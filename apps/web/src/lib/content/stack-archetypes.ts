@@ -20,7 +20,7 @@ export const stackArchetypes: StackArchetype[] = [
 		hook: {
 			en: 'Stop doing it by hand.',
 			es: 'Deja de hacerlo a mano.',
-			fr: 'Arrêtez de le faire à la main.',
+			fr: 'Arrête de le faire à la main.',
 		},
 		serviceId: 'data-pipeline',
 		slug: 'automated-workflow',
@@ -39,12 +39,12 @@ export const stackArchetypes: StackArchetype[] = [
 		description: {
 			en: 'Live metrics drawn straight from data you own.',
 			es: 'Métricas en vivo extraídas de datos que te pertenecen.',
-			fr: 'Des métriques en direct issues de données qui vous appartiennent.',
+			fr: 'Des métriques en direct issues de données qui t’appartiennent.',
 		},
 		hook: {
 			en: 'See your numbers move.',
 			es: 'Mira tus números moverse.',
-			fr: 'Voyez vos chiffres bouger.',
+			fr: 'Vois tes chiffres bouger.',
 		},
 		proofProjectSlug: 'transit-data-pipeline',
 		serviceId: 'analytics-reporting',
@@ -88,9 +88,9 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'A data model designed for the business you are becoming — migrations, integrity and room to grow without rewrites.',
-			es: 'Un modelo de datos para la empresa que estás construyendo — migraciones, integridad y espacio para crecer.',
-			fr: 'Un modèle de données pensé pour l’entreprise que vous devenez — migrations, intégrité et marge de croissance.',
+			en: 'A data model designed for the business you are becoming, migrations, integrity and room to grow without rewrites.',
+			es: 'Un modelo de datos para la empresa que estás construyendo, migraciones, integridad y espacio para crecer.',
+			fr: 'Un modèle de données pensé pour l’entreprise que tu deviens, migrations, intégrité et marge de croissance.',
 		},
 		hook: {
 			en: 'Schema today, growth tomorrow.',
@@ -137,14 +137,14 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'Database, pipelines, dashboards and the site that shows it — designed together so every layer feeds the next.',
-			es: 'Base de datos, pipelines, paneles y el sitio que los muestra — diseñados juntos para que cada capa alimente la siguiente.',
-			fr: 'Base de données, pipelines, tableaux de bord et le site qui les montre — conçus ensemble, chaque couche nourrit la suivante.',
+			en: 'Database, pipelines, dashboards and the site that shows it, designed together so every layer feeds the next.',
+			es: 'Base de datos, pipelines, paneles y el sitio que los muestra, diseñados juntos para que cada capa alimente la siguiente.',
+			fr: 'Base de données, pipelines, tableaux de bord et le site qui les montre, conçus ensemble, chaque couche nourrit la suivante.',
 		},
 		hook: {
-			en: 'Foundation to story — one system.',
-			es: 'Del cimiento a la historia — un solo sistema.',
-			fr: 'De la fondation au récit — un seul système.',
+			en: 'Foundation to story, one system.',
+			es: 'Del cimiento a la historia, un solo sistema.',
+			fr: 'De la fondation au récit, un seul système.',
 		},
 		serviceId: 'database-engineering',
 		slug: 'full-data-backbone',
@@ -163,14 +163,14 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'When the shared spreadsheet starts breaking, it becomes a small fast app — forms, permissions and a real database.',
-			es: 'Cuando la hoja compartida empieza a fallar, se convierte en una app pequeña y rápida — formularios, permisos y base de datos real.',
-			fr: 'Quand le tableur partagé craque, il devient une petite app rapide — formulaires, permissions et vraie base de données.',
+			en: 'When the shared spreadsheet starts breaking, it becomes a small fast app, forms, permissions and a real database.',
+			es: 'Cuando la hoja compartida empieza a fallar, se convierte en una app pequeña y rápida, formularios, permisos y base de datos real.',
+			fr: 'Quand le tableur partagé craque, il devient une petite app rapide, formulaires, permissions et vraie base de données.',
 		},
 		hook: {
 			en: 'The app your spreadsheet wants to be.',
 			es: 'La app que tu hoja de cálculo quiere ser.',
-			fr: 'L’app que votre tableur rêve d’être.',
+			fr: 'L’app que ton tableur rêve d’être.',
 		},
 		serviceId: 'web-development',
 		slug: 'internal-tool',
@@ -187,9 +187,9 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'A storefront with a database heart — products, content and checkout in one system the owner can run alone.',
-			es: 'Una tienda con una base de datos en el corazón — productos, contenido y pago en un solo sistema.',
-			fr: 'Une boutique avec une base de données au cœur — produits, contenu et paiement dans un seul système.',
+			en: 'A storefront with a database heart, products, content and checkout in one system the owner can run alone.',
+			es: 'Una tienda con una base de datos en el corazón, productos, contenido y pago en un solo sistema.',
+			fr: 'Une boutique avec une base de données au cœur, produits, contenu et paiement dans un seul système.',
 		},
 		hook: {
 			en: 'Open 24/7, fast everywhere.',
@@ -213,9 +213,9 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'Data flows that monitor their own health — alerts before customers notice, dashboards instead of guesswork.',
-			es: 'Flujos de datos que vigilan su propia salud — alertas antes de que los clientes lo noten, paneles en vez de intuición.',
-			fr: 'Des flux de données qui surveillent leur propre santé — alertes avant que les clients remarquent, tableaux de bord plutôt qu’intuition.',
+			en: 'Data flows that monitor their own health, alerts before customers notice, dashboards instead of guesswork.',
+			es: 'Flujos de datos que vigilan su propia salud, alertas antes de que los clientes lo noten, paneles en vez de intuición.',
+			fr: 'Des flux de données qui surveillent leur propre santé, alertes avant que les clients remarquent, tableaux de bord plutôt qu’intuition.',
 		},
 		hook: {
 			en: 'Pipelines that watch themselves.',
@@ -238,9 +238,9 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'The reports you already run, made fast — indexes, query plans and schema fixes on the database you already own.',
-			es: 'Tus reportes actuales, pero rápidos — índices, planes de consulta y arreglos de esquema en tu base existente.',
-			fr: 'Vos rapports actuels, rendus rapides — index, plans de requête et corrections de schéma sur votre base existante.',
+			en: 'The reports you already run, made fast, indexes, query plans and schema fixes on the database you already own.',
+			es: 'Tus reportes actuales, pero rápidos, índices, planes de consulta y arreglos de esquema en tu base existente.',
+			fr: 'Tes rapports actuels, rendus rapides, index, plans de requête et corrections de schéma sur ta base existante.',
 		},
 		hook: {
 			en: 'Seconds, not minutes.',
@@ -263,9 +263,9 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'The numbers your team compiles by hand, delivered automatically — same format, zero mornings lost.',
-			es: 'Los números que tu equipo compila a mano, entregados automáticamente — mismo formato, cero mañanas perdidas.',
-			fr: 'Les chiffres que votre équipe compile à la main, livrés automatiquement — même format, zéro matinée perdue.',
+			en: 'The numbers your team compiles by hand, delivered automatically, same format, zero mornings lost.',
+			es: 'Los números que tu equipo compila a mano, entregados automáticamente, mismo formato, cero mañanas perdidas.',
+			fr: 'Les chiffres que ton équipe compile à la main, livrés automatiquement, même format, zéro matinée perdue.',
 		},
 		hook: {
 			en: 'Monday numbers, before Monday.',
@@ -287,9 +287,9 @@ export const stackArchetypes: StackArchetype[] = [
 	},
 	{
 		description: {
-			en: 'Your shop and your metrics in one loop — what sells, what stalls, and what to reorder, visible daily.',
-			es: 'Tu tienda y tus métricas en un ciclo — qué se vende, qué se estanca y qué reordenar, visible a diario.',
-			fr: 'Votre boutique et vos métriques en boucle — ce qui se vend, ce qui stagne, quoi recommander, visible chaque jour.',
+			en: 'Your shop and your metrics in one loop, what sells, what stalls, and what to reorder, visible daily.',
+			es: 'Tu tienda y tus métricas en un ciclo, qué se vende, qué se estanca y qué reordenar, visible a diario.',
+			fr: 'Ta boutique et tes métriques en boucle, ce qui se vend, ce qui stagne, quoi recommander, visible chaque jour.',
 		},
 		hook: {
 			en: 'Commerce with a dashboard heart.',

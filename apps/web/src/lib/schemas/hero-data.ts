@@ -7,12 +7,24 @@ import type { HeroMetric, HeroQueryRow, HeroData } from '$lib/content/hero-data'
 
 export const HeroMetricKeySchema = z.enum(['vehicles', 'delay', 'routes']);
 
+// Mirrors LocalizedString { en; fr?; es? }.
+const LocalizedStringSchema = z.object({
+	en: z.string(),
+	fr: z.string().optional(),
+	es: z.string().optional(),
+});
+
 export const HeroMetricSchema = z.object({
 	label: z.string(),
 	value: z.number(),
 	unit: z.string().optional(),
 	sub: z.string(),
 	key: HeroMetricKeySchema,
+	// WITHOUT these, parsePort() strips the metric FR off the SSR heroData
+	// (Zod drops unknown keys) and localizeHeroData falls back to the EN label.
+	// The drift detector below misses it because both are optional on HeroMetric.
+	labelI18n: LocalizedStringSchema.optional(),
+	subI18n: LocalizedStringSchema.optional(),
 });
 
 export const HeroQueryRowSchema = z.object({

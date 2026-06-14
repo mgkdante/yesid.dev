@@ -103,7 +103,7 @@ Seed scripts are one-shot/idempotent per domain (`seed:services`, `seed:projects
 
 ```bash
 # 1) Admin credentials from 1Password (no hand-copying).
-export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
+export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token")
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 
 # 2) Seed (from apps/cms).
@@ -181,7 +181,7 @@ Bulk-upload `apps/web/static/images/*` into Directus-managed R2 storage. Reads `
 
 ```bash
 # 1) Pull the admin token from 1Password.
-export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
+export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token")
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 
 # 2) Dry-run first — prints what would upload without touching Directus.
@@ -207,7 +207,7 @@ Directus saved asset presets let consumers request named sizes via `?key=<preset
 ```bash
 # Idempotent — overwrites directus_settings.storage_asset_presets with the
 # declared SLICE_18_PRESETS array.
-export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
+export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token")
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 bun run seed:presets
 ```

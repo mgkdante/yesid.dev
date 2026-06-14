@@ -17,7 +17,7 @@ describe('FLAT_FIELD_PLAN shape', () => {
 		// addendum) + 1 seeded stack_explainer (go2/w5 engine-layered-learning)
 		expect(count('block_tech_stack_page_content_translations')).toBe(19);
 		expect(count('block_contact_content_translations')).toBe(21);
-		expect(count('block_about_content_translations')).toBe(27); // 26 string + polaroids list
+		expect(count('block_about_content_translations')).toBe(26); // 25 string + polaroids list
 		expect(count('block_about_intro_translations')).toBe(2);
 	});
 	it('parent scalar moves are locked at 13', () => {

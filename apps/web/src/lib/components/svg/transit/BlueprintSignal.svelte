@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="6" y="12" font-family="JetBrains Mono" font-size="6" fill="currentColor">SIGNAL — TYPE SA-2</text>
+	<text x="6" y="12" font-family="JetBrains Mono" font-size="6" fill="currentColor">SIGNAL · TYPE SA-2</text>
 	<line x1="6" y1="15" x2="95" y2="15" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->

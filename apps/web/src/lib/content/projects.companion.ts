@@ -12,9 +12,10 @@ import { projects } from './projects';
 /** HTML `<title>` + `<meta description>` for the `/projects` route. Extracted
  *  in Task 17b-7k. */
 export const projectsPageMeta = {
-	title: { en: 'Projects | yesid.' } satisfies LocalizedString,
+	title: { en: 'Projects | yesid.', fr: 'Projets | yesid.' } satisfies LocalizedString,
 	description: {
-		en: 'Projects, pipelines, and systems built by yesid. — freelance digital infrastructure in Montreal.',
+		en: 'Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.',
+		fr: 'Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique à la pige à Montréal.',
 	} satisfies LocalizedString,
 } as const;
 
@@ -22,21 +23,27 @@ export const projectsPageMeta = {
  *  Consumed by ProjectListingPage, ProjectFilterMobile, ProjectFilterSidebar,
  *  ProjectCard, and (via re-use) the services detail's "see all projects" link. */
 export const projectsListingContent = {
-	heading: { en: 'Projects' } satisfies LocalizedString,
-	searchPlaceholder: { en: 'Search projects...' } satisfies LocalizedString,
+	heading: { en: 'Projects', fr: 'Projets' } satisfies LocalizedString,
+	searchPlaceholder: {
+		en: 'Search projects...',
+		fr: 'Rechercher des projets…',
+	} satisfies LocalizedString,
 	/** "See all projects →" link — used from service detail pages pointing to /projects. */
-	seeAllLink: { en: 'See all projects →' } satisfies LocalizedString,
+	seeAllLink: {
+		en: 'See all projects →',
+		fr: 'Voir tous les projets →',
+	} satisfies LocalizedString,
 	filters: {
-		filtersLabel: { en: 'Filters' } satisfies LocalizedString,
-		services: { en: 'Services' } satisfies LocalizedString,
-		tags: { en: 'Tags' } satisfies LocalizedString,
-		techStack: { en: 'Tech Stack' } satisfies LocalizedString,
-		allLabel: { en: 'All' } satisfies LocalizedString,
-		showingPrefix: { en: 'Showing' } satisfies LocalizedString,
+		filtersLabel: { en: 'Filters', fr: 'Filtres' } satisfies LocalizedString,
+		services: { en: 'Services', fr: 'Services' } satisfies LocalizedString,
+		tags: { en: 'Tags', fr: 'Étiquettes' } satisfies LocalizedString,
+		techStack: { en: 'Tech Stack', fr: 'Stack technique' } satisfies LocalizedString,
+		allLabel: { en: 'All', fr: 'Tous' } satisfies LocalizedString,
+		showingPrefix: { en: 'Showing', fr: 'Affichage' } satisfies LocalizedString,
 	},
 	card: {
 		/** Suffix after the first N stack items; template `{count}` -> extra count. */
-		stackOverflowSuffix: { en: '+{count} more' } satisfies LocalizedString,
+		stackOverflowSuffix: { en: '+{count} more', fr: '+{count} de plus' } satisfies LocalizedString,
 	},
 } as const;
 
@@ -44,26 +51,26 @@ export const projectsListingContent = {
  *  Consumed by ProjectDetailHeader, ProjectDetailPage, ProjectGlancePanel(+Mobile),
  *  ProjectTocPill. */
 export const projectsDetailContent = {
-	backToListingLabel: { en: '← All Projects' } satisfies LocalizedString,
-	tocSectionTitle: { en: 'On this page' } satisfies LocalizedString,
-	readmeSectionTitle: { en: 'README' } satisfies LocalizedString,
+	backToListingLabel: { en: '← All Projects', fr: '← Tous les projets' } satisfies LocalizedString,
+	tocSectionTitle: { en: 'On this page', fr: 'Sur cette page' } satisfies LocalizedString,
+	readmeSectionTitle: { en: 'README', fr: 'README' } satisfies LocalizedString,
 	/** Glance panel (desktop sidebar + mobile collapsible) section headings. */
 	glance: {
-		overview: { en: 'Overview' } satisfies LocalizedString,
-		impact: { en: 'Impact' } satisfies LocalizedString,
-		stack: { en: 'Stack' } satisfies LocalizedString,
-		services: { en: 'Services' } satisfies LocalizedString,
-		links: { en: 'Links' } satisfies LocalizedString,
+		overview: { en: 'Overview', fr: 'Aperçu' } satisfies LocalizedString,
+		impact: { en: 'Impact', fr: 'Impact' } satisfies LocalizedString,
+		stack: { en: 'Stack', fr: 'Stack' } satisfies LocalizedString,
+		services: { en: 'Services', fr: 'Services' } satisfies LocalizedString,
+		links: { en: 'Links', fr: 'Liens' } satisfies LocalizedString,
 		/** Mobile-only rolled-up heading. */
-		projectInfo: { en: 'Project Info' } satisfies LocalizedString,
+		projectInfo: { en: 'Project Info', fr: 'Infos du projet' } satisfies LocalizedString,
 		/** Link labels inside the Links section. */
-		liveSiteLabel: { en: 'Live Site' } satisfies LocalizedString,
-		liveSiteLabelMobile: { en: '↗ Live Site' } satisfies LocalizedString,
-		githubLabel: { en: 'GitHub' } satisfies LocalizedString,
+		liveSiteLabel: { en: 'Live Site', fr: 'Site en ligne' } satisfies LocalizedString,
+		liveSiteLabelMobile: { en: '↗ Live Site', fr: '↗ Site en ligne' } satisfies LocalizedString,
+		githubLabel: { en: 'GitHub', fr: 'GitHub' } satisfies LocalizedString,
 	},
 	tocPill: {
-		openAria: { en: 'Table of contents' } satisfies LocalizedString,
-		closeAria: { en: 'Close table of contents' } satisfies LocalizedString,
+		openAria: { en: 'Table of contents', fr: 'Table des matières' } satisfies LocalizedString,
+		closeAria: { en: 'Close table of contents', fr: 'Fermer la table des matières' } satisfies LocalizedString,
 	},
 } as const;
 

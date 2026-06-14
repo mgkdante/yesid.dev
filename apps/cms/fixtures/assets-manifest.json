@@ -29,16 +29,40 @@
 			"description": "Decorative polaroid photograph used in the /about page polaroid strip."
 		},
 		{
-			"legacyPath": "images/about/polaroid-2.webp",
+			"legacyPath": "images/about/polaroid-dante.webp",
 			"folder": "about",
-			"title": "Polaroid — Montreal 2",
-			"description": "Decorative polaroid photograph used in the /about page polaroid strip."
+			"title": "Polaroid — Dante",
+			"description": "Polaroid photograph of Dante, the family dog, used in the /about page photo strip."
 		},
 		{
-			"legacyPath": "images/about/polaroid-3.webp",
+			"legacyPath": "images/about/polaroid-poupoune.webp",
 			"folder": "about",
-			"title": "Polaroid — Montreal 3",
-			"description": "Decorative polaroid photograph used in the /about page polaroid strip."
+			"title": "Polaroid — Poupoune",
+			"description": "Polaroid photograph of Poupoune, Yesid's dog, used in the /about page photo strip."
+		},
+		{
+			"legacyPath": "images/about/polaroid-yesid.webp",
+			"folder": "about",
+			"title": "Polaroid — Yesid",
+			"description": "Polaroid photograph of Yesid used in the /about page photo strip."
+		},
+		{
+			"legacyPath": "images/about/polaroid-family.webp",
+			"folder": "about",
+			"title": "Polaroid — family",
+			"description": "Polaroid photograph of Yesid with family, used in the /about page photo strip."
+		},
+		{
+			"legacyPath": "images/about/polaroid-friends.webp",
+			"folder": "about",
+			"title": "Polaroid — friends",
+			"description": "Polaroid photograph of Yesid with friends, used in the /about page photo strip."
+		},
+		{
+			"legacyPath": "images/about/polaroid-museum.webp",
+			"folder": "about",
+			"title": "Polaroid — Ottawa museum",
+			"description": "Polaroid photograph from an Ottawa museum day, used in the /about page photo strip."
 		},
 		{
 			"legacyPath": "images/about/interests/anime.webp",
@@ -47,10 +71,10 @@
 			"description": "Decorative illustration representing Yesid's interest in anime; used in the /about page interests grid."
 		},
 		{
-			"legacyPath": "images/about/interests/dataviz.webp",
+			"legacyPath": "images/about/interests/transit.webp",
 			"folder": "about",
-			"title": "Interests — data visualization",
-			"description": "Decorative illustration representing Yesid's interest in data visualization; used in the /about page interests grid."
+			"title": "Interests — transit",
+			"description": "Transit photograph representing Yesid's interest in public transportation; used in the /about page interests grid."
 		},
 		{
 			"legacyPath": "images/about/interests/food.webp",
@@ -59,34 +83,10 @@
 			"description": "Decorative illustration representing Yesid's interest in food; used in the /about page interests grid."
 		},
 		{
-			"legacyPath": "images/about/interests/opensource.webp",
+			"legacyPath": "images/about/interests/space.webp",
 			"folder": "about",
-			"title": "Interests — open source",
-			"description": "Decorative illustration representing Yesid's interest in open-source contribution; used in the /about page interests grid."
-		},
-		{
-			"legacyPath": "images/about/logo-1.svg",
-			"folder": "about",
-			"title": "Company logo 1 (anonymized)",
-			"description": "Anonymized company logo placeholder in the /about page career-history strip."
-		},
-		{
-			"legacyPath": "images/about/logo-2.svg",
-			"folder": "about",
-			"title": "Company logo 2 (anonymized)",
-			"description": "Anonymized company logo placeholder in the /about page career-history strip."
-		},
-		{
-			"legacyPath": "images/about/logo-3.svg",
-			"folder": "about",
-			"title": "Company logo 3 (anonymized)",
-			"description": "Anonymized company logo placeholder in the /about page career-history strip."
-		},
-		{
-			"legacyPath": "images/about/logo-4.svg",
-			"folder": "about",
-			"title": "Company logo 4 (anonymized)",
-			"description": "Anonymized company logo placeholder in the /about page career-history strip."
+			"title": "Interests — space",
+			"description": "Space image representing Yesid's interest in astronomy; used in the /about page interests grid."
 		},
 		{
 			"legacyPath": "images/work/yesid-dev.png",

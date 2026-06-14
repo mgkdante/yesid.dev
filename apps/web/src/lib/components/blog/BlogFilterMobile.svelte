@@ -8,6 +8,7 @@
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
 
 	const locale = getLocale();
 	import { blogListingContent } from '$lib/content/blog';
@@ -72,8 +73,9 @@
 		<CollapsibleContent forceMount class="blog-filter-body">
 			<div class="min-h-0 overflow-hidden">
 				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3" use:scrollChain>
-					<!-- Language filter -->
-					{#if languages.length > 1}
+					<!-- Language filter — surfaces the languages present in the active posts,
+					     like Tags (shown whenever ≥1 language exists, even EN-only). -->
+					{#if languages.length >= 1}
 						<div class="label-section font-semibold">
 							{languageLabel}
 						</div>
@@ -147,7 +149,7 @@
 					{#if cornerLink}
 						<div class="mt-3 divider-dashed pt-2">
 							<a
-								href={cornerLink.href}
+								href={localizeHref(cornerLink.href, locale)}
 								class="text-xs font-semibold no-underline"
 								style="color: {cornerLink.href.includes('personal') ? 'var(--accent-text)' : 'var(--primary)'};"
 							>

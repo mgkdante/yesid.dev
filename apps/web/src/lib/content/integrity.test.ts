@@ -586,7 +586,12 @@ describe('LocalizedString guard + translation debt', () => {
 // ONE siteLabels.ui.metroCaption ('STM métro + REM' — names the hero metro
 // art) — net +2 with a11y.replayIntro (hero dot replay button aria)
 // → NO_FR 435, TOTAL 517.
-const LOCKED = { TOTAL: 525, WITH_FR: 82, NO_FR: 443, ES_WITHOUT_FR: 0 } as const; // integration regen 2026-06-12: +7 roster enables (en) + metro caption (en)
+// slice-30 t1: the site_labels singleton gains 6 code-owned chrome groups
+// (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard)
+// recomposed from the companion + hero-data labels. +97 LocalizedString leaves,
+// ALL with fr (the chrome translations seed) → WITH_FR + TOTAL both +97
+// (530 → 627), NO_FR stays 0.
+const LOCKED = { TOTAL: 627, WITH_FR: 627, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30 t1: +97 chrome leaves (100% fr). ES deliberately deferred.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

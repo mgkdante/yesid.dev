@@ -20,6 +20,7 @@
 	import type { StackArchetype } from '@repo/shared/schemas';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
 	import { localizeHref } from '$lib/utils/locale-routing';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
@@ -41,21 +42,35 @@
 				techs: composeTechs ?? archetype.tech.map((l) => l.id),
 			}),
 	);
+
+	// The two exits + the whisper — code-owned, localized, em-dash-free.
+	const TAKE_BLUEPRINT = { en: 'Take this blueprint with you →', fr: 'Apporte ce plan avec toi →' };
+	const HIRE_THIS = {
+		en: 'Hire this, see the service behind it',
+		fr: 'Engage ça, vois le service en arrière',
+	};
+	const WHISPER = {
+		en: "if you ever want help building it, I'm around.",
+		fr: 'si jamais tu veux un coup de main pour le bâtir, je suis là.',
+	};
+	const takeBlueprint = $derived(resolveLocale(TAKE_BLUEPRINT, locale));
+	const hireThis = $derived(resolveLocale(HIRE_THIS, locale));
+	const whisper = $derived(resolveLocale(WHISPER, locale));
 </script>
 
 <div class="blueprint-cta" data-testid="blueprint-cta">
 	<div class="cta-row">
 		<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
-			Take this blueprint with you →
+			{takeBlueprint}
 		</a>
 		{#if archetype.serviceId}
 			<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
-				Hire this — see the service behind it
+				{hireThis}
 			</a>
 		{/if}
 	</div>
 	<!-- go2/w5 tone pass: the whisper — warm, zero pressure. -->
-	<p class="cta-whisper">if you ever want help building it, I'm around.</p>
+	<p class="cta-whisper">{whisper}</p>
 </div>
 
 <style>

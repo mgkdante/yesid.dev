@@ -56,7 +56,10 @@ describe('PREVIEW_CONFIGS — round 4 totality', () => {
 				expect(slot.y).toBeGreaterThanOrEqual(0);
 				expect(slot.x + slot.w).toBeLessThanOrEqual(frame.w);
 				expect(slot.y + slot.h).toBeLessThanOrEqual(frame.h);
-				expect(slot.role.length, `${config.slug} slot role must not be empty`).toBeGreaterThan(0);
+				expect(slot.role.en.length, `${config.slug} slot role (en) must not be empty`).toBeGreaterThan(0);
+				expect(slot.role.fr?.length ?? 0, `${config.slug} slot role (fr) must not be empty`).toBeGreaterThan(0);
+				expect(slot.role.en, `${config.slug} slot role must be em-dash-free`).not.toContain('—');
+				expect(slot.role.fr).not.toContain('—');
 			}
 		}
 	});
@@ -97,7 +100,7 @@ describe('round 4 dual-role audit — duplicated techs always tell distinct stor
 			const resolved = resolveArchetypePreview(archetype)!;
 			const rolesByTech = new Map<string, string[]>();
 			for (const slot of resolved.slots) {
-				rolesByTech.set(slot.techId, [...(rolesByTech.get(slot.techId) ?? []), slot.role]);
+				rolesByTech.set(slot.techId, [...(rolesByTech.get(slot.techId) ?? []), slot.role.en]);
 			}
 			for (const [techId, roles] of rolesByTech) {
 				expect(
@@ -110,7 +113,7 @@ describe('round 4 dual-role audit — duplicated techs always tell distinct stor
 
 	it("pins the operator example: the pipeline's two Pythons read 'pulls the raw feeds' vs 'cleans & reshapes'", () => {
 		const resolved = resolveArchetypePreview(pipeline)!;
-		const pythonRoles = resolved.slots.filter((s) => s.techId === 'python').map((s) => s.role);
+		const pythonRoles = resolved.slots.filter((s) => s.techId === 'python').map((s) => s.role.en);
 		expect(pythonRoles).toEqual(['pulls the raw feeds', 'cleans & reshapes']);
 	});
 });
@@ -172,6 +175,8 @@ describe('buildComposedPreview — see YOUR build as a product (round 4)', () =>
 		const frame = FRAME_SIZES[composed.frame];
 		for (const slot of composed.slots) {
 			expect(slot.role).toBe(COMPOSED_ROLES[slot.layer]);
+			expect(slot.role.en.length).toBeGreaterThan(0);
+			expect(slot.role.fr?.length ?? 0).toBeGreaterThan(0);
 			expect(slot.flip).toBe(true);
 			expect(slot.x).toBeGreaterThanOrEqual(0);
 			expect(slot.x + slot.w).toBeLessThanOrEqual(frame.w);
@@ -246,7 +251,7 @@ describe('ProductPreview', () => {
 		const caption = screen.getByTestId('enables-postgresql');
 		expect(caption.textContent).toContain('where the numbers live here');
 		expect(caption.textContent).toContain('stores and queries your data reliably');
-		expect(caption.textContent).toContain('data: the remembering part — where records live');
+		expect(caption.textContent).toContain('data: the remembering part, where records live');
 		// Tap again — caption toggles away.
 		await fireEvent.click(slot);
 		expect(screen.queryByTestId('enables-postgresql')).toBeNull();
@@ -283,7 +288,7 @@ describe('ProductPreview', () => {
 		expect(screen.getByTestId('slot-node-js')).toBeTruthy();
 		expect(screen.getByTestId('slot-github-actions')).toBeTruthy();
 		expect(preview.querySelectorAll('[data-flip-id]')).toHaveLength(2);
-		expect(preview.textContent).toContain(COMPOSED_ROLES.logic);
-		expect(preview.textContent).toContain(COMPOSED_ROLES.infra);
+		expect(preview.textContent).toContain(COMPOSED_ROLES.logic.en);
+		expect(preview.textContent).toContain(COMPOSED_ROLES.infra.en);
 	});
 });

@@ -21,6 +21,7 @@
 // (zero CMS schema changes); the audit test enforces distinctness.
 
 import { STACK_LAYERS, type StackArchetype, type StackLayer } from '@repo/shared/schemas';
+import type { LocalizedString } from '$lib/types';
 
 export interface PreviewSlot {
 	layer: StackLayer;
@@ -32,8 +33,9 @@ export interface PreviewSlot {
 	w: number;
 	h: number;
 	/** The slot's job in this product — story voice, rendered above the tech
-	 *  name and read into the tap caption. Required (round 4 dual-role rule). */
-	role: string;
+	 *  name and read into the tap caption. Required (round 4 dual-role rule).
+	 *  go2 FR pass: LocalizedString ({ en, fr }); resolved at the renderer. */
+	role: LocalizedString;
 }
 
 export interface PreviewConfig {
@@ -45,7 +47,7 @@ export interface PreviewConfig {
 /** A slot with its occupant resolved — what ProductPreview actually renders. */
 export interface ResolvedPreviewSlot {
 	layer: StackLayer;
-	role: string;
+	role: LocalizedString;
 	x: number;
 	y: number;
 	w: number;
@@ -77,12 +79,12 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'data-dashboard',
 		frame: 'browser',
 		slots: [
-			{ layer: 'interface', x: 0, y: 0, w: 360, h: 26, role: 'the nav up top' },
-			{ layer: 'interface', x: 12, y: 38, w: 166, h: 50, role: 'this revenue card' },
-			{ layer: 'interface', x: 190, y: 38, w: 158, h: 50, role: 'this traffic card' },
-			{ layer: 'logic', x: 12, y: 100, w: 336, h: 88, role: 'feeds the chart live numbers' },
-			{ layer: 'data', x: 12, y: 200, w: 336, h: 26, role: 'where the numbers live' },
-			{ layer: 'infra', x: 240, y: 232, w: 108, h: 26, role: 'ships it anywhere' },
+			{ layer: 'interface', x: 0, y: 0, w: 360, h: 26, role: { en: 'the nav up top', fr: 'la barre de nav en haut' } },
+			{ layer: 'interface', x: 12, y: 38, w: 166, h: 50, role: { en: 'this revenue card', fr: 'cette carte de revenus' } },
+			{ layer: 'interface', x: 190, y: 38, w: 158, h: 50, role: { en: 'this traffic card', fr: 'cette carte de trafic' } },
+			{ layer: 'logic', x: 12, y: 100, w: 336, h: 88, role: { en: 'feeds the chart live numbers', fr: 'envoie les chiffres en direct au graphique' } },
+			{ layer: 'data', x: 12, y: 200, w: 336, h: 26, role: { en: 'where the numbers live', fr: 'où les chiffres restent' } },
+			{ layer: 'infra', x: 240, y: 232, w: 108, h: 26, role: { en: 'ships it anywhere', fr: 'le déploie n\'importe où' } },
 		],
 	},
 	// Browser pipeline: the operator's dual-Python case — source AND transform
@@ -91,10 +93,10 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'data-pipeline',
 		frame: 'browser',
 		slots: [
-			{ layer: 'logic', x: 12, y: 40, w: 100, h: 120, role: 'pulls the raw feeds' },
-			{ layer: 'logic', x: 130, y: 40, w: 100, h: 120, role: 'cleans & reshapes' },
-			{ layer: 'data', x: 248, y: 40, w: 100, h: 120, role: 'lands the clean tables' },
-			{ layer: 'infra', x: 12, y: 176, w: 110, h: 26, role: 'runs the whole line' },
+			{ layer: 'logic', x: 12, y: 40, w: 100, h: 120, role: { en: 'pulls the raw feeds', fr: 'va chercher les données brutes' } },
+			{ layer: 'logic', x: 130, y: 40, w: 100, h: 120, role: { en: 'cleans & reshapes', fr: 'nettoie pis remet en forme' } },
+			{ layer: 'data', x: 248, y: 40, w: 100, h: 120, role: { en: 'lands the clean tables', fr: 'dépose les tables propres' } },
+			{ layer: 'infra', x: 12, y: 176, w: 110, h: 26, role: { en: 'runs the whole line', fr: 'roule toute la ligne' } },
 		],
 	},
 	// Phone site: hero block (interface), three content sections (logic —
@@ -103,11 +105,11 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'fast-website',
 		frame: 'phone',
 		slots: [
-			{ layer: 'interface', x: 12, y: 36, w: 156, h: 90, role: 'the page people land on' },
-			{ layer: 'logic', x: 12, y: 138, w: 156, h: 34, role: 'the services section, typed' },
-			{ layer: 'logic', x: 12, y: 180, w: 156, h: 34, role: 'the projects section, typed' },
-			{ layer: 'logic', x: 12, y: 222, w: 156, h: 34, role: 'the contact form, typed' },
-			{ layer: 'infra', x: 40, y: 276, w: 100, h: 26, role: 'served from the edge' },
+			{ layer: 'interface', x: 12, y: 36, w: 156, h: 90, role: { en: 'the page people land on', fr: 'la page où le monde atterrit' } },
+			{ layer: 'logic', x: 12, y: 138, w: 156, h: 34, role: { en: 'the services section, typed', fr: 'la section services, typée' } },
+			{ layer: 'logic', x: 12, y: 180, w: 156, h: 34, role: { en: 'the projects section, typed', fr: 'la section projets, typée' } },
+			{ layer: 'logic', x: 12, y: 222, w: 156, h: 34, role: { en: 'the contact form, typed', fr: 'le formulaire de contact, typé' } },
+			{ layer: 'infra', x: 40, y: 276, w: 100, h: 26, role: { en: 'served from the edge', fr: 'servi depuis le edge' } },
 		],
 	},
 	// ── Round 4: the remaining 9 — every archetype previews as a product. ───
@@ -116,9 +118,9 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'automated-workflow',
 		frame: 'browser',
 		slots: [
-			{ layer: 'logic', x: 12, y: 40, w: 220, h: 120, role: 'runs the job, hands-free' },
-			{ layer: 'data', x: 248, y: 40, w: 100, h: 120, role: 'logs every run' },
-			{ layer: 'infra', x: 12, y: 176, w: 150, h: 26, role: 'fires it on schedule' },
+			{ layer: 'logic', x: 12, y: 40, w: 220, h: 120, role: { en: 'runs the job, hands-free', fr: 'roule la job, mains libres' } },
+			{ layer: 'data', x: 248, y: 40, w: 100, h: 120, role: { en: 'logs every run', fr: 'note chaque run' } },
+			{ layer: 'infra', x: 12, y: 176, w: 150, h: 26, role: { en: 'fires it on schedule', fr: 'la déclenche sur l\'horaire' } },
 		],
 	},
 	// DB admin window: the tables themselves + the migration rail beside them
@@ -127,9 +129,9 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'database-that-scales',
 		frame: 'browser',
 		slots: [
-			{ layer: 'data', x: 12, y: 40, w: 220, h: 148, role: 'the tables, source of truth' },
-			{ layer: 'data', pick: 1, x: 248, y: 40, w: 100, h: 148, role: 'migrates the schema safely' },
-			{ layer: 'infra', x: 12, y: 204, w: 160, h: 26, role: 'same database, any machine' },
+			{ layer: 'data', x: 12, y: 40, w: 220, h: 148, role: { en: 'the tables, source of truth', fr: 'les tables, la source de vérité' } },
+			{ layer: 'data', pick: 1, x: 248, y: 40, w: 100, h: 148, role: { en: 'migrates the schema safely', fr: 'migre le schéma sans casser' } },
+			{ layer: 'infra', x: 12, y: 204, w: 160, h: 26, role: { en: 'same database, any machine', fr: 'même base de données, n\'importe quelle machine' } },
 		],
 	},
 	// Whole-system window: site topbar, pipeline lane, dashboard panel
@@ -138,11 +140,11 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'full-data-backbone',
 		frame: 'browser',
 		slots: [
-			{ layer: 'interface', x: 0, y: 0, w: 360, h: 26, role: 'the site everyone sees' },
-			{ layer: 'logic', x: 12, y: 38, w: 166, h: 98, role: 'moves & cleans the data' },
-			{ layer: 'data', pick: 1, x: 190, y: 38, w: 158, h: 98, role: 'the boardroom dashboard' },
-			{ layer: 'data', x: 12, y: 148, w: 336, h: 26, role: 'one database feeds it all' },
-			{ layer: 'infra', x: 240, y: 204, w: 108, h: 26, role: 'every piece runs the same' },
+			{ layer: 'interface', x: 0, y: 0, w: 360, h: 26, role: { en: 'the site everyone sees', fr: 'le site que tout le monde voit' } },
+			{ layer: 'logic', x: 12, y: 38, w: 166, h: 98, role: { en: 'moves & cleans the data', fr: 'déplace pis nettoie les données' } },
+			{ layer: 'data', pick: 1, x: 190, y: 38, w: 158, h: 98, role: { en: 'the boardroom dashboard', fr: 'le tableau de bord du conseil' } },
+			{ layer: 'data', x: 12, y: 148, w: 336, h: 26, role: { en: 'one database feeds it all', fr: 'une base de données nourrit tout' } },
+			{ layer: 'infra', x: 240, y: 204, w: 108, h: 26, role: { en: 'every piece runs the same', fr: 'chaque morceau roule pareil' } },
 		],
 	},
 	// Team app: sidebar of screens, a checked form, the records table.
@@ -150,9 +152,9 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'internal-tool',
 		frame: 'browser',
 		slots: [
-			{ layer: 'interface', x: 0, y: 0, w: 84, h: 264, role: 'the screens your team taps' },
-			{ layer: 'logic', x: 96, y: 40, w: 252, h: 96, role: 'checks every entry' },
-			{ layer: 'data', x: 96, y: 148, w: 252, h: 96, role: 'the records, one source' },
+			{ layer: 'interface', x: 0, y: 0, w: 84, h: 264, role: { en: 'the screens your team taps', fr: 'les écrans que ton équipe touche' } },
+			{ layer: 'logic', x: 96, y: 40, w: 252, h: 96, role: { en: 'checks every entry', fr: 'vérifie chaque saisie' } },
+			{ layer: 'data', x: 96, y: 148, w: 252, h: 96, role: { en: 'the records, one source', fr: 'les données, une seule source' } },
 		],
 	},
 	// Shopping happens on phones: shop window, honest checkout, stock memory.
@@ -160,10 +162,10 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'online-store',
 		frame: 'phone',
 		slots: [
-			{ layer: 'interface', x: 12, y: 36, w: 156, h: 112, role: 'the shop window' },
-			{ layer: 'logic', x: 12, y: 160, w: 156, h: 40, role: 'keeps checkout honest' },
-			{ layer: 'data', x: 12, y: 212, w: 156, h: 32, role: 'remembers stock & orders' },
-			{ layer: 'infra', x: 40, y: 276, w: 100, h: 26, role: 'fast for every visitor' },
+			{ layer: 'interface', x: 12, y: 36, w: 156, h: 112, role: { en: 'the shop window', fr: 'la vitrine de la boutique' } },
+			{ layer: 'logic', x: 12, y: 160, w: 156, h: 40, role: { en: 'keeps checkout honest', fr: 'garde le checkout honnête' } },
+			{ layer: 'data', x: 12, y: 212, w: 156, h: 32, role: { en: 'remembers stock & orders', fr: 'se souvient du stock pis des orders' } },
+			{ layer: 'infra', x: 40, y: 276, w: 100, h: 26, role: { en: 'fast for every visitor', fr: 'rapide pour chaque visiteur' } },
 		],
 	},
 	// Health console: watcher lane + health board, TWO infra chips with two
@@ -172,10 +174,10 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'ops-autopilot',
 		frame: 'browser',
 		slots: [
-			{ layer: 'logic', x: 12, y: 40, w: 166, h: 120, role: 'watches every run' },
-			{ layer: 'data', x: 190, y: 40, w: 158, h: 120, role: 'the health board' },
-			{ layer: 'infra', x: 12, y: 176, w: 160, h: 26, role: 'the boxes it runs in' },
-			{ layer: 'infra', pick: 1, x: 190, y: 176, w: 158, h: 26, role: 'reruns & alerts' },
+			{ layer: 'logic', x: 12, y: 40, w: 166, h: 120, role: { en: 'watches every run', fr: 'surveille chaque run' } },
+			{ layer: 'data', x: 190, y: 40, w: 158, h: 120, role: { en: 'the health board', fr: 'le tableau de santé' } },
+			{ layer: 'infra', x: 12, y: 176, w: 160, h: 26, role: { en: 'the boxes it runs in', fr: 'les boîtes où ça roule' } },
+			{ layer: 'infra', pick: 1, x: 190, y: 176, w: 158, h: 26, role: { en: 'reruns & alerts', fr: 'relance pis alerte' } },
 		],
 	},
 	// Query console over BOTH stores (pick 1 = SQL Server beside Postgres).
@@ -183,9 +185,9 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'queries-that-fly',
 		frame: 'browser',
 		slots: [
-			{ layer: 'logic', x: 12, y: 40, w: 336, h: 56, role: 'profiles the slow queries' },
-			{ layer: 'data', x: 12, y: 112, w: 160, h: 112, role: 'your Postgres, tuned' },
-			{ layer: 'data', pick: 1, x: 188, y: 112, w: 160, h: 112, role: 'the SQL Server estate' },
+			{ layer: 'logic', x: 12, y: 40, w: 336, h: 56, role: { en: 'profiles the slow queries', fr: 'profile les requêtes lentes' } },
+			{ layer: 'data', x: 12, y: 112, w: 160, h: 112, role: { en: 'your Postgres, tuned', fr: 'ton PostgreSQL, ajusté' } },
+			{ layer: 'data', pick: 1, x: 188, y: 112, w: 160, h: 112, role: { en: 'the SQL Server estate', fr: 'le parc SQL Server' } },
 		],
 	},
 	// The Monday report: report canvas, the numbers' home (pick 1 = SQL
@@ -194,9 +196,9 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'report-writes-itself',
 		frame: 'browser',
 		slots: [
-			{ layer: 'data', x: 12, y: 40, w: 220, h: 148, role: 'the Monday report, drawn' },
-			{ layer: 'data', pick: 1, x: 248, y: 40, w: 100, h: 148, role: 'where the numbers live' },
-			{ layer: 'logic', x: 12, y: 204, w: 200, h: 26, role: 'compiles it overnight' },
+			{ layer: 'data', x: 12, y: 40, w: 220, h: 148, role: { en: 'the Monday report, drawn', fr: 'le rapport du lundi, dessiné' } },
+			{ layer: 'data', pick: 1, x: 248, y: 40, w: 100, h: 148, role: { en: 'where the numbers live', fr: 'où les chiffres restent' } },
+			{ layer: 'logic', x: 12, y: 204, w: 200, h: 26, role: { en: 'compiles it overnight', fr: 'le compile durant la nuit' } },
 		],
 	},
 	// Storefront with a dashboard heart: shop topbar, sales chart (pick 1 =
@@ -205,10 +207,10 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slug: 'store-knows-numbers',
 		frame: 'browser',
 		slots: [
-			{ layer: 'interface', x: 0, y: 0, w: 360, h: 26, role: 'the storefront people browse' },
-			{ layer: 'data', pick: 1, x: 12, y: 38, w: 166, h: 110, role: 'what sold, drawn daily' },
-			{ layer: 'logic', x: 190, y: 38, w: 158, h: 110, role: 'keeps cart & counts honest' },
-			{ layer: 'data', x: 12, y: 162, w: 336, h: 26, role: 'orders & products, one base' },
+			{ layer: 'interface', x: 0, y: 0, w: 360, h: 26, role: { en: 'the storefront people browse', fr: 'la vitrine que le monde fouille' } },
+			{ layer: 'data', pick: 1, x: 12, y: 38, w: 166, h: 110, role: { en: 'what sold, drawn daily', fr: 'ce qui s\'est vendu, dessiné chaque jour' } },
+			{ layer: 'logic', x: 190, y: 38, w: 158, h: 110, role: { en: 'keeps cart & counts honest', fr: 'garde le panier pis les comptes honnêtes' } },
+			{ layer: 'data', x: 12, y: 162, w: 336, h: 26, role: { en: 'orders & products, one base', fr: 'orders pis produits, une seule base' } },
 		],
 	},
 };
@@ -248,11 +250,11 @@ export function resolveArchetypePreview(archetype: StackArchetype): ResolvedPrev
 
 /** Generic role per layer for the composed build preview (picks are unique
  *  ids, so the dual-role rule is satisfied by construction here). */
-export const COMPOSED_ROLES: Record<StackLayer, string> = {
-	interface: 'what people see',
-	logic: 'does the thinking',
-	data: 'keeps the records',
-	infra: 'the ground it runs on',
+export const COMPOSED_ROLES: Record<StackLayer, LocalizedString> = {
+	interface: { en: 'what people see', fr: 'ce que le monde voit' },
+	logic: { en: 'does the thinking', fr: 'fait la réflexion' },
+	data: { en: 'keeps the records', fr: 'garde les données' },
+	infra: { en: 'the ground it runs on', fr: 'le terrain sur lequel ça roule' },
 };
 
 /** Layer bands for the composed preview — fixed rows; a missing layer leaves

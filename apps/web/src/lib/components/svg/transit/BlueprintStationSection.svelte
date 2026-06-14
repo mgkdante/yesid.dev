@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 300 170" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="8" y="13" font-family="JetBrains Mono" font-size="7" fill="currentColor">SECTION TYPE ST-3 — STATION</text>
+	<text x="8" y="13" font-family="JetBrains Mono" font-size="7" fill="currentColor">SECTION TYPE ST-3 · STATION</text>
 	<line x1="8" y1="16" x2="195" y2="16" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->
@@ -103,7 +103,7 @@
 	<line x1="40" y1="158" x2="260" y2="158" stroke="currentColor" stroke-width="0.3"/>
 	<line x1="40" y1="155" x2="40" y2="161" stroke="currentColor" stroke-width="0.3"/>
 	<line x1="260" y1="155" x2="260" y2="161" stroke="currentColor" stroke-width="0.3"/>
-	<text x="150" y="164" font-family="JetBrains Mono" font-size="5" fill="currentColor" text-anchor="middle">18,4 m — LARGEUR TOTALE</text>
+	<text x="150" y="164" font-family="JetBrains Mono" font-size="5" fill="currentColor" text-anchor="middle">18,4 m · LARGEUR TOTALE</text>
 
 	<!-- Height dimension (right side) -->
 	<line x1="272" y1="28" x2="272" y2="140" stroke="currentColor" stroke-width="0.3"/>

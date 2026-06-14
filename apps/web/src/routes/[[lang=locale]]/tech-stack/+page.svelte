@@ -37,12 +37,17 @@
 	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, locale);
 	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, locale);
 	const heroTerminalAria = resolveLocale(c.hero.terminalAria, locale);
+	// go2/slice-30: explainer kicker — inline LocalizedString (CMS-back later with the rest).
+	const stackKicker = resolveLocale(
+		{ en: 'what\'s a "stack"?', fr: 'c\'est quoi un « stack »?' },
+		locale,
+	);
 	// go2/w5 §1: "What is a stack?" explainer — CMS-backed (stack_explainer flat
 	// column) with a byte-identical EN code fallback. The committed module has
 	// no stackExplainer until the orchestrator applies the field + regenerates,
 	// so the fallback is what EXPORT_FALLBACKS_SKIP=1 builds render. Never blank.
 	const FALLBACK_STACK_EXPLAINER =
-		'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you — poke the blueprints below and see for yourself.';
+		'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you, poke the blueprints below and see for yourself.';
 	const stackExplainer = c.hero.stackExplainer
 		? resolveLocale(c.hero.stackExplainer, locale) || FALLBACK_STACK_EXPLAINER
 		: FALLBACK_STACK_EXPLAINER;
@@ -54,7 +59,6 @@
 	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, locale);
 	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, locale);
 	const ctaSub = resolveLocale(c.cta.sub, locale);
-	const ctaAvailability = resolveLocale(c.cta.availability, locale);
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -133,7 +137,7 @@
 				     before the machine voice starts typing. Human voice = site sans;
 				     mono stays the machine's. -->
 				<p class="stack-explainer" data-testid="stack-explainer">
-					<span class="explainer-kicker">what's a "stack"?</span>
+					<span class="explainer-kicker">{stackKicker}</span>
 					{stackExplainer}
 				</p>
 
@@ -220,7 +224,6 @@
 				{viewServicesLabel}
 			</Button>
 		</div>
-		<span class="cta-avail">{ctaAvailability}</span>
 	</section>
 </main>
 
@@ -476,14 +479,6 @@
 		gap: 1rem;
 		margin-bottom: 1rem;
 		flex-wrap: wrap;
-	}
-
-	.cta-avail {
-		font-family: var(--font-mono);
-		font-size: 10px;
-		letter-spacing: 1px;
-		color: var(--accent-text);
-		text-transform: uppercase;
 	}
 
 	/* ═══ Responsive ═══ */

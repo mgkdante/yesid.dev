@@ -308,7 +308,8 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 	if (data.siteLabels) {
 		out.push({
 			filePath: path('site-labels.ts'),
-			description: 'Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton.',
+			description:
+				'Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton. slice-30 t1: also carries the code-owned chrome groups (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard) recomposed from the companion-shaped flat columns, so a future regen sources the companion/hero-data labels straight from Directus.',
 			imports: [{ symbols: ['SiteLabels'], from: '$lib/types', typeOnly: true }],
 			exports: [{ name: 'siteLabels', typeName: 'SiteLabels', value: data.siteLabels }],
 		});

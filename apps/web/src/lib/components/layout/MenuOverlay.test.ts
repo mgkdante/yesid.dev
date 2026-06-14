@@ -110,26 +110,11 @@ describe('MenuOverlay — locale threading (slice-28.6)', () => {
 		expect(screen.getByText('ce que je construis')).toBeInTheDocument();
 	});
 
-	it('hides the locale switcher while only one locale is published', () => {
-		render(MenuOverlay, { props: { open: true, pathname: '/', menuItems: [] } });
-		expect(screen.queryByTestId('locale-switch')).toBeNull();
-	});
-
-	it('renders path-preserving EN|FR links when two locales are available', () => {
+	it('does not render a locale switcher — the persistent Nav LanguageToggle owns it (no double EN/FR)', () => {
 		render(MenuOverlay, {
-			props: {
-				open: true,
-				pathname: '/fr/about',
-				locale: 'fr',
-				menuItems: [],
-				availableLocales: ['en', 'fr'],
-			},
+			props: { open: true, pathname: '/fr/about', locale: 'fr', menuItems: [], availableLocales: ['en', 'fr'] },
 		});
-		const sw = screen.getByTestId('locale-switch');
-		const links = sw.querySelectorAll('a');
-		expect(links[0].getAttribute('href')).toBe('/about');
-		expect(links[1].getAttribute('href')).toBe('/fr/about');
-		expect(links[1].getAttribute('aria-current')).toBe('true');
+		expect(screen.queryByTestId('locale-switch')).toBeNull();
 	});
 
 	it('localizes item hrefs and resolves active state from a prefixed pathname', () => {

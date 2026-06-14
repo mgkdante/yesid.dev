@@ -5,9 +5,7 @@
  * stop_labels/labels/meta now read FLAT columns (locale-invariant leaves on
  * the parent row, per-locale strings + the polaroids repeater on
  * translations); the list repeaters (metrics/methodology/testimonials/
- * interests) and parent-row arrays (tech_stack, client_logos) are unchanged.
- *
- * Mirrors transformBlockAboutContent in apps/web/src/lib/adapters/directus.ts:952.
+ * interests) are unchanged. Parent-row arrays now carry languages + education.
  */
 
 import { readSingleton } from '@directus/sdk';
@@ -26,7 +24,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const clientCount = typeof raw.client_count === 'number' ? raw.client_count : 0;
 
 	// --- identity: flat columns + per-locale polaroids repeater ---
 	const polaroidsByLocale = new Map<string, Array<Record<string, unknown>>>();
@@ -168,17 +165,47 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		return testimonial;
 	});
 
-	// --- techStack: read from parent row ---
-	const rawTechStack = Array.isArray(raw.tech_stack)
-		? (raw.tech_stack as Array<Record<string, unknown>>)
+	// --- languages: read from parent row ---
+	const languages = Array.isArray(raw.languages)
+		? (raw.languages as unknown[]).filter((item): item is string => typeof item === 'string')
 		: [];
-	const techStack: AboutContent['techStack'] = rawTechStack.map((item) => ({
-		name: typeof item.name === 'string' ? item.name : '',
-		category: (item.category as AboutContent['techStack'][number]['category']) ?? 'tools',
-		relatedServices: Array.isArray(item.relatedServices)
-			? (item.relatedServices as string[])
-			: [],
-	}));
+
+	// --- education: per-locale repeater on the translation rows (school/program
+	// are localized strings, icon is locale-invariant). Same shape as the
+	// metrics/methodology/interests repeaters above; the en row is the base and
+	// fr/es are zipped by index. (Earlier this read bilingual school_en/_fr
+	// columns from the parent row, but that field was never created — the data
+	// lives on the translation rows, so the parent read always yielded [].) ---
+	const educationByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.education)) {
+			educationByLocale.set(code, row.education as Array<Record<string, unknown>>);
+		}
+	}
+	const enEducation = educationByLocale.get('en') ?? [];
+	const education: AboutContent['education'] = enEducation.map((enE, idx) => {
+		const school: LocalizedString = { en: typeof enE.school === 'string' ? enE.school : '' };
+		const program: LocalizedString = { en: typeof enE.program === 'string' ? enE.program : '' };
+		for (const [locale, eList] of educationByLocale) {
+			if (locale === 'en') continue;
+			const e = eList[idx];
+			if (!e) continue;
+			if (typeof e.school === 'string' && e.school.length > 0) {
+				if (locale === 'fr') school.fr = e.school;
+				else if (locale === 'es') school.es = e.school;
+			}
+			if (typeof e.program === 'string' && e.program.length > 0) {
+				if (locale === 'fr') program.fr = e.program;
+				else if (locale === 'es') program.es = e.program;
+			}
+		}
+		return {
+			school,
+			program,
+			icon: enE.icon === 'bishops' ? 'bishops' : 'champlain',
+		};
+	});
 
 	// --- interests: id (plain), image (plain), label (LS) ---
 	const interestsByLocale = new Map<string, Array<Record<string, unknown>>>();
@@ -213,19 +240,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		hook: toLocalizedString(tr, 'weather_hook'),
 		enabled: raw.weather_enabled === true,
 	};
-
-	// --- clientLogos: read from parent row ---
-	const rawClientLogos = Array.isArray(raw.client_logos)
-		? (raw.client_logos as Array<Record<string, unknown>>)
-		: [];
-	const clientLogos: AboutContent['clientLogos'] = rawClientLogos.map((logo) => {
-		const cl: AboutContent['clientLogos'][number] = {
-			name: typeof logo.name === 'string' ? logo.name : '',
-			src: typeof logo.src === 'string' ? logo.src : '',
-		};
-		if (typeof logo.url === 'string' && logo.url.length > 0) cl.url = logo.url;
-		return cl;
-	});
 
 	// --- cta: parent scalars/arrays + flat LS ---
 	const rawCtaLines = Array.isArray(raw.cta_lines)
@@ -263,7 +277,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		next: toLocalizedString(tr, 'stop_next'),
 	};
 	const labels: AboutContent['labels'] = {
-		clientsServed: toLocalizedString(tr, 'label_clients_served'),
 		polaroidPrevAria: toLocalizedString(tr, 'label_polaroid_prev_aria'),
 		polaroidNextAria: toLocalizedString(tr, 'label_polaroid_next_aria'),
 		testimonialsCarouselAria: toLocalizedString(tr, 'label_testimonials_carousel_aria'),
@@ -281,11 +294,10 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		metrics,
 		methodology,
 		testimonials,
-		techStack,
+		languages,
+		education,
 		interests,
 		weather,
-		clientLogos,
-		clientCount,
 		cta,
 		stopLabels,
 		labels,
