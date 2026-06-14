@@ -103,9 +103,15 @@ test.describe('weather scene screenshots', () => {
 			test(`${c.name} · ${theme}`, async ({ page }) => {
 				await page.addInitScript((t) => localStorage.setItem('theme', t), theme);
 				await forceWeather(page, c);
-				await page.goto('/about', { waitUntil: 'networkidle' });
+				await page.goto('/about');
+				// The scene is pure CSS + inline SVG (no external images), so
+				// `load` + a painted, correctly-keyed skyline is the deterministic
+				// stability signal — networkidle would race the stubbed
+				// /api/weather refresh + DOM clock interval for no extra guarantee.
+				await page.waitForLoadState('load');
 				const scene = page.locator(SCENE);
 				await expect(scene).toHaveAttribute('data-scene', c.scene);
+				await expect(scene.locator('.weather-skyline')).toBeVisible();
 				// Let loops distribute particles before the motion frame.
 				await page.waitForTimeout(2600);
 				await page
@@ -118,8 +124,13 @@ test.describe('weather scene screenshots', () => {
 					await page.addInitScript((t) => localStorage.setItem('theme', t), theme);
 					await page.emulateMedia({ reducedMotion: 'reduce' });
 					await forceWeather(page, c);
-					await page.goto('/about', { waitUntil: 'networkidle' });
-					await expect(page.locator(SCENE)).toHaveAttribute('data-scene', c.scene);
+					await page.goto('/about');
+					// Static still: `load` + the painted skyline is the deterministic
+					// guard; reduce-motion parks every loop so there is no settle to wait on.
+					await page.waitForLoadState('load');
+					const scene = page.locator(SCENE);
+					await expect(scene).toHaveAttribute('data-scene', c.scene);
+					await expect(scene.locator('.weather-skyline')).toBeVisible();
 					await page.waitForTimeout(400);
 					await page
 						.locator('[data-testid="about-weather"]')
