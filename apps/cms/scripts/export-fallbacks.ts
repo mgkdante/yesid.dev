@@ -42,6 +42,12 @@ import { createLogger } from './lib/logger';
 import { buildEmitConfigs } from './lib/emitters/configs';
 import { emitModule } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
+import {
+	GENERATED_MANIFEST_FILENAME,
+	hashContent,
+	loadManifest,
+	writeManifest,
+} from './lib/generated-manifest';
 import type { ExportData } from './export-data';
 import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
@@ -98,6 +104,11 @@ export interface RunOptions {
 	isProd?: boolean;
 }
 
+// `--module=<name>` filter values. A few emitted FILES are bundled under one
+// module name: `blog-posts` emits both blog.ts and blog-bodies.ts, and
+// `tech-stack` needs both tech-stack-page + tech-stack data — so there is no
+// `--module=blog-bodies`. A partial run merges its emitted hashes into the
+// manifest (see emitAll), so unrelated keys are preserved.
 const ALL_MODULES = [
 	'site-meta',
 	'site-seo-defaults',
@@ -298,12 +309,24 @@ async function emitAll(data: ExportData, opts: RunOptions): Promise<void> {
 	}
 
 	await mkdir(emitDir, { recursive: true });
+	const emittedHashes: Record<string, string> = {};
 	for (const cfg of configs) {
 		const content = emitModule(cfg);
 		await Bun.write(cfg.filePath, content);
+		emittedHashes[relative(emitDir, cfg.filePath)] = hashContent(content);
 		log.info(`  ${relative(emitDir, cfg.filePath)} (${content.length} bytes)`);
 	}
 	log.info(`emit: wrote ${configs.length} module(s).`);
+
+	// Record the SHA-256 of every emitted module so the pre-commit guard can
+	// detect hand-edits (the CMS is the source of truth; these files are cache).
+	// A `--module=<name>` partial run merges into the existing manifest so it
+	// never drops the hashes of modules it didn't re-emit; a full run replaces.
+	const manifestFiles = opts.module
+		? { ...((await loadManifest(emitDir))?.files ?? {}), ...emittedHashes }
+		: emittedHashes;
+	await writeManifest(emitDir, manifestFiles);
+	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${Object.keys(manifestFiles).length} entries).`);
 }
 
 function cachePath(opts: RunOptions): string {

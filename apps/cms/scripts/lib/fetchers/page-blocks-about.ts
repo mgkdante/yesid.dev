@@ -170,23 +170,40 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		? (raw.languages as unknown[]).filter((item): item is string => typeof item === 'string')
 		: [];
 
-	// --- education: read from parent row ---
-	const rawEducation = Array.isArray(raw.education)
-		? (raw.education as Array<Record<string, unknown>>)
-		: [];
-	const education: AboutContent['education'] = rawEducation.map((item) => {
-		const school: LocalizedString = {
-			en: typeof item.school_en === 'string' ? item.school_en : '',
-		};
-		const program: LocalizedString = {
-			en: typeof item.program_en === 'string' ? item.program_en : '',
-		};
-		if (typeof item.school_fr === 'string' && item.school_fr.length > 0) school.fr = item.school_fr;
-		if (typeof item.program_fr === 'string' && item.program_fr.length > 0) program.fr = item.program_fr;
+	// --- education: per-locale repeater on the translation rows (school/program
+	// are localized strings, icon is locale-invariant). Same shape as the
+	// metrics/methodology/interests repeaters above; the en row is the base and
+	// fr/es are zipped by index. (Earlier this read bilingual school_en/_fr
+	// columns from the parent row, but that field was never created — the data
+	// lives on the translation rows, so the parent read always yielded [].) ---
+	const educationByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.education)) {
+			educationByLocale.set(code, row.education as Array<Record<string, unknown>>);
+		}
+	}
+	const enEducation = educationByLocale.get('en') ?? [];
+	const education: AboutContent['education'] = enEducation.map((enE, idx) => {
+		const school: LocalizedString = { en: typeof enE.school === 'string' ? enE.school : '' };
+		const program: LocalizedString = { en: typeof enE.program === 'string' ? enE.program : '' };
+		for (const [locale, eList] of educationByLocale) {
+			if (locale === 'en') continue;
+			const e = eList[idx];
+			if (!e) continue;
+			if (typeof e.school === 'string' && e.school.length > 0) {
+				if (locale === 'fr') school.fr = e.school;
+				else if (locale === 'es') school.es = e.school;
+			}
+			if (typeof e.program === 'string' && e.program.length > 0) {
+				if (locale === 'fr') program.fr = e.program;
+				else if (locale === 'es') program.es = e.program;
+			}
+		}
 		return {
 			school,
 			program,
-			icon: item.icon === 'bishops' ? 'bishops' : 'champlain',
+			icon: enE.icon === 'bishops' ? 'bishops' : 'champlain',
 		};
 	});
 
