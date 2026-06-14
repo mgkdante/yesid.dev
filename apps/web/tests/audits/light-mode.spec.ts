@@ -8,6 +8,7 @@
 // /blog) — Track 4 may rename service slugs this wave, so nothing is
 // hardcoded below the collection level.
 import { test, expect, type Page } from '@playwright/test';
+import { serviceDetailLinks } from '../_support/helpers';
 
 const LIGHT_BG = 'rgb(247, 242, 233)'; // #F7F2E9 — GO2-W5 warm station paper
 
@@ -50,7 +51,14 @@ async function assertRendersLight(page: Page, route: string, allow: RegExp[] = [
 	);
 	expect(bodyBg).toBe(LIGHT_BG);
 
-	await page.waitForLoadState('networkidle');
+	// Settle the page before asserting zero console errors (was networkidle —
+	// racy against the contact terminal's /api/weather fetch + clock interval).
+	// `load` fires all resources; the footer is rendered by +layout.svelte on
+	// EVERY route (including the 404 error page), so its visibility is a
+	// deterministic signal that hydration has run far enough for any deferred
+	// console/page error to have surfaced.
+	await page.waitForLoadState('load');
+	await expect(page.getByTestId('footer')).toBeVisible();
 	expect(problems, problems.join('\n')).toEqual([]);
 }
 
@@ -69,8 +77,10 @@ test.describe('light mode — per-page audit', () => {
 	test('project detail (first card href) renders light with no console errors', async ({
 		page,
 	}) => {
-		await page.goto('/projects', { waitUntil: 'networkidle' });
-		const href = await page.getByTestId('project-card').first().getAttribute('href');
+		await page.goto('/projects');
+		const card = page.getByTestId('project-card').first();
+		await expect(card).toBeVisible(); // card present before reading its href
+		const href = await card.getAttribute('href');
 		expect(href, 'first project card must link to a detail route').toBeTruthy();
 		await assertRendersLight(page, href!);
 	});
@@ -78,8 +88,10 @@ test.describe('light mode — per-page audit', () => {
 	test('blog post detail (first row href) renders light with no console errors', async ({
 		page,
 	}) => {
-		await page.goto('/blog', { waitUntil: 'networkidle' });
-		const href = await page.getByTestId('blog-row').first().getAttribute('href');
+		await page.goto('/blog');
+		const row = page.getByTestId('blog-row').first();
+		await expect(row).toBeVisible(); // row present before reading its href
+		const href = await row.getAttribute('href');
 		expect(href, 'first blog row must link to a post route').toBeTruthy();
 		await assertRendersLight(page, href!);
 	});
@@ -91,7 +103,10 @@ test.describe('light mode — per-page audit', () => {
 		// terminal board inside: GO2-W5 taste round 2 contract — the terminal
 		// body IS the site background (--terminal === --background, solid);
 		// identity lives in chrome/rule-border/type, not a surface color.
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
+		// The board is nested inside the section, so its visibility guarantees
+		// both surfaces are painted before we read their computed colors.
+		await expect(page.getByTestId('closer-board')).toBeVisible();
 		const closerBg = await page
 			.getByTestId('closer-section')
 			.evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -104,7 +119,10 @@ test.describe('light mode — per-page audit', () => {
 	});
 
 	test('muted text resolves to the AA light value', async ({ page }) => {
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
+		// Probe reads a CSS-var-driven color; the footer landmark guarantees the
+		// stylesheet + light theme are applied before we append the probe.
+		await expect(page.getByTestId('footer')).toBeVisible();
 		const color = await page.evaluate(() => {
 			const probe = document.createElement('span');
 			probe.className = 'label-section';
@@ -118,7 +136,8 @@ test.describe('light mode — per-page audit', () => {
 
 	test('station labels speak the wayfinding voice (accent-text, not primary)', async ({ page }) => {
 		// GO2-W5: .label-station is signage — amber ink in light (#815D00).
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
+		await expect(page.getByTestId('footer')).toBeVisible(); // stylesheet + theme applied
 		const color = await page.evaluate(() => {
 			const probe = document.createElement('span');
 			probe.className = 'label-station';
@@ -134,7 +153,8 @@ test.describe('light mode — per-page audit', () => {
 		// GO2-W5 non-negotiable: light-mode hazard strips stay BLACK+YELLOW
 		// (theme-invariant tokens), never orange+white. Probe the strip under
 		// the closer board's titlebar (TerminalChrome composes Separator).
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
+		await expect(page.getByTestId('closer-board')).toBeVisible(); // probe target painted
 		const bgImage = await page.evaluate(() => {
 			const el = document.querySelector('[data-testid="closer-board"] > div:nth-child(2)');
 			return el ? getComputedStyle(el).backgroundImage : '';
@@ -147,7 +167,10 @@ test.describe('light mode — per-page audit', () => {
 		// Operator round 3: dividers one step thicker in both modes; light-mode
 		// blueprint art up another step. Probe computed styles on /projects
 		// (blueprint header + footer present on one page).
-		await page.goto('/projects', { waitUntil: 'networkidle' });
+		await page.goto('/projects');
+		// Footer visibility means the whole page (blueprint header above it +
+		// footer-status-border below) has painted before we probe computed styles.
+		await expect(page.getByTestId('footer')).toBeVisible();
 
 		// .divider-dashed: 2px dashed route-set rule (light primary #9D5200).
 		const divider = await page.evaluate(() => {
@@ -185,7 +208,9 @@ test.describe('light mode — per-page audit', () => {
 	test('round 4: four-color doctrine — yellow readouts, black structure, 3px list frames', async ({ page }) => {
 		// Operator doctrine: orange signage / yellow wayfinding / reflective
 		// white / black tape-structure. Probe the light-mode computed values.
-		await page.goto('/projects', { waitUntil: 'networkidle' });
+		await page.goto('/projects');
+		await expect(page.getByTestId('project-card').first()).toBeVisible(); // cards painted
+		await expect(page.getByTestId('footer')).toBeVisible(); // footer-status-border painted
 
 		// Listing-header subline = YELLOW overline (accent-text #815D00).
 		const subtitle = await page.evaluate(() => {
@@ -219,7 +244,8 @@ test.describe('light mode — per-page audit', () => {
 		expect(borderStrong.toUpperCase()).toBe('#1C1814');
 
 		// Blog rows carry the 3px list-item frame too.
-		await page.goto('/blog', { waitUntil: 'networkidle' });
+		await page.goto('/blog');
+		await expect(page.getByTestId('blog-row').first()).toBeVisible(); // rows painted
 		const rowBorder = await page.evaluate(() => {
 			const el = document.querySelector('[data-testid="blog-row"] .card-surface');
 			return el ? getComputedStyle(el).borderTopWidth : null;
@@ -233,7 +259,8 @@ test.describe('light mode — per-page audit', () => {
 		const LIGHT_PRIMARY = 'rgb(157, 82, 0)'; // #9D5200
 
 		// Contact submit = THE yellow conversion button (signage pair, light too).
-		await page.goto('/contact', { waitUntil: 'networkidle' });
+		await page.goto('/contact');
+		await expect(page.getByTestId('contact-submit').first()).toBeVisible(); // button painted
 		const submit = await page.evaluate(() => {
 			const el = document.querySelector('[data-testid="contact-submit"]');
 			if (!el) return null;
@@ -243,7 +270,8 @@ test.describe('light mode — per-page audit', () => {
 		expect(submit).toEqual({ bg: AMBER, ink: SIGNAGE_INK });
 
 		// Hero: contact CTA yellow, projects CTA stays orange (≤1 yellow per view).
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
+		await expect(page.getByTestId('hero-cta-contact').first()).toBeVisible(); // hero CTAs painted
 		const hero = await page.evaluate(() => {
 			const contact = document.querySelector('[data-testid="hero-cta-contact"]');
 			const projects = document.querySelector('[data-testid="hero-cta-projects"]');
@@ -267,7 +295,8 @@ test.describe('light mode — per-page audit', () => {
 		// R5-2 card parity: project card chassis = bare 3px frame, no inset
 		// route strip in the box-shadow stack. (Chrome serializes shadows as
 		// "color X Y blur spread inset" — the old strip read "2px 0px 0px 0px inset".)
-		await page.goto('/projects', { waitUntil: 'networkidle' });
+		await page.goto('/projects');
+		await expect(page.getByTestId('project-card').first()).toBeVisible(); // cards + rail painted
 		const cardShadow = await page.evaluate(() => {
 			const el = document.querySelector('[data-testid="project-card"] .card-surface');
 			return el ? getComputedStyle(el).boxShadow : null;
@@ -286,7 +315,8 @@ test.describe('light mode — per-page audit', () => {
 	test('round 6: detail art on the RIGHT + top band matches the listing', async ({ page }) => {
 		// Resolve a real detail route from the listing (nothing hardcoded
 		// below the collection level — Track 4 may rename service slugs).
-		await page.goto('/services', { waitUntil: 'networkidle' });
+		await page.goto('/services');
+		await expect(page.getByTestId('service-listing-page')).toBeVisible(); // tabs-bar painted
 
 		// The listing's solid backdrop above the sticky tabs (the reference
 		// treatment the detail page must match).
@@ -296,9 +326,13 @@ test.describe('light mode — per-page audit', () => {
 		});
 		expect(listingBand).toBe(LIGHT_BG);
 
-		const href = await page.locator('a[href^="/services/"]').first().getAttribute('href');
+		const detailLink = serviceDetailLinks(page).first();
+		await expect(detailLink, 'listing must link to a service detail route').toBeVisible();
+		const href = await detailLink.getAttribute('href');
 		expect(href, 'listing must link to a service detail route').toBeTruthy();
-		await page.goto(href!, { waitUntil: 'networkidle' });
+		await page.goto(href!);
+		// Detail landmark visible → tabs-bar + hero composition have rendered.
+		await expect(page.getByTestId('service-detail-page')).toBeVisible();
 
 		// R6-3 top-band parity: the detail page paints the same solid band
 		// above its StationTabs (was transparent — grid peeked through).
@@ -311,6 +345,9 @@ test.describe('light mode — per-page audit', () => {
 		// Fun art on the RIGHT (operator pass 2 — commit 2d3f7796 "move service
 		// detail art right"; hero-grid is `1fr auto`, text col then svg col): the
 		// svg panel renders and sits to the RIGHT of the hero text column.
+		// Wait for the desktop svg panel to be visible so its geometry is settled
+		// before we read bounding rects.
+		await expect(page.locator('.svg-desktop [data-testid="service-svg-panel"]')).toBeVisible();
 		const layout = await page.evaluate(() => {
 			const panel = document.querySelector('.svg-desktop [data-testid="service-svg-panel"]');
 			const text = document.querySelector('.hero-text');
@@ -332,8 +369,10 @@ test.describe('light mode — per-page audit', () => {
 		// chassis, theme-INVARIANT signage chip, YELLOW-voice metric, ORANGE
 		// exploration line, and the F5 image doctrine (light WHITENS the
 		// resting B&W band instead of dimming it).
-		await page.goto('/', { waitUntil: 'networkidle' });
-		await page.getByTestId('proof-reel-section').scrollIntoViewIfNeeded();
+		await page.goto('/');
+		const proofReel = page.getByTestId('proof-reel-section');
+		await expect(proofReel).toBeVisible(); // section + proof cards painted
+		await proofReel.scrollIntoViewIfNeeded();
 
 		const chassis = await page.locator('.proof-card').first().evaluate((el) => {
 			const s = getComputedStyle(el);
@@ -381,7 +420,9 @@ test.describe('light mode — per-page audit', () => {
 		// #F1E9DA; dark asphalt #1E1E1E is pinned in tokens.test) under the
 		// theme-invariant platform-edge tape. 6b: the page above contributes
 		// NO second tape at the footer seam.
-		await page.goto('/about', { waitUntil: 'networkidle' });
+		await page.goto('/about');
+		await expect(page.getByTestId('page-about')).toBeVisible(); // about section painted
+		await expect(page.getByTestId('footer')).toBeVisible(); // footer panel + tape painted
 
 		const footer = await page.evaluate(() => {
 			const el = document.querySelector('[data-testid="footer"]');
@@ -421,9 +462,11 @@ test.describe('theme toggle behaviour', () => {
 	test.use({ colorScheme: 'dark' });
 
 	test('toggle flips theme, persists across navigation + reload, updates meta', async ({ page }) => {
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
+		// Wait for the hydrated toggle before clicking — replaces networkidle.
+		await expect(page.getByTestId('theme-toggle').first()).toBeVisible();
 		await page.getByTestId('theme-toggle').first().click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#F7F2E9');
@@ -456,8 +499,9 @@ test.describe('theme toggle behaviour', () => {
 	});
 
 	test('toggle is an aria switch with a 44px hit target', async ({ page }) => {
-		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.goto('/');
 		const toggle = page.getByTestId('theme-toggle').first();
+		await expect(toggle).toBeVisible(); // toggle painted before reading attrs/box
 		await expect(toggle).toHaveAttribute('role', 'switch');
 		await expect(toggle).toHaveAttribute('aria-checked', 'true');
 		const box = await toggle.boundingBox();
