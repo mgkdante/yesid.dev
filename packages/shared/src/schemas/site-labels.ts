@@ -32,6 +32,19 @@ export const SiteLabelsSchema = z.object({
 		/** Hero metro-art caption — ONE line naming the art: "STM métro + REM"
 		 *  (go2/w5 taste-2; replaces the two-row in-frame legend). */
 		metroCaption: LocalizedStringSchema,
+		/** Featured-projects caption for 3+ station projects ({count} placeholder). */
+		stationsOneSystem: LocalizedStringSchema,
+		/** Listing result-count, per-locale singular/plural ({count} placeholder). */
+		resultCount: z.object({
+			singular: LocalizedStringSchema,
+			plural: LocalizedStringSchema,
+		}),
+		/** Display names for each published language (localized endonym/exonym). */
+		languageNames: z.object({
+			en: LocalizedStringSchema,
+			fr: LocalizedStringSchema,
+			es: LocalizedStringSchema,
+		}),
 	}),
 	pages: z.object({
 		blogEdgeTitle: LocalizedStringSchema,
@@ -151,6 +164,14 @@ export const SiteLabelsSchema = z.object({
 			heading: LocalizedStringSchema,
 			stationLabelTemplate: LocalizedStringSchema,
 			deepDiveLabel: LocalizedStringSchema,
+			/** Compact station-tab labels keyed by service id — short forms for the
+			 *  horizontal tab rail (the full titles are too long). */
+			stationShortLabels: z.object({
+				'database-engineering': LocalizedStringSchema,
+				'data-pipeline': LocalizedStringSchema,
+				'analytics-reporting': LocalizedStringSchema,
+				'web-development': LocalizedStringSchema,
+			}),
 			projectsStrip: z.object({
 				builtWithService: LocalizedStringSchema,
 				builtWithFallback: LocalizedStringSchema,

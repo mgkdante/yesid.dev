@@ -32,7 +32,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { projectsListingContent } from '$lib/content/projects';
-	import { sharedChromeContent } from '$lib/content';
+	import { siteLabels } from '$lib/content';
 
 	let {
 		projects,
@@ -245,7 +245,7 @@
 
 		<!-- Active filter summary -->
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredProjects.length} countLabel={sharedChromeContent.projectCount} onClear={clearFilters} />
+			<FilterSummary count={filteredProjects.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
 		{/if}
 
 		<!-- Card grid -->

@@ -120,5 +120,15 @@
 	"hero_dashboard_delay_label": "RETARD MOYEN",
 	"hero_dashboard_delay_sub": "{coverage}% DE COUVERTURE",
 	"hero_dashboard_routes_label": "LIGNES EN DIRECT",
-	"hero_dashboard_routes_sub": "SUR {total} AU TOTAL"
+	"hero_dashboard_routes_sub": "SUR {total} AU TOTAL",
+	"ui_stations_one_system": "{count} stations · un seul système",
+	"ui_result_count_singular": "{count} résultat",
+	"ui_result_count_plural": "{count} résultats",
+	"ui_language_name_en": "Anglais",
+	"ui_language_name_fr": "Français",
+	"ui_language_name_es": "Espagnol",
+	"services_chrome_listing_station_short_database_engineering": "Bases de données",
+	"services_chrome_listing_station_short_data_pipeline": "Pipelines",
+	"services_chrome_listing_station_short_analytics_reporting": "Tableaux de bord",
+	"services_chrome_listing_station_short_web_development": "Sites web"
 }

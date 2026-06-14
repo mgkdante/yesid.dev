@@ -6,7 +6,7 @@
   No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">
-  import type { BlogPost, Locale } from '$lib/types';
+  import type { BlogPost } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
 
@@ -83,15 +83,13 @@
   // Format date for edge label: "2026.04.15"
   const edgeDate = $derived(post.date.replace(/-/g, '.'));
 
-  // Post body language as an endonym (English/Français), not the raw `en`/`fr`
-  // code that leaked into the meta row. No CMS label map exists yet — reported
-  // as needsCmsField: siteLabels.ui.languageNames. Endonyms are locale-stable.
-  const LANGUAGE_ENDONYMS: Record<Locale, string> = {
-    en: 'English',
-    fr: 'Français',
-    es: 'Español',
-  };
-  const languageName = $derived(LANGUAGE_ENDONYMS[post.lang] ?? post.lang);
+  // Post body language as a localized display name (CMS truth:
+  // siteLabels.ui.languageNames), not the raw `en`/`fr` code that leaked into
+  // the meta row. resolveLocale picks the name in the active UI locale (e.g. an
+  // English post reads "English" on /, "Anglais" on /fr).
+  const languageName = $derived(
+    resolveLocale(siteLabels.ui.languageNames[post.lang], locale) || post.lang
+  );
 
   // Highlight first tag keyword in title
   const titleParts = $derived.by(() => {

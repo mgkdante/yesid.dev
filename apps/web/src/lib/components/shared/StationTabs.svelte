@@ -14,6 +14,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { servicesDetailContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -47,15 +48,20 @@
 		return String(n).padStart(2, '0');
 	}
 
-	/** Compact tab label: first word of the locale-resolved service title.
-	 *  EN titles ("Databases & SQL" → "Databases") yield the same single-word
-	 *  labels the old hardcoded EN map did, so EN output is unchanged; /fr now
-	 *  reads the French first word instead of an English literal.
-	 *  TODO(cms): proper short labels live in siteLabels.servicesChrome.listing
-	 *  .stationShortLabels once that field exists — see needsCmsField report.
-	 *  Wire as: resolveLocale(siteLabels.servicesChrome.listing.stationShortLabels[service.id], locale). */
+	// Compact tab labels are CMS truth (siteLabels.servicesChrome.listing
+	// .stationShortLabels), keyed by service id. EN values ("Databases",
+	// "Pipelines", "Dashboards", "Websites") match the old hardcoded EN labels,
+	// so EN output is byte-identical; /fr now renders the French CMS value
+	// instead of an English literal.
+	const stationShortLabels = siteLabels.servicesChrome.listing.stationShortLabels;
+
+	/** Compact tab label from the CMS short-label map, keyed by service id.
+	 *  Falls back to the locale-resolved full service title only when a service
+	 *  id is missing from the map. */
 	function getLabel(service: Service): string {
-		return resolveLocale(service.title, locale).split(' ')[0];
+		const short = stationShortLabels[service.id as keyof typeof stationShortLabels];
+		if (short) return resolveLocale(short, locale);
+		return resolveLocale(service.title, locale);
 	}
 
 	/** Inactive tabs fade by distance from active: closer tabs stay brighter.

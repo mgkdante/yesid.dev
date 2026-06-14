@@ -23,7 +23,6 @@
   const locale = getLocale();
   import { blogDetailContent } from '$lib/content/blog';
   import { siteLabels } from '$lib/content';
-  import type { Locale } from '$lib/types';
 
   // go2/w4: reading mode removed per operator QA — the default reading
   // experience is the only one. (blogDetailContent.page.readingMode stays in
@@ -68,16 +67,13 @@
       : resolveLocale(siteLabels.ui.categoryProfessional, locale)
   );
 
-  // Language name: no CMS label map exists yet (reported as needsCmsField:
-  // siteLabels.ui.languageNames). Until that lands, display the language's
-  // endonym via the same constant the listing filters use (BlogFilterSidebar),
-  // not the raw `en`/`fr` code. Endonyms are locale-stable by design.
-  const LANGUAGE_ENDONYMS: Record<Locale, string> = {
-    en: 'English',
-    fr: 'Français',
-    es: 'Español',
-  };
-  const languageName = $derived(LANGUAGE_ENDONYMS[post.lang] ?? post.lang);
+  // Language name: CMS-backed via siteLabels.ui.languageNames (a Locale-keyed
+  // map of LocalizedString display names). resolveLocale picks the name in the
+  // active UI locale, so an English post reads "English" on /, "Anglais" on /fr
+  // — replacing the raw `en`/`fr` code that leaked into the meta sidebar.
+  const languageName = $derived(
+    resolveLocale(siteLabels.ui.languageNames[post.lang], locale) || post.lang
+  );
 
   // Shared active heading state — drives TOC + pill
   let activeHeadingId = $state('');
