@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
 // Ground truth (src/lib/components/contact/ContactPage.svelte + content/contact-page.ts):
 //   - Errors render as `✗ {message}` inside the visible form terminal.
@@ -11,17 +12,25 @@ import { test, expect } from '@playwright/test';
 //     To exercise the app's *own* regex (/^[^\s@]+@[^\s@]+\.[^\s@]+$/, which
 //     additionally requires a dot in the domain) we use a value that is valid to
 //     the native check but invalid to the app: "john@nodomain".
-//   - Two <form> elements exist in the DOM (desktop + mobile snippets); only one
-//     is visible at any viewport. We scope every assertion to the visible form.
+//   - The form terminal (data-testid="contact-form-terminal") is rendered TWICE
+//     (desktop + mobile snippets); only one is visible per viewport. The <form>
+//     lives inside that terminal, so we scope every assertion to the visible
+//     terminal via visibleContactTerminal(page).
+//
+// No networkidle: the contact info-terminal fires a one-shot fetch('/api/weather')
+// + a DOM clock interval against the live preview, so 'networkidle' is racy/slow.
+// We wait on the deterministic landmark — the visible form terminal becoming
+// visible — before reading text or clicking.
 
 test.describe('Contact form validation', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/contact');
-		await page.waitForLoadState('networkidle');
+		// Deterministic readiness signal: the visible form terminal is mounted.
+		await expect(visibleContactTerminal(page)).toBeVisible();
 	});
 
 	test('contact form shows validation errors on empty submit', async ({ page }) => {
-		const form = page.locator('form').filter({ visible: true }).first();
+		const form = visibleContactTerminal(page);
 		const submitBtn = form.getByTestId('contact-submit');
 
 		await submitBtn.click();
@@ -40,7 +49,7 @@ test.describe('Contact form validation', () => {
 	});
 
 	test('contact form shows invalid email error', async ({ page }) => {
-		const form = page.locator('form').filter({ visible: true }).first();
+		const form = visibleContactTerminal(page);
 
 		await form.locator('#contact-name').fill('John Doe');
 		// Valid to <input type="email"> (has "@"), invalid to the app regex
@@ -56,17 +65,9 @@ test.describe('Contact form validation', () => {
 	test('contact form does not submit when email is invalid', async ({ page }) => {
 		// Intercept the Web3Forms endpoint BEFORE the action so we can prove it is
 		// never called when client-side validation rejects the email.
-		let web3formsCalls = 0;
-		await page.route('https://api.web3forms.com/submit', async (route) => {
-			web3formsCalls += 1;
-			await route.fulfill({
-				status: 200,
-				contentType: 'application/json',
-				body: JSON.stringify({ success: true }),
-			});
-		});
+		const { submittedEmails } = await mockWeb3Forms(page, { success: true });
 
-		const form = page.locator('form').filter({ visible: true }).first();
+		const form = visibleContactTerminal(page);
 		await form.locator('#contact-name').fill('John Doe');
 		await form.locator('#contact-email').fill('john@nodomain');
 		await form.locator('#contact-message').fill('Test message');
@@ -77,11 +78,11 @@ test.describe('Contact form validation', () => {
 		await expect(form.getByText('✗ invalid, enter a valid email address')).toBeVisible();
 		// Give any (erroneous) network call time to fire before asserting absence.
 		await page.waitForTimeout(500);
-		expect(web3formsCalls).toBe(0);
+		expect(submittedEmails).toEqual([]);
 	});
 
 	test('contact form shows required field error for empty name', async ({ page }) => {
-		const form = page.locator('form').filter({ visible: true }).first();
+		const form = visibleContactTerminal(page);
 
 		await form.locator('#contact-email').fill('test@example.com');
 		await form.locator('#contact-message').fill('Test message');
@@ -92,7 +93,7 @@ test.describe('Contact form validation', () => {
 	});
 
 	test('contact form shows required field error for empty email', async ({ page }) => {
-		const form = page.locator('form').filter({ visible: true }).first();
+		const form = visibleContactTerminal(page);
 
 		await form.locator('#contact-name').fill('John Doe');
 		await form.locator('#contact-message').fill('Test message');
@@ -103,7 +104,7 @@ test.describe('Contact form validation', () => {
 	});
 
 	test('contact form shows required field error for empty message', async ({ page }) => {
-		const form = page.locator('form').filter({ visible: true }).first();
+		const form = visibleContactTerminal(page);
 
 		await form.locator('#contact-name').fill('John Doe');
 		await form.locator('#contact-email').fill('test@example.com');
@@ -117,24 +118,16 @@ test.describe('Contact form validation', () => {
 		// Stub Web3Forms so a passing submission is deterministic. The intent: valid
 		// emails must NOT be blocked by client validation — the handler should reach
 		// the fetch and the success sequence should render (no ✗ errors at all).
-		const submittedEmails: string[] = [];
-		await page.route('https://api.web3forms.com/submit', async (route) => {
-			const payload = JSON.parse(route.request().postData() ?? '{}');
-			submittedEmails.push(payload.email);
-			await route.fulfill({
-				status: 200,
-				contentType: 'application/json',
-				body: JSON.stringify({ success: true }),
-			});
-		});
+		const { submittedEmails } = await mockWeb3Forms(page, { success: true });
 
 		const validEmails = ['user@example.com', 'john.doe@company.co.uk', 'test+tag@domain.org'];
 
 		for (const email of validEmails) {
 			await page.goto('/contact');
-			await page.waitForLoadState('networkidle');
+			// Deterministic readiness signal instead of networkidle.
+			await expect(visibleContactTerminal(page)).toBeVisible();
 
-			const form = page.locator('form').filter({ visible: true }).first();
+			const form = visibleContactTerminal(page);
 			await form.locator('#contact-name').fill('Test User');
 			await form.locator('#contact-email').fill(email);
 			await form.locator('#contact-message').fill('Test message');
@@ -144,7 +137,7 @@ test.describe('Contact form validation', () => {
 			// On success the <form> is swapped for the success terminal, so scope to
 			// the visible form terminal (which persists). Valid input ⇒ success
 			// animation renders, proving validation never blocked the submission.
-			const terminal = page.getByTestId('contact-form-terminal').filter({ visible: true }).first();
+			const terminal = visibleContactTerminal(page);
 			await expect(terminal.getByTestId('contact-success')).toBeVisible();
 			// No validation error survived (the form is gone entirely).
 			await expect(page.getByText('✗ invalid, enter a valid email address')).toHaveCount(0);

@@ -24,8 +24,12 @@ const SIGNAGE_BG = 'rgb(28, 24, 20)'; // #1C1814 — theme-invariant signage pai
 const SIGNAGE_TEXT = 'rgb(255, 182, 39)'; // #FFB627
 
 test('home cards surface excerpt + station chip + metric + exploration line (non-zero boxes)', async ({ page }) => {
-	await page.goto('/', { waitUntil: 'networkidle' });
+	await page.goto('/');
 	const section = page.getByTestId('proof-reel-section');
+	// Deterministic replacement for networkidle: the proof reel is the landmark
+	// every following read/geometry assertion depends on — wait for it to paint
+	// (web-first, auto-retrying) instead of for the contact weather fetch to idle.
+	await expect(section).toBeVisible();
 	await section.scrollIntoViewIfNeeded();
 
 	const cards = page.getByTestId('proof-card');
@@ -102,8 +106,11 @@ test('home cards surface excerpt + station chip + metric + exploration line (non
 });
 
 test('home cards: solid card chassis (3px blog parity) + tamed image band', async ({ page }) => {
-	await page.goto('/', { waitUntil: 'networkidle' });
+	await page.goto('/');
 	const section = page.getByTestId('proof-reel-section');
+	// Deterministic replacement for networkidle: wait for the proof reel landmark
+	// to paint before scrolling/reading the computed card chassis.
+	await expect(section).toBeVisible();
 	await section.scrollIntoViewIfNeeded();
 
 	// Solid panel per the system — computed card surface, no transparency.

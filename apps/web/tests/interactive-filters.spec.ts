@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+// networkidle is banned in this suite (see tests/_support/helpers.ts): against the
+// live preview the contact info-terminal fires a one-shot fetch('/api/weather') +
+// a DOM clock interval, so "network idle" never settles deterministically. Each
+// listing's beforeEach now waits on its filter-sidebar landmark (web-first,
+// auto-retrying) — that's the element every test in the block depends on.
+
 // Ground truth (verified against the live preview + src):
 //   - ProjectFilterSidebar renders FilterGroup with testIdPrefix="service-filter" /
 //     "tag-filter"; FilterGroup emits data-testid=`${prefix}-${key}` on each item
@@ -17,7 +23,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Project listing filters', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/projects');
-    await page.waitForLoadState('networkidle');
+    // Wait on the filter-sidebar landmark (web-first, auto-retrying) — the element
+    // every test in this block depends on — instead of the banned networkidle.
+    await expect(page.locator('[data-testid="project-filter-sidebar"]')).toBeVisible();
   });
 
   test('clicking a service filter button updates URL param', async ({ page }) => {
@@ -101,7 +109,9 @@ test.describe('Project listing filters', () => {
 test.describe('Blog listing filters', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/blog');
-    await page.waitForLoadState('networkidle');
+    // Wait on the filter-sidebar landmark (web-first, auto-retrying) — the element
+    // every test in this block depends on — instead of the banned networkidle.
+    await expect(page.locator('[data-testid="blog-filter-sidebar"]')).toBeVisible();
   });
 
   test('blog tag filter updates URL and filters posts', async ({ page }) => {

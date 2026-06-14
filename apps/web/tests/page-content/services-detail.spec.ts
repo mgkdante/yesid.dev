@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { gotoFirstDetail, serviceDetailLinks } from '../_support/helpers';
 
 // Ground truth (src/lib/content/services.ts + ServiceDetailPage.svelte):
 // The /services listing's first station (sorted by station number) is
@@ -9,21 +10,14 @@ import { test, expect } from '@playwright/test';
 // <nav class="station-tabs"> of <a class="station-tab"> links wrapped in a
 // .tabs-bar div (NO role="tab"/role="tablist"). Section headings render in
 // CollapsibleSection's <h2 class="section-title">.
-
-/** Open the first service detail page and return its href. */
-async function gotoFirstService(page: import('@playwright/test').Page): Promise<string> {
-  await page.goto('/services');
-  const firstServiceLink = page.locator('a[href^="/services/"]').first();
-  const href = await firstServiceLink.getAttribute('href');
-  expect(href).toBeTruthy();
-  await page.goto(href!);
-  await expect(page.locator('[data-testid="service-detail-page"]')).toBeVisible();
-  return href!;
-}
+//
+// gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page')
+// opens that first station's detail page and waits on the
+// [data-testid="service-detail-page"] landmark (no networkidle).
 
 test.describe('/services/[id] detail page content', () => {
   test('service detail page renders with hero SVG panel', async ({ page }) => {
-    await gotoFirstService(page);
+    await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     // SVG panel (art) is rendered on desktop — the first service always has one.
     test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only SVG panel');
@@ -35,7 +29,7 @@ test.describe('/services/[id] detail page content', () => {
   });
 
   test('service detail renders station tabs in navigate mode', async ({ page }) => {
-    await gotoFirstService(page);
+    await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     // Navigate-mode tabs: a .tabs-bar wrapper holding a .station-tabs <nav>.
     // There is no role="tablist"/role="tab" — the controls are <a.station-tab> links.
@@ -52,7 +46,7 @@ test.describe('/services/[id] detail page content', () => {
   });
 
   test('service detail shows impact metric when present', async ({ page }) => {
-    await gotoFirstService(page);
+    await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     // The first service carries an impact metric — on desktop it renders in the
     // sticky .impact-column as .impact-value + .impact-label, both non-empty.
@@ -67,7 +61,7 @@ test.describe('/services/[id] detail page content', () => {
   });
 
   test('service detail renders value-proposition + deliverables sections', async ({ page }) => {
-    await gotoFirstService(page);
+    await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     // CollapsibleSection renders each title in <h2 class="section-title">.
     // Real copy: "How This Helps You" (value proposition) + "Typical Deliverables".
@@ -84,7 +78,7 @@ test.describe('/services/[id] detail page content', () => {
   });
 
   test('service detail renders related projects section', async ({ page }) => {
-    await gotoFirstService(page);
+    await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     // The first service has related projects — the panel heading reads
     // "Related Projects (N)" and the list holds N project links.
@@ -103,7 +97,7 @@ test.describe('/services/[id] detail page content', () => {
   });
 
   test('service detail back link navigates to /services', async ({ page }) => {
-    await gotoFirstService(page);
+    await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     const backLink = page.locator('a.back-link[href$="/services"]').first();
     await expect(backLink).toBeVisible();
