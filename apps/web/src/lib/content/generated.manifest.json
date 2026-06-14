@@ -2,7 +2,7 @@
 	"//": "SHA-256 of each CMS-generated content module, as last emitted by export:fallbacks (apps/cms/scripts/export-fallbacks.ts). The Directus CMS is the source of truth; these .ts files are a regenerated edge cache. DO NOT hand-edit this manifest or the .ts files it lists — edit the CMS and re-run `bun run --cwd apps/cms export:fallbacks`. The pre-commit hook (.githooks/pre-commit) blocks any commit where a generated .ts no longer matches its hash here.",
 	"algorithm": "sha256",
 	"files": {
-		"about-page.ts": "79080730f32a398e0f836248ec306de8d2d2102e3c96ead774cd6a1dc70888e6",
+		"about-page.ts": "80125975855803c387963baf4b8fdeb0b5a6216a2b1d7b89c49a8755e6f99f90",
 		"blog-bodies.ts": "b2c172d40fff38252e9a59a96679d5ca6de8d666c59660cb5eb6036db73013a8",
 		"blog-page.ts": "d105b34ab9d87ebd351ecb24346151de72d493c9f8b1af5946b1597cbbbf5924",
 		"blog.ts": "e84fc2be40e349be1933603a47b54ebdc8da5a6f550bf08d84170c8bd2258030",
@@ -19,6 +19,6 @@
 		"site-pages.ts": "4dc091d62b0efb11c7698f9ee4dbc32795dab2fa451536f0730213b91f388dda",
 		"site-seo-defaults.ts": "2cb258604c3fb2e2438c239d6b08d6fe74de1e51deafdbc0e0773411d91d06ad",
 		"stack-archetypes.ts": "d3256c8ceca054d199eba652fed5219e15cd8c06d1fa5cfdf50ea0570465545a",
-		"tech-stack.ts": "5610020c85e0bb696d7ffc77aad9c8c63d83df3f04711a70198612afb3f44772"
+		"tech-stack.ts": "b1806c8c4328788e0d4c189448ed661b246e02265562b020ece378686132ccab"
 	}
 }

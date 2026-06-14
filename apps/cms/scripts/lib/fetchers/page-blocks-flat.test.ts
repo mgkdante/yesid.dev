@@ -88,17 +88,11 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 			cta_lines: [{ text: 'hi', color: 'muted' }],
 			cta_socials: [{ label: 'GH', href: 'https://g', icon: 'gh' }],
 			languages: ['English'],
-			education: [{
-				school_en: 'School',
-				school_fr: 'École',
-				program_en: 'Program',
-				program_fr: 'Programme',
-				icon: 'champlain',
-			}],
 			translations: [
 				{
 					languages_code: 'en',
 					identity_name: 'Yesid', identity_title: 'Engineer', identity_value_prop: 'ships',
+					education: [{ school: 'School', program: 'Program', icon: 'champlain' }],
 					polaroids: [{ src: '/p.jpg', alt: 'me', caption: 'hi', rotate: -2 }],
 					weather_city: 'Montreal', weather_hook: 'rain',
 					cta_button_label: 'Talk', cta_availability: 'open',
@@ -115,6 +109,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				{
 					languages_code: 'fr',
 					identity_name: 'Yesid', polaroids: [{ alt: 'moi', caption: 'salut' }],
+					education: [{ school: 'École', program: 'Programme', icon: 'champlain' }],
 					weather_city: 'Montréal',
 				},
 			],
