@@ -13,12 +13,13 @@ name: web
 # PRs would be blocked forever. With the Phase 7 caches, cost on no-op runs
 # is ~20-30s end-to-end (FULL TURBO cache replay), so always-run is fine.
 #
-# E2E (Playwright) is intentionally NOT in CI (slice-28.4 decision, audit #90):
-# the suite under apps/web/tests is run manually pre-deploy via
-# `bun run test:e2e` from apps/web. By default it builds + serves a local
-# preview; set PLAYWRIGHT_BASE_URL=<deployed URL> to target dev/prod surfaces
-# instead. Browser-install + build-boot cost outweighs CI value while deploys
-# are operator-driven; revisit if deploy cadence ever outgrows manual QA.
+# E2E (Playwright) now RUNS in CI as a separate `e2e` job (FR go-live / launch
+# roadmap #3 — supersedes the slice-28.4 manual-only decision now that deploys
+# carry FR + motion/visual surface area). Hermetic: the suite builds + serves a
+# local preview against the committed .ts (EXPORT_FALLBACKS_SKIP=1, no live CMS).
+# All four projects are Chromium (WebKit deps unavailable on Linux), so only the
+# chromium browser is installed. To target a deployed surface instead, run
+# locally with PLAYWRIGHT_BASE_URL=<url> bun run test:e2e from apps/web.
 
 on:
   push:
@@ -62,3 +63,32 @@ jobs:
           # turbo.json build env so turbo strict mode forwards it.
           EXPORT_FALLBACKS_SKIP: '1'
         run: bun x turbo run build --filter=@repo/web
+
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Install Playwright Chromium (+ system deps)
+        working-directory: apps/web
+        run: bun x playwright install --with-deps chromium
+
+      - name: Playwright e2e (hermetic — committed .ts, local preview)
+        working-directory: apps/web
+        env:
+          # The webServer runs `bun run build`, whose prebuild would otherwise
+          # hit the live CMS via export-fallbacks. Keep CI hermetic like the
+          # `ci` build job above — the committed content modules are the source.
+          EXPORT_FALLBACKS_SKIP: '1'
+        run: bun run test:e2e
+
+      - name: Upload Playwright report on failure
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
