@@ -239,5 +239,27 @@
     "reject": null,
     "flow": "4e59885c-8e18-41fd-b8f4-89f0f6baa951",
     "_syncId": "dc01c036-4e5b-44a2-bd3d-87031b718d8f"
+  },
+  {
+    "name": "POST force-rebuild hook",
+    "key": "post_force_rebuild",
+    "type": "request",
+    "position_x": 19,
+    "position_y": 1,
+    "options": {
+      "method": "POST",
+      "url": "{{$env.VERCEL_DEPLOY_HOOK_URL}}?buildCache=false&source=directus-force-rebuild",
+      "headers": [
+        {
+          "header": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"source\":\"directus.manual\",\"trigger\":\"force_rebuild_flow\"}"
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
+    "_syncId": "a7c9d628-b970-4f38-bb4b-0c532901d0e1"
   }
 ]
