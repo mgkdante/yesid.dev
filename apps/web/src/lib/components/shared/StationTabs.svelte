@@ -13,7 +13,6 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
-	import { servicesDetailContent } from '$lib/content/services';
 	import { siteLabels } from '$lib/content';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
@@ -23,7 +22,7 @@
 	// StationTabs lives inside remounting pages ({#key pathname} in the root
 	// layout) — an init-time context read is always current.
 	const locale = getLocale();
-	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, locale);
+	const serviceNavAria = resolveLocale(siteLabels.servicesChrome.detail.serviceNavAria, locale);
 
 	let {
 		services,
@@ -98,7 +97,29 @@
 
 	// scrollChain for Tabs.List (bits-ui component — can't use use: directly on components)
 	let tabsListRef = $state<HTMLElement | null>(null);
+	// Navigate-mode container (plain <nav>) — paired with tabsListRef so the
+	// active-tab auto-centering below works in both modes.
+	let navRef = $state<HTMLElement | null>(null);
 	let tabsListScrollChain: { destroy(): void } | undefined;
+
+	// Keep the active tab centred in the horizontal strip whenever it changes:
+	// on the listing page activeId follows the scroll, so the stripe tracks the
+	// service you're reading; on the detail page it centres the current service
+	// on mount. Scrolls ONLY the tab container (never the window).
+	$effect(() => {
+		const container = tabsListRef ?? navRef;
+		if (!container || !activeId) return;
+		const activeEl = container.querySelector<HTMLElement>(
+			`[data-testid="station-tab-${activeId}"]`,
+		);
+		if (!activeEl) return;
+		const cRect = container.getBoundingClientRect();
+		const aRect = activeEl.getBoundingClientRect();
+		const delta = aRect.left - cRect.left - (container.clientWidth - activeEl.clientWidth) / 2;
+		if (Math.abs(delta) < 1) return;
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		container.scrollTo({ left: container.scrollLeft + delta, behavior: reduce ? 'auto' : 'smooth' });
+	});
 
 	onMount(() => {
 		if (tabsListRef) {
@@ -118,6 +139,7 @@
 	<!-- Wrapper provides position:relative anchor for the scroll-cue gradient overlay -->
 	<div class="station-tabs-wrapper">
 		<nav
+			bind:this={navRef}
 			aria-label={serviceNavAria}
 			class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
 			class:swipe-lock={swipeActive}

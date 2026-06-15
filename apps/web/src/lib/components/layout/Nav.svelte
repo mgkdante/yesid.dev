@@ -343,7 +343,11 @@
 	.menu-toggle {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-end;
+		/* Centre the hamburger lines in their 44px hit area (was flex-end, which
+		   shoved them against the pill's right edge and left ~28px dead space on the
+		   button's left — the burger read as detached from the toggles). Centring
+		   evens the right-side control rhythm without changing any widths. */
+		align-items: center;
 		justify-content: center;
 		gap: 5px;
 		padding: 4px;

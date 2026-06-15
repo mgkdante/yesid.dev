@@ -10,7 +10,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { servicesDetailContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { navDirections } from '$lib/content/nav';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { SectionLabel } from '$lib/components/brand';
@@ -26,7 +26,7 @@
 	// Resolve titles reactively so locale changes propagate without remounting
 	let prevTitle = $derived(prev ? resolveLocale(prev.title, locale) : '');
 	let nextTitle = $derived(next ? resolveLocale(next.title, locale) : '');
-	let navAria = $derived(resolveLocale(servicesDetailContent.serviceNavAria, locale));
+	let navAria = $derived(resolveLocale(siteLabels.servicesChrome.detail.serviceNavAria, locale));
 	let prevLabel = $derived(resolveLocale(navDirections.previous, locale));
 	let nextLabel = $derived(resolveLocale(navDirections.next, locale));
 </script>

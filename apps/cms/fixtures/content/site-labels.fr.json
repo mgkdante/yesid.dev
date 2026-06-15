@@ -95,6 +95,8 @@
 	"services_chrome_detail_related_projects_heading": "Projets liés",
 	"services_chrome_detail_related_projects_nav_aria": "Projets liés",
 	"services_chrome_detail_service_nav_aria": "Navigation des services",
+	"services_chrome_detail_stack_heading": "Stack",
+	"services_chrome_detail_see_stack_label": "Voir la stack complète →",
 	"nav_chrome_directions_previous": "Précédent",
 	"nav_chrome_directions_next": "Suivant",
 	"nav_chrome_shared_open_menu_aria": "Ouvrir le menu",
