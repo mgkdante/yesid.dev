@@ -25,11 +25,14 @@ export type LocaleFree = string | number | boolean | null | LocaleFree[];
  * Union/nullable values can't be inferred from the seed — pass them explicitly,
  * e.g. `persisted<Locale | null>('blog-lang', null)`.
  */
-type Widen<T> = T extends string
+// Non-distributive ([T] extends [string]) on purpose: a bare literal seed widens
+// to its base ('' -> string), but an explicit UNION is preserved — distribution
+// would widen `Locale | null` to `string | null` (each 'en'|'fr'|'es' literal -> string).
+type Widen<T> = [T] extends [string]
 	? string
-	: T extends number
+	: [T] extends [number]
 		? number
-		: T extends boolean
+		: [T] extends [boolean]
 			? boolean
 			: T;
 
