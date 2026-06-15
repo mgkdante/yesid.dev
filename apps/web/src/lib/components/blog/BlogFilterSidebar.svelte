@@ -14,6 +14,7 @@
 
 	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
+	import { persisted } from '$lib/state/persisted.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { blogListingContent } from '$lib/content/blog';
 
@@ -23,8 +24,10 @@
 	const labels = blogListingContent.filters;
 	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, locale);
 
-	// WHY: date range section is not a FilterGroup, so it needs its own collapse state
-	let dateOpen = $state(true);
+	// WHY: date range section is not a FilterGroup, so it needs its own collapse state.
+	// slice-34.6: session-scoped so it survives a locale switch (paints directly via
+	// persisted()'s synchronous seed — no expand-then-collapse flash).
+	const dateOpen = persisted('blog-filter-date', true);
 
 	let {
 		tags,
@@ -82,6 +85,7 @@
 				{accentColor}
 				allowDeselect={false}
 				collapsible={true}
+				persistKey="blog-filter-language"
 				onSelect={(key) => onLangSelect(key as Locale | null)}
 			/>
 		</div>
@@ -91,12 +95,12 @@
 	<div class="mt-5 divider-dashed pt-3">
 	<button
 		class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
-		onclick={() => (dateOpen = !dateOpen)}
+		onclick={() => (dateOpen.value = !dateOpen.value)}
 	>
 		{resolveLocale(labels.dateRange, locale)}
-		<ChevronToggle open={dateOpen} size="sm" direction="down" />
+		<ChevronToggle open={dateOpen.value} size="sm" direction="down" />
 	</button>
-	<div class="date-collapse" class:date-open={dateOpen}>
+	<div class="date-collapse" class:date-open={dateOpen.value}>
 		<div class="date-collapse-inner">
 			<div class="mt-2 flex flex-col gap-1.5">
 				<label class="text-sm text-[var(--muted-foreground)]">
@@ -130,6 +134,7 @@
 			allowDeselect={false}
 			collapsible={true}
 			startOpen={false}
+			persistKey="blog-filter-tags"
 			onSelect={onTagSelect}
 		/>
 	</div>
