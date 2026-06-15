@@ -25,7 +25,9 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { EngineState } from './engine-state.svelte';
+	import { stackArchetypes } from '$lib/content/stack-archetypes';
+	import { registerSession, pendingRestore } from '$lib/state/locale-handoff.svelte';
+	import { EngineState, seedFromParams, coerceEngineSeed } from './engine-state.svelte';
 	import { LAYER_TEACHING } from './layer-teaching';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
@@ -39,7 +41,26 @@
 
 	let { animate = true }: { animate?: boolean } = $props();
 
-	const engine = new EngineState();
+	// ── slice-34.2: the engine REMOUNTS on a language switch (the {#key
+	// $page.url.pathname} subtree is destroyed), AND it mounts via async dynamic
+	// import() — so there is no surviving singleton to live-set into. The boot
+	// seed is resolved HERE, at construction, in precedence:
+	//   1. an in-flight switch-restore (the orchestrator is still inside its
+	//      post-paint await window when this async chunk lands — read it the same
+	//      way FeaturedProjects reads pendingRestore in onEmblaInit), THEN
+	//   2. an inbound deep-link (?mode=&archetype=&techs= on the URL), THEN
+	//   3. the engine's plain defaults (seed === null → goal/select/empty).
+	// All of this runs through engine-state's pure, whitelisting seed helpers so
+	// a hand-edited URL or a stale blob can never seed a bogus mode/archetype.
+	const restoreSeed = coerceEngineSeed(pendingRestore('stack-engine'), stackArchetypes);
+	const bootSeed = restoreSeed ?? seedFromParams(page.url.searchParams, stackArchetypes);
+	const engine = new EngineState(undefined, bootSeed);
+
+	// Register with the locale-handoff orchestrator so beforeNavigate can SNAPSHOT
+	// the live build before the switch tears this subtree down. get-only: the
+	// restore is the constructor reading pendingRestore above (an async-mount
+	// consumer, never a live-setter race), so `set` is intentionally a no-op.
+	$effect(() => registerSession('stack-engine', { get: () => engine.serialize(), set: () => {} }));
 
 	// ── Round 4 nav: browser-back friendliness via SvelteKit shallow routing.
 	// Opening a drawing pushes ONE history entry (URL unchanged); the browser
