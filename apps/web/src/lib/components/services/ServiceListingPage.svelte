@@ -4,8 +4,10 @@
   IntersectionObserver tracks which service viewport is in view. D190, D191.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import type { Service, Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -38,9 +40,9 @@
 		return svc ? resolveLocale(svc.title, locale) : undefined;
 	});
 
-	function handleTabSelect(id: string) {
-		activeId = id;
-		if (!browser) return;
+	// Lenis-aware scroll to a station viewport — the authoritative motion; activeId
+	// follows from the IntersectionObserver once the section lands in view.
+	function scrollToStation(id: string) {
 		const lenis = getLenis();
 		const target = document.querySelector<HTMLElement>(`#service-${id}`);
 		if (lenis && target) {
@@ -50,8 +52,32 @@
 		}
 	}
 
+	// slice-34.5: the active station is a SHAREABLE ?station=<id> URL param, written
+	// only on an explicit tab click (NOT from the IntersectionObserver, which would
+	// spam replaceState during scroll). Because it's a URL param it rides the
+	// language toggle for free (localizeHref carries the query), so on the remounted
+	// FR/EN page the onMount deep-link below re-scrolls to the carried station.
+	function handleTabSelect(id: string) {
+		activeId = id;
+		if (!browser) return;
+		const url = new URL($page.url);
+		url.searchParams.set('station', id);
+		// noScroll: the Lenis scroll below owns the motion; replaceState keeps the
+		// tab-click out of the history stack (a scroll position, not a destination).
+		void goto(url.toString(), { replaceState: true, noScroll: true });
+		scrollToStation(id);
+	}
+
 	onMount(() => {
 		if (!browser) return;
+
+		// Deep-link / switch-restore: if ?station=<id> names a real station, scroll
+		// to it after the viewports have painted. The scroll is authoritative —
+		// activeId follows from the IO when the section crosses the 0.5 threshold.
+		const requested = $page.url.searchParams.get('station');
+		if (requested && sorted.some((s) => s.id === requested)) {
+			void tick().then(() => scrollToStation(requested));
+		}
 
 		const viewports = document.querySelectorAll<HTMLElement>('[id^="service-"]');
 		if (viewports.length === 0) return;

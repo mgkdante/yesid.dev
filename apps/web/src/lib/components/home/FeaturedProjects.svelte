@@ -30,6 +30,8 @@
 	import { resolveLocale } from '$lib/utils';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { persisted } from '$lib/state/persisted.svelte';
+	import { pendingRestore } from '$lib/state/locale-handoff.svelte';
 
 	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
@@ -143,7 +145,17 @@
 	// Embla carousel — infinite loop. The library handles slide cloning
 	// internally so card 1 appears next to card 5 seamlessly during scroll.
 	let emblaApi: EmblaCarouselType | undefined = $state(undefined);
-	let currentIndex = $state(0);
+
+	// slice-34.5: the focused card survives a language switch. The stored value is
+	// the locale-free snap index (integer). Embla is async — `emblaApi` is
+	// undefined until onEmblaInit fires on the remounted page — so the restore is
+	// applied INSIDE onEmblaInit (read pendingRestore first since the orchestrator
+	// may still be mid-restore), via scrollTo(idx, true) for an INSTANT jump (no
+	// scroll animation, also correct under reduced-motion). `currentIndex` mirrors
+	// card.value so the existing template bindings (counter, [data-active]) are
+	// unchanged.
+	const card = persisted<number>('featured-card', 0);
+	let currentIndex = $derived(card.value);
 
 	const emblaOptions = {
 		loop: true,
@@ -154,9 +166,20 @@
 
 	function onEmblaInit(event: CustomEvent<EmblaCarouselType>) {
 		emblaApi = event.detail;
-		currentIndex = emblaApi.selectedScrollSnap();
+		const snapCount = emblaApi.scrollSnapList().length;
+		// The index to land on: an in-flight switch-restore wins (the orchestrator
+		// is still inside its post-paint await window when this async init fires);
+		// otherwise the persisted session value (default 0 on a cold load).
+		const pending = pendingRestore('featured-card');
+		const saved = typeof pending === 'number' ? pending : card.value;
+		// Guard against a stale / out-of-range index (snap count is content-driven).
+		const target = snapCount > 0 ? Math.min(Math.max(saved, 0), snapCount - 1) : 0;
+		if (target !== emblaApi.selectedScrollSnap()) {
+			emblaApi.scrollTo(target, true); // true = instant jump, no animation
+		}
+		card.value = emblaApi.selectedScrollSnap();
 		emblaApi.on('select', () => {
-			if (emblaApi) currentIndex = emblaApi.selectedScrollSnap();
+			if (emblaApi) card.value = emblaApi.selectedScrollSnap();
 		});
 	}
 
