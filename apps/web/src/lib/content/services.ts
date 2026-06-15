@@ -130,8 +130,8 @@ export const services: readonly Service[] = [
 		},
 		id: 'data-pipeline',
 		impactMetric: {
-			label: { en: 'missed mornings', fr: 'matin manqué' },
-			value: { en: '0', fr: '0' },
+			label: { en: 'migrated', fr: 'migrées' },
+			value: { en: '1.5TB+', fr: '1,5 To+' },
 		},
 		relatedProjects: ['transit-data-pipeline'],
 		sections: [

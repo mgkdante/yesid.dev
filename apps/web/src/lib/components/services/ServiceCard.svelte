@@ -287,23 +287,16 @@
 	/* Mobile: card = usable area height, SVG stacked on top, flex centered.
 	   scroll-margin-top aligns tab clicks below the sticky tabs. */
 	@media (max-width: 767px) {
-		/* min-height instead of a hard cap: the banner row can push past the
-		   usable area on short phones — the card grows rather than clipping
-		   its ends (justify-center + fixed height would crop both). */
 		.service-viewport {
-			height: auto;
-			min-height: calc(100svh - 12rem);
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			scroll-margin-top: 8.75rem;
-			padding-block: 1rem;
+			/* Match the desktop sticky-scroll: full-screen card (100svh) whose inner
+			   is sticky-pinned + centered (both inherited from the base rule), just
+			   stacked vertically for the narrow viewport. */
+			height: 100svh;
 		}
 		.viewport-inner {
-			position: static;
 			flex-direction: column;
 			align-items: stretch;
-			gap: 0.75rem;
+			gap: 1rem;
 		}
 		/* Swap CTA visibility */
 		.deep-dive-cta.desktop-only { display: none; }

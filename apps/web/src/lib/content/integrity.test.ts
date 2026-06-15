@@ -607,7 +607,7 @@ describe('LocalizedString guard + translation debt', () => {
 // fr-complete leaves to site-labels (the operator's seed batch, incl. the 2
 // resultCount leaves) and the 4 interim companion leaves were removed
 // → WITH_FR + TOTAL both 631 + 10 − 4 = 637, NO_FR stays 0.
-const LOCKED = { TOTAL: 651, WITH_FR: 651, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // content-services: +14 fr leaves (new "Is this you?" ×4 + "When I'm not your guy" ×2 section title/content). Was 637 (slice-30 t1: +97 chrome leaves).
+const LOCKED = { TOTAL: 648, WITH_FR: 648, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // content-services: +14 sections then -3 (closing-ask chrome removed) from 637. New "Is this you?" ×4 + "When I'm not your guy" ×2 section title/content.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

@@ -179,15 +179,4 @@
 		bottom: 0;
 		z-index: var(--z-rail);
 	}
-
-	/* Breathing room between stacked service cards on mobile. The cards are
-	   ServiceCard roots and direct children of .services-page, so this lives in
-	   the parent: a scoped adjacent-sibling rule inside ServiceCard gets pruned
-	   (the sibling is a separate component instance). Adjacent-sibling so there's
-	   no gap before the first card or before the sticky projects strip. */
-	@media (max-width: 767px) {
-		.services-page :global(.service-viewport + .service-viewport) {
-			margin-top: 2.5rem;
-		}
-	}
 </style>

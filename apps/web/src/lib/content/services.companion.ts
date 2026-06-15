@@ -21,18 +21,6 @@ export const servicesListingContent = {
 	deepDiveLabel: { en: 'Deep dive →', fr: 'Voir en détail →' } satisfies LocalizedString,
 	/** Summary label for the collapsible Stack disclosure on each ServiceCard. */
 	stackLabel: { en: 'Stack', fr: 'Stack' } satisfies LocalizedString,
-	/** Closing call-to-action shown at the foot of the listing + each detail page. */
-	closingAsk: {
-		heading: {
-			en: 'Not sure where you fit?',
-			fr: 'Tu sais pas trop où tu te situes?',
-		} satisfies LocalizedString,
-		body: {
-			en: 'Tell me what you\'re wrestling with. If I can help, I\'ll show you how. If I can\'t, I\'ll tell you that too.',
-			fr: 'Dis-moi ce qui te bloque. Si je peux aider, je te montre comment. Sinon, je te le dis aussi.',
-		} satisfies LocalizedString,
-		cta: { en: 'Get in touch →', fr: 'Écris-moi →' } satisfies LocalizedString,
-	},
 	/** Labels for the sticky orange ProjectsStrip under the services listing. */
 	projectsStrip: {
 		/** Template when a service is active; placeholder {serviceTitle}. */
