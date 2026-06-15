@@ -9,6 +9,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	const locale = getLocale();
 	import { blogListingContent } from '$lib/content/blog';
@@ -47,11 +48,12 @@
 		dateTo?: string;
 	} = $props();
 
-	let open = $state(false);
+	// slice-34.6 — the open/closed sheet survives a locale switch (locale-free bool).
+	const sheet = persisted('blog-filter-sheet', false);
 </script>
 
 <div class="lg:hidden" data-testid="blog-filter-mobile">
-	<Collapsible bind:open>
+	<Collapsible bind:open={sheet.value}>
 		<div class="mb-3 flex items-center gap-3">
 			<CollapsibleTrigger>
 				{#snippet child({ props })}
@@ -61,7 +63,7 @@
 						style="border-color: {accentColor}; color: {accentColor};"
 					>
 						{filtersLabel}
-						<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
+						<span class="text-caption">{sheet.value ? '\u25B2' : '\u25BC'}</span>
 					</button>
 				{/snippet}
 			</CollapsibleTrigger>
