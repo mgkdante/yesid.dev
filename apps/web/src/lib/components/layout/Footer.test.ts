@@ -104,7 +104,7 @@ describe('Footer — locale threading (slice-28.6)', () => {
 
 	it('renders path-preserving EN|FR links when two locales are available', () => {
 		render(Footer, {
-			props: { locale: 'fr', pathname: '/fr/about', availableLocales: ['en', 'fr'] },
+			props: { locale: 'fr', url: new URL('https://yesid.dev/fr/about'), availableLocales: ['en', 'fr'] },
 		});
 		const sw = screen.getByTestId('footer-locale-switch');
 		const links = sw.querySelectorAll('a');
