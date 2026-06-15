@@ -5,6 +5,7 @@ import {
 	delocalizePath,
 	localizeHref,
 	localizeUrl,
+	isLocaleSwitch,
 	stripLocaleSegment,
 	localeFromParams,
 } from './locale-routing';
@@ -94,6 +95,26 @@ describe('localizeUrl (preserves query + hash across a locale switch)', () => {
 	});
 	it('preserves a hash-only URL', () => {
 		expect(localizeUrl(u('/about#contact'), 'fr')).toBe('/fr/about#contact');
+	});
+});
+
+describe('isLocaleSwitch (snapshot/restore gate)', () => {
+	it('is true for the same canonical page in a different locale', () => {
+		expect(isLocaleSwitch('/about', '/fr/about')).toBe(true);
+		expect(isLocaleSwitch('/fr/about', '/about')).toBe(true);
+		expect(isLocaleSwitch('/', '/fr')).toBe(true);
+		expect(isLocaleSwitch('/fr', '/')).toBe(true);
+		expect(isLocaleSwitch('/projects', '/fr/projects')).toBe(true);
+	});
+	it('is false for a different page (a real navigation, not a switch)', () => {
+		expect(isLocaleSwitch('/about', '/projects')).toBe(false);
+		expect(isLocaleSwitch('/about', '/fr/projects')).toBe(false);
+		expect(isLocaleSwitch('/fr/about', '/fr/projects')).toBe(false);
+	});
+	it('is false when the locale is unchanged', () => {
+		expect(isLocaleSwitch('/about', '/about')).toBe(false);
+		expect(isLocaleSwitch('/fr/about', '/fr/about')).toBe(false);
+		expect(isLocaleSwitch('/', '/')).toBe(false);
 	});
 });
 

@@ -65,6 +65,19 @@ export function localizeUrl(url: URL, locale: Locale): string {
 	return localizeHref(url.pathname, locale) + url.search + url.hash;
 }
 
+/**
+ * True when navigating from→to is a LOCALE SWITCH: the same canonical page in a
+ * different locale (e.g. /about → /fr/about). The language switcher produces
+ * exactly these; the locale-handoff uses it to gate snapshot/restore so a normal
+ * navigation (to a different page) never triggers a state restore.
+ */
+export function isLocaleSwitch(fromPathname: string, toPathname: string): boolean {
+	return (
+		delocalizePath(fromPathname) === delocalizePath(toPathname) &&
+		pathLocale(fromPathname) !== pathLocale(toPathname)
+	);
+}
+
 /** '/[[lang=locale]]/about' → '/about' — route ids stay keyed by their
  *  canonical (unprefixed) form everywhere (route-seo registries, getPageSeo). */
 export function stripLocaleSegment(routeId: string): string {
