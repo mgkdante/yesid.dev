@@ -21,6 +21,12 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { initSectionMagnet } from '$lib/motion/utils/sectionMagnet.js';
+	import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import {
+		registerScrollContext,
+		lenisAwareScrollTo,
+		localeHandoff,
+	} from '$lib/state/locale-handoff.svelte';
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
@@ -89,6 +95,16 @@
 
 	let destroyFns: Array<() => void> = [];
 
+	/** Max scrollable distance for the current (post-pin-refresh) document. */
+	function maxScroll(): number {
+		return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+	}
+
+	/** The pin ScrollTrigger if the hero intro is live (absent once collapsed). */
+	function findPinTrigger(): ReturnType<typeof ScrollTrigger.getAll>[number] | undefined {
+		return ScrollTrigger.getAll().find((t) => Boolean(t.vars.pin));
+	}
+
 	onMount(() => {
 		if (!browser) return;
 		// go2/w5: soft section magnetism — on scroll settle, gently ease to
@@ -96,12 +112,75 @@
 		// mobile native; reduced motion keeps the magnet, settles instantly).
 		// Sections are queried lazily per settle so pin spacers / hero
 		// collapse are always measured fresh.
+		//
+		// slice-34.4: suppress the magnet while a locale-switch scroll restore
+		// is in flight — the restore's forced jump to the captured fraction
+		// fires scroll events that would otherwise trip a settle and snap the
+		// position to the nearest section top.
 		destroyFns.push(
-			initSectionMagnet(() =>
-				Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
+			initSectionMagnet(
+				() => Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
+				{ suppress: () => localeHandoff.restoring },
 			),
 		);
+
+		// slice-34.4 — reading position survives a locale switch on the HOME page,
+		// the hardest case: HeroBanner's GSAP pin rewrites the document height
+		// (~900svh) AFTER a deferred ScrollTrigger.refresh, and the height also
+		// depends on the hero-intro state (live pin vs collapsed same-day reload).
+		// A raw scrollY captured against one height is meaningless against another,
+		// so we capture a NORMALIZED FRACTION (scrollY / maxScroll) and, after the
+		// remounted page's pin has materialized + refreshed, jump to
+		// fraction * maxScroll via the Lenis-aware recipe.
+		destroyFns.push(
+			registerScrollContext({
+				capture: () => {
+					const max = maxScroll();
+					return {
+						kind: 'home-fraction',
+						fraction: max > 0 ? window.scrollY / max : 0,
+						y: window.scrollY,
+					};
+				},
+				restore: async (snap) => {
+					const s = snap as { fraction?: number; y?: number } | null;
+					const fraction = Math.min(1, Math.max(0, s?.fraction ?? 0));
+
+					// Wait for the pin ScrollTrigger to materialize on the freshly
+					// remounted page. HeroBanner builds it inside setupIntro() and
+					// defers ScrollTrigger.refresh() to a rAF, so the pin (and the
+					// final document height) is not ready synchronously after paint.
+					// Poll a bounded number of frames; once the pin exists we refresh
+					// to lock its start/end + the document height, then jump.
+					//
+					// Intro collapsed (same-day reload / completed): NO pin trigger
+					// ever appears — the poll times out fast and we jump against the
+					// short collapsed height, which is correct for that state.
+					await waitForPinOrTimeout(30);
+					const pin = findPinTrigger();
+					if (pin) ScrollTrigger.refresh();
+
+					lenisAwareScrollTo(Math.round(fraction * maxScroll()));
+				},
+			}),
+		);
 	});
+
+	/** Resolve once the pin ScrollTrigger exists, or after `maxFrames` rAFs. */
+	function waitForPinOrTimeout(maxFrames: number): Promise<void> {
+		return new Promise((resolve) => {
+			let frames = 0;
+			const tick = () => {
+				if (findPinTrigger() || frames >= maxFrames) {
+					resolve();
+					return;
+				}
+				frames++;
+				requestAnimationFrame(tick);
+			};
+			requestAnimationFrame(tick);
+		});
+	}
 
 	onDestroy(() => {
 		destroyFns.forEach((fn) => fn());

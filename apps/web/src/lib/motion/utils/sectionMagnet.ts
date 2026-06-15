@@ -86,6 +86,14 @@ export interface SectionMagnetOpts {
 	touch?: Partial<MagnetTier>;
 	/** Smooth-ease duration when Lenis drives the desktop nudge. Default 0.8s. */
 	lenisDuration?: number;
+	/**
+	 * Optional predicate — when it returns true the magnet stands down (no
+	 * settle nudge). slice-34.4 uses it to suppress the magnet while a
+	 * locale-switch scroll restore is in flight: the restore's forced jump to a
+	 * scroll fraction fires scroll events that would otherwise trip a settle and
+	 * yank the just-restored position to the nearest section top.
+	 */
+	suppress?: () => boolean;
 }
 
 /**
@@ -100,6 +108,7 @@ export function initSectionMagnet(
 	const desktopTier: MagnetTier = { ...DESKTOP_TIER, ...opts.desktop };
 	const touchTier: MagnetTier = { ...TOUCH_TIER, ...opts.touch };
 	const lenisDuration = opts.lenisDuration ?? 0.8;
+	const suppress = opts.suppress ?? (() => false);
 
 	let timer: ReturnType<typeof setTimeout> | null = null;
 	let pointerDown = false;
@@ -134,6 +143,7 @@ export function initSectionMagnet(
 	function settle(): void {
 		timer = null;
 		if (pointerDown) return; // scrollbar drag in progress — wait for release
+		if (suppress()) return; // standing down (e.g. locale-switch scroll restore)
 
 		const touchMode = isTouchMode();
 		const { radiusVh, maxRadiusPx } = touchMode ? touchTier : desktopTier;
