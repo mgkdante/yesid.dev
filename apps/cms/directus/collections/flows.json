@@ -3,8 +3,8 @@
     "name": "Flush Build to Vercel",
     "icon": "cloud_upload",
     "color": "#3399FF",
-    "description": "slice-18m.2: Reads build_queue.cms_dirty on a 2-min CRON. If true, POSTs the Vercel production deploy hook (via $env.VERCEL_DEPLOY_HOOK_PROD) and resets dirty flag. Kill-switch: disable this Flow to pause CMS-triggered builds. Requires FLOWS_ENV_ALLOW_LIST=VERCEL_DEPLOY_HOOK_PROD.",
-    "status": "active",
+    "description": "DISABLED 2026-06-14 (immediate-only rebuild). Was the debounced 2-min CRON polling build_queue.cms_dirty. Disabled to (1) stop the every-2-min DB poll that kept the Neon branch awake, and (2) remove the redundant double-rebuild — 'Vercel revalidate on publish' handles rebuilds immediately on publish. Re-enable (status=active, with 'Mark Dirty on CMS Publish') to restore debounced builds. Requires FLOWS_ENV_ALLOW_LIST=VERCEL_DEPLOY_HOOK_PROD.",
+    "status": "inactive",
     "trigger": "schedule",
     "accountability": "all",
     "options": {
@@ -17,8 +17,8 @@
     "name": "Mark Dirty on CMS Publish",
     "icon": "build_circle",
     "color": "#E07800",
-    "description": "slice-18m.2: Sets build_queue.cms_dirty=true on publish/delete events. Flow B reads this every 2min and POSTs the per-env webhook.",
-    "status": "active",
+    "description": "DISABLED 2026-06-14 (immediate-only rebuild). Set build_queue.cms_dirty=true to feed the debounced Flush-Build cron, which is now disabled. Re-enable together with 'Flush Build to Vercel' to restore debounced builds.",
+    "status": "inactive",
     "trigger": "event",
     "accountability": "all",
     "options": {
