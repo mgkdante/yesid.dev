@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent, siteLabels } from '$lib/content';
+	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { localizeHref, localizeUrl } from '$lib/utils/locale-routing';
-	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
-	import { fillTemplate } from '$lib/utils/labels';
+	import { localizeHref } from '$lib/utils/locale-routing';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
 	import type { NavLink } from '$lib/content/nav';
@@ -12,18 +10,14 @@
 
 	// footerLinks: adapter-sourced footer placement links (from +layout.server.ts).
 	// Falls back to the menu items (which serve as footer fallback in static mode).
+	// (No url / availableLocales props: the EN|FR locale switcher was removed from
+	// the status bar, so the footer no longer needs the current URL or locale list.)
 	let {
 		locale = DEFAULT_LOCALE,
-		url = new URL('https://yesid.dev/'),
 		footerLinks = staticMenuItems as readonly NavLink[],
-		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
 	}: {
 		locale?: Locale;
-		/** Full current URL — the switch preserves path, query AND hash. */
-		url?: URL;
 		footerLinks?: readonly NavLink[];
-		/** Locale switcher entries; hidden until more than one is published. */
-		availableLocales?: readonly Locale[];
 	} = $props();
 
 	// $derived (not const): Footer never remounts; locale changes on /fr↔/ navigation.
@@ -31,17 +25,6 @@
 	const location = $derived(resolveLocale(footerContent.location, locale));
 	const statusPrefix = $derived(resolveLocale(footerContent.statusPrefix, locale));
 	const footerNavAria = $derived(resolveLocale(sharedChromeContent.footerNavAria, locale));
-	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
-	// Path-preserving AND state-preserving: /fr/about?x ↔ /about?x (slice-34).
-	const switchHref = (l: Locale) => localizeUrl(url, l);
-
-	const year = new Date().getFullYear();
-	// go2-t1c2: copyright template from site_labels (orange dot stays code =
-	// placement), previous literal as fallback.
-	const copyrightText = $derived(fillTemplate(
-		resolveLocale(siteLabels.ui.copyrightTemplate, locale) || '© {year} yesid',
-		{ year: String(year) },
-	));
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
@@ -122,22 +105,10 @@
 		</div>
 	</div>
 
-	<!-- Row 2: Status bar -->
+	<!-- Row 2: Status bar — below the hazard rule. Operator trim: location +
+	     system status only (copyright and the EN|FR locale toggle removed). -->
 	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10">
-		<small>{copyrightText}<span class="text-primary">.</span></small>
 		<address class="not-italic">{location}</address>
-		{#if availableLocales.length > 1}
-			<nav data-testid="footer-locale-switch" aria-label={switcherAria} class="flex items-center gap-2">
-				{#each availableLocales as l, i (l)}
-					{#if i > 0}<span aria-hidden="true" class="opacity-30">|</span>{/if}
-					<a
-						href={switchHref(l)}
-						aria-current={l === locale ? 'true' : undefined}
-						class={l === locale ? 'text-primary' : 'transition-colors hover:text-primary'}
-					>{l.toUpperCase()}</a>
-				{/each}
-			</nav>
-		{/if}
 		<!-- Round-4 doctrine: the system status line is a departure-board
 		     readout — the YELLOW voice under the amber departure rule
 		     (the lamp stays the orange route-set aspect). -->

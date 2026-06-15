@@ -14,11 +14,9 @@ describe('Footer', () => {
 		expect(screen.getByTestId('footer-wordmark').textContent).toContain('yesid');
 	});
 
-	it('renders the current year in copyright', () => {
+	it('does not render a copyright line (operator trim below the hazard rule)', () => {
 		render(Footer);
-		const year = new Date().getFullYear().toString();
-		const small = screen.getByText(new RegExp(`©\\s*${year}`));
-		expect(small).toBeInTheDocument();
+		expect(screen.queryByText(/©/)).toBeNull();
 	});
 
 	it('renders footer navigation with aria-label', () => {
@@ -97,20 +95,11 @@ describe('Footer — locale threading (slice-28.6)', () => {
 		expect(screen.getByText('Projets')).toBeInTheDocument();
 	});
 
-	it('hides the locale switcher when only one locale is available', () => {
-		render(Footer, { props: { availableLocales: ['en'] } });
+	it('never renders a locale switcher (operator trim — removed below the hazard rule)', () => {
+		// Even with two published locales the footer status bar no longer carries
+		// the EN|FR toggle (operator decision). Language switches via nav/route.
+		render(Footer, { props: { locale: 'fr' } });
 		expect(screen.queryByTestId('footer-locale-switch')).toBeNull();
-	});
-
-	it('renders path-preserving EN|FR links when two locales are available', () => {
-		render(Footer, {
-			props: { locale: 'fr', url: new URL('https://yesid.dev/fr/about'), availableLocales: ['en', 'fr'] },
-		});
-		const sw = screen.getByTestId('footer-locale-switch');
-		const links = sw.querySelectorAll('a');
-		expect(links[0].getAttribute('href')).toBe('/about');
-		expect(links[1].getAttribute('href')).toBe('/fr/about');
-		expect(links[1].getAttribute('aria-current')).toBe('true');
 	});
 
 	it('localizes nav link hrefs and the wordmark for fr', () => {
