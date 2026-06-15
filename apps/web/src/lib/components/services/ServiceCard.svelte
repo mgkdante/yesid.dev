@@ -58,7 +58,6 @@
 	let metricLabel = $derived(
 		service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : null
 	);
-	let stackLabel = $derived(resolveLocale(servicesListingContent.stackLabel, locale));
 </script>
 
 <section
@@ -86,6 +85,14 @@
 
 			<p class="service-description">{description}</p>
 
+			{#if service.stack && service.stack.length > 0}
+				<div class="stack-pills">
+					{#each service.stack as tech}
+						<span class="stack-pill">{tech}</span>
+					{/each}
+				</div>
+			{/if}
+
 			<div class="cta-row">
 				{#if metricValue}
 					<div class="metric-inline">
@@ -103,41 +110,22 @@
 			</div>
 		</div>
 
-		<!-- Mobile-only SVG banner (desktop uses the side panel in .card-aside). -->
+		<!-- Mobile-only SVG banner — operator order: metric → art → deep dive.
+		     The text column above ends on the metric; the CTA row closes below. -->
 		{#if svgContent}
 			<div class="svg-mobile-banner">
 				<ServiceSvgPanel {svgContent} variant="banner" />
 			</div>
 		{/if}
 
-		<!-- Right rail (desktop): SVG panel on top, collapsible Stack below it.
-		     On mobile the SVG here is hidden (the banner above is used); this row
-		     contributes the full-width Stack collapsible. -->
-		<div class="card-aside">
-			{#if svgContent}
-				<ServiceSvgPanel {svgContent} class="svg-panel-responsive" />
-			{/if}
-			{#if service.stack && service.stack.length > 0}
-				<details class="stack-panel">
-					<summary class="stack-summary">
-						<span class="stack-summary-text">{stackLabel}</span>
-						<span class="stack-summary-count">{service.stack.length}</span>
-						<span class="stack-chevron" aria-hidden="true"></span>
-					</summary>
-					<div class="stack-pills">
-						{#each service.stack as tech}
-							<span class="stack-pill">{tech}</span>
-						{/each}
-					</div>
-				</details>
-			{/if}
-		</div>
-
-		<!-- Mobile-only full-width deep-dive CTA. -->
+		<!-- Mobile: full-width deep-dive CTA. Desktop: SVG panel only. -->
 		<div class="card-bottom">
 			<a href={localizeHref(`/services/${service.id}`, locale)} class="deep-dive-cta mobile-only tap-press" use:pressBounce>
 				{deepDiveLabel}
 			</a>
+			{#if svgContent}
+				<ServiceSvgPanel {svgContent} class="svg-panel-responsive" />
+			{/if}
 		</div>
 	</div>
 </section>
@@ -173,16 +161,9 @@
 		min-width: 0;
 	}
 
-	/* Bigger station label on the card so "SERVICE 0X / 04" scales with the
-	   enlarged title block (overrides the global .label-station 15px). Desktop
-	   only in effect; the clamp min equals the old size so mobile is unchanged. */
-	.service-text :global(.label-station) {
-		font-size: clamp(15px, 1.2vw, 18px);
-	}
-
 	.service-title {
 		font-family: var(--font-heading);
-		font-size: clamp(46px, 6vw, 84px);
+		font-size: clamp(44px, 5vw, 64px);
 		font-weight: 900;
 		color: var(--foreground);
 		line-height: 1.05;
@@ -200,7 +181,7 @@
 	}
 
 	.benefit-headline {
-		font-size: clamp(20px, 2.8vw, 30px);
+		font-size: clamp(18px, 2.5vw, 24px);
 		font-weight: 600;
 		color: var(--foreground);
 		line-height: 1.3;
@@ -208,7 +189,7 @@
 	}
 
 	.service-description {
-		font-size: clamp(18px, 1.4vw, 21px);
+		font-size: var(--text-body);
 		line-height: 1.7;
 		color: var(--secondary-foreground);
 		max-width: 55ch;
@@ -219,7 +200,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
-		padding: 0 0.875rem 0.875rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.stack-pill {
@@ -240,64 +221,10 @@
 		flex-wrap: wrap;
 	}
 
-	/* card-bottom now holds only the mobile-only deep-dive CTA. Hidden on desktop
-	   (the desktop CTA lives in .cta-row; the SVG + Stack live in .card-aside). */
+	/* Desktop: card-bottom is just the SVG panel */
 	.card-bottom {
-		display: none;
-	}
-
-	/* Desktop right rail: SVG panel on top, collapsible Stack below it. */
-	.card-aside {
 		flex-shrink: 0;
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		gap: 1.25rem;
-		/* Match the SVG panel width so expanding the Stack wraps the pills inside
-		   the rail instead of widening the column and reflowing the title. */
-		width: clamp(180px, 20vw, 280px);
-	}
-
-	/* Collapsible "Stack" disclosure. Collapsed by default so the card reads
-	   clean for non-technical visitors; technical buyers expand it on demand. */
-	.stack-panel {
-		border: 1.5px solid var(--primary);
-		border-radius: var(--radius-md);
-		background: transparent;
-	}
-	.stack-summary {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		min-height: 44px;
-		padding-inline: 0.875rem;
-		cursor: pointer;
-		list-style: none;
-		user-select: none;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		color: var(--secondary-foreground);
-	}
-	.stack-summary::-webkit-details-marker {
-		display: none;
-	}
-	.stack-summary-count {
-		color: var(--primary);
-		font-weight: 700;
-	}
-	.stack-chevron {
-		margin-left: auto;
-		width: 8px;
-		height: 8px;
-		border-right: 2px solid var(--primary);
-		border-bottom: 2px solid var(--primary);
-		transform: rotate(-45deg);
-		transition: transform var(--duration-fast) var(--ease-default);
-	}
-	.stack-panel[open] .stack-chevron {
-		transform: rotate(45deg);
+		overflow: hidden; /* clips SVG during initial render — prevents size flash */
 	}
 
 	/* Mobile-only banner — hidden from tablet up (desktop keeps the side panel). */
@@ -382,12 +309,8 @@
 		.deep-dive-cta.desktop-only { display: none; }
 		.deep-dive-cta.mobile-only { display: inline-block; }
 		/* The side panel belongs to desktop — mobile gets the banner above. */
-		.card-aside :global(.svg-panel-responsive) {
+		.card-bottom :global(.svg-panel-responsive) {
 			display: none;
-		}
-		/* Mobile: the rail is just the full-width Stack collapsible. */
-		.card-aside {
-			width: 100%;
 		}
 		/* Deep dive closes the card as a full-width tappable bar. */
 		.card-bottom {
@@ -408,16 +331,16 @@
 		}
 		.service-description {
 			max-width: none;
-			font-size: var(--text-body);
-			line-height: 1.55;
+			font-size: var(--text-small);
+			line-height: 1.5;
 			margin-bottom: 1rem;
 		}
 		.service-title {
-			font-size: clamp(32px, 9vw, 44px);
+			font-size: clamp(28px, 7vw, 36px);
 			margin-bottom: 0.5rem;
 		}
 		.benefit-headline {
-			font-size: clamp(18px, 4.8vw, 22px);
+			font-size: var(--text-body);
 			margin-bottom: 1rem;
 		}
 		.stack-pills {

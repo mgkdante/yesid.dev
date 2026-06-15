@@ -18,7 +18,6 @@
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
 	import ProjectsStrip from './ProjectsStrip.svelte';
-	import ServiceClosingAsk from './ServiceClosingAsk.svelte';
 
 	let {
 		services,
@@ -137,9 +136,6 @@
 			total={sorted.length}
 		/>
 	{/each}
-
-	<!-- Closing ask — foot of the listing, before the sticky projects strip. -->
-	<ServiceClosingAsk />
 
 	<!-- Sticky projects strip -->
 	<div class="strip-bar">

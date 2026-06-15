@@ -59,6 +59,7 @@
 	let metricLabel = $derived(
 		service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : null
 	);
+	let stackLabel = $derived(resolveLocale(servicesListingContent.stackLabel, locale));
 	let backLinkLabel = $derived(resolveLocale(servicesDetailContent.backToServicesLabel, locale));
 	let valuePropositionHeading = $derived(
 		resolveLocale(servicesDetailContent.valuePropositionHeading, locale)
@@ -116,24 +117,31 @@
 					{/if}
 
 					<p class="detail-description">{description}</p>
-
-					{#if service.stack && service.stack.length > 0}
-						<div class="stack-pills">
-							{#each service.stack as tech}
-								<span class="stack-pill">{tech}</span>
-							{/each}
-						</div>
-					{/if}
 				</div>
 
-				<!-- SVG panel — desktop/tablet only (wrapper controls visibility).
-				     Operator pass 2: text leads the detail hero, art sits to the
-				     right on desktop — morph on hover AND tap, both themes. -->
-				{#if svgContent}
-					<div class="svg-desktop">
-						<ServiceSvgPanel {svgContent} />
-					</div>
-				{/if}
+				<!-- Right rail: SVG panel (desktop) on top, collapsible Stack below.
+				     Stack moved out of the text column into this rail. -->
+				<div class="hero-aside">
+					{#if svgContent}
+						<div class="svg-desktop">
+							<ServiceSvgPanel {svgContent} />
+						</div>
+					{/if}
+					{#if service.stack && service.stack.length > 0}
+						<details class="stack-panel">
+							<summary class="stack-summary">
+								<span class="stack-summary-text">{stackLabel}</span>
+								<span class="stack-summary-count">{service.stack.length}</span>
+								<span class="stack-chevron" aria-hidden="true"></span>
+							</summary>
+							<div class="stack-pills">
+								{#each service.stack as tech}
+									<span class="stack-pill">{tech}</span>
+								{/each}
+							</div>
+						</details>
+					{/if}
+				</div>
 			</header>
 
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
@@ -399,9 +407,14 @@
 		min-width: 0;
 	}
 
+	/* Bigger station label so "SERVICE 0X / 04" scales with the enlarged title. */
+	.hero-text :global(.label-station) {
+		font-size: clamp(15px, 1.2vw, 18px);
+	}
+
 	.detail-title {
 		font-family: var(--font-heading);
-		font-size: clamp(32px, 4vw, 56px);
+		font-size: clamp(40px, 5vw, 72px);
 		font-weight: 900;
 		color: var(--foreground);
 		line-height: 1.05;
@@ -421,18 +434,73 @@
 	}
 
 	.detail-description {
-		font-size: var(--text-body);
+		font-size: clamp(18px, 1.4vw, 21px);
 		line-height: 1.7;
 		color: var(--secondary-foreground);
 		max-width: 60ch;
 		margin-bottom: 1.5rem;
 	}
 
-	/* Stack pills — orange border + text (matches ServiceCard) */
+	/* Right rail wrapping the SVG panel + the collapsible Stack. */
+	.hero-aside {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+	@media (min-width: 768px) {
+		.hero-aside {
+			align-items: stretch;
+			width: clamp(180px, 20vw, 280px);
+		}
+	}
+
+	/* Collapsible "Stack" disclosure: collapsed by default, pills wrap inside. */
+	.stack-panel {
+		border: 1.5px solid var(--primary);
+		border-radius: var(--radius-md);
+		background: transparent;
+	}
+	.stack-summary {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 44px;
+		padding-inline: 0.875rem;
+		cursor: pointer;
+		list-style: none;
+		user-select: none;
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		color: var(--secondary-foreground);
+	}
+	.stack-summary::-webkit-details-marker {
+		display: none;
+	}
+	.stack-summary-count {
+		color: var(--primary);
+		font-weight: 700;
+	}
+	.stack-chevron {
+		margin-left: auto;
+		width: 8px;
+		height: 8px;
+		border-right: 2px solid var(--primary);
+		border-bottom: 2px solid var(--primary);
+		transform: rotate(-45deg);
+		transition: transform var(--duration-fast) var(--ease-default);
+	}
+	.stack-panel[open] .stack-chevron {
+		transform: rotate(45deg);
+	}
+
+	/* Stack pills — orange border + text (matches ServiceCard). Inside the panel. */
 	.stack-pills {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
+		padding: 0 0.875rem 0.875rem;
 	}
 
 	.stack-pill {
@@ -707,7 +775,7 @@
 		}
 
 		.detail-title {
-			font-size: clamp(28px, 7vw, 36px);
+			font-size: clamp(32px, 9vw, 44px);
 		}
 
 		.detail-subtitle {
@@ -715,8 +783,8 @@
 		}
 
 		.detail-description {
-			font-size: var(--text-small);
-			line-height: 1.5;
+			font-size: var(--text-body);
+			line-height: 1.55;
 			margin-bottom: 1rem;
 		}
 
