@@ -119,29 +119,12 @@
 					<p class="detail-description">{description}</p>
 				</div>
 
-				<!-- Right rail: SVG panel (desktop) on top, collapsible Stack below.
-				     Stack moved out of the text column into this rail. -->
-				<div class="hero-aside">
-					{#if svgContent}
-						<div class="svg-desktop">
-							<ServiceSvgPanel {svgContent} />
-						</div>
-					{/if}
-					{#if service.stack && service.stack.length > 0}
-						<details class="stack-panel">
-							<summary class="stack-summary">
-								<span class="stack-summary-text">{stackLabel}</span>
-								<span class="stack-summary-count">{service.stack.length}</span>
-								<span class="stack-chevron" aria-hidden="true"></span>
-							</summary>
-							<div class="stack-pills">
-								{#each service.stack as tech}
-									<span class="stack-pill">{tech}</span>
-								{/each}
-							</div>
-						</details>
-					{/if}
-				</div>
+				<!-- SVG panel — desktop/tablet only (wrapper controls visibility). -->
+				{#if svgContent}
+					<div class="svg-desktop">
+						<ServiceSvgPanel {svgContent} />
+					</div>
+				{/if}
 			</header>
 
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
@@ -268,6 +251,22 @@
 								{seeAllProjectsLabel}
 							</a>
 						</CollapsibleSection>
+						{#if service.stack && service.stack.length > 0}
+							<CollapsibleSection
+								title="{stackLabel} ({service.stack.length})"
+								sectionKey="svc-stack-desktop"
+								open={false}
+							>
+								{#snippet icon()}
+									<span class="projects-count">{service.stack.length}</span>
+								{/snippet}
+								<div class="stack-pills">
+									{#each service.stack as tech}
+										<span class="stack-pill">{tech}</span>
+									{/each}
+								</div>
+							</CollapsibleSection>
+						{/if}
 					</aside>
 				{/if}
 			</div>
@@ -301,6 +300,22 @@
 						{seeAllProjectsLabel}
 					</a>
 				</CollapsibleSection>
+				{#if service.stack && service.stack.length > 0}
+					<CollapsibleSection
+						title="{stackLabel} ({service.stack.length})"
+						sectionKey="svc-stack-mobile"
+						open={false}
+					>
+						{#snippet icon()}
+							<span class="projects-count">{service.stack.length}</span>
+						{/snippet}
+						<div class="stack-pills">
+							{#each service.stack as tech}
+								<span class="stack-pill">{tech}</span>
+							{/each}
+						</div>
+					</CollapsibleSection>
+				{/if}
 			</div>
 		{/if}
 
@@ -441,66 +456,12 @@
 		margin-bottom: 1.5rem;
 	}
 
-	/* Right rail wrapping the SVG panel + the collapsible Stack. */
-	.hero-aside {
-		display: flex;
-		flex-direction: column;
-		gap: 1.25rem;
-	}
-	@media (min-width: 768px) {
-		.hero-aside {
-			align-items: stretch;
-			width: clamp(180px, 20vw, 280px);
-		}
-	}
-
-	/* Collapsible "Stack" disclosure: collapsed by default, pills wrap inside. */
-	.stack-panel {
-		border: 1.5px solid var(--primary);
-		border-radius: var(--radius-md);
-		background: transparent;
-	}
-	.stack-summary {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		min-height: 44px;
-		padding-inline: 0.875rem;
-		cursor: pointer;
-		list-style: none;
-		user-select: none;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		color: var(--secondary-foreground);
-	}
-	.stack-summary::-webkit-details-marker {
-		display: none;
-	}
-	.stack-summary-count {
-		color: var(--primary);
-		font-weight: 700;
-	}
-	.stack-chevron {
-		margin-left: auto;
-		width: 8px;
-		height: 8px;
-		border-right: 2px solid var(--primary);
-		border-bottom: 2px solid var(--primary);
-		transform: rotate(-45deg);
-		transition: transform var(--duration-fast) var(--ease-default);
-	}
-	.stack-panel[open] .stack-chevron {
-		transform: rotate(45deg);
-	}
-
-	/* Stack pills — orange border + text (matches ServiceCard). Inside the panel. */
+	/* Stack pills — orange border + text (matches ServiceCard). Shown inside the
+	   Stack CollapsibleSection, under Related projects (right rail / mobile). */
 	.stack-pills {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
-		padding: 0 0.875rem 0.875rem;
 	}
 
 	.stack-pill {
