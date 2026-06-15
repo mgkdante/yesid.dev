@@ -26,6 +26,7 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
 
 	interface TocEntry {
 		id: string;
@@ -137,12 +138,46 @@
 		return () => observer.disconnect();
 	});
 
-	function scrollToHeading(id: string): void {
-		const el = id.startsWith('section-')
+	/** Map a TOC id to its DOM element. `section-${i}` ids are SYNTHETIC and
+	 *  locale-stable (driven by section index, not localized text); README child
+	 *  ids are index-based too — so the same id resolves to the corresponding
+	 *  heading on both /projects/x and /fr/projects/x. */
+	function headingElement(id: string): Element | null {
+		return id.startsWith('section-')
 			? document.querySelector(`[data-section-index="${id.replace('section-', '')}"]`)
 			: document.getElementById(id);
-		if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}
+
+	function scrollToHeading(id: string): void {
+		headingElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
+	// slice-34.4 — reading position survives a locale switch. The detail page's
+	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
+	// capture the active heading id and, after the page remounts in the new
+	// locale, scroll to that SAME heading. Raw scrollY would be wrong — FR/EN
+	// body lengths differ, so the same heading sits at a different offset.
+	onMount(() =>
+		registerScrollContext({
+			capture: () => ({ kind: 'heading', id: activeHeadingId, y: window.scrollY }),
+			restore: (snap) => {
+				const s = snap as { id?: string; y?: number } | null;
+				const id = s?.id;
+				const el = id ? headingElement(id) : null;
+				if (el) {
+					// Instant, Lenis-aware jump to the heading's top — matches the
+					// IntersectionObserver's -20% top rootMargin so the restored
+					// heading lands where the observer considers it "active".
+					const top = el.getBoundingClientRect().top + window.scrollY;
+					lenisAwareScrollTo(Math.max(0, top - window.innerHeight * 0.2));
+				} else {
+					// No active heading (top of page) or it vanished — fall back to
+					// the raw captured offset (still Lenis-aware).
+					lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
+				}
+			},
+		})
+	);
 </script>
 
 <article data-testid="project-detail-page">
@@ -162,7 +197,7 @@
 		<aside class="toc-column">
 			<StickyPanel top="5rem">
 				<div class="toc-panel toc-scroll" use:scrollChain>
-					<CollapsibleSection title={tocSectionTitle} open={true}>
+					<CollapsibleSection title={tocSectionTitle} sectionKey="proj-toc" open={true}>
 						<nav class="toc-nav">
 								{#each tocEntries as entry}
 									<button
@@ -210,6 +245,7 @@
 				>
 					<CollapsibleSection
 						title={resolveLocale(section.title, locale)}
+						sectionKey="proj-section-{i}"
 						index={i}
 						open={true}
 					>
@@ -223,7 +259,7 @@
 					class="section-block"
 					data-section-index={project.sections.length}
 				>
-					<CollapsibleSection title={readmeSectionTitle} open={true}>
+					<CollapsibleSection title={readmeSectionTitle} sectionKey="proj-readme" open={true}>
 						{#snippet icon()}
 							<svg class="h-5 w-5 shrink-0 text-primary" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
 								<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />

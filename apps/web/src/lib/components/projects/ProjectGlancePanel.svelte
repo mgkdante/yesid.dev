@@ -64,7 +64,7 @@
   >
     <!-- Overview -->
     <div class="mb-4">
-      <CollapsibleSection title={glanceOverviewTitle} open={true}>
+      <CollapsibleSection title={glanceOverviewTitle} sectionKey="glance-overview" open={true}>
         <div class="glance-overview text-small leading-[1.7]">
           <BlockRenderer doc={resolveLocale(project.description, locale)} />
         </div>
@@ -74,7 +74,7 @@
     <!-- Impact metrics -->
     {#if hasMetrics}
       <div class="mb-4">
-        <CollapsibleSection title={glanceImpactTitle} open={true}>
+        <CollapsibleSection title={glanceImpactTitle} sectionKey="glance-impact" open={true}>
           <div class="grid grid-cols-2 gap-4">
             {#each allMetrics as metric, i}
               <MetricDisplay
@@ -93,7 +93,7 @@
     <!-- Stack -->
     {#if project.stack.length > 0}
       <div class="mb-4">
-        <CollapsibleSection title={glanceStackTitle} open={true}>
+        <CollapsibleSection title={glanceStackTitle} sectionKey="glance-stack" open={true}>
           <div class="flex flex-wrap gap-1.5">
             {#each project.stack as tech}
               <Badge variant="tag" size="xs">{tech}</Badge>
@@ -106,7 +106,7 @@
     <!-- Services (SVG badges with morph hover) -->
     {#if hasServices}
       <div class="mb-4">
-        <CollapsibleSection title={glanceServicesTitle} open={true}>
+        <CollapsibleSection title={glanceServicesTitle} sectionKey="glance-services" open={true}>
           <div class="flex flex-col gap-2 px-2 py-1">
             {#each services as service}
               <ServiceBadge
@@ -122,7 +122,7 @@
     <!-- Links -->
     {#if hasLinks}
       <div class="mb-4">
-        <CollapsibleSection title={glanceLinksTitle} open={true}>
+        <CollapsibleSection title={glanceLinksTitle} sectionKey="glance-links" open={true}>
           <div class="flex flex-col gap-2">
             {#if project.liveUrl}
               <a

@@ -4,7 +4,12 @@
 
 import { describe, it, expect } from 'vitest';
 import type { StackArchetype } from '@repo/shared/schemas';
-import { EngineState } from './engine-state.svelte';
+import {
+	EngineState,
+	seedFromParams,
+	coerceEngineSeed,
+	type EngineSeed,
+} from './engine-state.svelte';
 
 const ls = (en: string) => ({ en });
 
@@ -199,5 +204,136 @@ describe('EngineState', () => {
 		s.onDetailOpen = null;
 		s.selectArchetype('data-dashboard');
 		expect(opened).toEqual(['data-pipeline']);
+	});
+
+	// ── slice-34.2: boot seed (switch-restore / inbound deep-link) + serialize ──
+	it('seed: no seed boots at plain defaults (goal/select/empty)', () => {
+		const s = new EngineState(FIXTURES, null);
+		expect(s.mode).toBe('goal');
+		expect(s.view).toBe('select');
+		expect(s.activeArchetype).toBeNull();
+		expect(s.pickedTechs.size).toBe(0);
+	});
+
+	it('seed: an archetype seeds the blueprint view and the active slug', () => {
+		const seed: EngineSeed = { mode: 'goal', archetype: 'data-dashboard', techs: [] };
+		const s = new EngineState(FIXTURES, seed);
+		expect(s.mode).toBe('goal');
+		expect(s.activeArchetype).toBe('data-dashboard');
+		expect(s.view).toBe('blueprint'); // DERIVED from a present archetype, never carried
+		expect(s.active?.slug).toBe('data-dashboard');
+	});
+
+	it('seed: compose mode + picks restore the build; view stays select with no archetype', () => {
+		const seed: EngineSeed = { mode: 'compose', archetype: null, techs: ['postgresql', 'docker'] };
+		const s = new EngineState(FIXTURES, seed);
+		expect(s.mode).toBe('compose');
+		expect(s.activeArchetype).toBeNull();
+		expect(s.view).toBe('select');
+		expect([...s.pickedTechs]).toEqual(['postgresql', 'docker']); // insertion order kept
+		// Deriveds over the SAME SvelteSet instance still fire — matches recompute.
+		expect(s.matches.map((m) => m.slug)).toContain('data-pipeline');
+	});
+
+	it('seed: an UNKNOWN archetype is stripped — falls back to select, no active', () => {
+		const seed: EngineSeed = { mode: 'goal', archetype: 'not-a-real-archetype', techs: [] };
+		const s = new EngineState(FIXTURES, seed);
+		expect(s.activeArchetype).toBeNull();
+		expect(s.view).toBe('select');
+	});
+
+	it('seed: seeding does NOT fire onDetailOpen (no shallow-history push on restore)', () => {
+		const opened: string[] = [];
+		const seed: EngineSeed = { mode: 'goal', archetype: 'data-dashboard', techs: [] };
+		const s = new EngineState(FIXTURES, seed);
+		s.onDetailOpen = (slug) => opened.push(slug);
+		// The constructor already applied the seed; the hook (wired AFTER) saw nothing.
+		expect(opened).toEqual([]);
+		expect(s.activeArchetype).toBe('data-dashboard');
+	});
+
+	it('serialize: snapshots the live build (mode + archetype + picks), omitting view/teach', () => {
+		const s = new EngineState(FIXTURES);
+		s.setMode('compose');
+		s.toggleTech('postgresql');
+		s.toggleTech('docker');
+		s.selectArchetype('data-pipeline');
+		expect(s.serialize()).toEqual({
+			mode: 'compose',
+			archetype: 'data-pipeline',
+			techs: ['postgresql', 'docker'],
+		});
+	});
+
+	it('serialize → seed round-trips a goal-mode blueprint', () => {
+		const a = new EngineState(FIXTURES);
+		a.selectArchetype('data-dashboard');
+		const b = new EngineState(FIXTURES, a.serialize());
+		expect(b.mode).toBe('goal');
+		expect(b.activeArchetype).toBe('data-dashboard');
+		expect(b.view).toBe('blueprint');
+	});
+});
+
+describe('seedFromParams (inbound deep-link → EngineSeed)', () => {
+	const params = (qs: string) => new URLSearchParams(qs);
+
+	it('returns null when no engine params are present', () => {
+		expect(seedFromParams(params(''), FIXTURES)).toBeNull();
+		expect(seedFromParams(params('tag=svelte'), FIXTURES)).toBeNull();
+	});
+
+	it('parses mode + archetype + techs from the URL', () => {
+		expect(
+			seedFromParams(params('mode=compose&archetype=data-dashboard&techs=sveltekit.postgresql'), FIXTURES),
+		).toEqual({ mode: 'compose', archetype: 'data-dashboard', techs: ['sveltekit', 'postgresql'] });
+	});
+
+	it('whitelists mode — an unknown mode falls back to goal', () => {
+		expect(seedFromParams(params('mode=hack'), FIXTURES)?.mode).toBe('goal');
+	});
+
+	it('strips an unknown archetype (kept null) but keeps valid techs', () => {
+		expect(seedFromParams(params('archetype=ghost&techs=docker'), FIXTURES)).toEqual({
+			mode: 'goal',
+			archetype: null,
+			techs: ['docker'],
+		});
+	});
+
+	it('drops garbage tech ids and dedupes (insertion order preserved)', () => {
+		expect(
+			seedFromParams(params('techs=docker.BAD%20ID.docker.python'), FIXTURES)?.techs,
+		).toEqual(['docker', 'python']);
+	});
+
+	it('an empty techs param yields no picks (not [""])', () => {
+		expect(seedFromParams(params('mode=compose&techs='), FIXTURES)?.techs).toEqual([]);
+	});
+});
+
+describe('coerceEngineSeed (orchestrator restore blob → EngineSeed)', () => {
+	it('returns null for non-object input', () => {
+		expect(coerceEngineSeed(null, FIXTURES)).toBeNull();
+		expect(coerceEngineSeed('nope', FIXTURES)).toBeNull();
+		expect(coerceEngineSeed(undefined, FIXTURES)).toBeNull();
+	});
+
+	it('coerces a well-formed blob, whitelisting mode/archetype and the id grammar', () => {
+		expect(
+			coerceEngineSeed(
+				{ mode: 'compose', archetype: 'data-pipeline', techs: ['docker', 'python', 'docker'] },
+				FIXTURES,
+			),
+		).toEqual({ mode: 'compose', archetype: 'data-pipeline', techs: ['docker', 'python'] });
+	});
+
+	it('defends against a tampered blob (bad mode/archetype/tech types)', () => {
+		expect(
+			coerceEngineSeed(
+				{ mode: 42, archetype: 'ghost', techs: ['ok-id', 7, 'Bad Id', null] },
+				FIXTURES,
+			),
+		).toEqual({ mode: 'goal', archetype: null, techs: ['ok-id'] });
 	});
 });

@@ -24,6 +24,7 @@ import { browser } from '$app/environment';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch } from '$lib/utils/locale-routing';
+import { getLenis } from '$lib/motion/utils/lenis.js';
 import {
 	makeBlob,
 	serializeBlob,
@@ -125,9 +126,34 @@ function restoreFocus(focus: FocusSnapshot | null): void {
 }
 
 // --- scroll (generic window offset by default; pages override via ScrollContext) ---
+// Lenis is the site-wide scroll engine (apps/web/+layout.svelte initLenis), so
+// EVERY default restore must be Lenis-aware. window.scrollTo() fights an active
+// Lenis: Lenis keeps its own animated position and snaps the page back. When a
+// Lenis instance is live we use its jumpTo recipe (HeroBanner's): resize() to
+// sync the cached scroll limits to the freshly-remounted page height, then an
+// immediate forced scrollTo. On touch / reduced-motion (no Lenis) we fall back
+// to the native window.scrollTo.
 function captureScroll(): unknown {
 	if (scrollContext) return scrollContext.capture();
 	return { kind: 'offset', y: window.scrollY };
+}
+
+/**
+ * Lenis-aware instant scroll to `y`. Mirrors HeroBanner.jumpTo — resize() first
+ * so Lenis's debounced dimension cache matches the just-remounted page before we
+ * target a position past the old (shorter/taller) limit, then an immediate forced
+ * scroll so no easing animation plays. Shared by the default restore AND the
+ * page-level ScrollContexts (home pin-fraction, prose heading) so all scroll
+ * restore goes through one Lenis-safe path.
+ */
+export function lenisAwareScrollTo(y: number): void {
+	const lenis = getLenis();
+	if (lenis) {
+		lenis.resize();
+		lenis.scrollTo(y, { immediate: true, force: true });
+	} else {
+		window.scrollTo(0, y);
+	}
 }
 
 async function restoreScroll(snapshot: unknown): Promise<void> {
@@ -136,7 +162,7 @@ async function restoreScroll(snapshot: unknown): Promise<void> {
 		return;
 	}
 	const y = (snapshot as { y?: number } | null)?.y ?? 0;
-	window.scrollTo(0, y);
+	lenisAwareScrollTo(y);
 }
 
 // --- storage (always guarded: private mode / quota must never crash a nav) ---
@@ -189,6 +215,11 @@ export function attachLocaleHandoff(): void {
 	if (!browser) return;
 
 	beforeNavigate((nav) => {
+		// Any navigation ends the previous page's pending async restore — clear it so
+		// a slow async consumer (e.g. the dynamically-imported stack-engine) that
+		// already read it on THIS page cannot be re-seeded with stale data on a later
+		// page. The blob is consumed for the lifetime of the page it was restored on.
+		pendingBlob = null;
 		if (!nav.from || !nav.to) return;
 		if (!isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) return;
 		// Idempotency: a rapid second switch fired mid-restore must NOT overwrite the
@@ -222,7 +253,10 @@ export function attachLocaleHandoff(): void {
 		await restoreScroll(blob.scroll);
 		restoreFocus(blob.focus);
 		clearBlob(delocalized);
-		pendingBlob = null;
+		// Keep `pendingBlob` in memory (NOT cleared here). Async-mounted consumers —
+		// e.g. the stack-engine, which loads via dynamic import() and constructs AFTER
+		// this restore window — read their seed from pendingRestore() during the rest
+		// of the page's life. It is cleared on the next beforeNavigate (above).
 		restoringState = false;
 	});
 }
