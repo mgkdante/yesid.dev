@@ -14,18 +14,28 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
 
-	let currentIndex = $state(0);
+	// slice-34.5: the active polaroid survives a language switch. The stored value
+	// is a locale-free integer index — valid in any locale — per the persisted()
+	// invariant. The {#key currentIndex} below remounts on restore, so the carried
+	// index lands cleanly on the remounted page.
+	const polaroid = persisted<number>('about-polaroid', 0);
 
 	function prev() {
-		currentIndex = (currentIndex - 1 + polaroids.length) % polaroids.length;
+		polaroid.value = (polaroid.value - 1 + polaroids.length) % polaroids.length;
 	}
 	function next() {
-		currentIndex = (currentIndex + 1) % polaroids.length;
+		polaroid.value = (polaroid.value + 1) % polaroids.length;
 	}
 
+	// Clamp against the resolved set so a stale carried index can never read past
+	// the array (defensive — the polaroid count is content-stable, but cheap).
+	const currentIndex = $derived(
+		polaroids.length > 0 ? ((polaroid.value % polaroids.length) + polaroids.length) % polaroids.length : 0,
+	);
 	const current = $derived(polaroids[currentIndex]);
 	const alt = $derived(resolveLocale(current.alt, locale));
 	const caption = $derived(resolveLocale(current.caption, locale));
@@ -76,14 +86,16 @@
 				class="tap-press flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] p-2.5 text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 				onclick={prev}
 				aria-label={prevPhotoAria}
+				data-testid="about-polaroid-prev"
 			>
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6 2L3.5 5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>
-			<span class="font-mono text-caption text-[var(--muted-foreground)]">{currentIndex + 1}/{polaroids.length}</span>
+			<span class="font-mono text-caption text-[var(--muted-foreground)]" data-testid="about-polaroid-counter">{currentIndex + 1}/{polaroids.length}</span>
 			<button
 				class="tap-press flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] p-2.5 text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 				onclick={next}
 				aria-label={nextPhotoAria}
+				data-testid="about-polaroid-next"
 			>
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4 2L6.5 5L4 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>

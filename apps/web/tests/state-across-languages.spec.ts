@@ -5,7 +5,7 @@ import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 // in-progress URL state (filters ?service=…, ?station=…, the engine seed) across
 // EN⇄FR instead of silently dropping it (localizeHref was pathname-only). The
 // query is preserved verbatim, so these assertions don't depend on real filter
-// ids. Session-scope survival (search text, scroll, collapsibles) is proven
+// ids. Session-scope survival (search text, contact draft, carousel) is proven
 // per-family below.
 test.describe('State across languages — foundation (URL state survives the switch)', () => {
 	test('the toggle href carries the query string EN→FR', async ({ page }) => {
@@ -124,5 +124,48 @@ test.describe('State across languages — contact form (session survives the swi
 		await expect(after.getByTestId('contact-success')).toBeVisible({ timeout: 5000 });
 		await expect(after.getByText('Please reply, this is sent.')).toHaveCount(0);
 		await expect(after.locator('#contact-message')).toHaveCount(0);
+	});
+});
+
+// slice-34.5 — Selections & carousels. The active /about polaroid index is a
+// locale-free integer registered with the orchestrator (persisted('about-polaroid',
+// 0)). The {#key pathname} remount destroys the rune; the orchestrator restores the
+// carried index after paint — the same photo shows before and after the toggle,
+// with no URL param involved.
+test.describe('State across languages — selections (carousel survives the switch)', () => {
+	// The polaroid TOTAL ("/N") is CMS-content-driven, so the denominator is read
+	// from the DOM; only the carried POSITION (the "M" in "M/N") is asserted.
+	async function polaroidTotal(counter: import('@playwright/test').Locator): Promise<string> {
+		const text = (await counter.textContent()) ?? '';
+		const total = text.split('/')[1]?.trim() ?? '';
+		expect(Number(total)).toBeGreaterThanOrEqual(3);
+		return total;
+	}
+
+	test('the /about polaroid index survives EN→FR', async ({ page }) => {
+		await page.goto('/about');
+		const counter = page.getByTestId('about-polaroid-counter');
+		await expect(counter).toBeVisible();
+		const total = await polaroidTotal(counter);
+		await expect(counter).toHaveText(`1/${total}`);
+		const next = page.getByTestId('about-polaroid-next');
+		await next.click();
+		await next.click();
+		await expect(counter).toHaveText(`3/${total}`);
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL('**/fr/about');
+		await expect(page.getByTestId('about-polaroid-counter')).toHaveText(`3/${total}`);
+	});
+
+	test('the /about polaroid index survives FR→EN too', async ({ page }) => {
+		await page.goto('/fr/about');
+		const counter = page.getByTestId('about-polaroid-counter');
+		await expect(counter).toBeVisible();
+		const total = await polaroidTotal(counter);
+		await page.getByTestId('about-polaroid-next').click();
+		await expect(counter).toHaveText(`2/${total}`);
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL((url) => url.pathname === '/about');
+		await expect(page.getByTestId('about-polaroid-counter')).toHaveText(`2/${total}`);
 	});
 });
