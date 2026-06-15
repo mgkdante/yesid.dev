@@ -25,8 +25,8 @@ type Patch = Record<string, string>;
 
 export const PATCHES: Record<string, { en: Patch; fr: Patch }> = {
 	'data-pipeline': {
-		en: { impact_metric_value: '0', impact_metric_label: 'missed mornings' },
-		fr: { impact_metric_value: '0', impact_metric_label: 'matin manqué' },
+		en: { impact_metric_value: '1.5TB+', impact_metric_label: 'migrated' },
+		fr: { impact_metric_value: '1,5 To+', impact_metric_label: 'migrées' },
 	},
 	'web-development': {
 		en: {

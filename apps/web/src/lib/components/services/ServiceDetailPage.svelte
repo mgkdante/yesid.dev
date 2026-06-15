@@ -17,7 +17,6 @@
 	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
-	import ServiceClosingAsk from './ServiceClosingAsk.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -231,9 +230,6 @@
 							sectionKey="svc-related-desktop"
 							open={true}
 						>
-							{#snippet icon()}
-								<span class="projects-count">{relatedProjects.length}</span>
-							{/snippet}
 							<nav class="projects-list" aria-label={relatedProjectsAria}>
 								{#each relatedProjects as project}
 									<a
@@ -257,9 +253,6 @@
 								sectionKey="svc-stack-desktop"
 								open={false}
 							>
-								{#snippet icon()}
-									<span class="projects-count">{service.stack.length}</span>
-								{/snippet}
 								<div class="stack-pills">
 									{#each service.stack as tech}
 										<span class="stack-pill">{tech}</span>
@@ -280,9 +273,6 @@
 					sectionKey="svc-related-mobile"
 					open={true}
 				>
-					{#snippet icon()}
-						<span class="projects-count">{relatedProjects.length}</span>
-					{/snippet}
 					<nav class="projects-list" aria-label={relatedProjectsAria}>
 						{#each relatedProjects as project}
 							<a
@@ -306,9 +296,6 @@
 						sectionKey="svc-stack-mobile"
 						open={false}
 					>
-						{#snippet icon()}
-							<span class="projects-count">{service.stack.length}</span>
-						{/snippet}
 						<div class="stack-pills">
 							{#each service.stack as tech}
 								<span class="stack-pill">{tech}</span>
@@ -318,9 +305,6 @@
 				{/if}
 			</div>
 		{/if}
-
-		<!-- Closing ask — names the next step before prev/next. -->
-		<ServiceClosingAsk />
 
 		<!-- Prev/Next Nav -->
 		<div class="nav-area">
@@ -623,7 +607,7 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: var(--text-small);
+		font-size: var(--text-body);
 		color: var(--secondary-foreground);
 	}
 
@@ -643,7 +627,9 @@
 
 	@media (min-width: 1024px) {
 		.projects-panel {
-			display: block;
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
 			position: sticky;
 			top: calc(5rem + 4rem + 2rem);
 		}
@@ -713,6 +699,9 @@
 	/* ── Related projects mobile (bottom of page) ── */
 
 	.projects-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 		padding: 1.5rem var(--space-page-x);
 	}
 
