@@ -15,24 +15,27 @@
   On switch the boards give a gentle swing (a signpost catching the change);
   disabled under prefers-reduced-motion.
 
-  Persistent chrome (rides Nav): locale + pathname are PROPS (ThemeToggle convention).
+  Persistent chrome (rides Nav): locale + url are PROPS (ThemeToggle convention).
+  The switch preserves the full URL — path, query AND hash — so in-progress
+  state (filters, ?station, the engine seed) survives the language change.
 -->
 <script lang="ts">
 	import { sharedChromeContent } from '$lib/content';
 	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
-	import { localizeHref, delocalizePath } from '$lib/utils/locale-routing';
+	import { localizeUrl } from '$lib/utils/locale-routing';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import type { Locale } from '$lib/types';
 
 	let {
 		class: className = '',
 		locale = DEFAULT_LOCALE,
-		pathname = '/',
+		url = new URL('https://yesid.dev/'),
 		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
 	}: {
 		class?: string;
 		locale?: Locale;
-		pathname?: string;
+		/** Full current URL — the switch preserves its path, query AND hash. */
+		url?: URL;
 		availableLocales?: readonly Locale[];
 	} = $props();
 
@@ -43,7 +46,7 @@
 
 	const idx = $derived(Math.max(0, availableLocales.indexOf(locale)));
 	const next = $derived(availableLocales[(idx + 1) % availableLocales.length]);
-	const nextHref = $derived(localizeHref(delocalizePath(pathname), next));
+	const nextHref = $derived(localizeUrl(url, next));
 	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
 	const ariaLabel = $derived(`${switcherAria}: ${NAMES[locale] ?? locale}`);
 
@@ -81,6 +84,7 @@
 		href={nextHref}
 		data-testid="language-toggle"
 		data-sveltekit-preload-data="hover"
+		data-sveltekit-noscroll
 		class="lang-post tap-press {className}"
 		aria-label={ariaLabel}
 		title={NAMES[locale] ?? locale}

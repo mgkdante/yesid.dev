@@ -17,11 +17,14 @@
 
 	let {
 		pathname = '/',
+		url = new URL('https://yesid.dev/'),
 		locale = DEFAULT_LOCALE,
 		headerLinks = staticNavLinks as readonly NavLink[],
 		menuItems = [] as readonly NavLink[],
 	}: {
 		pathname?: string;
+		/** Full current URL — threaded to LanguageToggle so the switch keeps query + hash. */
+		url?: URL;
 		locale?: Locale;
 		headerLinks?: readonly NavLink[];
 		menuItems?: readonly NavLink[];
@@ -135,7 +138,7 @@
 		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
 		     Persistent (stays visible above the open menu sheet) — it is the SINGLE locale switcher;
 		     the sheet's own EN|FR switch was removed to kill the double. -->
-		<LanguageToggle {locale} {pathname} />
+		<LanguageToggle {locale} {url} />
 
 		<!-- Theme toggle (GO-W2.2) -->
 		<ThemeToggle {locale} />

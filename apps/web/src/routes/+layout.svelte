@@ -99,7 +99,7 @@
 </svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
-	<Nav pathname={$page.url.pathname} {locale} {headerLinks} {menuItems} />
+	<Nav pathname={$page.url.pathname} url={$page.url} {locale} {headerLinks} {menuItems} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
@@ -110,7 +110,7 @@
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
 	<div class="relative z-[45]">
-		<Footer {locale} pathname={$page.url.pathname} {footerLinks} />
+		<Footer {locale} url={$page.url} {footerLinks} />
 	</div>
 </div>
 
