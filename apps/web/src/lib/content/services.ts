@@ -51,8 +51,8 @@ export const services: readonly Service[] = [
 			},
 		],
 		description: {
-			en: 'Schemas, queries, and migrations, a database that stays fast as your data grows.',
-			fr: 'Schémas, requêtes et migrations : une base de données qui reste rapide à mesure que tes données grossissent.',
+			en: 'Where your business keeps its data, built to stay fast and safe as you grow.',
+			fr: 'L\'endroit où ta business garde ses données, bâti pour rester rapide et sécuritaire en grandissant.',
 		},
 		id: 'database-engineering',
 		impactMetric: {
@@ -62,16 +62,19 @@ export const services: readonly Service[] = [
 			},
 			value: { en: '3x faster', fr: '3x plus vite' },
 		},
-		relatedProjects: [
-			'transit-data-pipeline',
-			'lorem-database-migration',
-			'lorem-query-optimizer',
-		],
+		relatedProjects: ['transit-data-pipeline', 'yesid-dev'],
 		sections: [
 			{
 				content: {
-					en: 'I start with your slowest queries, execution plans and profiling find the root cause (missing indexes, implicit conversions, parameter sniffing), and fix them systematically. Database changes are infrastructure changes: every migration gets a rollback script, and every schema change is benchmarked against production-scale data before deployment.',
-					fr: 'Je commence par tes requêtes les plus lentes : les plans d\'exécution et le profilage trouvent la cause profonde (index manquants, conversions implicites, parameter sniffing), et je la corrige méthodiquement. Un changement de base de données, c\'est un changement d\'infrastructure : chaque migration reçoit un script de retour en arrière, et chaque changement de schéma est mesuré sur des données à l\'échelle de la production avant le déploiement.',
+					en: 'Signs this is you: queries that crawl, reports that time out, a migration you are scared to run, or a database that grew by accident and nobody really designed. Maybe it works today but you hold your breath every time it runs. If any of that sounds familiar, this is the right place to start.',
+					fr: 'Des signes que c\'est toi: des requêtes qui traînent, des rapports qui tombent en timeout, une migration qui te fait peur à faire rouler, ou une base de données qui a grossi par accident et que personne a vraiment pensée. Peut-être que ça marche aujourd\'hui, mais tu retiens ton souffle chaque fois que ça roule. Si une de ces affaires-là te parle, t\'es à la bonne place pour commencer.',
+				},
+				title: { en: 'Is this you?', fr: 'Ça te ressemble?' },
+			},
+			{
+				content: {
+					en: 'Database work is never one-size-fits-all: a stubborn query, a database from scratch, a Snowflake build, faster indexes. I start from what you need and dig for the real fix, not a band-aid, but years in I never wing it: backups and a tested rollback before anything touches live data. I love this work, so I guard your data like my own.',
+					fr: 'Le travail de base de données, c\'est jamais du mur-à-mur: une requête têtue, une base partie de zéro, un build Snowflake, des index plus rapides. Je pars de ce dont tu as besoin et je creuse pour trouver le vrai fix, pas un plaster, mais avec les années j\'improvise jamais: des sauvegardes et un rollback testé avant que quoi que ce soit touche à tes données en live. J\'aime cette job-là, fait que je protège tes données comme si c\'étaient les miennes.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -81,8 +84,8 @@ export const services: readonly Service[] = [
 		svg: 'service-database.svg',
 		title: { en: 'Databases & SQL', fr: 'Bases de données et SQL' },
 		valueProposition: {
-			en: 'Slow queries and risky migrations are the same problem: a database nobody engineered. I audit the SQL layer, rewrite the expensive queries, design schemas that scale, and run migrations with rollback plans, 500GB+ moved safely so far. Faster dashboards, lower database costs, a database that\'s an asset, not a liability.',
-			fr: 'Des requêtes lentes et des migrations risquées, c\'est le même problème : une base de données que personne n\'a vraiment conçue. J\'examine la couche SQL, je réécris les requêtes qui coûtent cher, je conçois des schémas qui montent en charge, et je fais les migrations avec des plans de retour en arrière : plus de 500 Go déplacés en toute sécurité jusqu\'ici. Des tableaux de bord plus rapides, des coûts de base de données plus bas, une base de données qui est un atout, pas un fardeau.',
+			en: 'First stop: your data lives here. A database is the filing cabinet behind your whole business, and everything else is built on top of it. I make yours store and update your data fast and safely, so it stays an asset instead of the thing that slows you down.',
+			fr: 'Premier arrêt : tes données vivent ici. Une base de données, c\'est le classeur derrière toute ta business, et tout le reste est bâti par-dessus. Je fais en sorte que la tienne garde et mette à jour tes données vite et de façon sécuritaire, pour qu\'elle reste un atout au lieu de la chose qui te ralentit.',
 		},
 		visible: true,
 	},
@@ -122,20 +125,27 @@ export const services: readonly Service[] = [
 			},
 		],
 		description: {
-			en: 'Data moves from source to warehouse on schedule, and the manual copy-paste work goes away.',
-			fr: 'Les données passent de la source à l\'entrepôt selon l\'horaire, et le copier-coller manuel disparaît.',
+			en: 'Your data travels from where it\'s created to where your team uses it, on its own, every day.',
+			fr: 'Tes données voyagent d\'où elles sont créées jusqu\'où ton équipe les utilise, toutes seules, chaque jour.',
 		},
 		id: 'data-pipeline',
 		impactMetric: {
 			label: { en: 'missed mornings', fr: 'matin manqué' },
 			value: { en: '0', fr: '0' },
 		},
-		relatedProjects: ['transit-data-pipeline', 'lorem-retool-admin'],
+		relatedProjects: ['transit-data-pipeline'],
 		sections: [
 			{
 				content: {
-					en: 'I design pipelines that are boring in the best way, predictable, observable, and easy to debug at 3 AM. Every pipeline gets idempotent loads, schema contracts, and clear logging. I prefer dbt for transformation logic because it makes SQL testable and version-controlled.',
-					fr: 'Je conçois des pipelines plats dans le bon sens du terme : prévisibles, observables et faciles à déboguer à 3 h du matin. Chaque pipeline reçoit des chargements idempotents, des contrats de schéma et une journalisation claire. Je préfère dbt pour la logique de transformation, parce que ça rend le SQL testable et versionné.',
+					en: 'Signs this is you: someone on your team copies numbers between systems every week, by hand. Your reports are always a day behind. Or your data lives in five different tools that never quite agree with each other. If any of that sounds familiar, this is the work I do.',
+					fr: 'Des signes que c\'est toi: quelqu\'un dans ton équipe recopie des chiffres d\'un système à l\'autre chaque semaine, à la main. Tes rapports ont toujours une journée de retard. Ou tes données vivent dans cinq outils différents qui s\'entendent jamais vraiment entre eux. Si une de ces affaires-là te parle, c\'est exactement le genre de travail que je fais.',
+				},
+				title: { en: 'Is this you?', fr: 'Ça te ressemble?' },
+			},
+			{
+				content: {
+					en: 'Moving data can mean a nightly sync, a full warehouse build, or killing one painful copy-paste job. I learn how your data flows, then build a route that\'s boring and reliable on purpose: it retries on its own, alerts me when something\'s off, and recovers cleanly. I enjoy making a messy process quietly run itself, and after years of 3 AM pages, I build it so those calls don\'t come.',
+					fr: 'Déplacer des données, ça peut être une synchro à chaque nuit, monter un entrepôt de données au complet, ou tuer une job de copier-coller qui te gosse. Je regarde comment tes données circulent, pis je bâtis un chemin plate et fiable, fait exprès de même: ça réessaye tout seul, ça m\'avertit quand quelque chose cloche, pis ça se replace proprement. J\'aime ça prendre un processus mêlant pis le faire rouler tout seul tranquillement, pis après des années de calls à 3 h du matin, je le bâtis pour que ces appels-là arrivent pas.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -148,8 +158,8 @@ export const services: readonly Service[] = [
 			fr: 'Pipelines et automatisation',
 		},
 		valueProposition: {
-			en: 'Data stuck in silos is data nobody can use, and an ops team copying between spreadsheets is the symptom. I build pipelines and workflow automation that move information from source systems to your warehouse reliably, with logging, retry logic, and schema validation. Your analysts get clean, fresh data every morning; your team stops doing data entry.',
-			fr: 'Des données coincées dans des silos, c\'est des données que personne ne peut utiliser, et une équipe des opérations qui copie d\'un tableur à l\'autre, c\'est le symptôme. Je bâtis des pipelines et de l\'automatisation de flux de travail qui transportent l\'information des systèmes sources vers ton entrepôt de façon fiable, avec journalisation, logique de reprise et validation de schéma. Tes analystes ont des données propres et fraîches chaque matin; ton équipe arrête de faire de la saisie de données.',
+			en: 'Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it\'s created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day.',
+			fr: 'Prochain arrêt : tes données bougent. En ce moment, quelqu\'un dans ton équipe recopie probablement des chiffres d\'un système à l\'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d\'où elles sont créées jusqu\'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour.',
 		},
 		visible: true,
 	},
@@ -185,8 +195,8 @@ export const services: readonly Service[] = [
 			},
 		],
 		description: {
-			en: 'One semantic layer, numbers that match in every report, dashboards your team trusts.',
-			fr: 'Une seule couche sémantique, des chiffres qui concordent dans tous les rapports, des tableaux de bord auxquels ton équipe fait confiance.',
+			en: 'Your messy numbers turned into clear dashboards your team actually trusts.',
+			fr: 'Tes chiffres mélangés transformés en tableaux de bord clairs en qui ton équipe a confiance.',
 		},
 		id: 'analytics-reporting',
 		impactMetric: {
@@ -196,14 +206,31 @@ export const services: readonly Service[] = [
 			},
 			value: { en: '2d → 15m', fr: '2 j → 15 min' },
 		},
-		relatedProjects: ['lorem-analytics-dashboard', 'lorem-retool-admin'],
+		relatedProjects: ['transit-data-pipeline', 'cafe-arona'],
 		sections: [
 			{
 				content: {
-					en: 'I start by understanding how your team makes decisions, what questions they ask, how often, and what data they trust. Then I build a semantic layer that makes those questions easy to answer. The dashboard is the last step, not the first.',
-					fr: 'Je commence par comprendre comment ton équipe prend ses décisions : quelles questions elle se pose, à quelle fréquence, et à quelles données elle fait confiance. Ensuite, je bâtis une couche sémantique qui rend les réponses à ces questions faciles à trouver. Le tableau de bord, c\'est la dernière étape, pas la première.',
+					en: 'Signs this is you: every meeting turns into an argument about whose number is right. The same report takes someone days to pull together by hand, every time. Or you have dashboards sitting there that nobody opens, because everyone learned they do not match what is really happening.',
+					fr: 'Des signes que c\'est toi: chaque réunion vire en chicane sur quel chiffre est le bon. Le même rapport prend des jours à monter à la main, chaque fois. Ou bien tu as des tableaux de bord que personne n\'ouvre, parce que le monde a fini par comprendre qu\'ils collent pas à la réalité.',
+				},
+				title: { en: 'Is this you?', fr: 'Ça te ressemble?' },
+			},
+			{
+				content: {
+					en: 'This ranges from one clean dashboard to a whole reporting setup your team lives in. I\'m curious by default and I love getting this right, so I start with how you actually decide, not the chart, and keep asking until the numbers make sense. Then I check every number against its source, because a dashboard people can\'t trust is worse than none.',
+					fr: 'Ça peut aller d\'un seul tableau de bord propre jusqu\'à toute une structure de rapports dans laquelle ton équipe vit au quotidien. Je suis curieux de nature et j\'aime vraiment ça, fait que je commence par comprendre comment tu prends tes décisions, pas par le graphique, pis je continue de poser des questions jusqu\'à ce que les chiffres aient du sens. Ensuite je vérifie chaque chiffre par rapport à sa source, parce qu\'un tableau de bord auquel le monde peut pas se fier, c\'est pire que rien.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
+			},
+			{
+				content: {
+					en: 'If you just need a BI tool turned on or one quick chart pulled for a single meeting, that is lighter work than what I do. I build the trustworthy layer underneath so the numbers hold up over time, which is overkill when you only need a fast one-off.',
+					fr: 'Si tu as juste besoin qu\'on active un outil de BI ou qu\'on sorte un graphique vite fait pour une seule réunion, c\'est plus léger que ce que je fais. Moi, je bâtis la couche solide en dessous pour que les chiffres tiennent la route dans le temps, ce qui est exagéré quand tu veux juste un coup rapide une seule fois.',
+				},
+				title: {
+					en: 'When I\'m not your guy',
+					fr: 'Quand je suis pas la bonne personne',
+				},
 			},
 		],
 		stack: ['Power BI', 'Retool', 'DAX', 'SQL'],
@@ -214,8 +241,8 @@ export const services: readonly Service[] = [
 			fr: 'Tableaux de bord et analytique',
 		},
 		valueProposition: {
-			en: 'A dashboard nobody trusts is worse than no dashboard. I build reporting systems grounded in a clean semantic layer, so the numbers match across reports, filters work intuitively, and your team stops second-guessing the data. You get dashboards that drive decisions, not confusion.',
-			fr: 'Un tableau de bord auquel personne ne fait confiance, c\'est pire que pas de tableau de bord pantoute. Je bâtis des systèmes de rapports ancrés dans une couche sémantique propre, pour que les chiffres concordent d\'un rapport à l\'autre, que les filtres marchent de façon intuitive, et que ton équipe arrête de douter des données. Tu obtiens des tableaux de bord qui guident les décisions, pas qui sèment la confusion.',
+			en: 'Third stop: your data starts talking. I take numbers scattered across your tools and turn them into one set of dashboards that all agree with each other. Your team stops arguing about whose number is right and just decides.',
+			fr: 'Troisième arrêt : tes données se mettent à parler. Je prends des chiffres éparpillés dans tes outils et j\'en fais une seule série de tableaux de bord qui s\'accordent tous entre eux. Ton équipe arrête de se chicaner sur quel chiffre est le bon et prend ses décisions, point.',
 		},
 		visible: true,
 	},
@@ -251,8 +278,8 @@ export const services: readonly Service[] = [
 			},
 		],
 		description: {
-			en: 'Fast sites and stores wired to your data, storefront to back office.',
-			fr: 'Des sites et des boutiques rapides, branchés sur tes données, de la vitrine jusqu\'à l\'arrière-boutique.',
+			en: 'Fast websites, online stores, and dashboards that put your data in front of people.',
+			fr: 'Des sites web, des boutiques en ligne et des tableaux de bord rapides qui mettent tes données devant le monde.',
 		},
 		id: 'web-development',
 		impactMetric: {
@@ -262,14 +289,31 @@ export const services: readonly Service[] = [
 			},
 			value: { en: '95+', fr: '95+' },
 		},
-		relatedProjects: ['yesid-dev', 'cafe-arona'],
+		relatedProjects: ['yesid-dev', 'cafe-arona', 'transit-data-pipeline'],
 		sections: [
 			{
 				content: {
-					en: 'I build with SvelteKit because it compiles away the framework, you get fast pages with minimal JavaScript. Every component is typed, every page is server-rendered for SEO, and the data layer connects cleanly to your backend. I deploy to Vercel for zero-config CI/CD and edge caching.',
-					fr: 'Je bâtis avec SvelteKit parce que ça compile et fait disparaître le cadriciel : tu obtiens des pages rapides avec un minimum de JavaScript. Chaque composant est typé, chaque page est rendue côté serveur pour le référencement, et la couche de données se connecte proprement à ton backend. Je déploie sur Vercel pour du CI/CD sans configuration et de la mise en cache en périphérie.',
+					en: 'Signs this is you: a site that loads slowly or feels clunky to use, a store that keeps losing people right at checkout, or tools and data your customers and team just cannot get to. If the thing standing between your work and the people who need it is the website itself, that is the gap I close.',
+					fr: 'Des signes que c\'est toi: un site lent ou maladroit à utiliser, une boutique qui perd du monde juste au moment de payer, ou des outils et des données que tes clients et ton équipe arrivent pas à atteindre. Si ce qui bloque entre ton travail et les gens qui en ont besoin, c\'est le site lui-même, c\'est exactement ce trou-là que je vais combler.',
+				},
+				title: { en: 'Is this you?', fr: 'Ça te ressemble?' },
+			},
+			{
+				content: {
+					en: 'A web project might be a quick storefront, a custom app, or a dashboard wired into your systems. I love figuring out how a thing should work, so I start with who uses it and what they need, then build it fast and simple. And I ship it safely, tested and easy to roll back, so going live never means holding your breath.',
+					fr: 'Un projet web, ça peut être une petite boutique, une app sur mesure, ou un tableau de bord branché sur tes systèmes. J\'adore comprendre comment une affaire devrait fonctionner, fait que je commence par qui s\'en sert et ce dont ces gens ont besoin, pis je construis vite et simple. Et je le mets en ligne en toute sécurité, testé et facile à revenir en arrière, pour que le lancement te demande jamais de retenir ton souffle.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
+			},
+			{
+				content: {
+					en: 'If you want a pure brand or marketing campaign with no real data or systems behind it, an agency will serve you better than I will. My web work shines when it is wired straight into your data, so that is where I am worth your money.',
+					fr: 'Si tu cherches une pure campagne de marque ou de marketing, sans vraies données ni systèmes derrière, une agence va mieux te servir que moi. Mon travail web brille quand il est branché direct sur tes données, c\'est là que je vaux ton argent.',
+				},
+				title: {
+					en: 'When I\'m not your guy',
+					fr: 'Quand je suis pas la bonne personne',
+				},
 			},
 		],
 		stack: [
@@ -286,8 +330,8 @@ export const services: readonly Service[] = [
 			fr: 'Sites web et commerce en ligne',
 		},
 		valueProposition: {
-			en: 'Your digital infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer, client portals, internal dashboards, public-facing tools, with the same attention to performance and reliability I bring to the backend.',
-			fr: 'Ton infrastructure numérique mérite un frontend à sa hauteur. Je bâtis des applications web qui se branchent directement sur ta couche de données : portails clients, tableaux de bord internes, outils accessibles au public, avec le même souci de performance et de fiabilité que j\'apporte au backend.',
+			en: 'Last stop on the line: your data reaches people. A fast website, online store, or dashboard takes everything sitting in your systems and shows it to customers and staff the way they\'ll actually use it. Pages load quick, the store takes orders, and your team sees what they need without digging.',
+			fr: 'Dernier arrêt sur la ligne : tes données rejoignent le monde. Un site web rapide, une boutique en ligne ou un tableau de bord prend tout ce qui dort dans tes systèmes et le montre à tes clients pis à ton staff de la façon dont ils vont vraiment s\'en servir. Les pages chargent vite, la boutique prend les commandes, pis ton équipe voit ce qu\'il lui faut sans avoir à fouiller.',
 		},
 		visible: true,
 	},
