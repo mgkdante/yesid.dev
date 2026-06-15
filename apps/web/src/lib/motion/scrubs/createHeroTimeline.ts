@@ -133,6 +133,37 @@ function updateHeroTextOrigin(heroDot: SVGSVGElement, heroTextContainer: HTMLEle
 	heroTextContainer.style.transformOrigin = `${pctX}% ${pctY}%`;
 }
 
+/**
+ * Ensure the Berri-UQAM zoom target is tagged `.metro-berri`. MetroNetwork tags
+ * it at mount (the biggest `#E07800` station, found via getBBox), but getBBox
+ * returns a ZERO box when the metro is `display:none` at that instant — exactly
+ * the case on a same-day reload, where the hero paints collapsed (the wrapper is
+ * hidden) before MetroNetwork measures, so `.metro-berri` is never applied. This
+ * factory only ever runs with the metro visible (first visit, or a replay after
+ * the track re-enlarges), so re-derive + tag Berri here when it is missing —
+ * otherwise the `!berri` guard below would silently build NO pin and the dot
+ * replay would do nothing. The `.metro-station` set is tagged by fill colour, so
+ * it is reliable even when the reload classification ran while hidden.
+ */
+function ensureBerriTagged(svg: Element): void {
+	if (svg.querySelector('.metro-berri')) return;
+	let biggest: Element | null = null;
+	let biggestSize = 0;
+	svg.querySelectorAll('.metro-station').forEach((station) => {
+		try {
+			const bbox = (station as SVGGraphicsElement).getBBox();
+			const size = bbox.width * bbox.height;
+			if (size > biggestSize) {
+				biggestSize = size;
+				biggest = station;
+			}
+		} catch {
+			/* not measurable yet — skip; the !berri guard still handles a total miss */
+		}
+	});
+	if (biggest) (biggest as Element).classList.add('metro-berri');
+}
+
 // ---- Factory ----
 
 /**
@@ -164,6 +195,13 @@ export function createHeroTimeline(
 		// SVG hasn't mounted yet (or this container isn't the hero) — no-op.
 		return () => {};
 	}
+
+	// A same-day reload paints the hero collapsed, so MetroNetwork may have
+	// classified the metro while it was display:none and failed to tag Berri
+	// (getBBox → 0). The metro is visible by the time we build the timeline, so
+	// re-tag it here if needed — otherwise the `!berri` guard below no-ops the
+	// whole pin and the replay does nothing.
+	ensureBerriTagged(svg);
 
 	const lines = svg.querySelectorAll('.metro-line');
 	const stations = svg.querySelectorAll('.metro-station:not(.metro-berri)');
