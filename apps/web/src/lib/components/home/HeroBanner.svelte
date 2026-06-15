@@ -386,6 +386,20 @@
 	onMount(async () => {
 		reducedMotion = isPrefersReducedMotion();
 
+		// The app.html pre-paint script may have set html[data-hero-intro-done]
+		// from the day-key so a same-day reload paints the hero COLLAPSED from
+		// frame 0 (no flash of the 900svh metro intro before this component
+		// mounts). That attribute is a FRAME-0 BRIDGE ONLY: once this component
+		// is alive, the `introCollapsed`-driven `.hero-intro-done` CLASS owns the
+		// geometry, so the bridge must be cleared. Its global collapse rules
+		// (reserve→100svh, pin height:auto, metro display:none) are NOT scoped to
+		// introCollapsed — left on, they outlive the bridge and permanently pin
+		// the section, so a later replay (introCollapsed=false drops the class)
+		// can't re-enlarge the track and the rebuilt intro paints a broken/popped
+		// frame. (operator-reported regression from the no-flash change.)
+		const clearHeroIntroBridge = () =>
+			document.documentElement.removeAttribute('data-hero-intro-done');
+
 		// Reduced motion (slice-23): the entire metro-network sequence is
 		// gated off — no scroll-pin, no typewriter, no GSAP timeline. The
 		// hero loads straight up via @media (prefers-reduced-motion: reduce)
@@ -393,7 +407,12 @@
 		// forced visible, scroll prompt hidden, section reservation
 		// collapsed to a single viewport. No JS setup required. (There is
 		// nothing to replay either, so the dot stays dormant.)
-		if (reducedMotion) return;
+		if (reducedMotion) {
+			// The @media(prefers-reduced-motion) rules hold the collapse alone;
+			// drop the bridge so no global attribute lingers.
+			clearHeroIntroBridge();
+			return;
+		}
 
 		// go2/w5: already scrolled the intro through today — land in the
 		// completed state (hero-intro-done CSS collapses the reserve, hides
@@ -407,10 +426,21 @@
 			// against the un-collapsed 900svh reserve — re-measure once layout
 			// settles.
 			initScrollTriggerConfig();
-			requestAnimationFrame(() => ScrollTrigger.refresh());
+			requestAnimationFrame(() => {
+				// Hand off from the pre-paint attribute to the now-painted
+				// `.hero-intro-done` class (Svelte has flushed introCollapsed to
+				// the DOM by this frame); both render identical geometry, so the
+				// swap is seamless — no frame repaints the intro.
+				clearHeroIntroBridge();
+				ScrollTrigger.refresh();
+			});
 			return;
 		}
 
+		// Not completed today → the intro plays. If the bridge was set despite
+		// that (the local day rolled over between the pre-paint read and now),
+		// clear it so it can't collapse the very intro we're about to build.
+		clearHeroIntroBridge();
 		await setupIntro();
 	});
 </script>
