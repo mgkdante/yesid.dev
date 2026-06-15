@@ -24,6 +24,7 @@ import { browser } from '$app/environment';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch } from '$lib/utils/locale-routing';
+import { getLenis } from '$lib/motion/utils/lenis.js';
 import {
 	makeBlob,
 	serializeBlob,
@@ -125,9 +126,34 @@ function restoreFocus(focus: FocusSnapshot | null): void {
 }
 
 // --- scroll (generic window offset by default; pages override via ScrollContext) ---
+// Lenis is the site-wide scroll engine (apps/web/+layout.svelte initLenis), so
+// EVERY default restore must be Lenis-aware. window.scrollTo() fights an active
+// Lenis: Lenis keeps its own animated position and snaps the page back. When a
+// Lenis instance is live we use its jumpTo recipe (HeroBanner's): resize() to
+// sync the cached scroll limits to the freshly-remounted page height, then an
+// immediate forced scrollTo. On touch / reduced-motion (no Lenis) we fall back
+// to the native window.scrollTo.
 function captureScroll(): unknown {
 	if (scrollContext) return scrollContext.capture();
 	return { kind: 'offset', y: window.scrollY };
+}
+
+/**
+ * Lenis-aware instant scroll to `y`. Mirrors HeroBanner.jumpTo — resize() first
+ * so Lenis's debounced dimension cache matches the just-remounted page before we
+ * target a position past the old (shorter/taller) limit, then an immediate forced
+ * scroll so no easing animation plays. Shared by the default restore AND the
+ * page-level ScrollContexts (home pin-fraction, prose heading) so all scroll
+ * restore goes through one Lenis-safe path.
+ */
+export function lenisAwareScrollTo(y: number): void {
+	const lenis = getLenis();
+	if (lenis) {
+		lenis.resize();
+		lenis.scrollTo(y, { immediate: true, force: true });
+	} else {
+		window.scrollTo(0, y);
+	}
 }
 
 async function restoreScroll(snapshot: unknown): Promise<void> {
@@ -136,7 +162,7 @@ async function restoreScroll(snapshot: unknown): Promise<void> {
 		return;
 	}
 	const y = (snapshot as { y?: number } | null)?.y ?? 0;
-	window.scrollTo(0, y);
+	lenisAwareScrollTo(y);
 }
 
 // --- storage (always guarded: private mode / quota must never crash a nav) ---

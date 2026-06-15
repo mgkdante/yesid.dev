@@ -264,6 +264,22 @@ describe('motion/utils/sectionMagnet — initSectionMagnet (wiring)', () => {
 		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
 	});
 
+	// slice-34.4: the suppress predicate stands the magnet down while a
+	// locale-switch scroll restore is in flight — the restore's forced jump
+	// fires scroll events that would otherwise yank the restored position to
+	// the nearest section top.
+	it('suppress(): magnet stands down while the predicate is true', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		let suppressed = true;
+		destroy = initSectionMagnet(() => sections, { suppress: () => suppressed });
+		settleAt(2100);
+		expect(scrollToSpy).not.toHaveBeenCalled();
+		// Once restore finishes the predicate flips and the magnet resumes.
+		suppressed = false;
+		settleAt(2080);
+		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
+	});
+
 	it('destroy removes listeners — no settle fires afterwards', () => {
 		const sections = [fakeSection(0), fakeSection(2000)];
 		destroy = initSectionMagnet(() => sections);
