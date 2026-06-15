@@ -36,6 +36,7 @@ const DESKTOP_ONLY_SPECS = [
 	'**/state-lang-engine.spec.ts',
 	'**/state-lang-scroll.spec.ts',
 	'**/state-lang-layout.spec.ts',
+	'**/hero-intro-reload.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',
 	'**/interactive-filters.spec.ts',
