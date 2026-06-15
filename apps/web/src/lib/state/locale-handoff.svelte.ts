@@ -215,6 +215,11 @@ export function attachLocaleHandoff(): void {
 	if (!browser) return;
 
 	beforeNavigate((nav) => {
+		// Any navigation ends the previous page's pending async restore — clear it so
+		// a slow async consumer (e.g. the dynamically-imported stack-engine) that
+		// already read it on THIS page cannot be re-seeded with stale data on a later
+		// page. The blob is consumed for the lifetime of the page it was restored on.
+		pendingBlob = null;
 		if (!nav.from || !nav.to) return;
 		if (!isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) return;
 		// Idempotency: a rapid second switch fired mid-restore must NOT overwrite the
@@ -248,7 +253,10 @@ export function attachLocaleHandoff(): void {
 		await restoreScroll(blob.scroll);
 		restoreFocus(blob.focus);
 		clearBlob(delocalized);
-		pendingBlob = null;
+		// Keep `pendingBlob` in memory (NOT cleared here). Async-mounted consumers —
+		// e.g. the stack-engine, which loads via dynamic import() and constructs AFTER
+		// this restore window — read their seed from pendingRestore() during the rest
+		// of the page's life. It is cleared on the next beforeNavigate (above).
 		restoringState = false;
 	});
 }
