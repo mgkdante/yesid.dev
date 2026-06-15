@@ -20,6 +20,7 @@
 	import { DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { provideLocale } from '$lib/utils/locale-context';
 	import { delocalizePath } from '$lib/utils/locale-routing';
+	import { attachLocaleHandoff } from '$lib/state/locale-handoff.svelte';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { themeStore } from '$lib/stores/theme.svelte';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
@@ -49,6 +50,11 @@
 	// (page components remount per pathname, so an init-time read is correct).
 	const locale = $derived(data.locale ?? DEFAULT_LOCALE);
 	provideLocale(() => data.locale ?? DEFAULT_LOCALE);
+
+	// slice-34: wire the locale-switch state handoff. MUST run at layout init —
+	// beforeNavigate/afterNavigate register during component initialization, and
+	// the root layout never remounts, so the orchestrator survives page swaps.
+	attachLocaleHandoff();
 
 	$effect(() => {
 		if (data.morphShapes) {
@@ -99,7 +105,7 @@
 </svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
-	<Nav pathname={$page.url.pathname} {locale} {headerLinks} {menuItems} />
+	<Nav pathname={$page.url.pathname} url={$page.url} {locale} {headerLinks} {menuItems} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
@@ -110,7 +116,7 @@
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
 	<div class="relative z-[45]">
-		<Footer {locale} pathname={$page.url.pathname} {footerLinks} />
+		<Footer {locale} url={$page.url} {footerLinks} />
 	</div>
 </div>
 

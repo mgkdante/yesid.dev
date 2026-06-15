@@ -75,6 +75,7 @@ export default defineConfig({
 						'src/lib/repositories/**/*.test.ts',
 						'src/lib/schemas/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',
+						'src/lib/state/**/*.test.ts',
 						'src/lib/styles/**/*.test.ts',
 						'src/lib/og/**/*.test.ts',
 						'src/params/**/*.test.ts',
@@ -82,7 +83,7 @@ export default defineConfig({
 					],
 					// slice-17f L3+L4: utils/ tests use @testing-library/svelte render()
 					// which requires a DOM. Route them to the `dom` project instead.
-					exclude: ['src/tests/utils/**/*.test.ts'],
+					exclude: ['src/tests/utils/**/*.test.ts', 'src/lib/state/**/*.svelte.test.ts'],
 					environment: 'node',
 					globals: true,
 					pool: 'threads',
@@ -96,6 +97,7 @@ export default defineConfig({
 					include: [
 						'src/lib/components/**/*.test.ts',
 						'src/lib/stores/**/*.test.ts',
+						'src/lib/state/**/*.svelte.test.ts',
 						'src/lib/motion/**/*.test.ts',
 						'src/routes/**/*.test.ts',
 						// slice-17f L3+L4: tests/utils/ houses render fixtures + DOM
