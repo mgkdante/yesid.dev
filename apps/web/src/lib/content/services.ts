@@ -222,16 +222,6 @@ export const services: readonly Service[] = [
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
-			{
-				content: {
-					en: 'If you just need a BI tool turned on or one quick chart pulled for a single meeting, that is lighter work than what I do. I build the trustworthy layer underneath so the numbers hold up over time, which is overkill when you only need a fast one-off.',
-					fr: 'Si tu as juste besoin qu\'on active un outil de BI ou qu\'on sorte un graphique vite fait pour une seule réunion, c\'est plus léger que ce que je fais. Moi, je bâtis la couche solide en dessous pour que les chiffres tiennent la route dans le temps, ce qui est exagéré quand tu veux juste un coup rapide une seule fois.',
-				},
-				title: {
-					en: 'When I\'m not your guy',
-					fr: 'Quand je suis pas la bonne personne',
-				},
-			},
 		],
 		stack: ['Power BI', 'Retool', 'DAX', 'SQL'],
 		station: 3,
@@ -304,16 +294,6 @@ export const services: readonly Service[] = [
 					fr: 'Un projet web, ça peut être une petite boutique, une app sur mesure, ou un tableau de bord branché sur tes systèmes. J\'adore comprendre comment une affaire devrait fonctionner, fait que je commence par qui s\'en sert et ce dont ces gens ont besoin, pis je construis vite et simple. Et je le mets en ligne en toute sécurité, testé et facile à revenir en arrière, pour que le lancement te demande jamais de retenir ton souffle.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
-			},
-			{
-				content: {
-					en: 'If you want a pure brand or marketing campaign with no real data or systems behind it, an agency will serve you better than I will. My web work shines when it is wired straight into your data, so that is where I am worth your money.',
-					fr: 'Si tu cherches une pure campagne de marque ou de marketing, sans vraies données ni systèmes derrière, une agence va mieux te servir que moi. Mon travail web brille quand il est branché direct sur tes données, c\'est là que je vaux ton argent.',
-				},
-				title: {
-					en: 'When I\'m not your guy',
-					fr: 'Quand je suis pas la bonne personne',
-				},
 			},
 		],
 		stack: [

@@ -11,7 +11,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { servicesListingContent, servicesDetailContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { projectsListingContent } from '$lib/content/projects';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
@@ -44,7 +44,7 @@
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(services.length).padStart(2, '0'));
 	let stationLabelText = $derived(
-		resolveLocale(servicesListingContent.stationLabelTemplate, locale)
+		resolveLocale(siteLabels.servicesChrome.listing.stationLabelTemplate, locale)
 			.replace('{stationNum}', stationNum)
 			.replace('{totalStr}', totalStr)
 	);
@@ -58,19 +58,22 @@
 	let metricLabel = $derived(
 		service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : null
 	);
-	let stackLabel = $derived(resolveLocale(servicesListingContent.stackLabel, locale));
-	let backLinkLabel = $derived(resolveLocale(servicesDetailContent.backToServicesLabel, locale));
+	// Services chrome — CMS truth (site_labels → servicesChrome.detail / .listing).
+	let stackLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.stackHeading, locale));
+	let seeStackLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.seeStackLabel, locale));
+	let hasStack = $derived((service.stack?.length ?? 0) > 0);
+	let backLinkLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.backToServicesLabel, locale));
 	let valuePropositionHeading = $derived(
-		resolveLocale(servicesDetailContent.valuePropositionHeading, locale)
+		resolveLocale(siteLabels.servicesChrome.detail.valuePropositionHeading, locale)
 	);
 	let deliverablesHeading = $derived(
-		resolveLocale(servicesDetailContent.deliverablesHeading, locale)
+		resolveLocale(siteLabels.servicesChrome.detail.deliverablesHeading, locale)
 	);
 	let relatedProjectsHeading = $derived(
-		resolveLocale(servicesDetailContent.relatedProjectsHeading, locale)
+		resolveLocale(siteLabels.servicesChrome.detail.relatedProjectsHeading, locale)
 	);
 	let relatedProjectsAria = $derived(
-		resolveLocale(servicesDetailContent.relatedProjectsNavAria, locale)
+		resolveLocale(siteLabels.servicesChrome.detail.relatedProjectsNavAria, locale)
 	);
 	let seeAllProjectsLabel = $derived(
 		resolveLocale(projectsListingContent.seeAllLink, locale)
@@ -222,42 +225,60 @@
 					{/if}
 				</div>
 
-				<!-- Related projects — right panel (desktop), hidden on mobile -->
-				{#if relatedProjects.length > 0}
+				<!-- Stack + Related projects — right panel (desktop), hidden on mobile.
+				     Operator order: Stack first (open by default), then Related projects. -->
+				{#if hasStack || relatedProjects.length > 0}
 					<aside class="projects-panel">
-						<CollapsibleSection
-							title="{relatedProjectsHeading} ({relatedProjects.length})"
-							sectionKey="svc-related-desktop"
-							open={true}
-						>
-							<nav class="projects-list" aria-label={relatedProjectsAria}>
-								{#each relatedProjects as project}
-									<a
-										href={localizeHref(`/projects/${project.slug}`, locale)}
-										class="project-link tap-press"
-										use:boop={{ scale: 1.02, timing: 150 }}
-										use:pressBounce
-									>
-										<span class="project-dot" aria-hidden="true"></span>
-										<span class="project-name">{resolveLocale(project.title, locale)}</span>
-									</a>
-								{/each}
-							</nav>
-							<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
-								{seeAllProjectsLabel}
-							</a>
-						</CollapsibleSection>
 						{#if service.stack && service.stack.length > 0}
 							<CollapsibleSection
 								title="{stackLabel} ({service.stack.length})"
 								sectionKey="svc-stack-desktop"
-								open={false}
+								open={true}
 							>
+								{#snippet icon()}
+									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+										<path d="M10 2.5l7.5 3.75L10 10 2.5 6.25 10 2.5z" />
+										<path d="M2.5 10L10 13.75 17.5 10" />
+										<path d="M2.5 13.75L10 17.5l7.5-3.75" />
+									</svg>
+								{/snippet}
 								<div class="stack-pills">
 									{#each service.stack as tech}
 										<span class="stack-pill">{tech}</span>
 									{/each}
 								</div>
+								<a href={localizeHref('/tech-stack', locale)} class="projects-all tap-feedback">
+									{seeStackLabel}
+								</a>
+							</CollapsibleSection>
+						{/if}
+						{#if relatedProjects.length > 0}
+							<CollapsibleSection
+								title="{relatedProjectsHeading} ({relatedProjects.length})"
+								sectionKey="svc-related-desktop"
+								open={true}
+							>
+								{#snippet icon()}
+									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<path d="M7 4a2 2 0 012-2h2a2 2 0 012 2v1h3a2 2 0 012 2v3H1V7a2 2 0 012-2h3V4zm2 1h2V4H9v1zM1 11h18v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4z" />
+									</svg>
+								{/snippet}
+								<nav class="projects-list" aria-label={relatedProjectsAria}>
+									{#each relatedProjects as project}
+										<a
+											href={localizeHref(`/projects/${project.slug}`, locale)}
+											class="project-link tap-press"
+											use:boop={{ scale: 1.02, timing: 150 }}
+											use:pressBounce
+										>
+											<span class="project-dot" aria-hidden="true"></span>
+											<span class="project-name">{resolveLocale(project.title, locale)}</span>
+										</a>
+									{/each}
+								</nav>
+								<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
+									{seeAllProjectsLabel}
+								</a>
 							</CollapsibleSection>
 						{/if}
 					</aside>
@@ -265,42 +286,60 @@
 			</div>
 		</div>
 
-		<!-- Related projects — mobile only, before prev/next -->
-		{#if relatedProjects.length > 0}
+		<!-- Stack + Related projects — mobile only, before prev/next.
+		     Operator order: Stack first (open by default), then Related projects. -->
+		{#if hasStack || relatedProjects.length > 0}
 			<div class="projects-mobile">
-				<CollapsibleSection
-					title="{relatedProjectsHeading} ({relatedProjects.length})"
-					sectionKey="svc-related-mobile"
-					open={true}
-				>
-					<nav class="projects-list" aria-label={relatedProjectsAria}>
-						{#each relatedProjects as project}
-							<a
-								href={localizeHref(`/projects/${project.slug}`, locale)}
-								class="project-link tap-press"
-								use:boop={{ scale: 1.02, timing: 150 }}
-								use:pressBounce
-							>
-								<span class="project-dot" aria-hidden="true"></span>
-								<span class="project-name">{resolveLocale(project.title, locale)}</span>
-							</a>
-						{/each}
-					</nav>
-					<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
-						{seeAllProjectsLabel}
-					</a>
-				</CollapsibleSection>
 				{#if service.stack && service.stack.length > 0}
 					<CollapsibleSection
 						title="{stackLabel} ({service.stack.length})"
 						sectionKey="svc-stack-mobile"
-						open={false}
+						open={true}
 					>
+						{#snippet icon()}
+							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+								<path d="M10 2.5l7.5 3.75L10 10 2.5 6.25 10 2.5z" />
+								<path d="M2.5 10L10 13.75 17.5 10" />
+								<path d="M2.5 13.75L10 17.5l7.5-3.75" />
+							</svg>
+						{/snippet}
 						<div class="stack-pills">
 							{#each service.stack as tech}
 								<span class="stack-pill">{tech}</span>
 							{/each}
 						</div>
+						<a href={localizeHref('/tech-stack', locale)} class="projects-all tap-feedback">
+							{seeStackLabel}
+						</a>
+					</CollapsibleSection>
+				{/if}
+				{#if relatedProjects.length > 0}
+					<CollapsibleSection
+						title="{relatedProjectsHeading} ({relatedProjects.length})"
+						sectionKey="svc-related-mobile"
+						open={true}
+					>
+						{#snippet icon()}
+							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+								<path d="M7 4a2 2 0 012-2h2a2 2 0 012 2v1h3a2 2 0 012 2v3H1V7a2 2 0 012-2h3V4zm2 1h2V4H9v1zM1 11h18v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4z" />
+							</svg>
+						{/snippet}
+						<nav class="projects-list" aria-label={relatedProjectsAria}>
+							{#each relatedProjects as project}
+								<a
+									href={localizeHref(`/projects/${project.slug}`, locale)}
+									class="project-link tap-press"
+									use:boop={{ scale: 1.02, timing: 150 }}
+									use:pressBounce
+								>
+									<span class="project-dot" aria-hidden="true"></span>
+									<span class="project-name">{resolveLocale(project.title, locale)}</span>
+								</a>
+							{/each}
+						</nav>
+						<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
+							{seeAllProjectsLabel}
+						</a>
 					</CollapsibleSection>
 				{/if}
 			</div>
@@ -406,18 +445,19 @@
 		min-width: 0;
 	}
 
-	/* Bigger station label so "SERVICE 0X / 04" scales with the enlarged title. */
+	/* Bigger station label so "SERVICE 0X / 04" scales with the giant title. */
 	.hero-text :global(.label-station) {
-		font-size: clamp(15px, 1.2vw, 18px);
+		font-size: clamp(16px, 1.5vw, 22px);
 	}
 
+	/* Giant on desktop — the service name is the loudest thing on the page. */
 	.detail-title {
 		font-family: var(--font-heading);
-		font-size: clamp(40px, 5vw, 72px);
+		font-size: clamp(56px, 8vw, 104px);
 		font-weight: 900;
 		color: var(--foreground);
-		line-height: 1.05;
-		letter-spacing: -0.03em;
+		line-height: 1.02;
+		letter-spacing: -0.035em;
 		margin-bottom: 0.5rem;
 	}
 
@@ -433,30 +473,47 @@
 	}
 
 	.detail-description {
-		font-size: clamp(18px, 1.4vw, 21px);
-		line-height: 1.7;
+		font-size: clamp(19px, 1.6vw, 24px);
+		line-height: 1.65;
 		color: var(--secondary-foreground);
 		max-width: 60ch;
 		margin-bottom: 1.5rem;
 	}
 
-	/* Stack pills — orange border + text (matches ServiceCard). Shown inside the
-	   Stack CollapsibleSection, under Related projects (right rail / mobile). */
+	/* Stack pills — visual pun: rendered as a literal vertical STACK of layers.
+	   Connected slabs (shared edges, square middles, rounded top/bottom) read as
+	   one stack rather than scattered tags. Shown inside the Stack
+	   CollapsibleSection, under Related projects (right rail / mobile). */
 	.stack-pills {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+		margin-bottom: 0.75rem;
 	}
 
 	.stack-pill {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		padding: 0.25rem 0.625rem;
+		padding: 0.5rem 0.75rem;
 		border: 1.5px solid var(--primary);
-		border-radius: var(--radius-pill);
+		border-bottom-width: 0;
+		border-radius: 0;
 		color: var(--primary);
-		background: transparent;
+		background: color-mix(in srgb, var(--primary) 5%, transparent);
 		cursor: default;
+		text-align: left;
+	}
+
+	.stack-pill:first-child {
+		border-top-left-radius: var(--radius-md);
+		border-top-right-radius: var(--radius-md);
+	}
+
+	.stack-pill:last-child {
+		border-bottom-width: 1.5px;
+		border-bottom-left-radius: var(--radius-md);
+		border-bottom-right-radius: var(--radius-md);
 	}
 
 	/* ── Body area ── */
@@ -635,15 +692,6 @@
 		}
 	}
 
-	.projects-count {
-		font-family: var(--font-mono);
-		font-size: var(--text-micro);
-		color: var(--primary);
-		background: color-mix(in srgb, var(--primary) 12%, transparent);
-		padding: 0.125rem 0.5rem;
-		border-radius: var(--radius-pill);
-	}
-
 	.projects-list {
 		display: flex;
 		flex-direction: column;
@@ -724,8 +772,10 @@
 			padding: 1.5rem var(--space-page-x) 1.5rem;
 		}
 
+		/* Big on mobile too — same loud-name intent, dialled back from the
+		   desktop giant so it never overflows the narrow column. */
 		.detail-title {
-			font-size: clamp(32px, 9vw, 44px);
+			font-size: clamp(40px, 11vw, 60px);
 		}
 
 		.detail-subtitle {
@@ -739,8 +789,8 @@
 		}
 
 		.stack-pill {
-			font-size: var(--text-micro);
-			padding: 0.125rem 0.5rem;
+			font-size: var(--text-caption);
+			padding: 0.4rem 0.625rem;
 		}
 	}
 </style>
