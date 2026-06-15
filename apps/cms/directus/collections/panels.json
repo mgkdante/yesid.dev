@@ -210,5 +210,55 @@
       "function": "count"
     },
     "_syncId": "_sync_panel_content_health_total_pages"
+  },
+  {
+    "dashboard": "_sync_dashboard_ops_deploy",
+    "name": "Rebuild pending?",
+    "icon": "pending_actions",
+    "color": null,
+    "show_header": true,
+    "note": "1 = a publish is queued for the next build flush (build_queue.cms_dirty = true)",
+    "type": "metric",
+    "position_x": 1,
+    "position_y": 1,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "build_queue",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "cms_dirty": {
+          "_eq": true
+        }
+      }
+    },
+    "_syncId": "_sync_panel_ops_rebuild_pending"
+  },
+  {
+    "dashboard": "_sync_dashboard_ops_deploy",
+    "name": "Recent activity",
+    "icon": "history",
+    "color": null,
+    "show_header": true,
+    "note": "Last 10 changes across the CMS (any collection)",
+    "type": "list",
+    "position_x": 1,
+    "position_y": 7,
+    "width": 20,
+    "height": 16,
+    "options": {
+      "collection": "directus_activity",
+      "limit": 10,
+      "sort": [
+        "-timestamp"
+      ],
+      "displayFields": [
+        "action",
+        "collection",
+        "timestamp"
+      ]
+    },
+    "_syncId": "_sync_panel_ops_recent_activity"
   }
 ]
