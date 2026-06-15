@@ -17,6 +17,7 @@
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
   import { onMount } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+  import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
 
@@ -121,6 +122,53 @@
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  // slice-34.4 — reading position survives a locale switch.
+  //
+  // Blog heading ids are kebabSlug(headingText) (see @repo/shared
+  // extractHeadings), so they are LOCALE-VARIABLE: "Getting Started" → id
+  // `getting-started` in EN, "Pour commencer" → `pour-commencer` in FR. The raw
+  // id therefore cannot survive the switch.
+  //
+  // The locale-stable analog is the active heading's ORDINAL INDEX in the
+  // `headings` array — a translated post mirrors the source's heading structure,
+  // so heading #3 in EN corresponds to heading #3 in FR. We capture that index
+  // (plus the raw offset as a fallback) and, on the remounted FR/EN page, scroll
+  // to the heading at the same index. If the structures differ (count mismatch,
+  // index out of range, untranslated post) we fall back to the raw offset.
+  // See the FLAG in the slice report — index↔index assumes matched structure.
+  function activeHeadingIndex(): number {
+    return headings.findIndex((h) => h.id === activeHeadingId);
+  }
+
+  onMount(() =>
+    registerScrollContext({
+      capture: () => ({
+        kind: 'heading-index',
+        index: activeHeadingIndex(),
+        count: headings.length,
+        y: window.scrollY,
+      }),
+      restore: (snap) => {
+        const s = snap as { index?: number; count?: number; y?: number } | null;
+        const idx = s?.index ?? -1;
+        // Restore by ordinal index only when the heading structure matches
+        // (same count) and the index is in range — otherwise the offset is the
+        // safer guess than scrolling to a structurally-different heading.
+        const sameStructure = s?.count === headings.length;
+        const target = sameStructure && idx >= 0 ? headings[idx] : undefined;
+        const el = target ? document.getElementById(target.id) : null;
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY;
+          // Match the IntersectionObserver's -20% top rootMargin so the restored
+          // heading lands where the observer considers it active.
+          lenisAwareScrollTo(Math.max(0, top - window.innerHeight * 0.2));
+        } else {
+          lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
+        }
+      },
+    })
+  );
 
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
 </script>

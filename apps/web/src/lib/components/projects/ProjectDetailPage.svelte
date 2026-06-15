@@ -26,6 +26,7 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
 
 	interface TocEntry {
 		id: string;
@@ -137,12 +138,46 @@
 		return () => observer.disconnect();
 	});
 
-	function scrollToHeading(id: string): void {
-		const el = id.startsWith('section-')
+	/** Map a TOC id to its DOM element. `section-${i}` ids are SYNTHETIC and
+	 *  locale-stable (driven by section index, not localized text); README child
+	 *  ids are index-based too — so the same id resolves to the corresponding
+	 *  heading on both /projects/x and /fr/projects/x. */
+	function headingElement(id: string): Element | null {
+		return id.startsWith('section-')
 			? document.querySelector(`[data-section-index="${id.replace('section-', '')}"]`)
 			: document.getElementById(id);
-		if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}
+
+	function scrollToHeading(id: string): void {
+		headingElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
+	// slice-34.4 — reading position survives a locale switch. The detail page's
+	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
+	// capture the active heading id and, after the page remounts in the new
+	// locale, scroll to that SAME heading. Raw scrollY would be wrong — FR/EN
+	// body lengths differ, so the same heading sits at a different offset.
+	onMount(() =>
+		registerScrollContext({
+			capture: () => ({ kind: 'heading', id: activeHeadingId, y: window.scrollY }),
+			restore: (snap) => {
+				const s = snap as { id?: string; y?: number } | null;
+				const id = s?.id;
+				const el = id ? headingElement(id) : null;
+				if (el) {
+					// Instant, Lenis-aware jump to the heading's top — matches the
+					// IntersectionObserver's -20% top rootMargin so the restored
+					// heading lands where the observer considers it "active".
+					const top = el.getBoundingClientRect().top + window.scrollY;
+					lenisAwareScrollTo(Math.max(0, top - window.innerHeight * 0.2));
+				} else {
+					// No active heading (top of page) or it vanished — fall back to
+					// the raw captured offset (still Lenis-aware).
+					lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
+				}
+			},
+		})
+	);
 </script>
 
 <article data-testid="project-detail-page">
