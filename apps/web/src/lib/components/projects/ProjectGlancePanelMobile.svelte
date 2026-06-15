@@ -37,7 +37,7 @@
 </script>
 
 <div data-testid="project-glance-panel-mobile">
-  <CollapsibleSection title={projectInfoTitle} open={false}>
+  <CollapsibleSection title={projectInfoTitle} sectionKey="glance-mobile" open={false}>
     <div class="space-y-5">
       <!-- Overview -->
       <div class="mobile-glance-overview text-small leading-relaxed">

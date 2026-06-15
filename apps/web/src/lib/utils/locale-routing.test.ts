@@ -4,6 +4,8 @@ import {
 	pathLocale,
 	delocalizePath,
 	localizeHref,
+	localizeUrl,
+	isLocaleSwitch,
 	stripLocaleSegment,
 	localeFromParams,
 } from './locale-routing';
@@ -69,6 +71,50 @@ describe('localizeHref', () => {
 	});
 	it('unsupported prefix locale falls back to en form', () => {
 		expect(localizeHref('/about', 'es')).toBe('/about');
+	});
+});
+
+describe('localizeUrl (preserves query + hash across a locale switch)', () => {
+	const u = (s: string) => new URL(s, 'https://yesid.dev');
+	it('carries the query string and hash when prefixing to fr', () => {
+		expect(localizeUrl(u('/projects?service=web&tag=svelte'), 'fr')).toBe(
+			'/fr/projects?service=web&tag=svelte',
+		);
+		expect(localizeUrl(u('/blog?tag=ml#post-3'), 'fr')).toBe('/fr/blog?tag=ml#post-3');
+	});
+	it('carries query + hash for the en (identity) direction', () => {
+		expect(localizeUrl(u('/projects?service=web'), 'en')).toBe('/projects?service=web');
+		expect(localizeUrl(u('/fr/projects?service=web'), 'en')).toBe('/projects?service=web');
+	});
+	it('is idempotent on already-localized paths', () => {
+		expect(localizeUrl(u('/fr/projects?tag=a'), 'fr')).toBe('/fr/projects?tag=a');
+	});
+	it('works with no query or hash', () => {
+		expect(localizeUrl(u('/about'), 'fr')).toBe('/fr/about');
+		expect(localizeUrl(u('/'), 'fr')).toBe('/fr');
+	});
+	it('preserves a hash-only URL', () => {
+		expect(localizeUrl(u('/about#contact'), 'fr')).toBe('/fr/about#contact');
+	});
+});
+
+describe('isLocaleSwitch (snapshot/restore gate)', () => {
+	it('is true for the same canonical page in a different locale', () => {
+		expect(isLocaleSwitch('/about', '/fr/about')).toBe(true);
+		expect(isLocaleSwitch('/fr/about', '/about')).toBe(true);
+		expect(isLocaleSwitch('/', '/fr')).toBe(true);
+		expect(isLocaleSwitch('/fr', '/')).toBe(true);
+		expect(isLocaleSwitch('/projects', '/fr/projects')).toBe(true);
+	});
+	it('is false for a different page (a real navigation, not a switch)', () => {
+		expect(isLocaleSwitch('/about', '/projects')).toBe(false);
+		expect(isLocaleSwitch('/about', '/fr/projects')).toBe(false);
+		expect(isLocaleSwitch('/fr/about', '/fr/projects')).toBe(false);
+	});
+	it('is false when the locale is unchanged', () => {
+		expect(isLocaleSwitch('/about', '/about')).toBe(false);
+		expect(isLocaleSwitch('/fr/about', '/fr/about')).toBe(false);
+		expect(isLocaleSwitch('/', '/')).toBe(false);
 	});
 });
 

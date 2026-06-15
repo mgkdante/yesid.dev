@@ -16,6 +16,7 @@
 
 	const locale = getLocale();
 	import { sharedChromeContent, siteLabels } from '$lib/content';
+	import { persisted } from '$lib/state/persisted.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
@@ -41,16 +42,35 @@
 	} = $props();
 
 	let activeId = $state('');
-	let tocOpen = $state(startOpen);
 
-	// Sync ToC open state with parent (e.g. README collapse)
+	// slice-34.6 — the ToC open/closed state survives a locale switch, but ONLY
+	// when this component owns it. When the parent drives `syncOpen`, the parent is
+	// the source of truth (e.g. README collapse) — persisting here would fight it,
+	// so we keep a plain local rune in that case and let the parent's own persisted
+	// state carry across the switch. `mobileOpen` is ephemeral (a transient mobile
+	// overlay) and is intentionally NOT persisted.
+	const tocPersisted = syncOpen === undefined ? persisted('toc-open', startOpen) : null;
+	let tocOpenLocal = $state(startOpen);
+	let tocOpen = $derived(tocPersisted ? tocPersisted.value : tocOpenLocal);
+	function setTocOpen(next: boolean): void {
+		if (tocPersisted) tocPersisted.value = next;
+		else tocOpenLocal = next;
+	}
+
+	// Sync ToC open state with parent (e.g. README collapse). Only runs in the
+	// parent-driven branch (tocPersisted is null there).
 	$effect(() => {
 		if (syncOpen !== undefined) {
-			tocOpen = syncOpen;
+			tocOpenLocal = syncOpen;
 		}
 	});
 	let mobileOpen = $state(false);
-	let collapsedSections = $state<Set<string>>(new Set());
+
+	// Collapsed section ids persist as a locale-free string[] (a Set is not a
+	// LocaleFree primitive and isn't JSON-stable). The live Set is derived for the
+	// existing membership reads; writes go through the persisted array.
+	const collapsedKeys = persisted<string[]>('toc-collapsed', []);
+	let collapsedSections = $derived(new Set(collapsedKeys.value));
 	let observer: IntersectionObserver | null = null;
 
 	// -- Section grouping for collapsible sub-items ----------------------
@@ -101,7 +121,7 @@
 		} else {
 			next.add(id);
 		}
-		collapsedSections = next;
+		collapsedKeys.value = [...next];
 	}
 
 	// -- Scroll + active tracking ---------------------------------------
@@ -168,7 +188,7 @@
 	<!-- Embedded mode: parent controls layout/visibility -->
 	{#if headings.length > 0}
 		<nav class="toc-embedded {className}" aria-label={tocAria} data-testid="toc-embedded">
-			<Collapsible bind:open={tocOpen}>
+			<Collapsible bind:open={() => tocOpen, setTocOpen}>
 				<CollapsibleTrigger>
 					{#snippet child({ props })}
 						<button

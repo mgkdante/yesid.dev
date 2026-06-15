@@ -17,6 +17,27 @@
 				d.dataset.theme = t;
 			})();
 		</script>
+		<!-- go2/w5 pre-paint hero-intro resolution. If the visitor already scrolled
+		     the intro through TODAY ('yesid:hero-intro-day' = local YYYY-MM-DD), mark
+		     the document so the hero renders COLLAPSED from the first frame — no flash
+		     of the 900svh metro intro before onMount collapses it. Synchronous +
+		     before CSSOM, exactly like the theme script above. -->
+		<script>
+			(function () {
+				try {
+					var n = new Date();
+					var today =
+						n.getFullYear() +
+						'-' +
+						String(n.getMonth() + 1).padStart(2, '0') +
+						'-' +
+						String(n.getDate()).padStart(2, '0');
+					if (localStorage.getItem('yesid:hero-intro-day') === today) {
+						document.documentElement.dataset.heroIntroDone = '1';
+					}
+				} catch (e) {}
+			})();
+		</script>
 		<!-- Fonts: self-hosted via @fontsource-variable (no external requests) -->
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		%sveltekit.head%
