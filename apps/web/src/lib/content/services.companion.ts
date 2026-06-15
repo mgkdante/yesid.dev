@@ -21,6 +21,18 @@ export const servicesListingContent = {
 	deepDiveLabel: { en: 'Deep dive →', fr: 'Voir en détail →' } satisfies LocalizedString,
 	/** Summary label for the collapsible Stack disclosure on each ServiceCard. */
 	stackLabel: { en: 'Stack', fr: 'Stack' } satisfies LocalizedString,
+	/** Closing call-to-action shown at the foot of the listing + each detail page. */
+	closingAsk: {
+		heading: {
+			en: 'Not sure where you fit?',
+			fr: 'Tu sais pas trop où tu te situes?',
+		} satisfies LocalizedString,
+		body: {
+			en: 'Tell me what you\'re wrestling with. If I can help, I\'ll show you how. If I can\'t, I\'ll tell you that too.',
+			fr: 'Dis-moi ce qui te bloque. Si je peux aider, je te montre comment. Sinon, je te le dis aussi.',
+		} satisfies LocalizedString,
+		cta: { en: 'Get in touch →', fr: 'Écris-moi →' } satisfies LocalizedString,
+	},
 	/** Labels for the sticky orange ProjectsStrip under the services listing. */
 	projectsStrip: {
 		/** Template when a service is active; placeholder {serviceTitle}. */
@@ -34,17 +46,6 @@ export const servicesListingContent = {
 		projectSingular: { en: 'PROJECT', fr: 'PROJET' } satisfies LocalizedString,
 		projectPlural: { en: 'PROJECTS', fr: 'PROJETS' } satisfies LocalizedString,
 	},
-} as const;
-
-/** HTML `<title>` + `<meta description>` for the `/services` route. Extracted
- *  in Task 17b-7k. Per-service-detail pages already resolve their own title +
- *  description from the service data. */
-export const servicesPageMeta = {
-	title: { en: 'Services · yesid.', fr: 'Services · yesid.' } satisfies LocalizedString,
-	description: {
-		en: 'Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.',
-		fr: 'Quatre stations : Bases de données & SQL, Pipelines & Automatisation, Tableaux de bord & Analytique, Sites web & Commerce en ligne. Bâti à Montréal, livré avec des chiffres.',
-	} satisfies LocalizedString,
 } as const;
 
 /** Services-detail-page chrome copy extracted from components in Task 17b-7f.

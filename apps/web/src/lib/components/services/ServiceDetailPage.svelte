@@ -17,6 +17,7 @@
 	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
+	import ServiceClosingAsk from './ServiceClosingAsk.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -294,6 +295,9 @@
 				</CollapsibleSection>
 			</div>
 		{/if}
+
+		<!-- Closing ask — names the next step before prev/next. -->
+		<ServiceClosingAsk />
 
 		<!-- Prev/Next Nav -->
 		<div class="nav-area">
