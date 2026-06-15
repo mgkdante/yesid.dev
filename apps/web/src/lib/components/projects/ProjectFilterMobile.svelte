@@ -13,6 +13,7 @@
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { projectsListingContent } from '$lib/content/projects';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	let {
 		serviceIds,
@@ -38,7 +39,8 @@
 		onStackSelect?: (stack: string | null) => void;
 	} = $props();
 
-	let open = $state(false);
+	// slice-34.6 — the open/closed sheet survives a locale switch (locale-free bool).
+	const sheet = persisted('projects-filter-sheet', false);
 
 	// Labels pulled from content layer (Task 17b-7d). Same object as
 	// ProjectFilterSidebar for deduplication.
@@ -61,7 +63,7 @@
 </script>
 
 <div class="md:hidden" data-testid="project-filter-mobile">
-	<Collapsible bind:open>
+	<Collapsible bind:open={sheet.value}>
 		<div class="mb-3 flex items-center gap-3">
 			<CollapsibleTrigger>
 				{#snippet child({ props })}
@@ -71,7 +73,7 @@
 						style="border-color: var(--primary); color: var(--primary);"
 					>
 						{resolveLocale(labels.filters, locale)}
-						<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
+						<span class="text-caption">{sheet.value ? '\u25B2' : '\u25BC'}</span>
 					</button>
 				{/snippet}
 			</CollapsibleTrigger>

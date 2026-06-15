@@ -182,7 +182,7 @@
 					<!-- Value Proposition -->
 					{#if service.valueProposition}
 						<div>
-							<CollapsibleSection title={valuePropositionHeading} open={true}>
+							<CollapsibleSection title={valuePropositionHeading} sectionKey="svc-valueprop" open={true}>
 								{#snippet icon()}
 									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 										<circle cx="8" cy="8" r="2.5" />
@@ -199,7 +199,7 @@
 					<!-- Deliverables -->
 					{#if service.deliverables && service.deliverables.length > 0}
 						<div>
-							<CollapsibleSection title={deliverablesHeading} open={true}>
+							<CollapsibleSection title={deliverablesHeading} sectionKey="svc-deliverables" open={true}>
 								{#snippet icon()}
 									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 										<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
@@ -221,7 +221,7 @@
 					{#if service.sections}
 						{#each service.sections as section, i}
 							<div>
-								<CollapsibleSection title={resolveLocale(section.title, locale)} open={true} index={i}>
+								<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey="svc-section-{i}" open={true} index={i}>
 									<p class="section-body">
 										{resolveLocale(section.content, locale)}
 									</p>
@@ -236,6 +236,7 @@
 					<aside class="projects-panel">
 						<CollapsibleSection
 							title="{relatedProjectsHeading} ({relatedProjects.length})"
+							sectionKey="svc-related-desktop"
 							open={true}
 						>
 							{#snippet icon()}
@@ -268,6 +269,7 @@
 			<div class="projects-mobile">
 				<CollapsibleSection
 					title="{relatedProjectsHeading} ({relatedProjects.length})"
+					sectionKey="svc-related-mobile"
 					open={true}
 				>
 					{#snippet icon()}

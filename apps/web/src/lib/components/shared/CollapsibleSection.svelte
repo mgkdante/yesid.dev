@@ -11,10 +11,12 @@
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	let {
 		title,
 		open = $bindable(true),
+		sectionKey = undefined,
 		index = null,
 		accentColor = 'var(--primary)',
 		collapsible = true,
@@ -23,12 +25,37 @@
 	}: {
 		title: string;
 		open?: boolean;
+		/**
+		 * slice-34.6 — opt this section's open/closed state into surviving a locale
+		 * switch. When set, a session value keyed by `sectionKey` (a stable,
+		 * locale-free string — NOT the translated title) is registered with the
+		 * locale-handoff orchestrator and drives `open`, seeded with the `open`
+		 * prop as the per-slot default. When absent, the plain `$bindable` `open`
+		 * is used (existing call sites are unchanged).
+		 */
+		sectionKey?: string;
 		index?: number | null;
 		accentColor?: string;
 		collapsible?: boolean;
 		icon?: Snippet;
 		children?: Snippet;
 	} = $props();
+
+	// When a sectionKey is supplied, the open state is session-scoped: persisted()
+	// seeds from the `open` prop default (or the carried value on a switch-restore)
+	// and registers the key with the orchestrator. The key is captured once at
+	// init — like every persisted() call site, it must be a stable string. When no
+	// key is supplied, `persistedOpen` is null and the bindable `open` is the
+	// source of truth (the existing behaviour).
+	const persistedOpen = sectionKey ? persisted(sectionKey, open) : null;
+
+	// Single source of truth the template binds to: the persisted value when keyed,
+	// otherwise the local bindable. Writes route back to whichever owns the state.
+	let isOpen = $derived(persistedOpen ? persistedOpen.value : open);
+	function setOpen(next: boolean): void {
+		if (persistedOpen) persistedOpen.value = next;
+		else open = next;
+	}
 
 	// GO2-W5 final batch (6d): the WHOLE card is the toggle surface.
 	// Interactive children take priority — a click that originates inside a
@@ -46,7 +73,7 @@
 		if (target.closest('[data-slot="card"]') !== event.currentTarget) return;
 		// A click that ends a text selection is content interaction, not a toggle.
 		if (window.getSelection()?.toString()) return;
-		open = !open;
+		setOpen(!isOpen);
 	}
 </script>
 
@@ -71,7 +98,7 @@
 	style="--accent: {accentColor};"
 	onclick={collapsible ? onCardClick : undefined}
 >
-	<Collapsible bind:open>
+	<Collapsible bind:open={() => isOpen, setOpen}>
 		{#if collapsible}
 			<CollapsibleTrigger>
 				{#snippet child({ props })}
@@ -81,7 +108,7 @@
 						class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
 					>
 						{@render headerContent()}
-						<ChevronToggle {open} direction="right" />
+						<ChevronToggle open={isOpen} direction="right" />
 					</button>
 				{/snippet}
 			</CollapsibleTrigger>
