@@ -192,6 +192,8 @@ export const SiteLabelsSchema = z.object({
 			relatedProjectsHeading: LocalizedStringSchema,
 			relatedProjectsNavAria: LocalizedStringSchema,
 			serviceNavAria: LocalizedStringSchema,
+			stackHeading: LocalizedStringSchema,
+			seeStackLabel: LocalizedStringSchema,
 		}),
 	}),
 	navChrome: z.object({

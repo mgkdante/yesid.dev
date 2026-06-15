@@ -186,6 +186,8 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				relatedProjectsHeading: ls('services_chrome_detail_related_projects_heading'),
 				relatedProjectsNavAria: ls('services_chrome_detail_related_projects_nav_aria'),
 				serviceNavAria: ls('services_chrome_detail_service_nav_aria'),
+				stackHeading: ls('services_chrome_detail_stack_heading'),
+				seeStackLabel: ls('services_chrome_detail_see_stack_label'),
 			},
 		},
 		navChrome: {

@@ -13,7 +13,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { servicesListingContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
@@ -45,9 +45,17 @@
 	function scrollToStation(id: string) {
 		const lenis = getLenis();
 		const target = document.querySelector<HTMLElement>(`#service-${id}`);
-		if (lenis && target) {
-			lenis.scrollTo(target, { offset: 0 });
-		} else if (target) {
+		if (!target) return;
+		// Lenis ignores CSS scroll-margin-top, so the mobile offset that clears the
+		// sticky tabs (.service-viewport scroll-margin-top: 8.75rem) was being dropped
+		// and the card landed jammed under the tabs. Read the computed value and pass it
+		// to Lenis as a negative offset. Desktop sets no scroll-margin-top (0), so its
+		// sticky-centered behaviour is unchanged.
+		const offset = -(parseFloat(getComputedStyle(target).scrollMarginTop) || 0);
+		if (lenis) {
+			lenis.scrollTo(target, { offset });
+		} else {
+			// Native fallback already honours scroll-margin-top.
 			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
 	}
@@ -57,14 +65,18 @@
 	// spam replaceState during scroll). Because it's a URL param it rides the
 	// language toggle for free (localizeHref carries the query), so on the remounted
 	// FR/EN page the onMount deep-link below re-scrolls to the carried station.
-	function handleTabSelect(id: string) {
+	async function handleTabSelect(id: string) {
 		activeId = id;
 		if (!browser) return;
 		const url = new URL($page.url);
 		url.searchParams.set('station', id);
-		// noScroll: the Lenis scroll below owns the motion; replaceState keeps the
-		// tab-click out of the history stack (a scroll position, not a destination).
-		void goto(url.toString(), { replaceState: true, noScroll: true });
+		// Await the navigation BEFORE scrolling. replaceState keeps the tab-click out
+		// of the history stack (a scroll position, not a destination). On touch devices
+		// (no Lenis) the scroll is a native smooth scrollIntoView, and firing it before
+		// goto settled cancelled it mid-animation: the tab highlighted but the page
+		// never moved. Desktop survived because Lenis owns its own scroll. Awaiting goto
+		// fixes the mobile tab-scroll.
+		await goto(url.toString(), { replaceState: true, noScroll: true });
 		scrollToStation(id);
 	}
 
@@ -103,7 +115,7 @@
 </script>
 
 <div class="services-page" data-testid="service-listing-page">
-	<h1 class="sr-only">{resolveLocale(servicesListingContent.heading, locale)}</h1>
+	<h1 class="sr-only">{resolveLocale(siteLabels.servicesChrome.listing.heading, locale)}</h1>
 
 	<!-- Sticky station tabs -->
 	<div class="tabs-bar">
