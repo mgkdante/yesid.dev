@@ -3,8 +3,8 @@
     "name": "Flush Build to Vercel",
     "icon": "cloud_upload",
     "color": "#3399FF",
-    "description": "slice-18m.2: Reads build_queue.cms_dirty on a 2-min CRON. If true, POSTs the Vercel production deploy hook (via $env.VERCEL_DEPLOY_HOOK_PROD) and resets dirty flag. Kill-switch: disable this Flow to pause CMS-triggered builds. Requires FLOWS_ENV_ALLOW_LIST=VERCEL_DEPLOY_HOOK_PROD.",
-    "status": "active",
+    "description": "DISABLED 2026-06-14 (immediate-only rebuild). Was the debounced 2-min CRON polling build_queue.cms_dirty. Disabled to (1) stop the every-2-min DB poll that kept the Neon branch awake, and (2) remove the redundant double-rebuild — 'Vercel revalidate on publish' handles rebuilds immediately on publish. Re-enable (status=active, with 'Mark Dirty on CMS Publish') to restore debounced builds. Requires FLOWS_ENV_ALLOW_LIST=VERCEL_DEPLOY_HOOK_PROD.",
+    "status": "inactive",
     "trigger": "schedule",
     "accountability": "all",
     "options": {
@@ -17,8 +17,8 @@
     "name": "Mark Dirty on CMS Publish",
     "icon": "build_circle",
     "color": "#E07800",
-    "description": "slice-18m.2: Sets build_queue.cms_dirty=true on publish/delete events. Flow B reads this every 2min and POSTs the per-env webhook.",
-    "status": "active",
+    "description": "DISABLED 2026-06-14 (immediate-only rebuild). Set build_queue.cms_dirty=true to feed the debounced Flush-Build cron, which is now disabled. Re-enable together with 'Flush Build to Vercel' to restore debounced builds.",
+    "status": "inactive",
     "trigger": "event",
     "accountability": "all",
     "options": {
@@ -160,5 +160,24 @@
     },
     "operation": "_sync_op_translation_reminder_check_published",
     "_syncId": "c80a68ad-dabf-4ccc-95cc-e97095f51d90"
+  },
+  {
+    "name": "Force Rebuild (this environment)",
+    "icon": "rocket_launch",
+    "color": "#E07800",
+    "description": "Manual trigger: POSTs THIS environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL) with buildCache=false to force an immediate fresh rebuild. Branch-correct per Railway env (dev Directus -> dev.yesid.dev, prod -> yesid.dev). Run it from the build_queue singleton (Site Config -> Build refresh flag -> Run Flow). Requires VERCEL_DEPLOY_HOOK_URL in FLOWS_ENV_ALLOW_LIST (already allow-listed by 'Vercel revalidate on publish').",
+    "status": "active",
+    "trigger": "manual",
+    "accountability": "all",
+    "options": {
+      "collections": [
+        "build_queue"
+      ],
+      "location": "item",
+      "requireSelection": false,
+      "async": false
+    },
+    "operation": "a7c9d628-b970-4f38-bb4b-0c532901d0e1",
+    "_syncId": "d86a5982-6ab4-4474-ace8-cfd16962a9a4"
   }
 ]

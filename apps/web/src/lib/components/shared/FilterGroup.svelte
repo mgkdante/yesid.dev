@@ -18,6 +18,7 @@
 
 	const locale = getLocale();
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	const defaultAllLabel = { en: 'All', fr: 'Tous', es: 'Todos' };
 
@@ -29,6 +30,7 @@
 		allowDeselect = true,
 		collapsible = false,
 		startOpen = true,
+		persistKey = undefined,
 		allLabel = defaultAllLabel,
 		onSelect,
 		testIdPrefix = undefined
@@ -40,12 +42,27 @@
 		allowDeselect?: boolean;
 		collapsible?: boolean;
 		startOpen?: boolean;
+		/**
+		 * slice-34.6 — opt this group's expand/collapse into surviving a locale
+		 * switch. When set, a session boolean keyed by `persistKey` (a stable,
+		 * locale-free string) drives `isOpen`, seeded with `startOpen` as the
+		 * default. When absent, a plain local rune is used (existing behaviour).
+		 */
+		persistKey?: string;
 		allLabel?: { en: string; fr?: string; es?: string };
 		onSelect: (key: string | null) => void;
 		testIdPrefix?: string | undefined;
 	} = $props();
 
-	let isOpen = $state(startOpen);
+	// Keyed → session-scoped (survives a locale switch, paints directly in its
+	// restored state via persisted()'s synchronous seed); unkeyed → local rune.
+	const persistedOpen = persistKey ? persisted(persistKey, startOpen) : null;
+	let localOpen = $state(startOpen);
+	const isOpen = $derived(persistedOpen ? persistedOpen.value : localOpen);
+	function toggleOpen(): void {
+		if (persistedOpen) persistedOpen.value = !persistedOpen.value;
+		else localOpen = !localOpen;
+	}
 
 	// Map activeKey to ToggleGroup value: null → '__all__', string → string
 	const groupValue = $derived(activeKey ?? '__all__');
@@ -67,7 +84,7 @@
 	{#if collapsible}
 		<button
 			class="tap-press flex w-full items-center justify-between label-section text-sm font-semibold py-2.5 min-h-11 transition-colors hover:text-[var(--foreground)] active:text-[var(--foreground)]"
-			onclick={() => (isOpen = !isOpen)}
+			onclick={toggleOpen}
 		>
 			{label}
 			<ChevronToggle open={isOpen} size="sm" direction="down" />

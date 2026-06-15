@@ -33,6 +33,7 @@
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { projectsListingContent } from '$lib/content/projects';
 	import { siteLabels } from '$lib/content';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	let {
 		projects,
@@ -73,7 +74,11 @@
 	let activeService = $derived($page.url.searchParams.get('service'));
 	let activeTag = $derived($page.url.searchParams.get('tag'));
 	let activeStack = $derived($page.url.searchParams.get('stack'));
-	let searchQuery = $state('');
+	// slice-34.1: free-text search is session-scoped (the locale-free string IS the
+	// query the user typed — valid verbatim in any locale) so it survives a language
+	// switch via the locale-handoff orchestrator. The tag/service/stack filters live
+	// in the URL and are carried for free by localizeUrl.
+	const searchQuery = persisted('projects-q', '');
 
 	// Apply filters: service + tag + stack + search use AND logic
 	let filteredProjects = $derived.by(() => {
@@ -92,8 +97,8 @@
 		}
 
 		// Search filter (title, oneLiner, tags, stack)
-		if (searchQuery.trim()) {
-			const q = searchQuery.trim().toLowerCase();
+		if (searchQuery.value.trim()) {
+			const q = searchQuery.value.trim().toLowerCase();
 			result = result.filter((p) => {
 				const title = resolveLocale(p.title, locale).toLowerCase();
 				const oneLiner = resolveLocale(p.oneLiner, locale).toLowerCase();
@@ -135,11 +140,11 @@
 		new Map(services.map((s) => [s.id, resolveLocale(s.title, locale)]))
 	);
 
-	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.trim() !== '');
+	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.value.trim() !== '');
 
 	async function clearFilters() {
 		flipState = captureFlipState();
-		searchQuery = '';
+		searchQuery.value = '';
 		const url = new URL($page.url);
 		url.searchParams.delete('service');
 		url.searchParams.delete('tag');
@@ -216,7 +221,7 @@
 					onServiceSelect={handleServiceSelect}
 					onTagSelect={handleTagSelect}
 					onStackSelect={handleStackSelect}
-					bind:searchQuery
+					bind:searchQuery={searchQuery.value}
 				/>
 			</div>
 		</aside>
@@ -226,7 +231,7 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery} testId="project-search-mobile" />
+			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery.value} testId="project-search-mobile" />
 		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
