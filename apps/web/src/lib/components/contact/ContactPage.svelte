@@ -13,6 +13,8 @@
 	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import { siteLabels } from '$lib/content';
+	import { persisted } from '$lib/state/persisted.svelte';
+	import { localeHandoff } from '$lib/state/locale-handoff.svelte';
 	import type { ContactContent } from '$lib/types';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
@@ -95,33 +97,54 @@
 	});
 
 	// --- Form state ---
-	let name = $state('');
-	let email = $state('');
-	let message = $state(initialMessage ?? '');
+	// slice-34.3: the flagship "state across languages" surface — a half-typed
+	// message must survive a locale switch. name/email/message are session-scoped
+	// via persisted(); the orchestrator snapshots them before the {#key}-remount
+	// and restores them on the new locale's page. Locale-free invariant holds:
+	// these are user-typed primitives, never translated copy.
+	const name = persisted<string>('contact-name', '');
+	const email = persisted<string>('contact-email', '');
+	const message = persisted<string>('contact-message', '');
 
-	// slice-29: late-arriving blueprint prefill (e.g. client-side ?bp= change)
-	// only applies while the field is untouched — never clobber typed text.
+	// slice-34.3: seed the message from a ?bp= blueprint handoff, but never on a
+	// switch-restore — a restore must win over the blueprint prefill. The
+	// persisted() setter assigns the restored value unconditionally, so guarding
+	// here lets restore beat both the '' default and this effect.
 	$effect(() => {
-		if (initialMessage && message === '') message = initialMessage;
+		if (!localeHandoff.restoring && initialMessage && message.value === '') {
+			message.value = initialMessage;
+		}
 	});
 	let submitted = $state(false);
 	let errors = $state<Record<string, string>>({});
 	let showSuccess = $state(false);
 	let successLines = $state<{ text: string; color: string; visible: boolean }[]>([]);
 
+	// slice-34.3: persist ONLY the locale-free "the send succeeded" bit. The
+	// success lines are translated → re-derived (rebuildSuccessLines) on restore,
+	// never stored. On a switch-restore of a sent form, re-show the success screen
+	// in the NEW locale.
+	const wasSuccessful = persisted<boolean>('contact-success', false);
+	$effect(() => {
+		if (localeHandoff.restoring && wasSuccessful.value && !showSuccess) {
+			rebuildSuccessLines();
+			showSuccess = true;
+		}
+	});
+
 	// --- Validation ---
 	function validate(): boolean {
 		const newErrors: Record<string, string> = {};
 
-		if (!name.trim()) {
+		if (!name.value.trim()) {
 			newErrors.name = resolveLocale(c.validation.required, locale).replace('{field}', 'name');
 		}
-		if (!email.trim()) {
+		if (!email.value.trim()) {
 			newErrors.email = resolveLocale(c.validation.required, locale).replace('{field}', 'email');
-		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
 			newErrors.email = resolveLocale(c.validation.invalidEmail, locale);
 		}
-		if (!message.trim()) {
+		if (!message.value.trim()) {
 			newErrors.message = resolveLocale(c.validation.required, locale).replace('{field}', 'message');
 		}
 
@@ -150,11 +173,11 @@
 					access_key: c.web3formsKey,
 					subject: fillTemplate(
 						resolveLocale(siteLabels.email.contactSubjectTemplate, locale) || 'New contact from {name} via yesid.dev',
-						{ name },
+						{ name: name.value },
 					),
-					from_name: name,
-					email,
-					message,
+					from_name: name.value,
+					email: email.value,
+					message: message.value,
 				}),
 			});
 			const result = await res.json();
@@ -175,9 +198,13 @@
 	}
 
 	// --- Success animation sequence ---
-	async function playSuccessSequence() {
+	// slice-34.3: the success lines are TRANSLATED — they are re-derived in the
+	// current locale, never persisted. rebuildSuccessLines() rebuilds them visible
+	// (used on a switch-restore); playSuccessSequence() reveals them line-by-line
+	// after a real submit.
+	function buildSuccessLines() {
 		const okText = resolveLocale(c.success.fieldOk, locale);
-		const lines = [
+		return [
 			{ text: '~ $ send --message', color: 'muted' },
 			{ text: `→ ${resolveLocale(c.success.validating, locale)}`, color: 'orange' },
 			{ text: `✓ ${c.formTerminal.fields.name.label}: ${okText}`, color: 'green' },
@@ -188,8 +215,24 @@
 			{ text: `→ ${resolveLocale(c.success.responseTime, locale)}`, color: 'accent' },
 			{ text: `→ ${resolveLocale(c.success.meanwhile, locale)}`, color: 'muted' }
 		];
+	}
 
-		successLines = lines.map((l) => ({ ...l, visible: false }));
+	// Switch-restore path: the form already succeeded in the OTHER locale; rebuild
+	// the (translated) lines fully visible in THIS locale — no typed animation.
+	function rebuildSuccessLines() {
+		successLines = buildSuccessLines().map((l) => ({ ...l, visible: true }));
+	}
+
+	async function playSuccessSequence() {
+		// slice-34.3: the send succeeded — clear the persisted draft so a sent
+		// message can't resurrect on a later locale switch, and flip the locale-free
+		// success flag so a switch mid-success-screen re-shows it in the new locale.
+		name.value = '';
+		email.value = '';
+		message.value = '';
+		wasSuccessful.value = true;
+
+		successLines = buildSuccessLines().map((l) => ({ ...l, visible: false }));
 		showSuccess = true;
 
 		for (let i = 0; i < successLines.length; i++) {
@@ -200,9 +243,12 @@
 
 	// --- Reset ---
 	function handleReset() {
-		name = '';
-		email = '';
-		message = '';
+		// slice-34.3: clear the persisted sessions too (incl. the success flag) so
+		// "send another" starts genuinely empty and survives a later switch as empty.
+		name.value = '';
+		email.value = '';
+		message.value = '';
+		wasSuccessful.value = false;
 		submitted = false;
 		errors = {};
 		showSuccess = false;
@@ -337,7 +383,8 @@
 								id="contact-name"
 								name="name"
 								type="text"
-								bind:value={name}
+								data-handoff-focus="contact-name"
+								bind:value={name.value}
 								placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, locale)}
 								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 							/>
@@ -355,7 +402,8 @@
 								id="contact-email"
 								name="email"
 								type="email"
-								bind:value={email}
+								data-handoff-focus="contact-email"
+								bind:value={email.value}
 								placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, locale)}
 								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 							/>
@@ -372,7 +420,8 @@
 							<textarea
 								id="contact-message"
 								name="message"
-								bind:value={message}
+								data-handoff-focus="contact-message"
+								bind:value={message.value}
 								placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, locale)}
 								rows="6"
 								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
