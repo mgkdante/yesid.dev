@@ -15,7 +15,7 @@
  * writes a real `$state` underneath. Do not wrap the rune object in another bind.
  */
 import { browser } from '$app/environment';
-import { registerSession, pendingRestore } from './locale-handoff.svelte';
+import { registerSession, peekRestore } from './locale-handoff.svelte';
 
 export type LocaleFree = string | number | boolean | null | LocaleFree[];
 
@@ -42,11 +42,12 @@ export interface Persisted<T extends LocaleFree> {
 
 export function persisted<T extends LocaleFree>(key: string, initial: T): Persisted<Widen<T>> {
 	type V = Widen<T>;
-	// Seed from an in-flight switch-restore (covers a consumer that mounts during
-	// the orchestrator's post-paint await window). For the common synchronous
-	// consumer this is undefined at call time and the restore lands via the
-	// registered setter once afterNavigate runs.
-	const seeded = browser ? (pendingRestore(key) as V | undefined) : undefined;
+	// Seed SYNCHRONOUSLY from an in-flight switch-restore so the consumer paints
+	// directly in its restored state — no default-then-restore flash (e.g. a
+	// collapsible would otherwise render open for a frame then animate shut).
+	// peekRestore returns the handoff value during a restore, undefined otherwise
+	// (a normal mount/reload) → falls back to `initial`.
+	const seeded = browser ? (peekRestore(key) as V | undefined) : undefined;
 	let current = $state<V>(seeded !== undefined ? seeded : (initial as unknown as V));
 
 	if (browser) {
