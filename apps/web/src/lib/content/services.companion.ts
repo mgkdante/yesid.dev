@@ -19,6 +19,8 @@ export const servicesListingContent = {
 		fr: 'Service {stationNum} / {totalStr}',
 	} satisfies LocalizedString,
 	deepDiveLabel: { en: 'Deep dive →', fr: 'Voir en détail →' } satisfies LocalizedString,
+	/** Summary label for the collapsible Stack disclosure on each ServiceCard. */
+	stackLabel: { en: 'Stack', fr: 'Stack' } satisfies LocalizedString,
 	/** Labels for the sticky orange ProjectsStrip under the services listing. */
 	projectsStrip: {
 		/** Template when a service is active; placeholder {serviceTitle}. */
