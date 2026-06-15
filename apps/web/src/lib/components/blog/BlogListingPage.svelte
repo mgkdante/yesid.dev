@@ -27,6 +27,7 @@
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { persisted } from '$lib/state/persisted.svelte';
 
 	let {
 		posts,
@@ -51,20 +52,24 @@
 		blogPage?: import('@repo/shared').BlogPageContent;
 	} = $props();
 
-	// Filter state
+	// Filter state. slice-34.1: search/language/date are session-scoped so they
+	// survive a language switch via the locale-handoff orchestrator — each stored
+	// value is a locale-free primitive (the literal query string, a Locale code, an
+	// ISO date), valid verbatim in any locale. The `tag` filter lives in the URL and
+	// is carried for free by localizeUrl.
 	let activeTag = $derived($page.url.searchParams.get('tag'));
-	let activeLang = $state<Locale | null>(null); // null = show all languages
-	let searchQuery = $state('');
-	let dateFrom = $state('');
-	let dateTo = $state('');
+	const activeLang = persisted<Locale | null>('blog-lang', null); // null = show all languages
+	const searchQuery = persisted('blog-q', '');
+	const dateFrom = persisted('blog-from', '');
+	const dateTo = persisted('blog-to', '');
 
 	// Apply all filters
 	let filteredPosts = $derived.by(() => {
 		let result = [...posts];
 
 		// Language filter
-		if (activeLang) {
-			result = result.filter((p) => p.lang === activeLang);
+		if (activeLang.value) {
+			result = result.filter((p) => p.lang === activeLang.value);
 		}
 
 		// Tag filter
@@ -73,8 +78,8 @@
 		}
 
 		// Search filter (title, excerpt, tags)
-		if (searchQuery.trim()) {
-			const q = searchQuery.trim().toLowerCase();
+		if (searchQuery.value.trim()) {
+			const q = searchQuery.value.trim().toLowerCase();
 			result = result.filter((p) => {
 				const title = p.title.toLowerCase();
 				const excerpt = p.excerpt.toLowerCase();
@@ -84,11 +89,11 @@
 		}
 
 		// Date range filter
-		if (dateFrom) {
-			result = result.filter((p) => p.date >= dateFrom);
+		if (dateFrom.value) {
+			result = result.filter((p) => p.date >= dateFrom.value);
 		}
-		if (dateTo) {
-			result = result.filter((p) => p.date <= dateTo);
+		if (dateTo.value) {
+			result = result.filter((p) => p.date <= dateTo.value);
 		}
 
 		return result;
@@ -107,20 +112,24 @@
 
 	function handleLangSelect(lang: Locale | null) {
 		flipState = captureFlipState();
-		activeLang = lang;
+		activeLang.value = lang;
 	}
 
 	function clearFilters() {
 		flipState = captureFlipState();
-		searchQuery = '';
-		dateFrom = '';
-		dateTo = '';
-		activeLang = null;
+		searchQuery.value = '';
+		dateFrom.value = '';
+		dateTo.value = '';
+		activeLang.value = null;
 		handleTagSelect(null);
 	}
 
 	let hasActiveFilters = $derived(
-		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
+		!!activeTag ||
+			!!activeLang.value ||
+			searchQuery.value.trim() !== '' ||
+			dateFrom.value !== '' ||
+			dateTo.value !== ''
 	);
 
 	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
@@ -197,14 +206,14 @@
 					tags={allTags}
 					{languages}
 					{activeTag}
-					{activeLang}
+					activeLang={activeLang.value}
 					{accentColor}
 					{cornerLink}
-					bind:searchQuery
+					bind:searchQuery={searchQuery.value}
 					onTagSelect={handleTagSelect}
 					onLangSelect={handleLangSelect}
-					bind:dateFrom
-					bind:dateTo
+					bind:dateFrom={dateFrom.value}
+					bind:dateTo={dateTo.value}
 				/>
 			</div>
 		</aside>
@@ -214,7 +223,7 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<SearchInput placeholder={resolveLocale(blogListingContent.searchPlaceholder, locale)} bind:value={searchQuery} testId="blog-search-mobile" />
+			<SearchInput placeholder={resolveLocale(blogListingContent.searchPlaceholder, locale)} bind:value={searchQuery.value} testId="blog-search-mobile" />
 		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
@@ -222,13 +231,13 @@
 			tags={allTags}
 			{languages}
 			{activeTag}
-			{activeLang}
+			activeLang={activeLang.value}
 			{accentColor}
 			{cornerLink}
 			onTagSelect={handleTagSelect}
 			onLangSelect={handleLangSelect}
-			bind:dateFrom
-			bind:dateTo
+			bind:dateFrom={dateFrom.value}
+			bind:dateTo={dateTo.value}
 		/>
 
 		{#if hasActiveFilters}
