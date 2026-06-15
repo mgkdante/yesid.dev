@@ -13,7 +13,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { servicesListingContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
@@ -115,7 +115,7 @@
 </script>
 
 <div class="services-page" data-testid="service-listing-page">
-	<h1 class="sr-only">{resolveLocale(servicesListingContent.heading, locale)}</h1>
+	<h1 class="sr-only">{resolveLocale(siteLabels.servicesChrome.listing.heading, locale)}</h1>
 
 	<!-- Sticky station tabs -->
 	<div class="tabs-bar">

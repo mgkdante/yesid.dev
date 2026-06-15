@@ -10,7 +10,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { servicesListingContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { SectionLabel } from '$lib/components/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '$lib/utils';
@@ -41,11 +41,11 @@
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(total).padStart(2, '0'));
 	let stationLabelText = $derived(
-		resolveLocale(servicesListingContent.stationLabelTemplate, locale)
+		resolveLocale(siteLabels.servicesChrome.listing.stationLabelTemplate, locale)
 			.replace('{stationNum}', stationNum)
 			.replace('{totalStr}', totalStr)
 	);
-	let deepDiveLabel = $derived(resolveLocale(servicesListingContent.deepDiveLabel, locale));
+	let deepDiveLabel = $derived(resolveLocale(siteLabels.servicesChrome.listing.deepDiveLabel, locale));
 	let title = $derived(resolveLocale(service.title, locale));
 	let description = $derived(resolveLocale(service.description, locale));
 	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, locale) : null);
@@ -152,6 +152,8 @@
 		top: calc(50dvh - 13rem);
 		display: flex;
 		align-items: center;
+		/* Original distance restored — the giant title (below) fills the row so the
+		   text no longer floats far from the SVG panel. */
 		gap: clamp(2rem, 4vw, 4rem);
 		width: 100%;
 	}
@@ -161,13 +163,14 @@
 		min-width: 0;
 	}
 
+	/* Giant — matches the detail page's hero title size. */
 	.service-title {
 		font-family: var(--font-heading);
-		font-size: clamp(44px, 5vw, 64px);
+		font-size: clamp(56px, 8vw, 104px);
 		font-weight: 900;
 		color: var(--foreground);
-		line-height: 1.05;
-		letter-spacing: -0.03em;
+		line-height: 1.02;
+		letter-spacing: -0.035em;
 		margin-bottom: 1rem;
 	}
 
@@ -181,7 +184,7 @@
 	}
 
 	.benefit-headline {
-		font-size: clamp(18px, 2.5vw, 24px);
+		font-size: clamp(20px, 2.6vw, 26px);
 		font-weight: 600;
 		color: var(--foreground);
 		line-height: 1.3;
@@ -189,8 +192,8 @@
 	}
 
 	.service-description {
-		font-size: var(--text-body);
-		line-height: 1.7;
+		font-size: clamp(18px, 1.5vw, 22px);
+		line-height: 1.6;
 		color: var(--secondary-foreground);
 		max-width: 55ch;
 		margin-bottom: 1.5rem;
@@ -247,7 +250,7 @@
 	/* Round-4 doctrine: metric/number callouts speak the YELLOW voice
 	   (accent-text = AA amber both modes); the CTA next to it stays orange. */
 	.metric-value {
-		font-size: clamp(36px, 4vw, 48px);
+		font-size: clamp(44px, 5vw, 60px);
 		font-weight: 900;
 		color: var(--accent-text);
 		line-height: 1;
@@ -255,7 +258,7 @@
 
 	.metric-label {
 		font-family: var(--font-mono);
-		font-size: var(--text-caption);
+		font-size: var(--text-small);
 		color: var(--accent-text);
 		text-transform: uppercase;
 		letter-spacing: 1px;
@@ -264,7 +267,7 @@
 	.deep-dive-cta {
 		display: inline-block;
 		font-family: var(--font-mono);
-		font-size: var(--text-body);
+		font-size: var(--text-subheading);
 		font-weight: 700;
 		color: var(--background);
 		background: var(--primary);
@@ -324,16 +327,17 @@
 		}
 		.service-description {
 			max-width: none;
-			font-size: var(--text-small);
-			line-height: 1.5;
+			font-size: var(--text-body);
+			line-height: 1.55;
 			margin-bottom: 1rem;
 		}
+		/* Big on mobile too — matches the detail page's mobile title size. */
 		.service-title {
-			font-size: clamp(28px, 7vw, 36px);
+			font-size: clamp(40px, 11vw, 60px);
 			margin-bottom: 0.5rem;
 		}
 		.benefit-headline {
-			font-size: var(--text-body);
+			font-size: var(--text-subheading);
 			margin-bottom: 1rem;
 		}
 		.stack-pills {
@@ -344,11 +348,11 @@
 			padding: 0.125rem 0.5rem;
 		}
 		.metric-value {
-			font-size: clamp(28px, 6vw, 36px);
+			font-size: clamp(34px, 8vw, 46px);
 		}
 		.deep-dive-cta {
 			padding: 1rem 1.5rem;
-			font-size: var(--text-small);
+			font-size: var(--text-body);
 			min-height: 44px;
 		}
 	}

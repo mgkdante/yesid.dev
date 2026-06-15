@@ -10,7 +10,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { servicesListingContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { Separator } from '$lib/components/ui/separator';
 	import { cn } from '$lib/utils';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -33,17 +33,17 @@
 
 	let label = $derived(
 		serviceTitle
-			? resolveLocale(servicesListingContent.projectsStrip.builtWithService, locale).replace(
+			? resolveLocale(siteLabels.servicesChrome.listing.projectsStrip.builtWithService, locale).replace(
 					'{serviceTitle}',
 					serviceTitle
 				)
-			: resolveLocale(servicesListingContent.projectsStrip.builtWithFallback, locale)
+			: resolveLocale(siteLabels.servicesChrome.listing.projectsStrip.builtWithFallback, locale)
 	);
 	let countLabel = $derived(
 		`${projects.length} ${resolveLocale(
 			projects.length === 1
-				? servicesListingContent.projectsStrip.projectSingular
-				: servicesListingContent.projectsStrip.projectPlural,
+				? siteLabels.servicesChrome.listing.projectsStrip.projectSingular
+				: siteLabels.servicesChrome.listing.projectsStrip.projectPlural,
 			locale
 		)}`
 	);

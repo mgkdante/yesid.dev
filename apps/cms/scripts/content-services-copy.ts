@@ -5,9 +5,9 @@
  * For each of the 4 visible services, patches services_translations (en+fr):
  *   - description, value_proposition (the plain owner-to-owner rewrite)
  * Upserts services_sections (idempotent, matched by en title):
- *   - "My Approach" (sort 2): rewritten curious + safe + love paragraph (en+fr)
  *   - "Is this you?" (sort 1): owner-symptom self-qualification (en+fr) [all 4]
- *   - "When I'm not your guy" (sort 3): honest fit (en+fr) [03 + 04 only]
+ *   - "My Approach" (sort 2): rewritten curious + safe + love paragraph (en+fr)
+ * Reconcile-deletes retired sections (operator pull): "When I'm not your guy".
  * Reconciles projects_services: deletes lorem-* links, creates the real mapping.
  *
  * benefit_headline + impact_metric were handled by content-services-metrics.ts.
@@ -32,7 +32,6 @@ interface ServiceCopy {
 	valueProposition: Loc;
 	myApproach: Loc;
 	isThisYou: { bodyEn: string; bodyFr: string };
-	whenNot?: { bodyEn: string; bodyFr: string };
 }
 
 const SERVICES: ServiceCopy[] = [
@@ -92,10 +91,6 @@ const SERVICES: ServiceCopy[] = [
 			bodyEn: 'Signs this is you: every meeting turns into an argument about whose number is right. The same report takes someone days to pull together by hand, every time. Or you have dashboards sitting there that nobody opens, because everyone learned they do not match what is really happening.',
 			bodyFr: "Des signes que c'est toi: chaque réunion vire en chicane sur quel chiffre est le bon. Le même rapport prend des jours à monter à la main, chaque fois. Ou bien tu as des tableaux de bord que personne n'ouvre, parce que le monde a fini par comprendre qu'ils collent pas à la réalité.",
 		},
-		whenNot: {
-			bodyEn: 'If you just need a BI tool turned on or one quick chart pulled for a single meeting, that is lighter work than what I do. I build the trustworthy layer underneath so the numbers hold up over time, which is overkill when you only need a fast one-off.',
-			bodyFr: "Si tu as juste besoin qu'on active un outil de BI ou qu'on sorte un graphique vite fait pour une seule réunion, c'est plus léger que ce que je fais. Moi, je bâtis la couche solide en dessous pour que les chiffres tiennent la route dans le temps, ce qui est exagéré quand tu veux juste un coup rapide une seule fois.",
-		},
 	},
 	{
 		id: 'web-development',
@@ -115,18 +110,16 @@ const SERVICES: ServiceCopy[] = [
 			bodyEn: 'Signs this is you: a site that loads slowly or feels clunky to use, a store that keeps losing people right at checkout, or tools and data your customers and team just cannot get to. If the thing standing between your work and the people who need it is the website itself, that is the gap I close.',
 			bodyFr: "Des signes que c'est toi: un site lent ou maladroit à utiliser, une boutique qui perd du monde juste au moment de payer, ou des outils et des données que tes clients et ton équipe arrivent pas à atteindre. Si ce qui bloque entre ton travail et les gens qui en ont besoin, c'est le site lui-même, c'est exactement ce trou-là que je vais combler.",
 		},
-		whenNot: {
-			bodyEn: 'If you want a pure brand or marketing campaign with no real data or systems behind it, an agency will serve you better than I will. My web work shines when it is wired straight into your data, so that is where I am worth your money.',
-			bodyFr: "Si tu cherches une pure campagne de marque ou de marketing, sans vraies données ni systèmes derrière, une agence va mieux te servir que moi. Mon travail web brille quand il est branché direct sur tes données, c'est là que je vaux ton argent.",
-		},
 	},
 ];
 
 const SECTION_TITLES = {
 	myApproach: { en: 'My Approach', fr: 'Mon approche' },
 	isThisYou: { en: 'Is this you?', fr: 'Ça te ressemble?' },
-	whenNot: { en: "When I'm not your guy", fr: 'Quand je suis pas la bonne personne' },
 };
+
+/** Sections to reconcile-delete on apply (retired copy, matched by en title). */
+const RETIRED_SECTION_TITLES_EN: readonly string[] = ["When I'm not your guy"];
 
 /** Desired relatedProjects per service, in display order (creation order). */
 const DESIRED_PROJECTS: Record<string, string[]> = {
@@ -209,8 +202,19 @@ export async function apply(opts: { directusUrl: string; token: string }): Promi
 		const existing = await readSections(client, svc.id);
 		await upsertSection(client, svc.id, existing, { sort: 1, titleEn: SECTION_TITLES.isThisYou.en, titleFr: SECTION_TITLES.isThisYou.fr, bodyEn: svc.isThisYou.bodyEn, bodyFr: svc.isThisYou.bodyFr });
 		await upsertSection(client, svc.id, existing, { sort: 2, titleEn: SECTION_TITLES.myApproach.en, titleFr: SECTION_TITLES.myApproach.fr, bodyEn: svc.myApproach.en, bodyFr: svc.myApproach.fr });
-		if (svc.whenNot) {
-			await upsertSection(client, svc.id, existing, { sort: 3, titleEn: SECTION_TITLES.whenNot.en, titleFr: SECTION_TITLES.whenNot.fr, bodyEn: svc.whenNot.bodyEn, bodyFr: svc.whenNot.bodyFr });
+
+		// Reconcile-delete retired sections (e.g. "When I'm not your guy", pulled by
+		// the operator) so a re-run converges to the desired set. Translations first
+		// (avoid orphan rows), then the parent section.
+		for (const sec of existing) {
+			const enTitle = sec.translations?.find((t) => t.languages_code === 'en')?.title ?? null;
+			if (enTitle && RETIRED_SECTION_TITLES_EN.includes(enTitle)) {
+				for (const t of sec.translations ?? []) {
+					await client.request(deleteItem('services_sections_translations' as never, t.id as never));
+				}
+				await client.request(deleteItem('services_sections', sec.id));
+				log.info(`    - retired section "${enTitle}" (#${sec.id}) deleted`);
+			}
 		}
 	}
 
@@ -242,7 +246,7 @@ async function main(): Promise<void> {
 
 	if (!apply_) {
 		for (const svc of SERVICES) {
-			log.info(`  ~ ${svc.id}: description + value_proposition (en+fr); sections Is this you? + My Approach${svc.whenNot ? ' + When not' : ''}`);
+			log.info(`  ~ ${svc.id}: description + value_proposition (en+fr); sections Is this you? + My Approach`);
 		}
 		log.info('  ~ projects_services: delete lorem-* links; create the real mapping');
 		log.info('dry-run complete. Pass --apply to execute.');
