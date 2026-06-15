@@ -47,7 +47,7 @@ export const projects: readonly Project[] = [
 			en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.',
 			fr: 'Le site que tu regardes en ce moment : un portfolio SvelteKit bâti morceau par morceau.',
 		},
-		relatedServices: ['web-development'],
+		relatedServices: ['web-development', 'database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		sections: [
 			{
@@ -154,7 +154,12 @@ export const projects: readonly Project[] = [
 			fr: 'Un pipeline ELT de bout en bout qui traite les données de transport en temps réel pour un opérateur régional.',
 		},
 		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
-		relatedServices: ['data-pipeline', 'database-engineering'],
+		relatedServices: [
+			'data-pipeline',
+			'database-engineering',
+			'analytics-reporting',
+			'web-development',
+		],
 		repoUrl: 'https://github.com/mgkdante/transit',
 		sections: [],
 		slug: 'transit-data-pipeline',
@@ -233,7 +238,7 @@ export const projects: readonly Project[] = [
 			fr: 'Tableau de bord des KPI pour la direction, qui suit les indicateurs opérationnels à travers 12 départements.',
 		},
 		readmeUrl: 'https://github.com/zen-browser/desktop/blob/dev/README.md',
-		relatedServices: ['analytics-reporting'],
+		relatedServices: [],
 		repoUrl: 'https://github.com/zen-browser',
 		sections: [
 			{
@@ -359,7 +364,7 @@ export const projects: readonly Project[] = [
 			fr: 'Migration sans interruption d\'un MySQL hérité vers PostgreSQL pour une plateforme SaaS.',
 		},
 		readmeUrl: 'https://github.com/oven-sh/bun/blob/main/README.md',
-		relatedServices: ['database-engineering'],
+		relatedServices: [],
 		repoUrl: 'https://github.com/oven-sh/bun',
 		sections: [
 			{
@@ -511,7 +516,7 @@ export const projects: readonly Project[] = [
 			es: 'Migración de Webflow a Shopify para un importador quebequense de café camerunés.',
 			fr: 'Migration Webflow → Shopify pour un importateur québécois de café camerounais.',
 		},
-		relatedServices: ['web-development'],
+		relatedServices: ['web-development', 'analytics-reporting'],
 		sections: [
 			{
 				content: {
@@ -650,7 +655,7 @@ export const projects: readonly Project[] = [
 			en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.',
 			fr: 'Outil automatisé d\'analyse de requêtes SQL Server qui repère les requêtes lentes et suggère des améliorations d\'index.',
 		},
-		relatedServices: ['database-engineering'],
+		relatedServices: [],
 		repoUrl: 'https://github.com/mgkdante/lorem-query-optimizer',
 		sections: [
 			{
@@ -728,7 +733,7 @@ export const projects: readonly Project[] = [
 			en: 'Internal operations dashboard for managing inventory and approval workflows.',
 			fr: 'Tableau de bord des opérations internes pour gérer l\'inventaire et les flux d\'approbation.',
 		},
-		relatedServices: ['data-pipeline', 'analytics-reporting'],
+		relatedServices: [],
 		sections: [
 			{
 				content: {
