@@ -32,6 +32,7 @@ const DESKTOP_ONLY_SPECS = [
 	'**/stack-engine.spec.ts',
 	'**/i18n-routing.spec.ts',
 	'**/i18n-language-toggle.spec.ts',
+	'**/state-across-languages.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',
 	'**/interactive-filters.spec.ts',
