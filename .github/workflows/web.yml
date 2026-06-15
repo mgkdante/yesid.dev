@@ -76,6 +76,14 @@ jobs:
   # 1) Resolve the preview URL once. Tiny job (just the Deployments API poll) —
   #    its output feeds every shard, so we don't poll N times.
   e2e-preview:
+    # Edge-request throttle (2026-06-15): the e2e suite hits the Vercel PREVIEW
+    # edge, and that traffic counts toward the team's Edge Request quota. Run e2e
+    # ONLY on pull_request (it gates the PR) — NEVER on push: post-merge develop
+    # pushes are redundant, and push-to-main would run the whole suite against
+    # PRODUCTION. The cheap `ci` job above still runs on push. Device-matrix is
+    # scaled per target branch in the `e2e` step (1 device on develop PRs, all 4
+    # on main/release PRs).
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     # The Deployments API (where Vercel posts the preview URL) is not readable by
     # the default contents-only GITHUB_TOKEN → 403 without this grant.
@@ -124,6 +132,7 @@ jobs:
   #    doesn't kill the others. Each shard emits a blob report artifact.
   e2e:
     needs: e2e-preview
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     # NON-BLOCKING during shake-out. To make it a hard gate: drop this, drop it
     # on e2e-report, and add `e2e-report` to the branch ruleset.
@@ -156,7 +165,17 @@ jobs:
           # workers hit it concurrently. 4 × 4 shards = 16 concurrent — plenty,
           # without a serverless thundering herd on /api/weather, og, sitemap.
           PLAYWRIGHT_WORKERS: 4
-        run: bun x playwright test --shard=${{ matrix.shard }}/${{ env.SHARD_TOTAL }} --reporter=blob
+        # Device-matrix scaling (edge-request throttle): develop PRs run a
+        # 1-device smoke (desktop-chrome); PRs targeting main run the full 4
+        # device profiles for release confidence. Cuts develop-PR e2e edge
+        # requests ~75% (4 projects → 1).
+        run: |
+          if [ "${{ github.base_ref }}" = "main" ]; then
+            PROJECTS=""
+          else
+            PROJECTS="--project=desktop-chrome"
+          fi
+          bun x playwright test --shard=${{ matrix.shard }}/${{ env.SHARD_TOTAL }} $PROJECTS --reporter=blob
 
       - name: Upload blob report (shard ${{ matrix.shard }})
         if: ${{ !cancelled() }}
@@ -170,7 +189,7 @@ jobs:
   #    shard failed, so the report is always complete.
   e2e-report:
     needs: e2e
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
