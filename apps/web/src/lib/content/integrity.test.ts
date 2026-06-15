@@ -97,10 +97,13 @@ describe('projects data integrity', () => {
 		expect(featured.length).toBeGreaterThan(0);
 	});
 
-	it('all projects have a relatedServices array with at least one entry', () => {
+	it('all public projects have a relatedServices array with at least one entry', () => {
+		// Private placeholder projects (the lorem-* records pending removal in the
+		// content-projects slice) are not rendered, so they need not link a service.
+		// The content-services relatedProjects remap dropped their lorem links.
 		projects.forEach((p) => {
 			expect(Array.isArray(p.relatedServices)).toBe(true);
-			expect(p.relatedServices.length).toBeGreaterThan(0);
+			if (p.status === 'public') expect(p.relatedServices.length).toBeGreaterThan(0);
 		});
 	});
 
@@ -604,7 +607,7 @@ describe('LocalizedString guard + translation debt', () => {
 // fr-complete leaves to site-labels (the operator's seed batch, incl. the 2
 // resultCount leaves) and the 4 interim companion leaves were removed
 // → WITH_FR + TOTAL both 631 + 10 − 4 = 637, NO_FR stays 0.
-const LOCKED = { TOTAL: 637, WITH_FR: 637, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30 t1: +97 chrome leaves (100% fr). ES deliberately deferred.
+const LOCKED = { TOTAL: 632, WITH_FR: 632, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // content-services: 637 → 648 (sections) → 649 (stack chrome to CMS) → 645 ("When I'm not your guy" retired, -4). Then the services chrome was fully wired to the CMS: components now read siteLabels.servicesChrome (which is already walked) and the duplicate hand-written companion exports (servicesListingContent 7 + servicesDetailContent 6 = 13 leaves) were deleted → -13 = 632. Single source = CMS.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

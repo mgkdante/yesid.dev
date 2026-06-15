@@ -54,17 +54,17 @@ typography:
   heading:
     fontSize: "1.5rem"
   subheading:
-    fontSize: "1.125rem"
+    fontSize: "1.1875rem"
   body:
-    fontSize: "1rem"
+    fontSize: "1.0625rem"
   small:
-    fontSize: "0.875rem"
+    fontSize: "0.9375rem"
   mono:
-    fontSize: "0.8125rem"
+    fontSize: "0.875rem"
   caption:
-    fontSize: "0.75rem"
+    fontSize: "0.8125rem"
   micro:
-    fontSize: "0.625rem"
+    fontSize: "0.6875rem"
 
 rounded:
   sm: "4px"

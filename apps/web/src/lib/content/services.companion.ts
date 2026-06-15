@@ -1,63 +1,12 @@
 // Hand-written companion to the CMS-derived `services.ts` (slice-18m).
 //
-// Holds the route chrome (listing + meta + detail copy) and the local
-// helper functions that operate on the `services` array exported by the
-// generated module.
+// Holds the local helper functions that operate on the `services` array exported
+// by the generated module. The route chrome (listing + detail microcopy) now
+// lives in the CMS site_labels singleton (siteLabels.servicesChrome.{listing,
+// detail}) and is read there directly by the components — single source = CMS.
 
-import type { LocalizedString, Service } from '$lib/types';
+import type { Service } from '$lib/types';
 import { services } from './services';
-
-/** Services-listing-page chrome copy extracted from components in Task 17b-7f.
- *  Consumed by ServiceListingPage, ServiceCard, ProjectsStrip. */
-export const servicesListingContent = {
-	heading: { en: 'Services', fr: 'Services' } satisfies LocalizedString,
-	/** Template for the SectionLabel on each service viewport.
-	 *  Placeholders: {stationNum}, {totalStr} (both zero-padded). Shared with
-	 *  ServiceDetailPage's hero — imported there from this same block. */
-	stationLabelTemplate: {
-		en: 'Service {stationNum} / {totalStr}',
-		fr: 'Service {stationNum} / {totalStr}',
-	} satisfies LocalizedString,
-	deepDiveLabel: { en: 'Deep dive →', fr: 'Voir en détail →' } satisfies LocalizedString,
-	/** Labels for the sticky orange ProjectsStrip under the services listing. */
-	projectsStrip: {
-		/** Template when a service is active; placeholder {serviceTitle}. */
-		builtWithService: {
-			en: 'Built with {serviceTitle}',
-			fr: 'Bâti avec {serviceTitle}',
-		} satisfies LocalizedString,
-		/** Fallback when no service is selected. */
-		builtWithFallback: { en: 'Built with this', fr: 'Bâti avec ça' } satisfies LocalizedString,
-		/** Project-count noun (ALL-CAPS in the strip). */
-		projectSingular: { en: 'PROJECT', fr: 'PROJET' } satisfies LocalizedString,
-		projectPlural: { en: 'PROJECTS', fr: 'PROJETS' } satisfies LocalizedString,
-	},
-} as const;
-
-/** HTML `<title>` + `<meta description>` for the `/services` route. Extracted
- *  in Task 17b-7k. Per-service-detail pages already resolve their own title +
- *  description from the service data. */
-export const servicesPageMeta = {
-	title: { en: 'Services · yesid.', fr: 'Services · yesid.' } satisfies LocalizedString,
-	description: {
-		en: 'Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.',
-		fr: 'Quatre stations : Bases de données & SQL, Pipelines & Automatisation, Tableaux de bord & Analytique, Sites web & Commerce en ligne. Bâti à Montréal, livré avec des chiffres.',
-	} satisfies LocalizedString,
-} as const;
-
-/** Services-detail-page chrome copy extracted from components in Task 17b-7f.
- *  Consumed by ServiceDetailPage, ServiceNav. Station label template lives on
- *  `servicesListingContent` (shared with ServiceCard) — imported separately. */
-export const servicesDetailContent = {
-	backToServicesLabel: { en: '← All Services', fr: '← Tous les services' } satisfies LocalizedString,
-	valuePropositionHeading: { en: 'How This Helps You', fr: 'Comment ça t\'aide' } satisfies LocalizedString,
-	deliverablesHeading: { en: 'Typical Deliverables', fr: 'Livrables typiques' } satisfies LocalizedString,
-	relatedProjectsHeading: { en: 'Related Projects', fr: 'Projets liés' } satisfies LocalizedString,
-	/** Aria-label on the nav listing the related project links. */
-	relatedProjectsNavAria: { en: 'Related projects', fr: 'Projets liés' } satisfies LocalizedString,
-	/** Aria-label on the ServiceNav prev/next wrapper. */
-	serviceNavAria: { en: 'Service navigation', fr: 'Navigation des services' } satisfies LocalizedString,
-} as const;
 
 // --- Helper functions ---
 // Operate on the generated `services` array. Co-located here because helpers and

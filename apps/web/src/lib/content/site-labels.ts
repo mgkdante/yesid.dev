@@ -204,7 +204,12 @@ export const siteLabels: SiteLabels = {
 			deliverablesHeading: { en: 'Typical Deliverables', fr: 'Livrables typiques' },
 			relatedProjectsHeading: { en: 'Related Projects', fr: 'Projets liés' },
 			relatedProjectsNavAria: { en: 'Related projects', fr: 'Projets liés' },
+			seeStackLabel: {
+				en: 'See the full stack →',
+				fr: 'Voir la stack complète →',
+			},
 			serviceNavAria: { en: 'Service navigation', fr: 'Navigation des services' },
+			stackHeading: { en: 'Stack', fr: 'Stack' },
 			valuePropositionHeading: { en: 'How This Helps You', fr: 'Comment ça t\'aide' },
 		},
 		listing: {
