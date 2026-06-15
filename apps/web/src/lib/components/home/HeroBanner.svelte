@@ -642,6 +642,30 @@
 		transform: none !important;
 	}
 
+	/* go2/w5 — same-day-reload pre-paint collapse. The app.html pre-paint script
+	   sets html[data-hero-intro-done] from the day-key BEFORE first paint, so a hero
+	   already scrolled-through today lands collapsed from frame 0 — no flash of the
+	   intro before onMount sets introCollapsed. Mirrors the .hero-intro-done rules
+	   above, keyed on the document attribute instead of the (post-mount) class. */
+	:global(html[data-hero-intro-done]) .hero-section-reserve {
+		min-height: 100svh;
+	}
+	:global(html[data-hero-intro-done]) .hero-pin {
+		height: auto;
+		min-height: 100svh;
+	}
+	:global(html[data-hero-intro-done]) .hero-metro-wrapper {
+		display: none;
+	}
+	:global(html[data-hero-intro-done]) .scroll-prompt {
+		display: none;
+	}
+	:global(html[data-hero-intro-done] [data-testid='hero-text-container']) {
+		opacity: 1 !important;
+		position: relative !important;
+		transform: none !important;
+	}
+
 	/* go2/w5 taste-2: metro caption — ONE small line naming the art. Lives in
 	   the wrapper's bottom strip: the frame is capped at 80dvh and vertically
 	   centered, so ≥10% of the wrapper's height below it is always art-free —
