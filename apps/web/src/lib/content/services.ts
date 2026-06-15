@@ -127,8 +127,8 @@ export const services: readonly Service[] = [
 		},
 		id: 'data-pipeline',
 		impactMetric: {
-			label: { en: 'pipeline uptime', fr: 'disponibilité des pipelines' },
-			value: { en: '99.9%', fr: '99,9 %' },
+			label: { en: 'missed mornings', fr: 'matin manqué' },
+			value: { en: '0', fr: '0' },
 		},
 		relatedProjects: ['transit-data-pipeline', 'lorem-retool-admin'],
 		sections: [
@@ -221,8 +221,8 @@ export const services: readonly Service[] = [
 	},
 	{
 		benefitHeadline: {
-			en: 'A frontend that matches your backend quality',
-			fr: 'Un frontend à la hauteur de la qualité de ton backend',
+			en: 'A storefront as fast as the systems behind it',
+			fr: 'Une vitrine aussi rapide que les systèmes derrière',
 		},
 		deliverables: [
 			{
@@ -260,7 +260,7 @@ export const services: readonly Service[] = [
 				en: 'Lighthouse performance',
 				fr: 'performance Lighthouse',
 			},
-			value: { en: '100', fr: '100' },
+			value: { en: '95+', fr: '95+' },
 		},
 		relatedProjects: ['yesid-dev', 'cafe-arona'],
 		sections: [
