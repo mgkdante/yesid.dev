@@ -54,6 +54,17 @@ export function localizeHref(href: string, locale: Locale): string {
 	return base === '/' ? `/${locale}` : `/${locale}${base}`;
 }
 
+/**
+ * Localize a full URL for a target locale, PRESERVING its query string and hash.
+ * The language switcher uses this (not localizeHref) so in-progress URL state —
+ * filters (?service=…), the engine inbound seed, ?station=… — survives an
+ * EN⇄FR(⇄ES) switch instead of being silently dropped. Path handling (prefix
+ * strip/re-add, exemptions, idempotency) is delegated to localizeHref.
+ */
+export function localizeUrl(url: URL, locale: Locale): string {
+	return localizeHref(url.pathname, locale) + url.search + url.hash;
+}
+
 /** '/[[lang=locale]]/about' → '/about' — route ids stay keyed by their
  *  canonical (unprefixed) form everywhere (route-seo registries, getPageSeo). */
 export function stripLocaleSegment(routeId: string): string {

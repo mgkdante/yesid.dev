@@ -2,7 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
+	import { localizeHref, localizeUrl } from '$lib/utils/locale-routing';
 	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 	import { fillTemplate } from '$lib/utils/labels';
 	import { wordmarkHover } from '$lib/motion/actions';
@@ -14,13 +14,13 @@
 	// Falls back to the menu items (which serve as footer fallback in static mode).
 	let {
 		locale = DEFAULT_LOCALE,
-		pathname = '/',
+		url = new URL('https://yesid.dev/'),
 		footerLinks = staticMenuItems as readonly NavLink[],
 		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
 	}: {
 		locale?: Locale;
-		/** Current pathname — the locale switch preserves it across locales. */
-		pathname?: string;
+		/** Full current URL — the switch preserves path, query AND hash. */
+		url?: URL;
 		footerLinks?: readonly NavLink[];
 		/** Locale switcher entries; hidden until more than one is published. */
 		availableLocales?: readonly Locale[];
@@ -32,8 +32,8 @@
 	const statusPrefix = $derived(resolveLocale(footerContent.statusPrefix, locale));
 	const footerNavAria = $derived(resolveLocale(sharedChromeContent.footerNavAria, locale));
 	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
-	// Path-preserving: /fr/about ↔ /about (slice-28.6).
-	const switchHref = (l: Locale) => localizeHref(delocalizePath(pathname), l);
+	// Path-preserving AND state-preserving: /fr/about?x ↔ /about?x (slice-34).
+	const switchHref = (l: Locale) => localizeUrl(url, l);
 
 	const year = new Date().getFullYear();
 	// go2-t1c2: copyright template from site_labels (orange dot stays code =
