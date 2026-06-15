@@ -85,6 +85,28 @@ export function pendingRestore(key: string): unknown {
 	return pendingBlob?.entries[key];
 }
 
+/**
+ * Synchronously read a consumer's restored value DURING a switch so it can
+ * initialize directly in its restored state at construction — no
+ * default-then-restore flash (e.g. a collapsible that would otherwise render open
+ * for a frame then visibly animate shut). Prefers the in-memory blob (set by
+ * afterNavigate for late async mounts), else reads the sessionStorage blob written
+ * in beforeNavigate, which is still present for the duration of the remount. Gated
+ * on `restoringState` so it never returns stale data outside an active restore
+ * (a normal mount or a plain reload reads nothing → consumer keeps its default).
+ */
+export function peekRestore(key: string): unknown {
+	if (!browser) return undefined;
+	if (pendingBlob) return pendingBlob.entries[key];
+	if (!restoringState) return undefined;
+	try {
+		const path = delocalizePath(window.location.pathname);
+		return parseBlob(sessionStorage.getItem(storageKey(path)), path)?.entries[key];
+	} catch {
+		return undefined;
+	}
+}
+
 // --- registry capture/apply (exported for unit tests) ---
 export function captureEntries(): Record<string, unknown> {
 	const entries: Record<string, unknown> = {};
