@@ -89,10 +89,58 @@
 			"description": "Space image representing Yesid's interest in astronomy; used in the /about page interests grid."
 		},
 		{
+			"legacyPath": "images/about/languages/quebec.svg",
+			"folder": "about",
+			"title": "Language flag - Quebec",
+			"description": "Extended Quebec flag SVG used by the CMS-backed /about language panel."
+		},
+		{
+			"legacyPath": "images/about/languages/canada.svg",
+			"folder": "about",
+			"title": "Language flag - Canada",
+			"description": "Extended Canada flag SVG used by the CMS-backed /about language panel."
+		},
+		{
+			"legacyPath": "images/about/languages/colombia.svg",
+			"folder": "about",
+			"title": "Language flag - Colombia",
+			"description": "Extended Colombia flag SVG used by the CMS-backed /about language panel."
+		},
+		{
 			"legacyPath": "images/work/yesid-dev.png",
 			"folder": "projects",
 			"title": "yesid.dev — cover screenshot",
 			"description": "Cover screenshot of the yesid.dev site; used on the /projects listing + project-detail page for the self-referential case study."
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-home.png",
+			"folder": "projects",
+			"title": "yesid.dev home screenshot",
+			"description": "Fresh screenshot of the yesid.dev home page; used as the current project card image."
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-home-light.png",
+			"folder": "projects",
+			"title": "yesid.dev home screenshot light",
+			"description": "Light theme screenshot of the yesid.dev home page; used as the project hero light variant."
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-mobile.png",
+			"folder": "projects",
+			"title": "yesid.dev mobile screenshot",
+			"description": "Fresh mobile screenshot of the yesid.dev home page; used as the mobile showcase image inside the case study."
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-mobile-light.png",
+			"folder": "projects",
+			"title": "yesid.dev mobile screenshot light",
+			"description": "Light theme mobile screenshot of the yesid.dev home page; used as the optional secondary hero light variant."
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-case-study.png",
+			"folder": "projects",
+			"title": "yesid.dev case study screenshot",
+			"description": "Fresh screenshot of the yesid.dev project case study; used inside the case study body."
 		}
 	]
 }

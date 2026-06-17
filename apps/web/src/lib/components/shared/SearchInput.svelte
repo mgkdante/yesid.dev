@@ -7,7 +7,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { sharedChromeContent } from '$lib/content';
+	import { siteLabels } from '$lib/content';
 
 	export interface SearchInputProps {
 		placeholder?: string;
@@ -15,7 +15,7 @@
 		testId?: string;
 	}
 
-	const defaultPlaceholder = resolveLocale(sharedChromeContent.searchPlaceholder, locale);
+	const defaultPlaceholder = resolveLocale(siteLabels.navChrome.shared.searchPlaceholder, locale);
 
 	let {
 		placeholder = defaultPlaceholder,

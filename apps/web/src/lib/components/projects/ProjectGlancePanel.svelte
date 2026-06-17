@@ -1,8 +1,9 @@
 <!--
-  Right sidebar for the project detail page.
-  Each section is a CollapsibleSection card (same primitive as center sections).
-  Conditionally rendered — hidden when data is empty.
-  Desktop only (hidden below lg). Mobile gets ProjectGlancePanelMobile.
+  Glance rail for the project detail page (Overview / Impact / Stack / Services /
+  Links). Each panel is a CollapsibleSection card; conditionally rendered when its
+  data exists. Serves BOTH the desktop right rail and the mobile block below the
+  sections: pass `mobile` for the mobile variant (distinct section keys so open
+  state doesn't collide, 1-column metrics, non-sticky).
 -->
 <script lang="ts">
   import type { Project, Service, ImpactMetric } from '$lib/types';
@@ -10,31 +11,40 @@
   import { getLocale } from '$lib/utils/locale-context';
 
   const locale = getLocale();
-  import { MetricDisplay, StickyPanel } from '$lib/components/brand';
-  import { Badge } from '$lib/components/ui/badge';
+  import { MetricDisplay } from '$lib/components/brand';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+  import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
   import ServiceBadge from './ServiceBadge.svelte';
-  import { projectsDetailContent } from '$lib/content/projects';
+  import { siteLabels } from '$lib/content';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+  import ProjectLinksCard from './ProjectLinksCard.svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
-  const glanceOverviewTitle = resolveLocale(projectsDetailContent.glance.overview, locale);
-  const glanceImpactTitle = resolveLocale(projectsDetailContent.glance.impact, locale);
-  const glanceStackTitle = resolveLocale(projectsDetailContent.glance.stack, locale);
-  const glanceServicesTitle = resolveLocale(projectsDetailContent.glance.services, locale);
-  const glanceLinksTitle = resolveLocale(projectsDetailContent.glance.links, locale);
-  const liveSiteLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabel, locale);
-  const githubLabel = resolveLocale(projectsDetailContent.glance.githubLabel, locale);
-
+  const glanceChrome = siteLabels.projectsChrome.detail.glance;
+  const glanceOverviewTitle = resolveLocale(glanceChrome.overview, locale);
+  const glanceImpactTitle = resolveLocale(glanceChrome.impact, locale);
+  const glanceStackTitle = resolveLocale(glanceChrome.stack, locale);
+  const glanceServicesTitle = resolveLocale(glanceChrome.services, locale);
   let {
     project,
     services,
     serviceSvgContents = {},
+    mobile = false,
+    showLinks = true,
   }: {
     project: Project;
     services: Service[];
     serviceSvgContents?: Record<string, string>;
+    /** Mobile variant: distinct section keys (no persisted-state collision with
+     *  the desktop instance), 1-column metrics, and non-sticky (it sits below the
+     *  sections in the page flow, like the services detail mobile rail). */
+    mobile?: boolean;
+    /** Desktop ProjectDetailPage moves Links under Images in the TOC rail. */
+    showLinks?: boolean;
   } = $props();
+
+  /** Suffix section keys so the mobile + desktop instances don't share open state. */
+  const k = (key: string) => (mobile ? `${key}-m` : key);
 
   const allMetrics = $derived.by((): ImpactMetric[] => {
     if (project.impactMetrics && project.impactMetrics.length > 0) {
@@ -53,18 +63,19 @@
   const metricColors = ['var(--primary)', 'var(--accent)'] as const;
 </script>
 
-<StickyPanel top="5rem">
-  <!-- Inner scroller: the real overflow lives here (the StickyPanel shell only
-       overflows by its padding). It needs its own scrollChain so the nested-
-       scroll exemption tracks THIS element's boundaries, not the shell's. -->
-  <div
-    class="glance-panel"
-    data-testid="project-glance-panel"
-    use:scrollChain
-  >
+<!-- Bare sticky rail (no StickyPanel box) so it reads clean like the services
+     detail rail. scrollChain keeps the nested-scroll exemption on this element. -->
+<div
+  class="glance-rail scrollbar-hidden {mobile ? '' : 'glance-rail--sticky'}"
+  data-testid="project-glance-panel{mobile ? '-mobile' : ''}"
+  use:scrollChain
+>
     <!-- Overview -->
     <div class="mb-4">
-      <CollapsibleSection title={glanceOverviewTitle} sectionKey="glance-overview" open={true}>
+      <CollapsibleSection title={glanceOverviewTitle} sectionKey={k('glance-overview')} open={true}>
+        {#snippet icon()}
+          <SectionIcon name="eye" />
+        {/snippet}
         <div class="glance-overview text-small leading-[1.7]">
           <BlockRenderer doc={resolveLocale(project.description, locale)} />
         </div>
@@ -74,8 +85,11 @@
     <!-- Impact metrics -->
     {#if hasMetrics}
       <div class="mb-4">
-        <CollapsibleSection title={glanceImpactTitle} sectionKey="glance-impact" open={true}>
-          <div class="grid grid-cols-2 gap-4">
+        <CollapsibleSection title={glanceImpactTitle} sectionKey={k('glance-impact')} open={true}>
+          {#snippet icon()}
+            <SectionIcon name="chart" />
+          {/snippet}
+          <div class="grid gap-4 {mobile ? 'grid-cols-1' : 'grid-cols-2'}">
             {#each allMetrics as metric, i}
               <MetricDisplay
                 value={metric.value}
@@ -92,11 +106,14 @@
 
     <!-- Stack -->
     {#if project.stack.length > 0}
-      <div class="mb-4">
-        <CollapsibleSection title={glanceStackTitle} sectionKey="glance-stack" open={true}>
-          <div class="flex flex-wrap gap-1.5">
+      <div data-toc={mobile ? 'glance-stack' : undefined} class="mb-4">
+        <CollapsibleSection title="{glanceStackTitle} ({project.stack.length})" sectionKey={k('glance-stack')} open={true}>
+          {#snippet icon()}
+            <SectionIcon name="layers" />
+          {/snippet}
+          <div class="stack-pills">
             {#each project.stack as tech}
-              <Badge variant="tag" size="xs">{tech}</Badge>
+              <span class="stack-pill">{tech}</span>
             {/each}
           </div>
         </CollapsibleSection>
@@ -105,8 +122,11 @@
 
     <!-- Services (SVG badges with morph hover) -->
     {#if hasServices}
-      <div class="mb-4">
-        <CollapsibleSection title={glanceServicesTitle} sectionKey="glance-services" open={true}>
+      <div data-toc={mobile ? 'glance-services' : undefined} class="mb-4">
+        <CollapsibleSection title="{glanceServicesTitle} ({services.length})" sectionKey={k('glance-services')} open={true}>
+          {#snippet icon()}
+            <SectionIcon name="grid" />
+          {/snippet}
           <div class="flex flex-col gap-2 px-2 py-1">
             {#each services as service}
               <ServiceBadge
@@ -120,52 +140,62 @@
     {/if}
 
     <!-- Links -->
-    {#if hasLinks}
+    {#if hasLinks && showLinks}
       <div class="mb-4">
-        <CollapsibleSection title={glanceLinksTitle} sectionKey="glance-links" open={true}>
-          <div class="flex flex-col gap-2">
-            {#if project.liveUrl}
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 font-mono text-mono text-primary no-underline"
-              >
-                <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M6 3h7v7M13 3L3 13" />
-                </svg>
-                {liveSiteLabel}
-              </a>
-            {/if}
-            {#if project.repoUrl}
-              <a
-                href={project.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 font-mono text-mono text-primary no-underline"
-              >
-                <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                </svg>
-                {githubLabel}
-              </a>
-            {/if}
-          </div>
-        </CollapsibleSection>
+        <ProjectLinksCard
+          {project}
+          sectionKey={k('glance-links')}
+          anchor={mobile ? 'glance-links' : undefined}
+        />
       </div>
     {/if}
-  </div>
-</StickyPanel>
+</div>
 
 <style>
-  .glance-panel {
-    max-height: calc(100dvh - 10rem);
-    overflow-y: auto;
+  /* Bare rail without a border/background box (matches the services detail rail) and
+     NO height cap (as long as its content needs, no internal-scroll clip). Stays
+     sticky: the center column is the longest, so the rail pins at the top while
+     the article scrolls past it. */
+  .glance-rail {
     overflow-x: hidden;
     padding-bottom: 1rem;
+  }
+  /* Desktop rail pins; the mobile instance flows below the sections (no sticky). */
+  .glance-rail--sticky {
+    position: sticky;
+    top: 5rem;
   }
 
   .glance-overview {
     color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  }
+
+  /* Stack rendered as a literal vertical STACK of connected slabs, mirroring the
+     services detail page (visual pun + brand cohesion). */
+  .stack-pills {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .stack-pill {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    padding: 0.45rem 0.7rem;
+    border: 1.5px solid var(--primary);
+    border-bottom-width: 0;
+    border-radius: 0;
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 5%, transparent);
+    cursor: default;
+  }
+  .stack-pill:first-child {
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+  }
+  .stack-pill:last-child {
+    border-bottom-width: 1.5px;
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
   }
 </style>

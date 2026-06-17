@@ -16,6 +16,7 @@ import {
 } from '../schemas/service';
 import type { LocalizedString } from '@repo/shared';
 import type { FetcherContext } from './types';
+import { stackFromTechM2M, type DirectusTechStackJunctionRow } from './projects';
 
 export interface DirectusServiceTranslation {
 	languages_code: string;
@@ -58,10 +59,11 @@ export interface DirectusService {
 	icon?: string | null;
 	svg?: string | null;
 	visible?: boolean | null;
-	stack?: string[] | null;
 	translations?: DirectusServiceTranslation[];
 	deliverables?: DirectusServiceDeliverable[];
 	sections?: DirectusServiceSectionRow[];
+	/** Normalized tech stack: M2M to tech_stack, ordered by junction `sort`. */
+	tech_stack?: DirectusTechStackJunctionRow[];
 }
 
 interface JunctionRow {
@@ -89,7 +91,8 @@ export function toService(row: DirectusService): Service {
 	if (valueProposition) service.valueProposition = valueProposition;
 	const benefitHeadline = toLocalizedStringOrUndef(translations, 'benefit_headline');
 	if (benefitHeadline) service.benefitHeadline = benefitHeadline;
-	if (row.stack && row.stack.length > 0) service.stack = row.stack;
+	const stack = stackFromTechM2M(row.tech_stack);
+	if (stack.length > 0) service.stack = stack;
 
 	const impactValue = toLocalizedStringOrUndef(translations, 'impact_metric_value');
 	const impactLabel = toLocalizedStringOrUndef(translations, 'impact_metric_label');
@@ -125,6 +128,7 @@ export async function fetchServices({ client }: FetcherContext): Promise<readonl
 					{ translations: ['*'] } as unknown as string,
 					{ deliverables: ['id', 'sort', { translations: ['*'] }] } as unknown as string,
 					{ sections: ['id', 'sort', { translations: ['*'] }] } as unknown as string,
+					{ tech_stack: ['sort', { tech_stack_id: ['id', 'name'] }] } as unknown as string,
 				],
 				limit: -1,
 			}),

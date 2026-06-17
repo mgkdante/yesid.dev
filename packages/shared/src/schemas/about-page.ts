@@ -12,6 +12,7 @@ import type {
 	AboutMetric,
 	AboutMethodStep,
 	AboutTestimonial,
+	AboutLanguage,
 	AboutInterest,
 	AboutEducationItem,
 	AboutWeatherConfig,
@@ -55,6 +56,12 @@ export const AboutTestimonialSchema = z.object({
 	company: z.string(),
 	logo: z.string().optional(),
 }) satisfies z.ZodType<AboutTestimonial>;
+
+export const AboutLanguageSchema = z.object({
+	id: z.string(),
+	label: LocalizedStringSchema,
+	image: z.string(),
+}) satisfies z.ZodType<AboutLanguage>;
 
 export const AboutInterestSchema = z.object({
 	id: z.string(),
@@ -124,7 +131,7 @@ export const AboutContentSchema = z.object({
 	metrics: z.array(AboutMetricSchema).readonly(),
 	methodology: z.array(AboutMethodStepSchema).readonly(),
 	testimonials: z.array(AboutTestimonialSchema).readonly(),
-	languages: z.array(z.string()).readonly(),
+	languages: z.array(AboutLanguageSchema).readonly(),
 	education: z.array(AboutEducationItemSchema).readonly(),
 	interests: z.array(AboutInterestSchema).readonly(),
 	weather: AboutWeatherConfigSchema,

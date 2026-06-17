@@ -11,7 +11,7 @@
  * apps/web/src/lib/adapters/directus.ts.
  */
 
-import { readSingleton } from '@directus/sdk';
+import { readItems, readSingleton } from '@directus/sdk';
 import { toLocalizedString } from '../locale';
 import { asSingletonRow } from './singleton';
 import {
@@ -31,6 +31,17 @@ interface BlockRow {
 	translations?: ReadonlyArray<Record<string, unknown>>;
 	[key: string]: unknown;
 }
+
+interface ContactChannelRow {
+	id: string;
+	status?: string;
+	sort?: number | null;
+	href?: unknown;
+	icon?: unknown;
+	translations?: ReadonlyArray<Record<string, unknown> & { languages_code: string }>;
+}
+
+const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 
 export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
@@ -94,14 +105,24 @@ export async function fetchTechStackPageContent({
 // contact-page
 // ---------------------------------------------------------------------------
 
-export function toContactContent(raw: BlockRow): ContactContent {
+export function toContactChannels(rows: readonly ContactChannelRow[]): ContactContent['socials'] {
+	return [...rows]
+		.filter((row) => row.status === undefined || row.status === 'published')
+		.sort((a, b) => (a.sort ?? Number.MAX_SAFE_INTEGER) - (b.sort ?? Number.MAX_SAFE_INTEGER) || a.id.localeCompare(b.id))
+		.map((row) => ({
+			label: toLocalizedString(row.translations ?? [], 'label'),
+			href: str(row.href),
+			icon: str(row.icon),
+		}));
+}
+
+export function toContactContent(
+	raw: BlockRow,
+	socials: ContactContent['socials'],
+): ContactContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const str = (v: unknown): string => (typeof v === 'string' ? v : '');
-	const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
-	const rawSocials =
-		enRow && Array.isArray(enRow.socials) ? (enRow.socials as Array<Record<string, unknown>>) : [];
 	return {
 		pageTitle: toLocalizedString(tr, 'page_title'),
 		stationLabel: toLocalizedString(tr, 'station_label'),
@@ -145,19 +166,27 @@ export function toContactContent(raw: BlockRow): ContactContent {
 			resetLabel: toLocalizedString(tr, 'success_reset_label'),
 			fieldOk: toLocalizedString(tr, 'success_field_ok'),
 		},
-		socials: rawSocials.map((s) => ({
-			label: str(s.label), href: str(s.href), icon: str(s.icon),
-		})),
+		socials,
 		web3formsKey: str(raw.web3forms_key),
 	};
 }
 
 export async function fetchContactContent({ client }: FetcherContext): Promise<ContactContent> {
-	const result = await client.request(
-		readSingleton('block_contact_content', {
-			fields: ['*', { translations: ['*'] } as unknown as string],
-		}),
-	);
+	const [result, contactChannelRows] = await Promise.all([
+		client.request(
+			readSingleton('block_contact_content', {
+				fields: ['*', { translations: ['*'] } as unknown as string],
+			}),
+		),
+		client.request(
+			readItems('contact_channels', {
+				fields: ['id', 'status', 'sort', 'href', 'icon', { translations: ['languages_code', 'label'] } as unknown as string],
+				filter: { status: { _eq: 'published' } },
+				sort: ['sort', 'id'],
+				limit: -1,
+			}),
+		),
+	]);
 	const row = asSingletonRow<BlockRow>(result, 'fetchContactContent/block_contact_content');
-	return ContactContentSchema.parse(toContactContent(row));
+	return ContactContentSchema.parse(toContactContent(row, toContactChannels(contactChannelRows as ContactChannelRow[])));
 }

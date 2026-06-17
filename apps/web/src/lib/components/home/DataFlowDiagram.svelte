@@ -32,10 +32,10 @@
 	const BRAND_COLORS = ['var(--primary)', 'var(--line-amber)'];
 	const TEXT_COLORS = ['var(--primary)', 'var(--accent-text)'];
 
-	// Size-dependent layout constants — sm fits inside cards, lg is prominent on detail pages
+	// Size-dependent layout constants. sm is used inside project/proof cards.
 	let cfg = $derived(size === 'lg'
 		? { nodeW: 110, nodeH: 36, gap: 32, padX: 14, padY: 22, fontSize: 11, rx: 8, dotR: 3, strokeW: 2, lineStroke: 1.8 }
-		: { nodeW: 70, nodeH: 22, gap: 16, padX: 8, padY: 9, fontSize: 8, rx: 5, dotR: 2, strokeW: 1.5, lineStroke: 1.2 }
+		: { nodeW: 96, nodeH: 34, gap: 24, padX: 10, padY: 14, fontSize: 11, rx: 7, dotR: 2.75, strokeW: 1.9, lineStroke: 1.6 }
 	);
 
 	// Dynamic viewBox calculation based on stack length and size config
@@ -54,7 +54,11 @@
 	);
 
 	// Max label length based on node width and font size
-	let maxLabelLen = $derived(size === 'lg' ? 14 : 10);
+	let maxLabelLen = $derived(size === 'lg' ? 14 : 12);
+
+	function stopCarouselGesturePropagation(event: WheelEvent) {
+		event.stopPropagation();
+	}
 
 	onMount(async () => {
 		if (isPrefersReducedMotion() || !container) return;
@@ -128,9 +132,13 @@
 <div
 	bind:this={container}
 	class="data-flow-diagram"
+	data-carousel-drag-ignore="true"
 	class:scrollable={stack.length > 4}
 	use:scrollChain
+	class:size-sm={size === 'sm'}
 	class:size-lg={size === 'lg'}
+	onwheel={stopCarouselGesturePropagation}
+	style="--df-svg-width: {svgWidth}px;"
 >
 	<svg
 		viewBox="0 0 {svgWidth} {svgHeight}"
@@ -223,6 +231,18 @@
 	.data-flow-diagram.scrollable {
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
+	}
+
+	@media (max-width: 767px) {
+		.data-flow-diagram.size-sm {
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.data-flow-diagram.size-sm svg {
+			width: max(100%, var(--df-svg-width));
+			max-width: none;
+		}
 	}
 
 	.data-flow-diagram.scrollable::-webkit-scrollbar {

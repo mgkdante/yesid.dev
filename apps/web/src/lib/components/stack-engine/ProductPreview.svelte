@@ -24,6 +24,7 @@
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { LAYER_TEACHING } from './layer-teaching';
 	import { FRAME_SIZES, buildComposedPreview, resolveArchetypePreview } from './preview-configs';
+	import TechIcon from './TechIcon.svelte';
 
 	let {
 		archetype = null,
@@ -98,6 +99,7 @@
 				{/if}
 			</div>
 			{#each resolved.slots as slot, i (i)}
+				{@const tech = techById.get(slot.techId)}
 				<button
 					type="button"
 					class="slot slot-layer-{slot.layer}"
@@ -111,7 +113,8 @@
 					onclick={() => toggleCaption(i)}
 				>
 					<span class="slot-role">{resolveLocale(slot.role, locale)}</span>
-					<span class="slot-name">{techById.get(slot.techId)?.name ?? slot.techId}</span>
+					<TechIcon icon={tech?.icon ?? null} label={tech?.name ?? slot.techId} class="slot-tech-icon" />
+					<span class="slot-name">{tech?.name ?? slot.techId}</span>
 				</button>
 			{/each}
 		</div>
@@ -227,12 +230,22 @@
 		max-width: 100%;
 	}
 
+	.slot :global(.slot-tech-icon) {
+		width: 14px;
+		height: 14px;
+	}
+
 	/* go2/w5 taste round 2 (fit audit): shallow slots (infra/data bars ≈ 18px
 	   rendered at 375px viewports) can't hold role + name — the name is the
 	   payload, the role hint yields below 480px instead of clipping it. */
 	@media (max-width: 479px) {
 		.slot-role {
 			display: none;
+		}
+
+		.slot :global(.slot-tech-icon) {
+			width: 12px;
+			height: 12px;
 		}
 	}
 

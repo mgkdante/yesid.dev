@@ -63,7 +63,7 @@ export const ContactSuccessSchema = z.object({
 // z.infer produces the same readonly marker for bidirectional drift detection.
 // Exported so consumers can import the primitive shape directly.
 export const ContactSocialLinkSchema = z.object({
-	label: z.string(),
+	label: LocalizedStringSchema,
 	href: z.string(),
 	icon: z.string(),
 });

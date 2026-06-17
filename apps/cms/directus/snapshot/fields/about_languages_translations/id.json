@@ -1,0 +1,28 @@
+{
+  "collection": "about_languages_translations",
+  "field": "id",
+  "type": "integer",
+  "meta": {
+    "collection": "about_languages_translations",
+    "field": "id",
+    "hidden": true,
+    "interface": "input",
+    "readonly": true,
+    "required": false,
+    "searchable": true,
+    "sort": 1,
+    "special": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "id",
+    "table": "about_languages_translations",
+    "data_type": "integer",
+    "is_nullable": false,
+    "is_unique": true,
+    "is_primary_key": true,
+    "has_auto_increment": true,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

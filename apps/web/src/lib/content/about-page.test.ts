@@ -12,6 +12,25 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.identity.valueProp.en.length).toBeGreaterThan(0);
 		});
 
+		it('keeps the identity value prop concise and removes the old mom-computer story', () => {
+			expect(aboutPageContent.identity.valueProp.en.length).toBeLessThanOrEqual(260);
+			expect(aboutPageContent.identity.valueProp.en.toLowerCase()).not.toContain('mom');
+			expect(aboutPageContent.identity.valueProp.en).not.toContain('2005');
+			expect(aboutPageContent.identity.valueProp.en).toContain(
+				'so they can be behind the wheel making their own decisions.',
+			);
+			expect(aboutPageContent.identity.valueProp.en).toBe(
+				"I'm Yesid a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so they can be behind the wheel making their own decisions.",
+			);
+			expect(aboutPageContent.identity.valueProp.en).not.toContain('take advantage');
+			const valuePropFr = aboutPageContent.identity.valueProp.fr;
+			expect(valuePropFr).toBeDefined();
+			expect(valuePropFr?.length).toBeLessThanOrEqual(300);
+			expect(valuePropFr?.toLowerCase()).not.toContain('mère');
+			expect(valuePropFr).not.toContain('2005');
+			expect(valuePropFr).not.toContain('Je suis Yesid');
+		});
+
 		it('headshot points to webp file', () => {
 			expect(aboutPageContent.identity.headshot).toMatch(/\.webp$/);
 		});
@@ -70,8 +89,8 @@ describe('aboutPageContent', () => {
 	});
 
 	describe('testimonials', () => {
-		it('has exactly one playful quote', () => {
-			expect(aboutPageContent.testimonials).toHaveLength(1);
+		it('has the CMS-fed quote carousel entries in order', () => {
+			expect(aboutPageContent.testimonials).toHaveLength(3);
 			expect(aboutPageContent.testimonials[0]?.quote.en).toBe(
 				"You have the gift of perseverance, and that's what makes you a genius too.",
 			);
@@ -79,6 +98,14 @@ describe('aboutPageContent', () => {
 				"Tu as le don de la persévérance, et c'est ce qui fait de toi un génie.",
 			);
 			expect(aboutPageContent.testimonials[0]?.author).toBe('Guy Sensei');
+			expect(aboutPageContent.testimonials[1]?.quote.en).toBe(
+				'What matters in life is not what happens to you but what you remember and how you remember it.',
+			);
+			expect(aboutPageContent.testimonials[1]?.author).toBe('Gabriel Garcia Marquez');
+			expect(aboutPageContent.testimonials[2]?.quote.en).toBe(
+				'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.',
+			);
+			expect(aboutPageContent.testimonials[2]?.author).toBe('Marcus Aurelius');
 		});
 
 		it('every testimonial has required fields', () => {
@@ -92,8 +119,28 @@ describe('aboutPageContent', () => {
 	});
 
 	describe('languages', () => {
-		it('has exactly the three native language names', () => {
-			expect(aboutPageContent.languages).toEqual(['Español', 'English', 'Français']);
+		it('has exactly the three CMS-backed language panels in order', () => {
+			expect(aboutPageContent.languages).toEqual([
+				{
+					id: 'quebec',
+					label: { en: 'French', fr: 'Français' },
+					image: expect.any(String),
+				},
+				{
+					id: 'canada',
+					label: { en: 'English', fr: 'Anglais' },
+					image: expect.any(String),
+				},
+				{
+					id: 'colombia',
+					label: { en: 'Spanish', fr: 'Espagnol' },
+					image: expect.any(String),
+				},
+			]);
+			expect(JSON.stringify(aboutPageContent.languages)).not.toContain('"flag"');
+			for (const language of aboutPageContent.languages) {
+				expect(language.image.length).toBeGreaterThan(0);
+			}
 		});
 	});
 
@@ -141,6 +188,11 @@ describe('aboutPageContent', () => {
 		it('uses the real-person transit and space rows', () => {
 			const ids = aboutPageContent.interests.map((i) => i.id);
 			expect(ids).toEqual(['anime', 'transit', 'space', 'food']);
+			expect(aboutPageContent.interests[0]).toMatchObject({
+				id: 'anime',
+				image: '/images/about/interests/anime.webp',
+				label: { en: 'Manga', fr: 'Manga' },
+			});
 			expect(aboutPageContent.interests[1]).toMatchObject({
 				id: 'transit',
 				image: '/images/about/interests/transit.webp',

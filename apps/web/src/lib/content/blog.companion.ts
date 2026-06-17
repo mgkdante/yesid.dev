@@ -1,6 +1,6 @@
 // Hand-written companion to the CMS-derived `blog.ts` (slice-18m).
 //
-// Holds the route chrome (listing + detail) + the SVG fallback resolver.
+// Holds the SVG fallback resolver and helper functions.
 // The CMS-derived `blog.ts` only emits `blogPosts: readonly BlogPost[]`;
 // the html/body bridge lives in the runtime adapter (block-editor → HTML
 // serialization).
@@ -9,66 +9,8 @@
 // and the `/src/content/blog/**` markdown tree were deleted — post HTML now
 // flows exclusively from the CMS block-editor pipeline.
 
-import type { BlogPost, BlogCategory, BlogAnimation, Locale, LocalizedString } from '$lib/types';
+import type { BlogPost, BlogCategory, BlogAnimation, Locale } from '$lib/types';
 import { blogPosts } from './blog';
-
-/** Listing-page chrome copy extracted from components in Task 17b-7b.
- *  Consumed by BlogListingPage, BlogFilterMobile, BlogFilterSidebar, BlogRouteMap. */
-export const blogListingContent = {
-	mobileHeading: { en: 'Blog', fr: 'Blogue' } satisfies LocalizedString,
-	searchPlaceholder: { en: 'Search posts...', fr: 'Chercher des articles...' } satisfies LocalizedString,
-	resultNoun: { en: 'result', fr: 'résultat' } satisfies LocalizedString,
-	noPostsMessage: {
-		en: 'No posts found. Try adjusting your filters.',
-		fr: 'Aucun article trouvé. Essaie d\'ajuster tes filtres.',
-	} satisfies LocalizedString,
-	filters: {
-		filtersLabel: { en: 'Filters', fr: 'Filtres' } satisfies LocalizedString,
-		allLabel: { en: 'All', fr: 'Tous' } satisfies LocalizedString,
-		language: { en: 'Language', fr: 'Langue' } satisfies LocalizedString,
-		dateRange: { en: 'Date Range', fr: 'Période' } satisfies LocalizedString,
-		from: { en: 'From', fr: 'De' } satisfies LocalizedString,
-		to: { en: 'To', fr: 'À' } satisfies LocalizedString,
-		tags: { en: 'Tags', fr: 'Étiquettes' } satisfies LocalizedString,
-		/** Prefix before active filter in the "Showing: {tag}" mobile status label. */
-		showingPrefix: { en: 'Showing', fr: 'Affichage' } satisfies LocalizedString,
-	},
-	routeMap: {
-		title: { en: 'Route Map', fr: 'Carte du trajet' } satisfies LocalizedString,
-		terminus: { en: 'Terminus', fr: 'Terminus' } satisfies LocalizedString,
-	},
-} as const;
-
-/** Blog-detail-page chrome copy extracted from components in Task 17b-7c.
- *  Consumed by BlogContent, BlogDetailHeader, BlogDetailPage, BlogTocPill. */
-export const blogDetailContent = {
-	code: {
-		copyAria: { en: 'Copy code to clipboard', fr: 'Copier le code dans le presse-papiers' } satisfies LocalizedString,
-		copyLabel: { en: 'Copy', fr: 'Copier' } satisfies LocalizedString,
-		errorLabel: { en: 'Error', fr: 'Erreur' } satisfies LocalizedString,
-	},
-	backNav: {
-		toPersonal: { en: '← back to personal corner', fr: '← retour au coin personnel' } satisfies LocalizedString,
-		toDispatches: { en: '← back to dispatches', fr: '← retour aux dépêches' } satisfies LocalizedString,
-	},
-	header: {
-		postTagsAria: { en: 'Post tags', fr: 'Étiquettes de l\'article' } satisfies LocalizedString,
-		readingTimeLabel: { en: '{minutes} min read', fr: '{minutes} min de lecture' } satisfies LocalizedString,
-	},
-	page: {
-		readingMode: { en: 'Reading mode', fr: 'Mode lecture' } satisfies LocalizedString,
-		tocSectionTitle: { en: 'On this page', fr: 'Sur cette page' } satisfies LocalizedString,
-		metaCategory: { en: 'Category', fr: 'Catégorie' } satisfies LocalizedString,
-		metaWords: { en: 'Words', fr: 'Mots' } satisfies LocalizedString,
-		metaReadTime: { en: 'Read time', fr: 'Temps de lecture' } satisfies LocalizedString,
-		metaLanguage: { en: 'Language', fr: 'Langue' } satisfies LocalizedString,
-		metaTags: { en: 'Tags', fr: 'Étiquettes' } satisfies LocalizedString,
-	},
-	tocPill: {
-		openAria: { en: 'Table of contents', fr: 'Table des matières' } satisfies LocalizedString,
-		closeAria: { en: 'Close table of contents', fr: 'Fermer la table des matières' } satisfies LocalizedString,
-	},
-} as const;
 
 // --- Fallback SVG + animation resolution ---
 

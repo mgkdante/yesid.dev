@@ -2456,8 +2456,6 @@
     "presets": null,
     "fields": [
       "id",
-      "images",
-      "slugs",
       "sort",
       "status",
       "translations",

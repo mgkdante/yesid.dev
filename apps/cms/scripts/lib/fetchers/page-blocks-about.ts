@@ -1,14 +1,14 @@
 /**
- * about-page block fetcher — block_about_content.
+ * about-page block fetcher: block_about_content.
  *
  * The most complex block: 13 nested types. go2-t1b2: identity/weather/cta/
  * stop_labels/labels/meta now read FLAT columns (locale-invariant leaves on
  * the parent row, per-locale strings + the polaroids repeater on
  * translations); the list repeaters (metrics/methodology/testimonials/
- * interests) are unchanged. Parent-row arrays now carry languages + education.
+ * interests) are unchanged. Languages are normalized in about_languages.
  */
 
-import { readSingleton } from '@directus/sdk';
+import { readItems, readSingleton } from '@directus/sdk';
 import { toLocalizedString } from '../locale';
 import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
 import { asSingletonRow } from './singleton';
@@ -20,7 +20,90 @@ interface BlockRow {
 	[key: string]: unknown;
 }
 
-export function toAboutContent(raw: BlockRow): AboutContent {
+const LEGACY_LANGUAGE_ITEMS: Record<string, AboutContent['languages'][number]> = {
+	'français': {
+		id: 'quebec',
+		label: { en: 'French', fr: 'Français' },
+		image: '/images/about/languages/quebec.svg',
+	},
+	'english': {
+		id: 'canada',
+		label: { en: 'English', fr: 'Anglais' },
+		image: '/images/about/languages/canada.svg',
+	},
+	'español': {
+		id: 'colombia',
+		label: { en: 'Spanish', fr: 'Espagnol' },
+		image: '/images/about/languages/colombia.svg',
+	},
+};
+
+function toLanguageItem(item: unknown): AboutContent['languages'][number] | null {
+	if (typeof item === 'string') {
+		return LEGACY_LANGUAGE_ITEMS[item.toLowerCase()] ?? {
+			id: item.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+			label: { en: item },
+			image: '',
+		};
+	}
+	if (!item || typeof item !== 'object') return null;
+	const record = item as Record<string, unknown>;
+	const rawLabel = record.label;
+	const label: LocalizedString = { en: '' };
+	if (rawLabel && typeof rawLabel === 'object') {
+		const rawLabelRecord = rawLabel as Record<string, unknown>;
+		label.en = typeof rawLabelRecord.en === 'string' ? rawLabelRecord.en : '';
+		if (typeof rawLabelRecord.fr === 'string') label.fr = rawLabelRecord.fr;
+		if (typeof rawLabelRecord.es === 'string') label.es = rawLabelRecord.es;
+	} else {
+		label.en =
+			typeof rawLabel === 'string'
+				? rawLabel
+				: typeof record.label_en === 'string'
+					? record.label_en
+					: '';
+		if (typeof record.label_fr === 'string') label.fr = record.label_fr;
+		if (typeof record.label_es === 'string') label.es = record.label_es;
+	}
+	return {
+		id: typeof record.id === 'string' ? record.id : '',
+		label,
+		image: typeof record.image === 'string' ? record.image : '',
+	};
+}
+
+export interface DirectusAboutLanguageTranslation {
+	languages_code: string;
+	label?: string | null;
+}
+
+export interface DirectusAboutLanguageRow {
+	id: string;
+	status?: string | null;
+	sort?: number | null;
+	image?: string | { id?: string | null } | null;
+	translations?: DirectusAboutLanguageTranslation[];
+}
+
+function imageIdFromField(image: DirectusAboutLanguageRow['image']): string {
+	if (!image) return '';
+	if (typeof image === 'string') return image;
+	return image.id ?? '';
+}
+
+export function toAboutLanguages(rows: readonly DirectusAboutLanguageRow[]): AboutContent['languages'] {
+	return rows
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((row) => ({
+			id: row.id,
+			label: toLocalizedString(row.translations ?? [], 'label'),
+			image: imageIdFromField(row.image),
+		}))
+		.filter((row) => row.id.length > 0 && row.label.en.length > 0 && row.image.length > 0);
+}
+
+export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent['languages']): AboutContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
@@ -166,15 +249,15 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 	});
 
 	// --- languages: read from parent row ---
-	const languages = Array.isArray(raw.languages)
-		? (raw.languages as unknown[]).filter((item): item is string => typeof item === 'string')
-		: [];
+	const languages = normalizedLanguages ?? (Array.isArray(raw.languages)
+		? (raw.languages as unknown[]).map(toLanguageItem).filter((item): item is AboutContent['languages'][number] => item !== null)
+		: []);
 
 	// --- education: per-locale repeater on the translation rows (school/program
 	// are localized strings, icon is locale-invariant). Same shape as the
 	// metrics/methodology/interests repeaters above; the en row is the base and
 	// fr/es are zipped by index. (Earlier this read bilingual school_en/_fr
-	// columns from the parent row, but that field was never created — the data
+	// columns from the parent row, but that field was never created. The data
 	// lives on the translation rows, so the parent read always yielded [].) ---
 	const educationByLocale = new Map<string, Array<Record<string, unknown>>>();
 	for (const row of tr) {
@@ -306,11 +389,22 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 }
 
 export async function fetchAboutContent({ client }: FetcherContext): Promise<AboutContent> {
-	const result = await client.request(
-		readSingleton('block_about_content', {
-			fields: ['*', { translations: ['*'] } as unknown as string],
-		}),
-	);
+	const [result, languageRows] = await Promise.all([
+		client.request(
+			readSingleton('block_about_content', {
+				fields: ['*', { translations: ['*'] } as unknown as string],
+			}),
+		),
+		client.request(
+			readItems('about_languages', {
+				fields: ['id', 'status', 'sort', 'image', { translations: ['languages_code', 'label'] }] as unknown as string[],
+				filter: { status: { _eq: 'published' } },
+				sort: ['sort'],
+				limit: -1,
+			}),
+		),
+	]);
 	const row = asSingletonRow<BlockRow>(result, 'fetchAboutContent/block_about_content');
-	return AboutContentSchema.parse(toAboutContent(row));
+	const languages = toAboutLanguages(languageRows as unknown as DirectusAboutLanguageRow[]);
+	return AboutContentSchema.parse(toAboutContent(row, languages));
 }

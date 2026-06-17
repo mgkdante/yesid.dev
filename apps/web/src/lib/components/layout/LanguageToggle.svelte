@@ -20,7 +20,7 @@
   state (filters, ?station, the engine seed) survives the language change.
 -->
 <script lang="ts">
-	import { sharedChromeContent } from '$lib/content';
+	import { siteLabels } from '$lib/content';
 	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 	import { localizeUrl } from '$lib/utils/locale-routing';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
@@ -47,7 +47,7 @@
 	const idx = $derived(Math.max(0, availableLocales.indexOf(locale)));
 	const next = $derived(availableLocales[(idx + 1) % availableLocales.length]);
 	const nextHref = $derived(localizeUrl(url, next));
-	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
+	const switcherAria = $derived(resolveLocale(siteLabels.navChrome.shared.localeSwitcherAria, locale));
 	const ariaLabel = $derived(`${switcherAria}: ${NAMES[locale] ?? locale}`);
 
 	// One fingerboard per locale, alternating sides of the pole, current emphasised.

@@ -12,7 +12,7 @@
 	const locale = getLocale();
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { projectsListingContent } from '$lib/content/projects';
+	import { siteLabels } from '$lib/content';
 	import { persisted } from '$lib/state/persisted.svelte';
 
 	let {
@@ -44,13 +44,14 @@
 
 	// Labels pulled from content layer (Task 17b-7d). Same object as
 	// ProjectFilterSidebar for deduplication.
+	const filters = siteLabels.projectsChrome.listing.filters;
 	const labels = {
-		filters: projectsListingContent.filters.filtersLabel,
-		services: projectsListingContent.filters.services,
-		tags: projectsListingContent.filters.tags,
-		stack: projectsListingContent.filters.techStack,
-		all: projectsListingContent.filters.allLabel,
-		showing: projectsListingContent.filters.showingPrefix,
+		filters: filters.filtersLabel,
+		services: filters.services,
+		tags: filters.tags,
+		stack: filters.techStack,
+		all: filters.allLabel,
+		showing: filters.showingPrefix,
 	};
 
 	let summary = $derived.by(() => {

@@ -1,0 +1,29 @@
+{
+  "collection": "about_languages",
+  "field": "sort",
+  "type": "integer",
+  "meta": {
+    "collection": "about_languages",
+    "field": "sort",
+    "hidden": false,
+    "interface": "input",
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 3,
+    "special": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "sort",
+    "table": "about_languages",
+    "data_type": "integer",
+    "default_value": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_primary_key": false,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

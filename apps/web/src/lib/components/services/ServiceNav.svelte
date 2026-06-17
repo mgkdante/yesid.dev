@@ -11,7 +11,6 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { navDirections } from '$lib/content/nav';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { SectionLabel } from '$lib/components/brand';
 
@@ -27,8 +26,8 @@
 	let prevTitle = $derived(prev ? resolveLocale(prev.title, locale) : '');
 	let nextTitle = $derived(next ? resolveLocale(next.title, locale) : '');
 	let navAria = $derived(resolveLocale(siteLabels.servicesChrome.detail.serviceNavAria, locale));
-	let prevLabel = $derived(resolveLocale(navDirections.previous, locale));
-	let nextLabel = $derived(resolveLocale(navDirections.next, locale));
+	let prevLabel = $derived(resolveLocale(siteLabels.navChrome.directions.previous, locale));
+	let nextLabel = $derived(resolveLocale(siteLabels.navChrome.directions.next, locale));
 </script>
 
 <nav class="service-nav" aria-label={navAria}>

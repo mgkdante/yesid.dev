@@ -1,22 +1,63 @@
 <script lang="ts">
+	import type { AboutLanguage } from '$lib/types';
+	import { asset } from '$lib/directus/assets';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { languages, stop, label }: { languages: readonly string[]; stop: string; label: string } = $props();
+	const locale = getLocale();
+
+	let { languages, stop, label }: { languages: readonly AboutLanguage[]; stop: string; label: string } = $props();
+
+	let activeIndex = $state(-1);
+
+	function handleTap(index: number) {
+		activeIndex = activeIndex === index ? -1 : index;
+	}
+
+	function resolveLanguageImage(image: string): string {
+		if (image.startsWith('/') || image.startsWith('http') || image.startsWith('data:')) return image;
+		return asset(image);
+	}
 </script>
 
 <div class="group h-full" use:cursorGlow>
-	<Card class="h-full p-3" data-testid="about-languages">
-		<div class="relative flex h-full flex-col">
+	<Card class="relative h-full !gap-0 overflow-hidden !py-0" data-testid="about-languages">
+		<div class="language-stop-badge absolute top-3 left-4 z-20">
 			<StopLabel {stop} {label} />
+		</div>
+		<div class="relative flex h-full flex-col">
+			<div class="language-strip flex h-full min-h-36 flex-col">
+				{#each languages as language, i}
+					{@const languageLabel = resolveLocale(language.label, locale)}
+					{@const imageSrc = resolveLanguageImage(language.image)}
+					<button
+						type="button"
+						class="tap-press language-flag relative flex min-h-0 flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
+						class:language-flag-seamed={i > 0}
+						class:language-flag-active={activeIndex === i}
+						data-testid="about-language-flag"
+						data-region={language.id}
+						aria-label={languageLabel}
+						aria-pressed={activeIndex === i}
+						onclick={() => handleTap(i)}
+					>
+						<img
+							src={imageSrc}
+							alt=""
+							class="flag-image absolute inset-0 transition-transform duration-500 ease-out"
+							data-testid="about-language-image"
+							loading="lazy"
+							decoding="async"
+						/>
+						<div class="flag-overlay absolute inset-0 transition-opacity duration-500"></div>
 
-			<div class="lang-line mt-4 flex flex-1 flex-col justify-center">
-				{#each languages as language}
-					<div class="lang-stop">
-						<span class="lang-node" aria-hidden="true"></span>
-						<span class="lang-name">{language}</span>
-					</div>
+						<span class="flag-label absolute z-10 font-mono text-caption font-semibold tracking-[3px]">
+							{languageLabel}
+						</span>
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -24,60 +65,92 @@
 </div>
 
 <style>
-	/* No filled rows (operator). The three languages are STATIONS on one
-	   orange transit line — the brand motif carried over from Education. The
-	   vertical line threads the nodes; names are big and legible. */
-	.lang-line {
-		position: relative;
-		gap: 1.4rem;
-		padding-left: 0.35rem;
+	.language-strip {
+		container-type: inline-size;
+		isolation: isolate;
 	}
 
-	/* The line itself — runs through the node centres (node is 0.85rem wide,
-	   so its centre sits at padding-left + 0.425rem). */
-	.lang-line::before {
-		content: '';
-		position: absolute;
-		left: calc(0.35rem + 0.42rem);
-		top: 0.6rem;
-		bottom: 0.6rem;
-		width: 2px;
-		transform: translateX(-50%);
-		background: linear-gradient(
-			180deg,
-			color-mix(in srgb, var(--primary) 70%, transparent),
-			color-mix(in srgb, var(--primary) 35%, transparent)
-		);
+	.language-stop-badge {
+		border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+		border-radius: var(--radius-sm);
+		background: color-mix(in srgb, var(--background) 72%, transparent);
+		box-shadow: 0 8px 24px color-mix(in srgb, var(--background) 45%, transparent);
+		padding: 0.22rem 0.42rem;
+		backdrop-filter: blur(5px);
 	}
 
-	.lang-stop {
-		position: relative;
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		align-items: center;
-		gap: 0.85rem;
+	button.language-flag {
+		appearance: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		background: transparent;
+		cursor: pointer;
 	}
 
-	/* Station node — orange dot with a soft halo, sitting on the line. */
-	.lang-node {
-		width: 0.85rem;
-		height: 0.85rem;
-		border-radius: 999px;
-		background: var(--primary);
-		box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 14%, transparent);
-		transition: box-shadow var(--duration-normal) var(--ease-default);
+	.language-flag {
+		min-width: 0;
 	}
 
-	.group:hover .lang-node {
-		box-shadow: 0 0 0 5px color-mix(in srgb, var(--primary) 22%, transparent);
+	.language-flag-seamed {
+		border-top: 1px solid color-mix(in srgb, var(--primary) 52%, transparent);
 	}
 
-	/* Legible native names — bigger heading type, foreground ink. */
-	.lang-name {
-		font-family: var(--font-heading);
-		font-size: var(--text-body);
-		font-weight: 700;
-		letter-spacing: -0.005em;
+	.flag-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: brightness(0.96) saturate(1.12);
+		transform: scale(1.01);
+	}
+
+	.flag-overlay {
+		background: color-mix(in srgb, var(--background) 12%, transparent);
+	}
+
+	.flag-label {
+		right: clamp(0.35rem, 1.8cqw, 0.7rem);
+		bottom: clamp(0.2rem, 1cqw, 0.45rem);
+		padding: 0.1rem 0.35rem;
+		border: 1px solid color-mix(in srgb, var(--primary) 42%, transparent);
+		border-radius: var(--radius-sm);
+		background: color-mix(in srgb, var(--background) 62%, transparent);
+		backdrop-filter: blur(4px);
 		color: var(--foreground);
+		font-size: clamp(0.5rem, 2.65cqw, var(--text-caption));
+		letter-spacing: clamp(0.04em, 0.7cqw, 0.22em);
+		text-shadow: 0 1px 4px color-mix(in srgb, var(--background) 82%, transparent);
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	:global([data-theme='light']) .flag-image,
+	:global(.theme-light) .flag-image {
+		filter: brightness(1.04) saturate(1.08);
+	}
+
+	.language-flag:hover .flag-image,
+	.language-flag.language-flag-active .flag-image {
+		filter: brightness(1.05) saturate(1.18);
+		transform: scale(1.04);
+	}
+
+	:global([data-theme='light']) .language-flag:hover .flag-image,
+	:global(.theme-light) .language-flag:hover .flag-image,
+	:global([data-theme='light']) .language-flag.language-flag-active .flag-image,
+	:global(.theme-light) .language-flag.language-flag-active .flag-image {
+		filter: brightness(1.1) saturate(1.13);
+	}
+
+	.language-flag:hover .flag-overlay,
+	.language-flag.language-flag-active .flag-overlay {
+		opacity: var(--opacity-subtle);
+	}
+
+	.language-flag:hover,
+	.language-flag.language-flag-active {
+		flex: 1.55;
+		z-index: 5;
 	}
 </style>

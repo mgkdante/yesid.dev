@@ -93,9 +93,13 @@ describe('project optional metadata fields', () => {
 	it('projects without new fields still work (optional)', async () => {
 		const project = await getProjectBySlug('yesid-dev');
 		expect(project).toBeDefined();
+		// yesid-dev carries none of the deployment-style metadata fields…
 		expect(project?.location).toBeUndefined();
 		expect(project?.environment).toBeUndefined();
 		expect(project?.version).toBeUndefined();
-		expect(project?.impactMetrics).toBeUndefined();
+		// …but its case study (content-projects.1) does define impact metrics, so
+		// the optional fields are exercised both present and absent on one project.
+		expect(project?.impactMetrics).toBeDefined();
+		expect(project!.impactMetrics!.length).toBe(5);
 	});
 });
