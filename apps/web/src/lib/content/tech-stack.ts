@@ -596,7 +596,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'On yesid.dev, GitHub Actions runs the test suite (<code>bun run test</code>), type checks (<code>bun run check</code>), and triggers Vercel deployments on every push. Pull request workflows run the full test matrix and block merging if tests fail. The pipeline also handles scheduled tasks and can be extended with Playwright E2E tests as the project grows. Having CI run on every commit means I catch broken builds immediately, not after deploying to production.',
+							text: 'On yesid.dev, GitHub Actions runs the cheap CI gate on every push and PR: type checks, unit tests, token drift checks, package tests, and builds. Playwright E2E is still part of the procedure, but I trigger it manually when a release, risky UI change, or production check needs browser proof. That keeps broken builds visible without burning Vercel Edge Requests on every commit.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -609,7 +609,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Sur yesid.dev, GitHub Actions roule la suite de tests (<code>bun run test</code>), les vérifications de types (<code>bun run check</code>) et déclenche les déploiements Vercel à chaque push. Les workflows de pull request roulent toute la matrice de tests et bloquent la fusion si les tests échouent. Le pipeline gère aussi les tâches planifiées et peut être étendu avec des tests E2E Playwright à mesure que le projet grandit. Avoir la CI qui roule à chaque commit, ça veut dire que j\'attrape les builds brisés tout de suite, pas après le déploiement en production.',
+							text: 'Sur yesid.dev, GitHub Actions roule le contrôle CI léger à chaque push et PR : vérification de types, tests unitaires, drift des tokens, tests de packages et builds. Les tests E2E Playwright restent dans la procédure, mais je les déclenche manuellement quand une release, un changement UI risqué ou une vérification prod a besoin d\'une preuve navigateur. Ça garde les builds cassés visibles sans brûler des Vercel Edge Requests à chaque commit.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -652,7 +652,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'GitHub Actions integrates directly with where my code lives, no separate CI service to configure, no webhooks to maintain, no additional accounts to manage. I define my test and deploy pipeline in <code>.github/workflows/</code>, and it runs on every push. The tight integration means PR checks show test results inline, deployment status appears on the commit, and I can trigger workflows from GitHub\'s UI when needed. For solo and small-team projects, it\'s the simplest path to professional CI/CD.',
+							text: 'GitHub Actions integrates directly with where my code lives: no separate CI service, no webhooks to maintain, no extra accounts. I define the pipeline in <code>.github/workflows/</code>, keep the required checks cheap by default, and use manual workflow dispatch for heavier verification like Playwright. PR checks stay visible inline, deployments stay tied to commits, and the expensive tests run when they are actually useful.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -665,7 +665,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'GitHub Actions s\'intègre directement là où mon code vit : pas de service CI séparé à configurer, pas de webhooks à maintenir, pas de comptes additionnels à gérer. Je définis mon pipeline de test et de déploiement dans <code>.github/workflows/</code>, et ça roule à chaque push. L\'intégration serrée fait que les vérifications de PR affichent les résultats de tests directement dans la page, l\'état du déploiement apparaît sur le commit, et je peux déclencher des workflows depuis l\'interface de GitHub au besoin. Pour les projets solos et en petite équipe, c\'est le chemin le plus simple vers une CI/CD professionnelle.',
+							text: 'GitHub Actions s\'intègre directement là où mon code vit : pas de service CI séparé, pas de webhooks à maintenir, pas de comptes additionnels. Je définis le pipeline dans <code>.github/workflows/</code>, je garde les checks requis légers par défaut et j\'utilise le déclenchement manuel pour les vérifications plus lourdes comme Playwright. Les checks de PR restent visibles dans GitHub, les déploiements restent liés aux commits et les tests coûteux roulent quand ils sont vraiment utiles.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -992,7 +992,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Playwright is planned for yesid.dev\'s E2E testing layer, verifying critical user flows like navigating the tech stack diagram, opening detail panels, using filters, and the Build Your Stack configurator across Chrome, Firefox, and Safari. It integrates with GitHub Actions to run browser tests on every push, and its screenshot comparison can catch visual regressions that unit tests would never detect.',
+							text: 'Playwright is yesid.dev\'s manual E2E layer for critical flows: navigating the tech stack diagram, opening detail panels, using filters, checking mobile layouts, and validating release candidates in a real browser. It is wired into GitHub Actions as an explicit workflow dispatch, not a default push check, so I can get browser proof without spending Edge Requests on routine commits.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -1005,7 +1005,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Playwright est prévu pour la couche de tests E2E de yesid.dev, en vérifiant les parcours utilisateurs critiques comme naviguer dans le diagramme de la pile technique, ouvrir les panneaux de détails, utiliser les filtres et le configurateur Build Your Stack à travers Chrome, Firefox et Safari. Il s\'intègre avec GitHub Actions pour rouler les tests de navigateur à chaque push, et sa comparaison de captures d\'écran peut attraper les régressions visuelles que les tests unitaires ne détecteraient jamais.',
+							text: 'Playwright est la couche E2E manuelle de yesid.dev pour les parcours critiques : naviguer dans le diagramme du stack, ouvrir les panneaux de détails, utiliser les filtres, vérifier les layouts mobile et valider une release candidate dans un vrai navigateur. Il est branché dans GitHub Actions comme workflow déclenché explicitement, pas comme check par défaut à chaque push, donc je peux obtenir une preuve navigateur sans dépenser des Edge Requests sur les commits routiniers.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
