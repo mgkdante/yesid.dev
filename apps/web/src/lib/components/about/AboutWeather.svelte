@@ -1,7 +1,7 @@
 <!--
   Weather + Location-reveal widget.
   Wordplay hook ("Guess where I am?") leads the visitor to discover Montreal.
-  GO Wave 4: full animated scene system — one crafted Montréal vignette per
+  GO Wave 4: full animated scene system, one crafted Montréal vignette per
   condition family (WeatherScene.svelte), day/night from the data's icon
   suffix, theme-aware palettes, crafted inline glyph (WeatherGlyph.svelte).
   Stop number computed from prop. Card dimensions/placement unchanged.
@@ -36,12 +36,12 @@
 	// --- Weather freshness (slice-28.1, audit #20/#122) ---
 	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
 	// day old). Render it immediately, then refresh from /api/weather after
-	// hydration. Any failure is a graceful no-op — the baked value stays.
+	// hydration. Any failure is a graceful no-op; the baked value stays.
 	let freshWeather = $state<WeatherData | null>(null);
 	const currentWeather = $derived(freshWeather ?? weather ?? null);
 
 	// Offline-scene daypart: with no icon to read d/n from, fall back to the
-	// visitor's local clock — client-side only (onMount) so SSR output stays
+	// visitor's local clock, client-side only (onMount) so SSR output stays
 	// deterministic (server always renders the offline scene as day).
 	let clientNight = $state(false);
 
@@ -53,7 +53,7 @@
 	async function refreshWeather() {
 		try {
 			// Pass the active locale so OpenWeather localizes `condition`
-			// (fr/es). EN omits the param — its /api/weather URL (and CDN key)
+			// (fr/es). EN omits the param, so its /api/weather URL (and CDN key)
 			// stays byte-identical to before.
 			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
 			const res = await fetch(url);
@@ -70,8 +70,8 @@
 	const hasWeather = $derived(currentWeather != null);
 
 	// Scene + daypart. The icon's d/n suffix is OpenWeather's own
-	// sunrise/sunset calc for Montreal — data-driven, SSR-deterministic.
-	// Unknown codes → clear; missing data → calm offline sky (never blank).
+	// sunrise/sunset calc for Montreal, data-driven and SSR-deterministic.
+	// Unknown codes map to clear; missing data maps to calm offline sky.
 	const sceneState = $derived(resolveWeatherScene(currentWeather?.icon));
 	const night = $derived(currentWeather ? sceneState.night : clientNight);
 </script>
@@ -115,7 +115,7 @@
 				</div>
 			{:else}
 				<!-- Fallback -->
-				<div class="mt-1 font-mono text-sm text-[var(--muted-foreground)]">—</div>
+				<div class="mt-1 font-mono text-sm text-[var(--muted-foreground)]">-</div>
 			{/if}
 		</div>
 	</div>

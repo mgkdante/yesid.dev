@@ -3,13 +3,13 @@
     "name": { "en": "Yesid O.", "fr": "Yesid O." },
     "title": { "en": "SQL developer, builder, and patient explainer", "fr": "Développeur SQL, bâtisseur et vulgarisateur patient" },
     "valueProp": {
-      "en": "I'm Yesid, a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so nobody can take advantage of them.",
-      "fr": "Je suis Yesid, un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour que personne ne puisse profiter d'eux."
+      "en": "I'm Yesid a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so they can be behind the wheel making their own decisions.",
+      "fr": "Je suis un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour qu'ils gardent le volant et prennent leurs propres décisions."
     },
     "headshot": "/images/about/headshot.webp",
     "polaroids": [
       { "src": "/images/about/polaroid-1.webp", "alt": { "en": "Walking with my dog in Montreal" }, "caption": { "en": "Off-duty mode" }, "rotate": -3 },
-      { "src": "/images/about/polaroid-dante.webp", "alt": { "en": "Dante, the family dog", "fr": "Dante, le chien de la famille" }, "caption": { "en": "Dante — the family's good boy", "fr": "Dante — le bon chien de la famille" }, "rotate": 3 },
+      { "src": "/images/about/polaroid-dante.webp", "alt": { "en": "Dante, the family dog", "fr": "Dante, le chien de la famille" }, "caption": { "en": "Dante, the family's good boy", "fr": "Dante, le bon chien de la famille" }, "rotate": 3 },
       { "src": "/images/about/polaroid-poupoune.webp", "alt": { "en": "Poupoune, my dog", "fr": "Poupoune, mon chien" }, "caption": { "en": "Poupoune 🐾", "fr": "Poupoune 🐾" }, "rotate": -2 },
       { "src": "/images/about/polaroid-yesid.webp", "alt": { "en": "Yesid", "fr": "Yesid" }, "caption": { "en": "That's me", "fr": "C'est moi" }, "rotate": 2 },
       { "src": "/images/about/polaroid-family.webp", "alt": { "en": "With my family", "fr": "Avec ma famille" }, "caption": { "en": "Family", "fr": "La famille" }, "rotate": -4 },
@@ -26,7 +26,7 @@
   "methodology": [
     { "id": "curiosity", "station": 1, "label": { "en": "CURIOSITY", "fr": "CURIOSITÉ" }, "description": { "en": "I take things apart to learn how they work, then build better ones.", "fr": "Je démonte les choses pour comprendre comment elles marchent, puis j'en construis de meilleures." } },
     { "id": "aesthetics", "station": 2, "label": { "en": "AESTHETICS", "fr": "ESTHÉTIQUE" }, "description": { "en": "If it works but it's ugly, it's only half done.", "fr": "Si ça fonctionne mais que c'est laid, ce n'est qu'à moitié fait." } },
-    { "id": "community", "station": 3, "label": { "en": "COMMUNITY", "fr": "COMMUNAUTÉ" }, "description": { "en": "Good tools lift the people around them — that’s the whole point.", "fr": "Les bons outils élèvent les gens autour d'eux — c'est tout l'intérêt." } },
+    { "id": "community", "station": 3, "label": { "en": "COMMUNITY", "fr": "COMMUNAUTÉ" }, "description": { "en": "Good tools lift the people around them, that's the whole point.", "fr": "Les bons outils élèvent les gens autour d'eux, c'est tout l'intérêt." } },
     { "id": "quality", "station": 4, "label": { "en": "QUALITY", "fr": "QUALITÉ" }, "description": { "en": "I'd rather build it right than build it twice.", "fr": "Je préfère bien le bâtir que le bâtir deux fois." } }
   ],
   "testimonials": [
@@ -35,12 +35,46 @@
       "author": "Guy Sensei",
       "role": { "en": "Sensei", "fr": "Gaï Sensei" },
       "company": "Personal lore"
+    },
+    {
+      "quote": {
+        "en": "What matters in life is not what happens to you but what you remember and how you remember it.",
+        "fr": "Ce qui compte dans la vie, ce n'est pas ce qui t'arrive, mais ce dont tu te souviens et la façon dont tu t'en souviens."
+      },
+      "author": "Gabriel Garcia Marquez",
+      "role": { "en": "Writer", "fr": "Écrivain" },
+      "company": "Literature"
+    },
+    {
+      "quote": {
+        "en": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.",
+        "fr": "Tout ce que nous entendons est une opinion, pas un fait. Tout ce que nous voyons est une perspective, pas la vérité."
+      },
+      "author": "Marcus Aurelius",
+      "role": { "en": "Stoic philosopher", "fr": "Philosophe stoïcien" },
+      "company": "Meditations"
     }
   ],
-  "languages": ["Español", "English", "Français"],
+  "languages": [
+    {
+      "id": "quebec",
+      "label": { "en": "French", "fr": "Français" },
+      "image": "/images/about/languages/quebec.svg"
+    },
+    {
+      "id": "canada",
+      "label": { "en": "English", "fr": "Anglais" },
+      "image": "/images/about/languages/canada.svg"
+    },
+    {
+      "id": "colombia",
+      "label": { "en": "Spanish", "fr": "Espagnol" },
+      "image": "/images/about/languages/colombia.svg"
+    }
+  ],
   "education": [
     {
-      "school": { "en": "Champlain Regional College — Lennoxville", "fr": "Champlain Regional College — Lennoxville" },
+      "school": { "en": "Champlain Regional College, Lennoxville", "fr": "Champlain Regional College, Lennoxville" },
       "program": { "en": "DEC, Accounting & Management Technology", "fr": "DEC, Techniques de comptabilité et de gestion" },
       "icon": "champlain"
     },
@@ -51,7 +85,7 @@
     }
   ],
   "interests": [
-    { "id": "anime", "label": { "en": "Anime", "fr": "Anime" }, "image": "/images/about/interests/anime.webp" },
+    { "id": "anime", "label": { "en": "Manga", "fr": "Manga" }, "image": "/images/about/interests/anime.webp" },
     { "id": "transit", "label": { "en": "Transit", "fr": "Transport collectif" }, "image": "/images/about/interests/transit.webp" },
     { "id": "space", "label": { "en": "Space", "fr": "L'espace" }, "image": "/images/about/interests/space.webp" },
     { "id": "food", "label": { "en": "MTL Food", "fr": "Bouffe MTL" }, "image": "/images/about/interests/food.webp" }
@@ -99,7 +133,7 @@
     "showTestimonialAria": { "en": "Show testimonial {index}", "fr": "Afficher le témoignage {index}" }
   },
   "meta": {
-    "title": { "en": "About — yesid.", "fr": "À propos — yesid." },
+    "title": { "en": "About | yesid.", "fr": "À propos | yesid." },
     "description": {
       "en": "About Yesid O., a Montréal SQL developer, builder, and patient explainer.",
       "fr": "À propos de Yesid O., développeur SQL à Montréal, bâtisseur et vulgarisateur patient."

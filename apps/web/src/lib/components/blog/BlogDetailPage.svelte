@@ -1,20 +1,20 @@
 <!--
   Blog detail page orchestrator for /blog/[slug].
   Structure: full-bleed header + hazard separator + 4-zone body.
-  Desktop: BEGIN (edge) + TOC (sideLeft) + prose (content) + TRANSMISSION (edge).
-  Mobile: floating BlogTocPill + single-column prose.
+  Desktop: BEGIN edge + shared TOC + prose content + TRANSMISSION edge.
+  Mobile: shared floating TOC pill + single-column prose.
   Edge labels use writing-mode: vertical-rl with clamp() sizing.
   Same architectural role as ProjectDetailPage.
 -->
 <script lang="ts">
   import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
   import { Separator } from '$lib/components/ui/separator';
-  import { StickyPanel } from '$lib/components/brand';
-  import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
   import BlogContent from './BlogContent.svelte';
-  import BlogTocPill from './BlogTocPill.svelte';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+  import TocNav from '$lib/components/shared/TocNav.svelte';
+  import TocPill from '$lib/components/shared/TocPill.svelte';
+  import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
   import { onMount } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
   import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
@@ -22,18 +22,21 @@
   import { getLocale } from '$lib/utils/locale-context';
 
   const locale = getLocale();
-  import { blogDetailContent } from '$lib/content/blog';
   import { siteLabels } from '$lib/content';
 
   // go2/w4: reading mode removed per operator QA — the default reading
-  // experience is the only one. (blogDetailContent.page.readingMode stays in
-  // the content module, dormant, to avoid CMS churn.)
-  const tocSectionTitle = resolveLocale(blogDetailContent.page.tocSectionTitle, locale);
-  const metaCategoryLabel = resolveLocale(blogDetailContent.page.metaCategory, locale);
-  const metaWordsLabel = resolveLocale(blogDetailContent.page.metaWords, locale);
-  const metaReadTimeLabel = resolveLocale(blogDetailContent.page.metaReadTime, locale);
-  const metaLanguageLabel = resolveLocale(blogDetailContent.page.metaLanguage, locale);
-  const metaTagsLabel = resolveLocale(blogDetailContent.page.metaTags, locale);
+  // experience is the only one. The readingMode field stays dormant in the
+  // CMS cache to avoid schema churn.
+  const detailPageChrome = siteLabels.blogChrome.detail.page;
+  const metaCategoryLabel = resolveLocale(detailPageChrome.metaCategory, locale);
+  const metaWordsLabel = resolveLocale(detailPageChrome.metaWords, locale);
+  const metaReadTimeLabel = resolveLocale(detailPageChrome.metaReadTime, locale);
+  const metaLanguageLabel = resolveLocale(detailPageChrome.metaLanguage, locale);
+  const metaTagsLabel = resolveLocale(detailPageChrome.metaTags, locale);
+  const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
+  const tocOpenAria = resolveLocale(siteLabels.navChrome.shared.tocMobileButton, locale);
+  const tocCloseAria = resolveLocale(siteLabels.navChrome.shared.tocCloseAria, locale);
+  const tocCounterPrefix = resolveLocale(siteLabels.navChrome.shared.tocCounterPrefix, locale);
 
   let {
     post,
@@ -79,48 +82,42 @@
   // Shared active heading state — drives TOC + pill
   let activeHeadingId = $state('');
 
-  const activeIndex = $derived(
-    Math.max(0, headings.findIndex((h) => h.id === activeHeadingId))
-  );
+  const tocEntries = $derived.by((): TocEntry[] => {
+    const entries: TocEntry[] = [];
+    let sectionNumber = 0;
+    let currentSection: TocEntry | null = null;
 
-  const h2Count = $derived(
-    headings.filter((h) => h.level === 2).length
-  );
-
-  const h2Index = $derived.by(() => {
-    let count = 0;
-    for (let i = 0; i <= activeIndex; i++) {
-      if (headings[i]?.level === 2) count++;
+    for (const heading of headings) {
+      if (heading.level <= 2 || currentSection === null) {
+        const badge =
+          heading.level === 2
+            ? ({ kind: 'number', value: ++sectionNumber } as const)
+            : undefined;
+        currentSection = {
+          id: heading.id,
+          title: heading.text,
+          level: heading.level,
+          badge,
+          children: [],
+        };
+        entries.push(currentSection);
+      } else {
+        currentSection.children.push({
+          id: heading.id,
+          title: heading.text,
+          level: heading.level,
+          children: [],
+        });
+      }
     }
-    return count;
+
+    return entries;
   });
 
-  // IntersectionObserver for heading tracking (desktop TOC)
-  onMount(() => {
-    const contentEl = document.querySelector('[data-testid="blog-content"]');
-    if (!contentEl) return;
-
-    const observedHeadings = contentEl.querySelectorAll('h2[id], h3[id], h4[id]');
-    if (observedHeadings.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting && entry.target.id) {
-            activeHeadingId = entry.target.id;
-          }
-        }
-      },
-      { rootMargin: '-20% 0px -70% 0px' }
-    );
-    observedHeadings.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  });
+  onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
 
   function scrollToHeading(id: string): void {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    tocElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   // slice-34.4 — reading position survives a locale switch.
@@ -184,61 +181,44 @@
   <div class="body-grid">
     <!-- TOC sidebar — desktop only -->
     <div class="toc-column">
-      <StickyPanel top="5rem">
-        <div class="toc-panel toc-scroll" use:scrollChain>
-          <CollapsibleSection title={tocSectionTitle} open={true}>
-            <nav class="toc-nav">
-              {#each headings as heading}
-                <button
-                  class="toc-item"
-                  class:toc-sub-item={heading.level > 2}
-                  class:active={activeHeadingId === heading.id}
-                  onclick={() => scrollToHeading(heading.id)}
-                  style={heading.level > 2 ? `padding-left: ${16 + (heading.level - 3) * 10}px;` : ''}
-                >
-                  {#if activeHeadingId === heading.id}
-                    <div class="toc-dot"></div>
-                  {/if}
-                  {heading.text}
-                </button>
-              {/each}
-            </nav>
+      <div class="toc-panel toc-scroll" use:scrollChain>
+        {#if tocEntries.length > 0}
+          <TocNav
+            entries={tocEntries}
+            activeId={activeHeadingId}
+            onNavigate={scrollToHeading}
+            heading={tocHeading}
+            sectionKey="blog-toc"
+            counterPrefix={tocCounterPrefix}
+          />
+        {/if}
 
-            <div class="mt-6 flex items-center gap-2">
-              <div class="toc-counter-dot"></div>
-              <span class="toc-counter-text font-mono text-micro tracking-[1.5px]">
-                SEC {h2Index} / {h2Count}
-              </span>
-            </div>
-          </CollapsibleSection>
-
-          <!-- Post metadata panel -->
-          <div class="left-meta" aria-hidden="true">
-            <div class="left-meta__item">
-              <span class="left-meta__label">{metaCategoryLabel}</span>
-              <span class="left-meta__value">{categoryName}</span>
-            </div>
-            <div class="left-meta__item">
-              <span class="left-meta__label">{metaWordsLabel}</span>
-              <span class="left-meta__value">{wordCount.toLocaleString()}</span>
-            </div>
-            <div class="left-meta__item">
-              <span class="left-meta__label">{metaReadTimeLabel}</span>
-              <span class="left-meta__value">{readingTime} min</span>
-            </div>
-            <div class="left-meta__item">
-              <span class="left-meta__label">{metaLanguageLabel}</span>
-              <span class="left-meta__value">{languageName}</span>
-            </div>
-            {#if post.tags.length > 0}
-              <div class="left-meta__item">
-                <span class="left-meta__label">{metaTagsLabel}</span>
-                <span class="left-meta__value">{post.tags.join(' · ')}</span>
-              </div>
-            {/if}
+        <!-- Post metadata panel -->
+        <div class="left-meta" aria-hidden="true">
+          <div class="left-meta__item">
+            <span class="left-meta__label">{metaCategoryLabel}</span>
+            <span class="left-meta__value">{categoryName}</span>
           </div>
+          <div class="left-meta__item">
+            <span class="left-meta__label">{metaWordsLabel}</span>
+            <span class="left-meta__value">{wordCount.toLocaleString()}</span>
+          </div>
+          <div class="left-meta__item">
+            <span class="left-meta__label">{metaReadTimeLabel}</span>
+            <span class="left-meta__value">{readingTime} min</span>
+          </div>
+          <div class="left-meta__item">
+            <span class="left-meta__label">{metaLanguageLabel}</span>
+            <span class="left-meta__value">{languageName}</span>
+          </div>
+          {#if post.tags.length > 0}
+            <div class="left-meta__item">
+              <span class="left-meta__label">{metaTagsLabel}</span>
+              <span class="left-meta__value">{post.tags.join(' · ')}</span>
+            </div>
+          {/if}
         </div>
-      </StickyPanel>
+      </div>
     </div>
 
     <!-- Center: prose content -->
@@ -251,7 +231,9 @@
 </article>
 
 <!-- Mobile floating TOC pill -->
-<BlogTocPill headings={headings as TocHeading[]} />
+{#if tocEntries.length > 0}
+  <TocPill entries={tocEntries} activeId={activeHeadingId} openAria={tocOpenAria} closeAria={tocCloseAria} />
+{/if}
 
 <style>
   /* ── Centered 2-column body grid ───────────────────────── */
@@ -291,6 +273,11 @@
     .toc-column {
       display: block;
     }
+
+    .toc-panel {
+      position: sticky;
+      top: 5rem;
+    }
   }
 
   @media (min-width: 1024px) and (max-width: 1279px) {
@@ -328,73 +315,6 @@
     font-family: var(--font-heading);
     font-size: 17px;
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
-  }
-
-  /* ── TOC nav ───────────────────────────────────────────────── */
-  .toc-nav {
-    font-family: var(--font-heading);
-    font-size: 15px;
-    line-height: 2.4;
-    border-left: 2px solid color-mix(in srgb, var(--blog-accent, var(--primary)) 12%, transparent);
-    padding-left: 16px;
-  }
-
-  .toc-item {
-    display: block;
-    position: relative;
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    color: var(--muted-foreground);
-    transition: color var(--duration-fast) var(--ease-default);
-  }
-
-  .toc-item:hover {
-    color: color-mix(in srgb, var(--foreground) 60%, transparent);
-  }
-
-  .toc-item.active {
-    color: var(--blog-accent, var(--primary));
-    font-weight: 600;
-  }
-
-  .toc-sub-item {
-    font-size: 13px;
-    color: color-mix(in srgb, var(--foreground) 20%, transparent);
-  }
-
-  .toc-sub-item:hover {
-    color: color-mix(in srgb, var(--foreground) 50%, transparent);
-  }
-
-  .toc-sub-item.active {
-    color: var(--blog-accent, var(--primary));
-  }
-
-  .toc-dot {
-    position: absolute;
-    left: -19px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--blog-accent, var(--primary));
-  }
-
-  .toc-counter-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--blog-accent, var(--primary));
-    box-shadow: 0 0 8px color-mix(in srgb, var(--blog-accent, var(--primary)) 40%, transparent);
-  }
-
-  .toc-counter-text {
-    color: color-mix(in srgb, var(--blog-accent, var(--primary)) 30%, transparent);
   }
 
   /* Align blog content card top with TOC on desktop */

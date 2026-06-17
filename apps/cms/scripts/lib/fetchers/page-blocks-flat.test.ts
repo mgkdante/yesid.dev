@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { toHeroContent, toManifestoContent, toCloserContent, toAboutIntroContent } from './page-blocks-home';
-import { toTechStackPageContent, toContactContent } from './page-blocks-medium';
-import { toAboutContent } from './page-blocks-about';
+import { toTechStackPageContent, toContactContent, toContactChannels } from './page-blocks-medium';
+import { toAboutContent, toAboutLanguages } from './page-blocks-about';
 import {
 	HeroContentSchema, ManifestoContentSchema, CloserContentSchema,
 	TechStackPageContentSchema, ContactContentSchema, AboutContentSchema,
@@ -69,14 +69,87 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
 				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
 				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				socials: [{ label: 'GitHub', href: 'https://g', icon: 'gh' }],
 			}],
 		};
-		const out = toContactContent(row);
+		const channels = [{ label: { en: 'GitHub' }, href: 'https://g', icon: 'gh' }];
+		const out = toContactContent(row, channels);
 		expect(out.formTerminal.fields.name).toEqual({ label: 'name', placeholder: { en: 'Your name' } });
 		expect(out.infoTerminal.title).toBe('info.sh');
 		expect(out.success.fieldOk).toEqual({ en: 'ok' });
-		expect(out.socials).toEqual([{ label: 'GitHub', href: 'https://g', icon: 'gh' }]);
+		expect(out.socials).toEqual(channels);
+		expect(() => ContactContentSchema.parse(out)).not.toThrow();
+	});
+
+	it('contact channels: normalized rows recompose localized labels and stable order', () => {
+		const out = toContactChannels([
+			{
+				id: 'linkedin',
+				status: 'published',
+				sort: 3,
+				href: 'https://www.linkedin.com/in/otaloray/',
+				icon: 'linkedin',
+				translations: [
+					{ languages_code: 'en', label: 'LinkedIn' },
+					{ languages_code: 'fr', label: 'LinkedIn' },
+				],
+			},
+			{
+				id: 'draft-channel',
+				status: 'draft',
+				sort: 2,
+				href: 'https://example.com',
+				icon: 'example',
+				translations: [{ languages_code: 'en', label: 'Draft' }],
+			},
+			{
+				id: 'email',
+				status: 'published',
+				sort: 1,
+				href: 'mailto:contact@yesid.dev',
+				icon: 'email',
+				translations: [
+					{ languages_code: 'en', label: 'Email' },
+					{ languages_code: 'fr', label: 'Courriel' },
+				],
+			},
+		]);
+		expect(out).toEqual([
+			{
+				label: { en: 'Email', fr: 'Courriel' },
+				href: 'mailto:contact@yesid.dev',
+				icon: 'email',
+			},
+			{
+				label: { en: 'LinkedIn', fr: 'LinkedIn' },
+				href: 'https://www.linkedin.com/in/otaloray/',
+				icon: 'linkedin',
+			},
+		]);
+	});
+
+	it('contact: retired socials JSON is ignored when normalized channels are empty', () => {
+		const row = {
+			id: 1, web3forms_key: 'k',
+			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
+			form_terminal_title: 'form.sh', form_terminal_command: 'send',
+			form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
+			translations: [{
+				languages_code: 'en',
+				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
+				meta_title: 'Contact | yesid.', meta_description: 'desc',
+				info_location: 'MTL', info_response_time: '24h',
+				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
+				form_command_output: 'ready', form_submit_label: 'send',
+				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
+				form_field_message_placeholder: 'What breaks?',
+				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
+				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
+				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
+				socials: [{ label: 'Legacy', href: 'https://legacy.example', icon: 'legacy' }],
+			}],
+		};
+		const out = toContactContent(row, []);
+		expect(out.socials).toEqual([]);
 		expect(() => ContactContentSchema.parse(out)).not.toThrow();
 	});
 
@@ -120,9 +193,54 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, hook: { en: 'rain' }, enabled: true });
 		expect(out.cta.command).toBe('whoami');
 		expect(out.stopLabels.next).toEqual({ en: 's10' });
-		expect(out.languages).toEqual(['English']);
+		expect(out.languages).toEqual([
+			{
+				id: 'canada',
+				label: { en: 'English', fr: 'Anglais' },
+				image: '/images/about/languages/canada.svg',
+			},
+		]);
 		expect(out.education[0]?.school).toEqual({ en: 'School', fr: 'École' });
 		expect(() => AboutContentSchema.parse(out)).not.toThrow();
+	});
+
+	it('about languages: normalized rows recompose localized labels and asset ids', () => {
+		const out = toAboutLanguages([
+			{
+				id: 'canada',
+				status: 'published',
+				sort: 2,
+				image: 'uuid-canada',
+				translations: [
+					{ languages_code: 'en', label: 'English' },
+					{ languages_code: 'fr', label: 'Anglais' },
+				],
+			},
+			{
+				id: 'quebec',
+				status: 'published',
+				sort: 1,
+				image: { id: 'uuid-quebec' },
+				translations: [
+					{ languages_code: 'en', label: 'French' },
+					{ languages_code: 'fr', label: 'Français' },
+				],
+			},
+		]);
+		expect(out).toEqual([
+			{
+				id: 'quebec',
+				label: { en: 'French', fr: 'Français' },
+				image: 'uuid-quebec',
+			},
+			{
+				id: 'canada',
+				label: { en: 'English', fr: 'Anglais' },
+				image: 'uuid-canada',
+			},
+		]);
+		expect(JSON.stringify(out)).not.toContain('"flag"');
+		expect(() => AboutContentSchema.shape.languages.parse(out)).not.toThrow();
 	});
 
 	it('manifesto + tech-stack-page + about-intro flat columns parse', () => {

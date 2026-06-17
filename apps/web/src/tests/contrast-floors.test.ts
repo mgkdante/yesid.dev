@@ -18,8 +18,7 @@ const FILES = [
 	'src/lib/components/home/FeaturedProjects.svelte',
 	'src/lib/components/blog/BlogDetailHeader.svelte',
 	'src/lib/components/projects/ProjectDetailHeader.svelte',
-	'src/lib/components/projects/ProjectTocPill.svelte',
-	'src/lib/components/blog/BlogTocPill.svelte',
+	'src/lib/components/shared/TocPill.svelte',
 ];
 
 // (?<![-\w]) keeps `border-color:` / `outline-color:` (boundaries, not text)

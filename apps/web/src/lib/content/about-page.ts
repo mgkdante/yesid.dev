@@ -130,15 +130,15 @@ export const aboutPageContent: AboutContent = {
 			fr: 'Bâtisseur curieux, bricoleur depuis toujours',
 		},
 		valueProp: {
-			en: 'I\'m Yesid (Yesito to my friends). I was born in Zipaquirá, Colombia, and grew up in Sherbrooke, Québec from the age of ten. I\'ve been pulling computers apart since I was a kid. The family\'s first PC showed up in 2002, and by 2005 I was tinkering with it so much my mom would get mad. These days I\'m proud to be her engineer #1. That curiosity never left. Now I build clear systems and explain them in plain words, so you always know exactly what you\'re getting.',
-			fr: 'Je suis Yesid (Yesito pour mes chums). Je suis né à Zipaquirá, en Colombie, et j\'ai grandi à Sherbrooke, au Québec, depuis l\'âge de dix ans. Je démonte des ordinateurs depuis que je suis tout petit. Le premier PC de la famille est arrivé en 2002, et dès 2005 je le bricolais tellement que ma mère pognait les nerfs. Aujourd\'hui, je suis fier d\'être son ingénieur numéro un. Cette curiosité-là ne m\'a jamais lâché. Astheure, je bâtis des systèmes clairs et je les explique en mots simples, comme ça tu sais toujours exactement ce que tu reçois.',
+			en: 'I\'m Yesid a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so they can be behind the wheel making their own decisions.',
+			fr: 'Je suis un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour qu\'ils gardent le volant et prennent leurs propres décisions.',
 		},
 	},
 	interests: [
 		{
 			id: 'anime',
 			image: '/images/about/interests/anime.webp',
-			label: { en: 'Anime', fr: 'Anime' },
+			label: { en: 'Manga', fr: 'Manga' },
 		},
 		{
 			id: 'transit',
@@ -170,7 +170,23 @@ export const aboutPageContent: AboutContent = {
 		testimonialsCarouselAria: { en: 'Personal quote', fr: 'Citation personnelle' },
 		testimonialsTabNavAria: { en: 'Quote navigation', fr: 'Navigation de citation' },
 	},
-	languages: ['Español', 'English', 'Français'],
+	languages: [
+		{
+			id: 'quebec',
+			image: '5f512546-d577-4e24-8a4e-e5518db6374e',
+			label: { en: 'French', fr: 'Français' },
+		},
+		{
+			id: 'canada',
+			image: 'f1d1046b-d08a-4eca-8347-4b7d21c68c15',
+			label: { en: 'English', fr: 'Anglais' },
+		},
+		{
+			id: 'colombia',
+			image: 'dd23a610-b9fc-4cd3-bfa4-4cc09af4ea84',
+			label: { en: 'Spanish', fr: 'Espagnol' },
+		},
+	],
 	meta: {
 		description: {
 			en: 'Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can\'t afford downtime.',
@@ -267,6 +283,24 @@ export const aboutPageContent: AboutContent = {
 				fr: 'Tu as le don de la persévérance, et c\'est ce qui fait de toi un génie.',
 			},
 			role: { en: 'Sensei', fr: 'Gaï Sensei' },
+		},
+		{
+			author: 'Gabriel Garcia Marquez',
+			company: 'Literature',
+			quote: {
+				en: 'What matters in life is not what happens to you but what you remember and how you remember it.',
+				fr: 'Ce qui compte dans la vie, ce n\'est pas ce qui t\'arrive, mais ce dont tu te souviens et la façon dont tu t\'en souviens.',
+			},
+			role: { en: 'Writer', fr: 'Écrivain' },
+		},
+		{
+			author: 'Marcus Aurelius',
+			company: 'Meditations',
+			quote: {
+				en: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.',
+				fr: 'Tout ce que nous entendons est une opinion, pas un fait. Tout ce que nous voyons est une perspective, pas la vérité.',
+			},
+			role: { en: 'Stoic philosopher', fr: 'Philosophe stoïcien' },
 		},
 	],
 	weather: {

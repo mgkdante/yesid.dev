@@ -61,7 +61,7 @@
 </script>
 
 <section
-	class={cn('service-viewport', className)}
+	class={cn('service-viewport', index === 0 && 'service-viewport-first', className)}
 	data-testid="service-card-{service.id}"
 	id="service-{service.id}"
 	{...rest}
@@ -291,12 +291,19 @@
 	   scroll-margin-top aligns tab clicks below the sticky tabs. */
 	@media (max-width: 767px) {
 		.service-viewport {
-			/* Match the desktop sticky-scroll: full-screen card (100svh) whose inner
-			   is sticky-pinned + centered (both inherited from the base rule), just
-			   stacked vertically for the narrow viewport. */
-			height: 100svh;
+			height: auto;
+			min-height: 0;
+			padding-block: clamp(4rem, 14svh, 7rem);
+			margin-bottom: clamp(3rem, 12svh, 6rem);
+			scroll-margin-top: 8.75rem;
+			scroll-snap-align: none;
+		}
+		.service-viewport-first {
+			padding-block-start: clamp(1.5rem, 5svh, 3rem);
 		}
 		.viewport-inner {
+			position: static;
+			top: auto;
 			flex-direction: column;
 			align-items: stretch;
 			gap: 1rem;

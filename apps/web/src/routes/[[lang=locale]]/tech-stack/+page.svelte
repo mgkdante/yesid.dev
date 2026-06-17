@@ -140,7 +140,9 @@
 					<span class="explainer-kicker">{stackKicker}</span>
 					{stackExplainer}
 				</p>
+			</div>
 
+			<div class="hero-col-side" data-testid="hero-col-side">
 				<div class="hero-terminal" aria-label={heroTerminalAria}>
 					{#each heroLines as line}
 						<div
@@ -159,9 +161,7 @@
 						<TerminalCursor />
 					</div>
 				</div>
-			</div>
 
-			<div class="hero-col-side" data-testid="hero-col-side">
 				<div class="hero-stats" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
 					<div class="hero-stat">
 						<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
@@ -292,6 +292,11 @@
 
 	.hero-title-accent { color: var(--primary); }
 
+	.hero-col-side {
+		display: flex;
+		flex-direction: column;
+	}
+
 	/* go2/w5 §1: the teaching voice is the human voice — site sans, not mono.
 	   Finale (4d): a comfortable BIG reading size on the wide panel. */
 	.stack-explainer {
@@ -353,7 +358,7 @@
 	.hero-stats {
 		display: flex;
 		gap: 2.5rem;
-		padding-top: 2rem;
+		padding-top: 1.25rem;
 		border-top: 1px solid var(--border);
 		margin-bottom: 2rem;
 	}
@@ -503,10 +508,8 @@
 			align-items: end;
 		}
 
-		/* The shared rhythm line does the separating — no trailing margin on
-		   the reading column's last block. */
 		.hero-terminal {
-			margin-bottom: 0;
+			margin-bottom: 1.25rem;
 		}
 
 		/* The count is the readout column's anchor gauge — bigger on the

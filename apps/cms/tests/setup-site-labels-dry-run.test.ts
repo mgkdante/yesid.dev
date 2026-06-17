@@ -31,7 +31,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		const colNames = plan
 			.filter((s) => s.kind === 'field' && s.path === '/fields/site_labels_translations')
 			.map((s) => (s.payload as { field: string }).field);
-		expect(colNames.length).toBe(134);
+		expect(colNames.length).toBe(136);
 		expect(colNames).toContain('services_chrome_detail_stack_heading');
 		expect(colNames).toContain('services_chrome_detail_see_stack_label');
 		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(colNames).toContain(key);
@@ -72,7 +72,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_SEEDS.hero_dashboard_vehicles_label).toBe('VEHICLES TRACKED');
 		expect(SITE_LABEL_SEEDS.services_chrome_detail_stack_heading).toBe('Stack');
 		expect(SITE_LABEL_SEEDS.services_chrome_detail_see_stack_label).toBe('See the full stack →');
-		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(134);
+		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(136);
 	});
 	it('FR translations seed covers every EN column (complete after t1 reconciliation)', () => {
 		// slice-30 t1: FR is a SEPARATE site_labels_translations row. The base
@@ -86,7 +86,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_FR_SEEDS.hero_dashboard_vehicles_label).toBe('VÉHICULES SUIVIS');
 		expect(SITE_LABEL_FR_SEEDS.a11y_replay_intro).toBe("Rejouer l'intro");
 		expect(SITE_LABEL_FR_SEEDS.services_chrome_detail_see_stack_label).toBe('Voir la stack complète →');
-		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(134);
+		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(136);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });

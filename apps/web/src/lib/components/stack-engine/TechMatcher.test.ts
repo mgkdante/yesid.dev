@@ -30,6 +30,21 @@ describe('TechMatcher chips', () => {
 		}
 	});
 
+	it('renders CMS-backed tech icons inside chips, with fallback marks when no icon id exists', () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+
+		const postgresql = screen.getByTestId('tech-chip-postgresql');
+		const icon = postgresql.querySelector('[data-testid="tech-icon-postgresql"]');
+		expect(icon).toBeTruthy();
+		expect(icon?.getAttribute('src')).toBe('https://api.iconify.design/logos/postgresql.svg');
+		expect(icon?.getAttribute('alt')).toBe('');
+
+		const alembic = screen.getByTestId('tech-chip-alembic');
+		const fallback = alembic.querySelector('[data-testid="tech-icon-alembic-fallback"]');
+		expect(fallback?.textContent).toBe('A');
+	});
+
 	it('groups chips by STACK_LAYERS order (trailing more only when layerless techs exist)', () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });

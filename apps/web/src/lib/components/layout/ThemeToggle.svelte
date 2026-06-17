@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import { themeStore } from '$lib/stores/theme.svelte';
-	import { sharedChromeContent } from '$lib/content';
+	import { siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import type { Locale } from '$lib/types';
 
@@ -15,7 +15,7 @@
 	let { class: className = '', locale = DEFAULT_LOCALE }: { class?: string; locale?: Locale } =
 		$props();
 
-	const label = $derived(resolveLocale(sharedChromeContent.themeToggleAria, locale));
+	const label = $derived(resolveLocale(siteLabels.navChrome.shared.themeToggleAria, locale));
 	const isDark = $derived(themeStore.isDark);
 </script>
 

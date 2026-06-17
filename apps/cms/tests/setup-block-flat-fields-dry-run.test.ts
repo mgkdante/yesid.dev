@@ -67,7 +67,6 @@ describe('setup-block-flat-fields buildArchiveSteps (go2-t1b3)', () => {
 		for (const keep of [
 			'/fields/block_manifesto_translations/pills',
 			'/fields/block_manifesto_translations/hidden_transit_lines',
-			'/fields/block_contact_content_translations/socials',
 			'/fields/block_about_content_translations/metrics',
 			'/fields/block_about_content/tech_stack',
 			'/fields/block_closer/cta_href',
