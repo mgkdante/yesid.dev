@@ -20,12 +20,16 @@
     title: string;
     /** Optional tag label next to title */
     tag?: string;
+    /** Optional test id for the tag */
+    tagTestId?: string;
     /** Optional status text */
     status?: string;
     /** Optional footer metric items */
     footer?: TerminalFooterItem[];
     /** Remove body padding (when children manage their own) */
     noPadding?: boolean;
+    /** Optional titlebar actions */
+    actions?: Snippet;
     /** Terminal body content */
     children: Snippet;
     class?: string;
@@ -34,9 +38,11 @@
   let {
     title,
     tag,
+    tagTestId,
     status,
     footer,
     noPadding = false,
+    actions,
     children,
     class: className = '',
     ...rest
@@ -48,19 +54,26 @@
        stop unlit at 25%) replaces the single orange dot. Inline dots, zero
        layout shift. -->
   <div class="terminal-titlebar">
-    <div class="flex items-center gap-2">
+    <div class="terminal-titlebar-main">
       <span class="flex items-center gap-1" data-slot="signal-head" aria-hidden="true">
         <StatusDot color="green" pulse size="sm" />
         <StatusDot color="caution" size="sm" class="opacity-25" />
         <StatusDot color="stop" size="sm" class="opacity-25" />
       </span>
-      <span class="font-mono text-caption text-[var(--secondary-foreground)]">{title}</span>
+      <span class="terminal-title">{title}</span>
       {#if tag}
-        <span class="rounded-sm bg-[var(--accent-surface)] px-1.5 py-0.5 font-mono text-[0.625rem] text-[var(--accent-text)]">{tag}</span>
+        <span class="terminal-tag" data-testid={tagTestId}>{tag}</span>
       {/if}
     </div>
-    {#if status}
-      <span class="font-mono text-caption text-[var(--terminal-ink-muted)]">{status}</span>
+    {#if status || actions}
+      <div class="terminal-titlebar-actions">
+        {#if status}
+          <span class="terminal-status">{status}</span>
+        {/if}
+        {#if actions}
+          {@render actions()}
+        {/if}
+      </div>
     {/if}
   </div>
 
@@ -78,52 +91,10 @@
     <div class="terminal-footer">
       {#each footer as item}
         <div class="flex gap-2">
-          <span class="font-mono text-caption text-[var(--terminal-ink-muted)]">{item.label}</span>
-          <span class="font-mono text-caption text-[var(--accent-text)]">{item.value}</span>
+          <span class="terminal-footer-label">{item.label}</span>
+          <span class="terminal-footer-value">{item.value}</span>
         </div>
       {/each}
     </div>
   {/if}
 </div>
-
-<style>
-  /* GO2-W5 taste round 2: the terminal body IS the site background
-     (--terminal === --background by token contract, SOLID) — identity is
-     carried by the chrome strips, the solid-orange rule chassis and the
-     mono type, never by a special surface color.
-     Round 3: chassis one step thicker (1px → 2px) — bolder structure. */
-  .terminal {
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--border-rule);
-    background: var(--terminal);
-    overflow: hidden;
-  }
-
-  .terminal-titlebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    background: var(--terminal-chrome);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .terminal-body {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    overflow-y: auto;
-  }
-  .terminal-body.no-pad {
-    padding: 0;
-  }
-
-  .terminal-footer {
-    display: flex;
-    gap: 1.5rem;
-    padding: 0.5rem 0.75rem;
-    background: var(--terminal-chrome);
-    border-top: 1px solid var(--border-subtle);
-  }
-</style>

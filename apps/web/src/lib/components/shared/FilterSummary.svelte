@@ -15,7 +15,7 @@
 	import type { LocalizedString } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-	import { sharedChromeContent } from '$lib/content';
+	import { siteLabels } from '$lib/content';
 
 	const locale = getLocale();
 
@@ -29,7 +29,7 @@
 
 	let { count, countLabel, onClear }: FilterSummaryProps = $props();
 
-	const clearFiltersLabel = resolveLocale(sharedChromeContent.clearFiltersLabel, locale);
+	const clearFiltersLabel = resolveLocale(siteLabels.navChrome.shared.clearFiltersLabel, locale);
 
 	// Per-locale plural selection. French treats 0 as singular; English does not.
 	const isPlural = $derived(locale === 'fr' ? count >= 2 : count !== 1);

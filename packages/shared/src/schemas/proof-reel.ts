@@ -13,6 +13,4 @@ export const ProofReelContentSchema = z.object({
 	viewAllLabel: LocalizedStringSchema,
 	viewAllHref: z.string(),
 	toggleColorAria: LocalizedStringSchema,
-	slugs: z.array(z.string()).readonly(),
-	images: z.record(z.string(), z.string()).readonly(),
 }) satisfies z.ZodType<ProofReelContent>;

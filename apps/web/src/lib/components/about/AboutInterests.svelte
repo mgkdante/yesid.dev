@@ -1,5 +1,5 @@
 <!--
-  Interests — Style A: Diagonal strips with background images.
+  Interests: Style A, diagonal strips with background images.
   B&W by default, turns color on hover (desktop) / tap toggle (mobile).
   Comic/manga panel energy. Skewed strips with thin diagonal orange dividers.
   Stop label always top-left.
@@ -23,33 +23,25 @@
 		activeIndex = activeIndex === index ? -1 : index;
 	}
 
-	// Photo credits, overlaid on the relevant strips (locale-invariant).
-	// transit = REM photo by Harrison Keely (CC BY 4.0); space = NASA (public domain).
 	const ATTRIBUTION: Record<string, string> = {
 		transit: 'Harrison Keely · CC BY 4.0',
 		space: 'NASA',
 	};
 
-	// Footer photo-credit line. Names/licenses stay verbatim; only the
-	// connective labels localize. Em-dash-free (middot separator).
-	const CREDITS = {
-		en: 'Transit photo: Harrison Keely · CC BY 4.0 · Space: NASA',
-		fr: 'Photo transport collectif : Harrison Keely · CC BY 4.0 · Espace : NASA',
-	} as const;
 </script>
 
 <div
 	class="group h-full"
 	use:cursorGlow
 >
-<Card class="relative h-full" data-testid="about-interests">
+<Card class="relative h-full !gap-0 !py-0" data-testid="about-interests">
 	<!-- Stop label: top-left, always -->
 	<div class="absolute top-3 left-4 z-20">
 		<StopLabel {stop} {label} />
 	</div>
 
 	<!-- Diagonal strips container -->
-	<div class="flex h-full min-h-36 pb-5">
+	<div class="flex h-full min-h-36">
 		{#each interests as interest, i}
 			{@const interestLabel = resolveLocale(interest.label, locale)}
 			<button
@@ -60,8 +52,8 @@
 				aria-label={interestLabel}
 				aria-pressed={activeIndex === i}
 			>
-				<!-- Background image: skewed, B&W → color on hover/tap.
-				     go2/w4: treatment is theme-aware — dark keeps the darkened
+				<!-- Background image: skewed, B&W to color on hover/tap.
+				     go2/w4: treatment is theme-aware, dark keeps the darkened
 				     look, light whitens instead (filters live in <style>). -->
 				<div
 					class="strip-bg absolute inset-[-20px] bg-cover bg-center transition-all duration-500 ease-out"
@@ -81,26 +73,22 @@
 					></div>
 				{/if}
 
-				<!-- Label — theme-aware ink + halo (see .strip-label below) -->
+				<!-- Label: theme-aware ink + halo (see .strip-label below) -->
 				<div class="relative z-10 flex flex-col items-center justify-center">
 					<span class="strip-label font-mono text-caption font-semibold tracking-[3px]">
 						{interestLabel.toUpperCase()}
 					</span>
 				</div>
 
-				<!-- Photo credit overlay (CC BY / public domain) — kept on the image -->
 				{#if ATTRIBUTION[interest.id]}
 					<span
-						class="strip-credit absolute inset-x-0 bottom-0 z-20 px-1 pb-0.5 pt-3 text-center font-mono text-[8px] leading-none tracking-tight"
+						class="strip-credit absolute inset-x-0 bottom-0 z-20 px-1 pb-1 pt-5 text-center font-mono text-[8px] leading-none tracking-tight"
 					>{ATTRIBUTION[interest.id]}</span>
 				{/if}
 			</button>
 		{/each}
 	</div>
 
-	<div class="absolute right-3 bottom-1.5 left-3 z-20 truncate text-right font-mono text-[0.625rem] text-[var(--muted-foreground)]">
-		{resolveLocale(CREDITS, locale)}
-	</div>
 </Card>
 </div>
 
@@ -109,7 +97,7 @@
 	   original darkened B&W (brightness 0.3 + ink overlay); light mode
 	   WHITENS instead (brightness up + paper overlay) so the strips read as
 	   bleached paper, not a dark slab on a light page. Tokens drive the
-	   overlay (var(--background) flips per theme) — no hardcoded black. */
+	   overlay (var(--background) flips per theme), no hardcoded black. */
 	.strip-bg {
 		filter: grayscale(1) brightness(0.3);
 	}
@@ -121,13 +109,11 @@
 		text-shadow: 0 1px 4px color-mix(in srgb, var(--background) 80%, transparent);
 	}
 
-	/* Photo credit: small, bottom of the strip, with a soft gradient scrim for
-	   legibility over any image. Non-interactive so taps still toggle the strip. */
 	.strip-credit {
-		color: color-mix(in srgb, var(--foreground) 70%, transparent);
+		color: color-mix(in srgb, var(--foreground) 72%, transparent);
 		background: linear-gradient(
 			to top,
-			color-mix(in srgb, var(--background) 78%, transparent),
+			color-mix(in srgb, var(--background) 76%, transparent),
 			transparent
 		);
 		pointer-events: none;

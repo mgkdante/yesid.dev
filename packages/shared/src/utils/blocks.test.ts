@@ -180,6 +180,36 @@ describe('extractText', () => {
 		expect(extractText(doc)).toBe('a a sample b');
 	});
 
+	it('accepts optional light variants on image blocks', () => {
+		const result = BlockEditorDocSchema.safeParse({
+			time: 1,
+			version: '2.31.2',
+			blocks: [
+				{
+					id: 'hero',
+					type: 'image',
+					data: {
+						file: { fileId: 'dark-id', fileURL: '/files/dark-id', url: '/assets/dark-id' },
+						variants: {
+							light: { fileId: 'light-id', fileURL: '/files/light-id', url: '/assets/light-id' },
+						},
+						caption: 'Theme aware project image',
+						withBorder: true,
+						withBackground: false,
+						stretched: true,
+					},
+				},
+			],
+		});
+
+		expect(result.success).toBe(true);
+		if (!result.success) throw new Error('expected image block to parse');
+		const image = result.data.blocks[0];
+		expect(image?.type).toBe('image');
+		if (image?.type !== 'image') throw new Error('expected image block');
+		expect(image.data.variants?.light?.fileId).toBe('light-id');
+	});
+
 	it('extracts text from deeply nested lists', () => {
 		const doc: BlockEditorDoc = {
 			time: 1,

@@ -2,6 +2,7 @@
 	import '@fontsource-variable/inter';
 	import '@fontsource-variable/jetbrains-mono';
 	import '../app.css';
+	import '$lib/styles/terminal.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Nav from '$lib/components/layout/Nav.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';

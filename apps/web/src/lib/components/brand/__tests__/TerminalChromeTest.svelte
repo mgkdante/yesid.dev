@@ -8,11 +8,17 @@
     status?: string;
     footer?: TerminalFooterItem[];
     bodyText?: string;
+    showActions?: boolean;
   }
 
-  let { bodyText = '$ hello', ...rest }: Props = $props();
+  let { bodyText = '$ hello', showActions = false, ...rest }: Props = $props();
 </script>
 
 <TerminalChrome {...rest}>
+  {#snippet actions()}
+    {#if showActions}
+      <button type="button">Copy</button>
+    {/if}
+  {/snippet}
   <p>{bodyText}</p>
 </TerminalChrome>

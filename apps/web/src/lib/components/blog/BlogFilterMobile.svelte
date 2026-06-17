@@ -12,17 +12,18 @@
 	import { persisted } from '$lib/state/persisted.svelte';
 
 	const locale = getLocale();
-	import { blogListingContent } from '$lib/content/blog';
+	import { siteLabels } from '$lib/content';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', es: 'ES' };
 
-	const filtersLabel = resolveLocale(blogListingContent.filters.filtersLabel, locale);
-	const allLabel = resolveLocale(blogListingContent.filters.allLabel, locale);
-	const languageLabel = resolveLocale(blogListingContent.filters.language, locale);
-	const dateRangeLabel = resolveLocale(blogListingContent.filters.dateRange, locale);
-	const fromLabel = resolveLocale(blogListingContent.filters.from, locale);
-	const toLabel = resolveLocale(blogListingContent.filters.to, locale);
-	const showingPrefix = resolveLocale(blogListingContent.filters.showingPrefix, locale);
+	const filters = siteLabels.blogChrome.listing.filters;
+	const filtersLabel = resolveLocale(filters.filtersLabel, locale);
+	const allLabel = resolveLocale(filters.allLabel, locale);
+	const languageLabel = resolveLocale(filters.language, locale);
+	const dateRangeLabel = resolveLocale(filters.dateRange, locale);
+	const fromLabel = resolveLocale(filters.from, locale);
+	const toLabel = resolveLocale(filters.to, locale);
+	const showingPrefix = resolveLocale(filters.showingPrefix, locale);
 
 	let {
 		tags,

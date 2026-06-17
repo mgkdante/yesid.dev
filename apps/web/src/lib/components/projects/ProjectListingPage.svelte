@@ -1,9 +1,9 @@
 <!--
-  Full work listing page layout: header, sidebar filters (desktop) / collapsible
-  filter (mobile), and a card grid with GSAP Flip animation on filter changes.
+  Full work listing page layout: header, desktop sidebar filters, and a card grid
+  with GSAP Flip animation on filter changes.
   Service + tag filters use AND logic with URL params via goto().
   Desktop: sticky left sidebar (~220px) + main grid on the right.
-  Mobile: collapsible filter button above the grid.
+  Mobile: search only. Filter trigger hidden per operator QA.
   Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
   No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
 -->
@@ -27,11 +27,9 @@
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { MetroStation } from '$lib/components/brand';
-	import ProjectFilterMobile from './ProjectFilterMobile.svelte';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { projectsListingContent } from '$lib/content/projects';
 	import { siteLabels } from '$lib/content';
 	import { persisted } from '$lib/state/persisted.svelte';
 
@@ -57,9 +55,10 @@
 	// (block_projects_page_content — heading/intro/empty_state), with the
 	// generated listing module + previous literals as code fallbacks. The
 	// formerly orphaned CMS intro is rendered as the header subtitle.
+	const listingChrome = siteLabels.projectsChrome.listing;
 	const listingHeading =
-		resolveLocale(projectsPage.heading, locale) || resolveLocale(projectsListingContent.heading, locale);
-	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, locale);
+		resolveLocale(projectsPage.heading, locale) || resolveLocale(listingChrome.heading, locale);
+	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
 	const listingIntro = resolveLocale(projectsPage.intro, locale);
 	const emptyStateText =
 		resolveLocale(projectsPage.emptyState, locale) ||
@@ -233,20 +232,6 @@
 		<div class="mb-4 lg:hidden">
 			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery.value} testId="project-search-mobile" />
 		</div>
-
-		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
-		<ProjectFilterMobile
-			{serviceIds}
-			{serviceMap}
-			tags={allTags}
-			stack={allStack}
-			{activeService}
-			{activeTag}
-			{activeStack}
-			onServiceSelect={handleServiceSelect}
-			onTagSelect={handleTagSelect}
-			onStackSelect={handleStackSelect}
-		/>
 
 		<!-- Active filter summary -->
 		{#if hasActiveFilters}

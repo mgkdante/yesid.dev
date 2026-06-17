@@ -13,7 +13,7 @@
 
 	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
-	import { projectsListingContent } from '$lib/content/projects';
+	import { siteLabels } from '$lib/content';
 
 	let {
 		serviceIds,
@@ -42,12 +42,13 @@
 	} = $props();
 
 	// Labels pulled from content layer (Task 17b-7d).
+	const filters = siteLabels.projectsChrome.listing.filters;
 	const labels = {
-		services: projectsListingContent.filters.services,
-		tags: projectsListingContent.filters.tags,
-		stack: projectsListingContent.filters.techStack,
+		services: filters.services,
+		tags: filters.tags,
+		stack: filters.techStack,
 	};
-	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, locale);
+	const searchPlaceholder = resolveLocale(siteLabels.projectsChrome.listing.searchPlaceholder, locale);
 </script>
 
 <aside data-testid="project-filter-sidebar">

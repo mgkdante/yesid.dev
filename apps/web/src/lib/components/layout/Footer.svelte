@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent } from '$lib/content';
+	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { wordmarkHover } from '$lib/motion/actions';
@@ -21,10 +21,10 @@
 	} = $props();
 
 	// $derived (not const): Footer never remounts; locale changes on /fr↔/ navigation.
-	const tagline = $derived(resolveLocale(footerContent.tagline, locale));
-	const location = $derived(resolveLocale(footerContent.location, locale));
-	const statusPrefix = $derived(resolveLocale(footerContent.statusPrefix, locale));
-	const footerNavAria = $derived(resolveLocale(sharedChromeContent.footerNavAria, locale));
+	const tagline = $derived(resolveLocale(siteLabels.footerChrome.footer.tagline, locale));
+	const location = $derived(resolveLocale(siteLabels.footerChrome.footer.location, locale));
+	const statusPrefix = $derived(resolveLocale(siteLabels.footerChrome.footer.statusPrefix, locale));
+	const footerNavAria = $derived(resolveLocale(siteLabels.navChrome.shared.footerNavAria, locale));
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;

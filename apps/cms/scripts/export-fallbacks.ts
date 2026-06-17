@@ -257,7 +257,7 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		});
 		enqueue('proof-reel', async () => {
 			out.proofReel = await fetchProofReelContent({ client });
-			log.info(`  proof-reel done (${out.proofReel.slugs.length} slugs).`);
+			log.info('  proof-reel done.');
 		});
 		enqueue('services-grid', async () => {
 			out.servicesGrid = await fetchServicesGridContent({ client });

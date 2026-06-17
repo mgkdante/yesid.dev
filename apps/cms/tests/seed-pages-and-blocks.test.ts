@@ -185,17 +185,10 @@ describe('toBlockProofReelRow', () => {
 		expect(row.sort).toBe(3);
 	});
 
-	it('exposes view_all_href, slugs, and images JSON columns on parent', () => {
+	it('exposes view_all_href without legacy project-selection JSON', () => {
 		expect(typeof row.view_all_href).toBe('string');
-		expect(Array.isArray(row.slugs)).toBe(true);
-		expect((row.slugs as readonly string[]).length).toBeGreaterThan(0);
-		expect(typeof row.images).toBe('object');
-		const images = row.images as Record<string, string>;
-		const slugs = row.slugs as readonly string[];
-		// every slug has a corresponding image entry
-		for (const s of slugs) {
-			expect(typeof images[s]).toBe('string');
-		}
+		expect('slugs' in row).toBe(false);
+		expect('images' in row).toBe(false);
 	});
 });
 
@@ -306,9 +299,8 @@ describe('toBlockAboutContentRow', () => {
 		expect(row.editor_label).toBe('About Content');
 	});
 
-	it('languages is an array on the parent row', () => {
-		expect(Array.isArray(row.languages)).toBe(true);
-		expect(row.languages).toEqual(['Español', 'English', 'Français']);
+	it('does not write language panels to the about parent JSON row', () => {
+		expect('languages' in row).toBe(false);
 	});
 
 	it('education is an array on the parent row', () => {
@@ -375,6 +367,14 @@ describe('toBlockContactContentTranslationRows', () => {
 		expect(fields?.['name']).toBeDefined();
 		expect(fields?.['email']).toBeDefined();
 		expect(fields?.['message']).toBeDefined();
+	});
+
+	it('does not write the retired socials JSON column', () => {
+		expect('socials' in (rows[0] ?? {})).toBe(false);
+	});
+
+	it('reads a seed fixture that no longer owns contact channels', () => {
+		expect('socials' in contactPageFixture).toBe(false);
 	});
 });
 

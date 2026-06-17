@@ -53,16 +53,22 @@ describe('/tech-stack stack explainer', () => {
 // the source order, because source order IS the mobile stack:
 // title → explainer → terminal → count → actions.
 describe('/tech-stack control-room hero columns', () => {
-	it('reading column holds title + explainer + terminal; readout column holds count + actions', () => {
+	it('reading column holds the teaching copy; readout column stacks terminal above count + actions', () => {
 		render(Page, { props: { data: stubData } });
 		const main = screen.getByTestId('hero-col-main');
 		const side = screen.getByTestId('hero-col-side');
 		expect(main.querySelector('.hero-title')).toBeTruthy();
 		expect(main.querySelector('.stack-explainer')).toBeTruthy();
-		expect(main.querySelector('.hero-terminal')).toBeTruthy();
+		expect(main.querySelector('.hero-terminal')).toBeNull();
+		expect(side.querySelector('.hero-terminal')).toBeTruthy();
 		expect(side.querySelector('.hero-stats')).toBeTruthy();
 		expect(side.querySelector('.hero-actions')).toBeTruthy();
-		// Source order = mobile stack: the reading column precedes the readout.
+		const terminal = side.querySelector('.hero-terminal')!;
+		const stats = side.querySelector('.hero-stats')!;
+		expect(
+			Boolean(terminal.compareDocumentPosition(stats) & Node.DOCUMENT_POSITION_FOLLOWING),
+		).toBe(true);
+		// Source order = mobile stack: title + explainer precede terminal + count + actions.
 		expect(
 			Boolean(main.compareDocumentPosition(side) & Node.DOCUMENT_POSITION_FOLLOWING),
 		).toBe(true);

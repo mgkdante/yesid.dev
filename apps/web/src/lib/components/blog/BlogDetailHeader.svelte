@@ -12,7 +12,6 @@
 
   const locale = getLocale();
   import { fillTemplate } from '$lib/utils/labels';
-  import { blogDetailContent } from '$lib/content/blog';
   import { siteLabels } from '$lib/content';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
@@ -35,6 +34,7 @@
   } = $props();
 
   let headerEl = $state<HTMLElement>(undefined!);
+  const detailChrome = siteLabels.blogChrome.detail;
 
   const backHref = $derived(
     post.category === 'personal' ? '/blog/personal' : '/blog'
@@ -51,11 +51,11 @@
       if (resolved.trim()) return resolved;
     }
     return post.category === 'personal'
-      ? resolveLocale(blogDetailContent.backNav.toPersonal, locale)
-      : resolveLocale(blogDetailContent.backNav.toDispatches, locale);
+      ? resolveLocale(detailChrome.backNav.toPersonal, locale)
+      : resolveLocale(detailChrome.backNav.toDispatches, locale);
   });
-  const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, locale);
-  const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, locale);
+  const postTagsAria = resolveLocale(detailChrome.header.postTagsAria, locale);
+  const readingTimeTemplate = resolveLocale(detailChrome.header.readingTimeLabel, locale);
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
   // go2-t1c2: category/watermark/edition microcopy from site_labels, previous
   // literals kept as code fallbacks.

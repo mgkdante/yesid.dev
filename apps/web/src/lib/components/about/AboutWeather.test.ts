@@ -1,4 +1,4 @@
-// AboutWeather scene system — GO Wave 4.
+// AboutWeather scene system, GO Wave 4.
 // Covers: condition→scene mapping (pure resolver), graceful data states
 // (unknown code → clear, missing data → offline, never blank), day/night
 // derivation from the icon suffix, per-scene composition (clouds, bolt,
@@ -136,7 +136,7 @@ describe('AboutWeather scene rendering', () => {
 		expect(sceneEl().dataset.scene).toBe('clear');
 	});
 
-	it('missing weather renders the calm offline sky — card never empty', () => {
+	it('missing weather renders the calm offline sky with a non-empty fallback', () => {
 		renderWeather(null);
 		const scene = sceneEl();
 		expect(scene.dataset.scene).toBe('offline');
@@ -144,7 +144,7 @@ describe('AboutWeather scene rendering', () => {
 		expect(scene.querySelector('.weather-skyline')).not.toBeNull();
 		const widget = screen.getByTestId('about-weather');
 		expect(widget.textContent).toContain('Montreal');
-		expect(widget.textContent).toContain('—');
+		expect(widget.textContent).toContain('-');
 	});
 
 	it('scene layer is decorative: aria-hidden and pointer-transparent', () => {

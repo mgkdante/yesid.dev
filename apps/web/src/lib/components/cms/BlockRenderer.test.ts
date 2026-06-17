@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/svelte';
+import { fireEvent, render } from '@testing-library/svelte';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 import BlockRenderer from './BlockRenderer.svelte';
 import type { BlockEditorDoc } from '@repo/shared';
 
@@ -42,6 +45,20 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		expect(container.querySelector('b')?.textContent).toBe('bold');
 		expect(container.querySelector('i')?.textContent).toBe('em');
 		expect(container.querySelector('a')?.getAttribute('href')).toBe('https://yesid.dev');
+	});
+
+	it('renders markdown-style inline code spans in paragraph text', () => {
+		const doc = baseDoc([
+			{
+				id: 'p1',
+				type: 'paragraph',
+				data: { text: 'Run `bun test` after <b>green</b>.' },
+			},
+		]);
+		const { container } = render(BlockRenderer, { doc });
+		expect(container.querySelector('code')?.textContent).toBe('bun test');
+		expect(container.querySelector('b')?.textContent).toBe('green');
+		expect(container.querySelector('p')?.innerHTML).toContain('<code>bun test</code>');
 	});
 
 	it('renders unordered nestedlist', () => {
@@ -106,7 +123,107 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const { container } = render(BlockRenderer, { doc });
 		const code = container.querySelector('pre code');
 		expect(code?.textContent).toBe('SELECT 1;');
-		expect(code?.className).toBe('');
+		expect(container.querySelector('pre')?.hasAttribute('data-language')).toBe(false);
+		expect(container.querySelector('[data-testid="code-block-language"]')).toBeNull();
+	});
+
+	it('renders fenced script code blocks with language badge and copies the script body', async () => {
+		const writeText = vi.fn().mockResolvedValue(undefined);
+		Object.defineProperty(navigator, 'clipboard', {
+			value: { writeText },
+			configurable: true,
+		});
+		const script = [
+			'```sh',
+			'export OP_SERVICE_ACCOUNT_TOKEN="$(grep ^OP_TOKEN= .env | cut -d= -f2-)"',
+			'op run --env-file=apps/cms/.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev bun apps/cms/scripts/export-fallbacks.ts --module=projects',
+			'```',
+		].join('\n');
+		const doc = baseDoc([
+			{ id: 'c-script', type: 'code', data: { code: script } },
+		]);
+		const { container } = render(BlockRenderer, { doc });
+		const code = container.querySelector('pre code');
+		const button = container.querySelector('button.terminal-code-copy') as HTMLButtonElement | null;
+
+		expect(container.querySelector('[data-slot="terminal-chrome"]')).toBeTruthy();
+		expect(container.querySelector('.code-fence-frame')).toBeNull();
+		expect(container.querySelector('[data-code-language]')?.getAttribute('data-code-language')).toBe('sh');
+		expect(container.querySelector('[data-testid="code-block-language"]')?.textContent).toBe('sh');
+		expect(container.querySelector('pre.shiki')).toBeTruthy();
+		expect(container.innerHTML).toContain('var(--terminal)');
+		expect(container.innerHTML).toContain('var(--primary)');
+		expect(code?.textContent).toContain('op run --env-file=apps/cms/.env');
+		expect(code?.textContent).not.toContain('```');
+		expect(button).toBeTruthy();
+
+		await fireEvent.click(button as HTMLButtonElement);
+
+		expect(writeText).toHaveBeenCalledWith(
+			[
+				'export OP_SERVICE_ACCOUNT_TOKEN="$(grep ^OP_TOKEN= .env | cut -d= -f2-)"',
+				'op run --env-file=apps/cms/.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev bun apps/cms/scripts/export-fallbacks.ts --module=projects',
+			].join('\n'),
+		);
+	});
+
+	it('renders TypeScript code fences with the shared code frame', () => {
+		const doc = baseDoc([
+			{
+				id: 'c-ts',
+				type: 'code',
+				data: {
+					code: [
+						'```typescript',
+						'export const projects = [...] satisfies Project[];',
+						'```',
+					].join('\n'),
+				},
+			},
+		]);
+		const { container } = render(BlockRenderer, { doc });
+
+		expect(container.querySelector('[data-slot="terminal-chrome"]')).toBeTruthy();
+		expect(container.querySelector('.code-fence-frame')).toBeNull();
+		expect(container.querySelector('[data-code-language="ts"]')).toBeTruthy();
+		expect(container.querySelector('[data-testid="code-block-language"]')?.textContent).toBe('ts');
+		expect(container.querySelector('pre.shiki')).toBeTruthy();
+		expect(container.querySelector('pre code')?.textContent).toBe(
+			'export const projects = [...] satisfies Project[];',
+		);
+	});
+
+	it('renders mermaid code blocks as CMS-authored diagrams', () => {
+		const doc = baseDoc([
+			{
+				id: 'm1',
+				type: 'code',
+				data: {
+					code: 'mermaid\nflowchart LR\n  directus["Directus CMS"] --> cache["generated TypeScript cache"]',
+				},
+			},
+		]);
+		const { container } = render(BlockRenderer, { doc });
+		const diagram = container.querySelector('[data-testid="mermaid-diagram"]');
+
+		expect(diagram).toBeTruthy();
+		expect(diagram?.textContent).toContain('Directus CMS');
+		expect(diagram?.textContent).toContain('generated TypeScript cache');
+		expect(container.querySelector('.copy-btn')).toBeNull();
+	});
+
+	it('configures Mermaid with theme-aware brand colors', () => {
+		const source = readFileSync(
+			join(cwd(), 'src/lib/components/cms/blocks/MermaidDiagram.svelte'),
+			'utf8',
+		);
+
+		expect(source).toContain('themeVariables');
+		expect(source).toContain('getComputedStyle');
+		expect(source).toContain('--primary');
+		expect(source).toContain('--accent');
+		expect(source).toContain('MutationObserver');
+		expect(source).not.toContain("svg = ''");
 	});
 
 	it('escapes plain text in code block (XSS attempt)', () => {

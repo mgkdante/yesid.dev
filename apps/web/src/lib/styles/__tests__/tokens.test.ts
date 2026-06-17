@@ -232,11 +232,12 @@ describe('Design System Tokens', () => {
       expect(tokensCSS).toContain('--shadow-card: 0 0 16px color-mix(in srgb, var(--primary) 8%, transparent), 0 2px 8px rgba(10, 7, 4, 0.35), inset 0 1px 0 var(--edge-highlight);');
     });
 
-    it('app.css ships warm light shadow overrides + pinned-dark code blocks (hand region)', () => {
+    it('app.css ships warm light shadow overrides and leaves prose code theme-aware', () => {
       expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1)');
       expect(appCSS).toContain('inset 0 1px 0 var(--edge-highlight)');
-      expect(appCSS).toMatch(/\[data-theme="light"\] \.prose-dark pre/);
-      expect(appCSS).toContain('background: #141414 !important;');
+      expect(appCSS).not.toMatch(/\[data-theme="light"\] \.prose-dark pre/);
+      expect(appCSS).not.toMatch(/\.theme-light \.prose-dark pre/);
+      expect(appCSS).not.toContain('background: #141414 !important;');
     });
 
     it('app.css grid recipe is the NX track schematic (block markers + fine grid)', () => {

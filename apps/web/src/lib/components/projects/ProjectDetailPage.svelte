@@ -5,35 +5,42 @@
   Mobile: collapsible glance panel + floating TOC pill + stacked sections.
 -->
 <script lang="ts">
-	import type { Project, Service } from '$lib/types';
+	import type { BlockEditorDoc, Project, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { projectsDetailContent } from '$lib/content/projects';
+	import { siteLabels } from '$lib/content';
 
-	const tocSectionTitle = resolveLocale(projectsDetailContent.tocSectionTitle, locale);
-	const readmeSectionTitle = resolveLocale(projectsDetailContent.readmeSectionTitle, locale);
+	// TOC chrome, CMS-sourced (navChrome.shared), shared across detail pages.
+	const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
+	const tocOpenAria = resolveLocale(siteLabels.navChrome.shared.tocMobileButton, locale);
+	const tocCloseAria = resolveLocale(siteLabels.navChrome.shared.tocCloseAria, locale);
+	const tocCounterPrefix = resolveLocale(siteLabels.navChrome.shared.tocCounterPrefix, locale);
+	const detailChrome = siteLabels.projectsChrome.detail;
+	const readmeSectionTitle = resolveLocale(detailChrome.readmeSectionTitle, locale);
+	const glanceStackTitle = resolveLocale(detailChrome.glance.stack, locale);
+	const glanceServicesTitle = resolveLocale(detailChrome.glance.services, locale);
+	const glanceLinksTitle = resolveLocale(detailChrome.glance.links, locale);
+	const codeChrome = siteLabels.blogChrome.detail.code;
+	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
+	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
+	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
 	import { Separator } from '$lib/components/ui/separator';
-	import { SectionLabel, StickyPanel, ChevronToggle } from '$lib/components/brand';
-	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
+	import TocNav from '$lib/components/shared/TocNav.svelte';
+	import TocPill from '$lib/components/shared/TocPill.svelte';
+	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
-	import ProjectGlancePanelMobile from './ProjectGlancePanelMobile.svelte';
-	import ProjectTocPill from './ProjectTocPill.svelte';
+	import ProjectImageGallery from './ProjectImageGallery.svelte';
+	import ProjectLinksCard from './ProjectLinksCard.svelte';
 	import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
-
-	interface TocEntry {
-		id: string;
-		title: string;
-		level: number;
-		children: TocEntry[];
-	}
 
 	let {
 		project,
@@ -48,61 +55,138 @@
 	} = $props();
 
 	let activeHeadingId = $state('');
+	let readmeBody = $state<HTMLElement | null>(null);
+	let readmeCopyResetTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	type SectionView = {
+		section: Project['sections'][number];
+		originalIndex: number;
+		title: string;
+		doc: BlockEditorDoc;
+		isImageGallery: boolean;
+	};
+
+	function isImageGalleryDoc(doc: BlockEditorDoc): boolean {
+		return doc.blocks.length > 0 && doc.blocks.every((block) => block.type === 'image');
+	}
+
+	function articleTocEntry(section: SectionView, articleIndex: number): TocEntry {
+		return {
+			id: `section-${articleIndex}`,
+			title: section.title,
+			level: 2,
+			badge: { kind: 'number', value: articleIndex + 1 },
+			children: [],
+		};
+	}
+
+	function galleryTocEntry(gallery: SectionView): TocEntry {
+		return {
+			id: `project-gallery-${gallery.originalIndex}`,
+			title: gallery.title,
+			level: 2,
+			badge: { kind: 'icon', name: 'image' },
+			rail: true,
+			children: [],
+		};
+	}
+
+	function readmeTocChildren(html: string): TocEntry[] {
+		const children: TocEntry[] = [];
+		if (!browser) return children;
+
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(html, 'text/html');
+		const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+		headings.forEach((h, idx) => {
+			const level = parseInt(h.tagName[1]) + 1;
+			const id = `readme-h-${idx}`;
+			children.push({
+				id,
+				title: h.textContent?.trim() || `Section ${idx + 1}`,
+				level: Math.min(level, 6),
+				children: [],
+			});
+		});
+
+		return children;
+	}
+
+	function glanceTocEntries(): TocEntry[] {
+		const entries: TocEntry[] = [];
+		if (project.stack.length > 0)
+			entries.push({ id: 'glance-stack', title: glanceStackTitle, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
+		if (services.length > 0)
+			entries.push({ id: 'glance-services', title: glanceServicesTitle, level: 2, badge: { kind: 'icon', name: 'grid' }, rail: true, children: [] });
+		if (project.liveUrl || project.repoUrl)
+			entries.push({ id: 'glance-links', title: glanceLinksTitle, level: 2, badge: { kind: 'icon', name: 'arrow' }, rail: true, children: [] });
+		return entries;
+	}
+
+	const sectionViews = $derived.by((): SectionView[] =>
+		project.sections.map((section, originalIndex) => {
+			const doc = resolveLocale(section.content, locale);
+			return {
+				section,
+				originalIndex,
+				title: resolveLocale(section.title, locale),
+				doc,
+				isImageGallery: isImageGalleryDoc(doc),
+			};
+		})
+	);
+	const imageGallerySections = $derived(sectionViews.filter((section) => section.isImageGallery));
+	const articleSections = $derived(sectionViews.filter((section) => !section.isImageGallery));
+	const firstArticleSection = $derived(articleSections[0]);
+	const remainingArticleSections = $derived(articleSections.slice(1));
+	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl);
+	const readmeTocEntry = $derived.by((): TocEntry | null => {
+		if (!readmeHtml) return null;
+		return {
+			id: `section-${articleSections.length}`,
+			title: 'README',
+			level: 2,
+			badge: { kind: 'icon', name: 'github' },
+			children: readmeTocChildren(readmeHtml),
+		};
+	});
 
 	const tocEntries = $derived.by((): TocEntry[] => {
 		const entries: TocEntry[] = [];
 
-		for (let i = 0; i < project.sections.length; i++) {
-			entries.push({
-				id: `section-${i}`,
-				title: resolveLocale(project.sections[i].title, locale),
-				level: 2,
-				children: [],
-			});
+		for (const gallery of imageGallerySections) {
+			entries.push(galleryTocEntry(gallery));
 		}
 
-		if (readmeHtml) {
-			const readmeChildren: TocEntry[] = [];
-			if (browser) {
-				const parser = new DOMParser();
-				const doc = parser.parseFromString(readmeHtml, 'text/html');
-				const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-				headings.forEach((h, idx) => {
-					const level = parseInt(h.tagName[1]) + 1;
-					const id = `readme-h-${idx}`;
-					readmeChildren.push({
-						id,
-						title: h.textContent?.trim() ?? '',
-						level: Math.min(level, 6),
-						children: [],
-					});
-				});
-			}
-			entries.push({
-				id: `section-${project.sections.length}`,
-				title: 'README',
-				level: 2,
-				children: readmeChildren,
-			});
+		for (let i = 0; i < articleSections.length; i++) {
+			entries.push(articleTocEntry(articleSections[i], i));
 		}
+
+		if (readmeTocEntry) entries.push(readmeTocEntry);
+
+		// Glance-rail panels in the TOC (Stack / Services / Links). On mobile these
+		// sit below the sections (in-flow); their scroll-target anchors (data-toc)
+		// live on the mobile glance instance. On desktop they're already visible in
+		// the rail. Badges mirror the glance cards' SectionIcon shapes.
+		entries.push(...glanceTocEntries());
 
 		return entries;
 	});
 
-	const allHeadingIds = $derived.by(() => {
-		const ids: string[] = [];
-		for (const entry of tocEntries) {
-			ids.push(entry.id);
-			for (const child of entry.children) {
-				ids.push(child.id);
-			}
-		}
-		return ids;
-	});
+	const mobileTocEntries = $derived.by((): TocEntry[] => {
+		const entries: TocEntry[] = [];
 
-	const activeEntryIndex = $derived(
-		Math.max(0, allHeadingIds.indexOf(activeHeadingId))
-	);
+		if (firstArticleSection) entries.push(articleTocEntry(firstArticleSection, 0));
+		for (const gallery of imageGallerySections) entries.push(galleryTocEntry(gallery));
+		for (let offset = 0; offset < remainingArticleSections.length; offset++) {
+			const articleIndex = offset + 1;
+			entries.push(articleTocEntry(remainingArticleSections[offset], articleIndex));
+		}
+		if (readmeTocEntry) entries.push(readmeTocEntry);
+		entries.push(...glanceTocEntries());
+
+		return entries;
+	});
 
 	const processedReadmeHtml = $derived.by(() => {
 		if (!readmeHtml) return '';
@@ -113,49 +197,182 @@
 		});
 	});
 
+	function mermaidCssVar(style: CSSStyleDeclaration, name: string, fallback: string): string {
+		return style.getPropertyValue(name).trim() || fallback;
+	}
+
+	function mermaidThemeVariables(root: Element): Record<string, string> {
+		const style = getComputedStyle(root);
+		const primary = mermaidCssVar(style, '--primary', '#E07800');
+		const accent = mermaidCssVar(style, '--accent', '#FFB627');
+		const background = mermaidCssVar(style, '--background', '#141414');
+		const card = mermaidCssVar(style, '--card', '#1a1a1a');
+		const foreground = mermaidCssVar(style, '--foreground', '#F5F5F0');
+		const muted = mermaidCssVar(style, '--muted-foreground', '#949494');
+		const border = mermaidCssVar(style, '--border-subtle', '#2f2f2f');
+
+		return {
+			background,
+			mainBkg: card,
+			primaryColor: card,
+			primaryBorderColor: primary,
+			primaryTextColor: foreground,
+			secondaryColor: background,
+			secondaryBorderColor: accent,
+			secondaryTextColor: foreground,
+			tertiaryColor: background,
+			tertiaryBorderColor: border,
+			tertiaryTextColor: foreground,
+			lineColor: accent,
+			textColor: foreground,
+			nodeTextColor: foreground,
+			clusterBkg: background,
+			clusterBorder: primary,
+			edgeLabelBackground: card,
+			labelTextColor: foreground,
+			noteBkgColor: card,
+			noteTextColor: foreground,
+			noteBorderColor: border,
+			actorBkg: card,
+			actorBorder: primary,
+			actorTextColor: foreground,
+			activationBkgColor: primary,
+			activationBorderColor: accent,
+			signalColor: muted,
+			signalTextColor: foreground,
+		};
+	}
+
+	// One observer drives the active state for BOTH the desktop nav and the mobile
+	// pill (each receives activeHeadingId as a prop, no duplicate observers).
+	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
+
 	onMount(() => {
-		const headingEls = document.querySelectorAll('[data-section-index], [id^="readme-h-"]');
-		if (headingEls.length === 0) return;
+		if (!browser || !readmeHtml) return;
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) {
-						const el = entry.target;
-						const sectionIdx = el.getAttribute('data-section-index');
-						if (sectionIdx !== null) {
-							activeHeadingId = `section-${sectionIdx}`;
-						} else if (el.id) {
-							activeHeadingId = el.id;
-						}
-					}
+		let cancelled = false;
+		let renderSerial = 0;
+		let renderQueued = false;
+		let observer: MutationObserver | null = null;
+
+		async function renderReadmeMermaid(): Promise<void> {
+			const token = ++renderSerial;
+			await tick();
+			if (cancelled || !readmeBody) return;
+
+			const mermaid = (await import('mermaid')).default;
+			const diagrams = [...readmeBody.querySelectorAll<HTMLElement>('[data-mermaid-source]')];
+			for (let i = 0; i < diagrams.length; i++) {
+				const diagram = diagrams[i];
+				const source = diagram.getAttribute('data-mermaid-source')?.trim();
+				const surface = diagram.querySelector<HTMLElement>('.mermaid-diagram__surface');
+				if (!source || !surface) continue;
+				try {
+					const themeVariables = mermaidThemeVariables(diagram);
+					const renderKey = `${source}\n${JSON.stringify(themeVariables)}`;
+					if (diagram.dataset.mermaidRenderedKey === renderKey) continue;
+					mermaid.initialize({
+						startOnLoad: false,
+						securityLevel: 'strict',
+						theme: 'base',
+						themeVariables,
+						flowchart: {
+							curve: 'basis',
+							htmlLabels: false,
+						},
+					});
+					const rendered = await mermaid.render(`readme-mermaid-${token}-${i}`, source);
+					if (cancelled || token !== renderSerial) return;
+					surface.innerHTML = rendered.svg;
+					diagram.dataset.mermaidRenderedKey = renderKey;
+					diagram.removeAttribute('data-mermaid-error');
+				} catch {
+					if (!cancelled && token === renderSerial) diagram.setAttribute('data-mermaid-error', 'true');
 				}
-			},
-			{ rootMargin: '-20% 0px -70% 0px' }
-		);
-		headingEls.forEach((el) => observer.observe(el));
+			}
+		}
 
-		return () => observer.disconnect();
+		function queueReadmeMermaid(): void {
+			if (renderQueued) return;
+			renderQueued = true;
+			requestAnimationFrame(() => {
+				renderQueued = false;
+				void renderReadmeMermaid();
+			});
+		}
+
+		void renderReadmeMermaid();
+		observer = new MutationObserver(queueReadmeMermaid);
+		observer.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['data-theme', 'class'],
+		});
+
+		return () => {
+			cancelled = true;
+			observer?.disconnect();
+		};
 	});
 
-	/** Map a TOC id to its DOM element. `section-${i}` ids are SYNTHETIC and
-	 *  locale-stable (driven by section index, not localized text); README child
-	 *  ids are index-based too — so the same id resolves to the corresponding
-	 *  heading on both /projects/x and /fr/projects/x. */
+	onMount(() => {
+		if (!browser || !readmeHtml) return;
+
+		let cancelled = false;
+		let removeListener: (() => void) | null = null;
+
+		async function handleReadmeCopy(event: MouseEvent): Promise<void> {
+			const button = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>('[data-code-copy-button]');
+			if (!button || !readmeBody?.contains(button)) return;
+			const terminal = button.closest<HTMLElement>('[data-code-copy]');
+			const copyText = terminal?.getAttribute('data-code-copy') ?? '';
+			if (!copyText) return;
+
+			try {
+				await navigator.clipboard.writeText(copyText);
+				button.textContent = '✓';
+			} catch {
+				button.textContent = readmeCopyErrorLabel;
+			}
+
+			if (readmeCopyResetTimeout) clearTimeout(readmeCopyResetTimeout);
+			readmeCopyResetTimeout = setTimeout(() => {
+				button.textContent = readmeCopyLabel;
+			}, 2000);
+		}
+
+		void tick().then(() => {
+			if (cancelled || !readmeBody) return;
+			for (const button of readmeBody.querySelectorAll<HTMLButtonElement>('[data-code-copy-button]')) {
+				button.textContent = readmeCopyLabel;
+				button.setAttribute('aria-label', readmeCopyAria);
+			}
+			readmeBody.addEventListener('click', handleReadmeCopy);
+			removeListener = () => readmeBody?.removeEventListener('click', handleReadmeCopy);
+		});
+
+		return () => {
+			cancelled = true;
+			removeListener?.();
+			if (readmeCopyResetTimeout) clearTimeout(readmeCopyResetTimeout);
+		};
+	});
+
+	/** Map a TOC id to its DOM element via the shared resolver. `section-${i}` ids
+	 *  are SYNTHETIC and locale-stable (driven by section index, not localized
+	 *  text); README child ids are index-based too, so the same id resolves to the
+	 *  corresponding heading on both /projects/x and /fr/projects/x. */
 	function headingElement(id: string): Element | null {
-		return id.startsWith('section-')
-			? document.querySelector(`[data-section-index="${id.replace('section-', '')}"]`)
-			: document.getElementById(id);
+		return tocElement(id);
 	}
 
 	function scrollToHeading(id: string): void {
-		headingElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		headingElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	}
 
-	// slice-34.4 — reading position survives a locale switch. The detail page's
+	// slice-34.4: reading position survives a locale switch. The detail page's
 	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
 	// capture the active heading id and, after the page remounts in the new
-	// locale, scroll to that SAME heading. Raw scrollY would be wrong — FR/EN
+	// locale, scroll to that SAME heading. Raw scrollY would be wrong because FR/EN
 	// body lengths differ, so the same heading sits at a different offset.
 	onMount(() =>
 		registerScrollContext({
@@ -165,13 +382,13 @@
 				const id = s?.id;
 				const el = id ? headingElement(id) : null;
 				if (el) {
-					// Instant, Lenis-aware jump to the heading's top — matches the
+					// Instant, Lenis-aware jump to the heading's top, matching the
 					// IntersectionObserver's -20% top rootMargin so the restored
 					// heading lands where the observer considers it "active".
 					const top = el.getBoundingClientRect().top + window.scrollY;
 					lenisAwareScrollTo(Math.max(0, top - window.innerHeight * 0.2));
 				} else {
-					// No active heading (top of page) or it vanished — fall back to
+					// No active heading (top of page) or it vanished, so fall back to
 					// the raw captured offset (still Lenis-aware).
 					lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
 				}
@@ -187,85 +404,108 @@
 	<!-- Edge-to-edge hazard stripes -->
 	<Separator variant="hazard" />
 
-	<!-- Mobile: collapsible glance panel -->
-	<div class="mt-4 px-[var(--space-page-x)] lg:hidden">
-		<ProjectGlancePanelMobile {project} />
-	</div>
-
 	<!-- Body: 3-column CSS Grid with TOC left, sections center, panel right -->
 	<div class="detail-body">
 		<aside class="toc-column">
-			<StickyPanel top="5rem">
-				<div class="toc-panel toc-scroll" use:scrollChain>
-					<CollapsibleSection title={tocSectionTitle} sectionKey="proj-toc" open={true}>
-						<nav class="toc-nav">
-								{#each tocEntries as entry}
-									<button
-										class="tap-press toc-item"
-										class:active={activeHeadingId === entry.id}
-										onclick={() => scrollToHeading(entry.id)}
-									>
-										{#if activeHeadingId === entry.id}
-											<div class="toc-dot"></div>
-										{/if}
-										{entry.title}
-									</button>
-									{#each entry.children as child}
-										<button
-											class="tap-press toc-item toc-sub-item"
-											class:active={activeHeadingId === child.id}
-											onclick={() => scrollToHeading(child.id)}
-											style="padding-left: {16 + Math.max(0, child.level - 3) * 10}px;"
-										>
-											{#if activeHeadingId === child.id}
-												<div class="toc-dot"></div>
-											{/if}
-											{child.title}
-										</button>
-									{/each}
-								{/each}
-							</nav>
-
-							<div class="mt-6 flex items-center gap-2">
-								<div class="toc-counter-dot"></div>
-								<span class="toc-counter-text font-mono text-micro tracking-[1.5px]">
-									SEC {activeEntryIndex + 1} / {allHeadingIds.length}
-								</span>
-							</div>
-					</CollapsibleSection>
-				</div>
-			</StickyPanel>
+			<div class="toc-rail toc-scroll" use:scrollChain>
+				<TocNav
+					entries={tocEntries}
+					activeId={activeHeadingId}
+					onNavigate={scrollToHeading}
+					heading={tocHeading}
+					sectionKey="proj-toc"
+					counterPrefix={tocCounterPrefix}
+				/>
+				{#if imageGallerySections.length > 0}
+					<div class="toc-gallery-stack" data-testid="project-image-gallery-rail">
+						{#each imageGallerySections as gallery (gallery.originalIndex)}
+							<CollapsibleSection
+								title={gallery.title}
+								sectionKey="proj-gallery-{gallery.originalIndex}"
+								open={true}
+							>
+								{#snippet icon()}
+									<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
+								{/snippet}
+								<ProjectImageGallery doc={gallery.doc} />
+							</CollapsibleSection>
+						{/each}
+					</div>
+				{/if}
+				{#if hasProjectLinks}
+					<div class="toc-links-stack">
+						<ProjectLinksCard project={project} sectionKey="glance-links-left-rail" />
+					</div>
+				{/if}
+			</div>
 		</aside>
 
 		<div class="sections-column">
-			{#each project.sections as section, i}
+			{#if firstArticleSection}
+				<div
+					class="section-block"
+					data-section-index={0}
+				>
+					<CollapsibleSection
+						title={firstArticleSection.title}
+						sectionKey="proj-section-0"
+						index={0}
+						open={true}
+						>
+							<div class="section-body">
+								<BlockRenderer doc={firstArticleSection.doc} />
+							</div>
+						</CollapsibleSection>
+					</div>
+			{/if}
+
+			{#if imageGallerySections.length > 0}
+				<div class="mobile-gallery-stack lg:hidden" data-testid="project-image-gallery-mobile">
+					{#each imageGallerySections as gallery (gallery.originalIndex)}
+						<CollapsibleSection
+							title={gallery.title}
+							sectionKey="proj-gallery-mobile-{gallery.originalIndex}"
+							anchor={`project-gallery-${gallery.originalIndex}`}
+							open={true}
+						>
+							{#snippet icon()}
+								<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
+							{/snippet}
+							<ProjectImageGallery doc={gallery.doc} />
+						</CollapsibleSection>
+					{/each}
+				</div>
+			{/if}
+
+			{#each remainingArticleSections as section, offset}
+				{@const i = offset + 1}
 				<div
 					class="section-block"
 					data-section-index={i}
 				>
 					<CollapsibleSection
-						title={resolveLocale(section.title, locale)}
+						title={section.title}
 						sectionKey="proj-section-{i}"
 						index={i}
 						open={true}
-					>
-						<div class="section-body"><BlockRenderer doc={resolveLocale(section.content, locale)} /></div>
-					</CollapsibleSection>
-				</div>
+						>
+							<div class="section-body">
+								<BlockRenderer doc={section.doc} />
+							</div>
+						</CollapsibleSection>
+					</div>
 			{/each}
 
 			{#if readmeHtml}
 				<div
 					class="section-block"
-					data-section-index={project.sections.length}
+					data-section-index={articleSections.length}
 				>
 					<CollapsibleSection title={readmeSectionTitle} sectionKey="proj-readme" open={true}>
 						{#snippet icon()}
-							<svg class="h-5 w-5 shrink-0 text-primary" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-								<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-							</svg>
+							<SectionIcon name="github" class="h-5 w-5 shrink-0 text-primary" />
 						{/snippet}
-						<div class="prose-dark section-body">
+						<div class="prose-dark section-body" bind:this={readmeBody}>
 							{@html processedReadmeHtml}
 						</div>
 					</CollapsibleSection>
@@ -274,93 +514,28 @@
 		</div>
 
 		<aside class="glance-column">
-			<ProjectGlancePanel {project} {services} {serviceSvgContents} />
+			<ProjectGlancePanel {project} {services} {serviceSvgContents} showLinks={false} />
 		</aside>
+	</div>
+
+	<!-- Mobile glance: the SAME panels as desktop (Services-style), rendered below
+	     the sections like the services detail mobile rail. Replaces the old
+	     condensed "Project Info" panel. -->
+	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
+		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile />
 	</div>
 </article>
 
 <!-- Mobile floating TOC pill -->
-<ProjectTocPill {tocEntries} />
+{#if mobileTocEntries.length > 0}
+	<TocPill entries={mobileTocEntries} activeId={activeHeadingId} openAria={tocOpenAria} closeAria={tocCloseAria} />
+{/if}
 
 <style>
-	/* TOC panel */
-	.toc-nav {
-		font-family: var(--font-heading);
-		font-size: 16px;
-		line-height: 2.4;
-		border-left: 2px solid color-mix(in srgb, var(--primary) 12%, transparent);
-		padding-left: 16px;
-	}
-
-	.toc-item {
-		display: block;
-		position: relative;
-		width: 100%;
-		text-align: left;
-		background: none;
-		border: none;
-		cursor: pointer;
-		padding: 0;
-		min-height: 44px;
-		color: var(--muted-foreground);
-		transition: color var(--duration-fast) var(--ease-default);
-	}
-
-	.toc-item:hover {
-		color: color-mix(in srgb, var(--foreground) 60%, transparent);
-	}
-
-	.toc-item.active {
-		color: var(--primary);
-		font-weight: 600;
-	}
-
-	.toc-sub-item {
-		/* padding-left set inline based on heading depth */
-		font-size: 13px;
-		color: color-mix(in srgb, var(--foreground) 20%, transparent);
-	}
-
-	.toc-sub-item:hover {
-		color: color-mix(in srgb, var(--foreground) 50%, transparent);
-	}
-
-	.toc-sub-item.active {
-		color: var(--primary);
-	}
-
-	.toc-dot {
-		position: absolute;
-		left: -19px;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--primary);
-	}
-
-	.toc-counter-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--primary);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
-	}
-
-	.toc-counter-text {
-		color: color-mix(in srgb, var(--primary) 30%, transparent);
-	}
-
-	/* Section blocks */
+	/* Section blocks match the side-column card spacing (mb-4 = 1rem) so the
+	   center column isn't airier than the rails. */
 	.section-block {
-		margin-bottom: 36px;
-	}
-
-	@media (min-width: 1024px) {
-		.section-block {
-			margin-bottom: 48px;
-		}
+		margin-bottom: 1rem;
 	}
 
 	/* Body: 3-column grid layout */
@@ -377,6 +552,16 @@
 		display: none;
 	}
 
+	.toc-column,
+	.sections-column {
+		position: relative;
+	}
+
+	.toc-column:has(:global(.project-image-gallery__lightbox)),
+	.sections-column:has(:global(.project-image-gallery__lightbox)) {
+		z-index: 1000;
+	}
+
 	@media (min-width: 1024px) {
 		.detail-body {
 			grid-template-columns: 1fr 2fr 1fr;
@@ -389,11 +574,29 @@
 		}
 	}
 
-	/* TOC scrollable area */
+	/* Bare sticky TOC rail without a StickyPanel box (matches the clean services rail).
+	   The TOC's CollapsibleSection card carries its own framing. */
+	.toc-rail {
+		position: sticky;
+		top: 5rem;
+	}
+
+	/* No height cap because the TOC is as long as it needs (no internal-scroll clip).
+	   The .toc-rail above keeps it sticky; the center column is the longest. */
 	.toc-scroll {
-		max-height: calc(100dvh - 14rem);
-		overflow-y: auto;
 		padding-bottom: 1rem;
+	}
+
+	.toc-gallery-stack {
+		margin-top: 1rem;
+	}
+
+	.toc-links-stack {
+		margin-top: 1rem;
+	}
+
+	.mobile-gallery-stack {
+		margin-bottom: 1rem;
 	}
 
 	/* Section body text */

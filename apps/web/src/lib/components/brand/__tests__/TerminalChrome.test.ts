@@ -23,6 +23,11 @@ describe('TerminalChrome', () => {
     expect(screen.getByText('connected')).toBeTruthy();
   });
 
+  it('renders titlebar actions when provided', () => {
+    render(TerminalChromeTest, { props: { title: 'test', showActions: true } });
+    expect(screen.getByRole('button', { name: 'Copy' })).toBeTruthy();
+  });
+
   it('renders footer items when provided', () => {
     const footer = [
       { label: 'ping', value: '12ms' },
