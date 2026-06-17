@@ -15,7 +15,6 @@
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
-  import { projectsDetailContent } from '$lib/content/projects';
   import { siteLabels } from '$lib/content';
 
   let { project }: { project: Project } = $props();
@@ -24,9 +23,10 @@
   // previous companion literal kept as the code fallback.
   const backToListingLabel =
     resolveLocale(siteLabels.ui.backToProjects, locale) ||
-    resolveLocale(projectsDetailContent.backToListingLabel, locale);
+    resolveLocale(siteLabels.projectsChrome.detail.backToListingLabel, locale);
   // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
   const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale) || 'Tech stack';
+  const subtitle = $derived(resolveLocale(project.oneLiner, locale));
 
   const location = $derived(project.location ?? 'sherbrooke');
   const environment = $derived(project.environment ?? 'production');
@@ -132,6 +132,10 @@
       >
         {resolveLocale(project.title, locale)}
       </h1>
+
+      {#if subtitle}
+        <p class="header-subtitle">{subtitle}</p>
+      {/if}
 
       <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label={navTechStackAria}>
         {#each project.stack as tech}
@@ -251,6 +255,21 @@
     .header-title {
       font-size: clamp(2.5rem, 5vw, 4rem);
       text-shadow: 0 0 80px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+  }
+
+  .header-subtitle {
+    max-width: 720px;
+    margin: 0 auto 1.25rem;
+    color: color-mix(in srgb, var(--foreground) 76%, transparent);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  @media (min-width: 1024px) {
+    .header-subtitle {
+      margin-bottom: 1.5rem;
+      font-size: 1.125rem;
     }
   }
 

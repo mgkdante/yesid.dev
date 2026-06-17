@@ -1,0 +1,24 @@
+{
+  "collection": "contact_channels",
+  "field": "translations",
+  "type": "alias",
+  "meta": {
+    "collection": "contact_channels",
+    "field": "translations",
+    "hidden": false,
+    "interface": "translations",
+    "options": {
+      "languageField": "name"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 6,
+    "special": [
+      "translations"
+    ],
+    "translations": null,
+    "width": "full"
+  },
+  "schema": null
+}

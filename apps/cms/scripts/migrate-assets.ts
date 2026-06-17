@@ -414,6 +414,23 @@ export function buildIdMap(
 	return out;
 }
 
+export function collectPreservedIdMapEntries(
+	existingMaps: ReadonlyArray<Record<string, unknown>>,
+	manifestKeys: ReadonlySet<string>,
+): Map<string, string> {
+	const preservedEntries = new Map<string, string>();
+	for (const existingMap of existingMaps) {
+		for (const [key, value] of Object.entries(existingMap)) {
+			if (manifestKeys.has(key)) continue;
+			if (key.startsWith('images/')) continue;
+			if (typeof value === 'string' && !preservedEntries.has(key)) {
+				preservedEntries.set(key, value);
+			}
+		}
+	}
+	return preservedEntries;
+}
+
 // --- Directus I/O (only exercised by CLI entrypoint) -----------------------
 
 interface MigrateOptions {
@@ -631,15 +648,33 @@ export async function migrateAssets(
 		);
 	}
 
-	// Emit the id-map file. Stable-ordered for diff-friendliness.
+	// Emit the id-map file. Stable-ordered for diff-friendliness. Preserve
+	// non-images keys owned by sibling seeders, such as brand/* from
+	// seed-brand-assets.ts, while still letting removed manifest images disappear.
+	const manifestKeys = new Set(manifest.assets.map((entry) => entry.legacyPath));
+	const existingMaps: Record<string, unknown>[] = [];
+	for (const outPath of opts.outputMapPaths) {
+		if (!existsSync(outPath)) continue;
+		try {
+			existingMaps.push(JSON.parse(readFileSync(outPath, 'utf8')) as Record<string, unknown>);
+		} catch {
+			log.warn(`could not read existing id-map for preserved entries: ${outPath}`);
+		}
+	}
+	const preservedEntries = collectPreservedIdMapEntries(existingMaps, manifestKeys);
+
 	const outputObj: Record<string, string> = {};
+	for (const [key, value] of preservedEntries) {
+		outputObj[key] = value;
+	}
 	for (const key of [...idMap.keys()].sort()) {
 		outputObj[key] = idMap.get(key) ?? '';
 	}
 	const serialized = JSON.stringify(outputObj, null, '\t') + '\n';
+	const outputEntryCount = Object.keys(outputObj).length;
 	for (const outPath of opts.outputMapPaths) {
 		writeFileSync(outPath, serialized);
-		log.info(`  ✓ emitted ${outPath} (${idMap.size} entries)`);
+		log.info(`  ✓ emitted ${outPath} (${outputEntryCount} entries)`);
 	}
 	log.info('');
 

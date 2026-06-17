@@ -12,13 +12,17 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { projectsListingContent } from '$lib/content/projects';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
+	import TocNav from '$lib/components/shared/TocNav.svelte';
+	import TocPill from '$lib/components/shared/TocPill.svelte';
+	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+	import { onMount } from 'svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';
 
@@ -76,8 +80,41 @@
 		resolveLocale(siteLabels.servicesChrome.detail.relatedProjectsNavAria, locale)
 	);
 	let seeAllProjectsLabel = $derived(
-		resolveLocale(projectsListingContent.seeAllLink, locale)
+		resolveLocale(siteLabels.projectsChrome.listing.seeAllLink, locale)
 	);
+
+	// ── Table of contents (shared TocNav desktop / TocPill mobile) ──
+	// Chrome is shared across detail pages (one source, see site-content.companion).
+	const tocHeading = $derived(resolveLocale(siteLabels.navChrome.shared.tocHeading, locale));
+	const tocOpenAria = $derived(resolveLocale(siteLabels.navChrome.shared.tocMobileButton, locale));
+	const tocCloseAria = $derived(resolveLocale(siteLabels.navChrome.shared.tocCloseAria, locale));
+	const tocCounterPrefix = $derived(resolveLocale(siteLabels.navChrome.shared.tocCounterPrefix, locale));
+
+	// Each TOC entry mirrors its section card's badge (icon shape or number) so the
+	// TOC and the cards never drift: same SectionIcon registry, no ad-hoc copies.
+	const tocEntries = $derived.by((): TocEntry[] => {
+		const entries: TocEntry[] = [];
+		if (service.valueProposition)
+			entries.push({ id: 'svc-valueprop', title: valuePropositionHeading, level: 2, badge: { kind: 'icon', name: 'eye' }, children: [] });
+		if (service.deliverables && service.deliverables.length > 0)
+			entries.push({ id: 'svc-deliverables', title: deliverablesHeading, level: 2, badge: { kind: 'icon', name: 'list' }, children: [] });
+		if (service.sections)
+			service.sections.forEach((section, i) =>
+				entries.push({ id: `svc-section-${i}`, title: resolveLocale(section.title, locale), level: 2, badge: { kind: 'number', value: i + 1 }, children: [] })
+			);
+		if (hasStack)
+			entries.push({ id: 'svc-stack', title: stackLabel, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
+		if (relatedProjects.length > 0)
+			entries.push({ id: 'svc-related', title: relatedProjectsHeading, level: 2, badge: { kind: 'icon', name: 'briefcase' }, rail: true, children: [] });
+		return entries;
+	});
+
+	let activeTocId = $state('');
+	onMount(() => observeActiveToc((id) => (activeTocId = id)));
+
+	function scrollToToc(id: string): void {
+		tocElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
 </script>
 
 <div class="service-detail" data-testid="service-detail-page">
@@ -143,17 +180,32 @@
 		<div class="body-area">
 			<div class="body-grid">
 				<!-- Impact metric column — desktop only, sticky -->
-				{#if metricValue}
+				{#if metricValue || tocEntries.length > 0}
 					<aside class="impact-column">
-						<div class="impact-metric">
-							<span class="impact-value">{metricValue}</span>
-							{#if metricLabel}
-								<span class="impact-label">{metricLabel}</span>
+						{#if metricValue}
+							<div class="impact-metric">
+								<span class="impact-value">{metricValue}</span>
+								{#if metricLabel}
+									<span class="impact-label">{metricLabel}</span>
+								{/if}
+							</div>
+							{#if benefitHeadline}
+								<div class="impact-separator" aria-hidden="true"></div>
+								<p class="benefit-headline">{benefitHeadline}</p>
 							{/if}
-						</div>
-						{#if benefitHeadline}
-							<div class="impact-separator" aria-hidden="true"></div>
-							<p class="benefit-headline">{benefitHeadline}</p>
+						{/if}
+
+						{#if tocEntries.length > 0}
+							<div class="impact-toc">
+								<TocNav
+									entries={tocEntries}
+									activeId={activeTocId}
+									onNavigate={scrollToToc}
+									heading={tocHeading}
+									sectionKey="svc-toc"
+									counterPrefix={tocCounterPrefix}
+								/>
+							</div>
 						{/if}
 					</aside>
 				{/if}
@@ -176,12 +228,9 @@
 					<!-- Value Proposition -->
 					{#if service.valueProposition}
 						<div>
-							<CollapsibleSection title={valuePropositionHeading} sectionKey="svc-valueprop" open={true}>
+							<CollapsibleSection title={valuePropositionHeading} sectionKey="svc-valueprop" anchor="svc-valueprop" open={true}>
 								{#snippet icon()}
-									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-										<circle cx="8" cy="8" r="2.5" />
-										<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
-									</svg>
+									<SectionIcon name="eye" class="h-4 w-4 shrink-0 text-primary" />
 								{/snippet}
 								<p class="section-body">
 									{resolveLocale(service.valueProposition, locale)}
@@ -193,11 +242,9 @@
 					<!-- Deliverables -->
 					{#if service.deliverables && service.deliverables.length > 0}
 						<div>
-							<CollapsibleSection title={deliverablesHeading} sectionKey="svc-deliverables" open={true}>
+							<CollapsibleSection title={deliverablesHeading} sectionKey="svc-deliverables" anchor="svc-deliverables" open={true}>
 								{#snippet icon()}
-									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
-									</svg>
+									<SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
 								{/snippet}
 								<div class="deliverables-grid">
 									{#each service.deliverables as deliverable}
@@ -215,7 +262,7 @@
 					{#if service.sections}
 						{#each service.sections as section, i}
 							<div>
-								<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey="svc-section-{i}" open={true} index={i}>
+								<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey="svc-section-{i}" anchor="svc-section-{i}" open={true} index={i}>
 									<p class="section-body">
 										{resolveLocale(section.content, locale)}
 									</p>
@@ -236,11 +283,7 @@
 								open={true}
 							>
 								{#snippet icon()}
-									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
-										<path d="M10 2.5l7.5 3.75L10 10 2.5 6.25 10 2.5z" />
-										<path d="M2.5 10L10 13.75 17.5 10" />
-										<path d="M2.5 13.75L10 17.5l7.5-3.75" />
-									</svg>
+									<SectionIcon name="layers" class="h-4 w-4 shrink-0 text-primary" />
 								{/snippet}
 								<div class="stack-pills">
 									{#each service.stack as tech}
@@ -259,9 +302,7 @@
 								open={true}
 							>
 								{#snippet icon()}
-									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path d="M7 4a2 2 0 012-2h2a2 2 0 012 2v1h3a2 2 0 012 2v3H1V7a2 2 0 012-2h3V4zm2 1h2V4H9v1zM1 11h18v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4z" />
-									</svg>
+									<SectionIcon name="briefcase" class="h-4 w-4 shrink-0 text-primary" />
 								{/snippet}
 								<nav class="projects-list" aria-label={relatedProjectsAria}>
 									{#each relatedProjects as project}
@@ -294,14 +335,11 @@
 					<CollapsibleSection
 						title="{stackLabel} ({service.stack.length})"
 						sectionKey="svc-stack-mobile"
+						anchor="svc-stack"
 						open={true}
 					>
 						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
-								<path d="M10 2.5l7.5 3.75L10 10 2.5 6.25 10 2.5z" />
-								<path d="M2.5 10L10 13.75 17.5 10" />
-								<path d="M2.5 13.75L10 17.5l7.5-3.75" />
-							</svg>
+							<SectionIcon name="layers" class="h-4 w-4 shrink-0 text-primary" />
 						{/snippet}
 						<div class="stack-pills">
 							{#each service.stack as tech}
@@ -317,12 +355,11 @@
 					<CollapsibleSection
 						title="{relatedProjectsHeading} ({relatedProjects.length})"
 						sectionKey="svc-related-mobile"
+						anchor="svc-related"
 						open={true}
 					>
 						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-								<path d="M7 4a2 2 0 012-2h2a2 2 0 012 2v1h3a2 2 0 012 2v3H1V7a2 2 0 012-2h3V4zm2 1h2V4H9v1zM1 11h18v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4z" />
-							</svg>
+							<SectionIcon name="briefcase" class="h-4 w-4 shrink-0 text-primary" />
 						{/snippet}
 						<nav class="projects-list" aria-label={relatedProjectsAria}>
 							{#each relatedProjects as project}
@@ -350,6 +387,11 @@
 			<ServiceNav {prev} {next} />
 		</div>
 	</article>
+
+	<!-- Mobile floating TOC pill -->
+	{#if tocEntries.length > 0}
+		<TocPill entries={tocEntries} activeId={activeTocId} openAria={tocOpenAria} closeAria={tocCloseAria} />
+	{/if}
 </div>
 
 <style>
@@ -589,6 +631,11 @@
 		font-weight: 500;
 		color: var(--secondary-foreground);
 		line-height: 1.5;
+	}
+
+	/* TOC sits below the metric in the sticky impact column (desktop). */
+	.impact-toc {
+		margin-top: 2rem;
 	}
 
 	/* ── Mobile inline metric (below 1024px) ── */

@@ -324,23 +324,6 @@ pre, code, table {
 	--border-brand: color-mix(in srgb, var(--primary) 60%, transparent);
 }
 
-/* Code blocks stay night-mode in light theme: Shiki token colors are baked
-   against the dark brand theme (lib/utils/markdown.ts). Pinning the block
-   dark keeps syntax readable with zero highlighter changes. Values are the
-   dark-theme --terminal / --border literals on purpose (the vars flip) —
-   taste round 2: back to the restored near-black board values. */
-[data-theme="light"] .prose-dark pre,
-[data-theme="light"] .prose-dark pre.shiki,
-.theme-light .prose-dark pre,
-.theme-light .prose-dark pre.shiki {
-	background: #141414 !important;
-	border-color: #3A3A3A;
-}
-[data-theme="light"] .prose-dark pre:not(.shiki) code,
-.theme-light .prose-dark pre:not(.shiki) code {
-	color: #E07800;
-}
-
 /* GO2-W5: inline code chips in light mode — manila label on the paper
    (var(--muted) + strong border) instead of var(--card): a #FFFDF8 chip is
    near-invisible on #F7F2E9 prose and disappears entirely inside cards. */

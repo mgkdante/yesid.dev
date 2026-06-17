@@ -60,6 +60,7 @@
 		 *  $lib/content companions for services/projects. */
 		services: readonly Service[];
 		featuredProjects: readonly Project[];
+		serviceSvgContents: Record<string, string>;
 	}
 	let {
 		metroSvg,
@@ -74,6 +75,7 @@
 		initialHeroData,
 		services,
 		featuredProjects,
+		serviceSvgContents,
 	}: Props = $props();
 
 // go2-t1c2: rotated home section titles from site_labels, previous
@@ -203,7 +205,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
-<section bind:this={projectsSectionEl} data-magnet-section class="home-section home-section--left">
+<section bind:this={projectsSectionEl} data-magnet-section class="home-section home-section--left home-section--proof-reel">
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionProjects} />
 	</div>
@@ -213,7 +215,7 @@
 	<div class="home-section-content">
 		<!-- go2/home-cards: services join the proof reel so each card can name
 		     the station that built it (same prop the services grid consumes). -->
-		<FeaturedProjects {proofReel} projects={featuredProjects} {services} />
+		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
 	</div>
 </section>
 
@@ -332,6 +334,14 @@
 		.home-section-heading-mobile {
 			display: block;
 			padding: 2rem var(--space-page-x) 0.5rem;
+		}
+
+		.home-section--proof-reel .home-section-heading-mobile {
+			padding-bottom: 0;
+		}
+
+		.home-section--proof-reel :global(.proof-reel-section) {
+			padding-block-start: clamp(0.75rem, 2dvh, 1.25rem);
 		}
 	}
 </style>

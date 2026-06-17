@@ -81,9 +81,16 @@ describe('fixtures/assets-manifest.json', () => {
 		expect(m.sourceRoot).toBe('apps/web/static');
 	});
 
-	it('declares exactly 14 assets after 18d triage', () => {
+	it('declares exactly 22 assets after language flag SVG additions', () => {
 		const m = loadManifest();
-		expect(m.assets.length).toBe(14);
+		expect(m.assets.length).toBe(22);
+		expect(m.assets.map((asset) => asset.legacyPath)).toEqual(
+			expect.arrayContaining([
+				'images/about/languages/quebec.svg',
+				'images/about/languages/canada.svg',
+				'images/about/languages/colombia.svg',
+			]),
+		);
 	});
 
 	it('declares all 6 content folders (services/projects/blog/brand/about/og)', () => {

@@ -48,6 +48,8 @@ describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 		resolve(SRC, 'lib/components/brand/TerminalChrome.svelte'),
 		'utf-8',
 	);
+	const appCss = readFileSync(resolve(SRC, 'app.css'), 'utf-8');
+	const terminalCss = readFileSync(resolve(SRC, 'lib/styles/terminal.css'), 'utf-8');
 	const footer = readFileSync(resolve(SRC, 'lib/components/layout/Footer.svelte'), 'utf-8');
 
 	it('hazard separator is real tape — theme-invariant hazard tokens, not primary/background', () => {
@@ -62,16 +64,18 @@ describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 	});
 
 	it('terminal chrome strips use the chrome token; body keeps var(--terminal); chassis is the bold rule', () => {
-		expect(terminalChrome).toContain('background: var(--terminal-chrome);');
-		expect(terminalChrome).toContain('background: var(--terminal);');
+		expect(terminalChrome).toContain('class="terminal-titlebar"');
+		expect(terminalCss).toContain('background: var(--terminal-chrome);');
+		expect(terminalCss).toContain('background: var(--terminal);');
 		// Taste round 2: terminal identity = chrome/border/type — the chassis
 		// is the solid-orange structural rule, not a neutral strong border.
 		// Round 3: chassis one step thicker (2px).
-		expect(terminalChrome).toContain('border: 2px solid var(--border-rule);');
+		expect(terminalCss).toContain('border: 2px solid var(--border-rule);');
 	});
 
 	it('terminal footer values speak the wayfinding voice (departure board)', () => {
-		expect(terminalChrome).toContain('text-[var(--accent-text)]');
+		expect(terminalChrome).toContain('terminal-footer-value');
+		expect(terminalCss).toContain('color: var(--accent-text);');
 	});
 
 	it('hero SQL terminal carries the same rule chassis (terminal = page bg, solid, round-3 2px)', () => {
@@ -119,14 +123,17 @@ describe('GO2-W5 round 3 — bolder structure (operator: dividers thicker both m
 
 	it('the brand grid draws at 2px (card surface + section panels)', () => {
 		expect(card).toContain('border: 2px solid var(--border-brand);');
-		for (const f of [
-			'lib/components/home/HomeServices.svelte',
-			'lib/components/home/FeaturedProjects.svelte',
-		]) {
+		for (const f of ['lib/components/home/HomeServices.svelte']) {
 			expect(readFileSync(resolve(SRC, f), 'utf-8'), f).toContain(
 				'border: 2px solid var(--border-brand);',
 			);
 		}
+		expect(readFileSync(resolve(SRC, 'lib/components/projects/ProjectCard.svelte'), 'utf-8')).toContain(
+			"import { Card } from '$lib/components/ui/card';",
+		);
+		expect(readFileSync(resolve(SRC, 'lib/components/home/FeaturedProjects.svelte'), 'utf-8')).toContain(
+			"import ProjectCard from '$lib/components/projects/ProjectCard.svelte';",
+		);
 	});
 
 	it('blueprint shells run the round-3 light visibility (hero 0.46 / details 0.42 / 55% / 70%)', () => {
@@ -173,9 +180,6 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 		expect(read('lib/components/home/HomeServices.svelte')).toMatch(
 			/\.services-marker \{[\s\S]*?color: var\(--accent-text\);/,
 		);
-		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
-			/\.proof-marker \{[\s\S]*?color: var\(--accent-text\);/,
-		);
 		// Listing-header sublines are overlines too.
 		expect(read('lib/components/blog/BlogListingPage.svelte')).toMatch(
 			/\.blog-header-subtitle \{[\s\S]*?color: var\(--accent-text\);/,
@@ -190,7 +194,7 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 		expect(read('lib/components/home/HomeServices.svelte')).toMatch(
 			/\.services-metric-value \{[\s\S]*?color: var\(--accent-text\);/,
 		);
-		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
+		expect(read('lib/components/projects/ProjectCard.svelte')).toMatch(
 			/\.proof-metric-value \{[\s\S]*?color: var\(--accent-text\);/,
 		);
 		expect(read('lib/components/services/ServiceCard.svelte')).toMatch(
@@ -213,10 +217,7 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 		);
 	});
 
-	it('WHITE role — reflective voice: proof titles over photo gradients + métro dot cores', () => {
-		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
-			/\.proof-title \{[\s\S]*?color: var\(--reflective\);/,
-		);
+	it('WHITE role: reflective voice: métro dot cores and map cores', () => {
 		expect(read('lib/components/home/DataFlowDiagram.svelte')).toContain('fill="var(--reflective)"');
 		expect(read('lib/components/blog/BlogRouteMap.svelte')).toContain('fill: var(--reflective);');
 	});

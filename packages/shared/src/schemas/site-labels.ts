@@ -56,18 +56,16 @@ export const SiteLabelsSchema = z.object({
 	email: z.object({
 		contactSubjectTemplate: LocalizedStringSchema,
 	}),
-	// --- slice-30 t1: code-owned chrome groups -------------------------------
-	// Mirror the companion-module shapes 1:1 so a future export:fallbacks regen
-	// recomposes the flat CMS columns straight back into the constants the
-	// components already import (projects/blog/services/nav/site-content
-	// companions + hero-data dashboard labels). Leaves stay LocalizedString.
+	// --- slice-30 t1: CMS chrome groups --------------------------------------
+	// Recompose flat CMS columns into stable chrome groups consumed from
+	// siteLabels.*. Leaves stay LocalizedString.
 	projectsChrome: z.object({
-		// projects.companion.ts → projectsPageMeta
+		// Former projectsPageMeta shape.
 		pageMeta: z.object({
 			title: LocalizedStringSchema,
 			description: LocalizedStringSchema,
 		}),
-		// projects.companion.ts → projectsListingContent
+		// Former projectsListingContent shape.
 		listing: z.object({
 			heading: LocalizedStringSchema,
 			searchPlaceholder: LocalizedStringSchema,
@@ -84,7 +82,7 @@ export const SiteLabelsSchema = z.object({
 				stackOverflowSuffix: LocalizedStringSchema,
 			}),
 		}),
-		// projects.companion.ts → projectsDetailContent
+		// Former projectsDetailContent shape.
 		detail: z.object({
 			backToListingLabel: LocalizedStringSchema,
 			tocSectionTitle: LocalizedStringSchema,
@@ -107,7 +105,7 @@ export const SiteLabelsSchema = z.object({
 		}),
 	}),
 	blogChrome: z.object({
-		// blog.companion.ts → blogListingContent
+		// Former blogListingContent shape.
 		listing: z.object({
 			mobileHeading: LocalizedStringSchema,
 			searchPlaceholder: LocalizedStringSchema,
@@ -128,7 +126,7 @@ export const SiteLabelsSchema = z.object({
 				terminus: LocalizedStringSchema,
 			}),
 		}),
-		// blog.companion.ts → blogDetailContent
+		// Former blogDetailContent shape.
 		detail: z.object({
 			code: z.object({
 				copyAria: LocalizedStringSchema,
@@ -159,7 +157,7 @@ export const SiteLabelsSchema = z.object({
 		}),
 	}),
 	servicesChrome: z.object({
-		// services.companion.ts → servicesListingContent
+		// Former servicesListingContent shape.
 		listing: z.object({
 			heading: LocalizedStringSchema,
 			stationLabelTemplate: LocalizedStringSchema,
@@ -179,12 +177,12 @@ export const SiteLabelsSchema = z.object({
 				projectPlural: LocalizedStringSchema,
 			}),
 		}),
-		// services.companion.ts → servicesPageMeta
+		// Former servicesPageMeta shape.
 		pageMeta: z.object({
 			title: LocalizedStringSchema,
 			description: LocalizedStringSchema,
 		}),
-		// services.companion.ts → servicesDetailContent
+		// Former servicesDetailContent shape.
 		detail: z.object({
 			backToServicesLabel: LocalizedStringSchema,
 			valuePropositionHeading: LocalizedStringSchema,
@@ -197,12 +195,12 @@ export const SiteLabelsSchema = z.object({
 		}),
 	}),
 	navChrome: z.object({
-		// nav.companion.ts → navDirections
+		// Former navDirections shape.
 		directions: z.object({
 			previous: LocalizedStringSchema,
 			next: LocalizedStringSchema,
 		}),
-		// nav.companion.ts → sharedChromeContent
+		// Former sharedChromeContent shape.
 		shared: z.object({
 			openMenuAria: LocalizedStringSchema,
 			closeMenuAria: LocalizedStringSchema,
@@ -216,16 +214,18 @@ export const SiteLabelsSchema = z.object({
 			tocToggleSectionAria: LocalizedStringSchema,
 			tocHeading: LocalizedStringSchema,
 			tocMobileButton: LocalizedStringSchema,
+			tocCloseAria: LocalizedStringSchema,
+			tocCounterPrefix: LocalizedStringSchema,
 		}),
 	}),
 	footerChrome: z.object({
-		// site-content.companion.ts → relatedProjectsStripContent
+		// Former relatedProjectsStripContent shape.
 		relatedProjectsStrip: z.object({
 			builtWithLabel: LocalizedStringSchema,
 			projectCountSingular: LocalizedStringSchema,
 			projectCountPlural: LocalizedStringSchema,
 		}),
-		// site-content.companion.ts → footerContent
+		// Former footerContent shape.
 		footer: z.object({
 			tagline: LocalizedStringSchema,
 			location: LocalizedStringSchema,

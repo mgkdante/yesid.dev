@@ -13,6 +13,10 @@ export async function getProjectBySlug(slug: string, ctx?: PreviewContext): Prom
 	return adapter.projects.bySlug(slug, ctx);
 }
 
+export async function getFeaturedProjects(ctx?: PreviewContext): Promise<readonly Project[]> {
+	return adapter.projects.featured(ctx);
+}
+
 export async function getPublicProjects(ctx?: PreviewContext): Promise<readonly Project[]> {
 	return adapter.projects.public(ctx);
 }

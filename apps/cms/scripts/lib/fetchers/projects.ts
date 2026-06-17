@@ -66,18 +66,55 @@ export interface DirectusProject {
 	sort: number | null;
 	featured: boolean;
 	hero_image: string | null;
+	hero_image_light: string | null;
+	hero_image_secondary: string | null;
+	hero_image_secondary_light: string | null;
 	repo_url: string | null;
 	live_url: string | null;
 	readme_url: string | null;
 	location: string | null;
 	environment: string | null;
 	version: string | null;
-	stack: string[];
-	tags: string[];
 	translations?: DirectusProjectTranslation[];
 	sections?: DirectusProjectSectionRow[];
 	impact_metrics?: DirectusProjectImpactMetricRow[];
 	services?: DirectusProjectsServicesRow[];
+	/** Normalized tech stack: M2M to tech_stack, ordered by junction `sort`.
+	 *  Single source of truth (the old denormalized `stack` json was dropped). */
+	tech_stack?: DirectusTechStackJunctionRow[];
+	/** Normalized tags: M2M to the shared tags collection, ordered by `sort`
+	 *  (the old denormalized `tags` json was dropped). */
+	tags?: DirectusTagJunctionRow[];
+}
+
+/** tech_stack_projects junction row, expanded to the linked tech name. */
+export interface DirectusTechStackJunctionRow {
+	sort: number | null;
+	tech_stack_id: { id: string; name: string } | null;
+}
+
+/** projects_tags / blog_posts_tags junction row, expanded to the tag slug. */
+export interface DirectusTagJunctionRow {
+	sort: number | null;
+	tags_id: { id: string } | null;
+}
+
+/** Tech names from the ordered M2M junction (single source of truth for stack). */
+export function stackFromTechM2M(rows: DirectusTechStackJunctionRow[] | undefined): string[] {
+	return (rows ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((j) => j.tech_stack_id?.name)
+		.filter((n): n is string => !!n);
+}
+
+/** Tag slugs from the ordered M2M junction (single source of truth for tags). */
+export function tagsFromM2M(rows: DirectusTagJunctionRow[] | undefined): string[] {
+	return (rows ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((j) => j.tags_id?.id)
+		.filter((n): n is string => !!n);
 }
 
 export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): ProjectStatus {
@@ -120,8 +157,8 @@ export function toProject(row: DirectusProject): Project {
 		title: toLocalizedString(translations, 'title'),
 		oneLiner: toLocalizedString(translations, 'one_liner'),
 		description: toLocalizedBlockEditorDoc(translations, 'description'),
-		stack: row.stack ?? [],
-		tags: row.tags ?? [],
+		stack: stackFromTechM2M(row.tech_stack),
+		tags: tagsFromM2M(row.tags),
 		status: statusFromDirectus(row.status),
 		featured: row.featured,
 		relatedServices: (row.services ?? []).map((j) => j.service_id),
@@ -132,6 +169,9 @@ export function toProject(row: DirectusProject): Project {
 	if (row.live_url) project.liveUrl = row.live_url;
 	if (row.readme_url) project.readmeUrl = row.readme_url;
 	if (row.hero_image) project.image = row.hero_image;
+	if (row.hero_image_light) project.imageLight = row.hero_image_light;
+	if (row.hero_image_secondary) project.imageSecondary = row.hero_image_secondary;
+	if (row.hero_image_secondary_light) project.imageSecondaryLight = row.hero_image_secondary_light;
 	if (row.location) project.location = row.location;
 	if (row.environment) project.environment = row.environment;
 	if (row.version) project.version = row.version;
@@ -154,6 +194,8 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 				{ sections: ['id', 'sort', { translations: ['*'] }] } as unknown as string,
 				{ impact_metrics: ['id', 'sort', 'value', 'before', { translations: ['*'] }] } as unknown as string,
 				{ services: ['id', 'project_id', 'service_id'] } as unknown as string,
+				{ tech_stack: ['sort', { tech_stack_id: ['id', 'name'] }] } as unknown as string,
+				{ tags: ['sort', { tags_id: ['id'] }] } as unknown as string,
 			],
 			limit: -1,
 		}),

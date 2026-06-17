@@ -98,8 +98,6 @@ describe('ProofReelContentSchema', () => {
 		viewAllLabel: ls('All'),
 		viewAllHref: '/work',
 		toggleColorAria: ls('Toggle'),
-		slugs: ['project-a'],
-		images: { 'project-a': '/images/a.jpg' },
 	};
 
 	it('parses a minimal valid ProofReelContent', () => {

@@ -136,10 +136,18 @@
 </div>
 
 <style>
+	.filter-btn {
+		background: var(--card);
+		border: 1px solid var(--border-subtle);
+		box-shadow: inset 0 1px 0 var(--edge-highlight);
+		color: var(--muted-foreground);
+	}
+
 	/* GO2-W5: text on the route-set fill pairs with primary-foreground
 	   (foreground-on-primary computed 2.4–2.9:1 — latent AA fail). */
 	.active {
 		background: var(--primary);
+		border-color: var(--primary);
 		color: var(--primary-foreground);
 	}
 

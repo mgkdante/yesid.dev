@@ -63,17 +63,17 @@ export const contactContent: ContactContent = {
 		{
 			href: 'mailto:contact@yesid.dev',
 			icon: 'email',
-			label: 'Email',
+			label: { en: 'Email', fr: 'Courriel' },
 		},
 		{
 			href: 'https://github.com/mgkdante',
 			icon: 'github',
-			label: 'GitHub',
+			label: { en: 'GitHub', fr: 'GitHub' },
 		},
 		{
 			href: 'https://www.linkedin.com/in/otaloray/',
 			icon: 'linkedin',
-			label: 'LinkedIn',
+			label: { en: 'LinkedIn', fr: 'LinkedIn' },
 		},
 	],
 	stationLabel: { en: 'NEXT STOP: YOU', fr: 'PROCHAIN ARRÊT : TOI' },

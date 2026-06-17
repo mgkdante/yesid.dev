@@ -12,14 +12,13 @@
  *   - block_tech_stack_page_content: cta -> Q3 availability + station language
  *   - block_contact_content: meta description vocabulary fix
  *   - block_blog_page_content / block_projects_page_content: intro rewrites
- *   - block_proof_reel:  slugs -> the 2 real projects; images keyed to match
  *
  * DRY-RUN BY DEFAULT. Pass --apply to write. Same env/auth/run shape as
  * consolidate-services.ts (see that header). Run consolidate-services FIRST —
  * the pills point at the post-consolidation station ids.
  */
 
-import { readItems, updateItem, updateSingleton } from '@directus/sdk';
+import { readItems, updateItem } from '@directus/sdk';
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
@@ -123,19 +122,6 @@ export const SITE_META_TRANSLATION_EDITS: Record<'en' | 'fr' | 'es', Record<stri
 	es: { owner_job_title: 'Ingeniero independiente en infraestructura digital' },
 };
 
-export const PROOF_REEL_PATCH: { slugs: string[]; images: Record<string, string> } = {
-	slugs: ['transit-data-pipeline', 'yesid-dev'],
-	images: {
-		// Transit: keeps the current stock transit photo until ASK #4 delivers a
-		// real dashboard screenshot (operator uploads -> swap URL, re-run script).
-		'transit-data-pipeline':
-			'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&h=600&fit=crop',
-		// yesid-dev: the project's own committed Directus asset (verify it
-		// resolves on the target instance before --apply; see runbook step A4).
-		'yesid-dev': 'https://cms.yesid.dev/assets/8b57ccd1-bed1-46ae-bb24-a887714a8bcc?key=card-600',
-	},
-};
-
 // --- Helpers ------------------------------------------------------------------
 
 export function parseFlags(argv: readonly string[]): { apply: boolean } {
@@ -217,18 +203,6 @@ export async function applyMessagePass(opts: { directusUrl: string; token: strin
 		log.info(`  ✓ site_meta_translations(${locale}) patched: ${Object.keys(fields).join(', ')}`);
 	}
 
-	// proof reel — slugs + images live on the PARENT row.
-	const reelRaw = (await client.request(
-		readItems('block_proof_reel' as never, { fields: ['id'], limit: 1 } as never),
-	)) as unknown;
-	// singleton since go2/t1 group A — object, not array; updateSingleton route.
-	const reels = (Array.isArray(reelRaw) ? reelRaw : reelRaw ? [reelRaw] : []) as GenericRow[];
-	if (reels.length === 0) throw new Error('[go2-message-pass] no block_proof_reel row found');
-	await client.request(
-		updateSingleton('block_proof_reel' as never, PROOF_REEL_PATCH as never),
-	);
-	log.info(`  ✓ block_proof_reel: slugs -> [${PROOF_REEL_PATCH.slugs.join(', ')}]`);
-
 	log.info('message pass applied.');
 }
 
@@ -245,7 +219,6 @@ async function main(): Promise<void> {
 		for (const [locale, fields] of Object.entries(SITE_META_TRANSLATION_EDITS)) {
 			log.info(`  ~ site_meta_translations(${locale}): ${Object.keys(fields).join(', ')}`);
 		}
-		log.info(`  ~ block_proof_reel: slugs -> [${PROOF_REEL_PATCH.slugs.join(', ')}] + matching images`);
 		log.info('dry-run complete. Pass --apply to execute (ORCHESTRATOR ONLY).');
 		return;
 	}

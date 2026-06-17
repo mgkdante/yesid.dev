@@ -7,8 +7,8 @@
 // - COLLECTION / PRIMARY data (anything with an adapter port) is read at
 //   runtime only by $lib/adapters/static.ts; routes get it via
 //   $lib/repositories and pass it to components as props.
-// - CODE-OWNED UI LITERALS (listing chrome copy, aria templates, companion
-//   constants) may be imported directly by display components — sanctioned.
+// - CMS chrome singletons (`siteLabels.*`) may be imported directly by display
+//   components because generated content files are the edge cache.
 // - Static-fallback imports in layout/error shells + test stubs are sanctioned.
 
 // Generated CMS-derived modules (slice-18m export-fallbacks pipeline).
@@ -27,8 +27,8 @@ export * from './projects-page'
 export * from './morph-shapes'
 export * from './site-labels'
 
-// Hand-written companions (slice-18m): route chrome, helper functions, type
-// definitions, and legacy fallbacks the generator does not emit.
+// Hand-written companions (slice-18m): helper functions, type definitions, and
+// legacy fallbacks the generator does not emit.
 export * from './projects.companion'
 export * from './services.companion'
 export * from './blog.companion'

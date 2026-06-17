@@ -1,0 +1,24 @@
+{
+  "collection": "about_languages",
+  "field": "translations",
+  "type": "alias",
+  "meta": {
+    "collection": "about_languages",
+    "field": "translations",
+    "hidden": false,
+    "interface": "translations",
+    "options": {
+      "languageField": "name"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 5,
+    "special": [
+      "translations"
+    ],
+    "translations": null,
+    "width": "full"
+  },
+  "schema": null
+}

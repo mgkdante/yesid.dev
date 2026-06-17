@@ -48,6 +48,7 @@
 	} from './stack-shape';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
 	import ProductPreview from './ProductPreview.svelte';
+	import TechIcon from './TechIcon.svelte';
 	import type { EngineState } from './engine-state.svelte';
 
 	// Idempotent (Engine.svelte registers it too) — the card morph below uses
@@ -350,6 +351,7 @@
 						onmouseenter={() => teach(tech)}
 						onfocus={() => teach(tech)}
 					>
+						<TechIcon icon={tech.icon} label={tech.name} />
 						<span class="chip-label">{tech.name}</span>
 					</button>
 				{/each}
@@ -666,6 +668,9 @@
 	}
 
 	.tech-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.42rem;
 		font-family: var(--font-mono);
 		font-size: var(--text-small);
 		padding: 0.35rem 0.75rem;

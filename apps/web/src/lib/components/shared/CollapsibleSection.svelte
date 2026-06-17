@@ -20,6 +20,7 @@
 		index = null,
 		accentColor = 'var(--primary)',
 		collapsible = true,
+		anchor = undefined,
 		icon,
 		children
 	}: {
@@ -37,6 +38,9 @@
 		index?: number | null;
 		accentColor?: string;
 		collapsible?: boolean;
+		/** When set, renders `data-toc={anchor}` on the card root so the shared TOC
+		 *  (TocNav / TocPill via toc.ts) can scroll to + active-track this section. */
+		anchor?: string;
 		icon?: Snippet;
 		children?: Snippet;
 	} = $props();
@@ -96,6 +100,7 @@
 <Card
 	class="section-card {collapsible ? 'section-card--toggleable' : ''}"
 	style="--accent: {accentColor};"
+	data-toc={anchor}
 	onclick={collapsible ? onCardClick : undefined}
 >
 	<Collapsible bind:open={() => isOpen, setOpen}>

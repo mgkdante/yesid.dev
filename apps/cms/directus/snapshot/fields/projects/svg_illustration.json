@@ -32,7 +32,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 42,
+    "sort": 45,
     "special": [
       "m2o"
     ],

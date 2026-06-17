@@ -91,6 +91,9 @@ export interface ImageBlock {
 	type: 'image';
 	data: {
 		file: ImageBlockFile;
+		variants?: {
+			light?: ImageBlockFile;
+		};
 		caption: string;
 		withBorder: boolean;
 		withBackground: boolean;
@@ -204,6 +207,9 @@ export const ImageBlockSchema: z.ZodType<ImageBlock> = z.object({
 	type: z.literal('image'),
 	data: z.object({
 		file: ImageBlockFileSchema,
+		variants: z.object({
+			light: ImageBlockFileSchema.optional(),
+		}).optional(),
 		caption: z.string(),
 		withBorder: z.boolean(),
 		withBackground: z.boolean(),

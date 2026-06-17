@@ -1,0 +1,29 @@
+{
+  "collection": "contact_channels_translations",
+  "field": "label",
+  "type": "string",
+  "meta": {
+    "collection": "contact_channels_translations",
+    "field": "label",
+    "hidden": false,
+    "interface": "input",
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 4,
+    "special": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "label",
+    "table": "contact_channels_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_primary_key": false,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

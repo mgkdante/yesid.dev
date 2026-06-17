@@ -38,9 +38,9 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
 	});
 
-	it('contains exactly 16 entries (matches manifest cardinality)', () => {
+	it('contains exactly 24 entries, including brand assets and language flags', () => {
 		const m = loadIdMap();
-		expect(Object.keys(m).length).toBe(16);
+		expect(Object.keys(m).length).toBe(24);
 	});
 
 	it('keys are sorted alphabetically (diff-friendly)', () => {
@@ -62,6 +62,11 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(m['images/montreal-metro.svg']).toMatch(/^[0-9a-f-]{36}$/);
 		expect(m['images/about/headshot.webp']).toMatch(/^[0-9a-f-]{36}$/);
 		expect(m['images/work/yesid-dev.png']).toMatch(/^[0-9a-f-]{36}$/);
+		expect(m['images/work/yesid-dev-home.png']).toMatch(/^[0-9a-f-]{36}$/);
+		expect(m['images/work/yesid-dev-case-study.png']).toMatch(/^[0-9a-f-]{36}$/);
+		expect(m['images/about/languages/quebec.svg']).toMatch(/^[0-9a-f-]{36}$/);
+		expect(m['images/about/languages/canada.svg']).toMatch(/^[0-9a-f-]{36}$/);
+		expect(m['images/about/languages/colombia.svg']).toMatch(/^[0-9a-f-]{36}$/);
 	});
 
 	it('matches packages/shared copy exactly', () => {

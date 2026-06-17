@@ -9,7 +9,10 @@ const FIXTURE_EXTERNAL: DirectusBlogPostRow = {
 	sort: 1,
 	lang: 'en',
 	category: 'professional',
-	tags: ['bun', 'js'],
+	tags: [
+		{ sort: 0, tags_id: { id: 'bun' } },
+		{ sort: 1, tags_id: { id: 'js' } },
+	],
 	external: false,
 	url: null,
 	cover_image: null,

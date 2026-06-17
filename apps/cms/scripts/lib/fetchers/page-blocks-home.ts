@@ -229,11 +229,6 @@ export async function fetchManifestoContent({ client }: FetcherContext): Promise
 
 export function toProofReelContent(raw: BlockRow): ProofReelContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
-	const slugs = Array.isArray(raw.slugs) ? (raw.slugs as string[]) : [];
-	const images =
-		raw.images !== null && typeof raw.images === 'object' && !Array.isArray(raw.images)
-			? (raw.images as Record<string, string>)
-			: {};
 	return {
 		heading: toLocalizedString(tr, 'heading'),
 		headingDot: toLocalizedString(tr, 'heading_dot'),
@@ -242,8 +237,6 @@ export function toProofReelContent(raw: BlockRow): ProofReelContent {
 		viewAllLabel: toLocalizedString(tr, 'view_all_label'),
 		viewAllHref: typeof raw.view_all_href === 'string' ? raw.view_all_href : '/work',
 		toggleColorAria: toLocalizedString(tr, 'toggle_color_aria'),
-		slugs,
-		images,
 	};
 }
 

@@ -1,0 +1,29 @@
+{
+  "collection": "about_languages",
+  "field": "id",
+  "type": "string",
+  "meta": {
+    "collection": "about_languages",
+    "field": "id",
+    "hidden": false,
+    "interface": "input",
+    "note": "Stable language panel id, such as quebec or brazil.",
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 1,
+    "special": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "id",
+    "table": "about_languages",
+    "data_type": "character varying",
+    "is_nullable": false,
+    "is_unique": true,
+    "is_primary_key": true,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
