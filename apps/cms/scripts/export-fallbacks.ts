@@ -16,6 +16,9 @@
  *                            0 before any network). Used by hermetic CI builds
  *                            (web.yml) where the committed modules already ARE
  *                            the content source and no CMS should be contacted.
+ *   EXPORT_FALLBACKS_LIVE  - set to 1 to force a live export on Vercel. Normal
+ *                            Vercel builds skip the CMS fetch and ship the
+ *                            committed modules, matching the edge-cache model.
  *   PUBLIC_DIRECTUS_URL    — Directus URL. Defaults to cms.dev.yesid.dev (P6 flip,
  *                            once dev mirrors prod). Set to https://cms.yesid.dev
  *                            for production builds (Vercel: encrypted env var
@@ -143,6 +146,17 @@ function shouldRun(filter: string | undefined, name: ModuleName): boolean {
 
 /** Timeout (ms) for the entire fetchAll operation before falling back to cache. */
 const FETCH_ALL_TIMEOUT_MS = 60_000;
+type Env = Record<string, string | undefined>;
+
+function envFlag(value: string | undefined): boolean {
+	return ['1', 'true'].includes((value ?? '').toLowerCase());
+}
+
+export function getExportSkipReason(env: Env = process.env): string | null {
+	if (envFlag(env.EXPORT_FALLBACKS_SKIP)) return 'EXPORT_FALLBACKS_SKIP';
+	if (env.VERCEL_ENV && !envFlag(env.EXPORT_FALLBACKS_LIVE)) return `VERCEL_ENV=${env.VERCEL_ENV}`;
+	return null;
+}
 
 async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	log.info(`fetch: source=${opts.directusUrl}`);
@@ -387,16 +401,17 @@ export async function run(opts: RunOptions): Promise<void> {
 }
 
 async function main(): Promise<void> {
-	// Hermetic-build escape hatch (slice-28.4, audit #137): CI builds must not
-	// reach out to any live CMS — the committed content modules are already the
-	// authoritative source. Checked before ANY token resolution or fetch.
-	if (['1', 'true'].includes((process.env.EXPORT_FALLBACKS_SKIP ?? '').toLowerCase())) {
+	// Hermetic-build escape hatch (slice-28.4, audit #137): CI and Vercel builds
+	// must not reach out to any live CMS. The committed content modules are
+	// already the authoritative source. Checked before ANY token resolution.
+	const skipReason = getExportSkipReason();
+	if (skipReason) {
 		if (process.env.VERCEL_ENV === 'production') {
 			log.warn(
-				'EXPORT_FALLBACKS_SKIP is set on a PRODUCTION build — shipping the committed content modules as-is (no CMS refresh).',
+				`${skipReason} on a production build: shipping committed content modules as-is, no CMS refresh.`,
 			);
 		}
-		log.info('EXPORT_FALLBACKS_SKIP set — skipping export, committed content modules remain authoritative. Exiting 0.');
+		log.info(`${skipReason}: skipping export, committed content modules remain authoritative. Exiting 0.`);
 		return;
 	}
 
