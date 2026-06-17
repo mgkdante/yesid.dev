@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 // GENERATED FILE — do not edit by hand.
 //
-// Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.
+// Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces live in nav.companion.ts; chrome lives in site-labels.ts.
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via

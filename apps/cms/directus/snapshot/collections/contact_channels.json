@@ -1,0 +1,30 @@
+{
+  "collection": "contact_channels",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": "status",
+    "archive_value": "archived",
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "contact_channels",
+    "color": null,
+    "display_template": "{{id}}",
+    "group": "contact_page",
+    "hidden": false,
+    "icon": "alternate_email",
+    "item_duplication_fields": null,
+    "note": "CMS-backed /contact terminal channels. Each row owns href, icon, order, and translated label.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": 2,
+    "sort_field": "sort",
+    "status": "active",
+    "translations": null,
+    "unarchive_value": "published",
+    "versioning": true
+  },
+  "schema": {
+    "name": "contact_channels"
+  }
+}

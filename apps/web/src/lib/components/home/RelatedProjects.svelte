@@ -11,13 +11,14 @@
 	const locale = getLocale();
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { relatedProjectsStripContent } from '$lib/content/site-content';
+	import { siteLabels } from '$lib/content';
 
 	let { projects }: { projects: readonly Project[] } = $props();
 
-	const builtWithLabel = resolveLocale(relatedProjectsStripContent.builtWithLabel, locale);
-	const countSingular = resolveLocale(relatedProjectsStripContent.projectCount.singular, locale);
-	const countPlural = resolveLocale(relatedProjectsStripContent.projectCount.plural, locale);
+	const strip = siteLabels.footerChrome.relatedProjectsStrip;
+	const builtWithLabel = resolveLocale(strip.builtWithLabel, locale);
+	const countSingular = resolveLocale(strip.projectCountSingular, locale);
+	const countPlural = resolveLocale(strip.projectCountPlural, locale);
 </script>
 
 <div

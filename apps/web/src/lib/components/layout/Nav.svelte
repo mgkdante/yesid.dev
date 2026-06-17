@@ -6,7 +6,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { wordmarkHover, magnetic } from '$lib/motion/actions';
-	import { sharedChromeContent, navLinks as staticNavLinks } from '$lib/content';
+	import { navLinks as staticNavLinks, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import MenuOverlay from './MenuOverlay.svelte';
@@ -31,8 +31,9 @@
 	} = $props();
 
 	// $derived (not const): Nav never remounts; locale changes on /fr↔/ navigation.
-	const openMenuAria = $derived(resolveLocale(sharedChromeContent.openMenuAria, locale));
-	const closeMenuAria = $derived(resolveLocale(sharedChromeContent.closeMenuAria, locale));
+	const sharedChrome = siteLabels.navChrome.shared;
+	const openMenuAria = $derived(resolveLocale(sharedChrome.openMenuAria, locale));
+	const closeMenuAria = $derived(resolveLocale(sharedChrome.closeMenuAria, locale));
 	// isActive compares the canonical (delocalized) pathname so /fr/projects
 	// activates the same link as /projects.
 	const basePath = $derived(delocalizePath(pathname));
@@ -135,13 +136,13 @@
 		<!-- Divider -->
 		<span class="nav-divider" aria-hidden="true"></span>
 
+		<!-- Theme toggle (GO-W2.2) -->
+		<ThemeToggle {locale} />
+
 		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
 		     Persistent (stays visible above the open menu sheet) — it is the SINGLE locale switcher;
 		     the sheet's own EN|FR switch was removed to kill the double. -->
 		<LanguageToggle {locale} {url} />
-
-		<!-- Theme toggle (GO-W2.2) -->
-		<ThemeToggle {locale} />
 
 		<!-- Menu toggle -->
 		<button

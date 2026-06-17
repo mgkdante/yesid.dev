@@ -208,6 +208,8 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				tocToggleSectionAria: ls('nav_chrome_shared_toc_toggle_section_aria'),
 				tocHeading: ls('nav_chrome_shared_toc_heading'),
 				tocMobileButton: ls('nav_chrome_shared_toc_mobile_button'),
+				tocCloseAria: ls('nav_chrome_shared_toc_close_aria'),
+				tocCounterPrefix: ls('nav_chrome_shared_toc_counter_prefix'),
 			},
 		},
 		footerChrome: {

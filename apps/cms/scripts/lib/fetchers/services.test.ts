@@ -8,7 +8,10 @@ const FIXTURE: DirectusService = {
 	icon: null,
 	svg: 'service-sql.svg',
 	visible: true,
-	stack: ['PostgreSQL', 'SQL Server'],
+	tech_stack: [
+		{ sort: 0, tech_stack_id: { id: 'postgresql', name: 'PostgreSQL' } },
+		{ sort: 1, tech_stack_id: { id: 'sql-server', name: 'SQL Server' } },
+	],
 	translations: [
 		{
 			languages_code: 'en',

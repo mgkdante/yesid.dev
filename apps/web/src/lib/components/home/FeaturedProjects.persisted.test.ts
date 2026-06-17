@@ -11,18 +11,21 @@
 //
 // Render shape mirrors FeaturedProjects.test.ts (CMS-decoupling precedent).
 
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { flushSync } from 'svelte';
 import { render, screen, cleanup } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '$lib/content/site-content';
-import { getProjectBySlug, getVisibleServices } from '$lib/content';
+import { getFeaturedProjects, getVisibleServices } from '$lib/content';
 import type { Project } from '$lib/types';
 import { captureEntries, applyEntries } from '$lib/state/locale-handoff.svelte';
 
-const resolvedProjects: Project[] = proofReelContent.slugs
-	.map((slug) => getProjectBySlug(slug))
-	.filter((p): p is Project => Boolean(p));
+vi.mock('$lib/directus/assets', () => ({
+	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+	buildSrcSet: () => '',
+}));
+
+const resolvedProjects: readonly Project[] = getFeaturedProjects();
 const services = getVisibleServices();
 const renderProps = { proofReel: proofReelContent, projects: resolvedProjects, services };
 
@@ -56,10 +59,12 @@ describe('FeaturedProjects (slice-34.5 switch survival)', () => {
 		const first = render(FeaturedProjects, { props: renderProps });
 		flushSync();
 
-		// Simulate the orchestrator restoring index 2 onto the registered consumer.
-		applyEntries({ 'featured-card': 2 });
+		const restoredIndex = Math.max(0, resolvedProjects.length - 1);
+		const restoredLabel = String(restoredIndex + 1).padStart(2, '0');
+		// Simulate the orchestrator restoring the final valid index.
+		applyEntries({ 'featured-card': restoredIndex });
 		flushSync();
-		expect(currentCounter().textContent).toBe('03');
+		expect(currentCounter().textContent).toBe(restoredLabel);
 
 		first.unmount();
 		// After unmount the entry is gone — no stale leak across pages.

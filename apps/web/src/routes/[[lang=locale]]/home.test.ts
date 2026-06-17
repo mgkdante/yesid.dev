@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import Page from './+page.svelte';
 import type { PageData } from './$types';
 // slice-18i Phase 7C: +page.server.ts now loads all home-page block content
@@ -15,12 +17,16 @@ import {
 	closerContent,
 } from '$lib/content/site-content';
 import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
-import { getProjectBySlug, getVisibleServices } from '$lib/content';
+import { getFeaturedProjects, getVisibleServices } from '$lib/content';
 import type { Project } from '$lib/types';
 
-// The proof-reel card count is CMS-driven: `proofReelContent.slugs` and the
-// `projects` collection are both generated from live Directus, and the
-// component renders one card per slug that resolves to a real project. Derive
+vi.mock('$lib/directus/assets', () => ({
+	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+	buildSrcSet: () => '',
+}));
+
+// The proof-reel card count is CMS-driven: project rows carry the `featured`
+// toggle in Directus, and the component renders one card per featured project. Derive
 // the expected count instead of hardcoding it (precedent: slice-16 commit
 // 8259c6b "decouple test assertions from CMS-controlled copy").
 //
@@ -29,9 +35,7 @@ import type { Project } from '$lib/types';
 // stub mirrors that load output, derived from the same content modules the
 // static adapter reads (companion calls are fine in TESTS — the boundary rule
 // only governs runtime component code; see adapters/static.ts header).
-const featuredProjects = proofReelContent.slugs
-	.map((slug) => getProjectBySlug(slug))
-	.filter((p): p is Project => Boolean(p));
+const featuredProjects = getFeaturedProjects();
 const expectedProofCards = featuredProjects.length;
 
 // PageData merges +page.server.ts return + +layout.server.ts return + +layout.ts
@@ -53,11 +57,23 @@ const stubData = {
 	initialHeroData: INITIAL_HERO_DATA,
 	services: getVisibleServices(),
 	featuredProjects,
+	serviceSvgContents: {},
 } as unknown as PageData;
 
 const renderPage = () => render(Page, { props: { data: stubData } });
 
 describe('Home page', () => {
+	it('scopes the tighter mobile proof-reel heading gap to the Projects section', () => {
+		const source = readFileSync(
+			join(process.cwd(), 'src/lib/components/home/HomePage.svelte'),
+			'utf8',
+		);
+
+		expect(source).toContain('home-section--proof-reel');
+		expect(source).toMatch(/home-section--proof-reel[\s\S]*home-section-heading-mobile/);
+		expect(source).toMatch(/home-section--proof-reel[\s\S]*proof-reel-section/);
+	});
+
 	it('renders the app root', () => {
 		renderPage();
 		expect(screen.getByTestId('app-root')).toBeInTheDocument();

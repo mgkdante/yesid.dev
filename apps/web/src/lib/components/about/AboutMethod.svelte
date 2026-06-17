@@ -5,6 +5,7 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
@@ -19,7 +20,12 @@
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
-		<div class="mt-3 grid flex-1 grid-cols-1 gap-2 sm:grid-cols-2">
+		<div
+			class="mt-3 min-h-0 flex-1 overflow-y-auto pr-1"
+			data-testid="about-method-scroll"
+			use:scrollChain
+		>
+		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 			{#each steps as step, i}
 				{@const stepLabel = resolveLocale(step.label, locale)}
 				{@const stepDesc = resolveLocale(step.description, locale)}
@@ -34,6 +40,7 @@
 					<p class="mt-2 text-caption leading-snug text-[var(--secondary-foreground)]">{stepDesc}</p>
 				</div>
 			{/each}
+		</div>
 		</div>
 	</div>
 </Card>

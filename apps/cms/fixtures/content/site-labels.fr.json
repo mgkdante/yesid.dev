@@ -111,6 +111,8 @@
 	"nav_chrome_shared_toc_toggle_section_aria": "Basculer la section",
 	"nav_chrome_shared_toc_heading": "Sur cette page",
 	"nav_chrome_shared_toc_mobile_button": "Table des matières",
+	"nav_chrome_shared_toc_close_aria": "Fermer la table des matières",
+	"nav_chrome_shared_toc_counter_prefix": "SEC",
 	"footer_chrome_related_projects_strip_built_with_label": "Bâti avec ça",
 	"footer_chrome_related_projects_strip_project_count_singular": "projet",
 	"footer_chrome_related_projects_strip_project_count_plural": "projets",

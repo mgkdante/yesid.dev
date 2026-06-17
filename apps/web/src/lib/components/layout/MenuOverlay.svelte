@@ -6,7 +6,7 @@
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { menuItems as staticMenuItems, sharedChromeContent } from '$lib/content';
+	import { menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
@@ -34,8 +34,9 @@
 
 	// $derived (not const): the overlay rides the persistent Nav — it never
 	// remounts, and locale changes on /fr↔/ navigation.
-	const dialogTitle = $derived(resolveLocale(sharedChromeContent.menuOverlayAria, locale));
-	const footerLabel = $derived(resolveLocale(sharedChromeContent.menuOverlayFooterLabel, locale));
+	const sharedChrome = siteLabels.navChrome.shared;
+	const dialogTitle = $derived(resolveLocale(sharedChrome.menuOverlayAria, locale));
+	const footerLabel = $derived(resolveLocale(sharedChrome.menuOverlayFooterLabel, locale));
 	const basePath = $derived(delocalizePath(pathname));
 
 	let overlayEl: HTMLElement = $state(null!);

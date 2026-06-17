@@ -3,7 +3,6 @@ import {
 	MANIFESTO_PILLS,
 	EN_TRANSLATION_EDITS,
 	SITE_META_TRANSLATION_EDITS,
-	PROOF_REEL_PATCH,
 	SELF_TITLE,
 	parseFlags,
 } from '../scripts/go2-message-pass';
@@ -51,15 +50,6 @@ describe('message-pass payloads', () => {
 	it('fr/es site-meta edits touch ONLY owner_job_title (never blank untranslated fields)', () => {
 		expect(Object.keys(SITE_META_TRANSLATION_EDITS.fr)).toEqual(['owner_job_title']);
 		expect(Object.keys(SITE_META_TRANSLATION_EDITS.es)).toEqual(['owner_job_title']);
-	});
-
-	it('proof reel runs on real project slugs only, with an image per slug', () => {
-		expect(PROOF_REEL_PATCH.slugs).toEqual(['transit-data-pipeline', 'yesid-dev']);
-		expect(PROOF_REEL_PATCH.slugs.some((s) => s.startsWith('lorem-'))).toBe(false);
-		expect(Object.keys(PROOF_REEL_PATCH.images).sort()).toEqual([...PROOF_REEL_PATCH.slugs].sort());
-		for (const url of Object.values(PROOF_REEL_PATCH.images)) {
-			expect(url).toMatch(/^https:\/\//);
-		}
 	});
 
 	it('only --apply writes', () => {

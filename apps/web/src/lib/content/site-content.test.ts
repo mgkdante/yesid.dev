@@ -27,7 +27,6 @@ import {
 	proofReelContent,
 	closerContent,
 } from './site-content.js';
-import { getProjectBySlug } from './projects.js';
 import { getVisibleServices } from './services.js';
 
 describe('heroContent', () => {
@@ -164,37 +163,11 @@ describe('proofReelContent', () => {
 		expect(proofReelContent.viewAllHref).toBe('/projects');
 	});
 
-	it('has a non-empty list of featured project slugs', () => {
-		// The exact count is CMS-controlled (the operator curates the proof-reel
-		// block in Directus), so we assert the carousel has *something* to show
-		// rather than a fixed N. Every entry must be a non-empty string.
-		expect(Array.isArray(proofReelContent.slugs)).toBe(true);
-		expect(proofReelContent.slugs.length).toBeGreaterThan(0);
-		for (const slug of proofReelContent.slugs) {
-			expect(typeof slug).toBe('string');
-			expect(slug.length).toBeGreaterThan(0);
-		}
-	});
-
-	it('resolves at least one featured slug to a real project (carousel non-empty)', () => {
-		// Reference-integrity guard. The proof-reel block (slugs) and the
-		// projects collection are independently CMS-driven and can drift — a
-		// slug may reference a project the operator has since unpublished. The
-		// FeaturedProjects component is resilient (it drops unresolved slugs),
-		// so the runtime contract is "at least one slug resolves" (otherwise the
-		// section renders empty), and every slug that DOES resolve must point at
-		// a valid Project. We do NOT require *every* slug to resolve, because
-		// that asserts CMS data hygiene rather than engineering correctness.
-		const resolved = proofReelContent.slugs
-			.map((slug) => getProjectBySlug(slug))
-			.filter((p) => p !== undefined);
-		expect(
-			resolved.length,
-			'no proof-reel slug resolved to a project — the carousel would render empty',
-		).toBeGreaterThan(0);
-		for (const project of resolved) {
-			expect(project!.slug.length).toBeGreaterThan(0);
-		}
+	it('does not carry legacy project-selection JSON', () => {
+		// Project membership now comes from the project row `featured` toggle.
+		// The proof-reel block owns section chrome only.
+		expect('slugs' in proofReelContent).toBe(false);
+		expect('images' in proofReelContent).toBe(false);
 	});
 });
 

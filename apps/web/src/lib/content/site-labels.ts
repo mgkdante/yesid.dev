@@ -138,6 +138,11 @@ export const siteLabels: SiteLabels = {
 			openMenuAria: { en: 'Open menu', fr: 'Ouvrir le menu' },
 			searchPlaceholder: { en: 'Search...', fr: 'Rechercher...' },
 			themeToggleAria: { en: 'Dark theme', fr: 'Thème sombre' },
+			tocCloseAria: {
+				en: 'Close table of contents',
+				fr: 'Fermer la table des matières',
+			},
+			tocCounterPrefix: { en: 'SEC', fr: 'SEC' },
 			tocHeading: { en: 'On this page', fr: 'Sur cette page' },
 			tocMobileButton: { en: 'Table of Contents', fr: 'Table des matières' },
 			tocToggleSectionAria: { en: 'Toggle section', fr: 'Basculer la section' },

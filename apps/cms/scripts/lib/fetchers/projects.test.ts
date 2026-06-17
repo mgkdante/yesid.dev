@@ -16,14 +16,23 @@ const FIXTURE: DirectusProject = {
 	sort: 1,
 	featured: false,
 	hero_image: 'asset-uuid-1',
+	hero_image_light: null,
+	hero_image_secondary: null,
+	hero_image_secondary_light: null,
 	repo_url: 'https://github.com/mgkdante/transit',
 	live_url: null,
 	readme_url: null,
 	location: 'sherbrooke',
 	environment: 'production',
 	version: '2.4.1',
-	stack: ['PostgreSQL', 'Python'],
-	tags: ['etl', 'transit'],
+	tech_stack: [
+		{ sort: 0, tech_stack_id: { id: 'postgresql', name: 'PostgreSQL' } },
+		{ sort: 1, tech_stack_id: { id: 'python', name: 'Python' } },
+	],
+	tags: [
+		{ sort: 0, tags_id: { id: 'etl' } },
+		{ sort: 1, tags_id: { id: 'transit' } },
+	],
 	translations: [
 		{
 			languages_code: 'en',
@@ -86,6 +95,21 @@ describe('projects fetcher transform', () => {
 		const result = toProject(noMetrics);
 		expect(result.impactMetrics).toBeUndefined();
 		expect(result.impactMetric).toBeUndefined();
+	});
+
+	it('maps theme-aware primary and optional secondary hero images', () => {
+		const result = toProject({
+			...FIXTURE,
+			hero_image: 'desktop-dark-uuid',
+			hero_image_light: 'desktop-light-uuid',
+			hero_image_secondary: 'mobile-dark-uuid',
+			hero_image_secondary_light: 'mobile-light-uuid',
+		});
+
+		expect(result.image).toBe('desktop-dark-uuid');
+		expect(result.imageLight).toBe('desktop-light-uuid');
+		expect(result.imageSecondary).toBe('mobile-dark-uuid');
+		expect(result.imageSecondaryLight).toBe('mobile-light-uuid');
 	});
 
 	it('output parses through ProjectSchema', () => {

@@ -87,6 +87,8 @@ import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
 
+const ContactSeedFixtureSchema = ContactContentSchema.omit({ socials: true });
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -354,13 +356,7 @@ export function toBlockProofReelRow(
 		editor_label: 'Home Proof Reel',
 		status: 'published',
 		sort,
-		// Non-translatable JSON columns on the parent. ProofReelContent.slugs is
-		// readonly string[] (project slugs to render); .images is
-		// Readonly<Record<slug, string>> (slug → image URL). Neither has
-		// LocalizedString leaves.
 		view_all_href: raw.proofReelContent.viewAllHref,
-		slugs: raw.proofReelContent.slugs,
-		images: raw.proofReelContent.images,
 	};
 }
 
@@ -523,12 +519,11 @@ export function toBlockCloserTranslationRows(
 export function toBlockAboutContentRow(
 	raw: typeof aboutPageFixture,
 	sort = 1,
-): DirectusBlockParentRow & { languages: unknown; education: unknown } {
+): DirectusBlockParentRow & { education: unknown } {
 	return {
 		editor_label: 'About Content',
 		status: 'published',
 		sort,
-		languages: raw.languages,
 		education: raw.education.map((item) => ({
 			school_en: item.school.en,
 			school_fr: item.school.fr,
@@ -684,7 +679,6 @@ export function toBlockContactContentTranslationRows(
 				resetLabel: raw.success.resetLabel.en,
 				fieldOk: raw.success.fieldOk.en,
 			},
-			socials: raw.socials,
 		},
 	];
 }
@@ -954,7 +948,7 @@ export function validateAllFixtures(): void {
 	AboutContentSchema.parse(aboutPageFixture);
 
 	// Contact page
-	ContactContentSchema.parse(contactPageFixture);
+	ContactSeedFixtureSchema.parse(contactPageFixture);
 
 	// Tech stack page
 	TechStackPageContentSchema.parse(techStackPageFixture);
@@ -1015,7 +1009,7 @@ interface Schema {
 	block_about_intro: DirectusBlockParentRow[];
 	block_cta: DirectusBlockParentRow[];
 	block_closer: DirectusBlockParentRow[];
-	block_about_content: (DirectusBlockParentRow & { languages: unknown; education: unknown })[];
+	block_about_content: (DirectusBlockParentRow & { education: unknown })[];
 	block_contact_content: DirectusBlockParentRow[];
 	block_tech_stack_page_content: DirectusBlockParentRow[];
 	block_projects_page_content: DirectusBlockParentRow[];

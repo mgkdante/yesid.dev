@@ -164,12 +164,7 @@ export const manifestoContent: ManifestoContent = {
 export const proofReelContent: ProofReelContent = {
 	heading: { en: 'PROOF', fr: 'PREUVES' },
 	headingDot: { en: '.', fr: '.' },
-	images: {
-		'transit-data-pipeline': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&h=600&fit=crop',
-		'yesid-dev': 'https://cms.yesid.dev/assets/8b57ccd1-bed1-46ae-bb24-a887714a8bcc?key=card-600',
-	},
 	sectionLabel: { en: '// PROOF', fr: '// PREUVES' },
-	slugs: ['transit-data-pipeline', 'yesid-dev'],
 	subheading: { en: 'SELECTED WORK', fr: 'TRAVAUX CHOISIS' },
 	toggleColorAria: {
 		en: 'Toggle color for {title}',
@@ -199,8 +194,8 @@ export const aboutContent: AboutIntroContent = {
 		fr: 'Montréal, QC. Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.',
 	},
 	interests: {
-		en: 'Anime · Data viz · Open source · Montreal food scene',
-		fr: 'Anime · Visualisation de données · Open source · Scène bouffe de Montréal',
+		en: 'Manga · Data viz · Open source · Montreal food scene',
+		fr: 'Manga · Visualisation de données · Open source · Scène bouffe de Montréal',
 	},
 	interestsLabel: { en: 'INTERESTS', fr: 'INTÉRÊTS' },
 	location: {

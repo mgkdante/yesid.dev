@@ -1,0 +1,36 @@
+{
+  "collection": "about_languages",
+  "field": "image",
+  "type": "uuid",
+  "meta": {
+    "collection": "about_languages",
+    "display": "image",
+    "field": "image",
+    "hidden": false,
+    "interface": "file-image",
+    "note": "Extended SVG flag uploaded to the About assets folder.",
+    "options": {
+      "folder": "about"
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 4,
+    "special": [
+      "file"
+    ],
+    "width": "full"
+  },
+  "schema": {
+    "name": "image",
+    "table": "about_languages",
+    "data_type": "uuid",
+    "default_value": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_primary_key": false,
+    "has_auto_increment": false,
+    "foreign_key_table": "directus_files",
+    "foreign_key_column": "id"
+  }
+}

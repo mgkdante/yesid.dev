@@ -42,7 +42,7 @@
 		"status": "published",
 		"date_published": null,
 		"sort": 1,
-		"featured": false,
+		"featured": true,
 		"hero_image_legacy_path": null,
 		"repo_url": "https://github.com/mgkdante/transit",
 		"live_url": null,
