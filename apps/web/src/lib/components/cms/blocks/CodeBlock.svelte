@@ -1,28 +1,38 @@
 <!--
-  CodeBlock.svelte — renders Editor.js `code` block.
-  AM3: no language hint. Plain <pre><code>{data.code}</code></pre> with copy button.
-  Svelte's default {expr} interpolation escapes HTML — XSS-safe by construction.
+  CodeBlock.svelte renders Editor.js `code` blocks.
+  Fenced languages are highlighted with Shiki inside the shared TerminalChrome.
+  Mermaid fences render as diagrams.
 -->
 <script lang="ts">
 	import type { CodeBlock } from '@repo/shared';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { parseCodeFence } from '$lib/utils/code-fences';
+	import { highlightCodeHtml } from '$lib/utils/syntax-highlight';
+	import { TerminalChrome } from '$lib/components/brand';
+	import MermaidDiagram from './MermaidDiagram.svelte';
 
 	const locale = getLocale();
-	import { blogDetailContent } from '$lib/content/blog';
+	import { siteLabels } from '$lib/content';
 
 	let { data }: { data: CodeBlock['data'] } = $props();
 
-	const copyLabel = resolveLocale(blogDetailContent.code.copyLabel, locale);
-	const copyAria = resolveLocale(blogDetailContent.code.copyAria, locale);
-	const errorLabel = resolveLocale(blogDetailContent.code.errorLabel, locale);
+	const codeChrome = siteLabels.blogChrome.detail.code;
+	const copyLabel = resolveLocale(codeChrome.copyLabel, locale);
+	const copyAria = resolveLocale(codeChrome.copyAria, locale);
+	const errorLabel = resolveLocale(codeChrome.errorLabel, locale);
 
 	let buttonLabel = $state(copyLabel);
 	let resetTimeout: ReturnType<typeof setTimeout> | null = null;
+	const parsed = $derived(parseCodeFence(data.code));
+	const language = $derived(parsed.kind === 'code' && parsed.language ? parsed.normalizedLanguage : undefined);
+	const highlightedHtml = $derived(
+		parsed.kind === 'code' ? highlightCodeHtml(parsed.body, parsed.normalizedLanguage) : '',
+	);
 
 	async function copyToClipboard() {
 		try {
-			await navigator.clipboard.writeText(data.code);
+			await navigator.clipboard.writeText(parsed.body);
 			buttonLabel = '✓';
 		} catch {
 			buttonLabel = errorLabel;
@@ -32,25 +42,30 @@
 	}
 </script>
 
-<pre><code>{data.code}</code><button class="copy-btn" onclick={copyToClipboard} aria-label={copyAria}>{buttonLabel}</button></pre>
-
-<style>
-	pre { position: relative; }
-	.copy-btn {
-		position: absolute;
-		top: 0.5rem;
-		right: 0.5rem;
-		padding: 0.25rem 0.5rem;
-		font-size: 0.75rem;
-		font-family: var(--font-body);
-		color: var(--muted-foreground);
-		background: var(--card);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-sm);
-		cursor: pointer;
-		opacity: 0;
-		transition: opacity var(--duration-fast) var(--ease-default);
-	}
-	pre:hover .copy-btn { opacity: 1; }
-	.copy-btn:hover { color: var(--foreground); background: var(--popover); }
-</style>
+{#if parsed.kind === 'mermaid'}
+	<MermaidDiagram code={parsed.body} />
+{:else}
+	<TerminalChrome
+		title="code"
+		tag={language}
+		tagTestId={language ? 'code-block-language' : undefined}
+		noPadding
+		class="terminal-code"
+		data-code-language={language}
+		data-code-copy={parsed.body}
+	>
+		{#snippet actions()}
+			<button
+				type="button"
+				class="terminal-code-copy"
+				onclick={copyToClipboard}
+				aria-label={copyAria}
+			>
+				{buttonLabel}
+			</button>
+		{/snippet}
+		<div class="terminal-code-body" data-language={language}>
+			{@html highlightedHtml}
+		</div>
+	</TerminalChrome>
+{/if}

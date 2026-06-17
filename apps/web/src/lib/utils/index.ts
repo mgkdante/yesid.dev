@@ -11,11 +11,10 @@
 //   - Type-only consumers (e.g. <WeatherData> in a component) are also imported
 //     directly: `import type { WeatherData } from '$lib/utils/weather'`.
 //   - Markdown rendering: `import { marked } from '$lib/utils/markdown'`.
-//     Slice-23: deliberately NOT re-exported here — `markdown.ts` has a
-//     top-level `await createHighlighter(...)` that pulls Shiki + its theme
-//     and every language registration (≈100 KB). Browser components only
-//     ever need `cn`, `locale`, etc. from this barrel; forcing the
-//     markdown path to be specific keeps Shiki off the client bundle.
+//     Slice-23: deliberately NOT re-exported here. The markdown renderer imports
+//     the shared Shiki highlighter, which pulls its theme and language registry.
+//     Browser components only need `cn`, `locale`, etc. from this barrel; forcing
+//     syntax rendering imports to be specific keeps accidental bundle growth visible.
 // Documented in CONSTITUTION.md § Data Architecture (17b-9).
 
 export * from './cn'

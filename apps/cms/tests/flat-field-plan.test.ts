@@ -31,7 +31,7 @@ describe('FLAT_FIELD_PLAN shape', () => {
 			block_hero_translations: ['cta_contact', 'cta_work', 'subheadline', 'subtitle'],
 			block_manifesto_translations: ['pills', 'hidden_transit_lines'],
 			block_closer_translations: ['heading', 'heading_dot', 'subheading'],
-			block_contact_content_translations: ['page_title', 'send_error_message', 'socials', 'station_label'],
+			block_contact_content_translations: ['page_title', 'send_error_message', 'station_label'],
 			block_about_content_translations: ['interests', 'methodology', 'metrics', 'testimonials'],
 			block_about_intro_translations: ['bio', 'interests', 'interests_label', 'location_label', 'more_link', 'name', 'stack_label', 'title'],
 			block_tech_stack_page_content_translations: [],

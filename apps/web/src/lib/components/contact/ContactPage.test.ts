@@ -67,6 +67,28 @@ describe('ContactPage', () => {
 		expect(screen.getAllByTestId('contact-social-linkedin').length).toBeGreaterThanOrEqual(1);
 	});
 
+	it('renders an extra CMS channel as another terminal line', () => {
+		render(ContactPage, {
+			props: {
+				contactPage: {
+					...contactContent,
+					socials: [
+						...contactContent.socials,
+						{
+							label: { en: 'Mastodon' },
+							href: 'https://mastodon.social/@mgkdante',
+							icon: 'mastodon',
+						},
+					],
+				},
+			},
+		});
+		const mastodonLinks = screen.getAllByTestId('contact-social-mastodon');
+		expect(mastodonLinks.length).toBeGreaterThanOrEqual(1);
+		expect(mastodonLinks[0].getAttribute('aria-label')).toBe('Mastodon');
+		expect(mastodonLinks[0].textContent).toContain('mastodon.social/@mgkdante');
+	});
+
 	it('email social uses mailto link', () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		const emailLinks = screen.getAllByTestId('contact-social-email');

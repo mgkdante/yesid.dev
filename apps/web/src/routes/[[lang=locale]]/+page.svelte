@@ -27,6 +27,7 @@
 			initialHeroData={data.initialHeroData}
 			services={data.services}
 			featuredProjects={data.featuredProjects}
+			serviceSvgContents={data.serviceSvgContents}
 		/>
 	</div>
 </div>

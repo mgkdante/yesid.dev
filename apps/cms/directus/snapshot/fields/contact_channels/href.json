@@ -1,0 +1,30 @@
+{
+  "collection": "contact_channels",
+  "field": "href",
+  "type": "string",
+  "meta": {
+    "collection": "contact_channels",
+    "field": "href",
+    "hidden": false,
+    "interface": "input",
+    "note": "Full channel URL, including mailto: for email.",
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 4,
+    "special": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "href",
+    "table": "contact_channels",
+    "data_type": "character varying",
+    "default_value": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_primary_key": false,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

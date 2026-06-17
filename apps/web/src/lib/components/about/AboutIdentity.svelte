@@ -1,5 +1,5 @@
 <!--
-  About page identity card — V1 Editorial Glow.
+  About page identity card: V1 Editorial Glow.
   Side-by-side: headshot with gradient ring + ambient glow, text right.
   Metro stop label top-left. Cursor-following glow.
   All text from data layer via props.
@@ -11,7 +11,8 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { StatusDot, StopLabel } from '$lib/components/brand';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
@@ -37,27 +38,33 @@
 		<!-- Stop label -->
 		<StopLabel {stop} {label} />
 
-		<div class="flex flex-1 flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
-			<!-- Headshot with gradient ring + availability dot -->
+		<div
+			class="min-h-0 flex-1 overflow-y-auto pr-1"
+			data-testid="about-identity-scroll"
+			use:scrollChain
+		>
+		<div class="flex min-h-full flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
+			<!-- Headshot with gradient ring -->
 			<div class="relative shrink-0">
-				<div class="rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-0.5">
-					<img
-						src={identity.headshot}
-						alt={name}
-						class="h-20 w-20 rounded-full object-cover md:h-24 md:w-24"
-						data-testid="about-headshot"
-					/>
+				<div
+					class="size-20 overflow-hidden rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-0.5 md:size-24"
+					data-testid="about-headshot-frame"
+				>
+					<div class="h-full w-full overflow-hidden rounded-full">
+						<img
+							src={identity.headshot}
+							alt={name}
+							class="block h-full w-full scale-[1.08] rounded-full object-cover object-[50%_42%]"
+							style="width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 42%; scale: 1.08;"
+							data-testid="about-headshot"
+						/>
+					</div>
 				</div>
-				<!-- Green availability dot -->
-				<StatusDot color="green" pulse size="md" ring class="absolute bottom-1 right-1" />
 			</div>
 
 			<!-- Text block -->
 			<div class="text-center md:pt-1 md:text-left">
-				<h1 class="font-heading text-title font-bold leading-tight tracking-tight text-[var(--foreground)]">
-					{name}
-				</h1>
-				<div class="mt-1.5 label-station text-caption">
+				<div class="label-station text-caption">
 					{title}
 				</div>
 				<!-- Gradient separator -->
@@ -66,6 +73,7 @@
 					{valueProp}
 				</p>
 			</div>
+		</div>
 		</div>
 	</div>
 </Card>

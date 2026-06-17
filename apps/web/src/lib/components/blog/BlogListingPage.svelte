@@ -1,7 +1,7 @@
 <!--
   Shared blog listing layout used by BOTH /blog (professional) and /blog/personal.
   Parameterized by category — no category logic inside, just renders what it's given.
-  Includes: search, tag filter, date range filter.
+  Includes desktop filters and mobile search. Mobile filter trigger hidden per operator QA.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -14,7 +14,6 @@
 
 	const locale = getLocale();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { blogListingContent } from '$lib/content/blog';
 	import { siteLabels } from '$lib/content';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
 	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
@@ -23,7 +22,6 @@
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
-	import BlogFilterMobile from './BlogFilterMobile.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -51,6 +49,8 @@
 		/** go2-t1c2: CMS /blog chrome (optional — /blog passes it, /blog/personal does not). */
 		blogPage?: import('@repo/shared').BlogPageContent;
 	} = $props();
+
+	const listingChrome = siteLabels.blogChrome.listing;
 
 	// Filter state. slice-34.1: search/language/date are session-scoped so they
 	// survive a language switch via the locale-handoff orchestrator — each stored
@@ -190,7 +190,7 @@
 			<div class="blog-header-text">
 				<!-- "Blog." heading: only on mobile (edge title in route layout carries it on desktop) -->
 				<!-- go2-t1c2: prefer CMS blogPage.heading; static module stays the fallback -->
-				<h1 class="blog-mobile-heading">{resolveLocale(blogPage?.heading ?? blogListingContent.mobileHeading, locale)}<span class="text-[var(--primary)]">.</span></h1>
+				<h1 class="blog-mobile-heading">{resolveLocale(blogPage?.heading ?? listingChrome.mobileHeading, locale)}<span class="text-[var(--primary)]">.</span></h1>
 				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
 		</div>
@@ -223,22 +223,8 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<SearchInput placeholder={resolveLocale(blogListingContent.searchPlaceholder, locale)} bind:value={searchQuery.value} testId="blog-search-mobile" />
+			<SearchInput placeholder={resolveLocale(listingChrome.searchPlaceholder, locale)} bind:value={searchQuery.value} testId="blog-search-mobile" />
 		</div>
-
-		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
-		<BlogFilterMobile
-			tags={allTags}
-			{languages}
-			{activeTag}
-			activeLang={activeLang.value}
-			{accentColor}
-			{cornerLink}
-			onTagSelect={handleTagSelect}
-			onLangSelect={handleLangSelect}
-			bind:dateFrom={dateFrom.value}
-			bind:dateTo={dateTo.value}
-		/>
 
 		{#if hasActiveFilters}
 			<FilterSummary count={filteredPosts.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
@@ -246,7 +232,7 @@
 
 		{#if filteredPosts.length === 0}
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-				{resolveLocale(blogListingContent.noPostsMessage, locale)}
+				{resolveLocale(listingChrome.noPostsMessage, locale)}
 			</p>
 		{:else}
 			<div class="flex flex-col gap-4">

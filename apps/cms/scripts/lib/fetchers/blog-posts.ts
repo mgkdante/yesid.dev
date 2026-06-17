@@ -18,6 +18,7 @@ import {
 } from '../schemas/blog';
 import { BlockEditorDocSchema } from '@repo/shared';
 import type { FetcherContext } from './types';
+import { tagsFromM2M, type DirectusTagJunctionRow } from './projects';
 
 export interface DirectusBlogPostRow {
 	id: string;
@@ -26,7 +27,7 @@ export interface DirectusBlogPostRow {
 	sort: number | null;
 	lang: 'en' | 'fr' | 'es';
 	category: BlogCategory;
-	tags: readonly string[] | null;
+	tags?: DirectusTagJunctionRow[];
 	external: boolean;
 	url: string | null;
 	cover_image: { id: string } | string | null;
@@ -70,7 +71,7 @@ export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
 		date: row.date_published ? row.date_published.split('T')[0]! : '',
 		lang: row.lang,
 		category: row.category,
-		tags: [...(row.tags ?? [])],
+		tags: tagsFromM2M(row.tags),
 		animation: row.animation,
 		svg: svgId,
 		url: row.external ? (row.url ?? '') : `/blog/${row.id}`,
@@ -89,7 +90,7 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 				'sort',
 				'lang',
 				'category',
-				'tags',
+				{ tags: ['sort', { tags_id: ['id'] }] } as unknown as string,
 				'external',
 				'url',
 				'animation',

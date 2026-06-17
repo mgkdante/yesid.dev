@@ -10,12 +10,10 @@
 //      a slice-26 adapter re-point reach the render. HomeServices and
 //      FeaturedProjects were the last component-level bypasses for primary
 //      data; slice-28.5 threaded both through the home +page.server.ts.
-//   2. CODE-OWNED UI LITERALS (listing chrome copy, aria templates —
-//      projectsListingContent, servicesDetailContent, blogListingContent,
-//      sharedChromeContent, navDirections, etc.) MAY be imported directly by
-//      display components. They are hand-written companion constants the
-//      adapter does not port; routing them through props would add plumbing
-//      with no CMS benefit. ~30 components do this today — sanctioned.
+//   2. CMS CHROME SINGLETONS (siteLabels.*) MAY be imported directly by
+//      display components when the copy is global chrome, aria text, or route
+//      shell labels. They are build-cache values, not runtime CMS calls; routing
+//      them through every load() would add plumbing with no client benefit.
 //   3. SANCTIONED EXCEPTIONS: +layout.ts / +layout.server.ts / +error.svelte /
 //      Nav / MenuOverlay / Footer static-fallback imports (CSR-only fallback
 //      when server data is absent); HeroBanner's client-side

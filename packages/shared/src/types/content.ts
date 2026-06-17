@@ -86,11 +86,15 @@ export interface Project {
 	featured: boolean;
 	repoUrl?: string;
 	liveUrl?: string;
-	// Directus file UUID for the project thumbnail/hero image (hero_image on
-	// the CMS row). Consumers build the URL via asset(image, '<preset>')
-	// against PUBLIC_DIRECTUS_URL — the one live runtime CMS seam.
-	// If omitted, cards show a gradient placeholder. Detail pages show no hero image.
+	// Directus file UUID for the primary project thumbnail/hero image
+	// (hero_image on the CMS row). Consumers build the URL via asset(image,
+	// '<preset>') against PUBLIC_DIRECTUS_URL. Optional light and secondary
+	// fields let cards render theme-aware desktop/mobile-style splits without
+	// inferring hero meaning from article gallery order.
 	image?: string;
+	imageLight?: string;
+	imageSecondary?: string;
+	imageSecondaryLight?: string;
 	// Service IDs this project is associated with. SVGs cascade from services.
 	// A project can link to 1+ services. IDs must match existing service.id values.
 	relatedServices: string[];
@@ -293,6 +297,12 @@ export interface AboutTestimonial {
 	logo?: string;
 }
 
+export interface AboutLanguage {
+	id: 'quebec' | 'canada' | 'colombia' | string;
+	label: LocalizedString;
+	image: string;
+}
+
 // An interest displayed as a diagonal strip with background image.
 // image is B&W by default, turns color on hover via CSS filter.
 export interface AboutInterest {
@@ -407,7 +417,7 @@ export interface AboutContent {
 	metrics: readonly AboutMetric[];
 	methodology: readonly AboutMethodStep[];
 	testimonials: readonly AboutTestimonial[];
-	languages: readonly string[];
+	languages: readonly AboutLanguage[];
 	education: readonly AboutEducationItem[];
 	interests: readonly AboutInterest[];
 	weather: AboutWeatherConfig;
@@ -478,7 +488,7 @@ export interface ContactContent {
 	formTerminal: ContactFormTerminal;
 	validation: ContactValidation;
 	success: ContactSuccess;
-	socials: readonly { label: string; href: string; icon: string }[];
+	socials: readonly { label: LocalizedString; href: string; icon: string }[];
 	web3formsKey: string; // Public access key — safe to expose client-side
 }
 
@@ -630,9 +640,6 @@ export interface ProofReelContent {
 	viewAllHref: string;
 	/** Aria-label template — brace placeholder `{title}` resolved at render. */
 	toggleColorAria: LocalizedString;
-	slugs: readonly string[];
-	/** Placeholder / real project screenshot URLs keyed by project slug. */
-	images: Readonly<Record<string, string>>;
 }
 
 /** Home page — Services grid (section 3). */

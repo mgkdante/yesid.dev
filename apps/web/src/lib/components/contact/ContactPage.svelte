@@ -262,6 +262,10 @@
 		return 'border-[var(--success)]';
 	}
 
+	function contactChannelLabel(label: ContactContent['socials'][number]['label']): string {
+		return resolveLocale(label, locale);
+	}
+
 </script>
 
 <div class="contact-grid" data-testid="page-contact">
@@ -334,6 +338,7 @@
 					{#each c.socials as social}
 						<a
 							href={social.href}
+							aria-label={contactChannelLabel(social.label)}
 							data-testid="contact-social-{social.icon}"
 							class="tap-feedback flex items-center gap-2 rounded px-2 py-3 min-h-11 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15 active:bg-primary/25"
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}

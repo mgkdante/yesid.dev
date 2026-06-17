@@ -14,6 +14,7 @@ import {
 	mimeTypeForLegacyPath,
 	imageMetadataFromBytes,
 	buildFileMetadataPatch,
+	collectPreservedIdMapEntries,
 } from '../scripts/migrate-assets';
 
 /**
@@ -244,5 +245,36 @@ describe('buildIdMap', () => {
 
 	it('returns empty object on empty input', () => {
 		expect(buildIdMap([])).toEqual({});
+	});
+});
+
+describe('collectPreservedIdMapEntries', () => {
+	it('keeps sibling-owned keys and drops stale image keys', () => {
+		const manifestKeys = new Set(['images/work/yesid-dev.png']);
+		const preserved = collectPreservedIdMapEntries(
+			[
+				{
+					'brand/yesid-icon.svg': 'icon-uuid',
+					'images/work/yesid-dev.png': 'manifest-owned',
+					'images/removed.webp': 'stale-image',
+					'brand/not-a-string.svg': null,
+				},
+			],
+			manifestKeys,
+		);
+
+		expect([...preserved.entries()]).toEqual([['brand/yesid-icon.svg', 'icon-uuid']]);
+	});
+
+	it('keeps the first map value when mirrored id maps disagree', () => {
+		const preserved = collectPreservedIdMapEntries(
+			[
+				{ 'brand/yesid-icon.svg': 'authoritative-uuid' },
+				{ 'brand/yesid-icon.svg': 'stale-mirror-uuid' },
+			],
+			new Set(),
+		);
+
+		expect(preserved.get('brand/yesid-icon.svg')).toBe('authoritative-uuid');
 	});
 });

@@ -16,13 +16,14 @@
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { persisted } from '$lib/state/persisted.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
-	import { blogListingContent } from '$lib/content/blog';
+	import { siteLabels } from '$lib/content';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
 
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
-	const labels = blogListingContent.filters;
-	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, locale);
+	const listingChrome = siteLabels.blogChrome.listing;
+	const labels = listingChrome.filters;
+	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
 
 	// WHY: date range section is not a FilterGroup, so it needs its own collapse state.
 	// slice-34.6: session-scoped so it survives a locale switch (paints directly via

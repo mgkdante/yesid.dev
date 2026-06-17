@@ -41,10 +41,5 @@
     "resetLabel": { "en": "reset --form" },
     "fieldOk": { "en": "OK" }
   },
-  "socials": [
-    { "label": "Email", "href": "mailto:contact@yesid.dev", "icon": "email" },
-    { "label": "GitHub", "href": "https://github.com/mgkdante", "icon": "github" },
-    { "label": "LinkedIn", "href": "https://www.linkedin.com/in/otaloray/", "icon": "linkedin" }
-  ],
   "web3formsKey": "6887fd90-3348-4d31-ba03-bc0e285697b6"
 }

@@ -80,7 +80,7 @@ describe('contactContent', () => {
 
 		it('every social has label, href, and icon', () => {
 			for (const s of contactContent.socials) {
-				expect(s.label.length).toBeGreaterThan(0);
+				expect(s.label.en.length).toBeGreaterThan(0);
 				expect(s.href.length).toBeGreaterThan(0);
 				expect(s.icon.length).toBeGreaterThan(0);
 			}

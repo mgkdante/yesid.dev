@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/svelte';
+import { render, screen } from '@testing-library/svelte';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import BlogDetailPage from './BlogDetailPage.svelte';
 import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
 
@@ -36,6 +38,20 @@ const mockHeadings: TocHeading[] = [
 ];
 
 describe('BlogDetailPage', () => {
+	it('uses the shared detail-page TOC system', () => {
+		const source = readFileSync(
+			join(process.cwd(), 'src/lib/components/blog/BlogDetailPage.svelte'),
+			'utf8',
+		);
+
+		expect(source).toContain("import TocNav from '$lib/components/shared/TocNav.svelte'");
+		expect(source).toContain("import TocPill from '$lib/components/shared/TocPill.svelte'");
+		expect(source).toContain("observeActiveToc");
+		expect(source).not.toContain("BlogTocPill");
+		expect(source).not.toContain("StickyPanel");
+		expect(source).not.toContain("tocSectionTitle");
+	});
+
 	it('renders with data-testid', () => {
 		const { getByTestId } = render(BlogDetailPage, {
 			props: { post: makePost(), body: mockBody, headings: mockHeadings }
@@ -71,5 +87,14 @@ describe('BlogDetailPage', () => {
 		});
 		const article = getByTestId('blog-detail-page');
 		expect(article.style.getPropertyValue('--blog-accent')).toContain('--accent');
+	});
+
+	it('renders the shared mobile TOC pill from blog headings', () => {
+		render(BlogDetailPage, {
+			props: { post: makePost(), body: mockBody, headings: mockHeadings }
+		});
+
+		expect(screen.getByTestId('toc-pill')).toBeTruthy();
+		expect(screen.queryByTestId('blog-toc-pill')).toBeNull();
 	});
 });

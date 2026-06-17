@@ -10,9 +10,9 @@ import {
 	getCloserContent,
 	getInitialHeroData,
 	getVisibleServices,
-	getProjectBySlug,
+	getFeaturedProjects,
 } from '$lib/repositories';
-import type { Project } from '$lib/types';
+import { fetchServiceSvgContents } from '$lib/utils';
 
 // slice-18i Phase 7C: home route now fetches ALL page-block content via the
 // repository/adapter pipeline, threading event.locals.pageCache as ctx so
@@ -27,13 +27,13 @@ import type { Project } from '$lib/types';
 // through the repository layer, closing the last primary-data adapter bypass —
 // HomeServices/FeaturedProjects previously called the $lib/content companions
 // directly, so a future adapter re-point (slice-26) would not have reached
-// them. featuredProjects preserves the component's exact prior behaviour:
-// proofReel.slugs order, slugs that resolve to no project silently dropped.
+// them. featuredProjects now comes from the project row `featured` toggle,
+// making the project collection the source of truth for home proof-reel membership.
 //
 // Promise.all ensures all blocks resolve concurrently within a single request.
 // Intentionally untyped (no PageServerLoad annotation) — App.PageData.seo is
 // provided by +layout.ts and not required from the page server load.
-export async function load({ locals }: { locals: App.Locals }) {
+export async function load({ locals, fetch }: { locals: App.Locals; fetch: typeof globalThis.fetch }) {
 	const ctx = { pageCache: locals.pageCache };
 
 	const [
@@ -62,11 +62,10 @@ export async function load({ locals }: { locals: App.Locals }) {
 		getVisibleServices(ctx),
 	]);
 
-	// Second hop: the featured-project slugs live inside the proof-reel block,
-	// so this resolve can only start once proofReel is in hand.
-	const featuredProjects = (
-		await Promise.all(proofReel.slugs.map((slug) => getProjectBySlug(slug, ctx)))
-	).filter((p): p is Project => Boolean(p));
+	const [featuredProjects, serviceSvgContents] = await Promise.all([
+		getFeaturedProjects(ctx),
+		fetchServiceSvgContents(fetch, services),
+	]);
 
 	return {
 		metroSvg,
@@ -81,5 +80,6 @@ export async function load({ locals }: { locals: App.Locals }) {
 		initialHeroData,
 		services,
 		featuredProjects,
+		serviceSvgContents,
 	};
 };
