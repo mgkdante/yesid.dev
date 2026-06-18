@@ -29,6 +29,7 @@ import {
 	readFieldsByCollection,
 	updateRelation,
 } from '@directus/sdk';
+import { runMain } from './lib/cli';
 import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
 
 interface TechStackRow {
@@ -153,9 +154,4 @@ async function main(): Promise<void> {
 	if (dryRun) console.log('Re-run with --apply to execute against dev.');
 }
 
-if (import.meta.main) {
-	main().catch((e) => {
-		console.error(e);
-		process.exit(1);
-	});
-}
+runMain(main);

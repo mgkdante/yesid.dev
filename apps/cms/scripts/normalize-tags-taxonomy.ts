@@ -30,6 +30,7 @@ import {
 	readCollections,
 	readFieldsByCollection,
 } from '@directus/sdk';
+import { runMain } from './lib/cli';
 import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
 
 interface TagParent { id: string; tags: string[] | null }
@@ -188,9 +189,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
 }
 
-if (import.meta.main) {
-	main().catch((e) => {
-		console.error(e);
-		process.exit(1);
-	});
-}
+runMain(main);

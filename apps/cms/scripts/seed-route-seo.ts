@@ -42,6 +42,7 @@ import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
+import { parseSeedFlags } from './lib/cli';
 
 // --- Types -----------------------------------------------------------------
 
@@ -377,15 +378,8 @@ export async function seedRouteSeo(
 	}
 }
 
-function parseFlags(argv: readonly string[]): { dryRun: boolean; reset: boolean } {
-	return {
-		dryRun: argv.includes('--dry-run'),
-		reset: argv.includes('--reset'),
-	};
-}
-
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseFlags(process.argv.slice(2));
+	const { dryRun, reset } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
 	log.info(
 		`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`,

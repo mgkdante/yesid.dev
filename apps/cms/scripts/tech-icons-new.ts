@@ -9,6 +9,7 @@
 
 import { createItems, readItems, updateItem } from '@directus/sdk';
 import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { runMain } from './lib/cli';
 
 export const TECH_ICON_TARGETS = [
 	{ id: 'shopify', name: 'Shopify', iconify_id: 'logos:shopify' },
@@ -116,9 +117,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
 }
 
-if (import.meta.main) {
-	main().catch((error) => {
-		console.error(error);
-		process.exit(1);
-	});
-}
+runMain(main);
