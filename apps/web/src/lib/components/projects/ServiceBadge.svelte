@@ -10,6 +10,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { serviceLineColor } from '$lib/utils/service-colors';
 
 	const locale = getLocale();
 	import { SvgIcon } from '$lib/components/brand';
@@ -25,15 +26,8 @@
 	// Track hover state to pass down to WorkSvgIcon for MorphSVG effect
 	let badgeHovered = $state(false);
 
-	// GO2-W5 STM line bullets — service id → line color (database = orange
-	// line, pipeline = yellow line, analytics = green line, web = lunar).
-	const SERVICE_LINE_COLORS: Record<string, string> = {
-		'database-engineering': 'var(--primary)',
-		'data-pipeline': 'var(--line-amber)',
-		'analytics-reporting': 'var(--signal-proceed)',
-		'web-development': 'var(--signal-lunar)'
-	};
-	const lineColor = $derived(SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)');
+	// GO2-W5 STM line bullets — service id → métro line color (shared util).
+	const lineColor = $derived(serviceLineColor(service.id));
 </script>
 
 <!-- Clickable badge → /services/{service.id} (page built in future slice, 404 until then) -->

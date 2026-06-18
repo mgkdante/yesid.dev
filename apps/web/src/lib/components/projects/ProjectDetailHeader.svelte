@@ -12,6 +12,7 @@
 
   const locale = getLocale();
   import { getStackRole } from '$lib/utils/stack-roles';
+  import { projectMetrics } from '$lib/utils/project-metrics';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
@@ -44,15 +45,7 @@
     }))
   );
 
-  const metrics = $derived.by(() => {
-    if (project.impactMetrics && project.impactMetrics.length > 0) {
-      return project.impactMetrics;
-    }
-    if (project.impactMetric) {
-      return [project.impactMetric];
-    }
-    return [];
-  });
+  const metrics = $derived(projectMetrics(project));
 
   let headerEl = $state<HTMLElement>(undefined!);
 </script>

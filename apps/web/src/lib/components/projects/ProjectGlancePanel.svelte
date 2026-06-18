@@ -6,9 +6,10 @@
   state doesn't collide, 1-column metrics, non-sticky).
 -->
 <script lang="ts">
-  import type { Project, Service, ImpactMetric } from '$lib/types';
+  import type { Project, Service } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
+  import { projectMetrics } from '$lib/utils/project-metrics';
 
   const locale = getLocale();
   import { MetricDisplay } from '$lib/components/brand';
@@ -46,15 +47,7 @@
   /** Suffix section keys so the mobile + desktop instances don't share open state. */
   const k = (key: string) => (mobile ? `${key}-m` : key);
 
-  const allMetrics = $derived.by((): ImpactMetric[] => {
-    if (project.impactMetrics && project.impactMetrics.length > 0) {
-      return project.impactMetrics;
-    }
-    if (project.impactMetric) {
-      return [project.impactMetric];
-    }
-    return [];
-  });
+  const allMetrics = $derived(projectMetrics(project));
 
   const hasMetrics = $derived(allMetrics.length > 0);
   const hasServices = $derived(services.length > 0);

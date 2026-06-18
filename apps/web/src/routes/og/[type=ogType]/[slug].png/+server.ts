@@ -4,7 +4,7 @@ import { buildOgTree } from '$lib/og/template';
 import { renderOgPng } from '$lib/og/render';
 import { getOgFonts } from '$lib/og/fonts';
 import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '$lib/utils/locale';
+import { DEFAULT_LOCALE, isSupportedLocale } from '$lib/utils/locale';
 import { defaultOgImageFor } from '$lib/utils/seo-defaults';
 
 // Eager-call so font failures surface at deploy time, not mid-request.
@@ -32,13 +32,11 @@ const HAPPY_HEADERS = {
   'cache-control': 'public, max-age=60, s-maxage=31536000, stale-while-revalidate=86400',
 };
 
-// Gate on SUPPORTED_LOCALES (the type-valid set), not PUBLISHED_LOCALES.
-// `loadOgTitle` handles per-locale fallback internally via resolveLocale,
-// so forwarding any supported locale is safe; gating tighter would silently
-// strip a valid query string and surprise share-debugger crawlers.
-function isSupportedLocale(value: string): value is Locale {
-  return (SUPPORTED_LOCALES as readonly string[]).includes(value);
-}
+// Locale gating uses the shared isSupportedLocale guard (SUPPORTED_LOCALES, the
+// type-valid set — NOT PUBLISHED_LOCALES). `loadOgTitle` handles per-locale
+// fallback internally via resolveLocale, so forwarding any supported locale is
+// safe; gating tighter would silently strip a valid query string and surprise
+// share-debugger crawlers.
 
 export const GET: RequestHandler = async (event) => {
   const { type, slug } = event.params as { type: OgType; slug: string };
