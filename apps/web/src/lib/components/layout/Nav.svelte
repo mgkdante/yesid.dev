@@ -116,8 +116,12 @@
 
 		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
 			{#each headerLinks as link}
+<!-- Reveal the priority-2 link only once the pill has room for a third
+					 14px label. After the typography consolidation bumped
+					 --text-nav-link-mobile 13px->14px, three labels overflowed the
+					 rail in a ~480-489px band; 500px clears it with margin. -->
 				<span
-					class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}
+					class={link.priority === 2 ? 'hidden min-[500px]:block' : undefined}
 					use:magnetic={{ strength: 6, radius: 50 }}
 				>
 					<a
@@ -268,10 +272,10 @@
 	   little room — squeeze the decorative spacing, never the hit areas. */
 	@media (max-width: 359px) {
 		.nav-pill {
-			padding: 6px 6px;
+			padding: 6px 4px;
 		}
 		.nav-pill-compact {
-			padding: 6px 6px;
+			padding: 6px 4px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-compact);
@@ -287,10 +291,17 @@
 			display: none;
 		}
 		.nav-links {
-			gap: 4px;
+			gap: 2px;
 		}
 		.nav-pill-link {
 			font-size: var(--text-nav-link-compact);
+			/* Trim the link's inner padding (Tailwind px-1 = 4px) to 2px at the
+			   320px floor — reclaims 8px across the two labels. This shrinks the
+			   decorative gutter, NOT the 44px tap target: min-h-11 keeps the
+			   vertical hit area, and the labels stay fully clickable. CI's wider
+			   font metrics were tipping the borderline pill ~a few px past 320px;
+			   this restores real margin. */
+			padding-inline: 2px;
 		}
 	}
 

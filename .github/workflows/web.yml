@@ -23,18 +23,22 @@ on:
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
-    inputs:
-      run_e2e:
-        description: "Run Playwright e2e against the latest Vercel deployment"
-        type: boolean
-        default: false
-        required: true
 
 # Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
 # complete (we want every main commit to have a recorded build).
 concurrency:
   group: web-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Turbo Remote Cache: when TURBO_TOKEN (a Vercel access token) and TURBO_TEAM
+# (the Vercel team slug) are set as a repo secret + variable, `turbo run` shares
+# a content-addressed cache across every run/branch/PR, so check/test/build go
+# near-instant on unchanged inputs (even on a fresh PR). Empty values degrade
+# gracefully to the local .turbo/cache. One-time setup: `bunx turbo login &&
+# bunx turbo link`, then add the TURBO_TOKEN secret + TURBO_TEAM variable.
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
   ci:
@@ -67,135 +71,63 @@ jobs:
           EXPORT_FALLBACKS_SKIP: "1"
         run: bun x turbo run build --filter=@repo/web
 
-  # ── E2E (Playwright) against the DEPLOYED Vercel PREVIEW ──────────────────
-  # Three jobs, so the suite SCALES: resolve the preview URL ONCE, fan the run
-  # out across a shard MATRIX (each runner hits the edge independently), then
-  # merge the per-shard blob reports into one HTML report. Adding tests never
-  # grows wall-clock — bump SHARD_TOTAL. Targeting the real preview (not a
-  # hermetic build) sidesteps the @resvg/resvg-js native-binary gap, the
-  # /projects SSR 500 and sub-pixel font drift; canonical/hreflang asserts are
-  # host-independent (SITE_HOST is hardcoded) so they hold on the preview host.
-
-  # 1) Resolve the preview URL once. Tiny job (just the Deployments API poll) —
-  #    its output feeds every shard, so we don't poll N times.
-  e2e-preview:
-    # Edge-request throttle (2026-06-17): Playwright is manual-only. Normal push
-    # and PR CI never resolves a Vercel deployment and never hits the edge.
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_e2e }}
-    runs-on: ubuntu-latest
-    # The Deployments API (where Vercel posts the preview URL) is not readable by
-    # the default contents-only GITHUB_TOKEN → 403 without this grant.
-    permissions:
-      contents: read
-      deployments: read
-    outputs:
-      url: ${{ steps.preview.outputs.url }}
-    steps:
-      - name: Resolve the Vercel preview URL (wait for the deploy)
-        id: preview
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const sha = context.payload.pull_request?.head?.sha ?? context.sha;
-            core.info(`Waiting for a Vercel preview deployment for ${sha}…`);
-            const deadline = Date.now() + 12 * 60 * 1000;
-            // Resilient poll: a transient API hiccup must not kill the wait.
-            while (Date.now() < deadline) {
-              try {
-                const { data: deployments } = await github.rest.repos.listDeployments({
-                  owner: context.repo.owner, repo: context.repo.repo, sha, per_page: 30,
-                });
-                for (const d of deployments) {
-                  const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
-                    owner: context.repo.owner, repo: context.repo.repo, deployment_id: d.id, per_page: 30,
-                  });
-                  const ok = statuses.find((s) => s.state === 'success' && s.environment_url);
-                  if (ok) {
-                    core.info(`preview ready: ${ok.environment_url}`);
-                    core.setOutput('url', ok.environment_url);
-                    return;
-                  }
-                  if (statuses.some((s) => ['failure', 'error'].includes(s.state))) {
-                    core.warning(`a deployment for ${sha} reported failure; still polling for a good one`);
-                  }
-                }
-              } catch (err) {
-                core.warning(`deployments poll errored (${err.status ?? ''} ${err.message}); retrying`);
-              }
-              await new Promise((r) => setTimeout(r, 15000));
-            }
-            core.setFailed(`No successful Vercel preview deployment found for ${sha} within 12m`);
-
-  # 2) Run the suite, sharded across the matrix. fail-fast:false so one red shard
-  #    doesn't kill the others. Each shard emits a blob report artifact.
+  # ── E2E (Playwright) against a LOCAL hermetic preview ──────────────────────
+  # Runs ENTIRELY on the runner: the playwright webServer builds with
+  # EXPORT_FALLBACKS_SKIP=1 (committed content modules are the content source —
+  # no CMS call) and serves on :4173; the suite hits localhost. ZERO Vercel edge
+  # requests — no preview URL to resolve, no Deployment-Protection bypass, no
+  # edge-quota burn (that burn was the reason e2e was throttled to manual-only).
+  # The old reasons for targeting the deployed preview — the @resvg/resvg-js OG
+  # native binary, a /projects SSR 500, and screenshot/font drift — are stale:
+  # every route serves 200 under the local preview and there are no pixel-diff
+  # assertions. CMS stays build-time-only, the deployed site never calls it.
   e2e:
-    needs: e2e-preview
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_e2e }}
+    # Hard gate by default: runs on every PR/push against the local hermetic
+    # preview (zero edge requests). OPTIONAL SWITCH to skip it on demand — add the
+    # "skip-e2e" label to a PR, or put [skip e2e] in the (push) commit message.
+    # Use for docs-only changes or to unblock a merge if the suite is misbehaving.
+    if: >-
+      ${{ !contains(github.event.pull_request.labels.*.name, 'skip-e2e')
+          && !contains(github.event.head_commit.message, '[skip e2e]') }}
     runs-on: ubuntu-latest
-    # NON-BLOCKING during shake-out. To make it a hard gate: drop this, drop it
-    # on e2e-report, and add `e2e-report` to the branch ruleset.
-    continue-on-error: true
-    strategy:
-      fail-fast: false
-      matrix:
-        # SHARD_TOTAL = length of this list. Bump both to scale.
-        shard: [1, 2, 3, 4]
-    env:
-      SHARD_TOTAL: 4
     steps:
       - uses: actions/checkout@v5
 
       - uses: ./.github/actions/setup
+
+      # Cache the Playwright browser binaries so the ~100MB Chromium download is
+      # skipped on a cache hit. Keyed by the lockfile (changes on a @playwright
+      # bump); the restore-key keeps the last good cache so a dep bump does not
+      # force a full re-download.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
 
       - name: Install Playwright Chromium (+ system deps)
         working-directory: apps/web
         run: bun x playwright install --with-deps chromium
 
-      - name: Playwright e2e shard ${{ matrix.shard }}/${{ env.SHARD_TOTAL }}
+      # Build via turbo (cache-eligible; shares the remote/local cache with the
+      # ci job's build) so the Playwright webServer does NOT rebuild — it just
+      # previews this output (E2E_PREBUILT). EXPORT_FALLBACKS_SKIP matches the ci
+      # build so the turbo cache key lines up; the CMS is never contacted.
+      - name: Build (turbo, cache-eligible)
+        env:
+          EXPORT_FALLBACKS_SKIP: "1"
+        run: bun x turbo run build --filter=@repo/web
+
+      - name: Playwright e2e (local hermetic preview, zero edge requests)
         working-directory: apps/web
         env:
-          PLAYWRIGHT_BASE_URL: ${{ needs.e2e-preview.outputs.url }}
-          # Preview deployments are behind Vercel Deployment Protection (SSO 401);
-          # this Protection Bypass for Automation secret lets the suite through.
-          # Without it every test times out on the Vercel login wall.
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-          # Per-shard parallelism: the preview edge is horizontally scalable, so
-          # workers hit it concurrently. 4 × 4 shards = 16 concurrent — plenty,
-          # without a serverless thundering herd on /api/weather, og, sitemap.
-          PLAYWRIGHT_WORKERS: 4
-        run: bun x playwright test --shard=${{ matrix.shard }}/${{ env.SHARD_TOTAL }} --reporter=blob
+          E2E_PREBUILT: "1"
+        run: bun x playwright test
 
-      - name: Upload blob report (shard ${{ matrix.shard }})
+      - name: Upload HTML report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: blob-report-${{ matrix.shard }}
-          path: apps/web/blob-report/
-          retention-days: 7
-
-  # 3) Merge the per-shard blob reports into one HTML report. Runs even if a
-  #    shard failed, so the report is always complete.
-  e2e-report:
-    needs: e2e
-    if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.run_e2e }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: ./.github/actions/setup
-
-      - name: Download all shard blob reports
-        uses: actions/download-artifact@v4
-        with:
-          path: apps/web/all-blob-reports
-          pattern: blob-report-*
-          merge-multiple: true
-
-      - name: Merge into one HTML report
-        working-directory: apps/web
-        run: bun x playwright merge-reports --reporter html ./all-blob-reports
-
-      - name: Upload merged HTML report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report

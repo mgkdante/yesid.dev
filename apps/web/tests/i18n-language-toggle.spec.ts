@@ -93,17 +93,35 @@ test.describe('Language toggle — click navigation + content change', () => {
     expect(href).toBe('/fr/blog');
   });
 
-  test('blog page: EN /blog shows "Dispatches", FR /fr/blog shows "Dépêches"', async ({ page }) => {
-    // The blog heading ("Dispatches"/"Dépêches", blog-page.ts heading) renders in
-    // a mobile-only <h1> (display:none on desktop), so assert it's in the body
-    // text rather than visible. The language flip is the real assertion.
+  test('blog page: EN /blog shows "Blog", FR /fr/blog shows "Blogue"', async ({ page }) => {
+    // The blog listing heading (siteLabels.blogChrome.listing.mobileHeading,
+    // { en: 'Blog', fr: 'Blogue' }) renders in <h1.listing-mobile-heading> with a
+    // trailing accent "." span -> textContent is "Blog."/"Blogue.". It is
+    // display:none on desktop (>=1024px), so assert its text via toHaveText
+    // (visibility-agnostic) rather than visibility. The locale flip is the real
+    // assertion. NOTE: a body.toContainText() check no longer distinguishes
+    // locales here — the SvelteKit hydration payload serializes the full
+    // bilingual blogPage object into the DOM, so every locale string is present
+    // in body text on both routes. The visible <div.listing-header-subtitle>
+    // (EN/FR intro) is the desktop-visible corroborating marker.
+    const heading = page.getByTestId('blog-listing').locator('.listing-mobile-heading');
+    const subtitle = page.getByTestId('blog-listing').locator('.listing-header-subtitle');
+
     // EN
     await page.goto('/blog');
-    await expect(page.locator('body')).toContainText('Dispatches');
+    await expect(heading).toHaveText('Blog.');
+    await expect(subtitle).toBeVisible();
+    await expect(subtitle).toHaveText(
+      'Notes on digital infrastructure, databases, and building reliable systems.'
+    );
 
     // FR
     await page.goto('/fr/blog');
-    await expect(page.locator('body')).toContainText('Dépêches');
+    await expect(heading).toHaveText('Blogue.');
+    await expect(subtitle).toBeVisible();
+    await expect(subtitle).toHaveText(
+      "Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables."
+    );
   });
 
   test('language toggle animation/motion respects prefers-reduced-motion', async ({ page }) => {

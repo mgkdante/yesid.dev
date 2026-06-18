@@ -80,21 +80,28 @@ test.describe('French locale coverage', () => {
 
     // (networkidle removed: the very next assertion is a web-first toBeVisible()
     // that auto-waits for the filter sidebar — the wait was redundant.)
-    // The desktop filter sidebar is always present on /fr/blog at desktop width
-    // (BlogListingPage .blog-filter-column is display:block ≥1024px).
-    const langFilter = page.locator('[data-testid="blog-filter-sidebar"]');
+    // The listing-consolidation refactor wraps the SAME BlogFilterSidebar inside the
+    // mobile filter panel (data-testid="blog-filter-mobile"), so blog-filter-sidebar
+    // now resolves to TWO elements. Scope to the desktop copy — the one living in the
+    // listing grid (.listing-filter-column), which is first in DOM and the visible one
+    // at desktop width (the mobile panel is lg:hidden).
+    const langFilter = page
+      .locator('.listing-grid [data-testid="blog-filter-sidebar"]')
+      .first();
     await expect(langFilter).toBeVisible();
 
     // The Language FilterGroup renders whenever ≥1 language exists; it surfaces
     // the localized section label "Langue" plus per-language buttons.
     await expect(langFilter).toContainText('Langue');
 
-    // Should expose at least the English + French distinction as buttons.
-    // (FilterGroup buttons are bits-ui ToggleGroupItems whose accessible name is
-    // the option key, so match on rendered text rather than role-name.)
+    // Should expose the per-language distinction as buttons. The language labels
+    // are localized via siteLabels.ui.languageNames, so on the FR page the
+    // English-language option renders its French name "Anglais" (en→{fr:'Anglais'}),
+    // not the raw "English" key. (Posts here are EN-only, so only the Anglais button
+    // surfaces — the component shows a language button whenever ≥1 language exists.)
     const buttons = langFilter.locator('button');
     expect(await buttons.count()).toBeGreaterThan(0);
-    await expect(langFilter.locator('button', { hasText: 'English' })).toBeVisible();
+    await expect(langFilter.locator('button', { hasText: 'Anglais' })).toBeVisible();
   });
 
   test('English route /contact is distinct from /fr/contact', async ({ page }) => {
