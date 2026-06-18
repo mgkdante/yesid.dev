@@ -28,3 +28,22 @@ export const PageMetaSchema = z.object({
 	title: LocalizedStringSchema,
 	description: LocalizedStringSchema,
 });
+
+// Compile-time bidirectional parity assertion between a Zod-inferred type and
+// its hand-written TS interface. Resolves to `true` when the two are mutually
+// assignable and `never` otherwise, so a content schema asserts parity with one
+// line — `true satisfies AssertSchemaMatches<z.infer<typeof XSchema>, X>` — that
+// is a no-op on a match and a compile error (`true satisfies never`) on drift.
+//
+// The `[Inferred] extends [Type]` tuple wrapping is load-bearing: it stops the
+// conditional from distributing over union members (e.g. ProjectStatus, the
+// NavLink `priority: 1 | 2` literal union). A naked `Inferred extends Type`
+// would distribute and collapse an *exactly matching* union to `never`, failing
+// the build. The tuple form mirrors the non-distributing semantics of the
+// inline `z.infer<...> extends T ? (T extends z.infer<...> ? true : false)`
+// drift detectors it replaces.
+export type AssertSchemaMatches<Inferred, Type> = [Inferred] extends [Type]
+	? [Type] extends [Inferred]
+		? true
+		: never
+	: never;

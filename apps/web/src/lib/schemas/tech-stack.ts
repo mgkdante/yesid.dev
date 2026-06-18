@@ -9,7 +9,7 @@
 // them were already removed, leaving zero references.
 
 import { z } from 'zod';
-import type { TechStackItem } from '$lib/types';
+import type { TechStackItem, AssertSchemaMatches } from '$lib/types';
 import { LocalizedStringSchema, StackLayerSchema } from '@repo/shared/schemas';
 import { LocalizedBlockEditorDocSchema } from '$lib/schemas/project';
 import { IconRecordSchema } from '$lib/schemas/icon';
@@ -28,11 +28,5 @@ export const TechStackItemSchema = z.object({
 	enables: LocalizedStringSchema.optional(),
 });
 
-// Drift detector.
-type _TechStackItemCheck = z.infer<typeof TechStackItemSchema> extends TechStackItem
-	? TechStackItem extends z.infer<typeof TechStackItemSchema>
-		? true
-		: false
-	: false;
-const _techStackItemCheck: _TechStackItemCheck = true;
-void _techStackItemCheck;
+// Drift detector — compile error (`true satisfies never`) on schema/type drift.
+true satisfies AssertSchemaMatches<z.infer<typeof TechStackItemSchema>, TechStackItem>;

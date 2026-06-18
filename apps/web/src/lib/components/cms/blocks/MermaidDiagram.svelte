@@ -4,6 +4,7 @@
 	import { siteLabels } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { buildMermaidThemeVariables } from '$lib/utils/mermaid-theme';
 
 	let { code }: { code: string } = $props();
 
@@ -19,52 +20,6 @@
 	function cleanMermaidSource(value: string): string {
 		const trimmed = value.trim();
 		return trimmed.replace(/^mermaid\s*\n/i, '').trim();
-	}
-
-	function cssVar(style: CSSStyleDeclaration, name: string, fallback: string): string {
-		return style.getPropertyValue(name).trim() || fallback;
-	}
-
-	function buildThemeVariables(): Record<string, string> {
-		const style = getComputedStyle(root ?? document.documentElement);
-		const primary = cssVar(style, '--primary', '#E07800');
-		const accent = cssVar(style, '--accent', '#FFB627');
-		const background = cssVar(style, '--background', '#141414');
-		const card = cssVar(style, '--card', '#1a1a1a');
-		const foreground = cssVar(style, '--foreground', '#F5F5F0');
-		const muted = cssVar(style, '--muted-foreground', '#949494');
-		const border = cssVar(style, '--border-subtle', '#2f2f2f');
-
-		return {
-			background,
-			mainBkg: card,
-			primaryColor: card,
-			primaryBorderColor: primary,
-			primaryTextColor: foreground,
-			secondaryColor: background,
-			secondaryBorderColor: accent,
-			secondaryTextColor: foreground,
-			tertiaryColor: background,
-			tertiaryBorderColor: border,
-			tertiaryTextColor: foreground,
-			lineColor: accent,
-			textColor: foreground,
-			nodeTextColor: foreground,
-			clusterBkg: background,
-			clusterBorder: primary,
-			edgeLabelBackground: card,
-			labelTextColor: foreground,
-			noteBkgColor: card,
-			noteTextColor: foreground,
-			noteBorderColor: border,
-			actorBkg: card,
-			actorBorder: primary,
-			actorTextColor: foreground,
-			activationBkgColor: primary,
-			activationBorderColor: accent,
-			signalColor: muted,
-			signalTextColor: foreground,
-		};
 	}
 
 	onMount(() => {
@@ -84,7 +39,7 @@
 					startOnLoad: false,
 					securityLevel: 'strict',
 					theme: 'base',
-					themeVariables: buildThemeVariables(),
+					themeVariables: buildMermaidThemeVariables(root),
 					flowchart: {
 						curve: 'basis',
 						htmlLabels: false,

@@ -8,7 +8,7 @@
 
 import { z } from 'zod';
 import { LocaleSchema } from './shared';
-import type { BlogPost, BlogCategory, BlogAnimation } from '$lib/types';
+import type { BlogPost, BlogCategory, BlogAnimation, AssertSchemaMatches } from '$lib/types';
 
 export const BlogCategorySchema = z.enum(['professional', 'personal']);
 
@@ -34,27 +34,7 @@ export const BlogPostSchema = z.object({
 	coverImageAlt: z.string().min(1).max(160).optional(),
 });
 
-// Drift detectors.
-type _BlogCategoryCheck = z.infer<typeof BlogCategorySchema> extends BlogCategory
-	? BlogCategory extends z.infer<typeof BlogCategorySchema>
-		? true
-		: false
-	: false;
-const _blogCategoryCheck: _BlogCategoryCheck = true;
-void _blogCategoryCheck;
-
-type _BlogAnimationCheck = z.infer<typeof BlogAnimationSchema> extends BlogAnimation
-	? BlogAnimation extends z.infer<typeof BlogAnimationSchema>
-		? true
-		: false
-	: false;
-const _blogAnimationCheck: _BlogAnimationCheck = true;
-void _blogAnimationCheck;
-
-type _BlogPostCheck = z.infer<typeof BlogPostSchema> extends BlogPost
-	? BlogPost extends z.infer<typeof BlogPostSchema>
-		? true
-		: false
-	: false;
-const _blogPostCheck: _BlogPostCheck = true;
-void _blogPostCheck;
+// Drift detectors — compile error (`true satisfies never`) on schema/type drift.
+true satisfies AssertSchemaMatches<z.infer<typeof BlogCategorySchema>, BlogCategory>;
+true satisfies AssertSchemaMatches<z.infer<typeof BlogAnimationSchema>, BlogAnimation>;
+true satisfies AssertSchemaMatches<z.infer<typeof BlogPostSchema>, BlogPost>;
