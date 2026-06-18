@@ -9,7 +9,9 @@
  */
 
 import { deleteField, readFieldsByCollection } from '@directus/sdk';
-import { createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { runMain } from './lib/cli';
+import { getAdminToken } from './lib/auth';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 
 const TARGETS = [
 	{ collection: 'block_proof_reel', field: 'slugs' },
@@ -37,18 +39,11 @@ export async function apply(opts: { directusUrl: string; token: string; dryRun?:
 async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const directusUrl = defaultDirectusUrl();
-	if (!directusUrl.includes('cms.dev.yesid.dev')) {
-		throw new Error(`Refusing to run against non-dev CMS: ${directusUrl}. DEV-ONLY; prod runs via the gated promotion path.`);
-	}
-	const token = requireEnv('DIRECTUS_ADMIN_TOKEN', 'dev CMS admin token');
+	assertDevCms(directusUrl);
+	const token = await getAdminToken(directusUrl);
 	const log = await apply({ directusUrl, token, dryRun });
 	console.log(log.join('\n'));
 	console.log(`\n${dryRun ? 'DRY-RUN (no fields dropped)' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
 }
 
-if (import.meta.main) {
-	main().catch((error) => {
-		console.error(error);
-		process.exit(1);
-	});
-}
+runMain(main);

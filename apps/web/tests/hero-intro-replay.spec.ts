@@ -158,11 +158,15 @@ test('first visit plays the intro; scrolling through persists, arms the dot + co
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
 	await expect(dot).toHaveAttribute('aria-label', 'Replay intro');
-	expect(
-		await dot
-			.locator('[data-testid="hero-dot"]')
-			.evaluate((el) => getComputedStyle(el).animationName),
-	).toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
+	await expect
+		.poll(
+			() =>
+				dot
+					.locator('[data-testid="hero-dot"]')
+					.evaluate((el) => getComputedStyle(el).animationName),
+			{ timeout: 2000 },
+		)
+		.toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
 });
 
 test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-collapses', async ({
@@ -191,9 +195,9 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 	await expect(dot).toHaveAttribute('aria-label', 'Replay intro');
 	expect(await dot.evaluate((el) => getComputedStyle(el).cursor)).toBe('pointer');
 	const dotGlyph = dot.locator('[data-testid="hero-dot"]');
-	expect(await dotGlyph.evaluate((el) => getComputedStyle(el).animationName)).toMatch(
-		/hero-dot-pulse/,
-	); // Svelte scopes @keyframes names
+	await expect
+		.poll(() => dotGlyph.evaluate((el) => getComputedStyle(el).animationName), { timeout: 2000 })
+		.toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
 	const dotBox = await dotGlyph.evaluate((el) => {
 		const r = el.getBoundingClientRect();
 		return { width: r.width, height: r.height, overflow: getComputedStyle(el).overflow };

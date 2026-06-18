@@ -8,7 +8,7 @@
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { SiteMeta, SiteLinks, SiteAddress, SiteOwner } from '$lib/types';
+import type { SiteMeta, SiteLinks, SiteAddress, SiteOwner, AssertSchemaMatches } from '$lib/types';
 
 export const SiteLinksSchema = z.object({
 	email: z.string(),
@@ -40,35 +40,8 @@ export const SiteMetaSchema = z.object({
 	owner: SiteOwnerSchema,
 });
 
-// Drift detectors.
-type _SiteLinksCheck = z.infer<typeof SiteLinksSchema> extends SiteLinks
-	? SiteLinks extends z.infer<typeof SiteLinksSchema>
-		? true
-		: false
-	: false;
-const _siteLinksCheck: _SiteLinksCheck = true;
-void _siteLinksCheck;
-
-type _SiteAddressCheck = z.infer<typeof SiteAddressSchema> extends SiteAddress
-	? SiteAddress extends z.infer<typeof SiteAddressSchema>
-		? true
-		: false
-	: false;
-const _siteAddressCheck: _SiteAddressCheck = true;
-void _siteAddressCheck;
-
-type _SiteOwnerCheck = z.infer<typeof SiteOwnerSchema> extends SiteOwner
-	? SiteOwner extends z.infer<typeof SiteOwnerSchema>
-		? true
-		: false
-	: false;
-const _siteOwnerCheck: _SiteOwnerCheck = true;
-void _siteOwnerCheck;
-
-type _SiteMetaCheck = z.infer<typeof SiteMetaSchema> extends SiteMeta
-	? SiteMeta extends z.infer<typeof SiteMetaSchema>
-		? true
-		: false
-	: false;
-const _siteMetaCheck: _SiteMetaCheck = true;
-void _siteMetaCheck;
+// Drift detectors — compile error (`true satisfies never`) on schema/type drift.
+true satisfies AssertSchemaMatches<z.infer<typeof SiteLinksSchema>, SiteLinks>;
+true satisfies AssertSchemaMatches<z.infer<typeof SiteAddressSchema>, SiteAddress>;
+true satisfies AssertSchemaMatches<z.infer<typeof SiteOwnerSchema>, SiteOwner>;
+true satisfies AssertSchemaMatches<z.infer<typeof SiteMetaSchema>, SiteMeta>;
