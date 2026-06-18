@@ -239,7 +239,7 @@
 		height: 2.5rem;
 		place-items: center;
 		border: 1px solid color-mix(in srgb, var(--primary) 42%, transparent);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: color-mix(in srgb, var(--surface-2) 90%, transparent);
 		color: var(--foreground);
 		cursor: pointer;
@@ -251,7 +251,7 @@
 		display: block;
 		width: 1rem;
 		height: 2px;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: currentColor;
 	}
 

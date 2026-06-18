@@ -14,6 +14,11 @@ describe('theme store', () => {
 		meta.setAttribute('name', 'theme-color');
 		meta.setAttribute('content', '#141414');
 		document.head.appendChild(meta);
+		document.head.querySelectorAll('link[rel="icon"]').forEach((l) => l.remove());
+		const icon = document.createElement('link');
+		icon.setAttribute('rel', 'icon');
+		icon.setAttribute('href', '/favicon.svg');
+		document.head.appendChild(icon);
 		themeStore.set('dark');
 		localStorage.clear();
 	});
@@ -29,9 +34,18 @@ describe('theme store', () => {
 
 	it('set("light") updates the theme-color meta to the light surface', () => {
 		themeStore.set('light');
-		expect(metaThemeColor()).toBe('#F7F2E9');
+		expect(metaThemeColor()).toBe('#F3F6FB');
 		themeStore.set('dark');
 		expect(metaThemeColor()).toBe('#141414');
+	});
+
+	it('repaints the favicon dot with the per-theme orange on theme change', () => {
+		const faviconHref = () =>
+			document.querySelector('link[rel="icon"]')?.getAttribute('href') ?? '';
+		themeStore.set('light');
+		expect(decodeURIComponent(faviconHref())).toContain('#A05500');
+		themeStore.set('dark');
+		expect(decodeURIComponent(faviconHref())).toContain('#E07800');
 	});
 
 	it('dispatches a themechange CustomEvent', () => {
@@ -49,7 +63,7 @@ describe('theme store', () => {
 		document.documentElement.dataset.theme = 'light';
 		const cleanup = themeStore.init();
 		expect(themeStore.theme).toBe('light');
-		expect(metaThemeColor()).toBe('#F7F2E9');
+		expect(metaThemeColor()).toBe('#F3F6FB');
 		cleanup();
 	});
 

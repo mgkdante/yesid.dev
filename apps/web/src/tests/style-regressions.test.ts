@@ -570,7 +570,7 @@ describe('GO2-W5 final batch (6c) — the asphalt footer is BELOVED (never repav
 	// Operator: "the footer being that asphalt color was amazing!" The footer
 	// is the street beneath the platform-edge tape: bg-[var(--muted)] — the
 	// asphalt road surface in dark (#1E1E1E, locked in tokens.test) and the
-	// approved station paper in light (#F1E9DA). Wiring locked here so no
+	// approved station paper in light (#E4E9F3). Wiring locked here so no
 	// future pass repaves the footer onto another surface token.
 	const footer = readFileSync(resolve(SRC, 'lib/components/layout/Footer.svelte'), 'utf-8');
 
