@@ -213,8 +213,11 @@ test.describe('light mode — per-page audit', () => {
 		await expect(page.getByTestId('footer')).toBeVisible(); // footer-status-border painted
 
 		// Listing-header subline = YELLOW overline (accent-text #815D00).
+		// Consolidation renamed the bespoke `.projects-header-subtitle` to the
+		// shared listing chrome class `.listing-header-subtitle` (same element,
+		// same voice — still the accent-text overline above the listing title).
 		const subtitle = await page.evaluate(() => {
-			const el = document.querySelector('.projects-header-subtitle');
+			const el = document.querySelector('.listing-header-subtitle');
 			return el ? getComputedStyle(el).color : null;
 		});
 		expect(subtitle).toBe('rgb(129, 93, 0)');
@@ -363,21 +366,30 @@ test.describe('light mode — per-page audit', () => {
 		expect(layout!.textRight).toBeLessThanOrEqual(layout!.panelLeft);
 	});
 
-	test('go2/home-cards: solid paper cards, signage chip, yellow metric, whitened image band', async ({ page }) => {
+	test('go2/home-cards: solid paper cards, signage chip, yellow metric', async ({ page }) => {
 		// Story-first proof cards must stay theme-correct in light mode:
 		// solid --card paper surface (no grid bleed-through), 3px blog-parity
-		// chassis, theme-INVARIANT signage chip, YELLOW-voice metric, ORANGE
-		// exploration line, and the F5 image doctrine (light WHITENS the
-		// resting B&W band instead of dimming it).
+		// chassis, theme-INVARIANT signage chip, and a YELLOW-voice metric.
+		// (The consolidation migrated the reel onto the shared ProjectCard; the
+		// per-card "see the build" line and the grayscale-at-rest image doctrine
+		// were dropped with it — operator-accepted; the station chip was restored.)
 		await page.goto('/');
 		const proofReel = page.getByTestId('proof-reel-section');
 		await expect(proofReel).toBeVisible(); // section + proof cards painted
 		await proofReel.scrollIntoViewIfNeeded();
 
-		const chassis = await page.locator('.proof-card').first().evaluate((el) => {
-			const s = getComputedStyle(el);
-			return { bg: s.backgroundColor, borderW: s.borderTopWidth };
-		});
+		// Consolidation: the bespoke `.proof-card` chassis was replaced by the
+		// shared ProjectCard (variant="proof"). The chassis surface is now the
+		// generic `.card-surface` inside data-testid="proof-card"; the proof
+		// variant still overrides it to the 3px blog-parity frame.
+		const chassis = await page
+			.getByTestId('proof-card')
+			.first()
+			.locator('.card-surface')
+			.evaluate((el) => {
+				const s = getComputedStyle(el);
+				return { bg: s.backgroundColor, borderW: s.borderTopWidth };
+			});
 		expect(chassis.bg).toBe('rgb(255, 253, 248)'); // #FFFDF8 light --card — solid
 		expect(chassis.borderW).toBe('3px'); // round-5 blog-card chassis parity
 
@@ -388,31 +400,12 @@ test.describe('light mode — per-page audit', () => {
 		});
 		expect(chip).toEqual({ bg: 'rgb(28, 24, 20)', ink: 'rgb(255, 182, 39)' });
 
-		// Metric = YELLOW wayfinding voice; exploration line = ORANGE action.
+		// Metric = YELLOW wayfinding voice.
 		const metricColor = await page
 			.getByTestId('proof-metric-value')
 			.first()
 			.evaluate((el) => getComputedStyle(el).color);
 		expect(metricColor).toBe('rgb(129, 93, 0)'); // #815D00 light accent-text
-		const seeBuildColor = await page
-			.getByTestId('proof-see-build')
-			.first()
-			.evaluate((el) => getComputedStyle(el).color);
-		expect(seeBuildColor).toBe('rgb(157, 82, 0)'); // #9D5200 light primary
-
-		// F5 doctrine on the resting band: light mode whitens the B&W photo
-		// (brightness > 1), never the dark dim. Active slide stays colored.
-		const restingImg = page.locator('.proof-card[data-active="false"] .proof-img');
-		if ((await restingImg.count()) > 0) {
-			const filter = await restingImg.first().evaluate((el) => getComputedStyle(el).filter);
-			expect(filter).toContain('grayscale(1)');
-			expect(filter).toContain('brightness(1.12)');
-		}
-		const activeImg = page.locator('.proof-card[data-active="true"] .proof-img');
-		if ((await activeImg.count()) > 0) {
-			const filter = await activeImg.first().evaluate((el) => getComputedStyle(el).filter);
-			expect(filter).toContain('grayscale(0)');
-		}
 	});
 
 	test('final batch: the footer street panel + ONE platform-edge tape at the seam', async ({ page }) => {
