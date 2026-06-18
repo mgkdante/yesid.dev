@@ -75,7 +75,19 @@ for (const route of SVG_ROUTES) {
 			await page.evaluate((t) => {
 				document.documentElement.dataset.theme = t;
 			}, theme);
-			await page.waitForTimeout(150);
+			// Deterministic settle: wait until the first rendered panel reports the
+			// computed visibility the per-panel loop later asserts ('visible'),
+			// instead of a fixed sleep after flipping data-theme.
+			await expect
+				.poll(
+					() =>
+						page
+							.locator('[data-testid="service-svg-panel"]')
+							.first()
+							.evaluate((el) => getComputedStyle(el).visibility),
+					{ timeout: 2000 },
+				)
+				.toBe('visible');
 
 			const panels = await collectPanelPaint(page);
 
@@ -124,9 +136,23 @@ test('nav pill stays painted ABOVE the menu sheet while it is open', async ({ pa
 	await expect(pill).toBeVisible();
 
 	await page.click('[data-testid="nav-menu-toggle"]');
-	await expect(page.locator('.menu-overlay')).toBeVisible();
-	// Let the sheet's open transition fully land before probing paint order.
-	await page.waitForTimeout(700);
+	const overlay = page.locator('.menu-overlay');
+	await expect(overlay).toBeVisible();
+	// Let the sheet's open transition fully land before probing paint order:
+	// poll the overlay's computed transform until it stops changing across two
+	// consecutive reads (transition settled), instead of a fixed sleep.
+	let prevTransform: string | null = null;
+	await expect
+		.poll(
+			async () => {
+				const current = await overlay.evaluate((el) => getComputedStyle(el).transform);
+				const stable = prevTransform !== null && current === prevTransform;
+				prevTransform = current;
+				return stable;
+			},
+			{ timeout: 2000, intervals: [50] },
+		)
+		.toBe(true);
 
 	// Paint-order probe: the element at the pill's center must belong to the
 	// nav. (toBeVisible() passes even when another layer covers the pill —
