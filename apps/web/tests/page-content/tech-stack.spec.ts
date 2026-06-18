@@ -164,7 +164,7 @@ test.describe('/tech-stack page content', () => {
     // FR is genuinely localized — the kicker resolves to the French copy,
     // proving the locale path renders real translations (not EN fallback).
     const kicker = explainer.locator('.explainer-kicker');
-    await expect(kicker).toHaveText('c\'est quoi un « stack »?');
+    await expect(kicker).toHaveText('c\'est quoi un stack?');
   });
 });
 

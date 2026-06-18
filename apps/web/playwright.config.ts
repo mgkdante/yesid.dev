@@ -95,7 +95,13 @@ export default defineConfig({
 					reuseExistingServer: !process.env.CI,
 					// CI cold-build (vite build + check:sitemap) can exceed the
 					// default 60s before the preview answers on :4173.
-					timeout: 180_000
+					timeout: 180_000,
+					// Hermetic build: skip the export-fallbacks prebuild so the local
+					// e2e build NEVER contacts the live CMS (the committed content
+					// modules already ARE the content source). This both honors the
+					// "CMS only at build time, never live" contract and keeps the
+					// local-preview e2e path fully offline — zero edge requests.
+					env: { EXPORT_FALLBACKS_SKIP: '1' }
 				}
 			}),
 	testDir: 'tests',

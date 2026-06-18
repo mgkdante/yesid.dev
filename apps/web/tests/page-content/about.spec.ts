@@ -81,8 +81,9 @@ test.describe('/about page content', () => {
     const langCell = page.locator('[data-testid="about-languages"]');
     await expect(langCell).toBeVisible();
 
-    // Language names: spans with class="lang-name"
-    const langNames = langCell.locator('.lang-name');
+    // Language names: each language is a flag button (data-testid="about-language-flag")
+    // carrying its visible name in a span.flag-label.
+    const langNames = langCell.locator('.flag-label');
     const langCount = await langNames.count();
     expect(langCount).toBeGreaterThan(0);
 

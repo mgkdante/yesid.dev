@@ -221,16 +221,27 @@ test('content language: /fr/about FR page renders French copy', async ({ page })
   await expect(page.getByTestId('about-cta-button')).toContainText('Envoyer un message');
 });
 
-test('content language: /blog EN shows "Dispatches"', async ({ page }) => {
+test('content language: /blog EN renders English intro', async ({ page }) => {
   await page.goto('/blog');
-  // blogPageContent.heading.en — assert on body text (the heading element is
-  // viewport-conditional, but the copy is always in the rendered DOM).
-  await expect(page.locator('body')).toContainText('Dispatches');
+  // Listing header subtitle (blogPage.intro.en) is the locale-specific marker.
+  // The .listing-mobile-heading h1 is display:none at >=1024px, so on the
+  // desktop viewport the subtitle is the always-visible locale anchor. The
+  // intro copy is unambiguously English (unlike the heading "Blog", a substring
+  // of FR "Blogue").
+  const subtitle = page.locator('.listing-header-subtitle');
+  await expect(subtitle).toBeVisible();
+  await expect(subtitle).toContainText(
+    'Notes on digital infrastructure, databases, and building reliable systems.',
+  );
 });
 
-test('content language: /fr/blog FR shows "Dépêches"', async ({ page }) => {
+test('content language: /fr/blog FR renders French intro', async ({ page }) => {
   await page.goto('/fr/blog');
-  await expect(page.locator('body')).toContainText('Dépêches');
+  const subtitle = page.locator('.listing-header-subtitle');
+  await expect(subtitle).toBeVisible();
+  await expect(subtitle).toContainText(
+    "Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.",
+  );
 });
 
 // ---------------------------------------------------------------------------
