@@ -8,7 +8,7 @@
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { SiteSeoDefaults } from '$lib/types';
+import type { SiteSeoDefaults, AssertSchemaMatches } from '$lib/types';
 
 export const SiteSeoDefaultsSchema = z.object({
 	defaultOgImage: z.string().uuid().nullable(),
@@ -16,12 +16,6 @@ export const SiteSeoDefaultsSchema = z.object({
 	defaultDescription: LocalizedStringSchema,
 });
 
-// Drift detector — fails to compile if z.infer<Schema> and SiteSeoDefaults
-// drift apart in either direction.
-type _SiteSeoDefaultsCheck = z.infer<typeof SiteSeoDefaultsSchema> extends SiteSeoDefaults
-	? SiteSeoDefaults extends z.infer<typeof SiteSeoDefaultsSchema>
-		? true
-		: false
-	: false;
-const _siteSeoDefaultsCheck: _SiteSeoDefaultsCheck = true;
-void _siteSeoDefaultsCheck;
+// Drift detector — compile error (`true satisfies never`) on schema/type drift
+// in either direction.
+true satisfies AssertSchemaMatches<z.infer<typeof SiteSeoDefaultsSchema>, SiteSeoDefaults>;
