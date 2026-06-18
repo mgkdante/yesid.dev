@@ -122,8 +122,12 @@
 	}
 
 	/* GO-W2.2 light theme: recolor the CMS-sourced metro art via attribute
-	   overrides. Dark is untouched (selectors scoped to light). Orange lines/
-	   stations stay #E07800 — decorative, brand-true on paper. */
+	   overrides. Dark is untouched (selectors scoped to light), so it keeps the
+	   SVG's brand #E07800. The intro orange (lines + stations) now maps to
+	   var(--primary) in light (#A05500) to match the interactive orange, and
+	   repaints on theme toggle automatically: the selectors key on the
+	   data-theme attribute, and the GSAP timeline only tweens opacity/drawSVG,
+	   never fill/stroke colour, so CSS owns the colour. */
 	:global([data-theme="light"] .metro-network-frame svg [fill="#1E1E1E"]),
 	:global(.theme-light .metro-network-frame svg [fill="#1E1E1E"]) {
 		fill: var(--muted);
@@ -131,5 +135,13 @@
 	:global([data-theme="light"] .metro-network-frame svg [fill="#808285"]),
 	:global(.theme-light .metro-network-frame svg [fill="#808285"]) {
 		fill: var(--muted-foreground);
+	}
+	:global([data-theme="light"] .metro-network-frame svg [fill="#E07800"]),
+	:global(.theme-light .metro-network-frame svg [fill="#E07800"]) {
+		fill: var(--primary);
+	}
+	:global([data-theme="light"] .metro-network-frame svg [stroke="#E07800"]),
+	:global(.theme-light .metro-network-frame svg [stroke="#E07800"]) {
+		stroke: var(--primary);
 	}
 </style>
