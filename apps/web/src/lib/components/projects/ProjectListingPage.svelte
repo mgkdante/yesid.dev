@@ -1,31 +1,30 @@
 <!--
-  Full work listing page layout: header, desktop sidebar filters, and a card grid
+  Full work listing page layout: header, desktop and mobile filters, and a card grid
   with GSAP Flip animation on filter changes.
   Service + tag filters use AND logic with URL params via goto().
   Desktop: sticky left sidebar (~220px) + main grid on the right.
-  Mobile: search only. Filter trigger hidden per operator QA.
+  Mobile: search + in-flow collapsible filters.
   Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
   No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { Project, ProjectsPageContent, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import '$lib/styles/listing-header.css';
+	import '$lib/styles/listing-shell.css';
 
 	const locale = getLocale();
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
-	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
-	import { createDrawScrub } from '$lib/motion/scrubs/index.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
+	import ListingMobileFilters from '$lib/components/shared/ListingMobileFilters.svelte';
+	import { startListingBlueprintScrub } from '$lib/components/shared/listing-blueprint-scrub';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
-	import { Badge } from '$lib/components/ui/badge';
 	import { MetroStation } from '$lib/components/brand';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -59,6 +58,7 @@
 	const listingHeading =
 		resolveLocale(projectsPage.heading, locale) || resolveLocale(listingChrome.heading, locale);
 	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
+	const mobileFiltersLabel = resolveLocale(listingChrome.filters.filtersLabel, locale);
 	const listingIntro = resolveLocale(projectsPage.intro, locale);
 	const emptyStateText =
 		resolveLocale(projectsPage.emptyState, locale) ||
@@ -78,6 +78,10 @@
 	// switch via the locale-handoff orchestrator. The tag/service/stack filters live
 	// in the URL and are carried for free by localizeUrl.
 	const searchQuery = persisted('projects-q', '');
+	const mobileFiltersOpen = persisted('projects-mobile-filters-open', false);
+	function setMobileFiltersOpen(next: boolean): void {
+		mobileFiltersOpen.value = next;
+	}
 
 	// Apply filters: service + tag + stack + search use AND logic
 	let filteredProjects = $derived.by(() => {
@@ -164,50 +168,41 @@
 		});
 	});
 
-	// Blueprint draw-scrub: paths stroke-dash from 0% → 100% as user scrolls
-	// through the listing page section. DrawSVG plugin lazy-loaded at mount.
+	// Blueprint artwork renders on every viewport. DrawSVG scroll-scrub is a
+	// desktop-only enhancement so mobile keeps native scroll behavior.
 	let blueprintWrapEl = $state<HTMLElement>(undefined!);
 	let listingSectionEl = $state<HTMLElement>(undefined!);
 	let destroyDrawScrub: (() => void) | undefined;
 
-	onMount(async () => {
-		if (!browser) return;
+	onMount(() => {
+		let cancelled = false;
+		void startListingBlueprintScrub(blueprintWrapEl, listingSectionEl).then((destroy) => {
+			if (cancelled) destroy?.();
+			else destroyDrawScrub = destroy;
+		});
 
-		// Flip: filter-transition plugin; always loaded (consumer-wide sync
-		// precondition for captureFlipState). DrawSVG: blueprint scroll-scrub.
-		await loadFlip();
-
-		if (isPrefersReducedMotion()) return;
-
-		await loadDrawSVG();
-		initScrollTriggerConfig();
-
-		if (blueprintWrapEl && listingSectionEl) {
-			destroyDrawScrub = createDrawScrub(blueprintWrapEl, {
-				section: listingSectionEl,
-				pathSelector: 'svg path',
-			});
-		}
+		return () => {
+			cancelled = true;
+			destroyDrawScrub?.();
+		};
 	});
-
-	onDestroy(() => destroyDrawScrub?.());
 </script>
 
 <div bind:this={listingSectionEl} data-testid="project-listing" class="w-full pb-16">
 	<!-- Blueprint header: full-bleed, outside container -->
-	<div bind:this={blueprintWrapEl} class="projects-blueprint-header" data-batch="project-item">
+	<div bind:this={blueprintWrapEl} class="listing-blueprint-header" data-batch="project-item">
 		<ProjectsBlueprint />
-		<div class="projects-header-text">
-			<h1 class="projects-mobile-heading">{listingHeading}<span class="text-[var(--primary)]">.</span></h1>
-			<div class="projects-header-subtitle">{listingIntro}</div>
+		<div class="listing-header-text">
+			<h1 class="listing-mobile-heading">{listingHeading}<span class="text-[var(--primary)]">.</span></h1>
+			<div class="listing-header-subtitle">{listingIntro}</div>
 		</div>
 	</div>
 
 	<Separator variant="hazard" />
 
 	<!-- Section 2: Listing — filter sidebar (desktop) + cards -->
-	<section class="project-listing-grid">
-		<aside class="project-filter-column">
+	<section class="listing-grid">
+		<aside class="listing-filter-column">
 			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
 				<ProjectFilterSidebar
 					{serviceIds}
@@ -226,12 +221,34 @@
 		</aside>
 
 		<!-- Listing content with padding -->
-		<div class="px-4 py-6 md:px-6 md:py-8">
+		<div class="listing-content">
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
 			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery.value} testId="project-search-mobile" />
 		</div>
+
+		<ListingMobileFilters
+			open={mobileFiltersOpen.value}
+			label={mobileFiltersLabel}
+			testId="project-filter-mobile"
+			onOpenChange={setMobileFiltersOpen}
+		>
+			<ProjectFilterSidebar
+				{serviceIds}
+				{serviceMap}
+				tags={allTags}
+				stack={allStack}
+				{activeService}
+				{activeTag}
+				{activeStack}
+				showSearch={false}
+				onServiceSelect={handleServiceSelect}
+				onTagSelect={handleTagSelect}
+				onStackSelect={handleStackSelect}
+				bind:searchQuery={searchQuery.value}
+			/>
+		</ListingMobileFilters>
 
 		<!-- Active filter summary -->
 		{#if hasActiveFilters}
@@ -260,82 +277,6 @@
 </div>
 
 <style>
-	/* Recipe 3: Filter sidebar + content */
-	.project-listing-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		width: 100%;
-	}
-
-	.project-filter-column {
-		display: none;
-	}
-
-	@media (min-width: 1024px) {
-		.project-listing-grid {
-			grid-template-columns: clamp(220px, 22vw, 320px) 1fr;
-		}
-		.project-filter-column {
-			display: block;
-		}
-	}
-
-	/* --- Projects header: blueprint visualization --- */
-	.projects-blueprint-header {
-		position: relative;
-		height: calc(100px + 5rem);
-		overflow: hidden;
-		margin-top: -5rem;
-		padding-top: 5rem;
-	}
-
-	/* Desktop: taller header */
-	@media (min-width: 1024px) {
-		.projects-blueprint-header {
-			height: calc(160px + 5rem);
-		}
-	}
-
-	.projects-header-text {
-		position: absolute;
-		z-index: 20;
-		bottom: 1rem;
-		left: var(--space-page-x);
-	}
-
-	.projects-mobile-heading {
-		font-family: var(--font-heading);
-		font-size: clamp(2rem, 5vw, 3rem);
-		font-weight: 900;
-		color: var(--foreground);
-		letter-spacing: -1px;
-		line-height: 1;
-	}
-
-	/* Hide "Projects." heading on desktop (edge title in route layout carries it) */
-	@media (min-width: 1024px) {
-		.projects-mobile-heading { display: none; }
-	}
-
-	/* Round-4 doctrine: the listing-header subline is a section overline —
-	   the YELLOW wayfinding voice (label-station precedent). */
-	.projects-header-subtitle {
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		color: var(--accent-text);
-		letter-spacing: 2px;
-		text-transform: uppercase;
-		margin-top: 0.35rem;
-	}
-
-	/* Desktop: large to differentiate from blueprint labels */
-	@media (min-width: 1024px) {
-		.projects-header-subtitle {
-			font-size: 1.1rem;
-			letter-spacing: 5px;
-		}
-	}
-
 	/* 2-column grid on desktop, single column on mobile */
 	.project-grid {
 		display: grid;

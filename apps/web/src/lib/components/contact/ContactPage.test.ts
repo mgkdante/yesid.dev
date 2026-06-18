@@ -54,6 +54,36 @@ describe('ContactPage', () => {
 		expect(screen.getAllByLabelText(/^message/i).length).toBeGreaterThanOrEqual(1);
 	});
 
+	it('uses CMS-localized form field labels in labels and validation errors', async () => {
+		const labeledContact = {
+			...contactContent,
+			formTerminal: {
+				...contactContent.formTerminal,
+				fields: {
+					name: { ...contactContent.formTerminal.fields.name, label: { en: 'full name' } },
+					email: { ...contactContent.formTerminal.fields.email, label: { en: 'email address' } },
+					message: { ...contactContent.formTerminal.fields.message, label: { en: 'project note' } },
+				},
+			},
+			validation: {
+				...contactContent.validation,
+				required: { en: 'Missing {field}' },
+			},
+		} as unknown as typeof contactContent;
+
+		render(ContactPage, { props: { contactPage: labeledContact } });
+		expect(screen.getAllByLabelText(/^full name/i).length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByLabelText(/^email address/i).length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByLabelText(/^project note/i).length).toBeGreaterThanOrEqual(1);
+
+		const submitBtns = screen.getAllByRole('button', { name: /send/i });
+		await submitForm(submitBtns[0]);
+
+		expect(screen.getAllByText(/Missing full name/i).length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText(/Missing email address/i).length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText(/Missing project note/i).length).toBeGreaterThanOrEqual(1);
+	});
+
 	it('renders submit button', () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		const buttons = screen.getAllByRole('button', { name: /send/i });
@@ -143,6 +173,40 @@ describe('ContactPage', () => {
 		await new Promise((r) => setTimeout(r, 2000));
 
 		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
+	});
+
+	it('uses CMS success link labels inside the success template', async () => {
+		const linkedContact = {
+			...contactContent,
+			success: {
+				...contactContent.success,
+				meanwhile: { en: 'Meanwhile, check {work} and {blog}.' },
+				workLinkLabel: { en: 'services' },
+				blogLinkLabel: { en: 'journal' },
+			},
+		} as unknown as typeof contactContent;
+
+		render(ContactPage, { props: { contactPage: linkedContact } });
+		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
+		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
+		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+
+		await typeInto(nameInputs[0], 'Test User');
+		await typeInto(emailInputs[0], 'test@example.com');
+		await typeInto(messageInputs[0], 'Hello there');
+
+		const submitBtns = screen.getAllByRole('button', { name: /send/i });
+		await submitForm(submitBtns[0]);
+		await new Promise((r) => setTimeout(r, 2000));
+
+		const success = screen.getAllByTestId('contact-success')[0];
+		expect(success.textContent).toContain('services');
+		expect(success.textContent).toContain('journal');
+		expect(success.textContent).not.toContain('work');
+		expect(success.textContent).not.toContain('blog.');
+		const links = Array.from(success.querySelectorAll('a'));
+		expect(links.map((link) => link.textContent)).toEqual(['services', 'journal']);
+		expect(links.map((link) => link.getAttribute('href'))).toEqual(['/services', '/blog']);
 	});
 
 	// slice-29: the Tech Stack Engine hands off via /contact?bp=… — the decoded

@@ -16,6 +16,7 @@ export * from './projects'
 export * from './services'
 export * from './blog'
 export * from './site-meta'
+export * from './route-seo'
 export * from './tech-stack'
 export * from './site-content'
 export * from './nav'
@@ -27,13 +28,5 @@ export * from './projects-page'
 export * from './morph-shapes'
 export * from './site-labels'
 
-// Hand-written companions (slice-18m): helper functions, type definitions, and
-// legacy fallbacks the generator does not emit.
-export * from './projects.companion'
-export * from './services.companion'
-export * from './blog.companion'
-export * from './site-content.companion'
-export * from './nav.companion'
-export * from './contact-page.companion'
 // tech-stack.companion.ts deleted in slice-18m follow-up (GH #63/#64) — items
 // + page chrome now both emit from CMS via tech-stack.ts.

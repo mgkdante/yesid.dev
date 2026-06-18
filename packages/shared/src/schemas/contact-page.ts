@@ -16,7 +16,7 @@ import type {
 } from '../types/content';
 
 export const ContactTerminalFieldSchema = z.object({
-	label: z.string(),
+	label: LocalizedStringSchema,
 	placeholder: LocalizedStringSchema,
 }) satisfies z.ZodType<ContactTerminalField>;
 
@@ -57,6 +57,8 @@ export const ContactSuccessSchema = z.object({
 	meanwhile: LocalizedStringSchema,
 	resetLabel: LocalizedStringSchema,
 	fieldOk: LocalizedStringSchema,
+	workLinkLabel: LocalizedStringSchema,
+	blogLinkLabel: LocalizedStringSchema,
 }) satisfies z.ZodType<ContactSuccess>;
 
 // `socials` is `readonly { label, href, icon }[]` in TS — use .readonly() so

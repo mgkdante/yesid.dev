@@ -58,6 +58,12 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('about-identity')).toBeTruthy();
 	});
 
+	it('sources the CTA terminal chrome title from CMS labels', () => {
+		const source = readFileSync(join(process.cwd(), 'src/lib/components/about/AboutCta.svelte'), 'utf-8');
+		expect(source).toContain('siteLabels.ui.terminalTitle');
+		expect(source).not.toContain('title="terminal"');
+	});
+
 	it('renders identity without availability dot and keeps the headshot frame circular', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		const identity = screen.getByTestId('about-identity');
@@ -180,6 +186,29 @@ describe('AboutPage', () => {
 			'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.',
 		);
 		expect(testimonials.textContent).toContain('Marcus Aurelius');
+	});
+
+	it('uses About CMS labels for quote carousel aria text', () => {
+		const labeledAbout = {
+			...aboutPageContent,
+			labels: {
+				...aboutPageContent.labels,
+				testimonialsCarouselAria: { en: 'Personal quote carousel' },
+				testimonialsTabNavAria: { en: 'Quote slide selector' },
+				testimonialsPrevAria: { en: 'Earlier quote' },
+				testimonialsNextAria: { en: 'Later quote' },
+				showTestimonialAria: { en: 'Jump to quote {index}' },
+				testimonialSlideAria: { en: 'Quote {index} of {total}' },
+			},
+		} as unknown as typeof aboutPageContent;
+
+		render(AboutPage, { props: { aboutPage: labeledAbout, weather: null } });
+
+		expect(screen.getByRole('region', { name: 'Personal quote carousel' })).toBeTruthy();
+		expect(screen.getByRole('tablist', { name: 'Quote slide selector' })).toBeTruthy();
+		expect(screen.getByLabelText('Earlier quote')).toBeTruthy();
+		expect(screen.getByLabelText('Later quote')).toBeTruthy();
+		expect(screen.getByLabelText('Jump to quote 1')).toBeTruthy();
 	});
 
 	it('renders seven polaroids in the counter', () => {

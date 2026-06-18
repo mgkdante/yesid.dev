@@ -2112,6 +2112,8 @@
       "identity",
       "interests",
       "labels",
+      "label_testimonials_next_aria",
+      "label_testimonials_prev_aria",
       "languages_code",
       "meta",
       "methodology",
@@ -2193,7 +2195,23 @@
       "heading",
       "id",
       "intro",
-      "languages_code"
+      "languages_code",
+      "personal_heading",
+      "personal_intro",
+      "to_personal_label",
+      "to_personal_subtitle",
+      "to_professional_label",
+      "to_professional_subtitle",
+      "entry_rail_work_title",
+      "entry_rail_work_prompt",
+      "entry_rail_services_label",
+      "entry_rail_contact_label",
+      "entry_rail_routes_title",
+      "entry_rail_route_case_studies_label",
+      "entry_rail_route_services_label",
+      "entry_rail_route_stack_label",
+      "entry_rail_route_about_label",
+      "entry_rail_route_contact_label"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "071fa52d-f648-403a-ad9b-ae4846c50ddd"
@@ -2208,7 +2226,14 @@
       "id",
       "sort",
       "status",
-      "translations"
+      "translations",
+      "entry_rail_services_href",
+      "entry_rail_contact_href",
+      "entry_rail_route_case_studies_href",
+      "entry_rail_route_services_href",
+      "entry_rail_route_stack_href",
+      "entry_rail_route_about_href",
+      "entry_rail_route_contact_href"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "5166cbe5-bcae-4078-8eb1-fd0b4247413b"
@@ -2259,6 +2284,9 @@
     "presets": null,
     "fields": [
       "block_contact_content_id",
+      "form_field_email_label",
+      "form_field_message_label",
+      "form_field_name_label",
       "form_terminal",
       "id",
       "info_terminal",
@@ -2269,6 +2297,8 @@
       "socials",
       "station_label",
       "success",
+      "success_blog_link_label",
+      "success_work_link_label",
       "validation"
     ],
     "policy": "_sync_default_public_policy",
@@ -2508,10 +2538,12 @@
       "actions",
       "block_tech_stack_page_content_id",
       "cta",
+      "engine_loading",
       "hero",
       "id",
       "languages_code",
-      "meta"
+      "meta",
+      "stack_kicker"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "01b8952e-2df3-41d8-995c-9ecba66e5726"
@@ -2560,6 +2592,9 @@
       "animation",
       "title",
       "excerpt",
+      "seo_title",
+      "seo_description",
+      "date_modified",
       "body"
     ],
     "policy": "_sync_default_public_policy",

@@ -10,7 +10,7 @@ import {
 	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
-import type { NavLink, ErrorPageContent } from '$lib/content/nav';
+import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
 // slice-28.5 (#120): client fallback reads the GENERATED morph-shapes module
 // (same source the static adapter serves), not the utils/shapes.ts seed —
 // otherwise a CSR-only render would show pre-CMS shapes while SSR shows CMS

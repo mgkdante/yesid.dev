@@ -52,6 +52,30 @@ describe('blog-posts fetcher transform', () => {
 		expect(result.date).toBe('2026-04-14');
 	});
 
+	it('maps CMS-backed SEO fields, modified date, and cover image alt text', () => {
+		const row = {
+			...FIXTURE_EXTERNAL,
+			date_modified: '2026-04-20T09:30:00Z',
+			seo_title: 'Raw SQL for PostgreSQL Control',
+			seo_description:
+				'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.',
+			cover_image: {
+				id: '11111111-1111-4111-8111-111111111111',
+				description: 'Query plan screenshot inside the yesid.dev CMS.',
+				title: 'Raw SQL cover',
+			},
+		} as unknown as DirectusBlogPostRow;
+
+		const result = toBlogPost(row) as Record<string, unknown>;
+		expect(result.dateModified).toBe('2026-04-20');
+		expect(result.seoTitle).toBe('Raw SQL for PostgreSQL Control');
+		expect(result.seoDescription).toBe(
+			'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.',
+		);
+		expect(result.coverImage).toBe('11111111-1111-4111-8111-111111111111');
+		expect(result.coverImageAlt).toBe('Query plan screenshot inside the yesid.dev CMS.');
+	});
+
 	it('output parses through BlogPostSchema', () => {
 		const result = toBlogPost(FIXTURE_EXTERNAL);
 		expect(() => BlogPostSchema.parse(result)).not.toThrow();

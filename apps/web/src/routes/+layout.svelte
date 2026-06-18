@@ -28,7 +28,7 @@
 	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
 	import { setMorphShapes } from '$lib/utils/shapes';
 	import type { LayoutData } from './$types';
-	import type { NavLink } from '$lib/content/nav';
+	import type { NavLink } from '$lib/navigation/types';
 	import type { MorphShape } from '$lib/types';
 
 	let { data, children }: { data: LayoutData & {

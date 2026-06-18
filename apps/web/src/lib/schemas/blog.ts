@@ -20,6 +20,7 @@ export const BlogPostSchema = z.object({
 	title: z.string().min(1),
 	excerpt: z.string().min(1),
 	date: z.string(),
+	dateModified: z.string().optional(),
 	lang: LocaleSchema,
 	category: BlogCategorySchema,
 	tags: z.array(z.string()),
@@ -27,6 +28,10 @@ export const BlogPostSchema = z.object({
 	svg: z.string(),
 	url: z.string(),
 	external: z.boolean(),
+	seoTitle: z.string().min(1).max(60).optional(),
+	seoDescription: z.string().min(50).max(200).optional(),
+	coverImage: z.string().uuid().optional(),
+	coverImageAlt: z.string().min(1).max(160).optional(),
 });
 
 // Drift detectors.

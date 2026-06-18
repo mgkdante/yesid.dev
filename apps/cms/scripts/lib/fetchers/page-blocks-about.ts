@@ -364,6 +364,8 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		polaroidNextAria: toLocalizedString(tr, 'label_polaroid_next_aria'),
 		testimonialsCarouselAria: toLocalizedString(tr, 'label_testimonials_carousel_aria'),
 		testimonialsTabNavAria: toLocalizedString(tr, 'label_testimonials_tab_nav_aria'),
+		testimonialsPrevAria: toLocalizedString(tr, 'label_testimonials_prev_aria'),
+		testimonialsNextAria: toLocalizedString(tr, 'label_testimonials_next_aria'),
 		testimonialSlideAria: toLocalizedString(tr, 'label_testimonial_slide_aria'),
 		showTestimonialAria: toLocalizedString(tr, 'label_show_testimonial_aria'),
 	};

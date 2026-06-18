@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
-// Services array (id, title, station, deliverables, sections, related projects). Chrome + helpers live in services.companion.ts.
+// Services array (id, title, station, deliverables, sections, related projects).
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
@@ -463,7 +463,3 @@ export const services: readonly Service[] = [
 		visible: false,
 	},
 ];
-
-// Re-export hand-written companion module so consumers can keep importing
-// chrome / helpers / type defs from the original path 'services'.
-export * from './services.companion';

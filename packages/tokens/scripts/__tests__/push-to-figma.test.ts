@@ -62,8 +62,11 @@ describe('push-to-figma', () => {
     // border/rule + border/rule-accent (solid orange / yellow voices).
     // Round 4 adds 1: color/reflective — the theme-invariant WHITE voice of
     // the four-color infrastructure doctrine.
+    // Typography token system (listing/detail consolidation) adds 24 number
+    // variables: detail-body, nav, menu, tag, metric-chip, card title/body/meta,
+    // back-link and control sizes across mobile + desktop scales.
     const vars = runScript();
-    expect(vars.length).toBe(104);
+    expect(vars.length).toBe(128);
   });
 
   it('theme re-pins of brand names merge as modes of one variable (no duplicates)', () => {

@@ -5,7 +5,7 @@
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
-	import type { NavLink } from '$lib/content/nav';
+	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
 
 	// footerLinks: adapter-sourced footer placement links (from +layout.server.ts).

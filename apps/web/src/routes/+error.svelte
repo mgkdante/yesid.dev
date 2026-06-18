@@ -14,7 +14,7 @@
 	// getPageSeo('/__error', locale), so 404s ship noindex,nofollow server-side.
 	import { page } from '$app/stores';
 	import { errorPageContent as staticErrorPageContent, siteLabels } from '$lib/content';
-	import type { ErrorPageContent } from '$lib/content/nav';
+	import type { ErrorPageContent } from '$lib/navigation/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { pathLocale, localizeHref } from '$lib/utils/locale-routing';
 	import { prefersReducedMotion } from '$lib/motion/stores';

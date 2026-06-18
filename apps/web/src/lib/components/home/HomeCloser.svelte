@@ -12,12 +12,17 @@
 
 	const locale = getLocale();
 
-	import { getLatestPosts } from '$lib/content';
-	import { siteMeta } from '$lib/content/site-meta';
-	import type { CloserContent } from '$lib/types';
+	import type { BlogPost, CloserContent, SiteMeta } from '$lib/types';
 
 	// slice-18i Phase 7C: closerContent now flows as a prop from the server load.
-	let { closer: closerContent }: { closer: CloserContent } = $props();
+	let {
+		closer: closerContent,
+		siteMeta,
+	}: {
+		closer: CloserContent;
+		latestPosts: readonly BlogPost[];
+		siteMeta: SiteMeta;
+	} = $props();
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { pressBounce } from '$lib/motion/actions';
@@ -28,32 +33,30 @@
 	import CloserTerminalBoard from './CloserTerminalBoard.svelte';
 
 	// Static content
-	const heading = resolveLocale(closerContent.heading, locale);
-	const headingDot = resolveLocale(closerContent.headingDot, locale);
-	const subheading = resolveLocale(closerContent.subheading, locale);
-	const ctaLabel = resolveLocale(closerContent.cta.label, locale);
-	const ctaHref = closerContent.cta.href;
-	const contactLabel = resolveLocale(closerContent.rows.contact.label, locale);
-	const contactDesc = resolveLocale(closerContent.rows.contact.description, locale);
-	const contactAction = resolveLocale(closerContent.rows.contact.action, locale);
-	const connectLabel = resolveLocale(closerContent.rows.connect.label, locale);
-	const connectDesc = resolveLocale(closerContent.rows.connect.description, locale);
-	const connectAction = resolveLocale(closerContent.rows.connect.action, locale);
-	const readLabel = resolveLocale(closerContent.rows.read.label, locale);
-	const readAction = resolveLocale(closerContent.rows.read.action, locale);
-	const aboutLabel = resolveLocale(closerContent.rows.about.label, locale);
-	const aboutDesc = resolveLocale(closerContent.rows.about.description, locale);
-	const aboutAction = resolveLocale(closerContent.rows.about.action, locale);
+	const ctaLabel = $derived(resolveLocale(closerContent.cta.label, locale));
+	const ctaHref = $derived(closerContent.cta.href);
+	const stackLabel = $derived(resolveLocale(closerContent.rows.stack.label, locale));
+	const stackDesc = $derived(resolveLocale(closerContent.rows.stack.description, locale));
+	const stackAction = $derived(resolveLocale(closerContent.rows.stack.action, locale));
+	const contactLabel = $derived(resolveLocale(closerContent.rows.contact.label, locale));
+	const contactDesc = $derived(resolveLocale(closerContent.rows.contact.description, locale));
+	const contactAction = $derived(resolveLocale(closerContent.rows.contact.action, locale));
+	const connectLabel = $derived(resolveLocale(closerContent.rows.connect.label, locale));
+	const connectDesc = $derived(resolveLocale(closerContent.rows.connect.description, locale));
+	const connectAction = $derived(resolveLocale(closerContent.rows.connect.action, locale));
+	const readLabel = $derived(resolveLocale(closerContent.rows.read.label, locale));
+	const readDesc = $derived(resolveLocale(closerContent.rows.read.description, locale));
+	const readAction = $derived(resolveLocale(closerContent.rows.read.action, locale));
+	const aboutLabel = $derived(resolveLocale(closerContent.rows.about.label, locale));
+	const aboutDesc = $derived(resolveLocale(closerContent.rows.about.description, locale));
+	const aboutAction = $derived(resolveLocale(closerContent.rows.about.action, locale));
 
 	// Terminal chrome copy — added in Task 17b-7a.
-	const terminalTitleText = resolveLocale(closerContent.terminal.title, locale);
-	const terminalCityLabel = resolveLocale(closerContent.terminal.city, locale);
-	const terminalEncodingLabel = resolveLocale(closerContent.terminal.encoding, locale);
-	const terminalDestinationsTemplate = resolveLocale(closerContent.terminal.destinationsLabel, locale);
-	const terminalPromptLine = resolveLocale(closerContent.terminal.prompt, locale);
-
-	// Dynamic blog posts
-	const latestPosts = getLatestPosts(2, 'professional');
+	const terminalTitleText = $derived(resolveLocale(closerContent.terminal.title, locale));
+	const terminalCityLabel = $derived(resolveLocale(closerContent.terminal.city, locale));
+	const terminalEncodingLabel = $derived(resolveLocale(closerContent.terminal.encoding, locale));
+	const terminalDestinationsTemplate = $derived(resolveLocale(closerContent.terminal.destinationsLabel, locale));
+	const terminalPromptLine = $derived(resolveLocale(closerContent.terminal.prompt, locale));
 
 	// Build row data
 	type BoardRow = {
@@ -63,7 +66,14 @@
 		href: string;
 		primary: boolean;
 	};
-	const rows: BoardRow[] = [
+	const rows = $derived([
+		{
+			label: stackLabel,
+			description: stackDesc,
+			action: stackAction,
+			href: '/tech-stack',
+			primary: false,
+		},
 		{
 			label: contactLabel,
 			description: contactDesc,
@@ -72,27 +82,27 @@
 			primary: true,
 		},
 		{
-			label: connectLabel,
-			description: connectDesc,
-			action: connectAction,
-			href: siteMeta.links.github,
-			primary: true,
-		},
-		...latestPosts.map((post) => ({
-			label: readLabel,
-			description: post.title,
-			action: readAction,
-			href: `/blog/${post.slug}`,
-			primary: false,
-		})),
-		{
 			label: aboutLabel,
 			description: aboutDesc,
 			action: aboutAction,
 			href: '/about',
 			primary: false,
 		},
-	];
+		{
+			label: readLabel,
+			description: readDesc,
+			action: readAction,
+			href: '/blog',
+			primary: false,
+		},
+		{
+			label: connectLabel,
+			description: connectDesc,
+			action: connectAction,
+			href: siteMeta.links.github,
+			primary: true,
+		},
+	] satisfies BoardRow[]);
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 	let masterTl: gsap.core.Timeline | undefined;
@@ -233,22 +243,6 @@
 		max-width: 78%;
 		width: 100%;
 		padding-inline-start: clamp(1rem, 4vw, 3rem);
-	}
-
-	.closer-heading {
-		font-family: var(--font-heading);
-		font-size: clamp(2.5rem, 6vw, 4rem);
-		font-weight: 900;
-		color: var(--foreground);
-		letter-spacing: -2px;
-		margin-block-end: 6px;
-	}
-	.closer-dot {
-		color: var(--primary);
-	}
-
-	.closer-subheading {
-		margin-block-end: 36px;
 	}
 
 	/* ===== CTA ===== */
