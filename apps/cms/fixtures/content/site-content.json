@@ -4,11 +4,11 @@
   },
   "heroContent": {
     "headline": {
-      "line1": { "en": "PIPELINES THAT" },
-      "line2": { "en": "DON'T BREAK." },
+      "line1": { "en": "SYSTEMS THAT" },
+      "line2": { "en": "DON'T BREAK" },
       "ariaSuffix": { "en": "Don't Break." }
     },
-    "subheadline": { "en": "Data that tell the truth." },
+    "subheadline": { "en": "I make data tell the truth." },
     "subtitle": { "en": "Building reliable infrastructure for teams that can't afford downtime." },
     "ctaWork": { "en": "See how I build →" },
     "ctaContact": { "en": "Let's talk" },
@@ -43,16 +43,15 @@
       "command": { "en": ":~$ cat manifesto.md" }
     },
     "pills": [
-      { "label": { "en": "pipelines" }, "serviceId": "data-pipeline" },
       { "label": { "en": "databases" }, "serviceId": "database-engineering" },
+      { "label": { "en": "pipelines" }, "serviceId": "data-pipeline" },
       { "label": { "en": "dashboards" }, "serviceId": "analytics-reporting" },
-      { "label": { "en": "internal_tools" }, "serviceId": "internal-tooling" },
-      { "label": { "en": "web_apps" }, "serviceId": "web-development" }
+      { "label": { "en": "websites" }, "serviceId": "web-development" }
     ],
     "edgeLeft": {
-      "sectionNumber": { "en": "SEC—02" },
+      "sectionNumber": { "en": "SEC-02" },
       "sectionName": { "en": "MANIFESTO" },
-      "location": { "en": "MTL—QC" }
+      "location": { "en": "MTL-QC" }
     },
     "edgeRight": {
       "lat": { "en": "LAT 45.5017°N" },
@@ -106,11 +105,11 @@
   },
   "aboutIntroContent": {
     "name": { "en": "Yesid O." },
-    "title": { "en": "Freelance Data Engineer" },
-    "bio": { "en": "Montreal, QC — building digital infrastructure for teams that ship." },
+    "title": { "en": "Freelance Digital Infrastructure Engineer" },
+    "bio": { "en": "Montreal, QC, I bring data, make it tell stories, and build the systems it moves through." },
     "moreLink": { "en": "→ More about me" },
     "stackLabel": { "en": "STACK" },
-    "stackItems": ["PostgreSQL", "SQL Server", "Python", "Power BI", "Retool", "SvelteKit"],
+    "stackItems": [],
     "locationLabel": { "en": "LOCATION" },
     "location": {
       "city": { "en": "Montreal" },
@@ -121,7 +120,7 @@
   },
   "ctaContent": {
     "heading": { "en": "Let's build something\nthat moves" },
-    "subtitle": { "en": "Have a data problem? Let's talk. Available for freelance projects and consulting." },
+    "subtitle": { "en": "Have a data problem? Let's talk." },
     "ctaContact": { "en": "Get in touch" },
     "ctaGithub": { "en": "View on GitHub" }
   },

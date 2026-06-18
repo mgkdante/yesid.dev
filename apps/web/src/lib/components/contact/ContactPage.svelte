@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -54,7 +54,12 @@
 
 	async function refreshWeather() {
 		try {
-			const res = await fetch('/api/weather');
+			// Pass the active locale so OpenWeather localizes `condition` (fr/es),
+			// matching AboutWeather. EN omits the param, so its /api/weather URL
+			// (and CDN cache key) stays byte-identical. Without this, /fr re-fetched
+			// English weather after hydration, overwriting the correct SSR-baked value.
+			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
+			const res = await fetch(url);
 			if (!res.ok) return;
 			const data = (await res.json()) as WeatherData | null;
 			if (data && typeof data.temp === 'number') freshWeather = data;
