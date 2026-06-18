@@ -18,7 +18,7 @@
  */
 
 import { createItem, deleteItem, readItems, updateItem } from '@directus/sdk';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
 
@@ -253,9 +253,7 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	if (!url.includes('cms.dev.yesid.dev')) {
-		throw new Error(`refusing --apply against non-dev URL '${url}'. Run via op run --env-file=apps/cms/.env -- ... --apply`);
-	}
+	assertDevCms(url);
 	const token = process.env.DIRECTUS_ADMIN_TOKEN;
 	if (!token) throw new Error('no DIRECTUS_ADMIN_TOKEN (run via op run --env-file=apps/cms/.env)');
 	try {

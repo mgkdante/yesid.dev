@@ -3,10 +3,9 @@
  * regroups the prefix-named flat columns (a11y_/ui_/pages_/email_) into the
  * nested SiteLabels shape consumed by apps/web components.
  */
-import { readSingleton } from '@directus/sdk';
 import { toLocalizedString } from '../locale';
 import { SiteLabelsSchema, type SiteLabels } from '@repo/shared/schemas';
-import { asSingletonRow } from './singleton';
+import { fetchBlockSingleton } from './singleton';
 import type { FetcherContext } from './types';
 
 interface SiteLabelsRow {
@@ -248,11 +247,11 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 }
 
 export async function fetchSiteLabels({ client }: FetcherContext): Promise<SiteLabels> {
-	const result = await client.request(
-		readSingleton('site_labels', {
-			fields: ['id', { translations: ['*'] } as unknown as string],
-		}),
+	const row = await fetchBlockSingleton<SiteLabelsRow>(
+		client,
+		'site_labels',
+		'fetchSiteLabels/site_labels',
+		['id', { translations: ['*'] }],
 	);
-	const row = asSingletonRow<SiteLabelsRow>(result, 'fetchSiteLabels/site_labels');
 	return SiteLabelsSchema.parse(toSiteLabels(row));
 }

@@ -8,17 +8,11 @@
  * interests) are unchanged. Languages are normalized in about_languages.
  */
 
-import { readItems, readSingleton } from '@directus/sdk';
-import { toLocalizedString } from '../locale';
+import { readItems } from '@directus/sdk';
+import { toLocalizedString, mapLocalizedRepeater, str } from '../locale';
 import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
-import { asSingletonRow } from './singleton';
+import { fetchBlockSingleton, type BlockRow } from './singleton';
 import type { FetcherContext } from './types';
-
-interface BlockRow {
-	id: number;
-	translations?: ReadonlyArray<Record<string, unknown>>;
-	[key: string]: unknown;
-}
 
 const LEGACY_LANGUAGE_ITEMS: Record<string, AboutContent['languages'][number]> = {
 	'français': {
@@ -52,7 +46,7 @@ function toLanguageItem(item: unknown): AboutContent['languages'][number] | null
 	const label: LocalizedString = { en: '' };
 	if (rawLabel && typeof rawLabel === 'object') {
 		const rawLabelRecord = rawLabel as Record<string, unknown>;
-		label.en = typeof rawLabelRecord.en === 'string' ? rawLabelRecord.en : '';
+		label.en = str(rawLabelRecord.en);
 		if (typeof rawLabelRecord.fr === 'string') label.fr = rawLabelRecord.fr;
 		if (typeof rawLabelRecord.es === 'string') label.es = rawLabelRecord.es;
 	} else {
@@ -66,9 +60,9 @@ function toLanguageItem(item: unknown): AboutContent['languages'][number] | null
 		if (typeof record.label_es === 'string') label.es = record.label_es;
 	}
 	return {
-		id: typeof record.id === 'string' ? record.id : '',
+		id: str(record.id),
 		label,
-		image: typeof record.image === 'string' ? record.image : '',
+		image: str(record.image),
 	};
 }
 
@@ -92,15 +86,11 @@ function imageIdFromField(image: DirectusAboutLanguageRow['image']): string {
 }
 
 export function toAboutLanguages(rows: readonly DirectusAboutLanguageRow[]): AboutContent['languages'] {
-	return rows
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((row) => ({
-			id: row.id,
-			label: toLocalizedString(row.translations ?? [], 'label'),
-			image: imageIdFromField(row.image),
-		}))
-		.filter((row) => row.id.length > 0 && row.label.en.length > 0 && row.image.length > 0);
+	return mapLocalizedRepeater(rows, (row) => ({
+		id: row.id,
+		label: toLocalizedString(row.translations ?? [], 'label'),
+		image: imageIdFromField(row.image),
+	})).filter((row) => row.id.length > 0 && row.label.en.length > 0 && row.image.length > 0);
 }
 
 export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent['languages']): AboutContent {
@@ -117,9 +107,9 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	}
 	const enPolaroids = polaroidsByLocale.get('en') ?? [];
 	const polaroids = enPolaroids.map((enPol, idx) => {
-		const altLS: LocalizedString = { en: typeof enPol.alt === 'string' ? enPol.alt : '' };
+		const altLS: LocalizedString = { en: str(enPol.alt) };
 		const captionLS: LocalizedString = {
-			en: typeof enPol.caption === 'string' ? enPol.caption : '',
+			en: str(enPol.caption),
 		};
 		for (const [locale, polList] of polaroidsByLocale) {
 			if (locale === 'en') continue;
@@ -135,7 +125,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			}
 		}
 		return {
-			src: typeof enPol.src === 'string' ? enPol.src : '',
+			src: str(enPol.src),
 			alt: altLS,
 			caption: captionLS,
 			rotate: typeof enPol.rotate === 'number' ? enPol.rotate : 0,
@@ -146,7 +136,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		name: toLocalizedString(tr, 'identity_name'),
 		title: toLocalizedString(tr, 'identity_title'),
 		valueProp: toLocalizedString(tr, 'identity_value_prop'),
-		headshot: typeof raw.headshot === 'string' ? raw.headshot : '',
+		headshot: str(raw.headshot),
 		polaroids,
 	};
 
@@ -160,7 +150,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	}
 	const enMetrics = metricsByLocale.get('en') ?? [];
 	const metrics: AboutContent['metrics'] = enMetrics.map((enM, idx) => {
-		const labelLS: LocalizedString = { en: typeof enM.label === 'string' ? enM.label : '' };
+		const labelLS: LocalizedString = { en: str(enM.label) };
 		for (const [locale, mList] of metricsByLocale) {
 			if (locale === 'en') continue;
 			const m = mList[idx];
@@ -171,7 +161,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			}
 		}
 		const metric: AboutContent['metrics'][number] = {
-			value: typeof enM.value === 'string' ? enM.value : '',
+			value: str(enM.value),
 			label: labelLS,
 		};
 		if (typeof enM.icon === 'string' && enM.icon.length > 0) metric.icon = enM.icon;
@@ -188,9 +178,9 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	}
 	const enMethod = methodByLocale.get('en') ?? [];
 	const methodology: AboutContent['methodology'] = enMethod.map((enS, idx) => {
-		const labelLS: LocalizedString = { en: typeof enS.label === 'string' ? enS.label : '' };
+		const labelLS: LocalizedString = { en: str(enS.label) };
 		const descLS: LocalizedString = {
-			en: typeof enS.description === 'string' ? enS.description : '',
+			en: str(enS.description),
 		};
 		for (const [locale, sList] of methodByLocale) {
 			if (locale === 'en') continue;
@@ -206,7 +196,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			}
 		}
 		return {
-			id: typeof enS.id === 'string' ? enS.id : '',
+			id: str(enS.id),
 			label: labelLS,
 			description: descLS,
 			station: typeof enS.station === 'number' ? enS.station : 0,
@@ -223,8 +213,8 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	}
 	const enTestimonials = testimonialsByLocale.get('en') ?? [];
 	const testimonials: AboutContent['testimonials'] = enTestimonials.map((enT, idx) => {
-		const quoteLS: LocalizedString = { en: typeof enT.quote === 'string' ? enT.quote : '' };
-		const roleLS: LocalizedString = { en: typeof enT.role === 'string' ? enT.role : '' };
+		const quoteLS: LocalizedString = { en: str(enT.quote) };
+		const roleLS: LocalizedString = { en: str(enT.role) };
 		for (const [locale, tList] of testimonialsByLocale) {
 			if (locale === 'en') continue;
 			const t = tList[idx];
@@ -240,9 +230,9 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		}
 		const testimonial: AboutContent['testimonials'][number] = {
 			quote: quoteLS,
-			author: typeof enT.author === 'string' ? enT.author : '',
+			author: str(enT.author),
 			role: roleLS,
-			company: typeof enT.company === 'string' ? enT.company : '',
+			company: str(enT.company),
 		};
 		if (typeof enT.logo === 'string' && enT.logo.length > 0) testimonial.logo = enT.logo;
 		return testimonial;
@@ -268,8 +258,8 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	}
 	const enEducation = educationByLocale.get('en') ?? [];
 	const education: AboutContent['education'] = enEducation.map((enE, idx) => {
-		const school: LocalizedString = { en: typeof enE.school === 'string' ? enE.school : '' };
-		const program: LocalizedString = { en: typeof enE.program === 'string' ? enE.program : '' };
+		const school: LocalizedString = { en: str(enE.school) };
+		const program: LocalizedString = { en: str(enE.program) };
 		for (const [locale, eList] of educationByLocale) {
 			if (locale === 'en') continue;
 			const e = eList[idx];
@@ -300,7 +290,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	}
 	const enInterests = interestsByLocale.get('en') ?? [];
 	const interests: AboutContent['interests'] = enInterests.map((enI, idx) => {
-		const labelLS: LocalizedString = { en: typeof enI.label === 'string' ? enI.label : '' };
+		const labelLS: LocalizedString = { en: str(enI.label) };
 		for (const [locale, iList] of interestsByLocale) {
 			if (locale === 'en') continue;
 			const i = iList[idx];
@@ -311,9 +301,9 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			}
 		}
 		return {
-			id: typeof enI.id === 'string' ? enI.id : '',
+			id: str(enI.id),
 			label: labelLS,
-			image: typeof enI.image === 'string' ? enI.image : '',
+			image: str(enI.image),
 		};
 	});
 
@@ -332,18 +322,18 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		? (raw.cta_socials as Array<Record<string, unknown>>)
 		: [];
 	const cta: AboutContent['cta'] = {
-		command: typeof raw.cta_command === 'string' ? raw.cta_command : '',
+		command: str(raw.cta_command),
 		lines: rawCtaLines.map((l) => ({
-			text: typeof l.text === 'string' ? l.text : '',
+			text: str(l.text),
 			color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
 		})),
 		buttonLabel: toLocalizedString(tr, 'cta_button_label'),
-		buttonHref: typeof raw.cta_button_href === 'string' ? raw.cta_button_href : '',
+		buttonHref: str(raw.cta_button_href),
 		availability: toLocalizedString(tr, 'cta_availability'),
 		socials: rawCtaSocials.map((s) => ({
-			label: typeof s.label === 'string' ? s.label : '',
-			href: typeof s.href === 'string' ? s.href : '',
-			icon: typeof s.icon === 'string' ? s.icon : '',
+			label: str(s.label),
+			href: str(s.href),
+			icon: str(s.icon),
 		})),
 	};
 
@@ -391,12 +381,8 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 }
 
 export async function fetchAboutContent({ client }: FetcherContext): Promise<AboutContent> {
-	const [result, languageRows] = await Promise.all([
-		client.request(
-			readSingleton('block_about_content', {
-				fields: ['*', { translations: ['*'] } as unknown as string],
-			}),
-		),
+	const [row, languageRows] = await Promise.all([
+		fetchBlockSingleton<BlockRow>(client, 'block_about_content', 'fetchAboutContent/block_about_content'),
 		client.request(
 			readItems('about_languages', {
 				fields: ['id', 'status', 'sort', 'image', { translations: ['languages_code', 'label'] }] as unknown as string[],
@@ -406,7 +392,6 @@ export async function fetchAboutContent({ client }: FetcherContext): Promise<Abo
 			}),
 		),
 	]);
-	const row = asSingletonRow<BlockRow>(result, 'fetchAboutContent/block_about_content');
 	const languages = toAboutLanguages(languageRows as unknown as DirectusAboutLanguageRow[]);
 	return AboutContentSchema.parse(toAboutContent(row, languages));
 }
