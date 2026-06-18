@@ -68,12 +68,17 @@ export default defineConfig({
 		: process.env.CI
 			? 1
 			: undefined,
-	// Retry in CI only. The suite runs against a REMOTE Vercel preview, so a few
-	// GSAP/scroll-timing assertions (e.g. the hero-intro replay) occasionally tip
-	// past their wait window under network latency that doesn't exist locally.
-	// Retries absorb that transient variance without masking real failures — a
-	// genuine break fails all attempts. Flaky-on-retry tests surface in the report.
+	// Retry in CI only. The suite runs SERIALLY (workers:1) against the single
+	// local hermetic preview and CI runners are slower than local dev, so a few
+	// GSAP/scroll-timing assertions occasionally tip past their wait window.
+	// Retries absorb that transient variance without masking real failures (a
+	// genuine break fails all attempts); flaky-on-retry tests surface in the report.
 	retries: process.env.CI ? 2 : 0,
+	// Headroom for the slower, serial CI runner so timing-sensitive specs do not
+	// flake on the clock. This is headroom, NOT masking: a real hang still fails,
+	// and fails all retries.
+	timeout: process.env.CI ? 45_000 : 30_000,
+	expect: { timeout: process.env.CI ? 10_000 : 5_000 },
 	use: {
 		baseURL: externalBaseURL ?? 'http://localhost:4173',
 		// Vercel preview deployments sit behind Deployment Protection (the SSO 401

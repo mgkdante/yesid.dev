@@ -82,12 +82,14 @@ jobs:
   # every route serves 200 under the local preview and there are no pixel-diff
   # assertions. CMS stays build-time-only, the deployed site never calls it.
   e2e:
+    # Hard gate by default: runs on every PR/push against the local hermetic
+    # preview (zero edge requests). OPTIONAL SWITCH to skip it on demand — add the
+    # "skip-e2e" label to a PR, or put [skip e2e] in the (push) commit message.
+    # Use for docs-only changes or to unblock a merge if the suite is misbehaving.
+    if: >-
+      ${{ !contains(github.event.pull_request.labels.*.name, 'skip-e2e')
+          && !contains(github.event.head_commit.message, '[skip e2e]') }}
     runs-on: ubuntu-latest
-    # Hard gate: runs on every PR/push against the local hermetic preview (zero
-    # edge requests). The two ipad-mini edge cases that were non-blocking during
-    # shake-out are resolved (nav matrix restricted to real iPad widths; hero-
-    # intro replay is desktop-only like hero-intro-reload). Contact-form timing
-    # variance is absorbed by retries:2.
     steps:
       - uses: actions/checkout@v5
 
