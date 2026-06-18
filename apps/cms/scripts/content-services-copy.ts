@@ -18,6 +18,7 @@
  */
 
 import { createItem, deleteItem, readItems, updateItem } from '@directus/sdk';
+import { getAdminToken } from './lib/auth';
 import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -254,8 +255,7 @@ async function main(): Promise<void> {
 	}
 
 	assertDevCms(url);
-	const token = process.env.DIRECTUS_ADMIN_TOKEN;
-	if (!token) throw new Error('no DIRECTUS_ADMIN_TOKEN (run via op run --env-file=apps/cms/.env)');
+	const token = await getAdminToken(url);
 	try {
 		await apply({ directusUrl: url, token });
 		log.info('done.');

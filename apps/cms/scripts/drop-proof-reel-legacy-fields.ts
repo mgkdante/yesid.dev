@@ -10,7 +10,8 @@
 
 import { deleteField, readFieldsByCollection } from '@directus/sdk';
 import { runMain } from './lib/cli';
-import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { getAdminToken } from './lib/auth';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 
 const TARGETS = [
 	{ collection: 'block_proof_reel', field: 'slugs' },
@@ -39,7 +40,7 @@ async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	const token = requireEnv('DIRECTUS_ADMIN_TOKEN', 'dev CMS admin token');
+	const token = await getAdminToken(directusUrl);
 	const log = await apply({ directusUrl, token, dryRun });
 	console.log(log.join('\n'));
 	console.log(`\n${dryRun ? 'DRY-RUN (no fields dropped)' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
