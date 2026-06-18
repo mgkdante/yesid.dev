@@ -18,7 +18,7 @@
 	import { SvgIcon } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
-	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
+	import DataFlowDiagram from '$lib/components/projects/DataFlowDiagram.svelte';
 	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';
 	import { siteLabels } from '$lib/content';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';

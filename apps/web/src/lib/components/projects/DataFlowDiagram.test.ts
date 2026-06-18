@@ -31,7 +31,7 @@ describe('DataFlowDiagram card sizing', () => {
 
 	it('lets mobile card diagrams scroll at natural width instead of forcing tiny text', () => {
 		const source = readFileSync(
-			join(cwd(), 'src/lib/components/home/DataFlowDiagram.svelte'),
+			join(cwd(), 'src/lib/components/projects/DataFlowDiagram.svelte'),
 			'utf8',
 		);
 
@@ -52,7 +52,7 @@ describe('DataFlowDiagram card sizing', () => {
 		expect(diagram?.getAttribute('data-carousel-drag-ignore')).toBe('true');
 
 		const source = readFileSync(
-			join(cwd(), 'src/lib/components/home/DataFlowDiagram.svelte'),
+			join(cwd(), 'src/lib/components/projects/DataFlowDiagram.svelte'),
 			'utf8',
 		);
 		expect(source).toContain('siteLabels.a11y.technologyStackTemplate');
