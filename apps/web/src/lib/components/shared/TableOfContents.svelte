@@ -26,7 +26,7 @@
 	const tocHeading = resolveLocale(sharedChrome.tocHeading, locale);
 	const tocMobileButton = resolveLocale(sharedChrome.tocMobileButton, locale);
 	// go2-t1c2: nav aria from site_labels, previous literal as fallback.
-	const tocAria = resolveLocale(siteLabels.a11y.toc, locale) || 'Table of contents';
+	const tocAria = resolveLocale(siteLabels.a11y.toc, locale);
 
 	let {
 		headings,

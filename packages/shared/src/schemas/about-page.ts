@@ -122,6 +122,8 @@ export const AboutLabelsSchema = z.object({
 	polaroidNextAria: LocalizedStringSchema,
 	testimonialsCarouselAria: LocalizedStringSchema,
 	testimonialsTabNavAria: LocalizedStringSchema,
+	testimonialsPrevAria: LocalizedStringSchema,
+	testimonialsNextAria: LocalizedStringSchema,
 	testimonialSlideAria: LocalizedStringSchema,
 	showTestimonialAria: LocalizedStringSchema,
 }) satisfies z.ZodType<AboutLabels>;

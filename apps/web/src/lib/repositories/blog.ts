@@ -28,6 +28,14 @@ export async function getPostsByCategory(
 	return adapter.blog.byCategory(category, ctx);
 }
 
+export async function getLatestPosts(
+	count: number,
+	category?: BlogCategory,
+	ctx?: PreviewContext,
+): Promise<readonly BlogPost[]> {
+	return adapter.blog.latest(count, category, ctx);
+}
+
 export async function getSvgContent(post: BlogPost, ctx?: PreviewContext): Promise<string> {
 	return adapter.blog.svgContent(post, ctx);
 }

@@ -1,38 +1,40 @@
 <!--
   Blog detail page orchestrator for /blog/[slug].
-  Structure: full-bleed header + hazard separator + 4-zone body.
-  Desktop: BEGIN edge + shared TOC + prose content + TRANSMISSION edge.
-  Mobile: shared floating TOC pill + single-column prose.
-  Edge labels use writing-mode: vertical-rl with clamp() sizing.
+  Structure: full-bleed header + hazard separator + shared article body.
+  Desktop: shared TOC + post meta rail + sectionized article cards.
+  Mobile: post meta card + sectionized article cards + floating TOC pill.
   Same architectural role as ProjectDetailPage.
 -->
 <script lang="ts">
   import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
   import { Separator } from '$lib/components/ui/separator';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
-  import BlogContent from './BlogContent.svelte';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+  import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+  import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
   import TocNav from '$lib/components/shared/TocNav.svelte';
   import TocPill from '$lib/components/shared/TocPill.svelte';
   import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+  import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
   import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
+  import { sectionizeBlogBody } from '$lib/blog/sections';
 
   const locale = getLocale();
   import { siteLabels } from '$lib/content';
 
-  // go2/w4: reading mode removed per operator QA — the default reading
+  // go2/w4: reading mode removed per operator QA. The default reading
   // experience is the only one. The readingMode field stays dormant in the
   // CMS cache to avoid schema churn.
   const detailPageChrome = siteLabels.blogChrome.detail.page;
-  const metaCategoryLabel = resolveLocale(detailPageChrome.metaCategory, locale);
   const metaWordsLabel = resolveLocale(detailPageChrome.metaWords, locale);
   const metaReadTimeLabel = resolveLocale(detailPageChrome.metaReadTime, locale);
   const metaLanguageLabel = resolveLocale(detailPageChrome.metaLanguage, locale);
   const metaTagsLabel = resolveLocale(detailPageChrome.metaTags, locale);
+  const readingTimeTemplate = resolveLocale(siteLabels.blogChrome.detail.header.readingTimeLabel, locale);
   const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
   const tocOpenAria = resolveLocale(siteLabels.navChrome.shared.tocMobileButton, locale);
   const tocCloseAria = resolveLocale(siteLabels.navChrome.shared.tocCloseAria, locale);
@@ -58,6 +60,8 @@
     blogPage?: import('@repo/shared').BlogPageContent;
   } = $props();
 
+  const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
+
   const accentColor = $derived(
     post.category === 'personal' ? 'var(--accent-text)' : 'var(--primary)'
   );
@@ -74,13 +78,37 @@
   // Language name: CMS-backed via siteLabels.ui.languageNames (a Locale-keyed
   // map of LocalizedString display names). resolveLocale picks the name in the
   // active UI locale, so an English post reads "English" on /, "Anglais" on /fr
-  // — replacing the raw `en`/`fr` code that leaked into the meta sidebar.
+  // replacing the raw `en`/`fr` code that leaked into the meta sidebar.
   const languageName = $derived(
     resolveLocale(siteLabels.ui.languageNames[post.lang], locale) || post.lang
   );
 
-  // Shared active heading state — drives TOC + pill
+  // Shared active heading state, drives TOC + pill.
   let activeHeadingId = $state('');
+  const articleSections = $derived(sectionizeBlogBody(body, post.title));
+  const entryRail = $derived(blogPage?.entryRail);
+
+  const entryRailTocEntries = $derived.by((): TocEntry[] => {
+    if (!entryRail) return [];
+    return [
+      {
+        id: 'blog-work-with-me',
+        title: resolveLocale(entryRail.workWithMe.title, locale),
+        level: 2,
+        badge: { kind: 'icon', name: 'briefcase' },
+        rail: true,
+        children: [],
+      },
+      {
+        id: 'blog-pick-route',
+        title: resolveLocale(entryRail.routes.title, locale),
+        level: 2,
+        badge: { kind: 'icon', name: 'toc' },
+        rail: true,
+        children: [],
+      },
+    ];
+  });
 
   const tocEntries = $derived.by((): TocEntry[] => {
     const entries: TocEntry[] = [];
@@ -111,6 +139,8 @@
       }
     }
 
+    entries.push(...entryRailTocEntries);
+
     return entries;
   });
 
@@ -120,20 +150,20 @@
     tocElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  // slice-34.4 — reading position survives a locale switch.
+  // slice-34.4: reading position survives a locale switch.
   //
   // Blog heading ids are kebabSlug(headingText) (see @repo/shared
-  // extractHeadings), so they are LOCALE-VARIABLE: "Getting Started" → id
-  // `getting-started` in EN, "Pour commencer" → `pour-commencer` in FR. The raw
+  // extractHeadings), so they are LOCALE-VARIABLE: "Getting Started" -> id
+  // `getting-started` in EN, "Pour commencer" -> `pour-commencer` in FR. The raw
   // id therefore cannot survive the switch.
   //
   // The locale-stable analog is the active heading's ORDINAL INDEX in the
-  // `headings` array — a translated post mirrors the source's heading structure,
+  // `headings` array. A translated post mirrors the source's heading structure,
   // so heading #3 in EN corresponds to heading #3 in FR. We capture that index
   // (plus the raw offset as a fallback) and, on the remounted FR/EN page, scroll
   // to the heading at the same index. If the structures differ (count mismatch,
   // index out of range, untranslated post) we fall back to the raw offset.
-  // See the FLAG in the slice report — index↔index assumes matched structure.
+  // See the FLAG in the slice report: index-to-index assumes matched structure.
   function activeHeadingIndex(): number {
     return headings.findIndex((h) => h.id === activeHeadingId);
   }
@@ -150,7 +180,7 @@
         const s = snap as { index?: number; count?: number; y?: number } | null;
         const idx = s?.index ?? -1;
         // Restore by ordinal index only when the heading structure matches
-        // (same count) and the index is in range — otherwise the offset is the
+        // (same count) and the index is in range. Otherwise the offset is the
         // safer guess than scrolling to a structurally-different heading.
         const sameStructure = s?.count === headings.length;
         const target = sameStructure && idx >= 0 ? headings[idx] : undefined;
@@ -177,57 +207,84 @@
   <!-- Edge-to-edge hazard stripes -->
   <Separator variant="hazard" />
 
-  <!-- Body: simple centered 2-column grid (TOC | content) -->
+  <!-- Body: shared article grid (TOC/meta rail | section cards) -->
   <div class="body-grid">
-    <!-- TOC sidebar — desktop only -->
-    <div class="toc-column">
-      <div class="toc-panel toc-scroll" use:scrollChain>
+    <aside class="context-column">
+      <div class="context-panel toc-scroll" use:scrollChain>
         {#if tocEntries.length > 0}
-          <TocNav
-            entries={tocEntries}
-            activeId={activeHeadingId}
-            onNavigate={scrollToHeading}
-            heading={tocHeading}
-            sectionKey="blog-toc"
-            counterPrefix={tocCounterPrefix}
-          />
+          <div class="toc-nav-shell">
+            <TocNav
+              entries={tocEntries}
+              activeId={activeHeadingId}
+              onNavigate={scrollToHeading}
+              heading={tocHeading}
+              sectionKey="blog-toc"
+              counterPrefix={tocCounterPrefix}
+            />
+          </div>
         {/if}
 
-        <!-- Post metadata panel -->
-        <div class="left-meta" aria-hidden="true">
-          <div class="left-meta__item">
-            <span class="left-meta__label">{metaCategoryLabel}</span>
-            <span class="left-meta__value">{categoryName}</span>
-          </div>
-          <div class="left-meta__item">
-            <span class="left-meta__label">{metaWordsLabel}</span>
-            <span class="left-meta__value">{wordCount.toLocaleString()}</span>
-          </div>
-          <div class="left-meta__item">
-            <span class="left-meta__label">{metaReadTimeLabel}</span>
-            <span class="left-meta__value">{readingTime} min</span>
-          </div>
-          <div class="left-meta__item">
-            <span class="left-meta__label">{metaLanguageLabel}</span>
-            <span class="left-meta__value">{languageName}</span>
-          </div>
-          {#if post.tags.length > 0}
-            <div class="left-meta__item">
-              <span class="left-meta__label">{metaTagsLabel}</span>
-              <span class="left-meta__value">{post.tags.join(' · ')}</span>
-            </div>
-          {/if}
+        <div class="meta-card" data-testid="blog-meta-card">
+          <CollapsibleSection title={categoryName} sectionKey="blog-meta" open={true} accentColor={accentColor}>
+            {#snippet icon()}
+              <SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
+            {/snippet}
+            <dl class="meta-list">
+              <div class="meta-list__item">
+                <dt>{metaWordsLabel}</dt>
+                <dd>{wordCount.toLocaleString()}</dd>
+              </div>
+              <div class="meta-list__item">
+                <dt>{metaReadTimeLabel}</dt>
+                <dd>{readingTimeText}</dd>
+              </div>
+              <div class="meta-list__item">
+                <dt>{metaLanguageLabel}</dt>
+                <dd>{languageName}</dd>
+              </div>
+              {#if post.tags.length > 0}
+                <div class="meta-list__item">
+                  <dt>{metaTagsLabel}</dt>
+                  <dd>{post.tags.join(' · ')}</dd>
+                </div>
+              {/if}
+            </dl>
+          </CollapsibleSection>
         </div>
       </div>
+    </aside>
+
+    <div class="sections-column" data-testid="blog-sections">
+      {#each articleSections as section, i (section.id)}
+        <div class="blog-section-block">
+          <CollapsibleSection
+            title={section.title}
+            sectionKey={section.id}
+            anchor={section.anchor}
+            index={i}
+            open={true}
+            accentColor={accentColor}
+          >
+            <div class="blog-section-body prose-dark" data-testid="blog-section-body" style="--blog-accent: {accentColor};">
+              <BlockRenderer doc={section.doc} />
+            </div>
+          </CollapsibleSection>
+        </div>
+      {/each}
     </div>
 
-    <!-- Center: prose content -->
-    <div class="content-column">
-      <BlogContent {accentColor}>
-        <BlockRenderer doc={body} />
-      </BlogContent>
-    </div>
+    {#if entryRail}
+      <aside class="entry-column">
+        <BlogEntryRail rail={entryRail} />
+      </aside>
+    {/if}
   </div>
+
+  {#if entryRail}
+    <div class="entry-mobile lg:hidden px-[var(--space-page-x)] pb-8">
+      <BlogEntryRail rail={entryRail} mobile />
+    </div>
+  {/if}
 </article>
 
 <!-- Mobile floating TOC pill -->
@@ -236,45 +293,69 @@
 {/if}
 
 <style>
-  /* ── Centered 2-column body grid ───────────────────────── */
+  /* ── Shared article grid ───────────────────────── */
   .body-grid {
     max-width: var(--container-wide);
-    margin: 2rem auto 0;
+    margin: 0 auto;
     padding-inline: var(--space-page-x);
+    padding-block: 1.5rem;
     min-width: 0;
     overflow-x: clip;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-card-gap);
+  }
+
+  .context-column,
+  .sections-column,
+  .entry-column {
+    min-width: 0;
+  }
+
+  .sections-column {
     display: flex;
     flex-direction: column;
-  }
-
-  .toc-column {
-    display: none;
-  }
-
-  /* go2/w4 operator QA: classic blog measure on BOTH breakpoints — the
-     prose card is capped at a readable column and centered. 46rem box
-     (card padding included) keeps the inner text at the .prose-dark 72ch
-     cap or below (~65-75ch at the 1.0625-1.125rem prose sizes), consistent
-     with the --container-* token family. */
-  .content-column {
-    min-width: 0;
+    gap: 1rem;
     width: 100%;
-    max-width: 46rem;
-    margin-inline: auto;
+  }
+
+  .entry-column {
+    display: none;
   }
 
   @media (min-width: 1024px) {
     .body-grid {
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: clamp(1.5rem, 2.5vw, 3rem);
-      align-items: start;
-    }
-    .toc-column {
-      display: block;
+      width: 100%;
+      max-width: none;
+      grid-template-columns: minmax(12rem, 1fr) minmax(0, 46rem) minmax(12rem, 1fr);
+      gap: 2rem;
+      align-items: stretch;
+      padding-block: 2.5rem;
     }
 
-    .toc-panel {
+    .context-column {
+      grid-column: 1;
+      align-self: stretch;
+      justify-self: end;
+      width: min(18rem, 100%);
+    }
+
+    .sections-column {
+      grid-column: 2;
+      justify-self: center;
+      max-width: 46rem;
+    }
+
+    .entry-column {
+      display: block;
+      grid-column: 3;
+      align-self: stretch;
+      justify-self: start;
+      width: min(18rem, 100%);
+    }
+
+    .context-panel {
       position: sticky;
       top: 5rem;
     }
@@ -282,53 +363,129 @@
 
   @media (min-width: 1024px) and (max-width: 1279px) {
     .body-grid {
-      grid-template-columns: 1fr 1.5fr;
+      gap: 1.25rem;
+    }
+
+    .context-column {
+      width: 100%;
+      justify-self: stretch;
+    }
+
+    .sections-column {
+      max-width: none;
+      justify-self: stretch;
+    }
+
+    .entry-column {
+      width: 100%;
+      justify-self: stretch;
     }
   }
 
-
-  /* ── Left column metadata panel ──────────────────────────────── */
-  .left-meta {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid color-mix(in srgb, var(--blog-accent, var(--primary)) 10%, transparent);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .toc-nav-shell {
+    display: none;
   }
 
-  .left-meta__item {
+  @media (min-width: 1024px) {
+    .toc-nav-shell {
+      display: block;
+    }
+  }
+
+  .meta-card {
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .meta-card {
+      margin-top: 1rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .meta-list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .meta-list__item {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
   }
 
-  .left-meta__label {
+  .meta-list dt {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 1.5px;
+    font-size: var(--text-detail-kicker);
+    letter-spacing: 0;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--blog-accent, var(--primary)) 35%, transparent);
   }
 
-  .left-meta__value {
+  .meta-list dd {
+    margin: 0;
     font-family: var(--font-heading);
-    font-size: 17px;
+    font-size: var(--text-detail-meta);
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
   }
 
-  /* Align blog content card top with TOC on desktop */
+  .blog-section-body {
+    font-size: var(--text-detail-body-mobile);
+    color: color-mix(in srgb, var(--foreground) 50%, transparent);
+    line-height: 1.8;
+  }
+
   @media (min-width: 1024px) {
-    .content-column :global([data-testid="blog-content"]) {
-      margin-top: 0;
+    .blog-section-body {
+      font-size: var(--text-detail-body-desktop);
+      color: color-mix(in srgb, var(--foreground) 55%, transparent);
+      line-height: 1.9;
     }
   }
 
-  /* ── TOC scrollable area ───────────────────────────────────── */
-  .toc-scroll {
-    max-height: calc(100dvh - 14rem);
-    overflow-y: auto;
-    padding-bottom: 1rem;
+  .blog-section-body :global(a) {
+    color: var(--blog-accent);
+  }
+
+  .blog-section-body :global(code) {
+    color: var(--blog-accent);
+  }
+
+  .blog-section-body :global(blockquote) {
+    border-left-color: var(--blog-accent);
+  }
+
+  .blog-section-body :global(h3),
+  .blog-section-body :global(h4) {
+    position: relative;
+  }
+
+  .blog-section-body :global(h3)::before,
+  .blog-section-body :global(h4)::before {
+    content: '#';
+    position: absolute;
+    right: 100%;
+    margin-right: 0.5rem;
+    color: var(--blog-accent);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
+  }
+
+  .blog-section-body :global(h3):hover::before,
+  .blog-section-body :global(h4):hover::before {
+    opacity: var(--opacity-muted);
+    transform: translateX(0);
+  }
+
+  @media (min-width: 1024px) {
+    .toc-scroll {
+      max-height: calc(100dvh - 6rem);
+      overflow-y: auto;
+      padding-bottom: 1rem;
+    }
   }
 
   /* go2/w4: reading-mode switch + dim styles removed per operator QA. */

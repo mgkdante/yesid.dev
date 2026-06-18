@@ -134,23 +134,29 @@
       "href": "/contact"
     },
     "rows": {
+      "stack": {
+        "label": { "en": "STACK" },
+        "description": { "en": "Tools and architecture" },
+        "action": { "en": "cd" }
+      },
       "contact": {
         "label": { "en": "CONTACT" },
         "description": { "en": "Start a project together" },
         "action": { "en": "GO" }
       },
       "connect": {
-        "label": { "en": "EXPLORE" },
+        "label": { "en": "GITHUB REPO" },
         "description": { "en": "GitHub · open-source work" },
         "action": { "en": "GO" }
       },
       "read": {
-        "label": { "en": "READ" },
+        "label": { "en": "BLOG" },
+        "description": { "en": "Writing and field notes" },
         "action": { "en": "cd" }
       },
       "about": {
-        "label": { "en": "ABOUT" },
-        "description": { "en": "Yesid O. · Montreal" },
+        "label": { "en": "YESID" },
+        "description": { "en": "About the builder" },
         "action": { "en": "cd" }
       }
     },

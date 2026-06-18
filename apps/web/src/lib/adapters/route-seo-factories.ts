@@ -23,6 +23,7 @@ import { SITE_HOST, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults
 import { resolveLocale } from '$lib/utils/locale';
 import { resolveSitePage } from '$lib/utils/page-registry';
 import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
+import { asset } from '$lib/directus/assets';
 import {
 	buildBlogPostingNode,
 	buildBreadcrumbListNode,
@@ -58,6 +59,21 @@ function fitDescriptionForSeo(
 	const len = desc.en.length;
 	if (len < 50 || len > 200) return fallback;
 	return desc;
+}
+
+function cleanText(value: string | undefined): string | undefined {
+	const trimmed = value?.trim();
+	return trimmed ? trimmed : undefined;
+}
+
+function titleBodyForSeo(primary: string | undefined, fallback: string, brand: string): string {
+	const suffix = ` | ${brand}`;
+	const candidates = [cleanText(primary), cleanText(fallback)].filter(Boolean) as string[];
+	for (const candidate of candidates) {
+		if (`${candidate}${suffix}`.length <= 70) return candidate;
+	}
+	const maxBodyLength = Math.max(1, 70 - suffix.length);
+	return (candidates[0] ?? fallback).slice(0, maxBodyLength).trimEnd();
 }
 
 /** /services/[id] — pulls service from collection adapter; brand suffix from siteMeta. */
@@ -152,15 +168,28 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	// at the BODY-language URL (an EN post under /fr/blog/x canonicals to
 	// /blog/x), and singleLocale suppresses the cross-locale hreflang cluster.
 	const canonicalUrl = canonicalFor(`/blog/${post.slug}`, post.lang);
+	const titleBody = titleBodyForSeo(post.seoTitle, post.title, siteMeta.name);
+	const description = fitDescriptionForSeo(
+		{ en: post.seoDescription ?? post.excerpt },
+		siteSeoDefaults.defaultDescription,
+	);
+	// asset() resolves to a RELATIVE mirrored path (e.g. /images/work/x.png) in
+	// production. JSON-LD `image` is validated as z.string().url() (absolute),
+	// so a relative path makes SchemaOrgNodeSchema.parse throw and the post
+	// silently falls back to error SEO, dropping all structured data. Absolutize
+	// against SITE_HOST; new URL(abs, SITE_HOST) is idempotent when asset()
+	// already returned an absolute URL.
+	const rawImageUrl = post.coverImage ? asset(post.coverImage, 'og-1200') : undefined;
+	const imageUrl = rawImageUrl ? new URL(rawImageUrl, SITE_HOST).href : undefined;
 	const seo: PageSeo = {
-		title: { en: `${post.title} | ${siteMeta.name}` },
-		description: fitDescriptionForSeo({ en: post.excerpt }, siteSeoDefaults.defaultDescription),
+		title: { en: `${titleBody} | ${siteMeta.name}` },
+		description,
 		canonical: canonicalUrl,
 		ogType: 'article',
 		noIndex: false,
 		singleLocale: true,
 		jsonLd: [
-			buildBlogPostingNode(post, locale),
+			buildBlogPostingNode(post, locale, { imageUrl }),
 			buildBreadcrumbListNode(
 				[
 					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
@@ -176,8 +205,8 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
-			url: `/og/blog/${post.slug}.png`,
-			alt: { en: `${post.title} — yesid.` },
+			url: imageUrl ?? `/og/blog/${post.slug}.png`,
+			alt: { en: post.coverImageAlt ?? `${post.title} | ${siteMeta.name}` },
 			width: 1200,
 			height: 630,
 		};

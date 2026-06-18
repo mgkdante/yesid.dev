@@ -17,7 +17,10 @@ import {
 	closerContent,
 } from '$lib/content/site-content';
 import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
-import { getFeaturedProjects, getVisibleServices } from '$lib/content';
+import { getFeaturedProjects } from '$lib/projects/static-helpers';
+import { getVisibleServices } from '$lib/services/static-helpers';
+import { getLatestPosts } from '$lib/blog/static-helpers';
+import { siteMeta } from '$lib/content/site-meta';
 import type { Project } from '$lib/types';
 
 vi.mock('$lib/directus/assets', () => ({
@@ -57,6 +60,8 @@ const stubData = {
 	initialHeroData: INITIAL_HERO_DATA,
 	services: getVisibleServices(),
 	featuredProjects,
+	latestPosts: getLatestPosts(2, 'professional'),
+	siteMeta,
 	serviceSvgContents: {},
 } as unknown as PageData;
 
@@ -72,6 +77,17 @@ describe('Home page', () => {
 		expect(source).toContain('home-section--proof-reel');
 		expect(source).toMatch(/home-section--proof-reel[\s\S]*home-section-heading-mobile/);
 		expect(source).toMatch(/home-section--proof-reel[\s\S]*proof-reel-section/);
+	});
+
+	it('keeps section magnet scroll positioning desktop only', () => {
+		const source = readFileSync(
+			join(process.cwd(), 'src/lib/components/home/HomePage.svelte'),
+			'utf8',
+		);
+
+		expect(source).toContain("import { isViewportAtMost } from '$lib/motion/utils/device.js';");
+		expect(source).toContain('if (!isViewportAtMost(1023)) {');
+		expect(source).toMatch(/if \(!isViewportAtMost\(1023\)\) \{[\s\S]*initSectionMagnet/);
 	});
 
 	it('renders the app root', () => {

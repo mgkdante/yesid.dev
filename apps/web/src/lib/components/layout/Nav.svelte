@@ -10,7 +10,7 @@
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import MenuOverlay from './MenuOverlay.svelte';
-	import type { NavLink } from '$lib/content/nav';
+	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
 	import LanguageToggle from './LanguageToggle.svelte';
@@ -189,9 +189,13 @@
 	   guarantee "yesid." NEVER wraps — the SplitText letter spans inherit
 	   the anchor's content-box width, so they stay on one line too. */
 	.nav-wordmark {
-		font-size: 18px;
+		font-size: var(--text-nav-brand-desktop);
 		white-space: nowrap;
 		flex-shrink: 0;
+	}
+
+	.nav-pill-link {
+		font-size: var(--text-nav-link-desktop);
 	}
 
 	.nav-divider {
@@ -226,7 +230,7 @@
 			padding: 8px 14px;
 		}
 		.nav-wordmark {
-			font-size: 17px;
+			font-size: var(--text-nav-brand-mobile);
 		}
 		.nav-divider {
 			margin-inline: 10px;
@@ -235,7 +239,7 @@
 			gap: 18px;
 		}
 		.nav-pill-link {
-			font-size: 13px;
+			font-size: var(--text-nav-link-mobile);
 		}
 	}
 
@@ -247,7 +251,7 @@
 			padding: 6px 8px;
 		}
 		.nav-wordmark {
-			font-size: 16px;
+			font-size: var(--text-nav-brand-compact);
 		}
 		.nav-divider {
 			margin-inline: 4px;
@@ -256,7 +260,7 @@
 			gap: 7px;
 		}
 		.nav-pill-link {
-			font-size: 12.5px;
+			font-size: var(--text-nav-link-compact);
 		}
 	}
 
@@ -270,7 +274,7 @@
 			padding: 6px 6px;
 		}
 		.nav-wordmark {
-			font-size: 15px;
+			font-size: var(--text-nav-brand-compact);
 		}
 		.nav-divider {
 			margin-inline: 2px;
@@ -286,7 +290,7 @@
 			gap: 4px;
 		}
 		.nav-pill-link {
-			font-size: 12px;
+			font-size: var(--text-nav-link-compact);
 		}
 	}
 
@@ -312,10 +316,22 @@
 	}
 
 	.nav-pill-link {
-		font-size: 13.5px;
+		font-size: var(--text-nav-link-desktop);
 		font-weight: 500;
 		white-space: nowrap;
 		position: relative;
+	}
+
+	@media (max-width: 767px) {
+		.nav-pill-link {
+			font-size: var(--text-nav-link-mobile);
+		}
+	}
+
+	@media (max-width: 479px) {
+		.nav-pill-link {
+			font-size: var(--text-nav-link-compact);
+		}
 	}
 
 	/* GO2-W5 "you are here" lamp: the active link gets an amber wayfinding

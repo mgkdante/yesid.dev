@@ -60,3 +60,47 @@ describe('buildSrcSet', () => {
 		expect(assets.buildSrcSet('id', [])).toBe('');
 	});
 });
+
+describe('mirrored media assets', () => {
+	const mirrored = createAssets('https://cms.yesid.dev', {
+		allowDirectusFallback: false,
+		mirroredAssets: {
+			'6048a712-de42-4cca-ab51-6f92d64685c2': '/images/work/yesid-dev-home.png',
+		},
+	});
+
+	it('resolves a known CMS UUID to the mirrored static path without a Directus host', () => {
+		expect(mirrored.asset('6048a712-de42-4cca-ab51-6f92d64685c2')).toBe(
+			'/images/work/yesid-dev-home.png',
+		);
+		expect(mirrored.asset('6048a712-de42-4cca-ab51-6f92d64685c2', 'card-600')).toBe(
+			'/images/work/yesid-dev-home.png',
+		);
+	});
+
+	it('builds mirrored srcsets without PUBLIC_DIRECTUS_URL-backed entries', () => {
+		expect(
+			mirrored.buildSrcSet('6048a712-de42-4cca-ab51-6f92d64685c2', [
+				'thumb-300',
+				'card-600',
+			]),
+		).toBe('/images/work/yesid-dev-home.png 300w, /images/work/yesid-dev-home.png 600w');
+	});
+
+	it('fails loud for unknown UUIDs when Directus fallback is disabled', () => {
+		expect(() => mirrored.asset('unknown-uuid', 'card-600')).toThrow(
+			'[assets] no mirrored media asset for "unknown-uuid"',
+		);
+	});
+
+	it('keeps an explicit Directus fallback path available for dev/editing flows', () => {
+		const devAssets = createAssets('https://cms.dev.yesid.dev', {
+			allowDirectusFallback: true,
+			mirroredAssets: {},
+		});
+
+		expect(devAssets.asset('unknown-uuid', 'card-600')).toBe(
+			'https://cms.dev.yesid.dev/assets/unknown-uuid?key=card-600',
+		);
+	});
+});

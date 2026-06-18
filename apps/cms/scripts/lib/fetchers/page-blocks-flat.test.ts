@@ -39,15 +39,17 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				cta_label: 'Start a project', attribution_text: 'type by X',
 				terminal_title: 't', terminal_city: 'MTL', terminal_encoding: 'utf8',
 				terminal_destinations_label: 'dest', terminal_prompt: '>',
+				rows_stack_label: 'stack', rows_stack_description: 'd', rows_stack_action: 'go',
 				rows_contact_label: 'contact', rows_contact_description: 'd', rows_contact_action: 'go',
 				rows_connect_label: 'connect', rows_connect_description: 'd', rows_connect_action: 'go',
-				rows_read_label: 'read', rows_read_action: 'go',
+				rows_read_label: 'read', rows_read_description: 'd', rows_read_action: 'go',
 				rows_about_label: 'about', rows_about_description: 'd', rows_about_action: 'go',
 			}],
 		};
 		const out = toCloserContent(row);
 		expect(out.cta).toEqual({ label: { en: 'Start a project' }, href: '/contact' });
-		expect(out.rows.read).toEqual({ label: { en: 'read' }, action: { en: 'go' } });
+		expect(out.rows.stack).toEqual({ label: { en: 'stack' }, description: { en: 'd' }, action: { en: 'go' } });
+		expect(out.rows.read).toEqual({ label: { en: 'read' }, description: { en: 'd' }, action: { en: 'go' } });
 		expect(() => CloserContentSchema.parse(out)).not.toThrow();
 	});
 
@@ -56,7 +58,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 			id: 1, web3forms_key: 'k',
 			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
 			form_terminal_title: 'form.sh', form_terminal_command: 'send',
-			form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
+			form_field_name_label: 'legacy-name', form_field_email_label: 'legacy-email', form_field_message_label: 'legacy-message',
 			translations: [{
 				languages_code: 'en',
 				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
@@ -64,18 +66,27 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				info_location: 'MTL', info_response_time: '24h',
 				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
 				form_command_output: 'ready', form_submit_label: 'send',
+				form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
 				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
 				form_field_message_placeholder: 'What breaks?',
 				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
 				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
 				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
+				success_work_link_label: 'work', success_blog_link_label: 'blog',
+			}, {
+				languages_code: 'fr',
+				form_field_name_label: 'nom', form_field_email_label: 'courriel', form_field_message_label: 'message',
+				success_work_link_label: 'services', success_blog_link_label: 'blogue',
 			}],
 		};
 		const channels = [{ label: { en: 'GitHub' }, href: 'https://g', icon: 'gh' }];
 		const out = toContactContent(row, channels);
-		expect(out.formTerminal.fields.name).toEqual({ label: 'name', placeholder: { en: 'Your name' } });
+		expect(out.formTerminal.fields.name).toEqual({ label: { en: 'name', fr: 'nom' }, placeholder: { en: 'Your name' } });
+		expect(out.formTerminal.fields.email.label).toEqual({ en: 'email', fr: 'courriel' });
 		expect(out.infoTerminal.title).toBe('info.sh');
 		expect(out.success.fieldOk).toEqual({ en: 'ok' });
+		expect(out.success.workLinkLabel).toEqual({ en: 'work', fr: 'services' });
+		expect(out.success.blogLinkLabel).toEqual({ en: 'blog', fr: 'blogue' });
 		expect(out.socials).toEqual(channels);
 		expect(() => ContactContentSchema.parse(out)).not.toThrow();
 	});
@@ -145,6 +156,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
 				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
 				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
+				success_work_link_label: 'work', success_blog_link_label: 'blog',
 				socials: [{ label: 'Legacy', href: 'https://legacy.example', icon: 'legacy' }],
 			}],
 		};
@@ -174,6 +186,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					stop_location: 's9', stop_next: 's10',
 					label_polaroid_prev_aria: 'l2', label_polaroid_next_aria: 'l3',
 					label_testimonials_carousel_aria: 'l4', label_testimonials_tab_nav_aria: 'l5',
+					label_testimonials_prev_aria: 'l5a', label_testimonials_next_aria: 'l5b',
 					label_testimonial_slide_aria: 'l6', label_show_testimonial_aria: 'l7',
 					meta_title: 'About', meta_description: 'd',
 					metrics: [{ value: '10+', label: 'projects' }],
@@ -271,6 +284,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				meta_title: 'Tech | yesid.', meta_description: 'd',
 				hero_overline: 'o', hero_title_line1: 'TECH', hero_title_line2: 'STACK',
 				hero_terminal_aria: 'Hero terminal', hero_stat_technologies: '{n} technologies',
+				stack_kicker: 'what is a stack?',
+				engine_loading: '~ loading the map...',
 				terminal_cmd: '~ yesid --stack --verbose', terminal_loading: '→ loading {count} nodes...',
 				terminal_success: '✓ successful', terminal_cataloged: '→ {count} technologies cataloged',
 				terminal_status: 'interactive map online.',
@@ -291,6 +306,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		// go2/w5: stack_explainer column absent → the optional key is OMITTED
 		// (a bare { en: '' } would fail LocalizedStringSchema's non-blank en).
 		expect(ts.hero.stackExplainer).toBeUndefined();
+		expect((ts.hero as Record<string, unknown>).stackKicker).toEqual({ en: 'what is a stack?' });
+		expect((ts.hero as Record<string, unknown>).engineLoading).toEqual({ en: '~ loading the map...' });
 		expect(() => TechStackPageContentSchema.parse(ts)).not.toThrow();
 
 		// go2/w5 present case: a populated stack_explainer column recomposes as
@@ -303,6 +320,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					meta_title: 'Tech | yesid.', meta_description: 'd',
 					hero_overline: 'o', hero_title_line1: 'TECH', hero_title_line2: 'STACK',
 					hero_terminal_aria: 'Hero terminal', hero_stat_technologies: '{n} technologies',
+					stack_kicker: 'what is a stack?',
+					engine_loading: '~ loading the map...',
 					terminal_cmd: '~ yesid --stack --verbose', terminal_loading: '→ loading {count} nodes...',
 					terminal_success: '✓ successful', terminal_cataloged: '→ {count} technologies cataloged',
 					terminal_status: 'interactive map online.',
@@ -310,8 +329,21 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					action_get_in_touch: 'Get in touch', action_view_services: 'View services',
 					cta_heading_line1: 'h1', cta_heading_line2: 'h2', cta_sub: 's', cta_availability: 'a',
 				},
-				{ languages_code: 'fr', stack_explainer: 'Un « stack », c\'est la liste des pièces.' },
+				{
+					languages_code: 'fr',
+					stack_kicker: 'c\'est quoi un stack?',
+					engine_loading: '~ chargement de la carte...',
+					stack_explainer: 'Un « stack », c\'est la liste des pièces.',
+				},
 			],
+		});
+		expect(tsWithExplainer.hero.stackKicker).toEqual({
+			en: 'what is a stack?',
+			fr: 'c\'est quoi un stack?',
+		});
+		expect(tsWithExplainer.hero.engineLoading).toEqual({
+			en: '~ loading the map...',
+			fr: '~ chargement de la carte...',
 		});
 		expect(tsWithExplainer.hero.stackExplainer).toEqual({
 			en: 'A "stack" is just the parts list.',

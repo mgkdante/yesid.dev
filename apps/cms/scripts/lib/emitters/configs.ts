@@ -49,6 +49,36 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.routeSeo) {
+		out.push({
+			filePath: path('route-seo.ts'),
+			description: 'Published route_seo overrides for static route title, description, and OG image.',
+			imports: [{ symbols: ['RouteSeoOverride'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{
+					name: 'routeSeoOverrides',
+					typeName: 'readonly RouteSeoOverride[]',
+					value: data.routeSeo,
+				},
+			],
+		});
+	}
+
+	if (data.mediaAssets) {
+		out.push({
+			filePath: path('media-assets.ts'),
+			description: 'Directus media UUID to mirrored static asset path map. Generated from the CMS asset manifest.',
+			imports: [],
+			exports: [
+				{
+					name: 'mirroredMediaAssets',
+					typeName: 'Readonly<Record<string, string>>',
+					value: data.mediaAssets,
+				},
+			],
+		});
+	}
+
 	if (data.aboutPage) {
 		out.push({
 			filePath: path('about-page.ts'),
@@ -64,7 +94,6 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 			description: '/contact page content (terminals, validation, success states).',
 			imports: [{ symbols: ['ContactContent'], from: '$lib/types', typeOnly: true }],
 			exports: [{ name: 'contactContent', typeName: 'ContactContent', value: data.contactPage }],
-			reExportFromCompanion: './contact-page.companion',
 		});
 	}
 
@@ -126,7 +155,6 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 					value: data[e.key as keyof ExportData],
 				})),
 			],
-			reExportFromCompanion: './site-content.companion',
 		});
 	}
 
@@ -184,10 +212,9 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 	if (data.blogPosts) {
 		out.push({
 			filePath: path('blog.ts'),
-			description: 'Blog posts (slugs, titles, excerpts, dates, tags, SVG illustration refs). Helpers + chrome live in blog.companion.ts.',
+			description: 'Blog posts (slugs, titles, excerpts, dates, tags, SVG illustration refs).',
 			imports: [{ symbols: ['BlogPost'], from: '$lib/types', typeOnly: true }],
 			exports: [{ name: 'blogPosts', typeName: 'readonly BlogPost[]', value: data.blogPosts }],
-			reExportFromCompanion: './blog.companion',
 		});
 	}
 
@@ -213,10 +240,9 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 	if (data.services) {
 		out.push({
 			filePath: path('services.ts'),
-			description: 'Services array (id, title, station, deliverables, sections, related projects). Chrome + helpers live in services.companion.ts.',
+			description: 'Services array (id, title, station, deliverables, sections, related projects).',
 			imports: [{ symbols: ['Service'], from: '$lib/types', typeOnly: true }],
 			exports: [{ name: 'services', typeName: 'readonly Service[]', value: data.services }],
-			reExportFromCompanion: './services.companion',
 		});
 	}
 
@@ -228,10 +254,9 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		// against the Project type directly.
 		out.push({
 			filePath: path('projects.ts'),
-			description: 'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services). Helpers live in projects.companion.ts.',
+			description: 'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services).',
 			imports: [{ symbols: ['Project'], from: '$lib/types', typeOnly: true }],
 			exports: [{ name: 'projects', typeName: 'readonly Project[]', value: data.projects }],
-			reExportFromCompanion: './projects.companion',
 		});
 	}
 
@@ -245,7 +270,7 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 			imports: [
 				{
 					symbols: ['ErrorPageContent'],
-					from: './nav.companion',
+					from: '$lib/navigation/types',
 					typeOnly: true,
 				},
 			],
@@ -265,11 +290,11 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 	if (data.nav && data.errorPageFallback) {
 		out.push({
 			filePath: path('nav.ts'),
-			description: 'Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces live in nav.companion.ts; chrome lives in site-labels.ts.',
+			description: 'Navigation links (header + menu + footer + mobile placements) + error page fallback.',
 			imports: [
 				{
 					symbols: ['NavLink', 'MenuItem', 'ErrorPageContent'],
-					from: './nav.companion',
+					from: '$lib/navigation/types',
 					typeOnly: true,
 				},
 			],
@@ -284,7 +309,6 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 					value: data.errorPageFallback,
 				},
 			],
-			reExportFromCompanion: './nav.companion',
 		});
 	} else if (data.nav || data.errorPageFallback) {
 		// eslint-disable-next-line no-console

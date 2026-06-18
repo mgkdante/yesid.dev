@@ -1,0 +1,51 @@
+/* Shared mobile/desktop blueprint header chrome for listing pages. */
+.listing-blueprint-header {
+	position: relative;
+	height: calc(100px + 5rem);
+	overflow: hidden;
+	margin-top: -5rem;
+	padding-top: 5rem;
+}
+
+@media (min-width: 1024px) {
+	.listing-blueprint-header {
+		height: calc(160px + 5rem);
+	}
+}
+
+.listing-header-text {
+	position: absolute;
+	z-index: 20;
+	bottom: 1rem;
+	left: var(--space-page-x);
+}
+
+.listing-mobile-heading {
+	font-family: var(--font-heading);
+	font-size: clamp(2rem, 5vw, 3rem);
+	font-weight: 900;
+	color: var(--foreground);
+	letter-spacing: 0;
+	line-height: 1;
+}
+
+@media (min-width: 1024px) {
+	.listing-mobile-heading {
+		display: none;
+	}
+}
+
+.listing-header-subtitle {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	color: var(--accent-text);
+	letter-spacing: 0;
+	text-transform: uppercase;
+	margin-top: 0.35rem;
+}
+
+@media (min-width: 1024px) {
+	.listing-header-subtitle {
+		font-size: 1.1rem;
+	}
+}

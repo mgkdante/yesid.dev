@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { AboutTestimonial } from '$lib/types';
+	import type { AboutLabels, AboutTestimonial } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { fillTemplate } from '$lib/utils/labels';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -9,7 +10,17 @@
 
 	const locale = getLocale();
 
-	let { testimonials, stop, label }: { testimonials: readonly AboutTestimonial[]; stop: string; label: string } = $props();
+	let {
+		testimonials,
+		stop,
+		label,
+		labels,
+	}: {
+		testimonials: readonly AboutTestimonial[];
+		stop: string;
+		label: string;
+		labels: AboutLabels;
+	} = $props();
 
 	let activeIndex = $state(0);
 	const active = $derived(testimonials[activeIndex] ?? testimonials[0]);
@@ -17,6 +28,16 @@
 	const role = $derived(active ? resolveLocale(active.role, locale) : '');
 	const author = $derived(active?.author ?? '');
 	const hasSlides = $derived(testimonials.length > 1);
+	const carouselAria = $derived(resolveLocale(labels.testimonialsCarouselAria, locale));
+	const tabNavAria = $derived(resolveLocale(labels.testimonialsTabNavAria, locale));
+	const prevAria = $derived(resolveLocale(labels.testimonialsPrevAria, locale));
+	const nextAria = $derived(resolveLocale(labels.testimonialsNextAria, locale));
+	const slideAria = $derived(
+		fillTemplate(resolveLocale(labels.testimonialSlideAria, locale), {
+			index: String(activeIndex + 1),
+			total: String(testimonials.length),
+		}),
+	);
 
 	function previous() {
 		if (testimonials.length === 0) return;
@@ -31,14 +52,20 @@
 	function goTo(index: number) {
 		activeIndex = index;
 	}
+
+	function showSlideAria(index: number): string {
+		return fillTemplate(resolveLocale(labels.showTestimonialAria, locale), {
+			index: String(index + 1),
+		});
+	}
 </script>
 
 <div class="group h-full" use:cursorGlow>
-	<Card class="h-[19rem] p-3 sm:h-full sm:min-h-[19rem]" data-testid="about-testimonials" role="region" aria-label={label}>
+	<Card class="h-[19rem] p-3 sm:h-full sm:min-h-[19rem]" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
 		<div class="relative flex h-full flex-col">
 			<StopLabel {stop} {label} />
 
-			<div class="min-h-0 flex-1 overflow-y-auto pr-1" data-testid="about-quote-body" use:scrollChain>
+			<div class="min-h-0 flex-1 overflow-y-auto pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite" use:scrollChain>
 				<div class="flex min-h-full flex-col justify-center">
 					<div class="font-heading text-7xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 						&ldquo;
@@ -69,19 +96,19 @@
 					<button
 						type="button"
 						class="quote-arrow tap-press"
-						aria-label="Previous quote"
+						aria-label={prevAria}
 						onclick={previous}
 					>
 						‹
 					</button>
-					<div class="flex items-center gap-2" role="tablist" aria-label="Quote slides">
+					<div class="flex items-center gap-2" role="tablist" aria-label={tabNavAria}>
 						{#each testimonials as _testimonial, i}
 							<button
 								type="button"
 								class="quote-dot"
 								class:quote-dot-active={i === activeIndex}
 								data-testid="about-quote-dot"
-								aria-label={`Show quote ${i + 1}`}
+								aria-label={showSlideAria(i)}
 								aria-selected={i === activeIndex}
 								role="tab"
 								onclick={() => goTo(i)}
@@ -91,7 +118,7 @@
 					<button
 						type="button"
 						class="quote-arrow tap-press"
-						aria-label="Next quote"
+						aria-label={nextAria}
 						onclick={next}
 					>
 						›

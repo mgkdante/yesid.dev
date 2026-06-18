@@ -1,7 +1,6 @@
 <!--
-  Desktop sidebar for the /work listing page.
-  Shows SERVICES section + TAGS section, sticky.
-  Hidden on mobile — ProjectFilterMobile handles that viewport.
+  Listing filter panel for the /projects page.
+  Shows SERVICES section + TAGS section.
   Follows the same layout pattern as BlogFilterSidebar.
 
   WHY: button groups (services + tags) are now delegated to FilterGroup so the
@@ -23,6 +22,7 @@
 		activeService = null,
 		activeTag = null,
 		activeStack = null,
+		showSearch = true,
 		onServiceSelect,
 		onTagSelect,
 		onStackSelect,
@@ -35,6 +35,7 @@
 		activeService: string | null;
 		activeTag: string | null;
 		activeStack?: string | null;
+		showSearch?: boolean;
 		onServiceSelect: (serviceId: string | null) => void;
 		onTagSelect: (tag: string | null) => void;
 		onStackSelect?: (stack: string | null) => void;
@@ -53,21 +54,23 @@
 
 <aside data-testid="project-filter-sidebar">
 	<!-- Search -->
-	<div class="pt-3 mb-6 pb-5 divider-dashed">
-		<div class="relative">
-			<input
-				type="text"
-				placeholder={searchPlaceholder}
-				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-3 min-h-11 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
-				data-testid="project-search-sidebar"
-			/>
-			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-				<circle cx="7" cy="7" r="5"/>
-				<line x1="11" y1="11" x2="14" y2="14"/>
-			</svg>
+	{#if showSearch}
+		<div class="pt-3 mb-6 pb-5 divider-dashed">
+			<div class="relative">
+				<input
+					type="text"
+					placeholder={searchPlaceholder}
+					bind:value={searchQuery}
+					class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-3 min-h-11 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
+					data-testid="project-search-sidebar"
+				/>
+				<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+					<circle cx="7" cy="7" r="5"/>
+					<line x1="11" y1="11" x2="14" y2="14"/>
+				</svg>
+			</div>
 		</div>
-	</div>
+	{/if}
 
 	<!-- Services section — delegated to FilterGroup with deselect enabled -->
 	<div class="mt-5 divider-dashed pt-3">

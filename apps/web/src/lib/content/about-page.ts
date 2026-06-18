@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // /about page content (identity, metrics, methodology, testimonials, etc.).
 //
@@ -168,6 +168,8 @@ export const aboutPageContent: AboutContent = {
 			fr: 'Témoignage {index} sur {total}',
 		},
 		testimonialsCarouselAria: { en: 'Personal quote', fr: 'Citation personnelle' },
+		testimonialsNextAria: { en: 'Next quote', fr: 'Citation suivante' },
+		testimonialsPrevAria: { en: 'Previous quote', fr: 'Citation précédente' },
 		testimonialsTabNavAria: { en: 'Quote navigation', fr: 'Navigation de citation' },
 	},
 	languages: [

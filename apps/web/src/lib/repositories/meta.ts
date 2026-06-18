@@ -3,11 +3,11 @@
 // <JsonLd> component; the repository no longer participates in that flow.
 
 import { adapter } from '$lib/adapters';
-import type { Locale, PageSeo, PreviewContext, SiteSeoDefaults } from '$lib/types';
+import type { Locale, PageSeo, PreviewContext, SiteMeta, SiteSeoDefaults } from '$lib/types';
 
-// getSiteMeta — pruned in slice-28.3 (#117, zero consumers). The underlying
-// adapter.meta.site port stays on the ContentAdapter contract (route-SEO
-// factories consume siteMeta; adapter.test.ts exercises the port).
+export async function getSiteMeta(ctx?: PreviewContext): Promise<SiteMeta> {
+	return adapter.meta.site(ctx);
+}
 
 /**
  * Slice-18 18h Q9: site-wide SEO defaults from the `site_meta` singleton.

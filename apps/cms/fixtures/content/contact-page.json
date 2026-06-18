@@ -21,9 +21,9 @@
     "command": "$ yesid --contact",
     "commandOutput": { "en": "Opening contact form..." },
     "fields": {
-      "name": { "label": "name", "placeholder": { "en": "Your name" } },
-      "email": { "label": "email", "placeholder": { "en": "you@company.com" } },
-      "message": { "label": "message", "placeholder": { "en": "Tell me about your project..." } }
+      "name": { "label": { "en": "name", "fr": "nom" }, "placeholder": { "en": "Your name" } },
+      "email": { "label": { "en": "email", "fr": "courriel" }, "placeholder": { "en": "you@company.com" } },
+      "message": { "label": { "en": "message", "fr": "message" }, "placeholder": { "en": "Tell me about your project..." } }
     },
     "submitLabel": { "en": "send --message →" }
   },
@@ -39,7 +39,9 @@
     "responseTime": { "en": "I'll get back to you within 24h" },
     "meanwhile": { "en": "Meanwhile, check out my {work} or {blog}" },
     "resetLabel": { "en": "reset --form" },
-    "fieldOk": { "en": "OK" }
+    "fieldOk": { "en": "OK" },
+    "workLinkLabel": { "en": "work", "fr": "services" },
+    "blogLinkLabel": { "en": "blog", "fr": "blogue" }
   },
   "web3formsKey": "6887fd90-3348-4d31-ba03-bc0e285697b6"
 }

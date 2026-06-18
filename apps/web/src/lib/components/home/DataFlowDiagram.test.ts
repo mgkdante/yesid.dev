@@ -22,6 +22,7 @@ describe('DataFlowDiagram card sizing', () => {
 		const svg = container.querySelector('svg');
 		const firstLabel = container.querySelector('.df-node text');
 
+		expect(svg?.getAttribute('aria-label')).toBe('Technology stack: SvelteKit, Directus, Neon, Vercel, Bun');
 		expect(Number(svg?.getAttribute('width'))).toBeGreaterThanOrEqual(580);
 		expect(Number(svg?.getAttribute('height'))).toBeGreaterThanOrEqual(58);
 		expect(Number(firstLabel?.getAttribute('font-size'))).toBeGreaterThanOrEqual(11);
@@ -54,6 +55,48 @@ describe('DataFlowDiagram card sizing', () => {
 			join(cwd(), 'src/lib/components/home/DataFlowDiagram.svelte'),
 			'utf8',
 		);
-		expect(source).toContain('onwheel={stopCarouselGesturePropagation}');
+		expect(source).toContain('siteLabels.a11y.technologyStackTemplate');
+		expect(source).not.toContain('aria-label="Technology stack: {stack.join');
+		expect(source).toContain('onwheel={containHorizontalStackWheel}');
+	});
+
+	it('lets vertical wheel events bubble so project cards do not interrupt page scroll', () => {
+		const { container } = render(DataFlowDiagram, {
+			props: {
+				stack: ['SvelteKit', 'Directus', 'Neon', 'Vercel', 'Bun'],
+				size: 'sm',
+			},
+		});
+
+		const diagram = container.querySelector('.data-flow-diagram');
+		const onWheel = vi.fn();
+		document.addEventListener('wheel', onWheel);
+
+		try {
+			diagram?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 120 }));
+			expect(onWheel).toHaveBeenCalledTimes(1);
+		} finally {
+			document.removeEventListener('wheel', onWheel);
+		}
+	});
+
+	it('keeps horizontal-dominant wheel events inside the stack diagram', () => {
+		const { container } = render(DataFlowDiagram, {
+			props: {
+				stack: ['SvelteKit', 'Directus', 'Neon', 'Vercel', 'Bun'],
+				size: 'sm',
+			},
+		});
+
+		const diagram = container.querySelector('.data-flow-diagram');
+		const onWheel = vi.fn();
+		document.addEventListener('wheel', onWheel);
+
+		try {
+			diagram?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaX: 120, deltaY: 10 }));
+			expect(onWheel).not.toHaveBeenCalled();
+		} finally {
+			document.removeEventListener('wheel', onWheel);
+		}
 	});
 });

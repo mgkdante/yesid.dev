@@ -6,6 +6,7 @@
 
 import type { BlockEditorDoc, SitePage } from '@repo/shared';
 import type { StackArchetype, SiteLabels } from '@repo/shared/schemas';
+import type { RouteSeoOverride } from '@repo/shared';
 import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
 import type { MorphShape } from './lib/schemas/morph-shape';
 import type { ErrorPageContent } from './lib/schemas/nav';
@@ -32,6 +33,7 @@ import type { NavData } from './lib/fetchers/nav';
 export interface ExportData {
 	siteMeta?: SiteMeta;
 	siteSeoDefaults?: SiteSeoDefaults;
+	routeSeo?: readonly RouteSeoOverride[];
 	morphShapes?: readonly MorphShape[];
 	errorPageFallback?: ErrorPageContent;
 	/** All published error_pages rows keyed by status_code. Used to emit error-pages.ts. */
@@ -70,4 +72,5 @@ export interface ExportData {
 	cta?: CtaContent;
 	closer?: CloserContent;
 	aboutPage?: AboutContent;
+	mediaAssets?: Readonly<Record<string, string>>;
 }

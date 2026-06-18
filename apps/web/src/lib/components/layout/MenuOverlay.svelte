@@ -10,7 +10,7 @@
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
-	import type { NavLink } from '$lib/content/nav';
+	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
 
 	let {
@@ -293,10 +293,16 @@
 
 	.menu-label {
 		font-family: var(--font-heading);
-		font-size: 24px;
+		font-size: var(--text-menu-label-mobile);
 		font-weight: 600;
 		color: var(--secondary-foreground);
 		transition: color var(--duration-fast), text-shadow var(--duration-fast);
+	}
+
+	@media (min-width: 768px) {
+		.menu-label {
+			font-size: var(--text-menu-label-desktop);
+		}
 	}
 	.menu-item-active .menu-label {
 		color: var(--primary);
@@ -309,9 +315,9 @@
 
 	.menu-subtitle {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-menu-subtitle);
 		color: var(--muted-foreground);
-		letter-spacing: 0.3px;
+		letter-spacing: 0;
 	}
 
 	/* Footer */
@@ -329,8 +335,8 @@
 	}
 	.menu-footer-label {
 		font-family: var(--font-mono);
-		font-size: 10px;
-		letter-spacing: 3px;
+		font-size: var(--text-menu-subtitle);
+		letter-spacing: 0;
 		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		white-space: nowrap;
 	}
