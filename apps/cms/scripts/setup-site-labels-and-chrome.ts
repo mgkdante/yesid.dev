@@ -29,6 +29,9 @@ import frSeedsJson from '../fixtures/content/site-labels.fr.json';
 import { defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { type ApplyContext, type SchemaStep, isAlreadyExists, rest } from './lib/schema-apply';
+
+export type { SchemaStep, SchemaStepKind } from './lib/schema-apply';
 
 /** EN seeds — also the column source (one CMS column per key). */
 export const SITE_LABEL_SEEDS: Record<string, string> = seedsJson;
@@ -40,21 +43,6 @@ export const SITE_LABEL_SEEDS: Record<string, string> = seedsJson;
  * the existing a11y_/ui_/pages_/email_ FR translations live as a distinct row.
  */
 export const SITE_LABEL_FR_SEEDS: Record<string, string> = frSeedsJson;
-
-// --- Plan types (mirror setup-stack-archetypes-schema.ts) -------------------
-
-export type SchemaStepKind = 'collection' | 'field' | 'relation' | 'permission';
-
-export interface SchemaStep {
-	kind: SchemaStepKind;
-	/** Human-readable target, e.g. 'site_labels' or 'site_labels.translations'. */
-	target: string;
-	method: 'POST' | 'PATCH';
-	path: string;
-	payload: Record<string, unknown>;
-	/** permission steps only: policy display names resolved to ids at apply time. */
-	policyNames?: readonly string[];
-}
 
 /** uuid PK — mirrors site_pages.id. */
 function uuidPkField() {
@@ -184,47 +172,6 @@ export function describeStep(step: SchemaStep): string {
 // --- Apply-time I/O (mirrors setup-stack-archetypes-schema.ts) ---------------
 
 const log = createLogger('setup-site-labels');
-
-interface ApplyContext {
-	directusUrl: string;
-	token: string;
-}
-
-async function rest(
-	ctx: ApplyContext,
-	method: string,
-	path: string,
-	body?: unknown,
-): Promise<{ status: number; json: any }> {
-	const res = await fetch(`${ctx.directusUrl}${path}`, {
-		method,
-		headers: {
-			Authorization: `Bearer ${ctx.token}`,
-			'Content-Type': 'application/json',
-		},
-		body: body === undefined ? undefined : JSON.stringify(body),
-	});
-	const text = await res.text();
-	let json: any = null;
-	try {
-		json = text ? JSON.parse(text) : null;
-	} catch {
-		json = { raw: text };
-	}
-	return { status: res.status, json };
-}
-
-/** Directus "this already exists" answers — tolerated so re-runs are idempotent. */
-function isAlreadyExists(status: number, json: any): boolean {
-	if (status < 400) return false;
-	const errors: { message?: string; extensions?: { code?: string } }[] = json?.errors ?? [];
-	return errors.some(
-		(e) =>
-			e.extensions?.code === 'RECORD_NOT_UNIQUE' ||
-			/already exists/i.test(e.message ?? '') ||
-			/already has an associated relationship/i.test(e.message ?? ''),
-	);
-}
 
 async function applyPermission(ctx: ApplyContext, step: SchemaStep): Promise<void> {
 	const policies = await rest(ctx, 'GET', '/policies?fields=id,name&limit=-1');
