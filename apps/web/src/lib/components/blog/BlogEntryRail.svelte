@@ -116,7 +116,7 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		padding: 0.75rem 0.9rem;
 	}
 

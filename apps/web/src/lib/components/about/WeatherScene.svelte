@@ -565,7 +565,7 @@
 		left: -20%;
 		width: 140%;
 		height: 18%;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: var(--wx-fog);
 		opacity: var(--wx-fog-o);
 		filter: blur(5px);
