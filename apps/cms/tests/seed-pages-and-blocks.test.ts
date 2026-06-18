@@ -163,8 +163,10 @@ describe('toBlockManifestoTranslationRows', () => {
 	it('pills is an array of label/serviceId pairs', () => {
 		const pills = rows[0]?.pills as Array<{ label: string; serviceId: string }>;
 		expect(Array.isArray(pills)).toBe(true);
-		expect(pills.length).toBe(5);
-		expect(pills[0]?.serviceId).toBe('data-pipeline');
+		// 4 pills = the 4 consolidated services (GO-day 6->4; internal-tooling +
+		// sql-development retired). Order matches the live content module.
+		expect(pills.length).toBe(4);
+		expect(pills[0]?.serviceId).toBe('database-engineering');
 	});
 
 	it('hidden_transit_lines has 9 entries', () => {
