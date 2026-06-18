@@ -300,12 +300,16 @@
     text-align: center;
     width: 100%;
     margin-inline: auto;
-    padding: 2rem 1.25rem 2.5rem;
+    /* Top padding clears the fixed floating nav. The wrapper's
+       -nav-height/+nav-height trick only extends the background up under the
+       nav; it does NOT push content down, so the first element (the back link)
+       must clear the nav here or it renders hidden beneath it. */
+    padding: 4.5rem 1.25rem 2.5rem;
   }
 
   @media (min-width: 1024px) {
     .header__content {
-      padding: 2.5rem 2rem 3.75rem;
+      padding: 5.5rem 2rem 3.75rem;
     }
   }
 
