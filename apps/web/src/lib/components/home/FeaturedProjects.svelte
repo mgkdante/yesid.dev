@@ -195,7 +195,7 @@
 		justify-content: center;
 		width: 2.5rem;
 		height: 2.5rem;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: transparent;
 		border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
 		color: var(--primary);

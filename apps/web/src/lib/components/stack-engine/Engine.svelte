@@ -472,7 +472,7 @@
 		color: var(--primary);
 		background: none;
 		border: 1px solid var(--primary);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		padding: 0.35rem 0.9rem;
 		cursor: pointer;
 		transition: background-color 150ms ease, color 150ms ease;
