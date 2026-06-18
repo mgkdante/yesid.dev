@@ -254,7 +254,6 @@
 						svgContent={svgContents[post.slug] ?? ''}
 						{accentColor}
 						index={i}
-						featured={i === 0}
 						data-flip-id={post.slug}
 					/>
 				{/each}

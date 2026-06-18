@@ -48,7 +48,6 @@
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
 	import HeroTextContent from './HeroTextContent.svelte';
 	import HeroMobileSql from './HeroMobileSql.svelte';
-	import { Button } from '$lib/components/ui/button';
 
 	// slice-18i Phase 7C: all hero content now flows as props from +page.server.ts
 	// → +page.svelte → HomePage → HeroBanner. No static imports for page content.

@@ -1,7 +1,6 @@
 <!--
   Single blog post row in the listing page.
   Metro timeline layout: station badge + vertical line | content card.
-  Featured prop controls accent border, larger SVG, and full excerpt.
 -->
 <script lang="ts">
 	import type { BlogPost } from '$lib/types';
@@ -29,8 +28,6 @@
 		accentColor?: string;
 		/** Position index in the listing (1-based station number) */
 		index?: number;
-		/** Whether this is a featured/highlighted row */
-		featured?: boolean;
 		class?: string;
 		[key: string]: unknown;
 	}
@@ -40,7 +37,6 @@
 		svgContent = '',
 		accentColor = 'var(--primary)',
 		index = 0,
-		featured = false,
 		class: className = '',
 		...rest
 	}: BlogRowProps = $props();

@@ -12,7 +12,7 @@
 
 	const locale = getLocale();
 
-	import type { BlogPost, CloserContent, SiteMeta } from '$lib/types';
+	import type { CloserContent, SiteMeta } from '$lib/types';
 
 	// slice-18i Phase 7C: closerContent now flows as a prop from the server load.
 	let {
@@ -20,7 +20,6 @@
 		siteMeta,
 	}: {
 		closer: CloserContent;
-		latestPosts: readonly BlogPost[];
 		siteMeta: SiteMeta;
 	} = $props();
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';

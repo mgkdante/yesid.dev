@@ -426,13 +426,7 @@ pre, code, table {
    Wired into consumers in Phase B (17a-2b).
    ═══════════════════════════════════════════════════════════════ */
 
-/* 1. Gradient separator — brand orange fading to transparent */
-.brand-fade-line {
-  background: linear-gradient(90deg, var(--primary), transparent);
-  height: 1px;
-}
-
-/* 2. Dashed divider — filter group separators.
+/* Dashed divider — filter group separators.
    Taste round 2: delimitations speak the route-set voice — solid-orange
    dashed rule (NX diagram energy) instead of a neutral gray.
    Round 3: one step thicker (1px → 2px) — operator wants the dividers
@@ -441,7 +435,7 @@ pre, code, table {
   border-top: 2px dashed var(--border-rule);
 }
 
-/* 3. Hidden scrollbar — preserves scroll, hides chrome */
+/* Hidden scrollbar — preserves scroll, hides chrome */
 .scrollbar-hidden {
   scrollbar-width: none;
   -ms-overflow-style: none;
