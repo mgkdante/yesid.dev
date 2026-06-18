@@ -9,6 +9,7 @@
  */
 
 import { deleteField, readFieldsByCollection } from '@directus/sdk';
+import { runMain } from './lib/cli';
 import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
 
 const TARGETS = [
@@ -44,9 +45,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN (no fields dropped)' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
 }
 
-if (import.meta.main) {
-	main().catch((error) => {
-		console.error(error);
-		process.exit(1);
-	});
-}
+runMain(main);

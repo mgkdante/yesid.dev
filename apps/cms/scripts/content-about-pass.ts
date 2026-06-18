@@ -10,6 +10,7 @@
  */
 
 import { readItems, readSingleton, updateItem } from '@directus/sdk';
+import { runMain } from './lib/cli';
 import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
 
 type Locale = 'en' | 'fr';
@@ -133,9 +134,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : 'Regenerate fallbacks next.'}`);
 }
 
-if (import.meta.main) {
-	main().catch((error) => {
-		console.error(error);
-		process.exit(1);
-	});
-}
+runMain(main);

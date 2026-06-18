@@ -11,6 +11,7 @@
 
 import { readItems, createItems } from '@directus/sdk';
 import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { runMain } from './lib/cli';
 
 // tech id -> project ids that actually used it.
 const ADD_TO_PROJECTS: Record<string, string[]> = {
@@ -84,9 +85,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
 }
 
-if (import.meta.main) {
-	main().catch((e) => {
-		console.error(e);
-		process.exit(1);
-	});
-}
+runMain(main);
