@@ -22,6 +22,18 @@ export function defaultDirectusUrl(): string {
 }
 
 /**
+ * Guard: refuse to run a mutating ops script against anything but the dev
+ * Directus instance. Every seed / migration / content script calls this right
+ * after resolving its target URL, so a stray prod URL aborts before any write.
+ * Prod promotion is a separate, deliberate, operator-gated path.
+ */
+export function assertDevCms(url: string): void {
+	if (!url.includes('cms.dev.yesid.dev')) {
+		throw new Error(`Refusing non-dev CMS: ${url}. DEV-ONLY.`);
+	}
+}
+
+/**
  * Read a required env var or throw a loud error with actionable guidance.
  * Use for secrets that have no sensible default (admin tokens, DB URLs, etc.).
  */
