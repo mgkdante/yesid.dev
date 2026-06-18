@@ -33,8 +33,6 @@
 		services?: readonly Service[];
 		/** SVG contents keyed by service ID */
 		serviceSvgContents?: Record<string, string>;
-		/** Position index for stagger animations */
-		index?: number;
 		variant?: ProjectCardVariant;
 		cardSize?: ProjectCardSize;
 		testId?: string;
@@ -51,7 +49,6 @@
 		project,
 		services = [],
 		serviceSvgContents = {},
-		index = 0,
 		variant = 'listing',
 		cardSize = variant === 'proof' ? 'proof' : 'listing',
 		testId = variant === 'proof' ? 'proof-card' : 'project-card',

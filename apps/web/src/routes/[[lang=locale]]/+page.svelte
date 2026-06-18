@@ -27,7 +27,6 @@
 			initialHeroData={data.initialHeroData}
 			services={data.services}
 			featuredProjects={data.featuredProjects}
-			latestPosts={data.latestPosts}
 			siteMeta={data.siteMeta}
 			serviceSvgContents={data.serviceSvgContents}
 		/>

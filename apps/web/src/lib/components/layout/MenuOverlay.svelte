@@ -9,7 +9,6 @@
 	import { menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
-	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
 
@@ -18,7 +17,6 @@
 		pathname = '/',
 		locale = DEFAULT_LOCALE,
 		menuItems = staticMenuItems as readonly NavLink[],
-		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
 		onclose,
 		onanimationdone
 	}: {
@@ -26,8 +24,6 @@
 		pathname: string;
 		locale?: Locale;
 		menuItems?: readonly NavLink[];
-		/** Locale switcher entries; hidden until more than one is published. */
-		availableLocales?: readonly Locale[];
 		onclose?: () => void;
 		onanimationdone?: () => void;
 	} = $props();

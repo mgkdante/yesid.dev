@@ -112,7 +112,7 @@ describe('MenuOverlay — locale threading (slice-28.6)', () => {
 
 	it('does not render a locale switcher — the persistent Nav LanguageToggle owns it (no double EN/FR)', () => {
 		render(MenuOverlay, {
-			props: { open: true, pathname: '/fr/about', locale: 'fr', menuItems: [], availableLocales: ['en', 'fr'] },
+			props: { open: true, pathname: '/fr/about', locale: 'fr', menuItems: [] },
 		});
 		expect(screen.queryByTestId('locale-switch')).toBeNull();
 	});
