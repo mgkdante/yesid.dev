@@ -11,9 +11,9 @@
  * apps/web/src/lib/adapters/directus.ts.
  */
 
-import { readItems, readSingleton } from '@directus/sdk';
-import { toLocalizedString } from '../locale';
-import { asSingletonRow } from './singleton';
+import { readItems } from '@directus/sdk';
+import { toLocalizedString, str } from '../locale';
+import { fetchBlockSingleton, type BlockRow } from './singleton';
 import {
 	TechStackPageContentSchema,
 	ContactContentSchema,
@@ -26,12 +26,6 @@ import type { FetcherContext } from './types';
 // tech-stack-page
 // ---------------------------------------------------------------------------
 
-interface BlockRow {
-	id: number;
-	translations?: ReadonlyArray<Record<string, unknown>>;
-	[key: string]: unknown;
-}
-
 interface ContactChannelRow {
 	id: string;
 	status?: string;
@@ -40,8 +34,6 @@ interface ContactChannelRow {
 	icon?: unknown;
 	translations?: ReadonlyArray<Record<string, unknown> & { languages_code: string }>;
 }
-
-const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 
 function localizedWithFallback(
 	rows: ReadonlyArray<Record<string, unknown> & { languages_code: string }>,
@@ -102,13 +94,9 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 export async function fetchTechStackPageContent({
 	client,
 }: FetcherContext): Promise<TechStackPageContent> {
-	const result = await client.request(
-		readSingleton('block_tech_stack_page_content', {
-			fields: ['*', { translations: ['*'] } as unknown as string],
-		}),
-	);
-	const row = asSingletonRow<BlockRow>(
-		result,
+	const row = await fetchBlockSingleton<BlockRow>(
+		client,
+		'block_tech_stack_page_content',
 		'fetchTechStackPageContent/block_tech_stack_page_content',
 	);
 	return TechStackPageContentSchema.parse(toTechStackPageContent(row));
@@ -187,11 +175,11 @@ export function toContactContent(
 }
 
 export async function fetchContactContent({ client }: FetcherContext): Promise<ContactContent> {
-	const [result, contactChannelRows] = await Promise.all([
-		client.request(
-			readSingleton('block_contact_content', {
-				fields: ['*', { translations: ['*'] } as unknown as string],
-			}),
+	const [row, contactChannelRows] = await Promise.all([
+		fetchBlockSingleton<BlockRow>(
+			client,
+			'block_contact_content',
+			'fetchContactContent/block_contact_content',
 		),
 		client.request(
 			readItems('contact_channels', {
@@ -202,6 +190,5 @@ export async function fetchContactContent({ client }: FetcherContext): Promise<C
 			}),
 		),
 	]);
-	const row = asSingletonRow<BlockRow>(result, 'fetchContactContent/block_contact_content');
 	return ContactContentSchema.parse(toContactContent(row, toContactChannels(contactChannelRows as ContactChannelRow[])));
 }

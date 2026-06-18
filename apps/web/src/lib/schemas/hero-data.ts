@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 import type { HeroMetric, HeroQueryRow, HeroData } from '$lib/content/hero-data';
+import type { AssertSchemaMatches } from '$lib/types';
 
 export const HeroMetricKeySchema = z.enum(['vehicles', 'delay', 'routes']);
 
@@ -33,27 +34,7 @@ export const HeroDataSchema = z.object({
 	queryTime: z.number(),
 });
 
-// Drift detectors.
-type _HeroMetricCheck = z.infer<typeof HeroMetricSchema> extends HeroMetric
-	? HeroMetric extends z.infer<typeof HeroMetricSchema>
-		? true
-		: false
-	: false;
-const _heroMetricCheck: _HeroMetricCheck = true;
-void _heroMetricCheck;
-
-type _HeroQueryRowCheck = z.infer<typeof HeroQueryRowSchema> extends HeroQueryRow
-	? HeroQueryRow extends z.infer<typeof HeroQueryRowSchema>
-		? true
-		: false
-	: false;
-const _heroQueryRowCheck: _HeroQueryRowCheck = true;
-void _heroQueryRowCheck;
-
-type _HeroDataCheck = z.infer<typeof HeroDataSchema> extends HeroData
-	? HeroData extends z.infer<typeof HeroDataSchema>
-		? true
-		: false
-	: false;
-const _heroDataCheck: _HeroDataCheck = true;
-void _heroDataCheck;
+// Drift detectors — compile error (`true satisfies never`) on schema/type drift.
+true satisfies AssertSchemaMatches<z.infer<typeof HeroMetricSchema>, HeroMetric>;
+true satisfies AssertSchemaMatches<z.infer<typeof HeroQueryRowSchema>, HeroQueryRow>;
+true satisfies AssertSchemaMatches<z.infer<typeof HeroDataSchema>, HeroData>;

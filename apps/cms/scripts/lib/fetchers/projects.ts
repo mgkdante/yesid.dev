@@ -10,7 +10,7 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { toLocalizedString, toLocalizedBlockEditorDoc } from '../locale';
+import { toLocalizedString, toLocalizedBlockEditorDoc, mapLocalizedRepeater } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
 import {
 	ProjectSchema,
@@ -101,20 +101,14 @@ export interface DirectusTagJunctionRow {
 
 /** Tech names from the ordered M2M junction (single source of truth for stack). */
 export function stackFromTechM2M(rows: DirectusTechStackJunctionRow[] | undefined): string[] {
-	return (rows ?? [])
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((j) => j.tech_stack_id?.name)
-		.filter((n): n is string => !!n);
+	return mapLocalizedRepeater(rows, (j) => j.tech_stack_id?.name).filter(
+		(n): n is string => !!n,
+	);
 }
 
 /** Tag slugs from the ordered M2M junction (single source of truth for tags). */
 export function tagsFromM2M(rows: DirectusTagJunctionRow[] | undefined): string[] {
-	return (rows ?? [])
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((j) => j.tags_id?.id)
-		.filter((n): n is string => !!n);
+	return mapLocalizedRepeater(rows, (j) => j.tags_id?.id).filter((n): n is string => !!n);
 }
 
 export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): ProjectStatus {
@@ -132,25 +126,19 @@ export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): Proje
 export function toProject(row: DirectusProject): Project {
 	const translations = row.translations ?? [];
 
-	const sections: ProjectSection[] = (row.sections ?? [])
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((s) => ({
-			title: toLocalizedString(s.translations ?? [], 'title'),
-			content: toLocalizedBlockEditorDoc(s.translations ?? [], 'content'),
-		}));
+	const sections: ProjectSection[] = mapLocalizedRepeater(row.sections, (s) => ({
+		title: toLocalizedString(s.translations ?? [], 'title'),
+		content: toLocalizedBlockEditorDoc(s.translations ?? [], 'content'),
+	}));
 
-	const impactMetrics: ImpactMetric[] = (row.impact_metrics ?? [])
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((m) => {
-			const metric: ImpactMetric = {
-				value: m.value,
-				label: toLocalizedString(m.translations ?? [], 'label'),
-			};
-			if (m.before) metric.before = m.before;
-			return metric;
-		});
+	const impactMetrics: ImpactMetric[] = mapLocalizedRepeater(row.impact_metrics, (m) => {
+		const metric: ImpactMetric = {
+			value: m.value,
+			label: toLocalizedString(m.translations ?? [], 'label'),
+		};
+		if (m.before) metric.before = m.before;
+		return metric;
+	});
 
 	const project: Project = {
 		slug: row.id,

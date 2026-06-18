@@ -8,7 +8,13 @@
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 import { LocalizedBlockEditorDocSchema } from '@repo/shared';
-import type { Project, ProjectSection, ImpactMetric, ProjectStatus } from '$lib/types';
+import type {
+	Project,
+	ProjectSection,
+	ImpactMetric,
+	ProjectStatus,
+	AssertSchemaMatches,
+} from '$lib/types';
 
 export const ProjectStatusSchema = z.enum(['public', 'private', 'wip']);
 
@@ -52,36 +58,10 @@ export const ProjectSchema = z.object({
 	version: z.string().optional(),
 });
 
-// Drift detectors — fail to compile if TS interface and schema diverge.
-// Bidirectional check catches field adds/removes in either direction.
-type _ProjectStatusCheck = z.infer<typeof ProjectStatusSchema> extends ProjectStatus
-	? ProjectStatus extends z.infer<typeof ProjectStatusSchema>
-		? true
-		: false
-	: false;
-const _projectStatusCheck: _ProjectStatusCheck = true;
-void _projectStatusCheck;
-
-type _ProjectSectionCheck = z.infer<typeof ProjectSectionSchema> extends ProjectSection
-	? ProjectSection extends z.infer<typeof ProjectSectionSchema>
-		? true
-		: false
-	: false;
-const _projectSectionCheck: _ProjectSectionCheck = true;
-void _projectSectionCheck;
-
-type _ImpactMetricCheck = z.infer<typeof ImpactMetricSchema> extends ImpactMetric
-	? ImpactMetric extends z.infer<typeof ImpactMetricSchema>
-		? true
-		: false
-	: false;
-const _impactMetricCheck: _ImpactMetricCheck = true;
-void _impactMetricCheck;
-
-type _ProjectCheck = z.infer<typeof ProjectSchema> extends Project
-	? Project extends z.infer<typeof ProjectSchema>
-		? true
-		: false
-	: false;
-const _projectCheck: _ProjectCheck = true;
-void _projectCheck;
+// Drift detectors — compile error (`true satisfies never`) if a schema and its
+// TS interface diverge in either direction. Bidirectional, catches field
+// adds/removes on either side.
+true satisfies AssertSchemaMatches<z.infer<typeof ProjectStatusSchema>, ProjectStatus>;
+true satisfies AssertSchemaMatches<z.infer<typeof ProjectSectionSchema>, ProjectSection>;
+true satisfies AssertSchemaMatches<z.infer<typeof ImpactMetricSchema>, ImpactMetric>;
+true satisfies AssertSchemaMatches<z.infer<typeof ProjectSchema>, Project>;

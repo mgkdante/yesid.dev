@@ -11,7 +11,7 @@
  */
 
 import { readItems } from '@directus/sdk';
-import { toLocalizedString } from '../locale';
+import { str, toLocalizedString } from '../locale';
 import {
 	ErrorPageContentSchema,
 	type ErrorPageContent,
@@ -58,7 +58,7 @@ export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent 
 	const suggestions: readonly { label: LocalizedString; href: string }[] = enSuggestions.map(
 		(enSug, idx) => {
 			const labelLS: LocalizedString = {
-				en: typeof enSug.label === 'string' ? enSug.label : '',
+				en: str(enSug.label),
 			};
 			const frSug = suggestionsByLocale.get('fr')?.[idx];
 			if (frSug && typeof frSug.label === 'string' && frSug.label.length > 0) {
@@ -70,7 +70,7 @@ export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent 
 			}
 			return {
 				label: labelLS,
-				href: typeof enSug.href === 'string' ? enSug.href : '',
+				href: str(enSug.href),
 			};
 		},
 	);
