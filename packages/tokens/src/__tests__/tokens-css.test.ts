@@ -30,7 +30,7 @@ describe('generateTokensCss', () => {
   const css = generateTokensCss(fixture);
 
   it('begins with a GENERATED header', () => {
-    expect(css.startsWith('/* GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT */')).toBe(true);
+    expect(css.startsWith('/* GENERATED FROM packages/tokens/tokens.json - DO NOT EDIT */')).toBe(true);
   });
 
   it('emits brand tokens at :root', () => {
