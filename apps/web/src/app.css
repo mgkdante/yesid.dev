@@ -200,6 +200,10 @@ html {
   color: var(--foreground);
   overflow-x: clip; /* No Overflow Guarantee — Layer 1: viewport boundary */
   overscroll-behavior: none; /* Prevent pull-to-refresh & bounce in pinned sections */
+  /* Reserve the vertical-scrollbar gutter at all times so content that grows or
+     shrinks (Quiet Mode collapse/open, route changes) does not toggle the
+     scrollbar and shift centered layout sideways. */
+  scrollbar-gutter: stable;
 }
 
 /* No Overflow Guarantee — Layer 2: text breaks before overflowing */
