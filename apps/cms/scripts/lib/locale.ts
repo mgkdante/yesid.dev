@@ -72,6 +72,71 @@ export function toLocalizedStringNullable<T extends { languages_code: string }>(
 	return hasAny ? toLocalizedString(rows, field) : null;
 }
 
+/** A repeater/junction row carrying an optional `sort` order column. */
+export interface SortableRow {
+	sort?: number | null;
+}
+
+/**
+ * Ascending comparator over a nullable `sort` column, treating a missing/null
+ * `sort` as `0`. Byte-identical to the inline `(a, b) => (a.sort ?? 0) - (b.sort ?? 0)`
+ * comparator the repeater/junction fetchers sort with today (projects sections /
+ * impact_metrics, services deliverables / sections, about_languages,
+ * stack/tags M2M).
+ *
+ * NOTE: this is the `?? 0` variant. The cascade/registry fetchers that order by
+ * `?? Number.MAX_SAFE_INTEGER` with a secondary string tiebreak (nav,
+ * site_pages, route_seo, contact channels, stack-archetype tech links) have
+ * DIFFERENT null-handling semantics and are intentionally NOT covered here —
+ * swapping them to `bySort` would move null-sort rows from last to first.
+ */
+export function bySort(a: SortableRow, b: SortableRow): number {
+	return (a.sort ?? 0) - (b.sort ?? 0);
+}
+
+/**
+ * Sort a repeater's rows by {@link bySort} (non-mutating) and map each row to a
+ * value via `project`. Factors out the
+ * `(rows ?? []).slice().sort(bySort).map(...)` shape shared by the
+ * repeater/junction fetchers.
+ *
+ * `rows` is accepted as `null | undefined` and normalized to `[]` so callers
+ * drop their own `?? []` guard. The copy (`[...rows]`) preserves the original
+ * array — same as the inline `.slice()` calls it replaces.
+ */
+export function mapLocalizedRepeater<T extends SortableRow, R>(
+	rows: ReadonlyArray<T> | null | undefined,
+	project: (row: T) => R,
+): R[] {
+	return [...(rows ?? [])].sort(bySort).map(project);
+}
+
+/**
+ * Convenience over {@link mapLocalizedRepeater} for the common single-field
+ * shape: sort rows by {@link bySort}, then map each to
+ * `toLocalizedString(row.translations ?? [], field)`. Covers e.g. services
+ * `deliverables` (one localized `label` per row).
+ *
+ * The translations accessor defaults to `row.translations`; rows whose
+ * translations live under a different key keep using the callback variant.
+ * Sparse `LocalizedString` semantics are unchanged — this only relocates the
+ * existing `toLocalizedString` call.
+ */
+export function mapLocalizedField<
+	T extends SortableRow & { translations?: ReadonlyArray<{ languages_code: string }> | null },
+>(rows: ReadonlyArray<T> | null | undefined, field: string): LocalizedString[] {
+	return mapLocalizedRepeater(rows, (row) => toLocalizedString(row.translations ?? [], field));
+}
+
+/**
+ * Coerce an unknown value to a string, falling back to `''` for non-strings.
+ * Mirrors the local `str` helper in page-blocks-medium.ts and the inline
+ * `typeof v === 'string' ? v : ''` idiom used across the singleton fetchers.
+ */
+export function str(value: unknown): string {
+	return typeof value === 'string' ? value : '';
+}
+
 import type { BlockEditorDoc, LocalizedBlockEditorDoc } from '@repo/shared';
 
 /**

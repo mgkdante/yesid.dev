@@ -27,6 +27,7 @@ import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
+import { parseSeedFlags } from './lib/cli';
 
 // --- Zod ---------------------------------------------------------------
 //
@@ -185,12 +186,8 @@ export async function seedBlogPosts(fixtures: readonly BlogPostFixture[], opts: 
 	log.info(`verified: ${final.length} blog posts in Directus`);
 }
 
-function parseFlags(argv: readonly string[]): { dryRun: boolean; reset: boolean } {
-	return { dryRun: argv.includes('--dry-run'), reset: argv.includes('--reset') };
-}
-
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseFlags(process.argv.slice(2));
+	const { dryRun, reset } = parseSeedFlags();
 	const url = defaultDirectusUrl();
 	log.info(`target: ${url}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
 

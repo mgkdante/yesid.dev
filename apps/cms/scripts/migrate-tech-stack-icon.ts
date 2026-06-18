@@ -45,6 +45,7 @@ import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
+import { parseSeedFlags } from './lib/cli';
 
 // --- Types ------------------------------------------------------------------
 
@@ -72,14 +73,6 @@ export function techStackIdToIconId(techId: string): string {
 	if (techId === 'svelte-5') return 'svelte';
 	if (techId === 'threejs-threlte') return 'threejs';
 	return techId;
-}
-
-// --- Flags ------------------------------------------------------------------
-
-function parseFlags(argv: readonly string[]): { dryRun: boolean } {
-	return {
-		dryRun: argv.includes('--dry-run'),
-	};
 }
 
 // --- Core logic (exported for tests) ----------------------------------------
@@ -218,7 +211,7 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 // --- Entry point ------------------------------------------------------------
 
 async function main(): Promise<void> {
-	const { dryRun } = parseFlags(process.argv.slice(2));
+	const { dryRun } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
 
 	if (dryRun) {

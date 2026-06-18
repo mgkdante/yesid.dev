@@ -7,7 +7,7 @@
 
 import { createField, readFieldsByCollection, updateItem } from '@directus/sdk';
 import { getAdminToken } from './lib/auth';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 
 const COLLECTION = 'blog_posts';
 
@@ -191,9 +191,7 @@ export async function apply(opts: {
 async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const directusUrl = defaultDirectusUrl();
-	if (!directusUrl.includes('cms.dev.yesid.dev')) {
-		throw new Error(`Refusing non-dev CMS: ${directusUrl}. DEV-ONLY.`);
-	}
+	assertDevCms(directusUrl);
 	const token = await getAdminToken(directusUrl);
 	const log = await apply({ directusUrl, token, dryRun });
 	console.log(log.join('\n'));
