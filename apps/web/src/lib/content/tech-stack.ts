@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // /tech-stack page chrome + tech-stack items array, both CMS-derived.
 //
@@ -24,6 +24,10 @@ export const techStackPageContent: TechStackPageContent = {
 		},
 	},
 	hero: {
+		engineLoading: {
+			en: '~ rolling out the drawing board...',
+			fr: '~ chargement du plan...',
+		},
 		overline: {
 			en: 'Infrastructure Map',
 			fr: 'Carte de l\'infrastructure',
@@ -32,6 +36,7 @@ export const techStackPageContent: TechStackPageContent = {
 			en: 'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you, poke the blueprints below and see for yourself.',
 			fr: 'Un « stack », c\'est juste la liste des morceaux d\'un logiciel : l\'interface que le monde touche, la logique qui décide des choses, les données qu\'il garde en mémoire et l\'infrastructure sur laquelle il roule. C\'est tout le secret. Une fois que tu sais lire un stack, une soumission ne peut plus te cacher grand-chose, fouille dans les plans plus bas et vois par toi-même.',
 		},
+		stackKicker: { en: 'what\'s a "stack"?', fr: 'c\'est quoi un stack?' },
 		stats: {
 			technologies: { en: 'technologies', fr: 'technologies' },
 		},

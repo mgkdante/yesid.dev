@@ -230,6 +230,10 @@ describe('ProjectDetailPage image placement', () => {
 		expect(source).toContain('[data-theme="light"]');
 		expect(source).toContain('#fff');
 		expect(source).toContain("from '$lib/utils/theme-media'");
+		expect(source).toContain('siteLabels.a11y.projectImageOpen');
+		expect(source).toContain('siteLabels.a11y.projectImageClose');
+		expect(source).not.toContain('aria-label="Open {stripHtml(image.data.caption)}"');
+		expect(source).not.toContain('aria-label="Close image"');
 		expect(source).not.toContain('new MutationObserver');
 		expect(source).not.toContain('background: #050505;');
 	});

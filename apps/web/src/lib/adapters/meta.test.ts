@@ -1,11 +1,22 @@
 import { describe, expect, it } from 'vitest';
 import { adapter } from './index';
+import { routeSeoOverrides } from '$lib/content/route-seo';
+
+const overrideByPath = new Map(routeSeoOverrides.map((entry) => [entry.path, entry]));
 
 describe('adapter.meta.forRoute', () => {
 	it('resolves a static route by id', async () => {
 		const seo = await adapter.meta.forRoute('/about', 'en');
 		expect(seo.title.en).toMatch(/About/);
 		expect(seo.canonical).toBe('https://yesid.dev/about');
+	});
+
+	it('uses CMS route_seo overrides for static route descriptions', async () => {
+		const servicesOverride = overrideByPath.get('/services');
+		expect(servicesOverride?.description?.en).toBeTruthy();
+
+		const seo = await adapter.meta.forRoute('/services', 'en');
+		expect(seo.description.en).toBe(servicesOverride?.description?.en);
 	});
 
 	it('returns a Zod-validated object (ogType default fills in)', async () => {
@@ -113,6 +124,14 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 
 	it('/services emits CollectionPage + BreadcrumbList', async () => {
 		expect(await typesFor('/services')).toEqual(['CollectionPage', 'BreadcrumbList']);
+	});
+
+	it('/services CollectionPage description follows the CMS route_seo description', async () => {
+		const servicesOverride = overrideByPath.get('/services');
+		const seo = await adapter.meta.forRoute('/services', 'en');
+		const collectionPage = seo.jsonLd?.find((node) => node['@type'] === 'CollectionPage');
+
+		expect(collectionPage?.description).toBe(servicesOverride?.description?.en);
 	});
 
 	it('/services/[id] emits Service + BreadcrumbList', async () => {

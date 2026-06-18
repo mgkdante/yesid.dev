@@ -37,6 +37,11 @@ const DESKTOP_ONLY_SPECS = [
 	'**/state-lang-scroll.spec.ts',
 	'**/state-lang-layout.spec.ts',
 	'**/hero-intro-reload.spec.ts',
+	// Replay mechanics (scroll-pinned GSAP completion + day-key write) are tested
+	// once on desktop-chrome — the same as hero-intro-reload. The mobile profiles
+	// add an iPad-Mini scroll-geometry edge case (the intro completion does not
+	// register from an instant scrollTo under DPR 2) without proportional value.
+	'**/hero-intro-replay.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',
 	'**/interactive-filters.spec.ts',
@@ -63,12 +68,17 @@ export default defineConfig({
 		: process.env.CI
 			? 1
 			: undefined,
-	// Retry in CI only. The suite runs against a REMOTE Vercel preview, so a few
-	// GSAP/scroll-timing assertions (e.g. the hero-intro replay) occasionally tip
-	// past their wait window under network latency that doesn't exist locally.
-	// Retries absorb that transient variance without masking real failures — a
-	// genuine break fails all attempts. Flaky-on-retry tests surface in the report.
+	// Retry in CI only. The suite runs SERIALLY (workers:1) against the single
+	// local hermetic preview and CI runners are slower than local dev, so a few
+	// GSAP/scroll-timing assertions occasionally tip past their wait window.
+	// Retries absorb that transient variance without masking real failures (a
+	// genuine break fails all attempts); flaky-on-retry tests surface in the report.
 	retries: process.env.CI ? 2 : 0,
+	// Headroom for the slower, serial CI runner so timing-sensitive specs do not
+	// flake on the clock. This is headroom, NOT masking: a real hang still fails,
+	// and fails all retries.
+	timeout: process.env.CI ? 45_000 : 30_000,
+	expect: { timeout: process.env.CI ? 10_000 : 5_000 },
 	use: {
 		baseURL: externalBaseURL ?? 'http://localhost:4173',
 		// Vercel preview deployments sit behind Deployment Protection (the SSO 401
@@ -90,12 +100,24 @@ export default defineConfig({
 		? {}
 		: {
 				webServer: {
-					command: 'bun run build && bun run preview',
+					// E2E_PREBUILT skips the build and only previews — CI builds once
+					// via `turbo run build` (cache-eligible / remote-cache shared) so the
+					// webServer does not rebuild what the ci job already built. Locally
+					// (no flag) it builds + previews for one-command convenience.
+					command: process.env.E2E_PREBUILT
+						? 'bun run preview'
+						: 'bun run build && bun run preview',
 					port: 4173,
 					reuseExistingServer: !process.env.CI,
 					// CI cold-build (vite build + check:sitemap) can exceed the
 					// default 60s before the preview answers on :4173.
-					timeout: 180_000
+					timeout: 180_000,
+					// Hermetic build: skip the export-fallbacks prebuild so the local
+					// e2e build NEVER contacts the live CMS (the committed content
+					// modules already ARE the content source). This both honors the
+					// "CMS only at build time, never live" contract and keeps the
+					// local-preview e2e path fully offline — zero edge requests.
+					env: { EXPORT_FALLBACKS_SKIP: '1' }
 				}
 			}),
 	testDir: 'tests',

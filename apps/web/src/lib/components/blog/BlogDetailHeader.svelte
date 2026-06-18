@@ -16,6 +16,7 @@
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
+  import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 
   let {
     post,
@@ -57,17 +58,18 @@
   const postTagsAria = resolveLocale(detailChrome.header.postTagsAria, locale);
   const readingTimeTemplate = resolveLocale(detailChrome.header.readingTimeLabel, locale);
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
+  const edgeReadingTimeText = $derived(readingTimeText.toUpperCase());
   // go2-t1c2: category/watermark/edition microcopy from site_labels, previous
   // literals kept as code fallbacks.
   const categoryLabel = $derived(
     post.category === 'personal'
-      ? resolveLocale(siteLabels.ui.categoryPersonal, locale) || 'Personal'
-      : resolveLocale(siteLabels.ui.categoryProfessional, locale) || 'Professional'
+      ? resolveLocale(siteLabels.ui.categoryPersonal, locale)
+      : resolveLocale(siteLabels.ui.categoryProfessional, locale)
   );
   const watermarkText = $derived(
     post.category === 'personal'
-      ? resolveLocale(siteLabels.ui.watermarkPersonal, locale) || 'Personal'
-      : resolveLocale(siteLabels.ui.watermarkProfessional, locale) || 'Dispatch'
+      ? resolveLocale(siteLabels.ui.watermarkPersonal, locale)
+      : resolveLocale(siteLabels.ui.watermarkProfessional, locale)
   );
   const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
 
@@ -142,7 +144,7 @@
         {fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
       </div>
       <div class="header__edge header__edge-right hidden lg:block" aria-hidden="true">
-        {edgeDate} // {readingTime} MIN
+        {edgeDate} // {edgeReadingTimeText}
       </div>
     </div>
 
@@ -186,6 +188,10 @@
         <span>{readingTimeText}</span>
         <span class="header__meta-sep" aria-hidden="true"></span>
         <span>{languageName}</span>
+      </div>
+
+      <div class="header__quiet">
+        <QuietModeButton />
       </div>
     </div>
   </section>
@@ -294,12 +300,16 @@
     text-align: center;
     width: 100%;
     margin-inline: auto;
-    padding: 2rem 1.25rem 2.5rem;
+    /* Top padding clears the fixed floating nav. The wrapper's
+       -nav-height/+nav-height trick only extends the background up under the
+       nav; it does NOT push content down, so the first element (the back link)
+       must clear the nav here or it renders hidden beneath it. */
+    padding: 4.5rem 1.25rem 2.5rem;
   }
 
   @media (min-width: 1024px) {
     .header__content {
-      padding: 2.5rem 2rem 3.75rem;
+      padding: 5.5rem 2rem 3.75rem;
     }
   }
 
@@ -308,8 +318,8 @@
     display: inline-block;
     margin-bottom: 1.25rem;
     font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.5px;
+    font-size: var(--text-back-link);
+    letter-spacing: 0;
     color: var(--blog-accent);
     text-decoration: none;
     opacity: 0.7;
@@ -318,6 +328,10 @@
 
   .header__back:hover {
     opacity: 1;
+  }
+
+  .header__quiet {
+    margin-top: 1.25rem;
   }
 
   @media (min-width: 1024px) {

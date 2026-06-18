@@ -26,6 +26,16 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			toc: ls('a11y_toc'),
 			closerGraffiti: ls('a11y_closer_graffiti'),
 			replayIntro: ls('a11y_replay_intro'),
+			projectImageOpen: ls('a11y_project_image_open'),
+			projectImageClose: ls('a11y_project_image_close'),
+			moreMetrics: ls('a11y_more_metrics'),
+			architectureDiagram: ls('a11y_architecture_diagram'),
+			technologyStackTemplate: ls('a11y_technology_stack_template'),
+			quietModeLabel: ls('a11y_quiet_mode_label'),
+			quietModeEnable: ls('a11y_quiet_mode_enable'),
+			quietModeDisable: ls('a11y_quiet_mode_disable'),
+			quietModeRemember: ls('a11y_quiet_mode_remember'),
+			quietModeForget: ls('a11y_quiet_mode_forget'),
 		},
 		ui: {
 			markerService: ls('ui_marker_service'),
@@ -41,6 +51,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			watermarkProfessional: ls('ui_watermark_professional'),
 			metroCaption: ls('ui_metro_caption'),
 			stationsOneSystem: ls('ui_stations_one_system'),
+			terminalTitle: ls('ui_terminal_title'),
 			resultCount: {
 				singular: ls('ui_result_count_singular'),
 				plural: ls('ui_result_count_plural'),
@@ -130,6 +141,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			},
 			detail: {
 				code: {
+					title: ls('blog_chrome_detail_code_title'),
 					copyAria: ls('blog_chrome_detail_code_copy_aria'),
 					copyLabel: ls('blog_chrome_detail_code_copy_label'),
 					errorLabel: ls('blog_chrome_detail_code_error_label'),

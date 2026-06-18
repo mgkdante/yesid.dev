@@ -2,7 +2,7 @@ import type { TokenTree, Token } from '../types.ts';
 import { serializeCss } from '../serialize.ts';
 import { isLeaf } from '../parse.ts';
 
-const HEADER = `/* GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT */
+const HEADER = `/* GENERATED FROM packages/tokens/tokens.json - DO NOT EDIT */
 /* Run \`bun run --cwd packages/tokens build\` to regenerate. */
 `;
 

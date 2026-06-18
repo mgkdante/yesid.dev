@@ -129,6 +129,8 @@
     "polaroidNextAria": { "en": "Next photo", "fr": "Photo suivante" },
     "testimonialsCarouselAria": { "en": "Personal quote", "fr": "Citation personnelle" },
     "testimonialsTabNavAria": { "en": "Quote navigation", "fr": "Navigation de citation" },
+    "testimonialsPrevAria": { "en": "Previous quote", "fr": "Citation précédente" },
+    "testimonialsNextAria": { "en": "Next quote", "fr": "Citation suivante" },
     "testimonialSlideAria": { "en": "Testimonial {index} of {total}", "fr": "Témoignage {index} sur {total}" },
     "showTestimonialAria": { "en": "Show testimonial {index}", "fr": "Afficher le témoignage {index}" }
   },

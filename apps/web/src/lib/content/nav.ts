@@ -1,14 +1,14 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
-// Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces live in nav.companion.ts; chrome lives in site-labels.ts.
+// Navigation links (header + menu + footer + mobile placements) + error page fallback.
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
 // apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
 // ----------------------------------------------------------------------
 
-import type { NavLink, MenuItem, ErrorPageContent } from './nav.companion';
+import type { NavLink, MenuItem, ErrorPageContent } from '$lib/navigation/types';
 
 export const navLinks: readonly NavLink[] = [
 	{
@@ -149,7 +149,3 @@ export const errorPageContent: ErrorPageContent = {
 	],
 	terminalLine: '$ route --status 0 // generic fallback',
 };
-
-// Re-export hand-written companion module so consumers can keep importing
-// chrome / helpers / type defs from the original path 'nav'.
-export * from './nav.companion';

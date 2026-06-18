@@ -8,7 +8,7 @@ import {
 	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
-import type { ErrorPageContent, NavLink } from '$lib/content/nav';
+import type { ErrorPageContent, NavLink } from '$lib/navigation/types';
 import type { PageSeo } from '$lib/types';
 
 const fakeSeo: PageSeo = {

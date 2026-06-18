@@ -5,7 +5,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { NavLink } from '$lib/content/nav';
+import type { NavLink } from '$lib/navigation/types';
 
 const localizedString = () => ({
 	en: faker.lorem.word(),

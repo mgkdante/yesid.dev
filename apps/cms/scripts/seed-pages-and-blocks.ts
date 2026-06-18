@@ -479,6 +479,11 @@ export function toBlockCloserTranslationRows(
 				href: closerContent.cta.href,
 			},
 			rows: {
+				stack: {
+					label: closerContent.rows.stack.label.en,
+					description: closerContent.rows.stack.description.en,
+					action: closerContent.rows.stack.action.en,
+				},
 				contact: {
 					label: closerContent.rows.contact.label.en,
 					description: closerContent.rows.contact.description.en,
@@ -491,6 +496,7 @@ export function toBlockCloserTranslationRows(
 				},
 				read: {
 					label: closerContent.rows.read.label.en,
+					description: closerContent.rows.read.description.en,
 					action: closerContent.rows.read.action.en,
 				},
 				about: {
@@ -603,6 +609,8 @@ export function toBlockAboutContentTranslationRows(
 				polaroidNextAria: raw.labels.polaroidNextAria.en,
 				testimonialsCarouselAria: raw.labels.testimonialsCarouselAria.en,
 				testimonialsTabNavAria: raw.labels.testimonialsTabNavAria.en,
+				testimonialsPrevAria: raw.labels.testimonialsPrevAria.en,
+				testimonialsNextAria: raw.labels.testimonialsNextAria.en,
 				testimonialSlideAria: raw.labels.testimonialSlideAria.en,
 				showTestimonialAria: raw.labels.showTestimonialAria.en,
 			},
@@ -659,9 +667,9 @@ export function toBlockContactContentTranslationRows(
 				command: raw.formTerminal.command,
 				commandOutput: raw.formTerminal.commandOutput.en,
 				fields: {
-					name: { label: raw.formTerminal.fields.name.label, placeholder: raw.formTerminal.fields.name.placeholder.en },
-					email: { label: raw.formTerminal.fields.email.label, placeholder: raw.formTerminal.fields.email.placeholder.en },
-					message: { label: raw.formTerminal.fields.message.label, placeholder: raw.formTerminal.fields.message.placeholder.en },
+					name: { label: raw.formTerminal.fields.name.label.en, placeholder: raw.formTerminal.fields.name.placeholder.en },
+					email: { label: raw.formTerminal.fields.email.label.en, placeholder: raw.formTerminal.fields.email.placeholder.en },
+					message: { label: raw.formTerminal.fields.message.label.en, placeholder: raw.formTerminal.fields.message.placeholder.en },
 				},
 				submitLabel: raw.formTerminal.submitLabel.en,
 			},
@@ -678,6 +686,8 @@ export function toBlockContactContentTranslationRows(
 				meanwhile: raw.success.meanwhile.en,
 				resetLabel: raw.success.resetLabel.en,
 				fieldOk: raw.success.fieldOk.en,
+				workLinkLabel: raw.success.workLinkLabel.en,
+				blogLinkLabel: raw.success.blogLinkLabel.en,
 			},
 		},
 	];
@@ -704,6 +714,8 @@ export function toBlockTechStackPageContentTranslationRows(
 				titleLine1: raw.hero.titleLine1.en,
 				titleLine2: raw.hero.titleLine2.en,
 				terminalAria: raw.hero.terminalAria.en,
+				stackKicker: raw.hero.stackKicker.en,
+				engineLoading: raw.hero.engineLoading.en,
 				stats: { technologies: raw.hero.stats.technologies.en },
 			},
 			actions: {
@@ -748,7 +760,18 @@ export function toBlockProjectsPageContentTranslationRows(): ReadonlyArray<Direc
 // --- block_blog_page_content + translations --------------------------------
 
 export function toBlockBlogPageContentRow(sort = 1): DirectusBlockParentRow {
-	return { editor_label: 'Blog Page Content', status: 'published', sort };
+	return {
+		editor_label: 'Blog Page Content',
+		status: 'published',
+		sort,
+		entry_rail_services_href: '/services',
+		entry_rail_contact_href: '/contact',
+		entry_rail_route_case_studies_href: '/projects',
+		entry_rail_route_services_href: '/services',
+		entry_rail_route_stack_href: '/tech-stack',
+		entry_rail_route_about_href: '/about',
+		entry_rail_route_contact_href: '/contact',
+	};
 }
 
 export function toBlockBlogPageContentTranslationRows(): ReadonlyArray<DirectusBlockTranslationRow> {
@@ -759,9 +782,25 @@ export function toBlockBlogPageContentTranslationRows(): ReadonlyArray<DirectusB
 			// sibling fields. See toBlockProjectsPageContentTranslationRows for the
 			// slice-27.1 T4 double-encoding rationale.
 			intro: 'Notes on data engineering, infrastructure, and building reliable systems.',
-			heading: 'Dispatches',
-			back_to_dispatches: '← back to dispatches',
+			heading: 'Blog',
+			back_to_dispatches: '← back to Blog',
 			back_to_personal: '← back to personal corner',
+			personal_heading: 'Personal Corner',
+			personal_intro: 'Trains, space, tools, and the off-work notes that still shape how I build.',
+			to_personal_label: 'Personal Corner',
+			to_personal_subtitle: 'Off the clock',
+			to_professional_label: 'Back to Blog',
+			to_professional_subtitle: 'Brand notes',
+			entry_rail_work_title: 'Work With Me',
+			entry_rail_work_prompt: 'Need a system that stays editable?',
+			entry_rail_services_label: 'View Services',
+			entry_rail_contact_label: 'Start a Project',
+			entry_rail_routes_title: 'Pick A Route',
+			entry_rail_route_case_studies_label: 'Case studies',
+			entry_rail_route_services_label: 'Services',
+			entry_rail_route_stack_label: 'Stack',
+			entry_rail_route_about_label: 'About the author',
+			entry_rail_route_contact_label: 'Contact',
 		},
 	];
 }
@@ -956,9 +995,33 @@ export function validateAllFixtures(): void {
 	// Blog + projects page stubs (just locale string)
 	BlogPageContentSchema.parse({
 		intro: { en: 'Notes on data engineering, infrastructure, and building reliable systems.' },
-		heading: { en: 'Dispatches' },
-		backToDispatches: { en: 'back to dispatches' },
+		heading: { en: 'Blog' },
+		backToDispatches: { en: 'back to Blog' },
 		backToPersonal: { en: 'back to personal corner' },
+		personalHeading: { en: 'Personal Corner' },
+		personalIntro: { en: 'Trains, space, tools, and the off-work notes that still shape how I build.' },
+		toPersonalLabel: { en: 'Personal Corner' },
+		toPersonalSubtitle: { en: 'Off the clock' },
+		toProfessionalLabel: { en: 'Back to Blog' },
+		toProfessionalSubtitle: { en: 'Brand notes' },
+		entryRail: {
+			workWithMe: {
+				title: { en: 'Work With Me' },
+				prompt: { en: 'Need a system that stays editable?' },
+				primary: { label: { en: 'View Services' }, href: '/services' },
+				secondary: { label: { en: 'Start a Project' }, href: '/contact' },
+			},
+			routes: {
+				title: { en: 'Pick A Route' },
+				links: [
+					{ label: { en: 'Case studies' }, href: '/projects' },
+					{ label: { en: 'Services' }, href: '/services' },
+					{ label: { en: 'Stack' }, href: '/tech-stack' },
+					{ label: { en: 'About' }, href: '/about' },
+					{ label: { en: 'Contact' }, href: '/contact' },
+				],
+			},
+		},
 	});
 	ProjectsPageContentSchema.parse({
 		intro: { en: 'Projects, pipelines, and systems I have built.' },

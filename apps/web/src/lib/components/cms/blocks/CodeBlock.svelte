@@ -18,6 +18,7 @@
 	let { data }: { data: CodeBlock['data'] } = $props();
 
 	const codeChrome = siteLabels.blogChrome.detail.code;
+	const codeTitle = resolveLocale(codeChrome.title, locale);
 	const copyLabel = resolveLocale(codeChrome.copyLabel, locale);
 	const copyAria = resolveLocale(codeChrome.copyAria, locale);
 	const errorLabel = resolveLocale(codeChrome.errorLabel, locale);
@@ -46,7 +47,7 @@
 	<MermaidDiagram code={parsed.body} />
 {:else}
 	<TerminalChrome
-		title="code"
+		title={codeTitle}
 		tag={language}
 		tagTestId={language ? 'code-block-language' : undefined}
 		noPadding

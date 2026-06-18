@@ -30,8 +30,10 @@ import { aboutPageContent } from './about-page.js';
 import { contactContent } from './contact-page.js';
 import * as metaModule from './site-meta.js';
 import * as blogModule from './blog.js';
+import * as blogPageModule from './blog-page.js';
 import * as techStackModule from './tech-stack.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
+import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
 import { techStackPageContent, techStackItems } from './tech-stack.js';
@@ -220,7 +222,6 @@ describe('chrome companion consolidation', () => {
 		const consumers = [
 			'lib/components/blog/BlogRouteMap.svelte',
 			'lib/components/blog/BlogFilterSidebar.svelte',
-			'lib/components/blog/BlogFilterMobile.svelte',
 			'lib/components/blog/BlogListingPage.svelte',
 			'lib/components/blog/BlogDetailHeader.svelte',
 			'lib/components/blog/BlogDetailPage.svelte',
@@ -239,7 +240,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/projects/ProjectCard.svelte',
 			'lib/components/projects/ProjectListingPage.svelte',
 			'lib/components/projects/ProjectFilterSidebar.svelte',
-			'lib/components/projects/ProjectFilterMobile.svelte',
 			'lib/components/projects/ProjectDetailPage.svelte',
 			'lib/components/projects/ProjectGlancePanel.svelte',
 			'lib/components/projects/ProjectDetailHeader.svelte',
@@ -575,9 +575,12 @@ const WALKER_SOURCES: Array<[string, unknown]> = [
 	['contact-page', contactContent],
 	['meta', metaModule],
 	['blog', blogModule],
+	['blog-page', blogPageModule],
 	['tech-stack', techStackModule],
 	// site-seo-defaults carries defaultDescription (en-only at present).
 	['site-seo-defaults', siteSeoDefaultsModule],
+	// route_seo static route SEO overrides, emitted from CMS.
+	['route-seo', routeSeoModule],
 	// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
 	['site-pages', sitePagesModule],
 	// stack_archetypes engine recipes (slice-29).
@@ -680,7 +683,7 @@ describe('LocalizedString guard + translation debt', () => {
 // fr-complete leaves to site-labels (the operator's seed batch, incl. the 2
 // resultCount leaves) and the 4 interim companion leaves were removed
 // → WITH_FR + TOTAL both 631 + 10 − 4 = 637, NO_FR stays 0.
-const LOCKED = { TOTAL: 566, WITH_FR: 566, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // 637→648→649→645→632 (content-services: sections, stack-chrome-to-CMS, "When I'm not your guy" retired, companion chrome de-duped). content-projects: removed 4 lorem-* placeholders → 613. content-projects.1: yesid.dev case study (5 sections + 5 metrics + richer overview, en+fr, minus the old stub section) → +10 = 623. Shared TOC chrome (tocChrome: heading/openAria/closeAria/counterPrefix, en+fr) added to site-content.companion, project tocSectionTitle+tocPill de-duped into it → +4 −3 = 624. chrome→CMS: retired the tocChrome companion (−4), added navChrome.shared.tocCloseAria+tocCounterPrefix to CMS (+2) → 622. chrome→CMS batch 2: retired footerContent(3) + relatedProjectsStripContent(3) + navDirections(2) companions, components now read siteLabels.footerChrome/navChrome.directions → −8 = 614. chrome→CMS batch 3: retired sharedChromeContent(12), components now read siteLabels.navChrome.shared → −12 = 602. chrome→CMS batch 4: retired blogListingContent(12) + blogDetailContent(18), components now read siteLabels.blogChrome → −30 = 572. chrome→CMS batch 5: retired projectsPageMeta(2) + projectsListingContent(9) + projectsDetailContent(12), components now read siteLabels.projectsChrome → −23 = 549. new-tech longform: added FR enables for 8 normalized tech rows -> +8 = 557. content-projects.1 image gallery: added localized Images project section -> +1 = 558. yesid.dev case study consolidation: 5 article sections -> 3 article sections = 556. About pass: 3 flag labels + 2 quote and role pairs = +7. Contact channels: 3 labels moved from plain strings to localized CMS rows = +3.
+const LOCKED = { TOTAL: 627, WITH_FR: 627, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // +5 fr-complete quiet-mode a11y leaves (siteLabels.a11y.quietMode*) = 627.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

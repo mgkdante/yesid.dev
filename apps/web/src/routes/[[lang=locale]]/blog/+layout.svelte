@@ -9,7 +9,7 @@
 	const locale = getLocale();
 
 	// go2-t1c2: edge title from site_labels, previous literal as fallback.
-	const edgeTitle = resolveLocale(siteLabels.pages.blogEdgeTitle, locale) || 'Blog';
+	const edgeTitle = resolveLocale(siteLabels.pages.blogEdgeTitle, locale);
 </script>
 
 <div class="listing-layout">

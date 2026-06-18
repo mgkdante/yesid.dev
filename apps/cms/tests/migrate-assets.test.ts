@@ -15,6 +15,8 @@ import {
 	imageMetadataFromBytes,
 	buildFileMetadataPatch,
 	collectPreservedIdMapEntries,
+	desiredIdsForManifest,
+	findPreservedIdConflicts,
 } from '../scripts/migrate-assets';
 
 /**
@@ -276,5 +278,71 @@ describe('collectPreservedIdMapEntries', () => {
 		);
 
 		expect(preserved.get('brand/yesid-icon.svg')).toBe('authoritative-uuid');
+	});
+});
+
+describe('desiredIdsForManifest', () => {
+	const manifest = parseManifest({
+		description: 'x',
+		sourceRoot: 'apps/web/static',
+		folders: { work: 'x' },
+		assets: [
+			{ legacyPath: 'images/work/desktop.png', folder: 'work', title: 'Desktop', description: 'Desktop image' },
+			{ legacyPath: 'images/work/mobile.png', folder: 'work', title: 'Mobile', description: 'Mobile image' },
+		],
+	});
+
+	it('keeps exactly the manifest-owned ids from an existing id map', () => {
+		const desired = desiredIdsForManifest(manifest, {
+			'images/work/desktop.png': 'desktop-uuid',
+			'images/work/mobile.png': 'mobile-uuid',
+			'brand/yesid-icon.svg': 'brand-uuid',
+		});
+
+		expect([...desired.entries()]).toEqual([
+			['images/work/desktop.png', 'desktop-uuid'],
+			['images/work/mobile.png', 'mobile-uuid'],
+		]);
+	});
+
+	it('fails loud when a manifest asset has no preserved id', () => {
+		expect(() =>
+			desiredIdsForManifest(manifest, {
+				'images/work/desktop.png': 'desktop-uuid',
+			}),
+		).toThrow('missing preserved file id for images/work/mobile.png');
+	});
+});
+
+describe('findPreservedIdConflicts', () => {
+	it('returns only existing migrated files whose id differs from the desired id', () => {
+		const conflicts = findPreservedIdConflicts(
+			new Map([
+				['images/work/desktop.png', 'desktop-uuid'],
+				['images/work/mobile.png', 'old-mobile-uuid'],
+				['images/work/other.png', 'other-uuid'],
+			]),
+			new Map([
+				['images/work/desktop.png', 'desktop-uuid'],
+				['images/work/mobile.png', 'mobile-uuid'],
+			]),
+		);
+
+		expect(conflicts).toEqual([
+			{
+				legacyPath: 'images/work/mobile.png',
+				existingId: 'old-mobile-uuid',
+				desiredId: 'mobile-uuid',
+			},
+		]);
+	});
+
+	it('returns [] when existing ids already match the desired ids', () => {
+		expect(
+			findPreservedIdConflicts(
+				new Map([['images/work/desktop.png', 'desktop-uuid']]),
+				new Map([['images/work/desktop.png', 'desktop-uuid']]),
+			),
+		).toEqual([]);
 	});
 });

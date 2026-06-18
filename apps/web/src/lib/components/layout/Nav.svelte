@@ -10,7 +10,7 @@
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import MenuOverlay from './MenuOverlay.svelte';
-	import type { NavLink } from '$lib/content/nav';
+	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
 	import LanguageToggle from './LanguageToggle.svelte';
@@ -116,8 +116,12 @@
 
 		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
 			{#each headerLinks as link}
+<!-- Reveal the priority-2 link only once the pill has room for a third
+					 14px label. After the typography consolidation bumped
+					 --text-nav-link-mobile 13px->14px, three labels overflowed the
+					 rail in a ~480-489px band; 500px clears it with margin. -->
 				<span
-					class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}
+					class={link.priority === 2 ? 'hidden min-[500px]:block' : undefined}
 					use:magnetic={{ strength: 6, radius: 50 }}
 				>
 					<a
@@ -189,9 +193,13 @@
 	   guarantee "yesid." NEVER wraps — the SplitText letter spans inherit
 	   the anchor's content-box width, so they stay on one line too. */
 	.nav-wordmark {
-		font-size: 18px;
+		font-size: var(--text-nav-brand-desktop);
 		white-space: nowrap;
 		flex-shrink: 0;
+	}
+
+	.nav-pill-link {
+		font-size: var(--text-nav-link-desktop);
 	}
 
 	.nav-divider {
@@ -226,7 +234,7 @@
 			padding: 8px 14px;
 		}
 		.nav-wordmark {
-			font-size: 17px;
+			font-size: var(--text-nav-brand-mobile);
 		}
 		.nav-divider {
 			margin-inline: 10px;
@@ -235,7 +243,7 @@
 			gap: 18px;
 		}
 		.nav-pill-link {
-			font-size: 13px;
+			font-size: var(--text-nav-link-mobile);
 		}
 	}
 
@@ -247,7 +255,7 @@
 			padding: 6px 8px;
 		}
 		.nav-wordmark {
-			font-size: 16px;
+			font-size: var(--text-nav-brand-compact);
 		}
 		.nav-divider {
 			margin-inline: 4px;
@@ -256,7 +264,7 @@
 			gap: 7px;
 		}
 		.nav-pill-link {
-			font-size: 12.5px;
+			font-size: var(--text-nav-link-compact);
 		}
 	}
 
@@ -264,13 +272,13 @@
 	   little room — squeeze the decorative spacing, never the hit areas. */
 	@media (max-width: 359px) {
 		.nav-pill {
-			padding: 6px 6px;
+			padding: 6px 4px;
 		}
 		.nav-pill-compact {
-			padding: 6px 6px;
+			padding: 6px 4px;
 		}
 		.nav-wordmark {
-			font-size: 15px;
+			font-size: var(--text-nav-brand-compact);
 		}
 		.nav-divider {
 			margin-inline: 2px;
@@ -283,10 +291,17 @@
 			display: none;
 		}
 		.nav-links {
-			gap: 4px;
+			gap: 2px;
 		}
 		.nav-pill-link {
-			font-size: 12px;
+			font-size: var(--text-nav-link-compact);
+			/* Trim the link's inner padding (Tailwind px-1 = 4px) to 2px at the
+			   320px floor — reclaims 8px across the two labels. This shrinks the
+			   decorative gutter, NOT the 44px tap target: min-h-11 keeps the
+			   vertical hit area, and the labels stay fully clickable. CI's wider
+			   font metrics were tipping the borderline pill ~a few px past 320px;
+			   this restores real margin. */
+			padding-inline: 2px;
 		}
 	}
 
@@ -312,10 +327,22 @@
 	}
 
 	.nav-pill-link {
-		font-size: 13.5px;
+		font-size: var(--text-nav-link-desktop);
 		font-weight: 500;
 		white-space: nowrap;
 		position: relative;
+	}
+
+	@media (max-width: 767px) {
+		.nav-pill-link {
+			font-size: var(--text-nav-link-mobile);
+		}
+	}
+
+	@media (max-width: 479px) {
+		.nav-pill-link {
+			font-size: var(--text-nav-link-compact);
+		}
 	}
 
 	/* GO2-W5 "you are here" lamp: the active link gets an amber wayfinding

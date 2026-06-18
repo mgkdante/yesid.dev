@@ -11,6 +11,7 @@ import {
 	getInitialHeroData,
 	getVisibleServices,
 	getFeaturedProjects,
+	getSiteMeta,
 } from '$lib/repositories';
 import { fetchServiceSvgContents } from '$lib/utils';
 
@@ -48,6 +49,7 @@ export async function load({ locals, fetch }: { locals: App.Locals; fetch: typeo
 		closer,
 		initialHeroData,
 		services,
+		siteMeta,
 	] = await Promise.all([
 		getMetroSvg(ctx),
 		getHeroContent(ctx),
@@ -60,6 +62,7 @@ export async function load({ locals, fetch }: { locals: App.Locals; fetch: typeo
 		getCloserContent(ctx),
 		getInitialHeroData(ctx),
 		getVisibleServices(ctx),
+		getSiteMeta(ctx),
 	]);
 
 	const [featuredProjects, serviceSvgContents] = await Promise.all([
@@ -79,6 +82,7 @@ export async function load({ locals, fetch }: { locals: App.Locals; fetch: typeo
 		closer,
 		initialHeroData,
 		services,
+		siteMeta,
 		featuredProjects,
 		serviceSvgContents,
 	};

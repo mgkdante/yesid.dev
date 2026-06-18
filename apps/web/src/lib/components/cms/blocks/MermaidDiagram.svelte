@@ -1,14 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { siteLabels } from '$lib/content';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 
 	let { code }: { code: string } = $props();
+
+	const locale = getLocale();
 
 	let svg = $state('');
 	let renderError = $state('');
 	let root: HTMLElement | null = null;
 
 	const source = $derived(cleanMermaidSource(code));
+	const architectureDiagramLabel = $derived(resolveLocale(siteLabels.a11y.architectureDiagram, locale));
 
 	function cleanMermaidSource(value: string): string {
 		const trimmed = value.trim();
@@ -116,7 +122,7 @@
 </script>
 
 <figure class="mermaid-diagram" data-testid="mermaid-diagram" bind:this={root}>
-	<div class="mermaid-diagram__surface" aria-label="Architecture diagram">
+	<div class="mermaid-diagram__surface" aria-label={architectureDiagramLabel}>
 		{#if svg}
 			{@html svg}
 		{:else}

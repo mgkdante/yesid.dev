@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.
 //
@@ -8,7 +8,7 @@
 // apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
 // ----------------------------------------------------------------------
 
-import type { ErrorPageContent } from './nav.companion';
+import type { ErrorPageContent } from '$lib/navigation/types';
 
 export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'0': {

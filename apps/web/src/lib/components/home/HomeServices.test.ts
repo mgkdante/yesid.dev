@@ -7,7 +7,7 @@ import HomeServices from './HomeServices.svelte';
 // +page.server.ts resolves it through the repository layer. The test stub
 // derives the same data from the content module the static adapter reads.
 import { servicesGridContent } from '$lib/content/site-content';
-import { getVisibleServices } from '$lib/content';
+import { getVisibleServices } from '$lib/services/static-helpers';
 import { serviceFactory } from '../../../tests/factories';
 
 const services = getVisibleServices();

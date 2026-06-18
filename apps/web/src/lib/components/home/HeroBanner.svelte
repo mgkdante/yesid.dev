@@ -48,7 +48,6 @@
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
 	import HeroTextContent from './HeroTextContent.svelte';
 	import HeroMobileSql from './HeroMobileSql.svelte';
-	import { Button } from '$lib/components/ui/button';
 
 	// slice-18i Phase 7C: all hero content now flows as props from +page.server.ts
 	// → +page.svelte → HomePage → HeroBanner. No static imports for page content.
@@ -83,11 +82,11 @@
 	const sqlMetaTemplate = resolveLocale(heroContent.sqlPanel.metaTemplate, locale);
 	const refreshLabel = resolveLocale(heroContent.refreshButton.label, locale);
 	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, locale);
-	// go2/w5: hero-dot replay button aria — site_labels with code fallback.
-	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale) || 'Replay intro';
+	// go2/w5: hero-dot replay button aria from site_labels.
+	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale);
 	// go2/w5 taste-2: ONE caption names the metro art (the in-frame legend is
-	// gone — it overlapped the SVG on mobile). site_labels, code fallback.
-	const metroCaption = resolveLocale(siteLabels.ui.metroCaption, locale) || 'STM métro + REM';
+	// gone because it overlapped the SVG on mobile). site_labels owns the copy.
+	const metroCaption = resolveLocale(siteLabels.ui.metroCaption, locale);
 
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;

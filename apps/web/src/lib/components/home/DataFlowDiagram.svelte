@@ -12,9 +12,14 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { siteLabels } from '$lib/content';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 
 	let {
 		stack,
@@ -55,9 +60,13 @@
 
 	// Max label length based on node width and font size
 	let maxLabelLen = $derived(size === 'lg' ? 14 : 12);
+	let stackAriaTemplate = $derived(resolveLocale(siteLabels.a11y.technologyStackTemplate, locale));
+	let stackAriaLabel = $derived(stackAriaTemplate.replace('{stack}', stack.join(', ')));
 
-	function stopCarouselGesturePropagation(event: WheelEvent) {
-		event.stopPropagation();
+	function containHorizontalStackWheel(event: WheelEvent) {
+		if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey) {
+			event.stopPropagation();
+		}
 	}
 
 	onMount(async () => {
@@ -137,7 +146,7 @@
 	use:scrollChain
 	class:size-sm={size === 'sm'}
 	class:size-lg={size === 'lg'}
-	onwheel={stopCarouselGesturePropagation}
+	onwheel={containHorizontalStackWheel}
 	style="--df-svg-width: {svgWidth}px;"
 >
 	<svg
@@ -146,7 +155,7 @@
 		height={svgHeight}
 		xmlns="http://www.w3.org/2000/svg"
 		role="img"
-		aria-label="Technology stack: {stack.join(', ')}"
+		aria-label={stackAriaLabel}
 	>
 		<!-- Connecting dashed lines between nodes -->
 		{#each nodes as node, i}

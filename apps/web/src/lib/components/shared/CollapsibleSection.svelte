@@ -1,7 +1,6 @@
 <!--
   Reusable collapsible section card.
-  Used in WorkDetailPage, ServiceDetailPage (collapsible=true)
-  and BlogContent (collapsible=false, visual card wrapper only).
+  Used in project, service, and blog detail pages.
   Pattern: blog-card style — bg-card border-border-subtle, white title → orange hover.
   Uses bits-ui Collapsible for a11y (aria-controls, aria-expanded, focus management).
 -->
@@ -12,6 +11,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import { persisted } from '$lib/state/persisted.svelte';
+	import { quietModeStore } from '$lib/state/quiet-mode.svelte';
 
 	let {
 		title,
@@ -60,6 +60,19 @@
 		if (persistedOpen) persistedOpen.value = next;
 		else open = next;
 	}
+
+	$effect(() => {
+		quietModeStore.closeSignal;
+		if (collapsible && quietModeStore.enabled) setOpen(false);
+	});
+
+	let lastQuietOpenSignal = quietModeStore.openSignal;
+	$effect(() => {
+		const signal = quietModeStore.openSignal;
+		if (signal === lastQuietOpenSignal) return;
+		lastQuietOpenSignal = signal;
+		if (collapsible && !quietModeStore.enabled) setOpen(true);
+	});
 
 	// GO2-W5 final batch (6d): the WHOLE card is the toggle surface.
 	// Interactive children take priority — a click that originates inside a

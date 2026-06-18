@@ -1,34 +1,19 @@
-// Code-side per-route technical SEO defaults — slice-18 18h Phase 4 Task 11.
+// Code-side per-route technical SEO defaults.
 //
-// CANONICAL SEO OVERRIDE SOURCE (decision, slice-28.5 audit #62): this file
-// is where per-route SEO is authored. The Directus route_seo +
-// route_seo_translations collections are a DEAD END — they hold zero rows,
-// no export-fallbacks fetcher/emitter exists for them (dropped as YAGNI in
-// 27.1), and the live static adapter returns `routeSeo.byPath -> undefined`
-// unconditionally, so a Data Studio edit there never reaches a rendered
-// <title>/<meta>. Decision on record: ARCHIVE those collections rather than
-// build the fetcher — the actual archival (CMS schema change, drift-gated)
-// is flagged to slice-26; do NOT seed rows into route_seo expecting them to
-// render. If per-locale SEO copy needs CMS ownership when French ships,
-// revisit by adding a route-seo fetcher + emitter and wiring routeOverride —
-// until then, edit THIS file. (The byPath plumbing in static.ts/types.ts
-// stays: the RUN_PARITY oracle exercises it — see static.ts.)
-//
-// The 18h split still applies within the code side: the (now-archived-path)
-// CMS was to own editorial copy; code owns technical fields (ogType, noIndex)
-// + jsonLd factories that consume the brand SiteMeta. Single file, easy to
-// audit, low maintenance cost.
+// Editorial SEO for static routes is CMS-owned in route_seo and emitted to
+// $lib/content/route-seo.ts. This file only keeps technical behavior that
+// should not be authored in CMS: ogType, noIndex, title composition strategy,
+// and JSON-LD factories.
 //
 // Kept tightly scoped: 8 static routes (`/`, `/about`, `/contact`, `/services`,
 // `/projects`, `/blog`, `/blog/personal`, `/tech-stack`). Dynamic routes
 // (`/services/[id]`, `/projects/[slug]`, `/blog/[slug]`) have their own
 // factories in `route-seo-factories.ts`.
 //
-// `composedTitleStrategy` (P3 finding 2026-04-27): the home `/` uses
-// `'yesid. — X'` brand-first em-dash; every other route uses `'X | yesid.'`
-// pipe-suffix. This flag preserves both formats through the composer.
+// `composedTitleStrategy` lets the home route keep its full CMS title
+// verbatim, while other static routes append the brand suffix.
 
-import type { Locale, PageSeo, SchemaOrgNode, SiteMeta } from '$lib/types';
+import type { Locale, LocalizedString, PageSeo, SchemaOrgNode, SiteMeta } from '$lib/types';
 import {
 	buildBreadcrumbListNode,
 	buildCollectionPageNode,
@@ -37,6 +22,7 @@ import {
 	buildWebSiteNode,
 } from '$lib/adapters/jsonld';
 import { crumbName } from '$lib/adapters/route-seo-factories';
+import { resolveLocale } from '$lib/utils/locale';
 import { canonicalFor } from '$lib/utils/seo-defaults';
 
 export interface CodeRouteSeoDefaults {
@@ -52,15 +38,19 @@ export interface CodeRouteSeoDefaults {
 	 * composer.
 	 */
 	composedTitleStrategy: 'verbatim' | 'append-brand';
-	/** Per-route jsonLd factory; consumes SiteMeta (brand) only. */
-	jsonLdFactory: (siteMeta: SiteMeta, locale: Locale) => SchemaOrgNode[];
+	/** Per-route jsonLd factory; consumes CMS-composed SEO copy plus SiteMeta. */
+	jsonLdFactory: (
+		siteMeta: SiteMeta,
+		locale: Locale,
+		seoCopy: { titleBody: LocalizedString; description: LocalizedString },
+	) => SchemaOrgNode[];
 }
 
 export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 	'/': {
 		ogType: 'website',
 		noIndex: false,
-		fallbackTitle: { en: 'yesid. — Digital Infrastructure that Moves.' },
+		fallbackTitle: { en: 'yesid. | Digital Infrastructure that Moves.' },
 		composedTitleStrategy: 'verbatim',
 		jsonLdFactory: (sm, locale) => [
 			buildPersonNode(sm, locale),
@@ -105,12 +95,10 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Services' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale) => [
+		jsonLdFactory: (_sm, locale, seoCopy) => [
 			buildCollectionPageNode({
 				name: crumbName('/services', locale, 'Services'),
-				// Code-side EN literal (documented); FR copy optional at content drop.
-				description:
-					'Digital infrastructure services in four stations: databases & SQL, data pipelines & automation, dashboards & analytics, websites & e-commerce.',
+				description: resolveLocale(seoCopy.description, locale),
 				url: canonicalFor('/services', locale),
 			}),
 			buildBreadcrumbListNode(
@@ -127,11 +115,10 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Projects' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale) => [
+		jsonLdFactory: (_sm, locale, seoCopy) => [
 			buildCollectionPageNode({
 				name: crumbName('/projects', locale, 'Projects'),
-				description:
-					'Recent freelance and client work: transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects.',
+				description: resolveLocale(seoCopy.description, locale),
 				url: canonicalFor('/projects', locale),
 			}),
 			buildBreadcrumbListNode(
@@ -148,11 +135,10 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Blog' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale) => [
+		jsonLdFactory: (_sm, locale, seoCopy) => [
 			buildCollectionPageNode({
 				name: crumbName('/blog', locale, 'Blog'),
-				description:
-					'Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and analytics systems.',
+				description: resolveLocale(seoCopy.description, locale),
 				url: canonicalFor('/blog', locale),
 			}),
 			buildBreadcrumbListNode(
@@ -169,11 +155,10 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Personal Blog', fr: 'Blogue perso' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale) => [
+		jsonLdFactory: (_sm, locale, seoCopy) => [
 			buildCollectionPageNode({
 				name: crumbName('/blog/personal', locale, 'Personal Blog'),
-				description:
-					'Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog.',
+				description: resolveLocale(seoCopy.description, locale),
 				url: canonicalFor('/blog/personal', locale),
 			}),
 			buildBreadcrumbListNode(

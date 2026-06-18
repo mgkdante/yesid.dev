@@ -16,8 +16,7 @@
 
 	type LetterData = { main: SVGPathElement; drips: SVGPathElement[] };
 
-	// go2-t1c2: img-role aria from site_labels, previous literal as fallback.
-	const graffitiAria = resolveLocale(siteLabels.a11y.closerGraffiti, locale) || 'THE END graffiti';
+	const graffitiAria = resolveLocale(siteLabels.a11y.closerGraffiti, locale);
 
 	let {
 		onReady,

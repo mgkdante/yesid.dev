@@ -145,9 +145,10 @@ describe('CloserContentSchema', () => {
 		subheading: ls('sub'),
 		cta: { label: ls('Get in touch'), href: '/contact' },
 		rows: {
+			stack: { label: ls('Stack'), description: ls('desc'), action: ls('Open') },
 			contact: { label: ls('Contact'), description: ls('desc'), action: ls('Send') },
 			connect: { label: ls('Connect'), description: ls('desc'), action: ls('Link') },
-			read: { label: ls('Read'), action: ls('Blog') },
+			read: { label: ls('Read'), description: ls('desc'), action: ls('Blog') },
 			about: { label: ls('About'), description: ls('desc'), action: ls('More') },
 		},
 		attribution: { text: ls('Built with'), url: 'https://sveltekit.dev' },

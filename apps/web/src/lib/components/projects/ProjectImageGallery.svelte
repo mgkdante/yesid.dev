@@ -1,8 +1,13 @@
 <script lang="ts">
 	import type { BlockEditorDoc, ImageBlock } from '@repo/shared';
 	import { asset } from '$lib/directus/assets';
+	import { siteLabels } from '$lib/content';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '$lib/utils/theme-media';
 	import { onMount } from 'svelte';
+
+	const locale = getLocale();
 
 	let { doc }: { doc: BlockEditorDoc } = $props();
 
@@ -11,6 +16,8 @@
 	const images = $derived(doc.blocks.filter((block): block is ImageBlock => block.type === 'image'));
 	let activeImage = $state<ImageBlock | null>(null);
 	const activeCaption = $derived(activeImage ? stripHtml(activeImage.data.caption) : '');
+	const projectImageOpenTemplate = $derived(resolveLocale(siteLabels.a11y.projectImageOpen, locale));
+	const projectImageCloseLabel = $derived(resolveLocale(siteLabels.a11y.projectImageClose, locale));
 	const activeSrc = $derived(
 		activeImage ? imageSrc(activeImage, 'hero-1200') : '',
 	);
@@ -28,6 +35,10 @@
 
 	function stripHtml(value: string): string {
 		return value.replace(/<[^>]*>/g, '');
+	}
+
+	function openImageLabel(image: ImageBlock): string {
+		return projectImageOpenTemplate.replace('{caption}', stripHtml(image.data.caption));
 	}
 
 	function openImage(image: ImageBlock, event: MouseEvent): void {
@@ -58,7 +69,7 @@
 			<button
 				type="button"
 				class="project-image-gallery__trigger"
-				aria-label="Open {stripHtml(image.data.caption)}"
+				aria-label={openImageLabel(image)}
 				data-testid="project-image-gallery-trigger"
 				onclick={(event) => openImage(image, event)}
 			>
@@ -84,7 +95,7 @@
 		<button
 			type="button"
 			class="project-image-gallery__backdrop"
-			aria-label="Close image"
+			aria-label={projectImageCloseLabel}
 			data-testid="project-image-gallery-backdrop"
 			onclick={closeImage}
 		></button>
@@ -99,7 +110,7 @@
 			<button
 				type="button"
 				class="project-image-gallery__close"
-				aria-label="Close image"
+				aria-label={projectImageCloseLabel}
 				onclick={closeImage}
 			>
 				<span class="project-image-gallery__close-mark" aria-hidden="true"></span>

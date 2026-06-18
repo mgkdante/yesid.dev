@@ -1,6 +1,5 @@
 <!--
-  Desktop sidebar: language filter + date range + tag filters + corner link.
-  Hidden on mobile — BlogFilterMobile handles that.
+  Listing filter panel: language filter + date range + tag filters + corner link.
 
   WHY: button groups (language + tags) are now delegated to FilterGroup so the
   active/tag-active styles live in one place. Date range and corner link stay inline
@@ -18,12 +17,11 @@
 	import { ChevronToggle } from '$lib/components/brand';
 	import { siteLabels } from '$lib/content';
 
-	const LANG_LABELS: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
-
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
 	const listingChrome = siteLabels.blogChrome.listing;
 	const labels = listingChrome.filters;
 	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
+	const languageLabel = (lang: Locale) => resolveLocale(siteLabels.ui.languageNames[lang], locale) || lang;
 
 	// WHY: date range section is not a FilterGroup, so it needs its own collapse state.
 	// slice-34.6: session-scoped so it survives a locale switch (paints directly via
@@ -37,6 +35,7 @@
 		activeLang = null,
 		accentColor = 'var(--primary)',
 		cornerLink = null,
+		showSearch = true,
 		onTagSelect,
 		onLangSelect,
 		searchQuery = $bindable(''),
@@ -49,6 +48,7 @@
 		activeLang: Locale | null;
 		accentColor?: string;
 		cornerLink?: { href: string; label: string; subtitle: string } | null;
+		showSearch?: boolean;
 		onTagSelect: (tag: string | null) => void;
 		onLangSelect: (lang: Locale | null) => void;
 		searchQuery?: string;
@@ -59,29 +59,31 @@
 
 <aside data-testid="blog-filter-sidebar">
 	<!-- Search -->
-	<div class="pt-3 mb-6 pb-5 divider-dashed">
-		<div class="relative">
-			<input
-				type="text"
-				placeholder={searchPlaceholder}
-				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
-				data-testid="blog-search-sidebar"
-			/>
-			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-				<circle cx="7" cy="7" r="5"/>
-				<line x1="11" y1="11" x2="14" y2="14"/>
-			</svg>
+	{#if showSearch}
+		<div class="pt-3 mb-6 pb-5 divider-dashed">
+			<div class="relative">
+				<input
+					type="text"
+					placeholder={searchPlaceholder}
+					bind:value={searchQuery}
+					class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+					data-testid="blog-search-sidebar"
+				/>
+				<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+					<circle cx="7" cy="7" r="5"/>
+					<line x1="11" y1="11" x2="14" y2="14"/>
+				</svg>
+			</div>
 		</div>
-	</div>
+	{/if}
 
 	<!-- Language filter — surfaces the languages present in the active posts, like
 	     Tags (shown whenever ≥1 language exists, even when posts are EN-only). -->
 	{#if languages.length >= 1}
 		<div class="mt-5 divider-dashed pt-3">
-			<FilterGroup
+				<FilterGroup
 				label={resolveLocale(labels.language, locale)}
-				items={languages.map((lang) => ({ key: lang, label: LANG_LABELS[lang] }))}
+				items={languages.map((lang) => ({ key: lang, label: languageLabel(lang) }))}
 				activeKey={activeLang}
 				{accentColor}
 				allowDeselect={false}

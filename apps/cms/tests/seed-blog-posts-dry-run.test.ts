@@ -29,6 +29,15 @@ describe('seed-blog-posts pure helpers', () => {
 			expect(row.excerpt).toBe(orm.excerpt);
 		});
 
+		it('promotes optional SEO fields onto the row when present', () => {
+			const row = toBlogPostRow(orm);
+			expect(row.seo_title).toBe('Raw SQL for PostgreSQL Control');
+			expect(row.seo_description).toBe(
+				'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.',
+			);
+			expect(row.date_modified).toBe('2026-04-01');
+		});
+
 		it('returns null url for non-external posts', () => {
 			const row = toBlogPostRow(orm);
 			expect(row.url).toBeNull();

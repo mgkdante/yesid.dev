@@ -24,17 +24,23 @@ export interface DirectusBlogPostRow {
 	id: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
+	date_modified: string | null;
 	sort: number | null;
 	lang: 'en' | 'fr' | 'es';
 	category: BlogCategory;
 	tags?: DirectusTagJunctionRow[];
 	external: boolean;
 	url: string | null;
-	cover_image: { id: string } | string | null;
+	cover_image:
+		| { id: string; title?: string | null; description?: string | null }
+		| string
+		| null;
 	svg_illustration: { id: string; label?: string; category?: string; file?: { id: string } } | string | null;
 	animation: BlogAnimation;
 	title: string;
 	excerpt: string;
+	seo_title: string | null;
+	seo_description: string | null;
 }
 
 const PRO_FALLBACKS = ['pro-database', 'pro-code', 'pro-pipeline', 'pro-chart'] as const;
@@ -58,6 +64,30 @@ export function resolveSvgFallbackName(slug: string, category: BlogCategory): st
 	return list[slugHash(slug) % list.length]!;
 }
 
+function compact(value: string | null | undefined): string | undefined {
+	const trimmed = value?.trim();
+	return trimmed ? trimmed : undefined;
+}
+
+function dateOnly(value: string | null | undefined): string | undefined {
+	return value ? value.split('T')[0] : undefined;
+}
+
+function coverImageId(
+	value: DirectusBlogPostRow['cover_image'],
+): string | undefined {
+	if (typeof value === 'string') return value;
+	if (value && typeof value === 'object') return value.id;
+	return undefined;
+}
+
+function coverImageAlt(
+	value: DirectusBlogPostRow['cover_image'],
+): string | undefined {
+	if (!value || typeof value !== 'object') return undefined;
+	return compact(value.description) ?? compact(value.title);
+}
+
 /** Pure transform — DirectusBlogPostRow → BlogPost. Tested standalone. */
 export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
 	const svgId =
@@ -65,10 +95,15 @@ export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
 			? row.svg_illustration.id
 			: (row.svg_illustration ?? resolveSvgFallbackName(row.id, row.category));
 	return {
+		coverImage: coverImageId(row.cover_image),
+		coverImageAlt: coverImageAlt(row.cover_image),
 		slug: row.id,
 		title: row.title,
 		excerpt: row.excerpt,
-		date: row.date_published ? row.date_published.split('T')[0]! : '',
+		seoTitle: compact(row.seo_title),
+		seoDescription: compact(row.seo_description),
+		date: dateOnly(row.date_published) ?? '',
+		dateModified: dateOnly(row.date_modified),
 		lang: row.lang,
 		category: row.category,
 		tags: tagsFromM2M(row.tags),
@@ -87,6 +122,7 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 				'id',
 				'status',
 				'date_published',
+				'date_modified',
 				'sort',
 				'lang',
 				'category',
@@ -96,7 +132,9 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 				'animation',
 				'title',
 				'excerpt',
-				{ cover_image: ['id'] } as unknown as string,
+				'seo_title',
+				'seo_description',
+				{ cover_image: ['id', 'title', 'description'] } as unknown as string,
 				{ svg_illustration: ['id', 'label', 'category', { file: ['id'] }] } as unknown as string,
 			],
 			filter: { status: { _eq: 'published' } },
