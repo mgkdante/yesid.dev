@@ -261,6 +261,32 @@ describe('ContactPage', () => {
 			});
 			expect(screen.getAllByText(/fresh breeze/i).length).toBeGreaterThanOrEqual(1);
 			expect(screen.queryAllByText(/12°C/).length).toBe(0);
+			// EN omits the ?lang= param so the CDN cache key stays byte-identical.
+			expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather');
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
+	});
+
+	// The client refresh must carry the active locale so OpenWeather localizes
+	// `condition` (fr/es). Regression guard for the bug where /fr re-fetched
+	// English weather after hydration, overwriting the correct SSR-baked value.
+	it('refreshes weather with the ?lang= param inside a fr locale provider', async () => {
+		const prevFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ temp: 99, condition: 'brise fraîche', icon: '01d' }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			}),
+		) as typeof globalThis.fetch;
+		try {
+			render(ContactPage, {
+				props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } },
+				context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+			});
+			await waitFor(() => {
+				expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather?lang=fr');
+			});
 		} finally {
 			globalThis.fetch = prevFetch;
 		}
