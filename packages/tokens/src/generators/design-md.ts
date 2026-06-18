@@ -129,7 +129,7 @@ Full narrative and implementation rules: Notion → Business → Brand.
 colors — orange signage, yellow hazard stripes (with black), reflective white, black tape and
 structure. Each holds a named role; every component usage maps to exactly one:
 
-- **ORANGE — interactive/signage** (\`primary\` \`#E07800\`, light \`#9D5200\`): links, buttons,
+- **ORANGE — interactive/signage** (\`primary\` \`#E07800\`, light \`#A05500\`): links, buttons,
   CTAs, focus rings, active/hover states, signage accents. The clickable hue for everything
   except conversion (below).
 - **YELLOW — wayfinding & hazard & highlight** (\`accent\` \`#FFB627\` as surface/art;

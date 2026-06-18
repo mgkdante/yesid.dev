@@ -10,7 +10,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { serviceDetailLinks } from '../_support/helpers';
 
-const LIGHT_BG = 'rgb(247, 242, 233)'; // #F7F2E9 — GO2-W5 warm station paper
+const LIGHT_BG = 'rgb(243, 246, 251)'; // #F3F6FB — GO2-W5 warm station paper
 
 const ROUTES = [
 	'/',
@@ -131,7 +131,7 @@ test.describe('light mode — per-page audit', () => {
 			probe.remove();
 			return c;
 		});
-		expect(color).toBe('rgb(110, 101, 87)'); // #6E6557 — GO2-W5 warm muted-foreground
+		expect(color).toBe('rgb(84, 94, 117)'); // #6E6557 — GO2-W5 warm muted-foreground
 	});
 
 	test('station labels speak the wayfinding voice (accent-text, not primary)', async ({ page }) => {
@@ -186,7 +186,7 @@ test.describe('light mode — per-page audit', () => {
 			probe.remove();
 			return out;
 		});
-		expect(divider).toEqual({ width: '2px', style: 'dashed', color: 'rgb(157, 82, 0)' });
+		expect(divider).toEqual({ width: '2px', style: 'dashed', color: 'rgb(160, 85, 0)' });
 
 		// Footer departure rule: 2px solid amber (#B57F00 light line-amber).
 		const footerRule = await page.evaluate(() => {
@@ -259,7 +259,7 @@ test.describe('light mode — per-page audit', () => {
 	test('round 5: yellow-conversion doctrine + card parity + bolder rails', async ({ page }) => {
 		const AMBER = 'rgb(255, 182, 39)'; // #FFB627 --accent (theme-invariant)
 		const SIGNAGE_INK = 'rgb(28, 24, 20)'; // #1C1814 --signage-bg
-		const LIGHT_PRIMARY = 'rgb(157, 82, 0)'; // #9D5200
+		const LIGHT_PRIMARY = 'rgb(160, 85, 0)'; // #9D5200
 
 		// Contact submit = THE yellow conversion button (signage pair, light too).
 		await page.goto('/contact');
@@ -390,7 +390,7 @@ test.describe('light mode — per-page audit', () => {
 				const s = getComputedStyle(el);
 				return { bg: s.backgroundColor, borderW: s.borderTopWidth };
 			});
-		expect(chassis.bg).toBe('rgb(255, 253, 248)'); // #FFFDF8 light --card — solid
+		expect(chassis.bg).toBe('rgb(249, 250, 253)'); // #FFFDF8 light --card — solid
 		expect(chassis.borderW).toBe('3px'); // round-5 blog-card chassis parity
 
 		// Signage chip: real signs don't reskin when the lights change.
@@ -427,7 +427,7 @@ test.describe('light mode — per-page audit', () => {
 			};
 		});
 		expect(footer).not.toBeNull();
-		expect(footer!.bg).toBe('rgb(241, 233, 218)'); // #F1E9DA light --muted
+		expect(footer!.bg).toBe('rgb(228, 233, 243)'); // #F1E9DA light --muted
 		expect(footer!.tape).toContain('rgb(255, 182, 39)'); // #FFB627 hazard-a
 		expect(footer!.tape).toContain('rgb(28, 24, 20)'); // #1C1814 hazard-b
 
@@ -462,7 +462,7 @@ test.describe('theme toggle behaviour', () => {
 		await expect(page.getByTestId('theme-toggle').first()).toBeVisible();
 		await page.getByTestId('theme-toggle').first().click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#F7F2E9');
+		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#F3F6FB');
 		expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('light');
 
 		await page.getByRole('link', { name: 'Projects' }).first().click();

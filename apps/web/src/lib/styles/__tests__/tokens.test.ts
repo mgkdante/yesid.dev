@@ -129,7 +129,7 @@ describe('Design System Tokens', () => {
 
     it('terminals ARE the site background in both modes (solid; identity = chrome/border/type)', () => {
       expect(darkBlock).toContain('--terminal: #141414;');
-      expect(lightBlock).toContain('--terminal: #F7F2E9;');
+      expect(lightBlock).toContain('--terminal: #F3F6FB;');
     });
 
     it('dark border scale is the restored neutral ladder (subtle < default < strong)', () => {
@@ -139,8 +139,8 @@ describe('Design System Tokens', () => {
     });
 
     it('light borders are HARDER (round 2) and strong rules are BLACK tape (round 4 doctrine)', () => {
-      expect(lightBlock).toContain('--border: #C9BCA1;');
-      expect(lightBlock).toContain('--border-subtle: #D5C9B2;');
+      expect(lightBlock).toContain('--border: #B5BECD;');
+      expect(lightBlock).toContain('--border-subtle: #C2CBD8;');
       // Round 4: light strong rules lean true-dark — the #1C1814 signage
       // family draws structure as black tape on paper (was #A08F70).
       expect(lightBlock).toContain('--border-strong: #1C1814;');
@@ -151,12 +151,12 @@ describe('Design System Tokens', () => {
     });
 
     it('light interactive palette is AA-safe on the warm paper', () => {
-      expect(lightBlock).toContain('--background: #F7F2E9;');
-      expect(lightBlock).toContain('--card: #FFFDF8;');
-      expect(lightBlock).toContain('--primary: #9D5200;');
+      expect(lightBlock).toContain('--background: #F3F6FB;');
+      expect(lightBlock).toContain('--card: #F9FAFD;');
+      expect(lightBlock).toContain('--primary: #A05500;');
       expect(lightBlock).toContain('--primary-hover: #854500;');
-      expect(lightBlock).toContain('--primary-rgb: 157 82 0;');
-      expect(lightBlock).toContain('--muted-foreground: #6E6557;');
+      expect(lightBlock).toContain('--primary-rgb: 160 85 0;');
+      expect(lightBlock).toContain('--muted-foreground: #545E75;');
       expect(lightBlock).toContain('--destructive: #C62828;');
       expect(lightBlock).toContain('--success: #127336;');
       expect(lightBlock).toContain('--accent-foreground: #1C1813;');
@@ -192,7 +192,7 @@ describe('Design System Tokens', () => {
 
     it('per-mode signal & infrastructure families exist', () => {
       expect(darkBlock).toContain('--terminal-chrome: #0E0E0E;');
-      expect(lightBlock).toContain('--terminal-chrome: #EDE3CF;');
+      expect(lightBlock).toContain('--terminal-chrome: #DFE4EE;');
       expect(darkBlock).toContain('--terminal-ink: #E9E2D2;');
       expect(lightBlock).toContain('--terminal-ink: #3D362B;');
       expect(darkBlock).toContain('--line-amber: #FFB627;');
@@ -330,9 +330,9 @@ describe('Design System Tokens', () => {
       expect(g.toUpperCase()).toBe(b.toUpperCase());
     });
 
-    it('light --muted is the approved station paper: #F1E9DA exactly', () => {
-      expect(lightBlock).toContain('--muted: #F1E9DA;');
-      expect(mediaLight).toContain('--muted: #F1E9DA;');
+    it('light --muted is the cool-concrete tint: #E4E9F3 exactly', () => {
+      expect(lightBlock).toContain('--muted: #E4E9F3;');
+      expect(mediaLight).toContain('--muted: #E4E9F3;');
     });
   });
 });
