@@ -23,6 +23,7 @@ import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
 import { PresetsConfigSchema, type PresetsConfig } from './lib/schemas/presets';
+import { parseSeedFlags } from './lib/cli';
 
 const log = createLogger('seed-presets');
 
@@ -77,15 +78,8 @@ export function loadPresetsFixture(): PresetsConfig {
 	return PresetsConfigSchema.parse(raw);
 }
 
-function parseFlags(argv: readonly string[]): { dryRun: boolean; reset: boolean } {
-	return {
-		dryRun: argv.includes('--dry-run'),
-		reset: argv.includes('--reset'),
-	};
-}
-
 async function main(): Promise<void> {
-	const { dryRun } = parseFlags(process.argv.slice(2));
+	const { dryRun } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
 	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : ''}`);
 
