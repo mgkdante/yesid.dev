@@ -4,17 +4,13 @@
 //
 // Service SVGs fetched via SvelteKit's `fetch` (works during SSR).
 
-import { fetchServiceSvgContents } from '$lib/utils';
+import { fetchServiceSvgContents, uniqueSorted } from '$lib/utils';
 import {
 	getPublicProjects,
 	getVisibleServices,
 	getProjectsPageContent,
 } from '$lib/repositories';
 import type { Project } from '$lib/types';
-
-function uniqueSorted(values: Iterable<string>): readonly string[] {
-	return [...new Set(values)].sort();
-}
 
 function tagsFromProjects(projects: readonly Project[]): readonly string[] {
 	return uniqueSorted(projects.flatMap((project) => project.tags));

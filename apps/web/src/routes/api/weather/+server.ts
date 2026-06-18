@@ -13,7 +13,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { fetchMontrealWeather } from '$lib/utils/weather';
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '$lib/utils/locale';
+import { isSupportedLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 import type { Locale } from '$lib/types';
 
 // Resolve the locale from ?lang= (client passes the active locale). Unknown or
@@ -21,9 +21,7 @@ import type { Locale } from '$lib/types';
 // and ?lang is part of the URL so each language stays its own cacheable key.
 function localeFromQuery(url: URL): Locale {
 	const lang = url.searchParams.get('lang');
-	return lang && (SUPPORTED_LOCALES as readonly string[]).includes(lang)
-		? (lang as Locale)
-		: DEFAULT_LOCALE;
+	return isSupportedLocale(lang) ? lang : DEFAULT_LOCALE;
 }
 
 export const GET: RequestHandler = async ({ url }) => {

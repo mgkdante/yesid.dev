@@ -63,7 +63,6 @@
 		 *  $lib/content companions for services/projects. */
 		services: readonly Service[];
 		featuredProjects: readonly Project[];
-		latestPosts: readonly BlogPost[];
 		siteMeta: SiteMeta;
 		serviceSvgContents: Record<string, string>;
 	}
@@ -80,7 +79,6 @@
 		initialHeroData,
 		services,
 		featuredProjects,
-		latestPosts,
 		siteMeta,
 		serviceSvgContents,
 	}: Props = $props();
@@ -254,7 +252,7 @@
 		<SectionHeading heading={sectionTerminus} />
 	</div>
 	<div class="home-section-content">
-		<HomeCloser {closer} {latestPosts} {siteMeta} />
+		<HomeCloser {closer} {siteMeta} />
 	</div>
 </section>
 

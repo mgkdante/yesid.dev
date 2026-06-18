@@ -5,12 +5,9 @@ export {
 	loadMorphSVG,
 	loadFlip,
 	loadCustomEase,
-	loadMotionPathPlugin,
-	loadSplitText,
 	gsap,
 	ScrollTrigger,
 } from './gsap.js';
-export { stagger, type StaggerOptions } from './stagger.js';
 export {
 	findSettleTarget,
 	initSectionMagnet,

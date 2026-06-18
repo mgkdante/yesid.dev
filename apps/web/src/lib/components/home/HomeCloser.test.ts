@@ -5,38 +5,8 @@ import HomeCloser from './HomeCloser.svelte';
 import { closerContent } from '$lib/content/site-content';
 import { siteMeta } from '$lib/content/site-meta';
 import { gsap } from '$lib/motion/utils/gsap';
-import type { BlogPost } from '$lib/types';
 
-const latestPosts: BlogPost[] = [
-	{
-		slug: 'first-post',
-		title: 'First dispatch',
-		excerpt: 'A dispatch excerpt.',
-		date: '2026-01-02',
-		lang: 'en',
-		category: 'professional',
-		tags: ['sql'],
-		animation: 'draw',
-		svg: 'pro-code',
-		url: '/blog/first-post',
-		external: false,
-	},
-	{
-		slug: 'second-post',
-		title: 'Second dispatch',
-		excerpt: 'Another dispatch excerpt.',
-		date: '2026-01-01',
-		lang: 'en',
-		category: 'professional',
-		tags: ['cms'],
-		animation: 'draw-fill',
-		svg: 'pro-pipeline',
-		url: '/blog/second-post',
-		external: false,
-	},
-];
-
-const props = { closer: closerContent, latestPosts, siteMeta };
+const props = { closer: closerContent, siteMeta };
 
 // Mock fetch to prevent happy-dom from making real HTTP requests during onMount
 const originalFetch = globalThis.fetch;

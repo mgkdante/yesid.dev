@@ -266,7 +266,7 @@
 					<div class="flex gap-3" data-batch="project-item">
 						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
 						<div class="min-w-0 flex-1">
-							<ProjectCard {project} {services} {serviceSvgContents} index={i} />
+							<ProjectCard {project} {services} {serviceSvgContents} />
 						</div>
 					</div>
 				{/each}

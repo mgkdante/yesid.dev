@@ -4,6 +4,7 @@
 -->
 <script lang="ts">
 	import type { ParagraphBlock } from '@repo/shared';
+	import { escapeHtml } from '$lib/utils/code-fences';
 
 	let { data }: { data: ParagraphBlock['data'] } = $props();
 
@@ -17,15 +18,6 @@
 				return part.replace(/`([^`]+)`/g, (_match, value: string) => `<code>${escapeHtml(value)}</code>`);
 			})
 			.join('');
-	}
-
-	function escapeHtml(value: string): string {
-		return value
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;')
-			.replace(/'/g, '&#39;');
 	}
 </script>
 

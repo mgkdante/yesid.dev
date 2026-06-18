@@ -112,16 +112,6 @@ describe('lazy plugin loaders', () => {
 		await expect(loadCustomEase()).resolves.toBeUndefined();
 	});
 
-	it('loadMotionPathPlugin resolves without error', async () => {
-		const { loadMotionPathPlugin } = await import('./gsap.js');
-		await expect(loadMotionPathPlugin()).resolves.toBeUndefined();
-	});
-
-	it('loadSplitText resolves without error', async () => {
-		const { loadSplitText } = await import('./gsap.js');
-		await expect(loadSplitText()).resolves.toBeUndefined();
-	});
-
 	it('loadDrawSVG registers DrawSVGPlugin', async () => {
 		const { gsap } = await import('gsap');
 		const { loadDrawSVG } = await import('./gsap.js');
@@ -171,32 +161,12 @@ describe('lazy plugin loaders', () => {
 		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
 	});
 
-	it('loadMotionPathPlugin is idempotent', async () => {
+	it('ensureSplitTextRegistered is idempotent', async () => {
 		const { gsap } = await import('gsap');
-		const { loadMotionPathPlugin } = await import('./gsap.js');
-
-		await loadMotionPathPlugin();
-		await loadMotionPathPlugin();
-
-		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
-	});
-
-	it('loadSplitText is idempotent', async () => {
-		const { gsap } = await import('gsap');
-		const { loadSplitText } = await import('./gsap.js');
-
-		await loadSplitText();
-		await loadSplitText();
-
-		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
-	});
-
-	it('ensureSplitTextRegistered and loadSplitText share the same registry', async () => {
-		const { gsap } = await import('gsap');
-		const { ensureSplitTextRegistered, loadSplitText } = await import('./gsap.js');
+		const { ensureSplitTextRegistered } = await import('./gsap.js');
 
 		ensureSplitTextRegistered();
-		await loadSplitText();
+		ensureSplitTextRegistered();
 
 		// Second call finds SplitText already registered — single registerPlugin call.
 		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);

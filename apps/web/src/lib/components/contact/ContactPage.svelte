@@ -21,6 +21,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
 	import type { WeatherData } from '$lib/utils/weather';
+	import { escapeHtml } from '$lib/utils/code-fences';
 	import { pressBounce } from '$lib/motion/actions';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
@@ -260,15 +261,6 @@
 	function fieldLabel(field: keyof ContactContent['formTerminal']['fields']): string {
 		const label = c.formTerminal.fields[field].label;
 		return typeof label === 'string' ? label : resolveLocale(label, locale);
-	}
-
-	function escapeHtml(value: string): string {
-		return value
-			.replaceAll('&', '&amp;')
-			.replaceAll('<', '&lt;')
-			.replaceAll('>', '&gt;')
-			.replaceAll('"', '&quot;')
-			.replaceAll("'", '&#39;');
 	}
 
 </script>

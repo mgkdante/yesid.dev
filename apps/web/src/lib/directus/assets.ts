@@ -14,9 +14,9 @@
 // presets (`STORAGE_ASSET_TRANSFORM=presets`, set on Railway via 18c Task 37).
 //
 // Convention: preset keys end with `-<width>` (e.g., `hero-1200`, `card-600`,
-// `thumb-300`). `buildSrcSet` parses this suffix to synthesise the
-// `<descriptor>w` entries. Presets without a numeric suffix (e.g. `hero-og`)
-// for fixed-size OG images get no width descriptor.
+// `thumb-240`). `buildSrcSet` parses this suffix to synthesise the
+// `<descriptor>w` entries. The fixed-size social card preset (`og-1200`) also
+// carries a numeric suffix but is used at its native size for OG images.
 //
 // Factory pattern keeps the helper unit-testable without touching
 // $env/dynamic/public; the default binding at the bottom reads the env once
@@ -27,16 +27,19 @@ import { env as publicEnv } from '$env/dynamic/public';
 import { mirroredMediaAssets } from '$lib/content/media-assets';
 
 /**
- * Canonical preset list (18c). Each consumer site may narrow this to its own
- * union by branding over the string type. Callers typically pass these names
- * as string literals. TS will accept any `string` at call sites too, since
- * typos here are low-impact (result is a 404 on the asset URL, not a crash).
+ * Canonical preset list — the exact set seeded in Directus
+ * (fixtures/brand/presets.json + directus/collections/settings.json):
+ * hero-1200, card-600, thumb-240, og-1200. Each consumer site may narrow this
+ * to its own union by branding over the string type. Callers typically pass
+ * these names as string literals. TS will accept any `string` at call sites
+ * too, since typos here are low-impact (result is a 404 on the asset URL, not
+ * a crash).
  */
 export type AssetPreset =
 	| 'hero-1200'
 	| 'card-600'
-	| 'thumb-300'
-	| 'hero-og'
+	| 'thumb-240'
+	| 'og-1200'
 	// Allow arbitrary preset names while still auto-completing the canonical
 	// set. Every string literal is assignable to `string & {}`, but the union
 	// members take precedence in IDE suggestions.
@@ -95,8 +98,8 @@ export function createAssets(baseUrl: string, options: CreateAssetsOptions = {})
 
 /**
  * Extract a numeric width from a preset suffix (e.g. `hero-1200` -> 1200).
- * Presets without a trailing `-NNN` (e.g. `hero-og`) return 0. Callers
- * treat that as "no width descriptor" (effectively a 1x entry).
+ * An ad-hoc preset without a trailing `-NNN` returns 0. Callers treat that as
+ * "no width descriptor" (effectively a 1x entry).
  */
 function parsePresetWidth(preset: string): number {
 	const match = preset.match(/-(\d+)$/);

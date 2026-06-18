@@ -26,7 +26,6 @@
 	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
 	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
 	import { SectionHeading } from '$lib/components/brand';
-	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import type { Service, ServicesGridContent } from '$lib/types';
 
 	// slice-28.5 (#124): services arrive as a prop from the home

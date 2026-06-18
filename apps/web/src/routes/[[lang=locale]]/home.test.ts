@@ -19,7 +19,6 @@ import {
 import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
 import { getFeaturedProjects } from '$lib/projects/static-helpers';
 import { getVisibleServices } from '$lib/services/static-helpers';
-import { getLatestPosts } from '$lib/blog/static-helpers';
 import { siteMeta } from '$lib/content/site-meta';
 import type { Project } from '$lib/types';
 
@@ -60,7 +59,6 @@ const stubData = {
 	initialHeroData: INITIAL_HERO_DATA,
 	services: getVisibleServices(),
 	featuredProjects,
-	latestPosts: getLatestPosts(2, 'professional'),
 	siteMeta,
 	serviceSvgContents: {},
 } as unknown as PageData;
