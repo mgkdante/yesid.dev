@@ -5,7 +5,7 @@
  * DEV-ONLY. Dry-run by default; pass --apply to patch rows.
  */
 
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 
 type Locale = 'en' | 'fr';
@@ -111,9 +111,7 @@ async function patchLocaleRow(opts: {
 async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const baseUrl = defaultDirectusUrl();
-	if (!baseUrl.includes('cms.dev.yesid.dev')) {
-		throw new Error(`Refusing non-dev CMS: ${baseUrl}. DEV-ONLY.`);
-	}
+	assertDevCms(baseUrl);
 	const token = await getAdminToken(baseUrl);
 	const log: string[] = [];
 

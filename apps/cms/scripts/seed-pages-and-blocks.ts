@@ -86,6 +86,7 @@ import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
+import { parseSeedFlags } from './lib/cli';
 
 const ContactSeedFixtureSchema = ContactContentSchema.omit({ socials: true });
 
@@ -1283,22 +1284,8 @@ export async function seedPagesAndBlocks(opts: SeedRunOptions): Promise<void> {
 // CLI
 // ---------------------------------------------------------------------------
 
-function parseFlags(argv: readonly string[]): {
-	dryRun: boolean;
-	reset: boolean;
-	verbose: boolean;
-	help: boolean;
-} {
-	return {
-		dryRun: argv.includes('--dry-run'),
-		reset: argv.includes('--reset'),
-		verbose: argv.includes('--verbose'),
-		help: argv.includes('--help') || argv.includes('-h'),
-	};
-}
-
 async function main(): Promise<void> {
-	const { dryRun, reset, verbose, help } = parseFlags(process.argv.slice(2));
+	const { dryRun, reset, verbose, help } = parseSeedFlags();
 
 	if (help) {
 		console.log(`seed-pages-and-blocks — seed pages, block_*, nav_links, error_pages.
