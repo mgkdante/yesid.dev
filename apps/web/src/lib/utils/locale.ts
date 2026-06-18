@@ -11,6 +11,16 @@ export const DEFAULT_LOCALE: Locale = 'en';
 export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
 
 /**
+ * Type guard: is an arbitrary value one of the SUPPORTED_LOCALES? Narrows to
+ * Locale on success and accepts null/undefined so query-param guards (?lang=,
+ * ?locale=) can pass `url.searchParams.get(...)` straight in. Shared by the
+ * weather + OG endpoints so the membership check lives in one place.
+ */
+export function isSupportedLocale(value: string | null | undefined): value is Locale {
+	return value != null && (SUPPORTED_LOCALES as readonly string[]).includes(value);
+}
+
+/**
  * A generic localized container: any object with a required `en` key and
  * optional `fr`/`es` keys. Covers both LocalizedString (string values) and
  * LocalizedBlockEditorDoc (BlockEditorDoc values).

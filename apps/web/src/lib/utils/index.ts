@@ -18,7 +18,10 @@
 // Documented in CONSTITUTION.md § Data Architecture (17b-9).
 
 export * from './cn'
+export * from './collections'
 export * from './locale'
+export * from './project-metrics'
+export * from './service-colors'
 export * from './shapes'
 export * from './stack-roles'
 export * from './service-svg'

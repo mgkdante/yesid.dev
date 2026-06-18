@@ -13,7 +13,6 @@
 //   /                     -> loadDrawSVG() + loadCustomEase() in HeroBanner,
 //                            loadDrawSVG() in DataFlowDiagram/HomeCloser
 //   /blog, /projects      -> loadDrawSVG() + loadFlip()
-//   /tech-stack           -> loadMotionPathPlugin() + loadDrawSVG() in StackConnections
 //   any route with SvgIcon -> loadDrawSVG() + loadMorphSVG() (morph path is lazy
 //                            since SvgIcon does its own Promise.all at mount)
 
@@ -83,19 +82,6 @@ export async function loadCustomEase(): Promise<void> {
 	const mod = await import('gsap/CustomEase');
 	gsap.registerPlugin(mod.CustomEase);
 	loadedPlugins.add('CustomEase');
-}
-
-export async function loadMotionPathPlugin(): Promise<void> {
-	if (loadedPlugins.has('MotionPath')) return;
-	const mod = await import('gsap/MotionPathPlugin');
-	gsap.registerPlugin(mod.MotionPathPlugin);
-	loadedPlugins.add('MotionPath');
-}
-
-export async function loadSplitText(): Promise<void> {
-	if (loadedPlugins.has('SplitText')) return;
-	gsap.registerPlugin(SplitText);
-	loadedPlugins.add('SplitText');
 }
 
 // Re-export for motion code that needs a direct symbol reference.
