@@ -441,7 +441,7 @@
 		width: 1.75rem;
 		height: 1.75rem;
 		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: var(--card);
 		font-family: var(--font-heading);
 		font-size: 1rem;
