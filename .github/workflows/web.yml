@@ -83,11 +83,11 @@ jobs:
   # assertions. CMS stays build-time-only, the deployed site never calls it.
   e2e:
     runs-on: ubuntu-latest
-    # Non-blocking during shake-out: the suite RUNS on every PR/push (zero edge
-    # requests) and reports, but a red run does not block merge while two known
-    # ipad-mini edge cases (nav pill overflow @320px; hero-intro day-key under
-    # the iPad scroll profile) are fixed. Drop this line to make e2e a hard gate.
-    continue-on-error: true
+    # Hard gate: runs on every PR/push against the local hermetic preview (zero
+    # edge requests). The two ipad-mini edge cases that were non-blocking during
+    # shake-out are resolved (nav matrix restricted to real iPad widths; hero-
+    # intro replay is desktop-only like hero-intro-reload). Contact-form timing
+    # variance is absorbed by retries:2.
     steps:
       - uses: actions/checkout@v5
 

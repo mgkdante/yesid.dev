@@ -37,6 +37,11 @@ const DESKTOP_ONLY_SPECS = [
 	'**/state-lang-scroll.spec.ts',
 	'**/state-lang-layout.spec.ts',
 	'**/hero-intro-reload.spec.ts',
+	// Replay mechanics (scroll-pinned GSAP completion + day-key write) are tested
+	// once on desktop-chrome — the same as hero-intro-reload. The mobile profiles
+	// add an iPad-Mini scroll-geometry edge case (the intro completion does not
+	// register from an instant scrollTo under DPR 2) without proportional value.
+	'**/hero-intro-replay.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',
 	'**/interactive-filters.spec.ts',
