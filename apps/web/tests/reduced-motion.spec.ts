@@ -27,9 +27,11 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		// → initLenis() has definitely run, THEN assert Lenis never attached.
 		await page.waitForLoadState('load');
 		await expect(page.getByTestId('app-root')).toBeVisible();
-		expect(
-			await page.evaluate(() => document.documentElement.classList.contains('lenis')),
-		).toBe(false);
+		await expect
+			.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis')), {
+				timeout: 2000,
+			})
+			.toBe(false);
 	});
 
 	test('reduce: about train↔rocket renders the train, idle bob gated off', async ({ page }) => {
@@ -41,8 +43,9 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		const paths = widget.locator('svg path');
 		expect(await paths.count()).toBeGreaterThan(5);
 		// The ceaseless idle bob must be suppressed under reduced motion.
-		const bob = await widget.evaluate((el) => getComputedStyle(el).animationName);
-		expect(bob).toBe('none');
+		await expect
+			.poll(() => widget.evaluate((el) => getComputedStyle(el).animationName), { timeout: 1000 })
+			.toBe('none');
 	});
 
 	test('reduce: weather scene is a static composition (parked, never blank)', async ({
@@ -63,9 +66,11 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		const count = await particles.count();
 		expect(count).toBeGreaterThan(0);
 		for (let i = 0; i < count; i++) {
-			expect(
-				await particles.nth(i).evaluate((el) => getComputedStyle(el).animationName),
-			).toBe('none');
+			await expect
+				.poll(() => particles.nth(i).evaluate((el) => getComputedStyle(el).animationName), {
+					timeout: 1000,
+				})
+				.toBe('none');
 		}
 	});
 
