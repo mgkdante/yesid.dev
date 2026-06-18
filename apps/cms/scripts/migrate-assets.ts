@@ -29,6 +29,8 @@
  *   --source <path>   Source root on disk (default: ../web/static at monorepo)
  *   --dry-run         Skip uploads; print what WOULD happen.
  *   --reset           Delete previously-uploaded files first, then upload all.
+ *   --preserve-ids-from-map
+ *                     Upload new files with IDs from assets-id-map.json.
  *
  * Required env:
  *   DIRECTUS_ADMIN_TOKEN  — preferred (skips /auth/login)
@@ -431,6 +433,37 @@ export function collectPreservedIdMapEntries(
 	return preservedEntries;
 }
 
+export function desiredIdsForManifest(
+	manifest: AssetsManifest,
+	idMap: Readonly<Record<string, unknown>>,
+): Map<string, string> {
+	const desiredIds = new Map<string, string>();
+	for (const entry of manifest.assets) {
+		const desiredId = idMap[entry.legacyPath];
+		if (typeof desiredId !== 'string' || desiredId.length === 0) {
+			throw new Error(
+				`[migrate] missing preserved file id for ${entry.legacyPath}`,
+			);
+		}
+		desiredIds.set(entry.legacyPath, desiredId);
+	}
+	return desiredIds;
+}
+
+export function findPreservedIdConflicts(
+	existingByLegacyPath: ReadonlyMap<string, string>,
+	desiredIds: ReadonlyMap<string, string>,
+): readonly { legacyPath: string; existingId: string; desiredId: string }[] {
+	const conflicts: { legacyPath: string; existingId: string; desiredId: string }[] = [];
+	for (const [legacyPath, existingId] of existingByLegacyPath) {
+		const desiredId = desiredIds.get(legacyPath);
+		if (desiredId && desiredId !== existingId) {
+			conflicts.push({ legacyPath, existingId, desiredId });
+		}
+	}
+	return conflicts;
+}
+
 // --- Directus I/O (only exercised by CLI entrypoint) -----------------------
 
 interface MigrateOptions {
@@ -448,6 +481,7 @@ interface MigrateOptions {
 	outputMapPaths: readonly string[];
 	dryRun: boolean;
 	reset: boolean;
+	preserveIds?: ReadonlyMap<string, string>;
 }
 
 interface DirectusFolder {
@@ -491,10 +525,12 @@ async function uploadOne(
 	entry: AssetEntry,
 	folderId: string,
 	sourceRoot: string,
+	desiredId?: string,
 ): Promise<string> {
 	const absPath = resolveSourcePath(entry, sourceRoot);
 	const bytes = readFileSync(absPath);
 	const form = new FormData();
+	if (desiredId) form.append('id', desiredId);
 	form.append('folder', folderId);
 	form.append('legacy_path', entry.legacyPath);
 	form.append('description', entry.description);
@@ -614,6 +650,21 @@ export async function migrateAssets(
 		}
 	}
 
+	if (!opts.reset && opts.preserveIds?.size) {
+		const conflicts = findPreservedIdConflicts(existingByLegacyPath, opts.preserveIds);
+		if (conflicts.length > 0) {
+			const list = conflicts
+				.map(
+					(conflict) =>
+						`  - ${conflict.legacyPath}: existing=${conflict.existingId}, desired=${conflict.desiredId}`,
+				)
+				.join('\n');
+			throw new Error(
+				`[migrate] ${conflicts.length} preserved id conflicts found. Re-run with --reset only after verifying these are disposable migrated assets.\n${list}`,
+			);
+		}
+	}
+
 	const { alreadyUploaded, toUpload } = filterToUpload(manifest, existingByLegacyPath);
 
 	if (alreadyUploaded.size > 0) {
@@ -633,13 +684,26 @@ export async function migrateAssets(
 			);
 		}
 		let fileId: string;
+		const desiredId = opts.preserveIds?.get(entry.legacyPath);
 		try {
-			fileId = await uploadOneRateLimited(client, entry, folderId, opts.sourceRoot);
+			fileId = await uploadOneRateLimited(
+				client,
+				entry,
+				folderId,
+				opts.sourceRoot,
+				desiredId,
+			);
 		} catch (err) {
 			const msgs = parseErrors(err);
 			throw new DirectusError(
 				500,
 				`Upload failed for ${entry.legacyPath}: ${msgs.join(' · ')}`,
+			);
+		}
+		if (desiredId && fileId !== desiredId) {
+			throw new DirectusError(
+				500,
+				`Upload failed for ${entry.legacyPath}: Directus returned ${fileId}, expected preserved id ${desiredId}`,
 			);
 		}
 		idMap.set(entry.legacyPath, fileId);
@@ -685,25 +749,28 @@ function parseCliArgs(argv: readonly string[]): {
 	sourceRoot?: string;
 	dryRun: boolean;
 	reset: boolean;
+	preserveIdsFromMap: boolean;
 } {
 	let sourceRoot: string | undefined;
 	let dryRun = false;
 	let reset = false;
+	let preserveIdsFromMap = false;
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
 		if (arg === '--dry-run') dryRun = true;
 		else if (arg === '--reset') reset = true;
+		else if (arg === '--preserve-ids-from-map') preserveIdsFromMap = true;
 		else if (arg === '--source' && i + 1 < argv.length) {
 			sourceRoot = argv[i + 1];
 			i++;
 		}
 	}
-	return { sourceRoot, dryRun, reset };
+	return { sourceRoot, dryRun, reset, preserveIdsFromMap };
 }
 
 async function main(): Promise<void> {
 	const directusUrl = defaultDirectusUrl();
-	const { sourceRoot: cliSource, dryRun, reset } = parseCliArgs(
+	const { sourceRoot: cliSource, dryRun, reset, preserveIdsFromMap } = parseCliArgs(
 		process.argv.slice(2),
 	);
 
@@ -740,6 +807,16 @@ async function main(): Promise<void> {
 		),
 	];
 
+	let preserveIds: Map<string, string> | undefined;
+	if (preserveIdsFromMap) {
+		if (!existsSync(outputMapPaths[0])) {
+			throw new Error(`[migrate] id map not found: ${outputMapPaths[0]}`);
+		}
+		const idMapJson = JSON.parse(readFileSync(outputMapPaths[0], 'utf8')) as Record<string, unknown>;
+		preserveIds = desiredIdsForManifest(manifest, idMapJson);
+		log.info(`preserving ${preserveIds.size} file ids from ${outputMapPaths[0]}`);
+	}
+
 	const token = dryRun ? 'dry-run' : await getAdminTokenLib(directusUrl);
 
 	await migrateAssets(manifest, {
@@ -749,6 +826,7 @@ async function main(): Promise<void> {
 		outputMapPaths,
 		dryRun,
 		reset,
+		preserveIds,
 	});
 	log.info('');
 	log.info('done.');

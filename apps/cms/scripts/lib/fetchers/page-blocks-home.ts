@@ -347,7 +347,7 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const rowGroup = (key: 'contact' | 'connect' | 'about') => ({
+	const rowGroup = (key: 'stack' | 'contact' | 'connect' | 'read' | 'about') => ({
 		label: toLocalizedString(tr, `rows_${key}_label`),
 		description: toLocalizedString(tr, `rows_${key}_description`),
 		action: toLocalizedString(tr, `rows_${key}_action`),
@@ -361,12 +361,10 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 			href: typeof raw.cta_href === 'string' ? raw.cta_href : '/contact',
 		},
 		rows: {
+			stack: rowGroup('stack'),
 			contact: rowGroup('contact'),
 			connect: rowGroup('connect'),
-			read: {
-				label: toLocalizedString(tr, 'rows_read_label'),
-				action: toLocalizedString(tr, 'rows_read_action'),
-			},
+			read: rowGroup('read'),
 			about: rowGroup('about'),
 		},
 		attribution: {

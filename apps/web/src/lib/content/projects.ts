@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
-// Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services). Helpers live in projects.companion.ts.
+// Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services).
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
@@ -894,7 +894,3 @@ export const projects: readonly Project[] = [
 		title: { en: 'Café Arona', es: 'Café Arona', fr: 'Café Arona' },
 	},
 ];
-
-// Re-export hand-written companion module so consumers can keep importing
-// chrome / helpers / type defs from the original path 'projects'.
-export * from './projects.companion';

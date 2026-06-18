@@ -26,12 +26,11 @@
 	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
 	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
 	import { SectionHeading } from '$lib/components/brand';
-	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import type { Service, ServicesGridContent } from '$lib/types';
 
 	// slice-28.5 (#124): services arrive as a prop from the home
 	// +page.server.ts load (repository -> adapter), replacing the previous
-	// direct getVisibleServices() call into the $lib/content companion. Same
+	// direct getVisibleServices() call into the static helper layer. Same
 	// data, adapter-resolved — so a slice-26 adapter re-point reaches this grid.
 	let {
 		servicesGrid: servicesGridContent,
@@ -364,20 +363,20 @@
 	.services-title {
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: 1.5rem;
+		font-size: var(--text-card-title);
 		line-height: 1.1;
 		color: var(--foreground);
-		letter-spacing: -0.02em;
+		letter-spacing: 0;
 	}
 
 	@media (min-width: 768px) {
 		.services-title {
-			font-size: 1.75rem;
+			font-size: calc(var(--text-card-title) + 0.25rem);
 		}
 	}
 
 	.services-benefit {
-		font-size: 0.95rem;
+		font-size: var(--text-card-body);
 		line-height: 1.4;
 		color: var(--muted-foreground);
 	}
@@ -403,10 +402,10 @@
 
 	.services-metric-label {
 		font-family: var(--font-mono);
-		font-size: 0.8rem;
+		font-size: var(--text-card-meta);
 		color: var(--muted-foreground);
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
+		letter-spacing: 0;
 	}
 
 	@media (min-width: 768px) {
@@ -414,7 +413,7 @@
 			font-size: 1.75rem;
 		}
 		.services-metric-label {
-			font-size: 0.9rem;
+			font-size: var(--text-card-meta);
 		}
 	}
 

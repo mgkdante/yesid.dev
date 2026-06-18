@@ -13,6 +13,7 @@ import {
 	buildServiceNode,
 	buildCreativeWorkNode,
 } from './jsonld';
+import type { BlogPost } from '$lib/types';
 
 describe('PERSON_ID / WEBSITE_ID constants', () => {
 	it('PERSON_ID resolves against SITE_HOST with #person fragment', () => {
@@ -162,6 +163,36 @@ describe('buildBlogPostingNode', () => {
 		const post = posts[0];
 		const node = buildBlogPostingNode(post, 'en');
 		expect(node.datePublished).toBe(post.date);
+	});
+
+	it('uses CMS-backed SEO fields for BlogPosting description, keywords, modified date, and image', () => {
+		const post = {
+			slug: 'raw-sql-control',
+			title: 'Raw SQL Control',
+			excerpt: 'Short listing excerpt.',
+			seoDescription:
+				'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.',
+			date: '2026-04-14',
+			dateModified: '2026-04-20',
+			lang: 'en',
+			category: 'professional',
+			tags: ['sql', 'postgresql'],
+			animation: 'draw',
+			svg: 'pro-code',
+			url: '/blog/raw-sql-control',
+			external: false,
+		} satisfies BlogPost;
+
+		const node = buildBlogPostingNode(post, 'en', {
+			imageUrl: 'https://cms.example.com/assets/11111111-1111-4111-8111-111111111111?key=og-1200',
+		});
+
+		expect(node.description).toBe(post.seoDescription);
+		expect(node.dateModified).toBe('2026-04-20');
+		expect(node.keywords).toEqual(['sql', 'postgresql']);
+		expect(node.image).toBe(
+			'https://cms.example.com/assets/11111111-1111-4111-8111-111111111111?key=og-1200',
+		);
 	});
 });
 

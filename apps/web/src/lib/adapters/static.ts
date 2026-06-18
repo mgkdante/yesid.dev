@@ -19,10 +19,6 @@
 //      when server data is absent); HeroBanner's client-side
 //      generateHeroData() refresh (interactive mock regen, not CMS data);
 //      test files stubbing load output.
-//   KNOWN LEFTOVER (out of 28.5 scope, on record): HomeCloser.svelte still
-//   calls getLatestPosts(2,'professional') + reads siteMeta directly for the
-//   departure board — thread it through the home load() if/when slice-26
-//   needs the home route fully adapter-resolved.
 //
 // Each method is a thin async wrapper around a content-layer export. No
 // transformation, no validation (Zod lands in Slice 17c between adapter and
@@ -38,13 +34,13 @@ import {
 	getAllTags,
 	getAllStackItems,
 	getServiceIdsForProjects,
-} from '$lib/content/projects.companion';
+} from '$lib/projects/static-helpers';
 import { services } from '$lib/content/services';
 import {
 	getServiceById,
 	getVisibleServices,
 	getAdjacentServices,
-} from '$lib/content/services.companion';
+} from '$lib/services/static-helpers';
 import { blogPosts } from '$lib/content/blog';
 // Slice-27.1: blog.html + blog.bodyBySlug now mirror the directus adapter —
 // `bodyBySlug` reads the CMS-derived Block Editor doc from blog-bodies.ts and
@@ -63,9 +59,10 @@ import {
 	getSvgContentsForPosts,
 	resolveSvgFallbackName,
 	resolveAnimation,
-} from '$lib/content/blog.companion';
+} from '$lib/blog/static-helpers';
 import { siteMeta } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
+import { routeSeoOverrides } from '$lib/content/route-seo';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import {
 	routeSeoFactories,
@@ -210,16 +207,8 @@ export const staticAdapter: ContentAdapter = {
 		// (The retired directus adapter sourced this from the CMS singleton;
 		// the static module keeps the same shape so the contract is uniform.)
 		siteSeoDefaults: async () => STATIC_SITE_SEO_DEFAULTS,
-		// routeSeo.byPath — pruned at slice-26 close together with the dormant
-		// directus adapter (the RUN_PARITY oracle that exercised it on both
-		// adapters is fulfilled). route-seo-defaults.ts is the canonical
-		// per-route override source; the composer receives routeOverride:
-		// undefined below (its cold-start contract, still covered by
-		// __tests__/compose-page-seo.test.ts).
-		// slice-18 18h Phase 5 Task 15: forRoute now uses the same composer pattern
-		// as the (since-removed) directus adapter (compose-page-seo + route-seo-factories +
-		// route-seo-defaults). Replaces the legacy `routeSeoEntries` lookup that
-		// got deleted with `apps/web/src/lib/content/meta.ts`.
+		// Static-route editorial SEO comes from generated routeSeoOverrides.
+		// route-seo-defaults.ts keeps technical defaults only.
 		forRoute: async (
 			routeId: string,
 			locale: Locale,
@@ -228,20 +217,20 @@ export const staticAdapter: ContentAdapter = {
 			const { adapter } = await import('$lib/adapters');
 			const dynamicFactory = routeSeoFactories[routeId];
 			if (dynamicFactory) {
-				return dynamicFactory({
+				return PageSeoSchema.parse(await dynamicFactory({
 					params: params ?? {},
 					locale,
 					adapter,
 					siteMeta,
 					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
-				});
+				}));
 			}
 			if (routeId === '/__error') {
-				return errorSeoFallback({
+				return PageSeoSchema.parse(errorSeoFallback({
 					locale,
 					siteMeta,
 					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
-				});
+				}));
 			}
 			const codeDefaults = codeRouteSeoDefaults[routeId];
 			if (!codeDefaults) {
@@ -249,14 +238,15 @@ export const staticAdapter: ContentAdapter = {
 					`[adapter.meta.forRoute] Unknown route id: ${routeId}. Add an entry in route-seo-defaults.ts.`,
 				);
 			}
-			return composePageSeo({
+			const routeOverride = routeSeoOverrides.find((entry) => entry.path === routeId);
+			return PageSeoSchema.parse(composePageSeo({
 				routeId,
 				locale,
 				siteMeta,
 				siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
-				routeOverride: undefined,
+				routeOverride,
 				codeDefaults,
-			});
+			}));
 		},
 	},
 	techStack: {

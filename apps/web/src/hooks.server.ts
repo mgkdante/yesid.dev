@@ -1,7 +1,7 @@
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { adapter } from '$lib/adapters';
 import { pathLocale } from '$lib/utils/locale-routing';
-import type { ErrorPageContent } from '$lib/content/nav';
+import type { ErrorPageContent } from '$lib/navigation/types';
 
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
 const PUBLIC_CDN_CACHE_CONTROL = 'max-age=86400, stale-while-revalidate=604800';

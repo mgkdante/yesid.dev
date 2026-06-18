@@ -36,7 +36,7 @@ import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
 import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
 import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
-import type { NavLink, ErrorPageContent } from '$lib/content/nav';
+import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
 
 // CDN cache-control headers are set centrally in hooks.server.ts via
 // response.headers.set (not setHeaders). Setting them here too triggered a

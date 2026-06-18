@@ -38,6 +38,7 @@
 import { parseArgs } from 'node:util';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
@@ -53,6 +54,7 @@ import {
 } from './lib/generated-manifest';
 import type { ExportData } from './export-data';
 import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
+import { fetchRouteSeoOverrides } from './lib/fetchers/route-seo';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
 import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
@@ -82,6 +84,8 @@ import {
 } from './lib/fetchers/page-blocks-home';
 import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
 import type { CmsClient } from './lib/fetchers/types';
+import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
+import assetManifest from '../fixtures/assets-manifest.json' with { type: 'json' };
 
 const log = createLogger('export-fallbacks');
 
@@ -115,6 +119,7 @@ export interface RunOptions {
 const ALL_MODULES = [
 	'site-meta',
 	'site-seo-defaults',
+	'route-seo',
 	'morph-shapes',
 	'error-pages',
 	'nav',
@@ -137,6 +142,7 @@ const ALL_MODULES = [
 	'cta',
 	'closer',
 	'about-page',
+	'media-assets',
 ] as const;
 type ModuleName = (typeof ALL_MODULES)[number];
 
@@ -147,6 +153,55 @@ function shouldRun(filter: string | undefined, name: ModuleName): boolean {
 /** Timeout (ms) for the entire fetchAll operation before falling back to cache. */
 const FETCH_ALL_TIMEOUT_MS = 60_000;
 type Env = Record<string, string | undefined>;
+
+interface MediaMirrorManifest {
+	sourceRoot: string;
+	assets: readonly { legacyPath: string }[];
+}
+
+export function buildMirroredMediaAssetsFromManifest(
+	manifest: MediaMirrorManifest,
+	ids: Readonly<Record<string, string>>,
+	repoRoot = resolve(SCRIPT_DIR, '../../..'),
+): Readonly<Record<string, string>> {
+	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
+	const mirrored: Record<string, string> = {};
+	const missingIds: string[] = [];
+	const missingFiles: string[] = [];
+
+	for (const item of manifest.assets) {
+		const id = ids[item.legacyPath];
+		if (!id) {
+			missingIds.push(item.legacyPath);
+			continue;
+		}
+		if (!existsSync(resolve(staticRoot, item.legacyPath))) {
+			missingFiles.push(item.legacyPath);
+			continue;
+		}
+		mirrored[id] = `/${item.legacyPath}`;
+	}
+
+	if (missingIds.length > 0) {
+		throw new Error(
+			`[media-assets] missing Directus UUID(s) in assets-id-map.json: ${missingIds.join(', ')}`,
+		);
+	}
+	if (missingFiles.length > 0) {
+		throw new Error(
+			`[media-assets] missing mirrored static asset file(s) under ${manifest.sourceRoot}: ${missingFiles.join(', ')}`,
+		);
+	}
+
+	return mirrored;
+}
+
+export function buildMirroredMediaAssets(): Readonly<Record<string, string>> {
+	return buildMirroredMediaAssetsFromManifest(
+		assetManifest as MediaMirrorManifest,
+		assetIdMap as Record<string, string>,
+	);
+}
 
 function envFlag(value: string | undefined): boolean {
 	return ['1', 'true'].includes((value ?? '').toLowerCase());
@@ -169,6 +224,9 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	const fetchAllInner = async (): Promise<ExportData> => {
 		const client = createClient(opts.directusUrl, opts.token) as unknown as CmsClient;
 		const out: ExportData = {};
+		if (shouldRun(opts.module, 'media-assets')) {
+			out.mediaAssets = buildMirroredMediaAssets();
+		}
 
 		// Each task is [moduleName, async () => void that assigns to out.*].
 		// Only enqueue if shouldRun passes; then fan-out in parallel.
@@ -190,6 +248,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('site-seo-defaults', async () => {
 			out.siteSeoDefaults = await fetchSiteSeoDefaults({ client });
 			log.info('  site-seo-defaults done.');
+		});
+		enqueue('route-seo', async () => {
+			out.routeSeo = await fetchRouteSeoOverrides({ client });
+			log.info(`  route-seo done (${out.routeSeo.length} rows).`);
 		});
 		enqueue('morph-shapes', async () => {
 			out.morphShapes = await fetchMorphShapes({ client });

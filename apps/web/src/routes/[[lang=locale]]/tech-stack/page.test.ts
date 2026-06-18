@@ -5,6 +5,8 @@
 // regenerates — so this proves the EN fallback path, i.e. exactly what an
 // EXPORT_FALLBACKS_SKIP=1 build ships. Never blank.
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Page from './+page.svelte';
@@ -19,6 +21,32 @@ const stubData = {
 } as unknown as PageData;
 
 describe('/tech-stack stack explainer', () => {
+	it('renders stack kicker and engine loading copy from CMS page chrome', () => {
+		const cmsData = {
+			...stubData,
+			techStackPage: {
+				...techStackPageContent,
+				hero: {
+					...techStackPageContent.hero,
+					stackKicker: { en: 'CMS stack question' },
+					engineLoading: { en: '~ CMS engine loading...' },
+					stackExplainer: { en: 'CMS stack explainer.' },
+				},
+			},
+		} as unknown as PageData;
+
+		render(Page, { props: { data: cmsData } });
+
+		expect(screen.getByTestId('stack-explainer').textContent).toContain('CMS stack question');
+		expect(screen.getByTestId('stack-engine-loading').textContent).toContain('~ CMS engine loading...');
+	});
+
+	it('does not keep old hardcoded stack kicker or loading copy in the route component', () => {
+		const source = readFileSync(join(process.cwd(), 'src/routes/[[lang=locale]]/tech-stack/+page.svelte'), 'utf-8');
+		expect(source).not.toContain('what\\\'s a "stack"?');
+		expect(source).not.toContain('rolling out the drawing board');
+	});
+
 	it('renders non-empty from the committed module (byte-identical EN fallback)', () => {
 		render(Page, { props: { data: stubData } });
 		const explainer = screen.getByTestId('stack-explainer');

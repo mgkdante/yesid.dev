@@ -12,12 +12,12 @@ describe('FLAT_FIELD_PLAN shape', () => {
 	it('covers the 7 translation collections with the locked column counts', () => {
 		expect(count('block_hero_translations')).toBe(12);
 		expect(count('block_manifesto_translations')).toBe(25);
-		expect(count('block_closer_translations')).toBe(18);
+		expect(count('block_closer_translations')).toBe(22);
 		// 13 flattened from JSON + 5 seeded hero terminal templates (operator
-		// addendum) + 1 seeded stack_explainer (go2/w5 engine-layered-learning)
-		expect(count('block_tech_stack_page_content_translations')).toBe(19);
-		expect(count('block_contact_content_translations')).toBe(21);
-		expect(count('block_about_content_translations')).toBe(26); // 25 string + polaroids list
+		// addendum) + 1 seeded stack_explainer + 2 Stack chrome leak fields.
+		expect(count('block_tech_stack_page_content_translations')).toBe(21);
+		expect(count('block_contact_content_translations')).toBe(26);
+		expect(count('block_about_content_translations')).toBe(28); // 27 string + polaroids list
 		expect(count('block_about_intro_translations')).toBe(2);
 	});
 	it('parent scalar moves are locked at 13', () => {

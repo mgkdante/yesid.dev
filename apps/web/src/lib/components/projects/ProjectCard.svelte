@@ -19,7 +19,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
-	import { cn } from '$lib/utils';
+	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';
 	import { siteLabels } from '$lib/content';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';
 
@@ -33,8 +33,6 @@
 		services?: readonly Service[];
 		/** SVG contents keyed by service ID */
 		serviceSvgContents?: Record<string, string>;
-		/** Position index for stagger animations */
-		index?: number;
 		variant?: ProjectCardVariant;
 		cardSize?: ProjectCardSize;
 		testId?: string;
@@ -51,7 +49,6 @@
 		project,
 		services = [],
 		serviceSvgContents = {},
-		index = 0,
 		variant = 'listing',
 		cardSize = variant === 'proof' ? 'proof' : 'listing',
 		testId = variant === 'proof' ? 'proof-card' : 'project-card',
@@ -81,6 +78,15 @@
 			.filter((s): s is Service => !!s)
 	);
 
+	// Proof variant only: the card body LEADS with a station signage chip naming
+	// which station(s) built the project, drawn in the theme-INVARIANT --signage
+	// tokens (real signs don't reskin when the lights change). Restored after the
+	// consolidation migrated the home reel onto this shared card. Sorted by
+	// station number; 2-digit padded (StationTabs convention).
+	let proofStations = $derived([...projectServices].sort((a, b) => a.station - b.station));
+	const stationsOneSystemTemplate = resolveLocale(siteLabels.ui.stationsOneSystem, locale);
+	const padStation = (n: number): string => String(n).padStart(2, '0');
+
 	// Gradient color based on the first related service's position in the palette.
 	// GO-2: keyed by the 4 consolidated stations; unknown/archived ids take the
 	// fallback pair below.
@@ -89,16 +95,6 @@
 		'data-pipeline': ['var(--accent)', 'var(--accent-hover)'],
 		'analytics-reporting': ['var(--primary)', 'var(--accent)'],
 		'web-development': ['var(--accent)', 'var(--primary)']
-	};
-
-	// GO2-W5 STM line bullets: each service chip carries its line color —
-	// database = orange line, pipeline = yellow line (line-amber survives
-	// daylight), analytics = green line, web = lunar white.
-	const SERVICE_LINE_COLORS: Record<string, string> = {
-		'database-engineering': 'var(--primary)',
-		'data-pipeline': 'var(--line-amber)',
-		'analytics-reporting': 'var(--signal-proceed)',
-		'web-development': 'var(--signal-lunar)'
 	};
 
 	let gradientColors = $derived(
@@ -110,19 +106,14 @@
 	const stackLabel = listingChrome.filters.techStack;
 	const servicesLabel = listingChrome.filters.services;
 	const stackOverflowTemplate = resolveLocale(listingChrome.card.stackOverflowSuffix, locale);
+	const moreMetricsLabel = resolveLocale(siteLabels.a11y.moreMetrics, locale);
 	const stackOverflow = $derived(
 		project.stack.length > 5
 			? stackOverflowTemplate.replace('{count}', String(project.stack.length - 5))
 			: ''
 	);
 
-	const proofMetrics = $derived(
-		project.impactMetrics && project.impactMetrics.length > 0
-			? project.impactMetrics
-			: project.impactMetric
-				? [project.impactMetric]
-				: []
-	);
+	const proofMetrics = $derived(projectMetrics(project));
 	const visibleProofMetrics = $derived(proofMetrics.slice(0, 3));
 	const hasProofMetricOverflow = $derived(proofMetrics.length > 3);
 </script>
@@ -170,21 +161,38 @@
 
 		<!-- Content area — all content stacks naturally below the banner -->
 		<div class="project-card-body flex flex-1 flex-col p-4">
+			<!-- Proof reel: the body leads with the station signage chip (which
+			     station built this), theme-invariant signage colors. -->
+			{#if isProof && proofStations.length > 0}
+				<span class="proof-station-row" data-testid="proof-station-row">
+					{#each proofStations as station (station.id)}
+						<span class="proof-station-chip" data-testid="proof-station-chip">
+							<span class="proof-station-chip-num">{padStation(station.station)}</span>
+							{#if proofStations.length <= 2}<span>{resolveLocale(station.title, locale)}</span>{/if}
+						</span>
+					{/each}
+					{#if proofStations.length > 2}
+						<span class="proof-station-caption">{stationsOneSystemTemplate.replace('{count}', String(proofStations.length))}</span>
+					{/if}
+				</span>
+			{/if}
+
 			<!-- Title below the gradient, not overlaid -->
 			<h2
-				class="text-base font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary md:text-lg"
+				class="project-card-title font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary"
 				data-testid={titleTestId}
 			>
 				{resolveLocale(project.title, locale)}
 			</h2>
 
 			<!-- Description -->
-			<p class="mt-1.5 text-sm leading-relaxed text-[var(--secondary-foreground)]" data-testid={excerptTestId}>
+			<p class="project-card-excerpt mt-1.5 leading-relaxed text-[var(--secondary-foreground)]" data-testid={excerptTestId}>
 				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
-			<!-- Service badges row — SVGs with MorphSVG on card hover -->
-			{#if projectServices.length > 0}
+			<!-- Service badges row — SVGs with MorphSVG on card hover. Listing only;
+			     the proof variant uses the station signage chip above instead. -->
+			{#if !isProof && projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, locale)}
@@ -206,10 +214,10 @@
 							{/if}
 							<span
 								class="line-bullet"
-								style="background: {SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)'};"
+								style="background: {serviceLineColor(service.id)};"
 								aria-hidden="true"
 							></span>
-							<span class="font-mono text-caption leading-tight text-[var(--foreground)]">
+							<span class="project-card-meta font-mono leading-tight text-[var(--foreground)]">
 								{resolveLocale(service.title, locale)}
 							</span>
 						</div>
@@ -226,7 +234,7 @@
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
 					{#if stackOverflow}
-						<span class="mt-0.5 block font-mono text-caption text-[var(--muted-foreground)]">{stackOverflow}</span>
+						<span class="project-card-meta mt-0.5 block font-mono text-[var(--muted-foreground)]">{stackOverflow}</span>
 					{/if}
 				</div>
 			{/if}
@@ -238,6 +246,7 @@
 						<Badge
 							variant="tag-active"
 							size="xs"
+							class="project-card-tag"
 							data-testid={isProof ? 'proof-project-tag' : undefined}
 						>{tag}</Badge>
 					</span>
@@ -263,7 +272,7 @@
 						</div>
 					{/each}
 					{#if hasProofMetricOverflow}
-						<div class="project-card-proof-metric__overflow" data-testid="{metricTestPrefix}-metric-overflow" aria-label="More metrics">...</div>
+						<div class="project-card-proof-metric__overflow" data-testid="{metricTestPrefix}-metric-overflow" aria-label={moreMetricsLabel}>...</div>
 					{/if}
 					{#if visibleProofMetrics.length === 0}
 						<div class="project-card-proof-metric__item" aria-hidden="true">
@@ -288,6 +297,44 @@
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	/* Proof reel station signage chip — which station built the project. Drawn
+	   in the THEME-INVARIANT --signage tokens (a real sign doesn't reskin when
+	   the lights change), with a 2px amber backlit base edge. */
+	.proof-station-row {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.45em;
+		flex-wrap: wrap;
+		margin-bottom: 0.75rem;
+	}
+	.proof-station-chip {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.5em;
+		background: var(--signage-bg);
+		color: var(--signage-text);
+		border: 1px solid color-mix(in srgb, var(--signage-text) 30%, transparent);
+		border-bottom: 2px solid var(--signage-text);
+		border-radius: var(--radius-sm);
+		padding: 0.3rem 0.6rem;
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		line-height: 1.2;
+	}
+	.proof-station-chip-num {
+		font-weight: 800;
+	}
+	.proof-station-caption {
+		font-family: var(--font-mono);
+		font-size: var(--text-micro);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--accent-text);
 	}
 
 	/* GO2-W5 STM line bullet — the service's line color as a roundel dot. */
@@ -325,6 +372,25 @@
 
 	.project-card-media--proof {
 		height: clamp(15rem, 38dvh, 22rem);
+	}
+
+	.project-card-title {
+		font-size: var(--text-card-title);
+		line-height: 1.2;
+		letter-spacing: 0;
+	}
+
+	.project-card-excerpt {
+		font-size: var(--text-card-body);
+	}
+
+	.project-card-meta {
+		font-size: var(--text-card-meta);
+	}
+
+	:global(.project-card-tag) {
+		font-size: var(--text-tag);
+		letter-spacing: 0;
 	}
 
 	.project-card--proof .project-card-body {
@@ -406,7 +472,7 @@
 	.proof-metric-value {
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: 1.875rem;
+		font-size: var(--text-metric-value-default);
 		line-height: 1;
 		color: var(--accent-text);
 		max-width: 100%;
@@ -443,7 +509,7 @@
 		}
 
 		.proof-metric-value {
-			font-size: 2.25rem;
+			font-size: var(--text-metric-value-desktop);
 		}
 
 		.proof-metric-label {
@@ -477,7 +543,7 @@
 		}
 
 		.proof-metric-value {
-			font-size: 1.25rem;
+			font-size: var(--text-metric-value-mobile);
 		}
 
 		.proof-metric-label {

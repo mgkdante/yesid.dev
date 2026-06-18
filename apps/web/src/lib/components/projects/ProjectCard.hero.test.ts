@@ -167,6 +167,17 @@ describe('ProjectCard hero media', () => {
 		]);
 		expect(screen.queryByText('CMS calls per visit')).toBeNull();
 		expect(screen.getByTestId('proof-metric-overflow')).toHaveTextContent('...');
+		expect(screen.getByTestId('proof-metric-overflow')).toHaveAttribute('aria-label', 'More metrics');
+	});
+
+	it('sources the proof metric overflow aria label from siteLabels', () => {
+		const source = readFileSync(
+			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),
+			'utf8',
+		);
+
+		expect(source).toContain('siteLabels.a11y.moreMetrics');
+		expect(source).not.toContain('aria-label="More metrics"');
 	});
 
 	it('keeps the proof reel footprint as a ProjectCard size option', () => {

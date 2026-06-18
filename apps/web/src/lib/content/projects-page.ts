@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // /projects page chrome (intro, heading, empty-state). NEW in slice-18m; heading/emptyState added in go2-t1c2.
 //

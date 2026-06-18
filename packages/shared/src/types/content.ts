@@ -233,6 +233,8 @@ export interface BlogPost {
 	excerpt: string;
 	// ISO date string (YYYY-MM-DD)
 	date: string;
+	// Optional last-updated date for Article/BlogPosting structured data.
+	dateModified?: string;
 	// Language this post was written in — no translation, just native language
 	lang: Locale;
 	// Which content lane this post belongs to
@@ -246,6 +248,13 @@ export interface BlogPost {
 	url: string;
 	// Whether the post is hosted externally (opens in new tab)
 	external: boolean;
+	// Optional per-post SEO override fields authored in the CMS.
+	// seoTitle is the title body; the site appends the brand suffix.
+	seoTitle?: string;
+	seoDescription?: string;
+	// Optional Directus file UUID for OG/Twitter image output.
+	coverImage?: string;
+	coverImageAlt?: string;
 }
 
 // --- About page types ---
@@ -398,6 +407,8 @@ export interface AboutLabels {
 	polaroidNextAria: LocalizedString;
 	testimonialsCarouselAria: LocalizedString;
 	testimonialsTabNavAria: LocalizedString;
+	testimonialsPrevAria: LocalizedString;
+	testimonialsNextAria: LocalizedString;
 	/** Template: placeholders {index} + {total}. */
 	testimonialSlideAria: LocalizedString;
 	/** Template: placeholder {index}. */
@@ -430,7 +441,7 @@ export interface AboutContent {
 // --- Contact page types ---
 
 export interface ContactTerminalField {
-	label: string;
+	label: LocalizedString;
 	placeholder: LocalizedString;
 }
 
@@ -471,6 +482,8 @@ export interface ContactSuccess {
 	meanwhile: LocalizedString;
 	resetLabel: LocalizedString;
 	fieldOk: LocalizedString; // "OK" — used in "✓ {field}: OK"
+	workLinkLabel: LocalizedString;
+	blogLinkLabel: LocalizedString;
 }
 
 export interface ContactContent {
@@ -688,9 +701,10 @@ export interface CloserContent {
 		href: string;
 	};
 	rows: {
+		stack: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
 		contact: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
 		connect: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
-		read: { label: LocalizedString; action: LocalizedString };
+		read: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
 		about: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
 	};
 	attribution: {

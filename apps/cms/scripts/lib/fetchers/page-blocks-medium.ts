@@ -43,6 +43,17 @@ interface ContactChannelRow {
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 
+function localizedWithFallback(
+	rows: ReadonlyArray<Record<string, unknown> & { languages_code: string }>,
+	field: string,
+	fallback: unknown,
+) {
+	const localized = toLocalizedString(rows, field);
+	if (localized.en.trim()) return localized;
+	const fallbackText = str(fallback).trim();
+	return fallbackText ? { ...localized, en: fallbackText } : localized;
+}
+
 export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
@@ -62,6 +73,8 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 			titleLine1: toLocalizedString(tr, 'hero_title_line1'),
 			titleLine2: toLocalizedString(tr, 'hero_title_line2'),
 			terminalAria: toLocalizedString(tr, 'hero_terminal_aria'),
+			stackKicker: toLocalizedString(tr, 'stack_kicker'),
+			engineLoading: toLocalizedString(tr, 'engine_loading'),
 			// Operator addendum: terminal line templates — literal {count} token
 			// interpolated by the component from data.items.length.
 			terminal: {
@@ -146,9 +159,9 @@ export function toContactContent(
 			command: str(raw.form_terminal_command),
 			commandOutput: toLocalizedString(tr, 'form_command_output'),
 			fields: {
-				name: { label: str(raw.form_field_name_label), placeholder: toLocalizedString(tr, 'form_field_name_placeholder') },
-				email: { label: str(raw.form_field_email_label), placeholder: toLocalizedString(tr, 'form_field_email_placeholder') },
-				message: { label: str(raw.form_field_message_label), placeholder: toLocalizedString(tr, 'form_field_message_placeholder') },
+				name: { label: localizedWithFallback(tr, 'form_field_name_label', raw.form_field_name_label), placeholder: toLocalizedString(tr, 'form_field_name_placeholder') },
+				email: { label: localizedWithFallback(tr, 'form_field_email_label', raw.form_field_email_label), placeholder: toLocalizedString(tr, 'form_field_email_placeholder') },
+				message: { label: localizedWithFallback(tr, 'form_field_message_label', raw.form_field_message_label), placeholder: toLocalizedString(tr, 'form_field_message_placeholder') },
 			},
 			submitLabel: toLocalizedString(tr, 'form_submit_label'),
 		},
@@ -165,6 +178,8 @@ export function toContactContent(
 			meanwhile: toLocalizedString(tr, 'success_meanwhile'),
 			resetLabel: toLocalizedString(tr, 'success_reset_label'),
 			fieldOk: toLocalizedString(tr, 'success_field_ok'),
+			workLinkLabel: toLocalizedString(tr, 'success_work_link_label'),
+			blogLinkLabel: toLocalizedString(tr, 'success_blog_link_label'),
 		},
 		socials,
 		web3formsKey: str(raw.web3forms_key),

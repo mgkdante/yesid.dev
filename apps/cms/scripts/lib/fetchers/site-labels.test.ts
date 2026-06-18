@@ -15,7 +15,13 @@ describe('site-labels transform', () => {
 		};
 		const out = toSiteLabels(row);
 		expect(out.a11y.toc).toEqual({ en: 'Table of contents', fr: 'Table des matières' });
+		expect(out.a11y.projectImageOpen).toEqual({ en: 'Open {caption}' });
+		expect(out.a11y.projectImageClose).toEqual({ en: 'Close image' });
+		expect(out.a11y.moreMetrics).toEqual({ en: 'More metrics' });
+		expect(out.a11y.architectureDiagram).toEqual({ en: 'Architecture diagram' });
+		expect(out.a11y.technologyStackTemplate).toEqual({ en: 'Technology stack: {stack}' });
 		expect(out.ui.markerFeatured).toEqual({ en: '{num} / FEATURED' });
+		expect(out.ui.terminalTitle).toEqual({ en: 'terminal' });
 		expect(out.email.contactSubjectTemplate.en).toContain('{name}');
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
 	});
@@ -38,11 +44,20 @@ describe('site-labels transform', () => {
 		});
 		// blog / services / nav / footer companions.
 		expect(out.blogChrome.listing.mobileHeading).toEqual({ en: 'Blog', fr: 'Blogue' });
+		expect(out.blogChrome.detail.code.title).toEqual({ en: 'code', fr: 'code' });
 		expect(out.servicesChrome.detail.backToServicesLabel).toEqual({
 			en: '← All Services',
 			fr: '← Tous les services',
 		});
 		expect(out.navChrome.shared.openMenuAria).toEqual({ en: 'Open menu', fr: 'Ouvrir le menu' });
+		expect(out.a11y.projectImageOpen).toEqual({
+			en: 'Open {caption}',
+			fr: 'Ouvrir {caption}',
+		});
+		expect(out.a11y.technologyStackTemplate).toEqual({
+			en: 'Technology stack: {stack}',
+			fr: 'Stack technique : {stack}',
+		});
 		expect(out.footerChrome.footer.tagline).toEqual({
 			en: '// digital infrastructure',
 			fr: '// infrastructure numérique',

@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // Block Editor body per published blog post, keyed by slug. Powers static blog.bodyBySlug + blog.html (serializeBlocksToHtml).
 //

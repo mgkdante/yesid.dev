@@ -14,6 +14,11 @@ export const CloserContentSchema = z.object({
 		href: z.string(),
 	}),
 	rows: z.object({
+		stack: z.object({
+			label: LocalizedStringSchema,
+			description: LocalizedStringSchema,
+			action: LocalizedStringSchema,
+		}),
 		contact: z.object({
 			label: LocalizedStringSchema,
 			description: LocalizedStringSchema,
@@ -24,9 +29,9 @@ export const CloserContentSchema = z.object({
 			description: LocalizedStringSchema,
 			action: LocalizedStringSchema,
 		}),
-		// `read` has no `description` field in the TS interface
 		read: z.object({
 			label: LocalizedStringSchema,
+			description: LocalizedStringSchema,
 			action: LocalizedStringSchema,
 		}),
 		about: z.object({

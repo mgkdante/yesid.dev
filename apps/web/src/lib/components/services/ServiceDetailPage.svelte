@@ -25,6 +25,7 @@
 	import { onMount } from 'svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';
+	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 
 	let {
 		service,
@@ -84,7 +85,7 @@
 	);
 
 	// ── Table of contents (shared TocNav desktop / TocPill mobile) ──
-	// Chrome is shared across detail pages (one source, see site-content.companion).
+	// Chrome is shared across detail pages through siteLabels.servicesChrome.
 	const tocHeading = $derived(resolveLocale(siteLabels.navChrome.shared.tocHeading, locale));
 	const tocOpenAria = $derived(resolveLocale(siteLabels.navChrome.shared.tocMobileButton, locale));
 	const tocCloseAria = $derived(resolveLocale(siteLabels.navChrome.shared.tocCloseAria, locale));
@@ -156,6 +157,10 @@
 					{/if}
 
 					<p class="detail-description">{description}</p>
+
+					<div class="quiet-mode-slot quiet-mode-slot--desktop">
+						<QuietModeButton />
+					</div>
 				</div>
 
 				<!-- SVG panel — desktop/tablet only (wrapper controls visibility). -->
@@ -172,6 +177,10 @@
 					<ServiceSvgPanel {svgContent} variant="banner" />
 				</div>
 			{/if}
+
+			<div class="quiet-mode-slot quiet-mode-slot--mobile">
+				<QuietModeButton />
+			</div>
 		</div>
 
 		<Separator variant="hazard" />
@@ -435,7 +444,7 @@
 		display: inline-flex;
 		align-items: center;
 		font-family: var(--font-mono);
-		font-size: var(--text-caption);
+		font-size: var(--text-back-link);
 		color: var(--primary);
 		text-decoration: none;
 		margin-bottom: 1.5rem;
@@ -485,6 +494,28 @@
 
 	.hero-text {
 		min-width: 0;
+	}
+
+	.quiet-mode-slot {
+		display: flex;
+	}
+
+	.quiet-mode-slot--desktop {
+		display: none;
+	}
+
+	.quiet-mode-slot--mobile {
+		margin-top: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.quiet-mode-slot--desktop {
+			display: flex;
+		}
+
+		.quiet-mode-slot--mobile {
+			display: none;
+		}
 	}
 
 	/* Bigger station label so "SERVICE 0X / 04" scales with the giant title. */

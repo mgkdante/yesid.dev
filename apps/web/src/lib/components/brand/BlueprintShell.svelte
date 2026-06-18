@@ -113,6 +113,24 @@
 	}
 
 	@media (max-width: 1023px) {
+		.hero-svg {
+			opacity: 0.30;
+		}
+
+		.edge-details :global(.edge-detail) {
+			opacity: 0.30 !important;
+		}
+
+		:global([data-theme='light']) .hero-svg,
+		:global(.theme-light) .hero-svg {
+			opacity: 0.50;
+		}
+
+		:global([data-theme='light']) .edge-details :global(.edge-detail),
+		:global(.theme-light) .edge-details :global(.edge-detail) {
+			opacity: 0.46 !important;
+		}
+
 		.ref-label,
 		.crosshair {
 			display: none;

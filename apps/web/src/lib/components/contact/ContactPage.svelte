@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -21,6 +21,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
 	import type { WeatherData } from '$lib/utils/weather';
+	import { escapeHtml } from '$lib/utils/code-fences';
 	import { pressBounce } from '$lib/motion/actions';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
@@ -41,17 +42,8 @@
 	const pageTitle = resolveLocale(c.pageTitle, locale);
 	const stationLabel = resolveLocale(c.stationLabel, locale);
 	const sendErrorMessage = resolveLocale(c.sendErrorMessage, locale);
-
-	// Inline anchor words for the success "Meanwhile, check out my {work} or {blog}"
-	// line (c.success.meanwhile). These render INSIDE the localized template, so on
-	// /fr the link text must be French too — today they leak English ("work"/"blog").
-	// READY-TO-WIRE: once the CMS fields land, swap the literals for
-	//   resolveLocale(c.success.workLinkLabel, locale) / c.success.blogLinkLabel.
-	// See needsCmsField: siteLabels is the wrong home — these belong on the
-	// generated contact-page.ts `success` group beside `meanwhile`.
-	// TODO(cms): wire to c.success.workLinkLabel / c.success.blogLinkLabel.
-	const workLinkLabel = 'work';
-	const blogLinkLabel = 'blog';
+	const workLinkLabel = resolveLocale(c.success.workLinkLabel, locale);
+	const blogLinkLabel = resolveLocale(c.success.blogLinkLabel, locale);
 
 	// --- Weather freshness (slice-28.1, audit #20/#122) ---
 	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
@@ -62,7 +54,12 @@
 
 	async function refreshWeather() {
 		try {
-			const res = await fetch('/api/weather');
+			// Pass the active locale so OpenWeather localizes `condition` (fr/es),
+			// matching AboutWeather. EN omits the param, so its /api/weather URL
+			// (and CDN cache key) stays byte-identical. Without this, /fr re-fetched
+			// English weather after hydration, overwriting the correct SSR-baked value.
+			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
+			const res = await fetch(url);
 			if (!res.ok) return;
 			const data = (await res.json()) as WeatherData | null;
 			if (data && typeof data.temp === 'number') freshWeather = data;
@@ -137,15 +134,15 @@
 		const newErrors: Record<string, string> = {};
 
 		if (!name.value.trim()) {
-			newErrors.name = resolveLocale(c.validation.required, locale).replace('{field}', 'name');
+			newErrors.name = resolveLocale(c.validation.required, locale).replace('{field}', fieldLabel('name'));
 		}
 		if (!email.value.trim()) {
-			newErrors.email = resolveLocale(c.validation.required, locale).replace('{field}', 'email');
+			newErrors.email = resolveLocale(c.validation.required, locale).replace('{field}', fieldLabel('email'));
 		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
 			newErrors.email = resolveLocale(c.validation.invalidEmail, locale);
 		}
 		if (!message.value.trim()) {
-			newErrors.message = resolveLocale(c.validation.required, locale).replace('{field}', 'message');
+			newErrors.message = resolveLocale(c.validation.required, locale).replace('{field}', fieldLabel('message'));
 		}
 
 		errors = newErrors;
@@ -207,9 +204,9 @@
 		return [
 			{ text: '~ $ send --message', color: 'muted' },
 			{ text: `→ ${resolveLocale(c.success.validating, locale)}`, color: 'orange' },
-			{ text: `✓ ${c.formTerminal.fields.name.label}: ${okText}`, color: 'green' },
-			{ text: `✓ ${c.formTerminal.fields.email.label}: ${okText}`, color: 'green' },
-			{ text: `✓ ${c.formTerminal.fields.message.label}: ${okText}`, color: 'green' },
+			{ text: `✓ ${fieldLabel('name')}: ${okText}`, color: 'green' },
+			{ text: `✓ ${fieldLabel('email')}: ${okText}`, color: 'green' },
+			{ text: `✓ ${fieldLabel('message')}: ${okText}`, color: 'green' },
 			{ text: `→ ${resolveLocale(c.success.sending, locale)}`, color: 'orange' },
 			{ text: `✓ ${resolveLocale(c.success.sent, locale)}`, color: 'green' },
 			{ text: `→ ${resolveLocale(c.success.responseTime, locale)}`, color: 'accent' },
@@ -264,6 +261,11 @@
 
 	function contactChannelLabel(label: ContactContent['socials'][number]['label']): string {
 		return resolveLocale(label, locale);
+	}
+
+	function fieldLabel(field: keyof ContactContent['formTerminal']['fields']): string {
+		const label = c.formTerminal.fields[field].label;
+		return typeof label === 'string' ? label : resolveLocale(label, locale);
 	}
 
 </script>
@@ -382,7 +384,7 @@
 						<!-- Name field -->
 						<div class="flex flex-col gap-1">
 							<label for="contact-name" class="text-caption text-[var(--primary)]">
-								{c.formTerminal.fields.name.label}:
+								{fieldLabel('name')}:
 							</label>
 							<input
 								id="contact-name"
@@ -401,7 +403,7 @@
 						<!-- Email field -->
 						<div class="flex flex-col gap-1">
 							<label for="contact-email" class="text-caption text-[var(--primary)]">
-								{c.formTerminal.fields.email.label}:
+								{fieldLabel('email')}:
 							</label>
 							<input
 								id="contact-email"
@@ -420,7 +422,7 @@
 						<!-- Message field -->
 						<div class="flex flex-col gap-1">
 							<label for="contact-message" class="text-caption text-[var(--primary)]">
-								{c.formTerminal.fields.message.label}:
+								{fieldLabel('message')}:
 							</label>
 							<textarea
 								id="contact-message"
@@ -475,8 +477,8 @@
 										: 'text-[var(--secondary-foreground)]'} text-small">
 								{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 									{@html line.text
-										.replace('{work}', `<a href="${localizeHref('/services', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${workLinkLabel}</a>`)
-										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${blogLinkLabel}</a>`)}
+										.replace('{work}', `<a href="${localizeHref('/services', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${escapeHtml(workLinkLabel)}</a>`)
+										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${escapeHtml(blogLinkLabel)}</a>`)}
 								{:else}
 									{line.text}
 								{/if}

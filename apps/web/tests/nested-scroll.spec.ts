@@ -14,10 +14,27 @@
 //
 // Lenis is desktop-wheel only — wheel tests skip on mobile projects. The
 // mobile test asserts native touch scrolling is untouched by the exemptions.
+//
+// Fixture note (CMS-backed listing/typography consolidation, commit 0335a939):
+// the project detail page's TOC + glance rails were intentionally converted from
+// internally-scrollable capped cards (`max-height` + `overflow-y:auto`) into
+// UNCAPPED sticky rails ("no internal-scroll clip") — so /projects/[slug] no
+// longer carries ANY internally-scrollable card to drive this contract. The
+// scrollChain action is unchanged and still guards the glide-cancel behaviour;
+// its surviving internally-scrollable home is the BLOG detail reading rail
+// (`.context-panel.toc-scroll`, capped at `calc(100dvh - 6rem)` from 1024px up).
+// These tests now exercise that rail across two posts whose TOCs overflow.
 
 import { test, expect, type Page, type Locator } from '@playwright/test';
 
-const PROJECT_URL = '/projects/transit-data-pipeline';
+// Blog detail posts whose context/TOC rail overflows at the desktop viewport
+// (verified scrollMax 427 / 474 px against the 1280×720 desktop-chrome profile,
+// both well above the 120 px wheel detent below). Each rail is the single
+// internally-scrollable scrollChain card on its page (no strict-mode duplicate).
+const BLOG_URL_A = '/blog/building-a-transit-pipeline';
+const BLOG_URL_B = '/blog/anime-data-viz-challenge';
+// The blog reading rail: the TOC + meta scroll card in the left context column.
+const CONTEXT_RAIL = '.context-column .context-panel.toc-scroll';
 const TICK = 120; // one notched mouse-wheel detent
 const SETTLE = 60; // ms between synthetic wheel events (human-burst spacing)
 
@@ -63,15 +80,15 @@ async function scrollCardToBottomAndHandOff(page: Page, selector: string): Promi
 	await page.waitForTimeout(SETTLE);
 }
 
-function wheelReversalContract(name: string, selector: string) {
+function wheelReversalContract(name: string, route: string, selector: string) {
 	test(`${name}: wheel reversal scrolls the card back up while the page stays put`, async ({
 		page,
 		isMobile,
 	}) => {
 		test.skip(Boolean(isMobile), 'Lenis is desktop-wheel only');
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
-		await page.goto(PROJECT_URL);
-		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		await page.goto(route);
+		await expect(page.getByTestId('blog-detail-page')).toBeVisible();
 		// expect.poll auto-waits for client hydration to add the lenis class —
 		// the deterministic "page JS is live" signal the old networkidle guarded.
 		await expect
@@ -113,9 +130,9 @@ function wheelReversalContract(name: string, selector: string) {
 
 		// Unwind to the top, then keep wheeling: the page must resume (canon law —
 		// the card never traps page scroll at its limit). Budget a few ticks for
-		// the seam: nested shells (e.g. the StickyPanel around the glance panel)
-		// may eat a tick unwinding their own few px, and Chromium's wheel
-		// latching can drop one tick at a scroller boundary.
+		// the seam: nested shells (e.g. the CollapsibleSection cards inside the
+		// reading rail) may eat a tick unwinding their own few px, and Chromium's
+		// wheel latching can drop one tick at a scroller boundary.
 		for (let i = 0; i < 16; i++) {
 			await page.mouse.wheel(0, -TICK);
 			await page.waitForTimeout(SETTLE);
@@ -140,10 +157,12 @@ function wheelReversalContract(name: string, selector: string) {
 }
 
 test.describe('nested scrollables escape the Lenis trap (go2)', () => {
-	// The 'On this page' TOC card (left column).
-	wheelReversalContract('toc card', '.toc-column .toc-scroll');
-	// The Impact/Stack glance sidebar (right column) — nested inner scroller.
-	wheelReversalContract('glance card', '.glance-column .glance-panel');
+	// The blog reading rail (TOC + meta scroll card, left context column). Two
+	// posts whose rails overflow independently — each is a real internally-
+	// scrollable scrollChain card, the surviving home of this contract after the
+	// project-detail rails were uncapped in the consolidation refactor.
+	wheelReversalContract('blog rail (transit post)', BLOG_URL_A, CONTEXT_RAIL);
+	wheelReversalContract('blog rail (anime post)', BLOG_URL_B, CONTEXT_RAIL);
 
 	test('reduced motion: native nested scroll stays symmetric (no Lenis)', async ({
 		page,
@@ -151,8 +170,8 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 	}) => {
 		test.skip(Boolean(isMobile), 'wheel input is desktop-only');
 		await page.emulateMedia({ reducedMotion: 'reduce' });
-		await page.goto(PROJECT_URL);
-		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		await page.goto(BLOG_URL_A);
+		await expect(page.getByTestId('blog-detail-page')).toBeVisible();
 		// Reduced motion: initLenis() returns early, so the lenis class is never
 		// added. expect.poll lets hydration run (the old networkidle's job) while
 		// asserting the class stays absent — deterministic, not a pre-hydration read.
@@ -160,7 +179,7 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 			.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis')))
 			.toBe(false);
 
-		const selector = '.toc-column .toc-scroll';
+		const selector = CONTEXT_RAIL;
 		const card = page.locator(selector);
 		await card.waitFor({ state: 'visible' });
 		await hoverScrolledCard(page, card);
@@ -188,8 +207,8 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 	}) => {
 		test.skip(!isMobile, 'mobile-profile assertion');
 		test.skip(browserName !== 'chromium', 'CDP gesture is chromium-only');
-		await page.goto(PROJECT_URL);
-		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		await page.goto(BLOG_URL_A);
+		await expect(page.getByTestId('blog-detail-page')).toBeVisible();
 		// Touch device: initLenis() bails before constructing Lenis, so the class
 		// never lands. expect.poll gives hydration the runway the old networkidle
 		// provided while asserting the class stays absent.

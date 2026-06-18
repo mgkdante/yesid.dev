@@ -27,7 +27,7 @@ import {
 	proofReelContent,
 	closerContent,
 } from './site-content.js';
-import { getVisibleServices } from './services.js';
+import { getVisibleServices } from '$lib/services/static-helpers';
 
 describe('heroContent', () => {
 	it('has non-empty headline lines (both English)', () => {

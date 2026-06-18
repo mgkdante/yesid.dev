@@ -25,8 +25,8 @@
 		serviceSvgContents?: Record<string, string>;
 	} = $props();
 
-	const carouselPrevAria = $derived(resolveLocale(siteLabels.a11y.carouselPrev, locale) || 'Previous projects');
-	const carouselNextAria = $derived(resolveLocale(siteLabels.a11y.carouselNext, locale) || 'Next projects');
+	const carouselPrevAria = $derived(resolveLocale(siteLabels.a11y.carouselPrev, locale));
+	const carouselNextAria = $derived(resolveLocale(siteLabels.a11y.carouselNext, locale));
 	const viewAllLabel = $derived(resolveLocale(proofReelContent.viewAllLabel, locale));
 	const viewAllHref = $derived(proofReelContent.viewAllHref);
 	const visibleProjects = $derived(projects);

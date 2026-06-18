@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton. slice-30 t1: also carries the code-owned chrome groups (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard) recomposed from the companion-shaped flat columns, so a future regen sources the companion/hero-data labels straight from Directus.
 //
@@ -12,18 +12,46 @@ import type { SiteLabels } from '$lib/types';
 
 export const siteLabels: SiteLabels = {
 	a11y: {
+		architectureDiagram: {
+			en: 'Architecture diagram',
+			fr: 'Diagramme d\'architecture',
+		},
 		carouselNext: { en: 'Next projects', fr: 'Projets suivants' },
 		carouselPrev: { en: 'Previous projects', fr: 'Projets précédents' },
 		closerGraffiti: { en: 'THE END graffiti', fr: 'graffiti THE END' },
+		moreMetrics: { en: 'More metrics', fr: 'Plus de métriques' },
 		navCapabilities: { en: 'Capabilities', fr: 'Capacités' },
 		navTechStack: { en: 'Tech stack', fr: 'Stack technique' },
+		projectImageClose: { en: 'Close image', fr: 'Fermer l\'image' },
+		projectImageOpen: { en: 'Open {caption}', fr: 'Ouvrir {caption}' },
+		quietModeDisable: {
+			en: 'Disable quiet mode',
+			fr: 'Désactiver le mode silencieux',
+		},
+		quietModeEnable: {
+			en: 'Enable quiet mode',
+			fr: 'Activer le mode silencieux',
+		},
+		quietModeForget: {
+			en: 'Forget remembered quiet mode',
+			fr: 'Oublier le mode silencieux mémorisé',
+		},
+		quietModeLabel: { en: 'Quiet mode', fr: 'Mode silencieux' },
+		quietModeRemember: {
+			en: 'Remember quiet mode',
+			fr: 'Mémoriser le mode silencieux',
+		},
 		replayIntro: { en: 'Replay intro', fr: 'Rejouer l\'intro' },
+		technologyStackTemplate: {
+			en: 'Technology stack: {stack}',
+			fr: 'Stack technique : {stack}',
+		},
 		toc: { en: 'Table of contents', fr: 'Table des matières' },
 	},
 	blogChrome: {
 		detail: {
 			backNav: {
-				toDispatches: { en: '← back to dispatches', fr: '← retour aux dépêches' },
+				toDispatches: { en: '← back to Blog', fr: '← retour au blogue' },
 				toPersonal: {
 					en: '← back to personal corner',
 					fr: '← retour au coin personnel',
@@ -36,6 +64,7 @@ export const siteLabels: SiteLabels = {
 				},
 				copyLabel: { en: 'Copy', fr: 'Copier' },
 				errorLabel: { en: 'Error', fr: 'Erreur' },
+				title: { en: 'code', fr: 'code' },
 			},
 			header: {
 				postTagsAria: { en: 'Post tags', fr: 'Étiquettes de l\'article' },
@@ -278,7 +307,8 @@ export const siteLabels: SiteLabels = {
 			en: '{count} stations · one system',
 			fr: '{count} stations · un seul système',
 		},
+		terminalTitle: { en: 'terminal', fr: 'terminal' },
 		watermarkPersonal: { en: 'Personal', fr: 'Perso' },
-		watermarkProfessional: { en: 'Dispatch', fr: 'Dépêche' },
+		watermarkProfessional: { en: 'Blog', fr: 'Blogue' },
 	},
 };

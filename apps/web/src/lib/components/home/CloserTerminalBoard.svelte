@@ -44,7 +44,6 @@
 	]}
 	data-testid="closer-board"
 	data-closer-board
-	class="closer-terminal"
 >
 	<!-- Welcome line -->
 	<div class="terminal-welcome">
@@ -79,12 +78,6 @@
 </TerminalChrome>
 
 <style>
-	/* ===== Terminal window ===== */
-	.closer-terminal {
-		margin-block-end: 32px;
-		font-family: var(--font-mono);
-	}
-
 	.terminal-welcome {
 		padding: 4px 24px 12px;
 	}

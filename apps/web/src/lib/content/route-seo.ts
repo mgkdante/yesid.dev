@@ -1,0 +1,89 @@
+// ----------------------------------------------------------------------
+// GENERATED FILE - do not edit by hand.
+//
+// Published route_seo overrides for static route title, description, and OG image.
+//
+// Source: live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
+// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// ----------------------------------------------------------------------
+
+import type { RouteSeoOverride } from '$lib/types';
+
+export const routeSeoOverrides: readonly RouteSeoOverride[] = [
+	{
+		description: {
+			en: 'Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards.',
+			fr: 'Développeur SQL pigiste et consultant en infrastructure numérique à Montréal. PostgreSQL, dbt, Power BI et Python pour pipelines, analyses et tableaux de bord.',
+		},
+		ogImage: null,
+		path: '/',
+		title: {
+			en: 'yesid. | Digital Infrastructure that Moves.',
+			fr: 'yesid. | Infrastructure numérique qui avance.',
+		},
+	},
+	{
+		description: {
+			en: 'Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work.',
+			fr: 'Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes.',
+		},
+		ogImage: null,
+		path: '/about',
+		title: { en: 'About Yesid', fr: 'À propos de Yesid' },
+	},
+	{
+		description: {
+			en: 'Get in touch for freelance SQL, PostgreSQL, dbt, Power BI, or data infrastructure work. Based in Montreal; available across Canada and for remote engagements.',
+			fr: 'Contactez-moi pour du travail pigiste en SQL, PostgreSQL, dbt, Power BI ou infrastructure de données. Basé à Montréal et disponible à distance.',
+		},
+		ogImage: null,
+		path: '/contact',
+		title: { en: 'Contact', fr: 'Contact' },
+	},
+	{
+		description: {
+			en: 'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams.',
+			fr: 'Services d\'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel.',
+		},
+		ogImage: null,
+		path: '/services',
+		title: { en: 'Services', fr: 'Services' },
+	},
+	{
+		description: {
+			en: 'Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.',
+			fr: 'Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure de données.',
+		},
+		ogImage: null,
+		path: '/projects',
+		title: { en: 'Projects', fr: 'Projets' },
+	},
+	{
+		description: {
+			en: 'Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.',
+			fr: 'Notes sur l\'infrastructure de données, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance.',
+		},
+		ogImage: null,
+		path: '/blog',
+		title: { en: 'Blog', fr: 'Blog' },
+	},
+	{
+		description: {
+			en: 'Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well.',
+			fr: 'Notes hors travail: outils, lectures, expériences et projets parallèles. Plus personnel que le blog professionnel, mais toujours centré sur bien construire.',
+		},
+		ogImage: null,
+		path: '/blog/personal',
+		title: { en: 'Personal Blog', fr: 'Blogue perso' },
+	},
+	{
+		description: {
+			en: 'The tools, languages, and platforms yesid. works with daily: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript, and the glue that holds them together.',
+			fr: 'Les outils, langages et plateformes que yesid. utilise au quotidien: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript et la colle qui tient tout ensemble.',
+		},
+		ogImage: null,
+		path: '/tech-stack',
+		title: { en: 'Tech Stack', fr: 'Stack technique' },
+	},
+];

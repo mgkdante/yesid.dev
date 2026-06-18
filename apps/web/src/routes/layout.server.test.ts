@@ -24,7 +24,7 @@ import {
 	menuItems as staticMenuItems,
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
-import type { NavLink, ErrorPageContent } from '$lib/content/nav';
+import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
 import type { MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
 
 // ---------------------------------------------------------------------------

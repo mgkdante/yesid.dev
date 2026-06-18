@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // SEO defaults (defaultOgImage UUID, themeColor, defaultDescription). CMS-driven from site_meta singleton.
 //

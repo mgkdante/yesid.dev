@@ -2,7 +2,7 @@
 // for information about these interfaces
 import type { PageSeo } from '$lib/schemas/seo';
 import type { PageData as DirectusPageData } from '@repo/shared';
-import type { ErrorPageContent } from '$lib/content/nav';
+import type { ErrorPageContent } from '$lib/navigation/types';
 
 declare global {
 	namespace App {

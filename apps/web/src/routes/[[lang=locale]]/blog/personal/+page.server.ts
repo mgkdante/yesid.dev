@@ -1,23 +1,8 @@
-import {
-	getPostsByCategory,
-	getSvgContentsForPosts,
-} from '$lib/repositories';
-import type { BlogPost, Locale } from '$lib/types';
+// /blog/personal — same listing shape as /blog, pinned to the personal
+// category. Fetch + facet derivation is shared via loadBlogCategory.
 
-function tagsFromPosts(posts: readonly BlogPost[]): readonly string[] {
-	return [...new Set(posts.flatMap((post) => post.tags))].sort();
-}
-
-function languagesFromPosts(posts: readonly BlogPost[]): readonly Locale[] {
-	return [...new Set(posts.map((post) => post.lang))].sort() as Locale[];
-}
+import { loadBlogCategory } from '../blog-category-loader';
 
 export async function load({ locals }: { locals: App.Locals }) {
-	const ctx = { pageCache: locals.pageCache };
-	const posts = await getPostsByCategory('personal', ctx);
-	const svgContents = await getSvgContentsForPosts(posts, ctx);
-	const tags = tagsFromPosts(posts);
-	const languages = languagesFromPosts(posts);
-
-	return { posts, tags, languages, svgContents };
+	return loadBlogCategory('personal', { pageCache: locals.pageCache });
 }

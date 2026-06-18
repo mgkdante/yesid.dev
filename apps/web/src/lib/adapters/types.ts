@@ -42,7 +42,7 @@ import type {
 	BlockEditorDoc,
 	MorphShape,
 } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
+import type { ErrorPageContent, NavLink, MenuItem } from '$lib/navigation/types';
 import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
@@ -157,11 +157,8 @@ export interface MetaPort {
 	 * (a route added without a route-seo-defaults.ts entry), not an expected
 	 * state.
 	 *
-	 * Composer pattern: merges siteMeta + siteSeoDefaults with code-side
-	 * technical defaults (canonical, ogType, noIndex, jsonLd factory) via
-	 * composePageSeo. The per-route CMS override port (`routeSeo.byPath`)
-	 * was removed with the dormant directus adapter at slice-26 close —
-	 * route-seo-defaults.ts is the canonical override source.
+	 * Composer pattern: merges siteMeta + siteSeoDefaults with CMS route_seo
+	 * overrides and code-side technical defaults via composePageSeo.
 	 *
 	 * Returned shape is parsed through PageSeoSchema at the adapter boundary,
 	 * so any adapter (static, Directus, mock) can only emit valid SEO.

@@ -223,7 +223,19 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		expect(source).toContain('--primary');
 		expect(source).toContain('--accent');
 		expect(source).toContain('MutationObserver');
+		expect(source).toContain('siteLabels.a11y.architectureDiagram');
+		expect(source).not.toContain('aria-label="Architecture diagram"');
 		expect(source).not.toContain("svg = ''");
+	});
+
+	it('sources code terminal chrome text from CMS labels', () => {
+		const source = readFileSync(
+			join(cwd(), 'src/lib/components/cms/blocks/CodeBlock.svelte'),
+			'utf8',
+		);
+
+		expect(source).toContain('codeChrome.title');
+		expect(source).not.toContain('title="code"');
 	});
 
 	it('escapes plain text in code block (XSS attempt)', () => {

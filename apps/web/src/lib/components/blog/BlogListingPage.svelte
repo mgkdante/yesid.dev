@@ -1,25 +1,25 @@
 <!--
   Shared blog listing layout used by BOTH /blog (professional) and /blog/personal.
   Parameterized by category — no category logic inside, just renders what it's given.
-  Includes desktop filters and mobile search. Mobile filter trigger hidden per operator QA.
+  Includes desktop filters and mobile in-flow filters.
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { BlogPost, Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import '$lib/styles/listing-header.css';
+	import '$lib/styles/listing-shell.css';
 
 	const locale = getLocale();
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { siteLabels } from '$lib/content';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
-	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
-	import { createDrawScrub } from '$lib/motion/scrubs/index.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
+	import ListingMobileFilters from '$lib/components/shared/ListingMobileFilters.svelte';
+	import { startListingBlueprintScrub } from '$lib/components/shared/listing-blueprint-scrub';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
@@ -31,26 +31,25 @@
 		posts,
 		allTags,
 		languages = [],
-		heading,
+		mobileHeading = undefined,
 		subtitle,
 		accentColor = 'var(--primary)',
 		cornerLink = null,
-		svgContents = {},
-		blogPage = undefined
+		svgContents = {}
 	}: {
 		posts: readonly BlogPost[];
 		allTags: readonly string[];
 		languages?: readonly Locale[];
-		heading: string;
+		mobileHeading?: string;
 		subtitle: string;
 		accentColor?: string;
 		cornerLink?: { href: string; label: string; subtitle: string } | null;
 		svgContents?: Record<string, string>;
-		/** go2-t1c2: CMS /blog chrome (optional — /blog passes it, /blog/personal does not). */
-		blogPage?: import('@repo/shared').BlogPageContent;
 	} = $props();
 
 	const listingChrome = siteLabels.blogChrome.listing;
+	const mobileHeadingText = $derived(mobileHeading ?? resolveLocale(listingChrome.mobileHeading, locale));
+	const mobileFiltersLabel = resolveLocale(listingChrome.filters.filtersLabel, locale);
 
 	// Filter state. slice-34.1: search/language/date are session-scoped so they
 	// survive a language switch via the locale-handoff orchestrator — each stored
@@ -62,6 +61,10 @@
 	const searchQuery = persisted('blog-q', '');
 	const dateFrom = persisted('blog-from', '');
 	const dateTo = persisted('blog-to', '');
+	const mobileFiltersOpen = persisted('blog-mobile-filters-open', false);
+	function setMobileFiltersOpen(next: boolean): void {
+		mobileFiltersOpen.value = next;
+	}
 
 	// Apply all filters
 	let filteredPosts = $derived.by(() => {
@@ -145,35 +148,24 @@
 		});
 	});
 
-	// Blueprint draw-scrub: paths stroke-dash from 0% → 100% as user scrolls
-	// through the listing page section. DrawSVG plugin lazy-loaded at mount.
+	// Blueprint artwork renders on every viewport. DrawSVG scroll-scrub is a
+	// desktop-only enhancement so mobile keeps native scroll behavior.
 	let blueprintWrapEl = $state<HTMLElement>(undefined!);
 	let listingSectionEl = $state<HTMLElement>(undefined!);
 	let destroyDrawScrub: (() => void) | undefined;
 
-	onMount(async () => {
-		if (!browser) return;
+	onMount(() => {
+		let cancelled = false;
+		void startListingBlueprintScrub(blueprintWrapEl, listingSectionEl).then((destroy) => {
+			if (cancelled) destroy?.();
+			else destroyDrawScrub = destroy;
+		});
 
-		// Flip is loaded regardless of reduced-motion — filter transitions
-		// use captureFlipState/animateFlipTransition on every filter change
-		// (animations short-circuit on reduced-motion inside flip.ts).
-		// DrawSVG is only needed for the Blueprint scroll-scrub.
-		await loadFlip();
-
-		if (isPrefersReducedMotion()) return;
-
-		await loadDrawSVG();
-		initScrollTriggerConfig();
-
-		if (blueprintWrapEl && listingSectionEl) {
-			destroyDrawScrub = createDrawScrub(blueprintWrapEl, {
-				section: listingSectionEl,
-				pathSelector: 'svg path',
-			});
-		}
+		return () => {
+			cancelled = true;
+			destroyDrawScrub?.();
+		};
 	});
-
-	onDestroy(() => destroyDrawScrub?.());
 </script>
 
 <div
@@ -184,14 +176,12 @@
 >
 	<!-- Section 1: Header — blueprint visualization -->
 	<section class="w-full">
-		<div bind:this={blueprintWrapEl} class="blog-blueprint-header" data-batch="blog-item">
+		<div bind:this={blueprintWrapEl} class="listing-blueprint-header" data-batch="blog-item">
 			<BlogBlueprint />
 			<!-- Subtitle: always visible, overlaid on blueprints -->
-			<div class="blog-header-text">
-				<!-- "Blog." heading: only on mobile (edge title in route layout carries it on desktop) -->
-				<!-- go2-t1c2: prefer CMS blogPage.heading; static module stays the fallback -->
-				<h1 class="blog-mobile-heading">{resolveLocale(blogPage?.heading ?? listingChrome.mobileHeading, locale)}<span class="text-[var(--primary)]">.</span></h1>
-				<div class="blog-header-subtitle">{subtitle}</div>
+			<div class="listing-header-text">
+				<h1 class="listing-mobile-heading">{mobileHeadingText}<span class="text-[var(--primary)]">.</span></h1>
+				<div class="listing-header-subtitle">{subtitle}</div>
 			</div>
 		</div>
 	</section>
@@ -199,8 +189,8 @@
 	<Separator variant="hazard" />
 
 	<!-- Section 2: Listing — filter sidebar + posts in CSS Grid -->
-	<section class="blog-listing-grid">
-		<aside class="blog-filter-column">
+	<section class="listing-grid">
+		<aside class="listing-filter-column">
 			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
 				<BlogFilterSidebar
 					tags={allTags}
@@ -219,12 +209,34 @@
 		</aside>
 
 		<!-- Listing content with padding -->
-		<div class="px-4 py-6 md:px-6 md:py-8">
+		<div class="listing-content">
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
 			<SearchInput placeholder={resolveLocale(listingChrome.searchPlaceholder, locale)} bind:value={searchQuery.value} testId="blog-search-mobile" />
 		</div>
+
+		<ListingMobileFilters
+			open={mobileFiltersOpen.value}
+			label={mobileFiltersLabel}
+			testId="blog-filter-mobile"
+			onOpenChange={setMobileFiltersOpen}
+		>
+			<BlogFilterSidebar
+				tags={allTags}
+				{languages}
+				{activeTag}
+				activeLang={activeLang.value}
+				{accentColor}
+				{cornerLink}
+				showSearch={false}
+				bind:searchQuery={searchQuery.value}
+				onTagSelect={handleTagSelect}
+				onLangSelect={handleLangSelect}
+				bind:dateFrom={dateFrom.value}
+				bind:dateTo={dateTo.value}
+			/>
+		</ListingMobileFilters>
 
 		{#if hasActiveFilters}
 			<FilterSummary count={filteredPosts.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
@@ -242,7 +254,6 @@
 						svgContent={svgContents[post.slug] ?? ''}
 						{accentColor}
 						index={i}
-						featured={i === 0}
 						data-flip-id={post.slug}
 					/>
 				{/each}
@@ -253,82 +264,6 @@
 </div>
 
 <style>
-	/* --- Blog header: blueprint visualization --- */
-	.blog-blueprint-header {
-		position: relative;
-		height: calc(100px + 5rem);
-		overflow: hidden;
-		margin-top: -5rem;
-		padding-top: 5rem;
-	}
-
-	/* Desktop: taller header */
-	@media (min-width: 1024px) {
-		.blog-blueprint-header {
-			height: calc(160px + 5rem);
-		}
-	}
-
-	.blog-header-text {
-		position: absolute;
-		z-index: 20;
-		bottom: 1rem;
-		left: var(--space-page-x);
-	}
-
-	.blog-mobile-heading {
-		font-family: var(--font-heading);
-		font-size: clamp(2rem, 5vw, 3rem);
-		font-weight: 900;
-		color: var(--foreground);
-		letter-spacing: -1px;
-		line-height: 1;
-	}
-
-	/* Hide "Blog." heading on desktop (edge title in route layout carries it) */
-	@media (min-width: 1024px) {
-		.blog-mobile-heading { display: none; }
-	}
-
-	/* Round-4 doctrine: the listing-header subline is a section overline —
-	   the YELLOW wayfinding voice (label-station precedent). */
-	.blog-header-subtitle {
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		color: var(--accent-text);
-		letter-spacing: 2px;
-		text-transform: uppercase;
-		margin-top: 0.35rem;
-	}
-
-	/* Desktop: large to differentiate from blueprint labels */
-	@media (min-width: 1024px) {
-		.blog-header-subtitle {
-			font-size: 1.1rem;
-			letter-spacing: 5px;
-		}
-	}
-
-	/* Recipe 3: Filter sidebar + content */
-	.blog-listing-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		width: 100%;
-	}
-
-	.blog-filter-column {
-		display: none;
-	}
-
-	@media (min-width: 1024px) {
-		.blog-listing-grid {
-			grid-template-columns: clamp(220px, 22vw, 320px) 1fr;
-		}
-		.blog-filter-column {
-			display: block;
-		}
-	}
-
 	/* WHY: items render at final state on load (Snappy Doctrine, 17e-2). FLIP
 	   handles filter transitions only. The `data-batch="blog-item"` attribute
 	   stays as a query target for animateFlipTransition. */

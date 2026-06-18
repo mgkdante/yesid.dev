@@ -54,10 +54,12 @@ export const BlogPostingSchema = z.object({
 	description: z.string().min(1),
 	inLanguage: z.string().min(2),
 	datePublished: z.string().min(1),
+	dateModified: z.string().min(1).optional(),
 	author: IdRef,
 	publisher: IdRef,
 	mainEntityOfPage: z.string().url(),
 	image: z.string().url().optional(),
+	keywords: z.array(z.string().min(1)).optional(),
 });
 
 // Note: `availableLanguage` was dropped during 15b Codex-review iteration —
