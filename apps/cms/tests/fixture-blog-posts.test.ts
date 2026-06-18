@@ -17,6 +17,7 @@ const BlogPostFixtureSchema = z.array(z.object({
 	id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
 	status: z.enum(['draft', 'published', 'archived']),
 	date_published: z.string().nullable(),
+	date_modified: z.string().nullable().optional(),
 	sort: z.number().int().min(0),
 	lang: z.enum(['en', 'fr', 'es']),
 	category: z.enum(['professional', 'personal']),
@@ -28,6 +29,8 @@ const BlogPostFixtureSchema = z.array(z.object({
 	animation: z.enum(['draw', 'morph', 'draw-fill']),
 	title: z.string().min(1),
 	excerpt: z.string().min(1).max(500),
+	seo_title: z.string().min(1).max(60).nullable().optional(),
+	seo_description: z.string().min(50).max(200).nullable().optional(),
 	body: z.unknown(),
 }));
 

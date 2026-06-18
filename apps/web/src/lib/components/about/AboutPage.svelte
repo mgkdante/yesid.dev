@@ -52,7 +52,7 @@
 				<!-- SELL ROW 1 -->
 				<div class="area-identity"><AboutIdentity identity={c.identity} stop={s[0]} label={resolveLocale(c.stopLabels.identity, locale)} /></div>
 				<div class="area-metrics"><AboutMetrics metrics={c.metrics} stop={s[1]} label={resolveLocale(c.stopLabels.metrics, locale)} /></div>
-				<div class="area-testimonials"><AboutTestimonials testimonials={c.testimonials} stop={s[4]} label={resolveLocale(c.stopLabels.testimonials, locale)} /></div>
+				<div class="area-testimonials"><AboutTestimonials testimonials={c.testimonials} stop={s[4]} label={resolveLocale(c.stopLabels.testimonials, locale)} labels={c.labels} /></div>
 
 				<!-- SELL ROW 2 -->
 				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label={resolveLocale(c.stopLabels.process, locale)} /></div>

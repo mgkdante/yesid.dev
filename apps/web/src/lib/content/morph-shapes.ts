@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // Geometric morph-target library (id, label, path, viewbox, sort). NEW in slice-18m — was previously derived from utils/shapes.ts SHAPES const.
 //

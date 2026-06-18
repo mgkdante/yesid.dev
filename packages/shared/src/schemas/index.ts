@@ -26,6 +26,9 @@ export * from './projects-page';
 // site_pages registry rows (slice-26.1 content controls)
 export * from './site-pages';
 
+// route_seo static-route SEO overrides
+export * from './route-seo';
+
 // site_labels global UI microcopy singleton (go2-t1c)
 export * from './site-labels';
 

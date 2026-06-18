@@ -110,6 +110,7 @@
 	const stackLabel = listingChrome.filters.techStack;
 	const servicesLabel = listingChrome.filters.services;
 	const stackOverflowTemplate = resolveLocale(listingChrome.card.stackOverflowSuffix, locale);
+	const moreMetricsLabel = resolveLocale(siteLabels.a11y.moreMetrics, locale);
 	const stackOverflow = $derived(
 		project.stack.length > 5
 			? stackOverflowTemplate.replace('{count}', String(project.stack.length - 5))
@@ -172,14 +173,14 @@
 		<div class="project-card-body flex flex-1 flex-col p-4">
 			<!-- Title below the gradient, not overlaid -->
 			<h2
-				class="text-base font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary md:text-lg"
+				class="project-card-title font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary"
 				data-testid={titleTestId}
 			>
 				{resolveLocale(project.title, locale)}
 			</h2>
 
 			<!-- Description -->
-			<p class="mt-1.5 text-sm leading-relaxed text-[var(--secondary-foreground)]" data-testid={excerptTestId}>
+			<p class="project-card-excerpt mt-1.5 leading-relaxed text-[var(--secondary-foreground)]" data-testid={excerptTestId}>
 				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
@@ -209,7 +210,7 @@
 								style="background: {SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)'};"
 								aria-hidden="true"
 							></span>
-							<span class="font-mono text-caption leading-tight text-[var(--foreground)]">
+							<span class="project-card-meta font-mono leading-tight text-[var(--foreground)]">
 								{resolveLocale(service.title, locale)}
 							</span>
 						</div>
@@ -226,7 +227,7 @@
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
 					{#if stackOverflow}
-						<span class="mt-0.5 block font-mono text-caption text-[var(--muted-foreground)]">{stackOverflow}</span>
+						<span class="project-card-meta mt-0.5 block font-mono text-[var(--muted-foreground)]">{stackOverflow}</span>
 					{/if}
 				</div>
 			{/if}
@@ -238,6 +239,7 @@
 						<Badge
 							variant="tag-active"
 							size="xs"
+							class="project-card-tag"
 							data-testid={isProof ? 'proof-project-tag' : undefined}
 						>{tag}</Badge>
 					</span>
@@ -263,7 +265,7 @@
 						</div>
 					{/each}
 					{#if hasProofMetricOverflow}
-						<div class="project-card-proof-metric__overflow" data-testid="{metricTestPrefix}-metric-overflow" aria-label="More metrics">...</div>
+						<div class="project-card-proof-metric__overflow" data-testid="{metricTestPrefix}-metric-overflow" aria-label={moreMetricsLabel}>...</div>
 					{/if}
 					{#if visibleProofMetrics.length === 0}
 						<div class="project-card-proof-metric__item" aria-hidden="true">
@@ -325,6 +327,25 @@
 
 	.project-card-media--proof {
 		height: clamp(15rem, 38dvh, 22rem);
+	}
+
+	.project-card-title {
+		font-size: var(--text-card-title);
+		line-height: 1.2;
+		letter-spacing: 0;
+	}
+
+	.project-card-excerpt {
+		font-size: var(--text-card-body);
+	}
+
+	.project-card-meta {
+		font-size: var(--text-card-meta);
+	}
+
+	:global(.project-card-tag) {
+		font-size: var(--text-tag);
+		letter-spacing: 0;
 	}
 
 	.project-card--proof .project-card-body {
@@ -406,7 +427,7 @@
 	.proof-metric-value {
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: 1.875rem;
+		font-size: var(--text-metric-value-default);
 		line-height: 1;
 		color: var(--accent-text);
 		max-width: 100%;
@@ -443,7 +464,7 @@
 		}
 
 		.proof-metric-value {
-			font-size: 2.25rem;
+			font-size: var(--text-metric-value-desktop);
 		}
 
 		.proof-metric-label {
@@ -477,7 +498,7 @@
 		}
 
 		.proof-metric-value {
-			font-size: 1.25rem;
+			font-size: var(--text-metric-value-mobile);
 		}
 
 		.proof-metric-label {

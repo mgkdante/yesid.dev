@@ -63,6 +63,24 @@ typography:
     fontSize: "0.875rem"
   caption:
     fontSize: "0.8125rem"
+  card-title:
+    fontSize: "1.25rem"
+  card-body:
+    fontSize: "1.0625rem"
+  card-meta:
+    fontSize: "0.9375rem"
+  control:
+    fontSize: "0.9375rem"
+  tag:
+    fontSize: "0.9375rem"
+  back-link:
+    fontSize: "0.9375rem"
+  detail-meta:
+    fontSize: "1.0625rem"
+  detail-kicker:
+    fontSize: "0.75rem"
+  menu-subtitle:
+    fontSize: "1rem"
   micro:
     fontSize: "0.6875rem"
 

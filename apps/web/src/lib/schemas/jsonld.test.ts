@@ -95,6 +95,15 @@ describe('BlogPostingSchema', () => {
 		};
 		expect(BlogPostingSchema.safeParse(withImage).success).toBe(true);
 	});
+
+	it('accepts optional dateModified and keywords fields', () => {
+		const richPost = {
+			...validBlogPosting,
+			dateModified: '2026-04-21',
+			keywords: ['sql', 'postgresql', 'performance'],
+		};
+		expect(BlogPostingSchema.safeParse(richPost).success).toBe(true);
+	});
 });
 
 describe('ServiceSchema', () => {

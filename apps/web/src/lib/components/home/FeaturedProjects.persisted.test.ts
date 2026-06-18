@@ -16,7 +16,8 @@ import { flushSync } from 'svelte';
 import { render, screen, cleanup } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '$lib/content/site-content';
-import { getFeaturedProjects, getVisibleServices } from '$lib/content';
+import { getFeaturedProjects } from '$lib/projects/static-helpers';
+import { getVisibleServices } from '$lib/services/static-helpers';
 import type { Project } from '$lib/types';
 import { captureEntries, applyEntries } from '$lib/state/locale-handoff.svelte';
 

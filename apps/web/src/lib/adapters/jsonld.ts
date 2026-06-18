@@ -122,18 +122,25 @@ export function buildCollectionPageNode(args: {
 	return SchemaOrgNodeSchema.parse(built) as CollectionPage;
 }
 
-export function buildBlogPostingNode(post: BlogPost, locale: Locale): BlogPosting {
+export function buildBlogPostingNode(
+	post: BlogPost,
+	locale: Locale,
+	opts: { imageUrl?: string } = {},
+): BlogPosting {
 	const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
 	const built = {
 		'@type': 'BlogPosting' as const,
 		'@id': canonicalUrl,
 		headline: post.title,
-		description: post.excerpt,
+		description: post.seoDescription ?? post.excerpt,
 		inLanguage: post.lang,
 		datePublished: post.date,
+		...(post.dateModified && { dateModified: post.dateModified }),
 		author: { '@id': PERSON_ID },
 		publisher: { '@id': PERSON_ID },
 		mainEntityOfPage: canonicalUrl,
+		...(post.tags.length > 0 && { keywords: post.tags }),
+		...(opts.imageUrl && { image: opts.imageUrl }),
 	};
 	return SchemaOrgNodeSchema.parse(built) as BlogPosting;
 }

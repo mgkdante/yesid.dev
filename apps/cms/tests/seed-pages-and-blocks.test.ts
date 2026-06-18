@@ -275,8 +275,9 @@ describe('toBlockCloserRow', () => {
 
 describe('toBlockCloserTranslationRows', () => {
 	const rows = toBlockCloserTranslationRows(siteContentFixture);
-	it('rows is a nested object with contact/connect/read/about', () => {
+	it('rows is a nested object with stack/contact/connect/read/about', () => {
 		const r = rows[0]?.rows as Record<string, unknown>;
+		expect(r?.['stack']).toBeDefined();
 		expect(r?.['contact']).toBeDefined();
 		expect(r?.['read']).toBeDefined();
 	});
@@ -429,6 +430,13 @@ describe('toBlockBlogPageContentTranslationRows', () => {
 	it('returns 1 row with intro', () => {
 		expect(rows.length).toBe(1);
 		expect(rows[0]?.intro).toBeDefined();
+	});
+
+	// Canon: the wired seed:pages bootstrap must match the shipped/generated
+	// value ('About the author'), not the bare 'About'. A drift here silently
+	// downgrades EN copy on a from-scratch CMS rebuild.
+	it('entry_rail_route_about_label is the canonical "About the author"', () => {
+		expect(rows[0]?.entry_rail_route_about_label).toBe('About the author');
 	});
 });
 

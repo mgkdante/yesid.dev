@@ -33,7 +33,7 @@ describe('contactContent', () => {
 		it('has all three form fields with label and placeholder', () => {
 			for (const key of ['name', 'email', 'message'] as const) {
 				const field = contactContent.formTerminal.fields[key];
-				expect(field.label.length).toBeGreaterThan(0);
+				expect(field.label.en.length).toBeGreaterThan(0);
 				expect(field.placeholder.en.length).toBeGreaterThan(0);
 			}
 		});
@@ -65,6 +65,8 @@ describe('contactContent', () => {
 			expect(contactContent.success.responseTime.en.length).toBeGreaterThan(0);
 			expect(contactContent.success.meanwhile.en.length).toBeGreaterThan(0);
 			expect(contactContent.success.resetLabel.en.length).toBeGreaterThan(0);
+			expect(contactContent.success.workLinkLabel.en.length).toBeGreaterThan(0);
+			expect(contactContent.success.blogLinkLabel.en.length).toBeGreaterThan(0);
 		});
 
 		it('meanwhile contains {work} and {blog} placeholders', () => {

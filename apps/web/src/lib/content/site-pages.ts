@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // Published site_pages registry rows (path, type, title). PUBLISHED rows only — a path's absence IS the hidden signal: the route gate 404s it, the sitemap drops it, and nav links pointing at it disappear (cascade applied in the nav fetcher). NEW in slice-26.1.
 //

@@ -12,13 +12,9 @@
 
 	const locale = getLocale();
 
-	const heading = $derived(resolveLocale(data.blogPage.heading, locale) || 'Dispatches');
-	const subtitle = $derived(
-		resolveLocale(
-			{ en: 'Data, SQL, and infrastructure, from the field', fr: 'Données, SQL et infrastructure, du terrain' },
-			locale,
-		),
-	);
+	const subtitle = $derived(resolveLocale(data.blogPage.intro, locale));
+	const personalLabel = $derived(resolveLocale(data.blogPage.toPersonalLabel, locale));
+	const personalSubtitle = $derived(resolveLocale(data.blogPage.toPersonalSubtitle, locale));
 </script>
 
 <BlogListingPage
@@ -26,13 +22,11 @@
 	allTags={data.tags}
 	languages={data.languages}
 	svgContents={data.svgContents}
-	blogPage={data.blogPage}
-	{heading}
 	subtitle={subtitle}
 	accentColor="var(--primary)"
 	cornerLink={{
 		href: '/blog/personal',
-		label: resolveLocale({ en: 'Personal Corner', fr: 'Coin perso' }, locale),
-		subtitle: resolveLocale({ en: 'Off the clock', fr: 'À mes heures' }, locale)
+		label: personalLabel,
+		subtitle: personalSubtitle
 	}}
 />

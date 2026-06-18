@@ -37,19 +37,12 @@ export interface ModuleEmitConfig {
 	description: string;
 	imports: readonly ImportDecl[];
 	exports: readonly ExportDecl[];
-	/**
-	 * Optional companion-module path (relative, e.g. `./nav.companion`). When set,
-	 * the generated file appends `export * from '<path>';` so consumers can keep
-	 * importing chrome/helpers/types via the original `./<name>` path instead of
-	 * having to switch to `./<name>.companion`. Keeps the public API stable.
-	 */
-	reExportFromCompanion?: string;
 }
 
 export function emitModule(config: ModuleEmitConfig): string {
 	const headerLines = [
 		'// ----------------------------------------------------------------------',
-		'// GENERATED FILE — do not edit by hand.',
+		'// GENERATED FILE - do not edit by hand.',
 		'//',
 		`// ${config.description}`,
 		'//',
@@ -67,20 +60,11 @@ export function emitModule(config: ModuleEmitConfig): string {
 
 	const exportLines = config.exports.map((exp) => emitExport(exp.name, exp.typeName, exp.value));
 
-	const reExportLines = config.reExportFromCompanion
-		? [
-				`// Re-export hand-written companion module so consumers can keep importing`,
-				`// chrome / helpers / type defs from the original path '${config.filePath.split('/').pop()?.replace(/\.ts$/, '')}'.`,
-				`export * from '${config.reExportFromCompanion}';`,
-			]
-		: [];
-
 	const blocks: string[] = [headerLines.join('\n')];
 	if (importLines.length > 0) blocks.push(importLines.join('\n'));
 	if (exportLines.length > 0) blocks.push(exportLines.join('\n\n'));
-	if (reExportLines.length > 0) blocks.push(reExportLines.join('\n'));
 
-	// Two newlines between blocks (header → imports → exports → re-exports).
+	// Two newlines between blocks (header -> imports -> exports).
 	// Single trailing newline at EOF (POSIX convention).
 	return blocks.join('\n\n') + '\n';
 }

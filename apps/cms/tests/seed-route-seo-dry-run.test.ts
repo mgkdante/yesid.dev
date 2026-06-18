@@ -51,6 +51,14 @@ describe('seed-route-seo pure helpers', () => {
 			}
 		});
 
+		it('every row has a French translation for the FR-first SEO lock', () => {
+			for (const r of fixture) {
+				const fr = r.translations.find((t) => t.languages_code === 'fr');
+				expect(fr?.title).toBeTruthy();
+				expect(fr?.description).toBeTruthy();
+			}
+		});
+
 		it('every row is published', () => {
 			for (const r of fixture) {
 				expect(r.status).toBe('published');
@@ -74,9 +82,9 @@ describe('seed-route-seo pure helpers', () => {
 			expect(home.sort).toBe(1);
 		});
 
-		it('uses verbatim em-dash title (P3 finding — not body-only)', () => {
+		it('uses a verbatim home title', () => {
 			const en = home.translations.find((t) => t.languages_code === 'en');
-			expect(en?.title).toBe('yesid. — Digital Infrastructure that Moves.');
+			expect(en?.title).toBe('yesid. | Digital Infrastructure that Moves.');
 		});
 
 		it('home description is in 50-200 SEO band', () => {
@@ -103,9 +111,11 @@ describe('seed-route-seo pure helpers', () => {
 
 		it('includes nested translations array', () => {
 			const row = toRouteSeoRow(blog);
-			expect(row.translations.length).toBe(1);
+			expect(row.translations.length).toBe(2);
 			expect(row.translations[0]?.languages_code).toBe('en');
 			expect(row.translations[0]?.title).toBe('Blog');
+			expect(row.translations[1]?.languages_code).toBe('fr');
+			expect(row.translations[1]?.title).toBe('Blog');
 		});
 
 		it('handles og_image=null correctly', () => {
@@ -132,9 +142,9 @@ describe('seed-route-seo pure helpers', () => {
 	});
 
 	describe('toTranslationRows', () => {
-		it('returns 1 row for mono-locale en fixture', () => {
-			expect(toTranslationRows(home).length).toBe(1);
-			expect(toTranslationRows(about).length).toBe(1);
+		it('returns en and fr rows for each static route fixture', () => {
+			expect(toTranslationRows(home).map((row) => row.languages_code)).toEqual(['en', 'fr']);
+			expect(toTranslationRows(about).map((row) => row.languages_code)).toEqual(['en', 'fr']);
 		});
 
 		it('preserves languages_code, title, description', () => {
@@ -165,6 +175,17 @@ describe('seed-route-seo pure helpers', () => {
 				const en = r.translations.find((t) => t.languages_code === 'en');
 				if (en?.description != null) {
 					const len = en.description.length;
+					expect(len).toBeGreaterThanOrEqual(50);
+					expect(len).toBeLessThanOrEqual(200);
+				}
+			}
+		});
+
+		it('every FR description is in 50-200 SEO band', () => {
+			for (const r of fixture) {
+				const fr = r.translations.find((t) => t.languages_code === 'fr');
+				if (fr?.description != null) {
+					const len = fr.description.length;
 					expect(len).toBeGreaterThanOrEqual(50);
 					expect(len).toBeLessThanOrEqual(200);
 				}

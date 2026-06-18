@@ -23,6 +23,9 @@
       "svg_illustration",
       "title",
       "excerpt",
+      "seo_title",
+      "seo_description",
+      "date_modified",
       "body"
     ],
     "note": "Blog posts. Mono-language by editorial design (lang field on parent). ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",

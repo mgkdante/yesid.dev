@@ -1,14 +1,14 @@
-// Nav schemas — runtime mirror of nav.ts content types: NavLink, MenuItem,
-// ErrorPageContent. Each schema matches its TS interface in
-// $lib/content/nav shape-for-shape; per spec D3 no new constraints beyond
+// Nav schemas - runtime mirror of navigation types: NavLink, MenuItem,
+// ErrorPageContent. Each schema matches its TS interface shape-for-shape;
+// per spec D3 no new constraints beyond
 // what TS already encodes.
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { NavLink, MenuItem, ErrorPageContent } from '$lib/content/nav';
+import type { NavLink, MenuItem, ErrorPageContent } from '$lib/navigation/types';
 
-// `priority: 1 | 2` — TS numeric literal union preserved via z.union.
-// subtitle and icon are optional — present on menu/footer placement rows.
+// `priority: 1 | 2` - TS numeric literal union preserved via z.union.
+// subtitle and icon are optional - present on menu/footer placement rows.
 export const NavLinkSchema = z.object({
 	label: LocalizedStringSchema,
 	href: z.string(),
@@ -18,7 +18,7 @@ export const NavLinkSchema = z.object({
 });
 
 /**
- * MenuItem is now a type alias of NavLink — MenuItemSchema equals NavLinkSchema.
+ * MenuItem is now a type alias of NavLink - MenuItemSchema equals NavLinkSchema.
  * Preserved as a named export for backwards compatibility with existing callers.
  */
 export const MenuItemSchema = NavLinkSchema;
@@ -38,7 +38,7 @@ export const ErrorPageContentSchema = z.object({
 		.readonly(),
 });
 
-// Drift detectors — NavLink ↔ NavLinkSchema structural parity check.
+// Drift detectors - NavLink ↔ NavLinkSchema structural parity check.
 // MenuItem is a type alias of NavLink so MenuItemSchema = NavLinkSchema by definition.
 type _NavLinkCheck = z.infer<typeof NavLinkSchema> extends NavLink
 	? NavLink extends z.infer<typeof NavLinkSchema>
@@ -48,7 +48,7 @@ type _NavLinkCheck = z.infer<typeof NavLinkSchema> extends NavLink
 const _navLinkCheck: _NavLinkCheck = true;
 void _navLinkCheck;
 
-// MenuItem = NavLink (alias) — parity check via NavLink.
+// MenuItem = NavLink (alias) - parity check via NavLink.
 type _MenuItemCheck = MenuItem extends NavLink ? (NavLink extends MenuItem ? true : false) : false;
 const _menuItemCheck: _MenuItemCheck = true;
 void _menuItemCheck;

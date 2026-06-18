@@ -21,6 +21,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { initSectionMagnet } from '$lib/motion/utils/sectionMagnet.js';
+	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 	import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import {
 		registerScrollContext,
@@ -41,6 +42,8 @@
 		CloserContent,
 		Project,
 		Service,
+		SiteMeta,
+		BlogPost,
 	} from '$lib/types';
 	import type { HeroData } from '$lib/content/hero-data';
 
@@ -60,6 +63,8 @@
 		 *  $lib/content companions for services/projects. */
 		services: readonly Service[];
 		featuredProjects: readonly Project[];
+		latestPosts: readonly BlogPost[];
+		siteMeta: SiteMeta;
 		serviceSvgContents: Record<string, string>;
 	}
 	let {
@@ -75,14 +80,16 @@
 		initialHeroData,
 		services,
 		featuredProjects,
+		latestPosts,
+		siteMeta,
 		serviceSvgContents,
 	}: Props = $props();
 
 // go2-t1c2: rotated home section titles from site_labels, previous
 	// literals kept as code fallbacks.
-	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, locale) || 'Projects';
-	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, locale) || 'Services';
-	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale) || 'Terminus';
+	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, locale);
+	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, locale);
+	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale);
 
 	// GO-w2t5 → go2/w4: backgroundBreathing lives inside HomeCloser (each
 	// section component owns its own effect). HomeServices' sectionGlow was
@@ -109,22 +116,21 @@
 
 	onMount(() => {
 		if (!browser) return;
-		// go2/w5: soft section magnetism — on scroll settle, gently ease to
-		// the nearest home-section top when already close (desktop Lenis +
-		// mobile native; reduced motion keeps the magnet, settles instantly).
-		// Sections are queried lazily per settle so pin spacers / hero
-		// collapse are always measured fresh.
+		// go2/w5: desktop-only soft section magnetism. On mobile, native
+		// scroll must stay free of section snapping.
 		//
 		// slice-34.4: suppress the magnet while a locale-switch scroll restore
 		// is in flight — the restore's forced jump to the captured fraction
 		// fires scroll events that would otherwise trip a settle and snap the
 		// position to the nearest section top.
-		destroyFns.push(
-			initSectionMagnet(
-				() => Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
-				{ suppress: () => localeHandoff.restoring },
-			),
-		);
+		if (!isViewportAtMost(1023)) {
+			destroyFns.push(
+				initSectionMagnet(
+					() => Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
+					{ suppress: () => localeHandoff.restoring },
+				),
+			);
+		}
 
 		// slice-34.4 — reading position survives a locale switch on the HOME page,
 		// the hardest case: HeroBanner's GSAP pin rewrites the document height
@@ -248,7 +254,7 @@
 		<SectionHeading heading={sectionTerminus} />
 	</div>
 	<div class="home-section-content">
-		<HomeCloser {closer} />
+		<HomeCloser {closer} {latestPosts} {siteMeta} />
 	</div>
 </section>
 

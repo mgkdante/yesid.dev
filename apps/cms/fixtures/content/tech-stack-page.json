@@ -8,6 +8,8 @@
     "titleLine1": { "en": "The Control" },
     "titleLine2": { "en": "Room" },
     "terminalAria": { "en": "Infrastructure overview" },
+    "stackKicker": { "en": "what's a \"stack\"?", "fr": "c'est quoi un stack?" },
+    "engineLoading": { "en": "~ rolling out the drawing board...", "fr": "~ chargement du plan..." },
     "terminal": {
       "cmd": { "en": "~ yesid --stack --verbose" },
       "loading": { "en": "→ loading {count} nodes..." },

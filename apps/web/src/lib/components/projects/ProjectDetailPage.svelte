@@ -601,14 +601,14 @@
 
 	/* Section body text */
 	.section-body {
-		font-size: 17px;
+		font-size: var(--text-detail-body-mobile);
 		color: color-mix(in srgb, var(--foreground) 50%, transparent);
 		line-height: 1.8;
 	}
 
 	@media (min-width: 1024px) {
 		.section-body {
-			font-size: 18px;
+			font-size: var(--text-detail-body-desktop);
 			color: color-mix(in srgb, var(--foreground) 55%, transparent);
 			line-height: 1.9;
 		}
@@ -617,7 +617,7 @@
 	/* Sub-section h3 styling (within rendered HTML content) */
 	.section-body :global(h3) {
 		font-family: var(--font-heading);
-		font-size: 16px;
+		font-size: var(--text-detail-subheading-mobile);
 		font-weight: 600;
 		color: color-mix(in srgb, var(--foreground) 70%, transparent);
 		margin: 20px 0 12px;
@@ -627,7 +627,7 @@
 
 	@media (min-width: 1024px) {
 		.section-body :global(h3) {
-			font-size: 18px;
+			font-size: var(--text-detail-subheading-desktop);
 			color: color-mix(in srgb, var(--foreground) 80%, transparent);
 			margin: 24px 0 16px;
 			padding-left: 12px;

@@ -1,0 +1,33 @@
+{
+  "collection": "blog_posts",
+  "field": "grp_seo",
+  "type": "alias",
+  "meta": {
+    "collection": "blog_posts",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_seo",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Search and share metadata",
+    "options": {
+      "headerColor": "#E07800",
+      "start": "open"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 30,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}
