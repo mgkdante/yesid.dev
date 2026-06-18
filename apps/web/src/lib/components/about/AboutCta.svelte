@@ -11,6 +11,7 @@
 
 	const locale = getLocale();
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
+	import { siteLabels } from '$lib/content';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
@@ -19,6 +20,7 @@
 	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 
 	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, locale));
+	const terminalTitle = $derived(resolveLocale(siteLabels.ui.terminalTitle, locale));
 </script>
 
 <div
@@ -37,7 +39,7 @@
 		<StopLabel {stop} {label} />
 
 		<!-- Terminal window -->
-		<TerminalChrome title="terminal" class="mt-3 flex-1 min-h-0">
+		<TerminalChrome title={terminalTitle} class="mt-3 flex-1 min-h-0">
 			<div class="font-mono text-sm leading-relaxed">
 				<!-- Command -->
 				<div class="text-[var(--secondary-foreground)]">
@@ -72,4 +74,3 @@
 	</div>
 </Card>
 </div>
-

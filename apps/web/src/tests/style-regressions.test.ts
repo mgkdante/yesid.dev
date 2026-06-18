@@ -143,6 +143,21 @@ describe('GO2-W5 round 3 — bolder structure (operator: dividers thicker both m
 		expect(shell).toContain('color-mix(in srgb, var(--primary) 70%, transparent)');
 	});
 
+	it('listing blueprint shells are stronger on mobile without changing desktop base opacity', () => {
+		expect(shell).toMatch(
+			/@media \(max-width: 1023px\) \{[\s\S]*?\.hero-svg \{[\s\S]*?opacity: 0\.30;/,
+		);
+		expect(shell).toMatch(
+			/@media \(max-width: 1023px\) \{[\s\S]*?\.edge-details :global\(\.edge-detail\) \{[\s\S]*?opacity: 0\.30 !important;/,
+		);
+		expect(shell).toMatch(
+			/@media \(max-width: 1023px\) \{[\s\S]*?\[data-theme='light'\]\) \.hero-svg[\s\S]*?opacity: 0\.50;/,
+		);
+		expect(shell).toMatch(
+			/@media \(max-width: 1023px\) \{[\s\S]*?\[data-theme='light'\]\) \.edge-details :global\(\.edge-detail\)[\s\S]*?opacity: 0\.46 !important;/,
+		);
+	});
+
 	it('the home services blueprint wall ships light-mode overrides (was dark-only opacities)', () => {
 		// Round 3 introduced the light treatment; round 4 boldens it a step
 		// (train 0.26 → 0.30, details 0.32 → 0.36, ref labels 70% → 80%).
@@ -181,11 +196,8 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 			/\.services-marker \{[\s\S]*?color: var\(--accent-text\);/,
 		);
 		// Listing-header sublines are overlines too.
-		expect(read('lib/components/blog/BlogListingPage.svelte')).toMatch(
-			/\.blog-header-subtitle \{[\s\S]*?color: var\(--accent-text\);/,
-		);
-		expect(read('lib/components/projects/ProjectListingPage.svelte')).toMatch(
-			/\.projects-header-subtitle \{[\s\S]*?color: var\(--accent-text\);/,
+		expect(read('lib/styles/listing-header.css')).toMatch(
+			/\.listing-header-subtitle \{[\s\S]*?color: var\(--accent-text\);/,
 		);
 	});
 
@@ -213,7 +225,7 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 			/\.proof-count-current \{[\s\S]*?color: var\(--accent-text\);/,
 		);
 		expect(read('lib/components/blog/BlogRow.svelte')).toMatch(
-			/<time[^>]*text-\[var\(--accent-text\)\]/,
+			/\.blog-date \{[\s\S]*?color: var\(--accent-text\);/,
 		);
 	});
 
@@ -232,8 +244,98 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 		expect(read('lib/components/shared/CollapsibleSection.svelte')).toMatch(
 			/\.section-card\) \{\s*\n\t*border-width: 3px;/,
 		);
-		// Blog prose content block: 1px → 2px.
-		expect(read('lib/components/blog/BlogContent.svelte')).toContain('border-2 border-[var(--border-subtle)]');
+	});
+});
+
+describe('global readable typography system', () => {
+	const read = (rel: string) => readFileSync(resolve(SRC, rel), 'utf-8');
+	const tokens = read('lib/styles/tokens.css');
+
+	it('defines shared readable text tokens for cards, controls, tags, and back links', () => {
+		for (const token of [
+			'--text-card-title',
+			'--text-card-body',
+			'--text-card-meta',
+			'--text-control',
+			'--text-tag',
+			'--text-back-link',
+			'--text-detail-body-mobile',
+			'--text-detail-body-desktop',
+			'--text-detail-meta',
+			'--text-detail-kicker',
+			'--text-detail-subheading-mobile',
+			'--text-detail-subheading-desktop',
+			'--text-metric-value-mobile',
+			'--text-metric-value-desktop',
+			'--text-metric-value-default',
+			'--text-nav-brand-mobile',
+			'--text-nav-brand-desktop',
+			'--text-nav-link-mobile',
+			'--text-nav-link-desktop',
+			'--text-nav-link-compact',
+			'--text-menu-label-mobile',
+			'--text-menu-label-desktop',
+			'--text-menu-subtitle',
+		]) {
+			expect(tokens).toContain(token);
+		}
+	});
+
+	it('routes listing cards and home service cards through card text tokens', () => {
+		for (const rel of [
+			'lib/components/projects/ProjectCard.svelte',
+			'lib/components/blog/BlogRow.svelte',
+			'lib/components/home/HomeServices.svelte',
+		]) {
+			const source = read(rel);
+			expect(source, rel).toContain('var(--text-card-title)');
+			expect(source, rel).toContain('var(--text-card-body)');
+		}
+	});
+
+	it('routes equal-intent back links through the shared back-link token', () => {
+		for (const rel of [
+			'lib/components/projects/ProjectDetailHeader.svelte',
+			'lib/components/blog/BlogDetailHeader.svelte',
+			'lib/components/services/ServiceDetailPage.svelte',
+		]) {
+			expect(read(rel), rel).toContain('var(--text-back-link)');
+		}
+	});
+
+	it('routes mobile filters and tags through shared control tokens', () => {
+		expect(read('lib/styles/listing-shell.css')).toContain('var(--text-control)');
+		expect(read('lib/components/projects/ProjectCard.svelte')).toContain('var(--text-tag)');
+		expect(read('lib/components/blog/BlogRow.svelte')).toContain('var(--text-tag)');
+	});
+
+	it('mobile filter collapse uses bare selectors (global CSS file, no Svelte :global)', () => {
+		// listing-shell.css is imported as a GLOBAL stylesheet, not a Svelte <style>
+		// block, so a :global(...) wrapper is invalid CSS and the browser drops the
+		// whole rule — which silently left the mobile filter panel permanently
+		// expanded. Bare selectors apply globally; this guards the fix.
+		const shell = read('lib/styles/listing-shell.css');
+		expect(shell).not.toContain(':global(');
+		expect(shell).toContain('.mobile-filter-body[data-state="open"]');
+	});
+
+	it('routes detail body, nav, and menu sizing through semantic mobile/desktop tokens', () => {
+		expect(read('lib/components/blog/BlogDetailPage.svelte')).toContain('var(--text-detail-body-mobile)');
+		expect(read('lib/components/blog/BlogDetailPage.svelte')).toContain('var(--text-detail-body-desktop)');
+		expect(read('lib/components/projects/ProjectDetailPage.svelte')).toContain('var(--text-detail-body-mobile)');
+		expect(read('lib/components/projects/ProjectDetailPage.svelte')).toContain('var(--text-detail-body-desktop)');
+
+		const nav = read('lib/components/layout/Nav.svelte');
+		expect(nav).toContain('var(--text-nav-brand-desktop)');
+		expect(nav).toContain('var(--text-nav-brand-mobile)');
+		expect(nav).toContain('var(--text-nav-link-desktop)');
+		expect(nav).toContain('var(--text-nav-link-mobile)');
+		expect(nav).toContain('var(--text-nav-link-compact)');
+
+		const menu = read('lib/components/layout/MenuOverlay.svelte');
+		expect(menu).toContain('var(--text-menu-label-mobile)');
+		expect(menu).toContain('var(--text-menu-label-desktop)');
+		expect(menu).toContain('var(--text-menu-subtitle)');
 	});
 });
 

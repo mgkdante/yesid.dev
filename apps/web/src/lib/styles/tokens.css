@@ -1,4 +1,4 @@
-/* GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT */
+/* GENERATED FROM packages/tokens/tokens.json - DO NOT EDIT */
 /* Run `bun run --cwd packages/tokens build` to regenerate. */
 
 :root {
@@ -28,6 +28,30 @@
   --text-small: 0.9375rem;
   --text-mono: 0.875rem;
   --text-caption: 0.8125rem;
+  --text-card-title: 1.25rem;
+  --text-card-body: 1.0625rem;
+  --text-card-meta: 0.9375rem;
+  --text-control: 0.9375rem;
+  --text-tag: 0.9375rem;
+  --text-back-link: 0.9375rem;
+  --text-detail-body-mobile: 1.0625rem;
+  --text-detail-body-desktop: 1.125rem;
+  --text-detail-meta: 1.0625rem;
+  --text-detail-kicker: 0.75rem;
+  --text-detail-subheading-mobile: 1rem;
+  --text-detail-subheading-desktop: 1.125rem;
+  --text-metric-value-mobile: 1.25rem;
+  --text-metric-value-desktop: 2.25rem;
+  --text-metric-value-default: 1.875rem;
+  --text-nav-brand-mobile: 1.0625rem;
+  --text-nav-brand-desktop: 1.125rem;
+  --text-nav-brand-compact: 1rem;
+  --text-nav-link-mobile: 0.875rem;
+  --text-nav-link-desktop: 0.9375rem;
+  --text-nav-link-compact: 0.8125rem;
+  --text-menu-label-mobile: 1.625rem;
+  --text-menu-label-desktop: 1.875rem;
+  --text-menu-subtitle: 1rem;
   --text-micro: 0.6875rem;
   --space-page-x: clamp(1.5rem, 4vw, 5rem);
   --space-section-y: clamp(3rem, 8vw, 6rem);

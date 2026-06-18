@@ -39,6 +39,7 @@ const BlogPostFixtureRowSchema = z.object({
 	id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
 	status: z.enum(['draft', 'published', 'archived']),
 	date_published: z.string().nullable(),
+	date_modified: z.string().nullable().optional(),
 	sort: z.number().int().min(0),
 	lang: z.enum(['en', 'fr', 'es']),
 	category: z.enum(['professional', 'personal']),
@@ -50,6 +51,8 @@ const BlogPostFixtureRowSchema = z.object({
 	animation: z.enum(['draw', 'morph', 'draw-fill']),
 	title: z.string().min(1),
 	excerpt: z.string().min(1).max(500),
+	seo_title: z.string().min(1).max(60).nullable().optional(),
+	seo_description: z.string().min(50).max(200).nullable().optional(),
 	body: z.unknown(),
 });
 
@@ -76,6 +79,7 @@ export interface DirectusBlogPostRow {
 	id: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
+	date_modified: string | null;
 	sort: number;
 	lang: 'en' | 'fr' | 'es';
 	category: 'professional' | 'personal';
@@ -87,6 +91,8 @@ export interface DirectusBlogPostRow {
 	animation: 'draw' | 'morph' | 'draw-fill';
 	title: string;
 	excerpt: string;
+	seo_title: string | null;
+	seo_description: string | null;
 	body: BlockEditorDoc;
 }
 
@@ -100,6 +106,7 @@ export function toBlogPostRow(fixture: BlogPostFixture): DirectusBlogPostRow {
 		id: fixture.id,
 		status: fixture.status,
 		date_published: fixture.date_published,
+		date_modified: fixture.date_modified ?? null,
 		sort: fixture.sort,
 		lang: fixture.lang,
 		category: fixture.category,
@@ -111,6 +118,8 @@ export function toBlogPostRow(fixture: BlogPostFixture): DirectusBlogPostRow {
 		animation: fixture.animation,
 		title: fixture.title,
 		excerpt: fixture.excerpt,
+		seo_title: fixture.seo_title ?? null,
+		seo_description: fixture.seo_description ?? null,
 		body: fixture.body,
 	};
 }

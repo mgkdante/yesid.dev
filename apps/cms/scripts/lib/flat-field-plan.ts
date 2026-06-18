@@ -134,7 +134,7 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		transit_direction_badge: ['directionBadge'],
 	}),
 
-	// ── block_closer_translations (18) ───────────────────────────────────
+	// ── block_closer_translations (22) ───────────────────────────────────
 	...t('block_closer_translations', 'cta', { cta_label: ['label'] }),
 	...t('block_closer_translations', 'attribution', { attribution_text: ['text'] }),
 	...t('block_closer_translations', 'terminal', {
@@ -145,6 +145,9 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		terminal_prompt: ['prompt'],
 	}),
 	...t('block_closer_translations', 'rows', {
+		rows_stack_label: ['stack', 'label'],
+		rows_stack_description: ['stack', 'description'],
+		rows_stack_action: ['stack', 'action'],
 		rows_contact_label: ['contact', 'label'],
 		rows_contact_description: ['contact', 'description'],
 		rows_contact_action: ['contact', 'action'],
@@ -152,13 +155,14 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		rows_connect_description: ['connect', 'description'],
 		rows_connect_action: ['connect', 'action'],
 		rows_read_label: ['read', 'label'],
+		rows_read_description: ['read', 'description'],
 		rows_read_action: ['read', 'action'],
 		rows_about_label: ['about', 'label'],
 		rows_about_description: ['about', 'description'],
 		rows_about_action: ['about', 'action'],
 	}),
 
-	// ── block_tech_stack_page_content_translations (19) ──────────────────
+	// ── block_tech_stack_page_content_translations ───────────────────────
 	...t('block_tech_stack_page_content_translations', 'meta', {
 		meta_title: ['title'],
 		meta_description: ['description'],
@@ -168,6 +172,8 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		hero_title_line1: ['titleLine1'],
 		hero_title_line2: ['titleLine2'],
 		hero_terminal_aria: ['terminalAria'],
+		stack_kicker: ['stackKicker'],
+		engine_loading: ['engineLoading'],
 		hero_stat_technologies: ['stats', 'technologies'],
 	}),
 	// Hero terminal line templates (operator addendum) — seeded, no JSON source.
@@ -243,7 +249,7 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		cta_availability: ['availability'],
 	}),
 
-	// ── block_contact_content_translations (21) ──────────────────────────
+	// ── block_contact_content_translations ───────────────────────────────
 	...t('block_contact_content_translations', 'meta', {
 		meta_title: ['title'],
 		meta_description: ['description'],
@@ -257,6 +263,9 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 	...t('block_contact_content_translations', 'form_terminal', {
 		form_command_output: ['commandOutput'],
 		form_submit_label: ['submitLabel'],
+		form_field_name_label: ['fields', 'name', 'label'],
+		form_field_email_label: ['fields', 'email', 'label'],
+		form_field_message_label: ['fields', 'message', 'label'],
 		form_field_name_placeholder: ['fields', 'name', 'placeholder'],
 		form_field_email_placeholder: ['fields', 'email', 'placeholder'],
 		form_field_message_placeholder: ['fields', 'message', 'placeholder'],
@@ -274,6 +283,8 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		success_meanwhile: ['meanwhile'],
 		success_reset_label: ['resetLabel'],
 		success_field_ok: ['fieldOk'],
+		success_work_link_label: ['workLinkLabel'],
+		success_blog_link_label: ['blogLinkLabel'],
 	}),
 
 	// ── block_about_content_translations (27) ────────────────────────────
@@ -315,6 +326,8 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		label_polaroid_next_aria: ['polaroidNextAria'],
 		label_testimonials_carousel_aria: ['testimonialsCarouselAria'],
 		label_testimonials_tab_nav_aria: ['testimonialsTabNavAria'],
+		label_testimonials_prev_aria: ['testimonialsPrevAria'],
+		label_testimonials_next_aria: ['testimonialsNextAria'],
 		label_testimonial_slide_aria: ['testimonialSlideAria'],
 		label_show_testimonial_aria: ['showTestimonialAria'],
 	}),

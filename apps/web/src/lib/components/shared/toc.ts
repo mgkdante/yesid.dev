@@ -59,7 +59,7 @@ export function tocElement(id: string): Element | null {
  *  Returns a cleanup fn for onMount. */
 export function observeActiveToc(setActive: (id: string) => void): () => void {
 	const els = document.querySelectorAll(
-		'[data-section-index], [id^="readme-h-"], [data-toc], [data-testid="blog-content"] h2[id], [data-testid="blog-content"] h3[id], [data-testid="blog-content"] h4[id]',
+		'[data-section-index], [id^="readme-h-"], [data-toc], [data-testid="blog-section-body"] h3[id], [data-testid="blog-section-body"] h4[id]',
 	);
 	if (els.length === 0) return () => {};
 

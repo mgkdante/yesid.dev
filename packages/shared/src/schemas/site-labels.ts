@@ -15,6 +15,18 @@ export const SiteLabelsSchema = z.object({
 		closerGraffiti: LocalizedStringSchema,
 		/** "Replay intro" — hero dot replay button aria-label (go2/w5). */
 		replayIntro: LocalizedStringSchema,
+		projectImageOpen: LocalizedStringSchema,
+		projectImageClose: LocalizedStringSchema,
+		moreMetrics: LocalizedStringSchema,
+		architectureDiagram: LocalizedStringSchema,
+		technologyStackTemplate: LocalizedStringSchema,
+		/** Quiet-mode reading control (detail headers). Switch label + on/off
+		 *  titles + the persist control's remember/forget copy. */
+		quietModeLabel: LocalizedStringSchema,
+		quietModeEnable: LocalizedStringSchema,
+		quietModeDisable: LocalizedStringSchema,
+		quietModeRemember: LocalizedStringSchema,
+		quietModeForget: LocalizedStringSchema,
 	}),
 	ui: z.object({
 		markerService: LocalizedStringSchema,
@@ -34,6 +46,7 @@ export const SiteLabelsSchema = z.object({
 		metroCaption: LocalizedStringSchema,
 		/** Featured-projects caption for 3+ station projects ({count} placeholder). */
 		stationsOneSystem: LocalizedStringSchema,
+		terminalTitle: LocalizedStringSchema,
 		/** Listing result-count, per-locale singular/plural ({count} placeholder). */
 		resultCount: z.object({
 			singular: LocalizedStringSchema,
@@ -129,6 +142,7 @@ export const SiteLabelsSchema = z.object({
 		// Former blogDetailContent shape.
 		detail: z.object({
 			code: z.object({
+				title: LocalizedStringSchema,
 				copyAria: LocalizedStringSchema,
 				copyLabel: LocalizedStringSchema,
 				errorLabel: LocalizedStringSchema,

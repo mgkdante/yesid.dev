@@ -63,9 +63,54 @@ describe('surface spec — one card spec, defined once', () => {
 		expect(read('src/lib/components/blog/BlogRow.svelte')).not.toMatch(/\{accentColor\}\d{2}/);
 	});
 
-	it('listing pages do not render mobile filter trigger components', () => {
+	it('listing pages restore mobile filters in-flow without floating trigger components', () => {
 		expect(read('src/lib/components/projects/ProjectListingPage.svelte')).not.toContain('<ProjectFilterMobile');
 		expect(read('src/lib/components/blog/BlogListingPage.svelte')).not.toContain('<BlogFilterMobile');
+		expect(read('src/lib/components/projects/ProjectListingPage.svelte')).toContain('testId="project-filter-mobile"');
+		expect(read('src/lib/components/blog/BlogListingPage.svelte')).toContain('testId="blog-filter-mobile"');
+		expect(read('src/lib/components/projects/ProjectListingPage.svelte')).toContain('showSearch={false}');
+		expect(read('src/lib/components/blog/BlogListingPage.svelte')).toContain('showSearch={false}');
+		expect(read('src/lib/components/projects/ProjectListingPage.svelte')).toContain('ListingMobileFilters');
+		expect(read('src/lib/components/blog/BlogListingPage.svelte')).toContain('ListingMobileFilters');
+	});
+
+	it('Blog and Projects share listing header chrome without leaking desktop blog copy into mobile', () => {
+		const blog = read('src/lib/components/blog/BlogListingPage.svelte');
+		const projects = read('src/lib/components/projects/ProjectListingPage.svelte');
+		const headerCss = read('src/lib/styles/listing-header.css');
+		const shellCss = read('src/lib/styles/listing-shell.css');
+
+		expect(blog).toContain("import '$lib/styles/listing-header.css';");
+		expect(projects).toContain("import '$lib/styles/listing-header.css';");
+		expect(blog).toContain("import '$lib/styles/listing-shell.css';");
+		expect(projects).toContain("import '$lib/styles/listing-shell.css';");
+		expect(blog).toContain('class="listing-blueprint-header"');
+		expect(projects).toContain('class="listing-blueprint-header"');
+		expect(blog).toContain('class="listing-grid"');
+		expect(projects).toContain('class="listing-grid"');
+		expect(blog).toContain('mobileHeading?: string;');
+		expect(blog).toContain('const mobileHeadingText = $derived(');
+		expect(blog).toContain('resolveLocale(listingChrome.mobileHeading, locale)');
+		expect(blog).not.toContain('class="blog-blueprint-header"');
+		expect(projects).not.toContain('class="projects-blueprint-header"');
+		expect(headerCss).toContain('.listing-header-subtitle');
+		expect(shellCss).toContain('.listing-filter-column');
+		expect(blog).not.toContain('.mobile-filter-toggle');
+		expect(projects).not.toContain('.mobile-filter-toggle');
+	});
+
+	it('listing blueprint artwork renders everywhere while DrawSVG scrub mounts only on desktop', () => {
+		const blog = read('src/lib/components/blog/BlogListingPage.svelte');
+		const projects = read('src/lib/components/projects/ProjectListingPage.svelte');
+
+		expect(blog).toContain('<BlogBlueprint />');
+		expect(projects).toContain('<ProjectsBlueprint />');
+
+		for (const src of [blog, projects]) {
+			expect(src).toContain("import { startListingBlueprintScrub } from '$lib/components/shared/listing-blueprint-scrub';");
+			expect(src).not.toContain("import { isViewportAtMost } from '$lib/motion/utils/device.js';");
+			expect(src).not.toContain('createDrawScrub(blueprintWrapEl');
+		}
 	});
 
 	it('shared filter buttons use a solid card surface by default', () => {

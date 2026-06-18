@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // /contact page content (terminals, validation, success states).
 //
@@ -19,18 +19,18 @@ export const contactContent: ContactContent = {
 		},
 		fields: {
 			email: {
-				label: 'email',
+				label: { en: 'email', fr: 'courriel' },
 				placeholder: { en: 'you@company.com', fr: 'toi@compagnie.com' },
 			},
 			message: {
-				label: 'message',
+				label: { en: 'message', fr: 'message' },
 				placeholder: {
 					en: 'Tell me about your project...',
 					fr: 'Parle-moi de ton projet...',
 				},
 			},
 			name: {
-				label: 'name',
+				label: { en: 'name', fr: 'nom' },
 				placeholder: { en: 'Your name', fr: 'Ton nom' },
 			},
 		},
@@ -78,6 +78,7 @@ export const contactContent: ContactContent = {
 	],
 	stationLabel: { en: 'NEXT STOP: YOU', fr: 'PROCHAIN ARRÊT : TOI' },
 	success: {
+		blogLinkLabel: { en: 'blog', fr: 'blogue' },
 		fieldOk: { en: 'OK', fr: 'OK' },
 		meanwhile: {
 			en: 'Meanwhile, check out my {work} or {blog}',
@@ -97,6 +98,7 @@ export const contactContent: ContactContent = {
 			en: 'Validating fields...',
 			fr: 'Validation des champs...',
 		},
+		workLinkLabel: { en: 'work', fr: 'services' },
 	},
 	validation: {
 		errorSummary: {
@@ -114,7 +116,3 @@ export const contactContent: ContactContent = {
 	},
 	web3formsKey: '6887fd90-3348-4d31-ba03-bc0e285697b6',
 };
-
-// Re-export hand-written companion module so consumers can keep importing
-// chrome / helpers / type defs from the original path 'contact-page'.
-export * from './contact-page.companion';

@@ -193,7 +193,7 @@
 		</div>
 
 		<!-- Capability pills -->
-		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, locale) || 'Capabilities'}>
+		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, locale)}>
 			{#each pills as pill}
 				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}

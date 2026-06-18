@@ -37,20 +37,13 @@
 	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, locale);
 	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, locale);
 	const heroTerminalAria = resolveLocale(c.hero.terminalAria, locale);
-	// go2/slice-30: explainer kicker — inline LocalizedString (CMS-back later with the rest).
-	const stackKicker = resolveLocale(
-		{ en: 'what\'s a "stack"?', fr: 'c\'est quoi un « stack »?' },
-		locale,
-	);
-	// go2/w5 §1: "What is a stack?" explainer — CMS-backed (stack_explainer flat
-	// column) with a byte-identical EN code fallback. The committed module has
-	// no stackExplainer until the orchestrator applies the field + regenerates,
-	// so the fallback is what EXPORT_FALLBACKS_SKIP=1 builds render. Never blank.
+	const stackKicker = resolveLocale(c.hero.stackKicker, locale);
 	const FALLBACK_STACK_EXPLAINER =
 		'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you, poke the blueprints below and see for yourself.';
 	const stackExplainer = c.hero.stackExplainer
 		? resolveLocale(c.hero.stackExplainer, locale) || FALLBACK_STACK_EXPLAINER
 		: FALLBACK_STACK_EXPLAINER;
+	const engineLoading = resolveLocale(c.hero.engineLoading, locale);
 	const statLabels = {
 		technologies: resolveLocale(c.hero.stats.technologies, locale),
 	};
@@ -200,15 +193,7 @@
 			<EngineComponent animate={engineAnimate} />
 		{:else}
 			<section class="engine-loading" data-testid="stack-engine-loading" aria-hidden="true">
-				<!-- fr-leak (needs-cms-field): this engine-band loading caption is an
-				     EN-only literal — it ships English on /fr. No CMS field carries it
-				     yet (techStackPageContent has no hero.engineLoading; siteLabels.ui
-				     has no engine/loading caption). READY TO WIRE: once the operator
-				     adds `engineLoading: LocalizedString` to the tech-stack-page schema
-				     (@repo/shared) + CMS singleton + regen, swap this literal for
-				     `{resolveLocale(c.hero.engineLoading, locale)}`. EN must stay
-				     byte-identical: en='~ rolling out the drawing board…'. -->
-				<span class="engine-loading-line">~ rolling out the drawing board…</span>
+				<span class="engine-loading-line">{engineLoading}</span>
 			</section>
 		{/if}
 		<Separator variant="hazard" data-testid="engine-band-hazard-bottom" />

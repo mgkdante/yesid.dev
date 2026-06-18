@@ -16,6 +16,7 @@
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
   import { siteLabels } from '$lib/content';
+  import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 
   let { project }: { project: Project } = $props();
 
@@ -25,7 +26,7 @@
     resolveLocale(siteLabels.ui.backToProjects, locale) ||
     resolveLocale(siteLabels.projectsChrome.detail.backToListingLabel, locale);
   // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
-  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale) || 'Tech stack';
+  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale);
   const subtitle = $derived(resolveLocale(project.oneLiner, locale));
 
   const location = $derived(project.location ?? 'sherbrooke');
@@ -121,7 +122,7 @@
     <div class="header__content">
       <a
         href={localizeHref('/projects', locale)}
-        class="mb-5 inline-block font-mono text-xs tracking-[0.5px] text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
+        class="header__back mb-5 inline-block font-mono text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
         use:boop={{ scale: 1.05, timing: 200 }}
       >
         {backToListingLabel}
@@ -142,6 +143,10 @@
           <span class="header__pill">{tech}</span>
         {/each}
       </nav>
+
+      <div class="header__quiet">
+        <QuietModeButton />
+      </div>
     </div>
   </section>
 </div>
@@ -202,12 +207,16 @@
     text-align: center;
     width: 100%;
     margin-inline: auto;
-    padding: 2.5rem 1.25rem 2.5rem;
+    /* Top padding clears the fixed floating nav. The wrapper's
+       -nav-height/+nav-height trick only extends the background up under the
+       nav; it does NOT push content down, so the first element (the back link)
+       must clear the nav here or it renders hidden beneath it. */
+    padding: 4.5rem 1.25rem 2.5rem;
   }
 
   @media (min-width: 1024px) {
     .header__content {
-      padding: 2.5rem 2rem 3.75rem;
+      padding: 5.5rem 2rem 3.75rem;
     }
   }
 
@@ -238,6 +247,15 @@
   .edge-separator {
     margin-top: 8px;
     opacity: 0.5;
+  }
+
+  .header__back {
+    font-size: var(--text-back-link);
+    letter-spacing: 0;
+  }
+
+  .header__quiet {
+    margin-top: 1.25rem;
   }
 
   /* ── Decorations ──────────────────────────────────────────── */

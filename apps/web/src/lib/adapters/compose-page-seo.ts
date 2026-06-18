@@ -69,6 +69,7 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	const description: LocalizedString =
 		(routeOverride?.description as LocalizedString | undefined) ??
 		siteSeoDefaults.defaultDescription;
+	const seoCopy = { titleBody, description };
 
 	// OG image fallback chain. UUID → asset URL with `og-1200` preset (per
 	// CONVENTIONS § 9 + P1 finding). When no UUID is available, leave ogImage
@@ -84,7 +85,7 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 		canonical,
 		ogType: codeDefaults.ogType,
 		noIndex: codeDefaults.noIndex,
-		jsonLd: codeDefaults.jsonLdFactory(siteMeta, locale),
+		jsonLd: codeDefaults.jsonLdFactory(siteMeta, locale, seoCopy),
 	};
 
 	if (ogImageUuid) {

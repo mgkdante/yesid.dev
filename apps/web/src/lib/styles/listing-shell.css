@@ -1,0 +1,79 @@
+.listing-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	width: 100%;
+}
+
+.listing-filter-column {
+	display: none;
+}
+
+.listing-content {
+	padding: 1.5rem 1rem;
+}
+
+.mobile-filter-toggle {
+	display: flex;
+	width: 100%;
+	min-height: 44px;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: var(--radius-md);
+	border: 2px solid var(--border-brand);
+	background: var(--card);
+	padding: 0.75rem 0.875rem;
+	font-family: var(--font-mono);
+	font-size: var(--text-control);
+	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: uppercase;
+	color: var(--foreground);
+	transition:
+		border-color var(--duration-normal) var(--ease-default),
+		color var(--duration-normal) var(--ease-default);
+}
+
+.mobile-filter-toggle:hover,
+.mobile-filter-toggle:focus-visible {
+	border-color: var(--primary);
+	color: var(--primary);
+	outline: none;
+}
+
+/* Plain selectors: this file is imported as a GLOBAL stylesheet (not a Svelte
+   <style> block), so a Svelte-only global() wrapper would be invalid CSS here
+   and the whole rule gets dropped. That is what left the filter panel
+   permanently expanded; bare selectors apply globally without it. */
+[data-slot="collapsible-content"].mobile-filter-body {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows var(--duration-normal) var(--ease-default);
+}
+
+[data-slot="collapsible-content"].mobile-filter-body[data-state="open"] {
+	grid-template-rows: 1fr;
+}
+
+.mobile-filter-shell {
+	margin-top: 0.75rem;
+	border-radius: var(--radius-md);
+	border: 2px solid var(--border-brand);
+	background: var(--card);
+	padding: 0.875rem;
+}
+
+@media (min-width: 768px) {
+	.listing-content {
+		padding: 2rem 1.5rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	.listing-grid {
+		grid-template-columns: clamp(220px, 22vw, 320px) 1fr;
+	}
+
+	.listing-filter-column {
+		display: block;
+	}
+}

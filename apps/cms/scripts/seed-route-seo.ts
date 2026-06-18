@@ -1,13 +1,8 @@
 #!/usr/bin/env bun
 //
-// DONE — one-shot seed, completed (slice-18h Phase 3 Task 7; banner added in
-// slice-28.5, audit #34). WARNING (audit #62): route_seo is a decided DEAD
-// END — the live collection holds zero rows, no export-fallbacks fetcher
-// exists, and the static adapter never reads it, so re-seeding it changes
-// NOTHING on the rendered site. Per-route SEO is authored in
-// apps/web/src/lib/adapters/route-seo-defaults.ts; collection archival is
-// flagged to slice-26. Kept in-tree per the 27.2 archive-not-delete
-// convention.
+// Seed and maintain the CMS-owned route_seo rows consumed by export-fallbacks.
+// Static route editorial SEO lives here. Code still owns technical SEO defaults
+// like ogType, noIndex, canonical construction, and JSON-LD factories.
 //
 /**
  * Seed Directus `route_seo` collection from `fixtures/collections/route-seo.json`.

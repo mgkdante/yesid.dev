@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// GENERATED FILE — do not edit by hand.
+// GENERATED FILE - do not edit by hand.
 //
 // Home-page block content (hero, manifesto, proof reel, services grid, about teaser, CTA, closer).
 //
@@ -246,28 +246,37 @@ export const closerContent: CloserContent = {
 	rows: {
 		about: {
 			action: { en: 'cd', fr: 'cd' },
-			description: { en: 'Yesid O. · Montreal', fr: 'Yesid O. · Montréal' },
-			label: { en: 'ABOUT', fr: 'À PROPOS' },
+			description: { en: 'About the builder', fr: 'À propos du bâtisseur' },
+			label: { en: 'YESID', fr: 'YESID' },
 		},
 		connect: {
 			action: { en: 'GO', fr: 'GO' },
 			description: {
 				en: 'GitHub · open-source work',
-				fr: 'GitHub · travail open-source',
+				fr: 'GitHub · travail open source',
 			},
-			label: { en: 'EXPLORE', fr: 'EXPLORER' },
+			label: { en: 'GITHUB REPO', fr: 'DÉPÔT GITHUB' },
 		},
 		contact: {
 			action: { en: 'GO', fr: 'GO' },
 			description: {
 				en: 'Start a project together',
-				fr: 'Partir un projet ensemble',
+				fr: 'Démarrer un projet ensemble',
 			},
 			label: { en: 'CONTACT', fr: 'CONTACT' },
 		},
 		read: {
 			action: { en: 'cd', fr: 'cd' },
-			label: { en: 'READ', fr: 'LIRE' },
+			description: { en: 'Writing and field notes', fr: 'Notes et articles' },
+			label: { en: 'BLOG', fr: 'BLOGUE' },
+		},
+		stack: {
+			action: { en: 'cd', fr: 'cd' },
+			description: {
+				en: 'Tools and architecture',
+				fr: 'Outils et architecture',
+			},
+			label: { en: 'STACK', fr: 'STACK' },
 		},
 	},
 	subheading: { en: 'END OF LINE', fr: 'FIN DE LA LIGNE' },
@@ -282,7 +291,3 @@ export const closerContent: CloserContent = {
 		},
 	},
 };
-
-// Re-export hand-written companion module so consumers can keep importing
-// chrome / helpers / type defs from the original path 'site-content'.
-export * from './site-content.companion';
