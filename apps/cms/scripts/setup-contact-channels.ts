@@ -10,7 +10,7 @@
  * DEV-ONLY. Dry-run by default; pass --apply --seed to write schema and rows.
  */
 
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 
@@ -444,7 +444,7 @@ async function dropLegacyJsonField(ctx: ApplyContext): Promise<void> {
 async function main(): Promise<void> {
 	const flags = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
-	if (!url.includes('cms.dev.yesid.dev')) throw new Error(`Refusing non-dev CMS: ${url}. DEV-ONLY.`);
+	assertDevCms(url);
 	const plan = buildContactChannelsPlan();
 	log.info(`target: ${url}${flags.apply ? ' [apply]' : ' [dry-run]'}${flags.seed ? ' [seed]' : ''}`);
 	log.info(`plan: ${plan.length} steps`);

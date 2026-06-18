@@ -25,7 +25,7 @@ import type {
 } from '$lib/schemas/jsonld';
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
 import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { SITE_HOST, canonicalFor } from '$lib/utils/seo-defaults';
 import { extractText } from '@repo/shared';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
@@ -127,7 +127,7 @@ export function buildBlogPostingNode(
 	locale: Locale,
 	opts: { imageUrl?: string } = {},
 ): BlogPosting {
-	const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
+	const canonicalUrl = canonicalFor(`/blog/${post.slug}`, post.lang);
 	const built = {
 		'@type': 'BlogPosting' as const,
 		'@id': canonicalUrl,
@@ -146,7 +146,7 @@ export function buildBlogPostingNode(
 }
 
 export function buildServiceNode(service: ServiceDomain, locale: Locale): ServiceNode {
-	const canonicalUrl = `${SITE_HOST}/services/${service.id}`;
+	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	// Schema.org does not define `availableLanguage` on `Service` directly
 	// (it belongs on ContactPoint / ServiceChannel / Place). When fr/es
 	// content ships, locale info will re-enter via a nested ServiceChannel
@@ -162,7 +162,7 @@ export function buildServiceNode(service: ServiceDomain, locale: Locale): Servic
 }
 
 export function buildCreativeWorkNode(project: Project, locale: Locale): CreativeWork {
-	const canonicalUrl = `${SITE_HOST}/projects/${project.slug}`;
+	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
 	const built = {
 		'@type': 'CreativeWork' as const,
 		'@id': canonicalUrl,

@@ -12,9 +12,8 @@
  * simpler code and the build-time drift gate (P7) catches mismatches.
  */
 
-import { readSingleton } from '@directus/sdk';
 import { toLocalizedString } from '../locale';
-import { asSingletonRow } from './singleton';
+import { fetchBlockSingleton } from './singleton';
 import {
 	BlogPageContentSchema,
 	ProjectsPageContentSchema,
@@ -119,22 +118,22 @@ export function toBlogPageContent(row: BlogPageRow): BlogPageContent {
 }
 
 export async function fetchBlogPageContent({ client }: FetcherContext): Promise<BlogPageContent> {
-	const result = await client.request(
-		readSingleton('block_blog_page_content', {
-			fields: [
-				'id',
-				'entry_rail_services_href',
-				'entry_rail_contact_href',
-				'entry_rail_route_case_studies_href',
-				'entry_rail_route_services_href',
-				'entry_rail_route_stack_href',
-				'entry_rail_route_about_href',
-				'entry_rail_route_contact_href',
-				{ translations: ['*'] } as unknown as string,
-			],
-		}),
+	const row = await fetchBlockSingleton<BlogPageRow>(
+		client,
+		'block_blog_page_content',
+		'fetchBlogPageContent/block_blog_page_content',
+		[
+			'id',
+			'entry_rail_services_href',
+			'entry_rail_contact_href',
+			'entry_rail_route_case_studies_href',
+			'entry_rail_route_services_href',
+			'entry_rail_route_stack_href',
+			'entry_rail_route_about_href',
+			'entry_rail_route_contact_href',
+			{ translations: ['*'] },
+		],
 	);
-	const row = asSingletonRow<BlogPageRow>(result, 'fetchBlogPageContent/block_blog_page_content');
 	return BlogPageContentSchema.parse(toBlogPageContent(row));
 }
 
@@ -162,14 +161,11 @@ export function toProjectsPageContent(row: ProjectsPageRow): ProjectsPageContent
 export async function fetchProjectsPageContent({
 	client,
 }: FetcherContext): Promise<ProjectsPageContent> {
-	const result = await client.request(
-		readSingleton('block_projects_page_content', {
-			fields: ['id', { translations: ['*'] } as unknown as string],
-		}),
-	);
-	const row = asSingletonRow<ProjectsPageRow>(
-		result,
+	const row = await fetchBlockSingleton<ProjectsPageRow>(
+		client,
+		'block_projects_page_content',
 		'fetchProjectsPageContent/block_projects_page_content',
+		['id', { translations: ['*'] }],
 	);
 	return ProjectsPageContentSchema.parse(toProjectsPageContent(row));
 }
