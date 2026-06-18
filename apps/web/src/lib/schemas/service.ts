@@ -6,7 +6,7 @@
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { Service, ServiceSection } from '$lib/types';
+import type { Service, ServiceSection, AssertSchemaMatches } from '$lib/types';
 
 export const ServiceSectionSchema = z.object({
 	title: LocalizedStringSchema,
@@ -26,7 +26,6 @@ export const ServiceSchema = z.object({
 	title: LocalizedStringSchema,
 	description: LocalizedStringSchema,
 	station: z.number(),
-	icon: z.string().optional(),
 	svg: z.string().optional(),
 	visible: z.boolean().optional(),
 	relatedProjects: z.array(z.string()),
@@ -44,19 +43,7 @@ export const ServiceSchema = z.object({
 	impactMetric: ServiceImpactMetricSchema.optional(),
 });
 
-// Drift detectors — fail to compile if TS interface and schema diverge.
-type _ServiceSectionCheck = z.infer<typeof ServiceSectionSchema> extends ServiceSection
-	? ServiceSection extends z.infer<typeof ServiceSectionSchema>
-		? true
-		: false
-	: false;
-const _serviceSectionCheck: _ServiceSectionCheck = true;
-void _serviceSectionCheck;
-
-type _ServiceCheck = z.infer<typeof ServiceSchema> extends Service
-	? Service extends z.infer<typeof ServiceSchema>
-		? true
-		: false
-	: false;
-const _serviceCheck: _ServiceCheck = true;
-void _serviceCheck;
+// Drift detectors — compile error (`true satisfies never`) if a schema and its
+// TS interface diverge in either direction.
+true satisfies AssertSchemaMatches<z.infer<typeof ServiceSectionSchema>, ServiceSection>;
+true satisfies AssertSchemaMatches<z.infer<typeof ServiceSchema>, Service>;

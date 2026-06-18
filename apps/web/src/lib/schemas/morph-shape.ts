@@ -8,7 +8,7 @@
 // with the adapter consumer.
 
 import { z } from 'zod';
-import type { MorphShape } from '$lib/types';
+import type { MorphShape, AssertSchemaMatches } from '$lib/types';
 
 export const MorphShapeSchema: z.ZodType<MorphShape> = z.object({
 	id: z.string(),
@@ -18,11 +18,5 @@ export const MorphShapeSchema: z.ZodType<MorphShape> = z.object({
 	sort: z.number().int(),
 });
 
-// Drift detector — fail at compile time if the TS type and Zod schema diverge.
-type _MorphShapeCheck = z.infer<typeof MorphShapeSchema> extends MorphShape
-	? MorphShape extends z.infer<typeof MorphShapeSchema>
-		? true
-		: false
-	: false;
-const _morphShapeCheck: _MorphShapeCheck = true;
-void _morphShapeCheck;
+// Drift detector — compile error (`true satisfies never`) on schema/type drift.
+true satisfies AssertSchemaMatches<z.infer<typeof MorphShapeSchema>, MorphShape>;
