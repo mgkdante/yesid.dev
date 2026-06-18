@@ -8,17 +8,12 @@
 // differ). Add a `/work/[...slug]/+server.ts` later if old detail URLs
 // need preservation.
 //
-// slice-28.1 (audit #24): built as a raw Response instead of redirect() —
-// the kit helper can't carry headers, and this permanent redirect should be
-// served from the CDN edge (s-maxage=86400) rather than invoking the lambda
-// for every legacy hit.
+// slice-28.1 (audit #24): a permanent redirect served from the CDN edge
+// (s-maxage=86400) rather than invoking the lambda for every legacy hit. The
+// raw-Response detail lives in permanentRedirect().
+
+import { permanentRedirect } from '$lib/server/redirect';
 
 export function GET(): Response {
-	return new Response(null, {
-		status: 301,
-		headers: {
-			location: '/projects',
-			'cache-control': 'public, s-maxage=86400',
-		},
-	});
+	return permanentRedirect('/projects');
 }

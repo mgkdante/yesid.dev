@@ -19,7 +19,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
-	import { cn } from '$lib/utils';
+	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';
 	import { siteLabels } from '$lib/content';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';
 
@@ -97,16 +97,6 @@
 		'web-development': ['var(--accent)', 'var(--primary)']
 	};
 
-	// GO2-W5 STM line bullets: each service chip carries its line color —
-	// database = orange line, pipeline = yellow line (line-amber survives
-	// daylight), analytics = green line, web = lunar white.
-	const SERVICE_LINE_COLORS: Record<string, string> = {
-		'database-engineering': 'var(--primary)',
-		'data-pipeline': 'var(--line-amber)',
-		'analytics-reporting': 'var(--signal-proceed)',
-		'web-development': 'var(--signal-lunar)'
-	};
-
 	let gradientColors = $derived(
 		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--primary)', 'var(--accent)']
 	);
@@ -123,13 +113,7 @@
 			: ''
 	);
 
-	const proofMetrics = $derived(
-		project.impactMetrics && project.impactMetrics.length > 0
-			? project.impactMetrics
-			: project.impactMetric
-				? [project.impactMetric]
-				: []
-	);
+	const proofMetrics = $derived(projectMetrics(project));
 	const visibleProofMetrics = $derived(proofMetrics.slice(0, 3));
 	const hasProofMetricOverflow = $derived(proofMetrics.length > 3);
 </script>
@@ -230,7 +214,7 @@
 							{/if}
 							<span
 								class="line-bullet"
-								style="background: {SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)'};"
+								style="background: {serviceLineColor(service.id)};"
 								aria-hidden="true"
 							></span>
 							<span class="project-card-meta font-mono leading-tight text-[var(--foreground)]">
