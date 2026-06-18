@@ -116,8 +116,12 @@
 
 		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
 			{#each headerLinks as link}
+<!-- Reveal the priority-2 link only once the pill has room for a third
+					 14px label. After the typography consolidation bumped
+					 --text-nav-link-mobile 13px->14px, three labels overflowed the
+					 rail in a ~480-489px band; 500px clears it with margin. -->
 				<span
-					class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}
+					class={link.priority === 2 ? 'hidden min-[500px]:block' : undefined}
 					use:magnetic={{ strength: 6, radius: 50 }}
 				>
 					<a
