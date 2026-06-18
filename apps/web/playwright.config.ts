@@ -90,7 +90,13 @@ export default defineConfig({
 		? {}
 		: {
 				webServer: {
-					command: 'bun run build && bun run preview',
+					// E2E_PREBUILT skips the build and only previews — CI builds once
+					// via `turbo run build` (cache-eligible / remote-cache shared) so the
+					// webServer does not rebuild what the ci job already built. Locally
+					// (no flag) it builds + previews for one-command convenience.
+					command: process.env.E2E_PREBUILT
+						? 'bun run preview'
+						: 'bun run build && bun run preview',
 					port: 4173,
 					reuseExistingServer: !process.env.CI,
 					// CI cold-build (vite build + check:sitemap) can exceed the
