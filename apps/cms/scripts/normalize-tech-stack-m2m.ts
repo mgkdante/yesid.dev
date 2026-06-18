@@ -29,7 +29,7 @@ import {
 	readFieldsByCollection,
 	updateRelation,
 } from '@directus/sdk';
-import { createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
 
 interface TechStackRow {
 	id: string;
@@ -145,9 +145,7 @@ export async function apply(opts: { directusUrl: string; token: string; dryRun?:
 async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const directusUrl = defaultDirectusUrl();
-	if (!directusUrl.includes('cms.dev.yesid.dev')) {
-		throw new Error(`Refusing to run against non-dev CMS: ${directusUrl}. This script is DEV-ONLY; prod runs via the gated promotion path.`);
-	}
+	assertDevCms(directusUrl);
 	const token = requireEnv('DIRECTUS_ADMIN_TOKEN', 'dev CMS admin token (op:// ref in apps/cms/.env)');
 	const { created, rebuilt, log } = await apply({ directusUrl, token, dryRun });
 	console.log(log.join('\n'));
