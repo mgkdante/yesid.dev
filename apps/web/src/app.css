@@ -199,11 +199,14 @@ html {
   background-color: var(--background);
   color: var(--foreground);
   overflow-x: clip; /* No Overflow Guarantee — Layer 1: viewport boundary */
+  /* Always reserve a real scrollbar track so a page-height change (e.g. blog
+     Quiet Mode collapsing the article) can't toggle the scrollbar and shift
+     content sideways. Unlike scrollbar-gutter:stable, a real scrollbar IS
+     subtracted from documentElement.clientWidth, so full-bleed bands still
+     measure edge-to-edge (the engine-band invariant holds). On overlay /
+     zero-width-scrollbar platforms this reserves 0px and is a no-op. */
+  overflow-y: scroll;
   overscroll-behavior: none; /* Prevent pull-to-refresh & bounce in pinned sections */
-  /* Reserve the vertical-scrollbar gutter at all times so content that grows or
-     shrinks (Quiet Mode collapse/open, route changes) does not toggle the
-     scrollbar and shift centered layout sideways. */
-  scrollbar-gutter: stable;
 }
 
 /* No Overflow Guarantee — Layer 2: text breaks before overflowing */
