@@ -51,8 +51,11 @@
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
-		<!-- Polaroid display -->
-		<div class="flex flex-1 items-center justify-center">
+		<!-- Polaroid display. Reserve the tallest polaroid frame on mobile so the
+		     {#key currentIndex} remount (which briefly empties this slot) can't
+		     collapse + re-expand the card on photo change. Frame = fixed img
+		     (h-56 / sm:h-64) + p-1.5 pb-5 + tape. Desktop sizes from the grid row. -->
+		<div class="flex flex-1 items-center justify-center min-h-[16rem] sm:min-h-[18rem] lg:min-h-0">
 			{#key currentIndex}
 				<div
 					class="relative transition-all duration-300"

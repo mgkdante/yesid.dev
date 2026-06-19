@@ -76,7 +76,7 @@
 	   wider layout (2/4/6-col bento) keeps the min-h-36 floor + h-full. */
 	@media (max-width: 499.98px) {
 		.language-strip {
-			min-height: 15rem;
+			min-height: 18rem;
 		}
 	}
 
