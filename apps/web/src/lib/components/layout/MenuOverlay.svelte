@@ -192,6 +192,14 @@
 		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-slow) cubic-bezier(0.33, 1, 0.68, 1);
 	}
 
+	/* Light mode: the "cast from above" glow rides --primary, but light's primary
+	   (#A05500) is muted where dark's (#E07800) is bright, so the 4% mix tuned for
+	   dark reads as nothing here. Lift the mix so the warm cast lands with the same
+	   presence as dark (1:1 parity). */
+	:global([data-theme='light']) .menu-overlay {
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 58%);
+	}
+
 	/* Entering: render invisible, no transition (painted first, then class removed → transitions in) */
 	.menu-overlay.entering {
 		opacity: 0;
