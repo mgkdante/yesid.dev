@@ -156,7 +156,10 @@
 
 	.tabs-bar {
 		position: sticky;
-		top: 5rem;
+		/* Route through the shared nav clearance so the sticky tablist clears the
+		   floating pill (was 5rem/80px = only 4px below the 76px pill, which read
+		   as "01 Databases tucked under the nav"). */
+		top: var(--nav-clearance, 5.5rem);
 		z-index: var(--z-rail);
 	}
 
@@ -169,7 +172,7 @@
 		position: absolute;
 		inset-inline: 0;
 		bottom: 100%;
-		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
+		height: calc(var(--nav-clearance, 5.5rem) + env(safe-area-inset-top, 0px) + 0.5rem);
 		background: var(--background);
 		pointer-events: none;
 	}
