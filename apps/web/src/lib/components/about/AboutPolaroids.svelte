@@ -55,7 +55,7 @@
 		     {#key currentIndex} remount (which briefly empties this slot) can't
 		     collapse + re-expand the card on photo change. Frame = fixed img
 		     (h-56 / sm:h-64) + p-1.5 pb-5 + tape. Desktop sizes from the grid row. -->
-		<div class="flex flex-1 items-center justify-center min-h-[16rem] sm:min-h-[18rem] lg:min-h-0">
+		<div class="flex flex-1 items-center justify-center min-h-[16rem] sm:min-h-[18rem] lg:[min-height:auto]">
 			{#key currentIndex}
 				<div
 					class="relative transition-all duration-300"
@@ -75,7 +75,7 @@
 							class="h-56 w-40 object-cover sm:h-64 sm:w-48 lg:h-[calc(100%-4rem)] lg:w-auto lg:max-h-[280px] lg:min-h-[160px]"
 							loading="lazy"
 						/>
-						<p class="absolute bottom-1 left-0 w-full text-center text-caption italic text-neutral-500">
+						<p class="pointer-events-none absolute bottom-1 left-0 w-full text-center text-caption italic text-neutral-500">
 							{caption}
 						</p>
 					</div>

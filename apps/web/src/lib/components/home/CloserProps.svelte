@@ -12,7 +12,7 @@
 	onMount(() => {
 		if (!browser || !wrapperEl) return;
 
-		const propFiles = ['cone', 'sign', 'helmet', 'barricade'] as const;
+		const propFiles = ['sign', 'helmet', 'barricade', 'balise'] as const;
 		propFiles.forEach((name, idx) => {
 			const wrap = wrapperEl!.querySelector(`[data-prop="${name}"]`);
 			if (!wrap) return;
@@ -61,10 +61,10 @@
 
 <!-- display:contents preserves absolute positioning relative to parent section -->
 <div bind:this={wrapperEl} style:display="contents">
-	<div class="prop prop-cone" data-prop="cone" aria-hidden="true"></div>
 	<div class="prop prop-sign" data-prop="sign" aria-hidden="true"></div>
 	<div class="prop prop-helmet" data-prop="helmet" aria-hidden="true"></div>
 	<div class="prop prop-barricade" data-prop="barricade" aria-hidden="true"></div>
+	<div class="prop prop-balise" data-prop="balise" aria-hidden="true"></div>
 </div>
 
 <style>
@@ -83,20 +83,16 @@
 	}
 
 	/* Desktop prop positions — left cluster, bigger */
-	.prop-cone { left: 2%; width: 50px; }
-	.prop-sign { left: 10%; width: 75px; }
+	.prop-sign { left: 10%; width: 167px; }
 	.prop-helmet { left: 22%; width: 60px; }
 	.prop-barricade { left: 30%; width: 200px; }
+	.prop-balise { left: 45%; width: 156px; }
 
 	@media (max-width: 767px) {
 		/* Props cluster around the centered floodlight */
-		.prop-cone {
-			left: calc(50% - 80px);
-			width: 22px;
-		}
 		.prop-sign {
 			left: calc(50% - 50px);
-			width: 36px;
+			width: 64px;
 		}
 		.prop-helmet {
 			left: calc(50% + 24px);
@@ -105,6 +101,10 @@
 		.prop-barricade {
 			left: calc(50% + 50px);
 			width: 80px;
+		}
+		.prop-balise {
+			left: calc(50% - 98px);
+			width: 60px;
 		}
 	}
 </style>

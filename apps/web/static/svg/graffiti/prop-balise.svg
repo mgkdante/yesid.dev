@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 96" fill="none">
+  <!-- Montreal TRV-7 balise conique — 5 stacked cylinders, each only slightly
+       narrower than the one below (near-columnar, subtle step), a white reflective
+       stripe at the top of each, on a black weighted rubber foot. -->
+  <!-- Flat cap -->
+  <path d="M19 11 Q19 8.5 21.5 8.5 L42.5 8.5 Q45 8.5 45 11 Z" fill="#E07800"/>
+  <!-- Stacked cylinder segments (bottom widest, ~0.5u narrower each step up) -->
+  <rect x="19" y="11" width="26" height="14" fill="#E07800"/>
+  <rect x="18.5" y="25" width="27" height="14" fill="#E07800"/>
+  <rect x="18" y="39" width="28" height="14" fill="#E07800"/>
+  <rect x="17.5" y="53" width="29" height="14" fill="#E07800"/>
+  <rect x="17" y="67" width="30" height="14" fill="#E07800"/>
+  <!-- Straight base skirt -->
+  <rect x="17" y="81" width="30" height="8" fill="#E07800"/>
+  <!-- White reflective stripe at the top of each segment -->
+  <rect x="19" y="11" width="26" height="5" fill="#f4f4f4"/>
+  <rect x="19" y="15" width="26" height="1" fill="#cfcfcf"/>
+  <rect x="18.5" y="25" width="27" height="5" fill="#f4f4f4"/>
+  <rect x="18.5" y="29" width="27" height="1" fill="#cfcfcf"/>
+  <rect x="18" y="39" width="28" height="5" fill="#f4f4f4"/>
+  <rect x="18" y="43" width="28" height="1" fill="#cfcfcf"/>
+  <rect x="17.5" y="53" width="29" height="5" fill="#f4f4f4"/>
+  <rect x="17.5" y="57" width="29" height="1" fill="#cfcfcf"/>
+  <rect x="17" y="67" width="30" height="5" fill="#f4f4f4"/>
+  <rect x="17" y="71" width="30" height="1" fill="#cfcfcf"/>
+  <!-- Right-side shading for cylinder roundness -->
+  <path d="M32 11 L45 11 L45 25 L45.5 25 L45.5 39 L46 39 L46 53 L46.5 53 L46.5 67 L47 67 L47 89 L32 89 Z" fill="#000000" opacity="0.09"/>
+  <!-- Black weighted rubber foot — flat, wide pad -->
+  <rect x="9" y="89" width="46" height="7" rx="1.5" fill="#222222"/>
+  <rect x="10" y="89.5" width="44" height="2" rx="1" fill="#333333"/>
+</svg>
