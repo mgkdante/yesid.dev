@@ -148,4 +148,49 @@
 		padding: 8px 24px 12px;
 		align-items: center;
 	}
+
+	/* Mobile (<=767px): the 4-column departure-board grid
+	   (36px 120px 1fr 80px) starves the description column to ~24px at 360px and
+	   ~9px at 320px, stacking words one character per line (illegible). Collapse
+	   each row into stacked full-width lines: [num] LABEL on top, the
+	   description on its own line, the action below. Keeps the same fields and
+	   colors; just gives the description room to read. */
+	@media (max-width: 767px) {
+		.terminal-row {
+			grid-template-columns: auto 1fr;
+			grid-template-areas:
+				'num label'
+				'desc desc'
+				'action action';
+			column-gap: 10px;
+			row-gap: 4px;
+			align-items: start;
+			padding: 14px 20px;
+		}
+		.terminal-row .terminal-line-num {
+			grid-area: num;
+			align-self: center;
+			font-size: 13px;
+		}
+		.terminal-row-label {
+			grid-area: label;
+			align-self: center;
+		}
+		.terminal-row-desc,
+		.terminal-row-desc-primary {
+			grid-area: desc;
+		}
+		.terminal-row-action,
+		.terminal-row-action-primary {
+			grid-area: action;
+			text-align: left;
+			font-size: 14px;
+		}
+		.terminal-welcome {
+			padding: 4px 20px 10px;
+		}
+		.terminal-cursor-line {
+			padding: 8px 20px 12px;
+		}
+	}
 </style>
