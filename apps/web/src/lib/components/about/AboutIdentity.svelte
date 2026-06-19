@@ -29,8 +29,8 @@
 <Card class="relative h-full p-3" data-testid="about-identity">
 	<!-- Ambient glow behind headshot -->
 	<div
-		class="pointer-events-none absolute -top-10 -left-10 h-44 w-44"
-		style="background: radial-gradient(circle, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 70%);"
+		class="pointer-events-none absolute -top-10 -left-10 h-44 w-44 opacity-[0.28] dark:opacity-[0.12]"
+		style="background: radial-gradient(circle, var(--primary) 0%, transparent 70%);"
 		aria-hidden="true"
 	></div>
 

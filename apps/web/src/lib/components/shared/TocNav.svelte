@@ -150,6 +150,9 @@
 		background: var(--primary);
 		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
 	}
+	:global([data-theme='light']) .toc-counter-dot {
+		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 100%, transparent);
+	}
 
 	.toc-counter-text {
 		color: color-mix(in srgb, var(--primary) 30%, transparent);

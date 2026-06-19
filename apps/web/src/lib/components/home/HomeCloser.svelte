@@ -236,6 +236,13 @@
 			transparent 75%
 		);
 	}
+	:global([data-theme='light']) .closer-section::before {
+		background: radial-gradient(
+			ellipse 80% 55% at 50% 100%,
+			color-mix(in srgb, var(--primary) calc(8% + var(--breathing-phase, 0) * 8%), transparent),
+			transparent 75%
+		);
+	}
 
 	/* Content area — wide, leaves room for graffiti on the right */
 	.closer-content {

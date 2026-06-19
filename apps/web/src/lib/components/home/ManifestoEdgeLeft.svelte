@@ -128,6 +128,9 @@
 		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
 		flex-shrink: 0;
 	}
+	:global([data-theme='light']) .manifesto__dot-active {
+		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 100%, transparent);
+	}
 
 	.manifesto__dot-inactive {
 		width: 5px;
