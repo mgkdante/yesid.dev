@@ -66,7 +66,11 @@ const ONE_PHONE_SPECS = [
 	'**/mobile/services-detail.spec.ts',
 	'**/mobile/home.spec.ts',
 	'**/home-cards.spec.ts',
-	'**/pages.spec.ts'
+	'**/pages.spec.ts',
+	// Phone-layout fit guard — meaningless above 768px and redundant at 412px,
+	// so it rides the single-phone set: runs on iphone-12 + the iphone-se /
+	// galaxy-s23 profiles, skipped on pixel-7 / ipad-mini.
+	'**/mobile/small-device-fit.spec.ts'
 ];
 
 export default defineConfig({
@@ -163,6 +167,35 @@ export default defineConfig({
 			name: 'ipad-mini',
 			use: { ...devices['iPad Mini'], defaultBrowserType: 'chromium' },
 			testIgnore: [...DESKTOP_ONLY_SPECS, ...ONE_PHONE_SPECS]
+		},
+		// Small-device band (Galaxy S23 360x780, iPhone SE 375x667). The phone
+		// matrix above starts at iPhone 12 (390px), so the 360-375px band where
+		// narrow/short layouts actually break was untested — that gap let the
+		// nav-clearance / hero-clip / terminus-crush regressions ship. These two
+		// profiles run ONLY the tests/mobile specs (the layout-sensitive ones,
+		// incl. small-device-fit) so they cover the dead zone without re-running
+		// the viewport-agnostic suites a third time.
+		{
+			name: 'iphone-se',
+			use: {
+				viewport: { width: 375, height: 667 },
+				deviceScaleFactor: 2,
+				isMobile: true,
+				hasTouch: true,
+				defaultBrowserType: 'chromium'
+			},
+			testMatch: '**/mobile/**/*.spec.ts'
+		},
+		{
+			name: 'galaxy-s23',
+			use: {
+				viewport: { width: 360, height: 780 },
+				deviceScaleFactor: 3,
+				isMobile: true,
+				hasTouch: true,
+				defaultBrowserType: 'chromium'
+			},
+			testMatch: '**/mobile/**/*.spec.ts'
 		}
 	]
 });
