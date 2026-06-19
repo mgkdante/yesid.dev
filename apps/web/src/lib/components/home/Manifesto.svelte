@@ -297,7 +297,7 @@
 		color: var(--primary);
 		letter-spacing: -0.05em;
 		line-height: 0.85;
-		text-shadow: 0 0 80px color-mix(in srgb, var(--primary) 12%, transparent);
+		text-shadow: 0 0 80px color-mix(in srgb, var(--glow) 12%, transparent);
 		white-space: nowrap;
 		max-width: 100vw;
 		overflow: hidden;

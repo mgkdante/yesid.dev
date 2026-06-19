@@ -276,7 +276,10 @@ describe('Design System Tokens', () => {
         'utf-8',
       );
       const lamp = heroBanner.match(/\.hero-lamp \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(lamp).toContain('var(--grid-glow)');
+      // The lamp rides the theme-invariant --glow (not --grid-glow, which is
+      // off in daylight): the operator wants the sodium-lamp cast visible in
+      // BOTH themes, so it uses the vivid glow token at a fixed opacity.
+      expect(lamp).toContain('var(--glow)');
       expect(lamp).toContain('pointer-events: none');
       // Sized by the pin (100%), never by the document or viewport units —
       // geometry flips (collapse, replay re-enlarge) must not touch it.

@@ -798,11 +798,7 @@
 	   → SAFE-ALWAYS) so both modes speak one hover language. */
 	.match-card:hover,
 	.compose-card-idle:hover {
-		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 12%, transparent);
-	}
-	:global([data-theme='light']) .match-card:hover,
-	:global([data-theme='light']) .compose-card-idle:hover {
-		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 30%, transparent);
+		box-shadow: 0 6px 18px color-mix(in srgb, var(--glow) 12%, transparent);
 	}
 
 	/* go2/w5 §5: ruled out — grayed, not gone. The stable grid makes the AND
