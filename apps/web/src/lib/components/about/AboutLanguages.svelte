@@ -70,6 +70,16 @@
 		isolation: isolate;
 	}
 
+	/* Mobile (single-column stack, below the about grid's 500px de-stack): the
+	   card height is driven only by this floor since h-full has no row to
+	   stretch into. Raise it so the stacked flags read taller on phones; every
+	   wider layout (2/4/6-col bento) keeps the min-h-36 floor + h-full. */
+	@media (max-width: 499.98px) {
+		.language-strip {
+			min-height: 15rem;
+		}
+	}
+
 	.language-stop-badge {
 		border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
 		border-radius: var(--radius-sm);

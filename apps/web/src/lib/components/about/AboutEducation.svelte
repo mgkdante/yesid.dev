@@ -77,7 +77,7 @@
 		width: 3rem;
 		height: 3rem;
 		flex: 0 0 auto;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		border: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
 		box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 8%, transparent);
 		transition: border-color var(--duration-normal) var(--ease-default);

@@ -136,7 +136,7 @@
 		height: 2rem;
 		place-items: center;
 		border: 1px solid var(--border-subtle);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: var(--card);
 		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		color: var(--foreground);
@@ -160,7 +160,7 @@
 		width: 0.55rem;
 		height: 0.55rem;
 		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: transparent;
 		cursor: pointer;
 		transition:

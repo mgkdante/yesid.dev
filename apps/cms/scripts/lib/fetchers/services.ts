@@ -8,13 +8,17 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { toLocalizedString, toLocalizedStringOrUndef } from '../locale';
+import {
+	toLocalizedString,
+	toLocalizedStringOrUndef,
+	mapLocalizedField,
+	mapLocalizedRepeater,
+} from '../locale';
 import {
 	ServiceSchema,
 	type Service,
 	type ServiceSection,
 } from '../schemas/service';
-import type { LocalizedString } from '@repo/shared';
 import type { FetcherContext } from './types';
 import { stackFromTechM2M, type DirectusTechStackJunctionRow } from './projects';
 
@@ -100,19 +104,16 @@ export function toService(row: DirectusService): Service {
 		service.impactMetric = { value: impactValue, label: impactLabel };
 	}
 
-	const deliverables = (row.deliverables ?? [])
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((d): LocalizedString => toLocalizedString(d.translations ?? [], 'label'));
+	const deliverables = mapLocalizedField(row.deliverables, 'label');
 	if (deliverables.length > 0) service.deliverables = deliverables;
 
-	const sections = (row.sections ?? [])
-		.slice()
-		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
-		.map((s): ServiceSection => ({
+	const sections = mapLocalizedRepeater(
+		row.sections,
+		(s): ServiceSection => ({
 			title: toLocalizedString(s.translations ?? [], 'title'),
 			content: toLocalizedString(s.translations ?? [], 'content'),
-		}));
+		}),
+	);
 	if (sections.length > 0) service.sections = sections;
 
 	return service;

@@ -53,7 +53,7 @@
 <div bind:this={headerEl} class="project-detail-header" data-testid="project-detail-header">
   <!-- BG layers as direct children (same pattern as home Manifesto) so
        ManifestoCanvas containerEl coordinates match the canvas position -->
-  <div class="header__circuit-grid"></div>
+  <div class="header__circuit-grid detail-header-grid"></div>
   <ManifestoCanvas containerEl={headerEl} />
 
 <section class="header-section w-full">
@@ -148,8 +148,14 @@
   /* ── Container — extends behind nav with negative margin ────── */
   .project-detail-header {
     position: relative;
-    margin-top: calc(-1 * var(--nav-height, 64px));
-    padding-top: var(--nav-height, 64px);
+    /* accent for the shared .detail-header-grid dot-grid (app.css) */
+    --header-accent: var(--primary);
+    /* --nav-height was never defined (64px fallback under-reserved the 76px
+       pill by 12px, clipping the header title under the nav). Route through the
+       shared --nav-clearance (88px) so the negative-margin/padding pair reserves
+       the real pill height on this full-bleed detail page. */
+    margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
+    padding-top: var(--nav-clearance, 5.5rem);
     overflow: hidden;
     background: var(--manifesto, #0f0d0a);
     cursor: crosshair;
@@ -168,26 +174,13 @@
     }
   }
 
-  /* ── BG Layer 1: Circuit Grid (direct child of header, covers full area) ── */
+  /* ── BG Layer 1: Circuit Grid (direct child of header, covers full area) ──
+     Dot-grid pattern lives in the shared .detail-header-grid class (app.css),
+     driven by --header-accent. Only the surface-layout box stays here. */
   .header__circuit-grid {
     position: absolute;
     inset: 0;
-    background-image:
-      repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
-      repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
     z-index: var(--z-base);
-  }
-
-  .header__circuit-grid::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle 2.5px at 80px 80px, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 4px),
-      radial-gradient(circle 2px at 160px 160px, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 3px),
-      radial-gradient(circle 2.5px at 240px 80px, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 4px),
-      radial-gradient(circle 2px at 80px 240px, color-mix(in srgb, var(--primary) 6%, transparent) 0%, transparent 3px);
-    background-size: 320px 320px;
   }
 
   /* ── Center Content — full bleed, centered ─────────────────── */

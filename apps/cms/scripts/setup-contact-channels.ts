@@ -10,20 +10,12 @@
  * DEV-ONLY. Dry-run by default; pass --apply --seed to write schema and rows.
  */
 
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { type ApplyContext, type SchemaStep, isAlreadyExists, rest } from './lib/schema-apply';
 
-export type SchemaStepKind = 'collection' | 'field' | 'relation' | 'permission';
-
-export interface SchemaStep {
-	kind: SchemaStepKind;
-	target: string;
-	method: 'POST' | 'PATCH';
-	path: string;
-	payload: Record<string, unknown> | null;
-	policyNames?: readonly string[];
-}
+export type { SchemaStep, SchemaStepKind } from './lib/schema-apply';
 
 export const CONTACT_CHANNEL_SEEDS = [
 	{
@@ -272,46 +264,6 @@ export function parseFlags(argv: readonly string[]): { apply: boolean; seed: boo
 
 const log = createLogger('contact-channels');
 
-interface ApplyContext {
-	directusUrl: string;
-	token: string;
-}
-
-async function rest(
-	ctx: ApplyContext,
-	method: string,
-	path: string,
-	body?: unknown,
-): Promise<{ status: number; json: any }> {
-	const res = await fetch(`${ctx.directusUrl}${path}`, {
-		method,
-		headers: {
-			Authorization: `Bearer ${ctx.token}`,
-			'Content-Type': 'application/json',
-		},
-		body: body === undefined ? undefined : JSON.stringify(body),
-	});
-	const text = await res.text();
-	let json: any = null;
-	try {
-		json = text ? JSON.parse(text) : null;
-	} catch {
-		json = { raw: text };
-	}
-	return { status: res.status, json };
-}
-
-function isAlreadyExists(status: number, json: any): boolean {
-	if (status < 400) return false;
-	const errors: { message?: string; extensions?: { code?: string } }[] = json?.errors ?? [];
-	return errors.some(
-		(error) =>
-			error.extensions?.code === 'RECORD_NOT_UNIQUE' ||
-			/already exists/i.test(error.message ?? '') ||
-			/already has an associated relationship/i.test(error.message ?? ''),
-	);
-}
-
 async function applyPermission(ctx: ApplyContext, step: SchemaStep): Promise<void> {
 	const policies = await rest(ctx, 'GET', '/policies?fields=id,name&limit=-1');
 	if (policies.status >= 400) {
@@ -444,7 +396,7 @@ async function dropLegacyJsonField(ctx: ApplyContext): Promise<void> {
 async function main(): Promise<void> {
 	const flags = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
-	if (!url.includes('cms.dev.yesid.dev')) throw new Error(`Refusing non-dev CMS: ${url}. DEV-ONLY.`);
+	assertDevCms(url);
 	const plan = buildContactChannelsPlan();
 	log.info(`target: ${url}${flags.apply ? ' [apply]' : ' [dry-run]'}${flags.seed ? ' [seed]' : ''}`);
 	log.info(`plan: ${plan.length} steps`);

@@ -230,7 +230,7 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 	});
 
 	it('WHITE role: reflective voice: métro dot cores and map cores', () => {
-		expect(read('lib/components/home/DataFlowDiagram.svelte')).toContain('fill="var(--reflective)"');
+		expect(read('lib/components/projects/DataFlowDiagram.svelte')).toContain('fill="var(--reflective)"');
 		expect(read('lib/components/blog/BlogRouteMap.svelte')).toContain('fill: var(--reflective);');
 	});
 
@@ -444,7 +444,7 @@ describe('GO2-W5 round 5 — closer: fun SVGs, card parity, bolder rails, yellow
 
 describe('GO-W2.2 T7 — art direction', () => {
 	const closer = readFileSync(resolve(SRC, 'lib/components/home/HomeCloser.svelte'), 'utf-8');
-	const error = readFileSync(resolve(SRC, 'lib/components/home/ErrorIllustration.svelte'), 'utf-8');
+	const error = readFileSync(resolve(SRC, 'lib/components/shared/ErrorIllustration.svelte'), 'utf-8');
 	const metro = readFileSync(resolve(SRC, 'lib/motion/svg/MetroNetwork.svelte'), 'utf-8');
 
 	it('home closer follows the active theme (go2/w4: theme-dark pin removed)', () => {
@@ -570,7 +570,7 @@ describe('GO2-W5 final batch (6c) — the asphalt footer is BELOVED (never repav
 	// Operator: "the footer being that asphalt color was amazing!" The footer
 	// is the street beneath the platform-edge tape: bg-[var(--muted)] — the
 	// asphalt road surface in dark (#1E1E1E, locked in tokens.test) and the
-	// approved station paper in light (#F1E9DA). Wiring locked here so no
+	// approved station paper in light (#E4E9F3). Wiring locked here so no
 	// future pass repaves the footer onto another surface token.
 	const footer = readFileSync(resolve(SRC, 'lib/components/layout/Footer.svelte'), 'utf-8');
 

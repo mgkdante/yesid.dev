@@ -18,7 +18,7 @@
 	import { SvgIcon } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
-	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
+	import DataFlowDiagram from '$lib/components/projects/DataFlowDiagram.svelte';
 	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';
 	import { siteLabels } from '$lib/content';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';
@@ -441,7 +441,7 @@
 		width: 1.75rem;
 		height: 1.75rem;
 		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: var(--card);
 		font-family: var(--font-heading);
 		font-size: 1rem;
