@@ -322,17 +322,17 @@
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
 		letter-spacing: 0.04em;
 		color: var(--accent-text);
-		border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+		border: 1px solid color-mix(in srgb, var(--accent) 36%, transparent);
 		border-radius: var(--radius-pill);
 		padding: 8px 20px;
-		background: color-mix(in srgb, var(--accent) 8%, transparent);
+		background: color-mix(in srgb, var(--accent) 15%, transparent);
 		text-decoration: none;
 		transition: border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default), background var(--duration-normal) var(--ease-default);
 	}
 
 	.manifesto__pill:hover {
-		border-color: color-mix(in srgb, var(--accent) 48%, transparent);
-		background: color-mix(in srgb, var(--accent) 12%, transparent);
+		border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+		background: color-mix(in srgb, var(--accent) 22%, transparent);
 	}
 
 	/* ── Ripple keyframes (for ManifestoCanvas) ───────────────────── */
