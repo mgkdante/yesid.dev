@@ -347,4 +347,22 @@
 		white-space: nowrap;
 	}
 
+	/* Desktop: the flex-start top-align + nav-clearance padding is a small-screen
+	   guard so the menu options never ride up under the floating nav pill. Desktop
+	   has the vertical room, so center the links and pin the footer to the bottom
+	   (restores the pre-mobile-sweep desktop layout). Placed after the base rules
+	   so source order wins; the footer override cancels the mobile margin-top:auto
+	   that would otherwise eat the free space and defeat justify-content. */
+	@media (min-width: 768px) {
+		.menu-overlay {
+			justify-content: center;
+		}
+		.menu-footer {
+			position: absolute;
+			bottom: 32px;
+			margin-top: 0;
+			padding-top: 0;
+		}
+	}
+
 </style>
