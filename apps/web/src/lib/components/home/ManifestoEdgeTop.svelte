@@ -36,14 +36,14 @@
 	.manifesto__tick-line {
 		width: 1px;
 		height: 12px;
-		background: color-mix(in srgb, var(--primary) 12%, transparent);
+		background: color-mix(in srgb, var(--primary) 22%, transparent);
 	}
 
 	.manifesto__tick-label {
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--primary) 15%, transparent);
+		color: color-mix(in srgb, var(--primary) 42%, transparent);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
