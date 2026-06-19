@@ -33,7 +33,10 @@ export async function loadOgTitle(
 
     // type === 'project'
     const project = await getProjectBySlug(slug);
-    if (!project) return null;
+    // Mirror the detail route guard: archived projects (status 'private') 404
+    // there, so their OG image must fall back to the default too — never render
+    // a share card for a hidden project.
+    if (!project || project.status === 'private') return null;
     // Use the canonical locale resolver — treats empty/whitespace strings as
     // "not translated yet" and falls back to en (guaranteed by schema).
     const resolved = resolveLocale(project.title, locale);
