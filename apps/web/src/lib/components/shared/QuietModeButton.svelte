@@ -152,20 +152,14 @@
 	.quiet-mode-toggle[aria-checked='true'] .q-core {
 		fill: var(--primary);
 		stroke: var(--primary);
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 60%, transparent));
-	}
-	:global([data-theme='light']) .quiet-mode-toggle[aria-checked='true'] .q-core {
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 100%, transparent));
+		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 60%, transparent));
 	}
 
 	/* Pinned: the bookmark fills solid --primary (the saved preference). */
 	.quiet-mode-toggle[aria-pressed='true'] .r-bookmark {
 		fill: var(--primary);
 		stroke: var(--primary);
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 55%, transparent));
-	}
-	:global([data-theme='light']) .quiet-mode-toggle[aria-pressed='true'] .r-bookmark {
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 95%, transparent));
+		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 55%, transparent));
 	}
 
 	@media (prefers-reduced-motion: reduce) {
