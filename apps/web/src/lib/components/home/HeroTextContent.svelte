@@ -247,20 +247,59 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			padding-block: 0.75rem;
+			padding-block: 0.5rem;
 		}
-		/* Font sizing now driven by the --text-hero-mobile token (Tailwind
-		   .text-hero-mobile utility, applied in the template).  No scoped
-		   override needed — see app.css @theme. */
-		/* Tighten spacing to fit within bounded height */
+		/* Fit the whole hero (headline through both CTAs) inside one short
+		   viewport so it stops clipping before the SQL demo. The headline floor
+		   drops and is svh-scaled via the house clamp(min, min(vw, svh), max)
+		   idiom so the SHORTEST phones (iPhone SE 667) and the longer FR copy
+		   both fit. Overrides the --text-hero-mobile token for mobile only;
+		   wider phones keep the 4rem ceiling. */
+		.hero-viewport-text :global([data-testid="hero-line1"]),
+		.hero-viewport-text :global([data-testid="hero-line2"]) {
+			font-size: clamp(2.25rem, min(11.5vw, 6.6svh), 4rem);
+		}
+		/* Tighten the inter-element spacing to reclaim vertical budget. */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
-			margin-block: 0.75rem;
+			margin-block: 0.5rem;
 		}
 		.hero-viewport-text :global([data-testid="hero-subheadline"]) {
-			margin-top: 0.5rem;
+			margin-top: 0.375rem;
+			font-size: clamp(1.2rem, 5vw, 1.5rem);
+			line-height: 1.12;
 		}
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			margin-top: 0.5rem;
+			line-height: 1.35;
+		}
+		/* The CTA row (the only flex descendant tagged stagger 6) — tighten the
+		   top gap + inter-button gap, and the button block padding, so both
+		   CTAs stay on-screen. */
+		.hero-viewport-text :global([data-hero-stagger="6"].flex) {
 			margin-top: 0.75rem;
+			gap: 0.625rem;
+		}
+		.hero-viewport-text :global([data-testid="hero-cta-projects"]),
+		.hero-viewport-text :global([data-testid="hero-cta-contact"]) {
+			padding-top: 0.7rem;
+			padding-bottom: 0.7rem;
+		}
+	}
+
+	/* Sub-660px-tall phones (e.g. 320x640) carrying the longer FR copy need a
+	   touch more shaved so nothing clips. iPhone SE (667) and Galaxy S23 (780)
+	   are above this floor and unaffected. */
+	@media (max-width: 768px) and (max-height: 660px) {
+		.hero-viewport-text :global([data-testid="hero-line1"]),
+		.hero-viewport-text :global([data-testid="hero-line2"]) {
+			font-size: clamp(2rem, min(10.5vw, 6svh), 3.5rem);
+		}
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			font-size: 1rem;
+			line-height: 1.3;
+		}
+		.hero-viewport-text :global([data-hero-stagger="3"]) {
+			margin-block: 0.375rem;
 		}
 	}
 </style>
