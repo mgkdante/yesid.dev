@@ -12,11 +12,15 @@ import { expect, test } from '@playwright/test';
 // real-device viewports it now runs under (iphone-se + galaxy-s23 profiles,
 // plus iphone-12 via the single-phone set).
 //
-// Reduced motion renders the home hero in its final static state (the GSAP
-// intro otherwise hides the text behind an animation).
-test.use({ reducedMotion: 'reduce' });
-
 const ROUTES = ['/', '/services', '/projects', '/blog', '/contact', '/tech-stack', '/about'];
+
+// Reduced motion renders the home hero in its final static state (the GSAP
+// intro otherwise hides the text behind an animation). Applied via media
+// emulation per test rather than test.use({ reducedMotion }), which this
+// Playwright version does not type on the Fixtures object.
+test.beforeEach(async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+});
 
 async function pillBottom(page: import('@playwright/test').Page): Promise<number> {
 	const box = await page.getByTestId('nav-pill').boundingBox();
