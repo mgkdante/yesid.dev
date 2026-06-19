@@ -87,13 +87,13 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--primary) 42%, transparent);
+		color: var(--primary); opacity: var(--chrome-ink-opacity);
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
 
 	.manifesto__coord--value {
-		color: color-mix(in srgb, var(--primary) 55%, transparent);
+		color: var(--primary); opacity: var(--chrome-ink-opacity);
 	}
 
 	.manifesto__separator-line {

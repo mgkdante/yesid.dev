@@ -191,6 +191,13 @@ select {
   --font-heading: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  /* Ambient "chrome" text opacity: the one rule for the decorative coordinate /
+     departure-board / edge labels on the manifesto + project/blog detail
+     headers. Color-agnostic on purpose — each label keeps its own colour at
+     full strength (--primary, --blog-accent, …) and dims uniformly through this
+     single knob, so "all the chrome text, whatever its colour, reads at the same
+     opacity." Light overrides it higher (the light primary is muted on paper). */
+  --chrome-ink-opacity: 0.6;
 }
 
 /* Dark theme is the default — tokens.css handles var(--background) etc.
@@ -364,6 +371,9 @@ pre, code, table {
    are already full-strength in both modes and only gain thickness. */
 [data-theme="light"], .theme-light {
 	--border-brand: color-mix(in srgb, var(--primary) 60%, transparent);
+	/* Chrome labels run higher on paper: the light --primary (#A05500) is muted,
+	   so the same opacity reads fainter than dark's bright orange. */
+	--chrome-ink-opacity: 0.72;
 }
 
 /* GO2-W5: inline code chips in light mode — manila label on the paper

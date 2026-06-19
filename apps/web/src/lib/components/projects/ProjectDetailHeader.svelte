@@ -80,7 +80,7 @@
 
       <!-- Ticks (top center) — contrast-exempt: decorative (aria-hidden watermark) -->
       <div class="header__decoration absolute left-1/2 top-[18px] hidden -translate-x-1/2 gap-7 font-mono text-micro lg:flex" aria-hidden="true"
-        style="color: color-mix(in srgb, var(--primary) 8%, transparent);"
+        style="color: var(--primary); opacity: var(--chrome-ink-opacity);"
       >
         {#each [0, 80, 160, 240, 320, 400, 480] as tick}
           <span>{tick}</span>
@@ -216,7 +216,7 @@
     font-size: 10px;
     letter-spacing: 1.5px;
     /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--primary); opacity: var(--chrome-ink-opacity);
     line-height: 2.4;
     text-transform: uppercase;
     z-index: calc(var(--z-content) + 1);
@@ -227,7 +227,7 @@
 
   .edge-value {
     /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: color-mix(in srgb, var(--primary) 25%, transparent);
+    color: var(--primary); opacity: var(--chrome-ink-opacity);
   }
 
   .edge-separator {

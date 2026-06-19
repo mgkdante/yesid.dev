@@ -263,7 +263,7 @@
     font-size: 10px;
     letter-spacing: 2px;
     /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: color-mix(in srgb, var(--blog-accent) 20%, transparent);
+    color: var(--blog-accent); opacity: var(--chrome-ink-opacity);
     text-transform: uppercase;
     white-space: nowrap;
     z-index: calc(var(--z-content) + 1);
