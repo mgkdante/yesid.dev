@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
+	import ErrorIllustration from '$lib/components/shared/ErrorIllustration.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	// slice-18i Phase 5 Task 5.4: error page copy is sourced from
 	// $page.data.errorPage (pre-resolved by +layout.server.ts via
