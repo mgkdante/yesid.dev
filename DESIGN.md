@@ -12,6 +12,7 @@ colors:
   accent: "#FFB627"
   accent-hover: "#E5A220"
   reflective: "#F5F5F0"
+  glow: "#E07800"
   hazard-a: "#FFB627"
   hazard-b: "#1C1814"
   signage-bg: "#1C1814"

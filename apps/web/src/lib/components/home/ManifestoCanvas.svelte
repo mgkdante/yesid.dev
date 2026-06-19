@@ -290,7 +290,7 @@
 		height: 500px;
 		background: radial-gradient(
 			ellipse,
-			color-mix(in srgb, var(--primary) 6%, transparent) 0%,
+			color-mix(in srgb, var(--glow) 6%, transparent) 0%,
 			color-mix(in srgb, var(--accent) 2%, transparent) 30%,
 			transparent 60%
 		);
@@ -300,5 +300,19 @@
 			left 0.8s ease-out,
 			top 0.8s ease-out;
 		z-index: var(--z-base);
+	}
+
+	/* Light mode: same cursor-follow warm glow, but on the light surface the 6%/2%
+	   mix tuned for the dark board is invisible. Lift primary -> 16% and accent ->
+	   8% so the cast reads with the same presence as dark (1:1 parity). The shared
+	   .manifesto__warm-glow class also drives the blog + project detail headers, so
+	   this lifts all three at once. */
+	:global([data-theme='light']) .manifesto__warm-glow {
+		background: radial-gradient(
+			ellipse,
+			color-mix(in srgb, var(--glow) 16%, transparent) 0%,
+			color-mix(in srgb, var(--accent) 8%, transparent) 30%,
+			transparent 60%
+		);
 	}
 </style>

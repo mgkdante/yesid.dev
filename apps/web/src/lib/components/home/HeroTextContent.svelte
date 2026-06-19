@@ -199,8 +199,8 @@
 		animation: hero-dot-pulse 1.5s ease-in-out infinite;
 		transform-origin: center;
 		will-change: transform;
-		filter: drop-shadow(0 0 0.09em color-mix(in srgb, var(--primary) 95%, transparent))
-			drop-shadow(0 0 0.28em color-mix(in srgb, var(--primary) 55%, transparent));
+		filter: drop-shadow(0 0 0.09em color-mix(in srgb, var(--glow) 95%, transparent))
+			drop-shadow(0 0 0.28em color-mix(in srgb, var(--glow) 55%, transparent));
 	}
 
 	@keyframes hero-dot-pulse {

@@ -202,13 +202,17 @@
 	.train-rocket svg {
 		display: block;
 		overflow: visible;
-		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--primary) 22%, transparent));
+		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--glow) 22%, transparent));
 		transition: filter var(--duration-normal) var(--ease-default);
 	}
 
 	/* Launched: a warmer, taller glow as it lifts off. */
 	.train-rocket.is-launched svg {
 		filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--accent) 38%, transparent));
+	}
+
+	:global([data-theme='light']) .train-rocket.is-launched svg {
+		filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--accent) 60%, transparent));
 	}
 
 	@keyframes train-bob {

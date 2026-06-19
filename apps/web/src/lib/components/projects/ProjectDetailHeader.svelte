@@ -252,13 +252,13 @@
   /* ── Title ─────────────────────────────────────��──────────── */
   .header-title {
     font-size: 32px;
-    text-shadow: 0 0 60px color-mix(in srgb, var(--primary) 12%, transparent);
+    text-shadow: 0 0 60px color-mix(in srgb, var(--glow) 12%, transparent);
   }
 
   @media (min-width: 1024px) {
     .header-title {
       font-size: clamp(2.5rem, 5vw, 4rem);
-      text-shadow: 0 0 80px color-mix(in srgb, var(--primary) 12%, transparent);
+      text-shadow: 0 0 80px color-mix(in srgb, var(--glow) 12%, transparent);
     }
   }
 

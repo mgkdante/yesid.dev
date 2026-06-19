@@ -170,7 +170,7 @@
 		inset: 0;
 		z-index: var(--z-menu);
 		background: var(--background);
-		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 4%, transparent) 0%, transparent 60%);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 4%, transparent) 0%, transparent 60%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -190,6 +190,14 @@
 		transform: scaleY(1);
 		transform-origin: top center;
 		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-slow) cubic-bezier(0.33, 1, 0.68, 1);
+	}
+
+	/* Light mode: the "cast from above" glow rides --primary, but light's primary
+	   (#A05500) is muted where dark's (#E07800) is bright, so the 4% mix tuned for
+	   dark reads as nothing here. Lift the mix so the warm cast lands with the same
+	   presence as dark (1:1 parity). */
+	:global([data-theme='light']) .menu-overlay {
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 16%, transparent) 0%, transparent 58%);
 	}
 
 	/* Entering: render invisible, no transition (painted first, then class removed → transitions in) */
@@ -259,7 +267,7 @@
 	}
 	.menu-stop-active {
 		border-color: var(--primary);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 40%, transparent);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--glow) 40%, transparent);
 	}
 	.menu-stop-fill {
 		position: absolute;
@@ -308,11 +316,11 @@
 	}
 	.menu-item-active .menu-label {
 		color: var(--primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 50%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--glow) 50%, transparent);
 	}
 	.menu-item:hover .menu-label {
 		color: var(--primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--glow) 60%, transparent), 0 0 20px color-mix(in srgb, var(--glow) 30%, transparent);
 	}
 
 	.menu-subtitle {
@@ -345,6 +353,24 @@
 		letter-spacing: 0;
 		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		white-space: nowrap;
+	}
+
+	/* Desktop: the flex-start top-align + nav-clearance padding is a small-screen
+	   guard so the menu options never ride up under the floating nav pill. Desktop
+	   has the vertical room, so center the links and pin the footer to the bottom
+	   (restores the pre-mobile-sweep desktop layout). Placed after the base rules
+	   so source order wins; the footer override cancels the mobile margin-top:auto
+	   that would otherwise eat the free space and defeat justify-content. */
+	@media (min-width: 768px) {
+		.menu-overlay {
+			justify-content: center;
+		}
+		.menu-footer {
+			position: absolute;
+			bottom: 32px;
+			margin-top: 0;
+			padding-top: 0;
+		}
 	}
 
 </style>
