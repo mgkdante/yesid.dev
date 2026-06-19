@@ -46,28 +46,28 @@
 	.manifesto__stripe--tl { top: 0; left: 0; width: 240px; height: 240px; }
 	.manifesto__stripe--tl::before {
 		width: 480px; height: 480px; top: -240px; left: -240px;
-		background: repeating-linear-gradient(-45deg, var(--accent) 0px, var(--accent) 12px, var(--manifesto) 12px, var(--manifesto) 24px);
+		background: repeating-linear-gradient(-45deg, var(--hazard-a) 0px, var(--hazard-a) 12px, var(--hazard-b) 12px, var(--hazard-b) 24px);
 		opacity: var(--opacity-subtle);
 	}
 
 	.manifesto__stripe--br { bottom: 0; right: 0; width: 240px; height: 240px; }
 	.manifesto__stripe--br::before {
 		width: 480px; height: 480px; bottom: -240px; right: -240px;
-		background: repeating-linear-gradient(-45deg, var(--accent) 0px, var(--accent) 12px, var(--manifesto) 12px, var(--manifesto) 24px);
+		background: repeating-linear-gradient(-45deg, var(--hazard-a) 0px, var(--hazard-a) 12px, var(--hazard-b) 12px, var(--hazard-b) 24px);
 		opacity: var(--opacity-subtle);
 	}
 
 	.manifesto__stripe--tr { top: 0; right: 0; width: 110px; height: 110px; }
 	.manifesto__stripe--tr::before {
 		width: 220px; height: 220px; top: -130px; right: -130px;
-		background: repeating-linear-gradient(45deg, var(--accent) 0px, var(--accent) 7px, var(--manifesto) 7px, var(--manifesto) 14px);
+		background: repeating-linear-gradient(45deg, var(--hazard-a) 0px, var(--hazard-a) 7px, var(--hazard-b) 7px, var(--hazard-b) 14px);
 		opacity: var(--opacity-faint);
 	}
 
 	.manifesto__stripe--bl { bottom: 0; left: 0; width: 110px; height: 110px; }
 	.manifesto__stripe--bl::before {
 		width: 220px; height: 220px; bottom: -130px; left: -130px;
-		background: repeating-linear-gradient(45deg, var(--accent) 0px, var(--accent) 7px, var(--manifesto) 7px, var(--manifesto) 14px);
+		background: repeating-linear-gradient(45deg, var(--hazard-a) 0px, var(--hazard-a) 7px, var(--hazard-b) 7px, var(--hazard-b) 14px);
 		opacity: var(--opacity-faint);
 	}
 
