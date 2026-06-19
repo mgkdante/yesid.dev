@@ -64,6 +64,9 @@
 		   SAFE-ALWAYS, pairs with the committed pressBounce on tap. */
 		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 12%, transparent);
 	}
+	:global([data-theme='light']) .archetype-card:hover {
+		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 30%, transparent);
+	}
 
 	/* go2/w5 legibility pass: card type steps up one full rung of the site
 	   scale — the title reads like a card headline (--text-heading), hook and

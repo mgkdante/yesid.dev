@@ -281,6 +281,9 @@
 		transform: translateY(-2px);
 		box-shadow: 0 4px 20px color-mix(in srgb, var(--primary) 40%, transparent);
 	}
+	:global([data-theme='light']) .deep-dive-cta:hover {
+		box-shadow: 0 4px 20px color-mix(in srgb, var(--primary) 100%, transparent);
+	}
 
 	/* SVG panel: responsive sizing */
 	:global(.svg-panel-responsive) {

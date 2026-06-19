@@ -75,6 +75,9 @@
 		stroke: var(--primary);
 		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 60%, transparent));
 	}
+	:global([data-theme='light']) .lens.lit {
+		filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) 100%, transparent));
+	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.theme-toggle,

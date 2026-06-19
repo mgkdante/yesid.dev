@@ -76,4 +76,7 @@
 		transform: scale(1.02);
 		box-shadow: var(--shadow-glow-md);
 	}
+	:global([data-theme='light']) .service-badge:hover {
+		box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 50%, transparent);
+	}
 </style>

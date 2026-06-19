@@ -72,6 +72,15 @@
 		filter: blur(8px);
 		pointer-events: none;
 	}
+	:global([data-theme='light']) .closer-beam {
+		background: linear-gradient(
+			to top,
+			color-mix(in srgb, var(--accent) 20%, transparent) 0%,
+			color-mix(in srgb, var(--accent) 11%, transparent) 35%,
+			color-mix(in srgb, var(--accent) 4%, transparent) 65%,
+			transparent 100%
+		);
+	}
 
 	@media (max-width: 767px) {
 		/* Floodlight on the ground, centered across full width */

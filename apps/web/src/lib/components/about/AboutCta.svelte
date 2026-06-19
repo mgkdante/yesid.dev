@@ -30,7 +30,7 @@
 <Card class="relative h-full p-3" data-testid="about-cta">
 	<!-- Ambient glow -->
 	<div
-		class="pointer-events-none absolute inset-0 opacity-[0.07]"
+		class="pointer-events-none absolute inset-0 opacity-[0.2] dark:opacity-[0.07]"
 		style="background: radial-gradient(ellipse at 20% 50%, var(--primary), transparent 70%);"
 		aria-hidden="true"
 	></div>

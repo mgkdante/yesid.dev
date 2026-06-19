@@ -603,6 +603,12 @@
 		pointer-events: none;
 		background-image: radial-gradient(120vw 100% at 50% 0%, var(--grid-glow), transparent 60%);
 	}
+	/* Light: --grid-glow is transparent in daylight, so the "sodium lamp" cast
+	   from the top vanishes. Re-cast it with the warm primary so the hero reads
+	   the same overhead glow as dark (1:1 parity). */
+	:global([data-theme='light']) .hero-lamp {
+		background-image: radial-gradient(120vw 100% at 50% 0%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 60%);
+	}
 
 	/* ─────────────────────────────────────────────────────────────────
 	   Reduced motion: the metro-network scroll-pin sequence is entirely
@@ -768,11 +774,21 @@
 			0 4px 12px rgba(0, 0, 0, 0.4);
 		transition: box-shadow var(--duration-normal), transform var(--duration-normal);
 	}
+	:global([data-theme='light']) .refresh-btn {
+		box-shadow:
+			0 0 24px color-mix(in srgb, var(--primary) 70%, transparent),
+			0 4px 12px rgba(0, 0, 0, 0.15);
+	}
 	.refresh-btn:hover {
 		box-shadow:
 			0 0 40px color-mix(in srgb, var(--primary) 50%, transparent),
 			0 6px 20px rgba(0, 0, 0, 0.5);
 		transform: translateY(-1px);
+	}
+	:global([data-theme='light']) .refresh-btn:hover {
+		box-shadow:
+			0 0 40px color-mix(in srgb, var(--primary) 95%, transparent),
+			0 6px 20px rgba(0, 0, 0, 0.12);
 	}
 
 	/* Full-width billboard text */
