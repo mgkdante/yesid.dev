@@ -192,7 +192,7 @@ describe('Design System Tokens', () => {
 
     it('per-mode signal & infrastructure families exist', () => {
       expect(darkBlock).toContain('--terminal-chrome: #0E0E0E;');
-      expect(lightBlock).toContain('--terminal-chrome: #DFE4EE;');
+      expect(lightBlock).toContain('--terminal-chrome: #EFE5CE;');
       expect(darkBlock).toContain('--terminal-ink: #E9E2D2;');
       expect(lightBlock).toContain('--terminal-ink: #3D362B;');
       expect(darkBlock).toContain('--line-amber: #FFB627;');
