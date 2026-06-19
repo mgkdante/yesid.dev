@@ -366,13 +366,13 @@ test.describe('light mode — per-page audit', () => {
 		expect(layout!.textRight).toBeLessThanOrEqual(layout!.panelLeft);
 	});
 
-	test('go2/home-cards: solid paper cards, signage chip, yellow metric', async ({ page }) => {
+	test('go2/home-cards: solid paper cards, yellow metric', async ({ page }) => {
 		// Story-first proof cards must stay theme-correct in light mode:
 		// solid --card paper surface (no grid bleed-through), 3px blog-parity
-		// chassis, theme-INVARIANT signage chip, and a YELLOW-voice metric.
-		// (The consolidation migrated the reel onto the shared ProjectCard; the
-		// per-card "see the build" line and the grayscale-at-rest image doctrine
-		// were dropped with it — operator-accepted; the station chip was restored.)
+		// chassis, and a YELLOW-voice metric.
+		// (The reel is the shared ProjectCard, variant="proof". The per-service
+		// station signage chip was removed so the reel mirrors /projects, and the
+		// tag pills are listing-only — operator call.)
 		await page.goto('/');
 		const proofReel = page.getByTestId('proof-reel-section');
 		await expect(proofReel).toBeVisible(); // section + proof cards painted
@@ -392,13 +392,6 @@ test.describe('light mode — per-page audit', () => {
 			});
 		expect(chassis.bg).toBe('rgb(249, 250, 253)'); // #FFFDF8 light --card — solid
 		expect(chassis.borderW).toBe('3px'); // round-5 blog-card chassis parity
-
-		// Signage chip: real signs don't reskin when the lights change.
-		const chip = await page.getByTestId('proof-station-chip').first().evaluate((el) => {
-			const s = getComputedStyle(el);
-			return { bg: s.backgroundColor, ink: s.color };
-		});
-		expect(chip).toEqual({ bg: 'rgb(28, 24, 20)', ink: 'rgb(255, 182, 39)' });
 
 		// Metric = YELLOW wayfinding voice.
 		const metricColor = await page
