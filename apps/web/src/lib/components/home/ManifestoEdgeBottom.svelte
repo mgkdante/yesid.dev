@@ -100,7 +100,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--primary) 18%, transparent);
+		color: color-mix(in srgb, var(--primary) 44%, transparent);
 		white-space: nowrap;
 	}
 
@@ -117,7 +117,7 @@
 	.manifesto__separator {
 		width: 1px;
 		height: 10px;
-		background: color-mix(in srgb, var(--primary) 10%, transparent);
+		background: color-mix(in srgb, var(--primary) 20%, transparent);
 		flex-shrink: 0;
 	}
 
