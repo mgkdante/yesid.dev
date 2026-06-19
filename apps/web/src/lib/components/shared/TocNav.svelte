@@ -148,10 +148,7 @@
 		height: 6px;
 		border-radius: 50%;
 		background: var(--primary);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
-	}
-	:global([data-theme='light']) .toc-counter-dot {
-		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 100%, transparent);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--glow) 40%, transparent);
 	}
 
 	.toc-counter-text {

@@ -73,10 +73,7 @@
 	.lens.lit {
 		fill: var(--primary);
 		stroke: var(--primary);
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 60%, transparent));
-	}
-	:global([data-theme='light']) .lens.lit {
-		filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) 100%, transparent));
+		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 60%, transparent));
 	}
 
 	@media (prefers-reduced-motion: reduce) {

@@ -170,7 +170,7 @@
 		inset: 0;
 		z-index: var(--z-menu);
 		background: var(--background);
-		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 4%, transparent) 0%, transparent 60%);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 4%, transparent) 0%, transparent 60%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -197,7 +197,7 @@
 	   dark reads as nothing here. Lift the mix so the warm cast lands with the same
 	   presence as dark (1:1 parity). */
 	:global([data-theme='light']) .menu-overlay {
-		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 58%);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 16%, transparent) 0%, transparent 58%);
 	}
 
 	/* Entering: render invisible, no transition (painted first, then class removed → transitions in) */
@@ -267,7 +267,7 @@
 	}
 	.menu-stop-active {
 		border-color: var(--primary);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 40%, transparent);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--glow) 40%, transparent);
 	}
 	.menu-stop-fill {
 		position: absolute;
@@ -316,11 +316,11 @@
 	}
 	.menu-item-active .menu-label {
 		color: var(--primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 50%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--glow) 50%, transparent);
 	}
 	.menu-item:hover .menu-label {
 		color: var(--primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--glow) 60%, transparent), 0 0 20px color-mix(in srgb, var(--glow) 30%, transparent);
 	}
 
 	.menu-subtitle {

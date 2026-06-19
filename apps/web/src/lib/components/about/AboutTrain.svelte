@@ -202,12 +202,8 @@
 	.train-rocket svg {
 		display: block;
 		overflow: visible;
-		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--primary) 22%, transparent));
+		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--glow) 22%, transparent));
 		transition: filter var(--duration-normal) var(--ease-default);
-	}
-
-	:global([data-theme='light']) .train-rocket svg {
-		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--primary) 55%, transparent));
 	}
 
 	/* Launched: a warmer, taller glow as it lifts off. */

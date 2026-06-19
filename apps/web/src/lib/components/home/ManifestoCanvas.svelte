@@ -290,7 +290,7 @@
 		height: 500px;
 		background: radial-gradient(
 			ellipse,
-			color-mix(in srgb, var(--primary) 6%, transparent) 0%,
+			color-mix(in srgb, var(--glow) 6%, transparent) 0%,
 			color-mix(in srgb, var(--accent) 2%, transparent) 30%,
 			transparent 60%
 		);
@@ -310,7 +310,7 @@
 	:global([data-theme='light']) .manifesto__warm-glow {
 		background: radial-gradient(
 			ellipse,
-			color-mix(in srgb, var(--primary) 16%, transparent) 0%,
+			color-mix(in srgb, var(--glow) 16%, transparent) 0%,
 			color-mix(in srgb, var(--accent) 8%, transparent) 30%,
 			transparent 60%
 		);
