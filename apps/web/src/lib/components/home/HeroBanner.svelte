@@ -790,6 +790,14 @@
 			letter-spacing: -0.5vw;
 			bottom: 0;
 		}
+		/* The FR billboard ("PROCHAIN ARRÊT : FAIS DÉFILER") is ~27% longer than
+		   EN ("NEXT STOP: SCROLL DOWN"); at 6.8vw it spans ~103% of the viewport
+		   and clips the end on the single-line (md:whitespace-nowrap) desktop
+		   billboard. Shrink ONLY the FR locale so it fits with margin (~91% at
+		   6vw); EN is unchanged. Mobile (<768px) wraps, so no clip there. */
+		:global(html[lang='fr']) .scroll-prompt {
+			font-size: 6vw;
+		}
 	}
 
 	/* Mobile: single-column grid */

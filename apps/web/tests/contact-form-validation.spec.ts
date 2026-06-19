@@ -75,9 +75,14 @@ test.describe('Contact form validation', () => {
 		await form.getByTestId('contact-submit').click();
 
 		// The invalid-email error must show (handler ran, validation rejected).
-		await expect(form.getByText('✗ invalid, enter a valid email address')).toBeVisible();
-		// Give any (erroneous) network call time to fire before asserting absence.
-		await page.waitForTimeout(500);
+		// Polling its visibility is the deterministic signal that the onsubmit
+		// handler finished and rejected the email — any erroneous fetch would
+		// have already fired synchronously before the error renders.
+		await expect
+			.poll(() => form.getByText('✗ invalid, enter a valid email address').isVisible(), {
+				timeout: 2000,
+			})
+			.toBe(true);
 		expect(submittedEmails).toEqual([]);
 	});
 

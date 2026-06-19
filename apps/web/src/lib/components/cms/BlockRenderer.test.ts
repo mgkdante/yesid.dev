@@ -213,15 +213,24 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 	});
 
 	it('configures Mermaid with theme-aware brand colors', () => {
+		// The theme-variable builder lives in the extracted $lib/utils/mermaid-theme
+		// module: it reads the brand CSS custom properties via getComputedStyle so
+		// the palette tracks the active light/dark theme.
+		const themeSource = readFileSync(
+			join(cwd(), 'src/lib/utils/mermaid-theme.ts'),
+			'utf8',
+		);
+		expect(themeSource).toContain('themeVariables');
+		expect(themeSource).toContain('getComputedStyle');
+		expect(themeSource).toContain('--primary');
+		expect(themeSource).toContain('--accent');
+
+		// The component consumes that builder and re-themes on a data-theme flip.
 		const source = readFileSync(
 			join(cwd(), 'src/lib/components/cms/blocks/MermaidDiagram.svelte'),
 			'utf8',
 		);
-
-		expect(source).toContain('themeVariables');
-		expect(source).toContain('getComputedStyle');
-		expect(source).toContain('--primary');
-		expect(source).toContain('--accent');
+		expect(source).toContain('buildMermaidThemeVariables');
 		expect(source).toContain('MutationObserver');
 		expect(source).toContain('siteLabels.a11y.architectureDiagram');
 		expect(source).not.toContain('aria-label="Architecture diagram"');

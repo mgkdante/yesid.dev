@@ -110,7 +110,7 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="flex-1 {isFullBleed ? '' : 'pt-20'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}
@@ -122,6 +122,20 @@
 </div>
 
 <style>
+	/* Single source of truth for top clearance under the floating nav pill.
+	   The pill is a constant ~60px tall fixed at top:16px, so its bottom edge
+	   sits at ~76px on every viewport (does not grow on mobile). Clearance =
+	   pill bottom + a 12px breathing gap = 88px. Every page's top reserve and
+	   every sticky/detail-header offset routes through this var so titles never
+	   tuck under the pill. Defined on the shell wrapper (cascades to all pages);
+	   tokens.css/app.css are generated + off-limits, so it lives here. */
+	.circuit-grid {
+		--nav-clearance: 5.5rem; /* 88px */
+	}
+	:global(.pt-nav-clear) {
+		padding-top: var(--nav-clearance, 5.5rem);
+	}
+
 	@keyframes page-fade-in {
 		from { opacity: 0; }
 		to { opacity: 1; }

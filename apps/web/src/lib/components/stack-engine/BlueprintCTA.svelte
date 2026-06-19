@@ -116,7 +116,7 @@
 		color: #1C1814;
 		background: var(--accent);
 		text-decoration: none;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		padding: 0.5rem 1.1rem;
 	}
 

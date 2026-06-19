@@ -13,9 +13,11 @@ name: web
 # PRs would be blocked forever. With the Phase 7 caches, cost on no-op runs
 # is ~20-30s end-to-end (FULL TURBO cache replay), so always-run is fine.
 #
-# E2E (Playwright) is manual-only. The suite hits Vercel preview/prod edge and
-# that traffic counts toward Edge Request quota. Push and PR CI run cheap checks
-# only: type check, unit tests, token drift, package tests, and build.
+# E2E (Playwright) runs on pull_request ONLY (not on push), against a LOCAL
+# hermetic preview on the runner — zero Vercel edge requests. It does consume
+# GitHub Actions runner minutes (build + 3 shards), so it is kept off the
+# redundant post-merge push. Push CI runs cheap checks only: type check, unit
+# tests, token drift, package tests, and build.
 
 on:
   push:
@@ -82,14 +84,23 @@ jobs:
   # every route serves 200 under the local preview and there are no pixel-diff
   # assertions. CMS stays build-time-only, the deployed site never calls it.
   e2e:
-    # Hard gate by default: runs on every PR/push against the local hermetic
-    # preview (zero edge requests). OPTIONAL SWITCH to skip it on demand — add the
-    # "skip-e2e" label to a PR, or put [skip e2e] in the (push) commit message.
-    # Use for docs-only changes or to unblock a merge if the suite is misbehaving.
+    # PR-only: e2e runs on pull_request, NOT on push to main/develop. The
+    # post-merge develop/main push used to re-run the 3 shards redundantly with
+    # the PR run that already passed — pure GitHub Actions minute burn (the 3,000
+    # free monthly minutes ran out mid-month once). ci + gitleaks still run on
+    # push. OPTIONAL SWITCH: add the "skip-e2e" label to a PR to skip e2e
+    # (docs-only, or to unblock a merge if the suite is misbehaving).
     if: >-
-      ${{ !contains(github.event.pull_request.labels.*.name, 'skip-e2e')
-          && !contains(github.event.head_commit.message, '[skip e2e]') }}
+      ${{ github.event_name == 'pull_request'
+          && !contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
     runs-on: ubuntu-latest
+    # Shard across 3 runners. Each shard builds from the warm turbo remote cache
+    # (the ci job's identical EXPORT_FALLBACKS_SKIP=1 build populates it), so the
+    # per-shard build is a cache hit and only ~1/3 of the suite runs per runner.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v5
 
@@ -120,11 +131,48 @@ jobs:
           EXPORT_FALLBACKS_SKIP: "1"
         run: bun x turbo run build --filter=@repo/web
 
-      - name: Playwright e2e (local hermetic preview, zero edge requests)
+      - name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)
         working-directory: apps/web
         env:
           E2E_PREBUILT: "1"
-        run: bun x playwright test
+        run: >-
+          bun x playwright test
+          --shard=${{ matrix.shard }}/3
+          --reporter=blob
+
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shard }}
+          path: apps/web/blob-report/
+          retention-days: 14
+
+  # ── Merge the 3 shard blob reports into one HTML report ─────────────────────
+  # needs: [e2e] + if: !cancelled() so it still merges when a shard fails (you
+  # want the report most on a red build). Downloads every blob-report-* artifact
+  # and merges to the single playwright-report/ path the old job published.
+  e2e-merge-reports:
+    # Skip when e2e itself was skipped (e.g. a push, where e2e is now PR-only) —
+    # otherwise this would run with no blob reports to merge.
+    if: ${{ !cancelled() && needs.e2e.result != 'skipped' }}
+    needs: [e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Download all blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: apps/web/all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML report
+        working-directory: apps/web
+        run: bun x playwright merge-reports --reporter=html ./all-blob-reports
 
       - name: Upload HTML report
         if: ${{ !cancelled() }}

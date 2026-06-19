@@ -20,7 +20,8 @@
  */
 
 import { readItems, updateItem } from '@directus/sdk';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { getAdminToken } from './lib/auth';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
 
@@ -79,13 +80,8 @@ async function main(): Promise<void> {
 
 	// Safety: this content load targets DEV only. Prod gets it via the publish
 	// pipeline (operator-gated), never by pointing this script at prod.
-	if (!url.includes('cms.dev.yesid.dev')) {
-		throw new Error(
-			`refusing --apply against non-dev URL '${url}'. Run via: op run --env-file=apps/cms/.env -- bun apps/cms/scripts/content-services-stack-labels.ts --apply`,
-		);
-	}
-	const token = process.env.DIRECTUS_ADMIN_TOKEN;
-	if (!token) throw new Error('no DIRECTUS_ADMIN_TOKEN in env (run via op run --env-file=apps/cms/.env)');
+	assertDevCms(url);
+	const token = await getAdminToken(url);
 	try {
 		await apply({ directusUrl: url, token });
 		log.info('done.');

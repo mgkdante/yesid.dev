@@ -12,7 +12,9 @@
  */
 
 import { readItems, deleteItems } from '@directus/sdk';
-import { createClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { getAdminToken } from './lib/auth';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
+import { runMain } from './lib/cli';
 
 export async function apply(opts: { directusUrl: string; token: string; dryRun?: boolean }): Promise<{ removed: string[]; log: string[] }> {
 	const dryRun = opts.dryRun ?? false;
@@ -55,16 +57,11 @@ export async function apply(opts: { directusUrl: string; token: string; dryRun?:
 async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const directusUrl = defaultDirectusUrl();
-	if (!directusUrl.includes('cms.dev.yesid.dev')) throw new Error(`Refusing non-dev CMS: ${directusUrl}. DEV-ONLY.`);
-	const token = requireEnv('DIRECTUS_ADMIN_TOKEN', 'dev CMS admin token');
+	assertDevCms(directusUrl);
+	const token = await getAdminToken(directusUrl);
 	const { removed, log } = await apply({ directusUrl, token, dryRun });
 	console.log(log.join('\n'));
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}: ${removed.length} tech rows ${dryRun ? 'would be' : ''} removed.${dryRun ? ' Re-run with --apply.' : ''}`);
 }
 
-if (import.meta.main) {
-	main().catch((e) => {
-		console.error(e);
-		process.exit(1);
-	});
-}
+runMain(main);

@@ -43,6 +43,29 @@
 
 	let nodes: CircuitNode[] = [];
 
+	// Canvas can't read CSS vars at draw time, so mirror --primary-rgb here: the
+	// node field paints #A05500 in light / #E07800 in dark, re-read on the
+	// themechange event the theme store dispatches.
+	let primaryRgb = '224,120,0';
+	function readPrimaryRgb() {
+		if (!browser) return;
+		const v = getComputedStyle(document.documentElement)
+			.getPropertyValue('--primary-rgb')
+			.trim();
+		if (v) primaryRgb = v.split(/\s+/).join(',');
+	}
+
+	function paintStatic() {
+		if (!ctx) return;
+		ctx.clearRect(0, 0, width, height);
+		for (const node of nodes) {
+			ctx.beginPath();
+			ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+			ctx.fillStyle = `rgba(${primaryRgb},${node.baseOpacity})`;
+			ctx.fill();
+		}
+	}
+
 	function generateNodes() {
 		nodes = [];
 		for (let x = GRID; x < width; x += GRID) {
@@ -146,13 +169,13 @@
 			if (node.glowSize > 0.5) {
 				ctx.beginPath();
 				ctx.arc(node.x, node.y, node.glowSize, 0, Math.PI * 2);
-				ctx.fillStyle = `rgba(224,120,0,${node.currentOpacity * 0.3})`;
+				ctx.fillStyle = `rgba(${primaryRgb},${node.currentOpacity * 0.3})`;
 				ctx.fill();
 			}
 
 			ctx.beginPath();
 			ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
-			ctx.fillStyle = `rgba(224,120,0,${node.currentOpacity})`;
+			ctx.fillStyle = `rgba(${primaryRgb},${node.currentOpacity})`;
 			ctx.fill();
 		}
 
@@ -169,7 +192,7 @@
 						ctx.beginPath();
 						ctx.moveTo(a.x, a.y);
 						ctx.lineTo(b.x, b.y);
-						ctx.strokeStyle = `rgba(224,120,0,${opacity})`;
+						ctx.strokeStyle = `rgba(${primaryRgb},${opacity})`;
 						ctx.lineWidth = 1;
 						ctx.stroke();
 					}
@@ -192,15 +215,17 @@
 		ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
+		readPrimaryRgb();
+
 		if (isPrefersReducedMotion()) {
 			resize();
-			for (const node of nodes) {
-				ctx!.beginPath();
-				ctx!.arc(node.x, node.y, node.size, 0, Math.PI * 2);
-				ctx!.fillStyle = `rgba(224,120,0,${node.baseOpacity})`;
-				ctx!.fill();
-			}
-			return;
+			paintStatic();
+			const onThemeChange = () => {
+				readPrimaryRgb();
+				paintStatic();
+			};
+			document.addEventListener('themechange', onThemeChange);
+			return () => document.removeEventListener('themechange', onThemeChange);
 		}
 
 		resize();
@@ -225,6 +250,8 @@
 		containerEl.addEventListener('touchmove', onTouchMove, { passive: true });
 		containerEl.addEventListener('click', onTap);
 		window.addEventListener('resize', resize);
+		const onThemeChange = () => readPrimaryRgb();
+		document.addEventListener('themechange', onThemeChange);
 
 		return () => {
 			unsubscribe(SUBSCRIPTION_ID);
@@ -237,6 +264,7 @@
 				currentContainer.removeEventListener('click', onTap);
 			}
 			window.removeEventListener('resize', resize);
+			document.removeEventListener('themechange', onThemeChange);
 		};
 	});
 </script>

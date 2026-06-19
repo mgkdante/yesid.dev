@@ -141,6 +141,27 @@ describe('buildBlogPostingNode', () => {
 		expect(node['@id']).toBe(`https://yesid.dev/blog/${post.slug}`);
 	});
 
+	it('@id keys on post.lang, not the render locale (mono-language AM2.5)', () => {
+		const enPost = {
+			slug: 'raw-sql-control',
+			title: 'Raw SQL Control',
+			excerpt: 'Short listing excerpt.',
+			date: '2026-04-14',
+			lang: 'en',
+			category: 'professional',
+			tags: ['sql'],
+			animation: 'draw',
+			svg: 'pro-code',
+			url: '/blog/raw-sql-control',
+			external: false,
+		} satisfies BlogPost;
+		// An EN-language post rendered under /fr keeps its EN canonical @id.
+		expect(buildBlogPostingNode(enPost, 'fr')['@id']).toBe('https://yesid.dev/blog/raw-sql-control');
+		// An FR-language post gets the /fr canonical regardless of render locale.
+		const frPost = { ...enPost, slug: 'controle-sql', lang: 'fr' } satisfies BlogPost;
+		expect(buildBlogPostingNode(frPost, 'en')['@id']).toBe('https://yesid.dev/fr/blog/controle-sql');
+	});
+
 	it('copies inLanguage from post.lang', async () => {
 		const posts = await adapter.blog.all();
 		if (posts.length === 0) return;
@@ -206,6 +227,14 @@ describe('buildServiceNode', () => {
 		expect(node['@id']).toBe(`https://yesid.dev/services/${service.id}`);
 	});
 
+	it('@id is locale-aware: an fr render uses the /fr canonical', async () => {
+		const services = await adapter.services.visible();
+		if (services.length === 0) return;
+		const service = services[0];
+		const node = buildServiceNode(service, 'fr');
+		expect(node['@id']).toBe(`https://yesid.dev/fr/services/${service.id}`);
+	});
+
 	it('references Person via provider @id', async () => {
 		const services = await adapter.services.visible();
 		if (services.length === 0) return;
@@ -233,6 +262,14 @@ describe('buildCreativeWorkNode', () => {
 		const node = buildCreativeWorkNode(project, 'en');
 		expect(node['@type']).toBe('CreativeWork');
 		expect(node['@id']).toBe(`https://yesid.dev/projects/${project.slug}`);
+	});
+
+	it('@id is locale-aware: an fr render uses the /fr canonical', async () => {
+		const projects = await adapter.projects.public();
+		if (projects.length === 0) return;
+		const project = projects[0];
+		const node = buildCreativeWorkNode(project, 'fr');
+		expect(node['@id']).toBe(`https://yesid.dev/fr/projects/${project.slug}`);
 	});
 
 	it('references Person via author + creator @ids', async () => {

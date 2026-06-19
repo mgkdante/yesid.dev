@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 //   - toggle control: data-testid="theme-toggle", role="switch", aria-checked={isDark}
 //   - localStorage key: 'theme', values 'dark' | 'light'
 //   - theme reflected on <html data-theme="...">; pre-paint script always writes 'dark' or 'light' (never null); dark is default
-//   - meta[name="theme-color"] SSR'd '#141414' (dark surface); toggle to light => '#F7F2E9'
+//   - meta[name="theme-color"] SSR'd '#141414' (dark surface); toggle to light => '#F3F6FB'
 
 test.describe('Theme toggle persistence', () => {
 	test('page loads in dark theme by default', async ({ page }) => {
@@ -83,7 +83,7 @@ test.describe('Theme toggle persistence', () => {
 		// Toggle to light -> store rewrites the meta to the light surface.
 		await toggle.click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-		await expect(themeMeta).toHaveAttribute('content', '#F7F2E9');
+		await expect(themeMeta).toHaveAttribute('content', '#F3F6FB');
 
 		const newColor = await themeMeta.getAttribute('content');
 		expect(newColor).toMatch(/^#[0-9A-F]{6}$/i);
