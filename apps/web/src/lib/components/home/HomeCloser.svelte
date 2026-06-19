@@ -232,7 +232,14 @@
 		pointer-events: none;
 		background: radial-gradient(
 			ellipse 80% 55% at 50% 100%,
-			color-mix(in srgb, var(--primary) calc(2% + var(--breathing-phase, 0) * 3%), transparent),
+			color-mix(in srgb, var(--glow) calc(2% + var(--breathing-phase, 0) * 3%), transparent),
+			transparent 75%
+		);
+	}
+	:global([data-theme='light']) .closer-section::before {
+		background: radial-gradient(
+			ellipse 80% 55% at 50% 100%,
+			color-mix(in srgb, var(--glow) calc(8% + var(--breathing-phase, 0) * 8%), transparent),
 			transparent 75%
 		);
 	}

@@ -152,14 +152,14 @@
 	.quiet-mode-toggle[aria-checked='true'] .q-core {
 		fill: var(--primary);
 		stroke: var(--primary);
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 60%, transparent));
+		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 60%, transparent));
 	}
 
 	/* Pinned: the bookmark fills solid --primary (the saved preference). */
 	.quiet-mode-toggle[aria-pressed='true'] .r-bookmark {
 		fill: var(--primary);
 		stroke: var(--primary);
-		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 55%, transparent));
+		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 55%, transparent));
 	}
 
 	@media (prefers-reduced-motion: reduce) {

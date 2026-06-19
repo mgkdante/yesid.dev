@@ -94,7 +94,7 @@
 		letter-spacing: 2px;
 		cursor: pointer;
 		box-shadow:
-			0 0 24px color-mix(in srgb, var(--primary) 30%, transparent),
+			0 0 24px color-mix(in srgb, var(--glow) 30%, transparent),
 			0 4px 12px rgba(0, 0, 0, 0.4);
 		transition: box-shadow var(--duration-normal), transform var(--duration-normal);
 		width: 100%;
@@ -105,7 +105,7 @@
 	}
 	.refresh-btn:hover {
 		box-shadow:
-			0 0 40px color-mix(in srgb, var(--primary) 50%, transparent),
+			0 0 40px color-mix(in srgb, var(--glow) 50%, transparent),
 			0 6px 20px rgba(0, 0, 0, 0.5);
 		transform: translateY(-1px);
 	}
