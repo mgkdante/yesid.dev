@@ -43,7 +43,7 @@
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--primary) 42%, transparent);
+		color: var(--primary); opacity: var(--chrome-ink-opacity);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
