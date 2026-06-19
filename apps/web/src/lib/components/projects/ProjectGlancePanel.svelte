@@ -69,7 +69,7 @@
         {#snippet icon()}
           <SectionIcon name="eye" />
         {/snippet}
-        <div class="glance-overview text-small leading-[1.7]">
+        <div class="glance-overview text-caption leading-[1.7]">
           <BlockRenderer doc={resolveLocale(project.description, locale)} />
         </div>
       </CollapsibleSection>
