@@ -9,7 +9,17 @@
 #   - dev DB schema + content = prod (including admin user = prod's admin@yesid.dev)
 #   - dev R2 files = prod files
 #   - dev code (origin/develop) = main
-#   - dev.yesid.dev rebuilds with this state via Vercel
+#   - dev.yesid.dev rebuilds with this state via Vercel (live-pull, see below)
+#
+# Build-bot token durability (why dev live-pull survives this refresh):
+# Vercel's DIRECTUS_BUILD_TOKEN (preview + production) is the read-only
+# "Build Bot" user's static token. That token is the SAME value on dev and
+# prod Directus, so the Neon re-fork below copies prod's token into dev and
+# the Vercel preview env still authenticates against cms.dev.yesid.dev. No
+# re-rotation needed: like the shared admin token, it self-heals through the
+# re-fork. (If you ever rotate it, set the new value in all four places at
+# once: dev Directus user, prod Directus user, Vercel preview, Vercel
+# production. Vercel preview also needs EXPORT_FALLBACKS_LIVE=1 for the pull.)
 #
 # If you ever want separate dev credentials, re-rotate after refresh
 # (see the manual step at the end).
@@ -100,6 +110,8 @@ echo "============================================================"
 echo "Done. Dev now mirrors prod state."
 echo ""
 echo "Vercel will auto-rebuild dev.yesid.dev on the develop push."
+echo "The rebuild live-pulls dev CMS content: the read-only build-bot token is"
+echo "shared dev+prod, so it survives this re-fork (no re-rotation needed)."
 echo ""
 echo "Admin login on dev now = prod admin (admin@yesid.dev + prod password)."
 echo "If you want separate dev creds, rotate after refresh:"
