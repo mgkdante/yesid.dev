@@ -14,17 +14,9 @@ import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { type ApplyContext, type SchemaStep, isAlreadyExists, rest } from './lib/schema-apply';
 
-export type SchemaStepKind = 'collection' | 'field' | 'relation' | 'permission';
-
-export interface SchemaStep {
-	kind: SchemaStepKind;
-	target: string;
-	method: 'POST' | 'PATCH';
-	path: string;
-	payload: Record<string, unknown>;
-	policyNames?: readonly string[];
-}
+export type { SchemaStep, SchemaStepKind } from './lib/schema-apply';
 
 export const LANGUAGE_SEEDS = [
 	{
@@ -284,46 +276,6 @@ export function parseFlags(argv: readonly string[]): { apply: boolean; seed: boo
 }
 
 const log = createLogger('about-languages');
-
-interface ApplyContext {
-	directusUrl: string;
-	token: string;
-}
-
-async function rest(
-	ctx: ApplyContext,
-	method: string,
-	path: string,
-	body?: unknown,
-): Promise<{ status: number; json: any }> {
-	const res = await fetch(`${ctx.directusUrl}${path}`, {
-		method,
-		headers: {
-			Authorization: `Bearer ${ctx.token}`,
-			'Content-Type': 'application/json',
-		},
-		body: body === undefined ? undefined : JSON.stringify(body),
-	});
-	const text = await res.text();
-	let json: any = null;
-	try {
-		json = text ? JSON.parse(text) : null;
-	} catch {
-		json = { raw: text };
-	}
-	return { status: res.status, json };
-}
-
-function isAlreadyExists(status: number, json: any): boolean {
-	if (status < 400) return false;
-	const errors: { message?: string; extensions?: { code?: string } }[] = json?.errors ?? [];
-	return errors.some(
-		(error) =>
-			error.extensions?.code === 'RECORD_NOT_UNIQUE' ||
-			/already exists/i.test(error.message ?? '') ||
-			/already has an associated relationship/i.test(error.message ?? ''),
-	);
-}
 
 async function applyPermission(ctx: ApplyContext, step: SchemaStep): Promise<void> {
 	const policies = await rest(ctx, 'GET', '/policies?fields=id,name&limit=-1');
