@@ -225,14 +225,12 @@
   .edge-left { left: 28px; }
   .edge-right { right: 28px; text-align: right; }
 
-  .edge-value {
-    /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: var(--primary); opacity: var(--chrome-ink-opacity);
-  }
-
+  /* edge-value + edge-separator INHERIT the container's colour + chrome-ink
+     opacity. They must NOT set their own opacity: nested under .edge-left/right
+     it would COMPOUND (0.6 x 0.6 = 0.36) and render fainter than the labels.
+     One opacity on the container → the whole panel reads consolidated. */
   .edge-separator {
     margin-top: 8px;
-    opacity: 0.5;
   }
 
   .header__back {

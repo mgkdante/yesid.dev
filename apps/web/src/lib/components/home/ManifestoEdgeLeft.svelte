@@ -32,7 +32,7 @@
 	<div
 		class="manifesto__roundel manifesto__roundel--transit manifesto__roundel--t{i}"
 		aria-hidden="true"
-		style="--line-color: {line.color}; --line-color-border: {line.color}40; --line-color-bg: {line.color}1A; --line-color-text: {line.color}33;"
+		style="--line-color: {line.color}; --line-color-border: {line.color}40; --line-color-bg: {line.color}1A; --line-color-text: {line.color};"
 	>
 		<span class="manifesto__roundel-dot"></span>
 		<span class="manifesto__roundel-name">{line.name}</span>
@@ -86,7 +86,12 @@
 		flex-shrink: 0;
 	}
 
-	.manifesto__roundel-name { color: var(--line-color-text); }
+	/* Line names: the FULL line colour, dimmed through the same --chrome-ink-opacity
+	   as the orange coordinate chrome. (The old --line-color-text baked a 20% alpha
+	   `33` suffix, so the colored names read ~3x fainter than the orange labels —
+	   that's why orange looked sharper.) The dot keeps its own faint fill/stroke as
+	   the colour accent. */
+	.manifesto__roundel-name { color: var(--line-color-text); opacity: var(--chrome-ink-opacity); }
 
 	/* Scattered positions — 9 transit lines around edges */
 	.manifesto__roundel--t0 { left: 155px; top: 116px; }
