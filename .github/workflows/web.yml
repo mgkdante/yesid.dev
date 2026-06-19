@@ -1,7 +1,8 @@
 name: web
 
 # CI for apps/web (SvelteKit consumer deployed to Vercel).
-# Runs check + test + build via turbo on EVERY PR/push to main+develop.
+# Runs check + test + build via turbo on EVERY PR to main+develop (PR-only;
+# the redundant post-merge push run was dropped to cut cost).
 #
 # slice-17f Phase 7: shared setup extracted to .github/actions/setup
 # (Bun + cache restores + install). concurrency cancel-in-progress on
@@ -13,21 +14,20 @@ name: web
 # PRs would be blocked forever. With the Phase 7 caches, cost on no-op runs
 # is ~20-30s end-to-end (FULL TURBO cache replay), so always-run is fine.
 #
-# E2E (Playwright) runs on pull_request ONLY (not on push), against a LOCAL
-# hermetic preview on the runner — zero Vercel edge requests. It does consume
-# GitHub Actions runner minutes (build + 3 shards), so it is kept off the
-# redundant post-merge push. Push CI runs cheap checks only: type check, unit
-# tests, token drift, package tests, and build.
+# E2E (Playwright) runs on pull_request only, against a LOCAL hermetic preview
+# on the runner — zero Vercel edge requests — and is further gated by the
+# `skip-e2e` PR label (build + 3 shards is the costly part). The cheap `ci` job
+# (type check, unit tests, token drift, package tests, build) runs on every PR.
 
 on:
-  push:
-    branches: [main, develop]
+  # PR-only (no push: trigger). The PR run is the gate that blocks a bad merge;
+  # re-running the same checks on the post-merge push to develop/main is
+  # redundant and pure cost, so it was dropped (2026-06-19, cost cut).
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
 
-# Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
-# complete (we want every main commit to have a recorded build).
+# Cancel in-progress duplicate runs on PR pushes (force-push / fast follow-ups).
 concurrency:
   group: web-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}

@@ -65,8 +65,11 @@ describe('push-to-figma', () => {
     // Typography token system (listing/detail consolidation) adds 24 number
     // variables: detail-body, nav, menu, tag, metric-chip, card title/body/meta,
     // back-link and control sizes across mobile + desktop scales.
+    // Glow token system adds 1: color/glow — the theme-invariant decorative
+    // glow color (glows ride --glow, vivid in both themes; never text, so not
+    // AA-bound), so glows read in light without per-component overrides.
     const vars = runScript();
-    expect(vars.length).toBe(128);
+    expect(vars.length).toBe(129);
   });
 
   it('theme re-pins of brand names merge as modes of one variable (no duplicates)', () => {
