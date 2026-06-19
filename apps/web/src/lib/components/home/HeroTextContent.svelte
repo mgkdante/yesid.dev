@@ -202,6 +202,10 @@
 		filter: drop-shadow(0 0 0.09em color-mix(in srgb, var(--primary) 95%, transparent))
 			drop-shadow(0 0 0.28em color-mix(in srgb, var(--primary) 55%, transparent));
 	}
+	:global([data-theme='light']) .hero-dot-settled .hero-dot {
+		filter: drop-shadow(0 0 0.12em color-mix(in srgb, var(--primary) 100%, transparent))
+			drop-shadow(0 0 0.4em color-mix(in srgb, var(--primary) 75%, transparent));
+	}
 
 	@keyframes hero-dot-pulse {
 		0%,

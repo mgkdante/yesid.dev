@@ -330,6 +330,9 @@
 		border-color: color-mix(in srgb, var(--primary) 38%, transparent);
 		box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 22%, transparent);
 	}
+	:global([data-theme='light']) .services-card-link:hover button.services-svg-panel {
+		box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 55%, transparent);
+	}
 
 	.svg-inline-wrapper {
 		width: 96px;

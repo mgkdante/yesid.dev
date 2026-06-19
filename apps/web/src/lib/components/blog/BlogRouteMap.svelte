@@ -222,6 +222,9 @@
     opacity: 1;
     filter: drop-shadow(0 0 8px color-mix(in srgb, var(--line-amber, var(--accent)) 40%, transparent));
   }
+  :global([data-theme='light']) .route-station--active {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--line-amber, var(--accent)) 65%, transparent));
+  }
 
   .route-station--passed {
     opacity: 0.6;

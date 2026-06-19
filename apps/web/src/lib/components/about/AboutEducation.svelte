@@ -83,6 +83,10 @@
 		transition: border-color var(--duration-normal) var(--ease-default);
 	}
 
+	:global([data-theme='light']) .edu-mark {
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
+	}
+
 	.group:hover .edu-mark {
 		border-color: var(--primary);
 	}

@@ -363,8 +363,14 @@
 	:global(.nav-link-glow) {
 		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
 	}
+	:global([data-theme='light'] .nav-link-glow) {
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 95%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 55%, transparent);
+	}
 	:global(.nav-link-active) {
 		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 50%, transparent), 0 0 16px color-mix(in srgb, var(--primary) 20%, transparent);
+	}
+	:global([data-theme='light'] .nav-link-active) {
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 90%, transparent), 0 0 16px color-mix(in srgb, var(--primary) 50%, transparent);
 	}
 
 	/* Hamburger → ✕ morph */
