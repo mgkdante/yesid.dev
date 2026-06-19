@@ -78,14 +78,6 @@
 			.filter((s): s is Service => !!s)
 	);
 
-	// Proof variant only: the card body LEADS with a station signage chip naming
-	// which station(s) built the project, drawn in the theme-INVARIANT --signage
-	// tokens (real signs don't reskin when the lights change). Restored after the
-	// consolidation migrated the home reel onto this shared card. Sorted by
-	// station number; 2-digit padded (StationTabs convention).
-	let proofStations = $derived([...projectServices].sort((a, b) => a.station - b.station));
-	const stationsOneSystemTemplate = resolveLocale(siteLabels.ui.stationsOneSystem, locale);
-	const padStation = (n: number): string => String(n).padStart(2, '0');
 
 	// Gradient color based on the first related service's position in the palette.
 	// GO-2: keyed by the 4 consolidated stations; unknown/archived ids take the
@@ -161,22 +153,6 @@
 
 		<!-- Content area — all content stacks naturally below the banner -->
 		<div class="project-card-body flex flex-1 flex-col p-4">
-			<!-- Proof reel: the body leads with the station signage chip (which
-			     station built this), theme-invariant signage colors. -->
-			{#if isProof && proofStations.length > 0}
-				<span class="proof-station-row" data-testid="proof-station-row">
-					{#each proofStations as station (station.id)}
-						<span class="proof-station-chip" data-testid="proof-station-chip">
-							<span class="proof-station-chip-num">{padStation(station.station)}</span>
-							{#if proofStations.length <= 2}<span>{resolveLocale(station.title, locale)}</span>{/if}
-						</span>
-					{/each}
-					{#if proofStations.length > 2}
-						<span class="proof-station-caption">{stationsOneSystemTemplate.replace('{count}', String(proofStations.length))}</span>
-					{/if}
-				</span>
-			{/if}
-
 			<!-- Title below the gradient, not overlaid -->
 			<h2
 				class="project-card-title font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary"
@@ -190,9 +166,10 @@
 				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
-			<!-- Service badges row — SVGs with MorphSVG on card hover. Listing only;
-			     the proof variant uses the station signage chip above instead. -->
-			{#if !isProof && projectServices.length > 0}
+			<!-- Service badges row — SVGs with MorphSVG on card hover. Shared by the
+			     listing AND the proof reel: the proof reel mirrors the projects/
+			     listing now (the old per-service station signage chip was removed). -->
+			{#if projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, locale)}
@@ -239,19 +216,21 @@
 				</div>
 			{/if}
 
-			<!-- Tags as small pills -->
-			<div class="flex flex-wrap gap-1 pt-3">
-				{#each displayTags as tag}
-					<span use:magnetic={{ strength: 2, radius: 30 }}>
-						<Badge
-							variant="tag-active"
-							size="xs"
-							class="project-card-tag"
-							data-testid={isProof ? 'proof-project-tag' : undefined}
-						>{tag}</Badge>
-					</span>
-				{/each}
-			</div>
+			<!-- Tags as small pills — listing only; the proof reel stays clean
+			     (no tags in the reel, operator call). -->
+			{#if !isProof}
+				<div class="flex flex-wrap gap-1 pt-3">
+					{#each displayTags as tag}
+						<span use:magnetic={{ strength: 2, radius: 30 }}>
+							<Badge
+								variant="tag-active"
+								size="xs"
+								class="project-card-tag"
+							>{tag}</Badge>
+						</span>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		{#if isProof}
@@ -299,43 +278,6 @@
 		border-radius: 0;
 	}
 
-	/* Proof reel station signage chip — which station built the project. Drawn
-	   in the THEME-INVARIANT --signage tokens (a real sign doesn't reskin when
-	   the lights change), with a 2px amber backlit base edge. */
-	.proof-station-row {
-		display: inline-flex;
-		align-items: baseline;
-		gap: 0.45em;
-		flex-wrap: wrap;
-		margin-bottom: 0.75rem;
-	}
-	.proof-station-chip {
-		display: inline-flex;
-		align-items: baseline;
-		gap: 0.5em;
-		background: var(--signage-bg);
-		color: var(--signage-text);
-		border: 1px solid color-mix(in srgb, var(--signage-text) 30%, transparent);
-		border-bottom: 2px solid var(--signage-text);
-		border-radius: var(--radius-sm);
-		padding: 0.3rem 0.6rem;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 700;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		line-height: 1.2;
-	}
-	.proof-station-chip-num {
-		font-weight: 800;
-	}
-	.proof-station-caption {
-		font-family: var(--font-mono);
-		font-size: var(--text-micro);
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--accent-text);
-	}
 
 	/* GO2-W5 STM line bullet — the service's line color as a roundel dot. */
 	.line-bullet {
