@@ -53,7 +53,7 @@
 	/* ── Beck-style Route Lines ──────────────────────────────────── */
 	.manifesto__beck-line {
 		position: absolute;
-		background: color-mix(in srgb, var(--primary) 6%, transparent);
+		background: color-mix(in srgb, var(--primary) 14%, transparent);
 		z-index: var(--z-content);
 	}
 
@@ -116,7 +116,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 3px;
-		color: color-mix(in srgb, var(--primary) 20%, transparent);
+		color: color-mix(in srgb, var(--primary) 45%, transparent);
 		text-transform: uppercase;
 	}
 
