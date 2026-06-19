@@ -80,7 +80,7 @@
 
       <!-- Ticks (top center) — contrast-exempt: decorative (aria-hidden watermark) -->
       <div class="header__decoration absolute left-1/2 top-[18px] hidden -translate-x-1/2 gap-7 font-mono text-micro lg:flex" aria-hidden="true"
-        style="color: color-mix(in srgb, var(--primary) 8%, transparent);"
+        style="color: var(--primary); opacity: var(--chrome-ink-opacity);"
       >
         {#each [0, 80, 160, 240, 320, 400, 480] as tick}
           <span>{tick}</span>
@@ -216,7 +216,7 @@
     font-size: 10px;
     letter-spacing: 1.5px;
     /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--primary); opacity: var(--chrome-ink-opacity);
     line-height: 2.4;
     text-transform: uppercase;
     z-index: calc(var(--z-content) + 1);
@@ -225,14 +225,12 @@
   .edge-left { left: 28px; }
   .edge-right { right: 28px; text-align: right; }
 
-  .edge-value {
-    /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: color-mix(in srgb, var(--primary) 25%, transparent);
-  }
-
+  /* edge-value + edge-separator INHERIT the container's colour + chrome-ink
+     opacity. They must NOT set their own opacity: nested under .edge-left/right
+     it would COMPOUND (0.6 x 0.6 = 0.36) and render fainter than the labels.
+     One opacity on the container → the whole panel reads consolidated. */
   .edge-separator {
     margin-top: 8px;
-    opacity: 0.5;
   }
 
   .header__back {

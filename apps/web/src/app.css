@@ -191,6 +191,13 @@ select {
   --font-heading: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  /* Ambient "chrome" text opacity: the one rule for the decorative coordinate /
+     departure-board / edge labels on the manifesto + project/blog detail
+     headers. Color-agnostic on purpose — each label keeps its own colour at
+     full strength (--primary, --blog-accent, …) and dims uniformly through this
+     single knob, so "all the chrome text, whatever its colour, reads at the same
+     opacity." Uniform across both themes (operator-tuned to 40%). */
+  --chrome-ink-opacity: 0.4;
 }
 
 /* Dark theme is the default — tokens.css handles var(--background) etc.
