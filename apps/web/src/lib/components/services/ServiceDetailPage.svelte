@@ -429,7 +429,7 @@
 		position: absolute;
 		inset-inline: 0;
 		bottom: 100%;
-		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
+		height: calc(var(--nav-clearance, 5.5rem) + env(safe-area-inset-top, 0px) + 0.5rem);
 		background: var(--background);
 		pointer-events: none;
 	}

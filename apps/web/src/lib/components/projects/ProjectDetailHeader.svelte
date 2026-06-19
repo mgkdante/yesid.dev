@@ -150,8 +150,12 @@
     position: relative;
     /* accent for the shared .detail-header-grid dot-grid (app.css) */
     --header-accent: var(--primary);
-    margin-top: calc(-1 * var(--nav-height, 64px));
-    padding-top: var(--nav-height, 64px);
+    /* --nav-height was never defined (64px fallback under-reserved the 76px
+       pill by 12px, clipping the header title under the nav). Route through the
+       shared --nav-clearance (88px) so the negative-margin/padding pair reserves
+       the real pill height on this full-bleed detail page. */
+    margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
+    padding-top: var(--nav-clearance, 5.5rem);
     overflow: hidden;
     background: var(--manifesto, #0f0d0a);
     cursor: crosshair;
