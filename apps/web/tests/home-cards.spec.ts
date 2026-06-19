@@ -47,11 +47,11 @@ test('home cards surface excerpt + station chip + metric + exploration line (non
 	expect(count, 'proof reel must render at least one card').toBeGreaterThan(0);
 
 	// Data-quality guard (same spirit as the unit CMS-integrity guard): at
-	// least one featured project must declare the station that built it. The
-	// The station-signage chip (which station built each project) was restored
-	// to the proof variant after the consolidation: one theme-invariant signage
-	// chip per related station, leading the card body.
-	expect(await page.locator('[data-testid="proof-station-chip"]').count()).toBeGreaterThan(0);
+	// least one featured project must declare the station that built it. Post
+	// consolidation the station-signage chip became the per-service STM roundel
+	// `.line-bullet` under the card's Services badge row, so at least one roundel
+	// must render across the reel.
+	expect(await page.locator('.line-bullet').count()).toBeGreaterThan(0);
 
 	// The orange exploration action survived as the section-level "view all"
 	// link (the per-card "see the build →" line was removed: the whole card is
