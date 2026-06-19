@@ -80,6 +80,17 @@ describe('loadOgTitle', () => {
       expect(await loadOgTitle('project', 'missing', 'en')).toBeNull();
     });
 
+    it('returns null when project is archived (status private)', async () => {
+      // Hidden project: detail route 404s, so its OG image must fall back to
+      // the default instead of rendering a card for a hidden project.
+      getProjectBySlugMock.mockResolvedValueOnce({
+        slug: 'hidden',
+        status: 'private',
+        title: { en: 'Hidden Project' },
+      });
+      expect(await loadOgTitle('project', 'hidden', 'en')).toBeNull();
+    });
+
     it('returns null when repository throws', async () => {
       getProjectBySlugMock.mockRejectedValueOnce(new Error('boom'));
       expect(await loadOgTitle('project', 's', 'en')).toBeNull();
