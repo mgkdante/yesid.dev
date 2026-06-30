@@ -376,7 +376,8 @@
 
 	/* Fun pass: a solid box lands with the chips' own settle pop. Keyed each
 	   → only NEW boxes (fresh picks / ghost-flips) animate. CSS-only,
-	   user-initiated, <400ms, tiny → SAFE-ALWAYS (chip-settle precedent). */
+	   user-initiated, <400ms, tiny; guarded for prefers-reduced-motion below
+	   (chip-settle precedent). */
 	.sbp-box-solid {
 		transform-box: fill-box;
 		transform-origin: center;
@@ -387,6 +388,12 @@
 		0% { scale: 1; }
 		50% { scale: 1.06; }
 		100% { scale: 1; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sbp-box-solid {
+			animation: none;
+		}
 	}
 
 	/* The established bp-ghost treatment: group dims, rect dashes. */

@@ -48,7 +48,7 @@ describe('push-to-figma', () => {
     expect(Object.keys(colorCard!.values).sort()).toEqual(['dark', 'light']);
   });
 
-  it('produces 104 variables (GO2-W5 round-4 doctrine baseline)', () => {
+  it('produces 133 variables (GO2-W5 round-4 doctrine baseline)', () => {
     // Sanity check on the overall count. 82 at GO-W2.2 (69 after
     // slice-design's trim + 13: 3 theme-moded colors, 6 surface aliases,
     // 3 border aliases, shadow/sheet). GO2-W5 adds 19: 7 theme-invariant
@@ -68,8 +68,11 @@ describe('push-to-figma', () => {
     // Glow token system adds 1: color/glow — the theme-invariant decorative
     // glow color (glows ride --glow, vivid in both themes; never text, so not
     // AA-bound), so glows read in light without per-component overrides.
+    // consolidation-vibe-style-fixes adds 4: shadow/cta + shadow/cta-hover
+    // (hero CTA shadow folded into tokens) and z/overlay + z/ripple (modal and
+    // ripple z-index tiers above nav).
     const vars = runScript();
-    expect(vars.length).toBe(129);
+    expect(vars.length).toBe(133);
   });
 
   it('theme re-pins of brand names merge as modes of one variable (no duplicates)', () => {

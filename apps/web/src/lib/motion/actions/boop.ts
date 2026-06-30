@@ -34,7 +34,7 @@ export function boop(node: HTMLElement, params: BoopParams = {}) {
 		if (scale !== 1) parts.push(`scale(${scale})`);
 		if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
 
-		node.style.transition = `transform ${timing}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
+		node.style.transition = `transform ${timing}ms var(--ease-bounce)`;
 		node.style.transform = parts.join(' ') || 'none';
 
 		timeoutId = setTimeout(() => {

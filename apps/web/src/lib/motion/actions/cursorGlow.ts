@@ -50,7 +50,7 @@ export function cursorGlow(node: HTMLElement, params: CursorGlowParams = {}) {
 			borderRadius: 'inherit',
 			pointerEvents: 'none',
 			opacity: '0',
-			transition: 'opacity 0.3s ease',
+			transition: 'opacity var(--duration-slow) ease',
 			background: `radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(var(--primary-rgb) / ${intensity}), transparent 60%)`,
 		});
 		node.appendChild(overlay);
