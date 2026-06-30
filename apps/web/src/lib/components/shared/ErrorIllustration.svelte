@@ -2,6 +2,9 @@
   Inline SVG construction illustration for the 404 error page.
   Elements: platform, scaffolding, station sign, barriers, cones, blinking lights.
   Respects prefers-reduced-motion (lights static instead of blinking).
+  Brand colors run through tokens (var(--primary)/--accent/--hazard-b via CSS
+  classes — SVG presentation attributes can't read custom properties) so the
+  illustration tracks the light/dark theme swap instead of pinning dark-mode hex.
 -->
 <script lang="ts">
 	interface Props {
@@ -25,53 +28,52 @@
 		<!-- Left scaffolding (taller) -->
 		<g class="scaffolding">
 			<!-- Verticals -->
-			<line x1="50" y1="60" x2="50" y2="200" stroke="rgba(255,182,39,0.3)" stroke-width="2" />
-			<line x1="80" y1="60" x2="80" y2="200" stroke="rgba(255,182,39,0.3)" stroke-width="2" />
+			<line class="scaffold-vert" x1="50" y1="60" x2="50" y2="200" stroke-width="2" />
+			<line class="scaffold-vert" x1="80" y1="60" x2="80" y2="200" stroke-width="2" />
 			<!-- Horizontals -->
-			<line x1="46" y1="80" x2="84" y2="80" stroke="rgba(255,182,39,0.25)" stroke-width="1.5" />
-			<line x1="46" y1="120" x2="84" y2="120" stroke="rgba(255,182,39,0.25)" stroke-width="1.5" />
-			<line x1="46" y1="160" x2="84" y2="160" stroke="rgba(255,182,39,0.25)" stroke-width="1.5" />
+			<line class="scaffold-rung" x1="46" y1="80" x2="84" y2="80" stroke-width="1.5" />
+			<line class="scaffold-rung" x1="46" y1="120" x2="84" y2="120" stroke-width="1.5" />
+			<line class="scaffold-rung" x1="46" y1="160" x2="84" y2="160" stroke-width="1.5" />
 			<!-- Cross braces -->
-			<line x1="50" y1="80" x2="80" y2="120" stroke="rgba(255,182,39,0.15)" stroke-width="1" />
-			<line x1="80" y1="80" x2="50" y2="120" stroke="rgba(255,182,39,0.15)" stroke-width="1" />
+			<line class="scaffold-brace" x1="50" y1="80" x2="80" y2="120" stroke-width="1" />
+			<line class="scaffold-brace" x1="80" y1="80" x2="50" y2="120" stroke-width="1" />
 		</g>
 
 		<!-- Right scaffolding (shorter) -->
 		<g class="scaffolding">
-			<line x1="320" y1="110" x2="320" y2="200" stroke="rgba(255,182,39,0.3)" stroke-width="2" />
-			<line x1="350" y1="110" x2="350" y2="200" stroke="rgba(255,182,39,0.3)" stroke-width="2" />
-			<line x1="316" y1="130" x2="354" y2="130" stroke="rgba(255,182,39,0.25)" stroke-width="1.5" />
-			<line x1="316" y1="165" x2="354" y2="165" stroke="rgba(255,182,39,0.25)" stroke-width="1.5" />
-			<line x1="320" y1="130" x2="350" y2="165" stroke="rgba(255,182,39,0.15)" stroke-width="1" />
+			<line class="scaffold-vert" x1="320" y1="110" x2="320" y2="200" stroke-width="2" />
+			<line class="scaffold-vert" x1="350" y1="110" x2="350" y2="200" stroke-width="2" />
+			<line class="scaffold-rung" x1="316" y1="130" x2="354" y2="130" stroke-width="1.5" />
+			<line class="scaffold-rung" x1="316" y1="165" x2="354" y2="165" stroke-width="1.5" />
+			<line class="scaffold-brace" x1="320" y1="130" x2="350" y2="165" stroke-width="1" />
 		</g>
 
 		<!-- Station sign -->
 		<g class="station-sign">
 			<!-- Sign background -->
 			<rect
+				class="sign-bg"
 				x="130" y="70" width="140" height="80"
 				rx="4"
-				fill="rgba(10,10,10,0.9)"
-				stroke="rgba(224,120,0,0.3)"
 				stroke-width="1.5"
 			/>
 			<!-- "STATION" label -->
 			<text
+				class="sign-label"
 				x="200" y="95"
 				text-anchor="middle"
 				font-family="'JetBrains Mono', monospace"
 				font-size="10"
 				letter-spacing="3"
-				fill="rgba(224,120,0,0.5)"
 			>STATION</text>
 			<!-- "404" large text -->
 			<text
+				class="sign-404"
 				x="200" y="138"
 				text-anchor="middle"
 				font-family="Inter, sans-serif"
 				font-size="40"
 				font-weight="800"
-				fill="#E07800"
 			>404</text>
 			<!-- Sign post -->
 			<line class="scene-post" x1="200" y1="150" x2="200" y2="200" stroke-width="2" />
@@ -95,30 +97,30 @@
 
 		<!-- Left cone -->
 		<g class="cone">
-			<polygon points="115,200 120,183 125,200" fill="#E07800" opacity="0.7" />
-			<rect x="112" y="200" width="16" height="3" rx="1" fill="rgba(224,120,0,0.4)" />
+			<polygon class="cone-body" points="115,200 120,183 125,200" opacity="0.7" />
+			<rect class="cone-base" x="112" y="200" width="16" height="3" rx="1" />
 		</g>
 
 		<!-- Right cone -->
 		<g class="cone">
-			<polygon points="275,200 280,183 285,200" fill="#E07800" opacity="0.7" />
-			<rect x="272" y="200" width="16" height="3" rx="1" fill="rgba(224,120,0,0.4)" />
+			<polygon class="cone-body" points="275,200 280,183 285,200" opacity="0.7" />
+			<rect class="cone-base" x="272" y="200" width="16" height="3" rx="1" />
 		</g>
 
 		<!-- Construction lights -->
 		<!-- Light 1 (left barrier) -->
-		<circle class="light light-a" cx="120" cy="174" r="5" fill="#FFB627" />
-		<circle class="light-glow light-a" cx="120" cy="174" r="10" fill="rgba(255,182,39,0.2)" />
+		<circle class="light light-a" cx="120" cy="174" r="5" />
+		<circle class="light-glow light-a" cx="120" cy="174" r="10" />
 
 		<!-- Light 2 (right barrier) -->
-		<circle class="light light-b" cx="280" cy="174" r="5" fill="#FFB627" />
-		<circle class="light-glow light-b" cx="280" cy="174" r="10" fill="rgba(255,182,39,0.2)" />
+		<circle class="light light-b" cx="280" cy="174" r="5" />
+		<circle class="light-glow light-b" cx="280" cy="174" r="10" />
 
 		<!-- Hazard stripe pattern definition -->
 		<defs>
 			<pattern id="hazard-pattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
-				<rect width="4" height="8" fill="#FFB627" />
-				<rect x="4" width="4" height="8" fill="#1C1814" />
+				<rect class="hazard-stripe-a" width="4" height="8" />
+				<rect class="hazard-stripe-b" x="4" width="4" height="8" />
 			</pattern>
 		</defs>
 	</svg>
@@ -136,6 +138,31 @@
 	.scene-ground { stroke: color-mix(in srgb, var(--foreground) 8%, transparent); }
 	.scene-post { stroke: color-mix(in srgb, var(--foreground) 10%, transparent); }
 	.scene-leg { stroke: color-mix(in srgb, var(--foreground) 15%, transparent); }
+
+	/* Scaffolding = yellow wayfinding voice at descending weights. */
+	.scaffold-vert { stroke: color-mix(in srgb, var(--accent) 30%, transparent); }
+	.scaffold-rung { stroke: color-mix(in srgb, var(--accent) 25%, transparent); }
+	.scaffold-brace { stroke: color-mix(in srgb, var(--accent) 15%, transparent); }
+
+	/* Station sign = dark signage ground + orange signage type. */
+	.sign-bg {
+		fill: color-mix(in srgb, var(--signage-bg) 90%, transparent);
+		stroke: color-mix(in srgb, var(--primary) 30%, transparent);
+	}
+	.sign-label { fill: color-mix(in srgb, var(--primary) 50%, transparent); }
+	.sign-404 { fill: var(--primary); }
+
+	/* Cones = orange signage. */
+	.cone-body { fill: var(--primary); }
+	.cone-base { fill: color-mix(in srgb, var(--primary) 40%, transparent); }
+
+	/* Hazard chevrons = yellow + structural black. */
+	.hazard-stripe-a { fill: var(--accent); }
+	.hazard-stripe-b { fill: var(--hazard-b); }
+
+	/* Construction lights = yellow lamps + soft halo. */
+	.light { fill: var(--accent); }
+	.light-glow { fill: color-mix(in srgb, var(--accent) 20%, transparent); }
 
 	/* Alternating blink for construction lights */
 	.light-a, .light-glow.light-a {

@@ -295,7 +295,7 @@
 	.explainer-kicker {
 		display: block;
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-detail-kicker);
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--accent-text);
@@ -324,7 +324,7 @@
 	.hero-line-color-accent { color: var(--accent-text); }
 	.hero-line-color-green { color: var(--success); }
 
-	.hero-line-animate { animation: hero-line-in 0.3s ease-out both; }
+	.hero-line-animate { animation: hero-line-in var(--duration-slow) ease-out both; }
 
 	@keyframes hero-line-in {
 		from { opacity: 0; }
@@ -367,7 +367,7 @@
 
 	.hero-stat-label {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-detail-kicker);
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--muted-foreground);
@@ -463,7 +463,7 @@
 
 	.cta-sub {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-caption);
 		color: var(--muted-foreground);
 		margin-bottom: 2rem;
 		max-width: 500px;

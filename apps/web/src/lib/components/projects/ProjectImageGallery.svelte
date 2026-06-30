@@ -182,7 +182,7 @@
 	.project-image-gallery__lightbox {
 		position: fixed;
 		inset: 0;
-		z-index: 1000;
+		z-index: var(--z-overlay);
 		display: grid;
 		place-items: center;
 		padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
@@ -202,7 +202,7 @@
 		position: relative;
 		z-index: 1;
 		width: min(96vw, 1440px);
-		max-height: 90vh;
+		max-height: 90dvh;
 		border: 3px solid var(--border-brand-active);
 		border-radius: var(--radius-md);
 		background: var(--surface-2);
@@ -215,7 +215,7 @@
 	.project-image-gallery__lightbox-panel img {
 		display: block;
 		width: 100%;
-		max-height: calc(90vh - 4rem);
+		max-height: calc(90dvh - 4rem);
 		object-fit: contain;
 		background: var(--project-image-gallery-mat);
 	}

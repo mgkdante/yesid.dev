@@ -157,7 +157,7 @@
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		pointer-events: none;
-		z-index: 9999;
+		z-index: var(--z-ripple);
 		animation: global-ripple-expand 1.2s ease-out forwards;
 	}
 
@@ -167,7 +167,7 @@
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		pointer-events: none;
-		z-index: 9999;
+		z-index: var(--z-ripple);
 		animation: global-ripple-inner-expand 0.8s ease-out forwards;
 	}
 

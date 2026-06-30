@@ -202,7 +202,7 @@
 		border-radius: 8px;
 		cursor: pointer;
 		font-family: var(--font-heading);
-		font-size: 14px;
+		font-size: var(--text-mono);
 		color: color-mix(in srgb, var(--foreground) 65%, transparent);
 		transition: background var(--duration-fast) var(--ease-default),
 			color var(--duration-fast) var(--ease-default);
@@ -242,7 +242,7 @@
 	/* Sub-headings indented (no badge slot; align under the parent's label). */
 	.toc-drawer-sub {
 		padding-left: 40px;
-		font-size: 13px;
+		font-size: var(--text-caption);
 		color: color-mix(in srgb, var(--foreground) 65%, transparent);
 	}
 
