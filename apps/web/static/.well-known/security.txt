@@ -1,0 +1,6 @@
+# yesid.dev — security contact (RFC 9116)
+Contact: mailto:contact@yesid.dev
+Contact: https://yesid.dev/contact
+Expires: 2027-07-01T00:00:00.000Z
+Preferred-Languages: en, fr
+Canonical: https://yesid.dev/.well-known/security.txt

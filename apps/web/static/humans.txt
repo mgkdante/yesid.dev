@@ -1,0 +1,15 @@
+/* TEAM */
+Builder: Yesid
+Location: Montréal, QC, Canada
+Contact: https://yesid.dev/contact
+GitHub: https://github.com/mgkdante
+
+/* SITE */
+Stack: SvelteKit · Svelte 5 · Tailwind v4 · GSAP · Directus · Neon · Vercel · Railway
+Languages: English / Français
+Doctrine: orange signage · yellow wayfinding · reflective white · structural black
+Source of truth: the CMS. Always the CMS.
+
+/* COLOPHON */
+Type: Inter Variable + JetBrains Mono Variable, self-hosted
+Muse: the Montréal métro
