@@ -20,7 +20,8 @@
  */
 
 import { dirname, resolve } from 'node:path';
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { MediaVariantEntry, MediaVariantSource } from '@repo/shared';
 
@@ -101,13 +102,24 @@ export async function buildMediaVariants(
 			throw new Error(`[media-variants] could not read dimensions of ${legacyPath}`);
 		}
 
+		const originalBytes = statSync(sourcePath).size;
 		const variants: MediaVariantSource[] = [];
 		for (const width of pickVariantWidths(meta.width)) {
-			const variantRelPath = variantPathFor(legacyPath, width);
-			await sharp(sourcePath)
+			const encoded = await sharp(sourcePath)
 				.resize({ width })
 				.webp({ quality: WEBP_QUALITY })
-				.toFile(resolve(staticRoot, variantRelPath));
+				.toBuffer();
+			// A variant only earns its bytes if it beats the original (near-
+			// intrinsic re-encodes of already-webp sources come out LARGER).
+			// Fall back to the original at this rung and end the ladder — every
+			// higher rung would fall back too, and duplicate paths in srcset
+			// are noise.
+			if (encoded.length >= originalBytes) {
+				variants.push({ width, path: `/${legacyPath}` });
+				break;
+			}
+			const variantRelPath = variantPathFor(legacyPath, width);
+			await writeFile(resolve(staticRoot, variantRelPath), encoded);
 			variants.push({ width, path: `/${variantRelPath}` });
 		}
 
