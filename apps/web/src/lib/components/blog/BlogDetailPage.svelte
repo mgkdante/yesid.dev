@@ -49,6 +49,7 @@
     headings = [],
     postIndex = 1,
     blogPage,
+    codeHighlights,
   }: {
     post: BlogPost;
     body: BlockEditorDoc;
@@ -58,6 +59,8 @@
     headings?: readonly TocHeading[];
     postIndex?: number;
     blogPage?: import('@repo/shared').BlogPageContent;
+    /** block.id → server-highlighted HTML ($lib/server/code-highlights). */
+    codeHighlights?: Readonly<Record<string, string>>;
   } = $props();
 
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
@@ -266,7 +269,7 @@
             accentColor={accentColor}
           >
             <div class="blog-section-body prose-dark" data-testid="blog-section-body" style="--blog-accent: {accentColor};">
-              <BlockRenderer doc={section.doc} />
+              <BlockRenderer doc={section.doc} {codeHighlights} />
             </div>
           </CollapsibleSection>
         </div>

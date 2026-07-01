@@ -19,12 +19,25 @@
 // carries a numeric suffix but is used at its native size for OG images.
 //
 // Factory pattern keeps the helper unit-testable without touching
-// $env/dynamic/public; the default binding at the bottom reads the env once
+// $env/static/public; the default binding at the bottom reads the env once
 // lazily for consumer ergonomics.
+//
+// Static (build-time) env, NOT $env/dynamic/public: dynamic env is unreadable
+// while prerendering, and this module runs during prerender for every page
+// with images. The namespace import + `in` guard (instead of a named import)
+// keeps builds green in contexts where PUBLIC_DIRECTUS_URL is unset (hermetic
+// CI, dev deploys) — a named import of an absent static env var is a build
+// error. Unset resolves to '', which only matters when an asset misses the
+// mirror map (dev-only fallback path; production fails loud regardless).
 
 import { dev } from '$app/environment';
-import { env as publicEnv } from '$env/dynamic/public';
+import * as staticPublicEnv from '$env/static/public';
 import { mirroredMediaAssets } from '$lib/content/media-assets';
+import { mediaVariants } from '$lib/content/media-variants';
+import type { MediaVariantEntry } from '$lib/types';
+
+const PUBLIC_DIRECTUS_URL =
+	(staticPublicEnv as Record<string, string | undefined>).PUBLIC_DIRECTUS_URL ?? '';
 
 /**
  * Canonical preset list — the exact set seeded in Directus
@@ -45,15 +58,32 @@ export type AssetPreset =
 	// members take precedence in IDE suggestions.
 	| (string & {});
 
+/**
+ * Everything an <img> needs for responsive rendering. `srcset`/`width`/
+ * `height` are present when the asset is mirrored AND has generated variants
+ * (media-variants.ts); callers supply `sizes` at the call site (it encodes
+ * layout knowledge the helper cannot have).
+ */
+export interface AssetImageSource {
+	src: string;
+	srcset?: string;
+	width?: number;
+	height?: number;
+}
+
 export interface AssetHelpers {
 	/** Build a mirrored static URL or, when allowed, a Directus /assets URL. */
 	asset(id: string, preset?: AssetPreset): string;
 	/** Build a `srcset` attribute value from a list of presets ordered by width. */
 	buildSrcSet(id: string, presets: readonly AssetPreset[]): string;
+	/** Resolve src + srcset + intrinsic dimensions for responsive <img> use. */
+	assetImage(id: string, preset?: AssetPreset): AssetImageSource;
 }
 
 export interface CreateAssetsOptions {
 	mirroredAssets?: Readonly<Record<string, string>>;
+	/** Variant map keyed by mirrored static path (media-variants.ts). */
+	variants?: Readonly<Record<string, MediaVariantEntry>>;
 	allowDirectusFallback?: boolean;
 }
 
@@ -65,6 +95,7 @@ export interface CreateAssetsOptions {
 export function createAssets(baseUrl: string, options: CreateAssetsOptions = {}): AssetHelpers {
 	const base = baseUrl.replace(/\/+$/, '');
 	const mirrors = options.mirroredAssets ?? {};
+	const variants = options.variants ?? {};
 	const allowDirectusFallback = options.allowDirectusFallback ?? true;
 
 	const asset: AssetHelpers['asset'] = (id, preset) => {
@@ -93,7 +124,27 @@ export function createAssets(baseUrl: string, options: CreateAssetsOptions = {})
 			})
 			.join(', ');
 
-	return { asset, buildSrcSet };
+	const assetImage: AssetHelpers['assetImage'] = (id, preset) => {
+		const mirrored = mirrors[id];
+		if (mirrored) {
+			const entry = variants[mirrored];
+			if (!entry) return { src: mirrored };
+			return {
+				src: mirrored,
+				srcset: entry.variants.map((v) => `${v.path} ${v.width}w`).join(', '),
+				width: entry.width,
+				height: entry.height,
+			};
+		}
+		// Dev-only Directus fallback (unknown/unmirrored id): preset transforms
+		// stand in for the missing variant files.
+		return {
+			src: asset(id, preset),
+			srcset: buildSrcSet(id, ['thumb-240', 'card-600', 'hero-1200']),
+		};
+	};
+
+	return { asset, buildSrcSet, assetImage };
 }
 
 /**
@@ -107,7 +158,7 @@ function parsePresetWidth(preset: string): number {
 }
 
 // ---------------------------------------------------------------------------
-// Default bindings: lazily read PUBLIC_DIRECTUS_URL so importing this module
+// Default bindings: lazily construct the helpers so importing this module
 // is side-effect-free (keeps the static analysis in apps/web/src/tests happy).
 // ---------------------------------------------------------------------------
 
@@ -115,9 +166,10 @@ let cachedDefault: AssetHelpers | null = null;
 
 function defaultAssets(): AssetHelpers {
 	if (cachedDefault) return cachedDefault;
-	cachedDefault = createAssets(publicEnv.PUBLIC_DIRECTUS_URL ?? '', {
+	cachedDefault = createAssets(PUBLIC_DIRECTUS_URL, {
 		allowDirectusFallback: dev,
 		mirroredAssets: mirroredMediaAssets,
+		variants: mediaVariants,
 	});
 	return cachedDefault;
 }
@@ -127,3 +179,6 @@ export const asset: AssetHelpers['asset'] = (id, preset) =>
 
 export const buildSrcSet: AssetHelpers['buildSrcSet'] = (id, presets) =>
 	defaultAssets().buildSrcSet(id, presets);
+
+export const assetImage: AssetHelpers['assetImage'] = (id, preset) =>
+	defaultAssets().assetImage(id, preset);

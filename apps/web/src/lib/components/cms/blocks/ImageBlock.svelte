@@ -5,17 +5,32 @@
 -->
 <script lang="ts">
 	import type { ImageBlock } from '@repo/shared';
-	import { asset } from '$lib/directus/assets';
+	import { assetImage } from '$lib/directus/assets';
 
 	let { data }: { data: ImageBlock['data'] } = $props();
 
-	// Prefer Directus asset transform via fileId; fall back to raw url if no fileId.
-	const src = $derived(data.file.fileId ? asset(data.file.fileId, 'card-600') : data.file.url);
+	// Prefer the mirrored asset (with webp variants) via fileId; fall back to
+	// the raw url if no fileId.
+	const source = $derived(
+		data.file.fileId ? assetImage(data.file.fileId, 'card-600') : { src: data.file.url },
+	);
 	const altText = $derived(data.caption ? data.caption.replace(/<[^>]*>/g, '') : '');
+
+	// Article/prose column width — capped well below full viewport on desktop.
+	const SIZES = '(min-width: 768px) 680px, 94vw';
 </script>
 
 <figure class:bordered={data.withBorder} class:bg={data.withBackground} class:stretched={data.stretched}>
-	<img src={src} alt={altText} loading="lazy" />
+	<img
+		src={source.src}
+		srcset={source.srcset}
+		sizes={SIZES}
+		width={source.width}
+		height={source.height}
+		alt={altText}
+		loading="lazy"
+		decoding="async"
+	/>
 	{#if data.caption}
 		<figcaption>{@html data.caption}</figcaption>
 	{/if}

@@ -18,4 +18,5 @@
 	headings={data.headings}
 	postIndex={data.postIndex}
 	blogPage={data.blogPage}
+	codeHighlights={data.codeHighlights}
 />

@@ -105,3 +105,56 @@ describe('mirrored media assets', () => {
 		);
 	});
 });
+
+describe('assetImage (responsive variants — consolidation-deploy-honesty)', () => {
+	const UUID = '6048a712-de42-4cca-ab51-6f92d64685c2';
+	const MIRRORED_PATH = '/images/work/yesid-dev-home.png';
+	const withVariants = createAssets('https://cms.yesid.dev', {
+		allowDirectusFallback: false,
+		mirroredAssets: { [UUID]: MIRRORED_PATH },
+		variants: {
+			[MIRRORED_PATH]: {
+				width: 2482,
+				height: 1326,
+				variants: [
+					{ width: 240, path: '/images/work/yesid-dev-home.w240.webp' },
+					{ width: 600, path: '/images/work/yesid-dev-home.w600.webp' },
+					{ width: 1200, path: '/images/work/yesid-dev-home.w1200.webp' },
+				],
+			},
+		},
+	});
+
+	it('composes src + variant srcset + intrinsic dimensions for mirrored assets', () => {
+		expect(withVariants.assetImage(UUID, 'card-600')).toEqual({
+			src: MIRRORED_PATH,
+			srcset: [
+				'/images/work/yesid-dev-home.w240.webp 240w',
+				'/images/work/yesid-dev-home.w600.webp 600w',
+				'/images/work/yesid-dev-home.w1200.webp 1200w',
+			].join(', '),
+			width: 2482,
+			height: 1326,
+		});
+	});
+
+	it('degrades to bare src when a mirrored asset has no variant entry', () => {
+		const noVariants = createAssets('https://cms.yesid.dev', {
+			allowDirectusFallback: false,
+			mirroredAssets: { [UUID]: MIRRORED_PATH },
+		});
+		expect(noVariants.assetImage(UUID)).toEqual({ src: MIRRORED_PATH });
+	});
+
+	it('falls back to Directus preset transforms for unmirrored ids (dev flow)', () => {
+		const devAssets = createAssets('https://cms.dev.yesid.dev', {
+			allowDirectusFallback: true,
+			mirroredAssets: {},
+		});
+		const image = devAssets.assetImage('unknown-uuid', 'card-600');
+		expect(image.src).toBe('https://cms.dev.yesid.dev/assets/unknown-uuid?key=card-600');
+		expect(image.srcset).toContain('?key=thumb-240 240w');
+		expect(image.srcset).toContain('?key=hero-1200 1200w');
+		expect(image.width).toBeUndefined();
+	});
+});

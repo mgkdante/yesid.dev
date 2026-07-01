@@ -59,6 +59,11 @@ export const handle: Handle = async ({ event, resolve }) => {
  * error page still renders using the layout's status=0 fallback row.
  */
 export const handleError: HandleServerError = async ({ error, event, status }) => {
+	// A custom handleError REPLACES kit's default console logging — without
+	// this line the real exception is invisible in Vercel function logs and
+	// in prerender failures ("Error: 500 /about" with no cause).
+	console.error(`[handleError] ${status} ${event.url.pathname}`, error);
+
 	const message =
 		error instanceof Error ? error.message : (typeof error === 'string' ? error : 'An unexpected error occurred');
 

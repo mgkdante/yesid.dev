@@ -24,6 +24,9 @@ import { captureEntries, applyEntries } from '$lib/state/locale-handoff.svelte';
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
+	assetImage: (id: string, preset?: string) => ({
+		src: `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+	}),
 }));
 
 const resolvedProjects: readonly Project[] = getFeaturedProjects();

@@ -4,6 +4,11 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 import BlockRenderer from './BlockRenderer.svelte';
+// Server-side highlighter (Shiki) — fine to import in vitest (node context);
+// the client bundle guard only applies to app code. Tests build the highlight
+// map with the real helper so the load → BlockRenderer → CodeBlock seam is
+// exercised end-to-end.
+import { collectCodeHighlights } from '$lib/server/code-highlights';
 import type { BlockEditorDoc } from '@repo/shared';
 
 // Stub Directus asset helper — PUBLIC_DIRECTUS_URL is unset in the test env
@@ -13,6 +18,7 @@ import type { BlockEditorDoc } from '@repo/shared';
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string, _preset?: string) => `/test-assets/${id}`,
 	buildSrcSet: () => '',
+	assetImage: (id: string, _preset?: string) => ({ src: `/test-assets/${id}` }),
 }));
 
 describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
@@ -120,11 +126,23 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const doc = baseDoc([
 			{ id: 'c1', type: 'code', data: { code: 'SELECT 1;' } },
 		]);
-		const { container } = render(BlockRenderer, { doc });
+		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
 		const code = container.querySelector('pre code');
 		expect(code?.textContent).toBe('SELECT 1;');
 		expect(container.querySelector('pre')?.hasAttribute('data-language')).toBe(false);
 		expect(container.querySelector('[data-testid="code-block-language"]')).toBeNull();
+	});
+
+	it('renders a plain escaped <pre> when no server highlight is provided', () => {
+		// Surfaces whose load does not call collectCodeHighlights fall back to
+		// unhighlighted-but-styled output — never client-side Shiki.
+		const doc = baseDoc([
+			{ id: 'c-plain', type: 'code', data: { code: '```ts\nconst a = 1 < 2;\n```' } },
+		]);
+		const { container } = render(BlockRenderer, { doc });
+		expect(container.querySelector('pre.shiki')).toBeNull();
+		expect(container.querySelector('pre code')?.textContent).toBe('const a = 1 < 2;');
+		expect(container.querySelector('[data-testid="code-block-language"]')?.textContent).toBe('ts');
 	});
 
 	it('renders fenced script code blocks with language badge and copies the script body', async () => {
@@ -142,7 +160,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const doc = baseDoc([
 			{ id: 'c-script', type: 'code', data: { code: script } },
 		]);
-		const { container } = render(BlockRenderer, { doc });
+		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
 		const code = container.querySelector('pre code');
 		const button = container.querySelector('button.terminal-code-copy') as HTMLButtonElement | null;
 
@@ -181,7 +199,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 				},
 			},
 		]);
-		const { container } = render(BlockRenderer, { doc });
+		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
 
 		expect(container.querySelector('[data-slot="terminal-chrome"]')).toBeTruthy();
 		expect(container.querySelector('.code-fence-frame')).toBeNull();

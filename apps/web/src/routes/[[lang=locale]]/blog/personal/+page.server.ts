@@ -2,6 +2,9 @@
 // category. Fetch + facet derivation is shared via loadBlogCategory.
 
 import { loadBlogCategory } from '../blog-category-loader';
+import { localeEntries } from '$lib/server/prerender-entries';
+
+export const entries = localeEntries;
 
 export async function load({ locals }: { locals: App.Locals }) {
 	return loadBlogCategory('personal', { pageCache: locals.pageCache });

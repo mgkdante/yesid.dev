@@ -4,7 +4,7 @@
  * the export-fallbacks.ts orchestrator.
  */
 
-import type { BlockEditorDoc, SitePage } from '@repo/shared';
+import type { BlockEditorDoc, MediaVariantEntry, SitePage } from '@repo/shared';
 import type { StackArchetype, SiteLabels } from '@repo/shared/schemas';
 import type { RouteSeoOverride } from '@repo/shared';
 import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
@@ -73,4 +73,10 @@ export interface ExportData {
 	closer?: CloserContent;
 	aboutPage?: AboutContent;
 	mediaAssets?: Readonly<Record<string, string>>;
+	/**
+	 * Responsive variants of the mirrored raster assets, keyed by original
+	 * static path. Built locally (sharp) alongside the variant files
+	 * themselves; see lib/media-variants.ts.
+	 */
+	mediaVariants?: Readonly<Record<string, MediaVariantEntry>>;
 }
