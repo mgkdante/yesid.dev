@@ -1,6 +1,10 @@
+// Server-only ($lib/server): Shiki + 17 grammars is ~300KB gz — it highlights
+// at render/prerender time only. Client components (CodeBlock) consume the
+// pre-highlighted HTML and must never import this module; SvelteKit fails the
+// build if anything client-reachable tries.
 import { createHighlighter } from 'shiki';
 import type { ThemeRegistration } from 'shiki';
-import { renderPlainCodeHtml } from './code-fences';
+import { renderPlainCodeHtml } from '$lib/utils/code-fences';
 
 const brandTheme: ThemeRegistration = {
 	name: 'yesid-brand',

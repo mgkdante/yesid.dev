@@ -3,6 +3,9 @@
 // /blog/personal via loadBlogCategory — this route just pins the category.
 
 import { loadBlogCategory } from './blog-category-loader';
+import { localeEntries } from '$lib/server/prerender-entries';
+
+export const entries = localeEntries;
 
 export async function load({ locals }: { locals: App.Locals }) {
 	return loadBlogCategory('professional', { pageCache: locals.pageCache });

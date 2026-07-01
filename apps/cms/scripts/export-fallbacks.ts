@@ -84,6 +84,7 @@ import {
 } from './lib/fetchers/page-blocks-home';
 import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
 import type { CmsClient } from './lib/fetchers/types';
+import { buildMediaVariants } from './lib/media-variants';
 import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 import assetManifest from '../fixtures/assets-manifest.json' with { type: 'json' };
 
@@ -143,6 +144,7 @@ const ALL_MODULES = [
 	'closer',
 	'about-page',
 	'media-assets',
+	'media-variants',
 ] as const;
 type ModuleName = (typeof ALL_MODULES)[number];
 
@@ -371,7 +373,19 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		),
 	);
 
-	return Promise.race([fetchAllInner(), timeoutReject]);
+	const out = await Promise.race([fetchAllInner(), timeoutReject]);
+
+	// media-variants runs OUTSIDE the network-timeout race: it is local-only
+	// (reads mirrored files on disk, writes webp variants next to them) and
+	// sharp encode time must not eat into the CMS fetch budget.
+	if (shouldRun(opts.module, 'media-variants')) {
+		out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
+		log.info(
+			`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
+		);
+	}
+
+	return out;
 }
 
 async function emitAll(data: ExportData, opts: RunOptions): Promise<void> {

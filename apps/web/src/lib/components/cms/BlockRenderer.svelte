@@ -15,7 +15,15 @@
 	import Delimiter from './blocks/Delimiter.svelte';
 	import ImageBlock from './blocks/ImageBlock.svelte';
 
-	let { doc }: { doc: BlockEditorDoc } = $props();
+	let {
+		doc,
+		codeHighlights,
+	}: {
+		doc: BlockEditorDoc;
+		/** block.id → server-highlighted HTML ($lib/server/code-highlights).
+		 *  Absent entries render as plain escaped <pre> inside CodeBlock. */
+		codeHighlights?: Readonly<Record<string, string>>;
+	} = $props();
 </script>
 
 {#each doc.blocks as block (block.id)}
@@ -26,7 +34,7 @@
 	{:else if block.type === 'nestedlist'}
 		<NestedList style={block.data.style} items={block.data.items} />
 	{:else if block.type === 'code'}
-		<CodeBlock data={block.data} />
+		<CodeBlock data={block.data} highlightedHtml={codeHighlights?.[block.id]} />
 	{:else if block.type === 'quote'}
 		<Quote data={block.data} />
 	{:else if block.type === 'delimiter'}

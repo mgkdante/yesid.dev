@@ -1,4 +1,10 @@
 import type { RequestHandler } from './$types';
+
+// Stays on the lambda (edge-cached via s-maxage): explicit even though
+// endpoints default to prerender=false — a silently-static sitemap after a
+// kit-default change would be a stale-SEO footgun.
+export const prerender = false;
+
 import { adapter } from '$lib/adapters';
 import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 import { isPathPublished } from '$lib/utils/page-registry';

@@ -1,6 +1,9 @@
 import { getContactPageContent } from '$lib/repositories';
 import { fetchMontrealWeather } from '$lib/utils/weather';
 import { localeFromParams } from '$lib/utils/locale-routing';
+import { localeEntries } from '$lib/server/prerender-entries';
+
+export const entries = localeEntries;
 
 // slice-18i Phase 7C: thread pageCache ctx so loadPage('contact') memo-ises.
 export async function load({

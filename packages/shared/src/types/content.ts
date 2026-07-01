@@ -741,3 +741,28 @@ export interface MorphShape {
 	viewbox: string;  // default "0 0 48 48"
 	sort: number;
 }
+
+// ---------------------------------------------------------------------------
+// Media variants (responsive image pipeline — consolidation-deploy-honesty)
+// ---------------------------------------------------------------------------
+//
+// Width/format variants of the mirrored static media assets, generated at
+// export time (apps/cms/scripts/lib/media-variants.ts, sharp) and committed
+// alongside the originals. The generated media-variants.ts module maps each
+// original static path to its intrinsic dimensions + the webp variant set;
+// the web asset helper composes srcset/width/height from it.
+
+/** One generated variant file: rendered width + static path (webp). */
+export interface MediaVariantSource {
+	width: number;
+	path: string;
+}
+
+/** Variant record for one mirrored asset, keyed by its original static path. */
+export interface MediaVariantEntry {
+	/** Intrinsic pixel size of the ORIGINAL asset (for width/height attrs). */
+	width: number;
+	height: number;
+	/** webp variants, ascending width. The original file stays the src fallback. */
+	variants: readonly MediaVariantSource[];
+}

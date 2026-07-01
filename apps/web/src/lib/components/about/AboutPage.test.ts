@@ -10,6 +10,7 @@ import { aboutPageContent } from '$lib/content/about-page';
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string) => `/test-assets/${id}`,
 	buildSrcSet: () => '',
+	assetImage: (id: string) => ({ src: `/test-assets/${id}` }),
 }));
 
 describe('AboutPage', () => {

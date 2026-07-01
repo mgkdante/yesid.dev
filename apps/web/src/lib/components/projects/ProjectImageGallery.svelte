@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { BlockEditorDoc, ImageBlock } from '@repo/shared';
-	import { asset } from '$lib/directus/assets';
+	import { assetImage, type AssetImageSource } from '$lib/directus/assets';
 	import { siteLabels } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -18,9 +18,14 @@
 	const activeCaption = $derived(activeImage ? stripHtml(activeImage.data.caption) : '');
 	const projectImageOpenTemplate = $derived(resolveLocale(siteLabels.a11y.projectImageOpen, locale));
 	const projectImageCloseLabel = $derived(resolveLocale(siteLabels.a11y.projectImageClose, locale));
-	const activeSrc = $derived(
-		activeImage ? imageSrc(activeImage, 'hero-1200') : '',
+	const activeSource = $derived(
+		activeImage ? imageSource(activeImage, 'hero-1200') : undefined,
 	);
+
+	// Thumbnails sit in a 2-col grid inside the detail page's center column;
+	// the lightbox panel is min(96vw, 1440px).
+	const THUMB_SIZES = '(min-width: 1024px) 28vw, (min-width: 768px) 45vw, 92vw';
+	const LIGHTBOX_SIZES = 'min(96vw, 1440px)';
 
 	onMount(() => {
 		return watchTheme((theme) => {
@@ -28,9 +33,9 @@
 		});
 	});
 
-	function imageSrc(image: ImageBlock, preset: string): string {
+	function imageSource(image: ImageBlock, preset: string): AssetImageSource {
 		const file = resolveThemeValue(activeTheme, image.data.file, image.data.variants?.light);
-		return file.fileId ? asset(file.fileId, preset) : file.url;
+		return file.fileId ? assetImage(file.fileId, preset) : { src: file.url };
 	}
 
 	function stripHtml(value: string): string {
@@ -65,6 +70,7 @@
 
 <div class="project-image-gallery" data-testid="project-image-gallery">
 	{#each images as image (image.id)}
+		{@const source = imageSource(image, 'hero-1200')}
 		<figure class="project-image-gallery__item">
 			<button
 				type="button"
@@ -74,7 +80,11 @@
 				onclick={(event) => openImage(image, event)}
 			>
 				<img
-					src={imageSrc(image, 'hero-1200')}
+					src={source.src}
+					srcset={source.srcset}
+					sizes={THUMB_SIZES}
+					width={source.width}
+					height={source.height}
 					alt={stripHtml(image.data.caption)}
 					loading="lazy"
 					decoding="async"
@@ -116,7 +126,11 @@
 				<span class="project-image-gallery__close-mark" aria-hidden="true"></span>
 			</button>
 			<img
-				src={activeSrc}
+				src={activeSource?.src}
+				srcset={activeSource?.srcset}
+				sizes={LIGHTBOX_SIZES}
+				width={activeSource?.width}
+				height={activeSource?.height}
 				alt={activeCaption}
 				decoding="async"
 				data-testid="project-image-gallery-lightbox-image"

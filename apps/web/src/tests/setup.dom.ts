@@ -60,6 +60,11 @@ HTMLCanvasElement.prototype.getContext = (() => {
 // verified on both environments; the git history holds the module).
 vi.mock('$env/dynamic/private', () => ({ env: {} }));
 vi.mock('$env/dynamic/public', () => ({ env: {} }));
+// $env/static/public resolves from the local .env at transform time, so its
+// contents differ between dev machines and CI. Stub for determinism (vitest's
+// mock proxy throws on any key absent from the factory, so list every var the
+// app touches); tests that need a real value mock the module locally.
+vi.mock('$env/static/public', () => ({ PUBLIC_DIRECTUS_URL: '' }));
 
 // happy-dom does not implement IntersectionObserver. Stub it so any Svelte
 // component using IO-based scroll triggers (lazy load, scroll-driven motion,
