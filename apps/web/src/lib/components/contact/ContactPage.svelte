@@ -158,6 +158,7 @@
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
+		if (sending) return; // in-flight guard — no double submits
 		submitted = true;
 		if (!validate()) return;
 
@@ -452,13 +453,31 @@
 
 						<!-- Submit button — Round 5c: THE conversion action. Yellow
 						     signage treatment (bg --accent, ink --signage-bg),
-						     never orange: yellow = "talk to Yesid" only. -->
+						     never orange: yellow = "talk to Yesid" only.
+						     In flight: disabled + label swaps to the CMS "sending"
+						     line so the 1-3s Web3Forms round trip is never dead air. -->
 						<span class="tap-press" use:pressBounce>
-							<Button variant="conversion" size="cta" type="submit" data-testid="contact-submit">
+							<Button
+								variant="conversion"
+								size="cta"
+								type="submit"
+								disabled={sending}
+								aria-busy={sending}
+								data-testid="contact-submit"
+							>
 								<span class="opacity-60">~ $</span>
-								{resolveLocale(c.formTerminal.submitLabel, locale)}
+								{sending
+									? resolveLocale(c.success.sending, locale)
+									: resolveLocale(c.formTerminal.submitLabel, locale)}
 							</Button>
 						</span>
+
+						<!-- In-flight transmission line (terminal voice) -->
+						{#if sending}
+							<div class="text-caption text-[var(--primary)]" role="status" data-testid="contact-sending-line">
+								→ {resolveLocale(c.success.sending, locale)}
+							</div>
+						{/if}
 
 					</div>
 				</form>

@@ -407,7 +407,7 @@ describe('GO2-W5 round 5 — closer: fun SVGs, card parity, bolder rails, yellow
 
 	it('R5c — every conversion-to-contact moment is yellow (≤1 per view): contact submit, hero contact, about send, closer CTA', () => {
 		expect(read('lib/components/contact/ContactPage.svelte')).toMatch(
-			/<Button variant="conversion" size="cta" type="submit"/,
+			/<Button\s+variant="conversion"\s+size="cta"\s+type="submit"/,
 		);
 		expect(read('lib/components/home/HeroTextContent.svelte')).toMatch(
 			/<Button variant="conversion"[^>]*data-testid="hero-cta-contact"/,
