@@ -10,7 +10,7 @@
 // uncolored). Same division of labor as the project-readme precedent
 // ($lib/server/markdown).
 
-import type { BlockEditorDoc, LocalizedBlockEditorDoc } from '@repo/shared';
+import type { BlockEditorDoc } from '@repo/shared';
 import { parseCodeFence } from '$lib/utils/code-fences';
 import { highlightCodeHtml } from './syntax-highlight';
 
@@ -19,8 +19,11 @@ export type CodeHighlights = Readonly<Record<string, string>>;
 
 /**
  * Collect highlighted HTML for every `code` block across the given docs.
- * Accepts sparse input (locale variants may be absent). Mermaid fences are
- * skipped — MermaidDiagram renders those client-side from source.
+ * Accepts sparse input (absent optional docs). Pass exactly the docs the
+ * page will render (resolveLocale-picked variants) — block ids key the map,
+ * so mixing locale variants of the SAME doc would let one locale's html
+ * shadow another's. Mermaid fences are skipped — MermaidDiagram renders
+ * those client-side from source.
  */
 export function collectCodeHighlights(
 	docs: ReadonlyArray<BlockEditorDoc | null | undefined>,
@@ -38,13 +41,3 @@ export function collectCodeHighlights(
 	return highlights;
 }
 
-/**
- * Convenience for localized doc records ({ en, fr?, es? } → all present
- * variants). Block ids are globally unique per doc, so one flat map serves
- * whichever locale the page renders.
- */
-export function localizedDocs(
-	localized: LocalizedBlockEditorDoc | null | undefined,
-): Array<BlockEditorDoc | undefined> {
-	return localized ? Object.values(localized) : [];
-}

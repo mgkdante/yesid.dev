@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 import type { BlockEditorDoc } from '@repo/shared';
-import { collectCodeHighlights, localizedDocs } from './code-highlights';
+import { collectCodeHighlights } from './code-highlights';
 
 const doc = (blocks: BlockEditorDoc['blocks']): BlockEditorDoc => ({
 	time: 1700000000000,
@@ -32,14 +32,7 @@ describe('collectCodeHighlights', () => {
 		expect(highlights).toEqual({});
 	});
 
-	it('tolerates sparse doc lists (absent locale variants)', () => {
+	it('tolerates sparse doc lists (absent optional docs)', () => {
 		expect(collectCodeHighlights([undefined, null])).toEqual({});
-	});
-
-	it('localizedDocs unwraps every present locale variant', () => {
-		const en = doc([{ id: 'c-en', type: 'code', data: { code: 'a' } }]);
-		const fr = doc([{ id: 'c-fr', type: 'code', data: { code: 'b' } }]);
-		expect(localizedDocs({ en, fr })).toEqual([en, fr]);
-		expect(localizedDocs(undefined)).toEqual([]);
 	});
 });

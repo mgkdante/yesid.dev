@@ -22,7 +22,6 @@
 import { dirname, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import sharp from 'sharp';
 import type { MediaVariantEntry, MediaVariantSource } from '@repo/shared';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -78,6 +77,11 @@ export async function buildMediaVariants(
 	manifest: MediaVariantsManifestInput,
 	repoRoot = DEFAULT_REPO_ROOT,
 ): Promise<Readonly<Record<string, MediaVariantEntry>>> {
+	// Dynamic import: sharp is a native module, and export-fallbacks must be
+	// able to honor EXPORT_FALLBACKS_SKIP / VERCEL skip WITHOUT resolving it —
+	// a hermetic CI run on a platform without the prebuilt binary must not
+	// crash at import time for a step it will never execute.
+	const { default: sharp } = await import('sharp');
 	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
 	const out: Record<string, MediaVariantEntry> = {};
 
