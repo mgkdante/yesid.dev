@@ -14,6 +14,9 @@ import {
 	getSiteMeta,
 } from '$lib/repositories';
 import { fetchServiceSvgContents } from '$lib/utils';
+import { localeEntries } from '$lib/server/prerender-entries';
+
+export const entries = localeEntries;
 
 // slice-18i Phase 7C: home route now fetches ALL page-block content via the
 // repository/adapter pipeline, threading event.locals.pageCache as ctx so

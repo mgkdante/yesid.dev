@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
-	import { asset } from '$lib/directus/assets';
+	import { assetImage } from '$lib/directus/assets';
 	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '$lib/utils/theme-media';
 	import { onMount } from 'svelte';
 
@@ -11,6 +11,8 @@
 		decorative = false,
 		class: className = '',
 		imageClass = '',
+		eager = false,
+		sizes = '(min-width: 768px) 40vw, 92vw',
 	}: {
 		project: Project;
 		preset: string;
@@ -18,6 +20,11 @@
 		decorative?: boolean;
 		class?: string;
 		imageClass?: string;
+		/** First-card/LCP treatment: loading=eager + fetchpriority=high.
+		 *  Everything else stays lazy. */
+		eager?: boolean;
+		/** Rendered-width hint for srcset selection — set per surface. */
+		sizes?: string;
 	} = $props();
 
 	let activeTheme = $state<Theme>(getActiveTheme());
@@ -37,6 +44,11 @@
 	const hasSecondary = $derived(Boolean(secondaryId));
 	const primaryAlt = $derived(decorative ? '' : alt);
 	const secondaryAlt = $derived(decorative ? '' : `${alt} secondary view`.trim());
+
+	const primaryImage = $derived(primaryId ? assetImage(primaryId, preset) : undefined);
+	const secondaryImage = $derived(secondaryId ? assetImage(secondaryId, preset) : undefined);
+	// The secondary pane is a narrow strip (clamp(5.75rem, 26%, 24rem)).
+	const SECONDARY_SIZES = '(min-width: 768px) 12vw, 26vw';
 </script>
 
 {#if primaryId}
@@ -48,22 +60,31 @@
 	>
 		<div class="project-hero-preview__pane project-hero-preview__pane--primary">
 			<img
-				src={asset(primaryId, preset)}
+				src={primaryImage?.src}
+				srcset={primaryImage?.srcset}
+				{sizes}
+				width={primaryImage?.width}
+				height={primaryImage?.height}
 				alt={primaryAlt}
 				class="project-hero-preview__image {imageClass}"
 				data-testid="project-hero-preview-image"
-				loading="lazy"
+				loading={eager ? 'eager' : 'lazy'}
+				fetchpriority={eager ? 'high' : undefined}
 				decoding="async"
 			/>
 		</div>
 		{#if secondaryId}
 			<div class="project-hero-preview__pane project-hero-preview__pane--secondary">
 				<img
-					src={asset(secondaryId, preset)}
+					src={secondaryImage?.src}
+					srcset={secondaryImage?.srcset}
+					sizes={SECONDARY_SIZES}
+					width={secondaryImage?.width}
+					height={secondaryImage?.height}
 					alt={secondaryAlt}
 					class="project-hero-preview__image {imageClass}"
 					data-testid="project-hero-preview-image"
-					loading="lazy"
+					loading={eager ? 'eager' : 'lazy'}
 					decoding="async"
 				/>
 			</div>

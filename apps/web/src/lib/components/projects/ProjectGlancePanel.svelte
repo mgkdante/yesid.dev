@@ -32,6 +32,7 @@
     serviceSvgContents = {},
     mobile = false,
     showLinks = true,
+    codeHighlights,
   }: {
     project: Project;
     services: Service[];
@@ -42,6 +43,8 @@
     mobile?: boolean;
     /** Desktop ProjectDetailPage moves Links under Images in the TOC rail. */
     showLinks?: boolean;
+    /** block.id → server-highlighted HTML ($lib/server/code-highlights). */
+    codeHighlights?: Readonly<Record<string, string>>;
   } = $props();
 
   /** Suffix section keys so the mobile + desktop instances don't share open state. */
@@ -70,7 +73,7 @@
           <SectionIcon name="eye" />
         {/snippet}
         <div class="glance-overview text-caption leading-[1.7]">
-          <BlockRenderer doc={resolveLocale(project.description, locale)} />
+          <BlockRenderer doc={resolveLocale(project.description, locale)} {codeHighlights} />
         </div>
       </CollapsibleSection>
     </div>

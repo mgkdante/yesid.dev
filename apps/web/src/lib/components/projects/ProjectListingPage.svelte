@@ -9,6 +9,7 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { Project, ProjectsPageContent, Service } from '$lib/types';
@@ -69,10 +70,13 @@
 			},
 			locale
 		);
-	// Filter state — read from URL params
-	let activeService = $derived($page.url.searchParams.get('service'));
-	let activeTag = $derived($page.url.searchParams.get('tag'));
-	let activeStack = $derived($page.url.searchParams.get('stack'));
+	// Filter state — read from URL params. Browser-gated: the page prerenders
+	// (url.searchParams is unreadable at build), so SSR HTML is always the
+	// unfiltered listing — the only representation a static file can carry —
+	// and ?service/?tag/?stack deep-links apply on hydration.
+	let activeService = $derived(browser ? $page.url.searchParams.get('service') : null);
+	let activeTag = $derived(browser ? $page.url.searchParams.get('tag') : null);
+	let activeStack = $derived(browser ? $page.url.searchParams.get('stack') : null);
 	// slice-34.1: free-text search is session-scoped (the locale-free string IS the
 	// query the user typed — valid verbatim in any locale) so it survives a language
 	// switch via the locale-handoff orchestrator. The tag/service/stack filters live
@@ -266,7 +270,9 @@
 					<div class="flex gap-3" data-batch="project-item">
 						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
 						<div class="min-w-0 flex-1">
-							<ProjectCard {project} {services} {serviceSvgContents} />
+							<!-- First card is the listing's LCP candidate: eager + high priority.
+							     The rest stay lazy. -->
+							<ProjectCard {project} {services} {serviceSvgContents} eager={i === 0} />
 						</div>
 					</div>
 				{/each}

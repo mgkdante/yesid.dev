@@ -7,6 +7,12 @@ import type { Locale } from '$lib/types';
 import { DEFAULT_LOCALE, isSupportedLocale } from '$lib/utils/locale';
 import { defaultOgImageFor } from '$lib/utils/seo-defaults';
 
+// Stays on the lambda: per-slug on-demand render, reads ?locale= (query params
+// are unavailable while prerendering). Explicit even though endpoints default
+// to prerender=false — the root layout prerenders every page, and this must
+// never silently join it on a kit-default change.
+export const prerender = false;
+
 // Eager-call so font failures surface at deploy time, not mid-request.
 // If this throws at module init, the whole route fails loud (500) — that
 // is intentional; a broken deploy must not silently fall back.
