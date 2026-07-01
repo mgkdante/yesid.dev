@@ -229,14 +229,6 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		if (shouldRun(opts.module, 'media-assets')) {
 			out.mediaAssets = buildMirroredMediaAssets();
 		}
-		if (shouldRun(opts.module, 'media-variants')) {
-			// Local-only (like media-assets): reads the mirrored files on disk,
-			// writes webp variants next to them, returns the manifest for emit.
-			out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
-			log.info(
-				`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
-			);
-		}
 
 		// Each task is [moduleName, async () => void that assigns to out.*].
 		// Only enqueue if shouldRun passes; then fan-out in parallel.
@@ -381,7 +373,19 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		),
 	);
 
-	return Promise.race([fetchAllInner(), timeoutReject]);
+	const out = await Promise.race([fetchAllInner(), timeoutReject]);
+
+	// media-variants runs OUTSIDE the network-timeout race: it is local-only
+	// (reads mirrored files on disk, writes webp variants next to them) and
+	// sharp encode time must not eat into the CMS fetch budget.
+	if (shouldRun(opts.module, 'media-variants')) {
+		out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
+		log.info(
+			`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
+		);
+	}
+
+	return out;
 }
 
 async function emitAll(data: ExportData, opts: RunOptions): Promise<void> {
