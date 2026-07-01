@@ -211,7 +211,7 @@
     margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
     padding-top: var(--nav-clearance, 5.5rem);
     overflow: hidden;
-    background: var(--manifesto, #0f0d0a);
+    background: var(--manifesto);
     cursor: crosshair;
   }
 
@@ -317,7 +317,7 @@
     color: var(--blog-accent);
     text-decoration: none;
     opacity: 0.7;
-    transition: opacity 0.2s ease;
+    transition: opacity var(--duration-normal) ease;
   }
 
   .header__back:hover {
@@ -413,7 +413,7 @@
 
   @media (min-width: 1024px) {
     .header__pill {
-      font-size: 13px;
+      font-size: var(--text-caption);
       color: color-mix(in srgb, var(--blog-accent) 90%, transparent);
       border-color: color-mix(in srgb, var(--blog-accent) 15%, transparent);
       padding: 7px 18px;

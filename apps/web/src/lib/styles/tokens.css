@@ -69,6 +69,8 @@
   --shadow-section: 0 8px 32px color-mix(in srgb, var(--primary) 6%, transparent);
   --shadow-nav: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
   --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.4);
+  --shadow-cta: 0 0 24px color-mix(in srgb, var(--glow) 30%, transparent), 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-cta-hover: 0 0 40px color-mix(in srgb, var(--glow) 50%, transparent), 0 6px 20px rgba(0, 0, 0, 0.5);
   --surface-0: var(--terminal);
   --surface-1: var(--card);
   --surface-2: var(--card);
@@ -86,6 +88,8 @@
   --z-sheet: 50;
   --z-menu: 60;
   --z-nav: 70;
+  --z-overlay: 80;
+  --z-ripple: 90;
   --duration-instant: 100ms;
   --duration-fast: 150ms;
   --duration-normal: 200ms;

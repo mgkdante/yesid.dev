@@ -26,6 +26,7 @@
   '+ add <name> to complete it' annotation.
 -->
 <script lang="ts">
+	import { durationSec } from '$lib/motion/tokens';
 	import { gsap } from 'gsap';
 	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
 	import type { LocalizedString } from '$lib/types';
@@ -209,7 +210,7 @@
 			tl.fromTo(
 				stampEl,
 				{ autoAlpha: 0, scale: 1.15, transformOrigin: '100% 100%' },
-				{ autoAlpha: 1, scale: 1, duration: 0.3, ease: 'power2.out' },
+				{ autoAlpha: 1, scale: 1, duration: durationSec('slow'), ease: 'power2.out' },
 			);
 		}
 		// GO-w2t5: signal dash — a short bright segment travels each
@@ -228,8 +229,8 @@
 					{ strokeDasharray: `12 ${length + 12}`, strokeDashoffset: 12, autoAlpha: 1 },
 					at,
 				);
-				tl.to(sig, { strokeDashoffset: -length, duration: 0.5, ease: 'power1.inOut' }, at);
-				tl.to(sig, { autoAlpha: 0, duration: 0.15 }, `signals+=${i * 0.08 + 0.45}`);
+				tl.to(sig, { strokeDashoffset: -length, duration: durationSec('slower'), ease: 'power1.inOut' }, at);
+				tl.to(sig, { autoAlpha: 0, duration: durationSec('fast') }, `signals+=${i * 0.08 + 0.45}`);
 			});
 		}
 		return () => {
@@ -480,7 +481,7 @@
 	   pair note's claim. Signal dash stays --primary (brand pulse). */
 	@media (hover: hover) {
 		.bp-connector {
-			transition: stroke 150ms ease;
+			transition: stroke var(--duration-fast) ease;
 		}
 
 		.bp-connector-hot.bp-from-interface { stroke: var(--layer-interface); }

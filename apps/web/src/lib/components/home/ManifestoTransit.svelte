@@ -114,7 +114,7 @@
 	/* ── Responsive ──────────────────────────────────────────────── */
 	@media (max-width: 640px) {
 		.manifesto__arrival { left: 12px; bottom: 50px; }
-		.manifesto__arrival .manifesto__arr-time { font-size: 14px; }
+		.manifesto__arrival .manifesto__arr-time { font-size: var(--text-mono); }
 	}
 
 	@media (max-width: 768px) {
