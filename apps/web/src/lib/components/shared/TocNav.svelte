@@ -75,7 +75,7 @@
 <style>
 	.toc-nav {
 		font-family: var(--font-heading);
-		font-size: 16px;
+		font-size: var(--text-menu-subtitle);
 		border-left: 2px solid color-mix(in srgb, var(--primary) 12%, transparent);
 		padding-left: 14px;
 		display: flex;
@@ -130,7 +130,7 @@
 
 	.toc-sub-item {
 		/* padding-left set inline based on heading depth */
-		font-size: 13px;
+		font-size: var(--text-caption);
 		min-height: 36px;
 		color: color-mix(in srgb, var(--foreground) 20%, transparent);
 	}

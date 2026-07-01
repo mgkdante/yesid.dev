@@ -345,7 +345,7 @@
 		color: var(--muted-foreground);
 		border: none;
 		cursor: pointer;
-		transition: background-color 150ms ease, color 150ms ease;
+		transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
 	}
 
 	.mode-btn + .mode-btn {
@@ -475,7 +475,7 @@
 		border-radius: var(--radius-pill);
 		padding: 0.35rem 0.9rem;
 		cursor: pointer;
-		transition: background-color 150ms ease, color 150ms ease;
+		transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
 	}
 
 	.engine-view-toggle:hover {

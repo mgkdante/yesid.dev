@@ -42,12 +42,12 @@ export function magnetic(node: HTMLElement, params: MagneticParams = {}) {
 		const factor = (1 - distance / radius) * strength;
 		const tx = (dx / radius) * factor;
 		const ty = (dy / radius) * factor;
-		node.style.transition = 'transform 0.1s ease-out';
+		node.style.transition = 'transform var(--duration-instant) ease-out';
 		node.style.transform = `translate(${tx}px, ${ty}px)`;
 	}
 
 	function onMouseLeave() {
-		node.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+		node.style.transition = 'transform var(--duration-slow) var(--ease-bounce)';
 		node.style.transform = '';
 	}
 

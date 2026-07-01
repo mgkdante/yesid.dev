@@ -211,7 +211,7 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		background: var(--manifesto, #0f0d0a);
+		background: var(--manifesto);
 		cursor: crosshair;
 	}
 
@@ -265,13 +265,13 @@
 
 	.manifesto__prompt-cmd {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-caption);
 		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-caption);
 		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 

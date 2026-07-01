@@ -157,7 +157,7 @@
     margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
     padding-top: var(--nav-clearance, 5.5rem);
     overflow: hidden;
-    background: var(--manifesto, #0f0d0a);
+    background: var(--manifesto);
     cursor: crosshair;
   }
 
@@ -255,7 +255,7 @@
 
   @media (min-width: 1024px) {
     .header-title {
-      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-size: var(--text-display);
       text-shadow: 0 0 80px color-mix(in srgb, var(--glow) 12%, transparent);
     }
   }
@@ -271,7 +271,7 @@
   @media (min-width: 1024px) {
     .header-subtitle {
       margin-bottom: 1.5rem;
-      font-size: 1.125rem;
+      font-size: var(--text-detail-body-desktop);
     }
   }
 
@@ -289,7 +289,7 @@
 
   @media (min-width: 1024px) {
     .header__pill {
-      font-size: 13px;
+      font-size: var(--text-caption);
       color: color-mix(in srgb, var(--primary) 90%, transparent);
       border-color: color-mix(in srgb, var(--primary) 15%, transparent);
       padding: 7px 18px;

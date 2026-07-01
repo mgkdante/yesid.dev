@@ -723,7 +723,7 @@
 
 	@media (min-width: 768px) {
 		.metro-caption {
-			font-size: 11px;
+			font-size: var(--text-micro);
 		}
 	}
 
@@ -758,20 +758,16 @@
 		border: none;
 		padding: 16px 48px;
 		border-radius: 10px;
-		font-size: 15px;
+		font-size: var(--text-control);
 		font-weight: 800;
 		font-family: var(--font-mono);
 		letter-spacing: 2px;
 		cursor: pointer;
-		box-shadow:
-			0 0 24px color-mix(in srgb, var(--glow) 30%, transparent),
-			0 4px 12px rgba(0, 0, 0, 0.4);
+		box-shadow: var(--shadow-cta);
 		transition: box-shadow var(--duration-normal), transform var(--duration-normal);
 	}
 	.refresh-btn:hover {
-		box-shadow:
-			0 0 40px color-mix(in srgb, var(--glow) 50%, transparent),
-			0 6px 20px rgba(0, 0, 0, 0.5);
+		box-shadow: var(--shadow-cta-hover);
 		transform: translateY(-1px);
 	}
 
@@ -811,7 +807,7 @@
 			justify-content: center;
 			padding: 16px 14px;
 			min-height: 44px;
-			font-size: 14px;
+			font-size: var(--text-mono);
 		}
 	}
 </style>

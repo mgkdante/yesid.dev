@@ -295,7 +295,7 @@
 			font-size: clamp(2rem, min(10.5vw, 6svh), 3.5rem);
 		}
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
-			font-size: 1rem;
+			font-size: var(--text-menu-subtitle);
 			line-height: 1.3;
 		}
 		.hero-viewport-text :global([data-hero-stagger="3"]) {

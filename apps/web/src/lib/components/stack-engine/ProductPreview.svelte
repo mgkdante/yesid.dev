@@ -207,7 +207,7 @@
 		background: color-mix(in oklab, var(--primary) 6%, var(--background));
 		cursor: pointer;
 		overflow: hidden;
-		transition: border-color 150ms ease;
+		transition: border-color var(--duration-fast) ease;
 	}
 
 	.slot:hover,

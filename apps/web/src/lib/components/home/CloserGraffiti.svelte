@@ -4,6 +4,7 @@
   Parent coordinates timing via onReady callback.
 -->
 <script lang="ts">
+	import { durationSec } from '$lib/motion/tokens';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
@@ -147,7 +148,7 @@
 				tl.to(letter.drips, {
 					scaleY: 1,
 					stagger: 0.08,
-					duration: 0.5,
+					duration: durationSec('slower'),
 					ease: 'power2.in',
 				}, offset + 0.7);
 			}

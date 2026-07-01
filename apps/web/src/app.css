@@ -118,12 +118,16 @@ select {
   --shadow-section: var(--shadow-section);
   --shadow-nav: var(--shadow-nav);
   --shadow-sheet: var(--shadow-sheet);
+  --shadow-cta: var(--shadow-cta);
+  --shadow-cta-hover: var(--shadow-cta-hover);
   --z-index-base: var(--z-base);
   --z-index-content: var(--z-content);
   --z-index-rail: var(--z-rail);
   --z-index-sheet: var(--z-sheet);
   --z-index-menu: var(--z-menu);
   --z-index-nav: var(--z-nav);
+  --z-index-overlay: var(--z-overlay);
+  --z-index-ripple: var(--z-ripple);
   --width-content: var(--container-content);
   --width-wide: var(--container-wide);
   --spacing-page-x: var(--space-page-x);

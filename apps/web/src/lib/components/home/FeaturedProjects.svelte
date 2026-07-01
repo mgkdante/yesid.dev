@@ -200,12 +200,12 @@
 		border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
 		color: var(--primary);
 		font-family: var(--font-mono);
-		font-size: 1rem;
+		font-size: var(--text-menu-subtitle);
 		font-weight: 700;
 		cursor: pointer;
 		transition:
-			background 200ms ease-out,
-			border-color 200ms ease-out;
+			background var(--duration-normal) ease-out,
+			border-color var(--duration-normal) ease-out;
 	}
 
 	.proof-control-btn:hover {
@@ -214,7 +214,7 @@
 	}
 
 	.proof-control-arrow {
-		font-size: 1.125rem;
+		font-size: var(--text-detail-body-desktop);
 		line-height: 1;
 	}
 
@@ -230,14 +230,14 @@
 	}
 
 	.proof-count-current {
-		font-size: 1rem;
+		font-size: var(--text-menu-subtitle);
 		font-weight: 700;
 		color: var(--accent-text);
 	}
 
 	.proof-count-sep,
 	.proof-count-total {
-		font-size: 0.875rem;
+		font-size: var(--text-mono);
 		color: color-mix(in srgb, var(--accent-text) 85%, transparent);
 	}
 
