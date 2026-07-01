@@ -10,6 +10,9 @@ import {
 	getAdjacentServices,
 	getProjectsByService,
 } from '$lib/repositories';
+import { serviceEntries } from '$lib/server/prerender-entries';
+
+export const entries = serviceEntries;
 
 export async function load({ params, fetch, locals }: { params: { id: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

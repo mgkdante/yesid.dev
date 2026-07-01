@@ -1,21 +1,27 @@
 <!--
   CodeBlock.svelte renders Editor.js `code` blocks.
-  Fenced languages are highlighted with Shiki inside the shared TerminalChrome.
+  Highlighting happens SERVER-SIDE ($lib/server/code-highlights → Shiki):
+  loads pass a block-id-keyed map down through BlockRenderer, and this
+  component consumes its entry via `highlightedHtml`. Without an entry it
+  renders a plain escaped <pre> — never import the Shiki chain here, that is
+  exactly the ~300KB gz client regression this replaced.
   Mermaid fences render as diagrams.
 -->
 <script lang="ts">
 	import type { CodeBlock } from '@repo/shared';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-	import { parseCodeFence } from '$lib/utils/code-fences';
-	import { highlightCodeHtml } from '$lib/utils/syntax-highlight';
+	import { parseCodeFence, renderPlainCodeHtml } from '$lib/utils/code-fences';
 	import { TerminalChrome } from '$lib/components/brand';
 	import MermaidDiagram from './MermaidDiagram.svelte';
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
 
-	let { data }: { data: CodeBlock['data'] } = $props();
+	let {
+		data,
+		highlightedHtml,
+	}: { data: CodeBlock['data']; highlightedHtml?: string } = $props();
 
 	const codeChrome = siteLabels.blogChrome.detail.code;
 	const codeTitle = resolveLocale(codeChrome.title, locale);
@@ -27,8 +33,8 @@
 	let resetTimeout: ReturnType<typeof setTimeout> | null = null;
 	const parsed = $derived(parseCodeFence(data.code));
 	const language = $derived(parsed.kind === 'code' && parsed.language ? parsed.normalizedLanguage : undefined);
-	const highlightedHtml = $derived(
-		parsed.kind === 'code' ? highlightCodeHtml(parsed.body, parsed.normalizedLanguage) : '',
+	const codeHtml = $derived(
+		parsed.kind === 'code' ? (highlightedHtml ?? renderPlainCodeHtml(parsed.body)) : '',
 	);
 
 	async function copyToClipboard() {
@@ -66,7 +72,7 @@
 			</button>
 		{/snippet}
 		<div class="terminal-code-body" data-language={language}>
-			{@html highlightedHtml}
+			{@html codeHtml}
 		</div>
 	</TerminalChrome>
 {/if}

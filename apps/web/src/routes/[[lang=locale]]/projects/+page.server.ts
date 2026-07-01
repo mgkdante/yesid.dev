@@ -10,7 +10,10 @@ import {
 	getVisibleServices,
 	getProjectsPageContent,
 } from '$lib/repositories';
+import { localeEntries } from '$lib/server/prerender-entries';
 import type { Project } from '$lib/types';
+
+export const entries = localeEntries;
 
 function tagsFromProjects(projects: readonly Project[]): readonly string[] {
 	return uniqueSorted(projects.flatMap((project) => project.tags));

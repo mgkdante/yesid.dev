@@ -3,10 +3,14 @@
 // static content layer post-27.2).
 
 import { error } from '@sveltejs/kit';
-import { marked } from '$lib/utils/markdown';
+import { marked } from '$lib/server/markdown';
 import { fetchServiceSvgContents } from '$lib/utils';
 import { getProjectBySlug, getServiceById } from '$lib/repositories';
+import { projectEntries } from '$lib/server/prerender-entries';
+import { collectCodeHighlights, localizedDocs } from '$lib/server/code-highlights';
 import type { Service } from '$lib/types';
+
+export const entries = projectEntries;
 
 export async function load({ params, fetch, locals }: { params: { slug: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };
@@ -44,5 +48,14 @@ export async function load({ params, fetch, locals }: { params: { slug: string }
 		}
 	}
 
-	return { project, services, serviceSvgContents, readmeHtml };
+	// Shiki runs server-side only. Cover every doc surface the detail page
+	// renders (description in the glance panel + each section body), across
+	// locale variants — block ids key the map, so one flat record serves
+	// whichever locale this URL renders.
+	const codeHighlights = collectCodeHighlights([
+		...localizedDocs(project.description),
+		...project.sections.flatMap((section) => localizedDocs(section.content)),
+	]);
+
+	return { project, services, serviceSvgContents, readmeHtml, codeHighlights };
 }

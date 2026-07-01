@@ -84,6 +84,7 @@ import {
 } from './lib/fetchers/page-blocks-home';
 import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
 import type { CmsClient } from './lib/fetchers/types';
+import { buildMediaVariants } from './lib/media-variants';
 import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 import assetManifest from '../fixtures/assets-manifest.json' with { type: 'json' };
 
@@ -143,6 +144,7 @@ const ALL_MODULES = [
 	'closer',
 	'about-page',
 	'media-assets',
+	'media-variants',
 ] as const;
 type ModuleName = (typeof ALL_MODULES)[number];
 
@@ -226,6 +228,14 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		const out: ExportData = {};
 		if (shouldRun(opts.module, 'media-assets')) {
 			out.mediaAssets = buildMirroredMediaAssets();
+		}
+		if (shouldRun(opts.module, 'media-variants')) {
+			// Local-only (like media-assets): reads the mirrored files on disk,
+			// writes webp variants next to them, returns the manifest for emit.
+			out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
+			log.info(
+				`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
+			);
 		}
 
 		// Each task is [moduleName, async () => void that assigns to out.*].

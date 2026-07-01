@@ -1,6 +1,10 @@
 import type { RequestHandler } from './$types';
 import { SITE_HOST } from '$lib/utils/seo-defaults';
 
+// Stays on the lambda (edge-cached via s-maxage); explicit opt-out matching
+// sitemap.xml — the two crawl surfaces keep one caching model.
+export const prerender = false;
+
 export const GET: RequestHandler = async () => {
 	const body = `User-agent: *
 Allow: /

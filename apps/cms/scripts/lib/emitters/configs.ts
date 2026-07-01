@@ -79,6 +79,22 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.mediaVariants) {
+		out.push({
+			filePath: path('media-variants.ts'),
+			description:
+				'Responsive webp variants of the mirrored raster assets, keyed by original static path (intrinsic width/height + ascending-width variant set). Generated with the variant files themselves by lib/media-variants.ts; the web asset helper composes srcset/width/height from this map.',
+			imports: [{ symbols: ['MediaVariantEntry'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{
+					name: 'mediaVariants',
+					typeName: 'Readonly<Record<string, MediaVariantEntry>>',
+					value: data.mediaVariants,
+				},
+			],
+		});
+	}
+
 	if (data.aboutPage) {
 		out.push({
 			filePath: path('about-page.ts'),

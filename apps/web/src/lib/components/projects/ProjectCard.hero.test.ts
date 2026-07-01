@@ -10,6 +10,9 @@ import { themeStore } from '$lib/stores/theme.svelte';
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
+	assetImage: (id: string, preset?: string) => ({
+		src: `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+	}),
 }));
 
 describe('ProjectCard hero media', () => {
@@ -223,5 +226,33 @@ describe('ProjectCard hero media', () => {
 
 		expect(source).toContain("from '$lib/utils/theme-media'");
 		expect(source).not.toContain('new MutationObserver');
+	});
+
+	it('lazy-loads hero media by default (only the first card goes eager)', () => {
+		const project = projectFactory.build({
+			image: 'desktop-dark-uuid',
+		} as Partial<ReturnType<typeof projectFactory.build>>);
+
+		const { container } = render(ProjectCard, {
+			props: { project, serviceSvgContents: {} },
+		});
+
+		const img = container.querySelector('[data-testid="project-hero-preview-image"]');
+		expect(img?.getAttribute('loading')).toBe('lazy');
+		expect(img?.hasAttribute('fetchpriority')).toBe(false);
+	});
+
+	it('eager + fetchpriority=high on the LCP first card (consolidation-deploy-honesty)', () => {
+		const project = projectFactory.build({
+			image: 'desktop-dark-uuid',
+		} as Partial<ReturnType<typeof projectFactory.build>>);
+
+		const { container } = render(ProjectCard, {
+			props: { project, serviceSvgContents: {}, eager: true },
+		});
+
+		const img = container.querySelector('[data-testid="project-hero-preview-image"]');
+		expect(img?.getAttribute('loading')).toBe('eager');
+		expect(img?.getAttribute('fetchpriority')).toBe('high');
 	});
 });
