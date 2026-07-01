@@ -92,10 +92,13 @@
 		<!-- Right: Social links -->
 		<div class="flex items-center gap-4">
 			{#each socialLinks as link}
+				<!-- rel="me": identity-verification backlink (IndieWeb/Mastodon
+				     verification, AI-era entity resolution) — these are Yesid's
+				     own profiles. -->
 				<a
 					href={link.href}
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="me noopener noreferrer"
 					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					aria-label={link.label}
 				>

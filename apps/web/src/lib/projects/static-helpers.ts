@@ -6,7 +6,9 @@ export function getProjectBySlug(slug: string): Project | undefined {
 }
 
 export function getFeaturedProjects(): readonly Project[] {
-	return projects.filter((project) => project.featured);
+	// status guard matches every sibling helper: a featured project that gets
+	// archived must not render on home linking to a 404 detail page.
+	return projects.filter((project) => project.featured && project.status !== 'private');
 }
 
 export function getPublicProjects(): readonly Project[] {

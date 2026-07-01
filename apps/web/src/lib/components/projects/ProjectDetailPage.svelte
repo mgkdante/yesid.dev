@@ -260,8 +260,11 @@
 			await tick();
 			if (cancelled || !readmeBody) return;
 
-			const mermaid = (await import('mermaid')).default;
+			// Query BEFORE importing: most readmes have zero diagrams, and the
+			// mermaid bundle is ~144KB gz — only pay for it when one exists.
 			const diagrams = [...readmeBody.querySelectorAll<HTMLElement>('[data-mermaid-source]')];
+			if (diagrams.length === 0) return;
+			const mermaid = (await import('mermaid')).default;
 			for (let i = 0; i < diagrams.length; i++) {
 				const diagram = diagrams[i];
 				const source = diagram.getAttribute('data-mermaid-source')?.trim();
