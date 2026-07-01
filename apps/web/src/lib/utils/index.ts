@@ -10,11 +10,11 @@
 //     (server-only — uses $env/dynamic/private; loaded from +page.server.ts only).
 //   - Type-only consumers (e.g. <WeatherData> in a component) are also imported
 //     directly: `import type { WeatherData } from '$lib/utils/weather'`.
-//   - Markdown rendering: `import { marked } from '$lib/utils/markdown'`.
-//     Slice-23: deliberately NOT re-exported here. The markdown renderer imports
-//     the shared Shiki highlighter, which pulls its theme and language registry.
-//     Browser components only need `cn`, `locale`, etc. from this barrel; forcing
-//     syntax rendering imports to be specific keeps accidental bundle growth visible.
+//   - Markdown rendering: `import { marked } from '$lib/server/markdown'`.
+//     Slice-23 kept it out of this barrel; consolidation-deploy-honesty moved
+//     it (with the Shiki highlighter it imports) into $lib/server so the build
+//     itself refuses any client-reachable import — highlighting is
+//     render/prerender-time only, CodeBlock consumes pre-highlighted HTML.
 // Documented in CONSTITUTION.md § Data Architecture (17b-9).
 
 export * from './cn'

@@ -12,6 +12,7 @@
 //   - GET /api/weather re-exposes this util with a 30-minute edge TTL;
 //     ContactPage/AboutWeather refresh from it after hydration.
 
+import { building } from '$app/environment';
 import { env } from '$env/dynamic/private';
 import type { Locale } from '$lib/types';
 import { DEFAULT_LOCALE } from '$lib/utils/locale';
@@ -56,6 +57,13 @@ const cache = new Map<string, CacheEntry>();
 export async function fetchMontrealWeather(
 	locale: Locale = DEFAULT_LOCALE,
 ): Promise<WeatherData | null> {
+	// Prerender guard: $env/dynamic/* is unreadable while prerendering (SvelteKit
+	// throws), and a build-time snapshot would be stale anyway. Prerendered pages
+	// ship without baked weather; WeatherScene/AboutWeather hydrate from
+	// GET /api/weather, which stays a dynamic (non-prerendered) endpoint.
+	if (building) {
+		return null;
+	}
 	if (!env.OPENWEATHER_API_KEY) {
 		return null;
 	}

@@ -8,6 +8,7 @@
 // EN URL until 'fr' joins PUBLISHED_LOCALES — so FR can be QA'd live, unindexed,
 // and the launch is a one-line flip.
 
+import { building } from '$app/environment';
 import type { Locale } from '$lib/types';
 import { DEFAULT_LOCALE } from '$lib/utils/locale';
 import { isRegistryExempt } from '$lib/utils/page-registry';
@@ -62,6 +63,11 @@ export function localizeHref(href: string, locale: Locale): string {
  * strip/re-add, exemptions, idempotency) is delegated to localizeHref.
  */
 export function localizeUrl(url: URL, locale: Locale): string {
+	// While prerendering there is no request query/hash to preserve — kit
+	// forbids reading url.search at build (the query string is not part of the
+	// prerendered representation). The switcher href self-corrects on
+	// hydration, where the real URL (with any ?state) is available.
+	if (building) return localizeHref(url.pathname, locale);
 	return localizeHref(url.pathname, locale) + url.search + url.hash;
 }
 

@@ -29,10 +29,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
 // composePageSeo calls asset(uuid) which needs PUBLIC_DIRECTUS_URL.
-// setup.data.ts mocks `$env/dynamic/public` to `{}`; override here so the
+// setup.data.ts mocks `$env/static/public` to `{}`; override here so the
 // asset URL builder doesn't throw.
-vi.mock('$env/dynamic/public', () => ({
-	env: { PUBLIC_DIRECTUS_URL: 'https://cms.yesid.dev' },
+vi.mock('$env/static/public', () => ({
+	PUBLIC_DIRECTUS_URL: 'https://cms.yesid.dev',
 }));
 
 import { composePageSeo } from '../compose-page-seo';

@@ -5,6 +5,10 @@
 
 import { permanentRedirect } from '$lib/server/redirect';
 
+// Stays on the lambda: permanentRedirect() carries CDN cache headers a
+// prerendered redirect entry would lose.
+export const prerender = false;
+
 export function GET(): Response {
 	return permanentRedirect('/services/data-pipeline');
 }

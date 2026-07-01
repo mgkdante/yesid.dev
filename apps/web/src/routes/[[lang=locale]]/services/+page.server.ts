@@ -3,7 +3,10 @@
 
 import { fetchServiceSvgContents } from '$lib/utils';
 import { getVisibleServices, getPublicProjects } from '$lib/repositories';
+import { localeEntries } from '$lib/server/prerender-entries';
 import type { Project } from '$lib/types';
+
+export const entries = localeEntries;
 
 export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

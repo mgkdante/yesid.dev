@@ -83,7 +83,16 @@
 		localTime = formatter.format(new Date());
 	}
 
+	// Hydration gate (consolidation-deploy-honesty): the page is prerendered,
+	// so the static HTML paints before handleSubmit is attached. A submit in
+	// that window would fall back to a NATIVE GET submit — full reload with the
+	// form values dumped into the query string. The form requires JS to send
+	// (Web3Forms fetch), so the honest pre-hydration state is a disabled
+	// button; it enables the moment the handler exists.
+	let hydrated = $state(false);
+
 	onMount(() => {
+		hydrated = true;
 		updateTime();
 		timeInterval = setInterval(updateTime, 60_000);
 		void refreshWeather();
@@ -461,7 +470,7 @@
 								variant="conversion"
 								size="cta"
 								type="submit"
-								disabled={sending}
+								disabled={sending || !hydrated}
 								aria-busy={sending}
 								data-testid="contact-submit"
 							>

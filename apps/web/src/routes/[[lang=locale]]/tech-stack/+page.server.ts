@@ -10,6 +10,9 @@ import {
 	getAllTechItems,
 	getTechStackPageContent,
 } from '$lib/repositories';
+import { localeEntries } from '$lib/server/prerender-entries';
+
+export const entries = localeEntries;
 
 export async function load({ locals }: { locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

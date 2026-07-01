@@ -25,6 +25,9 @@ import type { Project } from '$lib/types';
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
+	assetImage: (id: string, preset?: string) => ({
+		src: `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+	}),
 }));
 
 // The proof-reel card count is CMS-driven: project rows carry the `featured`
