@@ -175,6 +175,56 @@ describe('ContactPage', () => {
 		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
 	});
 
+	// Launch-edge batch: the Web3Forms round trip is 1-3s of network time — the
+	// button must disable (no double submits) and the terminal must show the
+	// in-flight line instead of dead air.
+	it('disables submit + shows the transmission line while the send is in flight', async () => {
+		const prevFetch = globalThis.fetch;
+		let resolveFetch!: (v: unknown) => void;
+		globalThis.fetch = vi.fn().mockReturnValue(
+			new Promise((resolve) => {
+				resolveFetch = resolve;
+			}),
+		) as typeof globalThis.fetch;
+
+		try {
+			render(ContactPage, { props: { contactPage: contactContent } });
+			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
+			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
+			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+			await typeInto(nameInputs[0], 'Test User');
+			await typeInto(emailInputs[0], 'test@example.com');
+			await typeInto(messageInputs[0], 'Hello there');
+
+			const submitBtns = screen.getAllByTestId('contact-submit') as HTMLButtonElement[];
+			await submitForm(submitBtns[0]);
+
+			// In flight: disabled button, visible transmission line.
+			expect(submitBtns[0].disabled).toBe(true);
+			expect(screen.getAllByTestId('contact-sending-line').length).toBeGreaterThanOrEqual(1);
+
+			// A second submit while in flight must not re-fire the request.
+			// (The mount-time weather fetch shares the same stub — count only
+			// the Web3Forms calls.)
+			const web3formsCalls = () =>
+				(globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.filter((call) =>
+					String(call[0]).includes('web3forms'),
+				).length;
+			expect(web3formsCalls()).toBe(1);
+			await submitForm(submitBtns[0]);
+			expect(web3formsCalls()).toBe(1);
+
+			// Resolve → the success sequence takes over.
+			resolveFetch({ json: async () => ({ success: true }) });
+			await waitFor(
+				() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1),
+				{ timeout: 4000 },
+			);
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
+	});
+
 	it('uses CMS success link labels inside the success template', async () => {
 		const linkedContact = {
 			...contactContent,

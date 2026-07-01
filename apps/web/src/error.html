@@ -1,0 +1,111 @@
+<!doctype html>
+<!--
+  SvelteKit FALLBACK error page: served when the app itself cannot render
+  (stale chunk after a deploy, hard server fault). It must be self-contained:
+  no token pipeline, no fonts, no JS. The hex values below deliberately mirror
+  packages/tokens/tokens.json (background/foreground/primary/accent/hazard-b);
+  keep them in sync if the doctrine palette ever changes.
+-->
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex" />
+		<title>%sveltekit.status% — yesid.dev</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			html,
+			body {
+				height: 100%;
+			}
+			body {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #141414;
+				color: #f5f5f0;
+				font-family: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+				line-height: 1.5;
+				padding: 1.5rem;
+			}
+			.board {
+				max-width: 34rem;
+				width: 100%;
+				border: 1px solid #3a3a3a;
+				border-radius: 8px;
+				overflow: hidden;
+			}
+			.tape {
+				height: 8px;
+				background: repeating-linear-gradient(
+					-45deg,
+					#ffb627 0 12px,
+					#1c1814 12px 24px
+				);
+			}
+			.body {
+				padding: 2rem 1.75rem;
+			}
+			.kicker {
+				font-size: 0.75rem;
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				color: #949494;
+			}
+			h1 {
+				font-size: 3rem;
+				font-weight: 800;
+				color: #e07800;
+				margin: 0.5rem 0 1rem;
+			}
+			p {
+				font-size: 0.9375rem;
+				color: #c9c9c2;
+			}
+			p.fr {
+				margin-top: 0.375rem;
+				color: #949494;
+			}
+			.msg {
+				margin-top: 1rem;
+				font-size: 0.8125rem;
+				color: #949494;
+				word-break: break-word;
+			}
+			a {
+				display: inline-block;
+				margin-top: 1.5rem;
+				color: #e07800;
+				text-decoration: none;
+				border: 1px solid #e07800;
+				border-radius: 8px;
+				padding: 0.625rem 1.25rem;
+				font-size: 0.9375rem;
+			}
+			a:hover,
+			a:focus-visible {
+				background: #e07800;
+				color: #141414;
+				outline: none;
+			}
+		</style>
+	</head>
+	<body>
+		<main class="board">
+			<div class="tape" aria-hidden="true"></div>
+			<div class="body">
+				<div class="kicker">Service disruption · Interruption de service</div>
+				<h1>%sveltekit.status%</h1>
+				<p>This train was taken out of service unexpectedly.</p>
+				<p class="fr">Cette rame a été retirée du service de façon imprévue.</p>
+				<div class="msg">%sveltekit.error.message%</div>
+				<a href="/">← Back to the platform · Retour au quai</a>
+			</div>
+			<div class="tape" aria-hidden="true"></div>
+		</main>
+	</body>
+</html>
