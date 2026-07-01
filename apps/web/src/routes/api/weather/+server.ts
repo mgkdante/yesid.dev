@@ -12,6 +12,10 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+
+// Stays on the lambda: live weather is the entire point of this endpoint —
+// prerendered pages ship without baked weather and hydrate from here.
+export const prerender = false;
 import { fetchMontrealWeather } from '$lib/utils/weather';
 import { isSupportedLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 import type { Locale } from '$lib/types';

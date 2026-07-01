@@ -14,6 +14,9 @@ import { projectFactory } from '../../../tests/factories';
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
+	assetImage: (id: string, preset?: string) => ({
+		src: `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+	}),
 }));
 
 const resolvedProjects: readonly Project[] = getFeaturedProjects();

@@ -7,6 +7,10 @@ import {
 	getBlogPageContent,
 } from '$lib/repositories';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
+import { blogEntries } from '$lib/server/prerender-entries';
+import { collectCodeHighlights } from '$lib/server/code-highlights';
+
+export const entries = blogEntries;
 
 export async function load({ params, locals }: { params: { slug: string }; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };
@@ -38,5 +42,7 @@ export async function load({ params, locals }: { params: { slug: string }; local
 		headings,
 		postIndex,
 		blogPage,
+		// Shiki runs server-side only; CodeBlock consumes these by block id.
+		codeHighlights: collectCodeHighlights([body]),
 	};
 }

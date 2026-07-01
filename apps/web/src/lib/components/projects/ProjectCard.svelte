@@ -41,6 +41,8 @@
 		excerptTestId?: string;
 		metricTestPrefix?: string;
 		mediaPreset?: string;
+		/** First-card/LCP treatment — forwarded to ProjectHeroPreview. */
+		eager?: boolean;
 		class?: string;
 		[key: string]: unknown;
 	}
@@ -57,9 +59,18 @@
 		excerptTestId = variant === 'proof' ? 'proof-excerpt' : undefined,
 		metricTestPrefix = variant === 'proof' ? 'proof' : 'project-card',
 		mediaPreset = variant === 'proof' ? 'hero-1200' : 'card-600',
+		eager = false,
 		class: className = '',
 		...rest
 	}: ProjectCardProps = $props();
+
+	// Rendered card widths: listing = 2-col grid beside the sidebar (~40vw
+	// desktop, full-width mobile); proof = embla slide clamp(340px, 44vw, 720px).
+	const mediaSizes = $derived(
+		variant === 'proof'
+			? '(min-width: 768px) min(44vw, 720px), 92vw'
+			: '(min-width: 768px) 40vw, 92vw',
+	);
 
 	let cardHovered = $state(false);
 	let isProof = $derived(variant === 'proof');
@@ -131,6 +142,8 @@
 					preset={mediaPreset}
 					alt={resolveLocale(project.title, locale)}
 					imageClass="project-card-img transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
+					{eager}
+					sizes={mediaSizes}
 				/>
 			</div>
 		{:else}

@@ -13,4 +13,5 @@
 	services={data.services}
 	serviceSvgContents={data.serviceSvgContents}
 	readmeHtml={data.readmeHtml}
+	codeHighlights={data.codeHighlights}
 />

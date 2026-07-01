@@ -46,12 +46,15 @@
 		project,
 		services,
 		serviceSvgContents,
-		readmeHtml
+		readmeHtml,
+		codeHighlights
 	}: {
 		project: Project;
 		services: Service[];
 		serviceSvgContents: Record<string, string>;
 		readmeHtml?: string;
+		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
+		codeHighlights?: Readonly<Record<string, string>>;
 	} = $props();
 
 	let activeHeadingId = $state('');
@@ -456,7 +459,7 @@
 						open={true}
 						>
 							<div class="section-body">
-								<BlockRenderer doc={firstArticleSection.doc} />
+								<BlockRenderer doc={firstArticleSection.doc} {codeHighlights} />
 							</div>
 						</CollapsibleSection>
 					</div>
@@ -493,7 +496,7 @@
 						open={true}
 						>
 							<div class="section-body">
-								<BlockRenderer doc={section.doc} />
+								<BlockRenderer doc={section.doc} {codeHighlights} />
 							</div>
 						</CollapsibleSection>
 					</div>
@@ -517,7 +520,7 @@
 		</div>
 
 		<aside class="glance-column">
-			<ProjectGlancePanel {project} {services} {serviceSvgContents} showLinks={false} />
+			<ProjectGlancePanel {project} {services} {serviceSvgContents} showLinks={false} {codeHighlights} />
 		</aside>
 	</div>
 
@@ -525,7 +528,7 @@
 	     the sections like the services detail mobile rail. Replaces the old
 	     condensed "Project Info" panel. -->
 	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
-		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile />
+		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile {codeHighlights} />
 	</div>
 </article>
 

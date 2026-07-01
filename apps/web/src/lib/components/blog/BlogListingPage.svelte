@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { BlogPost, Locale } from '$lib/types';
@@ -56,7 +57,10 @@
 	// value is a locale-free primitive (the literal query string, a Locale code, an
 	// ISO date), valid verbatim in any locale. The `tag` filter lives in the URL and
 	// is carried for free by localizeUrl.
-	let activeTag = $derived($page.url.searchParams.get('tag'));
+	// Browser-gated: the page prerenders (url.searchParams is unreadable at
+	// build), so SSR HTML is the unfiltered listing and ?tag deep-links apply
+	// on hydration.
+	let activeTag = $derived(browser ? $page.url.searchParams.get('tag') : null);
 	const activeLang = persisted<Locale | null>('blog-lang', null); // null = show all languages
 	const searchQuery = persisted('blog-q', '');
 	const dateFrom = persisted('blog-from', '');
