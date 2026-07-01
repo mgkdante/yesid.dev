@@ -290,7 +290,7 @@
 		top: 1rem;
 		color: var(--accent-text);
 		font-family: var(--font-mono);
-		font-size: 0.875rem;
+		font-size: var(--text-mono);
 		letter-spacing: 0.22em;
 		text-transform: uppercase;
 		font-weight: 700;
@@ -299,7 +299,7 @@
 
 	@media (min-width: 768px) {
 		.services-marker {
-			font-size: 1rem;
+			font-size: var(--text-menu-subtitle);
 			letter-spacing: 0.24em;
 		}
 	}

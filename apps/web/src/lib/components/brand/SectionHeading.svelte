@@ -32,7 +32,7 @@
 <style>
 	.section-heading-text {
 		font-family: var(--font-heading);
-		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-size: var(--text-display);
 		font-weight: 900;
 		color: var(--foreground);
 		letter-spacing: -2px;
@@ -43,7 +43,7 @@
 	}
 	.section-heading-sub {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-caption);
 		color: var(--muted-foreground);
 		letter-spacing: 2px;
 		text-transform: uppercase;

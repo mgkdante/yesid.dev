@@ -155,9 +155,12 @@
 	   (no alpha — the grid never bleeds through a chip), --accent-text type,
 	   and an --accent "you are here" lamp on the right edge (absolute, zero
 	   layout shift). */
-	.tag-active {
-		border-color: var(--accent-text) !important;
-		color: var(--accent-text) !important;
+	/* `.filter-btn.tag-active` (+ Svelte's scope hash) outranks the button's
+	   inline hover:/active: primary utilities, so the selected chip keeps the
+	   yellow wayfinding voice on hover without reaching for !important. */
+	.filter-btn.tag-active {
+		border-color: var(--accent-text);
+		color: var(--accent-text);
 		background: var(--accent-surface);
 		position: relative;
 	}

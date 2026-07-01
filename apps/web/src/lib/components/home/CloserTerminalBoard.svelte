@@ -83,7 +83,7 @@
 	}
 	/* GO2-W5: terminal text speaks console ink — comments/dim = ink-muted. */
 	.terminal-comment {
-		font-size: 14px;
+		font-size: var(--text-mono);
 		color: var(--terminal-ink-muted);
 		font-style: italic;
 	}
@@ -108,13 +108,13 @@
 	}
 
 	.terminal-line-num {
-		font-size: 12px;
+		font-size: var(--text-detail-kicker);
 		color: var(--terminal-ink-muted);
 		user-select: none;
 	}
 
 	.terminal-row-label {
-		font-size: 14px;
+		font-size: var(--text-mono);
 		font-weight: 700;
 		color: var(--primary);
 		text-transform: uppercase;
@@ -122,17 +122,17 @@
 	}
 
 	.terminal-row-desc {
-		font-size: 15px;
+		font-size: var(--text-small);
 		color: var(--terminal-ink-muted);
 	}
 	.terminal-row-desc-primary {
-		font-size: 16px;
+		font-size: var(--text-menu-subtitle);
 		color: var(--terminal-ink);
 	}
 
 	.terminal-row-action {
 		text-align: right;
-		font-size: 13px;
+		font-size: var(--text-caption);
 		color: var(--terminal-ink-muted);
 		transition: color var(--duration-normal);
 	}
@@ -170,7 +170,7 @@
 		.terminal-row .terminal-line-num {
 			grid-area: num;
 			align-self: center;
-			font-size: 13px;
+			font-size: var(--text-caption);
 		}
 		.terminal-row-label {
 			grid-area: label;
@@ -184,7 +184,7 @@
 		.terminal-row-action-primary {
 			grid-area: action;
 			text-align: left;
-			font-size: 14px;
+			font-size: var(--text-mono);
 		}
 		.terminal-welcome {
 			padding: 4px 20px 10px;

@@ -32,7 +32,7 @@
 	cite {
 		display: block;
 		margin-top: 0.5rem;
-		font-size: 0.875rem;
+		font-size: var(--text-mono);
 		font-style: normal;
 		color: var(--secondary-foreground);
 	}

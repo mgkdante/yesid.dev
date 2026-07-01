@@ -30,6 +30,7 @@ import { gsap } from '$lib/motion/utils/gsap.js';
 // import + property access — compatible with both Vite dev and Node SSR.
 // @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
 import gsapFlipModule from 'gsap/Flip';
+import { durationSec } from '$lib/motion/tokens';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Flip: typeof import('gsap/Flip').Flip = (gsapFlipModule as any).Flip ?? (gsapFlipModule as any);
 
@@ -81,16 +82,16 @@ export function animateFlipTransition(
 
 			Flip.from(flipState, {
 				targets: cards,
-				duration: 0.5,
+				duration: durationSec('slower'),
 				ease: 'power2.inOut',
 				stagger: 0.05,
 				onEnter: (els) =>
 					gsap.fromTo(
 						els,
 						{ opacity: 0, scale: 0.8 },
-						{ opacity: 1, scale: 1, duration: 0.5 },
+						{ opacity: 1, scale: 1, duration: durationSec('slower') },
 					),
-				onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.8, duration: 0.3 }),
+				onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.8, duration: durationSec('slow') }),
 			});
 			onFlipDone();
 		} else {

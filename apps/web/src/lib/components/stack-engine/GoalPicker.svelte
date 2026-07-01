@@ -54,7 +54,7 @@
 		background: var(--background);
 		text-align: left;
 		cursor: pointer;
-		transition: border-color 150ms ease, transform 150ms ease;
+		transition: border-color var(--duration-fast) ease, transform var(--duration-fast) ease;
 	}
 
 	.archetype-card:hover {

@@ -5,6 +5,7 @@
   Orchestrates GSAP master timeline across sub-components.
 -->
 <script lang="ts">
+	import { durationSec } from '$lib/motion/tokens';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
@@ -124,8 +125,8 @@
 		});
 
 		masterTl
-			.to(boardEl, { opacity: 1, scale: 1, duration: 0.5 })
-			.to(rowEls, { opacity: 1, x: 0, stagger: 0.05, duration: 0.3 }, '-=0.3');
+			.to(boardEl, { opacity: 1, scale: 1, duration: durationSec('slower') })
+			.to(rowEls, { opacity: 1, x: 0, stagger: 0.05, duration: durationSec('slow') }, '-=0.3');
 
 		if (graffitiAnimateFn) {
 			masterTl.add(graffitiAnimateFn(), '-=0.4');
@@ -261,7 +262,7 @@
 		align-items: center;
 		gap: 8px;
 		font-family: var(--font-mono);
-		font-size: 15px;
+		font-size: var(--text-control);
 		font-weight: 600;
 		color: var(--signage-bg);
 		background: var(--accent);
