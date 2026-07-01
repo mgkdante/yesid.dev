@@ -28,6 +28,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const lang = pathLocale(event.url.pathname);
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang),
+		// Preload the self-hosted variable fonts (+ js/css) via Link headers:
+		// without this the woff2 is only discovered through the CSS chain and
+		// font-display swap flashes fallback type on a text-LCP site.
+		preload: ({ type }) => type === 'font' || type === 'js' || type === 'css',
 	});
 	if (
 		event.request.method === 'GET' &&
