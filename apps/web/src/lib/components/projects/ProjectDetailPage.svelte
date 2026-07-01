@@ -559,7 +559,7 @@
 
 	.toc-column:has(:global(.project-image-gallery__lightbox)),
 	.sections-column:has(:global(.project-image-gallery__lightbox)) {
-		z-index: 1000;
+		z-index: var(--z-overlay);
 	}
 
 	@media (min-width: 1024px) {

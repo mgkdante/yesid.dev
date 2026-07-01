@@ -679,7 +679,7 @@
 		background: var(--background);
 		color: var(--secondary-foreground);
 		cursor: pointer;
-		transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+		transition: border-color var(--duration-fast) ease, background-color var(--duration-fast) ease, color var(--duration-fast) ease;
 	}
 
 	.tech-chip:hover {
@@ -697,10 +697,10 @@
 	}
 
 	/* GO-w2t5: select settle — one micro pop on pick. User-initiated, <400ms,
-	   tiny element → SAFE-ALWAYS. Runs on the inner span so it composes with
-	   pressBounce's scale tween on the button (same `scale` property, two
-	   different elements — no fight). Toggle-OFF just decays color (existing
-	   transition). */
+	   tiny element; guarded for prefers-reduced-motion below. Runs on the inner
+	   span so it composes with pressBounce's scale tween on the button (same
+	   `scale` property, two different elements — no fight). Toggle-OFF just
+	   decays color (existing transition). */
 	.tech-chip-picked .chip-label {
 		animation: chip-settle 180ms var(--ease-bounce);
 	}
@@ -709,6 +709,12 @@
 		0% { scale: 1; }
 		50% { scale: 1.06; }
 		100% { scale: 1; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.tech-chip-picked .chip-label {
+			animation: none;
+		}
 	}
 
 	/* go2/w5 §5: departures-board counter row (+ round 4: pick tools beside). */
@@ -746,7 +752,7 @@
 		border-radius: var(--radius-pill);
 		padding: 0.25rem 0.7rem;
 		cursor: pointer;
-		transition: border-color 150ms ease, color 150ms ease;
+		transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
 	}
 
 	.pick-tool:hover {
@@ -780,7 +786,7 @@
 		border-radius: var(--radius, 6px);
 		background: var(--background);
 		text-align: left;
-		transition: border-color 150ms ease, opacity 150ms ease;
+		transition: border-color var(--duration-fast) ease, opacity var(--duration-fast) ease;
 	}
 
 	.match-card,
@@ -954,7 +960,7 @@
 		border-radius: var(--radius-pill);
 		padding: 0.35rem 0.9rem;
 		cursor: pointer;
-		transition: background-color 150ms ease, color 150ms ease;
+		transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
 	}
 
 	.shape-view-toggle:hover {
@@ -994,6 +1000,12 @@
 		to {
 			opacity: 1;
 			translate: 0 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.shape-reading {
+			animation: none;
 		}
 	}
 

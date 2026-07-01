@@ -43,7 +43,7 @@
 	}
 	figcaption {
 		text-align: center;
-		font-size: 0.875rem;
+		font-size: var(--text-mono);
 		color: var(--muted-foreground);
 		margin-top: 0.5rem;
 	}

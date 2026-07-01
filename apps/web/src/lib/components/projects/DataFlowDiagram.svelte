@@ -11,6 +11,7 @@
     sm = card size (~40px height), lg = detail page (~80px height)
 -->
 <script lang="ts">
+	import { durationSec } from '$lib/motion/tokens';
 	import { onMount } from 'svelte';
 	import { siteLabels } from '$lib/content';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
@@ -85,7 +86,7 @@
 		gsap.to(nodeEls, {
 			opacity: 1,
 			scale: 1,
-			duration: 0.5,
+			duration: durationSec('slower'),
 			stagger: 0.09,
 			ease: 'back.out(1.5)'
 		});
@@ -95,7 +96,7 @@
 			gsap.set(lineEls, { drawSVG: '0%' });
 			gsap.to(lineEls, {
 				drawSVG: '100%',
-				duration: 0.5,
+				duration: durationSec('slower'),
 				stagger: 0.07,
 				ease: 'power2.inOut',
 				delay: stack.length * 0.09 + 0.2
@@ -126,7 +127,7 @@
 						gsap.to(dot, {
 							attr: { r: cfg.dotR * 1.6 },
 							opacity: 0.3,
-							duration: 0.5,
+							duration: durationSec('slower'),
 							ease: 'power1.out',
 							yoyo: true,
 							repeat: -1

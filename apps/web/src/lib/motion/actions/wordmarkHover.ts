@@ -9,6 +9,7 @@
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { initScrollTriggerConfig, ensureSplitTextRegistered, gsap, SplitText } from '../utils/gsap.js';
 import { isTouchDevice } from '../utils/device.js';
+import { durationSec } from '$lib/motion/tokens';
 
 export interface WordmarkHoverParams {
 	/** Reference to the dot element (the "." after "yesid") */
@@ -43,15 +44,15 @@ export function wordmarkHover(node: HTMLElement, params: WordmarkHoverParams) {
 	const effectBounce = (chars: Element[]) =>
 		gsap
 			.timeline()
-			.fromTo(chars, { y: 0 }, { y: -15, stagger: 0.04, duration: 0.3, ease: 'back.out(1.7)' })
-			.to(chars, { y: 0, stagger: 0.04, duration: 0.3, ease: 'power2.out' }, '>-0.15');
+			.fromTo(chars, { y: 0 }, { y: -15, stagger: 0.04, duration: durationSec('slow'), ease: 'back.out(1.7)' })
+			.to(chars, { y: 0, stagger: 0.04, duration: durationSec('slow'), ease: 'power2.out' }, '>-0.15');
 
 	const effectWiggle = (chars: Element[]) =>
 		gsap
 			.timeline()
-			.to(chars, { rotation: 12, stagger: 0.03, duration: 0.15, ease: 'power1.out' })
-			.to(chars, { rotation: -12, stagger: 0.03, duration: 0.15, ease: 'power1.out' })
-			.to(chars, { rotation: 0, stagger: 0.03, duration: 0.3, ease: 'elastic.out(1, 0.3)' });
+			.to(chars, { rotation: 12, stagger: 0.03, duration: durationSec('fast'), ease: 'power1.out' })
+			.to(chars, { rotation: -12, stagger: 0.03, duration: durationSec('fast'), ease: 'power1.out' })
+			.to(chars, { rotation: 0, stagger: 0.03, duration: durationSec('slow'), ease: 'elastic.out(1, 0.3)' });
 
 	const effectWave = (chars: Element[]) =>
 		gsap.timeline().to(chars, {
@@ -66,7 +67,7 @@ export function wordmarkHover(node: HTMLElement, params: WordmarkHoverParams) {
 	const effectSpin = (chars: Element[]) =>
 		gsap
 			.timeline()
-			.to(chars, { rotation: 360, stagger: 0.05, duration: 0.5, ease: 'power2.inOut' })
+			.to(chars, { rotation: 360, stagger: 0.05, duration: durationSec('slower'), ease: 'power2.inOut' })
 			.set(chars, { rotation: 0 });
 
 	const effects = [effectBounce, effectWiggle, effectWave, effectSpin];
@@ -80,7 +81,7 @@ export function wordmarkHover(node: HTMLElement, params: WordmarkHoverParams) {
 		tl.fromTo(
 			dotEl,
 			{ scale: 1 },
-			{ scale: 1.4, duration: 0.15, ease: 'power2.out', yoyo: true, repeat: 1 },
+			{ scale: 1.4, duration: durationSec('fast'), ease: 'power2.out', yoyo: true, repeat: 1 },
 			0
 		);
 
