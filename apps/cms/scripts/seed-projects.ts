@@ -75,6 +75,7 @@ const ProjectFixtureSchema = z.object({
 	featured: z.boolean(),
 	hero_image_legacy_path: z.string().nullable(),
 	repo_url: z.string().nullable(),
+	repo_private: z.boolean().default(false),
 	live_url: z.string().nullable(),
 	readme_url: z.string().nullable(),
 	location: z.string().nullable(),
@@ -137,6 +138,7 @@ export interface DirectusProjectRow {
 	featured: boolean;
 	hero_image: string | null;
 	repo_url: string | null;
+	repo_private: boolean;
 	live_url: string | null;
 	readme_url: string | null;
 	location: string | null;
@@ -215,6 +217,7 @@ export function toProjectRow(project: ProjectFixture): DirectusProjectRow {
 		featured: project.featured,
 		hero_image: heroImageUuid,
 		repo_url: project.repo_url,
+		repo_private: project.repo_private,
 		live_url: project.live_url,
 		readme_url: project.readme_url,
 		location: project.location,

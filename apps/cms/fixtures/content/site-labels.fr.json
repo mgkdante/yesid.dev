@@ -58,6 +58,7 @@
 	"projects_chrome_detail_glance_live_site_label": "Site en ligne",
 	"projects_chrome_detail_glance_live_site_label_mobile": "↗ Site en ligne",
 	"projects_chrome_detail_glance_github_label": "GitHub",
+	"projects_chrome_detail_glance_repo_private_label": "Dépôt privé (pour le moment)",
 	"projects_chrome_detail_toc_pill_open_aria": "Table des matières",
 	"projects_chrome_detail_toc_pill_close_aria": "Fermer la table des matières",
 	"blog_chrome_listing_mobile_heading": "Blogue",

@@ -195,6 +195,10 @@ export const siteLabels: SiteLabels = {
 				liveSiteLabelMobile: { en: '↗ Live Site', fr: '↗ Site en ligne' },
 				overview: { en: 'Overview', fr: 'Aperçu' },
 				projectInfo: { en: 'Project Info', fr: 'Infos du projet' },
+				repoPrivateLabel: {
+					en: 'Private repo (for now)',
+					fr: 'Dépôt privé (pour le moment)',
+				},
 				services: { en: 'Services', fr: 'Services' },
 				stack: { en: 'Stack', fr: 'Stack' },
 			},

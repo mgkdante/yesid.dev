@@ -1,0 +1,19 @@
+# Homework #16 (operator decision 2026-07-01): monthly grouped dependabot,
+# GitHub Actions only. Package updates stay manual: every PR bills e2e shards
+# unless labeled, so npm/bun ecosystems are deliberately NOT enrolled.
+# target-branch is develop (house rule: PRs never target main directly; a
+# main-bound PR would also fail cms.yml's prod-diff job under the dependabot
+# actor, which cannot read Actions secrets).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"
+    labels:
+      - skip-e2e

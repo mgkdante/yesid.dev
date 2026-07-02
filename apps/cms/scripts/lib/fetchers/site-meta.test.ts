@@ -47,18 +47,23 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 			languages_code: 'en',
 			tagline: 'Digital infrastructure that moves.',
 			description:
-				'Freelance SQL developer and digital infrastructure consultant based in Montreal. PostgreSQL, dbt, Power BI, and Python.',
+				'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
 			default_description:
-				'yesid. — freelance data infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, Python. Real-time pipelines, analytics, dashboards for growing teams.',
-			owner_job_title: 'Digital Infrastructure Consultant',
+				'yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
+			owner_job_title: 'Freelance Digital Infrastructure Engineer',
 		},
 		{
 			languages_code: 'fr',
-			owner_job_title: 'Consultant en infrastructure numérique',
+			tagline: 'Une infrastructure numérique qui bouge.',
+			description:
+				"Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+			default_description:
+				"yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
+			owner_job_title: 'Ingénieur pigiste en infrastructure numérique',
 		},
 		{
 			languages_code: 'es',
-			owner_job_title: 'Consultor de infraestructura digital',
+			owner_job_title: 'Ingeniero independiente en infraestructura digital',
 		},
 	],
 };
@@ -70,9 +75,11 @@ const EXPECTED_SITE_META: SiteMeta = {
 	name: 'yesid.',
 	tagline: {
 		en: 'Digital infrastructure that moves.',
+		fr: 'Une infrastructure numérique qui bouge.',
 	},
 	description: {
-		en: 'Freelance SQL developer and digital infrastructure consultant based in Montreal. PostgreSQL, dbt, Power BI, and Python.',
+		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
+		fr: "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -83,9 +90,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 	owner: {
 		name: 'Yesid O.',
 		jobTitle: {
-			en: 'Digital Infrastructure Consultant',
-			fr: 'Consultant en infrastructure numérique',
-			es: 'Consultor de infraestructura digital',
+			en: 'Freelance Digital Infrastructure Engineer',
+			fr: 'Ingénieur pigiste en infrastructure numérique',
+			es: 'Ingeniero independiente en infraestructura digital',
 		},
 		address: {
 			locality: 'Montreal',
@@ -139,12 +146,15 @@ describe('site-meta fetcher', () => {
 		});
 	});
 
-	it('LocalizedString shape: omits absent fr/es locales for fields not translated', () => {
+	it('LocalizedString shape: omits absent es locale for fields not translated', () => {
 		const result = toSiteMeta(SITE_META_FIXTURE);
-		// tagline + description are en-only in current fixture
-		expect(result.tagline).toEqual({ en: 'Digital infrastructure that moves.' });
+		// tagline + description carry en + fr in the current fixture; es stays absent
+		expect(result.tagline).toEqual({
+			en: 'Digital infrastructure that moves.',
+			fr: 'Une infrastructure numérique qui bouge.',
+		});
 		expect(result.description.en).toBeTruthy();
-		expect(result.description.fr).toBeUndefined();
+		expect(result.description.fr).toBeTruthy();
 		expect(result.description.es).toBeUndefined();
 	});
 });
