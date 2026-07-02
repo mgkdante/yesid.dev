@@ -150,7 +150,7 @@ describe('seed-route-seo pure helpers', () => {
 		it('preserves languages_code, title, description', () => {
 			const rows = toTranslationRows(about);
 			expect(rows[0]?.languages_code).toBe('en');
-			expect(rows[0]?.title).toBe('About Yesid');
+			expect(rows[0]?.title).toBe('Yesid O., Digital Infrastructure Engineer in Montreal');
 			expect((rows[0]?.description ?? '').length).toBeGreaterThan(0);
 		});
 

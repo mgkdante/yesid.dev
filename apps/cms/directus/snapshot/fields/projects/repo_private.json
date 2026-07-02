@@ -1,0 +1,46 @@
+{
+  "collection": "projects",
+  "field": "repo_private",
+  "type": "boolean",
+  "meta": {
+    "collection": "projects",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "repo_private",
+    "group": null,
+    "hidden": false,
+    "interface": "boolean",
+    "note": "Repo exists but is private: the site shows a private-repo state instead of a dead link.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 67,
+    "special": [
+      "cast-boolean"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "repo_private",
+    "table": "projects",
+    "data_type": "boolean",
+    "default_value": false,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

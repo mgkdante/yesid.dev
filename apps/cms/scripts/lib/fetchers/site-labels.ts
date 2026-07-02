@@ -110,6 +110,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 					liveSiteLabel: ls('projects_chrome_detail_glance_live_site_label'),
 					liveSiteLabelMobile: ls('projects_chrome_detail_glance_live_site_label_mobile'),
 					githubLabel: ls('projects_chrome_detail_glance_github_label'),
+					repoPrivateLabel: ls('projects_chrome_detail_glance_repo_private_label'),
 				},
 				tocPill: {
 					openAria: ls('projects_chrome_detail_toc_pill_open_aria'),

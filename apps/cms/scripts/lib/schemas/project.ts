@@ -31,6 +31,7 @@ export const ProjectSchema = z.object({
 	status: ProjectStatusSchema,
 	featured: z.boolean(),
 	repoUrl: z.string().optional(),
+	repoPrivate: z.boolean().optional(),
 	liveUrl: z.string().optional(),
 	image: z.string().optional(),
 	imageLight: z.string().optional(),
