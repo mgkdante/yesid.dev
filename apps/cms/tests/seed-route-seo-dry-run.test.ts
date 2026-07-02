@@ -99,7 +99,8 @@ describe('seed-route-seo pure helpers', () => {
 		it('preserves path, og_image, status, sort', () => {
 			const row = toRouteSeoRow(about);
 			expect(row.path).toBe('/about');
-			expect(row.og_image).toBeNull();
+			// brand-svg-og-cards: /about carries its share-card file UUID.
+			expect(row.og_image).toBe('48bb90b1-0934-4cc9-a935-bc5ab719a71d');
 			expect(row.status).toBe('published');
 			expect(row.sort).toBe(2);
 		});
@@ -118,10 +119,15 @@ describe('seed-route-seo pure helpers', () => {
 			expect(row.translations[1]?.title).toBe('Blog');
 		});
 
-		it('handles og_image=null correctly', () => {
+		it('og_image is a file UUID or null on every row', () => {
+			const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 			for (const f of fixture) {
-				expect(toRouteSeoRow(f).og_image).toBeNull();
+				const og = toRouteSeoRow(f).og_image;
+				if (og !== null) expect(og).toMatch(uuidRe);
 			}
+			// The four card-wired routes carry UUIDs; the rest stay null.
+			const withCard = fixture.filter((f) => toRouteSeoRow(f).og_image !== null).map((f) => f.path);
+			expect(withCard.sort()).toEqual(['/about', '/contact', '/projects', '/services']);
 		});
 	});
 

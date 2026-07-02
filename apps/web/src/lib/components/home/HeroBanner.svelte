@@ -19,7 +19,7 @@
   Scroll: 800% desktop / 300% mobile. Lenis smooth-scroll site-wide (normalizeScroll removed 17e-1).
 -->
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { onMount, onDestroy, tick, untrack } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import {
 		initScrollTriggerConfig,
@@ -66,22 +66,25 @@
 	let scrollCursorEl: HTMLSpanElement;
 	let reducedMotion = false;
 
-	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, locale);
-	const headlineLine1 = resolveLocale(heroContent.headline.line1, locale);
-	const headlineLine2 = resolveLocale(heroContent.headline.line2, locale);
-	const subheadlineText = resolveLocale(heroContent.subheadline, locale);
-	const subtitleText = resolveLocale(heroContent.subtitle, locale);
-	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, locale);
-	const ctaContactLabel = resolveLocale(heroContent.ctaContact, locale);
-	const sqlPrompt = resolveLocale(heroContent.sqlPanel.prompt, locale);
-	const sqlLiveLabel = resolveLocale(heroContent.sqlPanel.liveLabel, locale);
-	const headlineAriaSuffix = resolveLocale(heroContent.headline.ariaSuffix, locale);
-	const sqlColumnRoute = resolveLocale(heroContent.sqlPanel.columns.route, locale);
-	const sqlColumnAvgDelay = resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale);
-	const sqlColumnVehicles = resolveLocale(heroContent.sqlPanel.columns.vehicles, locale);
-	const sqlMetaTemplate = resolveLocale(heroContent.sqlPanel.metaTemplate, locale);
-	const refreshLabel = resolveLocale(heroContent.refreshButton.label, locale);
-	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, locale);
+	// $derived so these recompute if the hero props change: a plain const
+	// captures only the initial prop value, which Svelte 5 flags
+	// (state_referenced_locally).
+	const scrollDownLabel = $derived(resolveLocale(heroAnimContent.scrollDown, locale));
+	const headlineLine1 = $derived(resolveLocale(heroContent.headline.line1, locale));
+	const headlineLine2 = $derived(resolveLocale(heroContent.headline.line2, locale));
+	const subheadlineText = $derived(resolveLocale(heroContent.subheadline, locale));
+	const subtitleText = $derived(resolveLocale(heroContent.subtitle, locale));
+	const ctaWorkLabel = $derived(resolveLocale(heroContent.ctaWork, locale));
+	const ctaContactLabel = $derived(resolveLocale(heroContent.ctaContact, locale));
+	const sqlPrompt = $derived(resolveLocale(heroContent.sqlPanel.prompt, locale));
+	const sqlLiveLabel = $derived(resolveLocale(heroContent.sqlPanel.liveLabel, locale));
+	const headlineAriaSuffix = $derived(resolveLocale(heroContent.headline.ariaSuffix, locale));
+	const sqlColumnRoute = $derived(resolveLocale(heroContent.sqlPanel.columns.route, locale));
+	const sqlColumnAvgDelay = $derived(resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale));
+	const sqlColumnVehicles = $derived(resolveLocale(heroContent.sqlPanel.columns.vehicles, locale));
+	const sqlMetaTemplate = $derived(resolveLocale(heroContent.sqlPanel.metaTemplate, locale));
+	const refreshLabel = $derived(resolveLocale(heroContent.refreshButton.label, locale));
+	const refreshHelper = $derived(resolveLocale(heroContent.refreshButton.helper, locale));
 	// go2/w5: hero-dot replay button aria from site_labels.
 	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale);
 	// go2/w5 taste-2: ONE caption names the metro art (the in-frame legend is
@@ -91,7 +94,9 @@
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;
 
-	let heroData: HeroData = $state(INITIAL_HERO_DATA);
+	// untrack: heroData deliberately seeds from the prop once and then diverges
+	// locally via handleRefresh(); it must not follow later prop updates.
+	let heroData: HeroData = $state(untrack(() => INITIAL_HERO_DATA));
 	// The dashboard card LABEL/SUB copy is CMS truth (siteLabels.heroDashboard);
 	// HeroMetrics resolves it per-locale by metric key, and the SQL panels carry
 	// no metric labels — so heroData (numbers, units, query rows, the "STM"

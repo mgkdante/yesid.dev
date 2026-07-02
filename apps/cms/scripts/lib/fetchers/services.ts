@@ -14,11 +14,8 @@ import {
 	mapLocalizedField,
 	mapLocalizedRepeater,
 } from '../locale';
-import {
-	ServiceSchema,
-	type Service,
-	type ServiceSection,
-} from '../schemas/service';
+import { ServiceSchema } from '@repo/shared/schemas';
+import type { Service, ServiceSection } from '@repo/shared';
 import type { FetcherContext } from './types';
 import { stackFromTechM2M, type DirectusTechStackJunctionRow } from './projects';
 

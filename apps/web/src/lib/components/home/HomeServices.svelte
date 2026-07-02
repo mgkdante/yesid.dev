@@ -13,7 +13,7 @@
   Station Card frame.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
 	import { localizeHref } from '$lib/utils/locale-routing';
@@ -39,10 +39,15 @@
 
 	// GO-2: station order IS the journey order. Sort defensively — the CMS
 	// export carries no order guarantee after the station renumber.
-	const orderedServices = [...services].sort((a, b) => a.station - b.station);
+	// $derived so the sort and the chrome strings recompute if the props
+	// change: a plain const captures only the initial value, which Svelte 5
+	// flags (state_referenced_locally).
+	const orderedServices = $derived([...services].sort((a, b) => a.station - b.station));
 
-	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, locale);
-	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, locale);
+	const viewIllustrationAriaTemplate = $derived(
+		resolveLocale(servicesGridContent.viewIllustrationAria, locale)
+	);
+	const viewAllLink = $derived(resolveLocale(servicesGridContent.viewAllLink, locale));
 
 	// go2-t1c2: card marker template from site_labels, previous literal as fallback.
 	const markerServiceTemplate = resolveLocale(siteLabels.ui.markerService, locale) || '{num} / SERVICE';
@@ -51,8 +56,9 @@
 
 	// One flag per card — flipped true after the SVG is fetched and injected.
 	// `use:morphHover` reads this via its `enabled` param to gate morphs until
-	// the SVG paths are actually in the DOM.
-	const svgReady = $state<boolean[]>(orderedServices.map(() => false));
+	// the SVG paths are actually in the DOM. untrack: the seed is a deliberate
+	// one-shot snapshot of the card count; the flags are owned locally after init.
+	const svgReady = $state<boolean[]>(untrack(() => orderedServices.map(() => false)));
 
 	onMount(() => {
 		if (!browser || !sectionEl) return;

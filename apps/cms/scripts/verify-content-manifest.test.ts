@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
 	GENERATED_HEADER_MARKER,
+	GENERATED_MANIFEST_FILENAME,
 	hashContent,
 	writeManifest,
 } from './lib/generated-manifest';
@@ -86,6 +87,47 @@ describe('verifyContentDir', () => {
 			const { violations } = await verifyContentDir(dir);
 			expect(violations).toHaveLength(1);
 			expect(violations[0]).toContain('generated.manifest.json is missing or malformed');
+		} finally {
+			await rm(dir, { recursive: true, force: true });
+		}
+	});
+
+	it('flags a manifest emitted from the cache fallback even when every hash matches', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'ci-content-cache-'));
+		try {
+			const navContent = `${GENERATED_HEADER}\nexport const nav = [];\n`;
+			await writeFile(join(dir, 'nav.ts'), navContent, 'utf8');
+			await writeManifest(dir, { 'nav.ts': hashContent(navContent) }, 'cache');
+			const { verified, violations } = await verifyContentDir(dir);
+			// Hashes are consistent (cache emits rewrite both together): only the
+			// provenance field betrays the stale snapshot.
+			expect(verified).toEqual(['nav.ts']);
+			expect(violations).toHaveLength(1);
+			expect(violations[0]).toContain('source "cache"');
+		} finally {
+			await rm(dir, { recursive: true, force: true });
+		}
+	});
+
+	it('treats a manifest without a source field as live (backward compat)', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'ci-content-legacy-'));
+		try {
+			const navContent = `${GENERATED_HEADER}\nexport const nav = [];\n`;
+			await writeFile(join(dir, 'nav.ts'), navContent, 'utf8');
+			// Hand-built legacy shape: the committed manifest predates `source`.
+			const legacy = {
+				'//': 'legacy note',
+				algorithm: 'sha256',
+				files: { 'nav.ts': hashContent(navContent) },
+			};
+			await writeFile(
+				join(dir, GENERATED_MANIFEST_FILENAME),
+				`${JSON.stringify(legacy, null, '\t')}\n`,
+				'utf8',
+			);
+			const { verified, violations } = await verifyContentDir(dir);
+			expect(violations).toEqual([]);
+			expect(verified).toEqual(['nav.ts']);
 		} finally {
 			await rm(dir, { recursive: true, force: true });
 		}

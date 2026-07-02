@@ -28,7 +28,7 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 			en: 'Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work.',
 			fr: 'Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes.',
 		},
-		ogImage: null,
+		ogImage: '48bb90b1-0934-4cc9-a935-bc5ab719a71d',
 		path: '/about',
 		title: {
 			en: 'Yesid O., Digital Infrastructure Engineer in Montreal',
@@ -40,7 +40,7 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 			en: 'Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montreal; available remotely.',
 			fr: 'Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal et disponible à distance.',
 		},
-		ogImage: null,
+		ogImage: 'a781a5a4-1abc-4be4-a75e-ee6000419a53',
 		path: '/contact',
 		title: {
 			en: 'Hire a Digital Infrastructure Freelancer in Montreal',
@@ -52,7 +52,7 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 			en: 'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams.',
 			fr: 'Services d\'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel.',
 		},
-		ogImage: null,
+		ogImage: 'dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7',
 		path: '/services',
 		title: {
 			en: 'Digital Infrastructure Services: Web, Data, Automation',
@@ -64,7 +64,7 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 			en: 'Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.',
 			fr: 'Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure numérique.',
 		},
-		ogImage: null,
+		ogImage: '864b5ad1-3dac-47ea-ad96-f175cad1b515',
 		path: '/projects',
 		title: { en: 'Projects', fr: 'Projets' },
 	},

@@ -1,6 +1,6 @@
 {
 	"brand/yesid-icon.svg": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
-	"brand/yesid-wordmark.svg": "dbf31ca7-75c3-431e-aa8e-f5891e48e586",
+	"brand/yesid-wordmark.svg": "f82fd2eb-a9ae-436e-8bcb-089a1a2e7e44",
 	"images/about/headshot.webp": "66f6ddc8-c3f2-4bd7-97a5-978940757b77",
 	"images/about/interests/anime.webp": "c5eb69ac-f2dd-4fa6-82c6-12d8cefc22a4",
 	"images/about/interests/food.webp": "06450c2f-7b04-42c8-b766-6cde7c9cd166",
@@ -22,5 +22,9 @@
 	"images/work/yesid-dev-home.png": "6048a712-de42-4cca-ab51-6f92d64685c2",
 	"images/work/yesid-dev-mobile-light.png": "9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
 	"images/work/yesid-dev-mobile.png": "c2fad757-ecba-457c-aff7-47d3cc504081",
-	"images/work/yesid-dev.png": "8b57ccd1-bed1-46ae-bb24-a887714a8bcc"
+	"images/work/yesid-dev.png": "8b57ccd1-bed1-46ae-bb24-a887714a8bcc",
+	"og/routes/about.png": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
+	"og/routes/contact.png": "a781a5a4-1abc-4be4-a75e-ee6000419a53",
+	"og/routes/projects.png": "864b5ad1-3dac-47ea-ad96-f175cad1b515",
+	"og/routes/services.png": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7"
 }

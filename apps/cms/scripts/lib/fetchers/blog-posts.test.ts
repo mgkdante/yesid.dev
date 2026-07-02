@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { toBlogPost, resolveSvgFallbackName, type DirectusBlogPostRow } from './blog-posts';
-import { BlogPostSchema } from '../schemas/blog';
-
+import { BlogPostSchema } from '@repo/shared/schemas';
 const FIXTURE_EXTERNAL: DirectusBlogPostRow = {
 	id: 'why-bun-is-fast',
 	status: 'published',

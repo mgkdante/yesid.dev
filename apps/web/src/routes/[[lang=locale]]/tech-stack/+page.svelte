@@ -1,7 +1,7 @@
 <!-- /tech-stack route: hero + Tech Stack Engine (slice-29) + CTA -->
 <script lang="ts">
 	import type { Component } from 'svelte';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
@@ -24,34 +24,35 @@
 	let engineAnimate = $state(true);
 
 	// Dynamic counts from data layer.
-	const itemCount = data.items.length;
+	const itemCount = $derived(data.items.length);
 
-	// Pre-resolved chrome via the layout-provided locale (slice-28.6). Init-time
-	// consts are correct: the page remounts per pathname under the root
-	// layout's {#key $page.url.pathname}.
+	// Pre-resolved chrome via the layout-provided locale (slice-28.6). Each
+	// read is $derived so it recomputes if `data` changes: a plain const
+	// captures only the initial value, which Svelte 5 flags.
 	// SEO meta + title emitted by <SeoHead> in +layout.svelte (Slice 15a).
 	// Chrome content flows through adapter → repository → load() post-17c
 	// (closed the 17b seam leak that had this file importing $lib/content).
-	const c = data.techStackPage;
-	const heroOverline = resolveLocale(c.hero.overline, locale);
-	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, locale);
-	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, locale);
-	const heroTerminalAria = resolveLocale(c.hero.terminalAria, locale);
-	const stackKicker = resolveLocale(c.hero.stackKicker, locale);
+	const heroOverline = $derived(resolveLocale(data.techStackPage.hero.overline, locale));
+	const heroTitleLine1 = $derived(resolveLocale(data.techStackPage.hero.titleLine1, locale));
+	const heroTitleLine2 = $derived(resolveLocale(data.techStackPage.hero.titleLine2, locale));
+	const heroTerminalAria = $derived(resolveLocale(data.techStackPage.hero.terminalAria, locale));
+	const stackKicker = $derived(resolveLocale(data.techStackPage.hero.stackKicker, locale));
 	const FALLBACK_STACK_EXPLAINER =
 		'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you, poke the blueprints below and see for yourself.';
-	const stackExplainer = c.hero.stackExplainer
-		? resolveLocale(c.hero.stackExplainer, locale) || FALLBACK_STACK_EXPLAINER
-		: FALLBACK_STACK_EXPLAINER;
-	const engineLoading = resolveLocale(c.hero.engineLoading, locale);
-	const statLabels = {
-		technologies: resolveLocale(c.hero.stats.technologies, locale),
-	};
-	const getInTouchLabel = resolveLocale(c.actions.getInTouch, locale);
-	const viewServicesLabel = resolveLocale(c.actions.viewServices, locale);
-	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, locale);
-	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, locale);
-	const ctaSub = resolveLocale(c.cta.sub, locale);
+	const stackExplainer = $derived(
+		data.techStackPage.hero.stackExplainer
+			? resolveLocale(data.techStackPage.hero.stackExplainer, locale) || FALLBACK_STACK_EXPLAINER
+			: FALLBACK_STACK_EXPLAINER
+	);
+	const engineLoading = $derived(resolveLocale(data.techStackPage.hero.engineLoading, locale));
+	const statLabels = $derived({
+		technologies: resolveLocale(data.techStackPage.hero.stats.technologies, locale),
+	});
+	const getInTouchLabel = $derived(resolveLocale(data.techStackPage.actions.getInTouch, locale));
+	const viewServicesLabel = $derived(resolveLocale(data.techStackPage.actions.viewServices, locale));
+	const ctaHeadingLine1 = $derived(resolveLocale(data.techStackPage.cta.headingLine1, locale));
+	const ctaHeadingLine2 = $derived(resolveLocale(data.techStackPage.cta.headingLine2, locale));
+	const ctaSub = $derived(resolveLocale(data.techStackPage.cta.sub, locale));
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -63,16 +64,18 @@
 	// CMS-driven line templates (go2-t1b2 operator addendum) with the previous
 	// hardcoded strings as code fallbacks. The literal {count} token is
 	// interpolated here from data.items.length — computed, never stored.
-	const count = String(itemCount);
-	const terminalLines: TerminalLine[] = [
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.cmd, locale) || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.loading, locale) || '→ loading {count} nodes...', { count }), color: 'muted', visible: false },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.success, locale) || '✓ successful', { count }), color: 'green', visible: false },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.cataloged, locale) || '→ {count} technologies cataloged', { count }), color: 'orange', visible: false },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.status, locale) || 'interactive map online.', { count }), color: 'accent', visible: false },
-	];
+	const count = $derived(String(itemCount));
+	const terminalLines: TerminalLine[] = $derived([
+		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.cmd, locale) || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },
+		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.loading, locale) || '→ loading {count} nodes...', { count }), color: 'muted', visible: false },
+		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.success, locale) || '✓ successful', { count }), color: 'green', visible: false },
+		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.cataloged, locale) || '→ {count} technologies cataloged', { count }), color: 'orange', visible: false },
+		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.status, locale) || 'interactive map online.', { count }), color: 'accent', visible: false },
+	]);
 
-	let heroLines = $state<TerminalLine[]>(terminalLines);
+	// untrack: heroLines deliberately seeds from terminalLines once, then owns
+	// the visible flags locally (the typing sequence mutates them in onMount).
+	let heroLines = $state<TerminalLine[]>(untrack(() => terminalLines));
 	let heroReady = $state(false);
 	let heroCursorVisible = $state(false);
 
