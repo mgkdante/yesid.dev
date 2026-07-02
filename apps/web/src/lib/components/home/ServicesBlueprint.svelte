@@ -24,13 +24,13 @@
      dark-tuned to subliminal. Light overrides below step up in lockstep so
      light keeps reading slightly more pronounced than dark (round-3 rule). -->
 <div class="blueprint-bg absolute inset-0 z-0 text-[var(--primary)]" aria-hidden="true">
-	<!-- AZUR side elevation — primary full-page blueprint (centered, faint) -->
-	<div class="train-svg absolute inset-x-[2%] top-[25%] bottom-[25%] z-0 opacity-[0.18]">
+	<!-- AZUR side elevation — primary full-page blueprint (centered, faint; desktop) -->
+	<div class="train-svg absolute inset-x-[2%] top-[25%] bottom-[25%] z-0 hidden opacity-[0.18] md:block">
 		<BlueprintAzurSide class="h-full w-full" />
 	</div>
 
-	<!-- ALL 12 blueprint SVGs — tiled wall-to-wall, no gaps -->
-	<div class="edge-details absolute inset-0 z-0 opacity-[0.22] overflow-hidden">
+	<!-- ALL 12 blueprint SVGs — tiled wall-to-wall, no gaps (desktop canvas) -->
+	<div class="edge-details absolute inset-0 z-0 hidden opacity-[0.22] overflow-hidden md:block">
 		<!-- Row 1: top band (4 panels spanning full width) -->
 		<BlueprintAzurFront class="edge-detail" style="top:0;left:0;width:22%;height:38%;" />
 		<BlueprintDetailBogie class="edge-detail" style="top:0;left:22%;width:28%;height:28%;" />
@@ -47,6 +47,33 @@
 		<BlueprintMr73Side class="edge-detail" style="bottom:0;left:0;width:38%;height:30%;" />
 		<BlueprintDetailSeat class="edge-detail" style="bottom:0;left:38%;width:24%;height:28%;" />
 		<BlueprintAzurSide class="edge-detail" style="bottom:0;right:0;width:38%;height:30%;" />
+	</div>
+
+	<!-- Mobile canvas (homework #8 follow-up): the desktop percentage tiling
+	     shrinks every drawing to a sliver on a ~390x1760 single-column section,
+	     so below md the wall re-tiles: fewer, larger drawings, full-bleed
+	     elevations behind the heading and the between-card gaps, detail
+	     callouts hugging the side margins the cards leave free. -->
+	<!-- Mobile register is one step bolder than desktop (0.22 -> 0.30): the
+	     drawings only surface through the heading band, card gaps, margins
+	     and the closer band, so they need the extra weight to read. -->
+	<div class="edge-details absolute inset-0 z-0 opacity-[0.3] overflow-hidden md:hidden">
+		<!-- Heading band (above card 1) -->
+		<BlueprintMr73Side class="edge-detail" style="top:0;left:-15%;width:130%;height:10%;" />
+		<!-- Wide elevations vertically centered on the three inter-card gaps,
+		     so each ~30px slit reveals a dense slice of drawing -->
+		<BlueprintAzurSide class="edge-detail" style="top:26%;left:-30%;width:160%;height:15%;" />
+		<BlueprintAzurTop class="edge-detail" style="top:51%;left:-25%;width:150%;height:12%;" />
+		<BlueprintAzurSide class="edge-detail" style="top:74%;left:-40%;width:170%;height:15%;" />
+		<!-- Detail callouts hugging the side margins the cards leave free -->
+		<BlueprintDetailBogie class="edge-detail" style="top:14%;right:1%;width:36%;height:9%;" />
+		<BlueprintAzurFront class="edge-detail" style="top:20%;left:2%;width:36%;height:11%;" />
+		<BlueprintDetailDoor class="edge-detail" style="top:42%;right:1%;width:34%;height:9%;" />
+		<BlueprintAzurCross class="edge-detail" style="top:47%;left:2%;width:40%;height:11%;" />
+		<BlueprintDetailSeat class="edge-detail" style="top:68%;left:2%;width:32%;height:8%;" />
+		<!-- Closer band (below card 4) -->
+		<BlueprintDetailHandrails class="edge-detail" style="top:88%;left:-6%;width:34%;height:10%;" />
+		<BlueprintAzurBogie class="edge-detail" style="top:86.5%;right:-12%;width:72%;height:13%;" />
 	</div>
 
 	<!-- Corner crosshairs -->
