@@ -182,6 +182,16 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 		expect(bp).toContain('color-mix(in srgb, var(--primary) 45%, transparent)');
 	});
 
+	it('home blueprint wall keeps the desktop register on mobile and the project fallback is the blueprint sheet (homework #8)', () => {
+		const bp = read('lib/components/home/ServicesBlueprint.svelte');
+		expect(bp).not.toContain('@media (max-width: 767px)');
+		const card = read('lib/components/projects/ProjectCard.svelte');
+		expect(card).toContain('project-card-blueprint');
+		expect(card).toContain("digital-desktop.svg?raw");
+		expect(card).toContain("digital-mobile.svg?raw");
+		expect(card).not.toContain('linear-gradient(135deg');
+	});
+
 	it('manifesto home art is boldened and the arrival board speaks the YELLOW voice', () => {
 		const manifesto = read('lib/components/home/Manifesto.svelte');
 		expect(manifesto).toContain('color-mix(in srgb, var(--primary) 6%, transparent)'); // grid 3.5% → 6%
