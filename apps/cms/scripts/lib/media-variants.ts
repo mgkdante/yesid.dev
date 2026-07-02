@@ -88,6 +88,9 @@ export async function buildMediaVariants(
 
 	const rasterAssets = manifest.assets
 		.filter((a) => isRasterAsset(a.legacyPath))
+		// og/ share cards are fixed 1200x630 assets consumed via og:image URLs,
+		// never through <img srcset> — no responsive variants for them.
+		.filter((a) => !a.legacyPath.startsWith('og/'))
 		.sort((a, b) => a.legacyPath.localeCompare(b.legacyPath));
 
 	for (const { legacyPath } of rasterAssets) {
