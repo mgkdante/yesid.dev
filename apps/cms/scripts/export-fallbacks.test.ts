@@ -3,8 +3,11 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
+	ALL_MODULES,
+	assertValidModuleFilter,
 	buildMirroredMediaAssetsFromManifest,
 	getExportSkipReason,
+	raceWithStallGuard,
 } from './export-fallbacks';
 
 describe('export-fallbacks skip policy', () => {
@@ -24,6 +27,71 @@ describe('export-fallbacks skip policy', () => {
 
 	it('does not skip local explicit export commands by default', () => {
 		expect(getExportSkipReason({})).toBeNull();
+	});
+});
+
+describe('--module filter validation', () => {
+	it('accepts every known module name and the absent filter', () => {
+		for (const name of ALL_MODULES) {
+			expect(() => assertValidModuleFilter(name)).not.toThrow();
+		}
+		expect(() => assertValidModuleFilter(undefined)).not.toThrow();
+	});
+
+	it('rejects a typo loudly instead of silently emitting nothing', () => {
+		expect(() => assertValidModuleFilter('servicess')).toThrow(
+			"unknown --module 'servicess'",
+		);
+		expect(() => assertValidModuleFilter('Services')).toThrow('Valid modules:');
+	});
+});
+
+describe('raceWithStallGuard', () => {
+	const spyTimers = () => {
+		const calls: { set: number; clear: number; clearedId?: unknown; setId?: unknown } = {
+			set: 0,
+			clear: 0,
+		};
+		const timers = {
+			set: (fn: () => void, ms: number) => {
+				calls.set += 1;
+				const id = setTimeout(fn, ms);
+				calls.setId = id;
+				return id;
+			},
+			clear: (id: ReturnType<typeof setTimeout>) => {
+				calls.clear += 1;
+				calls.clearedId = id;
+				clearTimeout(id);
+			},
+		};
+		return { calls, timers };
+	};
+
+	it('resolves with the work result and clears the stall timer', async () => {
+		const { calls, timers } = spyTimers();
+		const out = await raceWithStallGuard(Promise.resolve('ok'), 60_000, timers);
+		expect(out).toBe('ok');
+		expect(calls.set).toBe(1);
+		expect(calls.clear).toBe(1);
+		expect(calls.clearedId).toBe(calls.setId);
+	});
+
+	it('clears the timer on the rejection path too', async () => {
+		const { calls, timers } = spyTimers();
+		await expect(
+			raceWithStallGuard(Promise.reject(new Error('boom')), 60_000, timers),
+		).rejects.toThrow('boom');
+		expect(calls.clear).toBe(1);
+	});
+
+	it('rejects when the work outlives the timeout', async () => {
+		const { calls, timers } = spyTimers();
+		const never = new Promise<string>(() => {});
+		await expect(raceWithStallGuard(never, 5, timers)).rejects.toThrow(
+			'fetchAll timed out after 5ms',
+		);
+		expect(calls.clear).toBe(1);
 	});
 });
 

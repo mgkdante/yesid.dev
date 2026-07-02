@@ -117,7 +117,7 @@ export interface RunOptions {
 // `tech-stack` needs both tech-stack-page + tech-stack data — so there is no
 // `--module=blog-bodies`. A partial run merges its emitted hashes into the
 // manifest (see emitAll), so unrelated keys are preserved.
-const ALL_MODULES = [
+export const ALL_MODULES = [
 	'site-meta',
 	'site-seo-defaults',
 	'route-seo',
@@ -150,6 +150,49 @@ type ModuleName = (typeof ALL_MODULES)[number];
 
 function shouldRun(filter: string | undefined, name: ModuleName): boolean {
 	return !filter || filter === name;
+}
+
+/**
+ * Reject unknown `--module` values loudly. A typo used to filter every module
+ * out silently: zero fetches, zero emits, and an EMPTY .cms-cache.json written
+ * over the last-known-good cache (audit 2026-07-01, bucket A #6).
+ */
+export function assertValidModuleFilter(
+	name: string | undefined,
+): asserts name is ModuleName | undefined {
+	if (name !== undefined && !(ALL_MODULES as readonly string[]).includes(name)) {
+		throw new Error(
+			`unknown --module '${name}'. Valid modules: ${ALL_MODULES.join(', ')}`,
+		);
+	}
+}
+
+/**
+ * Promise.race against a stall timer that is ALWAYS cleared. The inline
+ * setTimeout this replaces was never cleared on success, so every live export
+ * held the event loop for the full 60s after finishing (audit 2026-07-01,
+ * bucket A #6). Timer fns are injectable so tests can assert the clear.
+ */
+export async function raceWithStallGuard<T>(
+	work: Promise<T>,
+	timeoutMs: number,
+	timers: {
+		set: (fn: () => void, ms: number) => ReturnType<typeof setTimeout>;
+		clear: (id: ReturnType<typeof setTimeout>) => void;
+	} = { set: (fn, ms) => setTimeout(fn, ms), clear: (id) => clearTimeout(id) },
+): Promise<T> {
+	let stallTimer: ReturnType<typeof setTimeout> | undefined;
+	const timeoutReject = new Promise<never>((_, reject) => {
+		stallTimer = timers.set(
+			() => reject(new Error(`fetchAll timed out after ${timeoutMs}ms`)),
+			timeoutMs,
+		);
+	});
+	try {
+		return await Promise.race([work, timeoutReject]);
+	} finally {
+		if (stallTimer !== undefined) timers.clear(stallTimer);
+	}
 }
 
 /** Timeout (ms) for the entire fetchAll operation before falling back to cache. */
@@ -365,15 +408,9 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	};
 
 	// Top-level stall guard: if the entire fetch hasn't completed within
-	// FETCH_ALL_TIMEOUT_MS, reject so the caller falls through to cache.
-	const timeoutReject = new Promise<never>((_, reject) =>
-		setTimeout(
-			() => reject(new Error(`fetchAll timed out after ${FETCH_ALL_TIMEOUT_MS}ms`)),
-			FETCH_ALL_TIMEOUT_MS,
-		),
-	);
-
-	const out = await Promise.race([fetchAllInner(), timeoutReject]);
+	// FETCH_ALL_TIMEOUT_MS, reject so the caller falls through to cache. The
+	// timer is cleared in raceWithStallGuard's finally, win or lose.
+	const out = await raceWithStallGuard(fetchAllInner(), FETCH_ALL_TIMEOUT_MS);
 
 	// media-variants runs OUTSIDE the network-timeout race: it is local-only
 	// (reads mirrored files on disk, writes webp variants next to them) and
@@ -388,14 +425,16 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	return out;
 }
 
-async function emitAll(data: ExportData, opts: RunOptions): Promise<void> {
+/** Emits every populated module; returns the number of modules written so the
+ *  caller can skip the cache write when nothing was emitted. */
+async function emitAll(data: ExportData, opts: RunOptions): Promise<number> {
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	log.info(`emit: target=${emitDir}`);
 
 	const configs = buildEmitConfigs(data, emitDir);
 	if (configs.length === 0) {
 		log.warn('emit: no modules to write (ExportData has no populated slots)');
-		return;
+		return 0;
 	}
 
 	await mkdir(emitDir, { recursive: true });
@@ -417,6 +456,7 @@ async function emitAll(data: ExportData, opts: RunOptions): Promise<void> {
 		: emittedHashes;
 	await writeManifest(emitDir, manifestFiles);
 	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${Object.keys(manifestFiles).length} entries).`);
+	return configs.length;
 }
 
 function cachePath(opts: RunOptions): string {
@@ -467,9 +507,13 @@ export async function run(opts: RunOptions): Promise<void> {
 		return;
 	}
 
-	await emitAll(data, opts);
+	const emittedCount = await emitAll(data, opts);
 	if (dataFromCache) {
 		log.info('cache: skipped re-write (data sourced from cache).');
+	} else if (emittedCount === 0) {
+		log.warn(
+			'cache: skipped write: zero modules emitted; an empty cache would poison the fallback path.',
+		);
 	} else {
 		await writeCache(data, opts);
 	}
@@ -503,6 +547,7 @@ async function main(): Promise<void> {
 
 	const dryRun = values['dry-run'] === true;
 	const moduleFilter = typeof values.module === 'string' ? values.module : undefined;
+	assertValidModuleFilter(moduleFilter);
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 	const url = defaultDirectusUrl();
 	const isProd = process.env.VERCEL_ENV === 'production';
