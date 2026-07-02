@@ -2,7 +2,7 @@
 # PreToolUse matcher — block Write/Edit/MultiEdit targeting a CMS-generated
 # content module under apps/web/src/lib/content/.
 #
-# Those files carry a `GENERATED FILE — do not edit by hand.` header and are an
+# Those files carry a `GENERATED FILE - do not edit by hand.` header and are an
 # edge cache regenerated FROM the Directus CMS by export:fallbacks. The CMS is
 # the source of truth, so a hand-edit is overwritten on the next prod rebuild.
 # Edit the CMS instead. The companion git pre-commit hook (.githooks/pre-commit)
@@ -74,7 +74,7 @@ target="$content_dir/$base"
 manifest="$content_dir/generated.manifest.json"
 
 is_generated=0
-if [ -f "$target" ] && head -c 400 "$target" | grep -q "GENERATED FILE — do not edit by hand."; then
+if [ -f "$target" ] && head -c 400 "$target" | grep -q "GENERATED FILE - do not edit by hand."; then
   is_generated=1
 fi
 if [ "$is_generated" -eq 0 ] && [ -f "$manifest" ]; then

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'bun:test';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { emitModule } from './emitters/emit-module';
 import {
 	GENERATED_HEADER_MARKER,
 	GENERATED_MANIFEST_FILENAME,
@@ -79,7 +81,34 @@ describe('write/loadManifest round-trip', () => {
 });
 
 describe('GENERATED_HEADER_MARKER', () => {
-	it('is the exact string the emitter writes and the hooks grep for', () => {
-		expect(GENERATED_HEADER_MARKER).toBe('GENERATED FILE — do not edit by hand.');
+	// The marker is only useful if all four sites agree byte-for-byte: the
+	// emitter header, this constant, and the two bash guards that grep for it.
+	// A mismatch (the pre-2026-07 em-dash rot) silently disables both hand-edit
+	// guards, so each site is asserted here instead of trusted.
+	const REPO_ROOT = resolve(import.meta.dir, '../../../..');
+
+	it('is a substring of every emitModule() output', () => {
+		const out = emitModule({
+			filePath: '/tmp/marker-probe.ts',
+			description: 'marker sync probe',
+			imports: [],
+			exports: [{ name: 'probe', typeName: 'number', value: 1 }],
+		});
+		expect(out).toContain(GENERATED_HEADER_MARKER);
+		// The guards only scan the first 400 bytes (head -c 400).
+		expect(out.slice(0, 400)).toContain(GENERATED_HEADER_MARKER);
+	});
+
+	it('is the exact string the git pre-commit hook greps for', () => {
+		const hook = readFileSync(resolve(REPO_ROOT, '.githooks/pre-commit'), 'utf8');
+		expect(hook).toContain(`GENERATED_MARKER="${GENERATED_HEADER_MARKER}"`);
+	});
+
+	it('is the exact string the Claude PreToolUse hook greps for', () => {
+		const hook = readFileSync(
+			resolve(REPO_ROOT, '.claude/hooks/pretool-block-generated-ts.sh'),
+			'utf8',
+		);
+		expect(hook).toContain(`grep -q "${GENERATED_HEADER_MARKER}"`);
 	});
 });
