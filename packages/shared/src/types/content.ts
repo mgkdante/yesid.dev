@@ -176,6 +176,9 @@ export interface SiteAddress {
 export interface SiteOwner {
 	name: string;
 	jobTitle: LocalizedString;
+	// E.164 business phone (homework #12): feeds Person.telephone JSON-LD and
+	// the Google Business Profile. Service-area/online only — no street address.
+	phone?: string;
 	address: SiteAddress;
 	knowsAbout: readonly string[];
 }
