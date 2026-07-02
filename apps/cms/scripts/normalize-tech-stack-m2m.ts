@@ -155,4 +155,4 @@ async function main(): Promise<void> {
 	if (dryRun) console.log('Re-run with --apply to execute against dev.');
 }
 
-runMain(main);
+runMain(main, import.meta);
