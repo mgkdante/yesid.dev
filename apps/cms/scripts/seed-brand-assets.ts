@@ -22,7 +22,7 @@
 import { readFolders, uploadFiles } from '@directus/sdk';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -164,6 +164,7 @@ export async function seedBrandAssets(opts: SeedRunOptions): Promise<{ iconUuid:
 async function main(): Promise<void> {
 	const { dryRun } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : ''}`);
 
 	if (dryRun) {

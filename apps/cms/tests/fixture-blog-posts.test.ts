@@ -41,8 +41,12 @@ describe('apps/cms/fixtures/collections/blog-posts.json', () => {
 		expect(result.success).toBe(true);
 	});
 
-	it('contains exactly 7 posts (matches current markdown count)', () => {
-		expect(postsFixture.length).toBe(7);
+	it('mirrors real posts only (Homework #15): non-empty, no lorem', () => {
+		expect(postsFixture.length).toBeGreaterThanOrEqual(1);
+		const loremIds = (postsFixture as Array<{ id: string }>)
+			.map((p) => p.id)
+			.filter((id) => id.startsWith('lorem-'));
+		expect(loremIds).toEqual([]);
 	});
 
 	it('every svg_illustration_id (when set) exists in illustrations fixture', () => {

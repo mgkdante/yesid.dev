@@ -26,8 +26,11 @@
  *   bun apps/cms/scripts/consolidate-services.ts                  # dry-run plan
  *   op run --env-file=.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev \
  *     bun apps/cms/scripts/consolidate-services.ts --apply        # dev rehearsal
- *   op run --env-file=.env -- env PUBLIC_DIRECTUS_URL=https://cms.yesid.dev \
- *     bun apps/cms/scripts/consolidate-services.ts --apply        # prod
+ *
+ * DEV-ONLY since the pipeline-safety sweep: assertDevCms in main() refuses a
+ * prod URL. The consolidation already shipped to prod (2026-06-12 GO-day);
+ * any future prod replay must go through a deliberate prod-ack orchestrator
+ * like promote-content-services-prod.ts, not by re-pointing this script.
  *
  * Auth: lib/auth getAdminToken resolves DIRECTUS_BUILD_TOKEN →
  * DIRECTUS_ADMIN_TOKEN → email+password. If the build token is read-scoped
@@ -36,7 +39,7 @@
  */
 
 import { createItem, deleteItem, readItems, updateItem } from '@directus/sdk';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -473,6 +476,7 @@ export async function applyConsolidation(opts: { directusUrl: string; token: str
 async function main(): Promise<void> {
 	const { apply } = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
 
 	if (!apply) {

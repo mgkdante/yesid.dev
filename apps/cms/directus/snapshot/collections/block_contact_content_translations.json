@@ -14,7 +14,7 @@
     "hidden": true,
     "icon": "translate",
     "item_duplication_fields": null,
-    "note": "Translated copy for block_contact_content. Contact channels live in contact_channels, not this block.",
+    "note": "Translated copy for block_contact_content. 3 string columns (page_title, station_label, send_error_message) + 4 JSON columns (info_terminal, form_terminal, validation, success, socials_json) + meta JSON.",
     "preview_url": null,
     "singleton": false,
     "sort": null,

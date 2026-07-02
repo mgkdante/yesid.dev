@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces hero.engineLoading",
+    "note": "Stack engine loading caption.",
     "options": null,
     "readonly": false,
     "required": false,

@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { defaultDirectusUrl, requireEnv, createClient } from './sdk';
+import {
+	DEV_CMS_HOSTNAME,
+	assertDevCms,
+	createClient,
+	defaultDirectusUrl,
+	requireEnv,
+} from './sdk';
 
 describe('scripts/lib/sdk.ts', () => {
 	let originalEnv: Record<string, string | undefined>;
@@ -46,6 +52,36 @@ describe('scripts/lib/sdk.ts', () => {
 			expect(() => requireEnv('FOO_TEST', 'get from 1Password')).toThrow(
 				/get from 1Password/,
 			);
+		});
+	});
+
+	describe('assertDevCms', () => {
+		it('accepts the dev CMS URL in all common spellings', () => {
+			expect(() => assertDevCms('https://cms.dev.yesid.dev')).not.toThrow();
+			expect(() => assertDevCms('https://cms.dev.yesid.dev/')).not.toThrow();
+			expect(() => assertDevCms('https://cms.dev.yesid.dev/items/projects')).not.toThrow();
+		});
+
+		it('accepts the default fallback URL every guarded script resolves', () => {
+			delete process.env.PUBLIC_DIRECTUS_URL;
+			expect(() => assertDevCms(defaultDirectusUrl())).not.toThrow();
+			expect(new URL(defaultDirectusUrl()).hostname).toBe(DEV_CMS_HOSTNAME);
+		});
+
+		it('refuses the prod CMS', () => {
+			expect(() => assertDevCms('https://cms.yesid.dev')).toThrow(/DEV-ONLY/);
+		});
+
+		it('refuses crafted URLs that merely CONTAIN the dev hostname (pre-sweep substring hole)', () => {
+			expect(() => assertDevCms('https://cms.dev.yesid.dev.attacker.com')).toThrow(/DEV-ONLY/);
+			expect(() => assertDevCms('https://evil.example/cms.dev.yesid.dev')).toThrow(/DEV-ONLY/);
+			expect(() => assertDevCms('https://evil.example/?next=cms.dev.yesid.dev')).toThrow(/DEV-ONLY/);
+		});
+
+		it('refuses localhost and unparseable values', () => {
+			expect(() => assertDevCms('http://localhost:8055')).toThrow(/DEV-ONLY/);
+			expect(() => assertDevCms('not a url')).toThrow(/unparseable/);
+			expect(() => assertDevCms('')).toThrow(/unparseable/);
 		});
 	});
 
