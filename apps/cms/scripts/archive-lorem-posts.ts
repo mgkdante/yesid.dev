@@ -18,8 +18,10 @@
  *   op run --env-file=.env -- bun --cwd apps/cms run archive:lorem -- --apply
  *
  * Auth: lib/auth getAdminToken resolves DIRECTUS_BUILD_TOKEN →
- * DIRECTUS_ADMIN_TOKEN → email+password. Target URL: PUBLIC_DIRECTUS_URL
- * (defaults to the dev CMS — set it to prod explicitly for the real run).
+ * DIRECTUS_ADMIN_TOKEN → email+password. Target URL: PUBLIC_DIRECTUS_URL,
+ * DEV-ONLY (assertDevCms refuses anything else since the pipeline-safety
+ * sweep). Prod content changes go through the operator-gated promote path,
+ * never by pointing this script at prod.
  */
 
 import { readItems, updateItem } from '@directus/sdk';
