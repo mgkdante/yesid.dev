@@ -13,9 +13,12 @@ describe('apps/cms/fixtures/collections/projects.json', () => {
 		expect(result.success).toBe(true);
 	});
 
-	it('contains exactly 6 projects', () => {
+	it('mirrors the real roster (Homework #15): case-study hearts present, no lorem', () => {
 		const projects = ProjectsFixtureSchema.parse(fixtureData);
-		expect(projects.length).toBe(6);
+		const ids = projects.map((p) => p.id);
+		expect(ids).toContain('yesid-dev');
+		expect(ids).toContain('transit-data-pipeline');
+		expect(ids.filter((id) => id.startsWith('lorem-'))).toEqual([]);
 	});
 
 	it('every hero_image_legacy_path (when set) exists in assets-id-map.json', () => {
