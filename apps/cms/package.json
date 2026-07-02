@@ -12,6 +12,7 @@
 		"seed:icons": "bun scripts/seed-icons.ts",
 		"seed:brand-assets": "bun scripts/seed-brand-assets.ts",
 		"seed:pages": "bun scripts/seed-pages-and-blocks.ts",
+		"fixtures:refresh": "bun scripts/refresh-fixtures.ts",
 		"archive:lorem": "bun scripts/archive-lorem-posts.ts",
 		"setup:archetypes": "bun scripts/setup-stack-archetypes-schema.ts",
 		"setup:flat-fields": "bun scripts/setup-block-flat-fields.ts",
