@@ -4,13 +4,19 @@
  *
  * Homework #15: fixtures/collections/{projects,services,blog-posts}.json must
  * MIRROR the real Directus content, not the retired lorem placeholder set.
- * This script reads the dev CMS (read-only) and rewrites the three fixture
- * files in the exact shape their seeders consume, so seeding a fresh CMS from
- * the fixtures recreates the live rows:
+ * This script reads the dev CMS (read-only) and rewrites the fixture files in
+ * the exact shape their seeders consume, so seeding a fresh CMS from the
+ * fixtures recreates the live rows:
  *
  *   projects.json   -> scripts/seed-projects.ts   (ProjectsFixtureSchema)
  *   services.json   -> scripts/seed-services.ts   (ServicesFixtureSchema)
  *   blog-posts.json -> scripts/seed-blog-posts.ts (BlogPostsFixtureSchema)
+ *   route-seo.json  -> scripts/seed-route-seo.ts  (RouteSeoFixtureSchema)
+ *   singletons/site-meta.json -> scripts/seed-site-meta.ts (SiteMetaFixtureSchema)
+ *
+ * route_seo + site_meta joined the mirror in the homework batch (2026-07-02):
+ * both fixture files had rotted against the CMS ("data infrastructure" copy)
+ * because nothing refreshed them.
  *
  * Inversions (the seeders' transforms, run backwards):
  *   - Block Editor docs flatten to plain text, paragraphs joined by blank
@@ -38,7 +44,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { readItems } from '@directus/sdk';
+import { readItems, readSingleton } from '@directus/sdk';
 import type { BlockEditorDoc } from '@repo/shared';
 import { BlockEditorDocSchema } from '@repo/shared';
 import idMap from '../fixtures/assets-id-map.json' with { type: 'json' };
@@ -61,10 +67,13 @@ import {
 import { ProjectsFixtureSchema, type ProjectFixture } from './seed-projects';
 import { ServicesFixtureSchema, type Service } from './seed-services';
 import { BlogPostsFixtureSchema } from './seed-blog-posts';
+import { RouteSeoFixtureSchema } from './seed-route-seo';
+import { SiteMetaFixtureSchema } from './seed-site-meta';
 
 const log = createLogger('refresh-fixtures');
 
 const FIXTURES_DIR = join(import.meta.dir, '../fixtures/collections');
+const SINGLETONS_DIR = join(import.meta.dir, '../fixtures/singletons');
 
 // --- Inverse helpers --------------------------------------------------------
 
@@ -443,6 +452,112 @@ function writeFixture(filename: string, content: string, rows: number, dryRun: b
 	log.info(`wrote ${filename} (${before ?? '?'} -> ${rows} rows)`);
 }
 
+function writeSingletonFixture(filename: string, content: string, dryRun: boolean): void {
+	const filePath = join(SINGLETONS_DIR, filename);
+	if (dryRun) {
+		log.info(`dry-run: would write singletons/${filename}`);
+		return;
+	}
+	writeFileSync(filePath, content, 'utf-8');
+	log.info(`wrote singletons/${filename}`);
+}
+
+// --- route_seo + site_meta raw shapes and transforms -------------------------
+
+const LOCALE_ORDER = ['en', 'fr', 'es'] as const;
+
+function byLocale<T extends { languages_code: string }>(rows: readonly T[]): T[] {
+	return [...rows].sort(
+		(a, b) =>
+			LOCALE_ORDER.indexOf(a.languages_code as (typeof LOCALE_ORDER)[number]) -
+			LOCALE_ORDER.indexOf(b.languages_code as (typeof LOCALE_ORDER)[number]),
+	);
+}
+
+interface RawRouteSeoTranslation {
+	languages_code: 'en' | 'fr' | 'es';
+	title: string | null;
+	description: string | null;
+}
+
+interface RawRouteSeo {
+	path: string;
+	og_image: string | null;
+	status: 'draft' | 'published' | 'archived';
+	sort: number | null;
+	translations?: RawRouteSeoTranslation[];
+}
+
+function toRouteSeoFixture(row: RawRouteSeo) {
+	return {
+		path: row.path,
+		og_image: row.og_image,
+		status: row.status,
+		sort: row.sort ?? 0,
+		translations: byLocale(row.translations ?? []).map((t) => ({
+			languages_code: t.languages_code,
+			title: compactOrNull(t.title),
+			description: compactOrNull(t.description),
+		})),
+	};
+}
+
+interface RawSiteMetaTranslation {
+	languages_code: 'en' | 'fr' | 'es';
+	tagline: string | null;
+	description: string | null;
+	default_description: string | null;
+	owner_job_title: string | null;
+}
+
+interface RawSiteMeta {
+	id: number;
+	name: string;
+	email: string;
+	github_url: string;
+	linkedin_url: string | null;
+	upwork_url: string | null;
+	owner_name: string;
+	owner_locality: string;
+	owner_region: string;
+	owner_country: string;
+	owner_phone: string | null;
+	owner_knows_about: string[] | string | null;
+	default_og_image: string | null;
+	theme_color: string;
+	translations?: RawSiteMetaTranslation[];
+}
+
+/** Key order mirrors the committed singletons/site-meta.json for readable diffs. */
+function toSiteMetaFixture(row: RawSiteMeta) {
+	const knows = Array.isArray(row.owner_knows_about)
+		? row.owner_knows_about.join(',')
+		: (row.owner_knows_about ?? '');
+	return {
+		id: 1,
+		name: row.name,
+		email: row.email,
+		github_url: row.github_url,
+		linkedin_url: row.linkedin_url,
+		upwork_url: row.upwork_url,
+		owner_name: row.owner_name,
+		owner_locality: row.owner_locality,
+		owner_region: row.owner_region,
+		owner_country: row.owner_country,
+		owner_phone: row.owner_phone ?? '',
+		owner_knows_about: knows,
+		default_og_image: row.default_og_image,
+		theme_color: row.theme_color,
+		translations: byLocale(row.translations ?? []).map((t) => ({
+			languages_code: t.languages_code,
+			tagline: t.tagline ?? '',
+			description: t.description ?? '',
+			default_description: t.default_description ?? '',
+			owner_job_title: t.owner_job_title ?? '',
+		})),
+	};
+}
+
 // --- Main --------------------------------------------------------------------
 
 async function main(): Promise<void> {
@@ -454,7 +569,7 @@ async function main(): Promise<void> {
 	const token = await getAdminToken(directusUrl);
 	const client = createClient(directusUrl, token);
 
-	const [rawProjects, rawServices, junction, rawPosts] = await Promise.all([
+	const [rawProjects, rawServices, junction, rawPosts, rawRouteSeo, rawSiteMeta] = await Promise.all([
 		client.request(
 			readItems('projects', {
 				fields: [
@@ -499,6 +614,35 @@ async function main(): Promise<void> {
 				limit: -1,
 			}),
 		) as Promise<unknown> as Promise<RawBlogPost[]>,
+		client.request(
+			readItems('route_seo', {
+				fields: [
+					'path',
+					'og_image',
+					'status',
+					'sort',
+					{ translations: ['languages_code', 'title', 'description'] } as unknown as string,
+				],
+				sort: ['sort'],
+				limit: -1,
+			}),
+		) as Promise<unknown> as Promise<RawRouteSeo[]>,
+		client.request(
+			readSingleton('site_meta', {
+				fields: [
+					'*',
+					{
+						translations: [
+							'languages_code',
+							'tagline',
+							'description',
+							'default_description',
+							'owner_job_title',
+						],
+					} as unknown as string,
+				],
+			}),
+		) as Promise<unknown> as Promise<RawSiteMeta>,
 	]);
 
 	log.info(
@@ -525,11 +669,15 @@ async function main(): Promise<void> {
 		toServiceFixture(row, projectsByService.get(row.id) ?? []),
 	);
 	const posts = dropLorem(rawPosts, 'blog_posts').map(toBlogPostFixture);
+	const routeSeo = rawRouteSeo.map(toRouteSeoFixture);
+	const siteMeta = toSiteMetaFixture(rawSiteMeta);
 
 	// Validate against the seeders' schemas before writing anything.
 	ProjectsFixtureSchema.parse(projects);
 	ServicesFixtureSchema.parse(services);
 	BlogPostsFixtureSchema.parse(posts);
+	RouteSeoFixtureSchema.parse(routeSeo);
+	SiteMetaFixtureSchema.parse(siteMeta);
 	for (const p of posts) {
 		const result = BlockEditorDocSchema.safeParse(p.body);
 		if (!result.success) {
@@ -557,6 +705,8 @@ async function main(): Promise<void> {
 	);
 	writeFixture('services.json', `${JSON.stringify(services, null, '\t')}\n`, services.length, dryRun);
 	writeFixture('blog-posts.json', `${JSON.stringify(posts, null, 2)}\n`, posts.length, dryRun);
+	writeFixture('route-seo.json', `${JSON.stringify(routeSeo, null, '\t')}\n`, routeSeo.length, dryRun);
+	writeSingletonFixture('site-meta.json', `${JSON.stringify(siteMeta, null, '\t')}\n`, dryRun);
 
 	log.info(dryRun ? 'dry-run complete (no files written).' : 'done.');
 }
