@@ -19,7 +19,7 @@
 	},
 	{
 		"path": "/about",
-		"og_image": null,
+		"og_image": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
 		"status": "published",
 		"sort": 2,
 		"translations": [
@@ -37,7 +37,7 @@
 	},
 	{
 		"path": "/contact",
-		"og_image": null,
+		"og_image": "a781a5a4-1abc-4be4-a75e-ee6000419a53",
 		"status": "published",
 		"sort": 3,
 		"translations": [
@@ -55,7 +55,7 @@
 	},
 	{
 		"path": "/services",
-		"og_image": null,
+		"og_image": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7",
 		"status": "published",
 		"sort": 4,
 		"translations": [
@@ -73,7 +73,7 @@
 	},
 	{
 		"path": "/projects",
-		"og_image": null,
+		"og_image": "864b5ad1-3dac-47ea-ad96-f175cad1b515",
 		"status": "published",
 		"sort": 5,
 		"translations": [

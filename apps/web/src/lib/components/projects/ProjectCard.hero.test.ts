@@ -85,6 +85,23 @@ describe('ProjectCard hero media', () => {
 		expect(images[1]?.getAttribute('src')).toBe('/test-assets/mobile-light-uuid?key=card-600');
 	});
 
+	it('renders the digital-infrastructure blueprint sheet when the project has no image (homework #8b)', () => {
+		const project = projectFactory.build();
+
+		const { container } = render(ProjectCard, {
+			props: { project, serviceSvgContents: {} },
+		});
+
+		expect(container.querySelector('[data-testid="project-hero-preview"]')).toBeNull();
+		const media = container.querySelector('[data-testid="project-card-image"]');
+		expect(media?.classList.contains('project-card-blueprint')).toBe(true);
+		expect(media?.getAttribute('style') ?? '').not.toContain('linear-gradient');
+		// Both drawings ship in the DOM; CSS swaps them by viewport (mobile
+		// device below md, workstation + mobile duo at md and up).
+		expect(screen.getByTestId('project-blueprint-fallback').innerHTML).toContain('DWG DIG-001-A');
+		expect(container.querySelectorAll('.blueprint-art')).toHaveLength(2);
+	});
+
 	it('uses a shared media band border for image and fallback project cards', () => {
 		const source = readFileSync(
 			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),

@@ -76,13 +76,25 @@ function titleBodyForSeo(primary: string | undefined, fallback: string, brand: s
 	return (candidates[0] ?? fallback).slice(0, maxBodyLength).trimEnd();
 }
 
+/**
+ * Services with a committed share card at static/og/services/<id>.png (minted
+ * by scripts/generate-og-cards.ts). Both locales share one card per service;
+ * ids outside this set (archived services) fall through to the default card.
+ */
+const SERVICE_OG_CARD_IDS: ReadonlySet<string> = new Set([
+	'database-engineering',
+	'data-pipeline',
+	'analytics-reporting',
+	'web-development',
+]);
+
 /** /services/[id] — pulls service from collection adapter; brand suffix from siteMeta. */
 export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
 	const service = await adapter.services.byId(params.id, ctx);
 	if (!service) throw new Error(`Unknown service id: ${params.id}`);
 	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
-	return {
+	const seo: PageSeo = {
 		title: appendBrandPerLocale(service.title, siteMeta.name),
 		description: fitDescriptionForSeo(service.description, siteSeoDefaults.defaultDescription),
 		canonical: canonicalUrl,
@@ -100,6 +112,21 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 			),
 		],
 	};
+
+	if (SERVICE_OG_CARD_IDS.has(service.id)) {
+		seo.ogImage = {
+			url: `/og/services/${service.id}.png`,
+			alt: {
+				en: `${service.title.en} | yesid.dev`,
+				...(service.title.fr && { fr: `${service.title.fr} | yesid.dev` }),
+				...(service.title.es && { es: `${service.title.es} | yesid.dev` }),
+			},
+			width: 1200,
+			height: 630,
+		};
+	}
+
+	return seo;
 }
 
 /** /projects/[slug] — pulls project from collection adapter; brand suffix from siteMeta. */

@@ -70,5 +70,23 @@
     "tags": ["world", "globe"],
     "description": "Stylized globe illustration",
     "sort": 8
+  },
+  {
+    "id": "digital-desktop",
+    "file_legacy_path": "apps/web/src/lib/assets/project-fallbacks/digital-desktop.svg",
+    "label": "Digital infrastructure blueprint (workstation + mobile)",
+    "category": "general",
+    "tags": ["blueprint", "digital-infrastructure", "project-fallback"],
+    "description": "Drafting-style blueprint of a workstation and mobile device; project no-image fallback on desktop viewports",
+    "sort": 9
+  },
+  {
+    "id": "digital-mobile",
+    "file_legacy_path": "apps/web/src/lib/assets/project-fallbacks/digital-mobile.svg",
+    "label": "Digital infrastructure blueprint (mobile device)",
+    "category": "general",
+    "tags": ["blueprint", "digital-infrastructure", "project-fallback"],
+    "description": "Drafting-style blueprint of a mobile device, front and side elevation; project no-image fallback on mobile viewports",
+    "sort": 10
   }
 ]

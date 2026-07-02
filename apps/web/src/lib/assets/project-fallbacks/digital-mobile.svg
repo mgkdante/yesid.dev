@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 520" fill="none" stroke="currentColor" preserveAspectRatio="xMidYMid meet">
+  <!-- Digital-infrastructure blueprint: mobile device, front + side elevation.
+       Companion sheet to digital-desktop.svg (DWG DIG-001-A); same drafting
+       language as the metro blueprint set. -->
+
+  <!-- Ground line + shadow + tick hatching -->
+  <line x1="40" y1="430" x2="600" y2="430" stroke-width="2"/>
+  <line x1="40" y1="435" x2="600" y2="435" stroke-width="0.5"/>
+  <g stroke-width="1" opacity="0.5">
+    <line x1="60" y1="430" x2="60" y2="445"/><line x1="100" y1="430" x2="100" y2="445"/><line x1="140" y1="430" x2="140" y2="445"/><line x1="180" y1="430" x2="180" y2="445"/><line x1="220" y1="430" x2="220" y2="445"/><line x1="260" y1="430" x2="260" y2="445"/><line x1="300" y1="430" x2="300" y2="445"/><line x1="340" y1="430" x2="340" y2="445"/><line x1="380" y1="430" x2="380" y2="445"/><line x1="420" y1="430" x2="420" y2="445"/><line x1="460" y1="430" x2="460" y2="445"/><line x1="500" y1="430" x2="500" y2="445"/><line x1="540" y1="430" x2="540" y2="445"/><line x1="580" y1="430" x2="580" y2="445"/>
+  </g>
+
+  <!-- Vertical center datum through the front elevation -->
+  <line x1="265" y1="44" x2="265" y2="456" stroke-width="0.5" stroke-dasharray="20 5 2 5" opacity="0.6"/>
+
+  <!-- ============ FRONT ELEVATION ============ -->
+  <rect x="180" y="70" width="170" height="360" rx="22" stroke-width="2"/>
+  <rect x="192" y="96" width="146" height="308" stroke-width="1.5"/>
+  <!-- Speaker slot + camera -->
+  <line x1="240" y1="84" x2="290" y2="84" stroke-width="0.75"/>
+  <circle cx="222" cy="84" r="3" stroke-width="0.75"/>
+  <!-- Home indicator -->
+  <line x1="235" y1="417" x2="295" y2="417" stroke-width="0.75"/>
+  <!-- Screen schematic: status bar, chart, table rows, dock -->
+  <line x1="192" y1="114" x2="338" y2="114" stroke-width="0.5" opacity="0.6"/>
+  <polyline points="204,196 228,168 252,180 276,150 300,162 326,140" stroke-width="1" opacity="0.85"/>
+  <g stroke-width="0.5" opacity="0.5">
+    <line x1="204" y1="146" x2="326" y2="146" stroke-dasharray="4 2"/>
+    <line x1="204" y1="172" x2="326" y2="172" stroke-dasharray="4 2"/>
+  </g>
+  <g stroke-width="0.5" opacity="0.6">
+    <line x1="204" y1="230" x2="326" y2="230"/>
+    <line x1="204" y1="256" x2="306" y2="256" stroke-dasharray="4 2"/>
+    <line x1="204" y1="282" x2="318" y2="282" stroke-dasharray="4 2"/>
+    <line x1="204" y1="308" x2="290" y2="308" stroke-dasharray="4 2"/>
+  </g>
+  <g stroke-width="0.75" opacity="0.8">
+    <rect x="206" y="342" width="26" height="26" rx="6"/>
+    <rect x="240" y="342" width="26" height="26" rx="6"/>
+    <rect x="274" y="342" width="26" height="26" rx="6"/>
+    <rect x="308" y="342" width="26" height="26" rx="6"/>
+  </g>
+
+  <!-- ============ SIDE ELEVATION ============ -->
+  <rect x="450" y="70" width="26" height="360" rx="9" stroke-width="2"/>
+  <!-- Camera bump (rear face) -->
+  <rect x="476" y="96" width="5" height="44" rx="2" stroke-width="1"/>
+  <!-- Power / volume keys -->
+  <line x1="447" y1="150" x2="447" y2="182" stroke-width="1.5"/>
+  <line x1="447" y1="200" x2="447" y2="224" stroke-width="1.5"/>
+  <!-- Hidden internal board line -->
+  <line x1="463" y1="80" x2="463" y2="420" stroke-width="0.5" stroke-dasharray="10 5" opacity="0.5"/>
+
+  <!-- Callouts -->
+  <g font-family="'JetBrains Mono', monospace" fill="currentColor" stroke="none">
+    <text x="160" y="60" font-size="8" opacity="0.7">TOUCH PANEL — 6.1 IN</text>
+    <text x="486" y="60" font-size="8" opacity="0.7">SIDE</text>
+    <text x="352" y="100" font-size="7" opacity="0.5">CAMERA MODULE</text>
+    <text x="380" y="190" font-size="7" opacity="0.5">POWER KEY</text>
+    <text x="76" y="420" font-size="7" opacity="0.5">USB-C PORT</text>
+  </g>
+  <path d="M420 186 L448 166 l -4 8 M448 166 l -9 1" stroke-width="0.5" opacity="0.5"/>
+  <line x1="412" y1="103" x2="472" y2="110" stroke-width="0.5" opacity="0.5"/>
+  <line x1="126" y1="422" x2="256" y2="430" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- Dimensions -->
+  <line x1="180" y1="472" x2="350" y2="472" stroke-width="1" stroke-dasharray="6 3"/>
+  <line x1="180" y1="465" x2="180" y2="479" stroke-width="1"/>
+  <line x1="350" y1="465" x2="350" y2="479" stroke-width="1"/>
+  <path d="M 180 472 l 8 -3 v 6 z" fill="currentColor" stroke="none"/>
+  <path d="M 350 472 l -8 -3 v 6 z" fill="currentColor" stroke="none"/>
+  <text x="265" y="490" font-family="'JetBrains Mono', monospace" font-size="14" fill="currentColor" stroke="none" text-anchor="middle">71 mm</text>
+
+  <line x1="530" y1="70" x2="530" y2="430" stroke-width="1" stroke-dasharray="6 3"/>
+  <line x1="523" y1="70" x2="537" y2="70" stroke-width="1"/>
+  <line x1="523" y1="430" x2="537" y2="430" stroke-width="1"/>
+  <path d="M 530 70 l -3 8 h 6 z" fill="currentColor" stroke="none"/>
+  <path d="M 530 430 l -3 -8 h 6 z" fill="currentColor" stroke="none"/>
+  <text x="548" y="250" font-family="'JetBrains Mono', monospace" font-size="12" fill="currentColor" stroke="none" text-anchor="middle" transform="rotate(90,548,250)">146 mm</text>
+
+  <line x1="450" y1="452" x2="476" y2="452" stroke-width="0.75" stroke-dasharray="4 2"/>
+  <line x1="450" y1="447" x2="450" y2="457" stroke-width="0.75"/>
+  <line x1="476" y1="447" x2="476" y2="457" stroke-width="0.75"/>
+  <text x="484" y="456" font-family="'JetBrains Mono', monospace" font-size="9" fill="currentColor" stroke="none">7.8 mm</text>
+
+  <!-- Title block -->
+  <g transform="translate(40,468)">
+    <rect x="0" y="0" width="120" height="50" stroke-width="1"/>
+    <line x1="0" y1="17" x2="120" y2="17" stroke-width="0.5"/>
+    <line x1="0" y1="34" x2="120" y2="34" stroke-width="0.5"/>
+    <g font-family="'JetBrains Mono', monospace" fill="currentColor" stroke="none">
+      <text x="5" y="12" font-size="8">YESID / DIGITAL INFRA</text>
+      <text x="5" y="29" font-size="8">MOBILE DEVICE 1:4</text>
+      <text x="5" y="46" font-size="8">DWG DIG-002-A</text>
+    </g>
+  </g>
+</svg>

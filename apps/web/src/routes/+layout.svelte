@@ -3,7 +3,6 @@
 	import '@fontsource-variable/jetbrains-mono';
 	import '../app.css';
 	import '$lib/styles/terminal.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import Nav from '$lib/components/layout/Nav.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import { page } from '$app/stores';
@@ -100,10 +99,6 @@
 </script>
 
 <SeoHead seo={data.seo} {locale} themeColor={data.themeColor} />
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
 	<Nav pathname={$page.url.pathname} url={$page.url} {locale} {headerLinks} {menuItems} />

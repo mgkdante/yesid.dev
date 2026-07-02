@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 import type { ContentAdapter } from './types';
-import { blogSlugSeoFactory } from './route-seo-factories';
-import type { BlogPost, SiteMeta, SiteSeoDefaults } from '$lib/types';
+import { blogSlugSeoFactory, servicesIdSeoFactory } from './route-seo-factories';
+import { serviceFactory } from '../../tests/factories';
+import type { BlogPost, Service, SiteMeta, SiteSeoDefaults } from '$lib/types';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
@@ -149,5 +153,48 @@ describe('blogSlugSeoFactory', () => {
 		expect(seo.ogImage?.url).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
 		);
+	});
+});
+
+describe('servicesIdSeoFactory', () => {
+	const CARD_IDS = [
+		'database-engineering',
+		'data-pipeline',
+		'analytics-reporting',
+		'web-development',
+	] as const;
+
+	function argsFor(service: Service) {
+		return {
+			params: { id: service.id },
+			locale: 'en' as const,
+			ctx: undefined,
+			adapter: { services: { byId: async () => service } } as unknown as ContentAdapter,
+			siteMeta,
+			siteSeoDefaults,
+		};
+	}
+
+	it('wires the committed share card for each of the four station services', async () => {
+		for (const id of CARD_IDS) {
+			const service = serviceFactory.build({ id } as Partial<Service>);
+			const seo = await servicesIdSeoFactory(argsFor(service));
+			expect(seo.ogImage?.url).toBe(`/og/services/${id}.png`);
+			expect(seo.ogImage?.width).toBe(1200);
+			expect(seo.ogImage?.height).toBe(630);
+			expect(seo.ogImage?.alt?.en).toContain('yesid.dev');
+		}
+	});
+
+	it('every id in the card set has its PNG committed under static/og/services', () => {
+		for (const id of CARD_IDS) {
+			expect(existsSync(join(cwd(), `static/og/services/${id}.png`)), id).toBe(true);
+		}
+	});
+
+	it('services without a card fall through to the locale default (no ogImage)', async () => {
+		const service = serviceFactory.build({ id: 'internal-tooling' } as Partial<Service>);
+		const seo = await servicesIdSeoFactory(argsFor(service));
+		expect(seo.ogImage).toBeUndefined();
 	});
 });
