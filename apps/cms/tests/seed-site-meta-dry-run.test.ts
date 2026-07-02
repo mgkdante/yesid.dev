@@ -20,7 +20,7 @@ describe('seed-site-meta pure helpers', () => {
 			expect(fixture.id).toBe(1);
 		});
 
-		it('has all 13 expected parent fields', () => {
+		it('has all 14 expected parent fields', () => {
 			expect(Object.keys(fixture).sort()).toEqual(
 				[
 					'id',
@@ -33,6 +33,7 @@ describe('seed-site-meta pure helpers', () => {
 					'owner_locality',
 					'owner_region',
 					'owner_country',
+					'owner_phone',
 					'owner_knows_about',
 					'default_og_image',
 					'theme_color',
@@ -70,6 +71,7 @@ describe('seed-site-meta pure helpers', () => {
 					'owner_locality',
 					'owner_region',
 					'owner_country',
+					'owner_phone',
 					'owner_knows_about',
 					'default_og_image',
 					'theme_color',
