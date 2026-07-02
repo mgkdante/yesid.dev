@@ -772,3 +772,31 @@ export interface MediaVariantEntry {
 	/** webp variants, ascending width. The original file stays the src fallback. */
 	variants: readonly MediaVariantSource[];
 }
+
+// ---------------------------------------------------------------------------
+// Navigation types (moved from apps/web/src/lib/navigation/types.ts —
+// site-hardening-a-plus)
+// ---------------------------------------------------------------------------
+//
+// The nav/menu/error-page shapes are CMS contracts (the cms nav fetcher emits
+// them, the web nav components consume them), so they live here with the rest
+// of the content contract. apps/web/src/lib/navigation/types.ts re-exports
+// them for existing importers.
+
+export interface NavLink {
+	label: LocalizedString;
+	href: string;
+	priority: 1 | 2;
+	subtitle?: LocalizedString;
+	icon?: string;
+}
+
+export type MenuItem = NavLink;
+
+export interface ErrorPageContent {
+	label: LocalizedString;
+	heading: LocalizedString;
+	description: LocalizedString;
+	terminalLine: string;
+	suggestions: readonly { label: LocalizedString; href: string }[];
+}

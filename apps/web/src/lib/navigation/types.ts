@@ -1,19 +1,5 @@
-import type { LocalizedString } from '$lib/types';
-
-export interface NavLink {
-	label: LocalizedString;
-	href: string;
-	priority: 1 | 2;
-	subtitle?: LocalizedString;
-	icon?: string;
-}
-
-export type MenuItem = NavLink;
-
-export interface ErrorPageContent {
-	label: LocalizedString;
-	heading: LocalizedString;
-	description: LocalizedString;
-	terminalLine: string;
-	suggestions: readonly { label: LocalizedString; href: string }[];
-}
+// NavLink / MenuItem / ErrorPageContent moved to @repo/shared types
+// (site-hardening-a-plus) so the cms nav fetcher and the shared nav schema
+// share one contract. Re-exported here for existing $lib/navigation/types
+// importers.
+export type { NavLink, MenuItem, ErrorPageContent } from '@repo/shared';

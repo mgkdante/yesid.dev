@@ -12,6 +12,7 @@
   upstream callers still thread it through the sidebar chain. 17a-4 can prune.
 -->
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -56,8 +57,10 @@
 
 	// Keyed → session-scoped (survives a locale switch, paints directly in its
 	// restored state via persisted()'s synchronous seed); unkeyed → local rune.
-	const persistedOpen = persistKey ? persisted(persistKey, startOpen) : null;
-	let localOpen = $state(startOpen);
+	// untrack marks the one-shot init capture as intentional: the key must stay
+	// a stable string and startOpen is only the seed, owned locally afterwards.
+	const persistedOpen = untrack(() => (persistKey ? persisted(persistKey, startOpen) : null));
+	let localOpen = $state(untrack(() => startOpen));
 	const isOpen = $derived(persistedOpen ? persistedOpen.value : localOpen);
 	function toggleOpen(): void {
 		if (persistedOpen) persistedOpen.value = !persistedOpen.value;

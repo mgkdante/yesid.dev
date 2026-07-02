@@ -10,12 +10,8 @@
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import type { BlockEditorDoc } from '@repo/shared';
-import {
-	BlogPostSchema,
-	type BlogAnimation,
-	type BlogCategory,
-	type BlogPost,
-} from '../schemas/blog';
+import { BlogPostSchema } from '@repo/shared/schemas';
+import type { BlogAnimation, BlogCategory, BlogPost } from '@repo/shared';
 import { BlockEditorDocSchema } from '@repo/shared';
 import type { FetcherContext } from './types';
 import { tagsFromM2M, type DirectusTagJunctionRow } from './projects';

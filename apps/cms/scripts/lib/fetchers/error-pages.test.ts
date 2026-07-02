@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { toErrorPageContent, type DirectusErrorPageRow } from './error-pages';
-import { ErrorPageContentSchema } from '../schemas/nav';
-
+import { ErrorPageContentSchema } from '@repo/shared/schemas';
 const FIXTURE: DirectusErrorPageRow = {
 	id: '1',
 	status: 'published',

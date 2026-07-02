@@ -5,6 +5,7 @@
   Uses bits-ui Collapsible for a11y (aria-controls, aria-expanded, focus management).
 -->
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ChevronToggle } from '$lib/components/brand';
@@ -50,8 +51,9 @@
 	// and registers the key with the orchestrator. The key is captured once at
 	// init — like every persisted() call site, it must be a stable string. When no
 	// key is supplied, `persistedOpen` is null and the bindable `open` is the
-	// source of truth (the existing behaviour).
-	const persistedOpen = sectionKey ? persisted(sectionKey, open) : null;
+	// source of truth (the existing behaviour). untrack marks that one-shot
+	// capture as intentional: the key must never become reactive.
+	const persistedOpen = untrack(() => (sectionKey ? persisted(sectionKey, open) : null));
 
 	// Single source of truth the template binds to: the persisted value when keyed,
 	// otherwise the local bindable. Writes route back to whichever owns the state.

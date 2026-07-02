@@ -45,10 +45,20 @@ const MANIFEST_NOTE =
 	'(.githooks/pre-commit) blocks any commit where a generated .ts no longer ' +
 	'matches its hash here.';
 
+/** Provenance of an emit: a live CMS export or the `.cms-cache.json` fallback. */
+export type ManifestSource = 'live' | 'cache';
+
 export interface GeneratedManifest {
 	/** Human-readable note. JSON has no comments, so this rides as a `//` key. */
 	'//': string;
 	algorithm: 'sha256';
+	/**
+	 * Provenance of the last emit. 'cache' means the modules came from the
+	 * `.cms-cache.json` fallback rather than a live CMS export; ci:content
+	 * (verify-content-manifest.ts) rejects committing such a manifest. Absent
+	 * means 'live' (manifests written before this field existed).
+	 */
+	source?: ManifestSource;
 	/** Map of module basename (e.g. `about-page.ts`) → lowercase hex SHA-256. */
 	files: Record<string, string>;
 }
@@ -78,24 +88,31 @@ export async function loadManifest(contentDir: string): Promise<GeneratedManifes
 }
 
 /** Builds a manifest object with deterministically sorted `files` keys. */
-export function buildManifest(files: Record<string, string>): GeneratedManifest {
+export function buildManifest(
+	files: Record<string, string>,
+	source: ManifestSource = 'live',
+): GeneratedManifest {
 	const sorted: Record<string, string> = {};
 	for (const key of Object.keys(files).sort()) sorted[key] = files[key];
-	return { '//': MANIFEST_NOTE, algorithm: 'sha256', files: sorted };
+	return { '//': MANIFEST_NOTE, algorithm: 'sha256', source, files: sorted };
 }
 
 /**
  * Serializes a manifest to its canonical on-disk form (tab-indented, sorted
  * keys, trailing newline). Pure — used by both the writer and tests.
  */
-export function serializeManifest(files: Record<string, string>): string {
-	return `${JSON.stringify(buildManifest(files), null, '\t')}\n`;
+export function serializeManifest(
+	files: Record<string, string>,
+	source: ManifestSource = 'live',
+): string {
+	return `${JSON.stringify(buildManifest(files, source), null, '\t')}\n`;
 }
 
 /** Writes the manifest for `contentDir` from a basename → hash map. */
 export async function writeManifest(
 	contentDir: string,
 	files: Record<string, string>,
+	source: ManifestSource = 'live',
 ): Promise<void> {
-	await writeFile(manifestPath(contentDir), serializeManifest(files), 'utf8');
+	await writeFile(manifestPath(contentDir), serializeManifest(files, source), 'utf8');
 }

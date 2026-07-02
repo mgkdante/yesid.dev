@@ -6,8 +6,11 @@ import {
 	ALL_MODULES,
 	assertValidModuleFilter,
 	buildMirroredMediaAssetsFromManifest,
+	decideExit,
+	fallbackBannerLines,
 	getExportSkipReason,
 	raceWithStallGuard,
+	resolveFallbackPolicy,
 } from './export-fallbacks';
 
 describe('export-fallbacks skip policy', () => {
@@ -27,6 +30,49 @@ describe('export-fallbacks skip policy', () => {
 
 	it('does not skip local explicit export commands by default', () => {
 		expect(getExportSkipReason({})).toBeNull();
+	});
+});
+
+describe('fallback policy (live-or-die)', () => {
+	it('is soft for local builds regardless of the LIVE flag', () => {
+		expect(resolveFallbackPolicy({})).toBe('soft');
+		expect(resolveFallbackPolicy({ EXPORT_FALLBACKS_LIVE: '1' })).toBe('soft');
+	});
+
+	it('is fail on ANY Vercel target that opted into a live export', () => {
+		expect(resolveFallbackPolicy({ VERCEL_ENV: 'preview', EXPORT_FALLBACKS_LIVE: '1' })).toBe(
+			'fail',
+		);
+		expect(
+			resolveFallbackPolicy({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: 'true' }),
+		).toBe('fail');
+	});
+
+	it('stays soft on Vercel without the LIVE flag (the skip gate exits first anyway)', () => {
+		expect(resolveFallbackPolicy({ VERCEL_ENV: 'preview' })).toBe('soft');
+		expect(resolveFallbackPolicy({ VERCEL_ENV: 'production' })).toBe('soft');
+	});
+
+	it('decideExit fails every non-live outcome under fail, never under soft', () => {
+		expect(decideExit({ source: 'live', emitted: 27 }, 'fail')).toBe(0);
+		expect(decideExit({ source: 'cache', emitted: 27 }, 'fail')).toBe(1);
+		expect(decideExit({ source: 'none', emitted: 0 }, 'fail')).toBe(1);
+		expect(decideExit({ source: 'live', emitted: 27 }, 'soft')).toBe(0);
+		expect(decideExit({ source: 'cache', emitted: 27 }, 'soft')).toBe(0);
+		expect(decideExit({ source: 'none', emitted: 0 }, 'soft')).toBe(0);
+	});
+});
+
+describe('fallbackBannerLines', () => {
+	it('names the fallback source and carries the fetch error', () => {
+		const cacheBanner = fallbackBannerLines('cache', 'ECONNREFUSED');
+		expect(cacheBanner.join('\n')).toContain('CONTENT FALLBACK IN USE');
+		expect(cacheBanner.join('\n')).toContain('source: cache');
+		expect(cacheBanner.join('\n')).toContain('fetch error: ECONNREFUSED');
+
+		const shipBanner = fallbackBannerLines('committed-modules', 'boom');
+		expect(shipBanner.join('\n')).toContain('source: committed-modules');
+		expect(shipBanner.join('\n')).toContain('may be stale vs the CMS');
 	});
 });
 
