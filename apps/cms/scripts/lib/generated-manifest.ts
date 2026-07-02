@@ -4,7 +4,7 @@
  *
  * WHY THIS EXISTS
  * ---------------
- * Those modules carry a `GENERATED FILE — do not edit by hand.` header. They
+ * Those modules carry a `GENERATED FILE - do not edit by hand.` header. They
  * are an edge cache of Directus CMS state — `export:fallbacks` regenerates them
  * FROM the CMS on every build, so a hand-edit is silently overwritten on the
  * next prod rebuild (and worse, masks the fact that the CMS was never updated).
@@ -34,7 +34,7 @@ export const GENERATED_MANIFEST_FILENAME = 'generated.manifest.json';
  * truth for "is this file generated?" — kept in sync with the header emitted by
  * emit-module.ts. The bash hooks grep for this exact string too.
  */
-export const GENERATED_HEADER_MARKER = 'GENERATED FILE — do not edit by hand.';
+export const GENERATED_HEADER_MARKER = 'GENERATED FILE - do not edit by hand.';
 
 const MANIFEST_NOTE =
 	'SHA-256 of each CMS-generated content module, as last emitted by ' +

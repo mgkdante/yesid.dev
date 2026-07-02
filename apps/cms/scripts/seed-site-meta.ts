@@ -29,7 +29,7 @@ import {
 } from '@directus/sdk';
 import { z } from 'zod';
 import fixtureData from '../fixtures/singletons/site-meta.json' with { type: 'json' };
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -269,6 +269,7 @@ export async function seedSiteMeta(
 async function main(): Promise<void> {
 	const { dryRun, reset } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 	log.info(
 		`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset (no-op for singletons)]' : ''}`,
 	);

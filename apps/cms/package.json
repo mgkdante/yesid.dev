@@ -6,11 +6,13 @@
 	"scripts": {
 		"seed:services": "bun scripts/seed-services.ts",
 		"export:fallbacks": "bun scripts/export-fallbacks.ts",
+		"verify:content": "bun scripts/verify-content-manifest.ts",
 		"seed:projects": "bun scripts/seed-projects.ts",
 		"seed:presets": "bun scripts/seed-presets.ts",
 		"seed:icons": "bun scripts/seed-icons.ts",
 		"seed:brand-assets": "bun scripts/seed-brand-assets.ts",
 		"seed:pages": "bun scripts/seed-pages-and-blocks.ts",
+		"fixtures:refresh": "bun scripts/refresh-fixtures.ts",
 		"archive:lorem": "bun scripts/archive-lorem-posts.ts",
 		"setup:archetypes": "bun scripts/setup-stack-archetypes-schema.ts",
 		"setup:flat-fields": "bun scripts/setup-block-flat-fields.ts",

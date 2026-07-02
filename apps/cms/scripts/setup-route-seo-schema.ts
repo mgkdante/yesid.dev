@@ -6,7 +6,7 @@
  * route editorial SEO. Dry-run by default. Pass --apply to write dev CMS schema.
  */
 
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { type ApplyContext, type SchemaStep, isAlreadyExists, rest } from './lib/schema-apply';
@@ -327,6 +327,7 @@ async function main(): Promise<void> {
 	const { apply } = parseFlags(process.argv.slice(2));
 	const plan = buildRouteSeoPlan();
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 
 	log.info(`target: ${directusUrl}${apply ? ' [apply]' : ' [dry-run]'}`);
 	for (const step of plan) log.info(describeStep(step));

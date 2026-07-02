@@ -23,7 +23,7 @@ import { createItem, deleteItem, readItems } from '@directus/sdk';
 import { z } from 'zod';
 import fixtureData from '../fixtures/collections/blog-posts.json' with { type: 'json' };
 import { assetIdForOrUndefined, BlockEditorDocSchema, type BlockEditorDoc } from '@repo/shared';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -189,6 +189,7 @@ export async function seedBlogPosts(fixtures: readonly BlogPostFixture[], opts: 
 async function main(): Promise<void> {
 	const { dryRun, reset } = parseSeedFlags();
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	log.info(`target: ${url}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
 
 	const fixtures = loadBlogPostsFixture();
