@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { toProject, statusFromDirectus, type DirectusProject } from './projects';
-import { ProjectSchema } from '../schemas/project';
+import { ProjectSchema } from '@repo/shared/schemas';
 import type { BlockEditorDoc } from '@repo/shared';
 
 const EMPTY_DOC: BlockEditorDoc = {

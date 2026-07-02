@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 520" fill="none" stroke="currentColor" preserveAspectRatio="xMidYMid meet">
+  <!-- Digital-infrastructure blueprint: workstation + mobile, front elevation.
+       Drafting language mirrors the metro blueprint set (stroke hierarchy
+       2/1.5/1/0.75/0.5, JetBrains Mono dims, title block, ground ticks). -->
+
+  <!-- Ground line + shadow + tick hatching -->
+  <line x1="40" y1="430" x2="800" y2="430" stroke-width="2"/>
+  <line x1="40" y1="435" x2="800" y2="435" stroke-width="0.5"/>
+  <g stroke-width="1" opacity="0.5">
+    <line x1="60" y1="430" x2="60" y2="445"/><line x1="100" y1="430" x2="100" y2="445"/><line x1="140" y1="430" x2="140" y2="445"/><line x1="180" y1="430" x2="180" y2="445"/><line x1="220" y1="430" x2="220" y2="445"/><line x1="260" y1="430" x2="260" y2="445"/><line x1="300" y1="430" x2="300" y2="445"/><line x1="340" y1="430" x2="340" y2="445"/><line x1="380" y1="430" x2="380" y2="445"/><line x1="420" y1="430" x2="420" y2="445"/><line x1="460" y1="430" x2="460" y2="445"/><line x1="500" y1="430" x2="500" y2="445"/><line x1="540" y1="430" x2="540" y2="445"/><line x1="580" y1="430" x2="580" y2="445"/><line x1="620" y1="430" x2="620" y2="445"/><line x1="660" y1="430" x2="660" y2="445"/><line x1="700" y1="430" x2="700" y2="445"/><line x1="740" y1="430" x2="740" y2="445"/><line x1="780" y1="430" x2="780" y2="445"/>
+  </g>
+
+  <!-- Center datum through display centers -->
+  <line x1="40" y1="205" x2="800" y2="205" stroke-width="0.5" stroke-dasharray="20 5 2 5" opacity="0.6"/>
+
+  <!-- ============ WORKSTATION DISPLAY ============ -->
+  <!-- Panel bezel -->
+  <rect x="80" y="80" width="400" height="250" rx="6" stroke-width="2"/>
+  <!-- Screen aperture -->
+  <rect x="92" y="92" width="376" height="226" stroke-width="1.5"/>
+  <!-- Screen schematic: panel dividers -->
+  <line x1="218" y1="92" x2="218" y2="318" stroke-width="0.75" stroke-dasharray="4 2" opacity="0.6"/>
+  <line x1="218" y1="182" x2="468" y2="182" stroke-width="0.75" stroke-dasharray="4 2" opacity="0.6"/>
+  <!-- Left pane: bar chart -->
+  <g stroke-width="0.75" opacity="0.8">
+    <rect x="108" y="238" width="16" height="60"/>
+    <rect x="132" y="210" width="16" height="88"/>
+    <rect x="156" y="252" width="16" height="46"/>
+    <rect x="180" y="192" width="16" height="106"/>
+  </g>
+  <line x1="104" y1="298" x2="204" y2="298" stroke-width="1"/>
+  <!-- Left pane: database cylinder -->
+  <g stroke-width="0.75" opacity="0.8">
+    <ellipse cx="155" cy="122" rx="34" ry="10"/>
+    <path d="M121 122 V158 A34 10 0 0 0 189 158 V122"/>
+    <ellipse cx="155" cy="140" rx="34" ry="10" stroke-dasharray="3 2" opacity="0.6"/>
+  </g>
+  <!-- Right-top pane: telemetry line chart -->
+  <polyline points="232,168 262,140 292,152 322,118 352,132 382,108 412,120 454,104" stroke-width="1"/>
+  <g stroke-width="0.5" opacity="0.5">
+    <line x1="232" y1="112" x2="454" y2="112" stroke-dasharray="4 2"/>
+    <line x1="232" y1="140" x2="454" y2="140" stroke-dasharray="4 2"/>
+  </g>
+  <!-- Right-bottom pane: table rows -->
+  <g stroke-width="0.5" opacity="0.6">
+    <line x1="232" y1="206" x2="454" y2="206"/>
+    <line x1="232" y1="230" x2="420" y2="230" stroke-dasharray="4 2"/>
+    <line x1="232" y1="254" x2="440" y2="254" stroke-dasharray="4 2"/>
+    <line x1="232" y1="278" x2="400" y2="278" stroke-dasharray="4 2"/>
+    <line x1="232" y1="302" x2="430" y2="302" stroke-dasharray="4 2"/>
+  </g>
+  <!-- Stand: pillar + base plate -->
+  <path d="M266 330 L262 418 M294 330 L298 418" stroke-width="1.5"/>
+  <rect x="210" y="418" width="140" height="12" rx="2" stroke-width="2"/>
+
+  <!-- ============ MOBILE DEVICE ============ -->
+  <rect x="580" y="150" width="130" height="280" rx="16" stroke-width="2"/>
+  <rect x="590" y="172" width="110" height="236" stroke-width="1.5"/>
+  <line x1="625" y1="161" x2="665" y2="161" stroke-width="0.75"/>
+  <line x1="620" y1="419" x2="670" y2="419" stroke-width="0.75"/>
+  <!-- Mobile screen: status bar + mini chart + rows -->
+  <line x1="590" y1="188" x2="700" y2="188" stroke-width="0.5" opacity="0.6"/>
+  <polyline points="598,250 618,228 638,238 658,214 678,224 694,206" stroke-width="0.75" opacity="0.8"/>
+  <g stroke-width="0.5" opacity="0.6">
+    <line x1="598" y1="286" x2="692" y2="286" stroke-dasharray="4 2"/>
+    <line x1="598" y1="310" x2="676" y2="310" stroke-dasharray="4 2"/>
+    <line x1="598" y1="334" x2="688" y2="334" stroke-dasharray="4 2"/>
+    <line x1="598" y1="358" x2="662" y2="358" stroke-dasharray="4 2"/>
+  </g>
+
+  <!-- Data link between workstation and device -->
+  <path d="M482 160 Q540 96 610 140" stroke-width="1" stroke-dasharray="5 2"/>
+  <path d="M610 140 l -9 -2 6 -6 z" fill="currentColor" stroke="none"/>
+  <path d="M482 160 l 4 -8 5 7 z" fill="currentColor" stroke="none"/>
+
+  <!-- Callouts (JetBrains Mono, all caps) -->
+  <g font-family="'JetBrains Mono', monospace" fill="currentColor" stroke="none">
+    <text x="86" y="70" font-size="8" opacity="0.7">DISPLAY PANEL — TELEMETRY</text>
+    <text x="310" y="376" font-size="7" opacity="0.5">STAND / VESA 100</text>
+    <text x="640" y="128" font-size="8" opacity="0.7">MOBILE DEVICE</text>
+    <text x="500" y="78" font-size="7" opacity="0.5">DATA LINK — SYNC</text>
+  </g>
+
+  <!-- Dimensions -->
+  <line x1="80" y1="460" x2="480" y2="460" stroke-width="1" stroke-dasharray="6 3"/>
+  <line x1="80" y1="453" x2="80" y2="467" stroke-width="1"/>
+  <line x1="480" y1="453" x2="480" y2="467" stroke-width="1"/>
+  <path d="M 80 460 l 8 -3 v 6 z" fill="currentColor" stroke="none"/>
+  <path d="M 480 460 l -8 -3 v 6 z" fill="currentColor" stroke="none"/>
+  <text x="280" y="478" font-family="'JetBrains Mono', monospace" font-size="14" fill="currentColor" stroke="none" text-anchor="middle">610 mm</text>
+
+  <line x1="580" y1="452" x2="710" y2="452" stroke-width="0.75" stroke-dasharray="4 2"/>
+  <line x1="580" y1="447" x2="580" y2="457" stroke-width="0.75"/>
+  <line x1="710" y1="447" x2="710" y2="457" stroke-width="0.75"/>
+  <text x="645" y="446" font-family="'JetBrains Mono', monospace" font-size="9" fill="currentColor" stroke="none" text-anchor="middle">71 mm</text>
+
+  <line x1="740" y1="150" x2="740" y2="430" stroke-width="1" stroke-dasharray="6 3"/>
+  <line x1="733" y1="150" x2="747" y2="150" stroke-width="1"/>
+  <line x1="733" y1="430" x2="747" y2="430" stroke-width="1"/>
+  <path d="M 740 150 l -3 8 h 6 z" fill="currentColor" stroke="none"/>
+  <path d="M 740 430 l -3 -8 h 6 z" fill="currentColor" stroke="none"/>
+  <text x="758" y="290" font-family="'JetBrains Mono', monospace" font-size="12" fill="currentColor" stroke="none" text-anchor="middle" transform="rotate(90,758,290)">146 mm</text>
+
+  <!-- Title block -->
+  <g transform="translate(490,468)">
+    <rect x="0" y="0" width="310" height="50" stroke-width="1"/>
+    <line x1="0" y1="17" x2="310" y2="17" stroke-width="0.5"/>
+    <line x1="0" y1="34" x2="310" y2="34" stroke-width="0.5"/>
+    <line x1="155" y1="0" x2="155" y2="50" stroke-width="0.5"/>
+    <g font-family="'JetBrains Mono', monospace" fill="currentColor" stroke="none">
+      <text x="6" y="12" font-size="10">YESID / DIGITAL INFRA</text>
+      <text x="161" y="12" font-size="10">WORKSTATION + MOBILE</text>
+      <text x="6" y="29" font-size="9">FRONT ELEVATION</text>
+      <text x="161" y="29" font-size="9">SCALE 1:6</text>
+      <text x="6" y="46" font-size="9">MONTREAL QC</text>
+      <text x="161" y="46" font-size="9">DWG DIG-001-A</text>
+    </g>
+  </g>
+</svg>

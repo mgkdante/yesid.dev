@@ -142,7 +142,7 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-excerpt')).toBeInTheDocument();
 	});
 
-	it('falls back to the shared gradient media band for imageless projects', () => {
+	it('falls back to the shared blueprint media band for imageless projects', () => {
 		const service = services[0]!;
 		const project = projectFactory.build({
 			slug: 'synthetic-imageless',

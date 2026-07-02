@@ -141,6 +141,30 @@
 			"folder": "projects",
 			"title": "yesid.dev case study screenshot",
 			"description": "Fresh screenshot of the yesid.dev project case study; used inside the case study body."
+		},
+		{
+			"legacyPath": "og/routes/services.png",
+			"folder": "og",
+			"title": "OG card — /services",
+			"description": "Share card for the /services listing route: Digital Infrastructure title with the four-station service list."
+		},
+		{
+			"legacyPath": "og/routes/contact.png",
+			"folder": "og",
+			"title": "OG card — /contact",
+			"description": "Share card for the /contact route in the yellow signage voice: Let's talk."
+		},
+		{
+			"legacyPath": "og/routes/about.png",
+			"folder": "og",
+			"title": "OG card — /about",
+			"description": "Share card for the /about route: Yesid O., Digital Infrastructure Engineer, with headshot."
+		},
+		{
+			"legacyPath": "og/routes/projects.png",
+			"folder": "og",
+			"title": "OG card — /projects",
+			"description": "Share card for the /projects listing route with the digital-infrastructure blueprint drawing."
 		}
 	]
 }

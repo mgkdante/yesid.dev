@@ -1,9 +1,10 @@
 <!--
   Single project card for the /projects listing page.
-  Layout: short gradient banner (120px) -> title -> description -> service badges
+  Layout: short media banner -> title -> description -> service badges
          -> tech stack inline diagram -> tag pills.
-  Banner shows project image if available, otherwise a gradient with a subtle
-  SvgIcon at the right. Full card is a link to /projects/{slug}.
+  Banner shows project image if available, otherwise the digital-infrastructure
+  blueprint sheet (homework #8b): mobile-device drawing on mobile viewports,
+  workstation+mobile duo on desktop. Full card is a link to /projects/{slug}.
   Hover triggers border glow + SVG morph. No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
@@ -22,6 +23,8 @@
 	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';
 	import { siteLabels } from '$lib/content';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';
+	import digitalDesktopBlueprint from '$lib/assets/project-fallbacks/digital-desktop.svg?raw';
+	import digitalMobileBlueprint from '$lib/assets/project-fallbacks/digital-mobile.svg?raw';
 
 	type ProjectCardVariant = 'listing' | 'proof';
 	type ProjectCardSize = 'listing' | 'proof';
@@ -90,20 +93,6 @@
 	);
 
 
-	// Gradient color based on the first related service's position in the palette.
-	// GO-2: keyed by the 4 consolidated stations; unknown/archived ids take the
-	// fallback pair below.
-	const SERVICE_GRADIENTS: Record<string, [string, string]> = {
-		'database-engineering': ['var(--primary)', 'var(--primary-hover)'],
-		'data-pipeline': ['var(--accent)', 'var(--accent-hover)'],
-		'analytics-reporting': ['var(--primary)', 'var(--accent)'],
-		'web-development': ['var(--accent)', 'var(--primary)']
-	};
-
-	let gradientColors = $derived(
-		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--primary)', 'var(--accent)']
-	);
-
 	// i18n labels pulled from content layer (Task 17b-7d).
 	const listingChrome = siteLabels.projectsChrome.listing;
 	const stackLabel = listingChrome.filters.techStack;
@@ -134,7 +123,7 @@
 	<div class="h-full" use:cursorGlow>
 	<Card class="h-full gap-0 py-0">
 		<article class="flex h-full flex-col">
-		<!-- Gradient banner: short (120px), full-width. Image or gradient+icon fallback -->
+		<!-- Media banner: image, or the digital-infrastructure blueprint sheet fallback -->
 		{#if project.image}
 			<div class={mediaClass} data-testid={mediaTestId}>
 				<ProjectHeroPreview
@@ -148,19 +137,19 @@
 			</div>
 		{:else}
 			<div
-				class={cn(mediaClass, 'flex items-center justify-end pr-6')}
+				class={cn(mediaClass, 'project-card-blueprint relative')}
 				data-testid={mediaTestId}
-				style="background: linear-gradient(135deg, color-mix(in srgb, {gradientColors[0]} 13%, transparent), color-mix(in srgb, {gradientColors[1]} 7%, transparent));"
 			>
-				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
-					<div class="opacity-30 transition-opacity duration-300 group-hover:opacity-50 group-active:opacity-50">
-						<SvgIcon
-							svgContent={serviceSvgContents[project.relatedServices[0]]}
-							size={72}
-							hovered={cardHovered}
-						/>
-					</div>
-				{/if}
+				<div
+					class="blueprint-art blueprint-art--desktop"
+					data-testid="project-blueprint-fallback"
+					aria-hidden="true"
+				>
+					{@html digitalDesktopBlueprint}
+				</div>
+				<div class="blueprint-art blueprint-art--mobile" aria-hidden="true">
+					{@html digitalMobileBlueprint}
+				</div>
 			</div>
 		{/if}
 
@@ -315,6 +304,58 @@
 
 	.project-card-media {
 		border-bottom: 2px solid color-mix(in srgb, var(--primary) 78%, transparent);
+	}
+
+	/* No-image fallback: digital-infrastructure blueprint sheet (homework #8b).
+	   Graph-paper grid + drafting drawing, all in the primary voice; the
+	   drawing swaps per VIEWPORT (mobile device < md, workstation duo >= md). */
+	.project-card-blueprint {
+		color: var(--primary);
+		background-image:
+			linear-gradient(color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px),
+			linear-gradient(90deg, color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px),
+			linear-gradient(color-mix(in srgb, var(--primary) 5%, transparent) 1px, transparent 1px),
+			linear-gradient(90deg, color-mix(in srgb, var(--primary) 5%, transparent) 1px, transparent 1px);
+		background-size:
+			96px 96px,
+			96px 96px,
+			24px 24px,
+			24px 24px;
+	}
+
+	.blueprint-art {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+		opacity: 0.6;
+		transition: opacity 300ms;
+	}
+
+	.project-card:hover .blueprint-art,
+	.project-card:active .blueprint-art {
+		opacity: 0.85;
+	}
+
+	.blueprint-art :global(svg) {
+		width: 100%;
+		height: 100%;
+	}
+
+	.blueprint-art--desktop {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.blueprint-art--desktop {
+			display: flex;
+		}
+
+		.blueprint-art--mobile {
+			display: none;
+		}
 	}
 
 	.project-card-media--listing {

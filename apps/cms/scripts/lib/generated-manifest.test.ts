@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -41,6 +41,12 @@ describe('buildManifest', () => {
 		expect(serializeManifest(a.files)).toBe(serializeManifest(b.files));
 		expect(a.algorithm).toBe('sha256');
 	});
+
+	it('records live provenance by default and cache when the emit came from the fallback', () => {
+		expect(buildManifest({ 'a.ts': '1' }).source).toBe('live');
+		expect(buildManifest({ 'a.ts': '1' }, 'cache').source).toBe('cache');
+		expect(serializeManifest({ 'a.ts': '1' }, 'cache')).toContain('"source": "cache"');
+	});
 });
 
 describe('serializeManifest', () => {
@@ -65,6 +71,35 @@ describe('write/loadManifest round-trip', () => {
 
 			const loaded = await loadManifest(dir);
 			expect(loaded?.files).toEqual(buildManifest(files).files);
+		} finally {
+			await rm(dir, { recursive: true, force: true });
+		}
+	});
+
+	it('round-trips the cache provenance', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'manifest-test-'));
+		try {
+			await writeManifest(dir, { 'nav.ts': hashContent('one') }, 'cache');
+			expect((await loadManifest(dir))?.source).toBe('cache');
+		} finally {
+			await rm(dir, { recursive: true, force: true });
+		}
+	});
+
+	it('loads a pre-provenance manifest without a source field (backward compat)', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'manifest-test-'));
+		try {
+			// Hand-built legacy shape: the committed manifest predates `source`.
+			const legacy = {
+				'//': 'legacy note',
+				algorithm: 'sha256',
+				files: { 'nav.ts': hashContent('one') },
+			};
+			await writeFile(manifestPath(dir), `${JSON.stringify(legacy, null, '\t')}\n`, 'utf8');
+			const loaded = await loadManifest(dir);
+			expect(loaded).not.toBeNull();
+			expect(loaded?.source).toBeUndefined();
+			expect(loaded?.files).toEqual(legacy.files);
 		} finally {
 			await rm(dir, { recursive: true, force: true });
 		}

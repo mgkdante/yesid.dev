@@ -125,3 +125,38 @@ test.describe('/projects/[slug] detail page content', () => {
 		await expect(stackTitle).toBeVisible();
 	});
 });
+
+test.describe('/projects/[slug] repo-private links state (homework #13)', () => {
+	// yesid-dev ships repoPrivate: true in committed content, alongside a real
+	// liveUrl AND a repoUrl. ProjectLinksCard must suppress the GitHub link and
+	// render the honest non-link span instead (an honest state beats a 404),
+	// while the live-site link keeps rendering next to it.
+	test('private repo renders honest non-link state instead of a GitHub link', async ({ page }) => {
+		await page.goto('/projects/yesid-dev');
+		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
+
+		// The links card renders twice (desktop toc rail + hidden mobile glance).
+		// Scope to the visible instance to dodge strict-mode "resolved to 2".
+		const linksCard = page.getByTestId('project-links-card').filter({ visible: true }).first();
+		await expect(linksCard).toBeVisible();
+
+		const privateState = linksCard.getByTestId('project-repo-private');
+		await expect(privateState).toBeVisible();
+		await expect(privateState).toHaveText(/Private repo \(for now\)/);
+
+		// No GitHub anchor ships in ANY links-card instance (visible or hidden):
+		// repoUrl is set on this project, so a zero count proves the suppression.
+		await expect(page.getByTestId('project-links-card').locator('a[href*="github.com"]')).toHaveCount(0);
+		// The live-site link still renders: the private state coexists with real links.
+		await expect(linksCard.locator('a[href="https://yesid.dev"]')).toBeVisible();
+	});
+
+	test('FR locale renders the translated private-repo label', async ({ page }) => {
+		await page.goto('/fr/projects/yesid-dev');
+		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
+
+		const privateState = page.getByTestId('project-repo-private').filter({ visible: true }).first();
+		await expect(privateState).toBeVisible();
+		await expect(privateState).toHaveText(/Dépôt privé \(pour le moment\)/);
+	});
+});
