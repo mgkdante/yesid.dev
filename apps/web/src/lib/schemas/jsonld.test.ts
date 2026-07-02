@@ -199,7 +199,7 @@ describe('CollectionPageSchema', () => {
 		'@type': 'CollectionPage' as const,
 		'@id': 'https://yesid.dev/blog#collectionpage',
 		name: 'Blog',
-		description: 'Notes on data infrastructure.',
+		description: 'Notes on digital infrastructure.',
 		url: 'https://yesid.dev/blog',
 	};
 

@@ -5,7 +5,8 @@ import { adapter } from '$lib/adapters';
 describe('getPageSeo', () => {
 	it('delegates to the adapter and returns a parsed PageSeo for /about', async () => {
 		const seo = await getPageSeo('/about', 'en');
-		expect(seo.title.en).toMatch(/About/);
+		// Keyword title (homework #4): "Yesid O., Digital Infrastructure Engineer in Montreal"
+		expect(seo.title.en).toMatch(/Yesid O\./);
 		expect(seo.canonical).toBe('https://yesid.dev/about');
 	});
 

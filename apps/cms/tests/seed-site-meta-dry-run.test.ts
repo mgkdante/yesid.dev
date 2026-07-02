@@ -20,7 +20,7 @@ describe('seed-site-meta pure helpers', () => {
 			expect(fixture.id).toBe(1);
 		});
 
-		it('has all 13 expected parent fields', () => {
+		it('has all 14 expected parent fields', () => {
 			expect(Object.keys(fixture).sort()).toEqual(
 				[
 					'id',
@@ -33,6 +33,7 @@ describe('seed-site-meta pure helpers', () => {
 					'owner_locality',
 					'owner_region',
 					'owner_country',
+					'owner_phone',
 					'owner_knows_about',
 					'default_og_image',
 					'theme_color',
@@ -70,6 +71,7 @@ describe('seed-site-meta pure helpers', () => {
 					'owner_locality',
 					'owner_region',
 					'owner_country',
+					'owner_phone',
 					'owner_knows_about',
 					'default_og_image',
 					'theme_color',
@@ -147,7 +149,7 @@ describe('seed-site-meta pure helpers', () => {
 		});
 
 		it('owner_job_title is populated', () => {
-			expect(en!.owner_job_title).toBe('Digital Infrastructure Consultant');
+			expect(en!.owner_job_title).toBe('Freelance Digital Infrastructure Engineer');
 		});
 	});
 
@@ -171,7 +173,7 @@ describe('seed-site-meta pure helpers', () => {
 		});
 	});
 
-	describe('FR translation (partial — owner_job_title only)', () => {
+	describe('FR translation (full — FR launched slice-28.6)', () => {
 		const fr = fixture.translations.find((t) => t.languages_code === 'fr');
 
 		it('exists', () => {
@@ -179,13 +181,13 @@ describe('seed-site-meta pure helpers', () => {
 		});
 
 		it('has owner_job_title populated', () => {
-			expect(fr!.owner_job_title).toBe('Consultant en infrastructure numérique');
+			expect(fr!.owner_job_title).toBe('Ingénieur pigiste en infrastructure numérique');
 		});
 
-		it('has empty tagline/description/default_description (added later via Data Studio)', () => {
-			expect(fr!.tagline).toBe('');
-			expect(fr!.description).toBe('');
-			expect(fr!.default_description).toBe('');
+		it('has populated tagline/description/default_description (fixture mirrors the live FR content)', () => {
+			expect(fr!.tagline.length).toBeGreaterThan(0);
+			expect(fr!.description.length).toBeGreaterThan(0);
+			expect(fr!.default_description.length).toBeGreaterThan(0);
 		});
 	});
 
@@ -197,7 +199,7 @@ describe('seed-site-meta pure helpers', () => {
 		});
 
 		it('has owner_job_title populated', () => {
-			expect(es!.owner_job_title).toBe('Consultor de infraestructura digital');
+			expect(es!.owner_job_title).toBe('Ingeniero independiente en infraestructura digital');
 		});
 
 		it('has empty tagline/description/default_description', () => {

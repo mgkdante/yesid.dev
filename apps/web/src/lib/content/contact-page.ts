@@ -75,6 +75,14 @@ export const contactContent: ContactContent = {
 			icon: 'linkedin',
 			label: { en: 'LinkedIn', fr: 'LinkedIn' },
 		},
+		{
+			href: 'https://cal.com/yesid-dev',
+			icon: 'calendar',
+			label: {
+				en: 'Book a 20-min intro call',
+				fr: 'Réserver un appel intro de 20 minutes',
+			},
+		},
 	],
 	stationLabel: { en: 'NEXT STOP: YOU', fr: 'PROCHAIN ARRÊT : TOI' },
 	success: {

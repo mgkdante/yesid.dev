@@ -30,16 +30,22 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		},
 		ogImage: null,
 		path: '/about',
-		title: { en: 'About Yesid', fr: 'À propos de Yesid' },
+		title: {
+			en: 'Yesid O., Digital Infrastructure Engineer in Montreal',
+			fr: 'Yesid O., ingénieur en infrastructure numérique à Montréal',
+		},
 	},
 	{
 		description: {
-			en: 'Get in touch for freelance SQL, PostgreSQL, dbt, Power BI, or data infrastructure work. Based in Montreal; available across Canada and for remote engagements.',
-			fr: 'Contactez-moi pour du travail pigiste en SQL, PostgreSQL, dbt, Power BI ou infrastructure de données. Basé à Montréal et disponible à distance.',
+			en: 'Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montreal; available remotely.',
+			fr: 'Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal et disponible à distance.',
 		},
 		ogImage: null,
 		path: '/contact',
-		title: { en: 'Contact', fr: 'Contact' },
+		title: {
+			en: 'Hire a Digital Infrastructure Freelancer in Montreal',
+			fr: 'Engager un pigiste en infrastructure numérique à Montréal',
+		},
 	},
 	{
 		description: {
@@ -48,12 +54,15 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		},
 		ogImage: null,
 		path: '/services',
-		title: { en: 'Services', fr: 'Services' },
+		title: {
+			en: 'Digital Infrastructure Services: Web, Data, Automation',
+			fr: 'Infrastructure numérique: web, données, automatisation',
+		},
 	},
 	{
 		description: {
 			en: 'Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.',
-			fr: 'Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure de données.',
+			fr: 'Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure numérique.',
 		},
 		ogImage: null,
 		path: '/projects',
@@ -61,8 +70,8 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 	},
 	{
 		description: {
-			en: 'Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.',
-			fr: 'Notes sur l\'infrastructure de données, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance.',
+			en: 'Notes on digital infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.',
+			fr: 'Notes sur l\'infrastructure numérique, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance.',
 		},
 		ogImage: null,
 		path: '/blog',

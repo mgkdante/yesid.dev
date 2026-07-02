@@ -17,7 +17,12 @@ const config = {
 	kit: {
 		// Pin to Node 22 LTS. The adapter auto-detects the runtime but Bun ships
 		// a newer Node.js ABI that the adapter rejects — explicit runtime avoids this.
-		adapter: adapter({ runtime: 'nodejs22.x' })
+		adapter: adapter({ runtime: 'nodejs22.x' }),
+		prerender: {
+			// '*' keeps the default crawl; the llms files are linked from nowhere,
+			// so the crawler needs them as explicit entries.
+			entries: ['*', '/llms.txt', '/llms-full.txt']
+		}
 	}
 };
 

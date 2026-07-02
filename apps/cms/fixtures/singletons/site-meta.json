@@ -9,6 +9,7 @@
 	"owner_locality": "Montreal",
 	"owner_region": "QC",
 	"owner_country": "CA",
+	"owner_phone": "+18194465594",
 	"owner_knows_about": "PostgreSQL,dbt,Power BI,Python,Digital Infrastructure,ETL,Data Warehousing,SvelteKit,TypeScript",
 	"default_og_image": null,
 	"theme_color": "#141414",
@@ -16,23 +17,23 @@
 		{
 			"languages_code": "en",
 			"tagline": "Digital infrastructure that moves.",
-			"description": "Freelance SQL developer and digital infrastructure consultant based in Montreal. PostgreSQL, dbt, Power BI, and Python.",
-			"default_description": "yesid. — freelance data infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, Python. Real-time pipelines, analytics, dashboards for growing teams.",
-			"owner_job_title": "Digital Infrastructure Consultant"
+			"description": "Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.",
+			"default_description": "yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.",
+			"owner_job_title": "Freelance Digital Infrastructure Engineer"
 		},
 		{
 			"languages_code": "fr",
-			"tagline": "",
-			"description": "",
-			"default_description": "",
-			"owner_job_title": "Consultant en infrastructure numérique"
+			"tagline": "Une infrastructure numérique qui bouge.",
+			"description": "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+			"default_description": "yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
+			"owner_job_title": "Ingénieur pigiste en infrastructure numérique"
 		},
 		{
 			"languages_code": "es",
 			"tagline": "",
 			"description": "",
 			"default_description": "",
-			"owner_job_title": "Consultor de infraestructura digital"
+			"owner_job_title": "Ingeniero independiente en infraestructura digital"
 		}
 	]
 }

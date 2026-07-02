@@ -18,7 +18,7 @@ export const heroAnimContent: HeroAnimContent = {
 };
 
 export const heroContent: HeroContent = {
-	ctaContact: { en: 'Let\'s talk', fr: 'Parlons-en' },
+	ctaContact: { en: 'Let\'s talk!', fr: 'Parlons-en !' },
 	ctaWork: { en: 'See how I build →', fr: 'Vois comment je bâtis →' },
 	headline: {
 		ariaSuffix: { en: 'Don\'t Break.', fr: 'Ne cassent pas.' },
