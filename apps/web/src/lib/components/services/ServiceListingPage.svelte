@@ -4,7 +4,7 @@
   IntersectionObserver tracks which service viewport is in view. D190, D191.
 -->
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { onMount, tick, untrack } from 'svelte';
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -33,7 +33,9 @@
 		[...services].sort((a, b) => a.station - b.station)
 	);
 
-	let activeId = $state(sorted[0]?.id ?? '');
+	// untrack: activeId deliberately seeds from the first station once, then the
+	// IntersectionObserver and tab clicks own it.
+	let activeId = $state(untrack(() => sorted[0]?.id ?? ''));
 	let currentProjects = $derived(serviceProjects[activeId] ?? []);
 	let currentServiceTitle = $derived(() => {
 		const svc = sorted.find((s) => s.id === activeId);

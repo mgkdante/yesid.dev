@@ -13,6 +13,10 @@
  *      a real regen, which rewrites the manifest too).
  *   3. Every unlisted *.ts carrying the generated header marker in its first
  *      400 bytes is a hand-created/renamed generated file — rejected.
+ *   4. The manifest must not record `source: "cache"`: a cache-fallback emit
+ *      rewrites modules and manifest consistently, so hashes alone cannot tell
+ *      a stale snapshot from a live export; the provenance field can. Re-run
+ *      export:fallbacks against the dev CMS before committing.
  *
  * Companions (*.companion.ts), tests (*.test.ts), index.ts and other
  * code-owned files are unlisted and carry no marker, so they pass untouched.
@@ -54,6 +58,17 @@ export async function verifyContentDir(contentDir: string): Promise<ContentVerif
 					'Run `bun run --cwd apps/cms export:fallbacks` and commit the result.',
 			],
 		};
+	}
+
+	// Provenance guard: a cache-fallback emit is internally consistent (hashes
+	// match), so only the recorded source distinguishes it from a live export.
+	// Absent field = live (manifests written before the field existed).
+	if (manifest.source === 'cache') {
+		violations.push(
+			'generated.manifest.json records source "cache": the committed content modules were emitted ' +
+				'from the .cms-cache.json fallback, not a live CMS export. Re-run ' +
+				'`bun run --cwd apps/cms export:fallbacks` against the dev CMS and commit the result.',
+		);
 	}
 
 	const entries = await readdir(contentDir, { withFileTypes: true });

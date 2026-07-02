@@ -8,7 +8,8 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { MorphShapeSchema, type MorphShape } from '../schemas/morph-shape';
+import { MorphShapeSchema } from '@repo/shared/schemas';
+import type { MorphShape } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 export async function fetchMorphShapes({ client }: FetcherContext): Promise<readonly MorphShape[]> {

@@ -10,7 +10,7 @@
 -->
 <script lang="ts">
 	import type { TocHeading } from '@repo/shared';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, untrack } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -50,8 +50,12 @@
 	// so we keep a plain local rune in that case and let the parent's own persisted
 	// state carry across the switch. `mobileOpen` is ephemeral (a transient mobile
 	// overlay) and is intentionally NOT persisted.
-	const tocPersisted = syncOpen === undefined ? persisted('toc-open', startOpen) : null;
-	let tocOpenLocal = $state(startOpen);
+	// untrack marks the one-shot init capture as intentional: the ownership mode
+	// is decided once and startOpen is only the seed, owned locally afterwards.
+	const tocPersisted = untrack(() =>
+		syncOpen === undefined ? persisted('toc-open', startOpen) : null
+	);
+	let tocOpenLocal = $state(untrack(() => startOpen));
 	let tocOpen = $derived(tocPersisted ? tocPersisted.value : tocOpenLocal);
 	function setTocOpen(next: boolean): void {
 		if (tocPersisted) tocPersisted.value = next;

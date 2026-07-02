@@ -14,6 +14,13 @@
     "_syncId": "_sync_editor_role"
   },
   {
+    "name": "Ops Bot",
+    "icon": "smart_toy",
+    "description": "Scoped content-operations identity (content CRUD, file uploads, settings). Schema ops stay on the admin token.",
+    "parent": null,
+    "_syncId": "2225d721-adff-4a8b-803a-29b2ab86c38f"
+  },
+  {
     "name": "AI Editor",
     "icon": "smart_toy",
     "description": "For LLM/MCP clients (Claude Code, ChatGPT, Cursor). Read+Update on user collections only. No deletes. No system access.",
