@@ -12,13 +12,8 @@ import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import { toLocalizedString, toLocalizedBlockEditorDoc, mapLocalizedRepeater } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
-import {
-	ProjectSchema,
-	type ImpactMetric,
-	type Project,
-	type ProjectSection,
-	type ProjectStatus,
-} from '../schemas/project';
+import { ProjectSchema } from '@repo/shared/schemas';
+import type { ImpactMetric, Project, ProjectSection, ProjectStatus } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 export interface DirectusProjectTranslation {

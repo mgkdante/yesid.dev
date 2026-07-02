@@ -56,20 +56,24 @@
 	// generated listing module + previous literals as code fallbacks. The
 	// formerly orphaned CMS intro is rendered as the header subtitle.
 	const listingChrome = siteLabels.projectsChrome.listing;
-	const listingHeading =
-		resolveLocale(projectsPage.heading, locale) || resolveLocale(listingChrome.heading, locale);
+	// $derived on the projectsPage reads so they recompute if the prop changes:
+	// a plain const captures only the initial value, which Svelte 5 flags.
+	const listingHeading = $derived(
+		resolveLocale(projectsPage.heading, locale) || resolveLocale(listingChrome.heading, locale)
+	);
 	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
 	const mobileFiltersLabel = resolveLocale(listingChrome.filters.filtersLabel, locale);
-	const listingIntro = resolveLocale(projectsPage.intro, locale);
-	const emptyStateText =
+	const listingIntro = $derived(resolveLocale(projectsPage.intro, locale));
+	const emptyStateText = $derived(
 		resolveLocale(projectsPage.emptyState, locale) ||
-		resolveLocale(
-			{
-				en: 'No projects match the selected filters.',
-				fr: 'Aucun projet ne correspond aux filtres choisis.',
-			},
-			locale
-		);
+			resolveLocale(
+				{
+					en: 'No projects match the selected filters.',
+					fr: 'Aucun projet ne correspond aux filtres choisis.',
+				},
+				locale
+			)
+	);
 	// Filter state — read from URL params. Browser-gated: the page prerenders
 	// (url.searchParams is unreadable at build), so SSR HTML is always the
 	// unfiltered listing — the only representation a static file can carry —

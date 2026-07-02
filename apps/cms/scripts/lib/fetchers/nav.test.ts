@@ -6,8 +6,7 @@ import {
 	type DirectusNavLinkRow,
 	type DirectusSitePageRef,
 } from './nav';
-import { NavLinkSchema } from '../schemas/nav';
-
+import { NavLinkSchema } from '@repo/shared/schemas';
 const HEADER_ROW: DirectusNavLinkRow = {
 	id: '1',
 	status: 'published',

@@ -27,19 +27,25 @@
 	import ManifestoTransit from './ManifestoTransit.svelte';
 
 	// ── Resolve all text from data layer ──────────────────────────────
-	const statementLine1 = resolveLocale(manifestoContent.statement.line1, locale);
-	const statementLineHuge = resolveLocale(manifestoContent.statement.lineHuge, locale);
-	const statementLine3Part1 = resolveLocale(manifestoContent.statement.line3Part1, locale);
-	const statementLine3Highlight = resolveLocale(manifestoContent.statement.line3Highlight, locale);
-	const statementLine3Part2 = resolveLocale(manifestoContent.statement.line3Part2, locale);
+	// $derived so every prop read recomputes if the manifesto prop changes: a
+	// plain const captures only the initial value, which Svelte 5 flags.
+	const statementLine1 = $derived(resolveLocale(manifestoContent.statement.line1, locale));
+	const statementLineHuge = $derived(resolveLocale(manifestoContent.statement.lineHuge, locale));
+	const statementLine3Part1 = $derived(resolveLocale(manifestoContent.statement.line3Part1, locale));
+	const statementLine3Highlight = $derived(
+		resolveLocale(manifestoContent.statement.line3Highlight, locale)
+	);
+	const statementLine3Part2 = $derived(resolveLocale(manifestoContent.statement.line3Part2, locale));
 
-	const terminalUser = resolveLocale(manifestoContent.terminal.user, locale);
-	const terminalCommand = resolveLocale(manifestoContent.terminal.command, locale);
+	const terminalUser = $derived(resolveLocale(manifestoContent.terminal.user, locale));
+	const terminalCommand = $derived(resolveLocale(manifestoContent.terminal.command, locale));
 
-	const pills = manifestoContent.pills.map((p) => ({
-		label: resolveLocale(p.label, locale),
-		href: localizeHref(`/services/${p.serviceId}`, locale),
-	}));
+	const pills = $derived(
+		manifestoContent.pills.map((p) => ({
+			label: resolveLocale(p.label, locale),
+			href: localizeHref(`/services/${p.serviceId}`, locale),
+		}))
+	);
 
 	// Edge + transit data (passed to sub-components). $derived so they recompute
 	// when locale flips (the language toggle) — a plain const captures only the
@@ -74,12 +80,14 @@
 		directionBadge: resolveLocale(manifestoContent.transit.directionBadge, locale),
 	});
 
-	const ticks = manifestoContent.ticks;
+	const ticks = $derived(manifestoContent.ticks);
 
-	const hiddenLines = manifestoContent.hiddenTransitLines.map((l) => ({
-		name: resolveLocale(l.name, locale),
-		color: l.color,
-	}));
+	const hiddenLines = $derived(
+		manifestoContent.hiddenTransitLines.map((l) => ({
+			name: resolveLocale(l.name, locale),
+			color: l.color,
+		}))
+	);
 
 	// Data flow line specs
 	const hFlows = [
