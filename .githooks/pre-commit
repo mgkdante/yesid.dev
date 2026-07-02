@@ -96,7 +96,10 @@ fi
 # ============================================================================
 CONTENT_DIR="apps/web/src/lib/content"
 MANIFEST_PATH="$CONTENT_DIR/generated.manifest.json"
-GENERATED_MARKER="GENERATED FILE — do not edit by hand."
+# ASCII hyphen on purpose: emit-module.ts writes this exact string. Keep the
+# three sites in sync (emitter header, this hook, the Claude PreToolUse hook);
+# apps/cms/scripts/lib/generated-manifest.test.ts asserts the sync.
+GENERATED_MARKER="GENERATED FILE - do not edit by hand."
 
 # Read the manifest as it will be committed (index/stage-0 version — this is the
 # committed blob for an unchanged file, or the staged blob for a regen). If the
