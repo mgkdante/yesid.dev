@@ -57,6 +57,14 @@ jobs:
       - name: Unit tests
         run: bun x turbo run test --filter=@repo/web
 
+      - name: Content-manifest integrity (ci:content)
+        # CI counterpart of .githooks/pre-commit GUARD 2: hooks are opt-in on
+        # fresh clones, so CI re-verifies that every generated content module
+        # under apps/web/src/lib/content/ still hashes to its recorded value in
+        # generated.manifest.json (hermetic: no network, reuses
+        # apps/cms/scripts/lib/generated-manifest.ts).
+        run: bun run ci:content
+
       - name: Token drift + packages tests (slice-28.4, audit #81/#94/#60)
         # ci:tokens regenerates the token build outputs and fails on diff vs
         # the committed files; the package suites cover packages/tokens
