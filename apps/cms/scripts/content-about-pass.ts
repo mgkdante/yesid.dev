@@ -135,4 +135,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : 'Regenerate fallbacks next.'}`);
 }
 
-runMain(main);
+runMain(main, import.meta);
