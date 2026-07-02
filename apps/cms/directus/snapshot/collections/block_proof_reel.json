@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "photo_library",
     "item_duplication_fields": null,
-    "note": "Proof Reel block: featured projects section of /. Non-translatable fields: view_all_href (string) on parent. LocalizedString leaves in block_proof_reel_translations.",
+    "note": "Proof Reel block — featured projects section of /. Non-translatable fields: view_all_href (string), slugs (string[]), images (Record<string,string>) on parent. LocalizedString leaves in block_proof_reel_translations.",
     "preview_url": null,
     "singleton": true,
     "sort": 3,
