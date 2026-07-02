@@ -28,7 +28,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		blocks,
 	});
 
-	it('renders header with deterministic id from stripped text', () => {
+	it('renders header with deterministic id from stripped text and a real "#" permalink (homework #7c)', () => {
 		const doc = baseDoc([
 			{ id: 'h1', type: 'header', data: { text: 'Hello World', level: 2 } },
 		]);
@@ -36,7 +36,10 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const h2 = container.querySelector('h2');
 		expect(h2).toBeTruthy();
 		expect(h2?.id).toBe('hello-world');
-		expect(h2?.textContent).toBe('Hello World');
+		const anchor = h2?.querySelector('a.heading-anchor');
+		expect(anchor?.getAttribute('href')).toBe('#hello-world');
+		expect(anchor?.getAttribute('aria-labelledby')).toBe('hello-world');
+		expect(h2?.textContent).toBe('Hello World#');
 	});
 
 	it('renders paragraph with raw HTML inline marks (AM2)', () => {

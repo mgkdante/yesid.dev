@@ -85,6 +85,9 @@ export interface Project {
 	status: ProjectStatus;
 	featured: boolean;
 	repoUrl?: string;
+	// The repo exists but is private (homework #13): detail pages render a
+	// non-link "private repo" state instead of a dead 404 link.
+	repoPrivate?: boolean;
 	liveUrl?: string;
 	// Directus file UUID for the primary project thumbnail/hero image
 	// (hero_image on the CMS row). Consumers build the URL via asset(image,

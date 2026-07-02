@@ -110,6 +110,7 @@ export const SiteLabelsSchema = z.object({
 				liveSiteLabel: LocalizedStringSchema,
 				liveSiteLabelMobile: LocalizedStringSchema,
 				githubLabel: LocalizedStringSchema,
+				repoPrivateLabel: LocalizedStringSchema,
 			}),
 			tocPill: z.object({
 				openAria: LocalizedStringSchema,

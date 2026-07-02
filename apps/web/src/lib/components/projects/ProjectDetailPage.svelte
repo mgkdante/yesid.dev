@@ -121,7 +121,7 @@
 			entries.push({ id: 'glance-stack', title: glanceStackTitle, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
 		if (services.length > 0)
 			entries.push({ id: 'glance-services', title: glanceServicesTitle, level: 2, badge: { kind: 'icon', name: 'grid' }, rail: true, children: [] });
-		if (project.liveUrl || project.repoUrl)
+		if (project.liveUrl || project.repoUrl || project.repoPrivate)
 			entries.push({ id: 'glance-links', title: glanceLinksTitle, level: 2, badge: { kind: 'icon', name: 'arrow' }, rail: true, children: [] });
 		return entries;
 	}
@@ -142,7 +142,7 @@
 	const articleSections = $derived(sectionViews.filter((section) => !section.isImageGallery));
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
-	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl);
+	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
 	const readmeTocEntry = $derived.by((): TocEntry | null => {
 		if (!readmeHtml) return null;
 		return {
@@ -194,10 +194,20 @@
 	const processedReadmeHtml = $derived.by(() => {
 		if (!readmeHtml) return '';
 		let idx = 0;
-		return readmeHtml.replace(/<(h[1-6])([^>]*)>/gi, (match, tag, attrs) => {
-			const id = `readme-h-${idx++}`;
-			return `<${tag}${attrs} id="${id}">`;
-		});
+		// Same real "#" permalink as the blog path (homework #7c): id on the
+		// opening tag, anchor injected before the closing tag. IDs must count
+		// ALL h1-h6 (readmeTocChildren counts them all), but the visible anchor
+		// only ships on h2-h4 — the levels the hover CSS positions.
+		return readmeHtml.replace(
+			/<(h[1-6])([^>]*)>([\s\S]*?)<\/\1>/gi,
+			(match, tag, attrs, inner) => {
+				const id = `readme-h-${idx++}`;
+				const anchor = /^h[234]$/i.test(tag)
+					? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
+					: '';
+				return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
+			},
+		);
 	});
 
 	function mermaidCssVar(style: CSSStyleDeclaration, name: string, fallback: string): string {
@@ -620,15 +630,16 @@
 		}
 	}
 
-	/* Sub-section h3 styling (within rendered HTML content) */
+	/* Sub-section h3 styling (within rendered HTML content). The orange
+	   left-edge bar retired per operator call (homework #7c): subheadings now
+	   carry the same real "#" permalink as the blog. */
 	.section-body :global(h3) {
 		font-family: var(--font-heading);
 		font-size: var(--text-detail-subheading-mobile);
 		font-weight: 600;
 		color: color-mix(in srgb, var(--foreground) 70%, transparent);
 		margin: 20px 0 12px;
-		padding-left: 10px;
-		border-left: 2px solid color-mix(in srgb, var(--primary) 20%, transparent);
+		position: relative;
 	}
 
 	@media (min-width: 1024px) {
@@ -636,8 +647,36 @@
 			font-size: var(--text-detail-subheading-desktop);
 			color: color-mix(in srgb, var(--foreground) 80%, transparent);
 			margin: 24px 0 16px;
-			padding-left: 12px;
-			border-left: 3px solid color-mix(in srgb, var(--primary) 25%, transparent);
 		}
+	}
+
+	/* h3 is already position:relative via its subheading rule above; h2/h4
+	   need it too so their permalinks anchor to the heading, not the column. */
+	.section-body :global(h2),
+	.section-body :global(h4) {
+		position: relative;
+	}
+
+	.section-body :global(.heading-anchor) {
+		position: absolute;
+		right: 100%;
+		margin-right: 0.5rem;
+		color: var(--primary);
+		text-decoration: none;
+		opacity: 0;
+		transform: translateX(-4px);
+		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
+	}
+
+	.section-body :global(h2):hover :global(.heading-anchor),
+	.section-body :global(h3):hover :global(.heading-anchor),
+	.section-body :global(h4):hover :global(.heading-anchor) {
+		opacity: var(--opacity-muted);
+		transform: translateX(0);
+	}
+
+	.section-body :global(.heading-anchor):focus-visible {
+		opacity: 1;
+		transform: translateX(0);
 	}
 </style>

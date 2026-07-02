@@ -448,8 +448,10 @@
     }
   }
 
+  /* Clickables are ORANGE on every post (yellow = conversion only, operator
+     call homework #6a); --blog-accent stays on the decorative voice below. */
   .blog-section-body :global(a) {
-    color: var(--blog-accent);
+    color: var(--primary);
   }
 
   .blog-section-body :global(code) {
@@ -460,26 +462,34 @@
     border-left-color: var(--blog-accent);
   }
 
+  .blog-section-body :global(h2),
   .blog-section-body :global(h3),
   .blog-section-body :global(h4) {
     position: relative;
   }
 
-  .blog-section-body :global(h3)::before,
-  .blog-section-body :global(h4)::before {
-    content: '#';
+  /* The "#" is a REAL copyable permalink (homework #7c): rendered inside the
+     heading by cms/blocks/Heading.svelte (h2-h4), revealed on hover/focus. */
+  .blog-section-body :global(.heading-anchor) {
     position: absolute;
     right: 100%;
     margin-right: 0.5rem;
-    color: var(--blog-accent);
+    color: var(--primary);
+    text-decoration: none;
     opacity: 0;
     transform: translateX(-4px);
     transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
   }
 
-  .blog-section-body :global(h3):hover::before,
-  .blog-section-body :global(h4):hover::before {
+  .blog-section-body :global(h2):hover :global(.heading-anchor),
+  .blog-section-body :global(h3):hover :global(.heading-anchor),
+  .blog-section-body :global(h4):hover :global(.heading-anchor) {
     opacity: var(--opacity-muted);
+    transform: translateX(0);
+  }
+
+  .blog-section-body :global(.heading-anchor):focus-visible {
+    opacity: 1;
     transform: translateX(0);
   }
 

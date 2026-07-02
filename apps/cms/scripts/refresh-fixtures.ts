@@ -192,6 +192,7 @@ interface RawProject {
 	featured: boolean;
 	hero_image: string | null;
 	repo_url: string | null;
+	repo_private: boolean | null;
 	live_url: string | null;
 	readme_url: string | null;
 	location: string | null;
@@ -257,6 +258,7 @@ function toProjectFixture(row: RawProject): ProjectFixture {
 		featured: row.featured,
 		hero_image_legacy_path: legacyPathFor(row.hero_image, `projects/${row.id} hero_image`),
 		repo_url: row.repo_url,
+		repo_private: row.repo_private ?? false,
 		live_url: row.live_url,
 		readme_url: row.readme_url,
 		location: row.location,
