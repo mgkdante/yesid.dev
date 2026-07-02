@@ -131,25 +131,8 @@
 		}
 	}
 
-	/* Reduce opacity on mobile — round 4: damping steps up with the wall
-	   (dark 0.05 → 0.10, light 0.12 → 0.16) so mobile keeps a visible wall
-	   without drowning the single-column cards. */
-	@media (max-width: 767px) {
-		.edge-details {
-			opacity: 0.1;
-		}
-
-		.train-svg {
-			opacity: 0.1;
-		}
-
-		/* Light keeps the mobile damping too (these out-specificity the
-		   desktop light rules above; equal specificity → later wins). */
-		:global([data-theme='light']) .edge-details,
-		:global(.theme-light) .edge-details,
-		:global([data-theme='light']) .train-svg,
-		:global(.theme-light) .train-svg {
-			opacity: 0.16;
-		}
-	}
+	/* Homework #8: no mobile damping. The wall reads at the same register as
+	   desktop on every viewport (operator: "on mobile in the service section
+	   on home, to be able to see the blueprints as well"). Only the
+	   engineering annotations stay hidden below lg. */
 </style>
