@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces form_terminal.fields.name.label",
+    "note": "Contact form name field label.",
     "options": null,
     "readonly": false,
     "required": false,
