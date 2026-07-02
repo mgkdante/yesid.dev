@@ -230,7 +230,7 @@ async function buildCards(): Promise<Record<string, string>> {
 
 	cards['routes/projects.png'] = frame(
 		blueprintArt(590, 130, 0.62, 0.3),
-		eyebrow('PROJECTS'),
+		eyebrow('CASE STUDIES'),
 		overline(),
 		titleBlock(['Projects'], 92, 290),
 		subtitleBlock(['Projects, pipelines, and', 'systems I have built.'], 366),
@@ -251,13 +251,21 @@ async function buildCards(): Promise<Record<string, string>> {
 		footer('yesid.dev'),
 	);
 
-	cards['site.png'] = frame(
-		eyebrow('DIGITAL INFRASTRUCTURE · MONTRÉAL'),
-		overline(200),
-		wordmark(MARGIN, 240, 3.4),
-		`<text x="${MARGIN}" y="500" font-family="Inter" font-weight="500" font-size="40" fill="${MUTED}">Digital infrastructure that moves.</text>`,
-		`<text x="${WIDTH - MARGIN}" y="540" font-family="JetBrains Mono" font-weight="500" font-size="20" letter-spacing="2.4" fill="${MUTED}" text-anchor="end">MONTRÉAL · QC</text>`,
-	);
+	// General site cards, EN + FR (standalone share assets, wired to no route:
+	// yesid.dev is EN by default, /fr is French, so both languages ship).
+	const SITE_LOCALES = [
+		{ file: 'site.en.png', eyebrow: 'DIGITAL INFRASTRUCTURE · MONTRÉAL', tagline: 'Digital infrastructure that moves.' },
+		{ file: 'site.fr.png', eyebrow: 'INFRASTRUCTURE NUMÉRIQUE · MONTRÉAL', tagline: 'Une infrastructure numérique qui bouge.' },
+	];
+	for (const s of SITE_LOCALES) {
+		cards[s.file] = frame(
+			eyebrow(s.eyebrow),
+			overline(200),
+			wordmark(MARGIN, 240, 3.4),
+			`<text x="${MARGIN}" y="500" font-family="Inter" font-weight="500" font-size="40" fill="${MUTED}">${escapeXml(s.tagline)}</text>`,
+			`<text x="${WIDTH - MARGIN}" y="540" font-family="JetBrains Mono" font-weight="500" font-size="20" letter-spacing="2.4" fill="${MUTED}" text-anchor="end">MONTRÉAL · QC</text>`,
+		);
+	}
 
 	return cards;
 }
