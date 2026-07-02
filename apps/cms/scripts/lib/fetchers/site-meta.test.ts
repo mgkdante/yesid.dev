@@ -29,6 +29,7 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 	owner_locality: 'Montreal',
 	owner_region: 'QC',
 	owner_country: 'CA',
+	owner_phone: '+18194465594',
 	owner_knows_about: [
 		'PostgreSQL',
 		'dbt',
@@ -94,6 +95,7 @@ const EXPECTED_SITE_META: SiteMeta = {
 			fr: 'Ingénieur pigiste en infrastructure numérique',
 			es: 'Ingeniero independiente en infraestructura digital',
 		},
+		phone: '+18194465594',
 		address: {
 			locality: 'Montreal',
 			region: 'QC',
