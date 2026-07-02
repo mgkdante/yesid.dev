@@ -46,4 +46,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN (no columns dropped)' : 'APPLIED'}. ${dryRun ? 'Re-run with --apply.' : ''}`);
 }
 
-runMain(main);
+runMain(main, import.meta);

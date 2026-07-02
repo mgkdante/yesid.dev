@@ -86,7 +86,7 @@
     "name": "Vercel revalidate on publish",
     "icon": "bolt",
     "color": "#E07800",
-    "description": "POST to Vercel deploy hook when a user-content row in a watched collection is created or updated. Triggers a full SvelteKit rebuild. NOTE (2026-06-19): the former status=published gate (op 'check_published') was removed from the path because Directus's condition op threw 'Validation failed for field payload. Value is required.' on every edit whose payload lacked status (i.e. every normal content edit), aborting the flow before the POST. The entry op now points straight at 'post_hook'; 'check_published' remains an orphan op. To restore publish-only gating, insert a read-item step that checks the item's CURRENT status (the payload diff alone is unreliable).",
+    "description": "POST to Vercel deploy hook when a user-content row is created or updated with status=published. Triggers a full SvelteKit rebuild.",
     "status": "active",
     "trigger": "event",
     "accountability": "all",

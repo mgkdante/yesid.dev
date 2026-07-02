@@ -28,7 +28,7 @@
  */
 
 import { STACK_LAYERS } from '@repo/shared/schemas';
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { type ApplyContext, isAlreadyExists, rest } from './lib/schema-apply';
@@ -630,6 +630,7 @@ export async function applySchemaPlan(plan: SchemaStep[], ctx: ApplyContext): Pr
 async function main(): Promise<void> {
 	const { apply } = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	const plan = buildSchemaPlan();
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
 	log.info(`plan: ${plan.length} steps`);

@@ -26,7 +26,7 @@
 
 import seedsJson from '../fixtures/content/site-labels.json';
 import frSeedsJson from '../fixtures/content/site-labels.fr.json';
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { type ApplyContext, type SchemaStep, isAlreadyExists, rest } from './lib/schema-apply';
@@ -306,6 +306,7 @@ async function seed(ctx: ApplyContext): Promise<void> {
 async function main(): Promise<void> {
 	const { apply, seed: doSeed } = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	const plan = buildSiteLabelsPlan();
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}${doSeed ? ' [seed]' : ''}`);
 	log.info(`plan: ${plan.length} steps`);

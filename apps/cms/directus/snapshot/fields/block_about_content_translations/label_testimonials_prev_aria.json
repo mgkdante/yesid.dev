@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces labels.testimonialsPrevAria",
+    "note": "About quote carousel previous button aria label.",
     "options": null,
     "readonly": false,
     "required": false,

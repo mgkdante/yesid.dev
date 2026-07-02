@@ -33,17 +33,21 @@
  * extracts `err.message`, uses a scoped `log.error`, or has post-guard code
  * keep their inline guard — wrapping them here would change observable output.
  *
- * @param main The script's entrypoint. Called only when this module is the
- *   process entrypoint (`import.meta.main`), so importing the script for tests
- *   does not trigger it.
+ * @param main The script's entrypoint. Called only when the CALLER is the
+ *   process entrypoint, so importing the script for tests does not trigger it.
+ * @param meta The caller's `import.meta`. REQUIRED: `import.meta.main` is
+ *   per-module, so evaluating it inside this helper always yields false (this
+ *   file is never the entrypoint). Before 2026-07-02 (pipeline-safety slice)
+ *   the helper did exactly that, silently turning every runMain script into a
+ *   no-op under Bun 1.3.x.
  *
  * @example
  *   import { runMain } from './lib/cli';
  *   async function main() { ... }
- *   runMain(main);
+ *   runMain(main, import.meta);
  */
-export function runMain(main: () => void | Promise<void>): void {
-	if (import.meta.main) {
+export function runMain(main: () => void | Promise<void>, meta: ImportMeta): void {
+	if (meta.main) {
 		Promise.resolve(main()).catch((err) => {
 			console.error(err);
 			process.exit(1);
