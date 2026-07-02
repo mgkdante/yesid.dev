@@ -41,7 +41,7 @@
  */
 
 import { readItems, updateItem } from '@directus/sdk';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -213,6 +213,7 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 async function main(): Promise<void> {
 	const { dryRun } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 
 	if (dryRun) {
 		// Dry-run reads public data — no auth needed.

@@ -18,7 +18,7 @@
 import { readSettings, updateSettings } from '@directus/sdk';
 import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -81,6 +81,7 @@ export function loadPresetsFixture(): PresetsConfig {
 async function main(): Promise<void> {
 	const { dryRun } = parseSeedFlags();
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : ''}`);
 
 	const config = loadPresetsFixture();

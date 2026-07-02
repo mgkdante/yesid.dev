@@ -56,7 +56,7 @@ import { z } from 'zod';
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { resolve as resolvePath, join as joinPath, relative } from 'node:path';
 
-import { createClient as createSdkClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
+import { assertDevCms, createClient as createSdkClient, defaultDirectusUrl, requireEnv } from './lib/sdk';
 import { getAdminToken as getAdminTokenLib } from './lib/auth';
 import { withRateLimit } from './lib/bottleneck';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -770,6 +770,7 @@ function parseCliArgs(argv: readonly string[]): {
 
 async function main(): Promise<void> {
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 	const { sourceRoot: cliSource, dryRun, reset, preserveIdsFromMap } = parseCliArgs(
 		process.argv.slice(2),
 	);

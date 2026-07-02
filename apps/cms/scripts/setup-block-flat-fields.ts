@@ -19,7 +19,7 @@
  *     bun --cwd apps/cms run setup:flat-fields -- --apply
  */
 import { FLAT_FIELD_PLAN, type FlatField } from './lib/flat-field-plan';
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 
@@ -160,6 +160,7 @@ async function runArchivePass(apply: boolean): Promise<void> {
 }
 
 async function main(): Promise<void> {
+	assertDevCms(defaultDirectusUrl());
 	const { apply, archiveOld } = parseFlags(process.argv.slice(2));
 	if (archiveOld) {
 		await runArchivePass(apply);

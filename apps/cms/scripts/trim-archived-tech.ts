@@ -64,4 +64,4 @@ async function main(): Promise<void> {
 	console.log(`\n${dryRun ? 'DRY-RUN' : 'APPLIED'}: ${removed.length} tech rows ${dryRun ? 'would be' : ''} removed.${dryRun ? ' Re-run with --apply.' : ''}`);
 }
 
-runMain(main);
+runMain(main, import.meta);

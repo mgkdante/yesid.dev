@@ -1,0 +1,30 @@
+{
+  "collection": "tags",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "tags",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": false,
+    "icon": "sell",
+    "item_duplication_fields": null,
+    "note": "Shared tag taxonomy for projects + blog (normalized from json arrays).",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "name",
+    "status": "active",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "tags"
+  }
+}
