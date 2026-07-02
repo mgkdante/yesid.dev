@@ -25,12 +25,12 @@
 		"translations": [
 			{
 				"languages_code": "en",
-				"title": "About Yesid",
+				"title": "Yesid O., Digital Infrastructure Engineer in Montreal",
 				"description": "Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work."
 			},
 			{
 				"languages_code": "fr",
-				"title": "À propos de Yesid",
+				"title": "Yesid O., ingénieur en infrastructure numérique à Montréal",
 				"description": "Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes."
 			}
 		]
@@ -43,13 +43,13 @@
 		"translations": [
 			{
 				"languages_code": "en",
-				"title": "Contact",
-				"description": "Get in touch for freelance SQL, PostgreSQL, dbt, Power BI, or data infrastructure work. Based in Montreal; available across Canada and for remote engagements."
+				"title": "Hire a Digital Infrastructure Freelancer in Montreal",
+				"description": "Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montreal; available remotely."
 			},
 			{
 				"languages_code": "fr",
-				"title": "Contact",
-				"description": "Contactez-moi pour du travail pigiste en SQL, PostgreSQL, dbt, Power BI ou infrastructure de données. Basé à Montréal et disponible à distance."
+				"title": "Engager un pigiste en infrastructure numérique à Montréal",
+				"description": "Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal et disponible à distance."
 			}
 		]
 	},
@@ -61,12 +61,12 @@
 		"translations": [
 			{
 				"languages_code": "en",
-				"title": "Services",
+				"title": "Digital Infrastructure Services: Web, Data, Automation",
 				"description": "Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams."
 			},
 			{
 				"languages_code": "fr",
-				"title": "Services",
+				"title": "Infrastructure numérique: web, données, automatisation",
 				"description": "Services d'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel."
 			}
 		]
@@ -85,7 +85,7 @@
 			{
 				"languages_code": "fr",
 				"title": "Projets",
-				"description": "Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure de données."
+				"description": "Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure numérique."
 			}
 		]
 	},
@@ -98,12 +98,12 @@
 			{
 				"languages_code": "en",
 				"title": "Blog",
-				"description": "Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant."
+				"description": "Notes on digital infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant."
 			},
 			{
 				"languages_code": "fr",
 				"title": "Blog",
-				"description": "Notes sur l'infrastructure de données, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance."
+				"description": "Notes sur l'infrastructure numérique, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance."
 			}
 		]
 	},

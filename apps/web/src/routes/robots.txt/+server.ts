@@ -10,6 +10,10 @@ export const GET: RequestHandler = async () => {
 Allow: /
 
 Sitemap: ${SITE_HOST}/sitemap.xml
+
+# AI crawlers: condensed, CMS-fresh site context
+# ${SITE_HOST}/llms.txt
+# ${SITE_HOST}/llms-full.txt
 `;
 	return new Response(body, {
 		headers: {

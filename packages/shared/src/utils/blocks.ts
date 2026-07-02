@@ -225,7 +225,13 @@ function blockHtml(block: BlockEditorBlock, counts: Map<string, number>): string
 			const seen = counts.get(baseId) ?? 0;
 			counts.set(baseId, seen + 1);
 			const id = seen === 0 ? baseId : `${baseId}-${seen + 1}`;
-			return `<h${block.data.level} id="${id}">${block.data.text}</h${block.data.level}>`;
+			// Real copyable permalink (operator call, homework #7c): the "#" is an
+			// actual anchor, named by its heading via aria-labelledby. Skipped when
+			// the slug is empty (emoji/CJK-only headings) — no broken href="#".
+			const anchor = baseId
+				? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
+				: '';
+			return `<h${block.data.level} id="${id}">${block.data.text}${anchor}</h${block.data.level}>`;
 		}
 		case 'paragraph':
 			return `<p>${block.data.text}</p>`;

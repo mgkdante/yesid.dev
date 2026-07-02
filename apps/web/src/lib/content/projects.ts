@@ -83,6 +83,7 @@ export const projects: readonly Project[] = [
 			fr: 'Un portfolio CMS bilingue, édité dans Directus et servi aux visiteurs depuis du contenu généré prêt pour l’edge.',
 		},
 		relatedServices: ['web-development', 'database-engineering'],
+		repoPrivate: true,
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		sections: [
 			{
@@ -675,13 +676,13 @@ export const projects: readonly Project[] = [
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
 			fr: 'Un pipeline ELT de bout en bout qui traite les données de transport en temps réel pour un opérateur régional.',
 		},
-		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
 		relatedServices: [
 			'data-pipeline',
 			'database-engineering',
 			'analytics-reporting',
 			'web-development',
 		],
+		repoPrivate: true,
 		repoUrl: 'https://github.com/mgkdante/transit',
 		sections: [],
 		slug: 'transit-data-pipeline',

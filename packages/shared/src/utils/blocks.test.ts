@@ -439,7 +439,9 @@ describe('serializeBlocksToHtml', () => {
 				{ id: 'a', type: 'header', data: { text: 'Section', level: 2 } },
 			],
 		};
-		expect(serializeBlocksToHtml(doc)).toBe('<h2 id="section">Section</h2>');
+		expect(serializeBlocksToHtml(doc)).toBe(
+			'<h2 id="section">Section<a class="heading-anchor" href="#section" aria-labelledby="section">#</a></h2>',
+		);
 	});
 
 	it('appends -2 / -3 to duplicate header slugs', () => {
