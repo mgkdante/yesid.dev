@@ -82,7 +82,7 @@ import aboutPageFixture from '../fixtures/content/about-page.json' with { type: 
 import contactPageFixture from '../fixtures/content/contact-page.json' with { type: 'json' };
 import navFixture from '../fixtures/content/nav.json' with { type: 'json' };
 import techStackPageFixture from '../fixtures/content/tech-stack-page.json' with { type: 'json' };
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -1301,6 +1301,7 @@ async function main(): Promise<void> {
 	}
 
 	const directusUrl = defaultDirectusUrl();
+	assertDevCms(directusUrl);
 	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
 
 	if (dryRun) {

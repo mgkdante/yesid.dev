@@ -14,7 +14,7 @@
 import { createItem, deleteItem, readItems } from '@directus/sdk';
 import { z } from 'zod';
 import fixtureData from '../fixtures/collections/morph-shapes.json' with { type: 'json' };
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -85,6 +85,7 @@ async function main(): Promise<void> {
 	const dryRun = process.argv.includes('--dry-run');
 	const reset = process.argv.includes('--reset');
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	const rows = loadMorphShapesFixture();
 	if (dryRun) { await seedMorphShapes(rows, { directusUrl: url, token: '', dryRun: true }); return; }
 	const token = await getAdminToken(url);
