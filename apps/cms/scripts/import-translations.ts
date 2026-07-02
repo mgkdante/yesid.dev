@@ -30,7 +30,7 @@
 import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
 import { createItem, readItems, updateItem } from '@directus/sdk';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 
 export interface Entry {
@@ -94,6 +94,9 @@ if (import.meta.main) {
 	const drop = JSON.parse(readFileSync(values.file, 'utf-8')) as Drop;
 	validateDrop(drop);
 
+	const url = defaultDirectusUrl();
+	assertDevCms(url);
+
 	const plan = planDrop(drop);
 	if (values['dry-run']) {
 		// No client is ever constructed on this path — zero network.
@@ -102,7 +105,6 @@ if (import.meta.main) {
 		process.exit(0);
 	}
 
-	const url = defaultDirectusUrl();
 	const client = createClient(url, await getAdminToken(url));
 	let created = 0;
 	let updated = 0;

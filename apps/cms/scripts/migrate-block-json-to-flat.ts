@@ -25,7 +25,7 @@ import {
 	digPath,
 	type ParentFlatField,
 } from './lib/flat-field-plan';
-import { defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 
@@ -117,6 +117,7 @@ async function main(): Promise<void> {
 	const apply = argv.includes('--apply');
 	const verify = argv.includes('--verify');
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	const token = apply || verify ? await getAdminToken(url) : '';
 	const ctx: Ctx = { url, token };
 	let mismatches = 0;

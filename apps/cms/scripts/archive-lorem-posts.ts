@@ -23,7 +23,7 @@
  */
 
 import { readItems, updateItem } from '@directus/sdk';
-import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
@@ -167,6 +167,7 @@ export async function archiveLoremPosts(
 async function main(): Promise<void> {
 	const { apply } = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
+	assertDevCms(url);
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
 
 	if (!apply) {
