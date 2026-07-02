@@ -13,8 +13,8 @@
 
 import { describe, expect, it } from 'bun:test';
 import { toSiteMeta, type DirectusSiteMetaRow } from './site-meta';
-import { SiteMetaSchema, type SiteMeta } from '../schemas/site-meta';
-
+import { SiteMetaSchema } from '@repo/shared/schemas';
+import type { SiteMeta } from '@repo/shared';
 // Hand-crafted Directus response mirroring the current production `site_meta`
 // singleton. Crafted so toSiteMeta(fixture) === EXPECTED_SITE_META (the value
 // currently exported from apps/web/src/lib/content/site-meta.ts).

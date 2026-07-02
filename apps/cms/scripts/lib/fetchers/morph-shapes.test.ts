@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
-import { MorphShapeSchema, type MorphShape } from '../schemas/morph-shape';
-
+import { MorphShapeSchema } from '@repo/shared/schemas';
+import type { MorphShape } from '@repo/shared';
 describe('morph-shapes schema', () => {
 	it('accepts a well-formed MorphShape row', () => {
 		const row: MorphShape = {

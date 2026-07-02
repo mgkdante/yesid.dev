@@ -16,19 +16,27 @@
  *                            0 before any network). Used by hermetic CI builds
  *                            (web.yml) where the committed modules already ARE
  *                            the content source and no CMS should be contacted.
- *   EXPORT_FALLBACKS_LIVE  - set to 1 to force a live export on Vercel. Normal
- *                            Vercel builds skip the CMS fetch and ship the
- *                            committed modules, matching the edge-cache model.
+ *   EXPORT_FALLBACKS_LIVE  - set to 1 to force a live export on Vercel. With
+ *                            VERCEL_ENV set it also means live-or-die: ANY
+ *                            fallback (fetch failure, token failure, missing
+ *                            cache) exits 1, production and preview alike, so
+ *                            the build aborts and the prior deploy stays live.
+ *                            Vercel builds without it skip the CMS fetch and
+ *                            ship the committed modules (see the skip gate).
  *   PUBLIC_DIRECTUS_URL    — Directus URL. Defaults to cms.dev.yesid.dev (P6 flip,
  *                            once dev mirrors prod). Set to https://cms.yesid.dev
  *                            for production builds (Vercel: encrypted env var
  *                            scoped to the Production environment).
  *   DIRECTUS_ADMIN_TOKEN   — preferred auth (or DIRECTUS_ADMIN_EMAIL +
  *                            DIRECTUS_ADMIN_PASSWORD fallback). If absent OR fetch
- *                            fails, the cache layer (P5) tries `.cms-cache.json`
- *                            and degrades gracefully to a no-op (exits 0) if no
- *                            cache is available — committed .ts files become the
- *                            authoritative source for that build.
+ *                            fails: under the live-or-die policy above the build
+ *                            exits 1; local (soft-policy) runs try `.cms-cache.json`
+ *                            and degrade to a no-op (exit 0) if no cache exists,
+ *                            printing an unmissable stderr banner either way
+ *                            because the committed .ts files then become the
+ *                            authoritative source for that build. The manifest
+ *                            records the provenance (source: live|cache) and
+ *                            ci:content rejects committing a cache-emitted set.
  *
  * Build-time integration: registered as the apps/web `prebuild` script (P6)
  * so `bun run build` regenerates content before Vite kicks off. Vercel runs
@@ -51,6 +59,7 @@ import {
 	hashContent,
 	loadManifest,
 	writeManifest,
+	type ManifestSource,
 } from './lib/generated-manifest';
 import type { ExportData } from './export-data';
 import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
@@ -104,12 +113,15 @@ export interface RunOptions {
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
 	/**
-	 * When true (VERCEL_ENV==='production'), fetch failures and missing tokens
-	 * exit 1 instead of silently degrading. Vercel keeps the prior deploy
-	 * running, so a loud failure here is safe and far preferable to shipping
-	 * stale content without any signal.
+	 * Fallback policy from resolveFallbackPolicy(). Under 'fail' (any Vercel
+	 * build with EXPORT_FALLBACKS_LIVE=1, production and preview alike) a fetch
+	 * failure skips every fallback and the run reports a non-live outcome,
+	 * which main() turns into exit 1. Vercel keeps the prior deploy running,
+	 * so a loud failure is safe and far preferable to shipping stale content
+	 * without any signal. 'soft' (local, the default) keeps the cache/no-op
+	 * degrade, announced by a stderr banner.
 	 */
-	isProd?: boolean;
+	policy?: FallbackPolicy;
 }
 
 // `--module=<name>` filter values. A few emitted FILES are bundled under one
@@ -256,6 +268,70 @@ export function getExportSkipReason(env: Env = process.env): string | null {
 	if (envFlag(env.EXPORT_FALLBACKS_SKIP)) return 'EXPORT_FALLBACKS_SKIP';
 	if (env.VERCEL_ENV && !envFlag(env.EXPORT_FALLBACKS_LIVE)) return `VERCEL_ENV=${env.VERCEL_ENV}`;
 	return null;
+}
+
+export type FallbackPolicy = 'fail' | 'soft';
+
+/**
+ * Live-or-die policy (homework audit item 3, pipeline honesty): opting a
+ * Vercel target into a live export (EXPORT_FALLBACKS_LIVE=1) also opts it
+ * into failing loudly when that live export cannot happen. Production AND the
+ * develop-branch preview (dev.yesid.dev, the QA truth surface) both fail;
+ * a stale-but-green deploy is worse than a visibly failed build, because
+ * Vercel keeps the previous deploy live. Local runs never set VERCEL_ENV,
+ * so they keep the soft cache/no-op fallback (announced by a banner).
+ * Note the skip gate (getExportSkipReason) runs first: EXPORT_FALLBACKS_SKIP=1
+ * remains the deliberate operator escape hatch for shipping committed modules.
+ */
+export function resolveFallbackPolicy(env: Env = process.env): FallbackPolicy {
+	if (env.VERCEL_ENV && envFlag(env.EXPORT_FALLBACKS_LIVE)) return 'fail';
+	return 'soft';
+}
+
+/** Where the run's emitted content came from; 'none' means nothing was emitted. */
+export type ContentSource = 'live' | 'cache' | 'none';
+
+export interface RunOutcome {
+	source: ContentSource;
+	/** Number of modules written to disk. */
+	emitted: number;
+}
+
+/**
+ * Pure exit-code decision so the policy matrix is unit-testable: under 'fail'
+ * any non-live outcome is a build failure; under 'soft' everything exits 0.
+ */
+export function decideExit(outcome: RunOutcome, policy: FallbackPolicy): number {
+	return policy === 'fail' && outcome.source !== 'live' ? 1 : 0;
+}
+
+/**
+ * Unmissable stderr banner for soft-policy fallbacks. Local builds keep the
+ * graceful degrade, but a boxed block on stderr is much harder to scroll past
+ * than a single WARN line. Pure line-builder so tests can assert the content.
+ */
+export function fallbackBannerLines(
+	source: 'cache' | 'committed-modules',
+	fetchError: string,
+): string[] {
+	const detail =
+		source === 'cache'
+			? 'emitting from .cms-cache.json (last-known-good snapshot), NOT the live CMS'
+			: 'nothing emitted; the committed .ts modules ship as-is and may be stale vs the CMS';
+	return [
+		'!!==================================================================!!',
+		'!!  CONTENT FALLBACK IN USE: BUILD IS NOT LIVE CMS CONTENT           ',
+		`!!  source: ${source}`,
+		`!!  ${detail}`,
+		`!!  fetch error: ${fetchError}`,
+		'!!  Fix CMS connectivity and re-run export:fallbacks before          ',
+		'!!  trusting or committing this build output.                        ',
+		'!!==================================================================!!',
+	];
+}
+
+function logFallbackBanner(source: 'cache' | 'committed-modules', fetchError: string): void {
+	for (const line of fallbackBannerLines(source, fetchError)) console.error(line);
 }
 
 async function fetchAll(opts: RunOptions): Promise<ExportData> {
@@ -426,8 +502,14 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 }
 
 /** Emits every populated module; returns the number of modules written so the
- *  caller can skip the cache write when nothing was emitted. */
-async function emitAll(data: ExportData, opts: RunOptions): Promise<number> {
+ *  caller can skip the cache write when nothing was emitted. `source` records
+ *  the data's provenance in the manifest so ci:content can reject committing
+ *  a cache-emitted set. */
+async function emitAll(
+	data: ExportData,
+	opts: RunOptions,
+	source: ManifestSource,
+): Promise<number> {
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	log.info(`emit: target=${emitDir}`);
 
@@ -451,10 +533,14 @@ async function emitAll(data: ExportData, opts: RunOptions): Promise<number> {
 	// detect hand-edits (the CMS is the source of truth; these files are cache).
 	// A `--module=<name>` partial run merges into the existing manifest so it
 	// never drops the hashes of modules it didn't re-emit; a full run replaces.
-	const manifestFiles = opts.module
-		? { ...((await loadManifest(emitDir))?.files ?? {}), ...emittedHashes }
-		: emittedHashes;
-	await writeManifest(emitDir, manifestFiles);
+	// Provenance is sticky on partial runs: a live --module run over a
+	// cache-emitted manifest still leaves the other modules cache-sourced, so
+	// only a full live export clears 'cache'.
+	const prior = opts.module ? await loadManifest(emitDir) : null;
+	const manifestFiles = opts.module ? { ...(prior?.files ?? {}), ...emittedHashes } : emittedHashes;
+	const manifestSource: ManifestSource =
+		source === 'cache' || prior?.source === 'cache' ? 'cache' : 'live';
+	await writeManifest(emitDir, manifestFiles, manifestSource);
 	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${Object.keys(manifestFiles).length} entries).`);
 	return configs.length;
 }
@@ -469,8 +555,9 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 	log.info(`cache: wrote ${path}`);
 }
 
-export async function run(opts: RunOptions): Promise<void> {
-	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl}${opts.isProd ? ' [PRODUCTION]' : ''}`);
+export async function run(opts: RunOptions): Promise<RunOutcome> {
+	const policy = opts.policy ?? 'soft';
+	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl} policy=${policy}`);
 	if (opts.module) log.info(`scope: --module=${opts.module}`);
 
 	let data: ExportData;
@@ -478,13 +565,16 @@ export async function run(opts: RunOptions): Promise<void> {
 	try {
 		data = await fetchAll(opts);
 	} catch (fetchErr) {
-		log.warn(`fetch failed: ${(fetchErr as Error).message}`);
-		if (opts.isProd) {
+		const fetchMsg = (fetchErr as Error).message;
+		log.warn(`fetch failed: ${fetchMsg}`);
+		if (policy === 'fail') {
 			log.error(
-				'PRODUCTION BUILD FAILED: fetch failed and no cache can substitute for a prod deploy. ' +
-					'Verify DIRECTUS_BUILD_TOKEN is set and the CMS is reachable.',
+				`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): live CMS export failed and ` +
+					'EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on Vercel (live-or-die), preview and production alike. ' +
+					'Verify DIRECTUS_BUILD_TOKEN is set on this Vercel target and the CMS is reachable. ' +
+					'The prior deploy stays live until this build succeeds.',
 			);
-			process.exit(1);
+			return { source: 'none', emitted: 0 };
 		}
 		log.warn('attempting cache fallback...');
 		const cached = await readCache(cachePath(opts)).catch((err) => {
@@ -492,11 +582,13 @@ export async function run(opts: RunOptions): Promise<void> {
 			return null;
 		});
 		if (!cached) {
+			logFallbackBanner('committed-modules', fetchMsg);
 			log.warn(
-				'no cache available — exiting 0 without emitting (existing .ts files untouched).',
+				'no cache available: exiting 0 without emitting (existing .ts files untouched).',
 			);
-			return;
+			return { source: 'none', emitted: 0 };
 		}
+		logFallbackBanner('cache', fetchMsg);
 		log.info('cache fallback active: emitting from last-known-good snapshot.');
 		data = cached;
 		dataFromCache = true;
@@ -504,10 +596,10 @@ export async function run(opts: RunOptions): Promise<void> {
 
 	if (opts.dryRun) {
 		log.info('dry-run complete — skipped emit + cache write');
-		return;
+		return { source: 'live', emitted: 0 };
 	}
 
-	const emittedCount = await emitAll(data, opts);
+	const emittedCount = await emitAll(data, opts, dataFromCache ? 'cache' : 'live');
 	if (dataFromCache) {
 		log.info('cache: skipped re-write (data sourced from cache).');
 	} else if (emittedCount === 0) {
@@ -518,6 +610,7 @@ export async function run(opts: RunOptions): Promise<void> {
 		await writeCache(data, opts);
 	}
 	log.info('done.');
+	return { source: dataFromCache ? 'cache' : 'live', emitted: emittedCount };
 }
 
 async function main(): Promise<void> {
@@ -550,22 +643,23 @@ async function main(): Promise<void> {
 	assertValidModuleFilter(moduleFilter);
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 	const url = defaultDirectusUrl();
-	const isProd = process.env.VERCEL_ENV === 'production';
+	const policy = resolveFallbackPolicy();
 
-	// Token resolution: lenient for local/preview, strict for production.
-	// In production, a missing token is an operator error — fail loud so the
-	// build surfaces the problem instead of shipping stale content silently.
-	// Operator step: set DIRECTUS_BUILD_TOKEN in Vercel (Production env var)
-	// using a read-only "Build Bot" token from Directus.
+	// Token resolution: lenient locally, strict on Vercel (live-or-die policy).
+	// On Vercel a missing token is an operator error: fail loud so the build
+	// surfaces the problem instead of shipping stale content silently.
+	// Operator step: set DIRECTUS_BUILD_TOKEN in Vercel (Preview + Production
+	// env var) using a read-only "Build Bot" token from Directus.
 	let token = '';
 	if (!dryRun) {
 		try {
 			token = await getAdminToken(url);
 		} catch (authErr) {
-			if (isProd) {
+			if (policy === 'fail') {
 				log.error(
-					`PRODUCTION BUILD FAILED: token resolution failed — ${(authErr as Error).message}. ` +
-						'Set DIRECTUS_BUILD_TOKEN in Vercel Production environment variables.',
+					`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): token resolution failed: ` +
+						`${(authErr as Error).message}. EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on Vercel ` +
+						'(live-or-die), preview and production alike. Set DIRECTUS_BUILD_TOKEN on this Vercel target.',
 				);
 				process.exit(1);
 			}
@@ -576,7 +670,9 @@ async function main(): Promise<void> {
 		}
 	}
 
-	await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir, isProd });
+	const outcome = await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir, policy });
+	const exitCode = decideExit(outcome, policy);
+	if (exitCode !== 0) process.exit(exitCode);
 }
 
 if (import.meta.main) {

@@ -12,10 +12,8 @@
 
 import { readItems } from '@directus/sdk';
 import { str, toLocalizedString } from '../locale';
-import {
-	ErrorPageContentSchema,
-	type ErrorPageContent,
-} from '../schemas/nav';
+import { ErrorPageContentSchema } from '@repo/shared/schemas';
+import type { ErrorPageContent } from '@repo/shared';
 import type { LocalizedString } from '@repo/shared';
 import type { FetcherContext } from './types';
 

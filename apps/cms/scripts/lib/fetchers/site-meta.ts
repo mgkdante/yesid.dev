@@ -9,7 +9,8 @@
 
 import { readSingleton } from '@directus/sdk';
 import { toLocalizedString } from '../locale';
-import { SiteMetaSchema, SiteSeoDefaultsSchema, type SiteMeta, type SiteSeoDefaults } from '../schemas/site-meta';
+import { SiteMetaSchema, SiteSeoDefaultsSchema } from '@repo/shared/schemas';
+import type { SiteMeta, SiteSeoDefaults } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 // Mirror of DirectusSiteMetaRow from apps/web/src/lib/adapters/directus.ts.

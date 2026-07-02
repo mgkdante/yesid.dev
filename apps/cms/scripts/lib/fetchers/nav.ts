@@ -27,7 +27,8 @@
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import { toLocalizedString, toLocalizedStringOrUndef } from '../locale';
-import { NavLinkSchema, type NavLink } from '../schemas/nav';
+import { NavLinkSchema } from '@repo/shared/schemas';
+import type { NavLink } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 export interface DirectusNavLinkTranslation {
