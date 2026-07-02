@@ -11,6 +11,7 @@
 	const glanceLinksTitle = resolveLocale(glanceChrome.links, locale);
 	const liveSiteLabel = resolveLocale(glanceChrome.liveSiteLabel, locale);
 	const githubLabel = resolveLocale(glanceChrome.githubLabel, locale);
+	const repoPrivateLabel = resolveLocale(glanceChrome.repoPrivateLabel, locale);
 
 	let {
 		project,
@@ -22,7 +23,7 @@
 		anchor?: string;
 	} = $props();
 
-	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl);
+	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
 </script>
 
 {#if hasLinks}
@@ -43,7 +44,7 @@
 						{liveSiteLabel}
 					</a>
 				{/if}
-				{#if project.repoUrl}
+				{#if project.repoUrl && !project.repoPrivate}
 					<a
 						href={project.repoUrl}
 						target="_blank"
@@ -53,6 +54,16 @@
 						<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />
 						{githubLabel}
 					</a>
+				{:else if project.repoPrivate}
+					<!-- The repo exists but is private (homework #13): an honest non-link
+					     state beats a 404. Goes back to a link when the repo goes public. -->
+					<span
+						data-testid="project-repo-private"
+						class="inline-flex items-center gap-2 font-mono text-mono text-[var(--secondary-foreground)]"
+					>
+						<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />
+						{repoPrivateLabel}
+					</span>
 				{/if}
 			</div>
 		</CollapsibleSection>

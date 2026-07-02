@@ -19,20 +19,17 @@ export const DEFAULT_OG_IMAGE = '/og/default.en.png';
 // Brand wordmark. Not localised — "yesid." is the brand in all languages.
 export const SITE_NAME = 'yesid.';
 
-// Locales that currently have translated content AND published URL coverage.
-// THE FLIP LEVER (slice-28.6): adding a locale here causes:
-//   - og:locale:alternate meta to emit for this locale
-//   - hreflang link tags to include this locale
-//   - sitemap to iterate routes × this locale
-//   - canonicalFor to emit /{locale}-prefixed canonicals (scheme DONE — /fr
-//     path prefix per slice-28.6; routing opens separately via PREFIX_LOCALES
-//     in $lib/utils/locale-routing)
-//   - the EN|FR locale switcher (MenuOverlay/Footer) to become visible
-//   - a `static/og/default.{locale}.png` asset to be needed (generator script
-//     restored in slice-28.6: apps/web/scripts/generate-og-default.ts)
-// Flip checklist lives in the slice-28.6 runbook (PR body): FR content drop →
-// og/default.fr.png → flip this const → update the three flip-keyed tests.
-export const PUBLISHED_LOCALES: readonly Locale[] = ['en', 'fr'];
+// X (Twitter) attribution for shares (homework #14). The operator's personal
+// handle for now; swap here when a brand handle exists.
+export const TWITTER_HANDLE = '@mgkDante';
+
+// THE FLIP LEVER (slice-28.6) moved to $lib/utils/published-locales so
+// bare-bun scripts can read it without locale-routing's `$app/environment`.
+// Re-exported here so app code keeps one import site. Flip checklist lives in
+// the slice-28.6 runbook (PR body): FR content drop → og/default.{locale}.png
+// → flip the const → update the three flip-keyed tests.
+import { PUBLISHED_LOCALES } from './published-locales';
+export { PUBLISHED_LOCALES };
 
 // Re-exported from $lib/utils/locale so there's exactly one DEFAULT_LOCALE
 // in the codebase. Consumers of seo-defaults get it without a second import.

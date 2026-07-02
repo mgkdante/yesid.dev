@@ -42,6 +42,7 @@ export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE)
 		'@id': PERSON_ID,
 		name: meta.owner.name,
 		jobTitle: resolveLocale(meta.owner.jobTitle, locale),
+		...(meta.owner.phone ? { telephone: meta.owner.phone } : {}),
 		url: SITE_HOST,
 		email: meta.links.email,
 		sameAs,

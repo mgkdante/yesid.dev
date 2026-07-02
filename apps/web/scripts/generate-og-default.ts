@@ -30,7 +30,9 @@ import { parseArgs } from 'node:util';
 import { resolve as resolvePath } from 'node:path';
 import { Resvg } from '@resvg/resvg-js';
 import { siteMeta } from '../src/lib/content/site-meta';
-import { PUBLISHED_LOCALES } from '../src/lib/utils/seo-defaults';
+// Import the flip lever directly (NOT via seo-defaults): seo-defaults drags in
+// locale-routing → virtual `$app/environment`, which bare bun cannot resolve.
+import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 import { SUPPORTED_LOCALES } from '../src/lib/utils/locale';
 import type { Locale, LocalizedString } from '../src/lib/types';
 

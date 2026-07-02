@@ -26,6 +26,7 @@ export const SiteAddressSchema = z.object({
 export const SiteOwnerSchema = z.object({
 	name: z.string(),
 	jobTitle: LocalizedStringSchema,
+	phone: z.string().optional(),
 	address: SiteAddressSchema,
 	// `knowsAbout` is `readonly string[]` in TS. `.readonly()` makes z.infer
 	// produce the same marker so bidirectional drift detection compiles.

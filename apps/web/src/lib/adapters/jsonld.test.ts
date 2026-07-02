@@ -122,7 +122,7 @@ describe('buildCollectionPageNode', () => {
 	it('produces a Zod-parseable CollectionPage', () => {
 		const node = buildCollectionPageNode({
 			name: 'Blog',
-			description: 'Notes on data infrastructure.',
+			description: 'Notes on digital infrastructure.',
 			url: 'https://yesid.dev/blog',
 		});
 		expect(node['@type']).toBe('CollectionPage');
