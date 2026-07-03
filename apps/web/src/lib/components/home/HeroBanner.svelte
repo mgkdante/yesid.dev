@@ -74,6 +74,7 @@
 	const headlineLine2 = $derived(resolveLocale(heroContent.headline.line2, locale));
 	const subheadlineText = $derived(resolveLocale(heroContent.subheadline, locale));
 	const subtitleText = $derived(resolveLocale(heroContent.subtitle, locale));
+	const identityText = $derived(resolveLocale(heroContent.identity, locale));
 	const ctaWorkLabel = $derived(resolveLocale(heroContent.ctaWork, locale));
 	const ctaContactLabel = $derived(resolveLocale(heroContent.ctaContact, locale));
 	const sqlPrompt = $derived(resolveLocale(heroContent.sqlPanel.prompt, locale));
@@ -101,10 +102,12 @@
 	// HeroMetrics resolves it per-locale by metric key, and the SQL panels carry
 	// no metric labels — so heroData (numbers, units, query rows, the "STM"
 	// wordmark) flows to the children unchanged. No localization pass here.
-	// go2/about: relative-time strings localized. EN "just now"/"30s ago" →
-	// FR "à l'instant"/"il y a 30 s" (NB: French inserts a space before the unit).
-	const updatedAgoInitial = locale === 'fr' ? 'il y a 30 s' : '30s ago';
-	const updatedAgoJustNow = locale === 'fr' ? "à l'instant" : 'just now';
+	// Honesty pass (until real KPIs ship, homework #2): the page is prerendered,
+	// so any age claim at first paint is fiction. The slot says what the data IS
+	// ("demo data"); after a real click of the refresh button, "regenerated just
+	// now" is genuinely true and may stand.
+	const updatedAgoInitial = locale === 'fr' ? 'données démo' : 'demo data';
+	const updatedAgoJustNow = locale === 'fr' ? "régénéré à l'instant" : 'regenerated just now';
 	let updatedAgo: string = $state(updatedAgoInitial);
 	// Section min-height reserves scroll space for the pin + trailing content.
 	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
@@ -502,6 +505,7 @@
 						{headlineAriaSuffix}
 						{subheadlineText}
 						{subtitleText}
+						{identityText}
 						{ctaWorkLabel}
 						{ctaContactLabel}
 						heroData={heroData}

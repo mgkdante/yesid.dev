@@ -18,6 +18,7 @@ describe('HeroContentSchema', () => {
 		headline: { line1: ls('Hello'), line2: ls('World'), ariaSuffix: ls('suffix') },
 		subheadline: ls('sub'),
 		subtitle: ls('sub2'),
+		identity: ls('freelance line'),
 		ctaWork: ls('Work'),
 		ctaContact: ls('Contact'),
 		sqlPanel: {

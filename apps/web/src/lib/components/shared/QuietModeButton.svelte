@@ -9,12 +9,20 @@
 
 	// CMS-backed bilingual copy (siteLabels.a11y.quietMode*). getLocale() returns
 	// DEFAULT_LOCALE without a provider, so unit tests render the EN seeds.
+	// Homework #19b: the visible VERB label is the accessible name and flips
+	// with state (Collapse all / Expand all), so both controls are plain
+	// buttons; role="switch"/aria-pressed would double-encode the state the
+	// label already announces.
 	const locale = getLocale();
 	const a11y = siteLabels.a11y;
-	const quietModeLabel = resolveLocale(a11y.quietModeLabel, locale);
 
 	const enabled = $derived(quietModeStore.enabled);
 	const remembered = $derived(quietModeStore.remembered);
+	const switchLabel = $derived(
+		enabled
+			? resolveLocale(a11y.quietModeLabelCollapsed, locale)
+			: resolveLocale(a11y.quietModeLabel, locale)
+	);
 	const switchTitle = $derived(
 		enabled
 			? resolveLocale(a11y.quietModeDisable, locale)
@@ -34,9 +42,7 @@
 		type="button"
 		data-testid="quiet-mode-toggle"
 		class="quiet-mode-toggle quiet-mode-toggle--switch tap-press"
-		role="switch"
-		aria-checked={enabled}
-		aria-label={quietModeLabel}
+		data-collapsed={enabled}
 		title={switchTitle}
 		onclick={() => quietModeStore.toggle()}
 	>
@@ -49,15 +55,14 @@
 			<!-- signal core: lights up to mark the quiet zone -->
 			<circle class="q-core" cx="12" cy="12" r="2.3" />
 		</svg>
-		<span>{quietModeLabel}</span>
+		<span>{switchLabel}</span>
 	</button>
 
 	<button
 		type="button"
 		data-testid="quiet-mode-remember"
 		class="quiet-mode-toggle quiet-mode-toggle--remember tap-press"
-		aria-pressed={remembered}
-		aria-label={rememberLabel}
+		data-remembered={remembered}
 		title={rememberLabel}
 		onclick={() => (remembered ? quietModeStore.forgetDefault() : quietModeStore.rememberCurrent())}
 	>
@@ -111,8 +116,8 @@
 
 	.quiet-mode-toggle:hover,
 	.quiet-mode-toggle:focus-visible,
-	.quiet-mode-toggle[aria-checked='true'],
-	.quiet-mode-toggle[aria-pressed='true'] {
+	.quiet-mode-toggle[data-collapsed='true'],
+	.quiet-mode-toggle[data-remembered='true'] {
 		border-color: var(--primary);
 		color: var(--primary);
 		background: color-mix(in srgb, var(--primary) 7%, var(--background));
@@ -145,18 +150,18 @@
 		opacity: 0.5;
 	}
 
-	/* Quiet ENGAGED: the broadcast falls silent (arcs fade) and the core lights. */
-	.quiet-mode-toggle[aria-checked='true'] .q-wave {
+	/* Collapsed ENGAGED: the broadcast falls silent (arcs fade) and the core lights. */
+	.quiet-mode-toggle[data-collapsed='true'] .q-wave {
 		opacity: 0;
 	}
-	.quiet-mode-toggle[aria-checked='true'] .q-core {
+	.quiet-mode-toggle[data-collapsed='true'] .q-core {
 		fill: var(--primary);
 		stroke: var(--primary);
 		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 60%, transparent));
 	}
 
 	/* Pinned: the bookmark fills solid --primary (the saved preference). */
-	.quiet-mode-toggle[aria-pressed='true'] .r-bookmark {
+	.quiet-mode-toggle[data-remembered='true'] .r-bookmark {
 		fill: var(--primary);
 		stroke: var(--primary);
 		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 55%, transparent));

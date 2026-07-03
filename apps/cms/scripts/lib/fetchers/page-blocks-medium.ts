@@ -137,9 +137,11 @@ export function toContactContent(
 			command: str(raw.info_terminal_command),
 			location: toLocalizedString(tr, 'info_location'),
 			responseTime: toLocalizedString(tr, 'info_response_time'),
+			languages: toLocalizedString(tr, 'info_languages'),
 			sectionLabels: {
 				location: toLocalizedString(tr, 'info_section_label_location'),
 				connect: toLocalizedString(tr, 'info_section_label_connect'),
+				languages: toLocalizedString(tr, 'info_section_label_languages'),
 			},
 		},
 		formTerminal: {
@@ -152,6 +154,8 @@ export function toContactContent(
 				message: { label: localizedWithFallback(tr, 'form_field_message_label', raw.form_field_message_label), placeholder: toLocalizedString(tr, 'form_field_message_placeholder') },
 			},
 			submitLabel: toLocalizedString(tr, 'form_submit_label'),
+			bookingPrompt: toLocalizedString(tr, 'booking_prompt'),
+			bookingButtonLabel: toLocalizedString(tr, 'booking_button_label'),
 		},
 		validation: {
 			required: toLocalizedString(tr, 'validation_required'),

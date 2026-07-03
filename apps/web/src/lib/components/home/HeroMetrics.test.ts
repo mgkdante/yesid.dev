@@ -47,7 +47,8 @@ describe('HeroMetrics', () => {
 
   it('renders sub-labels for each metric (CMS templates, EN, {coverage}/{total} filled)', () => {
     render(HeroMetrics, { props: { metrics } });
-    expect(screen.getAllByText('STM · LIVE').length).toBeGreaterThan(0);
+    // Honesty pass: the demo dashboard stopped claiming a live STM feed.
+    expect(screen.getAllByText('DEMO · STM-STYLE').length).toBeGreaterThan(0);
     // delaySub template '{coverage}% COVERAGE' with coverage=87.6
     expect(screen.getAllByText('87.6% COVERAGE').length).toBeGreaterThan(0);
     // routesSub template 'OF {total} TOTAL' with total=203
@@ -74,7 +75,7 @@ describe('HeroMetrics — fr locale (CMS truth)', () => {
 
   it('renders French subs with {coverage}/{total} substituted', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
-    expect(screen.getAllByText('STM · EN DIRECT').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('DÉMO · STYLE STM').length).toBeGreaterThan(0);
     expect(screen.getAllByText('87.6% DE COUVERTURE').length).toBeGreaterThan(0);
     expect(screen.getAllByText('SUR 203 AU TOTAL').length).toBeGreaterThan(0);
     // The EN copy must NOT leak into the French render.

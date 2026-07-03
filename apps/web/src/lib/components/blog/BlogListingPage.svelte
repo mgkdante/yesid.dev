@@ -247,8 +247,13 @@
 		{/if}
 
 		{#if filteredPosts.length === 0}
+			<!-- Two empty states: "your filters matched nothing" vs "this section has
+			     no posts at all" (blaming filters that don't exist reads as a bug). -->
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-				{resolveLocale(listingChrome.noPostsMessage, locale)}
+				{resolveLocale(
+					hasActiveFilters ? listingChrome.noPostsMessage : listingChrome.noPostsEmptyMessage,
+					locale
+				)}
 			</p>
 		{:else}
 			<div class="flex flex-col gap-4">

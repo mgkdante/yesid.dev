@@ -140,75 +140,34 @@ function doc(...paras: string[]) {
 	return blockDoc(...paras.map((text, i) => paragraph(`p${i + 1}`, text)));
 }
 
-const OVERVIEW = {
-	en: 'Case study for a bilingual SvelteKit portfolio powered by Directus CMS, generated TypeScript caches, and Vercel edge delivery with zero CMS calls per visit.',
-	fr: "Étude de cas d'un portfolio SvelteKit bilingue avec édition Directus CMS, contenu TypeScript généré et livraison edge Vercel sans appel CMS par visite.",
-};
+// Conversion batch rewrite (operator ask 2026-07-02: "make this holistic").
+// All numbers measured on develop @ 2bdb611d + this batch; the update
+// procedure is written into the "Numbers with receipts" section itself.
 
 const ONE_LINER = {
-	en: 'A bilingual CMS portfolio that edits in Directus and serves visitors from generated edge-ready content.',
-	fr: 'Un portfolio CMS bilingue, édité dans Directus et servi aux visiteurs depuis du contenu généré prêt pour l’edge.',
+	en: 'My own site, run like client work: the CMS is the source of truth, the edge serves generated content, and every claim is locked by a test.',
+	fr: "Mon propre site, mené comme un mandat client : le CMS comme source de vérité, du contenu généré servi à l'edge, et chaque affirmation verrouillée par un test.",
 };
 
-const REGEN_SCRIPT = [
-	'```sh',
-	'export OP_SERVICE_ACCOUNT_TOKEN="$(grep ^OP_TOKEN= .env | cut -d= -f2-)"',
-	'op run --env-file=apps/cms/.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev bun apps/cms/scripts/export-fallbacks.ts --module=projects',
-	'```',
-].join('\n');
-
-const GENERATED_CACHE_CONTRACT = [
-	'```ts',
-	'type GeneratedContentCache = {',
-	"  source: 'Directus CMS';",
-	"  file: 'apps/web/src/lib/content/projects.ts';",
-	"  contract: 'Project[]';",
-	'  runtimeCmsCallsPerVisit: 0;',
-	'};',
-	'',
-	'export const projects = [...] satisfies Project[];',
-	'```',
-].join('\n');
-
-const PROJECT_HERO_MEDIA_CONTRACT = [
-	'```ts',
-	'type ProjectHeroMedia = {',
-	'  image: string;',
-	'  imageLight?: string;',
-	'  imageSecondary?: string;',
-	'  imageSecondaryLight?: string;',
-	'  featured: boolean;',
-	'};',
-	'',
-	'// image 1 drives desktop/default cards.',
-	'// image 2 is optional and drives mobile/secondary split cards.',
-	'```',
-].join('\n');
-
-const DEV_CONTENT_SCRIPT = [
-	'```sh',
-	'export OP_SERVICE_ACCOUNT_TOKEN="$(grep ^OP_TOKEN= .env | cut -d= -f2-)"',
-	'op run --env-file=apps/cms/.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev bun apps/cms/scripts/migrate-assets.ts',
-	'op run --env-file=apps/cms/.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev bun apps/cms/scripts/content-projects-yesid.ts --apply',
-	'op run --env-file=apps/cms/.env -- env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev bun apps/cms/scripts/export-fallbacks.ts --module=projects',
-	'```',
-].join('\n');
-
-const QUALITY_GATES = [
-	'```sh',
-	'cd apps/web && bunx svelte-check --tsconfig ./tsconfig.json',
-	'cd apps/cms && bun test',
-	'cd apps/web && bunx vitest run',
-	'```',
-].join('\n');
+const DESCRIPTION = {
+	en: [
+		'yesid.dev is the one project where I am both the client and the contractor. It is a bilingual SvelteKit site edited in `Directus`, regenerated into typed TypeScript modules at build time, and served prerendered from the `Vercel` edge with `0` CMS calls per visit.',
+		'It is also the working proof for all four services. The content lives in a Postgres database I tune myself, a pipeline rebuilds the site on every publish, the numbers in this case study are measured rather than estimated, and the storefront is the site itself.',
+	],
+	fr: [
+		"yesid.dev est le seul projet où je suis à la fois le client et l'entrepreneur. C'est un site SvelteKit bilingue, édité dans `Directus`, régénéré en modules TypeScript typés au moment du build, puis servi prérendu depuis l'edge `Vercel` avec `0` appel au CMS par visite.",
+		"C'est aussi la preuve en marche des quatre services. Le contenu vit dans une base Postgres que j'ajuste moi-même, un pipeline reconstruit le site à chaque publication, les chiffres de cette étude de cas sont mesurés plutôt qu'estimés, et la vitrine, c'est le site lui-même.",
+	],
+};
 
 const ARCHITECTURE_MERMAID = {
 	en: [
 		'```mermaid',
 		'flowchart LR',
 		'  directus["Directus CMS"] --> export["export-fallbacks.ts"]',
-		'  export --> cache["generated TypeScript cache"]',
-		'  cache --> svelte["SvelteKit"]',
+		'  export --> cache["21 typed content modules"]',
+		'  cache --> manifest["SHA-256 manifest"]',
+		'  cache --> svelte["SvelteKit prerender (EN + FR)"]',
 		'  svelte --> vercel["Vercel edge"]',
 		'```',
 	].join('\n'),
@@ -216,9 +175,50 @@ const ARCHITECTURE_MERMAID = {
 		'```mermaid',
 		'flowchart LR',
 		'  directus["CMS Directus"] --> export["export-fallbacks.ts"]',
-		'  export --> cache["cache TypeScript généré"]',
-		'  cache --> svelte["SvelteKit"]',
+		'  export --> cache["21 modules de contenu typés"]',
+		'  cache --> manifest["manifeste SHA-256"]',
+		'  cache --> svelte["prérendu SvelteKit (FR + EN)"]',
 		'  svelte --> vercel["edge Vercel"]',
+		'```',
+	].join('\n'),
+};
+
+const TEST_RECEIPTS = {
+	en: [
+		'```sh',
+		'cd apps/web && bunx vitest run        # 1,871 tests, 170 files',
+		'cd apps/cms && bun test               # 729 tests, 69 files',
+		'bun run --cwd packages/shared test    # 84 tests',
+		'bun run --cwd packages/tokens test    # 43 tests',
+		'cd apps/web && bunx playwright test   # 424 e2e tests, 37 files',
+		'```',
+	].join('\n'),
+	fr: [
+		'```sh',
+		'cd apps/web && bunx vitest run        # 1 871 tests, 170 fichiers',
+		'cd apps/cms && bun test               # 729 tests, 69 fichiers',
+		'bun run --cwd packages/shared test    # 84 tests',
+		'bun run --cwd packages/tokens test    # 43 tests',
+		'cd apps/web && bunx playwright test   # 424 tests e2e, 37 fichiers',
+		'```',
+	].join('\n'),
+};
+
+const LOCALE_LOCK = {
+	en: [
+		'```ts',
+		'// apps/web/src/lib/content/integrity.test.ts',
+		'const LOCKED = { TOTAL: 650, WITH_FR: 650, NO_FR: 0, ES_WITHOUT_FR: 0 };',
+		'// 650 visitor-facing strings walked. 650 carry French. Zero debt.',
+		'// Strip one translation and the suite goes red before the push.',
+		'```',
+	].join('\n'),
+	fr: [
+		'```ts',
+		'// apps/web/src/lib/content/integrity.test.ts',
+		'const LOCKED = { TOTAL: 650, WITH_FR: 650, NO_FR: 0, ES_WITHOUT_FR: 0 };',
+		'// 650 chaînes visibles par les visiteurs. 650 avec leur français. Zéro dette.',
+		'// Retire une traduction et la suite vire au rouge avant la poussée.',
 		'```',
 	].join('\n'),
 };
@@ -250,103 +250,109 @@ const SECTIONS: SectionSpec[] = [
 	{
 		sort: 2,
 		en: {
-			title: 'Outcome: CMS control, static delivery',
-			content: doc(
-				"yesid.dev is built for the same outcome I would sell to a client: edit content in `Directus`, regenerate the `TypeScript` cache, and ship pages that do not call the CMS for every visitor.",
-				'The result is a bilingual site that stays easy to update without paying a runtime tax on every page view. Content has one source of truth, the site has fast edge delivery, and future projects can inherit the same brand system instead of starting from zero.',
+			title: 'The site is the case study',
+			content: blockDoc(
+				paragraph('p1', 'Most portfolios describe work. This one has to survive it: the site is edited, built, tested and shipped by the same pipeline I would set up for a client, so the case study and the deliverable are the same artifact.'),
+				paragraph('p2', 'The shape is simple. Content lives in `Directus` on a `Neon` Postgres instance. At build time, `export-fallbacks.ts` regenerates `21` typed TypeScript modules from live CMS state and records each one in a SHA-256 manifest. `SvelteKit` prerenders every page in English and French, and `Vercel` serves the result. Visitors never wake the CMS: `0` calls per visit.'),
+				code('architecture-mermaid-en', ARCHITECTURE_MERMAID.en),
+				paragraph('p3', 'That boundary is enforced, not promised. On Vercel the export is live-or-die: if the CMS cannot be reached, the build fails instead of shipping stale content. Locally a fallback is allowed, but it prints a banner you cannot miss and the manifest records which modules came from cache. A pre-commit hook and a CI check both reject hand-edits to generated files. I edit the CMS, or nothing.'),
 			),
 		},
 		fr: {
-			title: 'Résultat : contrôle CMS, livraison statique',
-			content: doc(
-				"yesid.dev est bâti autour du même résultat que je vendrais à un client : éditer le contenu dans `Directus`, régénérer le cache `TypeScript`, puis servir des pages qui n'appellent pas le CMS à chaque visite.",
-				"Le résultat : un site bilingue facile à mettre à jour, sans taxe d'exécution sur chaque page vue. Le contenu garde une seule source de vérité, le site reste rapide à l'edge, et les prochains projets peuvent hériter du même système de marque au lieu de repartir à zéro.",
+			title: "Le site est l'étude de cas",
+			content: blockDoc(
+				paragraph('p1', "La plupart des portfolios décrivent le travail. Celui-ci doit y survivre : le site est édité, construit, testé et livré par le même pipeline que je monterais pour un client. L'étude de cas et le livrable sont le même artefact."),
+				paragraph('p2', "La forme est simple. Le contenu vit dans `Directus`, sur une instance Postgres `Neon`. Au moment du build, `export-fallbacks.ts` régénère `21` modules TypeScript typés à partir de l'état réel du CMS et note chacun dans un manifeste SHA-256. `SvelteKit` prérend chaque page en français et en anglais, puis `Vercel` sert le résultat. Les visiteurs ne réveillent jamais le CMS : `0` appel par visite."),
+				code('architecture-mermaid-fr', ARCHITECTURE_MERMAID.fr),
+				paragraph('p3', "Cette frontière est appliquée, pas promise. Sur Vercel, l'export est vivant ou mort : si le CMS ne répond pas, le build échoue au lieu de livrer du contenu périmé. En local, un fallback est permis, mais il affiche une bannière impossible à manquer et le manifeste note quels modules viennent du cache. Un hook pre-commit et une vérification CI rejettent tous les deux les modifications à la main des fichiers générés. J'édite le CMS, ou rien."),
 			),
 		},
 	},
 	{
 		sort: 3,
 		en: {
-			title: 'Identity and quality',
-			content: doc(
-				'Quality is part of the identity here. This is a proudly Quebec-built product, bilingual by default, with English and French treated as first-class surfaces instead of a translation pass at the end.',
-				'The Montreal voice matters, but so do the details: mobile-first layout, accessible controls, `light` and `dark` themes, and `prefers-reduced-motion` behavior. The point is not just that the site looks like me. It has to behave like I care.',
+			title: 'All four stations on one line',
+			content: blockDoc(
+				paragraph('p1', 'The services page draws a metro line with four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. This build stops at every one of them, not as a demo but as load-bearing structure.'),
+				unorderedList('stations-en', [
+					'`Databases & SQL`: the content sits in a Neon Postgres instance behind Directus. The schema ships as versioned snapshots, tags and tech stack are real M2M relations instead of denormalized JSON, and autosuspend tuning keeps the database bill close to zero between visits.',
+					'`Pipelines & Automation`: a publish in the CMS fires a deploy hook, the build pulls live content, regenerates every module and hashes it into a manifest. The scripts that can write to the CMS all refuse to touch prod by accident.',
+					'`Dashboards & Analytics`: the metrics at the top of this page are not marketing copy. Test counts, locale coverage and byte budgets come out of commands that can be rerun, and the important ones are pinned as failing tests. That is the same discipline I want in any dashboard: numbers with receipts.',
+					'`Websites & E-commerce`: the storefront is the site you are reading. Bilingual by default, prerendered in English and French, light and dark themes, and a `prefers-reduced-motion` contract checked end to end. The e-commerce half of this station gets proven on client work instead.',
+				]),
+				delimiter('stations-divider-en'),
+				paragraph('p2', 'The metro is not a paint job either. The NEXT STOP chrome, the terminus board and the little delay dashboard in the hero all read their labels from the same CMS pipeline as the rest of the copy, so even the set dressing is bilingual and covered by the tests.'),
 			),
 		},
 		fr: {
-			title: 'Identité et qualité',
-			content: doc(
-				"La qualité fait partie de l'identité ici. C'est un produit fièrement québécois, bilingue par défaut, avec le français et l'anglais traités comme deux surfaces de première classe au lieu d'une traduction ajoutée à la fin.",
-				"La voix montréalaise compte, mais les détails aussi : une mise en page mobile-first, des contrôles accessibles, les thèmes `light` et `dark`, puis le comportement `prefers-reduced-motion`. Le but, ce n'est pas seulement que le site me ressemble. Il faut qu'il se comporte comme si je fais attention.",
+			title: 'Les quatre stations sur une même ligne',
+			content: blockDoc(
+				paragraph('p1', "La page services trace une ligne de métro à quatre stations : Bases de données et SQL, Pipelines et automatisation, Tableaux de bord et analytique, Sites web et commerce en ligne. Ce build s'arrête à chacune d'elles, pas comme démo, mais comme structure porteuse."),
+				unorderedList('stations-fr', [
+					"`Bases de données et SQL` : le contenu repose dans une instance Postgres Neon derrière Directus. Le schéma est versionné en snapshots, les tags et la pile technique sont de vraies relations M2M au lieu de JSON dénormalisé, et le réglage de l'autosuspend garde la facture de base de données proche de zéro entre les visites.",
+					'`Pipelines et automatisation` : une publication dans le CMS déclenche un hook de déploiement, le build tire le contenu réel, régénère chaque module et le hache dans un manifeste. Les scripts capables d\'écrire dans le CMS refusent tous de toucher la prod par accident.',
+					"`Tableaux de bord et analytique` : les métriques en haut de cette page ne sont pas du marketing. Les comptes de tests, la couverture de langue et les budgets d'octets sortent de commandes qu'on peut relancer, et les plus importants sont verrouillés par des tests qui échouent. C'est la même discipline que je veux dans n'importe quel tableau de bord : des chiffres avec des reçus.",
+					"`Sites web et commerce en ligne` : la vitrine, c'est le site que tu es en train de lire. Bilingue par défaut, prérendu en français et en anglais, thèmes clair et sombre, et un contrat `prefers-reduced-motion` vérifié de bout en bout. Le volet commerce en ligne de cette station se prouve plutôt sur les mandats clients.",
+				]),
+				delimiter('stations-divider-fr'),
+				paragraph('p2', "Le métro n'est pas non plus une couche de peinture. Le chrome PROCHAIN ARRÊT, le tableau du terminus et le petit tableau des retards dans le héro lisent leurs étiquettes du même pipeline CMS que le reste du texte. Même le décor est bilingue et couvert par les tests."),
 			),
 		},
 	},
 	{
 		sort: 4,
 		en: {
-			title: 'Technical proof',
+			title: 'Numbers with receipts',
 			content: blockDoc(
-				paragraph('p1', 'The content pipeline is intentionally boring: `Directus` stores copy and media on `Neon`, `export-fallbacks.ts` pulls that state into a `generated TypeScript cache`, and `SvelteKit` serves the result through `Vercel`. The important part is the boundary: editors get a real CMS, visitors get edge-ready files.'),
-				code('architecture-mermaid-en', ARCHITECTURE_MERMAID.en),
-				unorderedList('technical-guarantees-en', [
-					'`Directus` is the source of truth for copy, media, project sections, and metrics.',
-					'The project row owns hero media, light variants, and the `featured` toggle for the home proof reel.',
-					'Generated files under `apps/web/src/lib/content` are a build cache, not hand-authored content.',
-					'Published visitors hit `SvelteKit` output and `Vercel` edge delivery with `0` CMS calls per visit.',
-					'Dev CMS and prod CMS stay separated so content work can be reviewed before promotion.',
-					'The integrity lock catches generated cache drift before a push can hide it.',
+				paragraph('p1', 'Metrics rot fast on portfolio sites, so here is where mine come from. Every suite below was green the day this page was written, and the counts are the test reporter\'s output, not a guess.'),
+				code('test-receipts-en', TEST_RECEIPTS.en),
+				paragraph('p2', 'That is `3,151` tests between a content edit and production. The Playwright end-to-end suite runs sharded three ways in CI against a hermetic local preview: no deployed URL, no edge quota spent, just the build under test.'),
+				paragraph('p3', 'The bilingual promise is a failing test, not a policy. An integrity walker visits every visitor-facing string in the generated content and locks the counts:'),
+				code('locale-lock-en', LOCALE_LOCK.en),
+				paragraph('p4', 'The same reflex guards the rest of the build:'),
+				unorderedList('guardrails-en', [
+					'`svelte-check` warnings are locked at `0`. The gate went from 46 to zero without a single suppression, and CI fails if one grows back.',
+					'Content schemas live once in `packages/shared` as `Zod` schemas, imported by both the web app and the CMS scripts, so the two ends of the pipeline cannot drift apart quietly.',
+					'The interactive stack engine stays code-split behind a pinned 25 KB gzip budget, re-measured after every build.',
+					'OG share cards are minted from the canonical wordmark SVG at 1200x630, with a hard 150 KB budget per card.',
+					'CI is cost-aware on purpose: PR-only triggers, a shared turbo remote cache, cached browsers and a skip label for docs-only changes. I burned through the free GitHub Actions minutes once. Once.',
 				]),
-				delimiter('technical-divider-en'),
-				paragraph('p2', 'The hero media model is explicit because gallery order is not a contract. Image 1 is the desktop/default card image. Image 2 is optional and only means mobile or secondary when the CMS field is filled. Extra gallery images stay in the case study body.'),
-				code('project-hero-media-contract-en', PROJECT_HERO_MEDIA_CONTRACT),
-				paragraph('p3', 'Assets and content move through the same repeatable path. Upload media to Directus, update the dev CMS row, then regenerate the fallback cache that the web app imports.'),
-				code('dev-content-script-en', DEV_CONTENT_SCRIPT),
-				paragraph('p4', 'The regen command can also run alone when the CMS already has the correct state and only the generated cache needs to be refreshed.'),
-				code('regen-script-en', REGEN_SCRIPT),
-				paragraph('p5', 'The generated module is the contract the web app consumes. The app imports typed content, not live CMS responses, so page rendering stays predictable and cheap.'),
-				code('cache-contract-en', GENERATED_CACHE_CONTRACT),
-				paragraph('p6', 'The quality gate is intentionally boring too. A content change still has to pass type checking, CMS script tests, web unit tests, and the integrity lock before it is ready for the operator push.'),
-				code('quality-gates-en', QUALITY_GATES),
-				paragraph('p7', 'The README collapsible is kept last on purpose. Public repos can feed it automatically; private client repos can keep the technical proof inside the CMS without exposing source code.'),
+				paragraph('p5', 'None of this is exotic. It is ordinary digital infrastructure, pointed at my own site first. If you want to know what working with me looks like, this page is the answer: the pipeline that built it is the pitch.'),
 			),
 		},
 		fr: {
-			title: 'Preuve technique',
+			title: 'Des chiffres avec des reçus',
 			content: blockDoc(
-				paragraph('p1', "Le pipeline de contenu est volontairement simple : `Directus` garde le texte et les médias sur `Neon`, `export-fallbacks.ts` transforme cet état en `cache TypeScript généré`, puis `SvelteKit` sert le résultat sur `Vercel`. Le point important, c'est la frontière : les éditeurs ont un vrai CMS, les visiteurs reçoivent des fichiers prêts pour l'edge."),
-				code('architecture-mermaid-fr', ARCHITECTURE_MERMAID.fr),
-				unorderedList('technical-guarantees-fr', [
-					'`Directus` est la source de vérité pour le texte, les médias, les sections de projet et les métriques.',
-					'La rangée projet possède les images héro, les variantes light et le toggle `featured` du proof reel.',
-					'Les fichiers générés dans `apps/web/src/lib/content` sont un cache de build, pas du contenu écrit à la main.',
-					'Les visiteurs publiés passent par la sortie `SvelteKit` et la livraison edge `Vercel`, avec `0` appel CMS par visite.',
-					'Le CMS dev et le CMS prod restent séparés pour relire le contenu avant la promotion.',
-					"Le verrou d'intégrité attrape les dérives du cache généré avant qu'une poussée puisse les cacher.",
+				paragraph('p1', "Les métriques pourrissent vite sur les sites portfolio, alors voici d'où viennent les miennes. Chaque suite ci-dessous était au vert le jour où cette page a été écrite, et les comptes sortent du rapporteur de tests, pas d'une estimation."),
+				code('test-receipts-fr', TEST_RECEIPTS.fr),
+				paragraph('p2', "Ça fait `3 151` tests entre une modification de contenu et la production. La suite Playwright de bout en bout roule en trois shards en CI contre un aperçu local hermétique : pas d'URL déployée, pas de quota edge dépensé, juste le build sous test."),
+				paragraph('p3', "La promesse bilingue est un test qui échoue, pas une politique. Un marcheur d'intégrité visite chaque chaîne visible par les visiteurs dans le contenu généré et verrouille les comptes :"),
+				code('locale-lock-fr', LOCALE_LOCK.fr),
+				paragraph('p4', 'Le même réflexe garde le reste du build :'),
+				unorderedList('guardrails-fr', [
+					"Les avertissements `svelte-check` sont verrouillés à `0`. La gate est passée de 46 à zéro sans une seule suppression, et la CI échoue si un seul repousse.",
+					"Les schémas de contenu vivent une seule fois dans `packages/shared`, en schémas `Zod` importés par l'app web et par les scripts CMS. Les deux bouts du pipeline ne peuvent pas dériver en silence.",
+					'Le moteur de pile interactif reste séparé du bundle principal, derrière un budget gzip épinglé à 25 Ko et remesuré après chaque build.',
+					'Les cartes de partage OG sont frappées à partir du wordmark SVG canonique, en 1200x630, avec un budget dur de 150 Ko par carte.',
+					"La CI est frugale exprès : déclencheurs sur PR seulement, cache distant turbo partagé, navigateurs en cache et une étiquette pour sauter les changements de docs. J'ai déjà brûlé les minutes gratuites de GitHub Actions une fois. Une seule.",
 				]),
-				delimiter('technical-divider-fr'),
-				paragraph('p2', "Le modèle média héro est explicite parce que l'ordre de la galerie n'est pas un contrat. L'image 1 est l'image bureau par défaut. L'image 2 est optionnelle et veut dire mobile ou secondaire seulement quand le champ CMS est rempli. Les autres images restent dans la galerie du cas d'étude."),
-				code('project-hero-media-contract-fr', PROJECT_HERO_MEDIA_CONTRACT),
-				paragraph('p3', 'Les assets et le contenu passent par le même chemin répétable. On envoie les médias dans Directus, on met à jour la rangée du CMS dev, puis on régénère le cache fallback importé par le site web.'),
-				code('dev-content-script-fr', DEV_CONTENT_SCRIPT),
-				paragraph('p4', "La commande de régénération peut aussi rouler seule quand le CMS contient déjà le bon état et que seul le cache généré doit être rafraîchi."),
-				code('regen-script-fr', REGEN_SCRIPT),
-				paragraph('p5', "Le module généré est le contrat consommé par l'app web. L'app importe du contenu typé, pas des réponses CMS en direct, donc le rendu reste prévisible et économique."),
-				code('cache-contract-fr', GENERATED_CACHE_CONTRACT),
-				paragraph('p6', "La gate de qualité reste volontairement simple. Même un changement de contenu doit passer le type checking, les tests des scripts CMS, les tests web et le verrou d'intégrité avant la poussée opérateur."),
-				code('quality-gates-fr', QUALITY_GATES),
-				paragraph('p7', 'Le collapsible README reste dernier exprès. Les repos publics peuvent le remplir automatiquement; les repos privés de clients peuvent garder la preuve technique dans le CMS sans exposer le code source.'),
+				paragraph('p5', "Rien de tout ça n'est exotique. C'est de l'infrastructure numérique ordinaire, pointée d'abord vers mon propre site. Si tu veux savoir de quoi ça a l'air de travailler avec moi, cette page est la réponse : le pipeline qui l'a construite, c'est le pitch."),
 			),
 		},
 	},
 ];
 
 interface MetricSpec { sort: number; value: string; en: string; fr: string }
+// Replaces the '62K+ lines of code' vanity metric and the stale '1,776' test
+// count. '3,151' = 1,871 web vitest + 729 cms bun test + 84 shared + 43 tokens
+// + 424 Playwright e2e; '650' is the integrity-lock LOCKED.TOTAL. Update both
+// alongside the "Numbers with receipts" section when the suites move.
 const METRICS: MetricSpec[] = [
-	{ sort: 1, value: '62K+', en: 'lines of code', fr: 'lignes de code' },
-	{ sort: 2, value: '100%', en: 'content from the CMS', fr: 'contenu venu du CMS' },
-	{ sort: 3, value: '1,776', en: 'tests, every change', fr: 'tests, à chaque changement' },
-	{ sort: 4, value: '0', en: 'CMS calls per visit', fr: 'appels au CMS par visite' },
-	{ sort: 5, value: '2', en: 'languages, one source', fr: 'langues, une source' },
+	{ sort: 1, value: '3,151', en: 'tests guarding the build', fr: 'tests qui gardent le build' },
+	{ sort: 2, value: '0', en: 'CMS calls per visit', fr: 'appels au CMS par visite' },
+	{ sort: 3, value: '650', en: 'bilingual strings, locked by a test', fr: 'chaînes bilingues, verrouillées par un test' },
+	{ sort: 4, value: '100%', en: 'content from the CMS', fr: 'contenu venu du CMS' },
+	{ sort: 5, value: '0', en: 'warnings tolerated in CI', fr: 'avertissements tolérés en CI' },
 ];
 
 interface Schema {
@@ -389,7 +395,7 @@ export async function apply(opts: { directusUrl: string; token: string }): Promi
 
 	for (const lang of ['en', 'fr'] as const) {
 		const id = await trRowId(client, lang);
-		await client.request(updateItem('projects_translations', id, { title: 'yesid.dev', one_liner: ONE_LINER[lang], description: doc(OVERVIEW[lang]) } as object));
+		await client.request(updateItem('projects_translations', id, { title: 'yesid.dev', one_liner: ONE_LINER[lang], description: doc(...DESCRIPTION[lang]) } as object));
 		log.info(`  ~ translations (${lang}, #${id}): title + one_liner + description`);
 	}
 

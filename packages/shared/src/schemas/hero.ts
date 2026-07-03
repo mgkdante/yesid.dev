@@ -14,6 +14,9 @@ export const HeroContentSchema = z.object({
 	}),
 	subheadline: LocalizedStringSchema,
 	subtitle: LocalizedStringSchema,
+	/** Identity kicker above the headline (homework #20): stored human-case,
+	 *  rendered ALL CAPS by CSS. */
+	identity: LocalizedStringSchema,
 	ctaWork: LocalizedStringSchema,
 	ctaContact: LocalizedStringSchema,
 	sqlPanel: z.object({

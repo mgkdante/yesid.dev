@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"Remember quiet mode\"",
+    "note": "Microcopy (go2-t1c). Group: a11y. Persist control, not-remembered state. Default: \"Always start collapsed\"",
     "options": null,
     "readonly": false,
     "required": false,

@@ -25,22 +25,17 @@ export const siteLabels: SiteLabels = {
 		projectImageClose: { en: 'Close image', fr: 'Fermer l\'image' },
 		projectImageOpen: { en: 'Open {caption}', fr: 'Ouvrir {caption}' },
 		quietModeDisable: {
-			en: 'Disable quiet mode',
-			fr: 'Désactiver le mode silencieux',
+			en: 'Expand all sections on this page',
+			fr: 'Déplier toutes les sections de la page',
 		},
 		quietModeEnable: {
-			en: 'Enable quiet mode',
-			fr: 'Activer le mode silencieux',
+			en: 'Collapse all sections on this page',
+			fr: 'Replier toutes les sections de la page',
 		},
-		quietModeForget: {
-			en: 'Forget remembered quiet mode',
-			fr: 'Oublier le mode silencieux mémorisé',
-		},
-		quietModeLabel: { en: 'Quiet mode', fr: 'Mode silencieux' },
-		quietModeRemember: {
-			en: 'Remember quiet mode',
-			fr: 'Mémoriser le mode silencieux',
-		},
+		quietModeForget: { en: 'Don\'t start collapsed', fr: 'Ne plus replier' },
+		quietModeLabel: { en: 'Collapse all', fr: 'Tout replier' },
+		quietModeLabelCollapsed: { en: 'Expand all', fr: 'Tout déplier' },
+		quietModeRemember: { en: 'Always start collapsed', fr: 'Toujours replier' },
 		replayIntro: { en: 'Replay intro', fr: 'Rejouer l\'intro' },
 		technologyStackTemplate: {
 			en: 'Technology stack: {stack}',
@@ -99,6 +94,10 @@ export const siteLabels: SiteLabels = {
 				to: { en: 'To', fr: 'À' },
 			},
 			mobileHeading: { en: 'Blog', fr: 'Blogue' },
+			noPostsEmptyMessage: {
+				en: 'Nothing here yet. New posts are in transit.',
+				fr: 'Rien ici pour le moment. Les prochains articles sont en transit.',
+			},
 			noPostsMessage: {
 				en: 'No posts found. Try adjusting your filters.',
 				fr: 'Aucun article trouvé. Essaie d\'ajuster tes filtres.',
@@ -144,7 +143,7 @@ export const siteLabels: SiteLabels = {
 		routesLabel: { en: 'ROUTES LIVE', fr: 'LIGNES EN DIRECT' },
 		routesSub: { en: 'OF {total} TOTAL', fr: 'SUR {total} AU TOTAL' },
 		vehiclesLabel: { en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' },
-		vehiclesSub: { en: 'STM · LIVE', fr: 'STM · EN DIRECT' },
+		vehiclesSub: { en: 'DEMO · STM-STYLE', fr: 'DÉMO · STYLE STM' },
 	},
 	navChrome: {
 		directions: {
@@ -187,6 +186,25 @@ export const siteLabels: SiteLabels = {
 	projectsChrome: {
 		detail: {
 			backToListingLabel: { en: '← All Projects', fr: '← Tous les projets' },
+			cta: {
+				body: {
+					en: 'This one started as a need and an empty repo. Yours can start with a 20-minute call.',
+					fr: 'Celui-ci a commencé par un besoin pis un dépôt vide. Le tien peut commencer par un appel de 20 minutes.',
+				},
+				heading: {
+					en: 'Got a build like this in mind?',
+					fr: 'T\'as un projet du genre en tête?',
+				},
+				overline: { en: 'TERMINUS · THIS BUILD', fr: 'TERMINUS · CE PROJET' },
+				primaryLabel: {
+					en: 'Book a 20-min intro call →',
+					fr: 'Réserver un appel intro de 20 min →',
+				},
+				secondaryLabel: {
+					en: 'or drop a line at /contact →',
+					fr: 'ou écris-moi via /contact →',
+				},
+			},
 			glance: {
 				githubLabel: { en: 'GitHub', fr: 'GitHub' },
 				impact: { en: 'Impact', fr: 'Impact' },
@@ -239,6 +257,25 @@ export const siteLabels: SiteLabels = {
 	servicesChrome: {
 		detail: {
 			backToServicesLabel: { en: '← All Services', fr: '← Tous les services' },
+			cta: {
+				body: {
+					en: 'Every build starts from your need, not a playbook. Bring the problem; the route gets drawn around it.',
+					fr: 'Chaque projet part de ton besoin, pas d\'un plan tout fait. Amène le problème; le trajet se dessine autour.',
+				},
+				heading: { en: 'Sound like your stop?', fr: 'C\'est ton arrêt?' },
+				overline: {
+					en: 'NEXT STOP: YOUR PROJECT',
+					fr: 'PROCHAIN ARRÊT : TON PROJET',
+				},
+				primaryLabel: {
+					en: 'Book a 20-min intro call →',
+					fr: 'Réserver un appel intro de 20 min →',
+				},
+				secondaryLabel: {
+					en: 'or drop a line at /contact →',
+					fr: 'ou écris-moi via /contact →',
+				},
+			},
 			deliverablesHeading: { en: 'Typical Deliverables', fr: 'Livrables typiques' },
 			relatedProjectsHeading: { en: 'Related Projects', fr: 'Projets liés' },
 			relatedProjectsNavAria: { en: 'Related projects', fr: 'Projets liés' },

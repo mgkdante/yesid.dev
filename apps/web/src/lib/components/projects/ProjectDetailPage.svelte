@@ -15,6 +15,14 @@
 	// TOC chrome, CMS-sourced (navChrome.shared), shared across detail pages.
 	const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
 	const tocOpenAria = resolveLocale(siteLabels.navChrome.shared.tocMobileButton, locale);
+	// End-of-case-study CTA (homework #21 batch): the highest-intent moment on
+	// the site gets the booking action instead of a dead end.
+	const ctaChrome = siteLabels.projectsChrome.detail.cta;
+	const ctaOverline = resolveLocale(ctaChrome.overline, locale);
+	const ctaHeading = resolveLocale(ctaChrome.heading, locale);
+	const ctaBody = resolveLocale(ctaChrome.body, locale);
+	const ctaPrimaryLabel = resolveLocale(ctaChrome.primaryLabel, locale);
+	const ctaSecondaryLabel = resolveLocale(ctaChrome.secondaryLabel, locale);
 	const tocCloseAria = resolveLocale(siteLabels.navChrome.shared.tocCloseAria, locale);
 	const tocCounterPrefix = resolveLocale(siteLabels.navChrome.shared.tocCounterPrefix, locale);
 	const detailChrome = siteLabels.projectsChrome.detail;
@@ -27,6 +35,10 @@
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
 	import { Separator } from '$lib/components/ui/separator';
+	import { Button } from '$lib/components/ui/button';
+	import { SectionLabel } from '$lib/components/brand';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
 	import TocNav from '$lib/components/shared/TocNav.svelte';
@@ -540,6 +552,35 @@
 	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
 		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile {codeHighlights} />
 	</div>
+
+	<!-- End-of-case-study CTA (homework #21 batch). Yellow is this view's single
+	     "talk to Yesid" action (Round 5c doctrine). -->
+	<section
+		class="cta-area px-[var(--space-page-x)]"
+		data-testid="project-cta"
+		aria-labelledby="project-cta-heading"
+	>
+		<SectionLabel text={ctaOverline} variant="station" class="mb-4 block" />
+		<h2 id="project-cta-heading" class="cta-heading">{ctaHeading}</h2>
+		<p class="cta-body">{ctaBody}</p>
+		<div class="cta-actions">
+			<span class="tap-press" use:pressBounce>
+				<Button
+					variant="conversion"
+					size="cta"
+					href="https://cal.com/yesid-dev"
+					target="_blank"
+					rel="noopener"
+					data-testid="project-cta-booking"
+				>
+					{ctaPrimaryLabel}
+				</Button>
+			</span>
+			<a href={localizeHref('/contact', locale)} class="cta-secondary tap-feedback">
+				{ctaSecondaryLabel}
+			</a>
+		</div>
+	</section>
 </article>
 
 <!-- Mobile floating TOC pill -->
@@ -548,6 +589,43 @@
 {/if}
 
 <style>
+	/* End-of-case-study CTA (homework #21 batch). */
+	.cta-area {
+		margin-top: 1rem;
+		padding-top: 2.5rem;
+		padding-bottom: 3rem;
+		border-top: 1px solid var(--border);
+	}
+
+	.cta-heading {
+		margin-bottom: 0.5rem;
+		font-family: var(--font-heading);
+		font-size: var(--text-title);
+		font-weight: 800;
+		color: var(--foreground);
+	}
+
+	.cta-body {
+		margin-bottom: 1.5rem;
+		max-width: 60ch;
+		color: var(--secondary-foreground);
+	}
+
+	.cta-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.cta-secondary {
+		padding: 0.5rem 0.25rem;
+		border-radius: var(--radius-md);
+		font-family: var(--font-mono);
+		font-size: var(--text-control);
+		color: var(--primary);
+	}
+
 	/* Section blocks match the side-column card spacing (mb-4 = 1rem) so the
 	   center column isn't airier than the rails. */
 	.section-block {

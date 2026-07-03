@@ -53,8 +53,13 @@
     }
   }
 
+  // Digit grouping follows the active locale ('1 247' in fr-CA, '1,247' in
+  // en-CA); a hard-coded en-US grouping stood out to exactly the local
+  // audience the FR page targets.
+  const numberLocale = locale === 'fr' ? 'fr-CA' : locale === 'es' ? 'es' : 'en-CA';
+
   function formatValue(metric: HeroMetric): string {
-    if (metric.key === 'vehicles') return metric.value.toLocaleString('en-US');
+    if (metric.key === 'vehicles') return metric.value.toLocaleString(numberLocale);
     if (metric.key === 'delay') return metric.value.toFixed(1);
     return String(metric.value);
   }

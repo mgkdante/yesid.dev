@@ -58,6 +58,7 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 		},
 		subheadline: toLocalizedString(tr, 'subheadline'),
 		subtitle: toLocalizedString(tr, 'subtitle'),
+		identity: toLocalizedString(tr, 'identity_line'),
 		ctaWork: toLocalizedString(tr, 'cta_work'),
 		ctaContact: toLocalizedString(tr, 'cta_contact'),
 		sqlPanel: {
