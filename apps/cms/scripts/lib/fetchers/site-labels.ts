@@ -67,6 +67,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			projectsEdgeTitle: ls('pages_projects_edge_title'),
 			homeSectionProjects: ls('pages_home_section_projects'),
 			homeSectionServices: ls('pages_home_section_services'),
+			homeSectionAbout: ls('pages_home_section_about'),
 			homeSectionTerminus: ls('pages_home_section_terminus'),
 		},
 		email: {
