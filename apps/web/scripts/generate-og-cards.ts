@@ -223,7 +223,7 @@ async function buildCards(): Promise<Record<string, string>> {
 		<rect x="780" y="140" width="320" height="320" rx="16" fill="none" stroke="${ORANGE}" stroke-width="3"/>`,
 		eyebrow('ABOUT'),
 		overline(),
-		titleBlock(['Yesid O.'], 92, 290),
+		titleBlock(['Yesid'], 92, 290),
 		subtitleBlock(['Digital Infrastructure', 'Engineer'], 366),
 		footer('yesid.dev/about'),
 	);

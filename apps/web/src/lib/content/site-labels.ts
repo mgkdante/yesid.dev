@@ -179,6 +179,7 @@ export const siteLabels: SiteLabels = {
 	},
 	pages: {
 		blogEdgeTitle: { en: 'Blog', fr: 'Blog' },
+		homeSectionAbout: { en: 'About', fr: 'À propos' },
 		homeSectionProjects: { en: 'Projects', fr: 'Projets' },
 		homeSectionServices: { en: 'Services', fr: 'Services' },
 		homeSectionTerminus: { en: 'Terminus', fr: 'Terminus' },
