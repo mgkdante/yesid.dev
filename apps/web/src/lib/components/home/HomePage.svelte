@@ -1,9 +1,9 @@
 <!--
   HomePage — orchestrator for the home page sections.
-  7 sections: Hero, Manifesto, Featured Projects, About teaser, Services,
-  CTA band, Closer. (About teaser + CTA band went live in the homework #21c
-  batch: the CMS blocks existed but were discarded here, and they carry the
-  identity + mid-page conversion copy the page was missing.)
+  7 sections: Hero, Manifesto, Services, About teaser, Featured Projects,
+  CTA band, Closer. (Services lead the story per operator 2026-07-03:
+  context → identity → proof. About teaser + CTA band went live in the
+  homework #21c batch.)
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
 
   slice-18i Phase 7C: all page-block content flows as props from +page.svelte
@@ -198,31 +198,9 @@
 
 <Separator variant="hazard" />
 
-<!-- Section 3: Featured Projects — rotated title LEFT -->
-<section bind:this={projectsSectionEl} class="home-section home-section--left home-section--proof-reel">
-	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading={sectionProjects} />
-	</div>
-	<div class="home-section-heading-mobile">
-		<SectionHeading heading={sectionProjects} />
-	</div>
-	<div class="home-section-content">
-		<!-- go2/home-cards: services join the proof reel so each card can name
-		     the station that built it (same prop the services grid consumes). -->
-		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
-	</div>
-</section>
-
-<Separator variant="hazard" />
-
-<!-- Section 3b: About teaser — the identity card (who builds this, from where) -->
-<section class="w-full">
-	<HomeAboutTeaser {about} />
-</section>
-
-<Separator variant="hazard" />
-
-<!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
+<!-- Section 3: Services — rotated title RIGHT, blueprint background spans
+     full width. Operator 2026-07-03: services lead so the story builds
+     context (what I do) → identity (who I am) → proof (what I built). -->
 <section bind:this={servicesSectionEl} class="home-section home-section--right relative">
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
@@ -235,6 +213,31 @@
 	</div>
 	<div class="rotated-title rotated-title--right">
 		<SectionHeading heading={sectionServices} />
+	</div>
+</section>
+
+<Separator variant="hazard" />
+
+<!-- Section 3b: About teaser — the identity card (who builds this, from where) -->
+<section class="w-full">
+	<HomeAboutTeaser {about} />
+</section>
+
+<Separator variant="hazard" />
+
+<!-- Section 4: Featured Projects — rotated title LEFT; the proof lands with
+     the service context already established above it. -->
+<section bind:this={projectsSectionEl} class="home-section home-section--left home-section--proof-reel">
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading={sectionProjects} />
+	</div>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading={sectionProjects} />
+	</div>
+	<div class="home-section-content">
+		<!-- go2/home-cards: services join the proof reel so each card can name
+		     the station that built it (same prop the services grid consumes). -->
+		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
 	</div>
 </section>
 
