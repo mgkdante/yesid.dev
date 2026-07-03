@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -92,15 +93,48 @@
 	// button; it enables the moment the handler exists.
 	let hydrated = $state(false);
 
+	// Rotated edge-title fit (operator spec 2026-07-03, shared logic with the
+	// home rotated titles): the label is measured and sized to exactly fill
+	// the edge column's height, capped at the 13rem design max. null until
+	// measured: the CSS var fallback carries first paint.
+	let edgeColumnEl = $state<HTMLElement | undefined>(undefined);
+	let edgeTitleSize = $state<number | null>(null);
+	const edgeVar = $derived(
+		edgeTitleSize === null ? undefined : `--edge-title-size: ${edgeTitleSize}px`,
+	);
+	let edgeFitRaf = 0;
+
+	function recomputeEdgeFit() {
+		const sample = edgeColumnEl?.querySelector('.edge-title');
+		if (!sample || !edgeColumnEl) return;
+		// The dot rides after the label: measure the full rendered string.
+		const budget = edgeColumnEl.clientHeight * 0.95;
+		if (budget <= 0) return;
+		const size = computeRotatedTitleSize(sample, [`${pageTitle}.`], budget, 208);
+		if (size !== null) edgeTitleSize = size;
+	}
+
+	function onEdgeResize() {
+		cancelAnimationFrame(edgeFitRaf);
+		edgeFitRaf = requestAnimationFrame(recomputeEdgeFit);
+	}
+
 	onMount(() => {
 		hydrated = true;
 		updateTime();
 		timeInterval = setInterval(updateTime, 60_000);
 		void refreshWeather();
+		recomputeEdgeFit();
+		document.fonts?.ready.then(() => recomputeEdgeFit()).catch(() => {});
+		window.addEventListener('resize', onEdgeResize);
 	});
 
 	onDestroy(() => {
 		if (timeInterval) clearInterval(timeInterval);
+		if (typeof window !== 'undefined') {
+			cancelAnimationFrame(edgeFitRaf);
+			window.removeEventListener('resize', onEdgeResize);
+		}
 	});
 
 	// --- Form state ---
@@ -283,7 +317,7 @@
 
 <div class="contact-grid" data-testid="page-contact">
 	<!-- ═══ EDGE TITLE (desktop only) ═══ -->
-	<div class="edge-title-column">
+	<div class="edge-title-column" bind:this={edgeColumnEl} style={edgeVar}>
 		<div class="edge-title">{pageTitle}<span class="edge-dot">.</span></div>
 	</div>
 
@@ -636,10 +670,12 @@
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			/* Vertical text runs along the viewport HEIGHT: the width-driven
-			   clamp overflows short desktop displays, so an 11dvh ceiling keeps
-			   the 7-glyph title (+dot) inside ~88dvh (operator 2026-07-03). */
-			font-size: min(clamp(6rem, 12vw, 13rem), 11dvh);
+			/* COMPUTED fit (operator spec 2026-07-03, rotated-title-fit.ts):
+			   the rendered label is measured and sized to exactly fill the
+			   edge column's height, capped at the 13rem design max: as big as
+			   possible, zero overflow. The var fallback only covers first
+			   paint before hydration measures. */
+			font-size: var(--edge-title-size, min(clamp(6rem, 12vw, 13rem), 11dvh));
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;
