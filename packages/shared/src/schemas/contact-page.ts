@@ -25,9 +25,11 @@ export const ContactInfoTerminalSchema = z.object({
 	command: z.string(),
 	location: LocalizedStringSchema,
 	responseTime: LocalizedStringSchema,
+	languages: LocalizedStringSchema,
 	sectionLabels: z.object({
 		location: LocalizedStringSchema,
 		connect: LocalizedStringSchema,
+		languages: LocalizedStringSchema,
 	}),
 }) satisfies z.ZodType<ContactInfoTerminal>;
 
@@ -41,6 +43,8 @@ export const ContactFormTerminalSchema = z.object({
 		message: ContactTerminalFieldSchema,
 	}),
 	submitLabel: LocalizedStringSchema,
+	bookingPrompt: LocalizedStringSchema,
+	bookingButtonLabel: LocalizedStringSchema,
 }) satisfies z.ZodType<ContactFormTerminal>;
 
 export const ContactValidationSchema = z.object({

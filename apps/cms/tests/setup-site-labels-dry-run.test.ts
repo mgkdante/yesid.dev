@@ -19,7 +19,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
-	it('emits the 149 label columns as standalone POST /fields steps (not inline in the collection)', () => {
+	it('emits the 153 label columns as standalone POST /fields steps (not inline in the collection)', () => {
 		// The collection-create carries only structural fields (pk + 2 fks); each
 		// label column is a SEPARATE field step so new chrome columns are added to
 		// the ALREADY-EXISTING translations collection (the inline collection POST
@@ -29,13 +29,19 @@ describe('setup-site-labels-and-chrome plan', () => {
 		// +5 CMS SEO/frontend leak labels = 141;
 		// +2 terminal/code chrome labels = 143;
 		// +5 quiet-mode a11y labels = 148;
-		// +1 glance repo-private label (homework #13 batch) = 149.
+		// +1 glance repo-private label (homework #13 batch) = 149;
+		// +12 conversion batch (quiet-mode collapsed label + blog unfiltered
+		//     empty state + 5 services detail CTA + 5 projects detail CTA) = 161;
+		// +1 hero vehicles live sub-label (homework #2 phase 2, live KPIs) = 162;
+		// -10 detail-CTA columns (operator 2026-07-03: ONE shared CtaBand recycled
+		//     on home + both detail surfaces instead of bespoke copy) = 152;
+		// +1 About rotated section title (operator 2026-07-03 alternation) = 153.
 		const collFields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
 		expect(collFields).toEqual(['id', 'site_labels_id', 'languages_code']);
 		const colNames = plan
 			.filter((s) => s.kind === 'field' && s.path === '/fields/site_labels_translations')
 			.map((s) => (s.payload as { field: string }).field);
-		expect(colNames.length).toBe(149);
+		expect(colNames.length).toBe(153);
 		expect(colNames).toContain('services_chrome_detail_stack_heading');
 		expect(colNames).toContain('services_chrome_detail_see_stack_label');
 		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(colNames).toContain(key);
@@ -48,7 +54,10 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(colNames).toContain('a11y_architecture_diagram');
 		expect(colNames).toContain('a11y_technology_stack_template');
 		expect(colNames).toContain('a11y_quiet_mode_label');
+		expect(colNames).toContain('a11y_quiet_mode_label_collapsed');
 		expect(colNames).toContain('a11y_quiet_mode_forget');
+		// conversion batch — one representative per new group.
+		expect(colNames).toContain('blog_chrome_listing_no_posts_empty_message');
 		expect(colNames).toContain('ui_terminal_title');
 		expect(colNames).toContain('blog_chrome_detail_code_title');
 		expect(colNames).not.toContain('ui_metro_legend_stm');
@@ -89,7 +98,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_SEEDS.hero_dashboard_vehicles_label).toBe('VEHICLES TRACKED');
 		expect(SITE_LABEL_SEEDS.services_chrome_detail_stack_heading).toBe('Stack');
 		expect(SITE_LABEL_SEEDS.services_chrome_detail_see_stack_label).toBe('See the full stack →');
-		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(149);
+		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(153);
 	});
 	it('FR translations seed covers every EN column (complete after t1 reconciliation)', () => {
 		// slice-30 t1: FR is a SEPARATE site_labels_translations row. The base
@@ -107,7 +116,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_FR_SEEDS.ui_terminal_title).toBe('terminal');
 		expect(SITE_LABEL_FR_SEEDS.blog_chrome_detail_code_title).toBe('code');
 		expect(SITE_LABEL_FR_SEEDS.services_chrome_detail_see_stack_label).toBe('Voir la stack complète →');
-		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(149);
+		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(153);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });

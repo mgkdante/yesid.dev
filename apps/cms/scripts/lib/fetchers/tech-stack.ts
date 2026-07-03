@@ -9,8 +9,8 @@ import { z } from 'zod';
 import { toLocalizedBlockEditorDoc, toLocalizedStringOrUndef } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
 import type { StackLayer } from '@repo/shared/schemas';
-import { TechStackItemSchema, type TechStackItem } from '../schemas/tech-stack';
-import type { IconRecord } from '../schemas/icon';
+import { TechStackItemSchema } from '@repo/shared/schemas';
+import type { TechStackItem, IconRecord } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 export interface DirectusTechStackTranslation {

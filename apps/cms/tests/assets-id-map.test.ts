@@ -7,10 +7,12 @@ import { z } from 'zod';
  * Schema for fixtures/assets-id-map.json — emitted by migrate-assets.ts and
  * consumed by 18e-18i (and packages/shared via re-export). Slice 18l added the
  * `brand/` namespace for Directus admin chrome assets (icon + wordmark SVGs
- * uploaded by seed-brand-assets.ts and referenced from settings.json).
+ * uploaded by seed-brand-assets.ts and referenced from settings.json); the
+ * brand-svg-og-cards slice added `og/` for route share cards wired through
+ * route_seo.og_image.
  */
 const AssetsIdMapSchema = z.record(
-	z.string().regex(/^(images|brand)\//),
+	z.string().regex(/^(images|brand|og)\//),
 	z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
 );
 
@@ -38,9 +40,9 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
 	});
 
-	it('contains exactly 24 entries, including brand assets and language flags', () => {
+	it('contains exactly 28 entries, including brand assets, language flags and og route cards', () => {
 		const m = loadIdMap();
-		expect(Object.keys(m).length).toBe(24);
+		expect(Object.keys(m).length).toBe(28);
 	});
 
 	it('keys are sorted alphabetically (diff-friendly)', () => {

@@ -40,7 +40,7 @@ export const siteMeta: SiteMeta = {
 			'SvelteKit',
 			'TypeScript',
 		],
-		name: 'Yesid O.',
+		name: 'Yesid',
 		phone: '+18194465594',
 	},
 	tagline: {

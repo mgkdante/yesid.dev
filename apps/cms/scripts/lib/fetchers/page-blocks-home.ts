@@ -58,11 +58,13 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 		},
 		subheadline: toLocalizedString(tr, 'subheadline'),
 		subtitle: toLocalizedString(tr, 'subtitle'),
+		identity: toLocalizedString(tr, 'identity_line'),
 		ctaWork: toLocalizedString(tr, 'cta_work'),
 		ctaContact: toLocalizedString(tr, 'cta_contact'),
 		sqlPanel: {
 			prompt: toLocalizedString(tr, 'sql_prompt'),
 			liveLabel: toLocalizedString(tr, 'sql_live_label'),
+			liveBadge: toLocalizedString(tr, 'sql_live_badge'),
 			columns: {
 				route: toLocalizedString(tr, 'sql_col_route'),
 				avgDelayS: toLocalizedString(tr, 'sql_col_avg_delay'),
@@ -73,6 +75,7 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 		refreshButton: {
 			label: toLocalizedString(tr, 'refresh_label'),
 			helper: toLocalizedString(tr, 'refresh_helper'),
+			helperLive: toLocalizedString(tr, 'refresh_helper_live'),
 		},
 		heroAnim: { scrollDown: toLocalizedString(tr, 'scroll_down') },
 	};

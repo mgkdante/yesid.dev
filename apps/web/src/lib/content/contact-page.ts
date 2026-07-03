@@ -12,6 +12,11 @@ import type { ContactContent } from '$lib/types';
 
 export const contactContent: ContactContent = {
 	formTerminal: {
+		bookingButtonLabel: { en: 'book --intro-call →', fr: 'book --intro-call →' },
+		bookingPrompt: {
+			en: 'Prefer to talk it through?',
+			fr: 'Tu préfères en jaser de vive voix?',
+		},
 		command: '$ yesid --contact',
 		commandOutput: {
 			en: 'Opening contact form...',
@@ -39,10 +44,12 @@ export const contactContent: ContactContent = {
 	},
 	infoTerminal: {
 		command: '$ yesid --info',
+		languages: { en: 'EN · FR · ES', fr: 'EN · FR · ES' },
 		location: { en: 'Montreal, QC, Canada', fr: 'Montréal, QC, Canada' },
 		responseTime: { en: '~24h response time', fr: 'réponse en ~24h' },
 		sectionLabels: {
 			connect: { en: 'CONNECT', fr: 'CONNEXION' },
+			languages: { en: 'LANGUAGES', fr: 'LANGUES' },
 			location: { en: 'LOCATION', fr: 'EMPLACEMENT' },
 		},
 		title: 'yesid@mtl ~ /info',
@@ -61,6 +68,14 @@ export const contactContent: ContactContent = {
 	},
 	socials: [
 		{
+			href: 'https://cal.com/yesid-dev',
+			icon: 'calendar',
+			label: {
+				en: 'Book a 20-min intro call',
+				fr: 'Réserver un appel intro de 20 minutes',
+			},
+		},
+		{
 			href: 'mailto:contact@yesid.dev',
 			icon: 'email',
 			label: { en: 'Email', fr: 'Courriel' },
@@ -74,14 +89,6 @@ export const contactContent: ContactContent = {
 			href: 'https://www.linkedin.com/in/otaloray/',
 			icon: 'linkedin',
 			label: { en: 'LinkedIn', fr: 'LinkedIn' },
-		},
-		{
-			href: 'https://cal.com/yesid-dev',
-			icon: 'calendar',
-			label: {
-				en: 'Book a 20-min intro call',
-				fr: 'Réserver un appel intro de 20 minutes',
-			},
 		},
 	],
 	stationLabel: { en: 'NEXT STOP: YOU', fr: 'PROCHAIN ARRÊT : TOI' },

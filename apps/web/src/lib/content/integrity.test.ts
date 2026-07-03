@@ -686,7 +686,18 @@ describe('LocalizedString guard + translation debt', () => {
 // homework batch 2026-07-02: +2 fr-complete leaves — the cal.com booking
 // contact channel label (contactContent.socials) and the glance repoPrivateLabel
 // (siteLabels.projectsChrome.detail.glance) → 627 + 2 = 629.
-const LOCKED = { TOTAL: 629, WITH_FR: 629, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// conversion batch (homework #19/#20/#21/#25): +21 fr-complete leaves —
+// 12 site-labels (quiet-mode collapsed label, blog unfiltered empty state,
+// 5 services detail CTA, 5 projects detail CTA), 1 hero identity kicker,
+// 4 contact (bookingPrompt, bookingButtonLabel, languages + its section
+// label), 4 per-service seoDescription → 629 + 21 = 650.
+// live KPIs (homework #2 phase 2): +3 fr-complete leaves — hero sqlPanel
+// liveBadge + refreshButton helperLive, heroDashboard vehiclesSubLive
+// (LIVE-state labels; DEMO stays the default) → 650 + 3 = 653.
+// operator round 2026-07-03: -10 fr-complete leaves — both detail-CTA label
+// groups retired; the shared block_cta band is the one CTA → 653 - 10 = 643.
+// About rotated title (pages_home_section_about, EN+FR) → 643 + 1 = 644.
+const LOCKED = { TOTAL: 644, WITH_FR: 644, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

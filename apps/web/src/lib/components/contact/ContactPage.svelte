@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -38,12 +39,13 @@
 		initialMessage?: string | null;
 	} = $props();
 
-	const c = contactPage;
-	const pageTitle = resolveLocale(c.pageTitle, locale);
-	const stationLabel = resolveLocale(c.stationLabel, locale);
-	const sendErrorMessage = resolveLocale(c.sendErrorMessage, locale);
-	const workLinkLabel = resolveLocale(c.success.workLinkLabel, locale);
-	const blogLinkLabel = resolveLocale(c.success.blogLinkLabel, locale);
+	// $derived on the contactPage reads so they recompute if the prop changes:
+	// a plain const captures only the initial value, which Svelte 5 flags.
+	const pageTitle = $derived(resolveLocale(contactPage.pageTitle, locale));
+	const stationLabel = $derived(resolveLocale(contactPage.stationLabel, locale));
+	const sendErrorMessage = $derived(resolveLocale(contactPage.sendErrorMessage, locale));
+	const workLinkLabel = $derived(resolveLocale(contactPage.success.workLinkLabel, locale));
+	const blogLinkLabel = $derived(resolveLocale(contactPage.success.blogLinkLabel, locale));
 
 	// --- Weather freshness (slice-28.1, audit #20/#122) ---
 	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
@@ -91,15 +93,48 @@
 	// button; it enables the moment the handler exists.
 	let hydrated = $state(false);
 
+	// Rotated edge-title fit (operator spec 2026-07-03, shared logic with the
+	// home rotated titles): the label is measured and sized to exactly fill
+	// the edge column's height, capped at the 13rem design max. null until
+	// measured: the CSS var fallback carries first paint.
+	let edgeColumnEl = $state<HTMLElement | undefined>(undefined);
+	let edgeTitleSize = $state<number | null>(null);
+	const edgeVar = $derived(
+		edgeTitleSize === null ? undefined : `--edge-title-size: ${edgeTitleSize}px`,
+	);
+	let edgeFitRaf = 0;
+
+	function recomputeEdgeFit() {
+		const sample = edgeColumnEl?.querySelector('.edge-title');
+		if (!sample || !edgeColumnEl) return;
+		// The dot rides after the label: measure the full rendered string.
+		const budget = edgeColumnEl.clientHeight * 0.95;
+		if (budget <= 0) return;
+		const size = computeRotatedTitleSize(sample, [`${pageTitle}.`], budget, 208);
+		if (size !== null) edgeTitleSize = size;
+	}
+
+	function onEdgeResize() {
+		cancelAnimationFrame(edgeFitRaf);
+		edgeFitRaf = requestAnimationFrame(recomputeEdgeFit);
+	}
+
 	onMount(() => {
 		hydrated = true;
 		updateTime();
 		timeInterval = setInterval(updateTime, 60_000);
 		void refreshWeather();
+		recomputeEdgeFit();
+		document.fonts?.ready.then(() => recomputeEdgeFit()).catch(() => {});
+		window.addEventListener('resize', onEdgeResize);
 	});
 
 	onDestroy(() => {
 		if (timeInterval) clearInterval(timeInterval);
+		if (typeof window !== 'undefined') {
+			cancelAnimationFrame(edgeFitRaf);
+			window.removeEventListener('resize', onEdgeResize);
+		}
 	});
 
 	// --- Form state ---
@@ -143,15 +178,15 @@
 		const newErrors: Record<string, string> = {};
 
 		if (!name.value.trim()) {
-			newErrors.name = resolveLocale(c.validation.required, locale).replace('{field}', fieldLabel('name'));
+			newErrors.name = resolveLocale(contactPage.validation.required, locale).replace('{field}', fieldLabel('name'));
 		}
 		if (!email.value.trim()) {
-			newErrors.email = resolveLocale(c.validation.required, locale).replace('{field}', fieldLabel('email'));
+			newErrors.email = resolveLocale(contactPage.validation.required, locale).replace('{field}', fieldLabel('email'));
 		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-			newErrors.email = resolveLocale(c.validation.invalidEmail, locale);
+			newErrors.email = resolveLocale(contactPage.validation.invalidEmail, locale);
 		}
 		if (!message.value.trim()) {
-			newErrors.message = resolveLocale(c.validation.required, locale).replace('{field}', fieldLabel('message'));
+			newErrors.message = resolveLocale(contactPage.validation.required, locale).replace('{field}', fieldLabel('message'));
 		}
 
 		errors = newErrors;
@@ -177,7 +212,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					access_key: c.web3formsKey,
+					access_key: contactPage.web3formsKey,
 					subject: fillTemplate(
 						resolveLocale(siteLabels.email.contactSubjectTemplate, locale) || 'New contact from {name} via yesid.dev',
 						{ name: name.value },
@@ -210,17 +245,17 @@
 	// (used on a switch-restore); playSuccessSequence() reveals them line-by-line
 	// after a real submit.
 	function buildSuccessLines() {
-		const okText = resolveLocale(c.success.fieldOk, locale);
+		const okText = resolveLocale(contactPage.success.fieldOk, locale);
 		return [
 			{ text: '~ $ send --message', color: 'muted' },
-			{ text: `→ ${resolveLocale(c.success.validating, locale)}`, color: 'orange' },
+			{ text: `→ ${resolveLocale(contactPage.success.validating, locale)}`, color: 'orange' },
 			{ text: `✓ ${fieldLabel('name')}: ${okText}`, color: 'green' },
 			{ text: `✓ ${fieldLabel('email')}: ${okText}`, color: 'green' },
 			{ text: `✓ ${fieldLabel('message')}: ${okText}`, color: 'green' },
-			{ text: `→ ${resolveLocale(c.success.sending, locale)}`, color: 'orange' },
-			{ text: `✓ ${resolveLocale(c.success.sent, locale)}`, color: 'green' },
-			{ text: `→ ${resolveLocale(c.success.responseTime, locale)}`, color: 'accent' },
-			{ text: `→ ${resolveLocale(c.success.meanwhile, locale)}`, color: 'muted' }
+			{ text: `→ ${resolveLocale(contactPage.success.sending, locale)}`, color: 'orange' },
+			{ text: `✓ ${resolveLocale(contactPage.success.sent, locale)}`, color: 'green' },
+			{ text: `→ ${resolveLocale(contactPage.success.responseTime, locale)}`, color: 'accent' },
+			{ text: `→ ${resolveLocale(contactPage.success.meanwhile, locale)}`, color: 'muted' }
 		];
 	}
 
@@ -274,7 +309,7 @@
 	}
 
 	function fieldLabel(field: keyof ContactContent['formTerminal']['fields']): string {
-		const label = c.formTerminal.fields[field].label;
+		const label = contactPage.formTerminal.fields[field].label;
 		return typeof label === 'string' ? label : resolveLocale(label, locale);
 	}
 
@@ -282,7 +317,7 @@
 
 <div class="contact-grid" data-testid="page-contact">
 	<!-- ═══ EDGE TITLE (desktop only) ═══ -->
-	<div class="edge-title-column">
+	<div class="edge-title-column" bind:this={edgeColumnEl} style={edgeVar}>
 		<div class="edge-title">{pageTitle}<span class="edge-dot">.</span></div>
 	</div>
 
@@ -320,17 +355,17 @@
 
 <!-- ═══ INFO TERMINAL SNIPPET ═══ -->
 {#snippet infoTerminal()}
-	<TerminalChrome title={c.infoTerminal.title} class="h-full" data-testid="contact-info-terminal">
+	<TerminalChrome title={contactPage.infoTerminal.title} class="h-full" data-testid="contact-info-terminal">
 		<div class="font-mono text-body leading-relaxed">
 			<!-- Command line -->
 			<div class="mb-4 text-[var(--secondary-foreground)]">
-				<span class="text-[var(--foreground)]">~</span> {c.infoTerminal.command}
+				<span class="text-[var(--foreground)]">~</span> {contactPage.infoTerminal.command}
 			</div>
 
 			<!-- LOCATION section -->
 			<div class="mb-4">
-				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, locale)}</div>
-				<div class="text-[var(--secondary-foreground)]">{resolveLocale(c.infoTerminal.location, locale)}</div>
+				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.location, locale)}</div>
+				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.location, locale)}</div>
 				{#if currentWeather}
 					<div class="mt-0.5 font-mono text-small text-[var(--accent-text)]">
 						{currentWeather.temp}°C — <span class="capitalize">{currentWeather.condition}</span>
@@ -341,13 +376,25 @@
 						{localTime}
 					</div>
 				{/if}
+				<!-- The 24h promise renders BEFORE submit (it previously existed in the
+				     CMS but only appeared on the success screen). -->
+				<div class="mt-0.5 font-mono text-small text-[var(--secondary-foreground)]">
+					{resolveLocale(contactPage.infoTerminal.responseTime, locale)}
+				</div>
+			</div>
+
+			<!-- LANGUAGES section (homework #25): tells a bilingual Montreal market
+			     which language to write in; adding ES later is one CMS edit. -->
+			<div class="mb-4">
+				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.languages, locale)}</div>
+				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.languages, locale)}</div>
 			</div>
 
 			<!-- CONNECT section -->
 			<div class="mb-4">
-				<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.connect, locale)}</div>
+				<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.connect, locale)}</div>
 				<div class="flex flex-col gap-1">
-					{#each c.socials as social}
+					{#each contactPage.socials as social}
 						<a
 							href={social.href}
 							aria-label={contactChannelLabel(social.label)}
@@ -356,7 +403,15 @@
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
 							<span class="text-[var(--primary)]">→</span>
-							<span class="text-small">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
+							{#if social.icon === 'calendar'}
+								<!-- The booking row is the site's strongest CONNECT action: the
+								     human label is visible (it was aria-only) with the URL as a
+								     muted suffix. Other rows keep the terminal URL treatment. -->
+								<span class="text-small">{contactChannelLabel(social.label)}</span>
+								<span class="text-small text-[var(--muted-foreground)]">{social.href.replace(/^https?:\/\//, '')}</span>
+							{:else}
+								<span class="text-small">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
+							{/if}
 						</a>
 					{/each}
 				</div>
@@ -373,14 +428,14 @@
 
 <!-- ═══ FORM TERMINAL SNIPPET ═══ -->
 {#snippet formTerminal()}
-	<TerminalChrome title={c.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
+	<TerminalChrome title={contactPage.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
 		<div class="font-mono text-body leading-relaxed">
 			<!-- Command + output -->
 			<div class="mb-1 text-[var(--secondary-foreground)]">
-				<span class="text-[var(--foreground)]">~</span> {c.formTerminal.command}
+				<span class="text-[var(--foreground)]">~</span> {contactPage.formTerminal.command}
 			</div>
 			<div class="mb-4 text-caption text-[var(--muted-foreground)]">
-				{resolveLocale(c.formTerminal.commandOutput, locale)}
+				{resolveLocale(contactPage.formTerminal.commandOutput, locale)}
 			</div>
 
 			{#if !showSuccess}
@@ -402,7 +457,7 @@
 								type="text"
 								data-handoff-focus="contact-name"
 								bind:value={name.value}
-								placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, locale)}
+								placeholder={resolveLocale(contactPage.formTerminal.fields.name.placeholder, locale)}
 								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 							/>
 							{#if submitted && errors.name}
@@ -421,7 +476,7 @@
 								type="email"
 								data-handoff-focus="contact-email"
 								bind:value={email.value}
-								placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, locale)}
+								placeholder={resolveLocale(contactPage.formTerminal.fields.email.placeholder, locale)}
 								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 							/>
 							{#if submitted && errors.email}
@@ -439,7 +494,7 @@
 								name="message"
 								data-handoff-focus="contact-message"
 								bind:value={message.value}
-								placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, locale)}
+								placeholder={resolveLocale(contactPage.formTerminal.fields.message.placeholder, locale)}
 								rows="6"
 								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 							></textarea>
@@ -456,7 +511,7 @@
 						<!-- Error summary -->
 						{#if submitted && errorCount() > 0}
 							<div class="rounded border border-[var(--destructive)]/30 bg-[var(--destructive)]/10 px-3 py-2 text-caption text-[var(--destructive)]">
-								✗ {resolveLocale(c.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
+								✗ {resolveLocale(contactPage.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
 							</div>
 						{/if}
 
@@ -476,17 +531,34 @@
 							>
 								<span class="opacity-60">~ $</span>
 								{sending
-									? resolveLocale(c.success.sending, locale)
-									: resolveLocale(c.formTerminal.submitLabel, locale)}
+									? resolveLocale(contactPage.success.sending, locale)
+									: resolveLocale(contactPage.formTerminal.submitLabel, locale)}
 							</Button>
 						</span>
 
 						<!-- In-flight transmission line (terminal voice) -->
 						{#if sending}
 							<div class="text-caption text-[var(--primary)]" role="status" data-testid="contact-sending-line">
-								→ {resolveLocale(c.success.sending, locale)}
+								→ {resolveLocale(contactPage.success.sending, locale)}
 							</div>
 						{/if}
+
+						<!-- Booking escape hatch (homework #21 batch): prefer a call over a
+						     message. Orange mono link-row; the submit above stays the page's
+						     only conversion-yellow element (Round 5c doctrine). -->
+						<div class="mt-1 flex flex-wrap items-center gap-2 font-mono text-caption">
+							<span class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.formTerminal.bookingPrompt, locale)}</span>
+							<a
+								href="https://cal.com/yesid-dev"
+								target="_blank"
+								rel="noopener"
+								data-testid="contact-booking-link"
+								class="tap-feedback rounded px-1 py-0.5 text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
+							>
+								<span class="opacity-60">~ $</span>
+								{resolveLocale(contactPage.formTerminal.bookingButtonLabel, locale)}
+							</a>
+						</div>
 
 					</div>
 				</form>
@@ -520,7 +592,7 @@
 						onclick={handleReset}
 						class="mt-4 self-start font-mono text-caption tap-feedback min-h-11 px-4"
 					>
-						{resolveLocale(c.success.resetLabel, locale)}
+						{resolveLocale(contactPage.success.resetLabel, locale)}
 					</Button>
 				</div>
 			{/if}
@@ -598,7 +670,12 @@
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			font-size: clamp(6rem, 12vw, 13rem);
+			/* COMPUTED fit (operator spec 2026-07-03, rotated-title-fit.ts):
+			   the rendered label is measured and sized to exactly fill the
+			   edge column's height, capped at the 13rem design max: as big as
+			   possible, zero overflow. The var fallback only covers first
+			   paint before hydration measures. */
+			font-size: var(--edge-title-size, min(clamp(6rem, 12vw, 13rem), 11dvh));
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;

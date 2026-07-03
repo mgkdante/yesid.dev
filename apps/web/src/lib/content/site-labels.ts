@@ -25,22 +25,17 @@ export const siteLabels: SiteLabels = {
 		projectImageClose: { en: 'Close image', fr: 'Fermer l\'image' },
 		projectImageOpen: { en: 'Open {caption}', fr: 'Ouvrir {caption}' },
 		quietModeDisable: {
-			en: 'Disable quiet mode',
-			fr: 'Désactiver le mode silencieux',
+			en: 'Expand all sections on this page',
+			fr: 'Déplier toutes les sections de la page',
 		},
 		quietModeEnable: {
-			en: 'Enable quiet mode',
-			fr: 'Activer le mode silencieux',
+			en: 'Collapse all sections on this page',
+			fr: 'Replier toutes les sections de la page',
 		},
-		quietModeForget: {
-			en: 'Forget remembered quiet mode',
-			fr: 'Oublier le mode silencieux mémorisé',
-		},
-		quietModeLabel: { en: 'Quiet mode', fr: 'Mode silencieux' },
-		quietModeRemember: {
-			en: 'Remember quiet mode',
-			fr: 'Mémoriser le mode silencieux',
-		},
+		quietModeForget: { en: 'Don\'t start collapsed', fr: 'Ne plus replier' },
+		quietModeLabel: { en: 'Collapse all', fr: 'Tout replier' },
+		quietModeLabelCollapsed: { en: 'Expand all', fr: 'Tout déplier' },
+		quietModeRemember: { en: 'Always start collapsed', fr: 'Toujours replier' },
 		replayIntro: { en: 'Replay intro', fr: 'Rejouer l\'intro' },
 		technologyStackTemplate: {
 			en: 'Technology stack: {stack}',
@@ -99,6 +94,10 @@ export const siteLabels: SiteLabels = {
 				to: { en: 'To', fr: 'À' },
 			},
 			mobileHeading: { en: 'Blog', fr: 'Blogue' },
+			noPostsEmptyMessage: {
+				en: 'Nothing here yet. New posts are in transit.',
+				fr: 'Rien ici pour le moment. Les prochains articles sont en transit.',
+			},
 			noPostsMessage: {
 				en: 'No posts found. Try adjusting your filters.',
 				fr: 'Aucun article trouvé. Essaie d\'ajuster tes filtres.',
@@ -144,7 +143,8 @@ export const siteLabels: SiteLabels = {
 		routesLabel: { en: 'ROUTES LIVE', fr: 'LIGNES EN DIRECT' },
 		routesSub: { en: 'OF {total} TOTAL', fr: 'SUR {total} AU TOTAL' },
 		vehiclesLabel: { en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' },
-		vehiclesSub: { en: 'STM · LIVE', fr: 'STM · EN DIRECT' },
+		vehiclesSub: { en: 'DEMO · STM-STYLE', fr: 'DÉMO · STYLE STM' },
+		vehiclesSubLive: { en: 'STM · LIVE', fr: 'STM · EN DIRECT' },
 	},
 	navChrome: {
 		directions: {
@@ -179,6 +179,7 @@ export const siteLabels: SiteLabels = {
 	},
 	pages: {
 		blogEdgeTitle: { en: 'Blog', fr: 'Blog' },
+		homeSectionAbout: { en: 'About', fr: 'À propos' },
 		homeSectionProjects: { en: 'Projects', fr: 'Projets' },
 		homeSectionServices: { en: 'Services', fr: 'Services' },
 		homeSectionTerminus: { en: 'Terminus', fr: 'Terminus' },

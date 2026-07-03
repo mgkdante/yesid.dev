@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { toTechStackItem, type DirectusTechStackRow } from './tech-stack';
-import { TechStackItemSchema } from '../schemas/tech-stack';
+import { TechStackItemSchema } from '@repo/shared/schemas';
 import type { BlockEditorDoc } from '@repo/shared';
 
 const DOC: BlockEditorDoc = {

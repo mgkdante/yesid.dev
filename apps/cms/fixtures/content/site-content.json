@@ -1,174 +1,455 @@
 {
-  "heroAnimContent": {
-    "scrollDown": { "en": "NEXT STOP: SCROLL DOWN" }
-  },
-  "heroContent": {
-    "headline": {
-      "line1": { "en": "SYSTEMS THAT" },
-      "line2": { "en": "DON'T BREAK" },
-      "ariaSuffix": { "en": "Don't Break." }
-    },
-    "subheadline": { "en": "I make data tell the truth." },
-    "subtitle": { "en": "Building reliable infrastructure for teams that can't afford downtime." },
-    "ctaWork": { "en": "See how I build →" },
-    "ctaContact": { "en": "Let's talk" },
-    "sqlPanel": {
-      "prompt": { "en": "yesid@transit:gold>" },
-      "liveLabel": { "en": "LIVE" },
-      "columns": {
-        "route": { "en": "route" },
-        "avgDelayS": { "en": "avg_delay_s" },
-        "vehicles": { "en": "vehicles" }
-      },
-      "metaTemplate": { "en": "5 rows · {queryTime}s · updated {updatedAgo}" }
-    },
-    "refreshButton": {
-      "label": { "en": "PULL FRESH DATA" },
-      "helper": { "en": "Refreshes metrics + query results from the live pipeline" }
-    },
-    "heroAnim": {
-      "scrollDown": { "en": "NEXT STOP: SCROLL DOWN" }
-    }
-  },
-  "manifestoContent": {
-    "statement": {
-      "line1": { "en": "I BUILD THE" },
-      "lineHuge": { "en": "INFRASTRUCTURE" },
-      "line3Part1": { "en": "YOUR" },
-      "line3Highlight": { "en": "OPERATIONS" },
-      "line3Part2": { "en": "RUN ON" }
-    },
-    "terminal": {
-      "user": { "en": "yesid@mtl" },
-      "command": { "en": ":~$ cat manifesto.md" }
-    },
-    "pills": [
-      { "label": { "en": "databases" }, "serviceId": "database-engineering" },
-      { "label": { "en": "pipelines" }, "serviceId": "data-pipeline" },
-      { "label": { "en": "dashboards" }, "serviceId": "analytics-reporting" },
-      { "label": { "en": "websites" }, "serviceId": "web-development" }
-    ],
-    "edgeLeft": {
-      "sectionNumber": { "en": "SEC-02" },
-      "sectionName": { "en": "MANIFESTO" },
-      "location": { "en": "MTL-QC" }
-    },
-    "edgeRight": {
-      "lat": { "en": "LAT 45.5017°N" },
-      "lng": { "en": "LNG 73.5673°W" },
-      "src": { "en": "SRC Sherbrooke, QC" },
-      "via": { "en": "VIA Lennoxville, QC" },
-      "dst": { "en": "DST Montréal, QC" },
-      "node": { "en": "NODE berri-uqam" },
-      "status": { "en": "STATUS active" }
-    },
-    "edgeBottom": {
-      "connected": { "en": "CONNECTED" },
-      "line": { "en": "LIGNE ORANGE" },
-      "url": { "en": "yesid.dev" },
-      "version": { "en": "v2.0" },
-      "scrollHint": { "en": "SCROLL ↓" }
-    },
-    "transit": {
-      "arrivalLabel": { "en": "PROCHAIN / NEXT" },
-      "platformBadge": { "en": "QUAI / PLATFORM 2" },
-      "directionBadge": { "en": "DIRECTION: CENTRE-VILLE" }
-    },
-    "ticks": ["0", "80", "160", "240", "320", "400", "480"],
-    "hiddenTransitLines": [
-      { "name": { "en": "LIGNE BLEUE" }, "color": "#003DA5" },
-      { "name": { "en": "LIGNE VERTE" }, "color": "#008F4F" },
-      { "name": { "en": "LIGNE JAUNE" }, "color": "#F0CB00" },
-      { "name": { "en": "REM" }, "color": "#78BE20" },
-      { "name": { "en": "11 VAUDREUIL/HUDSON" }, "color": "#DA291C" },
-      { "name": { "en": "12 SAINT-JÉRÔME" }, "color": "#009B3A" },
-      { "name": { "en": "13 MONT-SAINT-HILAIRE" }, "color": "#FFD100" },
-      { "name": { "en": "14 CANDIAC" }, "color": "#7B2D8E" },
-      { "name": { "en": "15 MASCOUCHE" }, "color": "#0072CE" }
-    ]
-  },
-  "proofReelContent": {
-    "heading": { "en": "PROOF" },
-    "headingDot": { "en": "." },
-    "subheading": { "en": "SELECTED WORK" },
-    "sectionLabel": { "en": "// PROOF" },
-    "viewAllLabel": { "en": "View all projects →" },
-    "viewAllHref": "/projects",
-    "toggleColorAria": { "en": "Toggle color for {title}" }
-  },
-  "servicesGridContent": {
-    "heading": { "en": "SERVICES" },
-    "headingDot": { "en": "." },
-    "subheading": { "en": "WHAT I BUILD" },
-    "viewIllustrationAria": { "en": "View {title} illustration" },
-    "viewAllLink": { "en": "View all services →" }
-  },
-  "aboutIntroContent": {
-    "name": { "en": "Yesid O." },
-    "title": { "en": "Freelance Digital Infrastructure Engineer" },
-    "bio": { "en": "Montreal, QC, I bring data, make it tell stories, and build the systems it moves through." },
-    "moreLink": { "en": "→ More about me" },
-    "stackLabel": { "en": "STACK" },
-    "stackItems": [],
-    "locationLabel": { "en": "LOCATION" },
-    "location": {
-      "city": { "en": "Montreal" },
-      "region": { "en": "QC, Canada" }
-    },
-    "interestsLabel": { "en": "INTERESTS" },
-    "interests": { "en": "Manga · Data viz · Open source · Montreal food scene" }
-  },
-  "ctaContent": {
-    "heading": { "en": "Let's build something\nthat moves" },
-    "subtitle": { "en": "Have a data problem? Let's talk." },
-    "ctaContact": { "en": "Get in touch" },
-    "ctaGithub": { "en": "View on GitHub" }
-  },
-  "closerContent": {
-    "heading": { "en": "TERMINUS" },
-    "headingDot": { "en": "." },
-    "subheading": { "en": "END OF LINE" },
-    "cta": {
-      "label": { "en": "Initialize connection" },
-      "href": "/contact"
-    },
-    "rows": {
-      "stack": {
-        "label": { "en": "STACK" },
-        "description": { "en": "Tools and architecture" },
-        "action": { "en": "cd" }
-      },
-      "contact": {
-        "label": { "en": "CONTACT" },
-        "description": { "en": "Start a project together" },
-        "action": { "en": "GO" }
-      },
-      "connect": {
-        "label": { "en": "GITHUB REPO" },
-        "description": { "en": "GitHub · open-source work" },
-        "action": { "en": "GO" }
-      },
-      "read": {
-        "label": { "en": "BLOG" },
-        "description": { "en": "Writing and field notes" },
-        "action": { "en": "cd" }
-      },
-      "about": {
-        "label": { "en": "YESID" },
-        "description": { "en": "About the builder" },
-        "action": { "en": "cd" }
-      }
-    },
-    "attribution": {
-      "text": { "en": "Graffiti Vectors by Vecteezy" },
-      "url": "https://www.vecteezy.com/free-vector/graffiti"
-    },
-    "terminal": {
-      "title": { "en": "yesid@terminus:~/destinations" },
-      "city": { "en": "Montreal, QC" },
-      "encoding": { "en": "UTF-8" },
-      "destinationsLabel": { "en": "{count} destinations" },
-      "prompt": { "en": "// where to next?" }
-    }
-  }
+	"heroAnimContent": {
+		"scrollDown": {
+			"en": "NEXT STOP: SCROLL DOWN"
+		}
+	},
+	"heroContent": {
+		"headline": {
+			"line1": {
+				"en": "SYSTEMS THAT"
+			},
+			"line2": {
+				"en": "DON'T BREAK"
+			},
+			"ariaSuffix": {
+				"en": "Don't Break."
+			}
+		},
+		"subheadline": {
+			"en": "I make data tell the truth."
+		},
+		"subtitle": {
+			"en": "Building reliable infrastructure for teams that can't afford downtime."
+		},
+		"identity": {
+			"en": "freelance digital infrastructure - Montreal",
+			"fr": "infrastructure numérique à la pige - Montréal"
+		},
+		"ctaWork": {
+			"en": "See how I build →"
+		},
+		"ctaContact": {
+			"en": "Book a 20-min intro call",
+			"fr": "Réserver un appel intro de 20 min"
+		},
+		"sqlPanel": {
+			"prompt": {
+				"en": "yesid@transit:gold>"
+			},
+			"liveLabel": {
+				"en": "DEMO",
+				"fr": "DÉMO"
+			},
+			"liveBadge": {
+				"en": "LIVE",
+				"fr": "EN DIRECT"
+			},
+			"columns": {
+				"route": {
+					"en": "route"
+				},
+				"avgDelayS": {
+					"en": "avg_delay_s"
+				},
+				"vehicles": {
+					"en": "vehicles"
+				}
+			},
+			"metaTemplate": {
+				"en": "5 rows · {queryTime}s · {updatedAgo}",
+				"fr": "5 lignes · {queryTime}s · {updatedAgo}"
+			}
+		},
+		"refreshButton": {
+			"label": {
+				"en": "PULL FRESH DATA"
+			},
+			"helper": {
+				"en": "Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.",
+				"fr": "Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct."
+			},
+			"helperLive": {
+				"en": "Refreshes metrics + query results from the live pipeline.",
+				"fr": "Actualise les métriques et les résultats de requête depuis le pipeline en direct."
+			}
+		},
+		"heroAnim": {
+			"scrollDown": {
+				"en": "NEXT STOP: SCROLL DOWN"
+			}
+		}
+	},
+	"manifestoContent": {
+		"statement": {
+			"line1": {
+				"en": "I BUILD THE"
+			},
+			"lineHuge": {
+				"en": "INFRASTRUCTURE"
+			},
+			"line3Part1": {
+				"en": "YOUR"
+			},
+			"line3Highlight": {
+				"en": "OPERATIONS"
+			},
+			"line3Part2": {
+				"en": "RUN ON"
+			}
+		},
+		"terminal": {
+			"user": {
+				"en": "yesid@mtl"
+			},
+			"command": {
+				"en": ":~$ cat manifesto.md"
+			}
+		},
+		"pills": [
+			{
+				"label": {
+					"en": "databases"
+				},
+				"serviceId": "database-engineering"
+			},
+			{
+				"label": {
+					"en": "pipelines"
+				},
+				"serviceId": "data-pipeline"
+			},
+			{
+				"label": {
+					"en": "dashboards"
+				},
+				"serviceId": "analytics-reporting"
+			},
+			{
+				"label": {
+					"en": "websites"
+				},
+				"serviceId": "web-development"
+			}
+		],
+		"edgeLeft": {
+			"sectionNumber": {
+				"en": "SEC-02"
+			},
+			"sectionName": {
+				"en": "MANIFESTO"
+			},
+			"location": {
+				"en": "MTL-QC"
+			}
+		},
+		"edgeRight": {
+			"lat": {
+				"en": "LAT 45.5017°N"
+			},
+			"lng": {
+				"en": "LNG 73.5673°W"
+			},
+			"src": {
+				"en": "SRC Sherbrooke, QC"
+			},
+			"via": {
+				"en": "VIA Lennoxville, QC"
+			},
+			"dst": {
+				"en": "DST Montréal, QC"
+			},
+			"node": {
+				"en": "NODE berri-uqam"
+			},
+			"status": {
+				"en": "STATUS active"
+			}
+		},
+		"edgeBottom": {
+			"connected": {
+				"en": "CONNECTED"
+			},
+			"line": {
+				"en": "LIGNE ORANGE"
+			},
+			"url": {
+				"en": "yesid.dev"
+			},
+			"version": {
+				"en": "v2.0"
+			},
+			"scrollHint": {
+				"en": "SCROLL ↓"
+			}
+		},
+		"transit": {
+			"arrivalLabel": {
+				"en": "PROCHAIN / NEXT"
+			},
+			"platformBadge": {
+				"en": "QUAI / PLATFORM 2"
+			},
+			"directionBadge": {
+				"en": "DIRECTION: CENTRE-VILLE"
+			}
+		},
+		"ticks": [
+			"0",
+			"80",
+			"160",
+			"240",
+			"320",
+			"400",
+			"480"
+		],
+		"hiddenTransitLines": [
+			{
+				"name": {
+					"en": "LIGNE BLEUE"
+				},
+				"color": "#003DA5"
+			},
+			{
+				"name": {
+					"en": "LIGNE VERTE"
+				},
+				"color": "#008F4F"
+			},
+			{
+				"name": {
+					"en": "LIGNE JAUNE"
+				},
+				"color": "#F0CB00"
+			},
+			{
+				"name": {
+					"en": "REM"
+				},
+				"color": "#78BE20"
+			},
+			{
+				"name": {
+					"en": "11 VAUDREUIL/HUDSON"
+				},
+				"color": "#DA291C"
+			},
+			{
+				"name": {
+					"en": "12 SAINT-JÉRÔME"
+				},
+				"color": "#009B3A"
+			},
+			{
+				"name": {
+					"en": "13 MONT-SAINT-HILAIRE"
+				},
+				"color": "#FFD100"
+			},
+			{
+				"name": {
+					"en": "14 CANDIAC"
+				},
+				"color": "#7B2D8E"
+			},
+			{
+				"name": {
+					"en": "15 MASCOUCHE"
+				},
+				"color": "#0072CE"
+			}
+		]
+	},
+	"proofReelContent": {
+		"heading": {
+			"en": "PROOF"
+		},
+		"headingDot": {
+			"en": "."
+		},
+		"subheading": {
+			"en": "SELECTED WORK"
+		},
+		"sectionLabel": {
+			"en": "// PROOF"
+		},
+		"viewAllLabel": {
+			"en": "View all projects →"
+		},
+		"viewAllHref": "/projects",
+		"toggleColorAria": {
+			"en": "Toggle color for {title}"
+		}
+	},
+	"servicesGridContent": {
+		"heading": {
+			"en": "SERVICES"
+		},
+		"headingDot": {
+			"en": "."
+		},
+		"subheading": {
+			"en": "WHAT I BUILD"
+		},
+		"viewIllustrationAria": {
+			"en": "View {title} illustration"
+		},
+		"viewAllLink": {
+			"en": "View all services →"
+		}
+	},
+	"aboutIntroContent": {
+		"name": {
+			"en": "Yesid O."
+		},
+		"title": {
+			"en": "Freelance Digital Infrastructure Engineer"
+		},
+		"bio": {
+			"en": "I take data, make it tell stories, and build the systems it moves through.",
+			"fr": "Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule."
+		},
+		"moreLink": {
+			"en": "→ More about me"
+		},
+		"stackLabel": {
+			"en": "STACK"
+		},
+		"stackItems": [
+			"PostgreSQL",
+			"dbt + Airflow",
+			"Power BI",
+			"SvelteKit"
+		],
+		"locationLabel": {
+			"en": "LOCATION"
+		},
+		"location": {
+			"city": {
+				"en": "Montreal"
+			},
+			"region": {
+				"en": "QC, Canada"
+			}
+		},
+		"interestsLabel": {
+			"en": "INTERESTS"
+		},
+		"interests": {
+			"en": "Manga · Transit · Space · Montreal food scene",
+			"fr": "Manga · Transport collectif · Espace · Scène bouffe de Montréal"
+		}
+	},
+	"ctaContent": {
+		"heading": {
+			"en": "Let's build something\nthat moves"
+		},
+		"subtitle": {
+			"en": "Database, pipeline, dashboard, website: wherever it's stuck, that's where we start.",
+			"fr": "Base de données, pipeline, tableau de bord, site web : peu importe où ça accroche, c'est là qu'on commence."
+		},
+		"ctaContact": {
+			"en": "Get in touch"
+		},
+		"ctaGithub": {
+			"en": "View on GitHub"
+		}
+	},
+	"closerContent": {
+		"heading": {
+			"en": "TERMINUS"
+		},
+		"headingDot": {
+			"en": "."
+		},
+		"subheading": {
+			"en": "END OF LINE"
+		},
+		"cta": {
+			"label": {
+				"en": "Initialize connection"
+			},
+			"href": "/contact"
+		},
+		"rows": {
+			"stack": {
+				"label": {
+					"en": "STACK"
+				},
+				"description": {
+					"en": "Tools and architecture"
+				},
+				"action": {
+					"en": "cd"
+				}
+			},
+			"contact": {
+				"label": {
+					"en": "CONTACT"
+				},
+				"description": {
+					"en": "Start a project together"
+				},
+				"action": {
+					"en": "GO"
+				}
+			},
+			"connect": {
+				"label": {
+					"en": "GITHUB REPO"
+				},
+				"description": {
+					"en": "GitHub · open-source work"
+				},
+				"action": {
+					"en": "GO"
+				}
+			},
+			"read": {
+				"label": {
+					"en": "BLOG"
+				},
+				"description": {
+					"en": "Writing and field notes"
+				},
+				"action": {
+					"en": "cd"
+				}
+			},
+			"about": {
+				"label": {
+					"en": "YESID"
+				},
+				"description": {
+					"en": "About the builder"
+				},
+				"action": {
+					"en": "cd"
+				}
+			}
+		},
+		"attribution": {
+			"text": {
+				"en": "Graffiti Vectors by Vecteezy"
+			},
+			"url": "https://www.vecteezy.com/free-vector/graffiti"
+		},
+		"terminal": {
+			"title": {
+				"en": "yesid@terminus:~/destinations"
+			},
+			"city": {
+				"en": "Montreal, QC"
+			},
+			"encoding": {
+				"en": "UTF-8"
+			},
+			"destinationsLabel": {
+				"en": "{count} destinations"
+			},
+			"prompt": {
+				"en": "// where to next?"
+			}
+		}
+	}
 }

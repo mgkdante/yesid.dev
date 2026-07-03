@@ -81,14 +81,18 @@ describe('fixtures/assets-manifest.json', () => {
 		expect(m.sourceRoot).toBe('apps/web/static');
 	});
 
-	it('declares exactly 22 assets after language flag SVG additions', () => {
+	it('declares exactly 26 assets after the og route-card additions', () => {
 		const m = loadManifest();
-		expect(m.assets.length).toBe(22);
+		expect(m.assets.length).toBe(26);
 		expect(m.assets.map((asset) => asset.legacyPath)).toEqual(
 			expect.arrayContaining([
 				'images/about/languages/quebec.svg',
 				'images/about/languages/canada.svg',
 				'images/about/languages/colombia.svg',
+				'og/routes/services.png',
+				'og/routes/contact.png',
+				'og/routes/about.png',
+				'og/routes/projects.png',
 			]),
 		);
 	});
@@ -99,10 +103,12 @@ describe('fixtures/assets-manifest.json', () => {
 		expect(Object.keys(m.folders).sort()).toEqual(expected);
 	});
 
-	it('every legacyPath starts with "images/" (full-path-from-static convention)', () => {
+	it('every legacyPath starts with "images/" or "og/" (full-path-from-static convention)', () => {
 		const m = loadManifest();
 		for (const entry of m.assets) {
-			expect(entry.legacyPath.startsWith('images/')).toBe(true);
+			expect(entry.legacyPath.startsWith('images/') || entry.legacyPath.startsWith('og/')).toBe(
+				true,
+			);
 		}
 	});
 });

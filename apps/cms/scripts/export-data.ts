@@ -7,13 +7,16 @@
 import type { BlockEditorDoc, MediaVariantEntry, SitePage } from '@repo/shared';
 import type { StackArchetype, SiteLabels } from '@repo/shared/schemas';
 import type { RouteSeoOverride } from '@repo/shared';
-import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
-import type { MorphShape } from './lib/schemas/morph-shape';
-import type { ErrorPageContent } from './lib/schemas/nav';
-import type { BlogPost } from './lib/schemas/blog';
-import type { Service } from './lib/schemas/service';
-import type { Project } from './lib/schemas/project';
-import type { TechStackItem } from './lib/schemas/tech-stack';
+import type {
+	SiteMeta,
+	SiteSeoDefaults,
+	MorphShape,
+	ErrorPageContent,
+	BlogPost,
+	Service,
+	Project,
+	TechStackItem,
+} from '@repo/shared';
 import type {
 	BlogPageContent,
 	ProjectsPageContent,

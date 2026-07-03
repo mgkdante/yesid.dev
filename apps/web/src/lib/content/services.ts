@@ -79,6 +79,10 @@ export const services: readonly Service[] = [
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
 		],
+		seoDescription: {
+			en: 'Freelance PostgreSQL and SQL Server consulting in Montreal: schema design, query tuning, migrations with rollback. Fast and safe as your business grows.',
+			fr: 'Pigiste PostgreSQL et SQL Server à Montréal : conception de schéma, requêtes optimisées, migrations avec rollback. Ta base reste rapide et sécuritaire.',
+		},
 		stack: [
 			'PostgreSQL',
 			'SQL Server',
@@ -158,6 +162,10 @@ export const services: readonly Service[] = [
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
 		],
+		seoDescription: {
+			en: 'Freelance data pipelines and automation in Montreal: Python, Airflow, dbt. Data that travels on its own and lands clean, on time, every morning.',
+			fr: 'Pigiste pipelines de données à Montréal : Python, Airflow, dbt. Tes données voyagent toutes seules et arrivent propres, à temps, chaque matin.',
+		},
 		stack: ['Python', 'dbt', 'Apache Airflow', 'PostgreSQL', 'SSIS'],
 		station: 2,
 		svg: 'service-pipeline.svg',
@@ -231,6 +239,10 @@ export const services: readonly Service[] = [
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
 		],
+		seoDescription: {
+			en: 'Freelance Power BI dashboards and analytics in Montreal: KPIs, semantic layers, reports your team trusts. Decisions in 15 minutes, not 2 days.',
+			fr: 'Pigiste Power BI et analytique à Montréal : KPI, couche sémantique, tableaux de bord fiables. Ton équipe décide en 15 minutes, pas en 2 jours.',
+		},
 		stack: ['Power BI', 'Retool', 'DAX', 'SQL', 'SSRS'],
 		station: 3,
 		svg: 'service-reporting.svg',
@@ -304,6 +316,10 @@ export const services: readonly Service[] = [
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
 		],
+		seoDescription: {
+			en: 'Freelance web development in Montreal: SvelteKit sites, Shopify stores, live dashboards. Fast pages that put your data in front of people.',
+			fr: 'Pigiste web à Montréal : sites SvelteKit, boutiques Shopify, tableaux de bord rapides. Tes données et tes produits rejoignent le monde.',
+		},
 		stack: [
 			'SvelteKit',
 			'TypeScript',

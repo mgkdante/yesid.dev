@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { toService, type DirectusService } from './services';
-import { ServiceSchema } from '../schemas/service';
-
+import { ServiceSchema } from '@repo/shared/schemas';
 const FIXTURE: DirectusService = {
 	id: 'sql-development',
 	station: 1,

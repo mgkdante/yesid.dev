@@ -1,6 +1,9 @@
 <!--
   HomePage — orchestrator for the home page sections.
-  5 sections: Hero, Manifesto, Featured Projects, Services, Closer.
+  7 sections: Hero, Manifesto, Services, About teaser, Featured Projects,
+  CTA band, Closer. (Services lead the story per operator 2026-07-03:
+  context → identity → proof. About teaser + CTA band went live in the
+  homework #21c batch.)
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
 
   slice-18i Phase 7C: all page-block content flows as props from +page.svelte
@@ -14,15 +17,16 @@
 	import Manifesto from './Manifesto.svelte';
 	import FeaturedProjects from './FeaturedProjects.svelte';
 	import HomeServices from './HomeServices.svelte';
+	import HomeAboutTeaser from './HomeAboutTeaser.svelte';
+	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-	import { initSectionMagnet } from '$lib/motion/utils/sectionMagnet.js';
-	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 	import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
 	import {
 		registerScrollContext,
 		lenisAwareScrollTo,
@@ -73,8 +77,8 @@
 		manifesto,
 		proofReel,
 		servicesGrid,
-		about: _about,
-		cta: _cta,
+		about,
+		cta,
 		closer,
 		initialHeroData,
 		services,
@@ -87,7 +91,31 @@
 	// literals kept as code fallbacks.
 	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, locale);
 	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, locale);
+	const sectionAbout = resolveLocale(siteLabels.pages.homeSectionAbout, locale);
 	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale);
+
+	// Rotated-title fit (operator spec 2026-07-03): ONE mathematically
+	// computed size per locale: the LONGEST label must exactly fit the 50dvh
+	// sticky cap, capped at the 6rem design max; all four titles share it.
+	// null until measured: the CSS var fallback below carries first paint.
+	let rotatedTitleSize = $state<number | null>(null);
+	const rotatedVar = $derived(
+		rotatedTitleSize === null ? undefined : `--rotated-title-size: ${rotatedTitleSize}px`,
+	);
+
+	function recomputeRotatedTitleFit() {
+		const sample = document.querySelector('.rotated-title .section-heading-text');
+		if (!sample) return;
+		// Budget = the sticky cap (50dvh) with 2% breathing room; max = 6rem.
+		const budget = window.innerHeight * 0.5 * 0.98;
+		const size = computeRotatedTitleSize(
+			sample,
+			[sectionServices, sectionAbout, sectionProjects, sectionTerminus],
+			budget,
+			96,
+		);
+		if (size !== null) rotatedTitleSize = size;
+	}
 
 	// GO-w2t5 → go2/w4: backgroundBreathing lives inside HomeCloser (each
 	// section component owns its own effect). HomeServices' sectionGlow was
@@ -114,21 +142,24 @@
 
 	onMount(() => {
 		if (!browser) return;
-		// go2/w5: desktop-only soft section magnetism. On mobile, native
-		// scroll must stay free of section snapping.
-		//
-		// slice-34.4: suppress the magnet while a locale-switch scroll restore
-		// is in flight — the restore's forced jump to the captured fraction
-		// fires scroll events that would otherwise trip a settle and snap the
-		// position to the nearest section top.
-		if (!isViewportAtMost(1023)) {
-			destroyFns.push(
-				initSectionMagnet(
-					() => Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
-					{ suppress: () => localeHandoff.restoring },
-				),
-			);
-		}
+		// Section magnetism removed entirely (operator call 2026-07-03):
+		// scrolling settles wherever the visitor stops it, on every input.
+
+		// Rotated-title fit: compute once, again when the web font finishes
+		// loading (metrics change), and on every resize (the height budget
+		// moves with the viewport).
+		recomputeRotatedTitleFit();
+		document.fonts?.ready.then(() => recomputeRotatedTitleFit()).catch(() => {});
+		let fitRaf = 0;
+		const onResize = () => {
+			cancelAnimationFrame(fitRaf);
+			fitRaf = requestAnimationFrame(recomputeRotatedTitleFit);
+		};
+		window.addEventListener('resize', onResize);
+		destroyFns.push(() => {
+			cancelAnimationFrame(fitRaf);
+			window.removeEventListener('resize', onResize);
+		});
 
 		// slice-34.4 — reading position survives a locale switch on the HOME page,
 		// the hardest case: HeroBanner's GSAP pin rewrites the document height
@@ -195,38 +226,23 @@
 </script>
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
-<section data-magnet-section class="w-full">
+<section class="w-full">
 	<HeroBanner {metroSvg} {hero} {heroAnim} {initialHeroData} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
-<section data-magnet-section class="w-full">
+<section class="w-full">
 	<Manifesto {manifesto} />
 </section>
 
 <Separator variant="hazard" />
 
-<!-- Section 3: Featured Projects — rotated title LEFT -->
-<section bind:this={projectsSectionEl} data-magnet-section class="home-section home-section--left home-section--proof-reel">
-	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading={sectionProjects} />
-	</div>
-	<div class="home-section-heading-mobile">
-		<SectionHeading heading={sectionProjects} />
-	</div>
-	<div class="home-section-content">
-		<!-- go2/home-cards: services join the proof reel so each card can name
-		     the station that built it (same prop the services grid consumes). -->
-		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
-	</div>
-</section>
-
-<Separator variant="hazard" />
-
-<!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
-<section bind:this={servicesSectionEl} data-magnet-section class="home-section home-section--right relative">
+<!-- Section 3: Services — rotated title RIGHT, blueprint background spans
+     full width. Operator 2026-07-03: services lead so the story builds
+     context (what I do) → identity (who I am) → proof (what I built). -->
+<section bind:this={servicesSectionEl} class="home-section home-section--right relative" style={rotatedVar}>
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
@@ -243,8 +259,49 @@
 
 <Separator variant="hazard" />
 
+<!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
+     titled section alternates: Services R → About L → Projects R → Terminus L;
+     only the CTA goes untitled, it's special). -->
+<section class="home-section home-section--left" style={rotatedVar}>
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading={sectionAbout} />
+	</div>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading={sectionAbout} />
+	</div>
+	<div class="home-section-content">
+		<HomeAboutTeaser {about} />
+	</div>
+</section>
+
+<Separator variant="hazard" />
+
+<!-- Section 4: Featured Projects — rotated title RIGHT; the proof lands with
+     the service context already established above it. -->
+<section bind:this={projectsSectionEl} class="home-section home-section--right home-section--proof-reel" style={rotatedVar}>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading={sectionProjects} />
+	</div>
+	<div class="home-section-content">
+		<!-- go2/home-cards: services join the proof reel so each card can name
+		     the station that built it (same prop the services grid consumes). -->
+		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
+	</div>
+	<div class="rotated-title rotated-title--right">
+		<SectionHeading heading={sectionProjects} />
+	</div>
+</section>
+
+<!-- Section 4b: CTA band — the mid-page conversion action. The hazard strip
+     is INSIDE CtaBand now (every CTA wears it), so no separate separator. -->
+<section class="w-full">
+	<CtaBand {cta} {siteMeta} testidPrefix="home-cta-band" />
+</section>
+
+<Separator variant="hazard" />
+
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-<section bind:this={closerSectionEl} data-magnet-section class="home-section home-section--left">
+<section bind:this={closerSectionEl} class="home-section home-section--left" style={rotatedVar}>
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionTerminus} />
 	</div>
@@ -288,9 +345,15 @@
 
 	/* Right side: natural vertical-rl (reads top → bottom), no rotation */
 
-	/* Super bold display size — full brand color, maximized for edge column */
+	/* Super bold display size — full brand color, maximized for edge column.
+	   The SIZE IS COMPUTED (operator spec 2026-07-03): per locale, the
+	   longest label is measured and the shared --rotated-title-size is the
+	   largest size at which IT fits the 50dvh sticky cap (design max 6rem):
+	   as big as mathematically possible, zero overflow on either axis, all
+	   four titles uniform. See $lib/utils/rotated-title-fit.ts. The var
+	   fallback only covers first paint before hydration measures. */
 	.rotated-title :global(.section-heading-text) {
-		font-size: clamp(3.5rem, 7vw, 6rem);
+		font-size: var(--rotated-title-size, min(clamp(3.5rem, 7vw, 6rem), 5.5dvh));
 		font-weight: 900;
 		letter-spacing: -0.02em;
 		margin-block-end: 0;
