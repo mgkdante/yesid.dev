@@ -9,6 +9,7 @@
 	import type { CtaContent, SiteMeta } from '$lib/types';
 	import { ctaContent, siteMeta as siteMetaContent } from '$lib/content';
 	import { Button } from '$lib/components/ui/button';
+	import { Separator } from '$lib/components/ui/separator';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
@@ -29,6 +30,8 @@
 	const githubLabel = $derived(resolveLocale(cta.ctaGithub, locale));
 </script>
 
+<!-- Every CTA wears the hazard band on top (operator rule 2026-07-03). -->
+<Separator variant="hazard" />
 <div class="cta-band" data-testid={testidPrefix}>
 	<h2 class="band-heading">
 		{#each headingLines as line, i}

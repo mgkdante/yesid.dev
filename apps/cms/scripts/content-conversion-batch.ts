@@ -278,7 +278,17 @@ async function archiveCafeArona(ctx: ApplyContext): Promise<void> {
 async function main(): Promise<void> {
 	const apply = process.argv.includes('--apply');
 	const url = defaultDirectusUrl();
-	assertDevCms(url);
+	// Prod promotion path (mirrors sync-push.ts's double-ack ethos): dev is
+	// the default and the guard stays; promoting the SAME canonical values to
+	// prod requires BOTH the flag and the ack env naming the prod host.
+	const prodAck =
+		process.argv.includes('--promote-prod') &&
+		process.env.CONTENT_BATCH_ALLOW_PROD === 'cms.yesid.dev';
+	if (prodAck) {
+		log.info('⚠️  PROD PROMOTION acknowledged (--promote-prod + CONTENT_BATCH_ALLOW_PROD).');
+	} else {
+		assertDevCms(url);
+	}
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
 	log.info(`plan: ${TRANSLATION_PATCHES.length} translation patch groups, ` +
 		`${Object.keys(SERVICE_SEO_DESCRIPTIONS).length} service SEO descriptions, ` +
