@@ -64,34 +64,40 @@
 		</a>
 	</div>
 
-	<div class="teaser-badges" data-testid="home-about-badges">
-		{#each badges as badge (badge.area)}
-			<div class="badge-cell badge-cell--{badge.area}">
-				{#if badge.area === 'languages'}
-					<AboutLanguages languages={c.languages} stop={badge.stop} label={badge.label} />
-				{:else if badge.area === 'education'}
-					<AboutEducation education={c.education} stop={badge.stop} label={badge.label} />
-				{:else if badge.area === 'weather'}
-					<AboutWeather config={c.weather} weather={null} stop={badge.stop} label={badge.label} />
-				{:else}
-					<AboutInterests interests={c.interests} stop={badge.stop} label={badge.label} />
-				{/if}
-			</div>
-		{/each}
+	<!-- Full-bleed badge wall: About's exact container (px-3) + 4px bento
+	     seams, so the cards render at their true About size. -->
+	<div class="teaser-badges-bleed">
+		<div class="teaser-badges" data-testid="home-about-badges">
+			{#each badges as badge (badge.area)}
+				<div class="badge-cell badge-cell--{badge.area}">
+					{#if badge.area === 'languages'}
+						<AboutLanguages languages={c.languages} stop={badge.stop} label={badge.label} />
+					{:else if badge.area === 'education'}
+						<AboutEducation education={c.education} stop={badge.stop} label={badge.label} />
+					{:else if badge.area === 'weather'}
+						<AboutWeather config={c.weather} weather={null} stop={badge.stop} label={badge.label} />
+					{:else}
+						<AboutInterests interests={c.interests} stop={badge.stop} label={badge.label} />
+					{/if}
+				</div>
+			{/each}
+		</div>
 	</div>
 </div>
 
 <style>
+	/* Full width: the strip is a little piece of About dropped into home
+	   (operator 2026-07-03), so no content cap. The story keeps page gutters;
+	   the badge wall goes full-bleed like About's dashboard. */
 	.about-teaser {
 		display: grid;
 		gap: 2.5rem;
 		width: 100%;
-		max-width: 72rem;
-		margin-inline: auto;
-		padding: 3.5rem var(--space-page-x);
+		padding-block: 3.5rem;
 	}
 
 	.teaser-identity {
+		padding-inline: var(--space-page-x);
 		text-align: center;
 	}
 
@@ -148,6 +154,11 @@
 	   height ((100dvh - nav - stripes) / 4 per row): languages (1 col) |
 	   college (2 cols, About's education footprint) | weather (1 col), then
 	   interests spanning all four (About gives it a 4-column run too). */
+	/* About's exact container: px-3 wrapper + 4px bento seams. */
+	.teaser-badges-bleed {
+		padding-inline: 0.75rem;
+	}
+
 	.teaser-badges {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -157,7 +168,7 @@
 			'weather'
 			'interests';
 		grid-auto-rows: auto;
-		gap: var(--space-card-gap);
+		gap: 4px;
 	}
 
 	.badge-cell--languages { grid-area: languages; }
@@ -175,8 +186,17 @@
 		}
 	}
 
-	/* Desktop: the 4-column square at About's exact row height. */
+	/* Desktop: the 4-column square, CENTERED, at About's TRUE cell size:
+	   each column is exactly one About dashboard column
+	   ((100vw - px-3*2 - 5 seams) / 6), so four of them + 3 seams sit as a
+	   centered block; rows keep About's exact row height. */
 	@media (min-width: 1024px) {
+		.teaser-badges-bleed {
+			width: calc((100vw - 24px - 20px) / 6 * 4 + 12px);
+			margin-inline: auto;
+			padding-inline: 0;
+		}
+
 		.teaser-badges {
 			grid-template-columns: repeat(4, 1fr);
 			grid-template-rows: repeat(2, 1fr);
