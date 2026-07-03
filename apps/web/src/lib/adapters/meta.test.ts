@@ -110,9 +110,9 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		return (seo.jsonLd ?? []).map((n) => n['@type']);
 	}
 
-	it('/ emits Person + WebSite + ProfilePage', async () => {
+	it('/ emits Person + ProfessionalService + WebSite + ProfilePage', async () => {
 		const types = await typesFor('/');
-		expect(types).toEqual(['Person', 'WebSite', 'ProfilePage']);
+		expect(types).toEqual(['Person', 'ProfessionalService', 'WebSite', 'ProfilePage']);
 	});
 
 	it('/about emits Person + ProfilePage + BreadcrumbList', async () => {

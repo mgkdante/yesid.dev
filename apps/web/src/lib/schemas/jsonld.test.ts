@@ -4,6 +4,7 @@ import {
 	WebSiteSchema,
 	BlogPostingSchema,
 	ServiceSchema,
+	ProfessionalServiceSchema,
 	CreativeWorkSchema,
 	BreadcrumbListSchema,
 	ProfilePageSchema,
@@ -119,9 +120,50 @@ describe('ServiceSchema', () => {
 		expect(ServiceSchema.safeParse(validService).success).toBe(true);
 	});
 
-	it('accepts optional areaServed field', () => {
-		const withArea = { ...validService, areaServed: 'CA' };
+	it('accepts optional areaServed field (array of City nodes)', () => {
+		const withArea = {
+			...validService,
+			areaServed: [{ '@type': 'City' as const, name: 'Montréal' }],
+		};
 		expect(ServiceSchema.safeParse(withArea).success).toBe(true);
+	});
+});
+
+describe('ProfessionalServiceSchema', () => {
+	const validBusiness = {
+		'@type': 'ProfessionalService' as const,
+		'@id': 'https://yesid.dev/#business',
+		name: 'yesid.dev',
+		url: 'https://yesid.dev',
+		description: 'Freelance digital infrastructure in Montréal.',
+		address: {
+			'@type': 'PostalAddress' as const,
+			addressLocality: 'Montréal',
+			addressRegion: 'QC',
+			addressCountry: 'CA',
+		},
+		areaServed: [
+			{ '@type': 'City' as const, name: 'Montréal' },
+			{ '@type': 'City' as const, name: 'Laval' },
+		],
+		founder: { '@id': PERSON_ID },
+		sameAs: ['https://github.com/mgkdante'],
+		knowsAbout: ['SQL', 'Data pipelines'],
+	};
+
+	it('accepts a valid ProfessionalService', () => {
+		expect(ProfessionalServiceSchema.safeParse(validBusiness).success).toBe(true);
+	});
+
+	it('requires at least one served area', () => {
+		expect(ProfessionalServiceSchema.safeParse({ ...validBusiness, areaServed: [] }).success).toBe(
+			false,
+		);
+	});
+
+	it('narrows through the SchemaOrgNode union on @type', () => {
+		const parsed = SchemaOrgNodeSchema.parse(validBusiness);
+		expect(parsed['@type']).toBe('ProfessionalService');
 	});
 });
 

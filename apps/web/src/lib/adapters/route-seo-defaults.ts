@@ -18,6 +18,7 @@ import {
 	buildBreadcrumbListNode,
 	buildCollectionPageNode,
 	buildPersonNode,
+	buildProfessionalServiceNode,
 	buildProfilePageNode,
 	buildWebSiteNode,
 } from '$lib/adapters/jsonld';
@@ -54,6 +55,7 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		composedTitleStrategy: 'verbatim',
 		jsonLdFactory: (sm, locale) => [
 			buildPersonNode(sm, locale),
+			buildProfessionalServiceNode(sm, locale),
 			buildWebSiteNode(sm, locale),
 			buildProfilePageNode(canonicalFor('/', locale)),
 		],
