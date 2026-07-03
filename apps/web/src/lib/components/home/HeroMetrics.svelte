@@ -14,9 +14,12 @@
 
   interface Props {
     metrics: HeroMetric[];
+    /** True while REAL transit KPIs are on screen: vehicles card wears the
+     *  LIVE-state sub-label instead of the DEMO one. */
+    live?: boolean;
   }
 
-  let { metrics }: Props = $props();
+  let { metrics, live = false }: Props = $props();
 
   // CMS truth: the dashboard card LABEL/SUB copy comes from the site_labels
   // singleton (siteLabels.heroDashboard), keyed by the metric's stable `key`.
@@ -39,7 +42,7 @@
   function metricSub(metric: HeroMetric): string {
     switch (metric.key) {
       case 'vehicles':
-        return resolveLocale(dashboard.vehiclesSub, locale);
+        return resolveLocale(live ? dashboard.vehiclesSubLive : dashboard.vehiclesSub, locale);
       case 'delay':
         return resolveLocale(dashboard.delaySub, locale).replace(
           '{coverage}',
@@ -53,8 +56,13 @@
     }
   }
 
+  // Digit grouping follows the active locale ('1 247' in fr-CA, '1,247' in
+  // en-CA); a hard-coded en-US grouping stood out to exactly the local
+  // audience the FR page targets.
+  const numberLocale = locale === 'fr' ? 'fr-CA' : locale === 'es' ? 'es' : 'en-CA';
+
   function formatValue(metric: HeroMetric): string {
-    if (metric.key === 'vehicles') return metric.value.toLocaleString('en-US');
+    if (metric.key === 'vehicles') return metric.value.toLocaleString(numberLocale);
     if (metric.key === 'delay') return metric.value.toFixed(1);
     return String(metric.value);
   }

@@ -17,9 +17,11 @@
 		headlineAriaSuffix,
 		subheadlineText,
 		subtitleText,
+		identityText,
 		ctaWorkLabel,
 		ctaContactLabel,
 		heroData,
+		live = false,
 		introCompleted = false,
 		beaconSettled = false,
 		replayAriaLabel = 'Replay intro',
@@ -30,9 +32,13 @@
 		headlineAriaSuffix: string;
 		subheadlineText: string;
 		subtitleText: string;
+		/** Identity kicker (homework #20): "freelance digital infrastructure - Montreal". */
+		identityText: string;
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
 		heroData: HeroData;
+		/** True while REAL transit KPIs are on screen (homework #2 phase 2). */
+		live?: boolean;
 		/** go2/w5: arms the hero-dot replay button once the intro completed. */
 		introCompleted?: boolean;
 		/** The beacon dress (pulse + glow) renders only in SETTLED
@@ -54,6 +60,9 @@
 </script>
 
 <div class="hero-viewport-text">
+	<p class="hero-kicker" data-testid="hero-kicker" data-hero-stagger="1">
+		{identityText}
+	</p>
 	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} {headlineAriaSuffix}">
 		<span
 			class="block text-hero-mobile text-[var(--foreground)] md:text-hero"
@@ -98,7 +107,7 @@
 	  GSAP reveal timeline keeps the same step-3 order regardless of DOM order.
 	-->
 	<div class="my-6 md:my-6" data-hero-stagger="3">
-		<HeroMetrics metrics={heroData.metrics} />
+		<HeroMetrics metrics={heroData.metrics} {live} />
 	</div>
 
 	<div
@@ -118,20 +127,39 @@
 	</p>
 
 	<!-- Round 5c doctrine: orange = deep dive (projects); yellow = the single
-	     "talk to Yesid" conversion action in this view (contact). -->
+	     "talk to Yesid" conversion action in this view. Homework #21a: that
+	     action now books the cal.com intro call directly instead of routing
+	     through /contact. -->
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 		<span class="tap-press" use:pressBounce>
 			<Button variant="default" size="cta-lg" href={localizeHref('/projects', locale)} data-testid="hero-cta-projects">
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="conversion" size="cta-lg" href={localizeHref('/contact', locale)} data-testid="hero-cta-contact" class="tap-press">
+		<Button variant="conversion" size="cta-lg" href="https://cal.com/yesid-dev" target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press">
 			{ctaContactLabel}
 		</Button>
 	</div>
 </div>
 
 <style>
+	/* Identity kicker (homework #20): mono chrome above the headline. Stored
+	   human-case in the CMS; uppercased here so it reads as station chrome. */
+	.hero-kicker {
+		font-family: var(--font-mono);
+		font-size: var(--text-detail-kicker);
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		color: var(--accent-text);
+		margin-bottom: 0.75rem;
+	}
+
+	@media (max-height: 660px) {
+		.hero-kicker {
+			margin-bottom: 0.375rem;
+		}
+	}
+
 	/* SVG period dot — replaces text "." for pixel-perfect zoom center.
 	   Sized in em so it scales with the heading font-size. The markup keeps
 	   it whitespace-glued to "DON'T BREAK" (no soft-wrap point), so it always

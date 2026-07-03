@@ -27,6 +27,7 @@
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
 	import { Separator } from '$lib/components/ui/separator';
+	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
 	import TocNav from '$lib/components/shared/TocNav.svelte';
@@ -540,6 +541,12 @@
 	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
 		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile {codeHighlights} />
 	</div>
+
+	<!-- End-of-case-study CTA: THE site conversion band, recycled and centered
+	     on every surface that mounts it (operator round 2026-07-03). -->
+	<section class="cta-area" data-testid="project-cta">
+		<CtaBand testidPrefix="project-cta-band" />
+	</section>
 </article>
 
 <!-- Mobile floating TOC pill -->
@@ -548,6 +555,13 @@
 {/if}
 
 <style>
+	/* End-of-case-study CTA: the shared band brings its own centered layout
+	   AND its own hazard strip on top (operator rule), so the wrapper only
+	   spaces. */
+	.cta-area {
+		margin-top: 1rem;
+	}
+
 	/* Section blocks match the side-column card spacing (mb-4 = 1rem) so the
 	   center column isn't airier than the rails. */
 	.section-block {

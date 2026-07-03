@@ -14,11 +14,17 @@ export const HeroContentSchema = z.object({
 	}),
 	subheadline: LocalizedStringSchema,
 	subtitle: LocalizedStringSchema,
+	/** Identity kicker above the headline (homework #20): stored human-case,
+	 *  rendered ALL CAPS by CSS. */
+	identity: LocalizedStringSchema,
 	ctaWork: LocalizedStringSchema,
 	ctaContact: LocalizedStringSchema,
 	sqlPanel: z.object({
 		prompt: LocalizedStringSchema,
+		/** Badge in the DEMO state (simulated data). */
 		liveLabel: LocalizedStringSchema,
+		/** Badge when REAL transit KPIs are on screen (homework #2 phase 2). */
+		liveBadge: LocalizedStringSchema,
 		columns: z.object({
 			route: LocalizedStringSchema,
 			avgDelayS: LocalizedStringSchema,
@@ -29,6 +35,8 @@ export const HeroContentSchema = z.object({
 	refreshButton: z.object({
 		label: LocalizedStringSchema,
 		helper: LocalizedStringSchema,
+		/** Helper when real KPIs are on screen. */
+		helperLive: LocalizedStringSchema,
 	}),
 	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
 	 *  block_hero_translations. Carried through typed PageData so

@@ -144,6 +144,9 @@ export interface Service {
 	longDescription?: LocalizedString;
 	// "How this helps you" — client-facing value proposition
 	valueProposition?: LocalizedString;
+	// Search-facing meta description (homework #25): locality + tech + freelance.
+	// The evocative one-liner stays in `description` for on-page use.
+	seoDescription?: LocalizedString;
 	// Typical deliverables list
 	deliverables?: LocalizedString[];
 	// Tools/technologies used in this service (not localized — tech names are universal)
@@ -456,9 +459,13 @@ export interface ContactInfoTerminal {
 	command: string;
 	location: LocalizedString;
 	responseTime: LocalizedString;
+	/** Languages a client can write or book in (homework #25). Value like
+	 *  "EN · FR"; adding a language later is one CMS edit. */
+	languages: LocalizedString;
 	sectionLabels: {
 		location: LocalizedString;
 		connect: LocalizedString;
+		languages: LocalizedString;
 	};
 }
 
@@ -472,6 +479,11 @@ export interface ContactFormTerminal {
 		message: ContactTerminalField;
 	};
 	submitLabel: LocalizedString;
+	/** Booking escape hatch under the submit row (homework #21 batch): prompt +
+	 *  terminal-style link to the cal.com intro call. Orange mono treatment;
+	 *  the submit button stays the page's only conversion yellow. */
+	bookingPrompt: LocalizedString;
+	bookingButtonLabel: LocalizedString;
 }
 
 export interface ContactValidation {
@@ -578,11 +590,17 @@ export interface HeroContent {
 	};
 	subheadline: LocalizedString;
 	subtitle: LocalizedString;
+	/** Identity kicker above the headline (homework #20): stored human-case,
+	 *  rendered ALL CAPS by CSS. */
+	identity: LocalizedString;
 	ctaWork: LocalizedString;
 	ctaContact: LocalizedString;
 	sqlPanel: {
 		prompt: LocalizedString;
+		/** Badge in the DEMO state (simulated data). */
 		liveLabel: LocalizedString;
+		/** Badge when REAL transit KPIs are on screen (homework #2 phase 2). */
+		liveBadge: LocalizedString;
 		columns: {
 			route: LocalizedString;
 			avgDelayS: LocalizedString;
@@ -593,6 +611,8 @@ export interface HeroContent {
 	refreshButton: {
 		label: LocalizedString;
 		helper: LocalizedString;
+		/** Helper when real KPIs are on screen. */
+		helperLive: LocalizedString;
 	};
 	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
 	 *  block_hero_translations. Carried through the typed PageData so

@@ -17,10 +17,12 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.identity.valueProp.en.toLowerCase()).not.toContain('mom');
 			expect(aboutPageContent.identity.valueProp.en).not.toContain('2005');
 			expect(aboutPageContent.identity.valueProp.en).toContain(
-				'so they can be behind the wheel making their own decisions.',
+				'so they stay behind the wheel.',
 			);
+			// Conversion batch (homework #20): the value prop now names the trade in
+			// station order and keeps the wheel metaphor, trimmed to fit the cap.
 			expect(aboutPageContent.identity.valueProp.en).toBe(
-				"I'm Yesid a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so they can be behind the wheel making their own decisions.",
+				"I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.",
 			);
 			expect(aboutPageContent.identity.valueProp.en).not.toContain('take advantage');
 			const valuePropFr = aboutPageContent.identity.valueProp.fr;
