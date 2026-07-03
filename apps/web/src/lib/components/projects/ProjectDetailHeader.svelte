@@ -30,9 +30,12 @@
   const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale);
   const subtitle = $derived(resolveLocale(project.oneLiner, locale));
 
-  const location = $derived(project.location ?? 'sherbrooke');
-  const environment = $derived(project.environment ?? 'production');
-  const version = $derived(project.version ?? '1.0.0');
+  // No invented defaults: the edge chrome reads as factual telemetry, so a
+  // line simply disappears when the CMS field is absent (the old
+  // sherbrooke/production/1.0.0 fallbacks fabricated metadata).
+  const location = $derived(project.location);
+  const environment = $derived(project.environment);
+  const version = $derived(project.version);
 
   const layerId = $derived(
     project.relatedServices[0] ?? project.slug
@@ -90,9 +93,9 @@
       <!-- Edge Left: project identity + impact metrics (desktop only) -->
       <div class="edge-left header__edge hidden lg:block" aria-hidden="true">
         <div>PRJ <span class="edge-value">{project.slug}</span></div>
-        <div>SRC {location}</div>
-        <div>ENV {environment}</div>
-        <div>VER {version}</div>
+        {#if location}<div>SRC {location}</div>{/if}
+        {#if environment}<div>ENV {environment}</div>{/if}
+        {#if version}<div>VER {version}</div>{/if}
         <div>STATUS <span class="edge-value">{project.status}</span></div>
         <div class="edge-separator">───────</div>
         {#each metrics as metric}

@@ -130,8 +130,8 @@ export const aboutPageContent: AboutContent = {
 			fr: 'Bâtisseur curieux, bricoleur depuis toujours',
 		},
 		valueProp: {
-			en: 'I\'m Yesid a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so they can be behind the wheel making their own decisions.',
-			fr: 'Je suis un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour qu\'ils gardent le volant et prennent leurs propres décisions.',
+			en: 'I\'m Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.',
+			fr: 'Moi, c\'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les bases de données, les pipelines, les tableaux de bord et les sites web. Avec mes clients, j\'explique ce que les choses veulent dire pour qu\'ils gardent le volant.',
 		},
 	},
 	interests: [

@@ -25,7 +25,7 @@ function header(): string {
 		'',
 		`${en(siteMeta.tagline)} Yesid O. is a freelance digital infrastructure engineer in Montreal. The four services read as one data flow: store it (databases), move it (pipelines), understand it (dashboards), show it (websites).`,
 		'',
-		`The site is bilingual: every page below also exists in French under ${SITE_HOST}/fr.`,
+		`The site is bilingual: every page below also exists in French under ${SITE_HOST}/fr. Blog posts are the exception: English-only for now.`,
 	].join('\n');
 }
 
@@ -50,7 +50,7 @@ export function llmsTxt(): string {
 		'## Services',
 		...serviceLines,
 		'',
-		'## Projects (personal case studies)',
+		'## Projects (personal builds, documented like case studies)',
 		...projectLines,
 		'',
 		'## Blog',
@@ -94,7 +94,7 @@ export function llmsFullTxt(): string {
 		'',
 		serviceBlocks.join('\n\n'),
 		'',
-		'## Projects (personal case studies)',
+		'## Projects (personal builds, documented like case studies)',
 		'',
 		projectBlocks.join('\n\n'),
 		'',

@@ -686,7 +686,12 @@ describe('LocalizedString guard + translation debt', () => {
 // homework batch 2026-07-02: +2 fr-complete leaves — the cal.com booking
 // contact channel label (contactContent.socials) and the glance repoPrivateLabel
 // (siteLabels.projectsChrome.detail.glance) → 627 + 2 = 629.
-const LOCKED = { TOTAL: 629, WITH_FR: 629, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// conversion batch (homework #19/#20/#21/#25): +21 fr-complete leaves —
+// 12 site-labels (quiet-mode collapsed label, blog unfiltered empty state,
+// 5 services detail CTA, 5 projects detail CTA), 1 hero identity kicker,
+// 4 contact (bookingPrompt, bookingButtonLabel, languages + its section
+// label), 4 per-service seoDescription → 629 + 21 = 650.
+const LOCKED = { TOTAL: 650, WITH_FR: 650, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

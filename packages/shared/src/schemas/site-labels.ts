@@ -20,9 +20,12 @@ export const SiteLabelsSchema = z.object({
 		moreMetrics: LocalizedStringSchema,
 		architectureDiagram: LocalizedStringSchema,
 		technologyStackTemplate: LocalizedStringSchema,
-		/** Quiet-mode reading control (detail headers). Switch label + on/off
-		 *  titles + the persist control's remember/forget copy. */
+		/** Collapse/expand-all reading control (detail headers). Verb labels flip
+		 *  with state (label = open state, labelCollapsed = collapsed state);
+		 *  enable/disable are the state tooltips; remember/forget the persist
+		 *  control (homework #19b: verbs instead of a mode name). */
 		quietModeLabel: LocalizedStringSchema,
+		quietModeLabelCollapsed: LocalizedStringSchema,
 		quietModeEnable: LocalizedStringSchema,
 		quietModeDisable: LocalizedStringSchema,
 		quietModeRemember: LocalizedStringSchema,
@@ -116,6 +119,15 @@ export const SiteLabelsSchema = z.object({
 				openAria: LocalizedStringSchema,
 				closeAria: LocalizedStringSchema,
 			}),
+			/** End-of-case-study conversion CTA (homework #21 batch): the highest
+			 *  intent moment on the site gets the booking action. */
+			cta: z.object({
+				overline: LocalizedStringSchema,
+				heading: LocalizedStringSchema,
+				body: LocalizedStringSchema,
+				primaryLabel: LocalizedStringSchema,
+				secondaryLabel: LocalizedStringSchema,
+			}),
 		}),
 	}),
 	blogChrome: z.object({
@@ -125,6 +137,9 @@ export const SiteLabelsSchema = z.object({
 			searchPlaceholder: LocalizedStringSchema,
 			resultNoun: LocalizedStringSchema,
 			noPostsMessage: LocalizedStringSchema,
+			/** Unfiltered empty state: the section has no posts at all and no
+			 *  filters are active. The filtered variant stays in noPostsMessage. */
+			noPostsEmptyMessage: LocalizedStringSchema,
 			filters: z.object({
 				filtersLabel: LocalizedStringSchema,
 				allLabel: LocalizedStringSchema,
@@ -207,6 +222,15 @@ export const SiteLabelsSchema = z.object({
 			serviceNavAria: LocalizedStringSchema,
 			stackHeading: LocalizedStringSchema,
 			seeStackLabel: LocalizedStringSchema,
+			/** End-of-page conversion CTA (homework #21 batch): the last station
+			 *  offers the booking call instead of dead-ending into the footer. */
+			cta: z.object({
+				overline: LocalizedStringSchema,
+				heading: LocalizedStringSchema,
+				body: LocalizedStringSchema,
+				primaryLabel: LocalizedStringSchema,
+				secondaryLabel: LocalizedStringSchema,
+			}),
 		}),
 	}),
 	navChrome: z.object({

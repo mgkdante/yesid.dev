@@ -25,6 +25,7 @@
 	import { onMount } from 'svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 
 	let {
@@ -79,6 +80,16 @@
 	);
 	let relatedProjectsAria = $derived(
 		resolveLocale(siteLabels.servicesChrome.detail.relatedProjectsNavAria, locale)
+	);
+	// End-of-line CTA (homework #21 batch): booking action instead of a dead end.
+	let ctaOverline = $derived(resolveLocale(siteLabels.servicesChrome.detail.cta.overline, locale));
+	let ctaHeading = $derived(resolveLocale(siteLabels.servicesChrome.detail.cta.heading, locale));
+	let ctaBody = $derived(resolveLocale(siteLabels.servicesChrome.detail.cta.body, locale));
+	let ctaPrimaryLabel = $derived(
+		resolveLocale(siteLabels.servicesChrome.detail.cta.primaryLabel, locale)
+	);
+	let ctaSecondaryLabel = $derived(
+		resolveLocale(siteLabels.servicesChrome.detail.cta.secondaryLabel, locale)
 	);
 	let seeAllProjectsLabel = $derived(
 		resolveLocale(siteLabels.projectsChrome.listing.seeAllLink, locale)
@@ -390,6 +401,32 @@
 				{/if}
 			</div>
 		{/if}
+
+		<!-- End-of-line CTA (homework #21 batch): every detail page warms the
+		     visitor up with "Is this you?" and then offers the start. Yellow is
+		     this view's single "talk to Yesid" action (Round 5c doctrine). -->
+		<section class="cta-area" data-testid="service-cta" aria-labelledby="service-cta-heading">
+			<SectionLabel text={ctaOverline} variant="station" class="mb-4 block" />
+			<h2 id="service-cta-heading" class="cta-heading">{ctaHeading}</h2>
+			<p class="cta-body">{ctaBody}</p>
+			<div class="cta-actions">
+				<span class="tap-press" use:pressBounce>
+					<Button
+						variant="conversion"
+						size="cta"
+						href="https://cal.com/yesid-dev"
+						target="_blank"
+						rel="noopener"
+						data-testid="service-cta-booking"
+					>
+						{ctaPrimaryLabel}
+					</Button>
+				</span>
+				<a href={localizeHref('/contact', locale)} class="cta-secondary tap-feedback">
+					{ctaSecondaryLabel}
+				</a>
+			</div>
+		</section>
 
 		<!-- Prev/Next Nav -->
 		<div class="nav-area">
@@ -838,6 +875,42 @@
 	}
 
 	/* ── Nav area ── */
+
+	/* End-of-line CTA (homework #21 batch). */
+	.cta-area {
+		margin-top: 3rem;
+		border-top: 1px solid var(--border);
+		padding-top: 2.5rem;
+	}
+
+	.cta-heading {
+		margin-bottom: 0.5rem;
+		font-family: var(--font-heading);
+		font-size: var(--text-title);
+		font-weight: 800;
+		color: var(--foreground);
+	}
+
+	.cta-body {
+		margin-bottom: 1.5rem;
+		max-width: 60ch;
+		color: var(--secondary-foreground);
+	}
+
+	.cta-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.cta-secondary {
+		padding: 0.5rem 0.25rem;
+		border-radius: var(--radius-md);
+		font-family: var(--font-mono);
+		font-size: var(--text-control);
+		color: var(--primary);
+	}
 
 	.nav-area {
 		padding: 0 var(--space-page-x);

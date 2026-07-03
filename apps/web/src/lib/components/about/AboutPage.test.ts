@@ -70,7 +70,7 @@ describe('AboutPage', () => {
 		const identity = screen.getByTestId('about-identity');
 		expect(identity.querySelector('[data-slot="status-dot"]')).toBeNull();
 		expect(identity.querySelector('h1')).toBeNull();
-		expect(identity.textContent).toContain("I'm Yesid a Montréal builder");
+		expect(identity.textContent).toContain("I'm Yesid, a Montreal builder");
 		expect(screen.getByTestId('about-headshot-frame').getAttribute('class')).toContain('rounded-full');
 		expect(screen.getByTestId('about-headshot-frame').getAttribute('class')).toContain('overflow-hidden');
 		expect(screen.getByTestId('about-headshot').getAttribute('class')).toContain('rounded-full');

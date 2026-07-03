@@ -342,6 +342,18 @@
 						{localTime}
 					</div>
 				{/if}
+				<!-- The 24h promise renders BEFORE submit (it previously existed in the
+				     CMS but only appeared on the success screen). -->
+				<div class="mt-0.5 font-mono text-small text-[var(--secondary-foreground)]">
+					{resolveLocale(contactPage.infoTerminal.responseTime, locale)}
+				</div>
+			</div>
+
+			<!-- LANGUAGES section (homework #25): tells a bilingual Montreal market
+			     which language to write in; adding ES later is one CMS edit. -->
+			<div class="mb-4">
+				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.languages, locale)}</div>
+				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.languages, locale)}</div>
 			</div>
 
 			<!-- CONNECT section -->
@@ -357,7 +369,15 @@
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
 							<span class="text-[var(--primary)]">→</span>
-							<span class="text-small">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
+							{#if social.icon === 'calendar'}
+								<!-- The booking row is the site's strongest CONNECT action: the
+								     human label is visible (it was aria-only) with the URL as a
+								     muted suffix. Other rows keep the terminal URL treatment. -->
+								<span class="text-small">{contactChannelLabel(social.label)}</span>
+								<span class="text-small text-[var(--muted-foreground)]">{social.href.replace(/^https?:\/\//, '')}</span>
+							{:else}
+								<span class="text-small">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
+							{/if}
 						</a>
 					{/each}
 				</div>
@@ -488,6 +508,23 @@
 								→ {resolveLocale(contactPage.success.sending, locale)}
 							</div>
 						{/if}
+
+						<!-- Booking escape hatch (homework #21 batch): prefer a call over a
+						     message. Orange mono link-row; the submit above stays the page's
+						     only conversion-yellow element (Round 5c doctrine). -->
+						<div class="mt-1 flex flex-wrap items-center gap-2 font-mono text-caption">
+							<span class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.formTerminal.bookingPrompt, locale)}</span>
+							<a
+								href="https://cal.com/yesid-dev"
+								target="_blank"
+								rel="noopener"
+								data-testid="contact-booking-link"
+								class="tap-feedback rounded px-1 py-0.5 text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
+							>
+								<span class="opacity-60">~ $</span>
+								{resolveLocale(contactPage.formTerminal.bookingButtonLabel, locale)}
+							</a>
+						</div>
 
 					</div>
 				</form>

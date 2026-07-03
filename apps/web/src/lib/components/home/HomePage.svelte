@@ -1,6 +1,9 @@
 <!--
   HomePage — orchestrator for the home page sections.
-  5 sections: Hero, Manifesto, Featured Projects, Services, Closer.
+  7 sections: Hero, Manifesto, Featured Projects, About teaser, Services,
+  CTA band, Closer. (About teaser + CTA band went live in the homework #21c
+  batch: the CMS blocks existed but were discarded here, and they carry the
+  identity + mid-page conversion copy the page was missing.)
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
 
   slice-18i Phase 7C: all page-block content flows as props from +page.svelte
@@ -14,6 +17,8 @@
 	import Manifesto from './Manifesto.svelte';
 	import FeaturedProjects from './FeaturedProjects.svelte';
 	import HomeServices from './HomeServices.svelte';
+	import HomeAboutTeaser from './HomeAboutTeaser.svelte';
+	import HomeCtaBand from './HomeCtaBand.svelte';
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -73,8 +78,8 @@
 		manifesto,
 		proofReel,
 		servicesGrid,
-		about: _about,
-		cta: _cta,
+		about,
+		cta,
 		closer,
 		initialHeroData,
 		services,
@@ -225,6 +230,13 @@
 
 <Separator variant="hazard" />
 
+<!-- Section 3b: About teaser — the identity card (who builds this, from where) -->
+<section data-magnet-section class="w-full">
+	<HomeAboutTeaser {about} />
+</section>
+
+<Separator variant="hazard" />
+
 <!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
 <section bind:this={servicesSectionEl} data-magnet-section class="home-section home-section--right relative">
 	<div class="absolute inset-0 -z-10 pointer-events-none">
@@ -239,6 +251,13 @@
 	<div class="rotated-title rotated-title--right">
 		<SectionHeading heading={sectionServices} />
 	</div>
+</section>
+
+<Separator variant="hazard" />
+
+<!-- Section 4b: CTA band — the mid-page conversion action -->
+<section data-magnet-section class="w-full">
+	<HomeCtaBand {cta} {siteMeta} />
 </section>
 
 <Separator variant="hazard" />

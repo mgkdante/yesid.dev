@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"Quiet mode\"",
+    "note": "Microcopy (go2-t1c). Group: a11y. Open-state visible label of the collapse/expand-all control. Default: \"Collapse all\"",
     "options": null,
     "readonly": false,
     "required": false,

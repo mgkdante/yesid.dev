@@ -18,7 +18,10 @@ export const heroAnimContent: HeroAnimContent = {
 };
 
 export const heroContent: HeroContent = {
-	ctaContact: { en: 'Let\'s talk!', fr: 'Parlons-en !' },
+	ctaContact: {
+		en: 'Book a 20-min intro call',
+		fr: 'Réserver un appel intro de 20 min',
+	},
 	ctaWork: { en: 'See how I build →', fr: 'Vois comment je bâtis →' },
 	headline: {
 		ariaSuffix: { en: 'Don\'t Break.', fr: 'Ne cassent pas.' },
@@ -31,10 +34,14 @@ export const heroContent: HeroContent = {
 			fr: 'PROCHAIN ARRÊT : FAIS DÉFILER',
 		},
 	},
+	identity: {
+		en: 'freelance digital infrastructure - Montreal',
+		fr: 'infrastructure numérique à la pige - Montréal',
+	},
 	refreshButton: {
 		helper: {
-			en: 'Refreshes metrics + query results from the live pipeline',
-			fr: 'Rafraîchit les métriques et les résultats de requête à partir du pipeline en direct',
+			en: 'Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.',
+			fr: 'Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.',
 		},
 		label: { en: 'PULL FRESH DATA', fr: 'TIRER DES DONNÉES FRAÎCHES' },
 	},
@@ -44,10 +51,10 @@ export const heroContent: HeroContent = {
 			route: { en: 'route', fr: 'route' },
 			vehicles: { en: 'vehicles', fr: 'vehicles' },
 		},
-		liveLabel: { en: 'LIVE', fr: 'EN DIRECT' },
+		liveLabel: { en: 'DEMO', fr: 'DÉMO' },
 		metaTemplate: {
-			en: '5 rows · {queryTime}s · updated {updatedAgo}',
-			fr: '5 lignes · {queryTime}s · mis à jour {updatedAgo}',
+			en: '5 rows · {queryTime}s · {updatedAgo}',
+			fr: '5 lignes · {queryTime}s · {updatedAgo}',
 		},
 		prompt: { en: 'yesid@transit:gold>', fr: 'yesid@transit:gold>' },
 	},
@@ -190,12 +197,12 @@ export const servicesGridContent: ServicesGridContent = {
 
 export const aboutContent: AboutIntroContent = {
 	bio: {
-		en: 'Montreal, QC, I bring data, make it tell stories, and build the systems it moves through.',
-		fr: 'Montréal, QC. Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.',
+		en: 'I take data, make it tell stories, and build the systems it moves through.',
+		fr: 'Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.',
 	},
 	interests: {
-		en: 'Manga · Data viz · Open source · Montreal food scene',
-		fr: 'Manga · Visualisation de données · Open source · Scène bouffe de Montréal',
+		en: 'Manga · Transit · Space · Montreal food scene',
+		fr: 'Manga · Transport collectif · Espace · Scène bouffe de Montréal',
 	},
 	interestsLabel: { en: 'INTERESTS', fr: 'INTÉRÊTS' },
 	location: {
@@ -205,7 +212,7 @@ export const aboutContent: AboutIntroContent = {
 	locationLabel: { en: 'LOCATION', fr: 'EMPLACEMENT' },
 	moreLink: { en: '→ More about me', fr: '→ En savoir plus sur moi' },
 	name: { en: 'Yesid O.', fr: 'Yesid O.' },
-	stackItems: [],
+	stackItems: ['PostgreSQL', 'dbt + Airflow', 'Power BI', 'SvelteKit'],
 	stackLabel: { en: 'STACK', fr: 'STACK' },
 	title: {
 		en: 'Freelance Digital Infrastructure Engineer',
@@ -221,8 +228,8 @@ export const ctaContent: CtaContent = {
 		fr: 'Bâtissons quelque chose\nqui avance',
 	},
 	subtitle: {
-		en: 'Have a data problem? Let\'s talk.',
-		fr: 'Un problème de données? Parlons-en.',
+		en: 'Database, pipeline, dashboard, website: wherever it\'s stuck, that\'s where we start.',
+		fr: 'Base de données, pipeline, tableau de bord, site web : peu importe où ça accroche, c\'est là qu\'on commence.',
 	},
 };
 
