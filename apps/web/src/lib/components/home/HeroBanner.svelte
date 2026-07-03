@@ -136,16 +136,25 @@
 		}
 	}
 
+	// freshnessS is computed server-side at serve time; we keep advancing it
+	// locally (1s ticker below) so the stamp reads as truly live between
+	// polls (operator call 2026-07-03), not frozen at the fetch moment.
+	let liveBase: { freshnessS: number; receivedAt: number } | null = null;
+
+	function liveStamp(seconds: number): string {
+		return locale === 'fr' ? `il y a ${seconds} s` : `${seconds}s ago`;
+	}
+
 	function applyLiveSnapshot(snapshot: LiveHeroSnapshot) {
 		heroData = snapshot.data;
 		live = true;
-		// freshnessS is computed server-side at serve time, so this stamp is the
-		// one age claim the prerender honesty rule allows: it arrived measured.
-		updatedAgo = locale === 'fr' ? `il y a ${snapshot.freshnessS} s` : `${snapshot.freshnessS}s ago`;
+		liveBase = { freshnessS: snapshot.freshnessS, receivedAt: Date.now() };
+		updatedAgo = liveStamp(snapshot.freshnessS);
 	}
 
 	function dropToDemo(stamp: string) {
 		live = false;
+		liveBase = null;
 		heroData = generateHeroData();
 		updatedAgo = stamp;
 	}
@@ -178,7 +187,18 @@
 		};
 		void tickLive();
 		const timer = setInterval(tickLive, LIVE_POLL_MS);
-		return () => clearInterval(timer);
+		// Advance the freshness stamp every second between polls: the data's
+		// age keeps counting whether or not we've refetched.
+		const stampTimer = setInterval(() => {
+			if (live && liveBase) {
+				const elapsed = Math.round((Date.now() - liveBase.receivedAt) / 1000);
+				updatedAgo = liveStamp(liveBase.freshnessS + elapsed);
+			}
+		}, 1000);
+		return () => {
+			clearInterval(timer);
+			clearInterval(stampTimer);
+		};
 	});
 
 	let cleanup: (() => void) | undefined;

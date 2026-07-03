@@ -72,7 +72,7 @@
         {#snippet icon()}
           <SectionIcon name="eye" />
         {/snippet}
-        <div class="glance-overview text-caption leading-[1.7]">
+        <div class="glance-overview text-body leading-[1.7]">
           <BlockRenderer doc={resolveLocale(project.description, locale)} {codeHighlights} />
         </div>
       </CollapsibleSection>
@@ -162,8 +162,11 @@
     top: 5rem;
   }
 
+  /* Body-size overview (operator call 2026-07-03: as big as the rest of the
+     case-study text); standard muted body color so the larger type stays
+     readable instead of half-transparent. */
   .glance-overview {
-    color: color-mix(in srgb, var(--foreground) 50%, transparent);
+    color: var(--secondary-foreground);
   }
 
   /* Stack rendered as a literal vertical STACK of connected slabs, mirroring the

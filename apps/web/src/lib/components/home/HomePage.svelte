@@ -18,15 +18,13 @@
 	import FeaturedProjects from './FeaturedProjects.svelte';
 	import HomeServices from './HomeServices.svelte';
 	import HomeAboutTeaser from './HomeAboutTeaser.svelte';
-	import HomeCtaBand from './HomeCtaBand.svelte';
+	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-	import { initSectionMagnet } from '$lib/motion/utils/sectionMagnet.js';
-	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 	import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import {
 		registerScrollContext,
@@ -119,21 +117,8 @@
 
 	onMount(() => {
 		if (!browser) return;
-		// go2/w5: desktop-only soft section magnetism. On mobile, native
-		// scroll must stay free of section snapping.
-		//
-		// slice-34.4: suppress the magnet while a locale-switch scroll restore
-		// is in flight — the restore's forced jump to the captured fraction
-		// fires scroll events that would otherwise trip a settle and snap the
-		// position to the nearest section top.
-		if (!isViewportAtMost(1023)) {
-			destroyFns.push(
-				initSectionMagnet(
-					() => Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
-					{ suppress: () => localeHandoff.restoring },
-				),
-			);
-		}
+		// Section magnetism removed entirely (operator call 2026-07-03):
+		// scrolling settles wherever the visitor stops it, on every input.
 
 		// slice-34.4 — reading position survives a locale switch on the HOME page,
 		// the hardest case: HeroBanner's GSAP pin rewrites the document height
@@ -200,21 +185,21 @@
 </script>
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
-<section data-magnet-section class="w-full">
+<section class="w-full">
 	<HeroBanner {metroSvg} {hero} {heroAnim} {initialHeroData} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
-<section data-magnet-section class="w-full">
+<section class="w-full">
 	<Manifesto {manifesto} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
-<section bind:this={projectsSectionEl} data-magnet-section class="home-section home-section--left home-section--proof-reel">
+<section bind:this={projectsSectionEl} class="home-section home-section--left home-section--proof-reel">
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionProjects} />
 	</div>
@@ -231,14 +216,14 @@
 <Separator variant="hazard" />
 
 <!-- Section 3b: About teaser — the identity card (who builds this, from where) -->
-<section data-magnet-section class="w-full">
+<section class="w-full">
 	<HomeAboutTeaser {about} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
-<section bind:this={servicesSectionEl} data-magnet-section class="home-section home-section--right relative">
+<section bind:this={servicesSectionEl} class="home-section home-section--right relative">
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
@@ -256,14 +241,14 @@
 <Separator variant="hazard" />
 
 <!-- Section 4b: CTA band — the mid-page conversion action -->
-<section data-magnet-section class="w-full">
-	<HomeCtaBand {cta} {siteMeta} />
+<section class="w-full">
+	<CtaBand {cta} {siteMeta} testidPrefix="home-cta-band" />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-<section bind:this={closerSectionEl} data-magnet-section class="home-section home-section--left">
+<section bind:this={closerSectionEl} class="home-section home-section--left">
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionTerminus} />
 	</div>

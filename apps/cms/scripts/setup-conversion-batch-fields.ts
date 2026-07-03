@@ -8,8 +8,6 @@
  *   block_hero_translations.identity_line            hero identity kicker
  *   site_labels_translations.a11y_quiet_mode_label_collapsed
  *   site_labels_translations.blog_chrome_listing_no_posts_empty_message
- *   site_labels_translations.services_chrome_detail_cta_*   (5 columns)
- *   site_labels_translations.projects_chrome_detail_cta_*   (5 columns)
  *   block_contact_content_translations.booking_prompt / booking_button_label
  *   block_contact_content_translations.info_section_label_languages / info_languages
  *   services_translations.seo_description             search-facing meta copy
@@ -54,66 +52,6 @@ const NEW_FIELDS: readonly FieldSpec[] = [
 		field: 'blog_chrome_listing_no_posts_empty_message',
 		note: 'Microcopy. Group: blog. Blog listing empty state when no filters are active. Default: "Nothing here yet. New posts are in transit."',
 		sort: 146,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'services_chrome_detail_cta_overline',
-		note: 'Group: services chrome. Service detail end-of-page CTA overline. Default: "NEXT STOP: YOUR PROJECT"',
-		sort: 147,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'services_chrome_detail_cta_heading',
-		note: 'Group: services chrome. Service detail end-of-page CTA heading. Default: "Sound like your stop?"',
-		sort: 148,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'services_chrome_detail_cta_body',
-		note: 'Group: services chrome. Service detail end-of-page CTA body line. Default: "Every build starts from your need, not a playbook. Bring the problem; the route gets drawn around it."',
-		sort: 149,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'services_chrome_detail_cta_primary_label',
-		note: 'Group: services chrome. Service detail CTA primary button (links to the cal.com booking). Default: "Book a 20-min intro call →"',
-		sort: 150,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'services_chrome_detail_cta_secondary_label',
-		note: 'Group: services chrome. Service detail CTA secondary line (links to /contact). Default: "or drop a line at /contact →"',
-		sort: 151,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'projects_chrome_detail_cta_overline',
-		note: 'Group: projects chrome. Case-study end CTA overline. Default: "TERMINUS · THIS BUILD"',
-		sort: 152,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'projects_chrome_detail_cta_heading',
-		note: 'Group: projects chrome. Case-study end CTA heading. Default: "Got a build like this in mind?"',
-		sort: 153,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'projects_chrome_detail_cta_body',
-		note: 'Group: projects chrome. Case-study end CTA body line. Default: "This one started as a need and an empty repo. Yours can start with a 20-minute call."',
-		sort: 154,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'projects_chrome_detail_cta_primary_label',
-		note: 'Group: projects chrome. Case-study CTA primary button (links to the cal.com booking). Default: "Book a 20-min intro call →"',
-		sort: 155,
-	},
-	{
-		collection: 'site_labels_translations',
-		field: 'projects_chrome_detail_cta_secondary_label',
-		note: 'Group: projects chrome. Case-study CTA secondary line (links to /contact). Default: "or drop a line at /contact →"',
-		sort: 156,
 	},
 	{
 		collection: 'block_hero_translations',
