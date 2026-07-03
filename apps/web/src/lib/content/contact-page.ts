@@ -44,7 +44,7 @@ export const contactContent: ContactContent = {
 	},
 	infoTerminal: {
 		command: '$ yesid --info',
-		languages: { en: 'EN · FR', fr: 'EN · FR' },
+		languages: { en: 'EN · FR · ES', fr: 'EN · FR · ES' },
 		location: { en: 'Montreal, QC, Canada', fr: 'Montréal, QC, Canada' },
 		responseTime: { en: '~24h response time', fr: 'réponse en ~24h' },
 		sectionLabels: {

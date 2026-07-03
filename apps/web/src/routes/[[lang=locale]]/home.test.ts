@@ -80,15 +80,14 @@ describe('Home page', () => {
 		expect(source).toMatch(/home-section--proof-reel[\s\S]*proof-reel-section/);
 	});
 
-	it('keeps section magnet scroll positioning desktop only', () => {
+	it('has NO section magnet: scrolling settles naturally on every input (operator 2026-07-03)', () => {
 		const source = readFileSync(
 			join(process.cwd(), 'src/lib/components/home/HomePage.svelte'),
 			'utf8',
 		);
 
-		expect(source).toContain("import { isViewportAtMost } from '$lib/motion/utils/device.js';");
-		expect(source).toContain('if (!isViewportAtMost(1023)) {');
-		expect(source).toMatch(/if \(!isViewportAtMost\(1023\)\) \{[\s\S]*initSectionMagnet/);
+		expect(source).not.toContain('initSectionMagnet');
+		expect(source).not.toContain('data-magnet-section');
 	});
 
 	it('renders the app root', () => {

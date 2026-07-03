@@ -119,15 +119,6 @@ export const SiteLabelsSchema = z.object({
 				openAria: LocalizedStringSchema,
 				closeAria: LocalizedStringSchema,
 			}),
-			/** End-of-case-study conversion CTA (homework #21 batch): the highest
-			 *  intent moment on the site gets the booking action. */
-			cta: z.object({
-				overline: LocalizedStringSchema,
-				heading: LocalizedStringSchema,
-				body: LocalizedStringSchema,
-				primaryLabel: LocalizedStringSchema,
-				secondaryLabel: LocalizedStringSchema,
-			}),
 		}),
 	}),
 	blogChrome: z.object({
@@ -222,15 +213,6 @@ export const SiteLabelsSchema = z.object({
 			serviceNavAria: LocalizedStringSchema,
 			stackHeading: LocalizedStringSchema,
 			seeStackLabel: LocalizedStringSchema,
-			/** End-of-page conversion CTA (homework #21 batch): the last station
-			 *  offers the booking call instead of dead-ending into the footer. */
-			cta: z.object({
-				overline: LocalizedStringSchema,
-				heading: LocalizedStringSchema,
-				body: LocalizedStringSchema,
-				primaryLabel: LocalizedStringSchema,
-				secondaryLabel: LocalizedStringSchema,
-			}),
 		}),
 	}),
 	navChrome: z.object({

@@ -1,10 +1,13 @@
 <!--
-  HomeCtaBand — the mid-page conversion band (homework #21c). Renders the
-  block_cta CMS block that HomePage previously discarded: two-line heading,
-  the four-trades subtitle, and the contact + GitHub actions.
+  CtaBand — THE site conversion band (operator round 2026-07-03: one CTA,
+  recycled everywhere, always centered). Renders the block_cta CMS content:
+  two-line heading, the four-trades subtitle, and the contact + GitHub
+  actions. Mounted on home (mid-page), service details, and project details;
+  per-surface data-testids come from `testidPrefix`.
 -->
 <script lang="ts">
 	import type { CtaContent, SiteMeta } from '$lib/types';
+	import { ctaContent, siteMeta as siteMetaContent } from '$lib/content';
 	import { Button } from '$lib/components/ui/button';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -13,7 +16,11 @@
 
 	const locale = getLocale();
 
-	let { cta, siteMeta }: { cta: CtaContent; siteMeta: SiteMeta } = $props();
+	let {
+		cta = ctaContent,
+		siteMeta = siteMetaContent,
+		testidPrefix = 'cta-band',
+	}: { cta?: CtaContent; siteMeta?: SiteMeta; testidPrefix?: string } = $props();
 
 	// The CMS heading carries a deliberate \n line break.
 	const headingLines = $derived(resolveLocale(cta.heading, locale).split('\n'));
@@ -22,7 +29,7 @@
 	const githubLabel = $derived(resolveLocale(cta.ctaGithub, locale));
 </script>
 
-<div class="cta-band" data-testid="home-cta-band">
+<div class="cta-band" data-testid={testidPrefix}>
 	<h2 class="band-heading">
 		{#each headingLines as line, i}
 			<span class="band-line">{line}{#if i === headingLines.length - 1}<span class="band-dot">.</span>{/if}</span>
@@ -35,7 +42,7 @@
 				variant="conversion"
 				size="cta-lg"
 				href={localizeHref('/contact', locale)}
-				data-testid="home-cta-contact"
+				data-testid="{testidPrefix}-contact"
 			>
 				{contactLabel}
 			</Button>
@@ -46,7 +53,7 @@
 			href={siteMeta.links.github}
 			target="_blank"
 			rel="noopener"
-			data-testid="home-cta-github"
+			data-testid="{testidPrefix}-github"
 			class="tap-press"
 		>
 			{githubLabel}
@@ -55,6 +62,7 @@
 </div>
 
 <style>
+	/* Always centered, on every surface that mounts it (operator rule). */
 	.cta-band {
 		width: 100%;
 		max-width: 72rem;
@@ -63,9 +71,10 @@
 		text-align: center;
 	}
 
+	/* Big-fonts rule (operator round 2026-07-03). */
 	.band-heading {
 		font-family: var(--font-heading);
-		font-size: clamp(2rem, 5vw, 3.5rem);
+		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
 		line-height: 1.05;
 		letter-spacing: -0.02em;
@@ -81,15 +90,22 @@
 	}
 
 	.band-subtitle {
-		margin-top: 1rem;
+		margin-top: 1.25rem;
 		margin-inline: auto;
 		max-width: 58ch;
+		font-size: 1.125rem;
 		color: var(--secondary-foreground);
 		line-height: 1.7;
 	}
 
+	@media (min-width: 768px) {
+		.band-subtitle {
+			font-size: 1.25rem;
+		}
+	}
+
 	.band-actions {
-		margin-top: 2rem;
+		margin-top: 2.25rem;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;

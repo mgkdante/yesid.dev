@@ -117,13 +117,6 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 					openAria: ls('projects_chrome_detail_toc_pill_open_aria'),
 					closeAria: ls('projects_chrome_detail_toc_pill_close_aria'),
 				},
-				cta: {
-					overline: ls('projects_chrome_detail_cta_overline'),
-					heading: ls('projects_chrome_detail_cta_heading'),
-					body: ls('projects_chrome_detail_cta_body'),
-					primaryLabel: ls('projects_chrome_detail_cta_primary_label'),
-					secondaryLabel: ls('projects_chrome_detail_cta_secondary_label'),
-				},
 			},
 		},
 		blogChrome: {
@@ -209,13 +202,6 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				serviceNavAria: ls('services_chrome_detail_service_nav_aria'),
 				stackHeading: ls('services_chrome_detail_stack_heading'),
 				seeStackLabel: ls('services_chrome_detail_see_stack_label'),
-				cta: {
-					overline: ls('services_chrome_detail_cta_overline'),
-					heading: ls('services_chrome_detail_cta_heading'),
-					body: ls('services_chrome_detail_cta_body'),
-					primaryLabel: ls('services_chrome_detail_cta_primary_label'),
-					secondaryLabel: ls('services_chrome_detail_cta_secondary_label'),
-				},
 			},
 		},
 		navChrome: {

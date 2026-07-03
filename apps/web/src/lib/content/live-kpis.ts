@@ -15,8 +15,10 @@ import type { HeroData, HeroQueryRow } from './hero-data';
 
 export const LIVE_KPIS_URL = 'https://transit.yesid.dev/api/v1/kpis';
 
-/** One pipeline publish cycle: the endpoint's snapshot advances every ~30s. */
-export const LIVE_POLL_MS = 30_000;
+/** Operator cadence (2026-07-03): the endpoint's snapshot advances every
+ *  ~30s (server cache 30s + SWR), so polling at 45s guarantees every poll
+ *  crosses a publish boundary and lands genuinely new data. */
+export const LIVE_POLL_MS = 45_000;
 
 export interface LiveHeroSnapshot {
 	data: HeroData;

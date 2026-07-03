@@ -1,11 +1,18 @@
 <!--
-  HomeAboutTeaser — the identity card the home page was missing (homework #20/#21c).
-  Renders the block_about_intro CMS block that HomePage previously discarded:
-  name, title, bio, one tool per station, location, interests, and the
-  "More about me" route to /about. Terminal-card treatment in the metro voice.
+  HomeAboutTeaser — the identity strip (homework #20/#21c, reshaped by the
+  operator's 2026-07-03 round): the short story (name, title, bio, more-link)
+  plus the REAL About-page badges, borrowed as-is so home and /about stay one
+  identity: languages (flag reveal), education (school marks), location
+  (weather scene), interests (comic strips). No photo widget, no stack row
+  (the stack has its own page), no parallax, no scroll tricks. Big fonts.
 -->
 <script lang="ts">
 	import type { AboutIntroContent } from '$lib/types';
+	import { aboutPageContent } from '$lib/content';
+	import AboutLanguages from '$lib/components/about/AboutLanguages.svelte';
+	import AboutEducation from '$lib/components/about/AboutEducation.svelte';
+	import AboutWeather from '$lib/components/about/AboutWeather.svelte';
+	import AboutInterests from '$lib/components/about/AboutInterests.svelte';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
@@ -18,12 +25,33 @@
 	const title = $derived(resolveLocale(about.title, locale));
 	const bio = $derived(resolveLocale(about.bio, locale));
 	const moreLink = $derived(resolveLocale(about.moreLink, locale));
-	const stackLabel = $derived(resolveLocale(about.stackLabel, locale));
-	const locationLabel = $derived(resolveLocale(about.locationLabel, locale));
-	const locationCity = $derived(resolveLocale(about.location.city, locale));
-	const locationRegion = $derived(resolveLocale(about.location.region, locale));
-	const interestsLabel = $derived(resolveLocale(about.interestsLabel, locale));
-	const interests = $derived(resolveLocale(about.interests, locale));
+
+	// The badges read the same generated About content as /about itself, so
+	// a CMS edit lands in both places from one publish. Weather self-refreshes
+	// from /api/weather after hydration (the widget's own behavior).
+	const c = aboutPageContent;
+	const badges = $derived([
+		{
+			area: 'languages',
+			stop: '01',
+			label: resolveLocale(c.stopLabels.clients, locale),
+		},
+		{
+			area: 'education',
+			stop: '02',
+			label: resolveLocale(c.stopLabels.stack, locale),
+		},
+		{
+			area: 'weather',
+			stop: '03',
+			label: resolveLocale(c.stopLabels.location, locale),
+		},
+		{
+			area: 'interests',
+			stop: '04',
+			label: resolveLocale(c.stopLabels.interests, locale),
+		},
+	]);
 </script>
 
 <div class="about-teaser" data-testid="home-about-teaser">
@@ -36,50 +64,43 @@
 		</a>
 	</div>
 
-	<dl class="teaser-facts">
-		{#if about.stackItems.length > 0}
-			<div class="fact-row">
-				<dt class="fact-label">{stackLabel}</dt>
-				<dd class="fact-value">
-					{#each about.stackItems as item, i}
-						<span class="fact-chip">{item}</span>{#if i < about.stackItems.length - 1}<span class="fact-sep" aria-hidden="true">·</span>{/if}
-					{/each}
-				</dd>
+	<div class="teaser-badges" data-testid="home-about-badges">
+		{#each badges as badge (badge.area)}
+			<div class="badge-cell badge-cell--{badge.area}">
+				{#if badge.area === 'languages'}
+					<AboutLanguages languages={c.languages} stop={badge.stop} label={badge.label} />
+				{:else if badge.area === 'education'}
+					<AboutEducation education={c.education} stop={badge.stop} label={badge.label} />
+				{:else if badge.area === 'weather'}
+					<AboutWeather config={c.weather} weather={null} stop={badge.stop} label={badge.label} />
+				{:else}
+					<AboutInterests interests={c.interests} stop={badge.stop} label={badge.label} />
+				{/if}
 			</div>
-		{/if}
-		<div class="fact-row">
-			<dt class="fact-label">{locationLabel}</dt>
-			<dd class="fact-value">{locationCity} · {locationRegion}</dd>
-		</div>
-		<div class="fact-row">
-			<dt class="fact-label">{interestsLabel}</dt>
-			<dd class="fact-value">{interests}</dd>
-		</div>
-	</dl>
+		{/each}
+	</div>
 </div>
 
 <style>
 	.about-teaser {
 		display: grid;
-		gap: 2rem;
+		gap: 2.5rem;
 		width: 100%;
 		max-width: 72rem;
 		margin-inline: auto;
 		padding: 3.5rem var(--space-page-x);
 	}
 
-	@media (min-width: 768px) {
-		.about-teaser {
-			grid-template-columns: 3fr 2fr;
-			align-items: start;
-			gap: 3rem;
-		}
+	.teaser-identity {
+		text-align: center;
 	}
 
+	/* Big-fonts rule (operator round 2026-07-03). */
 	.teaser-name {
 		font-family: var(--font-heading);
-		font-size: var(--text-title);
+		font-size: var(--text-display);
 		font-weight: 900;
+		line-height: 1.05;
 		color: var(--foreground);
 	}
 
@@ -88,56 +109,66 @@
 	}
 
 	.teaser-title {
-		margin-top: 0.25rem;
+		margin-top: 0.5rem;
 		font-family: var(--font-mono);
-		font-size: var(--text-detail-kicker);
-		letter-spacing: 1px;
+		font-size: var(--text-subheading);
+		letter-spacing: 1.5px;
 		text-transform: uppercase;
 		color: var(--accent-text);
 	}
 
 	.teaser-bio {
-		margin-top: 1rem;
-		max-width: 46ch;
+		margin-top: 1.25rem;
+		margin-inline: auto;
+		max-width: 52ch;
+		font-size: 1.125rem;
 		color: var(--secondary-foreground);
-		line-height: 1.7;
+		line-height: 1.8;
+	}
+
+	@media (min-width: 768px) {
+		.teaser-bio {
+			font-size: 1.25rem;
+		}
 	}
 
 	.teaser-more {
 		display: inline-block;
-		margin-top: 1rem;
+		margin-top: 1.25rem;
 		padding: 0.5rem 0.25rem;
 		border-radius: var(--radius-md);
 		font-family: var(--font-mono);
-		font-size: var(--text-control);
+		font-size: var(--text-body);
 		color: var(--primary);
 	}
 
-	.teaser-facts {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		border-left: 2px solid var(--border-brand);
-		padding-left: 1.5rem;
+	/* The badge wall: one column on phones (each widget keeps its full
+	   interactive treatment), two columns from sm, the full four-across row
+	   on xl. Heights are generous so the flag strips, school marks, weather
+	   scene and interest panels all breathe. */
+	.teaser-badges {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-card-gap);
 	}
 
-	.fact-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		letter-spacing: 2px;
-		text-transform: uppercase;
-		color: var(--primary);
+	.badge-cell {
+		min-height: 15rem;
 	}
 
-	.fact-value {
-		margin-top: 0.25rem;
-		font-family: var(--font-mono);
-		font-size: var(--text-control);
-		color: var(--secondary-foreground);
+	@media (min-width: 640px) {
+		.teaser-badges {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
-	.fact-sep {
-		margin-inline: 0.375rem;
-		color: var(--muted-foreground);
+	@media (min-width: 1280px) {
+		.teaser-badges {
+			grid-template-columns: repeat(4, 1fr);
+		}
+
+		.badge-cell {
+			min-height: 17rem;
+		}
 	}
 </style>
