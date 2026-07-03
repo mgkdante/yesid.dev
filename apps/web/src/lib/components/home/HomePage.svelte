@@ -90,6 +90,7 @@
 	// literals kept as code fallbacks.
 	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, locale);
 	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, locale);
+	const sectionAbout = resolveLocale(siteLabels.pages.homeSectionAbout, locale);
 	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale);
 
 	// GO-w2t5 → go2/w4: backgroundBreathing lives inside HomeCloser (each
@@ -218,19 +219,26 @@
 
 <Separator variant="hazard" />
 
-<!-- Section 3b: About teaser — the identity card (who builds this, from where) -->
-<section class="w-full">
-	<HomeAboutTeaser {about} />
+<!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
+     titled section alternates: Services R → About L → Projects R → Terminus L;
+     only the CTA goes untitled, it's special). -->
+<section class="home-section home-section--left">
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading={sectionAbout} />
+	</div>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading={sectionAbout} />
+	</div>
+	<div class="home-section-content">
+		<HomeAboutTeaser {about} />
+	</div>
 </section>
 
 <Separator variant="hazard" />
 
-<!-- Section 4: Featured Projects — rotated title LEFT; the proof lands with
+<!-- Section 4: Featured Projects — rotated title RIGHT; the proof lands with
      the service context already established above it. -->
-<section bind:this={projectsSectionEl} class="home-section home-section--left home-section--proof-reel">
-	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading={sectionProjects} />
-	</div>
+<section bind:this={projectsSectionEl} class="home-section home-section--right home-section--proof-reel">
 	<div class="home-section-heading-mobile">
 		<SectionHeading heading={sectionProjects} />
 	</div>
@@ -238,6 +246,9 @@
 		<!-- go2/home-cards: services join the proof reel so each card can name
 		     the station that built it (same prop the services grid consumes). -->
 		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
+	</div>
+	<div class="rotated-title rotated-title--right">
+		<SectionHeading heading={sectionProjects} />
 	</div>
 </section>
 
@@ -294,9 +305,13 @@
 
 	/* Right side: natural vertical-rl (reads top → bottom), no rotation */
 
-	/* Super bold display size — full brand color, maximized for edge column */
+	/* Super bold display size — full brand color, maximized for edge column.
+	   The text runs along the VIEWPORT HEIGHT (vertical-rl), so width-driven
+	   sizing alone overflows the 50dvh sticky cap on short desktop displays
+	   (operator 2026-07-03). The 5.5dvh ceiling keeps the longest title
+	   (8 chars: TERMINUS / À PROPOS) at ~44dvh, always inside the cap. */
 	.rotated-title :global(.section-heading-text) {
-		font-size: clamp(3.5rem, 7vw, 6rem);
+		font-size: min(clamp(3.5rem, 7vw, 6rem), 5.5dvh);
 		font-weight: 900;
 		letter-spacing: -0.02em;
 		margin-block-end: 0;

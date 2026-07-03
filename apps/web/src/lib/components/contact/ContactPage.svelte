@@ -636,7 +636,10 @@
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			font-size: clamp(6rem, 12vw, 13rem);
+			/* Vertical text runs along the viewport HEIGHT: the width-driven
+			   clamp overflows short desktop displays, so an 11dvh ceiling keeps
+			   the 7-glyph title (+dot) inside ~88dvh (operator 2026-07-03). */
+			font-size: min(clamp(6rem, 12vw, 13rem), 11dvh);
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;

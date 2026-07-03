@@ -31,8 +31,8 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		ogImage: '48bb90b1-0934-4cc9-a935-bc5ab719a71d',
 		path: '/about',
 		title: {
-			en: 'Yesid O., Digital Infrastructure Engineer in Montreal',
-			fr: 'Yesid O., ingénieur en infrastructure numérique à Montréal',
+			en: 'Yesid, Digital Infrastructure Engineer in Montreal',
+			fr: 'Yesid, ingénieur en infrastructure numérique à Montréal',
 		},
 	},
 	{

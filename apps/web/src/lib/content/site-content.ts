@@ -216,7 +216,7 @@ export const aboutContent: AboutIntroContent = {
 	},
 	locationLabel: { en: 'LOCATION', fr: 'EMPLACEMENT' },
 	moreLink: { en: '→ More about me', fr: '→ En savoir plus sur moi' },
-	name: { en: 'Yesid O.', fr: 'Yesid O.' },
+	name: { en: 'Yesid', fr: 'Yesid' },
 	stackItems: ['PostgreSQL', 'dbt + Airflow', 'Power BI', 'SvelteKit'],
 	stackLabel: { en: 'STACK', fr: 'STACK' },
 	title: {
