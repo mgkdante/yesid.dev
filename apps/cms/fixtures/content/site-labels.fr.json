@@ -145,6 +145,7 @@
 	"footer_chrome_footer_status_prefix": "système en ligne ·",
 	"hero_dashboard_vehicles_label": "VÉHICULES SUIVIS",
 	"hero_dashboard_vehicles_sub": "DÉMO · STYLE STM",
+	"hero_dashboard_vehicles_sub_live": "STM · EN DIRECT",
 	"hero_dashboard_delay_label": "RETARD MOYEN",
 	"hero_dashboard_delay_sub": "{coverage}% DE COUVERTURE",
 	"hero_dashboard_routes_label": "LIGNES EN DIRECT",

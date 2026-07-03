@@ -275,6 +275,8 @@ export const SiteLabelsSchema = z.object({
 		// hero-data.ts → metric labelI18n / subI18n (verbatim seeds)
 		vehiclesLabel: LocalizedStringSchema,
 		vehiclesSub: LocalizedStringSchema,
+		/** Vehicles sub-label when REAL KPIs are on screen (vehiclesSub = DEMO state). */
+		vehiclesSubLive: LocalizedStringSchema,
 		delayLabel: LocalizedStringSchema,
 		// subs carry runtime numbers; seeded as templates ({coverage} / {total})
 		// so the localizable WORDS are CMS-owned while the figures stay runtime.

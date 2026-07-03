@@ -691,7 +691,10 @@ describe('LocalizedString guard + translation debt', () => {
 // 5 services detail CTA, 5 projects detail CTA), 1 hero identity kicker,
 // 4 contact (bookingPrompt, bookingButtonLabel, languages + its section
 // label), 4 per-service seoDescription → 629 + 21 = 650.
-const LOCKED = { TOTAL: 650, WITH_FR: 650, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// live KPIs (homework #2 phase 2): +3 fr-complete leaves — hero sqlPanel
+// liveBadge + refreshButton helperLive, heroDashboard vehiclesSubLive
+// (LIVE-state labels; DEMO stays the default) → 650 + 3 = 653.
+const LOCKED = { TOTAL: 653, WITH_FR: 653, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

@@ -39,6 +39,7 @@
 	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import { generateHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
+	import { fetchLiveKpis, LIVE_POLL_MS, type LiveHeroSnapshot } from '$lib/content/live-kpis';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -78,14 +79,22 @@
 	const ctaWorkLabel = $derived(resolveLocale(heroContent.ctaWork, locale));
 	const ctaContactLabel = $derived(resolveLocale(heroContent.ctaContact, locale));
 	const sqlPrompt = $derived(resolveLocale(heroContent.sqlPanel.prompt, locale));
-	const sqlLiveLabel = $derived(resolveLocale(heroContent.sqlPanel.liveLabel, locale));
+	// Live KPIs (homework #2 phase 2): true only while REAL transit data is on
+	// screen. Every visitor-facing label switches DEMO ↔ LIVE off this flag so
+	// the dashboard can never wear the LIVE badge over simulated numbers.
+	let live = $state(false);
+	const sqlLiveLabel = $derived(
+		resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
+	);
 	const headlineAriaSuffix = $derived(resolveLocale(heroContent.headline.ariaSuffix, locale));
 	const sqlColumnRoute = $derived(resolveLocale(heroContent.sqlPanel.columns.route, locale));
 	const sqlColumnAvgDelay = $derived(resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale));
 	const sqlColumnVehicles = $derived(resolveLocale(heroContent.sqlPanel.columns.vehicles, locale));
 	const sqlMetaTemplate = $derived(resolveLocale(heroContent.sqlPanel.metaTemplate, locale));
 	const refreshLabel = $derived(resolveLocale(heroContent.refreshButton.label, locale));
-	const refreshHelper = $derived(resolveLocale(heroContent.refreshButton.helper, locale));
+	const refreshHelper = $derived(
+		resolveLocale(live ? heroContent.refreshButton.helperLive : heroContent.refreshButton.helper, locale),
+	);
 	// go2/w5: hero-dot replay button aria from site_labels.
 	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale);
 	// go2/w5 taste-2: ONE caption names the metro art (the in-frame legend is
@@ -116,9 +125,7 @@
 	// Applied via CSS media query below so SSR renders correctly; inline
 	// style remains for reduced-motion (collapses to a single viewport).
 
-	function handleRefresh() {
-		heroData = generateHeroData();
-		updatedAgo = updatedAgoJustNow;
+	function spinRefreshIcon() {
 		if (refreshIcon) {
 			refreshIcon.style.transition = 'transform 0.6s ease';
 			refreshIcon.style.transform = 'rotate(360deg)';
@@ -128,6 +135,51 @@
 			}, 600);
 		}
 	}
+
+	function applyLiveSnapshot(snapshot: LiveHeroSnapshot) {
+		heroData = snapshot.data;
+		live = true;
+		// freshnessS is computed server-side at serve time, so this stamp is the
+		// one age claim the prerender honesty rule allows: it arrived measured.
+		updatedAgo = locale === 'fr' ? `il y a ${snapshot.freshnessS} s` : `${snapshot.freshnessS}s ago`;
+	}
+
+	function dropToDemo(stamp: string) {
+		live = false;
+		heroData = generateHeroData();
+		updatedAgo = stamp;
+	}
+
+	function handleRefresh() {
+		spinRefreshIcon();
+		if (!liveEnabled) {
+			heroData = generateHeroData();
+			updatedAgo = updatedAgoJustNow;
+			return;
+		}
+		void fetchLiveKpis().then((snapshot) => {
+			if (snapshot) applyLiveSnapshot(snapshot);
+			else dropToDemo(updatedAgoJustNow);
+		});
+	}
+
+	// Poll the transit endpoint at the pipeline cadence (~one publish cycle).
+	// Playwright runs (navigator.webdriver) stay on the deterministic demo
+	// generator so the hermetic e2e preview never depends on an external
+	// service. Any failure falls back to DEMO data with DEMO labels.
+	let liveEnabled = false;
+	onMount(() => {
+		if (navigator.webdriver) return;
+		liveEnabled = true;
+		const tickLive = async () => {
+			const snapshot = await fetchLiveKpis();
+			if (snapshot) applyLiveSnapshot(snapshot);
+			else if (live) dropToDemo(updatedAgoInitial);
+		};
+		void tickLive();
+		const timer = setInterval(tickLive, LIVE_POLL_MS);
+		return () => clearInterval(timer);
+	});
 
 	let cleanup: (() => void) | undefined;
 	onDestroy(() => cleanup?.());
@@ -509,6 +561,7 @@
 						{ctaWorkLabel}
 						{ctaContactLabel}
 						heroData={heroData}
+						{live}
 						{introCompleted}
 						beaconSettled={introCompleted && introCollapsed}
 						{replayAriaLabel}

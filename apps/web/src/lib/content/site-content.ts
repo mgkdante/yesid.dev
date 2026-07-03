@@ -43,6 +43,10 @@ export const heroContent: HeroContent = {
 			en: 'Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.',
 			fr: 'Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.',
 		},
+		helperLive: {
+			en: 'Refreshes metrics + query results from the live pipeline.',
+			fr: 'Actualise les métriques et les résultats de requête depuis le pipeline en direct.',
+		},
 		label: { en: 'PULL FRESH DATA', fr: 'TIRER DES DONNÉES FRAÎCHES' },
 	},
 	sqlPanel: {
@@ -51,6 +55,7 @@ export const heroContent: HeroContent = {
 			route: { en: 'route', fr: 'route' },
 			vehicles: { en: 'vehicles', fr: 'vehicles' },
 		},
+		liveBadge: { en: 'LIVE', fr: 'EN DIRECT' },
 		liveLabel: { en: 'DEMO', fr: 'DÉMO' },
 		metaTemplate: {
 			en: '5 rows · {queryTime}s · {updatedAgo}',

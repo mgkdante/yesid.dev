@@ -597,7 +597,10 @@ export interface HeroContent {
 	ctaContact: LocalizedString;
 	sqlPanel: {
 		prompt: LocalizedString;
+		/** Badge in the DEMO state (simulated data). */
 		liveLabel: LocalizedString;
+		/** Badge when REAL transit KPIs are on screen (homework #2 phase 2). */
+		liveBadge: LocalizedString;
 		columns: {
 			route: LocalizedString;
 			avgDelayS: LocalizedString;
@@ -608,6 +611,8 @@ export interface HeroContent {
 	refreshButton: {
 		label: LocalizedString;
 		helper: LocalizedString;
+		/** Helper when real KPIs are on screen. */
+		helperLive: LocalizedString;
 	};
 	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
 	 *  block_hero_translations. Carried through the typed PageData so

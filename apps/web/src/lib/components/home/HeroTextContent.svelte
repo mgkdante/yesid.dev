@@ -21,6 +21,7 @@
 		ctaWorkLabel,
 		ctaContactLabel,
 		heroData,
+		live = false,
 		introCompleted = false,
 		beaconSettled = false,
 		replayAriaLabel = 'Replay intro',
@@ -36,6 +37,8 @@
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
 		heroData: HeroData;
+		/** True while REAL transit KPIs are on screen (homework #2 phase 2). */
+		live?: boolean;
 		/** go2/w5: arms the hero-dot replay button once the intro completed. */
 		introCompleted?: boolean;
 		/** The beacon dress (pulse + glow) renders only in SETTLED
@@ -104,7 +107,7 @@
 	  GSAP reveal timeline keeps the same step-3 order regardless of DOM order.
 	-->
 	<div class="my-6 md:my-6" data-hero-stagger="3">
-		<HeroMetrics metrics={heroData.metrics} />
+		<HeroMetrics metrics={heroData.metrics} {live} />
 	</div>
 
 	<div

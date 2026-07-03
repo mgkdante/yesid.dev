@@ -14,9 +14,12 @@
 
   interface Props {
     metrics: HeroMetric[];
+    /** True while REAL transit KPIs are on screen: vehicles card wears the
+     *  LIVE-state sub-label instead of the DEMO one. */
+    live?: boolean;
   }
 
-  let { metrics }: Props = $props();
+  let { metrics, live = false }: Props = $props();
 
   // CMS truth: the dashboard card LABEL/SUB copy comes from the site_labels
   // singleton (siteLabels.heroDashboard), keyed by the metric's stable `key`.
@@ -39,7 +42,7 @@
   function metricSub(metric: HeroMetric): string {
     switch (metric.key) {
       case 'vehicles':
-        return resolveLocale(dashboard.vehiclesSub, locale);
+        return resolveLocale(live ? dashboard.vehiclesSubLive : dashboard.vehiclesSub, locale);
       case 'delay':
         return resolveLocale(dashboard.delaySub, locale).replace(
           '{coverage}',
