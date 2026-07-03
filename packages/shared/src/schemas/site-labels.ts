@@ -67,6 +67,7 @@ export const SiteLabelsSchema = z.object({
 		projectsEdgeTitle: LocalizedStringSchema,
 		homeSectionProjects: LocalizedStringSchema,
 		homeSectionServices: LocalizedStringSchema,
+		homeSectionAbout: LocalizedStringSchema,
 		homeSectionTerminus: LocalizedStringSchema,
 	}),
 	email: z.object({
