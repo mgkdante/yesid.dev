@@ -5,9 +5,14 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { styleRegressionViolations } from '@yesid/gates';
+import { YESID_FORBIDDEN } from '@yesid/gates/presets/yesid';
 
 const SRC = resolve(process.cwd(), 'src');
 
+// Local .svelte tree walk — kept for the app-specific art-direction pinning
+// tests below (e.g. the stack-engine CTA-doctrine scan). The BRAND
+// FORBIDDEN-utility gate below runs @yesid/gates' own walk internally.
 function walk(dir: string, out: string[] = []): string[] {
 	for (const entry of readdirSync(dir)) {
 		const p = join(dir, entry);
@@ -17,22 +22,18 @@ function walk(dir: string, out: string[] = []): string[] {
 	return out;
 }
 
-const files = walk(SRC);
-
-const FORBIDDEN: Array<{ pattern: RegExp; reason: string }> = [
-	{ pattern: /\bbg-bg-/, reason: 'bg-bg-* is not a token utility (use bg-background / bg-card)' },
-	{ pattern: /\bborder-bg-/, reason: 'border-bg-* is not a token utility (use border-border-subtle)' },
-	{ pattern: /\btext-text-/, reason: 'text-text-* is not a token utility (use text-secondary-foreground)' },
-	{ pattern: /var\(--text-light\)/, reason: '--text-light is undefined (use var(--secondary-foreground))' },
-	{ pattern: /var\(--dim-foreground\)|var\(--light-foreground\)/, reason: 'aliases to undefined vars (archived in app.css)' },
-];
-
+// PARITY FLIP (2026-07-03): the brand FORBIDDEN-utility gate is re-seated on
+// @yesid/gates (engine styleRegressionViolations + preset YESID_FORBIDDEN,
+// both byte-equivalent to yesid.dev @ 2bdb611d — same 5 patterns, same .svelte
+// walk under SRC, same 'src'-relative hit format). The app-specific
+// art-direction pinning tests below stay LOCAL — they are the per-app taste
+// contract, not brand gates.
 describe('style regressions — broken utilities & undefined vars', () => {
-	for (const { pattern, reason } of FORBIDDEN) {
+	for (const { pattern, reason, hits } of styleRegressionViolations({
+		root: SRC,
+		forbidden: YESID_FORBIDDEN,
+	})) {
 		it(`no source file matches ${pattern} (${reason})`, () => {
-			const hits = files
-				.filter((f) => pattern.test(readFileSync(f, 'utf-8')))
-				.map((f) => f.replace(SRC, 'src'));
 			expect(hits, hits.join('\n')).toEqual([]);
 		});
 	}
