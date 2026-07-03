@@ -10,15 +10,17 @@ const minimalHeroItem = {
 	headline: { line1: ls('Hello'), line2: ls('World'), ariaSuffix: ls('suffix') },
 	subheadline: ls('sub'),
 	subtitle: ls('sub2'),
+	identity: ls('freelance line'),
 	ctaWork: ls('Work'),
 	ctaContact: ls('Contact'),
 	sqlPanel: {
 		prompt: ls('SELECT'),
 		liveLabel: ls('live'),
+		liveBadge: ls('liveBadge'),
 		columns: { route: ls('Route'), avgDelayS: ls('Avg'), vehicles: ls('Vehicles') },
 		metaTemplate: ls('{n} rows'),
 	},
-	refreshButton: { label: ls('Refresh'), helper: ls('helper') },
+	refreshButton: { label: ls('Refresh'), helper: ls('helper'), helperLive: ls('helperLive') },
 	heroAnim: { scrollDown: ls('Scroll down') },
 };
 

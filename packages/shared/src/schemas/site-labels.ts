@@ -20,9 +20,12 @@ export const SiteLabelsSchema = z.object({
 		moreMetrics: LocalizedStringSchema,
 		architectureDiagram: LocalizedStringSchema,
 		technologyStackTemplate: LocalizedStringSchema,
-		/** Quiet-mode reading control (detail headers). Switch label + on/off
-		 *  titles + the persist control's remember/forget copy. */
+		/** Collapse/expand-all reading control (detail headers). Verb labels flip
+		 *  with state (label = open state, labelCollapsed = collapsed state);
+		 *  enable/disable are the state tooltips; remember/forget the persist
+		 *  control (homework #19b: verbs instead of a mode name). */
 		quietModeLabel: LocalizedStringSchema,
+		quietModeLabelCollapsed: LocalizedStringSchema,
 		quietModeEnable: LocalizedStringSchema,
 		quietModeDisable: LocalizedStringSchema,
 		quietModeRemember: LocalizedStringSchema,
@@ -125,6 +128,9 @@ export const SiteLabelsSchema = z.object({
 			searchPlaceholder: LocalizedStringSchema,
 			resultNoun: LocalizedStringSchema,
 			noPostsMessage: LocalizedStringSchema,
+			/** Unfiltered empty state: the section has no posts at all and no
+			 *  filters are active. The filtered variant stays in noPostsMessage. */
+			noPostsEmptyMessage: LocalizedStringSchema,
 			filters: z.object({
 				filtersLabel: LocalizedStringSchema,
 				allLabel: LocalizedStringSchema,
@@ -251,6 +257,8 @@ export const SiteLabelsSchema = z.object({
 		// hero-data.ts → metric labelI18n / subI18n (verbatim seeds)
 		vehiclesLabel: LocalizedStringSchema,
 		vehiclesSub: LocalizedStringSchema,
+		/** Vehicles sub-label when REAL KPIs are on screen (vehiclesSub = DEMO state). */
+		vehiclesSubLive: LocalizedStringSchema,
 		delayLabel: LocalizedStringSchema,
 		// subs carry runtime numbers; seeded as templates ({coverage} / {total})
 		// so the localizable WORDS are CMS-owned while the figures stay runtime.

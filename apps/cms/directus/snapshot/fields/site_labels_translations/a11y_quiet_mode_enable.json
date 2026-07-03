@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"Enable quiet mode\"",
+    "note": "Microcopy (go2-t1c). Group: a11y. Open-state tooltip. Default: \"Collapse all sections on this page\"",
     "options": null,
     "readonly": false,
     "required": false,

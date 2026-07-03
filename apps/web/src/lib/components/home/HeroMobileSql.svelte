@@ -66,14 +66,15 @@
 </div>
 
 <style>
-	/* Horizontal divider for mobile — faded ends like desktop vertical */
+	/* Horizontal divider for mobile — same amber rule + faded ends as the
+	   desktop vertical divider (operator call 2026-07-03: yellow on mobile too). */
 	.hero-divider-h {
 		height: 1px;
 		background: linear-gradient(
 			90deg,
 			transparent 0%,
-			var(--border) 15%,
-			var(--border) 85%,
+			var(--border-rule-accent) 15%,
+			var(--border-rule-accent) 85%,
 			transparent 100%
 		);
 	}

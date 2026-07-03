@@ -10,6 +10,7 @@ function baseProps(overrides: Record<string, unknown> = {}) {
 		headlineAriaSuffix: "don't break.",
 		subheadlineText: 'sub',
 		subtitleText: 'subtitle',
+		identityText: 'freelance digital infrastructure - Montreal',
 		ctaWorkLabel: 'See the work',
 		ctaContactLabel: 'Contact',
 		heroData: generateHeroData(),
