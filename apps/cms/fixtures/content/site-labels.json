@@ -145,6 +145,7 @@
 	"footer_chrome_footer_status_prefix": "system online ·",
 	"hero_dashboard_vehicles_label": "VEHICLES TRACKED",
 	"hero_dashboard_vehicles_sub": "DEMO · STM-STYLE",
+	"hero_dashboard_vehicles_sub_live": "STM · LIVE",
 	"hero_dashboard_delay_label": "AVG DELAY",
 	"hero_dashboard_delay_sub": "{coverage}% COVERAGE",
 	"hero_dashboard_routes_label": "ROUTES LIVE",

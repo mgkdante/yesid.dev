@@ -144,6 +144,7 @@ export const siteLabels: SiteLabels = {
 		routesSub: { en: 'OF {total} TOTAL', fr: 'SUR {total} AU TOTAL' },
 		vehiclesLabel: { en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' },
 		vehiclesSub: { en: 'DEMO · STM-STYLE', fr: 'DÉMO · STYLE STM' },
+		vehiclesSubLive: { en: 'STM · LIVE', fr: 'STM · EN DIRECT' },
 	},
 	navChrome: {
 		directions: {

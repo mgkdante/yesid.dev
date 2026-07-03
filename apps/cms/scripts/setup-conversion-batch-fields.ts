@@ -116,6 +116,23 @@ const NEW_FIELDS: readonly FieldSpec[] = [
 		sort: 156,
 	},
 	{
+		collection: 'block_hero_translations',
+		field: 'sql_live_badge',
+		note: 'SQL panel badge when REAL transit KPIs are on screen (sql_live_label holds the DEMO-state badge). Default: "LIVE"',
+	},
+	{
+		collection: 'block_hero_translations',
+		field: 'refresh_helper_live',
+		note: 'Refresh helper when real KPIs are on screen. Default: "Refreshes metrics + query results from the live pipeline."',
+		width: 'full',
+	},
+	{
+		collection: 'site_labels_translations',
+		field: 'hero_dashboard_vehicles_sub_live',
+		note: 'Group: hero dashboard. Vehicles card sub-label when REAL KPIs are on screen (hero_dashboard_vehicles_sub holds the DEMO state). Default: "STM · LIVE"',
+		sort: 157,
+	},
+	{
 		collection: 'block_contact_content_translations',
 		field: 'booking_prompt',
 		note: 'Form terminal booking prompt above the booking link. Default: "Prefer to talk it through?"',

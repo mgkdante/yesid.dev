@@ -24,6 +24,7 @@ describe('HeroContentSchema', () => {
 		sqlPanel: {
 			prompt: ls('SELECT'),
 			liveLabel: ls('live'),
+			liveBadge: ls('liveBadge'),
 			columns: {
 				route: ls('Route'),
 				avgDelayS: ls('Avg'),
@@ -31,7 +32,7 @@ describe('HeroContentSchema', () => {
 			},
 			metaTemplate: ls('{n} rows'),
 		},
-		refreshButton: { label: ls('Refresh'), helper: ls('helper') },
+		refreshButton: { label: ls('Refresh'), helper: ls('helper'), helperLive: ls('helperLive') },
 		heroAnim: { scrollDown: ls('scroll') },
 	};
 

@@ -41,6 +41,10 @@
 				"en": "DEMO",
 				"fr": "DÉMO"
 			},
+			"liveBadge": {
+				"en": "LIVE",
+				"fr": "EN DIRECT"
+			},
 			"columns": {
 				"route": {
 					"en": "route"
@@ -64,6 +68,10 @@
 			"helper": {
 				"en": "Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.",
 				"fr": "Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct."
+			},
+			"helperLive": {
+				"en": "Refreshes metrics + query results from the live pipeline.",
+				"fr": "Actualise les métriques et les résultats de requête depuis le pipeline en direct."
 			}
 		},
 		"heroAnim": {

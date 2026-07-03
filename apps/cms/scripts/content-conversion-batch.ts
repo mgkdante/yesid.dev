@@ -48,17 +48,22 @@ const TRANSLATION_PATCHES: readonly TranslationPatch[] = [
 				identity_line: 'freelance digital infrastructure - Montreal',
 				cta_contact: 'Book a 20-min intro call',
 				sql_live_label: 'DEMO',
+				sql_live_badge: 'LIVE',
 				sql_meta_template: '5 rows · {queryTime}s · {updatedAgo}',
 				refresh_helper:
 					'Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.',
+				refresh_helper_live: 'Refreshes metrics + query results from the live pipeline.',
 			},
 			fr: {
 				identity_line: 'infrastructure numérique à la pige - Montréal',
 				cta_contact: 'Réserver un appel intro de 20 min',
 				sql_live_label: 'DÉMO',
+				sql_live_badge: 'EN DIRECT',
 				sql_meta_template: '5 lignes · {queryTime}s · {updatedAgo}',
 				refresh_helper:
 					'Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.',
+				refresh_helper_live:
+					'Actualise les métriques et les résultats de requête depuis le pipeline en direct.',
 			},
 		},
 	},
@@ -76,6 +81,7 @@ const TRANSLATION_PATCHES: readonly TranslationPatch[] = [
 				a11y_quiet_mode_forget: "Don't start collapsed",
 				blog_chrome_listing_no_posts_empty_message: 'Nothing here yet. New posts are in transit.',
 				hero_dashboard_vehicles_sub: 'DEMO · STM-STYLE',
+				hero_dashboard_vehicles_sub_live: 'STM · LIVE',
 				services_chrome_detail_cta_overline: 'NEXT STOP: YOUR PROJECT',
 				services_chrome_detail_cta_heading: 'Sound like your stop?',
 				services_chrome_detail_cta_body:
@@ -99,6 +105,7 @@ const TRANSLATION_PATCHES: readonly TranslationPatch[] = [
 				blog_chrome_listing_no_posts_empty_message:
 					'Rien ici pour le moment. Les prochains articles sont en transit.',
 				hero_dashboard_vehicles_sub: 'DÉMO · STYLE STM',
+				hero_dashboard_vehicles_sub_live: 'STM · EN DIRECT',
 				services_chrome_detail_cta_overline: 'PROCHAIN ARRÊT : TON PROJET',
 				services_chrome_detail_cta_heading: "C'est ton arrêt?",
 				services_chrome_detail_cta_body:

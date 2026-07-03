@@ -255,6 +255,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 		heroDashboard: {
 			vehiclesLabel: ls('hero_dashboard_vehicles_label'),
 			vehiclesSub: ls('hero_dashboard_vehicles_sub'),
+			vehiclesSubLive: ls('hero_dashboard_vehicles_sub_live'),
 			delayLabel: ls('hero_dashboard_delay_label'),
 			delaySub: ls('hero_dashboard_delay_sub'),
 			routesLabel: ls('hero_dashboard_routes_label'),
