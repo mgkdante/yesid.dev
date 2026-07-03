@@ -3,7 +3,7 @@
 // read, so both files track CMS truth on every publish→rebuild. Server-only:
 // nothing here may reach the client bundle.
 import { blogPosts, contactContent, projects, services, siteMeta } from '$lib/content';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { SITE_HOST, SERVICE_AREAS } from '$lib/utils/seo-defaults';
 import { resolveLocale } from '$lib/utils/locale';
 import type { LocalizedString } from '$lib/types';
 
@@ -17,6 +17,14 @@ const publishedProjects = () => projects.filter((p) => p.status === 'public');
 
 const absolute = (path: string): string => (path.startsWith('http') ? path : `${SITE_HOST}${path}`);
 
+// Serialize SERVICE_AREAS as a natural-language list ("A, B, and C") so the
+// served geography is legible to answer engines fielding "...in <city>" queries.
+function serviceAreaList(): string {
+	const areas = [...SERVICE_AREAS];
+	if (areas.length <= 1) return areas[0] ?? '';
+	return `${areas.slice(0, -1).join(', ')}, and ${areas[areas.length - 1]}`;
+}
+
 function header(): string {
 	return [
 		`# ${siteMeta.name} (yesid.dev)`,
@@ -24,6 +32,8 @@ function header(): string {
 		`> ${en(siteMeta.description)}`,
 		'',
 		`${en(siteMeta.tagline)} Yesid O. is a freelance digital infrastructure engineer in Montreal. The four services read as one data flow: store it (databases), move it (pipelines), understand it (dashboards), show it (websites).`,
+		'',
+		`Available for remote and on-site work across ${serviceAreaList()}.`,
 		'',
 		`The site is bilingual: every page below also exists in French under ${SITE_HOST}/fr. Blog posts are the exception: English-only for now.`,
 	].join('\n');
