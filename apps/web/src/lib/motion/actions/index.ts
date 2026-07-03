@@ -1,19 +1,25 @@
-// Motion actions — Svelte actions for interaction signatures.
-// The Snappy Doctrine limits this surface to the 9-signature vocabulary
-// (boop, cursorGlow, magnetic, wordmarkHover, morphHover in 17e-5) + supporting types.
-// Slice-23 adds sectionGlow as a section-scoped feedback signature (related
-// to cursorGlow but applied to background layers rather than card surfaces).
+// Motion actions barrel. PARITY FLIP (2026-07-03): the Tier-1 signature
+// vocabulary now lives in @yesid/motion (vendored at design tag v0.1.0); the
+// two Tier-2 actions (morphHover, scrollChain) stay app-local — they are
+// component/scrub-coupled (MorphSVG helpers + ScrollTrigger scrub machinery)
+// and are deliberately NOT extracted into the package (rule-of-three pending).
+// The exported surface is byte-identical to yesid.dev @ 2bdb611d.
 
-export { boop, type BoopParams } from './boop.js';
-// reveal — deleted in 17e-2 (Snappy Doctrine forbids entrance actions)
-export { magnetic, type MagneticParams } from './magnetic.js';
-// ripple — deleted in 17e-2 (not in vocabulary)
-// tilt — deleted in 17e-2 (absorbed into magnetic or cut)
-export { cursorGlow, type CursorGlowParams } from './cursorGlow.js';
-export { sectionGlow } from './sectionGlow.js';
-export { cardParallax } from './cardParallax.js';
-export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
+// Tier-1 (from @yesid/motion) — the 9-signature Snappy-Doctrine vocabulary:
+export {
+	boop,
+	type BoopParams,
+	magnetic,
+	type MagneticParams,
+	cursorGlow,
+	type CursorGlowParams,
+	sectionGlow,
+	cardParallax,
+	wordmarkHover,
+	type WordmarkHoverParams,
+	pressBounce,
+} from '@yesid/motion/actions';
+
+// Tier-2 (stay app-local):
 export { morphHover, type MorphHoverParams } from './morphHover.js';
 export { scrollChain } from './scrollChain.js';
-export { pressBounce } from './pressBounce.js';
-// tapRipple — deleted in slice-28.3 (#104, zero template consumers)
