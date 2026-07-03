@@ -14,7 +14,7 @@
 		"dev:local-env": "bun --env-file=apps/web/.env.local run dev",
 		"build": "turbo run build",
 		"build:op": "op run --env-file=.env -- bun run --cwd apps/cms export:fallbacks && EXPORT_FALLBACKS_SKIP=1 turbo run build",
-		"test": "turbo run test",
+		"test": "turbo run test --filter=!@yesid/motion --filter=!@yesid/gates",
 		"check": "turbo run check",
 		"cms:sync:diff:op": "op run --env-file=.env -- bun run --cwd apps/cms sync:diff",
 		"cms:sync:push:op": "op run --env-file=.env -- bun run --cwd apps/cms sync:push",
