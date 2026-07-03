@@ -238,9 +238,8 @@
 	</div>
 </section>
 
-<Separator variant="hazard" />
-
-<!-- Section 4b: CTA band — the mid-page conversion action -->
+<!-- Section 4b: CTA band — the mid-page conversion action. The hazard strip
+     is INSIDE CtaBand now (every CTA wears it), so no separate separator. -->
 <section class="w-full">
 	<CtaBand {cta} {siteMeta} testidPrefix="home-cta-band" />
 </section>

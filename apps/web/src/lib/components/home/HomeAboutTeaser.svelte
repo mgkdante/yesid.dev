@@ -142,33 +142,48 @@
 		color: var(--primary);
 	}
 
-	/* The badge wall: one column on phones (each widget keeps its full
-	   interactive treatment), two columns from sm, the full four-across row
-	   on xl. Heights are generous so the flag strips, school marks, weather
-	   scene and interest panels all breathe. */
+	/* The badge wall mirrors the About bento EXACTLY (operator 2026-07-03):
+	   mobile = About's mobile model (one column, auto rows, each card sizes
+	   itself); desktop = a 4-column square, two rows at About's own row
+	   height ((100dvh - nav - stripes) / 4 per row): languages (1 col) |
+	   college (2 cols, About's education footprint) | weather (1 col), then
+	   interests spanning all four (About gives it a 4-column run too). */
 	.teaser-badges {
 		display: grid;
 		grid-template-columns: 1fr;
+		grid-template-areas:
+			'languages'
+			'education'
+			'weather'
+			'interests';
+		grid-auto-rows: auto;
 		gap: var(--space-card-gap);
 	}
 
-	.badge-cell {
-		min-height: 15rem;
-	}
+	.badge-cell--languages { grid-area: languages; }
+	.badge-cell--education { grid-area: education; }
+	.badge-cell--weather { grid-area: weather; }
+	.badge-cell--interests { grid-area: interests; }
 
+	/* Foldable/tablet: 2-col, natural heights (About's mid-breakpoint model). */
 	@media (min-width: 640px) {
 		.teaser-badges {
 			grid-template-columns: repeat(2, 1fr);
+			grid-template-areas:
+				'languages education'
+				'weather   interests';
 		}
 	}
 
-	@media (min-width: 1280px) {
+	/* Desktop: the 4-column square at About's exact row height. */
+	@media (min-width: 1024px) {
 		.teaser-badges {
 			grid-template-columns: repeat(4, 1fr);
-		}
-
-		.badge-cell {
-			min-height: 17rem;
+			grid-template-rows: repeat(2, 1fr);
+			grid-template-areas:
+				'languages education education weather'
+				'interests interests interests interests';
+			height: calc((100dvh - 5rem - 48px) / 2);
 		}
 	}
 </style>

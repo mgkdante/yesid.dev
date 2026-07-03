@@ -555,11 +555,11 @@
 {/if}
 
 <style>
-	/* End-of-case-study CTA: the shared band brings its own centered layout;
-	   this wrapper only draws the separation line. */
+	/* End-of-case-study CTA: the shared band brings its own centered layout
+	   AND its own hazard strip on top (operator rule), so the wrapper only
+	   spaces. */
 	.cta-area {
 		margin-top: 1rem;
-		border-top: 1px solid var(--border);
 	}
 
 	/* Section blocks match the side-column card spacing (mb-4 = 1rem) so the

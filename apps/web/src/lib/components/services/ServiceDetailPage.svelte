@@ -847,11 +847,10 @@
 
 	/* ── Nav area ── */
 
-	/* End-of-line CTA: the shared band brings its own centered layout;
-	   this wrapper only draws the separation line. */
+	/* End-of-line CTA: the shared band brings its own centered layout AND its
+	   own hazard strip on top (operator rule), so the wrapper only spaces. */
 	.cta-area {
 		margin-top: 2rem;
-		border-top: 1px solid var(--border);
 	}
 
 	.nav-area {
