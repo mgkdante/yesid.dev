@@ -29,7 +29,7 @@
     columnAvgDelay,
     columnVehicles,
     metaTemplate,
-    updatedAgo = '30s ago',
+    updatedAgo = 'demo data',
   }: Props = $props();
 
   const metaCaption = $derived(

@@ -8,12 +8,6 @@ export {
 	gsap,
 	ScrollTrigger,
 } from './gsap.js';
-export {
-	findSettleTarget,
-	initSectionMagnet,
-	type SectionMagnetOpts,
-	type SettleTargetOpts,
-} from './sectionMagnet.js';
 export { isTouchDevice, isViewportAtMost } from './device.js';
 export { convertSvgToMorphPaths } from './morphHelpers.js';
 export { subscribe, unsubscribe } from './ticker.js';

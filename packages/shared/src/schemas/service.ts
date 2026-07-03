@@ -36,6 +36,7 @@ export const ServiceSchema = z.object({
 	subtitle: LocalizedStringSchema.optional(),
 	longDescription: LocalizedStringSchema.optional(),
 	valueProposition: LocalizedStringSchema.optional(),
+	seoDescription: LocalizedStringSchema.optional(),
 	deliverables: z.array(LocalizedStringSchema).optional(),
 	stack: z.array(z.string()).optional(),
 	sections: z.array(ServiceSectionSchema).optional(),

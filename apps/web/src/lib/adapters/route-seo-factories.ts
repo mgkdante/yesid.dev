@@ -96,7 +96,13 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	const seo: PageSeo = {
 		title: appendBrandPerLocale(service.title, siteMeta.name),
-		description: fitDescriptionForSeo(service.description, siteSeoDefaults.defaultDescription),
+		// Search-facing copy first (homework #25: locality + tech + freelance);
+		// the evocative one-liner stays on-page. Mirrors the blog pattern
+		// (post.seoDescription ?? post.excerpt).
+		description: fitDescriptionForSeo(
+			service.seoDescription ?? service.description,
+			siteSeoDefaults.defaultDescription,
+		),
 		canonical: canonicalUrl,
 		ogType: 'article',
 		noIndex: false,

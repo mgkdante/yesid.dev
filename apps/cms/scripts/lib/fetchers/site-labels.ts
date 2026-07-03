@@ -31,6 +31,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			architectureDiagram: ls('a11y_architecture_diagram'),
 			technologyStackTemplate: ls('a11y_technology_stack_template'),
 			quietModeLabel: ls('a11y_quiet_mode_label'),
+			quietModeLabelCollapsed: ls('a11y_quiet_mode_label_collapsed'),
 			quietModeEnable: ls('a11y_quiet_mode_enable'),
 			quietModeDisable: ls('a11y_quiet_mode_disable'),
 			quietModeRemember: ls('a11y_quiet_mode_remember'),
@@ -124,6 +125,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				searchPlaceholder: ls('blog_chrome_listing_search_placeholder'),
 				resultNoun: ls('blog_chrome_listing_result_noun'),
 				noPostsMessage: ls('blog_chrome_listing_no_posts_message'),
+				noPostsEmptyMessage: ls('blog_chrome_listing_no_posts_empty_message'),
 				filters: {
 					filtersLabel: ls('blog_chrome_listing_filters_label'),
 					allLabel: ls('blog_chrome_listing_filters_all_label'),
@@ -239,6 +241,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 		heroDashboard: {
 			vehiclesLabel: ls('hero_dashboard_vehicles_label'),
 			vehiclesSub: ls('hero_dashboard_vehicles_sub'),
+			vehiclesSubLive: ls('hero_dashboard_vehicles_sub_live'),
 			delayLabel: ls('hero_dashboard_delay_label'),
 			delaySub: ls('hero_dashboard_delay_sub'),
 			routesLabel: ls('hero_dashboard_routes_label'),
