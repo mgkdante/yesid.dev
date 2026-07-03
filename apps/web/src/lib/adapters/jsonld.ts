@@ -19,17 +19,24 @@ import type {
 	CollectionPage,
 	CreativeWork,
 	Person,
+	ProfessionalService,
 	ProfilePage,
 	Service as ServiceNode,
 	WebSite,
 } from '$lib/schemas/jsonld';
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
 import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import { SITE_HOST, canonicalFor } from '$lib/utils/seo-defaults';
+import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL } from '$lib/utils/seo-defaults';
 import { extractText } from '@repo/shared';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
+export const BUSINESS_ID = `${SITE_HOST}/#business`;
+
+/** GBP service-area cities as schema.org City nodes (shared by Service + ProfessionalService). */
+function serviceAreaNodes() {
+	return SERVICE_AREAS.map((name) => ({ '@type': 'City' as const, name }));
+}
 
 export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE): Person {
 	const sameAs: string[] = [];
@@ -69,6 +76,45 @@ export function buildWebSiteNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE
 	};
 
 	return SchemaOrgNodeSchema.parse(built) as WebSite;
+}
+
+/**
+ * The practice as a LocalBusiness-family entity — the node Google's local pack
+ * keys on (a Person is not a LocalBusiness). `founder` links back to the Person
+ * of record; `areaServed` mirrors the GBP service areas; `name` is the bare
+ * host (yesid.dev) to stay byte-identical with the GBP listing name. Emitted
+ * once, on the home page (see route-seo-defaults).
+ */
+export function buildProfessionalServiceNode(
+	meta: SiteMeta,
+	locale: Locale = DEFAULT_LOCALE,
+): ProfessionalService {
+	const sameAs: string[] = [];
+	if (meta.links.github) sameAs.push(meta.links.github);
+	if (meta.links.linkedin) sameAs.push(meta.links.linkedin);
+	if (meta.links.upwork) sameAs.push(meta.links.upwork);
+	if (GBP_PROFILE_URL) sameAs.push(GBP_PROFILE_URL);
+
+	const built = {
+		'@type': 'ProfessionalService' as const,
+		'@id': BUSINESS_ID,
+		name: new URL(SITE_HOST).host,
+		url: SITE_HOST,
+		description: resolveLocale(meta.description, locale),
+		...(meta.owner.phone ? { telephone: meta.owner.phone } : {}),
+		address: {
+			'@type': 'PostalAddress' as const,
+			addressLocality: meta.owner.address.locality,
+			addressRegion: meta.owner.address.region,
+			addressCountry: meta.owner.address.country,
+		},
+		areaServed: serviceAreaNodes(),
+		founder: { '@id': PERSON_ID },
+		sameAs,
+		knowsAbout: [...meta.owner.knowsAbout],
+	};
+
+	return SchemaOrgNodeSchema.parse(built) as ProfessionalService;
 }
 
 /**
@@ -158,6 +204,7 @@ export function buildServiceNode(service: ServiceDomain, locale: Locale): Servic
 		name: resolveLocale(service.title, locale),
 		description: resolveLocale(service.description, locale),
 		provider: { '@id': PERSON_ID },
+		areaServed: serviceAreaNodes(),
 	};
 	return SchemaOrgNodeSchema.parse(built) as ServiceNode;
 }

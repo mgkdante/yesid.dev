@@ -10,6 +10,25 @@ import { delocalizePath } from '$lib/utils/locale-routing';
 // a staging domain is introduced (currently yesid.dev is the only target).
 export const SITE_HOST = 'https://yesid.dev';
 
+// Google Business Profile service-area cities. MUST stay byte-identical to the
+// GBP listing's service areas — this list feeds the ProfessionalService
+// `areaServed` and the llms.txt geo line, so drift here desyncs the site from
+// the local pack. Order mirrors the GBP entry (home metro first).
+export const SERVICE_AREAS = [
+	'Montreal',
+	'Laval',
+	'Longueuil',
+	'Brossard',
+	'Gatineau',
+	'Ottawa',
+	'Sherbrooke',
+] as const;
+
+// Public Google Business Profile URL (the Maps place / share link). Unknown
+// until the listing is verified + public (Homework #12); once you have it, set
+// it here and it joins the ProfessionalService `sameAs` for entity linking.
+export const GBP_PROFILE_URL: string | undefined = undefined;
+
 // 1200x630 branded default shipped as static asset, per-locale.
 // Pages without an explicit ogImage fall back to `defaultOgImageFor(locale)`.
 // The legacy `DEFAULT_OG_IMAGE` const is kept as an EN alias for direct
