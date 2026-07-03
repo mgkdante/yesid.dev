@@ -19,6 +19,13 @@ const PostalAddress = z.object({
 	addressCountry: z.string().min(1),
 });
 
+// A served place. `areaServed` accepts an array of these on Service +
+// ProfessionalService nodes so the local-pack geography is machine-legible.
+const City = z.object({
+	'@type': z.literal('City'),
+	name: z.string().min(1),
+});
+
 const ListItem = z.object({
 	'@type': z.literal('ListItem'),
 	position: z.number().int().positive(),
@@ -75,7 +82,26 @@ export const ServiceSchema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
 	provider: IdRef,
-	areaServed: z.string().optional(),
+	areaServed: z.array(City).optional(),
+});
+
+// LocalBusiness-family entity for the practice itself — the node Google's local
+// pack keys on (Person is not a LocalBusiness). `founder` links it to the
+// Person of record; `areaServed` mirrors the GBP service areas so the site and
+// the listing describe the same business over the same geography.
+export const ProfessionalServiceSchema = z.object({
+	'@type': z.literal('ProfessionalService'),
+	'@id': z.string().url(),
+	name: z.string().min(1),
+	url: z.string().url(),
+	description: z.string().min(1),
+	telephone: z.string().min(1).optional(),
+	address: PostalAddress,
+	areaServed: z.array(City).min(1),
+	founder: IdRef,
+	sameAs: z.array(z.string().url()),
+	knowsAbout: z.array(z.string().min(1)),
+	image: z.string().url().optional(),
 });
 
 export const CreativeWorkSchema = z.object({
@@ -121,6 +147,7 @@ export const SchemaOrgNodeSchema = z.discriminatedUnion('@type', [
 	WebSiteSchema,
 	BlogPostingSchema,
 	ServiceSchema,
+	ProfessionalServiceSchema,
 	CreativeWorkSchema,
 	BreadcrumbListSchema,
 	ProfilePageSchema,
@@ -131,6 +158,7 @@ export type Person = z.infer<typeof PersonSchema>;
 export type WebSite = z.infer<typeof WebSiteSchema>;
 export type BlogPosting = z.infer<typeof BlogPostingSchema>;
 export type Service = z.infer<typeof ServiceSchema>;
+export type ProfessionalService = z.infer<typeof ProfessionalServiceSchema>;
 export type CreativeWork = z.infer<typeof CreativeWorkSchema>;
 export type BreadcrumbList = z.infer<typeof BreadcrumbListSchema>;
 export type ProfilePage = z.infer<typeof ProfilePageSchema>;
