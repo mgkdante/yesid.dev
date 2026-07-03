@@ -39,6 +39,7 @@
 	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import { generateHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
+	import { fetchLiveKpis, LIVE_POLL_MS, type LiveHeroSnapshot } from '$lib/content/live-kpis';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -74,17 +75,26 @@
 	const headlineLine2 = $derived(resolveLocale(heroContent.headline.line2, locale));
 	const subheadlineText = $derived(resolveLocale(heroContent.subheadline, locale));
 	const subtitleText = $derived(resolveLocale(heroContent.subtitle, locale));
+	const identityText = $derived(resolveLocale(heroContent.identity, locale));
 	const ctaWorkLabel = $derived(resolveLocale(heroContent.ctaWork, locale));
 	const ctaContactLabel = $derived(resolveLocale(heroContent.ctaContact, locale));
 	const sqlPrompt = $derived(resolveLocale(heroContent.sqlPanel.prompt, locale));
-	const sqlLiveLabel = $derived(resolveLocale(heroContent.sqlPanel.liveLabel, locale));
+	// Live KPIs (homework #2 phase 2): true only while REAL transit data is on
+	// screen. Every visitor-facing label switches DEMO ↔ LIVE off this flag so
+	// the dashboard can never wear the LIVE badge over simulated numbers.
+	let live = $state(false);
+	const sqlLiveLabel = $derived(
+		resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
+	);
 	const headlineAriaSuffix = $derived(resolveLocale(heroContent.headline.ariaSuffix, locale));
 	const sqlColumnRoute = $derived(resolveLocale(heroContent.sqlPanel.columns.route, locale));
 	const sqlColumnAvgDelay = $derived(resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale));
 	const sqlColumnVehicles = $derived(resolveLocale(heroContent.sqlPanel.columns.vehicles, locale));
 	const sqlMetaTemplate = $derived(resolveLocale(heroContent.sqlPanel.metaTemplate, locale));
 	const refreshLabel = $derived(resolveLocale(heroContent.refreshButton.label, locale));
-	const refreshHelper = $derived(resolveLocale(heroContent.refreshButton.helper, locale));
+	const refreshHelper = $derived(
+		resolveLocale(live ? heroContent.refreshButton.helperLive : heroContent.refreshButton.helper, locale),
+	);
 	// go2/w5: hero-dot replay button aria from site_labels.
 	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale);
 	// go2/w5 taste-2: ONE caption names the metro art (the in-frame legend is
@@ -101,10 +111,12 @@
 	// HeroMetrics resolves it per-locale by metric key, and the SQL panels carry
 	// no metric labels — so heroData (numbers, units, query rows, the "STM"
 	// wordmark) flows to the children unchanged. No localization pass here.
-	// go2/about: relative-time strings localized. EN "just now"/"30s ago" →
-	// FR "à l'instant"/"il y a 30 s" (NB: French inserts a space before the unit).
-	const updatedAgoInitial = locale === 'fr' ? 'il y a 30 s' : '30s ago';
-	const updatedAgoJustNow = locale === 'fr' ? "à l'instant" : 'just now';
+	// Honesty pass (until real KPIs ship, homework #2): the page is prerendered,
+	// so any age claim at first paint is fiction. The slot says what the data IS
+	// ("demo data"); after a real click of the refresh button, "regenerated just
+	// now" is genuinely true and may stand.
+	const updatedAgoInitial = locale === 'fr' ? 'données démo' : 'demo data';
+	const updatedAgoJustNow = locale === 'fr' ? "régénéré à l'instant" : 'regenerated just now';
 	let updatedAgo: string = $state(updatedAgoInitial);
 	// Section min-height reserves scroll space for the pin + trailing content.
 	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
@@ -113,9 +125,7 @@
 	// Applied via CSS media query below so SSR renders correctly; inline
 	// style remains for reduced-motion (collapses to a single viewport).
 
-	function handleRefresh() {
-		heroData = generateHeroData();
-		updatedAgo = updatedAgoJustNow;
+	function spinRefreshIcon() {
 		if (refreshIcon) {
 			refreshIcon.style.transition = 'transform 0.6s ease';
 			refreshIcon.style.transform = 'rotate(360deg)';
@@ -125,6 +135,71 @@
 			}, 600);
 		}
 	}
+
+	// freshnessS is computed server-side at serve time; we keep advancing it
+	// locally (1s ticker below) so the stamp reads as truly live between
+	// polls (operator call 2026-07-03), not frozen at the fetch moment.
+	let liveBase: { freshnessS: number; receivedAt: number } | null = null;
+
+	function liveStamp(seconds: number): string {
+		return locale === 'fr' ? `il y a ${seconds} s` : `${seconds}s ago`;
+	}
+
+	function applyLiveSnapshot(snapshot: LiveHeroSnapshot) {
+		heroData = snapshot.data;
+		live = true;
+		liveBase = { freshnessS: snapshot.freshnessS, receivedAt: Date.now() };
+		updatedAgo = liveStamp(snapshot.freshnessS);
+	}
+
+	function dropToDemo(stamp: string) {
+		live = false;
+		liveBase = null;
+		heroData = generateHeroData();
+		updatedAgo = stamp;
+	}
+
+	function handleRefresh() {
+		spinRefreshIcon();
+		if (!liveEnabled) {
+			heroData = generateHeroData();
+			updatedAgo = updatedAgoJustNow;
+			return;
+		}
+		void fetchLiveKpis().then((snapshot) => {
+			if (snapshot) applyLiveSnapshot(snapshot);
+			else dropToDemo(updatedAgoJustNow);
+		});
+	}
+
+	// Poll the transit endpoint at the pipeline cadence (~one publish cycle).
+	// Playwright runs (navigator.webdriver) stay on the deterministic demo
+	// generator so the hermetic e2e preview never depends on an external
+	// service. Any failure falls back to DEMO data with DEMO labels.
+	let liveEnabled = false;
+	onMount(() => {
+		if (navigator.webdriver) return;
+		liveEnabled = true;
+		const tickLive = async () => {
+			const snapshot = await fetchLiveKpis();
+			if (snapshot) applyLiveSnapshot(snapshot);
+			else if (live) dropToDemo(updatedAgoInitial);
+		};
+		void tickLive();
+		const timer = setInterval(tickLive, LIVE_POLL_MS);
+		// Advance the freshness stamp every second between polls: the data's
+		// age keeps counting whether or not we've refetched.
+		const stampTimer = setInterval(() => {
+			if (live && liveBase) {
+				const elapsed = Math.round((Date.now() - liveBase.receivedAt) / 1000);
+				updatedAgo = liveStamp(liveBase.freshnessS + elapsed);
+			}
+		}, 1000);
+		return () => {
+			clearInterval(timer);
+			clearInterval(stampTimer);
+		};
+	});
 
 	let cleanup: (() => void) | undefined;
 	onDestroy(() => cleanup?.());
@@ -502,9 +577,11 @@
 						{headlineAriaSuffix}
 						{subheadlineText}
 						{subtitleText}
+						{identityText}
 						{ctaWorkLabel}
 						{ctaContactLabel}
 						heroData={heroData}
+						{live}
 						{introCompleted}
 						beaconSettled={introCompleted && introCollapsed}
 						{replayAriaLabel}

@@ -25,6 +25,7 @@
 	import { onMount } from 'svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';
+	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 
 	let {
@@ -391,10 +392,17 @@
 			</div>
 		{/if}
 
-		<!-- Prev/Next Nav -->
+		<!-- Prev/Next Nav (operator round 2026-07-03: nav moves UP; the CTA is
+		     the page's true last word). -->
 		<div class="nav-area">
 			<ServiceNav {prev} {next} />
 		</div>
+
+		<!-- End-of-line CTA: THE site conversion band, recycled and centered on
+		     every surface that mounts it. -->
+		<section class="cta-area" data-testid="service-cta">
+			<CtaBand testidPrefix="service-cta-band" />
+		</section>
 	</article>
 
 	<!-- Mobile floating TOC pill -->
@@ -838,6 +846,12 @@
 	}
 
 	/* ── Nav area ── */
+
+	/* End-of-line CTA: the shared band brings its own centered layout AND its
+	   own hazard strip on top (operator rule), so the wrapper only spaces. */
+	.cta-area {
+		margin-top: 2rem;
+	}
 
 	.nav-area {
 		padding: 0 var(--space-page-x);

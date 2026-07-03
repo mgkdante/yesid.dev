@@ -26,6 +26,7 @@ export interface DirectusServiceTranslation {
 	description?: string | null;
 	long_description?: string | null;
 	value_proposition?: string | null;
+	seo_description?: string | null;
 	benefit_headline?: string | null;
 	impact_metric_value?: string | null;
 	impact_metric_label?: string | null;
@@ -90,6 +91,8 @@ export function toService(row: DirectusService): Service {
 	if (longDescription) service.longDescription = longDescription;
 	const valueProposition = toLocalizedStringOrUndef(translations, 'value_proposition');
 	if (valueProposition) service.valueProposition = valueProposition;
+	const seoDescription = toLocalizedStringOrUndef(translations, 'seo_description');
+	if (seoDescription) service.seoDescription = seoDescription;
 	const benefitHeadline = toLocalizedStringOrUndef(translations, 'benefit_headline');
 	if (benefitHeadline) service.benefitHeadline = benefitHeadline;
 	const stack = stackFromTechM2M(row.tech_stack);

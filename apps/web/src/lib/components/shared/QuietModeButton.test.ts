@@ -4,6 +4,11 @@ import { flushSync } from 'svelte';
 import Fixture from './_quiet-mode-fixture.svelte';
 import { quietModeStore } from '$lib/state/quiet-mode.svelte';
 
+// Homework #19b: both controls are plain buttons whose accessible name IS the
+// visible verb label ("Collapse all" / "Expand all"), flipping with state.
+// State styling hooks moved from aria-checked/aria-pressed to
+// data-collapsed/data-remembered because the flipping name already announces
+// the state (role="switch" would double-encode it).
 describe('QuietModeButton', () => {
 	beforeEach(() => {
 		localStorage.clear();
@@ -22,26 +27,27 @@ describe('QuietModeButton', () => {
 		render(Fixture);
 		flushSync();
 
-		const button = screen.getByRole('switch', { name: 'Quiet mode' });
+		const button = screen.getByRole('button', { name: 'Collapse all' });
 		const trigger = screen.getByRole('button', { name: /Fixture Section/i });
 
-		expect(button).toHaveAttribute('aria-checked', 'false');
+		expect(button).toHaveAttribute('data-collapsed', 'false');
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
 		await fireEvent.click(button);
 		flushSync();
 
-		expect(button).toHaveAttribute('aria-checked', 'true');
+		expect(button).toHaveTextContent('Expand all');
+		expect(button).toHaveAttribute('data-collapsed', 'true');
 		expect(localStorage.getItem('quiet-mode')).toBe(null);
 		expect(document.documentElement.dataset.quietMode).toBe('true');
 		expect(trigger).toHaveAttribute('aria-expanded', 'false');
 	});
 
-	it('reopens keyed section cards when quiet mode is toggled off', async () => {
+	it('reopens keyed section cards when the toggle flips back to expand', async () => {
 		render(Fixture);
 		flushSync();
 
-		const button = screen.getByRole('switch', { name: 'Quiet mode' });
+		const button = screen.getByRole('button', { name: 'Collapse all' });
 		const trigger = screen.getByRole('button', { name: /Fixture Section/i });
 
 		await fireEvent.click(button);
@@ -51,47 +57,48 @@ describe('QuietModeButton', () => {
 		await fireEvent.click(button);
 		flushSync();
 
-		expect(button).toHaveAttribute('aria-checked', 'false');
+		expect(button).toHaveTextContent('Collapse all');
+		expect(button).toHaveAttribute('data-collapsed', 'false');
 		expect(document.documentElement.dataset.quietMode).toBeUndefined();
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
 	});
 
-	it('saves and forgets quiet mode through the separate remember control', async () => {
+	it('saves and forgets the collapsed default through the separate persist control', async () => {
 		render(Fixture);
 		flushSync();
 
-		const quietSwitch = screen.getByRole('switch', { name: 'Quiet mode' });
-		const remember = screen.getByRole('button', { name: 'Remember quiet mode' });
+		const collapseToggle = screen.getByRole('button', { name: 'Collapse all' });
+		const remember = screen.getByRole('button', { name: 'Always start collapsed' });
 
-		expect(screen.getByText('Remember quiet mode')).toBeTruthy();
-		expect(remember).toHaveAttribute('aria-pressed', 'false');
+		expect(screen.getByText('Always start collapsed')).toBeTruthy();
+		expect(remember).toHaveAttribute('data-remembered', 'false');
 
-		await fireEvent.click(quietSwitch);
+		await fireEvent.click(collapseToggle);
 		await fireEvent.click(remember);
 		flushSync();
 
 		expect(localStorage.getItem('quiet-mode')).toBe('true');
-		expect(remember).toHaveAttribute('aria-pressed', 'true');
-		expect(remember).toHaveAttribute('aria-label', 'Forget remembered quiet mode');
-		expect(screen.getByText('Forget remembered quiet mode')).toBeTruthy();
+		expect(remember).toHaveAttribute('data-remembered', 'true');
+		expect(screen.getByText("Don't start collapsed")).toBeTruthy();
 
 		await fireEvent.click(remember);
 		flushSync();
 
 		expect(localStorage.getItem('quiet-mode')).toBe(null);
-		expect(remember).toHaveAttribute('aria-pressed', 'false');
+		expect(remember).toHaveAttribute('data-remembered', 'false');
+		expect(screen.getByText('Always start collapsed')).toBeTruthy();
 	});
 
-	it('opens with sections closed when quiet mode was remembered', () => {
+	it('opens with sections closed when the collapsed default was remembered', () => {
 		localStorage.setItem('quiet-mode', 'true');
 
 		render(Fixture);
 		flushSync();
 
-		const quietSwitch = screen.getByRole('switch', { name: 'Quiet mode' });
+		const collapseToggle = screen.getByRole('button', { name: 'Expand all' });
 		const trigger = screen.getByRole('button', { name: /Fixture Section/i });
 
-		expect(quietSwitch).toHaveAttribute('aria-checked', 'true');
+		expect(collapseToggle).toHaveAttribute('data-collapsed', 'true');
 		expect(trigger).toHaveAttribute('aria-expanded', 'false');
 	});
 });
