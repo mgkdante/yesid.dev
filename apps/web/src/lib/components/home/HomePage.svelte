@@ -26,6 +26,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
 	import {
 		registerScrollContext,
 		lenisAwareScrollTo,
@@ -93,6 +94,29 @@
 	const sectionAbout = resolveLocale(siteLabels.pages.homeSectionAbout, locale);
 	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale);
 
+	// Rotated-title fit (operator spec 2026-07-03): ONE mathematically
+	// computed size per locale: the LONGEST label must exactly fit the 50dvh
+	// sticky cap, capped at the 6rem design max; all four titles share it.
+	// null until measured: the CSS var fallback below carries first paint.
+	let rotatedTitleSize = $state<number | null>(null);
+	const rotatedVar = $derived(
+		rotatedTitleSize === null ? undefined : `--rotated-title-size: ${rotatedTitleSize}px`,
+	);
+
+	function recomputeRotatedTitleFit() {
+		const sample = document.querySelector('.rotated-title .section-heading-text');
+		if (!sample) return;
+		// Budget = the sticky cap (50dvh) with 2% breathing room; max = 6rem.
+		const budget = window.innerHeight * 0.5 * 0.98;
+		const size = computeRotatedTitleSize(
+			sample,
+			[sectionServices, sectionAbout, sectionProjects, sectionTerminus],
+			budget,
+			96,
+		);
+		if (size !== null) rotatedTitleSize = size;
+	}
+
 	// GO-w2t5 → go2/w4: backgroundBreathing lives inside HomeCloser (each
 	// section component owns its own effect). HomeServices' sectionGlow was
 	// unwired in w4 per operator QA — the primitive stays in
@@ -120,6 +144,22 @@
 		if (!browser) return;
 		// Section magnetism removed entirely (operator call 2026-07-03):
 		// scrolling settles wherever the visitor stops it, on every input.
+
+		// Rotated-title fit: compute once, again when the web font finishes
+		// loading (metrics change), and on every resize (the height budget
+		// moves with the viewport).
+		recomputeRotatedTitleFit();
+		document.fonts?.ready.then(() => recomputeRotatedTitleFit()).catch(() => {});
+		let fitRaf = 0;
+		const onResize = () => {
+			cancelAnimationFrame(fitRaf);
+			fitRaf = requestAnimationFrame(recomputeRotatedTitleFit);
+		};
+		window.addEventListener('resize', onResize);
+		destroyFns.push(() => {
+			cancelAnimationFrame(fitRaf);
+			window.removeEventListener('resize', onResize);
+		});
 
 		// slice-34.4 — reading position survives a locale switch on the HOME page,
 		// the hardest case: HeroBanner's GSAP pin rewrites the document height
@@ -202,7 +242,7 @@
 <!-- Section 3: Services — rotated title RIGHT, blueprint background spans
      full width. Operator 2026-07-03: services lead so the story builds
      context (what I do) → identity (who I am) → proof (what I built). -->
-<section bind:this={servicesSectionEl} class="home-section home-section--right relative">
+<section bind:this={servicesSectionEl} class="home-section home-section--right relative" style={rotatedVar}>
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
@@ -222,7 +262,7 @@
 <!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
      titled section alternates: Services R → About L → Projects R → Terminus L;
      only the CTA goes untitled, it's special). -->
-<section class="home-section home-section--left">
+<section class="home-section home-section--left" style={rotatedVar}>
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionAbout} />
 	</div>
@@ -238,7 +278,7 @@
 
 <!-- Section 4: Featured Projects — rotated title RIGHT; the proof lands with
      the service context already established above it. -->
-<section bind:this={projectsSectionEl} class="home-section home-section--right home-section--proof-reel">
+<section bind:this={projectsSectionEl} class="home-section home-section--right home-section--proof-reel" style={rotatedVar}>
 	<div class="home-section-heading-mobile">
 		<SectionHeading heading={sectionProjects} />
 	</div>
@@ -261,7 +301,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-<section bind:this={closerSectionEl} class="home-section home-section--left">
+<section bind:this={closerSectionEl} class="home-section home-section--left" style={rotatedVar}>
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionTerminus} />
 	</div>
@@ -306,12 +346,14 @@
 	/* Right side: natural vertical-rl (reads top → bottom), no rotation */
 
 	/* Super bold display size — full brand color, maximized for edge column.
-	   The text runs along the VIEWPORT HEIGHT (vertical-rl), so width-driven
-	   sizing alone overflows the 50dvh sticky cap on short desktop displays
-	   (operator 2026-07-03). The 5.5dvh ceiling keeps the longest title
-	   (8 chars: TERMINUS / À PROPOS) at ~44dvh, always inside the cap. */
+	   The SIZE IS COMPUTED (operator spec 2026-07-03): per locale, the
+	   longest label is measured and the shared --rotated-title-size is the
+	   largest size at which IT fits the 50dvh sticky cap (design max 6rem):
+	   as big as mathematically possible, zero overflow on either axis, all
+	   four titles uniform. See $lib/utils/rotated-title-fit.ts. The var
+	   fallback only covers first paint before hydration measures. */
 	.rotated-title :global(.section-heading-text) {
-		font-size: min(clamp(3.5rem, 7vw, 6rem), 5.5dvh);
+		font-size: var(--rotated-title-size, min(clamp(3.5rem, 7vw, 6rem), 5.5dvh));
 		font-weight: 900;
 		letter-spacing: -0.02em;
 		margin-block-end: 0;
