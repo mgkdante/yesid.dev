@@ -190,29 +190,35 @@ async function upsertFooterLink(ctx: ApplyContext, sitePageId: string, slug: str
 	log.info(`  ok nav_links footer -> /legal/${slug}`);
 }
 
+/** The full seed pass. Exported for the prod promotion orchestrator
+ *  (promote-launch-phase1-prod) — the caller owns the URL guard. */
+export async function apply(ctx: ApplyContext): Promise<void> {
+	const pages = drafts.pages as DraftPage[];
+	for (const [i, page] of pages.entries()) {
+		await upsertLegalPage(ctx, page);
+		const sitePageId = await upsertSitePage(ctx, page, 20 + i);
+		await upsertFooterLink(ctx, sitePageId, page.slug, 90 + i);
+	}
+}
+
 async function main(): Promise<void> {
-	const apply = process.argv.includes('--apply');
+	const apply_ = process.argv.includes('--apply');
 	const url = defaultDirectusUrl();
 	assertDevCms(url);
 	const pages = drafts.pages as DraftPage[];
-	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
+	log.info(`target: ${url}${apply_ ? ' [apply]' : ' [dry-run]'}`);
 	log.info(`plan: ${pages.length} legal pages (en+fr) + site_pages rows + footer nav_links`);
 	for (const page of pages) {
 		log.info(
 			`  ${page.slug}: en "${page.en.title}" (${page.en.blocks.length} blocks) / fr "${page.fr.title}" (${page.fr.blocks.length} blocks) -> /legal/${page.slug}`,
 		);
 	}
-	if (!apply) {
+	if (!apply_) {
 		log.info('dry-run complete. Pass --apply to write.');
 		return;
 	}
 	const token = await getAdminToken(url);
-	const ctx: ApplyContext = { directusUrl: url, token };
-	for (const [i, page] of pages.entries()) {
-		await upsertLegalPage(ctx, page);
-		const sitePageId = await upsertSitePage(ctx, page, 20 + i);
-		await upsertFooterLink(ctx, sitePageId, page.slug, 90 + i);
-	}
+	await apply({ directusUrl: url, token });
 	log.info('apply complete.');
 }
 

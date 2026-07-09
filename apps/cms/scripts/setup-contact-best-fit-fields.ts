@@ -66,7 +66,8 @@ export function buildFieldPlan(): SchemaStep[] {
 	}));
 }
 
-async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
+/** Exported for the prod promotion orchestrator (promote-launch-phase1-prod). */
+export async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
 	for (const step of plan) {
 		const res = await rest(ctx, step.method, step.path, step.payload);
 		if (res.status < 400) {

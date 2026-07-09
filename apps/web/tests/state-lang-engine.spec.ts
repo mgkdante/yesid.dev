@@ -41,7 +41,7 @@ test.describe('State across languages — stack-engine (composed build survives 
 		await expect(page.getByTestId('build-shape')).toBeVisible();
 	});
 
-	test('the build survives FR→EN too', async ({ page }) => {
+	test('the build survives FR→ES→EN too (click-twice cycle)', async ({ page }) => {
 		await page.goto('/fr/tech-stack');
 		await expect(page.getByTestId('stack-engine')).toBeVisible();
 
@@ -49,6 +49,14 @@ test.describe('State across languages — stack-engine (composed build survives 
 		await page.getByTestId('tech-chip-postgresql').click();
 		await expect(page.getByTestId('tech-chip-postgresql')).toHaveAttribute('aria-pressed', 'true');
 
+		// Click 1: FR → ES — the build survives the first remount.
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL('**/es/tech-stack');
+		await expect(page.getByTestId('stack-engine')).toBeVisible();
+		await expect(page.getByTestId('mode-toggle-compose')).toHaveAttribute('aria-pressed', 'true');
+		await expect(page.getByTestId('tech-chip-postgresql')).toHaveAttribute('aria-pressed', 'true');
+
+		// Click 2: ES → EN — and the second one.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => url.pathname === '/tech-stack');
 		await expect(page.getByTestId('stack-engine')).toBeVisible();
