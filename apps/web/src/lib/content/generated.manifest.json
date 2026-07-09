@@ -3,7 +3,7 @@
 	"algorithm": "sha256",
 	"source": "live",
 	"files": {
-		"about-page.ts": "8d8b5df08f208759f5f1d22689952f13ca73b40d247fa4b12592a5f03f2bf12e",
+		"about-page.ts": "9ef09d5f14a1a7f5c829f141147491e6b831d59cce4832e503adc04c1c65e55c",
 		"blog-bodies.ts": "af7826fbf2ca7c7b129652d8af5ecefb0c559f3c007297602eceb3ebafac1702",
 		"blog-page.ts": "c3134e2e3de40fd05d5f7fd0ef71f2f236866e96f61e07381d6d8d9f071ceaea",
 		"blog.ts": "f3a13036b648e5698de00a06644a57a27cdd1316a6fb795569d7fe12da4f2a27",

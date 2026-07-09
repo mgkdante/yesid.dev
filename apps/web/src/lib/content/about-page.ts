@@ -168,7 +168,7 @@ export const aboutPageContent: AboutContent = {
 		},
 		valueProp: {
 			en: 'I\'m Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.',
-			es: 'Soy Yesid, un tipo de Montreal al que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por bases de datos, pipelines, dashboards y sitios web. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante.',
+			es: 'Soy Yesid, una persona de Montreal a la que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por bases de datos, pipelines, dashboards y sitios web. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante.',
 			fr: 'Moi, c\'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les bases de données, les pipelines, les tableaux de bord et les sites web. Avec mes clients, j\'explique ce que les choses veulent dire pour qu\'ils gardent le volant.',
 		},
 	},
