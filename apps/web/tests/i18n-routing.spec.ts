@@ -55,11 +55,21 @@ test.describe('i18n routing — static routes render 200 in EN + FR', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Routing: invalid locale prefix rejects (ES not published yet)
+// Routing: /es resolves (L1 dark state) but self-canonicalizes to EN until
+// 'es' joins PUBLISHED_LOCALES; a never-published prefix still 404s.
 // ---------------------------------------------------------------------------
 
-test('invalid locale prefix /es/* returns 404', async ({ page }) => {
+test('/es/about resolves dark: 200, es lang, EN canonical, unindexed', async ({ page }) => {
   const response = await page.goto('/es/about');
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+  // Dark-QA contract: canonical points at the EN URL until the publish flip.
+  const canonical = page.locator('link[rel="canonical"]');
+  await expect(canonical).toHaveAttribute('href', 'https://yesid.dev/about');
+});
+
+test('never-published locale prefix /de/* returns 404', async ({ page }) => {
+  const response = await page.goto('/de/about');
   expect(response?.status()).toBe(404);
   // Error page testids are always present.
   await expect(page.getByTestId('error-label')).toBeVisible();

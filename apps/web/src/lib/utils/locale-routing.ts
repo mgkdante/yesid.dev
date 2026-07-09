@@ -14,8 +14,10 @@ import { DEFAULT_LOCALE } from '$lib/utils/locale';
 import { isRegistryExempt } from '$lib/utils/page-registry';
 
 /** Locales that may appear as a URL path prefix. EN is never prefixed.
- *  Add 'es' here (plus src/params/locale.ts coverage) when Spanish routing opens. */
-export const PREFIX_LOCALES: readonly Locale[] = ['fr'];
+ *  L1: 'es' opened 2026-07-09 (dark-QA state: /es resolves + prerenders but
+ *  self-canonicalizes to EN and stays out of sitemap/hreflang/switcher until
+ *  'es' joins PUBLISHED_LOCALES). */
+export const PREFIX_LOCALES: readonly Locale[] = ['fr', 'es'];
 
 const PREFIX_SET: ReadonlySet<string> = new Set(PREFIX_LOCALES);
 
