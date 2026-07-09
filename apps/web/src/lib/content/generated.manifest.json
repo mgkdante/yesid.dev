@@ -3,7 +3,7 @@
 	"algorithm": "sha256",
 	"source": "live",
 	"files": {
-		"about-page.ts": "4048463955aba2650357de3a66c1c088b5397e2256896bfc5aaef94d0434c7f0",
+		"about-page.ts": "26793c8c45a417fe7394ba3c2ddcaecd9dd9c127aa024053f461260b37c2c79f",
 		"blog-bodies.ts": "af7826fbf2ca7c7b129652d8af5ecefb0c559f3c007297602eceb3ebafac1702",
 		"blog-page.ts": "361f1406fcf23c7dafd1fd12840f76ad28b547e7468f904c42912381aea0336f",
 		"blog.ts": "f3a13036b648e5698de00a06644a57a27cdd1316a6fb795569d7fe12da4f2a27",
@@ -16,7 +16,7 @@
 		"projects-page.ts": "c2cf87472ba85d287626f01fbebd9cd56707ccc042e76e24e585264b5d1d2fd0",
 		"projects.ts": "2175de038392bd4497ffb5cf5fa66c7d871d8dc7ee0ff5127b3c0d67ef81a642",
 		"route-seo.ts": "8cb017c7383fa4e8b049b3eece03df080094946ce768b0b7051d51e78cad27b7",
-		"services.ts": "b52fe486974368493a98d82ff44116195ea5203e7c58c746d5ffaca12912a673",
+		"services.ts": "98e336716cc4c3992111fb0b4b22ba43c1ddc90e18478e95046f3b3eed581f56",
 		"site-content.ts": "f96b92e59ddd319e71aa6ca82cb0e7d7452a9bacae2286a5035c01c14c3846ca",
 		"site-labels.ts": "4042e34b68320b0732c9c1d8ae378bdef0e0e299c4061418168a496246c461e1",
 		"site-meta.ts": "fbb35e40855284fbf6548dfe7b5ee9b2eb9d99f3de3141264b1e8cfdf1bf63f1",
