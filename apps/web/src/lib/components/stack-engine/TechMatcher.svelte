@@ -37,7 +37,7 @@
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
 	import { localizeHref } from '$lib/utils/locale-routing';
-	import { LAYER_TEACHING } from './layer-teaching';
+	import { LAYER_NAMES, LAYER_TEACHING } from './layer-teaching';
 	import {
 		AVAILABILITY_LINE,
 		composePhrase,
@@ -60,10 +60,11 @@
 	let { engine, animate = true }: { engine: EngineState; animate?: boolean } = $props();
 
 	// Layer groups in render order; layerless techs trail under 'more'.
+	// Labels are the localized LAYER_NAMES (receiver r2); keys stay canonical.
 	const groups: { key: string; label: string; items: typeof techStackItems }[] = [
 		...STACK_LAYERS.map((layer) => ({
 			key: layer as string,
-			label: layer as string,
+			label: resolveLocale(LAYER_NAMES[layer], locale),
 			items: techStackItems.filter((t) => t.layer === layer),
 		})),
 		{
@@ -97,18 +98,20 @@
 	const shape = $derived(composeStackShape([...engine.pickedTechs], techStackItems));
 	// Per-locale shape-card templates — exhaustive Record<Locale, …> so a new
 	// locale is a compile error here, never a silent English fallback (L1 rule).
+	const layerNames = (present: readonly StackLayer[], l: Locale): string =>
+		present.map((layer) => resolveLocale(LAYER_NAMES[layer], l)).join(' + ');
 	const SHAPE_HEADINGS: Record<Locale, (present: readonly StackLayer[]) => string> = {
 		en: (present) =>
 			present.length > 0
-				? `Your build: ${present.join(' + ')} covered`
+				? `Your build: ${layerNames(present, 'en')} covered`
 				: 'Your build: no layers covered yet',
 		fr: (present) =>
 			present.length > 0
-				? `Ton build : ${present.join(' + ')} couvert${present.length === 1 ? '' : 's'}`
+				? `Ton build : ${layerNames(present, 'fr')} couvert${present.length === 1 ? '' : 's'}`
 				: 'Ton build : aucune couche couverte encore',
 		es: (present) =>
 			present.length > 0
-				? `Tu build: ${present.join(' + ')} cubierto${present.length === 1 ? '' : 's'}`
+				? `Tu build: ${layerNames(present, 'es')} cubierto${present.length === 1 ? '' : 's'}`
 				: 'Tu build: ninguna capa cubierta todavía',
 	};
 	const SHAPE_READING_LEADS: Record<Locale, string> = {
@@ -222,10 +225,11 @@
 	function teach(tech: Tech): void {
 		const enables = tech.enables ? resolveLocale(tech.enables, locale) : '';
 		const layerLine = tech.layer ? resolveLocale(LAYER_TEACHING[tech.layer], locale) : null;
+		const layerName = tech.layer ? resolveLocale(LAYER_NAMES[tech.layer], locale) : '';
 		if (enables && layerLine) {
-			teachLine = `${tech.name}, ${enables}. ${livesIn} ${tech.layer}: ${layerLine}`;
+			teachLine = `${tech.name}, ${enables}. ${livesIn} ${layerName}: ${layerLine}`;
 		} else if (layerLine) {
-			teachLine = `${tech.name} ${livesIn} ${tech.layer}: ${layerLine}`;
+			teachLine = `${tech.name} ${livesIn} ${layerName}: ${layerLine}`;
 		} else if (enables) {
 			teachLine = `${tech.name}, ${enables}.`;
 		} else {

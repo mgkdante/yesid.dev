@@ -62,6 +62,7 @@ export const projects: readonly Project[] = [
 		impactMetric: {
 			label: {
 				en: 'tests guarding the build',
+				es: 'tests que cuidan el build',
 				fr: 'tests qui gardent le build',
 			},
 			value: '3,151',
@@ -70,6 +71,7 @@ export const projects: readonly Project[] = [
 			{
 				label: {
 					en: 'tests guarding the build',
+					es: 'tests que cuidan el build',
 					fr: 'tests qui gardent le build',
 				},
 				value: '3,151',
@@ -77,6 +79,7 @@ export const projects: readonly Project[] = [
 			{
 				label: {
 					en: 'CMS calls per visit',
+					es: 'llamadas al CMS por visita',
 					fr: 'appels au CMS par visite',
 				},
 				value: '0',
@@ -84,17 +87,23 @@ export const projects: readonly Project[] = [
 			{
 				label: {
 					en: 'bilingual strings, locked by a test',
+					es: 'cadenas bilingües, aseguradas por un test',
 					fr: 'chaînes bilingues, verrouillées par un test',
 				},
 				value: '650',
 			},
 			{
-				label: { en: 'content from the CMS', fr: 'contenu venu du CMS' },
+				label: {
+					en: 'content from the CMS',
+					es: 'contenido desde el CMS',
+					fr: 'contenu venu du CMS',
+				},
 				value: '100%',
 			},
 			{
 				label: {
 					en: 'warnings tolerated in CI',
+					es: 'advertencias toleradas en CI',
 					fr: 'avertissements tolérés en CI',
 				},
 				value: '0',
@@ -103,6 +112,7 @@ export const projects: readonly Project[] = [
 		liveUrl: 'https://yesid.dev',
 		oneLiner: {
 			en: 'My own site, run like client work: the CMS is the source of truth, the edge serves generated content, and every claim is locked by a test.',
+			es: 'Mi propio sitio, llevado como un proyecto de cliente: el CMS es la fuente de verdad, el edge sirve contenido generado y cada afirmación está asegurada por un test.',
 			fr: 'Mon propre site, mené comme un mandat client : le CMS comme source de vérité, du contenu généré servi à l\'edge, et chaque affirmation verrouillée par un test.',
 		},
 		relatedServices: ['web-development', 'database-engineering'],
@@ -629,7 +639,7 @@ export const projects: readonly Project[] = [
 		],
 		status: 'public',
 		tags: ['portfolio', 'web', 'svelte', 'cms', 'bilingual'],
-		title: { en: 'yesid.dev', fr: 'yesid.dev' },
+		title: { en: 'yesid.dev', es: 'yesid.dev', fr: 'yesid.dev' },
 	},
 	{
 		description: {
@@ -665,6 +675,7 @@ export const projects: readonly Project[] = [
 		impactMetric: {
 			label: {
 				en: 'Real-time refresh cycles',
+				es: 'Ciclos de actualización en tiempo real',
 				fr: 'Cycles de rafraîchissement en temps réel',
 			},
 			value: '30s',
@@ -673,18 +684,24 @@ export const projects: readonly Project[] = [
 			{
 				label: {
 					en: 'Real-time refresh cycles',
+					es: 'Ciclos de actualización en tiempo real',
 					fr: 'Cycles de rafraîchissement en temps réel',
 				},
 				value: '30s',
 			},
 			{
-				label: { en: 'Pipeline uptime', fr: 'Disponibilité du pipeline' },
+				label: {
+					en: 'Pipeline uptime',
+					es: 'Disponibilidad del pipeline',
+					fr: 'Disponibilité du pipeline',
+				},
 				value: '99.9%',
 			},
 		],
 		location: 'sherbrooke',
 		oneLiner: {
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
+			es: 'Un pipeline ELT de extremo a extremo que procesa datos de transporte en tiempo real para un operador regional.',
 			fr: 'Un pipeline ELT de bout en bout qui traite les données de transport en temps réel pour un opérateur régional.',
 		},
 		relatedServices: [
@@ -712,6 +729,7 @@ export const projects: readonly Project[] = [
 		tags: ['etl', 'transit', 'postgresql', 'dbt'],
 		title: {
 			en: 'Transit Operations Data Pipeline',
+			es: 'Pipeline de datos de operaciones de transporte',
 			fr: 'Pipeline de données des opérations de transport',
 		},
 		version: '2.4.1',
