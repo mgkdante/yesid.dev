@@ -219,11 +219,73 @@ export function buildPlan(): SchemaStep[] {
 				schema: { on_delete: 'CASCADE' },
 			},
 		},
+		// Permissions — the Vercel build token (Build Bot policy) must READ the
+		// new collections or export-fallbacks dies on deploy (live-or-die);
+		// Human Editor gets CRUD like every content collection.
+		...(['legal_pages', 'legal_pages_translations'] as const).map(
+			(collection): SchemaStep => ({
+				kind: 'permission',
+				target: `${collection}:read(build-bot)`,
+				method: 'POST',
+				path: '/permissions',
+				policyNames: ['Build Bot — content read'],
+				payload: { collection, action: 'read', fields: ['*'], permissions: {}, validation: null },
+			}),
+		),
+		...(['legal_pages', 'legal_pages_translations'] as const).flatMap((collection): SchemaStep[] =>
+			(['create', 'read', 'update', 'delete'] as const).map(
+				(action): SchemaStep => ({
+					kind: 'permission',
+					target: `${collection}:${action}(human-editor)`,
+					method: 'POST',
+					path: '/permissions',
+					policyNames: ['Human Editor'],
+					payload: { collection, action, fields: ['*'], permissions: {}, validation: null },
+				}),
+			),
+		),
 	];
+}
+
+/** Resolve the policy display name to an id, skip if granted, POST otherwise
+ *  (same contract as setup-contact-channels.ts). */
+async function applyPermission(ctx: ApplyContext, step: SchemaStep): Promise<void> {
+	const policies = await rest(ctx, 'GET', '/policies?fields=id,name&limit=-1');
+	if (policies.status >= 400) {
+		throw new Error(`GET /policies failed (${policies.status}): ${JSON.stringify(policies.json)}`);
+	}
+	const names = step.policyNames ?? [];
+	const policy = (policies.json?.data ?? []).find((item: { name: string }) => names.includes(item.name));
+	if (!policy) {
+		log.info(`  skip permission - no policy named [${names.join(', ')}]`);
+		return;
+	}
+	const payload = step.payload as { collection: string; action: string };
+	const existing = await rest(
+		ctx,
+		'GET',
+		`/permissions?limit=1&filter[policy][_eq]=${policy.id}` +
+			`&filter[collection][_eq]=${payload.collection}&filter[action][_eq]=${payload.action}`,
+	);
+	if ((existing.json?.data ?? []).length > 0) {
+		log.info(`  skip permission - ${policy.name} already has ${payload.action} on ${payload.collection}`);
+		return;
+	}
+	const post = await rest(ctx, 'POST', '/permissions', { ...step.payload, policy: policy.id });
+	if (post.status >= 400) {
+		throw new Error(
+			`POST /permissions ${payload.collection}:${payload.action} failed (${post.status}): ${JSON.stringify(post.json)}`,
+		);
+	}
+	log.info(`  ok permission - ${policy.name} ${payload.action} ${payload.collection}`);
 }
 
 async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
 	for (const step of plan) {
+		if (step.kind === 'permission') {
+			await applyPermission(ctx, step);
+			continue;
+		}
 		const res = await rest(ctx, step.method, step.path, step.payload);
 		if (res.status < 400) {
 			log.info(`  ok ${step.kind} - ${step.target}`);
@@ -243,7 +305,7 @@ async function main(): Promise<void> {
 	assertDevCms(url);
 	const plan = buildPlan();
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
-	log.info(`plan: ${plan.length} schema steps (2 collections, 6 fields, 2 relations)`);
+	log.info(`plan: ${plan.length} schema steps (2 collections, 6 fields, 2 relations, 10 permissions)`);
 	for (const step of plan) log.info(`  ${step.kind} ${step.target}`);
 	if (!apply) {
 		log.info('dry-run complete. Pass --apply to write schema.');
