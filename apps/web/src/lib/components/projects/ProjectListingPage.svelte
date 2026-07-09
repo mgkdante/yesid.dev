@@ -70,6 +70,7 @@
 				{
 					en: 'No projects match the selected filters.',
 					fr: 'Aucun projet ne correspond aux filtres choisis.',
+					es: 'Ningún proyecto coincide con los filtros elegidos.',
 				},
 				locale
 			)

@@ -27,6 +27,7 @@
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
 	import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
+	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -42,8 +43,7 @@
 		composePhrase,
 		composeStackShape,
 		JOURNEY_STEPS,
-		layerArticle,
-		layerGapFr,
+		layerGapLine,
 		readShape,
 	} from './stack-shape';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
@@ -70,7 +70,7 @@
 			key: 'more',
 			// Layer KEYS stay verbatim (they double as printed labels); only the
 			// catch-all 'more' group reads as a word, so it localizes.
-			label: resolveLocale({ en: 'more', fr: 'autres' }, locale),
+			label: resolveLocale({ en: 'more', fr: 'autres', es: 'más' }, locale),
 			items: techStackItems.filter(
 				(t) => !t.layer || !(STACK_LAYERS as readonly string[]).includes(t.layer),
 			),
@@ -95,29 +95,46 @@
 	// they do TOGETHER, the roster grounds it in the actual picks (enables
 	// lines), and the next-step line names what a complete build still needs.
 	const shape = $derived(composeStackShape([...engine.pickedTechs], techStackItems));
-	const shapeHeading = $derived(
-		shape.present.length > 0
-			? locale === 'fr'
-				? `Ton build : ${shape.present.join(' + ')} couvert${shape.present.length === 1 ? '' : 's'}`
-				: `Your build: ${shape.present.join(' + ')} covered`
-			: locale === 'fr'
-				? 'Ton build : aucune couche couverte encore'
+	// Per-locale shape-card templates — exhaustive Record<Locale, …> so a new
+	// locale is a compile error here, never a silent English fallback (L1 rule).
+	const SHAPE_HEADINGS: Record<Locale, (present: readonly StackLayer[]) => string> = {
+		en: (present) =>
+			present.length > 0
+				? `Your build: ${present.join(' + ')} covered`
 				: 'Your build: no layers covered yet',
-	);
+		fr: (present) =>
+			present.length > 0
+				? `Ton build : ${present.join(' + ')} couvert${present.length === 1 ? '' : 's'}`
+				: 'Ton build : aucune couche couverte encore',
+		es: (present) =>
+			present.length > 0
+				? `Tu build: ${present.join(' + ')} cubierto${present.length === 1 ? '' : 's'}`
+				: 'Tu build: ninguna capa cubierta todavía',
+	};
+	const SHAPE_READING_LEADS: Record<Locale, string> = {
+		en: "that's",
+		fr: "c'est",
+		es: 'eso es',
+	};
+	const SHAPE_NEXT: Record<Locale, (missing: readonly StackLayer[]) => string> = {
+		en: (missing) =>
+			missing.length === 0
+				? "nothing missing, this one's ready to build."
+				: `add ${missing.map((l) => layerGapLine(l, 'en')).join(' + ')} and this becomes a working product.`,
+		fr: (missing) =>
+			missing.length === 0
+				? 'rien ne manque, celui-là est prêt à bâtir.'
+				: `ajoute ${missing.map((l) => layerGapLine(l, 'fr')).join(' + ')} pis ça devient un produit fonctionnel.`,
+		es: (missing) =>
+			missing.length === 0
+				? 'no falta nada, este ya está listo para construir.'
+				: `agrega ${missing.map((l) => layerGapLine(l, 'es')).join(' + ')} y esto se vuelve un producto funcional.`,
+	};
+	const shapeHeading = $derived(SHAPE_HEADINGS[locale](shape.present));
 	const shapeReading = $derived(
-		locale === 'fr'
-			? `c'est ${resolveLocale(readShape(shape.present), locale)}.`
-			: `that's ${resolveLocale(readShape(shape.present), locale)}.`,
+		`${SHAPE_READING_LEADS[locale]} ${resolveLocale(readShape(shape.present), locale)}.`,
 	);
-	const shapeNext = $derived(
-		shape.missing.length === 0
-			? locale === 'fr'
-				? "rien ne manque, celui-là est prêt à bâtir."
-				: "nothing missing, this one's ready to build."
-			: locale === 'fr'
-				? `ajoute ${shape.missing.map((l) => layerGapFr(l)).join(' + ')} pis ça devient un produit fonctionnel.`
-				: `add ${shape.missing.map((l) => `${layerArticle(l)} ${l} layer`).join(' + ')} and this becomes a working product.`,
-	);
+	const shapeNext = $derived(SHAPE_NEXT[locale](shape.missing));
 	/** Picked techs in STACK_LAYERS order (stable within a layer), with enables. */
 	const layerRank = new Map<string, number>(
 		STACK_LAYERS.map((l, i) => [l as string, i] as const),
@@ -192,13 +209,15 @@
 		{
 			en: "tap a part, I'll tell you what it does.",
 			fr: 'tape un morceau, je te dis ce qu\'il fait.',
+			es: 'toca una pieza y te digo qué hace.',
 		},
 		locale,
 	);
 	let teachLine = $state(TEACH_EMPTY);
 
-	// "lives in" connector for the teach line, localized.
-	const livesIn = locale === 'fr' ? 'vit dans' : 'lives in';
+	// "lives in" connector for the teach line, localized (exhaustive map).
+	const LIVES_IN: Record<Locale, string> = { en: 'lives in', fr: 'vit dans', es: 'vive en' };
+	const livesIn = LIVES_IN[locale];
 
 	function teach(tech: Tech): void {
 		const enables = tech.enables ? resolveLocale(tech.enables, locale) : '';
@@ -230,16 +249,20 @@
 	}
 
 	// ── Localized UI copy (code-owned, em-dash-free). Counts/names interpolate. ─
-	const isFr = locale === 'fr';
 	const t = {
 		shapeLink: resolveLocale(
-			{ en: 'Take this combo with you →', fr: 'Apporte cette combinaison avec toi →' },
+			{
+				en: 'Take this combo with you →',
+				fr: 'Apporte cette combinaison avec toi →',
+				es: 'Llévate esta combinación contigo →',
+			},
 			locale,
 		),
 		knownBuildsLabel: resolveLocale(
 			{
 				en: "known builds, recipes I've already drawn with these parts",
 				fr: 'builds connus, des recettes que j\'ai déjà dessinées avec ces morceaux',
+				es: 'builds conocidos, recetas que ya dibujé con estas piezas',
 			},
 			locale,
 		),
@@ -247,66 +270,115 @@
 			{
 				en: 'no drawn recipe uses all of these yet, the shape above is already yours',
 				fr: 'aucune recette dessinée utilise tout ça encore, la forme en haut est déjà à toi',
+				es: 'ninguna receta dibujada usa todo esto todavía, la forma de arriba ya es tuya',
 			},
 			locale,
 		),
 		seeAsProduct: resolveLocale(
-			{ en: 'see your build as a product', fr: 'vois ton build comme un produit' },
+			{
+				en: 'see your build as a product',
+				fr: 'vois ton build comme un produit',
+				es: 've tu build como producto',
+			},
 			locale,
 		),
 		backToDrawing: resolveLocale(
-			{ en: 'back to the drawing', fr: 'retour au dessin' },
+			{ en: 'back to the drawing', fr: 'retour au dessin', es: 'volver al dibujo' },
 			locale,
 		),
-		undoLast: resolveLocale({ en: 'undo last pick', fr: 'défaire le dernier choix' }, locale),
-		startOver: resolveLocale({ en: 'start over', fr: 'recommencer' }, locale),
+		undoLast: resolveLocale(
+			{ en: 'undo last pick', fr: 'défaire le dernier choix', es: 'deshacer la última elección' },
+			locale,
+		),
+		startOver: resolveLocale(
+			{ en: 'start over', fr: 'recommencer', es: 'empezar de nuevo' },
+			locale,
+		),
 		closestComplete: resolveLocale(
-			{ en: 'closest to complete', fr: 'le plus proche du complet' },
+			{
+				en: 'closest to complete',
+				fr: 'le plus proche du complet',
+				es: 'el más cercano a completo',
+			},
 			locale,
 		),
 		completeTapToDraw: resolveLocale(
-			{ en: 'complete, tap to draw it', fr: 'complet, tape pour le dessiner' },
+			{
+				en: 'complete, tap to draw it',
+				fr: 'complet, tape pour le dessiner',
+				es: 'completo, toca para dibujarlo',
+			},
 			locale,
 		),
 	};
 
+	// Count-interpolating copy per locale — pluralization rules differ (FR
+	// treats the counters' nouns differently, ES pluralizes 0 like EN), so an
+	// exhaustive Record<Locale, …> of template functions replaces the old
+	// isFr ternaries (L1 rule: es must never silently render English).
+	const COUNTER_COPY: Record<
+		Locale,
+		{
+			idle: (builds: number) => string;
+			zero: (picks: number) => string;
+			picksLead: (picks: number, builds: number) => string;
+			suffix: string;
+			partsWord: string;
+			matchParts: (matched: number, total: number, missing: number) => string;
+			ruledOut: (name: string) => string;
+		}
+	> = {
+		en: {
+			idle: (builds) => `${builds} known builds on the board, tap parts to narrow`,
+			zero: (picks) => `${picks} pick${picks === 1 ? '' : 's'} → no known build, your shape's below`,
+			picksLead: (picks, builds) =>
+				`${picks} pick${picks === 1 ? '' : 's'} → ${builds} known build${builds === 1 ? '' : 's'}`,
+			suffix: ' · each pick narrows, never widens',
+			partsWord: 'parts',
+			matchParts: (matched, total, missing) => `${matched} of ${total} parts, ${missing} to go`,
+			ruledOut: (name) => `ruled out, ${name} isn't in this recipe`,
+		},
+		fr: {
+			idle: (builds) => `${builds} builds connus sur le tableau, tape des morceaux pour réduire`,
+			zero: (picks) => `${picks} choix → aucun build connu, ta forme est plus bas`,
+			picksLead: (picks, builds) =>
+				`${picks} choix → ${builds} build${builds === 1 ? '' : 's'} connu${builds === 1 ? '' : 's'}`,
+			suffix: ' · chaque choix réduit, jamais élargit',
+			partsWord: 'morceaux',
+			matchParts: (matched, total, missing) => `${matched} de ${total} morceaux, ${missing} à venir`,
+			ruledOut: (name) => `écarté, ${name} n'est pas dans cette recette`,
+		},
+		es: {
+			idle: (builds) => `${builds} builds conocidos en el tablero, toca piezas para reducir`,
+			zero: (picks) =>
+				`${picks} elecci${picks === 1 ? 'ón' : 'ones'} → ningún build conocido, tu forma está más abajo`,
+			picksLead: (picks, builds) =>
+				`${picks} elecci${picks === 1 ? 'ón' : 'ones'} → ${builds} build${builds === 1 ? '' : 's'} conocido${builds === 1 ? '' : 's'}`,
+			suffix: ' · cada elección reduce, nunca amplía',
+			partsWord: 'piezas',
+			matchParts: (matched, total, missing) =>
+				`${matched} de ${total} piezas, queda${missing === 1 ? '' : 'n'} ${missing}`,
+			ruledOut: (name) => `descartado, ${name} no está en esta receta`,
+		},
+	};
+	const cc = COUNTER_COPY[locale];
+
 	/** "{n} known builds on the board, tap parts to narrow" — count interpolated. */
-	const counterIdle = $derived(
-		isFr
-			? `${engine.archetypes.length} builds connus sur le tableau, tape des morceaux pour réduire`
-			: `${engine.archetypes.length} known builds on the board, tap parts to narrow`,
-	);
+	const counterIdle = $derived(cc.idle(engine.archetypes.length));
 	/** Zero-match counter line. */
-	const counterZero = $derived.by(() => {
-		const n = engine.pickedTechs.size;
-		return isFr
-			? `${n} choix → aucun build connu, ta forme est plus bas`
-			: `${n} pick${n === 1 ? '' : 's'} → no known build, your shape's below`;
-	});
+	const counterZero = $derived(cc.zero(engine.pickedTechs.size));
 	/** "{n} picks → {m} known builds" + the narrowing suffix. */
-	const counterPicksLead = $derived.by(() => {
-		const n = engine.pickedTechs.size;
-		const m = engine.matches.length;
-		return isFr
-			? `${n} choix → ${m} build${m === 1 ? '' : 's'} connu${m === 1 ? '' : 's'}`
-			: `${n} pick${n === 1 ? '' : 's'} → ${m} known build${m === 1 ? '' : 's'}`;
-	});
-	const counterSuffix = isFr
-		? ' · chaque choix réduit, jamais élargit'
-		: ' · each pick narrows, never widens';
-	const partsWord = isFr ? 'morceaux' : 'parts';
+	const counterPicksLead = $derived(cc.picksLead(engine.pickedTechs.size, engine.matches.length));
+	const counterSuffix = cc.suffix;
+	const partsWord = cc.partsWord;
 
 	/** Match-card parts line: "{matched} of {total} parts, {missing} to go". */
 	function matchPartsLine(matched: number, total: number, missing: number): string {
-		return isFr
-			? `${matched} de ${total} morceaux, ${missing} à venir`
-			: `${matched} of ${total} parts, ${missing} to go`;
+		return cc.matchParts(matched, total, missing);
 	}
 	/** Ruled-out card reason: "ruled out, {name} isn't in this recipe". */
 	function ruledOutLine(name: string): string {
-		return isFr
-			? `écarté, ${name} n'est pas dans cette recette`
-			: `ruled out, ${name} isn't in this recipe`;
+		return cc.ruledOut(name);
 	}
 </script>
 
