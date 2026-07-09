@@ -4819,6 +4819,102 @@
     "_syncId": "_sync_perm_illustrations_human_update"
   },
   {
+    "collection": "legal_pages_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "976baedc-5d2b-4be0-bd4b-f3f21efba3ea"
+  },
+  {
+    "collection": "legal_pages_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "fa21a7b6-d1d2-402c-a9d5-90bdd8d3a5c5"
+  },
+  {
+    "collection": "legal_pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2ebf6724-25bf-4a98-b048-35dfb59b4426"
+  },
+  {
+    "collection": "legal_pages_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "147c79bc-84dd-4c9a-947f-afde510f3211"
+  },
+  {
+    "collection": "legal_pages",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5896a610-8a50-4e1b-a501-941486592373"
+  },
+  {
+    "collection": "legal_pages",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "58460480-34ab-4456-b3df-e3a966ccd4c3"
+  },
+  {
+    "collection": "legal_pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2197d135-3176-4998-92b1-e28f77126963"
+  },
+  {
+    "collection": "legal_pages",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "caa084bf-976f-45d6-b814-06650550c2b8"
+  },
+  {
     "collection": "morph_shapes",
     "action": "create",
     "permissions": {},
@@ -9077,6 +9173,30 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "d3218d88-c50e-497e-bacf-414fabebca44"
+  },
+  {
+    "collection": "legal_pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "269895a2-689e-4bac-9b01-a9c24a3fede0"
+  },
+  {
+    "collection": "legal_pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "6ecc4dd5-ffe3-4438-bb25-22cf4929527c"
   },
   {
     "collection": "morph_shapes",
