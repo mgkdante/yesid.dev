@@ -1,0 +1,1313 @@
+{
+	"locale": "es",
+	"entries": [
+		{
+			"collection": "services",
+			"id": "sql-development",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Desarrollo y optimización SQL",
+				"subtitle": "y optimización",
+				"description": "Escribo, refactorizo y afino consultas SQL en PostgreSQL y SQL Server. Desde consultas complejas de reportes hasta procedimientos almacenados, todo construido para ser correcto y rápido.",
+				"value_proposition": "Las consultas lentas cuestan plata: en cómputo, en reportes que se atrasan, en analistas frustrados esperando sus datos. Reviso tu capa SQL, encuentro las consultas costosas y las reescribo para que queden rápidas y claras. Obtienes tableros más rápidos, costos de base de datos más bajos y código que tu equipo de verdad puede mantener.",
+				"benefit_headline": "Consultas que corren en segundos, no en minutos",
+				"impact_metric_value": "3x más veloz",
+				"impact_metric_label": "mejora promedio por consulta"
+			}
+		},
+		{
+			"collection": "services",
+			"id": "data-pipeline",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Pipelines y automatización",
+				"description": "Tus datos viajan de donde se crean hasta donde tu equipo los usa, solitos, todos los días.",
+				"value_proposition": "Próxima parada: tus datos se mueven. Ahora mismo alguien en tu equipo seguramente copia números de un sistema a otro a mano cada semana. Yo monto una ruta que lleva tus datos de donde se crean hasta donde tu equipo los usa, sola, cada mañana, para que los mismos números frescos lleguen de la misma forma todos los días.",
+				"benefit_headline": "Tus datos llegan limpios, a tiempo, cada mañana",
+				"impact_metric_value": "1,5 TB+",
+				"impact_metric_label": "migrados",
+				"seo_description": "Pipelines de datos y automatización freelance en Montreal: Python, Airflow, dbt. Datos que viajan solos y llegan limpios, a tiempo, cada mañana."
+			}
+		},
+		{
+			"collection": "services",
+			"id": "analytics-reporting",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Tableros y analítica",
+				"description": "Tus números revueltos convertidos en tableros claros en los que tu equipo confía de verdad.",
+				"value_proposition": "Tercera parada: tus datos empiezan a hablar. Tomo los números regados por todas tus herramientas y los convierto en un solo juego de tableros que cuadran entre sí. Tu equipo deja de pelear por cuál número es el bueno y simplemente decide.",
+				"benefit_headline": "Decisiones en 15 minutos, no en 2 días",
+				"impact_metric_value": "30 s",
+				"impact_metric_label": "refresh en vivo",
+				"seo_description": "Tableros Power BI y analítica freelance en Montreal: KPIs, capas semánticas, reportes en los que tu equipo confía. Decisiones en 15 minutos, no en 2 días."
+			}
+		},
+		{
+			"collection": "services",
+			"id": "database-engineering",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Bases de datos y SQL",
+				"description": "El lugar donde tu negocio guarda sus datos, construido para seguir rápido y seguro mientras creces.",
+				"value_proposition": "Primera parada: tus datos viven aquí. Una base de datos es el archivador detrás de todo tu negocio, y todo lo demás se construye encima. Hago que la tuya guarde y actualice tus datos rápido y de forma segura, para que siga siendo un activo y no la cosa que te frena.",
+				"benefit_headline": "Consultas que corren en segundos, no en minutos",
+				"impact_metric_value": "$60/mes → $0",
+				"impact_metric_label": "costo de hosting de la base",
+				"seo_description": "Consultoría freelance PostgreSQL y SQL Server en Montreal: diseño de esquemas, consultas afinadas, migraciones con rollback. Tu base sigue rápida y segura."
+			}
+		},
+		{
+			"collection": "services",
+			"id": "internal-tooling",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Herramientas internas",
+				"description": "Construyo paneles de administración y herramientas de flujo de trabajo que reemplazan las hojas de cálculo. Retool, tableros a la medida y sistemas de aprobación diseñados para equipos de operaciones.",
+				"value_proposition": "Tu equipo de operaciones anda copiando datos entre hojas de cálculo e hilos de Slack. Construyo herramientas internas, paneles de administración, flujos de aprobación, formularios de captura, que centralizan las operaciones y eliminan el trabajo manual. Entregas más rápido porque tu equipo dedica su tiempo a decidir, no a digitar datos.",
+				"benefit_headline": "Tu equipo deja de copiar entre hojas de cálculo",
+				"impact_metric_value": "80%",
+				"impact_metric_label": "menos digitación manual"
+			}
+		},
+		{
+			"collection": "services",
+			"id": "web-development",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Sitios web y e-commerce",
+				"description": "Sitios web, tiendas en línea y tableros rápidos que ponen tus datos frente a la gente.",
+				"value_proposition": "Última parada de la línea: tus datos llegan a la gente. Un sitio web rápido, una tienda en línea o un tablero toma todo lo que duerme en tus sistemas y se lo muestra a tus clientes y a tu equipo tal como lo van a usar de verdad. Las páginas cargan rápido, la tienda recibe pedidos y tu equipo ve lo que necesita sin ponerse a escarbar.",
+				"benefit_headline": "Una vitrina tan rápida como los sistemas detrás",
+				"impact_metric_value": "95+",
+				"impact_metric_label": "rendimiento Lighthouse",
+				"seo_description": "Desarrollo web freelance en Montreal: sitios SvelteKit, tiendas Shopify, tableros en vivo. Páginas rápidas que ponen tus datos frente a la gente."
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 73,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Auditoría de consultas lentas"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 74,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Procedimientos almacenados optimizados"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 75,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Estrategia de optimización de índices"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 76,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Plan de rediseño del esquema"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 77,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Scripts de migración con rollback"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 78,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Documentación y guía de operación"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 79,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Diseño de arquitectura del pipeline"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 80,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Implementación ELT/ETL"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 81,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Configuración de orquestación (Airflow/cron)"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 82,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Diseño y validación del esquema"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 83,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Manejo de errores y alertas"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 84,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Guía de operación y tablero de monitoreo"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 85,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Diseño de capa semántica / modelo de datos"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 86,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Tableros de Power BI o Retool"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 87,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Definición y documentación de KPI"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 88,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Envío automático de reportes"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 89,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Capacitación y onboarding de usuarios"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 90,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Optimización de rendimiento para datos masivos"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 91,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Auditoría de consultas lentas"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 92,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Procedimientos almacenados optimizados"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 93,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Revisión del diseño y la normalización del esquema"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 94,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Estrategia de optimización de índices"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 95,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Scripts de migración con rollback"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 96,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Plan de respaldo y recuperación"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 97,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Mapeo de necesidades y flujos de trabajo"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 98,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Panel de admin en Retool o a la medida"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 99,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Capa de integración de API"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 100,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Control de acceso por roles"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 101,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Documentación de onboarding de usuarios"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 102,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Guía de mantenimiento y extensión"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 103,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Aplicación SvelteKit full-stack"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 104,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Implementación de diseño responsive"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 105,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Integración de API y capa de datos"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 106,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Autenticación y autorización"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 107,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Despliegue y configuración CI/CD"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 108,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Optimización de rendimiento"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 109,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Medición de rendimiento"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 110,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Documentación, guías de operación y diagramas ER"
+			}
+		},
+		{
+			"collection": "services_deliverables",
+			"id": 111,
+			"parentFk": "services_deliverables_id",
+			"fields": {
+				"label": "Automatización de flujos de trabajo (aprobaciones, tareas programadas)"
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 13,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "Mi enfoque",
+				"content": "Empiezo por tus consultas más lentas, las que bloquean los tableros y sacan de quicio a la gente. Con planes de ejecución y herramientas de profiling, encuentro la causa raíz (índices faltantes, conversiones implícitas, parameter sniffing) y la corrijo de forma metódica. Cada cambio se prueba con datos a escala de producción antes del despliegue."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 14,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "Mi enfoque",
+				"content": "Mover datos puede ser una sincronización cada noche, montar un data warehouse completo o acabar con esa tarea de copiar y pegar que tanto fastidia. Miro cómo fluyen tus datos y luego armo una ruta aburrida y confiable a propósito: reintenta por su cuenta, me avisa cuando algo anda mal y se recupera sin dramas. Me encanta agarrar un proceso enredado y dejarlo andando solito, y después de años de llamadas a las 3 de la mañana, lo construyo para que esas llamadas no lleguen."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 15,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "Mi enfoque",
+				"content": "Esto va desde un solo tablero bien hecho hasta toda una estructura de reportes en la que tu equipo vive a diario. Soy curioso por naturaleza y me encanta que esto quede bien, así que empiezo por cómo tomas tus decisiones de verdad, no por el gráfico, y sigo preguntando hasta que los números tengan sentido. Después verifico cada número contra su fuente, porque un tablero en el que la gente no confía es peor que no tener ninguno."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 16,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "Mi enfoque",
+				"content": "El trabajo con bases de datos nunca es de talla única: una consulta terca, una base de datos desde cero, un build en Snowflake, índices más rápidos. Parto de lo que necesitas y escarbo hasta dar con el arreglo de verdad, no con un parche, pero con los años aprendí a no improvisar nunca: respaldos y un rollback probado antes de que nada toque tus datos en producción. Me encanta este trabajo, así que cuido tus datos como si fueran míos."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 17,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "Mi enfoque",
+				"content": "Empiezo acompañando el flujo de trabajo de cerca, mirando cómo se mueven los datos dentro de tu equipo. Después construyo la herramienta más simple que elimine el cuello de botella. Retool para prototipar rápido, código a la medida cuando Retool llega a su límite. Cada herramienta viene con su documentación para que tu equipo pueda extenderla sin mí."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 18,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "Mi enfoque",
+				"content": "Un proyecto web puede ser una tienda en línea sencilla, una app a la medida o un tablero conectado a tus sistemas. Me encanta descifrar cómo deberían funcionar las cosas, así que empiezo por quién lo va a usar y qué necesita, y luego lo construyo rápido y simple. Y lo lanzo sin sustos, probado y fácil de revertir, para que salir a producción nunca signifique aguantar la respiración."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 19,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "¿Te suena?",
+				"content": "Señales de que esto te pasa: consultas que se arrastran, reportes que se caen por timeout, una migración que te da miedo correr, o una base de datos que creció por accidente y que nadie diseñó de verdad. Puede que hoy funcione, pero aguantas la respiración cada vez que corre. Si algo de esto te suena, este es el punto ideal para empezar."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 20,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "¿Te suena?",
+				"content": "Señales de que esto te pasa: alguien en tu equipo copia números de un sistema a otro cada semana, a mano. Tus reportes siempre van un día atrasados. O tus datos viven en cinco herramientas distintas que nunca terminan de ponerse de acuerdo entre sí. Si algo de esto te suena, este es justo el trabajo que hago."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 21,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "¿Te suena?",
+				"content": "Señales de que esto te pasa: cada reunión termina en pelea por cuál número es el correcto. Armar el mismo reporte a mano le toma días a alguien, cada vez. O tienes tableros ahí quietos que nadie abre, porque todos aprendieron que no cuadran con lo que de verdad está pasando."
+			}
+		},
+		{
+			"collection": "services_sections",
+			"id": 23,
+			"parentFk": "services_sections_id",
+			"fields": {
+				"title": "¿Te suena?",
+				"content": "Señales de que esto te pasa: un sitio que carga lento o se siente torpe de usar, una tienda que pierde gente justo en el checkout, o herramientas y datos a los que tus clientes y tu equipo simplemente no pueden llegar. Si lo que se interpone entre tu trabajo y la gente que lo necesita es el sitio web en sí, ese es justo el hueco que yo cierro."
+			}
+		},
+		{
+			"collection": "block_about_content",
+			"id": "32f35417-d230-400b-9c17-98a49055ec86",
+			"parentFk": "block_about_content_id",
+			"fields": {
+				"interests": [
+					{
+						"id": "anime",
+						"label": "Manga",
+						"image": "/images/about/interests/anime.webp"
+					},
+					{
+						"id": "transit",
+						"label": "Transporte",
+						"image": "/images/about/interests/transit.webp"
+					},
+					{
+						"id": "space",
+						"label": "Espacio",
+						"image": "/images/about/interests/space.webp"
+					},
+					{
+						"id": "food",
+						"label": "Comida MTL",
+						"image": "/images/about/interests/food.webp"
+					}
+				],
+				"methodology": [
+					{
+						"id": "curiosity",
+						"station": 1,
+						"label": "CURIOSIDAD",
+						"description": "Desarmo las cosas para entender cómo funcionan, y luego construyo unas mejores."
+					},
+					{
+						"id": "aesthetics",
+						"station": 2,
+						"label": "ESTÉTICA",
+						"description": "Si funciona pero es feo, solo está hecho a medias."
+					},
+					{
+						"id": "community",
+						"station": 3,
+						"label": "COMUNIDAD",
+						"description": "Las buenas herramientas impulsan a quienes las rodean, de eso se trata todo."
+					},
+					{
+						"id": "quality",
+						"station": 4,
+						"label": "CALIDAD",
+						"description": "Prefiero construirlo bien a construirlo dos veces."
+					}
+				],
+				"metrics": [
+					{
+						"value": "5+",
+						"label": "años construyendo sistemas de datos"
+					},
+					{
+						"value": "30+",
+						"label": "bases de datos diseñadas y optimizadas"
+					},
+					{
+						"value": "3x",
+						"label": "mejora promedio en las consultas"
+					},
+					{
+						"value": "99.9%",
+						"label": "disponibilidad lograda en pipelines"
+					}
+				],
+				"testimonials": [
+					{
+						"quote": "Tienes el don de la perseverancia, y eso es lo que también te hace un genio.",
+						"author": "Guy Sensei",
+						"role": "Sensei",
+						"company": "Lore personal"
+					},
+					{
+						"quote": "La vida no es la que uno vivió, sino la que uno recuerda y cómo la recuerda para contarla.",
+						"author": "Gabriel García Márquez",
+						"role": "Escritor",
+						"company": "Literatura"
+					},
+					{
+						"quote": "Todo lo que oímos es una opinión, no un hecho. Todo lo que vemos es una perspectiva, no la verdad.",
+						"author": "Marco Aurelio",
+						"role": "Filósofo estoico",
+						"company": "Meditaciones"
+					}
+				],
+				"identity_name": "Yesid",
+				"identity_title": "Constructor curioso, cacharreador eterno",
+				"identity_value_prop": "Soy Yesid, un tipo de Montreal al que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por bases de datos, pipelines, dashboards y sitios web. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante.",
+				"polaroids": [
+					{
+						"src": "/images/about/polaroid-1.webp",
+						"alt": "Paseando con mi perro en Montreal",
+						"caption": "Modo descanso",
+						"rotate": -3
+					},
+					{
+						"src": "/images/about/polaroid-dante.webp",
+						"alt": "Dante, el perro de la familia",
+						"caption": "Dante, el consentido de la familia",
+						"rotate": 3
+					},
+					{
+						"src": "/images/about/polaroid-poupoune.webp",
+						"alt": "Poupoune, mi perro",
+						"caption": "Poupoune 🐾",
+						"rotate": -2
+					},
+					{
+						"src": "/images/about/polaroid-yesid.webp",
+						"alt": "Yesid",
+						"caption": "Ese soy yo",
+						"rotate": 2
+					},
+					{
+						"src": "/images/about/polaroid-family.webp",
+						"alt": "Con mi familia",
+						"caption": "Familia",
+						"rotate": -4
+					},
+					{
+						"src": "/images/about/polaroid-friends.webp",
+						"alt": "Con amigos",
+						"caption": "Parceros",
+						"rotate": 3
+					},
+					{
+						"src": "/images/about/polaroid-museum.webp",
+						"alt": "En el museo de arte de Ottawa",
+						"caption": "Día de museo, Ottawa",
+						"rotate": -3
+					}
+				],
+				"weather_city": "Montreal",
+				"weather_hook": "¿Adivina dónde estoy?",
+				"cta_button_label": "Enviar mensaje →",
+				"stop_identity": "IDENTIDAD",
+				"stop_metrics": "MÉTRICAS",
+				"stop_testimonials": "CITA",
+				"stop_process": "CONVICCIONES",
+				"stop_stack": "FORMACIÓN",
+				"stop_clients": "IDIOMAS",
+				"stop_interests": "INTERESES",
+				"stop_snapshots": "FOTOS",
+				"stop_location": "UBICACIÓN",
+				"stop_next": "SIGUE",
+				"label_clients_served": "clientes atendidos",
+				"label_polaroid_prev_aria": "Foto anterior",
+				"label_polaroid_next_aria": "Foto siguiente",
+				"label_testimonials_carousel_aria": "Cita personal",
+				"label_testimonials_tab_nav_aria": "Navegación de citas",
+				"label_testimonial_slide_aria": "Testimonio {index} de {total}",
+				"label_show_testimonial_aria": "Mostrar testimonio {index}",
+				"meta_title": "Sobre mí · yesid.",
+				"meta_description": "Ingeniero freelance de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas.",
+				"education": [
+					{
+						"school": "Champlain Regional College, Lennoxville",
+						"program": "DEC, Técnicas de contabilidad y gestión",
+						"icon": "champlain"
+					},
+					{
+						"school": "Bishop's University",
+						"program": "B.Sc. en Ciencias de la Computación, minor en Administración de Empresas",
+						"icon": "bishops"
+					}
+				],
+				"label_testimonials_prev_aria": "Cita anterior",
+				"label_testimonials_next_aria": "Cita siguiente"
+			}
+		},
+		{
+			"collection": "about_languages",
+			"id": "quebec",
+			"parentFk": "about_languages_id",
+			"fields": {
+				"label": "Francés"
+			}
+		},
+		{
+			"collection": "about_languages",
+			"id": "canada",
+			"parentFk": "about_languages_id",
+			"fields": {
+				"label": "Inglés"
+			}
+		},
+		{
+			"collection": "about_languages",
+			"id": "colombia",
+			"parentFk": "about_languages_id",
+			"fields": {
+				"label": "Español"
+			}
+		},
+		{
+			"collection": "block_contact_content",
+			"id": "4fc472d5-6bd0-4194-afc9-8997229b2a59",
+			"parentFk": "block_contact_content_id",
+			"fields": {
+				"page_title": "Contacto",
+				"send_error_message": "No se pudo enviar el mensaje. Inténtalo de nuevo, por favor.",
+				"station_label": "PRÓXIMA PARADA: TÚ",
+				"meta_title": "Contacto · yesid.",
+				"meta_description": "Escríbeme para infraestructura digital freelance: bases de datos, pipelines, tableros y sitios web. Montreal, respuesta en ~24h.",
+				"info_location": "Montreal, QC, Canadá",
+				"info_response_time": "respuesta en ~24h",
+				"info_section_label_location": "UBICACIÓN",
+				"info_section_label_connect": "CONECTA",
+				"form_command_output": "Abriendo formulario de contacto...",
+				"form_submit_label": "send --message →",
+				"form_field_name_placeholder": "Tu nombre",
+				"form_field_email_placeholder": "tu@empresa.com",
+				"form_field_message_placeholder": "Cuéntame de tu proyecto...",
+				"validation_required": "requerido, {field} no puede estar vacío",
+				"validation_invalid_email": "inválido, ingresa un correo válido",
+				"validation_error_summary": "{count} errores, corrige y reintenta",
+				"success_validating": "Validando campos...",
+				"success_sending": "Enviando mensaje...",
+				"success_sent": "¡Mensaje enviado con éxito!",
+				"success_response_time": "Te respondo en menos de 24h",
+				"success_meanwhile": "Mientras tanto, échale un ojo a mis {work} o a mi {blog}",
+				"success_reset_label": "reset --form",
+				"success_field_ok": "OK",
+				"form_field_name_label": "nombre",
+				"form_field_email_label": "correo",
+				"form_field_message_label": "mensaje",
+				"success_work_link_label": "servicios",
+				"success_blog_link_label": "blog",
+				"booking_prompt": "¿Prefieres hablarlo de viva voz?",
+				"booking_button_label": "book --intro-call →",
+				"info_section_label_languages": "IDIOMAS",
+				"info_languages": "EN · FR · ES",
+				"info_section_label_best_fit": "PROYECTOS IDEALES",
+				"info_best_fit_1": "Reportes lentos que deben ser rápidos",
+				"info_best_fit_2": "Trabajo manual con datos que debería correr solo",
+				"info_best_fit_3": "Sitios y tiendas conectados a datos en vivo"
+			}
+		},
+		{
+			"collection": "contact_channels",
+			"id": "email",
+			"parentFk": "contact_channels_id",
+			"fields": {
+				"label": "Correo"
+			}
+		},
+		{
+			"collection": "contact_channels",
+			"id": "github",
+			"parentFk": "contact_channels_id",
+			"fields": {
+				"label": "GitHub"
+			}
+		},
+		{
+			"collection": "contact_channels",
+			"id": "linkedin",
+			"parentFk": "contact_channels_id",
+			"fields": {
+				"label": "LinkedIn"
+			}
+		},
+		{
+			"collection": "contact_channels",
+			"id": "booking",
+			"parentFk": "contact_channels_id",
+			"fields": {
+				"label": "Agenda una llamada intro de 20 min"
+			}
+		},
+		{
+			"collection": "site_labels",
+			"id": "579bdd04-0a9a-4e29-a202-8839c527cdcc",
+			"parentFk": "site_labels_id",
+			"fields": {
+				"a11y_nav_capabilities": "Capacidades",
+				"a11y_carousel_prev": "Proyectos anteriores",
+				"a11y_carousel_next": "Próximos proyectos",
+				"a11y_nav_tech_stack": "Stack técnico",
+				"a11y_toc": "Tabla de contenido",
+				"a11y_closer_graffiti": "grafiti THE END",
+				"ui_marker_service": "{num} / SERVICIO",
+				"ui_marker_featured": "{num} / DESTACADO",
+				"ui_error_status_note": "// ruta solicitada fuera de servicio",
+				"ui_blog_edition_template": "VOL. 01 // NÚM. {issue}",
+				"ui_copyright_template": "© {year} yesid",
+				"ui_noun_project": "proyecto",
+				"ui_category_personal": "Personal",
+				"ui_category_professional": "Profesional",
+				"ui_watermark_personal": "Personal",
+				"ui_watermark_professional": "Blog",
+				"pages_blog_edge_title": "Blog",
+				"pages_projects_edge_title": "Proyectos",
+				"pages_home_section_projects": "Proyectos",
+				"pages_home_section_services": "Servicios",
+				"pages_home_section_terminus": "Terminal",
+				"email_contact_subject_template": "Nuevo mensaje de {name} vía yesid.dev",
+				"ui_back_to_projects": "← Todos los proyectos",
+				"ui_metro_caption": "metro STM + REM",
+				"a11y_replay_intro": "Repetir la intro",
+				"projects_chrome_meta_title": "Proyectos | yesid.",
+				"projects_chrome_meta_description": "Proyectos, pipelines y sistemas construidos por yesid., infraestructura digital freelance en Montreal. Cada uno con su historia y sus números.",
+				"projects_chrome_listing_heading": "Proyectos",
+				"projects_chrome_listing_search_placeholder": "Buscar proyectos...",
+				"projects_chrome_listing_see_all_link": "Ver todos los proyectos →",
+				"projects_chrome_listing_filters_label": "Filtros",
+				"projects_chrome_listing_filters_services": "Servicios",
+				"projects_chrome_listing_filters_tags": "Etiquetas",
+				"projects_chrome_listing_filters_tech_stack": "Stack técnico",
+				"projects_chrome_listing_filters_all_label": "Todos",
+				"projects_chrome_listing_filters_showing_prefix": "Mostrando",
+				"projects_chrome_listing_card_stack_overflow_suffix": "+{count} más",
+				"projects_chrome_detail_back_to_listing_label": "← Todos los proyectos",
+				"projects_chrome_detail_toc_section_title": "En esta página",
+				"projects_chrome_detail_readme_section_title": "README",
+				"projects_chrome_detail_glance_overview": "Resumen",
+				"projects_chrome_detail_glance_impact": "Impacto",
+				"projects_chrome_detail_glance_stack": "Stack",
+				"projects_chrome_detail_glance_services": "Servicios",
+				"projects_chrome_detail_glance_links": "Enlaces",
+				"projects_chrome_detail_glance_project_info": "Info del proyecto",
+				"projects_chrome_detail_glance_live_site_label": "Sitio en vivo",
+				"projects_chrome_detail_glance_live_site_label_mobile": "↗ Sitio en vivo",
+				"projects_chrome_detail_glance_github_label": "GitHub",
+				"projects_chrome_detail_toc_pill_open_aria": "Tabla de contenido",
+				"projects_chrome_detail_toc_pill_close_aria": "Cerrar tabla de contenido",
+				"blog_chrome_listing_mobile_heading": "Blog",
+				"blog_chrome_listing_search_placeholder": "Buscar artículos...",
+				"blog_chrome_listing_result_noun": "resultado",
+				"blog_chrome_listing_no_posts_message": "No se encontraron artículos. Intenta ajustar tus filtros.",
+				"blog_chrome_listing_filters_label": "Filtros",
+				"blog_chrome_listing_filters_all_label": "Todos",
+				"blog_chrome_listing_filters_language": "Idioma",
+				"blog_chrome_listing_filters_date_range": "Rango de fechas",
+				"blog_chrome_listing_filters_from": "Desde",
+				"blog_chrome_listing_filters_to": "Hasta",
+				"blog_chrome_listing_filters_tags": "Etiquetas",
+				"blog_chrome_listing_filters_showing_prefix": "Mostrando",
+				"blog_chrome_listing_route_map_title": "Mapa de ruta",
+				"blog_chrome_listing_route_map_terminus": "Terminal",
+				"blog_chrome_detail_code_copy_aria": "Copiar código al portapapeles",
+				"blog_chrome_detail_code_copy_label": "Copiar",
+				"blog_chrome_detail_code_error_label": "Error",
+				"blog_chrome_detail_back_nav_to_personal": "← volver al rincón personal",
+				"blog_chrome_detail_back_nav_to_dispatches": "← volver al blog",
+				"blog_chrome_detail_header_post_tags_aria": "Etiquetas del artículo",
+				"blog_chrome_detail_header_reading_time_label": "{minutes} min de lectura",
+				"blog_chrome_detail_page_reading_mode": "Modo lectura",
+				"blog_chrome_detail_page_toc_section_title": "En esta página",
+				"blog_chrome_detail_page_meta_category": "Categoría",
+				"blog_chrome_detail_page_meta_words": "Palabras",
+				"blog_chrome_detail_page_meta_read_time": "Tiempo de lectura",
+				"blog_chrome_detail_page_meta_language": "Idioma",
+				"blog_chrome_detail_page_meta_tags": "Etiquetas",
+				"blog_chrome_detail_toc_pill_open_aria": "Tabla de contenido",
+				"blog_chrome_detail_toc_pill_close_aria": "Cerrar tabla de contenido",
+				"services_chrome_listing_heading": "Servicios",
+				"services_chrome_listing_station_label_template": "Servicio {stationNum} / {totalStr}",
+				"services_chrome_listing_deep_dive_label": "Ver a fondo →",
+				"services_chrome_listing_projects_strip_built_with_service": "Construido con {serviceTitle}",
+				"services_chrome_listing_projects_strip_built_with_fallback": "Construido con esto",
+				"services_chrome_listing_projects_strip_project_singular": "PROYECTO",
+				"services_chrome_listing_projects_strip_project_plural": "PROYECTOS",
+				"services_chrome_meta_title": "Servicios · yesid.",
+				"services_chrome_meta_description": "Cuatro estaciones: Bases de datos y SQL, Pipelines y Automatización, Tableros y Analítica, Sitios web y E-commerce. Hecho en Montreal, entregado con números.",
+				"services_chrome_detail_back_to_services_label": "← Todos los servicios",
+				"services_chrome_detail_value_proposition_heading": "Cómo te ayuda esto",
+				"services_chrome_detail_deliverables_heading": "Entregables típicos",
+				"services_chrome_detail_related_projects_heading": "Proyectos relacionados",
+				"services_chrome_detail_related_projects_nav_aria": "Proyectos relacionados",
+				"services_chrome_detail_service_nav_aria": "Navegación de servicios",
+				"nav_chrome_directions_previous": "Anterior",
+				"nav_chrome_directions_next": "Siguiente",
+				"nav_chrome_shared_open_menu_aria": "Abrir menú",
+				"nav_chrome_shared_close_menu_aria": "Cerrar menú",
+				"nav_chrome_shared_theme_toggle_aria": "Tema oscuro",
+				"nav_chrome_shared_footer_nav_aria": "Navegación del pie de página",
+				"nav_chrome_shared_menu_overlay_aria": "Menú de navegación",
+				"nav_chrome_shared_menu_overlay_footer_label": "NAVEGACIÓN · TODAS LAS RUTAS",
+				"nav_chrome_shared_locale_switcher_aria": "Idioma",
+				"nav_chrome_shared_search_placeholder": "Buscar...",
+				"nav_chrome_shared_clear_filters_label": "limpiar filtros",
+				"nav_chrome_shared_toc_toggle_section_aria": "Alternar sección",
+				"nav_chrome_shared_toc_heading": "En esta página",
+				"nav_chrome_shared_toc_mobile_button": "Tabla de contenido",
+				"footer_chrome_related_projects_strip_built_with_label": "Construido con esto",
+				"footer_chrome_related_projects_strip_project_count_singular": "proyecto",
+				"footer_chrome_related_projects_strip_project_count_plural": "proyectos",
+				"footer_chrome_footer_tagline": "// infraestructura digital",
+				"footer_chrome_footer_location": "Montreal, QC · Remoto",
+				"footer_chrome_footer_status_prefix": "sistema en línea ·",
+				"hero_dashboard_vehicles_label": "VEHÍCULOS RASTREADOS",
+				"hero_dashboard_vehicles_sub": "DEMO · ESTILO STM",
+				"hero_dashboard_delay_label": "DEMORA MEDIA",
+				"hero_dashboard_delay_sub": "{coverage}% DE COBERTURA",
+				"hero_dashboard_routes_label": "RUTAS EN VIVO",
+				"hero_dashboard_routes_sub": "DE {total} EN TOTAL",
+				"ui_stations_one_system": "{count} estaciones · un solo sistema",
+				"ui_result_count_singular": "{count} resultado",
+				"ui_result_count_plural": "{count} resultados",
+				"ui_language_name_en": "Inglés",
+				"ui_language_name_fr": "Francés",
+				"ui_language_name_es": "Español",
+				"services_chrome_listing_station_short_database_engineering": "Bases de datos",
+				"services_chrome_listing_station_short_data_pipeline": "Pipelines",
+				"services_chrome_listing_station_short_analytics_reporting": "Tableros",
+				"services_chrome_listing_station_short_web_development": "Sitios web",
+				"services_chrome_detail_stack_heading": "Stack",
+				"services_chrome_detail_see_stack_label": "Ver el stack completo →",
+				"nav_chrome_shared_toc_close_aria": "Cerrar tabla de contenido",
+				"nav_chrome_shared_toc_counter_prefix": "SEC",
+				"a11y_project_image_open": "Abrir {caption}",
+				"a11y_project_image_close": "Cerrar imagen",
+				"a11y_more_metrics": "Más métricas",
+				"a11y_architecture_diagram": "Diagrama de arquitectura",
+				"a11y_technology_stack_template": "Stack tecnológico: {stack}",
+				"ui_terminal_title": "terminal",
+				"blog_chrome_detail_code_title": "código",
+				"a11y_quiet_mode_label": "Contraer todo",
+				"a11y_quiet_mode_enable": "Contraer todas las secciones de esta página",
+				"a11y_quiet_mode_disable": "Expandir todas las secciones de esta página",
+				"a11y_quiet_mode_remember": "Empezar siempre contraído",
+				"a11y_quiet_mode_forget": "No empezar contraído",
+				"projects_chrome_detail_glance_repo_private_label": "Repo privado (por ahora)",
+				"a11y_quiet_mode_label_collapsed": "Expandir todo",
+				"blog_chrome_listing_no_posts_empty_message": "Nada por aquí todavía. Los nuevos artículos están en tránsito.",
+				"hero_dashboard_vehicles_sub_live": "STM · EN VIVO",
+				"pages_home_section_about": "Sobre mí"
+			}
+		},
+		{
+			"collection": "site_meta",
+			"id": 1,
+			"parentFk": "site_meta_id",
+			"fields": {
+				"default_description": "yesid., ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.",
+				"description": "Ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.",
+				"tagline": "Infraestructura digital que se mueve."
+			}
+		},
+		{
+			"collection": "block_closer",
+			"id": "9aca5265-6e5f-4c61-8c35-1960061cbbd4",
+			"parentFk": "block_closer_id",
+			"fields": {
+				"heading": "TERMINAL",
+				"heading_dot": ".",
+				"subheading": "FIN DE LA LÍNEA",
+				"cta_label": "Inicializar conexión",
+				"attribution_text": "Graffiti Vectors by Vecteezy",
+				"terminal_title": "yesid@terminus:~/destinations",
+				"terminal_city": "Montreal, QC",
+				"terminal_encoding": "UTF-8",
+				"terminal_destinations_label": "{count} destinos",
+				"terminal_prompt": "// ¿y ahora a dónde?",
+				"rows_contact_label": "CONTACTO",
+				"rows_contact_description": "Empezar un proyecto juntos",
+				"rows_contact_action": "GO",
+				"rows_connect_label": "REPO GITHUB",
+				"rows_connect_description": "GitHub · trabajo open source",
+				"rows_connect_action": "GO",
+				"rows_read_label": "BLOG",
+				"rows_read_action": "cd",
+				"rows_about_label": "YESID",
+				"rows_about_description": "Sobre quien construye",
+				"rows_about_action": "cd",
+				"rows_stack_label": "STACK",
+				"rows_stack_description": "Herramientas y arquitectura",
+				"rows_stack_action": "cd",
+				"rows_read_description": "Artículos y notas de campo"
+			}
+		},
+		{
+			"collection": "error_pages",
+			"id": "373a1281-9e65-473c-b374-9352db95519e",
+			"parentFk": "error_pages_id",
+			"fields": {
+				"description": "El servidor encontró un error inesperado. Intenta de nuevo más tarde.",
+				"heading": "Algo salió mal",
+				"label": "ERROR DE SISTEMA",
+				"suggestions": [
+					{
+						"label": "Inicio",
+						"href": "/"
+					},
+					{
+						"label": "Contacto",
+						"href": "/contact"
+					}
+				],
+				"terminal_line": "$ route --status 500 // internal server error"
+			}
+		},
+		{
+			"collection": "error_pages",
+			"id": "0ed501b3-0866-497e-93d1-55245c864a9f",
+			"parentFk": "error_pages_id",
+			"fields": {
+				"description": "No se encontró la página que buscabas.",
+				"heading": "Estación fuera de servicio",
+				"label": "PÁGINA NO ENCONTRADA",
+				"suggestions": [
+					{
+						"label": "Inicio",
+						"href": "/"
+					},
+					{
+						"label": "Servicios",
+						"href": "/services"
+					}
+				],
+				"terminal_line": "$ route --status 0 // generic fallback"
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 1,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "yesid. | Infraestructura digital que se mueve.",
+				"description": "Desarrollador SQL freelance y consultor de infraestructura digital en Montreal. PostgreSQL, dbt, Power BI, Python. Pipelines en tiempo real, análisis, tableros."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 2,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Yesid, ingeniero de infraestructura digital en Montreal",
+				"description": "Consultor de infraestructura digital en Montreal. Experiencia en SQL, almacenes de datos y analítica en tiempo real. Disponible para freelance y consultoría."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 3,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Contrata un freelancer de infraestructura digital en Montreal",
+				"description": "Escríbeme para trabajo freelance en bases de datos, pipelines, tableros o sitios web. PostgreSQL, dbt, Power BI, SvelteKit. En Montreal, disponible en remoto."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 4,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Infraestructura digital: web, datos, automatización",
+				"description": "Servicios de infraestructura digital: consultoría SQL y PostgreSQL, pipelines dbt, analítica Power BI, ETL en Python y plataformas de datos en tiempo real."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 5,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Proyectos",
+				"description": "Trabajo freelance reciente: pipelines de transporte en tiempo real, plataformas analíticas, tableros, ETL e infraestructura para equipos en Montreal y Canadá."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 6,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Blog",
+				"description": "Notas sobre infraestructura digital, SQL, PostgreSQL, dbt, Power BI y sistemas analíticos para equipos en crecimiento. Consultor freelance en Montreal."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 7,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Blog personal",
+				"description": "Notas fuera del trabajo: herramientas, lecturas, experimentos y proyectos paralelos. Más largo que el blog profesional, siempre sobre construir bien las cosas."
+			}
+		},
+		{
+			"collection": "route_seo",
+			"id": 8,
+			"parentFk": "route_seo_id",
+			"fields": {
+				"title": "Stack técnico",
+				"description": "Las herramientas, lenguajes y plataformas que yesid. usa a diario: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript y el pegamento que lo une todo."
+			}
+		},
+		{
+			"collection": "block_hero",
+			"id": "4acac46d-6d45-4344-bdee-04122e4a64d1",
+			"parentFk": "block_hero_id",
+			"fields": {
+				"cta_contact": "Agenda tu llamada intro de 20 min",
+				"cta_work": "Mira cómo construyo →",
+				"subheadline": "Hago que los datos digan la verdad.",
+				"subtitle": "Construyo infraestructura confiable para equipos que no pueden darse el lujo de una caída.",
+				"headline_line1": "SISTEMAS QUE",
+				"headline_line2": "NO SE ROMPEN",
+				"headline_aria_suffix": "No se rompen.",
+				"sql_prompt": "yesid@transit:gold>",
+				"sql_live_label": "DEMO",
+				"sql_col_route": "route",
+				"sql_col_avg_delay": "avg_delay_s",
+				"sql_col_vehicles": "vehicles",
+				"sql_meta_template": "5 filas · {queryTime}s · {updatedAgo}",
+				"refresh_label": "TRAER DATOS FRESCOS",
+				"refresh_helper": "Regenera las métricas y los resultados de la consulta. Datos simulados, estilo pipeline STM, no un feed en vivo.",
+				"scroll_down": "PRÓXIMA PARADA: SIGUE BAJANDO",
+				"identity_line": "infraestructura digital freelance - Montreal",
+				"sql_live_badge": "EN VIVO",
+				"refresh_helper_live": "Actualiza las métricas y los resultados de la consulta desde el pipeline en vivo."
+			}
+		},
+		{
+			"collection": "block_manifesto",
+			"id": "be09d2ee-e057-4a26-9aae-b49e83273ec4",
+			"parentFk": "block_manifesto_id",
+			"fields": {
+				"hidden_transit_lines": [
+					{
+						"name": "LIGNE BLEUE",
+						"color": "#003DA5"
+					},
+					{
+						"name": "LIGNE VERTE",
+						"color": "#008F4F"
+					},
+					{
+						"name": "LIGNE JAUNE",
+						"color": "#F0CB00"
+					},
+					{
+						"name": "REM",
+						"color": "#78BE20"
+					},
+					{
+						"name": "11 VAUDREUIL/HUDSON",
+						"color": "#DA291C"
+					},
+					{
+						"name": "12 SAINT-JÉRÔME",
+						"color": "#009B3A"
+					},
+					{
+						"name": "13 MONT-SAINT-HILAIRE",
+						"color": "#FFD100"
+					},
+					{
+						"name": "14 CANDIAC",
+						"color": "#7B2D8E"
+					},
+					{
+						"name": "15 MASCOUCHE",
+						"color": "#0072CE"
+					}
+				],
+				"pills": [
+					{
+						"label": "bases de datos",
+						"serviceId": "database-engineering"
+					},
+					{
+						"label": "pipelines",
+						"serviceId": "data-pipeline"
+					},
+					{
+						"label": "tableros",
+						"serviceId": "analytics-reporting"
+					},
+					{
+						"label": "sitios web",
+						"serviceId": "web-development"
+					}
+				],
+				"statement_line1": "CONSTRUYO LA",
+				"statement_line_huge": "INFRAESTRUCTURA",
+				"statement_line3_part1": "QUE",
+				"statement_line3_highlight": "TUS OPERACIONES",
+				"statement_line3_part2": "NECESITAN",
+				"terminal_user": "yesid@mtl",
+				"terminal_command": ":~$ cat manifesto.md",
+				"edge_left_section_number": "SEC-02",
+				"edge_left_section_name": "MANIFIESTO",
+				"edge_left_location": "MTL-QC",
+				"edge_right_lat": "LAT 45.5017°N",
+				"edge_right_lng": "LNG 73.5673°W",
+				"edge_right_src": "SRC Sherbrooke, QC",
+				"edge_right_via": "VIA Lennoxville, QC",
+				"edge_right_dst": "DST Montréal, QC",
+				"edge_right_node": "NODE berri-uqam",
+				"edge_right_status": "STATUS active",
+				"edge_bottom_connected": "CONECTADO",
+				"edge_bottom_line": "LIGNE ORANGE",
+				"edge_bottom_url": "yesid.dev",
+				"edge_bottom_version": "v2.0",
+				"edge_bottom_scroll_hint": "BAJA ↓",
+				"transit_arrival_label": "PROCHAIN / NEXT",
+				"transit_platform_badge": "QUAI / PLATFORM 2",
+				"transit_direction_badge": "DIRECTION: CENTRE-VILLE"
+			}
+		},
+		{
+			"collection": "block_proof_reel",
+			"id": "6c8a6ba1-d44c-4c17-8fa3-736ef77fd1ff",
+			"parentFk": "block_proof_reel_id",
+			"fields": {
+				"heading": "PRUEBAS",
+				"heading_dot": ".",
+				"section_label": "// PRUEBAS",
+				"subheading": "TRABAJOS ESCOGIDOS",
+				"toggle_color_aria": "Alternar el color de {title}",
+				"view_all_label": "Ver todos los proyectos →"
+			}
+		},
+		{
+			"collection": "block_services_grid",
+			"id": "df55e0eb-c529-4339-b6c5-c9d03652f714",
+			"parentFk": "block_services_grid_id",
+			"fields": {
+				"heading": "SERVICIOS",
+				"heading_dot": ".",
+				"subheading": "LO QUE CONSTRUYO",
+				"view_all_link": "Ver todos los servicios →",
+				"view_illustration_aria": "Ver la ilustración de {title}"
+			}
+		},
+		{
+			"collection": "block_cta",
+			"id": "77d71216-9eb6-45d0-bd4c-b69fc94dcd45",
+			"parentFk": "block_cta_id",
+			"fields": {
+				"cta_contact": "Hablemos",
+				"cta_github": "Ver en GitHub",
+				"heading": "Construyamos algo\nque se mueva",
+				"subtitle": "Base de datos, pipeline, tablero, sitio web: donde se atasca la cosa, ahí empezamos."
+			}
+		},
+		{
+			"collection": "block_about_intro",
+			"id": "277c93ff-5416-4d6a-8580-50cf6cdec713",
+			"parentFk": "block_about_intro_id",
+			"fields": {
+				"bio": "Tomo los datos, hago que cuenten historias y construyo los sistemas por donde se mueven.",
+				"interests": "Manga · Transporte público · Espacio · Comida de Montreal",
+				"interests_label": "INTERESES",
+				"location_label": "UBICACIÓN",
+				"more_link": "→ Más sobre mí",
+				"name": "Yesid",
+				"stack_label": "STACK",
+				"title": "Ingeniero freelance de infraestructura digital",
+				"location_city": "Montreal",
+				"location_region": "QC, Canadá"
+			}
+		},
+		{
+			"collection": "block_blog_page_content",
+			"id": "74ef9d4b-9e57-41e1-9d62-1be677bd9a74",
+			"parentFk": "block_blog_page_content_id",
+			"fields": {
+				"intro": "Notas sobre infraestructura digital, bases de datos y cómo construir sistemas confiables.",
+				"heading": "Blog",
+				"back_to_dispatches": "← volver al blog",
+				"back_to_personal": "← volver al rincón personal",
+				"personal_heading": "Rincón personal",
+				"personal_intro": "Trenes, espacio, herramientas y esas notas por fuera del trabajo que todavía moldean mi manera de construir.",
+				"to_personal_label": "Rincón personal",
+				"to_personal_subtitle": "Fuera de horario",
+				"to_professional_label": "Volver al blog",
+				"to_professional_subtitle": "Notas de marca",
+				"entry_rail_work_title": "Trabaja conmigo",
+				"entry_rail_work_prompt": "¿Necesitas un sistema que se mantenga editable?",
+				"entry_rail_services_label": "Ver servicios",
+				"entry_rail_contact_label": "Empezar un proyecto",
+				"entry_rail_routes_title": "Elige una ruta",
+				"entry_rail_route_case_studies_label": "Casos de estudio",
+				"entry_rail_route_services_label": "Servicios",
+				"entry_rail_route_stack_label": "Stack",
+				"entry_rail_route_about_label": "Sobre el autor",
+				"entry_rail_route_contact_label": "Contacto"
+			}
+		},
+		{
+			"collection": "block_projects_page_content",
+			"id": "1036c81f-8f0b-4023-9554-43772fbf38fc",
+			"parentFk": "block_projects_page_content_id",
+			"fields": {
+				"intro": "Proyectos, pipelines y sistemas que he construido.",
+				"heading": "Proyectos",
+				"empty_state": "Ningún proyecto coincide con los filtros elegidos."
+			}
+		},
+		{
+			"collection": "block_tech_stack_page_content",
+			"id": "b41089d8-f7c2-408c-8ed5-9018425080a0",
+			"parentFk": "block_tech_stack_page_content_id",
+			"fields": {
+				"meta_title": "Stack tecnológico · yesid.",
+				"meta_description": "Más de {itemCount} tecnologías, un mapa interactivo que muestra cómo se construye la infraestructura digital, pieza por pieza.",
+				"hero_overline": "Mapa de infraestructura",
+				"hero_title_line1": "La sala de",
+				"hero_title_line2": "control",
+				"hero_terminal_aria": "Resumen de la infraestructura",
+				"hero_stat_technologies": "tecnologías",
+				"terminal_cmd": "~ yesid --stack --verbose",
+				"terminal_loading": "→ cargando {count} nodos...",
+				"terminal_success": "✓ listo",
+				"terminal_cataloged": "→ {count} tecnologías catalogadas",
+				"terminal_status": "mapa interactivo en línea.",
+				"action_get_in_touch": "Escríbeme",
+				"action_view_services": "Ver servicios",
+				"cta_heading_line1": "Encontraste tu stack",
+				"cta_heading_line2": "Vamos a construirlo",
+				"cta_sub": "Un pipeline, un tablero, una base de datos, una tienda, la infraestructura está lista.",
+				"stack_explainer": "Un \"stack\" es solo la lista de piezas de un software: la interfaz que la gente toca, la lógica que decide las cosas, los datos que guarda en memoria y la infraestructura sobre la que corre. Ese es todo el secreto. Cuando sabes leer un stack, una cotización ya no te puede esconder gran cosa; curiosea en los planos de abajo y compruébalo tú mismo.",
+				"stack_kicker": "¿qué es un \"stack\"?",
+				"engine_loading": "~ desenrollando los planos..."
+			}
+		}
+	]
+}
