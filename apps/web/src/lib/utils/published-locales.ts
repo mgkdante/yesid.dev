@@ -13,4 +13,4 @@
 // App code should keep importing it from $lib/utils/seo-defaults (re-export).
 import type { Locale } from '$lib/types';
 
-export const PUBLISHED_LOCALES: readonly Locale[] = ['en', 'fr'];
+export const PUBLISHED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'];

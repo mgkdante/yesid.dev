@@ -52,7 +52,7 @@ test.describe('State across languages — reading layout (collapsible state surv
 		await expect(frTrigger).toHaveAttribute('aria-expanded', 'false');
 	});
 
-	test('the collapse survives the FR→EN direction too', async ({ page }) => {
+	test('the collapse survives FR→ES→EN (click-twice cycle)', async ({ page }) => {
 		await page.goto('/fr/projects');
 		const firstCard = page.getByTestId('project-card').first();
 		await expect(firstCard).toBeVisible();
@@ -65,6 +65,15 @@ test.describe('State across languages — reading layout (collapsible state surv
 		await trigger.click();
 		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
+		// Click 1: FR → ES — the collapse survives the first remount.
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL('**/es/projects/**');
+		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		const esTrigger = firstVisibleSectionTrigger(page);
+		await expect(esTrigger).toBeVisible();
+		await expect(esTrigger).toHaveAttribute('aria-expanded', 'false');
+
+		// Click 2: ES → EN — and the second one.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => /^\/projects\//.test(url.pathname));
 		await expect(page.getByTestId('project-detail-page')).toBeVisible();
