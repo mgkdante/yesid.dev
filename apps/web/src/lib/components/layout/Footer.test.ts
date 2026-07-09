@@ -71,11 +71,13 @@ describe('Footer', () => {
 		expect(screen.getByText(/system online/)).toBeInTheDocument();
 	});
 
-	it('renders location in an address element', () => {
+	it('renders location in a single address element — status bar only (operator trim)', () => {
+		// The brand block dropped its location line; the status bar keeps it.
 		render(Footer);
-		const address = document.querySelector('footer address');
-		expect(address).not.toBeNull();
-		expect(address?.textContent).toContain('Montreal');
+		const addresses = document.querySelectorAll('footer address');
+		expect(addresses.length).toBe(1);
+		expect(addresses[0]?.textContent).toContain('Montreal');
+		expect(addresses[0]?.closest('.footer-status-border')).not.toBeNull();
 	});
 
 	it('renders the digital infrastructure tagline', () => {
