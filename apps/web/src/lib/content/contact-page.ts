@@ -43,11 +43,26 @@ export const contactContent: ContactContent = {
 		title: 'yesid@mtl ~ /contact',
 	},
 	infoTerminal: {
+		bestFit: [
+			{
+				en: 'Slow reports that need to be fast',
+				fr: 'Des rapports lents qui doivent aller vite',
+			},
+			{
+				en: 'Manual data work that should run itself',
+				fr: 'Du travail de données manuel qui devrait rouler tout seul',
+			},
+			{
+				en: 'Sites and stores wired to live data',
+				fr: 'Des sites et boutiques branchés sur des données en direct',
+			},
+		],
 		command: '$ yesid --info',
 		languages: { en: 'EN · FR · ES', fr: 'EN · FR · ES' },
 		location: { en: 'Montreal, QC, Canada', fr: 'Montréal, QC, Canada' },
 		responseTime: { en: '~24h response time', fr: 'réponse en ~24h' },
 		sectionLabels: {
+			bestFit: { en: 'BEST FIT', fr: 'PROJETS IDÉAUX' },
 			connect: { en: 'CONNECT', fr: 'CONNEXION' },
 			languages: { en: 'LANGUAGES', fr: 'LANGUES' },
 			location: { en: 'LOCATION', fr: 'EMPLACEMENT' },

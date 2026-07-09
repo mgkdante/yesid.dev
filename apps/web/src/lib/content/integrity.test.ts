@@ -697,7 +697,9 @@ describe('LocalizedString guard + translation debt', () => {
 // operator round 2026-07-03: -10 fr-complete leaves — both detail-CTA label
 // groups retired; the shared block_cta band is the one CTA → 653 - 10 = 643.
 // About rotated title (pages_home_section_about, EN+FR) → 643 + 1 = 644.
-const LOCKED = { TOTAL: 644, WITH_FR: 644, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// launch Phase 1 (homework #26b): contact BEST FIT section — 1 section label
+// + 3 lines, all fr-complete → 644 + 4 = 648.
+const LOCKED = { TOTAL: 648, WITH_FR: 648, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
