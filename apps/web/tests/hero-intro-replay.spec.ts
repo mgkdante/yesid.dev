@@ -44,6 +44,32 @@ async function expectNotOrangeWall(page: Page, moment: string): Promise<void> {
 	).toBeLessThan(3);
 }
 
+/**
+ * Drive the intro scroll-through DETERMINISTICALLY (CI-flake hardening): a
+ * single scrollTo(bottom) jump can leave the GSAP scrub short of the pin end
+ * on a loaded shard — the completion callback (day-key persist + collapse)
+ * then never fires and the poll below times out. Stepping a viewport at a
+ * time emits real scroll events the scrub renders one by one, and the loop
+ * exits on the true completion signal: the pin-spacer detaching.
+ */
+async function scrollIntroThrough(page: Page): Promise<void> {
+	// Budget: ~40 steps × 0.9 viewport ≈ 36 viewports — far beyond the
+	// 600–900svh track. On budget exhaustion the caller's own assertions
+	// report the failure precisely.
+	for (let step = 0; step < 40; step++) {
+		const spacerGone = await page.evaluate(() => {
+			if (document.querySelector('.pin-spacer') === null) return true;
+			const atBottom =
+				window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+			if (!atBottom) window.scrollBy(0, window.innerHeight * 0.9);
+			return false;
+		});
+		if (spacerGone) return;
+		// A beat between steps lets the scrub render the segment it just entered.
+		await page.waitForTimeout(50);
+	}
+}
+
 /** Local-timezone YYYY-MM-DD — must match heroIntroDayKey(). */
 function localDayKeyScript(storageKey: string): string {
 	return `(() => {
@@ -129,10 +155,11 @@ test('first visit plays the intro; scrolling through persists, arms the dot + co
 	const expandedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
 	const viewportHeight = page.viewportSize()!.height;
 
-	// Scroll the intro through (straight past the pin end).
-	await page.evaluate(() => {
-		window.scrollTo(0, document.body.scrollHeight);
-	});
+	// Scroll the intro through — stepped, so the scrub renders every segment
+	// and the completion signal (pin-spacer detach) is awaited BEFORE the
+	// day-key poll (CI shard 1 flaked on the old single-jump + key-first order).
+	await scrollIntroThrough(page);
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 
 	// Day-key persisted…
 	await expect
@@ -146,7 +173,6 @@ test('first visit plays the intro; scrolling through persists, arms the dot + co
 	await expect(page.locator('[data-testid="hero-banner"]')).toHaveClass(/hero-intro-done/, {
 		timeout: 15_000,
 	});
-	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 	const collapsedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
 	expect(
 		expandedHeight - collapsedHeight,
@@ -278,10 +304,8 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 	).toBe('0');
 
 	// Scrolling the replayed intro through again re-applies the collapse —
-	// the round-trip is idempotent.
-	await page.evaluate(() => {
-		window.scrollTo(0, document.body.scrollHeight);
-	});
+	// the round-trip is idempotent. Same stepped drive as the first pass.
+	await scrollIntroThrough(page);
 	await expect(banner).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 });
