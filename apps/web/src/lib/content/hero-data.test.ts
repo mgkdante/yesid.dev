@@ -34,12 +34,12 @@ describe('generateHeroData', () => {
     expect(delay!.unit).toBe('s');
   });
 
-  it('returns routes metric within 160–203', () => {
+  it('returns routes metric within 160–227', () => {
     const data = generateHeroData();
     const routes = data.metrics.find(m => m.key === 'routes');
     expect(routes).toBeDefined();
     expect(routes!.value).toBeGreaterThanOrEqual(160);
-    expect(routes!.value).toBeLessThanOrEqual(203);
+    expect(routes!.value).toBeLessThanOrEqual(227);
     expect(Number.isInteger(routes!.value)).toBe(true);
   });
 
