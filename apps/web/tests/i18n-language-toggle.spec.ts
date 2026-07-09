@@ -37,8 +37,9 @@ test.describe('Language toggle — click navigation + content change', () => {
     await expect(page.locator('body')).not.toContainText('Send message');
   });
 
-  test('clicking language toggle on FR page navigates to EN + content updates', async ({ page }) => {
-    // Start on FR /about
+  test('clicking language toggle on FR page cycles FR → ES → EN (click-twice)', async ({ page }) => {
+    // Three published locales: the toggle cycles en → fr → es → en, so FR
+    // reaches EN by clicking TWICE, passing through ES (approved approach).
     await page.goto('/fr/about');
     const toggle = page.getByTestId('language-toggle');
     await expect(toggle).toBeVisible();
@@ -46,33 +47,46 @@ test.describe('Language toggle — click navigation + content change', () => {
     // Assert the stable FR copy marker (CTA buttonLabel).
     await expect(page.locator('body')).toContainText('Envoyer un message');
 
-    // Click toggle → should navigate to /about (no prefix)
+    // Click 1: FR → ES
+    await toggle.click();
+    await page.waitForURL('/es/about');
+    await expect(page.locator('body')).toContainText('Enviar mensaje');
+    await expect(page.locator('body')).not.toContainText('Envoyer un message');
+
+    // Click 2: ES → EN (no prefix)
     await toggle.click();
     await page.waitForURL('/about');
     expect(page.url()).not.toContain('/fr');
+    expect(page.url()).not.toContain('/es');
 
-    // Verify EN page copy is back and the FR marker is gone.
+    // Verify EN page copy is back and the ES marker is gone.
     await expect(page.locator('body')).toContainText('Send message');
-    await expect(page.locator('body')).not.toContainText('Envoyer un message');
+    await expect(page.locator('body')).not.toContainText('Enviar mensaje');
   });
 
-  test('language toggle preserves path across all routes', async ({ page }) => {
+  test('language toggle preserves path across all routes (en → fr → es → en cycle)', async ({ page }) => {
     const testPaths = [
-      { en: '/services', fr: '/fr/services' },
-      { en: '/projects', fr: '/fr/projects' },
-      { en: '/blog', fr: '/fr/blog' },
-      { en: '/tech-stack', fr: '/fr/tech-stack' },
+      { en: '/services', fr: '/fr/services', es: '/es/services' },
+      { en: '/projects', fr: '/fr/projects', es: '/es/projects' },
+      { en: '/blog', fr: '/fr/blog', es: '/es/blog' },
+      { en: '/tech-stack', fr: '/fr/tech-stack', es: '/es/tech-stack' },
     ];
 
-    for (const { en, fr } of testPaths) {
+    for (const { en, fr, es } of testPaths) {
       // EN → FR
       await page.goto(en);
       const toggle = page.getByTestId('language-toggle');
       const href = await toggle.getAttribute('href');
       expect(href).toBe(fr);
 
-      // FR → EN
+      // FR → ES
       await page.goto(fr);
+      const toggleEs = page.getByTestId('language-toggle');
+      const hrefEs = await toggleEs.getAttribute('href');
+      expect(hrefEs).toBe(es);
+
+      // ES → EN (cycle closes, no prefix)
+      await page.goto(es);
       const toggleBack = page.getByTestId('language-toggle');
       const hrefBack = await toggleBack.getAttribute('href');
       expect(hrefBack).toBe(en);
@@ -149,6 +163,12 @@ test.describe('Language toggle — click navigation + content change', () => {
     toggle = page.getByTestId('language-toggle');
     ariaLabel = await toggle.getAttribute('aria-label');
     expect(ariaLabel?.toLowerCase()).toContain('français');
+
+    // ES: aria-label should contain 'Español'
+    await page.goto('/es/about');
+    toggle = page.getByTestId('language-toggle');
+    ariaLabel = await toggle.getAttribute('aria-label');
+    expect(ariaLabel?.toLowerCase()).toContain('español');
   });
 });
 

@@ -55,17 +55,17 @@ test.describe('i18n routing — static routes render 200 in EN + FR', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Routing: /es resolves (L1 dark state) but self-canonicalizes to EN until
-// 'es' joins PUBLISHED_LOCALES; a never-published prefix still 404s.
+// Routing: /es is PUBLISHED (launch flip) — es canonical, full SEO cluster;
+// a never-published prefix still 404s.
 // ---------------------------------------------------------------------------
 
-test('/es/about resolves dark: 200, es lang, EN canonical, unindexed', async ({ page }) => {
+test('/es/about is published: 200, es lang, /es canonical', async ({ page }) => {
   const response = await page.goto('/es/about');
   expect(response?.status()).toBe(200);
   await expect(page.locator('html')).toHaveAttribute('lang', 'es');
-  // Dark-QA contract: canonical points at the EN URL until the publish flip.
+  // Publish-flip contract: es is in PUBLISHED_LOCALES, so /es self-canonicalizes.
   const canonical = page.locator('link[rel="canonical"]');
-  await expect(canonical).toHaveAttribute('href', 'https://yesid.dev/about');
+  await expect(canonical).toHaveAttribute('href', 'https://yesid.dev/es/about');
 });
 
 test('never-published locale prefix /de/* returns 404', async ({ page }) => {
@@ -123,10 +123,11 @@ test('canonical meta: /fr home has canonical=https://yesid.dev/fr', async ({ pag
 // hreflang alternates — both locales on bilingual routes
 // ---------------------------------------------------------------------------
 
-test('hreflang: /about includes en + fr + x-default links', async ({ page }) => {
+test('hreflang: /about includes en + fr + es + x-default links', async ({ page }) => {
   await page.goto('/about');
   const enLink = page.locator('link[rel="alternate"][hreflang="en"]');
   const frLink = page.locator('link[rel="alternate"][hreflang="fr"]');
+  const esLink = page.locator('link[rel="alternate"][hreflang="es"]');
   const defaultLink = page.locator('link[rel="alternate"][hreflang="x-default"]');
 
   await expect(enLink).toHaveCount(1);
@@ -135,14 +136,18 @@ test('hreflang: /about includes en + fr + x-default links', async ({ page }) => 
   await expect(frLink).toHaveCount(1);
   await expect(frLink).toHaveAttribute('href', 'https://yesid.dev/fr/about');
 
+  await expect(esLink).toHaveCount(1);
+  await expect(esLink).toHaveAttribute('href', 'https://yesid.dev/es/about');
+
   await expect(defaultLink).toHaveCount(1);
   await expect(defaultLink).toHaveAttribute('href', 'https://yesid.dev/about');
 });
 
-test('hreflang: /fr/about ALSO includes en + fr + x-default (same cluster)', async ({ page }) => {
+test('hreflang: /fr/about ALSO includes en + fr + es + x-default (same cluster)', async ({ page }) => {
   await page.goto('/fr/about');
   const enLink = page.locator('link[rel="alternate"][hreflang="en"]');
   const frLink = page.locator('link[rel="alternate"][hreflang="fr"]');
+  const esLink = page.locator('link[rel="alternate"][hreflang="es"]');
   const defaultLink = page.locator('link[rel="alternate"][hreflang="x-default"]');
 
   await expect(enLink).toHaveCount(1);
@@ -151,32 +156,48 @@ test('hreflang: /fr/about ALSO includes en + fr + x-default (same cluster)', asy
   await expect(frLink).toHaveCount(1);
   await expect(frLink).toHaveAttribute('href', 'https://yesid.dev/fr/about');
 
+  await expect(esLink).toHaveCount(1);
+  await expect(esLink).toHaveAttribute('href', 'https://yesid.dev/es/about');
+
   await expect(defaultLink).toHaveCount(1);
   await expect(defaultLink).toHaveAttribute('href', 'https://yesid.dev/about');
 });
 
 // ---------------------------------------------------------------------------
-// og:locale meta tags — en_CA + fr_CA alternates
+// og:locale meta tags — three published locales → TWO alternates per page
 // ---------------------------------------------------------------------------
 
-test('og:locale: /about has og:locale=en_CA + og:locale:alternate=fr_CA', async ({ page }) => {
+test('og:locale: /about has og:locale=en_CA + alternates fr_CA/es_CA (count=2)', async ({ page }) => {
   await page.goto('/about');
   const mainLocale = page.locator('meta[property="og:locale"]');
   const altLocale = page.locator('meta[property="og:locale:alternate"]');
 
   await expect(mainLocale).toHaveAttribute('content', 'en_CA');
-  await expect(altLocale).toHaveCount(1);
-  await expect(altLocale).toHaveAttribute('content', 'fr_CA');
+  await expect(altLocale).toHaveCount(2);
+  const alternates = await altLocale.evaluateAll((els) => els.map((el) => el.getAttribute('content')));
+  expect(alternates.sort()).toEqual(['es_CA', 'fr_CA']);
 });
 
-test('og:locale: /fr/about has og:locale=fr_CA + og:locale:alternate=en_CA', async ({ page }) => {
+test('og:locale: /fr/about has og:locale=fr_CA + alternates en_CA/es_CA (count=2)', async ({ page }) => {
   await page.goto('/fr/about');
   const mainLocale = page.locator('meta[property="og:locale"]');
   const altLocale = page.locator('meta[property="og:locale:alternate"]');
 
   await expect(mainLocale).toHaveAttribute('content', 'fr_CA');
-  await expect(altLocale).toHaveCount(1);
-  await expect(altLocale).toHaveAttribute('content', 'en_CA');
+  await expect(altLocale).toHaveCount(2);
+  const alternates = await altLocale.evaluateAll((els) => els.map((el) => el.getAttribute('content')));
+  expect(alternates.sort()).toEqual(['en_CA', 'es_CA']);
+});
+
+test('og:locale: /es/about has og:locale=es_CA + alternates en_CA/fr_CA (count=2)', async ({ page }) => {
+  await page.goto('/es/about');
+  const mainLocale = page.locator('meta[property="og:locale"]');
+  const altLocale = page.locator('meta[property="og:locale:alternate"]');
+
+  await expect(mainLocale).toHaveAttribute('content', 'es_CA');
+  await expect(altLocale).toHaveCount(2);
+  const alternates = await altLocale.evaluateAll((els) => els.map((el) => el.getAttribute('content')));
+  expect(alternates.sort()).toEqual(['en_CA', 'fr_CA']);
 });
 
 // ---------------------------------------------------------------------------
@@ -196,15 +217,20 @@ test('language toggle: /about EN→FR click navigates to /fr/about', async ({ pa
   expect(page.url()).toContain('/fr/about');
 });
 
-test('language toggle: /fr/about FR→EN click navigates to /about', async ({ page }) => {
+test('language toggle: /fr/about reaches /about by clicking TWICE (via /es/about)', async ({ page }) => {
+  // Three published locales: the cycle is en → fr → es → en, so FR reaches
+  // EN through ES (approved click-twice approach).
   await page.goto('/fr/about');
   const toggle = page.getByTestId('language-toggle');
   await expect(toggle).toBeVisible();
   const href = await toggle.getAttribute('href');
-  expect(href).toBe('/about');
+  expect(href).toBe('/es/about');
+  await toggle.click();
+  await page.waitForURL('/es/about');
   await toggle.click();
   await page.waitForURL('/about');
   expect(page.url()).not.toContain('/fr');
+  expect(page.url()).not.toContain('/es');
 });
 
 test('language toggle: navigating preserves path (/services → /fr/services)', async ({ page }) => {
@@ -274,15 +300,17 @@ test('mono-language route: blog post suppresses hreflang cluster', async ({ page
 // Sitemap includes FR variants + hreflang clusters
 // ---------------------------------------------------------------------------
 
-test('sitemap: GET /sitemap.xml includes /fr routes with hreflang', async ({ page }) => {
+test('sitemap: GET /sitemap.xml includes /fr + /es routes with hreflang', async ({ page }) => {
   const response = await page.goto('/sitemap.xml');
   expect(response?.status()).toBe(200);
   const body = await response?.text();
   expect(body).toContain('<loc>https://yesid.dev/about</loc>');
   expect(body).toContain('<loc>https://yesid.dev/fr/about</loc>');
+  expect(body).toContain('<loc>https://yesid.dev/es/about</loc>');
   // hreflang link tags within the <url> for /about entry
   expect(body).toContain('hreflang="en"');
   expect(body).toContain('hreflang="fr"');
+  expect(body).toContain('hreflang="es"');
   expect(body).toContain('hreflang="x-default"');
   // /fr variant also carries full cluster
   expect(body).toMatch(/hreflang="en"[\s\S]*hreflang="fr"/);

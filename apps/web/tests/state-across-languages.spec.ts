@@ -23,8 +23,11 @@ test.describe('State across languages — foundation (URL state survives the swi
 		expect(page.url()).toContain('/fr/projects?service=web-development&tag=svelte');
 	});
 
-	test('the query survives the FR→EN direction too', async ({ page }) => {
+	test('the query survives the FR→ES and ES→EN directions too (3-locale cycle)', async ({ page }) => {
+		// en → fr → es → en: FR now points at ES; ES closes the cycle back to EN.
 		await page.goto('/fr/projects?tag=svelte');
+		await expect(page.getByTestId('language-toggle')).toHaveAttribute('href', '/es/projects?tag=svelte');
+		await page.goto('/es/projects?tag=svelte');
 		await expect(page.getByTestId('language-toggle')).toHaveAttribute('href', '/projects?tag=svelte');
 	});
 
@@ -51,12 +54,17 @@ test.describe('State across languages — search survives a locale switch (sessi
 		await expect(page.getByTestId('project-search-sidebar')).toHaveValue('railway');
 	});
 
-	test('projects: search persists FR→EN too', async ({ page }) => {
+	test('projects: search persists FR→ES→EN (click-twice cycle)', async ({ page }) => {
 		await page.goto('/fr/projects');
 		const search = page.getByTestId('project-search-sidebar');
 		await expect(search).toBeVisible();
 		await search.fill('sveltekit');
 		await expect(search).toHaveValue('sveltekit');
+		// Click 1: FR → ES — the draft survives the first remount.
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL('**/es/projects');
+		await expect(page.getByTestId('project-search-sidebar')).toHaveValue('sveltekit');
+		// Click 2: ES → EN — and the second one.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => url.pathname === '/projects');
 		await expect(page.getByTestId('project-search-sidebar')).toHaveValue('sveltekit');
@@ -93,13 +101,20 @@ test.describe('State across languages — contact form (session survives the swi
 		await expect(messageFR).toHaveValue(draft);
 	});
 
-	test('name + email also survive, and the FR→EN direction works', async ({ page }) => {
+	test('name + email also survive, and FR reaches EN via ES (click-twice)', async ({ page }) => {
 		await page.goto('/fr/contact');
 		const terminal = visibleContactTerminal(page);
 		await expect(terminal).toBeVisible();
 		await terminal.locator('#contact-name').fill('Ada Lovelace');
 		await terminal.locator('#contact-email').fill('ada@example.com');
 		await terminal.locator('#contact-message').fill('Bonjour, parlons projet.');
+		// Click 1: FR → ES — the draft survives the first remount.
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL('**/es/contact');
+		await expect(visibleContactTerminal(page).locator('#contact-message')).toHaveValue(
+			'Bonjour, parlons projet.',
+		);
+		// Click 2: ES → EN — and the second one, all three fields intact.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => url.pathname === '/contact');
 		const after = visibleContactTerminal(page);
@@ -157,13 +172,18 @@ test.describe('State across languages — selections (carousel survives the swit
 		await expect(page.getByTestId('about-polaroid-counter')).toHaveText(`3/${total}`);
 	});
 
-	test('the /about polaroid index survives FR→EN too', async ({ page }) => {
+	test('the /about polaroid index survives FR→ES→EN (click-twice cycle)', async ({ page }) => {
 		await page.goto('/fr/about');
 		const counter = page.getByTestId('about-polaroid-counter');
 		await expect(counter).toBeVisible();
 		const total = await polaroidTotal(counter);
 		await page.getByTestId('about-polaroid-next').click();
 		await expect(counter).toHaveText(`2/${total}`);
+		// Click 1: FR → ES — the index survives the first remount.
+		await page.getByTestId('language-toggle').click();
+		await page.waitForURL('**/es/about');
+		await expect(page.getByTestId('about-polaroid-counter')).toHaveText(`2/${total}`);
+		// Click 2: ES → EN — and the second one.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => url.pathname === '/about');
 		await expect(page.getByTestId('about-polaroid-counter')).toHaveText(`2/${total}`);

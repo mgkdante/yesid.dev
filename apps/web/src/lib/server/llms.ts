@@ -35,7 +35,7 @@ function header(): string {
 		'',
 		`Available for remote and on-site work across ${serviceAreaList()}.`,
 		'',
-		`The site is bilingual: every page below also exists in French under ${SITE_HOST}/fr. Blog posts are the exception: English-only for now.`,
+		`The site is trilingual: every page below also exists in French under ${SITE_HOST}/fr and in Spanish under ${SITE_HOST}/es. Blog posts are the exception: English-only for now.`,
 	].join('\n');
 }
 
