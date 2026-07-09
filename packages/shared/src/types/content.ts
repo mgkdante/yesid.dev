@@ -528,6 +528,17 @@ export interface ContactContent {
 	web3formsKey: string; // Public access key — safe to expose client-side
 }
 
+// --- Legal pages (OPS1 launch Phase 1) ---
+
+/** One legal page (/legal/[slug]): privacy, cookies, terms, notice,
+ *  accessibility. Body is a per-locale Block Editor doc; EN required,
+ *  FR shipped at OPS1, ES lands with the L1 Spanish pass. */
+export interface LegalPage {
+	slug: string;
+	title: LocalizedString;
+	body: LocalizedBlockEditorDoc;
+}
+
 // NOTE: `PageSeo` and `SchemaOrgNode` are defined in apps/web/src/lib/schemas/seo.ts
 // via Zod and stay there (apps/web specific). They are re-exported from
 // apps/web/src/lib/types.ts alongside these shared types so consumer code keeps

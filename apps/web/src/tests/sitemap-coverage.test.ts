@@ -70,6 +70,10 @@ async function expandDynamic(route: string): Promise<string[]> {
 		const services = await adapter.services.visible();
 		return services.map((s) => `/services/${s.id}`);
 	}
+	if (route === '/legal/[slug]') {
+		const pages = await adapter.legal.all();
+		return pages.map((p) => `/legal/${p.slug}`);
+	}
 
 	throw new Error(
 		`[sitemap-coverage] Unknown dynamic route pattern: ${route}. Add expansion logic.`,
