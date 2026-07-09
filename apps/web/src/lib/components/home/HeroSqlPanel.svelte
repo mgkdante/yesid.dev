@@ -77,9 +77,7 @@
        aligned). Semantic table = real column/row structure for screen
        readers too. data-testid="sql-result-row" stays on each <tr>. -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
-    <!-- Results type runs as large as the panel column allows (operator call):
-         a full step above the query, the numbers are the payoff. -->
-    <table class="w-full border-collapse text-sm md:text-lg" data-testid="sql-results">
+    <table class="w-full border-collapse text-xs md:text-sm" data-testid="sql-results">
       <thead>
         <tr>
           <th scope="col" class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-left font-normal text-[var(--terminal-ink-muted)]">{columnRoute}</th>
