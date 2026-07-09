@@ -84,7 +84,6 @@
 				>
 			</a>
 			<span class="mt-2 font-mono text-xs text-[var(--muted-foreground)]">{tagline}</span>
-			<address class="mt-1 font-mono text-caption not-italic text-[var(--muted-foreground)]">{location}</address>
 		</div>
 
 		<!-- EXPLORE: the site links -->
