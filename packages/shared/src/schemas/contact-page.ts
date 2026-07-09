@@ -26,10 +26,12 @@ export const ContactInfoTerminalSchema = z.object({
 	location: LocalizedStringSchema,
 	responseTime: LocalizedStringSchema,
 	languages: LocalizedStringSchema,
+	bestFit: z.array(LocalizedStringSchema).readonly().optional(),
 	sectionLabels: z.object({
 		location: LocalizedStringSchema,
 		connect: LocalizedStringSchema,
 		languages: LocalizedStringSchema,
+		bestFit: LocalizedStringSchema.optional(),
 	}),
 }) satisfies z.ZodType<ContactInfoTerminal>;
 

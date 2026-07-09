@@ -462,10 +462,15 @@ export interface ContactInfoTerminal {
 	/** Languages a client can write or book in (homework #25). Value like
 	 *  "EN · FR"; adding a language later is one CMS edit. */
 	languages: LocalizedString;
+	/** BEST FIT section lines (homework #26b): the project shapes that fit
+	 *  best. Optional so builds parse before the CMS fields are seeded
+	 *  (prod regenerates from the prod CMS; the section hides when absent). */
+	bestFit?: readonly LocalizedString[];
 	sectionLabels: {
 		location: LocalizedString;
 		connect: LocalizedString;
 		languages: LocalizedString;
+		bestFit?: LocalizedString;
 	};
 }
 
