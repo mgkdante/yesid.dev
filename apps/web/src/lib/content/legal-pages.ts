@@ -370,6 +370,361 @@ export const legalPages: readonly LegalPage[] = [
 				time: 1751500800000,
 				version: '2.31.2',
 			},
+			es: {
+				blocks: [
+					{
+						data: {
+							text: 'Esta política explica qué información personal recopila yesid.dev, por qué la recopila, a dónde va y qué derechos le otorga la ley de Quebec sobre ella. Yo mismo administro este sitio y escribí esta política para que se lea, así que está en lenguaje claro. La versión corta: el sitio recopila muy poco, y lo que recopila existe únicamente para que yo pueda responderle.',
+						},
+						id: 'legal-privacy-es-001',
+						type: 'paragraph',
+					},
+					{
+						data: { text: 'Última actualización: 2026-07-09' },
+						id: 'legal-privacy-es-002',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Quién soy' },
+						id: 'legal-privacy-es-003',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, quien opera una empresa individual en Quebec, Canadá. Soy consultor independiente en infraestructura digital: bases de datos y SQL, pipelines de datos y automatización, tableros de control y analítica, y sitios web y comercio electrónico. El sitio en sí no vende nada: no hay carrito de compras, ni cuentas de usuario, ni boletín informativo.',
+						},
+						id: 'legal-privacy-es-004',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Qué leyes se aplican' },
+						id: 'legal-privacy-es-005',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'yesid.dev es una empresa de Quebec, así que esta política está escrita primero para la Ley de protección de la información personal en el sector privado (Quebec), modernizada por la Ley 25 de Quebec, reconocida como esencialmente similar a la ley federal de Canadá. Cuando la información personal cruza fronteras provinciales o nacionales, o cuando trabajo con clientes en otras partes de Canadá, también se aplica PIPEDA (la ley federal canadiense de protección de datos personales). Me atengo siempre a la protección que sea más fuerte.',
+						},
+						id: 'legal-privacy-es-006',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Qué recopilo y cómo' },
+						id: 'legal-privacy-es-007',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'El sitio es completamente estático. No instala cookies ni ejecuta código que lo identifique a usted. La información personal me llega de tres maneras, más una herramienta de medición agregada.',
+						},
+						id: 'legal-privacy-es-008',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 3, text: 'Formulario de contacto' },
+						id: 'legal-privacy-es-009',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si usted usa el formulario de la página de contacto, recibo su nombre, su dirección de correo electrónico y su mensaje. El formulario lo retransmite Web3Forms, un servicio de terceros, que lo entrega en mi bandeja de correo.',
+						},
+						id: 'legal-privacy-es-010',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 3, text: 'Correo electrónico directo' },
+						id: 'legal-privacy-es-011',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si me escribe a admin@yesid.dev, recibo lo que usted decida enviarme.',
+						},
+						id: 'legal-privacy-es-012',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 3, text: 'Agendar una llamada' },
+						id: 'legal-privacy-es-013',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si usted agenda una llamada, la reserva se gestiona en cal.com. Usted proporciona su nombre, su dirección de correo electrónico y los detalles de la reunión; cal.com los comparte conmigo para que la reunión pueda realizarse.',
+						},
+						id: 'legal-privacy-es-014',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 3, text: 'Analítica del sitio web' },
+						id: 'legal-privacy-es-015',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Mido el tráfico del sitio con una herramienta de analítica enfocada en la privacidad y sin cookies (Plausible o Umami). No instala cookies, no crea ningún identificador persistente y no hace seguimiento entre sitios. Su dirección IP se procesa de forma transitoria para derivar estadísticas agregadas, como el país y las páginas vistas, y no se almacena. Lo que yo veo son totales anónimos, nunca visitantes individuales.',
+						},
+						id: 'legal-privacy-es-016',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 3, text: 'Preferencias guardadas en su navegador' },
+						id: 'legal-privacy-es-017',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'El sitio recuerda algunas preferencias funcionales (tema, idioma, secciones plegadas, un borrador de su mensaje del formulario) en el localStorage de su navegador. Esta información nunca sale de su dispositivo y nunca se me transmite a mí ni a nadie más.',
+						},
+						id: 'legal-privacy-es-018',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Por qué la recopilo' },
+						id: 'legal-privacy-es-019',
+						type: 'header',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'Para responder a su mensaje.',
+									items: [],
+								},
+								{
+									content: 'Para preparar y realizar la reunión que usted agendó.',
+									items: [],
+								},
+								{
+									content: 'Para llevar a cabo el trabajo que usted me encargue.',
+									items: [],
+								},
+								{
+									content: 'Para entender, de forma agregada, cómo se usa el sitio.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-privacy-es-020',
+						type: 'nestedlist',
+					},
+					{
+						data: {
+							text: 'No uso su información para nada más. Si alguna vez la necesitara para un nuevo propósito, primero le pediría su consentimiento.',
+						},
+						id: 'legal-privacy-es-021',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'A dónde va' },
+						id: 'legal-privacy-es-022',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Utilizo un número reducido de proveedores de servicios, y algunos están ubicados fuera de Quebec, principalmente en Estados Unidos y posiblemente en la Unión Europea. Por lo tanto, su información personal puede ser comunicada fuera de Quebec. Antes de apoyarme en cada proveedor, evalué si su información recibiría allí una protección adecuada, como lo exige el artículo 17 de la Ley de protección de la información personal en el sector privado (Quebec).',
+						},
+						id: 'legal-privacy-es-023',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'Vercel: aloja el sitio (empresa estadounidense, red global de distribución de contenidos).',
+									items: [],
+								},
+								{
+									content: 'Web3Forms: retransmite el formulario de contacto a mi correo electrónico.',
+									items: [],
+								},
+								{
+									content: 'cal.com: gestiona la reserva de llamadas.',
+									items: [],
+								},
+								{
+									content: 'Railway y Neon: ejecutan el backend de mi sistema de contenido. Nunca procesan datos de visitantes; el sitio publicado es estático y no hace ninguna llamada hacia ellos.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-privacy-es-024',
+						type: 'nestedlist',
+					},
+					{
+						data: { text: 'No comunico su información personal a nadie más.' },
+						id: 'legal-privacy-es-025',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Lo que no hago' },
+						id: 'legal-privacy-es-026',
+						type: 'header',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'Sin publicidad y sin redes publicitarias.',
+									items: [],
+								},
+								{
+									content: 'Sin venta, alquiler ni intercambio de información personal. Nunca.',
+									items: [],
+								},
+								{
+									content: 'Sin cookies de rastreo y sin banner de consentimiento: no hay nada que activar, porque el sitio no tiene ninguna función que lo identifique, lo ubique o cree un perfil de usted.',
+									items: [],
+								},
+								{
+									content: 'Sin perfilado y sin decisiones automatizadas.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-privacy-es-027',
+						type: 'nestedlist',
+					},
+					{
+						data: { level: 2, text: 'Conservación' },
+						id: 'legal-privacy-es-028',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Conservo los correos electrónicos, los mensajes del formulario y los detalles de las reservas mientras nuestro intercambio, y cualquier trabajo que se derive de él, lo requiera; después los elimino. Como regla general, la correspondencia y los detalles de las reservas se conservan hasta tres años después de nuestro último intercambio, lo que corresponde al plazo general de prescripción de Quebec; los registros vinculados a un encargo real (contratos, facturas y la correspondencia que los respalda) se conservan mientras lo exija la legislación fiscal y contable, es decir, al menos seis años. Los datos de analítica son agregados desde el inicio y no contienen información personal que eliminar.',
+						},
+						id: 'legal-privacy-es-029',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Seguridad' },
+						id: 'legal-privacy-es-030',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Reduzco el riesgo, ante todo, recopilando poco. Más allá de eso: solo yo tengo acceso a la bandeja de correo y a la cuenta de reservas, ambas están protegidas con una autenticación multifactor robusta, y mis proveedores cifran los datos en tránsito. Ningún sistema es perfectamente seguro, y no voy a fingir lo contrario, pero estas medidas son proporcionales a la sensibilidad de lo que conservo: nombres, direcciones de correo electrónico y mensajes.',
+						},
+						id: 'legal-privacy-es-031',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Sus derechos' },
+						id: 'legal-privacy-es-032',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'La Ley 25 de Quebec le otorga los siguientes derechos sobre la información personal que tengo sobre usted:',
+						},
+						id: 'legal-privacy-es-033',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'Acceso: obtener una copia de su información (art. 27).',
+									items: [],
+								},
+								{
+									content: 'Rectificación: hacer corregir la información inexacta o incompleta (art. 28).',
+									items: [],
+								},
+								{
+									content: 'Retiro del consentimiento: retirar su consentimiento a un uso o a una comunicación de su información.',
+									items: [],
+								},
+								{
+									content: 'Desindexación: pedir que un hipervínculo asociado a su nombre sea desindexado cuando la ley lo prevé (art. 28.1).',
+									items: [],
+								},
+								{
+									content: 'Portabilidad: desde septiembre de 2024, recibir la información personal informatizada que usted me proporcionó en un formato tecnológico estructurado y de uso común, o hacer que se envíe a otra organización.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-privacy-es-034',
+						type: 'nestedlist',
+					},
+					{
+						data: {
+							text: 'Para ejercer cualquiera de estos derechos, escriba a admin@yesid.dev. Es posible que deba verificar su identidad, y le responderé por escrito en un plazo de 30 días, como lo exige la ley. Una solicitud razonable no tiene ningún costo.',
+						},
+						id: 'legal-privacy-es-035',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Incidentes de confidencialidad' },
+						id: 'legal-privacy-es-036',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Llevo un registro de los incidentes de confidencialidad y, si un incidente que involucre su información personal presenta un riesgo de perjuicio serio, se lo notificaré a usted y a la Comisión de acceso a la información de Quebec (CAI, Commission d\'accès à l\'information du Québec), como lo exige la ley.',
+						},
+						id: 'legal-privacy-es-037',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Responsable de privacidad' },
+						id: 'legal-privacy-es-038',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Yo soy la persona a cargo de la protección de la información personal de este sitio. Cargo: Responsable de privacidad. Nombre: Yesid Fernando Otalora. Contacto: admin@yesid.dev.',
+						},
+						id: 'legal-privacy-es-039',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Quejas' },
+						id: 'legal-privacy-es-040',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si algo en la manera en que manejo su información personal le preocupa, por favor contácteme primero en admin@yesid.dev; me lo tomo en serio y le responderé con rapidez. Si mi respuesta no le satisface, puede presentar una queja ante la Comisión de acceso a la información de Quebec (CAI), el organismo público que supervisa la protección de la información personal en Quebec. Para asuntos que corresponden a la ley federal, por ejemplo si usted está fuera de Quebec, también puede contactar al Comisariado de Protección de la Privacidad de Canadá (OPC).',
+						},
+						id: 'legal-privacy-es-041',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Cambios a esta política' },
+						id: 'legal-privacy-es-042',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si cambio esta política, actualizaré esta página y la fecha que aparece arriba. Si un cambio afecta de manera sustancial la forma en que se maneja su información personal, lo diré aquí con claridad.',
+						},
+						id: 'legal-privacy-es-043',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Contacto' },
+						id: 'legal-privacy-es-044',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Para cualquier pregunta sobre esta política o sobre su información personal: admin@yesid.dev, o el formulario de la página de contacto (/contact). Con gusto puede escribirme en español, inglés o francés.',
+						},
+						id: 'legal-privacy-es-045',
+						type: 'paragraph',
+					},
+				],
+				time: 1751500800000,
+				version: '2.31.2',
+			},
 			fr: {
 				blocks: [
 					{
@@ -735,7 +1090,11 @@ export const legalPages: readonly LegalPage[] = [
 			},
 		},
 		slug: 'privacy',
-		title: { en: 'Privacy Policy', fr: 'Politique de confidentialité' },
+		title: {
+			en: 'Privacy Policy',
+			es: 'Política de privacidad',
+			fr: 'Politique de confidentialité',
+		},
 	},
 	{
 		body: {
@@ -901,6 +1260,174 @@ export const legalPages: readonly LegalPage[] = [
 							text: 'Questions about these terms are welcome in English, French, or Spanish. Write to admin@yesid.dev or use the contact page at /contact.',
 						},
 						id: 'legal-terms-en-024',
+						type: 'paragraph',
+					},
+				],
+				time: 1751500800000,
+				version: '2.31.2',
+			},
+			es: {
+				blocks: [
+					{
+						data: { text: 'Última actualización: 2026-07-09' },
+						id: 'legal-terms-es-001',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							text: 'Estas condiciones de uso rigen su visita a yesid.dev, el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital que opera como empresa individual (persona natural) en Quebec, Canadá. Al usar este sitio, usted acepta estas condiciones. Si no está de acuerdo con ellas, por favor deje de usar el sitio.',
+						},
+						id: 'legal-terms-es-002',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Qué es este sitio' },
+						id: 'legal-terms-es-003',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'yesid.dev es un sitio de portafolio e información. Presenta mi trabajo de consultoría en bases de datos y SQL, en pipelines de datos y automatización, en tableros de control y analítica, y en sitios web y comercio electrónico, y le ofrece formas de contactarme. Nada se vende directamente en el sitio: no hay proceso de compra, ni cuenta de usuario, ni suscripción.',
+						},
+						id: 'legal-terms-es-004',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							text: 'Todo trabajo de consultoría se rige por un acuerdo escrito aparte entre usted (o su organización) y yo. Estas condiciones se aplican únicamente al sitio web; no crean ninguna relación profesional ni contractual de servicios de consultoría.',
+						},
+						id: 'legal-terms-es-005',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Propiedad intelectual' },
+						id: 'legal-terms-es-006',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Salvo indicación en contrario, el contenido de este sitio, incluidos sus textos, imágenes, diseño visual y el código fuente del propio sitio, me pertenece. Usted puede leerlo, enlazarlo y citar extractos breves con atribución. No puede reproducir porciones sustanciales ni usar el contenido con fines comerciales sin mi permiso previo por escrito.',
+						},
+						id: 'legal-terms-es-007',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							text: 'Algunos proyectos presentados aquí son de código abierto. Su código vive en sus propios repositorios y se distribuye bajo la licencia indicada en cada repositorio. Son esas licencias, y no estas condiciones, las que rigen su uso de ese código.',
+						},
+						id: 'legal-terms-es-008',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Uso aceptable' },
+						id: 'legal-terms-es-009',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Usted se compromete a usar este sitio de forma legal y razonable. En particular, se compromete a no:',
+						},
+						id: 'legal-terms-es-010',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'intentar interrumpir, sobrecargar o atacar el sitio ni la infraestructura que lo sirve;',
+									items: [],
+								},
+								{
+									content: 'extraer o recolectar contenido de una manera que sobrecargue el sitio o ignore sus límites publicados;',
+									items: [],
+								},
+								{
+									content: 'falsear su identidad al contactarme, ni usar los canales de contacto para enviar mensajes ilegales, engañosos o abusivos.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-terms-es-011',
+						type: 'nestedlist',
+					},
+					{
+						data: { level: 2, text: 'Ausencia de garantía' },
+						id: 'legal-terms-es-012',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Este sitio y su contenido se ofrecen tal cual, a título de información general. Me esfuerzo por mantener la información exacta y actualizada, pero no garantizo que sea completa, esté libre de errores o esté disponible en todo momento. Cuando una demostración o un tablero está identificado como simulado, los datos mostrados son ilustrativos, no reales.',
+						},
+						id: 'legal-terms-es-013',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							text: 'Nada en este sitio constituye asesoría profesional. La asesoría adaptada a su situación solo se ofrece una vez que trabajamos juntos bajo un acuerdo escrito.',
+						},
+						id: 'legal-terms-es-014',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Limitación de responsabilidad' },
+						id: 'legal-terms-es-015',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'En la medida en que lo permita la ley aplicable, no soy responsable de daños indirectos, incidentales o consecuentes derivados de su uso de este sitio o de su confianza en el contenido. Nada en estas condiciones excluye ni limita una responsabilidad que no pueda excluirse o limitarse según las leyes de Quebec.',
+						},
+						id: 'legal-terms-es-016',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Enlaces a terceros' },
+						id: 'legal-terms-es-017',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Este sitio enlaza a servicios que no controlo, como GitHub, LinkedIn y cal.com. Esos servicios tienen sus propias condiciones y sus propias prácticas de privacidad, que se aplican cuando usted los usa. No soy responsable de su contenido ni de su conducta.',
+						},
+						id: 'legal-terms-es-018',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Ley aplicable' },
+						id: 'legal-terms-es-019',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Estas condiciones se rigen por las leyes de Quebec y las leyes aplicables de Canadá. Sujeto a cualquier norma de orden público que le otorgue un foro distinto, las disputas relacionadas con este sitio se presentarán ante los tribunales competentes del distrito judicial de Montreal.',
+						},
+						id: 'legal-terms-es-020',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Cambios' },
+						id: 'legal-terms-es-021',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Puedo actualizar estas condiciones de vez en cuando, por ejemplo cuando el sitio o la ley cambian. La fecha en la parte superior de esta página indica la versión vigente. Si usted sigue usando el sitio después de una actualización, le aplican las condiciones actualizadas.',
+						},
+						id: 'legal-terms-es-022',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Contacto' },
+						id: 'legal-terms-es-023',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Sus preguntas sobre estas condiciones son bienvenidas en español, inglés o francés. Escriba a admin@yesid.dev o use la página de contacto en /contact.',
+						},
+						id: 'legal-terms-es-024',
 						type: 'paragraph',
 					},
 				],
@@ -1077,7 +1604,11 @@ export const legalPages: readonly LegalPage[] = [
 			},
 		},
 		slug: 'terms',
-		title: { en: 'Terms of Use', fr: 'Conditions d\'utilisation' },
+		title: {
+			en: 'Terms of Use',
+			es: 'Condiciones de uso',
+			fr: 'Conditions d\'utilisation',
+		},
 	},
 	{
 		body: {
@@ -1181,6 +1712,112 @@ export const legalPages: readonly LegalPage[] = [
 							text: 'Questions about this policy are welcome at admin@yesid.dev or through the contact page, in English, French, or Spanish. Yesid Fernando Otalora acts as Privacy Officer for this site under section 3.1 of Law 25.',
 						},
 						id: 'legal-cookies-en-014',
+						type: 'paragraph',
+					},
+				],
+				time: 1751500800000,
+				version: '2.31.2',
+			},
+			es: {
+				blocks: [
+					{
+						data: {
+							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y por qué usted no verá aquí un aviso de cookies. Última actualización: 2026-07-09.',
+						},
+						id: 'legal-cookies-es-001',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'La versión corta' },
+						id: 'legal-cookies-es-002',
+						type: 'header',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'Este sitio no instala ninguna cookie de rastreo. Ninguna.',
+									items: [],
+								},
+								{
+									content: 'No hay tecnología publicitaria, ni rastreo entre sitios, ni elaboración de perfiles.',
+									items: [],
+								},
+								{
+									content: 'No hay un aviso de consentimiento porque nada en este sitio requiere ese tipo de consentimiento.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-cookies-es-003',
+						type: 'nestedlist',
+					},
+					{
+						data: { level: 2, text: 'Lo que el sitio guarda realmente' },
+						id: 'legal-cookies-es-004',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'El sitio conserva unas pocas preferencias funcionales en el localStorage de su navegador: su tema (claro u oscuro), su idioma, el estado de las secciones plegadas y el borrador sin enviar del formulario de contacto, para que no lo pierda si cambia de página. Esta información permanece en su dispositivo y nunca se me transmite a mí ni a nadie más; solo su propio navegador la usa, de forma local, para restablecer sus preferencias. Al borrar los datos de su navegador, esta información se elimina por completo.',
+						},
+						id: 'legal-cookies-es-005',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Analítica' },
+						id: 'legal-cookies-es-006',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Utilizo una herramienta de analítica sin cookies y centrada en la privacidad (Plausible o Umami) para entender el tráfico de forma agregada: qué páginas se visitan, aproximadamente cuántas visitas reciben y de dónde provienen, a nivel de país o de sitio de referencia. La herramienta no instala cookies, no guarda identificadores persistentes y no lo sigue a usted por otros sitios. Las direcciones IP se procesan de manera transitoria para calcular estadísticas agregadas y no se almacenan. En la práctica, puedo ver que una página recibió visitas; no puedo saber quién es usted, rastrearlo por la web ni reconocerlo en su próxima visita.',
+						},
+						id: 'legal-cookies-es-007',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Por qué no hay un aviso' },
+						id: 'legal-cookies-es-008',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'La Ley 25 de Quebec, en el artículo 8.1 de la Ley de protección de la información personal en el sector privado (Quebec), exige que un sitio web le permita activar o desactivar las tecnologías que lo identifican, lo localizan o elaboran un perfil sobre usted. Este sitio no usa ninguna tecnología de ese tipo: ni cookies de rastreo, ni huella digital del navegador, ni geolocalización, ni elaboración de perfiles. Como no hay nada que activar ni desactivar, un aviso no serviría de nada. Preferí ser transparente aquí, en texto claro.',
+						},
+						id: 'legal-cookies-es-009',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							text: 'La ley federal de Canadá apunta en la misma dirección: según las directrices sobre consentimiento significativo de PIPEDA (la ley federal canadiense de protección de datos personales), el consentimiento implícito es suficiente para usos no sensibles y sin rastreo, como estas estadísticas agregadas, de modo que por ese lado tampoco se requiere un aviso.',
+						},
+						id: 'legal-cookies-es-010',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Si esto cambia algún día' },
+						id: 'legal-cookies-es-011',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si algún día introduzco una tecnología que identifique, localice o elabore perfiles de los visitantes, le pediré su consentimiento expreso antes de activarla, y actualizaré esta página y su fecha. Nada de cambios silenciosos.',
+						},
+						id: 'legal-cookies-es-012',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Contacto' },
+						id: 'legal-cookies-es-013',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Cualquier pregunta sobre esta política es bienvenida en admin@yesid.dev o a través de la página de contacto, en español, inglés o francés. Yesid Fernando Otalora actúa como Responsable de la protección de la información personal de este sitio en virtud del artículo 3.1 de la Ley 25.',
+						},
+						id: 'legal-cookies-es-014',
 						type: 'paragraph',
 					},
 				],
@@ -1297,6 +1934,7 @@ export const legalPages: readonly LegalPage[] = [
 		slug: 'cookies',
 		title: {
 			en: 'Cookie and Tracking Policy',
+			es: 'Política de cookies y rastreo',
 			fr: 'Politique sur les témoins (cookies)',
 		},
 	},
@@ -1425,6 +2063,135 @@ export const legalPages: readonly LegalPage[] = [
 							text: 'For any question or report about accessibility: admin@yesid.dev, or the form on the contact page at /contact.',
 						},
 						id: 'legal-accessibility-en-013',
+						type: 'paragraph',
+					},
+				],
+				time: 1751500800000,
+				version: '2.31.2',
+			},
+			es: {
+				blocks: [
+					{
+						data: {
+							text: 'Esta página describe el estado actual de la accesibilidad en yesid.dev: lo que ya funciona, lo que todavía no, y cómo contactarme si algo le impide usar el sitio. Última actualización: 2026-07-09.',
+						},
+						id: 'legal-accessibility-es-001',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Mi compromiso' },
+						id: 'legal-accessibility-es-002',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Quiero que todas las personas puedan leer y usar este sitio, incluidas las que dependen de tecnologías de asistencia. Mi meta son las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.1, nivel AA. Todavía no lo cumplo en todas las páginas, y prefiero decirlo con claridad antes que afirmar lo contrario. La accesibilidad es parte de cómo construyo, no una casilla que se marca al final.',
+						},
+						id: 'legal-accessibility-es-003',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Lo que está en funcionamiento hoy' },
+						id: 'legal-accessibility-es-004',
+						type: 'header',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'HTML semántico: encabezados, puntos de referencia y listas que las tecnologías de asistencia pueden recorrer.',
+									items: [],
+								},
+								{
+									content: 'Navegación completa por teclado, con un indicador de foco visible en los elementos interactivos.',
+									items: [],
+								},
+								{
+									content: 'Etiquetas ARIA en las ilustraciones y gráficos interactivos.',
+									items: [],
+								},
+								{
+									content: 'Compatibilidad con el movimiento reducido: el sitio respeta la configuración prefers-reduced-motion y atenúa las animaciones en consecuencia.',
+									items: [],
+								},
+								{
+									content: 'Un modo de lectura que pliega todas las secciones y simplifica las páginas largas.',
+									items: [],
+								},
+								{
+									content: 'Contraste de color verificado tanto en el tema oscuro como en el claro.',
+									items: [],
+								},
+								{
+									content: 'Texto alternativo en las imágenes informativas.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-accessibility-es-005',
+						type: 'nestedlist',
+					},
+					{
+						data: { level: 2, text: 'Limitaciones conocidas' },
+						id: 'legal-accessibility-es-006',
+						type: 'header',
+					},
+					{
+						data: {
+							items: [
+								{
+									content: 'Las demostraciones interactivas en SVG y canvas tienen alternativas de texto, pero la experiencia visual completa no tiene equivalente para una persona que no puede verlas.',
+									items: [],
+								},
+								{
+									content: 'Algunos contenidos incrustados de terceros, como la herramienta de reserva de citas, podrían no cumplir el mismo estándar; yo no controlo su código.',
+									items: [],
+								},
+								{
+									content: 'El sitio todavía no ha pasado por una auditoría formal de conformidad con las WCAG 2.1 AA. Esta declaración se basa en mis propias pruebas.',
+									items: [],
+								},
+							],
+							style: 'unordered',
+						},
+						id: 'legal-accessibility-es-007',
+						type: 'nestedlist',
+					},
+					{
+						data: { level: 2, text: 'Dígame qué no está funcionando' },
+						id: 'legal-accessibility-es-008',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Si algo en este sitio le resulta difícil o imposible de usar, escríbame a admin@yesid.dev. Mencione en qué página estaba, qué intentaba hacer y, si es posible, qué navegador y qué tecnología de asistencia utiliza. Normalmente respondo en pocos días. Puede escribirme en español, inglés o francés.',
+						},
+						id: 'legal-accessibility-es-009',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Mejora continua' },
+						id: 'legal-accessibility-es-010',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'La accesibilidad es un trabajo continuo, no un estado terminado. Reviso las páginas y funciones nuevas según estos criterios a medida que las construyo, y corrijo los problemas reportados tan pronto como puedo. Esta declaración se actualizará a medida que el sitio evolucione.',
+						},
+						id: 'legal-accessibility-es-011',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Contacto' },
+						id: 'legal-accessibility-es-012',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Para cualquier pregunta o reporte sobre accesibilidad: admin@yesid.dev, o el formulario de la página de contacto en /contact.',
+						},
+						id: 'legal-accessibility-es-013',
 						type: 'paragraph',
 					},
 				],
@@ -1564,6 +2331,7 @@ export const legalPages: readonly LegalPage[] = [
 		slug: 'accessibility',
 		title: {
 			en: 'Accessibility Statement',
+			es: 'Declaración de accesibilidad',
 			fr: 'Déclaration d\'accessibilité',
 		},
 	},
@@ -1646,6 +2414,92 @@ export const legalPages: readonly LegalPage[] = [
 							text: 'You can reach me at admin@yesid.dev or through the contact page at /contact. I answer in English, French, or Spanish.',
 						},
 						id: 'legal-notice-en-013',
+						type: 'paragraph',
+					},
+				],
+				time: 1751500800000,
+				version: '2.31.2',
+			},
+			es: {
+				blocks: [
+					{
+						data: {
+							text: 'Esta página indica quién publica yesid.dev, quién lo aloja y quién responde por su contenido. Última actualización: 2026-07-09.',
+						},
+						id: 'legal-notice-es-001',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Editor del sitio' },
+						id: 'legal-notice-es-002',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'yesid.dev es publicado por Yesid Fernando Otalora, quien opera como empresa individual y ejerce como consultor independiente en infraestructura digital. Dirección: 366 rue de Fontenelle, Gatineau, Quebec, J8T 0C6, Canada.',
+						},
+						id: 'legal-notice-es-003',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Alojamiento' },
+						id: 'legal-notice-es-004',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'El sitio está alojado por Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA, y se distribuye a través de una red mundial de entrega de contenido. El sistema de contenidos detrás del sitio funciona sobre Railway y Neon; se usa únicamente para construir el sitio y no procesa datos de los visitantes mientras usted navega, porque el sitio publicado es completamente estático.',
+						},
+						id: 'legal-notice-es-005',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Responsabilidad de la publicación' },
+						id: 'legal-notice-es-006',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Soy responsable de todo lo que se publica en este sitio: textos, imágenes, ejemplos de código y estudios de caso. Si encuentra algo inexacto o desactualizado, escríbame y lo corregiré.',
+						},
+						id: 'legal-notice-es-007',
+						type: 'paragraph',
+					},
+					{
+						data: {
+							level: 2,
+							text: 'Marcas comerciales y nombres de terceros',
+						},
+						id: 'legal-notice-es-008',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Nombres como STM, Power BI y otros productos u organizaciones mencionados en este sitio pertenecen a sus respectivos propietarios. Aparecen con fines descriptivos, para explicar el trabajo que hago; su mención no implica afiliación, patrocinio ni respaldo alguno.',
+						},
+						id: 'legal-notice-es-009',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Créditos' },
+						id: 'legal-notice-es-010',
+						type: 'header',
+					},
+					{
+						data: { text: 'Diseñé y construí este sitio yo mismo.' },
+						id: 'legal-notice-es-011',
+						type: 'paragraph',
+					},
+					{
+						data: { level: 2, text: 'Contacto' },
+						id: 'legal-notice-es-012',
+						type: 'header',
+					},
+					{
+						data: {
+							text: 'Puede escribirme a admin@yesid.dev o usar la página de contacto en /contact. Respondo en inglés, francés o español.',
+						},
+						id: 'legal-notice-es-013',
 						type: 'paragraph',
 					},
 				],
@@ -1737,6 +2591,10 @@ export const legalPages: readonly LegalPage[] = [
 			},
 		},
 		slug: 'notice',
-		title: { en: 'Legal Notice', fr: 'Avis juridique' },
+		title: {
+			en: 'Legal Notice',
+			es: 'Aviso legal',
+			fr: 'Avis juridique',
+		},
 	},
 ];

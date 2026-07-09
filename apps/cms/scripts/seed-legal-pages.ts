@@ -42,7 +42,14 @@ interface DraftPage {
 	sort: number;
 	en: DraftLocale;
 	fr: DraftLocale;
+	/** L1 ES pass: present once the Spanish translation lands in the drafts file. */
+	es?: DraftLocale;
 	advisorNotes: string;
+}
+
+/** Locales present on a draft page, canonical order. */
+function draftLocales(page: DraftPage): Array<'en' | 'fr' | 'es'> {
+	return (['en', 'fr', 'es'] as const).filter((locale) => page[locale]);
 }
 
 /** site_pages titles: es now so the L1 flip needs no registry backfill. */
@@ -101,27 +108,28 @@ async function apiWrite(ctx: ApplyContext, method: 'POST' | 'PATCH', path: strin
 
 async function upsertLegalPage(ctx: ApplyContext, page: DraftPage): Promise<void> {
 	const existing = await apiGet(ctx, `/items/legal_pages/${page.slug}?fields=id,translations.id,translations.languages_code`);
+	const locales = draftLocales(page);
 	if (existing.status === 404 || existing.status === 403) {
 		await apiWrite(ctx, 'POST', '/items/legal_pages', {
 			id: page.slug,
 			status: 'published',
 			sort: page.sort,
-			translations: (['en', 'fr'] as const).map((locale) => ({
+			translations: locales.map((locale) => ({
 				languages_code: locale,
-				title: page[locale].title,
-				body: toBlockEditorDoc(page.slug, locale, page[locale].blocks),
+				title: page[locale]!.title,
+				body: toBlockEditorDoc(page.slug, locale, page[locale]!.blocks),
 			})),
 		});
-		log.info(`  ok legal_pages.${page.slug} created (en+fr)`);
+		log.info(`  ok legal_pages.${page.slug} created (${locales.join('+')})`);
 		return;
 	}
 	const rows = (existing.json?.data?.translations ?? []) as Array<{ id: number; languages_code: string }>;
 	const byLocale = Object.fromEntries(rows.map((r) => [r.languages_code, r.id]));
 	await apiWrite(ctx, 'PATCH', `/items/legal_pages/${page.slug}`, { status: 'published', sort: page.sort });
-	for (const locale of ['en', 'fr'] as const) {
+	for (const locale of locales) {
 		const payload = {
-			title: page[locale].title,
-			body: toBlockEditorDoc(page.slug, locale, page[locale].blocks),
+			title: page[locale]!.title,
+			body: toBlockEditorDoc(page.slug, locale, page[locale]!.blocks),
 		};
 		if (byLocale[locale] !== undefined) {
 			await apiWrite(ctx, 'PATCH', `/items/legal_pages_translations/${byLocale[locale]}`, payload);
@@ -133,7 +141,7 @@ async function upsertLegalPage(ctx: ApplyContext, page: DraftPage): Promise<void
 			});
 		}
 	}
-	log.info(`  ok legal_pages.${page.slug} updated (en+fr)`);
+	log.info(`  ok legal_pages.${page.slug} updated (${locales.join('+')})`);
 }
 
 async function upsertSitePage(ctx: ApplyContext, page: DraftPage, sort: number): Promise<string> {
