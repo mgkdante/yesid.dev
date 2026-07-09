@@ -12,6 +12,7 @@ const PERSON_NODE: SchemaOrgNode = {
 	email: 'contact@yesid.dev',
 	sameAs: ['https://github.com/mgkdante'],
 	knowsAbout: ['PostgreSQL'],
+	knowsLanguage: ['en', 'fr', 'es'],
 	address: {
 		'@type': 'PostalAddress',
 		addressLocality: 'Montreal',
