@@ -14,7 +14,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Last updated: [DATE]"
+						"text": "Last updated: 2026-07-09"
 					},
 					{
 						"kind": "h2",
@@ -22,7 +22,15 @@
 					},
 					{
 						"kind": "p",
-						"text": "yesid.dev is the portfolio and contact site of [FULL LEGAL NAME], operating as a sole proprietor (Yesid O.) in Montreal, Quebec, Canada [NEQ: [NEQ], if applicable]. I am a freelance consultant in digital infrastructure: databases and SQL, data pipelines and automation, dashboards and analytics, and websites and e-commerce. The site itself sells nothing: there is no checkout, no user account, and no newsletter."
+						"text": "yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, operating as a sole proprietor in Quebec, Canada. I am a freelance consultant in digital infrastructure: databases and SQL, data pipelines and automation, dashboards and analytics, and websites and e-commerce. The site itself sells nothing: there is no checkout, no user account, and no newsletter."
+					},
+					{
+						"kind": "h2",
+						"text": "Which laws apply"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev is a Quebec business, so this policy is written first for Quebec's Act respecting the protection of personal information in the private sector, as modernized by Law 25, which is recognized as substantially similar to Canada's federal law. When personal information crosses provincial or national borders, or when I work with clients elsewhere in Canada, the federal Personal Information Protection and Electronic Documents Act (PIPEDA) applies as well. I hold myself to whichever protection is stronger."
 					},
 					{
 						"kind": "h2",
@@ -129,7 +137,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. Where a fixed period applies, it is [RETENTION PERIOD]. Analytics data is aggregate from the start and contains no personal information to delete."
+						"text": "I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. As a rule, correspondence and booking details are kept for up to three years after our last exchange, which tracks Quebec's general limitation period; records tied to an actual engagement (contracts, invoices, and the correspondence that supports them) are kept as long as tax and accounting law requires, at least six years. Analytics data is aggregate from the start and contains no personal information to delete."
 					},
 					{
 						"kind": "h2",
@@ -175,7 +183,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: [FULL LEGAL NAME]. Contact: admin@yesid.dev."
+						"text": "I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: Yesid Fernando Otalora. Contact: admin@yesid.dev."
 					},
 					{
 						"kind": "h2",
@@ -183,7 +191,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "If anything about how I handle your personal information concerns you, please contact me first at admin@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d'accès à l'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec."
+						"text": "If anything about how I handle your personal information concerns you, please contact me first at admin@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d'accès à l'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec. For matters that fall under federal law, for example if you are outside Quebec, you may also contact the Office of the Privacy Commissioner of Canada (OPC)."
 					},
 					{
 						"kind": "h2",
@@ -212,7 +220,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Dernière mise à jour : [DATE]"
+						"text": "Dernière mise à jour : 2026-07-09"
 					},
 					{
 						"kind": "h2",
@@ -220,7 +228,15 @@
 					},
 					{
 						"kind": "p",
-						"text": "yesid.dev est le site portfolio et de contact de [FULL LEGAL NAME], qui exploite une entreprise individuelle (Yesid O.) à Montréal, Québec, Canada [NEQ : [NEQ], le cas échéant]. Je suis consultant indépendant en infrastructure numérique : bases de données et SQL, pipelines de données et automatisation, tableaux de bord et analytique, sites Web et commerce électronique. Le site lui-même ne vend rien : aucun panier d'achat, aucun compte utilisateur, aucune infolettre."
+						"text": "yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, qui exploite une entreprise individuelle au Québec, au Canada. Je suis consultant indépendant en infrastructure numérique : bases de données et SQL, pipelines de données et automatisation, tableaux de bord et analytique, sites Web et commerce électronique. Le site lui-même ne vend rien : aucun panier d'achat, aucun compte utilisateur, aucune infolettre."
+					},
+					{
+						"kind": "h2",
+						"text": "Lois applicables"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev est une entreprise québécoise : cette politique répond d'abord à la Loi sur la protection des renseignements personnels dans le secteur privé, modernisée par la Loi 25, reconnue comme essentiellement similaire à la loi fédérale. Lorsque des renseignements personnels traversent les frontières provinciales ou nationales, ou lorsque je travaille avec des clients ailleurs au Canada, la Loi sur la protection des renseignements personnels et les documents électroniques (LPRPDE) s'applique également. Je m'en tiens à la plus forte des deux protections."
 					},
 					{
 						"kind": "h2",
@@ -327,7 +343,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD]. Les statistiques de fréquentation sont agrégées dès l'origine et ne contiennent aucun renseignement personnel à supprimer."
+						"text": "Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. En règle générale, la correspondance et les détails de rendez-vous sont conservés au plus trois ans après notre dernier échange, ce qui suit le délai de prescription général au Québec; les dossiers liés à un mandat réel (contrats, factures et la correspondance qui les appuie) sont conservés aussi longtemps que la loi fiscale et comptable l'exige, soit au moins six ans. Les statistiques de fréquentation sont agrégées dès l'origine et ne contiennent aucun renseignement personnel à supprimer."
 					},
 					{
 						"kind": "h2",
@@ -373,7 +389,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : [FULL LEGAL NAME]. Contact : admin@yesid.dev."
+						"text": "Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : Yesid Fernando Otalora. Contact : admin@yesid.dev."
 					},
 					{
 						"kind": "h2",
@@ -381,7 +397,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d'abord à admin@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d'accès à l'information du Québec (CAI), l'organisme public qui veille à la protection des renseignements personnels au Québec."
+						"text": "Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d'abord à admin@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d'accès à l'information du Québec (CAI), l'organisme public qui veille à la protection des renseignements personnels au Québec. Pour les situations relevant de la loi fédérale, par exemple si vous êtes à l'extérieur du Québec, vous pouvez aussi vous adresser au Commissariat à la protection de la vie privée du Canada."
 					},
 					{
 						"kind": "h2",
@@ -401,7 +417,7 @@
 					}
 				]
 			},
-			"advisorNotes": "PLACEHOLDERS THE OPERATOR MUST FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (both languages, appears in Who I am and Privacy Officer sections); [NEQ] (confirm whether an NEQ exists; if the sole proprietorship is not registered, delete the bracketed NEQ clause entirely in both languages); [DATE] (last-updated date, set at publication); [RETENTION PERIOD] (a firm retention period for correspondence/booking data; if the advisor prefers a purpose-based retention statement only, delete the sentence \"Where a fixed period applies, it is [RETENTION PERIOD]\" / « Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD] »).\n\nPOINTS OF LAW TO CONFIRM (interpretation, not verified facts): (1) No-consent-banner position: the policy states there is \"nothing to activate\" because the site has no identification, localization or profiling functions per s. 8.1; confirm this reading holds for localStorage functional preferences and for cookieless analytics with transient IP processing. (2) Section 17 outside-Quebec communication: the policy asserts the adequate-protection assessment (EFVP) was performed by the operator for Vercel, Web3Forms, cal.com. The operator states this is done; the advisor should sight the written assessments and confirm they meet s. 17 requirements, and confirm whether contractual safeguards with each processor (s. 18.3-style clauses) exist and suffice. (3) 30-day response commitment: drafted per s. 32 of the private-sector Act; confirm phrasing. (4) Portability: drafted as \"since September 2024, computerized personal information you provided, in a structured, commonly used technological format\"; confirm scope (collected-from-the-person only) and the September 22, 2024 effective framing. (5) De-indexing s. 28.1: included for completeness even though the site indexes nothing; confirm keeping it (with \"where the law provides for it\") is preferable to omitting a statutory right. (6) Incident section compresses ss. 3.5-3.8 into one sentence (register + notify person and CAI on risk of serious injury); confirm the \"risk of serious injury\" / « risque de préjudice sérieux » threshold wording. (7) Privacy Officer: operator self-designates (default under s. 3.1 as the person with highest authority); title and contact are published as required; confirm no written delegation instrument is needed for a sole proprietor. (8) Business-contact-information exemption (s. 1 exclusion for information concerning the performance of duties within an enterprise) may cover some B2B correspondents; the policy deliberately treats all collected information as personal information (conservative). Confirm this over-inclusive approach is acceptable.\n\nCLAIMS TO VERIFY AGAINST REALITY BEFORE PUBLISH: (a) Analytics section is written in the ACTIVE voice (\"I measure...\") but the tool (Plausible or Umami) is PLANNED, not yet deployed. Do not publish with this section active until the tool is live, or have the advisor approve conditional wording; also finalize which tool (Plausible vs Umami) and its hosting location (EU vs self-hosted) and name it precisely. (b) Verify the factual claims: analytics tool sets no cookies / no persistent identifiers / transient IP not stored (depends on chosen tool and configuration); site sets no cookies at all (audit Vercel defaults, cal.com embed if embedded rather than linked, and Web3Forms for any cookie or fingerprinting behavior; if cal.com is embedded on-page it may set its own cookies, which would contradict the cookie claims). (c) Security statements (sole access, multi-factor authentication on mailbox and cal.com, encryption in transit) must be true on publication day. (d) Railway/Neon description (\"never process visitor data, static site makes no calls to them\") must remain true; if any runtime endpoint is later added, this section must be revised. (e) Confirm an incident register actually exists (even an empty template) before the register claim goes live.\n\nDRAFTING NOTES: EN cites sections as \"s. 27\" etc. of the Act respecting the protection of personal information in the private sector; FR cites « art. 27 » of the « Loi sur la protection des renseignements personnels dans le secteur privé » and uses « Loi 25 » informally; confirm citation style preference. No compliance overclaims were made anywhere; keep it that way in revisions. No em dashes are used in either language by deliberate rule; please preserve this in any advisor edits. EN and FR are drafted as faithful equivalents (same sections, same commitments), each written natively."
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || PLACEHOLDERS THE OPERATOR MUST FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (both languages, appears in Who I am and Privacy Officer sections); [NEQ] (confirm whether an NEQ exists; if the sole proprietorship is not registered, delete the bracketed NEQ clause entirely in both languages); [DATE] (last-updated date, set at publication); [RETENTION PERIOD] (a firm retention period for correspondence/booking data; if the advisor prefers a purpose-based retention statement only, delete the sentence \"Where a fixed period applies, it is [RETENTION PERIOD]\" / « Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD] »).\n\nPOINTS OF LAW TO CONFIRM (interpretation, not verified facts): (1) No-consent-banner position: the policy states there is \"nothing to activate\" because the site has no identification, localization or profiling functions per s. 8.1; confirm this reading holds for localStorage functional preferences and for cookieless analytics with transient IP processing. (2) Section 17 outside-Quebec communication: the policy asserts the adequate-protection assessment (EFVP) was performed by the operator for Vercel, Web3Forms, cal.com. The operator states this is done; the advisor should sight the written assessments and confirm they meet s. 17 requirements, and confirm whether contractual safeguards with each processor (s. 18.3-style clauses) exist and suffice. (3) 30-day response commitment: drafted per s. 32 of the private-sector Act; confirm phrasing. (4) Portability: drafted as \"since September 2024, computerized personal information you provided, in a structured, commonly used technological format\"; confirm scope (collected-from-the-person only) and the September 22, 2024 effective framing. (5) De-indexing s. 28.1: included for completeness even though the site indexes nothing; confirm keeping it (with \"where the law provides for it\") is preferable to omitting a statutory right. (6) Incident section compresses ss. 3.5-3.8 into one sentence (register + notify person and CAI on risk of serious injury); confirm the \"risk of serious injury\" / « risque de préjudice sérieux » threshold wording. (7) Privacy Officer: operator self-designates (default under s. 3.1 as the person with highest authority); title and contact are published as required; confirm no written delegation instrument is needed for a sole proprietor. (8) Business-contact-information exemption (s. 1 exclusion for information concerning the performance of duties within an enterprise) may cover some B2B correspondents; the policy deliberately treats all collected information as personal information (conservative). Confirm this over-inclusive approach is acceptable.\n\nCLAIMS TO VERIFY AGAINST REALITY BEFORE PUBLISH: (a) Analytics section is written in the ACTIVE voice (\"I measure...\") but the tool (Plausible or Umami) is PLANNED, not yet deployed. Do not publish with this section active until the tool is live, or have the advisor approve conditional wording; also finalize which tool (Plausible vs Umami) and its hosting location (EU vs self-hosted) and name it precisely. (b) Verify the factual claims: analytics tool sets no cookies / no persistent identifiers / transient IP not stored (depends on chosen tool and configuration); site sets no cookies at all (audit Vercel defaults, cal.com embed if embedded rather than linked, and Web3Forms for any cookie or fingerprinting behavior; if cal.com is embedded on-page it may set its own cookies, which would contradict the cookie claims). (c) Security statements (sole access, multi-factor authentication on mailbox and cal.com, encryption in transit) must be true on publication day. (d) Railway/Neon description (\"never process visitor data, static site makes no calls to them\") must remain true; if any runtime endpoint is later added, this section must be revised. (e) Confirm an incident register actually exists (even an empty template) before the register claim goes live.\n\nDRAFTING NOTES: EN cites sections as \"s. 27\" etc. of the Act respecting the protection of personal information in the private sector; FR cites « art. 27 » of the « Loi sur la protection des renseignements personnels dans le secteur privé » and uses « Loi 25 » informally; confirm citation style preference. No compliance overclaims were made anywhere; keep it that way in revisions. No em dashes are used in either language by deliberate rule; please preserve this in any advisor edits. EN and FR are drafted as faithful equivalents (same sections, same commitments), each written natively."
 		},
 		{
 			"slug": "terms",
@@ -411,11 +427,11 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "Last updated: [DATE]"
+						"text": "Last updated: 2026-07-09"
 					},
 					{
 						"kind": "p",
-						"text": "These terms of use govern your visit to yesid.dev, the portfolio and contact site of [FULL LEGAL NAME], a freelance digital-infrastructure consultant operating as a sole proprietor in Montreal, Quebec, Canada [NEQ, if applicable: [NEQ]]. By using this site, you accept these terms. If you do not agree with them, please stop using the site."
+						"text": "These terms of use govern your visit to yesid.dev, the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant operating as a sole proprietor in Quebec, Canada. By using this site, you accept these terms. If you do not agree with them, please stop using the site."
 					},
 					{
 						"kind": "h2",
@@ -516,11 +532,11 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "Dernière mise à jour : [DATE]"
+						"text": "Dernière mise à jour : 2026-07-09"
 					},
 					{
 						"kind": "p",
-						"text": "Les présentes conditions d'utilisation encadrent votre visite de yesid.dev, le site portfolio et de contact de [FULL LEGAL NAME], consultant indépendant en infrastructure numérique exerçant comme travailleur autonome (entreprise individuelle) à Montréal, Québec, Canada [NEQ, le cas échéant : [NEQ]]. En utilisant ce site, vous acceptez ces conditions. Si vous n'y consentez pas, veuillez cesser d'utiliser le site."
+						"text": "Les présentes conditions d'utilisation encadrent votre visite de yesid.dev, le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique exerçant comme travailleur autonome (entreprise individuelle) au Québec, au Canada. En utilisant ce site, vous acceptez ces conditions. Si vous n'y consentez pas, veuillez cesser d'utiliser le site."
 					},
 					{
 						"kind": "h2",
@@ -616,7 +632,7 @@
 					}
 				]
 			},
-			"advisorNotes": "PLACEHOLDERS TO FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (operator's full legal name, both languages); [NEQ] (confirm whether an NEQ is required at all: a sole proprietor doing business under their own first and last name is generally exempt from registration under the Act respecting the legal publicity of enterprises; if exempt, delete the bracketed NEQ mention entirely in both languages); [DATE] (set on publication and on every revision).\n\nINTERPRETATION POINTS TO CONFIRM:\n1. Acceptance by use (browsewrap): the terms bind visitors merely by browsing, with no click-through. Confirm this is adequate for a purely informational site with no accounts, no checkout, and no downloads.\n2. No warranty + limitation of liability: both clauses rely on the carve-out \"nothing excludes liability that cannot be excluded under the laws of Quebec\". Confirm this satisfies art. 1474 CCQ (no exclusion for bodily or moral injury, or for intentional or gross fault). The site sells nothing, so the Consumer Protection Act likely does not apply, but confirm the wording survives if a court ever characterized a visit as consumer-facing (CPA arts. 10, 261, 262 restrict disclaimers).\n3. Forum clause: deliberately softened with \"subject to any rule of public order that grants you a different forum\" because exclusive forum selection can be unenforceable against Quebec consumers (art. 3149 CCQ and related public-order rules). Confirm this softening is the right approach or whether to drop the Montreal forum sentence.\n4. Governing-law phrasing \"laws of Quebec and the applicable laws of Canada\": confirm this is the preferred formulation.\n5. Intellectual property: the terms voluntarily permit linking and quoting brief excerpts with attribution (wider than fair dealing). Confirm the operator intends this grant. Confirm the open-source carve-out matches the actual licenses on the linked repositories.\n6. Separate-agreement statement: the terms say consulting engagements are governed by separate written agreements. Confirm this matches the operator's actual engagement paperwork so the two documents do not conflict.\n7. Changes clause: unilateral amendment with continued-use acceptance. Confirm acceptable for a free informational site, or whether material changes should trigger a more visible notice.\n8. Language versions: EN and FR are drafted as faithful equivalents with no prevailing-version clause. Advise whether to add one (Charter of the French language considerations for a Quebec business); a Spanish version arrives at launch and will need the same treatment.\n9. FR terminology to validate: \"travailleur autonome (entreprise individuelle)\" for sole proprietor; \"district judiciaire de Montréal\"; \"moissonner ou extraire\" for scraping; \"for\" in \"un autre for\" (juridical register); overall vouvoiement register.\n10. Factual claims embedded in the terms that should stay true: site sells nothing directly, no user accounts, demos labeled as simulated where applicable, third-party links limited to services like GitHub, LinkedIn, cal.com."
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || PLACEHOLDERS TO FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (operator's full legal name, both languages); [NEQ] (confirm whether an NEQ is required at all: a sole proprietor doing business under their own first and last name is generally exempt from registration under the Act respecting the legal publicity of enterprises; if exempt, delete the bracketed NEQ mention entirely in both languages); [DATE] (set on publication and on every revision).\n\nINTERPRETATION POINTS TO CONFIRM:\n1. Acceptance by use (browsewrap): the terms bind visitors merely by browsing, with no click-through. Confirm this is adequate for a purely informational site with no accounts, no checkout, and no downloads.\n2. No warranty + limitation of liability: both clauses rely on the carve-out \"nothing excludes liability that cannot be excluded under the laws of Quebec\". Confirm this satisfies art. 1474 CCQ (no exclusion for bodily or moral injury, or for intentional or gross fault). The site sells nothing, so the Consumer Protection Act likely does not apply, but confirm the wording survives if a court ever characterized a visit as consumer-facing (CPA arts. 10, 261, 262 restrict disclaimers).\n3. Forum clause: deliberately softened with \"subject to any rule of public order that grants you a different forum\" because exclusive forum selection can be unenforceable against Quebec consumers (art. 3149 CCQ and related public-order rules). Confirm this softening is the right approach or whether to drop the Montreal forum sentence.\n4. Governing-law phrasing \"laws of Quebec and the applicable laws of Canada\": confirm this is the preferred formulation.\n5. Intellectual property: the terms voluntarily permit linking and quoting brief excerpts with attribution (wider than fair dealing). Confirm the operator intends this grant. Confirm the open-source carve-out matches the actual licenses on the linked repositories.\n6. Separate-agreement statement: the terms say consulting engagements are governed by separate written agreements. Confirm this matches the operator's actual engagement paperwork so the two documents do not conflict.\n7. Changes clause: unilateral amendment with continued-use acceptance. Confirm acceptable for a free informational site, or whether material changes should trigger a more visible notice.\n8. Language versions: EN and FR are drafted as faithful equivalents with no prevailing-version clause. Advise whether to add one (Charter of the French language considerations for a Quebec business); a Spanish version arrives at launch and will need the same treatment.\n9. FR terminology to validate: \"travailleur autonome (entreprise individuelle)\" for sole proprietor; \"district judiciaire de Montréal\"; \"moissonner ou extraire\" for scraping; \"for\" in \"un autre for\" (juridical register); overall vouvoiement register.\n10. Factual claims embedded in the terms that should stay true: site sells nothing directly, no user accounts, demos labeled as simulated where applicable, third-party links limited to services like GitHub, LinkedIn, cal.com."
 		},
 		{
 			"slug": "cookies",
@@ -626,7 +642,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "yesid.dev is the portfolio and contact site of [FULL LEGAL NAME], a freelance digital-infrastructure consultant in Montreal, Quebec. This page explains what the site stores in your browser, what it does not, and why you will not see a cookie banner here. Last updated: [DATE]."
+						"text": "yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and why you will not see a cookie banner here. Last updated: 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -654,7 +670,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "I use a cookieless, privacy-focused analytics tool ([Plausible / Umami]) to understand traffic in aggregate: which pages are visited, roughly how many visits they receive, and where visits come from at the level of a country or a referring site. The tool sets no cookies, stores no persistent identifiers, and does not follow you across other sites. IP addresses are processed transiently to compute aggregate statistics and are not stored. In practice, I can see that a page received visits; I cannot see who you are, track you around the web, or recognize you on your next visit."
+						"text": "I use a cookieless, privacy-focused analytics tool (Plausible or Umami) to understand traffic in aggregate: which pages are visited, roughly how many visits they receive, and where visits come from at the level of a country or a referring site. The tool sets no cookies, stores no persistent identifiers, and does not follow you across other sites. IP addresses are processed transiently to compute aggregate statistics and are not stored. In practice, I can see that a page received visits; I cannot see who you are, track you around the web, or recognize you on your next visit."
 					},
 					{
 						"kind": "h2",
@@ -663,6 +679,10 @@
 					{
 						"kind": "p",
 						"text": "Quebec's Law 25 (section 8.1 of the Act respecting the protection of personal information in the private sector) requires a website to let you activate or deactivate technologies that identify you, locate you, or profile you. This site uses no such technology: no tracking cookies, no fingerprinting, no geolocation, no profiling. Since there is nothing to switch on or off, a banner would serve no purpose. I chose to be transparent here instead, in plain text."
+					},
+					{
+						"kind": "p",
+						"text": "Canada's federal law points the same way: under PIPEDA's meaningful-consent guidance, implied consent is enough for non-sensitive, non-tracking uses like these aggregate statistics, so no banner is required on that side either."
 					},
 					{
 						"kind": "h2",
@@ -678,7 +698,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Questions about this policy are welcome at admin@yesid.dev or through the contact page, in English, French, or Spanish. [FULL LEGAL NAME] acts as Privacy Officer for this site under section 3.1 of Law 25."
+						"text": "Questions about this policy are welcome at admin@yesid.dev or through the contact page, in English, French, or Spanish. Yesid Fernando Otalora acts as Privacy Officer for this site under section 3.1 of Law 25."
 					}
 				]
 			},
@@ -687,7 +707,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "yesid.dev est le site portfolio et de contact de [FULL LEGAL NAME], consultant indépendant en infrastructure numérique à Montréal (Québec). Cette page explique ce que le site conserve dans votre navigateur, ce qu'il ne conserve pas, et pourquoi vous ne verrez pas de bandeau de témoins (cookies) ici. Dernière mise à jour : [DATE]."
+						"text": "yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu'il ne conserve pas, et pourquoi vous ne verrez pas de bandeau de témoins (cookies) ici. Dernière mise à jour : 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -715,7 +735,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "J'utilise un outil de mesure d'audience sans témoins et axé sur la vie privée ([Plausible / Umami]) pour comprendre l'achalandage de façon agrégée : les pages consultées, le nombre approximatif de visites et leur provenance, au niveau d'un pays ou d'un site référent. L'outil n'installe aucun témoin, ne conserve aucun identifiant persistant et ne vous suit pas d'un site à l'autre. Les adresses IP sont traitées de façon transitoire pour produire des statistiques agrégées et ne sont pas conservées. Concrètement, je peux voir qu'une page a reçu des visites; je ne peux pas savoir qui vous êtes, vous suivre sur le Web ni vous reconnaître à votre prochaine visite."
+						"text": "J'utilise un outil de mesure d'audience sans témoins et axé sur la vie privée (Plausible ou Umami) pour comprendre l'achalandage de façon agrégée : les pages consultées, le nombre approximatif de visites et leur provenance, au niveau d'un pays ou d'un site référent. L'outil n'installe aucun témoin, ne conserve aucun identifiant persistant et ne vous suit pas d'un site à l'autre. Les adresses IP sont traitées de façon transitoire pour produire des statistiques agrégées et ne sont pas conservées. Concrètement, je peux voir qu'une page a reçu des visites; je ne peux pas savoir qui vous êtes, vous suivre sur le Web ni vous reconnaître à votre prochaine visite."
 					},
 					{
 						"kind": "h2",
@@ -724,6 +744,10 @@
 					{
 						"kind": "p",
 						"text": "La Loi 25 (article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé) exige qu'un site Web vous permette d'activer ou de désactiver les technologies qui permettent de vous identifier, de vous localiser ou d'effectuer votre profilage. Ce site n'utilise aucune technologie de ce genre : pas de témoins de suivi, pas d'empreinte numérique, pas de géolocalisation, pas de profilage. Comme il n'y a rien à activer ni à désactiver, un bandeau ne servirait à rien. J'ai plutôt choisi d'être transparent ici, en texte clair."
+					},
+					{
+						"kind": "p",
+						"text": "La loi fédérale va dans le même sens : selon les lignes directrices sur le consentement valable de la LPRPDE, le consentement implicite suffit pour des usages non sensibles et sans suivi comme ces statistiques agrégées; aucune bannière n'est donc requise de ce côté non plus."
 					},
 					{
 						"kind": "h2",
@@ -739,11 +763,11 @@
 					},
 					{
 						"kind": "p",
-						"text": "Pour toute question sur cette politique, écrivez-moi à admin@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. [FULL LEGAL NAME] agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l'article 3.1 de la Loi 25."
+						"text": "Pour toute question sur cette politique, écrivez-moi à admin@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. Yesid Fernando Otalora agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l'article 3.1 de la Loi 25."
 					}
 				]
 			},
-			"advisorNotes": "1) CORE INTERPRETATION TO CONFIRM: the page's central position is that s. 8.1 of the Act respecting the protection of personal information in the private sector (Loi 25) only requires an activation/deactivation mechanism (banner) for technologies that identify, locate, or profile a person, and that this site uses none, so no banner is required and transparency via this policy suffices. Please confirm this reading, including that purely functional localStorage preferences (theme, language, UI state, unsent form draft, never transmitted) fall outside s. 8.1.\n2) ANALYTICS: the section is drafted in the present tense but the tool is NOT yet live; the operator will activate it (Plausible or Umami) before or at publication. Confirm (a) that a cookieless analytics tool with no persistent identifiers, transient IP processing, and aggregate-only output does not constitute identification, localization, or profiling under s. 8.1 and does not require prior consent; (b) if you disagree, the Analytics and Why-there-is-no-banner sections must be rewritten and an opt-in mechanism added before the tool goes live. Also confirm whether the hosting location of the analytics service (EU vs self-hosted) needs to be stated here or only in the privacy policy alongside the s. 17 assessment.\n3) FACTUAL CLAIMS TO VERIFY AGAINST THE CHOSEN TOOL before publication: \"no cookies\", \"no persistent identifiers\", \"IP addresses processed transiently and not stored\", \"no cross-site tracking\". These must match the actual configuration of the deployed Plausible/Umami instance.\n4) PLACEHOLDERS the operator must fill: [DATE] (effective/last-updated), [FULL LEGAL NAME] (appears in the intro and Contact sections of both languages), [Plausible / Umami] (pick the actual tool once deployed). [NEQ] is deliberately not used on this page; confirm it is not required here (expected on the legal notice / privacy policy instead).\n5) BINDING COMMITMENT: the \"If this ever changes\" section commits the operator to opt-in consent BEFORE deploying any identifying/locating/profiling technology. Confirm the operator accepts this as a standing commitment and that the wording creates no unintended obligation beyond Law 25's own requirements.\n6) TERMINOLOGY AND CITATIONS: FR uses \"témoins (cookies)\" on first mention, \"Loi 25\", the full French statute name, and \"Responsable de la protection des renseignements personnels\" (s. 3.1). Confirm whether a formal citation (RLRQ, c. P-39.1) should be added, and whether naming the privacy officer role on this page (in addition to the privacy policy) is appropriate or redundant.\n7) EQUIVALENCE: EN and FR were written natively with identical sections and commitments; please flag any spot where the FR legal phrasing (e.g. \"effectuer votre profilage\", \"activer ou désactiver\") should track the statutory wording more closely.\n8) NO OVERCLAIMS: the text deliberately avoids \"compliant/conforme\" language; confirm nothing in it reads as a guarantee."
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || 1) CORE INTERPRETATION TO CONFIRM: the page's central position is that s. 8.1 of the Act respecting the protection of personal information in the private sector (Loi 25) only requires an activation/deactivation mechanism (banner) for technologies that identify, locate, or profile a person, and that this site uses none, so no banner is required and transparency via this policy suffices. Please confirm this reading, including that purely functional localStorage preferences (theme, language, UI state, unsent form draft, never transmitted) fall outside s. 8.1.\n2) ANALYTICS: the section is drafted in the present tense but the tool is NOT yet live; the operator will activate it (Plausible or Umami) before or at publication. Confirm (a) that a cookieless analytics tool with no persistent identifiers, transient IP processing, and aggregate-only output does not constitute identification, localization, or profiling under s. 8.1 and does not require prior consent; (b) if you disagree, the Analytics and Why-there-is-no-banner sections must be rewritten and an opt-in mechanism added before the tool goes live. Also confirm whether the hosting location of the analytics service (EU vs self-hosted) needs to be stated here or only in the privacy policy alongside the s. 17 assessment.\n3) FACTUAL CLAIMS TO VERIFY AGAINST THE CHOSEN TOOL before publication: \"no cookies\", \"no persistent identifiers\", \"IP addresses processed transiently and not stored\", \"no cross-site tracking\". These must match the actual configuration of the deployed Plausible/Umami instance.\n4) PLACEHOLDERS the operator must fill: [DATE] (effective/last-updated), [FULL LEGAL NAME] (appears in the intro and Contact sections of both languages), [Plausible / Umami] (pick the actual tool once deployed). [NEQ] is deliberately not used on this page; confirm it is not required here (expected on the legal notice / privacy policy instead).\n5) BINDING COMMITMENT: the \"If this ever changes\" section commits the operator to opt-in consent BEFORE deploying any identifying/locating/profiling technology. Confirm the operator accepts this as a standing commitment and that the wording creates no unintended obligation beyond Law 25's own requirements.\n6) TERMINOLOGY AND CITATIONS: FR uses \"témoins (cookies)\" on first mention, \"Loi 25\", the full French statute name, and \"Responsable de la protection des renseignements personnels\" (s. 3.1). Confirm whether a formal citation (RLRQ, c. P-39.1) should be added, and whether naming the privacy officer role on this page (in addition to the privacy policy) is appropriate or redundant.\n7) EQUIVALENCE: EN and FR were written natively with identical sections and commitments; please flag any spot where the FR legal phrasing (e.g. \"effectuer votre profilage\", \"activer ou désactiver\") should track the statutory wording more closely.\n8) NO OVERCLAIMS: the text deliberately avoids \"compliant/conforme\" language; confirm nothing in it reads as a guarantee."
 		},
 		{
 			"slug": "accessibility",
@@ -753,7 +777,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "This page describes the current state of accessibility on yesid.dev: what already works, what does not yet, and how to reach me if something gets in your way. Last updated: [DATE]."
+						"text": "This page describes the current state of accessibility on yesid.dev: what already works, what does not yet, and how to reach me if something gets in your way. Last updated: 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -822,7 +846,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "Cette page décrit l'état actuel de l'accessibilité de yesid.dev : ce qui fonctionne déjà, ce qui reste à améliorer, et comment me joindre si quelque chose vous bloque. Dernière mise à jour : [DATE]."
+						"text": "Cette page décrit l'état actuel de l'accessibilité de yesid.dev : ce qui fonctionne déjà, ce qui reste à améliorer, et comment me joindre si quelque chose vous bloque. Dernière mise à jour : 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -886,7 +910,7 @@
 					}
 				]
 			},
-			"advisorNotes": "ACCESSIBILITY STATEMENT. Points for the Quebec advisor to confirm: (1) Legal basis: this is a VOLUNTARY statement. yesid.dev is a private sole proprietor's site; confirm no mandatory web accessibility standard applies (the SGQRI 008 standards bind Quebec public bodies, not private freelancers), so partial-conformance wording creates no statutory exposure. (2) Overclaim check: the text deliberately claims only a TARGET of WCAG 2.1 AA, states no formal audit has occurred, and bases claims on self-testing. Confirm this framing cannot be read as a conformance warranty under consumer-protection or misrepresentation rules. (3) Factual claims to verify with the operator BEFORE publication: each bullet under \"What is in place today\" (semantic HTML, keyboard navigation, visible focus, ARIA labels on interactive art, prefers-reduced-motion support, collapse-all mode, contrast checked in both themes, alt text) must be true on the live site at publication date; these are the operator's assertions, not the drafter's. (4) Third-party disclaimer: confirm the sentence limiting responsibility for third-party embeds (cal.com booking) is acceptable and does not read as an improper exclusion of liability. (5) Service commitment: \"reply within a few days\" is a soft commitment; confirm the operator accepts it or wants a firmer/looser wording. (6) Placeholder [DATE] must be filled at publication and updated on every material change. (7) Language: FR uses vouvoiement and Quebec French; confirm the FR version satisfies Charter of the French language expectations for a commercial site (FR available and at least equivalent to EN; the two versions here carry identical commitments). (8) Interpretation point: the statement invites feedback in EN/FR/ES; confirm offering trilingual contact creates no obligation issue before the Spanish site version launches (contact in ES is already welcomed even though ES pages are not live). No em dashes are used anywhere; this is an intentional style constraint, do not reintroduce them during review."
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || ACCESSIBILITY STATEMENT. Points for the Quebec advisor to confirm: (1) Legal basis: this is a VOLUNTARY statement. yesid.dev is a private sole proprietor's site; confirm no mandatory web accessibility standard applies (the SGQRI 008 standards bind Quebec public bodies, not private freelancers), so partial-conformance wording creates no statutory exposure. (2) Overclaim check: the text deliberately claims only a TARGET of WCAG 2.1 AA, states no formal audit has occurred, and bases claims on self-testing. Confirm this framing cannot be read as a conformance warranty under consumer-protection or misrepresentation rules. (3) Factual claims to verify with the operator BEFORE publication: each bullet under \"What is in place today\" (semantic HTML, keyboard navigation, visible focus, ARIA labels on interactive art, prefers-reduced-motion support, collapse-all mode, contrast checked in both themes, alt text) must be true on the live site at publication date; these are the operator's assertions, not the drafter's. (4) Third-party disclaimer: confirm the sentence limiting responsibility for third-party embeds (cal.com booking) is acceptable and does not read as an improper exclusion of liability. (5) Service commitment: \"reply within a few days\" is a soft commitment; confirm the operator accepts it or wants a firmer/looser wording. (6) Placeholder [DATE] must be filled at publication and updated on every material change. (7) Language: FR uses vouvoiement and Quebec French; confirm the FR version satisfies Charter of the French language expectations for a commercial site (FR available and at least equivalent to EN; the two versions here carry identical commitments). (8) Interpretation point: the statement invites feedback in EN/FR/ES; confirm offering trilingual contact creates no obligation issue before the Spanish site version launches (contact in ES is already welcomed even though ES pages are not live). No em dashes are used anywhere; this is an intentional style constraint, do not reintroduce them during review."
 		},
 		{
 			"slug": "notice",
@@ -896,7 +920,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: [DATE]."
+						"text": "This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -904,7 +928,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "yesid.dev is published by [FULL LEGAL NAME], operating as a sole proprietor and freelance digital-infrastructure consultant in Montreal, Quebec, Canada. Quebec enterprise number (NEQ): [NEQ]. [Note: this number applies only if the business is registered with the Registraire des entreprises du Québec; remove this line otherwise.]"
+						"text": "yesid.dev is published by Yesid Fernando Otalora, operating as a sole proprietor and freelance digital-infrastructure consultant. Address: 366 rue de Fontenelle, Gatineau, Quebec, J8T 0C6, Canada."
 					},
 					{
 						"kind": "h2",
@@ -912,7 +936,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "The site is hosted by Vercel Inc., [HOST ADDRESS], and served through a global content delivery network. The content system behind the site runs on Railway and Neon; it is used only to build the site and does not process visitor data while you browse, because the published site is fully static."
+						"text": "The site is hosted by Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA, and served through a global content delivery network. The content system behind the site runs on Railway and Neon; it is used only to build the site and does not process visitor data while you browse, because the published site is fully static."
 					},
 					{
 						"kind": "h2",
@@ -953,7 +977,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "Cette page indique qui publie yesid.dev, qui l'héberge et qui répond de son contenu. Dernière mise à jour : [DATE]."
+						"text": "Cette page indique qui publie yesid.dev, qui l'héberge et qui répond de son contenu. Dernière mise à jour : 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -961,7 +985,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "yesid.dev est publié par [FULL LEGAL NAME], entreprise individuelle, consultant indépendant en infrastructure numérique établi à Montréal (Québec), Canada. Numéro d'entreprise du Québec (NEQ) : [NEQ]. [Note : ce numéro s'applique seulement si l'entreprise est immatriculée au Registraire des entreprises du Québec; retirer cette ligne dans le cas contraire.]"
+						"text": "yesid.dev est publié par Yesid Fernando Otalora, entreprise individuelle, consultant indépendant en infrastructure numérique. Adresse : 366, rue de Fontenelle, Gatineau (Québec) J8T 0C6, Canada."
 					},
 					{
 						"kind": "h2",
@@ -969,7 +993,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Le site est hébergé par Vercel Inc., [HOST ADDRESS], et diffusé par un réseau mondial de distribution de contenu. Le système de contenu derrière le site fonctionne sur Railway et Neon; il sert uniquement à construire le site et ne traite aucune donnée de visiteur pendant votre navigation, puisque le site publié est entièrement statique."
+						"text": "Le site est hébergé par Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis, et diffusé par un réseau mondial de distribution de contenu. Le système de contenu derrière le site fonctionne sur Railway et Neon; il sert uniquement à construire le site et ne traite aucune donnée de visiteur pendant votre navigation, puisque le site publié est entièrement statique."
 					},
 					{
 						"kind": "h2",
@@ -1005,7 +1029,7 @@
 					}
 				]
 			},
-			"advisorNotes": "PLACEHOLDERS TO FILL (operator): [FULL LEGAL NAME] (natural person's full legal name); [NEQ] (only if registered); [HOST ADDRESS] (Vercel Inc. registered address, verify current); [DATE] (same date in both languages, agree on format: ISO vs written-out).\n\nPOINTS THE ADVISOR MUST CONFIRM: (1) NEQ line: sole proprietors operating under their own first and last name are generally exempt from registration with the Registraire des entreprises du Québec; confirm whether the operator is registered and delete the NEQ sentence plus bracketed note if not, or fill the number and delete only the note if yes. (2) Whether displaying the natural person's full legal name is required or whether the operating/trade name suffices for a sole proprietorship identity page. (3) Trademark disclaimer wording: confirm 'marques de commerce' is the preferred FR term and that the descriptive-use disclaimer (STM, Power BI, no affiliation/sponsorship/endorsement) is adequate; note the transit project is open-source civic work, not commissioned by STM, so no affiliation may be implied anywhere. (4) The factual claim that Railway/Neon backend does not process visitor data at browse time (site is fully prerendered/static): this is architecture-verified by the operator but the advisor should confirm the phrasing does not overclaim. (5) Publication-responsibility section is a plain-language personal commitment, not a statutory citation; confirm no additional liability or governing-law language is needed on this page (deliberately omitted; a legal-notice page is not itself mandated by Quebec law for a sole proprietor, it is a transparency practice). (6) FR version drafted natively in Quebec French with vouvoiement; confirm it satisfies Charter of the French Language expectations (FR at least equivalent to EN). (7) Bracketed [Note: ...] sentences are drafting instructions for review, not publishable copy; they must be resolved and removed before publication.\n\nINTERPRETATION CHOICES MADE: single final Contact section serves both the publisher-contact and page-contact requirements; Spanish contact welcome mentioned per launch plan even though the site UI is EN/FR today. No em dashes used in either language (hard project rule)."
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || PLACEHOLDERS TO FILL (operator): [FULL LEGAL NAME] (natural person's full legal name); [NEQ] (only if registered); [HOST ADDRESS] (Vercel Inc. registered address, verify current); [DATE] (same date in both languages, agree on format: ISO vs written-out).\n\nPOINTS THE ADVISOR MUST CONFIRM: (1) NEQ line: sole proprietors operating under their own first and last name are generally exempt from registration with the Registraire des entreprises du Québec; confirm whether the operator is registered and delete the NEQ sentence plus bracketed note if not, or fill the number and delete only the note if yes. (2) Whether displaying the natural person's full legal name is required or whether the operating/trade name suffices for a sole proprietorship identity page. (3) Trademark disclaimer wording: confirm 'marques de commerce' is the preferred FR term and that the descriptive-use disclaimer (STM, Power BI, no affiliation/sponsorship/endorsement) is adequate; note the transit project is open-source civic work, not commissioned by STM, so no affiliation may be implied anywhere. (4) The factual claim that Railway/Neon backend does not process visitor data at browse time (site is fully prerendered/static): this is architecture-verified by the operator but the advisor should confirm the phrasing does not overclaim. (5) Publication-responsibility section is a plain-language personal commitment, not a statutory citation; confirm no additional liability or governing-law language is needed on this page (deliberately omitted; a legal-notice page is not itself mandated by Quebec law for a sole proprietor, it is a transparency practice). (6) FR version drafted natively in Quebec French with vouvoiement; confirm it satisfies Charter of the French Language expectations (FR at least equivalent to EN). (7) Bracketed [Note: ...] sentences are drafting instructions for review, not publishable copy; they must be resolved and removed before publication.\n\nINTERPRETATION CHOICES MADE: single final Contact section serves both the publisher-contact and page-contact requirements; Spanish contact welcome mentioned per launch plan even though the site UI is EN/FR today. No em dashes used in either language (hard project rule)."
 		}
 	]
 }
