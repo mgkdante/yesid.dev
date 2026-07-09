@@ -248,6 +248,53 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	return seo;
 }
 
+/** First body paragraph, tags stripped, clamped into the SEO 50–200 band.
+ *  Returns undefined when the locale has no usable paragraph. */
+function legalDescriptionFor(doc: { blocks: Array<{ type: string; data: unknown }> } | undefined): string | undefined {
+	const block = doc?.blocks.find((b) => b.type === 'paragraph');
+	if (!block) return undefined;
+	const text = String((block.data as { text?: string }).text ?? '')
+		.replace(/<[^>]*>/g, '')
+		.replace(/\s+/g, ' ')
+		.trim();
+	if (text.length < 50) return undefined;
+	if (text.length <= 200) return text;
+	const cut = text.slice(0, 197);
+	return `${cut.slice(0, cut.lastIndexOf(' '))}...`;
+}
+
+/** /legal/[slug] — title from the CMS legal page (OPS1); description derived
+ *  from the first body paragraph per locale, siteSeoDefaults fallback. */
+export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
+	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
+	const page = await adapter.legal.bySlug(params.slug, ctx);
+	if (!page) throw new Error(`Unknown legal slug: ${params.slug}`);
+	const canonicalUrl = canonicalFor(`/legal/${page.slug}`, locale);
+	const enDescription = legalDescriptionFor(page.body.en);
+	const frDescription = legalDescriptionFor(page.body.fr);
+	const esDescription = legalDescriptionFor(page.body.es);
+	return {
+		title: appendBrandPerLocale(page.title, siteMeta.name),
+		description: {
+			en: enDescription ?? siteSeoDefaults.defaultDescription.en,
+			...(frDescription && { fr: frDescription }),
+			...(esDescription && { es: esDescription }),
+		},
+		canonical: canonicalUrl,
+		ogType: 'website',
+		noIndex: false,
+		jsonLd: [
+			buildBreadcrumbListNode(
+				[
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: resolveLocale(page.title, locale), url: canonicalUrl },
+				],
+				canonicalUrl,
+			),
+		],
+	};
+}
+
 /**
  * /__error — last-resort SEO. noIndex: true (nothing to crawl). Pulls brand
  * suffix from siteMeta and fallback description from siteSeoDefaults.
@@ -277,4 +324,5 @@ export const routeSeoFactories: Record<
 	'/services/[id]': servicesIdSeoFactory,
 	'/projects/[slug]': projectsSlugSeoFactory,
 	'/blog/[slug]': blogSlugSeoFactory,
+	'/legal/[slug]': legalSlugSeoFactory,
 };

@@ -16,6 +16,7 @@ import type {
 	Service,
 	Project,
 	TechStackItem,
+	LegalPage,
 } from '@repo/shared';
 import type {
 	BlogPageContent,
@@ -67,6 +68,8 @@ export interface ExportData {
 	projectsPage?: ProjectsPageContent;
 	techStackPage?: TechStackPageContent;
 	contactPage?: ContactContent;
+	/** Published legal_pages rows (OPS1): /legal/[slug] title + per-locale body. */
+	legalPages?: readonly LegalPage[];
 	hero?: HeroContent;
 	manifesto?: ManifestoContent;
 	proofReel?: ProofReelContent;

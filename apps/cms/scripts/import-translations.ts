@@ -83,6 +83,36 @@ export function validateDrop(drop: Drop): void {
 	});
 }
 
+/** The upsert loop against an already-constructed client. Exported for the
+ *  prod promotion orchestrator (promote-launch-phase1-prod) — the CALLER owns
+ *  the URL guard (assertDevCms here, the PROD-only assert there). */
+export async function applyDrop(
+	client: ReturnType<typeof createClient>,
+	drop: Drop,
+): Promise<{ created: number; updated: number }> {
+	let created = 0;
+	let updated = 0;
+	for (const e of drop.entries) {
+		const junction = junctionCollection(e.collection);
+		const existing = (await client.request(
+			readItems(junction as never, {
+				filter: { [e.parentFk]: { _eq: e.id }, languages_code: { _eq: drop.locale } } as never,
+				limit: 1,
+			} as never),
+		)) as Array<{ id: number }>;
+		if (existing.length > 0) {
+			await client.request(updateItem(junction as never, existing[0]!.id as never, e.fields as never));
+			updated++;
+		} else {
+			await client.request(
+				createItem(junction as never, buildCreatePayload(e, drop.locale) as never),
+			);
+			created++;
+		}
+	}
+	return { created, updated };
+}
+
 if (import.meta.main) {
 	const { values } = parseArgs({
 		options: { file: { type: 'string' }, 'dry-run': { type: 'boolean', default: false } },
@@ -106,26 +136,7 @@ if (import.meta.main) {
 	}
 
 	const client = createClient(url, await getAdminToken(url));
-	let created = 0;
-	let updated = 0;
-	for (const e of drop.entries) {
-		const junction = junctionCollection(e.collection);
-		const existing = (await client.request(
-			readItems(junction as never, {
-				filter: { [e.parentFk]: { _eq: e.id }, languages_code: { _eq: drop.locale } } as never,
-				limit: 1,
-			} as never),
-		)) as Array<{ id: number }>;
-		if (existing.length > 0) {
-			await client.request(updateItem(junction as never, existing[0]!.id as never, e.fields as never));
-			updated++;
-		} else {
-			await client.request(
-				createItem(junction as never, buildCreatePayload(e, drop.locale) as never),
-			);
-			created++;
-		}
-	}
+	const { created, updated } = await applyDrop(client, drop);
 	console.log(
 		`${drop.locale} import: ${created} created, ${updated} updated across ${drop.entries.length} entries.`,
 	);

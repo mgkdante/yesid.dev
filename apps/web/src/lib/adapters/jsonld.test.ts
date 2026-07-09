@@ -12,6 +12,7 @@ import {
 	buildBlogPostingNode,
 	buildServiceNode,
 	buildCreativeWorkNode,
+	buildProfessionalServiceNode,
 } from './jsonld';
 import type { BlogPost } from '$lib/types';
 
@@ -56,6 +57,21 @@ describe('buildPersonNode', () => {
 			addressRegion: siteMeta.owner.address.region,
 			addressCountry: siteMeta.owner.address.country,
 		});
+	});
+
+	it('emits knowsLanguage derived from the published locales (L2 Phase 4)', () => {
+		const node = buildPersonNode(siteMeta);
+		expect(node.knowsLanguage).toEqual(expect.arrayContaining(['en', 'fr', 'es']));
+		expect(node.knowsLanguage).toHaveLength(3);
+	});
+});
+
+describe('buildProfessionalServiceNode — L2 trilingual signal (Phase 4)', () => {
+	it('emits knowsLanguage matching the published locales, same as the Person', () => {
+		const business = buildProfessionalServiceNode(siteMeta);
+		const person = buildPersonNode(siteMeta);
+		expect(business.knowsLanguage).toEqual(expect.arrayContaining(['en', 'fr', 'es']));
+		expect(business.knowsLanguage).toEqual(person.knowsLanguage);
 	});
 });
 
@@ -251,6 +267,19 @@ describe('buildServiceNode', () => {
 		if (services.length === 0) return;
 		const node = buildServiceNode(services[0], 'en');
 		expect((node as Record<string, unknown>).availableLanguage).toBeUndefined();
+	});
+
+	it('emits serviceType as the STABLE EN category on every locale (L2 Phase 4)', async () => {
+		// serviceType IS a schema.org Service property (unlike availableLanguage):
+		// all three locale renders must resolve to the same machine-legible
+		// category — the EN station name.
+		const services = await adapter.services.visible();
+		if (services.length === 0) return;
+		const en = buildServiceNode(services[0], 'en');
+		const es = buildServiceNode(services[0], 'es');
+		expect(en.serviceType).toBeTruthy();
+		expect(es.serviceType).toBe(en.serviceType);
+		expect(en.serviceType).toBe(en.name); // EN render: category == EN name
 	});
 });
 

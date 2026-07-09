@@ -52,26 +52,36 @@
 
 	// One fingerboard per locale, alternating sides of the pole, current emphasised.
 	// Pointed-pennant silhouette is the locked shape — drawn flat (outline + label).
+	// Letters run at the FULL two-board size for EVERY board count (operator
+	// call, launch 3-board mode): the per-board span is CONSTANT and the post
+	// grows taller instead of shrinking its type. The control is exempt from
+	// the nav pill's vertical padding (see .lang-post), so the taller 3-board
+	// drawing rides the pill's padding band and the pill never grows.
+	const SPAN = 18; // per-board vertical span — the locked two-board geometry
+	const PLATE_H = 15; // plate height; carries the locked 15px-SVG-unit letters
+	const FONT_SIZE = 15;
+	const vbHeight = $derived(8 + SPAN * availableLocales.length); // 2 boards → 44 (unchanged)
+	// Rendered at the two-board scale (36px tall for the 44-unit post) at every
+	// count, so 15 SVG units paint the same on-screen size with 2 AND 3 boards.
+	const svgHeight = $derived(Math.round(((vbHeight * 36) / 44) * 10) / 10);
 	const boards = $derived(
 		availableLocales.map((loc, k) => {
-			const n = availableLocales.length;
-			const span = 36 / n;
-			const h = Math.min(12, span - 2);
-			const yTop = 4 + k * span + (span - h) / 2;
-			const mid = yTop + h / 2;
+			const yTop = 4 + k * SPAN + (SPAN - PLATE_H) / 2;
+			const mid = yTop + PLATE_H / 2;
 			const right = k % 2 === 1;
 			// Plate outline (pointed pennant) — the locked silhouette.
 			const path = right
-				? `M30 ${yTop} H49 L54 ${mid} L49 ${yTop + h} H30 Z`
-				: `M26 ${yTop} H7 L2 ${mid} L7 ${yTop + h} H26 Z`;
+				? `M30 ${yTop} H49 L54 ${mid} L49 ${yTop + PLATE_H} H30 Z`
+				: `M26 ${yTop} H7 L2 ${mid} L7 ${yTop + PLATE_H} H26 Z`;
 			return {
 				code: CODE[loc] ?? loc.slice(0, 2).toUpperCase(),
 				path,
-				ruleY: yTop + h + 1.4,
+				fontSize: FONT_SIZE,
+				ruleY: yTop + PLATE_H + 1.4,
 				ruleX1: right ? 31 : 8,
 				ruleX2: right ? 47.5 : 25,
 				tx: right ? 39 : 16,
-				ty: mid + 3.8,
+				ty: mid + FONT_SIZE * 0.36,
 				active: loc === locale,
 				delay: k * 60,
 			};
@@ -88,10 +98,11 @@
 		class="lang-post tap-press {className}"
 		aria-label={ariaLabel}
 		title={NAMES[locale] ?? locale}
+		style="--vb-h: {vbHeight}"
 	>
-		<svg viewBox="0 0 56 44" width="46" height="36" aria-hidden="true">
+		<svg viewBox="0 0 56 {vbHeight}" width="46" height={svgHeight} aria-hidden="true">
 			<!-- POLE: simple shaft with a small finial cap. -->
-			<line class="pole" x1="28" y1="6" x2="28" y2="41" stroke-linecap="round" />
+			<line class="pole" x1="28" y1="6" x2="28" y2={vbHeight - 3} stroke-linecap="round" />
 			<circle class="finial" cx="28" cy="4" r="2" />
 
 			{#key locale}
@@ -108,7 +119,7 @@
 							{#if b.active}
 								<line class="rule" x1={b.ruleX1} y1={b.ruleY} x2={b.ruleX2} y2={b.ruleY} />
 							{/if}
-							<text x={b.tx} y={b.ty}>{b.code}</text>
+							<text x={b.tx} y={b.ty} font-size={b.fontSize}>{b.code}</text>
 						</g>
 					{/each}
 				</g>
@@ -123,9 +134,15 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 44px;
+		/* FIXED height + zero vertical padding (operator call, 3-board mode):
+		   the control is exempt from the pill's top/bottom padding — the
+		   3-board drawing is taller than 44px and bleeds symmetrically into
+		   the pill's padding band instead of growing the pill. The 44px hit
+		   target comes from this height + the min-width. */
+		height: 44px;
 		min-width: 44px;
-		padding: 4px;
+		padding-block: 0;
+		padding-inline: 4px;
 		color: var(--secondary-foreground);
 		border-radius: var(--radius-sm);
 		transition: color var(--duration-fast) var(--ease-default);
@@ -157,9 +174,11 @@
 	}
 	.board text {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		/* Base size only — the render pins font-size to the locked 15 SVG
+		   units on every board (2- and 3-board posts alike). */
+		font-size: 15px;
 		font-weight: 700;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.01em;
 		fill: currentColor;
 		text-anchor: middle;
 	}
@@ -179,9 +198,11 @@
 		stroke-linecap: round;
 	}
 
-	/* MOTION — a gentle swing on switch + a small per-board stagger. No filters. */
+	/* MOTION — a gentle swing on switch + a small per-board stagger. No filters.
+	   Swing pivots on the post's vertical centre — computed from the viewBox
+	   height so the 3-board (62-unit) post pivots true, not at the 2-board 22. */
 	.boards {
-		transform-origin: 28px 22px;
+		transform-origin: 28px calc(0.5px * var(--vb-h, 44));
 		animation: post-swing 460ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
 	}
 	.board {
@@ -210,25 +231,27 @@
 
 	/* Mobile: the fingerpost is the widest pill control (svg is 46px wide) and,
 	   added in slice-30, it overflowed the floating nav pill at ≤360px. Shrink
-	   the drawing on phones — the tap target stays comfortably ≥24px (AA). */
+	   the drawing on phones — the tap target stays comfortably ≥24px (AA).
+	   Heights derive from the viewBox height at each tier's 2-board scale
+	   (27/44, 17/44), so the 3-board post keeps letter-size parity here too. */
 	@media (max-width: 479px) {
 		.lang-post {
 			min-width: 38px;
-			padding: 3px;
+			padding-inline: 3px;
 		}
 		.lang-post svg {
 			width: 34px;
-			height: 27px;
+			height: calc(27px * var(--vb-h, 44) / 44);
 		}
 	}
 	@media (max-width: 359px) {
 		.lang-post {
 			min-width: 26px;
-			padding: 2px;
+			padding-inline: 2px;
 		}
 		.lang-post svg {
 			width: 22px;
-			height: 17px;
+			height: calc(17px * var(--vb-h, 44) / 44);
 		}
 	}
 </style>

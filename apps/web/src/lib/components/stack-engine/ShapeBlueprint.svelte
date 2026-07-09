@@ -45,10 +45,12 @@
 -->
 <script lang="ts">
 	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
+	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { layoutBlueprint } from './blueprint-layout';
-	import { layerArticle, layerGapFr } from './stack-shape';
+	import { LAYER_NAMES } from './layer-teaching';
+	import { layerGapLine } from './stack-shape';
 
 	const locale = getLocale();
 
@@ -125,26 +127,40 @@
 
 	const complete = $derived(missing.length === 0);
 	const coveredCount = $derived(4 - missing.length);
-	// FR plural for "morceau" / "couche"; the EN copy pluralizes with a trailing s.
-	const partWord = $derived(
-		locale === 'fr'
-			? `morceau${picked.length === 1 ? '' : 'x'}`
-			: `part${picked.length === 1 ? '' : 's'}`,
-	);
-	const layersWord = $derived(locale === 'fr' ? 'couches' : 'layers');
-	const ariaLabel = $derived(
-		locale === 'fr'
-			? complete
-				? `Plan de ton build : ${picked.length} ${partWord} placé${picked.length === 1 ? '' : 's'}, les 4 couches couvertes`
-				: `Plan de ton build : ${picked.length} ${partWord} placé${picked.length === 1 ? '' : 's'}, ${missing.length} couche${missing.length === 1 ? '' : 's'} encore à ajouter`
-			: complete
-				? `Your build blueprint: ${picked.length} ${partWord} placed, all 4 layers covered`
-				: `Your build blueprint: ${picked.length} ${partWord} placed, ${missing.length} layer${missing.length === 1 ? '' : 's'} still to add`,
-	);
+	// Per-locale count grammar — exhaustive Record<Locale, …> maps so a new
+	// locale is a compile error here, never a silent English fallback (L1 rule).
+	const PART_WORDS: Record<Locale, (n: number) => string> = {
+		en: (n) => `part${n === 1 ? '' : 's'}`,
+		fr: (n) => `morceau${n === 1 ? '' : 'x'}`,
+		es: (n) => `pieza${n === 1 ? '' : 's'}`,
+	};
+	const LAYERS_WORDS: Record<Locale, string> = { en: 'layers', fr: 'couches', es: 'capas' };
+	const ARIA_LABELS: Record<
+		Locale,
+		(parts: number, partWord: string, missingCount: number) => string
+	> = {
+		en: (parts, partWord, missingCount) =>
+			missingCount === 0
+				? `Your build blueprint: ${parts} ${partWord} placed, all 4 layers covered`
+				: `Your build blueprint: ${parts} ${partWord} placed, ${missingCount} layer${missingCount === 1 ? '' : 's'} still to add`,
+		fr: (parts, partWord, missingCount) =>
+			missingCount === 0
+				? `Plan de ton build : ${parts} ${partWord} placé${parts === 1 ? '' : 's'}, les 4 couches couvertes`
+				: `Plan de ton build : ${parts} ${partWord} placé${parts === 1 ? '' : 's'}, ${missingCount} couche${missingCount === 1 ? '' : 's'} encore à ajouter`,
+		es: (parts, partWord, missingCount) =>
+			missingCount === 0
+				? `El plano de tu build: ${parts} ${partWord} colocada${parts === 1 ? '' : 's'}, las 4 capas cubiertas`
+				: `El plano de tu build: ${parts} ${partWord} colocada${parts === 1 ? '' : 's'}, ${missingCount} capa${missingCount === 1 ? '' : 's'} por agregar`,
+	};
+	const GHOST_PREFIXES: Record<Locale, string> = { en: '+ add', fr: '+ ajoute', es: '+ agrega' };
+	const partWord = $derived(PART_WORDS[locale](picked.length));
+	const layersWord = LAYERS_WORDS[locale];
+	const ariaLabel = $derived(ARIA_LABELS[locale](picked.length, partWord, missing.length));
 	// The ghost annotation per missing layer: "+ add an interface layer" /
-	// "+ ajoute une couche interface". ONE source via layerArticle / layerGapFr.
+	// "+ ajoute une couche interface" / "+ agrega una capa interface".
+	// ONE source via layerGapLine (round 3 parity, now trilingual).
 	const ghostAnnotation = (layer: StackLayer): string =>
-		locale === 'fr' ? `+ ajoute ${layerGapFr(layer)}` : `+ add ${layerArticle(layer)} ${layer} layer`;
+		`${GHOST_PREFIXES[locale]} ${layerGapLine(layer, locale)}`;
 </script>
 
 <!-- Finale (4b): contained horizontal pan — when even the wrapped drawing is
@@ -194,7 +210,7 @@
 					text-anchor="end"
 					dominant-baseline="central"
 				>
-					{box.layer}
+					{resolveLocale(LAYER_NAMES[box.layer], locale)}
 				</text>
 			{/each}
 		</g>
@@ -285,7 +301,7 @@
 			rx="2"
 		/>
 		<text class="sbp-stamp-title" x={layout.width + PAD - 8} y={layout.height + STAMP_H} text-anchor="end">
-			YOUR BUILD
+			{resolveLocale({ en: 'YOUR BUILD', fr: 'TON BUILD', es: 'TU BUILD' }, locale)}
 		</text>
 		<text
 			class="sbp-stamp-meta"

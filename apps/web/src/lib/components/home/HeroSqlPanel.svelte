@@ -55,35 +55,45 @@
     </span>
   </div>
 
-  <!-- Query with syntax highlighting -->
-  <div class="text-xs leading-[1.7] md:text-sm md:leading-[1.8]" data-testid="sql-query">
-    <span class="text-[var(--primary)]">SELECT</span><br />
-    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;d.route_short_name,</span><br />
-    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">round</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">avg</span><span class="text-[var(--terminal-ink)]">(f.delay_seconds)::numeric, 1)</span><br />
-    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">avg_delay_s,</span><br />
-    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">count</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">DISTINCT</span> <span class="text-[var(--terminal-ink)]">f.vehicle_id)</span><br />
-    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">vehicles</span><br />
-    <span class="text-[var(--primary)]">FROM</span> <span class="text-[var(--accent-text)]">gold.latest_trip_delay_snapshot</span> <span class="text-[var(--terminal-ink)]">f</span><br />
-    <span class="text-[var(--primary)]">JOIN</span> <span class="text-[var(--accent-text)]">gold.dim_route</span> <span class="text-[var(--terminal-ink)]">d</span><br />
-    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">USING</span> <span class="text-[var(--terminal-ink)]">(provider_id, route_id)</span><br />
-    <span class="text-[var(--primary)]">WHERE</span> <span class="text-[var(--terminal-ink)]">f.delay_seconds</span> <span class="text-[var(--primary)]">IS NOT NULL</span><br />
-    <span class="text-[var(--primary)]">GROUP BY</span> <span class="text-[var(--terminal-ink)]">d.route_short_name</span><br />
-    <span class="text-[var(--primary)]">ORDER BY</span> <span class="text-[var(--terminal-ink)]">vehicles</span> <span class="text-[var(--primary)]">DESC</span><br />
-    <span class="text-[var(--primary)]">LIMIT</span> <span class="text-[var(--accent-text)]">5</span><span class="text-[var(--terminal-ink)]">;</span>
+  <!-- Query with syntax highlighting — river indentation (operator's
+       personal pattern): keywords flush left, expressions aligned at one
+       12ch gutter, INNER JOIN spelled out, AS inline. Long lines scroll
+       horizontally like a real SQL editor instead of wrapping the river. -->
+  <div class="overflow-x-auto whitespace-nowrap text-xs leading-[1.7] md:text-sm md:leading-[1.8]" data-testid="sql-query">
+    <span class="text-[var(--primary)]">SELECT</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d.route_short_name,</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">round</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">avg</span><span class="text-[var(--terminal-ink)]">(f.delay_seconds)::numeric, 1)</span> <span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">avg_delay_s,</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">count</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">DISTINCT</span> <span class="text-[var(--terminal-ink)]">f.vehicle_id)</span> <span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">vehicles</span><br />
+    <span class="text-[var(--primary)]">FROM</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--accent-text)]">gold.latest_trip_delay_snapshot</span> <span class="text-[var(--terminal-ink)]">f</span><br />
+    <span class="text-[var(--primary)]">INNER JOIN</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--accent-text)]">gold.dim_route</span> <span class="text-[var(--terminal-ink)]">d</span> <span class="text-[var(--primary)]">USING</span> <span class="text-[var(--terminal-ink)]">(provider_id, route_id)</span><br />
+    <span class="text-[var(--primary)]">WHERE</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f.delay_seconds</span> <span class="text-[var(--primary)]">IS NOT NULL</span><br />
+    <span class="text-[var(--primary)]">GROUP BY</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;d.route_short_name</span><br />
+    <span class="text-[var(--primary)]">ORDER BY</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;vehicles</span> <span class="text-[var(--primary)]">DESC</span><br />
+    <span class="text-[var(--primary)]">LIMIT</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--accent-text)]">5</span><span class="text-[var(--terminal-ink)]">;</span>
   </div>
 
-  <!-- Results table -->
+  <!-- Results: a real <table>, styled like a SQL client result grid (psql
+       look: vertical column separators + a header rule, numbers right-
+       aligned). Semantic table = real column/row structure for screen
+       readers too. data-testid="sql-result-row" stays on each <tr>. -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
-    <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnRoute}</span>
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnAvgDelay}</span>
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnVehicles}</span>
-      {#each rows as row (row.route)}
-        <span class="text-[var(--terminal-ink)]" data-testid="sql-result-row">{row.route}</span>
-        <span class="text-[var(--accent-text)]">{row.avgDelayS}</span>
-        <span class="text-[var(--terminal-ink)]">{row.vehicles}</span>
-      {/each}
-    </div>
+    <table class="w-full border-collapse text-xs md:text-sm" data-testid="sql-results">
+      <thead>
+        <tr>
+          <th scope="col" class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-left font-normal text-[var(--terminal-ink-muted)]">{columnRoute}</th>
+          <th scope="col" class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-right font-normal text-[var(--terminal-ink-muted)]">{columnAvgDelay}</th>
+          <th scope="col" class="border-b border-[var(--border-subtle)] px-2 py-1 text-right font-normal text-[var(--terminal-ink-muted)]">{columnVehicles}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each rows as row (row.route)}
+          <tr data-testid="sql-result-row">
+            <td class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-[var(--terminal-ink)]">{row.route}</td>
+            <td class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-right text-[var(--accent-text)]">{row.avgDelayS}</td>
+            <td class="border-b border-[var(--border-subtle)] px-2 py-1 text-right text-[var(--terminal-ink)]">{row.vehicles}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
     <div class="mt-2.5 text-caption text-[var(--terminal-ink-muted)]" data-testid="sql-meta">
       {metaCaption}
     </div>
