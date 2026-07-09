@@ -28,6 +28,7 @@
 import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
 import type { Locale, LocalizedString, TechStackItem } from '$lib/types';
 import { resolveLocale } from '$lib/utils/locale';
+import { LAYER_NAMES } from './layer-teaching';
 
 export interface StackShape {
 	/** Dedup'd layers of the picked techs, in STACK_LAYERS render order. */
@@ -175,9 +176,10 @@ export function layerArticle(layer: StackLayer): 'a' | 'an' {
  *  annotations so they can never disagree (round 3 parity), and an exhaustive
  *  locale switch so a new locale can never silently fall back to English. */
 export function layerGapLine(layer: StackLayer, locale: Locale): string {
-	if (locale === 'fr') return `une couche ${layer}`;
-	if (locale === 'es') return `una capa ${layer}`;
-	return `${layerArticle(layer)} ${layer} layer`;
+	const name = resolveLocale(LAYER_NAMES[layer], locale);
+	if (locale === 'fr') return `une couche ${name}`;
+	if (locale === 'es') return `una capa de ${name}`;
+	return `${layerArticle(layer)} ${name} layer`;
 }
 
 // ── Finale (4c): THE PHRASE BUILDER — the layer grammar. ────────────────────

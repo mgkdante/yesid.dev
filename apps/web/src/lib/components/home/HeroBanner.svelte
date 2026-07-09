@@ -71,6 +71,16 @@
 	// captures only the initial prop value, which Svelte 5 flags
 	// (state_referenced_locally).
 	const scrollDownLabel = $derived(resolveLocale(heroAnimContent.scrollDown, locale));
+	// Billboard fit math (receiver r2): the desktop billboard is a nowrap
+	// single mono line with -0.5vw tracking, so its width is roughly
+	// len × (0.6 × size − 0.5) vw. Solve for the LARGEST size that spans ~90%
+	// of the viewport, for EVERY locale (the old approach hardcoded a FR-only
+	// shrink and the ES string clipped). +1 char budgets the block cursor.
+	const billboardVw = $derived.by(() => {
+		const len = scrollDownLabel.length + 1;
+		const size = (90 / len + 0.5) / 0.6;
+		return Math.min(8, Math.max(4, size)).toFixed(2);
+	});
 	const headlineLine1 = $derived(resolveLocale(heroContent.headline.line1, locale));
 	const headlineLine2 = $derived(resolveLocale(heroContent.headline.line2, locale));
 	const subheadlineText = $derived(resolveLocale(heroContent.subheadline, locale));
@@ -642,6 +652,7 @@
 		<p
 			bind:this={scrollPrompt}
 			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-primary md:whitespace-nowrap md:leading-none"
+			style="--billboard-vw: {billboardVw}vw"
 		>
 			<span bind:this={scrollText}></span><span bind:this={scrollCursorEl} class="scroll-block-cursor typewriter-cursor" aria-hidden="true">&#x2588;</span>
 		</p>
@@ -872,17 +883,12 @@
 
 	@media (min-width: 768px) {
 		.scroll-prompt {
-			font-size: 6.8vw;
+			/* Computed per locale from the label length (see billboardVw): the
+			   largest size that never clips the nowrap line. Replaces the old
+			   FR-only 6vw shrink that let the ES billboard overflow. */
+			font-size: var(--billboard-vw, 6.8vw);
 			letter-spacing: -0.5vw;
 			bottom: 0;
-		}
-		/* The FR billboard ("PROCHAIN ARRÊT : FAIS DÉFILER") is ~27% longer than
-		   EN ("NEXT STOP: SCROLL DOWN"); at 6.8vw it spans ~103% of the viewport
-		   and clips the end on the single-line (md:whitespace-nowrap) desktop
-		   billboard. Shrink ONLY the FR locale so it fits with margin (~91% at
-		   6vw); EN is unchanged. Mobile (<768px) wraps, so no clip there. */
-		:global(html[lang='fr']) .scroll-prompt {
-			font-size: 6vw;
 		}
 	}
 

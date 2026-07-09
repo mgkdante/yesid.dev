@@ -49,6 +49,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { layoutBlueprint } from './blueprint-layout';
+	import { LAYER_NAMES } from './layer-teaching';
 	import { layerGapLine } from './stack-shape';
 
 	const locale = getLocale();
@@ -209,7 +210,7 @@
 					text-anchor="end"
 					dominant-baseline="central"
 				>
-					{box.layer}
+					{resolveLocale(LAYER_NAMES[box.layer], locale)}
 				</text>
 			{/each}
 		</g>
@@ -300,7 +301,7 @@
 			rx="2"
 		/>
 		<text class="sbp-stamp-title" x={layout.width + PAD - 8} y={layout.height + STAMP_H} text-anchor="end">
-			YOUR BUILD
+			{resolveLocale({ en: 'YOUR BUILD', fr: 'TON BUILD', es: 'TU BUILD' }, locale)}
 		</text>
 		<text
 			class="sbp-stamp-meta"

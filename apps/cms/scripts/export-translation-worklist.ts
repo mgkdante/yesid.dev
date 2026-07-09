@@ -74,7 +74,12 @@ function isEmpty(v: unknown): boolean {
 
 async function main(): Promise<void> {
 	const { values } = parseArgs({
-		options: { locale: { type: 'string' }, out: { type: 'string' } },
+		options: {
+			locale: { type: 'string' },
+			out: { type: 'string' },
+			/** Comma-separated collection override (default: the L1 launch scope). */
+			collections: { type: 'string' },
+		},
 	});
 	const locale = values.locale;
 	if (locale !== 'fr' && locale !== 'es') {
@@ -89,9 +94,12 @@ async function main(): Promise<void> {
 	assertDevCms(url);
 	const client = createClient(url, await getAdminToken(url));
 
+	const targetCollections = values.collections
+		? (values.collections.split(',').map((c) => c.trim()) as readonly string[])
+		: COLLECTIONS;
 	const entries: WorkEntry[] = [];
 	let fieldCount = 0;
-	for (const collection of COLLECTIONS) {
+	for (const collection of targetCollections) {
 		const junction = `${collection}_translations`;
 		let rows: Array<Record<string, unknown>>;
 		try {

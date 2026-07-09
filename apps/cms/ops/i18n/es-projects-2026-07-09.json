@@ -1,0 +1,79 @@
+{
+	"locale": "es",
+	"entries": [
+		{
+			"collection": "projects",
+			"id": "yesid-dev",
+			"parentFk": "projects_id",
+			"fields": {
+				"one_liner": "Mi propio sitio, llevado como un proyecto de cliente: el CMS es la fuente de verdad, el edge sirve contenido generado y cada afirmación está asegurada por un test.",
+				"title": "yesid.dev"
+			}
+		},
+		{
+			"collection": "projects",
+			"id": "transit-data-pipeline",
+			"parentFk": "projects_id",
+			"fields": {
+				"one_liner": "Un pipeline ELT de extremo a extremo que procesa datos de transporte en tiempo real para un operador regional.",
+				"title": "Pipeline de datos de operaciones de transporte"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 6,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "Ciclos de actualización en tiempo real"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 7,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "Disponibilidad del pipeline"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 56,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "tests que cuidan el build"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 57,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "llamadas al CMS por visita"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 58,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "cadenas bilingües, aseguradas por un test"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 59,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "contenido desde el CMS"
+			}
+		},
+		{
+			"collection": "projects_impact_metrics",
+			"id": 60,
+			"parentFk": "projects_impact_metrics_id",
+			"fields": {
+				"label": "advertencias toleradas en CI"
+			}
+		}
+	]
+}

@@ -23,7 +23,7 @@
 
 	const locale = getLocale();
 	import { techStackItems } from '$lib/content/tech-stack';
-	import { LAYER_TEACHING } from './layer-teaching';
+	import { LAYER_NAMES, LAYER_TEACHING } from './layer-teaching';
 	import { FRAME_SIZES, buildComposedPreview, resolveArchetypePreview } from './preview-configs';
 	import TechIcon from './TechIcon.svelte';
 
@@ -62,7 +62,7 @@
 		const tech = techById.get(slot.techId);
 		const name = tech?.name ?? slot.techId;
 		const enables = tech?.enables ? resolveLocale(tech.enables, locale) : '';
-		const layerLine = `${slot.layer}: ${resolveLocale(LAYER_TEACHING[slot.layer], locale)}`;
+		const layerLine = `${resolveLocale(LAYER_NAMES[slot.layer], locale)}: ${resolveLocale(LAYER_TEACHING[slot.layer], locale)}`;
 		const role = resolveLocale(slot.role, locale);
 		// Connector words per locale — exhaustive maps (L1 rule: es never
 		// silently falls back to English).

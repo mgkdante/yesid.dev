@@ -34,6 +34,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { layoutBlueprint, ROW_GAP } from './blueprint-layout';
+	import { LAYER_NAMES } from './layer-teaching';
 
 	const locale = getLocale();
 
@@ -314,7 +315,7 @@
 					text-anchor="end"
 					dominant-baseline="central"
 				>
-					{row[0].layer}
+					{resolveLocale(LAYER_NAMES[row[0].layer], locale)}
 				</text>
 			{/each}
 		</g>

@@ -216,6 +216,9 @@ export const siteLabels: SiteLabels = {
 	},
 	footerChrome: {
 		footer: {
+			connectLabel: { en: 'CONNECT', es: 'CONECTA', fr: 'CONNEXION' },
+			exploreLabel: { en: 'EXPLORE', es: 'EXPLORA', fr: 'EXPLORER' },
+			legalLabel: { en: 'LEGAL', es: 'LEGAL', fr: 'LÉGAL' },
 			location: {
 				en: 'Montreal, QC · Remote',
 				es: 'Montreal, QC · Remoto',

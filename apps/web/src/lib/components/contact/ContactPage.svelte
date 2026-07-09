@@ -673,6 +673,21 @@
 		.desktop-terminals {
 			max-height: calc(100dvh - 5rem - 6rem - 5rem);
 		}
+		/* Language-independent fit (receiver r2): the terminals keep their
+		   capped size in EVERY locale; content taller than the pane (FR/ES
+		   wrap longer than EN, and the info list grew) scrolls inside the
+		   terminal body instead of clipping past the card. */
+		.desktop-terminals :global([data-slot='terminal-chrome']) {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+		}
+		.desktop-terminals :global([data-slot='terminal-chrome'] .terminal-body) {
+			flex: 1 1 auto;
+			min-height: 0;
+			overflow-y: auto;
+		}
 		/* Edge title starts at top, extends behind nav */
 		.edge-title-column {
 			display: flex;
