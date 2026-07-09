@@ -17,6 +17,7 @@ export const aboutPageContent: AboutContent = {
 		command: '$ yesid --contact',
 		lines: [
 			{ color: 'orange', text: '> Ready for new projects' },
+			{ color: 'muted', text: '> AI-accelerated, human-owned' },
 			{ color: 'muted', text: '> Email: contact@yesid.dev' },
 			{
 				color: 'muted',

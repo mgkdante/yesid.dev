@@ -56,11 +56,8 @@ export const services: readonly Service[] = [
 		},
 		id: 'database-engineering',
 		impactMetric: {
-			label: {
-				en: 'avg query improvement',
-				fr: 'amélioration moyenne des requêtes',
-			},
-			value: { en: '3x faster', fr: '3x plus vite' },
+			label: { en: 'database hosting cost', fr: 'coût d\'hébergement' },
+			value: { en: '$60/mo → $0', fr: '60 $/mois → 0 $' },
 		},
 		relatedProjects: ['transit-data-pipeline', 'yesid-dev'],
 		sections: [
@@ -217,10 +214,10 @@ export const services: readonly Service[] = [
 		id: 'analytics-reporting',
 		impactMetric: {
 			label: {
-				en: 'reporting turnaround',
-				fr: 'délai de production des rapports',
+				en: 'live data refresh',
+				fr: 'rafraîchissement en direct',
 			},
-			value: { en: '2d → 15m', fr: '2 j → 15 min' },
+			value: { en: '30s', fr: '30 s' },
 		},
 		relatedProjects: ['transit-data-pipeline', 'cafe-arona'],
 		sections: [
