@@ -7,6 +7,7 @@ export * from './shared';
 // Page schemas (relocated from apps/web in slice-18i Task 1.1 Phase B)
 export * from './about-page';
 export * from './contact-page';
+export * from './legal-pages';
 export * from './tech-stack-page';
 
 // Home-page block schemas (added in slice-18i Task 1.1 Phase C)

@@ -1,0 +1,46 @@
+{
+  "collection": "legal_pages_translations",
+  "field": "body",
+  "type": "json",
+  "meta": {
+    "collection": "legal_pages_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "body",
+    "group": null,
+    "hidden": false,
+    "interface": "input-block-editor",
+    "note": "Page body. Block Editor: headings, paragraphs, lists. Same renderer as blog bodies (BlockRenderer.svelte).",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 5,
+    "special": [
+      "cast-json"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "body",
+    "table": "legal_pages_translations",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

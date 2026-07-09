@@ -9,7 +9,7 @@
 // without ctx continue to work (loadPage degrades to one fetch per call).
 
 import { adapter } from '$lib/adapters';
-import type { AboutContent, ContactContent, PreviewContext } from '$lib/types';
+import type { AboutContent, ContactContent, LegalPage, PreviewContext } from '$lib/types';
 import type { HeroData } from '$lib/content/hero-data';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
@@ -54,6 +54,18 @@ export async function getAboutPageContent(ctx?: PreviewContext): Promise<AboutCo
 
 export async function getContactPageContent(ctx?: PreviewContext): Promise<ContactContent> {
 	return adapter.content.contactPage(ctx);
+}
+
+// OPS1 launch Phase 1 — legal pages (/legal/[slug]).
+export async function getLegalPages(ctx?: PreviewContext): Promise<readonly LegalPage[]> {
+	return adapter.legal.all(ctx);
+}
+
+export async function getLegalPageBySlug(
+	slug: string,
+	ctx?: PreviewContext,
+): Promise<LegalPage | undefined> {
+	return adapter.legal.bySlug(slug, ctx);
 }
 
 export async function getTechStackPageContent(ctx?: PreviewContext): Promise<TechStackPageContent> {

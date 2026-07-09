@@ -115,8 +115,14 @@
 	// so any age claim at first paint is fiction. The slot says what the data IS
 	// ("demo data"); after a real click of the refresh button, "regenerated just
 	// now" is genuinely true and may stand.
-	const updatedAgoInitial = locale === 'fr' ? 'données démo' : 'demo data';
-	const updatedAgoJustNow = locale === 'fr' ? "régénéré à l'instant" : 'regenerated just now';
+	const updatedAgoInitial = resolveLocale(
+		{ en: 'demo data', fr: 'données démo', es: 'datos de demo' },
+		locale,
+	);
+	const updatedAgoJustNow = resolveLocale(
+		{ en: 'regenerated just now', fr: "régénéré à l'instant", es: 'regenerado recién' },
+		locale,
+	);
 	let updatedAgo: string = $state(updatedAgoInitial);
 	// Section min-height reserves scroll space for the pin + trailing content.
 	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
@@ -142,7 +148,9 @@
 	let liveBase: { freshnessS: number; receivedAt: number } | null = null;
 
 	function liveStamp(seconds: number): string {
-		return locale === 'fr' ? `il y a ${seconds} s` : `${seconds}s ago`;
+		if (locale === 'fr') return `il y a ${seconds} s`;
+		if (locale === 'es') return `hace ${seconds} s`;
+		return `${seconds}s ago`;
 	}
 
 	function applyLiveSnapshot(snapshot: LiveHeroSnapshot) {

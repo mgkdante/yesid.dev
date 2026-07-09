@@ -15,7 +15,10 @@
     },
     "yesid-cms-dev": {
       "type": "http",
-      "url": "https://cms.dev.yesid.dev/mcp"
+      "url": "https://cms.dev.yesid.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${YESID_CMS_MCP_TOKEN:-}"
+      }
     },
     "railway": {
       "type": "stdio",

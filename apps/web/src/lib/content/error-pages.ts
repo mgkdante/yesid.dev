@@ -14,21 +14,27 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'0': {
 		description: {
 			en: 'The page you were looking for could not be found.',
+			es: 'No se encontró la página que buscabas.',
 			fr: 'La page que tu cherchais est introuvable.',
 		},
 		heading: {
 			en: 'This station is offline',
+			es: 'Estación fuera de servicio',
 			fr: 'Cette station est hors ligne',
 		},
-		label: { en: 'PAGE NOT FOUND', fr: 'PAGE INTROUVABLE' },
+		label: {
+			en: 'PAGE NOT FOUND',
+			es: 'PÁGINA NO ENCONTRADA',
+			fr: 'PAGE INTROUVABLE',
+		},
 		suggestions: [
 			{
 				href: '/',
-				label: { en: 'Home', fr: 'Accueil' },
+				label: { en: 'Home', es: 'Inicio', fr: 'Accueil' },
 			},
 			{
 				href: '/services',
-				label: { en: 'Services', fr: 'Services' },
+				label: { en: 'Services', es: 'Servicios', fr: 'Services' },
 			},
 		],
 		terminalLine: '$ route --status 0 // generic fallback',
@@ -68,21 +74,27 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'500': {
 		description: {
 			en: 'The server encountered an unexpected error. Please try again later.',
+			es: 'El servidor encontró un error inesperado. Intenta de nuevo más tarde.',
 			fr: 'Le serveur a rencontré une erreur inattendue. Réessaie plus tard.',
 		},
 		heading: {
 			en: 'Something went wrong',
+			es: 'Algo salió mal',
 			fr: 'Quelque chose a mal tourné',
 		},
-		label: { en: 'SYSTEM ERROR', fr: 'ERREUR SYSTÈME' },
+		label: {
+			en: 'SYSTEM ERROR',
+			es: 'ERROR DE SISTEMA',
+			fr: 'ERREUR SYSTÈME',
+		},
 		suggestions: [
 			{
 				href: '/',
-				label: { en: 'Home', fr: 'Accueil' },
+				label: { en: 'Home', es: 'Inicio', fr: 'Accueil' },
 			},
 			{
 				href: '/contact',
-				label: { en: 'Contact', fr: 'Contact' },
+				label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 			},
 		],
 		terminalLine: '$ route --status 500 // internal server error',

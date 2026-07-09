@@ -41,6 +41,7 @@ import type {
 	PreviewContext,
 	BlockEditorDoc,
 	MorphShape,
+	LegalPage,
 } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem } from '$lib/navigation/types';
 import type { HeroData } from '$lib/content/hero-data';
@@ -59,6 +60,12 @@ export interface NavPort {
 	): Promise<readonly NavLink[]>;
 }
 
+export interface LegalPort {
+	/** All published legal pages, sort order (OPS1: /legal/[slug]). */
+	all(ctx?: PreviewContext): Promise<readonly LegalPage[]>;
+	bySlug(slug: string, ctx?: PreviewContext): Promise<LegalPage | undefined>;
+}
+
 export interface ContentAdapter {
 	projects: ProjectPort;
 	services: ServicePort;
@@ -68,6 +75,8 @@ export interface ContentAdapter {
 	content: ContentPort;
 	/** Nav sub-port — reads nav_links by placement slot. Added in slice-18i Phase 5. */
 	nav: NavPort;
+	/** Legal-pages sub-port (OPS1 launch Phase 1). */
+	legal: LegalPort;
 }
 
 // Every port method accepts an optional trailing `ctx?: PreviewContext`. The

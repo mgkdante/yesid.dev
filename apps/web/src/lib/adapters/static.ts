@@ -109,6 +109,8 @@ import {
 	closerContent,
 } from '$lib/content/site-content';
 import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '$lib/content/nav';
+import { legalPages } from '$lib/content/legal-pages';
+import { LegalPageSchema } from '@repo/shared';
 import { errorPagesById } from '$lib/content/error-pages';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
@@ -343,5 +345,15 @@ export const staticAdapter: ContentAdapter = {
 			}
 			return [];
 		},
+	},
+	// Legal-pages port (OPS1) — reads the generated legal-pages module.
+	legal: {
+		all: async () => parsePort('legal.all', z.array(LegalPageSchema), legalPages),
+		bySlug: async (slug) =>
+			parsePort(
+				'legal.bySlug',
+				LegalPageSchema.optional(),
+				legalPages.find((page) => page.slug === slug),
+			),
 	},
 };

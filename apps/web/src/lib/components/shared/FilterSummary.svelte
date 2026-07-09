@@ -12,7 +12,7 @@
   which was wrong for French zero ("0 résultat", not "0 résultats").
 -->
 <script lang="ts">
-	import type { LocalizedString } from '$lib/types';
+	import type { Locale, LocalizedString } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { siteLabels } from '$lib/content';
@@ -31,8 +31,14 @@
 
 	const clearFiltersLabel = resolveLocale(siteLabels.navChrome.shared.clearFiltersLabel, locale);
 
-	// Per-locale plural selection. French treats 0 as singular; English does not.
-	const isPlural = $derived(locale === 'fr' ? count >= 2 : count !== 1);
+	// Per-locale plural selection — exhaustive map (L1 rule). French treats 0
+	// as singular; English and Spanish do not.
+	const PLURAL_RULES: Record<Locale, (n: number) => boolean> = {
+		en: (n) => n !== 1,
+		fr: (n) => n >= 2,
+		es: (n) => n !== 1,
+	};
+	const isPlural = $derived(PLURAL_RULES[locale](count));
 	const summaryText = $derived(
 		resolveLocale(isPlural ? countLabel.plural : countLabel.singular, locale).replace(
 			'{count}',

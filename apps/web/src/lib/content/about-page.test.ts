@@ -125,17 +125,17 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.languages).toEqual([
 				{
 					id: 'quebec',
-					label: { en: 'French', fr: 'Français' },
+					label: { en: 'French', fr: 'Français', es: 'Francés' },
 					image: expect.any(String),
 				},
 				{
 					id: 'canada',
-					label: { en: 'English', fr: 'Anglais' },
+					label: { en: 'English', fr: 'Anglais', es: 'Inglés' },
 					image: expect.any(String),
 				},
 				{
 					id: 'colombia',
-					label: { en: 'Spanish', fr: 'Espagnol' },
+					label: { en: 'Spanish', fr: 'Espagnol', es: 'Español' },
 					image: expect.any(String),
 				},
 			]);
@@ -150,18 +150,28 @@ describe('aboutPageContent', () => {
 		it('has Champlain and Bishop education rows', () => {
 			expect(aboutPageContent.education).toEqual([
 				{
-					school: { en: 'Champlain Regional College, Lennoxville', fr: 'Champlain Regional College, Lennoxville' },
+					school: {
+						en: 'Champlain Regional College, Lennoxville',
+						fr: 'Champlain Regional College, Lennoxville',
+						es: 'Champlain Regional College, Lennoxville',
+					},
 					program: {
 						en: 'DEC, Accounting & Management Technology',
 						fr: 'DEC, Techniques de comptabilité et de gestion',
+						es: 'DEC, Técnicas de contabilidad y gestión',
 					},
 					icon: 'champlain',
 				},
 				{
-					school: { en: "Bishop's University", fr: "Bishop's University" },
+					school: {
+						en: "Bishop's University",
+						fr: "Bishop's University",
+						es: "Bishop's University",
+					},
 					program: {
 						en: 'B.Sc. Computer Science, minor in Business Administration',
 						fr: 'B. Sc. informatique, mineure en administration des affaires',
+						es: 'B.Sc. en Ciencias de la Computación, minor en Administración de Empresas',
 					},
 					icon: 'bishops',
 				},

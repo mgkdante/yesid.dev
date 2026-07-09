@@ -73,10 +73,10 @@
   );
   const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
 
-  // Format date as "Apr 2026" (EN) / "avr. 2026" (FR). Month abbrev is
-  // localized natively by Intl from the active UI locale — no hardcoded
-  // 'en-US' (which leaked English month names onto /fr).
-  const dateLocale = $derived(locale === 'fr' ? 'fr-CA' : 'en-US');
+  // Format date as "Apr 2026" (EN) / "avr. 2026" (FR) / "abr 2026" (ES).
+  // Month abbrev is localized natively by Intl from the active UI locale — no
+  // hardcoded 'en-US' (which leaked English month names onto /fr and /es).
+  const dateLocale = $derived(locale === 'fr' ? 'fr-CA' : locale === 'es' ? 'es' : 'en-US');
   const formattedDate = $derived.by(() => {
     const d = new Date(post.date + 'T00:00:00');
     return d.toLocaleDateString(dateLocale, { month: 'short', year: 'numeric' });

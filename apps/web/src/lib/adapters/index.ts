@@ -41,6 +41,9 @@ export const adapter: ContentAdapter = {
 
 	// nav sub-port — reverted to static in slice-27.2.
 	nav: staticAdapter.nav,
+
+	// legal sub-port (OPS1) — static from birth.
+	legal: staticAdapter.legal,
 };
 
 export type { ContentAdapter } from './types';

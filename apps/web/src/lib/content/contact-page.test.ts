@@ -18,6 +18,16 @@ describe('contactContent', () => {
 			expect(contactContent.infoTerminal.location.en.length).toBeGreaterThan(0);
 			expect(contactContent.infoTerminal.responseTime.en.length).toBeGreaterThan(0);
 		});
+
+		it('has the BEST FIT section: label + 3 lines, en and fr (homework #26b)', () => {
+			expect(contactContent.infoTerminal.sectionLabels.bestFit?.en.length).toBeGreaterThan(0);
+			expect(contactContent.infoTerminal.sectionLabels.bestFit?.fr?.length).toBeGreaterThan(0);
+			expect(contactContent.infoTerminal.bestFit).toHaveLength(3);
+			for (const line of contactContent.infoTerminal.bestFit ?? []) {
+				expect(line.en.length).toBeGreaterThan(0);
+				expect(line.fr?.length).toBeGreaterThan(0);
+			}
+		});
 	});
 
 	describe('formTerminal', () => {

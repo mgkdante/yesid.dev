@@ -27,10 +27,12 @@
 		rocket: {
 			en: 'Rocket · tap to land it back into a train',
 			fr: 'Fusée · clique pour la reposer en train',
+			es: 'Cohete · toca para aterrizarlo de vuelta en tren',
 		},
 		train: {
 			en: 'Train · tap to launch it into a rocket',
 			fr: 'Train · clique pour le lancer en fusée',
+			es: 'Tren · toca para lanzarlo como cohete',
 		},
 	} as const;
 
