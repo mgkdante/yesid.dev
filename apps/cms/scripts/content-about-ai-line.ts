@@ -30,18 +30,9 @@ interface CtaLine {
 	text: string;
 }
 
-async function main(): Promise<void> {
-	const apply = process.argv.includes('--apply');
-	const url = defaultDirectusUrl();
-	assertDevCms(url);
-	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
-	log.info(`plan: insert cta_lines[${INSERT_AT}] = "${AI_LINE.text}" (${AI_LINE.color}) on block_about_content`);
-	if (!apply) {
-		log.info('dry-run complete. Pass --apply to write.');
-		return;
-	}
-	const token = await getAdminToken(url);
-	const ctx: ApplyContext = { directusUrl: url, token };
+/** Idempotent insert. Exported for the prod promotion orchestrator
+ *  (promote-launch-phase1-prod) — the caller owns the URL guard. */
+export async function apply(ctx: ApplyContext): Promise<void> {
 	const res = await rest(ctx, 'GET', '/items/block_about_content?fields=cta_lines');
 	if (res.status >= 400) {
 		throw new Error(`GET block_about_content failed (${res.status}): ${JSON.stringify(res.json)}`);
@@ -57,6 +48,20 @@ async function main(): Promise<void> {
 		throw new Error(`PATCH block_about_content failed (${patch.status}): ${JSON.stringify(patch.json)}`);
 	}
 	log.info(`  ok cta_lines ${lines.length} -> ${next.length} lines`);
+}
+
+async function main(): Promise<void> {
+	const apply_ = process.argv.includes('--apply');
+	const url = defaultDirectusUrl();
+	assertDevCms(url);
+	log.info(`target: ${url}${apply_ ? ' [apply]' : ' [dry-run]'}`);
+	log.info(`plan: insert cta_lines[${INSERT_AT}] = "${AI_LINE.text}" (${AI_LINE.color}) on block_about_content`);
+	if (!apply_) {
+		log.info('dry-run complete. Pass --apply to write.');
+		return;
+	}
+	const token = await getAdminToken(url);
+	await apply({ directusUrl: url, token });
 	log.info('apply complete.');
 }
 
