@@ -107,6 +107,51 @@ export const footerLinks: readonly NavLink[] = [
 		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 		priority: 1,
 	},
+	{
+		href: '/legal/privacy',
+		label: {
+			en: 'Privacy Policy',
+			es: 'Política de privacidad',
+			fr: 'Politique de confidentialité',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/terms',
+		label: {
+			en: 'Terms of Use',
+			es: 'Condiciones de uso',
+			fr: 'Conditions d\'utilisation',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/cookies',
+		label: {
+			en: 'Cookie and Tracking Policy',
+			es: 'Política de cookies',
+			fr: 'Politique sur les témoins (cookies)',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/accessibility',
+		label: {
+			en: 'Accessibility Statement',
+			es: 'Declaración de accesibilidad',
+			fr: 'Déclaration d\'accessibilité',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/notice',
+		label: {
+			en: 'Legal Notice',
+			es: 'Aviso legal',
+			fr: 'Avis juridique',
+		},
+		priority: 1,
+	},
 ];
 
 export const mobileLinks: readonly NavLink[] = [

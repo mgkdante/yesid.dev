@@ -1,0 +1,1011 @@
+{
+	"generatedAt": "2026-07-09",
+	"note": "OPS1 legal skeletons, drafted for operator review; a licensed Quebec advisor reviews before prod publish. Seeded to dev via seed-legal-pages.ts.",
+	"pages": [
+		{
+			"slug": "privacy",
+			"sort": 1,
+			"en": {
+				"title": "Privacy Policy",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "This policy explains what personal information yesid.dev collects, why, where it goes, and the rights Quebec law gives you over it. I run this site myself and I wrote this policy to be read, so it is in plain language. The short version: the site collects very little, and what it does collect exists only so I can answer you."
+					},
+					{
+						"kind": "p",
+						"text": "Last updated: [DATE]"
+					},
+					{
+						"kind": "h2",
+						"text": "Who I am"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev is the portfolio and contact site of [FULL LEGAL NAME], operating as a sole proprietor (Yesid O.) in Montreal, Quebec, Canada [NEQ: [NEQ], if applicable]. I am a freelance consultant in digital infrastructure: databases and SQL, data pipelines and automation, dashboards and analytics, and websites and e-commerce. The site itself sells nothing: there is no checkout, no user account, and no newsletter."
+					},
+					{
+						"kind": "h2",
+						"text": "What I collect and how"
+					},
+					{
+						"kind": "p",
+						"text": "The site is fully static. It sets no cookies and runs no code that identifies you. Personal information reaches me in three ways, plus one aggregate measurement tool."
+					},
+					{
+						"kind": "h3",
+						"text": "Contact form"
+					},
+					{
+						"kind": "p",
+						"text": "If you use the form on the contact page, I receive your name, your email address, and your message. The form is relayed by Web3Forms, a third-party service, which delivers it to my email inbox."
+					},
+					{
+						"kind": "h3",
+						"text": "Direct email"
+					},
+					{
+						"kind": "p",
+						"text": "If you write to admin@yesid.dev, I receive whatever you choose to send me."
+					},
+					{
+						"kind": "h3",
+						"text": "Booking a call"
+					},
+					{
+						"kind": "p",
+						"text": "If you book a call, the booking runs on cal.com. You provide your name, your email address, and the meeting details; cal.com shares them with me so the meeting can happen."
+					},
+					{
+						"kind": "h3",
+						"text": "Website analytics"
+					},
+					{
+						"kind": "p",
+						"text": "I measure site traffic with a privacy-focused, cookieless analytics tool (Plausible or Umami). It sets no cookies, creates no persistent identifier, and does no cross-site tracking. Your IP address is processed transiently to derive aggregate statistics, such as country and pages viewed, and is not stored. What I see are anonymous totals, never individual visitors."
+					},
+					{
+						"kind": "h3",
+						"text": "Preferences stored in your browser"
+					},
+					{
+						"kind": "p",
+						"text": "The site remembers a few functional preferences (theme, language, collapsed sections, a draft of your form message) in your browser's localStorage. This information never leaves your device and is never transmitted to me or to anyone else."
+					},
+					{
+						"kind": "h2",
+						"text": "Why I collect it"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"To respond to your message.",
+							"To prepare and hold the meeting you booked.",
+							"To carry out work you hire me for.",
+							"To understand, in aggregate, how the site is used."
+						]
+					},
+					{
+						"kind": "p",
+						"text": "I use your information for nothing else. If I ever needed it for a new purpose, I would ask for your consent first."
+					},
+					{
+						"kind": "h2",
+						"text": "Where it goes"
+					},
+					{
+						"kind": "p",
+						"text": "I use a small number of service providers, and some are located outside Quebec, mainly in the United States and possibly in the European Union. Your personal information may therefore be communicated outside Quebec. Before relying on each provider, I assessed whether your information would receive adequate protection there, as section 17 of the Act respecting the protection of personal information in the private sector requires."
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Vercel: hosts the site (US company, global content delivery network).",
+							"Web3Forms: relays the contact form to my email.",
+							"cal.com: handles call booking.",
+							"Railway and Neon: run the backend of my content system. They never process visitor data; the published site is static and makes no calls to them."
+						]
+					},
+					{
+						"kind": "p",
+						"text": "I do not communicate your personal information to anyone else."
+					},
+					{
+						"kind": "h2",
+						"text": "What I do not do"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"No advertising and no ad networks.",
+							"No selling, renting, or trading of personal information. Ever.",
+							"No tracking cookies and no consent banner: there is nothing to activate, because the site has no function that identifies you, locates you, or profiles you.",
+							"No profiling and no automated decision-making."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Retention"
+					},
+					{
+						"kind": "p",
+						"text": "I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. Where a fixed period applies, it is [RETENTION PERIOD]. Analytics data is aggregate from the start and contains no personal information to delete."
+					},
+					{
+						"kind": "h2",
+						"text": "Security"
+					},
+					{
+						"kind": "p",
+						"text": "I reduce risk first by collecting little. Beyond that: only I have access to the inbox and the booking account, both are protected by strong multi-factor authentication, and my providers encrypt data in transit. No system is perfectly secure, and I will not pretend otherwise, but these measures are proportionate to the sensitivity of what I hold: names, email addresses, and messages."
+					},
+					{
+						"kind": "h2",
+						"text": "Your rights"
+					},
+					{
+						"kind": "p",
+						"text": "Quebec's Law 25 gives you the following rights over the personal information I hold about you:"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Access: obtain a copy of your information (s. 27).",
+							"Rectification: have inaccurate or incomplete information corrected (s. 28).",
+							"Withdrawal of consent: withdraw your consent to a use or communication of your information.",
+							"De-indexing: ask that a hyperlink attached to your name be de-indexed where the law provides for it (s. 28.1).",
+							"Portability: since September 2024, receive the computerized personal information you provided to me in a structured, commonly used technological format, or have it sent to another organization."
+						]
+					},
+					{
+						"kind": "p",
+						"text": "To exercise any of these rights, write to admin@yesid.dev. I may need to verify your identity, and I will respond in writing within 30 days, as the law requires. There is no fee for a reasonable request."
+					},
+					{
+						"kind": "h2",
+						"text": "Confidentiality incidents"
+					},
+					{
+						"kind": "p",
+						"text": "I keep a register of confidentiality incidents, and if an incident involving your personal information presents a risk of serious injury, I will notify you and the Commission d'accès à l'information du Québec, as the law requires."
+					},
+					{
+						"kind": "h2",
+						"text": "Privacy Officer"
+					},
+					{
+						"kind": "p",
+						"text": "I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: [FULL LEGAL NAME]. Contact: admin@yesid.dev."
+					},
+					{
+						"kind": "h2",
+						"text": "Complaints"
+					},
+					{
+						"kind": "p",
+						"text": "If anything about how I handle your personal information concerns you, please contact me first at admin@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d'accès à l'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec."
+					},
+					{
+						"kind": "h2",
+						"text": "Changes to this policy"
+					},
+					{
+						"kind": "p",
+						"text": "If I change this policy, I will update this page and the date at the top. If a change materially affects how your personal information is handled, I will say so plainly here."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "For any question about this policy or about your personal information: admin@yesid.dev, or the form on the contact page (/contact). You are welcome to write in English, French, or Spanish."
+					}
+				]
+			},
+			"fr": {
+				"title": "Politique de confidentialité",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "Cette politique explique quels renseignements personnels yesid.dev recueille, pourquoi, où ils vont et quels droits la loi québécoise vous donne à leur égard. Je gère ce site moi-même et j'ai écrit cette politique pour qu'elle soit lue : elle est donc en langage clair. En résumé : le site recueille très peu de choses, et ce qu'il recueille sert uniquement à vous répondre."
+					},
+					{
+						"kind": "p",
+						"text": "Dernière mise à jour : [DATE]"
+					},
+					{
+						"kind": "h2",
+						"text": "Qui je suis"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev est le site portfolio et de contact de [FULL LEGAL NAME], qui exploite une entreprise individuelle (Yesid O.) à Montréal, Québec, Canada [NEQ : [NEQ], le cas échéant]. Je suis consultant indépendant en infrastructure numérique : bases de données et SQL, pipelines de données et automatisation, tableaux de bord et analytique, sites Web et commerce électronique. Le site lui-même ne vend rien : aucun panier d'achat, aucun compte utilisateur, aucune infolettre."
+					},
+					{
+						"kind": "h2",
+						"text": "Ce que je recueille et comment"
+					},
+					{
+						"kind": "p",
+						"text": "Le site est entièrement statique. Il n'installe aucun témoin (cookie) et n'exécute aucun code qui vous identifie. Des renseignements personnels me parviennent de trois façons, auxquelles s'ajoute un outil de mesure agrégée."
+					},
+					{
+						"kind": "h3",
+						"text": "Formulaire de contact"
+					},
+					{
+						"kind": "p",
+						"text": "Si vous utilisez le formulaire de la page contact, je reçois votre nom, votre adresse courriel et votre message. Le formulaire est relayé par Web3Forms, un service tiers, qui le livre dans ma boîte courriel."
+					},
+					{
+						"kind": "h3",
+						"text": "Courriel direct"
+					},
+					{
+						"kind": "p",
+						"text": "Si vous m'écrivez à admin@yesid.dev, je reçois ce que vous choisissez de m'envoyer."
+					},
+					{
+						"kind": "h3",
+						"text": "Prise de rendez-vous"
+					},
+					{
+						"kind": "p",
+						"text": "Si vous réservez un appel, la réservation passe par cal.com. Vous fournissez votre nom, votre adresse courriel et les détails de la rencontre; cal.com me les transmet pour que la rencontre ait lieu."
+					},
+					{
+						"kind": "h3",
+						"text": "Statistiques de fréquentation"
+					},
+					{
+						"kind": "p",
+						"text": "Je mesure la fréquentation du site avec un outil d'analyse respectueux de la vie privée et sans témoins (Plausible ou Umami). Il n'installe aucun cookie, ne crée aucun identifiant persistant et ne fait aucun suivi d'un site à l'autre. Votre adresse IP est traitée de façon transitoire pour produire des statistiques agrégées, comme le pays et les pages consultées, et n'est pas conservée. Je ne vois que des totaux anonymes, jamais des visiteurs individuels."
+					},
+					{
+						"kind": "h3",
+						"text": "Préférences conservées dans votre navigateur"
+					},
+					{
+						"kind": "p",
+						"text": "Le site retient quelques préférences fonctionnelles (thème, langue, sections repliées, brouillon de votre message) dans le localStorage de votre navigateur. Ces données ne quittent jamais votre appareil et ne me sont jamais transmises, ni à personne d'autre."
+					},
+					{
+						"kind": "h2",
+						"text": "Pourquoi je les recueille"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Pour répondre à votre message.",
+							"Pour préparer et tenir la rencontre que vous avez réservée.",
+							"Pour réaliser le travail que vous me confiez.",
+							"Pour comprendre, de façon agrégée, comment le site est utilisé."
+						]
+					},
+					{
+						"kind": "p",
+						"text": "Je n'utilise vos renseignements pour rien d'autre. Si une nouvelle fin devenait nécessaire, je vous demanderais d'abord votre consentement."
+					},
+					{
+						"kind": "h2",
+						"text": "Où vont vos renseignements"
+					},
+					{
+						"kind": "p",
+						"text": "Je fais appel à un petit nombre de fournisseurs de services, dont certains sont situés à l'extérieur du Québec, principalement aux États-Unis et possiblement dans l'Union européenne. Vos renseignements personnels peuvent donc être communiqués à l'extérieur du Québec. Avant de retenir chaque fournisseur, j'ai évalué si vos renseignements y recevraient une protection adéquate, comme l'exige l'article 17 de la Loi sur la protection des renseignements personnels dans le secteur privé."
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Vercel : héberge le site (entreprise américaine, réseau de diffusion mondial).",
+							"Web3Forms : relaie le formulaire de contact vers mon courriel.",
+							"cal.com : gère la prise de rendez-vous.",
+							"Railway et Neon : font tourner l'arrière-plan de mon système de contenu. Ils ne traitent jamais de données de visiteurs; le site publié est statique et ne communique pas avec eux."
+						]
+					},
+					{
+						"kind": "p",
+						"text": "Je ne communique vos renseignements personnels à personne d'autre."
+					},
+					{
+						"kind": "h2",
+						"text": "Ce que je ne fais pas"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Aucune publicité, aucun réseau publicitaire.",
+							"Aucune vente, location ou échange de renseignements personnels. Jamais.",
+							"Aucun témoin de suivi et aucune bannière de consentement : il n'y a rien à activer, car le site n'a aucune fonction qui vous identifie, vous localise ou établit votre profil.",
+							"Aucun profilage, aucune décision automatisée."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Conservation"
+					},
+					{
+						"kind": "p",
+						"text": "Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD]. Les statistiques de fréquentation sont agrégées dès l'origine et ne contiennent aucun renseignement personnel à supprimer."
+					},
+					{
+						"kind": "h2",
+						"text": "Sécurité"
+					},
+					{
+						"kind": "p",
+						"text": "Je réduis les risques d'abord en recueillant peu. Pour le reste : je suis le seul à avoir accès à la boîte courriel et au compte de réservation, les deux sont protégés par une authentification forte à plusieurs facteurs, et mes fournisseurs chiffrent les données en transit. Aucun système n'est parfaitement sûr, et je ne prétendrai pas le contraire, mais ces mesures sont proportionnées à la sensibilité de ce que je détiens : des noms, des adresses courriel et des messages."
+					},
+					{
+						"kind": "h2",
+						"text": "Vos droits"
+					},
+					{
+						"kind": "p",
+						"text": "La Loi 25 vous donne les droits suivants sur les renseignements personnels que je détiens à votre sujet :"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Accès : obtenir une copie de vos renseignements (art. 27).",
+							"Rectification : faire corriger des renseignements inexacts ou incomplets (art. 28).",
+							"Retrait du consentement : retirer votre consentement à une utilisation ou à une communication de vos renseignements.",
+							"Désindexation : demander qu'un hyperlien rattaché à votre nom soit désindexé lorsque la loi le prévoit (art. 28.1).",
+							"Portabilité : depuis septembre 2024, recevoir les renseignements personnels informatisés que vous m'avez fournis dans un format technologique structuré et couramment utilisé, ou les faire transmettre à une autre organisation."
+						]
+					},
+					{
+						"kind": "p",
+						"text": "Pour exercer l'un de ces droits, écrivez à admin@yesid.dev. Je pourrais devoir vérifier votre identité, et je vous répondrai par écrit dans un délai de 30 jours, comme la loi l'exige. Aucuns frais ne s'appliquent à une demande raisonnable."
+					},
+					{
+						"kind": "h2",
+						"text": "Incidents de confidentialité"
+					},
+					{
+						"kind": "p",
+						"text": "Je tiens un registre des incidents de confidentialité et, si un incident visant vos renseignements personnels présente un risque de préjudice sérieux, je vous en aviserai ainsi que la Commission d'accès à l'information du Québec, comme la loi l'exige."
+					},
+					{
+						"kind": "h2",
+						"text": "Responsable de la protection des renseignements personnels"
+					},
+					{
+						"kind": "p",
+						"text": "Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : [FULL LEGAL NAME]. Contact : admin@yesid.dev."
+					},
+					{
+						"kind": "h2",
+						"text": "Plaintes"
+					},
+					{
+						"kind": "p",
+						"text": "Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d'abord à admin@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d'accès à l'information du Québec (CAI), l'organisme public qui veille à la protection des renseignements personnels au Québec."
+					},
+					{
+						"kind": "h2",
+						"text": "Modifications de cette politique"
+					},
+					{
+						"kind": "p",
+						"text": "Si je modifie cette politique, je mettrai à jour cette page et la date indiquée en haut. Si un changement touche de façon importante le traitement de vos renseignements personnels, je l'indiquerai clairement ici."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Pour toute question sur cette politique ou sur vos renseignements personnels : admin@yesid.dev, ou le formulaire de la page contact (/contact). Vous pouvez m'écrire en français, en anglais ou en espagnol."
+					}
+				]
+			},
+			"advisorNotes": "PLACEHOLDERS THE OPERATOR MUST FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (both languages, appears in Who I am and Privacy Officer sections); [NEQ] (confirm whether an NEQ exists; if the sole proprietorship is not registered, delete the bracketed NEQ clause entirely in both languages); [DATE] (last-updated date, set at publication); [RETENTION PERIOD] (a firm retention period for correspondence/booking data; if the advisor prefers a purpose-based retention statement only, delete the sentence \"Where a fixed period applies, it is [RETENTION PERIOD]\" / « Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD] »).\n\nPOINTS OF LAW TO CONFIRM (interpretation, not verified facts): (1) No-consent-banner position: the policy states there is \"nothing to activate\" because the site has no identification, localization or profiling functions per s. 8.1; confirm this reading holds for localStorage functional preferences and for cookieless analytics with transient IP processing. (2) Section 17 outside-Quebec communication: the policy asserts the adequate-protection assessment (EFVP) was performed by the operator for Vercel, Web3Forms, cal.com. The operator states this is done; the advisor should sight the written assessments and confirm they meet s. 17 requirements, and confirm whether contractual safeguards with each processor (s. 18.3-style clauses) exist and suffice. (3) 30-day response commitment: drafted per s. 32 of the private-sector Act; confirm phrasing. (4) Portability: drafted as \"since September 2024, computerized personal information you provided, in a structured, commonly used technological format\"; confirm scope (collected-from-the-person only) and the September 22, 2024 effective framing. (5) De-indexing s. 28.1: included for completeness even though the site indexes nothing; confirm keeping it (with \"where the law provides for it\") is preferable to omitting a statutory right. (6) Incident section compresses ss. 3.5-3.8 into one sentence (register + notify person and CAI on risk of serious injury); confirm the \"risk of serious injury\" / « risque de préjudice sérieux » threshold wording. (7) Privacy Officer: operator self-designates (default under s. 3.1 as the person with highest authority); title and contact are published as required; confirm no written delegation instrument is needed for a sole proprietor. (8) Business-contact-information exemption (s. 1 exclusion for information concerning the performance of duties within an enterprise) may cover some B2B correspondents; the policy deliberately treats all collected information as personal information (conservative). Confirm this over-inclusive approach is acceptable.\n\nCLAIMS TO VERIFY AGAINST REALITY BEFORE PUBLISH: (a) Analytics section is written in the ACTIVE voice (\"I measure...\") but the tool (Plausible or Umami) is PLANNED, not yet deployed. Do not publish with this section active until the tool is live, or have the advisor approve conditional wording; also finalize which tool (Plausible vs Umami) and its hosting location (EU vs self-hosted) and name it precisely. (b) Verify the factual claims: analytics tool sets no cookies / no persistent identifiers / transient IP not stored (depends on chosen tool and configuration); site sets no cookies at all (audit Vercel defaults, cal.com embed if embedded rather than linked, and Web3Forms for any cookie or fingerprinting behavior; if cal.com is embedded on-page it may set its own cookies, which would contradict the cookie claims). (c) Security statements (sole access, multi-factor authentication on mailbox and cal.com, encryption in transit) must be true on publication day. (d) Railway/Neon description (\"never process visitor data, static site makes no calls to them\") must remain true; if any runtime endpoint is later added, this section must be revised. (e) Confirm an incident register actually exists (even an empty template) before the register claim goes live.\n\nDRAFTING NOTES: EN cites sections as \"s. 27\" etc. of the Act respecting the protection of personal information in the private sector; FR cites « art. 27 » of the « Loi sur la protection des renseignements personnels dans le secteur privé » and uses « Loi 25 » informally; confirm citation style preference. No compliance overclaims were made anywhere; keep it that way in revisions. No em dashes are used in either language by deliberate rule; please preserve this in any advisor edits. EN and FR are drafted as faithful equivalents (same sections, same commitments), each written natively."
+		},
+		{
+			"slug": "terms",
+			"sort": 2,
+			"en": {
+				"title": "Terms of Use",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "Last updated: [DATE]"
+					},
+					{
+						"kind": "p",
+						"text": "These terms of use govern your visit to yesid.dev, the portfolio and contact site of [FULL LEGAL NAME], a freelance digital-infrastructure consultant operating as a sole proprietor in Montreal, Quebec, Canada [NEQ, if applicable: [NEQ]]. By using this site, you accept these terms. If you do not agree with them, please stop using the site."
+					},
+					{
+						"kind": "h2",
+						"text": "What this site is"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev is a portfolio and information site. It presents my consulting work in databases and SQL, data pipelines and automation, dashboards and analytics, and websites and e-commerce, and it gives you ways to contact me. Nothing is sold directly on the site: there is no checkout, no user account, no subscription."
+					},
+					{
+						"kind": "p",
+						"text": "Any consulting engagement is governed by a separate written agreement between you (or your organization) and me. These terms apply to the website only; they do not create a professional or contractual relationship for consulting services."
+					},
+					{
+						"kind": "h2",
+						"text": "Intellectual property"
+					},
+					{
+						"kind": "p",
+						"text": "Unless indicated otherwise, the content of this site, including its text, images, visual design, and the site's own source code, belongs to me. You may read it, link to it, and quote brief excerpts with attribution. You may not reproduce substantial portions, or use the content commercially, without my prior written permission."
+					},
+					{
+						"kind": "p",
+						"text": "Some projects presented here are open source. Their code lives in its own repositories and is distributed under the license stated in each repository. Those licenses, not these terms, govern your use of that code."
+					},
+					{
+						"kind": "h2",
+						"text": "Acceptable use"
+					},
+					{
+						"kind": "p",
+						"text": "You agree to use this site lawfully and reasonably. In particular, you agree not to:"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"attempt to disrupt, overload, or attack the site or the infrastructure that serves it;",
+							"scrape or harvest content in a way that burdens the site or ignores its published limits;",
+							"misrepresent your identity when contacting me, or use the contact channels to send unlawful, deceptive, or abusive messages."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "No warranty"
+					},
+					{
+						"kind": "p",
+						"text": "This site and its content are provided as-is, for general information. I work to keep the information accurate and current, but I do not guarantee that it is complete, error-free, or available at all times. Where a demo or dashboard is labeled as simulated, the data shown is illustrative, not real."
+					},
+					{
+						"kind": "p",
+						"text": "Nothing on this site is professional advice. Advice tailored to your situation is only provided once we are engaged under a written agreement."
+					},
+					{
+						"kind": "h2",
+						"text": "Limitation of liability"
+					},
+					{
+						"kind": "p",
+						"text": "To the extent permitted by applicable law, I am not liable for indirect, incidental, or consequential damages arising from your use of this site or your reliance on its content. Nothing in these terms excludes or limits any liability that cannot be excluded or limited under the laws of Quebec."
+					},
+					{
+						"kind": "h2",
+						"text": "Third-party links"
+					},
+					{
+						"kind": "p",
+						"text": "This site links to services I do not control, such as GitHub, LinkedIn, and cal.com. Those services have their own terms and privacy practices, which apply when you use them. I am not responsible for their content or conduct."
+					},
+					{
+						"kind": "h2",
+						"text": "Governing law"
+					},
+					{
+						"kind": "p",
+						"text": "These terms are governed by the laws of Quebec and the applicable laws of Canada. Subject to any rule of public order that grants you a different forum, disputes relating to this site will be brought before the competent courts of the judicial district of Montreal."
+					},
+					{
+						"kind": "h2",
+						"text": "Changes"
+					},
+					{
+						"kind": "p",
+						"text": "I may update these terms from time to time, for example when the site or the law changes. The date at the top of this page indicates the current version. If you keep using the site after an update, the updated terms apply to you."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Questions about these terms are welcome in English, French, or Spanish. Write to admin@yesid.dev or use the contact page at /contact."
+					}
+				]
+			},
+			"fr": {
+				"title": "Conditions d'utilisation",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "Dernière mise à jour : [DATE]"
+					},
+					{
+						"kind": "p",
+						"text": "Les présentes conditions d'utilisation encadrent votre visite de yesid.dev, le site portfolio et de contact de [FULL LEGAL NAME], consultant indépendant en infrastructure numérique exerçant comme travailleur autonome (entreprise individuelle) à Montréal, Québec, Canada [NEQ, le cas échéant : [NEQ]]. En utilisant ce site, vous acceptez ces conditions. Si vous n'y consentez pas, veuillez cesser d'utiliser le site."
+					},
+					{
+						"kind": "h2",
+						"text": "Ce qu'est ce site"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev est un site de portfolio et d'information. Il présente mon travail de consultant en bases de données et SQL, en pipelines de données et automatisation, en tableaux de bord et analytique, ainsi qu'en sites Web et commerce électronique, et il vous permet de me joindre. Rien n'est vendu directement sur le site : il n'y a ni caisse, ni compte utilisateur, ni abonnement."
+					},
+					{
+						"kind": "p",
+						"text": "Tout mandat de consultation est régi par une entente écrite distincte entre vous (ou votre organisation) et moi. Les présentes conditions visent uniquement le site Web; elles ne créent aucune relation professionnelle ou contractuelle de services-conseils."
+					},
+					{
+						"kind": "h2",
+						"text": "Propriété intellectuelle"
+					},
+					{
+						"kind": "p",
+						"text": "Sauf indication contraire, le contenu de ce site, y compris les textes, les images, le design et le code source du site lui-même, m'appartient. Vous pouvez le consulter, créer des liens vers ses pages et en citer de courts extraits avec mention de la source. Vous ne pouvez pas en reproduire des portions substantielles ni l'utiliser à des fins commerciales sans mon autorisation écrite préalable."
+					},
+					{
+						"kind": "p",
+						"text": "Certains projets présentés ici sont des logiciels libres (open source). Leur code se trouve dans leurs propres dépôts et est distribué selon la licence indiquée dans chaque dépôt. Ce sont ces licences, et non les présentes conditions, qui régissent votre utilisation de ce code."
+					},
+					{
+						"kind": "h2",
+						"text": "Utilisation acceptable"
+					},
+					{
+						"kind": "p",
+						"text": "Vous vous engagez à utiliser ce site de façon licite et raisonnable. En particulier, vous vous engagez à ne pas :"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"tenter de perturber, de surcharger ou d'attaquer le site ou l'infrastructure qui l'héberge;",
+							"moissonner ou extraire le contenu d'une manière qui surcharge le site ou contourne ses limites publiées;",
+							"usurper une identité en me contactant, ni utiliser les canaux de contact pour transmettre des messages illicites, trompeurs ou abusifs."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Absence de garantie"
+					},
+					{
+						"kind": "p",
+						"text": "Ce site et son contenu sont fournis tels quels, à titre d'information générale. Je m'efforce de garder l'information exacte et à jour, mais je ne garantis pas qu'elle soit complète, exempte d'erreurs ou disponible en tout temps. Lorsqu'une démonstration ou un tableau de bord est identifié comme simulé, les données affichées sont illustratives et non réelles."
+					},
+					{
+						"kind": "p",
+						"text": "Rien sur ce site ne constitue un avis professionnel. Un conseil adapté à votre situation n'est offert que dans le cadre d'un mandat conclu par entente écrite."
+					},
+					{
+						"kind": "h2",
+						"text": "Limitation de responsabilité"
+					},
+					{
+						"kind": "p",
+						"text": "Dans la mesure permise par la loi applicable, je ne suis pas responsable des dommages indirects, accessoires ou consécutifs découlant de votre utilisation de ce site ou de votre confiance en son contenu. Rien dans les présentes conditions n'exclut ni ne limite une responsabilité qui ne peut être exclue ou limitée en vertu des lois du Québec."
+					},
+					{
+						"kind": "h2",
+						"text": "Liens vers des tiers"
+					},
+					{
+						"kind": "p",
+						"text": "Ce site contient des liens vers des services que je ne contrôle pas, notamment GitHub, LinkedIn et cal.com. Ces services ont leurs propres conditions et leurs propres pratiques en matière de vie privée, qui s'appliquent lorsque vous les utilisez. Je ne suis pas responsable de leur contenu ni de leur conduite."
+					},
+					{
+						"kind": "h2",
+						"text": "Droit applicable"
+					},
+					{
+						"kind": "p",
+						"text": "Les présentes conditions sont régies par les lois du Québec et les lois du Canada qui s'y appliquent. Sous réserve de toute règle d'ordre public vous accordant un autre for, tout litige relatif à ce site sera porté devant les tribunaux compétents du district judiciaire de Montréal."
+					},
+					{
+						"kind": "h2",
+						"text": "Modifications"
+					},
+					{
+						"kind": "p",
+						"text": "Je peux mettre à jour les présentes conditions de temps à autre, par exemple lorsque le site ou la loi change. La date en haut de cette page indique la version en vigueur. Si vous continuez d'utiliser le site après une mise à jour, ce sont les conditions mises à jour qui s'appliquent."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Vos questions sur ces conditions sont les bienvenues, en français, en anglais ou en espagnol. Écrivez-moi à admin@yesid.dev ou utilisez la page de contact : /contact."
+					}
+				]
+			},
+			"advisorNotes": "PLACEHOLDERS TO FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (operator's full legal name, both languages); [NEQ] (confirm whether an NEQ is required at all: a sole proprietor doing business under their own first and last name is generally exempt from registration under the Act respecting the legal publicity of enterprises; if exempt, delete the bracketed NEQ mention entirely in both languages); [DATE] (set on publication and on every revision).\n\nINTERPRETATION POINTS TO CONFIRM:\n1. Acceptance by use (browsewrap): the terms bind visitors merely by browsing, with no click-through. Confirm this is adequate for a purely informational site with no accounts, no checkout, and no downloads.\n2. No warranty + limitation of liability: both clauses rely on the carve-out \"nothing excludes liability that cannot be excluded under the laws of Quebec\". Confirm this satisfies art. 1474 CCQ (no exclusion for bodily or moral injury, or for intentional or gross fault). The site sells nothing, so the Consumer Protection Act likely does not apply, but confirm the wording survives if a court ever characterized a visit as consumer-facing (CPA arts. 10, 261, 262 restrict disclaimers).\n3. Forum clause: deliberately softened with \"subject to any rule of public order that grants you a different forum\" because exclusive forum selection can be unenforceable against Quebec consumers (art. 3149 CCQ and related public-order rules). Confirm this softening is the right approach or whether to drop the Montreal forum sentence.\n4. Governing-law phrasing \"laws of Quebec and the applicable laws of Canada\": confirm this is the preferred formulation.\n5. Intellectual property: the terms voluntarily permit linking and quoting brief excerpts with attribution (wider than fair dealing). Confirm the operator intends this grant. Confirm the open-source carve-out matches the actual licenses on the linked repositories.\n6. Separate-agreement statement: the terms say consulting engagements are governed by separate written agreements. Confirm this matches the operator's actual engagement paperwork so the two documents do not conflict.\n7. Changes clause: unilateral amendment with continued-use acceptance. Confirm acceptable for a free informational site, or whether material changes should trigger a more visible notice.\n8. Language versions: EN and FR are drafted as faithful equivalents with no prevailing-version clause. Advise whether to add one (Charter of the French language considerations for a Quebec business); a Spanish version arrives at launch and will need the same treatment.\n9. FR terminology to validate: \"travailleur autonome (entreprise individuelle)\" for sole proprietor; \"district judiciaire de Montréal\"; \"moissonner ou extraire\" for scraping; \"for\" in \"un autre for\" (juridical register); overall vouvoiement register.\n10. Factual claims embedded in the terms that should stay true: site sells nothing directly, no user accounts, demos labeled as simulated where applicable, third-party links limited to services like GitHub, LinkedIn, cal.com."
+		},
+		{
+			"slug": "cookies",
+			"sort": 3,
+			"en": {
+				"title": "Cookie and Tracking Policy",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "yesid.dev is the portfolio and contact site of [FULL LEGAL NAME], a freelance digital-infrastructure consultant in Montreal, Quebec. This page explains what the site stores in your browser, what it does not, and why you will not see a cookie banner here. Last updated: [DATE]."
+					},
+					{
+						"kind": "h2",
+						"text": "The short version"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"This site sets no tracking cookies. None.",
+							"There is no advertising technology, no cross-site tracking, and no profiling.",
+							"There is no consent banner because nothing on this site requires that kind of consent."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "What the site actually stores"
+					},
+					{
+						"kind": "p",
+						"text": "The site keeps a few functional preferences in your browser's localStorage: your theme (light or dark), your language, the state of collapsed sections, and an unsent draft of the contact form so you do not lose it if you navigate away. This information stays on your device and is never transmitted to me or to anyone else; only your own browser uses it, locally, to restore your preferences. Clearing your browser data removes it completely."
+					},
+					{
+						"kind": "h2",
+						"text": "Analytics"
+					},
+					{
+						"kind": "p",
+						"text": "I use a cookieless, privacy-focused analytics tool ([Plausible / Umami]) to understand traffic in aggregate: which pages are visited, roughly how many visits they receive, and where visits come from at the level of a country or a referring site. The tool sets no cookies, stores no persistent identifiers, and does not follow you across other sites. IP addresses are processed transiently to compute aggregate statistics and are not stored. In practice, I can see that a page received visits; I cannot see who you are, track you around the web, or recognize you on your next visit."
+					},
+					{
+						"kind": "h2",
+						"text": "Why there is no banner"
+					},
+					{
+						"kind": "p",
+						"text": "Quebec's Law 25 (section 8.1 of the Act respecting the protection of personal information in the private sector) requires a website to let you activate or deactivate technologies that identify you, locate you, or profile you. This site uses no such technology: no tracking cookies, no fingerprinting, no geolocation, no profiling. Since there is nothing to switch on or off, a banner would serve no purpose. I chose to be transparent here instead, in plain text."
+					},
+					{
+						"kind": "h2",
+						"text": "If this ever changes"
+					},
+					{
+						"kind": "p",
+						"text": "If I ever introduce a technology that identifies, locates, or profiles visitors, I will ask for your opt-in consent before it runs, and I will update this page and its date. No silent changes."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Questions about this policy are welcome at admin@yesid.dev or through the contact page, in English, French, or Spanish. [FULL LEGAL NAME] acts as Privacy Officer for this site under section 3.1 of Law 25."
+					}
+				]
+			},
+			"fr": {
+				"title": "Politique sur les témoins (cookies)",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "yesid.dev est le site portfolio et de contact de [FULL LEGAL NAME], consultant indépendant en infrastructure numérique à Montréal (Québec). Cette page explique ce que le site conserve dans votre navigateur, ce qu'il ne conserve pas, et pourquoi vous ne verrez pas de bandeau de témoins (cookies) ici. Dernière mise à jour : [DATE]."
+					},
+					{
+						"kind": "h2",
+						"text": "En bref"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Ce site n'installe aucun témoin de suivi. Aucun.",
+							"Il n'y a ni technologie publicitaire, ni suivi entre les sites, ni profilage.",
+							"Il n'y a pas de bandeau de consentement, parce que rien sur ce site n'exige ce type de consentement."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Ce que le site conserve réellement"
+					},
+					{
+						"kind": "p",
+						"text": "Le site garde quelques préférences fonctionnelles dans le localStorage de votre navigateur : votre thème (clair ou sombre), votre langue, l'état des sections repliées et le brouillon non envoyé du formulaire de contact, pour que vous ne le perdiez pas en changeant de page. Ces renseignements restent sur votre appareil et ne me sont jamais transmis, ni à personne d'autre; seul votre propre navigateur les utilise, localement, pour rétablir vos préférences. Effacer les données de votre navigateur les supprime complètement."
+					},
+					{
+						"kind": "h2",
+						"text": "Mesure d'audience"
+					},
+					{
+						"kind": "p",
+						"text": "J'utilise un outil de mesure d'audience sans témoins et axé sur la vie privée ([Plausible / Umami]) pour comprendre l'achalandage de façon agrégée : les pages consultées, le nombre approximatif de visites et leur provenance, au niveau d'un pays ou d'un site référent. L'outil n'installe aucun témoin, ne conserve aucun identifiant persistant et ne vous suit pas d'un site à l'autre. Les adresses IP sont traitées de façon transitoire pour produire des statistiques agrégées et ne sont pas conservées. Concrètement, je peux voir qu'une page a reçu des visites; je ne peux pas savoir qui vous êtes, vous suivre sur le Web ni vous reconnaître à votre prochaine visite."
+					},
+					{
+						"kind": "h2",
+						"text": "Pourquoi il n'y a pas de bandeau"
+					},
+					{
+						"kind": "p",
+						"text": "La Loi 25 (article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé) exige qu'un site Web vous permette d'activer ou de désactiver les technologies qui permettent de vous identifier, de vous localiser ou d'effectuer votre profilage. Ce site n'utilise aucune technologie de ce genre : pas de témoins de suivi, pas d'empreinte numérique, pas de géolocalisation, pas de profilage. Comme il n'y a rien à activer ni à désactiver, un bandeau ne servirait à rien. J'ai plutôt choisi d'être transparent ici, en texte clair."
+					},
+					{
+						"kind": "h2",
+						"text": "Si cela change un jour"
+					},
+					{
+						"kind": "p",
+						"text": "Si j'introduis un jour une technologie qui identifie, localise ou profile les visiteurs, je demanderai votre consentement explicite avant de l'activer, et je mettrai cette page et sa date à jour. Aucun changement silencieux."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Pour toute question sur cette politique, écrivez-moi à admin@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. [FULL LEGAL NAME] agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l'article 3.1 de la Loi 25."
+					}
+				]
+			},
+			"advisorNotes": "1) CORE INTERPRETATION TO CONFIRM: the page's central position is that s. 8.1 of the Act respecting the protection of personal information in the private sector (Loi 25) only requires an activation/deactivation mechanism (banner) for technologies that identify, locate, or profile a person, and that this site uses none, so no banner is required and transparency via this policy suffices. Please confirm this reading, including that purely functional localStorage preferences (theme, language, UI state, unsent form draft, never transmitted) fall outside s. 8.1.\n2) ANALYTICS: the section is drafted in the present tense but the tool is NOT yet live; the operator will activate it (Plausible or Umami) before or at publication. Confirm (a) that a cookieless analytics tool with no persistent identifiers, transient IP processing, and aggregate-only output does not constitute identification, localization, or profiling under s. 8.1 and does not require prior consent; (b) if you disagree, the Analytics and Why-there-is-no-banner sections must be rewritten and an opt-in mechanism added before the tool goes live. Also confirm whether the hosting location of the analytics service (EU vs self-hosted) needs to be stated here or only in the privacy policy alongside the s. 17 assessment.\n3) FACTUAL CLAIMS TO VERIFY AGAINST THE CHOSEN TOOL before publication: \"no cookies\", \"no persistent identifiers\", \"IP addresses processed transiently and not stored\", \"no cross-site tracking\". These must match the actual configuration of the deployed Plausible/Umami instance.\n4) PLACEHOLDERS the operator must fill: [DATE] (effective/last-updated), [FULL LEGAL NAME] (appears in the intro and Contact sections of both languages), [Plausible / Umami] (pick the actual tool once deployed). [NEQ] is deliberately not used on this page; confirm it is not required here (expected on the legal notice / privacy policy instead).\n5) BINDING COMMITMENT: the \"If this ever changes\" section commits the operator to opt-in consent BEFORE deploying any identifying/locating/profiling technology. Confirm the operator accepts this as a standing commitment and that the wording creates no unintended obligation beyond Law 25's own requirements.\n6) TERMINOLOGY AND CITATIONS: FR uses \"témoins (cookies)\" on first mention, \"Loi 25\", the full French statute name, and \"Responsable de la protection des renseignements personnels\" (s. 3.1). Confirm whether a formal citation (RLRQ, c. P-39.1) should be added, and whether naming the privacy officer role on this page (in addition to the privacy policy) is appropriate or redundant.\n7) EQUIVALENCE: EN and FR were written natively with identical sections and commitments; please flag any spot where the FR legal phrasing (e.g. \"effectuer votre profilage\", \"activer ou désactiver\") should track the statutory wording more closely.\n8) NO OVERCLAIMS: the text deliberately avoids \"compliant/conforme\" language; confirm nothing in it reads as a guarantee."
+		},
+		{
+			"slug": "accessibility",
+			"sort": 4,
+			"en": {
+				"title": "Accessibility Statement",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "This page describes the current state of accessibility on yesid.dev: what already works, what does not yet, and how to reach me if something gets in your way. Last updated: [DATE]."
+					},
+					{
+						"kind": "h2",
+						"text": "My commitment"
+					},
+					{
+						"kind": "p",
+						"text": "I want everyone to be able to read and use this site, including people who rely on assistive technology. My target is the Web Content Accessibility Guidelines (WCAG) 2.1, level AA. I am not there on every page yet, and I would rather say so plainly than claim otherwise. Accessibility is part of how I build, not a box checked at the end."
+					},
+					{
+						"kind": "h2",
+						"text": "What is in place today"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Semantic HTML: headings, landmarks and lists that assistive technology can navigate.",
+							"Full keyboard navigation, with a visible focus indicator on interactive elements.",
+							"ARIA labels on interactive artwork and graphics.",
+							"Support for reduced motion: the site respects the prefers-reduced-motion setting and tones down animation accordingly.",
+							"A collapse-all reading mode that simplifies long pages.",
+							"Color contrast checked in both the dark and light themes.",
+							"Alternative text on informative images."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Known limitations"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Interactive SVG and canvas demos have text alternatives, but the full visual experience is not equivalent for someone who cannot see them.",
+							"Some third-party embeds, such as the booking tool, may not meet the same standard; I do not control their code.",
+							"The site has not yet been formally audited against WCAG 2.1 AA. This statement is based on my own testing."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Tell me what is not working"
+					},
+					{
+						"kind": "p",
+						"text": "If something on this site is hard or impossible for you to use, write to me at admin@yesid.dev. Mention which page you were on, what you were trying to do and, if possible, which browser and assistive technology you use. I normally reply within a few days. You can write in English, French or Spanish."
+					},
+					{
+						"kind": "h2",
+						"text": "Continuous improvement"
+					},
+					{
+						"kind": "p",
+						"text": "Accessibility is ongoing work, not a finished state. I check new pages and features against these criteria as I build them, and I fix reported issues as quickly as I can. This statement will be updated as the site evolves."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "For any question or report about accessibility: admin@yesid.dev, or the form on the contact page at /contact."
+					}
+				]
+			},
+			"fr": {
+				"title": "Déclaration d'accessibilité",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "Cette page décrit l'état actuel de l'accessibilité de yesid.dev : ce qui fonctionne déjà, ce qui reste à améliorer, et comment me joindre si quelque chose vous bloque. Dernière mise à jour : [DATE]."
+					},
+					{
+						"kind": "h2",
+						"text": "Mon engagement"
+					},
+					{
+						"kind": "p",
+						"text": "Je veux que tout le monde puisse lire et utiliser ce site, y compris les personnes qui s'appuient sur des technologies d'assistance. Ma cible est le niveau AA des Règles pour l'accessibilité des contenus Web (WCAG) 2.1. Je n'y suis pas encore sur toutes les pages, et je préfère le dire franchement plutôt que de prétendre le contraire. L'accessibilité fait partie de ma façon de construire; ce n'est pas une case cochée à la fin."
+					},
+					{
+						"kind": "h2",
+						"text": "Ce qui est en place aujourd'hui"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Un HTML sémantique : des titres, des points de repère et des listes que les technologies d'assistance peuvent parcourir.",
+							"Une navigation complète au clavier, avec un indicateur de focus visible sur les éléments interactifs.",
+							"Des étiquettes ARIA sur les illustrations et graphiques interactifs.",
+							"Le respect de la préférence de mouvement réduit (prefers-reduced-motion) : les animations sont atténuées en conséquence.",
+							"Un mode de lecture « tout replier » qui simplifie les pages longues.",
+							"Un contraste des couleurs vérifié dans les thèmes sombre et clair.",
+							"Un texte de remplacement sur les images informatives."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Limites connues"
+					},
+					{
+						"kind": "ul",
+						"items": [
+							"Les démonstrations interactives en SVG ou en canvas offrent des solutions de rechange textuelles, mais l'expérience visuelle complète n'a pas d'équivalent pour une personne qui ne peut pas les voir.",
+							"Certains contenus intégrés provenant de tiers, comme l'outil de prise de rendez-vous, pourraient ne pas atteindre le même niveau; je ne contrôle pas leur code.",
+							"Le site n'a pas encore fait l'objet d'un audit formel de conformité aux WCAG 2.1 AA. Cette déclaration repose sur mes propres vérifications."
+						]
+					},
+					{
+						"kind": "h2",
+						"text": "Dites-moi ce qui ne fonctionne pas"
+					},
+					{
+						"kind": "p",
+						"text": "Si quelque chose sur ce site vous est difficile ou impossible à utiliser, écrivez-moi à admin@yesid.dev. Indiquez la page concernée, ce que vous tentiez de faire et, si possible, le navigateur et la technologie d'assistance que vous utilisez. Je réponds normalement en quelques jours. Vous pouvez m'écrire en français, en anglais ou en espagnol."
+					},
+					{
+						"kind": "h2",
+						"text": "Amélioration continue"
+					},
+					{
+						"kind": "p",
+						"text": "L'accessibilité est un travail continu, pas un état final. Je vérifie les nouvelles pages et fonctionnalités selon ces critères au fur et à mesure que je les construis, et je corrige les problèmes signalés aussi rapidement que possible. Cette déclaration sera mise à jour au fil de l'évolution du site."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Pour toute question ou tout signalement concernant l'accessibilité : admin@yesid.dev, ou le formulaire de la page contact à /contact."
+					}
+				]
+			},
+			"advisorNotes": "ACCESSIBILITY STATEMENT. Points for the Quebec advisor to confirm: (1) Legal basis: this is a VOLUNTARY statement. yesid.dev is a private sole proprietor's site; confirm no mandatory web accessibility standard applies (the SGQRI 008 standards bind Quebec public bodies, not private freelancers), so partial-conformance wording creates no statutory exposure. (2) Overclaim check: the text deliberately claims only a TARGET of WCAG 2.1 AA, states no formal audit has occurred, and bases claims on self-testing. Confirm this framing cannot be read as a conformance warranty under consumer-protection or misrepresentation rules. (3) Factual claims to verify with the operator BEFORE publication: each bullet under \"What is in place today\" (semantic HTML, keyboard navigation, visible focus, ARIA labels on interactive art, prefers-reduced-motion support, collapse-all mode, contrast checked in both themes, alt text) must be true on the live site at publication date; these are the operator's assertions, not the drafter's. (4) Third-party disclaimer: confirm the sentence limiting responsibility for third-party embeds (cal.com booking) is acceptable and does not read as an improper exclusion of liability. (5) Service commitment: \"reply within a few days\" is a soft commitment; confirm the operator accepts it or wants a firmer/looser wording. (6) Placeholder [DATE] must be filled at publication and updated on every material change. (7) Language: FR uses vouvoiement and Quebec French; confirm the FR version satisfies Charter of the French language expectations for a commercial site (FR available and at least equivalent to EN; the two versions here carry identical commitments). (8) Interpretation point: the statement invites feedback in EN/FR/ES; confirm offering trilingual contact creates no obligation issue before the Spanish site version launches (contact in ES is already welcomed even though ES pages are not live). No em dashes are used anywhere; this is an intentional style constraint, do not reintroduce them during review."
+		},
+		{
+			"slug": "notice",
+			"sort": 5,
+			"en": {
+				"title": "Legal Notice",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: [DATE]."
+					},
+					{
+						"kind": "h2",
+						"text": "Site publisher"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev is published by [FULL LEGAL NAME], operating as a sole proprietor and freelance digital-infrastructure consultant in Montreal, Quebec, Canada. Quebec enterprise number (NEQ): [NEQ]. [Note: this number applies only if the business is registered with the Registraire des entreprises du Québec; remove this line otherwise.]"
+					},
+					{
+						"kind": "h2",
+						"text": "Hosting"
+					},
+					{
+						"kind": "p",
+						"text": "The site is hosted by Vercel Inc., [HOST ADDRESS], and served through a global content delivery network. The content system behind the site runs on Railway and Neon; it is used only to build the site and does not process visitor data while you browse, because the published site is fully static."
+					},
+					{
+						"kind": "h2",
+						"text": "Publication responsibility"
+					},
+					{
+						"kind": "p",
+						"text": "I am responsible for everything published on this site: text, images, code samples, and case studies. If you find something inaccurate or outdated, write to me and I will correct it."
+					},
+					{
+						"kind": "h2",
+						"text": "Trademarks and third-party names"
+					},
+					{
+						"kind": "p",
+						"text": "Names such as STM, Power BI, and other products or organizations mentioned on this site belong to their respective owners. They appear descriptively, to explain the work I do; their mention implies no affiliation, sponsorship, or endorsement."
+					},
+					{
+						"kind": "h2",
+						"text": "Credits"
+					},
+					{
+						"kind": "p",
+						"text": "I designed and built this site myself."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "You can reach me at admin@yesid.dev or through the contact page at /contact. I answer in English, French, or Spanish."
+					}
+				]
+			},
+			"fr": {
+				"title": "Avis juridique",
+				"blocks": [
+					{
+						"kind": "p",
+						"text": "Cette page indique qui publie yesid.dev, qui l'héberge et qui répond de son contenu. Dernière mise à jour : [DATE]."
+					},
+					{
+						"kind": "h2",
+						"text": "Éditeur du site"
+					},
+					{
+						"kind": "p",
+						"text": "yesid.dev est publié par [FULL LEGAL NAME], entreprise individuelle, consultant indépendant en infrastructure numérique établi à Montréal (Québec), Canada. Numéro d'entreprise du Québec (NEQ) : [NEQ]. [Note : ce numéro s'applique seulement si l'entreprise est immatriculée au Registraire des entreprises du Québec; retirer cette ligne dans le cas contraire.]"
+					},
+					{
+						"kind": "h2",
+						"text": "Hébergement"
+					},
+					{
+						"kind": "p",
+						"text": "Le site est hébergé par Vercel Inc., [HOST ADDRESS], et diffusé par un réseau mondial de distribution de contenu. Le système de contenu derrière le site fonctionne sur Railway et Neon; il sert uniquement à construire le site et ne traite aucune donnée de visiteur pendant votre navigation, puisque le site publié est entièrement statique."
+					},
+					{
+						"kind": "h2",
+						"text": "Responsabilité de la publication"
+					},
+					{
+						"kind": "p",
+						"text": "Je suis responsable de tout ce qui est publié sur ce site : textes, images, exemples de code et études de cas. Si vous relevez une information inexacte ou périmée, écrivez-moi et je la corrigerai."
+					},
+					{
+						"kind": "h2",
+						"text": "Marques de commerce et noms de tiers"
+					},
+					{
+						"kind": "p",
+						"text": "Les noms comme STM, Power BI et les autres produits ou organismes mentionnés sur ce site appartiennent à leurs propriétaires respectifs. Ils sont cités à titre descriptif, pour expliquer mon travail; leur mention n'implique aucune affiliation, commandite ni approbation."
+					},
+					{
+						"kind": "h2",
+						"text": "Crédits"
+					},
+					{
+						"kind": "p",
+						"text": "J'ai conçu et réalisé ce site moi-même."
+					},
+					{
+						"kind": "h2",
+						"text": "Contact"
+					},
+					{
+						"kind": "p",
+						"text": "Vous pouvez m'écrire à admin@yesid.dev ou passer par la page de contact à /contact. Je réponds en français, en anglais ou en espagnol."
+					}
+				]
+			},
+			"advisorNotes": "PLACEHOLDERS TO FILL (operator): [FULL LEGAL NAME] (natural person's full legal name); [NEQ] (only if registered); [HOST ADDRESS] (Vercel Inc. registered address, verify current); [DATE] (same date in both languages, agree on format: ISO vs written-out).\n\nPOINTS THE ADVISOR MUST CONFIRM: (1) NEQ line: sole proprietors operating under their own first and last name are generally exempt from registration with the Registraire des entreprises du Québec; confirm whether the operator is registered and delete the NEQ sentence plus bracketed note if not, or fill the number and delete only the note if yes. (2) Whether displaying the natural person's full legal name is required or whether the operating/trade name suffices for a sole proprietorship identity page. (3) Trademark disclaimer wording: confirm 'marques de commerce' is the preferred FR term and that the descriptive-use disclaimer (STM, Power BI, no affiliation/sponsorship/endorsement) is adequate; note the transit project is open-source civic work, not commissioned by STM, so no affiliation may be implied anywhere. (4) The factual claim that Railway/Neon backend does not process visitor data at browse time (site is fully prerendered/static): this is architecture-verified by the operator but the advisor should confirm the phrasing does not overclaim. (5) Publication-responsibility section is a plain-language personal commitment, not a statutory citation; confirm no additional liability or governing-law language is needed on this page (deliberately omitted; a legal-notice page is not itself mandated by Quebec law for a sole proprietor, it is a transparency practice). (6) FR version drafted natively in Quebec French with vouvoiement; confirm it satisfies Charter of the French Language expectations (FR at least equivalent to EN). (7) Bracketed [Note: ...] sentences are drafting instructions for review, not publishable copy; they must be resolved and removed before publication.\n\nINTERPRETATION CHOICES MADE: single final Contact section serves both the publisher-contact and page-contact requirements; Spanish contact welcome mentioned per launch plan even though the site UI is EN/FR today. No em dashes used in either language (hard project rule)."
+		}
+	]
+}
