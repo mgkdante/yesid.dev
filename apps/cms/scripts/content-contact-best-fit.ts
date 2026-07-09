@@ -47,23 +47,9 @@ async function apiPatch(ctx: ApplyContext, path: string, body: unknown): Promise
 	return res.json;
 }
 
-async function main(): Promise<void> {
-	const apply = process.argv.includes('--apply');
-	const url = defaultDirectusUrl();
-	assertDevCms(url);
-	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
-	log.info(`plan: BEST FIT section label + 3 lines on block_contact_content_translations (en, fr)`);
-	for (const locale of ['en', 'fr'] as const) {
-		for (const [field, value] of Object.entries(VALUES[locale])) {
-			log.info(`  [${locale}] ${field} = "${value}"`);
-		}
-	}
-	if (!apply) {
-		log.info('dry-run complete. Pass --apply to write values.');
-		return;
-	}
-	const token = await getAdminToken(url);
-	const ctx: ApplyContext = { directusUrl: url, token };
+/** en+fr values (es rides the i18n drop). Exported for the prod promotion
+ *  orchestrator (promote-launch-phase1-prod) — the caller owns the URL guard. */
+export async function apply(ctx: ApplyContext): Promise<void> {
 	const json = await apiGet(ctx, '/items/block_contact_content?fields=translations.id,translations.languages_code');
 	const rows = (json?.data?.translations ?? []) as Array<{ id: number; languages_code: string }>;
 	const ids = Object.fromEntries(rows.map((row) => [row.languages_code, row.id]));
@@ -73,6 +59,25 @@ async function main(): Promise<void> {
 		await apiPatch(ctx, `/items/block_contact_content_translations/${rowId}`, VALUES[locale]);
 		log.info(`  ok best-fit [${locale}] row ${rowId} (${Object.keys(VALUES[locale]).length} fields)`);
 	}
+}
+
+async function main(): Promise<void> {
+	const apply_ = process.argv.includes('--apply');
+	const url = defaultDirectusUrl();
+	assertDevCms(url);
+	log.info(`target: ${url}${apply_ ? ' [apply]' : ' [dry-run]'}`);
+	log.info(`plan: BEST FIT section label + 3 lines on block_contact_content_translations (en, fr)`);
+	for (const locale of ['en', 'fr'] as const) {
+		for (const [field, value] of Object.entries(VALUES[locale])) {
+			log.info(`  [${locale}] ${field} = "${value}"`);
+		}
+	}
+	if (!apply_) {
+		log.info('dry-run complete. Pass --apply to write values.');
+		return;
+	}
+	const token = await getAdminToken(url);
+	await apply({ directusUrl: url, token });
 	log.info('apply complete.');
 }
 

@@ -56,21 +56,10 @@ function buildFieldPlan(): SchemaStep[] {
 	}));
 }
 
-async function main(): Promise<void> {
-	const apply = process.argv.includes('--apply');
-	const url = defaultDirectusUrl();
-	assertDevCms(url);
+/** Schema + values in one pass. Exported for the prod promotion orchestrator
+ *  (promote-launch-phase1-prod) — the caller owns the URL guard. */
+export async function apply(ctx: ApplyContext): Promise<void> {
 	const plan = buildFieldPlan();
-	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
-	for (const spec of FIELDS) {
-		log.info(`  field ${COLLECTION}.${spec.field} = ${JSON.stringify(spec.values)}`);
-	}
-	if (!apply) {
-		log.info('dry-run complete. Pass --apply to write.');
-		return;
-	}
-	const token = await getAdminToken(url);
-	const ctx: ApplyContext = { directusUrl: url, token };
 	for (const step of plan) {
 		const res = await rest(ctx, step.method, step.path, step.payload);
 		if (res.status < 400) log.info(`  ok field - ${step.target}`);
@@ -78,7 +67,12 @@ async function main(): Promise<void> {
 		else throw new Error(`${step.method} ${step.path} failed (${res.status}): ${JSON.stringify(res.json)}`);
 	}
 	// Values on the three locale rows, discovered through the parent singleton.
-	const parent = await rest(ctx, 'GET', '/items/site_labels?fields=translations.id,translations.languages_code');
+	// The singleton PK is a uuid — fetch it for the create fallback (a literal
+	// id can never satisfy the uuid FK; the fallback fires on any instance
+	// whose locale row does not exist yet, e.g. es on first prod promotion).
+	const parent = await rest(ctx, 'GET', '/items/site_labels?fields=id,translations.id,translations.languages_code');
+	const parentId = parent.json?.data?.id as string | undefined;
+	if (!parentId) throw new Error(`site_labels singleton id not readable (${parent.status})`);
 	const rows = (parent.json?.data?.translations ?? []) as Array<{ id: number; languages_code: string }>;
 	for (const locale of ['en', 'fr', 'es'] as const) {
 		const row = rows.find((r) => r.languages_code === locale);
@@ -89,7 +83,7 @@ async function main(): Promise<void> {
 			log.info(`  ok values [${locale}] row ${row.id}`);
 		} else {
 			const res = await rest(ctx, 'POST', '/items/site_labels_translations', {
-				site_labels_id: 1,
+				site_labels_id: parentId,
 				languages_code: locale,
 				...payload,
 			});
@@ -97,6 +91,22 @@ async function main(): Promise<void> {
 			log.info(`  ok values [${locale}] created`);
 		}
 	}
+}
+
+async function main(): Promise<void> {
+	const apply_ = process.argv.includes('--apply');
+	const url = defaultDirectusUrl();
+	assertDevCms(url);
+	log.info(`target: ${url}${apply_ ? ' [apply]' : ' [dry-run]'}`);
+	for (const spec of FIELDS) {
+		log.info(`  field ${COLLECTION}.${spec.field} = ${JSON.stringify(spec.values)}`);
+	}
+	if (!apply_) {
+		log.info('dry-run complete. Pass --apply to write.');
+		return;
+	}
+	const token = await getAdminToken(url);
+	await apply({ directusUrl: url, token });
 	log.info('apply complete.');
 }
 

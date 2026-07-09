@@ -280,7 +280,8 @@ async function applyPermission(ctx: ApplyContext, step: SchemaStep): Promise<voi
 	log.info(`  ok permission - ${policy.name} ${payload.action} ${payload.collection}`);
 }
 
-async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
+/** Exported for the prod promotion orchestrator (promote-launch-phase1-prod). */
+export async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
 	for (const step of plan) {
 		if (step.kind === 'permission') {
 			await applyPermission(ctx, step);
