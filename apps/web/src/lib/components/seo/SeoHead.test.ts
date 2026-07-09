@@ -65,10 +65,34 @@ describe('SeoHead — tag emission', () => {
 		}
 	});
 
-	it('emits hreflang for every published locale + x-default', () => {
+	it('emits hreflang for every published locale + x-default (en, fr, es live)', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
 		expect(getLink('alternate', { name: 'hreflang', value: 'en' })).not.toBeNull();
+		expect(getLink('alternate', { name: 'hreflang', value: 'fr' })).not.toBeNull();
+		expect(getLink('alternate', { name: 'hreflang', value: 'es' })).not.toBeNull();
 		expect(getLink('alternate', { name: 'hreflang', value: 'x-default' })).not.toBeNull();
+		// Exactly the three published locales + x-default — no strays.
+		expect(document.head.querySelectorAll('link[rel="alternate"]').length).toBe(4);
+		expect(getLink('alternate', { name: 'hreflang', value: 'es' })?.getAttribute('href')).toBe(
+			'https://yesid.dev/es/test',
+		);
+	});
+
+	it('emits og:locale:alternate for the OTHER two published locales (count=2)', () => {
+		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
+		const alternates = Array.from(
+			document.head.querySelectorAll('meta[property="og:locale:alternate"]'),
+		).map((el) => el.getAttribute('content'));
+		expect(alternates.sort()).toEqual(['es_CA', 'fr_CA']);
+	});
+
+	it('og:locale:alternate on an es page is en_CA + fr_CA', () => {
+		render(SeoHead, { props: { seo: validSeo, locale: 'es' } });
+		expect(getMeta('property', 'og:locale')?.content).toBe('es_CA');
+		const alternates = Array.from(
+			document.head.querySelectorAll('meta[property="og:locale:alternate"]'),
+		).map((el) => el.getAttribute('content'));
+		expect(alternates.sort()).toEqual(['en_CA', 'fr_CA']);
 	});
 
 	it('suppresses the hreflang cluster for singleLocale pages (blog posts, AM2.5)', () => {
@@ -87,6 +111,12 @@ describe('SeoHead — tag emission', () => {
 		const ogImage = getMeta('property', 'og:image');
 		// fr is now in PUBLISHED_LOCALES → its own /og/default.fr.png
 		expect(ogImage?.content).toMatch(/\/og\/default\.fr\.png$/);
+	});
+
+	it('uses the es default OG image now that es is published', () => {
+		render(SeoHead, { props: { seo: validSeo, locale: 'es' } });
+		const ogImage = getMeta('property', 'og:image');
+		expect(ogImage?.content).toMatch(/\/og\/default\.es\.png$/);
 	});
 
 	it('emits noindex,nofollow robots meta when seo.noIndex is true', () => {

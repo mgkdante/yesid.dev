@@ -29,11 +29,12 @@
 	import { durationSec } from '$lib/motion/tokens';
 	import { gsap } from 'gsap';
 	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
-	import type { LocalizedString } from '$lib/types';
+	import type { Locale, LocalizedString } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { layoutBlueprint, ROW_GAP } from './blueprint-layout';
+	import { LAYER_NAMES } from './layer-teaching';
 
 	const locale = getLocale();
 
@@ -100,12 +101,36 @@
 	// go2/w5 §4: layer-pair teaching — full map of every possible occupied-row
 	// adjacency (copy short, homey-teacher voice). Localized; HTTP stays verbatim.
 	const PAIR_NOTES: Record<string, LocalizedString> = {
-		'interface-logic': { en: 'the UI asks logic over HTTP', fr: 'l\'UI parle à la logique en HTTP' },
-		'logic-data': { en: 'logic reads & writes the data', fr: 'la logique lit pis écrit les données' },
-		'data-infra': { en: 'storage runs on this ground', fr: 'le stockage roule sur ce terrain' },
-		'interface-data': { en: 'the UI reads the data directly', fr: 'l\'UI lit les données direct' },
-		'logic-infra': { en: 'the logic runs on this ground', fr: 'la logique roule sur ce terrain' },
-		'interface-infra': { en: 'pages are served from here', fr: 'les pages sont servies d\'icitte' },
+		'interface-logic': {
+			en: 'the UI asks logic over HTTP',
+			fr: 'l\'UI parle à la logique en HTTP',
+			es: 'la UI le habla a la lógica por HTTP',
+		},
+		'logic-data': {
+			en: 'logic reads & writes the data',
+			fr: 'la logique lit pis écrit les données',
+			es: 'la lógica lee y escribe los datos',
+		},
+		'data-infra': {
+			en: 'storage runs on this ground',
+			fr: 'le stockage roule sur ce terrain',
+			es: 'el almacenamiento corre sobre este terreno',
+		},
+		'interface-data': {
+			en: 'the UI reads the data directly',
+			fr: 'l\'UI lit les données direct',
+			es: 'la UI lee los datos directo',
+		},
+		'logic-infra': {
+			en: 'the logic runs on this ground',
+			fr: 'la logique roule sur ce terrain',
+			es: 'la lógica corre sobre este terreno',
+		},
+		'interface-infra': {
+			en: 'pages are served from here',
+			fr: 'les pages sont servies d\'icitte',
+			es: 'las páginas se sirven desde aquí',
+		},
 	};
 
 	/** ONE annotation per DISTINCT adjacent layer pair (first occurrence). */
@@ -145,20 +170,27 @@
 	const naturalWidth = $derived(layout.width + PAD * 2 + gutter);
 
 	// Localized chrome words (parts/layers) + the canvas aria-label + the
-	// "complete it" annotation. Code-owned, em-dash-free.
-	const PARTS_WORD = { en: 'parts', fr: 'morceaux' };
-	const LAYERS_WORD = { en: 'layers', fr: 'couches' };
+	// "complete it" annotation. Code-owned, em-dash-free. Exhaustive per-locale
+	// template maps so a new locale is a compile error, never an EN fallback.
+	const PARTS_WORD = { en: 'parts', fr: 'morceaux', es: 'piezas' };
+	const LAYERS_WORD = { en: 'layers', fr: 'couches', es: 'capas' };
 	const partsWord = $derived(resolveLocale(PARTS_WORD, locale));
 	const layersWord = $derived(resolveLocale(LAYERS_WORD, locale));
-	const canvasAria = $derived(
-		locale === 'fr'
-			? `Plan : ${title}, ${layout.boxes.length} morceaux dans ${layerCount} couches`
-			: `Blueprint: ${title}, ${layout.boxes.length} parts in ${layerCount} layers`,
-	);
+	const CANVAS_ARIA: Record<Locale, (parts: number, layers: number) => string> = {
+		en: (parts, layers) => `Blueprint: ${title}, ${parts} parts in ${layers} layers`,
+		fr: (parts, layers) => `Plan : ${title}, ${parts} morceaux dans ${layers} couches`,
+		es: (parts, layers) => `Plano: ${title}, ${parts} piezas en ${layers} capas`,
+	};
+	const COMPLETE_ANNOTATIONS: Record<Locale, (name: string) => string> = {
+		en: (name) => `+ add ${name} to complete it`,
+		fr: (name) => `+ ajoute ${name} pour le compléter`,
+		es: (name) => `+ agrega ${name} para completarlo`,
+	};
+	const canvasAria = $derived(CANVAS_ARIA[locale](layout.boxes.length, layerCount));
 	const completeAnnotation = $derived.by(() => {
 		if (!firstMissingBox) return '';
 		const name = nameById.get(firstMissingBox.id) ?? firstMissingBox.id;
-		return locale === 'fr' ? `+ ajoute ${name} pour le compléter` : `+ add ${name} to complete it`;
+		return COMPLETE_ANNOTATIONS[locale](name);
 	});
 
 	let svgEl: SVGSVGElement | null = $state(null);
@@ -283,7 +315,7 @@
 					text-anchor="end"
 					dominant-baseline="central"
 				>
-					{row[0].layer}
+					{resolveLocale(LAYER_NAMES[row[0].layer], locale)}
 				</text>
 			{/each}
 		</g>

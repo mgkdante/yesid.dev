@@ -28,7 +28,7 @@
 	import { stackArchetypes } from '$lib/content/stack-archetypes';
 	import { registerSession, pendingRestore } from '$lib/state/locale-handoff.svelte';
 	import { EngineState, seedFromParams, coerceEngineSeed } from './engine-state.svelte';
-	import { LAYER_TEACHING } from './layer-teaching';
+	import { LAYER_NAMES, LAYER_TEACHING } from './layer-teaching';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
 	import BlueprintCanvas from './BlueprintCanvas.svelte';
@@ -113,8 +113,12 @@
 	}
 
 	// Homey nav labels (round 4) — the breadcrumb step reads like a place.
-	const BACK_TO_BLUEPRINT = { en: '← back to the blueprint', fr: '← retour au plan' };
-	const BACK_TO_MAP = { en: '← back to the map', fr: '← retour à la carte' };
+	const BACK_TO_BLUEPRINT = {
+		en: '← back to the blueprint',
+		fr: '← retour au plan',
+		es: '← volver al plano',
+	};
+	const BACK_TO_MAP = { en: '← back to the map', fr: '← retour à la carte', es: '← volver al mapa' };
 	const backLabel = $derived(
 		resolveLocale(engine.view === 'preview' ? BACK_TO_BLUEPRINT : BACK_TO_MAP, locale),
 	);
@@ -137,15 +141,23 @@
 
 	// Mode toggle labels — pinned EXACTLY by Engine.test.ts (spec wording).
 	const MODE_LABELS = {
-		goal: { en: 'I want to build…', fr: 'Je veux bâtir…' },
-		compose: { en: 'What can these build?', fr: 'Ça peut bâtir quoi?' },
+		goal: { en: 'I want to build…', fr: 'Je veux bâtir…', es: 'Quiero construir…' },
+		compose: { en: 'What can these build?', fr: 'Ça peut bâtir quoi?', es: '¿Qué construyen estas?' },
 	} as const;
 	const modeGoalLabel = $derived(resolveLocale(MODE_LABELS.goal, locale));
 	const modeComposeLabel = $derived(resolveLocale(MODE_LABELS.compose, locale));
 
 	// View-toggle copy (blueprint ⇄ product) — pinned by Engine.test.ts.
-	const SEE_AS_PRODUCT = { en: 'see it as a product', fr: 'vois-le comme un produit' };
-	const BACK_TO_BLUEPRINT_INLINE = { en: 'back to blueprint', fr: 'retour au plan' };
+	const SEE_AS_PRODUCT = {
+		en: 'see it as a product',
+		fr: 'vois-le comme un produit',
+		es: 'velo como producto',
+	};
+	const BACK_TO_BLUEPRINT_INLINE = {
+		en: 'back to blueprint',
+		fr: 'retour au plan',
+		es: 'volver al plano',
+	};
 	const seeAsProductLabel = $derived(resolveLocale(SEE_AS_PRODUCT, locale));
 	const backToBlueprintInline = $derived(resolveLocale(BACK_TO_BLUEPRINT_INLINE, locale));
 
@@ -197,7 +209,7 @@
 			<div class="legend-cell" data-testid={`legend-${layer}`} style:--legend-color={`var(--layer-${layer})`}>
 				<span class="legend-station">
 					<span class="legend-dot" aria-hidden="true"></span>
-					<span class="legend-name">{layer}</span>
+					<span class="legend-name">{resolveLocale(LAYER_NAMES[layer], locale)}</span>
 					<!-- go2/w5 taste round 2: the metro track is a per-cell flex
 					     segment AFTER the name — it fills the gap to the next
 					     station and can never paint over text (the old absolute

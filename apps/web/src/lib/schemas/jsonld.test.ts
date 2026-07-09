@@ -24,6 +24,7 @@ const validPerson = {
 	email: 'contact@yesid.dev',
 	sameAs: ['https://github.com/mgkdante', 'https://www.linkedin.com/in/otaloray/'],
 	knowsAbout: ['PostgreSQL', 'dbt'],
+	knowsLanguage: ['en', 'fr', 'es'],
 	address: {
 		'@type': 'PostalAddress' as const,
 		addressLocality: 'Montreal',
@@ -113,11 +114,17 @@ describe('ServiceSchema', () => {
 		'@id': 'https://yesid.dev/services/sql-consulting',
 		name: 'SQL Consulting',
 		description: 'PostgreSQL consulting for growing teams.',
+		serviceType: 'Databases & SQL',
 		provider: { '@id': PERSON_ID },
 	};
 
 	it('accepts a minimal valid Service', () => {
 		expect(ServiceSchema.safeParse(validService).success).toBe(true);
+	});
+
+	it('requires the machine-legible serviceType (L2 launch Phase 4)', () => {
+		const { serviceType: _s, ...bad } = validService;
+		expect(ServiceSchema.safeParse(bad).success).toBe(false);
 	});
 
 	it('accepts optional areaServed field (array of City nodes)', () => {
@@ -149,10 +156,16 @@ describe('ProfessionalServiceSchema', () => {
 		founder: { '@id': PERSON_ID },
 		sameAs: ['https://github.com/mgkdante'],
 		knowsAbout: ['SQL', 'Data pipelines'],
+		knowsLanguage: ['en', 'fr', 'es'],
 	};
 
 	it('accepts a valid ProfessionalService', () => {
 		expect(ProfessionalServiceSchema.safeParse(validBusiness).success).toBe(true);
+	});
+
+	it('requires the trilingual knowsLanguage signal (L2 launch Phase 4)', () => {
+		const { knowsLanguage: _k, ...bad } = validBusiness;
+		expect(ProfessionalServiceSchema.safeParse(bad).success).toBe(false);
 	});
 
 	it('requires at least one served area', () => {

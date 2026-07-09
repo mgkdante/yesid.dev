@@ -52,6 +52,9 @@ const DESKTOP_ONLY_SPECS = [
 	'**/interactive-filters.spec.ts',
 	'**/contact-form-submission.spec.ts',
 	'**/contact-form-validation.spec.ts',
+	// Fold containment asserts the >=1024px viewport equation (100dvh main,
+	// footer below the fold, terminal-body internal scroll) — desktop-only.
+	'**/contact-fold.spec.ts',
 	'**/theme-persistence.spec.ts',
 	'**/page-content/**'
 ];

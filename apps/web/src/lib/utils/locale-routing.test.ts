@@ -11,8 +11,8 @@ import {
 } from './locale-routing';
 
 describe('PREFIX_LOCALES', () => {
-	it('opens fr only (es joins when Spanish routing ships)', () => {
-		expect(PREFIX_LOCALES).toEqual(['fr']);
+	it('opens fr and es (L1: Spanish routing shipped 2026-07-09, dark until published)', () => {
+		expect(PREFIX_LOCALES).toEqual(['fr', 'es']);
 	});
 });
 
@@ -21,12 +21,13 @@ describe('pathLocale', () => {
 		expect(pathLocale('/fr')).toBe('fr');
 		expect(pathLocale('/fr/')).toBe('fr');
 		expect(pathLocale('/fr/about')).toBe('fr');
+		expect(pathLocale('/es/about')).toBe('es'); // L1: es routing open
 	});
 	it('defaults to en otherwise', () => {
 		expect(pathLocale('/')).toBe('en');
 		expect(pathLocale('/about')).toBe('en');
 		expect(pathLocale('/france')).toBe('en'); // segment, not prefix-string match
-		expect(pathLocale('/es/about')).toBe('en'); // es not opened yet
+		expect(pathLocale('/de/about')).toBe('en'); // never-published prefix stays closed
 	});
 });
 
@@ -69,8 +70,9 @@ describe('localizeHref', () => {
 		expect(localizeHref('/work', 'fr')).toBe('/work');
 		expect(localizeHref('/api/weather', 'fr')).toBe('/api/weather');
 	});
-	it('unsupported prefix locale falls back to en form', () => {
-		expect(localizeHref('/about', 'es')).toBe('/about');
+	it('prefixes es now that Spanish routing is open (L1)', () => {
+		expect(localizeHref('/about', 'es')).toBe('/es/about');
+		expect(localizeHref('/es/about', 'en')).toBe('/about');
 	});
 });
 

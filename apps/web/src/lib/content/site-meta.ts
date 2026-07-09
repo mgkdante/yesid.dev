@@ -13,6 +13,7 @@ import type { SiteMeta } from '$lib/types';
 export const siteMeta: SiteMeta = {
 	description: {
 		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
+		es: 'Ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
 		fr: 'Ingénieur d\'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu\'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.',
 	},
 	links: {
@@ -45,6 +46,7 @@ export const siteMeta: SiteMeta = {
 	},
 	tagline: {
 		en: 'Digital infrastructure that moves.',
+		es: 'Infraestructura digital que se mueve.',
 		fr: 'Une infrastructure numérique qui bouge.',
 	},
 };

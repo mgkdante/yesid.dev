@@ -462,10 +462,15 @@ export interface ContactInfoTerminal {
 	/** Languages a client can write or book in (homework #25). Value like
 	 *  "EN · FR"; adding a language later is one CMS edit. */
 	languages: LocalizedString;
+	/** BEST FIT section lines (homework #26b): the project shapes that fit
+	 *  best. Optional so builds parse before the CMS fields are seeded
+	 *  (prod regenerates from the prod CMS; the section hides when absent). */
+	bestFit?: readonly LocalizedString[];
 	sectionLabels: {
 		location: LocalizedString;
 		connect: LocalizedString;
 		languages: LocalizedString;
+		bestFit?: LocalizedString;
 	};
 }
 
@@ -521,6 +526,17 @@ export interface ContactContent {
 	success: ContactSuccess;
 	socials: readonly { label: LocalizedString; href: string; icon: string }[];
 	web3formsKey: string; // Public access key — safe to expose client-side
+}
+
+// --- Legal pages (OPS1 launch Phase 1) ---
+
+/** One legal page (/legal/[slug]): privacy, cookies, terms, notice,
+ *  accessibility. Body is a per-locale Block Editor doc; EN required,
+ *  FR shipped at OPS1, ES lands with the L1 Spanish pass. */
+export interface LegalPage {
+	slug: string;
+	title: LocalizedString;
+	body: LocalizedBlockEditorDoc;
 }
 
 // NOTE: `PageSeo` and `SchemaOrgNode` are defined in apps/web/src/lib/schemas/seo.ts

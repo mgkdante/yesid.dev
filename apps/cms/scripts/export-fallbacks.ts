@@ -68,6 +68,7 @@ import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
 import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
 import { fetchSitePages } from './lib/fetchers/site-pages';
+import { fetchLegalPages } from './lib/fetchers/legal-pages';
 import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
@@ -147,6 +148,7 @@ export const ALL_MODULES = [
 	'projects-page',
 	'tech-stack-page',
 	'contact-page',
+	'legal-pages',
 	'hero',
 	'manifesto',
 	'proof-reel',
@@ -441,6 +443,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('contact-page', async () => {
 			out.contactPage = await fetchContactContent({ client });
 			log.info('  contact-page done.');
+		});
+		enqueue('legal-pages', async () => {
+			out.legalPages = await fetchLegalPages({ client });
+			log.info(`  legal-pages done (${out.legalPages.length} pages).`);
 		});
 		enqueue('hero', async () => {
 			out.hero = await fetchHeroContent({ client });
