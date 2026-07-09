@@ -28,7 +28,7 @@
 	import { stackArchetypes } from '$lib/content/stack-archetypes';
 	import { registerSession, pendingRestore } from '$lib/state/locale-handoff.svelte';
 	import { EngineState, seedFromParams, coerceEngineSeed } from './engine-state.svelte';
-	import { LAYER_TEACHING } from './layer-teaching';
+	import { LAYER_NAMES, LAYER_TEACHING } from './layer-teaching';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
 	import BlueprintCanvas from './BlueprintCanvas.svelte';
@@ -209,7 +209,7 @@
 			<div class="legend-cell" data-testid={`legend-${layer}`} style:--legend-color={`var(--layer-${layer})`}>
 				<span class="legend-station">
 					<span class="legend-dot" aria-hidden="true"></span>
-					<span class="legend-name">{layer}</span>
+					<span class="legend-name">{resolveLocale(LAYER_NAMES[layer], locale)}</span>
 					<!-- go2/w5 taste round 2: the metro track is a per-cell flex
 					     segment AFTER the name — it fills the gap to the next
 					     station and can never paint over text (the old absolute

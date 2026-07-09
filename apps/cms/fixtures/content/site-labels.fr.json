@@ -151,5 +151,8 @@
 	"services_chrome_listing_station_short_database_engineering": "Bases de données",
 	"services_chrome_listing_station_short_data_pipeline": "Pipelines",
 	"services_chrome_listing_station_short_analytics_reporting": "Tableaux de bord",
-	"services_chrome_listing_station_short_web_development": "Sites web"
+	"services_chrome_listing_station_short_web_development": "Sites web",
+	"footer_chrome_footer_explore_label": "EXPLORER",
+	"footer_chrome_footer_legal_label": "LÉGAL",
+	"footer_chrome_footer_connect_label": "CONNEXION"
 }
