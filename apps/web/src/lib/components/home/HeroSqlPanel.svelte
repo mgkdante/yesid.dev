@@ -88,9 +88,9 @@
       <tbody>
         {#each rows as row (row.route)}
           <tr data-testid="sql-result-row">
-            <td class="border-r border-[var(--border-subtle)] px-2 py-1 text-[var(--terminal-ink)]">{row.route}</td>
-            <td class="border-r border-[var(--border-subtle)] px-2 py-1 text-right text-[var(--accent-text)]">{row.avgDelayS}</td>
-            <td class="px-2 py-1 text-right text-[var(--terminal-ink)]">{row.vehicles}</td>
+            <td class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-[var(--terminal-ink)]">{row.route}</td>
+            <td class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-right text-[var(--accent-text)]">{row.avgDelayS}</td>
+            <td class="border-b border-[var(--border-subtle)] px-2 py-1 text-right text-[var(--terminal-ink)]">{row.vehicles}</td>
           </tr>
         {/each}
       </tbody>
