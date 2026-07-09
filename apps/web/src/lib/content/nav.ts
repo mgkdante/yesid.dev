@@ -107,6 +107,51 @@ export const footerLinks: readonly NavLink[] = [
 		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 		priority: 1,
 	},
+	{
+		href: '/legal/privacy',
+		label: {
+			en: 'Privacy Policy',
+			es: 'Política de privacidad',
+			fr: 'Politique de confidentialité',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/terms',
+		label: {
+			en: 'Terms of Use',
+			es: 'Condiciones de uso',
+			fr: 'Conditions d\'utilisation',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/cookies',
+		label: {
+			en: 'Cookie and Tracking Policy',
+			es: 'Política de cookies',
+			fr: 'Politique sur les témoins (cookies)',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/accessibility',
+		label: {
+			en: 'Accessibility Statement',
+			es: 'Declaración de accesibilidad',
+			fr: 'Déclaration d\'accessibilité',
+		},
+		priority: 1,
+	},
+	{
+		href: '/legal/notice',
+		label: {
+			en: 'Legal Notice',
+			es: 'Aviso legal',
+			fr: 'Avis juridique',
+		},
+		priority: 1,
+	},
 ];
 
 export const mobileLinks: readonly NavLink[] = [
@@ -130,21 +175,27 @@ export const mobileLinks: readonly NavLink[] = [
 export const errorPageContent: ErrorPageContent = {
 	description: {
 		en: 'The page you were looking for could not be found.',
+		es: 'No se encontró la página que buscabas.',
 		fr: 'La page que tu cherchais est introuvable.',
 	},
 	heading: {
 		en: 'This station is offline',
+		es: 'Estación fuera de servicio',
 		fr: 'Cette station est hors ligne',
 	},
-	label: { en: 'PAGE NOT FOUND', fr: 'PAGE INTROUVABLE' },
+	label: {
+		en: 'PAGE NOT FOUND',
+		es: 'PÁGINA NO ENCONTRADA',
+		fr: 'PAGE INTROUVABLE',
+	},
 	suggestions: [
 		{
 			href: '/',
-			label: { en: 'Home', fr: 'Accueil' },
+			label: { en: 'Home', es: 'Inicio', fr: 'Accueil' },
 		},
 		{
 			href: '/services',
-			label: { en: 'Services', fr: 'Services' },
+			label: { en: 'Services', es: 'Servicios', fr: 'Services' },
 		},
 	],
 	terminalLine: '$ route --status 0 // generic fallback',

@@ -173,7 +173,7 @@ describe('isPathPublished — the route-gate predicate', () => {
 });
 
 describe('committed registry sanity (regenerated every build)', () => {
-	it('contains the 8 seeded paths, root included', () => {
+	it('contains the 13 seeded paths, root included', () => {
 		expect(sitePages.map((p) => p.path)).toEqual([
 			'/',
 			'/services',
@@ -183,6 +183,12 @@ describe('committed registry sanity (regenerated every build)', () => {
 			'/tech-stack',
 			'/about',
 			'/contact',
+			// OPS1 legal framework (launch Phase 1)
+			'/legal/privacy',
+			'/legal/terms',
+			'/legal/cookies',
+			'/legal/accessibility',
+			'/legal/notice',
 		]);
 	});
 

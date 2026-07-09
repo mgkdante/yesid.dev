@@ -11,7 +11,7 @@ export const heroDataFactory = new Factory<HeroData>(() => ({
 	metrics: [
 		{ value: 42, key: 'vehicles' as const },
 		{ value: 12, unit: 's', key: 'delay' as const, coverage: 87.6 },
-		{ value: 23, key: 'routes' as const, total: 203 },
+		{ value: 23, key: 'routes' as const, total: 227 },
 	],
 	queryRows: [
 		{

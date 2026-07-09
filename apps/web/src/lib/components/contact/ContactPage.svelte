@@ -390,6 +390,20 @@
 				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.languages, locale)}</div>
 			</div>
 
+			<!-- BEST FIT section (homework #26b): the project shapes that fit best,
+			     so a prospect self-qualifies before the form. Hidden until the CMS
+			     columns carry content (prod regenerates from the prod CMS). -->
+			{#if contactPage.infoTerminal.bestFit?.length}
+				<div class="mb-4" data-testid="contact-best-fit">
+					{#if contactPage.infoTerminal.sectionLabels.bestFit}
+						<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.bestFit, locale)}</div>
+					{/if}
+					{#each contactPage.infoTerminal.bestFit as line}
+						<div class="text-[var(--secondary-foreground)]">{resolveLocale(line, locale)}</div>
+					{/each}
+				</div>
+			{/if}
+
 			<!-- CONNECT section -->
 			<div class="mb-4">
 				<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.connect, locale)}</div>

@@ -124,6 +124,13 @@ export function toContactContent(
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
+	// BEST FIT section (homework #26b) follows the stack_explainer rule: the
+	// columns are optional in the schema so pre-seed builds parse — include the
+	// keys only when real content exists.
+	const bestFitLabel = toLocalizedString(tr, 'info_section_label_best_fit');
+	const bestFit = (['info_best_fit_1', 'info_best_fit_2', 'info_best_fit_3'] as const)
+		.map((field) => toLocalizedString(tr, field))
+		.filter((line) => line.en.trim());
 	return {
 		pageTitle: toLocalizedString(tr, 'page_title'),
 		stationLabel: toLocalizedString(tr, 'station_label'),
@@ -138,10 +145,12 @@ export function toContactContent(
 			location: toLocalizedString(tr, 'info_location'),
 			responseTime: toLocalizedString(tr, 'info_response_time'),
 			languages: toLocalizedString(tr, 'info_languages'),
+			...(bestFit.length ? { bestFit } : {}),
 			sectionLabels: {
 				location: toLocalizedString(tr, 'info_section_label_location'),
 				connect: toLocalizedString(tr, 'info_section_label_connect'),
 				languages: toLocalizedString(tr, 'info_section_label_languages'),
+				...(bestFitLabel.en.trim() ? { bestFit: bestFitLabel } : {}),
 			},
 		},
 		formTerminal: {

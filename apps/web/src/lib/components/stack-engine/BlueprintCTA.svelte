@@ -44,14 +44,20 @@
 	);
 
 	// The two exits + the whisper — code-owned, localized, em-dash-free.
-	const TAKE_BLUEPRINT = { en: 'Take this blueprint with you →', fr: 'Apporte ce plan avec toi →' };
+	const TAKE_BLUEPRINT = {
+		en: 'Take this blueprint with you →',
+		fr: 'Apporte ce plan avec toi →',
+		es: 'Llévate este plano contigo →',
+	};
 	const HIRE_THIS = {
 		en: 'Hire this, see the service behind it',
 		fr: 'Engage ça, vois le service en arrière',
+		es: 'Contrata esto, mira el servicio detrás',
 	};
 	const WHISPER = {
 		en: "if you ever want help building it, I'm around.",
 		fr: 'si jamais tu veux un coup de main pour le bâtir, je suis là.',
+		es: 'si algún día quieres una mano para construirlo, aquí ando.',
 	};
 	const takeBlueprint = $derived(resolveLocale(TAKE_BLUEPRINT, locale));
 	const hireThis = $derived(resolveLocale(HIRE_THIS, locale));
