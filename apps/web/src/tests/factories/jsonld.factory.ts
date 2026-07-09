@@ -21,6 +21,7 @@ export const jsonldFactory = new Factory<Person>(() => ({
 	url: faker.internet.url(),
 	sameAs: [faker.internet.url(), faker.internet.url()],
 	knowsAbout: ['TypeScript', 'SvelteKit', 'SQL'],
+	knowsLanguage: ['en', 'fr', 'es'],
 	address: {
 		'@type': 'PostalAddress' as const,
 		addressLocality: faker.location.city(),

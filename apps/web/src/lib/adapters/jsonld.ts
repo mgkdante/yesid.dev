@@ -26,7 +26,7 @@ import type {
 } from '$lib/schemas/jsonld';
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
 import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL } from '$lib/utils/seo-defaults';
+import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 import { extractText } from '@repo/shared';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
@@ -36,6 +36,13 @@ export const BUSINESS_ID = `${SITE_HOST}/#business`;
 /** GBP service-area cities as schema.org City nodes (shared by Service + ProfessionalService). */
 function serviceAreaNodes() {
 	return SERVICE_AREAS.map((name) => ({ '@type': 'City' as const, name }));
+}
+
+/** L2 (launch Phase 4): the languages the practice works in, derived from the
+ *  published locales — a new locale flips the entity signal automatically.
+ *  Shared by Person + ProfessionalService (both legitimate placements). */
+function knowsLanguage(): string[] {
+	return [...PUBLISHED_LOCALES];
 }
 
 export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE): Person {
@@ -54,6 +61,7 @@ export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE)
 		email: meta.links.email,
 		sameAs,
 		knowsAbout: [...meta.owner.knowsAbout],
+		knowsLanguage: knowsLanguage(),
 		address: {
 			'@type': 'PostalAddress' as const,
 			addressLocality: meta.owner.address.locality,
@@ -112,6 +120,7 @@ export function buildProfessionalServiceNode(
 		founder: { '@id': PERSON_ID },
 		sameAs,
 		knowsAbout: [...meta.owner.knowsAbout],
+		knowsLanguage: knowsLanguage(),
 	};
 
 	return SchemaOrgNodeSchema.parse(built) as ProfessionalService;
@@ -203,6 +212,9 @@ export function buildServiceNode(service: ServiceDomain, locale: Locale): Servic
 		'@id': canonicalUrl,
 		name: resolveLocale(service.title, locale),
 		description: resolveLocale(service.description, locale),
+		// L2: the stable EN station name as the machine-legible category, so
+		// the /es and /fr pages resolve to the same entity as the EN one.
+		serviceType: resolveLocale(service.title, DEFAULT_LOCALE),
 		provider: { '@id': PERSON_ID },
 		areaServed: serviceAreaNodes(),
 	};
