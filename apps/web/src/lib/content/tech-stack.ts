@@ -12,67 +12,98 @@ import type { TechStackPageContent, TechStackItem } from '$lib/types';
 
 export const techStackPageContent: TechStackPageContent = {
 	actions: {
-		getInTouch: { en: 'Get In Touch', fr: 'Écris-moi' },
-		viewServices: { en: 'View Services', fr: 'Voir les services' },
+		getInTouch: { en: 'Get In Touch', es: 'Escríbeme', fr: 'Écris-moi' },
+		viewServices: {
+			en: 'View Services',
+			es: 'Ver servicios',
+			fr: 'Voir les services',
+		},
 	},
 	cta: {
-		headingLine1: { en: 'Found your stack', fr: 'T\'as trouvé ton stack' },
-		headingLine2: { en: 'Let\'s build it', fr: 'On le bâtit ensemble' },
+		headingLine1: {
+			en: 'Found your stack',
+			es: 'Encontraste tu stack',
+			fr: 'T\'as trouvé ton stack',
+		},
+		headingLine2: {
+			en: 'Let\'s build it',
+			es: 'Vamos a construirlo',
+			fr: 'On le bâtit ensemble',
+		},
 		sub: {
 			en: 'A pipeline, a dashboard, a database, a store, the infrastructure is ready.',
+			es: 'Un pipeline, un tablero, una base de datos, una tienda, la infraestructura está lista.',
 			fr: 'Un pipeline, un tableau de bord, une base de données, une boutique, l\'infrastructure est prête.',
 		},
 	},
 	hero: {
 		engineLoading: {
 			en: '~ rolling out the drawing board...',
+			es: '~ desenrollando los planos...',
 			fr: '~ chargement du plan...',
 		},
 		overline: {
 			en: 'Infrastructure Map',
+			es: 'Mapa de infraestructura',
 			fr: 'Carte de l\'infrastructure',
 		},
 		stackExplainer: {
 			en: 'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you, poke the blueprints below and see for yourself.',
+			es: 'Un "stack" es solo la lista de piezas de un software: la interfaz que la gente toca, la lógica que decide las cosas, los datos que guarda en memoria y la infraestructura sobre la que corre. Ese es todo el secreto. Cuando sabes leer un stack, una cotización ya no te puede esconder gran cosa; curiosea en los planos de abajo y compruébalo tú mismo.',
 			fr: 'Un « stack », c\'est juste la liste des morceaux d\'un logiciel : l\'interface que le monde touche, la logique qui décide des choses, les données qu\'il garde en mémoire et l\'infrastructure sur laquelle il roule. C\'est tout le secret. Une fois que tu sais lire un stack, une soumission ne peut plus te cacher grand-chose, fouille dans les plans plus bas et vois par toi-même.',
 		},
-		stackKicker: { en: 'what\'s a "stack"?', fr: 'c\'est quoi un stack?' },
+		stackKicker: {
+			en: 'what\'s a "stack"?',
+			es: '¿qué es un "stack"?',
+			fr: 'c\'est quoi un stack?',
+		},
 		stats: {
-			technologies: { en: 'technologies', fr: 'technologies' },
+			technologies: {
+				en: 'technologies',
+				es: 'tecnologías',
+				fr: 'technologies',
+			},
 		},
 		terminal: {
 			cataloged: {
 				en: '→ {count} technologies cataloged',
+				es: '→ {count} tecnologías catalogadas',
 				fr: '→ {count} technologies cataloguées',
 			},
 			cmd: {
 				en: '~ yesid --stack --verbose',
+				es: '~ yesid --stack --verbose',
 				fr: '~ yesid --stack --verbose',
 			},
 			loading: {
 				en: '→ loading {count} nodes...',
+				es: '→ cargando {count} nodos...',
 				fr: '→ chargement de {count} nœuds...',
 			},
 			status: {
 				en: 'interactive map online.',
+				es: 'mapa interactivo en línea.',
 				fr: 'carte interactive en ligne.',
 			},
-			success: { en: '✓ successful', fr: '✓ réussi' },
+			success: { en: '✓ successful', es: '✓ listo', fr: '✓ réussi' },
 		},
 		terminalAria: {
 			en: 'Infrastructure overview',
+			es: 'Resumen de la infraestructura',
 			fr: 'Survol de l\'infrastructure',
 		},
-		titleLine1: { en: 'The Control', fr: 'La salle de' },
-		titleLine2: { en: 'Room', fr: 'contrôle' },
+		titleLine1: { en: 'The Control', es: 'La sala de', fr: 'La salle de' },
+		titleLine2: { en: 'Room', es: 'control', fr: 'contrôle' },
 	},
 	meta: {
 		description: {
 			en: '{itemCount}+ technologies, an interactive map of how digital infrastructure gets built.',
+			es: 'Más de {itemCount} tecnologías, un mapa interactivo que muestra cómo se construye la infraestructura digital, pieza por pieza.',
 			fr: 'Plus de {itemCount} technologies, une carte interactive de la manière dont une infrastructure numérique se bâtit.',
 		},
 		title: {
 			en: 'Tech Stack · yesid.',
+			es: 'Stack tecnológico · yesid.',
 			fr: 'Stack technologique · yesid.',
 		},
 	},

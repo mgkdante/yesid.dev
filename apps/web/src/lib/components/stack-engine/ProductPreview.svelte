@@ -17,12 +17,13 @@
 -->
 <script lang="ts">
 	import type { StackArchetype, StackLayer } from '@repo/shared/schemas';
+	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
 	import { techStackItems } from '$lib/content/tech-stack';
-	import { LAYER_TEACHING } from './layer-teaching';
+	import { LAYER_NAMES, LAYER_TEACHING } from './layer-teaching';
 	import { FRAME_SIZES, buildComposedPreview, resolveArchetypePreview } from './preview-configs';
 	import TechIcon from './TechIcon.svelte';
 
@@ -61,17 +62,14 @@
 		const tech = techById.get(slot.techId);
 		const name = tech?.name ?? slot.techId;
 		const enables = tech?.enables ? resolveLocale(tech.enables, locale) : '';
-		const layerLine = `${slot.layer}: ${resolveLocale(LAYER_TEACHING[slot.layer], locale)}`;
+		const layerLine = `${resolveLocale(LAYER_NAMES[slot.layer], locale)}: ${resolveLocale(LAYER_TEACHING[slot.layer], locale)}`;
 		const role = resolveLocale(slot.role, locale);
-		const tail =
-			locale === 'fr'
-				? enables
-					? `${enables} · ${layerLine}`
-					: `vit dans ${layerLine}`
-				: enables
-					? `${enables} · ${layerLine}`
-					: `lives in ${layerLine}`;
-		const here = locale === 'fr' ? `${role} icitte.` : `${role} here.`;
+		// Connector words per locale — exhaustive maps (L1 rule: es never
+		// silently falls back to English).
+		const LIVES_IN: Record<Locale, string> = { en: 'lives in', fr: 'vit dans', es: 'vive en' };
+		const HERE: Record<Locale, string> = { en: 'here', fr: 'icitte', es: 'aquí mismo' };
+		const tail = enables ? `${enables} · ${layerLine}` : `${LIVES_IN[locale]} ${layerLine}`;
+		const here = `${role} ${HERE[locale]}.`;
 		return { techId: slot.techId, name, text: `${here} ${tail}` };
 	});
 
@@ -81,6 +79,7 @@
 	const PREVIEW_PENDING = {
 		en: "this one's still on the drawing board, the blueprint view has the full picture.",
 		fr: 'celui-là est encore sur la table à dessin, la vue plan a le portrait complet.',
+		es: 'este todavía está en la mesa de dibujo, la vista de plano tiene el cuadro completo.',
 	};
 	const previewPending = $derived(resolveLocale(PREVIEW_PENDING, locale));
 </script>

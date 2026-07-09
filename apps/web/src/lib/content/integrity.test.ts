@@ -28,6 +28,7 @@ import * as servicesModule from './services.js';
 import * as projectsModule from './projects.js';
 import { aboutPageContent } from './about-page.js';
 import { contactContent } from './contact-page.js';
+import * as legalPagesModule from './legal-pages.js';
 import * as metaModule from './site-meta.js';
 import * as blogModule from './blog.js';
 import * as blogPageModule from './blog-page.js';
@@ -573,6 +574,9 @@ const WALKER_SOURCES: Array<[string, unknown]> = [
 	['projects', projectsModule],
 	['about-page', aboutPageContent],
 	['contact-page', contactContent],
+	// legal_pages rows (OPS1) — title is the walked LocalizedString; bodies are
+	// LocalizedBlockEditorDocs (per-locale docs, not string leaves).
+	['legal-pages', legalPagesModule],
 	['meta', metaModule],
 	['blog', blogModule],
 	['blog-page', blogPageModule],
@@ -697,7 +701,15 @@ describe('LocalizedString guard + translation debt', () => {
 // operator round 2026-07-03: -10 fr-complete leaves — both detail-CTA label
 // groups retired; the shared block_cta band is the one CTA → 653 - 10 = 643.
 // About rotated title (pages_home_section_about, EN+FR) → 643 + 1 = 644.
-const LOCKED = { TOTAL: 644, WITH_FR: 644, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// launch Phase 1 (homework #26b): contact BEST FIT section — 1 section label
+// + 3 lines, all fr-complete → 644 + 4 = 648.
+// launch Phase 1 (OPS1): 5 legal pages — legal_pages titles (en+fr), their
+// site_pages registry titles (en+fr+es), and the 5 footer nav labels derived
+// from those titles → 648 + 15 = 663. Bodies are LocalizedBlockEditorDocs,
+// invisible to the string walker; their ES pass lands with L1.
+// receiver r2: full-bleed footer column headings (EXPLORE/LEGAL/CONNECT,
+// site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
+const LOCKED = { TOTAL: 666, WITH_FR: 666, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

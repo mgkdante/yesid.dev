@@ -1,0 +1,25 @@
+{
+  "collection": "legal_pages_translations",
+  "field": "legal_pages_id",
+  "related_collection": "legal_pages",
+  "meta": {
+    "junction_field": "languages_code",
+    "many_collection": "legal_pages_translations",
+    "many_field": "legal_pages_id",
+    "one_allowed_collections": null,
+    "one_collection": "legal_pages",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "translations",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "legal_pages_translations",
+    "column": "legal_pages_id",
+    "foreign_key_table": "legal_pages",
+    "foreign_key_column": "id",
+    "constraint_name": "legal_pages_translations_legal_pages_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

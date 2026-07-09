@@ -86,6 +86,27 @@ describe('GET /sitemap.xml', () => {
 		expect(joined).toContain('<loc>https://yesid.dev/fr/about</loc>');
 	});
 
+	// ── launch flip: es published — /es variants + es alternates join the map ──
+	it('emits /es route variants + es alternates (es published)', async () => {
+		const entries = await _buildSitemapEntries();
+		const joined = entries.join('\n');
+		expect(joined).toContain('hreflang="es"');
+		expect(joined).toContain('<loc>https://yesid.dev/es</loc>');
+		expect(joined).toContain('<loc>https://yesid.dev/es/about</loc>');
+		expect(joined).toContain('<loc>https://yesid.dev/es/contact</loc>');
+		expect(joined).toContain('hreflang="es" href="https://yesid.dev/es/about"');
+	});
+
+	it('every trilingual entry carries the full en/fr/es/x-default cluster', async () => {
+		const entries = await _buildSitemapEntries();
+		const about = entries.find((e) => e.includes('<loc>https://yesid.dev/about</loc>'));
+		expect(about).toBeDefined();
+		expect(about).toContain('hreflang="en"');
+		expect(about).toContain('hreflang="fr"');
+		expect(about).toContain('hreflang="es"');
+		expect(about).toContain('hreflang="x-default"');
+	});
+
 	it('blog post entries carry no alternate cluster (mono-language, AM2.5)', async () => {
 		const entries = await _buildSitemapEntries();
 		const post = entries.find(

@@ -251,11 +251,20 @@ async function buildCards(): Promise<Record<string, string>> {
 		footer('yesid.dev'),
 	);
 
-	// General site cards, EN + FR (standalone share assets, wired to no route:
-	// yesid.dev is EN by default, /fr is French, so both languages ship).
+	// L1 ES pass: tagline mirrors site_meta.tagline.es (CMS is truth).
+	cards['default.es.png'] = frame(
+		eyebrow('INFRAESTRUCTURA DIGITAL · MONTRÉAL'),
+		overline(),
+		titleBlock(['Infraestructura digital', 'que se mueve.'], 84, 280),
+		footer('yesid.dev'),
+	);
+
+	// General site cards, EN + FR + ES (standalone share assets, wired to no
+	// route: yesid.dev is EN by default, /fr French, /es Spanish at the flip).
 	const SITE_LOCALES = [
 		{ file: 'site.en.png', eyebrow: 'DIGITAL INFRASTRUCTURE · MONTRÉAL', tagline: 'Digital infrastructure that moves.' },
 		{ file: 'site.fr.png', eyebrow: 'INFRASTRUCTURE NUMÉRIQUE · MONTRÉAL', tagline: 'Une infrastructure numérique qui bouge.' },
+		{ file: 'site.es.png', eyebrow: 'INFRAESTRUCTURA DIGITAL · MONTRÉAL', tagline: 'Infraestructura digital que se mueve.' },
 	];
 	for (const s of SITE_LOCALES) {
 		cards[s.file] = frame(

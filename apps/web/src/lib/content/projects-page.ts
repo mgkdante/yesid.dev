@@ -13,11 +13,13 @@ import type { ProjectsPageContent } from '@repo/shared';
 export const projectsPageContent: ProjectsPageContent = {
 	emptyState: {
 		en: 'No projects match the selected filters.',
+		es: 'Ningún proyecto coincide con los filtros elegidos.',
 		fr: 'Aucun projet ne correspond aux filtres sélectionnés.',
 	},
-	heading: { en: 'Projects', fr: 'Projets' },
+	heading: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 	intro: {
 		en: 'Projects, pipelines, and systems I have built.',
+		es: 'Proyectos, pipelines y sistemas que he construido.',
 		fr: 'Des projets, des pipelines et des systèmes que j\'ai bâtis.',
 	},
 };

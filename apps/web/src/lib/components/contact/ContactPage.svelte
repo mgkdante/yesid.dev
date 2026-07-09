@@ -390,6 +390,20 @@
 				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.languages, locale)}</div>
 			</div>
 
+			<!-- BEST FIT section (homework #26b): the project shapes that fit best,
+			     so a prospect self-qualifies before the form. Hidden until the CMS
+			     columns carry content (prod regenerates from the prod CMS). -->
+			{#if contactPage.infoTerminal.bestFit?.length}
+				<div class="mb-4" data-testid="contact-best-fit">
+					{#if contactPage.infoTerminal.sectionLabels.bestFit}
+						<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.bestFit, locale)}</div>
+					{/if}
+					{#each contactPage.infoTerminal.bestFit as line}
+						<div class="text-[var(--secondary-foreground)]">{resolveLocale(line, locale)}</div>
+					{/each}
+				</div>
+			{/if}
+
 			<!-- CONNECT section -->
 			<div class="mb-4">
 				<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.connect, locale)}</div>
@@ -627,12 +641,19 @@
 	/* Mobile heading visible, hidden on desktop (rotated edge title replaces it) */
 	.mobile-heading { display: block; margin-bottom: 0.5rem; }
 
-	/* Desktop only: cap main so entire page fits in one viewport */
+	/* Desktop only: nav + page fill EXACTLY one viewport (operator spec).
+	   The nav is a fixed pill (out of flow), so main's border-box IS the
+	   fold: height 100dvh puts the footer entirely below it — the footer is
+	   NOT in the equation and appears only on scroll. */
 	@media (min-width: 1024px) {
 		:global(main:has(.contact-grid)) {
-			max-height: calc(100dvh - 5rem - 6rem); /* 100dvh - nav (5rem) - footer (~6rem) */
+			/* main is a flex item (flex-1 = basis 0%): on the column main axis
+			   flex-basis beats `height`, so pin the basis to the viewport and
+			   freeze grow/shrink — THIS is what makes 100dvh stick. */
+			flex: 0 0 100dvh;
+			height: 100dvh;
 			overflow: hidden;
-			padding-bottom: 1.5rem; /* breathing room above footer */
+			padding-bottom: 1.5rem; /* breathing room at the fold */
 		}
 		.mobile-heading { display: none; }
 	}
@@ -643,8 +664,16 @@
 			/* Round 5: edge-title rule one step bolder, in lockstep with the
 			   blog/projects listing layouts (same Recipe-4 rail voice). */
 			grid-template-columns: auto 2px 1fr;
+			/* minmax(0, 1fr) row, NOT auto: an auto row grows past the grid's
+			   definite height and the whole cap chain below never engages —
+			   content then clips dead at main's overflow:hidden fold. This row
+			   is what forces .contact-content to the viewport equation so the
+			   terminals shrink and their bodies scroll. */
+			grid-template-rows: minmax(0, 1fr);
 			padding-block: 0;
-			height: 100%;
+			/* +5rem compensates the -5rem pull-up so the grid's bottom edge
+			   lands exactly at main's padding edge (the fold). */
+			height: calc(100% + 5rem);
 			/* Edge title + divider extend behind nav (same as blog/projects) */
 			margin-top: -5rem;
 		}
@@ -655,9 +684,21 @@
 			display: flex;
 			flex-direction: column;
 		}
-		/* Terminals max-height = 100dvh - nav - footer - 5rem */
-		.desktop-terminals {
-			max-height: calc(100dvh - 5rem - 6rem - 5rem);
+		/* Terminals are CONTENT-height (operator call, post-100dvh): the cards
+		   stand as tall as their copy, not stretched to the fold. The flex
+		   chain (main 100dvh → grid → content column) only CAPS them: taller
+		   content (FR/ES wrap longer than EN) shrinks the card and scrolls
+		   inside the terminal body instead of clipping past the fold. */
+		.desktop-terminals :global([data-slot='terminal-chrome']) {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+		}
+		.desktop-terminals :global([data-slot='terminal-chrome'] .terminal-body) {
+			flex: 1 1 auto;
+			min-height: 0;
+			overflow-y: auto;
 		}
 		/* Edge title starts at top, extends behind nav */
 		.edge-title-column {
@@ -690,8 +731,9 @@
 			background: color-mix(in srgb, var(--primary) 35%, transparent);
 		}
 
-		/* Swap visibility */
-		.desktop-terminals { display: block; flex: 1; min-height: 0; }
+		/* Swap visibility. flex 0 1 auto = content height with shrink-to-fit:
+		   the cards never stretch past their copy, and never past the fold. */
+		.desktop-terminals { display: block; flex: 0 1 auto; min-height: 0; }
 		.mobile-terminals { display: none; }
 	}
 

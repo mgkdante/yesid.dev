@@ -97,6 +97,34 @@ describe('ContactPage', () => {
 		expect(screen.getAllByTestId('contact-social-linkedin').length).toBeGreaterThanOrEqual(1);
 	});
 
+	it('renders the BEST FIT section with its lines (homework #26b)', () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		expect(screen.getAllByTestId('contact-best-fit').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText('BEST FIT').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText('Slow reports that need to be fast').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText('Sites and stores wired to live data').length).toBeGreaterThanOrEqual(1);
+	});
+
+	it('renders the BEST FIT section in French inside a fr locale provider', () => {
+		render(ContactPage, {
+			props: { contactPage: contactContent },
+			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+		});
+		expect(screen.getAllByText('PROJETS IDÉAUX').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText('Des rapports lents qui doivent aller vite').length).toBeGreaterThanOrEqual(1);
+		expect(screen.queryByText('BEST FIT')).toBeNull();
+	});
+
+	it('hides the BEST FIT section when the CMS carries no lines', () => {
+		const { bestFit: _bestFit, ...restInfo } = contactContent.infoTerminal;
+		const stripped = {
+			...contactContent,
+			infoTerminal: restInfo,
+		} as unknown as typeof contactContent;
+		render(ContactPage, { props: { contactPage: stripped } });
+		expect(screen.queryByTestId('contact-best-fit')).toBeNull();
+	});
+
 	it('renders an extra CMS channel as another terminal line', () => {
 		render(ContactPage, {
 			props: {

@@ -5,6 +5,8 @@
 <script lang="ts">
   import { cn } from '$lib/utils';
   import type { HTMLAttributes } from 'svelte/elements';
+  import type { Locale } from '$lib/types';
+  import { getLocale } from '$lib/utils/locale-context';
 
   export interface StopLabelProps extends HTMLAttributes<HTMLDivElement> {
     /** Stop number (e.g. "01", "02") */
@@ -15,9 +17,15 @@
   }
 
   let { stop, label, class: className, ...restProps }: StopLabelProps = $props();
+
+  // Chrome word per locale (receiver r2): the wayfinding "STOP" prefix speaks
+  // the visitor's language. Code-owned like the other brand-primitive copy;
+  // exhaustive map so a new locale is a compile error, never English.
+  const STOP_WORD: Record<Locale, string> = { en: 'STOP', fr: 'ARRÊT', es: 'PARADA' };
+  const locale = getLocale();
 </script>
 
-<div class={cn("stop-label", className)} data-slot="stop-label" {...restProps}><span class="stop-label-num">STOP {stop}</span> · {label}</div>
+<div class={cn("stop-label", className)} data-slot="stop-label" {...restProps}><span class="stop-label-num">{STOP_WORD[locale]} {stop}</span> · {label}</div>
 
 <style>
   .stop-label {

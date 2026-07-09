@@ -195,21 +195,25 @@ describe('composePhrase — the layer grammar speaks market, not category', () =
 		expect(composePhrase(a, layersOf(a))).toEqual(composePhrase(b, layersOf(b)));
 	});
 
-	it('LocalizedString-shaped with EN + QC FR; empty picks get a gentle prompt in both', () => {
+	it('LocalizedString-shaped with EN + QC FR + ES; empty picks get a gentle prompt in all three', () => {
 		const result = composePhrase([], []);
-		expect(Object.keys(result).sort()).toEqual(['en', 'fr']);
+		expect(Object.keys(result).sort()).toEqual(['en', 'es', 'fr']);
 		expect(result.en).toContain('Pick a part');
 		expect(result.fr).toContain('Choisis un morceau');
+		expect(result.es).toContain('Elige una pieza');
 		expect(result.en).not.toContain('—');
 		expect(result.fr).not.toContain('—');
-		// Every vocabulary fragment is now a LocalizedString ({ en, fr }) — the
-		// lean code-owned map speaks both locales, em-dash-free.
+		expect(result.es).not.toContain('—');
+		// Every vocabulary fragment is a LocalizedString ({ en, fr, es }) — the
+		// lean code-owned map speaks all three locales, em-dash-free (L1 pass).
 		for (const voice of Object.values(TECH_VOICES)) {
 			for (const fragment of Object.values(voice)) {
 				expect(typeof fragment.en).toBe('string');
 				expect(typeof fragment.fr).toBe('string');
+				expect(typeof fragment.es).toBe('string');
 				expect(fragment.en).not.toContain('—');
 				expect(fragment.fr).not.toContain('—');
+				expect(fragment.es).not.toContain('—');
 			}
 		}
 	});

@@ -51,8 +51,8 @@ describe('HeroMetrics', () => {
     expect(screen.getAllByText('DEMO · STM-STYLE').length).toBeGreaterThan(0);
     // delaySub template '{coverage}% COVERAGE' with coverage=87.6
     expect(screen.getAllByText('87.6% COVERAGE').length).toBeGreaterThan(0);
-    // routesSub template 'OF {total} TOTAL' with total=203
-    expect(screen.getAllByText('OF 203 TOTAL').length).toBeGreaterThan(0);
+    // routesSub template 'OF {total} TOTAL' with total=227
+    expect(screen.getAllByText('OF 227 TOTAL').length).toBeGreaterThan(0);
     // No unsubstituted placeholders leak through.
     expect(screen.queryByText(/\{coverage\}|\{total\}/)).toBeNull();
   });
@@ -77,9 +77,9 @@ describe('HeroMetrics — fr locale (CMS truth)', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
     expect(screen.getAllByText('DÉMO · STYLE STM').length).toBeGreaterThan(0);
     expect(screen.getAllByText('87.6% DE COUVERTURE').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('SUR 203 AU TOTAL').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('SUR 227 AU TOTAL').length).toBeGreaterThan(0);
     // The EN copy must NOT leak into the French render.
     expect(screen.queryByText('VEHICLES TRACKED')).toBeNull();
-    expect(screen.queryByText('OF 203 TOTAL')).toBeNull();
+    expect(screen.queryByText('OF 227 TOTAL')).toBeNull();
   });
 });

@@ -8,6 +8,7 @@ import { resolveLocale } from '$lib/utils/locale';
 import type { LocalizedString } from '$lib/types';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
+const es = (value: LocalizedString): string => resolveLocale(value, 'es');
 
 const visibleServices = () => [...services].filter((s) => s.visible !== false).sort((a, b) => a.station - b.station);
 
@@ -35,13 +36,29 @@ function header(): string {
 		'',
 		`Available for remote and on-site work across ${serviceAreaList()}.`,
 		'',
-		`The site is bilingual: every page below also exists in French under ${SITE_HOST}/fr. Blog posts are the exception: English-only for now.`,
+		`The site is trilingual: every page below also exists in French under ${SITE_HOST}/fr and in Spanish under ${SITE_HOST}/es. Blog posts are the exception: English-only for now.`,
 	].join('\n');
 }
 
 function contactSection(): string {
 	const lines = contactContent.socials.map((s) => `- ${en(s.label)}: ${s.href}`);
 	return ['## Contact', ...lines].join('\n');
+}
+
+// L2 (launch Phase 4, AEO): a Spanish section so AI answer engines fielding
+// Spanish queries ("desarrollador web que hable español en Montréal",
+// "consultor de datos Québec") meet native Spanish copy with the /es URLs.
+// Service titles/descriptions come from the same CMS caches as the /es pages.
+function spanishSection(): string {
+	const serviceLines = visibleServices().map(
+		(s) => `- [${es(s.title)}](${SITE_HOST}/es/services/${s.id}): ${es(s.description)}`,
+	);
+	return [
+		'## Español — infraestructura digital en Montreal, Québec',
+		`Yesid O. es un ingeniero de infraestructura digital freelance en Montreal que trabaja en español, francés e inglés. Desarrollo web, bases de datos y SQL, pipelines y automatización de datos, y dashboards para pymes de Québec — incluida la comunidad hispana. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
+		...serviceLines,
+		`Contacto en español: ${SITE_HOST}/es/contact`,
+	].join('\n');
 }
 
 export function llmsTxt(): string {
@@ -65,6 +82,8 @@ export function llmsTxt(): string {
 		'',
 		'## Blog',
 		...blogLines,
+		'',
+		spanishSection(),
 		'',
 		contactSection(),
 		'',
@@ -111,6 +130,8 @@ export function llmsFullTxt(): string {
 		'## Blog',
 		'',
 		blogBlocks.join('\n\n'),
+		'',
+		spanishSection(),
 		'',
 		contactSection(),
 		'',

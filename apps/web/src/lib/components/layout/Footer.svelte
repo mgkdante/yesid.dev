@@ -25,17 +25,25 @@
 	const location = $derived(resolveLocale(siteLabels.footerChrome.footer.location, locale));
 	const statusPrefix = $derived(resolveLocale(siteLabels.footerChrome.footer.statusPrefix, locale));
 	const footerNavAria = $derived(resolveLocale(siteLabels.navChrome.shared.footerNavAria, locale));
+	const exploreLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.exploreLabel, locale));
+	const legalLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.legalLabel, locale));
+	const connectLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.connectLabel, locale));
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
 
-	// Use footerLinks when available; fall back to staticMenuItems for backwards compat.
-	const footerNavLinks = $derived(
+	// Use footerLinks when available; fall back to staticMenuItems for backwards
+	// compat. Receiver r2: with the legal framework live the footer went
+	// full-bleed with grouped columns; legal links split into their own group.
+	const allFooterLinks = $derived(
 		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
 			label: resolveLocale(item.label, locale),
 			href: localizeHref(item.href, locale),
+			legal: item.href.startsWith('/legal/'),
 		})),
 	);
+	const exploreLinks = $derived(allFooterLinks.filter((link) => !link.legal));
+	const legalLinks = $derived(allFooterLinks.filter((link) => link.legal));
 
 	const socialLinks = [
 		siteMeta.links.github ? { label: 'GitHub', href: siteMeta.links.github } : null,
@@ -60,37 +68,53 @@
 	<!-- GO2-W5 platform edge: the footer's top line is real hazard tape -->
 	<div class="footer-gradient-sep" aria-hidden="true"></div>
 
-	<!-- Row 1: Main content -->
-	<div class="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 pb-5 pt-10 sm:flex-row sm:items-start sm:justify-between sm:px-10 sm:pt-12">
-		<!-- Left: Wordmark -->
-		<div class="flex flex-col items-center sm:items-start">
+	<!-- Row 1: full-bleed grouped columns (receiver r2) — brand block plus the
+	     EXPLORE / LEGAL / CONNECT groups, edge to edge with page padding. -->
+	<div class="grid w-full grid-cols-1 gap-10 px-6 pb-8 pt-10 sm:grid-cols-2 sm:px-10 sm:pt-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8 lg:px-16 lg:pt-14">
+		<!-- Brand block -->
+		<div class="flex flex-col items-start">
 			<a
 				href={localizeHref('/', locale)}
 				data-testid="footer-wordmark"
-				class="inline-flex items-baseline font-heading text-xl font-bold text-[var(--foreground)]"
+				class="inline-flex items-baseline font-heading text-2xl font-bold text-[var(--foreground)]"
 			>
 				<span bind:this={wordmarkEl}>yesid</span><span
 					bind:this={dotEl}
 					class="text-primary">.</span
 				>
 			</a>
-			<span class="mt-1 font-mono text-xs text-[var(--muted-foreground)]">{tagline}</span>
+			<span class="mt-2 font-mono text-xs text-[var(--muted-foreground)]">{tagline}</span>
 		</div>
 
-		<!-- Center: Nav links -->
-		<nav aria-label={footerNavAria} class="flex flex-wrap justify-center gap-x-6 gap-y-2">
-			{#each footerNavLinks as link}
+		<!-- EXPLORE: the site links -->
+		<nav aria-label={footerNavAria} class="flex flex-col gap-2">
+			<span class="footer-group-label">{exploreLabel}</span>
+			{#each exploreLinks as link}
 				<a
 					href={link.href}
-					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					class="footer-link self-start text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 				>
 					{link.label}
 				</a>
 			{/each}
 		</nav>
 
-		<!-- Right: Social links -->
-		<div class="flex items-center gap-4">
+		<!-- LEGAL: the framework pages -->
+		<nav aria-label={legalLabel} data-testid="footer-legal" class="flex flex-col gap-2">
+			<span class="footer-group-label">{legalLabel}</span>
+			{#each legalLinks as link}
+				<a
+					href={link.href}
+					class="footer-link self-start text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+				>
+					{link.label}
+				</a>
+			{/each}
+		</nav>
+
+		<!-- CONNECT: off-site profiles -->
+		<div class="flex flex-col gap-2">
+			<span class="footer-group-label">{connectLabel}</span>
 			{#each socialLinks as link}
 				<!-- rel="me": identity-verification backlink (IndieWeb/Mastodon
 				     verification, AI-era entity resolution) — these are Yesid's
@@ -99,7 +123,7 @@
 					href={link.href}
 					target="_blank"
 					rel="me noopener noreferrer"
-					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					class="footer-link self-start text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					aria-label={link.label}
 				>
 					{link.label}
@@ -108,9 +132,10 @@
 		</div>
 	</div>
 
-	<!-- Row 2: Status bar — below the hazard rule. Operator trim: location +
-	     system status only (copyright and the EN|FR locale toggle removed). -->
-	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10">
+	<!-- Row 2: Status bar — below the hazard rule. Operator trim: system
+	     status + location only (copyright and the EN|FR locale toggle stay
+	     removed). -->
+	<div class="footer-status-border flex w-full flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10 lg:px-16">
 		<address class="not-italic">{location}</address>
 		<!-- Round-4 doctrine: the system status line is a departure-board
 		     readout — the YELLOW voice under the amber departure rule
@@ -147,6 +172,17 @@
 
 	footer {
 		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	/* Receiver r2: column headings speak the amber wayfinding voice, like the
+	   contact terminal's section labels. */
+	.footer-group-label {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		color: var(--accent-text);
+		margin-bottom: 2px;
 	}
 
 	/* GO-w2t5: underline draw, blueprint line at word scale (SAFE-ALWAYS). */

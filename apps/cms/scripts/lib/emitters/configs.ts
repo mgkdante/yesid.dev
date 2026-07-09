@@ -234,6 +234,17 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.legalPages) {
+		out.push({
+			filePath: path('legal-pages.ts'),
+			description: 'Legal pages (OPS1): slug, title, per-locale Block Editor body for /legal/[slug].',
+			imports: [{ symbols: ['LegalPage'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{ name: 'legalPages', typeName: 'readonly LegalPage[]', value: data.legalPages },
+			],
+		});
+	}
+
 	if (data.blogBodies) {
 		// Block Editor `body` per published post, keyed by slug. Mirrors the
 		// blog.html-cache.ts precedent (kept OUT of the $lib/content barrel) so the

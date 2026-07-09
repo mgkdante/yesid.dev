@@ -17,16 +17,18 @@
 // techs fall back to layer-generic fragments, so the grammar is TOTAL and
 // self-extending, the 28-tech roster landing at the next regen Just Works.
 //
-// go2 FR pass: every user-visible reading/voice/fragment is now LocalizedString
-// ({ en, fr }) and composePhrase builds BOTH locales (the grammar joins are
-// locale-aware: EN "that … and …", QC FR "qui … pis …"). Tech/product names
-// (shopify, power-bi, dax, …) are never translated.
+// go2 FR pass + L1 ES pass: every user-visible reading/voice/fragment is a
+// LocalizedString ({ en, fr, es }) and composePhrase builds ALL THREE locales
+// (the grammar joins are locale-aware: EN "that … and …", QC FR "qui … pis …",
+// ES "que … y …"). Tech/product names (shopify, power-bi, dax, …) are never
+// translated.
 //
 // Pure data-in/data-out — fully covered by stack-shape.test.ts.
 
 import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
 import type { Locale, LocalizedString, TechStackItem } from '$lib/types';
 import { resolveLocale } from '$lib/utils/locale';
+import { LAYER_NAMES } from './layer-teaching';
 
 export interface StackShape {
 	/** Dedup'd layers of the picked techs, in STACK_LAYERS render order. */
@@ -67,62 +69,77 @@ export const SHAPE_READINGS: Record<string, LocalizedString> = {
 	interface: {
 		en: 'a face with nothing behind it yet, pure look and feel',
 		fr: 'une façade sans rien en arrière encore, juste le look pis le feeling',
+		es: 'una fachada sin nada detrás todavía, puro look y sensación',
 	},
 	logic: {
 		en: 'thinking with nowhere to show it, a script, the seed of an automation',
 		fr: 'de la réflexion sans place pour la montrer, un script, le début d\'une automatisation',
+		es: 'pensamiento sin dónde mostrarse, un script, la semilla de una automatización',
 	},
 	data: {
 		en: 'memory with nothing using it yet, records kept safe and queryable',
 		fr: 'de la mémoire sans rien qui s\'en sert encore, des données gardées au chaud pis interrogeables',
+		es: 'memoria sin nada que la use todavía, registros guardados y consultables',
 	},
 	infra: {
 		en: 'ground with nothing standing on it yet, a place for software to live',
 		fr: 'du terrain sans rien dessus encore, une place où le logiciel peut vivre',
+		es: 'terreno sin nada encima todavía, un lugar donde el software puede vivir',
 	},
 	'interface+logic': {
 		en: 'a face that thinks, an app that computes but forgets on every refresh',
 		fr: 'une façade qui réfléchit, une app qui calcule mais oublie tout à chaque refresh',
+		es: 'una fachada que piensa, una app que calcula pero olvida todo en cada refresh',
 	},
 	'interface+data': {
 		en: 'a face on memory, records people can browse, nothing computes yet',
 		fr: 'une façade sur de la mémoire, des données que le monde peut fouiller, rien calcule encore',
+		es: 'una fachada sobre memoria, registros que la gente puede explorar, nada calcula todavía',
 	},
 	'interface+infra': {
 		en: 'a live page on real ground, no brain or memory behind it yet',
 		fr: 'une page en ligne sur du vrai terrain, pas encore de cerveau ni de mémoire en arrière',
+		es: 'una página en vivo sobre terreno real, sin cerebro ni memoria detrás todavía',
 	},
 	'logic+data': {
 		en: 'thinking over memory, the working core of a pipeline or a report',
 		fr: 'de la réflexion sur de la mémoire, le cœur d\'un pipeline ou d\'un rapport',
+		es: 'pensamiento sobre memoria, el núcleo de un pipeline o de un reporte',
 	},
 	'logic+infra': {
 		en: 'code with ground to run on, a bot, a scheduled job, an automation',
 		fr: 'du code avec du terrain pour rouler, un bot, une job planifiée, une automatisation',
+		es: 'código con terreno donde correr, un bot, una tarea programada, una automatización',
 	},
 	'data+infra': {
 		en: 'memory on real ground, a hosted database, ready for tools on top',
 		fr: 'de la mémoire sur du vrai terrain, une base de données hébergée, prête pour des outils par-dessus',
+		es: 'memoria sobre terreno real, una base de datos alojada, lista para herramientas encima',
 	},
 	'interface+logic+data': {
 		en: 'a whole app missing only ground, it works, it just needs somewhere to live',
 		fr: 'une app au complet à qui il manque juste le terrain, ça marche, ça a juste besoin d\'une place pour vivre',
+		es: 'una app completa a la que solo le falta terreno, funciona, solo necesita dónde vivir',
 	},
 	'interface+logic+infra': {
 		en: 'a live app that forgets, give it memory and it keeps records',
 		fr: 'une app en ligne qui oublie, donne-y de la mémoire pis a garde les données',
+		es: 'una app en vivo que olvida, dale memoria y guarda los registros',
 	},
 	'interface+data+infra': {
 		en: 'a live window onto records, add thinking and it can act on them',
 		fr: 'une fenêtre en ligne sur les données, ajoute de la réflexion pis a peut agir dessus',
+		es: 'una ventana en vivo a los registros, agrégale pensamiento y puede actuar sobre ellos',
 	},
 	'logic+data+infra': {
 		en: 'a headless system, an automation with memory; only the face is missing',
 		fr: 'un système sans façade, une automatisation avec de la mémoire; il manque juste la face',
+		es: 'un sistema sin cara, una automatización con memoria; solo falta la fachada',
 	},
 	'interface+logic+data+infra': {
 		en: 'all four layers, the shape of a complete, working product',
 		fr: 'les quatre couches, la forme d\'un produit complet pis fonctionnel',
+		es: 'las cuatro capas, la forma de un producto completo y funcional',
 	},
 };
 
@@ -131,6 +148,7 @@ export const SHAPE_READINGS: Record<string, LocalizedString> = {
 const EMPTY_SHAPE_READING: LocalizedString = {
 	en: 'no layers covered yet, pick a part with a layer to give the build a shape',
 	fr: 'aucune couche couverte encore, choisis un morceau avec une couche pour donner une forme au build',
+	es: 'ninguna capa cubierta todavía, elige una pieza con capa para darle forma al build',
 };
 
 /**
@@ -151,12 +169,17 @@ export function layerArticle(layer: StackLayer): 'a' | 'an' {
 	return layer === 'interface' || layer === 'infra' ? 'an' : 'a';
 }
 
-/** The Québécois gap-line fragment for a missing layer ("une couche interface"
- *  etc.). The layer KEY stays verbatim (it doubles as the printed label); only
- *  the article + "couche" wrap it. ONE source for the FR gap line and the FR
- *  ghost annotations so they can never disagree (round 3 parity). */
-export function layerGapFr(layer: StackLayer): string {
-	return `une couche ${layer}`;
+/** The gap-line fragment for a missing layer, per locale. The layer KEY stays
+ *  verbatim (it doubles as the printed label); only the article + the word for
+ *  "layer" wrap it: EN "an interface layer", QC FR "une couche interface",
+ *  ES "una capa interface". ONE source for the gap lines and the ghost
+ *  annotations so they can never disagree (round 3 parity), and an exhaustive
+ *  locale switch so a new locale can never silently fall back to English. */
+export function layerGapLine(layer: StackLayer, locale: Locale): string {
+	const name = resolveLocale(LAYER_NAMES[layer], locale);
+	if (locale === 'fr') return `une couche ${name}`;
+	if (locale === 'es') return `una capa de ${name}`;
+	return `${layerArticle(layer)} ${name} layer`;
 }
 
 // ── Finale (4c): THE PHRASE BUILDER — the layer grammar. ────────────────────
@@ -186,61 +209,98 @@ export const TECH_VOICES: Record<string, Partial<Record<PhraseSlot, LocalizedStr
 		subject: {
 			en: 'a fast storefront with built-in checkout',
 			fr: 'un storefront rapide avec le checkout intégré',
+			es: 'un storefront rápido con el checkout integrado',
 		},
-		data: { en: 'remembers every order', fr: 'se souvient de chaque order' },
+		data: {
+			en: 'remembers every order',
+			fr: 'se souvient de chaque order',
+			es: 'se acuerda de cada pedido',
+		},
 	},
 	// Reporting — the numbers people actually read on Monday.
 	'power-bi': {
 		data: {
 			en: 'turns the numbers into reports anyone can read',
 			fr: 'transforme les chiffres en reports que tout le monde peut lire',
+			es: 'convierte los números en reportes que cualquiera puede leer',
 		},
 	},
 	dax: {
-		data: { en: 'does the report math honestly', fr: 'fait le calcul des reports comme du monde' },
+		data: {
+			en: 'does the report math honestly',
+			fr: 'fait le calcul des reports comme du monde',
+			es: 'hace las cuentas del reporte con honestidad',
+		},
 	},
 	// Pipelines — moving and cleaning data on schedule.
 	airflow: {
-		logic: { en: 'runs the data pipeline on schedule', fr: 'roule le pipeline de données sur l\'horaire' },
+		logic: {
+			en: 'runs the data pipeline on schedule',
+			fr: 'roule le pipeline de données sur l\'horaire',
+			es: 'corre el pipeline de datos según el horario',
+		},
 	},
 	dbt: {
 		logic: {
 			en: 'keeps every pipeline transform clean and tested',
 			fr: 'garde chaque transformation du pipeline propre pis testée',
+			es: 'mantiene cada transformación del pipeline limpia y probada',
 		},
 	},
 };
 
 /** Layer-generic subject (when that layer LEADS the sentence). */
 const PHRASE_SUBJECTS: Record<StackLayer, LocalizedString> = {
-	interface: { en: 'a fast, friendly site', fr: 'un site rapide pis accueillant' },
-	logic: { en: 'an automation', fr: 'une automatisation' },
-	data: { en: 'a well-kept memory', fr: 'une mémoire bien tenue' },
-	infra: { en: 'solid, dependable ground', fr: 'du terrain solide pis fiable' },
+	interface: {
+		en: 'a fast, friendly site',
+		fr: 'un site rapide pis accueillant',
+		es: 'un sitio rápido y amigable',
+	},
+	logic: { en: 'an automation', fr: 'une automatisation', es: 'una automatización' },
+	data: { en: 'a well-kept memory', fr: 'une mémoire bien tenue', es: 'una memoria bien cuidada' },
+	infra: {
+		en: 'solid, dependable ground',
+		fr: 'du terrain solide pis fiable',
+		es: 'terreno sólido y confiable',
+	},
 };
 
 /** Layer-generic clause (what the covered layer DOES, market voice). The
  *  interface clause never fires today (interface always leads when present —
  *  STACK_LAYERS order) but is defined so the grammar stays total. */
 const PHRASE_CLAUSES: Record<StackLayer, LocalizedString> = {
-	interface: { en: 'puts a friendly face on it', fr: 'y met une face accueillante' },
-	logic: { en: 'runs the busy work on its own', fr: 'fait l\'ouvrage plate tout seul' },
-	data: { en: 'keeps clean records', fr: 'garde des données propres' },
-	infra: { en: 'ships itself reliably', fr: 'se déploie tout seul, fiable' },
+	interface: {
+		en: 'puts a friendly face on it',
+		fr: 'y met une face accueillante',
+		es: 'le pone una cara amigable',
+	},
+	logic: {
+		en: 'runs the busy work on its own',
+		fr: 'fait l\'ouvrage plate tout seul',
+		es: 'hace el trabajo pesado por su cuenta',
+	},
+	data: { en: 'keeps clean records', fr: 'garde des données propres', es: 'guarda registros limpios' },
+	infra: {
+		en: 'ships itself reliably',
+		fr: 'se déploie tout seul, fiable',
+		es: 'se despliega solo, confiable',
+	},
 };
 
 /** Sentence-assembly grammar per locale: the connector after the subject and
- *  the final-list conjunction. EN "that … and …"; QC FR "qui … pis …". */
+ *  the final-list conjunction. EN "that … and …"; QC FR "qui … pis …";
+ *  ES "que … y …". */
 const PHRASE_GRAMMAR: Record<Locale, { connector: string; and: string }> = {
 	en: { connector: 'that', and: 'and' },
 	fr: { connector: 'qui', and: 'pis' },
-	es: { connector: 'that', and: 'and' },
+	es: { connector: 'que', and: 'y' },
 };
 
 /** The gentle empty-pick prompt — the sentence writes itself as you build. */
 const PHRASE_EMPTY: LocalizedString = {
 	en: 'Pick a part, the sentence writes itself as you build.',
 	fr: 'Choisis un morceau, la phrase s\'écrit toute seule à mesure que tu bâtis.',
+	es: 'Elige una pieza, la frase se escribe sola mientras construyes.',
 };
 
 const layerIndex = new Map<StackLayer, number>(STACK_LAYERS.map((l, i) => [l, i]));
@@ -254,7 +314,7 @@ const layerIndex = new Map<StackLayer, number>(STACK_LAYERS.map((l, i) => [l, i]
  * may enrich any covered slot, so shopify colors the data clause with orders
  * even from the interface row); a slot nobody voices falls back to its
  * layer-generic fragment. Deterministic; total over every pick set including
- * the empty one (defensive prompt). Built in EN and QC FR.
+ * the empty one (defensive prompt). Built in EN, QC FR, and ES.
  */
 export function composePhrase(
 	picks: readonly PhrasePick[],
@@ -316,18 +376,18 @@ export function composePhrase(
 		return sentence.charAt(0).toUpperCase() + sentence.slice(1);
 	};
 
-	return { en: buildFor('en'), fr: buildFor('fr') };
+	return { en: buildFor('en'), fr: buildFor('fr'), es: buildFor('es') };
 }
 
 // ── Finale (4c): the guided journey + the operator's open door. ─────────────
 
 /** The compose journey's stepper labels — teaching voice, code-owned,
- *  LocalizedString ({ en, fr }). */
+ *  LocalizedString ({ en, fr, es }). */
 export const JOURNEY_STEPS: readonly LocalizedString[] = [
-	{ en: 'pick parts', fr: 'choisis des morceaux' },
-	{ en: 'read your build', fr: 'lis ton build' },
-	{ en: 'see it as a product', fr: 'vois-le comme un produit' },
-	{ en: 'take it with you', fr: 'apporte-le avec toi' },
+	{ en: 'pick parts', fr: 'choisis des morceaux', es: 'elige piezas' },
+	{ en: 'read your build', fr: 'lis ton build', es: 'lee tu build' },
+	{ en: 'see it as a product', fr: 'vois-le comme un produit', es: 'míralo como producto' },
+	{ en: 'take it with you', fr: 'apporte-le avec toi', es: 'llévatelo contigo' },
 ];
 
 /** The warm availability line woven next to the CTA — links to /contact.
@@ -335,4 +395,5 @@ export const JOURNEY_STEPS: readonly LocalizedString[] = [
 export const AVAILABILITY_LINE: LocalizedString = {
 	en: 'Questions? Ask me anything.',
 	fr: 'Des questions? Demande-moi n\'importe quoi.',
+	es: '¿Preguntas? Pregúntame lo que sea.',
 };
