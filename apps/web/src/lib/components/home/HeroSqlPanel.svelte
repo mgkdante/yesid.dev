@@ -72,18 +72,29 @@
     <span class="text-[var(--primary)]">LIMIT</span> <span class="text-[var(--accent-text)]">5</span><span class="text-[var(--terminal-ink)]">;</span>
   </div>
 
-  <!-- Results table -->
+  <!-- Results: a real <table>, styled like a SQL client result grid (psql
+       look: vertical column separators + a header rule, numbers right-
+       aligned). Semantic table = real column/row structure for screen
+       readers too. data-testid="sql-result-row" stays on each <tr>. -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
-    <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnRoute}</span>
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnAvgDelay}</span>
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnVehicles}</span>
-      {#each rows as row (row.route)}
-        <span class="text-[var(--terminal-ink)]" data-testid="sql-result-row">{row.route}</span>
-        <span class="text-[var(--accent-text)]">{row.avgDelayS}</span>
-        <span class="text-[var(--terminal-ink)]">{row.vehicles}</span>
-      {/each}
-    </div>
+    <table class="w-full border-collapse text-xs md:text-sm" data-testid="sql-results">
+      <thead>
+        <tr>
+          <th scope="col" class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-left font-normal text-[var(--terminal-ink-muted)]">{columnRoute}</th>
+          <th scope="col" class="border-b border-r border-[var(--border-subtle)] px-2 py-1 text-right font-normal text-[var(--terminal-ink-muted)]">{columnAvgDelay}</th>
+          <th scope="col" class="border-b border-[var(--border-subtle)] px-2 py-1 text-right font-normal text-[var(--terminal-ink-muted)]">{columnVehicles}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each rows as row (row.route)}
+          <tr data-testid="sql-result-row">
+            <td class="border-r border-[var(--border-subtle)] px-2 py-1 text-[var(--terminal-ink)]">{row.route}</td>
+            <td class="border-r border-[var(--border-subtle)] px-2 py-1 text-right text-[var(--accent-text)]">{row.avgDelayS}</td>
+            <td class="px-2 py-1 text-right text-[var(--terminal-ink)]">{row.vehicles}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
     <div class="mt-2.5 text-caption text-[var(--terminal-ink-muted)]" data-testid="sql-meta">
       {metaCaption}
     </div>
