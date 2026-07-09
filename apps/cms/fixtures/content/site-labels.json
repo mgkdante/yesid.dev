@@ -151,5 +151,8 @@
 	"services_chrome_listing_station_short_database_engineering": "Databases",
 	"services_chrome_listing_station_short_data_pipeline": "Pipelines",
 	"services_chrome_listing_station_short_analytics_reporting": "Dashboards",
-	"services_chrome_listing_station_short_web_development": "Websites"
+	"services_chrome_listing_station_short_web_development": "Websites",
+	"footer_chrome_footer_explore_label": "EXPLORE",
+	"footer_chrome_footer_legal_label": "LEGAL",
+	"footer_chrome_footer_connect_label": "CONNECT"
 }

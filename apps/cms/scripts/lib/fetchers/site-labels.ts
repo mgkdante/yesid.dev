@@ -237,6 +237,9 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				tagline: ls('footer_chrome_footer_tagline'),
 				location: ls('footer_chrome_footer_location'),
 				statusPrefix: ls('footer_chrome_footer_status_prefix'),
+				exploreLabel: ls('footer_chrome_footer_explore_label'),
+				legalLabel: ls('footer_chrome_footer_legal_label'),
+				connectLabel: ls('footer_chrome_footer_connect_label'),
 			},
 		},
 		heroDashboard: {

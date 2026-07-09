@@ -247,11 +247,15 @@ export const SiteLabelsSchema = z.object({
 			projectCountSingular: LocalizedStringSchema,
 			projectCountPlural: LocalizedStringSchema,
 		}),
-		// Former footerContent shape.
+		// Former footerContent shape. Receiver r2: the full-bleed footer's
+		// column headings (EXPLORE / LEGAL / CONNECT).
 		footer: z.object({
 			tagline: LocalizedStringSchema,
 			location: LocalizedStringSchema,
 			statusPrefix: LocalizedStringSchema,
+			exploreLabel: LocalizedStringSchema,
+			legalLabel: LocalizedStringSchema,
+			connectLabel: LocalizedStringSchema,
 		}),
 	}),
 	heroDashboard: z.object({
