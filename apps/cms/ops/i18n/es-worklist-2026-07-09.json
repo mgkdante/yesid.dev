@@ -1,0 +1,6058 @@
+[
+	{
+		"collection": "services",
+		"id": "sql-development",
+		"parentFk": "services_id",
+		"fields": {
+			"title": {
+				"en": "SQL Development & Optimization",
+				"fr": "Développement et optimisation SQL",
+				"kind": "string"
+			},
+			"subtitle": {
+				"en": "& Optimization",
+				"fr": "et optimisation",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.",
+				"fr": "J'écris, je refais et j'ajuste les requêtes SQL sur PostgreSQL et SQL Server. Des requêtes de rapports complexes jusqu'aux procédures stockées, bâties pour être justes et performantes.",
+				"kind": "string"
+			},
+			"value_proposition": {
+				"en": "Slow queries cost money, in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.",
+				"fr": "Les requêtes lentes coûtent cher : en temps de calcul, en rapports qui retardent, en analystes frustrés qui attendent leurs données. J'examine ta couche SQL, je repère les requêtes qui coûtent cher et je les réécris pour la vitesse et la clarté. Tu obtiens des tableaux de bord plus rapides, des coûts de base de données plus bas, et du code que ton équipe peut vraiment entretenir.",
+				"kind": "string"
+			},
+			"benefit_headline": {
+				"en": "Queries that run in seconds, not minutes",
+				"fr": "Des requêtes qui roulent en secondes, pas en minutes",
+				"kind": "string"
+			},
+			"impact_metric_value": {
+				"en": "3x faster",
+				"fr": "3x plus vite",
+				"kind": "string"
+			},
+			"impact_metric_label": {
+				"en": "avg query improvement",
+				"fr": "amélioration moyenne des requêtes",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services",
+		"id": "data-pipeline",
+		"parentFk": "services_id",
+		"fields": {
+			"title": {
+				"en": "Pipelines & Automation",
+				"fr": "Pipelines et automatisation",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Your data travels from where it's created to where your team uses it, on its own, every day.",
+				"fr": "Tes données voyagent d'où elles sont créées jusqu'où ton équipe les utilise, toutes seules, chaque jour.",
+				"kind": "string"
+			},
+			"value_proposition": {
+				"en": "Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it's created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day.",
+				"fr": "Prochain arrêt : tes données bougent. En ce moment, quelqu'un dans ton équipe recopie probablement des chiffres d'un système à l'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d'où elles sont créées jusqu'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour.",
+				"kind": "string"
+			},
+			"benefit_headline": {
+				"en": "Your data arrives clean, on time, every morning",
+				"fr": "Tes données arrivent propres, à temps, chaque matin",
+				"kind": "string"
+			},
+			"impact_metric_value": {
+				"en": "1.5TB+",
+				"fr": "1,5 To+",
+				"kind": "string"
+			},
+			"impact_metric_label": {
+				"en": "migrated",
+				"fr": "migrées",
+				"kind": "string"
+			},
+			"seo_description": {
+				"en": "Freelance data pipelines and automation in Montreal: Python, Airflow, dbt. Data that travels on its own and lands clean, on time, every morning.",
+				"fr": "Pigiste pipelines de données à Montréal : Python, Airflow, dbt. Tes données voyagent toutes seules et arrivent propres, à temps, chaque matin.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services",
+		"id": "analytics-reporting",
+		"parentFk": "services_id",
+		"fields": {
+			"title": {
+				"en": "Dashboards & Analytics",
+				"fr": "Tableaux de bord et analytique",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Your messy numbers turned into clear dashboards your team actually trusts.",
+				"fr": "Tes chiffres mélangés transformés en tableaux de bord clairs en qui ton équipe a confiance.",
+				"kind": "string"
+			},
+			"value_proposition": {
+				"en": "Third stop: your data starts talking. I take numbers scattered across your tools and turn them into one set of dashboards that all agree with each other. Your team stops arguing about whose number is right and just decides.",
+				"fr": "Troisième arrêt : tes données se mettent à parler. Je prends des chiffres éparpillés dans tes outils et j'en fais une seule série de tableaux de bord qui s'accordent tous entre eux. Ton équipe arrête de se chicaner sur quel chiffre est le bon et prend ses décisions, point.",
+				"kind": "string"
+			},
+			"benefit_headline": {
+				"en": "Decisions in 15 minutes, not 2 days",
+				"fr": "Des décisions en 15 minutes, pas en 2 jours",
+				"kind": "string"
+			},
+			"impact_metric_value": {
+				"en": "30s",
+				"fr": "30 s",
+				"kind": "string"
+			},
+			"impact_metric_label": {
+				"en": "live data refresh",
+				"fr": "rafraîchissement en direct",
+				"kind": "string"
+			},
+			"seo_description": {
+				"en": "Freelance Power BI dashboards and analytics in Montreal: KPIs, semantic layers, reports your team trusts. Decisions in 15 minutes, not 2 days.",
+				"fr": "Pigiste Power BI et analytique à Montréal : KPI, couche sémantique, tableaux de bord fiables. Ton équipe décide en 15 minutes, pas en 2 jours.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services",
+		"id": "database-engineering",
+		"parentFk": "services_id",
+		"fields": {
+			"title": {
+				"en": "Databases & SQL",
+				"fr": "Bases de données et SQL",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Where your business keeps its data, built to stay fast and safe as you grow.",
+				"fr": "L'endroit où ta business garde ses données, bâti pour rester rapide et sécuritaire en grandissant.",
+				"kind": "string"
+			},
+			"value_proposition": {
+				"en": "First stop: your data lives here. A database is the filing cabinet behind your whole business, and everything else is built on top of it. I make yours store and update your data fast and safely, so it stays an asset instead of the thing that slows you down.",
+				"fr": "Premier arrêt : tes données vivent ici. Une base de données, c'est le classeur derrière toute ta business, et tout le reste est bâti par-dessus. Je fais en sorte que la tienne garde et mette à jour tes données vite et de façon sécuritaire, pour qu'elle reste un atout au lieu de la chose qui te ralentit.",
+				"kind": "string"
+			},
+			"benefit_headline": {
+				"en": "Queries that run in seconds, not minutes",
+				"fr": "Des requêtes qui roulent en secondes, pas en minutes",
+				"kind": "string"
+			},
+			"impact_metric_value": {
+				"en": "$60/mo → $0",
+				"fr": "60 $/mois → 0 $",
+				"kind": "string"
+			},
+			"impact_metric_label": {
+				"en": "database hosting cost",
+				"fr": "coût d'hébergement",
+				"kind": "string"
+			},
+			"seo_description": {
+				"en": "Freelance PostgreSQL and SQL Server consulting in Montreal: schema design, query tuning, migrations with rollback. Fast and safe as your business grows.",
+				"fr": "Pigiste PostgreSQL et SQL Server à Montréal : conception de schéma, requêtes optimisées, migrations avec rollback. Ta base reste rapide et sécuritaire.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services",
+		"id": "internal-tooling",
+		"parentFk": "services_id",
+		"fields": {
+			"title": {
+				"en": "Internal Tooling",
+				"fr": "Outils internes",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Build admin panels and workflow tools that replace spreadsheets. Retool, custom dashboards, and approval systems designed for operations teams.",
+				"fr": "Je bâtis des panneaux d'administration et des outils de flux de travail qui remplacent les tableurs. Retool, tableaux de bord sur mesure et systèmes d'approbation conçus pour les équipes des opérations.",
+				"kind": "string"
+			},
+			"value_proposition": {
+				"en": "Your ops team is copying data between spreadsheets and Slack threads. I build internal tools, admin panels, approval workflows, data entry forms, that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.",
+				"fr": "Ton équipe des opérations copie des données entre des tableurs et des fils Slack. Je bâtis des outils internes, des panneaux d'administration, des flux d'approbation, des formulaires de saisie, qui centralisent les opérations et éliminent le travail manuel. Tu livres plus vite parce que ton équipe passe son temps sur les décisions, pas sur la saisie de données.",
+				"kind": "string"
+			},
+			"benefit_headline": {
+				"en": "Your team stops copying between spreadsheets",
+				"fr": "Ton équipe arrête de copier d'un tableur à l'autre",
+				"kind": "string"
+			},
+			"impact_metric_value": {
+				"en": "80%",
+				"fr": "80 %",
+				"kind": "string"
+			},
+			"impact_metric_label": {
+				"en": "less manual data entry",
+				"fr": "de saisie manuelle en moins",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services",
+		"id": "web-development",
+		"parentFk": "services_id",
+		"fields": {
+			"title": {
+				"en": "Websites & E-commerce",
+				"fr": "Sites web et commerce en ligne",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Fast websites, online stores, and dashboards that put your data in front of people.",
+				"fr": "Des sites web, des boutiques en ligne et des tableaux de bord rapides qui mettent tes données devant le monde.",
+				"kind": "string"
+			},
+			"value_proposition": {
+				"en": "Last stop on the line: your data reaches people. A fast website, online store, or dashboard takes everything sitting in your systems and shows it to customers and staff the way they'll actually use it. Pages load quick, the store takes orders, and your team sees what they need without digging.",
+				"fr": "Dernier arrêt sur la ligne : tes données rejoignent le monde. Un site web rapide, une boutique en ligne ou un tableau de bord prend tout ce qui dort dans tes systèmes et le montre à tes clients pis à ton staff de la façon dont ils vont vraiment s'en servir. Les pages chargent vite, la boutique prend les commandes, pis ton équipe voit ce qu'il lui faut sans avoir à fouiller.",
+				"kind": "string"
+			},
+			"benefit_headline": {
+				"en": "A storefront as fast as the systems behind it",
+				"fr": "Une vitrine aussi rapide que les systèmes derrière",
+				"kind": "string"
+			},
+			"impact_metric_value": {
+				"en": "95+",
+				"fr": "95+",
+				"kind": "string"
+			},
+			"impact_metric_label": {
+				"en": "Lighthouse performance",
+				"fr": "performance Lighthouse",
+				"kind": "string"
+			},
+			"seo_description": {
+				"en": "Freelance web development in Montreal: SvelteKit sites, Shopify stores, live dashboards. Fast pages that put your data in front of people.",
+				"fr": "Pigiste web à Montréal : sites SvelteKit, boutiques Shopify, tableaux de bord rapides. Tes données et tes produits rejoignent le monde.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 73,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Query performance audit",
+				"fr": "Audit de performance des requêtes",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 74,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Optimized stored procedures",
+				"fr": "Procédures stockées optimisées",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 75,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Index optimization strategy",
+				"fr": "Stratégie d'optimisation des index",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 76,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Schema refactoring plan",
+				"fr": "Plan de refonte du schéma",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 77,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Migration scripts with rollback",
+				"fr": "Scripts de migration avec retour en arrière",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 78,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Documentation and runbook",
+				"fr": "Documentation et guide d'exploitation",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 79,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Pipeline architecture design",
+				"fr": "Conception de l'architecture du pipeline",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 80,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "ELT/ETL implementation",
+				"fr": "Implémentation ELT/ETL",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 81,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Orchestration setup (Airflow/cron)",
+				"fr": "Mise en place de l'orchestration (Airflow/cron)",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 82,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Schema design and validation",
+				"fr": "Conception et validation du schéma",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 83,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Error handling and alerting",
+				"fr": "Gestion des erreurs et alertes",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 84,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Runbook and monitoring dashboard",
+				"fr": "Guide d'exploitation et tableau de bord de surveillance",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 85,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Semantic layer / data model design",
+				"fr": "Conception de la couche sémantique / du modèle de données",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 86,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Power BI or Retool dashboards",
+				"fr": "Tableaux de bord Power BI ou Retool",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 87,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "KPI definition and documentation",
+				"fr": "Définition et documentation des KPI",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 88,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Automated report delivery",
+				"fr": "Livraison automatisée des rapports",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 89,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "User training and onboarding",
+				"fr": "Formation et accompagnement des usagers",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 90,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Performance tuning for large datasets",
+				"fr": "Optimisation de la performance pour les grands jeux de données",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 91,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Query performance audit",
+				"fr": "Audit de performance des requêtes",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 92,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Optimized stored procedures",
+				"fr": "Procédures stockées optimisées",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 93,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Schema design and normalization review",
+				"fr": "Révision de la conception et de la normalisation du schéma",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 94,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Index optimization strategy",
+				"fr": "Stratégie d'optimisation des index",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 95,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Migration scripts with rollback",
+				"fr": "Scripts de migration avec retour en arrière",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 96,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Backup and recovery plan",
+				"fr": "Plan de sauvegarde et de récupération",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 97,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Requirements and workflow mapping",
+				"fr": "Cartographie des besoins et des flux de travail",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 98,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Retool or custom admin panel",
+				"fr": "Panneau d'administration Retool ou sur mesure",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 99,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "API integration layer",
+				"fr": "Couche d'intégration API",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 100,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Role-based access control",
+				"fr": "Contrôle d'accès par rôle",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 101,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "User onboarding documentation",
+				"fr": "Documentation d'accueil des utilisateurs",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 102,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Maintenance and extension guide",
+				"fr": "Guide d'entretien et d'extension",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 103,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Full-stack SvelteKit application",
+				"fr": "Application SvelteKit pleine pile",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 104,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Responsive design implementation",
+				"fr": "Mise en place d'un design adaptatif",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 105,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "API integration and data layer",
+				"fr": "Intégration API et couche de données",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 106,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Authentication and authorization",
+				"fr": "Authentification et autorisation",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 107,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Deployment and CI/CD setup",
+				"fr": "Déploiement et configuration CI/CD",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 108,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Performance optimization",
+				"fr": "Optimisation de la performance",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 109,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Performance benchmarking",
+				"fr": "Mesure de la performance",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 110,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Documentation, runbooks, and ER diagrams",
+				"fr": "Documentation, guides d'exploitation et diagrammes entité-relation",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_deliverables",
+		"id": 111,
+		"parentFk": "services_deliverables_id",
+		"fields": {
+			"label": {
+				"en": "Workflow automation (approval flows, scheduled jobs)",
+				"fr": "Automatisation des flux de travail (flux d'approbation, tâches planifiées)",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 13,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "My Approach",
+				"fr": "Mon approche",
+				"kind": "string"
+			},
+			"content": {
+				"en": "I start with your slowest queries, the ones that block dashboards and frustrate users. Using execution plans and profiling tools, I identify the root cause (missing indexes, implicit conversions, parameter sniffing) and fix them systematically. Every change is tested against production-scale data before deployment.",
+				"fr": "Je commence par tes requêtes les plus lentes, celles qui bloquent les tableaux de bord et qui font enrager les usagers. À l'aide des plans d'exécution et des outils de profilage, je trouve la cause profonde (index manquants, conversions implicites, parameter sniffing) et je la corrige méthodiquement. Chaque changement est testé sur des données à l'échelle de la production avant le déploiement.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 14,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "My Approach",
+				"fr": "Mon approche",
+				"kind": "string"
+			},
+			"content": {
+				"en": "Moving data can mean a nightly sync, a full warehouse build, or killing one painful copy-paste job. I learn how your data flows, then build a route that's boring and reliable on purpose: it retries on its own, alerts me when something's off, and recovers cleanly. I enjoy making a messy process quietly run itself, and after years of 3 AM pages, I build it so those calls don't come.",
+				"fr": "Déplacer des données, ça peut être une synchro à chaque nuit, monter un entrepôt de données au complet, ou tuer une job de copier-coller qui te gosse. Je regarde comment tes données circulent, pis je bâtis un chemin plate et fiable, fait exprès de même: ça réessaye tout seul, ça m'avertit quand quelque chose cloche, pis ça se replace proprement. J'aime ça prendre un processus mêlant pis le faire rouler tout seul tranquillement, pis après des années de calls à 3 h du matin, je le bâtis pour que ces appels-là arrivent pas.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 15,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "My Approach",
+				"fr": "Mon approche",
+				"kind": "string"
+			},
+			"content": {
+				"en": "This ranges from one clean dashboard to a whole reporting setup your team lives in. I'm curious by default and I love getting this right, so I start with how you actually decide, not the chart, and keep asking until the numbers make sense. Then I check every number against its source, because a dashboard people can't trust is worse than none.",
+				"fr": "Ça peut aller d'un seul tableau de bord propre jusqu'à toute une structure de rapports dans laquelle ton équipe vit au quotidien. Je suis curieux de nature et j'aime vraiment ça, fait que je commence par comprendre comment tu prends tes décisions, pas par le graphique, pis je continue de poser des questions jusqu'à ce que les chiffres aient du sens. Ensuite je vérifie chaque chiffre par rapport à sa source, parce qu'un tableau de bord auquel le monde peut pas se fier, c'est pire que rien.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 16,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "My Approach",
+				"fr": "Mon approche",
+				"kind": "string"
+			},
+			"content": {
+				"en": "Database work is never one-size-fits-all: a stubborn query, a database from scratch, a Snowflake build, faster indexes. I start from what you need and dig for the real fix, not a band-aid, but years in I never wing it: backups and a tested rollback before anything touches live data. I love this work, so I guard your data like my own.",
+				"fr": "Le travail de base de données, c'est jamais du mur-à-mur: une requête têtue, une base partie de zéro, un build Snowflake, des index plus rapides. Je pars de ce dont tu as besoin et je creuse pour trouver le vrai fix, pas un plaster, mais avec les années j'improvise jamais: des sauvegardes et un rollback testé avant que quoi que ce soit touche à tes données en live. J'aime cette job-là, fait que je protège tes données comme si c'étaient les miennes.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 17,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "My Approach",
+				"fr": "Mon approche",
+				"kind": "string"
+			},
+			"content": {
+				"en": "I start by shadowing the workflow, watching how data moves through your team. Then I build the simplest tool that eliminates the bottleneck. Retool for rapid prototyping, custom code when Retool hits its limits. Every tool ships with docs so your team can extend it without me.",
+				"fr": "Je commence par observer le flux de travail de près, en regardant comment les données circulent dans ton équipe. Ensuite, je bâtis l'outil le plus simple qui élimine le goulot d'étranglement. Retool pour le prototypage rapide, du code sur mesure quand Retool atteint ses limites. Chaque outil arrive avec sa documentation pour que ton équipe puisse l'étendre sans moi.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 18,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "My Approach",
+				"fr": "Mon approche",
+				"kind": "string"
+			},
+			"content": {
+				"en": "A web project might be a quick storefront, a custom app, or a dashboard wired into your systems. I love figuring out how a thing should work, so I start with who uses it and what they need, then build it fast and simple. And I ship it safely, tested and easy to roll back, so going live never means holding your breath.",
+				"fr": "Un projet web, ça peut être une petite boutique, une app sur mesure, ou un tableau de bord branché sur tes systèmes. J'adore comprendre comment une affaire devrait fonctionner, fait que je commence par qui s'en sert et ce dont ces gens ont besoin, pis je construis vite et simple. Et je le mets en ligne en toute sécurité, testé et facile à revenir en arrière, pour que le lancement te demande jamais de retenir ton souffle.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 19,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "Is this you?",
+				"fr": "Ça te ressemble?",
+				"kind": "string"
+			},
+			"content": {
+				"en": "Signs this is you: queries that crawl, reports that time out, a migration you are scared to run, or a database that grew by accident and nobody really designed. Maybe it works today but you hold your breath every time it runs. If any of that sounds familiar, this is the right place to start.",
+				"fr": "Des signes que c'est toi: des requêtes qui traînent, des rapports qui tombent en timeout, une migration qui te fait peur à faire rouler, ou une base de données qui a grossi par accident et que personne a vraiment pensée. Peut-être que ça marche aujourd'hui, mais tu retiens ton souffle chaque fois que ça roule. Si une de ces affaires-là te parle, t'es à la bonne place pour commencer.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 20,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "Is this you?",
+				"fr": "Ça te ressemble?",
+				"kind": "string"
+			},
+			"content": {
+				"en": "Signs this is you: someone on your team copies numbers between systems every week, by hand. Your reports are always a day behind. Or your data lives in five different tools that never quite agree with each other. If any of that sounds familiar, this is the work I do.",
+				"fr": "Des signes que c'est toi: quelqu'un dans ton équipe recopie des chiffres d'un système à l'autre chaque semaine, à la main. Tes rapports ont toujours une journée de retard. Ou tes données vivent dans cinq outils différents qui s'entendent jamais vraiment entre eux. Si une de ces affaires-là te parle, c'est exactement le genre de travail que je fais.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 21,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "Is this you?",
+				"fr": "Ça te ressemble?",
+				"kind": "string"
+			},
+			"content": {
+				"en": "Signs this is you: every meeting turns into an argument about whose number is right. The same report takes someone days to pull together by hand, every time. Or you have dashboards sitting there that nobody opens, because everyone learned they do not match what is really happening.",
+				"fr": "Des signes que c'est toi: chaque réunion vire en chicane sur quel chiffre est le bon. Le même rapport prend des jours à monter à la main, chaque fois. Ou bien tu as des tableaux de bord que personne n'ouvre, parce que le monde a fini par comprendre qu'ils collent pas à la réalité.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "services_sections",
+		"id": 23,
+		"parentFk": "services_sections_id",
+		"fields": {
+			"title": {
+				"en": "Is this you?",
+				"fr": "Ça te ressemble?",
+				"kind": "string"
+			},
+			"content": {
+				"en": "Signs this is you: a site that loads slowly or feels clunky to use, a store that keeps losing people right at checkout, or tools and data your customers and team just cannot get to. If the thing standing between your work and the people who need it is the website itself, that is the gap I close.",
+				"fr": "Des signes que c'est toi: un site lent ou maladroit à utiliser, une boutique qui perd du monde juste au moment de payer, ou des outils et des données que tes clients et ton équipe arrivent pas à atteindre. Si ce qui bloque entre ton travail et les gens qui en ont besoin, c'est le site lui-même, c'est exactement ce trou-là que je vais combler.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_about_content",
+		"id": "32f35417-d230-400b-9c17-98a49055ec86",
+		"parentFk": "block_about_content_id",
+		"fields": {
+			"cta": {
+				"en": {
+					"command": "$ yesid --contact",
+					"lines": [
+						{
+							"text": "> Ready for new projects",
+							"color": "orange"
+						},
+						{
+							"text": "> Email: contact@yesid.dev",
+							"color": "muted"
+						},
+						{
+							"text": "> GitHub: https://github.com/mgkdante",
+							"color": "muted"
+						},
+						{
+							"text": "> LinkedIn: https://www.linkedin.com/in/otaloray/",
+							"color": "muted"
+						}
+					],
+					"buttonLabel": "Send message →",
+					"buttonHref": "/contact",
+					"availability": "Booking Q3 2026",
+					"socials": [
+						{
+							"label": "Email",
+							"href": "mailto:contact@yesid.dev",
+							"icon": "email"
+						},
+						{
+							"label": "GitHub",
+							"href": "https://github.com/mgkdante",
+							"icon": "github"
+						},
+						{
+							"label": "LinkedIn",
+							"href": "https://www.linkedin.com/in/otaloray/",
+							"icon": "linkedin"
+						}
+					]
+				},
+				"kind": "json"
+			},
+			"identity": {
+				"en": {
+					"name": "Yesid O.",
+					"title": "Freelance Digital Infrastructure Engineer",
+					"valueProp": "I help teams ship reliable digital infrastructure, from databases to dashboards to the pipelines between them.",
+					"headshot": "/images/about/headshot.webp",
+					"polaroids": [
+						{
+							"src": "/images/about/polaroid-1.webp",
+							"alt": "Walking with my dog in Montreal",
+							"caption": "Off-duty mode",
+							"rotate": -3
+						},
+						{
+							"src": "/images/about/polaroid-2.webp",
+							"alt": "Yesid smiling",
+							"caption": "The usual suspect",
+							"rotate": 4
+						},
+						{
+							"src": "/images/about/polaroid-3.webp",
+							"alt": "Portrait, Yesid Otalora",
+							"caption": "Circa 2019",
+							"rotate": -2
+						}
+					]
+				},
+				"kind": "json"
+			},
+			"interests": {
+				"en": [
+					{
+						"id": "anime",
+						"label": "Manga",
+						"image": "/images/about/interests/anime.webp"
+					},
+					{
+						"id": "transit",
+						"label": "Transit",
+						"image": "/images/about/interests/transit.webp"
+					},
+					{
+						"id": "space",
+						"label": "Space",
+						"image": "/images/about/interests/space.webp"
+					},
+					{
+						"id": "food",
+						"label": "MTL Food",
+						"image": "/images/about/interests/food.webp"
+					}
+				],
+				"fr": [
+					{
+						"id": "anime",
+						"label": "Manga",
+						"image": "/images/about/interests/anime.webp"
+					},
+					{
+						"id": "transit",
+						"label": "Transport collectif",
+						"image": "/images/about/interests/transit.webp"
+					},
+					{
+						"id": "space",
+						"label": "L'espace",
+						"image": "/images/about/interests/space.webp"
+					},
+					{
+						"id": "food",
+						"label": "Bouffe MTL",
+						"image": "/images/about/interests/food.webp"
+					}
+				],
+				"kind": "json"
+			},
+			"labels": {
+				"en": {
+					"clientsServed": "clients served",
+					"polaroidPrevAria": "Previous photo",
+					"polaroidNextAria": "Next photo",
+					"testimonialsCarouselAria": "Client testimonials",
+					"testimonialsTabNavAria": "Testimonial navigation",
+					"testimonialSlideAria": "Testimonial {index} of {total}",
+					"showTestimonialAria": "Show testimonial {index}"
+				},
+				"kind": "json"
+			},
+			"meta": {
+				"en": {
+					"title": "About, yesid.",
+					"description": "Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that ship."
+				},
+				"kind": "json"
+			},
+			"methodology": {
+				"en": [
+					{
+						"id": "curiosity",
+						"station": 1,
+						"label": "CURIOSITY",
+						"description": "I take things apart to learn how they work, then build better ones."
+					},
+					{
+						"id": "aesthetics",
+						"station": 2,
+						"label": "AESTHETICS",
+						"description": "If it works but it's ugly, it's only half done."
+					},
+					{
+						"id": "community",
+						"station": 3,
+						"label": "COMMUNITY",
+						"description": "Good tools lift the people around them, that’s the whole point."
+					},
+					{
+						"id": "quality",
+						"station": 4,
+						"label": "QUALITY",
+						"description": "I'd rather build it right than build it twice."
+					}
+				],
+				"fr": [
+					{
+						"id": "curiosity",
+						"station": 1,
+						"label": "CURIOSITÉ",
+						"description": "Je démonte les choses pour comprendre comment elles marchent, puis j'en construis de meilleures."
+					},
+					{
+						"id": "aesthetics",
+						"station": 2,
+						"label": "ESTHÉTIQUE",
+						"description": "Si ça fonctionne mais que c'est laid, ce n'est qu'à moitié fait."
+					},
+					{
+						"id": "community",
+						"station": 3,
+						"label": "COMMUNAUTÉ",
+						"description": "Les bons outils élèvent les gens autour d'eux, c'est tout l'intérêt."
+					},
+					{
+						"id": "quality",
+						"station": 4,
+						"label": "QUALITÉ",
+						"description": "Je préfère bien le bâtir que le bâtir deux fois."
+					}
+				],
+				"kind": "json"
+			},
+			"metrics": {
+				"en": [
+					{
+						"value": "5+",
+						"label": "years building data systems"
+					},
+					{
+						"value": "30+",
+						"label": "databases designed & optimized"
+					},
+					{
+						"value": "3x",
+						"label": "avg. query speed improvement"
+					},
+					{
+						"value": "99.9%",
+						"label": "pipeline uptime delivered"
+					}
+				],
+				"fr": [
+					{
+						"value": "5+",
+						"label": "années à bâtir des systèmes de données"
+					},
+					{
+						"value": "30+",
+						"label": "bases de données conçues et optimisées"
+					},
+					{
+						"value": "3x",
+						"label": "amélioration moyenne des requêtes"
+					},
+					{
+						"value": "99.9%",
+						"label": "disponibilité livrée sur les pipelines"
+					}
+				],
+				"kind": "json"
+			},
+			"stop_labels": {
+				"en": {
+					"identity": "IDENTITY",
+					"metrics": "METRICS",
+					"testimonials": "TESTIMONIALS",
+					"process": "PROCESS",
+					"stack": "STACK",
+					"clients": "CLIENTS",
+					"interests": "INTERESTS",
+					"snapshots": "SNAPSHOTS",
+					"location": "LOCATION",
+					"next": "NEXT"
+				},
+				"kind": "json"
+			},
+			"testimonials": {
+				"en": [
+					{
+						"quote": "You have the gift of perseverance, and that's what makes you a genius too.",
+						"author": "Guy Sensei",
+						"role": "Sensei",
+						"company": "Personal lore"
+					},
+					{
+						"quote": "What matters in life is not what happens to you but what you remember and how you remember it.",
+						"author": "Gabriel Garcia Marquez",
+						"role": "Writer",
+						"company": "Literature"
+					},
+					{
+						"quote": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.",
+						"author": "Marcus Aurelius",
+						"role": "Stoic philosopher",
+						"company": "Meditations"
+					}
+				],
+				"fr": [
+					{
+						"quote": "Tu as le don de la persévérance, et c'est ce qui fait de toi un génie.",
+						"author": "Guy Sensei",
+						"role": "Gaï Sensei",
+						"company": "Personal lore"
+					},
+					{
+						"quote": "Ce qui compte dans la vie, ce n'est pas ce qui t'arrive, mais ce dont tu te souviens et la façon dont tu t'en souviens.",
+						"author": "Gabriel Garcia Marquez",
+						"role": "Écrivain",
+						"company": "Literature"
+					},
+					{
+						"quote": "Tout ce que nous entendons est une opinion, pas un fait. Tout ce que nous voyons est une perspective, pas la vérité.",
+						"author": "Marcus Aurelius",
+						"role": "Philosophe stoïcien",
+						"company": "Meditations"
+					}
+				],
+				"kind": "json"
+			},
+			"weather": {
+				"en": {
+					"city": "Montreal",
+					"hook": "Guess where I am?",
+					"enabled": true
+				},
+				"kind": "json"
+			},
+			"identity_name": {
+				"en": "Yesid",
+				"fr": "Yesid",
+				"kind": "string"
+			},
+			"identity_title": {
+				"en": "Curious builder, lifelong tinkerer",
+				"fr": "Bâtisseur curieux, bricoleur depuis toujours",
+				"kind": "string"
+			},
+			"identity_value_prop": {
+				"en": "I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.",
+				"fr": "Moi, c'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les bases de données, les pipelines, les tableaux de bord et les sites web. Avec mes clients, j'explique ce que les choses veulent dire pour qu'ils gardent le volant.",
+				"kind": "string"
+			},
+			"polaroids": {
+				"en": [
+					{
+						"src": "/images/about/polaroid-1.webp",
+						"alt": "Walking with my dog in Montreal",
+						"caption": "Off-duty mode",
+						"rotate": -3
+					},
+					{
+						"src": "/images/about/polaroid-dante.webp",
+						"alt": "Dante, the family dog",
+						"caption": "Dante, the family's good boy",
+						"rotate": 3
+					},
+					{
+						"src": "/images/about/polaroid-poupoune.webp",
+						"alt": "Poupoune, my dog",
+						"caption": "Poupoune 🐾",
+						"rotate": -2
+					},
+					{
+						"src": "/images/about/polaroid-yesid.webp",
+						"alt": "Yesid",
+						"caption": "That's me",
+						"rotate": 2
+					},
+					{
+						"src": "/images/about/polaroid-family.webp",
+						"alt": "With my family",
+						"caption": "Family",
+						"rotate": -4
+					},
+					{
+						"src": "/images/about/polaroid-friends.webp",
+						"alt": "With friends",
+						"caption": "Friends",
+						"rotate": 3
+					},
+					{
+						"src": "/images/about/polaroid-museum.webp",
+						"alt": "At the art museum in Ottawa",
+						"caption": "Museum day, Ottawa",
+						"rotate": -3
+					}
+				],
+				"fr": [
+					{
+						"src": "/images/about/polaroid-1.webp",
+						"alt": "En promenade avec mon chien à Montréal",
+						"caption": "Mode relâche",
+						"rotate": -3
+					},
+					{
+						"src": "/images/about/polaroid-dante.webp",
+						"alt": "Dante, le chien de la famille",
+						"caption": "Dante, le bon chien de la famille",
+						"rotate": 3
+					},
+					{
+						"src": "/images/about/polaroid-poupoune.webp",
+						"alt": "Poupoune, mon chien",
+						"caption": "Poupoune 🐾",
+						"rotate": -2
+					},
+					{
+						"src": "/images/about/polaroid-yesid.webp",
+						"alt": "Yesid",
+						"caption": "C'est moi",
+						"rotate": 2
+					},
+					{
+						"src": "/images/about/polaroid-family.webp",
+						"alt": "Avec ma famille",
+						"caption": "La famille",
+						"rotate": -4
+					},
+					{
+						"src": "/images/about/polaroid-friends.webp",
+						"alt": "Avec les amis",
+						"caption": "Les amis",
+						"rotate": 3
+					},
+					{
+						"src": "/images/about/polaroid-museum.webp",
+						"alt": "Au musée d'art à Ottawa",
+						"caption": "Journée musée, Ottawa",
+						"rotate": -3
+					}
+				],
+				"kind": "json"
+			},
+			"weather_city": {
+				"en": "Montreal",
+				"fr": "Montréal",
+				"kind": "string"
+			},
+			"weather_hook": {
+				"en": "Guess where I am?",
+				"fr": "Devine où je suis?",
+				"kind": "string"
+			},
+			"cta_button_label": {
+				"en": "Send message →",
+				"fr": "Envoyer un message →",
+				"kind": "string"
+			},
+			"stop_identity": {
+				"en": "IDENTITY",
+				"fr": "IDENTITÉ",
+				"kind": "string"
+			},
+			"stop_metrics": {
+				"en": "METRICS",
+				"fr": "MESURES",
+				"kind": "string"
+			},
+			"stop_testimonials": {
+				"en": "QUOTE",
+				"fr": "CITATION",
+				"kind": "string"
+			},
+			"stop_process": {
+				"en": "CORE BELIEFS",
+				"fr": "CONVICTIONS",
+				"kind": "string"
+			},
+			"stop_stack": {
+				"en": "EDUCATION",
+				"fr": "FORMATION",
+				"kind": "string"
+			},
+			"stop_clients": {
+				"en": "LANGUAGES",
+				"fr": "LANGUES",
+				"kind": "string"
+			},
+			"stop_interests": {
+				"en": "INTERESTS",
+				"fr": "INTÉRÊTS",
+				"kind": "string"
+			},
+			"stop_snapshots": {
+				"en": "SNAPSHOTS",
+				"fr": "PHOTOS",
+				"kind": "string"
+			},
+			"stop_location": {
+				"en": "LOCATION",
+				"fr": "LOCALISATION",
+				"kind": "string"
+			},
+			"stop_next": {
+				"en": "NEXT",
+				"fr": "SUITE",
+				"kind": "string"
+			},
+			"label_clients_served": {
+				"en": "clients served",
+				"fr": "clients servis",
+				"kind": "string"
+			},
+			"label_polaroid_prev_aria": {
+				"en": "Previous photo",
+				"fr": "Photo précédente",
+				"kind": "string"
+			},
+			"label_polaroid_next_aria": {
+				"en": "Next photo",
+				"fr": "Photo suivante",
+				"kind": "string"
+			},
+			"label_testimonials_carousel_aria": {
+				"en": "Personal quote",
+				"fr": "Citation personnelle",
+				"kind": "string"
+			},
+			"label_testimonials_tab_nav_aria": {
+				"en": "Quote navigation",
+				"fr": "Navigation de citation",
+				"kind": "string"
+			},
+			"label_testimonial_slide_aria": {
+				"en": "Testimonial {index} of {total}",
+				"fr": "Témoignage {index} sur {total}",
+				"kind": "string"
+			},
+			"label_show_testimonial_aria": {
+				"en": "Show testimonial {index}",
+				"fr": "Afficher le témoignage {index}",
+				"kind": "string"
+			},
+			"meta_title": {
+				"en": "About · yesid.",
+				"fr": "À propos · yesid.",
+				"kind": "string"
+			},
+			"meta_description": {
+				"en": "Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can't afford downtime.",
+				"fr": "Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
+				"kind": "string"
+			},
+			"education": {
+				"en": [
+					{
+						"school": "Champlain Regional College, Lennoxville",
+						"program": "DEC, Accounting & Management Technology",
+						"icon": "champlain"
+					},
+					{
+						"school": "Bishop's University",
+						"program": "B.Sc. Computer Science, minor in Business Administration",
+						"icon": "bishops"
+					}
+				],
+				"fr": [
+					{
+						"school": "Champlain Regional College, Lennoxville",
+						"program": "DEC, Techniques de comptabilité et de gestion",
+						"icon": "champlain"
+					},
+					{
+						"school": "Bishop's University",
+						"program": "B. Sc. informatique, mineure en administration des affaires",
+						"icon": "bishops"
+					}
+				],
+				"kind": "json"
+			},
+			"label_testimonials_prev_aria": {
+				"en": "Previous quote",
+				"fr": "Citation précédente",
+				"kind": "string"
+			},
+			"label_testimonials_next_aria": {
+				"en": "Next quote",
+				"fr": "Citation suivante",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "about_languages",
+		"id": "quebec",
+		"parentFk": "about_languages_id",
+		"fields": {
+			"label": {
+				"en": "French",
+				"fr": "Français",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "about_languages",
+		"id": "canada",
+		"parentFk": "about_languages_id",
+		"fields": {
+			"label": {
+				"en": "English",
+				"fr": "Anglais",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "about_languages",
+		"id": "colombia",
+		"parentFk": "about_languages_id",
+		"fields": {
+			"label": {
+				"en": "Spanish",
+				"fr": "Espagnol",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_contact_content",
+		"id": "4fc472d5-6bd0-4194-afc9-8997229b2a59",
+		"parentFk": "block_contact_content_id",
+		"fields": {
+			"form_terminal": {
+				"en": {
+					"title": "yesid@mtl ~ /contact",
+					"command": "$ yesid --contact",
+					"commandOutput": "Opening contact form...",
+					"fields": {
+						"name": {
+							"label": "name",
+							"placeholder": "Your name"
+						},
+						"email": {
+							"label": "email",
+							"placeholder": "you@company.com"
+						},
+						"message": {
+							"label": "message",
+							"placeholder": "Tell me about your project..."
+						}
+					},
+					"submitLabel": "send --message →"
+				},
+				"fr": {
+					"title": "yesid@mtl ~ /contact",
+					"command": "$ yesid --contact",
+					"commandOutput": "Ouverture du formulaire de contact...",
+					"fields": {
+						"name": {
+							"label": "nom",
+							"placeholder": "Votre nom"
+						},
+						"email": {
+							"label": "courriel",
+							"placeholder": "vous@compagnie.com"
+						},
+						"message": {
+							"label": "message",
+							"placeholder": "Parlez-moi de votre projet..."
+						}
+					},
+					"submitLabel": "send --message →"
+				},
+				"kind": "json"
+			},
+			"info_terminal": {
+				"en": {
+					"title": "yesid@mtl ~ /info",
+					"command": "$ yesid --info",
+					"location": "Montreal, QC, Canada",
+					"responseTime": "~24h response time",
+					"sectionLabels": {
+						"location": "LOCATION",
+						"connect": "CONNECT"
+					}
+				},
+				"fr": {
+					"title": "yesid@mtl ~ /info",
+					"command": "$ yesid --info",
+					"location": "Montréal, QC, Canada",
+					"responseTime": "réponse en ~24h",
+					"sectionLabels": {
+						"location": "EMPLACEMENT",
+						"connect": "CONNEXION"
+					}
+				},
+				"kind": "json"
+			},
+			"meta": {
+				"en": {
+					"title": "Contact, yesid.",
+					"description": "Get in touch for freelance digital infrastructure, databases, pipelines, dashboards, and websites. Montreal, ~24h response time."
+				},
+				"kind": "json"
+			},
+			"page_title": {
+				"en": "Contact",
+				"fr": "Contact",
+				"kind": "string"
+			},
+			"send_error_message": {
+				"en": "Failed to send message. Please try again.",
+				"fr": "L'envoi du message a échoué. Réessaie, s'il te plaît.",
+				"kind": "string"
+			},
+			"station_label": {
+				"en": "NEXT STOP: YOU",
+				"fr": "PROCHAIN ARRÊT : TOI",
+				"kind": "string"
+			},
+			"success": {
+				"en": {
+					"validating": "Validating fields...",
+					"sending": "Sending message...",
+					"sent": "Message sent successfully!",
+					"responseTime": "I'll get back to you within 24h",
+					"meanwhile": "Meanwhile, check out my {work} or {blog}",
+					"resetLabel": "reset --form",
+					"fieldOk": "OK"
+				},
+				"fr": {
+					"validating": "Validation des champs...",
+					"sending": "Envoi du message...",
+					"sent": "Message envoyé avec succès!",
+					"responseTime": "Je vous reviens d'ici 24h",
+					"meanwhile": "En attendant, jetez un œil à mes {work} ou mon {blog}",
+					"resetLabel": "reset --form",
+					"fieldOk": "OK"
+				},
+				"kind": "json"
+			},
+			"validation": {
+				"en": {
+					"required": "required, {field} cannot be empty",
+					"invalidEmail": "invalid, enter a valid email address",
+					"errorSummary": "{count} errors, fix and retry"
+				},
+				"kind": "json"
+			},
+			"meta_title": {
+				"en": "Contact · yesid.",
+				"fr": "Contact · yesid.",
+				"kind": "string"
+			},
+			"meta_description": {
+				"en": "Get in touch for freelance digital infrastructure, databases, pipelines, dashboards, and websites. Montreal, ~24h response time.",
+				"fr": "Écris-moi pour de l'infrastructure numérique à la pige : bases de données, pipelines, tableaux de bord et sites web. Montréal, réponse en ~24h.",
+				"kind": "string"
+			},
+			"info_location": {
+				"en": "Montreal, QC, Canada",
+				"fr": "Montréal, QC, Canada",
+				"kind": "string"
+			},
+			"info_response_time": {
+				"en": "~24h response time",
+				"fr": "réponse en ~24h",
+				"kind": "string"
+			},
+			"info_section_label_location": {
+				"en": "LOCATION",
+				"fr": "EMPLACEMENT",
+				"kind": "string"
+			},
+			"info_section_label_connect": {
+				"en": "CONNECT",
+				"fr": "CONNEXION",
+				"kind": "string"
+			},
+			"form_command_output": {
+				"en": "Opening contact form...",
+				"fr": "Ouverture du formulaire de contact...",
+				"kind": "string"
+			},
+			"form_submit_label": {
+				"en": "send --message →",
+				"fr": "send --message →",
+				"kind": "string"
+			},
+			"form_field_name_placeholder": {
+				"en": "Your name",
+				"fr": "Ton nom",
+				"kind": "string"
+			},
+			"form_field_email_placeholder": {
+				"en": "you@company.com",
+				"fr": "toi@compagnie.com",
+				"kind": "string"
+			},
+			"form_field_message_placeholder": {
+				"en": "Tell me about your project...",
+				"fr": "Parle-moi de ton projet...",
+				"kind": "string"
+			},
+			"validation_required": {
+				"en": "required, {field} cannot be empty",
+				"fr": "requis, {field} ne peut pas être vide",
+				"kind": "string"
+			},
+			"validation_invalid_email": {
+				"en": "invalid, enter a valid email address",
+				"fr": "invalide, entre une adresse courriel valide",
+				"kind": "string"
+			},
+			"validation_error_summary": {
+				"en": "{count} errors, fix and retry",
+				"fr": "{count} erreurs, corrige et réessaie",
+				"kind": "string"
+			},
+			"success_validating": {
+				"en": "Validating fields...",
+				"fr": "Validation des champs...",
+				"kind": "string"
+			},
+			"success_sending": {
+				"en": "Sending message...",
+				"fr": "Envoi du message...",
+				"kind": "string"
+			},
+			"success_sent": {
+				"en": "Message sent successfully!",
+				"fr": "Message envoyé avec succès!",
+				"kind": "string"
+			},
+			"success_response_time": {
+				"en": "I'll get back to you within 24h",
+				"fr": "Je te reviens d'ici 24h",
+				"kind": "string"
+			},
+			"success_meanwhile": {
+				"en": "Meanwhile, check out my {work} or {blog}",
+				"fr": "En attendant, jette un œil à mes {work} ou mon {blog}",
+				"kind": "string"
+			},
+			"success_reset_label": {
+				"en": "reset --form",
+				"fr": "reset --form",
+				"kind": "string"
+			},
+			"success_field_ok": {
+				"en": "OK",
+				"fr": "OK",
+				"kind": "string"
+			},
+			"form_field_name_label": {
+				"en": "name",
+				"fr": "nom",
+				"kind": "string"
+			},
+			"form_field_email_label": {
+				"en": "email",
+				"fr": "courriel",
+				"kind": "string"
+			},
+			"form_field_message_label": {
+				"en": "message",
+				"fr": "message",
+				"kind": "string"
+			},
+			"success_work_link_label": {
+				"en": "work",
+				"fr": "services",
+				"kind": "string"
+			},
+			"success_blog_link_label": {
+				"en": "blog",
+				"fr": "blogue",
+				"kind": "string"
+			},
+			"booking_prompt": {
+				"en": "Prefer to talk it through?",
+				"fr": "Tu préfères en jaser de vive voix?",
+				"kind": "string"
+			},
+			"booking_button_label": {
+				"en": "book --intro-call →",
+				"fr": "book --intro-call →",
+				"kind": "string"
+			},
+			"info_section_label_languages": {
+				"en": "LANGUAGES",
+				"fr": "LANGUES",
+				"kind": "string"
+			},
+			"info_languages": {
+				"en": "EN · FR · ES",
+				"fr": "EN · FR · ES",
+				"kind": "string"
+			},
+			"info_section_label_best_fit": {
+				"en": "BEST FIT",
+				"fr": "PROJETS IDÉAUX",
+				"kind": "string"
+			},
+			"info_best_fit_1": {
+				"en": "Slow reports that need to be fast",
+				"fr": "Des rapports lents qui doivent aller vite",
+				"kind": "string"
+			},
+			"info_best_fit_2": {
+				"en": "Manual data work that should run itself",
+				"fr": "Du travail de données manuel qui devrait rouler tout seul",
+				"kind": "string"
+			},
+			"info_best_fit_3": {
+				"en": "Sites and stores wired to live data",
+				"fr": "Des sites et boutiques branchés sur des données en direct",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "contact_channels",
+		"id": "email",
+		"parentFk": "contact_channels_id",
+		"fields": {
+			"label": {
+				"en": "Email",
+				"fr": "Courriel",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "contact_channels",
+		"id": "github",
+		"parentFk": "contact_channels_id",
+		"fields": {
+			"label": {
+				"en": "GitHub",
+				"fr": "GitHub",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "contact_channels",
+		"id": "linkedin",
+		"parentFk": "contact_channels_id",
+		"fields": {
+			"label": {
+				"en": "LinkedIn",
+				"fr": "LinkedIn",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "contact_channels",
+		"id": "booking",
+		"parentFk": "contact_channels_id",
+		"fields": {
+			"label": {
+				"en": "Book a 20-min intro call",
+				"fr": "Réserver un appel intro de 20 minutes",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "site_labels",
+		"id": "579bdd04-0a9a-4e29-a202-8839c527cdcc",
+		"parentFk": "site_labels_id",
+		"fields": {
+			"a11y_nav_capabilities": {
+				"en": "Capabilities",
+				"fr": "Capacités",
+				"kind": "string"
+			},
+			"a11y_carousel_prev": {
+				"en": "Previous projects",
+				"fr": "Projets précédents",
+				"kind": "string"
+			},
+			"a11y_carousel_next": {
+				"en": "Next projects",
+				"fr": "Projets suivants",
+				"kind": "string"
+			},
+			"a11y_nav_tech_stack": {
+				"en": "Tech stack",
+				"fr": "Stack technique",
+				"kind": "string"
+			},
+			"a11y_toc": {
+				"en": "Table of contents",
+				"fr": "Table des matières",
+				"kind": "string"
+			},
+			"a11y_closer_graffiti": {
+				"en": "THE END graffiti",
+				"fr": "graffiti THE END",
+				"kind": "string"
+			},
+			"ui_marker_service": {
+				"en": "{num} / SERVICE",
+				"fr": "{num} / SERVICE",
+				"kind": "string"
+			},
+			"ui_marker_featured": {
+				"en": "{num} / FEATURED",
+				"fr": "{num} / EN VEDETTE",
+				"kind": "string"
+			},
+			"ui_error_status_note": {
+				"en": "// requested path not in service",
+				"fr": "// chemin demandé hors service",
+				"kind": "string"
+			},
+			"ui_blog_edition_template": {
+				"en": "VOL. 01 // ISS. {issue}",
+				"fr": "VOL. 01 // NO {issue}",
+				"kind": "string"
+			},
+			"ui_copyright_template": {
+				"en": "© {year} yesid",
+				"fr": "© {year} yesid",
+				"kind": "string"
+			},
+			"ui_noun_project": {
+				"en": "project",
+				"fr": "projet",
+				"kind": "string"
+			},
+			"ui_category_personal": {
+				"en": "Personal",
+				"fr": "Perso",
+				"kind": "string"
+			},
+			"ui_category_professional": {
+				"en": "Professional",
+				"fr": "Professionnel",
+				"kind": "string"
+			},
+			"ui_watermark_personal": {
+				"en": "Personal",
+				"fr": "Perso",
+				"kind": "string"
+			},
+			"ui_watermark_professional": {
+				"en": "Blog",
+				"fr": "Blogue",
+				"kind": "string"
+			},
+			"pages_blog_edge_title": {
+				"en": "Blog",
+				"fr": "Blog",
+				"kind": "string"
+			},
+			"pages_projects_edge_title": {
+				"en": "Projects",
+				"fr": "Projets",
+				"kind": "string"
+			},
+			"pages_home_section_projects": {
+				"en": "Projects",
+				"fr": "Projets",
+				"kind": "string"
+			},
+			"pages_home_section_services": {
+				"en": "Services",
+				"fr": "Services",
+				"kind": "string"
+			},
+			"pages_home_section_terminus": {
+				"en": "Terminus",
+				"fr": "Terminus",
+				"kind": "string"
+			},
+			"email_contact_subject_template": {
+				"en": "New contact from {name} via yesid.dev",
+				"fr": "Nouveau message de {name} via yesid.dev",
+				"kind": "string"
+			},
+			"ui_back_to_projects": {
+				"en": "← All Projects",
+				"fr": "← Tous les projets",
+				"kind": "string"
+			},
+			"ui_metro_caption": {
+				"en": "STM métro + REM",
+				"fr": "métro STM + REM",
+				"kind": "string"
+			},
+			"a11y_replay_intro": {
+				"en": "Replay intro",
+				"fr": "Rejouer l'intro",
+				"kind": "string"
+			},
+			"projects_chrome_meta_title": {
+				"en": "Projects | yesid.",
+				"fr": "Projets | yesid.",
+				"kind": "string"
+			},
+			"projects_chrome_meta_description": {
+				"en": "Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.",
+				"fr": "Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique à la pige à Montréal.",
+				"kind": "string"
+			},
+			"projects_chrome_listing_heading": {
+				"en": "Projects",
+				"fr": "Projets",
+				"kind": "string"
+			},
+			"projects_chrome_listing_search_placeholder": {
+				"en": "Search projects...",
+				"fr": "Rechercher des projets…",
+				"kind": "string"
+			},
+			"projects_chrome_listing_see_all_link": {
+				"en": "See all projects →",
+				"fr": "Voir tous les projets →",
+				"kind": "string"
+			},
+			"projects_chrome_listing_filters_label": {
+				"en": "Filters",
+				"fr": "Filtres",
+				"kind": "string"
+			},
+			"projects_chrome_listing_filters_services": {
+				"en": "Services",
+				"fr": "Services",
+				"kind": "string"
+			},
+			"projects_chrome_listing_filters_tags": {
+				"en": "Tags",
+				"fr": "Étiquettes",
+				"kind": "string"
+			},
+			"projects_chrome_listing_filters_tech_stack": {
+				"en": "Tech Stack",
+				"fr": "Stack technique",
+				"kind": "string"
+			},
+			"projects_chrome_listing_filters_all_label": {
+				"en": "All",
+				"fr": "Tous",
+				"kind": "string"
+			},
+			"projects_chrome_listing_filters_showing_prefix": {
+				"en": "Showing",
+				"fr": "Affichage",
+				"kind": "string"
+			},
+			"projects_chrome_listing_card_stack_overflow_suffix": {
+				"en": "+{count} more",
+				"fr": "+{count} de plus",
+				"kind": "string"
+			},
+			"projects_chrome_detail_back_to_listing_label": {
+				"en": "← All Projects",
+				"fr": "← Tous les projets",
+				"kind": "string"
+			},
+			"projects_chrome_detail_toc_section_title": {
+				"en": "On this page",
+				"fr": "Sur cette page",
+				"kind": "string"
+			},
+			"projects_chrome_detail_readme_section_title": {
+				"en": "README",
+				"fr": "README",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_overview": {
+				"en": "Overview",
+				"fr": "Aperçu",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_impact": {
+				"en": "Impact",
+				"fr": "Impact",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_stack": {
+				"en": "Stack",
+				"fr": "Stack",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_services": {
+				"en": "Services",
+				"fr": "Services",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_links": {
+				"en": "Links",
+				"fr": "Liens",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_project_info": {
+				"en": "Project Info",
+				"fr": "Infos du projet",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_live_site_label": {
+				"en": "Live Site",
+				"fr": "Site en ligne",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_live_site_label_mobile": {
+				"en": "↗ Live Site",
+				"fr": "↗ Site en ligne",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_github_label": {
+				"en": "GitHub",
+				"fr": "GitHub",
+				"kind": "string"
+			},
+			"projects_chrome_detail_toc_pill_open_aria": {
+				"en": "Table of contents",
+				"fr": "Table des matières",
+				"kind": "string"
+			},
+			"projects_chrome_detail_toc_pill_close_aria": {
+				"en": "Close table of contents",
+				"fr": "Fermer la table des matières",
+				"kind": "string"
+			},
+			"blog_chrome_listing_mobile_heading": {
+				"en": "Blog",
+				"fr": "Blogue",
+				"kind": "string"
+			},
+			"blog_chrome_listing_search_placeholder": {
+				"en": "Search posts...",
+				"fr": "Chercher des articles...",
+				"kind": "string"
+			},
+			"blog_chrome_listing_result_noun": {
+				"en": "result",
+				"fr": "résultat",
+				"kind": "string"
+			},
+			"blog_chrome_listing_no_posts_message": {
+				"en": "No posts found. Try adjusting your filters.",
+				"fr": "Aucun article trouvé. Essaie d'ajuster tes filtres.",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_label": {
+				"en": "Filters",
+				"fr": "Filtres",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_all_label": {
+				"en": "All",
+				"fr": "Tous",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_language": {
+				"en": "Language",
+				"fr": "Langue",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_date_range": {
+				"en": "Date Range",
+				"fr": "Période",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_from": {
+				"en": "From",
+				"fr": "De",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_to": {
+				"en": "To",
+				"fr": "À",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_tags": {
+				"en": "Tags",
+				"fr": "Étiquettes",
+				"kind": "string"
+			},
+			"blog_chrome_listing_filters_showing_prefix": {
+				"en": "Showing",
+				"fr": "Affichage",
+				"kind": "string"
+			},
+			"blog_chrome_listing_route_map_title": {
+				"en": "Route Map",
+				"fr": "Carte du trajet",
+				"kind": "string"
+			},
+			"blog_chrome_listing_route_map_terminus": {
+				"en": "Terminus",
+				"fr": "Terminus",
+				"kind": "string"
+			},
+			"blog_chrome_detail_code_copy_aria": {
+				"en": "Copy code to clipboard",
+				"fr": "Copier le code dans le presse-papiers",
+				"kind": "string"
+			},
+			"blog_chrome_detail_code_copy_label": {
+				"en": "Copy",
+				"fr": "Copier",
+				"kind": "string"
+			},
+			"blog_chrome_detail_code_error_label": {
+				"en": "Error",
+				"fr": "Erreur",
+				"kind": "string"
+			},
+			"blog_chrome_detail_back_nav_to_personal": {
+				"en": "← back to personal corner",
+				"fr": "← retour au coin personnel",
+				"kind": "string"
+			},
+			"blog_chrome_detail_back_nav_to_dispatches": {
+				"en": "← back to Blog",
+				"fr": "← retour au blogue",
+				"kind": "string"
+			},
+			"blog_chrome_detail_header_post_tags_aria": {
+				"en": "Post tags",
+				"fr": "Étiquettes de l'article",
+				"kind": "string"
+			},
+			"blog_chrome_detail_header_reading_time_label": {
+				"en": "{minutes} min read",
+				"fr": "{minutes} min de lecture",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_reading_mode": {
+				"en": "Reading mode",
+				"fr": "Mode lecture",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_toc_section_title": {
+				"en": "On this page",
+				"fr": "Sur cette page",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_meta_category": {
+				"en": "Category",
+				"fr": "Catégorie",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_meta_words": {
+				"en": "Words",
+				"fr": "Mots",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_meta_read_time": {
+				"en": "Read time",
+				"fr": "Temps de lecture",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_meta_language": {
+				"en": "Language",
+				"fr": "Langue",
+				"kind": "string"
+			},
+			"blog_chrome_detail_page_meta_tags": {
+				"en": "Tags",
+				"fr": "Étiquettes",
+				"kind": "string"
+			},
+			"blog_chrome_detail_toc_pill_open_aria": {
+				"en": "Table of contents",
+				"fr": "Table des matières",
+				"kind": "string"
+			},
+			"blog_chrome_detail_toc_pill_close_aria": {
+				"en": "Close table of contents",
+				"fr": "Fermer la table des matières",
+				"kind": "string"
+			},
+			"services_chrome_listing_heading": {
+				"en": "Services",
+				"fr": "Services",
+				"kind": "string"
+			},
+			"services_chrome_listing_station_label_template": {
+				"en": "Service {stationNum} / {totalStr}",
+				"fr": "Service {stationNum} / {totalStr}",
+				"kind": "string"
+			},
+			"services_chrome_listing_deep_dive_label": {
+				"en": "Deep dive →",
+				"fr": "Voir en détail →",
+				"kind": "string"
+			},
+			"services_chrome_listing_projects_strip_built_with_service": {
+				"en": "Built with {serviceTitle}",
+				"fr": "Bâti avec {serviceTitle}",
+				"kind": "string"
+			},
+			"services_chrome_listing_projects_strip_built_with_fallback": {
+				"en": "Built with this",
+				"fr": "Bâti avec ça",
+				"kind": "string"
+			},
+			"services_chrome_listing_projects_strip_project_singular": {
+				"en": "PROJECT",
+				"fr": "PROJET",
+				"kind": "string"
+			},
+			"services_chrome_listing_projects_strip_project_plural": {
+				"en": "PROJECTS",
+				"fr": "PROJETS",
+				"kind": "string"
+			},
+			"services_chrome_meta_title": {
+				"en": "Services · yesid.",
+				"fr": "Services · yesid.",
+				"kind": "string"
+			},
+			"services_chrome_meta_description": {
+				"en": "Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.",
+				"fr": "Quatre stations : Bases de données & SQL, Pipelines & Automatisation, Tableaux de bord & Analytique, Sites web & Commerce en ligne. Bâti à Montréal, livré avec des chiffres.",
+				"kind": "string"
+			},
+			"services_chrome_detail_back_to_services_label": {
+				"en": "← All Services",
+				"fr": "← Tous les services",
+				"kind": "string"
+			},
+			"services_chrome_detail_value_proposition_heading": {
+				"en": "How This Helps You",
+				"fr": "Comment ça t'aide",
+				"kind": "string"
+			},
+			"services_chrome_detail_deliverables_heading": {
+				"en": "Typical Deliverables",
+				"fr": "Livrables typiques",
+				"kind": "string"
+			},
+			"services_chrome_detail_related_projects_heading": {
+				"en": "Related Projects",
+				"fr": "Projets liés",
+				"kind": "string"
+			},
+			"services_chrome_detail_related_projects_nav_aria": {
+				"en": "Related projects",
+				"fr": "Projets liés",
+				"kind": "string"
+			},
+			"services_chrome_detail_service_nav_aria": {
+				"en": "Service navigation",
+				"fr": "Navigation des services",
+				"kind": "string"
+			},
+			"nav_chrome_directions_previous": {
+				"en": "Previous",
+				"fr": "Précédent",
+				"kind": "string"
+			},
+			"nav_chrome_directions_next": {
+				"en": "Next",
+				"fr": "Suivant",
+				"kind": "string"
+			},
+			"nav_chrome_shared_open_menu_aria": {
+				"en": "Open menu",
+				"fr": "Ouvrir le menu",
+				"kind": "string"
+			},
+			"nav_chrome_shared_close_menu_aria": {
+				"en": "Close menu",
+				"fr": "Fermer le menu",
+				"kind": "string"
+			},
+			"nav_chrome_shared_theme_toggle_aria": {
+				"en": "Dark theme",
+				"fr": "Thème sombre",
+				"kind": "string"
+			},
+			"nav_chrome_shared_footer_nav_aria": {
+				"en": "Footer navigation",
+				"fr": "Navigation du pied de page",
+				"kind": "string"
+			},
+			"nav_chrome_shared_menu_overlay_aria": {
+				"en": "Navigation menu",
+				"fr": "Menu de navigation",
+				"kind": "string"
+			},
+			"nav_chrome_shared_menu_overlay_footer_label": {
+				"en": "NAVIGATION · ALL ROUTES",
+				"fr": "NAVIGATION · TOUTES LES ROUTES",
+				"kind": "string"
+			},
+			"nav_chrome_shared_locale_switcher_aria": {
+				"en": "Language",
+				"fr": "Langue",
+				"kind": "string"
+			},
+			"nav_chrome_shared_search_placeholder": {
+				"en": "Search...",
+				"fr": "Rechercher...",
+				"kind": "string"
+			},
+			"nav_chrome_shared_clear_filters_label": {
+				"en": "clear filters",
+				"fr": "effacer les filtres",
+				"kind": "string"
+			},
+			"nav_chrome_shared_toc_toggle_section_aria": {
+				"en": "Toggle section",
+				"fr": "Basculer la section",
+				"kind": "string"
+			},
+			"nav_chrome_shared_toc_heading": {
+				"en": "On this page",
+				"fr": "Sur cette page",
+				"kind": "string"
+			},
+			"nav_chrome_shared_toc_mobile_button": {
+				"en": "Table of Contents",
+				"fr": "Table des matières",
+				"kind": "string"
+			},
+			"footer_chrome_related_projects_strip_built_with_label": {
+				"en": "Built with this",
+				"fr": "Bâti avec ça",
+				"kind": "string"
+			},
+			"footer_chrome_related_projects_strip_project_count_singular": {
+				"en": "project",
+				"fr": "projet",
+				"kind": "string"
+			},
+			"footer_chrome_related_projects_strip_project_count_plural": {
+				"en": "projects",
+				"fr": "projets",
+				"kind": "string"
+			},
+			"footer_chrome_footer_tagline": {
+				"en": "// digital infrastructure",
+				"fr": "// infrastructure numérique",
+				"kind": "string"
+			},
+			"footer_chrome_footer_location": {
+				"en": "Montreal, QC · Remote",
+				"fr": "Montréal, QC · À distance",
+				"kind": "string"
+			},
+			"footer_chrome_footer_status_prefix": {
+				"en": "system online ·",
+				"fr": "système en ligne ·",
+				"kind": "string"
+			},
+			"hero_dashboard_vehicles_label": {
+				"en": "VEHICLES TRACKED",
+				"fr": "VÉHICULES SUIVIS",
+				"kind": "string"
+			},
+			"hero_dashboard_vehicles_sub": {
+				"en": "DEMO · STM-STYLE",
+				"fr": "DÉMO · STYLE STM",
+				"kind": "string"
+			},
+			"hero_dashboard_delay_label": {
+				"en": "AVG DELAY",
+				"fr": "RETARD MOYEN",
+				"kind": "string"
+			},
+			"hero_dashboard_delay_sub": {
+				"en": "{coverage}% COVERAGE",
+				"fr": "{coverage}% DE COUVERTURE",
+				"kind": "string"
+			},
+			"hero_dashboard_routes_label": {
+				"en": "ROUTES LIVE",
+				"fr": "LIGNES EN DIRECT",
+				"kind": "string"
+			},
+			"hero_dashboard_routes_sub": {
+				"en": "OF {total} TOTAL",
+				"fr": "SUR {total} AU TOTAL",
+				"kind": "string"
+			},
+			"ui_stations_one_system": {
+				"en": "{count} stations · one system",
+				"fr": "{count} stations · un seul système",
+				"kind": "string"
+			},
+			"ui_result_count_singular": {
+				"en": "{count} result",
+				"fr": "{count} résultat",
+				"kind": "string"
+			},
+			"ui_result_count_plural": {
+				"en": "{count} results",
+				"fr": "{count} résultats",
+				"kind": "string"
+			},
+			"ui_language_name_en": {
+				"en": "English",
+				"fr": "Anglais",
+				"kind": "string"
+			},
+			"ui_language_name_fr": {
+				"en": "French",
+				"fr": "Français",
+				"kind": "string"
+			},
+			"ui_language_name_es": {
+				"en": "Spanish",
+				"fr": "Espagnol",
+				"kind": "string"
+			},
+			"services_chrome_listing_station_short_database_engineering": {
+				"en": "Databases",
+				"fr": "Bases de données",
+				"kind": "string"
+			},
+			"services_chrome_listing_station_short_data_pipeline": {
+				"en": "Pipelines",
+				"fr": "Pipelines",
+				"kind": "string"
+			},
+			"services_chrome_listing_station_short_analytics_reporting": {
+				"en": "Dashboards",
+				"fr": "Tableaux de bord",
+				"kind": "string"
+			},
+			"services_chrome_listing_station_short_web_development": {
+				"en": "Websites",
+				"fr": "Sites web",
+				"kind": "string"
+			},
+			"services_chrome_detail_stack_heading": {
+				"en": "Stack",
+				"fr": "Stack",
+				"kind": "string"
+			},
+			"services_chrome_detail_see_stack_label": {
+				"en": "See the full stack →",
+				"fr": "Voir la stack complète →",
+				"kind": "string"
+			},
+			"nav_chrome_shared_toc_close_aria": {
+				"en": "Close table of contents",
+				"fr": "Fermer la table des matières",
+				"kind": "string"
+			},
+			"nav_chrome_shared_toc_counter_prefix": {
+				"en": "SEC",
+				"fr": "SEC",
+				"kind": "string"
+			},
+			"a11y_project_image_open": {
+				"en": "Open {caption}",
+				"fr": "Ouvrir {caption}",
+				"kind": "string"
+			},
+			"a11y_project_image_close": {
+				"en": "Close image",
+				"fr": "Fermer l'image",
+				"kind": "string"
+			},
+			"a11y_more_metrics": {
+				"en": "More metrics",
+				"fr": "Plus de métriques",
+				"kind": "string"
+			},
+			"a11y_architecture_diagram": {
+				"en": "Architecture diagram",
+				"fr": "Diagramme d'architecture",
+				"kind": "string"
+			},
+			"a11y_technology_stack_template": {
+				"en": "Technology stack: {stack}",
+				"fr": "Stack technique : {stack}",
+				"kind": "string"
+			},
+			"ui_terminal_title": {
+				"en": "terminal",
+				"fr": "terminal",
+				"kind": "string"
+			},
+			"blog_chrome_detail_code_title": {
+				"en": "code",
+				"fr": "code",
+				"kind": "string"
+			},
+			"a11y_quiet_mode_label": {
+				"en": "Collapse all",
+				"fr": "Tout replier",
+				"kind": "string"
+			},
+			"a11y_quiet_mode_enable": {
+				"en": "Collapse all sections on this page",
+				"fr": "Replier toutes les sections de la page",
+				"kind": "string"
+			},
+			"a11y_quiet_mode_disable": {
+				"en": "Expand all sections on this page",
+				"fr": "Déplier toutes les sections de la page",
+				"kind": "string"
+			},
+			"a11y_quiet_mode_remember": {
+				"en": "Always start collapsed",
+				"fr": "Toujours replier",
+				"kind": "string"
+			},
+			"a11y_quiet_mode_forget": {
+				"en": "Don't start collapsed",
+				"fr": "Ne plus replier",
+				"kind": "string"
+			},
+			"projects_chrome_detail_glance_repo_private_label": {
+				"en": "Private repo (for now)",
+				"fr": "Dépôt privé (pour le moment)",
+				"kind": "string"
+			},
+			"a11y_quiet_mode_label_collapsed": {
+				"en": "Expand all",
+				"fr": "Tout déplier",
+				"kind": "string"
+			},
+			"blog_chrome_listing_no_posts_empty_message": {
+				"en": "Nothing here yet. New posts are in transit.",
+				"fr": "Rien ici pour le moment. Les prochains articles sont en transit.",
+				"kind": "string"
+			},
+			"hero_dashboard_vehicles_sub_live": {
+				"en": "STM · LIVE",
+				"fr": "STM · EN DIRECT",
+				"kind": "string"
+			},
+			"pages_home_section_about": {
+				"en": "About",
+				"fr": "À propos",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "site_meta",
+		"id": 1,
+		"parentFk": "site_meta_id",
+		"fields": {
+			"default_description": {
+				"en": "yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.",
+				"fr": "yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.",
+				"fr": "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+				"kind": "string"
+			},
+			"tagline": {
+				"en": "Digital infrastructure that moves.",
+				"fr": "Une infrastructure numérique qui bouge.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_closer",
+		"id": "9aca5265-6e5f-4c61-8c35-1960061cbbd4",
+		"parentFk": "block_closer_id",
+		"fields": {
+			"attribution": {
+				"en": {
+					"text": "Graffiti Vectors by Vecteezy",
+					"url": "https://www.vecteezy.com/free-vector/graffiti"
+				},
+				"fr": {
+					"text": "Vecteurs graffiti par Vecteezy",
+					"url": "https://www.vecteezy.com/free-vector/graffiti"
+				},
+				"kind": "json"
+			},
+			"cta": {
+				"en": {
+					"label": "Initialize connection",
+					"href": "/contact"
+				},
+				"kind": "json"
+			},
+			"heading": {
+				"en": "TERMINUS",
+				"fr": "TERMINUS",
+				"kind": "string"
+			},
+			"heading_dot": {
+				"en": ".",
+				"fr": ".",
+				"kind": "string"
+			},
+			"rows": {
+				"en": {
+					"contact": {
+						"label": "CONTACT",
+						"description": "Start a project together",
+						"action": "GO"
+					},
+					"connect": {
+						"label": "EXPLORE",
+						"description": "GitHub · open-source work",
+						"action": "GO"
+					},
+					"read": {
+						"label": "READ",
+						"action": "cd"
+					},
+					"about": {
+						"label": "ABOUT",
+						"description": "Yesid O. · Montreal",
+						"action": "cd"
+					}
+				},
+				"fr": {
+					"contact": {
+						"label": "CONTACT",
+						"description": "Démarrons un projet ensemble",
+						"action": "GO"
+					},
+					"connect": {
+						"label": "EXPLORER",
+						"description": "GitHub · projets à code ouvert",
+						"action": "GO"
+					},
+					"read": {
+						"label": "LIRE",
+						"action": "cd"
+					},
+					"about": {
+						"label": "À PROPOS",
+						"description": "Yesid O. · Montréal",
+						"action": "cd"
+					}
+				},
+				"kind": "json"
+			},
+			"subheading": {
+				"en": "END OF LINE",
+				"fr": "FIN DE LA LIGNE",
+				"kind": "string"
+			},
+			"terminal": {
+				"en": {
+					"title": "yesid@terminus:~/destinations",
+					"city": "Montreal, QC",
+					"encoding": "UTF-8",
+					"destinationsLabel": "{count} destinations",
+					"prompt": "// where to next?"
+				},
+				"fr": {
+					"title": "yesid@terminus:~/destinations",
+					"city": "Montréal, QC",
+					"encoding": "UTF-8",
+					"destinationsLabel": "{count} destinations",
+					"prompt": "// on va où ensuite?"
+				},
+				"kind": "json"
+			},
+			"cta_label": {
+				"en": "Initialize connection",
+				"fr": "Initialiser la connexion",
+				"kind": "string"
+			},
+			"attribution_text": {
+				"en": "Graffiti Vectors by Vecteezy",
+				"fr": "Graffiti Vectors by Vecteezy",
+				"kind": "string"
+			},
+			"terminal_title": {
+				"en": "yesid@terminus:~/destinations",
+				"fr": "yesid@terminus:~/destinations",
+				"kind": "string"
+			},
+			"terminal_city": {
+				"en": "Montreal, QC",
+				"fr": "Montréal, QC",
+				"kind": "string"
+			},
+			"terminal_encoding": {
+				"en": "UTF-8",
+				"fr": "UTF-8",
+				"kind": "string"
+			},
+			"terminal_destinations_label": {
+				"en": "{count} destinations",
+				"fr": "{count} destinations",
+				"kind": "string"
+			},
+			"terminal_prompt": {
+				"en": "// where to next?",
+				"fr": "// on va où, là?",
+				"kind": "string"
+			},
+			"rows_contact_label": {
+				"en": "CONTACT",
+				"fr": "CONTACT",
+				"kind": "string"
+			},
+			"rows_contact_description": {
+				"en": "Start a project together",
+				"fr": "Démarrer un projet ensemble",
+				"kind": "string"
+			},
+			"rows_contact_action": {
+				"en": "GO",
+				"fr": "GO",
+				"kind": "string"
+			},
+			"rows_connect_label": {
+				"en": "GITHUB REPO",
+				"fr": "DÉPÔT GITHUB",
+				"kind": "string"
+			},
+			"rows_connect_description": {
+				"en": "GitHub · open-source work",
+				"fr": "GitHub · travail open source",
+				"kind": "string"
+			},
+			"rows_connect_action": {
+				"en": "GO",
+				"fr": "GO",
+				"kind": "string"
+			},
+			"rows_read_label": {
+				"en": "BLOG",
+				"fr": "BLOGUE",
+				"kind": "string"
+			},
+			"rows_read_action": {
+				"en": "cd",
+				"fr": "cd",
+				"kind": "string"
+			},
+			"rows_about_label": {
+				"en": "YESID",
+				"fr": "YESID",
+				"kind": "string"
+			},
+			"rows_about_description": {
+				"en": "About the builder",
+				"fr": "À propos du bâtisseur",
+				"kind": "string"
+			},
+			"rows_about_action": {
+				"en": "cd",
+				"fr": "cd",
+				"kind": "string"
+			},
+			"rows_stack_label": {
+				"en": "STACK",
+				"fr": "STACK",
+				"kind": "string"
+			},
+			"rows_stack_description": {
+				"en": "Tools and architecture",
+				"fr": "Outils et architecture",
+				"kind": "string"
+			},
+			"rows_stack_action": {
+				"en": "cd",
+				"fr": "cd",
+				"kind": "string"
+			},
+			"rows_read_description": {
+				"en": "Writing and field notes",
+				"fr": "Notes et articles",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "error_pages",
+		"id": "373a1281-9e65-473c-b374-9352db95519e",
+		"parentFk": "error_pages_id",
+		"fields": {
+			"description": {
+				"en": "The server encountered an unexpected error. Please try again later.",
+				"fr": "Le serveur a rencontré une erreur inattendue. Réessaie plus tard.",
+				"kind": "string"
+			},
+			"heading": {
+				"en": "Something went wrong",
+				"fr": "Quelque chose a mal tourné",
+				"kind": "string"
+			},
+			"label": {
+				"en": "SYSTEM ERROR",
+				"fr": "ERREUR SYSTÈME",
+				"kind": "string"
+			},
+			"suggestions": {
+				"en": [
+					{
+						"label": "Home",
+						"href": "/"
+					},
+					{
+						"label": "Contact",
+						"href": "/contact"
+					}
+				],
+				"fr": [
+					{
+						"label": "Accueil",
+						"href": "/"
+					},
+					{
+						"label": "Contact",
+						"href": "/contact"
+					}
+				],
+				"kind": "json"
+			},
+			"terminal_line": {
+				"en": "$ route --status 500 // internal server error",
+				"fr": "$ route --status 500 // internal server error",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "error_pages",
+		"id": "0ed501b3-0866-497e-93d1-55245c864a9f",
+		"parentFk": "error_pages_id",
+		"fields": {
+			"description": {
+				"en": "The page you were looking for could not be found.",
+				"fr": "La page que tu cherchais est introuvable.",
+				"kind": "string"
+			},
+			"heading": {
+				"en": "This station is offline",
+				"fr": "Cette station est hors ligne",
+				"kind": "string"
+			},
+			"label": {
+				"en": "PAGE NOT FOUND",
+				"fr": "PAGE INTROUVABLE",
+				"kind": "string"
+			},
+			"suggestions": {
+				"en": [
+					{
+						"label": "Home",
+						"href": "/"
+					},
+					{
+						"label": "Services",
+						"href": "/services"
+					}
+				],
+				"fr": [
+					{
+						"label": "Accueil",
+						"href": "/"
+					},
+					{
+						"label": "Services",
+						"href": "/services"
+					}
+				],
+				"kind": "json"
+			},
+			"terminal_line": {
+				"en": "$ route --status 0 // generic fallback",
+				"fr": "$ route --status 0 // generic fallback",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 1,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "yesid. | Digital Infrastructure that Moves.",
+				"fr": "yesid. | Infrastructure numérique qui avance.",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards.",
+				"fr": "Développeur SQL pigiste et consultant en infrastructure numérique à Montréal. PostgreSQL, dbt, Power BI et Python pour pipelines, analyses et tableaux de bord.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 2,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Yesid, Digital Infrastructure Engineer in Montreal",
+				"fr": "Yesid, ingénieur en infrastructure numérique à Montréal",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work.",
+				"fr": "Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 3,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Hire a Digital Infrastructure Freelancer in Montreal",
+				"fr": "Engager un pigiste en infrastructure numérique à Montréal",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montreal; available remotely.",
+				"fr": "Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal et disponible à distance.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 4,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Digital Infrastructure Services: Web, Data, Automation",
+				"fr": "Infrastructure numérique: web, données, automatisation",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams.",
+				"fr": "Services d'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 5,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Projects",
+				"fr": "Projets",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.",
+				"fr": "Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure numérique.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 6,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Blog",
+				"fr": "Blog",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Notes on digital infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.",
+				"fr": "Notes sur l'infrastructure numérique, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 7,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Personal Blog",
+				"fr": "Blogue perso",
+				"kind": "string"
+			},
+			"description": {
+				"en": "Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well.",
+				"fr": "Notes hors travail: outils, lectures, expériences et projets parallèles. Plus personnel que le blog professionnel, mais toujours centré sur bien construire.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "route_seo",
+		"id": 8,
+		"parentFk": "route_seo_id",
+		"fields": {
+			"title": {
+				"en": "Tech Stack",
+				"fr": "Stack technique",
+				"kind": "string"
+			},
+			"description": {
+				"en": "The tools, languages, and platforms yesid. works with daily: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript, and the glue that holds them together.",
+				"fr": "Les outils, langages et plateformes que yesid. utilise au quotidien: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript et la colle qui tient tout ensemble.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_hero",
+		"id": "4acac46d-6d45-4344-bdee-04122e4a64d1",
+		"parentFk": "block_hero_id",
+		"fields": {
+			"cta_contact": {
+				"en": "Book a 20-min intro call",
+				"fr": "Réserver un appel intro de 20 min",
+				"kind": "string"
+			},
+			"cta_work": {
+				"en": "See how I build →",
+				"fr": "Vois comment je bâtis →",
+				"kind": "string"
+			},
+			"headline": {
+				"en": {
+					"line1": "SYSTEMS THAT",
+					"line2": "DON'T BREAK.",
+					"ariaSuffix": "Don't Break."
+				},
+				"fr": {
+					"line1": "DES SYSTÈMES QUI",
+					"line2": "NE CASSENT PAS.",
+					"ariaSuffix": "Ne cassent pas."
+				},
+				"kind": "json"
+			},
+			"hero_anim": {
+				"en": {
+					"scrollDown": "NEXT STOP: SCROLL DOWN"
+				},
+				"fr": {
+					"scrollDown": "PROCHAIN ARRÊT : DESCENDEZ"
+				},
+				"kind": "json"
+			},
+			"refresh_button": {
+				"en": {
+					"label": "PULL FRESH DATA",
+					"helper": "Refreshes metrics + query results from the live pipeline"
+				},
+				"fr": {
+					"label": "TIRER DES DONNÉES FRAÎCHES",
+					"helper": "Rafraîchit les métriques et les résultats de requête à partir du pipeline en direct"
+				},
+				"kind": "json"
+			},
+			"sql_panel": {
+				"en": {
+					"prompt": "yesid@transit:gold>",
+					"liveLabel": "LIVE",
+					"columns": {
+						"route": "route",
+						"avgDelayS": "avg_delay_s",
+						"vehicles": "vehicles"
+					},
+					"metaTemplate": "5 rows · {queryTime}s · updated {updatedAgo}"
+				},
+				"fr": {
+					"prompt": "yesid@transit:gold>",
+					"liveLabel": "EN DIRECT",
+					"columns": {
+						"route": "route",
+						"avgDelayS": "avg_delay_s",
+						"vehicles": "vehicles"
+					},
+					"metaTemplate": "5 lignes · {queryTime}s · mis à jour {updatedAgo}"
+				},
+				"kind": "json"
+			},
+			"subheadline": {
+				"en": "I make data tell the truth.",
+				"fr": "Je fais parler les données, pour vrai.",
+				"kind": "string"
+			},
+			"subtitle": {
+				"en": "Building reliable infrastructure for teams that can't afford downtime.",
+				"fr": "Je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
+				"kind": "string"
+			},
+			"headline_line1": {
+				"en": "SYSTEMS THAT",
+				"fr": "DES SYSTÈMES QUI",
+				"kind": "string"
+			},
+			"headline_line2": {
+				"en": "DON'T BREAK",
+				"fr": "NE CASSENT PAS",
+				"kind": "string"
+			},
+			"headline_aria_suffix": {
+				"en": "Don't Break.",
+				"fr": "Ne cassent pas.",
+				"kind": "string"
+			},
+			"sql_prompt": {
+				"en": "yesid@transit:gold>",
+				"fr": "yesid@transit:gold>",
+				"kind": "string"
+			},
+			"sql_live_label": {
+				"en": "DEMO",
+				"fr": "DÉMO",
+				"kind": "string"
+			},
+			"sql_col_route": {
+				"en": "route",
+				"fr": "route",
+				"kind": "string"
+			},
+			"sql_col_avg_delay": {
+				"en": "avg_delay_s",
+				"fr": "avg_delay_s",
+				"kind": "string"
+			},
+			"sql_col_vehicles": {
+				"en": "vehicles",
+				"fr": "vehicles",
+				"kind": "string"
+			},
+			"sql_meta_template": {
+				"en": "5 rows · {queryTime}s · {updatedAgo}",
+				"fr": "5 lignes · {queryTime}s · {updatedAgo}",
+				"kind": "string"
+			},
+			"refresh_label": {
+				"en": "PULL FRESH DATA",
+				"fr": "TIRER DES DONNÉES FRAÎCHES",
+				"kind": "string"
+			},
+			"refresh_helper": {
+				"en": "Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.",
+				"fr": "Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.",
+				"kind": "string"
+			},
+			"scroll_down": {
+				"en": "NEXT STOP: SCROLL DOWN",
+				"fr": "PROCHAIN ARRÊT : FAIS DÉFILER",
+				"kind": "string"
+			},
+			"identity_line": {
+				"en": "freelance digital infrastructure - Montreal",
+				"fr": "infrastructure numérique à la pige - Montréal",
+				"kind": "string"
+			},
+			"sql_live_badge": {
+				"en": "LIVE",
+				"fr": "EN DIRECT",
+				"kind": "string"
+			},
+			"refresh_helper_live": {
+				"en": "Refreshes metrics + query results from the live pipeline.",
+				"fr": "Actualise les métriques et les résultats de requête depuis le pipeline en direct.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_manifesto",
+		"id": "be09d2ee-e057-4a26-9aae-b49e83273ec4",
+		"parentFk": "block_manifesto_id",
+		"fields": {
+			"edge_bottom": {
+				"en": {
+					"connected": "CONNECTED",
+					"line": "LIGNE ORANGE",
+					"url": "yesid.dev",
+					"version": "v2.0",
+					"scrollHint": "SCROLL ↓"
+				},
+				"fr": {
+					"connected": "CONNECTÉ",
+					"line": "LIGNE ORANGE",
+					"url": "yesid.dev",
+					"version": "v2.0",
+					"scrollHint": "DÉFILER ↓"
+				},
+				"kind": "json"
+			},
+			"edge_left": {
+				"en": {
+					"sectionNumber": "SEC-02",
+					"sectionName": "MANIFESTO",
+					"location": "MTL-QC"
+				},
+				"kind": "json"
+			},
+			"edge_right": {
+				"en": {
+					"lat": "LAT 45.5017°N",
+					"lng": "LNG 73.5673°W",
+					"src": "SRC Sherbrooke, QC",
+					"via": "VIA Lennoxville, QC",
+					"dst": "DST Montréal, QC",
+					"node": "NODE berri-uqam",
+					"status": "STATUS active"
+				},
+				"fr": {
+					"lat": "LAT 45.5017°N",
+					"lng": "LNG 73.5673°W",
+					"src": "SRC Sherbrooke, QC",
+					"via": "VIA Lennoxville, QC",
+					"dst": "DST Montréal, QC",
+					"node": "NODE berri-uqam",
+					"status": "STATUS active"
+				},
+				"kind": "json"
+			},
+			"hidden_transit_lines": {
+				"en": [
+					{
+						"name": "LIGNE BLEUE",
+						"color": "#003DA5"
+					},
+					{
+						"name": "LIGNE VERTE",
+						"color": "#008F4F"
+					},
+					{
+						"name": "LIGNE JAUNE",
+						"color": "#F0CB00"
+					},
+					{
+						"name": "REM",
+						"color": "#78BE20"
+					},
+					{
+						"name": "11 VAUDREUIL/HUDSON",
+						"color": "#DA291C"
+					},
+					{
+						"name": "12 SAINT-JÉRÔME",
+						"color": "#009B3A"
+					},
+					{
+						"name": "13 MONT-SAINT-HILAIRE",
+						"color": "#FFD100"
+					},
+					{
+						"name": "14 CANDIAC",
+						"color": "#7B2D8E"
+					},
+					{
+						"name": "15 MASCOUCHE",
+						"color": "#0072CE"
+					}
+				],
+				"fr": [
+					{
+						"name": "LIGNE BLEUE",
+						"color": "#003DA5"
+					},
+					{
+						"name": "LIGNE VERTE",
+						"color": "#008F4F"
+					},
+					{
+						"name": "LIGNE JAUNE",
+						"color": "#F0CB00"
+					},
+					{
+						"name": "REM",
+						"color": "#78BE20"
+					},
+					{
+						"name": "11 VAUDREUIL/HUDSON",
+						"color": "#DA291C"
+					},
+					{
+						"name": "12 SAINT-JÉRÔME",
+						"color": "#009B3A"
+					},
+					{
+						"name": "13 MONT-SAINT-HILAIRE",
+						"color": "#FFD100"
+					},
+					{
+						"name": "14 CANDIAC",
+						"color": "#7B2D8E"
+					},
+					{
+						"name": "15 MASCOUCHE",
+						"color": "#0072CE"
+					}
+				],
+				"kind": "json"
+			},
+			"pills": {
+				"en": [
+					{
+						"label": "databases",
+						"serviceId": "database-engineering"
+					},
+					{
+						"label": "pipelines",
+						"serviceId": "data-pipeline"
+					},
+					{
+						"label": "dashboards",
+						"serviceId": "analytics-reporting"
+					},
+					{
+						"label": "websites",
+						"serviceId": "web-development"
+					}
+				],
+				"fr": [
+					{
+						"label": "bases de données",
+						"serviceId": "database-engineering"
+					},
+					{
+						"label": "pipelines",
+						"serviceId": "data-pipeline"
+					},
+					{
+						"label": "tableaux de bord",
+						"serviceId": "analytics-reporting"
+					},
+					{
+						"label": "sites web",
+						"serviceId": "web-development"
+					}
+				],
+				"kind": "json"
+			},
+			"statement": {
+				"en": {
+					"line1": "I BUILD THE",
+					"lineHuge": "INFRASTRUCTURE",
+					"line3Part1": "YOUR",
+					"line3Highlight": "OPERATIONS",
+					"line3Part2": "RUN ON"
+				},
+				"fr": {
+					"line1": "JE BÂTIS L'",
+					"lineHuge": "INFRASTRUCTURE",
+					"line3Part1": "DONT",
+					"line3Highlight": "VOS OPÉRATIONS",
+					"line3Part2": "ONT BESOIN"
+				},
+				"kind": "json"
+			},
+			"terminal": {
+				"en": {
+					"user": "yesid@mtl",
+					"command": ":~$ cat manifesto.md"
+				},
+				"fr": {
+					"user": "yesid@mtl",
+					"command": ":~$ cat manifesto.md"
+				},
+				"kind": "json"
+			},
+			"transit": {
+				"en": {
+					"arrivalLabel": "PROCHAIN / NEXT",
+					"platformBadge": "QUAI / PLATFORM 2",
+					"directionBadge": "DIRECTION: CENTRE-VILLE"
+				},
+				"fr": {
+					"arrivalLabel": "PROCHAIN / NEXT",
+					"platformBadge": "QUAI / PLATFORM 2",
+					"directionBadge": "DIRECTION: CENTRE-VILLE"
+				},
+				"kind": "json"
+			},
+			"statement_line1": {
+				"en": "I BUILD THE",
+				"fr": "JE BÂTIS L'",
+				"kind": "string"
+			},
+			"statement_line_huge": {
+				"en": "INFRASTRUCTURE",
+				"fr": "INFRASTRUCTURE",
+				"kind": "string"
+			},
+			"statement_line3_part1": {
+				"en": "YOUR",
+				"fr": "DONT",
+				"kind": "string"
+			},
+			"statement_line3_highlight": {
+				"en": "OPERATIONS",
+				"fr": "TES OPÉRATIONS",
+				"kind": "string"
+			},
+			"statement_line3_part2": {
+				"en": "RUN ON",
+				"fr": "ONT BESOIN",
+				"kind": "string"
+			},
+			"terminal_user": {
+				"en": "yesid@mtl",
+				"fr": "yesid@mtl",
+				"kind": "string"
+			},
+			"terminal_command": {
+				"en": ":~$ cat manifesto.md",
+				"fr": ":~$ cat manifesto.md",
+				"kind": "string"
+			},
+			"edge_left_section_number": {
+				"en": "SEC-02",
+				"fr": "SEC-02",
+				"kind": "string"
+			},
+			"edge_left_section_name": {
+				"en": "MANIFESTO",
+				"fr": "MANIFESTE",
+				"kind": "string"
+			},
+			"edge_left_location": {
+				"en": "MTL-QC",
+				"fr": "MTL-QC",
+				"kind": "string"
+			},
+			"edge_right_lat": {
+				"en": "LAT 45.5017°N",
+				"fr": "LAT 45.5017°N",
+				"kind": "string"
+			},
+			"edge_right_lng": {
+				"en": "LNG 73.5673°W",
+				"fr": "LNG 73.5673°W",
+				"kind": "string"
+			},
+			"edge_right_src": {
+				"en": "SRC Sherbrooke, QC",
+				"fr": "SRC Sherbrooke, QC",
+				"kind": "string"
+			},
+			"edge_right_via": {
+				"en": "VIA Lennoxville, QC",
+				"fr": "VIA Lennoxville, QC",
+				"kind": "string"
+			},
+			"edge_right_dst": {
+				"en": "DST Montréal, QC",
+				"fr": "DST Montréal, QC",
+				"kind": "string"
+			},
+			"edge_right_node": {
+				"en": "NODE berri-uqam",
+				"fr": "NODE berri-uqam",
+				"kind": "string"
+			},
+			"edge_right_status": {
+				"en": "STATUS active",
+				"fr": "STATUS active",
+				"kind": "string"
+			},
+			"edge_bottom_connected": {
+				"en": "CONNECTED",
+				"fr": "CONNECTÉ",
+				"kind": "string"
+			},
+			"edge_bottom_line": {
+				"en": "LIGNE ORANGE",
+				"fr": "LIGNE ORANGE",
+				"kind": "string"
+			},
+			"edge_bottom_url": {
+				"en": "yesid.dev",
+				"fr": "yesid.dev",
+				"kind": "string"
+			},
+			"edge_bottom_version": {
+				"en": "v2.0",
+				"fr": "v2.0",
+				"kind": "string"
+			},
+			"edge_bottom_scroll_hint": {
+				"en": "SCROLL ↓",
+				"fr": "DÉFILER ↓",
+				"kind": "string"
+			},
+			"transit_arrival_label": {
+				"en": "PROCHAIN / NEXT",
+				"fr": "PROCHAIN / NEXT",
+				"kind": "string"
+			},
+			"transit_platform_badge": {
+				"en": "QUAI / PLATFORM 2",
+				"fr": "QUAI / PLATFORM 2",
+				"kind": "string"
+			},
+			"transit_direction_badge": {
+				"en": "DIRECTION: CENTRE-VILLE",
+				"fr": "DIRECTION: CENTRE-VILLE",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_proof_reel",
+		"id": "6c8a6ba1-d44c-4c17-8fa3-736ef77fd1ff",
+		"parentFk": "block_proof_reel_id",
+		"fields": {
+			"heading": {
+				"en": "PROOF",
+				"fr": "PREUVES",
+				"kind": "string"
+			},
+			"heading_dot": {
+				"en": ".",
+				"fr": ".",
+				"kind": "string"
+			},
+			"section_label": {
+				"en": "// PROOF",
+				"fr": "// PREUVES",
+				"kind": "string"
+			},
+			"subheading": {
+				"en": "SELECTED WORK",
+				"fr": "TRAVAUX CHOISIS",
+				"kind": "string"
+			},
+			"toggle_color_aria": {
+				"en": "Toggle color for {title}",
+				"fr": "Activer la couleur pour {title}",
+				"kind": "string"
+			},
+			"view_all_label": {
+				"en": "View all projects →",
+				"fr": "Voir tous les projets →",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_services_grid",
+		"id": "df55e0eb-c529-4339-b6c5-c9d03652f714",
+		"parentFk": "block_services_grid_id",
+		"fields": {
+			"heading": {
+				"en": "SERVICES",
+				"fr": "SERVICES",
+				"kind": "string"
+			},
+			"heading_dot": {
+				"en": ".",
+				"fr": ".",
+				"kind": "string"
+			},
+			"subheading": {
+				"en": "WHAT I BUILD",
+				"fr": "CE QUE JE BÂTIS",
+				"kind": "string"
+			},
+			"view_all_link": {
+				"en": "View all services →",
+				"fr": "Voir tous les services →",
+				"kind": "string"
+			},
+			"view_illustration_aria": {
+				"en": "View {title} illustration",
+				"fr": "Voir l'illustration de {title}",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_cta",
+		"id": "77d71216-9eb6-45d0-bd4c-b69fc94dcd45",
+		"parentFk": "block_cta_id",
+		"fields": {
+			"cta_contact": {
+				"en": "Get in touch",
+				"fr": "Parlons-en",
+				"kind": "string"
+			},
+			"cta_github": {
+				"en": "View on GitHub",
+				"fr": "Voir sur GitHub",
+				"kind": "string"
+			},
+			"heading": {
+				"en": "Let's build something\nthat moves",
+				"fr": "Bâtissons quelque chose\nqui avance",
+				"kind": "string"
+			},
+			"subtitle": {
+				"en": "Database, pipeline, dashboard, website: wherever it's stuck, that's where we start.",
+				"fr": "Base de données, pipeline, tableau de bord, site web : peu importe où ça accroche, c'est là qu'on commence.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_about_intro",
+		"id": "277c93ff-5416-4d6a-8580-50cf6cdec713",
+		"parentFk": "block_about_intro_id",
+		"fields": {
+			"bio": {
+				"en": "I take data, make it tell stories, and build the systems it moves through.",
+				"fr": "Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.",
+				"kind": "string"
+			},
+			"interests": {
+				"en": "Manga · Transit · Space · Montreal food scene",
+				"fr": "Manga · Transport collectif · Espace · Scène bouffe de Montréal",
+				"kind": "string"
+			},
+			"interests_label": {
+				"en": "INTERESTS",
+				"fr": "INTÉRÊTS",
+				"kind": "string"
+			},
+			"location": {
+				"en": {
+					"city": "Montreal",
+					"region": "QC, Canada"
+				},
+				"fr": {
+					"city": "Montréal",
+					"region": "QC, Canada"
+				},
+				"kind": "json"
+			},
+			"location_label": {
+				"en": "LOCATION",
+				"fr": "EMPLACEMENT",
+				"kind": "string"
+			},
+			"more_link": {
+				"en": "→ More about me",
+				"fr": "→ En savoir plus sur moi",
+				"kind": "string"
+			},
+			"name": {
+				"en": "Yesid",
+				"fr": "Yesid",
+				"kind": "string"
+			},
+			"stack_label": {
+				"en": "STACK",
+				"fr": "STACK",
+				"kind": "string"
+			},
+			"title": {
+				"en": "Freelance Digital Infrastructure Engineer",
+				"fr": "Ingénieur en infrastructure numérique, à la pige",
+				"kind": "string"
+			},
+			"location_city": {
+				"en": "Montreal",
+				"fr": "Montréal",
+				"kind": "string"
+			},
+			"location_region": {
+				"en": "QC, Canada",
+				"fr": "QC, Canada",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_blog_page_content",
+		"id": "74ef9d4b-9e57-41e1-9d62-1be677bd9a74",
+		"parentFk": "block_blog_page_content_id",
+		"fields": {
+			"intro": {
+				"en": "Notes on digital infrastructure, databases, and building reliable systems.",
+				"fr": "Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.",
+				"kind": "string"
+			},
+			"heading": {
+				"en": "Blog",
+				"fr": "Blogue",
+				"kind": "string"
+			},
+			"back_to_dispatches": {
+				"en": "← back to Blog",
+				"fr": "← retour au blogue",
+				"kind": "string"
+			},
+			"back_to_personal": {
+				"en": "← back to personal corner",
+				"fr": "← retour au coin personnel",
+				"kind": "string"
+			},
+			"personal_heading": {
+				"en": "Personal Corner",
+				"fr": "Coin perso",
+				"kind": "string"
+			},
+			"personal_intro": {
+				"en": "Trains, space, tools, and the off-work notes that still shape how I build.",
+				"fr": "Trains, espace, outils, et les notes hors mandat qui influencent encore ma façon de bâtir.",
+				"kind": "string"
+			},
+			"to_personal_label": {
+				"en": "Personal Corner",
+				"fr": "Coin perso",
+				"kind": "string"
+			},
+			"to_personal_subtitle": {
+				"en": "Off the clock",
+				"fr": "Hors mandat",
+				"kind": "string"
+			},
+			"to_professional_label": {
+				"en": "Back to Blog",
+				"fr": "Retour au blogue",
+				"kind": "string"
+			},
+			"to_professional_subtitle": {
+				"en": "Brand notes",
+				"fr": "Notes de marque",
+				"kind": "string"
+			},
+			"entry_rail_work_title": {
+				"en": "Work With Me",
+				"fr": "Travailler ensemble",
+				"kind": "string"
+			},
+			"entry_rail_work_prompt": {
+				"en": "Need a system that stays editable?",
+				"fr": "Besoin d’un système qui reste éditable?",
+				"kind": "string"
+			},
+			"entry_rail_services_label": {
+				"en": "View Services",
+				"fr": "Voir les services",
+				"kind": "string"
+			},
+			"entry_rail_contact_label": {
+				"en": "Start a Project",
+				"fr": "Démarrer un projet",
+				"kind": "string"
+			},
+			"entry_rail_routes_title": {
+				"en": "Pick A Route",
+				"fr": "Choisir une route",
+				"kind": "string"
+			},
+			"entry_rail_route_case_studies_label": {
+				"en": "Case studies",
+				"fr": "Études de cas",
+				"kind": "string"
+			},
+			"entry_rail_route_services_label": {
+				"en": "Services",
+				"fr": "Services",
+				"kind": "string"
+			},
+			"entry_rail_route_stack_label": {
+				"en": "Stack",
+				"fr": "Stack",
+				"kind": "string"
+			},
+			"entry_rail_route_about_label": {
+				"en": "About the author",
+				"fr": "À propos de l'auteur",
+				"kind": "string"
+			},
+			"entry_rail_route_contact_label": {
+				"en": "Contact",
+				"fr": "Contact",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_projects_page_content",
+		"id": "1036c81f-8f0b-4023-9554-43772fbf38fc",
+		"parentFk": "block_projects_page_content_id",
+		"fields": {
+			"intro": {
+				"en": "Projects, pipelines, and systems I have built.",
+				"fr": "Des projets, des pipelines et des systèmes que j'ai bâtis.",
+				"kind": "string"
+			},
+			"heading": {
+				"en": "Projects",
+				"fr": "Projets",
+				"kind": "string"
+			},
+			"empty_state": {
+				"en": "No projects match the selected filters.",
+				"fr": "Aucun projet ne correspond aux filtres sélectionnés.",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "block_tech_stack_page_content",
+		"id": "b41089d8-f7c2-408c-8ed5-9018425080a0",
+		"parentFk": "block_tech_stack_page_content_id",
+		"fields": {
+			"actions": {
+				"en": {
+					"getInTouch": "Get In Touch",
+					"viewServices": "View Services"
+				},
+				"fr": {
+					"getInTouch": "Écrivez-moi",
+					"viewServices": "Voir les services"
+				},
+				"kind": "json"
+			},
+			"cta": {
+				"en": {
+					"availability": "Booking Q3 2026",
+					"headingLine1": "Found your stack",
+					"headingLine2": "Let's build it",
+					"sub": "A pipeline, a dashboard, a database, a store, the infrastructure is ready."
+				},
+				"kind": "json"
+			},
+			"hero": {
+				"en": {
+					"overline": "Infrastructure Map",
+					"titleLine1": "The Control",
+					"titleLine2": "Room",
+					"terminalAria": "Infrastructure overview",
+					"stats": {
+						"technologies": "technologies"
+					}
+				},
+				"fr": {
+					"overline": "Carte de l'infrastructure",
+					"titleLine1": "La salle de",
+					"titleLine2": "contrôle",
+					"terminalAria": "Survol de l'infrastructure",
+					"stats": {
+						"technologies": "technologies"
+					}
+				},
+				"kind": "json"
+			},
+			"meta": {
+				"en": {
+					"title": "Tech Stack, yesid.",
+					"description": "{itemCount}+ technologies, an interactive map of how digital infrastructure gets built."
+				},
+				"kind": "json"
+			},
+			"meta_title": {
+				"en": "Tech Stack · yesid.",
+				"fr": "Stack technologique · yesid.",
+				"kind": "string"
+			},
+			"meta_description": {
+				"en": "{itemCount}+ technologies, an interactive map of how digital infrastructure gets built.",
+				"fr": "Plus de {itemCount} technologies, une carte interactive de la manière dont une infrastructure numérique se bâtit.",
+				"kind": "string"
+			},
+			"hero_overline": {
+				"en": "Infrastructure Map",
+				"fr": "Carte de l'infrastructure",
+				"kind": "string"
+			},
+			"hero_title_line1": {
+				"en": "The Control",
+				"fr": "La salle de",
+				"kind": "string"
+			},
+			"hero_title_line2": {
+				"en": "Room",
+				"fr": "contrôle",
+				"kind": "string"
+			},
+			"hero_terminal_aria": {
+				"en": "Infrastructure overview",
+				"fr": "Survol de l'infrastructure",
+				"kind": "string"
+			},
+			"hero_stat_technologies": {
+				"en": "technologies",
+				"fr": "technologies",
+				"kind": "string"
+			},
+			"terminal_cmd": {
+				"en": "~ yesid --stack --verbose",
+				"fr": "~ yesid --stack --verbose",
+				"kind": "string"
+			},
+			"terminal_loading": {
+				"en": "→ loading {count} nodes...",
+				"fr": "→ chargement de {count} nœuds...",
+				"kind": "string"
+			},
+			"terminal_success": {
+				"en": "✓ successful",
+				"fr": "✓ réussi",
+				"kind": "string"
+			},
+			"terminal_cataloged": {
+				"en": "→ {count} technologies cataloged",
+				"fr": "→ {count} technologies cataloguées",
+				"kind": "string"
+			},
+			"terminal_status": {
+				"en": "interactive map online.",
+				"fr": "carte interactive en ligne.",
+				"kind": "string"
+			},
+			"action_get_in_touch": {
+				"en": "Get In Touch",
+				"fr": "Écris-moi",
+				"kind": "string"
+			},
+			"action_view_services": {
+				"en": "View Services",
+				"fr": "Voir les services",
+				"kind": "string"
+			},
+			"cta_heading_line1": {
+				"en": "Found your stack",
+				"fr": "T'as trouvé ton stack",
+				"kind": "string"
+			},
+			"cta_heading_line2": {
+				"en": "Let's build it",
+				"fr": "On le bâtit ensemble",
+				"kind": "string"
+			},
+			"cta_sub": {
+				"en": "A pipeline, a dashboard, a database, a store, the infrastructure is ready.",
+				"fr": "Un pipeline, un tableau de bord, une base de données, une boutique, l'infrastructure est prête.",
+				"kind": "string"
+			},
+			"stack_explainer": {
+				"en": "A \"stack\" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That's the whole secret. Once you can read a stack, a quote can't hide much from you, poke the blueprints below and see for yourself.",
+				"fr": "Un « stack », c'est juste la liste des morceaux d'un logiciel : l'interface que le monde touche, la logique qui décide des choses, les données qu'il garde en mémoire et l'infrastructure sur laquelle il roule. C'est tout le secret. Une fois que tu sais lire un stack, une soumission ne peut plus te cacher grand-chose, fouille dans les plans plus bas et vois par toi-même.",
+				"kind": "string"
+			},
+			"stack_kicker": {
+				"en": "what's a \"stack\"?",
+				"fr": "c'est quoi un stack?",
+				"kind": "string"
+			},
+			"engine_loading": {
+				"en": "~ rolling out the drawing board...",
+				"fr": "~ chargement du plan...",
+				"kind": "string"
+			}
+		}
+	},
+	{
+		"collection": "legal_pages",
+		"id": "privacy",
+		"parentFk": "legal_pages_id",
+		"fields": {
+			"title": {
+				"en": "Privacy Policy",
+				"fr": "Politique de confidentialité",
+				"kind": "string"
+			},
+			"body": {
+				"en": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-privacy-en-001",
+							"type": "paragraph",
+							"data": {
+								"text": "This policy explains what personal information yesid.dev collects, why, where it goes, and the rights Quebec law gives you over it. I run this site myself and I wrote this policy to be read, so it is in plain language. The short version: the site collects very little, and what it does collect exists only so I can answer you."
+							}
+						},
+						{
+							"id": "legal-privacy-en-002",
+							"type": "paragraph",
+							"data": {
+								"text": "Last updated: 2026-07-09"
+							}
+						},
+						{
+							"id": "legal-privacy-en-003",
+							"type": "header",
+							"data": {
+								"text": "Who I am",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-004",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, operating as a sole proprietor in Quebec, Canada. I am a freelance consultant in digital infrastructure: databases and SQL, data pipelines and automation, dashboards and analytics, and websites and e-commerce. The site itself sells nothing: there is no checkout, no user account, and no newsletter."
+							}
+						},
+						{
+							"id": "legal-privacy-en-005",
+							"type": "header",
+							"data": {
+								"text": "Which laws apply",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-006",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev is a Quebec business, so this policy is written first for Quebec's Act respecting the protection of personal information in the private sector, as modernized by Law 25, which is recognized as substantially similar to Canada's federal law. When personal information crosses provincial or national borders, or when I work with clients elsewhere in Canada, the federal Personal Information Protection and Electronic Documents Act (PIPEDA) applies as well. I hold myself to whichever protection is stronger."
+							}
+						},
+						{
+							"id": "legal-privacy-en-007",
+							"type": "header",
+							"data": {
+								"text": "What I collect and how",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-008",
+							"type": "paragraph",
+							"data": {
+								"text": "The site is fully static. It sets no cookies and runs no code that identifies you. Personal information reaches me in three ways, plus one aggregate measurement tool."
+							}
+						},
+						{
+							"id": "legal-privacy-en-009",
+							"type": "header",
+							"data": {
+								"text": "Contact form",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-en-010",
+							"type": "paragraph",
+							"data": {
+								"text": "If you use the form on the contact page, I receive your name, your email address, and your message. The form is relayed by Web3Forms, a third-party service, which delivers it to my email inbox."
+							}
+						},
+						{
+							"id": "legal-privacy-en-011",
+							"type": "header",
+							"data": {
+								"text": "Direct email",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-en-012",
+							"type": "paragraph",
+							"data": {
+								"text": "If you write to admin@yesid.dev, I receive whatever you choose to send me."
+							}
+						},
+						{
+							"id": "legal-privacy-en-013",
+							"type": "header",
+							"data": {
+								"text": "Booking a call",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-en-014",
+							"type": "paragraph",
+							"data": {
+								"text": "If you book a call, the booking runs on cal.com. You provide your name, your email address, and the meeting details; cal.com shares them with me so the meeting can happen."
+							}
+						},
+						{
+							"id": "legal-privacy-en-015",
+							"type": "header",
+							"data": {
+								"text": "Website analytics",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-en-016",
+							"type": "paragraph",
+							"data": {
+								"text": "I measure site traffic with a privacy-focused, cookieless analytics tool (Plausible or Umami). It sets no cookies, creates no persistent identifier, and does no cross-site tracking. Your IP address is processed transiently to derive aggregate statistics, such as country and pages viewed, and is not stored. What I see are anonymous totals, never individual visitors."
+							}
+						},
+						{
+							"id": "legal-privacy-en-017",
+							"type": "header",
+							"data": {
+								"text": "Preferences stored in your browser",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-en-018",
+							"type": "paragraph",
+							"data": {
+								"text": "The site remembers a few functional preferences (theme, language, collapsed sections, a draft of your form message) in your browser's localStorage. This information never leaves your device and is never transmitted to me or to anyone else."
+							}
+						},
+						{
+							"id": "legal-privacy-en-019",
+							"type": "header",
+							"data": {
+								"text": "Why I collect it",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-020",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "To respond to your message.",
+										"items": []
+									},
+									{
+										"content": "To prepare and hold the meeting you booked.",
+										"items": []
+									},
+									{
+										"content": "To carry out work you hire me for.",
+										"items": []
+									},
+									{
+										"content": "To understand, in aggregate, how the site is used.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-en-021",
+							"type": "paragraph",
+							"data": {
+								"text": "I use your information for nothing else. If I ever needed it for a new purpose, I would ask for your consent first."
+							}
+						},
+						{
+							"id": "legal-privacy-en-022",
+							"type": "header",
+							"data": {
+								"text": "Where it goes",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-023",
+							"type": "paragraph",
+							"data": {
+								"text": "I use a small number of service providers, and some are located outside Quebec, mainly in the United States and possibly in the European Union. Your personal information may therefore be communicated outside Quebec. Before relying on each provider, I assessed whether your information would receive adequate protection there, as section 17 of the Act respecting the protection of personal information in the private sector requires."
+							}
+						},
+						{
+							"id": "legal-privacy-en-024",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Vercel: hosts the site (US company, global content delivery network).",
+										"items": []
+									},
+									{
+										"content": "Web3Forms: relays the contact form to my email.",
+										"items": []
+									},
+									{
+										"content": "cal.com: handles call booking.",
+										"items": []
+									},
+									{
+										"content": "Railway and Neon: run the backend of my content system. They never process visitor data; the published site is static and makes no calls to them.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-en-025",
+							"type": "paragraph",
+							"data": {
+								"text": "I do not communicate your personal information to anyone else."
+							}
+						},
+						{
+							"id": "legal-privacy-en-026",
+							"type": "header",
+							"data": {
+								"text": "What I do not do",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-027",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "No advertising and no ad networks.",
+										"items": []
+									},
+									{
+										"content": "No selling, renting, or trading of personal information. Ever.",
+										"items": []
+									},
+									{
+										"content": "No tracking cookies and no consent banner: there is nothing to activate, because the site has no function that identifies you, locates you, or profiles you.",
+										"items": []
+									},
+									{
+										"content": "No profiling and no automated decision-making.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-en-028",
+							"type": "header",
+							"data": {
+								"text": "Retention",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-029",
+							"type": "paragraph",
+							"data": {
+								"text": "I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. As a rule, correspondence and booking details are kept for up to three years after our last exchange, which tracks Quebec's general limitation period; records tied to an actual engagement (contracts, invoices, and the correspondence that supports them) are kept as long as tax and accounting law requires, at least six years. Analytics data is aggregate from the start and contains no personal information to delete."
+							}
+						},
+						{
+							"id": "legal-privacy-en-030",
+							"type": "header",
+							"data": {
+								"text": "Security",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-031",
+							"type": "paragraph",
+							"data": {
+								"text": "I reduce risk first by collecting little. Beyond that: only I have access to the inbox and the booking account, both are protected by strong multi-factor authentication, and my providers encrypt data in transit. No system is perfectly secure, and I will not pretend otherwise, but these measures are proportionate to the sensitivity of what I hold: names, email addresses, and messages."
+							}
+						},
+						{
+							"id": "legal-privacy-en-032",
+							"type": "header",
+							"data": {
+								"text": "Your rights",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-033",
+							"type": "paragraph",
+							"data": {
+								"text": "Quebec's Law 25 gives you the following rights over the personal information I hold about you:"
+							}
+						},
+						{
+							"id": "legal-privacy-en-034",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Access: obtain a copy of your information (s. 27).",
+										"items": []
+									},
+									{
+										"content": "Rectification: have inaccurate or incomplete information corrected (s. 28).",
+										"items": []
+									},
+									{
+										"content": "Withdrawal of consent: withdraw your consent to a use or communication of your information.",
+										"items": []
+									},
+									{
+										"content": "De-indexing: ask that a hyperlink attached to your name be de-indexed where the law provides for it (s. 28.1).",
+										"items": []
+									},
+									{
+										"content": "Portability: since September 2024, receive the computerized personal information you provided to me in a structured, commonly used technological format, or have it sent to another organization.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-en-035",
+							"type": "paragraph",
+							"data": {
+								"text": "To exercise any of these rights, write to admin@yesid.dev. I may need to verify your identity, and I will respond in writing within 30 days, as the law requires. There is no fee for a reasonable request."
+							}
+						},
+						{
+							"id": "legal-privacy-en-036",
+							"type": "header",
+							"data": {
+								"text": "Confidentiality incidents",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-037",
+							"type": "paragraph",
+							"data": {
+								"text": "I keep a register of confidentiality incidents, and if an incident involving your personal information presents a risk of serious injury, I will notify you and the Commission d'accès à l'information du Québec, as the law requires."
+							}
+						},
+						{
+							"id": "legal-privacy-en-038",
+							"type": "header",
+							"data": {
+								"text": "Privacy Officer",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-039",
+							"type": "paragraph",
+							"data": {
+								"text": "I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: Yesid Fernando Otalora. Contact: admin@yesid.dev."
+							}
+						},
+						{
+							"id": "legal-privacy-en-040",
+							"type": "header",
+							"data": {
+								"text": "Complaints",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-041",
+							"type": "paragraph",
+							"data": {
+								"text": "If anything about how I handle your personal information concerns you, please contact me first at admin@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d'accès à l'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec. For matters that fall under federal law, for example if you are outside Quebec, you may also contact the Office of the Privacy Commissioner of Canada (OPC)."
+							}
+						},
+						{
+							"id": "legal-privacy-en-042",
+							"type": "header",
+							"data": {
+								"text": "Changes to this policy",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-043",
+							"type": "paragraph",
+							"data": {
+								"text": "If I change this policy, I will update this page and the date at the top. If a change materially affects how your personal information is handled, I will say so plainly here."
+							}
+						},
+						{
+							"id": "legal-privacy-en-044",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-en-045",
+							"type": "paragraph",
+							"data": {
+								"text": "For any question about this policy or about your personal information: admin@yesid.dev, or the form on the contact page (/contact). You are welcome to write in English, French, or Spanish."
+							}
+						}
+					]
+				},
+				"fr": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-privacy-fr-001",
+							"type": "paragraph",
+							"data": {
+								"text": "Cette politique explique quels renseignements personnels yesid.dev recueille, pourquoi, où ils vont et quels droits la loi québécoise vous donne à leur égard. Je gère ce site moi-même et j'ai écrit cette politique pour qu'elle soit lue : elle est donc en langage clair. En résumé : le site recueille très peu de choses, et ce qu'il recueille sert uniquement à vous répondre."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-002",
+							"type": "paragraph",
+							"data": {
+								"text": "Dernière mise à jour : 2026-07-09"
+							}
+						},
+						{
+							"id": "legal-privacy-fr-003",
+							"type": "header",
+							"data": {
+								"text": "Qui je suis",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-004",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, qui exploite une entreprise individuelle au Québec, au Canada. Je suis consultant indépendant en infrastructure numérique : bases de données et SQL, pipelines de données et automatisation, tableaux de bord et analytique, sites Web et commerce électronique. Le site lui-même ne vend rien : aucun panier d'achat, aucun compte utilisateur, aucune infolettre."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-005",
+							"type": "header",
+							"data": {
+								"text": "Lois applicables",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-006",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev est une entreprise québécoise : cette politique répond d'abord à la Loi sur la protection des renseignements personnels dans le secteur privé, modernisée par la Loi 25, reconnue comme essentiellement similaire à la loi fédérale. Lorsque des renseignements personnels traversent les frontières provinciales ou nationales, ou lorsque je travaille avec des clients ailleurs au Canada, la Loi sur la protection des renseignements personnels et les documents électroniques (LPRPDE) s'applique également. Je m'en tiens à la plus forte des deux protections."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-007",
+							"type": "header",
+							"data": {
+								"text": "Ce que je recueille et comment",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-008",
+							"type": "paragraph",
+							"data": {
+								"text": "Le site est entièrement statique. Il n'installe aucun témoin (cookie) et n'exécute aucun code qui vous identifie. Des renseignements personnels me parviennent de trois façons, auxquelles s'ajoute un outil de mesure agrégée."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-009",
+							"type": "header",
+							"data": {
+								"text": "Formulaire de contact",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-fr-010",
+							"type": "paragraph",
+							"data": {
+								"text": "Si vous utilisez le formulaire de la page contact, je reçois votre nom, votre adresse courriel et votre message. Le formulaire est relayé par Web3Forms, un service tiers, qui le livre dans ma boîte courriel."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-011",
+							"type": "header",
+							"data": {
+								"text": "Courriel direct",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-fr-012",
+							"type": "paragraph",
+							"data": {
+								"text": "Si vous m'écrivez à admin@yesid.dev, je reçois ce que vous choisissez de m'envoyer."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-013",
+							"type": "header",
+							"data": {
+								"text": "Prise de rendez-vous",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-fr-014",
+							"type": "paragraph",
+							"data": {
+								"text": "Si vous réservez un appel, la réservation passe par cal.com. Vous fournissez votre nom, votre adresse courriel et les détails de la rencontre; cal.com me les transmet pour que la rencontre ait lieu."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-015",
+							"type": "header",
+							"data": {
+								"text": "Statistiques de fréquentation",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-fr-016",
+							"type": "paragraph",
+							"data": {
+								"text": "Je mesure la fréquentation du site avec un outil d'analyse respectueux de la vie privée et sans témoins (Plausible ou Umami). Il n'installe aucun cookie, ne crée aucun identifiant persistant et ne fait aucun suivi d'un site à l'autre. Votre adresse IP est traitée de façon transitoire pour produire des statistiques agrégées, comme le pays et les pages consultées, et n'est pas conservée. Je ne vois que des totaux anonymes, jamais des visiteurs individuels."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-017",
+							"type": "header",
+							"data": {
+								"text": "Préférences conservées dans votre navigateur",
+								"level": 3
+							}
+						},
+						{
+							"id": "legal-privacy-fr-018",
+							"type": "paragraph",
+							"data": {
+								"text": "Le site retient quelques préférences fonctionnelles (thème, langue, sections repliées, brouillon de votre message) dans le localStorage de votre navigateur. Ces données ne quittent jamais votre appareil et ne me sont jamais transmises, ni à personne d'autre."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-019",
+							"type": "header",
+							"data": {
+								"text": "Pourquoi je les recueille",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-020",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Pour répondre à votre message.",
+										"items": []
+									},
+									{
+										"content": "Pour préparer et tenir la rencontre que vous avez réservée.",
+										"items": []
+									},
+									{
+										"content": "Pour réaliser le travail que vous me confiez.",
+										"items": []
+									},
+									{
+										"content": "Pour comprendre, de façon agrégée, comment le site est utilisé.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-fr-021",
+							"type": "paragraph",
+							"data": {
+								"text": "Je n'utilise vos renseignements pour rien d'autre. Si une nouvelle fin devenait nécessaire, je vous demanderais d'abord votre consentement."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-022",
+							"type": "header",
+							"data": {
+								"text": "Où vont vos renseignements",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-023",
+							"type": "paragraph",
+							"data": {
+								"text": "Je fais appel à un petit nombre de fournisseurs de services, dont certains sont situés à l'extérieur du Québec, principalement aux États-Unis et possiblement dans l'Union européenne. Vos renseignements personnels peuvent donc être communiqués à l'extérieur du Québec. Avant de retenir chaque fournisseur, j'ai évalué si vos renseignements y recevraient une protection adéquate, comme l'exige l'article 17 de la Loi sur la protection des renseignements personnels dans le secteur privé."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-024",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Vercel : héberge le site (entreprise américaine, réseau de diffusion mondial).",
+										"items": []
+									},
+									{
+										"content": "Web3Forms : relaie le formulaire de contact vers mon courriel.",
+										"items": []
+									},
+									{
+										"content": "cal.com : gère la prise de rendez-vous.",
+										"items": []
+									},
+									{
+										"content": "Railway et Neon : font tourner l'arrière-plan de mon système de contenu. Ils ne traitent jamais de données de visiteurs; le site publié est statique et ne communique pas avec eux.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-fr-025",
+							"type": "paragraph",
+							"data": {
+								"text": "Je ne communique vos renseignements personnels à personne d'autre."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-026",
+							"type": "header",
+							"data": {
+								"text": "Ce que je ne fais pas",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-027",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Aucune publicité, aucun réseau publicitaire.",
+										"items": []
+									},
+									{
+										"content": "Aucune vente, location ou échange de renseignements personnels. Jamais.",
+										"items": []
+									},
+									{
+										"content": "Aucun témoin de suivi et aucune bannière de consentement : il n'y a rien à activer, car le site n'a aucune fonction qui vous identifie, vous localise ou établit votre profil.",
+										"items": []
+									},
+									{
+										"content": "Aucun profilage, aucune décision automatisée.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-fr-028",
+							"type": "header",
+							"data": {
+								"text": "Conservation",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-029",
+							"type": "paragraph",
+							"data": {
+								"text": "Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. En règle générale, la correspondance et les détails de rendez-vous sont conservés au plus trois ans après notre dernier échange, ce qui suit le délai de prescription général au Québec; les dossiers liés à un mandat réel (contrats, factures et la correspondance qui les appuie) sont conservés aussi longtemps que la loi fiscale et comptable l'exige, soit au moins six ans. Les statistiques de fréquentation sont agrégées dès l'origine et ne contiennent aucun renseignement personnel à supprimer."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-030",
+							"type": "header",
+							"data": {
+								"text": "Sécurité",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-031",
+							"type": "paragraph",
+							"data": {
+								"text": "Je réduis les risques d'abord en recueillant peu. Pour le reste : je suis le seul à avoir accès à la boîte courriel et au compte de réservation, les deux sont protégés par une authentification forte à plusieurs facteurs, et mes fournisseurs chiffrent les données en transit. Aucun système n'est parfaitement sûr, et je ne prétendrai pas le contraire, mais ces mesures sont proportionnées à la sensibilité de ce que je détiens : des noms, des adresses courriel et des messages."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-032",
+							"type": "header",
+							"data": {
+								"text": "Vos droits",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-033",
+							"type": "paragraph",
+							"data": {
+								"text": "La Loi 25 vous donne les droits suivants sur les renseignements personnels que je détiens à votre sujet :"
+							}
+						},
+						{
+							"id": "legal-privacy-fr-034",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Accès : obtenir une copie de vos renseignements (art. 27).",
+										"items": []
+									},
+									{
+										"content": "Rectification : faire corriger des renseignements inexacts ou incomplets (art. 28).",
+										"items": []
+									},
+									{
+										"content": "Retrait du consentement : retirer votre consentement à une utilisation ou à une communication de vos renseignements.",
+										"items": []
+									},
+									{
+										"content": "Désindexation : demander qu'un hyperlien rattaché à votre nom soit désindexé lorsque la loi le prévoit (art. 28.1).",
+										"items": []
+									},
+									{
+										"content": "Portabilité : depuis septembre 2024, recevoir les renseignements personnels informatisés que vous m'avez fournis dans un format technologique structuré et couramment utilisé, ou les faire transmettre à une autre organisation.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-privacy-fr-035",
+							"type": "paragraph",
+							"data": {
+								"text": "Pour exercer l'un de ces droits, écrivez à admin@yesid.dev. Je pourrais devoir vérifier votre identité, et je vous répondrai par écrit dans un délai de 30 jours, comme la loi l'exige. Aucuns frais ne s'appliquent à une demande raisonnable."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-036",
+							"type": "header",
+							"data": {
+								"text": "Incidents de confidentialité",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-037",
+							"type": "paragraph",
+							"data": {
+								"text": "Je tiens un registre des incidents de confidentialité et, si un incident visant vos renseignements personnels présente un risque de préjudice sérieux, je vous en aviserai ainsi que la Commission d'accès à l'information du Québec, comme la loi l'exige."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-038",
+							"type": "header",
+							"data": {
+								"text": "Responsable de la protection des renseignements personnels",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-039",
+							"type": "paragraph",
+							"data": {
+								"text": "Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : Yesid Fernando Otalora. Contact : admin@yesid.dev."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-040",
+							"type": "header",
+							"data": {
+								"text": "Plaintes",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-041",
+							"type": "paragraph",
+							"data": {
+								"text": "Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d'abord à admin@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d'accès à l'information du Québec (CAI), l'organisme public qui veille à la protection des renseignements personnels au Québec. Pour les situations relevant de la loi fédérale, par exemple si vous êtes à l'extérieur du Québec, vous pouvez aussi vous adresser au Commissariat à la protection de la vie privée du Canada."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-042",
+							"type": "header",
+							"data": {
+								"text": "Modifications de cette politique",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-043",
+							"type": "paragraph",
+							"data": {
+								"text": "Si je modifie cette politique, je mettrai à jour cette page et la date indiquée en haut. Si un changement touche de façon importante le traitement de vos renseignements personnels, je l'indiquerai clairement ici."
+							}
+						},
+						{
+							"id": "legal-privacy-fr-044",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-privacy-fr-045",
+							"type": "paragraph",
+							"data": {
+								"text": "Pour toute question sur cette politique ou sur vos renseignements personnels : admin@yesid.dev, ou le formulaire de la page contact (/contact). Vous pouvez m'écrire en français, en anglais ou en espagnol."
+							}
+						}
+					]
+				},
+				"kind": "json"
+			}
+		}
+	},
+	{
+		"collection": "legal_pages",
+		"id": "terms",
+		"parentFk": "legal_pages_id",
+		"fields": {
+			"title": {
+				"en": "Terms of Use",
+				"fr": "Conditions d'utilisation",
+				"kind": "string"
+			},
+			"body": {
+				"en": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-terms-en-001",
+							"type": "paragraph",
+							"data": {
+								"text": "Last updated: 2026-07-09"
+							}
+						},
+						{
+							"id": "legal-terms-en-002",
+							"type": "paragraph",
+							"data": {
+								"text": "These terms of use govern your visit to yesid.dev, the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant operating as a sole proprietor in Quebec, Canada. By using this site, you accept these terms. If you do not agree with them, please stop using the site."
+							}
+						},
+						{
+							"id": "legal-terms-en-003",
+							"type": "header",
+							"data": {
+								"text": "What this site is",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-004",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev is a portfolio and information site. It presents my consulting work in databases and SQL, data pipelines and automation, dashboards and analytics, and websites and e-commerce, and it gives you ways to contact me. Nothing is sold directly on the site: there is no checkout, no user account, no subscription."
+							}
+						},
+						{
+							"id": "legal-terms-en-005",
+							"type": "paragraph",
+							"data": {
+								"text": "Any consulting engagement is governed by a separate written agreement between you (or your organization) and me. These terms apply to the website only; they do not create a professional or contractual relationship for consulting services."
+							}
+						},
+						{
+							"id": "legal-terms-en-006",
+							"type": "header",
+							"data": {
+								"text": "Intellectual property",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-007",
+							"type": "paragraph",
+							"data": {
+								"text": "Unless indicated otherwise, the content of this site, including its text, images, visual design, and the site's own source code, belongs to me. You may read it, link to it, and quote brief excerpts with attribution. You may not reproduce substantial portions, or use the content commercially, without my prior written permission."
+							}
+						},
+						{
+							"id": "legal-terms-en-008",
+							"type": "paragraph",
+							"data": {
+								"text": "Some projects presented here are open source. Their code lives in its own repositories and is distributed under the license stated in each repository. Those licenses, not these terms, govern your use of that code."
+							}
+						},
+						{
+							"id": "legal-terms-en-009",
+							"type": "header",
+							"data": {
+								"text": "Acceptable use",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-010",
+							"type": "paragraph",
+							"data": {
+								"text": "You agree to use this site lawfully and reasonably. In particular, you agree not to:"
+							}
+						},
+						{
+							"id": "legal-terms-en-011",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "attempt to disrupt, overload, or attack the site or the infrastructure that serves it;",
+										"items": []
+									},
+									{
+										"content": "scrape or harvest content in a way that burdens the site or ignores its published limits;",
+										"items": []
+									},
+									{
+										"content": "misrepresent your identity when contacting me, or use the contact channels to send unlawful, deceptive, or abusive messages.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-terms-en-012",
+							"type": "header",
+							"data": {
+								"text": "No warranty",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-013",
+							"type": "paragraph",
+							"data": {
+								"text": "This site and its content are provided as-is, for general information. I work to keep the information accurate and current, but I do not guarantee that it is complete, error-free, or available at all times. Where a demo or dashboard is labeled as simulated, the data shown is illustrative, not real."
+							}
+						},
+						{
+							"id": "legal-terms-en-014",
+							"type": "paragraph",
+							"data": {
+								"text": "Nothing on this site is professional advice. Advice tailored to your situation is only provided once we are engaged under a written agreement."
+							}
+						},
+						{
+							"id": "legal-terms-en-015",
+							"type": "header",
+							"data": {
+								"text": "Limitation of liability",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-016",
+							"type": "paragraph",
+							"data": {
+								"text": "To the extent permitted by applicable law, I am not liable for indirect, incidental, or consequential damages arising from your use of this site or your reliance on its content. Nothing in these terms excludes or limits any liability that cannot be excluded or limited under the laws of Quebec."
+							}
+						},
+						{
+							"id": "legal-terms-en-017",
+							"type": "header",
+							"data": {
+								"text": "Third-party links",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-018",
+							"type": "paragraph",
+							"data": {
+								"text": "This site links to services I do not control, such as GitHub, LinkedIn, and cal.com. Those services have their own terms and privacy practices, which apply when you use them. I am not responsible for their content or conduct."
+							}
+						},
+						{
+							"id": "legal-terms-en-019",
+							"type": "header",
+							"data": {
+								"text": "Governing law",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-020",
+							"type": "paragraph",
+							"data": {
+								"text": "These terms are governed by the laws of Quebec and the applicable laws of Canada. Subject to any rule of public order that grants you a different forum, disputes relating to this site will be brought before the competent courts of the judicial district of Montreal."
+							}
+						},
+						{
+							"id": "legal-terms-en-021",
+							"type": "header",
+							"data": {
+								"text": "Changes",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-022",
+							"type": "paragraph",
+							"data": {
+								"text": "I may update these terms from time to time, for example when the site or the law changes. The date at the top of this page indicates the current version. If you keep using the site after an update, the updated terms apply to you."
+							}
+						},
+						{
+							"id": "legal-terms-en-023",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-en-024",
+							"type": "paragraph",
+							"data": {
+								"text": "Questions about these terms are welcome in English, French, or Spanish. Write to admin@yesid.dev or use the contact page at /contact."
+							}
+						}
+					]
+				},
+				"fr": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-terms-fr-001",
+							"type": "paragraph",
+							"data": {
+								"text": "Dernière mise à jour : 2026-07-09"
+							}
+						},
+						{
+							"id": "legal-terms-fr-002",
+							"type": "paragraph",
+							"data": {
+								"text": "Les présentes conditions d'utilisation encadrent votre visite de yesid.dev, le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique exerçant comme travailleur autonome (entreprise individuelle) au Québec, au Canada. En utilisant ce site, vous acceptez ces conditions. Si vous n'y consentez pas, veuillez cesser d'utiliser le site."
+							}
+						},
+						{
+							"id": "legal-terms-fr-003",
+							"type": "header",
+							"data": {
+								"text": "Ce qu'est ce site",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-004",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev est un site de portfolio et d'information. Il présente mon travail de consultant en bases de données et SQL, en pipelines de données et automatisation, en tableaux de bord et analytique, ainsi qu'en sites Web et commerce électronique, et il vous permet de me joindre. Rien n'est vendu directement sur le site : il n'y a ni caisse, ni compte utilisateur, ni abonnement."
+							}
+						},
+						{
+							"id": "legal-terms-fr-005",
+							"type": "paragraph",
+							"data": {
+								"text": "Tout mandat de consultation est régi par une entente écrite distincte entre vous (ou votre organisation) et moi. Les présentes conditions visent uniquement le site Web; elles ne créent aucune relation professionnelle ou contractuelle de services-conseils."
+							}
+						},
+						{
+							"id": "legal-terms-fr-006",
+							"type": "header",
+							"data": {
+								"text": "Propriété intellectuelle",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-007",
+							"type": "paragraph",
+							"data": {
+								"text": "Sauf indication contraire, le contenu de ce site, y compris les textes, les images, le design et le code source du site lui-même, m'appartient. Vous pouvez le consulter, créer des liens vers ses pages et en citer de courts extraits avec mention de la source. Vous ne pouvez pas en reproduire des portions substantielles ni l'utiliser à des fins commerciales sans mon autorisation écrite préalable."
+							}
+						},
+						{
+							"id": "legal-terms-fr-008",
+							"type": "paragraph",
+							"data": {
+								"text": "Certains projets présentés ici sont des logiciels libres (open source). Leur code se trouve dans leurs propres dépôts et est distribué selon la licence indiquée dans chaque dépôt. Ce sont ces licences, et non les présentes conditions, qui régissent votre utilisation de ce code."
+							}
+						},
+						{
+							"id": "legal-terms-fr-009",
+							"type": "header",
+							"data": {
+								"text": "Utilisation acceptable",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-010",
+							"type": "paragraph",
+							"data": {
+								"text": "Vous vous engagez à utiliser ce site de façon licite et raisonnable. En particulier, vous vous engagez à ne pas :"
+							}
+						},
+						{
+							"id": "legal-terms-fr-011",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "tenter de perturber, de surcharger ou d'attaquer le site ou l'infrastructure qui l'héberge;",
+										"items": []
+									},
+									{
+										"content": "moissonner ou extraire le contenu d'une manière qui surcharge le site ou contourne ses limites publiées;",
+										"items": []
+									},
+									{
+										"content": "usurper une identité en me contactant, ni utiliser les canaux de contact pour transmettre des messages illicites, trompeurs ou abusifs.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-terms-fr-012",
+							"type": "header",
+							"data": {
+								"text": "Absence de garantie",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-013",
+							"type": "paragraph",
+							"data": {
+								"text": "Ce site et son contenu sont fournis tels quels, à titre d'information générale. Je m'efforce de garder l'information exacte et à jour, mais je ne garantis pas qu'elle soit complète, exempte d'erreurs ou disponible en tout temps. Lorsqu'une démonstration ou un tableau de bord est identifié comme simulé, les données affichées sont illustratives et non réelles."
+							}
+						},
+						{
+							"id": "legal-terms-fr-014",
+							"type": "paragraph",
+							"data": {
+								"text": "Rien sur ce site ne constitue un avis professionnel. Un conseil adapté à votre situation n'est offert que dans le cadre d'un mandat conclu par entente écrite."
+							}
+						},
+						{
+							"id": "legal-terms-fr-015",
+							"type": "header",
+							"data": {
+								"text": "Limitation de responsabilité",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-016",
+							"type": "paragraph",
+							"data": {
+								"text": "Dans la mesure permise par la loi applicable, je ne suis pas responsable des dommages indirects, accessoires ou consécutifs découlant de votre utilisation de ce site ou de votre confiance en son contenu. Rien dans les présentes conditions n'exclut ni ne limite une responsabilité qui ne peut être exclue ou limitée en vertu des lois du Québec."
+							}
+						},
+						{
+							"id": "legal-terms-fr-017",
+							"type": "header",
+							"data": {
+								"text": "Liens vers des tiers",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-018",
+							"type": "paragraph",
+							"data": {
+								"text": "Ce site contient des liens vers des services que je ne contrôle pas, notamment GitHub, LinkedIn et cal.com. Ces services ont leurs propres conditions et leurs propres pratiques en matière de vie privée, qui s'appliquent lorsque vous les utilisez. Je ne suis pas responsable de leur contenu ni de leur conduite."
+							}
+						},
+						{
+							"id": "legal-terms-fr-019",
+							"type": "header",
+							"data": {
+								"text": "Droit applicable",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-020",
+							"type": "paragraph",
+							"data": {
+								"text": "Les présentes conditions sont régies par les lois du Québec et les lois du Canada qui s'y appliquent. Sous réserve de toute règle d'ordre public vous accordant un autre for, tout litige relatif à ce site sera porté devant les tribunaux compétents du district judiciaire de Montréal."
+							}
+						},
+						{
+							"id": "legal-terms-fr-021",
+							"type": "header",
+							"data": {
+								"text": "Modifications",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-022",
+							"type": "paragraph",
+							"data": {
+								"text": "Je peux mettre à jour les présentes conditions de temps à autre, par exemple lorsque le site ou la loi change. La date en haut de cette page indique la version en vigueur. Si vous continuez d'utiliser le site après une mise à jour, ce sont les conditions mises à jour qui s'appliquent."
+							}
+						},
+						{
+							"id": "legal-terms-fr-023",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-terms-fr-024",
+							"type": "paragraph",
+							"data": {
+								"text": "Vos questions sur ces conditions sont les bienvenues, en français, en anglais ou en espagnol. Écrivez-moi à admin@yesid.dev ou utilisez la page de contact : /contact."
+							}
+						}
+					]
+				},
+				"kind": "json"
+			}
+		}
+	},
+	{
+		"collection": "legal_pages",
+		"id": "cookies",
+		"parentFk": "legal_pages_id",
+		"fields": {
+			"title": {
+				"en": "Cookie and Tracking Policy",
+				"fr": "Politique sur les témoins (cookies)",
+				"kind": "string"
+			},
+			"body": {
+				"en": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-cookies-en-001",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and why you will not see a cookie banner here. Last updated: 2026-07-09."
+							}
+						},
+						{
+							"id": "legal-cookies-en-002",
+							"type": "header",
+							"data": {
+								"text": "The short version",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-en-003",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "This site sets no tracking cookies. None.",
+										"items": []
+									},
+									{
+										"content": "There is no advertising technology, no cross-site tracking, and no profiling.",
+										"items": []
+									},
+									{
+										"content": "There is no consent banner because nothing on this site requires that kind of consent.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-cookies-en-004",
+							"type": "header",
+							"data": {
+								"text": "What the site actually stores",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-en-005",
+							"type": "paragraph",
+							"data": {
+								"text": "The site keeps a few functional preferences in your browser's localStorage: your theme (light or dark), your language, the state of collapsed sections, and an unsent draft of the contact form so you do not lose it if you navigate away. This information stays on your device and is never transmitted to me or to anyone else; only your own browser uses it, locally, to restore your preferences. Clearing your browser data removes it completely."
+							}
+						},
+						{
+							"id": "legal-cookies-en-006",
+							"type": "header",
+							"data": {
+								"text": "Analytics",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-en-007",
+							"type": "paragraph",
+							"data": {
+								"text": "I use a cookieless, privacy-focused analytics tool (Plausible or Umami) to understand traffic in aggregate: which pages are visited, roughly how many visits they receive, and where visits come from at the level of a country or a referring site. The tool sets no cookies, stores no persistent identifiers, and does not follow you across other sites. IP addresses are processed transiently to compute aggregate statistics and are not stored. In practice, I can see that a page received visits; I cannot see who you are, track you around the web, or recognize you on your next visit."
+							}
+						},
+						{
+							"id": "legal-cookies-en-008",
+							"type": "header",
+							"data": {
+								"text": "Why there is no banner",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-en-009",
+							"type": "paragraph",
+							"data": {
+								"text": "Quebec's Law 25 (section 8.1 of the Act respecting the protection of personal information in the private sector) requires a website to let you activate or deactivate technologies that identify you, locate you, or profile you. This site uses no such technology: no tracking cookies, no fingerprinting, no geolocation, no profiling. Since there is nothing to switch on or off, a banner would serve no purpose. I chose to be transparent here instead, in plain text."
+							}
+						},
+						{
+							"id": "legal-cookies-en-010",
+							"type": "paragraph",
+							"data": {
+								"text": "Canada's federal law points the same way: under PIPEDA's meaningful-consent guidance, implied consent is enough for non-sensitive, non-tracking uses like these aggregate statistics, so no banner is required on that side either."
+							}
+						},
+						{
+							"id": "legal-cookies-en-011",
+							"type": "header",
+							"data": {
+								"text": "If this ever changes",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-en-012",
+							"type": "paragraph",
+							"data": {
+								"text": "If I ever introduce a technology that identifies, locates, or profiles visitors, I will ask for your opt-in consent before it runs, and I will update this page and its date. No silent changes."
+							}
+						},
+						{
+							"id": "legal-cookies-en-013",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-en-014",
+							"type": "paragraph",
+							"data": {
+								"text": "Questions about this policy are welcome at admin@yesid.dev or through the contact page, in English, French, or Spanish. Yesid Fernando Otalora acts as Privacy Officer for this site under section 3.1 of Law 25."
+							}
+						}
+					]
+				},
+				"fr": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-cookies-fr-001",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu'il ne conserve pas, et pourquoi vous ne verrez pas de bandeau de témoins (cookies) ici. Dernière mise à jour : 2026-07-09."
+							}
+						},
+						{
+							"id": "legal-cookies-fr-002",
+							"type": "header",
+							"data": {
+								"text": "En bref",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-fr-003",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Ce site n'installe aucun témoin de suivi. Aucun.",
+										"items": []
+									},
+									{
+										"content": "Il n'y a ni technologie publicitaire, ni suivi entre les sites, ni profilage.",
+										"items": []
+									},
+									{
+										"content": "Il n'y a pas de bandeau de consentement, parce que rien sur ce site n'exige ce type de consentement.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-cookies-fr-004",
+							"type": "header",
+							"data": {
+								"text": "Ce que le site conserve réellement",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-fr-005",
+							"type": "paragraph",
+							"data": {
+								"text": "Le site garde quelques préférences fonctionnelles dans le localStorage de votre navigateur : votre thème (clair ou sombre), votre langue, l'état des sections repliées et le brouillon non envoyé du formulaire de contact, pour que vous ne le perdiez pas en changeant de page. Ces renseignements restent sur votre appareil et ne me sont jamais transmis, ni à personne d'autre; seul votre propre navigateur les utilise, localement, pour rétablir vos préférences. Effacer les données de votre navigateur les supprime complètement."
+							}
+						},
+						{
+							"id": "legal-cookies-fr-006",
+							"type": "header",
+							"data": {
+								"text": "Mesure d'audience",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-fr-007",
+							"type": "paragraph",
+							"data": {
+								"text": "J'utilise un outil de mesure d'audience sans témoins et axé sur la vie privée (Plausible ou Umami) pour comprendre l'achalandage de façon agrégée : les pages consultées, le nombre approximatif de visites et leur provenance, au niveau d'un pays ou d'un site référent. L'outil n'installe aucun témoin, ne conserve aucun identifiant persistant et ne vous suit pas d'un site à l'autre. Les adresses IP sont traitées de façon transitoire pour produire des statistiques agrégées et ne sont pas conservées. Concrètement, je peux voir qu'une page a reçu des visites; je ne peux pas savoir qui vous êtes, vous suivre sur le Web ni vous reconnaître à votre prochaine visite."
+							}
+						},
+						{
+							"id": "legal-cookies-fr-008",
+							"type": "header",
+							"data": {
+								"text": "Pourquoi il n'y a pas de bandeau",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-fr-009",
+							"type": "paragraph",
+							"data": {
+								"text": "La Loi 25 (article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé) exige qu'un site Web vous permette d'activer ou de désactiver les technologies qui permettent de vous identifier, de vous localiser ou d'effectuer votre profilage. Ce site n'utilise aucune technologie de ce genre : pas de témoins de suivi, pas d'empreinte numérique, pas de géolocalisation, pas de profilage. Comme il n'y a rien à activer ni à désactiver, un bandeau ne servirait à rien. J'ai plutôt choisi d'être transparent ici, en texte clair."
+							}
+						},
+						{
+							"id": "legal-cookies-fr-010",
+							"type": "paragraph",
+							"data": {
+								"text": "La loi fédérale va dans le même sens : selon les lignes directrices sur le consentement valable de la LPRPDE, le consentement implicite suffit pour des usages non sensibles et sans suivi comme ces statistiques agrégées; aucune bannière n'est donc requise de ce côté non plus."
+							}
+						},
+						{
+							"id": "legal-cookies-fr-011",
+							"type": "header",
+							"data": {
+								"text": "Si cela change un jour",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-fr-012",
+							"type": "paragraph",
+							"data": {
+								"text": "Si j'introduis un jour une technologie qui identifie, localise ou profile les visiteurs, je demanderai votre consentement explicite avant de l'activer, et je mettrai cette page et sa date à jour. Aucun changement silencieux."
+							}
+						},
+						{
+							"id": "legal-cookies-fr-013",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-cookies-fr-014",
+							"type": "paragraph",
+							"data": {
+								"text": "Pour toute question sur cette politique, écrivez-moi à admin@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. Yesid Fernando Otalora agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l'article 3.1 de la Loi 25."
+							}
+						}
+					]
+				},
+				"kind": "json"
+			}
+		}
+	},
+	{
+		"collection": "legal_pages",
+		"id": "accessibility",
+		"parentFk": "legal_pages_id",
+		"fields": {
+			"title": {
+				"en": "Accessibility Statement",
+				"fr": "Déclaration d'accessibilité",
+				"kind": "string"
+			},
+			"body": {
+				"en": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-accessibility-en-001",
+							"type": "paragraph",
+							"data": {
+								"text": "This page describes the current state of accessibility on yesid.dev: what already works, what does not yet, and how to reach me if something gets in your way. Last updated: 2026-07-09."
+							}
+						},
+						{
+							"id": "legal-accessibility-en-002",
+							"type": "header",
+							"data": {
+								"text": "My commitment",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-en-003",
+							"type": "paragraph",
+							"data": {
+								"text": "I want everyone to be able to read and use this site, including people who rely on assistive technology. My target is the Web Content Accessibility Guidelines (WCAG) 2.1, level AA. I am not there on every page yet, and I would rather say so plainly than claim otherwise. Accessibility is part of how I build, not a box checked at the end."
+							}
+						},
+						{
+							"id": "legal-accessibility-en-004",
+							"type": "header",
+							"data": {
+								"text": "What is in place today",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-en-005",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Semantic HTML: headings, landmarks and lists that assistive technology can navigate.",
+										"items": []
+									},
+									{
+										"content": "Full keyboard navigation, with a visible focus indicator on interactive elements.",
+										"items": []
+									},
+									{
+										"content": "ARIA labels on interactive artwork and graphics.",
+										"items": []
+									},
+									{
+										"content": "Support for reduced motion: the site respects the prefers-reduced-motion setting and tones down animation accordingly.",
+										"items": []
+									},
+									{
+										"content": "A collapse-all reading mode that simplifies long pages.",
+										"items": []
+									},
+									{
+										"content": "Color contrast checked in both the dark and light themes.",
+										"items": []
+									},
+									{
+										"content": "Alternative text on informative images.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-accessibility-en-006",
+							"type": "header",
+							"data": {
+								"text": "Known limitations",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-en-007",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Interactive SVG and canvas demos have text alternatives, but the full visual experience is not equivalent for someone who cannot see them.",
+										"items": []
+									},
+									{
+										"content": "Some third-party embeds, such as the booking tool, may not meet the same standard; I do not control their code.",
+										"items": []
+									},
+									{
+										"content": "The site has not yet been formally audited against WCAG 2.1 AA. This statement is based on my own testing.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-accessibility-en-008",
+							"type": "header",
+							"data": {
+								"text": "Tell me what is not working",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-en-009",
+							"type": "paragraph",
+							"data": {
+								"text": "If something on this site is hard or impossible for you to use, write to me at admin@yesid.dev. Mention which page you were on, what you were trying to do and, if possible, which browser and assistive technology you use. I normally reply within a few days. You can write in English, French or Spanish."
+							}
+						},
+						{
+							"id": "legal-accessibility-en-010",
+							"type": "header",
+							"data": {
+								"text": "Continuous improvement",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-en-011",
+							"type": "paragraph",
+							"data": {
+								"text": "Accessibility is ongoing work, not a finished state. I check new pages and features against these criteria as I build them, and I fix reported issues as quickly as I can. This statement will be updated as the site evolves."
+							}
+						},
+						{
+							"id": "legal-accessibility-en-012",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-en-013",
+							"type": "paragraph",
+							"data": {
+								"text": "For any question or report about accessibility: admin@yesid.dev, or the form on the contact page at /contact."
+							}
+						}
+					]
+				},
+				"fr": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-accessibility-fr-001",
+							"type": "paragraph",
+							"data": {
+								"text": "Cette page décrit l'état actuel de l'accessibilité de yesid.dev : ce qui fonctionne déjà, ce qui reste à améliorer, et comment me joindre si quelque chose vous bloque. Dernière mise à jour : 2026-07-09."
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-002",
+							"type": "header",
+							"data": {
+								"text": "Mon engagement",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-003",
+							"type": "paragraph",
+							"data": {
+								"text": "Je veux que tout le monde puisse lire et utiliser ce site, y compris les personnes qui s'appuient sur des technologies d'assistance. Ma cible est le niveau AA des Règles pour l'accessibilité des contenus Web (WCAG) 2.1. Je n'y suis pas encore sur toutes les pages, et je préfère le dire franchement plutôt que de prétendre le contraire. L'accessibilité fait partie de ma façon de construire; ce n'est pas une case cochée à la fin."
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-004",
+							"type": "header",
+							"data": {
+								"text": "Ce qui est en place aujourd'hui",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-005",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Un HTML sémantique : des titres, des points de repère et des listes que les technologies d'assistance peuvent parcourir.",
+										"items": []
+									},
+									{
+										"content": "Une navigation complète au clavier, avec un indicateur de focus visible sur les éléments interactifs.",
+										"items": []
+									},
+									{
+										"content": "Des étiquettes ARIA sur les illustrations et graphiques interactifs.",
+										"items": []
+									},
+									{
+										"content": "Le respect de la préférence de mouvement réduit (prefers-reduced-motion) : les animations sont atténuées en conséquence.",
+										"items": []
+									},
+									{
+										"content": "Un mode de lecture « tout replier » qui simplifie les pages longues.",
+										"items": []
+									},
+									{
+										"content": "Un contraste des couleurs vérifié dans les thèmes sombre et clair.",
+										"items": []
+									},
+									{
+										"content": "Un texte de remplacement sur les images informatives.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-006",
+							"type": "header",
+							"data": {
+								"text": "Limites connues",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-007",
+							"type": "nestedlist",
+							"data": {
+								"style": "unordered",
+								"items": [
+									{
+										"content": "Les démonstrations interactives en SVG ou en canvas offrent des solutions de rechange textuelles, mais l'expérience visuelle complète n'a pas d'équivalent pour une personne qui ne peut pas les voir.",
+										"items": []
+									},
+									{
+										"content": "Certains contenus intégrés provenant de tiers, comme l'outil de prise de rendez-vous, pourraient ne pas atteindre le même niveau; je ne contrôle pas leur code.",
+										"items": []
+									},
+									{
+										"content": "Le site n'a pas encore fait l'objet d'un audit formel de conformité aux WCAG 2.1 AA. Cette déclaration repose sur mes propres vérifications.",
+										"items": []
+									}
+								]
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-008",
+							"type": "header",
+							"data": {
+								"text": "Dites-moi ce qui ne fonctionne pas",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-009",
+							"type": "paragraph",
+							"data": {
+								"text": "Si quelque chose sur ce site vous est difficile ou impossible à utiliser, écrivez-moi à admin@yesid.dev. Indiquez la page concernée, ce que vous tentiez de faire et, si possible, le navigateur et la technologie d'assistance que vous utilisez. Je réponds normalement en quelques jours. Vous pouvez m'écrire en français, en anglais ou en espagnol."
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-010",
+							"type": "header",
+							"data": {
+								"text": "Amélioration continue",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-011",
+							"type": "paragraph",
+							"data": {
+								"text": "L'accessibilité est un travail continu, pas un état final. Je vérifie les nouvelles pages et fonctionnalités selon ces critères au fur et à mesure que je les construis, et je corrige les problèmes signalés aussi rapidement que possible. Cette déclaration sera mise à jour au fil de l'évolution du site."
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-012",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-accessibility-fr-013",
+							"type": "paragraph",
+							"data": {
+								"text": "Pour toute question ou tout signalement concernant l'accessibilité : admin@yesid.dev, ou le formulaire de la page contact à /contact."
+							}
+						}
+					]
+				},
+				"kind": "json"
+			}
+		}
+	},
+	{
+		"collection": "legal_pages",
+		"id": "notice",
+		"parentFk": "legal_pages_id",
+		"fields": {
+			"title": {
+				"en": "Legal Notice",
+				"fr": "Avis juridique",
+				"kind": "string"
+			},
+			"body": {
+				"en": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-notice-en-001",
+							"type": "paragraph",
+							"data": {
+								"text": "This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: 2026-07-09."
+							}
+						},
+						{
+							"id": "legal-notice-en-002",
+							"type": "header",
+							"data": {
+								"text": "Site publisher",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-en-003",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev is published by Yesid Fernando Otalora, operating as a sole proprietor and freelance digital-infrastructure consultant. Address: 366 rue de Fontenelle, Gatineau, Quebec, J8T 0C6, Canada."
+							}
+						},
+						{
+							"id": "legal-notice-en-004",
+							"type": "header",
+							"data": {
+								"text": "Hosting",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-en-005",
+							"type": "paragraph",
+							"data": {
+								"text": "The site is hosted by Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA, and served through a global content delivery network. The content system behind the site runs on Railway and Neon; it is used only to build the site and does not process visitor data while you browse, because the published site is fully static."
+							}
+						},
+						{
+							"id": "legal-notice-en-006",
+							"type": "header",
+							"data": {
+								"text": "Publication responsibility",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-en-007",
+							"type": "paragraph",
+							"data": {
+								"text": "I am responsible for everything published on this site: text, images, code samples, and case studies. If you find something inaccurate or outdated, write to me and I will correct it."
+							}
+						},
+						{
+							"id": "legal-notice-en-008",
+							"type": "header",
+							"data": {
+								"text": "Trademarks and third-party names",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-en-009",
+							"type": "paragraph",
+							"data": {
+								"text": "Names such as STM, Power BI, and other products or organizations mentioned on this site belong to their respective owners. They appear descriptively, to explain the work I do; their mention implies no affiliation, sponsorship, or endorsement."
+							}
+						},
+						{
+							"id": "legal-notice-en-010",
+							"type": "header",
+							"data": {
+								"text": "Credits",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-en-011",
+							"type": "paragraph",
+							"data": {
+								"text": "I designed and built this site myself."
+							}
+						},
+						{
+							"id": "legal-notice-en-012",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-en-013",
+							"type": "paragraph",
+							"data": {
+								"text": "You can reach me at admin@yesid.dev or through the contact page at /contact. I answer in English, French, or Spanish."
+							}
+						}
+					]
+				},
+				"fr": {
+					"time": 1751500800000,
+					"version": "2.31.2",
+					"blocks": [
+						{
+							"id": "legal-notice-fr-001",
+							"type": "paragraph",
+							"data": {
+								"text": "Cette page indique qui publie yesid.dev, qui l'héberge et qui répond de son contenu. Dernière mise à jour : 2026-07-09."
+							}
+						},
+						{
+							"id": "legal-notice-fr-002",
+							"type": "header",
+							"data": {
+								"text": "Éditeur du site",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-fr-003",
+							"type": "paragraph",
+							"data": {
+								"text": "yesid.dev est publié par Yesid Fernando Otalora, entreprise individuelle, consultant indépendant en infrastructure numérique. Adresse : 366, rue de Fontenelle, Gatineau (Québec) J8T 0C6, Canada."
+							}
+						},
+						{
+							"id": "legal-notice-fr-004",
+							"type": "header",
+							"data": {
+								"text": "Hébergement",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-fr-005",
+							"type": "paragraph",
+							"data": {
+								"text": "Le site est hébergé par Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis, et diffusé par un réseau mondial de distribution de contenu. Le système de contenu derrière le site fonctionne sur Railway et Neon; il sert uniquement à construire le site et ne traite aucune donnée de visiteur pendant votre navigation, puisque le site publié est entièrement statique."
+							}
+						},
+						{
+							"id": "legal-notice-fr-006",
+							"type": "header",
+							"data": {
+								"text": "Responsabilité de la publication",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-fr-007",
+							"type": "paragraph",
+							"data": {
+								"text": "Je suis responsable de tout ce qui est publié sur ce site : textes, images, exemples de code et études de cas. Si vous relevez une information inexacte ou périmée, écrivez-moi et je la corrigerai."
+							}
+						},
+						{
+							"id": "legal-notice-fr-008",
+							"type": "header",
+							"data": {
+								"text": "Marques de commerce et noms de tiers",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-fr-009",
+							"type": "paragraph",
+							"data": {
+								"text": "Les noms comme STM, Power BI et les autres produits ou organismes mentionnés sur ce site appartiennent à leurs propriétaires respectifs. Ils sont cités à titre descriptif, pour expliquer mon travail; leur mention n'implique aucune affiliation, commandite ni approbation."
+							}
+						},
+						{
+							"id": "legal-notice-fr-010",
+							"type": "header",
+							"data": {
+								"text": "Crédits",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-fr-011",
+							"type": "paragraph",
+							"data": {
+								"text": "J'ai conçu et réalisé ce site moi-même."
+							}
+						},
+						{
+							"id": "legal-notice-fr-012",
+							"type": "header",
+							"data": {
+								"text": "Contact",
+								"level": 2
+							}
+						},
+						{
+							"id": "legal-notice-fr-013",
+							"type": "paragraph",
+							"data": {
+								"text": "Vous pouvez m'écrire à admin@yesid.dev ou passer par la page de contact à /contact. Je réponds en français, en anglais ou en espagnol."
+							}
+						}
+					]
+				},
+				"kind": "json"
+			}
+		}
+	}
+]

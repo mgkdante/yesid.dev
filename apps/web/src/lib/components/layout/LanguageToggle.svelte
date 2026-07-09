@@ -52,11 +52,15 @@
 
 	// One fingerboard per locale, alternating sides of the pole, current emphasised.
 	// Pointed-pennant silhouette is the locked shape — drawn flat (outline + label).
+	// Letters run as LARGE as the plate geometry allows (operator call): plates
+	// take the full per-board span and the type scales with the board count so
+	// the 3-board post (ES published) still fits its codes.
 	const boards = $derived(
 		availableLocales.map((loc, k) => {
 			const n = availableLocales.length;
 			const span = 36 / n;
-			const h = Math.min(12, span - 2);
+			const h = Math.min(15, span - 1.5);
+			const fontSize = n <= 2 ? 15 : 12.5;
 			const yTop = 4 + k * span + (span - h) / 2;
 			const mid = yTop + h / 2;
 			const right = k % 2 === 1;
@@ -67,11 +71,12 @@
 			return {
 				code: CODE[loc] ?? loc.slice(0, 2).toUpperCase(),
 				path,
+				fontSize,
 				ruleY: yTop + h + 1.4,
 				ruleX1: right ? 31 : 8,
 				ruleX2: right ? 47.5 : 25,
 				tx: right ? 39 : 16,
-				ty: mid + 3.8,
+				ty: mid + fontSize * 0.36,
 				active: loc === locale,
 				delay: k * 60,
 			};
@@ -108,7 +113,7 @@
 							{#if b.active}
 								<line class="rule" x1={b.ruleX1} y1={b.ruleY} x2={b.ruleX2} y2={b.ruleY} />
 							{/if}
-							<text x={b.tx} y={b.ty}>{b.code}</text>
+							<text x={b.tx} y={b.ty} font-size={b.fontSize}>{b.code}</text>
 						</g>
 					{/each}
 				</g>
@@ -157,9 +162,11 @@
 	}
 	.board text {
 		font-family: var(--font-mono);
+		/* Base size only — the render sets font-size per board count so the
+		   letters stay at the geometric max for 2 AND 3 published locales. */
 		font-size: 13px;
 		font-weight: 700;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.01em;
 		fill: currentColor;
 		text-anchor: middle;
 	}

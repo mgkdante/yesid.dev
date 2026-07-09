@@ -37,7 +37,7 @@ export const STM_ROUTES = [
   '105', '139', '30', '55', '150', '67', '97',
 ] as const;
 
-const ROUTES_TOTAL = 203;
+const ROUTES_TOTAL = 227;
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -101,7 +101,7 @@ export const INITIAL_HERO_DATA: HeroData = {
     {
       value: 186,
       key: 'routes',
-      total: 203,
+      total: 227,
     },
   ],
   queryRows: [

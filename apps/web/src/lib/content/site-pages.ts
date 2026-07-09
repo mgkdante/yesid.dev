@@ -59,4 +59,49 @@ export const sitePages: readonly SitePage[] = [
 		title: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 		type: 'freeform',
 	},
+	{
+		path: '/legal/privacy',
+		title: {
+			en: 'Privacy Policy',
+			es: 'Política de privacidad',
+			fr: 'Politique de confidentialité',
+		},
+		type: 'freeform',
+	},
+	{
+		path: '/legal/terms',
+		title: {
+			en: 'Terms of Use',
+			es: 'Condiciones de uso',
+			fr: 'Conditions d\'utilisation',
+		},
+		type: 'freeform',
+	},
+	{
+		path: '/legal/cookies',
+		title: {
+			en: 'Cookie and Tracking Policy',
+			es: 'Política de cookies',
+			fr: 'Politique sur les témoins (cookies)',
+		},
+		type: 'freeform',
+	},
+	{
+		path: '/legal/accessibility',
+		title: {
+			en: 'Accessibility Statement',
+			es: 'Declaración de accesibilidad',
+			fr: 'Déclaration d\'accessibilité',
+		},
+		type: 'freeform',
+	},
+	{
+		path: '/legal/notice',
+		title: {
+			en: 'Legal Notice',
+			es: 'Aviso legal',
+			fr: 'Avis juridique',
+		},
+		type: 'freeform',
+	},
 ];

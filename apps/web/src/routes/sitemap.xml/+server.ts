@@ -97,6 +97,13 @@ export async function _buildSitemapEntries(
 		pushIfPublished(`/services/${service.id}`);
 	}
 
+	// Legal pages (OPS1) — localized like the chrome routes, full alternate
+	// cluster per published locale.
+	const legal = await adapter.legal.all();
+	for (const page of legal) {
+		pushIfPublished(`/legal/${page.slug}`);
+	}
+
 	// Blog posts are mono-language (AM2.5): one URL at the body language, no
 	// alternate cluster ever — a /fr/blog/<en-post> page is FR chrome around an
 	// EN body and canonicals back here.

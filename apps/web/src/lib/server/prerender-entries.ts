@@ -20,6 +20,7 @@
 import { blogPosts } from '$lib/content/blog';
 import { projects } from '$lib/content/projects';
 import { services } from '$lib/content/services';
+import { legalPages } from '$lib/content/legal-pages';
 import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
@@ -54,4 +55,9 @@ export function serviceEntries(): Array<{ lang: string; id: string }> {
 	return services
 		.filter((service) => service.visible)
 		.flatMap((service) => LANG_PARAM_VALUES.map((lang) => ({ lang, id: service.id })));
+}
+
+/** Legal page entries (OPS1): every legal page × every published locale. */
+export function legalEntries(): Array<{ lang: string; slug: string }> {
+	return legalPages.flatMap((page) => LANG_PARAM_VALUES.map((lang) => ({ lang, slug: page.slug })));
 }

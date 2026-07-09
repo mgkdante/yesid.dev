@@ -14,8 +14,8 @@
 	let { engine }: { engine: EngineState } = $props();
 
 	// Card meta: "{n} parts · tap to draw" — code-owned, localized.
-	const PARTS_WORD = { en: 'parts', fr: 'morceaux' };
-	const TAP_TO_DRAW = { en: 'tap to draw', fr: 'tape pour dessiner' };
+	const PARTS_WORD = { en: 'parts', fr: 'morceaux', es: 'piezas' };
+	const TAP_TO_DRAW = { en: 'tap to draw', fr: 'tape pour dessiner', es: 'toca para dibujar' };
 	const partsWord = $derived(resolveLocale(PARTS_WORD, locale));
 	const tapToDraw = $derived(resolveLocale(TAP_TO_DRAW, locale));
 </script>

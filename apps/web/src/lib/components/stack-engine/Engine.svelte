@@ -113,8 +113,12 @@
 	}
 
 	// Homey nav labels (round 4) — the breadcrumb step reads like a place.
-	const BACK_TO_BLUEPRINT = { en: '← back to the blueprint', fr: '← retour au plan' };
-	const BACK_TO_MAP = { en: '← back to the map', fr: '← retour à la carte' };
+	const BACK_TO_BLUEPRINT = {
+		en: '← back to the blueprint',
+		fr: '← retour au plan',
+		es: '← volver al plano',
+	};
+	const BACK_TO_MAP = { en: '← back to the map', fr: '← retour à la carte', es: '← volver al mapa' };
 	const backLabel = $derived(
 		resolveLocale(engine.view === 'preview' ? BACK_TO_BLUEPRINT : BACK_TO_MAP, locale),
 	);
@@ -137,15 +141,23 @@
 
 	// Mode toggle labels — pinned EXACTLY by Engine.test.ts (spec wording).
 	const MODE_LABELS = {
-		goal: { en: 'I want to build…', fr: 'Je veux bâtir…' },
-		compose: { en: 'What can these build?', fr: 'Ça peut bâtir quoi?' },
+		goal: { en: 'I want to build…', fr: 'Je veux bâtir…', es: 'Quiero construir…' },
+		compose: { en: 'What can these build?', fr: 'Ça peut bâtir quoi?', es: '¿Qué construyen estas?' },
 	} as const;
 	const modeGoalLabel = $derived(resolveLocale(MODE_LABELS.goal, locale));
 	const modeComposeLabel = $derived(resolveLocale(MODE_LABELS.compose, locale));
 
 	// View-toggle copy (blueprint ⇄ product) — pinned by Engine.test.ts.
-	const SEE_AS_PRODUCT = { en: 'see it as a product', fr: 'vois-le comme un produit' };
-	const BACK_TO_BLUEPRINT_INLINE = { en: 'back to blueprint', fr: 'retour au plan' };
+	const SEE_AS_PRODUCT = {
+		en: 'see it as a product',
+		fr: 'vois-le comme un produit',
+		es: 'velo como producto',
+	};
+	const BACK_TO_BLUEPRINT_INLINE = {
+		en: 'back to blueprint',
+		fr: 'retour au plan',
+		es: 'volver al plano',
+	};
 	const seeAsProductLabel = $derived(resolveLocale(SEE_AS_PRODUCT, locale));
 	const backToBlueprintInline = $derived(resolveLocale(BACK_TO_BLUEPRINT_INLINE, locale));
 
