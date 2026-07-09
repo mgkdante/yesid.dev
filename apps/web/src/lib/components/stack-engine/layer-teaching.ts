@@ -14,6 +14,16 @@
 import type { StackLayer } from '@repo/shared/schemas';
 import type { LocalizedString } from '$lib/types';
 
+/** Printed layer names per locale (receiver r2): the canonical layer KEYS
+ *  (interface/logic/data/infra) stay the ids in state, CSS hooks, and CMS
+ *  data; these are the LABELS a visitor reads wherever a layer prints. */
+export const LAYER_NAMES: Record<StackLayer, LocalizedString> = {
+	interface: { en: 'interface', fr: 'interface', es: 'interfaz' },
+	logic: { en: 'logic', fr: 'logique', es: 'lógica' },
+	data: { en: 'data', fr: 'données', es: 'datos' },
+	infra: { en: 'infra', fr: 'infra', es: 'infra' },
+};
+
 /** Homey-teacher one-liners: what each layer IS, in human words. */
 export const LAYER_TEACHING: Record<StackLayer, LocalizedString> = {
 	interface: {
