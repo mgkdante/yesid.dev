@@ -26,7 +26,7 @@
  * Writes into ./gbp-assets/<locale>/ (en, fr):
  *   cover-services.{dark,light}.png   1200x675  -> GBP "cover" (the storefront)
  *   logo-wordmark.{dark,light}.png    1080x1080 -> GBP "logo" (square)
- *   mark-dot.{dark,light}.png         1080x1080 -> square avatar (text-free)
+ *   mark-dot.{dark,light}.png         1080x1080 -> avatar, TRANSPARENT ground
  *   og-default.{dark,light}.png       1200x630  -> general OG / social share
  *
  * GBP shows the profile on a WHITE UI, so the LIGHT variants are the safer
@@ -48,6 +48,11 @@ const FONT_FILES = [
 	`${WEB}/src/lib/og/fonts/JetBrainsMono-Medium.ttf`,
 ];
 const YELLOW = '#FFB627';
+// Every DOT is the vivid brand orange on BOTH themes (operator: the dots must
+// read orange, not the muted light-theme #A05500). Body text/grid/crosshairs
+// stay theme-aware via t.orange for legibility on the light paper; only the
+// brand dots and the mark pin to this.
+const DOT = '#E07800';
 
 interface Theme { key: string; bg: string; fg: string; muted: string; orange: string; core: string; blueprint: number; chrome: number; }
 const DARK: Theme = { key: 'dark', bg: '#141414', fg: '#F5F5F0', muted: '#949494', orange: '#E07800', core: '#F5F5F0', blueprint: 0.18, chrome: 0.42 };
@@ -69,13 +74,13 @@ const LOCALES: Locale[] = [
 
 const esc = (s: string) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 
-// Wordmark of record; the dot takes the theme orange, matching site --primary.
+// Wordmark of record; the dot is the vivid brand orange on both themes.
 const wmSvg = readFileSync(`${REPO}/apps/cms/brand/yesid-wordmark.svg`, 'utf8');
 const wmM = [...wmSvg.matchAll(/<path class="(wordmark|dot)" d="([^"]+)"/g)];
 const lettersPath = wmM.find(([, c]) => c === 'wordmark')![2];
 const dotPath = wmM.find(([, c]) => c === 'dot')![2];
 const wordmark = (x: number, y: number, s: number, t: Theme) =>
-	`<g transform="translate(${x},${y}) scale(${s})"><path d="${lettersPath}" fill="${t.fg}"/><path d="${dotPath}" fill="${t.orange}"/></g>`;
+	`<g transform="translate(${x},${y}) scale(${s})"><path d="${lettersPath}" fill="${t.fg}"/><path d="${dotPath}" fill="${DOT}"/></g>`;
 
 // Blueprint loader — wrap group with fill="none" so unspecified-fill shapes
 // render as line-art (not default-black) on any ground.
@@ -113,7 +118,7 @@ function cover(t: Theme, loc: Locale): string {
 	const dotCy = (i: number) => startY + i * gap - 13;
 	const rows = loc.services.map(([n, name], i) => {
 		const y = startY + i * gap, cy = dotCy(i);
-		return `<circle cx="${lineX}" cy="${cy}" r="9" fill="${YELLOW}"/><circle cx="${lineX}" cy="${cy}" r="4" fill="${t.core}"/>
+		return `<circle cx="${lineX}" cy="${cy}" r="9" fill="${DOT}"/><circle cx="${lineX}" cy="${cy}" r="4" fill="${t.core}"/>
 			<text x="${SM + 34}" y="${y}" font-family="JetBrains Mono" font-weight="500" font-size="26" fill="${t.orange}">${n}</text>
 			<text x="${SM + 92}" y="${y}" font-family="Inter" font-weight="900" font-size="${loc.nameSize}" letter-spacing="-1" fill="${t.fg}">${esc(name)}</text>`;
 	}).join('\n');
@@ -142,11 +147,20 @@ function logoWordmark(t: Theme, loc: Locale): string {
 	</svg>`;
 }
 
+// The bare mark: dot + outer ring on a TRANSPARENT ground, nothing else. No
+// background rect, so the same file drops onto any surface (GBP's white UI, a
+// dark deck, an email signature) without carrying a square of #141414 with it.
+// Resvg renders unpainted pixels as alpha 0 by default.
+//
+// Ring weight is sized for the DISPLAY size, not the source size. The old 3px
+// hairline at 0.3 opacity only read at full 1080; GBP crops avatars to roughly
+// 250px, where 3px becomes 0.69px of 30%-alpha ink and the ring disappears,
+// leaving a plain dot. At stroke 8 / 0.55 the ring still lands 1.85px at 250px
+// and survives the downscale while keeping the airy hairline character.
 function markDot(t: Theme): string {
 	return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
-		<rect width="1080" height="1080" fill="${t.bg}"/>
-		<circle cx="540" cy="540" r="362" fill="none" stroke="${t.orange}" stroke-width="3" opacity="0.3"/>
-		<circle cx="540" cy="540" r="300" fill="${t.orange}"/>
+		<circle cx="540" cy="540" r="362" fill="none" stroke="${DOT}" stroke-width="8" opacity="0.55"/>
+		<circle cx="540" cy="540" r="300" fill="${DOT}"/>
 	</svg>`;
 }
 
@@ -183,3 +197,15 @@ for (const [file, width, svg] of jobs) {
 	console.log(`✓ ${file}  ${(png.byteLength / 1024).toFixed(0)}KB`);
 }
 console.log(`\nWrote ${jobs.length} files to ${OUT}/{en,fr}`);
+
+// The Organization.logo of record. Unlike ./gbp-assets (throwaway, regenerate
+// anytime), this is a COMMITTED web asset: schema.org Organization.logo points
+// at it, so Google's entity surfaces and the site ship the same mark from the
+// same markDot() geometry. Dark orange, because Google presents the logo on a
+// purely white ground and dark is the brand default. 512px clears Google's
+// 112x112 minimum with room to downscale.
+const WEB_MARK = `${WEB}/static/brand/mark-512.png`;
+mkdirSync(dirname(WEB_MARK), { recursive: true });
+const markPng = new Resvg(markDot(DARK), { fitTo: { mode: 'width', value: 512 } }).render().asPng();
+writeFileSync(WEB_MARK, markPng);
+console.log(`✓ apps/web/static/brand/mark-512.png  ${(markPng.byteLength / 1024).toFixed(0)}KB  (Organization.logo)`);

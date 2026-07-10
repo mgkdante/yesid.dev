@@ -38,6 +38,7 @@ export const PersonSchema = z.object({
 	'@id': z.string().url(),
 	name: z.string().min(1),
 	jobTitle: z.string().min(1),
+	image: z.string().url(),
 	telephone: z.string().min(1).optional(),
 	url: z.string().url(),
 	email: z.string().email().optional(),
@@ -115,6 +116,12 @@ export const ProfessionalServiceSchema = z.object({
 	// languages so the site and the listing describe the same business.
 	knowsLanguage: z.array(z.string().min(2)).min(1),
 	image: z.string().url().optional(),
+	// The entity logo Google reads for the knowledge panel. Distinct from the
+	// favicon, which only drives the icon beside an ordinary result snippet.
+	// `logo` is an Organization property and ProfessionalService is a
+	// LocalBusiness, so this is a legitimate placement. Person has no `logo`
+	// (it takes `image`), which is why this lives on the business node.
+	logo: z.string().url().optional(),
 });
 
 export const CreativeWorkSchema = z.object({
