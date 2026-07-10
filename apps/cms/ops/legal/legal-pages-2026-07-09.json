@@ -38,7 +38,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "The site is fully static. It sets no cookies and runs no code that identifies you. Personal information reaches me in three ways, plus one aggregate measurement tool."
+						"text": "The site is prerendered and sets no tracking cookies. Personal information reaches me through contact, booking, and optional Plausible analytics. Plausible stays off unless you allow it."
 					},
 					{
 						"kind": "h3",
@@ -70,7 +70,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "I measure site traffic with a privacy-focused, cookieless analytics tool (Plausible or Umami). It sets no cookies, creates no persistent identifier, and does no cross-site tracking. Your IP address is processed transiently to derive aggregate statistics, such as country and pages viewed, and is not stored. What I see are anonymous totals, never individual visitors."
+						"text": "I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it."
 					},
 					{
 						"kind": "h3",
@@ -103,7 +103,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "I use a small number of service providers, and some are located outside Quebec, mainly in the United States and possibly in the European Union. Your personal information may therefore be communicated outside Quebec. Before relying on each provider, I assessed whether your information would receive adequate protection there, as section 17 of the Act respecting the protection of personal information in the private sector requires."
+						"text": "I use a small number of service providers, and some are located outside Quebec, in the United States and the European Union. Your personal information may therefore be communicated outside Quebec. Before relying on each provider, I assessed whether your information would receive adequate protection there, as section 17 of the Act respecting the protection of personal information in the private sector requires."
 					},
 					{
 						"kind": "ul",
@@ -111,7 +111,8 @@
 							"Vercel: hosts the site (US company, global content delivery network).",
 							"Web3Forms: relays the contact form to my email.",
 							"cal.com: handles call booking.",
-							"Railway and Neon: run the backend of my content system. They never process visitor data; the published site is static and makes no calls to them."
+							"Railway and Neon: run the backend of my content system. They never process visitor data; the published site is static and makes no calls to them.",
+							"Plausible Analytics (Plausible Insights OÜ, Estonia): processes the limited site-measurement data described above. Visitor data is processed and stored in the European Union."
 						]
 					},
 					{
@@ -127,7 +128,7 @@
 						"items": [
 							"No advertising and no ad networks.",
 							"No selling, renting, or trading of personal information. Ever.",
-							"No tracking cookies and no consent banner: there is nothing to activate, because the site has no function that identifies you, locates you, or profiles you.",
+							"No tracking cookies. Optional Plausible analytics is off by default and runs only after you allow it; you can reopen Analytics preferences from the footer.",
 							"No profiling and no automated decision-making."
 						]
 					},
@@ -137,7 +138,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. As a rule, correspondence and booking details are kept for up to three years after our last exchange, which tracks Quebec's general limitation period; records tied to an actual engagement (contracts, invoices, and the correspondence that supports them) are kept as long as tax and accounting law requires, at least six years. Analytics data is aggregate from the start and contains no personal information to delete."
+						"text": "I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. As a rule, correspondence and booking details are kept for up to three years after our last exchange, which tracks Quebec's general limitation period; records tied to an actual engagement (contracts, invoices, and the correspondence that supports them) are kept as long as tax and accounting law requires, at least six years. Plausible retains site-measurement data while my account is active. It does not store raw IP addresses or full User-Agent values, and I can permanently delete the site's stats."
 					},
 					{
 						"kind": "h2",
@@ -244,7 +245,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Le site est entièrement statique. Il n'installe aucun témoin (cookie) et n'exécute aucun code qui vous identifie. Des renseignements personnels me parviennent de trois façons, auxquelles s'ajoute un outil de mesure agrégée."
+						"text": "Le site est prérendu et n'installe aucun témoin de suivi. Des renseignements personnels me parviennent par le contact, la réservation et l'analytique Plausible facultative. Plausible reste désactivé sans votre autorisation."
 					},
 					{
 						"kind": "h3",
@@ -276,7 +277,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Je mesure la fréquentation du site avec un outil d'analyse respectueux de la vie privée et sans témoins (Plausible ou Umami). Il n'installe aucun cookie, ne crée aucun identifiant persistant et ne fait aucun suivi d'un site à l'autre. Votre adresse IP est traitée de façon transitoire pour produire des statistiques agrégées, comme le pays et les pages consultées, et n'est pas conservée. Je ne vois que des totaux anonymes, jamais des visiteurs individuels."
+						"text": "J'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d'exploitation et d'appareil, le pays, la région et la ville approximatifs, ainsi que deux événements de conversion : l'envoi réussi du formulaire de contact et le clic pour réserver un appel. Je ne joins à ces événements aucun champ du formulaire de contact ni aucune propriété personnalisée. Plausible n'installe aucun témoin, n'utilise pas le stockage du navigateur, n'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l'Union européenne. Je vois des rapports d'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas."
 					},
 					{
 						"kind": "h3",
@@ -309,7 +310,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Je fais appel à un petit nombre de fournisseurs de services, dont certains sont situés à l'extérieur du Québec, principalement aux États-Unis et possiblement dans l'Union européenne. Vos renseignements personnels peuvent donc être communiqués à l'extérieur du Québec. Avant de retenir chaque fournisseur, j'ai évalué si vos renseignements y recevraient une protection adéquate, comme l'exige l'article 17 de la Loi sur la protection des renseignements personnels dans le secteur privé."
+						"text": "Je fais appel à un petit nombre de fournisseurs de services, dont certains sont situés à l'extérieur du Québec, aux États-Unis et dans l'Union européenne. Vos renseignements personnels peuvent donc être communiqués à l'extérieur du Québec. Avant de retenir chaque fournisseur, j'ai évalué si vos renseignements y recevraient une protection adéquate, comme l'exige l'article 17 de la Loi sur la protection des renseignements personnels dans le secteur privé."
 					},
 					{
 						"kind": "ul",
@@ -317,7 +318,8 @@
 							"Vercel : héberge le site (entreprise américaine, réseau de diffusion mondial).",
 							"Web3Forms : relaie le formulaire de contact vers mon courriel.",
 							"cal.com : gère la prise de rendez-vous.",
-							"Railway et Neon : font tourner l'arrière-plan de mon système de contenu. Ils ne traitent jamais de données de visiteurs; le site publié est statique et ne communique pas avec eux."
+							"Railway et Neon : font tourner l'arrière-plan de mon système de contenu. Ils ne traitent jamais de données de visiteurs; le site publié est statique et ne communique pas avec eux.",
+							"Plausible Analytics (Plausible Insights OÜ, Estonie) : traite les données limitées de mesure du site décrites ci-dessus. Les données de visite sont traitées et conservées dans l'Union européenne."
 						]
 					},
 					{
@@ -333,7 +335,7 @@
 						"items": [
 							"Aucune publicité, aucun réseau publicitaire.",
 							"Aucune vente, location ou échange de renseignements personnels. Jamais.",
-							"Aucun témoin de suivi et aucune bannière de consentement : il n'y a rien à activer, car le site n'a aucune fonction qui vous identifie, vous localise ou établit votre profil.",
+							"Aucun témoin de suivi. L'analytique Plausible facultative est désactivée par défaut et fonctionne seulement après votre autorisation; vous pouvez rouvrir les Préférences d’analytique depuis le pied de page.",
 							"Aucun profilage, aucune décision automatisée."
 						]
 					},
@@ -343,7 +345,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. En règle générale, la correspondance et les détails de rendez-vous sont conservés au plus trois ans après notre dernier échange, ce qui suit le délai de prescription général au Québec; les dossiers liés à un mandat réel (contrats, factures et la correspondance qui les appuie) sont conservés aussi longtemps que la loi fiscale et comptable l'exige, soit au moins six ans. Les statistiques de fréquentation sont agrégées dès l'origine et ne contiennent aucun renseignement personnel à supprimer."
+						"text": "Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. En règle générale, la correspondance et les détails de rendez-vous sont conservés au plus trois ans après notre dernier échange, ce qui suit le délai de prescription général au Québec; les dossiers liés à un mandat réel (contrats, factures et la correspondance qui les appuie) sont conservés aussi longtemps que la loi fiscale et comptable l'exige, soit au moins six ans. Plausible conserve les données de mesure du site tant que mon compte est actif. Il ne conserve ni les adresses IP brutes ni les agents utilisateurs complets, et je peux supprimer définitivement les statistiques du site."
 					},
 					{
 						"kind": "h2",
@@ -417,7 +419,7 @@
 					}
 				]
 			},
-			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || PLACEHOLDERS THE OPERATOR MUST FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (both languages, appears in Who I am and Privacy Officer sections); [NEQ] (confirm whether an NEQ exists; if the sole proprietorship is not registered, delete the bracketed NEQ clause entirely in both languages); [DATE] (last-updated date, set at publication); [RETENTION PERIOD] (a firm retention period for correspondence/booking data; if the advisor prefers a purpose-based retention statement only, delete the sentence \"Where a fixed period applies, it is [RETENTION PERIOD]\" / « Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD] »).\n\nPOINTS OF LAW TO CONFIRM (interpretation, not verified facts): (1) No-consent-banner position: the policy states there is \"nothing to activate\" because the site has no identification, localization or profiling functions per s. 8.1; confirm this reading holds for localStorage functional preferences and for cookieless analytics with transient IP processing. (2) Section 17 outside-Quebec communication: the policy asserts the adequate-protection assessment (EFVP) was performed by the operator for Vercel, Web3Forms, cal.com. The operator states this is done; the advisor should sight the written assessments and confirm they meet s. 17 requirements, and confirm whether contractual safeguards with each processor (s. 18.3-style clauses) exist and suffice. (3) 30-day response commitment: drafted per s. 32 of the private-sector Act; confirm phrasing. (4) Portability: drafted as \"since September 2024, computerized personal information you provided, in a structured, commonly used technological format\"; confirm scope (collected-from-the-person only) and the September 22, 2024 effective framing. (5) De-indexing s. 28.1: included for completeness even though the site indexes nothing; confirm keeping it (with \"where the law provides for it\") is preferable to omitting a statutory right. (6) Incident section compresses ss. 3.5-3.8 into one sentence (register + notify person and CAI on risk of serious injury); confirm the \"risk of serious injury\" / « risque de préjudice sérieux » threshold wording. (7) Privacy Officer: operator self-designates (default under s. 3.1 as the person with highest authority); title and contact are published as required; confirm no written delegation instrument is needed for a sole proprietor. (8) Business-contact-information exemption (s. 1 exclusion for information concerning the performance of duties within an enterprise) may cover some B2B correspondents; the policy deliberately treats all collected information as personal information (conservative). Confirm this over-inclusive approach is acceptable.\n\nCLAIMS TO VERIFY AGAINST REALITY BEFORE PUBLISH: (a) Analytics section is written in the ACTIVE voice (\"I measure...\") but the tool (Plausible or Umami) is PLANNED, not yet deployed. Do not publish with this section active until the tool is live, or have the advisor approve conditional wording; also finalize which tool (Plausible vs Umami) and its hosting location (EU vs self-hosted) and name it precisely. (b) Verify the factual claims: analytics tool sets no cookies / no persistent identifiers / transient IP not stored (depends on chosen tool and configuration); site sets no cookies at all (audit Vercel defaults, cal.com embed if embedded rather than linked, and Web3Forms for any cookie or fingerprinting behavior; if cal.com is embedded on-page it may set its own cookies, which would contradict the cookie claims). (c) Security statements (sole access, multi-factor authentication on mailbox and cal.com, encryption in transit) must be true on publication day. (d) Railway/Neon description (\"never process visitor data, static site makes no calls to them\") must remain true; if any runtime endpoint is later added, this section must be revised. (e) Confirm an incident register actually exists (even an empty template) before the register claim goes live.\n\nDRAFTING NOTES: EN cites sections as \"s. 27\" etc. of the Act respecting the protection of personal information in the private sector; FR cites « art. 27 » of the « Loi sur la protection des renseignements personnels dans le secteur privé » and uses « Loi 25 » informally; confirm citation style preference. No compliance overclaims were made anywhere; keep it that way in revisions. No em dashes are used in either language by deliberate rule; please preserve this in any advisor edits. EN and FR are drafted as faithful equivalents (same sections, same commitments), each written natively.",
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || PLACEHOLDERS THE OPERATOR MUST FILL BEFORE PUBLICATION: [FULL LEGAL NAME] (both languages, appears in Who I am and Privacy Officer sections); [NEQ] (confirm whether an NEQ exists; if the sole proprietorship is not registered, delete the bracketed NEQ clause entirely in both languages); [DATE] (last-updated date, set at publication); [RETENTION PERIOD] (a firm retention period for correspondence/booking data; if the advisor prefers a purpose-based retention statement only, delete the sentence \"Where a fixed period applies, it is [RETENTION PERIOD]\" / « Lorsqu'un délai fixe s'applique, il est de [RETENTION PERIOD] »).\n\nPOINTS OF LAW TO CONFIRM (interpretation, not verified facts): (1) localStorage position: the policy treats the functional preferences kept in localStorage (theme, language, UI state, unsent form draft, never transmitted) as outside the s. 8.1 activation requirement; confirm this reading. Analytics no longer relies on this position: Plausible now runs behind the explicit opt-in choice described in the OPS2 note under CLAIMS below. (2) Section 17 outside-Quebec communication: the policy asserts the adequate-protection assessment (EFVP) was performed by the operator for Vercel, Web3Forms, cal.com. The operator states this is done; the advisor should sight the written assessments and confirm they meet s. 17 requirements, and confirm whether contractual safeguards with each processor (s. 18.3-style clauses) exist and suffice. (3) 30-day response commitment: drafted per s. 32 of the private-sector Act; confirm phrasing. (4) Portability: drafted as \"since September 2024, computerized personal information you provided, in a structured, commonly used technological format\"; confirm scope (collected-from-the-person only) and the September 22, 2024 effective framing. (5) De-indexing s. 28.1: included for completeness even though the site indexes nothing; confirm keeping it (with \"where the law provides for it\") is preferable to omitting a statutory right. (6) Incident section compresses ss. 3.5-3.8 into one sentence (register + notify person and CAI on risk of serious injury); confirm the \"risk of serious injury\" / « risque de préjudice sérieux » threshold wording. (7) Privacy Officer: operator self-designates (default under s. 3.1 as the person with highest authority); title and contact are published as required; confirm no written delegation instrument is needed for a sole proprietor. (8) Business-contact-information exemption (s. 1 exclusion for information concerning the performance of duties within an enterprise) may cover some B2B correspondents; the policy deliberately treats all collected information as personal information (conservative). Confirm this over-inclusive approach is acceptable.\n\nCLAIMS TO VERIFY AGAINST REALITY BEFORE PUBLISH: (a) OPS2 DECISION 2026-07-09: Plausible Analytics Cloud was selected. The implementation uses explicit opt-in because Plausible derives a daily visitor identifier and approximate country, region and city from IP address and User-Agent. No tracker import or request occurs before grant. Events carry sanitized page URLs only, with no form fields or custom properties. Production publication still requires the existing Quebec-advisor review and section 17 records. Verify these statements against the deployed build before approval. (b) Verify the factual claims: site sets no cookies at all (audit Vercel defaults, cal.com embed if embedded rather than linked, and Web3Forms for any cookie or fingerprinting behavior; if cal.com is embedded on-page it may set its own cookies, which would contradict the cookie claims). (c) Security statements (sole access, multi-factor authentication on mailbox and cal.com, encryption in transit) must be true on publication day. (d) Railway/Neon description (\"never process visitor data, static site makes no calls to them\") must remain true; if any runtime endpoint is later added, this section must be revised. (e) Confirm an incident register actually exists (even an empty template) before the register claim goes live.\n\nDRAFTING NOTES: EN cites sections as \"s. 27\" etc. of the Act respecting the protection of personal information in the private sector; FR cites « art. 27 » of the « Loi sur la protection des renseignements personnels dans le secteur privé » and uses « Loi 25 » informally; confirm citation style preference. No compliance overclaims were made anywhere; keep it that way in revisions. No em dashes are used in either language by deliberate rule; please preserve this in any advisor edits. EN and FR are drafted as faithful equivalents (same sections, same commitments), each written natively.",
 			"es": {
 				"title": "Política de privacidad",
 				"blocks": [
@@ -451,7 +453,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "El sitio es completamente estático. No instala cookies ni ejecuta código que lo identifique a usted. La información personal me llega de tres maneras, más una herramienta de medición agregada."
+						"text": "El sitio está prerrenderizado y no instala cookies de rastreo. La información personal me llega por el contacto, las reservas y la analítica opcional de Plausible. Plausible permanece desactivado sin su autorización."
 					},
 					{
 						"kind": "h3",
@@ -483,7 +485,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Mido el tráfico del sitio con una herramienta de analítica enfocada en la privacidad y sin cookies (Plausible o Umami). No instala cookies, no crea ningún identificador persistente y no hace seguimiento entre sitios. Su dirección IP se procesa de forma transitoria para derivar estadísticas agregadas, como el país y las páginas vistas, y no se almacena. Lo que yo veo son totales anónimos, nunca visitantes individuales."
+						"text": "Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y dos eventos de conversión: el envío exitoso del formulario de contacto y el clic para reservar una llamada. No adjunto a esos eventos ningún campo del formulario de contacto ni propiedades personalizadas. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice."
 					},
 					{
 						"kind": "h3",
@@ -516,7 +518,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Utilizo un número reducido de proveedores de servicios, y algunos están ubicados fuera de Quebec, principalmente en Estados Unidos y posiblemente en la Unión Europea. Por lo tanto, su información personal puede ser comunicada fuera de Quebec. Antes de apoyarme en cada proveedor, evalué si su información recibiría allí una protección adecuada, como lo exige el artículo 17 de la Ley de protección de la información personal en el sector privado (Quebec)."
+						"text": "Utilizo un número reducido de proveedores de servicios, y algunos están ubicados fuera de Quebec, en Estados Unidos y en la Unión Europea. Por lo tanto, su información personal puede ser comunicada fuera de Quebec. Antes de apoyarme en cada proveedor, evalué si su información recibiría allí una protección adecuada, como lo exige el artículo 17 de la Ley de protección de la información personal en el sector privado (Quebec)."
 					},
 					{
 						"kind": "ul",
@@ -524,7 +526,8 @@
 							"Vercel: aloja el sitio (empresa estadounidense, red global de distribución de contenidos).",
 							"Web3Forms: retransmite el formulario de contacto a mi correo electrónico.",
 							"cal.com: gestiona la reserva de llamadas.",
-							"Railway y Neon: ejecutan el backend de mi sistema de contenido. Nunca procesan datos de visitantes; el sitio publicado es estático y no hace ninguna llamada hacia ellos."
+							"Railway y Neon: ejecutan el backend de mi sistema de contenido. Nunca procesan datos de visitantes; el sitio publicado es estático y no hace ninguna llamada hacia ellos.",
+							"Plausible Analytics (Plausible Insights OÜ, Estonia): procesa los datos limitados de medición del sitio descritos arriba. Los datos de las visitas se procesan y almacenan en la Unión Europea."
 						]
 					},
 					{
@@ -540,7 +543,7 @@
 						"items": [
 							"Sin publicidad y sin redes publicitarias.",
 							"Sin venta, alquiler ni intercambio de información personal. Nunca.",
-							"Sin cookies de rastreo y sin banner de consentimiento: no hay nada que activar, porque el sitio no tiene ninguna función que lo identifique, lo ubique o cree un perfil de usted.",
+							"Sin cookies de rastreo. La analítica opcional de Plausible está desactivada de forma predeterminada y solo funciona después de que usted la autorice; puede volver a abrir las Preferencias de analítica desde el pie de página.",
 							"Sin perfilado y sin decisiones automatizadas."
 						]
 					},
@@ -550,7 +553,7 @@
 					},
 					{
 						"kind": "p",
-						"text": "Conservo los correos electrónicos, los mensajes del formulario y los detalles de las reservas mientras nuestro intercambio, y cualquier trabajo que se derive de él, lo requiera; después los elimino. Como regla general, la correspondencia y los detalles de las reservas se conservan hasta tres años después de nuestro último intercambio, lo que corresponde al plazo general de prescripción de Quebec; los registros vinculados a un encargo real (contratos, facturas y la correspondencia que los respalda) se conservan mientras lo exija la legislación fiscal y contable, es decir, al menos seis años. Los datos de analítica son agregados desde el inicio y no contienen información personal que eliminar."
+						"text": "Conservo los correos electrónicos, los mensajes del formulario y los detalles de las reservas mientras nuestro intercambio, y cualquier trabajo que se derive de él, lo requiera; después los elimino. Como regla general, la correspondencia y los detalles de las reservas se conservan hasta tres años después de nuestro último intercambio, lo que corresponde al plazo general de prescripción de Quebec; los registros vinculados a un encargo real (contratos, facturas y la correspondencia que los respalda) se conservan mientras lo exija la legislación fiscal y contable, es decir, al menos seis años. Plausible conserva los datos de medición del sitio mientras mi cuenta está activa. No almacena direcciones IP sin procesar ni agentes de usuario completos, y puedo eliminar de forma permanente las estadísticas del sitio."
 					},
 					{
 						"kind": "h2",
@@ -953,7 +956,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and why you will not see a cookie banner here. Last updated: 2026-07-09."
+						"text": "yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and how your analytics choice works. Last updated: 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -964,7 +967,7 @@
 						"items": [
 							"This site sets no tracking cookies. None.",
 							"There is no advertising technology, no cross-site tracking, and no profiling.",
-							"There is no consent banner because nothing on this site requires that kind of consent."
+							"Plausible analytics is off by default and runs only after you allow it."
 						]
 					},
 					{
@@ -981,27 +984,27 @@
 					},
 					{
 						"kind": "p",
-						"text": "I use a cookieless, privacy-focused analytics tool (Plausible or Umami) to understand traffic in aggregate: which pages are visited, roughly how many visits they receive, and where visits come from at the level of a country or a referring site. The tool sets no cookies, stores no persistent identifiers, and does not follow you across other sites. IP addresses are processed transiently to compute aggregate statistics and are not stored. In practice, I can see that a page received visits; I cannot see who you are, track you around the web, or recognize you on your next visit."
+						"text": "I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it."
 					},
 					{
 						"kind": "h2",
-						"text": "Why there is no banner"
+						"text": "Your analytics choice"
 					},
 					{
 						"kind": "p",
-						"text": "Quebec's Law 25 (section 8.1 of the Act respecting the protection of personal information in the private sector) requires a website to let you activate or deactivate technologies that identify you, locate you, or profile you. This site uses no such technology: no tracking cookies, no fingerprinting, no geolocation, no profiling. Since there is nothing to switch on or off, a banner would serve no purpose. I chose to be transparent here instead, in plain text."
+						"text": "Section 8.1 of Quebec's Act respecting the protection of personal information in the private sector addresses technologies with functions that can identify, locate or profile a person. Plausible derives a visitor count that changes daily and an approximate country, region and city. I therefore keep those functions off by default. No Plausible request is sent until you choose Allow analytics, and you can reopen Analytics preferences from the footer at any time."
 					},
 					{
 						"kind": "p",
-						"text": "Canada's federal law points the same way: under PIPEDA's meaningful-consent guidance, implied consent is enough for non-sensitive, non-tracking uses like these aggregate statistics, so no banner is required on that side either."
+						"text": "I use the same explicit choice for every visitor instead of relying on implied consent."
 					},
 					{
 						"kind": "h2",
-						"text": "If this ever changes"
+						"text": "If this changes"
 					},
 					{
 						"kind": "p",
-						"text": "If I ever introduce a technology that identifies, locates, or profiles visitors, I will ask for your opt-in consent before it runs, and I will update this page and its date. No silent changes."
+						"text": "If I add another technology that identifies, locates or profiles visitors, I will explain it here and keep it off until the required choice is available. No silent changes."
 					},
 					{
 						"kind": "h2",
@@ -1018,7 +1021,7 @@
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu'il ne conserve pas, et pourquoi vous ne verrez pas de bandeau de témoins (cookies) ici. Dernière mise à jour : 2026-07-09."
+						"text": "yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu'il ne conserve pas, et comment fonctionne votre choix d'analytique. Dernière mise à jour : 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -1029,7 +1032,7 @@
 						"items": [
 							"Ce site n'installe aucun témoin de suivi. Aucun.",
 							"Il n'y a ni technologie publicitaire, ni suivi entre les sites, ni profilage.",
-							"Il n'y a pas de bandeau de consentement, parce que rien sur ce site n'exige ce type de consentement."
+							"L'analytique Plausible est désactivée par défaut et fonctionne seulement après votre autorisation."
 						]
 					},
 					{
@@ -1046,27 +1049,27 @@
 					},
 					{
 						"kind": "p",
-						"text": "J'utilise un outil de mesure d'audience sans témoins et axé sur la vie privée (Plausible ou Umami) pour comprendre l'achalandage de façon agrégée : les pages consultées, le nombre approximatif de visites et leur provenance, au niveau d'un pays ou d'un site référent. L'outil n'installe aucun témoin, ne conserve aucun identifiant persistant et ne vous suit pas d'un site à l'autre. Les adresses IP sont traitées de façon transitoire pour produire des statistiques agrégées et ne sont pas conservées. Concrètement, je peux voir qu'une page a reçu des visites; je ne peux pas savoir qui vous êtes, vous suivre sur le Web ni vous reconnaître à votre prochaine visite."
+						"text": "J'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d'exploitation et d'appareil, le pays, la région et la ville approximatifs, ainsi que deux événements de conversion : l'envoi réussi du formulaire de contact et le clic pour réserver un appel. Je ne joins à ces événements aucun champ du formulaire de contact ni aucune propriété personnalisée. Plausible n'installe aucun témoin, n'utilise pas le stockage du navigateur, n'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l'Union européenne. Je vois des rapports d'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas."
 					},
 					{
 						"kind": "h2",
-						"text": "Pourquoi il n'y a pas de bandeau"
+						"text": "Votre choix d’analytique"
 					},
 					{
 						"kind": "p",
-						"text": "La Loi 25 (article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé) exige qu'un site Web vous permette d'activer ou de désactiver les technologies qui permettent de vous identifier, de vous localiser ou d'effectuer votre profilage. Ce site n'utilise aucune technologie de ce genre : pas de témoins de suivi, pas d'empreinte numérique, pas de géolocalisation, pas de profilage. Comme il n'y a rien à activer ni à désactiver, un bandeau ne servirait à rien. J'ai plutôt choisi d'être transparent ici, en texte clair."
+						"text": "L'article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé du Québec vise les technologies qui comportent des fonctions permettant d'identifier ou de localiser une personne, ou d'effectuer son profilage. Plausible produit un décompte des visiteurs renouvelé chaque jour ainsi qu'une estimation du pays, de la région et de la ville. Je garde donc ces fonctions désactivées par défaut. Aucune requête n'est envoyée à Plausible avant que vous choisissiez Autoriser l’analytique, et vous pouvez rouvrir les Préférences d’analytique depuis le pied de page en tout temps."
 					},
 					{
 						"kind": "p",
-						"text": "La loi fédérale va dans le même sens : selon les lignes directrices sur le consentement valable de la LPRPDE, le consentement implicite suffit pour des usages non sensibles et sans suivi comme ces statistiques agrégées; aucune bannière n'est donc requise de ce côté non plus."
+						"text": "J'utilise le même choix explicite pour chaque personne qui visite le site, plutôt que de m'appuyer sur un consentement implicite."
 					},
 					{
 						"kind": "h2",
-						"text": "Si cela change un jour"
+						"text": "Si cela change"
 					},
 					{
 						"kind": "p",
-						"text": "Si j'introduis un jour une technologie qui identifie, localise ou profile les visiteurs, je demanderai votre consentement explicite avant de l'activer, et je mettrai cette page et sa date à jour. Aucun changement silencieux."
+						"text": "Si j'ajoute une autre technologie qui identifie, localise ou profile les visiteurs, je l'expliquerai ici et je la garderai désactivée jusqu'à ce que le choix requis soit offert. Aucun changement silencieux."
 					},
 					{
 						"kind": "h2",
@@ -1078,13 +1081,13 @@
 					}
 				]
 			},
-			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || 1) CORE INTERPRETATION TO CONFIRM: the page's central position is that s. 8.1 of the Act respecting the protection of personal information in the private sector (Loi 25) only requires an activation/deactivation mechanism (banner) for technologies that identify, locate, or profile a person, and that this site uses none, so no banner is required and transparency via this policy suffices. Please confirm this reading, including that purely functional localStorage preferences (theme, language, UI state, unsent form draft, never transmitted) fall outside s. 8.1.\n2) ANALYTICS: the section is drafted in the present tense but the tool is NOT yet live; the operator will activate it (Plausible or Umami) before or at publication. Confirm (a) that a cookieless analytics tool with no persistent identifiers, transient IP processing, and aggregate-only output does not constitute identification, localization, or profiling under s. 8.1 and does not require prior consent; (b) if you disagree, the Analytics and Why-there-is-no-banner sections must be rewritten and an opt-in mechanism added before the tool goes live. Also confirm whether the hosting location of the analytics service (EU vs self-hosted) needs to be stated here or only in the privacy policy alongside the s. 17 assessment.\n3) FACTUAL CLAIMS TO VERIFY AGAINST THE CHOSEN TOOL before publication: \"no cookies\", \"no persistent identifiers\", \"IP addresses processed transiently and not stored\", \"no cross-site tracking\". These must match the actual configuration of the deployed Plausible/Umami instance.\n4) PLACEHOLDERS the operator must fill: [DATE] (effective/last-updated), [FULL LEGAL NAME] (appears in the intro and Contact sections of both languages), [Plausible / Umami] (pick the actual tool once deployed). [NEQ] is deliberately not used on this page; confirm it is not required here (expected on the legal notice / privacy policy instead).\n5) BINDING COMMITMENT: the \"If this ever changes\" section commits the operator to opt-in consent BEFORE deploying any identifying/locating/profiling technology. Confirm the operator accepts this as a standing commitment and that the wording creates no unintended obligation beyond Law 25's own requirements.\n6) TERMINOLOGY AND CITATIONS: FR uses \"témoins (cookies)\" on first mention, \"Loi 25\", the full French statute name, and \"Responsable de la protection des renseignements personnels\" (s. 3.1). Confirm whether a formal citation (RLRQ, c. P-39.1) should be added, and whether naming the privacy officer role on this page (in addition to the privacy policy) is appropriate or redundant.\n7) EQUIVALENCE: EN and FR were written natively with identical sections and commitments; please flag any spot where the FR legal phrasing (e.g. \"effectuer votre profilage\", \"activer ou désactiver\") should track the statutory wording more closely.\n8) NO OVERCLAIMS: the text deliberately avoids \"compliant/conforme\" language; confirm nothing in it reads as a guarantee.",
+			"advisorNotes": "OPERATOR VALUES APPLIED 2026-07-09: legal name Yesid Fernando Otalora; last-updated 2026-07-09; NO NEQ (not registered; advisor to confirm whether operating under the 'yesid.dev' name requires registration); publisher address 366 rue de Fontenelle, Gatineau QC J8T 0C6 (operator-provided; note the site's Montreal branding vs the Gatineau legal address; city mentions in legal identity lines neutralized to 'Quebec, Canada'); retention = 3 years after last exchange for correspondence/booking + tax-law minimum (6 years) for engagement records (confirm figures); Vercel Inc. address 440 N Barranca Ave #4133, Covina CA 91723; PIPEDA + OPC coverage added for Canada-wide compliance (confirm wording). || 1) CORE INTERPRETATION TO CONFIRM: the page now presents an explicit opt-in choice for Plausible analytics under s. 8.1 of the Act respecting the protection of personal information in the private sector (Loi 25). The remaining interpretation to confirm is that purely functional localStorage preferences (theme, language, UI state, unsent form draft, never transmitted) fall outside s. 8.1.\n2) OPS2 DECISION 2026-07-09: Plausible Analytics Cloud was selected. The implementation uses explicit opt-in because Plausible derives a daily visitor identifier and approximate country, region and city from IP address and User-Agent. No tracker import or request occurs before grant. Events carry sanitized page URLs only, with no form fields or custom properties. Production publication still requires the existing Quebec-advisor review and section 17 records. Verify these statements against the deployed build before approval.\n3) PLACEHOLDERS the operator must fill: [DATE] (effective/last-updated), [FULL LEGAL NAME] (appears in the intro and Contact sections of both languages). [NEQ] is deliberately not used on this page; confirm it is not required here (expected on the legal notice / privacy policy instead).\n4) BINDING COMMITMENT: the \"If this changes\" section commits the operator to opt-in consent BEFORE deploying any identifying/locating/profiling technology. Confirm the operator accepts this as a standing commitment and that the wording creates no unintended obligation beyond Law 25's own requirements.\n5) TERMINOLOGY AND CITATIONS: FR uses \"témoins (cookies)\" on first mention, \"Loi 25\", the full French statute name, and \"Responsable de la protection des renseignements personnels\" (s. 3.1). Confirm whether a formal citation (RLRQ, c. P-39.1) should be added, and whether naming the privacy officer role on this page (in addition to the privacy policy) is appropriate or redundant.\n6) EQUIVALENCE: EN and FR were written natively with identical sections and commitments; please flag any spot where the FR legal phrasing (e.g. \"effectuer votre profilage\", \"activer ou désactiver\") should track the statutory wording more closely.\n7) NO OVERCLAIMS: the text deliberately avoids \"compliant/conforme\" language; confirm nothing in it reads as a guarantee.",
 			"es": {
 				"title": "Política de cookies y rastreo",
 				"blocks": [
 					{
 						"kind": "p",
-						"text": "yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y por qué usted no verá aquí un aviso de cookies. Última actualización: 2026-07-09."
+						"text": "yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y cómo funciona su elección de analítica. Última actualización: 2026-07-09."
 					},
 					{
 						"kind": "h2",
@@ -1095,7 +1098,7 @@
 						"items": [
 							"Este sitio no instala ninguna cookie de rastreo. Ninguna.",
 							"No hay tecnología publicitaria, ni rastreo entre sitios, ni elaboración de perfiles.",
-							"No hay un aviso de consentimiento porque nada en este sitio requiere ese tipo de consentimiento."
+							"La analítica de Plausible está desactivada de forma predeterminada y solo funciona después de que usted la autorice."
 						]
 					},
 					{
@@ -1112,27 +1115,27 @@
 					},
 					{
 						"kind": "p",
-						"text": "Utilizo una herramienta de analítica sin cookies y centrada en la privacidad (Plausible o Umami) para entender el tráfico de forma agregada: qué páginas se visitan, aproximadamente cuántas visitas reciben y de dónde provienen, a nivel de país o de sitio de referencia. La herramienta no instala cookies, no guarda identificadores persistentes y no lo sigue a usted por otros sitios. Las direcciones IP se procesan de manera transitoria para calcular estadísticas agregadas y no se almacenan. En la práctica, puedo ver que una página recibió visitas; no puedo saber quién es usted, rastrearlo por la web ni reconocerlo en su próxima visita."
+						"text": "Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y dos eventos de conversión: el envío exitoso del formulario de contacto y el clic para reservar una llamada. No adjunto a esos eventos ningún campo del formulario de contacto ni propiedades personalizadas. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice."
 					},
 					{
 						"kind": "h2",
-						"text": "Por qué no hay un aviso"
+						"text": "Su elección de analítica"
 					},
 					{
 						"kind": "p",
-						"text": "La Ley 25 de Quebec, en el artículo 8.1 de la Ley de protección de la información personal en el sector privado (Quebec), exige que un sitio web le permita activar o desactivar las tecnologías que lo identifican, lo localizan o elaboran un perfil sobre usted. Este sitio no usa ninguna tecnología de ese tipo: ni cookies de rastreo, ni huella digital del navegador, ni geolocalización, ni elaboración de perfiles. Como no hay nada que activar ni desactivar, un aviso no serviría de nada. Preferí ser transparente aquí, en texto claro."
+						"text": "El artículo 8.1 de la Ley de protección de la información personal en el sector privado de Quebec se refiere a tecnologías con funciones que permiten identificar o localizar a una persona, o elaborar su perfil. Plausible crea un recuento de visitantes que cambia cada día y una estimación del país, la región y la ciudad. Por eso mantengo esas funciones desactivadas de forma predeterminada. No se envía ninguna solicitud a Plausible antes de que usted elija Permitir analítica, y puede volver a abrir las Preferencias de analítica desde el pie de página en cualquier momento."
 					},
 					{
 						"kind": "p",
-						"text": "La ley federal de Canadá apunta en la misma dirección: según las directrices sobre consentimiento significativo de PIPEDA (la ley federal canadiense de protección de datos personales), el consentimiento implícito es suficiente para usos no sensibles y sin rastreo, como estas estadísticas agregadas, de modo que por ese lado tampoco se requiere un aviso."
+						"text": "Uso la misma elección explícita para cada persona que visita el sitio, en vez de basarme en un consentimiento implícito."
 					},
 					{
 						"kind": "h2",
-						"text": "Si esto cambia algún día"
+						"text": "Si esto cambia"
 					},
 					{
 						"kind": "p",
-						"text": "Si algún día introduzco una tecnología que identifique, localice o elabore perfiles de los visitantes, le pediré su consentimiento expreso antes de activarla, y actualizaré esta página y su fecha. Nada de cambios silenciosos."
+						"text": "Si agrego otra tecnología que identifique, localice o elabore perfiles de los visitantes, la explicaré aquí y la mantendré desactivada hasta que se ofrezca la elección requerida. Nada de cambios silenciosos."
 					},
 					{
 						"kind": "h2",
