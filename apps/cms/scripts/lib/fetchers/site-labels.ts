@@ -61,6 +61,14 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				fr: ls('ui_language_name_fr'),
 				es: ls('ui_language_name_es'),
 			},
+			analyticsConsent: {
+				title: ls('ui_analytics_consent_title'),
+				description: ls('ui_analytics_consent_description'),
+				acceptLabel: ls('ui_analytics_consent_accept_label'),
+				declineLabel: ls('ui_analytics_consent_decline_label'),
+				settingsLabel: ls('ui_analytics_consent_settings_label'),
+				privacyLabel: ls('ui_analytics_consent_privacy_label'),
+			},
 		},
 		pages: {
 			blogEdgeTitle: ls('pages_blog_edge_title'),

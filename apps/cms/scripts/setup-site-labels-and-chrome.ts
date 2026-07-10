@@ -26,6 +26,7 @@
 
 import seedsJson from '../fixtures/content/site-labels.json';
 import frSeedsJson from '../fixtures/content/site-labels.fr.json';
+import esSeedsJson from '../fixtures/content/site-labels.es.json';
 import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
@@ -43,6 +44,9 @@ export const SITE_LABEL_SEEDS: Record<string, string> = seedsJson;
  * the existing a11y_/ui_/pages_/email_ FR translations live as a distinct row.
  */
 export const SITE_LABEL_FR_SEEDS: Record<string, string> = frSeedsJson;
+
+/** Sparse ES seed for the OPS2 analytics-choice columns only. */
+export const SITE_LABEL_ES_SEEDS: Record<string, string> = esSeedsJson;
 
 /** uuid PK — mirrors site_pages.id. */
 function uuidPkField() {
@@ -161,8 +165,16 @@ export function buildSiteLabelsPlan(): SchemaStep[] {
 	];
 }
 
-export function parseFlags(argv: readonly string[]): { apply: boolean; seed: boolean } {
-	return { apply: argv.includes('--apply'), seed: argv.includes('--seed') };
+export function parseFlags(argv: readonly string[]): {
+	apply: boolean;
+	seed: boolean;
+	labelsOnly: boolean;
+} {
+	return {
+		apply: argv.includes('--apply'),
+		seed: argv.includes('--seed'),
+		labelsOnly: argv.includes('--labels-only'),
+	};
 }
 
 export function describeStep(step: SchemaStep): string {
@@ -247,7 +259,34 @@ async function apiPatch(ctx: ApplyContext, path: string, body: unknown): Promise
 	return res.json;
 }
 
-async function seed(ctx: ApplyContext): Promise<void> {
+type SiteLabelLocale = 'en' | 'fr' | 'es';
+
+async function upsertTranslation(
+	ctx: ApplyContext,
+	parentId: string,
+	locale: SiteLabelLocale,
+	seeds: Record<string, string>,
+): Promise<void> {
+	const trs = await apiGet(
+		ctx,
+		`/items/site_labels_translations?filter[languages_code][_eq]=${locale}&limit=1`,
+	);
+	const row = (trs.data as Array<{ id: number }>)[0];
+	const seedCount = Object.keys(seeds).length;
+	if (row) {
+		await apiPatch(ctx, `/items/site_labels_translations/${row.id}`, seeds);
+		log.info(`  updated site_labels_translations#${row.id} (${locale}) with ${seedCount} seeds`);
+		return;
+	}
+	await apiPost(ctx, '/items/site_labels_translations', {
+		site_labels_id: parentId,
+		languages_code: locale,
+		...seeds,
+	});
+	log.info(`  created site_labels_translations (${locale}) with ${seedCount} seeds`);
+}
+
+async function seed(ctx: ApplyContext, labelsOnly: boolean): Promise<void> {
 	// 1. ensure the singleton row exists
 	const existing = await apiGet(ctx, '/items/site_labels');
 	let parentId = (existing?.data as { id?: string } | null)?.id;
@@ -257,33 +296,13 @@ async function seed(ctx: ApplyContext): Promise<void> {
 		parentId = (created.data as { id: string }).id;
 		log.info(`  materialized site_labels singleton row ${parentId}`);
 	}
-	// 2. upsert the EN translation row
-	const trs = await apiGet(ctx, `/items/site_labels_translations?filter[languages_code][_eq]=en&limit=1`);
-	const enRow = (trs.data as Array<{ id: number }>)[0];
-	if (enRow) {
-		await apiPatch(ctx, `/items/site_labels_translations/${enRow.id}`, SITE_LABEL_SEEDS);
-		log.info(`  updated site_labels_translations#${enRow.id} (en) with ${Object.keys(SITE_LABEL_SEEDS).length} seeds`);
-	} else {
-		await apiPost(ctx, '/items/site_labels_translations', {
-			site_labels_id: parentId,
-			languages_code: 'en',
-			...SITE_LABEL_SEEDS,
-		});
-		log.info(`  created site_labels_translations (en) with ${Object.keys(SITE_LABEL_SEEDS).length} seeds`);
-	}
-	// 2b. upsert the FR translation row (slice-30 t1 chrome translations seed).
-	const frTrs = await apiGet(ctx, `/items/site_labels_translations?filter[languages_code][_eq]=fr&limit=1`);
-	const frRow = (frTrs.data as Array<{ id: number }>)[0];
-	if (frRow) {
-		await apiPatch(ctx, `/items/site_labels_translations/${frRow.id}`, SITE_LABEL_FR_SEEDS);
-		log.info(`  updated site_labels_translations#${frRow.id} (fr) with ${Object.keys(SITE_LABEL_FR_SEEDS).length} seeds`);
-	} else {
-		await apiPost(ctx, '/items/site_labels_translations', {
-			site_labels_id: parentId,
-			languages_code: 'fr',
-			...SITE_LABEL_FR_SEEDS,
-		});
-		log.info(`  created site_labels_translations (fr) with ${Object.keys(SITE_LABEL_FR_SEEDS).length} seeds`);
+	// 2. upsert each translation row. ES stays sparse so historical values survive.
+	await upsertTranslation(ctx, parentId, 'en', SITE_LABEL_SEEDS);
+	await upsertTranslation(ctx, parentId, 'fr', SITE_LABEL_FR_SEEDS);
+	await upsertTranslation(ctx, parentId, 'es', SITE_LABEL_ES_SEEDS);
+	if (labelsOnly) {
+		log.info('  labels-only seed complete; /projects chrome was not touched');
+		return;
 	}
 	// 3. /projects chrome seeds — GO-DAY RULE: visible output must not change.
 	//    heading = current rendered H1; empty_state = current rendered empty message;
@@ -304,11 +323,13 @@ async function seed(ctx: ApplyContext): Promise<void> {
 // --- Main ---------------------------------------------------------------------
 
 async function main(): Promise<void> {
-	const { apply, seed: doSeed } = parseFlags(process.argv.slice(2));
+	const { apply, seed: doSeed, labelsOnly } = parseFlags(process.argv.slice(2));
 	const url = defaultDirectusUrl();
 	assertDevCms(url);
 	const plan = buildSiteLabelsPlan();
-	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}${doSeed ? ' [seed]' : ''}`);
+	log.info(
+		`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}${doSeed ? ' [seed]' : ''}${labelsOnly ? ' [labels-only]' : ''}`,
+	);
 	log.info(`plan: ${plan.length} steps`);
 	for (const step of plan) log.info(describeStep(step));
 
@@ -322,7 +343,7 @@ async function main(): Promise<void> {
 	await applySchemaPlan(plan, ctx);
 	if (doSeed) {
 		log.info('seeding…');
-		await seed(ctx);
+		await seed(ctx, labelsOnly);
 	}
 	log.info('apply complete.');
 }

@@ -17,6 +17,7 @@
 	// is gone; the Slice 17b "documented exception" reading siteMeta directly
 	// is likewise resolved.
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
+	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import { DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { provideLocale } from '$lib/utils/locale-context';
 	import { delocalizePath } from '$lib/utils/locale-routing';
@@ -99,6 +100,7 @@
 </script>
 
 <SeoHead seo={data.seo} {locale} themeColor={data.themeColor} />
+<Analytics {locale} />
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
 	<Nav pathname={$page.url.pathname} url={$page.url} {locale} {headerLinks} {menuItems} />
