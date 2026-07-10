@@ -48,6 +48,11 @@ const FONT_FILES = [
 	`${WEB}/src/lib/og/fonts/JetBrainsMono-Medium.ttf`,
 ];
 const YELLOW = '#FFB627';
+// Every DOT is the vivid brand orange on BOTH themes (operator: the dots must
+// read orange, not the muted light-theme #A05500). Body text/grid/crosshairs
+// stay theme-aware via t.orange for legibility on the light paper; only the
+// brand dots and the mark pin to this.
+const DOT = '#E07800';
 
 interface Theme { key: string; bg: string; fg: string; muted: string; orange: string; core: string; blueprint: number; chrome: number; }
 const DARK: Theme = { key: 'dark', bg: '#141414', fg: '#F5F5F0', muted: '#949494', orange: '#E07800', core: '#F5F5F0', blueprint: 0.18, chrome: 0.42 };
@@ -69,13 +74,13 @@ const LOCALES: Locale[] = [
 
 const esc = (s: string) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 
-// Wordmark of record; the dot takes the theme orange, matching site --primary.
+// Wordmark of record; the dot is the vivid brand orange on both themes.
 const wmSvg = readFileSync(`${REPO}/apps/cms/brand/yesid-wordmark.svg`, 'utf8');
 const wmM = [...wmSvg.matchAll(/<path class="(wordmark|dot)" d="([^"]+)"/g)];
 const lettersPath = wmM.find(([, c]) => c === 'wordmark')![2];
 const dotPath = wmM.find(([, c]) => c === 'dot')![2];
 const wordmark = (x: number, y: number, s: number, t: Theme) =>
-	`<g transform="translate(${x},${y}) scale(${s})"><path d="${lettersPath}" fill="${t.fg}"/><path d="${dotPath}" fill="${t.orange}"/></g>`;
+	`<g transform="translate(${x},${y}) scale(${s})"><path d="${lettersPath}" fill="${t.fg}"/><path d="${dotPath}" fill="${DOT}"/></g>`;
 
 // Blueprint loader — wrap group with fill="none" so unspecified-fill shapes
 // render as line-art (not default-black) on any ground.
@@ -113,7 +118,7 @@ function cover(t: Theme, loc: Locale): string {
 	const dotCy = (i: number) => startY + i * gap - 13;
 	const rows = loc.services.map(([n, name], i) => {
 		const y = startY + i * gap, cy = dotCy(i);
-		return `<circle cx="${lineX}" cy="${cy}" r="9" fill="${YELLOW}"/><circle cx="${lineX}" cy="${cy}" r="4" fill="${t.core}"/>
+		return `<circle cx="${lineX}" cy="${cy}" r="9" fill="${DOT}"/><circle cx="${lineX}" cy="${cy}" r="4" fill="${t.core}"/>
 			<text x="${SM + 34}" y="${y}" font-family="JetBrains Mono" font-weight="500" font-size="26" fill="${t.orange}">${n}</text>
 			<text x="${SM + 92}" y="${y}" font-family="Inter" font-weight="900" font-size="${loc.nameSize}" letter-spacing="-1" fill="${t.fg}">${esc(name)}</text>`;
 	}).join('\n');
@@ -154,8 +159,8 @@ function logoWordmark(t: Theme, loc: Locale): string {
 // and survives the downscale while keeping the airy hairline character.
 function markDot(t: Theme): string {
 	return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
-		<circle cx="540" cy="540" r="362" fill="none" stroke="${t.orange}" stroke-width="8" opacity="0.55"/>
-		<circle cx="540" cy="540" r="300" fill="${t.orange}"/>
+		<circle cx="540" cy="540" r="362" fill="none" stroke="${DOT}" stroke-width="8" opacity="0.55"/>
+		<circle cx="540" cy="540" r="300" fill="${DOT}"/>
 	</svg>`;
 }
 
