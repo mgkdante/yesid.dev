@@ -7,6 +7,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { trackAnalyticsEvent } from '$lib/analytics/client';
 
 	const locale = getLocale();
 	import { pressBounce } from '$lib/motion/actions';
@@ -136,7 +137,7 @@
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="conversion" size="cta-lg" href="https://cal.com/yesid-dev" target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press">
+		<Button variant="conversion" size="cta-lg" href="https://cal.com/yesid-dev" target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press" onclick={() => trackAnalyticsEvent('booking_click')}>
 			{ctaContactLabel}
 		</Button>
 	</div>

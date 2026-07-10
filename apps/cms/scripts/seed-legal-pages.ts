@@ -207,7 +207,7 @@ async function main(): Promise<void> {
 	assertDevCms(url);
 	const pages = drafts.pages as DraftPage[];
 	log.info(`target: ${url}${apply_ ? ' [apply]' : ' [dry-run]'}`);
-	log.info(`plan: ${pages.length} legal pages (en+fr) + site_pages rows + footer nav_links`);
+	log.info(`plan: ${pages.length} legal pages (en+fr+es) + site_pages rows + footer nav_links`);
 	for (const page of pages) {
 		log.info(
 			`  ${page.slug}: en "${page.en.title}" (${page.en.blocks.length} blocks) / fr "${page.fr.title}" (${page.fr.blocks.length} blocks) -> /legal/${page.slug}`,

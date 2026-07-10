@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
+
+const analyticsMocks = vi.hoisted(() => ({
+	trackAnalyticsEvent: vi.fn(),
+}));
+
+vi.mock('$lib/analytics/client', () => analyticsMocks);
+
 import ContactPage from './ContactPage.svelte';
 // slice-18i Phase 7C: ContactPage now requires contactPage prop.
 import { contactContent } from '$lib/content/contact-page';
@@ -8,6 +15,10 @@ import { contactContent } from '$lib/content/contact-page';
 // round-trip at the unit level (registerSession is module-scoped; the component's
 // persisted() fields register into the same registry on mount).
 import { captureEntries, applyEntries } from '$lib/state/locale-handoff.svelte';
+
+beforeEach(() => {
+	analyticsMocks.trackAnalyticsEvent.mockClear();
+});
 
 async function typeInto(el: HTMLInputElement | HTMLTextAreaElement, value: string) {
 	el.value = value;
@@ -20,6 +31,16 @@ async function submitForm(submitBtn: HTMLElement) {
 	const form = submitBtn.closest('form') as HTMLFormElement;
 	await fireEvent.submit(form);
 	await tick();
+}
+
+async function clickWithoutNavigating(link: HTMLElement) {
+	const preventNavigation = (event: Event) => event.preventDefault();
+	link.addEventListener('click', preventNavigation);
+	try {
+		await fireEvent.click(link);
+	} finally {
+		link.removeEventListener('click', preventNavigation);
+	}
 }
 
 describe('ContactPage', () => {
@@ -166,6 +187,7 @@ describe('ContactPage', () => {
 
 		const errors = screen.getAllByText(/✗/);
 		expect(errors.length).toBeGreaterThanOrEqual(3);
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
 	it('shows invalid email error for bad format', async () => {
@@ -182,6 +204,7 @@ describe('ContactPage', () => {
 		await submitForm(submitBtns[0]);
 
 		expect(screen.getAllByText(/invalid.*email/i).length).toBeGreaterThanOrEqual(1);
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
 	it('shows success state after valid submit', async () => {
@@ -201,6 +224,65 @@ describe('ContactPage', () => {
 		await new Promise((r) => setTimeout(r, 2000));
 
 		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
+	});
+
+	it('does not track a conversion when Web3Forms reports failure', async () => {
+		const prevFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+			if (String(input).includes('web3forms')) {
+				return new Response(JSON.stringify({ success: false }), {
+					status: 200,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+			return prevFetch(input, init);
+		}) as typeof globalThis.fetch;
+
+		try {
+			render(ContactPage, { props: { contactPage: contactContent } });
+			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
+			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
+			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+			await typeInto(nameInputs[0], 'Test User');
+			await typeInto(emailInputs[0], 'test@example.com');
+			await typeInto(messageInputs[0], 'Hello there');
+			await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
+
+			await waitFor(() => {
+				expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
+			});
+			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
+	});
+
+	it('does not track a conversion when the Web3Forms request rejects', async () => {
+		const prevFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+			if (String(input).includes('web3forms')) throw new Error('offline');
+			return prevFetch(input, init);
+		}) as typeof globalThis.fetch;
+
+		try {
+			render(ContactPage, { props: { contactPage: contactContent } });
+			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
+			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
+			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+			await typeInto(nameInputs[0], 'Test User');
+			await typeInto(emailInputs[0], 'test@example.com');
+			await typeInto(messageInputs[0], 'Hello there');
+			await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
+
+			await waitFor(() => {
+				expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
+			});
+			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
 	});
 
 	// Launch-edge batch: the Web3Forms round trip is 1-3s of network time — the
@@ -241,6 +323,7 @@ describe('ContactPage', () => {
 			expect(web3formsCalls()).toBe(1);
 			await submitForm(submitBtns[0]);
 			expect(web3formsCalls()).toBe(1);
+			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 
 			// Resolve → the success sequence takes over.
 			resolveFetch({ json: async () => ({ success: true }) });
@@ -248,9 +331,36 @@ describe('ContactPage', () => {
 				() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1),
 				{ timeout: 4000 },
 			);
+			expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+			expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
 		} finally {
 			globalThis.fetch = prevFetch;
 		}
+	});
+
+	it('tracks the calendar social row as a booking click', async () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await clickWithoutNavigating(screen.getAllByTestId('contact-social-calendar')[0]);
+
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
+	});
+
+	it('tracks the form booking escape hatch as a booking click', async () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await clickWithoutNavigating(screen.getAllByTestId('contact-booking-link')[0]);
+
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
+	});
+
+	it('does not track booking for non-calendar social links', async () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await clickWithoutNavigating(screen.getAllByTestId('contact-social-email')[0]);
+		await clickWithoutNavigating(screen.getAllByTestId('contact-social-github')[0]);
+		await clickWithoutNavigating(screen.getAllByTestId('contact-social-linkedin')[0]);
+
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
 	it('uses CMS success link labels inside the success template', async () => {

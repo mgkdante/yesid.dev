@@ -5,6 +5,7 @@
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
+	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
 	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
 
@@ -28,6 +29,7 @@
 	const exploreLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.exploreLabel, locale));
 	const legalLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.legalLabel, locale));
 	const connectLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.connectLabel, locale));
+	const settingsLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.settingsLabel, locale));
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
@@ -110,6 +112,16 @@
 					{link.label}
 				</a>
 			{/each}
+			{#if $analyticsConsentStore.ready && $analyticsConsentStore.available}
+				<button
+					type="button"
+					data-testid="analytics-preferences"
+					class="footer-link self-start text-left text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					onclick={() => analyticsConsentStore.openPreferences()}
+				>
+					{settingsLabel}
+				</button>
+			{/if}
 		</nav>
 
 		<!-- CONNECT: off-site profiles -->

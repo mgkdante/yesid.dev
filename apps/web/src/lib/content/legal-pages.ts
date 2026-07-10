@@ -58,7 +58,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'The site is fully static. It sets no cookies and runs no code that identifies you. Personal information reaches me in three ways, plus one aggregate measurement tool.',
+							text: 'The site is prerendered and sets no tracking cookies. Personal information reaches me through contact, booking, and optional Plausible analytics. Plausible stays off unless you allow it.',
 						},
 						id: 'legal-privacy-en-008',
 						type: 'paragraph',
@@ -106,7 +106,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I measure site traffic with a privacy-focused, cookieless analytics tool (Plausible or Umami). It sets no cookies, creates no persistent identifier, and does no cross-site tracking. Your IP address is processed transiently to derive aggregate statistics, such as country and pages viewed, and is not stored. What I see are anonymous totals, never individual visitors.',
+							text: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it.',
 						},
 						id: 'legal-privacy-en-016',
 						type: 'paragraph',
@@ -167,7 +167,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I use a small number of service providers, and some are located outside Quebec, mainly in the United States and possibly in the European Union. Your personal information may therefore be communicated outside Quebec. Before relying on each provider, I assessed whether your information would receive adequate protection there, as section 17 of the Act respecting the protection of personal information in the private sector requires.',
+							text: 'I use a small number of service providers, and some are located outside Quebec, in the United States and the European Union. Your personal information may therefore be communicated outside Quebec. Before relying on each provider, I assessed whether your information would receive adequate protection there, as section 17 of the Act respecting the protection of personal information in the private sector requires.',
 						},
 						id: 'legal-privacy-en-023',
 						type: 'paragraph',
@@ -189,6 +189,10 @@ export const legalPages: readonly LegalPage[] = [
 								},
 								{
 									content: 'Railway and Neon: run the backend of my content system. They never process visitor data; the published site is static and makes no calls to them.',
+									items: [],
+								},
+								{
+									content: 'Plausible Analytics (Plausible Insights OÜ, Estonia): processes the limited site-measurement data described above. Visitor data is processed and stored in the European Union.',
 									items: [],
 								},
 							],
@@ -221,7 +225,7 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'No tracking cookies and no consent banner: there is nothing to activate, because the site has no function that identifies you, locates you, or profiles you.',
+									content: 'No tracking cookies. Optional Plausible analytics is off by default and runs only after you allow it; you can reopen Analytics preferences from the footer.',
 									items: [],
 								},
 								{
@@ -241,7 +245,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. As a rule, correspondence and booking details are kept for up to three years after our last exchange, which tracks Quebec\'s general limitation period; records tied to an actual engagement (contracts, invoices, and the correspondence that supports them) are kept as long as tax and accounting law requires, at least six years. Analytics data is aggregate from the start and contains no personal information to delete.',
+							text: 'I keep emails, form messages, and booking details for as long as our exchange, and any work that follows from it, requires; then I delete them. As a rule, correspondence and booking details are kept for up to three years after our last exchange, which tracks Quebec\'s general limitation period; records tied to an actual engagement (contracts, invoices, and the correspondence that supports them) are kept as long as tax and accounting law requires, at least six years. Plausible retains site-measurement data while my account is active. It does not store raw IP addresses or full User-Agent values, and I can permanently delete the site\'s stats.',
 						},
 						id: 'legal-privacy-en-029',
 						type: 'paragraph',
@@ -415,7 +419,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'El sitio es completamente estático. No instala cookies ni ejecuta código que lo identifique a usted. La información personal me llega de tres maneras, más una herramienta de medición agregada.',
+							text: 'El sitio está prerrenderizado y no instala cookies de rastreo. La información personal me llega por el contacto, las reservas y la analítica opcional de Plausible. Plausible permanece desactivado sin su autorización.',
 						},
 						id: 'legal-privacy-es-008',
 						type: 'paragraph',
@@ -463,7 +467,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Mido el tráfico del sitio con una herramienta de analítica enfocada en la privacidad y sin cookies (Plausible o Umami). No instala cookies, no crea ningún identificador persistente y no hace seguimiento entre sitios. Su dirección IP se procesa de forma transitoria para derivar estadísticas agregadas, como el país y las páginas vistas, y no se almacena. Lo que yo veo son totales anónimos, nunca visitantes individuales.',
+							text: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y dos eventos de conversión: el envío exitoso del formulario de contacto y el clic para reservar una llamada. No adjunto a esos eventos ningún campo del formulario de contacto ni propiedades personalizadas. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice.',
 						},
 						id: 'legal-privacy-es-016',
 						type: 'paragraph',
@@ -524,7 +528,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Utilizo un número reducido de proveedores de servicios, y algunos están ubicados fuera de Quebec, principalmente en Estados Unidos y posiblemente en la Unión Europea. Por lo tanto, su información personal puede ser comunicada fuera de Quebec. Antes de apoyarme en cada proveedor, evalué si su información recibiría allí una protección adecuada, como lo exige el artículo 17 de la Ley de protección de la información personal en el sector privado (Quebec).',
+							text: 'Utilizo un número reducido de proveedores de servicios, y algunos están ubicados fuera de Quebec, en Estados Unidos y en la Unión Europea. Por lo tanto, su información personal puede ser comunicada fuera de Quebec. Antes de apoyarme en cada proveedor, evalué si su información recibiría allí una protección adecuada, como lo exige el artículo 17 de la Ley de protección de la información personal en el sector privado (Quebec).',
 						},
 						id: 'legal-privacy-es-023',
 						type: 'paragraph',
@@ -546,6 +550,10 @@ export const legalPages: readonly LegalPage[] = [
 								},
 								{
 									content: 'Railway y Neon: ejecutan el backend de mi sistema de contenido. Nunca procesan datos de visitantes; el sitio publicado es estático y no hace ninguna llamada hacia ellos.',
+									items: [],
+								},
+								{
+									content: 'Plausible Analytics (Plausible Insights OÜ, Estonia): procesa los datos limitados de medición del sitio descritos arriba. Los datos de las visitas se procesan y almacenan en la Unión Europea.',
 									items: [],
 								},
 							],
@@ -576,7 +584,7 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'Sin cookies de rastreo y sin banner de consentimiento: no hay nada que activar, porque el sitio no tiene ninguna función que lo identifique, lo ubique o cree un perfil de usted.',
+									content: 'Sin cookies de rastreo. La analítica opcional de Plausible está desactivada de forma predeterminada y solo funciona después de que usted la autorice; puede volver a abrir las Preferencias de analítica desde el pie de página.',
 									items: [],
 								},
 								{
@@ -596,7 +604,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Conservo los correos electrónicos, los mensajes del formulario y los detalles de las reservas mientras nuestro intercambio, y cualquier trabajo que se derive de él, lo requiera; después los elimino. Como regla general, la correspondencia y los detalles de las reservas se conservan hasta tres años después de nuestro último intercambio, lo que corresponde al plazo general de prescripción de Quebec; los registros vinculados a un encargo real (contratos, facturas y la correspondencia que los respalda) se conservan mientras lo exija la legislación fiscal y contable, es decir, al menos seis años. Los datos de analítica son agregados desde el inicio y no contienen información personal que eliminar.',
+							text: 'Conservo los correos electrónicos, los mensajes del formulario y los detalles de las reservas mientras nuestro intercambio, y cualquier trabajo que se derive de él, lo requiera; después los elimino. Como regla general, la correspondencia y los detalles de las reservas se conservan hasta tres años después de nuestro último intercambio, lo que corresponde al plazo general de prescripción de Quebec; los registros vinculados a un encargo real (contratos, facturas y la correspondencia que los respalda) se conservan mientras lo exija la legislación fiscal y contable, es decir, al menos seis años. Plausible conserva los datos de medición del sitio mientras mi cuenta está activa. No almacena direcciones IP sin procesar ni agentes de usuario completos, y puedo eliminar de forma permanente las estadísticas del sitio.',
 						},
 						id: 'legal-privacy-es-029',
 						type: 'paragraph',
@@ -770,7 +778,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Le site est entièrement statique. Il n\'installe aucun témoin (cookie) et n\'exécute aucun code qui vous identifie. Des renseignements personnels me parviennent de trois façons, auxquelles s\'ajoute un outil de mesure agrégée.',
+							text: 'Le site est prérendu et n\'installe aucun témoin de suivi. Des renseignements personnels me parviennent par le contact, la réservation et l\'analytique Plausible facultative. Plausible reste désactivé sans votre autorisation.',
 						},
 						id: 'legal-privacy-fr-008',
 						type: 'paragraph',
@@ -818,7 +826,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Je mesure la fréquentation du site avec un outil d\'analyse respectueux de la vie privée et sans témoins (Plausible ou Umami). Il n\'installe aucun cookie, ne crée aucun identifiant persistant et ne fait aucun suivi d\'un site à l\'autre. Votre adresse IP est traitée de façon transitoire pour produire des statistiques agrégées, comme le pays et les pages consultées, et n\'est pas conservée. Je ne vois que des totaux anonymes, jamais des visiteurs individuels.',
+							text: 'J\'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d\'exploitation et d\'appareil, le pays, la région et la ville approximatifs, ainsi que deux événements de conversion : l\'envoi réussi du formulaire de contact et le clic pour réserver un appel. Je ne joins à ces événements aucun champ du formulaire de contact ni aucune propriété personnalisée. Plausible n\'installe aucun témoin, n\'utilise pas le stockage du navigateur, n\'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l\'Union européenne. Je vois des rapports d\'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas.',
 						},
 						id: 'legal-privacy-fr-016',
 						type: 'paragraph',
@@ -882,7 +890,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Je fais appel à un petit nombre de fournisseurs de services, dont certains sont situés à l\'extérieur du Québec, principalement aux États-Unis et possiblement dans l\'Union européenne. Vos renseignements personnels peuvent donc être communiqués à l\'extérieur du Québec. Avant de retenir chaque fournisseur, j\'ai évalué si vos renseignements y recevraient une protection adéquate, comme l\'exige l\'article 17 de la Loi sur la protection des renseignements personnels dans le secteur privé.',
+							text: 'Je fais appel à un petit nombre de fournisseurs de services, dont certains sont situés à l\'extérieur du Québec, aux États-Unis et dans l\'Union européenne. Vos renseignements personnels peuvent donc être communiqués à l\'extérieur du Québec. Avant de retenir chaque fournisseur, j\'ai évalué si vos renseignements y recevraient une protection adéquate, comme l\'exige l\'article 17 de la Loi sur la protection des renseignements personnels dans le secteur privé.',
 						},
 						id: 'legal-privacy-fr-023',
 						type: 'paragraph',
@@ -904,6 +912,10 @@ export const legalPages: readonly LegalPage[] = [
 								},
 								{
 									content: 'Railway et Neon : font tourner l\'arrière-plan de mon système de contenu. Ils ne traitent jamais de données de visiteurs; le site publié est statique et ne communique pas avec eux.',
+									items: [],
+								},
+								{
+									content: 'Plausible Analytics (Plausible Insights OÜ, Estonie) : traite les données limitées de mesure du site décrites ci-dessus. Les données de visite sont traitées et conservées dans l\'Union européenne.',
 									items: [],
 								},
 							],
@@ -936,7 +948,7 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'Aucun témoin de suivi et aucune bannière de consentement : il n\'y a rien à activer, car le site n\'a aucune fonction qui vous identifie, vous localise ou établit votre profil.',
+									content: 'Aucun témoin de suivi. L\'analytique Plausible facultative est désactivée par défaut et fonctionne seulement après votre autorisation; vous pouvez rouvrir les Préférences d’analytique depuis le pied de page.',
 									items: [],
 								},
 								{
@@ -956,7 +968,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. En règle générale, la correspondance et les détails de rendez-vous sont conservés au plus trois ans après notre dernier échange, ce qui suit le délai de prescription général au Québec; les dossiers liés à un mandat réel (contrats, factures et la correspondance qui les appuie) sont conservés aussi longtemps que la loi fiscale et comptable l\'exige, soit au moins six ans. Les statistiques de fréquentation sont agrégées dès l\'origine et ne contiennent aucun renseignement personnel à supprimer.',
+							text: 'Je conserve les courriels, les messages du formulaire et les détails de rendez-vous aussi longtemps que notre échange, et le travail qui en découle, le requiert; ensuite, je les supprime. En règle générale, la correspondance et les détails de rendez-vous sont conservés au plus trois ans après notre dernier échange, ce qui suit le délai de prescription général au Québec; les dossiers liés à un mandat réel (contrats, factures et la correspondance qui les appuie) sont conservés aussi longtemps que la loi fiscale et comptable l\'exige, soit au moins six ans. Plausible conserve les données de mesure du site tant que mon compte est actif. Il ne conserve ni les adresses IP brutes ni les agents utilisateurs complets, et je peux supprimer définitivement les statistiques du site.',
 						},
 						id: 'legal-privacy-fr-029',
 						type: 'paragraph',
@@ -1616,7 +1628,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and why you will not see a cookie banner here. Last updated: 2026-07-09.',
+							text: 'yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and how your analytics choice works. Last updated: 2026-07-09.',
 						},
 						id: 'legal-cookies-en-001',
 						type: 'paragraph',
@@ -1638,7 +1650,7 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'There is no consent banner because nothing on this site requires that kind of consent.',
+									content: 'Plausible analytics is off by default and runs only after you allow it.',
 									items: [],
 								},
 							],
@@ -1666,38 +1678,38 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I use a cookieless, privacy-focused analytics tool (Plausible or Umami) to understand traffic in aggregate: which pages are visited, roughly how many visits they receive, and where visits come from at the level of a country or a referring site. The tool sets no cookies, stores no persistent identifiers, and does not follow you across other sites. IP addresses are processed transiently to compute aggregate statistics and are not stored. In practice, I can see that a page received visits; I cannot see who you are, track you around the web, or recognize you on your next visit.',
+							text: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it.',
 						},
 						id: 'legal-cookies-en-007',
 						type: 'paragraph',
 					},
 					{
-						data: { level: 2, text: 'Why there is no banner' },
+						data: { level: 2, text: 'Your analytics choice' },
 						id: 'legal-cookies-en-008',
 						type: 'header',
 					},
 					{
 						data: {
-							text: 'Quebec\'s Law 25 (section 8.1 of the Act respecting the protection of personal information in the private sector) requires a website to let you activate or deactivate technologies that identify you, locate you, or profile you. This site uses no such technology: no tracking cookies, no fingerprinting, no geolocation, no profiling. Since there is nothing to switch on or off, a banner would serve no purpose. I chose to be transparent here instead, in plain text.',
+							text: 'Section 8.1 of Quebec\'s Act respecting the protection of personal information in the private sector addresses technologies with functions that can identify, locate or profile a person. Plausible derives a visitor count that changes daily and an approximate country, region and city. I therefore keep those functions off by default. No Plausible request is sent until you choose Allow analytics, and you can reopen Analytics preferences from the footer at any time.',
 						},
 						id: 'legal-cookies-en-009',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'Canada\'s federal law points the same way: under PIPEDA\'s meaningful-consent guidance, implied consent is enough for non-sensitive, non-tracking uses like these aggregate statistics, so no banner is required on that side either.',
+							text: 'I use the same explicit choice for every visitor instead of relying on implied consent.',
 						},
 						id: 'legal-cookies-en-010',
 						type: 'paragraph',
 					},
 					{
-						data: { level: 2, text: 'If this ever changes' },
+						data: { level: 2, text: 'If this changes' },
 						id: 'legal-cookies-en-011',
 						type: 'header',
 					},
 					{
 						data: {
-							text: 'If I ever introduce a technology that identifies, locates, or profiles visitors, I will ask for your opt-in consent before it runs, and I will update this page and its date. No silent changes.',
+							text: 'If I add another technology that identifies, locates or profiles visitors, I will explain it here and keep it off until the required choice is available. No silent changes.',
 						},
 						id: 'legal-cookies-en-012',
 						type: 'paragraph',
@@ -1722,7 +1734,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y por qué usted no verá aquí un aviso de cookies. Última actualización: 2026-07-09.',
+							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y cómo funciona su elección de analítica. Última actualización: 2026-07-09.',
 						},
 						id: 'legal-cookies-es-001',
 						type: 'paragraph',
@@ -1744,7 +1756,7 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'No hay un aviso de consentimiento porque nada en este sitio requiere ese tipo de consentimiento.',
+									content: 'La analítica de Plausible está desactivada de forma predeterminada y solo funciona después de que usted la autorice.',
 									items: [],
 								},
 							],
@@ -1772,38 +1784,38 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Utilizo una herramienta de analítica sin cookies y centrada en la privacidad (Plausible o Umami) para entender el tráfico de forma agregada: qué páginas se visitan, aproximadamente cuántas visitas reciben y de dónde provienen, a nivel de país o de sitio de referencia. La herramienta no instala cookies, no guarda identificadores persistentes y no lo sigue a usted por otros sitios. Las direcciones IP se procesan de manera transitoria para calcular estadísticas agregadas y no se almacenan. En la práctica, puedo ver que una página recibió visitas; no puedo saber quién es usted, rastrearlo por la web ni reconocerlo en su próxima visita.',
+							text: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y dos eventos de conversión: el envío exitoso del formulario de contacto y el clic para reservar una llamada. No adjunto a esos eventos ningún campo del formulario de contacto ni propiedades personalizadas. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice.',
 						},
 						id: 'legal-cookies-es-007',
 						type: 'paragraph',
 					},
 					{
-						data: { level: 2, text: 'Por qué no hay un aviso' },
+						data: { level: 2, text: 'Su elección de analítica' },
 						id: 'legal-cookies-es-008',
 						type: 'header',
 					},
 					{
 						data: {
-							text: 'La Ley 25 de Quebec, en el artículo 8.1 de la Ley de protección de la información personal en el sector privado (Quebec), exige que un sitio web le permita activar o desactivar las tecnologías que lo identifican, lo localizan o elaboran un perfil sobre usted. Este sitio no usa ninguna tecnología de ese tipo: ni cookies de rastreo, ni huella digital del navegador, ni geolocalización, ni elaboración de perfiles. Como no hay nada que activar ni desactivar, un aviso no serviría de nada. Preferí ser transparente aquí, en texto claro.',
+							text: 'El artículo 8.1 de la Ley de protección de la información personal en el sector privado de Quebec se refiere a tecnologías con funciones que permiten identificar o localizar a una persona, o elaborar su perfil. Plausible crea un recuento de visitantes que cambia cada día y una estimación del país, la región y la ciudad. Por eso mantengo esas funciones desactivadas de forma predeterminada. No se envía ninguna solicitud a Plausible antes de que usted elija Permitir analítica, y puede volver a abrir las Preferencias de analítica desde el pie de página en cualquier momento.',
 						},
 						id: 'legal-cookies-es-009',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'La ley federal de Canadá apunta en la misma dirección: según las directrices sobre consentimiento significativo de PIPEDA (la ley federal canadiense de protección de datos personales), el consentimiento implícito es suficiente para usos no sensibles y sin rastreo, como estas estadísticas agregadas, de modo que por ese lado tampoco se requiere un aviso.',
+							text: 'Uso la misma elección explícita para cada persona que visita el sitio, en vez de basarme en un consentimiento implícito.',
 						},
 						id: 'legal-cookies-es-010',
 						type: 'paragraph',
 					},
 					{
-						data: { level: 2, text: 'Si esto cambia algún día' },
+						data: { level: 2, text: 'Si esto cambia' },
 						id: 'legal-cookies-es-011',
 						type: 'header',
 					},
 					{
 						data: {
-							text: 'Si algún día introduzco una tecnología que identifique, localice o elabore perfiles de los visitantes, le pediré su consentimiento expreso antes de activarla, y actualizaré esta página y su fecha. Nada de cambios silenciosos.',
+							text: 'Si agrego otra tecnología que identifique, localice o elabore perfiles de los visitantes, la explicaré aquí y la mantendré desactivada hasta que se ofrezca la elección requerida. Nada de cambios silenciosos.',
 						},
 						id: 'legal-cookies-es-012',
 						type: 'paragraph',
@@ -1828,7 +1840,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu\'il ne conserve pas, et pourquoi vous ne verrez pas de bandeau de témoins (cookies) ici. Dernière mise à jour : 2026-07-09.',
+							text: 'yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu\'il ne conserve pas, et comment fonctionne votre choix d\'analytique. Dernière mise à jour : 2026-07-09.',
 						},
 						id: 'legal-cookies-fr-001',
 						type: 'paragraph',
@@ -1850,7 +1862,7 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'Il n\'y a pas de bandeau de consentement, parce que rien sur ce site n\'exige ce type de consentement.',
+									content: 'L\'analytique Plausible est désactivée par défaut et fonctionne seulement après votre autorisation.',
 									items: [],
 								},
 							],
@@ -1878,38 +1890,38 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'J\'utilise un outil de mesure d\'audience sans témoins et axé sur la vie privée (Plausible ou Umami) pour comprendre l\'achalandage de façon agrégée : les pages consultées, le nombre approximatif de visites et leur provenance, au niveau d\'un pays ou d\'un site référent. L\'outil n\'installe aucun témoin, ne conserve aucun identifiant persistant et ne vous suit pas d\'un site à l\'autre. Les adresses IP sont traitées de façon transitoire pour produire des statistiques agrégées et ne sont pas conservées. Concrètement, je peux voir qu\'une page a reçu des visites; je ne peux pas savoir qui vous êtes, vous suivre sur le Web ni vous reconnaître à votre prochaine visite.',
+							text: 'J\'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d\'exploitation et d\'appareil, le pays, la région et la ville approximatifs, ainsi que deux événements de conversion : l\'envoi réussi du formulaire de contact et le clic pour réserver un appel. Je ne joins à ces événements aucun champ du formulaire de contact ni aucune propriété personnalisée. Plausible n\'installe aucun témoin, n\'utilise pas le stockage du navigateur, n\'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l\'Union européenne. Je vois des rapports d\'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas.',
 						},
 						id: 'legal-cookies-fr-007',
 						type: 'paragraph',
 					},
 					{
-						data: { level: 2, text: 'Pourquoi il n\'y a pas de bandeau' },
+						data: { level: 2, text: 'Votre choix d’analytique' },
 						id: 'legal-cookies-fr-008',
 						type: 'header',
 					},
 					{
 						data: {
-							text: 'La Loi 25 (article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé) exige qu\'un site Web vous permette d\'activer ou de désactiver les technologies qui permettent de vous identifier, de vous localiser ou d\'effectuer votre profilage. Ce site n\'utilise aucune technologie de ce genre : pas de témoins de suivi, pas d\'empreinte numérique, pas de géolocalisation, pas de profilage. Comme il n\'y a rien à activer ni à désactiver, un bandeau ne servirait à rien. J\'ai plutôt choisi d\'être transparent ici, en texte clair.',
+							text: 'L\'article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé du Québec vise les technologies qui comportent des fonctions permettant d\'identifier ou de localiser une personne, ou d\'effectuer son profilage. Plausible produit un décompte des visiteurs renouvelé chaque jour ainsi qu\'une estimation du pays, de la région et de la ville. Je garde donc ces fonctions désactivées par défaut. Aucune requête n\'est envoyée à Plausible avant que vous choisissiez Autoriser l’analytique, et vous pouvez rouvrir les Préférences d’analytique depuis le pied de page en tout temps.',
 						},
 						id: 'legal-cookies-fr-009',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'La loi fédérale va dans le même sens : selon les lignes directrices sur le consentement valable de la LPRPDE, le consentement implicite suffit pour des usages non sensibles et sans suivi comme ces statistiques agrégées; aucune bannière n\'est donc requise de ce côté non plus.',
+							text: 'J\'utilise le même choix explicite pour chaque personne qui visite le site, plutôt que de m\'appuyer sur un consentement implicite.',
 						},
 						id: 'legal-cookies-fr-010',
 						type: 'paragraph',
 					},
 					{
-						data: { level: 2, text: 'Si cela change un jour' },
+						data: { level: 2, text: 'Si cela change' },
 						id: 'legal-cookies-fr-011',
 						type: 'header',
 					},
 					{
 						data: {
-							text: 'Si j\'introduis un jour une technologie qui identifie, localise ou profile les visiteurs, je demanderai votre consentement explicite avant de l\'activer, et je mettrai cette page et sa date à jour. Aucun changement silencieux.',
+							text: 'Si j\'ajoute une autre technologie qui identifie, localise ou profile les visiteurs, je l\'expliquerai ici et je la garderai désactivée jusqu\'à ce que le choix requis soit offert. Aucun changement silencieux.',
 						},
 						id: 'legal-cookies-fr-012',
 						type: 'paragraph',
