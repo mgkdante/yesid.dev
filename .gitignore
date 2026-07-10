@@ -21,7 +21,11 @@ node_modules/
 # Per-machine overrides for tool-agnostic workflow contracts (workflow v0.6.0 R4-1).
 # Real Notion UUIDs and other workspace-specific config live in *.local.md files
 # so the committed AGENTS.md / CLAUDE.md stay fork-safe.
+AGENTS.override.md
 *.local.md
+.claude/settings.local.json
+.claude/projects/
+.claude/*.lnk
 *.log
 .DS_Store
 Thumbs.db

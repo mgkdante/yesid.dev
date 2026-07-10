@@ -14,12 +14,17 @@
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
+	import { mediaVariants } from '$lib/content/media-variants';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 
 	const name = $derived(resolveLocale(identity.name, locale));
 	const title = $derived(resolveLocale(identity.title, locale));
 	const valueProp = $derived(resolveLocale(identity.valueProp, locale));
+	const headshotMedia = $derived(mediaVariants[identity.headshot]);
+	const headshotSrcset = $derived(
+		headshotMedia?.variants.map((variant) => `${variant.path} ${variant.width}w`).join(', '),
+	);
 </script>
 
 <div
@@ -53,6 +58,10 @@
 					<div class="h-full w-full overflow-hidden rounded-full">
 						<img
 							src={identity.headshot}
+							srcset={headshotSrcset}
+							sizes="(min-width: 768px) 96px, 80px"
+							width={headshotMedia?.width}
+							height={headshotMedia?.height}
 							alt={name}
 							class="block h-full w-full scale-[1.08] rounded-full object-cover object-[50%_42%]"
 							style="width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 42%; scale: 1.08;"

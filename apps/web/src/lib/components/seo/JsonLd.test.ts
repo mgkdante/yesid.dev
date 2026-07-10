@@ -8,6 +8,7 @@ const PERSON_NODE: SchemaOrgNode = {
 	'@id': 'https://yesid.dev/#person',
 	name: 'Yesid O.',
 	jobTitle: 'Digital Infrastructure Consultant',
+	image: 'https://yesid.dev/images/about/headshot.webp',
 	url: 'https://yesid.dev',
 	email: 'contact@yesid.dev',
 	sameAs: ['https://github.com/mgkdante'],
