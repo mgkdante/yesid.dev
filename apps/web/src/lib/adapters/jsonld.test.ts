@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { siteMeta } from '$lib/content/site-meta';
 import { adapter } from './index';
 import {
+	BRAND_LOGO,
 	PERSON_ID,
 	WEBSITE_ID,
 	buildPersonNode,
@@ -72,6 +73,29 @@ describe('buildProfessionalServiceNode — L2 trilingual signal (Phase 4)', () =
 		const person = buildPersonNode(siteMeta);
 		expect(business.knowsLanguage).toEqual(expect.arrayContaining(['en', 'fr', 'es']));
 		expect(business.knowsLanguage).toEqual(person.knowsLanguage);
+	});
+});
+
+describe('buildProfessionalServiceNode: Organization.logo', () => {
+	// Resolved at build time, so a missing asset fails the suite instead of
+	// shipping a dead logo URL that Google silently drops.
+	const brandAssets = import.meta.glob('/static/brand/*.png');
+
+	it('emits the brand mark as an absolute, crawlable logo URL', () => {
+		const business = buildProfessionalServiceNode(siteMeta);
+		expect(business.logo).toBe(BRAND_LOGO);
+		expect(BRAND_LOGO).toBe('https://yesid.dev/brand/mark-512.png');
+		expect(() => new URL(BRAND_LOGO)).not.toThrow();
+	});
+
+	it('the logo URL points at a committed static asset that exists', () => {
+		expect(Object.keys(brandAssets)).toContain('/static/brand/mark-512.png');
+	});
+
+	// Person has no schema.org `logo` property; its image signal is `image`.
+	it('does not put a logo on the Person node', () => {
+		const person = buildPersonNode(siteMeta) as Record<string, unknown>;
+		expect(person.logo).toBeUndefined();
 	});
 });
 
