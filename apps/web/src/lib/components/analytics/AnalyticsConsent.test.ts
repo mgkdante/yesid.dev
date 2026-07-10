@@ -114,6 +114,36 @@ beforeEach(() => consentMock.reset());
 afterEach(() => cleanup());
 
 describe('AnalyticsConsent', () => {
+	it('obeys the visual gate while still initializing consent state', () => {
+		consentMock.set({ choice: 'unknown', ready: true, available: true });
+
+		render(AnalyticsConsent, { props: { canShow: false } });
+
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(consentMock.store.init).toHaveBeenCalledOnce();
+	});
+
+	it('renders the analytics station with semantic copy relationships and shared actions', () => {
+		consentMock.set({ choice: 'unknown', ready: true, available: true });
+
+		render(AnalyticsConsent, { props: { locale: 'en', canShow: true } });
+
+		const station = screen.getByTestId('analytics-consent');
+		const heading = screen.getByRole('heading', { level: 2, name: 'Can I count this visit?' });
+		const accept = screen.getByTestId('analytics-consent-accept');
+		const decline = screen.getByTestId('analytics-consent-decline');
+
+		expect(station).toHaveClass('analytics-station');
+		expect(station).toHaveAttribute('aria-labelledby', 'analytics-consent-title');
+		expect(station).toHaveAttribute('aria-describedby', 'analytics-consent-description');
+		expect(heading).toHaveClass('label-station');
+		for (const action of [decline, accept]) {
+			expect(action.tagName).toBe('BUTTON');
+			expect(action).toHaveAttribute('data-slot', 'button');
+			expect(action).toHaveClass('min-h-11');
+		}
+	});
+
 	it('is hidden until consent state is ready', () => {
 		consentMock.set({ choice: 'unknown', ready: false, available: true });
 
