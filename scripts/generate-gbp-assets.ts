@@ -26,7 +26,7 @@
  * Writes into ./gbp-assets/<locale>/ (en, fr):
  *   cover-services.{dark,light}.png   1200x675  -> GBP "cover" (the storefront)
  *   logo-wordmark.{dark,light}.png    1080x1080 -> GBP "logo" (square)
- *   mark-dot.{dark,light}.png         1080x1080 -> square avatar (text-free)
+ *   mark-dot.{dark,light}.png         1080x1080 -> avatar, TRANSPARENT ground
  *   og-default.{dark,light}.png       1200x630  -> general OG / social share
  *
  * GBP shows the profile on a WHITE UI, so the LIGHT variants are the safer
@@ -142,10 +142,19 @@ function logoWordmark(t: Theme, loc: Locale): string {
 	</svg>`;
 }
 
+// The bare mark: dot + outer ring on a TRANSPARENT ground, nothing else. No
+// background rect, so the same file drops onto any surface (GBP's white UI, a
+// dark deck, an email signature) without carrying a square of #141414 with it.
+// Resvg renders unpainted pixels as alpha 0 by default.
+//
+// Ring weight is sized for the DISPLAY size, not the source size. The old 3px
+// hairline at 0.3 opacity only read at full 1080; GBP crops avatars to roughly
+// 250px, where 3px becomes 0.69px of 30%-alpha ink and the ring disappears,
+// leaving a plain dot. At stroke 8 / 0.55 the ring still lands 1.85px at 250px
+// and survives the downscale while keeping the airy hairline character.
 function markDot(t: Theme): string {
 	return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
-		<rect width="1080" height="1080" fill="${t.bg}"/>
-		<circle cx="540" cy="540" r="362" fill="none" stroke="${t.orange}" stroke-width="3" opacity="0.3"/>
+		<circle cx="540" cy="540" r="362" fill="none" stroke="${t.orange}" stroke-width="8" opacity="0.55"/>
 		<circle cx="540" cy="540" r="300" fill="${t.orange}"/>
 	</svg>`;
 }
@@ -183,3 +192,15 @@ for (const [file, width, svg] of jobs) {
 	console.log(`✓ ${file}  ${(png.byteLength / 1024).toFixed(0)}KB`);
 }
 console.log(`\nWrote ${jobs.length} files to ${OUT}/{en,fr}`);
+
+// The Organization.logo of record. Unlike ./gbp-assets (throwaway, regenerate
+// anytime), this is a COMMITTED web asset: schema.org Organization.logo points
+// at it, so Google's entity surfaces and the site ship the same mark from the
+// same markDot() geometry. Dark orange, because Google presents the logo on a
+// purely white ground and dark is the brand default. 512px clears Google's
+// 112x112 minimum with room to downscale.
+const WEB_MARK = `${WEB}/static/brand/mark-512.png`;
+mkdirSync(dirname(WEB_MARK), { recursive: true });
+const markPng = new Resvg(markDot(DARK), { fitTo: { mode: 'width', value: 512 } }).render().asPng();
+writeFileSync(WEB_MARK, markPng);
+console.log(`✓ apps/web/static/brand/mark-512.png  ${(markPng.byteLength / 1024).toFixed(0)}KB  (Organization.logo)`);
