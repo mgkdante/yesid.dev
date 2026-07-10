@@ -5,6 +5,16 @@ import { test, expect } from '@playwright/test';
 
 const LEGAL_SLUGS = ['privacy', 'terms', 'cookies', 'accessibility', 'notice'];
 
+// OPS2: Privacy and Cookies disclose consented Plausible analytics in all three locales.
+const ANALYTICS_LEGAL_ROUTES = [
+  '/legal/privacy',
+  '/fr/legal/privacy',
+  '/es/legal/privacy',
+  '/legal/cookies',
+  '/fr/legal/cookies',
+  '/es/legal/cookies'
+] as const;
+
 test.describe('/legal pages content', () => {
   test('all five legal pages return 200 with a non-empty body', async ({ page }) => {
     for (const slug of LEGAL_SLUGS) {
@@ -43,5 +53,21 @@ test.describe('/legal pages content', () => {
   test('unknown legal slug 404s', async ({ page }) => {
     const response = await page.goto('/legal/nope');
     expect(response?.status()).toBe(404);
+  });
+
+  test('Privacy and Cookies name Plausible and disclose opt-in in EN, FR, and ES', async ({ page }) => {
+    for (const route of ANALYTICS_LEGAL_ROUTES) {
+      await page.goto(route);
+      const body = page.locator('[data-testid="legal-body"]');
+      await expect(body).toContainText('Plausible');
+      await expect(body).not.toContainText('Umami');
+    }
+
+    await page.goto('/legal/cookies');
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText('off until you allow it');
+    await page.goto('/fr/legal/cookies');
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText('désactivé tant que vous ne l’autorisez pas');
+    await page.goto('/es/legal/cookies');
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText('desactivado hasta que usted lo autorice');
   });
 });

@@ -709,7 +709,8 @@ describe('LocalizedString guard + translation debt', () => {
 // invisible to the string walker; their ES pass lands with L1.
 // receiver r2: full-bleed footer column headings (EXPLORE/LEGAL/CONNECT,
 // site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
-const LOCKED = { TOTAL: 666, WITH_FR: 666, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// OPS2 analytics-choice microcopy adds six EN/FR/ES-complete site-label leaves, 666 + 6 = 672.
+const LOCKED = { TOTAL: 672, WITH_FR: 672, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

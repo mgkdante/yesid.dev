@@ -61,6 +61,14 @@ export const SiteLabelsSchema = z.object({
 			fr: LocalizedStringSchema,
 			es: LocalizedStringSchema,
 		}),
+		analyticsConsent: z.object({
+			title: LocalizedStringSchema,
+			description: LocalizedStringSchema,
+			acceptLabel: LocalizedStringSchema,
+			declineLabel: LocalizedStringSchema,
+			settingsLabel: LocalizedStringSchema,
+			privacyLabel: LocalizedStringSchema,
+		}),
 	}),
 	pages: z.object({
 		blogEdgeTitle: LocalizedStringSchema,
