@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "_project": "yesid.dev — workflow-overlord 3.x via installed plugin (Claude hooks via plugin, session sync via direct REST, interactive Notion via hosted MCP)",
+  "_project": "yesid.dev - workflow-overlord 4.x via installed plugin (hooks via plugin, automation via direct REST, interactive Notion via hosted MCP)",
   "enabledMcpjsonServers": ["notion", "yesid-cms-prod", "yesid-cms-dev"],
   "hooks": {
     "PreToolUse": [
