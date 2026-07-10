@@ -49,6 +49,7 @@ const DESKTOP_ONLY_SPECS = [
 	'**/hero-intro-replay.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',
+	'**/analytics.spec.ts',
 	'**/interactive-filters.spec.ts',
 	'**/contact-form-submission.spec.ts',
 	'**/contact-form-validation.spec.ts',

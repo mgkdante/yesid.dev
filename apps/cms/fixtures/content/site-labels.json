@@ -154,5 +154,11 @@
 	"services_chrome_listing_station_short_web_development": "Websites",
 	"footer_chrome_footer_explore_label": "EXPLORE",
 	"footer_chrome_footer_legal_label": "LEGAL",
-	"footer_chrome_footer_connect_label": "CONNECT"
+	"footer_chrome_footer_connect_label": "CONNECT",
+	"ui_analytics_consent_title": "Can I count this visit?",
+	"ui_analytics_consent_description": "Plausible would count visits, pages viewed, referral sources, and general device and region data. No cookies, names, email addresses, or form contents.",
+	"ui_analytics_consent_accept_label": "Allow analytics",
+	"ui_analytics_consent_decline_label": "No thanks",
+	"ui_analytics_consent_settings_label": "Analytics preferences",
+	"ui_analytics_consent_privacy_label": "Privacy details"
 }

@@ -533,6 +533,34 @@ export const siteLabels: SiteLabels = {
 		},
 	},
 	ui: {
+		analyticsConsent: {
+			acceptLabel: {
+				en: 'Allow analytics',
+				es: 'Permitir analítica',
+				fr: 'Autoriser l’analytique',
+			},
+			declineLabel: { en: 'No thanks', es: 'No, gracias', fr: 'Non merci' },
+			description: {
+				en: 'Plausible would count visits, pages viewed, referral sources, and general device and region data. No cookies, names, email addresses, or form contents.',
+				es: 'Plausible contaría visitas, páginas vistas, fuentes de referencia y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+				fr: 'Plausible compterait les visites, les pages vues, les sources de référence et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+			},
+			privacyLabel: {
+				en: 'Privacy details',
+				es: 'Detalles de privacidad',
+				fr: 'Détails sur la vie privée',
+			},
+			settingsLabel: {
+				en: 'Analytics preferences',
+				es: 'Preferencias de analítica',
+				fr: 'Préférences d’analytique',
+			},
+			title: {
+				en: 'Can I count this visit?',
+				es: '¿Puedo contar esta visita?',
+				fr: 'Je peux compter cette visite?',
+			},
+		},
 		backToProjects: {
 			en: '← All Projects',
 			es: '← Todos los proyectos',

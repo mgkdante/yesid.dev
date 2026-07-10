@@ -1,6 +1,67 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
+
+const consentMock = vi.hoisted(() => {
+	type State = {
+		choice: 'unknown' | 'granted' | 'denied';
+		ready: boolean;
+		available: boolean;
+	};
+	type Subscriber = (state: State) => void;
+
+	let state: State = { choice: 'unknown', ready: false, available: false };
+	const subscribers = new Set<Subscriber>();
+	const openPreferences = vi.fn();
+
+	return {
+		store: {
+			subscribe(run: Subscriber) {
+				run(state);
+				subscribers.add(run);
+				return () => subscribers.delete(run);
+			},
+			openPreferences,
+		},
+		set(next: State) {
+			state = next;
+			for (const subscriber of subscribers) subscriber(state);
+		},
+		reset() {
+			state = { choice: 'unknown', ready: false, available: false };
+			openPreferences.mockClear();
+		},
+		openPreferences,
+	};
+});
+
+vi.mock('$lib/state/analytics-consent.svelte', () => ({
+	analyticsConsentStore: consentMock.store,
+}));
+
+vi.mock('$lib/content', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('$lib/content')>();
+	return {
+		...actual,
+		siteLabels: {
+			...actual.siteLabels,
+			ui: {
+				...actual.siteLabels.ui,
+				analyticsConsent: {
+					settingsLabel: {
+						en: 'Analytics preferences',
+						fr: 'Préférences d’analytique',
+						es: 'Preferencias de analítica',
+					},
+				},
+			},
+		},
+	};
+});
+
 import Footer from './Footer.svelte';
+
+beforeEach(() => consentMock.reset());
+afterEach(() => cleanup());
 
 describe('Footer', () => {
 	it('renders a footer element', () => {
@@ -113,5 +174,42 @@ describe('Footer — locale threading (slice-28.6)', () => {
 		});
 		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('href', '/fr/projects');
 		expect(screen.getByTestId('footer-wordmark')).toHaveAttribute('href', '/fr');
+	});
+});
+
+describe('Footer analytics preferences', () => {
+	it.each([
+		['en', 'Analytics preferences'],
+		['fr', 'Préférences d’analytique'],
+		['es', 'Preferencias de analítica'],
+	] as const)('renders the %s settings label as a button', (locale, label) => {
+		consentMock.set({ choice: 'unknown', ready: true, available: true });
+
+		render(Footer, { props: { locale } });
+
+		const preferences = screen.getByTestId('analytics-preferences');
+		expect(preferences).toHaveTextContent(label);
+		expect(preferences.tagName).toBe('BUTTON');
+		expect(preferences).not.toHaveAttribute('href');
+	});
+
+	it('opens analytics preferences exactly once', async () => {
+		consentMock.set({ choice: 'granted', ready: true, available: true });
+		render(Footer);
+
+		await fireEvent.click(screen.getByTestId('analytics-preferences'));
+
+		expect(consentMock.openPreferences).toHaveBeenCalledOnce();
+	});
+
+	it.each([
+		{ choice: 'unknown', ready: false, available: true },
+		{ choice: 'unknown', ready: true, available: false },
+	] as const)('hides preferences until production-host state is ready', (state) => {
+		consentMock.set(state);
+
+		render(Footer);
+
+		expect(screen.queryByTestId('analytics-preferences')).toBeNull();
 	});
 });
