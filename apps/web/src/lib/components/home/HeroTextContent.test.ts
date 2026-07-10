@@ -1,7 +1,18 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
+
+const analyticsMocks = vi.hoisted(() => ({
+	trackAnalyticsEvent: vi.fn(),
+}));
+
+vi.mock('$lib/analytics/client', () => analyticsMocks);
+
 import HeroTextContent from './HeroTextContent.svelte';
 import { generateHeroData } from '$lib/content';
+
+beforeEach(() => {
+	analyticsMocks.trackAnalyticsEvent.mockClear();
+});
 
 function baseProps(overrides: Record<string, unknown> = {}) {
 	return {
@@ -19,7 +30,32 @@ function baseProps(overrides: Record<string, unknown> = {}) {
 	};
 }
 
+async function clickWithoutNavigating(link: HTMLElement) {
+	const preventNavigation = (event: Event) => event.preventDefault();
+	link.addEventListener('click', preventNavigation);
+	try {
+		await fireEvent.click(link);
+	} finally {
+		link.removeEventListener('click', preventNavigation);
+	}
+}
+
 describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
+	it('tracks the Cal.com CTA as a booking click', async () => {
+		render(HeroTextContent, { props: baseProps() });
+		await clickWithoutNavigating(screen.getByTestId('hero-cta-contact'));
+
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
+	});
+
+	it('does not track the projects CTA as a booking click', async () => {
+		render(HeroTextContent, { props: baseProps() });
+		await clickWithoutNavigating(screen.getByTestId('hero-cta-projects'));
+
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+	});
+
 	it('renders the dot inside a button, dormant while the intro has not completed', () => {
 		render(HeroTextContent, { props: baseProps({ introCompleted: false }) });
 		const btn = screen.getByTestId('hero-dot-replay');
