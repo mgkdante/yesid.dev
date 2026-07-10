@@ -100,7 +100,7 @@
 </script>
 
 <SeoHead seo={data.seo} {locale} themeColor={data.themeColor} />
-<Analytics {locale} />
+<Analytics {locale} isHome={basePath === '/'} />
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
 	<Nav pathname={$page.url.pathname} url={$page.url} {locale} {headerLinks} {menuItems} />
