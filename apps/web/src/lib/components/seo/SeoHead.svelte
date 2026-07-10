@@ -9,6 +9,7 @@
 		TWITTER_HANDLE,
 		canonicalFor,
 		defaultOgImageFor,
+		localizeOgCard,
 	} from '$lib/utils/seo-defaults';
 	import { dev as runtimeDev } from '$app/environment';
 	import JsonLd from './JsonLd.svelte';
@@ -27,7 +28,9 @@
 
 	const title = $derived(resolveLocale(seo.title, locale));
 	const description = $derived(resolveLocale(seo.description, locale));
-	const ogImageUrl = $derived(seo.ogImage ? seo.ogImage.url : defaultOgImageFor(locale));
+	const ogImageUrl = $derived(
+		seo.ogImage ? localizeOgCard(seo.ogImage.url, locale) : defaultOgImageFor(locale),
+	);
 	const ogImageAlt = $derived(
 		seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} · ${title}`,
 	);
