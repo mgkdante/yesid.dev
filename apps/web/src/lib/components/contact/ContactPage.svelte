@@ -24,6 +24,7 @@
 	import type { WeatherData } from '$lib/utils/weather';
 	import { escapeHtml } from '$lib/utils/code-fences';
 	import { pressBounce } from '$lib/motion/actions';
+	import { trackAnalyticsEvent } from '$lib/analytics/client';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
 	// slice-29: initialMessage carries the decoded ?bp= blueprint prefill from
@@ -235,6 +236,7 @@
 			return;
 		}
 
+		trackAnalyticsEvent('contact_form_success');
 		sending = false;
 		await playSuccessSequence();
 	}
@@ -311,6 +313,10 @@
 	function fieldLabel(field: keyof ContactContent['formTerminal']['fields']): string {
 		const label = contactPage.formTerminal.fields[field].label;
 		return typeof label === 'string' ? label : resolveLocale(label, locale);
+	}
+
+	function handleBookingClick(): void {
+		trackAnalyticsEvent('booking_click');
 	}
 
 </script>
@@ -413,6 +419,7 @@
 							href={social.href}
 							aria-label={contactChannelLabel(social.label)}
 							data-testid="contact-social-{social.icon}"
+							onclick={social.icon === 'calendar' ? handleBookingClick : undefined}
 							class="tap-feedback flex items-center gap-2 rounded px-2 py-3 min-h-11 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15 active:bg-primary/25"
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
@@ -567,6 +574,7 @@
 								target="_blank"
 								rel="noopener"
 								data-testid="contact-booking-link"
+								onclick={handleBookingClick}
 								class="tap-feedback rounded px-1 py-0.5 text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
 							>
 								<span class="opacity-60">~ $</span>
