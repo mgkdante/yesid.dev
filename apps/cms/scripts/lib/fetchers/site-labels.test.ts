@@ -3,6 +3,7 @@ import { toSiteLabels } from './site-labels';
 import { SiteLabelsSchema } from '@repo/shared/schemas';
 import seeds from '../../../fixtures/content/site-labels.json';
 import frSeeds from '../../../fixtures/content/site-labels.fr.json';
+import esSeeds from '../../../fixtures/content/site-labels.es.json';
 
 describe('site-labels transform', () => {
 	it('regroups prefix-named columns into the nested SiteLabels shape', () => {
@@ -32,6 +33,7 @@ describe('site-labels transform', () => {
 			translations: [
 				{ languages_code: 'en', ...seeds },
 				{ languages_code: 'fr', ...frSeeds },
+				{ languages_code: 'es', ...esSeeds },
 			],
 		};
 		const out = toSiteLabels(row);
@@ -65,6 +67,30 @@ describe('site-labels transform', () => {
 		// hero-data dashboard labelI18n/subI18n (subs are runtime-templated).
 		expect(out.heroDashboard.vehiclesLabel).toEqual({ en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' });
 		expect(out.heroDashboard.delaySub).toEqual({ en: '{coverage}% COVERAGE', fr: '{coverage}% DE COUVERTURE' });
+		expect(out.ui.analyticsConsent).toEqual({
+			title: {
+				en: 'Can I count this visit?',
+				fr: 'Je peux compter cette visite?',
+				es: '¿Puedo contar esta visita?',
+			},
+			description: {
+				en: 'Plausible would count visits, pages viewed, referral sources, and general device and region data. No cookies, names, email addresses, or form contents.',
+				fr: 'Plausible compterait les visites, les pages vues, les sources de référence et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+				es: 'Plausible contaría visitas, páginas vistas, fuentes de referencia y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+			},
+			acceptLabel: { en: 'Allow analytics', fr: 'Autoriser l’analytique', es: 'Permitir analítica' },
+			declineLabel: { en: 'No thanks', fr: 'Non merci', es: 'No, gracias' },
+			settingsLabel: {
+				en: 'Analytics preferences',
+				fr: 'Préférences d’analytique',
+				es: 'Preferencias de analítica',
+			},
+			privacyLabel: {
+				en: 'Privacy details',
+				fr: 'Détails sur la vie privée',
+				es: 'Detalles de privacidad',
+			},
+		});
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
 	});
 });
