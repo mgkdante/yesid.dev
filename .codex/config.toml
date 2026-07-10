@@ -1,12 +1,5 @@
-# yesid.dev — workflow-overlord Codex CLI config.
-#
-# Hook dispatchers live in the GLOBAL ~/.codex/config.toml — they `cd` into
-# the project root and exec `<root>/.codex/hooks/<event>.sh`. Redeclaring the
-# same hooks here causes Codex to register them TWICE (global + project), so
-# every SessionStart fired two parallel dispatcher processes and produced
-# duplicate Sessions rows. v2.1.3 also added per-session file locking as a
-# belt-and-suspenders defense, but the right primary fix is "one place
-# registers each hook." Keep the [features] block only.
+# yesid.dev — workflow-overlord v4 Codex CLI config.
+# Hooks come only from the installed plugin's hooks/hooks.json.
 
 [features]
 hooks = true
