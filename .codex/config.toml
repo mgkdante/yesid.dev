@@ -1,5 +1,8 @@
-# yesid.dev — workflow-overlord v4 Codex CLI config.
-# Hooks come only from the installed plugin's hooks/hooks.json.
+# yesid.dev Codex project config.
+#
+# workflow-overlord 4.x registers its shell-neutral hook runtime directly from
+# the installed plugin. Do not add repo-local hook mirrors or duplicate hook
+# registrations here. Keep only project feature flags.
 
 [features]
 hooks = true

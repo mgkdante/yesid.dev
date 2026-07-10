@@ -18,6 +18,7 @@ export const jsonldFactory = new Factory<Person>(() => ({
 	'@id': faker.internet.url() + '#person',
 	name: faker.person.fullName(),
 	jobTitle: faker.person.jobTitle(),
+	image: faker.image.url(),
 	url: faker.internet.url(),
 	sameAs: [faker.internet.url(), faker.internet.url()],
 	knowsAbout: ['TypeScript', 'SvelteKit', 'SQL'],
