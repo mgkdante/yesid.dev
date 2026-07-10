@@ -2,12 +2,14 @@
 	import { afterNavigate } from '$app/navigation';
 	import { trackPageview } from '$lib/analytics/client';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
+	import { homeIntroStore } from '$lib/state/home-intro.svelte';
 	import { createPathnamePageviewTracker } from '$lib/utils/analytics';
 	import AnalyticsConsent from './AnalyticsConsent.svelte';
 	import type { Locale } from '$lib/types';
 
-	let { locale }: { locale: Locale } = $props();
+	let { locale, isHome = false }: { locale: Locale; isHome?: boolean } = $props();
 	let currentUrl = $state<URL | null>(null);
+	const canShowConsent = $derived(!isHome || $homeIntroStore === 'settled');
 
 	const reportPathname = createPathnamePageviewTracker((url) => {
 		trackPageview(url);
@@ -27,4 +29,4 @@
 	});
 </script>
 
-<AnalyticsConsent {locale} />
+<AnalyticsConsent {locale} canShow={canShowConsent} />
