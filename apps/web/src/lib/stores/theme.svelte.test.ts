@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { themeStore } from './theme.svelte';
+import staticFavicon from '../../../static/favicon.svg?raw';
+import { faviconSvg, themeStore } from './theme.svelte';
 
 function metaThemeColor(): string | null {
 	return document.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? null;
@@ -46,6 +47,32 @@ describe('theme store', () => {
 		expect(decodeURIComponent(faviconHref())).toContain('#A05500');
 		themeStore.set('dark');
 		expect(decodeURIComponent(faviconHref())).toContain('#E07800');
+	});
+
+	it('paints the brand mark as dot + outer ring, recoloring both per theme', () => {
+		const mark = () =>
+			decodeURIComponent(document.querySelector('link[rel="icon"]')?.getAttribute('href') ?? '');
+
+		themeStore.set('dark');
+		expect(mark()).toContain('r="14" fill="none" stroke="#E07800" stroke-width="2"');
+		expect(mark()).toContain('r="10.5" fill="#E07800"');
+
+		themeStore.set('light');
+		expect(mark()).toContain('r="14" fill="none" stroke="#A05500" stroke-width="2"');
+		expect(mark()).toContain('r="10.5" fill="#A05500"');
+	});
+
+	it('leaves the mark background transparent (no rect, no fill on the svg root)', () => {
+		const svg = faviconSvg('#E07800');
+		expect(svg).not.toContain('<rect');
+		expect(svg).not.toMatch(/<svg[^>]*\sfill=/);
+	});
+
+	// First paint and no-JS serve static/favicon.svg; hydration swaps in the
+	// data-URI. If the two ever diverge the tab icon jumps on load.
+	it('static/favicon.svg is byte-equivalent to the dark mark the store paints', () => {
+		const norm = (s: string) => s.replace(/>\s+</g, '><').replace(/\s+/g, ' ').trim();
+		expect(norm(staticFavicon)).toBe(norm(faviconSvg('#E07800')));
 	});
 
 	it('dispatches a themechange CustomEvent', () => {
