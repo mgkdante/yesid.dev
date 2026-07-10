@@ -5,7 +5,12 @@ import {
 	SITE_NAME,
 	PUBLISHED_LOCALES,
 	canonicalFor,
+	localizeOgCard,
 } from './seo-defaults';
+
+// Every committed OG card the resolver may localize. Resolved at build time so
+// a missing .fr/.es sibling fails the suite instead of shipping a 404 og:image.
+const ogAssets = import.meta.glob('/static/og/**/*.png');
 
 describe('seo-defaults constants', () => {
 	it('SITE_HOST has no trailing slash and is absolute', () => {
@@ -24,6 +29,53 @@ describe('seo-defaults constants', () => {
 	it('PUBLISHED_LOCALES is a non-empty subset of SUPPORTED_LOCALES and includes en', () => {
 		expect(PUBLISHED_LOCALES.length).toBeGreaterThan(0);
 		expect(PUBLISHED_LOCALES).toContain('en');
+	});
+});
+
+describe('localizeOgCard', () => {
+	const CARDS = [
+		'/og/routes/about.png',
+		'/og/routes/contact.png',
+		'/og/routes/projects.png',
+		'/og/routes/services.png',
+		'/og/services/database-engineering.png',
+		'/og/services/data-pipeline.png',
+		'/og/services/analytics-reporting.png',
+		'/og/services/web-development.png',
+	];
+
+	it('swaps route + service cards to the per-locale sibling for fr/es', () => {
+		for (const url of CARDS) {
+			expect(localizeOgCard(url, 'fr')).toBe(url.replace(/\.png$/, '.fr.png'));
+			expect(localizeOgCard(url, 'es')).toBe(url.replace(/\.png$/, '.es.png'));
+		}
+	});
+
+	it('leaves EN cards on the legacy no-suffix base', () => {
+		for (const url of CARDS) expect(localizeOgCard(url, 'en')).toBe(url);
+	});
+
+	it('passes through already locale-aware and dynamic URLs untouched', () => {
+		const passthrough = [
+			'/og/project/my-project.png?locale=fr',
+			'/og/blog/my-post.png',
+			'https://yesid.dev/images/work/cover.png',
+			'/og/default.fr.png',
+		];
+		for (const url of passthrough) {
+			expect(localizeOgCard(url, 'fr')).toBe(url);
+			expect(localizeOgCard(url, 'es')).toBe(url);
+		}
+	});
+
+	it('every localizable card ships committed fr + es siblings (no 404s)', () => {
+		const have = new Set(Object.keys(ogAssets));
+		for (const url of CARDS) {
+			for (const loc of ['fr', 'es'] as const) {
+				const sibling = `/static${url.replace(/\.png$/, `.${loc}.png`)}`;
+				expect(have.has(sibling), `${sibling} missing`).toBe(true);
+			}
+		}
 	});
 });
 
