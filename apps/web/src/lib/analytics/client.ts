@@ -4,7 +4,7 @@ import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
 import { createAnalyticsClient, type AnalyticsEventName } from '$lib/utils/analytics';
 
 const client = createAnalyticsClient({
-	loadTracker: () => import('@plausible-analytics/tracker'),
+	loadTracker: () => import('@plausible-analytics/tracker/plausible.js'),
 	canTrack: () => browser && get(analyticsConsentStore).choice === 'granted',
 });
 
