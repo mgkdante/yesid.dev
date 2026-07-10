@@ -12,12 +12,13 @@ import type { MediaVariantEntry } from '$lib/types';
 
 export const mediaVariants: Readonly<Record<string, MediaVariantEntry>> = {
 	'/images/about/headshot.webp': {
-		height: 400,
+		height: 800,
 		variants: [
 			{ path: '/images/about/headshot.w240.webp', width: 240 },
 			{ path: '/images/about/headshot.w600.webp', width: 600 },
+			{ path: '/images/about/headshot.w800.webp', width: 800 },
 		],
-		width: 600,
+		width: 800,
 	},
 	'/images/about/interests/anime.webp': {
 		height: 1002,

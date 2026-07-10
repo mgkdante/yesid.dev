@@ -3,6 +3,7 @@ import { siteMeta } from '$lib/content/site-meta';
 import { adapter } from './index';
 import {
 	BRAND_LOGO,
+	PERSON_IMAGE,
 	PERSON_ID,
 	WEBSITE_ID,
 	buildPersonNode,
@@ -37,6 +38,12 @@ describe('buildPersonNode', () => {
 	it('maps owner.name verbatim', () => {
 		const node = buildPersonNode(siteMeta);
 		expect(node.name).toBe(siteMeta.owner.name);
+	});
+
+	it('uses the canonical transparent portrait as the Person image', () => {
+		const node = buildPersonNode(siteMeta);
+		expect(PERSON_IMAGE).toBe('https://yesid.dev/images/about/headshot.webp');
+		expect(node.image).toBe(PERSON_IMAGE);
 	});
 
 	it('resolves jobTitle from owner.jobTitle.en', () => {

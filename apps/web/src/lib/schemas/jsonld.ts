@@ -38,6 +38,7 @@ export const PersonSchema = z.object({
 	'@id': z.string().url(),
 	name: z.string().min(1),
 	jobTitle: z.string().min(1),
+	image: z.string().url(),
 	telephone: z.string().min(1).optional(),
 	url: z.string().url(),
 	email: z.string().email().optional(),
