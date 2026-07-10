@@ -69,6 +69,38 @@ export function defaultOgImageFor(locale: Locale): string {
 }
 
 /**
+ * The committed OG share cards under /og/routes/ and /og/services/ that ship a
+ * per-locale sibling (X.fr.png, X.es.png) beside the EN base (X.png), minted by
+ * scripts/generate-og-cards.ts. Set-gated so a base path without minted variants
+ * transparently stays on EN. Never add a path here before both its fr AND es
+ * files land in static/og/, or the swap would point at a 404.
+ */
+const LOCALIZED_OG_CARDS: ReadonlySet<string> = new Set([
+	'/og/routes/about.png',
+	'/og/routes/contact.png',
+	'/og/routes/projects.png',
+	'/og/routes/services.png',
+	'/og/services/database-engineering.png',
+	'/og/services/data-pipeline.png',
+	'/og/services/analytics-reporting.png',
+	'/og/services/web-development.png',
+]);
+
+/**
+ * Swap a static EN OG card for its per-locale sibling. Returns the URL unchanged
+ * for EN, unpublished locales, cards without a minted variant, and any dynamic
+ * (/og/project, /og/blog), absolute, or query-string URL, so the already
+ * locale-aware surfaces pass through untouched. This is the single swap point:
+ * both route cards (compose-page-seo) and service cards (route-seo-factories)
+ * flow their url through SeoHead, which calls this.
+ */
+export function localizeOgCard(url: string, locale: Locale): string {
+	if (locale === DEFAULT_LOCALE || !PUBLISHED_LOCALES.includes(locale)) return url;
+	if (!LOCALIZED_OG_CARDS.has(url)) return url;
+	return url.replace(/\.png$/, `.${locale}.png`);
+}
+
+/**
  * Canonical absolute URL for a route in a locale. /fr path-prefix scheme
  * (slice-28.6): EN unprefixed; published non-EN locales get /{locale}; an
  * UNPUBLISHED prefix locale self-canonicalizes to the EN URL so /fr can be
