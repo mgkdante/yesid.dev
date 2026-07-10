@@ -33,6 +33,15 @@ export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
 export const BUSINESS_ID = `${SITE_HOST}/#business`;
 
+/**
+ * The brand mark of record: the orange dot inside its outer ring, on a
+ * transparent ground. Google wants Organization.logo to be a crawlable raster
+ * of at least 112x112 that "looks how you intend on a purely white background",
+ * so this is the 512px dark-orange cut. scripts/generate-gbp-assets.ts emits it
+ * from the same markDot() geometry as the GBP avatar, so the two never drift.
+ */
+export const BRAND_LOGO = `${SITE_HOST}/brand/mark-512.png`;
+
 /** GBP service-area cities as schema.org City nodes (shared by Service + ProfessionalService). */
 function serviceAreaNodes() {
 	return SERVICE_AREAS.map((name) => ({ '@type': 'City' as const, name }));
@@ -108,6 +117,7 @@ export function buildProfessionalServiceNode(
 		'@id': BUSINESS_ID,
 		name: new URL(SITE_HOST).host,
 		url: SITE_HOST,
+		logo: BRAND_LOGO,
 		description: resolveLocale(meta.description, locale),
 		...(meta.owner.phone ? { telephone: meta.owner.phone } : {}),
 		address: {
