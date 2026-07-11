@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const ENDPOINT = 'https://plausible.io/api/event';
 const LOCAL_PRODUCTION_ORIGIN = 'http://yesid.dev:4173';
@@ -125,6 +125,21 @@ async function drainCapturedRequests(page: Page, payloads: Payload[]): Promise<v
 
 function nonSentinel(payloads: Payload[]): Payload[] {
 	return payloads.filter(({ n }) => !n.startsWith('__e2e-drain-'));
+}
+
+function eventsNamed(payloads: Payload[], name: string): Payload[] {
+	return nonSentinel(payloads).filter((payload) => payload.n === name);
+}
+
+async function clickWithoutNavigation(link: Locator): Promise<void> {
+	await link.evaluate((element) => {
+		element.addEventListener(
+			'click',
+			(event) => event.preventDefault(),
+			{ capture: true, once: true },
+		);
+		(element as HTMLElement).click();
+	});
 }
 
 /** The tracker chunk is identified by content (the provider endpoint literal)
@@ -263,6 +278,124 @@ test('accepting consent sends exactly one initial pageview through the NPM track
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
 	expectExactPageviewCount(payloads, 1);
+});
+
+test('direct contact click sends one property-free event with the sanitized current page', async ({
+	page,
+}) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/contact?utm_source=codex_ops2_qa&bp=secret`,
+	);
+	await waitForPageviews(payloads, 1);
+	await expectNpmTracker(page);
+
+	const email = page
+		.getByTestId('contact-social-email')
+		.filter({ visible: true })
+		.first();
+	await expect(email).toBeVisible();
+	await clickWithoutNavigation(email);
+
+	await expect
+		.poll(() => eventsNamed(payloads, 'direct_contact_click').length)
+		.toBe(1);
+	await settleBrowser(page);
+	await drainCapturedRequests(page, payloads);
+
+	const events = eventsNamed(payloads, 'direct_contact_click');
+	expect(events).toHaveLength(1);
+	expect(events[0]).toMatchObject({
+		n: 'direct_contact_click',
+		d: 'yesid.dev',
+	});
+	expect(events[0].p).toBeUndefined();
+	const trackedUrl = new URL(events[0].u);
+	expect(trackedUrl.pathname).toBe('/contact');
+	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+	expect(trackedUrl.searchParams.has('bp')).toBe(false);
+	expectExactPageviewCount(payloads, 1);
+});
+
+test('project proof click sends one property-free event with the sanitized current project page', async ({
+	page,
+}) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/projects/yesid-dev?utm_source=codex_ops2_qa&stack=secret`,
+	);
+	await waitForPageviews(payloads, 1);
+	await expectNpmTracker(page);
+
+	const card = page
+		.getByTestId('project-links-card')
+		.filter({ visible: true })
+		.first();
+	const liveSite = card.locator('a[href="https://yesid.dev"]');
+	await expect(liveSite).toBeVisible();
+	await clickWithoutNavigation(liveSite);
+
+	await expect
+		.poll(() => eventsNamed(payloads, 'project_proof_click').length)
+		.toBe(1);
+	await settleBrowser(page);
+	await drainCapturedRequests(page, payloads);
+
+	const events = eventsNamed(payloads, 'project_proof_click');
+	expect(events).toHaveLength(1);
+	expect(events[0]).toMatchObject({
+		n: 'project_proof_click',
+		d: 'yesid.dev',
+	});
+	expect(events[0].p).toBeUndefined();
+	const trackedUrl = new URL(events[0].u);
+	expect(trackedUrl.pathname).toBe('/projects/yesid-dev');
+	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+	expect(trackedUrl.searchParams.has('stack')).toBe(false);
+	expectExactPageviewCount(payloads, 1);
+});
+
+test('direct contact remains blocked after decline and after withdrawal', async ({
+	page,
+}) => {
+	await enableWebdriverSends(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/contact`);
+	const email = page
+		.getByTestId('contact-social-email')
+		.filter({ visible: true })
+		.first();
+
+	await page.getByTestId('analytics-consent-decline').click();
+	await clickWithoutNavigation(email);
+	await settleBrowser(page);
+	await drainCapturedRequests(page, payloads);
+	expect(eventsNamed(payloads, 'direct_contact_click')).toHaveLength(0);
+
+	await page.getByTestId('analytics-preferences').click();
+	await page.getByTestId('analytics-consent-accept').click();
+	await waitForPageviews(payloads, 1);
+	await clickWithoutNavigation(email);
+	await expect
+		.poll(() => eventsNamed(payloads, 'direct_contact_click').length)
+		.toBe(1);
+	await drainCapturedRequests(page, payloads);
+	expect(eventsNamed(payloads, 'direct_contact_click')).toHaveLength(1);
+
+	await page.getByTestId('analytics-preferences').click();
+	await page.getByTestId('analytics-consent-decline').click();
+	await clickWithoutNavigation(email);
+	await settleBrowser(page);
+	await drainCapturedRequests(page, payloads);
+	expect(eventsNamed(payloads, 'direct_contact_click')).toHaveLength(1);
 });
 
 for (const { locale, path } of [
