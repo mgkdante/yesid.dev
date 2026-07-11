@@ -7,6 +7,8 @@ node_modules/
 **/.netlify/
 **/.wrangler/
 **/dist/
+!apps/cms/extensions/noindex/dist/
+!apps/cms/extensions/noindex/dist/index.js
 **/test-results/
 **/.turbo/
 # Vitest results cache — relocated from node_modules/.vite so CI can cache it
