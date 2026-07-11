@@ -2579,6 +2579,7 @@
     "presets": null,
     "fields": [
       "id",
+      "translation_key",
       "status",
       "date_published",
       "sort",

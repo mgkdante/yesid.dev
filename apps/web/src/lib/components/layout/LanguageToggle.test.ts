@@ -53,6 +53,65 @@ describe('LanguageToggle — fingerpost signpost', () => {
 		);
 	});
 
+	it('uses the exact translated article slug and preserves query + hash', () => {
+		render(LanguageToggle, {
+			props: {
+				locale: 'en',
+				url: new URL('https://yesid.dev/blog/english-slug?ref=home#section-2'),
+				availableLocales: ['en', 'fr', 'es'],
+				localeAlternates: {
+					en: 'https://yesid.dev/blog/english-slug',
+					fr: 'https://yesid.dev/fr/blog/slug-francais',
+					es: 'https://yesid.dev/es/blog/slug-espanol',
+				},
+			},
+		});
+
+		expect(screen.getByTestId('language-toggle').getAttribute('href')).toBe(
+			'/fr/blog/slug-francais?ref=home#section-2',
+		);
+	});
+
+	it('keeps canonical yesid.dev alternates relative on local and preview hosts', () => {
+		render(LanguageToggle, {
+			props: {
+				locale: 'en',
+				url: new URL('http://localhost:4173/blog/english-slug'),
+				availableLocales: ['en', 'fr', 'es'],
+				localeAlternates: {
+					en: 'https://yesid.dev/blog/english-slug',
+					fr: 'https://yesid.dev/fr/blog/slug-francais',
+					es: 'https://yesid.dev/es/blog/slug-espanol',
+				},
+			},
+		});
+
+		expect(screen.getByTestId('language-toggle')).toHaveAttribute(
+			'href',
+			'/fr/blog/slug-francais',
+		);
+	});
+
+	it('falls back to the target-locale blog index when that translation is missing', () => {
+		render(LanguageToggle, {
+			props: {
+				locale: 'fr',
+				url: new URL('https://yesid.dev/fr/blog/slug-francais?ref=home#section-2'),
+				availableLocales: ['en', 'fr', 'es'],
+				localeAlternates: {
+					en: 'https://yesid.dev/blog/english-slug',
+					fr: 'https://yesid.dev/fr/blog/slug-francais',
+				},
+			},
+		});
+
+		const toggle = screen.getByTestId('language-toggle');
+		expect(toggle.getAttribute('href')).toBe(
+			'/es/blog?ref=home#section-2',
+		);
+		expect(toggle).not.toHaveAttribute('data-sveltekit-noscroll');
+	});
+
 	it('carries data-sveltekit-noscroll so scroll is maintained across the switch', () => {
 		render(LanguageToggle, {
 			props: { locale: 'en', url: new URL('https://yesid.dev/'), availableLocales: ['en', 'fr'] },

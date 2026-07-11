@@ -18,6 +18,7 @@ import { tagsFromM2M, type DirectusTagJunctionRow } from './projects';
 
 export interface DirectusBlogPostRow {
 	id: string;
+	translation_key: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
 	date_modified: string | null;
@@ -91,11 +92,12 @@ export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
 	const svgId =
 		typeof row.svg_illustration === 'object' && row.svg_illustration !== null
 			? row.svg_illustration.id
-			: (row.svg_illustration ?? resolveSvgFallbackName(row.id, row.category));
+			: (row.svg_illustration ?? resolveSvgFallbackName(row.translation_key, row.category));
 	return {
 		coverImage: coverImageId(row.cover_image),
 		coverImageAlt: coverImageAlt(row.cover_image),
 		slug: row.id,
+		translationKey: row.translation_key,
 		title: row.title,
 		excerpt: row.excerpt,
 		seoTitle: compact(row.seo_title),
@@ -118,6 +120,7 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 		readItems('blog_posts', {
 			fields: [
 				'id',
+				'translation_key',
 				'status',
 				'date_published',
 				'date_modified',
