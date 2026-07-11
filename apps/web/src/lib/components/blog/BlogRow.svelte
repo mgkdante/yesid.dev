@@ -52,7 +52,7 @@
 </script>
 
 <a
-	href={post.external ? post.url : localizeHref(post.url, locale)}
+	href={post.external ? post.url : localizeHref(post.url, post.lang)}
 	target={post.external ? '_blank' : undefined}
 	rel={post.external ? 'noopener noreferrer' : undefined}
 	class={cn("group block", className)}

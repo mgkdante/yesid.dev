@@ -8,6 +8,7 @@ import {
 import { BlogPostSchema } from '@repo/shared/schemas';
 const FIXTURE_EXTERNAL: DirectusBlogPostRow = {
 	id: 'why-bun-is-fast',
+	translation_key: 'why-bun-is-fast',
 	status: 'published',
 	date_published: '2026-04-14T12:00:00Z',
 	sort: 1,
@@ -34,6 +35,7 @@ describe('blog-posts fetcher transform', () => {
 	it('builds /blog/<slug> url for non-external posts', () => {
 		const result = toBlogPost(FIXTURE_EXTERNAL);
 		expect(result.url).toBe('/blog/why-bun-is-fast');
+		expect(result.translationKey).toBe('why-bun-is-fast');
 		expect(result.external).toBe(false);
 	});
 
@@ -53,6 +55,18 @@ describe('blog-posts fetcher transform', () => {
 		const result = toBlogPost(noIllust);
 		expect(result.svg).toBe(resolveSvgFallbackName('why-bun-is-fast', 'professional'));
 		expect(result.svg).toMatch(/^pro-/);
+	});
+
+	it('pairs localized slugs to the same SVG fallback through translation_key', () => {
+		const english = toBlogPost({ ...FIXTURE_EXTERNAL, svg_illustration: null });
+		const french = toBlogPost({
+			...FIXTURE_EXTERNAL,
+			id: 'pourquoi-bun-est-rapide',
+			lang: 'fr',
+			svg_illustration: null,
+		});
+
+		expect(french.svg).toBe(english.svg);
 	});
 
 	it('strips time component from date_published (YYYY-MM-DD output)', () => {

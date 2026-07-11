@@ -25,6 +25,10 @@ import { resolveSitePage } from '$lib/utils/page-registry';
 import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
 import { asset } from '$lib/directus/assets';
 import {
+	BLOG_TRANSLATION_LOCALES,
+	findBlogTranslationVariants,
+} from '$lib/blog/translations';
+import {
 	buildBlogPostingNode,
 	buildBreadcrumbListNode,
 	buildCreativeWorkNode,
@@ -195,12 +199,31 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 /** /blog/[slug] — pulls post from collection adapter; brand suffix from siteMeta. */
 export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const post = await adapter.blog.bySlug(params.slug, ctx);
+	const [post, posts] = await Promise.all([
+		adapter.blog.bySlug(params.slug, ctx),
+		adapter.blog.all(ctx),
+	]);
 	if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
-	// AM2.5 (slice-28.6): blog posts are mono-language — the canonical points
-	// at the BODY-language URL (an EN post under /fr/blog/x canonicals to
-	// /blog/x), and singleLocale suppresses the cross-locale hreflang cluster.
+	if (post.lang !== locale) {
+		throw new Error(`Blog slug ${params.slug} does not belong to locale ${locale}`);
+	}
+	const translationVariants = findBlogTranslationVariants(posts, post.translationKey);
+	if (!translationVariants[post.lang]) {
+		throw new Error(`Unknown blog translation group: ${post.translationKey}`);
+	}
 	const canonicalUrl = canonicalFor(`/blog/${post.slug}`, post.lang);
+	const localeAlternates = Object.fromEntries(
+		BLOG_TRANSLATION_LOCALES.flatMap((translationLocale) => {
+			const variant = translationVariants[translationLocale];
+			if (!variant) return [];
+			return [
+				[
+					translationLocale,
+					canonicalFor(`/blog/${variant.slug}`, translationLocale),
+				],
+			];
+		}),
+	) as Partial<Record<Locale, string>>;
 	const titleBody = titleBodyForSeo(post.seoTitle, post.title, siteMeta.name);
 	const description = fitDescriptionForSeo(
 		{ en: post.seoDescription ?? post.excerpt },
@@ -220,7 +243,8 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		canonical: canonicalUrl,
 		ogType: 'article',
 		noIndex: false,
-		singleLocale: true,
+		localeAlternates,
+		localeHandoffId: `blog:${post.translationKey}`,
 		jsonLd: [
 			buildBlogPostingNode(post, locale, { imageUrl }),
 			buildBreadcrumbListNode(

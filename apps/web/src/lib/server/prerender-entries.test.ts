@@ -10,6 +10,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	blogEntries,
+	blogEntriesFor,
 	localeEntries,
 	projectEntries,
 	serviceEntries,
@@ -18,6 +19,7 @@ import { blogPosts } from '$lib/content/blog';
 import { projects } from '$lib/content/projects';
 import { services } from '$lib/content/services';
 import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
+import type { BlogPost } from '$lib/types';
 
 const LANG_VALUES = ['', ...PREFIX_LOCALES];
 
@@ -26,7 +28,7 @@ describe('prerender-entries', () => {
 		expect(localeEntries()).toEqual(LANG_VALUES.map((lang) => ({ lang })));
 	});
 
-	it('blogEntries yields exactly one mono-language entry per post', () => {
+	it('blogEntries yields the exact locale slug for every translated row', () => {
 		const entries = blogEntries();
 		expect(entries).toHaveLength(blogPosts.length);
 		for (const post of blogPosts) {
@@ -35,6 +37,18 @@ describe('prerender-entries', () => {
 				: '';
 			expect(entries).toContainEqual({ lang: expectedLang, slug: post.slug });
 		}
+	});
+
+	it('blogEntriesFor rejects an incomplete translation group before prerendering', () => {
+		const englishOnly = {
+			translationKey: 'incomplete-article',
+			slug: 'english-only',
+			lang: 'en',
+		} as BlogPost;
+
+		expect(() => blogEntriesFor([englishOnly])).toThrow(
+			'Missing blog translation for incomplete-article (fr)',
+		);
 	});
 
 	it('projectEntries covers every non-private project in every locale', () => {
