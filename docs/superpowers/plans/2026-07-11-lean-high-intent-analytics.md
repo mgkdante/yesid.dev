@@ -16,7 +16,7 @@
 - Keep `autoCapturePageviews: false`, `outboundLinks: false`, `fileDownloads: false`, and `formSubmissions: false`.
 - Send no custom properties, destinations, labels, channel names, project names, form data, personal information, search state, hover data, replay data, or manual scroll milestones.
 - Keep current URL sanitation: pathname plus only `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `ref`, and `source`.
-- `direct_contact_click` accepts non-empty `mailto:`, non-empty `tel:`, and exact HTTPS `wa.me` links only. Adding another WhatsApp host requires an explicit test and operator approval.
+- `direct_contact_click` accepts `mailto:` links whose payload contains `@`, `tel:` links whose payload contains at least one digit, and exact HTTPS `wa.me` links only. Adding another WhatsApp host requires an explicit test and operator approval.
 - `project_proof_click` accepts absolute HTTP/HTTPS project live or public-repository links without URL credentials. The private-repository state remains a non-link.
 - Analytics must fail open. It must never prevent, await, retry, or delay navigation or contact actions.
 - Public analytics copy is EN/FR/ES and must remain materially equivalent. No CMS write occurs until the operator approves the exact copy in Task 6.
@@ -214,6 +214,7 @@ git commit -m "feat(analytics): type lean high-intent events"
 - Produces: `isDirectContactHref(href: string): boolean`.
 - Produces: `isProjectProofHref(href: string): boolean`.
 - Consumed by: Tasks 3 and 4 only; neither function returns or forwards a URL.
+- Direct-contact eligibility requires a `mailto:` payload containing `@`, a `tel:` payload containing at least one digit, or an exact HTTPS `wa.me` link with a non-root path.
 
 - [ ] **Step 1: Write the failing URL-classification tests**
 
@@ -236,7 +237,9 @@ describe('isDirectContactHref', () => {
 		'',
 		'not a url',
 		'mailto:',
+		'mailto:contact',
 		'tel:',
+		'tel:+',
 		'https://wa.me/',
 		'http://wa.me/18194465594',
 		'https://wa.me:8443/18194465594',

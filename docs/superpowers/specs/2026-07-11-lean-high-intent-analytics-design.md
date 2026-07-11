@@ -76,8 +76,8 @@ Purpose: measure activation of an approved direct contact channel.
 
 Eligible actions:
 
-- public `mailto:` contact link;
-- public `tel:` contact link;
+- public `mailto:` contact link whose payload contains `@`;
+- public `tel:` contact link whose payload contains at least one digit;
 - public WhatsApp link on an approved WhatsApp host.
 
 Current scope: the CMS-backed contact-channel list. Email exists today. Phone and WhatsApp are added by the separate NAP/public-contact lane; this analytics slice does not create those channels.
