@@ -9,21 +9,22 @@
   fills: NO gradients, NO drop-shadow glows, NO filter animations. A drawing.
 
   Data-driven by PUBLISHED_LOCALES: one board per published locale, cycling on
-  click, path-preserving. Renders NOTHING when fewer than 2 are published — so
-  it is absent today (['en']) and appears EN⇄FR the instant French is flipped on.
+  click. Same-path pages preserve their route; translated articles use exact
+  locale slugs and fall back to the target blog index when a row is unavailable.
 
   On switch the boards give a gentle swing (a signpost catching the change);
   disabled under prefers-reduced-motion.
 
   Persistent chrome (rides Nav): locale + url are PROPS (ThemeToggle convention).
-  The switch preserves the full URL — path, query AND hash — so in-progress
-  state (filters, ?station, the engine seed) survives the language change.
+  The switch preserves query AND hash — so in-progress state (filters,
+  ?station, the engine seed) survives the language change.
 -->
 <script lang="ts">
 	import { siteLabels } from '$lib/content';
-	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
-	import { localizeUrl } from '$lib/utils/locale-routing';
+	import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
+	import { localizeHref, localizeUrl } from '$lib/utils/locale-routing';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { building } from '$app/environment';
 	import type { Locale } from '$lib/types';
 
 	let {
@@ -31,24 +32,48 @@
 		locale = DEFAULT_LOCALE,
 		url = new URL('https://yesid.dev/'),
 		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
+		localeAlternates,
 	}: {
 		class?: string;
 		locale?: Locale;
 		/** Full current URL — the switch preserves its path, query AND hash. */
 		url?: URL;
 		availableLocales?: readonly Locale[];
+		/** Exact translated canonicals for routes whose locale variants use different slugs. */
+		localeAlternates?: Partial<Record<Locale, string>>;
 	} = $props();
 
 	// Two-letter codes on the boards (legible at signpost scale); full self-names
 	// drive the accessible label/title (a French/Spanish speaker hears theirs).
 	const CODE: Record<Locale, string> = { en: 'EN', fr: 'FR', es: 'ES' };
 	const NAMES: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
+	const CANONICAL_ORIGIN = new URL(SITE_HOST).origin;
 
 	const idx = $derived(Math.max(0, availableLocales.indexOf(locale)));
 	const next = $derived(availableLocales[(idx + 1) % availableLocales.length]);
-	const nextHref = $derived(localizeUrl(url, next));
+	const nextHref = $derived(resolveNextHref(next));
+	const preservePageState = $derived(
+		!localeAlternates || Boolean(localeAlternates[next]),
+	);
 	const switcherAria = $derived(resolveLocale(siteLabels.navChrome.shared.localeSwitcherAria, locale));
 	const ariaLabel = $derived(`${switcherAria}: ${NAMES[locale] ?? locale}`);
+
+	function currentUrlSuffix(): string {
+		return building ? '' : url.search + url.hash;
+	}
+
+	function resolveNextHref(targetLocale: Locale): string {
+		if (!localeAlternates) return localizeUrl(url, targetLocale);
+
+		const exact = localeAlternates[targetLocale];
+		if (!exact) {
+			return localizeHref('/blog', targetLocale) + currentUrlSuffix();
+		}
+
+		const target = new URL(exact, url.origin);
+		const href = target.origin === CANONICAL_ORIGIN ? target.pathname : target.href;
+		return href + currentUrlSuffix();
+	}
 
 	// One fingerboard per locale, alternating sides of the pole, current emphasised.
 	// Pointed-pennant silhouette is the locked shape — drawn flat (outline + label).
@@ -94,7 +119,7 @@
 		href={nextHref}
 		data-testid="language-toggle"
 		data-sveltekit-preload-data="hover"
-		data-sveltekit-noscroll
+		data-sveltekit-noscroll={preservePageState ? '' : undefined}
 		class="lang-post tap-press {className}"
 		aria-label={ariaLabel}
 		title={NAMES[locale] ?? locale}

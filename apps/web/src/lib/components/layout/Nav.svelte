@@ -11,7 +11,7 @@
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import MenuOverlay from './MenuOverlay.svelte';
 	import type { NavLink } from '$lib/navigation/types';
-	import type { Locale } from '$lib/types';
+	import type { Locale, PageSeo } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
 	import LanguageToggle from './LanguageToggle.svelte';
 
@@ -19,6 +19,7 @@
 		pathname = '/',
 		url = new URL('https://yesid.dev/'),
 		locale = DEFAULT_LOCALE,
+		localeAlternates,
 		headerLinks = staticNavLinks as readonly NavLink[],
 		menuItems = [] as readonly NavLink[],
 	}: {
@@ -26,6 +27,7 @@
 		/** Full current URL — threaded to LanguageToggle so the switch keeps query + hash. */
 		url?: URL;
 		locale?: Locale;
+		localeAlternates?: PageSeo['localeAlternates'];
 		headerLinks?: readonly NavLink[];
 		menuItems?: readonly NavLink[];
 	} = $props();
@@ -145,8 +147,8 @@
 
 		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
 		     Persistent (stays visible above the open menu sheet) — it is the SINGLE locale switcher;
-		     the sheet's own EN|FR switch was removed to kill the double. -->
-		<LanguageToggle {locale} {url} />
+		     the sheet's duplicate locale switch was removed. -->
+		<LanguageToggle {locale} {url} {localeAlternates} />
 
 		<!-- Menu toggle -->
 		<button

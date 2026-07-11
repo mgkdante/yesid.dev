@@ -13,8 +13,9 @@
  * + dry-run + reset + pure helpers). Uses Editor.js Block Editor JSON for
  * body field.
  *
- * Per AM2.5: blog_posts is mono-language. Flat `title` + `excerpt` on
- * parent. NO translations junction.
+ * Per AM2.5: every blog_posts row is mono-language. Flat `title` + `excerpt`
+ * stay on the parent row. `translation_key` groups the en/fr/es rows for one
+ * article without introducing a translations junction.
  *
  * Per AM1: body is Editor.js { time, blocks, version }.
  */
@@ -36,8 +37,11 @@ import { parseSeedFlags } from './lib/cli';
 // — internal _parse dispatch breaks. We use z.unknown() here and validate
 // body separately via BlockEditorDocSchema.safeParse() before serializing.
 
+const TranslationKeySchema = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+
 const BlogPostFixtureRowSchema = z.object({
 	id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
+	translation_key: TranslationKeySchema,
 	status: z.enum(['draft', 'published', 'archived']),
 	date_published: z.string().nullable(),
 	date_modified: z.string().nullable().optional(),
@@ -58,10 +62,38 @@ const BlogPostFixtureRowSchema = z.object({
 });
 
 export type BlogPostFixture = z.infer<typeof BlogPostFixtureRowSchema> & { body: BlockEditorDoc };
-export const BlogPostsFixtureSchema = z.array(BlogPostFixtureRowSchema).min(1).readonly();
+const BlogPostFixtureRowsSchema = z
+	.array(BlogPostFixtureRowSchema)
+	.length(18, {
+		message: 'fixture must contain exactly 18 rows across six translation keys',
+	})
+	.readonly();
+export const BlogPostsFixtureSchema = BlogPostFixtureRowsSchema.superRefine((rows, ctx) => {
+	const byTranslationKey = new Map<string, typeof rows>();
+	for (const row of rows) {
+		const group = byTranslationKey.get(row.translation_key) ?? [];
+		byTranslationKey.set(row.translation_key, [...group, row]);
+	}
+	if (byTranslationKey.size !== 6) {
+		ctx.addIssue({
+			code: 'custom',
+			message: 'fixture must contain exactly 18 rows across six translation keys',
+		});
+	}
+	for (const [translationKey, group] of byTranslationKey) {
+		const locales = group.map((row) => row.lang).sort();
+		if (locales.length !== 3 || locales.join(',') !== 'en,es,fr') {
+			ctx.addIssue({
+				code: 'custom',
+				message:
+					`translation_key must group exactly one en, fr, and es row: ${translationKey}`,
+			});
+		}
+	}
+});
 
-export function loadBlogPostsFixture(): readonly BlogPostFixture[] {
-	const parsed = BlogPostsFixtureSchema.parse(fixtureData);
+export function parseBlogPostsFixture(input: unknown): readonly BlogPostFixture[] {
+	const parsed = BlogPostsFixtureSchema.parse(input);
 	// Validate every body separately through BlockEditorDocSchema (AM1).
 	for (const p of parsed) {
 		const result = BlockEditorDocSchema.safeParse(p.body);
@@ -74,10 +106,15 @@ export function loadBlogPostsFixture(): readonly BlogPostFixture[] {
 	return parsed as readonly BlogPostFixture[];
 }
 
+export function loadBlogPostsFixture(): readonly BlogPostFixture[] {
+	return parseBlogPostsFixture(fixtureData);
+}
+
 // --- Row shape ---------------------------------------------------------
 
 export interface DirectusBlogPostRow {
 	id: string;
+	translation_key: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
 	date_modified: string | null;
@@ -105,6 +142,7 @@ export function toBlogPostRow(fixture: BlogPostFixture): DirectusBlogPostRow {
 		: null;
 	return {
 		id: fixture.id,
+		translation_key: fixture.translation_key,
 		status: fixture.status,
 		date_published: fixture.date_published,
 		date_modified: fixture.date_modified ?? null,

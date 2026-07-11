@@ -55,8 +55,9 @@
 	// Filter state. slice-34.1: search/language/date are session-scoped so they
 	// survive a language switch via the locale-handoff orchestrator — each stored
 	// value is a locale-free primitive (the literal query string, a Locale code, an
-	// ISO date), valid verbatim in any locale. The `tag` filter lives in the URL and
-	// is carried for free by localizeUrl.
+	// ISO date). A language code can become incompatible after the server narrows
+	// the listing to the new request locale, so it is normalized below. The `tag`
+	// filter lives in the URL and is carried for free by localizeUrl.
 	// Browser-gated: the page prerenders (url.searchParams is unreadable at
 	// build), so SSR HTML is the unfiltered listing and ?tag deep-links apply
 	// on hydration.
@@ -66,6 +67,16 @@
 	const dateFrom = persisted('blog-from', '');
 	const dateTo = persisted('blog-to', '');
 	const mobileFiltersOpen = persisted('blog-mobile-filters-open', false);
+	const compatibleLang = $derived(
+		activeLang.value && languages.includes(activeLang.value) ? activeLang.value : null,
+	);
+
+	$effect(() => {
+		if (activeLang.value && !languages.includes(activeLang.value)) {
+			activeLang.value = null;
+		}
+	});
+
 	function setMobileFiltersOpen(next: boolean): void {
 		mobileFiltersOpen.value = next;
 	}
@@ -75,8 +86,8 @@
 		let result = [...posts];
 
 		// Language filter
-		if (activeLang.value) {
-			result = result.filter((p) => p.lang === activeLang.value);
+		if (compatibleLang) {
+			result = result.filter((p) => p.lang === compatibleLang);
 		}
 
 		// Tag filter
@@ -133,7 +144,7 @@
 
 	let hasActiveFilters = $derived(
 		!!activeTag ||
-			!!activeLang.value ||
+			!!compatibleLang ||
 			searchQuery.value.trim() !== '' ||
 			dateFrom.value !== '' ||
 			dateTo.value !== ''
@@ -200,7 +211,7 @@
 					tags={allTags}
 					{languages}
 					{activeTag}
-					activeLang={activeLang.value}
+					activeLang={compatibleLang}
 					{accentColor}
 					{cornerLink}
 					bind:searchQuery={searchQuery.value}
@@ -230,7 +241,7 @@
 				tags={allTags}
 				{languages}
 				{activeTag}
-				activeLang={activeLang.value}
+				activeLang={compatibleLang}
 				{accentColor}
 				{cornerLink}
 				showSearch={false}

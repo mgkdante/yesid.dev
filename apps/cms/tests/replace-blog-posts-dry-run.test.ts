@@ -118,8 +118,19 @@ describe('replace-blog-posts fixture contract', () => {
 	it('loads exactly six truth-locked published rows', () => {
 		expect(desired).toHaveLength(6);
 		expect(desired.every((post) => post.status === 'published')).toBe(true);
+		expect(desired.every((post) => post.lang === 'en')).toBe(true);
+		expect(desired.every((post) => post.translation_key === post.id)).toBe(true);
 		expect(desired.some((post) => LEGACY_BLOG_IDS.includes(post.id as never))).toBe(false);
 		expect(new Set(desired.map((post) => post.id)).size).toBe(6);
+	});
+
+	it('refuses multilingual input because this command is the retired six-English replacement', () => {
+		const invalid = structuredClone(desired) as typeof desired;
+		invalid[0]!.lang = 'fr';
+
+		expect(() => buildReplacementPlan(invalid, exactState())).toThrow(
+			'legacy command accepts exactly six English rows',
+		);
 	});
 
 	it('uses stable SHA-256 body hashes', () => {

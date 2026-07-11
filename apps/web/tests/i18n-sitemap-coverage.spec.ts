@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // i18n sitemap.xml coverage — verifies all published routes appear in
-// the sitemap with correct FR variants + hreflang clusters.
+// the sitemap with correct EN/FR/ES variants + hreflang clusters.
 //
 // Unit tests (sitemap.xml/server.test.ts) verify the _buildSitemapEntries
 // logic. This e2e test verifies the actual /sitemap.xml response from a
@@ -40,13 +40,26 @@ test.describe('Sitemap.xml i18n coverage', () => {
     expect(xml).toContain('<loc>https://yesid.dev/fr/tech-stack</loc>');
   });
 
-  test('sitemap: each route entry has hreflang cluster (en + fr + x-default)', async ({ page }) => {
+  test('sitemap includes all static ES routes (/es-prefixed)', async ({ page }) => {
+    const response = await page.goto('/sitemap.xml');
+    const xml = await response?.text();
+    expect(xml).toContain('<loc>https://yesid.dev/es</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/about</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/contact</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/services</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/projects</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/blog</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/blog/personal</loc>');
+    expect(xml).toContain('<loc>https://yesid.dev/es/tech-stack</loc>');
+  });
+
+  test('sitemap: each route entry has hreflang cluster (en + fr + es + x-default)', async ({ page }) => {
     const response = await page.goto('/sitemap.xml');
     const xml = await response?.text();
     // Every bilingual route should have the full cluster in its <url> entry.
     // Check for the pattern: <url>...<xhtml:link rel="alternate" hreflang="en"
     // This is a regex that matches a <url> block with hreflang links.
-    const urlPattern = /<url>\s*<loc>https:\/\/yesid\.dev\/about<\/loc>.*?<xhtml:link[^>]*hreflang="en"[^>]*>.*?<xhtml:link[^>]*hreflang="fr"[^>]*>.*?<xhtml:link[^>]*hreflang="x-default"[^>]*>/s;
+    const urlPattern = /<url>\s*<loc>https:\/\/yesid\.dev\/about<\/loc>.*?<xhtml:link[^>]*hreflang="en"[^>]*>.*?<xhtml:link[^>]*hreflang="fr"[^>]*>.*?<xhtml:link[^>]*hreflang="es"[^>]*>.*?<xhtml:link[^>]*hreflang="x-default"[^>]*>/s;
     expect(xml).toMatch(urlPattern);
   });
 
@@ -65,11 +78,33 @@ test.describe('Sitemap.xml i18n coverage', () => {
     expect(xml).toContain('hreflang="en" href="https://yesid.dev/about"');
     // hreflang="fr" should link to /fr-prefixed
     expect(xml).toContain('hreflang="fr" href="https://yesid.dev/fr/about"');
+    expect(xml).toContain('hreflang="es" href="https://yesid.dev/es/about"');
     // x-default points to EN
     expect(xml).toContain('hreflang="x-default" href="https://yesid.dev/about"');
   });
 
-  test('sitemap: home route (/) and /fr both present with hreflang', async ({ page }) => {
+  test('sitemap: translated blog slugs share one exact reciprocal cluster', async ({ page }) => {
+    const response = await page.goto('/sitemap.xml');
+    const xml = await response?.text();
+    const entry = xml?.match(
+      /<url>\s*<loc>https:\/\/yesid\.dev\/blog\/the-two-hour-internet-slot<\/loc>(.*?)<\/url>/s,
+    )?.[1];
+
+    expect(entry).toContain(
+      'hreflang="en" href="https://yesid.dev/blog/the-two-hour-internet-slot"',
+    );
+    expect(entry).toContain(
+      'hreflang="fr" href="https://yesid.dev/fr/blog/le-creneau-internet-de-deux-heures"',
+    );
+    expect(entry).toContain(
+      'hreflang="es" href="https://yesid.dev/es/blog/el-turno-de-dos-horas-para-usar-internet"',
+    );
+    expect(entry).toContain(
+      'hreflang="x-default" href="https://yesid.dev/blog/the-two-hour-internet-slot"',
+    );
+  });
+
+  test('sitemap: home route plus /fr and /es variants carry hreflang', async ({ page }) => {
     const response = await page.goto('/sitemap.xml');
     const xml = await response?.text();
     // Root entry has hreflang cluster pointing to / and /fr.
@@ -80,6 +115,8 @@ test.describe('Sitemap.xml i18n coverage', () => {
     // /fr entry also has full cluster
     const frPattern = /<url>\s*<loc>https:\/\/yesid\.dev\/fr<\/loc>.*?hreflang="en".*?hreflang="fr".*?hreflang="x-default"/s;
     expect(xml).toMatch(frPattern);
+    const esPattern = /<url>\s*<loc>https:\/\/yesid\.dev\/es<\/loc>.*?hreflang="en".*?hreflang="fr".*?hreflang="es".*?hreflang="x-default"/s;
+    expect(xml).toMatch(esPattern);
   });
 
   test('sitemap: cache-control headers allow long CDN cache', async ({ page }) => {
@@ -93,4 +130,3 @@ test.describe('Sitemap.xml i18n coverage', () => {
     expect(cacheControl).toContain('max-age=3600');
   });
 });
-

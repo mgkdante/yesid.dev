@@ -3,15 +3,14 @@
 // The site is 100% build-time content, so every page route prerenders
 // (prerender = true at the root layout). SvelteKit only auto-expands routes
 // whose params are all optional to their UNPREFIXED form ('*' entries strip
-// `[[lang=locale]]`), so each route exports explicit entries for both locales
+// `[[lang=locale]]`), so each route exports explicit entries for every locale
 // and each content slug. Explicit > crawl-discovered: an orphan page (not
 // linked from nav/listings) would otherwise silently fall back to the lambda.
 //
-// Locale model (slice-28.6): EN is never prefixed (lang: ''), FR resolves as a
-// path prefix (lang: 'fr'). `resolve_route` drops an optional param whose
-// value is '' — `{ lang: '' }` yields '/about', `{ lang: 'fr' }` '/fr/about'.
-// PREFIX_LOCALES is the routing lever: adding 'es' there automatically extends
-// every entry list here.
+// Locale model (slice-28.6): EN is never prefixed (lang: ''), while FR and ES
+// resolve as path prefixes. `resolve_route` drops an optional param whose value
+// is '' — `{ lang: '' }` yields '/about', `{ lang: 'fr' }` '/fr/about'.
+// PREFIX_LOCALES is the routing lever for every entry list here.
 //
 // Slug sources are the GENERATED content modules (CMS is truth, .ts is the
 // build-time cache) — the same arrays the sitemap builder enumerates, so
@@ -22,6 +21,8 @@ import { projects } from '$lib/content/projects';
 import { services } from '$lib/content/services';
 import { legalPages } from '$lib/content/legal-pages';
 import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
+import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '$lib/blog/translations';
+import type { BlogPost } from '$lib/types';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
 const LANG_PARAM_VALUES: readonly string[] = ['', ...PREFIX_LOCALES];
@@ -31,16 +32,25 @@ function langParamFor(locale: string): string {
 	return (PREFIX_LOCALES as readonly string[]).includes(locale) ? locale : '';
 }
 
-/** Entries for a static page: one per published locale ('/x' and '/fr/x'). */
+/** Entries for a static page: one unprefixed EN plus every prefix locale. */
 export function localeEntries(): Array<{ lang: string }> {
 	return LANG_PARAM_VALUES.map((lang) => ({ lang }));
 }
 
-/** Blog detail entries. Posts are mono-language: one URL per post, at the
- *  post body's language (EN posts live unprefixed, an FR post would live
- *  under /fr) — mirrors the sitemap's mono-language rule. */
+/** Blog detail entries for complete EN/FR/ES translation groups. Each row
+ * prerenders at its own locale-specific slug; grouping makes an incomplete
+ * publication fail the build instead of silently omitting a counterpart. */
+export function blogEntriesFor(posts: readonly BlogPost[]): Array<{ lang: string; slug: string }> {
+	return groupBlogTranslations(posts).flatMap((group) =>
+		BLOG_TRANSLATION_LOCALES.map((locale) => {
+			const post = group.posts[locale];
+			return { lang: langParamFor(post.lang), slug: post.slug };
+		}),
+	);
+}
+
 export function blogEntries(): Array<{ lang: string; slug: string }> {
-	return blogPosts.map((post) => ({ lang: langParamFor(post.lang), slug: post.slug }));
+	return blogEntriesFor(blogPosts);
 }
 
 /** Project detail entries: every public project × every published locale. */
