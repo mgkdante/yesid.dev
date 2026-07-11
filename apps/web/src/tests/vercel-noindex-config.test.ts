@@ -18,9 +18,11 @@ describe('Vercel host-scoped noindex policy', () => {
 
 		expect(noindexRules).toHaveLength(1);
 		expect(noindexRules[0]).toMatchObject({
-			source: '/:path*',
+			source: '/(.*)',
 			has: [{ type: 'host', value: 'dev\\.yesid\\.dev' }],
 			headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }],
 		});
+		expect(new RegExp(noindexRules[0].source).test('/')).toBe(true);
+		expect(new RegExp(noindexRules[0].source).test('/about')).toBe(true);
 	});
 });
