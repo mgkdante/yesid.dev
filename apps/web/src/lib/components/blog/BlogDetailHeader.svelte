@@ -9,6 +9,7 @@
   import type { BlogPost } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
+  import { localizeHref } from '$lib/utils/locale-routing';
 
   const locale = getLocale();
   import { fillTemplate } from '$lib/utils/labels';
@@ -38,7 +39,7 @@
   const detailChrome = siteLabels.blogChrome.detail;
 
   const backHref = $derived(
-    post.category === 'personal' ? '/blog/personal' : '/blog'
+    localizeHref(post.category === 'personal' ? '/blog/personal' : '/blog', post.lang)
   );
   // Prefer CMS-sourced labels (blogPage.backToPersonal / backToDispatches);
   // fall back to the legacy $lib/content/blog static module so the page still

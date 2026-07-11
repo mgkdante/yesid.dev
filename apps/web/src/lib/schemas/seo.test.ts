@@ -70,6 +70,34 @@ describe('PageSeoSchema', () => {
 		expect(PageSeoSchema.safeParse(full).success).toBe(true);
 	});
 
+	it('preserves exact locale alternates and a stable locale-handoff identity', () => {
+		const result = PageSeoSchema.parse({
+			...validBase,
+			localeAlternates: {
+				en: 'https://yesid.dev/blog/source-slug',
+				fr: 'https://yesid.dev/fr/blog/slug-francais',
+				es: 'https://yesid.dev/es/blog/slug-espanol',
+			},
+			localeHandoffId: 'blog:source-article',
+		});
+
+		expect(result.localeAlternates).toEqual({
+			en: 'https://yesid.dev/blog/source-slug',
+			fr: 'https://yesid.dev/fr/blog/slug-francais',
+			es: 'https://yesid.dev/es/blog/slug-espanol',
+		});
+		expect(result.localeHandoffId).toBe('blog:source-article');
+	});
+
+	it('rejects a non-URL exact locale alternate', () => {
+		expect(
+			PageSeoSchema.safeParse({
+				...validBase,
+				localeAlternates: { en: '/blog/source-slug' },
+			}).success,
+		).toBe(false);
+	});
+
 	it('rejects whitespace-only title.en (semantically empty)', () => {
 		const result = PageSeoSchema.safeParse({ ...validBase, title: { en: '   ' } });
 		expect(result.success).toBe(false);

@@ -1,13 +1,14 @@
 // blogPostFactory — test data for BlogPost.
 //
-// Mirrors BlogPostSchema in $lib/schemas/blog. BlogPost is mono-language
-// (title/excerpt are flat strings, NOT LocalizedString) — AM2.5 decision.
+// Mirrors BlogPostSchema in $lib/schemas/blog. Each BlogPost row owns one
+// language, so title/excerpt are flat strings rather than LocalizedString.
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
 import type { BlogPost } from '$lib/types';
 
 export const blogPostFactory = new Factory<BlogPost>(() => ({
+	translationKey: faker.lorem.slug(),
 	slug: faker.lorem.slug(),
 	title: faker.lorem.sentence(),
 	excerpt: faker.lorem.paragraph(),
