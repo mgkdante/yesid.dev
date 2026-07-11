@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'bun:test';
-import { toBlogPost, resolveSvgFallbackName, type DirectusBlogPostRow } from './blog-posts';
+import {
+	BLOG_POST_SORT,
+	toBlogPost,
+	resolveSvgFallbackName,
+	type DirectusBlogPostRow,
+} from './blog-posts';
 import { BlogPostSchema } from '@repo/shared/schemas';
 const FIXTURE_EXTERNAL: DirectusBlogPostRow = {
 	id: 'why-bun-is-fast',
@@ -22,6 +27,10 @@ const FIXTURE_EXTERNAL: DirectusBlogPostRow = {
 };
 
 describe('blog-posts fetcher transform', () => {
+	it('uses a deterministic newest-first order when publication dates tie', () => {
+		expect(BLOG_POST_SORT).toEqual(['-date_published', 'sort', 'id']);
+	});
+
 	it('builds /blog/<slug> url for non-external posts', () => {
 		const result = toBlogPost(FIXTURE_EXTERNAL);
 		expect(result.url).toBe('/blog/why-bun-is-fast');
