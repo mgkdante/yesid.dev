@@ -17,6 +17,7 @@ import {
 	buildProfessionalServiceNode,
 } from './jsonld';
 import type { BlogPost } from '$lib/types';
+import { canonicalFor } from '$lib/utils/seo-defaults';
 
 describe('PERSON_ID / WEBSITE_ID constants', () => {
 	it('PERSON_ID resolves against SITE_HOST with #person fragment', () => {
@@ -185,11 +186,12 @@ describe('buildBlogPostingNode', () => {
 		const post = posts[0];
 		const node = buildBlogPostingNode(post, 'en');
 		expect(node['@type']).toBe('BlogPosting');
-		expect(node['@id']).toBe(`https://yesid.dev/blog/${post.slug}`);
+		expect(node['@id']).toBe(canonicalFor(`/blog/${post.slug}`, post.lang));
 	});
 
-	it('@id keys on post.lang, not the render locale (mono-language AM2.5)', () => {
+	it('@id keys on the post language, not the render locale', () => {
 		const enPost = {
+			translationKey: 'raw-sql-control',
 			slug: 'raw-sql-control',
 			title: 'Raw SQL Control',
 			excerpt: 'Short listing excerpt.',
@@ -235,6 +237,7 @@ describe('buildBlogPostingNode', () => {
 
 	it('uses CMS-backed SEO fields for BlogPosting description, keywords, modified date, and image', () => {
 		const post = {
+			translationKey: 'raw-sql-control',
 			slug: 'raw-sql-control',
 			title: 'Raw SQL Control',
 			excerpt: 'Short listing excerpt.',

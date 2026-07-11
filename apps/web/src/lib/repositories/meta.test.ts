@@ -13,9 +13,9 @@ describe('getPageSeo', () => {
 
 	it('forwards params for dynamic routes', async () => {
 		const posts = await adapter.blog.all();
-		if (posts.length === 0) return;
-		const first = posts[0];
-		const seo = await getPageSeo('/blog/[slug]', 'en', { slug: first.slug });
+		const first = posts.find((post) => post.lang === 'en');
+		if (!first) return;
+		const seo = await getPageSeo('/blog/[slug]', first.lang, { slug: first.slug });
 		expect(seo.canonical).toContain(first.slug);
 	});
 

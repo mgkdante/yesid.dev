@@ -3,9 +3,9 @@
 // read, so both files track CMS truth on every publish→rebuild. Server-only:
 // nothing here may reach the client bundle.
 import { blogPosts, contactContent, projects, services, siteMeta } from '$lib/content';
-import { SITE_HOST, SERVICE_AREAS } from '$lib/utils/seo-defaults';
+import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '$lib/utils/seo-defaults';
 import { resolveLocale } from '$lib/utils/locale';
-import type { LocalizedString } from '$lib/types';
+import type { BlogPost, LocalizedString } from '$lib/types';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
 const es = (value: LocalizedString): string => resolveLocale(value, 'es');
@@ -17,6 +17,10 @@ const visibleServices = () => [...services].filter((s) => s.visible !== false).s
 const publishedProjects = () => projects.filter((p) => p.status === 'public');
 
 const absolute = (path: string): string => (path.startsWith('http') ? path : `${SITE_HOST}${path}`);
+const blogUrl = (post: BlogPost): string =>
+	post.external
+		? absolute(post.url ?? '')
+		: canonicalFor(`/blog/${post.slug}`, post.lang);
 
 // Serialize SERVICE_AREAS as a natural-language list ("A, B, and C") so the
 // served geography is legible to answer engines fielding "...in <city>" queries.
@@ -36,7 +40,7 @@ function header(): string {
 		'',
 		`Available for remote and on-site work across ${serviceAreaList()}.`,
 		'',
-		`The site is trilingual: every page below also exists in French under ${SITE_HOST}/fr and in Spanish under ${SITE_HOST}/es. Blog posts are the exception: English-only for now.`,
+		`The site is trilingual: pages below also exist in French under ${SITE_HOST}/fr and in Spanish under ${SITE_HOST}/es. Blog articles are available in English, French, and Spanish.`,
 	].join('\n');
 }
 
@@ -69,7 +73,7 @@ export function llmsTxt(): string {
 		(p) => `- [${en(p.title)}](${SITE_HOST}/projects/${p.slug}): ${en(p.oneLiner)}`,
 	);
 	const blogLines = blogPosts.map(
-		(p) => `- [${p.title}](${absolute(p.url ?? '')}) (${p.lang}): ${p.excerpt}`,
+		(p) => `- [${p.title}](${blogUrl(p)}) (${p.lang}): ${p.excerpt}`,
 	);
 	return [
 		header(),
@@ -114,7 +118,7 @@ export function llmsFullTxt(): string {
 		return lines.join('\n');
 	});
 	const blogBlocks = blogPosts.map(
-		(p) => `### ${p.title} (${absolute(p.url ?? '')})\n\nLanguage: ${p.lang}. ${p.excerpt}`,
+		(p) => `### ${p.title} (${blogUrl(p)})\n\nLanguage: ${p.lang}. ${p.excerpt}`,
 	);
 	return [
 		header(),

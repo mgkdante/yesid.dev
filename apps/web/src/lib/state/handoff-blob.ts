@@ -26,7 +26,7 @@ export interface FocusSnapshot {
 
 export interface HandoffBlob {
 	v: number;
-	/** Delocalized path the snapshot was taken on; restore only applies on a match. */
+	/** Restore scope: delocalized path or stable translated-route identity. */
 	path: string;
 	/** Registered session values, keyed by `persisted()` key — locale-free primitives. */
 	entries: Record<string, unknown>;
@@ -53,7 +53,7 @@ export function serializeBlob(blob: HandoffBlob): string {
 
 /**
  * Parse + gate a stored blob. Returns null (discard) for malformed JSON, a
- * version mismatch, a path mismatch (snapshot taken on a different page), or a
+ * version mismatch, a scope mismatch (snapshot taken on a different page), or a
  * structurally invalid `entries` map.
  */
 export function parseBlob(raw: string | null, expectedPath: string): HandoffBlob | null {

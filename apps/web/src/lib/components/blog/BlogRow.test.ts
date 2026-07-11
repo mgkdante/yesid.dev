@@ -7,6 +7,7 @@ import type { BlogPost } from '$lib/types';
 
 // Minimal BlogPost fixture for testing — only required fields populated
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
+	translationKey: 'test-post',
 	slug: 'test-post',
 	title: 'Test Post Title',
 	excerpt: 'A short excerpt for testing purposes.',
@@ -121,15 +122,27 @@ describe('BlogRow', () => {
 		expect(fr.getByTestId('blog-lang-chip').textContent?.trim()).toBe('Anglais');
 	});
 
-	it('localizes internal post urls inside a fr provider; external urls untouched (slice-28.6)', () => {
+	it('localizes internal post urls from the post language, independent of the listing context', () => {
 		const frContext = () => new Map([[Symbol.for('yesid.locale'), () => 'fr']]);
-		const internal = render(BlogRow, {
+		const enPost = render(BlogRow, {
 			props: { post: makePost(), index: 0 },
 			context: frContext(),
 		});
-		expect(internal.container.querySelector('a')?.getAttribute('href')).toBe(
-			'/fr/blog/test-post',
-		);
+		expect(enPost.container.querySelector('a')?.getAttribute('href')).toBe('/blog/test-post');
+		enPost.unmount();
+
+		const frPost = render(BlogRow, {
+			props: { post: makePost({ lang: 'fr' }), index: 0 },
+		});
+		expect(frPost.container.querySelector('a')?.getAttribute('href')).toBe('/fr/blog/test-post');
+		frPost.unmount();
+
+		const esPost = render(BlogRow, {
+			props: { post: makePost({ lang: 'es' }), index: 0 },
+		});
+		expect(esPost.container.querySelector('a')?.getAttribute('href')).toBe('/es/blog/test-post');
+		esPost.unmount();
+
 		const external = render(BlogRow, {
 			props: {
 				post: makePost({ external: true, url: 'https://medium.com/@x/post' }),

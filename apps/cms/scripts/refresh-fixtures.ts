@@ -231,8 +231,9 @@ interface RawProjectsServicesRow {
 	service_id: string;
 }
 
-interface RawBlogPost {
+export interface RawBlogPost {
 	id: string;
+	translation_key: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
 	date_modified: string | null;
@@ -357,8 +358,9 @@ function toServiceFixture(row: RawService, relatedProjects: readonly string[]): 
 	return ordered;
 }
 
-interface BlogPostFixtureRow {
+export interface BlogPostFixtureRow {
 	id: string;
+	translation_key: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
 	date_modified: string | null;
@@ -378,9 +380,10 @@ interface BlogPostFixtureRow {
 	body: unknown;
 }
 
-function toBlogPostFixture(row: RawBlogPost): BlogPostFixtureRow {
+export function toBlogPostFixture(row: RawBlogPost): BlogPostFixtureRow {
 	return {
 		id: row.id,
+		translation_key: row.translation_key,
 		status: row.status,
 		date_published: dateOnly(row.date_published),
 		date_modified: dateOnly(row.date_modified),
