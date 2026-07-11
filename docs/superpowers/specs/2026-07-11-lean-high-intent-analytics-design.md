@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: operator-approved design, awaiting written-spec review
+Status: operator-approved on 2026-07-11; implementation not started
 
 Notion slice: [slice-38 — Lean high-intent analytics](https://app.notion.com/p/39a3e863069081e19916cbc1f7f4763e)
 
