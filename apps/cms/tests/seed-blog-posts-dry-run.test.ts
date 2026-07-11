@@ -6,54 +6,53 @@ import {
 
 describe('seed-blog-posts pure helpers', () => {
 	const fixture = loadBlogPostsFixture();
-	const orm = fixture.find((p) => p.id === 'why-i-left-orm-for-raw-sql')!;
+	const aiWorkflow = fixture.find(
+		(p) => p.id === 'ai-accelerated-human-owned-my-actual-workflow',
+	)!;
 
 	describe('toBlogPostRow', () => {
 		it('preserves id + scalars', () => {
-			const row = toBlogPostRow(orm);
-			expect(row.id).toBe('why-i-left-orm-for-raw-sql');
+			const row = toBlogPostRow(aiWorkflow);
+			expect(row.id).toBe('ai-accelerated-human-owned-my-actual-workflow');
 			expect(row.status).toBe('published');
 			expect(row.lang).toBe('en');
 			expect(row.category).toBe('professional');
-			expect(row.tags).toEqual(orm.tags);
+			expect(row.tags).toEqual(aiWorkflow.tags);
 		});
 
 		it('passes body through unchanged (Editor.js shape)', () => {
-			const row = toBlogPostRow(orm);
-			expect(row.body).toEqual(orm.body as never);
+			const row = toBlogPostRow(aiWorkflow);
+			expect(row.body).toEqual(aiWorkflow.body as never);
 		});
 
 		it('promotes flat title + excerpt onto row (AM2.5 — no translations)', () => {
-			const row = toBlogPostRow(orm);
-			expect(row.title).toBe(orm.title);
-			expect(row.excerpt).toBe(orm.excerpt);
+			const row = toBlogPostRow(aiWorkflow);
+			expect(row.title).toBe(aiWorkflow.title);
+			expect(row.excerpt).toBe(aiWorkflow.excerpt);
 		});
 
 		it('promotes optional SEO fields onto the row when present', () => {
-			const row = toBlogPostRow(orm);
-			expect(row.seo_title).toBe('Raw SQL for PostgreSQL Control');
+			const row = toBlogPostRow(aiWorkflow);
+			expect(row.seo_title).toBe('AI-Accelerated, Human-Owned: My Development Workflow');
 			expect(row.seo_description).toBe(
-				'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.',
+				'My real AI-assisted development workflow: I choose architecture, direct implementation, inspect the files, catch mistakes, and own what ships.',
 			);
-			expect(row.date_modified).toBe('2026-04-01');
+			expect(row.date_modified).toBe('2026-07-11');
 		});
 
 		it('returns null url for non-external posts', () => {
-			const row = toBlogPostRow(orm);
+			const row = toBlogPostRow(aiWorkflow);
 			expect(row.url).toBeNull();
 		});
 
-		it('maps cover_image_legacy_path to cover_image when present', () => {
-			const fixtureWithCover = fixture.find((p) => p.cover_image_legacy_path !== null);
-			if (fixtureWithCover) {
-				const row = toBlogPostRow(fixtureWithCover);
-				expect(row.cover_image).not.toBeNull();
-			}
+		it('returns null cover_image when the fixture has no cover', () => {
+			const row = toBlogPostRow(aiWorkflow);
+			expect(row.cover_image).toBeNull();
 		});
 
 		it('maps svg_illustration_id to svg_illustration', () => {
-			const row = toBlogPostRow(orm);
-			expect(row.svg_illustration).toBe(orm.svg_illustration_id);
+			const row = toBlogPostRow(aiWorkflow);
+			expect(row.svg_illustration).toBe(aiWorkflow.svg_illustration_id);
 		});
 	});
 });

@@ -47,6 +47,8 @@ const PERSONAL_FALLBACKS = [
 	'personal-globe',
 ] as const;
 
+export const BLOG_POST_SORT = ['-date_published', 'sort', 'id'] as const;
+
 function slugHash(slug: string): number {
 	let hash = 0;
 	for (let i = 0; i < slug.length; i++) {
@@ -134,7 +136,7 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 				{ svg_illustration: ['id', 'label', 'category', { file: ['id'] }] } as unknown as string,
 			],
 			filter: { status: { _eq: 'published' } },
-			sort: ['-date_published'],
+			sort: [...BLOG_POST_SORT],
 			limit: -1,
 		}),
 	)) as unknown as DirectusBlogPostRow[];
@@ -163,7 +165,7 @@ export async function fetchBlogBodies({
 		readItems('blog_posts', {
 			fields: ['id', 'body'],
 			filter: { status: { _eq: 'published' } },
-			sort: ['-date_published'],
+			sort: [...BLOG_POST_SORT],
 			limit: -1,
 		}),
 	)) as unknown as DirectusBlogBodyRow[];

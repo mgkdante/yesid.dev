@@ -20,6 +20,7 @@ const validPerson = {
 	'@id': PERSON_ID,
 	name: 'Yesid O.',
 	jobTitle: 'Digital Infrastructure Consultant',
+	image: 'https://yesid.dev/images/about/headshot.webp',
 	url: 'https://yesid.dev',
 	email: 'contact@yesid.dev',
 	sameAs: ['https://github.com/mgkdante', 'https://www.linkedin.com/in/otaloray/'],
@@ -45,6 +46,12 @@ describe('PersonSchema', () => {
 
 	it('rejects a Person with a non-URL @id', () => {
 		expect(PersonSchema.safeParse({ ...validPerson, '@id': 'not-a-url' }).success).toBe(false);
+	});
+
+	it('requires an absolute portrait image URL', () => {
+		const { image: _image, ...missingImage } = validPerson;
+		expect(PersonSchema.safeParse(missingImage).success).toBe(false);
+		expect(PersonSchema.safeParse({ ...validPerson, image: '/images/about/headshot.webp' }).success).toBe(false);
 	});
 });
 

@@ -79,6 +79,15 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('about-headshot').getAttribute('class')).toContain('scale-[1.08]');
 		expect(screen.getByTestId('about-headshot').getAttribute('style')).toContain('scale: 1.08');
 		expect(screen.getByTestId('about-headshot').getAttribute('style')).toContain('height: 100%');
+		expect(screen.getByTestId('about-headshot').getAttribute('srcset')).toContain(
+			'/images/about/headshot.w240.webp 240w',
+		);
+		expect(screen.getByTestId('about-headshot').getAttribute('srcset')).toContain(
+			'/images/about/headshot.w800.webp 800w',
+		);
+		expect(screen.getByTestId('about-headshot').getAttribute('sizes')).toBe(
+			'(min-width: 768px) 96px, 80px',
+		);
 		expect(screen.getByTestId('about-identity-scroll')).toBeTruthy();
 	});
 

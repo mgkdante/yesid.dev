@@ -6,6 +6,7 @@ import { expect, test, type Page } from '@playwright/test';
 const ENDPOINT = 'https://plausible.io/api/event';
 const LOCAL_PRODUCTION_ORIGIN = 'http://yesid.dev:4173';
 const CONSENT_KEY = 'yesid:analytics-consent:v1';
+const HERO_INTRO_KEY = 'yesid:hero-intro-day';
 const CLIENT_CHUNKS_DIR = fileURLToPath(
 	new URL('../.svelte-kit/output/client/_app/immutable/chunks/', import.meta.url),
 );
@@ -60,6 +61,27 @@ async function enableWebdriverSends(page: Page): Promise<void> {
 	await page.addInitScript(() => {
 		(window as Window & { __plausible?: boolean }).__plausible = true;
 	});
+}
+
+async function completeHeroTodayBeforeLoad(page: Page): Promise<void> {
+	await page.addInitScript((key) => {
+		const now = new Date();
+		const month = String(now.getMonth() + 1).padStart(2, '0');
+		const day = String(now.getDate()).padStart(2, '0');
+		window.localStorage.setItem(key, `${now.getFullYear()}-${month}-${day}`);
+	}, HERO_INTRO_KEY);
+}
+
+async function scrollHomeIntroThrough(page: Page): Promise<void> {
+	for (let step = 0; step < 40; step++) {
+		const completed = await page.evaluate(() => {
+			if (document.querySelector('.pin-spacer') === null) return true;
+			window.scrollBy(0, window.innerHeight * 0.9);
+			return false;
+		});
+		if (completed) return;
+		await settleBrowser(page);
+	}
 }
 
 function pageviews(payloads: Payload[]): Payload[] {
@@ -131,6 +153,82 @@ async function expectNpmTracker(page: Page): Promise<void> {
 		)
 		.toBe('npm');
 }
+
+test('fresh homepage keeps consent absent while the GSAP intro owns the viewport', async ({
+	page,
+}) => {
+	await enableWebdriverSends(page);
+	await proxyProductionHostnameToPreview(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
+
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
+	await expect(page.getByTestId('analytics-consent')).toHaveCount(0);
+});
+
+test('same-day settled home shows consent, hides it for replay, and restores it after completion', async ({
+	page,
+}) => {
+	await enableWebdriverSends(page);
+	await completeHeroTodayBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
+
+	const hero = page.getByTestId('hero-banner');
+	await expect(hero).toHaveClass(/hero-intro-done/);
+	await expect(page.getByTestId('analytics-consent')).toBeVisible();
+
+	await page.getByTestId('hero-dot-replay').click();
+	await expect(page.getByTestId('analytics-consent')).toHaveCount(0);
+	await expect(hero).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
+	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
+
+	await scrollHomeIntroThrough(page);
+	await expect(hero).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+	await expect(page.getByTestId('analytics-consent')).toBeVisible();
+});
+
+test('reduced motion treats the static home hero as settled', async ({ page }) => {
+	await enableWebdriverSends(page);
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await proxyProductionHostnameToPreview(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
+
+	const station = page.getByTestId('analytics-consent');
+	await expect(station).toBeVisible();
+	expect(await station.evaluate((element) => getComputedStyle(element).animationName)).toBe('none');
+	await expect(page.locator('.pin-spacer')).toHaveCount(0);
+});
+
+test('analytics station fits a 360px viewport with 44px actions and no horizontal overflow', async ({
+	page,
+}) => {
+	await page.setViewportSize({ width: 360, height: 780 });
+	await enableWebdriverSends(page);
+	await proxyProductionHostnameToPreview(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
+
+	const station = page.getByTestId('analytics-consent');
+	await expect(station).toBeVisible();
+	const box = await station.boundingBox();
+	expect(box).not.toBeNull();
+	expect(box!.x).toBeGreaterThanOrEqual(12);
+	expect(box!.x + box!.width).toBeLessThanOrEqual(348);
+
+	for (const id of ['analytics-consent-decline', 'analytics-consent-accept']) {
+		const actionBox = await page.getByTestId(id).boundingBox();
+		expect(actionBox).not.toBeNull();
+		expect(actionBox!.height).toBeGreaterThanOrEqual(44);
+	}
+
+	expect(
+		await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+	).toBe(true);
+});
 
 test('production hostname without a saved choice renders consent and sends no events', async ({
 	page,

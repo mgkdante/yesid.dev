@@ -149,7 +149,7 @@ describe('imageMetadataFromBytes', () => {
 			legacyPath,
 			readFileSync(joinPath(staticRoot, legacyPath)),
 		);
-		expect(metadata).toEqual({ type: 'image/webp', width: 600, height: 400 });
+		expect(metadata).toEqual({ type: 'image/webp', width: 800, height: 800 });
 	});
 
 	it('trusts the file signature when extension and bytes disagree', () => {

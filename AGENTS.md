@@ -1,7 +1,7 @@
 ---
 # This file's frontmatter ships with `<FILL IN>` placeholders by design.
-# Real Notion UUIDs live in a gitignored `AGENTS.local.md` file.
-# Resolution: AGENTS.local.md > AGENTS.md > refuse (PreToolUse Rule 6 hook enforces).
+# Real Notion UUIDs live in a gitignored `AGENTS.override.md` or `AGENTS.local.md` file.
+# Resolution: AGENTS.override.md > AGENTS.local.md > AGENTS.md > refuse.
 
 notion:
   root_page_id: "<FILL IN: yesid.dev top page UUID>"
@@ -32,15 +32,15 @@ notion:
 
 ## Workflow
 
-workflow-overlord 3.x (installed plugin) orchestrates Claude Code + Codex sessions via Notion shared state. Anti-hallucination through chunked work (slice → tasks). User drives; AI reminds.
+workflow-overlord 4.x (installed plugin) orchestrates Claude Code + Codex sessions via Notion shared state. Approved slices hold outcomes, constraints, and evidence while the native agent runtime executes. User drives; AI reminds.
 
 ## Core principles — the 5 mechanical guarantees (100% enforced)
 
 1. **Sessions row exists at session start** — SessionStart hook
-2. **Sessions row gets transcript + summary at session end** — Stop/SessionEnd hook performs the final chunk sync, writes the full transcript artifact, and updates `Summary`. **`Ended` is not written on Stop** — sessions are resumable and Stop is treated as "quiet for now," not "final close."
+2. **Sessions row gets final transcript chunks + summary refresh on Stop** - the plugin finalizer flushes readable evidence and refreshes the Sessions index. **`Ended` is not written on Stop** because sessions are resumable.
 3. **No surgical Notion edits (Rule 2)** — PreToolUse hook
 4. **Refuse placeholder Notion config (Rule 6)** — PreToolUse hook
-5. **Cross-tool parity** — all five guarantees are at parity between Claude Code and Codex. SessionStart / UserPromptSubmit / Stop run via repo hook wrappers + workflow-overlord plugin manifest + per-project `.codex/config.toml` dispatchers. PreToolUse Rules 2 + 6 reached Codex parity in slice-19 via the `.codex/hooks/pretool-check-notion-edit.sh` + `.codex/hooks/pretool-check-notion-config.sh` wrappers (fail-open dispatchers that exec the installed plugin's hooks; registered through the `[[hooks.PreToolUse]]` config layer). The slice-18k "Claude-Code-only" gap note is historical.
+5. **Cross-tool parity** - Claude Code and Codex execute the same shell-neutral runtime from the installed plugin's `hooks/hooks.json` and `hooks/run-hook.ts`. The consumer repo contains no workflow-overlord hook, skill, or MCP-server mirrors.
 
 Everything else is instruction + AI nudge — user decides.
 
@@ -67,21 +67,21 @@ Two distinct paths — pick by **caller**, not by tool name.
 - **Policy:** try this path first for interactive work; if OAuth MCP is unavailable or failing, fall back to direct REST. No alternate MCP fallback exists.
 
 ### `notion_automation` (headless / hooks / CI)
-- **Binding:** direct Notion REST API (`https://api.notion.com/v1/...`) via `@notionhq/client` SDK or raw `fetch`
+- **Binding:** direct Notion REST API (`https://api.notion.com/v1/...`) via the plugin's bundled client or raw `fetch`
 - **Auth:** `NOTION_TOKEN` / `NOTION_INTEGRATION_TOKEN`
 - **Used by:** workflow-overlord plugin hooks, transcript sync, deterministic state writes, retries
-- **Helpers:** `plugin/scripts/notion-rest.ts` in the workflow-overlord plugin (`--mode api` = generic REST fallback, default SQL mode = Bun SQLite mirror), `session-start.ts`, `session-end.ts`, `transcript-sync-worker.ts`
+- **Helpers:** installed-plugin `scripts/notion-rest.ts` (`--mode api` = generic REST fallback, default SQL mode = Bun SQLite mirror), `session-start.ts`, `session-finalizer.ts`, and `session-worker.ts`
 
 ## Retrieval priority
 
 1. `notion-query-data-sources` via hosted Notion MCP — structured DB queries (primary)
 2. `notion-fetch` — full page body when query results are not enough
 3. `notion-search` — title-match only (NOT semantic); scope by data source when possible
-4. `notion-rest.ts --mode api` or `@notionhq/client` (provided by workflow-overlord plugin) — direct REST fallback when the OAuth MCP path is unavailable or failing
+4. `notion-rest.ts --mode api` or the plugin's bundled `vendor/notion-client.js` - direct REST fallback when the OAuth MCP path is unavailable or failing
 5. `notion-rest.ts` default SQL mode (provided by workflow-overlord plugin) — local SQL aggregation over REST-fetched rows when useful
 
-Transcript retrieval is hybrid:
-- `Sessions.Transcript` keeps the full-fidelity artifact
+Transcript retrieval uses two related surfaces:
+- the Sessions row keeps the summary and readable chunk index
 - `Transcript Chunks` keeps append-only Notion-native chunk pages for selective retrieval
 
 ## Slice Identity Law
@@ -91,16 +91,17 @@ Every slice has one canonical numeric identity, and every execution name is deri
 - Branch: `slice/<path>-<slug>`
 - Worktree dir: `slice-<path>-<slug>`
 
-The same `<path>` must survive across title, branch, and worktree. Active-slice lookups key off `Branch`, filter `Status != closed`, and prefer the newest matching row.
+The same `<path>` must survive across title, branch, and worktree when git isolation is used. Session-to-slice attachment is never inferred from git state; the operator manages it explicitly with slice-pick and slice-unpick.
 
 ## Session Lifecycle Law
 
 Session state is hook-owned, not manually maintained.
-1. SessionStart reads the current branch, finds the newest non-closed slice for that branch, and creates the Sessions row.
-2. During the session, transcript sync appends Notion-native `Transcript Chunks` pages related to the Sessions row and Slice when a slice relation exists.
-3. Stop / SessionEnd runs the final chunk sync, uploads the full transcript artifact to `Sessions.Transcript`, and writes `Summary`. It does **not** set `Ended` on Stop — sessions remain resumable, and Notion's `Last edited time` carries the "last touched" signal instead.
+1. SessionStart creates one Sessions row for the current session ID with no inferred slice attachment.
+2. A session can relate to zero, one, or many slices. The operator manages that relation explicitly.
+3. During the session, the installed plugin records readable transcript chunks and session evidence.
+4. Stop runs the final evidence flush and refreshes the Sessions summary. It does **not** set `Ended`; Notion's `Last edited time` carries the last-touched signal.
 
-If SessionStart never created the Sessions row, SessionEnd soft-skips instead of inventing state.
+Lifecycle failures soft-fail so observability cannot block the native agent runtime.
 
 ## AI nudge contract
 
@@ -108,15 +109,17 @@ The AI MUST nudge the user about available tools at every optional juncture. Sam
 
 > *Reminder: tools available — `superpowers:brainstorming`, `superpowers:writing-plans`, `superpowers:test-driven-development`, `superpowers:systematic-debugging`, `superpowers:verification-before-completion`, `superpowers:requesting-code-review`. Invoke any (or none) — your call.*
 
-Never recommend, never personalize, never auto-invoke. User decides.
+Never recommend or personalize the reminder. It is informational, never pauses execution, and never overrides a required skill sequence in the active workflow command.
 
 ## Slice Structure Law
 
-Every slice page body has exactly two canonical H2 sections, evolving across the lifecycle:
-- **`## Plan`** — starts as a one-paragraph spec at slice-open; evolves into a task checklist as the slice progresses. *Plan is the expectations.*
-- **`## Handoff`** — appended at slice-close. Files touched, what was actually done, deviations from Plan, test results, deferred issues. *Handoff is the reality.*
+Every slice has child pages titled exactly `Plan` and `Handoff`; `Research` is optional. The slice row body stays short and delegates to those children. Legacy rows with inline `## Plan` / `## Handoff` sections remain readable but are not the shape for new slices.
 
-No extra top-level workflow sections are canonical.
+The Plan is the canonical approved scope and evidence surface. It records Mission, Scope and non-goals, Authority and constraints, Acceptance criteria, and Verification evidence. The Handoff records delivered files, deviations, test results, and deferrals at close.
+
+## Slice Implementation Law
+
+`/workflow-overlord-slice-implement` is authority to finish the approved Plan scope. The native runtime owns decomposition, parallelism, worktrees, retries, and dependency order. It completes or reuses one front-loaded design-plan-build sequence for the scope, uses TDD for code changes, and pauses only at an explicit authority, credential, destructive-action, material-choice, or contradictory-requirements boundary.
 
 ## Zero-drift invariant
 

@@ -11,7 +11,7 @@ All workflow state lives in **Notion**, operated through the [workflow-overlord]
 - Interactive Notion work uses the hosted OAuth MCP at `https://mcp.notion.com/mcp`.
 - If that OAuth path is unavailable or failing, direct Notion REST is the fallback.
 - Hooks, session sync, and deterministic writes always use direct REST through the plugin.
-- Session retention is hybrid: one full transcript artifact on the Sessions row plus append-only `Transcript Chunks` pages for selective retrieval.
+- Session retention uses append-only `Transcript Chunks` plus a readable summary and chunk index on the Sessions row.
 
 ## Structure
 
@@ -19,12 +19,14 @@ All workflow state lives in **Notion**, operated through the [workflow-overlord]
 ├── apps/web/                       # SvelteKit site (public)
 ├── apps/cms/                       # Directus config + schema dumps + ops scripts
 ├── packages/                       # shared packages (shared, tokens)
-├── overlord-bridge/, scripts/, skills/  # workflow-overlord session tooling
+├── scripts/                        # repo-owned asset and operational utilities
 ├── .claude/, .codex/, .mcp.json    # consumer-side tool config only
 ├── AGENTS.md                       # workflow contract (tool-agnostic)
 ├── CLAUDE.md                       # Claude Code entry pointer
 └── DESIGN.md                       # generated from packages/tokens — do not hand-edit
 ```
+
+workflow-overlord hooks, skills, and automation live only in the installed plugin. The repo does not mirror plugin runtime code.
 
 Operational references live in Notion (Architecture → Dev vs Prod, Business → Brand) — there is no `docs/` tree in this repo.
 

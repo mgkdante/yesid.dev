@@ -1,12 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { CornerMarks } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 	import { siteLabels } from '$lib/content';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
 	import { DEFAULT_LOCALE, resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import type { Locale } from '$lib/types';
 
-	let { locale = DEFAULT_LOCALE }: { locale?: Locale } = $props();
+	let {
+		locale = DEFAULT_LOCALE,
+		canShow = true,
+	}: {
+		locale?: Locale;
+		canShow?: boolean;
+	} = $props();
 
 	const title = $derived(resolveLocale(siteLabels.ui.analyticsConsent.title, locale));
 	const description = $derived(
@@ -20,50 +28,105 @@
 	onMount(() => analyticsConsentStore.init());
 </script>
 
-{#if $analyticsConsentStore.ready && $analyticsConsentStore.available && $analyticsConsentStore.choice === 'unknown'}
+{#if canShow && $analyticsConsentStore.ready && $analyticsConsentStore.available && $analyticsConsentStore.choice === 'unknown'}
 	<section
 		data-testid="analytics-consent"
 		aria-labelledby="analytics-consent-title"
 		aria-describedby="analytics-consent-description"
-		class="fixed inset-x-4 bottom-4 z-[100] mx-auto max-w-3xl border border-[var(--border)] bg-[var(--background)] p-5 shadow-2xl sm:inset-x-6 sm:p-6"
+		class="analytics-station fixed inset-x-4 mx-auto max-w-4xl overflow-hidden sm:inset-x-6"
 	>
-		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-			<div class="max-w-2xl">
-				<h2 id="analytics-consent-title" class="font-heading text-lg font-bold text-[var(--foreground)]">
-					{title}
-				</h2>
+		<div class="station-rule" aria-hidden="true"></div>
+		<CornerMarks size="sm" opacity={0.35} />
+
+		<div class="relative grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+			<div class="min-w-0 max-w-3xl">
+				<div class="flex items-center gap-3">
+					<span class="station-dot" aria-hidden="true"></span>
+					<h2 id="analytics-consent-title" class="label-station leading-snug">
+						{title}
+					</h2>
+				</div>
 				<p
 					id="analytics-consent-description"
-					class="mt-2 text-small leading-relaxed text-[var(--secondary-foreground)]"
+					class="mt-3 text-small leading-relaxed text-[var(--secondary-foreground)]"
 				>
 					{description}
 				</p>
 				<a
 					data-testid="analytics-consent-privacy"
 					href={privacyHref}
-					class="mt-2 inline-block text-small text-[var(--secondary-foreground)] underline decoration-[var(--primary)] underline-offset-4 hover:text-primary"
+					class="mt-3 inline-block text-small text-[var(--secondary-foreground)] underline decoration-[var(--primary)] underline-offset-4 transition-colors hover:text-primary"
 				>
 					{privacyLabel}
 				</a>
 			</div>
-			<div class="flex shrink-0 flex-wrap gap-3">
-				<button
-					type="button"
+
+			<div class="grid w-full grid-cols-1 gap-3 sm:w-auto sm:grid-cols-2">
+				<Button
+					variant="outline"
+					size="cta-sm"
+					class="min-h-11 w-full sm:w-auto"
 					data-testid="analytics-consent-decline"
-					class="border border-[var(--border)] px-4 py-2 text-small font-semibold text-[var(--foreground)] transition-colors hover:border-[var(--primary)] hover:text-primary"
 					onclick={() => analyticsConsentStore.deny()}
 				>
 					{declineLabel}
-				</button>
-				<button
-					type="button"
+				</Button>
+				<Button
+					variant="default"
+					size="cta-sm"
+					class="min-h-11 w-full sm:w-auto"
 					data-testid="analytics-consent-accept"
-					class="bg-[var(--primary)] px-4 py-2 text-small font-semibold text-[var(--primary-foreground)] transition-opacity hover:opacity-90"
 					onclick={() => analyticsConsentStore.grant()}
 				>
 					{acceptLabel}
-				</button>
+				</Button>
 			</div>
 		</div>
 	</section>
 {/if}
+
+<style>
+	.analytics-station {
+		bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+		z-index: var(--z-sheet);
+		background: var(--surface-2);
+		border: 2px solid var(--border-brand);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
+		animation: analytics-station-in var(--duration-fast) var(--ease-out) both;
+	}
+
+	.station-rule {
+		position: absolute;
+		inset: 0 0 auto;
+		height: 3px;
+		background: var(--primary);
+	}
+
+	.station-dot {
+		width: 0.625rem;
+		height: 0.625rem;
+		flex: 0 0 auto;
+		border: 2px solid var(--primary);
+		border-radius: var(--radius-pill);
+		background: var(--reflective);
+		box-shadow: var(--shadow-glow-sm);
+	}
+
+	@keyframes analytics-station-in {
+		from {
+			opacity: 0;
+			transform: translateY(0.5rem);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.analytics-station {
+			animation: none;
+		}
+	}
+</style>

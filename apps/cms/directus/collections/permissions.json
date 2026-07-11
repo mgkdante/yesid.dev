@@ -9653,5 +9653,41 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "279eb7a2-279b-413d-ae0f-b324a57d84a8"
+  },
+  {
+    "collection": "tags",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "cf11ff38-0699-4091-8a45-3f647cfcb46d"
+  },
+  {
+    "collection": "projects_tags",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "4b1787ef-eb8d-43e7-8d9c-b382690408d0"
+  },
+  {
+    "collection": "blog_posts_tags",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "8917770a-57d3-40bd-a10e-cd344e5d0619"
   }
 ]
