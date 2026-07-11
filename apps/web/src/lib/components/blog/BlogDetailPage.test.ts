@@ -8,6 +8,7 @@ import type { BlogPageContent } from '@repo/shared';
 
 // Minimal BlogPost fixture, only required fields populated.
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
+	translationKey: 'test-post',
 	slug: 'test-post',
 	title: 'Test Post Title',
 	excerpt: 'A short excerpt for testing purposes.',
@@ -124,6 +125,37 @@ describe('BlogDetailPage', () => {
 			props: { post: makePost(), body: mockBody, headings: mockHeadings }
 		});
 		expect(getByTestId('blog-detail-header')).toBeTruthy();
+	});
+
+	it('links back to the listing in the post language', () => {
+		const french = render(BlogDetailPage, {
+			props: {
+				post: makePost({ lang: 'fr' }),
+				body: mockBody,
+				headings: mockHeadings,
+				blogPage: mockBlogPage,
+			},
+			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+		});
+		expect(french.getByRole('link', { name: 'back to Blog' })).toHaveAttribute(
+			'href',
+			'/fr/blog',
+		);
+		french.unmount();
+
+		const spanishPersonal = render(BlogDetailPage, {
+			props: {
+				post: makePost({ lang: 'es', category: 'personal' }),
+				body: mockBody,
+				headings: mockHeadings,
+				blogPage: mockBlogPage,
+			},
+			context: new Map([[Symbol.for('yesid.locale'), () => 'es']]),
+		});
+		expect(spanishPersonal.getByRole('link', { name: 'back to personal' })).toHaveAttribute(
+			'href',
+			'/es/blog/personal',
+		);
 	});
 
 	it('renders the sectionized blog content area', () => {

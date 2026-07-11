@@ -81,6 +81,28 @@ describe('Nav — mobile compaction (go2/w5)', () => {
 });
 
 describe('Nav — locale threading (slice-28.6)', () => {
+	it('threads exact translated blog alternates to the language toggle', () => {
+		render(Nav, {
+			props: {
+				pathname: '/blog/english-slug',
+				url: new URL('https://yesid.dev/blog/english-slug'),
+				locale: 'en',
+				localeAlternates: {
+					en: 'https://yesid.dev/blog/english-slug',
+					fr: 'https://yesid.dev/fr/blog/slug-francais',
+					es: 'https://yesid.dev/es/blog/slug-espanol',
+				},
+				headerLinks: [],
+				menuItems: [],
+			},
+		});
+
+		expect(screen.getByTestId('language-toggle')).toHaveAttribute(
+			'href',
+			'/fr/blog/slug-francais',
+		);
+	});
+
 	it('renders link labels via resolveLocale — fr prop yields fr labels', () => {
 		render(Nav, {
 			props: {

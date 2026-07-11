@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+const FIRST_ARTICLE = {
+  en: '/blog/the-two-hour-internet-slot',
+  fr: '/fr/blog/le-creneau-internet-de-deux-heures',
+  es: '/es/blog/el-turno-de-dos-horas-para-usar-internet',
+} as const;
+
 // i18n language toggle E2E — verifies click navigation, content language
 // changes, and state across route changes. Complement to unit tests which
 // mock the component props.
@@ -107,6 +113,22 @@ test.describe('Language toggle — click navigation + content change', () => {
     expect(href).toBe('/fr/blog');
   });
 
+  test('blog detail cycles through exact translated slugs and returns to English', async ({ page }) => {
+    await page.goto(FIRST_ARTICLE.en);
+    let toggle = page.getByTestId('language-toggle');
+    await expect(toggle).toHaveAttribute('href', FIRST_ARTICLE.fr);
+    await toggle.click();
+    await page.waitForURL(FIRST_ARTICLE.fr);
+
+    toggle = page.getByTestId('language-toggle');
+    await expect(toggle).toHaveAttribute('href', FIRST_ARTICLE.es);
+    await toggle.click();
+    await page.waitForURL(FIRST_ARTICLE.es);
+
+    toggle = page.getByTestId('language-toggle');
+    await expect(toggle).toHaveAttribute('href', FIRST_ARTICLE.en);
+  });
+
   test('blog page: EN /blog shows "Blog", FR /fr/blog shows "Blogue"', async ({ page }) => {
     // The blog listing heading (siteLabels.blogChrome.listing.mobileHeading,
     // { en: 'Blog', fr: 'Blogue' }) renders in <h1.listing-mobile-heading> with a
@@ -171,4 +193,3 @@ test.describe('Language toggle — click navigation + content change', () => {
     expect(ariaLabel?.toLowerCase()).toContain('español');
   });
 });
-

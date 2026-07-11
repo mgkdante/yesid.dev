@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-// i18n / bilingual routing + SEO coverage (slice-28.6 launch).
-// Verifies every published route renders 200 in BOTH EN (/) and FR (/fr/*),
+// i18n / trilingual routing + SEO coverage (slice-28.6 launch).
+// Verifies published routes across EN (/), FR (/fr/*), and ES (/es/*),
 // language toggle navigates correctly, content changes language, and 404s
 // reject invalid locales. No live CMS dependency — all content is committed
 // and static at build time (post-27.2 adapter).
@@ -281,19 +281,32 @@ test('content language: /fr/blog FR renders French intro', async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Blog posts are mono-language (no hreflang cluster)
+// Blog translations use different slugs but share one exact hreflang cluster
 // ---------------------------------------------------------------------------
 
-test('mono-language route: blog post suppresses hreflang cluster', async ({ page }) => {
-  // Blog posts have singleLocale=true per AM2.5 — no alternates.
-  // Pick any published blog slug (this is structural; content is in CMS).
-  // For now, test the absence of FR hreflang on /blog/* (if post is EN-only).
-  await page.goto('/blog');
-  // Blog listing page IS bilingual (hreflang cluster present).
-  const frLink = page.locator('link[rel="alternate"][hreflang="fr"]');
-  await expect(frLink).toHaveCount(1);
-  // (/blog itself has hreflang; individual posts are AM2.5 mono-language,
-  // tested via their own route when available)
+test('translated blog detail self-canonicalizes and emits exact alternate slugs', async ({ page }) => {
+  await page.goto('/fr/blog/le-creneau-internet-de-deux-heures');
+
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://yesid.dev/fr/blog/le-creneau-internet-de-deux-heures',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+    'href',
+    'https://yesid.dev/blog/the-two-hour-internet-slot',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="fr"]')).toHaveAttribute(
+    'href',
+    'https://yesid.dev/fr/blog/le-creneau-internet-de-deux-heures',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="es"]')).toHaveAttribute(
+    'href',
+    'https://yesid.dev/es/blog/el-turno-de-dos-horas-para-usar-internet',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+    'href',
+    'https://yesid.dev/blog/the-two-hour-internet-slot',
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -342,4 +355,3 @@ test('404 page respects FR context (/fr/nonexistent)', async ({ page }) => {
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
   expect(canonical).toContain('https://yesid.dev');
 });
-

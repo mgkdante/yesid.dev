@@ -29,9 +29,9 @@ describe('adapter.meta.forRoute', () => {
 
 	it('resolves a dynamic blog route by slug', async () => {
 		const posts = await adapter.blog.all();
-		if (posts.length === 0) return;
-		const first = posts[0];
-		const seo = await adapter.meta.forRoute('/blog/[slug]', 'en', { slug: first.slug });
+		const first = posts.find((post) => post.lang === 'en');
+		if (!first) return;
+		const seo = await adapter.meta.forRoute('/blog/[slug]', first.lang, { slug: first.slug });
 		expect(seo.title.en).toContain('yesid.');
 		expect(seo.canonical).toBe(`https://yesid.dev/blog/${first.slug}`);
 		expect(seo.ogType).toBe('article');
@@ -95,8 +95,9 @@ describe('adapter.meta.forRoute + jsonLd (Slice 15b)', () => {
 
 	it('returns jsonLd for a dynamic blog route', async () => {
 		const posts = await adapter.blog.all();
-		if (posts.length === 0) return;
-		const seo = await adapter.meta.forRoute('/blog/[slug]', 'en', { slug: posts[0].slug });
+		const post = posts.find((candidate) => candidate.lang === 'en');
+		if (!post) return;
+		const seo = await adapter.meta.forRoute('/blog/[slug]', post.lang, { slug: post.slug });
 		expect(seo.jsonLd).toBeDefined();
 		const types = (seo.jsonLd ?? []).map((n) => n['@type']);
 		expect(types).toContain('BlogPosting');
@@ -177,8 +178,9 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 
 	it('/blog/[slug] emits BlogPosting + BreadcrumbList', async () => {
 		const posts = await adapter.blog.all();
-		if (posts.length === 0) return;
-		const types = await typesFor('/blog/[slug]', { slug: posts[0].slug });
+		const post = posts.find((candidate) => candidate.lang === 'en');
+		if (!post) return;
+		const types = await typesFor('/blog/[slug]', { slug: post.slug });
 		expect(types).toEqual(['BlogPosting', 'BreadcrumbList']);
 	});
 

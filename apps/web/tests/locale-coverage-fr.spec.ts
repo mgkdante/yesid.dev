@@ -75,7 +75,7 @@ test.describe('French locale coverage', () => {
     await expect(search).toHaveAttribute('placeholder', 'Chercher des articles...');
   });
 
-  test('route /fr/blog language filter shows FR/EN distinction', async ({ page }) => {
+  test('route /fr/blog language filter contains only the active locale', async ({ page }) => {
     await page.goto('/fr/blog');
 
     // (networkidle removed: the very next assertion is a web-first toBeVisible()
@@ -94,14 +94,14 @@ test.describe('French locale coverage', () => {
     // the localized section label "Langue" plus per-language buttons.
     await expect(langFilter).toContainText('Langue');
 
-    // Should expose the per-language distinction as buttons. The language labels
-    // are localized via siteLabels.ui.languageNames, so on the FR page the
-    // English-language option renders its French name "Anglais" (en→{fr:'Anglais'}),
-    // not the raw "English" key. (Posts here are EN-only, so only the Anglais button
-    // surfaces — the component shows a language button whenever ≥1 language exists.)
+    // The server narrows the listing before deriving facets. The only language
+    // option on the French route is therefore French; persisted EN/ES filters
+    // cannot hide the active-locale posts after a locale switch.
     const buttons = langFilter.locator('button');
     expect(await buttons.count()).toBeGreaterThan(0);
-    await expect(langFilter.locator('button', { hasText: 'Anglais' })).toBeVisible();
+    await expect(langFilter.locator('button', { hasText: 'Français' })).toBeVisible();
+    await expect(langFilter.locator('button', { hasText: 'Anglais' })).toHaveCount(0);
+    await expect(langFilter.locator('button', { hasText: 'Espagnol' })).toHaveCount(0);
   });
 
   test('English route /contact is distinct from /fr/contact', async ({ page }) => {

@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 /**
- * Replace the three legacy blog posts with the six fixture rows.
+ * Legacy one-shot command: replace three retired posts with the six English
+ * source rows. Multilingual publication uses the separate translation flow.
  *
  * Dry-run is the default, but it reads the selected CMS so the printed plan is
  * an exact diff. Writes require --apply. Production additionally requires the
@@ -152,6 +153,7 @@ export interface ReplacementPlan {
 }
 
 const SCALAR_FIELDS = [
+	'translation_key',
 	'date_published',
 	'date_modified',
 	'sort',
@@ -256,7 +258,20 @@ function desiredTagIds(desired: readonly DesiredBlogPost[]): string[] {
 function assertFixtureContract(desired: readonly DesiredBlogPost[]): void {
 	if (desired.length !== 6) {
 		throw new Error(
-			`[replace-blog-posts] fixture must contain exactly 6 rows; got ${desired.length}`,
+			`[replace-blog-posts] legacy command accepts exactly six English rows; got ${desired.length}`,
+		);
+	}
+	if (desired.some((post) => post.lang !== 'en')) {
+		throw new Error(
+			'[replace-blog-posts] legacy command accepts exactly six English rows',
+		);
+	}
+	const translationKeyMismatch = desired.filter(
+		(post) => post.translation_key !== post.id,
+	);
+	if (translationKeyMismatch.length > 0) {
+		throw new Error(
+			`[replace-blog-posts] legacy English rows must use id as translation_key: ${translationKeyMismatch.map((post) => post.id).join(', ')}`,
 		);
 	}
 	const ids = desired.map((post) => post.id);
@@ -290,7 +305,9 @@ function assertFixtureContract(desired: readonly DesiredBlogPost[]): void {
 }
 
 export function loadReplacementFixture(): readonly DesiredBlogPost[] {
-	const desired = loadBlogPostsFixture().map(toBlogPostRow);
+	const desired = loadBlogPostsFixture()
+		.filter((post) => post.lang === 'en')
+		.map(toBlogPostRow);
 	assertFixtureContract(desired);
 	return desired;
 }
@@ -740,6 +757,7 @@ export function assertDesiredState(
 
 const BLOG_FIELDS = [
 	'id',
+	'translation_key',
 	'status',
 	'date_published',
 	'date_modified',
