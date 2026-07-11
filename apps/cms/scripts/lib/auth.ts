@@ -17,9 +17,17 @@
  *     bun run seed:services
  */
 
-export async function getAdminToken(directusUrl: string): Promise<string> {
+export interface AdminTokenOptions {
+	/** Set false for mutating system scripts that must never authenticate as Build Bot. */
+	allowBuildToken?: boolean;
+}
+
+export async function getAdminToken(
+	directusUrl: string,
+	options: AdminTokenOptions = {},
+): Promise<string> {
 	// DIRECTUS_BUILD_TOKEN: preferred for Vercel builds — read-only "Build Bot" token.
-	if (process.env.DIRECTUS_BUILD_TOKEN) {
+	if (options.allowBuildToken !== false && process.env.DIRECTUS_BUILD_TOKEN) {
 		return process.env.DIRECTUS_BUILD_TOKEN;
 	}
 	if (process.env.DIRECTUS_ADMIN_TOKEN) {
