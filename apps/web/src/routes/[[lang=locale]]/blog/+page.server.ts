@@ -4,9 +4,12 @@
 
 import { loadBlogCategory } from './blog-category-loader';
 import { localeEntries } from '$lib/server/prerender-entries';
+import { localeFromParams } from '$lib/utils/locale-routing';
 
 export const entries = localeEntries;
 
-export async function load({ locals }: { locals: App.Locals }) {
-	return loadBlogCategory('professional', { pageCache: locals.pageCache });
+export async function load({ locals, params }: { locals: App.Locals; params: Record<string, string> }) {
+	return loadBlogCategory('professional', localeFromParams(params), {
+		pageCache: locals.pageCache,
+	});
 }

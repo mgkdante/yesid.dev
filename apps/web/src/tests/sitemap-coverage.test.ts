@@ -112,17 +112,24 @@ describe('sitemap coverage gate', () => {
 		expect(missingInSitemap, `routes missing from sitemap`).toEqual([]);
 		expect(extraInSitemap, `routes in sitemap but missing from src/routes`).toEqual([]);
 
-		// slice-28.6: per-locale variants — every chrome path appears once per
-		// published locale; mono-language blog posts only at their body language.
-		const blogPaths = new Set((await adapter.blog.all()).map((p) => `/blog/${p.slug}`));
+		// Every same-path chrome route appears once per published locale. Blog
+		// translations own distinct slugs, so each row appears at its body locale
+		// and carries exact alternates rather than same-slug locale variants.
+		const posts = await adapter.blog.all();
+		const blogPaths = new Set(posts.map((p) => `/blog/${p.slug}`));
 		const rawActual = new Set(
 			entries.map((e) => e.match(/<loc>([^<]+)<\/loc>/)?.[1]).filter(Boolean) as string[],
 		);
 		for (const path of expected) {
-			if (blogPaths.has(path)) continue; // mono-language: body-language URL only
+			if (blogPaths.has(path)) continue;
 			for (const l of PUBLISHED_LOCALES) {
 				expect(rawActual, `missing ${l} variant of ${path}`).toContain(canonicalFor(path, l));
 			}
+		}
+		for (const post of posts) {
+			expect(rawActual, `missing ${post.lang} blog row ${post.slug}`).toContain(
+				canonicalFor(`/blog/${post.slug}`, post.lang),
+			);
 		}
 	});
 });

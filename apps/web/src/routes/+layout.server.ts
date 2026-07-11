@@ -30,7 +30,7 @@ import type { LayoutServerLoad } from './$types';
 
 // consolidation-deploy-honesty: the site is 100% build-time content, so every
 // page prerenders to static HTML at build. Each route exports explicit entries
-// (both locales + content slugs) via $lib/server/prerender-entries. Endpoint
+// (every published locale + content slugs) via $lib/server/prerender-entries. Endpoint
 // routes (+server.ts: og/, api/, sitemap.xml, robots.txt, /work, service
 // redirects) opt out individually — they stay on the lambda.
 export const prerender = true;
