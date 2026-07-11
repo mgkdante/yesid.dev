@@ -8,32 +8,28 @@
 import { createField, readFieldsByCollection, updateItem } from '@directus/sdk';
 import { getAdminToken } from './lib/auth';
 import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
+import { loadBlogPostsFixture } from './seed-blog-posts';
 
 const COLLECTION = 'blog_posts';
 
 const REAL_FIELDS = ['seo_title', 'seo_description', 'date_modified'] as const;
 type RealField = (typeof REAL_FIELDS)[number];
 
-const POSTS: Record<string, Record<RealField, string>> = {
-	'why-i-left-orm-for-raw-sql': {
-		seo_title: 'Raw SQL for PostgreSQL Control',
-		seo_description:
-			'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.',
-		date_modified: '2026-04-01',
-	},
-	'building-a-transit-pipeline': {
-		seo_title: 'Transit Data Pipeline with PostgreSQL and Python',
-		seo_description:
-			'A technical case study of a real-time transit data pipeline using GTFS feeds, PostgreSQL, Python, and dashboard-ready analytics for operations.',
-		date_modified: '2026-03-15',
-	},
-	'anime-data-viz-challenge': {
-		seo_title: 'Anime Data Visualization with SQL and Power BI',
-		seo_description:
-			'A data storytelling exercise using MyAnimeList data, SQL, and Power BI to compare studios, episode counts, genres, and long-term anime trends.',
-		date_modified: '2026-03-01',
-	},
-};
+const POSTS: Record<string, Record<RealField, string>> = Object.fromEntries(
+	loadBlogPostsFixture().map((post) => {
+		if (!post.seo_title || !post.seo_description || !post.date_modified) {
+			throw new Error(`[content-blog-seo] missing SEO fixture fields for ${post.id}`);
+		}
+		return [
+			post.id,
+			{
+				seo_title: post.seo_title,
+				seo_description: post.seo_description,
+				date_modified: post.date_modified,
+			},
+		];
+	}),
+);
 
 function groupField() {
 	return {
@@ -192,7 +188,7 @@ async function main(): Promise<void> {
 	const dryRun = !process.argv.includes('--apply');
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	const token = await getAdminToken(directusUrl);
+	const token = await getAdminToken(directusUrl, { allowBuildToken: false });
 	const log = await apply({ directusUrl, token, dryRun });
 	console.log(log.join('\n'));
 	console.log(`\n${dryRun ? 'DRY-RUN. Re-run with --apply.' : 'APPLIED.'}`);

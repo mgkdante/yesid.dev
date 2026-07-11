@@ -11,416 +11,757 @@
 import type { BlockEditorDoc } from '$lib/types';
 
 export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
-	'anime-data-viz-challenge': {
+	'50-to-0-an-oracle-always-free-vm': {
 		blocks: [
 			{
 				data: {
-					text: 'I watch a lot of anime. I also spend a lot of time in databases. So when I found a dataset of 10 years of MyAnimeList ratings, genres, and studios, I knew what I had to do.',
+					text: 'A worker in <a href="https://transit.yesid.dev">Transit</a> targets a 30-second start-to-start cadence as it asks the STM feeds for the latest trip and vehicle data. When Postgres ran on Neon and the worker ran on Railway, those two managed services cost me about $50 to $60 per month.',
 				},
-				id: 'm00000001',
-				type: 'paragraph',
-			},
-			{
-				data: { level: 2, text: 'The Dataset' },
-				id: 'm00000002',
-				type: 'header',
-			},
-			{
-				data: { text: 'The Kaggle dataset contains:' },
-				id: 'm00000003',
+				id: 'ch5-001',
 				type: 'paragraph',
 			},
 			{
 				data: {
-					items: [
-						{
-							content: '~17,000 anime titles',
-							items: [],
-						},
-						{
-							content: 'Ratings, member counts, and favorites',
-							items: [],
-						},
-						{
-							content: 'Genre tags and studio information',
-							items: [],
-						},
-						{
-							content: 'Airing dates and episode counts',
-							items: [],
-						},
-					],
-					style: 'unordered',
+					text: 'I moved the database and worker to an existing Oracle A1 Flex VM. As of July 2026, that VM costs me $0 under the A1 allowance attached to my PAYG account. The rest of Transit still uses infrastructure outside the VM, and Oracle\'s limits for new accounts may differ. This is a case study of my setup, not a recipe.',
 				},
-				id: 'm00000004',
-				type: 'nestedlist',
-			},
-			{
-				data: { level: 2, text: 'The Questions' },
-				id: 'm00000005',
-				type: 'header',
-			},
-			{
-				data: {
-					items: [
-						{
-							content: 'Which studios consistently produce the highest-rated anime?',
-							items: [],
-						},
-						{
-							content: 'Is there a "golden length" for anime series?',
-							items: [],
-						},
-						{
-							content: 'How have genre trends shifted over the decade?',
-							items: [],
-						},
-					],
-					style: 'ordered',
-				},
-				id: 'm00000006',
-				type: 'nestedlist',
-			},
-			{
-				data: { level: 2, text: 'Surprising Findings' },
-				id: 'm00000007',
-				type: 'header',
-			},
-			{
-				data: {
-					level: 3,
-					text: 'Studio quality is remarkably consistent',
-				},
-				id: 'm00000008',
-				type: 'header',
-			},
-			{
-				data: {
-					text: 'Madhouse, Bones, and Wit Studio maintain average ratings above 7.5 across their entire catalogs. Studio Deen... does not. The standard deviation tells the real story: some studios are high-variance bets.',
-				},
-				id: 'm00000009',
+				id: 'ch5-002',
 				type: 'paragraph',
 			},
 			{
-				data: { level: 3, text: '12-13 episodes is the sweet spot' },
-				id: 'm0000000a',
+				data: { level: 2, text: 'The move' },
+				id: 'ch5-003',
 				type: 'header',
 			},
 			{
 				data: {
-					text: 'Single-cour anime (12-13 episodes) have the highest average rating. Two-cour shows (24-26) are close behind. Anything over 100 episodes drops significantly, length fatigue is real.',
+					text: 'My VM is in Montréal. It has 4 OCPUs, about 24 GB of RAM, and a 200 GB-class disk. Five services run there: Postgres with PostGIS, the realtime worker, a separate database pruner, a health API, and Caddy. The database and worker moved off Neon and Railway; the external parts of Transit did not move onto this box.',
 				},
-				id: 'm0000000b',
-				type: 'paragraph',
-			},
-			{
-				data: { level: 3, text: 'Isekai exploded in 2016' },
-				id: 'm0000000c',
-				type: 'header',
-			},
-			{
-				data: {
-					text: 'Before 2016, isekai (transported to another world) was a niche genre. After 2016, it accounts for 15% of all new anime. The data doesn\'t lie, we\'re living in the isekai era.',
-				},
-				id: 'm0000000d',
-				type: 'paragraph',
-			},
-			{
-				data: { level: 2, text: 'The Technical Stack' },
-				id: 'm0000000e',
-				type: 'header',
-			},
-			{
-				data: {
-					items: [
-						{
-							content: '<b>PostgreSQL</b> for data storage and analysis (CTEs, window functions, pivot queries)',
-							items: [],
-						},
-						{
-							content: '<b>Power BI</b> for visualization',
-							items: [],
-						},
-						{
-							content: '<b>Python</b> for data cleaning and import',
-							items: [],
-						},
-					],
-					style: 'unordered',
-				},
-				id: 'm0000000f',
-				type: 'nestedlist',
-			},
-			{
-				data: { level: 2, text: 'What I Learned About Data Storytelling' },
-				id: 'm0000000g',
-				type: 'header',
-			},
-			{
-				data: {
-					text: 'Numbers without narrative are just noise. The anime dataset taught me that the best visualizations answer a question the viewer didn\'t know they had. "Which studio should I trust?" is more compelling than "Average rating by studio."',
-				},
-				id: 'm0000000h',
+				id: 'ch5-004',
 				type: 'paragraph',
 			},
 			{
 				data: {
-					text: 'Data viz is not about showing data. It\'s about showing insight.',
+					text: 'Low recurring cost matters because Transit is a long-lived public portfolio and civic-data project. A smaller bill makes it easier for me to keep operating it, but I did not remove cost from the system. I exchanged managed-service spend for a tighter machine boundary and more work of my own.',
 				},
-				id: 'm0000000i',
+				id: 'ch5-005',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'What 200 GB forced me to decide' },
+				id: 'ch5-006',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'At a historical peak, one realtime table held roughly half a billion rows and the Postgres volume reached about 139 GB. Those numbers are old scale receipts, not today\'s database size. On a 200 GB-class disk, keeping detail indefinitely was not an option.',
+				},
+				id: 'ch5-007',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The raw archive already existed. The cap forced me to make the retention budget explicit. As verified in July 2026, the live relational Silver layer keeps one day. Raw realtime GTFS-RT snapshots stay off-box in R2 for 90 days. Detailed Gold facts keep 14 days, while smaller rollups keep 730 days.',
+				},
+				id: 'ch5-008',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'A separate database pruner handles Silver and Gold cleanup outside the capture loop. It does not prune the R2 archive. For a selected archived window, I have tested rebuilding realtime Silver and its derived Gold delay facts. That proves one recovery path, not a universal rebuild.',
+				},
+				id: 'ch5-009',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Static and historic snapshots use content hashes to skip unchanged files, while the live tier publishes every cycle. Together, the storage roles are explicit: live relational data stays query-ready, raw realtime data stays replayable off-box, and smaller rollups keep the long view.',
+				},
+				id: 'ch5-010',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: '$0 is not zero work' },
+				id: 'ch5-011',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Leaving managed services transferred responsibility to me. I own the backups, restore testing, monitoring, patching, capacity decisions, and incident response. The off-box logical backup intentionally excludes the largest replayable realtime Silver table, so recovery combines the backup with raw realtime replay. I have also run a restore drill against a separate database environment instead of treating the existence of a backup file as proof.',
+				},
+				id: 'ch5-012',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is still one VM. If its host fails, the database and always-on pipeline are down while I restore or move the workload. The off-box site and existing snapshots can remain available, but their live data stops refreshing. There is no automatic failover.',
+				},
+				id: 'ch5-013',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The backup and replay paths reduce data-loss risk without creating high availability. That is the actual trade: lower vendor spend transferred more operational ownership to me.',
+				},
+				id: 'ch5-014',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Rented land' },
+				id: 'ch5-015',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Oracle controls the allowance and can change its terms. Anyone making a similar decision needs to check the current documentation instead of copying my July 2026 configuration.',
+				},
+				id: 'ch5-016',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'I reduced the switching cost; I did not eliminate it. The VM services are containerized, database access is configuration-driven, and the raw realtime data and logical backups live off the VM. I have not yet tested a full provider migration. If Oracle changes the deal, moving will still take work, but the recovery inputs are not trapped on the host.',
+				},
+				id: 'ch5-017',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The same question shaped my website: what must stay live, and what can move out of the request path? Its content lives in a CMS that the live site never calls.',
+				},
+				id: 'ch5-018',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is chapter 5 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Previous: <a href="/blog/ai-accelerated-human-owned-my-actual-workflow">AI-accelerated, human-owned: my actual workflow</a> · Next: <a href="/blog/does-your-website-need-instant-publishing">Does your website need instant publishing?</a>.',
+				},
+				id: 'ch5-footer',
 				type: 'paragraph',
 			},
 		],
-		time: 1777235049353,
+		time: 1783742400004,
 		version: '2.31.2',
 	},
-	'building-a-transit-pipeline': {
+	'ai-accelerated-human-owned-my-actual-workflow': {
 		blocks: [
 			{
-				data: {
-					text: 'When a Quebec transit operator needed real-time visibility into their operations, they had data, lots of it. GTFS-RT feeds streaming vehicle positions, trip updates, and service alerts every 15 seconds. What they didn\'t have was a way to turn that firehose into decisions.',
-				},
-				id: 'm00000001',
-				type: 'paragraph',
-			},
-			{
-				data: { level: 2, text: 'The Architecture' },
-				id: 'm00000002',
-				type: 'header',
-			},
-			{
-				data: { text: 'The pipeline follows an ELT pattern:' },
-				id: 'm00000003',
-				type: 'paragraph',
-			},
-			{
-				data: {
-					items: [
-						{
-							content: '<b>Extract:</b> Python scripts poll GTFS-RT protobuf feeds every 15 seconds',
-							items: [],
-						},
-						{
-							content: '<b>Load:</b> Raw data lands in a PostgreSQL staging schema',
-							items: [],
-						},
-						{
-							content: '<b>Transform:</b> dbt models clean, deduplicate, and aggregate into analytics-ready tables',
-							items: [],
-						},
-					],
-					style: 'ordered',
-				},
-				id: 'm00000004',
-				type: 'nestedlist',
-			},
-			{
-				data: { level: 2, text: 'Key Decisions' },
-				id: 'm00000005',
-				type: 'header',
-			},
-			{
-				data: { level: 3, text: 'Why PostgreSQL over a data warehouse?' },
-				id: 'm00000006',
+				data: { level: 2, text: 'The catch' },
+				id: 'ch4-001',
 				type: 'header',
 			},
 			{
 				data: {
-					text: 'The data volume (&lt; 50GB/month) didn\'t justify Snowflake or BigQuery costs. PostgreSQL with proper indexing handles the analytical queries under 2 seconds. Sometimes the boring choice is the right choice.',
+					text: 'Early in the work on <a href="https://yesid.dev">yesid.dev</a>, I chose a clear CMS boundary: repeated shared interface content was supposed to come from the CMS instead of staying in frontend files. Claude produced the implementation, and I checked the files against that boundary. I found shared copy still hardcoded in the frontend. Hardcoded text and CMS-backed text can produce the same pixels. A browser check proves that the page renders, not which system owns the content. The file check showed that the implementation did not yet match the content model I had chosen.',
 				},
-				id: 'm00000007',
+				id: 'ch4-002',
 				type: 'paragraph',
 			},
 			{
-				data: { level: 3, text: 'Why ELT over ETL?' },
-				id: 'm00000008',
+				data: { level: 2, text: 'The division of labor' },
+				id: 'ch4-003',
 				type: 'header',
 			},
 			{
 				data: {
-					text: 'Loading raw data first means we never lose fidelity. When the PM asked "can we also track schedule adherence?" three months in, the raw data was already there. We just added a dbt model.',
+					text: 'Claude was my primary implementation tool for <a href="https://yesid.dev">yesid.dev</a> and <a href="https://transit.yesid.dev">transit.yesid.dev</a>. Codex mostly reviewed the work and sometimes stepped in as a backup implementer. I oversaw both projects from A to Z and made the architecture decisions. I kept the project context, decided how the parts should fit, gave direction, inspected results, found problems, and moved the work forward.',
 				},
-				id: 'm00000009',
+				id: 'ch4-004',
 				type: 'paragraph',
 			},
 			{
-				data: { level: 3, text: 'Why dbt?' },
-				id: 'm0000000a',
+				data: {
+					text: 'The work became more managerial. Instead of typing each implementation, I was directing the projects, keeping the architecture in view, and checking what came back.',
+				},
+				id: 'ch4-005',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'The controls today' },
+				id: 'ch4-006',
 				type: 'header',
 			},
 			{
 				data: {
-					text: 'Version-controlled transformations. Every business rule is a SQL file with tests. When the on-time definition changed from "within 5 minutes" to "within 3 minutes," it was a one-line diff.',
+					text: 'The <a href="https://yesid.dev">yesid.dev</a> repository also has mechanical checks today for generated content and Svelte warnings. The pre-commit hook and PR CI compare CMS-generated modules with their recorded manifest. PR CI runs this check for pull requests targeting <code>main</code> or <code>develop</code>. The comparison catches ordinary drift between the modules and manifest, but it checks consistency, not whether the CMS produced the files. The local hook can be skipped, and a coordinated module-plus-manifest edit can still agree.',
 				},
-				id: 'm0000000b',
+				id: 'ch4-007',
 				type: 'paragraph',
 			},
 			{
-				data: { level: 2, text: 'The Dashboard' },
-				id: 'm0000000c',
+				data: {
+					text: 'The web check uses a configurable warning lock specifically for Svelte. It fails when reported warnings exceed that lock. These checks cover repeatable repository conditions. They do not decide whether the CMS architecture is right or whether a piece of content belongs in the frontend. That remains a project and architecture decision.',
+				},
+				id: 'ch4-008',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'How this article was made' },
+				id: 'ch4-009',
 				type: 'header',
 			},
 			{
 				data: {
-					text: 'Power BI connects directly to the analytics schema. KPIs include:',
+					text: 'My process starts with a conversation and my rambling. AI organizes the material into a skeleton and supplies wording in blocks. An article carries my name only after I check and correct the structure, claims, and wording, use those corrections in another AI draft, read every block from A to Z, and decide what stays.',
 				},
-				id: 'm0000000d',
+				id: 'ch4-010',
 				type: 'paragraph',
 			},
 			{
-				data: {
-					items: [
-						{
-							content: 'On-time performance by route and time period',
-							items: [],
-						},
-						{
-							content: 'Fleet utilization rates',
-							items: [],
-						},
-						{
-							content: 'Service alert response times',
-							items: [],
-						},
-					],
-					style: 'unordered',
-				},
-				id: 'm0000000e',
-				type: 'nestedlist',
-			},
-			{
-				data: {
-					text: 'The operator went from weekly Excel reports to real-time dashboards in 6 weeks.',
-				},
-				id: 'm0000000f',
-				type: 'paragraph',
-			},
-			{
-				data: { level: 2, text: 'What I\'d Do Differently' },
-				id: 'm0000000g',
+				data: { level: 2, text: 'The client test' },
+				id: 'ch4-011',
 				type: 'header',
 			},
 			{
 				data: {
-					items: [
-						{
-							content: 'Use Apache Airflow from day one instead of cron. The monitoring alone is worth it.',
-							items: [],
-						},
-						{
-							content: 'Add data quality checks earlier in the pipeline. Bad upstream data cascaded into confusing dashboard numbers for two days before we caught it.',
-							items: [],
-						},
-					],
-					style: 'unordered',
+					text: 'If a client wants to know whether I understand what I publish, quiz me about anything on this site.',
 				},
-				id: 'm0000000h',
-				type: 'nestedlist',
+				id: 'ch4-012',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'AI is one tool among many. It is not the end result. The results are <a href="https://yesid.dev">yesid.dev</a>, <a href="https://transit.yesid.dev">transit.yesid.dev</a>, and the systems that make their content and services work.',
+				},
+				id: 'ch4-013',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'After I deployed Transit, I also had to keep it running and pay the monthly infrastructure bill.',
+				},
+				id: 'ch4-014',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is chapter 4 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Previous: <a href="/blog/thinking-in-matrices">Thinking in matrices</a> · Next: <a href="/blog/50-to-0-an-oracle-always-free-vm">$50 to $0: an Oracle Always Free VM</a>.',
+				},
+				id: 'ch4-footer',
+				type: 'paragraph',
 			},
 		],
-		time: 1777235049358,
+		time: 1783742400003,
 		version: '2.31.2',
 	},
-	'why-i-left-orm-for-raw-sql': {
+	'does-your-website-need-instant-publishing': {
 		blocks: [
 			{
 				data: {
-					text: 'For years, I relied on ORMs, SQLAlchemy, Django ORM, Prisma. They promised productivity. They delivered abstraction. But somewhere along the way, I stopped understanding what my database was actually doing.',
+					text: 'Before choosing how a website publishes, ask one practical question: does an update need to be public in seconds, or can it take a few minutes? The answer changes the architecture.',
 				},
-				id: 'm00000001',
+				id: 'ch6-001',
 				type: 'paragraph',
 			},
 			{
-				data: { level: 2, text: 'The Breaking Point' },
-				id: 'm00000002',
+				data: {
+					text: 'A newsroom may need a correction visible immediately. A store may need stock and prices to be authoritative on every request. A services site, portfolio, or relatively stable business site may accept a short delay when a build-time separation between editing and serving fits its freshness and workflow needs. The right choice starts with freshness, not with a favourite tool.',
+				},
+				id: 'ch6-002',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'The editor and the public site' },
+				id: 'ch6-003',
 				type: 'header',
 			},
 			{
 				data: {
-					text: 'It happened on a Tuesday. A query that should have taken 50ms was taking 12 seconds. The ORM had generated a nested subquery with 4 JOINs when a simple CTE would have done the job. I spent 3 hours debugging the ORM\'s query builder before giving up and writing the SQL myself.',
+					text: 'The editor and the public site have different jobs. The editor gives the owner one place to edit content. The public site delivers the pages that visitors read.',
 				},
-				id: 'm00000003',
+				id: 'ch6-004',
 				type: 'paragraph',
 			},
 			{
-				data: { text: 'The raw SQL took 47ms.' },
-				id: 'm00000004',
+				data: {
+					text: 'On <a href="https://yesid.dev">yesid.dev</a>, the current application reads generated content modules for public pages instead of asking the CMS for content during each sampled visit. In fresh production traces on July 10, 2026, the home page, Services, Blog, one published article, and the <a href="https://yesid.dev/projects/yesid-dev">yesid.dev</a> project page all returned 200. Every observed request stayed on <a href="https://yesid.dev">yesid.dev</a>, with no request to Directus or a <code>cms.*</code> host. That is evidence from five traces, not a claim about every route or every future visit.',
+				},
+				id: 'ch6-005',
 				type: 'paragraph',
 			},
 			{
-				data: { level: 2, text: 'What I Learned' },
-				id: 'm00000005',
+				data: {
+					text: 'This smaller CMS dependency surface has practical value. Already-published pages are designed to remain available if the editor is unavailable because those pages do not need a fresh CMS response for each reader. That expectation follows from the architecture; it has not been proven by an independent outage drill. It also does not mean the whole website cannot fail. Other hosting, code, network, and asset dependencies still exist.',
+				},
+				id: 'ch6-006',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'For the owner, there is still one editor. The separation applies to how published content is built and served.',
+				},
+				id: 'ch6-007',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'What happens after Publish' },
+				id: 'ch6-008',
 				type: 'header',
 			},
 			{
 				data: {
-					items: [
-						{
-							content: '<b>You need to know your database.</b> ORMs hide the database behind an abstraction. That\'s fine until the abstraction leaks, and it always leaks.',
-							items: [],
-						},
-						{
-							content: '<b>SQL is already a DSL.</b> We don\'t need another language on top of a language designed for exactly this purpose.',
-							items: [],
-						},
-						{
-							content: '<b>Performance tuning requires SQL literacy.</b> You can\'t optimize what you can\'t read. EXPLAIN ANALYZE doesn\'t speak ORM.',
-							items: [],
-						},
-						{
-							content: '<b>Migrations are where ORMs shine.</b> I still use migration tools. But the queries themselves? Raw SQL, every time.',
-							items: [],
-						},
-					],
-					style: 'ordered',
+					text: 'Here is the one technical aside: the production path is Directus -&gt; build export -&gt; generated modules -&gt; SvelteKit/Vercel. The CMS supplies published content to a build, the build prepares the public files, and only a completed deployment replaces the previous version.',
 				},
-				id: 'm00000006',
-				type: 'nestedlist',
+				id: 'ch6-009',
+				type: 'paragraph',
 			},
 			{
-				data: { level: 2, text: 'My Stack Now' },
-				id: 'm00000007',
+				data: {
+					text: 'That production refresh is now enabled. On July 11, 2026, a production build logged <code>mode=live</code>, read <code>https://cms.yesid.dev</code> with a fail-closed policy, exported five published posts and five bodies, and emitted all 22 generated content modules.',
+				},
+				id: 'ch6-010',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'The delay is part of the design' },
+				id: 'ch6-011',
 				type: 'header',
 			},
 			{
 				data: {
-					items: [
-						{
-							content: '<b>PostgreSQL</b> for everything stateful',
-							items: [],
-						},
-						{
-							content: '<b>Raw SQL</b> with parameterized queries',
-							items: [],
-						},
-						{
-							content: '<b>dbt</b> for transformations',
-							items: [],
-						},
-						{
-							content: '<b>pg_stat_statements</b> for monitoring',
-							items: [],
-						},
-					],
-					style: 'unordered',
+					text: 'In the live-export path, refreshed content does not become public before a new deployment is ready. For the July 11 receipt, the production build started at 06:17:57.482 UTC and deployment completed at 06:19:26.603 UTC: 89.121 seconds from build start to completed deployment.',
 				},
-				id: 'm00000008',
-				type: 'nestedlist',
-			},
-			{
-				data: {
-					text: 'The code is longer. The control is absolute. The performance is predictable.',
-				},
-				id: 'm00000009',
+				id: 'ch6-012',
 				type: 'paragraph',
 			},
 			{
-				data: { text: 'I\'m not going back.' },
-				id: 'm0000000a',
+				data: {
+					text: 'That is one observation, not an SLA or a promised normal range. It does prove this specific CMS change reached the public site: after completion, all five intended new article URLs returned 200 with self-canonicals and appeared in the sitemap; the three retired article URLs returned 404 and disappeared from the sitemap. This article was deliberately still a draft during that receipt, also returned 404, and was absent from the sitemap. An earlier candidate build rejected a link to this draft page and was not promoted, so the previous live deployment stayed in place until the corrected build completed.',
+				},
+				id: 'ch6-013',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Who should choose something else' },
+				id: 'ch6-014',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'This architecture is a poor fit when updates must be public in seconds. That includes newsroom-speed publishing, inventory or pricing that must be authoritative at request time, personalized applications, live dashboards, and any workflow that cannot tolerate a build before content becomes public.',
+				},
+				id: 'ch6-015',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'It can fit services sites, portfolios, documentation, and other relatively stable pages where a few minutes is acceptable. Even then, fit depends on preview needs, editorial approvals, integrations, and how much operational work the owner or developer is prepared to carry. Static delivery is not a universal recommendation.',
+				},
+				id: 'ch6-016',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'If that trade fits your site, see how the <a href="https://yesid.dev/services/web-development">Websites &amp; E-commerce service</a> approaches web projects.',
+				},
+				id: 'ch6-017',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is chapter 6 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Previous: <a href="/blog/50-to-0-an-oracle-always-free-vm">$50 to $0: an Oracle Always Free VM</a>.',
+				},
+				id: 'ch6-footer',
 				type: 'paragraph',
 			},
 		],
-		time: 1777235049365,
+		time: 1783742400005,
+		version: '2.31.2',
+	},
+	'how-i-learn-orbiting-a-system-until-it-clicks': {
+		blocks: [
+			{
+				data: {
+					text: 'I was studying for an accounting exam, two years into my diploma, when I asked my roommate to explain why assets equal liabilities plus equity.',
+				},
+				id: 'ch2-001',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Accounting had been hard from the start. After a rough period with math in high school, I had little knowledge of inventories or handling money, and the abstractions were hard to understand. I had been studying the subject, but I still could not see the logic holding its parts together.',
+				},
+				id: 'ch2-002',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'My roommate went over the equation with me. As he explained it, I began to see that a change in one part had a related consequence elsewhere. I remember it vividly. A whole system clicked. It felt like I had been drawing a line, and at some point the line met its tail.',
+				},
+				id: 'ch2-003',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'The system underneath the rules' },
+				id: 'ch2-004',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'The breakthrough was not finally memorizing which direction a debit or credit goes. Some of those details were uncertain even when I retold the story. What stayed clear was the structure that had appeared underneath them.',
+				},
+				id: 'ch2-005',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Assets equal liabilities plus equity. Those were no longer three terms sitting beside an equals sign as separate facts. They belonged to one model. The events recorded in accounting did not produce isolated instructions. They had paired consequences that needed to remain coherent within the system.',
+				},
+				id: 'ch2-006',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'That was what I had been missing. Before the conversation, accounting felt like ad hoc logic. I could receive one rule and then another without understanding why they belonged together. Once I saw the interdependence, the rules had somewhere to live. I could understand them as parts of one structure instead of carrying each one as a separate fact.',
+				},
+				id: 'ch2-007',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The equation can hold for a company that is unhealthy or unprofitable, so it is not a health test. What mattered to me was the coherence of the record: a transaction could affect accounts in different ways, but its consequences still belonged to the same connected system. That relationship, rather than any single direction, is what stayed with me.',
+				},
+				id: 'ch2-008',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Looking back, this is the distinction I was reaching for: a rule can tell me what to do in one case, while a system lets me see why that rule belongs with other rules.',
+				},
+				id: 'ch2-009',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'What the two years were doing' },
+				id: 'ch2-010',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'It is tempting to make the conversation sound magical, but that would erase the two years before it. The explanation came after two years of exposure and connected more than one fact. The context was there before I could see its shape. The conversation made the structure visible.',
+				},
+				id: 'ch2-011',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'By orbiting, I mean staying in contact with a system long enough for its structure to become visible. In this memory, contact accumulated before understanding did. That is how I make sense of the delay now, not a method I knew I was following at the time.',
+				},
+				id: 'ch2-012',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Orbiting is not passive waiting. The contact matters, and confusion by itself is not the achievement. In accounting, I had stayed engaged with a subject that remained abstract to me. When the equation finally made the relationships visible, the earlier exposure gave those relationships context.',
+				},
+				id: 'ch2-013',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The conversation did not replace the two years. It changed how I could organize what I had encountered during them. The material was familiar, but its shape was new to me. That is what the orbit image names in this memory: a period of contact before I could see the whole. It leaves room for a later click without pretending that time alone guarantees one.',
+				},
+				id: 'ch2-014',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Some things do not click' },
+				id: 'ch2-015',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'French and English did not arrive through one breakthrough. I learned them through immersion and progression. I cannot point to one moment when either language made sense, or to a date when the learning became complete.',
+				},
+				id: 'ch2-016',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'They crept up on me. At some point I realized that I was fluent in both languages, and eventually that I could be eloquent in them, but I do not remember when that became true. The change was too gradual for me to separate it from the immersion that produced it.',
+				},
+				id: 'ch2-017',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'That difference keeps the accounting memory in proportion. Accounting gave me a click I can remember vividly. French and English gave me a progression that I can recognize only by looking back. The language experience was not an incomplete version of the accounting experience. It was simply a different way that learning happened in my life.',
+				},
+				id: 'ch2-018',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The accounting memory is one true description, not a universal formula. Some knowledge becomes visible in a particular moment. Some ability grows so gradually that I recognize the result only afterward.',
+				},
+				id: 'ch2-019',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'What I am orbiting now' },
+				id: 'ch2-020',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Right now, I am orbiting the mathematics underneath AI. My current focus is not simply working with AI, but understanding what sits behind tokens. I am learning about tokens, neural networks, predictions, and the roles of CPUs and GPUs. I can name some of the parts, but I cannot yet explain the complete chain from A to Z.',
+				},
+				id: 'ch2-021',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The system has not clicked yet. I am still circling the logic behind these topics and trying to understand what connects one part to another. I hope I will eventually internalize the process as one whole and explain it clearly from beginning to end, in my own words. For now, I am making sense of the questions one by one.',
+				},
+				id: 'ch2-022',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'When I think back to the accounting conversation, I still think of the line meeting its tail. Recognizing one system changed how I noticed relationships elsewhere, and that shift toward seeing connected dimensions is where the matrix-like thinking I want to examine next begins.',
+				},
+				id: 'ch2-023',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is chapter 2 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Previous: <a href="/blog/the-two-hour-internet-slot">The two-hour internet slot</a> · Next: <a href="/blog/thinking-in-matrices">Thinking in matrices</a>.',
+				},
+				id: 'ch2-footer',
+				type: 'paragraph',
+			},
+		],
+		time: 1783742400001,
+		version: '2.31.2',
+	},
+	'the-two-hour-internet-slot': {
+		blocks: [
+			{
+				data: {
+					text: 'At eight on Saturday morning, my turn on the family computer began. We were six at home, two parents and four kids, sharing one machine. The schedule was there so everyone could get a turn. On weekdays, my time was from four to five. On weekends, I had the computer from eight to ten. I woke up early, plugged in the router, and used those two hours to play games or explore browsers and software.',
+				},
+				id: 'ch1-001',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Around 2001 or 2002, while we were still in Colombia, my parents bought our first home computer. It was a white machine running Windows 98. My older brothers played Age of Empires, and I played too. My mother kept buying learning CDs for us, especially English material. We did not learn much English from them, but we also had Encarta, where I explored castles and history. Looking back, I was not following a career plan. This was simply how I spent time on the machine we had. Around 2005 or 2006, I started dreaming about having a computer of my own.',
+				},
+				id: 'ch1-002',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'We moved to Sherbrooke in 2007 and got home internet for the first time. Before that, I knew the internet through cafés. At home, I became the person who installed new software and navigated browsers on the family computer. Customizing profile pages also became my first accidental contact with HTML and CSS. The router slot belonged to that new period: internet was finally inside the house, but access to the one screen still had to be shared.',
+				},
+				id: 'ch1-003',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'In 2009, when I was around twelve, I used Ubuntu 9.04. I still have the orange CD. Ubuntu was my first real exposure to the command line. I became comfortable with <code>sudo</code>, installed software and graphics drivers, and created directories from the terminal. For the first time, I was doing those tasks by typing commands.',
+				},
+				id: 'ch1-004',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'The first website' },
+				id: 'ch1-005',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'That same year, I built my first website with PaginaWebGratis, a free site builder. I called it Mangaka Latino. It was an anime fan site built with HTML, some CSS, and linked images. It also used unauthorized streaming links for anime. Alongside those pages, I added Latino TV and Colombian radio while I was living in Sherbrooke.',
+				},
+				id: 'ch1-006',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'I maintained it from 2009 to 2011. As of July 2026, the site was still online. Looking back, what stands out is the combination on that page: anime I followed, television in Spanish, and radio from Colombia, put together with the limited tools I understood at the time. I did not know much about building software, but I had made a place on the internet and kept returning to maintain it for about two years.',
+				},
+				id: 'ch1-007',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Looking at that combination now, I can see the move between countries in the page itself. The site was built in Quebec, but some of what I put on it came from Colombia. I can see it now in what survived.',
+				},
+				id: 'ch1-008',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'In summer 2011, I earned $600 at my first job and used the money to buy my first computer, a Sony VAIO. It was the first machine I had funded myself. The computer I had wanted around 2005 or 2006 was finally mine. From 2011 to 2014, the computer was mostly for entertainment, with some light tinkering. I then completed a diploma in accounting and management. My heart still belonged to computers, but the route back was not immediate.',
+				},
+				id: 'ch1-009',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'After the diploma, I built a Shopify store from start to finish. Building it showed me there was more behind a page than the parts I could see and customize. I noticed that gap, but it did not immediately change my direction. The real turn came with a different project, one that never became a working product.',
+				},
+				id: 'ch1-010',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'The app I could not build' },
+				id: 'ch1-011',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'A friend suggested a website that would compare grocery prices. I tried to build it, but nothing functional shipped. I had made an anime site and assembled a Shopify store, yet I could not turn this idea into a working application. That failure made the limit of my knowledge concrete. It pushed me toward computer science in 2019.',
+				},
+				id: 'ch1-012',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This was different from customizing a template or assembling a storefront. The idea needed a working system behind the page, and I could not make one.',
+				},
+				id: 'ch1-013',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'I finished the computer science program in December 2022. Today I work as a SQL developer and build personal projects. There were years of entertainment, an accounting diploma, a store, and an app attempt that went nowhere. Studying computer science was a later decision I made after finding something useful that I could not build.',
+				},
+				id: 'ch1-014',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The orange Ubuntu 9.04 CD is from 2009, and I still have it upstairs. Looking back, computers often gave me fast feedback: change something, see what happened, and try again. Other systems did not reveal themselves that quickly. Some took years before I could see their structure.',
+				},
+				id: 'ch1-015',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is chapter 1 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Next: <a href="/blog/how-i-learn-orbiting-a-system-until-it-clicks">How I learn: orbiting a system until it clicks</a>.',
+				},
+				id: 'ch1-footer',
+				type: 'paragraph',
+			},
+		],
+		time: 1783742400000,
+		version: '2.31.2',
+	},
+	'thinking-in-matrices': {
+		blocks: [
+			{
+				data: {
+					text: 'When I understood how GTFS Schedule and GTFS Realtime could work together, I saw a matrix of useful questions about Montréal transit. GTFS Schedule supplied the planned side: routes, trips, stops, and timetables. GTFS Realtime could add live trip updates, vehicle positions, numeric delay, and optional occupancy information. A single date, a date range, or a wider period added another dimension. <a href="https://transit.yesid.dev">transit.yesid.dev</a> came about in part from seeing how those dimensions could cross instead of treating each feed or metric as a separate fact.',
+				},
+				id: 'ch3-001',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Put a route on one axis and time on another, then ask where scheduled service and live observations diverge. Which routes are late across the chosen period? Does the pattern change when the date range changes? Where does available crowding information show a different pattern at a certain time? Which scheduled bus trips should be running now but have no matching live vehicle? Each question comes from a different intersection of planned service, live information, a product interpretation, and a time control. The matrix turns a list of fields into something I can examine.',
+				},
+				id: 'ch3-002',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Those questions require the source and product layers to stay separate. Delay is numeric, while early, on time, late, and severe are interpretations created by the product. Occupancy is optional and experimental, so it can be absent, incomplete, and not guaranteed to form a linear scale. Not reporting is separate: it is a product-derived signal for a scheduled bus trip that should be running now but has no matching live vehicle, not an official GTFS timing value.',
+				},
+				id: 'ch3-003',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Rows and columns, literally' },
+				id: 'ch3-004',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'I see an actual matrix. I see rows and columns. It is a visual thing. Granularity can be one part of the picture: one item, a group, or a wider level. Filters and the options they leave can be another. Decisions, database fields, and combinations occupy the same kind of visual space. The contents change with the subject, but the rows and columns remain visible to me.',
+				},
+				id: 'ch3-005',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'For one decision, I can picture the options as rows and the constraints as columns. One filter narrows the options; another adds a condition. I can see which combinations remain. The exact entries depend on the decision, but I still see the relationships as a grid.',
+				},
+				id: 'ch3-006',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'SQL fits that picture. A table gives each row a record and each column a field. Filters choose which records are in view, and a query can combine several conditions. Relations let me move from one record to related records when a single table does not explain enough. Granularity also changes the picture: a single record, a grouped result, and a wider set answer different questions. SQL gives precise names and operations to the rows, columns, filters, database fields, and combinations I see.',
+				},
+				id: 'ch3-007',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Accounting and SQL rhyme' },
+				id: 'ch3-008',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Accounting and SQL connect in my head. Before I worked as a SQL developer, I studied accounting. When an amount was uncertain, a date and an amount were a place to start. They were clues, not guaranteed unique keys, because another record could share both values. The surrounding context could be in cash flow, a budget, a financial statement, or a transaction. Sometimes the date could point toward the right account; sometimes the amount only narrowed the search. I could move through those records and ask where the amount appeared, what it related to, and whether another record explained it better. JOINs and normalization later gave me more precise tools and language for following relations in data. The personal connection is the act of tracing: the first value points somewhere, the related records narrow the uncertainty, and the full answer depends on context.',
+				},
+				id: 'ch3-009',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'You have two hands' },
+				id: 'ch3-010',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'I remember a woman at a dishwasher job telling me, "You have two hands. Use both hands."',
+				},
+				id: 'ch3-011',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'I kept that instruction. I still notice when one hand is idle and could already be helping. One hand can keep an action moving while the other starts the next one. Both hands can move in different directions toward different tasks. It did not stay at the dishwasher job; I carried it into other physical work. When I work or do something with my body, I look for that opening instead of waiting for one action to finish. It saves time, and I catch myself using the habit all the time. The change is physical and specific: notice the idle hand, give it part of the work, and let the two actions move together.',
+				},
+				id: 'ch3-012',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Where measurement stops' },
+				id: 'ch3-013',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Data works because fields have definitions. A delay can be stored as a number, a date range has boundaries, and a product can group observations into stated categories. People are not hard parameters in the same way. You can collect the biggest metrics and still never fully measure a person. A score, category, or observation can describe something real, but it supports a limited claim.',
+				},
+				id: 'ch3-014',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The two-handed habit makes the difference clear. I can describe what changed: both hands work, actions move in different directions, and time is saved. Those measurements can describe the habit, but they cannot contain the person who taught it.',
+				},
+				id: 'ch3-015',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'That is also how I work with AI: it can turn a conversation into structure, but I read every block from start to finish and make the final call.',
+				},
+				id: 'ch3-016',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This is chapter 3 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Previous: <a href="/blog/how-i-learn-orbiting-a-system-until-it-clicks">How I learn: orbiting a system until it clicks</a> · Next: <a href="/blog/ai-accelerated-human-owned-my-actual-workflow">AI-accelerated, human-owned: my actual workflow</a>.',
+				},
+				id: 'ch3-footer',
+				type: 'paragraph',
+			},
+		],
+		time: 1783742400002,
 		version: '2.31.2',
 	},
 };
