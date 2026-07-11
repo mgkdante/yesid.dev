@@ -198,15 +198,18 @@ The public legal notice currently identifies the operator by full name and publi
 
 Quebec states that a natural person operating a sole proprietorship under a name that does not include their first and last names must register, while registration can be voluntary when the operating name includes both ([registration guidance](https://www.quebec.ca/en/businesses-and-self-employed-workers/start-entreprise/register-constitute-enterprise/learn-about-registration/about-registration)). Because the public brand is `yesid.dev`/`yesid.`, the operator must not treat the current “no NEQ” note as settled legal status.
 
+Current EN/FR/ES site and profile drafts also describe the operator with `engineer`, `ingénieur`, and `ingeniero` titles. No OIQ membership or permit receipt was inspected. Section 22 of Quebec's Engineers Act prohibits a person who is not an engineer from assuming the title alone or with qualifiers, or using a designation that may lead people to believe the person is authorized to practise engineering ([Engineers Act, section 22](https://www.legisquebec.gouv.qc.ca/en/version/cs/I-9?code=se%3A22)); the OIQ likewise says only members may use the title ([OIQ guidance](https://www.oiq.qc.ca/en/general-public/protection-of-the-public/reporting-illegal-practice-of-engineering/)). This record does not decide whether every translation, job title, service label, or trade-name use is prohibited. Until membership or licensed advice is evidenced, new public person-title copy should use a non-reserved description such as `developer` or `digital infrastructure specialist` instead.
+
 Before copy freeze and directory publication, the operator and licensed advisor must resolve and privately evidence:
 
 1. exact legal name and sole-proprietor status;
 2. current Registraire search/extract and whether an NEQ exists or registration is required for the public trade name;
 3. whether `yesid.dev`/`yesid.` must be declared as another name used in Quebec;
-4. which lawful address must appear on legal pages, and whether publishing a residential address is necessary and accepted by the operator;
-5. how the Gatineau legal address and Montreal service-area marketing can coexist without misleading public NAP data;
-6. the public email plus phone or WhatsApp choice for profiles and directories;
-7. one approved NAP record applied consistently to the site, Google Business Profile, LinkedIn, Upwork, and directories.
+4. OIQ membership/permit status and whether the current EN/FR/ES person titles, service labels, and business descriptions may be used; otherwise approve safe replacement wording;
+5. which lawful address must appear on legal pages, and whether publishing a residential address is necessary and accepted by the operator;
+6. how the Gatineau legal address and Montreal service-area marketing can coexist without misleading public NAP data;
+7. the public email plus phone or WhatsApp choice for profiles and directories;
+8. one approved NAP record applied consistently to the site, Google Business Profile, LinkedIn, Upwork, and directories.
 
 This record makes no NAP decision and does not repeat the full street address already visible on the live legal notice.
 
@@ -223,6 +226,7 @@ This record makes no NAP decision and does not repeat the full street address al
 - [ ] Provider incident-notice, confidentiality, purpose-limitation, end-of-contract deletion and verification terms have been checked against section 18.3.
 - [ ] Operator inquiry, booking, mailbox and analytics retention periods are explicit and do not misstate provider retention.
 - [ ] Functional `localStorage` and transient locale-handoff `sessionStorage` statements match the deployed code.
+- [ ] OIQ membership/title evidence or licensed replacement guidance supports every public `engineer`, `ingénieur`, `ingeniero`, `engineering`, and `ingénierie` person, service, and business-name use across EN/FR/ES.
 - [ ] Legal name, sole-proprietor description, NEQ/trade-name decision, address and NAP are operator-approved and source-backed.
 - [ ] EN and FR have the same provider list, purposes, categories, transfers, retention, rights, security caveats and effective date.
 - [ ] A qualified French legal-language pass confirms terminology and equivalence rather than relying only on translation parity.
@@ -246,16 +250,18 @@ This record makes no NAP decision and does not repeat the full street address al
 10. Archive Plausible's current DPA/subprocessors, account access/MFA and optional-integration settings; choose a site-statistics retention/review schedule.
 11. Capture the final Plausible production consent matrix in a clean browser and the dashboard receipts for `contact_form_success` and `booking_click`; identify or exclude controlled QA traffic before freezing analytics copy.
 12. Verify the private incident register access list, provider escalation contacts, entry-creation procedure, five-year retention rule, and quarterly review owner without placing incident details in git.
-13. Confirm legal identity, Registraire/NEQ/trade-name position, public address, public contact channel and one NAP record.
-14. Approve the factual EN/FR copy and the timing of the controlled CMS promotion.
+13. Confirm OIQ membership/permit status or approve non-reserved EN/FR/ES person-title wording while licensed advice is pending; inventory the current site/profile strings that need correction if the title is unavailable.
+14. Confirm legal identity, Registraire/NEQ/trade-name position, public address, public contact channel and one NAP record.
+15. Approve the factual EN/FR copy and the timing of the controlled CMS promotion.
 
 ### Licensed Quebec legal-advisor gates
 
 1. Decide whether each provider/flow receives adequate protection under section 17 and record the legal-framework analysis and mitigations.
 2. Confirm each written agreement covers the section 18.3 confidentiality, purpose, retention, incident and verification requirements.
 3. Confirm PIPEDA applicability for interprovincial/international commercial flows and correct any public wording.
-4. Review the legal identity, sole-proprietor, trade-name/NEQ, address and Montreal/Gatineau presentation.
-5. Confirm retention periods, rights language, incident language, storage/consent statements and EN/FR legal equivalence across `privacy`, `terms`, `cookies`, `accessibility`, and `notice`.
+4. Review the legal identity, sole-proprietor, trade-name/NEQ, professional-title/OIQ, address and Montreal/Gatineau presentation.
+5. Confirm which EN/FR/ES person titles, service labels, and business descriptions comply with Quebec's Engineers Act.
+6. Confirm retention periods, rights language, incident language, storage/consent statements and EN/FR legal equivalence across `privacy`, `terms`, `cookies`, `accessibility`, and `notice`.
 
 ### Completion rule
 
@@ -271,6 +277,8 @@ Homework legal items may be checked only after the receipts above exist. This fi
 - [CAI EFVP guide](https://www.cai.gouv.qc.ca/uploads/pdfs/CAI_GU_EFVP.pdf)
 - [CAI confidentiality-incident guidance](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/incidents-confidentialite-mesures-securite-entreprises)
 - [Government of Quebec enterprise-registration guidance](https://www.quebec.ca/en/businesses-and-self-employed-workers/start-entreprise/register-constitute-enterprise/learn-about-registration/about-registration)
+- [Quebec Engineers Act, section 22](https://www.legisquebec.gouv.qc.ca/en/version/cs/I-9?code=se%3A22)
+- [OIQ illegal-practice and protected-title guidance](https://www.oiq.qc.ca/en/general-public/protection-of-the-public/reporting-illegal-practice-of-engineering/)
 - [OPC PIPEDA requirements in brief](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)
 
 ### Vercel
