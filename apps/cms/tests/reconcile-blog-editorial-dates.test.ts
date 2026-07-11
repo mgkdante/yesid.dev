@@ -2,9 +2,16 @@ import { describe, expect, it } from 'bun:test';
 import {
 	BLOG_EDITORIAL_FAMILIES,
 	EXPECTED_ROW_COUNT,
+	PROD_CONFIRMATION,
+	TARGET_URLS,
+	applyAndVerify,
 	buildDatePlan,
+	formatDatePlan,
 	normalizeEditorialDate,
+	parseCli,
 	type BlogDateRow,
+	type DateCms,
+	type DatePatch,
 } from '../scripts/reconcile-blog-editorial-dates';
 
 function staleRows(): BlogDateRow[] {
@@ -90,5 +97,93 @@ describe('blog editorial date schedule', () => {
 		expect(() =>
 			buildDatePlan([{ ...rows[0]!, status: 'draft' }, ...rows.slice(1)]),
 		).toThrow(/must be published/);
+	});
+});
+
+describe('blog editorial date CLI', () => {
+	it('defaults to dry-run and pins both CMS URLs', () => {
+		expect(parseCli(['--target=dev'])).toEqual({ target: 'dev', apply: false });
+		expect(TARGET_URLS).toEqual({
+			dev: 'https://cms.dev.yesid.dev',
+			prod: 'https://cms.yesid.dev',
+		});
+	});
+
+	it('requires the exact confirmation for PROD apply', () => {
+		expect(() => parseCli(['--target=prod', '--apply'])).toThrow(
+			new RegExp(PROD_CONFIRMATION),
+		);
+		expect(
+			parseCli([
+				'--target=prod',
+				'--apply',
+				`--confirm=${PROD_CONFIRMATION}`,
+			]),
+		).toEqual({ target: 'prod', apply: true });
+	});
+
+	it('rejects contradictory or irrelevant flags', () => {
+		expect(() =>
+			parseCli(['--target=dev', '--apply', '--dry-run']),
+		).toThrow(/choose one/);
+		expect(() =>
+			parseCli(['--target=dev', `--confirm=${PROD_CONFIRMATION}`]),
+		).toThrow(/PROD apply/);
+		expect(() => parseCli(['--target=staging'])).toThrow(/dev\|prod/);
+	});
+});
+
+function fakeCms(before: BlogDateRow[], after: BlogDateRow[]): {
+	cms: DateCms;
+	patchCalls: DatePatch[][];
+} {
+	let reads = 0;
+	const patchCalls: DatePatch[][] = [];
+	return {
+		cms: {
+			read: async () => (reads++ === 0 ? before : after),
+			patch: async (patches) => {
+				patchCalls.push(patches.map((patch) => ({ ...patch })));
+			},
+		},
+		patchCalls,
+	};
+}
+
+describe('blog editorial date apply verification', () => {
+	it('writes only the displayed plan and verifies convergence', async () => {
+		const before = staleRows();
+		const after = before.map((row) => {
+			const family = BLOG_EDITORIAL_FAMILIES.find(
+				(candidate) => candidate.translationKey === row.translation_key,
+			)!;
+			return { ...row, date_published: normalizeEditorialDate(family.date) };
+		});
+		const plan = buildDatePlan(before);
+		const { cms, patchCalls } = fakeCms(before, after);
+		await expect(applyAndVerify(cms, plan)).resolves.toEqual(plan);
+		expect(patchCalls).toEqual([plan]);
+		expect(patchCalls[0]).toHaveLength(18);
+	});
+
+	it('refuses a changed pre-apply state and stale post-apply state', async () => {
+		const before = staleRows();
+		const plan = buildDatePlan(before);
+		const changed = structuredClone(before);
+		changed[0]!.date_published = normalizeEditorialDate(
+			BLOG_EDITORIAL_FAMILIES[0]!.date,
+		);
+		await expect(
+			applyAndVerify(fakeCms(changed, changed).cms, plan),
+		).rejects.toThrow(/state changed before apply/);
+		await expect(
+			applyAndVerify(fakeCms(before, before).cms, plan),
+		).rejects.toThrow(/post-apply verification/);
+	});
+
+	it('formats a bounded plan without content fields', () => {
+		const output = formatDatePlan(buildDatePlan(staleRows()));
+		expect(output).toContain('18 date_published patches');
+		expect(output).not.toMatch(/body|title|date_modified|delete|create/i);
 	});
 });

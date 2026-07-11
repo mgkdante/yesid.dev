@@ -1,5 +1,55 @@
 #!/usr/bin/env bun
 
+import { parseArgs as parseNodeArgs } from 'node:util';
+import { readItems, updateItemsBatch } from '@directus/sdk';
+import { getAdminToken } from './lib/auth';
+import { createLogger } from './lib/logger';
+import { createClient } from './lib/sdk';
+
+export const TARGET_URLS = {
+	dev: 'https://cms.dev.yesid.dev',
+	prod: 'https://cms.yesid.dev',
+} as const;
+export const PROD_CONFIRMATION = 'APPLY_PROD_BLOG_EDITORIAL_DATES';
+
+export type Target = keyof typeof TARGET_URLS;
+export interface CliOptions {
+	target: Target;
+	apply: boolean;
+}
+
+export function parseCli(argv: readonly string[]): CliOptions {
+	const { values } = parseNodeArgs({
+		args: [...argv],
+		options: {
+			target: { type: 'string' },
+			apply: { type: 'boolean', default: false },
+			'dry-run': { type: 'boolean', default: false },
+			confirm: { type: 'string' },
+		},
+		strict: true,
+		allowPositionals: false,
+	});
+	if (values.target !== 'dev' && values.target !== 'prod') {
+		throw new Error('[blog-editorial-dates] required: --target=dev|prod');
+	}
+	const apply = values.apply === true;
+	const dryRun = values['dry-run'] === true;
+	if (apply && dryRun) {
+		throw new Error('[blog-editorial-dates] choose one: --dry-run or --apply');
+	}
+	if (values.target === 'prod' && apply) {
+		if (values.confirm !== PROD_CONFIRMATION) {
+			throw new Error(
+				`[blog-editorial-dates] PROD apply requires --confirm=${PROD_CONFIRMATION}`,
+			);
+		}
+	} else if (values.confirm !== undefined) {
+		throw new Error('[blog-editorial-dates] --confirm is accepted only for PROD apply');
+	}
+	return { target: values.target, apply };
+}
+
 export type BlogLocale = 'en' | 'fr' | 'es';
 export type BlogStatus = 'draft' | 'published' | 'archived';
 
@@ -141,4 +191,107 @@ export function buildDatePlan(rows: readonly BlogDateRow[]): DatePatch[] {
 		})
 		.filter((patch): patch is DatePatch => patch !== null)
 		.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export interface DateCms {
+	read(): Promise<BlogDateRow[]>;
+	patch(patches: readonly DatePatch[]): Promise<void>;
+}
+
+function samePlan(left: readonly DatePatch[], right: readonly DatePatch[]): boolean {
+	return JSON.stringify(left) === JSON.stringify(right);
+}
+
+export function formatDatePlan(plan: readonly DatePatch[]): string {
+	if (plan.length === 0) return 'NO CHANGES';
+	return [
+		`BLOG EDITORIAL DATES: ${plan.length} date_published patches`,
+		...plan.map((patch) => `  PATCH ${patch.id} -> ${patch.date_published.slice(0, 10)}`),
+	].join('\n');
+}
+
+export async function applyAndVerify(
+	cms: DateCms,
+	displayedPlan: readonly DatePatch[],
+): Promise<readonly DatePatch[]> {
+	if (displayedPlan.length > EXPECTED_ROW_COUNT) {
+		throw new Error('[blog-editorial-dates] patch cap exceeded');
+	}
+	const currentPlan = buildDatePlan(await cms.read());
+	if (!samePlan(currentPlan, displayedPlan)) {
+		throw new Error('[blog-editorial-dates] state changed before apply');
+	}
+	if (displayedPlan.length === 0) return [];
+	await cms.patch(displayedPlan);
+	const remaining = buildDatePlan(await cms.read());
+	if (remaining.length !== 0) {
+		throw new Error(
+			`[blog-editorial-dates] post-apply verification failed: ${remaining.length} patches remain`,
+		);
+	}
+	return displayedPlan;
+}
+
+interface DirectusSchema {
+	blog_posts: BlogDateRow[];
+}
+
+type DirectusDateClient = ReturnType<typeof createClient<DirectusSchema>>;
+
+export function createDateCms(client: DirectusDateClient): DateCms {
+	const familyKeys = BLOG_EDITORIAL_FAMILIES.map(
+		(family) => family.translationKey,
+	);
+	return {
+		read: async () =>
+			(await client.request(
+				readItems('blog_posts', {
+					fields: [
+						'id',
+						'translation_key',
+						'lang',
+						'status',
+						'date_published',
+						'date_modified',
+					],
+					filter: { translation_key: { _in: familyKeys } },
+					sort: ['translation_key', 'lang', 'id'],
+					limit: -1,
+				}),
+			)) as BlogDateRow[],
+		patch: async (patches) => {
+			if (patches.length > EXPECTED_ROW_COUNT) {
+				throw new Error('[blog-editorial-dates] patch cap exceeded');
+			}
+			await client.request(
+				updateItemsBatch('blog_posts', patches.map((patch) => ({ ...patch }))),
+			);
+		},
+	};
+}
+
+async function main(): Promise<void> {
+	const options = parseCli(process.argv.slice(2));
+	const url = TARGET_URLS[options.target];
+	const log = createLogger('blog-editorial-dates');
+	log.info(
+		`target=${options.target} url=${url} mode=${options.apply ? 'APPLY' : 'DRY-RUN'}`,
+	);
+	const token = await getAdminToken(url, { allowBuildToken: false });
+	const cms = createDateCms(createClient<DirectusSchema>(url, token));
+	const plan = buildDatePlan(await cms.read());
+	console.log(formatDatePlan(plan));
+	if (!options.apply) {
+		log.info('dry-run complete: CMS was read; no writes were sent.');
+		return;
+	}
+	await applyAndVerify(cms, plan);
+	log.info(`verified ${plan.length} date_published patches; no other fields changed`);
+}
+
+if (import.meta.main) {
+	main().catch((error) => {
+		console.error('[blog-editorial-dates] FAILED:', error);
+		process.exit(1);
+	});
 }
