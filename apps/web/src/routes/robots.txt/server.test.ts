@@ -2,13 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { GET } from './+server';
 
 describe('GET /robots.txt', () => {
-	async function fetchBody() {
-		const response = await GET({} as Parameters<typeof GET>[0]);
+	async function fetchBody(hostname = 'yesid.dev') {
+		const response = await GET({
+			url: new URL(`https://${hostname}/robots.txt`),
+		} as Parameters<typeof GET>[0]);
 		return {
 			status: response.status,
 			body: await response.text(),
 			contentType: response.headers.get('content-type'),
 			cacheControl: response.headers.get('cache-control'),
+			robotsTag: response.headers.get('x-robots-tag'),
 		};
 	}
 
@@ -39,5 +42,14 @@ describe('GET /robots.txt', () => {
 	it('references the sitemap with absolute URL', async () => {
 		const { body } = await fetchBody();
 		expect(body).toContain('Sitemap: https://yesid.dev/sitemap.xml');
+	});
+
+	it('blocks every crawler and omits the production sitemap on non-production hosts', async () => {
+		const { body, cacheControl, robotsTag } = await fetchBody('dev.yesid.dev');
+		expect(body).toBe('User-agent: *\nDisallow: /\n');
+		expect(body).not.toContain('Allow:');
+		expect(body).not.toContain('Sitemap:');
+		expect(cacheControl).toBe('no-store');
+		expect(robotsTag).toBe('noindex, nofollow, noarchive');
 	});
 });
