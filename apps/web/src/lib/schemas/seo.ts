@@ -43,8 +43,20 @@ export const PageSeoSchema = z.object({
 	ogType: z.enum(['website', 'article', 'profile']).default('website'),
 	noIndex: z.boolean().default(false),
 	jsonLd: z.array(SchemaOrgNodeSchema).optional(),
-	// AM2.5 (slice-28.6): mono-language pages (blog post bodies) suppress the
-	// cross-locale hreflang cluster — they have no locale alternates.
+	// Exact translated route canonicals. Static pages omit this and SeoHead
+	// derives same-path alternates; translated blog rows set it because each
+	// locale owns a different slug.
+	localeAlternates: z
+		.object({
+			en: z.string().url().optional(),
+			fr: z.string().url().optional(),
+			es: z.string().url().optional(),
+		})
+		.optional(),
+	// Stable page identity for locale-switch state handoff when translated
+	// routes do not share a slug (for example, `blog:<translationKey>`).
+	localeHandoffId: z.string().trim().min(1).optional(),
+	// A genuinely mono-language page may still suppress alternates entirely.
 	singleLocale: z.boolean().optional(),
 });
 

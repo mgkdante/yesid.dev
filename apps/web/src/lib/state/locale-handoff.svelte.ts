@@ -7,7 +7,8 @@
  * bridges the gap:
  *   - in `beforeNavigate` of a switch, it snapshots every registered session
  *     value (+ scroll + focus) into a versioned sessionStorage blob keyed by the
- *     delocalized path, and raises `restoring`;
+ *     delocalized path (or a stable translation-group identity), and raises
+ *     `restoring`;
  *   - in `afterNavigate` on the remounted page, it restores them AFTER paint,
  *     restores focus/selection by stable key (the old element is gone), clears
  *     the blob (switch-scoped), and lowers `restoring`.
@@ -23,7 +24,7 @@
 import { browser } from '$app/environment';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { tick } from 'svelte';
-import { delocalizePath, isLocaleSwitch } from '$lib/utils/locale-routing';
+import { delocalizePath, isLocaleSwitch, pathLocale } from '$lib/utils/locale-routing';
 import { getLenis } from '$lib/motion/utils/lenis.js';
 import {
 	makeBlob,
@@ -53,6 +54,8 @@ let scrollContext: ScrollContext | null = null;
 // The blob currently being restored. Async consumers (engine constructor, Embla
 // onInit) read their value from here instead of racing `afterNavigate`.
 let pendingBlob: HandoffBlob | null = null;
+let activeSwitchKey: string | null = null;
+let activeStableIdentity: string | null = null;
 
 // Mask flag — surfaces that flash on restore (scroll, collapsibles) hold their
 // region while this is true. Mutated client-side only; SSR always reads false.
@@ -63,6 +66,27 @@ export const localeHandoff = {
 		return restoringState;
 	},
 };
+
+function normalizedIdentity(identity: string | undefined): string | undefined {
+	const normalized = identity?.trim();
+	return normalized || undefined;
+}
+
+/** Storage/restore scope for a page. Translated slugs share the stable identity. */
+export function localeHandoffKey(pathname: string, stableIdentity?: string): string {
+	const identity = normalizedIdentity(stableIdentity);
+	return identity ? `id:${identity}` : delocalizePath(pathname);
+}
+
+/** Before-navigation gate, including translated routes whose slugs differ by locale. */
+export function isLocaleHandoffNavigation(
+	fromPathname: string,
+	toPathname: string,
+	stableIdentity?: string,
+): boolean {
+	if (pathLocale(fromPathname) === pathLocale(toPathname)) return false;
+	return isLocaleSwitch(fromPathname, toPathname) || Boolean(normalizedIdentity(stableIdentity));
+}
 
 // --- registration API ---
 export function registerSession(key: string, entry: SessionEntry): () => void {
@@ -100,8 +124,8 @@ export function peekRestore(key: string): unknown {
 	if (pendingBlob) return pendingBlob.entries[key];
 	if (!restoringState) return undefined;
 	try {
-		const path = delocalizePath(window.location.pathname);
-		return parseBlob(sessionStorage.getItem(storageKey(path)), path)?.entries[key];
+		const scope = activeSwitchKey ?? delocalizePath(window.location.pathname);
+		return parseBlob(sessionStorage.getItem(storageKey(scope)), scope)?.entries[key];
 	} catch {
 		return undefined;
 	}
@@ -188,8 +212,8 @@ async function restoreScroll(snapshot: unknown): Promise<void> {
 }
 
 // --- storage (always guarded: private mode / quota must never crash a nav) ---
-function storageKey(delocalized: string): string {
-	return STORAGE_PREFIX + delocalized;
+function storageKey(scope: string): string {
+	return STORAGE_PREFIX + scope;
 }
 
 function writeBlob(blob: HandoffBlob): void {
@@ -200,17 +224,17 @@ function writeBlob(blob: HandoffBlob): void {
 	}
 }
 
-function readBlob(delocalized: string): HandoffBlob | null {
+function readBlob(scope: string): HandoffBlob | null {
 	try {
-		return parseBlob(sessionStorage.getItem(storageKey(delocalized)), delocalized);
+		return parseBlob(sessionStorage.getItem(storageKey(scope)), scope);
 	} catch {
 		return null;
 	}
 }
 
-function clearBlob(delocalized: string): void {
+function clearBlob(scope: string): void {
 	try {
-		sessionStorage.removeItem(storageKey(delocalized));
+		sessionStorage.removeItem(storageKey(scope));
 	} catch {
 		/* ignore */
 	}
@@ -220,10 +244,10 @@ function nextFrame(): Promise<void> {
 	return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 
-function snapshot(delocalized: string, nowMs: number): void {
+function snapshot(scope: string, nowMs: number): void {
 	writeBlob(
 		makeBlob({
-			path: delocalized,
+			path: scope,
 			entries: captureEntries(),
 			scroll: captureScroll(),
 			focus: captureFocus(),
@@ -233,7 +257,7 @@ function snapshot(delocalized: string, nowMs: number): void {
 }
 
 // --- attach: wire the nav hooks (call at +layout INIT) ---
-export function attachLocaleHandoff(): void {
+export function attachLocaleHandoff(getStableIdentity: () => string | undefined = () => undefined): void {
 	if (!browser) return;
 
 	beforeNavigate((nav) => {
@@ -241,28 +265,51 @@ export function attachLocaleHandoff(): void {
 		// a slow async consumer (e.g. the dynamically-imported stack-engine) that
 		// already read it on THIS page cannot be re-seeded with stale data on a later
 		// page. The blob is consumed for the lifetime of the page it was restored on.
-		pendingBlob = null;
 		if (!nav.from || !nav.to) return;
-		if (!isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) return;
 		// Idempotency: a rapid second switch fired mid-restore must NOT overwrite the
 		// good blob with half-restored / default state — keep the in-flight one.
 		if (restoringState) return;
-		snapshot(delocalizePath(nav.from.url.pathname), Date.now());
+		pendingBlob = null;
+		activeSwitchKey = null;
+		activeStableIdentity = null;
+		const stableIdentity = normalizedIdentity(getStableIdentity());
+		if (
+			!isLocaleHandoffNavigation(
+				nav.from.url.pathname,
+				nav.to.url.pathname,
+				stableIdentity,
+			)
+		) return;
+		activeSwitchKey = localeHandoffKey(nav.from.url.pathname, stableIdentity);
+		activeStableIdentity = stableIdentity ?? null;
+		snapshot(activeSwitchKey, Date.now());
 		restoringState = true;
 	});
 
 	afterNavigate(async (nav) => {
 		if (nav.type === 'enter') return; // initial hydration — nothing to restore
 		if (!nav.from || !nav.to) return;
-		if (!isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) {
+		if (!activeSwitchKey && !isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) {
 			// A non-switch navigation cleared the in-flight restore — drop the flag so
 			// the mask can never get stuck up after an aborted/redirected switch.
 			if (restoringState) restoringState = false;
 			return;
 		}
-		const delocalized = delocalizePath(nav.to.url.pathname);
-		const blob = readBlob(delocalized);
+		const scope = activeSwitchKey ?? localeHandoffKey(nav.to.url.pathname);
+		if (
+			activeStableIdentity &&
+			normalizedIdentity(getStableIdentity()) !== activeStableIdentity
+		) {
+			clearBlob(scope);
+			activeSwitchKey = null;
+			activeStableIdentity = null;
+			restoringState = false;
+			return;
+		}
+		const blob = readBlob(scope);
 		if (!blob) {
+			activeSwitchKey = null;
+			activeStableIdentity = null;
 			restoringState = false;
 			return;
 		}
@@ -274,7 +321,9 @@ export function attachLocaleHandoff(): void {
 		applyEntries(blob.entries);
 		await restoreScroll(blob.scroll);
 		restoreFocus(blob.focus);
-		clearBlob(delocalized);
+		clearBlob(scope);
+		activeSwitchKey = null;
+		activeStableIdentity = null;
 		// Keep `pendingBlob` in memory (NOT cleared here). Async-mounted consumers —
 		// e.g. the stack-engine, which loads via dynamic import() and constructs AFTER
 		// this restore window — read their seed from pendingRestore() during the rest

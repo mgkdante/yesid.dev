@@ -50,12 +50,27 @@ const siteSeoDefaults = {
 	},
 } satisfies SiteSeoDefaults;
 
-function adapterFor(post: BlogPost): ContentAdapter {
+function adapterFor(post: BlogPost, posts: readonly BlogPost[] = [post]): ContentAdapter {
 	return {
 		blog: {
+			all: async () => posts,
 			bySlug: async () => post,
 		},
 	} as unknown as ContentAdapter;
+}
+
+function translatedVariant(
+	post: BlogPost,
+	lang: BlogPost['lang'],
+	slug: string,
+): BlogPost {
+	return {
+		...post,
+		lang,
+		slug,
+		title: `${lang.toUpperCase()} ${post.title}`,
+		url: `${lang === 'en' ? '' : `/${lang}`}/blog/${slug}`,
+	};
 }
 
 describe('blogSlugSeoFactory', () => {
@@ -63,6 +78,7 @@ describe('blogSlugSeoFactory', () => {
 		const seoDescription =
 			'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.';
 		const post = {
+			translationKey: 'raw-sql-control',
 			slug: 'raw-sql-control',
 			title: 'Raw SQL Control',
 			excerpt: 'Short listing excerpt.',
@@ -81,10 +97,15 @@ describe('blogSlugSeoFactory', () => {
 			external: false,
 		} as BlogPost;
 
+		const translations = [
+			post,
+			translatedVariant(post, 'fr', 'controle-sql-brut'),
+			translatedVariant(post, 'es', 'control-sql-directo'),
+		];
 		const seo = await blogSlugSeoFactory({
 			params: { slug: post.slug },
 			locale: 'en',
-			adapter: adapterFor(post),
+			adapter: adapterFor(post, translations),
 			siteMeta,
 			siteSeoDefaults,
 		});
@@ -92,7 +113,13 @@ describe('blogSlugSeoFactory', () => {
 		expect(seo.title.en).toBe('Raw SQL for PostgreSQL Control | yesid.');
 		expect(seo.description.en).toBe(seoDescription);
 		expect(seo.canonical).toBe('https://yesid.dev/blog/raw-sql-control');
-		expect(seo.singleLocale).toBe(true);
+		expect(seo.singleLocale).toBeUndefined();
+		expect(seo.localeAlternates).toEqual({
+			en: 'https://yesid.dev/blog/raw-sql-control',
+			fr: 'https://yesid.dev/fr/blog/controle-sql-brut',
+			es: 'https://yesid.dev/es/blog/control-sql-directo',
+		});
+		expect(seo.localeHandoffId).toBe('blog:raw-sql-control');
 		expect(seo.ogImage).toEqual({
 			url: 'https://cms.example.com/assets/11111111-1111-4111-8111-111111111111?key=og-1200',
 			alt: { en: 'PostgreSQL query plan screenshot in the CMS.' },
@@ -118,6 +145,7 @@ describe('blogSlugSeoFactory', () => {
 		// loses all structured data. This locks the SITE_HOST prefixing.
 		assetMock.relative = true;
 		const post = {
+			translationKey: 'mirrored-cover',
 			slug: 'mirrored-cover',
 			title: 'Mirrored Cover',
 			excerpt: 'Short listing excerpt.',
@@ -136,11 +164,16 @@ describe('blogSlugSeoFactory', () => {
 			url: '/blog/mirrored-cover',
 			external: false,
 		} as BlogPost;
+		const translations = [
+			post,
+			translatedVariant(post, 'fr', 'couverture-miroir'),
+			translatedVariant(post, 'es', 'portada-reflejada'),
+		];
 
 		const seo = await blogSlugSeoFactory({
 			params: { slug: post.slug },
 			locale: 'en',
-			adapter: adapterFor(post),
+			adapter: adapterFor(post, translations),
 			siteMeta,
 			siteSeoDefaults,
 		});
@@ -153,6 +186,67 @@ describe('blogSlugSeoFactory', () => {
 		expect(seo.ogImage?.url).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
 		);
+	});
+
+	it('keeps available exact alternates when a target translation is not published yet', async () => {
+		const post = {
+			translationKey: 'staged-article',
+			slug: 'staged-article',
+			title: 'Staged Article',
+			excerpt: 'Short listing excerpt.',
+			seoDescription:
+				'A staged multilingual article keeps safe alternate metadata while one translated row is still unavailable for publication.',
+			date: '2026-07-11',
+			lang: 'en',
+			category: 'professional',
+			tags: ['staged'],
+			animation: 'draw',
+			svg: 'pro-code',
+			url: '/blog/staged-article',
+			external: false,
+		} as BlogPost;
+		const posts = [post, translatedVariant(post, 'fr', 'article-en-preparation')];
+
+		const seo = await blogSlugSeoFactory({
+			params: { slug: post.slug },
+			locale: 'en',
+			adapter: adapterFor(post, posts),
+			siteMeta,
+			siteSeoDefaults,
+		});
+
+		expect(seo.localeAlternates).toEqual({
+			en: 'https://yesid.dev/blog/staged-article',
+			fr: 'https://yesid.dev/fr/blog/article-en-preparation',
+		});
+	});
+
+	it('rejects an English slug requested under the French route', async () => {
+		const post = {
+			translationKey: 'english-only-route',
+			slug: 'english-only-route',
+			title: 'English-only route',
+			excerpt:
+				'An English article must not provide indexable article metadata for a matched French URL that the page loader rejects with a 404.',
+			date: '2026-07-11',
+			lang: 'en',
+			category: 'professional',
+			tags: ['routing'],
+			animation: 'draw',
+			svg: 'pro-code',
+			url: '/blog/english-only-route',
+			external: false,
+		} as BlogPost;
+
+		await expect(
+			blogSlugSeoFactory({
+				params: { slug: post.slug },
+				locale: 'fr',
+				adapter: adapterFor(post),
+				siteMeta,
+				siteSeoDefaults,
+			}),
+		).rejects.toThrow('does not belong to locale fr');
 	});
 });
 

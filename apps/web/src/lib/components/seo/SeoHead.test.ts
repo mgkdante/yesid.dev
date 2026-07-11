@@ -86,6 +86,52 @@ describe('SeoHead — tag emission', () => {
 		expect(alternates.sort()).toEqual(['es_CA', 'fr_CA']);
 	});
 
+	it('uses exact per-locale URLs when translated pages have different slugs', () => {
+		const seo = {
+			...validSeo,
+			canonical: 'https://yesid.dev/fr/blog/article-francais',
+			localeAlternates: {
+				en: 'https://yesid.dev/blog/english-article',
+				fr: 'https://yesid.dev/fr/blog/article-francais',
+				es: 'https://yesid.dev/es/blog/articulo-espanol',
+			},
+		} as PageSeo;
+
+		render(SeoHead, { props: { seo, locale: 'fr' } });
+
+		expect(getLink('alternate', { name: 'hreflang', value: 'en' })?.href).toBe(
+			'https://yesid.dev/blog/english-article',
+		);
+		expect(getLink('alternate', { name: 'hreflang', value: 'fr' })?.href).toBe(
+			'https://yesid.dev/fr/blog/article-francais',
+		);
+		expect(getLink('alternate', { name: 'hreflang', value: 'es' })?.href).toBe(
+			'https://yesid.dev/es/blog/articulo-espanol',
+		);
+		expect(getLink('alternate', { name: 'hreflang', value: 'x-default' })?.href).toBe(
+			'https://yesid.dev/blog/english-article',
+		);
+	});
+
+	it('limits hreflang and OG alternates to exact translations that exist', () => {
+		const seo = {
+			...validSeo,
+			localeAlternates: {
+				en: 'https://yesid.dev/blog/english-article',
+				fr: 'https://yesid.dev/fr/blog/article-francais',
+			},
+		} as PageSeo;
+
+		render(SeoHead, { props: { seo, locale: 'en' } });
+
+		expect(document.head.querySelectorAll('link[rel="alternate"]')).toHaveLength(3);
+		expect(getLink('alternate', { name: 'hreflang', value: 'es' })).toBeNull();
+		const ogAlternates = Array.from(
+			document.head.querySelectorAll('meta[property="og:locale:alternate"]'),
+		).map((el) => el.getAttribute('content'));
+		expect(ogAlternates).toEqual(['fr_CA']);
+	});
+
 	it('og:locale:alternate on an es page is en_CA + fr_CA', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'es' } });
 		expect(getMeta('property', 'og:locale')?.content).toBe('es_CA');
