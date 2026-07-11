@@ -1,6 +1,6 @@
-# Directus 12.0.0 base + directus-extension-sync authoring endpoint (HOST-OVERRIDDEN).
-# Extension is auto-discovered from node_modules via its `directus:extension`
-# manifest entry (no manual copy to EXTENSIONS_PATH folder required).
+# Directus 12.0.0 base + folder extensions under EXTENSIONS_PATH.
+# directus-extension-sync is packed from npm; the local noindex hook is copied
+# from this build context. Both are discovered through `directus:extension`.
 #
 # ── slice-26 v12 OVERRIDE (2026-06-10) ──────────────────────────────────────
 # directus-extension-sync@3.0.6 declares `host: "^11.0.0"`, so Directus 12
@@ -55,5 +55,7 @@ RUN npm pack directus-extension-sync@3.0.6 --pack-destination /tmp --quiet \
 	&& node -e "const fs=require('fs');const p='/directus/extensions/directus-extension-sync/package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));j['directus:extension'].host='^11.0.0 || ^12.0.0';fs.writeFileSync(p,JSON.stringify(j,null,2));" \
 	&& node -e "const h=require('/directus/extensions/directus-extension-sync/package.json')['directus:extension'].host;if(h!=='^11.0.0 || ^12.0.0'){console.error('host patch failed: '+h);process.exit(1)};console.log('extension host patched: '+h)" \
 	&& chown -R node:node /directus/extensions
+
+COPY --chown=node:node extensions/noindex /directus/extensions/directus-extension-noindex
 
 USER node
