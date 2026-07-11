@@ -9,13 +9,22 @@ import {
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
 import { blogEntries } from '$lib/server/prerender-entries';
 import { collectCodeHighlights } from '$lib/server/code-highlights';
+import { getBlogPostsForLocale } from '$lib/blog/translations';
+import { localeFromParams } from '$lib/utils/locale-routing';
 
 export const entries = blogEntries;
 
-export async function load({ params, locals }: { params: { slug: string }; locals: App.Locals }) {
+export async function load({
+	params,
+	locals,
+}: {
+	params: { slug: string; lang?: string };
+	locals: App.Locals;
+}) {
 	const ctx = { pageCache: locals.pageCache };
+	const locale = localeFromParams(params);
 	const post = await getPostBySlug(params.slug, ctx);
-	if (!post) error(404, 'Post not found');
+	if (!post || post.lang !== locale) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts, blogPage] = await Promise.all([
 		getPostBody(params.slug, ctx),
@@ -31,7 +40,8 @@ export async function load({ params, locals }: { params: { slug: string }; local
 	const minutesToRead = readingTime(words);
 	const headings = extractHeadings(body);
 
-	const postIndex = allPosts.findIndex((p) => p.slug === post.slug) + 1;
+	const localePosts = getBlogPostsForLocale(allPosts, locale);
+	const postIndex = localePosts.findIndex((candidate) => candidate.slug === post.slug) + 1;
 
 	return {
 		post,

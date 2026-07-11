@@ -1,6 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { GET, _buildSitemapEntries } from './+server';
+import { GET, _blogUrlEntries, _buildSitemapEntries } from './+server';
 import { sitePages } from '$lib/content/site-pages';
+import { canonicalFor } from '$lib/utils/seo-defaults';
+import type { BlogPost } from '$lib/types';
+
+function translatedPost(lang: BlogPost['lang'], slug: string): BlogPost {
+	return {
+		translationKey: 'shared-article',
+		slug,
+		title: `${lang} title`,
+		excerpt: `${lang} excerpt`,
+		date: '2026-07-11',
+		lang,
+		category: 'professional',
+		tags: [lang],
+		animation: 'draw',
+		svg: `/images/blog/${slug}.svg`,
+		url: `${lang === 'en' ? '' : `/${lang}`}/blog/${slug}`,
+		external: false,
+	};
+}
 
 describe('GET /sitemap.xml', () => {
 	async function fetchBody() {
@@ -49,7 +68,7 @@ describe('GET /sitemap.xml', () => {
 		const { body } = await fetchBody();
 		for (const post of posts) {
 			expect(body, `missing blog post ${post.slug}`).toContain(
-				`<loc>https://yesid.dev/blog/${post.slug}</loc>`,
+				`<loc>${canonicalFor(`/blog/${post.slug}`, post.lang)}</loc>`,
 			);
 		}
 	});
@@ -107,13 +126,38 @@ describe('GET /sitemap.xml', () => {
 		expect(about).toContain('hreflang="x-default"');
 	});
 
-	it('blog post entries carry no alternate cluster (mono-language, AM2.5)', async () => {
+	it('groups translated blog slugs into reciprocal en/fr/es/x-default clusters', () => {
+		const entries = _blogUrlEntries([
+			translatedPost('en', 'english-article'),
+			translatedPost('fr', 'article-francais'),
+			translatedPost('es', 'articulo-espanol'),
+		]);
+
+		expect(entries).toHaveLength(3);
+		for (const entry of entries) {
+			expect(entry).toContain('hreflang="en" href="https://yesid.dev/blog/english-article"');
+			expect(entry).toContain(
+				'hreflang="fr" href="https://yesid.dev/fr/blog/article-francais"',
+			);
+			expect(entry).toContain(
+				'hreflang="es" href="https://yesid.dev/es/blog/articulo-espanol"',
+			);
+			expect(entry).toContain(
+				'hreflang="x-default" href="https://yesid.dev/blog/english-article"',
+			);
+		}
+	});
+
+	it('every published blog post entry carries its exact translation cluster', async () => {
 		const entries = await _buildSitemapEntries();
 		const post = entries.find(
 			(e) => e.includes('/blog/') && !e.includes('/blog</loc>') && !e.includes('/blog/personal'),
 		);
 		expect(post).toBeDefined();
-		expect(post).not.toContain('xhtml:link');
+		expect(post).toContain('hreflang="en"');
+		expect(post).toContain('hreflang="fr"');
+		expect(post).toContain('hreflang="es"');
+		expect(post).toContain('hreflang="x-default"');
 	});
 });
 
