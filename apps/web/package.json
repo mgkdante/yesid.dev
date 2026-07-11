@@ -18,7 +18,8 @@
 		"test:e2e": "playwright test",
 		"test:e2e:prebuilt": "E2E_PREBUILT=1 playwright test",
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
-		"check:engine-chunk": "node scripts/check-engine-chunk.mjs"
+		"check:engine-chunk": "node scripts/check-engine-chunk.mjs",
+		"verify:contact-rate-limit": "bun scripts/verify-contact-rate-limit.ts"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^10.4.0",

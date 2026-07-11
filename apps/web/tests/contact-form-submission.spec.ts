@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
+import { mockContactApi, visibleContactTerminal } from './_support/helpers';
 
 test.describe('Contact form submission', () => {
 	test.beforeEach(async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe('Contact form submission', () => {
 	});
 
 	test('contact form shows success state after valid submit', async ({ page }) => {
-		await mockWeb3Forms(page, { success: true });
+		const { origins } = await mockContactApi(page, { success: true });
 
 		const terminal = visibleContactTerminal(page);
 		await terminal.locator('#contact-name').fill('John Doe');
@@ -30,13 +30,14 @@ test.describe('Contact form submission', () => {
 		// confirmation (contactContent.success.sent).
 		await expect(success.getByText('~ $ send --message')).toBeVisible({ timeout: 5000 });
 		await expect(success.getByText('Message sent successfully!')).toBeVisible({ timeout: 5000 });
+		expect(origins).toEqual([new URL(page.url()).origin]);
 
 		// The input form is gone.
 		await expect(terminal.locator('#contact-name')).toHaveCount(0);
 	});
 
 	test('contact form keeps the form (no success) when the API reports failure', async ({ page }) => {
-		await mockWeb3Forms(page, { success: false });
+		await mockContactApi(page, { success: false });
 
 		const terminal = visibleContactTerminal(page);
 		await terminal.locator('#contact-name').fill('John Doe');
@@ -57,7 +58,7 @@ test.describe('Contact form submission', () => {
 	});
 
 	test('contact form reset button clears the form and returns to input state', async ({ page }) => {
-		await mockWeb3Forms(page, { success: true });
+		await mockContactApi(page, { success: true });
 
 		const terminal = visibleContactTerminal(page);
 		const nameInput = terminal.locator('#contact-name');

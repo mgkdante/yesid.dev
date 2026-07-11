@@ -191,7 +191,7 @@ vi.mock('gsap/SplitText', () => ({
 // fetch used to resolve against the default http://localhost:3000 origin and
 // spray "connect ECONNREFUSED 127.0.0.1:3000" + teardown AbortError stacks
 // across the run (slice-28.4, audit #92). Stubbed surfaces:
-//   - web3forms.com   → canned success JSON so the contact form's success
+//   - /api/contact    → canned success JSON so the contact form's success
 //                       animation fires.
 //   - /api/weather    → JSON null ("no fresh data") so ContactPage/AboutWeather
 //                       keep their SSR-baked prop (slice-28.1 onMount refresh).
@@ -203,7 +203,7 @@ vi.mock('gsap/SplitText', () => ({
 //                       never let DOM tests open real sockets.
 vi.stubGlobal('fetch', async (url: string | URL | Request) => {
 	const urlStr = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
-	if (urlStr.includes('web3forms.com')) {
+	if (urlStr.includes('/api/contact')) {
 		return new Response(JSON.stringify({ success: true }), {
 			status: 200,
 			headers: { 'Content-Type': 'application/json' },

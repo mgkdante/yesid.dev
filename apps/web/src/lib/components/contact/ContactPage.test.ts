@@ -75,6 +75,22 @@ describe('ContactPage', () => {
 		expect(screen.getAllByLabelText(/^message/i).length).toBeGreaterThanOrEqual(1);
 	});
 
+	it('renders an inert hidden website honeypot', () => {
+		const { container } = render(ContactPage, { props: { contactPage: contactContent } });
+		const honeypot = container.querySelector<HTMLInputElement>('input[name="website"]');
+		expect(honeypot).not.toBeNull();
+		expect(honeypot?.tabIndex).toBe(-1);
+		expect(honeypot?.autocomplete).toBe('off');
+		expect(honeypot?.maxLength).toBe(200);
+	});
+
+	it('exposes the server input limits in the form controls', () => {
+		const { container } = render(ContactPage, { props: { contactPage: contactContent } });
+		expect(container.querySelector<HTMLInputElement>('input[name="name"]')?.maxLength).toBe(120);
+		expect(container.querySelector<HTMLInputElement>('input[name="email"]')?.maxLength).toBe(254);
+		expect(container.querySelector<HTMLTextAreaElement>('textarea[name="message"]')?.maxLength).toBe(10_000);
+	});
+
 	it('uses CMS-localized form field labels in labels and validation errors', async () => {
 		const labeledContact = {
 			...contactContent,
@@ -228,12 +244,60 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
 	});
 
-	it('does not track a conversion when Web3Forms reports failure', async () => {
+	it('posts only contact fields to the same-origin endpoint', async () => {
+		const prevFetch = globalThis.fetch;
+		const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+			if (String(input).includes('/api/weather')) return prevFetch(input, init);
+			return new Response(JSON.stringify({ success: true }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		});
+		globalThis.fetch = fetchMock as typeof globalThis.fetch;
+
+		try {
+			const { container } = render(ContactPage, { props: { contactPage: contactContent } });
+			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
+			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
+			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+			await typeInto(nameInputs[0], 'Test User');
+			await typeInto(emailInputs[0], 'test@example.com');
+			await typeInto(messageInputs[0], 'Hello there');
+			const honeypot = container.querySelector<HTMLInputElement>('input[name="website"]');
+			if (!honeypot) throw new Error('contact honeypot is missing');
+			await typeInto(honeypot, '');
+			await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
+
+			await waitFor(() => {
+				const contactCalls = fetchMock.mock.calls.filter(
+					([input]) => !String(input).includes('/api/weather'),
+				);
+				expect(contactCalls).toHaveLength(1);
+				const [input, init] = contactCalls[0];
+				expect(input).toBe('/api/contact');
+				expect(init).toMatchObject({
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+				});
+				expect(JSON.parse(String(init?.body))).toEqual({
+					name: 'Test User',
+					email: 'test@example.com',
+					message: 'Hello there',
+					website: '',
+				});
+				expect(String(init?.body)).not.toContain('access_key');
+			});
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
+	});
+
+	it('does not track a conversion when the same-origin endpoint reports failure', async () => {
 		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
-			if (String(input).includes('web3forms')) {
+			if (String(input).includes('/api/contact')) {
 				return new Response(JSON.stringify({ success: false }), {
-					status: 200,
+					status: 503,
 					headers: { 'Content-Type': 'application/json' },
 				});
 			}
@@ -259,10 +323,10 @@ describe('ContactPage', () => {
 		}
 	});
 
-	it('does not track a conversion when the Web3Forms request rejects', async () => {
+	it('does not track a conversion when the same-origin request rejects', async () => {
 		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
-			if (String(input).includes('web3forms')) throw new Error('offline');
+			if (String(input).includes('/api/contact')) throw new Error('offline');
 			return prevFetch(input, init);
 		}) as typeof globalThis.fetch;
 
@@ -285,17 +349,19 @@ describe('ContactPage', () => {
 		}
 	});
 
-	// Launch-edge batch: the Web3Forms round trip is 1-3s of network time — the
+	// The server delivery round trip is network time — the
 	// button must disable (no double submits) and the terminal must show the
 	// in-flight line instead of dead air.
 	it('disables submit + shows the transmission line while the send is in flight', async () => {
 		const prevFetch = globalThis.fetch;
 		let resolveFetch!: (v: unknown) => void;
-		globalThis.fetch = vi.fn().mockReturnValue(
-			new Promise((resolve) => {
-				resolveFetch = resolve;
-			}),
-		) as typeof globalThis.fetch;
+		const pendingContact = new Promise((resolve) => {
+			resolveFetch = resolve;
+		});
+		globalThis.fetch = vi.fn((input: string | URL | Request, init?: RequestInit) => {
+			if (String(input).includes('/api/contact')) return pendingContact;
+			return prevFetch(input, init);
+		}) as typeof globalThis.fetch;
 
 		try {
 			render(ContactPage, { props: { contactPage: contactContent } });
@@ -315,18 +381,23 @@ describe('ContactPage', () => {
 
 			// A second submit while in flight must not re-fire the request.
 			// (The mount-time weather fetch shares the same stub — count only
-			// the Web3Forms calls.)
-			const web3formsCalls = () =>
+			// the contact delivery calls.)
+			const contactCalls = () =>
 				(globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.filter((call) =>
-					String(call[0]).includes('web3forms'),
+					String(call[0]).includes('/api/contact'),
 				).length;
-			expect(web3formsCalls()).toBe(1);
+			expect(contactCalls()).toBe(1);
 			await submitForm(submitBtns[0]);
-			expect(web3formsCalls()).toBe(1);
+			expect(contactCalls()).toBe(1);
 			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 
 			// Resolve → the success sequence takes over.
-			resolveFetch({ json: async () => ({ success: true }) });
+			resolveFetch(
+				new Response(JSON.stringify({ success: true }), {
+					status: 200,
+					headers: { 'Content-Type': 'application/json' },
+				}),
+			);
 			await waitFor(
 				() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1),
 				{ timeout: 4000 },

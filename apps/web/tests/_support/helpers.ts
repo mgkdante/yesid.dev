@@ -11,21 +11,23 @@
 
 import { type Page, type Locator, expect } from '@playwright/test';
 
-/** Web3Forms submit endpoint — intercepted so contact tests never touch the network. */
-export const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
+/** Same-origin contact endpoint — intercepted so contact tests never send mail. */
+export const CONTACT_API_URL = '**/api/contact';
 
 /**
- * Stub the Web3Forms POST. Must be called BEFORE the submit click.
+ * Stub the contact API POST. Must be called BEFORE the submit click.
  * Returns `submittedEmails` — the e-mail of every request that reached the route,
  * so a test can prove valid input was NOT blocked by client-side validation.
  */
-export async function mockWeb3Forms(
+export async function mockContactApi(
 	page: Page,
 	opts: { success?: boolean } = {}
-): Promise<{ submittedEmails: string[] }> {
+): Promise<{ submittedEmails: string[]; origins: string[] }> {
 	const success = opts.success ?? true;
 	const submittedEmails: string[] = [];
-	await page.route(WEB3FORMS_URL, async (route) => {
+	const origins: string[] = [];
+	await page.route(CONTACT_API_URL, async (route) => {
+		origins.push(route.request().headers().origin ?? '');
 		try {
 			const body = route.request().postDataJSON?.();
 			if (body?.email) submittedEmails.push(body.email);
@@ -33,12 +35,12 @@ export async function mockWeb3Forms(
 			/* non-JSON body — ignore */
 		}
 		await route.fulfill({
-			status: 200,
+			status: success ? 200 : 503,
 			contentType: 'application/json',
 			body: JSON.stringify({ success })
 		});
 	});
-	return { submittedEmails };
+	return { submittedEmails, origins };
 }
 
 /**

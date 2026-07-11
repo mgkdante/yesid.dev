@@ -90,6 +90,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.success.workLinkLabel).toEqual({ en: 'work', fr: 'services' });
 		expect(out.success.blogLinkLabel).toEqual({ en: 'blog', fr: 'blogue' });
 		expect(out.socials).toEqual(channels);
+		expect('web3formsKey' in out).toBe(false);
 		// Best-fit columns absent (pre-seed / pre-promotion CMS): keys stay out
 		// so LocalizedStringSchema never sees an empty en.
 		expect(out.infoTerminal.bestFit).toBeUndefined();

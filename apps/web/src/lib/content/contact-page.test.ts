@@ -1,7 +1,21 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { contactContent } from './contact-page.js';
 
 describe('contactContent', () => {
+	describe('contact transport boundary', () => {
+		it('keeps retired Web3Forms keys and endpoints out of generated and browser code', () => {
+			const activeBrowserSources = [
+				JSON.stringify(contactContent),
+				readFileSync(resolve(process.cwd(), 'src/lib/content/contact-page.ts'), 'utf8'),
+				readFileSync(resolve(process.cwd(), 'src/lib/components/contact/ContactPage.svelte'), 'utf8'),
+			].join('\n');
+
+			expect(activeBrowserSources).not.toMatch(/web3formsKey|api\.web3forms\.com|access_key/i);
+		});
+	});
+
 	describe('stationLabel', () => {
 		it('has en key with station label text', () => {
 			expect(contactContent.stationLabel.en).toContain('NEXT STOP');

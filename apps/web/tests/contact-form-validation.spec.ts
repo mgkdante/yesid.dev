@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
+import { mockContactApi, visibleContactTerminal } from './_support/helpers';
 
 // Ground truth (src/lib/components/contact/ContactPage.svelte + content/contact-page.ts):
 //   - Errors render as `✗ {message}` inside the visible form terminal.
@@ -63,9 +63,9 @@ test.describe('Contact form validation', () => {
 	});
 
 	test('contact form does not submit when email is invalid', async ({ page }) => {
-		// Intercept the Web3Forms endpoint BEFORE the action so we can prove it is
+		// Intercept the same-origin contact endpoint BEFORE the action so we can prove it is
 		// never called when client-side validation rejects the email.
-		const { submittedEmails } = await mockWeb3Forms(page, { success: true });
+		const { submittedEmails } = await mockContactApi(page, { success: true });
 
 		const form = visibleContactTerminal(page);
 		await form.locator('#contact-name').fill('John Doe');
@@ -120,10 +120,10 @@ test.describe('Contact form validation', () => {
 	});
 
 	test('contact form accepts valid email formats', async ({ page }) => {
-		// Stub Web3Forms so a passing submission is deterministic. The intent: valid
+		// Stub the contact API so a passing submission is deterministic. The intent: valid
 		// emails must NOT be blocked by client validation — the handler should reach
 		// the fetch and the success sequence should render (no ✗ errors at all).
-		const { submittedEmails } = await mockWeb3Forms(page, { success: true });
+		const { submittedEmails } = await mockContactApi(page, { success: true });
 
 		const validEmails = ['user@example.com', 'john.doe@company.co.uk', 'test+tag@domain.org'];
 
@@ -148,7 +148,7 @@ test.describe('Contact form validation', () => {
 			await expect(page.getByText('✗ invalid, enter a valid email address')).toHaveCount(0);
 		}
 
-		// Every valid email reached the Web3Forms call (validation never blocked it).
+		// Every valid email reached the contact API call (validation never blocked it).
 		expect(submittedEmails).toEqual(validEmails);
 	});
 });

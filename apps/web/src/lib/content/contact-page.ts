@@ -204,5 +204,4 @@ export const contactContent: ContactContent = {
 			fr: 'requis, {field} ne peut pas être vide',
 		},
 	},
-	web3formsKey: '6887fd90-3348-4d31-ba03-bc0e285697b6',
 };

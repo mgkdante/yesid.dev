@@ -351,9 +351,9 @@ describe('toBlockContactContentRow', () => {
 		expect(row.editor_label).toBe('Contact Content');
 	});
 
-	it('exposes web3forms_key as non-translatable parent column', () => {
-		expect(typeof row.web3forms_key).toBe('string');
-		expect(row.web3forms_key).toBe(contactPageFixture.web3formsKey);
+	it('does not seed the rollback-only web3forms_key field', () => {
+		expect('web3forms_key' in row).toBe(false);
+		expect('web3formsKey' in contactPageFixture).toBe(false);
 	});
 });
 

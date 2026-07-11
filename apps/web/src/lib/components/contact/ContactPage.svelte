@@ -12,8 +12,6 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { fillTemplate } from '$lib/utils/labels';
-	import { siteLabels } from '$lib/content';
 	import { persisted } from '$lib/state/persisted.svelte';
 	import { localeHandoff } from '$lib/state/locale-handoff.svelte';
 	import type { ContactContent } from '$lib/types';
@@ -90,7 +88,7 @@
 	// so the static HTML paints before handleSubmit is attached. A submit in
 	// that window would fall back to a NATIVE GET submit — full reload with the
 	// form values dumped into the query string. The form requires JS to send
-	// (Web3Forms fetch), so the honest pre-hydration state is a disabled
+	// through the same-origin endpoint, so the honest pre-hydration state is a disabled
 	// button; it enables the moment the handler exists.
 	let hydrated = $state(false);
 
@@ -147,6 +145,8 @@
 	const name = persisted<string>('contact-name', '');
 	const email = persisted<string>('contact-email', '');
 	const message = persisted<string>('contact-message', '');
+	// Deliberately not persisted: this field exists only to absorb simple bots.
+	let website = $state('');
 
 	// slice-34.3: seed the message from a ?bp= blueprint handoff, but never on a
 	// switch-restore — a restore must win over the blueprint prefill. The
@@ -198,7 +198,7 @@
 		return Object.keys(errors).length;
 	}
 
-	// --- Submit (client-side — Web3Forms free tier requires client calls) ---
+	// --- Submit through the same-origin server delivery boundary ---
 	let sending = $state(false);
 
 	async function handleSubmit(e: Event) {
@@ -209,23 +209,19 @@
 
 		sending = true;
 		try {
-			const res = await fetch('https://api.web3forms.com/submit', {
+			const res = await fetch('/api/contact', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					access_key: contactPage.web3formsKey,
-					subject: fillTemplate(
-						resolveLocale(siteLabels.email.contactSubjectTemplate, locale) || 'New contact from {name} via yesid.dev',
-						{ name: name.value },
-					),
-					from_name: name.value,
+					name: name.value,
 					email: email.value,
 					message: message.value,
+					website,
 				}),
 			});
-			const result = await res.json();
+			const result = (await res.json()) as { success?: boolean };
 
-			if (!result.success) {
+			if (!res.ok || result.success !== true) {
 				errors = { form: sendErrorMessage };
 				sending = false;
 				return;
@@ -274,6 +270,7 @@
 		name.value = '';
 		email.value = '';
 		message.value = '';
+		website = '';
 		wasSuccessful.value = true;
 
 		successLines = buildSuccessLines().map((l) => ({ ...l, visible: false }));
@@ -292,6 +289,7 @@
 		name.value = '';
 		email.value = '';
 		message.value = '';
+		website = '';
 		wasSuccessful.value = false;
 		submitted = false;
 		errors = {};
@@ -465,6 +463,18 @@
 					onsubmit={handleSubmit}
 					class="mt-3 space-y-3"
 				>
+					<!-- Off-screen honeypot. Humans and assistive technology never need it. -->
+					<label class="contact-honeypot" aria-hidden="true">
+						Website
+						<input
+							name="website"
+							type="text"
+							tabindex="-1"
+							autocomplete="off"
+							maxlength="200"
+							bind:value={website}
+						/>
+					</label>
 					<div class="flex flex-col gap-4">
 
 						<!-- Name field -->
@@ -476,6 +486,7 @@
 								id="contact-name"
 								name="name"
 								type="text"
+								maxlength="120"
 								data-handoff-focus="contact-name"
 								bind:value={name.value}
 								placeholder={resolveLocale(contactPage.formTerminal.fields.name.placeholder, locale)}
@@ -495,6 +506,7 @@
 								id="contact-email"
 								name="email"
 								type="email"
+								maxlength="254"
 								data-handoff-focus="contact-email"
 								bind:value={email.value}
 								placeholder={resolveLocale(contactPage.formTerminal.fields.email.placeholder, locale)}
@@ -517,6 +529,7 @@
 								bind:value={message.value}
 								placeholder={resolveLocale(contactPage.formTerminal.fields.message.placeholder, locale)}
 								rows="6"
+								maxlength="10000"
 								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 							></textarea>
 							{#if submitted && errors.message}
@@ -540,7 +553,7 @@
 						     signage treatment (bg --accent, ink --signage-bg),
 						     never orange: yellow = "talk to Yesid" only.
 						     In flight: disabled + label swaps to the CMS "sending"
-						     line so the 1-3s Web3Forms round trip is never dead air. -->
+						     line so the delivery round trip is never dead air. -->
 						<span class="tap-press" use:pressBounce>
 							<Button
 								variant="conversion"
@@ -624,6 +637,14 @@
 {/snippet}
 
 <style>
+	.contact-honeypot {
+		position: absolute;
+		inset-inline-start: -10000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
 	/* ═══ Recipe 4: Edge Title Grid ═══ */
 	.contact-grid {
 		display: block;

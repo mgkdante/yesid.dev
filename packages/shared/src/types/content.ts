@@ -515,7 +515,7 @@ export interface ContactContent {
 	pageTitle: LocalizedString;
 	/** User-visible subtitle under the title ("NEXT STOP: YOU"). */
 	stationLabel: LocalizedString;
-	/** Error message shown when the contact-form POST to web3forms fails. */
+	/** Error message shown when the contact-form delivery request fails. */
 	sendErrorMessage: LocalizedString;
 	/** HTML `<title>` + `<meta description>` for the `/contact` route — distinct
 	 *  from `pageTitle` (which is the visible page chrome). */
@@ -525,7 +525,6 @@ export interface ContactContent {
 	validation: ContactValidation;
 	success: ContactSuccess;
 	socials: readonly { label: LocalizedString; href: string; icon: string }[];
-	web3formsKey: string; // Public access key — safe to expose client-side
 }
 
 // --- Legal pages (OPS1 launch Phase 1) ---

@@ -183,7 +183,6 @@ export function toContactContent(
 			blogLinkLabel: toLocalizedString(tr, 'success_blog_link_label'),
 		},
 		socials,
-		web3formsKey: str(raw.web3forms_key),
 	};
 }
 

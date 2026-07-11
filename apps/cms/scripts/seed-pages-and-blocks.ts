@@ -633,10 +633,6 @@ export function toBlockContactContentRow(
 		editor_label: 'Contact Content',
 		status: 'published',
 		sort,
-		// Non-translatable parent column: web3formsKey is a public client-safe
-		// form-submission key (not a server secret), used by the contact form
-		// on the client side.
-		web3forms_key: raw.web3formsKey,
 	};
 }
 

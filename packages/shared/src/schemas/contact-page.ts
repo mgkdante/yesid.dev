@@ -86,5 +86,4 @@ export const ContactContentSchema = z.object({
 	validation: ContactValidationSchema,
 	success: ContactSuccessSchema,
 	socials: z.array(ContactSocialLinkSchema).readonly(),
-	web3formsKey: z.string(),
 }) satisfies z.ZodType<ContactContent>;

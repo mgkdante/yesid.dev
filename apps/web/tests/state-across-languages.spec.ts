@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
+import { mockContactApi, visibleContactTerminal } from './_support/helpers';
 
 // State across languages (slice-34 foundation) — the language switch must CARRY
 // in-progress URL state (filters ?service=…, ?station=…, the engine seed) across
@@ -124,7 +124,7 @@ test.describe('State across languages — contact form (session survives the swi
 	});
 
 	test('a SENT message does not resurrect after the switch', async ({ page }) => {
-		await mockWeb3Forms(page, { success: true });
+		await mockContactApi(page, { success: true });
 		await page.goto('/contact');
 		const terminal = visibleContactTerminal(page);
 		await expect(terminal).toBeVisible();
