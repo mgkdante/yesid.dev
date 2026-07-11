@@ -39,10 +39,24 @@
 	);
 	const canonicalAbsolute = $derived(seo.canonical);
 	const ogLocale = $derived(`${locale}_CA`);
-	const otherLocales = $derived(
-		PUBLISHED_LOCALES.filter((l) => l !== locale).map((l) => `${l}_CA`),
-	);
 	const pathForCanonical = $derived(seo.canonical.replace(SITE_HOST, '') || '/');
+	const alternateLocales = $derived(
+		seo.localeAlternates
+			? PUBLISHED_LOCALES.filter((l) => Boolean(seo.localeAlternates?.[l]))
+			: PUBLISHED_LOCALES,
+	);
+	const otherLocales = $derived(
+		alternateLocales.filter((l) => l !== locale).map((l) => `${l}_CA`),
+	);
+	const xDefaultHref = $derived(
+		seo.localeAlternates
+			? seo.localeAlternates.en
+			: canonicalFor(pathForCanonical, 'en'),
+	);
+
+	function alternateHref(locale: Locale): string {
+		return seo.localeAlternates?.[locale] ?? canonicalFor(pathForCanonical, locale);
+	}
 
 	// Dev-mode warnings. Zod already hard-fails outside 50–200 / 70 chars;
 	// these warnings cover the "optimum but not hard-fail" band.
@@ -97,13 +111,15 @@
 	<meta name="twitter:image" content={ogImageAbsolute} />
 	<meta name="twitter:image:alt" content={ogImageAlt} />
 
-	<!-- hreflang per published locale + x-default. Mono-language pages (blog
-	     post bodies, AM2.5) have no locale alternates — suppressed entirely. -->
+	<!-- Static pages derive same-path alternates. Translated content may supply
+	     exact URLs when each locale owns a different slug. -->
 	{#if seo.singleLocale !== true}
-		{#each PUBLISHED_LOCALES as l (l)}
-			<link rel="alternate" hreflang={l} href={canonicalFor(pathForCanonical, l)} />
+		{#each alternateLocales as l (l)}
+			<link rel="alternate" hreflang={l} href={alternateHref(l)} />
 		{/each}
-		<link rel="alternate" hreflang="x-default" href={canonicalFor(pathForCanonical, 'en')} />
+		{#if xDefaultHref}
+			<link rel="alternate" hreflang="x-default" href={xDefaultHref} />
+		{/if}
 	{/if}
 </svelte:head>
 

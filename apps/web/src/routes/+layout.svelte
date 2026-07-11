@@ -55,7 +55,7 @@
 	// slice-34: wire the locale-switch state handoff. MUST run at layout init —
 	// beforeNavigate/afterNavigate register during component initialization, and
 	// the root layout never remounts, so the orchestrator survives page swaps.
-	attachLocaleHandoff();
+	attachLocaleHandoff(() => data.seo.localeHandoffId);
 
 	$effect(() => {
 		if (data.morphShapes) {
@@ -103,7 +103,14 @@
 <Analytics {locale} isHome={basePath === '/'} />
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
-	<Nav pathname={$page.url.pathname} url={$page.url} {locale} {headerLinks} {menuItems} />
+	<Nav
+		pathname={$page.url.pathname}
+		url={$page.url}
+		{locale}
+		localeAlternates={data.seo.localeAlternates}
+		{headerLinks}
+		{menuItems}
+	/>
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}

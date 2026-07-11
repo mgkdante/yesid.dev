@@ -1,6 +1,7 @@
 [
   {
     "id": "the-two-hour-internet-slot",
+    "translation_key": "the-two-hour-internet-slot",
     "status": "published",
     "date_published": "2026-07-11",
     "date_modified": "2026-07-11",
@@ -145,6 +146,7 @@
   },
   {
     "id": "how-i-learn-orbiting-a-system-until-it-clicks",
+    "translation_key": "how-i-learn-orbiting-a-system-until-it-clicks",
     "status": "published",
     "date_published": "2026-07-11",
     "date_modified": "2026-07-11",
@@ -347,6 +349,7 @@
   },
   {
     "id": "thinking-in-matrices",
+    "translation_key": "thinking-in-matrices",
     "status": "published",
     "date_published": "2026-07-11",
     "date_modified": "2026-07-11",
@@ -500,6 +503,7 @@
   },
   {
     "id": "ai-accelerated-human-owned-my-actual-workflow",
+    "translation_key": "ai-accelerated-human-owned-my-actual-workflow",
     "status": "published",
     "date_published": "2026-07-11",
     "date_modified": "2026-07-11",
@@ -640,6 +644,7 @@
   },
   {
     "id": "50-to-0-an-oracle-always-free-vm",
+    "translation_key": "50-to-0-an-oracle-always-free-vm",
     "status": "published",
     "date_published": "2026-07-11",
     "date_modified": "2026-07-11",
@@ -807,6 +812,7 @@
   },
   {
     "id": "does-your-website-need-instant-publishing",
+    "translation_key": "does-your-website-need-instant-publishing",
     "status": "published",
     "date_published": "2026-07-11",
     "date_modified": "2026-07-11",
@@ -963,6 +969,1950 @@
           }
         }
       ]
+    }
+  },
+  {
+    "id": "le-creneau-internet-de-deux-heures",
+    "translation_key": "the-two-hour-internet-slot",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 1,
+    "lang": "fr",
+    "category": "personal",
+    "tags": [
+      "personal-story",
+      "computer-science",
+      "ubuntu",
+      "web-development"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Le créneau internet de deux heures",
+    "excerpt": "Six personnes se partageaient un ordinateur. Mon tour de fin de semaine commençait à huit heures. Des années plus tard, mon incapacité à créer une seule application utile m’a poussé vers l’informatique.",
+    "seo_title": "Deux heures d’internet qui m’ont mené à l’informatique",
+    "seo_description": "Comment un ordinateur familial partagé, Ubuntu 9.04, un premier site web et l’échec d’une application m’ont finalement poussé à étudier l’informatique.",
+    "body": {
+      "time": 1783742400000,
+      "blocks": [
+        {
+          "id": "ch1-fr-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Le samedi matin à huit heures, mon tour sur l’ordinateur familial commençait. Nous étions six à la maison, deux parents et quatre enfants, à partager une seule machine. L’horaire était là pour que chacun puisse avoir son tour. En semaine, j’avais l’ordinateur de quatre à cinq. La fin de semaine, je l’avais de huit à dix. Je me levais tôt, je branchais le routeur et j’utilisais ces deux heures pour jouer ou explorer des navigateurs et des logiciels."
+          }
+        },
+        {
+          "id": "ch1-fr-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Vers 2001 ou 2002, alors que nous vivions encore en Colombie, mes parents ont acheté notre premier ordinateur familial. C’était une machine blanche sous Windows 98. Mes frères aînés jouaient à Age of Empires, et moi aussi. Ma mère continuait à nous acheter des CD éducatifs, surtout pour apprendre l’anglais. Nous n’y avons pas appris beaucoup d’anglais, mais nous avions aussi Encarta, où j’explorais des châteaux et l’histoire. Avec le recul, je ne suivais pas un plan de carrière. C’était simplement ainsi que je passais du temps sur la machine que nous avions. Vers 2005 ou 2006, j’ai commencé à rêver d’avoir mon propre ordinateur."
+          }
+        },
+        {
+          "id": "ch1-fr-003",
+          "type": "paragraph",
+          "data": {
+            "text": "Nous avons déménagé à Sherbrooke en 2007 et avons eu internet à la maison pour la première fois. Avant cela, je connaissais internet grâce aux cafés. À la maison, je suis devenu celui qui installait de nouveaux logiciels et savait se débrouiller avec les navigateurs sur l’ordinateur familial. La personnalisation de pages de profil est aussi devenue mon premier contact accidentel avec le HTML et le CSS. Le créneau du routeur appartenait à cette nouvelle période : internet était enfin dans la maison, mais il fallait toujours partager l’accès au seul écran."
+          }
+        },
+        {
+          "id": "ch1-fr-004",
+          "type": "paragraph",
+          "data": {
+            "text": "En 2009, vers l’âge de douze ans, j’ai utilisé Ubuntu 9.04. J’ai encore le CD orange. Ubuntu a été ma première vraie expérience de la ligne de commande. Je me suis familiarisé avec <code>sudo</code>, j’ai installé des logiciels et des pilotes graphiques, et j’ai créé des répertoires depuis le terminal. Pour la première fois, j’accomplissais ces tâches en tapant des commandes."
+          }
+        },
+        {
+          "id": "ch1-fr-005",
+          "type": "header",
+          "data": {
+            "text": "Le premier site web",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch1-fr-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Cette même année, j’ai créé mon premier site web avec PaginaWebGratis, un créateur de sites gratuit. Je l’ai appelé Mangaka Latino. C’était un site de fans d’anime construit avec du HTML, un peu de CSS et des images liées. Il utilisait aussi des liens de diffusion en continu non autorisés pour les anime. À côté de ces pages, j’ai ajouté Latino TV et des radios colombiennes pendant que je vivais à Sherbrooke."
+          }
+        },
+        {
+          "id": "ch1-fr-007",
+          "type": "paragraph",
+          "data": {
+            "text": "Je l’ai maintenu de 2009 à 2011. En juillet 2026, le site était encore en ligne. Avec le recul, ce qui ressort est la combinaison présente sur cette page : les anime que je suivais, la télévision en espagnol et la radio colombienne, réunis avec les outils limités que je comprenais à l’époque. Je connaissais peu le développement logiciel, mais j’avais créé un endroit sur internet et j’y suis revenu pendant environ deux ans pour le maintenir."
+          }
+        },
+        {
+          "id": "ch1-fr-008",
+          "type": "paragraph",
+          "data": {
+            "text": "En regardant cette combinaison aujourd’hui, je peux voir le passage d’un pays à l’autre dans la page elle-même. Le site a été créé au Québec, mais une partie de ce que j’y ai mis venait de Colombie. Je le vois maintenant dans ce qui a survécu."
+          }
+        },
+        {
+          "id": "ch1-fr-009",
+          "type": "paragraph",
+          "data": {
+            "text": "À l’été 2011, j’ai gagné 600 $ à mon premier emploi et j’ai utilisé cet argent pour acheter mon premier ordinateur, un Sony VAIO. C’était la première machine que j’avais payée moi-même. L’ordinateur que je désirais vers 2005 ou 2006 était enfin à moi. De 2011 à 2014, il a surtout servi au divertissement, avec quelques petits bricolages techniques. J’ai ensuite obtenu un diplôme en comptabilité et gestion. Mon cœur appartenait toujours aux ordinateurs, mais le chemin du retour n’a pas été immédiat."
+          }
+        },
+        {
+          "id": "ch1-fr-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Après le diplôme, j’ai créé une boutique Shopify du début à la fin. Ce travail m’a montré qu’il y avait davantage derrière une page que les parties que je pouvais voir et personnaliser. J’ai remarqué cet écart, mais il n’a pas immédiatement changé ma direction. Le vrai tournant est arrivé avec un autre projet, qui n’est jamais devenu un produit fonctionnel."
+          }
+        },
+        {
+          "id": "ch1-fr-011",
+          "type": "header",
+          "data": {
+            "text": "L’application que je n’ai pas pu créer",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch1-fr-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Un ami a proposé un site web qui comparerait les prix des produits d’épicerie. J’ai essayé de le créer, mais rien de fonctionnel n’a vu le jour. J’avais créé un site d’anime et assemblé une boutique Shopify, mais je n’arrivais pas à transformer cette idée en application fonctionnelle. Cet échec a rendu concrète la limite de mes connaissances. Il m’a poussé vers l’informatique en 2019."
+          }
+        },
+        {
+          "id": "ch1-fr-013",
+          "type": "paragraph",
+          "data": {
+            "text": "C’était différent de personnaliser un modèle ou d’assembler une boutique en ligne. L’idée avait besoin d’un système fonctionnel derrière la page, et je n’arrivais pas à en créer un."
+          }
+        },
+        {
+          "id": "ch1-fr-014",
+          "type": "paragraph",
+          "data": {
+            "text": "J’ai terminé le programme d’informatique en décembre 2022. Aujourd’hui, je travaille comme développeur SQL et je réalise des projets personnels. Il y a eu des années de divertissement, un diplôme en comptabilité, une boutique et une tentative d’application qui n’a mené nulle part. Étudier l’informatique a été une décision plus tardive, prise après avoir trouvé quelque chose d’utile que je ne savais pas créer."
+          }
+        },
+        {
+          "id": "ch1-fr-015",
+          "type": "paragraph",
+          "data": {
+            "text": "Le CD orange d’Ubuntu 9.04 date de 2009, et je l’ai encore à l’étage. Avec le recul, les ordinateurs me donnaient souvent une rétroaction rapide : changer quelque chose, voir ce qui se passait, puis réessayer. D’autres systèmes ne se révélaient pas aussi rapidement. Pour certains, il a fallu des années avant que je puisse voir leur structure."
+          }
+        },
+        {
+          "id": "ch1-fr-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le chapitre 1 d’une épopée en six chapitres. Chapitres 1 à 3 : qui je suis. Chapitres 4 à 6 : ce que je construis. Suivant : <a href=\"/fr/blog/comment-japprends-graviter-autour-dun-systeme-jusquau-declic\">Comment j’apprends : graviter autour d’un système jusqu’au déclic</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "el-turno-de-dos-horas-para-usar-internet",
+    "translation_key": "the-two-hour-internet-slot",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 1,
+    "lang": "es",
+    "category": "personal",
+    "tags": [
+      "personal-story",
+      "computer-science",
+      "ubuntu",
+      "web-development"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "El turno de dos horas para usar internet",
+    "excerpt": "Seis personas compartíamos una computadora. Mi turno de fin de semana empezaba a las ocho. Años después, no poder crear una sola aplicación útil me llevó a estudiar ciencias de la computación.",
+    "seo_title": "Dos horas de internet que me llevaron a la informática",
+    "seo_description": "Cómo una computadora familiar compartida, Ubuntu 9.04, un primer sitio web y una aplicación fallida terminaron por llevarme a estudiar informática.",
+    "body": {
+      "time": 1783742400000,
+      "blocks": [
+        {
+          "id": "ch1-es-001",
+          "type": "paragraph",
+          "data": {
+            "text": "A las ocho del sábado por la mañana empezaba mi turno en la computadora familiar. Éramos seis en casa, dos padres y cuatro hijos, compartiendo una sola máquina. El horario existía para que todos tuviéramos nuestro turno. Entre semana, me correspondía de cuatro a cinco. Los fines de semana, tenía la computadora de ocho a diez. Me levantaba temprano, conectaba el router y usaba esas dos horas para jugar o explorar navegadores y programas."
+          }
+        },
+        {
+          "id": "ch1-es-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Alrededor de 2001 o 2002, cuando todavía vivíamos en Colombia, mis padres compraron nuestra primera computadora para la casa. Era una máquina blanca con Windows 98. Mis hermanos mayores jugaban Age of Empires, y yo también. Mi madre seguía comprándonos CD educativos, sobre todo material para aprender inglés. No aprendimos mucho inglés con ellos, pero también teníamos Encarta, donde exploraba castillos e historia. Al mirar atrás, no estaba siguiendo un plan profesional. Simplemente era la forma en que pasaba el tiempo con la máquina que teníamos. Alrededor de 2005 o 2006, empecé a soñar con tener mi propia computadora."
+          }
+        },
+        {
+          "id": "ch1-es-003",
+          "type": "paragraph",
+          "data": {
+            "text": "Nos mudamos a Sherbrooke en 2007 y tuvimos internet en casa por primera vez. Antes de eso, conocía internet por los cibercafés. En casa, me convertí en la persona que instalaba programas nuevos y sabía moverse entre los navegadores de la computadora familiar. Personalizar páginas de perfil también fue mi primer contacto accidental con HTML y CSS. El turno del router pertenecía a esa nueva etapa: internet por fin estaba dentro de la casa, pero todavía teníamos que compartir el acceso a la única pantalla."
+          }
+        },
+        {
+          "id": "ch1-es-004",
+          "type": "paragraph",
+          "data": {
+            "text": "En 2009, cuando tenía unos doce años, usé Ubuntu 9.04. Todavía conservo el CD naranja. Ubuntu fue mi primer contacto real con la línea de comandos. Me acostumbré a usar <code>sudo</code>, instalé programas y controladores gráficos, y creé directorios desde la terminal. Por primera vez, hacía esas tareas escribiendo comandos."
+          }
+        },
+        {
+          "id": "ch1-es-005",
+          "type": "header",
+          "data": {
+            "text": "El primer sitio web",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch1-es-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Ese mismo año, construí mi primer sitio web con PaginaWebGratis, un creador de sitios gratuito. Lo llamé Mangaka Latino. Era un sitio de fans del anime hecho con HTML, algo de CSS e imágenes enlazadas. También usaba enlaces de streaming no autorizados para el anime. Junto a esas páginas, agregué Latino TV y radio colombiana mientras vivía en Sherbrooke."
+          }
+        },
+        {
+          "id": "ch1-es-007",
+          "type": "paragraph",
+          "data": {
+            "text": "Lo mantuve de 2009 a 2011. En julio de 2026, el sitio todavía estaba en línea. Al mirar atrás, lo que más resalta es la combinación que había en esa página: el anime que seguía, televisión en español y radio de Colombia, todo armado con las herramientas limitadas que entendía en ese momento. No sabía mucho sobre desarrollo de software, pero había creado un lugar en internet y seguí volviendo para mantenerlo durante unos dos años."
+          }
+        },
+        {
+          "id": "ch1-es-008",
+          "type": "paragraph",
+          "data": {
+            "text": "Al ver esa combinación ahora, puedo ver el paso de un país a otro en la propia página. El sitio se creó en Quebec, pero parte de lo que puse allí venía de Colombia. Ahora puedo verlo en lo que sobrevivió."
+          }
+        },
+        {
+          "id": "ch1-es-009",
+          "type": "paragraph",
+          "data": {
+            "text": "En el verano de 2011, gané $600 en mi primer trabajo y usé ese dinero para comprar mi primera computadora, una Sony VAIO. Fue la primera máquina que pagué con mi propio dinero. La computadora que había querido alrededor de 2005 o 2006 por fin era mía. De 2011 a 2014, la usé sobre todo para entretenerme y para algo de experimentación técnica. Después terminé un diploma en contabilidad y gestión. Mi corazón todavía estaba con las computadoras, pero el camino de regreso no fue inmediato."
+          }
+        },
+        {
+          "id": "ch1-es-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Después del diploma, construí una tienda Shopify de principio a fin. Hacerlo me mostró que detrás de una página había más que las partes que yo podía ver y personalizar. Noté esa diferencia, pero no cambió mi rumbo de inmediato. El verdadero giro llegó con otro proyecto, uno que nunca se convirtió en un producto funcional."
+          }
+        },
+        {
+          "id": "ch1-es-011",
+          "type": "header",
+          "data": {
+            "text": "La aplicación que no pude crear",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch1-es-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Un amigo propuso un sitio web que comparara los precios de productos de supermercado. Intenté construirlo, pero no llegué a entregar nada funcional. Había creado un sitio de anime y armado una tienda Shopify, pero no podía convertir esa idea en una aplicación que funcionara. Ese fracaso hizo concreto el límite de mis conocimientos. Me empujó hacia las ciencias de la computación en 2019."
+          }
+        },
+        {
+          "id": "ch1-es-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Esto era distinto de personalizar una plantilla o armar una tienda en línea. La idea necesitaba un sistema funcional detrás de la página, y yo no sabía construirlo."
+          }
+        },
+        {
+          "id": "ch1-es-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Terminé el programa de ciencias de la computación en diciembre de 2022. Hoy trabajo como desarrollador SQL y construyo proyectos personales. Hubo años de entretenimiento, un diploma en contabilidad, una tienda y un intento de aplicación que no llegó a ninguna parte. Estudiar ciencias de la computación fue una decisión posterior, que tomé después de encontrar algo útil que no sabía construir."
+          }
+        },
+        {
+          "id": "ch1-es-015",
+          "type": "paragraph",
+          "data": {
+            "text": "El CD naranja de Ubuntu 9.04 es de 2009 y todavía lo tengo en el piso de arriba. Al mirar atrás, las computadoras solían darme retroalimentación rápida: cambiar algo, ver qué pasaba e intentarlo de nuevo. Otros sistemas no se revelaban tan rápido. Algunos tardaron años antes de que pudiera ver su estructura."
+          }
+        },
+        {
+          "id": "ch1-es-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el capítulo 1 de una serie de seis capítulos. Capítulos 1–3: quién soy. Capítulos 4–6: lo que construyo. Siguiente: <a href=\"/es/blog/como-aprendo-orbitar-un-sistema-hasta-que-encaja\">Cómo aprendo: orbitar un sistema hasta que encaja</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "comment-japprends-graviter-autour-dun-systeme-jusquau-declic",
+    "translation_key": "how-i-learn-orbiting-a-system-until-it-clicks",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 2,
+    "lang": "fr",
+    "category": "personal",
+    "tags": [
+      "learning",
+      "systems-thinking",
+      "accounting",
+      "ai"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Comment j’apprends : graviter autour d’un système jusqu’au déclic",
+    "excerpt": "Pendant deux ans, la comptabilité n’avait aucun sens pour moi. Puis une conversation m’a révélé le système derrière les règles.",
+    "seo_title": "Comment j’apprends : rester au contact jusqu’au déclic",
+    "seo_description": "Deux années de confusion en comptabilité ont mené à un déclic. Voici pourquoi je reste au contact des systèmes difficiles jusqu’à voir leur structure.",
+    "body": {
+      "time": 1783742400001,
+      "blocks": [
+        {
+          "id": "ch2-fr-001",
+          "type": "paragraph",
+          "data": {
+            "text": "J’étudiais pour un examen de comptabilité, deux ans après le début de mon diplôme, lorsque j’ai demandé à mon colocataire de m’expliquer pourquoi l’actif est égal au passif plus les capitaux propres."
+          }
+        },
+        {
+          "id": "ch2-fr-002",
+          "type": "paragraph",
+          "data": {
+            "text": "La comptabilité avait été difficile dès le début. Après une période pénible en mathématiques au secondaire, j’avais peu de connaissances sur les stocks ou la gestion de l’argent, et les abstractions étaient difficiles à comprendre. J’étudiais cette matière, mais je ne voyais toujours pas la logique qui reliait ses différentes parties."
+          }
+        },
+        {
+          "id": "ch2-fr-003",
+          "type": "paragraph",
+          "data": {
+            "text": "Mon colocataire a repris l’équation avec moi. Pendant qu’il l’expliquait, j’ai commencé à voir qu’un changement dans une partie entraînait une conséquence correspondante ailleurs. Je m’en souviens très clairement. Tout un système s’est mis en place. J’avais l’impression d’avoir tracé une ligne qui, à un moment, rejoignait sa propre queue."
+          }
+        },
+        {
+          "id": "ch2-fr-004",
+          "type": "header",
+          "data": {
+            "text": "Le système derrière les règles",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-fr-005",
+          "type": "paragraph",
+          "data": {
+            "text": "Le déclic n’est pas venu du fait d’avoir enfin mémorisé dans quel sens inscrire un débit ou un crédit. Certains de ces détails restaient incertains même lorsque je racontais l’histoire plus tard. Ce qui est resté clair, c’était la structure apparue sous ces détails."
+          }
+        },
+        {
+          "id": "ch2-fr-006",
+          "type": "paragraph",
+          "data": {
+            "text": "L’actif est égal au passif plus les capitaux propres. Ce n’étaient plus trois termes posés côte à côte autour d’un signe égal comme des faits distincts. Ils appartenaient à un seul modèle. Les événements consignés en comptabilité ne produisaient pas des consignes isolées. Ils avaient des conséquences correspondantes qui devaient rester cohérentes dans le système."
+          }
+        },
+        {
+          "id": "ch2-fr-007",
+          "type": "paragraph",
+          "data": {
+            "text": "C’était ce qui me manquait. Avant cette conversation, la comptabilité ressemblait à une logique improvisée. Je pouvais recevoir une règle, puis une autre, sans comprendre pourquoi elles allaient ensemble. Une fois que j’ai vu l’interdépendance, les règles avaient un endroit où s’inscrire. Je pouvais les comprendre comme des parties d’une même structure au lieu de porter chacune comme un fait distinct."
+          }
+        },
+        {
+          "id": "ch2-fr-008",
+          "type": "paragraph",
+          "data": {
+            "text": "L’équation peut rester valide pour une entreprise en difficulté ou non rentable, alors elle ne mesure pas sa santé. Ce qui comptait pour moi, c’était la cohérence des écritures : une opération pouvait toucher des comptes de différentes façons, mais ses conséquences appartenaient toujours au même système relié. C’est cette relation, plutôt qu’un sens particulier, qui m’est restée."
+          }
+        },
+        {
+          "id": "ch2-fr-009",
+          "type": "paragraph",
+          "data": {
+            "text": "Avec le recul, voici la distinction que j’essayais de saisir : une règle peut me dire quoi faire dans un cas précis, alors qu’un système me permet de voir pourquoi cette règle va avec d’autres règles."
+          }
+        },
+        {
+          "id": "ch2-fr-010",
+          "type": "header",
+          "data": {
+            "text": "Ce qui s’accumulait pendant ces deux années",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-fr-011",
+          "type": "paragraph",
+          "data": {
+            "text": "Il est tentant de donner un caractère magique à cette conversation, mais cela effacerait les deux années qui l’ont précédée. L’explication est venue après deux ans de contact avec la matière et a relié plus d’un fait. Le contexte était déjà là avant que je puisse en voir la forme. La conversation a rendu la structure visible."
+          }
+        },
+        {
+          "id": "ch2-fr-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Par graviter, j’entends rester au contact d’un système assez longtemps pour que sa structure devienne visible. Dans ce souvenir, le contact s’est accumulé avant la compréhension. C’est ainsi que j’explique ce délai aujourd’hui, et non une méthode que je savais suivre à l’époque."
+          }
+        },
+        {
+          "id": "ch2-fr-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Graviter n’est pas attendre passivement. Le contact compte, et la confusion ne constitue pas un accomplissement en soi. En comptabilité, j’étais resté engagé dans une matière qui demeurait abstraite pour moi. Lorsque l’équation a finalement rendu les relations visibles, l’exposition précédente leur a donné un contexte."
+          }
+        },
+        {
+          "id": "ch2-fr-014",
+          "type": "paragraph",
+          "data": {
+            "text": "La conversation n’a pas remplacé ces deux années. Elle a changé la façon dont je pouvais organiser ce que j’y avais rencontré. La matière m’était familière, mais sa forme était nouvelle pour moi. C’est ce que l’image de l’orbite nomme dans ce souvenir : une période de contact avant que je puisse voir l’ensemble. Elle laisse place à un déclic ultérieur sans prétendre que le temps seul le garantit."
+          }
+        },
+        {
+          "id": "ch2-fr-015",
+          "type": "header",
+          "data": {
+            "text": "Le déclic n’arrive pas toujours",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-fr-016",
+          "type": "paragraph",
+          "data": {
+            "text": "Le français et l’anglais ne sont pas arrivés grâce à un seul déclic. Je les ai appris par immersion, au fil d’un apprentissage progressif. Je ne peux pas désigner un moment où l’une ou l’autre langue s’est mise à avoir du sens, ni une date où l’apprentissage a été achevé."
+          }
+        },
+        {
+          "id": "ch2-fr-017",
+          "type": "paragraph",
+          "data": {
+            "text": "Elles se sont installées à mon insu. À un moment, j’ai réalisé que je parlais couramment les deux langues, puis que je pouvais m’y exprimer avec éloquence, mais je ne me souviens pas du moment où cela est devenu vrai. Le changement était trop graduel pour que je puisse le séparer de l’immersion qui l’avait produit."
+          }
+        },
+        {
+          "id": "ch2-fr-018",
+          "type": "paragraph",
+          "data": {
+            "text": "Cette différence remet le souvenir de la comptabilité en perspective. La comptabilité m’a donné un déclic dont je me souviens clairement. Le français et l’anglais m’ont offert une progression que je ne peux reconnaître qu’avec le recul. L’apprentissage des langues n’était pas une version incomplète de l’expérience en comptabilité. C’était simplement une autre manière d’apprendre dans mon parcours."
+          }
+        },
+        {
+          "id": "ch2-fr-019",
+          "type": "paragraph",
+          "data": {
+            "text": "Le souvenir de la comptabilité est un récit fidèle, pas une formule universelle. Certaines connaissances deviennent visibles à un moment précis. Certaines aptitudes progressent si graduellement que je ne reconnais le résultat qu’après coup."
+          }
+        },
+        {
+          "id": "ch2-fr-020",
+          "type": "header",
+          "data": {
+            "text": "Ce autour de quoi je gravite maintenant",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-fr-021",
+          "type": "paragraph",
+          "data": {
+            "text": "En ce moment, je gravite autour des mathématiques qui sous-tendent l’IA. Mon objectif actuel n’est pas simplement de travailler avec l’IA, mais de comprendre ce qui se trouve derrière les tokens. J’apprends ce que sont les tokens, les réseaux neuronaux et les prédictions, ainsi que les rôles des CPU et des GPU. Je peux nommer certaines parties, mais je ne peux pas encore expliquer la chaîne complète de A à Z."
+          }
+        },
+        {
+          "id": "ch2-fr-022",
+          "type": "paragraph",
+          "data": {
+            "text": "Le déclic n’a pas encore eu lieu pour ce système. Je tourne toujours autour de la logique derrière ces sujets et j’essaie de comprendre ce qui relie une partie à une autre. J’espère finir par intégrer le processus dans son ensemble et l’expliquer clairement du début à la fin, dans mes propres mots. Pour l’instant, j’essaie de comprendre les questions une à la fois."
+          }
+        },
+        {
+          "id": "ch2-fr-023",
+          "type": "paragraph",
+          "data": {
+            "text": "Quand je repense à la conversation sur la comptabilité, je vois toujours la ligne rejoindre sa propre queue. Reconnaître un système a changé ma façon de remarquer les relations ailleurs, et cette évolution vers la perception de dimensions reliées marque le début de la pensée matricielle que je veux examiner ensuite."
+          }
+        },
+        {
+          "id": "ch2-fr-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le chapitre 2 d’une épopée en six chapitres. Chapitres 1 à 3 : qui je suis. Chapitres 4 à 6 : ce que je construis. Précédent : <a href=\"/fr/blog/le-creneau-internet-de-deux-heures\">Le créneau internet de deux heures</a> · Suivant : <a href=\"/fr/blog/penser-en-matrices\">Penser en matrices</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "como-aprendo-orbitar-un-sistema-hasta-que-encaja",
+    "translation_key": "how-i-learn-orbiting-a-system-until-it-clicks",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 2,
+    "lang": "es",
+    "category": "personal",
+    "tags": [
+      "learning",
+      "systems-thinking",
+      "accounting",
+      "ai"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Cómo aprendo: orbitar un sistema hasta que encaja",
+    "excerpt": "Durante dos años, la contabilidad no tenía sentido para mí. Luego, una conversación reveló el sistema que había detrás de las reglas.",
+    "seo_title": "Cómo aprendo: orbitar un sistema hasta que encaja",
+    "seo_description": "Cómo dos años de confusión con la contabilidad terminaron en un momento en que todo encajó, y por qué sigo cerca de los sistemas difíciles hasta ver su estructura.",
+    "body": {
+      "time": 1783742400001,
+      "blocks": [
+        {
+          "id": "ch2-es-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Estaba estudiando para un examen de contabilidad, dos años después de empezar el diploma, cuando le pedí a mi compañero de apartamento que me explicara por qué los activos son iguales a los pasivos más el patrimonio."
+          }
+        },
+        {
+          "id": "ch2-es-002",
+          "type": "paragraph",
+          "data": {
+            "text": "La contabilidad había sido difícil desde el principio. Después de una etapa complicada con las matemáticas en la secundaria, sabía poco sobre inventarios o manejo del dinero, y me costaba entender las abstracciones. Había estado estudiando la materia, pero todavía no veía la lógica que mantenía unidas sus partes."
+          }
+        },
+        {
+          "id": "ch2-es-003",
+          "type": "paragraph",
+          "data": {
+            "text": "Mi compañero repasó la ecuación conmigo. Mientras la explicaba, empecé a ver que un cambio en una parte tenía una consecuencia relacionada en otra. Lo recuerdo con mucha claridad. Todo un sistema encajó. Sentí que había estado dibujando una línea y que, en algún momento, la línea se encontraba con su propia cola."
+          }
+        },
+        {
+          "id": "ch2-es-004",
+          "type": "header",
+          "data": {
+            "text": "El sistema detrás de las reglas",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-es-005",
+          "type": "paragraph",
+          "data": {
+            "text": "El avance no consistió en memorizar por fin hacia qué lado va un débito o un crédito. Algunos de esos detalles seguían siendo inciertos incluso cuando volví a contar la historia. Lo que quedó claro fue la estructura que había aparecido debajo de ellos."
+          }
+        },
+        {
+          "id": "ch2-es-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Los activos son iguales a los pasivos más el patrimonio. Ya no eran tres términos puestos junto a un signo igual como hechos separados. Pertenecían a un solo modelo. Los eventos registrados en la contabilidad no producían instrucciones aisladas. Tenían consecuencias emparejadas que debían mantener la coherencia dentro del sistema."
+          }
+        },
+        {
+          "id": "ch2-es-007",
+          "type": "paragraph",
+          "data": {
+            "text": "Eso era lo que me faltaba. Antes de la conversación, la contabilidad parecía una lógica improvisada. Podía recibir una regla y luego otra sin entender por qué iban juntas. Cuando vi la interdependencia, las reglas encontraron un lugar. Pude entenderlas como partes de una sola estructura, en vez de cargar cada una como un hecho separado."
+          }
+        },
+        {
+          "id": "ch2-es-008",
+          "type": "paragraph",
+          "data": {
+            "text": "La ecuación puede cumplirse para una empresa con problemas o sin rentabilidad, así que no es una prueba de salud. Lo que me importaba era la coherencia del registro: una transacción podía afectar las cuentas de distintas formas, pero sus consecuencias seguían perteneciendo al mismo sistema conectado. Esa relación, y no una dirección particular, fue lo que se me quedó."
+          }
+        },
+        {
+          "id": "ch2-es-009",
+          "type": "paragraph",
+          "data": {
+            "text": "Al mirar atrás, esta es la distinción que intentaba alcanzar: una regla puede decirme qué hacer en un caso, mientras que un sistema me permite ver por qué esa regla encaja con otras reglas."
+          }
+        },
+        {
+          "id": "ch2-es-010",
+          "type": "header",
+          "data": {
+            "text": "Lo que hicieron esos dos años",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-es-011",
+          "type": "paragraph",
+          "data": {
+            "text": "Es tentador hacer que la conversación parezca mágica, pero eso borraría los dos años anteriores. La explicación llegó después de dos años de exposición y conectó más de un hecho. El contexto ya estaba allí antes de que pudiera ver su forma. La conversación hizo visible la estructura."
+          }
+        },
+        {
+          "id": "ch2-es-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Cuando digo orbitar, me refiero a mantenerme en contacto con un sistema el tiempo suficiente para que su estructura se vuelva visible. En este recuerdo, el contacto se acumuló antes de que llegara la comprensión. Así entiendo ahora esa demora; no era un método que yo supiera que estaba siguiendo en ese momento."
+          }
+        },
+        {
+          "id": "ch2-es-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Orbitar no es esperar de forma pasiva. El contacto importa, y la confusión por sí sola no es el logro. En contabilidad, me había mantenido involucrado con una materia que seguía siendo abstracta para mí. Cuando la ecuación por fin hizo visibles las relaciones, la exposición anterior les dio contexto."
+          }
+        },
+        {
+          "id": "ch2-es-014",
+          "type": "paragraph",
+          "data": {
+            "text": "La conversación no reemplazó los dos años. Cambió la forma en que podía organizar lo que había ido encontrando durante ese tiempo. El material me resultaba conocido, pero su forma era nueva para mí. Eso es lo que nombra la imagen de la órbita en este recuerdo: un periodo de contacto antes de que pudiera ver el conjunto. Deja espacio para que algo encaje más adelante, sin fingir que el tiempo por sí solo lo garantiza."
+          }
+        },
+        {
+          "id": "ch2-es-015",
+          "type": "header",
+          "data": {
+            "text": "No todo encaja de golpe",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-es-016",
+          "type": "paragraph",
+          "data": {
+            "text": "El francés y el inglés no llegaron a mí en un solo momento revelador. Los aprendí por inmersión y progresión. No puedo señalar un único momento en que alguno de los dos idiomas cobró sentido, ni una fecha en que el aprendizaje quedó completo."
+          }
+        },
+        {
+          "id": "ch2-es-017",
+          "type": "paragraph",
+          "data": {
+            "text": "Se fueron instalando poco a poco. En algún momento me di cuenta de que hablaba ambos idiomas con fluidez y, con el tiempo, de que podía expresarme con elocuencia en ellos, pero no recuerdo cuándo ocurrió. El cambio fue demasiado gradual para separarlo de la inmersión que lo produjo."
+          }
+        },
+        {
+          "id": "ch2-es-018",
+          "type": "paragraph",
+          "data": {
+            "text": "Esa diferencia mantiene el recuerdo de la contabilidad en su justa proporción. La contabilidad me dio un momento en que todo encajó y que recuerdo con claridad. El francés y el inglés me dieron una progresión que solo puedo reconocer al mirar atrás. La experiencia con los idiomas no fue una versión incompleta de la experiencia con la contabilidad. Simplemente fue otra forma en que ocurrió el aprendizaje en mi vida."
+          }
+        },
+        {
+          "id": "ch2-es-019",
+          "type": "paragraph",
+          "data": {
+            "text": "El recuerdo de la contabilidad es una descripción verdadera, no una fórmula universal. Algunos conocimientos se vuelven visibles en un momento particular. Algunas capacidades crecen tan gradualmente que solo reconozco el resultado después."
+          }
+        },
+        {
+          "id": "ch2-es-020",
+          "type": "header",
+          "data": {
+            "text": "Lo que estoy orbitando ahora",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch2-es-021",
+          "type": "paragraph",
+          "data": {
+            "text": "Ahora mismo, estoy orbitando las matemáticas que hay detrás de la IA. Mi objetivo actual no es simplemente trabajar con IA, sino entender qué hay detrás de los tokens. Estoy aprendiendo sobre tokens, redes neuronales, predicciones y las funciones de las CPU y las GPU. Puedo nombrar algunas partes, pero todavía no puedo explicar la cadena completa de principio a fin."
+          }
+        },
+        {
+          "id": "ch2-es-022",
+          "type": "paragraph",
+          "data": {
+            "text": "El sistema todavía no ha encajado. Sigo dando vueltas alrededor de la lógica que hay detrás de estos temas e intentando entender qué conecta una parte con otra. Espero que algún día pueda interiorizar el proceso como un todo y explicarlo con claridad de principio a fin, con mis propias palabras. Por ahora, voy tratando de entender las preguntas una por una."
+          }
+        },
+        {
+          "id": "ch2-es-023",
+          "type": "paragraph",
+          "data": {
+            "text": "Cuando recuerdo la conversación sobre contabilidad, todavía pienso en la línea que se encuentra con su propia cola. Reconocer un sistema cambió la forma en que notaba las relaciones en otros lugares, y ahí empieza la forma de pensar en matrices que quiero examinar después, en ese cambio hacia una visión de dimensiones conectadas."
+          }
+        },
+        {
+          "id": "ch2-es-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el capítulo 2 de una serie de seis capítulos. Capítulos 1–3: quién soy. Capítulos 4–6: lo que construyo. Anterior: <a href=\"/es/blog/el-turno-de-dos-horas-para-usar-internet\">El turno de dos horas para usar internet</a> · Siguiente: <a href=\"/es/blog/pensar-en-matrices\">Pensar en matrices</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "penser-en-matrices",
+    "translation_key": "thinking-in-matrices",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 3,
+    "lang": "fr",
+    "category": "personal",
+    "tags": [
+      "systems-thinking",
+      "sql",
+      "gtfs",
+      "transit-data"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Penser en matrices",
+    "excerpt": "Je vois des lignes et des colonnes quand j’observe les systèmes. Cette habitude m’a aidé à bâtir un projet de transport collectif et m’a appris où les données s’arrêtent.",
+    "seo_title": "Penser en matrices : des données GTFS aux requêtes SQL",
+    "seo_description": "Comment j’utilise les lignes, les colonnes, les données GTFS, SQL et les relations comptables pour examiner des systèmes et voir où la mesure s’arrête.",
+    "body": {
+      "time": 1783742400002,
+      "blocks": [
+        {
+          "id": "ch3-fr-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Quand j’ai compris comment GTFS Schedule et GTFS Realtime pouvaient fonctionner ensemble, j’ai vu une matrice de questions utiles sur le transport collectif montréalais. GTFS Schedule fournissait le volet planifié : les lignes, les trajets, les arrêts et les horaires. GTFS Realtime pouvait ajouter les mises à jour des trajets en temps réel, la position des véhicules, la valeur numérique du retard et des renseignements facultatifs sur l’occupation. Une seule date, une plage de dates ou une période plus longue ajoutait une autre dimension. <a href=\"https://transit.yesid.dev\">transit.yesid.dev</a> est né en partie du fait que je voyais comment ces dimensions pouvaient se croiser, plutôt que de traiter chaque flux ou chaque mesure comme un fait séparé."
+          }
+        },
+        {
+          "id": "ch3-fr-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Placez une ligne sur un axe et le temps sur l’autre, puis demandez-vous où le service planifié et les observations en temps réel divergent. Quelles lignes sont en retard durant la période choisie? Le motif change-t-il lorsque la plage de dates change? À quel endroit l’information disponible sur l’occupation montre-t-elle un motif différent à une certaine heure? Quels trajets d’autobus planifiés devraient être en service maintenant, mais n’ont aucun véhicule en temps réel correspondant? Chaque question vient d’un croisement différent entre le service planifié, l’information en temps réel, une interprétation du produit et un contrôle temporel. La matrice transforme une liste de champs en quelque chose que je peux examiner."
+          }
+        },
+        {
+          "id": "ch3-fr-003",
+          "type": "paragraph",
+          "data": {
+            "text": "Ces questions exigent que les couches de la source et du produit restent distinctes. Le retard est une valeur numérique, tandis que les catégories en avance, à l’heure, en retard et retard important sont des interprétations créées par le produit. Les données d’occupation sont facultatives et expérimentales : elles peuvent donc être absentes ou incomplètes, et rien ne garantit qu’elles forment une échelle linéaire. Le statut de non-transmission est distinct : c’est un signal dérivé par le produit pour un trajet d’autobus planifié qui devrait être en service maintenant, mais auquel aucun véhicule en temps réel ne correspond. Ce n’est pas une valeur temporelle officielle du standard GTFS."
+          }
+        },
+        {
+          "id": "ch3-fr-004",
+          "type": "header",
+          "data": {
+            "text": "Des lignes et des colonnes, littéralement",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-fr-005",
+          "type": "paragraph",
+          "data": {
+            "text": "Je vois une vraie matrice. Je vois des lignes et des colonnes. C’est visuel. La granularité peut faire partie de l’image : un élément, un groupe ou un niveau plus large. Les filtres et les options qu’ils laissent peuvent en former une autre partie. Les décisions, les champs de base de données et les combinaisons occupent le même genre d’espace visuel. Le contenu change selon le sujet, mais les lignes et les colonnes restent visibles pour moi."
+          }
+        },
+        {
+          "id": "ch3-fr-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Pour une décision, je peux imaginer les options comme des lignes et les contraintes comme des colonnes. Un filtre réduit les options; un autre ajoute une condition. Je peux voir quelles combinaisons restent. Les entrées exactes dépendent de la décision, mais je continue de voir les relations comme une grille."
+          }
+        },
+        {
+          "id": "ch3-fr-007",
+          "type": "paragraph",
+          "data": {
+            "text": "SQL correspond à cette image. Dans une table, chaque ligne est un enregistrement et chaque colonne est un champ. Les filtres choisissent les enregistrements à afficher, et une requête peut combiner plusieurs conditions. Les relations me permettent de passer d’un enregistrement aux enregistrements associés lorsqu’une seule table ne suffit pas à expliquer la situation. La granularité change aussi l’image : un seul enregistrement, un résultat groupé et un ensemble plus large répondent à des questions différentes. SQL donne des noms et des opérations précis aux lignes, aux colonnes, aux filtres, aux champs de base de données et aux combinaisons que je vois."
+          }
+        },
+        {
+          "id": "ch3-fr-008",
+          "type": "header",
+          "data": {
+            "text": "La comptabilité et SQL se font écho",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-fr-009",
+          "type": "paragraph",
+          "data": {
+            "text": "La comptabilité et SQL se rejoignent dans ma tête. Avant de travailler comme développeur SQL, j’ai étudié la comptabilité. Quand un montant était incertain, une date et un montant constituaient un point de départ. C’étaient des indices, pas des clés dont l’unicité était garantie, puisqu’un autre enregistrement pouvait partager ces deux valeurs. Le contexte pouvait se trouver dans les flux de trésorerie, un budget, un état financier ou une transaction. Parfois, la date pouvait orienter vers le bon compte; parfois, le montant ne faisait que réduire le champ de recherche. Je pouvais parcourir ces enregistrements et demander où le montant apparaissait, à quoi il était relié et si un autre enregistrement l’expliquait mieux. Les JOINs et la normalisation m’ont ensuite donné des outils et un vocabulaire plus précis pour suivre les relations dans les données. Ce qui les relie pour moi, c’est le fait de remonter une piste : la première valeur pointe quelque part, les enregistrements associés réduisent l’incertitude et la réponse complète dépend du contexte."
+          }
+        },
+        {
+          "id": "ch3-fr-010",
+          "type": "header",
+          "data": {
+            "text": "Tu as deux mains",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-fr-011",
+          "type": "paragraph",
+          "data": {
+            "text": "Je me souviens d’une femme qui, quand je travaillais à la plonge, m’a dit : « Tu as deux mains. Sers-toi des deux. »"
+          }
+        },
+        {
+          "id": "ch3-fr-012",
+          "type": "paragraph",
+          "data": {
+            "text": "J’ai gardé cette consigne. Je remarque encore quand une main est libre et pourrait déjà aider. Une main peut poursuivre un geste pendant que l’autre commence le suivant. Les deux mains peuvent aller dans des directions différentes et s’occuper de tâches différentes. Cette habitude ne s’est pas arrêtée à la plonge; je l’ai gardée dans d’autres emplois physiques. Quand je travaille ou fais quelque chose de physique, je cherche cette possibilité au lieu d’attendre qu’un geste soit terminé. Cela fait gagner du temps, et je me surprends encore à appliquer cette habitude. Le changement est physique et précis : remarquer la main libre, lui confier une partie du travail et laisser les deux gestes avancer ensemble."
+          }
+        },
+        {
+          "id": "ch3-fr-013",
+          "type": "header",
+          "data": {
+            "text": "Là où la mesure s’arrête",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-fr-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Les données fonctionnent parce que les champs ont des définitions. Un retard peut être enregistré sous forme de nombre, une plage de dates a des limites, et un produit peut regrouper des observations dans des catégories déclarées. Les gens ne sont pas des paramètres rigides de la même façon. Vous pouvez recueillir les mesures les plus importantes sans jamais mesurer pleinement une personne. Une note, une catégorie ou une observation peut décrire quelque chose de réel, mais ne peut appuyer qu’une affirmation limitée."
+          }
+        },
+        {
+          "id": "ch3-fr-015",
+          "type": "paragraph",
+          "data": {
+            "text": "L’habitude des deux mains rend la différence claire. Je peux décrire ce qui a changé : les deux mains travaillent, les actions avancent dans des directions différentes et du temps est économisé. Ces mesures peuvent décrire l’habitude, mais elles ne peuvent contenir la personne qui me l’a enseignée."
+          }
+        },
+        {
+          "id": "ch3-fr-016",
+          "type": "paragraph",
+          "data": {
+            "text": "C’est aussi ainsi que je travaille avec l’IA : elle peut transformer une conversation en structure, mais je lis chaque bloc du début à la fin et je prends la décision finale."
+          }
+        },
+        {
+          "id": "ch3-fr-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le chapitre 3 d’une épopée en six chapitres. Chapitres 1 à 3 : qui je suis. Chapitres 4 à 6 : ce que je construis. Précédent : <a href=\"/fr/blog/comment-japprends-graviter-autour-dun-systeme-jusquau-declic\">Comment j’apprends : graviter autour d’un système jusqu’au déclic</a> · Suivant : <a href=\"/fr/blog/accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail\">Accéléré par l’IA, piloté par l’humain : mon vrai flux de travail</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "pensar-en-matrices",
+    "translation_key": "thinking-in-matrices",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 3,
+    "lang": "es",
+    "category": "personal",
+    "tags": [
+      "systems-thinking",
+      "sql",
+      "gtfs",
+      "transit-data"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Pensar en matrices",
+    "excerpt": "Veo filas y columnas cuando observo sistemas. Ese hábito me ayudó a construir un proyecto de transporte público y me enseñó dónde terminan los datos.",
+    "seo_title": "Pensar en matrices: de los datos GTFS a las consultas SQL",
+    "seo_description": "Cómo uso filas, columnas, datos GTFS, SQL y relaciones contables para examinar sistemas y reconocer dónde termina la medición.",
+    "body": {
+      "time": 1783742400002,
+      "blocks": [
+        {
+          "id": "ch3-es-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Cuando entendí cómo GTFS Schedule y GTFS Realtime podían funcionar juntos, vi una matriz de preguntas útiles sobre el transporte público de Montreal. GTFS Schedule aportaba la parte planificada: rutas, viajes, paradas y horarios. GTFS Realtime podía añadir actualizaciones de viajes en tiempo real, posiciones de vehículos, el retraso como valor numérico e información opcional sobre ocupación. Una fecha, un rango de fechas o un período más amplio añadía otra dimensión. <a href=\"https://transit.yesid.dev\">transit.yesid.dev</a> surgió en parte de ver cómo esas dimensiones podían cruzarse, en lugar de tratar cada flujo de datos o métrica como un dato aislado."
+          }
+        },
+        {
+          "id": "ch3-es-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Pon una ruta en un eje y el tiempo en otro; luego pregunta dónde divergen el servicio planificado y las observaciones en tiempo real. ¿Qué rutas presentan retrasos durante el período elegido? ¿Cambia el patrón cuando cambia el rango de fechas? ¿Dónde muestra la información disponible sobre ocupación un patrón distinto a cierta hora? ¿Qué viajes programados de autobús deberían estar circulando ahora, pero no tienen ningún vehículo en tiempo real correspondiente? Cada pregunta surge de una intersección distinta entre el servicio planificado, la información en tiempo real, una interpretación del producto y un control temporal. La matriz convierte una lista de campos en algo que puedo examinar."
+          }
+        },
+        {
+          "id": "ch3-es-003",
+          "type": "paragraph",
+          "data": {
+            "text": "Estas preguntas exigen mantener separadas las capas de la fuente y del producto. El retraso es numérico; «adelantado», «a tiempo», «retrasado» y «grave» son interpretaciones creadas por el producto. La ocupación es opcional y experimental, así que puede estar ausente o incompleta, y no se garantiza que forme una escala lineal. El estado «sin reporte» es distinto: es una señal derivada por el producto para un viaje programado de autobús que debería estar circulando ahora, pero no tiene un vehículo en tiempo real correspondiente; no es un valor temporal oficial de GTFS."
+          }
+        },
+        {
+          "id": "ch3-es-004",
+          "type": "header",
+          "data": {
+            "text": "Filas y columnas, literalmente",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-es-005",
+          "type": "paragraph",
+          "data": {
+            "text": "Veo una matriz de verdad. Veo filas y columnas. Es algo visual. La granularidad puede ser una parte de la imagen: un elemento, un grupo o un nivel más amplio. Los filtros y las opciones que dejan pueden ser otra. Las decisiones, los campos de base de datos y las combinaciones ocupan el mismo tipo de espacio visual. El contenido cambia según el tema, pero sigo viendo las filas y las columnas."
+          }
+        },
+        {
+          "id": "ch3-es-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Para una decisión, puedo imaginar las opciones como filas y las restricciones como columnas. Un filtro reduce las opciones; otro añade una condición. Puedo ver qué combinaciones quedan. Las entradas exactas dependen de la decisión, pero aun así veo las relaciones como una cuadrícula."
+          }
+        },
+        {
+          "id": "ch3-es-007",
+          "type": "paragraph",
+          "data": {
+            "text": "SQL encaja con esa imagen. En una tabla, cada fila es un registro y cada columna es un campo. Los filtros seleccionan qué registros quedan a la vista, y una consulta puede combinar varias condiciones. Las relaciones me permiten pasar de un registro a los registros relacionados cuando una sola tabla no explica lo suficiente. La granularidad también cambia la imagen: un solo registro, un resultado agrupado y un conjunto más amplio responden preguntas distintas. SQL da nombres y operaciones precisos a las filas, las columnas, los filtros, los campos de base de datos y las combinaciones que veo."
+          }
+        },
+        {
+          "id": "ch3-es-008",
+          "type": "header",
+          "data": {
+            "text": "La contabilidad y SQL riman",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-es-009",
+          "type": "paragraph",
+          "data": {
+            "text": "La contabilidad y SQL se conectan en mi cabeza. Antes de trabajar como desarrollador SQL, estudié contabilidad. Cuando un monto era incierto, una fecha y un monto eran un punto de partida. Eran pistas, no claves únicas garantizadas, porque otro registro podía compartir ambos valores. El contexto que los rodeaba podía estar en el flujo de caja, un presupuesto, un estado financiero o una transacción. A veces la fecha podía apuntar a la cuenta correcta; a veces el monto solo reducía la búsqueda. Podía recorrer esos registros y preguntar dónde aparecía el monto, con qué se relacionaba y si otro registro lo explicaba mejor. Los JOINs y la normalización me dieron después herramientas y un lenguaje más precisos para seguir las relaciones entre los datos. Para mí, la conexión personal está en el acto de seguir el rastro: el primer valor apunta a algún lugar, los registros relacionados reducen la incertidumbre y la respuesta completa depende del contexto."
+          }
+        },
+        {
+          "id": "ch3-es-010",
+          "type": "header",
+          "data": {
+            "text": "Tienes dos manos",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-es-011",
+          "type": "paragraph",
+          "data": {
+            "text": "Recuerdo que, cuando trabajaba lavando platos, una mujer me dijo: «Tienes dos manos. Usa las dos»."
+          }
+        },
+        {
+          "id": "ch3-es-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Me quedé con esa instrucción. Todavía noto cuando una mano está desocupada y ya podría estar ayudando. Una mano puede mantener una acción en marcha mientras la otra inicia la siguiente. Las dos manos pueden moverse en direcciones distintas y ocuparse de tareas diferentes. Ese hábito no se quedó en el trabajo lavando platos; lo llevé a otros trabajos físicos. Cuando trabajo o hago algo físico, busco esa oportunidad en lugar de esperar a que termine una acción. Ahorra tiempo, y me doy cuenta de que uso ese hábito todo el tiempo. El cambio es físico y específico: notar la mano desocupada, darle una parte del trabajo y dejar que las dos acciones avancen juntas."
+          }
+        },
+        {
+          "id": "ch3-es-013",
+          "type": "header",
+          "data": {
+            "text": "Donde termina la medición",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch3-es-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Los datos funcionan porque los campos tienen definiciones. Un retraso puede almacenarse como número, un rango de fechas tiene límites y un producto puede agrupar observaciones en categorías declaradas. Las personas no son parámetros rígidos de la misma manera. Puedes recopilar las métricas más importantes y aun así nunca medir por completo a una persona. Una puntuación, una categoría o una observación puede describir algo real, pero respalda una afirmación limitada."
+          }
+        },
+        {
+          "id": "ch3-es-015",
+          "type": "paragraph",
+          "data": {
+            "text": "El hábito de las dos manos deja clara la diferencia. Puedo describir qué cambió: ambas manos trabajan, las acciones avanzan en direcciones distintas y se ahorra tiempo. Esas mediciones pueden describir el hábito, pero no pueden contener a la persona que me lo enseñó."
+          }
+        },
+        {
+          "id": "ch3-es-016",
+          "type": "paragraph",
+          "data": {
+            "text": "Así es también como trabajo con IA: puede convertir una conversación en una estructura, pero leo cada bloque de principio a fin y tomo la decisión final."
+          }
+        },
+        {
+          "id": "ch3-es-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el capítulo 3 de una serie de seis capítulos. Capítulos 1–3: quién soy. Capítulos 4–6: lo que construyo. Anterior: <a href=\"/es/blog/como-aprendo-orbitar-un-sistema-hasta-que-encaja\">Cómo aprendo: orbitar un sistema hasta que encaja</a> · Siguiente: <a href=\"/es/blog/acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real\">Acelerado por IA, en manos humanas: mi flujo de trabajo real</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail",
+    "translation_key": "ai-accelerated-human-owned-my-actual-workflow",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 4,
+    "lang": "fr",
+    "category": "professional",
+    "tags": [
+      "ai-assisted-development",
+      "software-architecture",
+      "cms",
+      "code-review"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Accéléré par l’IA, piloté par l’humain : mon vrai flux de travail",
+    "excerpt": "Claude était mon principal outil d’implémentation pour mes deux sites. Codex révisait surtout le travail et prenait parfois le relais pour l’implémentation. J’ai choisi l’architecture et repéré le genre d’erreur liée au CMS qu’une démo peut cacher.",
+    "seo_title": "Accéléré par l’IA, piloté par l’humain : mon flux de travail",
+    "seo_description": "Mon vrai flux avec l’IA : je choisis l’architecture, dirige l’implémentation, inspecte les fichiers, repère les erreurs et assume ce qui est livré.",
+    "body": {
+      "time": 1783742400003,
+      "blocks": [
+        {
+          "id": "ch4-fr-001",
+          "type": "header",
+          "data": {
+            "text": "Le piège",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-fr-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Au début du travail sur <a href=\"https://yesid.dev\">yesid.dev</a>, j’ai fixé une frontière claire pour le CMS : le contenu d’interface commun et répété devait venir du CMS plutôt que de rester dans les fichiers du frontend. Claude a produit l’implémentation, et j’ai vérifié les fichiers par rapport à cette frontière. J’y ai trouvé du texte partagé encore codé en dur dans le frontend. Du texte codé en dur et du texte alimenté par un CMS peuvent produire les mêmes pixels. Une vérification dans le navigateur prouve que la page s’affiche, pas quel système en est responsable. La vérification des fichiers a montré que l’implémentation ne respectait pas encore le modèle de contenu que j’avais choisi."
+          }
+        },
+        {
+          "id": "ch4-fr-003",
+          "type": "header",
+          "data": {
+            "text": "La répartition du travail",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-fr-004",
+          "type": "paragraph",
+          "data": {
+            "text": "Claude était mon principal outil d’implémentation pour <a href=\"https://yesid.dev\">yesid.dev</a> et <a href=\"https://transit.yesid.dev\">transit.yesid.dev</a>. Codex a surtout révisé le travail et a parfois pris le relais pour l’implémentation. J’ai supervisé les deux projets de A à Z et pris les décisions d’architecture. J’ai gardé le contexte des projets, décidé comment les différentes parties devaient s’intégrer, donné des directives, inspecté les résultats, trouvé les problèmes et fait avancer le travail."
+          }
+        },
+        {
+          "id": "ch4-fr-005",
+          "type": "paragraph",
+          "data": {
+            "text": "Le travail s’est rapproché de la direction de projet. Au lieu d’écrire le code moi-même pour chaque implémentation, je dirigeais les projets, gardais l’architecture en tête et vérifiais les résultats."
+          }
+        },
+        {
+          "id": "ch4-fr-006",
+          "type": "header",
+          "data": {
+            "text": "Les contrôles en place aujourd’hui",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-fr-007",
+          "type": "paragraph",
+          "data": {
+            "text": "Le dépôt de <a href=\"https://yesid.dev\">yesid.dev</a> comporte aujourd’hui des contrôles automatisés du contenu généré et des avertissements Svelte. Le hook de précommit et la CI des PR comparent les modules générés par le CMS au manifeste qui les répertorie. La CI des PR exécute ce contrôle pour les pull requests visant <code>main</code> ou <code>develop</code>. La comparaison détecte les écarts ordinaires entre les modules et le manifeste, mais elle vérifie leur cohérence, pas si le CMS a réellement produit les fichiers. Le hook local peut ne pas être exécuté, et une modification coordonnée d’un module et du manifeste peut tout de même les laisser cohérents."
+          }
+        },
+        {
+          "id": "ch4-fr-008",
+          "type": "paragraph",
+          "data": {
+            "text": "La vérification web utilise un verrou configurable sur le nombre d’avertissements, précisément pour Svelte. Elle échoue lorsque les avertissements signalés dépassent ce seuil. Ces vérifications couvrent des conditions reproductibles dans le dépôt. Elles ne décident pas si l’architecture du CMS est la bonne ni si un contenu appartient au frontend. Cela reste une décision liée au projet et à l’architecture."
+          }
+        },
+        {
+          "id": "ch4-fr-009",
+          "type": "header",
+          "data": {
+            "text": "Comment cet article a été créé",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-fr-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Mon processus commence par une conversation où mes idées partent dans tous les sens. L’IA organise la matière en une structure et propose des formulations bloc par bloc. Un article ne porte mon nom qu’après que j’en ai vérifié et corrigé la structure, les affirmations et le choix des mots, intégré ces corrections dans une autre ébauche produite par l’IA, lu chaque bloc de A à Z et décidé ce qui reste."
+          }
+        },
+        {
+          "id": "ch4-fr-011",
+          "type": "header",
+          "data": {
+            "text": "Le test du client",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-fr-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Si un client veut savoir si je comprends ce que je publie, qu’il m’interroge sur n’importe quel élément de ce site."
+          }
+        },
+        {
+          "id": "ch4-fr-013",
+          "type": "paragraph",
+          "data": {
+            "text": "L’IA est un outil parmi tant d’autres. Elle n’est pas le résultat final. Les résultats sont <a href=\"https://yesid.dev\">yesid.dev</a>, <a href=\"https://transit.yesid.dev\">transit.yesid.dev</a> et les systèmes qui font fonctionner leur contenu et leurs services."
+          }
+        },
+        {
+          "id": "ch4-fr-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Après avoir déployé Transit, j’ai aussi dû le maintenir en fonction et payer la facture mensuelle d’infrastructure."
+          }
+        },
+        {
+          "id": "ch4-fr-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le chapitre 4 d’une épopée en six chapitres. Chapitres 1 à 3 : qui je suis. Chapitres 4 à 6 : ce que je construis. Précédent : <a href=\"/fr/blog/penser-en-matrices\">Penser en matrices</a> · Suivant : <a href=\"/fr/blog/de-50-a-0-une-vm-oracle-always-free\">De 50 $ à 0 $ : une VM Oracle Always Free</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real",
+    "translation_key": "ai-accelerated-human-owned-my-actual-workflow",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 4,
+    "lang": "es",
+    "category": "professional",
+    "tags": [
+      "ai-assisted-development",
+      "software-architecture",
+      "cms",
+      "code-review"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Acelerado por IA, en manos humanas: mi flujo de trabajo real",
+    "excerpt": "Claude fue mi principal herramienta de implementación para mis dos sitios. Codex se encargó sobre todo de revisar el trabajo y, a veces, intervino como implementador de respaldo. Yo elegí la arquitectura y detecté el tipo de error relacionado con el CMS que una demo puede ocultar.",
+    "seo_title": "Acelerado por IA, en manos humanas: mi flujo de trabajo real",
+    "seo_description": "Mi flujo real con IA: elijo la arquitectura, dirijo la implementación, inspecciono archivos, detecto errores y respondo por lo que publico.",
+    "body": {
+      "time": 1783742400003,
+      "blocks": [
+        {
+          "id": "ch4-es-001",
+          "type": "header",
+          "data": {
+            "text": "La trampa",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-es-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Al principio del trabajo en <a href=\"https://yesid.dev\">yesid.dev</a>, elegí un límite claro para el CMS: el contenido compartido y recurrente de la interfaz debía venir del CMS en lugar de permanecer en archivos del frontend. Claude produjo la implementación, y yo revisé los archivos para comprobar si respetaban ese límite. Encontré texto compartido que seguía incrustado directamente en el frontend. El texto incrustado y el texto administrado por el CMS pueden producir los mismos píxeles. Una revisión en el navegador demuestra que la página se renderiza, no qué sistema es responsable del contenido. La revisión de los archivos mostró que la implementación todavía no coincidía con el modelo de contenido que yo había elegido."
+          }
+        },
+        {
+          "id": "ch4-es-003",
+          "type": "header",
+          "data": {
+            "text": "La división del trabajo",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-es-004",
+          "type": "paragraph",
+          "data": {
+            "text": "Claude fue mi principal herramienta de implementación para <a href=\"https://yesid.dev\">yesid.dev</a> y <a href=\"https://transit.yesid.dev\">transit.yesid.dev</a>. Codex se encargó sobre todo de revisar el trabajo y, a veces, intervino como implementador de respaldo. Yo supervisé ambos proyectos de principio a fin y tomé las decisiones de arquitectura. Mantuve el contexto de los proyectos, decidí cómo debían encajar las partes, di instrucciones, inspeccioné los resultados, encontré problemas e hice avanzar el trabajo."
+          }
+        },
+        {
+          "id": "ch4-es-005",
+          "type": "paragraph",
+          "data": {
+            "text": "El trabajo pasó a ser más de gestión. En lugar de escribir yo mismo el código de cada implementación, dirigía los proyectos, mantenía la arquitectura a la vista y revisaba lo que recibía."
+          }
+        },
+        {
+          "id": "ch4-es-006",
+          "type": "header",
+          "data": {
+            "text": "Los controles actuales",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-es-007",
+          "type": "paragraph",
+          "data": {
+            "text": "El repositorio de <a href=\"https://yesid.dev\">yesid.dev</a> también cuenta hoy con verificaciones automatizadas del contenido generado y las advertencias de Svelte. El hook de pre-commit y la CI de los PR comparan los módulos generados por el CMS con el manifiesto registrado. La CI de los PR ejecuta esta verificación para los pull requests dirigidos a <code>main</code> o <code>develop</code>. La comparación detecta las diferencias normales entre los módulos y el manifiesto, pero comprueba su coherencia, no si el CMS realmente produjo los archivos. El hook local puede omitirse, y una edición coordinada del módulo y el manifiesto puede hacer que ambos sigan coincidiendo."
+          }
+        },
+        {
+          "id": "ch4-es-008",
+          "type": "paragraph",
+          "data": {
+            "text": "La verificación web usa un umbral configurable específicamente para las advertencias de Svelte. Falla cuando el número de advertencias reportadas supera ese umbral. Estos controles cubren condiciones reproducibles del repositorio. No deciden si la arquitectura del CMS es correcta ni si un contenido debe estar en el frontend. Esa sigue siendo una decisión de proyecto y arquitectura."
+          }
+        },
+        {
+          "id": "ch4-es-009",
+          "type": "header",
+          "data": {
+            "text": "Cómo se hizo este artículo",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-es-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Mi proceso empieza con una conversación y mis divagaciones. La IA organiza el material en un esqueleto y propone redacción por bloques. Un artículo lleva mi nombre solo después de que reviso y corrijo la estructura, las afirmaciones y la redacción, uso esas correcciones en otro borrador de IA, leo cada bloque de principio a fin y decido qué queda."
+          }
+        },
+        {
+          "id": "ch4-es-011",
+          "type": "header",
+          "data": {
+            "text": "La prueba del cliente",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch4-es-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Si un cliente quiere saber si entiendo lo que publico, que me pregunte sobre cualquier cosa de este sitio."
+          }
+        },
+        {
+          "id": "ch4-es-013",
+          "type": "paragraph",
+          "data": {
+            "text": "La IA es una herramienta entre muchas. No es el resultado final. Los resultados son <a href=\"https://yesid.dev\">yesid.dev</a>, <a href=\"https://transit.yesid.dev\">transit.yesid.dev</a> y los sistemas que hacen funcionar su contenido y sus servicios."
+          }
+        },
+        {
+          "id": "ch4-es-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Después de desplegar Transit, también tuve que mantenerlo funcionando y pagar la factura mensual de infraestructura."
+          }
+        },
+        {
+          "id": "ch4-es-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el capítulo 4 de una serie de seis capítulos. Capítulos 1–3: quién soy. Capítulos 4–6: lo que construyo. Anterior: <a href=\"/es/blog/pensar-en-matrices\">Pensar en matrices</a> · Siguiente: <a href=\"/es/blog/de-50-a-0-una-vm-oracle-always-free\">De 50 $ a 0 $: una VM Oracle Always Free</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "de-50-a-0-une-vm-oracle-always-free",
+    "translation_key": "50-to-0-an-oracle-always-free-vm",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 5,
+    "lang": "fr",
+    "category": "professional",
+    "tags": [
+      "oracle-cloud",
+      "self-hosting",
+      "postgresql",
+      "transit-data"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "De 50 $ à 0 $ : une VM Oracle Always Free",
+    "excerpt": "La base de données gérée et le worker de Transit me coûtaient environ 50 à 60 $ par mois. Dans mon compte PAYG, la VM Oracle A1 qui les a remplacés me coûte actuellement 0 $, et son disque d’environ 200 Go m’a forcé à définir un budget de rétention explicite.",
+    "seo_title": "De 50 $ à 0 $ : faire tourner Transit sur Oracle Always Free",
+    "seo_description": "Comment j’ai déplacé la base de données et le worker de Transit vers une VM Oracle A1 à 0 $ par mois, avec des compromis explicites de rétention, de sauvegarde et de reprise.",
+    "body": {
+      "time": 1783742400004,
+      "blocks": [
+        {
+          "id": "ch5-fr-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Un worker de <a href=\"https://transit.yesid.dev\">Transit</a> vise une cadence de 30 secondes d’un démarrage à l’autre lorsqu’il interroge les flux de la STM pour obtenir les plus récentes données sur les trajets et les véhicules. Lorsque Postgres fonctionnait sur Neon et le worker sur Railway, ces deux services gérés me coûtaient environ 50 à 60 $ par mois."
+          }
+        },
+        {
+          "id": "ch5-fr-002",
+          "type": "paragraph",
+          "data": {
+            "text": "J’ai déplacé la base de données et le worker vers une VM Oracle A1 Flex existante. En juillet 2026, cette VM me coûte 0 $ dans le cadre du quota A1 associé à mon compte PAYG. Le reste de Transit utilise encore de l’infrastructure à l’extérieur de la VM, et les limites d’Oracle peuvent différer pour les nouveaux comptes. Il s’agit d’une étude de cas sur ma configuration, pas d’une marche à suivre."
+          }
+        },
+        {
+          "id": "ch5-fr-003",
+          "type": "header",
+          "data": {
+            "text": "La migration",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-fr-004",
+          "type": "paragraph",
+          "data": {
+            "text": "Ma VM se trouve à Montréal. Elle compte 4 OCPU, environ 24 Go de mémoire vive et un disque d’une capacité nominale d’environ 200 Go. Cinq services y fonctionnent : Postgres avec PostGIS, le worker en temps réel, un service distinct qui purge la base de données, une API d’état de santé et Caddy. La base de données et le worker ont quitté Neon et Railway; les parties externes de Transit n’ont pas été déplacées sur cette machine."
+          }
+        },
+        {
+          "id": "ch5-fr-005",
+          "type": "paragraph",
+          "data": {
+            "text": "Un faible coût récurrent compte parce que Transit est un projet public de données civiques qui fait partie de mon portfolio et qui est conçu pour durer. Une facture plus petite me permet de continuer à l’exploiter plus facilement, mais je n’ai pas supprimé les coûts du système. J’ai troqué les dépenses en services gérés contre les contraintes d’une seule machine et davantage de travail de ma part."
+          }
+        },
+        {
+          "id": "ch5-fr-006",
+          "type": "header",
+          "data": {
+            "text": "Les décisions imposées par la limite de 200 Go",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-fr-007",
+          "type": "paragraph",
+          "data": {
+            "text": "À un pic historique, une table en temps réel contenait environ un demi-milliard de lignes et le volume Postgres atteignait environ 139 Go. Ces chiffres témoignent d’une échelle passée; ils ne représentent pas la taille actuelle de la base de données. Sur un disque d’environ 200 Go, conserver les données détaillées indéfiniment n’était pas une option."
+          }
+        },
+        {
+          "id": "ch5-fr-008",
+          "type": "paragraph",
+          "data": {
+            "text": "L’archive brute existait déjà. La limite m’a forcé à rendre le budget de rétention explicite. La vérification de juillet 2026 confirmait que la couche relationnelle Silver active conserve une journée. Les instantanés GTFS-RT bruts en temps réel restent hors de la VM dans R2 pendant 90 jours. Les faits Gold détaillés sont conservés pendant 14 jours, tandis que les agrégats plus petits le sont pendant 730 jours."
+          }
+        },
+        {
+          "id": "ch5-fr-009",
+          "type": "paragraph",
+          "data": {
+            "text": "Un service distinct purge les couches Silver et Gold en dehors de la boucle de capture. Il ne purge pas l’archive R2. Pour une période choisie dans les archives, j’ai testé la reconstruction de la couche Silver en temps réel et des faits Gold dérivés sur les retards. Cela démontre un chemin de reprise, pas une reconstruction universelle."
+          }
+        },
+        {
+          "id": "ch5-fr-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Les instantanés statiques et historiques utilisent des hachages de contenu pour ignorer les fichiers inchangés, tandis que la couche active publie à chaque cycle. Ensemble, les rôles de stockage sont explicites : les données relationnelles actives restent prêtes à être interrogées, les données brutes en temps réel restent rejouables hors de la VM et les agrégats plus petits conservent la vue à long terme."
+          }
+        },
+        {
+          "id": "ch5-fr-011",
+          "type": "header",
+          "data": {
+            "text": "0 $ ne veut pas dire zéro travail",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-fr-012",
+          "type": "paragraph",
+          "data": {
+            "text": "En quittant les services gérés, j’ai repris à ma charge les responsabilités qu’ils assumaient. Je suis responsable des sauvegardes, des tests de restauration, de la surveillance, des correctifs, des décisions de capacité et des interventions en cas d’incident. La sauvegarde logique hors de la VM exclut intentionnellement la plus grande table Silver en temps réel, qui peut être rejouée. La reprise combine donc la sauvegarde avec le rejeu des données brutes en temps réel. J’ai aussi exécuté un exercice de restauration dans un environnement de base de données distinct, plutôt que de considérer l’existence d’un fichier de sauvegarde comme une preuve."
+          }
+        },
+        {
+          "id": "ch5-fr-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Cela reste une seule VM. Si son hôte tombe en panne, la base de données et le pipeline toujours actif sont hors service pendant que je restaure ou déplace la charge de travail. Le site hors de la VM et les instantanés existants peuvent rester accessibles, mais leurs données en direct cessent de s’actualiser. Il n’y a aucun basculement automatique."
+          }
+        },
+        {
+          "id": "ch5-fr-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Les chemins de sauvegarde et de rejeu réduisent le risque de perte de données sans créer de haute disponibilité. Voilà le véritable compromis : la baisse des dépenses auprès des fournisseurs m’a transféré davantage de responsabilité opérationnelle."
+          }
+        },
+        {
+          "id": "ch5-fr-015",
+          "type": "header",
+          "data": {
+            "text": "Sur un terrain loué",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-fr-016",
+          "type": "paragraph",
+          "data": {
+            "text": "Oracle contrôle le quota et peut en modifier les conditions. Quiconque envisage une décision semblable doit consulter la documentation actuelle au lieu de copier ma configuration de juillet 2026."
+          }
+        },
+        {
+          "id": "ch5-fr-017",
+          "type": "paragraph",
+          "data": {
+            "text": "J’ai réduit le coût de changement de fournisseur; je ne l’ai pas éliminé. Les services de la VM sont conteneurisés, l’accès à la base de données est piloté par la configuration, et les données brutes en temps réel ainsi que les sauvegardes logiques se trouvent hors de la VM. Je n’ai pas encore testé une migration complète vers un autre fournisseur. Si Oracle change l’entente, le déplacement demandera encore du travail, mais les éléments nécessaires à la reprise ne sont pas prisonniers de l’hôte."
+          }
+        },
+        {
+          "id": "ch5-fr-018",
+          "type": "paragraph",
+          "data": {
+            "text": "La même question a façonné mon site web : qu’est-ce qui doit rester en direct, et qu’est-ce qui peut être retiré du chemin de requête? Son contenu vit dans un CMS que le site en production n’appelle jamais."
+          }
+        },
+        {
+          "id": "ch5-fr-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le chapitre 5 d’une épopée en six chapitres. Chapitres 1 à 3 : qui je suis. Chapitres 4 à 6 : ce que je construis. Précédent : <a href=\"/fr/blog/accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail\">Accéléré par l’IA, piloté par l’humain : mon vrai flux de travail</a> · Suivant : <a href=\"/fr/blog/votre-site-web-a-t-il-besoin-dune-publication-instantanee\">Votre site web a-t-il besoin d’une publication instantanée?</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "de-50-a-0-una-vm-oracle-always-free",
+    "translation_key": "50-to-0-an-oracle-always-free-vm",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 5,
+    "lang": "es",
+    "category": "professional",
+    "tags": [
+      "oracle-cloud",
+      "self-hosting",
+      "postgresql",
+      "transit-data"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "De 50 $ a 0 $: una VM Oracle Always Free",
+    "excerpt": "La base de datos administrada y el worker de Transit me costaban entre 50 $ y 60 $ al mes. En mi cuenta PAYG, la VM Oracle A1 que los reemplazó me cuesta actualmente 0 $, y su disco de unos 200 GB me obligó a definir un presupuesto explícito de retención.",
+    "seo_title": "De 50 $ a 0 $: Transit en Oracle Always Free",
+    "seo_description": "Cómo trasladé la base de datos y el worker de Transit a una VM Oracle A1 de 0 $ al mes, con contrapartidas claras de retención, respaldo y recuperación.",
+    "body": {
+      "time": 1783742400004,
+      "blocks": [
+        {
+          "id": "ch5-es-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Un worker de <a href=\"https://transit.yesid.dev\">Transit</a> busca mantener una cadencia de 30 segundos entre el inicio de un ciclo y el siguiente mientras consulta los feeds de la STM para obtener los datos más recientes de viajes y vehículos. Cuando Postgres corría en Neon y el worker en Railway, esos dos servicios administrados me costaban entre 50 $ y 60 $ al mes."
+          }
+        },
+        {
+          "id": "ch5-es-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Trasladé la base de datos y el worker a una VM Oracle A1 Flex que ya tenía. En julio de 2026, esa VM me cuesta 0 $ gracias a la asignación A1 asociada a mi cuenta PAYG. El resto de Transit todavía usa infraestructura fuera de la VM, y los límites de Oracle para cuentas nuevas pueden ser distintos. Este es un estudio de caso de mi configuración, no una receta."
+          }
+        },
+        {
+          "id": "ch5-es-003",
+          "type": "header",
+          "data": {
+            "text": "La migración",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-es-004",
+          "type": "paragraph",
+          "data": {
+            "text": "Mi VM está en Montreal. Tiene 4 OCPU, unos 24 GB de RAM y un disco de alrededor de 200 GB. Allí corren cinco servicios: Postgres con PostGIS, el worker en tiempo real, un proceso separado de limpieza de la base de datos, una API de salud y Caddy. La base de datos y el worker salieron de Neon y Railway; las partes externas de Transit no se trasladaron a esta máquina."
+          }
+        },
+        {
+          "id": "ch5-es-005",
+          "type": "paragraph",
+          "data": {
+            "text": "El bajo costo recurrente importa porque Transit es un proyecto público de datos cívicos que forma parte de mi portafolio y está pensado para durar. Una factura menor me facilita mantenerlo en operación, pero no eliminé los costos del sistema. Cambié el gasto en servicios administrados por una infraestructura limitada a una sola máquina y más trabajo a mi cargo."
+          }
+        },
+        {
+          "id": "ch5-es-006",
+          "type": "header",
+          "data": {
+            "text": "Las decisiones que me impuso el límite de 200 GB",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-es-007",
+          "type": "paragraph",
+          "data": {
+            "text": "En un pico histórico, una tabla en tiempo real contenía cerca de quinientos millones de filas y el volumen de Postgres llegó a unos 139 GB. Esas cifras documentan una escala pasada, no el tamaño actual de la base de datos. En un disco de unos 200 GB, conservar el detalle indefinidamente no era una opción."
+          }
+        },
+        {
+          "id": "ch5-es-008",
+          "type": "paragraph",
+          "data": {
+            "text": "El archivo de datos brutos ya existía. El límite me obligó a hacer explícito el presupuesto de retención. Según la verificación de julio de 2026, la capa relacional Silver en producción conserva un día. Los snapshots brutos de GTFS-RT en tiempo real permanecen fuera de la VM, en R2, durante 90 días. Los hechos Gold detallados se conservan durante 14 días, mientras que los agregados más pequeños se guardan durante 730 días."
+          }
+        },
+        {
+          "id": "ch5-es-009",
+          "type": "paragraph",
+          "data": {
+            "text": "Un proceso separado de limpieza de la base de datos se encarga de depurar Silver y Gold fuera del ciclo de captura. No elimina datos del archivo R2. Para un periodo seleccionado dentro del archivo, probé la reconstrucción de Silver en tiempo real y de los hechos Gold derivados de retrasos. Eso demuestra una ruta de recuperación, no una reconstrucción universal."
+          }
+        },
+        {
+          "id": "ch5-es-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Los snapshots estáticos e históricos usan hashes de contenido para omitir los archivos sin cambios, mientras que la capa en vivo publica en cada ciclo. En conjunto, las funciones de almacenamiento quedan claras: los datos relacionales en vivo siguen listos para consultas, los datos brutos en tiempo real se pueden reprocesar fuera de la VM y los agregados más pequeños conservan la visión a largo plazo."
+          }
+        },
+        {
+          "id": "ch5-es-011",
+          "type": "header",
+          "data": {
+            "text": "0 $ no significa cero trabajo",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-es-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Al dejar los servicios administrados, esas responsabilidades pasaron a mis manos. Quedaron a mi cargo las copias de seguridad, las pruebas de restauración, el monitoreo, la aplicación de parches, las decisiones de capacidad y la respuesta a incidentes. La copia de seguridad lógica fuera de la VM excluye intencionalmente la tabla Silver en tiempo real más grande, que se puede reconstruir mediante reprocesamiento; por eso, la recuperación combina la copia de seguridad con el reprocesamiento de los datos brutos en tiempo real. También hice un simulacro de restauración en un entorno de base de datos separado, en vez de tratar la existencia de un archivo de copia de seguridad como prueba suficiente."
+          }
+        },
+        {
+          "id": "ch5-es-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Sigue siendo una sola VM. Si falla el host, la base de datos y el pipeline que corre continuamente quedan fuera de servicio mientras restauro o traslado la carga de trabajo. El sitio alojado fuera de la VM y los snapshots existentes pueden seguir disponibles, pero sus datos en vivo dejan de actualizarse. No hay failover automático."
+          }
+        },
+        {
+          "id": "ch5-es-014",
+          "type": "paragraph",
+          "data": {
+            "text": "Los mecanismos de copia de seguridad y reprocesamiento reducen el riesgo de pérdida de datos sin crear alta disponibilidad. Esa es la contrapartida real: un menor gasto en proveedores dejó más responsabilidad operativa en mis manos."
+          }
+        },
+        {
+          "id": "ch5-es-015",
+          "type": "header",
+          "data": {
+            "text": "Terreno alquilado",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch5-es-016",
+          "type": "paragraph",
+          "data": {
+            "text": "Oracle controla la asignación y puede cambiar sus condiciones. Cualquiera que tome una decisión similar debe consultar la documentación vigente en lugar de copiar mi configuración de julio de 2026."
+          }
+        },
+        {
+          "id": "ch5-es-017",
+          "type": "paragraph",
+          "data": {
+            "text": "Reduje el costo de cambiar de proveedor; no lo eliminé. Los servicios de la VM corren en contenedores, el acceso a la base de datos se define por configuración y los datos brutos en tiempo real, junto con las copias de seguridad lógicas, están fuera de la VM. Todavía no he probado una migración completa a otro proveedor. Si Oracle cambia las condiciones, trasladar el sistema seguirá requiriendo trabajo, pero los insumos de recuperación no están atrapados en el host."
+          }
+        },
+        {
+          "id": "ch5-es-018",
+          "type": "paragraph",
+          "data": {
+            "text": "La misma pregunta dio forma a mi sitio web: ¿qué debe seguir en vivo y qué puede quedar fuera de la ruta de cada solicitud? Su contenido vive en un CMS al que el sitio en producción nunca llama."
+          }
+        },
+        {
+          "id": "ch5-es-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el capítulo 5 de una saga de seis capítulos. Capítulos 1 a 3: quién soy. Capítulos 4 a 6: lo que construyo. Anterior: <a href=\"/es/blog/acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real\">Acelerado por IA, en manos humanas: mi flujo de trabajo real</a> · Siguiente: <a href=\"/es/blog/tu-sitio-web-necesita-publicacion-instantanea\">¿Tu sitio web necesita publicación instantánea?</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "votre-site-web-a-t-il-besoin-dune-publication-instantanee",
+    "translation_key": "does-your-website-need-instant-publishing",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 6,
+    "lang": "fr",
+    "category": "professional",
+    "tags": [
+      "web-development",
+      "cms",
+      "sveltekit",
+      "directus"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "Votre site web a-t-il besoin d’une publication instantanée?",
+    "excerpt": "Si les mises à jour peuvent prendre quelques minutes avant d’être mises en ligne, vous pouvez séparer l’éditeur du site public, garder les pages publiées indépendantes du CMS et offrir au propriétaire un seul endroit pour modifier le contenu.",
+    "seo_title": "Votre site web a-t-il besoin d’une publication instantanée?",
+    "seo_description": "Un guide pratique pour choisir entre la publication instantanée et un processus CMS qui publie après compilation.",
+    "body": {
+      "time": 1783742400005,
+      "blocks": [
+        {
+          "id": "ch6-fr-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Avant de choisir comment un site web publie son contenu, posez une question pratique : une mise à jour doit-elle être publique en quelques secondes, ou peut-elle prendre quelques minutes? La réponse change l’architecture."
+          }
+        },
+        {
+          "id": "ch6-fr-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Une salle de rédaction peut avoir besoin qu’une correction soit visible immédiatement. Un magasin peut avoir besoin que les stocks et les prix fassent autorité à chaque requête. Un site de services, un portfolio ou un site d’entreprise relativement stable peut accepter un court délai lorsqu’une architecture qui sépare l’édition de la diffusion au moment de la compilation convient à ses besoins de fraîcheur et à son flux de travail. Le bon choix commence par le besoin de fraîcheur, pas par un outil préféré."
+          }
+        },
+        {
+          "id": "ch6-fr-003",
+          "type": "header",
+          "data": {
+            "text": "L’éditeur et le site public",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-fr-004",
+          "type": "paragraph",
+          "data": {
+            "text": "L’éditeur et le site public ont des fonctions différentes. L’éditeur offre au propriétaire un seul endroit pour modifier le contenu. Le site public diffuse les pages que les visiteurs lisent."
+          }
+        },
+        {
+          "id": "ch6-fr-005",
+          "type": "paragraph",
+          "data": {
+            "text": "Sur <a href=\"https://yesid.dev\">yesid.dev</a>, l’application actuelle lit des modules de contenu générés pour les pages publiques au lieu de demander le contenu au CMS lors de chacune des visites échantillonnées. Dans des traces de production récentes du 10 juillet 2026, la page d’accueil, Services, Blog, un article publié et la page du projet <a href=\"https://yesid.dev/projects/yesid-dev\">yesid.dev</a> ont tous renvoyé un code 200. Chaque requête observée est restée sur <a href=\"https://yesid.dev\">yesid.dev</a>, sans aucune requête vers Directus ou vers un hôte <code>cms.*</code>. Il s’agit d’une preuve tirée de cinq traces, pas d’une affirmation sur chaque route ou chaque visite future."
+          }
+        },
+        {
+          "id": "ch6-fr-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Cette dépendance plus limitée envers le CMS a une valeur pratique. Les pages déjà publiées sont conçues pour rester accessibles si l’éditeur est indisponible, car elles n’ont pas besoin d’une nouvelle réponse du CMS pour chaque lecteur. Cette attente découle de l’architecture; elle n’a pas été démontrée par un exercice de panne indépendant. Cela ne met pas non plus l’ensemble du site web à l’abri des pannes. D’autres dépendances liées à l’hébergement, au code, au réseau et aux ressources existent encore."
+          }
+        },
+        {
+          "id": "ch6-fr-007",
+          "type": "paragraph",
+          "data": {
+            "text": "Pour le propriétaire, il y a toujours un seul éditeur. La séparation concerne la façon dont le contenu publié est construit et diffusé."
+          }
+        },
+        {
+          "id": "ch6-fr-008",
+          "type": "header",
+          "data": {
+            "text": "Ce qui se passe après « Publier »",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-fr-009",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le seul aparté technique : le chemin de production est Directus -&gt; export à la compilation -&gt; modules générés -&gt; SvelteKit/Vercel. Le CMS fournit le contenu publié au processus de compilation, la compilation prépare les fichiers publics et seul un déploiement terminé remplace la version précédente."
+          }
+        },
+        {
+          "id": "ch6-fr-010",
+          "type": "paragraph",
+          "data": {
+            "text": "Ce rafraîchissement du contenu en production est maintenant activé. Le 11 juillet 2026, une compilation de production a consigné <code>mode=live</code>, a lu <code>https://cms.yesid.dev</code> selon une politique qui bloque en cas d’échec, a exporté cinq articles publiés et cinq corps d’article, puis a produit les 22 modules de contenu générés."
+          }
+        },
+        {
+          "id": "ch6-fr-011",
+          "type": "header",
+          "data": {
+            "text": "Le délai fait partie de la conception",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-fr-012",
+          "type": "paragraph",
+          "data": {
+            "text": "Dans le chemin d’exportation en direct, le contenu actualisé ne devient pas public avant qu’un nouveau déploiement soit prêt. Au moment de ce relevé du 11 juillet, la compilation de production a commencé à 06:17:57.482 UTC et le déploiement s’est terminé à 06:19:26.603 UTC : 89.121 secondes entre le début de la compilation et la fin du déploiement."
+          }
+        },
+        {
+          "id": "ch6-fr-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Il s’agit d’une observation, pas d’un SLA ni d’une fourchette habituelle garantie. Elle prouve que cette modification précise du CMS a atteint le site public : une fois le déploiement terminé, les cinq nouvelles URL d’article prévues ont renvoyé un code 200, avaient chacune une URL canonique qui pointait vers elle-même et figuraient dans le plan du site; les trois URL d’article retirées ont renvoyé un code 404 et ont disparu du plan du site. Cet article était délibérément encore à l’état de brouillon pendant ce relevé, renvoyait lui aussi un code 404 et était absent du plan du site. Une compilation candidate antérieure a rejeté un lien vers cette page à l’état de brouillon et n’a pas été promue, de sorte que le déploiement précédent est resté en ligne jusqu’à la fin de la compilation corrigée."
+          }
+        },
+        {
+          "id": "ch6-fr-014",
+          "type": "header",
+          "data": {
+            "text": "Qui devrait choisir autre chose",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-fr-015",
+          "type": "paragraph",
+          "data": {
+            "text": "Cette architecture convient mal lorsque les mises à jour doivent être publiques en quelques secondes. Cela comprend la publication au rythme d’une salle de rédaction, les stocks ou les prix qui doivent faire autorité au moment de la requête, les applications personnalisées, les tableaux de bord en direct et tout flux de travail qui ne peut pas tolérer une compilation avant la mise en ligne du contenu."
+          }
+        },
+        {
+          "id": "ch6-fr-016",
+          "type": "paragraph",
+          "data": {
+            "text": "Elle peut convenir aux sites de services, aux portfolios, à la documentation et à d’autres pages relativement stables pour lesquelles quelques minutes sont acceptables. Même alors, la pertinence dépend des besoins d’aperçu, des approbations éditoriales, des intégrations et de la quantité de travail opérationnel que le propriétaire ou le développeur est prêt à prendre en charge. La livraison statique n’est pas une recommandation universelle."
+          }
+        },
+        {
+          "id": "ch6-fr-017",
+          "type": "paragraph",
+          "data": {
+            "text": "Si ce compromis convient à votre site, voyez comment le <a href=\"https://yesid.dev/services/web-development\">service Sites web et commerce électronique</a> aborde les projets web."
+          }
+        },
+        {
+          "id": "ch6-fr-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Voici le chapitre 6 d’une épopée en six chapitres. Chapitres 1 à 3 : qui je suis. Chapitres 4 à 6 : ce que je construis. Précédent : <a href=\"/fr/blog/de-50-a-0-une-vm-oracle-always-free\">De 50 $ à 0 $ : une VM Oracle Always Free</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
+    }
+  },
+  {
+    "id": "tu-sitio-web-necesita-publicacion-instantanea",
+    "translation_key": "does-your-website-need-instant-publishing",
+    "status": "published",
+    "date_published": "2026-07-11",
+    "date_modified": "2026-07-11",
+    "sort": 6,
+    "lang": "es",
+    "category": "professional",
+    "tags": [
+      "web-development",
+      "cms",
+      "sveltekit",
+      "directus"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": null,
+    "animation": "morph",
+    "title": "¿Tu sitio web necesita publicación instantánea?",
+    "excerpt": "Si las actualizaciones pueden tardar unos minutos en publicarse, puedes separar el editor del sitio público, mantener las páginas publicadas independientes del CMS y darle al propietario un solo lugar para editar el contenido.",
+    "seo_title": "¿Tu sitio web necesita publicación instantánea?",
+    "seo_description": "Una guía práctica para propietarios de negocios que deciden entre publicación instantánea y un flujo de CMS con compilación previa.",
+    "body": {
+      "time": 1783742400005,
+      "blocks": [
+        {
+          "id": "ch6-es-001",
+          "type": "paragraph",
+          "data": {
+            "text": "Antes de elegir cómo publicar un sitio web, hazte una pregunta práctica: ¿una actualización debe quedar visible para el público en segundos o puede tardar unos minutos? La respuesta cambia la arquitectura."
+          }
+        },
+        {
+          "id": "ch6-es-002",
+          "type": "paragraph",
+          "data": {
+            "text": "Una sala de redacción puede necesitar que una corrección se vea de inmediato. Una tienda puede necesitar que cada solicitud use los datos vigentes de inventario y precios. Un sitio de servicios, un portafolio o un sitio empresarial relativamente estable puede aceptar una breve demora si separar, en tiempo de compilación, la edición de la entrega responde a sus necesidades de actualización y flujo de trabajo. La decisión correcta parte de la frecuencia de actualización necesaria, no de una herramienta favorita."
+          }
+        },
+        {
+          "id": "ch6-es-003",
+          "type": "header",
+          "data": {
+            "text": "El editor y el sitio público",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-es-004",
+          "type": "paragraph",
+          "data": {
+            "text": "El editor y el sitio público cumplen funciones distintas. El editor le da al propietario un solo lugar para modificar el contenido. El sitio público entrega las páginas que leen los visitantes."
+          }
+        },
+        {
+          "id": "ch6-es-005",
+          "type": "paragraph",
+          "data": {
+            "text": "En <a href=\"https://yesid.dev\">yesid.dev</a>, la aplicación actual lee módulos de contenido generados para las páginas públicas en vez de pedirle contenido al CMS durante cada visita incluida en la muestra. En trazas recientes de producción del 10 de julio de 2026, la página de inicio, Servicios, Blog, un artículo publicado y la página del proyecto <a href=\"https://yesid.dev/projects/yesid-dev\">yesid.dev</a> devolvieron un código 200. Todas las solicitudes observadas se mantuvieron en <a href=\"https://yesid.dev\">yesid.dev</a>, sin solicitudes a Directus ni a un host <code>cms.*</code>. Esto es evidencia de cinco trazas, no una afirmación sobre todas las rutas ni sobre cada visita futura."
+          }
+        },
+        {
+          "id": "ch6-es-006",
+          "type": "paragraph",
+          "data": {
+            "text": "Depender menos del CMS en el sitio público tiene un valor práctico. Las páginas ya publicadas están diseñadas para seguir disponibles si el editor no lo está, porque no necesitan una respuesta nueva del CMS para cada lector. Esa expectativa se desprende de la arquitectura; no se ha demostrado mediante un simulacro independiente de interrupción del servicio. El sitio completo todavía puede fallar. Siguen existiendo dependencias de hosting, código, red y recursos."
+          }
+        },
+        {
+          "id": "ch6-es-007",
+          "type": "paragraph",
+          "data": {
+            "text": "Para el propietario sigue habiendo un solo editor. La separación se aplica a la forma en que el contenido publicado se genera y se entrega."
+          }
+        },
+        {
+          "id": "ch6-es-008",
+          "type": "header",
+          "data": {
+            "text": "Qué pasa después de «Publicar»",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-es-009",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el único aparte técnico: la ruta de producción es Directus -&gt; exportación durante la compilación -&gt; módulos generados -&gt; SvelteKit/Vercel. El CMS entrega el contenido publicado al proceso de compilación, la compilación prepara los archivos públicos y solo un despliegue completado reemplaza la versión anterior."
+          }
+        },
+        {
+          "id": "ch6-es-010",
+          "type": "paragraph",
+          "data": {
+            "text": "La actualización de contenido en producción ya está habilitada. El 11 de julio de 2026, una compilación de producción registró <code>mode=live</code>, leyó <code>https://cms.yesid.dev</code> con una política de fallo cerrado, exportó cinco artículos publicados y cinco cuerpos de contenido, y generó los 22 módulos de contenido."
+          }
+        },
+        {
+          "id": "ch6-es-011",
+          "type": "header",
+          "data": {
+            "text": "La demora es parte del diseño",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-es-012",
+          "type": "paragraph",
+          "data": {
+            "text": "En la ruta de exportación en vivo, el contenido actualizado no se vuelve público hasta que un nuevo despliegue está listo. Para el registro del 11 de julio, la compilación de producción comenzó a las 06:17:57.482 UTC y el despliegue terminó a las 06:19:26.603 UTC: 89.121 segundos desde el inicio de la compilación hasta el despliegue completado."
+          }
+        },
+        {
+          "id": "ch6-es-013",
+          "type": "paragraph",
+          "data": {
+            "text": "Esa es una sola observación, no un SLA ni una promesa de que ese sea el rango habitual. Sí demuestra que este cambio específico del CMS llegó al sitio público: al terminar, las cinco URL nuevas previstas devolvieron un código 200, cada una tenía una URL canónica hacia sí misma y todas aparecieron en el sitemap; las tres URL de artículos retirados devolvieron un código 404 y desaparecieron del sitemap. Este artículo seguía deliberadamente como borrador durante ese registro; también devolvió un código 404 y no aparecía en el sitemap. Una compilación candidata anterior rechazó un enlace a esta página en borrador y no fue promovida, así que el despliegue anterior siguió activo hasta que terminó la compilación corregida."
+          }
+        },
+        {
+          "id": "ch6-es-014",
+          "type": "header",
+          "data": {
+            "text": "Quién debería elegir otra opción",
+            "level": 2
+          }
+        },
+        {
+          "id": "ch6-es-015",
+          "type": "paragraph",
+          "data": {
+            "text": "Esta arquitectura encaja mal cuando las actualizaciones deben publicarse en segundos. Eso incluye la publicación al ritmo de una sala de redacción, el inventario o los precios que deban reflejar los datos vigentes al atender cada solicitud, las aplicaciones con contenido personalizado, los tableros en vivo y cualquier flujo de trabajo que no pueda tolerar una compilación antes de que el contenido se vuelva público."
+          }
+        },
+        {
+          "id": "ch6-es-016",
+          "type": "paragraph",
+          "data": {
+            "text": "Puede funcionar para sitios de servicios, portafolios, documentación y otras páginas relativamente estables donde unos minutos sean aceptables. Incluso entonces, que sea una buena opción depende de las necesidades de vista previa, las aprobaciones editoriales, las integraciones y cuánto trabajo operativo esté dispuesto a asumir el propietario o el desarrollador. La entrega estática no es una recomendación universal."
+          }
+        },
+        {
+          "id": "ch6-es-017",
+          "type": "paragraph",
+          "data": {
+            "text": "Si ese equilibrio funciona para tu sitio, mira cómo el <a href=\"https://yesid.dev/services/web-development\">servicio de Sitios web y e-commerce</a> aborda los proyectos web."
+          }
+        },
+        {
+          "id": "ch6-es-footer",
+          "type": "paragraph",
+          "data": {
+            "text": "Este es el capítulo 6 de una saga de seis capítulos. Capítulos 1 a 3: quién soy. Capítulos 4 a 6: lo que construyo. Anterior: <a href=\"/es/blog/de-50-a-0-una-vm-oracle-always-free\">De 50 $ a 0 $: una VM Oracle Always Free</a>."
+          }
+        }
+      ],
+      "version": "2.31.2"
     }
   }
 ]

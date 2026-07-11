@@ -234,17 +234,17 @@ export type BlogCategory = 'professional' | 'personal';
 export type BlogAnimation = 'draw' | 'morph' | 'draw-fill';
 
 export interface BlogPost {
+	// Stable identity shared by every language variant of the same article.
+	translationKey: string;
 	slug: string;
-	// AM2.5: title is a flat string — blog posts are mono-language end-to-end.
-	// The `lang` field on the parent row IS the i18n primitive; no translations junction.
+	// Each blog row owns one language, so title/excerpt stay flat strings.
 	title: string;
-	// AM2.5: excerpt is a flat string — same rationale as title (mono-language per AM2.5).
 	excerpt: string;
 	// ISO date string (YYYY-MM-DD)
 	date: string;
 	// Optional last-updated date for Article/BlogPosting structured data.
 	dateModified?: string;
-	// Language this post was written in — no translation, just native language
+	// Language of this row. Translated rows share translationKey.
 	lang: Locale;
 	// Which content lane this post belongs to
 	category: BlogCategory;

@@ -123,20 +123,19 @@ test.describe('/blog/[slug] detail page content', () => {
 		expect(bodyText?.trim().length).toBeGreaterThan(0);
 	});
 
-	test('blog detail page renders in FR (/fr/blog/[slug])', async ({ page }) => {
-		// Navigate to the first English post to get a real slug.
-		const href = await gotoFirstPost(page);
+	for (const locale of ['fr', 'es'] as const) {
+		test(`blog detail page renders its own ${locale.toUpperCase()} slug`, async ({ page }) => {
+			const href = await gotoFirstDetail(
+				page,
+				`/${locale}/blog`,
+				blogPostLinks,
+				'blog-detail-page',
+			);
 
-		// Extract slug from href (e.g., /blog/my-post -> my-post)
-		const slug = href.split('/').pop();
-		const frHref = `/fr/blog/${slug}`;
-
-		const response = await page.goto(frHref);
-		// FR route may 404 if a post is FR-excluded; only assert content on 200.
-		if (response?.status() === 200) {
+			expect(href).toMatch(new RegExp(`^/${locale}/blog/`));
 			await expect(page.locator('[data-testid="blog-detail-page"]')).toBeVisible();
 			const bodyText = await page.locator('[data-testid="blog-sections"]').textContent();
 			expect(bodyText?.trim().length).toBeGreaterThan(0);
-		}
-	});
+		});
+	}
 });

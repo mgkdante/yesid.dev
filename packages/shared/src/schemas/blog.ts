@@ -14,8 +14,9 @@ export const BlogCategorySchema = z.enum(['professional', 'personal']);
 
 export const BlogAnimationSchema = z.enum(['draw', 'morph', 'draw-fill']);
 
-// AM2.5: title + excerpt are flat strings (blog is mono-language; no translations junction).
+// Each blog row owns one language; translationKey groups its language variants.
 export const BlogPostSchema = z.object({
+	translationKey: z.string().min(1).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 	slug: z.string().min(1),
 	title: z.string().min(1),
 	excerpt: z.string().min(1),

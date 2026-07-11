@@ -9,7 +9,8 @@ import { adapter } from '$lib/adapters';
 import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 import { isPathPublished } from '$lib/utils/page-registry';
 import { sitePages } from '$lib/content/site-pages';
-import type { Locale, SitePage } from '$lib/types';
+import { groupBlogTranslations } from '$lib/blog/translations';
+import type { BlogPost, Locale, SitePage } from '$lib/types';
 
 // Route ids that are always present in the router. Keep this list in sync
 // with the static-route set in $lib/adapters/route-seo-defaults.ts when
@@ -48,21 +49,48 @@ function xmlEscape(s: string): string {
 // published, output keeps the legacy one-entry-with-en-self-link shape
 // (locked by test).
 function urlEntries(path: string, variants: readonly Locale[]): string[] {
+	const alternates = Object.fromEntries(
+		variants.map((locale) => [locale, canonicalFor(path, locale)]),
+	) as Partial<Record<Locale, string>>;
+	return exactUrlEntries(alternates, variants);
+}
+
+function exactUrlEntries(
+	alternates: Partial<Record<Locale, string>>,
+	variants: readonly Locale[],
+): string[] {
 	const multi = variants.length > 1;
 	return variants.map((v) => {
-		const loc = canonicalFor(path, v);
+		const loc = alternates[v];
+		if (!loc) throw new Error(`Missing sitemap alternate for ${v}`);
 		const altLinks = [
 			...variants.map(
-				(m) =>
-					`    <xhtml:link rel="alternate" hreflang="${m}" href="${xmlEscape(canonicalFor(path, m))}" />`,
+				(m) => {
+					const href = alternates[m];
+					if (!href) throw new Error(`Missing sitemap alternate for ${m}`);
+					return `    <xhtml:link rel="alternate" hreflang="${m}" href="${xmlEscape(href)}" />`;
+				},
 			),
 			...(multi
 				? [
-						`    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(canonicalFor(path, DEFAULT_LOCALE))}" />`,
+						`    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(alternates[DEFAULT_LOCALE] ?? loc)}" />`,
 					]
 				: []),
 		];
 		return `  <url>\n    <loc>${xmlEscape(loc)}</loc>\n${altLinks.join('\n')}\n  </url>`;
+	});
+}
+
+/** Exact translated blog clusters. Different slugs still emit reciprocal alternates. */
+export function _blogUrlEntries(posts: readonly BlogPost[]): string[] {
+	return groupBlogTranslations(posts).flatMap((group) => {
+		const alternates = Object.fromEntries(
+			PUBLISHED_LOCALES.map((locale) => {
+				const variant = group.posts[locale];
+				return [locale, canonicalFor(`/blog/${variant.slug}`, locale)];
+			}),
+		) as Partial<Record<Locale, string>>;
+		return exactUrlEntries(alternates, PUBLISHED_LOCALES);
 	});
 }
 
@@ -104,15 +132,12 @@ export async function _buildSitemapEntries(
 		pushIfPublished(`/legal/${page.slug}`);
 	}
 
-	// Blog posts are mono-language (AM2.5): one URL at the body language, no
-	// alternate cluster ever — a /fr/blog/<en-post> page is FR chrome around an
-	// EN body and canonicals back here.
-	const posts = await adapter.blog.all();
-	for (const post of posts) {
-		if (!isPathPublished(`/blog/${post.slug}`, pages)) continue;
-		const loc = canonicalFor(`/blog/${post.slug}`, post.lang);
-		entries.push(`  <url>\n    <loc>${xmlEscape(loc)}</loc>\n  </url>`);
-	}
+	// Each translated blog row owns its locale-specific slug. Group by the
+	// required translation key so every variant carries one reciprocal cluster.
+	const posts = (await adapter.blog.all()).filter((post) =>
+		isPathPublished(`/blog/${post.slug}`, pages),
+	);
+	entries.push(..._blogUrlEntries(posts));
 
 	return entries;
 }
