@@ -1,5 +1,6 @@
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { adapter } from '$lib/adapters';
+import { isProductionHostname, NOINDEX_POLICY } from '$lib/server/indexing';
 import { pathLocale } from '$lib/utils/locale-routing';
 import type { ErrorPageContent } from '$lib/navigation/types';
 
@@ -33,6 +34,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 		// font-display swap flashes fallback type on a text-LCP site.
 		preload: ({ type }) => type === 'font' || type === 'js' || type === 'css',
 	});
+	if (!isProductionHostname(event.url.hostname)) {
+		response.headers.set('x-robots-tag', NOINDEX_POLICY);
+	}
 	if (
 		event.request.method === 'GET' &&
 		response.status === 200 &&
