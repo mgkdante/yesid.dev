@@ -18,8 +18,10 @@ import { handle } from '../hooks.server';
 const PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
 const CDN_CACHE_CONTROL = 'max-age=86400, stale-while-revalidate=604800';
 
-function makeEvent(opts: { method?: string; pathname?: string } = {}): RequestEvent {
-	const url = new URL(`https://yesid.dev${opts.pathname ?? '/'}`);
+function makeEvent(
+	opts: { method?: string; pathname?: string; hostname?: string } = {},
+): RequestEvent {
+	const url = new URL(`https://${opts.hostname ?? 'yesid.dev'}${opts.pathname ?? '/'}`);
 	const event = {
 		request: new Request(url, { method: opts.method ?? 'GET' }),
 		url,
@@ -95,4 +97,17 @@ describe('hooks.server handle() cache headers', () => {
 		expect(event.locals.pageCache).toBeInstanceOf(Map);
 		expect(event.locals.pageCache.size).toBe(0);
 	});
+
+	it.each(['yesid.dev', 'www.yesid.dev'])('keeps production host %s indexable', async (hostname) => {
+		const response = await runHandle(makeEvent({ hostname }), htmlResponse());
+		expect(response.headers.get('x-robots-tag')).toBeNull();
+	});
+
+	it.each(['dev.yesid.dev', 'preview-123.vercel.app', 'localhost'])(
+		'blocks indexing on non-production host %s',
+		async (hostname) => {
+			const response = await runHandle(makeEvent({ hostname }), htmlResponse());
+			expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow, noarchive');
+		},
+	);
 });
