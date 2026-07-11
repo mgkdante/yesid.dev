@@ -31,8 +31,8 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
 // (verified scrollMax 427 / 474 px against the 1280×720 desktop-chrome profile,
 // both well above the 120 px wheel detent below). Each rail is the single
 // internally-scrollable scrollChain card on its page (no strict-mode duplicate).
-const BLOG_URL_A = '/blog/building-a-transit-pipeline';
-const BLOG_URL_B = '/blog/anime-data-viz-challenge';
+const BLOG_URL_A = '/blog/how-i-learn-orbiting-a-system-until-it-clicks';
+const BLOG_URL_B = '/blog/50-to-0-an-oracle-always-free-vm';
 // The blog reading rail: the TOC + meta scroll card in the left context column.
 const CONTEXT_RAIL = '.context-column .context-panel.toc-scroll';
 const TICK = 120; // one notched mouse-wheel detent
@@ -161,8 +161,8 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 	// posts whose rails overflow independently — each is a real internally-
 	// scrollable scrollChain card, the surviving home of this contract after the
 	// project-detail rails were uncapped in the consolidation refactor.
-	wheelReversalContract('blog rail (transit post)', BLOG_URL_A, CONTEXT_RAIL);
-	wheelReversalContract('blog rail (anime post)', BLOG_URL_B, CONTEXT_RAIL);
+	wheelReversalContract('blog rail (learning post)', BLOG_URL_A, CONTEXT_RAIL);
+	wheelReversalContract('blog rail (Oracle VM post)', BLOG_URL_B, CONTEXT_RAIL);
 
 	test('reduced motion: native nested scroll stays symmetric (no Lenis)', async ({
 		page,
@@ -186,7 +186,10 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 
 		await scrollCardToBottomAndHandOff(page, selector);
 		const atBottom = await cardState(page, selector);
-		expect(atBottom.cardTop).toBe(atBottom.cardMax);
+		expect(
+			atBottom.cardMax - atBottom.cardTop,
+			'native scroll reaches the bottom within one rounded CSS pixel',
+		).toBeLessThanOrEqual(1);
 
 		await page.mouse.wheel(0, -TICK);
 		await page.waitForTimeout(SETTLE);

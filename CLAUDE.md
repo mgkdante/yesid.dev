@@ -6,11 +6,11 @@
 
 - **Project:** yesid.dev — freelance digital-infrastructure practice
 - **Stack:** Bun · SvelteKit · Directus · Neon · Vercel · Railway · TypeScript
-- **Workflow:** workflow-overlord 3.x (installed plugin; orchestrates Claude Code + Codex via Notion)
+- **Workflow:** workflow-overlord 4.x (installed plugin; orchestrates Claude Code + Codex via Notion)
 
 ## Where context lives
 
-Architecture / Business / Vocabulary / Slices / Sessions / Roadmap → Notion subtree per `AGENTS.local.md` frontmatter. Interactive Notion access uses the hosted MCP at `https://mcp.notion.com/mcp` (`notion-*` tools and Codex aliases) first; if that OAuth path fails, use direct REST. Hooks and automation always use direct REST. Repo stays lean — Notion is canonical for workflow content.
+Architecture / Business / Vocabulary / Slices / Sessions / Roadmap → Notion subtree from the highest-priority workflow config (`AGENTS.override.md` > `AGENTS.local.md` > `AGENTS.md`). Interactive Notion access uses the hosted MCP at `https://mcp.notion.com/mcp` (`notion-*` tools and Codex aliases) first; if that OAuth path fails, use direct REST. Hooks and automation always use direct REST. Repo stays lean — Notion is canonical for workflow content.
 
 ## Build commands
 
@@ -34,7 +34,7 @@ Architecture / Business / Vocabulary / Slices / Sessions / Roadmap → Notion su
 - `/workflow-overlord-slice-close` — finalize the active slice
 - `/workflow-overlord-status` — read-only
 
-The 5 mechanical guarantees fire automatically via the installed `workflow-overlord` plugin. Claude loads the plugin hooks directly; Codex uses the same repo hook wrappers through `.codex/hooks/*.sh` plus config-layer dispatchers. User decisions go through the SKILLs.
+The 5 mechanical guarantees fire automatically through the installed `workflow-overlord` plugin's shared hook runtime. Claude Code and Codex load that plugin directly. The repo does not carry hook or skill mirrors. User decisions go through the installed SKILLs.
 
 ## Portability
 

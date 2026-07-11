@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
+import sharp from 'sharp';
 import {
 	AssetsManifestSchema,
 	parseManifest,
@@ -109,6 +110,19 @@ describe('fixtures/assets-manifest.json', () => {
 			expect(entry.legacyPath.startsWith('images/') || entry.legacyPath.startsWith('og/')).toBe(
 				true,
 			);
+		}
+	});
+
+	it('keeps the canonical portrait background transparent at every responsive size', async () => {
+		const staticRoot = joinPath(import.meta.dir, '..', '..', 'web', 'static');
+		for (const file of [
+			'images/about/headshot.webp',
+			'images/about/headshot.w240.webp',
+			'images/about/headshot.w600.webp',
+			'images/about/headshot.w800.webp',
+		]) {
+			const metadata = await sharp(joinPath(staticRoot, file)).metadata();
+			expect(metadata.hasAlpha, file).toBe(true);
 		}
 	});
 });

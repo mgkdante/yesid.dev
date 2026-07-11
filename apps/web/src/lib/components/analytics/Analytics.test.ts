@@ -8,6 +8,8 @@ type ConsentState = {
 	available: boolean;
 };
 
+type HomeIntroPhase = 'pending' | 'running' | 'settled';
+
 type TestConsentStore = {
 	subscribe: (run: (state: ConsentState) => void) => () => void;
 	init: ReturnType<typeof vi.fn<() => () => void>>;
@@ -36,6 +38,16 @@ const navigationMock = vi.hoisted(() => {
 const consentMock = vi.hoisted(() => ({
 	store: undefined as unknown as TestConsentStore,
 	set: undefined as unknown as (state: ConsentState) => void,
+}));
+
+const introMock = vi.hoisted(() => ({
+	store: undefined as unknown as {
+		subscribe: (run: (phase: HomeIntroPhase) => void) => () => void;
+		begin: () => void;
+		settle: () => void;
+		reset: () => void;
+	},
+	set: undefined as unknown as (phase: HomeIntroPhase) => void,
 }));
 
 const analyticsMock = vi.hoisted(() => ({
@@ -73,6 +85,21 @@ vi.mock('$lib/state/analytics-consent.svelte', async () => {
 	};
 
 	return { analyticsConsentStore: consentMock.store };
+});
+
+vi.mock('$lib/state/home-intro.svelte', async () => {
+	const { writable } = await import('svelte/store');
+	const state = writable<HomeIntroPhase>('pending');
+
+	introMock.set = state.set;
+	introMock.store = {
+		subscribe: state.subscribe,
+		begin: () => state.set('running'),
+		settle: () => state.set('settled'),
+		reset: () => state.set('pending'),
+	};
+
+	return { homeIntroStore: introMock.store };
 });
 
 vi.mock('$lib/analytics/client', () => ({
@@ -113,6 +140,7 @@ import Analytics from './Analytics.svelte';
 
 beforeEach(() => {
 	consentMock.set({ choice: 'unknown', ready: true, available: true });
+	introMock.set('pending');
 	consentMock.store.init.mockClear();
 	consentMock.store.grant.mockClear();
 	consentMock.store.deny.mockClear();
@@ -124,6 +152,26 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe('Analytics', () => {
+	it('defers only the home consent surface until the intro settles', async () => {
+		render(Analytics, { props: { locale: 'en', isHome: true } });
+
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+
+		introMock.set('settled');
+		await tick();
+		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+
+		introMock.set('running');
+		await tick();
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+	});
+
+	it('shows an unknown consent choice immediately on non-home routes', () => {
+		render(Analytics, { props: { locale: 'en', isHome: false } });
+
+		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+	});
+
 	it('tracks the consent transition and pathname changes without query or hash duplicates', async () => {
 		render(Analytics, { props: { locale: 'fr' } });
 
