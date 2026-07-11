@@ -437,7 +437,7 @@ Usage:
 
 Flags:
   --dry-run         Print Block Editor JSON for each post; do not write fixture
-  --single <slug>   Process only the named post (e.g. --single why-i-left-orm-for-raw-sql)
+  --single <slug>   Process only the named post (e.g. --single thinking-in-matrices)
   -h, --help        Show this help
 
 Output (without --dry-run): apps/cms/fixtures/collections/blog-posts.json (overwritten)

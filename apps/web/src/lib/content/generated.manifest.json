@@ -4,9 +4,9 @@
 	"source": "live",
 	"files": {
 		"about-page.ts": "9ef09d5f14a1a7f5c829f141147491e6b831d59cce4832e503adc04c1c65e55c",
-		"blog-bodies.ts": "af7826fbf2ca7c7b129652d8af5ecefb0c559f3c007297602eceb3ebafac1702",
+		"blog-bodies.ts": "5805db95becf684a062fdb4f78db05acc6dce6ff6c0a2a003f0d28bc75fb02c0",
 		"blog-page.ts": "c3134e2e3de40fd05d5f7fd0ef71f2f236866e96f61e07381d6d8d9f071ceaea",
-		"blog.ts": "f3a13036b648e5698de00a06644a57a27cdd1316a6fb795569d7fe12da4f2a27",
+		"blog.ts": "8d819e661a2920ae69c9773f513e528c7fb5e98f98f518628196cf71e49f555a",
 		"contact-page.ts": "7e9bff62d4f6390d4df90d3e8904e36e744efbef52bee1e3ff614539aa3ec190",
 		"error-pages.ts": "3a5df86609ed3c7f7fecbb04209d010bd6621b4566d5d0ed0bf2d7d4e52a32d0",
 		"legal-pages.ts": "fe78f9aa059ee862b0acad817d4f6457bb6b738f19071b72d7ffdd1a9124d931",

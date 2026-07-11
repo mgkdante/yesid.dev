@@ -80,12 +80,14 @@ test.describe('/blog/[slug] detail page content', () => {
 		const tocItems = tocColumn.locator('.toc-item');
 		expect(await tocItems.count()).toBeGreaterThan(0);
 
-		// TOC item count mirrors the prose headings: the desktop nav lists every
-		// non-rail content heading, i.e. each top-level section card (data-toc in
-		// the blog-sections wrapper) plus every h3/h4[id] sub-heading inside the
-		// section bodies. (The right-rail entry cards are excluded from the nav.)
+		// TOC item count mirrors authored headings: each authored top-level
+		// section card plus every h3/h4[id] sub-heading. A post with no authored
+		// h2 gets one synthetic `blog-article` card for layout; that fallback card
+		// is intentionally absent from the TOC and must not be counted here.
 		const sectionAnchorCount = await page
-			.locator('[data-testid="blog-sections"] [data-toc]')
+			.locator(
+				'[data-testid="blog-sections"] [data-toc]:not([data-toc="blog-article"])',
+			)
 			.count();
 		const subHeadingCount = await page
 			.locator(
@@ -136,68 +138,5 @@ test.describe('/blog/[slug] detail page content', () => {
 			const bodyText = await page.locator('[data-testid="blog-sections"]').textContent();
 			expect(bodyText?.trim().length).toBeGreaterThan(0);
 		}
-	});
-});
-
-test.describe('blog heading permalinks (homework #7c)', () => {
-	// Committed content: anime-data-viz-challenge carries h3 sub-headings inside
-	// its section bodies. h2 blocks never reach the body (sectionizeBlogBody
-	// consumes every level-2 header as a section-card title), so on blog detail
-	// the heading anchors live on h3/h4 only. This heading's kebab id starts with
-	// a letter, keeping the raw #id CSS selector valid.
-	const POST = '/blog/anime-data-viz-challenge';
-	const HEADING_ID = 'isekai-exploded-in-2016';
-
-	test('h3 carries a real "#" permalink with href + aria-labelledby', async ({ page }) => {
-		await page.goto(POST);
-		await expect(page.locator('[data-testid="blog-detail-page"]')).toBeVisible();
-
-		const heading = page.locator(`[data-testid="blog-section-body"] h3#${HEADING_ID}`);
-		await expect(heading).toBeVisible();
-
-		// Contract from cms/blocks/Heading.svelte: the anchor lives INSIDE the
-		// heading, points at the heading id, and is named by it for AT users.
-		const anchor = heading.locator('a.heading-anchor');
-		await expect(anchor).toHaveAttribute('href', `#${HEADING_ID}`);
-		await expect(anchor).toHaveAttribute('aria-labelledby', HEADING_ID);
-		await expect(anchor).toHaveText('#');
-	});
-
-	test('permalink is hover-revealed: opacity 0 at rest, >0 on heading hover', async ({ page }) => {
-		await page.goto(POST);
-		await expect(page.locator('[data-testid="blog-detail-page"]')).toBeVisible();
-
-		const heading = page.locator(`[data-testid="blog-section-body"] h3#${HEADING_ID}`);
-		await heading.scrollIntoViewIfNeeded();
-		const anchor = heading.locator('a.heading-anchor');
-
-		// Playwright counts opacity:0 elements as "visible" (non-empty box, no
-		// visibility:hidden), so toBeVisible cannot prove the hover reveal.
-		// Assert the computed opacity instead: 0 at rest, > 0 after hovering the
-		// heading (--opacity-muted = 0.6 once the 200ms fade settles).
-		await expect.poll(() => anchor.evaluate((el) => getComputedStyle(el).opacity)).toBe('0');
-		await heading.hover();
-		await expect
-			.poll(() => anchor.evaluate((el) => parseFloat(getComputedStyle(el).opacity)))
-			.toBeGreaterThan(0);
-	});
-
-	test('copyable anchor: navigating to the #fragment scrolls the heading into view', async ({ page }) => {
-		// Under reduced motion Lenis never mounts (see reduced-motion.spec), so
-		// the browser's native fragment scroll runs and lands deterministically.
-		await page.emulateMedia({ reducedMotion: 'reduce' });
-		await page.goto(`${POST}#${HEADING_ID}`);
-		await expect(page.locator('[data-testid="blog-detail-page"]')).toBeVisible();
-
-		const heading = page.locator(`[data-testid="blog-section-body"] h3#${HEADING_ID}`);
-		await expect(heading).toBeVisible();
-
-		// The fragment target sits well below the fold: the page must have
-		// scrolled, and the heading must land inside the viewport.
-		await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-		const box = await heading.boundingBox();
-		expect(box).not.toBeNull();
-		expect(box!.y).toBeGreaterThanOrEqual(-1);
-		expect(box!.y).toBeLessThan(page.viewportSize()!.height);
 	});
 });

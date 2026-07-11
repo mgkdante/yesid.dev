@@ -79,11 +79,11 @@ describe('archive-lorem-posts pure helpers', () => {
 		it('ignores non-target rows in the existing set', () => {
 			const withExtra = [
 				...existing,
-				{ id: 'why-i-left-orm-for-raw-sql', status: 'published' as const },
+				{ id: 'thinking-in-matrices', status: 'published' as const },
 			];
 			const plan = buildArchivePlan(LOREM_SLUGS, withExtra);
 			expect(plan.length).toBe(LOREM_SLUGS.length);
-			expect(plan.some((e) => e.id === 'why-i-left-orm-for-raw-sql')).toBe(false);
+			expect(plan.some((e) => e.id === 'thinking-in-matrices')).toBe(false);
 		});
 	});
 
