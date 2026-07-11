@@ -21,6 +21,7 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick, untrack } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { homeIntroStore } from '$lib/state/home-intro.svelte';
 	import {
 		initScrollTriggerConfig,
 		loadDrawSVG,
@@ -220,7 +221,12 @@
 	});
 
 	let cleanup: (() => void) | undefined;
-	onDestroy(() => cleanup?.());
+	let destroyed = false;
+	onDestroy(() => {
+		destroyed = true;
+		cleanup?.();
+		homeIntroStore.reset();
+	});
 
 	// go2/w5 replayable intro (taste-2 geometry):
 	//   - introCompleted arms the pulsing hero-dot replay button (set when the
@@ -246,9 +252,13 @@
 		if (!opts.replayRebuild) {
 			await new Promise((r) => setTimeout(r, 300));
 		}
+		if (destroyed) return;
 
 		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
-		if (!svg) return;
+		if (!svg) {
+			homeIntroStore.settle();
+			return;
+		}
 
 		// Resolve heroDot from DOM — inside HeroTextContent child component
 		const heroDot = heroTextContainer.querySelector('.hero-dot') as SVGSVGElement;
@@ -257,6 +267,7 @@
 		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws).
 		// Register ScrollTrigger + apply its site-wide config.
 		await Promise.all([loadDrawSVG(), loadCustomEase()]);
+		if (destroyed) return;
 		initScrollTriggerConfig();
 
 		// Typewriter: pure ambient per D264 — plays every visit, no scroll lock.
@@ -267,6 +278,7 @@
 
 		// Ensure fonts are loaded before glyph measurements
 		await document.fonts.ready;
+		if (destroyed) return;
 
 		// Mobile pin length branch per design spec §5.1 + plan decision A1.
 		// Single mount-time matchMedia check; no gsap.matchMedia rebuild on
@@ -350,19 +362,19 @@
 	// frame and the collapsed hero are the same pixels). Same-day reloads then
 	// land in identical geometry, so restored scroll positions match 1:1.
 	async function collapseIntroTrack(): Promise<void> {
-		if (introCollapsed) return;
+		if (destroyed || introCollapsed) return;
 		const beforeHeight = document.documentElement.scrollHeight;
 		const beforeY = window.scrollY;
-		cleanup?.(); // kills the pin (ScrollTrigger.kill() reverts the spacer) + timeline + typewriter
+		cleanup?.();
 		cleanup = undefined;
 		clearIntroSceneStyles();
 		introCollapsed = true;
 		await tick();
+		if (destroyed) return;
 		const delta = Math.max(0, beforeHeight - document.documentElement.scrollHeight);
 		jumpTo(Math.max(0, beforeY - delta));
-		// Downstream triggers (manifesto, closer…) measured against the full
-		// reserve — re-measure against the collapsed geometry.
 		ScrollTrigger.refresh();
+		homeIntroStore.settle();
 	}
 
 	/** Instant scroll that keeps Lenis' internal position AND limits in sync. */
@@ -405,7 +417,8 @@
 	//   4. the corrective jump dials in the exact pin end and renders it
 	//      before the next paint, then the rewind starts.
 	async function handleReplay(): Promise<void> {
-		if (replayArming || !introCompleted) return;
+		if (destroyed || replayArming || !introCompleted) return;
+		homeIntroStore.begin();
 		replayArming = true;
 		// Operator: clicking the dot un-completes the intro for the day — a
 		// refresh from here on lands on the animation again ("still to do").
@@ -481,6 +494,7 @@
 	}
 
 	onMount(async () => {
+		homeIntroStore.begin();
 		reducedMotion = isPrefersReducedMotion();
 
 		// The app.html pre-paint script may have set html[data-hero-intro-done]
@@ -508,6 +522,7 @@
 			// The @media(prefers-reduced-motion) rules hold the collapse alone;
 			// drop the bridge so no global attribute lingers.
 			clearHeroIntroBridge();
+			homeIntroStore.settle();
 			return;
 		}
 
@@ -524,12 +539,14 @@
 			// settles.
 			initScrollTriggerConfig();
 			requestAnimationFrame(() => {
+				if (destroyed) return;
 				// Hand off from the pre-paint attribute to the now-painted
 				// `.hero-intro-done` class (Svelte has flushed introCollapsed to
 				// the DOM by this frame); both render identical geometry, so the
 				// swap is seamless — no frame repaints the intro.
 				clearHeroIntroBridge();
 				ScrollTrigger.refresh();
+				homeIntroStore.settle();
 			});
 			return;
 		}

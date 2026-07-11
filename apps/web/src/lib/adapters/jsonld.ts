@@ -41,6 +41,7 @@ export const BUSINESS_ID = `${SITE_HOST}/#business`;
  * from the same markDot() geometry as the GBP avatar, so the two never drift.
  */
 export const BRAND_LOGO = `${SITE_HOST}/brand/mark-512.png`;
+export const PERSON_IMAGE = `${SITE_HOST}/images/about/headshot.webp`;
 
 /** GBP service-area cities as schema.org City nodes (shared by Service + ProfessionalService). */
 function serviceAreaNodes() {
@@ -65,6 +66,7 @@ export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE)
 		'@id': PERSON_ID,
 		name: meta.owner.name,
 		jobTitle: resolveLocale(meta.owner.jobTitle, locale),
+		image: PERSON_IMAGE,
 		...(meta.owner.phone ? { telephone: meta.owner.phone } : {}),
 		url: SITE_HOST,
 		email: meta.links.email,
