@@ -88,7 +88,7 @@
 <style>
 	.analytics-station {
 		bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-		z-index: var(--z-sheet);
+		z-index: calc(var(--z-sheet) + 1);
 		background: var(--surface-2);
 		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
