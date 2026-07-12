@@ -354,13 +354,58 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
 	});
 
-	it('does not track booking for non-calendar social links', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await clickWithoutNavigating(screen.getAllByTestId('contact-social-email')[0]);
-		await clickWithoutNavigating(screen.getAllByTestId('contact-social-github')[0]);
-		await clickWithoutNavigating(screen.getAllByTestId('contact-social-linkedin')[0]);
+	it.each([
+		['email', 'mailto:contact@yesid.dev'],
+		['phone', 'tel:+18194465594'],
+		['whatsapp', 'https://wa.me/18194465594'],
+	])('tracks one direct contact event for %s', async (icon, href) => {
+		const content = {
+			...contactContent,
+			socials: [{ label: { en: icon }, href, icon }],
+		} as typeof contactContent;
+
+		render(ContactPage, { props: { contactPage: content } });
+		await clickWithoutNavigating(
+			screen.getAllByTestId(`contact-social-${icon}`)[0],
+		);
+
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith(
+			'direct_contact_click',
+		);
+	});
+
+	it.each([
+		['github', 'https://github.com/mgkdante'],
+		['linkedin', 'https://www.linkedin.com/in/otaloray/'],
+		['cal-link-without-calendar-icon', 'https://cal.com/yesid-dev'],
+		['ordinary-https', 'https://example.com/contact'],
+		['insecure-whatsapp', 'http://wa.me/18194465594'],
+		['spoofed-whatsapp', 'https://wa.me.evil.example/18194465594'],
+		['malformed', 'not a url'],
+	])('does not track the ineligible channel %s', async (icon, href) => {
+		const content = {
+			...contactContent,
+			socials: [{ label: { en: icon }, href, icon }],
+		} as typeof contactContent;
+
+		render(ContactPage, { props: { contactPage: content } });
+		await clickWithoutNavigating(
+			screen.getAllByTestId(`contact-social-${icon}`)[0],
+		);
 
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+	});
+
+	it('keeps calendar separate from direct contact', async () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await clickWithoutNavigating(
+			screen.getAllByTestId('contact-social-calendar')[0],
+		);
+
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
+			['booking_click'],
+		]);
 	});
 
 	it('uses CMS success link labels inside the success template', async () => {
