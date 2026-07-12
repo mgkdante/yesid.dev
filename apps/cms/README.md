@@ -13,7 +13,7 @@ Long-form decisions, research, and slice history live in Notion (Architecture �
 | Image | `directus/directus:12.0.0` + `directus-extension-sync@3.0.6` (manifest host-overridden to load on v12 — see the Dockerfile banner; drop the override when tractr ships v12 support), pinned in `apps/cms/Dockerfile` |
 | Database | Neon Postgres (BYO; separate Neon target per environment) |
 | Storage | Cloudflare R2 via Directus's built-in `s3` driver |
-| Email | Resend (SMTP transport) |
+| Directus system email | No external SMTP transport configured in the live Railway variables (`EMAIL_FROM` only on prod); separate from public Web3Forms contact delivery |
 | Consumer site | [yesid.dev](https://yesid.dev) — reads all *data* from a build-time static content layer; live Directus serves only `/assets/*` media URLs at runtime |
 
 ## How content reaches production
