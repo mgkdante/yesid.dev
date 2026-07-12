@@ -7,6 +7,23 @@ const ENDPOINT = 'https://plausible.io/api/event';
 const LOCAL_PRODUCTION_ORIGIN = 'http://yesid.dev:4173';
 const CONSENT_KEY = 'yesid:analytics-consent:v1';
 const HERO_INTRO_KEY = 'yesid:hero-intro-day';
+const CONSENT_DISCLOSURES = [
+	{
+		locale: 'English',
+		path: '/projects',
+		copy: 'Plausible would count visits, pages viewed, referral sources, general device and region data, and clicks on contact or project proof links. No cookies, names, email addresses, form contents, destination URLs, or custom properties.',
+	},
+	{
+		locale: 'French',
+		path: '/fr/projects',
+		copy: 'Plausible compterait les visites, les pages vues, les sources de référence, des données générales sur l’appareil et la région, ainsi que les clics sur des liens de contact, de site en ligne ou de dépôt public d’un projet. Aucun cookie, nom, courriel, contenu de formulaire, URL de destination ni propriété personnalisée.',
+	},
+	{
+		locale: 'Spanish',
+		path: '/es/projects',
+		copy: 'Plausible contaría visitas, páginas vistas, fuentes de referencia, datos generales del dispositivo y la región, y clics en enlaces de contacto, del sitio publicado o del repositorio público de un proyecto. Sin cookies, nombres, correos, contenido de formularios, URL de destino ni propiedades personalizadas.',
+	},
+] as const;
 const CLIENT_CHUNKS_DIR = fileURLToPath(
 	new URL('../.svelte-kit/output/client/_app/immutable/chunks/', import.meta.url),
 );
@@ -259,6 +276,17 @@ test('mobile blog TOC does not block the analytics consent action', async ({ pag
 	await expect(accept).toBeVisible();
 	await accept.click({ trial: true });
 });
+
+for (const { locale, path, copy } of CONSENT_DISCLOSURES) {
+	test(`${locale} consent renders the exact high-intent disclosure`, async ({ page }) => {
+		await enableWebdriverSends(page);
+		await proxyProductionHostnameToPreview(page);
+
+		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
+
+		await expect(page.locator('#analytics-consent-description')).toHaveText(copy);
+	});
+}
 
 test('production hostname without a saved choice renders consent and sends no events', async ({
 	page,
