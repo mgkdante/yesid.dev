@@ -1,7 +1,12 @@
 type PlausibleModule = typeof import('@plausible-analytics/tracker');
 
 export const PLAUSIBLE_DOMAIN = 'yesid.dev';
-export const ANALYTICS_EVENTS = ['contact_form_success', 'booking_click'] as const;
+export const ANALYTICS_EVENTS = [
+	'contact_form_success',
+	'booking_click',
+	'direct_contact_click',
+	'project_proof_click',
+] as const;
 export type AnalyticsEventName = (typeof ANALYTICS_EVENTS)[number];
 
 export const PLAUSIBLE_CONFIG = {
