@@ -196,7 +196,9 @@ describe('promote-blog-translations stage planner', () => {
 		const groupCollision = wrongGroup.posts.find(
 			(post) => post.id === translations[0]!.id,
 		)!;
-		groupCollision.translation_key = english[1]!.translation_key;
+		groupCollision.translation_key = english.find(
+			(post) => post.translation_key !== groupCollision.translation_key,
+		)!.translation_key;
 		expect(() => buildStagePlan(desired, wrongGroup)).toThrow(
 			'translation ownership mismatch',
 		);

@@ -4,6 +4,7 @@ import illustrationsFixture from '../fixtures/collections/illustrations.json' wi
 import { z } from 'zod';
 import { BlockEditorDocSchema } from '@repo/shared';
 import { createHash } from 'node:crypto';
+import { BLOG_EDITORIAL_FAMILIES } from '../scripts/reconcile-blog-editorial-dates';
 
 // AM2.5: blog_posts is mono-language. Flat `title` + `excerpt` on parent.
 // No `blog_posts_translations` collection; no `translations` array.
@@ -41,12 +42,12 @@ type FixturePost = z.infer<typeof BlogPostFixtureSchema>[number] & {
 };
 
 const ENGLISH_SOURCE_HASHES: Record<string, string> = {
-	'the-two-hour-internet-slot': '51cc7bcb93f83a2791666d652a47191f7ec376f267b6081ec0652475e9e4c8bd',
-	'how-i-learn-orbiting-a-system-until-it-clicks': '9b932277621f7bedddf0884c98ef42ec4e9af1209ef3155fe7547b756d96a1d2',
-	'thinking-in-matrices': 'efdd047f2732157c362b10ce909074dfc4c9c21888999508492faaadec610f59',
-	'ai-accelerated-human-owned-my-actual-workflow': '800caba1bc3720020b8b80ef450f4256b61b42510a938937bab8265e7cc70033',
-	'50-to-0-an-oracle-always-free-vm': 'a6b38d4716664f736f168491b7cbd817332386d7c0aefd72051a47732293c058',
-	'does-your-website-need-instant-publishing': '393e82eb5588dd3575f044fc59608894a194c961b97b4340c07ff336dff2bbff',
+	'the-two-hour-internet-slot': 'dedcaa2a66fa921a994c61ded5ad322b8da653ae52fcd82195b533db156f9438',
+	'how-i-learn-orbiting-a-system-until-it-clicks': '858042d819110946a08a6695c2ee969fdfcebca1e1ea7c827d761b65ded4ed9c',
+	'thinking-in-matrices': '2d48da3166b95d2e85dea351bbd09c2ae7114e7ee3ee93dafcccb526660d0ab2',
+	'ai-accelerated-human-owned-my-actual-workflow': '8d974a616f9802d30b8e2b83ff4792cec11aa5a92edf0dc49e3f16228081476a',
+	'50-to-0-an-oracle-always-free-vm': 'f2fdb8a3fe345755c703069fb93bb8ae0335c61fe65e2a4b2d0e432ff0f718e3',
+	'does-your-website-need-instant-publishing': 'ef5ca8e575a59087845c0aa1bdc07e89d6d31b6bd770388604f235eab730413a',
 };
 
 function sortJson(value: unknown): unknown {
@@ -60,7 +61,11 @@ function sortJson(value: unknown): unknown {
 }
 
 function sourceHash(post: FixturePost): string {
-	const { translation_key: _translationKey, ...sourceProjection } = post;
+	const {
+		translation_key: _translationKey,
+		date_published: _operatorOwnedEditorialDate,
+		...sourceProjection
+	} = post;
 	return createHash('sha256')
 		.update(`${JSON.stringify(sortJson(sourceProjection))}\n`)
 		.digest('hex');
@@ -110,7 +115,17 @@ describe('apps/cms/fixtures/collections/blog-posts.json', () => {
 		}
 	});
 
-	it('keeps every shipped English source projection byte-locked', () => {
+	it('matches the approved editorial date in every EN/FR/ES family', () => {
+		const posts = BlogPostFixtureSchema.parse(postsFixture) as FixturePost[];
+		const expectedDates = new Map(
+			BLOG_EDITORIAL_FAMILIES.map((family) => [family.translationKey, family.date]),
+		);
+		for (const post of posts) {
+			expect(post.date_published).toBe(expectedDates.get(post.translation_key));
+		}
+	});
+
+	it('keeps every shipped English content projection byte-locked', () => {
 		const posts = BlogPostFixtureSchema.parse(postsFixture) as FixturePost[];
 		const english = posts.filter((post) => post.lang === 'en');
 		expect(english).toHaveLength(6);
