@@ -667,7 +667,10 @@ with_yesid_op() (
   set +x
   export OP_SERVICE_ACCOUNT_TOKEN="$(sed -n 's/^OP_TOKEN=//p' /home/mgkdante/Yesito/projects/yesid.dev/.env)"
   trap 'unset OP_SERVICE_ACCOUNT_TOKEN' EXIT
-  test -n "${OP_SERVICE_ACCOUNT_TOKEN}"
+  if [[ -z "${OP_SERVICE_ACCOUNT_TOKEN}" ]]; then
+    printf '%s\n' '[blog-editorial-dates] missing OP_TOKEN in /home/mgkdante/Yesito/projects/yesid.dev/.env; stop before op run.' >&2
+    exit 1
+  fi
   op run --env-file=/home/mgkdante/Yesito/projects/yesid.dev/.env -- "$@"
 )
 ```
