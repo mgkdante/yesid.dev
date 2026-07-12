@@ -1,8 +1,8 @@
 # yesid.dev actual-provider evidence record
 
-Prepared: 2026-07-11
+Prepared: 2026-07-11; reconciled: 2026-07-12
 
-Evidence cutoff: 2026-07-11, America/Toronto
+Evidence cutoff: 2026-07-12, America/Toronto
 
 Status: **agent-preparable evidence recorded; operator account receipts, provider decisions, and licensed Quebec legal review remain open**
 
@@ -14,11 +14,11 @@ Scope is yesid.dev hosting, contact delivery, mailbox storage, booking, and anal
 
 1. The production contact path remains Web3Forms to Proton. The operator explicitly chose to keep it.
 2. The cancelled Resend proposal is historical only. It is not a production provider, implementation target, checklist item, or prerequisite in this record.
-3. Vercel hosts the commercial yesid.dev services site. The authenticated team is on Hobby, and Vercel restricts Hobby to non-commercial personal use. This is a whole-site plan issue, not a reason to change the contact form. The operator committed to upgrade by the next deployment, with a working target of 2026-07-25; that future action is not a completed receipt.
+3. Vercel hosts the commercial yesid.dev services site. The authenticated team is on Hobby, and Vercel restricts Hobby to non-commercial personal use. This is a whole-site plan issue, not a reason to change the contact form. The operator plans to upgrade later, but explicitly removed the upgrade as a technical publication or deployment gate; that future account action is not a completed receipt.
 4. Web3Forms is the live contact relay. Its public Free-plan, retention, contract, and spam-processing statements require account and written-provider clarification before the legal record can be frozen.
 5. Proton is the live mailbox. Its actual plan, DPA applicability, account access, and operator retention settings require authenticated evidence.
 6. Cal.com is the live booking service. Its actual plan, integrations, access controls, DPA, subprocessor record, and retention/deletion settings require authenticated evidence.
-7. Plausible is live behind explicit opt-in. Its public DPA and code controls are evidenced, but the exact goals and account-side receipts are still incomplete.
+7. Plausible is live behind explicit opt-in. Its public DPA and code controls are evidenced, and authenticated reads show the five exact property-free event goals. The human Realtime and account-side receipts remain incomplete.
 8. The current privacy text says adequate protection was assessed before relying on each provider. The evidence below does not substantiate that completed claim. It must not receive a final operator copy freeze until it is corrected or supported by real records and licensed advice.
 9. The older `privacy.advisorNotes` inside `legal-pages-2026-07-09.json` repeats that completed-assessment claim and omits Proton and Plausible. This record supersedes that internal note. Do not use the old note as promotion authority.
 
@@ -48,14 +48,14 @@ The public form code sends no attachment. Free-text contact and booking fields c
 
 ## Verified project and account receipts
 
-- Repository truth was checked at `origin/main` commit `866640d21e536dcde8da87ee4294c23ca2b8fdc0`.
+- Repository truth was reconciled to `origin/main` commit `842b3b2b1a309a59e476d8c97d9de3c083ae26ac`.
 - The production contact source posts client-side to `https://api.web3forms.com/submit`; no live same-origin contact route exists in this commit.
-- The public site, contact route, legal routes, booking link, robots file, sitemap, and sampled priority routes were reachable on 2026-07-11.
+- The public site, contact route, legal routes, booking link, robots file, sitemap, and sampled priority routes were reachable on 2026-07-12.
 - Authenticated Vercel CLI/API evidence identified project `yesid-dev`, team `mgkdantes-projects`, active Hobby billing, one confirmed OWNER, and enabled MFA with TOTP.
 - The repository's 1Password service-account flow resolved the stored Plausible API credential without exposing it.
-- Fresh Plausible goal reads returned `404`, `Outbound Link: Click`, `File Download`, and `Form: Submission`. They did not return `contact_form_success` or `booking_click` at the evidence cutoff.
-- The operator accidentally created `contact_form_success` and `booking_click` as Plausible custom-property names rather than goals. An idempotent Sites API goal write was attempted with the existing credential and returned HTTP 401 for both names; no goal was created or changed. The key remains usable for read-only receipts.
-- Authenticated Directus reads found five legal pages in each environment and 30 public `admin@yesid.dev` occurrences in both DEV and PROD. Neither environment contained `contact@yesid.dev` in those legal-page bodies at the evidence cutoff. The operator approved `contact@yesid.dev` for every public-facing use, but no CMS write or rebuild has happened yet.
+- Authenticated Plausible goal reads returned the exact property-free event goals `404`, `contact_form_success`, `booking_click`, `direct_contact_click`, and `project_proof_click`. The stored key remains read-only for these receipts; no agent-side goal write is claimed.
+- The operator approved `contact@yesid.dev` for every public-facing use and kept `admin@yesid.dev` internal-only. On 2026-07-12, guarded DEV and PROD dry runs each planned exactly 15 body-only legal-translation patches. Each apply performed a global reread plus an immediate full-row GET/compare before every PATCH, then converged to `NO CHANGES`. A review follow-up used the same guarded process to set the current revision label to 2026-07-12 on all five EN/FR/ES legal pages. Both environments now export zero public `admin@yesid.dev` occurrences, exactly 30 `contact@yesid.dev` occurrences, and 15 current revision labels; their `legal-pages.ts` exports are byte-identical at SHA-256 `929ebf77fcced267668bcc68d59db050113bd7f5aa82e764e06e3a1b03bd5e64`.
+- A read-only Railway variable-key inventory on 2026-07-12 found only `EMAIL_FROM` on the production Directus service and no email variable on the development service; neither live CMS service configures an SMTP transport, host, or user. The old README and env example that presented Resend SMTP as live Directus truth were stale. Directus system email is separate from the public Web3Forms-to-Proton contact path.
 - The private confidentiality incident register exists, recorded zero incidents at the evidence cutoff, and defines the required incident fields and a five-year minimum retention rule.
 
 ## Processor register
@@ -63,10 +63,10 @@ The public form code sends no attachment. Free-text contact and booking fields c
 | Provider | Production role | Main personal-information boundary | Verified contract/account state | Current disposition |
 |---|---|---|---|---|
 | Vercel | Public-site hosting | Request metadata and deployment/account data | Authenticated Hobby, one OWNER, MFA/TOTP; public DPA applies to Pro and Enterprise | Commercial-plan mismatch; operator decision required |
-| Web3Forms | Contact-form relay | Name, email, free-text message, form metadata, IP/email data used by spam controls | Public Free tier is labelled PERSONAL; no authenticated dashboard or DPA receipt | Retained production provider; account and written-provider evidence incomplete |
+| Web3Forms | Contact-form relay | Name, email, free-text message, form metadata, IP/email data used by spam controls | Public Free tier is labelled PERSONAL; pricing lists 30-day submission history and up to three-year submission-data retention; no authenticated dashboard or DPA receipt | Retained production provider; account and written-provider evidence incomplete |
 | Proton Mail | Contact mailbox | Message content, sender/recipient data, attachments from direct email, and mail metadata | Public DPA exists; actual plan and applicability unproved | Retained production provider; operator account evidence incomplete |
 | Cal.com | Booking | Name, email, booking/timezone data, optional notes/guests, and connected integrations | Public terms/privacy available; authenticated DPA and account settings unproved | Retained production provider; minimize and document account configuration |
-| Plausible | Consent-gated analytics | Path/referrer/campaign, browser/device categories, approximate geography, named events, and transient IP/User-Agent processing | Public DPA accepted by use; live goal/account receipts incomplete | Retained production provider; finish OPS2 and account evidence |
+| Plausible | Consent-gated analytics | Path/referrer/campaign, browser/device categories, approximate geography, named events, and transient IP/User-Agent processing | Public DPA accepted by use; five exact property-free goals verified; Realtime/account receipts incomplete | Retained production provider; finish human OPS2 receipts and account evidence |
 
 ## Provider records
 
@@ -78,13 +78,13 @@ The public form code sends no attachment. Free-text contact and booking fields c
 
 **Contract and plan evidence.** Vercel's [Fair Use Guidelines](https://vercel.com/docs/limits/fair-use-guidelines), updated 2026-06-16, restrict Hobby teams to non-commercial personal use. The definition includes advertising the sale of a product or service. yesid.dev advertises paid freelance services. Vercel's [Data Processing Addendum](https://vercel.com/legal/dpa), effective 2026-03-31, applies to Pro and Enterprise customers.
 
-**Open operator action.** Upgrade to a commercial plan before the next deployment and archive the applicable agreement and plan receipt. Working target: 2026-07-25. Also archive a dated subprocessor list, deployment/log retention settings, owner/access receipt, and incident route. Until the dashboard proves the upgrade, the mismatch remains open.
+**Open operator action.** Upgrade to a commercial plan and archive the applicable agreement and plan receipt. The operator explicitly allowed repo, CMS, merge, and deployment work to continue before that later upgrade, so this mismatch is not a technical publication or deployment gate. Also archive a dated subprocessor list, deployment/log retention settings, owner/access receipt, and incident route. Until the dashboard proves the upgrade, the account and contract mismatch remains open.
 
 ### Web3Forms
 
 **Role and data.** The browser sends name, email, message, subject, and sender-display metadata to Web3Forms, which delivers the inquiry to Proton. The client-side access key is public by the provider's design. No attachment, webhook, or optional integration appears in the current form code.
 
-**Public evidence.** Web3Forms [Pricing](https://web3forms.com/pricing) labels the Free tier PERSONAL and advertises a 30-day form-submission history. Its [FAQ](https://docs.web3forms.com/getting-started/faq) separately says form submissions are not stored and that logs containing personal information are deleted periodically, described there as every two months. The [Privacy Policy](https://web3forms.com/privacy) says IP and email data may be sent to CleanTalk and Akismet for spam prevention. The [Terms](https://web3forms.com/terms) still contain `[Your Jurisdiction]` in the governing-law clause. No public DPA was found in the provider's first-party legal navigation during this review.
+**Public evidence (accessed 2026-07-12).** Web3Forms [Pricing](https://web3forms.com/pricing) labels the Free tier PERSONAL. It gives Free users 30 days of form-submission history, but separately defines its data-retention policy as the maximum period submission data is retained before permanent deletion and lists Free as up to three years. Its [FAQ](https://docs.web3forms.com/getting-started/faq) instead says Web3Forms does not store form submissions and says logs containing personally identifiable information are deleted every two months. Its [Privacy Policy](https://web3forms.com/privacy), last updated 2025-12-09, says data is stored in an AWS-hosted database encrypted at rest and that server logs are deleted regularly, without a fixed interval. These first-party statements are inconsistent: 30-day history must not be treated as a deletion period, and no controlling retention schedule can be established without written provider confirmation. The Privacy Policy also says submitter IP and email data may be sent to CleanTalk and Akismet for spam prevention. The [Terms](https://web3forms.com/terms) still contain `[Your Jurisdiction]` in the governing-law clause. No public DPA was found in the provider's first-party legal navigation during this review.
 
 **Open operator action.** Capture the dashboard plan, form destination, account owner/access, security controls, history/deletion controls, active integrations, and spam settings. Ask Web3Forms in writing to confirm commercial Free eligibility, the controlling retention statement, contracting entity, DPA/subprocessors and locations, transfer safeguards, incident notice, deletion/return procedure, spam-processor defaults, outbound-mail provider, and transport-security policy.
 
@@ -106,11 +106,11 @@ The public form code sends no attachment. Free-text contact and booking fields c
 
 ### Plausible Analytics Cloud
 
-**Role and data.** The site loads Plausible only after the visitor grants analytics. It sends pageviews plus `contact_form_success` and `booking_click` without form fields or custom properties. Withdrawal stops future analytics events.
+**Role and data.** The site loads Plausible only after the visitor grants analytics. It sends pageviews plus `contact_form_success`, `booking_click`, `direct_contact_click`, and `project_proof_click` without form fields or custom properties. Withdrawal stops future analytics events.
 
 **Public evidence.** Plausible's [DPA](https://plausible.io/dpa), last updated 2026-03, says use of the service constitutes acceptance. It describes EU processing and storage on EU-owned infrastructure in Germany, deletion of raw IP/User-Agent inputs rather than storage, deletion of old salts every 24 hours, breach notice no later than 48 hours, and permanent deletion of site statistics on instruction. The [Privacy Policy](https://plausible.io/privacy) identifies account and infrastructure providers including Hetzner, Bunny, UpCloud, Paddle, and Postmark.
 
-**Open operator action.** Confirm the two exact custom goals in the live API, capture a normal-browser Realtime receipt, and identify or annotate the controlled QA window. Archive plan/invoice, DPA/subprocessor snapshot, account owner/team, MFA/sessions, shared links, optional integrations, and site-statistics retention/deletion decisions.
+**Open operator action.** Run the normal-browser Realtime receipt window for all four conversion events and identify, filter, or annotate the controlled QA window. Archive plan/invoice, DPA/subprocessor snapshot, account owner/team, MFA/sessions, shared links, optional integrations, and site-statistics retention/deletion decisions.
 
 ## Cross-provider risk and control record
 
@@ -153,9 +153,9 @@ Before profile or directory publication, record the remaining operator approval 
 4. the exact public display name;
 5. one consistent public NAP record using the approved public email, phone, and WhatsApp fields.
 
-## EN/FR operator copy-freeze checklist
+## EN/FR/ES operator copy-freeze checklist
 
-- [ ] Production transport is named as Web3Forms to Proton in EN and FR.
+- [ ] Production transport is named as Web3Forms to Proton in EN, FR, and ES.
 - [ ] The completed section 17 assessment statement is supported by real records or replaced with accurate pending language after licensed review.
 - [ ] Vercel plan, DPA applicability, locations, retention, subprocessors, and access controls match authenticated receipts.
 - [ ] Web3Forms plan, commercial eligibility, destination, integrations, spam processors, retention, transfers, deletion, and contract statements match authenticated and written evidence.
@@ -166,8 +166,8 @@ Before profile or directory publication, record the remaining operator approval 
 - [ ] Functional local storage and temporary locale-handoff storage statements match deployed code.
 - [ ] Every public person title uses the operator-approved non-reserved EN/FR/ES wording; generic discipline/service terminology remains intact.
 - [ ] Legal name, sole-proprietor wording, NEQ/trade-name decision, address, and NAP are operator-approved and source-backed.
-- [ ] EN and FR have the same provider list, purposes, information categories, transfers, retention, rights, security caveats, and effective date.
-- [ ] The five EN/FR legal routes, CMS rows, committed fallbacks, links, canonicals, locale switches, and mobile rendering are reconciled after any approved change.
+- [ ] EN, FR, and ES have the same provider list, purposes, information categories, transfers, retention, rights, security caveats, and effective date.
+- [ ] The five EN/FR/ES legal routes, CMS rows, committed fallbacks, links, canonicals, locale switches, and mobile rendering are reconciled after any approved change.
 - [ ] The operator records factual approval.
 - [ ] A real licensed Québec legal advisor records the legal review. No agent checkbox substitutes for it.
 
@@ -179,7 +179,7 @@ Before profile or directory publication, record the remaining operator approval 
 2. Capture the Web3Forms dashboard and written-provider answers listed above.
 3. Capture the Proton plan, DPA applicability, access/security, configuration, and retention receipts.
 4. Capture the Cal.com plan, DPA/subprocessors, access/security, integrations, and retention/deletion receipts.
-5. Finish the Plausible goal and Realtime receipts plus account-security and retention evidence.
+5. Finish the Plausible normal-browser Realtime receipts plus account-security and retention evidence; the exact goal inventory is already verified.
 6. Confirm the incident-register access list, review owner, escalation contacts, and entry procedure.
 7. Approve the non-reserved EN/FR/ES person-title trio.
 8. Confirm legal identity, Registraire/NEQ/trade-name status, address treatment, Google Business Profile eligibility, and one NAP record.
