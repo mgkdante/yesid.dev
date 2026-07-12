@@ -91,6 +91,15 @@ describe('createPathnamePageviewTracker', () => {
 });
 
 describe('createAnalyticsClient', () => {
+	it('exposes exactly the four approved custom event names', () => {
+		expect(ANALYTICS_EVENTS).toEqual([
+			'contact_form_success',
+			'booking_click',
+			'direct_contact_click',
+			'project_proof_click',
+		]);
+	});
+
 	it('enables only the exact production hostname', async () => {
 		const { client, loadTracker, module } = createClient();
 
@@ -136,6 +145,29 @@ describe('createAnalyticsClient', () => {
 		});
 	});
 
+	it('blocks the new events before consent and after withdrawal', async () => {
+		let consent = false;
+		const { client, loadTracker, module } = createClient({
+			canTrack: () => consent,
+		});
+		const url = new URL(
+			'https://yesid.dev/projects/yesid-dev?token=private&utm_source=portfolio',
+		);
+
+		await client.trackEvent('direct_contact_click', url);
+		expect(loadTracker).not.toHaveBeenCalled();
+
+		consent = true;
+		await client.trackEvent('direct_contact_click', url);
+		expect(module.track).toHaveBeenCalledWith('direct_contact_click', {
+			url: 'https://yesid.dev/projects/yesid-dev?utm_source=portfolio',
+		});
+
+		consent = false;
+		await client.trackEvent('project_proof_click', url);
+		expect(module.track).toHaveBeenCalledTimes(1);
+	});
+
 	it('initializes once with the exact manual-only config', async () => {
 		const init = vi.fn<PlausibleModule['init']>();
 		const module = createTrackerModule({ init });
@@ -161,7 +193,7 @@ describe('createAnalyticsClient', () => {
 		expect(PLAUSIBLE_CONFIG).toEqual(init.mock.calls[0]?.[0]);
 	});
 
-	it('sends sanitized pageviews and the two typed custom events without properties', async () => {
+	it('sends sanitized pageviews and the four typed custom events without properties', async () => {
 		const track = vi.fn<PlausibleModule['track']>();
 		const module = createTrackerModule({ track });
 		const { client } = createClient({ module });
@@ -184,6 +216,8 @@ describe('createAnalyticsClient', () => {
 			],
 			['contact_form_success', { url: 'https://yesid.dev/contact?ref=calendar' }],
 			['booking_click', { url: 'https://yesid.dev/contact?ref=calendar' }],
+			['direct_contact_click', { url: 'https://yesid.dev/contact?ref=calendar' }],
+			['project_proof_click', { url: 'https://yesid.dev/contact?ref=calendar' }],
 		]);
 		for (const [, options] of track.mock.calls) {
 			expect(options).toEqual({ url: expect.any(String) });

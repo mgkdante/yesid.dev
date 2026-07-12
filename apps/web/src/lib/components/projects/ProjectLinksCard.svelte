@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { trackAnalyticsEvent } from '$lib/analytics/client';
 	import type { Project } from '$lib/types';
+	import { isProjectProofHref } from '$lib/utils/high-intent-links';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { siteLabels } from '$lib/content';
@@ -23,6 +25,12 @@
 		anchor?: string;
 	} = $props();
 
+	function handleProjectProofClick(href: string | undefined): void {
+		if (href && isProjectProofHref(href)) {
+			trackAnalyticsEvent('project_proof_click');
+		}
+	}
+
 	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
 </script>
 
@@ -38,6 +46,7 @@
 						href={project.liveUrl}
 						target="_blank"
 						rel="noopener noreferrer"
+						onclick={() => handleProjectProofClick(project.liveUrl)}
 						class="inline-flex items-center gap-2 font-mono text-mono text-primary no-underline"
 					>
 						<SectionIcon name="arrow" class="h-3.5 w-3.5 shrink-0" />
@@ -49,6 +58,7 @@
 						href={project.repoUrl}
 						target="_blank"
 						rel="noopener noreferrer"
+						onclick={() => handleProjectProofClick(project.repoUrl)}
 						class="inline-flex items-center gap-2 font-mono text-mono text-primary no-underline"
 					>
 						<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />

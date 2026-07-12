@@ -156,7 +156,7 @@
 	"footer_chrome_footer_legal_label": "LÉGAL",
 	"footer_chrome_footer_connect_label": "CONNEXION",
 	"ui_analytics_consent_title": "Je peux compter cette visite?",
-	"ui_analytics_consent_description": "Plausible compterait les visites, les pages vues, les sources de référence et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.",
+	"ui_analytics_consent_description": "Plausible compterait les visites, les pages vues, les sources de référence, des données générales sur l’appareil et la région, ainsi que les clics sur des liens de contact, de site en ligne ou de dépôt public d’un projet. Aucun cookie, nom, courriel, contenu de formulaire, URL de destination ni propriété personnalisée.",
 	"ui_analytics_consent_accept_label": "Autoriser l’analytique",
 	"ui_analytics_consent_decline_label": "Non merci",
 	"ui_analytics_consent_settings_label": "Préférences d’analytique",
