@@ -74,9 +74,9 @@ describe('site-labels transform', () => {
 				es: '¿Puedo contar esta visita?',
 			},
 			description: {
-				en: 'Plausible would count visits, pages viewed, referral sources, and general device and region data. No cookies, names, email addresses, or form contents.',
-				fr: 'Plausible compterait les visites, les pages vues, les sources de référence et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
-				es: 'Plausible contaría visitas, páginas vistas, fuentes de referencia y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+				en: 'Plausible would count visits, pages viewed, referral sources, general device and region data, and clicks on contact or project proof links. No cookies, names, email addresses, form contents, destination URLs, or custom properties.',
+				fr: 'Plausible compterait les visites, les pages vues, les sources de référence, des données générales sur l’appareil et la région, ainsi que les clics sur des liens de contact, de site en ligne ou de dépôt public d’un projet. Aucun cookie, nom, courriel, contenu de formulaire, URL de destination ni propriété personnalisée.',
+				es: 'Plausible contaría visitas, páginas vistas, fuentes de referencia, datos generales del dispositivo y la región, y clics en enlaces de contacto, del sitio publicado o del repositorio público de un proyecto. Sin cookies, nombres, correos, contenido de formularios, URL de destino ni propiedades personalizadas.',
 			},
 			acceptLabel: { en: 'Allow analytics', fr: 'Autoriser l’analytique', es: 'Permitir analítica' },
 			declineLabel: { en: 'No thanks', fr: 'Non merci', es: 'No, gracias' },

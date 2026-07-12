@@ -80,7 +80,10 @@ export function buildSiteLabelsPlan(): SchemaStep[] {
 			note: `Microcopy (go2-t1c). Group: ${field.split('_')[0]}. Default: "${seed}"`,
 			sort: Object.keys(SITE_LABEL_SEEDS).indexOf(field) + 4,
 		},
-		schema: {},
+		schema:
+			field === 'ui_analytics_consent_description'
+				? { max_length: 500 }
+				: {},
 	}));
 	return [
 		{
