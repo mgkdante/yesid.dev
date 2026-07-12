@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -55,12 +56,96 @@ const REVISION_LABELS: Record<Locale, string> = {
 	es: 'Última actualización:',
 };
 
+const SOURCE_PRESERVATION_SHA256 = {
+	'site-labels.json': '04f75b348f0287dd637a5f8e87b1f45caa43a1d475f22307c80b3644abbd2217',
+	'site-labels.fr.json': '9cb55b693bbc431ee259291627dcaac8e3308565f44013ec7dc690c6d050d3dd',
+	'site-labels.es.json': '52ebd03c73a03b53f9f61eaf798124fae9c8a38bac3a1ede01e5dceaf4eca6ec',
+	'legal-pages-2026-07-09.json':
+		'd6799f1e4aef96f97c95caed9a196548accc36aeeeb04368d5de756bca35eb96',
+} as const;
+
+const CONSENT_DESCRIPTION_SENTINEL = '<task-6-consent-description>';
+const GENERATED_AT_SENTINEL = '<task-6-generated-at>';
+const REVISION_DATE_SENTINEL = '<task-6-revision-date>';
+const LEGAL_CLAUSE_SENTINEL = '<task-6-legal-clause>';
+
 function readJson<T>(path: string): T {
 	return JSON.parse(readFileSync(path, 'utf8')) as T;
 }
 
 function textBlocks(page: LegalPage, locale: Locale): string[] {
 	return page[locale].blocks.flatMap((block) => (block.text === undefined ? [] : [block.text]));
+}
+
+function sha256(value: string): string {
+	return createHash('sha256').update(value).digest('hex');
+}
+
+function canonicalJson(raw: string): string {
+	return `${JSON.stringify(JSON.parse(raw), null, '\t')}\n`;
+}
+
+function normalizeConsentDescriptionBytes(raw: string): string {
+	const labels = JSON.parse(raw) as Record<string, string>;
+	const keyPrefix = '"ui_analytics_consent_description": ';
+	const keyAt = raw.indexOf(keyPrefix);
+	if (keyAt < 0 || raw.indexOf(keyPrefix, keyAt + keyPrefix.length) >= 0) {
+		throw new Error('expected exactly one analytics consent description key');
+	}
+	const valueAt = keyAt + keyPrefix.length;
+	const valueLiteral = JSON.stringify(labels.ui_analytics_consent_description);
+	if (!raw.startsWith(valueLiteral, valueAt)) {
+		throw new Error('analytics consent description is not at the expected JSON key');
+	}
+	return `${raw.slice(0, valueAt)}${JSON.stringify(CONSENT_DESCRIPTION_SENTINEL)}${raw.slice(valueAt + valueLiteral.length)}`;
+}
+
+function replaceExactlyOnce(value: string, segment: string, replacement: string): string {
+	const segmentAt = value.indexOf(segment);
+	if (segmentAt < 0 || value.indexOf(segment, segmentAt + segment.length) >= 0) {
+		throw new Error(`expected exactly one authorized segment: ${segment.slice(0, 40)}`);
+	}
+	return `${value.slice(0, segmentAt)}${replacement}${value.slice(segmentAt + segment.length)}`;
+}
+
+function normalizeLegalSemanticLeaves(raw: string): string {
+	const artifact = JSON.parse(raw) as LegalArtifact;
+	artifact.generatedAt = GENERATED_AT_SENTINEL;
+
+	for (const slug of ['privacy', 'cookies'] as const) {
+		const page = artifact.pages.find((candidate) => candidate.slug === slug);
+		if (page === undefined) throw new Error(`missing legal page: ${slug}`);
+
+		for (const locale of ['en', 'fr', 'es'] as const) {
+			const revisionBlocks = page[locale].blocks.filter(
+				(block) =>
+					typeof block.text === 'string' && block.text.includes(REVISION_LABELS[locale]),
+			);
+			if (revisionBlocks.length !== 1) {
+				throw new Error(`expected one ${slug}/${locale} revision block`);
+			}
+			revisionBlocks[0]!.text = replaceExactlyOnce(
+				revisionBlocks[0]!.text!,
+				'2026-07-11',
+				REVISION_DATE_SENTINEL,
+			);
+
+			const analyticsBlocks = page[locale].blocks.filter(
+				(block) =>
+					typeof block.text === 'string' && block.text.includes('Plausible Analytics Cloud'),
+			);
+			if (analyticsBlocks.length !== 1) {
+				throw new Error(`expected one ${slug}/${locale} Plausible block`);
+			}
+			analyticsBlocks[0]!.text = replaceExactlyOnce(
+				analyticsBlocks[0]!.text!,
+				LEGAL_CLAUSES[locale],
+				LEGAL_CLAUSE_SENTINEL,
+			);
+		}
+	}
+
+	return `${JSON.stringify(artifact, null, '\t')}\n`;
 }
 
 const legalArtifact = readJson<LegalArtifact>(LEGAL_ARTIFACT_PATH);
@@ -75,6 +160,26 @@ describe('lean high-intent analytics source copy', () => {
 			expect(labels.ui_analytics_consent_description).toBe(copy);
 		});
 	}
+});
+
+describe('Task 6 preserves every non-authorized source byte and semantic leaf from 8cd368ff', () => {
+	for (const { fixture } of Object.values(CONSENT_DESCRIPTIONS)) {
+		it(`${fixture} differs only at the authorized consent description`, () => {
+			const raw = readFileSync(join(CMS_ROOT, 'fixtures', 'content', fixture), 'utf8');
+			expect(raw).toBe(canonicalJson(raw));
+			expect(sha256(normalizeConsentDescriptionBytes(raw))).toBe(
+				SOURCE_PRESERVATION_SHA256[fixture],
+			);
+		});
+	}
+
+	it('legal source differs only at generatedAt, target dates, and target clauses', () => {
+		const raw = readFileSync(LEGAL_ARTIFACT_PATH, 'utf8');
+		expect(raw).toBe(canonicalJson(raw));
+		expect(sha256(normalizeLegalSemanticLeaves(raw))).toBe(
+			SOURCE_PRESERVATION_SHA256['legal-pages-2026-07-09.json'],
+		);
+	});
 });
 
 describe('lean high-intent analytics legal source', () => {
