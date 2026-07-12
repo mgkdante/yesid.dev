@@ -23,6 +23,7 @@
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
 	import type { WeatherData } from '$lib/utils/weather';
 	import { escapeHtml } from '$lib/utils/code-fences';
+	import { isDirectContactHref } from '$lib/utils/high-intent-links';
 	import { pressBounce } from '$lib/motion/actions';
 	import { trackAnalyticsEvent } from '$lib/analytics/client';
 
@@ -319,6 +320,19 @@
 		trackAnalyticsEvent('booking_click');
 	}
 
+	function handleContactChannelClick(
+		social: ContactContent['socials'][number],
+	): void {
+		if (social.icon === 'calendar') {
+			handleBookingClick();
+			return;
+		}
+
+		if (isDirectContactHref(social.href)) {
+			trackAnalyticsEvent('direct_contact_click');
+		}
+	}
+
 </script>
 
 <div class="contact-grid" data-testid="page-contact">
@@ -419,7 +433,7 @@
 							href={social.href}
 							aria-label={contactChannelLabel(social.label)}
 							data-testid="contact-social-{social.icon}"
-							onclick={social.icon === 'calendar' ? handleBookingClick : undefined}
+							onclick={() => handleContactChannelClick(social)}
 							class="tap-feedback flex items-center gap-2 rounded px-2 py-3 min-h-11 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15 active:bg-primary/25"
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
