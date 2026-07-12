@@ -301,6 +301,27 @@ describe('blogPosts data integrity', () => {
 		});
 	});
 
+	it('keeps the six EN/FR/ES families on the approved newest-first editorial schedule', () => {
+		const expectedDates = new Map([
+			['the-two-hour-internet-slot', '2026-06-01'],
+			['how-i-learn-orbiting-a-system-until-it-clicks', '2026-06-09'],
+			['thinking-in-matrices', '2026-06-17'],
+			['ai-accelerated-human-owned-my-actual-workflow', '2026-06-25'],
+			['50-to-0-an-oracle-always-free-vm', '2026-07-03'],
+			['does-your-website-need-instant-publishing', '2026-07-11'],
+		]);
+		expect(blogPosts).toHaveLength(18);
+		for (const [translationKey, date] of expectedDates) {
+			const family = blogPosts.filter((post) => post.translationKey === translationKey);
+			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
+			expect(family.every((post) => post.date === date)).toBe(true);
+			expect(family.every((post) => post.dateModified === '2026-07-11')).toBe(true);
+		}
+		expect(blogPosts.map((post) => post.date)).toEqual(
+			blogPosts.map((post) => post.date).toSorted().reverse(),
+		);
+	});
+
 	it('all posts have at least one tag', () => {
 		blogPosts.forEach((p) => {
 			expect(p.tags.length).toBeGreaterThan(0);
