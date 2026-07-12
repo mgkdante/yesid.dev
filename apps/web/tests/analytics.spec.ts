@@ -245,6 +245,21 @@ test('analytics station fits a 360px viewport with 44px actions and no horizonta
 	).toBe(true);
 });
 
+test('mobile blog TOC does not block the analytics consent action', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await enableWebdriverSends(page);
+	await proxyProductionHostnameToPreview(page);
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/blog/does-your-website-need-instant-publishing`,
+	);
+
+	await expect(page.getByTestId('toc-pill')).toBeVisible();
+	const accept = page.getByTestId('analytics-consent-accept');
+	await expect(accept).toBeVisible();
+	await accept.click({ trial: true });
+});
+
 test('production hostname without a saved choice renders consent and sends no events', async ({
 	page,
 }) => {
