@@ -17,7 +17,7 @@ type LegalTranslation = { title: string; blocks: LegalBlock[] };
 type LegalPage = { slug: string } & Record<Locale, LegalTranslation>;
 type LegalArtifact = { generatedAt: string; pages: LegalPage[] };
 
-const CONSENT_DESCRIPTIONS: Record<Locale, { fixture: string; copy: string }> = {
+const CONSENT_DESCRIPTIONS = {
 	en: {
 		fixture: 'site-labels.json',
 		copy: 'Plausible would count visits, pages viewed, referral sources, general device and region data, and clicks on contact or project proof links. No cookies, names, email addresses, form contents, destination URLs, or custom properties.',
@@ -30,7 +30,7 @@ const CONSENT_DESCRIPTIONS: Record<Locale, { fixture: string; copy: string }> = 
 		fixture: 'site-labels.es.json',
 		copy: 'Plausible contaría visitas, páginas vistas, fuentes de referencia, datos generales del dispositivo y la región, y clics en enlaces de contacto, del sitio publicado o del repositorio público de un proyecto. Sin cookies, nombres, correos, contenido de formularios, URL de destino ni propiedades personalizadas.',
 	},
-};
+} as const satisfies Record<Locale, { fixture: string; copy: string }>;
 
 const OLD_LEGAL_CLAUSES: Record<Locale, string> = {
 	en: 'and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events.',
