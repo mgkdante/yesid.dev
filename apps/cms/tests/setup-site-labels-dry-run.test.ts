@@ -79,6 +79,30 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(colNames).toContain('footer_chrome_footer_tagline');
 		expect(colNames).toContain('hero_dashboard_vehicles_label');
 	});
+	it('creates only the analytics consent description with varchar(500) capacity', () => {
+		const labelFields = plan.filter(
+			(step) =>
+				step.kind === 'field' &&
+				step.path === '/fields/site_labels_translations',
+		);
+		const description = labelFields.find(
+			(step) =>
+				(step.payload as { field: string }).field ===
+				'ui_analytics_consent_description',
+		)!;
+		expect(description.payload).toMatchObject({
+			field: 'ui_analytics_consent_description',
+			type: 'string',
+			schema: { max_length: 500 },
+		});
+		expect(
+			labelFields.filter(
+				(step) =>
+					(step.payload as { schema?: { max_length?: number } }).schema
+						?.max_length !== undefined,
+			),
+		).toEqual([description]);
+	});
 	it('adds heading + empty_state to block_projects_page_content_translations', () => {
 		const chrome = plan.filter((s) => s.kind === 'field' && s.path === '/fields/block_projects_page_content_translations');
 		expect(chrome.map((s) => (s.payload as { field: string }).field).sort()).toEqual(['empty_state', 'heading']);

@@ -6,13 +6,55 @@ import { test, expect } from '@playwright/test';
 const LEGAL_SLUGS = ['privacy', 'terms', 'cookies', 'accessibility', 'notice'];
 
 // OPS2: Privacy and Cookies disclose consented Plausible analytics in all three locales.
-const ANALYTICS_LEGAL_ROUTES = [
-  '/legal/privacy',
-  '/fr/legal/privacy',
-  '/es/legal/privacy',
-  '/legal/cookies',
-  '/fr/legal/cookies',
-  '/es/legal/cookies'
+const ANALYTICS_LEGAL_EXPECTATIONS = [
+  {
+    route: '/legal/privacy',
+    locale: 'EN',
+    page: 'Privacy',
+    clause:
+      "and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project's live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events.",
+    revision: 'Last updated: 2026-07-11',
+  },
+  {
+    route: '/fr/legal/privacy',
+    locale: 'FR',
+    page: 'Privacy',
+    clause:
+      'ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée.',
+    revision: 'Dernière mise à jour : 2026-07-11',
+  },
+  {
+    route: '/es/legal/privacy',
+    locale: 'ES',
+    page: 'Privacy',
+    clause:
+      'y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada.',
+    revision: 'Última actualización: 2026-07-11',
+  },
+  {
+    route: '/legal/cookies',
+    locale: 'EN',
+    page: 'Cookies',
+    clause:
+      "and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project's live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events.",
+    revision: 'Last updated: 2026-07-11',
+  },
+  {
+    route: '/fr/legal/cookies',
+    locale: 'FR',
+    page: 'Cookies',
+    clause:
+      'ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée.',
+    revision: 'Dernière mise à jour : 2026-07-11',
+  },
+  {
+    route: '/es/legal/cookies',
+    locale: 'ES',
+    page: 'Cookies',
+    clause:
+      'y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada.',
+    revision: 'Última actualización: 2026-07-11',
+  },
 ] as const;
 
 test.describe('/legal pages content', () => {
@@ -56,7 +98,7 @@ test.describe('/legal pages content', () => {
   });
 
   test('Privacy and Cookies name Plausible and disclose opt-in in EN, FR, and ES', async ({ page }) => {
-    for (const route of ANALYTICS_LEGAL_ROUTES) {
+    for (const { route } of ANALYTICS_LEGAL_EXPECTATIONS) {
       await page.goto(route);
       const body = page.locator('[data-testid="legal-body"]');
       await expect(body).toContainText('Plausible');
@@ -70,4 +112,15 @@ test.describe('/legal pages content', () => {
     await page.goto('/es/legal/cookies');
     await expect(page.locator('[data-testid="legal-body"]')).toContainText('desactivado hasta que usted lo autorice');
   });
+
+  for (const expectation of ANALYTICS_LEGAL_EXPECTATIONS) {
+    test(`${expectation.page} renders the exact ${expectation.locale} four-event disclosure and revision`, async ({
+      page,
+    }) => {
+      await page.goto(expectation.route);
+      const body = page.locator('[data-testid="legal-body"]');
+      await expect(body).toContainText(expectation.clause);
+      await expect(body).toContainText(expectation.revision);
+    });
+  }
 });
