@@ -35,6 +35,10 @@ type Payload = {
 	p?: Record<string, string>;
 };
 
+test.afterEach(async ({ page }) => {
+	await page.unrouteAll({ behavior: 'wait' });
+});
+
 async function proxyProductionHostnameToPreview(page: Page): Promise<string[]> {
 	const requestedUrls: string[] = [];
 	await page.route(LOCAL_PRODUCTION_ORIGIN + '/**', async (route) => {
