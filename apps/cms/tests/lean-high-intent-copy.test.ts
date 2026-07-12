@@ -68,6 +68,24 @@ const CONSENT_DESCRIPTION_SENTINEL = '<task-6-consent-description>';
 const GENERATED_AT_SENTINEL = '<task-6-generated-at>';
 const REVISION_DATE_SENTINEL = '<task-6-revision-date>';
 const LEGAL_CLAUSE_SENTINEL = '<task-6-legal-clause>';
+const PUBLIC_CONTACT_EMAIL = 'contact@yesid.dev';
+const INTERNAL_CONTACT_EMAIL = 'admin@yesid.dev';
+
+const NORMALIZED_REVISION_DATES = {
+	privacy: REVISION_DATE_SENTINEL,
+	terms: '2026-07-09',
+	cookies: REVISION_DATE_SENTINEL,
+	accessibility: '2026-07-09',
+	notice: '2026-07-09',
+} as const;
+
+const PUBLIC_CONTACT_COUNTS = {
+	privacy: 5,
+	terms: 1,
+	cookies: 1,
+	accessibility: 2,
+	notice: 1,
+} as const;
 
 function readJson<T>(path: string): T {
 	return JSON.parse(readFileSync(path, 'utf8')) as T;
@@ -112,24 +130,44 @@ function normalizeLegalSemanticLeaves(raw: string): string {
 	const artifact = JSON.parse(raw) as LegalArtifact;
 	artifact.generatedAt = GENERATED_AT_SENTINEL;
 
-	for (const slug of ['privacy', 'cookies'] as const) {
-		const page = artifact.pages.find((candidate) => candidate.slug === slug);
-		if (page === undefined) throw new Error(`missing legal page: ${slug}`);
-
+	for (const page of artifact.pages) {
+		const expectedCount = PUBLIC_CONTACT_COUNTS[page.slug as keyof typeof PUBLIC_CONTACT_COUNTS];
+		if (expectedCount === undefined) throw new Error(`unexpected legal page: ${page.slug}`);
 		for (const locale of ['en', 'fr', 'es'] as const) {
+			let replacementCount = 0;
+			for (const block of page[locale].blocks) {
+				if (block.text === undefined) continue;
+				replacementCount += block.text.split(PUBLIC_CONTACT_EMAIL).length - 1;
+				block.text = block.text.replaceAll(PUBLIC_CONTACT_EMAIL, INTERNAL_CONTACT_EMAIL);
+			}
+			if (replacementCount !== expectedCount) {
+				throw new Error(
+					`expected ${expectedCount} authorized public contact replacements in ${page.slug}/${locale}, received ${replacementCount}`,
+				);
+			}
+
 			const revisionBlocks = page[locale].blocks.filter(
 				(block) =>
 					typeof block.text === 'string' && block.text.includes(REVISION_LABELS[locale]),
 			);
 			if (revisionBlocks.length !== 1) {
-				throw new Error(`expected one ${slug}/${locale} revision block`);
+				throw new Error(`expected one ${page.slug}/${locale} revision block`);
 			}
 			revisionBlocks[0]!.text = replaceExactlyOnce(
 				revisionBlocks[0]!.text!,
-				'2026-07-11',
-				REVISION_DATE_SENTINEL,
+				'2026-07-12',
+				NORMALIZED_REVISION_DATES[
+					page.slug as keyof typeof NORMALIZED_REVISION_DATES
+				],
 			);
+		}
+	}
 
+	for (const slug of ['privacy', 'cookies'] as const) {
+		const page = artifact.pages.find((candidate) => candidate.slug === slug);
+		if (page === undefined) throw new Error(`missing legal page: ${slug}`);
+
+		for (const locale of ['en', 'fr', 'es'] as const) {
 			const analyticsBlocks = page[locale].blocks.filter(
 				(block) =>
 					typeof block.text === 'string' && block.text.includes('Plausible Analytics Cloud'),
@@ -162,7 +200,7 @@ describe('lean high-intent analytics source copy', () => {
 	}
 });
 
-describe('Task 6 preserves every non-authorized source byte and semantic leaf from 8cd368ff', () => {
+describe('source preservation allows only the approved analytics and public-contact leaves', () => {
 	for (const { fixture } of Object.values(CONSENT_DESCRIPTIONS)) {
 		it(`${fixture} differs only at the authorized consent description`, () => {
 			const raw = readFileSync(join(CMS_ROOT, 'fixtures', 'content', fixture), 'utf8');
@@ -173,7 +211,7 @@ describe('Task 6 preserves every non-authorized source byte and semantic leaf fr
 		});
 	}
 
-	it('legal source differs only at generatedAt, target dates, and target clauses', () => {
+	it('legal source differs only at generatedAt, target dates, target clauses, and public contact email', () => {
 		const raw = readFileSync(LEGAL_ARTIFACT_PATH, 'utf8');
 		expect(raw).toBe(canonicalJson(raw));
 		expect(sha256(normalizeLegalSemanticLeaves(raw))).toBe(
@@ -183,8 +221,24 @@ describe('Task 6 preserves every non-authorized source byte and semantic leaf fr
 });
 
 describe('lean high-intent analytics legal source', () => {
+	it('uses the approved public contact address in every legal translation', () => {
+		let publicContactCount = 0;
+		for (const page of legalArtifact.pages) {
+			const expectedCount = PUBLIC_CONTACT_COUNTS[page.slug as keyof typeof PUBLIC_CONTACT_COUNTS];
+			expect(expectedCount).toBeDefined();
+			for (const locale of ['en', 'fr', 'es'] as const) {
+				const body = textBlocks(page, locale).join('\n');
+				expect(body).not.toContain(INTERNAL_CONTACT_EMAIL);
+				const count = body.split(PUBLIC_CONTACT_EMAIL).length - 1;
+				expect(count).toBe(expectedCount!);
+				publicContactCount += count;
+			}
+		}
+		expect(publicContactCount).toBe(30);
+	});
+
 	it('records the source artifact revision date', () => {
-		expect(legalArtifact.generatedAt).toBe('2026-07-11');
+		expect(legalArtifact.generatedAt).toBe('2026-07-12');
 	});
 
 	it('keeps the legal page order, titles, and block counts stable', () => {
@@ -248,29 +302,16 @@ describe('lean high-intent analytics legal source', () => {
 		}
 	}
 
-	for (const slug of ['privacy', 'cookies'] as const) {
+	for (const slug of ['privacy', 'terms', 'cookies', 'accessibility', 'notice'] as const) {
 		for (const locale of ['en', 'fr', 'es'] as const) {
-			it(`${slug} records only the new ${locale.toUpperCase()} revision date`, () => {
+			it(`${slug} records the July 12 ${locale.toUpperCase()} revision date`, () => {
 				const page = legalArtifact.pages.find((candidate) => candidate.slug === slug);
 				expect(page).toBeDefined();
 				const revisionText = textBlocks(page!, locale).find((text) =>
 					text.includes(REVISION_LABELS[locale]),
 				);
-				expect(revisionText).toContain('2026-07-11');
+				expect(revisionText).toContain('2026-07-12');
 				expect(revisionText).not.toContain('2026-07-09');
-			});
-		}
-	}
-
-	for (const slug of ['terms', 'accessibility', 'notice'] as const) {
-		for (const locale of ['en', 'fr', 'es'] as const) {
-			it(`${slug} keeps its ${locale.toUpperCase()} revision date unchanged`, () => {
-				const page = legalArtifact.pages.find((candidate) => candidate.slug === slug);
-				expect(page).toBeDefined();
-				const revisionText = textBlocks(page!, locale).find((text) =>
-					text.includes(REVISION_LABELS[locale]),
-				);
-				expect(revisionText).toContain('2026-07-09');
 				expect(revisionText).not.toContain('2026-07-11');
 			});
 		}
