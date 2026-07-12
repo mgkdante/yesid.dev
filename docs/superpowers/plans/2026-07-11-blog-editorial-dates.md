@@ -17,7 +17,7 @@
 - Directus is the content source of truth. Fixtures and web content modules are regenerated only from live CMS state.
 - The command may update only `blog_posts.date_published` for the 18 exact row IDs. No create, delete, status, body, title, excerpt, SEO, tag, translation-key, or relation operation exists.
 - Dry-run is the default. PROD apply requires `--confirm=APPLY_PROD_BLOG_EDITORIAL_DATES`.
-- No DEV/PROD CMS write, push, PR, preview, merge, or deployment before the operator provides the Vercel commercial-plan upgrade receipt.
+- On 2026-07-11 the operator explicitly deferred the Vercel plan upgrade to a later date and confirmed that it does not block this blog-date release. The account plan is not a prerequisite for the CMS writes, PR, merge, or deployment in this scope.
 - Use `OP_TOKEN` from `/home/mgkdante/Yesito/projects/yesid.dev/.env` through the runbook's trap-backed `with_yesid_op` subshell, then resolve the repository's `op://` environment references with `op run --env-file=/home/mgkdante/Yesito/projects/yesid.dev/.env`; never print or persist secrets.
 - Transit implementation and Transit content remain out of scope.
 
@@ -638,7 +638,7 @@ git commit -m "feat(cms): reconcile blog editorial dates"
 **Interfaces:**
 
 - Consumes the Task 2 command.
-- Produces the exact operator runbook for current dry-runs and post-upgrade writes.
+- Produces the exact operator runbook for dry-runs and controlled writes.
 
 - [ ] **Step 1: Write the runbook**
 
@@ -694,11 +694,11 @@ The apply command compares the displayed plan with a fresh pre-write read of the
 
 The batch PATCH body contains only `id` and `date_published`, so this command cannot overwrite those unrelated fields. A concurrent `date_published` edit remains a residual race; use a controlled apply window with no other date writer, start from a fresh dry-run, and never infer success from a timeout or thrown command.
 
-## Write gate and required sequence
+## Required write and release sequence
 
-Do not apply, push, open a PR, create a preview, merge, or deploy until the Vercel account reports a commercial plan.
+On 2026-07-11 the operator explicitly deferred the Vercel plan upgrade to a later date and confirmed that it does not block this blog-date release. Do not use the current account plan as a prerequisite for this sequence.
 
-After that receipt, the order is mandatory: DEV apply and convergence, DEV fixture and fallback regeneration, local verification, reviewed PR and merge, confirmed Ready deployment, then a fresh PROD dry-run and confirmed PROD apply. Do not move directly from DEV convergence to PROD.
+The order remains mandatory: DEV apply and convergence, DEV fixture and fallback regeneration, local verification, reviewed PR and merge, confirmed Ready deployment, then a fresh PROD dry-run and confirmed PROD apply. Do not move directly from DEV convergence to PROD.
 
 ### 1. Apply DEV and prove convergence
 
@@ -804,7 +804,7 @@ Expected: only the reconciler, its test, the design/plan, and this runbook diffe
 
 ---
 
-### Task 4: After the Vercel upgrade, reconcile CMS and regenerate derived content
+### Task 4: Reconcile CMS and regenerate derived content
 
 **Files:**
 
@@ -814,18 +814,18 @@ Expected: only the reconciler, its test, the design/plan, and this runbook diffe
 
 **Interfaces:**
 
-- Consumes the operator's Vercel commercial-plan receipt and Tasks 1–3.
+- Consumes the operator's 2026-07-11 authority correction and Tasks 1–3.
 - Produces converged DEV/PROD CMS state and regenerated date-only committed fallbacks.
 
-- [ ] **Step 1: Verify the deployment gate**
+- [x] **Step 1: Record the operator authority correction**
 
-Read the live Vercel team/account plan and record the commercial-plan receipt in the content-blog Plan. Stop if the account still reports Hobby.
+The operator confirmed that the Vercel upgrade will happen later and does not block this release. The account plan must not be reintroduced as a gate for this task.
 
-- [ ] **Step 2: Apply and verify DEV**
+- [x] **Step 2: Apply and verify DEV**
 
-Use the runbook's DEV apply and convergence commands. Expected: 18 writes, followed by `NO CHANGES`.
+The fresh DEV dry-run showed exactly 18 date-only patches. Apply verified all 18 writes, and the immediate convergence dry-run returned `NO CHANGES`.
 
-- [ ] **Step 3: Regenerate the committed fixture and fallbacks from DEV**
+- [x] **Step 3: Regenerate the committed fixture and fallbacks from DEV**
 
 ```bash
 with_yesid_op \
@@ -838,7 +838,9 @@ with_yesid_op \
 
 Inspect every changed file. The blog fixture and `blog.ts` must contain the six approved date-only values with three locale rows per family. Treat any unrelated fixture/content diff as a blocker; do not stage or discard it without proving its origin.
 
-- [ ] **Step 4: Verify generated and public contracts locally**
+The full DEV refresh exposed pre-existing Spanish/owner/service drift in four unrelated fixture domains. That drift was proved separately and excluded. The retained outputs are only `blog-posts.json`, `blog.ts`, and the corresponding `blog.ts` manifest hash.
+
+- [x] **Step 4: Verify generated and public contracts locally**
 
 ```bash
 bun test apps/cms/tests/reconcile-blog-editorial-dates.test.ts
@@ -850,6 +852,8 @@ bun run --cwd apps/web check
 ```
 
 Verify the fixture and generated module have 18 rows, each translation family has one date, chapter order is newest-first on listings, and BlogPosting `datePublished` remains date-only.
+
+Verified: 18 unique slugs; six complete EN/FR/ES families; the six dates occur three times each; all `dateModified` values remain `2026-07-11`; copy and bodies are unchanged when keyed by slug and excluding only the operator-owned date; generated output is newest-first; content manifest, full CMS, full web, Svelte check, build, sitemap, desktop detail, and iPhone listing/fit checks pass.
 
 - [ ] **Step 5: Use the reviewed protected-branch release path**
 

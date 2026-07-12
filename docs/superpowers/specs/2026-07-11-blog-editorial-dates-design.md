@@ -39,11 +39,11 @@ A narrow CMS reconciler will own this change. It will:
 
 The reconciler will not change status, body, title, excerpt, SEO copy, tags, translation keys, `date_modified`, or any other collection. It will have no create or delete path.
 
-## Delivery sequence and deployment gate
+## Required delivery sequence
 
-Local code, tests, and read-only CMS dry-runs may proceed now. No DEV/PROD CMS write, push, pull request, preview, merge, or deployment occurs until the operator supplies the Vercel commercial-plan upgrade receipt.
+On 2026-07-11 the operator explicitly deferred the Vercel plan upgrade to a later date and confirmed that it does not block this blog-date release. The account plan is therefore not a prerequisite for the CMS writes, pull request, merge, or deployment in this scope. The controlled release order and every verification gate below remain mandatory.
 
-After that gate:
+Execution sequence:
 
 1. run DEV dry-run, apply, re-read, and convergence dry-run;
 2. regenerate the committed fixture and web fallbacks from live DEV CMS;

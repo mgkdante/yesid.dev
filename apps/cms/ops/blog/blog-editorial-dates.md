@@ -47,11 +47,11 @@ The apply command compares the displayed plan with a fresh pre-write read of the
 
 The batch PATCH body contains only `id` and `date_published`, so this command cannot overwrite those unrelated fields. A concurrent `date_published` edit remains a residual race; use a controlled apply window with no other date writer, start from a fresh dry-run, and never infer success from a timeout or thrown command.
 
-## Write gate and required sequence
+## Required write and release sequence
 
-Do not apply, push, open a PR, create a preview, merge, or deploy until the Vercel account reports a commercial plan.
+On 2026-07-11 the operator explicitly deferred the Vercel plan upgrade to a later date and confirmed that it does not block this blog-date release. Do not use the current account plan as a prerequisite for this sequence.
 
-After that receipt, the order is mandatory: DEV apply and convergence, DEV fixture and fallback regeneration, local verification, reviewed PR and merge, confirmed Ready deployment, then a fresh PROD dry-run and confirmed PROD apply. Do not move directly from DEV convergence to PROD.
+The order remains mandatory: DEV apply and convergence, DEV fixture and fallback regeneration, local verification, reviewed PR and merge, confirmed Ready deployment, then a fresh PROD dry-run and confirmed PROD apply. Do not move directly from DEV convergence to PROD.
 
 ### 1. Apply DEV and prove convergence
 
