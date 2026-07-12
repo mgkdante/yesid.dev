@@ -23,7 +23,7 @@ export const legalPages: readonly LegalPage[] = [
 						type: 'paragraph',
 					},
 					{
-						data: { text: 'Last updated: 2026-07-11' },
+						data: { text: 'Last updated: 2026-07-12' },
 						id: 'legal-privacy-en-002',
 						type: 'paragraph',
 					},
@@ -82,7 +82,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'If you write to admin@yesid.dev, I receive whatever you choose to send me.',
+							text: 'If you write to contact@yesid.dev, I receive whatever you choose to send me.',
 						},
 						id: 'legal-privacy-en-012',
 						type: 'paragraph',
@@ -305,7 +305,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'To exercise any of these rights, write to admin@yesid.dev. I may need to verify your identity, and I will respond in writing within 30 days, as the law requires. There is no fee for a reasonable request.',
+							text: 'To exercise any of these rights, write to contact@yesid.dev. I may need to verify your identity, and I will respond in writing within 30 days, as the law requires. There is no fee for a reasonable request.',
 						},
 						id: 'legal-privacy-en-035',
 						type: 'paragraph',
@@ -329,7 +329,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: Yesid Fernando Otalora. Contact: admin@yesid.dev.',
+							text: 'I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: Yesid Fernando Otalora. Contact: contact@yesid.dev.',
 						},
 						id: 'legal-privacy-en-039',
 						type: 'paragraph',
@@ -341,7 +341,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'If anything about how I handle your personal information concerns you, please contact me first at admin@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d\'accès à l\'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec. For matters that fall under federal law, for example if you are outside Quebec, you may also contact the Office of the Privacy Commissioner of Canada (OPC).',
+							text: 'If anything about how I handle your personal information concerns you, please contact me first at contact@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d\'accès à l\'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec. For matters that fall under federal law, for example if you are outside Quebec, you may also contact the Office of the Privacy Commissioner of Canada (OPC).',
 						},
 						id: 'legal-privacy-en-041',
 						type: 'paragraph',
@@ -365,7 +365,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'For any question about this policy or about your personal information: admin@yesid.dev, or the form on the contact page (/contact). You are welcome to write in English, French, or Spanish.',
+							text: 'For any question about this policy or about your personal information: contact@yesid.dev, or the form on the contact page (/contact). You are welcome to write in English, French, or Spanish.',
 						},
 						id: 'legal-privacy-en-045',
 						type: 'paragraph',
@@ -384,7 +384,7 @@ export const legalPages: readonly LegalPage[] = [
 						type: 'paragraph',
 					},
 					{
-						data: { text: 'Última actualización: 2026-07-11' },
+						data: { text: 'Última actualización: 2026-07-12' },
 						id: 'legal-privacy-es-002',
 						type: 'paragraph',
 					},
@@ -443,7 +443,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Si me escribe a admin@yesid.dev, recibo lo que usted decida enviarme.',
+							text: 'Si me escribe a contact@yesid.dev, recibo lo que usted decida enviarme.',
 						},
 						id: 'legal-privacy-es-012',
 						type: 'paragraph',
@@ -664,7 +664,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Para ejercer cualquiera de estos derechos, escriba a admin@yesid.dev. Es posible que deba verificar su identidad, y le responderé por escrito en un plazo de 30 días, como lo exige la ley. Una solicitud razonable no tiene ningún costo.',
+							text: 'Para ejercer cualquiera de estos derechos, escriba a contact@yesid.dev. Es posible que deba verificar su identidad, y le responderé por escrito en un plazo de 30 días, como lo exige la ley. Una solicitud razonable no tiene ningún costo.',
 						},
 						id: 'legal-privacy-es-035',
 						type: 'paragraph',
@@ -688,7 +688,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Yo soy la persona a cargo de la protección de la información personal de este sitio. Cargo: Responsable de privacidad. Nombre: Yesid Fernando Otalora. Contacto: admin@yesid.dev.',
+							text: 'Yo soy la persona a cargo de la protección de la información personal de este sitio. Cargo: Responsable de privacidad. Nombre: Yesid Fernando Otalora. Contacto: contact@yesid.dev.',
 						},
 						id: 'legal-privacy-es-039',
 						type: 'paragraph',
@@ -700,7 +700,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Si algo en la manera en que manejo su información personal le preocupa, por favor contácteme primero en admin@yesid.dev; me lo tomo en serio y le responderé con rapidez. Si mi respuesta no le satisface, puede presentar una queja ante la Comisión de acceso a la información de Quebec (CAI), el organismo público que supervisa la protección de la información personal en Quebec. Para asuntos que corresponden a la ley federal, por ejemplo si usted está fuera de Quebec, también puede contactar al Comisariado de Protección de la Privacidad de Canadá (OPC).',
+							text: 'Si algo en la manera en que manejo su información personal le preocupa, por favor contácteme primero en contact@yesid.dev; me lo tomo en serio y le responderé con rapidez. Si mi respuesta no le satisface, puede presentar una queja ante la Comisión de acceso a la información de Quebec (CAI), el organismo público que supervisa la protección de la información personal en Quebec. Para asuntos que corresponden a la ley federal, por ejemplo si usted está fuera de Quebec, también puede contactar al Comisariado de Protección de la Privacidad de Canadá (OPC).',
 						},
 						id: 'legal-privacy-es-041',
 						type: 'paragraph',
@@ -724,7 +724,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Para cualquier pregunta sobre esta política o sobre su información personal: admin@yesid.dev, o el formulario de la página de contacto (/contact). Con gusto puede escribirme en español, inglés o francés.',
+							text: 'Para cualquier pregunta sobre esta política o sobre su información personal: contact@yesid.dev, o el formulario de la página de contacto (/contact). Con gusto puede escribirme en español, inglés o francés.',
 						},
 						id: 'legal-privacy-es-045',
 						type: 'paragraph',
@@ -743,7 +743,7 @@ export const legalPages: readonly LegalPage[] = [
 						type: 'paragraph',
 					},
 					{
-						data: { text: 'Dernière mise à jour : 2026-07-11' },
+						data: { text: 'Dernière mise à jour : 2026-07-12' },
 						id: 'legal-privacy-fr-002',
 						type: 'paragraph',
 					},
@@ -802,7 +802,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Si vous m\'écrivez à admin@yesid.dev, je reçois ce que vous choisissez de m\'envoyer.',
+							text: 'Si vous m\'écrivez à contact@yesid.dev, je reçois ce que vous choisissez de m\'envoyer.',
 						},
 						id: 'legal-privacy-fr-012',
 						type: 'paragraph',
@@ -1028,7 +1028,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Pour exercer l\'un de ces droits, écrivez à admin@yesid.dev. Je pourrais devoir vérifier votre identité, et je vous répondrai par écrit dans un délai de 30 jours, comme la loi l\'exige. Aucuns frais ne s\'appliquent à une demande raisonnable.',
+							text: 'Pour exercer l\'un de ces droits, écrivez à contact@yesid.dev. Je pourrais devoir vérifier votre identité, et je vous répondrai par écrit dans un délai de 30 jours, comme la loi l\'exige. Aucuns frais ne s\'appliquent à une demande raisonnable.',
 						},
 						id: 'legal-privacy-fr-035',
 						type: 'paragraph',
@@ -1055,7 +1055,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : Yesid Fernando Otalora. Contact : admin@yesid.dev.',
+							text: 'Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : Yesid Fernando Otalora. Contact : contact@yesid.dev.',
 						},
 						id: 'legal-privacy-fr-039',
 						type: 'paragraph',
@@ -1067,7 +1067,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d\'abord à admin@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d\'accès à l\'information du Québec (CAI), l\'organisme public qui veille à la protection des renseignements personnels au Québec. Pour les situations relevant de la loi fédérale, par exemple si vous êtes à l\'extérieur du Québec, vous pouvez aussi vous adresser au Commissariat à la protection de la vie privée du Canada.',
+							text: 'Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d\'abord à contact@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d\'accès à l\'information du Québec (CAI), l\'organisme public qui veille à la protection des renseignements personnels au Québec. Pour les situations relevant de la loi fédérale, par exemple si vous êtes à l\'extérieur du Québec, vous pouvez aussi vous adresser au Commissariat à la protection de la vie privée du Canada.',
 						},
 						id: 'legal-privacy-fr-041',
 						type: 'paragraph',
@@ -1091,7 +1091,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Pour toute question sur cette politique ou sur vos renseignements personnels : admin@yesid.dev, ou le formulaire de la page contact (/contact). Vous pouvez m\'écrire en français, en anglais ou en espagnol.',
+							text: 'Pour toute question sur cette politique ou sur vos renseignements personnels : contact@yesid.dev, ou le formulaire de la page contact (/contact). Vous pouvez m\'écrire en français, en anglais ou en espagnol.',
 						},
 						id: 'legal-privacy-fr-045',
 						type: 'paragraph',
@@ -1113,7 +1113,7 @@ export const legalPages: readonly LegalPage[] = [
 			en: {
 				blocks: [
 					{
-						data: { text: 'Last updated: 2026-07-09' },
+						data: { text: 'Last updated: 2026-07-12' },
 						id: 'legal-terms-en-001',
 						type: 'paragraph',
 					},
@@ -1269,7 +1269,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Questions about these terms are welcome in English, French, or Spanish. Write to admin@yesid.dev or use the contact page at /contact.',
+							text: 'Questions about these terms are welcome in English, French, or Spanish. Write to contact@yesid.dev or use the contact page at /contact.',
 						},
 						id: 'legal-terms-en-024',
 						type: 'paragraph',
@@ -1281,7 +1281,7 @@ export const legalPages: readonly LegalPage[] = [
 			es: {
 				blocks: [
 					{
-						data: { text: 'Última actualización: 2026-07-09' },
+						data: { text: 'Última actualización: 2026-07-12' },
 						id: 'legal-terms-es-001',
 						type: 'paragraph',
 					},
@@ -1437,7 +1437,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Sus preguntas sobre estas condiciones son bienvenidas en español, inglés o francés. Escriba a admin@yesid.dev o use la página de contacto en /contact.',
+							text: 'Sus preguntas sobre estas condiciones son bienvenidas en español, inglés o francés. Escriba a contact@yesid.dev o use la página de contacto en /contact.',
 						},
 						id: 'legal-terms-es-024',
 						type: 'paragraph',
@@ -1449,7 +1449,7 @@ export const legalPages: readonly LegalPage[] = [
 			fr: {
 				blocks: [
 					{
-						data: { text: 'Dernière mise à jour : 2026-07-09' },
+						data: { text: 'Dernière mise à jour : 2026-07-12' },
 						id: 'legal-terms-fr-001',
 						type: 'paragraph',
 					},
@@ -1605,7 +1605,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Vos questions sur ces conditions sont les bienvenues, en français, en anglais ou en espagnol. Écrivez-moi à admin@yesid.dev ou utilisez la page de contact : /contact.',
+							text: 'Vos questions sur ces conditions sont les bienvenues, en français, en anglais ou en espagnol. Écrivez-moi à contact@yesid.dev ou utilisez la page de contact : /contact.',
 						},
 						id: 'legal-terms-fr-024',
 						type: 'paragraph',
@@ -1628,7 +1628,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and how your analytics choice works. Last updated: 2026-07-11.',
+							text: 'yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and how your analytics choice works. Last updated: 2026-07-12.',
 						},
 						id: 'legal-cookies-en-001',
 						type: 'paragraph',
@@ -1721,7 +1721,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Questions about this policy are welcome at admin@yesid.dev or through the contact page, in English, French, or Spanish. Yesid Fernando Otalora acts as Privacy Officer for this site under section 3.1 of Law 25.',
+							text: 'Questions about this policy are welcome at contact@yesid.dev or through the contact page, in English, French, or Spanish. Yesid Fernando Otalora acts as Privacy Officer for this site under section 3.1 of Law 25.',
 						},
 						id: 'legal-cookies-en-014',
 						type: 'paragraph',
@@ -1734,7 +1734,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y cómo funciona su elección de analítica. Última actualización: 2026-07-11.',
+							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y cómo funciona su elección de analítica. Última actualización: 2026-07-12.',
 						},
 						id: 'legal-cookies-es-001',
 						type: 'paragraph',
@@ -1827,7 +1827,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Cualquier pregunta sobre esta política es bienvenida en admin@yesid.dev o a través de la página de contacto, en español, inglés o francés. Yesid Fernando Otalora actúa como Responsable de la protección de la información personal de este sitio en virtud del artículo 3.1 de la Ley 25.',
+							text: 'Cualquier pregunta sobre esta política es bienvenida en contact@yesid.dev o a través de la página de contacto, en español, inglés o francés. Yesid Fernando Otalora actúa como Responsable de la protección de la información personal de este sitio en virtud del artículo 3.1 de la Ley 25.',
 						},
 						id: 'legal-cookies-es-014',
 						type: 'paragraph',
@@ -1840,7 +1840,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu\'il ne conserve pas, et comment fonctionne votre choix d\'analytique. Dernière mise à jour : 2026-07-11.',
+							text: 'yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu\'il ne conserve pas, et comment fonctionne votre choix d\'analytique. Dernière mise à jour : 2026-07-12.',
 						},
 						id: 'legal-cookies-fr-001',
 						type: 'paragraph',
@@ -1933,7 +1933,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Pour toute question sur cette politique, écrivez-moi à admin@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. Yesid Fernando Otalora agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l\'article 3.1 de la Loi 25.',
+							text: 'Pour toute question sur cette politique, écrivez-moi à contact@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. Yesid Fernando Otalora agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l\'article 3.1 de la Loi 25.',
 						},
 						id: 'legal-cookies-fr-014',
 						type: 'paragraph',
@@ -1956,7 +1956,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'This page describes the current state of accessibility on yesid.dev: what already works, what does not yet, and how to reach me if something gets in your way. Last updated: 2026-07-09.',
+							text: 'This page describes the current state of accessibility on yesid.dev: what already works, what does not yet, and how to reach me if something gets in your way. Last updated: 2026-07-12.',
 						},
 						id: 'legal-accessibility-en-001',
 						type: 'paragraph',
@@ -2048,7 +2048,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'If something on this site is hard or impossible for you to use, write to me at admin@yesid.dev. Mention which page you were on, what you were trying to do and, if possible, which browser and assistive technology you use. I normally reply within a few days. You can write in English, French or Spanish.',
+							text: 'If something on this site is hard or impossible for you to use, write to me at contact@yesid.dev. Mention which page you were on, what you were trying to do and, if possible, which browser and assistive technology you use. I normally reply within a few days. You can write in English, French or Spanish.',
 						},
 						id: 'legal-accessibility-en-009',
 						type: 'paragraph',
@@ -2072,7 +2072,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'For any question or report about accessibility: admin@yesid.dev, or the form on the contact page at /contact.',
+							text: 'For any question or report about accessibility: contact@yesid.dev, or the form on the contact page at /contact.',
 						},
 						id: 'legal-accessibility-en-013',
 						type: 'paragraph',
@@ -2085,7 +2085,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Esta página describe el estado actual de la accesibilidad en yesid.dev: lo que ya funciona, lo que todavía no, y cómo contactarme si algo le impide usar el sitio. Última actualización: 2026-07-09.',
+							text: 'Esta página describe el estado actual de la accesibilidad en yesid.dev: lo que ya funciona, lo que todavía no, y cómo contactarme si algo le impide usar el sitio. Última actualización: 2026-07-12.',
 						},
 						id: 'legal-accessibility-es-001',
 						type: 'paragraph',
@@ -2177,7 +2177,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Si algo en este sitio le resulta difícil o imposible de usar, escríbame a admin@yesid.dev. Mencione en qué página estaba, qué intentaba hacer y, si es posible, qué navegador y qué tecnología de asistencia utiliza. Normalmente respondo en pocos días. Puede escribirme en español, inglés o francés.',
+							text: 'Si algo en este sitio le resulta difícil o imposible de usar, escríbame a contact@yesid.dev. Mencione en qué página estaba, qué intentaba hacer y, si es posible, qué navegador y qué tecnología de asistencia utiliza. Normalmente respondo en pocos días. Puede escribirme en español, inglés o francés.',
 						},
 						id: 'legal-accessibility-es-009',
 						type: 'paragraph',
@@ -2201,7 +2201,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Para cualquier pregunta o reporte sobre accesibilidad: admin@yesid.dev, o el formulario de la página de contacto en /contact.',
+							text: 'Para cualquier pregunta o reporte sobre accesibilidad: contact@yesid.dev, o el formulario de la página de contacto en /contact.',
 						},
 						id: 'legal-accessibility-es-013',
 						type: 'paragraph',
@@ -2214,7 +2214,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Cette page décrit l\'état actuel de l\'accessibilité de yesid.dev : ce qui fonctionne déjà, ce qui reste à améliorer, et comment me joindre si quelque chose vous bloque. Dernière mise à jour : 2026-07-09.',
+							text: 'Cette page décrit l\'état actuel de l\'accessibilité de yesid.dev : ce qui fonctionne déjà, ce qui reste à améliorer, et comment me joindre si quelque chose vous bloque. Dernière mise à jour : 2026-07-12.',
 						},
 						id: 'legal-accessibility-fr-001',
 						type: 'paragraph',
@@ -2306,7 +2306,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Si quelque chose sur ce site vous est difficile ou impossible à utiliser, écrivez-moi à admin@yesid.dev. Indiquez la page concernée, ce que vous tentiez de faire et, si possible, le navigateur et la technologie d\'assistance que vous utilisez. Je réponds normalement en quelques jours. Vous pouvez m\'écrire en français, en anglais ou en espagnol.',
+							text: 'Si quelque chose sur ce site vous est difficile ou impossible à utiliser, écrivez-moi à contact@yesid.dev. Indiquez la page concernée, ce que vous tentiez de faire et, si possible, le navigateur et la technologie d\'assistance que vous utilisez. Je réponds normalement en quelques jours. Vous pouvez m\'écrire en français, en anglais ou en espagnol.',
 						},
 						id: 'legal-accessibility-fr-009',
 						type: 'paragraph',
@@ -2330,7 +2330,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Pour toute question ou tout signalement concernant l\'accessibilité : admin@yesid.dev, ou le formulaire de la page contact à /contact.',
+							text: 'Pour toute question ou tout signalement concernant l\'accessibilité : contact@yesid.dev, ou le formulaire de la page contact à /contact.',
 						},
 						id: 'legal-accessibility-fr-013',
 						type: 'paragraph',
@@ -2353,7 +2353,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: 2026-07-09.',
+							text: 'This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: 2026-07-12.',
 						},
 						id: 'legal-notice-en-001',
 						type: 'paragraph',
@@ -2423,7 +2423,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'You can reach me at admin@yesid.dev or through the contact page at /contact. I answer in English, French, or Spanish.',
+							text: 'You can reach me at contact@yesid.dev or through the contact page at /contact. I answer in English, French, or Spanish.',
 						},
 						id: 'legal-notice-en-013',
 						type: 'paragraph',
@@ -2436,7 +2436,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Esta página indica quién publica yesid.dev, quién lo aloja y quién responde por su contenido. Última actualización: 2026-07-09.',
+							text: 'Esta página indica quién publica yesid.dev, quién lo aloja y quién responde por su contenido. Última actualización: 2026-07-12.',
 						},
 						id: 'legal-notice-es-001',
 						type: 'paragraph',
@@ -2509,7 +2509,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Puede escribirme a admin@yesid.dev o usar la página de contacto en /contact. Respondo en inglés, francés o español.',
+							text: 'Puede escribirme a contact@yesid.dev o usar la página de contacto en /contact. Respondo en inglés, francés o español.',
 						},
 						id: 'legal-notice-es-013',
 						type: 'paragraph',
@@ -2522,7 +2522,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Cette page indique qui publie yesid.dev, qui l\'héberge et qui répond de son contenu. Dernière mise à jour : 2026-07-09.',
+							text: 'Cette page indique qui publie yesid.dev, qui l\'héberge et qui répond de son contenu. Dernière mise à jour : 2026-07-12.',
 						},
 						id: 'legal-notice-fr-001',
 						type: 'paragraph',
@@ -2592,7 +2592,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Vous pouvez m\'écrire à admin@yesid.dev ou passer par la page de contact à /contact. Je réponds en français, en anglais ou en espagnol.',
+							text: 'Vous pouvez m\'écrire à contact@yesid.dev ou passer par la page de contact à /contact. Je réponds en français, en anglais ou en espagnol.',
 						},
 						id: 'legal-notice-fr-013',
 						type: 'paragraph',
