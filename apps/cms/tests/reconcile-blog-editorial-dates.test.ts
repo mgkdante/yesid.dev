@@ -6,6 +6,7 @@ import {
 	TARGET_URLS,
 	applyAndVerify,
 	buildDatePlan,
+	createDateCms,
 	formatDatePlan,
 	normalizeEditorialDate,
 	parseCli,
@@ -185,5 +186,66 @@ describe('blog editorial date apply verification', () => {
 		const output = formatDatePlan(buildDatePlan(staleRows()));
 		expect(output).toContain('18 date_published patches');
 		expect(output).not.toMatch(/body|title|date_modified|delete|create/i);
+	});
+});
+
+interface CommandDescriptor {
+	path: string;
+	params: unknown;
+	body?: string;
+	method: string;
+}
+
+describe('blog editorial date Directus adapter', () => {
+	it('builds the exact GET and date-only batch PATCH descriptors', async () => {
+		const commands: CommandDescriptor[] = [];
+		const client = {
+			request: async (command: () => CommandDescriptor) => {
+				const descriptor = command();
+				commands.push(descriptor);
+				return descriptor.method === 'GET' ? staleRows() : undefined;
+			},
+		};
+		const cms = createDateCms(client as never);
+		const rows = await cms.read();
+		const patches = buildDatePlan(rows);
+		await cms.patch(patches);
+
+		expect(commands[0]).toEqual({
+			path: '/items/blog_posts',
+			params: {
+				fields: [
+					'id',
+					'translation_key',
+					'lang',
+					'status',
+					'date_published',
+					'date_modified',
+				],
+				filter: {
+					translation_key: {
+						_in: BLOG_EDITORIAL_FAMILIES.map(
+							(family) => family.translationKey,
+						),
+					},
+				},
+				sort: ['translation_key', 'lang', 'id'],
+				limit: -1,
+			},
+			method: 'GET',
+		});
+		expect(commands[1]).toEqual({
+			path: '/items/blog_posts',
+			params: {},
+			body: JSON.stringify(patches),
+			method: 'PATCH',
+		});
+		expect(patches).toHaveLength(18);
+		expect(
+			(JSON.parse(commands[1]!.body!) as Record<string, unknown>[]).every(
+				(patch) =>
+					Object.keys(patch).sort().join(',') === 'date_published,id',
+			),
+		).toBe(true);
 	});
 });
