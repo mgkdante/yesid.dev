@@ -17,6 +17,7 @@ const ACTIVE_TITLE_SOURCES = [
 	'apps/web/src/lib/server/llms.ts',
 	'apps/web/scripts/generate-og-cards.ts',
 	'apps/web/src/lib/content/site-meta.ts',
+	'apps/web/src/lib/content/site-seo-defaults.ts',
 	'apps/web/src/lib/content/route-seo.ts',
 	'apps/web/src/lib/content/about-page.ts',
 	'apps/web/src/lib/content/site-content.ts',
@@ -55,6 +56,8 @@ const COPY_FREEZE_SHA256: Record<(typeof ACTIVE_TITLE_SOURCES)[number], string> 
 		'54be57948b8598092b771a3e859ce53da32833576cf3e2250be58e5f5033c770',
 	'apps/web/src/lib/content/site-meta.ts':
 		'3dd41d3026bc43d687dad7d54c1c8e005eb6f2542ea18cb01306620b52948a7c',
+	'apps/web/src/lib/content/site-seo-defaults.ts':
+		'14b80efd1a81d2ec6c5e5265864c2b266f4c1a84f1ae297f884e8c21a85fcec5',
 	'apps/web/src/lib/content/route-seo.ts':
 		'dd3fbdce3a484bc105bdcab988a6c4627da10f442a617a8839d30264abbc14c4',
 	'apps/web/src/lib/content/about-page.ts':
@@ -82,6 +85,11 @@ const EXACT_CODE_FIELD_FRAGMENTS = {
 		`en: '${APPROVED_TITLES.en}'`,
 		`fr: '${APPROVED_TITLES.fr}'`,
 		`es: '${APPROVED_TITLES.es}'`,
+	],
+	'apps/web/src/lib/content/site-seo-defaults.ts': [
+		`en: 'yesid., ${APPROVED_TITLES.en} in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.'`,
+		`fr: 'yesid., ${APPROVED_TITLES.fr}, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu\\'ils font rouler. Livré avec des chiffres.'`,
+		`es: 'yesid., ${APPROVED_TITLES.es} en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.'`,
 	],
 	'apps/web/src/lib/content/route-seo.ts': [
 		`en: '${APPROVED_TITLES.en}'`,
