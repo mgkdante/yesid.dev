@@ -459,7 +459,7 @@
               "id": "p1",
               "type": "paragraph",
               "data": {
-                "text": "Un site de marque personnelle et de portfolio pour un ingénieur d'infrastructure numérique pigiste. Bâti avec SvelteKit 2, Svelte 5, Tailwind CSS v4, et déployé sur Vercel. Conçu pour être multilingue (en/fr/es) dès le premier jour."
+                "text": "Un site de marque personnelle et de portfolio pour un développeur de solutions numériques à la pige. Bâti avec SvelteKit 2, Svelte 5, Tailwind CSS v4, et déployé sur Vercel. Conçu pour être multilingue (en/fr/es) dès le premier jour."
               }
             }
           ]
@@ -2451,7 +2451,7 @@
         ],
         "identity_name": "Yesid",
         "identity_title": "Bâtisseur curieux, bricoleur depuis toujours",
-        "identity_value_prop": "Je suis Yesid (Yesito pour mes chums). Je suis né à Zipaquirá, en Colombie, et j'ai grandi à Sherbrooke, au Québec, depuis l'âge de dix ans. Je démonte des ordinateurs depuis que je suis tout petit. Le premier PC de la famille est arrivé en 2002, et dès 2005 je le bricolais tellement que ma mère pognait les nerfs. Aujourd'hui, je suis fier d'être son ingénieur numéro un. Cette curiosité-là ne m'a jamais lâché. Astheure, je bâtis des systèmes clairs et je les explique en mots simples, comme ça tu sais toujours exactement ce que tu reçois.",
+        "identity_value_prop": "Je suis Yesid (Yesito pour mes chums). Je suis né à Zipaquirá, en Colombie, et j'ai grandi à Sherbrooke, au Québec, depuis l'âge de dix ans. Je démonte des ordinateurs depuis que je suis tout petit. Le premier PC de la famille est arrivé en 2002, et dès 2005 je le bricolais tellement que ma mère pognait les nerfs. Aujourd'hui, je suis fier d'être son dépanneur informatique numéro un. Cette curiosité-là ne m'a jamais lâché. Astheure, je bâtis des systèmes clairs et je les explique en mots simples, comme ça tu sais toujours exactement ce que tu reçois.",
         "polaroids": [
           {
             "src": "/images/about/polaroid-1.webp",
@@ -2517,7 +2517,7 @@
         "label_testimonial_slide_aria": "Témoignage {index} de {total}",
         "label_show_testimonial_aria": "Afficher le témoignage {index}",
         "meta_title": "À propos · yesid.",
-        "meta_description": "Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui livrent.",
+        "meta_description": "Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.",
         "education": [
           {
             "school": "Champlain Regional College, Lennoxville",
@@ -2548,7 +2548,7 @@
         "more_link": "→ En savoir plus sur moi",
         "name": "Yesid O.",
         "stack_label": "STACK",
-        "title": "Ingénieur en infrastructure numérique, à la pige",
+        "title": "Développeur de solutions numériques à la pige",
         "location_city": "Montréal",
         "location_region": "QC, Canada"
       }
@@ -2965,8 +2965,8 @@
       "id": 1,
       "parentFk": "site_meta_id",
       "fields": {
-        "default_description": "yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
-        "description": "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+        "default_description": "yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.",
+        "description": "Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.",
         "tagline": "Une infrastructure numérique qui bouge."
       }
     },
