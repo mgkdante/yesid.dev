@@ -8,7 +8,7 @@ describe('adapter.meta.forRoute', () => {
 	it('resolves a static route by id', async () => {
 		const seo = await adapter.meta.forRoute('/about', 'en');
 		expect(seo.title.en).toBe(
-			'Freelance SQL and Digital Infrastructure Developer | yesid.',
+			'Freelance Digital Solutions Developer | yesid.',
 		);
 		expect(seo.canonical).toBe('https://yesid.dev/about');
 	});
