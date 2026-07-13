@@ -48,23 +48,28 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 			languages_code: 'en',
 			tagline: 'Digital infrastructure that moves.',
 			description:
-				'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
+				'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
 			default_description:
-				'yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
-			owner_job_title: 'Freelance Digital Infrastructure Engineer',
+				'yesid., Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
+			owner_job_title: 'Freelance SQL and Digital Infrastructure Developer',
 		},
 		{
 			languages_code: 'fr',
 			tagline: 'Une infrastructure numérique qui bouge.',
 			description:
-				"Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+				"Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
 			default_description:
-				"yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
-			owner_job_title: 'Ingénieur pigiste en infrastructure numérique',
+				"yesid., Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
+			owner_job_title: 'Développeur SQL et en infrastructure numérique, à la pige',
 		},
 		{
 			languages_code: 'es',
-			owner_job_title: 'Ingeniero independiente en infraestructura digital',
+			tagline: 'Infraestructura digital que se mueve.',
+			description:
+				'Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
+			default_description:
+				'yesid., Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.',
+			owner_job_title: 'Desarrollador freelance SQL y de infraestructura digital',
 		},
 	],
 };
@@ -77,10 +82,12 @@ const EXPECTED_SITE_META: SiteMeta = {
 	tagline: {
 		en: 'Digital infrastructure that moves.',
 		fr: 'Une infrastructure numérique qui bouge.',
+		es: 'Infraestructura digital que se mueve.',
 	},
 	description: {
-		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
-		fr: "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+		en: 'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
+		fr: "Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+		es: 'Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -91,9 +98,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 	owner: {
 		name: 'Yesid O.',
 		jobTitle: {
-			en: 'Freelance Digital Infrastructure Engineer',
-			fr: 'Ingénieur pigiste en infrastructure numérique',
-			es: 'Ingeniero independiente en infraestructura digital',
+			en: 'Freelance SQL and Digital Infrastructure Developer',
+			fr: 'Développeur SQL et en infrastructure numérique, à la pige',
+			es: 'Desarrollador freelance SQL y de infraestructura digital',
 		},
 		phone: '+18194465594',
 		address: {
@@ -148,15 +155,15 @@ describe('site-meta fetcher', () => {
 		});
 	});
 
-	it('LocalizedString shape: omits absent es locale for fields not translated', () => {
+	it('LocalizedString shape carries the complete EN/FR/ES source', () => {
 		const result = toSiteMeta(SITE_META_FIXTURE);
-		// tagline + description carry en + fr in the current fixture; es stays absent
 		expect(result.tagline).toEqual({
 			en: 'Digital infrastructure that moves.',
 			fr: 'Une infrastructure numérique qui bouge.',
+			es: 'Infraestructura digital que se mueve.',
 		});
 		expect(result.description.en).toBeTruthy();
 		expect(result.description.fr).toBeTruthy();
-		expect(result.description.es).toBeUndefined();
+		expect(result.description.es).toBeTruthy();
 	});
 });

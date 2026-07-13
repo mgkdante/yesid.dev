@@ -7,9 +7,9 @@ const overrideByPath = new Map(routeSeoOverrides.map((entry) => [entry.path, ent
 describe('adapter.meta.forRoute', () => {
 	it('resolves a static route by id', async () => {
 		const seo = await adapter.meta.forRoute('/about', 'en');
-		// Keyword title (homework #4, name shortened per operator 2026-07-03):
-		// "Yesid, Digital Infrastructure Engineer in Montreal"
-		expect(seo.title.en).toMatch(/Yesid, Digital Infrastructure Engineer/);
+		expect(seo.title.en).toBe(
+			'Freelance SQL and Digital Infrastructure Developer | yesid.',
+		);
 		expect(seo.canonical).toBe('https://yesid.dev/about');
 	});
 

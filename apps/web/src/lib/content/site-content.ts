@@ -351,9 +351,9 @@ export const aboutContent: AboutIntroContent = {
 	stackItems: ['PostgreSQL', 'dbt + Airflow', 'Power BI', 'SvelteKit'],
 	stackLabel: { en: 'STACK', es: 'STACK', fr: 'STACK' },
 	title: {
-		en: 'Freelance Digital Infrastructure Engineer',
-		es: 'Ingeniero freelance de infraestructura digital',
-		fr: 'Ingénieur en infrastructure numérique, à la pige',
+		en: 'Freelance SQL and Digital Infrastructure Developer',
+		es: 'Desarrollador freelance SQL y de infraestructura digital',
+		fr: 'Développeur SQL et en infrastructure numérique, à la pige',
 	},
 };
 
