@@ -125,12 +125,20 @@ export function hashEditorDoc(doc: EditorDoc): string {
 		.digest('hex');
 }
 
+function collectStrings(value: unknown): string[] {
+	if (typeof value === 'string') return [value];
+	if (Array.isArray(value)) return value.flatMap(collectStrings);
+	if (!isRecord(value)) return [];
+	return Object.values(value).flatMap(collectStrings);
+}
+
 function textContent(doc: EditorDoc): string {
-	return doc.blocks
-		.map((block) =>
-			typeof block.data.text === 'string' ? block.data.text : '',
-		)
-		.join('\n');
+	return doc.blocks.flatMap((block) => collectStrings(block.data)).join('\n');
+}
+
+export function hasPrivateLocation(doc: EditorDoc): boolean {
+	const text = textContent(doc);
+	return /\bGatineau\b/i.test(text) || CANADIAN_POSTAL_CODE.test(text);
 }
 
 export function desiredServiceAreaDoc(locale: Locale): EditorDoc {
@@ -138,8 +146,7 @@ export function desiredServiceAreaDoc(locale: Locale): EditorDoc {
 	const text = textContent(doc);
 	if (
 		!text.includes(SERVICE_AREA_TEXT[locale]) ||
-		/\bGatineau\b/i.test(text) ||
-		CANADIAN_POSTAL_CODE.test(text)
+		hasPrivateLocation(doc)
 	) {
 		throw new Error(
 			`[legal-service-area] unsafe canonical notice source for notice.${locale}`,

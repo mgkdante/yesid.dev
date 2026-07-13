@@ -141,6 +141,25 @@ test('rejects unrecognized or malformed live bodies without writes', async () =>
 	expect(() => subject.buildPlan({ rows: malformed })).toThrow(/malformed JSON/);
 });
 
+test('detects private location text nested inside list data', async () => {
+	const subject = await import('../scripts/reconcile-legal-service-area');
+	const nested = {
+		time: 1,
+		version: 'test',
+		blocks: [
+			{
+				id: 'nested-private-location',
+				type: 'nestedlist',
+				data: {
+					style: 'unordered',
+					items: [{ content: 'Gatineau A1A 1A1', items: [] }],
+				},
+			},
+		],
+	};
+	expect(subject.hasPrivateLocation(nested)).toBe(true);
+});
+
 test('dry-runs without writes, rereads before every PATCH, and verifies convergence', async () => {
 	const subject = await import('../scripts/reconcile-legal-service-area');
 	const before = Object.fromEntries(
@@ -210,7 +229,54 @@ test('dry-runs without writes, rereads before every PATCH, and verifies converge
 	expect(subject.buildPlan(state, accepted)).toEqual([]);
 });
 
-test('aborts on concurrent changes and uses exact Directus paths', async () => {
+test('aborts when a row changes after the global reread', async () => {
+	const subject = await import('../scripts/reconcile-legal-service-area');
+	const before = Object.fromEntries(
+		subject.LOCALES.map((locale) => [
+			locale,
+			{
+				time: 1,
+				version: 'test',
+				blocks: [
+					{
+						id: `before-${locale}`,
+						type: 'paragraph',
+						data: { text: `safe-before-${locale}` },
+					},
+				],
+			},
+		]),
+	) as Record<(typeof subject.LOCALES)[number], subject.EditorDoc>;
+	const accepted = Object.fromEntries(
+		subject.LOCALES.map((locale) => [locale, subject.hashEditorDoc(before[locale])]),
+	) as Record<(typeof subject.LOCALES)[number], string>;
+	const state = {
+		rows: subject.LOCALES.map((locale, index) => ({
+			id: index + 1,
+			legal_pages_id: 'notice' as const,
+			languages_code: locale,
+			body: before[locale],
+		})),
+	};
+	const plan = subject.buildPlan(state, accepted);
+	const patches: subject.ServiceAreaPatch[] = [];
+	const cms = {
+		read: async () => clone(state),
+		readLegal: async (rowId: number) => {
+			const row = clone(state.rows.find((candidate) => candidate.id === rowId)!);
+			row.body.blocks[0]!.data.text = 'concurrent safe edit';
+			return row;
+		},
+		patch: async (step: subject.ServiceAreaPatch) => patches.push(step),
+	};
+
+	await expect(subject.applyAndVerify(cms, plan, accepted)).rejects.toThrow(
+		/notice\.en changed before PATCH/,
+	);
+	expect(patches).toEqual([]);
+});
+
+test('uses exact Directus read and body-only PATCH paths', async () => {
 	const subject = await import('../scripts/reconcile-legal-service-area');
 	const desiredRows = subject.LOCALES.map((locale, index) => ({
 		id: index + 1,
