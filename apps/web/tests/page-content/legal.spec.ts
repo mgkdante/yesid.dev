@@ -10,6 +10,17 @@ const REVISION_LABELS = [
   'Dernière mise à jour : 2026-07-12',
   'Última actualización: 2026-07-12',
 ];
+const NOTICE_REVISION_LABELS = [
+  'Last updated: 2026-07-13',
+  'Dernière mise à jour : 2026-07-13',
+  'Última actualización: 2026-07-13',
+];
+const NOTICE_SERVICE_AREAS = [
+  'Service area: Montréal, Québec, Canada.',
+  'Zone de service : Montréal, Québec, Canada.',
+  'Área de servicio: Montréal, Québec, Canadá.',
+];
+const CANADIAN_POSTAL_CODE = /\b[A-Z]\d[A-Z][ -]?\d[A-Z]\d\b/i;
 
 // OPS2: Privacy and Cookies disclose consented Plausible analytics in all three locales.
 const ANALYTICS_LEGAL_EXPECTATIONS = [
@@ -94,14 +105,27 @@ test.describe('/legal pages content', () => {
     }
   });
 
-  test('all EN/FR/ES legal pages publish the July 12 revision label', async ({ page }) => {
+  test('all EN/FR/ES legal pages publish their current revision label', async ({ page }) => {
     for (const [localeIndex, prefix] of LOCALE_PREFIXES.entries()) {
       for (const slug of LEGAL_SLUGS) {
         await page.goto(`${prefix}/legal/${slug}`);
-        await expect(page.locator('[data-testid="legal-body"]')).toContainText(
-          REVISION_LABELS[localeIndex]!,
-        );
+        const text = await page.locator('[data-testid="legal-body"]').innerText();
+        const revision =
+          slug === 'notice'
+            ? NOTICE_REVISION_LABELS[localeIndex]!
+            : REVISION_LABELS[localeIndex]!;
+        expect(text.includes(revision)).toBe(true);
       }
+    }
+  });
+
+  test('notice publishes only the Montréal service area in EN, FR, and ES', async ({ page }) => {
+    for (const [localeIndex, prefix] of LOCALE_PREFIXES.entries()) {
+      await page.goto(`${prefix}/legal/notice`);
+      const text = await page.locator('[data-testid="legal-body"]').innerText();
+      expect(text.includes(NOTICE_SERVICE_AREAS[localeIndex]!)).toBe(true);
+      expect(/\bGatineau\b/i.test(text)).toBe(false);
+      expect(CANADIAN_POSTAL_CODE.test(text)).toBe(false);
     }
   });
 
