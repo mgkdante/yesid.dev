@@ -9,7 +9,7 @@ import {
 	buildPolicyCandidateDiagnostics,
 	formatPolicyCandidateDiagnostics,
 	type DiagnosticLivePolicyRow,
-	type PolicyNameCandidateDiagnostic,
+	type PolicyCandidateDiagnosticReport,
 } from './lib/permission-policy-candidate-diagnostic';
 import type {
 	DesiredPermissionRow,
@@ -118,7 +118,7 @@ export async function loadPolicyCandidateDiagnostics(
 	api: ReadOnlyCandidateApiRequest,
 	repoPolicies: readonly RepoPolicyRow[],
 	desiredPermissions: readonly DesiredPermissionRow[],
-): Promise<PolicyNameCandidateDiagnostic[]> {
+): Promise<PolicyCandidateDiagnosticReport> {
 	const livePolicies = dataRows<DiagnosticLivePolicyRow>(
 		await api('GET', policyQuery()),
 		'GET /policies',
@@ -163,12 +163,12 @@ async function main(): Promise<void> {
 	};
 	const api: ReadOnlyCandidateApiRequest = (method, path) =>
 		rest(ctx, method, path);
-	const diagnostics = await loadPolicyCandidateDiagnostics(
+	const report = await loadPolicyCandidateDiagnostics(
 		api,
 		repoPolicies,
 		desiredPermissions,
 	);
-	console.log(formatPolicyCandidateDiagnostics(diagnostics));
+	console.log(formatPolicyCandidateDiagnostics(report));
 }
 
 if (import.meta.main) {
