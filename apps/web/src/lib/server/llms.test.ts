@@ -15,9 +15,13 @@ describe('llms.txt — Spanish section (L2 Phase 4)', () => {
 		it(`${name} declares the site trilingual and carries the Español section`, () => {
 			expect(body).toContain('The site is trilingual');
 			expect(body).toContain('https://yesid.dev/es');
-			expect(body).toContain('## Español — infraestructura digital en Montreal, Québec');
+			expect(body).toContain('## Español — soluciones digitales en Montreal, Québec');
+			expect(body).toContain('Freelance Digital Solutions Developer');
+			expect(body).toContain('Desarrollador freelance de soluciones digitales');
 			expect(body).toContain('en español, francés e inglés');
 			expect(body).toContain('https://yesid.dev/es/contact');
+			expect(body).toContain('Available for remote and on-site work across Montréal.');
+			expect(body).not.toMatch(/Laval|Longueuil|Brossard|Gatineau|Ottawa|Sherbrooke/);
 		});
 
 		it(`${name} lists every visible service under /es with Spanish copy`, () => {

@@ -24,7 +24,7 @@
 			"parentFk": "site_meta_id",
 			"fields": {
 				"tagline": "Infrastructure numérique en mouvement",
-				"description": "Ingénieur indépendant en infrastructure numérique à Montréal. Bases de données, pipelines, tableaux de bord — PostgreSQL, dbt, Power BI, SvelteKit."
+				"description": "Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables."
 			}
 		}
 	]

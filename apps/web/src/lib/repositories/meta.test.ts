@@ -6,7 +6,7 @@ describe('getPageSeo', () => {
 	it('delegates to the adapter and returns a parsed PageSeo for /about', async () => {
 		const seo = await getPageSeo('/about', 'en');
 		expect(seo.title.en).toBe(
-			'Freelance SQL and Digital Infrastructure Developer | yesid.',
+			'Freelance Digital Solutions Developer | yesid.',
 		);
 		expect(seo.canonical).toBe('https://yesid.dev/about');
 	});

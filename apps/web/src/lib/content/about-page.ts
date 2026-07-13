@@ -259,9 +259,9 @@ export const aboutPageContent: AboutContent = {
 	],
 	meta: {
 		description: {
-			en: 'Freelance SQL and Digital Infrastructure Developer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can\'t afford downtime.',
-			es: 'Desarrollador freelance SQL y de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas.',
-			fr: 'Développeur SQL et en infrastructure numérique, à la pige, basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l\'infrastructure fiable pour les équipes qui n\'ont pas les moyens d\'avoir des pannes.',
+			en: 'Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.',
+			es: 'Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables.',
+			fr: 'Développeur de solutions numériques à la pige à Montréal. J\'aide les PME du Québec avec le web, l\'automatisation, l\'analytique, les bases de données et SQL.',
 		},
 		title: {
 			en: 'About · yesid.',

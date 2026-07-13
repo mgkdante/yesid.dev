@@ -2,19 +2,20 @@
 
 import { isDeepStrictEqual, parseArgs as parseNodeArgs } from 'node:util';
 import { getAdminToken } from './lib/auth';
+import { createQueuedFetch } from './lib/queued-fetch';
 
 export const TARGET_URLS = {
 	dev: 'https://cms.dev.yesid.dev',
 	prod: 'https://cms.yesid.dev',
 } as const;
 
-export const PROD_CONFIRMATION = 'APPLY_PROD_RESERVED_PERSON_TITLES';
-export const MAX_PATCHES = 12;
+export const PROD_CONFIRMATION = 'APPLY_PROD_OUTCOME_FIRST_POSITIONING';
+export const MAX_PATCHES = 18;
 
 export const TITLE_BY_LOCALE = {
-	en: 'Freelance SQL and Digital Infrastructure Developer',
-	fr: 'Développeur SQL et en infrastructure numérique, à la pige',
-	es: 'Desarrollador freelance SQL y de infraestructura digital',
+	en: 'Freelance Digital Solutions Developer',
+	fr: 'Développeur de solutions numériques à la pige',
+	es: 'Desarrollador freelance de soluciones digitales',
 } as const;
 
 export type Target = keyof typeof TARGET_URLS;
@@ -52,7 +53,9 @@ export interface CmsSnapshot {
 	aboutIntro: IntroRow[];
 	aboutContent: AboutContentRow[];
 	siteMeta: SiteMetaRow[];
+	homeRoute: { id: number; path: '/'; translations: RouteTranslationRow[] };
 	aboutRoute: { id: number; path: '/about'; translations: RouteTranslationRow[] };
+	servicesRoute: { id: number; path: '/services'; translations: RouteTranslationRow[] };
 }
 
 export interface TitlePatch {
@@ -71,21 +74,21 @@ export interface CliOptions {
 const LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
 
 const PREVIOUS_INTRO_TITLES: Record<Locale, string> = {
-	en: 'Freelance Digital Infrastructure Engineer',
-	fr: 'Ingénieur en infrastructure numérique, à la pige',
-	es: 'Ingeniero freelance de infraestructura digital',
+	en: 'Freelance SQL and Digital Infrastructure Developer',
+	fr: 'Développeur SQL et en infrastructure numérique, à la pige',
+	es: 'Desarrollador freelance SQL y de infraestructura digital',
 };
 
 const PREVIOUS_ABOUT_META_DESCRIPTIONS: Record<Locale, string> = {
-	en: "Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can't afford downtime.",
-	fr: "Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
-	es: 'Ingeniero freelance de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas.',
-};
-
-export const ABOUT_META_DESCRIPTION_BY_LOCALE: Record<Locale, string> = {
 	en: "Freelance SQL and Digital Infrastructure Developer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can't afford downtime.",
 	fr: "Développeur SQL et en infrastructure numérique, à la pige, basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
 	es: 'Desarrollador freelance SQL y de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas.',
+};
+
+export const ABOUT_META_DESCRIPTION_BY_LOCALE: Record<Locale, string> = {
+	en: 'Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.',
+	fr: "Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.",
+	es: 'Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables.',
 };
 
 const PREVIOUS_SITE_META: Record<
@@ -94,55 +97,112 @@ const PREVIOUS_SITE_META: Record<
 > = {
 	en: {
 		description:
-			'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
-		default_description:
-			'yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
-		owner_job_title: 'Freelance Digital Infrastructure Engineer',
-	},
-	fr: {
-		description:
-			"Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
-		default_description:
-			"yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
-		owner_job_title: 'Ingénieur pigiste en infrastructure numérique',
-	},
-	es: {
-		description:
-			'Ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
-		default_description:
-			'yesid., ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.',
-		owner_job_title: 'Ingeniero independiente en infraestructura digital',
-	},
-};
-
-export const SITE_META_BY_LOCALE: typeof PREVIOUS_SITE_META = {
-	en: {
-		description:
 			'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
 		default_description:
 			'yesid., Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
-		owner_job_title: TITLE_BY_LOCALE.en,
+		owner_job_title: 'Freelance SQL and Digital Infrastructure Developer',
 	},
 	fr: {
 		description:
 			"Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
 		default_description:
 			"yesid., Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
-		owner_job_title: TITLE_BY_LOCALE.fr,
+		owner_job_title: 'Développeur SQL et en infrastructure numérique, à la pige',
 	},
 	es: {
 		description:
 			'Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
 		default_description:
 			'yesid., Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.',
+		owner_job_title: 'Desarrollador freelance SQL y de infraestructura digital',
+	},
+};
+
+export const SITE_META_BY_LOCALE: typeof PREVIOUS_SITE_META = {
+	en: {
+		description:
+			'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
+		default_description:
+			'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
+		owner_job_title: TITLE_BY_LOCALE.en,
+	},
+	fr: {
+		description:
+			'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
+		default_description:
+			'yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.',
+		owner_job_title: TITLE_BY_LOCALE.fr,
+	},
+	es: {
+		description:
+			'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
+		default_description:
+			'yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.',
 		owner_job_title: TITLE_BY_LOCALE.es,
 	},
 };
 
-const PREVIOUS_ROUTE_TITLES: Record<Locale, string> = {
-	en: 'Yesid, Digital Infrastructure Engineer in Montreal',
-	fr: 'Yesid, ingénieur en infrastructure numérique à Montréal',
-	es: 'Yesid, ingeniero de infraestructura digital en Montreal',
+const PREVIOUS_HOME_DESCRIPTION_BY_LOCALE: Record<Locale, string> = {
+	en: 'Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards.',
+	fr: 'Développeur SQL pigiste et consultant en infrastructure numérique à Montréal. PostgreSQL, dbt, Power BI et Python pour pipelines, analyses et tableaux de bord.',
+	es: 'Desarrollador SQL freelance y consultor de infraestructura digital en Montreal. PostgreSQL, dbt, Power BI, Python. Pipelines en tiempo real, análisis, tableros.',
+};
+
+export const HOME_DESCRIPTION_BY_LOCALE: Record<Locale, string> = {
+	en: 'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
+	fr: 'yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.',
+	es: 'yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.',
+};
+
+const PREVIOUS_ABOUT_ROUTE_BY_LOCALE: Record<
+	Locale,
+	Pick<RouteTranslationRow, 'title' | 'description'>
+> = {
+	en: {
+		title: 'Freelance SQL and Digital Infrastructure Developer',
+		description:
+			'Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work.',
+	},
+	fr: {
+		title: 'Développeur SQL et en infrastructure numérique, à la pige',
+		description:
+			'Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes.',
+	},
+	es: {
+		title: 'Desarrollador freelance SQL y de infraestructura digital',
+		description:
+			'Consultor de infraestructura digital en Montreal. Experiencia en SQL, almacenes de datos y analítica en tiempo real. Disponible para freelance y consultoría.',
+	},
+};
+
+export const ABOUT_ROUTE_BY_LOCALE: typeof PREVIOUS_ABOUT_ROUTE_BY_LOCALE = {
+	en: {
+		title: TITLE_BY_LOCALE.en,
+		description:
+			'Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.',
+	},
+	fr: {
+		title: TITLE_BY_LOCALE.fr,
+		description:
+			"Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.",
+	},
+	es: {
+		title: TITLE_BY_LOCALE.es,
+		description:
+			'Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables.',
+	},
+};
+
+const PREVIOUS_SERVICES_DESCRIPTION_BY_LOCALE: Record<Locale, string> = {
+	en: 'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams.',
+	fr: "Services d'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel.",
+	es: 'Servicios de infraestructura digital: consultoría SQL y PostgreSQL, pipelines dbt, analítica Power BI, ETL en Python y plataformas de datos en tiempo real.',
+};
+
+export const SERVICES_DESCRIPTION_BY_LOCALE: Record<Locale, string> = {
+	en: 'Digital solutions for Québec SMEs: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.',
+	fr: 'Solutions numériques pour les PME du Québec : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL fiables.',
+	es: 'Soluciones digitales para pymes de Québec: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real.',
 };
 
 export function parseCli(argv: readonly string[]): CliOptions {
@@ -242,20 +302,28 @@ function planFieldPatch(
 	});
 }
 
+function routeRows<
+	Path extends CmsSnapshot['homeRoute']['path'] | CmsSnapshot['aboutRoute']['path'] | CmsSnapshot['servicesRoute']['path'],
+>(
+	route: { id: number; path: Path; translations: RouteTranslationRow[] },
+	path: Path,
+	label: string,
+): Record<Locale, RouteTranslationRow> {
+	if (!isRecord(route) || route.path !== path || !Array.isArray(route.translations)) {
+		throw new Error(`[reserved-person-titles] malformed ${path} route`);
+	}
+	assertId(route.id, `${path} route`);
+	return rowsByLocale(route.translations, label);
+}
+
 export function buildPlan(snapshot: CmsSnapshot): TitlePatch[] {
 	if (!isRecord(snapshot)) throw new Error('[reserved-person-titles] malformed snapshot');
 	const intro = rowsByLocale(snapshot.aboutIntro, 'about-intro');
 	const aboutContent = rowsByLocale(snapshot.aboutContent, 'about-content');
 	const siteMeta = rowsByLocale(snapshot.siteMeta, 'site-meta');
-	if (
-		!isRecord(snapshot.aboutRoute) ||
-		snapshot.aboutRoute.path !== '/about' ||
-		!Array.isArray(snapshot.aboutRoute.translations)
-	) {
-		throw new Error('[reserved-person-titles] malformed /about route');
-	}
-	assertId(snapshot.aboutRoute.id, '/about route');
-	const route = rowsByLocale(snapshot.aboutRoute.translations, 'about-route');
+	const homeRoute = routeRows(snapshot.homeRoute, '/', 'home-route');
+	const aboutRoute = routeRows(snapshot.aboutRoute, '/about', 'about-route');
+	const servicesRoute = routeRows(snapshot.servicesRoute, '/services', 'services-route');
 
 	const plan: TitlePatch[] = [];
 	for (const locale of LOCALES) {
@@ -283,14 +351,30 @@ export function buildPlan(snapshot: CmsSnapshot): TitlePatch[] {
 		});
 	}
 	for (const locale of LOCALES) {
+		planFieldPatch(plan, {
+			row: homeRoute[locale] as unknown as Record<string, unknown> & RouteTranslationRow,
+			path: `/items/route_seo_translations/${homeRoute[locale].id}`,
+			previous: { description: PREVIOUS_HOME_DESCRIPTION_BY_LOCALE[locale] },
+			desired: { description: HOME_DESCRIPTION_BY_LOCALE[locale] },
+		});
+	}
+	for (const locale of LOCALES) {
 		if (TITLE_BY_LOCALE[locale].length > 70) {
 			throw new Error(`[reserved-person-titles] ${locale} route title exceeds 70 characters`);
 		}
 		planFieldPatch(plan, {
-			row: route[locale] as unknown as Record<string, unknown> & RouteTranslationRow,
-			path: `/items/route_seo_translations/${route[locale].id}`,
-			previous: { title: PREVIOUS_ROUTE_TITLES[locale] },
-			desired: { title: TITLE_BY_LOCALE[locale] },
+			row: aboutRoute[locale] as unknown as Record<string, unknown> & RouteTranslationRow,
+			path: `/items/route_seo_translations/${aboutRoute[locale].id}`,
+			previous: PREVIOUS_ABOUT_ROUTE_BY_LOCALE[locale],
+			desired: ABOUT_ROUTE_BY_LOCALE[locale],
+		});
+	}
+	for (const locale of LOCALES) {
+		planFieldPatch(plan, {
+			row: servicesRoute[locale] as unknown as Record<string, unknown> & RouteTranslationRow,
+			path: `/items/route_seo_translations/${servicesRoute[locale].id}`,
+			previous: { description: PREVIOUS_SERVICES_DESCRIPTION_BY_LOCALE[locale] },
+			desired: { description: SERVICES_DESCRIPTION_BY_LOCALE[locale] },
 		});
 	}
 	if (plan.length > MAX_PATCHES) {
@@ -305,7 +389,8 @@ export async function applyVerifiedPlan(
 		readSnapshot: () => Promise<CmsSnapshot>;
 		sendPatch: (step: TitlePatch) => Promise<void>;
 	},
-): Promise<void> {
+): Promise<number> {
+	let sentCount = 0;
 	function assertExpectedSubset(
 		currentPlan: readonly TitlePatch[],
 		expectedPlan: readonly TitlePatch[],
@@ -341,6 +426,7 @@ export async function applyVerifiedPlan(
 		const current = currentPlan.find((candidate) => candidate.path === step.path);
 		if (!current) continue;
 		await deps.sendPatch(step);
+		sentCount += 1;
 		let afterPlan: TitlePatch[];
 		try {
 			afterPlan = buildPlan(await deps.readSnapshot());
@@ -361,6 +447,7 @@ export async function applyVerifiedPlan(
 			`[reserved-person-titles] post-apply verification failed: ${remaining.length} PATCHes remain`,
 		);
 	}
+	return sentCount;
 }
 
 const PATHS = {
@@ -370,12 +457,36 @@ const PATHS = {
 		'/items/block_about_content_translations?fields=id,languages_code,meta_title,meta_description&limit=-1',
 	siteMeta:
 		'/items/site_meta_translations?fields=id,languages_code,description,default_description,owner_job_title&limit=-1',
+	homeRoute:
+		'/items/route_seo?fields=id,path,translations.id,translations.languages_code,translations.title,translations.description&filter[path][_eq]=%2F&limit=1',
 	aboutRoute:
 		'/items/route_seo?fields=id,path,translations.id,translations.languages_code,translations.title,translations.description&filter[path][_eq]=%2Fabout&limit=1',
+	servicesRoute:
+		'/items/route_seo?fields=id,path,translations.id,translations.languages_code,translations.title,translations.description&filter[path][_eq]=%2Fservices&limit=1',
 } as const;
 
-async function requestData(url: string, token: string, path: string): Promise<unknown> {
-	const response = await fetch(`${url}${path}`, {
+export function createReconcilerFetch(
+	upstreamFetch: typeof fetch = globalThis.fetch,
+	sleep?: (ms: number) => Promise<void>,
+): typeof fetch {
+	return createQueuedFetch({
+		maxConcurrent: 1,
+		minTime: 50,
+		retries: 4,
+		fetch: upstreamFetch,
+		sleep,
+	});
+}
+
+const reconcilerFetch = createReconcilerFetch();
+
+export async function requestData(
+	url: string,
+	token: string,
+	path: string,
+	fetcher: typeof fetch = reconcilerFetch,
+): Promise<unknown> {
+	const response = await fetcher(`${url}${path}`, {
 		headers: { Authorization: `Bearer ${token}` },
 	});
 	if (!response.ok) {
@@ -389,18 +500,24 @@ async function requestData(url: string, token: string, path: string): Promise<un
 }
 
 export async function readSnapshot(url: string, token: string): Promise<CmsSnapshot> {
-	const [aboutIntro, aboutContent, siteMeta, aboutRoutes] = await Promise.all([
+	const [aboutIntro, aboutContent, siteMeta, homeRoutes, aboutRoutes, servicesRoutes] = await Promise.all([
 		requestData(url, token, PATHS.aboutIntro),
 		requestData(url, token, PATHS.aboutContent),
 		requestData(url, token, PATHS.siteMeta),
+		requestData(url, token, PATHS.homeRoute),
 		requestData(url, token, PATHS.aboutRoute),
+		requestData(url, token, PATHS.servicesRoute),
 	]);
 	if (
 		!Array.isArray(aboutIntro) ||
 		!Array.isArray(aboutContent) ||
 		!Array.isArray(siteMeta) ||
+		!Array.isArray(homeRoutes) ||
+		homeRoutes.length !== 1 ||
 		!Array.isArray(aboutRoutes) ||
-		aboutRoutes.length !== 1
+		aboutRoutes.length !== 1 ||
+		!Array.isArray(servicesRoutes) ||
+		servicesRoutes.length !== 1
 	) {
 		throw new Error('[reserved-person-titles] malformed CMS snapshot response');
 	}
@@ -408,12 +525,14 @@ export async function readSnapshot(url: string, token: string): Promise<CmsSnaps
 		aboutIntro: aboutIntro as IntroRow[],
 		aboutContent: aboutContent as AboutContentRow[],
 		siteMeta: siteMeta as SiteMetaRow[],
+		homeRoute: homeRoutes[0] as CmsSnapshot['homeRoute'],
 		aboutRoute: aboutRoutes[0] as CmsSnapshot['aboutRoute'],
+		servicesRoute: servicesRoutes[0] as CmsSnapshot['servicesRoute'],
 	};
 }
 
 async function sendPatch(url: string, token: string, step: TitlePatch): Promise<void> {
-	const response = await fetch(`${url}${step.path}`, {
+	const response = await reconcilerFetch(`${url}${step.path}`, {
 		method: step.method,
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -443,12 +562,12 @@ async function main(): Promise<void> {
 		console.log('[reserved-person-titles] dry-run complete; no writes sent');
 		return;
 	}
-	await applyVerifiedPlan(plan, {
+	const sentCount = await applyVerifiedPlan(plan, {
 		readSnapshot: () => readSnapshot(url, token),
 		sendPatch: (step) => sendPatch(url, token, step),
 	});
 	console.log(
-		`[reserved-person-titles] verified ${plan.length} PATCHes; NO CHANGES remain`,
+		`[reserved-person-titles] verified convergence; planned=${plan.length} sent=${sentCount}; NO CHANGES remain`,
 	);
 }
 
