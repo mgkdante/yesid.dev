@@ -164,7 +164,39 @@ describe('semantic Directus permission audit', () => {
 		).toEqual({});
 	});
 
-	it('refuses unresolved and ambiguous policy identity before comparing permissions', () => {
+	it('keeps unrelated duplicate live policy names as distinct untracked buckets', () => {
+		const duplicateUntrackedPolicies: LivePolicyRow[] = [
+			...livePolicies,
+			{ id: 'legacy-bot-a', name: 'Legacy Bot' },
+			{ id: 'legacy-bot-b', name: 'Legacy Bot' },
+		];
+		const audit = buildPermissionAudit(
+			repoPolicies,
+			[desired('repo-public', 'blog_posts', 'read')],
+			duplicateUntrackedPolicies,
+			[
+				live('permission-116', 'live-public', 'blog_posts', 'read'),
+				live('legacy-a-read', 'legacy-bot-a', 'legacy_items', 'read'),
+				live('legacy-b-read', 'legacy-bot-b', 'legacy_items', 'read'),
+			],
+		);
+
+		expect(audit.summary).toEqual({
+			equivalent: 1,
+			mismatch: 0,
+			missing: 0,
+			duplicate: 0,
+			untracked: 2,
+			total: 3,
+		});
+		expect(
+			audit.entries
+				.filter((entry) => entry.policyName === 'Legacy Bot')
+				.map((entry) => entry.livePermissionIds),
+		).toEqual([['legacy-a-read'], ['legacy-b-read']]);
+	});
+
+	it('refuses unresolved and desired policy-name ambiguity before comparing permissions', () => {
 		expect(() =>
 			buildPermissionAudit(
 				repoPolicies,
@@ -176,11 +208,11 @@ describe('semantic Directus permission audit', () => {
 		expect(() =>
 			buildPermissionAudit(
 				repoPolicies,
-				[],
+				[desired('repo-public', 'blog_posts', 'read')],
 				[...livePolicies, { id: 'duplicate-name', name: '$t:public_label' }],
 				[],
 			),
-		).toThrow(/duplicate live policy name/);
+		).toThrow(/expected exactly one live policy named "\$t:public_label"; found 2/);
 	});
 
 	it('formats every classification and an exact summary', () => {
