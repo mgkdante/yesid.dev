@@ -48,28 +48,28 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 			languages_code: 'en',
 			tagline: 'Digital infrastructure that moves.',
 			description:
-				'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
+				'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
 			default_description:
-				'yesid., Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
-			owner_job_title: 'Freelance SQL and Digital Infrastructure Developer',
+				'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
+			owner_job_title: 'Freelance Digital Solutions Developer',
 		},
 		{
 			languages_code: 'fr',
 			tagline: 'Une infrastructure numérique qui bouge.',
 			description:
-				"Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+				'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
 			default_description:
-				"yesid., Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
-			owner_job_title: 'Développeur SQL et en infrastructure numérique, à la pige',
+				'yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.',
+			owner_job_title: 'Développeur de solutions numériques à la pige',
 		},
 		{
 			languages_code: 'es',
 			tagline: 'Infraestructura digital que se mueve.',
 			description:
-				'Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
+				'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
 			default_description:
-				'yesid., Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.',
-			owner_job_title: 'Desarrollador freelance SQL y de infraestructura digital',
+				'yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.',
+			owner_job_title: 'Desarrollador freelance de soluciones digitales',
 		},
 	],
 };
@@ -85,9 +85,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 		es: 'Infraestructura digital que se mueve.',
 	},
 	description: {
-		en: 'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
-		fr: "Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
-		es: 'Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
+		en: 'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
+		fr: 'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
+		es: 'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -98,9 +98,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 	owner: {
 		name: 'Yesid O.',
 		jobTitle: {
-			en: 'Freelance SQL and Digital Infrastructure Developer',
-			fr: 'Développeur SQL et en infrastructure numérique, à la pige',
-			es: 'Desarrollador freelance SQL y de infraestructura digital',
+			en: 'Freelance Digital Solutions Developer',
+			fr: 'Développeur de solutions numériques à la pige',
+			es: 'Desarrollador freelance de soluciones digitales',
 		},
 		phone: '+18194465594',
 		address: {

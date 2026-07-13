@@ -1,7 +1,7 @@
 {
   "identity": {
     "name": { "en": "Yesid O.", "fr": "Yesid O." },
-    "title": { "en": "SQL developer, builder, and patient explainer", "fr": "Développeur SQL, bâtisseur et vulgarisateur patient" },
+    "title": { "en": "Curious builder, lifelong tinkerer", "fr": "Bâtisseur curieux, bricoleur depuis toujours", "es": "Constructor curioso, cacharreador eterno" },
     "valueProp": {
       "en": "I'm Yesid a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so they can be behind the wheel making their own decisions.",
       "fr": "Je suis un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour qu'ils gardent le volant et prennent leurs propres décisions."
@@ -137,9 +137,9 @@
   "meta": {
     "title": { "en": "About | yesid.", "fr": "À propos | yesid.", "es": "Sobre mí | yesid." },
     "description": {
-      "en": "Freelance SQL and Digital Infrastructure Developer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can't afford downtime.",
-      "fr": "Développeur SQL et en infrastructure numérique, à la pige, basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
-      "es": "Desarrollador freelance SQL y de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas."
+      "en": "Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.",
+      "fr": "Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.",
+      "es": "Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables."
     }
   }
 }

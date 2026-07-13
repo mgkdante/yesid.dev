@@ -28,7 +28,7 @@ const log = createLogger('go2-message-pass');
 
 // --- Payloads (locked in the GO-2 Track 3 plan) -----------------------------
 
-export const SELF_TITLE = 'Freelance SQL and Digital Infrastructure Developer';
+export const SELF_TITLE = 'Freelance Digital Solutions Developer';
 
 export const MANIFESTO_PILLS: ReadonlyArray<{ label: string; serviceId: string }> = [
 	{ label: 'databases', serviceId: 'database-engineering' },
@@ -111,16 +111,15 @@ export const EN_TRANSLATION_EDITS: readonly TranslationEdit[] = [
 export const SITE_META_TRANSLATION_EDITS: Record<'en' | 'fr' | 'es', Record<string, string>> = {
 	en: {
 		description:
-			'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power — PostgreSQL, dbt, Power BI, SvelteKit.',
+			'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
 		default_description:
-			'yesid. — Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
+			'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
 		owner_job_title: SELF_TITLE,
 	},
-	// fr/es: owner_job_title ONLY (the other fields have no fr/es values today;
-	// writing them would create partial-translation drift). The operator approved
-	// this exact title trio on 2026-07-12.
-	fr: { owner_job_title: 'Développeur SQL et en infrastructure numérique, à la pige' },
-	es: { owner_job_title: 'Desarrollador freelance SQL y de infraestructura digital' },
+	// This older narrow migration only owns the FR/ES person-title field. The
+	// guarded outcome-first reconciler owns the broader multilingual copy set.
+	fr: { owner_job_title: 'Développeur de solutions numériques à la pige' },
+	es: { owner_job_title: 'Desarrollador freelance de soluciones digitales' },
 };
 
 // --- Helpers ------------------------------------------------------------------
