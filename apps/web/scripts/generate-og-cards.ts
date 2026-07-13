@@ -295,9 +295,9 @@ const ROUTES = {
 	about: {
 		eyebrow: { en: 'ABOUT', fr: 'À PROPOS', es: 'ACERCA DE' } satisfies L,
 		subtitle: {
-			en: ['Digital Infrastructure', 'Engineer'],
-			fr: ['Ingénieur en', 'infrastructure numérique'],
-			es: ['Ingeniero de', 'infraestructura digital'],
+			en: ['Freelance SQL and', 'Digital Infrastructure', 'Developer'],
+			fr: ['Développeur SQL et en', 'infrastructure numérique,', 'à la pige'],
+			es: ['Desarrollador freelance SQL', 'y de infraestructura digital'],
 		} satisfies LL,
 	},
 	projects: {
