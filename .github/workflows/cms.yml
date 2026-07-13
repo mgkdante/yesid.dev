@@ -12,6 +12,10 @@ name: cms
 #   prod. Never writes.
 # - push (workflow_dispatch with action=push): applies the JSON tree to
 #   cms.yesid.dev. Gated behind production environment for operator review.
+# - permission-control-audit (workflow_dispatch): GET-only semantic comparison
+#   of the repository permission declaration with production.
+# - public-blog-translation-key-repair (workflow_dispatch): audits, applies one
+#   guarded fields-only permission repair, then audits again.
 #
 # slice-17f Phase 7: shared setup extracted to .github/actions/setup
 # (Bun + cache restores + install). concurrency cancel-in-progress on
@@ -37,9 +41,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action (diff = preview, push = config apply, legal-service-area = guarded notice remediation)'
+        description: 'Action: diff preview, push config apply, legal notice remediation, read-only permission audit, or targeted blog repair'
         type: choice
-        options: [diff, push, legal-service-area]
+        options: [diff, push, legal-service-area, permission-control-audit, public-blog-translation-key-repair]
         default: diff
         required: true
       include_permissions:
@@ -176,3 +180,75 @@ jobs:
             apps/web/src/lib/content/generated.manifest.json
           if-no-files-found: error
           retention-days: 1
+
+  permission-control-audit:
+    # Read-only semantic comparison by policy name + collection + action. This
+    # job cannot invoke either a permission reconciler or directus-sync.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'permission-control-audit' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    env:
+      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Audit production Directus permissions semantically (read-only)
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
+
+  public-blog-translation-key-repair:
+    # One targeted public blog_posts:read fields repair. The reconciler refuses
+    # duplicate rows, unrelated drift, and any PATCH body beyond fields.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'public-blog-translation-key-repair' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    env:
+      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Audit production permissions before targeted repair
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
+
+      - name: Preview public blog translation_key permission repair
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/reconcile-public-blog-permission.ts --target=prod --dry-run
+
+      - name: Apply and verify public blog translation_key permission repair
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: >-
+          bun scripts/reconcile-public-blog-permission.ts
+          --target=prod
+          --apply
+          --confirm=APPLY_PROD_PUBLIC_BLOG_TRANSLATION_KEY_PERMISSION
+
+      - name: Audit production permissions after targeted repair
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run --require-converged
