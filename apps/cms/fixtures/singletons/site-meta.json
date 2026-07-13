@@ -17,23 +17,23 @@
 		{
 			"languages_code": "en",
 			"tagline": "Digital infrastructure that moves.",
-			"description": "Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.",
-			"default_description": "yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.",
-			"owner_job_title": "Freelance Digital Infrastructure Engineer"
+			"description": "Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.",
+			"default_description": "yesid., Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.",
+			"owner_job_title": "Freelance SQL and Digital Infrastructure Developer"
 		},
 		{
 			"languages_code": "fr",
 			"tagline": "Une infrastructure numérique qui bouge.",
-			"description": "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
-			"default_description": "yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
-			"owner_job_title": "Ingénieur pigiste en infrastructure numérique"
+			"description": "Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+			"default_description": "yesid., Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
+			"owner_job_title": "Développeur SQL et en infrastructure numérique, à la pige"
 		},
 		{
 			"languages_code": "es",
-			"tagline": "",
-			"description": "",
-			"default_description": "",
-			"owner_job_title": "Ingeniero independiente en infraestructura digital"
+			"tagline": "Infraestructura digital que se mueve.",
+			"description": "Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.",
+			"default_description": "yesid., Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.",
+			"owner_job_title": "Desarrollador freelance SQL y de infraestructura digital"
 		}
 	]
 }
