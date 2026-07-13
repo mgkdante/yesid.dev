@@ -157,6 +157,30 @@ describe('public blog permission target selection and plan', () => {
 		expect(plan.patch).toBeNull();
 	});
 
+	it('ignores null-policy rows that cannot belong to the target policy', () => {
+		const desired = desiredTarget();
+		const plan = buildPublicBlogPermissionPlan(desired, livePolicies, [
+			stalePermission(),
+			stalePermission({ id: 117, policy: null }),
+		]);
+
+		expect(plan).toMatchObject({
+			action: 'update',
+			permissionId: 116,
+		});
+	});
+
+	it('rejects malformed non-null policy relation shapes', () => {
+		const desired = desiredTarget();
+		expect(() =>
+			buildPublicBlogPermissionPlan(desired, livePolicies, [
+				stalePermission({
+					policy: {} as LivePermissionRow['policy'],
+				}),
+			]),
+		).toThrow(/invalid live policy relation.*116/);
+	});
+
 	it('refuses missing or duplicate policies and permission rows', () => {
 		const desired = desiredTarget();
 		expect(() =>
