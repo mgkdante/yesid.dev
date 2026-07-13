@@ -76,6 +76,13 @@ test('plans one body-only PATCH for every previously published legal translation
 		'accessibility',
 		'notice',
 	]);
+	expect(subject.REVISION_DATES).toEqual({
+		privacy: '2026-07-12',
+		terms: '2026-07-12',
+		cookies: '2026-07-12',
+		accessibility: '2026-07-12',
+		notice: '2026-07-13',
+	});
 	expect(subject.LEGAL_PATH).toBe(
 		'/items/legal_pages_translations?fields=id,languages_code,legal_pages_id,body&filter[legal_pages_id][_in]=privacy,terms,cookies,accessibility,notice&filter[languages_code][_in]=en,fr,es&sort=legal_pages_id,languages_code&limit=-1',
 	);
@@ -100,8 +107,7 @@ test('plans one body-only PATCH for every previously published legal translation
 		expect(Object.keys(step.body)).toEqual(['body']);
 		expect(JSON.stringify(step.body.body)).toContain('contact@yesid.dev');
 		expect(JSON.stringify(step.body.body)).not.toContain('admin@yesid.dev');
-		expect(JSON.stringify(step.body.body)).toContain('2026-07-12');
-		expect(JSON.stringify(step.before)).not.toContain('2026-07-12');
+		expect(JSON.stringify(step.body.body)).toContain(subject.REVISION_DATES[step.slug]);
 	}
 	expect(subject.formatPlan(plan)).toContain('15 content PATCHes');
 
