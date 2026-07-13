@@ -148,15 +148,15 @@ describe('seed-route-seo pure helpers', () => {
 	});
 
 	describe('toTranslationRows', () => {
-		it('returns en and fr rows for each static route fixture', () => {
+		it('returns required locales from each static route fixture', () => {
 			expect(toTranslationRows(home).map((row) => row.languages_code)).toEqual(['en', 'fr']);
-			expect(toTranslationRows(about).map((row) => row.languages_code)).toEqual(['en', 'fr']);
+			expect(toTranslationRows(about).map((row) => row.languages_code)).toEqual(['en', 'fr', 'es']);
 		});
 
 		it('preserves languages_code, title, description', () => {
 			const rows = toTranslationRows(about);
 			expect(rows[0]?.languages_code).toBe('en');
-			expect(rows[0]?.title).toBe('Yesid O., Digital Infrastructure Engineer in Montreal');
+			expect(rows[0]?.title).toBe('Freelance SQL and Digital Infrastructure Developer');
 			expect((rows[0]?.description ?? '').length).toBeGreaterThan(0);
 		});
 
