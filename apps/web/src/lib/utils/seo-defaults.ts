@@ -10,19 +10,10 @@ import { delocalizePath } from '$lib/utils/locale-routing';
 // a staging domain is introduced (currently yesid.dev is the only target).
 export const SITE_HOST = 'https://yesid.dev';
 
-// Google Business Profile service-area cities. MUST stay byte-identical to the
-// GBP listing's service areas — this list feeds the ProfessionalService
-// `areaServed` and the llms.txt geo line, so drift here desyncs the site from
-// the local pack. Order mirrors the GBP entry (home metro first).
-export const SERVICE_AREAS = [
-	'Montreal',
-	'Laval',
-	'Longueuil',
-	'Brossard',
-	'Gatineau',
-	'Ottawa',
-	'Sherbrooke',
-] as const;
+// Public service area. MUST stay byte-identical to the approved GBP listing:
+// Montréal only, with the Gatineau legal street address kept private. This
+// feeds ProfessionalService `areaServed` and the llms.txt geography line.
+export const SERVICE_AREAS = ['Montréal'] as const;
 
 // Public Google Business Profile URL (the Maps place / share link). Unknown
 // until the listing is verified + public (Homework #12); once you have it, set
@@ -57,11 +48,11 @@ export { DEFAULT_LOCALE };
 /**
  * Returns the default OG image path for a given locale.
  *
- * For published locales, returns `/og/default.{locale}.png` — a manually
- * produced, committed asset under `static/og/` (the generate-og-default
- * script was deleted in slice-27.1; restorable from a5f28f2^ when a new
- * locale launches). For unpublished locales, falls back to the EN default
- * so `og:image` meta always resolves to a real file.
+ * For published locales, returns `/og/default.{locale}.png`, a committed asset
+ * under `static/og/` produced by scripts/generate-og-cards.ts. The legacy
+ * generate-og-default.ts entry point delegates to that canonical renderer.
+ * For unpublished locales, falls back to the EN default so `og:image` always
+ * resolves to a real file.
  */
 export function defaultOgImageFor(locale: Locale): string {
 	if (PUBLISHED_LOCALES.includes(locale)) return `/og/default.${locale}.png`;

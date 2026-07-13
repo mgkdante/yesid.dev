@@ -16,14 +16,16 @@
  * their font size so no line overlaps the service logo art on the right, which
  * matters most for the longer fr/es strings ("Bases de données et SQL").
  *
- * Service + tagline copy is the canonical CMS truth (apps/web/src/lib/content/
- * services.ts, site_meta). Every card carries the outlined wordmark ("yesid" +
- * orange period) read from apps/cms/brand/yesid-wordmark.svg.
+ * The explicit service titles below are manually reconciled against the
+ * committed content export; this script does not import CMS copy. Route labels
+ * and the general site-card tagline are also explicit in DEFAULTS and SITE,
+ * keeping this renderer deterministic and reviewable. Every card carries the
+ * outlined wordmark ("yesid" + orange period) from the canonical brand SVG.
  *
- * Same rendering stack as generate-og-default.ts: hand-built SVG -> resvg with
- * the vendored OG TTFs (Inter 500/900, JetBrains Mono 500). The /about card
- * embeds the headshot; sharp (an apps/cms dependency) converts the committed
- * webp to PNG at render time via createRequire.
+ * This is the canonical renderer; generate-og-default.ts is a compatibility
+ * wrapper that delegates here. Cards use hand-built SVG -> resvg with the
+ * vendored OG TTFs (Inter 500/900, JetBrains Mono 500). The /about card embeds
+ * the headshot; sharp converts the committed webp to PNG at render time.
  *
  *   bun scripts/generate-og-cards.ts                 # writes into static/og
  *   bun scripts/generate-og-cards.ts --out <dir>     # mockup run
@@ -38,7 +40,8 @@ const WEB_ROOT = resolve(import.meta.dir, '..');
 const REPO_ROOT = resolve(WEB_ROOT, '../..');
 
 const OUT_FLAG = process.argv.indexOf('--out');
-const OUT_DIR = OUT_FLAG === -1 ? resolve(WEB_ROOT, 'static/og') : resolve(process.argv[OUT_FLAG + 1] ?? '');
+const OUT_DIR =
+	OUT_FLAG === -1 ? resolve(WEB_ROOT, 'static/og') : resolve(process.argv[OUT_FLAG + 1] ?? '');
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -53,6 +56,15 @@ const YELLOW = '#FFB627';
 
 type Locale = 'en' | 'fr' | 'es';
 const LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
+const LOCALE_EQ_ARG = process.argv.find((arg) => arg.startsWith('--locale='));
+const LOCALE_FLAG = process.argv.indexOf('--locale');
+const requestedLocale =
+	LOCALE_EQ_ARG?.slice('--locale='.length) ??
+	(LOCALE_FLAG === -1 ? undefined : process.argv[LOCALE_FLAG + 1]);
+if (requestedLocale && !(LOCALES as readonly string[]).includes(requestedLocale)) {
+	throw new Error(`unsupported locale: ${requestedLocale}`);
+}
+const SELECTED_LOCALES: readonly Locale[] = requestedLocale ? [requestedLocale as Locale] : LOCALES;
 /** EN keeps the legacy no-suffix path; fr/es get a .<locale> suffix. */
 const suffix = (loc: Locale) => (loc === 'en' ? '' : `.${loc}`);
 
@@ -86,7 +98,11 @@ function wordmark(x: number, y: number, scale: number, letterFill = TEXT): strin
 function measureWidth(text: string, size: number, family: string, weight: number): number {
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="4000" height="400"><text x="0" y="200" font-family="${family}" font-weight="${weight}" font-size="${size}">${escapeXml(text)}</text></svg>`;
 	const bbox = new Resvg(svg, {
-		font: { fontFiles: FONT_FILES, loadSystemFonts: false, defaultFontFamily: 'Inter' },
+		font: {
+			fontFiles: FONT_FILES,
+			loadSystemFonts: false,
+			defaultFontFamily: 'Inter',
+		},
 	}).getBBox();
 	return bbox?.width ?? 0;
 }
@@ -95,10 +111,29 @@ function measureWidth(text: string, size: number, family: string, weight: number
 function fitSize(
 	lines: readonly string[],
 	maxWidth: number,
-	{ max, min, family, weight }: { max: number; min: number; family: string; weight: number },
+	{
+		max,
+		min,
+		family,
+		weight,
+		letterSpacing = 0,
+	}: {
+		max: number;
+		min: number;
+		family: string;
+		weight: number;
+		letterSpacing?: number;
+	},
 ): number {
 	for (let size = max; size > min; size -= 2) {
-		if (lines.every((line) => measureWidth(line, size, family, weight) <= maxWidth)) return size;
+		if (
+			lines.every((line) => {
+				const trackedWidth =
+					measureWidth(line, size, family, weight) + Math.max(0, line.length - 1) * letterSpacing;
+				return trackedWidth <= maxWidth;
+			})
+		)
+			return size;
 	}
 	return min;
 }
@@ -161,7 +196,12 @@ function overline(y = 186): string {
 
 /** Two-line title, vertically centered on `midY`, auto-fit to `maxWidth`. */
 function titleBlock(lines: readonly string[], maxWidth: number, midY: number, fill = TEXT): string {
-	const size = fitSize(lines, maxWidth, { max: 92, min: 52, family: 'Inter', weight: 900 });
+	const size = fitSize(lines, maxWidth, {
+		max: 92,
+		min: 52,
+		family: 'Inter',
+		weight: 900,
+	});
 	const lineHeight = Math.round(size * 1.08);
 	const startY = midY - ((lines.length - 1) * lineHeight) / 2 + size * 0.34;
 	return lines
@@ -210,7 +250,7 @@ async function headshotDataUri(): Promise<string> {
 	return `data:image/png;base64,${png.toString('base64')}`;
 }
 
-// --- Trilingual copy (CMS truth for names + taglines) ----------------------
+// --- Trilingual card copy (committed service export + explicit OG labels) --
 
 type L = Record<Locale, string>;
 type LL = Record<Locale, readonly string[]>;
@@ -268,7 +308,12 @@ const SERVICE_EYEBROW: L = { en: 'SERVICE', fr: 'SERVICE', es: 'SERVICIO' };
 
 /** Uppercase service names for the services-listing line-list, per locale. */
 const SERVICE_LIST: Record<Locale, readonly string[]> = {
-	en: ['DATABASES & SQL', 'PIPELINES & AUTOMATION', 'DASHBOARDS & ANALYTICS', 'WEBSITES & E-COMMERCE'],
+	en: [
+		'DATABASES & SQL',
+		'PIPELINES & AUTOMATION',
+		'DASHBOARDS & ANALYTICS',
+		'WEBSITES & E-COMMERCE',
+	],
 	fr: [
 		'BASES DE DONNÉES ET SQL',
 		'PIPELINES ET AUTOMATISATION',
@@ -287,21 +332,25 @@ const ROUTES = {
 	services: {
 		eyebrow: { en: 'SERVICES', fr: 'SERVICES', es: 'SERVICIOS' } satisfies L,
 		title: {
-			en: ['Digital', 'Infrastructure'],
-			fr: ['Infrastructure', 'numérique'],
-			es: ['Infraestructura', 'digital'],
+			en: ['Digital', 'Solutions'],
+			fr: ['Solutions', 'numériques'],
+			es: ['Soluciones', 'digitales'],
 		} satisfies LL,
 	},
 	about: {
 		eyebrow: { en: 'ABOUT', fr: 'À PROPOS', es: 'ACERCA DE' } satisfies L,
 		subtitle: {
-			en: ['Freelance SQL and', 'Digital Infrastructure', 'Developer'],
-			fr: ['Développeur SQL et en', 'infrastructure numérique,', 'à la pige'],
-			es: ['Desarrollador freelance SQL', 'y de infraestructura digital'],
+			en: ['Freelance Digital', 'Solutions Developer'],
+			fr: ['Développeur de solutions', 'numériques à la pige'],
+			es: ['Desarrollador freelance', 'de soluciones digitales'],
 		} satisfies LL,
 	},
 	projects: {
-		eyebrow: { en: 'CASE STUDIES', fr: 'ÉTUDES DE CAS', es: 'CASOS DE ESTUDIO' } satisfies L,
+		eyebrow: {
+			en: 'CASE STUDIES',
+			fr: 'ÉTUDES DE CAS',
+			es: 'CASOS DE ESTUDIO',
+		} satisfies L,
 		title: { en: 'Projects', fr: 'Projets', es: 'Proyectos' } satisfies L,
 		subtitle: {
 			en: ['Projects, pipelines, and', 'systems I have built.'],
@@ -316,15 +365,33 @@ const ROUTES = {
 } as const;
 
 const DEFAULTS: Record<Locale, { eyebrow: string; title: readonly string[] }> = {
-	en: { eyebrow: 'DIGITAL INFRASTRUCTURE · MONTRÉAL', title: ['Digital infrastructure', 'that moves.'] },
-	fr: { eyebrow: 'INFRASTRUCTURE NUMÉRIQUE · MONTRÉAL', title: ['Une infrastructure', 'numérique qui bouge.'] },
-	es: { eyebrow: 'INFRAESTRUCTURA DIGITAL · MONTRÉAL', title: ['Infraestructura digital', 'que se mueve.'] },
+	en: {
+		eyebrow: 'DIGITAL SOLUTIONS · MONTRÉAL',
+		title: ['Web, data & automation', 'for Québec businesses.'],
+	},
+	fr: {
+		eyebrow: 'SOLUTIONS NUMÉRIQUES · MONTRÉAL',
+		title: ['Web, données et automatisation', 'pour les entreprises du Québec.'],
+	},
+	es: {
+		eyebrow: 'SOLUCIONES DIGITALES · MONTRÉAL',
+		title: ['Web, datos y automatización', 'para empresas de Québec.'],
+	},
 };
 
 const SITE: Record<Locale, { eyebrow: string; tagline: string }> = {
-	en: { eyebrow: 'DIGITAL INFRASTRUCTURE · MONTRÉAL', tagline: 'Digital infrastructure that moves.' },
-	fr: { eyebrow: 'INFRASTRUCTURE NUMÉRIQUE · MONTRÉAL', tagline: 'Une infrastructure numérique qui bouge.' },
-	es: { eyebrow: 'INFRAESTRUCTURA DIGITAL · MONTRÉAL', tagline: 'Infraestructura digital que se mueve.' },
+	en: {
+		eyebrow: 'DIGITAL SOLUTIONS · MONTRÉAL',
+		tagline: 'Web, data and automation for Québec businesses.',
+	},
+	fr: {
+		eyebrow: 'SOLUTIONS NUMÉRIQUES · MONTRÉAL',
+		tagline: 'Web, données et automatisation pour les entreprises du Québec.',
+	},
+	es: {
+		eyebrow: 'SOLUCIONES DIGITALES · MONTRÉAL',
+		tagline: 'Web, datos y automatización para empresas de Québec.',
+	},
 };
 
 // --- Cards ------------------------------------------------------------------
@@ -332,7 +399,7 @@ const SITE: Record<Locale, { eyebrow: string; tagline: string }> = {
 async function buildCards(): Promise<Record<string, string>> {
 	const cards: Record<string, string> = {};
 
-	for (const loc of LOCALES) {
+	for (const loc of SELECTED_LOCALES) {
 		const sfx = suffix(loc);
 
 		// Service cards: two-line title, auto-fit clear of the logo art.
@@ -353,6 +420,7 @@ async function buildCards(): Promise<Record<string, string>> {
 			min: 15,
 			family: 'JetBrains Mono',
 			weight: 500,
+			letterSpacing: 1.6,
 		});
 		const listRows = SERVICE_LIST[loc]
 			.map((name, i) => {
@@ -409,11 +477,17 @@ async function buildCards(): Promise<Record<string, string>> {
 		);
 
 		// General site card: big wordmark + tagline.
+		const siteTaglineSize = fitSize([SITE[loc].tagline], WIDTH - 2 * MARGIN, {
+			max: 40,
+			min: 26,
+			family: 'Inter',
+			weight: 500,
+		});
 		cards[`site.${loc}.png`] = frame(
 			eyebrow(SITE[loc].eyebrow),
 			overline(200),
 			wordmark(MARGIN, 240, 3.4),
-			`<text x="${MARGIN}" y="500" font-family="Inter" font-weight="500" font-size="40" fill="${MUTED}">${escapeXml(SITE[loc].tagline)}</text>`,
+			`<text x="${MARGIN}" y="500" font-family="Inter" font-weight="500" font-size="${siteTaglineSize}" fill="${MUTED}">${escapeXml(SITE[loc].tagline)}</text>`,
 			`<text x="${WIDTH - MARGIN}" y="540" font-family="JetBrains Mono" font-weight="500" font-size="20" letter-spacing="2.4" fill="${MUTED}" text-anchor="end">MONTRÉAL · QC</text>`,
 		);
 	}
@@ -428,7 +502,11 @@ let failed = false;
 for (const [file, svg] of Object.entries(cards)) {
 	let png: Uint8Array = new Resvg(svg, {
 		fitTo: { mode: 'width', value: WIDTH },
-		font: { fontFiles: FONT_FILES, loadSystemFonts: false, defaultFontFamily: 'Inter' },
+		font: {
+			fontFiles: FONT_FILES,
+			loadSystemFonts: false,
+			defaultFontFamily: 'Inter',
+		},
 	})
 		.render()
 		.asPng();
