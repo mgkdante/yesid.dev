@@ -3,7 +3,7 @@
 	"algorithm": "sha256",
 	"source": "live",
 	"files": {
-		"about-page.ts": "9ef09d5f14a1a7f5c829f141147491e6b831d59cce4832e503adc04c1c65e55c",
+		"about-page.ts": "2d58dfff451bc4c958245b9a5dfbec0046e5777f705289275eb263479d592530",
 		"blog-bodies.ts": "7fdb2d3b42d77e5edd7a7da72fb84b4190664c5a565cc8ff72b28c91b69323bd",
 		"blog-page.ts": "c3134e2e3de40fd05d5f7fd0ef71f2f236866e96f61e07381d6d8d9f071ceaea",
 		"blog.ts": "8daa0c53d0cb6bae822eb982b2da75708ea5b9c7ebad77dc501464dff8b0188b",
@@ -16,13 +16,13 @@
 		"nav.ts": "232e3c855d5f534846004145a16cbf357ed9b4ec2b3ac5d559e27e85fde077be",
 		"projects-page.ts": "74503286ec615fb76db6b5dc921a3f1cf49f146cfd90c021c8420c0c9b13c17a",
 		"projects.ts": "ad834151aab840e3f4a5d83716d647db61258875493fca0112fcc494ac89e0c5",
-		"route-seo.ts": "3dd5e44c426f11029e0038d4c455711cae8a3f3a3425671192b8b7b0bfd6e7cf",
+		"route-seo.ts": "dd3fbdce3a484bc105bdcab988a6c4627da10f442a617a8839d30264abbc14c4",
 		"services.ts": "7e1ec379abbafcfc02a439eba8670d57f854ed9f337332bffad42a7bdf7a5e8a",
-		"site-content.ts": "0b2568d58e097c251daad83ed553802d380f06e561cd557c72d72696e99c7118",
+		"site-content.ts": "d9fb9cd7872b326aef079156bafc778f7ba608ce9cd6dd22110724f3c8e45d19",
 		"site-labels.ts": "f669eb5ab6ee686bb758de83c9c5723d702bdff3a78cf92094e6a8fe1efa763f",
-		"site-meta.ts": "6459fe71adade8b31a9e67e1d2d17b5d51fbb56a6e5da37a8eddaca371e1800d",
+		"site-meta.ts": "3dd41d3026bc43d687dad7d54c1c8e005eb6f2542ea18cb01306620b52948a7c",
 		"site-pages.ts": "c2fe166b59cf691145431440b02952e30ceca8a893f1598d90e9e93a9e383a8e",
-		"site-seo-defaults.ts": "2a1e05945a6c0e882e0c89807d1ff62201b29e32dc1689ae32564466d4f9998e",
+		"site-seo-defaults.ts": "14b80efd1a81d2ec6c5e5265864c2b266f4c1a84f1ae297f884e8c21a85fcec5",
 		"stack-archetypes.ts": "8f4a7f3e6944149ed5ab362157b277395371b32a736d2fab9db023df11312977",
 		"tech-stack.ts": "8c1a6cd810d06e92a145cec3e06b808f29f5afbe98c58953a55827b8e60238de"
 	}

@@ -32,7 +32,7 @@ const siteMeta = {
 	},
 	owner: {
 		name: 'Yesid Otalora',
-		jobTitle: { en: 'Digital Infrastructure Engineer' },
+		jobTitle: { en: 'Freelance SQL and Digital Infrastructure Developer' },
 		knowsAbout: ['PostgreSQL', 'SvelteKit'],
 		address: {
 			locality: 'Montreal',

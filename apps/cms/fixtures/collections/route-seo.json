@@ -25,13 +25,18 @@
 		"translations": [
 			{
 				"languages_code": "en",
-				"title": "Yesid O., Digital Infrastructure Engineer in Montreal",
+				"title": "Freelance SQL and Digital Infrastructure Developer",
 				"description": "Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work."
 			},
 			{
 				"languages_code": "fr",
-				"title": "Yesid O., ingénieur en infrastructure numérique à Montréal",
+				"title": "Développeur SQL et en infrastructure numérique, à la pige",
 				"description": "Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes."
+			},
+			{
+				"languages_code": "es",
+				"title": "Desarrollador freelance SQL y de infraestructura digital",
+				"description": "Consultor de infraestructura digital en Montreal. Experiencia en SQL, almacenes de datos y analítica en tiempo real. Disponible para freelance y consultoría."
 			}
 		]
 	},
