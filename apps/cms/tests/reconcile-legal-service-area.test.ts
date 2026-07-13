@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 function clone<T>(value: T): T {
@@ -12,6 +12,20 @@ test('ships a dedicated legal service-area reconciler', () => {
 			join(import.meta.dir, '..', 'scripts', 'reconcile-legal-service-area.ts'),
 		),
 	).toBe(true);
+});
+
+test('forces the authenticated production export to fail closed', () => {
+	const workflow = readFileSync(
+		join(import.meta.dir, '..', '..', '..', '.github', 'workflows', 'cms.yml'),
+		'utf8',
+	);
+	const exportStep = workflow.slice(
+		workflow.indexOf('Regenerate legal module from authenticated live production CMS'),
+		workflow.indexOf('Verify generated-content integrity'),
+	);
+	expect(exportStep).toContain("EXPORT_FALLBACKS_LIVE: '1'");
+	expect(exportStep).toContain('VERCEL_ENV: production');
+	expect(exportStep).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
 });
 
 test('defaults to dry-run and requires exact confirmation for PROD apply', async () => {

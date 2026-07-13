@@ -160,6 +160,7 @@ jobs:
         working-directory: apps/cms
         env:
           EXPORT_FALLBACKS_LIVE: '1'
+          VERCEL_ENV: production
           PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
         run: bun scripts/export-fallbacks.ts --module=legal-pages
 
