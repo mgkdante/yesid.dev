@@ -29,17 +29,19 @@ test('offers separate, unambiguous permission audit and targeted repair dispatch
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, legal-service-area, permission-control-audit, public-blog-translation-key-repair]',
+		'options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, public-blog-translation-key-repair]',
 	);
 	expect(dispatch).toContain('read-only permission audit');
+	expect(dispatch).toContain('candidate diagnostic');
 	expect(dispatch).toContain('targeted blog repair');
 });
 
 test('permission-control-audit is production-gated, authenticated, and GET-only', () => {
 	const audit = jobBlock(
 		'permission-control-audit',
-		'public-blog-translation-key-repair',
+		'permission-policy-candidate-diagnostic',
 	);
+
 	expect(audit).toContain(
 		"github.event.inputs.action == 'permission-control-audit'",
 	);
@@ -67,6 +69,42 @@ test('permission-control-audit is production-gated, authenticated, and GET-only'
 		'reconcile-public-blog-permission.ts',
 	]) {
 		expect(audit).not.toContain(forbidden);
+	}
+});
+
+test('permission-policy-candidate-diagnostic is main-only, production-gated, and GET-only', () => {
+	const diagnostic = jobBlock(
+		'permission-policy-candidate-diagnostic',
+		'public-blog-translation-key-repair',
+	);
+	expect(diagnostic).toContain(
+		"github.event.inputs.action == 'permission-policy-candidate-diagnostic'",
+	);
+	expect(diagnostic).toContain("github.ref == 'refs/heads/main'");
+	expect(diagnostic).toContain('needs: test');
+	expect(diagnostic).toContain('name: production');
+	expect(diagnostic).toContain(
+		'DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}',
+	);
+	expect(diagnostic.slice(0, diagnostic.indexOf('    steps:'))).not.toContain(
+		'DIRECTUS_ADMIN_TOKEN',
+	);
+	expect(diagnostic.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(1);
+	expect(diagnostic).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
+	expect(diagnostic).toContain(
+		'name: Diagnose duplicate desired-policy candidates (read-only)',
+	);
+	expect(diagnostic).toContain(
+		'run: bun scripts/diagnose-permission-policy-candidates.ts --target=prod --dry-run',
+	);
+	for (const forbidden of [
+		'--apply',
+		'--confirm=',
+		'sync:push',
+		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
+		'reconcile-public-blog-permission.ts',
+	]) {
+		expect(diagnostic).not.toContain(forbidden);
 	}
 });
 
