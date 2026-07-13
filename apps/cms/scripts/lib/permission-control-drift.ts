@@ -153,23 +153,20 @@ export function resolveDesiredPermissions(
 
 function livePolicyMaps(livePolicies: readonly LivePolicyRow[]): {
 	nameById: Map<string, string>;
-	idsByName: Map<string, string>;
+	idsByName: Map<string, string[]>;
 } {
 	const nameById = new Map<string, string>();
-	const idsByName = new Map<string, string>();
+	const idsByName = new Map<string, string[]>();
 	for (const policy of livePolicies) {
 		if (nameById.has(policy.id)) {
 			throw new Error(
 				`[permission-control-drift] duplicate live policy id ${policy.id}`,
 			);
 		}
-		if (idsByName.has(policy.name)) {
-			throw new Error(
-				`[permission-control-drift] duplicate live policy name ${policy.name}`,
-			);
-		}
 		nameById.set(policy.id, policy.name);
-		idsByName.set(policy.name, policy.id);
+		const ids = idsByName.get(policy.name) ?? [];
+		ids.push(policy.id);
+		idsByName.set(policy.name, ids);
 	}
 	return { nameById, idsByName };
 }
@@ -179,13 +176,13 @@ export function resolveLivePolicyId(
 	policyName: string,
 ): string {
 	const { idsByName } = livePolicyMaps(livePolicies);
-	const id = idsByName.get(policyName);
-	if (!id) {
+	const ids = idsByName.get(policyName) ?? [];
+	if (ids.length !== 1) {
 		throw new Error(
-			`[permission-control-drift] expected exactly one live policy named "${policyName}"; found 0`,
+			`[permission-control-drift] expected exactly one live policy named "${policyName}"; found ${ids.length}`,
 		);
 	}
-	return id;
+	return ids[0]!;
 }
 
 function livePolicyId(permission: LivePermissionRow): string {
@@ -203,6 +200,7 @@ function semanticKey(
 }
 
 interface AuditBucket {
+	identity: string;
 	policyName: string;
 	collection: string;
 	action: string;
@@ -212,14 +210,16 @@ interface AuditBucket {
 
 function bucketFor(
 	buckets: Map<string, AuditBucket>,
+	identity: string,
 	policyName: string,
 	collection: string,
 	action: string,
 ): AuditBucket {
-	const key = semanticKey(policyName, collection, action);
+	const key = JSON.stringify([identity, collection, action]);
 	let bucket = buckets.get(key);
 	if (!bucket) {
 		bucket = {
+			identity,
 			policyName,
 			collection,
 			action,
@@ -238,12 +238,24 @@ export function buildPermissionAudit(
 	livePermissions: readonly LivePermissionRow[],
 ): PermissionAudit {
 	const desired = resolveDesiredPermissions(repoPolicies, desiredPermissions);
-	const { nameById } = livePolicyMaps(livePolicies);
+	const { nameById, idsByName } = livePolicyMaps(livePolicies);
+	const desiredPolicyNames = new Set(
+		desired.map((permission) => permission.policyName),
+	);
+	for (const policyName of desiredPolicyNames) {
+		const ids = idsByName.get(policyName) ?? [];
+		if (ids.length > 1) {
+			throw new Error(
+				`[permission-control-drift] expected exactly one live policy named "${policyName}"; found ${ids.length}`,
+			);
+		}
+	}
 	const buckets = new Map<string, AuditBucket>();
 
 	for (const permission of desired) {
 		bucketFor(
 			buckets,
+			`desired:${permission.policyName}`,
 			permission.policyName,
 			permission.collection,
 			permission.action,
@@ -259,6 +271,9 @@ export function buildPermissionAudit(
 		}
 		bucketFor(
 			buckets,
+			desiredPolicyNames.has(policyName)
+				? `desired:${policyName}`
+				: `live:${id}`,
 			policyName,
 			permission.collection,
 			permission.action,
@@ -269,11 +284,16 @@ export function buildPermissionAudit(
 	}
 
 	const entries = [...buckets.values()]
-		.sort((left, right) =>
-			semanticKey(left.policyName, left.collection, left.action).localeCompare(
+		.sort((left, right) => {
+			const semanticComparison = semanticKey(
+				left.policyName,
+				left.collection,
+				left.action,
+			).localeCompare(
 				semanticKey(right.policyName, right.collection, right.action),
-			),
-		)
+			);
+			return semanticComparison || left.identity.localeCompare(right.identity);
+		})
 		.map((bucket): PermissionAuditEntry => {
 			const livePermissionIds = bucket.live
 				.map((permission) => permission.id)
