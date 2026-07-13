@@ -14,6 +14,8 @@ name: cms
 #   cms.yesid.dev. Gated behind production environment for operator review.
 # - permission-control-audit (workflow_dispatch): GET-only semantic comparison
 #   of the repository permission declaration with production.
+# - permission-policy-candidate-diagnostic (workflow_dispatch): GET-only
+#   candidate evidence when a desired policy name is duplicated in production.
 # - public-blog-translation-key-repair (workflow_dispatch): audits, applies one
 #   guarded fields-only permission repair, then audits again.
 #
@@ -41,9 +43,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action: diff preview, push config apply, legal notice remediation, read-only permission audit, or targeted blog repair'
+        description: 'Action: diff preview, push config apply, legal notice remediation, read-only permission audit, candidate diagnostic, or targeted blog repair'
         type: choice
-        options: [diff, push, legal-service-area, permission-control-audit, public-blog-translation-key-repair]
+        options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, public-blog-translation-key-repair]
         default: diff
         required: true
       include_permissions:
@@ -205,6 +207,32 @@ jobs:
         env:
           DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
+
+  permission-policy-candidate-diagnostic:
+    # GET-only evidence for every live candidate sharing a desired policy name.
+    # The script prints role labels and direct-user role labels, never user PII,
+    # and cannot invoke a reconciler or directus-sync.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'permission-policy-candidate-diagnostic' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    env:
+      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Diagnose duplicate desired-policy candidates (read-only)
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/diagnose-permission-policy-candidates.ts --target=prod --dry-run
 
   public-blog-translation-key-repair:
     # One targeted public blog_posts:read fields repair. The reconciler refuses
