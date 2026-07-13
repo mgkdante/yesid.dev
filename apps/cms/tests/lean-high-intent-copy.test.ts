@@ -10,11 +10,17 @@ const LEGAL_ARTIFACT_PATH = join(
 	'legal',
 	'legal-pages-2026-07-09.json',
 );
+const ES_WORKLIST_PATH = join(
+	CMS_ROOT,
+	'ops',
+	'i18n',
+	'es-worklist-2026-07-09.json',
+);
 
 type Locale = 'en' | 'fr' | 'es';
 type LegalBlock = { kind: string; text?: string; items?: string[] };
 type LegalTranslation = { title: string; blocks: LegalBlock[] };
-type LegalPage = { slug: string } & Record<Locale, LegalTranslation>;
+type LegalPage = { slug: string; advisorNotes: string } & Record<Locale, LegalTranslation>;
 type LegalArtifact = { generatedAt: string; pages: LegalPage[] };
 
 const CONSENT_DESCRIPTIONS = {
@@ -61,7 +67,7 @@ const SOURCE_PRESERVATION_SHA256 = {
 	'site-labels.fr.json': '9cb55b693bbc431ee259291627dcaac8e3308565f44013ec7dc690c6d050d3dd',
 	'site-labels.es.json': '52ebd03c73a03b53f9f61eaf798124fae9c8a38bac3a1ede01e5dceaf4eca6ec',
 	'legal-pages-2026-07-09.json':
-		'd6799f1e4aef96f97c95caed9a196548accc36aeeeb04368d5de756bca35eb96',
+		'9eb8c80d09e10919f00f63bc8c0427e50e1dc152e0001ba84c799d382e6f5941',
 } as const;
 
 const CONSENT_DESCRIPTION_SENTINEL = '<task-6-consent-description>';
@@ -71,12 +77,28 @@ const LEGAL_CLAUSE_SENTINEL = '<task-6-legal-clause>';
 const PUBLIC_CONTACT_EMAIL = 'contact@yesid.dev';
 const INTERNAL_CONTACT_EMAIL = 'admin@yesid.dev';
 
+const PUBLIC_SERVICE_AREA_IDENTIFICATION: Record<Locale, string> = {
+	en: 'Service area: Montréal, Québec, Canada.',
+	fr: 'Zone de service : Montréal, Québec, Canada.',
+	es: 'Área de servicio: Montréal, Québec, Canadá.',
+};
+
+const CANADIAN_POSTAL_CODE = /\b[A-Z]\d[A-Z][ -]?\d[A-Z]\d\b/i;
+
 const NORMALIZED_REVISION_DATES = {
 	privacy: REVISION_DATE_SENTINEL,
 	terms: '2026-07-09',
 	cookies: REVISION_DATE_SENTINEL,
 	accessibility: '2026-07-09',
-	notice: '2026-07-09',
+	notice: REVISION_DATE_SENTINEL,
+} as const;
+
+const CURRENT_REVISION_DATES = {
+	privacy: '2026-07-12',
+	terms: '2026-07-12',
+	cookies: '2026-07-12',
+	accessibility: '2026-07-12',
+	notice: '2026-07-13',
 } as const;
 
 const PUBLIC_CONTACT_COUNTS = {
@@ -155,7 +177,9 @@ function normalizeLegalSemanticLeaves(raw: string): string {
 			}
 			revisionBlocks[0]!.text = replaceExactlyOnce(
 				revisionBlocks[0]!.text!,
-				'2026-07-12',
+				CURRENT_REVISION_DATES[
+					page.slug as keyof typeof CURRENT_REVISION_DATES
+				],
 				NORMALIZED_REVISION_DATES[
 					page.slug as keyof typeof NORMALIZED_REVISION_DATES
 				],
@@ -200,7 +224,7 @@ describe('lean high-intent analytics source copy', () => {
 	}
 });
 
-describe('source preservation allows only the approved analytics and public-contact leaves', () => {
+describe('source preservation allows only the approved analytics and legal privacy leaves', () => {
 	for (const { fixture } of Object.values(CONSENT_DESCRIPTIONS)) {
 		it(`${fixture} differs only at the authorized consent description`, () => {
 			const raw = readFileSync(join(CMS_ROOT, 'fixtures', 'content', fixture), 'utf8');
@@ -211,7 +235,7 @@ describe('source preservation allows only the approved analytics and public-cont
 		});
 	}
 
-	it('legal source differs only at generatedAt, target dates, target clauses, and public contact email', () => {
+	it('legal source matches the approved generatedAt, dates, clauses, contact, and service-area privacy revision', () => {
 		const raw = readFileSync(LEGAL_ARTIFACT_PATH, 'utf8');
 		expect(raw).toBe(canonicalJson(raw));
 		expect(sha256(normalizeLegalSemanticLeaves(raw))).toBe(
@@ -221,6 +245,51 @@ describe('source preservation allows only the approved analytics and public-cont
 });
 
 describe('lean high-intent analytics legal source', () => {
+	it('publishes service-area identification without the private home location', () => {
+		const notice = legalArtifact.pages.find((candidate) => candidate.slug === 'notice');
+		expect(notice).toBeDefined();
+
+		for (const locale of ['en', 'fr', 'es'] as const) {
+			const body = textBlocks(notice!, locale).join('\n');
+			expect(body.includes(PUBLIC_SERVICE_AREA_IDENTIFICATION[locale])).toBe(true);
+			expect(/\bGatineau\b/i.test(body)).toBe(false);
+			expect(CANADIAN_POSTAL_CODE.test(body)).toBe(false);
+		}
+	});
+
+	it('does not retain a private postal address in review notes', () => {
+		for (const page of legalArtifact.pages) {
+			expect(CANADIAN_POSTAL_CODE.test(page.advisorNotes)).toBe(false);
+		}
+	});
+
+	it('keeps the translation worklist free of the superseded private location', () => {
+		const worklist = readJson<
+			Array<{
+				collection: string;
+				id: string;
+				fields: {
+					body: Record<
+						'en' | 'fr',
+						{ blocks: Array<{ data: { text?: string } }> }
+					>;
+				};
+			}>
+		>(ES_WORKLIST_PATH);
+		const notice = worklist.find(
+			(row) => row.collection === 'legal_pages' && row.id === 'notice',
+		);
+		expect(notice).toBeDefined();
+		for (const locale of ['en', 'fr'] as const) {
+			const body = notice!.fields.body[locale].blocks
+				.map((block) => block.data.text ?? '')
+				.join('\n');
+			expect(body.includes(PUBLIC_SERVICE_AREA_IDENTIFICATION[locale])).toBe(true);
+			expect(/\bGatineau\b/i.test(body)).toBe(false);
+			expect(CANADIAN_POSTAL_CODE.test(body)).toBe(false);
+		}
+	});
+
 	it('uses the approved public contact address in every legal translation', () => {
 		let publicContactCount = 0;
 		for (const page of legalArtifact.pages) {
@@ -238,7 +307,7 @@ describe('lean high-intent analytics legal source', () => {
 	});
 
 	it('records the source artifact revision date', () => {
-		expect(legalArtifact.generatedAt).toBe('2026-07-12');
+		expect(legalArtifact.generatedAt).toBe('2026-07-13');
 	});
 
 	it('keeps the legal page order, titles, and block counts stable', () => {
@@ -304,15 +373,13 @@ describe('lean high-intent analytics legal source', () => {
 
 	for (const slug of ['privacy', 'terms', 'cookies', 'accessibility', 'notice'] as const) {
 		for (const locale of ['en', 'fr', 'es'] as const) {
-			it(`${slug} records the July 12 ${locale.toUpperCase()} revision date`, () => {
+			it(`${slug} records the current ${locale.toUpperCase()} revision date`, () => {
 				const page = legalArtifact.pages.find((candidate) => candidate.slug === slug);
 				expect(page).toBeDefined();
 				const revisionText = textBlocks(page!, locale).find((text) =>
 					text.includes(REVISION_LABELS[locale]),
 				);
-				expect(revisionText).toContain('2026-07-12');
-				expect(revisionText).not.toContain('2026-07-09');
-				expect(revisionText).not.toContain('2026-07-11');
+				expect(revisionText?.includes(CURRENT_REVISION_DATES[slug])).toBe(true);
 			});
 		}
 	}
