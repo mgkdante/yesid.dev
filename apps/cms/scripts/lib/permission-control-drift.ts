@@ -23,7 +23,7 @@ export interface DesiredPermissionRow extends PermissionPayloadSource {
 
 export interface LivePermissionRow extends PermissionPayloadSource {
 	id: string | number;
-	policy: string | { id: string };
+	policy: string | { id: string } | null;
 	collection: string;
 	action: string;
 }
@@ -185,10 +185,21 @@ export function resolveLivePolicyId(
 	return ids[0]!;
 }
 
-function livePolicyId(permission: LivePermissionRow): string {
-	return typeof permission.policy === 'string'
-		? permission.policy
-		: permission.policy.id;
+function livePolicyId(permission: LivePermissionRow): string | null {
+	const policy: unknown = permission.policy;
+	if (policy === null) return null;
+	if (typeof policy === 'string' && policy.length > 0) return policy;
+	if (
+		typeof policy === 'object' &&
+		!Array.isArray(policy) &&
+		typeof (policy as { id?: unknown }).id === 'string' &&
+		(policy as { id: string }).id.length > 0
+	) {
+		return (policy as { id: string }).id;
+	}
+	throw new Error(
+		`[permission-control-drift] invalid live policy relation on permission ${permission.id}`,
+	);
 }
 
 function semanticKey(
@@ -263,6 +274,19 @@ export function buildPermissionAudit(
 	}
 	for (const permission of livePermissions) {
 		const id = livePolicyId(permission);
+		if (id === null) {
+			bucketFor(
+				buckets,
+				'live:<unassigned>',
+				'<unassigned>',
+				permission.collection,
+				permission.action,
+			).live.push({
+				id: permission.id,
+				payload: normalizePermissionPayload(permission),
+			});
+			continue;
+		}
 		const policyName = nameById.get(id);
 		if (!policyName) {
 			throw new Error(
