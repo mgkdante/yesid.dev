@@ -2,7 +2,7 @@
 
 **Digital infrastructure that moves.**
 
-The repo for [yesid.dev](https://yesid.dev) — Yesid O.'s freelance SQL and digital-infrastructure brand. Portfolio + tooling + workflow systems.
+The repo for [yesid.dev](https://yesid.dev) — Yesid O.'s freelance digital-solutions practice for web, automation, analytics, databases, and SQL. Portfolio + tooling + workflow systems.
 
 ## How it works
 

@@ -12,9 +12,9 @@ import type { SiteMeta } from '$lib/types';
 
 export const siteMeta: SiteMeta = {
 	description: {
-		en: 'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
-		es: 'Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.',
-		fr: 'Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu\'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.',
+		en: 'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
+		es: 'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
+		fr: 'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -26,9 +26,9 @@ export const siteMeta: SiteMeta = {
 	owner: {
 		address: { country: 'CA', locality: 'Montreal', region: 'QC' },
 		jobTitle: {
-			en: 'Freelance SQL and Digital Infrastructure Developer',
-			es: 'Desarrollador freelance SQL y de infraestructura digital',
-			fr: 'Développeur SQL et en infrastructure numérique, à la pige',
+			en: 'Freelance Digital Solutions Developer',
+			es: 'Desarrollador freelance de soluciones digitales',
+			fr: 'Développeur de solutions numériques à la pige',
 		},
 		knowsAbout: [
 			'PostgreSQL',

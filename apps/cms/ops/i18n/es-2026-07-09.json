@@ -645,7 +645,7 @@
 				"label_testimonial_slide_aria": "Testimonio {index} de {total}",
 				"label_show_testimonial_aria": "Mostrar testimonio {index}",
 				"meta_title": "Sobre mí · yesid.",
-				"meta_description": "Ingeniero freelance de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas.",
+				"meta_description": "Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables.",
 				"education": [
 					{
 						"school": "Champlain Regional College, Lennoxville",
@@ -927,8 +927,8 @@
 			"id": 1,
 			"parentFk": "site_meta_id",
 			"fields": {
-				"default_description": "yesid., ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.",
-				"description": "Ingeniero freelance de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y sitios web que impulsan. PostgreSQL, dbt, Power BI, SvelteKit.",
+				"default_description": "yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.",
+				"description": "Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.",
 				"tagline": "Infraestructura digital que se mueve."
 			}
 		},
@@ -1012,7 +1012,7 @@
 			"parentFk": "route_seo_id",
 			"fields": {
 				"title": "yesid. | Infraestructura digital que se mueve.",
-				"description": "Desarrollador SQL freelance y consultor de infraestructura digital en Montreal. PostgreSQL, dbt, Power BI, Python. Pipelines en tiempo real, análisis, tableros."
+        "description": "yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL."
 			}
 		},
 		{
@@ -1020,8 +1020,8 @@
 			"id": 2,
 			"parentFk": "route_seo_id",
 			"fields": {
-				"title": "Yesid, ingeniero de infraestructura digital en Montreal",
-				"description": "Consultor de infraestructura digital en Montreal. Experiencia en SQL, almacenes de datos y analítica en tiempo real. Disponible para freelance y consultoría."
+        "title": "Desarrollador freelance de soluciones digitales",
+        "description": "Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables."
 			}
 		},
 		{
@@ -1039,7 +1039,7 @@
 			"parentFk": "route_seo_id",
 			"fields": {
 				"title": "Infraestructura digital: web, datos, automatización",
-				"description": "Servicios de infraestructura digital: consultoría SQL y PostgreSQL, pipelines dbt, analítica Power BI, ETL en Python y plataformas de datos en tiempo real."
+        "description": "Soluciones digitales para pymes de Québec: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real."
 			}
 		},
 		{
@@ -1240,7 +1240,7 @@
 				"more_link": "→ Más sobre mí",
 				"name": "Yesid",
 				"stack_label": "STACK",
-				"title": "Ingeniero freelance de infraestructura digital",
+				"title": "Desarrollador freelance de soluciones digitales",
 				"location_city": "Montreal",
 				"location_region": "QC, Canadá"
 			}
