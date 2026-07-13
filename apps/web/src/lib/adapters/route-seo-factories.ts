@@ -272,23 +272,25 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	return seo;
 }
 
-/** First body paragraph, tags stripped, clamped into the SEO 50–200 band.
+/** First substantive body paragraph, tags stripped, clamped into the SEO 50–200 band.
  *  Returns undefined when the locale has no usable paragraph. */
 function legalDescriptionFor(doc: { blocks: Array<{ type: string; data: unknown }> } | undefined): string | undefined {
-	const block = doc?.blocks.find((b) => b.type === 'paragraph');
-	if (!block) return undefined;
-	const text = String((block.data as { text?: string }).text ?? '')
-		.replace(/<[^>]*>/g, '')
-		.replace(/\s+/g, ' ')
-		.trim();
-	if (text.length < 50) return undefined;
-	if (text.length <= 200) return text;
-	const cut = text.slice(0, 197);
-	return `${cut.slice(0, cut.lastIndexOf(' '))}...`;
+	for (const block of doc?.blocks ?? []) {
+		if (block.type !== 'paragraph') continue;
+		const text = String((block.data as { text?: string }).text ?? '')
+			.replace(/<[^>]*>/g, '')
+			.replace(/\s+/g, ' ')
+			.trim();
+		if (text.length < 50) continue;
+		if (text.length <= 200) return text;
+		const cut = text.slice(0, 197);
+		return `${cut.slice(0, cut.lastIndexOf(' '))}...`;
+	}
+	return undefined;
 }
 
 /** /legal/[slug] — title from the CMS legal page (OPS1); description derived
- *  from the first body paragraph per locale, siteSeoDefaults fallback. */
+ *  from the first substantive body paragraph per locale, siteSeoDefaults fallback. */
 export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
 	const page = await adapter.legal.bySlug(params.slug, ctx);
