@@ -189,10 +189,21 @@ export function selectDesiredPublicBlogPermission(
 	};
 }
 
-function livePolicyId(permission: LivePermissionRow): string {
-	return typeof permission.policy === 'string'
-		? permission.policy
-		: permission.policy.id;
+function livePolicyId(permission: LivePermissionRow): string | null {
+	const policy: unknown = permission.policy;
+	if (policy === null) return null;
+	if (typeof policy === 'string' && policy.length > 0) return policy;
+	if (
+		typeof policy === 'object' &&
+		!Array.isArray(policy) &&
+		typeof (policy as { id?: unknown }).id === 'string' &&
+		(policy as { id: string }).id.length > 0
+	) {
+		return (policy as { id: string }).id;
+	}
+	throw new Error(
+		`[public-blog-permission] invalid live policy relation on permission ${permission.id}`,
+	);
 }
 
 export function buildPublicBlogPermissionPlan(

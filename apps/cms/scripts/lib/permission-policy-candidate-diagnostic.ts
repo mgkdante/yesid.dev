@@ -59,6 +59,11 @@ export interface PolicyNameCandidateDiagnostic {
 	candidates: PolicyCandidateEvidence[];
 }
 
+export interface PolicyCandidateDiagnosticReport {
+	diagnostics: PolicyNameCandidateDiagnostic[];
+	ignoredNullPolicyPermissionCount: number;
+}
+
 interface DesiredSemanticPermission {
 	collection: string;
 	action: string;
@@ -69,10 +74,21 @@ function semanticKey(collection: string, action: string): string {
 	return JSON.stringify([collection, action]);
 }
 
-function livePolicyId(permission: LivePermissionRow): string {
-	return typeof permission.policy === 'string'
-		? permission.policy
-		: permission.policy.id;
+function livePolicyId(permission: LivePermissionRow): string | null {
+	const policy: unknown = permission.policy;
+	if (policy === null) return null;
+	if (typeof policy === 'string' && policy.length > 0) return policy;
+	if (
+		typeof policy === 'object' &&
+		!Array.isArray(policy) &&
+		typeof (policy as { id?: unknown }).id === 'string' &&
+		(policy as { id: string }).id.length > 0
+	) {
+		return (policy as { id: string }).id;
+	}
+	throw new Error(
+		`[permission-policy-candidate-diagnostic] invalid live policy relation on permission ${permission.id}`,
+	);
 }
 
 function sortedUnique(values: readonly string[]): string[] {
@@ -231,7 +247,13 @@ export function buildPolicyCandidateDiagnostics(
 	desiredPermissions: readonly DesiredPermissionRow[],
 	livePolicies: readonly DiagnosticLivePolicyRow[],
 	livePermissions: readonly LivePermissionRow[],
-): PolicyNameCandidateDiagnostic[] {
+): PolicyCandidateDiagnosticReport {
+	let ignoredNullPolicyPermissionCount = 0;
+	for (const permission of livePermissions) {
+		if (livePolicyId(permission) === null) {
+			ignoredNullPolicyPermissionCount += 1;
+		}
+	}
 	const desiredByPolicyName = desiredPermissionsByPolicyName(
 		repoPolicies,
 		desiredPermissions,
@@ -265,9 +287,12 @@ export function buildPolicyCandidateDiagnostics(
 			candidates,
 		});
 	}
-	return diagnostics.sort((left, right) =>
-		left.policyName.localeCompare(right.policyName),
-	);
+	return {
+		diagnostics: diagnostics.sort((left, right) =>
+			left.policyName.localeCompare(right.policyName),
+		),
+		ignoredNullPolicyPermissionCount,
+	};
 }
 
 function formatMismatch(mismatch: CandidateMismatch): string {
@@ -280,10 +305,10 @@ function formatMismatch(mismatch: CandidateMismatch): string {
 }
 
 export function formatPolicyCandidateDiagnostics(
-	diagnostics: readonly PolicyNameCandidateDiagnostic[],
+	report: PolicyCandidateDiagnosticReport,
 ): string {
 	const lines: string[] = [];
-	for (const diagnostic of diagnostics) {
+	for (const diagnostic of report.diagnostics) {
 		for (const candidate of diagnostic.candidates) {
 			lines.push(
 				[
@@ -305,7 +330,7 @@ export function formatPolicyCandidateDiagnostics(
 		}
 	}
 	lines.push(
-		`summary duplicated_desired_policy_names=${diagnostics.length} writes_sent=0`,
+		`summary duplicated_desired_policy_names=${report.diagnostics.length} ignored_null_policy_permissions=${report.ignoredNullPolicyPermissionCount} writes_sent=0`,
 	);
 	return lines.join('\n');
 }
