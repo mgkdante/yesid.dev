@@ -45,7 +45,7 @@ function desired(
 
 function live(
 	id: string,
-	policy: string,
+	policy: LivePermissionRow['policy'],
 	collection: string,
 	action: string,
 	overrides: Partial<LivePermissionRow> = {},
@@ -194,6 +194,56 @@ describe('semantic Directus permission audit', () => {
 				.filter((entry) => entry.policyName === 'Legacy Bot')
 				.map((entry) => entry.livePermissionIds),
 		).toEqual([['legacy-a-read'], ['legacy-b-read']]);
+	});
+
+	it('classifies null-policy rows as explicit untracked unassigned drift', () => {
+		const audit = buildPermissionAudit(
+			repoPolicies,
+			[desired('repo-public', 'blog_posts', 'read')],
+			livePolicies,
+			[
+				live('permission-116', 'live-public', 'blog_posts', 'read'),
+				live('unassigned-read', null, 'runtime_state', 'read'),
+			],
+		);
+
+		expect(audit.summary).toEqual({
+			equivalent: 1,
+			mismatch: 0,
+			missing: 0,
+			duplicate: 0,
+			untracked: 1,
+			total: 2,
+		});
+		expect(
+			audit.entries.find((entry) => entry.livePermissionIds.includes('unassigned-read')),
+		).toMatchObject({
+			classification: 'untracked',
+			policyName: '<unassigned>',
+			collection: 'runtime_state',
+			action: 'read',
+		});
+		expect(formatPermissionAudit(audit)).toContain(
+			'UNTRACKED policy="<unassigned>" runtime_state:read',
+		);
+	});
+
+	it('rejects malformed non-null live policy relation shapes', () => {
+		const malformed = live(
+			'bad-relation',
+			{} as LivePermissionRow['policy'],
+			'blog_posts',
+			'read',
+		);
+
+		expect(() =>
+			buildPermissionAudit(
+				repoPolicies,
+				[desired('repo-public', 'blog_posts', 'read')],
+				livePolicies,
+				[malformed],
+			),
+		).toThrow(/invalid live policy relation.*bad-relation/);
 	});
 
 	it('refuses unresolved and desired policy-name ambiguity before comparing permissions', () => {

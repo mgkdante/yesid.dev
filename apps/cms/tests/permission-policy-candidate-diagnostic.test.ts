@@ -39,7 +39,7 @@ function desired(
 
 function live(
 	id: string,
-	policy: string,
+	policy: LivePermissionRow['policy'],
 	collection: string,
 	action: string,
 	overrides: Partial<LivePermissionRow> = {},
@@ -74,7 +74,7 @@ const duplicatePolicies: DiagnosticLivePolicyRow[] = [
 
 describe('duplicate desired-policy candidate diagnostics', () => {
 	it('reports candidate evidence without nominating a live policy or using sync ids', () => {
-		const diagnostics = buildPolicyCandidateDiagnostics(
+		const report = buildPolicyCandidateDiagnostics(
 			repoPolicies,
 			[desired('blog_posts', 'read'), desired('directus_files', 'read')],
 			duplicatePolicies,
@@ -83,6 +83,7 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 				live('permission-files', 'candidate-a', 'directus_files', 'read'),
 			],
 		);
+		const { diagnostics } = report;
 
 		expect(diagnostics).toHaveLength(1);
 		expect(diagnostics[0]).toMatchObject({
@@ -116,7 +117,7 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 			],
 		});
 
-		const output = formatPolicyCandidateDiagnostics(diagnostics);
+		const output = formatPolicyCandidateDiagnostics(report);
 		expect(output).toContain('policy_id="candidate-a"');
 		expect(output).toContain('role_names=["Content automation"]');
 		expect(output).toContain('direct_user_role_names=["Service accounts"]');
@@ -130,7 +131,7 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 	});
 
 	it('reports both same-name candidates and payload differences without resolving them', () => {
-		const diagnostics = buildPolicyCandidateDiagnostics(
+		const report = buildPolicyCandidateDiagnostics(
 			repoPolicies,
 			[desired('blog_posts', 'read')],
 			duplicatePolicies,
@@ -139,6 +140,7 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 				live('candidate-b-row', 'candidate-b', 'blog_posts', 'read', { fields: ['id'] }),
 			],
 		);
+		const { diagnostics } = report;
 
 		expect(diagnostics[0]).not.toHaveProperty('resolution');
 		expect(diagnostics[0]).not.toHaveProperty('uniqueFullCoverageCandidateId');
@@ -154,13 +156,13 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 				},
 			],
 		});
-		expect(formatPolicyCandidateDiagnostics(diagnostics)).not.toContain(
+		expect(formatPolicyCandidateDiagnostics(report)).not.toContain(
 			'RESOLUTION',
 		);
 	});
 
 	it('reports duplicate desired-key rows and untracked permissions without payload values', () => {
-		const diagnostics = buildPolicyCandidateDiagnostics(
+		const report = buildPolicyCandidateDiagnostics(
 			repoPolicies,
 			[desired('blog_posts', 'read')],
 			duplicatePolicies,
@@ -170,6 +172,7 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 				live('extra', 'candidate-a', 'legacy_items', 'read'),
 			],
 		);
+		const { diagnostics } = report;
 
 		expect(diagnostics[0]?.candidates[0]).toMatchObject({
 			permissionCount: 3,
@@ -186,6 +189,76 @@ describe('duplicate desired-policy candidate diagnostics', () => {
 				},
 			],
 		});
+	});
+
+	it('ignores unassigned permission rows while surfacing their count', () => {
+		const report = buildPolicyCandidateDiagnostics(
+			repoPolicies,
+			[desired('blog_posts', 'read')],
+			duplicatePolicies,
+			[
+				live('candidate-row', 'candidate-a', 'blog_posts', 'read'),
+				live('unassigned-row', null, 'private_runtime_state', 'read'),
+			],
+		);
+
+		expect(report).toMatchObject({
+			ignoredNullPolicyPermissionCount: 1,
+			diagnostics: [
+				{
+					candidates: [
+						{
+							policyId: 'candidate-a',
+							permissionCount: 1,
+							desiredSemanticKeyOverlap: 1,
+							exactPayloadMatchCount: 1,
+						},
+						{
+							policyId: 'candidate-b',
+							permissionCount: 0,
+						},
+					],
+				},
+			],
+		});
+		const output = formatPolicyCandidateDiagnostics(report);
+		expect(output).toContain('ignored_null_policy_permissions=1');
+		expect(output).not.toContain('private_runtime_state');
+	});
+
+	it('preserves the ignored null-policy count when no desired policy name is duplicated', () => {
+		const report = buildPolicyCandidateDiagnostics(
+			repoPolicies,
+			[desired('blog_posts', 'read')],
+			[duplicatePolicies[0]!],
+			[live('unassigned-row', null, 'private_runtime_state', 'read')],
+		);
+
+		expect(report).toEqual({
+			diagnostics: [],
+			ignoredNullPolicyPermissionCount: 1,
+		});
+		expect(formatPolicyCandidateDiagnostics(report)).toBe(
+			'summary duplicated_desired_policy_names=0 ignored_null_policy_permissions=1 writes_sent=0',
+		);
+	});
+
+	it('rejects malformed non-null policy relation shapes', () => {
+		const malformed = live(
+			'bad-relation',
+			{} as LivePermissionRow['policy'],
+			'blog_posts',
+			'read',
+		);
+
+		expect(() =>
+			buildPolicyCandidateDiagnostics(
+				repoPolicies,
+				[desired('blog_posts', 'read')],
+				duplicatePolicies,
+				[malformed],
+			),
+		).toThrow(/invalid live policy relation.*bad-relation/);
 	});
 });
 
@@ -215,18 +288,18 @@ describe('GET-only production candidate diagnostic adapter', () => {
 			throw new Error(`unexpected ${method} ${path}`);
 		};
 
-		const diagnostics = await loadPolicyCandidateDiagnostics(
+		const report = await loadPolicyCandidateDiagnostics(
 			api,
 			repoPolicies,
 			[desired('blog_posts', 'read')],
 		);
 
-		expect(diagnostics[0]?.candidates[0]).toMatchObject({
+		expect(report.diagnostics[0]?.candidates[0]).toMatchObject({
 			policyId: 'candidate-a',
 			desiredSemanticKeyOverlap: 1,
 			exactPayloadMatchCount: 1,
 		});
-		expect(diagnostics[0]).not.toHaveProperty('resolution');
+		expect(report.diagnostics[0]).not.toHaveProperty('resolution');
 		expect(calls).toHaveLength(2);
 		expect(calls.every((call) => call.method === 'GET')).toBe(true);
 		expect(calls[0]?.path).toContain('roles.role.name');
