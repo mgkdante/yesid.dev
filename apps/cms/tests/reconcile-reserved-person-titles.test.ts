@@ -223,6 +223,22 @@ describe('reserved person-title reconciler', () => {
 		expect(writes).toBe(1);
 	});
 
+	test('treats a later row that concurrently reaches the approved value as a verified no-op', async () => {
+		const snapshot = currentSnapshot();
+		const plan = buildPlan(snapshot);
+		const sent: string[] = [];
+		await applyVerifiedPlan(plan, {
+			readSnapshot: async () => structuredClone(snapshot),
+			sendPatch: async (step) => {
+				sent.push(step.path);
+				applyPatch(snapshot, step);
+				if (step.path === plan[0]?.path) applyPatch(snapshot, plan[1]!);
+			},
+		});
+		expect(sent).toEqual(plan.filter((step) => step.path !== plan[1]?.path).map((step) => step.path));
+		expect(buildPlan(snapshot)).toEqual([]);
+	});
+
 	test('aborts before a PATCH when the row changed after planning', async () => {
 		const snapshot = currentSnapshot();
 		const plan = buildPlan(snapshot);
