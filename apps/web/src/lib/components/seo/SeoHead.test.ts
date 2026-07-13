@@ -65,6 +65,25 @@ describe('SeoHead — tag emission', () => {
 		}
 	});
 
+	it('keeps Twitter/X title, description, image, and alt identical to Open Graph', () => {
+		const seo: PageSeo = {
+			...validSeo,
+			ogImage: {
+				url: '/og/routes/about.png',
+				alt: { en: 'Outcome-first share card' },
+				width: 1200,
+				height: 630,
+			},
+		};
+		render(SeoHead, { props: { seo, locale: 'en' } });
+
+		for (const field of ['title', 'description', 'image', 'image:alt']) {
+			expect(getMeta('name', `twitter:${field}`)?.content).toBe(
+				getMeta('property', `og:${field}`)?.content,
+			);
+		}
+	});
+
 	it('emits hreflang for every published locale + x-default (en, fr, es live)', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
 		expect(getLink('alternate', { name: 'hreflang', value: 'en' })).not.toBeNull();

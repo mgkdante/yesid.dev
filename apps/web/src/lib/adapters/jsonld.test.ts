@@ -82,6 +82,11 @@ describe('buildProfessionalServiceNode — L2 trilingual signal (Phase 4)', () =
 		expect(business.knowsLanguage).toEqual(expect.arrayContaining(['en', 'fr', 'es']));
 		expect(business.knowsLanguage).toEqual(person.knowsLanguage);
 	});
+
+	it('publishes Montréal as the only service area', () => {
+		const business = buildProfessionalServiceNode(siteMeta);
+		expect(business.areaServed).toEqual([{ '@type': 'City', name: 'Montréal' }]);
+	});
 });
 
 describe('buildProfessionalServiceNode: Organization.logo', () => {

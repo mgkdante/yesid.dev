@@ -36,7 +36,7 @@ function header(): string {
 		'',
 		`> ${en(siteMeta.description)}`,
 		'',
-		`${en(siteMeta.tagline)} Yesid O. works as a Freelance SQL and Digital Infrastructure Developer in Montreal. The four services read as one data flow: store it (databases), move it (pipelines), understand it (dashboards), show it (websites).`,
+		`${en(siteMeta.tagline)} Yesid O. works as a Freelance Digital Solutions Developer in Montréal. The four services cover websites and e-commerce, automation and pipelines, dashboards and analytics, and databases and SQL.`,
 		'',
 		`Available for remote and on-site work across ${serviceAreaList()}.`,
 		'',
@@ -58,8 +58,8 @@ function spanishSection(): string {
 		(s) => `- [${es(s.title)}](${SITE_HOST}/es/services/${s.id}): ${es(s.description)}`,
 	);
 	return [
-		'## Español — infraestructura digital en Montreal, Québec',
-		`Yesid O. trabaja como Desarrollador freelance SQL y de infraestructura digital en Montreal y atiende en español, francés e inglés. Desarrollo web, bases de datos y SQL, pipelines y automatización de datos, y dashboards para pymes de Québec — incluida la comunidad hispana. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
+		'## Español — soluciones digitales en Montreal, Québec',
+		`Yesid O. trabaja como Desarrollador freelance de soluciones digitales en Montreal y atiende en español, francés e inglés. Ayuda a pymes de Québec con sitios web y e-commerce, automatización y pipelines, tableros y analítica, y bases de datos y SQL. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
 		...serviceLines,
 		`Contacto en español: ${SITE_HOST}/es/contact`,
 	].join('\n');

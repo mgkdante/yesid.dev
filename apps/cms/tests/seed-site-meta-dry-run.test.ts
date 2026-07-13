@@ -149,7 +149,7 @@ describe('seed-site-meta pure helpers', () => {
 		});
 
 		it('owner_job_title is populated', () => {
-			expect(en!.owner_job_title).toBe('Freelance SQL and Digital Infrastructure Developer');
+			expect(en!.owner_job_title).toBe('Freelance Digital Solutions Developer');
 		});
 	});
 
@@ -181,9 +181,7 @@ describe('seed-site-meta pure helpers', () => {
 		});
 
 		it('has owner_job_title populated', () => {
-			expect(fr!.owner_job_title).toBe(
-				'Développeur SQL et en infrastructure numérique, à la pige',
-			);
+			expect(fr!.owner_job_title).toBe('Développeur de solutions numériques à la pige');
 		});
 
 		it('has populated tagline/description/default_description (fixture mirrors the live FR content)', () => {
@@ -201,9 +199,7 @@ describe('seed-site-meta pure helpers', () => {
 		});
 
 		it('has owner_job_title populated', () => {
-			expect(es!.owner_job_title).toBe(
-				'Desarrollador freelance SQL y de infraestructura digital',
-			);
+			expect(es!.owner_job_title).toBe('Desarrollador freelance de soluciones digitales');
 		});
 
 		it('has populated tagline/description/default_description', () => {

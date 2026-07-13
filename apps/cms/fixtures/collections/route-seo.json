@@ -8,12 +8,12 @@
 			{
 				"languages_code": "en",
 				"title": "yesid. | Digital Infrastructure that Moves.",
-				"description": "Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards."
+				"description": "yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL."
 			},
 			{
 				"languages_code": "fr",
 				"title": "yesid. | Infrastructure numérique qui avance.",
-				"description": "Développeur SQL pigiste et consultant en infrastructure numérique à Montréal. PostgreSQL, dbt, Power BI et Python pour pipelines, analyses et tableaux de bord."
+				"description": "yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL."
 			}
 		]
 	},
@@ -25,18 +25,18 @@
 		"translations": [
 			{
 				"languages_code": "en",
-				"title": "Freelance SQL and Digital Infrastructure Developer",
-				"description": "Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work."
+				"title": "Freelance Digital Solutions Developer",
+				"description": "Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL."
 			},
 			{
 				"languages_code": "fr",
-				"title": "Développeur SQL et en infrastructure numérique, à la pige",
-				"description": "Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes."
+				"title": "Développeur de solutions numériques à la pige",
+				"description": "Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL."
 			},
 			{
 				"languages_code": "es",
-				"title": "Desarrollador freelance SQL y de infraestructura digital",
-				"description": "Consultor de infraestructura digital en Montreal. Experiencia en SQL, almacenes de datos y analítica en tiempo real. Disponible para freelance y consultoría."
+				"title": "Desarrollador freelance de soluciones digitales",
+				"description": "Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables."
 			}
 		]
 	},
@@ -67,12 +67,12 @@
 			{
 				"languages_code": "en",
 				"title": "Digital Infrastructure Services: Web, Data, Automation",
-				"description": "Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams."
+				"description": "Digital solutions for Québec SMEs: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations."
 			},
 			{
 				"languages_code": "fr",
 				"title": "Infrastructure numérique: web, données, automatisation",
-				"description": "Services d'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel."
+				"description": "Solutions numériques pour les PME du Québec : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL fiables."
 			}
 		]
 	},

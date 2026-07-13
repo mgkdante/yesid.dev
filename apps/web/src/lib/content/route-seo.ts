@@ -13,9 +13,9 @@ import type { RouteSeoOverride } from '$lib/types';
 export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 	{
 		description: {
-			en: 'Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards.',
-			es: 'Desarrollador SQL freelance y consultor de infraestructura digital en Montreal. PostgreSQL, dbt, Power BI, Python. Pipelines en tiempo real, análisis, tableros.',
-			fr: 'Développeur SQL pigiste et consultant en infrastructure numérique à Montréal. PostgreSQL, dbt, Power BI et Python pour pipelines, analyses et tableaux de bord.',
+			en: 'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
+			es: 'yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.',
+			fr: 'yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.',
 		},
 		ogImage: null,
 		path: '/',
@@ -27,16 +27,16 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 	},
 	{
 		description: {
-			en: 'Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work.',
-			es: 'Consultor de infraestructura digital en Montreal. Experiencia en SQL, almacenes de datos y analítica en tiempo real. Disponible para freelance y consultoría.',
-			fr: 'Consultant en infrastructure numérique basé à Montréal. Expérience en SQL, entrepôts de données et analyses temps réel, disponible pour mandats pigistes.',
+			en: 'Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.',
+			es: 'Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables.',
+			fr: 'Développeur de solutions numériques à la pige à Montréal. J\'aide les PME du Québec avec le web, l\'automatisation, l\'analytique, les bases de données et SQL.',
 		},
 		ogImage: '48bb90b1-0934-4cc9-a935-bc5ab719a71d',
 		path: '/about',
 		title: {
-			en: 'Freelance SQL and Digital Infrastructure Developer',
-			es: 'Desarrollador freelance SQL y de infraestructura digital',
-			fr: 'Développeur SQL et en infrastructure numérique, à la pige',
+			en: 'Freelance Digital Solutions Developer',
+			es: 'Desarrollador freelance de soluciones digitales',
+			fr: 'Développeur de solutions numériques à la pige',
 		},
 	},
 	{
@@ -55,9 +55,9 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 	},
 	{
 		description: {
-			en: 'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams.',
-			es: 'Servicios de infraestructura digital: consultoría SQL y PostgreSQL, pipelines dbt, analítica Power BI, ETL en Python y plataformas de datos en tiempo real.',
-			fr: 'Services d\'infrastructure numérique: conseil SQL et PostgreSQL, pipelines dbt, analyses Power BI, ETL Python et plateformes de données temps réel.',
+			en: 'Digital solutions for Québec SMEs: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.',
+			es: 'Soluciones digitales para pymes de Québec: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real.',
+			fr: 'Solutions numériques pour les PME du Québec : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL fiables.',
 		},
 		ogImage: 'dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7',
 		path: '/services',
