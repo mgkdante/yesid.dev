@@ -135,10 +135,11 @@
     "showTestimonialAria": { "en": "Show testimonial {index}", "fr": "Afficher le témoignage {index}" }
   },
   "meta": {
-    "title": { "en": "About | yesid.", "fr": "À propos | yesid." },
+    "title": { "en": "About | yesid.", "fr": "À propos | yesid.", "es": "Sobre mí | yesid." },
     "description": {
-      "en": "About Yesid O., a Montréal SQL developer, builder, and patient explainer.",
-      "fr": "À propos de Yesid O., développeur SQL à Montréal, bâtisseur et vulgarisateur patient."
+      "en": "Freelance SQL and Digital Infrastructure Developer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can't afford downtime.",
+      "fr": "Développeur SQL et en infrastructure numérique, à la pige, basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
+      "es": "Desarrollador freelance SQL y de infraestructura digital en Montreal. PostgreSQL, SQL Server, Python, Power BI. Sistemas confiables para equipos que no toleran caídas."
     }
   }
 }
