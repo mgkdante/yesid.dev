@@ -2353,7 +2353,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: 2026-07-12.',
+							text: 'This page states who publishes yesid.dev, who hosts it, and who answers for its content. Last updated: 2026-07-13.',
 						},
 						id: 'legal-notice-en-001',
 						type: 'paragraph',
@@ -2365,7 +2365,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'yesid.dev is published by Yesid Fernando Otalora, operating as a sole proprietor and freelance digital-infrastructure consultant. Address: 366 rue de Fontenelle, Gatineau, Quebec, J8T 0C6, Canada.',
+							text: 'yesid.dev is published by Yesid Fernando Otalora, operating as a sole proprietor and freelance digital-infrastructure consultant. Service area: Montréal, Québec, Canada.',
 						},
 						id: 'legal-notice-en-003',
 						type: 'paragraph',
@@ -2436,7 +2436,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Esta página indica quién publica yesid.dev, quién lo aloja y quién responde por su contenido. Última actualización: 2026-07-12.',
+							text: 'Esta página indica quién publica yesid.dev, quién lo aloja y quién responde por su contenido. Última actualización: 2026-07-13.',
 						},
 						id: 'legal-notice-es-001',
 						type: 'paragraph',
@@ -2448,7 +2448,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'yesid.dev es publicado por Yesid Fernando Otalora, quien opera como empresa individual y ejerce como consultor independiente en infraestructura digital. Dirección: 366 rue de Fontenelle, Gatineau, Quebec, J8T 0C6, Canada.',
+							text: 'yesid.dev es publicado por Yesid Fernando Otalora, quien opera como empresa individual y ejerce como consultor independiente en infraestructura digital. Área de servicio: Montréal, Québec, Canadá.',
 						},
 						id: 'legal-notice-es-003',
 						type: 'paragraph',
@@ -2522,7 +2522,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Cette page indique qui publie yesid.dev, qui l\'héberge et qui répond de son contenu. Dernière mise à jour : 2026-07-12.',
+							text: 'Cette page indique qui publie yesid.dev, qui l\'héberge et qui répond de son contenu. Dernière mise à jour : 2026-07-13.',
 						},
 						id: 'legal-notice-fr-001',
 						type: 'paragraph',
@@ -2534,7 +2534,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'yesid.dev est publié par Yesid Fernando Otalora, entreprise individuelle, consultant indépendant en infrastructure numérique. Adresse : 366, rue de Fontenelle, Gatineau (Québec) J8T 0C6, Canada.',
+							text: 'yesid.dev est publié par Yesid Fernando Otalora, entreprise individuelle, consultant indépendant en infrastructure numérique. Zone de service : Montréal, Québec, Canada.',
 						},
 						id: 'legal-notice-fr-003',
 						type: 'paragraph',
