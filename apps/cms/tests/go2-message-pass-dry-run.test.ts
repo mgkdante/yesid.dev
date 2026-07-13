@@ -18,15 +18,15 @@ describe('message-pass payloads', () => {
 	});
 
 	it('one self-title everywhere', () => {
-		expect(SELF_TITLE).toBe('Freelance SQL and Digital Infrastructure Developer');
+		expect(SELF_TITLE).toBe('Freelance Digital Solutions Developer');
 		const aboutIntro = EN_TRANSLATION_EDITS.find((e) => e.collection === 'block_about_intro');
 		expect(aboutIntro?.fields.title).toBe(SELF_TITLE);
 		expect(SITE_META_TRANSLATION_EDITS.en.owner_job_title).toBe(SELF_TITLE);
 		expect(SITE_META_TRANSLATION_EDITS.fr.owner_job_title).toBe(
-			'Développeur SQL et en infrastructure numérique, à la pige',
+			'Développeur de solutions numériques à la pige',
 		);
 		expect(SITE_META_TRANSLATION_EDITS.es.owner_job_title).toBe(
-			'Desarrollador freelance SQL y de infraestructura digital',
+			'Desarrollador freelance de soluciones digitales',
 		);
 	});
 

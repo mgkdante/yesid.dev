@@ -12,9 +12,9 @@ import type { SiteSeoDefaults } from '$lib/types';
 
 export const STATIC_SITE_SEO_DEFAULTS: SiteSeoDefaults = {
 	defaultDescription: {
-		en: 'yesid., Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
-		es: 'yesid., Desarrollador freelance SQL y de infraestructura digital en Montreal. Bases de datos, pipelines, tableros y los sitios web que impulsan. Entregado con números.',
-		fr: 'yesid., Développeur SQL et en infrastructure numérique, à la pige, à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu\'ils font rouler. Livré avec des chiffres.',
+		en: 'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
+		es: 'yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.',
+		fr: 'yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.',
 	},
 	defaultOgImage: null,
 	themeColor: '#141414',
