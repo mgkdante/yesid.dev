@@ -28,7 +28,7 @@ const log = createLogger('go2-message-pass');
 
 // --- Payloads (locked in the GO-2 Track 3 plan) -----------------------------
 
-export const SELF_TITLE = 'Freelance Digital Infrastructure Engineer';
+export const SELF_TITLE = 'Freelance SQL and Digital Infrastructure Developer';
 
 export const MANIFESTO_PILLS: ReadonlyArray<{ label: string; serviceId: string }> = [
 	{ label: 'databases', serviceId: 'database-engineering' },
@@ -111,15 +111,16 @@ export const EN_TRANSLATION_EDITS: readonly TranslationEdit[] = [
 export const SITE_META_TRANSLATION_EDITS: Record<'en' | 'fr' | 'es', Record<string, string>> = {
 	en: {
 		description:
-			'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power — PostgreSQL, dbt, Power BI, SvelteKit.',
+			'Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power — PostgreSQL, dbt, Power BI, SvelteKit.',
 		default_description:
-			'yesid. — freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
+			'yesid. — Freelance SQL and Digital Infrastructure Developer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
 		owner_job_title: SELF_TITLE,
 	},
 	// fr/es: owner_job_title ONLY (the other fields have no fr/es values today;
-	// writing them would create partial-translation drift). ASK #6 confirms wording.
-	fr: { owner_job_title: 'Ingénieur indépendant en infrastructure numérique' },
-	es: { owner_job_title: 'Ingeniero independiente en infraestructura digital' },
+	// writing them would create partial-translation drift). The operator approved
+	// this exact title trio on 2026-07-12.
+	fr: { owner_job_title: 'Développeur SQL et en infrastructure numérique, à la pige' },
+	es: { owner_job_title: 'Desarrollador freelance SQL y de infraestructura digital' },
 };
 
 // --- Helpers ------------------------------------------------------------------
