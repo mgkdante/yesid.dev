@@ -37,9 +37,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action (diff = preview vs prod; push = apply to prod)'
+        description: 'Action (diff = preview, push = config apply, legal-service-area = guarded notice remediation)'
         type: choice
-        options: [diff, push]
+        options: [diff, push, legal-service-area]
         default: diff
         required: true
       include_permissions:
@@ -120,3 +120,59 @@ jobs:
           DIRECTUS_SYNC_INCLUDE_PERMISSIONS: ${{ inputs.include_permissions && '1' || '' }}
           DIRECTUS_SYNC_PERMISSIONS_ACK: ${{ inputs.include_permissions && 'permissions-push-can-delete-parallel-work' || '' }}
         run: bun run sync:push
+
+  legal-service-area:
+    # P0 privacy remediation for the three localized legal-notice bodies. The
+    # script accepts only the immutable pre-remediation body hashes or the
+    # already-converged bodies, sends body-only PATCHes, and rereads every row.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'legal-service-area'
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    env:
+      DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Preview guarded legal service-area remediation
+        working-directory: apps/cms
+        run: bun scripts/reconcile-legal-service-area.ts --target=prod --dry-run
+
+      - name: Apply and verify guarded legal service-area remediation
+        working-directory: apps/cms
+        run: >-
+          bun scripts/reconcile-legal-service-area.ts
+          --target=prod
+          --apply
+          --confirm=APPLY_PROD_LEGAL_SERVICE_AREA
+
+      - name: Prove legal service-area convergence
+        working-directory: apps/cms
+        run: bun scripts/reconcile-legal-service-area.ts --target=prod --dry-run
+
+      - name: Regenerate legal module from authenticated live production CMS
+        working-directory: apps/cms
+        env:
+          EXPORT_FALLBACKS_LIVE: '1'
+          VERCEL_ENV: production
+          PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+        run: bun scripts/export-fallbacks.ts --module=legal-pages
+
+      - name: Verify generated-content integrity
+        run: bun apps/cms/scripts/verify-content-manifest.ts
+
+      - name: Upload authenticated legal export
+        uses: actions/upload-artifact@v4
+        with:
+          name: legal-service-area-live-export-${{ github.run_id }}
+          path: |
+            apps/web/src/lib/content/legal-pages.ts
+            apps/web/src/lib/content/generated.manifest.json
+          if-no-files-found: error
+          retention-days: 1
