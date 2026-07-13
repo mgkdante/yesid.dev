@@ -3,6 +3,7 @@ import {
 	SITE_HOST,
 	DEFAULT_OG_IMAGE,
 	SITE_NAME,
+	SERVICE_AREAS,
 	PUBLISHED_LOCALES,
 	canonicalFor,
 	localizeOgCard,
@@ -24,6 +25,10 @@ describe('seo-defaults constants', () => {
 
 	it('SITE_NAME equals the brand wordmark', () => {
 		expect(SITE_NAME).toBe('yesid.');
+	});
+
+	it('advertises Montréal as the only public service area', () => {
+		expect(SERVICE_AREAS).toEqual(['Montréal']);
 	});
 
 	it('PUBLISHED_LOCALES is a non-empty subset of SUPPORTED_LOCALES and includes en', () => {
