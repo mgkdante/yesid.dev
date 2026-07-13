@@ -202,7 +202,14 @@ describe('read-only production permission audit adapter', () => {
 	it('pins production, rejects mutation flags, and cross-checks the URL', () => {
 		expect(parseAuditArgs(['--target=prod'], `${PROD_CMS_URL}/`)).toEqual({
 			directusUrl: PROD_CMS_URL,
+			requireConverged: false,
 		});
+		expect(
+			parseAuditArgs(
+				['--target=prod', '--require-converged'],
+				PROD_CMS_URL,
+			),
+		).toEqual({ directusUrl: PROD_CMS_URL, requireConverged: true });
 		expect(() => parseAuditArgs([], PROD_CMS_URL)).toThrow(/--target=prod/);
 		expect(() => parseAuditArgs(['--target=dev'], PROD_CMS_URL)).toThrow(
 			/only --target=prod/,
@@ -212,6 +219,38 @@ describe('read-only production permission audit adapter', () => {
 		);
 		expect(() => parseAuditArgs(['--target=prod'], 'https://example.com')).toThrow(
 			/Unsupported PUBLIC_DIRECTUS_URL/,
+		);
+	});
+
+	it('can fail a read-only run when any semantic permission drift remains', async () => {
+		const subject = (await import(
+			'../scripts/audit-permission-control-drift'
+		)) as Record<string, unknown>;
+		expect(typeof subject.assertPermissionAuditConverged).toBe('function');
+		if (typeof subject.assertPermissionAuditConverged !== 'function') return;
+		const assertConverged = subject.assertPermissionAuditConverged as (
+			audit: ReturnType<typeof buildPermissionAudit>,
+		) => void;
+		const equivalent = buildPermissionAudit(
+			repoPolicies,
+			[desired('repo-public', 'blog_posts', 'read')],
+			livePolicies,
+			[live('permission-116', 'live-public', 'blog_posts', 'read')],
+		);
+		expect(() => assertConverged(equivalent)).not.toThrow();
+
+		const drifted = buildPermissionAudit(
+			repoPolicies,
+			[desired('repo-public', 'blog_posts', 'read')],
+			livePolicies,
+			[
+				live('permission-116', 'live-public', 'blog_posts', 'read', {
+					fields: ['id'],
+				}),
+			],
+		);
+		expect(() => assertConverged(drifted)).toThrow(
+			/convergence required.*mismatch=1.*missing=0.*duplicate=0.*untracked=0/,
 		);
 	});
 

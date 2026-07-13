@@ -19,6 +19,7 @@ export const PROD_CMS_URL = 'https://cms.yesid.dev';
 
 export interface AuditArgs {
 	directusUrl: typeof PROD_CMS_URL;
+	requireConverged: boolean;
 }
 
 export interface ApiResponse {
@@ -45,7 +46,10 @@ export function parseAuditArgs(
 		);
 	}
 	const unknown = argv.find(
-		(argument) => argument !== '--target=prod' && argument !== '--dry-run',
+		(argument) =>
+			argument !== '--target=prod' &&
+			argument !== '--dry-run' &&
+			argument !== '--require-converged',
 	);
 	if (unknown) {
 		if (unknown.startsWith('--target=')) {
@@ -68,7 +72,18 @@ export function parseAuditArgs(
 			`[permission-control-drift] Unsupported PUBLIC_DIRECTUS_URL: ${directusUrl}`,
 		);
 	}
-	return { directusUrl: PROD_CMS_URL };
+	return {
+		directusUrl: PROD_CMS_URL,
+		requireConverged: argv.includes('--require-converged'),
+	};
+}
+
+export function assertPermissionAuditConverged(audit: PermissionAudit): void {
+	const { mismatch, missing, duplicate, untracked } = audit.summary;
+	if (mismatch + missing + duplicate + untracked === 0) return;
+	throw new Error(
+		`[permission-control-drift] convergence required but audit found mismatch=${mismatch} missing=${missing} duplicate=${duplicate} untracked=${untracked}`,
+	);
 }
 
 function dataRows<T>(response: ApiResponse, operation: string): T[] {
@@ -153,6 +168,7 @@ async function main(): Promise<void> {
 	const api: ReadOnlyApiRequest = (method, path) => rest(ctx, method, path);
 	const audit = await loadPermissionAudit(api, repoPolicies, desiredPermissions);
 	console.log(formatPermissionAudit(audit));
+	if (options.requireConverged) assertPermissionAuditConverged(audit);
 }
 
 if (import.meta.main) {
