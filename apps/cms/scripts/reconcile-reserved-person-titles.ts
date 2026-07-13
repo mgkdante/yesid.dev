@@ -306,7 +306,25 @@ export async function applyVerifiedPlan(
 		sendPatch: (step: TitlePatch) => Promise<void>;
 	},
 ): Promise<void> {
-	for (const step of plan) {
+	function assertExpectedSubset(
+		currentPlan: readonly TitlePatch[],
+		expectedPlan: readonly TitlePatch[],
+		message: string,
+	): void {
+		const expectedByPath = new Map(expectedPlan.map((candidate) => [candidate.path, candidate]));
+		for (const candidate of currentPlan) {
+			const expected = expectedByPath.get(candidate.path);
+			if (
+				!expected ||
+				!isDeepStrictEqual(candidate.before, expected.before) ||
+				!isDeepStrictEqual(candidate.body, expected.body)
+			) {
+				throw new Error(message);
+			}
+		}
+	}
+
+	for (const [index, step] of plan.entries()) {
 		let currentPlan: TitlePatch[];
 		try {
 			currentPlan = buildPlan(await deps.readSnapshot());
@@ -315,14 +333,13 @@ export async function applyVerifiedPlan(
 				`[reserved-person-titles] state changed before PATCH ${step.path}: ${error instanceof Error ? error.message : String(error)}`,
 			);
 		}
+		assertExpectedSubset(
+			currentPlan,
+			plan.slice(index),
+			`[reserved-person-titles] state changed before PATCH ${step.path}`,
+		);
 		const current = currentPlan.find((candidate) => candidate.path === step.path);
-		if (
-			!current ||
-			!isDeepStrictEqual(current.before, step.before) ||
-			!isDeepStrictEqual(current.body, step.body)
-		) {
-			throw new Error(`[reserved-person-titles] state changed before PATCH ${step.path}`);
-		}
+		if (!current) continue;
 		await deps.sendPatch(step);
 		let afterPlan: TitlePatch[];
 		try {
@@ -332,11 +349,11 @@ export async function applyVerifiedPlan(
 				`[reserved-person-titles] post-PATCH verification failed for ${step.path}: ${error instanceof Error ? error.message : String(error)}`,
 			);
 		}
-		if (afterPlan.some((candidate) => candidate.path === step.path)) {
-			throw new Error(
-				`[reserved-person-titles] post-PATCH verification failed for ${step.path}`,
-			);
-		}
+		assertExpectedSubset(
+			afterPlan,
+			plan.slice(index + 1),
+			`[reserved-person-titles] post-PATCH verification failed for ${step.path}`,
+		);
 	}
 	const remaining = buildPlan(await deps.readSnapshot());
 	if (remaining.length !== 0) {
