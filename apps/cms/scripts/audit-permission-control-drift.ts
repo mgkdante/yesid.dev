@@ -89,7 +89,7 @@ export function assertPermissionAuditConverged(audit: PermissionAudit): void {
 function dataRows<T>(response: ApiResponse, operation: string): T[] {
 	if (response.status >= 400) {
 		throw new Error(
-			`[permission-control-drift] ${operation} failed (${response.status}): ${JSON.stringify(response.json)}`,
+			`[permission-control-drift] ${operation} failed (${response.status})`,
 		);
 	}
 	const data = (response.json as { data?: unknown } | null)?.data;
