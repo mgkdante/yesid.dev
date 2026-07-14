@@ -29,10 +29,11 @@ test('offers separate, unambiguous permission audit and targeted repair dispatch
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, public-blog-translation-key-repair]',
+		'options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
 	);
 	expect(dispatch).toContain('read-only permission audit');
 	expect(dispatch).toContain('candidate diagnostic');
+	expect(dispatch).toContain('quarantine rename');
 	expect(dispatch).toContain('targeted blog repair');
 });
 
@@ -75,7 +76,7 @@ test('permission-control-audit is production-gated, authenticated, and GET-only'
 test('permission-policy-candidate-diagnostic is main-only, production-gated, and GET-only', () => {
 	const diagnostic = jobBlock(
 		'permission-policy-candidate-diagnostic',
-		'public-blog-translation-key-repair',
+		'permission-policy-quarantine-rename',
 	);
 	expect(diagnostic).toContain(
 		"github.event.inputs.action == 'permission-policy-candidate-diagnostic'",
@@ -105,6 +106,53 @@ test('permission-policy-candidate-diagnostic is main-only, production-gated, and
 		'reconcile-public-blog-permission.ts',
 	]) {
 		expect(diagnostic).not.toContain(forbidden);
+	}
+});
+
+test('policy quarantine rename previews, applies exactly one name, verifies, then GET-only audits', () => {
+	const rename = jobBlock(
+		'permission-policy-quarantine-rename',
+		'public-blog-translation-key-repair',
+	);
+	expect(rename).toContain(
+		"github.event.inputs.action == 'permission-policy-quarantine-rename'",
+	);
+	expect(rename).toContain("github.ref == 'refs/heads/main'");
+	expect(rename).toContain('needs: test');
+	expect(rename).toContain('name: production');
+	expect(rename).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
+	expect(rename.slice(0, rename.indexOf('    steps:'))).not.toContain(
+		'DIRECTUS_ADMIN_TOKEN',
+	);
+	expect(rename.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(4);
+
+	const previewCommand =
+		'bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run';
+	const confirmation =
+		'--confirm=APPLY_PROD_PERMISSION_POLICY_QUARANTINE_RENAME';
+	const auditCommand =
+		'bun scripts/audit-permission-control-drift.ts --target=prod --dry-run';
+	const preview = rename.indexOf(previewCommand);
+	const apply = rename.indexOf(confirmation);
+	const readBack = rename.indexOf(previewCommand, preview + 1);
+	const audit = rename.indexOf(auditCommand, readBack + 1);
+
+	expect(preview).toBeGreaterThan(-1);
+	expect(apply).toBeGreaterThan(preview);
+	expect(readBack).toBeGreaterThan(apply);
+	expect(audit).toBeGreaterThan(readBack);
+	expect(rename.match(/--apply/g)).toHaveLength(1);
+	expect(rename.match(/--confirm=/g)).toHaveLength(1);
+	expect(rename.match(/audit-permission-control-drift\.ts/g)).toHaveLength(1);
+	expect(rename).not.toContain('--require-converged');
+	for (const forbidden of [
+		'sync:push',
+		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
+		'include_permissions',
+		'reconcile-public-blog-permission.ts',
+		'reconcile-legal-service-area.ts',
+	]) {
+		expect(rename).not.toContain(forbidden);
 	}
 });
 
@@ -154,7 +202,10 @@ test('targeted repair audits before and after one exact-confirm fields-only reco
 	}
 });
 
-test('keeps the existing diff, push, and legal-service-area job bodies byte-stable', () => {
+test('keeps every unrelated existing CMS job body byte-stable', () => {
+	expect(sha256(jobBlock('test', 'diff'))).toBe(
+		'ece34b91e13a1ae97467f9e8e4aa8ef49d21bed854c5b13f4ee5b55fa491a4ad',
+	);
 	expect(sha256(jobBlock('diff', 'push'))).toBe(
 		'd0715689c14987b2cc2274650f8631af25968068276c87c0f756017109de09d9',
 	);
@@ -165,5 +216,28 @@ test('keeps the existing diff, push, and legal-service-area job bodies byte-stab
 		sha256(jobBlock('legal-service-area', 'permission-control-audit')),
 	).toBe(
 		'5219bfadbc6c718da977652ba205c03438a8684d6db248a464f0f3609de355fc',
+	);
+	expect(
+		sha256(
+			jobBlock(
+				'permission-control-audit',
+				'permission-policy-candidate-diagnostic',
+			),
+		),
+	).toBe(
+		'2572e65cb6c5886f475cd6d8e28fd0d938d38180658f268acf6b1802dee6dd8c',
+	);
+	expect(
+		sha256(
+			jobBlock(
+				'permission-policy-candidate-diagnostic',
+				'permission-policy-quarantine-rename',
+			),
+		),
+	).toBe(
+		'843d0098fa697ff183768b4d66a67b4dd8bb413584e15cce7d084ad1c6e90388',
+	);
+	expect(sha256(jobBlock('public-blog-translation-key-repair'))).toBe(
+		'8e33450fcf0d0fea53a6a1cc307317128fef197df0749906b4c4cfab1c99f193',
 	);
 });
