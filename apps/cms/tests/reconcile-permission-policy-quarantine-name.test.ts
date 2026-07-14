@@ -9,8 +9,14 @@ interface PolicyRow {
 	description: unknown;
 	ip_access: unknown;
 	enforce_tfa: unknown;
-	roles: unknown;
-	users: unknown;
+}
+
+interface AccessRow {
+	id: string;
+	policy: string;
+	role: string | null;
+	user: string | null;
+	sort: number | null;
 }
 
 interface PermissionRow {
@@ -19,6 +25,7 @@ interface PermissionRow {
 
 interface PolicyState {
 	policy: PolicyRow;
+	access: AccessRow[];
 	permissions: PermissionRow[];
 	matchingPolicies: Array<{ id: string; name: string }>;
 }
@@ -32,18 +39,12 @@ interface RenamePlan {
 	permissionCount: number;
 	adminAccess: false;
 	appAccess: false;
-	roleAttachmentCount: number;
-	userAttachmentCount: number;
-	roleAttachmentIds: string[];
-	userAttachmentIds: string[];
-	roleAttachments: Array<{
+	accessRowCount: number;
+	roleOnlyAccessCount: number;
+	userOnlyAccessCount: number;
+	accessRows: Array<{
 		id: string;
-		role: string | null;
-		user: string | null;
-		sort: number | null;
-	}>;
-	userAttachments: Array<{
-		id: string;
+		policy: string;
 		role: string | null;
 		user: string | null;
 		sort: number | null;
@@ -110,25 +111,20 @@ function policy(
 		admin_access: false,
 		app_access: false,
 		icon: 'badge-private-marker',
-		description: 'description-private-marker',
-		ip_access: ['203.0.113.0/24'],
-		enforce_tfa: true,
-		roles: [
-			{
-				id: 'access-role-a',
-				role: 'role-endpoint-a',
-				user: null,
-				sort: 1,
-			},
-		],
-		users: [
-			{
-				id: 'access-user-a',
-				role: null,
-				user: 'user-endpoint-a',
-				sort: 2,
-			},
-		],
+	description: 'description-private-marker',
+	ip_access: ['203.0.113.0/24'],
+	enforce_tfa: true,
+		...overrides,
+	};
+}
+
+function accessRow(overrides: Partial<AccessRow> = {}): AccessRow {
+	return {
+		id: 'access-role-a',
+		policy: 'cbe60d41-b585-4f02-b18a-486dbd1e59f1',
+		role: 'role-endpoint-a',
+		user: null,
+		sort: 1,
 		...overrides,
 	};
 }
@@ -136,6 +132,7 @@ function policy(
 function state(overrides: Partial<PolicyState> = {}): PolicyState {
 	return {
 		policy: policy(),
+		access: [accessRow()],
 		permissions: [],
 		matchingPolicies: [
 			{
@@ -234,6 +231,18 @@ describe('policy quarantine rename CLI guard', () => {
 				module.PROD_CMS_URL,
 			),
 		).toThrow(/at most one --dry-run/);
+		expect(() =>
+			module.parseQuarantineRenameArgs(
+				['--target=prod', '--target=prod'],
+				module.PROD_CMS_URL,
+			),
+		).toThrow(/exactly one --target=prod/);
+		expect(() =>
+			module.parseQuarantineRenameArgs(
+				['--target=prod', '--unknown'],
+				module.PROD_CMS_URL,
+			),
+		).toThrow(/unknown argument/);
 	});
 
 	it('requires the exact confirmation only for apply', () => {
@@ -270,6 +279,17 @@ describe('policy quarantine rename CLI guard', () => {
 				module.PROD_CMS_URL,
 			),
 		).toThrow(/only for PROD apply/);
+		expect(() =>
+			module.parseQuarantineRenameArgs(
+				[
+					'--target=prod',
+					'--apply',
+					`--confirm=${module.PROD_CONFIRM_PHRASE}`,
+					`--confirm=${module.PROD_CONFIRM_PHRASE}`,
+				],
+				module.PROD_CMS_URL,
+			),
+		).toThrow(/at most one --confirm/);
 	});
 
 	it('requires a static admin token with no credential fallback', () => {
@@ -288,10 +308,17 @@ describe('policy quarantine rename CLI guard', () => {
 });
 
 describe('policy quarantine rename plan', () => {
-	it('plans exactly one name-only patch after proving access flags, zero permissions, attachment ids, and duplicate topology', () => {
+	it('plans one name-only patch from exact raw access topology and ignores overlapping policy aliases', () => {
 		const module = subject();
 		if (!module) return;
-		const plan = module.buildPolicyQuarantineRenamePlan(state());
+		const overlappingAliasPolicy = {
+			...policy(),
+			roles: [accessRow()],
+			users: [accessRow()],
+		} as PolicyRow;
+		const plan = module.buildPolicyQuarantineRenamePlan(
+			state({ policy: overlappingAliasPolicy }),
+		);
 		expect(plan).toEqual({
 			action: 'rename',
 			policyId: module.TARGET_POLICY_ID,
@@ -301,24 +328,16 @@ describe('policy quarantine rename plan', () => {
 			permissionCount: 0,
 			adminAccess: false,
 			appAccess: false,
-			roleAttachmentCount: 1,
-			userAttachmentCount: 1,
-			roleAttachmentIds: ['access-role-a'],
-			userAttachmentIds: ['access-user-a'],
-			roleAttachments: [
+			accessRowCount: 1,
+			roleOnlyAccessCount: 1,
+			userOnlyAccessCount: 0,
+			accessRows: [
 				{
 					id: 'access-role-a',
+					policy: module.TARGET_POLICY_ID,
 					role: 'role-endpoint-a',
 					user: null,
 					sort: 1,
-				},
-			],
-			userAttachments: [
-				{
-					id: 'access-user-a',
-					role: null,
-					user: 'user-endpoint-a',
-					sort: 2,
 				},
 			],
 			sourceNamePolicyIds: [
@@ -335,13 +354,10 @@ describe('policy quarantine rename plan', () => {
 		});
 		expect(Object.keys(plan.patch ?? {})).toEqual(['name']);
 		expect(module.formatPolicyQuarantineRenamePlan(plan)).toContain(
-			'admin_access=false app_access=false permissions=0 role_attachments=1 user_attachments=1',
+			'admin_access=false app_access=false permissions=0 access_rows=1 role_only_access=1 user_only_access=0',
 		);
 		expect(module.formatPolicyQuarantineRenamePlan(plan)).not.toContain(
 			'access-role-a',
-		);
-		expect(module.formatPolicyQuarantineRenamePlan(plan)).not.toContain(
-			'access-user-a',
 		);
 		expect(module.formatPolicyQuarantineRenamePlan(plan)).not.toContain(
 			'badge-private-marker',
@@ -351,9 +367,6 @@ describe('policy quarantine rename plan', () => {
 		);
 		expect(module.formatPolicyQuarantineRenamePlan(plan)).not.toContain(
 			'role-endpoint-a',
-		);
-		expect(module.formatPolicyQuarantineRenamePlan(plan)).not.toContain(
-			'user-endpoint-a',
 		);
 		expect(module.formatPolicyQuarantineRenamePlan(plan)).toContain(
 			'writes_sent=0',
@@ -374,7 +387,7 @@ describe('policy quarantine rename plan', () => {
 		expect(plan.patch).toBeNull();
 	});
 
-	it('fails closed on the wrong identity, any unexpected name, any permission, access flag, or unsafe attachment evidence', () => {
+	it('fails closed on the wrong identity, unexpected name, any permission, access flag, or missing stable field', () => {
 		const module = subject();
 		if (!module) return;
 		const incompleteStableFields = policy();
@@ -406,82 +419,121 @@ describe('policy quarantine rename plan', () => {
 		).toThrow(/app_access must be exactly false/);
 		expect(() =>
 			module.buildPolicyQuarantineRenamePlan(
-				state({ policy: policy({ roles: null }) }),
-			),
-		).toThrow(/roles attachments.*array/);
-		expect(() =>
-			module.buildPolicyQuarantineRenamePlan(
-				state({ policy: policy({ users: null }) }),
-			),
-		).toThrow(/users attachments.*array/);
-		expect(() =>
-			module.buildPolicyQuarantineRenamePlan(
-				state({ policy: policy({ roles: [] }) }),
-			),
-		).toThrow(/expected exactly one role attachment/);
-		expect(() =>
-			module.buildPolicyQuarantineRenamePlan(
-				state({ policy: policy({ users: [{ id: 'a' }, { id: 'b' }] }) }),
-			),
-		).toThrow(/expected exactly one direct-user attachment/);
-		expect(() =>
-			module.buildPolicyQuarantineRenamePlan(
-				state({ policy: policy({ roles: [{}] }) }),
-			),
-		).toThrow(/role attachment.*non-empty junction id/);
-		expect(() =>
-			module.buildPolicyQuarantineRenamePlan(
 				state({ policy: incompleteStableFields }),
 			),
 		).toThrow(/stable policy field description.*missing/);
+	});
+
+	it('rejects malformed raw access rows before topology inference', () => {
+		const module = subject();
+		if (!module) return;
+		const missingRequiredRows = (
+			['id', 'policy', 'role', 'user', 'sort'] as const
+		).map((key) => {
+			const row = accessRow();
+			delete (row as Partial<AccessRow>)[key];
+			return row;
+		});
+		for (const invalidAccess of [
+			[null],
+			['not-an-object'],
+			[[]],
+			...missingRequiredRows.map((row) => [row]),
+			[accessRow({ id: '' })],
+			[accessRow({ id: 42 as never })],
+			[accessRow({ policy: 'foreign-policy' })],
+			[accessRow({ policy: { id: 'expanded-policy' } as never })],
+			[accessRow({ role: '' })],
+			[accessRow({ role: { id: 'expanded-role' } as never })],
+			[accessRow({ role: null, user: '' })],
+			[accessRow({ user: { id: 'expanded-user' } as never })],
+			[accessRow({ user: 'user-endpoint-a' })],
+			[accessRow({ role: null, user: null })],
+			[accessRow({ sort: undefined as never })],
+			[accessRow({ sort: '1' as never })],
+		]) {
+			expect(() =>
+				module.buildPolicyQuarantineRenamePlan(
+					state({ access: invalidAccess as AccessRow[] }),
+				),
+			).toThrow(/raw access row/);
+		}
+		expect(() =>
+			module.buildPolicyQuarantineRenamePlan(
+				state({ access: null as never }),
+			),
+		).toThrow(/raw access rows must be an array/);
+	});
+
+	it('requires one unique role-only raw access row and zero user-only rows', () => {
+		const module = subject();
+		if (!module) return;
+		expect(() =>
+			module.buildPolicyQuarantineRenamePlan(
+				state({ access: [] }),
+			),
+		).toThrow(/exactly one role-only.*zero user-only.*roles=0.*users=0/);
 		expect(() =>
 			module.buildPolicyQuarantineRenamePlan(
 				state({
-					policy: policy({
-						roles: [
-							{
-								id: 'access-role-a',
-								role: null,
-								user: 'user-endpoint-a',
-								sort: 1,
-							},
-						],
-					}),
+					access: [
+						accessRow(),
+						accessRow({
+							id: 'access-user-a',
+							user: 'user-endpoint-a',
+							role: null,
+						}),
+					],
 				}),
 			),
-		).toThrow(/role attachment.*scalar role id.*null user/);
+		).toThrow(/exactly one role-only.*zero user-only.*roles=1.*users=1/);
 		expect(() =>
 			module.buildPolicyQuarantineRenamePlan(
 				state({
-					policy: policy({
-						users: [
-							{
-								id: 'access-user-a',
-								role: null,
-								user: { id: 'expanded-user' },
-								sort: 2,
-							},
-						],
-					}),
+					access: [accessRow(), accessRow({ role: 'role-endpoint-b' })],
 				}),
 			),
-		).toThrow(/direct-user attachment.*scalar user id.*null role/);
+		).toThrow(/duplicate raw access row id/);
 		expect(() =>
 			module.buildPolicyQuarantineRenamePlan(
 				state({
-					policy: policy({
-						roles: [
-							{
-								id: 'access-role-a',
-								role: 'role-endpoint-a',
-								user: null,
-								sort: '1',
-							},
-						],
-					}),
+					access: [
+						accessRow(),
+						accessRow({ id: 'access-role-b', role: 'role-endpoint-b' }),
+					],
 				}),
 			),
-		).toThrow(/role attachment.*integer or null sort/);
+		).toThrow(/exactly one role-only.*zero user-only.*roles=2.*users=0/);
+	});
+
+	it('does not disclose raw access ids or relation values in output or errors', () => {
+		const module = subject();
+		if (!module) return;
+		const planText = module.formatPolicyQuarantineRenamePlan(
+			module.buildPolicyQuarantineRenamePlan(state()),
+		);
+		expect(planText).not.toContain('access-role-a');
+		expect(planText).not.toContain('role-endpoint-a');
+
+		const rawMarkers = [
+			'FOREIGN_POLICY_PRIVATE_MARKER',
+			'ROLE_PRIVATE_MARKER',
+			'USER_PRIVATE_MARKER',
+		];
+		const errorText = thrownText(() =>
+			module.buildPolicyQuarantineRenamePlan(
+				state({
+					access: [
+						accessRow({
+							policy: rawMarkers[0],
+							role: rawMarkers[1],
+							user: rawMarkers[2],
+						}),
+					],
+				}),
+			),
+		);
+		for (const marker of rawMarkers) expect(errorText).not.toContain(marker);
 	});
 
 	it('requires the exact pre-rename and already-converged name topology with no collision', () => {
@@ -553,8 +605,17 @@ async function rejectionText(promise: Promise<unknown>): Promise<string> {
 	}
 }
 
+function thrownText(action: () => unknown): string {
+	try {
+		action();
+		return 'returned without throwing';
+	} catch (error) {
+		return error instanceof Error ? error.message : String(error);
+	}
+}
+
 describe('policy quarantine rename apply verification', () => {
-	it('re-GETs before mutation, PATCHes name only, and re-GET proves unchanged attachments', async () => {
+	it('re-GETs before mutation, PATCHes name only, and re-GET proves unchanged raw access', async () => {
 		const module = subject();
 		if (!module) return;
 		const before = state();
@@ -579,24 +640,16 @@ describe('policy quarantine rename apply verification', () => {
 			permissionCount: 0,
 			adminAccess: false,
 			appAccess: false,
-			roleAttachmentCount: 1,
-			userAttachmentCount: 1,
-			roleAttachmentIds: ['access-role-a'],
-			userAttachmentIds: ['access-user-a'],
-			roleAttachments: [
+			accessRowCount: 1,
+			roleOnlyAccessCount: 1,
+			userOnlyAccessCount: 0,
+			accessRows: [
 				{
 					id: 'access-role-a',
+					policy: module.TARGET_POLICY_ID,
 					role: 'role-endpoint-a',
 					user: null,
 					sort: 1,
-				},
-			],
-			userAttachments: [
-				{
-					id: 'access-user-a',
-					role: null,
-					user: 'user-endpoint-a',
-					sort: 2,
 				},
 			],
 		});
@@ -654,137 +707,78 @@ describe('policy quarantine rename apply verification', () => {
 				fakeCms([
 					before,
 					convergedState({
-						policy: policy({
-							name: module.TARGET_POLICY_NAME,
-							roles: [
-								{
-									id: 'access-role-replaced',
-									role: 'role-endpoint-a',
-									user: null,
-									sort: 1,
-								},
-							],
-						}),
+						access: [accessRow({ id: 'access-role-replaced' })],
 					}),
 				]).cms,
 				displayed,
 			),
-		).rejects.toThrow(/role attachment ids changed/);
-		await expect(
-			module.applyAndVerifyPolicyQuarantineRename(
-				fakeCms([
-					before,
-					convergedState({
-						policy: policy({
-							name: module.TARGET_POLICY_NAME,
-							users: [
-								{
-									id: 'access-user-replaced',
-									role: null,
-									user: 'user-endpoint-a',
-									sort: 2,
-								},
-							],
-						}),
-					}),
-				]).cms,
-				displayed,
-			),
-		).rejects.toThrow(/user attachment ids changed/);
+		).rejects.toThrow(/raw access projection changed/);
 	});
 
-	it('rejects same-junction endpoint or sort drift before and after PATCH', async () => {
+	it('deep-compares the full raw access projection before and after PATCH', async () => {
 		const module = subject();
 		if (!module) return;
 		const before = state();
 		const displayed = module.buildPolicyQuarantineRenamePlan(before);
 		const staleRole = fakeCms([
 			state({
-				policy: policy({
-					roles: [
-						{
-							id: 'access-role-a',
-							role: 'role-endpoint-replaced',
-							user: null,
-							sort: 1,
-						},
-					],
-				}),
+				access: [accessRow({ role: 'role-endpoint-replaced' })],
 			}),
 		]);
 		await expect(
 			module.applyAndVerifyPolicyQuarantineRename(staleRole.cms, displayed),
 		).rejects.toThrow(/state changed before apply/);
 		expect(staleRole.patches).toEqual([]);
+		const stalePolicy = fakeCms([
+			state({
+				access: [accessRow({ policy: 'foreign-policy-before-patch' })],
+			}),
+		]);
+		await expect(
+			module.applyAndVerifyPolicyQuarantineRename(stalePolicy.cms, displayed),
+		).rejects.toThrow(/raw access row.*unexpected policy/);
+		expect(stalePolicy.patches).toEqual([]);
 
 		const roleEndpointDrift = await rejectionText(
 			module.applyAndVerifyPolicyQuarantineRename(
 				fakeCms([
 					before,
 					convergedState({
-						policy: policy({
-							name: module.TARGET_POLICY_NAME,
-							roles: [
-								{
-									id: 'access-role-a',
-									role: 'role-endpoint-replaced',
-									user: null,
-									sort: 1,
-								},
-							],
-						}),
+						access: [accessRow({ role: 'role-endpoint-replaced' })],
 					}),
 				]).cms,
 				displayed,
 			),
 		);
-		expect(roleEndpointDrift).toContain('role attachment projection changed');
-
-		const userEndpointDrift = await rejectionText(
-			module.applyAndVerifyPolicyQuarantineRename(
-				fakeCms([
-					before,
-					convergedState({
-						policy: policy({
-							name: module.TARGET_POLICY_NAME,
-							users: [
-								{
-									id: 'access-user-a',
-									role: null,
-									user: 'user-endpoint-replaced',
-									sort: 2,
-								},
-							],
-						}),
-					}),
-				]).cms,
-				displayed,
-			),
-		);
-		expect(userEndpointDrift).toContain('user attachment projection changed');
+		expect(roleEndpointDrift).toContain('raw access projection changed');
 
 		const sortDrift = await rejectionText(
 			module.applyAndVerifyPolicyQuarantineRename(
 				fakeCms([
 					before,
 					convergedState({
-						policy: policy({
-							name: module.TARGET_POLICY_NAME,
-							roles: [
-								{
-									id: 'access-role-a',
-									role: 'role-endpoint-a',
-									user: null,
-									sort: 99,
-								},
-							],
-						}),
+						access: [accessRow({ sort: 99 })],
 					}),
 				]).cms,
 				displayed,
 			),
 		);
-		expect(sortDrift).toContain('role attachment projection changed');
+		expect(sortDrift).toContain('raw access projection changed');
+
+		const policyDrift = await rejectionText(
+			module.applyAndVerifyPolicyQuarantineRename(
+				fakeCms([
+					before,
+					convergedState({
+						access: [accessRow({ policy: 'foreign-policy-after-patch' })],
+					}),
+				]).cms,
+				displayed,
+			),
+		);
+		expect(policyDrift).toContain('raw access row 0 belongs to an unexpected policy');
+		expect(policyDrift).not.toContain('foreign-policy-after-patch');
+		expect(policyDrift).toContain('a name-only write may have occurred');
 	});
 
 	it('warns that a name-only write may have occurred when PATCH or post-readback fails', async () => {
@@ -849,7 +843,7 @@ describe('policy quarantine rename apply verification', () => {
 });
 
 describe('policy quarantine rename Directus adapter', () => {
-	it('GETs the exact target and permission set, then PATCHes only the exact name', async () => {
+	it('GETs raw access without policy aliases, then PATCHes only the exact name', async () => {
 		const module = subject();
 		if (!module) return;
 		const calls: Array<{ method: string; path: string; body?: unknown }> = [];
@@ -857,7 +851,19 @@ describe('policy quarantine rename Directus adapter', () => {
 			async (method, path, body) => {
 				calls.push({ method, path, body });
 				if (method === 'GET' && path.startsWith('/policies/')) {
-					return { status: 200, json: { data: policy() } };
+					return {
+						status: 200,
+						json: {
+							data: {
+								...policy(),
+								roles: [accessRow()],
+								users: [accessRow()],
+							},
+						},
+					};
+				}
+				if (method === 'GET' && path.startsWith('/access?')) {
+					return { status: 200, json: { data: [accessRow()] } };
 				}
 				if (method === 'GET' && path.startsWith('/permissions?')) {
 					return { status: 200, json: { data: [] } };
@@ -880,21 +886,54 @@ describe('policy quarantine rename Directus adapter', () => {
 			name: module.TARGET_POLICY_NAME,
 		});
 
-		expect(calls[0]?.method).toBe('GET');
-		expect(calls[0]?.path).toContain(
+		const policyCall = calls.find(
+			(call) =>
+				call.method === 'GET' &&
+				call.path.startsWith(`/policies/${module.TARGET_POLICY_ID}?`),
+		);
+		const accessCall = calls.find(
+			(call) => call.method === 'GET' && call.path.startsWith('/access?'),
+		);
+		const permissionCall = calls.find(
+			(call) => call.method === 'GET' && call.path.startsWith('/permissions?'),
+		);
+		const topologyCall = calls.find(
+			(call) => call.method === 'GET' && call.path.startsWith('/policies?'),
+		);
+		const patchCall = calls.find((call) => call.method === 'PATCH');
+
+		expect(calls.filter((call) => call.method === 'GET')).toHaveLength(4);
+		expect(policyCall?.path).toContain(
 			`/policies/${module.TARGET_POLICY_ID}?`,
 		);
-		expect(decodeURIComponent(calls[0]?.path ?? '')).toContain(
-			'fields=id,name,admin_access,app_access,icon,description,ip_access,enforce_tfa,roles.id,roles.role,roles.user,roles.sort,users.id,users.role,users.user,users.sort',
+		expect(
+			new URL(policyCall?.path ?? '', module.PROD_CMS_URL).searchParams.get(
+				'fields',
+			),
+		).toBe(
+			'id,name,admin_access,app_access,icon,description,ip_access,enforce_tfa',
 		);
-		expect(calls[0]?.path).not.toMatch(
-			/email|first_name|last_name|roles\.role\.name|users\.user\./,
+		expect(policyCall?.path).not.toMatch(
+			/roles|users|email|first_name|last_name/,
 		);
-		expect(decodeURIComponent(calls[1]?.path ?? '')).toContain(
-			`filter[policy][_eq]=${module.TARGET_POLICY_ID}`,
+		const accessParams = new URL(
+			accessCall?.path ?? '',
+			module.PROD_CMS_URL,
+		).searchParams;
+		expect(accessParams.get('fields')).toBe('id,policy,role,user,sort');
+		expect(accessParams.get('filter[policy][_eq]')).toBe(
+			module.TARGET_POLICY_ID,
 		);
+		expect(accessParams.get('limit')).toBe('-1');
+		expect(accessCall?.path).not.toMatch(/email|first_name|last_name|name/);
+		expect(
+			new URL(
+				permissionCall?.path ?? '',
+				module.PROD_CMS_URL,
+			).searchParams.get('filter[policy][_eq]'),
+		).toBe(module.TARGET_POLICY_ID);
 		const topologyParams = new URL(
-			calls[2]?.path ?? '',
+			topologyCall?.path ?? '',
 			module.PROD_CMS_URL,
 		).searchParams;
 		expect(topologyParams.get('fields')).toBe('id,name');
@@ -904,8 +943,8 @@ describe('policy quarantine rename Directus adapter', () => {
 		expect(topologyParams.get('filter[_or][1][name][_eq]')).toBe(
 			module.TARGET_POLICY_NAME,
 		);
-		expect(calls[2]?.path).not.toMatch(/email|first_name|last_name/);
-		expect(calls[3]).toEqual({
+		expect(topologyCall?.path).not.toMatch(/email|first_name|last_name/);
+		expect(patchCall).toEqual({
 			method: 'PATCH',
 			path: `/policies/${module.TARGET_POLICY_ID}`,
 			body: { name: module.TARGET_POLICY_NAME },
@@ -928,7 +967,7 @@ describe('policy quarantine rename Directus adapter', () => {
 		await expect(
 			cms.patch(module.TARGET_POLICY_ID, {
 				name: module.TARGET_POLICY_NAME,
-				roles: [],
+				access: [],
 			} as never),
 		).rejects.toThrow(/PATCH body must contain name only/);
 	});
@@ -945,6 +984,21 @@ describe('policy quarantine rename Directus adapter', () => {
 		expect(readError).toContain('GET /policies/');
 		expect(readError).toContain('503');
 		expect(readError).not.toContain(sensitiveMarker);
+
+		const accessReadCms = module.createPolicyQuarantineRenameCms(
+			async (method, path) => {
+				if (method === 'GET' && path.startsWith('/policies/')) {
+					return { status: 200, json: { data: policy() } };
+				}
+				return {
+					status: 502,
+					json: { errors: [{ message: sensitiveMarker }] },
+				};
+			},
+		);
+		const accessReadError = await rejectionText(accessReadCms.read());
+		expect(accessReadError).toContain('GET /access failed (502)');
+		expect(accessReadError).not.toContain(sensitiveMarker);
 
 		const patchCms = module.createPolicyQuarantineRenameCms(async () => ({
 			status: 500,

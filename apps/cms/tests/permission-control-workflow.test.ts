@@ -23,17 +23,27 @@ function sha256(value: string): string {
 	return createHash('sha256').update(value).digest('hex');
 }
 
+function stepBlock(job: string, name: string, next?: string): string {
+	const start = job.indexOf(`      - name: ${name}\n`);
+	if (start < 0) throw new Error(`missing workflow step: ${name}`);
+	const nextOffset = next
+		? job.indexOf(`      - name: ${next}\n`, start + 1)
+		: -1;
+	const end = nextOffset >= 0 ? nextOffset : job.length;
+	return job.slice(start, end).trimEnd();
+}
+
 test('offers separate, unambiguous permission audit and targeted repair dispatch actions', () => {
 	const dispatch = workflow.slice(
 		workflow.indexOf('  workflow_dispatch:'),
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
+		'options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
 	);
 	expect(dispatch).toContain('read-only permission audit');
 	expect(dispatch).toContain('candidate diagnostic');
-	expect(dispatch).toContain('quarantine rename');
+	expect(dispatch).toContain('quarantine preview or rename');
 	expect(dispatch).toContain('targeted blog repair');
 });
 
@@ -109,10 +119,13 @@ test('permission-policy-candidate-diagnostic is main-only, production-gated, and
 	}
 });
 
-test('policy quarantine rename previews, applies exactly one name, verifies, then GET-only audits', () => {
+test('policy quarantine preview is separate and rename-only steps are statically mutation-gated', () => {
 	const rename = jobBlock(
 		'permission-policy-quarantine-rename',
 		'public-blog-translation-key-repair',
+	);
+	expect(rename).toContain(
+		"github.event.inputs.action == 'permission-policy-quarantine-preview'",
 	);
 	expect(rename).toContain(
 		"github.event.inputs.action == 'permission-policy-quarantine-rename'",
@@ -128,6 +141,17 @@ test('policy quarantine rename previews, applies exactly one name, verifies, the
 
 	const previewCommand =
 		'bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run';
+	const previewStepName = 'Preview guarded duplicate-policy quarantine rename';
+	const applyStepName = 'Apply and verify guarded duplicate-policy quarantine rename';
+	const readBackStepName = 'Prove duplicate-policy quarantine rename read-back';
+	const auditStepName =
+		'Audit all production Directus permissions after rename (read-only)';
+	const previewStep = stepBlock(rename, previewStepName, applyStepName);
+	const applyStep = stepBlock(rename, applyStepName, readBackStepName);
+	const readBackStep = stepBlock(rename, readBackStepName, auditStepName);
+	const auditStep = stepBlock(rename, auditStepName);
+	const renameOnlyCondition =
+		"if: github.event.inputs.action == 'permission-policy-quarantine-rename'";
 	const confirmation =
 		'--confirm=APPLY_PROD_PERMISSION_POLICY_QUARANTINE_RENAME';
 	const auditCommand =
@@ -141,6 +165,19 @@ test('policy quarantine rename previews, applies exactly one name, verifies, the
 	expect(apply).toBeGreaterThan(preview);
 	expect(readBack).toBeGreaterThan(apply);
 	expect(audit).toBeGreaterThan(readBack);
+	expect(previewStep).toContain(previewCommand);
+	expect(previewStep).not.toContain('if:');
+	expect(previewStep).not.toMatch(/--apply|--confirm=|audit-permission-control-drift/);
+	for (const guardedStep of [applyStep, readBackStep, auditStep]) {
+		expect(guardedStep).toContain(renameOnlyCondition);
+		expect(guardedStep).not.toContain(
+			'permission-policy-quarantine-preview',
+		);
+	}
+	expect(applyStep).toContain('--apply');
+	expect(applyStep).toContain(confirmation);
+	expect(readBackStep).toContain(previewCommand);
+	expect(auditStep).toContain(auditCommand);
 	expect(rename.match(/--apply/g)).toHaveLength(1);
 	expect(rename.match(/--confirm=/g)).toHaveLength(1);
 	expect(rename.match(/audit-permission-control-drift\.ts/g)).toHaveLength(1);

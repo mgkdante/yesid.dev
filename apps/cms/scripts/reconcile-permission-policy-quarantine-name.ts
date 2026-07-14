@@ -3,6 +3,8 @@
  * Rename one zero-permission duplicate production policy to an explicit
  * quarantine label. This reconciler never changes permissions or attachments.
  * Dry-run is the default; production writes require the exact confirmation.
+ * Raw /access rows are authoritative because Directus 12 policy roles/users
+ * aliases overlap and cannot prove independent attachment topology.
  */
 
 import { createLogger } from './lib/logger';
@@ -35,8 +37,6 @@ export interface PolicyRow {
 	description: unknown;
 	ip_access: unknown;
 	enforce_tfa: unknown;
-	roles: unknown;
-	users: unknown;
 }
 
 export interface MatchingPolicyRow {
@@ -50,6 +50,7 @@ export interface PermissionIdentityRow {
 
 export interface PolicyQuarantineRenameState {
 	policy: PolicyRow;
+	access: unknown;
 	permissions: PermissionIdentityRow[];
 	matchingPolicies: MatchingPolicyRow[];
 }
@@ -65,8 +66,9 @@ export interface PreservedPolicyFields {
 	enforce_tfa: unknown;
 }
 
-export interface AccessAttachmentProjection {
+export interface RawAccessProjection {
 	id: string;
+	policy: typeof TARGET_POLICY_ID;
 	role: string | null;
 	user: string | null;
 	sort: number | null;
@@ -81,12 +83,10 @@ export interface PolicyQuarantineRenamePlan {
 	permissionCount: number;
 	adminAccess: false;
 	appAccess: false;
-	roleAttachmentCount: number;
-	userAttachmentCount: number;
-	roleAttachmentIds: string[];
-	userAttachmentIds: string[];
-	roleAttachments: AccessAttachmentProjection[];
-	userAttachments: AccessAttachmentProjection[];
+	accessRowCount: number;
+	roleOnlyAccessCount: number;
+	userOnlyAccessCount: number;
+	accessRows: RawAccessProjection[];
 	sourceNamePolicyIds: string[];
 	quarantineNamePolicyIds: string[];
 	preservedFields: PreservedPolicyFields;
@@ -179,67 +179,104 @@ export function requireStaticAdminToken(
 	return token;
 }
 
-function canonicalAttachments(
-	policy: PolicyRow,
-	key: 'roles' | 'users',
-): AccessAttachmentProjection[] {
-	const attachments = policy[key];
-	if (!Array.isArray(attachments)) {
+function canonicalRawAccessRows(value: unknown): RawAccessProjection[] {
+	if (!Array.isArray(value)) {
 		throw new Error(
-			`${ERROR_PREFIX} ${key} attachments must be an array; refusing incomplete policy evidence`,
+			`${ERROR_PREFIX} raw access rows must be an array; refusing incomplete access evidence`,
 		);
 	}
-	const label = key === 'roles' ? 'role' : 'direct-user';
-	if (attachments.length !== 1) {
-		throw new Error(
-			`${ERROR_PREFIX} expected exactly one ${label} attachment; found ${attachments.length}`,
-		);
-	}
-	const projections = attachments.map((attachment, index) => {
+	const requiredKeys = ['id', 'policy', 'role', 'user', 'sort'] as const;
+	const projections = value.map((candidate, index) => {
 		if (
-			!attachment ||
-			typeof attachment !== 'object' ||
-			Array.isArray(attachment) ||
-			typeof (attachment as { id?: unknown }).id !== 'string' ||
-			(attachment as { id: string }).id.length === 0
+			!candidate ||
+			typeof candidate !== 'object' ||
+			Array.isArray(candidate) ||
+			(Object.getPrototypeOf(candidate) !== Object.prototype &&
+				Object.getPrototypeOf(candidate) !== null)
 		) {
 			throw new Error(
-				`${ERROR_PREFIX} ${label} attachment ${index} must expose a non-empty junction id`,
+				`${ERROR_PREFIX} raw access row ${index} must be a plain object`,
 			);
 		}
-		const row = attachment as Record<string, unknown>;
+		const row = candidate as Record<string, unknown>;
+		for (const key of requiredKeys) {
+			if (
+				!Object.prototype.hasOwnProperty.call(row, key) ||
+				row[key] === undefined
+			) {
+				throw new Error(
+					`${ERROR_PREFIX} raw access row ${index} is missing required field ${key}`,
+				);
+			}
+		}
+		if (typeof row.id !== 'string' || row.id.length === 0) {
+			throw new Error(
+				`${ERROR_PREFIX} raw access row ${index} id must be a non-empty scalar string`,
+			);
+		}
+		if (typeof row.policy !== 'string' || row.policy.length === 0) {
+			throw new Error(
+				`${ERROR_PREFIX} raw access row ${index} policy must be a non-empty scalar string`,
+			);
+		}
+		if (row.policy !== TARGET_POLICY_ID) {
+			throw new Error(
+				`${ERROR_PREFIX} raw access row ${index} belongs to an unexpected policy`,
+			);
+		}
+		if (
+			row.role !== null &&
+			(typeof row.role !== 'string' || row.role.length === 0)
+		) {
+			throw new Error(
+				`${ERROR_PREFIX} raw access row ${index} role must be a non-empty scalar string or null`,
+			);
+		}
+		if (
+			row.user !== null &&
+			(typeof row.user !== 'string' || row.user.length === 0)
+		) {
+			throw new Error(
+				`${ERROR_PREFIX} raw access row ${index} user must be a non-empty scalar string or null`,
+			);
+		}
+		if ((row.role === null) === (row.user === null)) {
+			throw new Error(
+				`${ERROR_PREFIX} raw access row ${index} must have exactly one of role or user non-null`,
+			);
+		}
 		if (
 			row.sort !== null &&
 			(typeof row.sort !== 'number' || !Number.isInteger(row.sort))
 		) {
 			throw new Error(
-				`${ERROR_PREFIX} ${label} attachment ${index} must expose an integer or null sort`,
-			);
-		}
-		if (
-			key === 'roles' &&
-			(typeof row.role !== 'string' || row.role.length === 0 || row.user !== null)
-		) {
-			throw new Error(
-				`${ERROR_PREFIX} role attachment ${index} must expose a scalar role id and null user`,
-			);
-		}
-		if (
-			key === 'users' &&
-			(typeof row.user !== 'string' || row.user.length === 0 || row.role !== null)
-		) {
-			throw new Error(
-				`${ERROR_PREFIX} direct-user attachment ${index} must expose a scalar user id and null role`,
+				`${ERROR_PREFIX} raw access row ${index} sort must be an integer or null`,
 			);
 		}
 		return {
-			id: row.id as string,
+			id: row.id,
+			policy: row.policy as typeof TARGET_POLICY_ID,
 			role: row.role as string | null,
 			user: row.user as string | null,
 			sort: row.sort as number | null,
 		};
 	});
-	return projections.sort((left, right) => left.id.localeCompare(right.id));
+	if (new Set(projections.map((row) => row.id)).size !== projections.length) {
+		throw new Error(`${ERROR_PREFIX} duplicate raw access row id`);
+	}
+	projections.sort((left, right) => left.id.localeCompare(right.id));
+	const roleOnlyCount = projections.filter((row) => row.role !== null).length;
+	const userOnlyCount = projections.filter((row) => row.user !== null).length;
+	if (
+		projections.length !== 1 ||
+		roleOnlyCount !== 1 ||
+		userOnlyCount !== 0
+	) {
+		throw new Error(
+			`${ERROR_PREFIX} expected exactly one role-only raw access row and zero user-only rows; found roles=${roleOnlyCount} users=${userOnlyCount}`,
+		);
+	}
+	return projections;
 }
 
 function sameStrings(left: readonly string[], right: readonly string[]): boolean {
@@ -323,10 +360,13 @@ export function buildPolicyQuarantineRenamePlan(
 			`${ERROR_PREFIX} app_access must be exactly false; refusing effective app access`,
 		);
 	}
-	const roleAttachments = canonicalAttachments(state.policy, 'roles');
-	const userAttachments = canonicalAttachments(state.policy, 'users');
-	const roleAttachmentIds = roleAttachments.map((attachment) => attachment.id);
-	const userAttachmentIds = userAttachments.map((attachment) => attachment.id);
+	const accessRows = canonicalRawAccessRows(state.access);
+	const roleOnlyAccessCount = accessRows.filter(
+		(row) => row.role !== null,
+	).length;
+	const userOnlyAccessCount = accessRows.filter(
+		(row) => row.user !== null,
+	).length;
 	const preservedFields = capturePreservedFields(state.policy);
 	if (!Array.isArray(state.matchingPolicies)) {
 		throw new Error(
@@ -384,12 +424,10 @@ export function buildPolicyQuarantineRenamePlan(
 		permissionCount: 0,
 		adminAccess: false,
 		appAccess: false,
-		roleAttachmentCount: roleAttachmentIds.length,
-		userAttachmentCount: userAttachmentIds.length,
-		roleAttachmentIds,
-		userAttachmentIds,
-		roleAttachments,
-		userAttachments,
+		accessRowCount: accessRows.length,
+		roleOnlyAccessCount,
+		userOnlyAccessCount,
+		accessRows,
 		sourceNamePolicyIds,
 		quarantineNamePolicyIds,
 		preservedFields,
@@ -403,8 +441,9 @@ export function formatPolicyQuarantineRenamePlan(
 	const evidence =
 		`admin_access=${plan.adminAccess} app_access=${plan.appAccess} ` +
 		`permissions=${plan.permissionCount} ` +
-		`role_attachments=${plan.roleAttachmentCount} ` +
-		`user_attachments=${plan.userAttachmentCount} ` +
+		`access_rows=${plan.accessRowCount} ` +
+		`role_only_access=${plan.roleOnlyAccessCount} ` +
+		`user_only_access=${plan.userOnlyAccessCount} ` +
 		`writes_sent=${writesSent}`;
 	if (plan.action === 'noop') {
 		return `NOOP policy_id=${JSON.stringify(plan.policyId)} exact quarantine name already present ${evidence}`;
@@ -440,34 +479,9 @@ export async function applyAndVerifyPolicyQuarantineRename(
 				`${ERROR_PREFIX} post-apply verification failed: exact target name was not read back`,
 			);
 		}
-		if (after.roleAttachmentCount !== before.roleAttachmentCount) {
+		if (!isDeepStrictEqual(after.accessRows, before.accessRows)) {
 			throw new Error(
-				`${ERROR_PREFIX} post-apply verification failed: role attachment count changed from ${before.roleAttachmentCount} to ${after.roleAttachmentCount}`,
-			);
-		}
-		if (!sameStrings(after.roleAttachmentIds, before.roleAttachmentIds)) {
-			throw new Error(
-				`${ERROR_PREFIX} post-apply verification failed: role attachment ids changed`,
-			);
-		}
-		if (after.userAttachmentCount !== before.userAttachmentCount) {
-			throw new Error(
-				`${ERROR_PREFIX} post-apply verification failed: user attachment count changed from ${before.userAttachmentCount} to ${after.userAttachmentCount}`,
-			);
-		}
-		if (!sameStrings(after.userAttachmentIds, before.userAttachmentIds)) {
-			throw new Error(
-				`${ERROR_PREFIX} post-apply verification failed: user attachment ids changed`,
-			);
-		}
-		if (!isDeepStrictEqual(after.roleAttachments, before.roleAttachments)) {
-			throw new Error(
-				`${ERROR_PREFIX} post-apply verification failed: role attachment projection changed`,
-			);
-		}
-		if (!isDeepStrictEqual(after.userAttachments, before.userAttachments)) {
-			throw new Error(
-				`${ERROR_PREFIX} post-apply verification failed: user attachment projection changed`,
+				`${ERROR_PREFIX} post-apply verification failed: raw access projection changed`,
 			);
 		}
 		if (!isDeepStrictEqual(after.preservedFields, before.preservedFields)) {
@@ -515,9 +529,17 @@ function policyPath(): string {
 	const params = new URLSearchParams();
 	params.set(
 		'fields',
-		'id,name,admin_access,app_access,icon,description,ip_access,enforce_tfa,roles.id,roles.role,roles.user,roles.sort,users.id,users.role,users.user,users.sort',
+		'id,name,admin_access,app_access,icon,description,ip_access,enforce_tfa',
 	);
 	return `/policies/${encodeURIComponent(TARGET_POLICY_ID)}?${params.toString()}`;
+}
+
+function accessPath(): string {
+	const params = new URLSearchParams();
+	params.set('fields', 'id,policy,role,user,sort');
+	params.set('filter[policy][_eq]', TARGET_POLICY_ID);
+	params.set('limit', '-1');
+	return `/access?${params.toString()}`;
 }
 
 function matchingPoliciesPath(): string {
@@ -546,6 +568,10 @@ export function createPolicyQuarantineRenameCms(
 				await api('GET', policyPath()),
 				`GET /policies/${TARGET_POLICY_ID}`,
 			);
+			const access = dataRows<unknown>(
+				await api('GET', accessPath()),
+				'GET /access',
+			);
 			const permissions = dataRows<PermissionIdentityRow>(
 				await api('GET', permissionsPath()),
 				'GET /permissions',
@@ -554,7 +580,7 @@ export function createPolicyQuarantineRenameCms(
 				await api('GET', matchingPoliciesPath()),
 				'GET /policies name topology',
 			);
-			return { policy, permissions, matchingPolicies };
+			return { policy, access, permissions, matchingPolicies };
 		},
 		patch: async (id, body) => {
 			if (id !== TARGET_POLICY_ID) {
