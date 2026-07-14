@@ -16,6 +16,8 @@ name: cms
 #   of the repository permission declaration with production.
 # - permission-policy-candidate-diagnostic (workflow_dispatch): GET-only
 #   candidate evidence when a desired policy name is duplicated in production.
+# - permission-policy-quarantine-rename (workflow_dispatch): guarded name-only
+#   quarantine rename for one proven zero-permission duplicate policy.
 # - public-blog-translation-key-repair (workflow_dispatch): audits, applies one
 #   guarded fields-only permission repair, then audits again.
 #
@@ -43,9 +45,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action: diff preview, push config apply, legal notice remediation, read-only permission audit, candidate diagnostic, or targeted blog repair'
+        description: 'Action: diff preview, push config apply, legal notice remediation, read-only permission audit, candidate diagnostic, quarantine rename, or targeted blog repair'
         type: choice
-        options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, public-blog-translation-key-repair]
+        options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-rename, public-blog-translation-key-repair]
         default: diff
         required: true
       include_permissions:
@@ -233,6 +235,54 @@ jobs:
         env:
           DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: bun scripts/diagnose-permission-policy-candidates.ts --target=prod --dry-run
+
+  permission-policy-quarantine-rename:
+    # Guarded name-only reconciliation for one immutable policy id. The script
+    # refuses effective-access flags, permissions, unexpected name topology,
+    # or any role/user attachment-identity change.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'permission-policy-quarantine-rename' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    env:
+      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Preview guarded duplicate-policy quarantine rename
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run
+
+      - name: Apply and verify guarded duplicate-policy quarantine rename
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: >-
+          bun scripts/reconcile-permission-policy-quarantine-name.ts
+          --target=prod
+          --apply
+          --confirm=APPLY_PROD_PERMISSION_POLICY_QUARANTINE_RENAME
+
+      - name: Prove duplicate-policy quarantine rename read-back
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run
+
+      - name: Audit all production Directus permissions after rename (read-only)
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
 
   public-blog-translation-key-repair:
     # One targeted public blog_posts:read fields repair. The reconciler refuses

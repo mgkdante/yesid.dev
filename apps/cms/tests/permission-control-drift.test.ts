@@ -368,4 +368,22 @@ describe('read-only production permission audit adapter', () => {
 		expect(calls[1]?.path).toContain('fields=id%2Cpolicy%2Ccollection%2Caction%2Cfields%2Cpermissions%2Cvalidation%2Cpresets');
 		expect(calls[1]?.path).toContain('limit=-1');
 	});
+
+	it('reports HTTP status without leaking upstream response bodies', async () => {
+		const sensitiveMarker = 'UPSTREAM_AUDIT_BODY_MUST_NOT_LEAK';
+		const message = await loadPermissionAudit(
+			async () => ({
+				status: 503,
+				json: { errors: [{ message: sensitiveMarker }] },
+			}),
+			repoPolicies,
+			[desired('repo-public', 'blog_posts', 'read')],
+		).then(
+			() => 'resolved without rejection',
+			(error) => (error instanceof Error ? error.message : String(error)),
+		);
+
+		expect(message).toContain('GET /policies failed (503)');
+		expect(message).not.toContain(sensitiveMarker);
+	});
 });
