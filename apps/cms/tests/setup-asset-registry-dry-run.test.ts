@@ -6,6 +6,14 @@ import {
 	ASSET_SEMANTIC_KEY_PATTERN,
 	SHA256_HEX_PATTERN,
 } from '@repo/shared';
+import {
+	ASSET_REGISTRY_READ_FIELDS,
+	buildAssetEditorPresetPayloads,
+	buildDesiredAssetPermissions,
+	type AssetEditorPolicyName,
+	type AssetPermissionRow,
+	type AssetPresetRow,
+} from '../scripts/lib/assets/editor-presets';
 import type { SchemaStep } from '../scripts/lib/schema-apply';
 
 const originalFetch = globalThis.fetch;
@@ -440,6 +448,79 @@ function relationPayload(plan: readonly SchemaStep[], collection: string, field:
 	return payload(step);
 }
 
+const CONFIG_POLICY_IDS: Record<AssetEditorPolicyName, string> = {
+	'$t:public_label': 'policy-public',
+	'Build Bot — content read': 'policy-build',
+	'Human Editor': 'policy-human',
+	'Ops Bot content ops': 'policy-ops',
+};
+
+function configurationHarness(options: {
+	permissions?: AssetPermissionRow[];
+	presets?: AssetPresetRow[];
+	persistCreates?: boolean;
+	responseFor?: (method: string, path: string, body: unknown) => { status: number; json: unknown } | undefined;
+} = {}) {
+	const roles = [{ id: 'role-editor', name: 'Editor' }];
+	const policies = [
+		{
+			id: CONFIG_POLICY_IDS['$t:public_label'],
+			name: '$t:public_label',
+			admin_access: false,
+			app_access: false,
+			roles: [{ role: null }],
+		},
+		{
+			id: CONFIG_POLICY_IDS['Build Bot — content read'],
+			name: 'Build Bot — content read',
+			admin_access: false,
+			app_access: false,
+			roles: [],
+		},
+		{
+			id: CONFIG_POLICY_IDS['Human Editor'],
+			name: 'Human Editor',
+			admin_access: false,
+			app_access: true,
+			roles: [{ role: 'role-editor' }],
+		},
+		{
+			id: CONFIG_POLICY_IDS['Ops Bot content ops'],
+			name: 'Ops Bot content ops',
+			admin_access: false,
+			app_access: false,
+			roles: [],
+		},
+	];
+	const permissions = [...(options.permissions ?? [])];
+	const presets = [...(options.presets ?? [])];
+	const calls: Array<{ method: string; path: string; body: unknown }> = [];
+	const request = (async (
+		_context: unknown,
+		method: string,
+		path: string,
+		body?: unknown,
+	) => {
+		calls.push({ method, path, body });
+		const override = options.responseFor?.(method, path, body);
+		if (override) return override;
+		if (method === 'GET' && path.startsWith('/roles?')) return { status: 200, json: { data: roles } };
+		if (method === 'GET' && path.startsWith('/policies?')) return { status: 200, json: { data: policies } };
+		if (method === 'GET' && path.startsWith('/permissions?')) return { status: 200, json: { data: permissions } };
+		if (method === 'GET' && path.startsWith('/presets?')) return { status: 200, json: { data: presets } };
+		if (method === 'POST' && path === '/permissions') {
+			if (options.persistCreates !== false) permissions.push({ id: permissions.length + 1, ...(body as any) });
+			return { status: 201, json: { data: { id: permissions.length } } };
+		}
+		if (method === 'POST' && path === '/presets') {
+			if (options.persistCreates !== false) presets.push({ id: presets.length + 1, ...(body as any) });
+			return { status: 201, json: { data: { id: presets.length } } };
+		}
+		return { status: 204, json: null };
+	}) as typeof import('../scripts/lib/schema-apply').rest;
+	return { calls, permissions, policies, presets, request, roles };
+}
+
 describe('setup-asset-registry-schema dry-run plan', () => {
 	it('imports and builds a deterministic dry-run plan without network access', () => {
 		expect(importFetchCalls).toBe(0);
@@ -519,6 +600,21 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 		const plan = buildAssetRegistryPlan();
 		for (const [collection, fields] of Object.entries(EXPECTED_FIELDS)) {
 			expect(fieldNames(plan, collection)).toEqual([...fields].sort());
+		}
+	});
+
+	it('keeps every permission read list equal to the schema primary key plus declared fields', () => {
+		const plan = buildAssetRegistryPlan();
+		for (const [collection, permissionFields] of Object.entries(ASSET_REGISTRY_READ_FIELDS)) {
+			const collectionStep = plan.find(
+				(step) => step.kind === 'collection' && step.target === collection,
+			);
+			if (!collectionStep) throw new Error(`Missing collection step: ${collection}`);
+			const primaryKey = (payload(collectionStep).fields as Payload[])[0]?.field;
+			const declaredFields = plan
+				.filter((step) => step.kind === 'field' && step.path === `/fields/${collection}`)
+				.map((step) => payload(step).field);
+			expect([primaryKey, ...declaredFields]).toEqual([...permissionFields]);
 		}
 	});
 
@@ -909,6 +1005,7 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 		let fetchCalls = 0;
 		let tokenCalls = 0;
 		let requestCalls = 0;
+		const messages: string[] = [];
 		globalThis.fetch = (async () => {
 			fetchCalls += 1;
 			throw new Error('dry-run must not fetch');
@@ -924,9 +1021,10 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 					requestCalls += 1;
 					return { status: 204, json: null };
 				}) as typeof import('../scripts/lib/schema-apply').rest,
-				logger: { info: () => undefined },
+				logger: { info: (message) => messages.push(message) },
 			});
 			expect(result).toEqual({ mode: 'dry-run', planLength: buildAssetRegistryPlan().length });
+			expect(messages).toContain('configuration: 31 permissions, 10 Editor bookmarks');
 			expect({ fetchCalls, tokenCalls, requestCalls }).toEqual({
 				fetchCalls: 0,
 				tokenCalls: 0,
@@ -939,13 +1037,14 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 
 	it('uses an admin-only token path for explicit DEV apply', async () => {
 		let tokenOptions: unknown;
+		const harness = configurationHarness();
 		const result = await runAssetRegistryCli(['--apply'], {
 			resolveUrl: () => 'https://cms.dev.yesid.dev',
 			getToken: async (_url, options) => {
 				tokenOptions = options;
 				return 'admin';
 			},
-			request: (async () => ({ status: 204, json: null })) as typeof import('../scripts/lib/schema-apply').rest,
+			request: harness.request,
 			logger: { info: () => undefined },
 		});
 		expect(tokenOptions).toEqual({ allowBuildToken: false });
@@ -953,7 +1052,177 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 			mode: 'apply',
 			planLength: buildAssetRegistryPlan().length,
 			result: { created: buildAssetRegistryPlan().length, existing: 0, failed: 0 },
+			configuration: {
+				permissions: { created: 31, existing: 0 },
+				presets: { created: 10, existing: 0 },
+			},
 		});
+	});
+
+	it('applies schema first, creates permissions then presets, and re-reads to all-noop convergence', async () => {
+		const harness = configurationHarness();
+		const result = await runAssetRegistryCli(['--apply'], {
+			resolveUrl: () => 'https://cms.dev.yesid.dev',
+			getToken: async () => 'admin',
+			request: harness.request,
+			logger: { info: () => undefined },
+		});
+		const planLength = buildAssetRegistryPlan().length;
+		expect(harness.calls.slice(0, planLength).every((call) => call.method === 'POST')).toBe(true);
+		expect(harness.calls.slice(0, planLength).map((call) => call.path)).not.toContain('/permissions');
+		const configurationCalls = harness.calls.slice(planLength);
+		expect(configurationCalls.slice(0, 4).map((call) => `${call.method} ${call.path.split('?')[0]}`)).toEqual([
+			'GET /roles',
+			'GET /policies',
+			'GET /permissions',
+			'GET /presets',
+		]);
+		expect(configurationCalls.slice(4, 35).map((call) => `${call.method} ${call.path}`)).toEqual(
+			Array(31).fill('POST /permissions'),
+		);
+		expect(configurationCalls.slice(35, 45).map((call) => `${call.method} ${call.path}`)).toEqual(
+			Array(10).fill('POST /presets'),
+		);
+		expect(configurationCalls.slice(45).map((call) => `${call.method} ${call.path.split('?')[0]}`)).toEqual([
+			'GET /roles',
+			'GET /policies',
+			'GET /permissions',
+			'GET /presets',
+		]);
+		expect(harness.calls.every((call) => call.method === 'GET' || call.method === 'POST')).toBe(true);
+		expect(result).toMatchObject({
+			configuration: {
+				permissions: { created: 31, existing: 0 },
+				presets: { created: 10, existing: 0 },
+			},
+		});
+	});
+
+	it('uses a create/noop-only second pass when governed configuration already exists', async () => {
+		const permissions = buildDesiredAssetPermissions(CONFIG_POLICY_IDS).map((payload, index) => ({
+			id: index + 1,
+			...structuredClone(payload),
+		}));
+		const presets = buildAssetEditorPresetPayloads('role-editor').map((payload, index) => ({
+			id: index + 1,
+			...structuredClone(payload),
+		}));
+		const harness = configurationHarness({ permissions, presets });
+		const result = await runAssetRegistryCli(['--apply'], {
+			resolveUrl: () => 'https://cms.dev.yesid.dev',
+			getToken: async () => 'admin',
+			request: harness.request,
+			logger: { info: () => undefined },
+		});
+		expect(harness.calls.filter((call) => call.path === '/permissions' || call.path === '/presets')).toEqual([]);
+		expect(result).toMatchObject({
+			configuration: {
+				permissions: { created: 0, existing: 31 },
+				presets: { created: 0, existing: 10 },
+			},
+		});
+	});
+
+	it('refuses PROD before credentials or requests', async () => {
+		let tokenCalls = 0;
+		let requests = 0;
+		await expect(
+			runAssetRegistryCli(['--apply'], {
+				resolveUrl: () => 'https://cms.yesid.dev',
+				getToken: async () => {
+					tokenCalls += 1;
+					return 'admin';
+				},
+				request: (async () => {
+					requests += 1;
+					return { status: 204, json: null };
+				}) as typeof import('../scripts/lib/schema-apply').rest,
+				logger: { info: () => undefined },
+			}),
+		).rejects.toThrow(/Refusing non-dev CMS/);
+		expect({ tokenCalls, requests }).toEqual({ tokenCalls: 0, requests: 0 });
+	});
+
+	it('plans the complete configuration before refusing topology, duplicate, or unexpected rows without config writes', async () => {
+		const exact = buildDesiredAssetPermissions(CONFIG_POLICY_IDS).map((payload, index) => ({
+			id: index + 1,
+			...structuredClone(payload),
+		}));
+		const cases: AssetPermissionRow[][] = [
+			[exact[0]!, { ...exact[0]!, id: 999 }],
+			[{
+				id: 999,
+				policy: CONFIG_POLICY_IDS['$t:public_label'],
+				collection: 'asset_records',
+				action: 'read',
+				fields: ['id'],
+				permissions: {},
+				validation: null,
+				presets: null,
+			}],
+		];
+		for (const permissions of cases) {
+			const harness = configurationHarness({ permissions });
+			await expect(
+				runAssetRegistryCli(['--apply'], {
+					resolveUrl: () => 'https://cms.dev.yesid.dev',
+					getToken: async () => 'admin',
+					request: harness.request,
+					logger: { info: () => undefined },
+				}),
+			).rejects.toThrow();
+			expect(harness.calls.filter((call) => call.path === '/permissions' || call.path === '/presets')).toEqual([]);
+		}
+
+		const topology = configurationHarness({
+			responseFor: (method, path) =>
+				method === 'GET' && path.startsWith('/policies?')
+					? {
+							status: 200,
+							json: {
+								data: configurationHarness().policies.map((policy) =>
+									policy.name === 'Human Editor' ? { ...policy, app_access: false } : policy,
+								),
+							},
+						}
+					: undefined,
+		});
+		await expect(
+			runAssetRegistryCli(['--apply'], {
+				resolveUrl: () => 'https://cms.dev.yesid.dev',
+				getToken: async () => 'admin',
+				request: topology.request,
+				logger: { info: () => undefined },
+			}),
+		).rejects.toThrow(/Human Editor/);
+		expect(topology.calls.filter((call) => call.path === '/permissions' || call.path === '/presets')).toEqual([]);
+	});
+
+	it('fails configuration non-array responses and failed re-read convergence', async () => {
+		const malformed = configurationHarness({
+			responseFor: (method, path) =>
+				method === 'GET' && path.startsWith('/roles?')
+					? { status: 200, json: { data: {} } }
+					: undefined,
+		});
+		await expect(
+			runAssetRegistryCli(['--apply'], {
+				resolveUrl: () => 'https://cms.dev.yesid.dev',
+				getToken: async () => 'admin',
+				request: malformed.request,
+				logger: { info: () => undefined },
+			}),
+		).rejects.toThrow(/non-array/);
+
+		const nonConverging = configurationHarness({ persistCreates: false });
+		await expect(
+			runAssetRegistryCli(['--apply'], {
+				resolveUrl: () => 'https://cms.dev.yesid.dev',
+				getToken: async () => 'admin',
+				request: nonConverging.request,
+				logger: { info: () => undefined },
+			}),
+		).rejects.toThrow(/converge/);
 	});
 
 	it('guards DEV before the first request', async () => {

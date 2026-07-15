@@ -12,6 +12,11 @@ import {
 	SHA256_HEX_PATTERN,
 } from '@repo/shared';
 import { getAdminToken } from './lib/auth';
+import {
+	applyAssetEditorConfigurationPlan,
+	loadAssetEditorConfigurationPlan,
+	type AssetConfigurationApi,
+} from './lib/assets/editor-presets';
 import { createLogger } from './lib/logger';
 import {
 	type ApplyContext,
@@ -758,6 +763,10 @@ export async function runAssetRegistryCli(
 			mode: 'apply';
 			planLength: number;
 			result: { created: number; existing: number; failed: number };
+			configuration: {
+				permissions: { created: number; existing: number };
+				presets: { created: number; existing: number };
+			};
 	  }
 > {
 	const { apply } = parseFlags(argv);
@@ -767,6 +776,7 @@ export async function runAssetRegistryCli(
 	const logger = dependencies.logger ?? log;
 	logger.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
 	logger.info(`plan: ${plan.length} steps`);
+	logger.info('configuration: 31 permissions, 10 Editor bookmarks');
 	for (const step of plan) logger.info(`  ${step.kind} ${step.method} ${step.path} -> ${step.target}`);
 
 	if (!apply) {
@@ -775,15 +785,34 @@ export async function runAssetRegistryCli(
 	}
 
 	const token = await (dependencies.getToken ?? getAdminToken)(url, { allowBuildToken: false });
+	const request = dependencies.request ?? rest;
+	const context = { directusUrl: url, token };
 	const result = await applyAssetRegistryPlan(
 		plan,
-		{ directusUrl: url, token },
-		dependencies.request ?? rest,
+		context,
+		request,
 	);
 	logger.info(
 		`apply complete: created=${result.created} existing=${result.existing} failed=${result.failed}`,
 	);
-	return { mode: 'apply', planLength: plan.length, result };
+	const api: AssetConfigurationApi = (method, path, body) =>
+		request(context, method, path, body);
+	const configurationPlan = await loadAssetEditorConfigurationPlan(api);
+	const configuration = {
+		permissions: {
+			created: configurationPlan.permissionEntries.filter((entry) => entry.action === 'create').length,
+			existing: configurationPlan.permissionEntries.filter((entry) => entry.action === 'noop').length,
+		},
+		presets: {
+			created: configurationPlan.presetEntries.filter((entry) => entry.action === 'create').length,
+			existing: configurationPlan.presetEntries.filter((entry) => entry.action === 'noop').length,
+		},
+	};
+	await applyAssetEditorConfigurationPlan(api, configurationPlan);
+	logger.info(
+		`configuration complete: permissions created=${configuration.permissions.created} existing=${configuration.permissions.existing}; presets created=${configuration.presets.created} existing=${configuration.presets.existing}`,
+	);
+	return { mode: 'apply', planLength: plan.length, result, configuration };
 }
 
 if (import.meta.main) {
