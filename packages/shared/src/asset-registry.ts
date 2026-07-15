@@ -1,7 +1,8 @@
-const ASSET_SEMANTIC_KEY_PATTERN =
-	/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*){2,4}$/;
+export const ASSET_SEMANTIC_KEY_PATTERN: RegExp = Object.freeze(
+	/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*){2,4}$/,
+);
 const USAGE_KEY_PATTERN = /^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*){2,}$/;
-const SHA256_HEX_PATTERN = /^[0-9a-f]{64}$/;
+export const SHA256_HEX_PATTERN: RegExp = Object.freeze(/^[0-9a-f]{64}$/);
 const LOWERCASE_UUID_PATTERN =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
