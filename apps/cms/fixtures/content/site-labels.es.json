@@ -1,6 +1,6 @@
 {
 	"ui_analytics_consent_title": "¿Puedo contar esta visita?",
-	"ui_analytics_consent_description": "Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.",
+	"ui_analytics_consent_description": "Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.",
 	"ui_analytics_consent_accept_label": "Permitir analítica",
 	"ui_analytics_consent_decline_label": "No, gracias",
 	"ui_analytics_consent_settings_label": "Preferencias de analítica",
