@@ -3,6 +3,7 @@
 // Apps consume via: `import type { Service, LocalizedString } from '@repo/shared'`.
 
 export * from './assets';
+export * from './asset-registry';
 export * from './types';
 export * from './utils';
 export * from './schemas';
