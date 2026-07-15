@@ -24,7 +24,13 @@ export const LEGAL_SLUGS = [
 ] as const;
 export const PUBLIC_CONTACT_EMAIL = 'contact@yesid.dev';
 export const INTERNAL_CONTACT_EMAIL = 'admin@yesid.dev';
-export const REVISION_DATE = '2026-07-12';
+export const REVISION_DATES = {
+	privacy: '2026-07-15',
+	terms: '2026-07-12',
+	cookies: '2026-07-15',
+	accessibility: '2026-07-12',
+	notice: '2026-07-13',
+} as const satisfies Record<(typeof LEGAL_SLUGS)[number], string>;
 export const MAX_CONTENT_PATCHES = 15;
 
 const PUBLIC_CONTACT_COUNTS: Record<LegalSlug, number> = {
@@ -36,9 +42,9 @@ const PUBLIC_CONTACT_COUNTS: Record<LegalSlug, number> = {
 };
 
 const PREVIOUS_REVISION_DATES: Record<LegalSlug, string> = {
-	privacy: '2026-07-11',
+	privacy: '2026-07-12',
 	terms: '2026-07-09',
-	cookies: '2026-07-11',
+	cookies: '2026-07-12',
 	accessibility: '2026-07-09',
 	notice: '2026-07-09',
 };
@@ -163,13 +169,14 @@ export function desiredContactDoc(slug: LegalSlug, locale: Locale): EditorDoc {
 	}
 	const doc = toBlockEditorDoc(slug, locale, localeDraft.blocks) as EditorDoc;
 	const expectedCount = PUBLIC_CONTACT_COUNTS[slug];
+	const revisionDate = REVISION_DATES[slug];
 	if (
 		countText(doc, PUBLIC_CONTACT_EMAIL) !== expectedCount ||
 		countText(doc, INTERNAL_CONTACT_EMAIL) !== 0 ||
-		countText(doc, REVISION_DATE) !== 1
+		countText(doc, revisionDate) !== 1
 	) {
 		throw new Error(
-			`[legal-public-contact] ${slug}.${locale} source must contain exactly ${expectedCount} public contact addresses, no internal address, and one ${REVISION_DATE} revision date`,
+			`[legal-public-contact] ${slug}.${locale} source must contain exactly ${expectedCount} public contact addresses, no internal address, and one ${revisionDate} revision date`,
 		);
 	}
 	return doc;
@@ -180,20 +187,21 @@ export function previousRevisionContactDoc(
 	locale: Locale,
 ): EditorDoc {
 	const doc = clone(desiredContactDoc(slug, locale));
+	const revisionDate = REVISION_DATES[slug];
 	let replacements = 0;
 	for (const block of doc.blocks) {
 		if (typeof block.data.text === 'string') {
-			const count = block.data.text.split(REVISION_DATE).length - 1;
+			const count = block.data.text.split(revisionDate).length - 1;
 			replacements += count;
 			block.data.text = block.data.text.replaceAll(
-				REVISION_DATE,
+				revisionDate,
 				PREVIOUS_REVISION_DATES[slug],
 			);
 		}
 	}
 	if (
 		replacements !== 1 ||
-		countText(doc, REVISION_DATE) !== 0 ||
+		countText(doc, revisionDate) !== 0 ||
 		countText(doc, PREVIOUS_REVISION_DATES[slug]) !== 1 ||
 		countText(doc, INTERNAL_CONTACT_EMAIL) !== 0
 	) {

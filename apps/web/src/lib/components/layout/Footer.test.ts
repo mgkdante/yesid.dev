@@ -6,10 +6,16 @@ const consentMock = vi.hoisted(() => {
 		choice: 'unknown' | 'granted' | 'denied';
 		ready: boolean;
 		available: boolean;
+		preferencesOpen: boolean;
 	};
 	type Subscriber = (state: State) => void;
 
-	let state: State = { choice: 'unknown', ready: false, available: false };
+	let state: State = {
+		choice: 'unknown',
+		ready: false,
+		available: false,
+		preferencesOpen: false,
+	};
 	const subscribers = new Set<Subscriber>();
 	const openPreferences = vi.fn();
 
@@ -27,10 +33,33 @@ const consentMock = vi.hoisted(() => {
 			for (const subscriber of subscribers) subscriber(state);
 		},
 		reset() {
-			state = { choice: 'unknown', ready: false, available: false };
+			state = {
+				choice: 'unknown',
+				ready: false,
+				available: false,
+				preferencesOpen: false,
+			};
 			openPreferences.mockClear();
 		},
 		openPreferences,
+	};
+});
+
+const controlsMock = vi.hoisted(() => {
+	let enabled: boolean | undefined;
+	let showBanner: boolean | undefined;
+
+	return {
+		get enabled() {
+			return enabled;
+		},
+		get showBanner() {
+			return showBanner;
+		},
+		set(nextEnabled?: boolean, nextShowBanner?: boolean) {
+			enabled = nextEnabled;
+			showBanner = nextShowBanner;
+		},
 	};
 });
 
@@ -47,6 +76,12 @@ vi.mock('$lib/content', async (importOriginal) => {
 			ui: {
 				...actual.siteLabels.ui,
 				analyticsConsent: {
+					get enabled() {
+						return controlsMock.enabled;
+					},
+					get showBanner() {
+						return controlsMock.showBanner;
+					},
 					settingsLabel: {
 						en: 'Analytics preferences',
 						fr: 'Préférences d’analytique',
@@ -60,7 +95,10 @@ vi.mock('$lib/content', async (importOriginal) => {
 
 import Footer from './Footer.svelte';
 
-beforeEach(() => consentMock.reset());
+beforeEach(() => {
+	controlsMock.set();
+	consentMock.reset();
+});
 afterEach(() => cleanup());
 
 describe('Footer', () => {
@@ -183,7 +221,12 @@ describe('Footer analytics preferences', () => {
 		['fr', 'Préférences d’analytique'],
 		['es', 'Preferencias de analítica'],
 	] as const)('renders the %s settings label as a button', (locale, label) => {
-		consentMock.set({ choice: 'unknown', ready: true, available: true });
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 
 		render(Footer, { props: { locale } });
 
@@ -194,7 +237,12 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it('opens analytics preferences exactly once', async () => {
-		consentMock.set({ choice: 'granted', ready: true, available: true });
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		render(Footer);
 
 		await fireEvent.click(screen.getByTestId('analytics-preferences'));
@@ -203,10 +251,38 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it.each([
-		{ choice: 'unknown', ready: false, available: true },
-		{ choice: 'unknown', ready: true, available: false },
+		{ choice: 'unknown', ready: false, available: true, preferencesOpen: false },
+		{ choice: 'unknown', ready: true, available: false, preferencesOpen: false },
 	] as const)('hides preferences until production-host state is ready', (state) => {
 		consentMock.set(state);
+
+		render(Footer);
+
+		expect(screen.queryByTestId('analytics-preferences')).toBeNull();
+	});
+
+	it('keeps preferences available in enabled hidden mode after a saved denial', () => {
+		controlsMock.set(true, false);
+		consentMock.set({
+			choice: 'denied',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
+
+		render(Footer);
+
+		expect(screen.getByTestId('analytics-preferences')).toBeInTheDocument();
+	});
+
+	it('hides preferences when analytics is disabled, even with a saved grant', () => {
+		controlsMock.set(false, false);
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 
 		render(Footer);
 
