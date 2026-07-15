@@ -161,10 +161,31 @@ export type ReconciliationPatch = SchemaPatch | LabelPatch | LegalPatch;
 
 const LEGAL_RULES: Record<
 	LegalSlug,
-	{ blockCount: number; allowedTextIndexes: readonly number[] }
+	{ blockCount: number; allowedPaths: readonly string[] }
 > = {
-	privacy: { blockCount: 45, allowedTextIndexes: [1, 15] },
-	cookies: { blockCount: 14, allowedTextIndexes: [0, 6] },
+	privacy: {
+		blockCount: 45,
+		allowedPaths: [
+			'blocks[1].data.text',
+			'blocks[7].data.text',
+			'blocks[15].data.text',
+			'blocks[17].data.text',
+			'blocks[26].data.items[2].content',
+			'blocks[26].data.items[3].content',
+		],
+	},
+	cookies: {
+		blockCount: 14,
+		allowedPaths: [
+			'blocks[0].data.text',
+			'blocks[2].data.items[1].content',
+			'blocks[2].data.items[2].content',
+			'blocks[4].data.text',
+			'blocks[6].data.text',
+			'blocks[8].data.text',
+			'blocks[9].data.text',
+		],
+	},
 };
 
 const LABEL_SOURCES: Record<Locale, Record<string, unknown>> = {
@@ -427,9 +448,7 @@ export function buildPlan(snapshot: LiveSnapshot): ReconciliationPatch[] {
 				);
 			}
 			const differences = diffPaths(current, desired);
-			const allowed = new Set(
-				rule.allowedTextIndexes.map((index) => `blocks[${index}].data.text`),
-			);
+			const allowed = new Set(rule.allowedPaths);
 			const unexpected = differences.filter((path) => !allowed.has(path));
 			if (unexpected.length > 0) {
 				throw new Error(

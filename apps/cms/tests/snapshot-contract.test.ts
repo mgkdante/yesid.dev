@@ -57,6 +57,51 @@ describe('site-labels fetcher ls() literals exist in the snapshot', () => {
 	});
 });
 
+describe('site-labels analytics controls exist in the snapshot', () => {
+	const fieldNames = ['analytics_enabled', 'analytics_consent_show_banner'] as const;
+	const fieldsDir = join(SNAPSHOT_DIR, 'fields', 'site_labels');
+
+	it('commits both required true-default boolean fields with their approved editor copy', () => {
+		const missing = fieldNames.filter(
+			(field) => !existsSync(join(fieldsDir, `${field}.json`)),
+		);
+		expect(missing).toEqual([]);
+
+		const snapshots = Object.fromEntries(
+			fieldNames.map((field) => [
+				field,
+				JSON.parse(readFileSync(join(fieldsDir, `${field}.json`), 'utf8')),
+			]),
+		) as Record<(typeof fieldNames)[number], Record<string, any>>;
+		expect(snapshots.analytics_enabled).toMatchObject({
+			collection: 'site_labels',
+			field: 'analytics_enabled',
+			type: 'boolean',
+			meta: {
+				interface: 'boolean',
+				note: 'Master switch. Off disables Plausible tracking, pageviews, conversion events, the consent banner, and footer analytics preferences after the site rebuilds. Stored visitor choices are retained.',
+				options: { label: 'Analytics enabled' },
+				required: true,
+				special: ['cast-boolean'],
+			},
+			schema: { default_value: true, is_nullable: false },
+		});
+		expect(snapshots.analytics_consent_show_banner).toMatchObject({
+			collection: 'site_labels',
+			field: 'analytics_consent_show_banner',
+			type: 'boolean',
+			meta: {
+				interface: 'boolean',
+				note: "When analytics is enabled, off starts cookieless Plausible analytics for visitors without a saved decline. Saved declines stay untracked and footer preferences remain available. Use only after confirming the site's legal basis and published privacy notice support this mode.",
+				options: { label: 'Show analytics consent banner' },
+				required: true,
+				special: ['cast-boolean'],
+			},
+			schema: { default_value: true, is_nullable: false },
+		});
+	});
+});
+
 describe('fetcher collection literals exist in the snapshot', () => {
 	// Junction/translation tables reached via nested field selections do not
 	// appear as readItems() literals; this covers the top-level reads only,

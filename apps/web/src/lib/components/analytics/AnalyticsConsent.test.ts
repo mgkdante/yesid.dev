@@ -6,10 +6,16 @@ const consentMock = vi.hoisted(() => {
 		choice: 'unknown' | 'granted' | 'denied';
 		ready: boolean;
 		available: boolean;
+		preferencesOpen: boolean;
 	};
 	type Subscriber = (state: State) => void;
 
-	let state: State = { choice: 'unknown', ready: false, available: false };
+	let state: State = {
+		choice: 'unknown',
+		ready: false,
+		available: false,
+		preferencesOpen: false,
+	};
 	const subscribers = new Set<Subscriber>();
 	const store = {
 		subscribe(run: Subscriber) {
@@ -30,11 +36,34 @@ const consentMock = vi.hoisted(() => {
 			for (const subscriber of subscribers) subscriber(state);
 		},
 		reset() {
-			state = { choice: 'unknown', ready: false, available: false };
+			state = {
+				choice: 'unknown',
+				ready: false,
+				available: false,
+				preferencesOpen: false,
+			};
 			store.init.mockClear();
 			store.grant.mockClear();
 			store.deny.mockClear();
 			store.openPreferences.mockClear();
+		},
+	};
+});
+
+const controlsMock = vi.hoisted(() => {
+	let enabled: boolean | undefined;
+	let showBanner: boolean | undefined;
+
+	return {
+		get enabled() {
+			return enabled;
+		},
+		get showBanner() {
+			return showBanner;
+		},
+		set(nextEnabled?: boolean, nextShowBanner?: boolean) {
+			enabled = nextEnabled;
+			showBanner = nextShowBanner;
 		},
 	};
 });
@@ -47,15 +76,21 @@ vi.mock('$lib/content', () => ({
 	siteLabels: {
 		ui: {
 			analyticsConsent: {
+				get enabled() {
+					return controlsMock.enabled;
+				},
+				get showBanner() {
+					return controlsMock.showBanner;
+				},
 				title: {
 					en: 'Can I count this visit?',
 					fr: 'Je peux compter cette visite?',
 					es: '¿Puedo contar esta visita?',
 				},
 				description: {
-					en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
-					fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
-					es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+					en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
+					fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
+					es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
 				},
 				acceptLabel: {
 					en: 'Allow analytics',
@@ -84,7 +119,7 @@ const localizedCopy = {
 	en: {
 		title: 'Can I count this visit?',
 		description:
-			'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
+			'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
 		accept: 'Allow analytics',
 		decline: 'No thanks',
 		privacy: 'Privacy details',
@@ -93,7 +128,7 @@ const localizedCopy = {
 	fr: {
 		title: 'Je peux compter cette visite?',
 		description:
-			'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+			'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
 		accept: 'Autoriser l’analytique',
 		decline: 'Non merci',
 		privacy: 'Détails sur la vie privée',
@@ -102,7 +137,7 @@ const localizedCopy = {
 	es: {
 		title: '¿Puedo contar esta visita?',
 		description:
-			'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+			'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
 		accept: 'Permitir analítica',
 		decline: 'No, gracias',
 		privacy: 'Detalles de privacidad',
@@ -110,12 +145,20 @@ const localizedCopy = {
 	},
 } as const;
 
-beforeEach(() => consentMock.reset());
+beforeEach(() => {
+	controlsMock.set();
+	consentMock.reset();
+});
 afterEach(() => cleanup());
 
 describe('AnalyticsConsent', () => {
 	it('obeys the visual gate while still initializing consent state', () => {
-		consentMock.set({ choice: 'unknown', ready: true, available: true });
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 
 		render(AnalyticsConsent, { props: { canShow: false } });
 
@@ -124,7 +167,12 @@ describe('AnalyticsConsent', () => {
 	});
 
 	it('renders a quiet consent rail with semantic copy relationships and shared actions', () => {
-		consentMock.set({ choice: 'unknown', ready: true, available: true });
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 
 		const { container } = render(AnalyticsConsent, {
 			props: { locale: 'en', canShow: true },
@@ -150,7 +198,12 @@ describe('AnalyticsConsent', () => {
 	});
 
 	it('is hidden until consent state is ready', () => {
-		consentMock.set({ choice: 'unknown', ready: false, available: true });
+		consentMock.set({
+			choice: 'unknown',
+			ready: false,
+			available: true,
+			preferencesOpen: false,
+		});
 
 		render(AnalyticsConsent);
 
@@ -158,9 +211,9 @@ describe('AnalyticsConsent', () => {
 	});
 
 	it.each([
-		{ choice: 'unknown', ready: true, available: false },
-		{ choice: 'granted', ready: true, available: true },
-		{ choice: 'denied', ready: true, available: true },
+		{ choice: 'unknown', ready: true, available: false, preferencesOpen: false },
+		{ choice: 'granted', ready: true, available: true, preferencesOpen: false },
+		{ choice: 'denied', ready: true, available: true, preferencesOpen: false },
 	] as const)('is hidden for state $choice/$available', (state) => {
 		consentMock.set(state);
 
@@ -172,7 +225,12 @@ describe('AnalyticsConsent', () => {
 	it.each(Object.entries(localizedCopy))(
 		'renders exact %s copy and a localized privacy route',
 		(locale, copy) => {
-			consentMock.set({ choice: 'unknown', ready: true, available: true });
+			consentMock.set({
+				choice: 'unknown',
+				ready: true,
+				available: true,
+				preferencesOpen: false,
+			});
 
 			render(AnalyticsConsent, {
 				props: { locale: locale as keyof typeof localizedCopy },
@@ -192,7 +250,12 @@ describe('AnalyticsConsent', () => {
 	);
 
 	it('grants consent once from the accept button', async () => {
-		consentMock.set({ choice: 'unknown', ready: true, available: true });
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		render(AnalyticsConsent);
 
 		await fireEvent.click(screen.getByTestId('analytics-consent-accept'));
@@ -201,7 +264,12 @@ describe('AnalyticsConsent', () => {
 	});
 
 	it('denies consent once from the decline button', async () => {
-		consentMock.set({ choice: 'unknown', ready: true, available: true });
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		render(AnalyticsConsent);
 
 		await fireEvent.click(screen.getByTestId('analytics-consent-decline'));
@@ -213,5 +281,48 @@ describe('AnalyticsConsent', () => {
 		render(AnalyticsConsent);
 
 		expect(consentMock.store.init).toHaveBeenCalledOnce();
+	});
+
+	it('hides a fresh unknown choice in enabled hidden mode', () => {
+		controlsMock.set(true, false);
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
+
+		render(AnalyticsConsent);
+
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(consentMock.store.init).toHaveBeenCalledOnce();
+	});
+
+	it('force-opens preferences in enabled hidden mode', () => {
+		controlsMock.set(true, false);
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+
+		render(AnalyticsConsent);
+
+		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+	});
+
+	it('stays hidden when analytics is disabled, even if preferences are open', () => {
+		controlsMock.set(false, false);
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+
+		render(AnalyticsConsent);
+
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
 	});
 });
