@@ -53,9 +53,9 @@ vi.mock('$lib/content', () => ({
 					es: '¿Puedo contar esta visita?',
 				},
 				description: {
-					en: 'Plausible would count visits, pages viewed, referral sources, and general device and region data. No cookies, names, email addresses, or form contents.',
-					fr: 'Plausible compterait les visites, les pages vues, les sources de référence et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
-					es: 'Plausible contaría visitas, páginas vistas, fuentes de referencia y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+					en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
+					fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+					es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
 				},
 				acceptLabel: {
 					en: 'Allow analytics',
@@ -84,7 +84,7 @@ const localizedCopy = {
 	en: {
 		title: 'Can I count this visit?',
 		description:
-			'Plausible would count visits, pages viewed, referral sources, and general device and region data. No cookies, names, email addresses, or form contents.',
+			'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
 		accept: 'Allow analytics',
 		decline: 'No thanks',
 		privacy: 'Privacy details',
@@ -93,7 +93,7 @@ const localizedCopy = {
 	fr: {
 		title: 'Je peux compter cette visite?',
 		description:
-			'Plausible compterait les visites, les pages vues, les sources de référence et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+			'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
 		accept: 'Autoriser l’analytique',
 		decline: 'Non merci',
 		privacy: 'Détails sur la vie privée',
@@ -102,7 +102,7 @@ const localizedCopy = {
 	es: {
 		title: '¿Puedo contar esta visita?',
 		description:
-			'Plausible contaría visitas, páginas vistas, fuentes de referencia y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+			'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
 		accept: 'Permitir analítica',
 		decline: 'No, gracias',
 		privacy: 'Detalles de privacidad',
@@ -123,20 +123,25 @@ describe('AnalyticsConsent', () => {
 		expect(consentMock.store.init).toHaveBeenCalledOnce();
 	});
 
-	it('renders the analytics station with semantic copy relationships and shared actions', () => {
+	it('renders a quiet consent rail with semantic copy relationships and shared actions', () => {
 		consentMock.set({ choice: 'unknown', ready: true, available: true });
 
-		render(AnalyticsConsent, { props: { locale: 'en', canShow: true } });
+		const { container } = render(AnalyticsConsent, {
+			props: { locale: 'en', canShow: true },
+		});
 
-		const station = screen.getByTestId('analytics-consent');
+		const rail = screen.getByTestId('analytics-consent');
 		const heading = screen.getByRole('heading', { level: 2, name: 'Can I count this visit?' });
 		const accept = screen.getByTestId('analytics-consent-accept');
 		const decline = screen.getByTestId('analytics-consent-decline');
 
-		expect(station).toHaveClass('analytics-station');
-		expect(station).toHaveAttribute('aria-labelledby', 'analytics-consent-title');
-		expect(station).toHaveAttribute('aria-describedby', 'analytics-consent-description');
-		expect(heading).toHaveClass('label-station');
+		expect(rail).toHaveClass('analytics-consent');
+		expect(rail).toHaveAttribute('aria-labelledby', 'analytics-consent-title');
+		expect(rail).toHaveAttribute('aria-describedby', 'analytics-consent-description');
+		expect(heading).toHaveClass('sr-only');
+		expect(container.querySelector('.station-rule')).toBeNull();
+		expect(container.querySelector('.station-dot')).toBeNull();
+		expect(container.querySelector('[data-slot="corner-marks"]')).toBeNull();
 		for (const action of [decline, accept]) {
 			expect(action.tagName).toBe('BUTTON');
 			expect(action).toHaveAttribute('data-slot', 'button');
