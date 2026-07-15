@@ -11,17 +11,17 @@ const CONSENT_DISCLOSURES = [
 	{
 		locale: 'English',
 		path: '/projects',
-		copy: 'Plausible would count visits, pages viewed, referral sources, general device and region data, and clicks on contact or project proof links. No cookies, names, email addresses, form contents, destination URLs, or custom properties.',
+		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
 	},
 	{
 		locale: 'French',
 		path: '/fr/projects',
-		copy: 'Plausible compterait les visites, les pages vues, les sources de référence, des données générales sur l’appareil et la région, ainsi que les clics sur des liens de contact, de site en ligne ou de dépôt public d’un projet. Aucun cookie, nom, courriel, contenu de formulaire, URL de destination ni propriété personnalisée.',
+		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
 	},
 	{
 		locale: 'Spanish',
 		path: '/es/projects',
-		copy: 'Plausible contaría visitas, páginas vistas, fuentes de referencia, datos generales del dispositivo y la región, y clics en enlaces de contacto, del sitio publicado o del repositorio público de un proyecto. Sin cookies, nombres, correos, contenido de formularios, URL de destino ni propiedades personalizadas.',
+		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
 	},
 ] as const;
 const CLIENT_CHUNKS_DIR = fileURLToPath(
@@ -239,32 +239,85 @@ test('reduced motion treats the static home hero as settled', async ({ page }) =
 	await expect(page.locator('.pin-spacer')).toHaveCount(0);
 });
 
-test('analytics station fits a 360px viewport with 44px actions and no horizontal overflow', async ({
-	page,
-}) => {
-	await page.setViewportSize({ width: 360, height: 780 });
+test('analytics consent is a wide borderless desktop rail', async ({ page }) => {
+	await page.setViewportSize({ width: 1440, height: 900 });
 	await enableWebdriverSends(page);
 	await proxyProductionHostnameToPreview(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
 
-	const station = page.getByTestId('analytics-consent');
-	await expect(station).toBeVisible();
-	const box = await station.boundingBox();
+	const rail = page.getByTestId('analytics-consent');
+	await expect(rail).toBeVisible();
+	const box = await rail.boundingBox();
 	expect(box).not.toBeNull();
-	expect(box!.x).toBeGreaterThanOrEqual(12);
-	expect(box!.x + box!.width).toBeLessThanOrEqual(348);
-
-	for (const id of ['analytics-consent-decline', 'analytics-consent-accept']) {
-		const actionBox = await page.getByTestId(id).boundingBox();
-		expect(actionBox).not.toBeNull();
-		expect(actionBox!.height).toBeGreaterThanOrEqual(44);
-	}
-
+	expect(box!.width).toBeGreaterThanOrEqual(1100);
+	expect(box!.height).toBeLessThanOrEqual(128);
 	expect(
-		await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
-	).toBe(true);
+		await rail.evaluate((element) => {
+			const style = getComputedStyle(element);
+			return [
+				style.borderTopWidth,
+				style.borderRightWidth,
+				style.borderBottomWidth,
+				style.borderLeftWidth,
+			];
+		}),
+	).toEqual(['0px', '0px', '0px', '0px']);
 });
+
+for (const { locale, path } of CONSENT_DISCLOSURES) {
+	test(`${locale} analytics consent fits a 360px viewport with contained 44px actions`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 360, height: 780 });
+		await enableWebdriverSends(page);
+		await proxyProductionHostnameToPreview(page);
+
+		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
+
+		const station = page.getByTestId('analytics-consent');
+		await expect(station).toBeVisible();
+		const { rail, actions } = await station.evaluate((element) => {
+			const railBox = element.getBoundingClientRect();
+			const actionBoxes = [
+				element.querySelector('[data-testid="analytics-consent-decline"]'),
+				element.querySelector('[data-testid="analytics-consent-accept"]'),
+			].map((action) => action?.getBoundingClientRect());
+			return {
+				rail: {
+					x: railBox.x,
+					right: railBox.right,
+					height: railBox.height,
+				},
+				actions: actionBoxes.map((action) =>
+					action
+						? {
+								x: action.x,
+								right: action.right,
+								y: action.y,
+								height: action.height,
+							}
+						: null,
+				),
+			};
+		});
+
+		expect(rail.x).toBeGreaterThanOrEqual(12);
+		expect(rail.right).toBeLessThanOrEqual(348);
+		expect(rail.height).toBeLessThanOrEqual(280);
+		for (const action of actions) {
+			expect(action).not.toBeNull();
+			expect(action!.x).toBeGreaterThanOrEqual(rail.x);
+			expect(action!.right).toBeLessThanOrEqual(rail.right);
+			expect(action!.height).toBeGreaterThanOrEqual(44);
+		}
+		expect(Math.abs(actions[0]!.y - actions[1]!.y)).toBeLessThan(1);
+
+		expect(
+			await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+		).toBe(true);
+	});
+}
 
 test('mobile blog TOC does not block the analytics consent action', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
