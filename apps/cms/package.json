@@ -18,6 +18,7 @@
 		"setup:flat-fields": "bun scripts/setup-block-flat-fields.ts",
 		"migrate:flat-fields": "bun scripts/migrate-block-json-to-flat.ts",
 		"setup:site-labels": "bun scripts/setup-site-labels-and-chrome.ts",
+		"setup:asset-registry": "bun scripts/setup-asset-registry-schema.ts",
 		"content:terminus-routes": "bun scripts/content-terminus-routes.ts",
 		"seed:archetypes": "bun scripts/seed-stack-archetypes.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
