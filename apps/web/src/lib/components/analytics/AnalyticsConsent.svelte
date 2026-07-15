@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { CornerMarks } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import { siteLabels } from '$lib/content';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
@@ -33,39 +32,30 @@
 		data-testid="analytics-consent"
 		aria-labelledby="analytics-consent-title"
 		aria-describedby="analytics-consent-description"
-		class="analytics-station fixed inset-x-4 mx-auto max-w-4xl overflow-hidden sm:inset-x-6"
+		class="analytics-consent fixed inset-x-4 mx-auto sm:inset-x-6"
 	>
-		<div class="station-rule" aria-hidden="true"></div>
-		<CornerMarks size="sm" opacity={0.35} />
-
-		<div class="relative grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-			<div class="min-w-0 max-w-3xl">
-				<div class="flex items-center gap-3">
-					<span class="station-dot" aria-hidden="true"></span>
-					<h2 id="analytics-consent-title" class="label-station leading-snug">
-						{title}
-					</h2>
+		<div class="consent-layout">
+			<div class="consent-copy">
+				<h2 id="analytics-consent-title" class="sr-only">{title}</h2>
+				<div class="consent-disclosure">
+					<p id="analytics-consent-description" class="consent-description">
+						{description}
+					</p>{' '}
+					<a
+						data-testid="analytics-consent-privacy"
+						href={privacyHref}
+						class="consent-privacy"
+					>
+						{privacyLabel}
+					</a>
 				</div>
-				<p
-					id="analytics-consent-description"
-					class="mt-3 text-small leading-relaxed text-[var(--secondary-foreground)]"
-				>
-					{description}
-				</p>
-				<a
-					data-testid="analytics-consent-privacy"
-					href={privacyHref}
-					class="mt-3 inline-block text-small text-[var(--secondary-foreground)] underline decoration-[var(--primary)] underline-offset-4 transition-colors hover:text-primary"
-				>
-					{privacyLabel}
-				</a>
 			</div>
 
-			<div class="grid w-full grid-cols-1 gap-3 sm:w-auto sm:grid-cols-2">
+			<div class="consent-actions">
 				<Button
-					variant="outline"
+					variant="ghost"
 					size="cta-sm"
-					class="min-h-11 w-full sm:w-auto"
+					class="min-h-11 min-w-0 w-full px-3 leading-tight whitespace-normal sm:w-auto sm:px-5 sm:whitespace-nowrap"
 					data-testid="analytics-consent-decline"
 					onclick={() => analyticsConsentStore.deny()}
 				>
@@ -74,7 +64,7 @@
 				<Button
 					variant="default"
 					size="cta-sm"
-					class="min-h-11 w-full sm:w-auto"
+					class="min-h-11 min-w-0 w-full px-3 leading-tight whitespace-normal hover:translate-y-0 hover:shadow-none sm:w-auto sm:px-5 sm:whitespace-nowrap"
 					data-testid="analytics-consent-accept"
 					onclick={() => analyticsConsentStore.grant()}
 				>
@@ -86,34 +76,79 @@
 {/if}
 
 <style>
-	.analytics-station {
+	.analytics-consent {
 		bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
 		z-index: calc(var(--z-sheet) + 1);
-		background: var(--surface-2);
-		border: 2px solid var(--border-brand);
+		max-width: var(--container-wide);
+		background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+		border: 0;
 		border-radius: var(--radius-lg);
-		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
-		animation: analytics-station-in var(--duration-fast) var(--ease-out) both;
+		box-shadow: 0 10px 30px rgb(0 0 0 / 0.18);
+		backdrop-filter: blur(18px) saturate(115%);
+		-webkit-backdrop-filter: blur(18px) saturate(115%);
+		animation: analytics-consent-in var(--duration-fast) var(--ease-out) both;
 	}
 
-	.station-rule {
-		position: absolute;
-		inset: 0 0 auto;
-		height: 3px;
-		background: var(--primary);
+	.consent-layout {
+		display: grid;
+		gap: 0.75rem;
+		padding: 0.875rem 1rem;
 	}
 
-	.station-dot {
-		width: 0.625rem;
-		height: 0.625rem;
-		flex: 0 0 auto;
-		border: 2px solid var(--primary);
-		border-radius: var(--radius-pill);
-		background: var(--reflective);
-		box-shadow: var(--shadow-glow-sm);
+	.consent-copy {
+		min-width: 0;
 	}
 
-	@keyframes analytics-station-in {
+	.consent-disclosure {
+		color: var(--secondary-foreground);
+		font-size: var(--text-small);
+		line-height: 1.5;
+	}
+
+	.consent-description {
+		display: inline;
+		margin: 0;
+	}
+
+	.consent-privacy {
+		color: var(--foreground);
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--primary) 70%, transparent);
+		text-underline-offset: 0.2em;
+		white-space: nowrap;
+		transition: color var(--duration-fast) var(--ease-out);
+	}
+
+	.consent-privacy:hover,
+	.consent-privacy:focus-visible {
+		color: var(--primary);
+	}
+
+	.consent-actions {
+		display: grid;
+		grid-template-columns: max-content minmax(0, 1fr);
+		width: 100%;
+		min-width: 0;
+		justify-content: end;
+		align-items: stretch;
+		gap: 0.5rem;
+	}
+
+	@media (min-width: 48rem) {
+		.consent-layout {
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: center;
+			column-gap: 1.25rem;
+		}
+
+		.consent-actions {
+			grid-template-columns: max-content max-content;
+			width: auto;
+			align-items: center;
+		}
+	}
+
+	@keyframes analytics-consent-in {
 		from {
 			opacity: 0;
 			transform: translateY(0.5rem);
@@ -125,7 +160,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.analytics-station {
+		.analytics-consent {
 			animation: none;
 		}
 	}
