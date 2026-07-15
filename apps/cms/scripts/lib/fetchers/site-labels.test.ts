@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { toSiteLabels } from './site-labels';
+import { fetchSiteLabels, toSiteLabels } from './site-labels';
 import { SiteLabelsSchema } from '@repo/shared/schemas';
 import seeds from '../../../fixtures/content/site-labels.json';
 import frSeeds from '../../../fixtures/content/site-labels.fr.json';
@@ -30,6 +30,8 @@ describe('site-labels transform', () => {
 	it('recomposes the slice-30 chrome columns into companion-shaped groups', () => {
 		const row = {
 			id: 'u1',
+			analytics_enabled: true,
+			analytics_consent_show_banner: true,
 			translations: [
 				{ languages_code: 'en', ...seeds },
 				{ languages_code: 'fr', ...frSeeds },
@@ -68,15 +70,17 @@ describe('site-labels transform', () => {
 		expect(out.heroDashboard.vehiclesLabel).toEqual({ en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' });
 		expect(out.heroDashboard.delaySub).toEqual({ en: '{coverage}% COVERAGE', fr: '{coverage}% DE COUVERTURE' });
 		expect(out.ui.analyticsConsent).toEqual({
+			enabled: true,
+			showBanner: true,
 			title: {
 				en: 'Can I count this visit?',
 				fr: 'Je peux compter cette visite?',
 				es: '¿Puedo contar esta visita?',
 			},
 			description: {
-				en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
-				fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
-				es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+				en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
+				fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
+				es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
 			},
 			acceptLabel: { en: 'Allow analytics', fr: 'Autoriser l’analytique', es: 'Permitir analítica' },
 			declineLabel: { en: 'No thanks', fr: 'Non merci', es: 'No, gracias' },
@@ -92,5 +96,109 @@ describe('site-labels transform', () => {
 			},
 		});
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
+	});
+
+	it('maps every valid CMS control combination and keeps it in the shared schema output', () => {
+		const combinations = [
+			{ analytics_enabled: true, analytics_consent_show_banner: true },
+			{ analytics_enabled: true, analytics_consent_show_banner: false },
+			{ analytics_enabled: false, analytics_consent_show_banner: true },
+			{ analytics_enabled: false, analytics_consent_show_banner: false },
+		];
+		for (const controls of combinations) {
+			const parsed = SiteLabelsSchema.parse(
+				toSiteLabels({
+					id: 'u1',
+					...controls,
+					translations: [{ languages_code: 'en', ...seeds }],
+				}),
+			);
+			expect(parsed.ui.analyticsConsent.enabled).toBe(controls.analytics_enabled);
+			expect(parsed.ui.analyticsConsent.showBanner).toBe(
+				controls.analytics_consent_show_banner,
+			);
+		}
+	});
+
+	it('requires both analytics controls at the generated-content boundary', () => {
+		const output = toSiteLabels({
+			id: 'u1',
+			analytics_enabled: true,
+			analytics_consent_show_banner: true,
+			translations: [{ languages_code: 'en', ...seeds }],
+		});
+		const { enabled: _enabled, ...withoutEnabled } = output.ui.analyticsConsent;
+		const { showBanner: _showBanner, ...withoutShowBanner } = output.ui.analyticsConsent;
+
+		expect(
+			SiteLabelsSchema.safeParse({
+				...output,
+				ui: { ...output.ui, analyticsConsent: withoutEnabled },
+			}).success,
+		).toBe(false);
+		expect(
+			SiteLabelsSchema.safeParse({
+				...output,
+				ui: { ...output.ui, analyticsConsent: withoutShowBanner },
+			}).success,
+		).toBe(false);
+	});
+
+	it('falls back to the current explicit-consent mode when either CMS control is missing or malformed', () => {
+		const unsafeRows = [
+			{
+				controls: { analytics_enabled: undefined, analytics_consent_show_banner: false },
+				expected: { enabled: true, showBanner: true },
+			},
+			{
+				controls: { analytics_enabled: true, analytics_consent_show_banner: 'false' },
+				expected: { enabled: true, showBanner: true },
+			},
+			{
+				controls: { analytics_enabled: 'true', analytics_consent_show_banner: false },
+				expected: { enabled: true, showBanner: true },
+			},
+			{
+				controls: { analytics_enabled: null, analytics_consent_show_banner: null },
+				expected: { enabled: true, showBanner: true },
+			},
+			{
+				controls: { analytics_enabled: false, analytics_consent_show_banner: 'false' },
+				expected: { enabled: false, showBanner: true },
+			},
+		];
+		for (const { controls, expected } of unsafeRows) {
+			const out = toSiteLabels({
+				id: 'u1',
+				...controls,
+				translations: [{ languages_code: 'en', ...seeds }],
+			});
+			expect(out.ui.analyticsConsent.enabled).toBe(expected.enabled);
+			expect(out.ui.analyticsConsent.showBanner).toBe(expected.showBanner);
+		}
+	});
+
+	it('requests both non-translated controls from the site_labels singleton', async () => {
+		let request:
+			| { params?: { fields?: unknown[] } }
+			| undefined;
+		const client = {
+			request: async (command: () => { params?: { fields?: unknown[] } }) => {
+				request = command();
+				return {
+					id: 'u1',
+					analytics_enabled: true,
+					analytics_consent_show_banner: true,
+					translations: [{ languages_code: 'en', ...seeds }],
+				};
+			},
+		};
+		await fetchSiteLabels({ client: client as never });
+		expect(request?.params?.fields).toEqual([
+			'id',
+			'analytics_enabled',
+			'analytics_consent_show_banner',
+			{ translations: ['*'] },
+		]);
 	});
 });

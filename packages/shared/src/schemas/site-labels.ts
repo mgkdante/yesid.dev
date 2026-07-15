@@ -62,6 +62,8 @@ export const SiteLabelsSchema = z.object({
 			es: LocalizedStringSchema,
 		}),
 		analyticsConsent: z.object({
+			enabled: z.boolean(),
+			showBanner: z.boolean(),
 			title: LocalizedStringSchema,
 			description: LocalizedStringSchema,
 			acceptLabel: LocalizedStringSchema,
