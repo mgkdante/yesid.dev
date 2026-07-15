@@ -2,6 +2,8 @@ import { describe, expect, it } from 'bun:test';
 import * as shared from './index';
 
 type AssetRegistryContract = {
+	readonly ASSET_SEMANTIC_KEY_PATTERN: RegExp;
+	readonly SHA256_HEX_PATTERN: RegExp;
 	readonly ASSET_KINDS: readonly string[];
 	readonly ASSET_ROLES: readonly string[];
 	readonly ASSET_DELIVERY_MODES: readonly string[];
@@ -112,6 +114,25 @@ describe('asset registry identities', () => {
 		` ${'a'.repeat(64)}`,
 	])('rejects an invalid SHA-256 identity without coercion', (value) => {
 		expect(() => registry.parseSha256Hex(value)).toThrow();
+	});
+
+	it('exports immutable canonical identity patterns for downstream validation', () => {
+		expect(registry.ASSET_SEMANTIC_KEY_PATTERN).toBeInstanceOf(RegExp);
+		expect(registry.ASSET_SEMANTIC_KEY_PATTERN.source).toBe(
+			'^[a-z0-9][a-z0-9-]*(?:\\.[a-z0-9][a-z0-9-]*){2,4}$',
+		);
+		expect(registry.ASSET_SEMANTIC_KEY_PATTERN.flags).toBe('');
+		expect(registry.ASSET_SEMANTIC_KEY_PATTERN.test('hero.route.home')).toBe(true);
+		expect(registry.ASSET_SEMANTIC_KEY_PATTERN.test('Hero.route.home')).toBe(false);
+
+		expect(registry.SHA256_HEX_PATTERN).toBeInstanceOf(RegExp);
+		expect(registry.SHA256_HEX_PATTERN.source).toBe('^[0-9a-f]{64}$');
+		expect(registry.SHA256_HEX_PATTERN.flags).toBe('');
+		expect(registry.SHA256_HEX_PATTERN.test(SHA_A)).toBe(true);
+		expect(registry.SHA256_HEX_PATTERN.test(SHA_A.toUpperCase())).toBe(false);
+
+		expect(Object.isFrozen(registry.ASSET_SEMANTIC_KEY_PATTERN)).toBe(true);
+		expect(Object.isFrozen(registry.SHA256_HEX_PATTERN)).toBe(true);
 	});
 
 	it('exports the closed kind, role, and delivery-mode sets', () => {
@@ -286,7 +307,7 @@ describe('asset release manifests', () => {
 		expect(registry.canonicalizeAssetReleaseManifest(second)).toBe(canonical);
 		expect(await registry.hashAssetReleaseManifest(first)).toBe(expectedHash);
 		expect(await registry.hashAssetReleaseManifest(second)).toBe(expectedHash);
-		expect(expectedHash).toMatch(/^[0-9a-f]{64}$/);
+		expect(expectedHash).toMatch(registry.SHA256_HEX_PATTERN);
 	});
 
 	it.each([
