@@ -20,6 +20,50 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
+	it('adds the required analytics controls directly to site_labels with safe true defaults', () => {
+		const controls = plan
+			.filter((step) => step.kind === 'field' && step.path === '/fields/site_labels')
+			.filter((step) =>
+				['analytics_enabled', 'analytics_consent_show_banner'].includes(
+					(step.payload as { field: string }).field,
+				),
+		);
+		expect(controls).toHaveLength(2);
+		expect(controls.map((step) => step.target)).toEqual([
+			'site_labels.analytics_enabled',
+			'site_labels.analytics_consent_show_banner',
+		]);
+		expect(controls.map((step) => step.payload)).toEqual([
+			{
+				field: 'analytics_enabled',
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					special: ['cast-boolean'],
+					options: { label: 'Analytics enabled' },
+					note: 'Master switch. Off disables Plausible tracking, pageviews, conversion events, the consent banner, and footer analytics preferences after the site rebuilds. Stored visitor choices are retained.',
+					required: true,
+					width: 'half',
+					sort: 3,
+				},
+				schema: { default_value: true, is_nullable: false },
+			},
+			{
+				field: 'analytics_consent_show_banner',
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					special: ['cast-boolean'],
+					options: { label: 'Show analytics consent banner' },
+					note: "When analytics is enabled, off starts cookieless Plausible analytics for visitors without a saved decline. Saved declines stay untracked and footer preferences remain available. Use only after confirming the site's legal basis and published privacy notice support this mode.",
+					required: true,
+					width: 'half',
+					sort: 4,
+				},
+				schema: { default_value: true, is_nullable: false },
+			},
+		]);
+	});
 	it('emits the 162 label columns as standalone POST /fields steps (not inline in the collection)', () => {
 		// The collection-create carries only structural fields (pk + 2 fks); each
 		// label column is a SEPARATE field step so new chrome columns are added to

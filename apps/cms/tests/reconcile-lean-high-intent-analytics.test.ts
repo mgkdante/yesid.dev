@@ -59,12 +59,25 @@ function staleSnapshot(): LiveSnapshot {
 	for (const row of snapshot.labels) {
 		row.ui_analytics_consent_description = `stale-${row.languages_code}`;
 	}
-	const indexes = { privacy: [1, 15], cookies: [0, 6] } as const;
+	const textIndexes = {
+		privacy: [1, 7, 15, 17],
+		cookies: [0, 4, 6, 8, 9],
+	} as const;
 	for (const row of snapshot.legal) {
 		const body = clone(row.body) as Exclude<LegalRow['body'], string>;
-		for (const index of indexes[row.legal_pages_id]) {
+		for (const index of textIndexes[row.legal_pages_id]) {
 			body.blocks[index]!.data.text =
 				`stale-${row.legal_pages_id}-${row.languages_code}-${index}`;
+		}
+		const listIndex = row.legal_pages_id === 'privacy' ? 26 : 2;
+		const itemIndexes = row.legal_pages_id === 'privacy' ? [2, 3] : [1, 2];
+		const items = body.blocks[listIndex]!.data.items as Array<{
+			content: string;
+			items: unknown[];
+		}>;
+		for (const itemIndex of itemIndexes) {
+			items[itemIndex]!.content =
+				`stale-${row.legal_pages_id}-${row.languages_code}-${listIndex}-${itemIndex}`;
 		}
 		row.body = body;
 	}
@@ -226,9 +239,22 @@ describe('lean high-intent analytics plan', () => {
 			LegalRow['body'],
 			string
 		>;
-		body.blocks[2]!.data.text = 'unrelated operator edit';
+		body.blocks[3]!.data.text = 'unrelated operator edit';
 		unrelated.legal[0]!.body = body;
 		expect(() => buildPlan(unrelated)).toThrow(/unrelated legal drift/);
+
+		const unrelatedListItem = convergedSnapshot();
+		const listBody = clone(unrelatedListItem.legal[0]!.body) as Exclude<
+			LegalRow['body'],
+			string
+		>;
+		const items = listBody.blocks[26]!.data.items as Array<{
+			content: string;
+			items: unknown[];
+		}>;
+		items[1]!.content = 'unrelated operator list edit';
+		unrelatedListItem.legal[0]!.body = listBody;
+		expect(() => buildPlan(unrelatedListItem)).toThrow(/unrelated legal drift/);
 	});
 
 	it('enforces one schema and nine content PATCH caps', () => {

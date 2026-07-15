@@ -85,6 +85,20 @@ export function buildSiteLabelsPlan(): SchemaStep[] {
 				? { max_length: 500 }
 				: {},
 	}));
+	const analyticsControls = [
+		{
+			field: 'analytics_enabled',
+			label: 'Analytics enabled',
+			note: 'Master switch. Off disables Plausible tracking, pageviews, conversion events, the consent banner, and footer analytics preferences after the site rebuilds. Stored visitor choices are retained.',
+			sort: 3,
+		},
+		{
+			field: 'analytics_consent_show_banner',
+			label: 'Show analytics consent banner',
+			note: "When analytics is enabled, off starts cookieless Plausible analytics for visitors without a saved decline. Saved declines stay untracked and footer preferences remain available. Use only after confirming the site's legal basis and published privacy notice support this mode.",
+			sort: 4,
+		},
+	] as const;
 	return [
 		{
 			kind: 'collection', target: 'site_labels', method: 'POST', path: '/collections',
@@ -136,6 +150,26 @@ export function buildSiteLabelsPlan(): SchemaStep[] {
 				schema: { on_delete: 'SET NULL' },
 			},
 		},
+		...analyticsControls.map((control): SchemaStep => ({
+			kind: 'field',
+			target: `site_labels.${control.field}`,
+			method: 'POST',
+			path: '/fields/site_labels',
+			payload: {
+				field: control.field,
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					special: ['cast-boolean'],
+					options: { label: control.label },
+					note: control.note,
+					required: true,
+					width: 'half',
+					sort: control.sort,
+				},
+				schema: { default_value: true, is_nullable: false },
+			},
+		})),
 		// per-column translation fields — emitted individually (POST /fields) so new
 		// chrome columns land on the ALREADY-EXISTING translations collection (the
 		// inline collection.fields above only fire on a fresh instance, and that
