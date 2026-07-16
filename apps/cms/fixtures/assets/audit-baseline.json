@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
 	"source": "live",
-	"generatedAt": "2026-07-16T03:59:19.585Z",
-	"repositoryRevision": "ef9c4a6e06bef58ee3636f208497c1fc35b04ac9",
+	"generatedAt": "2026-07-16T16:41:59.653Z",
+	"repositoryRevision": "c33c2194a2013ac67aba8a07135d5a64f8b77506",
 	"scopeReceipts": [
 		{
 			"reason": "complete",
@@ -55,7 +55,7 @@
 			"status": "not-evaluated"
 		}
 	],
-	"reportSha256": "910775c641c1fa187f2de05989310c3259b7bad032a4ab4be97806b1a6f581d8",
+	"reportSha256": "18c232c8fcd925ba2e37f3a97cde82e7e3faf413a6a8c0469a91bd1eb0f26bcc",
 	"repositoryAssetIds": [
 		"external:iconify:devicon:microsoftsqlserver",
 		"external:iconify:logos:airflow",
@@ -130,6 +130,10 @@
 		"repo-component:apps/web/src/lib/components/svg/azur/BlueprintAzurSide.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/svg/azur/BlueprintAzurTop.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/svg/azur/BlueprintMr73Side.svelte#svg:1",
+		"repo-component:apps/web/src/lib/components/svg/cta/BlueprintCodeSystem.svelte#svg:1",
+		"repo-component:apps/web/src/lib/components/svg/cta/BlueprintDataPipeline.svelte#svg:1",
+		"repo-component:apps/web/src/lib/components/svg/cta/BlueprintInterfaceSuite.svelte#svg:1",
+		"repo-component:apps/web/src/lib/components/svg/cta/BlueprintTransitRoute.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/svg/detail/BlueprintDetailBogie.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/svg/detail/BlueprintDetailDoor.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/svg/detail/BlueprintDetailHandrails.svelte#svg:1",
@@ -2086,6 +2090,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "40230da68f41307b9a2eea90c192fc2b36e51dbf9dd8f5de6b541b28e721bd4a",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -5919,6 +5931,15 @@
 			]
 		},
 		{
+			"fingerprint": "c94402fa87a072582607ea55bfdb5fa7af4b51ace44d471375dbf0149ad423f7",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "c973c9c393c64ed9f52aaf00235806a4ce00566608708fcde166823e8e350c0d",
 			"code": "invalid-format",
 			"severity": "error",
@@ -5993,6 +6014,15 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "cc84e7f60f9fddfe2cf89b4b31860e35a7a08dca3a9b2cf3459758f7f550bc8e",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -6080,6 +6110,15 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "cf4c1eaff525cb258f1c402c7090254e7a8d9dd06c78a5fab2c3f6bff698ae31",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -6452,6 +6491,15 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "dd160e75ff7a33a4dd7c6898082e9420f1ff9607a0cde71810091f52936de501",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
