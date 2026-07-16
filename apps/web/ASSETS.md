@@ -42,3 +42,8 @@ pipeline (`apps/cms/README.md` § Asset migration).
   do not copy component markup into Directus or replace the source SVGs with CMS
   files. The shared CTA composition has no runtime fetch and must stay decorative,
   `aria-hidden`, unfocusable, clipped by its band, and motion-safe.
+- Until the code-component reconciliation policy lands, this map is the selectable
+  catalog for those keys. Do not create partial Directus code-component records:
+  partial linking changes live usage identities while the offline scanner correctly
+  remains repository-only. The guarded asset-audit baseline inventories the four
+  component roots in the meantime.
