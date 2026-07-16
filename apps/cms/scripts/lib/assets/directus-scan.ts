@@ -56,6 +56,13 @@ export type RegistryAvailability =
 
 export const DIRECTUS_PAGE_SIZE = 100;
 
+export const ASSET_REGISTRY_READ_COLLECTIONS = Object.freeze([
+  "asset_records",
+  "asset_records_translations",
+  "asset_versions",
+  "asset_usages",
+] as const);
+
 export const DIRECTUS_READ_SURFACES = Object.freeze([
   "asset_records",
   "asset_records_translations",
@@ -356,6 +363,7 @@ export interface CmsAssetReadResponse {
 }
 
 export interface CmsReadClient {
+  readRegistryCollections?(): Promise<CmsReadResponse>;
   readPage(input: {
     surface: PageSurface;
     fields: readonly unknown[];
@@ -947,16 +955,74 @@ interface ReadAllResult {
   issues: DirectusReadIssue[];
 }
 
+type RegistrySchemaState = "available" | "missing" | "partial" | "unavailable";
+
+async function registrySchemaState(client: CmsReadClient): Promise<RegistrySchemaState> {
+  if (!client.readRegistryCollections) return "unavailable";
+  let response: CmsReadResponse;
+  try {
+    response = await client.readRegistryCollections();
+  } catch {
+    return "unavailable";
+  }
+  if (
+    !Number.isInteger(response.status) ||
+    response.status < 200 ||
+    response.status >= 300 ||
+    !Array.isArray(response.data) ||
+    response.data.some(
+      (row) =>
+        !row ||
+        typeof row !== "object" ||
+        typeof (row as { collection?: unknown }).collection !== "string",
+    )
+  ) {
+    return "unavailable";
+  }
+  const available = new Set(
+    response.data.map((row) => (row as { collection: string }).collection),
+  );
+  const present = ASSET_REGISTRY_READ_COLLECTIONS.filter((collection) =>
+    available.has(collection),
+  ).length;
+  if (present === 0) return "missing";
+  if (present === ASSET_REGISTRY_READ_COLLECTIONS.length) return "available";
+  return "partial";
+}
+
 async function readAllSurfaces(
   environment: CmsEnvironment,
   client: CmsReadClient,
   limits: DirectusReadLimits,
+  registryState: RegistrySchemaState,
 ): Promise<ReadAllResult> {
   const data: RawSurfaceData = {};
   const receipts: DirectusReadReceipt[] = [];
   const issues: DirectusReadIssue[] = [];
 
   for (const surface of DIRECTUS_READ_SURFACES) {
+    if (
+      registryState === "missing" &&
+      (ASSET_REGISTRY_READ_COLLECTIONS as readonly string[]).includes(surface)
+    ) {
+      data[surface] = [];
+      receipts.push({
+        surface,
+        availability: "missing",
+        complete: false,
+        rowCount: null,
+      });
+      issues.push(
+        issue(
+          environment,
+          "collection-missing",
+          `readPage:${surface}`,
+          404,
+          surface,
+        ),
+      );
+      continue;
+    }
     const spec = DIRECTUS_SURFACE_SPECS[surface];
     if (spec.mode === "singleton") {
       const operation = `readSingleton:${surface}`;
@@ -3094,10 +3160,12 @@ export async function scanDirectusAssets(
     throw new TypeError("environment must be dev or prod");
   }
   const limits = validatedLimits(options.limits);
+  const registryState = await registrySchemaState(options.client);
   const read = await readAllSurfaces(
     options.environment,
     options.client,
     limits,
+    registryState,
   );
   const issues = [...read.issues];
   const folders = normalizeFolders(
@@ -3179,7 +3247,12 @@ export async function scanDirectusAssets(
   return {
     schemaVersion: 1,
     environment: options.environment,
-    registryAvailability: registryAvailability(read.receipts),
+    registryAvailability:
+      registryState === "missing"
+        ? "missing"
+        : registryState === "partial"
+          ? "unknown"
+          : registryAvailability(read.receipts),
     folders,
     files,
     records,

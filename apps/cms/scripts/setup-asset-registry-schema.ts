@@ -69,8 +69,14 @@ function choices(values: readonly string[]) {
 	return values.map((value) => ({ text: humanize(value), value }));
 }
 
-function validation(field: string, rule: Record<string, unknown>): Record<string, unknown> {
-	return { _and: [{ [field]: rule }] };
+function validation(
+	field: string,
+	rule: Record<string, unknown>,
+	allowNull = false,
+): Record<string, unknown> {
+	return allowNull
+		? { _or: [{ [field]: { _null: true } }, { [field]: rule }] }
+		: { _and: [{ [field]: rule }] };
 }
 
 function standardField(
@@ -156,9 +162,9 @@ function integerField(
 		interface: 'input',
 		validation:
 			bound === 'positive'
-				? validation(field, { _gt: 0 })
+				? validation(field, { _gt: 0 }, !options.required)
 				: bound === 'non-negative'
-					? validation(field, { _gte: 0 })
+					? validation(field, { _gte: 0 }, !options.required)
 					: undefined,
 	});
 }
@@ -172,7 +178,7 @@ function hashField(
 		...options,
 		interface: 'input',
 		maxLength: 64,
-		validation: validation(field, { _regex: SHA256_HEX_PATTERN.source }),
+		validation: validation(field, { _regex: SHA256_HEX_PATTERN.source }, !options.required),
 	});
 }
 
@@ -402,10 +408,10 @@ function assetRecordFields(): FieldPayload[] {
 		standardField('transform_profile', 'string', 17, { maxLength: 255, width: 'full' }),
 		selectField('delivery_mode', 18, ASSET_DELIVERY_MODES, { required: true, width: 'full' }),
 		standardField('focal_point_x', 'decimal', 19, {
-			validation: validation('focal_point_x', { _gte: 0, _lte: 1 }),
+			validation: validation('focal_point_x', { _gte: 0, _lte: 1 }, true),
 		}),
 		standardField('focal_point_y', 'decimal', 20, {
-			validation: validation('focal_point_y', { _gte: 0, _lte: 1 }),
+			validation: validation('focal_point_y', { _gte: 0, _lte: 1 }, true),
 		}),
 		integerField('max_bytes', 21, 'non-negative'),
 		selectField(

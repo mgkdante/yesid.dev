@@ -434,7 +434,9 @@ function choiceValues(field: Payload): string[] {
 }
 
 function regexValue(field: Payload): string {
-	return field.meta.validation._and[0][field.field]._regex;
+	const rules = field.meta.validation._and ?? field.meta.validation._or;
+	const matching = rules.find((rule: Payload) => rule[field.field]?._regex);
+	return matching[field.field]._regex;
 }
 
 function relationPayload(plan: readonly SchemaStep[], collection: string, field: string): Payload {
@@ -842,13 +844,19 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 		});
 
 		for (const [collection, field] of [
-			['asset_records', 'aspect_ratio_width'],
-			['asset_records', 'aspect_ratio_height'],
 			['asset_versions', 'version_number'],
-			['asset_usages', 'source_line'],
 		] as const) {
 			expect(fieldPayload(plan, collection, field).meta.validation).toEqual({
 				_and: [{ [field]: { _gt: 0 } }],
+			});
+		}
+		for (const [collection, field] of [
+			['asset_records', 'aspect_ratio_width'],
+			['asset_records', 'aspect_ratio_height'],
+			['asset_usages', 'source_line'],
+		] as const) {
+			expect(fieldPayload(plan, collection, field).meta.validation).toEqual({
+				_or: [{ [field]: { _null: true } }, { [field]: { _gt: 0 } }],
 			});
 		}
 		for (const [collection, field] of [
@@ -859,8 +867,39 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 			['asset_versions', 'duration_ms'],
 		] as const) {
 			expect(fieldPayload(plan, collection, field).meta.validation).toEqual({
-				_and: [{ [field]: { _gte: 0 } }],
+				_or: [{ [field]: { _null: true } }, { [field]: { _gte: 0 } }],
 			});
+		}
+	});
+
+	it('allows null for every optional field that otherwise has value validation', () => {
+		const plan = buildAssetRegistryPlan();
+		for (const [collection, field] of [
+			['asset_records', 'aspect_ratio_width'],
+			['asset_records', 'aspect_ratio_height'],
+			['asset_records', 'focal_point_x'],
+			['asset_records', 'focal_point_y'],
+			['asset_records', 'max_bytes'],
+			['asset_versions', 'bytes'],
+			['asset_versions', 'width'],
+			['asset_versions', 'height'],
+			['asset_versions', 'duration_ms'],
+			['asset_versions', 'source_hash'],
+			['asset_versions', 'transform_signature'],
+			['asset_versions', 'sanitizer_signature'],
+			['asset_versions', 'generator_signature'],
+			['asset_versions', 'toolchain_signature'],
+			['asset_versions', 'sanitized_output_sha256'],
+			['asset_versions', 'input_hash'],
+			['asset_usages', 'source_line'],
+			['asset_releases', 'repo_sha'],
+			['asset_releases', 'content_export_sha256'],
+			['asset_releases', 'expected_manifest_sha256'],
+			['asset_releases', 'toolchain_signature'],
+		] as const) {
+			const definition = fieldPayload(plan, collection, field);
+			expect(definition.schema.is_nullable).toBe(true);
+			expect(definition.meta.validation._or?.[0]).toEqual({ [field]: { _null: true } });
 		}
 	});
 

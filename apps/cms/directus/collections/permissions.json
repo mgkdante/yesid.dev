@@ -9690,5 +9690,1075 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "8917770a-57d3-40bd-a10e-cd344e5d0619"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "asset_records_id": {
+        "lifecycle_status": {
+          "_in": [
+            "draft",
+            "candidate",
+            "ready"
+          ]
+        }
+      }
+    },
+    "presets": null,
+    "fields": [
+      "asset_records_id",
+      "languages_code",
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "b40b3ce0-5899-4e9b-94d9-e25bec79c03b"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_records_id",
+      "languages_code",
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e0a6a187-5295-4f4b-8932-8118547ccdf4"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "update",
+    "permissions": {
+      "asset_records_id": {
+        "lifecycle_status": {
+          "_in": [
+            "draft",
+            "candidate",
+            "ready"
+          ]
+        }
+      }
+    },
+    "validation": {
+      "asset_records_id": {
+        "lifecycle_status": {
+          "_in": [
+            "draft",
+            "candidate",
+            "ready"
+          ]
+        }
+      }
+    },
+    "presets": null,
+    "fields": [
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "02fd89ee-613e-4ffe-bfa4-a472d309972c"
+  },
+  {
+    "collection": "asset_records",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "lifecycle_status": {
+            "_eq": "draft"
+          }
+        },
+        {
+          "brand_status": {
+            "_eq": "unreviewed"
+          }
+        }
+      ]
+    },
+    "presets": {
+      "lifecycle_status": "draft",
+      "brand_status": "unreviewed"
+    },
+    "fields": [
+      "semantic_key",
+      "title",
+      "meaning",
+      "kind",
+      "role",
+      "lifecycle_status",
+      "code_component_key",
+      "owner_type",
+      "owner_key",
+      "locale_policy",
+      "alt_mode",
+      "aspect_ratio_mode",
+      "aspect_ratio_width",
+      "aspect_ratio_height",
+      "allowed_mime_families",
+      "transform_profile",
+      "delivery_mode",
+      "focal_point_x",
+      "focal_point_y",
+      "max_bytes",
+      "brand_status",
+      "translations"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "c852d8ab-c226-4a10-b84a-5aaa0e64782b"
+  },
+  {
+    "collection": "asset_records",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "semantic_key",
+      "title",
+      "meaning",
+      "kind",
+      "role",
+      "lifecycle_status",
+      "code_component_key",
+      "owner_type",
+      "owner_key",
+      "locale_policy",
+      "alt_mode",
+      "aspect_ratio_mode",
+      "aspect_ratio_width",
+      "aspect_ratio_height",
+      "allowed_mime_families",
+      "transform_profile",
+      "delivery_mode",
+      "focal_point_x",
+      "focal_point_y",
+      "max_bytes",
+      "brand_status",
+      "approved_token_slots",
+      "candidate_version",
+      "approved_version",
+      "translations",
+      "versions",
+      "usages",
+      "date_created",
+      "date_updated",
+      "user_created",
+      "user_updated"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3aefcdbb-c506-41c9-8f25-39adf2ce8683"
+  },
+  {
+    "collection": "asset_records",
+    "action": "update",
+    "permissions": {
+      "lifecycle_status": {
+        "_in": [
+          "draft",
+          "candidate",
+          "ready"
+        ]
+      }
+    },
+    "validation": {
+      "lifecycle_status": {
+        "_in": [
+          "draft",
+          "candidate",
+          "ready"
+        ]
+      }
+    },
+    "presets": null,
+    "fields": [
+      "title",
+      "meaning",
+      "kind",
+      "role",
+      "code_component_key",
+      "owner_type",
+      "owner_key",
+      "locale_policy",
+      "alt_mode",
+      "aspect_ratio_mode",
+      "aspect_ratio_width",
+      "aspect_ratio_height",
+      "allowed_mime_families",
+      "transform_profile",
+      "delivery_mode",
+      "focal_point_x",
+      "focal_point_y",
+      "max_bytes",
+      "brand_status",
+      "translations"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4fea0508-665b-46f3-b2f2-164763cf4b8b"
+  },
+  {
+    "collection": "asset_releases",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "release_key",
+      "schema_version",
+      "manifest",
+      "manifest_sha256",
+      "source_environment",
+      "target_environment",
+      "status",
+      "repo_sha",
+      "content_export_sha256",
+      "expected_manifest_sha256",
+      "toolchain_signature",
+      "expected_live_release",
+      "idempotency_key",
+      "lease_owner",
+      "lease_expires_at",
+      "previous_release",
+      "rollback_of",
+      "validation_checks",
+      "source_dev_receipt",
+      "deployment_receipt",
+      "build_ref",
+      "deploy_ref",
+      "error_code",
+      "error_message",
+      "date_created",
+      "date_updated",
+      "user_created"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "ebc6a12c-55ab-401f-be35-6ca184a7f30e"
+  },
+  {
+    "collection": "asset_usages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "resolved_version",
+      "unresolved_ref",
+      "scan_run_id",
+      "last_seen_manifest_sha256",
+      "confidence",
+      "consumer_type",
+      "consumer_key",
+      "source_kind",
+      "source_file",
+      "cms_field",
+      "source_line",
+      "route",
+      "locale",
+      "slot",
+      "required",
+      "delivery_mode",
+      "alt_text_override",
+      "alt_source",
+      "active",
+      "first_seen",
+      "last_seen",
+      "date_updated"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "f4e0a421-d48f-4f94-bf59-5f5be7143804"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "asset_record": {
+            "lifecycle_status": {
+              "_in": [
+                "draft",
+                "candidate",
+                "ready"
+              ]
+            }
+          }
+        },
+        {
+          "source_mode": {
+            "_in": [
+              "upload",
+              "code-component"
+            ]
+          }
+        },
+        {
+          "approval_status": {
+            "_eq": "uploaded"
+          }
+        }
+      ]
+    },
+    "presets": {
+      "approval_status": "uploaded"
+    },
+    "fields": [
+      "asset_record",
+      "version_number",
+      "source_mode",
+      "directus_file",
+      "component_key",
+      "sha256",
+      "approval_status",
+      "replaces_version",
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "da859d84-5f45-4681-a490-5a0fa31f8384"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "version_number",
+      "source_mode",
+      "directus_file",
+      "component_key",
+      "sha256",
+      "mime_type",
+      "format",
+      "bytes",
+      "width",
+      "height",
+      "duration_ms",
+      "orientation",
+      "color_profile",
+      "is_animated",
+      "source_hash",
+      "dependency_hashes",
+      "transform_profile",
+      "transform_signature",
+      "sanitizer_signature",
+      "generator_signature",
+      "toolchain_signature",
+      "approval_status",
+      "approved_by",
+      "approved_at",
+      "replaces_version",
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason",
+      "sanitized_output_sha256",
+      "input_hash",
+      "brand_slots",
+      "svg_id_prefix",
+      "template_version",
+      "safety_report",
+      "date_created",
+      "user_created"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2960c16b-fbae-410d-90f6-5041d8a57ec3"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "update",
+    "permissions": {
+      "approval_status": {
+        "_in": [
+          "uploaded",
+          "validating",
+          "valid",
+          "rejected"
+        ]
+      }
+    },
+    "validation": {
+      "approval_status": {
+        "_in": [
+          "uploaded",
+          "validating",
+          "valid",
+          "rejected"
+        ]
+      }
+    },
+    "presets": null,
+    "fields": [
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "1a331113-ebf5-46b1-b7ff-9df13a5dade3"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "asset_records_id",
+      "languages_code",
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "81103578-b683-43ad-a5f2-c05819d340c8"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_records_id",
+      "languages_code",
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "2e1945c7-e5dc-40f9-a4e7-fa3c660b2700"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "59bc4868-7bec-42da-9128-edb7ae0be75d"
+  },
+  {
+    "collection": "asset_records",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "lifecycle_status": {
+            "_eq": "draft"
+          }
+        },
+        {
+          "brand_status": {
+            "_eq": "unreviewed"
+          }
+        }
+      ]
+    },
+    "presets": {
+      "lifecycle_status": "draft",
+      "brand_status": "unreviewed"
+    },
+    "fields": [
+      "semantic_key",
+      "title",
+      "meaning",
+      "kind",
+      "role",
+      "lifecycle_status",
+      "code_component_key",
+      "owner_type",
+      "owner_key",
+      "locale_policy",
+      "alt_mode",
+      "aspect_ratio_mode",
+      "aspect_ratio_width",
+      "aspect_ratio_height",
+      "allowed_mime_families",
+      "transform_profile",
+      "delivery_mode",
+      "focal_point_x",
+      "focal_point_y",
+      "max_bytes",
+      "brand_status",
+      "approved_token_slots",
+      "candidate_version",
+      "approved_version"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "94d082aa-6d35-415d-baf2-3dbbe83f23e6"
+  },
+  {
+    "collection": "asset_records",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "semantic_key",
+      "title",
+      "meaning",
+      "kind",
+      "role",
+      "lifecycle_status",
+      "code_component_key",
+      "owner_type",
+      "owner_key",
+      "locale_policy",
+      "alt_mode",
+      "aspect_ratio_mode",
+      "aspect_ratio_width",
+      "aspect_ratio_height",
+      "allowed_mime_families",
+      "transform_profile",
+      "delivery_mode",
+      "focal_point_x",
+      "focal_point_y",
+      "max_bytes",
+      "brand_status",
+      "approved_token_slots",
+      "candidate_version",
+      "approved_version",
+      "translations",
+      "versions",
+      "usages",
+      "date_created",
+      "date_updated",
+      "user_created",
+      "user_updated"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "706b9447-518f-47f0-bd49-56337d788d94"
+  },
+  {
+    "collection": "asset_records",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "lifecycle_status",
+      "brand_status",
+      "approved_token_slots",
+      "candidate_version",
+      "approved_version"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "057b9245-59ae-4391-92b7-67da651354e4"
+  },
+  {
+    "collection": "asset_releases",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": {
+      "schema_version": 1,
+      "source_environment": "dev",
+      "status": "draft"
+    },
+    "fields": [
+      "release_key",
+      "schema_version",
+      "manifest",
+      "manifest_sha256",
+      "source_environment",
+      "target_environment",
+      "status",
+      "repo_sha",
+      "content_export_sha256",
+      "expected_manifest_sha256",
+      "toolchain_signature",
+      "expected_live_release",
+      "idempotency_key",
+      "lease_owner",
+      "lease_expires_at",
+      "previous_release",
+      "rollback_of",
+      "validation_checks",
+      "source_dev_receipt",
+      "deployment_receipt",
+      "build_ref",
+      "deploy_ref",
+      "error_code",
+      "error_message"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "42b6298b-df08-430e-9efc-a2000754d189"
+  },
+  {
+    "collection": "asset_releases",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "release_key",
+      "schema_version",
+      "manifest",
+      "manifest_sha256",
+      "source_environment",
+      "target_environment",
+      "status",
+      "repo_sha",
+      "content_export_sha256",
+      "expected_manifest_sha256",
+      "toolchain_signature",
+      "expected_live_release",
+      "idempotency_key",
+      "lease_owner",
+      "lease_expires_at",
+      "previous_release",
+      "rollback_of",
+      "validation_checks",
+      "source_dev_receipt",
+      "deployment_receipt",
+      "build_ref",
+      "deploy_ref",
+      "error_code",
+      "error_message",
+      "date_created",
+      "date_updated",
+      "user_created"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "a1ecc03c-de39-44dd-abc9-01d49ca53c83"
+  },
+  {
+    "collection": "asset_releases",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "status",
+      "lease_owner",
+      "lease_expires_at",
+      "validation_checks",
+      "source_dev_receipt",
+      "deployment_receipt",
+      "build_ref",
+      "deploy_ref",
+      "error_code",
+      "error_message"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "95720d9c-f536-4f7e-8a13-0782a9e7f551"
+  },
+  {
+    "collection": "asset_usages",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "resolved_version",
+      "unresolved_ref",
+      "scan_run_id",
+      "last_seen_manifest_sha256",
+      "confidence",
+      "consumer_type",
+      "consumer_key",
+      "source_kind",
+      "source_file",
+      "cms_field",
+      "source_line",
+      "route",
+      "locale",
+      "slot",
+      "required",
+      "delivery_mode",
+      "alt_text_override",
+      "alt_source",
+      "active",
+      "first_seen",
+      "last_seen"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "33c34091-96c1-4af7-b0db-f1c54cdb105a"
+  },
+  {
+    "collection": "asset_usages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "resolved_version",
+      "unresolved_ref",
+      "scan_run_id",
+      "last_seen_manifest_sha256",
+      "confidence",
+      "consumer_type",
+      "consumer_key",
+      "source_kind",
+      "source_file",
+      "cms_field",
+      "source_line",
+      "route",
+      "locale",
+      "slot",
+      "required",
+      "delivery_mode",
+      "alt_text_override",
+      "alt_source",
+      "active",
+      "first_seen",
+      "last_seen",
+      "date_updated"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "ee31cba3-6b04-42bb-a301-5cb19a51abe9"
+  },
+  {
+    "collection": "asset_usages",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "asset_record",
+      "resolved_version",
+      "unresolved_ref",
+      "scan_run_id",
+      "last_seen_manifest_sha256",
+      "confidence",
+      "alt_text_override",
+      "alt_source",
+      "active",
+      "last_seen"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "d132859d-44eb-4c6c-9762-5c1c2548a607"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "asset_record",
+      "version_number",
+      "source_mode",
+      "directus_file",
+      "component_key",
+      "sha256",
+      "mime_type",
+      "format",
+      "bytes",
+      "width",
+      "height",
+      "duration_ms",
+      "orientation",
+      "color_profile",
+      "is_animated",
+      "source_hash",
+      "dependency_hashes",
+      "transform_profile",
+      "transform_signature",
+      "sanitizer_signature",
+      "generator_signature",
+      "toolchain_signature",
+      "approval_status",
+      "approved_by",
+      "approved_at",
+      "replaces_version",
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason",
+      "sanitized_output_sha256",
+      "input_hash",
+      "brand_slots",
+      "svg_id_prefix",
+      "template_version",
+      "safety_report"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "419bcaa4-145c-41c6-a08d-f6ca75e526fe"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "version_number",
+      "source_mode",
+      "directus_file",
+      "component_key",
+      "sha256",
+      "mime_type",
+      "format",
+      "bytes",
+      "width",
+      "height",
+      "duration_ms",
+      "orientation",
+      "color_profile",
+      "is_animated",
+      "source_hash",
+      "dependency_hashes",
+      "transform_profile",
+      "transform_signature",
+      "sanitizer_signature",
+      "generator_signature",
+      "toolchain_signature",
+      "approval_status",
+      "approved_by",
+      "approved_at",
+      "replaces_version",
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason",
+      "sanitized_output_sha256",
+      "input_hash",
+      "brand_slots",
+      "svg_id_prefix",
+      "template_version",
+      "safety_report",
+      "date_created",
+      "user_created"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "524b25bf-99a1-4078-92af-250410a4b4f5"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "approval_status",
+      "approved_by",
+      "approved_at",
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "f06a2d27-fb8c-469a-aa79-8679ec9590a2"
+  },
+  {
+    "collection": "asset_records_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_records_id",
+      "languages_code",
+      "alt_text",
+      "caption",
+      "credit",
+      "og_image_alt"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "86e60ce2-03fe-4499-b781-94210f712034"
+  },
+  {
+    "collection": "asset_records",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "semantic_key",
+      "title",
+      "meaning",
+      "kind",
+      "role",
+      "lifecycle_status",
+      "code_component_key",
+      "owner_type",
+      "owner_key",
+      "locale_policy",
+      "alt_mode",
+      "aspect_ratio_mode",
+      "aspect_ratio_width",
+      "aspect_ratio_height",
+      "allowed_mime_families",
+      "transform_profile",
+      "delivery_mode",
+      "focal_point_x",
+      "focal_point_y",
+      "max_bytes",
+      "brand_status",
+      "approved_token_slots",
+      "candidate_version",
+      "approved_version",
+      "translations",
+      "versions",
+      "usages",
+      "date_created",
+      "date_updated",
+      "user_created",
+      "user_updated"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "530ef3e2-3813-4b67-a87b-d478c41043b6"
+  },
+  {
+    "collection": "asset_releases",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "release_key",
+      "schema_version",
+      "manifest",
+      "manifest_sha256",
+      "source_environment",
+      "target_environment",
+      "status",
+      "repo_sha",
+      "content_export_sha256",
+      "expected_manifest_sha256",
+      "toolchain_signature",
+      "expected_live_release",
+      "idempotency_key",
+      "lease_owner",
+      "lease_expires_at",
+      "previous_release",
+      "rollback_of",
+      "validation_checks",
+      "source_dev_receipt",
+      "deployment_receipt",
+      "build_ref",
+      "deploy_ref",
+      "error_code",
+      "error_message",
+      "date_created",
+      "date_updated",
+      "user_created"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "2665b982-d07a-43dc-a5a1-c5db207d5989"
+  },
+  {
+    "collection": "asset_usages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "resolved_version",
+      "unresolved_ref",
+      "scan_run_id",
+      "last_seen_manifest_sha256",
+      "confidence",
+      "consumer_type",
+      "consumer_key",
+      "source_kind",
+      "source_file",
+      "cms_field",
+      "source_line",
+      "route",
+      "locale",
+      "slot",
+      "required",
+      "delivery_mode",
+      "alt_text_override",
+      "alt_source",
+      "active",
+      "first_seen",
+      "last_seen",
+      "date_updated"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "8e0359a6-ceed-48f1-8959-94cc922faecb"
+  },
+  {
+    "collection": "asset_versions",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "asset_record",
+      "version_number",
+      "source_mode",
+      "directus_file",
+      "component_key",
+      "sha256",
+      "mime_type",
+      "format",
+      "bytes",
+      "width",
+      "height",
+      "duration_ms",
+      "orientation",
+      "color_profile",
+      "is_animated",
+      "source_hash",
+      "dependency_hashes",
+      "transform_profile",
+      "transform_signature",
+      "sanitizer_signature",
+      "generator_signature",
+      "toolchain_signature",
+      "approval_status",
+      "approved_by",
+      "approved_at",
+      "replaces_version",
+      "replacement_reason",
+      "promotion_request_id",
+      "quarantine_reason",
+      "sanitized_output_sha256",
+      "input_hash",
+      "brand_slots",
+      "svg_id_prefix",
+      "template_version",
+      "safety_report",
+      "date_created",
+      "user_created"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "693c2a2b-87e7-4bb8-8173-65ade7542b22"
   }
 ]

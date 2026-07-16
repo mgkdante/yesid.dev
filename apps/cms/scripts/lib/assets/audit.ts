@@ -490,6 +490,17 @@ function repositoryMediaAnchor(value: string): {
   };
 }
 
+function canonicalRepositoryComponentAssetId(value: string): boolean {
+  const match =
+    /^repo-component:((?:apps|packages|gbp-assets)\/[^#?\\\s]+\.svelte)#svg:([1-9]\d*)$/.exec(
+      value,
+    );
+  if (!match) return false;
+  return match[1]!
+    .split("/")
+    .every((segment) => segment !== "" && segment !== "." && segment !== "..");
+}
+
 function sanitizeUnanchoredLocalReference(value: string): string {
   if (!localReferenceShaped(value)) return value;
   const fragmentIndex = value.indexOf("#");
@@ -517,9 +528,10 @@ function sanitizeLocalReference(value: string): string {
  * Safe semantic values remain byte-stable after NFC/LF normalization.
  */
 export function sanitizeAssetAuditPublicText(value: string): string {
-  let sanitized = normalizeString(value).replace(
-    EXTERNAL_URL_PATTERN,
-    (candidate) => sanitizeExternalUrl(candidate),
+  const normalized = normalizeString(value);
+  if (canonicalRepositoryComponentAssetId(normalized)) return normalized;
+  let sanitized = normalized.replace(EXTERNAL_URL_PATTERN, (candidate) =>
+    sanitizeExternalUrl(candidate),
   );
   sanitized = sanitized.replace(
     EMBEDDED_LOCAL_REFERENCE_PATTERN,
@@ -813,7 +825,7 @@ function validateOgCoverage(rows: readonly OgCoverageRequirement[]): void {
     throw new TypeError("OG coverage must contain exactly 75 rows");
   }
   const byUsageKey = new Map<string, OgCoverageRequirement>();
-  const groups = new Map<string, Set<string>>();
+  const groups = new Map<string, Map<string, string>>();
   for (const row of rows) {
     if (
       !row ||
@@ -888,20 +900,39 @@ function validateOgCoverage(rows: readonly OgCoverageRequirement[]): void {
     const groupKey = compactCanonical({
       ownerType: row.ownerType,
       ownerKey: row.ownerKey,
-      route: row.route,
     });
-    const locales = groups.get(groupKey) ?? new Set<string>();
-    locales.add(row.locale);
-    groups.set(groupKey, locales);
+    const localeRoutes = groups.get(groupKey) ?? new Map<string, string>();
+    if (localeRoutes.has(row.locale)) {
+      throw new TypeError("Every OG group must contain one row per locale");
+    }
+    localeRoutes.set(row.locale, row.route);
+    groups.set(groupKey, localeRoutes);
   }
   if (groups.size !== 25)
     throw new TypeError("OG coverage must contain exactly 25 groups");
-  for (const locales of groups.values()) {
+  for (const localeRoutes of groups.values()) {
+    const locales = new Set(localeRoutes.keys());
     if (
       locales.size !== 3 ||
       !["en", "fr", "es"].every((locale) => locales.has(locale))
     ) {
       throw new TypeError("Every OG group must contain EN, FR, and ES");
+    }
+    if (new Set(localeRoutes.values()).size !== 3) {
+      throw new TypeError(
+        "Every OG locale row must preserve its distinct public route",
+      );
+    }
+    for (const [locale, route] of localeRoutes) {
+      const hasFrenchPrefix = route === "/fr" || route.startsWith("/fr/");
+      const hasSpanishPrefix = route === "/es" || route.startsWith("/es/");
+      if (
+        (locale === "en" && (hasFrenchPrefix || hasSpanishPrefix)) ||
+        (locale === "fr" && !hasFrenchPrefix) ||
+        (locale === "es" && !hasSpanishPrefix)
+      ) {
+        throw new TypeError("OG locale does not match its public route prefix");
+      }
     }
   }
   for (const row of rows) {
@@ -945,7 +976,11 @@ function categoryIssues(
         FILE_SURFACES.has(surface) || issue.operation.startsWith("readAsset")
       );
     }
-    return !REGISTRY_SURFACES.has(surface) && !FILE_SURFACES.has(surface);
+    return (
+      !issue.operation.startsWith("readAsset") &&
+      !REGISTRY_SURFACES.has(surface) &&
+      !FILE_SURFACES.has(surface)
+    );
   });
 }
 
@@ -999,7 +1034,7 @@ function environmentScopeReceipts(
   } else if (snapshotValue.registryAvailability === "missing") {
     result.push({
       scope: names.registry,
-      status: environment === "dev" ? "evaluated" : "not-evaluated",
+      status: "not-evaluated",
       reason: "registry-missing",
     });
   } else if (snapshotValue.registryAvailability === "forbidden") {
@@ -2128,18 +2163,39 @@ function generatedChainComplete(
   if (tracked.has(assetId)) return true;
   if (visiting.has(assetId)) return false;
   visiting.add(assetId);
-  const links = input.repository.generatedFrom.filter(
-    (link) => link.outputAssetId === assetId,
-  );
-  if (links.length === 0) return false;
-  return links.every((link) => {
-    const direct = input.repository.assets.find(
-      (asset) => asset.id === link.inputRef,
+  try {
+    const links = input.repository.generatedFrom.filter(
+      (link) => link.outputAssetId === assetId,
     );
-    return direct
-      ? generatedChainComplete(direct.id, input, tracked, visiting)
-      : false;
-  });
+    if (links.length === 0) return false;
+    return links.every((link) => {
+      const directMatches = input.repository.assets.filter(
+        (asset) => asset.id === link.inputRef,
+      );
+      const fragmentIndex = link.inputRef.indexOf("#");
+      const repoPath =
+        fragmentIndex < 0
+          ? link.inputRef
+          : link.inputRef.slice(0, fragmentIndex);
+      const pathMatches =
+        directMatches.length === 0 && repoPath
+          ? input.repository.assets.filter(
+              (asset) => asset.repoPath === repoPath,
+            )
+          : [];
+      const direct =
+        directMatches.length === 1
+          ? directMatches[0]
+          : pathMatches.length === 1
+            ? pathMatches[0]
+            : undefined;
+      return direct
+        ? generatedChainComplete(direct.id, input, tracked, visiting)
+        : false;
+    });
+  } finally {
+    visiting.delete(assetId);
+  }
 }
 
 function buildInventoryFindings(

@@ -1,0 +1,71 @@
+{
+  "collection": "asset_records",
+  "field": "kind",
+  "type": "string",
+  "meta": {
+    "collection": "asset_records",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "kind",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown",
+    "note": null,
+    "options": {
+      "choices": [
+        {
+          "text": "Raster",
+          "value": "raster"
+        },
+        {
+          "text": "Svg",
+          "value": "svg"
+        },
+        {
+          "text": "Code Component",
+          "value": "code-component"
+        },
+        {
+          "text": "Font",
+          "value": "font"
+        },
+        {
+          "text": "Document",
+          "value": "document"
+        },
+        {
+          "text": "Video",
+          "value": "video"
+        }
+      ]
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 5,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "kind",
+    "table": "asset_records",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": true,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

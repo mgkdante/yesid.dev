@@ -25,6 +25,8 @@
 import { describe, expect, it } from 'bun:test';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { ASSET_REGISTRY_COLLECTIONS } from '../scripts/lib/assets/editor-presets';
+import { buildAssetRegistryPlan } from '../scripts/setup-asset-registry-schema';
 
 const CMS_ROOT = resolve(import.meta.dir, '..');
 const FETCHERS_DIR = join(CMS_ROOT, 'scripts', 'lib', 'fetchers');
@@ -77,5 +79,147 @@ describe('fetcher collection literals exist in the snapshot', () => {
 			(c) => !existsSync(join(collectionsDir, `${c}.json`)),
 		);
 		expect(missing).toEqual([]);
+	});
+});
+
+describe('asset registry plan is captured exactly in the schema snapshot', () => {
+	const plan = buildAssetRegistryPlan();
+	const expectedCollections = new Map<string, Record<string, unknown>>();
+	const expectedFieldPayloads = new Map<string, Map<string, Record<string, unknown>>>(
+		ASSET_REGISTRY_COLLECTIONS.map((collection) => [collection, new Map()]),
+	);
+	const expectedRelationPayloads = new Map<string, Map<string, Record<string, unknown>>>(
+		ASSET_REGISTRY_COLLECTIONS.map((collection) => [collection, new Map()]),
+	);
+	const expectedFields = new Map<string, Set<string>>(
+		ASSET_REGISTRY_COLLECTIONS.map((collection) => [collection, new Set<string>()]),
+	);
+	const expectedRelations = new Map<string, Set<string>>(
+		ASSET_REGISTRY_COLLECTIONS.map((collection) => [collection, new Set<string>()]),
+	);
+
+	for (const step of plan) {
+		if (step.kind === 'collection') {
+			const collection = String(step.payload?.collection);
+			expectedCollections.set(collection, step.payload!);
+			for (const field of (step.payload?.fields ?? []) as Array<Record<string, unknown>>) {
+				const fieldName = String(field.field);
+				expectedFields.get(collection)?.add(fieldName);
+				expectedFieldPayloads.get(collection)?.set(fieldName, field);
+			}
+		}
+		if (step.kind === 'field') {
+			const collection = step.path.slice('/fields/'.length);
+			const field = String(step.payload?.field);
+			expectedFields.get(collection)?.add(field);
+			expectedFieldPayloads.get(collection)?.set(field, step.payload!);
+		}
+		if (step.kind === 'relation') {
+			const collection = String(step.payload?.collection);
+			const field = String(step.payload?.field);
+			expectedRelations.get(collection)?.add(field);
+			expectedRelationPayloads.get(collection)?.set(field, step.payload!);
+		}
+	}
+
+	it('has the five grouped collection snapshots', () => {
+		for (const collection of ASSET_REGISTRY_COLLECTIONS) {
+			const path = join(SNAPSHOT_DIR, 'collections', `${collection}.json`);
+			expect(existsSync(path), collection).toBe(true);
+			if (!existsSync(path)) continue;
+			const snapshot = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
+			const expected = expectedCollections.get(collection)!;
+			expect(snapshot).toMatchObject({
+				collection,
+				meta: { ...(expected.meta as Record<string, unknown>), collection },
+				schema: { name: collection },
+			});
+		}
+	});
+
+	it('has exactly the planned field files for every registry collection', () => {
+		for (const collection of ASSET_REGISTRY_COLLECTIONS) {
+			const directory = join(SNAPSHOT_DIR, 'fields', collection);
+			const actual = existsSync(directory)
+				? readdirSync(directory)
+						.filter((file) => file.endsWith('.json'))
+						.map((file) => file.slice(0, -'.json'.length))
+						.sort()
+				: [];
+			expect(actual, collection).toEqual([...expectedFields.get(collection)!].sort());
+		}
+	});
+
+	it('preserves every planned field type, editor option, validation, and schema constraint', () => {
+		for (const collection of ASSET_REGISTRY_COLLECTIONS) {
+			for (const [field, expected] of expectedFieldPayloads.get(collection)!) {
+				const path = join(SNAPSHOT_DIR, 'fields', collection, `${field}.json`);
+				expect(existsSync(path), `${collection}.${field}`).toBe(true);
+				if (!existsSync(path)) continue;
+				const snapshot = JSON.parse(readFileSync(path, 'utf8')) as {
+					collection: string;
+					field: string;
+					type: string;
+					meta: Record<string, unknown>;
+					schema: Record<string, unknown> | null;
+				};
+
+				expect(snapshot.collection, `${collection}.${field}`).toBe(collection);
+				expect(snapshot.field, `${collection}.${field}`).toBe(field);
+				expect(snapshot.type, `${collection}.${field}`).toBe(String(expected.type));
+				expect(snapshot.meta, `${collection}.${field}`).toMatchObject(
+					{ ...(expected.meta as Record<string, unknown>), collection, field },
+				);
+				if (expected.schema === null) {
+					// directus-sync omits schema for alias fields instead of serializing null.
+					expect(snapshot.schema ?? null, `${collection}.${field}`).toBeNull();
+				} else {
+					expect(snapshot.schema, `${collection}.${field}`).toMatchObject(
+						{ ...(expected.schema as Record<string, unknown>), name: field, table: collection },
+					);
+				}
+			}
+		}
+	});
+
+	it('has exactly the planned relation files for every registry collection', () => {
+		for (const collection of ASSET_REGISTRY_COLLECTIONS) {
+			const directory = join(SNAPSHOT_DIR, 'relations', collection);
+			const actual = existsSync(directory)
+				? readdirSync(directory)
+						.filter((file) => file.endsWith('.json'))
+						.map((file) => file.slice(0, -'.json'.length))
+						.sort()
+				: [];
+			expect(actual, collection).toEqual([...expectedRelations.get(collection)!].sort());
+		}
+	});
+
+	it('preserves every planned relation target, junction option, and delete rule', () => {
+		for (const collection of ASSET_REGISTRY_COLLECTIONS) {
+			for (const [field, expected] of expectedRelationPayloads.get(collection)!) {
+				const path = join(SNAPSHOT_DIR, 'relations', collection, `${field}.json`);
+				expect(existsSync(path), `${collection}.${field}`).toBe(true);
+				if (!existsSync(path)) continue;
+				const snapshot = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
+				expect(snapshot, `${collection}.${field}`).toMatchObject({
+					collection,
+					field,
+					related_collection: expected.related_collection,
+					meta: {
+						...(expected.meta as Record<string, unknown>),
+						many_collection: collection,
+						many_field: field,
+						one_collection: expected.related_collection,
+					},
+					schema: {
+						...(expected.schema as Record<string, unknown>),
+						table: collection,
+						column: field,
+						foreign_key_table: expected.related_collection,
+					},
+				});
+			}
+		}
 	});
 });
