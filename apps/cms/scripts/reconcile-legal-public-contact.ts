@@ -25,9 +25,9 @@ export const LEGAL_SLUGS = [
 export const PUBLIC_CONTACT_EMAIL = 'contact@yesid.dev';
 export const INTERNAL_CONTACT_EMAIL = 'admin@yesid.dev';
 export const REVISION_DATES = {
-	privacy: '2026-07-12',
+	privacy: '2026-07-15',
 	terms: '2026-07-12',
-	cookies: '2026-07-12',
+	cookies: '2026-07-15',
 	accessibility: '2026-07-12',
 	notice: '2026-07-13',
 } as const satisfies Record<(typeof LEGAL_SLUGS)[number], string>;
@@ -42,9 +42,9 @@ const PUBLIC_CONTACT_COUNTS: Record<LegalSlug, number> = {
 };
 
 const PREVIOUS_REVISION_DATES: Record<LegalSlug, string> = {
-	privacy: '2026-07-11',
+	privacy: '2026-07-12',
 	terms: '2026-07-09',
-	cookies: '2026-07-11',
+	cookies: '2026-07-12',
 	accessibility: '2026-07-09',
 	notice: '2026-07-09',
 };

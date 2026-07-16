@@ -23,7 +23,7 @@ export const legalPages: readonly LegalPage[] = [
 						type: 'paragraph',
 					},
 					{
-						data: { text: 'Last updated: 2026-07-12' },
+						data: { text: 'Last updated: 2026-07-15' },
 						id: 'legal-privacy-en-002',
 						type: 'paragraph',
 					},
@@ -58,7 +58,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'The site is prerendered and sets no tracking cookies. Personal information reaches me through contact, booking, and optional Plausible analytics. Plausible stays off unless you allow it.',
+							text: 'The site is prerendered and sets no tracking cookies. Personal information reaches me through contact, booking, and optional Plausible analytics when I enable it. Explicit consent is the site\'s documented default for analytics.',
 						},
 						id: 'legal-privacy-en-008',
 						type: 'paragraph',
@@ -106,7 +106,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project\'s live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it.',
+							text: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project\'s live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events. Each analytics request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. When Plausible is disabled, the site makes no analytics requests and sends no pageviews or conversion events. The Analytics preferences control is absent from the footer, and any analytics choice already stored in your browser remains there but is dormant. With the default consent banner, no Plausible request runs until you choose Allow analytics. If I enable analytics without the banner, cookieless Plausible starts for visitors without a saved decline; a saved decline remains untracked.',
 						},
 						id: 'legal-privacy-en-016',
 						type: 'paragraph',
@@ -118,7 +118,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'The site remembers a few functional preferences (theme, language, collapsed sections, a draft of your form message) in your browser\'s localStorage. This information never leaves your device and is never transmitted to me or to anyone else.',
+							text: 'The site remembers a few functional preferences (theme, language, collapsed sections, a draft of your form message) in your browser\'s localStorage. Plausible itself sets no cookies, uses no browser storage, and creates no persistent cross-site identifier. yesid.dev stores your analytics choice in your browser\'s localStorage. Those stored values stay on your device; the analytics choice only controls whether requests run. The Analytics preferences control is available in the footer whenever analytics is enabled. Opening it pauses future measurement and shows the choice. Allow analytics resumes measurement; No thanks records a decline. Withdrawing consent stops future analytics requests and events. Aggregate data already sent cannot be tied back to you or selectively removed.',
 						},
 						id: 'legal-privacy-en-018',
 						type: 'paragraph',
@@ -225,11 +225,11 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'No tracking cookies. Optional Plausible analytics is off by default and runs only after you allow it; you can reopen Analytics preferences from the footer.',
+									content: 'No tracking cookies. Explicit consent is the documented default. I use the no-banner mode only after deciding to do so and obtaining legal-advisor review.',
 									items: [],
 								},
 								{
-									content: 'No profiling and no automated decision-making.',
+									content: 'No advertising profile and no automated decision-making.',
 									items: [],
 								},
 							],
@@ -384,7 +384,7 @@ export const legalPages: readonly LegalPage[] = [
 						type: 'paragraph',
 					},
 					{
-						data: { text: 'Última actualización: 2026-07-12' },
+						data: { text: 'Última actualización: 2026-07-15' },
 						id: 'legal-privacy-es-002',
 						type: 'paragraph',
 					},
@@ -419,7 +419,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'El sitio está prerrenderizado y no instala cookies de rastreo. La información personal me llega por el contacto, las reservas y la analítica opcional de Plausible. Plausible permanece desactivado sin su autorización.',
+							text: 'El sitio está prerrenderizado y no instala cookies de rastreo. La información personal me llega por el contacto, las reservas y la analítica opcional de Plausible cuando la activo. El consentimiento explícito es el modo documentado predeterminado para la analítica.',
 						},
 						id: 'legal-privacy-es-008',
 						type: 'paragraph',
@@ -467,7 +467,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice.',
+							text: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada. Cada solicitud de analítica contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Cuando Plausible está desactivado, el sitio no hace solicitudes de analítica ni envía páginas vistas o eventos de conversión. El control Preferencias de analítica no aparece en el pie de página, y cualquier elección de analítica ya guardada en su navegador permanece allí, pero queda inactiva. Con el banner de consentimiento predeterminado, no se envía ninguna solicitud a Plausible hasta que usted elige Permitir analítica. Si activo la analítica sin el banner, Plausible sin cookies comienza para quienes no tengan un rechazo guardado; un rechazo guardado sigue impidiendo toda medición.',
 						},
 						id: 'legal-privacy-es-016',
 						type: 'paragraph',
@@ -479,7 +479,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'El sitio recuerda algunas preferencias funcionales (tema, idioma, secciones plegadas, un borrador de su mensaje del formulario) en el localStorage de su navegador. Esta información nunca sale de su dispositivo y nunca se me transmite a mí ni a nadie más.',
+							text: 'El sitio recuerda algunas preferencias funcionales (tema, idioma, secciones plegadas, un borrador de su mensaje del formulario) en el localStorage de su navegador. Plausible no instala cookies, no usa el almacenamiento del navegador y no crea identificadores persistentes entre sitios. yesid.dev guarda su elección de analítica en el localStorage de su navegador. Estos valores permanecen en su dispositivo; la elección de analítica solo determina si se envían solicitudes. El control Preferencias de analítica está disponible en el pie de página siempre que la analítica esté activada. Al abrirlo, se pausa toda medición futura y se muestra la elección. Permitir analítica reanuda la medición; No, gracias registra un rechazo. Retirar el consentimiento detiene las futuras solicitudes y los futuros eventos de analítica. Los datos agregados ya enviados no pueden volver a vincularse con usted ni eliminarse de forma selectiva.',
 						},
 						id: 'legal-privacy-es-018',
 						type: 'paragraph',
@@ -584,11 +584,11 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'Sin cookies de rastreo. La analítica opcional de Plausible está desactivada de forma predeterminada y solo funciona después de que usted la autorice; puede volver a abrir las Preferencias de analítica desde el pie de página.',
+									content: 'Sin cookies de rastreo. El consentimiento explícito sigue siendo el modo documentado predeterminado. Solo uso el modo sin banner después de decidirlo y obtener la revisión de un asesor jurídico.',
 									items: [],
 								},
 								{
-									content: 'Sin perfilado y sin decisiones automatizadas.',
+									content: 'Ningún perfil publicitario ni decisión automatizada.',
 									items: [],
 								},
 							],
@@ -743,7 +743,7 @@ export const legalPages: readonly LegalPage[] = [
 						type: 'paragraph',
 					},
 					{
-						data: { text: 'Dernière mise à jour : 2026-07-12' },
+						data: { text: 'Dernière mise à jour : 2026-07-15' },
 						id: 'legal-privacy-fr-002',
 						type: 'paragraph',
 					},
@@ -778,7 +778,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Le site est prérendu et n\'installe aucun témoin de suivi. Des renseignements personnels me parviennent par le contact, la réservation et l\'analytique Plausible facultative. Plausible reste désactivé sans votre autorisation.',
+							text: 'Le site est prérendu et n\'installe aucun témoin de suivi. Des renseignements personnels me parviennent par le contact, la réservation et, lorsque je l\'active, l\'analytique Plausible facultative. Le consentement explicite est le mode documenté par défaut pour l\'analytique.',
 						},
 						id: 'legal-privacy-fr-008',
 						type: 'paragraph',
@@ -826,7 +826,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'J\'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d\'exploitation et d\'appareil, le pays, la région et la ville approximatifs, ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée. Plausible n\'installe aucun témoin, n\'utilise pas le stockage du navigateur, n\'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l\'Union européenne. Je vois des rapports d\'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas.',
+							text: 'J\'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d\'exploitation et d\'appareil, le pays, la région et la ville approximatifs, ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée. Chaque requête d\'analytique contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l\'Union européenne. Je vois des rapports d\'utilisation du site, pas des personnes nommées. Lorsque Plausible est désactivé, le site ne fait aucune requête d\'analytique et n\'envoie aucune page vue ni aucun événement de conversion. Le contrôle Préférences d\'analytique est absent du pied de page, et tout choix d\'analytique déjà conservé dans votre navigateur y reste, mais demeure inactif. Avec la bannière de consentement offerte par défaut, aucune requête n\'est envoyée à Plausible avant que vous choisissiez Autoriser l\'analytique. Si j\'active l\'analytique sans la bannière, Plausible sans témoins démarre pour les personnes qui n\'ont pas enregistré de refus; un refus enregistré continue d\'empêcher toute mesure.',
 						},
 						id: 'legal-privacy-fr-016',
 						type: 'paragraph',
@@ -841,7 +841,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Le site retient quelques préférences fonctionnelles (thème, langue, sections repliées, brouillon de votre message) dans le localStorage de votre navigateur. Ces données ne quittent jamais votre appareil et ne me sont jamais transmises, ni à personne d\'autre.',
+							text: 'Le site retient quelques préférences fonctionnelles (thème, langue, sections repliées, brouillon de votre message) dans le localStorage de votre navigateur. Plausible lui-même n\'installe aucun témoin, n\'utilise pas le stockage du navigateur et ne crée aucun identifiant persistant entre les sites. yesid.dev conserve votre choix d\'analytique dans le localStorage de votre navigateur. Ces valeurs restent sur votre appareil; le choix d\'analytique détermine seulement si des requêtes sont envoyées. Le contrôle Préférences d\'analytique est disponible dans le pied de page lorsque l\'analytique est activée. L\'ouvrir suspend toute mesure future et affiche le choix. Autoriser l\'analytique reprend la mesure; Non merci enregistre un refus. Retirer votre consentement arrête les futures requêtes et les futurs événements d\'analytique. Les données agrégées déjà envoyées ne peuvent pas être rattachées à vous ni retirées sélectivement.',
 						},
 						id: 'legal-privacy-fr-018',
 						type: 'paragraph',
@@ -948,11 +948,11 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'Aucun témoin de suivi. L\'analytique Plausible facultative est désactivée par défaut et fonctionne seulement après votre autorisation; vous pouvez rouvrir les Préférences d’analytique depuis le pied de page.',
+									content: 'Aucun témoin de suivi. Le consentement explicite demeure le mode documenté par défaut. Je n\'utilise le mode sans bannière qu\'après avoir décidé de le faire et obtenu l\'avis d\'un conseiller juridique.',
 									items: [],
 								},
 								{
-									content: 'Aucun profilage, aucune décision automatisée.',
+									content: 'Aucun profil publicitaire et aucune décision automatisée.',
 									items: [],
 								},
 							],
@@ -1628,7 +1628,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and how your analytics choice works. Last updated: 2026-07-12.',
+							text: 'yesid.dev is the portfolio and contact site of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec, Canada. This page explains what the site stores in your browser, what it does not, and how your analytics choice works. Last updated: 2026-07-15.',
 						},
 						id: 'legal-cookies-en-001',
 						type: 'paragraph',
@@ -1646,11 +1646,11 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'There is no advertising technology, no cross-site tracking, and no profiling.',
+									content: 'There is no advertising technology, advertising profile, or automated decision-making.',
 									items: [],
 								},
 								{
-									content: 'Plausible analytics is off by default and runs only after you allow it.',
+									content: 'Plausible can be fully disabled. When it is enabled, explicit consent is the documented default; the no-banner mode is operator-controlled and requires legal-advisor review.',
 									items: [],
 								},
 							],
@@ -1666,7 +1666,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'The site keeps a few functional preferences in your browser\'s localStorage: your theme (light or dark), your language, the state of collapsed sections, and an unsent draft of the contact form so you do not lose it if you navigate away. This information stays on your device and is never transmitted to me or to anyone else; only your own browser uses it, locally, to restore your preferences. Clearing your browser data removes it completely.',
+							text: 'The site keeps a few functional preferences in your browser\'s localStorage: your theme (light or dark), your language, the state of collapsed sections, and an unsent draft of the contact form so you do not lose it if you navigate away. Plausible itself sets no cookies, uses no browser storage, and creates no persistent cross-site identifier. yesid.dev stores your analytics choice in your browser\'s localStorage. Those stored values stay on your device. An analytics choice remains dormant whenever Plausible is disabled. Clearing your browser data removes the stored values.',
 						},
 						id: 'legal-cookies-en-005',
 						type: 'paragraph',
@@ -1678,7 +1678,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project\'s live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it.',
+							text: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project\'s live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events. Each analytics request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. When Plausible is disabled, the site makes no analytics requests and sends no pageviews or conversion events. The Analytics preferences control is absent from the footer, and any analytics choice already stored in your browser remains there but is dormant. With the default consent banner, no Plausible request runs until you choose Allow analytics. If I enable analytics without the banner, cookieless Plausible starts for visitors without a saved decline; a saved decline remains untracked.',
 						},
 						id: 'legal-cookies-en-007',
 						type: 'paragraph',
@@ -1690,14 +1690,14 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Section 8.1 of Quebec\'s Act respecting the protection of personal information in the private sector addresses technologies with functions that can identify, locate or profile a person. Plausible derives a visitor count that changes daily and an approximate country, region and city. I therefore keep those functions off by default. No Plausible request is sent until you choose Allow analytics, and you can reopen Analytics preferences from the footer at any time.',
+							text: 'Section 8.1 of Quebec\'s Act respecting the protection of personal information in the private sector addresses technologies with functions that can identify, locate or profile a person. Plausible derives a visitor count that changes daily and an approximate country, region and city. The Analytics preferences control is available in the footer whenever analytics is enabled. Opening it pauses future measurement and shows the choice. Allow analytics resumes measurement; No thanks records a decline. Withdrawing consent stops future analytics requests and events. Aggregate data already sent cannot be tied back to you or selectively removed.',
 						},
 						id: 'legal-cookies-en-009',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'I use the same explicit choice for every visitor instead of relying on implied consent.',
+							text: 'Explicit consent is the documented default. I use the no-banner mode only after deciding to do so and obtaining legal-advisor review.',
 						},
 						id: 'legal-cookies-en-010',
 						type: 'paragraph',
@@ -1734,7 +1734,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y cómo funciona su elección de analítica. Última actualización: 2026-07-12.',
+							text: 'yesid.dev es el sitio de portafolio y contacto de Yesid Fernando Otalora, consultor independiente en infraestructura digital en Quebec, Canadá. Esta página explica qué guarda el sitio en su navegador, qué no guarda y cómo funciona su elección de analítica. Última actualización: 2026-07-15.',
 						},
 						id: 'legal-cookies-es-001',
 						type: 'paragraph',
@@ -1752,11 +1752,11 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'No hay tecnología publicitaria, ni rastreo entre sitios, ni elaboración de perfiles.',
+									content: 'No hay tecnología publicitaria, perfiles publicitarios ni decisiones automatizadas.',
 									items: [],
 								},
 								{
-									content: 'La analítica de Plausible está desactivada de forma predeterminada y solo funciona después de que usted la autorice.',
+									content: 'Plausible puede desactivarse por completo. Cuando está activado, el consentimiento explícito es el modo documentado predeterminado; el modo sin banner está bajo control del operador y requiere la revisión de un asesor jurídico.',
 									items: [],
 								},
 							],
@@ -1772,7 +1772,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'El sitio conserva unas pocas preferencias funcionales en el localStorage de su navegador: su tema (claro u oscuro), su idioma, el estado de las secciones plegadas y el borrador sin enviar del formulario de contacto, para que no lo pierda si cambia de página. Esta información permanece en su dispositivo y nunca se me transmite a mí ni a nadie más; solo su propio navegador la usa, de forma local, para restablecer sus preferencias. Al borrar los datos de su navegador, esta información se elimina por completo.',
+							text: 'El sitio conserva unas pocas preferencias funcionales en el localStorage de su navegador: su tema (claro u oscuro), su idioma, el estado de las secciones plegadas y el borrador sin enviar del formulario de contacto, para que no lo pierda si cambia de página. Plausible no instala cookies, no usa el almacenamiento del navegador y no crea identificadores persistentes entre sitios. yesid.dev guarda su elección de analítica en el localStorage de su navegador. Estos valores permanecen en su dispositivo. Una elección de analítica queda inactiva mientras Plausible está desactivado. Al borrar los datos de su navegador, se eliminan los valores guardados.',
 						},
 						id: 'legal-cookies-es-005',
 						type: 'paragraph',
@@ -1784,7 +1784,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice.',
+							text: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada. Cada solicitud de analítica contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Cuando Plausible está desactivado, el sitio no hace solicitudes de analítica ni envía páginas vistas o eventos de conversión. El control Preferencias de analítica no aparece en el pie de página, y cualquier elección de analítica ya guardada en su navegador permanece allí, pero queda inactiva. Con el banner de consentimiento predeterminado, no se envía ninguna solicitud a Plausible hasta que usted elige Permitir analítica. Si activo la analítica sin el banner, Plausible sin cookies comienza para quienes no tengan un rechazo guardado; un rechazo guardado sigue impidiendo toda medición.',
 						},
 						id: 'legal-cookies-es-007',
 						type: 'paragraph',
@@ -1796,14 +1796,14 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'El artículo 8.1 de la Ley de protección de la información personal en el sector privado de Quebec se refiere a tecnologías con funciones que permiten identificar o localizar a una persona, o elaborar su perfil. Plausible crea un recuento de visitantes que cambia cada día y una estimación del país, la región y la ciudad. Por eso mantengo esas funciones desactivadas de forma predeterminada. No se envía ninguna solicitud a Plausible antes de que usted elija Permitir analítica, y puede volver a abrir las Preferencias de analítica desde el pie de página en cualquier momento.',
+							text: 'El artículo 8.1 de la Ley de protección de la información personal en el sector privado de Quebec se refiere a tecnologías con funciones que permiten identificar o localizar a una persona, o elaborar su perfil. Plausible crea un recuento de visitantes que cambia cada día y una estimación del país, la región y la ciudad. El control Preferencias de analítica está disponible en el pie de página siempre que la analítica esté activada. Al abrirlo, se pausa toda medición futura y se muestra la elección. Permitir analítica reanuda la medición; No, gracias registra un rechazo. Retirar el consentimiento detiene las futuras solicitudes y los futuros eventos de analítica. Los datos agregados ya enviados no pueden volver a vincularse con usted ni eliminarse de forma selectiva.',
 						},
 						id: 'legal-cookies-es-009',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'Uso la misma elección explícita para cada persona que visita el sitio, en vez de basarme en un consentimiento implícito.',
+							text: 'El consentimiento explícito sigue siendo el modo documentado predeterminado. Solo uso el modo sin banner después de decidirlo y obtener la revisión de un asesor jurídico.',
 						},
 						id: 'legal-cookies-es-010',
 						type: 'paragraph',
@@ -1840,7 +1840,7 @@ export const legalPages: readonly LegalPage[] = [
 				blocks: [
 					{
 						data: {
-							text: 'yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu\'il ne conserve pas, et comment fonctionne votre choix d\'analytique. Dernière mise à jour : 2026-07-12.',
+							text: 'yesid.dev est le site portfolio et de contact de Yesid Fernando Otalora, consultant indépendant en infrastructure numérique au Québec (Canada). Cette page explique ce que le site conserve dans votre navigateur, ce qu\'il ne conserve pas, et comment fonctionne votre choix d\'analytique. Dernière mise à jour : 2026-07-15.',
 						},
 						id: 'legal-cookies-fr-001',
 						type: 'paragraph',
@@ -1858,11 +1858,11 @@ export const legalPages: readonly LegalPage[] = [
 									items: [],
 								},
 								{
-									content: 'Il n\'y a ni technologie publicitaire, ni suivi entre les sites, ni profilage.',
+									content: 'Il n\'y a aucune technologie publicitaire, aucun profil publicitaire ni aucune décision automatisée.',
 									items: [],
 								},
 								{
-									content: 'L\'analytique Plausible est désactivée par défaut et fonctionne seulement après votre autorisation.',
+									content: 'Plausible peut être complètement désactivé. Lorsqu\'il est activé, le consentement explicite est le mode documenté par défaut; le mode sans bannière est contrôlé par l\'exploitant et exige l\'avis d\'un conseiller juridique.',
 									items: [],
 								},
 							],
@@ -1878,7 +1878,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'Le site garde quelques préférences fonctionnelles dans le localStorage de votre navigateur : votre thème (clair ou sombre), votre langue, l\'état des sections repliées et le brouillon non envoyé du formulaire de contact, pour que vous ne le perdiez pas en changeant de page. Ces renseignements restent sur votre appareil et ne me sont jamais transmis, ni à personne d\'autre; seul votre propre navigateur les utilise, localement, pour rétablir vos préférences. Effacer les données de votre navigateur les supprime complètement.',
+							text: 'Le site garde quelques préférences fonctionnelles dans le localStorage de votre navigateur : votre thème (clair ou sombre), votre langue, l\'état des sections repliées et le brouillon non envoyé du formulaire de contact, pour que vous ne le perdiez pas en changeant de page. Plausible lui-même n\'installe aucun témoin, n\'utilise pas le stockage du navigateur et ne crée aucun identifiant persistant entre les sites. yesid.dev conserve votre choix d\'analytique dans le localStorage de votre navigateur. Ces valeurs restent sur votre appareil. Un choix d\'analytique demeure inactif lorsque Plausible est désactivé. Effacer les données de votre navigateur supprime les valeurs conservées.',
 						},
 						id: 'legal-cookies-fr-005',
 						type: 'paragraph',
@@ -1890,7 +1890,7 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'J\'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d\'exploitation et d\'appareil, le pays, la région et la ville approximatifs, ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée. Plausible n\'installe aucun témoin, n\'utilise pas le stockage du navigateur, n\'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l\'Union européenne. Je vois des rapports d\'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas.',
+							text: 'J\'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d\'exploitation et d\'appareil, le pays, la région et la ville approximatifs, ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée. Chaque requête d\'analytique contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l\'Union européenne. Je vois des rapports d\'utilisation du site, pas des personnes nommées. Lorsque Plausible est désactivé, le site ne fait aucune requête d\'analytique et n\'envoie aucune page vue ni aucun événement de conversion. Le contrôle Préférences d\'analytique est absent du pied de page, et tout choix d\'analytique déjà conservé dans votre navigateur y reste, mais demeure inactif. Avec la bannière de consentement offerte par défaut, aucune requête n\'est envoyée à Plausible avant que vous choisissiez Autoriser l\'analytique. Si j\'active l\'analytique sans la bannière, Plausible sans témoins démarre pour les personnes qui n\'ont pas enregistré de refus; un refus enregistré continue d\'empêcher toute mesure.',
 						},
 						id: 'legal-cookies-fr-007',
 						type: 'paragraph',
@@ -1902,14 +1902,14 @@ export const legalPages: readonly LegalPage[] = [
 					},
 					{
 						data: {
-							text: 'L\'article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé du Québec vise les technologies qui comportent des fonctions permettant d\'identifier ou de localiser une personne, ou d\'effectuer son profilage. Plausible produit un décompte des visiteurs renouvelé chaque jour ainsi qu\'une estimation du pays, de la région et de la ville. Je garde donc ces fonctions désactivées par défaut. Aucune requête n\'est envoyée à Plausible avant que vous choisissiez Autoriser l’analytique, et vous pouvez rouvrir les Préférences d’analytique depuis le pied de page en tout temps.',
+							text: 'L\'article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé du Québec vise les technologies qui comportent des fonctions permettant d\'identifier ou de localiser une personne, ou d\'effectuer son profilage. Plausible produit un décompte des visiteurs renouvelé chaque jour ainsi qu\'une estimation du pays, de la région et de la ville. Le contrôle Préférences d\'analytique est disponible dans le pied de page lorsque l\'analytique est activée. L\'ouvrir suspend toute mesure future et affiche le choix. Autoriser l\'analytique reprend la mesure; Non merci enregistre un refus. Retirer votre consentement arrête les futures requêtes et les futurs événements d\'analytique. Les données agrégées déjà envoyées ne peuvent pas être rattachées à vous ni retirées sélectivement.',
 						},
 						id: 'legal-cookies-fr-009',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'J\'utilise le même choix explicite pour chaque personne qui visite le site, plutôt que de m\'appuyer sur un consentement implicite.',
+							text: 'Le consentement explicite demeure le mode documenté par défaut. Je n\'utilise le mode sans bannière qu\'après avoir décidé de le faire et obtenu l\'avis d\'un conseiller juridique.',
 						},
 						id: 'legal-cookies-fr-010',
 						type: 'paragraph',

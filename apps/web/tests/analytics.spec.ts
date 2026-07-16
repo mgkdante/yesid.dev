@@ -11,17 +11,17 @@ const CONSENT_DISCLOSURES = [
 	{
 		locale: 'English',
 		path: '/projects',
-		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
+		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
 	},
 	{
 		locale: 'French',
 		path: '/fr/projects',
-		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
 	},
 	{
 		locale: 'Spanish',
 		path: '/es/projects',
-		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
 	},
 ] as const;
 const CLIENT_CHUNKS_DIR = fileURLToPath(
@@ -29,10 +29,11 @@ const CLIENT_CHUNKS_DIR = fileURLToPath(
 );
 
 type Payload = {
-	n: string;
-	u: string;
-	d: string;
-	p?: Record<string, string>;
+	name: string;
+	url: string;
+	domain: string;
+	referrer?: string;
+	props?: Record<string, string>;
 };
 
 test.afterEach(async ({ page }) => {
@@ -74,14 +75,7 @@ async function capturePlausible(page: Page): Promise<Payload[]> {
 async function grantBeforeLoad(page: Page): Promise<void> {
 	await page.addInitScript((key) => {
 		window.localStorage.setItem(key, 'granted');
-		(window as Window & { __plausible?: boolean }).__plausible = true;
 	}, CONSENT_KEY);
-}
-
-async function enableWebdriverSends(page: Page): Promise<void> {
-	await page.addInitScript(() => {
-		(window as Window & { __plausible?: boolean }).__plausible = true;
-	});
 }
 
 async function completeHeroTodayBeforeLoad(page: Page): Promise<void> {
@@ -106,7 +100,7 @@ async function scrollHomeIntroThrough(page: Page): Promise<void> {
 }
 
 function pageviews(payloads: Payload[]): Payload[] {
-	return payloads.filter(({ n }) => n === 'pageview');
+	return payloads.filter(({ name }) => name === 'pageview');
 }
 
 async function waitForPageviews(payloads: Payload[], count: number): Promise<void> {
@@ -137,19 +131,21 @@ async function drainCapturedRequests(page: Page, payloads: Payload[]): Promise<v
 	drainSequence += 1;
 	const marker = `__e2e-drain-${drainSequence}__`;
 	await page.evaluate(
-		([endpoint, n]) =>
-			fetch(endpoint, { method: 'POST', body: JSON.stringify({ n }) }).catch(() => undefined),
+		([endpoint, name]) =>
+			fetch(endpoint, { method: 'POST', body: JSON.stringify({ name }) }).catch(
+				() => undefined,
+			),
 		[ENDPOINT, marker] as const,
 	);
-	await expect.poll(() => payloads.some(({ n }) => n === marker)).toBe(true);
+	await expect.poll(() => payloads.some(({ name }) => name === marker)).toBe(true);
 }
 
 function nonSentinel(payloads: Payload[]): Payload[] {
-	return payloads.filter(({ n }) => !n.startsWith('__e2e-drain-'));
+	return payloads.filter(({ name }) => !name.startsWith('__e2e-drain-'));
 }
 
 function eventsNamed(payloads: Payload[], name: string): Payload[] {
-	return nonSentinel(payloads).filter((payload) => payload.n === name);
+	return nonSentinel(payloads).filter((payload) => payload.name === name);
 }
 
 async function clickWithoutNavigation(link: Locator): Promise<void> {
@@ -163,37 +159,26 @@ async function clickWithoutNavigation(link: Locator): Promise<void> {
 	});
 }
 
-/** The tracker chunk is identified by content (the provider endpoint literal)
+/** The transport chunk is identified by content (the provider endpoint literal)
  *  against the build being served, so the assertion survives hash changes. A
  *  request for that chunk is proof of a consent breach even while the lazy
- *  import is still in flight and `window.plausible` is not yet bound. */
-function expectNoTrackerChunkRequest(requestedUrls: string[]): void {
-	const trackerChunks = readdirSync(CLIENT_CHUNKS_DIR).filter(
+ *  import is still in flight. */
+function expectNoTransportChunkRequest(requestedUrls: string[]): void {
+	const transportChunks = readdirSync(CLIENT_CHUNKS_DIR).filter(
 		(name) =>
 			name.endsWith('.js') &&
 			readFileSync(join(CLIENT_CHUNKS_DIR, name), 'utf8').includes('plausible.io/api/event'),
 	);
-	expect(trackerChunks.length).toBeGreaterThan(0);
-	const trackerRequests = requestedUrls.filter((url) =>
-		trackerChunks.some((chunk) => url.endsWith(`/${chunk}`)),
+	expect(transportChunks.length).toBeGreaterThan(0);
+	const transportRequests = requestedUrls.filter((url) =>
+		transportChunks.some((chunk) => url.endsWith(`/${chunk}`)),
 	);
-	expect(trackerRequests).toHaveLength(0);
-}
-
-async function expectNpmTracker(page: Page): Promise<void> {
-	await expect
-		.poll(() =>
-			page.evaluate(
-				() => (window as Window & { plausible?: { s?: string } }).plausible?.s,
-			),
-		)
-		.toBe('npm');
+	expect(transportRequests).toHaveLength(0);
 }
 
 test('fresh homepage keeps consent absent while the GSAP intro owns the viewport', async ({
 	page,
 }) => {
-	await enableWebdriverSends(page);
 	await proxyProductionHostnameToPreview(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
@@ -205,7 +190,6 @@ test('fresh homepage keeps consent absent while the GSAP intro owns the viewport
 test('same-day settled home shows consent, hides it for replay, and restores it after completion', async ({
 	page,
 }) => {
-	await enableWebdriverSends(page);
 	await completeHeroTodayBeforeLoad(page);
 	await proxyProductionHostnameToPreview(page);
 
@@ -227,7 +211,6 @@ test('same-day settled home shows consent, hides it for replay, and restores it 
 });
 
 test('reduced motion treats the static home hero as settled', async ({ page }) => {
-	await enableWebdriverSends(page);
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await proxyProductionHostnameToPreview(page);
 
@@ -241,7 +224,6 @@ test('reduced motion treats the static home hero as settled', async ({ page }) =
 
 test('analytics consent is a wide borderless desktop rail', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 900 });
-	await enableWebdriverSends(page);
 	await proxyProductionHostnameToPreview(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
@@ -270,7 +252,6 @@ for (const { locale, path } of CONSENT_DISCLOSURES) {
 		page,
 	}) => {
 		await page.setViewportSize({ width: 360, height: 780 });
-		await enableWebdriverSends(page);
 		await proxyProductionHostnameToPreview(page);
 
 		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
@@ -321,7 +302,6 @@ for (const { locale, path } of CONSENT_DISCLOSURES) {
 
 test('mobile blog TOC does not block the analytics consent action', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
-	await enableWebdriverSends(page);
 	await proxyProductionHostnameToPreview(page);
 
 	await page.goto(
@@ -336,7 +316,6 @@ test('mobile blog TOC does not block the analytics consent action', async ({ pag
 
 for (const { locale, path, copy } of CONSENT_DISCLOSURES) {
 	test(`${locale} consent renders the exact high-intent disclosure`, async ({ page }) => {
-		await enableWebdriverSends(page);
 		await proxyProductionHostnameToPreview(page);
 
 		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
@@ -348,7 +327,6 @@ for (const { locale, path, copy } of CONSENT_DISCLOSURES) {
 test('production hostname without a saved choice renders consent and sends no events', async ({
 	page,
 }) => {
-	await enableWebdriverSends(page);
 	const requestedUrls = await proxyProductionHostnameToPreview(page);
 	const payloads = await capturePlausible(page);
 
@@ -357,15 +335,13 @@ test('production hostname without a saved choice renders consent and sends no ev
 	await expect(page.getByTestId('analytics-consent')).toBeVisible();
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
-	expect(await page.evaluate(() => 'plausible' in window)).toBe(false);
-	expectNoTrackerChunkRequest(requestedUrls);
+	expectNoTransportChunkRequest(requestedUrls);
 	expect(nonSentinel(payloads)).toHaveLength(0);
 });
 
-test('accepting consent sends exactly one initial pageview through the NPM tracker', async ({
+test('accepting consent sends exactly one initial pageview through the controlled transport', async ({
 	page,
 }) => {
-	await enableWebdriverSends(page);
 	await proxyProductionHostnameToPreview(page);
 	const payloads = await capturePlausible(page);
 
@@ -374,7 +350,6 @@ test('accepting consent sends exactly one initial pageview through the NPM track
 	await page.getByTestId('analytics-consent-accept').click();
 
 	await waitForPageviews(payloads, 1);
-	await expectNpmTracker(page);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
 	expectExactPageviewCount(payloads, 1);
@@ -391,7 +366,6 @@ test('direct contact click sends one property-free event with the sanitized curr
 		`${LOCAL_PRODUCTION_ORIGIN}/contact?utm_source=codex_ops2_qa&bp=secret`,
 	);
 	await waitForPageviews(payloads, 1);
-	await expectNpmTracker(page);
 
 	const email = page
 		.getByTestId('contact-social-email')
@@ -409,11 +383,11 @@ test('direct contact click sends one property-free event with the sanitized curr
 	const events = eventsNamed(payloads, 'direct_contact_click');
 	expect(events).toHaveLength(1);
 	expect(events[0]).toMatchObject({
-		n: 'direct_contact_click',
-		d: 'yesid.dev',
+		name: 'direct_contact_click',
+		domain: 'yesid.dev',
 	});
-	expect(events[0].p).toBeUndefined();
-	const trackedUrl = new URL(events[0].u);
+	expect(events[0].props).toBeUndefined();
+	const trackedUrl = new URL(events[0].url);
 	expect(trackedUrl.pathname).toBe('/contact');
 	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
 	expect(trackedUrl.searchParams.has('bp')).toBe(false);
@@ -431,7 +405,6 @@ test('project proof click sends one property-free event with the sanitized curre
 		`${LOCAL_PRODUCTION_ORIGIN}/projects/yesid-dev?utm_source=codex_ops2_qa&stack=secret`,
 	);
 	await waitForPageviews(payloads, 1);
-	await expectNpmTracker(page);
 
 	const card = page
 		.getByTestId('project-links-card')
@@ -450,11 +423,11 @@ test('project proof click sends one property-free event with the sanitized curre
 	const events = eventsNamed(payloads, 'project_proof_click');
 	expect(events).toHaveLength(1);
 	expect(events[0]).toMatchObject({
-		n: 'project_proof_click',
-		d: 'yesid.dev',
+		name: 'project_proof_click',
+		domain: 'yesid.dev',
 	});
-	expect(events[0].p).toBeUndefined();
-	const trackedUrl = new URL(events[0].u);
+	expect(events[0].props).toBeUndefined();
+	const trackedUrl = new URL(events[0].url);
 	expect(trackedUrl.pathname).toBe('/projects/yesid-dev');
 	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
 	expect(trackedUrl.searchParams.has('stack')).toBe(false);
@@ -464,7 +437,6 @@ test('project proof click sends one property-free event with the sanitized curre
 test('direct contact remains blocked after decline and after withdrawal', async ({
 	page,
 }) => {
-	await enableWebdriverSends(page);
 	await proxyProductionHostnameToPreview(page);
 	const payloads = await capturePlausible(page);
 
@@ -498,6 +470,38 @@ test('direct contact remains blocked after decline and after withdrawal', async 
 	expect(eventsNamed(payloads, 'direct_contact_click')).toHaveLength(1);
 });
 
+test('withdrawal emits no autonomous engagement event on page lifecycle signals', async ({
+	page,
+}) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
+	await waitForPageviews(payloads, 1);
+
+	await page.getByTestId('analytics-preferences').click();
+	await page.getByTestId('analytics-consent-decline').click();
+	await page.evaluate(() => {
+		Object.defineProperty(document, 'hasFocus', {
+			configurable: true,
+			value: () => false,
+		});
+		window.dispatchEvent(new Event('blur'));
+		document.dispatchEvent(new Event('visibilitychange'));
+		Object.defineProperty(document, 'hasFocus', {
+			configurable: true,
+			value: () => true,
+		});
+		window.dispatchEvent(new Event('focus'));
+	});
+
+	await settleBrowser(page);
+	await drainCapturedRequests(page, payloads);
+	expect(eventsNamed(payloads, 'engagement')).toHaveLength(0);
+	expectExactPageviewCount(payloads, 1);
+});
+
 for (const { locale, path } of [
 	{ locale: 'English', path: '/projects' },
 	{ locale: 'French', path: '/fr/projects' },
@@ -515,15 +519,14 @@ for (const { locale, path } of [
 		);
 
 		await waitForPageviews(payloads, 1);
-		await expectNpmTracker(page);
 		await settleBrowser(page);
 		await drainCapturedRequests(page, payloads);
 		expectExactPageviewCount(payloads, 1);
 
 		const [pageview] = pageviews(payloads);
-		const trackedUrl = new URL(pageview.u);
-		expect(pageview.d).toBe('yesid.dev');
-		expect(pageview.p).toBeUndefined();
+		const trackedUrl = new URL(pageview.url);
+		expect(pageview.domain).toBe('yesid.dev');
+		expect(pageview.props).toBeUndefined();
 		expect(trackedUrl.origin).toBe(LOCAL_PRODUCTION_ORIGIN);
 		expect(trackedUrl.pathname).toBe(path);
 		expect(trackedUrl.searchParams.get('utm_source')).toBe('linkedin');
@@ -538,7 +541,6 @@ test('query-only service filtering does not emit a duplicate pageview', async ({
 	const payloads = await capturePlausible(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
-	await expectNpmTracker(page);
 	await waitForPageviews(payloads, 1);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
@@ -565,7 +567,6 @@ test('internal path navigation emits one additional pageview', async ({ page }) 
 	const payloads = await capturePlausible(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
-	await expectNpmTracker(page);
 	await waitForPageviews(payloads, 1);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
@@ -583,7 +584,7 @@ test('internal path navigation emits one additional pageview', async ({ page }) 
 	expectExactPageviewCount(payloads, 2);
 });
 
-test('localhost never loads the tracker even with saved consent', async ({ page }) => {
+test('localhost never loads the transport even with saved consent', async ({ page }) => {
 	await grantBeforeLoad(page);
 	const requestedUrls = await recordChunkRequests(page);
 	const payloads = await capturePlausible(page);
@@ -593,12 +594,13 @@ test('localhost never loads the tracker even with saved consent', async ({ page 
 	await expect(page.getByTestId('nav')).toBeVisible();
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
-	expect(await page.evaluate(() => 'plausible' in window)).toBe(false);
-	expectNoTrackerChunkRequest(requestedUrls);
+	expectNoTransportChunkRequest(requestedUrls);
 	expect(nonSentinel(payloads)).toHaveLength(0);
 });
 
-test('an aborted provider request fails open across internal navigation', async ({ page }) => {
+test('an aborted provider request remains retryable without blocking navigation', async ({
+	page,
+}) => {
 	await grantBeforeLoad(page);
 	await proxyProductionHostnameToPreview(page);
 	const abortedPayloads: Payload[] = [];
@@ -610,11 +612,14 @@ test('an aborted provider request fails open across internal navigation', async 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/contact`);
 
 	await expect(page.getByTestId('page-contact')).toBeVisible();
-	await expectNpmTracker(page);
 	await waitForPageviews(abortedPayloads, 1);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, abortedPayloads);
-	expectExactPageviewCount(abortedPayloads, 1);
+	expect(
+		pageviews(abortedPayloads).filter(
+			(payload) => new URL(payload.url).pathname === '/contact',
+		).length,
+	).toBeGreaterThanOrEqual(1);
 
 	const servicesLink = page.getByTestId('nav').locator('a[href="/services"]');
 	await expect(servicesLink).toBeVisible();
@@ -622,8 +627,18 @@ test('an aborted provider request fails open across internal navigation', async 
 
 	await expect(page).toHaveURL(`${LOCAL_PRODUCTION_ORIGIN}/services`);
 	await expect(page.getByTestId('service-listing-page')).toBeVisible();
-	await waitForPageviews(abortedPayloads, 2);
+	await expect
+		.poll(
+			() =>
+				pageviews(abortedPayloads).filter(
+					(payload) => new URL(payload.url).pathname === '/services',
+				).length,
+		)
+		.toBeGreaterThanOrEqual(1);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, abortedPayloads);
-	expectExactPageviewCount(abortedPayloads, 2);
+	for (const payload of pageviews(abortedPayloads)) {
+		expect(payload.domain).toBe('yesid.dev');
+		expect(payload.props).toBeUndefined();
+	}
 });
