@@ -49,8 +49,9 @@ test('offers separate, unambiguous permission audit and targeted repair dispatch
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
+		'options: [diff, push, legal-service-area, analytics-controls, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
 	);
+	expect(dispatch).toContain('guarded analytics-controls promotion');
 	expect(dispatch).toContain('read-only permission audit');
 	expect(dispatch).toContain('candidate diagnostic');
 	expect(dispatch).toContain('quarantine preview or rename');
@@ -204,7 +205,7 @@ test('policy quarantine preview is separate and rename-only steps are statically
 });
 
 test('targeted repair audits before and after one exact-confirm fields-only reconciler', () => {
-	const repair = jobBlock('public-blog-translation-key-repair');
+	const repair = jobBlock('public-blog-translation-key-repair', 'analytics-controls');
 	expect(repair).toContain(
 		"github.event.inputs.action == 'public-blog-translation-key-repair'",
 	);
@@ -284,7 +285,44 @@ test('keeps every unrelated existing CMS job body byte-stable', () => {
 	).toBe(
 		'843d0098fa697ff183768b4d66a67b4dd8bb413584e15cce7d084ad1c6e90388',
 	);
-	expect(sha256(jobBlock('public-blog-translation-key-repair'))).toBe(
-		'8e33450fcf0d0fea53a6a1cc307317128fef197df0749906b4c4cfab1c99f193',
-	);
+	expect(
+		sha256(jobBlock('public-blog-translation-key-repair', 'analytics-controls')),
+	).toBe('8e33450fcf0d0fea53a6a1cc307317128fef197df0749906b4c4cfab1c99f193');
+});
+
+test('analytics-controls is production-gated, scoped-lane-only, and exact-confirm (slice-40.1 Stage D)', () => {
+	const job = jobBlock('analytics-controls');
+
+	// Dispatch-only, behind the production environment gate, after tests.
+	expect(job).toContain("github.event.inputs.action == 'analytics-controls'");
+	expect(job).toContain('needs: test');
+	expect(job).toContain('name: production');
+	expect(job).toContain('DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}');
+
+	// Scoped lanes ONLY — never a broad push, never permissions.
+	expect(job).toContain('sync:push -- --no-collections');
+	expect(job).toContain('sync:push -- --no-snapshot --only-collections flows');
+	expect(job).not.toContain('run: bun run sync:push\n');
+	expect(job).not.toContain('DIRECTUS_SYNC_INCLUDE_PERMISSIONS');
+	expect(job).not.toContain('include_permissions');
+
+	// Content lane: dry-run before AND after one exact-confirm apply.
+	const applies = job.split('--confirm=APPLY_PROD_LEAN_HIGH_INTENT_ANALYTICS').length - 1;
+	expect(applies).toBe(1);
+	const dryRuns =
+		job.split(
+			'promote-lean-high-intent-analytics.ts --target=prod --dry-run',
+		).length - 1;
+	expect(dryRuns).toBe(2);
+
+	// Owner flag-preservation proof: prod row must read true/true.
+	expect(job).toContain('analytics_enabled');
+	expect(job).toContain('analytics_consent_show_banner');
+	expect(job).toContain('FLAG ASSERTION FAILED');
+
+	// Drift audits bracket the promotion; live export + manifest verify close it.
+	expect(job).toContain('audit-permission-control-drift.ts --target=prod --dry-run');
+	expect(job).toContain('--module=site-labels');
+	expect(job).toContain('--module=legal-pages');
+	expect(job).toContain('verify-content-manifest.ts');
 });

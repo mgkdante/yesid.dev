@@ -48,9 +48,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action: diff preview, push config apply, legal notice remediation, read-only permission audit, candidate diagnostic, quarantine preview or rename, or targeted blog repair'
+        description: 'Action: diff preview, push config apply, legal notice remediation, guarded analytics-controls promotion, read-only permission audit, candidate diagnostic, quarantine preview or rename, or targeted blog repair'
         type: choice
-        options: [diff, push, legal-service-area, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]
+        options: [diff, push, legal-service-area, analytics-controls, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]
         default: diff
         required: true
       include_permissions:
@@ -343,3 +343,123 @@ jobs:
         env:
           DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run --require-converged
+
+  analytics-controls:
+    # slice-40.1 Stage D: guarded SCOPED promotion of the CMS analytics
+    # controls to production — three narrow lanes (schema fields, revalidate
+    # flow, lean content), each dry-run → apply → converge read-back. Never a
+    # broad push. Owner directive 2026-07-16: flags land true/true (explicit-
+    # consent banner mode); hidden/no-banner mode stays unapproved and inert;
+    # EFVP + NEQ are deferred to pre-deploy day as a hard pre-campaign gate.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'analytics-controls'
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    env:
+      DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+      DIRECTUS_URL: https://cms.yesid.dev
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      # Pre-existing drift ('Ops Bot content ops' duplicate) may legitimately
+      # appear here; the post-promotion audit must show no NEW drift vs this
+      # baseline log. Non-blocking by design.
+      - name: Baseline permission-control drift audit (read-only)
+        working-directory: apps/cms
+        continue-on-error: true
+        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
+
+      - name: Preflight scoped diff (expect 2 analytics field creates, 1 flow update, zero deletions)
+        working-directory: apps/cms
+        run: bun run sync:diff
+
+      - name: Schema lane — apply snapshot only (2 field creates)
+        working-directory: apps/cms
+        env:
+          DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH: '1'
+          DIRECTUS_SYNC_PUSH_ACK: sync-push-can-delete-cms-data
+        run: bun run sync:push -- --no-collections
+
+      - name: Flow lane — apply flows collection only (revalidate flow gains site_labels)
+        working-directory: apps/cms
+        env:
+          DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH: '1'
+          DIRECTUS_SYNC_PUSH_ACK: sync-push-can-delete-cms-data
+        run: bun run sync:push -- --no-snapshot --only-collections flows
+
+      - name: Converge read-back — scoped diff must show no snapshot/flow changes
+        working-directory: apps/cms
+        run: bun run sync:diff
+
+      - name: Assert prod analytics flags are true/true (owner flag-preservation proof)
+        run: >-
+          curl -fsS -H "Authorization: Bearer ${DIRECTUS_ADMIN_TOKEN}"
+          "${DIRECTUS_URL}/items/site_labels?fields=analytics_enabled,analytics_consent_show_banner"
+          | bun -e 'const d=await new Response(Bun.stdin.stream()).json();
+          if (d.data?.analytics_enabled !== true || d.data?.analytics_consent_show_banner !== true)
+          { console.error("FLAG ASSERTION FAILED:", JSON.stringify(d.data)); process.exit(1); }
+          console.log("flags true/true confirmed");'
+
+      - name: Content lane — dry-run (archived as the pre-apply row snapshot)
+        working-directory: apps/cms
+        run: |
+          set -o pipefail
+          bun scripts/promote-lean-high-intent-analytics.ts --target=prod --dry-run | tee /tmp/lean-pre-apply.log
+
+      - name: Content lane — apply with confirm token
+        working-directory: apps/cms
+        run: >-
+          bun scripts/promote-lean-high-intent-analytics.ts
+          --target=prod
+          --apply
+          --confirm=APPLY_PROD_LEAN_HIGH_INTENT_ANALYTICS
+
+      - name: Content lane — converge (dry-run must report no changes)
+        working-directory: apps/cms
+        run: bun scripts/promote-lean-high-intent-analytics.ts --target=prod --dry-run
+
+      - name: Legal service-area convergence spot-check (read-only)
+        working-directory: apps/cms
+        run: bun scripts/reconcile-legal-service-area.ts --target=prod --dry-run
+
+      - name: Post-promotion permission-control drift audit (compare to baseline)
+        working-directory: apps/cms
+        continue-on-error: true
+        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
+
+      - name: Regenerate site-labels module from authenticated live production CMS
+        working-directory: apps/cms
+        env:
+          EXPORT_FALLBACKS_LIVE: '1'
+          VERCEL_ENV: production
+          PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+        run: bun scripts/export-fallbacks.ts --module=site-labels
+
+      - name: Regenerate legal-pages module from authenticated live production CMS
+        working-directory: apps/cms
+        env:
+          EXPORT_FALLBACKS_LIVE: '1'
+          VERCEL_ENV: production
+          PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+        run: bun scripts/export-fallbacks.ts --module=legal-pages
+
+      - name: Verify generated-content integrity
+        run: bun apps/cms/scripts/verify-content-manifest.ts
+
+      - name: Upload authenticated live export + pre-apply snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: analytics-controls-live-export-${{ github.run_id }}
+          path: |
+            apps/web/src/lib/content/site-labels.ts
+            apps/web/src/lib/content/legal-pages.ts
+            apps/web/src/lib/content/generated.manifest.json
+            /tmp/lean-pre-apply.log
+          if-no-files-found: error
+          retention-days: 7
