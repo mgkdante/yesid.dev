@@ -8,7 +8,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { subscribe, unsubscribe } from '$lib/motion/utils/ticker.js';
+	import { subscribe, unsubscribe } from '@yesid/motion/utils/ticker';
 
 	interface Props {
 		containerEl?: HTMLElement;
