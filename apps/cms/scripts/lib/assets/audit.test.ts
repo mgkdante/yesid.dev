@@ -377,7 +377,10 @@ function ogMatrix(): OgCoverageRequirement[] {
     for (const locale of ["en", "fr", "es"] as const) {
       rows.push({
         usageKey: `route.og.slot-${suffix}.${locale}`,
-        route: `/routes/slot-${suffix}`,
+        route:
+          locale === "en"
+            ? `/routes/slot-${suffix}`
+            : `/${locale}/routes/slot-${suffix}`,
         locale,
         ownerType: "route",
         ownerKey: `slot-${suffix}`,
@@ -545,7 +548,7 @@ describe("approved finding taxonomy", () => {
         repository: repositoryScan({
           usages: [repositoryUsage({ assetId: null })],
         }),
-        dev: snapshot("dev", { registryAvailability: "missing" }),
+        dev: snapshot("dev"),
       }),
     );
 
@@ -974,7 +977,7 @@ describe("scope receipts and incomplete-scope safety", () => {
     expect(findings(report, "environment-drift")).toHaveLength(0);
   });
 
-  it("treats a missing DEV registry as evaluated absence but expected missing PROD registry as not drift", () => {
+  it("treats missing DEV and PROD registries as unavailable evidence without manufacturing drift", () => {
     const missingReceipt = (environment: CmsEnvironment) =>
       snapshot(environment, {
         registryAvailability: "missing",
@@ -1001,7 +1004,7 @@ describe("scope receipts and incomplete-scope safety", () => {
 
     expect(report.scopeReceipts).toContainEqual({
       scope: "dev-registry",
-      status: "evaluated",
+      status: "not-evaluated",
       reason: "registry-missing",
     });
     expect(report.scopeReceipts).toContainEqual({
@@ -1009,7 +1012,7 @@ describe("scope receipts and incomplete-scope safety", () => {
       status: "not-evaluated",
       reason: "registry-missing",
     });
-    expectFinding(report, "missing-record", "error");
+    expect(findings(report, "missing-record")).toHaveLength(0);
     expect(findings(report, "environment-drift")).toHaveLength(0);
   });
 
@@ -1144,6 +1147,11 @@ describe("scope receipts and incomplete-scope safety", () => {
       scope: "prod-files",
       status: "not-evaluated",
       reason: "request-failed",
+    });
+    expect(report.scopeReceipts).toContainEqual({
+      scope: "prod-content",
+      status: "evaluated",
+      reason: "complete",
     });
     expect(findings(report, "environment-drift")).toHaveLength(0);
   });
@@ -1472,6 +1480,186 @@ describe("origin, duplicate, generated, and environment classification", () => {
     );
 
     expect(findings(report, "duplicate-content")).toHaveLength(0);
+  });
+
+  it("resolves generated provenance by an exact unambiguous repository path, including declaration anchors", () => {
+    const source = repositoryAsset({
+      id: "repo-file:apps/cms/brand/yesid-wordmark.svg",
+      kind: "svg",
+      repoPath: "apps/cms/brand/yesid-wordmark.svg",
+    });
+    const output = repositoryAsset({
+      id: "repo-file:apps/web/static/og/default.png",
+      origin: "generated-file",
+      repoPath: "apps/web/static/og/default.png",
+      sha256: SHA_B,
+    });
+    const tracked = trackedRasterFixture({
+      semanticKey: "site.brand.wordmark",
+      legacyPath: "brand/yesid-wordmark.svg",
+      record: { kind: "svg", delivery_mode: "sanitized-svg-img" },
+      version: { mime_type: "image/svg+xml", format: "svg" },
+      file: {
+        mimeType: "image/svg+xml",
+        filenameDownload: "yesid-wordmark.svg",
+      },
+    });
+    const complete = reconcileAssetAudit(
+      auditInput({
+        repository: repositoryScan({
+          assets: [source, output],
+          generatedFrom: [
+            {
+              outputAssetId: output.id,
+              inputRef: source.repoPath!,
+              generator: "apps/web/scripts/generate-og-cards.ts",
+              relation: "generated-by",
+            },
+            {
+              outputAssetId: output.id,
+              inputRef: `${source.repoPath}#approvedColorSlots`,
+              generator: "apps/web/scripts/generate-og-cards.ts",
+              relation: "generated-by",
+            },
+          ],
+        }),
+        dev: snapshot("dev", {
+          records: [tracked.record],
+          versions: [tracked.version],
+          files: [tracked.file],
+        }),
+      }),
+    );
+    expect(
+      findings(complete, "untracked-repo-asset").filter(
+        (finding) => finding.identity === output.repoPath,
+      ),
+    ).toHaveLength(0);
+
+    const componentPath = "apps/web/src/lib/components/svg/Logo.svelte";
+    const inlineOne = repositoryAsset({
+      id: `repo-component:${componentPath}#svg:1`,
+      kind: "svg",
+      origin: "code-component",
+      repoPath: componentPath,
+      inlineSvgOrdinal: 1,
+    });
+    const inlineTwo = repositoryAsset({
+      id: `repo-component:${componentPath}#svg:2`,
+      kind: "svg",
+      origin: "code-component",
+      repoPath: componentPath,
+      inlineSvgOrdinal: 2,
+    });
+    const ambiguous = reconcileAssetAudit(
+      auditInput({
+        repository: repositoryScan({
+          assets: [inlineOne, inlineTwo, output],
+          usages: [
+            repositoryUsage({
+              assetId: inlineOne.id,
+              semanticKey: semantic("site.brand.wordmark"),
+            }),
+          ],
+          generatedFrom: [
+            {
+              outputAssetId: output.id,
+              inputRef: `${componentPath}#brandSlot`,
+              generator: "scripts/render-logo.ts",
+              relation: "generated-by",
+            },
+          ],
+        }),
+        dev: snapshot("dev", {
+          records: [tracked.record],
+          versions: [tracked.version],
+          files: [tracked.file],
+        }),
+      }),
+    );
+    expect(
+      findings(ambiguous, "untracked-repo-asset").some(
+        (finding) => finding.identity === output.repoPath,
+      ),
+    ).toBe(true);
+  });
+
+  it("accepts a generated diamond when both branches share one reproducible intermediate", () => {
+    const source = repositoryAsset({
+      id: "repo-file:apps/cms/brand/source.svg",
+      kind: "svg",
+      repoPath: "apps/cms/brand/source.svg",
+    });
+    const generated = (name: string) =>
+      repositoryAsset({
+        id: `repo-file:apps/web/static/generated/${name}.webp`,
+        origin: "generated-file",
+        repoPath: `apps/web/static/generated/${name}.webp`,
+        sha256: SHA_B,
+      });
+    const shared = generated("shared");
+    const left = generated("left");
+    const right = generated("right");
+    const output = generated("output");
+    const tracked = trackedRasterFixture({
+      semanticKey: "site.brand.source",
+      legacyPath: "brand/source.svg",
+      record: { kind: "svg", delivery_mode: "sanitized-svg-img" },
+      version: { mime_type: "image/svg+xml", format: "svg" },
+      file: { mimeType: "image/svg+xml", filenameDownload: "source.svg" },
+    });
+    const report = reconcileAssetAudit(
+      auditInput({
+        repository: repositoryScan({
+          assets: [source, shared, left, right, output],
+          generatedFrom: [
+            {
+              outputAssetId: shared.id,
+              inputRef: source.id,
+              generator: "scripts/shared.ts",
+              relation: "generated-by",
+            },
+            {
+              outputAssetId: left.id,
+              inputRef: shared.id,
+              generator: "scripts/left.ts",
+              relation: "generated-by",
+            },
+            {
+              outputAssetId: right.id,
+              inputRef: shared.id,
+              generator: "scripts/right.ts",
+              relation: "generated-by",
+            },
+            {
+              outputAssetId: output.id,
+              inputRef: left.id,
+              generator: "scripts/output.ts",
+              relation: "generated-by",
+            },
+            {
+              outputAssetId: output.id,
+              inputRef: right.id,
+              generator: "scripts/output.ts",
+              relation: "generated-by",
+            },
+          ],
+        }),
+        dev: snapshot("dev", {
+          records: [tracked.record],
+          versions: [tracked.version],
+          files: [tracked.file],
+        }),
+      }),
+    );
+
+    expect(
+      findings(report, "untracked-repo-asset").filter((finding) =>
+        [shared, left, right, output].some(
+          (asset) => asset.repoPath === finding.identity,
+        ),
+      ),
+    ).toHaveLength(0);
   });
 
   it("requires authored repository/component/publication tracking but excludes providers and exact mirrors", () => {
@@ -2114,6 +2302,16 @@ describe("OG coverage grammar and resolution", () => {
     expect(() =>
       reconcileAssetAudit(auditInput({ ogCoverage: contradictory })),
     ).toThrow();
+
+    const collapsedRoutes = ogMatrix();
+    for (const locale of ["fr", "es"] as const) {
+      setRow(collapsedRoutes, `route.og.slot-01.${locale}`, {
+        route: "/routes/slot-01",
+      });
+    }
+    expect(() =>
+      reconcileAssetAudit(auditInput({ ogCoverage: collapsedRoutes })),
+    ).toThrow(/route/i);
   });
 
   it("resolves a direct repository OG only with same owner/route/locale/fixed-slot proof", () => {
@@ -2215,21 +2413,27 @@ describe("OG coverage grammar and resolution", () => {
 
   it("proves closed blog and project runtime routes through only their exact template declarations", () => {
     const matrix = ogMatrix();
+    const blogSlugs = {
+      en: "hello-world",
+      fr: "bonjour-le-monde",
+      es: "hola-mundo",
+    } as const;
     for (const locale of ["en", "fr", "es"] as const) {
+      const prefix = locale === "en" ? "" : `/${locale}`;
       setRow(matrix, `route.og.slot-03.${locale}`, {
-        route: "/blog/hello-world",
+        route: `${prefix}/blog/${blogSlugs[locale]}`,
         ownerType: "blog",
         ownerKey: "hello-world",
         required: true,
         exclusionReason: null,
         currentRef: {
           kind: "runtime-route",
-          route: "/og/blog/hello-world.png",
+          route: `/og/blog/${blogSlugs[locale]}.png`,
         },
         proofUsageId: "declared:site.og.runtime-blog",
       });
       setRow(matrix, `route.og.slot-04.${locale}`, {
-        route: "/projects/metro-map",
+        route: `${prefix}/projects/metro-map`,
         ownerType: "project",
         ownerKey: "metro-map",
         required: true,

@@ -7,7 +7,8 @@ name: cms
 # directus-extension-sync@3.0.6 on the Railway Directus image.
 #
 # Jobs:
-# - test (always): apps/cms unit tests (no network).
+# - test (always): apps/cms unit tests plus the offline asset-audit regression
+#   gate (no network or CMS credentials).
 # - diff (PR): read-only preview of what sync:push WOULD apply. Against
 #   prod. Never writes.
 # - push (workflow_dispatch with action=push): applies the JSON tree to
@@ -75,6 +76,10 @@ jobs:
       - name: Run apps/cms unit tests (fixtures + seed dry-runs + sync-push + lib)
         working-directory: apps/cms
         run: bun test
+
+      - name: Verify asset audit baseline (offline, no CMS)
+        working-directory: apps/cms
+        run: bun run verify:assets-audit
 
       # Schema codegen drift check removed in slice-28.3 (#78): the generated
       # packages/shared/src/types/directus-schema.ts had zero consumers, and
