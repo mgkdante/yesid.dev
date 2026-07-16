@@ -14,6 +14,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { pressBounce } from '$lib/motion/actions';
+	import CtaBlueprintBackground from './CtaBlueprintBackground.svelte';
 
 	const locale = getLocale();
 
@@ -32,41 +33,54 @@
 
 <!-- Every CTA wears the hazard band on top (operator rule 2026-07-03). -->
 <Separator variant="hazard" />
-<div class="cta-band" data-testid={testidPrefix}>
-	<h2 class="band-heading">
-		{#each headingLines as line, i}
-			<span class="band-line">{line}{#if i === headingLines.length - 1}<span class="band-dot">.</span>{/if}</span>
-		{/each}
-	</h2>
-	<p class="band-subtitle">{subtitle}</p>
-	<div class="band-actions">
-		<span class="tap-press" use:pressBounce>
+<section class="cta-band-shell circuit-grid" data-testid={testidPrefix}>
+	<CtaBlueprintBackground />
+	<div class="cta-band">
+		<h2 class="band-heading">
+			{#each headingLines as line, i}
+				<span class="band-line">{line}{#if i === headingLines.length - 1}<span class="band-dot">.</span>{/if}</span>
+			{/each}
+		</h2>
+		<p class="band-subtitle">{subtitle}</p>
+		<div class="band-actions">
+			<span class="tap-press" use:pressBounce>
+				<Button
+					variant="conversion"
+					size="cta-lg"
+					href={localizeHref('/contact', locale)}
+					data-testid="{testidPrefix}-contact"
+				>
+					{contactLabel}
+				</Button>
+			</span>
 			<Button
-				variant="conversion"
+				variant="default"
 				size="cta-lg"
-				href={localizeHref('/contact', locale)}
-				data-testid="{testidPrefix}-contact"
+				href={siteMeta.links.github}
+				target="_blank"
+				rel="noopener"
+				data-testid="{testidPrefix}-github"
+				class="tap-press"
 			>
-				{contactLabel}
+				{githubLabel}
 			</Button>
-		</span>
-		<Button
-			variant="default"
-			size="cta-lg"
-			href={siteMeta.links.github}
-			target="_blank"
-			rel="noopener"
-			data-testid="{testidPrefix}-github"
-			class="tap-press"
-		>
-			{githubLabel}
-		</Button>
+		</div>
 	</div>
-</div>
+</section>
 
 <style>
+	.cta-band-shell {
+		position: relative;
+		isolation: isolate;
+		width: 100%;
+		overflow: clip;
+		background-color: var(--background);
+	}
+
 	/* Always centered, on every surface that mounts it (operator rule). */
 	.cta-band {
+		position: relative;
+		z-index: 1;
 		width: 100%;
 		max-width: 72rem;
 		margin-inline: auto;
