@@ -1714,6 +1714,76 @@ describe("response validation, availability precedence, and sanitized failures",
     expect(invalidOverForbidden.registryAvailability).toBe("unknown");
   });
 
+  it("uses authenticated schema evidence to distinguish an absent registry from forbidden item reads", async () => {
+    const registryCollections = [
+      "asset_records",
+      "asset_records_translations",
+      "asset_versions",
+      "asset_usages",
+    ] as const;
+    const forbiddenRegistryPages = Object.fromEntries(
+      registryCollections.map((surface) => [surface, 403]),
+    );
+
+    const absentClient = Object.assign(
+      makeClient({ pageStatus: forbiddenRegistryPages }),
+      {
+        readRegistryCollections: async () => ({ status: 200, data: [] }),
+      },
+    );
+    const absent = await scanDirectusAssets({
+      environment: "prod",
+      client: absentClient,
+    });
+    expect(absent.registryAvailability).toBe("missing");
+    expect(
+      absent.readReceipts
+        .filter((receipt) => registryCollections.includes(receipt.surface as never))
+        .map((receipt) => ({
+          surface: receipt.surface,
+          availability: receipt.availability,
+          complete: receipt.complete,
+        })),
+    ).toEqual(
+      registryCollections.map((surface) => ({
+        surface,
+        availability: "missing",
+        complete: false,
+      })),
+    );
+    expect(
+      absentClient.calls.pages.some((call) => registryCollections.includes(call.surface as never)),
+    ).toBe(false);
+
+    const presentButForbidden = await scanDirectusAssets({
+      environment: "prod",
+      client: Object.assign(
+        makeClient({ pageStatus: forbiddenRegistryPages }),
+        {
+          readRegistryCollections: async () => ({
+            status: 200,
+            data: registryCollections.map((collection) => ({ collection })),
+          }),
+        },
+      ),
+    });
+    expect(presentButForbidden.registryAvailability).toBe("forbidden");
+
+    const partial = await scanDirectusAssets({
+      environment: "prod",
+      client: Object.assign(
+        makeClient({ pageStatus: forbiddenRegistryPages }),
+        {
+          readRegistryCollections: async () => ({
+            status: 200,
+            data: [{ collection: "asset_records" }],
+          }),
+        },
+      ),
+    });
+    expect(partial.registryAvailability).toBe("unknown");
+  });
+
   it("turns thrown read errors into sanitized receipts and issues", async () => {
     const client = makeClient({
       pageHandler: (call) => {

@@ -33,6 +33,16 @@ function stepBlock(job: string, name: string, next?: string): string {
 	return job.slice(start, end).trimEnd();
 }
 
+test('asset audit regression gate stays inside the credential-free test job', () => {
+	const testJob = jobBlock('test', 'diff');
+	expect(testJob).toContain('name: Verify asset audit baseline (offline, no CMS)');
+	expect(testJob).toContain('run: bun run verify:assets-audit');
+	expect(testJob).not.toContain('DIRECTUS_ADMIN_TOKEN');
+	expect(testJob).not.toContain('PUBLIC_DIRECTUS_URL');
+	expect(testJob).not.toContain('op run');
+	expect(testJob).not.toContain('--update-baseline');
+});
+
 test('offers separate, unambiguous permission audit and targeted repair dispatch actions', () => {
 	const dispatch = workflow.slice(
 		workflow.indexOf('  workflow_dispatch:'),
@@ -241,7 +251,7 @@ test('targeted repair audits before and after one exact-confirm fields-only reco
 
 test('keeps every unrelated existing CMS job body byte-stable', () => {
 	expect(sha256(jobBlock('test', 'diff'))).toBe(
-		'ece34b91e13a1ae97467f9e8e4aa8ef49d21bed854c5b13f4ee5b55fa491a4ad',
+		'32127d605e2b7accbe7ef88dfb00b8c04fd232c1e6853fd9316b0602b85b94d3',
 	);
 	expect(sha256(jobBlock('diff', 'push'))).toBe(
 		'd0715689c14987b2cc2274650f8631af25968068276c87c0f756017109de09d9',

@@ -296,6 +296,37 @@ describe("dynamic media expression anchors", () => {
 });
 
 describe("scanRepository with an injected mini-repository", () => {
+  it("excludes the generated audit baseline from consumer evidence and scan recursion", async () => {
+    const baselinePath = "apps/cms/fixtures/assets/audit-baseline.json";
+    const imagePath = "apps/web/static/images/real.png";
+    const miniRepo = await makeMiniRepo({
+      [imagePath]: new Uint8Array([1, 2, 3]),
+      [baselinePath]: JSON.stringify({ acceptedAsset: "/images/real.png" }),
+    });
+
+    const before = await scanRepository({
+      repoRoot: miniRepo.root,
+      trackedFiles: miniRepo.trackedFiles,
+    });
+    await writeFile(
+      join(miniRepo.root, ...baselinePath.split("/")),
+      JSON.stringify({ acceptedAsset: "/images/replacement.png" }),
+    );
+    const after = await scanRepository({
+      repoRoot: miniRepo.root,
+      trackedFiles: miniRepo.trackedFiles,
+    });
+
+    expect(after).toEqual(before);
+    expect(hashRepositoryScan(after)).toBe(hashRepositoryScan(before));
+    expect(
+      before.usages.some((usage) => usage.sourceFile === baselinePath),
+    ).toBe(false);
+    expect(
+      before.findings.some((finding) => finding.sourceFile === baselinePath),
+    ).toBe(false);
+  });
+
   it("builds deterministic physical, component, usage, finding, hash, glob, and UUID evidence", async () => {
     const knownUuid = "11111111-1111-4111-8111-111111111111";
     const web3FormsUuid = "6887fd90-3348-4d31-ba03-bc0e285697b6";

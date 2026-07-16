@@ -1,0 +1,57 @@
+{
+  "collection": "asset_usages",
+  "field": "source_line",
+  "type": "integer",
+  "meta": {
+    "collection": "asset_usages",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "source_line",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": null,
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 13,
+    "special": null,
+    "translations": null,
+    "validation": {
+      "_or": [
+        {
+          "source_line": {
+            "_null": true
+          }
+        },
+        {
+          "source_line": {
+            "_gt": 0
+          }
+        }
+      ]
+    },
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "source_line",
+    "table": "asset_usages",
+    "data_type": "integer",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": 32,
+    "numeric_scale": 0,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

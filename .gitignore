@@ -11,6 +11,7 @@ node_modules/
 !apps/cms/extensions/noindex/dist/index.js
 **/test-results/
 **/.turbo/
+/apps/cms/.asset-audit/
 # Vitest results cache — relocated from node_modules/.vite so CI can cache it
 # (apps/web/vite.config.ts cacheDir under VITEST; slice-28.4 audit #132)
 **/.vitest/

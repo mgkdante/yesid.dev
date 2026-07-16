@@ -1,0 +1,30 @@
+{
+  "collection": "asset_records",
+  "field": "translations",
+  "type": "alias",
+  "meta": {
+    "collection": "asset_records",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "translations",
+    "group": null,
+    "hidden": false,
+    "interface": "translations",
+    "note": null,
+    "options": {
+      "languageField": "name"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 26,
+    "special": [
+      "translations"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

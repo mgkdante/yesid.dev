@@ -70,5 +70,350 @@
     "icon": "bookmark",
     "color": null,
     "_syncId": "b6e32c3f-b1ae-4a79-b1d4-1c28e1d13e57"
+  },
+  {
+    "bookmark": "OG assets",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "semantic_key",
+          "title",
+          "owner_type",
+          "owner_key",
+          "lifecycle_status",
+          "approved_version"
+        ],
+        "sort": [
+          "owner_type",
+          "owner_key",
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "role": {
+        "_eq": "og"
+      }
+    },
+    "icon": "share",
+    "color": null,
+    "_syncId": "15c645eb-7a75-4972-a575-bf831367ec9b"
+  },
+  {
+    "bookmark": "Unused or orphaned",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "semantic_key",
+          "title",
+          "lifecycle_status",
+          "owner_type",
+          "owner_key",
+          "usages"
+        ],
+        "sort": [
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "usages": {
+        "_none": {
+          "active": {
+            "_eq": true
+          }
+        }
+      }
+    },
+    "icon": "link_off",
+    "color": null,
+    "_syncId": "16787dd9-ff4d-474c-a8d6-a6b488eb953d"
+  },
+  {
+    "bookmark": "By owner",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "owner_type",
+          "owner_key",
+          "semantic_key",
+          "title",
+          "lifecycle_status",
+          "brand_status"
+        ],
+        "sort": [
+          "owner_type",
+          "owner_key",
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "account_tree",
+    "color": null,
+    "_syncId": "6578a7de-e514-47e0-8de2-0affca03d658"
+  },
+  {
+    "bookmark": "Live",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "semantic_key",
+          "title",
+          "role",
+          "approved_version",
+          "date_updated"
+        ],
+        "sort": [
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "lifecycle_status": {
+        "_eq": "live"
+      }
+    },
+    "icon": "public",
+    "color": null,
+    "_syncId": "8d56c4b4-a9c6-4703-9c2a-8b5eafe42a59"
+  },
+  {
+    "bookmark": "Superseded",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "semantic_key",
+          "title",
+          "lifecycle_status",
+          "date_updated",
+          "approved_version"
+        ],
+        "sort": [
+          "-date_updated",
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "lifecycle_status": {
+        "_eq": "superseded"
+      }
+    },
+    "icon": "history",
+    "color": null,
+    "_syncId": "a414c811-0bca-455c-887e-73acc4b76277"
+  },
+  {
+    "bookmark": "Needs attention",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "semantic_key",
+          "title",
+          "lifecycle_status",
+          "brand_status",
+          "owner_type",
+          "owner_key"
+        ],
+        "sort": [
+          "lifecycle_status",
+          "brand_status",
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "_or": [
+        {
+          "lifecycle_status": {
+            "_in": [
+              "draft",
+              "candidate",
+              "quarantined"
+            ]
+          }
+        },
+        {
+          "brand_status": {
+            "_in": [
+              "unreviewed",
+              "restricted"
+            ]
+          }
+        }
+      ]
+    },
+    "icon": "warning",
+    "color": null,
+    "_syncId": "a6d3fcf7-b288-4233-9e96-f1c5a63c7771"
+  },
+  {
+    "bookmark": "Failed",
+    "role": "_sync_editor_role",
+    "collection": "asset_releases",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "release_key",
+          "status",
+          "target_environment",
+          "repo_sha",
+          "error_code",
+          "error_message",
+          "date_updated"
+        ],
+        "sort": [
+          "-date_updated",
+          "release_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "status": {
+        "_eq": "failed"
+      }
+    },
+    "icon": "error",
+    "color": null,
+    "_syncId": "b4ca3eb3-993e-4002-8071-a8b2464b848e"
+  },
+  {
+    "bookmark": "Rollbacks",
+    "role": "_sync_editor_role",
+    "collection": "asset_releases",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "release_key",
+          "status",
+          "rollback_of",
+          "previous_release",
+          "deployment_receipt",
+          "date_updated"
+        ],
+        "sort": [
+          "-date_updated",
+          "release_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "status": {
+        "_eq": "rolled-back"
+      }
+    },
+    "icon": "undo",
+    "color": null,
+    "_syncId": "d38de433-9654-4058-ae40-36ed4c40b2bc"
+  },
+  {
+    "bookmark": "Ready to promote",
+    "role": "_sync_editor_role",
+    "collection": "asset_versions",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "asset_record",
+          "version_number",
+          "approval_status",
+          "source_mode",
+          "format",
+          "bytes"
+        ],
+        "sort": [
+          "asset_record",
+          "version_number",
+          "id"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "approval_status": {
+        "_eq": "approved"
+      }
+    },
+    "icon": "rocket_launch",
+    "color": null,
+    "_syncId": "dcfbb171-ee8a-4538-80a9-34077893fe80"
+  },
+  {
+    "bookmark": "Code-owned",
+    "role": "_sync_editor_role",
+    "collection": "asset_records",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "semantic_key",
+          "title",
+          "code_component_key",
+          "lifecycle_status",
+          "brand_status"
+        ],
+        "sort": [
+          "semantic_key"
+        ]
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "kind": {
+        "_eq": "code-component"
+      }
+    },
+    "icon": "code",
+    "color": null,
+    "_syncId": "df7b441a-3833-4d84-ae77-f2a041595bcd"
   }
 ]
