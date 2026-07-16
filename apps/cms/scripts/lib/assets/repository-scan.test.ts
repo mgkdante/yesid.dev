@@ -4,7 +4,11 @@ import { execFileSync } from "node:child_process";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { defineAssetUsages, type AssetUsageDeclaration } from "@repo/shared";
+import {
+  defineAssetUsages,
+  parseAssetSemanticKey,
+  type AssetUsageDeclaration,
+} from "@repo/shared";
 import { assetUsageDeclarations } from "../../../../web/src/lib/assets/usage-declarations";
 import {
   canonicalizeRepositoryScan,
@@ -203,6 +207,94 @@ describe("scanSvelteAssetSurface", () => {
   });
 });
 
+describe("dynamic media expression anchors", () => {
+  it("preserves declaration fragments and anchors each unknown media usage to its normalized expression", async () => {
+    const sourceFile = "apps/web/src/lib/Demo.svelte";
+    const mini = await makeMiniRepo({
+      [sourceFile]: [
+        '<script lang="ts">',
+        "  let heroImage: string;",
+        "  let unrelatedImage: string;",
+        "</script>",
+        '<img src={heroImage} alt="">',
+        '<img src={unrelatedImage} alt="">',
+      ].join("\n"),
+    });
+    const scan = await scanRepository({
+      repoRoot: mini.root,
+      trackedFiles: mini.trackedFiles,
+      declarations: [
+        declaration({
+          source: `${sourceFile}#img-src:heroImage`,
+        }),
+      ],
+    });
+
+    expect(
+      scan.usages
+        .filter((usage) => usage.confidence === "unknown")
+        .map((usage) => usage.sourceFile)
+        .sort(),
+    ).toEqual([
+      `${sourceFile}#img-src:heroImage`,
+      `${sourceFile}#img-src:unrelatedImage`,
+    ]);
+    expect(
+      scan.usages.find(
+        (usage) => usage.id === "declared:site.demo.dynamic-image",
+      )?.sourceFile,
+    ).toBe(`${sourceFile}#img-src:heroImage`);
+  });
+
+  it("keeps dynamic media identities stable across line churn while retaining diagnostic lines", async () => {
+    const sourceFile = "apps/web/src/lib/Demo.svelte";
+    const declarationRow = declaration({
+      source: `${sourceFile}#img-src:primaryImage?.src`,
+    });
+    const scanSource = async (blankLines: number) => {
+      const mini = await makeMiniRepo({
+        [sourceFile]: [
+          '<script lang="ts">',
+          "  let primaryImage: { src: string; srcset: string };",
+          "</script>",
+          ...Array.from({ length: blankLines }, () => ""),
+          '<img src={primaryImage?.src} srcset={primaryImage?.srcset} alt="">',
+        ].join("\n"),
+      });
+      return scanRepository({
+        repoRoot: mini.root,
+        trackedFiles: mini.trackedFiles,
+        declarations: [declarationRow],
+      });
+    };
+
+    const before = await scanSource(0);
+    const after = await scanSource(3);
+    const unknownRows = (scan: RepositoryScan) =>
+      scan.usages
+        .filter((usage) => usage.confidence === "unknown")
+        .map(({ id, sourceFile, sourceLine }) => ({
+          id,
+          sourceFile,
+          sourceLine,
+        }))
+        .sort((left, right) => left.sourceFile.localeCompare(right.sourceFile));
+
+    expect(
+      unknownRows(before).map(({ id, sourceFile }) => ({ id, sourceFile })),
+    ).toEqual(
+      unknownRows(after).map(({ id, sourceFile }) => ({ id, sourceFile })),
+    );
+    expect(unknownRows(before).map((usage) => usage.sourceFile)).toEqual([
+      `${sourceFile}#img-src:primaryImage?.src`,
+      `${sourceFile}#img-srcset:primaryImage?.srcset`,
+    ]);
+    expect(unknownRows(before).map((usage) => usage.sourceLine)).not.toEqual(
+      unknownRows(after).map((usage) => usage.sourceLine),
+    );
+  });
+});
+
 describe("scanRepository with an injected mini-repository", () => {
   it("builds deterministic physical, component, usage, finding, hash, glob, and UUID evidence", async () => {
     const knownUuid = "11111111-1111-4111-8111-111111111111";
@@ -261,7 +353,7 @@ describe("scanRepository with an injected mini-repository", () => {
       declaration(),
       declaration({
         usageKey: "site.demo.missing-source",
-        semanticKey: "site.demo.missing-source",
+        semanticKey: parseAssetSemanticKey("site.demo.missing-source"),
         source: "apps/web/src/lib/Missing.svelte#image",
       }),
     ];
@@ -1109,7 +1201,7 @@ describe("yesid.dev real repository contract", () => {
     for (const tag of renderedImageTags) {
       const graphRows = first.usages.filter(
         (usage) =>
-          usage.sourceFile === tag.sourceFile &&
+          usage.sourceFile.split("#")[0] === tag.sourceFile &&
           usage.sourceLine === tag.sourceLine &&
           (usage.assetId !== null || usage.unresolvedRef !== null),
       );
@@ -1134,6 +1226,54 @@ describe("yesid.dev real repository contract", () => {
         ).toBe(true);
       }
     }
+    const declaredMediaAnchors = [
+      "apps/web/src/lib/components/about/AboutIdentity.svelte#img-src:identity.headshot",
+      "apps/web/src/lib/components/about/AboutIdentity.svelte#img-srcset:headshotSrcset",
+      "apps/web/src/lib/components/about/AboutLanguages.svelte#img-src:imageSrc",
+      "apps/web/src/lib/components/about/AboutPolaroids.svelte#img-src:current.src",
+      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#img-src:source.src",
+      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#img-srcset:source.srcset",
+      "apps/web/src/lib/components/home/HomeServices.svelte#img-src:/svg/services/{service.svg}",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-src:primaryImage?.src",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-srcset:primaryImage?.srcset",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-src:secondaryImage?.src",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-srcset:secondaryImage?.srcset",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-src:source.src",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-srcset:source.srcset",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-src:activeSource?.src",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-srcset:activeSource?.srcset",
+    ];
+    for (const sourceFile of declaredMediaAnchors) {
+      expect(
+        first.usages.some(
+          (usage) =>
+            usage.sourceFile === sourceFile && usage.confidence === "unknown",
+        ),
+      ).toBe(true);
+      expect(
+        first.usages.some(
+          (usage) =>
+            usage.sourceFile === sourceFile &&
+            usage.confidence === "declared-dynamic",
+        ),
+      ).toBe(true);
+    }
+    const undeclaredTechIconAnchor =
+      "apps/web/src/lib/components/stack-engine/TechIcon.svelte#img-src:src";
+    expect(
+      first.usages.some(
+        (usage) =>
+          usage.sourceFile === undeclaredTechIconAnchor &&
+          usage.confidence === "unknown",
+      ),
+    ).toBe(true);
+    expect(
+      first.usages.some(
+        (usage) =>
+          usage.sourceFile === undeclaredTechIconAnchor &&
+          usage.confidence === "declared-dynamic",
+      ),
+    ).toBe(false);
     for (const educationAsset of [
       "repo-file:apps/web/static/images/about/edu-bishops.svg",
       "repo-file:apps/web/static/images/about/edu-champlain.svg",

@@ -162,7 +162,8 @@ export const assetUsageDeclarations = defineAssetUsages([
     semanticKey: "site.media.uuid-mirror",
     consumerType: "component",
     consumerKey: "about-identity-headshot",
-    source: "apps/web/src/lib/components/about/AboutIdentity.svelte#headshot",
+    source:
+      "apps/web/src/lib/components/about/AboutIdentity.svelte#img-src:identity.headshot",
     route: "/about",
     locale: null,
     slot: "identity-headshot",
@@ -173,12 +174,28 @@ export const assetUsageDeclarations = defineAssetUsages([
       "The about identity record selects a CMS-backed headshot and its generated responsive variants.",
   },
   {
+    usageKey: "site.media.about-identity-headshot-srcset",
+    semanticKey: "site.media.uuid-mirror",
+    consumerType: "component",
+    consumerKey: "about-identity-headshot",
+    source:
+      "apps/web/src/lib/components/about/AboutIdentity.svelte#img-srcset:headshotSrcset",
+    route: "/about",
+    locale: null,
+    slot: "identity-headshot-srcset",
+    required: true,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "The about identity record selects the generated responsive headshot variants.",
+  },
+  {
     usageKey: "site.media.about-polaroid",
     semanticKey: "site.media.uuid-mirror",
     consumerType: "component",
     consumerKey: "about-polaroid-carousel",
     source:
-      "apps/web/src/lib/components/about/AboutPolaroids.svelte#current-photo",
+      "apps/web/src/lib/components/about/AboutPolaroids.svelte#img-src:current.src",
     route: "/about",
     locale: null,
     slot: "polaroid-photo",
@@ -194,7 +211,7 @@ export const assetUsageDeclarations = defineAssetUsages([
     consumerType: "component",
     consumerKey: "about-language-flags",
     source:
-      "apps/web/src/lib/components/about/AboutLanguages.svelte#language-image",
+      "apps/web/src/lib/components/about/AboutLanguages.svelte#img-src:imageSrc",
     route: "/about",
     locale: null,
     slot: "language-flag",
@@ -210,7 +227,7 @@ export const assetUsageDeclarations = defineAssetUsages([
     consumerType: "project",
     consumerKey: "project-hero-primary",
     source:
-      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#primary-image",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-src:primaryImage?.src",
     route: "/projects/[slug]",
     locale: null,
     slot: "hero-primary",
@@ -221,12 +238,28 @@ export const assetUsageDeclarations = defineAssetUsages([
       "The project record and active theme resolve the primary Directus image and responsive preset.",
   },
   {
+    usageKey: "site.projects.hero-primary-srcset",
+    semanticKey: "site.media.uuid-mirror",
+    consumerType: "project",
+    consumerKey: "project-hero-primary",
+    source:
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-srcset:primaryImage?.srcset",
+    route: "/projects/[slug]",
+    locale: null,
+    slot: "hero-primary-srcset",
+    required: true,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "The project record and active theme resolve the primary responsive Directus image preset.",
+  },
+  {
     usageKey: "site.projects.hero-secondary",
     semanticKey: "site.media.uuid-mirror",
     consumerType: "project",
     consumerKey: "project-hero-secondary",
     source:
-      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#secondary-image",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-src:secondaryImage?.src",
     route: "/projects/[slug]",
     locale: null,
     slot: "hero-secondary",
@@ -237,12 +270,28 @@ export const assetUsageDeclarations = defineAssetUsages([
       "An optional themed secondary Directus image supplies the narrow companion hero pane.",
   },
   {
+    usageKey: "site.projects.hero-secondary-srcset",
+    semanticKey: "site.media.uuid-mirror",
+    consumerType: "project",
+    consumerKey: "project-hero-secondary",
+    source:
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte#img-srcset:secondaryImage?.srcset",
+    route: "/projects/[slug]",
+    locale: null,
+    slot: "hero-secondary-srcset",
+    required: false,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "The optional themed secondary image supplies its responsive Directus preset.",
+  },
+  {
     usageKey: "site.services.img-fallback",
     semanticKey: "site.services.svg-glob",
     consumerType: "service",
     consumerKey: "home-service-static-fallback",
     source:
-      "apps/web/src/lib/components/home/HomeServices.svelte#static-svg-fallback",
+      "apps/web/src/lib/components/home/HomeServices.svelte#img-src:/svg/services/{service.svg}",
     route: "/",
     locale: null,
     slot: "illustration-fallback",
@@ -258,7 +307,7 @@ export const assetUsageDeclarations = defineAssetUsages([
     consumerType: "page-block",
     consumerKey: "editor-image-block",
     source:
-      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#imageSource",
+      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#img-src:source.src",
     route: null,
     locale: null,
     slot: "body-image",
@@ -269,12 +318,28 @@ export const assetUsageDeclarations = defineAssetUsages([
       "Editor.js image blocks supply Directus file identities from CMS content at runtime.",
   },
   {
+    usageKey: "site.cms.image-block-srcset",
+    semanticKey: "site.cms.image-block",
+    consumerType: "page-block",
+    consumerKey: "editor-image-block",
+    source:
+      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#img-srcset:source.srcset",
+    route: null,
+    locale: null,
+    slot: "body-image-srcset",
+    required: false,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "Editor.js image blocks supply responsive Directus file variants from CMS content at runtime.",
+  },
+  {
     usageKey: "site.cms.project-gallery-thumbnail",
     semanticKey: "site.cms.image-block",
     consumerType: "project",
     consumerKey: "project-gallery-thumbnail",
     source:
-      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#thumbnail",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-src:source.src",
     route: "/projects/[slug]",
     locale: null,
     slot: "gallery-thumbnail",
@@ -285,12 +350,27 @@ export const assetUsageDeclarations = defineAssetUsages([
       "Each CMS image block resolves its themed file identity into the gallery thumbnail preset.",
   },
   {
+    usageKey: "site.cms.project-gallery-thumbnail-srcset",
+    semanticKey: "site.cms.image-block",
+    consumerType: "project",
+    consumerKey: "project-gallery-thumbnail",
+    source:
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-srcset:source.srcset",
+    route: "/projects/[slug]",
+    locale: null,
+    slot: "gallery-thumbnail-srcset",
+    required: false,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason: "Each CMS image block resolves its responsive thumbnail variants.",
+  },
+  {
     usageKey: "site.cms.project-gallery-lightbox",
     semanticKey: "site.cms.image-block",
     consumerType: "project",
     consumerKey: "project-gallery-lightbox",
     source:
-      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#lightbox",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-src:activeSource?.src",
     route: "/projects/[slug]",
     locale: null,
     slot: "gallery-lightbox",
@@ -299,5 +379,21 @@ export const assetUsageDeclarations = defineAssetUsages([
     confidence: "declared-dynamic",
     reason:
       "The selected CMS image block resolves its themed file identity into the lightbox preset.",
+  },
+  {
+    usageKey: "site.cms.project-gallery-lightbox-srcset",
+    semanticKey: "site.cms.image-block",
+    consumerType: "project",
+    consumerKey: "project-gallery-lightbox",
+    source:
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte#img-srcset:activeSource?.srcset",
+    route: "/projects/[slug]",
+    locale: null,
+    slot: "gallery-lightbox-srcset",
+    required: false,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "The selected CMS image block resolves its responsive lightbox variants.",
   },
 ]);
