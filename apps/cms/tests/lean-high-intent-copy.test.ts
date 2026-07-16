@@ -26,23 +26,17 @@ type LegalArtifact = { generatedAt: string; pages: LegalPage[] };
 const CONSENT_DESCRIPTIONS = {
 	en: {
 		fixture: 'site-labels.json',
-		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
+		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
 	},
 	fr: {
 		fixture: 'site-labels.fr.json',
-		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
 	},
 	es: {
 		fixture: 'site-labels.es.json',
-		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
+		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
 	},
 } as const satisfies Record<Locale, { fixture: string; copy: string }>;
-
-const OLD_LEGAL_CLAUSES: Record<Locale, string> = {
-	en: 'and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events.',
-	fr: 'ainsi que deux événements de conversion : l’envoi réussi du formulaire de contact et le clic pour réserver un appel. Je ne joins à ces événements aucun champ du formulaire de contact ni aucune propriété personnalisée.',
-	es: 'y dos eventos de conversión: el envío exitoso del formulario de contacto y el clic para reservar una llamada. No adjunto a esos eventos ningún campo del formulario de contacto ni propiedades personalizadas.',
-};
 
 const LEGAL_CLAUSES: Record<Locale, string> = {
 	en: "and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project's live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events.",
@@ -50,10 +44,79 @@ const LEGAL_CLAUSES: Record<Locale, string> = {
 	es: 'y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada.',
 };
 
-const BASELINE_ANALYTICS_PARAGRAPHS: Record<Locale, string> = {
-	en: 'I use Plausible Analytics Cloud, operated by Plausible Insights OÜ in Estonia, to measure page paths, referral and campaign sources, browser, operating-system and device categories, approximate country, region and city, and two conversion events: a successful contact-form submission and a click to book a call. I do not attach contact-form fields or custom properties to those events. Plausible sets no cookies, uses no browser storage, does no cross-site tracking and creates no persistent identifier. Each request contains an IP address and User-Agent; Plausible combines them with a value that changes daily to count visitors for that day, then discards the raw values. Visitor data is processed and stored in the European Union. I see site-usage reports, not named people. Plausible is off until you allow it.',
-	fr: "J'utilise Plausible Analytics Cloud, exploité par Plausible Insights OÜ en Estonie, pour mesurer les chemins de page, les sources de référence et de campagne, les catégories de navigateur, de système d'exploitation et d'appareil, le pays, la région et la ville approximatifs, ainsi que deux événements de conversion : l’envoi réussi du formulaire de contact et le clic pour réserver un appel. Je ne joins à ces événements aucun champ du formulaire de contact ni aucune propriété personnalisée. Plausible n'installe aucun témoin, n'utilise pas le stockage du navigateur, n'effectue aucun suivi entre les sites et ne crée aucun identifiant persistant. Chaque requête contient une adresse IP et un agent utilisateur; Plausible les combine à une valeur renouvelée chaque jour pour compter les visiteurs de cette journée, puis élimine les valeurs brutes. Les données de visite sont traitées et conservées dans l'Union européenne. Je vois des rapports d'utilisation du site, pas des personnes nommées. Plausible reste désactivé tant que vous ne l’autorisez pas.",
-	es: 'Utilizo Plausible Analytics Cloud, operado por Plausible Insights OÜ en Estonia, para medir las rutas de las páginas, las fuentes de referencia y campaña, las categorías de navegador, sistema operativo y dispositivo, el país, la región y la ciudad aproximados, y dos eventos de conversión: el envío exitoso del formulario de contacto y el clic para reservar una llamada. No adjunto a esos eventos ningún campo del formulario de contacto ni propiedades personalizadas. Plausible no instala cookies, no usa el almacenamiento del navegador, no hace seguimiento entre sitios y no crea identificadores persistentes. Cada solicitud contiene una dirección IP y un agente de usuario; Plausible los combina con un valor que cambia cada día para contar visitantes durante ese día y luego descarta los valores brutos. Los datos de las visitas se procesan y almacenan en la Unión Europea. Yo veo informes sobre el uso del sitio, no personas identificadas por su nombre. Plausible permanece desactivado hasta que usted lo autorice.',
+const ANALYTICS_MODE_TRUTH: Record<Locale, readonly string[]> = {
+	en: [
+		'When Plausible is disabled, the site makes no analytics requests and sends no pageviews or conversion events. The Analytics preferences control is absent from the footer, and any analytics choice already stored in your browser remains there but is dormant.',
+		'With the default consent banner, no Plausible request runs until you choose Allow analytics.',
+		'If I enable analytics without the banner, cookieless Plausible starts for visitors without a saved decline; a saved decline remains untracked.',
+		'The Analytics preferences control is available in the footer whenever analytics is enabled. Opening it pauses future measurement and shows the choice. Allow analytics resumes measurement; No thanks records a decline.',
+		'Withdrawing consent stops future analytics requests and events. Aggregate data already sent cannot be tied back to you or selectively removed.',
+		"Plausible itself sets no cookies, uses no browser storage, and creates no persistent cross-site identifier. yesid.dev stores your analytics choice in your browser's localStorage.",
+		'Explicit consent is the documented default. I use the no-banner mode only after deciding to do so and obtaining legal-advisor review.',
+	],
+	fr: [
+		"Lorsque Plausible est désactivé, le site ne fait aucune requête d'analytique et n'envoie aucune page vue ni aucun événement de conversion. Le contrôle Préférences d'analytique est absent du pied de page, et tout choix d'analytique déjà conservé dans votre navigateur y reste, mais demeure inactif.",
+		"Avec la bannière de consentement offerte par défaut, aucune requête n'est envoyée à Plausible avant que vous choisissiez Autoriser l'analytique.",
+		"Si j'active l'analytique sans la bannière, Plausible sans témoins démarre pour les personnes qui n'ont pas enregistré de refus; un refus enregistré continue d'empêcher toute mesure.",
+		"Le contrôle Préférences d'analytique est disponible dans le pied de page lorsque l'analytique est activée. L'ouvrir suspend toute mesure future et affiche le choix. Autoriser l'analytique reprend la mesure; Non merci enregistre un refus.",
+		"Retirer votre consentement arrête les futures requêtes et les futurs événements d'analytique. Les données agrégées déjà envoyées ne peuvent pas être rattachées à vous ni retirées sélectivement.",
+		"Plausible lui-même n'installe aucun témoin, n'utilise pas le stockage du navigateur et ne crée aucun identifiant persistant entre les sites. yesid.dev conserve votre choix d'analytique dans le localStorage de votre navigateur.",
+		"Le consentement explicite demeure le mode documenté par défaut. Je n'utilise le mode sans bannière qu'après avoir décidé de le faire et obtenu l'avis d'un conseiller juridique.",
+	],
+	es: [
+		'Cuando Plausible está desactivado, el sitio no hace solicitudes de analítica ni envía páginas vistas o eventos de conversión. El control Preferencias de analítica no aparece en el pie de página, y cualquier elección de analítica ya guardada en su navegador permanece allí, pero queda inactiva.',
+		'Con el banner de consentimiento predeterminado, no se envía ninguna solicitud a Plausible hasta que usted elige Permitir analítica.',
+		'Si activo la analítica sin el banner, Plausible sin cookies comienza para quienes no tengan un rechazo guardado; un rechazo guardado sigue impidiendo toda medición.',
+		'El control Preferencias de analítica está disponible en el pie de página siempre que la analítica esté activada. Al abrirlo, se pausa toda medición futura y se muestra la elección. Permitir analítica reanuda la medición; No, gracias registra un rechazo.',
+		'Retirar el consentimiento detiene las futuras solicitudes y los futuros eventos de analítica. Los datos agregados ya enviados no pueden volver a vincularse con usted ni eliminarse de forma selectiva.',
+		'Plausible no instala cookies, no usa el almacenamiento del navegador y no crea identificadores persistentes entre sitios. yesid.dev guarda su elección de analítica en el localStorage de su navegador.',
+		'El consentimiento explícito sigue siendo el modo documentado predeterminado. Solo uso el modo sin banner después de decidirlo y obtener la revisión de un asesor jurídico.',
+	],
+};
+
+const PRIVACY_PROFILE_TRUTH: Record<Locale, string> = {
+	en: 'No advertising profile and no automated decision-making.',
+	fr: 'Aucun profil publicitaire et aucune décision automatisée.',
+	es: 'Ningún perfil publicitario ni decisión automatizada.',
+};
+
+const COOKIE_PROFILE_TRUTH: Record<Locale, string> = {
+	en: 'There is no advertising technology, advertising profile, or automated decision-making.',
+	fr: "Il n'y a aucune technologie publicitaire, aucun profil publicitaire ni aucune décision automatisée.",
+	es: 'No hay tecnología publicitaria, perfiles publicitarios ni decisiones automatizadas.',
+};
+
+const FORBIDDEN_ANALYTICS_OVERCLAIMS: Record<Locale, readonly string[]> = {
+	en: [
+		'there is no advertising technology, no cross-site tracking, and no profiling.',
+		'fully anonymous',
+		'creates no persistent identifier.',
+		'does no cross-site tracking',
+		'no ip processing',
+		'no profiling and',
+	],
+	fr: [
+		"il n'y a ni technologie publicitaire, ni suivi entre les sites, ni profilage.",
+		'entièrement anonyme',
+		'ne crée aucun identifiant persistant.',
+		"n'effectue aucun suivi entre les sites",
+		"aucun traitement de l'adresse ip",
+		'aucun profilage,',
+	],
+	es: [
+		'no hay tecnología publicitaria, ni rastreo entre sitios, ni elaboración de perfiles.',
+		'completamente anónimo',
+		'no crea identificadores persistentes.',
+		'no hace seguimiento entre sitios',
+		'sin tratamiento de la dirección ip',
+		'sin perfilado y',
+	],
+};
+
+const REMOVED_BROAD_COOKIE_CLAIMS: Record<Locale, string> = {
+	en: 'There is no advertising technology, no cross-site tracking, and no profiling.',
+	fr: "Il n'y a ni technologie publicitaire, ni suivi entre les sites, ni profilage.",
+	es: 'No hay tecnología publicitaria, ni rastreo entre sitios, ni elaboración de perfiles.',
 };
 
 const REVISION_LABELS: Record<Locale, string> = {
@@ -67,7 +130,7 @@ const SOURCE_PRESERVATION_SHA256 = {
 	'site-labels.fr.json': '9cb55b693bbc431ee259291627dcaac8e3308565f44013ec7dc690c6d050d3dd',
 	'site-labels.es.json': '52ebd03c73a03b53f9f61eaf798124fae9c8a38bac3a1ede01e5dceaf4eca6ec',
 	'legal-pages-2026-07-09.json':
-		'9eb8c80d09e10919f00f63bc8c0427e50e1dc152e0001ba84c799d382e6f5941',
+		'9df41ca4b66e409cd0cd658a636efb50ee155fc7cc4dca759e47b826e23ba99e',
 } as const;
 
 const CONSENT_DESCRIPTION_SENTINEL = '<task-6-consent-description>';
@@ -94,9 +157,9 @@ const NORMALIZED_REVISION_DATES = {
 } as const;
 
 const CURRENT_REVISION_DATES = {
-	privacy: '2026-07-12',
+	privacy: '2026-07-15',
 	terms: '2026-07-12',
-	cookies: '2026-07-12',
+	cookies: '2026-07-15',
 	accessibility: '2026-07-12',
 	notice: '2026-07-13',
 } as const;
@@ -115,6 +178,12 @@ function readJson<T>(path: string): T {
 
 function textBlocks(page: LegalPage, locale: Locale): string[] {
 	return page[locale].blocks.flatMap((block) => (block.text === undefined ? [] : [block.text]));
+}
+
+function allBlockCopy(page: LegalPage, locale: Locale): string {
+	return page[locale].blocks
+		.flatMap((block) => [block.text ?? '', ...(block.items ?? [])])
+		.join('\n');
 }
 
 function sha256(value: string): string {
@@ -307,7 +376,7 @@ describe('lean high-intent analytics legal source', () => {
 	});
 
 	it('records the source artifact revision date', () => {
-		expect(legalArtifact.generatedAt).toBe('2026-07-13');
+		expect(legalArtifact.generatedAt).toBe('2026-07-15');
 	});
 
 	it('keeps the legal page order, titles, and block counts stable', () => {
@@ -356,20 +425,77 @@ describe('lean high-intent analytics legal source', () => {
 
 	for (const slug of ['privacy', 'cookies'] as const) {
 		for (const locale of ['en', 'fr', 'es'] as const) {
-			it(`${slug} uses the exact ${locale.toUpperCase()} four-event clause and preserves its surrounding paragraph`, () => {
+			it(`${slug} pins the ${locale.toUpperCase()} four-event inventory and configurable analytics matrix`, () => {
 				const page = legalArtifact.pages.find((candidate) => candidate.slug === slug);
 				expect(page).toBeDefined();
 				const analyticsParagraph = textBlocks(page!, locale).find((text) =>
 					text.includes('Plausible Analytics Cloud'),
 				);
-				const expected = BASELINE_ANALYTICS_PARAGRAPHS[locale].replace(
-					OLD_LEGAL_CLAUSES[locale],
-					LEGAL_CLAUSES[locale],
-				);
-				expect(analyticsParagraph).toBe(expected);
+				expect(analyticsParagraph).toContain(LEGAL_CLAUSES[locale]);
+				const body = allBlockCopy(page!, locale);
+				for (const truthBoundary of ANALYTICS_MODE_TRUTH[locale]) {
+					expect(body).toContain(truthBoundary);
+				}
 			});
 		}
 	}
+
+	for (const locale of ['en', 'fr', 'es'] as const) {
+		it(`privacy narrows the ${locale.toUpperCase()} profiling claim to advertising`, () => {
+			const page = legalArtifact.pages.find((candidate) => candidate.slug === 'privacy');
+			expect(page).toBeDefined();
+			expect(allBlockCopy(page!, locale)).toContain(PRIVACY_PROFILE_TRUTH[locale]);
+		});
+
+		it(`cookies narrows the ${locale.toUpperCase()} profiling claim to advertising`, () => {
+			const page = legalArtifact.pages.find((candidate) => candidate.slug === 'cookies');
+			expect(page).toBeDefined();
+			expect(allBlockCopy(page!, locale)).toContain(COOKIE_PROFILE_TRUTH[locale]);
+		});
+	}
+
+	it('keeps the public copy precise about processing and avoids analytics overclaims', () => {
+		for (const locale of ['en', 'fr', 'es'] as const) {
+			const removedClaim = REMOVED_BROAD_COOKIE_CLAIMS[locale].toLowerCase();
+			expect(
+				FORBIDDEN_ANALYTICS_OVERCLAIMS[locale].some((overclaim) =>
+					removedClaim.includes(overclaim),
+				),
+			).toBe(true);
+		}
+		for (const slug of ['privacy', 'cookies'] as const) {
+			const page = legalArtifact.pages.find((candidate) => candidate.slug === slug);
+			expect(page).toBeDefined();
+			for (const locale of ['en', 'fr', 'es'] as const) {
+				const body = allBlockCopy(page!, locale).toLowerCase();
+				for (const overclaim of FORBIDDEN_ANALYTICS_OVERCLAIMS[locale]) {
+					expect(body).not.toContain(overclaim);
+				}
+			}
+		}
+	});
+
+	it('keeps the configurable no-banner mode operator and advisor gated in review notes', () => {
+		for (const slug of ['privacy', 'cookies'] as const) {
+			const page = legalArtifact.pages.find((candidate) => candidate.slug === slug);
+			expect(page).toBeDefined();
+			expect(page!.advisorNotes).toContain(
+				'Explicit consent remains the documented default.',
+			);
+			expect(page!.advisorNotes).toContain(
+				'Full or emergency disable remains available to the operator at any time.',
+			);
+			expect(page!.advisorNotes).toContain(
+				'Only the no-banner mode requires legal-advisor review before the operator enables it.',
+			);
+			expect(page!.advisorNotes).toContain(
+				'Plausible derives a daily visitor identifier/hash from IP address and User-Agent, uses it to count visitors for that day, and discards the raw values.',
+			);
+			expect(page!.advisorNotes).toContain(
+				'This source does not claim that any analytics configuration is legally sufficient.',
+			);
+		}
+	});
 
 	for (const slug of ['privacy', 'terms', 'cookies', 'accessibility', 'notice'] as const) {
 		for (const locale of ['en', 'fr', 'es'] as const) {

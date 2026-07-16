@@ -6,6 +6,7 @@ type ConsentState = {
 	choice: 'unknown' | 'granted' | 'denied';
 	ready: boolean;
 	available: boolean;
+	preferencesOpen: boolean;
 };
 
 type HomeIntroPhase = 'pending' | 'running' | 'settled';
@@ -51,8 +52,26 @@ const introMock = vi.hoisted(() => ({
 }));
 
 const analyticsMock = vi.hoisted(() => ({
-	trackPageview: vi.fn<(url: URL) => void>(),
+	trackPageview: vi.fn<(url: URL) => Promise<boolean>>(),
 }));
+
+const controlsMock = vi.hoisted(() => {
+	let enabled: boolean | undefined;
+	let showBanner: boolean | undefined;
+
+	return {
+		get enabled() {
+			return enabled;
+		},
+		get showBanner() {
+			return showBanner;
+		},
+		set(nextEnabled?: boolean, nextShowBanner?: boolean) {
+			enabled = nextEnabled;
+			showBanner = nextShowBanner;
+		},
+	};
+});
 
 vi.mock('$app/navigation', async () => {
 	const { onMount } = await import('svelte');
@@ -73,6 +92,7 @@ vi.mock('$lib/state/analytics-consent.svelte', async () => {
 		choice: 'unknown',
 		ready: true,
 		available: true,
+		preferencesOpen: false,
 	});
 
 	consentMock.set = state.set;
@@ -110,6 +130,12 @@ vi.mock('$lib/content', () => ({
 	siteLabels: {
 		ui: {
 			analyticsConsent: {
+				get enabled() {
+					return controlsMock.enabled;
+				},
+				get showBanner() {
+					return controlsMock.showBanner;
+				},
 				title: {
 					en: 'Can I count this visit?',
 					fr: 'Je peux compter cette visite?',
@@ -139,14 +165,21 @@ vi.mock('$lib/content', () => ({
 import Analytics from './Analytics.svelte';
 
 beforeEach(() => {
-	consentMock.set({ choice: 'unknown', ready: true, available: true });
+	controlsMock.set();
+	consentMock.set({
+		choice: 'unknown',
+		ready: true,
+		available: true,
+		preferencesOpen: false,
+	});
 	introMock.set('pending');
 	consentMock.store.init.mockClear();
 	consentMock.store.grant.mockClear();
 	consentMock.store.deny.mockClear();
 	consentMock.store.openPreferences.mockClear();
 	navigationMock.afterNavigate.mockClear();
-	analyticsMock.trackPageview.mockClear();
+	analyticsMock.trackPageview.mockReset();
+	analyticsMock.trackPageview.mockResolvedValue(true);
 });
 
 afterEach(() => cleanup());
@@ -187,7 +220,12 @@ describe('Analytics', () => {
 
 		expect(analyticsMock.trackPageview).not.toHaveBeenCalled();
 
-		consentMock.set({ choice: 'granted', ready: true, available: true });
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		await tick();
 
 		expect(analyticsMock.trackPageview).toHaveBeenCalledOnce();
@@ -210,10 +248,12 @@ describe('Analytics', () => {
 		navigationMock.visit(projectsUrl);
 		await tick();
 
-		expect(analyticsMock.trackPageview.mock.calls).toEqual([
-			[currentUrl],
-			[projectsUrl],
-		]);
+		await vi.waitFor(() => {
+			expect(analyticsMock.trackPageview.mock.calls).toEqual([
+				[currentUrl],
+				[projectsUrl],
+			]);
+		});
 
 		navigationMock.visit(null);
 		await tick();
@@ -223,7 +263,12 @@ describe('Analytics', () => {
 
 	it('retains a denied destination for the first pageview after consent is granted', async () => {
 		render(Analytics, { props: { locale: 'en' } });
-		consentMock.set({ choice: 'denied', ready: true, available: true });
+		consentMock.set({
+			choice: 'denied',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		await tick();
 
 		const deniedUrl = new URL('https://yesid.dev/contact?ref=portfolio');
@@ -232,7 +277,12 @@ describe('Analytics', () => {
 
 		expect(analyticsMock.trackPageview).not.toHaveBeenCalled();
 
-		consentMock.set({ choice: 'granted', ready: true, available: true });
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		await tick();
 
 		expect(analyticsMock.trackPageview).toHaveBeenCalledOnce();
@@ -245,9 +295,19 @@ describe('Analytics', () => {
 		expect(navigationMock.afterNavigate).toHaveBeenCalledOnce();
 		expect(navigationMock.activeCallbacks).toHaveLength(1);
 
-		consentMock.set({ choice: 'granted', ready: true, available: true });
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		await tick();
-		consentMock.set({ choice: 'denied', ready: true, available: true });
+		consentMock.set({
+			choice: 'denied',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		await tick();
 
 		expect(navigationMock.afterNavigate).toHaveBeenCalledOnce();
@@ -259,7 +319,12 @@ describe('Analytics', () => {
 		navigationMock.visit(new URL('https://yesid.dev/unmounted'));
 		expect(analyticsMock.trackPageview).not.toHaveBeenCalled();
 
-		consentMock.set({ choice: 'granted', ready: true, available: true });
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
 		const second = render(Analytics, { props: { locale: 'es' } });
 
 		expect(navigationMock.afterNavigate).toHaveBeenCalledTimes(2);
@@ -274,5 +339,110 @@ describe('Analytics', () => {
 
 		second.unmount();
 		expect(navigationMock.activeCallbacks).toHaveLength(0);
+	});
+
+	it('tracks the first hidden-mode pageview without rendering the prompt', async () => {
+		controlsMock.set(true, false);
+		render(Analytics, { props: { locale: 'en' } });
+
+		const currentUrl = new URL('https://yesid.dev/projects?utm_source=portfolio');
+		navigationMock.visit(currentUrl);
+		await tick();
+
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(analyticsMock.trackPageview).toHaveBeenCalledOnce();
+		expect(analyticsMock.trackPageview).toHaveBeenCalledWith(currentUrl);
+	});
+
+	it('never tracks when analytics is disabled, even with a saved grant', async () => {
+		controlsMock.set(false, false);
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
+		render(Analytics, { props: { locale: 'en' } });
+
+		navigationMock.visit(new URL('https://yesid.dev/contact'));
+		await tick();
+
+		expect(analyticsMock.trackPageview).not.toHaveBeenCalled();
+		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+	});
+
+	it('pauses while preferences are open and reports an unconsumed destination after grant', async () => {
+		controlsMock.set(true, false);
+		render(Analytics, { props: { locale: 'en' } });
+
+		const firstUrl = new URL('https://yesid.dev/projects');
+		navigationMock.visit(firstUrl);
+		await tick();
+		expect(analyticsMock.trackPageview).toHaveBeenCalledWith(firstUrl);
+
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+		const pausedUrl = new URL('https://yesid.dev/contact?ref=projects');
+		navigationMock.visit(pausedUrl);
+		await tick();
+
+		expect(analyticsMock.trackPageview).toHaveBeenCalledTimes(1);
+		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
+		await tick();
+
+		await vi.waitFor(() => {
+			expect(analyticsMock.trackPageview.mock.calls).toEqual([[firstUrl], [pausedUrl]]);
+		});
+		navigationMock.visit(new URL('https://yesid.dev/contact?ref=footer#form'));
+		await tick();
+		expect(analyticsMock.trackPageview).toHaveBeenCalledTimes(2);
+	});
+
+	it('retries the current pathname when preferences cancel a pending pageview', async () => {
+		let resolvePageview!: (sent: boolean) => void;
+		const pendingPageview = new Promise<boolean>((resolve) => {
+			resolvePageview = resolve;
+		});
+		analyticsMock.trackPageview.mockImplementationOnce(() => pendingPageview);
+		controlsMock.set(true, false);
+		render(Analytics, { props: { locale: 'en' } });
+
+		const currentUrl = new URL('https://yesid.dev/projects?utm_source=portfolio');
+		navigationMock.visit(currentUrl);
+		await tick();
+		expect(analyticsMock.trackPageview).toHaveBeenCalledOnce();
+
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+		resolvePageview(false);
+		await pendingPageview;
+		await tick();
+
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
+		await tick();
+
+		expect(analyticsMock.trackPageview).toHaveBeenCalledTimes(2);
+		expect(analyticsMock.trackPageview).toHaveBeenNthCalledWith(1, currentUrl);
+		expect(analyticsMock.trackPageview).toHaveBeenNthCalledWith(2, currentUrl);
 	});
 });
