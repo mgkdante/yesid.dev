@@ -156,7 +156,7 @@
 	"footer_chrome_footer_legal_label": "LEGAL",
 	"footer_chrome_footer_connect_label": "CONNECT",
 	"ui_analytics_consent_title": "Can I count this visit?",
-	"ui_analytics_consent_description": "Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.",
+	"ui_analytics_consent_description": "Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.",
 	"ui_analytics_consent_accept_label": "Allow analytics",
 	"ui_analytics_consent_decline_label": "No thanks",
 	"ui_analytics_consent_settings_label": "Analytics preferences",

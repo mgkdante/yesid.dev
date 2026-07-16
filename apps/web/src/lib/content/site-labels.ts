@@ -541,10 +541,11 @@ export const siteLabels: SiteLabels = {
 			},
 			declineLabel: { en: 'No thanks', es: 'No, gracias', fr: 'Non merci' },
 			description: {
-				en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies, names, emails, or form content.',
-				es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies, nombres, correos ni contenido de formularios.',
-				fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun cookie, nom, courriel ni contenu de formulaire.',
+				en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
+				es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
+				fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
 			},
+			enabled: true,
 			privacyLabel: {
 				en: 'Privacy details',
 				es: 'Detalles de privacidad',
@@ -555,6 +556,7 @@ export const siteLabels: SiteLabels = {
 				es: 'Preferencias de analítica',
 				fr: 'Préférences d’analytique',
 			},
+			showBanner: true,
 			title: {
 				en: 'Can I count this visit?',
 				es: '¿Puedo contar esta visita?',

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
 	import { trackPageview } from '$lib/analytics/client';
+	import { getAnalyticsPolicy } from '$lib/analytics/policy';
+	import { siteLabels } from '$lib/content';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
 	import { homeIntroStore } from '$lib/state/home-intro.svelte';
 	import { createPathnamePageviewTracker } from '$lib/utils/analytics';
@@ -10,20 +12,21 @@
 	let { locale, isHome = false }: { locale: Locale; isHome?: boolean } = $props();
 	let currentUrl = $state<URL | null>(null);
 	const canShowConsent = $derived(!isHome || $homeIntroStore === 'settled');
+	const analyticsPolicy = $derived(
+		getAnalyticsPolicy(siteLabels.ui.analyticsConsent, $analyticsConsentStore),
+	);
 
-	const reportPathname = createPathnamePageviewTracker((url) => {
-		trackPageview(url);
-	});
+	const reportPathname = createPathnamePageviewTracker((url) => trackPageview(url));
 
 	afterNavigate(({ to }) => {
 		currentUrl = to?.url ?? null;
-		if ($analyticsConsentStore.choice === 'granted' && currentUrl) {
+		if (analyticsPolicy.canTrack && currentUrl) {
 			reportPathname(currentUrl);
 		}
 	});
 
 	$effect(() => {
-		if ($analyticsConsentStore.choice === 'granted' && currentUrl) {
+		if (analyticsPolicy.canTrack && currentUrl) {
 			reportPathname(currentUrl);
 		}
 	});
