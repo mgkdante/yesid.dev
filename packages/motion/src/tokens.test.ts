@@ -1,12 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { duration, ease } from './tokens.js';
 
-// Vitest runs tests from the project root; process.cwd() is reliable.
-// Avoid __dirname (not defined under ESM/Vitest without extra plumbing).
+// The package suite runs with packages/motion as cwd, but derive the package
+// root from this module URL so the generated-file lookup is cwd-independent.
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const tokensCss = readFileSync(
-	resolve(process.cwd(), '../../apps/gallery/src/lib/styles/tokens.css'),
+	resolve(packageRoot, '../../apps/web/src/lib/styles/tokens.css'),
 	'utf-8',
 );
 
