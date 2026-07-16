@@ -10,10 +10,14 @@ const routes = [
 
 const viewports = [
 	['desktop', 1280, 720],
+	['large-desktop', 1512, 982],
+	['wide-desktop', 1920, 1080],
 	['tablet', 768, 1024],
 	['phone', 390, 664],
 	['small-phone', 360, 780],
 ] as const;
+
+const densityViewports = viewports.slice(0, 3);
 
 const themes = ['dark', 'light'] as const;
 const shotRoot = process.env.CTA_BLUEPRINT_SHOT_DIR;
@@ -22,6 +26,87 @@ const captureShots = process.env.CTA_BLUEPRINT_SHOTS === '1' && Boolean(shotRoot
 async function waitForStablePaint(page: Page): Promise<void> {
 	await page.waitForLoadState('load');
 	await page.evaluate(() => document.fonts.ready);
+}
+
+async function measureBlueprintVerticalDensity(
+	page: Page,
+): Promise<{ upper: number; lower: number; ratio: number }> {
+	return page.getByTestId('cta-blueprint-background').evaluate((background) => {
+		const root = background.getBoundingClientRect();
+		const splitY = root.top + root.height / 2;
+		let upper = 0;
+		let lower = 0;
+
+		const effectiveOpacity = (target: Element) => {
+			let opacity = 1;
+			let current: Element | null = target;
+			while (current) {
+				opacity *= Number.parseFloat(getComputedStyle(current).opacity || '1');
+				if (current === background) break;
+				current = current.parentElement;
+			}
+			return opacity;
+		};
+
+		const toScreen = (matrix: DOMMatrix, point: DOMPoint) => ({
+			x: matrix.a * point.x + matrix.c * point.y + matrix.e,
+			y: matrix.b * point.x + matrix.d * point.y + matrix.f,
+		});
+
+		for (const geometry of background.querySelectorAll<SVGGeometryElement>(
+			'path, line, rect, circle, ellipse, polyline, polygon',
+		)) {
+			const styles = getComputedStyle(geometry);
+			if (
+				styles.display === 'none' ||
+				styles.visibility === 'hidden' ||
+				styles.stroke === 'none'
+			) {
+				continue;
+			}
+
+			const matrix = geometry.getScreenCTM();
+			const length = geometry.getTotalLength();
+			const strokeWidth = Number.parseFloat(styles.strokeWidth);
+			if (!matrix || !Number.isFinite(length) || length <= 0 || !Number.isFinite(strokeWidth)) {
+				continue;
+			}
+
+			const screenScale =
+				(Math.hypot(matrix.a, matrix.b) + Math.hypot(matrix.c, matrix.d)) / 2;
+			const weight = strokeWidth * screenScale * effectiveOpacity(geometry);
+			const segmentCount = Math.min(160, Math.max(1, Math.ceil(length / 8)));
+			let previous = toScreen(matrix, geometry.getPointAtLength(0));
+
+			for (let index = 1; index <= segmentCount; index += 1) {
+				const current = toScreen(
+					matrix,
+					geometry.getPointAtLength((length * index) / segmentCount),
+				);
+				const contribution = Math.hypot(current.x - previous.x, current.y - previous.y) * weight;
+				const midpoint = {
+					x: (current.x + previous.x) / 2,
+					y: (current.y + previous.y) / 2,
+				};
+				if (
+					midpoint.x >= root.left &&
+					midpoint.x <= root.right &&
+					midpoint.y >= root.top &&
+					midpoint.y <= root.bottom
+				) {
+					if (midpoint.y < splitY) upper += contribution;
+					else lower += contribution;
+				}
+				previous = current;
+			}
+		}
+
+		return {
+			upper: Number(upper.toFixed(1)),
+			lower: Number(lower.toFixed(1)),
+			ratio: Number((upper / lower).toFixed(3)),
+		};
+	});
 }
 
 async function assertBandGeometry(page: Page, prefix: string): Promise<void> {
@@ -267,6 +352,30 @@ for (const [viewportName, width, height] of viewports) {
 				expect(Math.abs(box.width - routeBoxes[0].width)).toBeLessThanOrEqual(1);
 				expect(Math.abs(box.height - routeBoxes[0].height)).toBeLessThanOrEqual(1);
 			}
+		});
+	}
+}
+
+for (const [viewportName, width, height] of densityViewports) {
+	for (const theme of themes) {
+		test(`${viewportName} ${theme}: blueprint stroke density is vertically balanced`, async ({
+			page,
+		}) => {
+			await page.setViewportSize({ width, height });
+			await page.addInitScript((value) => localStorage.setItem('theme', value), theme);
+			await page.goto('/');
+			await waitForStablePaint(page);
+
+			const density = await measureBlueprintVerticalDensity(page);
+			console.info(`[cta-density] ${viewportName} ${theme} ${JSON.stringify(density)}`);
+			expect(
+				density.ratio,
+				`${viewportName} ${theme} blueprint density ${JSON.stringify(density)} must not stack toward either edge`,
+			).toBeGreaterThanOrEqual(0.82);
+			expect(
+				density.ratio,
+				`${viewportName} ${theme} blueprint density ${JSON.stringify(density)} must not overcorrect toward the top`,
+			).toBeLessThanOrEqual(1.2);
 		});
 	}
 }
