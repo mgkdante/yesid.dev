@@ -1204,8 +1204,8 @@ describe("yesid.dev real repository contract", () => {
       if (surface.inlineSvgLines.length > 0) svgFiles += 1;
     }
     expect({ svgFiles, inlineSvgRoots, imageTags }).toEqual({
-      svgFiles: 45,
-      inlineSvgRoots: 59,
+      svgFiles: 49,
+      inlineSvgRoots: 63,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });
@@ -1494,7 +1494,7 @@ describe("yesid.dev real repository contract", () => {
         repoPath.startsWith("apps/web/src/lib/components/svg/") &&
         repoPath.endsWith(".svelte"),
     );
-    expect(blueprintPaths).toHaveLength(23);
+    expect(blueprintPaths).toHaveLength(27);
     for (const repoPath of blueprintPaths) {
       const blueprintAssets = first.assets.filter(
         (asset) => asset.repoPath === repoPath,
