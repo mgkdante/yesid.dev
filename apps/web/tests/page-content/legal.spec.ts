@@ -3,18 +3,35 @@ import { test, expect } from '@playwright/test';
 // OPS1 legal framework (launch Phase 1): 5 CMS-backed pages under /legal/,
 // EN + FR, linked from the footer, rendered through BlockRenderer.
 
-const LEGAL_SLUGS = ['privacy', 'terms', 'cookies', 'accessibility', 'notice'];
+const LEGAL_SLUGS = ['privacy', 'terms', 'cookies', 'accessibility', 'notice'] as const;
 const LOCALE_PREFIXES = ['', '/fr', '/es'];
-const REVISION_LABELS = [
-  'Last updated: 2026-07-12',
-  'Dernière mise à jour : 2026-07-12',
-  'Última actualización: 2026-07-12',
-];
-const NOTICE_REVISION_LABELS = [
-  'Last updated: 2026-07-13',
-  'Dernière mise à jour : 2026-07-13',
-  'Última actualización: 2026-07-13',
-];
+const REVISION_LABELS = {
+  privacy: [
+    'Last updated: 2026-07-15',
+    'Dernière mise à jour : 2026-07-15',
+    'Última actualización: 2026-07-15',
+  ],
+  terms: [
+    'Last updated: 2026-07-12',
+    'Dernière mise à jour : 2026-07-12',
+    'Última actualización: 2026-07-12',
+  ],
+  cookies: [
+    'Last updated: 2026-07-15',
+    'Dernière mise à jour : 2026-07-15',
+    'Última actualización: 2026-07-15',
+  ],
+  accessibility: [
+    'Last updated: 2026-07-12',
+    'Dernière mise à jour : 2026-07-12',
+    'Última actualización: 2026-07-12',
+  ],
+  notice: [
+    'Last updated: 2026-07-13',
+    'Dernière mise à jour : 2026-07-13',
+    'Última actualización: 2026-07-13',
+  ],
+} as const;
 const NOTICE_SERVICE_AREAS = [
   'Service area: Montréal, Québec, Canada.',
   'Zone de service : Montréal, Québec, Canada.',
@@ -30,7 +47,7 @@ const ANALYTICS_LEGAL_EXPECTATIONS = [
     page: 'Privacy',
     clause:
       "and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project's live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events.",
-    revision: 'Last updated: 2026-07-12',
+    revision: 'Last updated: 2026-07-15',
   },
   {
     route: '/fr/legal/privacy',
@@ -38,7 +55,7 @@ const ANALYTICS_LEGAL_EXPECTATIONS = [
     page: 'Privacy',
     clause:
       'ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée.',
-    revision: 'Dernière mise à jour : 2026-07-12',
+    revision: 'Dernière mise à jour : 2026-07-15',
   },
   {
     route: '/es/legal/privacy',
@@ -46,7 +63,7 @@ const ANALYTICS_LEGAL_EXPECTATIONS = [
     page: 'Privacy',
     clause:
       'y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada.',
-    revision: 'Última actualización: 2026-07-12',
+    revision: 'Última actualización: 2026-07-15',
   },
   {
     route: '/legal/cookies',
@@ -54,7 +71,7 @@ const ANALYTICS_LEGAL_EXPECTATIONS = [
     page: 'Cookies',
     clause:
       "and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project's live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events.",
-    revision: 'Last updated: 2026-07-12',
+    revision: 'Last updated: 2026-07-15',
   },
   {
     route: '/fr/legal/cookies',
@@ -62,7 +79,7 @@ const ANALYTICS_LEGAL_EXPECTATIONS = [
     page: 'Cookies',
     clause:
       'ainsi que quatre événements de conversion : l’envoi réussi du formulaire de contact, le clic pour réserver un appel, le clic sur un moyen de contact direct et le clic pour consulter le site en ligne ou le dépôt public de code source d’un projet. Je ne joins à ces événements aucun champ du formulaire de contact, aucune URL de destination, aucune étiquette de lien ni aucune propriété personnalisée.',
-    revision: 'Dernière mise à jour : 2026-07-12',
+    revision: 'Dernière mise à jour : 2026-07-15',
   },
   {
     route: '/es/legal/cookies',
@@ -70,7 +87,7 @@ const ANALYTICS_LEGAL_EXPECTATIONS = [
     page: 'Cookies',
     clause:
       'y cuatro eventos de conversión: el envío exitoso del formulario de contacto, el clic para reservar una llamada, el clic en un canal de contacto directo y el clic para consultar el sitio publicado o el repositorio público de código fuente de un proyecto. No adjunto a esos eventos ningún campo del formulario de contacto, URL de destino, etiqueta de enlace ni propiedad personalizada.',
-    revision: 'Última actualización: 2026-07-12',
+    revision: 'Última actualización: 2026-07-15',
   },
 ] as const;
 
@@ -109,12 +126,9 @@ test.describe('/legal pages content', () => {
     for (const [localeIndex, prefix] of LOCALE_PREFIXES.entries()) {
       for (const slug of LEGAL_SLUGS) {
         await page.goto(`${prefix}/legal/${slug}`);
-        const text = await page.locator('[data-testid="legal-body"]').innerText();
-        const revision =
-          slug === 'notice'
-            ? NOTICE_REVISION_LABELS[localeIndex]!
-            : REVISION_LABELS[localeIndex]!;
-        expect(text.includes(revision)).toBe(true);
+        await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+          REVISION_LABELS[slug][localeIndex]!,
+        );
       }
     }
   });
@@ -151,7 +165,7 @@ test.describe('/legal pages content', () => {
     expect(response?.status()).toBe(404);
   });
 
-  test('Privacy and Cookies name Plausible and disclose opt-in in EN, FR, and ES', async ({ page }) => {
+  test('Privacy and Cookies name Plausible and document the gated analytics modes', async ({ page }) => {
     for (const { route } of ANALYTICS_LEGAL_EXPECTATIONS) {
       await page.goto(route);
       const body = page.locator('[data-testid="legal-body"]');
@@ -160,11 +174,26 @@ test.describe('/legal pages content', () => {
     }
 
     await page.goto('/legal/cookies');
-    await expect(page.locator('[data-testid="legal-body"]')).toContainText('off until you allow it');
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+      'Explicit consent is the documented default',
+    );
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+      'no-banner mode is operator-controlled and requires legal-advisor review',
+    );
     await page.goto('/fr/legal/cookies');
-    await expect(page.locator('[data-testid="legal-body"]')).toContainText('désactivé tant que vous ne l’autorisez pas');
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+      'consentement explicite est le mode documenté par défaut',
+    );
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+      'mode sans bannière est contrôlé',
+    );
     await page.goto('/es/legal/cookies');
-    await expect(page.locator('[data-testid="legal-body"]')).toContainText('desactivado hasta que usted lo autorice');
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+      'consentimiento explícito es el modo documentado predeterminado',
+    );
+    await expect(page.locator('[data-testid="legal-body"]')).toContainText(
+      'modo sin banner está bajo control del operador',
+    );
   });
 
   for (const expectation of ANALYTICS_LEGAL_EXPECTATIONS) {

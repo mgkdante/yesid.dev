@@ -1,4 +1,7 @@
-type PlausibleModule = typeof import('@plausible-analytics/tracker');
+import type {
+	PlausibleEventPayload,
+	PlausibleTransport,
+} from '$lib/analytics/transport';
 
 export const PLAUSIBLE_DOMAIN = 'yesid.dev';
 export const ANALYTICS_EVENTS = [
@@ -8,17 +11,6 @@ export const ANALYTICS_EVENTS = [
 	'project_proof_click',
 ] as const;
 export type AnalyticsEventName = (typeof ANALYTICS_EVENTS)[number];
-
-export const PLAUSIBLE_CONFIG = {
-	domain: PLAUSIBLE_DOMAIN,
-	autoCapturePageviews: false,
-	outboundLinks: false,
-	fileDownloads: false,
-	formSubmissions: false,
-	captureOnLocalhost: false,
-	logging: false,
-	bindToWindow: true,
-} satisfies Parameters<PlausibleModule['init']>[0];
 
 const ACQUISITION_KEYS = [
 	'utm_source',
@@ -30,13 +22,20 @@ const ACQUISITION_KEYS = [
 	'source',
 ] as const;
 
+const SAFE_ACQUISITION_VALUE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
+
+function isSafeAcquisitionValue(value: string): boolean {
+	return SAFE_ACQUISITION_VALUE.test(value) && value.replace(/\D/g, '').length < 7;
+}
+
 export interface AnalyticsClientDependencies {
-	loadTracker(): Promise<PlausibleModule>;
+	loadTransport(): Promise<PlausibleTransport>;
 	canTrack(): boolean;
+	getReferrer(): string;
 }
 
 export interface AnalyticsClient {
-	trackPageview(url: URL): Promise<void>;
+	trackPageview(url: URL): Promise<boolean>;
 	trackEvent(name: AnalyticsEventName, url: URL): Promise<void>;
 }
 
@@ -45,31 +44,57 @@ export function sanitizeAnalyticsUrl(url: URL): string {
 
 	for (const key of ACQUISITION_KEYS) {
 		for (const value of url.searchParams.getAll(key)) {
-			if (value !== '') sanitized.searchParams.append(key, value);
+			if (isSafeAcquisitionValue(value)) sanitized.searchParams.append(key, value);
 		}
 	}
 
 	return sanitized.toString();
 }
 
+export function sanitizeAnalyticsReferrer(value: string): string | undefined {
+	if (value === '') return undefined;
+	try {
+		const referrer = new URL(value);
+		if (referrer.protocol !== 'http:' && referrer.protocol !== 'https:') {
+			return undefined;
+		}
+		return `${referrer.origin}/`;
+	} catch {
+		return undefined;
+	}
+}
+
 export function createPathnamePageviewTracker(
-	send: (url: URL) => void,
-): (url: URL) => boolean {
+	send: (url: URL) => boolean | Promise<boolean>,
+): (url: URL) => Promise<boolean> {
 	let lastPathname: string | undefined;
+	let queue: Promise<void> | undefined;
 
 	return (url) => {
-		if (url.pathname === lastPathname) return false;
+		const sendPageview = async () => {
+			if (url.pathname === lastPathname) return false;
 
-		lastPathname = url.pathname;
-		send(url);
-		return true;
+			const sent = await send(url);
+			if (sent) lastPathname = url.pathname;
+			return sent;
+		};
+		const request = queue ? queue.then(sendPageview) : sendPageview();
+		const settled = request.then(
+			() => undefined,
+			() => undefined,
+		);
+		queue = settled;
+		void settled.then(() => {
+			if (queue === settled) queue = undefined;
+		});
+		return request;
 	};
 }
 
 export function createAnalyticsClient(
 	dependencies: AnalyticsClientDependencies,
 ): AnalyticsClient {
-	let trackerPromise: Promise<PlausibleModule | null> | undefined;
+	let transportPromise: Promise<PlausibleTransport | null> | undefined;
 
 	function isEnabled(url: URL): boolean {
 		if (url.hostname !== PLAUSIBLE_DOMAIN) return false;
@@ -80,43 +105,55 @@ export function createAnalyticsClient(
 		}
 	}
 
-	function load(): Promise<PlausibleModule | null> {
-		trackerPromise ??= (async () => {
+	function load(): Promise<PlausibleTransport | null> {
+		transportPromise ??= (async () => {
 			try {
-				const tracker = await dependencies.loadTracker();
-				tracker.init(PLAUSIBLE_CONFIG);
-				return tracker;
+				return await dependencies.loadTransport();
 			} catch {
 				return null;
 			}
 		})();
 
-		return trackerPromise;
+		return transportPromise;
+	}
+
+	function referrer(): string | undefined {
+		try {
+			return sanitizeAnalyticsReferrer(dependencies.getReferrer());
+		} catch {
+			return undefined;
+		}
 	}
 
 	async function send(
 		name: 'pageview' | AnalyticsEventName,
 		url: URL,
-	): Promise<void> {
-		if (!isEnabled(url)) return;
+	): Promise<boolean> {
+		if (!isEnabled(url)) return false;
 
-		const tracker = await load();
-		if (!tracker || !isEnabled(url)) return;
+		const transport = await load();
+		if (!transport || !isEnabled(url)) return false;
 
 		try {
-			tracker.track(name, { url: sanitizeAnalyticsUrl(url) });
-		} catch {}
+			const payload: PlausibleEventPayload = {
+				name,
+				url: sanitizeAnalyticsUrl(url),
+				domain: PLAUSIBLE_DOMAIN,
+			};
+			const safeReferrer = referrer();
+			if (safeReferrer) payload.referrer = safeReferrer;
+			return await transport.sendPlausibleEvent(payload);
+		} catch {
+			return false;
+		}
 	}
 
-	let pendingPageview = Promise.resolve();
-	const trackPathname = createPathnamePageviewTracker((url) => {
-		pendingPageview = send('pageview', url);
-	});
+	const trackPathname = createPathnamePageviewTracker((url) => send('pageview', url));
 
 	return {
-		async trackPageview(url): Promise<void> {
-			if (!isEnabled(url) || !trackPathname(url)) return;
-			await pendingPageview;
+		async trackPageview(url): Promise<boolean> {
+			if (!isEnabled(url)) return false;
+			return trackPathname(url);
 		},
 		async trackEvent(name, url): Promise<void> {
 			await send(name, url);

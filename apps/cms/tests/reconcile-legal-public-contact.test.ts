@@ -77,9 +77,9 @@ test('plans one body-only PATCH for every previously published legal translation
 		'notice',
 	]);
 	expect(subject.REVISION_DATES).toEqual({
-		privacy: '2026-07-12',
+		privacy: '2026-07-15',
 		terms: '2026-07-12',
-		cookies: '2026-07-12',
+		cookies: '2026-07-15',
 		accessibility: '2026-07-12',
 		notice: '2026-07-13',
 	});

@@ -1,0 +1,48 @@
+{
+  "collection": "site_labels",
+  "field": "analytics_consent_show_banner",
+  "type": "boolean",
+  "meta": {
+    "collection": "site_labels",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "analytics_consent_show_banner",
+    "group": null,
+    "hidden": false,
+    "interface": "boolean",
+    "note": "When analytics is enabled, off starts cookieless Plausible analytics for visitors without a saved decline. Saved declines stay untracked and footer preferences remain available. Use only after confirming the site's legal basis and published privacy notice support this mode.",
+    "options": {
+      "label": "Show analytics consent banner"
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 4,
+    "special": [
+      "cast-boolean"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "analytics_consent_show_banner",
+    "table": "site_labels",
+    "data_type": "boolean",
+    "default_value": true,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
