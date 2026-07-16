@@ -1,0 +1,83 @@
+{
+  "collection": "asset_releases",
+  "field": "status",
+  "type": "string",
+  "meta": {
+    "collection": "asset_releases",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "status",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown",
+    "note": null,
+    "options": {
+      "choices": [
+        {
+          "text": "Draft",
+          "value": "draft"
+        },
+        {
+          "text": "Validating",
+          "value": "validating"
+        },
+        {
+          "text": "Ready",
+          "value": "ready"
+        },
+        {
+          "text": "Promoting",
+          "value": "promoting"
+        },
+        {
+          "text": "Deployed Pending Verification",
+          "value": "deployed-pending-verification"
+        },
+        {
+          "text": "Live",
+          "value": "live"
+        },
+        {
+          "text": "Failed",
+          "value": "failed"
+        },
+        {
+          "text": "Superseded",
+          "value": "superseded"
+        },
+        {
+          "text": "Rolled Back",
+          "value": "rolled-back"
+        }
+      ]
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 8,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "status",
+    "table": "asset_releases",
+    "data_type": "character varying",
+    "default_value": "draft",
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": true,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
