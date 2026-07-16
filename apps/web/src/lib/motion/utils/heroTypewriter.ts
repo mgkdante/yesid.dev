@@ -15,7 +15,7 @@
  * entire string in one frame.
  */
 
-import { subscribe, unsubscribe } from './ticker.js';
+import { subscribe, unsubscribe } from '@yesid/motion/utils/ticker';
 
 const CHAR_INTERVAL_MS = 80; // matches the original setInterval(..., 80) pacing
 let typewriterIdCounter = 0;
