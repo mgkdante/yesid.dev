@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { getAnalyticsPolicy } from '$lib/analytics/policy';
 	import { Button } from '$lib/components/ui/button';
 	import { siteLabels } from '$lib/content';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
@@ -23,11 +24,14 @@
 	const declineLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.declineLabel, locale));
 	const privacyLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.privacyLabel, locale));
 	const privacyHref = $derived(localizeHref('/legal/privacy', locale));
+	const analyticsPolicy = $derived(
+		getAnalyticsPolicy(siteLabels.ui.analyticsConsent, $analyticsConsentStore),
+	);
 
 	onMount(() => analyticsConsentStore.init());
 </script>
 
-{#if canShow && $analyticsConsentStore.ready && $analyticsConsentStore.available && $analyticsConsentStore.choice === 'unknown'}
+{#if canShow && analyticsPolicy.showPrompt}
 	<section
 		data-testid="analytics-consent"
 		aria-labelledby="analytics-consent-title"
