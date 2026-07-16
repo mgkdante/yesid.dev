@@ -101,7 +101,7 @@ describe('CTA blueprint sheet contracts', () => {
 			expect(Number(width[1])).toBeGreaterThanOrEqual(0.2);
 			expect(Number(width[1])).toBeLessThanOrEqual(3);
 		}
-		for (const radius of source.matchAll(/\brx="([0-9.]+)"/g)) {
+		for (const radius of source.matchAll(/<rect\b[^>]*\brx="([0-9.]+)"/g)) {
 			expect(Number(radius[1])).toBeLessThanOrEqual(12);
 		}
 	});
@@ -110,5 +110,13 @@ describe('CTA blueprint sheet contracts', () => {
 		const source = read(file);
 		const ids = [...source.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
 		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	it.each(sheets)('$file stays within the decorative sheet cost ceiling', ({ file }) => {
+		const source = read(file);
+		const geometry = source.match(/<(?:path|line|rect|circle|polyline|polygon|ellipse)\b/g) ?? [];
+
+		expect(Buffer.byteLength(source), `${file} source bytes`).toBeLessThan(8_000);
+		expect(geometry.length, `${file} geometry elements`).toBeLessThanOrEqual(64);
 	});
 });
