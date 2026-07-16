@@ -1,0 +1,30 @@
+{
+  "collection": "asset_versions",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "asset_versions",
+    "color": null,
+    "display_template": "{{asset_record.semantic_key}} · v{{version_number}}",
+    "group": "brand_assets",
+    "hidden": false,
+    "icon": "history",
+    "item_duplication_fields": null,
+    "note": "Immutable asset version evidence, source integrity, approval, and replacement history.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": 5,
+    "sort_field": null,
+    "status": "active",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "asset_versions"
+  }
+}
