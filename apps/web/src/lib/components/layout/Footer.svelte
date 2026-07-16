@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { getAnalyticsPolicy } from '$lib/analytics/policy';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
@@ -30,6 +31,9 @@
 	const legalLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.legalLabel, locale));
 	const connectLabel = $derived(resolveLocale(siteLabels.footerChrome.footer.connectLabel, locale));
 	const settingsLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.settingsLabel, locale));
+	const analyticsPolicy = $derived(
+		getAnalyticsPolicy(siteLabels.ui.analyticsConsent, $analyticsConsentStore),
+	);
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
@@ -112,7 +116,7 @@
 					{link.label}
 				</a>
 			{/each}
-			{#if $analyticsConsentStore.ready && $analyticsConsentStore.available}
+			{#if analyticsPolicy.showPreferences}
 				<button
 					type="button"
 					data-testid="analytics-preferences"

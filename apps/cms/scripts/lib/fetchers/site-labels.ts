@@ -10,12 +10,23 @@ import type { FetcherContext } from './types';
 
 interface SiteLabelsRow {
 	id: string;
+	analytics_enabled?: unknown;
+	analytics_consent_show_banner?: unknown;
 	translations?: ReadonlyArray<Record<string, unknown> & { languages_code: string }>;
 }
 
 export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 	const tr = raw.translations ?? [];
 	const ls = (field: string) => toLocalizedString(tr, field);
+	const enabledIsBoolean = typeof raw.analytics_enabled === 'boolean';
+	const showBannerIsBoolean = typeof raw.analytics_consent_show_banner === 'boolean';
+	const analyticsControls = {
+		enabled: enabledIsBoolean ? raw.analytics_enabled : true,
+		showBanner:
+			enabledIsBoolean && showBannerIsBoolean
+				? raw.analytics_consent_show_banner
+				: true,
+	};
 	return {
 		a11y: {
 			navCapabilities: ls('a11y_nav_capabilities'),
@@ -62,6 +73,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				es: ls('ui_language_name_es'),
 			},
 			analyticsConsent: {
+				...analyticsControls,
 				title: ls('ui_analytics_consent_title'),
 				description: ls('ui_analytics_consent_description'),
 				acceptLabel: ls('ui_analytics_consent_accept_label'),
@@ -267,7 +279,12 @@ export async function fetchSiteLabels({ client }: FetcherContext): Promise<SiteL
 		client,
 		'site_labels',
 		'fetchSiteLabels/site_labels',
-		['id', { translations: ['*'] }],
+		[
+			'id',
+			'analytics_enabled',
+			'analytics_consent_show_banner',
+			{ translations: ['*'] },
+		],
 	);
 	return SiteLabelsSchema.parse(toSiteLabels(row));
 }
