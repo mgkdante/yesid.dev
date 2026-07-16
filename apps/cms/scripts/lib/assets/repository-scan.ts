@@ -1167,22 +1167,23 @@ export async function scanRepository(
     if (reference.mediaTagName === null || reference.mediaAttribute === null)
       return;
     const sourceLine = reference.mediaTagLine ?? reference.sourceLine;
-    const normalizedRef = normalizeText(reference.rawRef);
+    const normalizedRef = normalizeText(reference.rawRef.trim());
     const evidenceSlot =
       reference.mediaTagName !== null && reference.mediaAttribute !== null
         ? `${reference.mediaTagName}-${reference.mediaAttribute}`
         : reference.context === "style"
           ? "background"
           : "asset-reference";
+    const anchoredSourceFile = `${sourceFile}#${evidenceSlot}:${normalizedRef}`;
     const identity = createHash("sha256")
-      .update(`${sourceFile}\0${sourceLine}\0${evidenceSlot}\0${normalizedRef}`)
+      .update(`${anchoredSourceFile}\0${normalizedRef}`)
       .digest("hex")
       .slice(0, 16);
-    const occurrenceKey = `unresolved\0${sourceFile}\0${sourceLine}\0${evidenceSlot}\0${identity}`;
+    const occurrenceKey = `unresolved\0${anchoredSourceFile}\0${identity}`;
     const occurrence = (usageOccurrences.get(occurrenceKey) ?? 0) + 1;
     usageOccurrences.set(occurrenceKey, occurrence);
     usages.push({
-      id: `unresolved:${sourceFile}:${sourceLine}:${evidenceSlot}:${identity}:${occurrence}`,
+      id: `unresolved:${anchoredSourceFile}:${identity}:${occurrence}`,
       assetId: null,
       semanticKey: null,
       unresolvedRef: normalizedRef,
@@ -1190,7 +1191,7 @@ export async function scanRepository(
       consumerType: usageConsumerType(sourceFile),
       consumerKey: sourceFile,
       sourceKind: sourceKind(sourceFile),
-      sourceFile,
+      sourceFile: anchoredSourceFile,
       sourceLine,
       cmsField: null,
       route: null,
@@ -1767,7 +1768,17 @@ export async function scanRepository(
   }
 
   for (const item of declarations) {
-    const sourceFile = normalizeRepoPath(item.source.split("#")[0]!);
+    const fragmentIndex = item.source.indexOf("#");
+    const sourceFile = normalizeRepoPath(
+      fragmentIndex < 0 ? item.source : item.source.slice(0, fragmentIndex),
+    );
+    const sourceFragment =
+      fragmentIndex < 0
+        ? null
+        : normalizeText(item.source.slice(fragmentIndex + 1).trim());
+    const declaredSourceFile = sourceFragment
+      ? `${sourceFile}#${sourceFragment}`
+      : sourceFile;
     if (!trackedSet.has(sourceFile)) {
       addFinding("missing-target", sourceFile, null, item.source);
     } else {
@@ -1796,7 +1807,7 @@ export async function scanRepository(
       consumerType: item.consumerType,
       consumerKey: item.consumerKey,
       sourceKind: "declaration",
-      sourceFile,
+      sourceFile: declaredSourceFile,
       sourceLine: null,
       cmsField: null,
       route: item.route,
