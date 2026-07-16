@@ -77,8 +77,8 @@
 	</g>
 
 	<g data-motif="dimensions">
-		<path d="M66 458V444M552 458V444M66 452H552M66 448L74 452L66 456M552 448L544 452L552 456" stroke-width="0.75" />
-		<text x="309" y="468" fill="currentColor" stroke="none" font-family="var(--font-mono)" font-size="8" text-anchor="middle">610</text>
+		<path d="M66 447V433M552 447V433M66 440H552M66 436L74 440L66 444M552 436L544 440L552 444" stroke-width="0.75" />
+		<text x="309" y="458" fill="currentColor" stroke="none" font-family="var(--font-mono)" font-size="8" text-anchor="middle">610</text>
 		<path d="M616 430V416M752 430V416M616 424H752M616 420L624 424L616 428M752 420L744 424L752 428" stroke-width="0.5" />
 		<text x="684" y="440" fill="currentColor" stroke="none" font-family="var(--font-mono)" font-size="7" text-anchor="middle">71</text>
 		<path d="M778 112H764M778 404H764M772 112V404M768 112L772 120L776 112M768 404L772 396L776 404" stroke-width="0.75" />
