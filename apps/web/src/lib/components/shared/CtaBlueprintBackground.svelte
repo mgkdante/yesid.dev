@@ -111,7 +111,7 @@
 	}
 
 	:global(.cta-sheet--geology) {
-		top: 20%;
+		top: 14%;
 		left: 18%;
 		width: 58%;
 		height: 34%;
@@ -127,7 +127,7 @@
 	}
 
 	:global(.cta-sheet--signal) {
-		top: 27%;
+		top: 18%;
 		left: 0;
 		width: 7%;
 		height: 38%;
@@ -135,7 +135,7 @@
 	}
 
 	:global(.cta-sheet--vent-shaft) {
-		top: 23%;
+		top: 14%;
 		right: 0;
 		width: 6.5%;
 		height: 50%;
@@ -143,7 +143,7 @@
 	}
 
 	:global(.cta-sheet--transit) {
-		bottom: -3%;
+		bottom: clamp(9%, calc(9% + (100vw - 1512px) * 0.12), 20%);
 		left: -3%;
 		width: 34%;
 		height: 36%;
@@ -151,7 +151,7 @@
 	}
 
 	:global(.cta-sheet--tbm) {
-		bottom: 22%;
+		bottom: clamp(40%, calc(40% + (100vw - 1512px) * 0.11), 50%);
 		left: 5%;
 		width: 55%;
 		height: 30%;
@@ -159,7 +159,7 @@
 	}
 
 	:global(.cta-sheet--pipeline) {
-		bottom: -2%;
+		bottom: clamp(18%, calc(18% + (100vw - 1512px) * 0.13), 30%);
 		left: 28%;
 		width: 39%;
 		height: 39%;
@@ -167,7 +167,7 @@
 	}
 
 	:global(.cta-sheet--station) {
-		bottom: -4%;
+		bottom: clamp(10%, calc(10% + (100vw - 1512px) * 0.13), 22%);
 		left: 62%;
 		width: 15%;
 		height: 28%;
@@ -176,7 +176,7 @@
 
 	:global(.cta-sheet--code) {
 		right: -3%;
-		bottom: -10%;
+		bottom: clamp(11%, calc(11% + (100vw - 1512px) * 0.14), 24%);
 		width: 26%;
 		height: 52%;
 		opacity: 0.16;
