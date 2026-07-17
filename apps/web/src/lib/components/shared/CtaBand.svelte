@@ -9,7 +9,7 @@
 	import type { CtaContent, SiteMeta } from '$lib/types';
 	import { ctaContent, siteMeta as siteMetaContent } from '$lib/content';
 	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';

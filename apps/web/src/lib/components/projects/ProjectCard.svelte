@@ -17,7 +17,7 @@
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
-	import { Badge } from '$lib/components/ui/badge';
+	import { Badge } from '@yesid/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import DataFlowDiagram from '$lib/components/projects/DataFlowDiagram.svelte';
 	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';

@@ -1093,8 +1093,14 @@ export async function scanRepository(
     });
   }
 
-  for (const repoPath of trackedFiles.filter((path) =>
-    path.endsWith(".svelte"),
+  for (const repoPath of trackedFiles.filter(
+    (path) =>
+      path.endsWith(".svelte") &&
+      // Embedded workspace packages (e.g. packages/ui) are library code from
+      // the design system, not site asset surface — same boundary the
+      // repository-contract test draws. Their inline SVGs are governed
+      // upstream in yesid.dev-design.
+      !path.startsWith("packages/"),
   )) {
     const source = await readSource(repoPath);
     const surface = scanSvelteAssetSurface(repoPath, source);

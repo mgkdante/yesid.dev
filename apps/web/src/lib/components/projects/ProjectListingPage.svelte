@@ -28,7 +28,7 @@
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { MetroStation } from '$lib/components/brand';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { siteLabels } from '$lib/content';
 	import { persisted } from '$lib/state/persisted.svelte';

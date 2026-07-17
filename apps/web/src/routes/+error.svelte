@@ -18,8 +18,8 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { pathLocale, localizeHref } from '$lib/utils/locale-routing';
 	import { prefersReducedMotion } from '$lib/motion/stores';
-	import { Separator } from '$lib/components/ui/separator';
-	import { SectionLabel } from '$lib/components/brand';
+	import { Separator } from '@yesid/ui/separator';
+	import { SectionLabel } from '@yesid/ui/brand';
 
 	// slice-28.6: error pages can render under /fr/* — derive the locale from
 	// the URL (error renders carry no params). Defensive optional chain: the

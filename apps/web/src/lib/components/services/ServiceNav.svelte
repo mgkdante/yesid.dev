@@ -12,7 +12,7 @@
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
 	import { boop } from '$lib/motion/actions/boop.js';
-	import { SectionLabel } from '$lib/components/brand';
+	import { SectionLabel } from '@yesid/ui/brand';
 
 	let {
 		prev,

@@ -14,7 +14,7 @@
 	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { persisted } from '$lib/state/persisted.svelte';
-	import { ChevronToggle } from '$lib/components/brand';
+	import { ChevronToggle } from '@yesid/ui/brand';
 	import { siteLabels } from '$lib/content';
 
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.

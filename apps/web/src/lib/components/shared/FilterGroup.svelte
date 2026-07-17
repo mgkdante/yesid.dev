@@ -13,12 +13,12 @@
 -->
 <script lang="ts">
 	import { untrack } from 'svelte';
-	import { ChevronToggle } from '$lib/components/brand';
+	import { ChevronToggle } from '@yesid/ui/brand';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
+	import { ToggleGroup, ToggleGroupItem } from '@yesid/ui/toggle-group';
 	import { persisted } from '$lib/state/persisted.svelte';
 
 	const defaultAllLabel = { en: 'All', fr: 'Tous', es: 'Todos' };
