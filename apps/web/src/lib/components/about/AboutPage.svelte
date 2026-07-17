@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import type { AboutContent } from '$lib/types';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';

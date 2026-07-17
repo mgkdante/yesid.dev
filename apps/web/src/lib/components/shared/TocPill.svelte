@@ -8,9 +8,8 @@
   so each page sources its own localized chrome.
 -->
 <script lang="ts">
-	import { ChevronToggle } from '$lib/components/brand';
+	import { ChevronToggle, TocBadge } from '@yesid/ui/brand';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import TocBadge from './TocBadge.svelte';
 	import { flattenToc, tocElement, type TocEntry } from './toc';
 
 	let {

@@ -23,8 +23,8 @@
 	import TocPill from '$lib/components/shared/TocPill.svelte';
 	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
 	import { onMount } from 'svelte';
-	import { Separator } from '$lib/components/ui/separator';
-	import { SectionLabel } from '$lib/components/brand';
+	import { Separator } from '@yesid/ui/separator';
+	import { SectionLabel } from '@yesid/ui/brand';
 	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 

@@ -26,7 +26,7 @@
 	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
