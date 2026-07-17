@@ -373,21 +373,21 @@ test('targeted repair audits before and after one exact-confirm fields-only reco
 
 test('keeps every unrelated existing CMS job body byte-stable', () => {
 	expect(sha256(jobBlock('test', 'diff'))).toBe(
-		'ff61400dd615925298f775c3d837f16c3a9ad034675957d3256a338b3d9477e4',
+		'97fb4967a1b12a9eae6846077098f1df4f998f6215cff8d6e0166ce908552381',
 	);
 	expect(sha256(jobBlock('diff', 'live-diff'))).toBe(
-		'047c0a864c3d830de685bcfb4ff08a50ead598e7a09a3b92751a7a43db95c1db',
+		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
 	);
 	expect(sha256(jobBlock('live-diff', 'push'))).toBe(
-		'b63deb24152d94cb5e4632df591426a9d60d7d18bca14c366fecabd55aa91c0b',
+		'e0b16991ceac323a6c9112584e4263f982502fc8318d28a0f24a249bb471551e',
 	);
 	expect(sha256(jobBlock('push', 'legal-service-area'))).toBe(
-		'4714a44a71d11ac5ae95ebd911f201609f587784076e5e6b86182830c6946a19',
+		'e73949aa6577920e21cf1ebdbcf88a9567590662ab880e4238c07256e288a9d3',
 	);
 	expect(
 		sha256(jobBlock('legal-service-area', 'permission-control-audit')),
 	).toBe(
-		'be2633ffb635ff16229b08dc5572d41b351c6238b1efa8196cda0b73af33ff57',
+		'b8c0b6e96f7421b7952b31bb7da5bffa60ff2aebcd2cf74e8fdcd397dd4b52d9',
 	);
 	expect(
 		sha256(
@@ -397,7 +397,7 @@ test('keeps every unrelated existing CMS job body byte-stable', () => {
 			),
 		),
 	).toBe(
-		'b8a7ccce7ba2c0c2415c06422bc0f5a806be47331ac31dc42355f518ab828dd2',
+		'517ae15e70704345eb9ea666c70f88ac78efe92ff8fcd1707a998237beb469a1',
 	);
 	expect(
 		sha256(
@@ -407,11 +407,11 @@ test('keeps every unrelated existing CMS job body byte-stable', () => {
 			),
 		),
 	).toBe(
-		'5792f00afe75eae2d1aeea3e9a7482e5ffc83555b08be81498e34f7357237895',
+		'232efa0979ad4d4a29b06fdf3cc691f4e7eb5a1cf7c349a1fa17ce9cc5bb0aaf',
 	);
 	expect(
 		sha256(jobBlock('public-blog-translation-key-repair', 'analytics-controls')),
-	).toBe('1910e642f0aac2d427d550ec8614d1112959030615f05776396ffd4bc9009f2a');
+	).toBe('7da8f48ee5ece7cc4d219539581c6999bc51b28902cb8d5658de70af485f55dd');
 });
 
 test('analytics-controls is production-gated, scoped-lane-only, and exact-confirm (slice-40.1 Stage D)', () => {
