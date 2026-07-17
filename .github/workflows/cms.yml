@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -100,7 +100,7 @@ jobs:
     timeout-minutes: 10
     needs: test
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -126,7 +126,7 @@ jobs:
     env:
       DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -154,7 +154,7 @@ jobs:
       DIRECTUS_URL: https://cms.yesid.dev
       DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -184,7 +184,7 @@ jobs:
     env:
       DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -216,7 +216,7 @@ jobs:
         run: bun apps/cms/scripts/verify-content-manifest.ts
 
       - name: Upload authenticated legal export
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: legal-service-area-live-export-${{ github.run_id }}
           path: |
@@ -241,7 +241,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -268,7 +268,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -298,7 +298,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -349,7 +349,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -402,7 +402,7 @@ jobs:
       DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
       DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
 
@@ -492,7 +492,7 @@ jobs:
         run: bun apps/cms/scripts/verify-content-manifest.ts
 
       - name: Upload authenticated live export + pre-apply snapshot
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: analytics-controls-live-export-${{ github.run_id }}
           path: |
