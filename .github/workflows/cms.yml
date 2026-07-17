@@ -70,6 +70,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
@@ -96,6 +97,7 @@ jobs:
       github.event_name == 'pull_request' &&
       github.base_ref == 'main'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: test
     steps:
       - uses: actions/checkout@v5
@@ -119,6 +121,7 @@ jobs:
         )
       )
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: test
     env:
       DIRECTUS_URL: https://cms.yesid.dev
@@ -142,6 +145,7 @@ jobs:
       github.event.inputs.action == 'push' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
@@ -172,6 +176,7 @@ jobs:
       github.event.inputs.action == 'legal-service-area' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
@@ -228,6 +233,7 @@ jobs:
       github.event.inputs.action == 'permission-control-audit' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
@@ -254,6 +260,7 @@ jobs:
       github.event.inputs.action == 'permission-policy-candidate-diagnostic' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
@@ -283,6 +290,7 @@ jobs:
       ) &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
@@ -333,6 +341,7 @@ jobs:
       github.event.inputs.action == 'public-blog-translation-key-repair' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
@@ -384,6 +393,7 @@ jobs:
       github.event.inputs.action == 'analytics-controls' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     environment:
       name: production
