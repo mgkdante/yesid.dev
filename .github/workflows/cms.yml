@@ -9,8 +9,10 @@ name: cms
 # Jobs:
 # - test (always): apps/cms unit tests plus the offline asset-audit regression
 #   gate (no network or CMS credentials).
-# - diff (PR): read-only preview of what sync:push WOULD apply. Against
-#   prod. Never writes.
+# - diff (main PR): required credential-free validation of the committed
+#   Directus snapshot contracts. Offline; never receives CMS credentials.
+# - live-diff (push to main or main-only diff dispatch): read-only preview of
+#   what sync:push WOULD apply against prod, from trusted main code only.
 # - push (workflow_dispatch with action=push): applies the JSON tree to
 #   cms.yesid.dev. Gated behind production environment for operator review.
 # - permission-control-audit (workflow_dispatch): GET-only semantic comparison
@@ -87,17 +89,39 @@ jobs:
       # (apps/cms/scripts/generate-types.ts) was deleted with it.
 
   diff:
-    # Preview what sync:push WOULD apply. Main-bound PR checks + explicit diff dispatch.
-    # Develop PRs run unit tests only; prod diff is too noisy while dev CMS work is active.
-    # Never writes — the `diff` subcommand is read-only.
+    # Keep the required main-PR `diff` status without exposing production.
+    # The full test job already runs this contract; repeating the narrow suite
+    # preserves the branch-rule check name while staying offline and secret-free.
     if: |
-      (github.event_name == 'pull_request' && github.base_ref == 'main') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'diff')
+      github.event_name == 'pull_request' &&
+      github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Validate committed Directus snapshot contracts (offline, no CMS)
+        working-directory: apps/cms
+        run: bun test tests/snapshot-contract.test.ts
+
+  live-diff:
+    # The live comparison needs the production API, so it runs only after main
+    # is trusted: immediately post-merge or by an explicit dispatch from main.
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (
+        github.event_name == 'push' ||
+        (
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.action == 'diff'
+        )
+      )
     runs-on: ubuntu-latest
     needs: test
     env:
       DIRECTUS_URL: https://cms.yesid.dev
-      DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
       - uses: actions/checkout@v5
 
@@ -105,6 +129,8 @@ jobs:
 
       - name: sync:diff — preview diff vs prod
         working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: bun run sync:diff
 
   push:
@@ -113,7 +139,8 @@ jobs:
     # permissions/flows changes can affect live content — review diff first.
     if: |
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'push'
+      github.event.inputs.action == 'push' &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
     environment:
@@ -142,7 +169,8 @@ jobs:
     # already-converged bodies, sends body-only PATCHes, and rereads every row.
     if: |
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'legal-service-area'
+      github.event.inputs.action == 'legal-service-area' &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
     environment:
@@ -353,7 +381,8 @@ jobs:
     # EFVP + NEQ are deferred to pre-deploy day as a hard pre-campaign gate.
     if: |
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'analytics-controls'
+      github.event.inputs.action == 'analytics-controls' &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
     environment:

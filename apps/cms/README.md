@@ -44,7 +44,7 @@ Prod apply is gated: the `cms.yml` workflow's push job runs on manual `workflow_
 
 Config lives in `apps/cms/directus-sync.config.cjs` (dumpPath, enabled features, env-var connection). The sync extension is installed via `apps/cms/Dockerfile`; the `directus-sync` CLI is a devDependency of this package.
 
-CI (`.github/workflows/cms.yml`): unit tests on PR, `sync:diff` preview on main-bound PRs, gated `sync:push` on dispatch. (The former `contract-test.yml` — ephemeral Directus + apps/web adapter integration tests — was retired at slice-26 close together with the dormant apps/web directus adapter it existed to test.)
+CI (`.github/workflows/cms.yml`): unit tests + credential-free snapshot-contract `diff` on PR; live `sync:diff` preview runs post-merge on `main` (or a `main`-ref dispatch) so production credentials never reach PR-controlled code; gated `sync:push` on dispatch. (The former `contract-test.yml` — ephemeral Directus + apps/web adapter integration tests — was retired at slice-26 close together with the dormant apps/web directus adapter it existed to test.)
 
 ## Shared secrets (cross-service)
 
