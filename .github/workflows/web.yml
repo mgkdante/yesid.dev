@@ -45,6 +45,7 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v5
@@ -106,6 +107,7 @@ jobs:
     # remote cache, so shards replay it instead of running 4 identical builds.
     needs: ci
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     # Shard across 3 runners. Each shard builds from the warm turbo remote cache
     # (the ci job's identical EXPORT_FALLBACKS_SKIP=1 build populates it), so the
     # per-shard build is a cache hit and only ~1/3 of the suite runs per runner.
@@ -170,6 +172,7 @@ jobs:
     if: ${{ !cancelled() && needs.e2e.result != 'skipped' }}
     needs: [e2e]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
