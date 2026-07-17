@@ -8,15 +8,23 @@ const workflow = readFileSync(
 	'utf8',
 );
 const jobsOffset = workflow.indexOf('\njobs:\n');
+const secretReference = /\$\{\{\s*secrets\s*(?:\.|\[)/;
+const topLevelEnvKey = /^(?:env|'env'|"env")\s*:/m;
 
 function jobBlock(name: string, next?: string): string {
 	const start = workflow.indexOf(`\n  ${name}:\n`, jobsOffset);
 	if (start < 0) throw new Error(`missing workflow job: ${name}`);
-	const nextOffset = next
-		? workflow.indexOf(`\n  ${next}:\n`, start + 1)
-		: -1;
-	const end = nextOffset >= 0 ? nextOffset : workflow.length;
-	return workflow.slice(start + 1, end).trimEnd();
+	const bodyStart = start + 1;
+	const remainder = workflow.slice(bodyStart);
+	const nextMatch = /\n  ([a-zA-Z0-9_-]+):\n/.exec(remainder);
+	const actualNext = nextMatch?.[1];
+	if (next && actualNext !== next) {
+		throw new Error(
+			`expected workflow job ${next} after ${name}, found ${actualNext ?? 'EOF'}`,
+		);
+	}
+	const end = nextMatch ? bodyStart + nextMatch.index : workflow.length;
+	return workflow.slice(bodyStart, end).trimEnd();
 }
 
 function sha256(value: string): string {
@@ -33,6 +41,19 @@ function stepBlock(job: string, name: string, next?: string): string {
 	return job.slice(start, end).trimEnd();
 }
 
+function jobCondition(job: string): string {
+	const start = job.indexOf('    if: |\n');
+	const end = job.indexOf('    runs-on:', start + 1);
+	if (start < 0 || end < 0) throw new Error('missing job condition boundary');
+	return job.slice(start, end).trimEnd();
+}
+
+function jobPreamble(job: string): string {
+	const end = job.indexOf('    steps:\n');
+	if (end < 0) throw new Error('missing job steps boundary');
+	return job.slice(0, end).trimEnd();
+}
+
 test('asset audit regression gate stays inside the credential-free test job', () => {
 	const testJob = jobBlock('test', 'diff');
 	expect(testJob).toContain('name: Verify asset audit baseline (offline, no CMS)');
@@ -41,6 +62,106 @@ test('asset audit regression gate stays inside the credential-free test job', ()
 	expect(testJob).not.toContain('PUBLIC_DIRECTUS_URL');
 	expect(testJob).not.toContain('op run');
 	expect(testJob).not.toContain('--update-baseline');
+});
+
+test('keeps the required PR diff check credential-free and offline', () => {
+	const diff = jobBlock('diff', 'live-diff');
+
+	expect(workflow).not.toMatch(topLevelEnvKey);
+	expect(jobCondition(diff)).toBe(`    if: |
+      github.event_name == 'pull_request' &&
+      github.base_ref == 'main'`);
+	expect(diff).toContain(
+		'name: Validate committed Directus snapshot contracts (offline, no CMS)',
+	);
+	expect(diff).toContain('run: bun test tests/snapshot-contract.test.ts');
+	expect(diff).not.toMatch(secretReference);
+	for (const forbidden of [
+		'workflow_dispatch',
+		"github.event_name == 'push'",
+		'DIRECTUS_PROD_ADMIN_TOKEN',
+		'DIRECTUS_ADMIN_TOKEN',
+		'https://cms.yesid.dev',
+		'sync:diff',
+	]) {
+		expect(diff).not.toContain(forbidden);
+	}
+});
+
+test('runs the live production diff only from trusted main with a step-scoped token', () => {
+	const liveDiff = jobBlock('live-diff', 'push');
+
+	expect(jobCondition(liveDiff)).toBe(`    if: |
+      github.ref == 'refs/heads/main' &&
+      (
+        github.event_name == 'push' ||
+        (
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.action == 'diff'
+        )
+      )`);
+	expect(liveDiff).not.toContain('pull_request');
+	expect(jobPreamble(liveDiff)).not.toMatch(secretReference);
+	const liveStep = stepBlock(liveDiff, 'sync:diff — preview diff vs prod');
+	expect(liveStep).toBe(`      - name: sync:diff — preview diff vs prod
+        working-directory: apps/cms
+        env:
+          DIRECTUS_ADMIN_TOKEN: \${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: bun run sync:diff`);
+	expect(liveDiff.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(1);
+});
+
+test('keeps every production-mutating dispatch job on main', () => {
+	const mutatingJobs: Array<{ name: string; next?: string; condition: string }> = [
+		{
+			name: 'push',
+			next: 'legal-service-area',
+			condition: `    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'push' &&
+      github.ref == 'refs/heads/main'`,
+		},
+		{
+			name: 'legal-service-area',
+			next: 'permission-control-audit',
+			condition: `    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'legal-service-area' &&
+      github.ref == 'refs/heads/main'`,
+		},
+		{
+			name: 'permission-policy-quarantine-rename',
+			next: 'public-blog-translation-key-repair',
+			condition: `    if: |
+      github.event_name == 'workflow_dispatch' &&
+      (
+        github.event.inputs.action == 'permission-policy-quarantine-preview' ||
+        github.event.inputs.action == 'permission-policy-quarantine-rename'
+      ) &&
+      github.ref == 'refs/heads/main'`,
+		},
+		{
+			name: 'public-blog-translation-key-repair',
+			next: 'analytics-controls',
+			condition: `    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'public-blog-translation-key-repair' &&
+      github.ref == 'refs/heads/main'`,
+		},
+		{
+			name: 'analytics-controls',
+			condition: `    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.action == 'analytics-controls' &&
+      github.ref == 'refs/heads/main'`,
+		},
+	];
+
+	for (const { name, next, condition } of mutatingJobs) {
+		const job = jobBlock(name, next);
+		expect(jobCondition(job), name).toBe(condition);
+		expect(jobPreamble(job), name).toContain('name: production');
+	}
 });
 
 test('offers separate, unambiguous permission audit and targeted repair dispatch actions', () => {
@@ -254,16 +375,19 @@ test('keeps every unrelated existing CMS job body byte-stable', () => {
 	expect(sha256(jobBlock('test', 'diff'))).toBe(
 		'32127d605e2b7accbe7ef88dfb00b8c04fd232c1e6853fd9316b0602b85b94d3',
 	);
-	expect(sha256(jobBlock('diff', 'push'))).toBe(
-		'd0715689c14987b2cc2274650f8631af25968068276c87c0f756017109de09d9',
+	expect(sha256(jobBlock('diff', 'live-diff'))).toBe(
+		'87143ee33bb7751b1550f7f1b0cb5eef5646d53d6b6a515f1e5ce19e63f175b4',
+	);
+	expect(sha256(jobBlock('live-diff', 'push'))).toBe(
+		'979426ca3a7cbe88205f4fde27bf22b2f02dc3277b750507f2e04b8e3e27988c',
 	);
 	expect(sha256(jobBlock('push', 'legal-service-area'))).toBe(
-		'd5bc5ebef3ad3af7eeafda95041a1ddda97cfa4b21ea2b59ab308328bf2ca49b',
+		'bddf90bcacd78590244ea3ff5fa8db0112d537f2ce3c1aa8df1245a16d12bb0b',
 	);
 	expect(
 		sha256(jobBlock('legal-service-area', 'permission-control-audit')),
 	).toBe(
-		'5219bfadbc6c718da977652ba205c03438a8684d6db248a464f0f3609de355fc',
+		'52e838209c89fae62668ccf9570725c4d005245fdc8c33736e132dd728f9b2aa',
 	);
 	expect(
 		sha256(
