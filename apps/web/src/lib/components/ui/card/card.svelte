@@ -1,3 +1,4 @@
+<!-- Kept app-side per packages/ui/PARITY-NOTES.md: yesid.dev requires its bevel and hover shadow. -->
 <script lang="ts">
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn, type WithElementRef } from "$lib/utils";

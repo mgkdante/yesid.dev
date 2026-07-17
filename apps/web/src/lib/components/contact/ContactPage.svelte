@@ -20,7 +20,8 @@
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
-	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
+	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
+	import ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte';
 	import type { WeatherData } from '$lib/utils/weather';
 	import { escapeHtml } from '$lib/utils/code-fences';
 	import { isDirectContactHref } from '$lib/utils/high-intent-links';

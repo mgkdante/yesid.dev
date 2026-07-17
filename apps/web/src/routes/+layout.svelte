@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '@fontsource-variable/inter';
 	import '@fontsource-variable/jetbrains-mono';
-	import '../app.css';
+	import '$lib/styles/site.css';
 	import '$lib/styles/terminal.css';
 	import Nav from '$lib/components/layout/Nav.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
@@ -27,9 +27,13 @@
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
 	import { setMorphShapes } from '$lib/utils/shapes';
+	import { configureUi } from '@yesid/ui/cn';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '$lib/navigation/types';
 	import type { MorphShape } from '$lib/types';
+
+	// Pass a fixed app vocabulary preset here if yesid.dev adds one in the future.
+	configureUi();
 
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];

@@ -68,9 +68,10 @@ jobs:
       - name: Token drift + packages tests (slice-28.4, audit #81/#94/#60)
         # ci:tokens regenerates the token build outputs and fails on diff vs
         # the committed files; the package suites cover packages/tokens
-        # (vitest), packages/shared (bun test), packages/motion (vitest), and
-        # packages/gates (vitest), which the turbo @repo/web filter never reaches.
-        run: bun run ci:tokens && bun run --cwd packages/tokens test && bun run --cwd packages/shared test && bun run --cwd packages/motion test && bun run --cwd packages/gates test
+        # (vitest), packages/shared (bun test), packages/motion (vitest),
+        # packages/gates (vitest), and packages/ui (vitest), which the turbo
+        # @repo/web filter never reaches.
+        run: bun run ci:tokens && bun run --cwd packages/tokens test && bun run --cwd packages/shared test && bun run --cwd packages/motion test && bun run --cwd packages/gates test && bun run --cwd packages/ui test
 
       - name: Build
         env:

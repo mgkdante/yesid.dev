@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
   import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
-  import { Separator } from '$lib/components/ui/separator';
+  import { Separator } from '@yesid/ui/separator';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';

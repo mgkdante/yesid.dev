@@ -1,3 +1,4 @@
+<!-- Kept app-side per packages/ui/PARITY-NOTES.md: yesid.dev keeps neutral chrome and a rounded-lg grip. -->
 <script lang="ts">
 	import * as ResizablePrimitive from "paneforge";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils";

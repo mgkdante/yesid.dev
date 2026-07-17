@@ -1,7 +1,7 @@
 import type { ClassValue } from 'clsx';
 import { describe, expect, it } from 'vitest';
+import { createCn, createTwMergeConfig } from '@yesid/ui/cn';
 import { cn } from './cn';
-import { createCn, createTwMergeConfig } from './create-cn';
 
 const LEGACY_TW_MERGE_CONFIG = {
 	extend: {

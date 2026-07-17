@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 	import { cn } from '$lib/utils';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 

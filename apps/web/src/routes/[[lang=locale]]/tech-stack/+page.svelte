@@ -10,9 +10,10 @@
 	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { StatusDot, SectionLabel } from '$lib/components/brand';
+	import { SectionLabel } from '@yesid/ui/brand';
+	import { StatusDot } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 
 	let { data } = $props();
 

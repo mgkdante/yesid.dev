@@ -13,6 +13,17 @@ describe('StopLabel', () => {
     expect(container.querySelector('.stop-label')?.textContent).toBe('STOP 07 · CONTACT');
   });
 
+  it.each([
+    ['fr', 'ARRÊT 03 · STACK'],
+    ['es', 'PARADA 03 · STACK'],
+  ] as const)('keeps the app-owned %s prefix', (locale, expected) => {
+    const { container } = render(StopLabel, {
+      props: { stop: '03', label: 'STACK' },
+      context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+    });
+    expect(container.querySelector('.stop-label')?.textContent).toBe(expected);
+  });
+
   it('uses the stop-label class', () => {
     const { container } = render(StopLabel, { props: { stop: '01', label: 'TEST' } });
     const div = container.querySelector('.stop-label');
