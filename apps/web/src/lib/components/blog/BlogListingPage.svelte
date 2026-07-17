@@ -24,7 +24,7 @@
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Separator } from '@yesid/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { persisted } from '$lib/state/persisted.svelte';
 

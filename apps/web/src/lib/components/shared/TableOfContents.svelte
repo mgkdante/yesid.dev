@@ -17,9 +17,10 @@
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
 	import { persisted } from '$lib/state/persisted.svelte';
-	import { ChevronToggle } from '$lib/components/brand';
-	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
-	import { ScrollArea } from '$lib/components/ui/scroll-area';
+	import { ChevronToggle } from '@yesid/ui/brand';
+	import { Collapsible, CollapsibleTrigger } from '@yesid/ui/collapsible';
+	import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
+	import { ScrollArea } from '@yesid/ui/scroll-area';
 
 	const sharedChrome = siteLabels.navChrome.shared;
 	const toggleSectionAria = resolveLocale(sharedChrome.tocToggleSectionAria, locale);

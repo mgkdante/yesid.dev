@@ -1204,8 +1204,11 @@ describe("yesid.dev real repository contract", () => {
       if (surface.inlineSvgLines.length > 0) svgFiles += 1;
     }
     expect({ svgFiles, inlineSvgRoots, imageTags }).toEqual({
-      svgFiles: 49,
-      inlineSvgRoots: 63,
+      // 49→47 / 63→61 (2026-07-16): BlueprintShell + ChevronToggle moved into
+      // the embedded @yesid/ui package (Wave 3 adoption); package internals are
+      // library code, outside the site's asset-governance scan surface.
+      svgFiles: 47,
+      inlineSvgRoots: 61,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });

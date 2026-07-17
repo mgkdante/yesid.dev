@@ -19,7 +19,7 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toContain('data-testid="engine-band"');
 		// Reuse the shared hazard composable (the /projects dashed orange divider) —
 		// no reinvented stripe gradients in the route.
-		expect(src).toContain("import { Separator } from '$lib/components/ui/separator'");
+		expect(src).toContain("import { Separator } from '@yesid/ui/separator'");
 		const hazards = src.match(/variant="hazard"/g) ?? [];
 		expect(hazards).toHaveLength(2);
 	});
