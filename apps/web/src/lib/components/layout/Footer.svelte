@@ -120,6 +120,8 @@
 				<button
 					type="button"
 					data-testid="analytics-preferences"
+					aria-controls="analytics-consent"
+					aria-expanded={$analyticsConsentStore.preferencesOpen}
 					class="footer-link self-start text-left text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					onclick={() => analyticsConsentStore.openPreferences()}
 				>
