@@ -1,5 +1,5 @@
 // Motion actions barrel. PARITY FLIP (2026-07-03): the Tier-1 signature
-// vocabulary now lives in @yesid/motion (vendored from immutable release v0.7.0); the
+// vocabulary now lives in @yesid/motion (vendored from an immutable release); the
 // two Tier-2 actions (morphHover, scrollChain) stay app-local — they are
 // component/scrub-coupled (MorphSVG helpers + ScrollTrigger scrub machinery)
 // and are deliberately NOT extracted into the package (rule-of-three pending).
