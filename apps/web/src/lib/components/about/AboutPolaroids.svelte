@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import { aboutPageContent } from '$lib/content/about-page';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 	import { persisted } from '$lib/state/persisted.svelte';

@@ -43,7 +43,7 @@
 //   });
 //   onDestroy(() => destroy?.());
 
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 // CustomEase imported directly — plugin is runtime-registered by loadCustomEase()
 // at HeroBanner mount; this import only provides the symbol for CustomEase.create().

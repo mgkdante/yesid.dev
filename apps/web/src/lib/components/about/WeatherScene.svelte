@@ -13,7 +13,7 @@
   drive the sun, lightning and lit windows.
 
   Motion — every loop here is infinite ambient motion, which is
-  MOTION-GATED per the two-tier policy ($lib/motion/policy). The gate is
+	MOTION-GATED per the two-tier policy (@yesid/motion/policy). The gate is
   the prefers-reduced-motion block at the bottom: animations stop and each
   element rests at its *designed* base position (precipitation is scattered
   mid-sky like a postcard still, the bolt stays lit, fog banks sit layered)

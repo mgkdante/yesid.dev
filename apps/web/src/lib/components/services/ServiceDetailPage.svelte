@@ -12,8 +12,7 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { boop } from '$lib/motion/actions/boop.js';
-	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
+	import { boop, pressBounce } from '@yesid/motion/actions';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
@@ -23,7 +22,7 @@
 	import TocPill from '$lib/components/shared/TocPill.svelte';
 	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
 	import { onMount } from 'svelte';
-	import { Separator } from '@yesid/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import { SectionLabel } from '@yesid/ui/brand';
 	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
@@ -184,7 +183,7 @@
 			</div>
 		</div>
 
-		<Separator variant="hazard" />
+		<HazardSeparator />
 
 		<!-- Body: impact column | content sections | projects panel -->
 		<div class="body-area">

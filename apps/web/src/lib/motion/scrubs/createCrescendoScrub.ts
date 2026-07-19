@@ -11,9 +11,9 @@
 // Reduced-motion: target is set to maxScale immediately; ScrollTrigger is NOT
 // registered; destroy is a no-op.
 
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { ScrollTrigger, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
-import type { EaseKey } from '$lib/motion/tokens.js';
+import type { EaseKey } from '@yesid/motion/tokens';
 
 export interface CrescendoOpts {
 	/** Scroll-trigger ancestor — usually the containing <section>. */
@@ -22,7 +22,7 @@ export interface CrescendoOpts {
 	minScale?: number;
 	/** Scale applied mid-scroll. Default: 1.4 */
 	maxScale?: number;
-	/** Ease curve key from motion/tokens.ts. Default: 'inOut'. */
+	/** Ease curve key from the shared motion package. Default: 'inOut'. */
 	ease?: EaseKey;
 }
 

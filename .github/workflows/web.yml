@@ -17,7 +17,8 @@ name: web
 # E2E (Playwright) runs on pull_request only, against a LOCAL hermetic preview
 # on the runner — zero Vercel edge requests — and is further gated by the
 # `skip-e2e` PR label (build + 3 shards is the costly part). The cheap `ci` job
-# (type check, unit tests, token drift, package tests, build) runs on every PR.
+# (type check, unit tests, vendor integrity, product token drift, shared-package
+# tests, build) runs on every PR.
 
 on:
   # PR-only (no push: trigger). The PR run is the gate that blocks a bad merge;
@@ -59,20 +60,22 @@ jobs:
         run: bun x turbo run test --filter=@repo/web
 
       - name: Content-manifest integrity (ci:content)
-        # CI counterpart of .githooks/pre-commit GUARD 2: hooks are opt-in on
+        # CI counterpart of .githooks/pre-commit GUARD 3: hooks are opt-in on
         # fresh clones, so CI re-verifies that every generated content module
         # under apps/web/src/lib/content/ still hashes to its recorded value in
         # generated.manifest.json (hermetic: no network, reuses
         # apps/cms/scripts/lib/generated-manifest.ts).
         run: bun run ci:content
 
-      - name: Token drift + packages tests (slice-28.4, audit #81/#94/#60)
-        # ci:tokens regenerates the token build outputs and fails on diff vs
-        # the committed files; the package suites cover packages/tokens
-        # (vitest), packages/shared (bun test), packages/motion (vitest),
-        # packages/gates (vitest), and packages/ui (vitest), which the turbo
-        # @repo/web filter never reaches.
-        run: bun run ci:tokens && bun run --cwd packages/tokens test && bun run --cwd packages/shared test && bun run --cwd packages/motion test && bun run --cwd packages/gates test && bun run --cwd packages/ui test
+      - name: Vendored design integrity (schema 2)
+        working-directory: apps/web
+        run: bun vendor/design/tools/adopt.ts --check --dest vendor/design
+
+      - name: Product token drift (ci:tokens)
+        run: bun run ci:tokens
+
+      - name: Product shared-package tests
+        run: bun run --cwd packages/shared test
 
       - name: Build
         env:

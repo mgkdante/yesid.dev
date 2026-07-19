@@ -11,10 +11,10 @@
     sm = card size (~40px height), lg = detail page (~80px height)
 -->
 <script lang="ts">
-	import { durationSec } from '$lib/motion/tokens';
+	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
 	import { siteLabels } from '$lib/content';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { resolveLocale } from '$lib/utils/locale';

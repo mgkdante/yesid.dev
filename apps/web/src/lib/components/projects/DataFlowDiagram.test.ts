@@ -5,7 +5,7 @@ import { cwd } from 'node:process';
 import { describe, expect, it, vi } from 'vitest';
 import DataFlowDiagram from './DataFlowDiagram.svelte';
 
-vi.mock('$lib/motion/stores/reducedMotion.js', () => ({
+vi.mock('@yesid/motion/stores/reducedMotion', () => ({
 	isPrefersReducedMotion: () => true,
 }));
 

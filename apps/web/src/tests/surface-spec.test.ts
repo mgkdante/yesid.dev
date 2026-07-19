@@ -40,8 +40,8 @@ describe('surface spec — one card spec, defined once', () => {
 		expect(src).toContain('cardSize="proof"');
 	});
 
-	it('surface-1 and surface-2 both alias the solid card token (tokens.css)', () => {
-		const tokensCss = read('src/lib/styles/tokens.css');
+	it('surface-1 and surface-2 both alias the solid card token (release tokens.css)', () => {
+		const tokensCss = read('vendor/design/tokens/tokens.css');
 		expect(tokensCss).toContain('--surface-1: var(--card);');
 		expect(tokensCss).toContain('--surface-2: var(--card);');
 	});
