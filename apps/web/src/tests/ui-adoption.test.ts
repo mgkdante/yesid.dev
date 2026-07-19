@@ -6,34 +6,83 @@ const REPO_ROOT = resolve(process.cwd(), '../..');
 const read = (path: string) => readFileSync(resolve(REPO_ROOT, path), 'utf8');
 const exists = (path: string) => existsSync(resolve(REPO_ROOT, path));
 
-describe('@yesid/ui embedding contract', () => {
-	it('embeds the source package and its governing parity notes', () => {
-		const manifest = 'packages/ui/package.json';
-		expect(exists(manifest), `${manifest} must be embedded`).toBe(true);
+describe('@yesid/ui customer contract', () => {
+	it('installs the immutable release package and its governing parity notes', () => {
+		const manifest = 'apps/web/vendor/design/ui/package.json';
+		expect(exists(manifest), `${manifest} must be vendored`).toBe(true);
 		if (!exists(manifest)) return;
 
 		expect(JSON.parse(read(manifest)).name).toBe('@yesid/ui');
-		expect(read('packages/ui/PARITY-NOTES.md')).toContain('## Adoption matrix');
-		expect(read('packages/ui/PARITY-NOTES.md')).toContain('### Brand adoption matrix');
+		expect(read('apps/web/vendor/design/ui/PARITY-NOTES.md')).toContain('## Adoption matrix');
+		expect(read('apps/web/vendor/design/ui/PARITY-NOTES.md')).toContain('### Brand adoption matrix');
+	});
+
+	it('initializes one app-owned UI configuration in both SvelteKit module graphs', () => {
+		const initializer = read('apps/web/src/lib/ui/configure.ts');
+		const clientHooks = read('apps/web/src/hooks.client.ts');
+		const serverHooks = read('apps/web/src/hooks.server.ts');
+		const layout = read('apps/web/src/routes/+layout.svelte');
+
+		expect(initializer).toContain("from '@yesid/ui/cn'");
+		expect(initializer).toContain('configureUi()');
+		expect(clientHooks).toContain('ClientInit');
+		expect(clientHooks).toContain("from '$lib/ui/configure'");
+		expect(clientHooks).toContain('initializeUi()');
+		expect(serverHooks).toContain('ServerInit');
+		expect(serverHooks).toContain("from '$lib/ui/configure'");
+		expect(serverHooks).toContain('initializeUi()');
+		expect(layout).not.toContain('configureUi');
 	});
 
 	it('wires Tailwind scanning, boot configuration, and the cn compatibility shim', () => {
 		const siteCss = read('apps/web/src/lib/styles/site.css');
 		const layout = read('apps/web/src/routes/+layout.svelte');
 		const cn = read('apps/web/src/lib/utils/cn.ts');
+		const viteConfig = read('apps/web/vite.config.ts');
 
 		expect(siteCss).toContain("@import '../../app.css';");
-		expect(siteCss).toContain('@source "../../../../../packages/ui/src";');
+		expect(siteCss).toContain('@source "../../../vendor/design/ui/src";');
 		expect(layout).toContain("import '$lib/styles/site.css';");
-		expect(layout).toContain("import { configureUi } from '@yesid/ui/cn';");
-		expect(layout).toContain('configureUi();');
 		expect(cn).toContain("from '@yesid/ui/cn'");
 		expect(cn).not.toContain("from './create-cn'");
 		expect(exists('apps/web/src/lib/utils/create-cn.ts')).toBe(false);
+		expect(viteConfig).toMatch(/dedupe:\s*\['bits-ui'\]/);
 	});
 });
 
 describe('@yesid/ui primitive adoption contract', () => {
+	it('centralizes yesid.dev full-width hazard bands in one product wrapper', () => {
+		const wrapper = 'apps/web/src/lib/components/shared/HazardSeparator.svelte';
+		expect(exists(wrapper), `${wrapper} must preserve the pre-release full-width contract`).toBe(
+			true,
+		);
+		if (!exists(wrapper)) return;
+
+		expect(read(wrapper)).toContain("from '@yesid/ui/separator'");
+		expect(read(wrapper)).toContain('variant="hazard"');
+		expect(read(wrapper)).toContain('maxWidth="none"');
+		for (const path of [
+			'apps/web/src/lib/components/about/AboutPage.svelte',
+			'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
+			'apps/web/src/lib/components/blog/BlogListingPage.svelte',
+			'apps/web/src/lib/components/brand/TerminalChrome.svelte',
+			'apps/web/src/lib/components/home/HomePage.svelte',
+			'apps/web/src/lib/components/projects/ProjectDetailPage.svelte',
+			'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
+			'apps/web/src/lib/components/services/ProjectsStrip.svelte',
+			'apps/web/src/lib/components/services/ServiceDetailPage.svelte',
+			'apps/web/src/lib/components/shared/CtaBand.svelte',
+			'apps/web/src/lib/components/shared/StationTabs.svelte',
+			'apps/web/src/routes/+error.svelte',
+			'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
+		]) {
+			expect(read(path), path).toContain(
+				"from '$lib/components/shared/HazardSeparator.svelte'",
+			);
+			expect(read(path), path).not.toContain("from '@yesid/ui/separator'");
+		}
+	});
+
 	it('routes parity-safe families through package subpaths', () => {
 		expect(read('apps/web/src/lib/components/blog/BlogRow.svelte')).toContain(
 			"from '@yesid/ui/badge'",
@@ -42,7 +91,7 @@ describe('@yesid/ui primitive adoption contract', () => {
 			"from '@yesid/ui/scroll-area'",
 		);
 		expect(read('apps/web/src/lib/components/home/HomePage.svelte')).toContain(
-			"from '@yesid/ui/separator'",
+			"from '$lib/components/shared/HazardSeparator.svelte'",
 		);
 		expect(read('apps/web/src/lib/components/shared/StationTabs.svelte')).toContain(
 			"from '@yesid/ui/tabs'",
@@ -95,7 +144,7 @@ describe('@yesid/ui primitive adoption contract', () => {
 			'apps/web/src/lib/components/ui/resizable/resizable-handle.svelte',
 		]) {
 			expect(exists(path), path).toBe(true);
-			expect(read(path), path).toContain('packages/ui/PARITY-NOTES.md');
+			expect(read(path), path).toContain('vendor/design/ui/PARITY-NOTES.md');
 		}
 	});
 });

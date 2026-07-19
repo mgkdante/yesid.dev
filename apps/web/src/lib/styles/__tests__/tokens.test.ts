@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const tokensCSS = readFileSync(
-  resolve(process.cwd(), 'src/lib/styles/tokens.css'),
+  resolve(process.cwd(), 'vendor/design/tokens/tokens.css'),
   'utf-8'
 );
 

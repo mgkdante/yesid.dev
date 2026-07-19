@@ -15,7 +15,7 @@
 
 	// slice-18i Phase 7C: manifestoContent now flows as a prop from the server load.
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
 	import { boop } from '$lib/motion/actions';
 	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';

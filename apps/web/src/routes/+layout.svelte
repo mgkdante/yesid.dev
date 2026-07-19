@@ -8,7 +8,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { prefersReducedMotion } from '$lib/motion/stores';
+	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
 	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
 	// server-side from $page.data.seo, which is populated by +layout.ts load.
@@ -22,18 +22,14 @@
 	import { provideLocale } from '$lib/utils/locale-context';
 	import { delocalizePath } from '$lib/utils/locale-routing';
 	import { attachLocaleHandoff } from '$lib/state/locale-handoff.svelte';
-	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
+	import { initLenis, destroyLenis } from '@yesid/motion/utils/lenis';
 	import { themeStore } from '$lib/stores/theme.svelte';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
 	import { setMorphShapes } from '$lib/utils/shapes';
-	import { configureUi } from '@yesid/ui/cn';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '$lib/navigation/types';
 	import type { MorphShape } from '$lib/types';
-
-	// Pass a fixed app vocabulary preset here if yesid.dev adds one in the future.
-	configureUi();
 
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
