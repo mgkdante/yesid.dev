@@ -922,6 +922,7 @@ describe("yesid.dev real repository contract", () => {
       "apps/cms/scripts/lib/assets/repository-scan.ts",
       "apps/cms/scripts/lib/assets/repository-scan.test.ts",
       "apps/web/src/lib/assets/usage-declarations.ts",
+      "apps/web/tools/design-gates.ts",
     ]),
   ];
 
@@ -989,7 +990,7 @@ describe("yesid.dev real repository contract", () => {
       trackedFiles: futureTrackedFiles,
       declarations: assetUsageDeclarations,
     });
-    const gatePreset = "packages/gates/src/presets/yesid.ts";
+    const gatePreset = "apps/web/tools/design-gates.ts";
     expect(
       scan.usages.filter((usage) => usage.sourceFile === gatePreset),
     ).toEqual([]);
