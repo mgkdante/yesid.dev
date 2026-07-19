@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { styleRegressionViolations } from '@yesid/gates';
-import { YESID_FORBIDDEN } from '@yesid/gates/presets/yesid';
+import { YESID_FORBIDDEN } from '../../tools/design-gates';
 
 const SRC = resolve(process.cwd(), 'src');
 const UI_SRC = resolve(process.cwd(), '../../packages/ui/src');
