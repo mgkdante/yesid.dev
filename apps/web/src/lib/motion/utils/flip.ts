@@ -19,7 +19,7 @@
 //   animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => { flipState = null; });
 
 import { tick } from 'svelte';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { gsap } from '$lib/motion/utils/gsap.js';
 // Flip imported directly — plugin is runtime-registered by loadFlip() at
 // consumer mount (BlogListingPage / ProjectListingPage); this import only
@@ -30,7 +30,7 @@ import { gsap } from '$lib/motion/utils/gsap.js';
 // import + property access — compatible with both Vite dev and Node SSR.
 // @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
 import gsapFlipModule from 'gsap/Flip';
-import { durationSec } from '$lib/motion/tokens';
+import { durationSec } from '@yesid/motion/tokens';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Flip: typeof import('gsap/Flip').Flip = (gsapFlipModule as any).Flip ?? (gsapFlipModule as any);
 

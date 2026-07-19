@@ -184,12 +184,12 @@ function absolutePath(repoRoot: string, repoPath: string): string {
 }
 
 function isExcluded(repoPath: string): boolean {
-  if (
-    repoPath === "apps/cms/scripts/lib/assets/repository-scan.ts" ||
-    repoPath === "apps/cms/fixtures/assets/audit-baseline.json" ||
-    repoPath === "apps/web/tools/design-gates.ts" ||
-    repoPath === "packages/gates/src/presets/yesid.ts" ||
-    (repoPath.startsWith("apps/web/src/") &&
+	if (
+		repoPath.startsWith("apps/web/vendor/design/") ||
+		repoPath === "apps/cms/scripts/lib/assets/repository-scan.ts" ||
+		repoPath === "apps/cms/fixtures/assets/audit-baseline.json" ||
+		repoPath === "apps/web/tools/design-gates.ts" ||
+		(repoPath.startsWith("apps/web/src/") &&
       /-fixture\.svelte$/i.test(repoPath))
   )
     return true;
@@ -1094,15 +1094,7 @@ export async function scanRepository(
     });
   }
 
-  for (const repoPath of trackedFiles.filter(
-    (path) =>
-      path.endsWith(".svelte") &&
-      // Embedded workspace packages (e.g. packages/ui) are library code from
-      // the design system, not site asset surface — same boundary the
-      // repository-contract test draws. Their inline SVGs are governed
-      // upstream in yesid.dev-design.
-      !path.startsWith("packages/"),
-  )) {
+	for (const repoPath of trackedFiles.filter((path) => path.endsWith(".svelte"))) {
     const source = await readSource(repoPath);
     const surface = scanSvelteAssetSurface(repoPath, source);
     svelteSurfaceCache.set(repoPath, surface);

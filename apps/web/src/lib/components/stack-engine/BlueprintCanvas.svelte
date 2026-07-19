@@ -26,7 +26,7 @@
   '+ add <name> to complete it' annotation.
 -->
 <script lang="ts">
-	import { durationSec } from '$lib/motion/tokens';
+	import { durationSec } from '@yesid/motion/tokens';
 	import { gsap } from 'gsap';
 	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
 	import type { Locale, LocalizedString } from '$lib/types';

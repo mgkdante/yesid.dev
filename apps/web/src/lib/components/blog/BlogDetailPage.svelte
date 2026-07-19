@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
   import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
-  import { Separator } from '@yesid/ui/separator';
+  import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
@@ -208,7 +208,7 @@
   <BlogDetailHeader {post} {svgContent} {accentColor} {readingTime} {postIndex} {blogPage} />
 
   <!-- Edge-to-edge hazard stripes -->
-  <Separator variant="hazard" />
+  <HazardSeparator />
 
   <!-- Body: shared article grid (TOC/meta rail | section cards) -->
   <div class="body-grid">

@@ -921,9 +921,10 @@ describe("yesid.dev real repository contract", () => {
       ...trackedFiles,
       "apps/cms/scripts/lib/assets/repository-scan.ts",
       "apps/cms/scripts/lib/assets/repository-scan.test.ts",
-      "apps/web/src/lib/assets/usage-declarations.ts",
-      "apps/web/tools/design-gates.ts",
-    ]),
+		"apps/web/src/lib/assets/usage-declarations.ts",
+		"apps/web/tools/design-gates.ts",
+		"apps/web/vendor/design/ui/src/brand/MetroStation.svelte",
+	]),
   ];
 
   it("keeps explicit dynamic declarations pure, unique, truthful, and bound to tracked source modules", async () => {
@@ -989,13 +990,29 @@ describe("yesid.dev real repository contract", () => {
       repoRoot,
       trackedFiles: futureTrackedFiles,
       declarations: assetUsageDeclarations,
-    });
+		});
     const gatePreset = "apps/web/tools/design-gates.ts";
     expect(
       scan.usages.filter((usage) => usage.sourceFile === gatePreset),
     ).toEqual([]);
     expect(
       scan.findings.filter((finding) => finding.sourceFile === gatePreset),
+    ).toEqual([]);
+  });
+
+  it("does not treat immutable design release sources as product asset consumers", async () => {
+    const scan = await scanRepository({
+      repoRoot,
+      trackedFiles: futureTrackedFiles,
+      declarations: assetUsageDeclarations,
+    });
+    const releaseSource =
+      "apps/web/vendor/design/ui/src/brand/MetroStation.svelte";
+    expect(
+      scan.usages.filter((usage) => usage.sourceFile === releaseSource),
+    ).toEqual([]);
+    expect(
+      scan.findings.filter((finding) => finding.sourceFile === releaseSource),
     ).toEqual([]);
   });
 

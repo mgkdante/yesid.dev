@@ -14,7 +14,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 	import WeatherScene from './WeatherScene.svelte';

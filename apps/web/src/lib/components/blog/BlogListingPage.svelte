@@ -24,7 +24,7 @@
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
-	import { Separator } from '@yesid/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { persisted } from '$lib/state/persisted.svelte';
 
@@ -201,7 +201,7 @@
 		</div>
 	</section>
 
-	<Separator variant="hazard" />
+	<HazardSeparator />
 
 	<!-- Section 2: Listing — filter sidebar + posts in CSS Grid -->
 	<section class="listing-grid">

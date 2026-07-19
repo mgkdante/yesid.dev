@@ -20,7 +20,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy, tick, untrack } from 'svelte';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { homeIntroStore } from '$lib/state/home-intro.svelte';
 	import {
 		initScrollTriggerConfig,
@@ -31,13 +31,13 @@
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
-	import { isViewportAtMost } from '$lib/motion/utils/device.js';
+	import { isViewportAtMost } from '@yesid/motion/utils/device';
 	import {
 		forgetHeroIntroCompleted,
 		isHeroIntroCompletedToday,
 		markHeroIntroCompleted,
 	} from '$lib/motion/utils/heroIntroReplay.js';
-	import { getLenis } from '$lib/motion/utils/lenis.js';
+	import { getLenis } from '@yesid/motion/utils/lenis';
 	import { generateHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
 	import { fetchLiveKpis, LIVE_POLL_MS, type LiveHeroSnapshot } from '$lib/content/live-kpis';
