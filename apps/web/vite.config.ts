@@ -9,6 +9,11 @@ import { visualizer } from 'rollup-plugin-visualizer';
 //   - adds @testing-library/svelte* to ssr.noExternal (forces Vite transform)
 // It only activates when process.env.VITEST is set, so it's safe to include always.
 export default defineConfig({
+	resolve: {
+		// The file-vendored UI package and app-owned parity wrappers must share
+		// one bits-ui context registry when they compose Root and Content.
+		dedupe: ['bits-ui'],
+	},
 	// Vitest stores its results cache (per-file test timings used for
 	// sequencing) under Vite's cacheDir at <cacheDir>/vitest/. The default is
 	// node_modules/.vite, which CI can't cache safely (bun install owns

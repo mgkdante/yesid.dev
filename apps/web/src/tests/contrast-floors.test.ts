@@ -73,14 +73,14 @@ describe('contrast floors on color: declarations', () => {
 
 // ──────────────────────────────────────────────────────────────────────
 // GO2-W5 INTERLOCKING (taste round 2): token-level AA lock. Computes WCAG
-// 2.x relative-luminance ratios straight from packages/tokens/tokens.json so
+// 2.x relative-luminance ratios straight from the immutable release tokens so
 // any palette drift that breaks a contracted pair fails here, with the actual
 // number. The 57 pairs + 2 terminal identities now live in the @yesid/gates
 // yesid preset (transcribed verbatim from the anchor).
 // ──────────────────────────────────────────────────────────────────────
 describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 	const tokens = JSON.parse(
-		readFileSync(resolve(process.cwd(), '../../packages/tokens/tokens.json'), 'utf-8'),
+		readFileSync(resolve(process.cwd(), 'vendor/design/tokens/tokens.json'), 'utf-8'),
 	);
 
 	for (const { label, ratio, floor, pass } of runContrastPairs(tokens, YESID_AA_PAIRS)) {

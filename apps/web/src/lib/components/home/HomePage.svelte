@@ -21,7 +21,7 @@
 	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
-	import { Separator } from '@yesid/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import { SectionHeading } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -230,14 +230,14 @@
 	<HeroBanner {metroSvg} {hero} {heroAnim} {initialHeroData} />
 </section>
 
-<Separator variant="hazard" />
+<HazardSeparator />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
 <section class="w-full">
 	<Manifesto {manifesto} />
 </section>
 
-<Separator variant="hazard" />
+<HazardSeparator />
 
 <!-- Section 3: Services — rotated title RIGHT, blueprint background spans
      full width. Operator 2026-07-03: services lead so the story builds
@@ -257,7 +257,7 @@
 	</div>
 </section>
 
-<Separator variant="hazard" />
+<HazardSeparator />
 
 <!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
      titled section alternates: Services R → About L → Projects R → Terminus L;
@@ -274,7 +274,7 @@
 	</div>
 </section>
 
-<Separator variant="hazard" />
+<HazardSeparator />
 
 <!-- Section 4: Featured Projects — rotated title RIGHT; the proof lands with
      the service context already established above it. -->
@@ -298,7 +298,7 @@
 	<CtaBand {cta} {siteMeta} testidPrefix="home-cta-band" />
 </section>
 
-<Separator variant="hazard" />
+<HazardSeparator />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
 <section bind:this={closerSectionEl} class="home-section home-section--left" style={rotatedVar}>

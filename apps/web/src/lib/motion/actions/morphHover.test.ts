@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock reducedMotion so we can toggle its return value per test.
-vi.mock('../stores/reducedMotion.js', async (importOriginal) => {
-	const mod = (await importOriginal()) as typeof import('../stores/reducedMotion.js');
+vi.mock('@yesid/motion/stores/reducedMotion', async (importOriginal) => {
+	const mod = (await importOriginal()) as typeof import('@yesid/motion/stores/reducedMotion');
 	return {
 		...mod,
 		isPrefersReducedMotion: vi.fn(() => false),
@@ -32,7 +32,7 @@ vi.mock('$lib/utils/shapes', () => ({
 }));
 
 import { morphHover } from './morphHover.js';
-import * as reducedMotionMod from '../stores/reducedMotion.js';
+import * as reducedMotionMod from '@yesid/motion/stores/reducedMotion';
 
 const isReducedMock = reducedMotionMod.isPrefersReducedMotion as ReturnType<typeof vi.fn>;
 
