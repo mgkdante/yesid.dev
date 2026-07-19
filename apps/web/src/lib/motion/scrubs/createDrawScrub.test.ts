@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createDrawScrub } from './createDrawScrub.js';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
-vi.mock('$lib/motion/stores/reducedMotion.js', async (importOriginal) => {
-	const mod = (await importOriginal()) as typeof import('$lib/motion/stores/reducedMotion.js');
+vi.mock('@yesid/motion/stores/reducedMotion', async (importOriginal) => {
+	const mod = (await importOriginal()) as typeof import('@yesid/motion/stores/reducedMotion');
 	return {
 		...mod,
 		isPrefersReducedMotion: vi.fn(() => false),

@@ -12,7 +12,7 @@
 	const locale = getLocale();
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { siteLabels } from '$lib/content';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';

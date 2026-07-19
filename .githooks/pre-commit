@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# Pre-commit hook — two independent generated-file guards:
+# Pre-commit hook — three independent repository-integrity guards:
 #
-#   1. TOKENS  — block staged edits to generated design-token files unless a
-#                legitimate source under packages/tokens/ is also staged.
-#   2. CONTENT — block staged hand-edits to the CMS-generated content modules
+#   1. DESIGN  — require the schema-2 manifest whenever vendored payload files
+#                change, so a release update is staged as one reviewable unit.
+#   2. TOKENS  — block staged token output changes unless the vendored token
+#                source or the product-owned adapter is also staged.
+#   3. CONTENT — block staged hand-edits to the CMS-generated content modules
 #                under apps/web/src/lib/content/. Those files are an edge cache
 #                regenerated FROM the Directus CMS by `export:fallbacks`; the CMS
 #                is the source of truth. A real regen rewrites the .ts AND its
@@ -11,7 +13,7 @@
 #                hashes match and the commit passes. A hand-edit changes only the
 #                .ts → hash mismatch → commit blocked.
 #
-# GUARD 2 is the real enforcement layer: it catches edits made by ANY means
+# GUARD 3 is the real content enforcement layer: it catches edits made by ANY means
 # (Edit tool, Bash `sed`/`echo >`, a script, etc.) because it checks the staged
 # bytes at commit time. The companion Claude PreToolUse hook
 # (.claude/hooks/pretool-block-generated-ts.sh) is only fast edit-time feedback
@@ -34,16 +36,43 @@ sha256_stdin() {
 }
 
 # ============================================================================
-# GUARD 1 — design tokens
+# GUARD 1 — vendored design release
+# ============================================================================
+VENDOR_DESIGN_DIR="apps/web/vendor/design"
+VENDOR_DESIGN_MANIFEST="$VENDOR_DESIGN_DIR/manifest.json"
+
+vendor_payload_staged() {
+  git diff --cached --name-only --diff-filter=ACMRD -- "$VENDOR_DESIGN_DIR" \
+    | grep -Fvx "$VENDOR_DESIGN_MANIFEST" \
+    | grep -q .
+}
+
+vendor_manifest_staged() {
+  git diff --cached --name-only --diff-filter=ACMR -- "$VENDOR_DESIGN_MANIFEST" \
+    | grep -Fxq "$VENDOR_DESIGN_MANIFEST"
+}
+
+if vendor_payload_staged && ! vendor_manifest_staged; then
+  echo "ERROR: Vendored design payload files changed without a staged manifest."
+  echo ""
+  echo "  Adopt the complete release from apps/web, then stage the payload and:"
+  echo "    $VENDOR_DESIGN_MANIFEST"
+  echo "  Verify the staged release from apps/web with:"
+  echo "    bun vendor/design/tools/adopt.ts --check --dest vendor/design"
+  echo ""
+  echo "Bypass (last resort): git commit --no-verify"
+  exit 1
+fi
+
+# ============================================================================
+# GUARD 2 — design tokens
 # ============================================================================
 TOKEN_GENERATED_FULL=(
-  "apps/web/src/lib/styles/tokens.css"
-  "apps/web/src/lib/motion/tokens.ts"
   "DESIGN.md"
 )
 TOKEN_MIXED_APP_CSS="apps/web/src/app.css"
 # Regex matching any file path that legitimately invalidates generated outputs.
-TOKEN_SOURCE_REGEX='^(packages/tokens/tokens\.json|packages/tokens/build\.ts|packages/tokens/src/.+\.ts)$'
+TOKEN_SOURCE_REGEX='^(apps/web/vendor/design/tokens/.+|apps/web/tools/build-tokens\.ts)$'
 
 app_css_token_region() {
   awk '
@@ -73,10 +102,11 @@ fi
 
 if [ "$token_generated_staged" -eq 1 ]; then
   if ! staged | grep -qE "$TOKEN_SOURCE_REGEX"; then
-    echo "ERROR: A generated token file is staged, but no source file under"
-    echo "       packages/tokens/ is staged. Either tokens.json, build.ts,"
-    echo "       or a generator under src/ must be the cause."
-    echo "       Edit the source and run 'bun run --cwd packages/tokens build'."
+    echo "ERROR: A generated token file is staged, but neither the vendored"
+    echo "       token source nor the product-owned adapter is staged."
+    echo "       Adopt a release that changes apps/web/vendor/design/tokens/,"
+    echo "       or update apps/web/tools/build-tokens.ts, then run:"
+    echo "         bun run tokens:build"
     echo ""
     echo "Generated files:"
     for f in "${TOKEN_GENERATED_FULL[@]}"; do
@@ -92,7 +122,7 @@ if [ "$token_generated_staged" -eq 1 ]; then
 fi
 
 # ============================================================================
-# GUARD 2 — CMS-generated content modules
+# GUARD 3 — CMS-generated content modules
 # ============================================================================
 CONTENT_DIR="apps/web/src/lib/content"
 MANIFEST_PATH="$CONTENT_DIR/generated.manifest.json"

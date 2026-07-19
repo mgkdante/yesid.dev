@@ -1,4 +1,4 @@
-<!-- Kept app-side per packages/ui/PARITY-NOTES.md: yesid.dev requires its bevel and hover shadow. -->
+<!-- Kept app-side per vendor/design/ui/PARITY-NOTES.md: yesid.dev requires its bevel and hover shadow. -->
 <script lang="ts">
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn, type WithElementRef } from "$lib/utils";
@@ -24,7 +24,7 @@
 
 <style>
 	/* Unified card surface — Constitution Section 13 spec, tokenized GO-W2.2.
-	   Spec lives in packages/tokens/tokens.json (surface.2 / border.brand).
+	   Spec lives in vendor/design/tokens/tokens.json (surface.2 / border.brand).
 	   GO2-W5 INTERLOCKING: the panel lifts off the board — surface.2 (--card)
 	   sits one solid step above the page, plus a 1px inset top bevel
 	   (--edge-highlight) so the panel catches the lamp light. SOLID hex
