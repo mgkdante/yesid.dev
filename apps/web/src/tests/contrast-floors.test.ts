@@ -21,18 +21,19 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { colorMixViolations, runContrastPairs, runIdentities } from '@yesid/gates';
 import {
+	YESID_COLOR_MIX_CONFIG,
 	YESID_COLOR_MIX_FILES,
 	YESID_MARKER_ALLOWED_FILES,
 	YESID_AA_PAIRS,
 	YESID_IDENTITIES,
-} from '@yesid/gates/presets/yesid';
+} from '../../tools/design-gates';
 
 const read = (rel: string) => readFileSync(resolve(process.cwd(), rel), 'utf-8');
 
 describe('contrast floors on color: declarations', () => {
 	for (const f of YESID_COLOR_MIX_FILES) {
 		it(`${f}: brand mixes >= 85%, foreground mixes >= 65%`, () => {
-			const bad = colorMixViolations(read(f));
+			const bad = colorMixViolations(read(f), YESID_COLOR_MIX_CONFIG);
 			expect(bad, bad.join('\n')).toEqual([]);
 		});
 	}

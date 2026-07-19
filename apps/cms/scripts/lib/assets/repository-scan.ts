@@ -187,6 +187,7 @@ function isExcluded(repoPath: string): boolean {
   if (
     repoPath === "apps/cms/scripts/lib/assets/repository-scan.ts" ||
     repoPath === "apps/cms/fixtures/assets/audit-baseline.json" ||
+    repoPath === "apps/web/tools/design-gates.ts" ||
     repoPath === "packages/gates/src/presets/yesid.ts" ||
     (repoPath.startsWith("apps/web/src/") &&
       /-fixture\.svelte$/i.test(repoPath))
