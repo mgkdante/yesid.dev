@@ -163,9 +163,9 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
 
 ### Existing Windows worktrees + `.gitattributes` LF enforcement (slice-18k #111)
 
-`.gitattributes` enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — Windows worktrees created before slice-18k may still have CRLF copies of `DESIGN.md`, `apps/web/src/app.css`, `apps/web/src/lib/styles/tokens.css`, `apps/web/src/lib/motion/tokens.ts`, etc.
+`.gitattributes` enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — Windows worktrees created before slice-18k may still have CRLF copies of generated product artifacts such as `DESIGN.md` and `apps/web/src/app.css`.
 
-If `packages/tokens` tests still fail on Windows after pulling slice-18k, run the one-time renormalize:
+If `bun run ci:tokens` still fails only on line endings after pulling slice-18k, run the one-time renormalize:
 
 ```bash
 git add --renormalize .

@@ -43,7 +43,7 @@ vi.mock('$app/stores', () => ({
 		},
 	},
 }));
-vi.mock('$lib/motion/utils/lenis.js', () => ({
+vi.mock('@yesid/motion/utils/lenis', () => ({
 	getLenis: () => mocks.lenis,
 }));
 

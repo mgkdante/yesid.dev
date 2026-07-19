@@ -1,4 +1,4 @@
-<!-- Kept as a yesid.dev compatibility wrapper per packages/ui/PARITY-NOTES.md. -->
+<!-- Kept as a yesid.dev compatibility wrapper per vendor/design/ui/PARITY-NOTES.md. -->
 <script lang="ts">
 	import { StickyPanel as UiStickyPanel, type StickyPanelProps as UiStickyPanelProps } from '@yesid/ui/brand';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';

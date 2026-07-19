@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { duration, ease } from './tokens.js';
+import { duration, ease } from '@yesid/motion/tokens';
 
 // Vitest runs tests from the project root; process.cwd() is reliable.
 // Avoid __dirname (not defined under ESM/Vitest without extra plumbing).
 const tokensCss = readFileSync(
-	resolve(process.cwd(), 'src/lib/styles/tokens.css'),
+	resolve(process.cwd(), 'vendor/design/tokens/tokens.css'),
 	'utf-8',
 );
 

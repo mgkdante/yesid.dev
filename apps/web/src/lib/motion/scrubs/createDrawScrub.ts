@@ -18,7 +18,7 @@
 // Reduced-motion: paths rendered at full stroke (drawSVG 100%); ScrollTrigger
 // NOT registered; destroy is a no-op.
 
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 
 export interface DrawScrubOpts {

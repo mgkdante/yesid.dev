@@ -26,7 +26,7 @@
 	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
-	import { Separator } from '@yesid/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
@@ -419,7 +419,7 @@
 	<ProjectDetailHeader {project} />
 
 	<!-- Edge-to-edge hazard stripes -->
-	<Separator variant="hazard" />
+	<HazardSeparator />
 
 	<!-- Body: 3-column CSS Grid with TOC left, sections center, panel right -->
 	<div class="detail-body">

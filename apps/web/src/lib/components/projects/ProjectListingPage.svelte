@@ -28,7 +28,7 @@
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { MetroStation } from '$lib/components/brand';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
-	import { Separator } from '@yesid/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { siteLabels } from '$lib/content';
 	import { persisted } from '$lib/state/persisted.svelte';
@@ -207,7 +207,7 @@
 		</div>
 	</div>
 
-	<Separator variant="hazard" />
+	<HazardSeparator />
 
 	<!-- Section 2: Listing — filter sidebar (desktop) + cards -->
 	<section class="listing-grid">

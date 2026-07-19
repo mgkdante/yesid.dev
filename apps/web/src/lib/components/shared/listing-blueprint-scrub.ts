@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-import { isViewportAtMost } from '$lib/motion/utils/device.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
+import { isViewportAtMost } from '@yesid/motion/utils/device';
 import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 import { createDrawScrub } from '$lib/motion/scrubs/index.js';
 

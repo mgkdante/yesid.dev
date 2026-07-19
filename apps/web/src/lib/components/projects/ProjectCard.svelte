@@ -14,8 +14,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
-	import { magnetic } from '$lib/motion/actions/magnetic.js';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { cursorGlow, magnetic } from '@yesid/motion/actions';
 	import { SvgIcon } from '$lib/components/brand';
 	import { Badge } from '@yesid/ui/badge';
 	import { Card } from '$lib/components/ui/card';

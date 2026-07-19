@@ -6,10 +6,10 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { styleRegressionViolations } from '@yesid/gates';
-import { YESID_FORBIDDEN } from '@yesid/gates/presets/yesid';
+import { YESID_FORBIDDEN } from '../../tools/design-gates';
 
 const SRC = resolve(process.cwd(), 'src');
-const UI_SRC = resolve(process.cwd(), '../../packages/ui/src');
+const UI_SRC = resolve(process.cwd(), 'vendor/design/ui/src');
 
 // Local .svelte tree walk — kept for the app-specific art-direction pinning
 // tests below (e.g. the stack-engine CTA-doctrine scan). The BRAND
@@ -254,7 +254,10 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 
 describe('global readable typography system', () => {
 	const read = (rel: string) => readFileSync(resolve(SRC, rel), 'utf-8');
-	const tokens = read('lib/styles/tokens.css');
+	const tokens = readFileSync(
+		resolve(process.cwd(), 'vendor/design/tokens/tokens.css'),
+		'utf-8',
+	);
 
 	it('defines shared readable text tokens for cards, controls, tags, and back links', () => {
 		for (const token of [

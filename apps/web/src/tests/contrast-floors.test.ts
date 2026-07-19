@@ -21,18 +21,19 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { colorMixViolations, runContrastPairs, runIdentities } from '@yesid/gates';
 import {
+	YESID_COLOR_MIX_CONFIG,
 	YESID_COLOR_MIX_FILES,
 	YESID_MARKER_ALLOWED_FILES,
 	YESID_AA_PAIRS,
 	YESID_IDENTITIES,
-} from '@yesid/gates/presets/yesid';
+} from '../../tools/design-gates';
 
 const read = (rel: string) => readFileSync(resolve(process.cwd(), rel), 'utf-8');
 
 describe('contrast floors on color: declarations', () => {
 	for (const f of YESID_COLOR_MIX_FILES) {
 		it(`${f}: brand mixes >= 85%, foreground mixes >= 65%`, () => {
-			const bad = colorMixViolations(read(f));
+			const bad = colorMixViolations(read(f), YESID_COLOR_MIX_CONFIG);
 			expect(bad, bad.join('\n')).toEqual([]);
 		});
 	}
@@ -72,14 +73,14 @@ describe('contrast floors on color: declarations', () => {
 
 // ──────────────────────────────────────────────────────────────────────
 // GO2-W5 INTERLOCKING (taste round 2): token-level AA lock. Computes WCAG
-// 2.x relative-luminance ratios straight from packages/tokens/tokens.json so
+// 2.x relative-luminance ratios straight from the immutable release tokens so
 // any palette drift that breaks a contracted pair fails here, with the actual
 // number. The 57 pairs + 2 terminal identities now live in the @yesid/gates
 // yesid preset (transcribed verbatim from the anchor).
 // ──────────────────────────────────────────────────────────────────────
 describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 	const tokens = JSON.parse(
-		readFileSync(resolve(process.cwd(), '../../packages/tokens/tokens.json'), 'utf-8'),
+		readFileSync(resolve(process.cwd(), 'vendor/design/tokens/tokens.json'), 'utf-8'),
 	);
 
 	for (const { label, ratio, floor, pass } of runContrastPairs(tokens, YESID_AA_PAIRS)) {

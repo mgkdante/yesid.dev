@@ -17,18 +17,32 @@ All workflow state lives in **Notion**, operated through the [workflow-overlord]
 
 ```
 ├── apps/web/                       # SvelteKit site (public)
+│   └── vendor/design/              # pinned yesid.dev-design release (customer boundary)
 ├── apps/cms/                       # Directus config + schema dumps + ops scripts
-├── packages/                       # shared packages (shared, tokens)
+├── packages/shared/                # product-owned shared schemas and utilities
 ├── scripts/                        # repo-owned asset and operational utilities
 ├── .claude/, .codex/, .mcp.json    # consumer-side tool config only
 ├── AGENTS.md                       # workflow contract (tool-agnostic)
 ├── CLAUDE.md                       # Claude Code entry pointer
-└── DESIGN.md                       # generated from packages/tokens — do not hand-edit
+└── DESIGN.md                       # generated from vendored tokens — do not hand-edit
 ```
 
 workflow-overlord hooks, skills, and automation live only in the installed plugin. The repo does not mirror plugin runtime code.
 
 Operational references live in Notion (Architecture → Dev vs Prod, Business → Brand) — there is no `docs/` tree in this repo.
+
+## Design-system customer boundary
+
+`yesid.dev-design` is an independently released dependency. This repo vendors one pinned schema-2 release under `apps/web/vendor/design` and owns only the product adapter, product policy, and product tests around it. Upstream package tests stay upstream.
+
+From `apps/web`, verify or update the customer payload:
+
+```bash
+bun vendor/design/tools/adopt.ts --check --dest vendor/design
+bun vendor/design/tools/adopt.ts --tag vX.Y.Z --packages tokens,motion,gates,ui --dest vendor/design
+```
+
+After a release changes the vendored tokens, return to the repo root and run `bun run tokens:build`. CI also runs `bun run ci:tokens` and the product-owned `packages/shared` tests.
 
 ## For a new dev or AI
 
