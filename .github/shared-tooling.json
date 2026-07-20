@@ -15,7 +15,7 @@
 				},
 				{
 					"path": ".github/shared-tooling/turbo.overlay.json",
-					"digest": "sha256:ac8ef82ab7939e11b245260d6a3ac4246ee2e8e152c8827c83b0913c347e1059"
+					"digest": "sha256:c50c16b311f17c20d40a1fad420bf22847b1a4b4588070c0e366988e49da5ec9"
 				}
 			],
 			"target": "turbo.json"

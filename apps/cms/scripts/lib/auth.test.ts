@@ -8,11 +8,17 @@ describe('scripts/lib/auth.ts', () => {
 	beforeEach(() => {
 		originalEnv = {
 			DIRECTUS_BUILD_TOKEN: process.env.DIRECTUS_BUILD_TOKEN,
+			DIRECTUS_DEV_BUILD_TOKEN: process.env.DIRECTUS_DEV_BUILD_TOKEN,
 			DIRECTUS_ADMIN_TOKEN: process.env.DIRECTUS_ADMIN_TOKEN,
 			DIRECTUS_ADMIN_EMAIL: process.env.DIRECTUS_ADMIN_EMAIL,
 			DIRECTUS_ADMIN_PASSWORD: process.env.DIRECTUS_ADMIN_PASSWORD,
+			VERCEL_ENV: process.env.VERCEL_ENV,
+			VERCEL_GIT_COMMIT_REF: process.env.VERCEL_GIT_COMMIT_REF,
 		};
 		delete process.env.DIRECTUS_BUILD_TOKEN;
+		delete process.env.DIRECTUS_DEV_BUILD_TOKEN;
+		delete process.env.VERCEL_ENV;
+		delete process.env.VERCEL_GIT_COMMIT_REF;
 		originalFetch = globalThis.fetch;
 	});
 
@@ -34,6 +40,64 @@ describe('scripts/lib/auth.ts', () => {
 		const token = await getAdminToken('http://localhost:8055');
 		expect(token).toBe('static-token-abc');
 		expect(fetchCalled).toBe(false);
+	});
+
+	it('uses only the dev build token on the develop preview', async () => {
+		process.env.VERCEL_ENV = 'preview';
+		process.env.VERCEL_GIT_COMMIT_REF = 'develop';
+		process.env.DIRECTUS_BUILD_TOKEN = 'production-build-token';
+		process.env.DIRECTUS_DEV_BUILD_TOKEN = 'development-build-token';
+		process.env.DIRECTUS_ADMIN_TOKEN = 'admin-token';
+
+		expect(await getAdminToken('https://cms.dev.yesid.dev')).toBe('development-build-token');
+	});
+
+	it('pins the develop preview token to the dev CMS', async () => {
+		process.env.VERCEL_ENV = 'preview';
+		process.env.VERCEL_GIT_COMMIT_REF = 'develop';
+		process.env.DIRECTUS_DEV_BUILD_TOKEN = 'development-build-token';
+
+		await expect(getAdminToken('https://cms.yesid.dev')).rejects.toThrow(/cms\.dev\.yesid\.dev/);
+	});
+
+	it('requires the canonical HTTPS origin for a trusted target', async () => {
+		process.env.VERCEL_ENV = 'preview';
+		process.env.VERCEL_GIT_COMMIT_REF = 'develop';
+		process.env.DIRECTUS_DEV_BUILD_TOKEN = 'development-build-token';
+
+		await expect(getAdminToken('http://cms.dev.yesid.dev')).rejects.toThrow(/https/u);
+		await expect(getAdminToken('https://cms.dev.yesid.dev/proxy')).rejects.toThrow(
+			/canonical/u,
+		);
+	});
+
+	it('refuses all credentials on an arbitrary preview branch', async () => {
+		process.env.VERCEL_ENV = 'preview';
+		process.env.VERCEL_GIT_COMMIT_REF = 'feature/untrusted-preview';
+		process.env.DIRECTUS_BUILD_TOKEN = 'production-build-token';
+		process.env.DIRECTUS_DEV_BUILD_TOKEN = 'development-build-token';
+		process.env.DIRECTUS_ADMIN_TOKEN = 'admin-token';
+
+		await expect(getAdminToken('https://cms.dev.yesid.dev')).rejects.toThrow(
+			/arbitrary Vercel preview/i,
+		);
+	});
+
+	it('requires the production build token on a production build', async () => {
+		process.env.VERCEL_ENV = 'production';
+		process.env.DIRECTUS_DEV_BUILD_TOKEN = 'development-build-token';
+		process.env.DIRECTUS_ADMIN_TOKEN = 'admin-token';
+
+		await expect(getAdminToken('https://cms.yesid.dev')).rejects.toThrow(
+			/DIRECTUS_BUILD_TOKEN/,
+		);
+	});
+
+	it('pins the production build token to the production CMS', async () => {
+		process.env.VERCEL_ENV = 'production';
+		process.env.DIRECTUS_BUILD_TOKEN = 'production-build-token';
+
+		await expect(getAdminToken('https://cms.dev.yesid.dev')).rejects.toThrow(/cms\.yesid\.dev/);
 	});
 
 	it('can require admin auth when a Build Bot token is also present', async () => {
