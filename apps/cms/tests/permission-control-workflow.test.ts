@@ -55,7 +55,7 @@ function jobPreamble(job: string): string {
 }
 
 test('asset audit regression gate stays inside the credential-free test job', () => {
-	const testJob = jobBlock('test-work', 'test');
+	const testJob = jobBlock('test', 'diff');
 	expect(testJob).toContain('name: Verify asset audit baseline (offline, no CMS)');
 	expect(testJob).toContain('run: bun run verify:assets-audit');
 	expect(testJob).not.toContain('DIRECTUS_ADMIN_TOKEN');
@@ -371,7 +371,10 @@ test('targeted repair audits before and after one exact-confirm fields-only reco
 	}
 });
 
-test('keeps every downstream CMS job body byte-stable', () => {
+test('keeps every unrelated existing CMS job body byte-stable', () => {
+	expect(sha256(jobBlock('test', 'diff'))).toBe(
+		'97fb4967a1b12a9eae6846077098f1df4f998f6215cff8d6e0166ce908552381',
+	);
 	expect(sha256(jobBlock('diff', 'live-diff'))).toBe(
 		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
 	);

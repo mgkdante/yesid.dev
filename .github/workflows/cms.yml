@@ -61,10 +61,6 @@ on:
         default: false
         required: false
 
-permissions:
-  contents: read
-  pull-requests: read
-
 # Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
 # AND workflow_dispatch (which may apply to prod) run to completion.
 concurrency:
@@ -72,45 +68,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  classify:
-    runs-on: ubuntu-latest
-    outputs:
-      classification: ${{ steps.classify.outputs.classification }}
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-
-      - uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        id: classify
-        with:
-          github-token: ${{ github.token }}
-          rules-json: >-
-            {
-              "schema": 1,
-              "always": {
-                "paths": [".bun-version", ".github/scripts/materialize-shared-config.mjs", ".github/shared-tooling.json", ".github/workflows/cms.yml", ".npmrc", "bun.lock", "package.json", "turbo.json"],
-                "prefixes": [".github/actions/", ".github/scripts/", ".github/shared-tooling/", ".github/workflows/"]
-              },
-              "jobs": {
-                "test-work": {
-                  "paths": [".claude/hooks/pretool-block-generated-ts.sh", ".githooks/pre-commit"],
-                  "prefixes": ["apps/cms/", "apps/web/", "gbp-assets/", "packages/"]
-                }
-              },
-              "ignore": {
-                "docs-only": {
-                  "paths": ["AGENTS.md", "CLAUDE.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
-                  "prefixes": ["docs/"]
-                },
-                "irrelevant": {
-                  "paths": [".env.1password", ".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", ".mcp.json", "DESIGN.md"],
-                  "prefixes": [".claude/", ".codex/", ".githooks/"]
-                }
-              }
-            }
-
-  test-work:
-    needs: [classify]
-    if: ${{ fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -130,16 +88,6 @@ jobs:
       # packages/shared/src/types/directus-schema.ts had zero consumers, and
       # this step hit the prod CMS on every test run. The generator
       # (apps/cms/scripts/generate-types.ts) was deleted with it.
-
-  test:
-    name: test
-    needs: [classify, test-work]
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: mgkdante/yesid.dev-design/.github/actions/required-context@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        with:
-          needs-json: ${{ toJSON(needs) }}
 
   diff:
     # Keep the required main-PR `diff` status without exposing production.

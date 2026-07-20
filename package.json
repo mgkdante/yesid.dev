@@ -33,7 +33,6 @@
 	},
 	"devDependencies": {
 		"@google/design.md": "0.1.1",
-		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/config-v0.2.0/yesid-config-v0.2.0.tgz",
 		"turbo": "^2.5.0"
 	},
 	"engines": {
