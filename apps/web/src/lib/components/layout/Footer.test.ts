@@ -234,6 +234,21 @@ describe('Footer analytics preferences', () => {
 		expect(preferences).toHaveTextContent(label);
 		expect(preferences.tagName).toBe('BUTTON');
 		expect(preferences).not.toHaveAttribute('href');
+		expect(preferences).toHaveAttribute('aria-controls', 'analytics-consent');
+		expect(preferences).toHaveAttribute('aria-expanded', 'false');
+	});
+
+	it('reports the preferences rail as expanded when it is already open', () => {
+		consentMock.set({
+			choice: 'denied',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+
+		render(Footer);
+
+		expect(screen.getByTestId('analytics-preferences')).toHaveAttribute('aria-expanded', 'true');
 	});
 
 	it('opens analytics preferences exactly once', async () => {

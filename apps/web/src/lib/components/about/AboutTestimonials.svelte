@@ -3,7 +3,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { fillTemplate } from '$lib/utils/labels';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { cursorGlow } from '@yesid/motion/actions';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';

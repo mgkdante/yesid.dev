@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from 'bits-ui';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';

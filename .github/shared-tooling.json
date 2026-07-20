@@ -1,0 +1,46 @@
+{
+	"schema": 1,
+	"source": {
+		"repository": "mgkdante/yesid.dev-design",
+		"sha": "a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25",
+		"gate": ".github/actions/shared-tooling-drift"
+	},
+	"configurations": [
+		{
+			"mode": "json-merge",
+			"sources": [
+				{
+					"path": "node_modules/.yesid-shared-tooling/turbo/base.json",
+					"digest": "sha256:588a4acf72f44593561112fc945d410548b56cf556bbbc9bc745c1f7b218424f"
+				},
+				{
+					"path": ".github/shared-tooling/turbo.overlay.json",
+					"digest": "sha256:c50c16b311f17c20d40a1fad420bf22847b1a4b4588070c0e366988e49da5ec9"
+				}
+			],
+			"target": "turbo.json"
+		}
+	],
+	"callers": [
+		{
+			"workflow": ".github/workflows/cms.yml",
+			"action": ".github/actions/classify-paths"
+		},
+		{
+			"workflow": ".github/workflows/cms.yml",
+			"action": ".github/actions/required-context"
+		},
+		{
+			"workflow": ".github/workflows/web.yml",
+			"action": ".github/actions/classify-paths"
+		},
+		{
+			"workflow": ".github/workflows/web.yml",
+			"action": ".github/actions/required-context"
+		},
+		{
+			"workflow": ".github/workflows/web.yml",
+			"action": ".github/actions/shared-tooling-drift"
+		}
+	]
+}

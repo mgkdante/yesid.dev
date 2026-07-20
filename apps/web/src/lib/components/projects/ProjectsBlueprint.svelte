@@ -3,7 +3,7 @@
   Uses BlueprintShell for shared crosshairs, ref-labels, and CSS.
 -->
 <script lang="ts">
-	import { BlueprintShell } from '$lib/components/brand';
+	import { BlueprintShell } from '@yesid/ui/brand';
 	import BlueprintTBM from '$lib/components/svg/tunneling/BlueprintTBM.svelte';
 	import BlueprintTunnelSection from '$lib/components/svg/tunneling/BlueprintTunnelSection.svelte';
 	import BlueprintErector from '$lib/components/svg/tunneling/BlueprintErector.svelte';
@@ -12,7 +12,7 @@
 	import BlueprintGroutInjection from '$lib/components/svg/tunneling/BlueprintGroutInjection.svelte';
 </script>
 
-<BlueprintShell labels={['SEC-PROJ / TUNNELING', 'DWG: TBM-EPB-SECTION', 'SCALE NTS | REV.B']}>
+<BlueprintShell normalizeTextFont={false} labels={['SEC-PROJ / TUNNELING', 'DWG: TBM-EPB-SECTION', 'SCALE NTS | REV.B']}>
 	{#snippet hero()}
 		<BlueprintTBM class="h-full w-full" />
 	{/snippet}

@@ -24,8 +24,25 @@ describe('export-fallbacks skip policy', () => {
 		expect(getExportSkipReason({ VERCEL_ENV: 'production' })).toBe('VERCEL_ENV=production');
 	});
 
-	it('allows an explicit live CMS export on Vercel when requested', () => {
+	it('skips arbitrary preview branches even when the live flag is mis-scoped', () => {
+		expect(
+			getExportSkipReason({
+				VERCEL_ENV: 'preview',
+				VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
+				EXPORT_FALLBACKS_LIVE: '1',
+			}),
+		).toBe('VERCEL_ENV=preview branch=feature/untrusted-preview');
+	});
+
+	it('allows live CMS exports only on production and the develop preview', () => {
 		expect(getExportSkipReason({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: '1' })).toBeNull();
+		expect(
+			getExportSkipReason({
+				VERCEL_ENV: 'preview',
+				VERCEL_GIT_COMMIT_REF: 'develop',
+				EXPORT_FALLBACKS_LIVE: '1',
+			}),
+		).toBeNull();
 	});
 
 	it('does not skip local explicit export commands by default', () => {
@@ -39,13 +56,27 @@ describe('fallback policy (live-or-die)', () => {
 		expect(resolveFallbackPolicy({ EXPORT_FALLBACKS_LIVE: '1' })).toBe('soft');
 	});
 
-	it('is fail on ANY Vercel target that opted into a live export', () => {
-		expect(resolveFallbackPolicy({ VERCEL_ENV: 'preview', EXPORT_FALLBACKS_LIVE: '1' })).toBe(
-			'fail',
-		);
+	it('is fail only on trusted Vercel targets that opted into a live export', () => {
+		expect(
+			resolveFallbackPolicy({
+				VERCEL_ENV: 'preview',
+				VERCEL_GIT_COMMIT_REF: 'develop',
+				EXPORT_FALLBACKS_LIVE: '1',
+			}),
+		).toBe('fail');
 		expect(
 			resolveFallbackPolicy({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: 'true' }),
 		).toBe('fail');
+	});
+
+	it('stays soft for an arbitrary preview even when the live flag drifts onto it', () => {
+		expect(
+			resolveFallbackPolicy({
+				VERCEL_ENV: 'preview',
+				VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
+				EXPORT_FALLBACKS_LIVE: '1',
+			}),
+		).toBe('soft');
 	});
 
 	it('stays soft on Vercel without the LIVE flag (the skip gate exits first anyway)', () => {

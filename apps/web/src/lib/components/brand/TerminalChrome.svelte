@@ -6,7 +6,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import StatusDot from './StatusDot.svelte';
-  import { Separator } from '$lib/components/ui/separator';
+  import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
   import { cn } from '$lib/utils';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
@@ -78,7 +78,7 @@
   </div>
 
   <!-- Accent stripe -->
-  <Separator variant="hazard" hazardSize="sm" />
+  <HazardSeparator hazardSize="sm" />
 
   <!-- Body -->
   <div class="terminal-body" class:no-pad={noPadding} use:scrollChain>

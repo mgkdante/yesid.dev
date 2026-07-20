@@ -50,7 +50,8 @@ describe('CtaBlueprintBackground', () => {
 			'utf8',
 		);
 
-		expect(source).toContain("import { BlueprintShell } from '$lib/components/brand'");
+		expect(source).toContain("import { BlueprintShell } from '@yesid/ui/brand'");
+		expect(source).toContain('normalizeTextFont={false}');
 		expect(source).not.toMatch(/\.crosshair|\.ref-label|backdrop-filter|mask(?:-image)?|protected-center|content-shield/);
 		expect(source).not.toMatch(/data-theme|theme-light/);
 	});

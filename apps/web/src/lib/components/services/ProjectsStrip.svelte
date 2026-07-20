@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { Separator } from '$lib/components/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import { cn } from '$lib/utils';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
@@ -50,7 +50,7 @@
 </script>
 
 <div class={cn('projects-strip', className)} data-testid="projects-strip" {...rest}>
-	<Separator variant="hazard" hazardSize="sm" />
+	<HazardSeparator hazardSize="sm" />
 	<div class="strip-inner">
 		<span class="strip-label">{label}</span>
 		<div class="strip-separator" aria-hidden="true"></div>

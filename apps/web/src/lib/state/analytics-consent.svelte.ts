@@ -3,6 +3,7 @@ import { writable, type Readable } from 'svelte/store';
 
 export const ANALYTICS_CONSENT_KEY = 'yesid:analytics-consent:v1';
 export const ANALYTICS_PREFERENCES_OPEN_KEY = 'yesid:analytics-preferences-open:v1';
+export const ANALYTICS_DENIAL_SAFETY_KEY = 'yesid:analytics-denial-safety:v1';
 export const ANALYTICS_STORAGE_PROBE_KEY = 'yesid:analytics-storage-probe:v1';
 
 export type AnalyticsConsentChoice = 'unknown' | 'granted' | 'denied';
@@ -22,8 +23,11 @@ export interface AnalyticsConsentDependencies {
 	write: (value: DurableAnalyticsConsentChoice) => void;
 	remove: () => void;
 	readPreferencesMarker: () => string | null;
-	writePreferencesMarker: () => void;
+	writePreferencesMarker: (choice: AnalyticsConsentChoice) => void;
 	removePreferencesMarker: () => void;
+	readSafetyMarker: () => string | null;
+	writeSafetyMarker: () => void;
+	removeSafetyMarker: () => void;
 	reload: () => void;
 	listen: (listener: (value: string | null) => void) => () => void;
 }
@@ -39,6 +43,7 @@ export function probeDurableAnalyticsStorage(storage: DurableStorageProbeTarget)
 }
 
 export interface AnalyticsConsentStore extends Readable<AnalyticsConsentState> {
+	preferencesFocusRequests: Readable<number>;
 	init: () => () => void;
 	grant: () => void;
 	deny: () => void;
@@ -60,13 +65,30 @@ export function createAnalyticsConsentStore(
 	dependencies: AnalyticsConsentDependencies,
 ): AnalyticsConsentStore {
 	const { subscribe, set } = writable<AnalyticsConsentState>(INITIAL_STATE);
+	const preferencesFocusRequests = writable(0);
 	let current = INITIAL_STATE;
+	let focusRequest = 0;
 	let storageSafetyFailed = false;
 	let stopListening: (() => void) | null = null;
 
 	function commit(next: AnalyticsConsentState): void {
 		current = next;
 		set(next);
+	}
+
+	function requestPreferencesFocus(): void {
+		focusRequest += 1;
+		preferencesFocusRequests.set(focusRequest);
+	}
+
+	function refreshOpenMarker(choice: AnalyticsConsentChoice): void {
+		if (!current.preferencesOpen) return;
+		try {
+			dependencies.writePreferencesMarker(choice);
+			storageSafetyFailed = false;
+		} catch {
+			// The in-memory preferences gate remains fail-closed for this runtime.
+		}
 	}
 
 	function clearPreferencesMarker(): void {
@@ -77,34 +99,53 @@ export function createAnalyticsConsentStore(
 		}
 	}
 
+	function clearSafetyMarker(): void {
+		try {
+			dependencies.removeSafetyMarker();
+		} catch {
+			// A failed cleanup remains fail-closed on the next load.
+		}
+	}
+
 	function stopStorageListener(): void {
 		stopListening?.();
 		stopListening = null;
 	}
 
+	function commitUnavailable(choice: AnalyticsConsentChoice = 'unknown'): void {
+		clearPreferencesMarker();
+		commit({ choice, ready: true, available: false, preferencesOpen: false });
+	}
+
 	function syncExternalChoice(value: string | null): void {
 		if (!current.ready || !current.available) return;
-		if (value === 'granted' && !current.preferencesOpen) {
+		if (value === 'granted') {
+			clearSafetyMarker();
+			refreshOpenMarker('granted');
 			commit({ ...current, choice: 'granted' });
 			return;
 		}
 		if (!isDurableChoice(value)) {
+			let denialPersisted = false;
 			let safetyPersisted = false;
 			try {
 				dependencies.write('denied');
+				denialPersisted = true;
 				safetyPersisted = true;
 			} catch {
 				try {
-					dependencies.writePreferencesMarker();
+					dependencies.writeSafetyMarker();
 					safetyPersisted = true;
 				} catch {
 					// Without either safety signal, this runtime must remain unavailable.
 				}
 			}
 			storageSafetyFailed = !safetyPersisted;
+			if (denialPersisted) clearSafetyMarker();
+			refreshOpenMarker('denied');
 			commit({
 				...current,
-				choice: current.preferencesOpen ? 'unknown' : 'denied',
+				choice: 'denied',
 				available: safetyPersisted,
 			});
 			return;
@@ -112,19 +153,22 @@ export function createAnalyticsConsentStore(
 
 		// A durable denial stops this tab immediately. A grant cannot close a prompt
 		// that this tab's user explicitly opened.
+		refreshOpenMarker('denied');
 		commit({
 			...current,
-			choice: current.preferencesOpen && value === 'granted' ? 'unknown' : 'denied',
+			choice: 'denied',
 		});
 	}
 
 	function chooseGranted(): void {
 		try {
 			dependencies.write('granted');
+			storageSafetyFailed = false;
 		} catch {
 			// The page may keep the choice in memory, but the next load must read storage again.
 		}
 		clearPreferencesMarker();
+		clearSafetyMarker();
 		commit({ ...current, choice: 'granted', preferencesOpen: false });
 	}
 
@@ -140,14 +184,15 @@ export function createAnalyticsConsentStore(
 		if (denialPersisted) {
 			storageSafetyFailed = false;
 			clearPreferencesMarker();
+			clearSafetyMarker();
 			commit({ ...current, choice: 'denied', preferencesOpen: false });
 			return;
 		}
 
-		let markerWritten = false;
+		let safetyMarkerWritten = false;
 		try {
-			dependencies.writePreferencesMarker();
-			markerWritten = true;
+			dependencies.writeSafetyMarker();
+			safetyMarkerWritten = true;
 		} catch {
 			// A durable denial may still provide the safety signal after stale-choice removal.
 		}
@@ -157,7 +202,7 @@ export function createAnalyticsConsentStore(
 			dependencies.remove();
 			staleChoiceRemoved = true;
 		} catch {
-			// The session marker still prevents a surviving grant from being restored.
+			// The denial safety marker still prevents a surviving grant from being restored.
 		}
 
 		if (staleChoiceRemoved) {
@@ -172,17 +217,20 @@ export function createAnalyticsConsentStore(
 		if (denialPersisted) {
 			storageSafetyFailed = false;
 			clearPreferencesMarker();
+			clearSafetyMarker();
 			commit({ ...current, choice: 'denied', preferencesOpen: false });
 			return;
 		}
 
-		if (markerWritten) {
+		if (safetyMarkerWritten) {
 			storageSafetyFailed = false;
+			clearPreferencesMarker();
 			commit({ ...current, choice: 'denied', preferencesOpen: false });
 			return;
 		}
 
 		storageSafetyFailed = true;
+		clearPreferencesMarker();
 		commit({
 			...current,
 			choice: 'denied',
@@ -193,31 +241,22 @@ export function createAnalyticsConsentStore(
 
 	return {
 		subscribe,
+		preferencesFocusRequests,
 		init(): () => void {
 			stopStorageListener();
 			const available = dependencies.hostname() === 'yesid.dev';
 			if (!available) {
-				commit({
-					choice: 'unknown',
-					ready: true,
-					available: false,
-					preferencesOpen: false,
-				});
+				commitUnavailable();
 				return () => {};
 			}
 			try {
 				dependencies.probeDurableStorage();
 			} catch {
-				commit({
-					choice: 'unknown',
-					ready: true,
-					available: false,
-					preferencesOpen: false,
-				});
+				commitUnavailable();
 				return () => {};
 			}
 			if (storageSafetyFailed) {
-				commit({ ...current, ready: true, available: false, preferencesOpen: false });
+				commitUnavailable(current.choice);
 				return () => {};
 			}
 
@@ -225,12 +264,7 @@ export function createAnalyticsConsentStore(
 			try {
 				stored = dependencies.read();
 			} catch {
-				commit({
-					choice: 'unknown',
-					ready: true,
-					available: false,
-					preferencesOpen: false,
-				});
+				commitUnavailable();
 				return () => {};
 			}
 
@@ -238,35 +272,53 @@ export function createAnalyticsConsentStore(
 			try {
 				preferencesMarker = dependencies.readPreferencesMarker();
 			} catch {
-				commit({
-					choice: 'unknown',
-					ready: true,
-					available: false,
-					preferencesOpen: false,
-				});
+				commitUnavailable();
 				return () => {};
 			}
 
-			const preferencesOpen = preferencesMarker === '1';
+			let safetyMarker: string | null;
+			try {
+				safetyMarker = dependencies.readSafetyMarker();
+			} catch {
+				commitUnavailable();
+				return () => {};
+			}
+
+			const markerChoice = isDurableChoice(preferencesMarker)
+				? preferencesMarker
+				: preferencesMarker === 'unknown'
+					? 'unknown'
+					: null;
+			const preferencesOpen = preferencesMarker === '1' || markerChoice !== null;
 			let unsubscribe: () => void;
 			try {
 				unsubscribe = dependencies.listen(syncExternalChoice);
 			} catch {
-				commit({
-					choice: 'unknown',
-					ready: true,
-					available: false,
-					preferencesOpen: false,
-				});
+				commitUnavailable();
 				return () => {};
 			}
 			stopListening = unsubscribe;
+			const choice =
+				markerChoice ??
+				(safetyMarker === '1'
+					? 'denied'
+					: preferencesOpen && stored === 'granted'
+						? 'unknown'
+						: isDurableChoice(stored)
+							? stored
+							: 'unknown');
 			commit({
-				choice: !preferencesOpen && isDurableChoice(stored) ? stored : 'unknown',
+				choice,
 				ready: true,
 				available: true,
 				preferencesOpen,
 			});
+			if (preferencesOpen) {
+				refreshOpenMarker(choice);
+				requestPreferencesFocus();
+			} else if (preferencesMarker !== null) {
+				clearPreferencesMarker();
+			}
 			return () => {
 				if (stopListening === unsubscribe) stopListening = null;
 				unsubscribe();
@@ -280,10 +332,12 @@ export function createAnalyticsConsentStore(
 		},
 		openPreferences(): void {
 			const previousChoice = current.choice;
+			const wasPreferencesOpen = current.preferencesOpen;
 			let markerWritten = false;
 			try {
-				dependencies.writePreferencesMarker();
+				dependencies.writePreferencesMarker(previousChoice);
 				markerWritten = true;
+				storageSafetyFailed = false;
 			} catch {
 				// Without the marker, do not reload; keep the in-memory pause active instead.
 			}
@@ -297,7 +351,15 @@ export function createAnalyticsConsentStore(
 					dependencies.write('denied');
 					durablyRevoked = true;
 				} catch {
-					// Keep unknown in memory and avoid reloading a grant that may have survived.
+					// Keep the prior choice visible and avoid reloading a grant that may have survived.
+				}
+			}
+
+			if (!durablyRevoked) {
+				try {
+					dependencies.writeSafetyMarker();
+				} catch {
+					// The in-memory preferences gate still blocks tracking in this runtime.
 				}
 			}
 
@@ -310,19 +372,26 @@ export function createAnalyticsConsentStore(
 					storageSafetyFailed = true;
 					commit({
 						...current,
-						choice: 'denied',
-						available: false,
+						choice: previousChoice,
+						available: true,
 						preferencesOpen: true,
 					});
+					requestPreferencesFocus();
 					return;
 				}
 			}
-			commit({ ...current, choice: 'unknown', preferencesOpen: true });
-			if (previousChoice === 'granted' && durablyRevoked && markerWritten) {
+			commit({ ...current, choice: previousChoice, preferencesOpen: true });
+			requestPreferencesFocus();
+			if (
+				!wasPreferencesOpen &&
+				previousChoice === 'granted' &&
+				durablyRevoked &&
+				markerWritten
+			) {
 				try {
 					dependencies.reload();
 				} catch {
-					// Reload can be unavailable in embedded browsers; unknown remains in memory.
+					// Reload can be unavailable in embedded browsers; the prior choice remains in memory.
 				}
 			}
 		},
@@ -343,11 +412,19 @@ export const analyticsConsentStore = createAnalyticsConsentStore({
 	},
 	readPreferencesMarker: () =>
 		browser ? window.sessionStorage.getItem(ANALYTICS_PREFERENCES_OPEN_KEY) : null,
-	writePreferencesMarker: () => {
-		if (browser) window.sessionStorage.setItem(ANALYTICS_PREFERENCES_OPEN_KEY, '1');
+	writePreferencesMarker: (choice) => {
+		if (browser) window.sessionStorage.setItem(ANALYTICS_PREFERENCES_OPEN_KEY, choice);
 	},
 	removePreferencesMarker: () => {
 		if (browser) window.sessionStorage.removeItem(ANALYTICS_PREFERENCES_OPEN_KEY);
+	},
+	readSafetyMarker: () =>
+		browser ? window.sessionStorage.getItem(ANALYTICS_DENIAL_SAFETY_KEY) : null,
+	writeSafetyMarker: () => {
+		if (browser) window.sessionStorage.setItem(ANALYTICS_DENIAL_SAFETY_KEY, '1');
+	},
+	removeSafetyMarker: () => {
+		if (browser) window.sessionStorage.removeItem(ANALYTICS_DENIAL_SAFETY_KEY);
 	},
 	reload: () => {
 		if (browser) window.location.reload();

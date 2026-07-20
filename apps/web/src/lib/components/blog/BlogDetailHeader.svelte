@@ -16,7 +16,7 @@
   import { siteLabels } from '$lib/content';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
-  import { boop } from '$lib/motion/actions/boop.js';
+  import { boop } from '@yesid/motion/actions';
   import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
 
   let {

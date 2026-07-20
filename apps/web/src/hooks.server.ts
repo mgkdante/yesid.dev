@@ -1,8 +1,13 @@
-import type { Handle, HandleServerError } from '@sveltejs/kit';
+import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
 import { adapter } from '$lib/adapters';
 import { isProductionHostname, NOINDEX_POLICY } from '$lib/server/indexing';
 import { pathLocale } from '$lib/utils/locale-routing';
 import type { ErrorPageContent } from '$lib/navigation/types';
+import { initializeUi } from '$lib/ui/configure';
+
+export const init: ServerInit = () => {
+	initializeUi();
+};
 
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
 const PUBLIC_CDN_CACHE_CONTROL = 'max-age=86400, stale-while-revalidate=604800';

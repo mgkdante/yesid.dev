@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import type { AboutContent } from '$lib/types';
-	import { Separator } from '$lib/components/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';
@@ -41,7 +41,7 @@
 
 <!-- Top Stripe -->
 <div class="px-3 pt-1" aria-hidden="true">
-	<Separator variant="hazard" />
+	<HazardSeparator />
 </div>
 
 <!-- Bento Dashboard -->

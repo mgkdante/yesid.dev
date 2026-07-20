@@ -1,0 +1,28 @@
+{
+  "collection": "asset_records",
+  "field": "versions",
+  "type": "alias",
+  "meta": {
+    "collection": "asset_records",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "versions",
+    "group": null,
+    "hidden": false,
+    "interface": "list-o2m",
+    "note": null,
+    "options": null,
+    "readonly": true,
+    "required": false,
+    "searchable": true,
+    "sort": 27,
+    "special": [
+      "o2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

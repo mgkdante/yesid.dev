@@ -25,7 +25,7 @@
 
 import { gsap, loadMorphSVG } from '../utils/gsap.js';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
-import { isViewportAtMost } from '../utils/device.js';
+import { isViewportAtMost } from '@yesid/motion/utils/device';
 import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
 import type { MorphShape } from '@repo/shared';
 

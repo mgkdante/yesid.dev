@@ -22,7 +22,7 @@ Publishing is a build-time pipeline, not a runtime read:
 
 1. Editor publishes, updates a published row, or archives a row in Data Studio on prod (the Flow condition matches `status ∈ {published, archived}` — widened at slice-26 close so deprecations deploy too).
 2. The "Vercel revalidate on publish" Flow POSTs `VERCEL_DEPLOY_HOOK_URL` (env var on the Railway service, consumed by the Flow's request operation).
-3. Vercel rebuilds `apps/web`; the `prebuild` step (`apps/cms/scripts/export-fallbacks.ts`) re-exports CMS content into the static content layer, authenticating with `DIRECTUS_BUILD_TOKEN`.
+3. Vercel rebuilds `apps/web`; the `prebuild` step (`apps/cms/scripts/export-fallbacks.ts`) re-exports CMS content into the static content layer with the target-specific read-only Build Bot token.
 4. The deployed site serves the freshly exported content — no Directus data reads at request time.
 
 **Deprecation policy: archive, don't delete.** There is no delete-triggered rebuild path. To retire content, set `status = "archived"` — the archive transition itself fires the rebuild Flow (since the slice-26 condition fix), and export-fallbacks filters archived rows out. Do not add a Directus Flow for deletes.
@@ -44,16 +44,17 @@ Prod apply is gated: the `cms.yml` workflow's push job runs on manual `workflow_
 
 Config lives in `apps/cms/directus-sync.config.cjs` (dumpPath, enabled features, env-var connection). The sync extension is installed via `apps/cms/Dockerfile`; the `directus-sync` CLI is a devDependency of this package.
 
-CI (`.github/workflows/cms.yml`): unit tests on PR, `sync:diff` preview on main-bound PRs, gated `sync:push` on dispatch. (The former `contract-test.yml` — ephemeral Directus + apps/web adapter integration tests — was retired at slice-26 close together with the dormant apps/web directus adapter it existed to test.)
+CI (`.github/workflows/cms.yml`): unit tests + credential-free snapshot-contract `diff` on PR; live `sync:diff` preview runs post-merge on `main` (or a `main`-ref dispatch) so production credentials never reach PR-controlled code; gated `sync:push` on dispatch. (The former `contract-test.yml` — ephemeral Directus + apps/web adapter integration tests — was retired at slice-26 close together with the dormant apps/web directus adapter it existed to test.)
 
 ## Shared secrets (cross-service)
 
-Two secrets connect the CMS to the consumer build. Real values live in 1Password / the respective dashboards — never in git.
+Real values live in 1Password and the respective dashboards, never in git. Directus production and dev credentials are deliberately distinct.
 
 | Secret | Lives in | Purpose |
 |---|---|---|
 | `VERCEL_DEPLOY_HOOK_URL` | Railway service env (read by the publish Flow) | The single rebuild trigger: Flow POSTs it after a publish/archive; Vercel rebuilds the site |
-| `DIRECTUS_BUILD_TOKEN` | Vercel build env (**Preview + Production**) | Auth for `export-fallbacks.ts` during the build. Scoped read-only token of the **Build Bot** user (policy "Build Bot — content read", 1P item "API — Directus — Build Bot"); swapped off the admin token at slice-26 close. ONE shared value: Production auths `cms.yesid.dev`, Preview auths `cms.dev.yesid.dev`. It is the same string on dev + prod Directus, so a `refresh-dev-from-prod` (Neon re-fork) keeps dev live-pull working without re-rotation. Live-pull on each target is gated on `EXPORT_FALLBACKS_LIVE=1` (set on both), which is also live-or-die: any fallback (fetch or token failure) fails the build on Preview and Production alike, and the prior deploy stays live |
+| `DIRECTUS_BUILD_TOKEN` | Vercel **Production only** | Read-only prod Build Bot token for `cms.yesid.dev`. Production live export also requires `EXPORT_FALLBACKS_LIVE=1` and the prod `PUBLIC_DIRECTUS_URL` |
+| `DIRECTUS_DEV_BUILD_TOKEN` | Vercel **Preview restricted to branch `develop` only**; 1Password for the refresh command | Distinct read-only dev Build Bot token for `cms.dev.yesid.dev`. The develop live export also requires branch-scoped `EXPORT_FALLBACKS_LIVE=1`. `refresh-dev-from-prod.sh` rebinds and authenticates this token after every Neon reset before R2 sync or the protected `develop` merge |
 | `LICENSE_KEY` | Railway service env (both services) + GH Actions secret `DIRECTUS_LICENSE_KEY` (contract-test) | Directus 12 Open Innovation Grant key (1P item "API — Directus — License", renews 2027-06-10; 5 activations bound to PUBLIC_URL) |
 
 The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone: `/preview/*` routes and ISR revalidation webhooks never shipped, and slice-27.2 removed the runtime CMS seam they were designed for.
@@ -61,9 +62,21 @@ The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone:
 ### Rotation runbook
 
 - **`VERCEL_DEPLOY_HOOK_URL`** — Vercel dashboard → yesid-dev project → Settings → Git → Deploy Hooks: create a new hook, copy the URL into the Railway service variable (`railway variables --service "Directus CMS" --set "VERCEL_DEPLOY_HOOK_URL=<new>"`), delete the old hook in Vercel, then verify by re-saving any published row and watching a Production build start. Update the 1P item.
-- **`DIRECTUS_BUILD_TOKEN`** — one shared read-only token, set in FOUR places (so it survives a `refresh-dev-from-prod`: the Neon re-fork copies prod's token row into dev). To rotate: mint one value (`openssl rand -hex 32`), `PATCH /users/<build-bot-id> {"token": "<new>"}` with an admin token against BOTH `https://cms.yesid.dev` AND `https://cms.dev.yesid.dev`, then set it on BOTH Vercel targets (`for t in production preview; do vercel env rm DIRECTUS_BUILD_TOKEN "$t" --yes; printf '%s' "<new>" | vercel env add DIRECTUS_BUILD_TOKEN "$t"; done`). Preview also needs `EXPORT_FALLBACKS_LIVE=1` (already set) for the dev build to live-pull. Update the 1P item, fire each deploy hook once, and confirm `export-fallbacks` logs `mode=live` on both the develop (preview) and main (production) builds. Setting the token Production-only breaks dev live-pull loudly: with `EXPORT_FALLBACKS_LIVE=1` the preview build fails (exit 1, live-or-die policy) instead of silently shipping committed `.ts`, and the previous dev deploy stays live until the token is fixed.
+- **Build Bot tokens** — rotate prod and dev independently. Pre-stage the new value in 1Password and only the matching Vercel target without deploying. Then PATCH that environment's single Build Bot token; this immediately invalidates the old value. Trigger and verify the target's live export at once. If it fails, PATCH the old value back and restore the matching Vercel variable. Never put either token or `EXPORT_FALLBACKS_LIVE` on generic Preview. Before a dev database refresh, the parent shell requires both Build Bot values and rejects equality without printing or passing the production value to a child process. The orchestrator then waits for every Neon operation, requires exactly one Build Bot, rebinds the dev token, and verifies `/users/me` with it before R2 sync or the protected `develop` merge.
 - **Prod admin token** — rotate in Data Studio (admin user → token), then update BOTH consumers in the same sitting: the GH Actions secret `DIRECTUS_PROD_ADMIN_TOKEN` (`gh secret set`) and the 1P item "API — Directus — Prod/Dev" `admin_token` field. A mid-deploy rotation orphaned CI once (slice-27.2) — do it between releases.
 - **`LICENSE_KEY`** — only on grant renewal: update the Railway vars on both services + the GH secret + the 1P item. Deactivate stale activations in Data Studio → Settings → License if URLs changed.
+
+### Vercel target contract
+
+| Variable | Production | Preview: `develop` | Generic Preview |
+|---|---|---|---|
+| `PUBLIC_DIRECTUS_URL` | `https://cms.yesid.dev` | `https://cms.dev.yesid.dev` | optional; export skips before auth |
+| `DIRECTUS_BUILD_TOKEN` | prod value | absent | absent |
+| `DIRECTUS_DEV_BUILD_TOKEN` | absent | dev value | absent |
+| `EXPORT_FALLBACKS_LIVE` | `1` | `1` | absent |
+| `OPENWEATHER_API_KEY` | existing key, scoped to Production | existing key, independently scoped to `develop` | absent |
+
+Verify this matrix from Vercel environment-variable metadata after every credential change; values must never be printed. There is currently one OpenWeather credential. At external cutover, bind that same value independently to the two trusted targets and remove it from generic Preview; this is scope separation, not credential separation. The repository has no Vercel environment IaC, so dashboard metadata and successful target builds are the authoritative evidence. The exporter independently rejects generic Preview before token resolution and pins each trusted token to its expected canonical HTTPS CMS origin.
 
 ## Local development (optional)
 
@@ -163,9 +176,9 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
 
 ### Existing Windows worktrees + `.gitattributes` LF enforcement (slice-18k #111)
 
-`.gitattributes` enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — Windows worktrees created before slice-18k may still have CRLF copies of `DESIGN.md`, `apps/web/src/app.css`, `apps/web/src/lib/styles/tokens.css`, `apps/web/src/lib/motion/tokens.ts`, etc.
+`.gitattributes` enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — Windows worktrees created before slice-18k may still have CRLF copies of generated product artifacts such as `DESIGN.md` and `apps/web/src/app.css`.
 
-If `packages/tokens` tests still fail on Windows after pulling slice-18k, run the one-time renormalize:
+If `bun run ci:tokens` still fails only on line endings after pulling slice-18k, run the one-time renormalize:
 
 ```bash
 git add --renormalize .
