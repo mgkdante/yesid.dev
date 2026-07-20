@@ -1,18 +1,12 @@
 import adapter from '@sveltejs/adapter-vercel';
-import { relative, sep } from 'node:path';
+import { projectRunes } from '@yesid/config/svelte/project-runes.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: ['.svelte'],
 	compilerOptions: {
 		// defaults to rune mode for the project, except for `node_modules`. Can be removed in svelte 6.
-		runes: ({ filename }) => {
-			const relativePath = relative(import.meta.dirname, filename);
-			const pathSegments = relativePath.toLowerCase().split(sep);
-			const isExternalLibrary = pathSegments.includes('node_modules');
-
-			return isExternalLibrary ? undefined : true;
-		}
+		runes: projectRunes(import.meta.dirname)
 	},
 	kit: {
 		// Pin to Node 22 LTS. The adapter auto-detects the runtime but Bun ships
