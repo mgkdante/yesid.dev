@@ -88,3 +88,5 @@ project. Original yesid.dev material is all rights reserved. See
 - Support and service inquiries: [SUPPORT.md](SUPPORT.md)
 - Contribution policy: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Third-party material: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+
+<!-- ST6 CMS reporter probe setup. This branch is intentionally never merged. -->
