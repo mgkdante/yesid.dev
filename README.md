@@ -1,55 +1,90 @@
-# yesid. Pipeline
+# yesid.dev
 
-**Digital infrastructure that moves.**
+Source for [yesid.dev](https://yesid.dev), the portfolio and information site
+of Yesid Fernando Otalora, a freelance digital-infrastructure consultant in
+Quebec, Canada. It presents work in database engineering and SQL, data
+pipelines and automation, analytics and reporting, and web development.
 
-The repo for [yesid.dev](https://yesid.dev) — Yesid O.'s freelance digital-solutions practice for web, automation, analytics, databases, and SQL. Portfolio + tooling + workflow systems.
+## Product
 
-## How it works
+The site is a multilingual SvelteKit application with:
 
-All workflow state lives in **Notion**, operated through the [workflow-overlord](https://github.com/mgkdante/workflow-overlord) plugin from Claude Code or Codex.
+- service, project, and technology case-study content;
+- an editorial blog in English, French, and Spanish;
+- accessible contact, legal, privacy, and consent flows;
+- structured metadata, sitemaps, share cards, and machine-readable content;
+- a Directus-backed publishing pipeline with build-time delivery.
 
-- Interactive Notion work uses the hosted OAuth MCP at `https://mcp.notion.com/mcp`.
-- If that OAuth path is unavailable or failing, direct Notion REST is the fallback.
-- Hooks, session sync, and deterministic writes always use direct REST through the plugin.
-- Session retention uses append-only `Transcript Chunks` plus a readable summary and chunk index on the Sessions row.
+## Architecture
 
-## Structure
+Each domain has one owner:
 
+| Path | Responsibility |
+|---|---|
+| `apps/web` | SvelteKit application, routes, product components, generated content adapters, and deployment |
+| `apps/cms` | Directus schema, deterministic fixtures, content export, and operational tooling |
+| `packages/shared` | Product-owned schemas and utilities shared by the web and CMS domains |
+| `apps/web/vendor/design` | Immutable `yesid.dev-design` Release; never edited by the consumer |
+
+Content moves in one direction:
+
+```text
+Directus
+   │ publish
+   ▼
+typed build-time export ──► SvelteKit build ──► Vercel
+       │
+       └── committed fallback snapshot for deterministic local and CI builds
 ```
-├── apps/web/                       # SvelteKit site (public)
-│   └── vendor/design/              # pinned yesid.dev-design release (customer boundary)
-├── apps/cms/                       # Directus config + schema dumps + ops scripts
-├── packages/shared/                # product-owned shared schemas and utilities
-├── scripts/                        # repo-owned asset and operational utilities
-├── .claude/, .codex/, .mcp.json    # consumer-side tool config only
-├── AGENTS.md                       # workflow contract (tool-agnostic)
-├── CLAUDE.md                       # Claude Code entry pointer
-└── DESIGN.md                       # generated from vendored tokens — do not hand-edit
-```
 
-workflow-overlord hooks, skills, and automation live only in the installed plugin. The repo does not mirror plugin runtime code.
-
-Operational references live in Notion (Architecture → Dev vs Prod, Business → Brand) — there is no `docs/` tree in this repo.
+The public application does not query Directus for page data at request time.
+Directus remains the editorial source; the deployed build owns delivery.
 
 ## Design-system customer boundary
 
-`yesid.dev-design` is an independently released dependency. This repo vendors one pinned schema-2 release under `apps/web/vendor/design` and owns only the product adapter, product policy, and product tests around it. Upstream package tests stay upstream.
+`yesid.dev-design` is released independently. This repository vendors one
+exact schema-2 Release under `apps/web/vendor/design` and owns only its product
+adapters, product policy, composed components, generated outputs, and product
+tests.
 
-From `apps/web`, verify or update the customer payload:
+From `apps/web`, verify the customer payload:
 
 ```bash
 bun vendor/design/tools/adopt.ts --check --dest vendor/design
-bun vendor/design/tools/adopt.ts --tag vX.Y.Z --packages tokens,motion,gates,ui --dest vendor/design
 ```
 
-After a release changes the vendored tokens, return to the repo root and run `bun run tokens:build`. CI also runs `bun run ci:tokens` and the product-owned `packages/shared` tests.
+Future upgrades use a reviewed exact-tag adoption. Never patch the vendored
+snapshot.
 
-## For a new dev or AI
+## Local development
 
-1. Read `AGENTS.md`
-2. Find active slice state in Notion `Projects/yesid.dev/`
-3. Check the latest Sessions DB row before editing
+Prerequisites: Bun 1.3+ and Node 22+.
 
-## Brand
+```bash
+bun install --frozen-lockfile
+bun run dev
+```
 
-Primary `#E07800` · Accent `#FFB627` · Inter + JetBrains Mono · Dark-first. Full brand book lives in Notion → 🏢 Business → Brand.
+The default local site uses committed content fallbacks. Connected CMS
+operations require the environment references documented in `.env.example`;
+never commit resolved credentials.
+
+Run the repository gates:
+
+```bash
+bun run test
+bun run check
+bun run ci:tokens
+bun run build
+```
+
+## Repository status
+
+This is a public source repository for portfolio inspection, not an open-source
+project. Original yesid.dev material is all rights reserved. See
+[LICENSE](LICENSE).
+
+- Security reports: [SECURITY.md](SECURITY.md)
+- Support and service inquiries: [SUPPORT.md](SUPPORT.md)
+- Contribution policy: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Third-party material: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
