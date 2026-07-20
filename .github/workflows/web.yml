@@ -28,6 +28,10 @@ on:
     branches: [main, develop]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: read
+
 # Cancel in-progress duplicate runs on PR pushes (force-push / fast follow-ups).
 concurrency:
   group: web-${{ github.workflow }}-${{ github.ref }}
@@ -36,15 +40,52 @@ concurrency:
 # Turbo Remote Cache: when TURBO_TOKEN (a Vercel access token) and TURBO_TEAM
 # (the Vercel team slug) are set as a repo secret + variable, `turbo run` shares
 # a content-addressed cache across every run/branch/PR, so check/test/build go
-# near-instant on unchanged inputs (even on a fresh PR). Empty values degrade
-# gracefully to the local .turbo/cache. One-time setup: `bunx turbo login &&
-# bunx turbo link`, then add the TURBO_TOKEN secret + TURBO_TEAM variable.
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+# near-instant on unchanged inputs (even on a fresh PR). The credential is
+# scoped only to the four steps that invoke Turbo; every action and other step
+# stays outside that trust boundary. Empty values degrade gracefully to the
+# local .turbo/cache. One-time setup: `bunx turbo login && bunx turbo link`,
+# then add the TURBO_TOKEN secret + TURBO_TEAM variable.
 
 jobs:
-  ci:
+  classify:
+    runs-on: ubuntu-latest
+    outputs:
+      classification: ${{ steps.classify.outputs.classification }}
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
+        id: classify
+        with:
+          github-token: ${{ github.token }}
+          rules-json: >-
+            {
+              "schema": 1,
+              "always": {
+                "paths": [".bun-version", ".github/scripts/materialize-shared-config.mjs", ".github/shared-tooling.json", ".github/workflows/web.yml", ".npmrc", "DESIGN.md", "bun.lock", "package.json", "turbo.json"],
+                "prefixes": [".github/actions/", ".github/scripts/", ".github/shared-tooling/", ".github/workflows/"]
+              },
+              "jobs": {
+                "ci-work": {
+                  "paths": [],
+                  "prefixes": ["apps/cms/", "apps/web/", "packages/"]
+                }
+              },
+              "ignore": {
+                "docs-only": {
+                  "paths": ["AGENTS.md", "CLAUDE.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
+                  "prefixes": ["docs/"]
+                },
+                "irrelevant": {
+                  "paths": [".env.1password", ".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", ".mcp.json"],
+                  "prefixes": [".claude/", ".codex/", ".githooks/"]
+                }
+              }
+            }
+
+  ci-work:
+    needs: [classify]
+    if: ${{ fromJSON(needs.classify.outputs.classification).relevant['ci-work'] }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -53,10 +94,23 @@ jobs:
 
       - uses: ./.github/actions/setup
 
+      - name: Materialize shared config
+        run: node .github/scripts/materialize-shared-config.mjs
+
+      - uses: mgkdante/yesid.dev-design/.github/actions/shared-tooling-drift@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
+        with:
+          manifest: .github/shared-tooling.json
+
       - name: Type check (svelte-kit sync + svelte-check)
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         run: bun x turbo run check --filter=@repo/web
 
       - name: Unit tests
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         run: bun x turbo run test --filter=@repo/web
 
       - name: Content-manifest integrity (ci:content)
@@ -79,12 +133,24 @@ jobs:
 
       - name: Build
         env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
           # Hermetic CI build (slice-28.4, audit #137): skip the
           # export-fallbacks prebuild — the committed content modules are the
           # content source and CI must not reach a live CMS. Declared in
           # turbo.json build env so turbo strict mode forwards it.
           EXPORT_FALLBACKS_SKIP: "1"
         run: bun x turbo run build --filter=@repo/web
+
+  ci:
+    name: ci
+    needs: [classify, ci-work]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mgkdante/yesid.dev-design/.github/actions/required-context@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
+        with:
+          needs-json: ${{ toJSON(needs) }}
 
   # ── E2E (Playwright) against a LOCAL hermetic preview ──────────────────────
   # Runs ENTIRELY on the runner: the playwright webServer builds with
@@ -105,10 +171,11 @@ jobs:
     # (docs-only, or to unblock a merge if the suite is misbehaving).
     if: >-
       ${{ github.event_name == 'pull_request'
+          && fromJSON(needs.classify.outputs.classification).relevant['ci-work']
           && !contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
     # Gate the 3 shards on the cheap ci job: its build populates the turbo
     # remote cache, so shards replay it instead of running 4 identical builds.
-    needs: ci
+    needs: [classify, ci]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # Shard across 3 runners. Each shard builds from the warm turbo remote cache
@@ -145,6 +212,8 @@ jobs:
       # build so the turbo cache key lines up; the CMS is never contacted.
       - name: Build (turbo, cache-eligible)
         env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
           EXPORT_FALLBACKS_SKIP: "1"
         run: bun x turbo run build --filter=@repo/web
 
