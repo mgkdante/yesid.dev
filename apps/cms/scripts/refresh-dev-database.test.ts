@@ -72,6 +72,31 @@ describe('refreshDevDatabase', () => {
 		expect(calls[6]?.url).toBe('https://cms.dev.yesid.dev/users/me?fields=id');
 	});
 
+	it('continues polling when Neon retries a failed operation', async () => {
+		let requestCount = 0;
+		const responses = [
+			json({ operations: [{ id: 'reset-operation', status: 'failed' }] }),
+			json({ operation: { id: 'reset-operation', status: 'running' } }),
+			json({ operation: { id: 'reset-operation', status: 'finished' } }),
+			json({ data: [{ id: 'build-bot-role', name: 'Build Bot' }] }),
+			json({ data: [{ id: 'build-bot-user', status: 'active' }] }),
+			json({ data: { id: 'build-bot-user' } }),
+			json({ data: { id: 'build-bot-user' } }),
+		];
+
+		await refreshDevDatabase({
+			...options(),
+			fetch: (async () => {
+				requestCount += 1;
+				const response = responses.shift();
+				if (!response) throw new Error('unexpected request');
+				return response;
+			}) as unknown as typeof fetch,
+		});
+
+		expect(requestCount).toBe(7);
+	});
+
 	it('fails closed unless exactly one Build Bot role exists', async () => {
 		for (const roles of [
 			[],

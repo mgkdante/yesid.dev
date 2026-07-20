@@ -90,7 +90,12 @@ function operationFinished(status: string): boolean {
 }
 
 function operationPending(status: string): boolean {
-	return status === 'scheduling' || status === 'running' || status === 'cancelling';
+	return (
+		status === 'scheduling' ||
+		status === 'running' ||
+		status === 'failed' ||
+		status === 'cancelling'
+	);
 }
 
 async function waitForOperation(
