@@ -54,6 +54,14 @@ describe('production processor evidence', () => {
 		expect(evidence).toContain('zero recorded incidents is not proof that no earlier incident occurred');
 	});
 
+	test('keeps private operator coordinates out of tracked evidence', () => {
+		expect(evidence).toContain('contact@yesid.dev');
+		expect(evidence).toContain('held outside git');
+		expect(evidence).not.toMatch(
+			/(^|[^0-9])\+?1?[ .-]?\(?[2-9][0-9]{2}\)?[ .-][0-9]{3}[ .-][0-9]{4}([^0-9]|$)/
+		);
+	});
+
 	test('records the current Plausible goals and later Vercel upgrade without stale gates', () => {
 		for (const goal of [
 			'404',

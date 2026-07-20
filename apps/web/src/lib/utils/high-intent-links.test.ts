@@ -4,8 +4,8 @@ import { isDirectContactHref, isProjectProofHref } from './high-intent-links';
 describe('isDirectContactHref', () => {
 	it.each([
 		'mailto:contact@yesid.dev',
-		'tel:+18194465594',
-		'https://wa.me/18194465594',
+		'tel:+12025550100',
+		'https://wa.me/12025550100',
 	])('accepts the approved direct-contact URL %s', (href) => {
 		expect(isDirectContactHref(href)).toBe(true);
 	});
@@ -18,9 +18,9 @@ describe('isDirectContactHref', () => {
 		'tel:',
 		'tel:+',
 		'https://wa.me/',
-		'http://wa.me/18194465594',
-		'https://wa.me:8443/18194465594',
-		'https://wa.me.evil.example/18194465594',
+		'http://wa.me/12025550100',
+		'https://wa.me:8443/12025550100',
+		'https://wa.me.evil.example/12025550100',
 		'https://github.com/mgkdante',
 		'https://www.linkedin.com/in/otaloray/',
 		'https://cal.com/yesid-dev',
@@ -44,7 +44,7 @@ describe('isProjectProofHref', () => {
 		'not a url',
 		'/projects/yesid-dev',
 		'mailto:contact@yesid.dev',
-		'tel:+18194465594',
+		'tel:+12025550100',
 		'javascript:alert(1)',
 		'https://user:password@example.com/private',
 	])('rejects the ineligible project-proof URL %s', (href) => {

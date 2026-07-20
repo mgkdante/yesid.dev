@@ -42,7 +42,6 @@ export const siteMeta: SiteMeta = {
 			'TypeScript',
 		],
 		name: 'Yesid',
-		phone: '+18194465594',
 	},
 	tagline: {
 		en: 'Digital infrastructure that moves.',
