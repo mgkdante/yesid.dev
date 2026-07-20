@@ -219,12 +219,14 @@ pr_url="$(
 echo "  PR: $pr_url"
 
 assert_preflight_lock() {
-  expected_pr_lock="$(printf 'true\t%s\t%s' "$snapshot_sha" "$develop_sha")"
+  expected_draft_state="${1:-true}"
+  expected_pr_lock="$(printf '%s\t%s\t%s\tdevelop\t%s' \
+    "$expected_draft_state" "$refresh_branch" "$snapshot_sha" "$develop_sha")"
   current_pr_lock="$(
     run_gh pr view "$pr_url" \
       --repo "$GITHUB_REPOSITORY" \
-      --json isDraft,headRefOid,baseRefOid \
-      --jq '[.isDraft, .headRefOid, .baseRefOid] | @tsv'
+      --json isDraft,headRefName,headRefOid,baseRefName,baseRefOid \
+      --jq '[.isDraft, .headRefName, .headRefOid, .baseRefName, .baseRefOid] | @tsv'
   )"
   if [[ "$current_pr_lock" != "$expected_pr_lock" ]]; then
     echo "ERROR: refresh PR is no longer the expected locked draft." >&2
@@ -280,6 +282,7 @@ assert_preflight_lock
 echo ""
 echo "[4/4] GitHub: merge the checked snapshot into protected develop..."
 run_gh pr ready "$pr_url" --repo "$GITHUB_REPOSITORY"
+assert_preflight_lock false
 run_gh pr merge "$pr_url" \
   --repo "$GITHUB_REPOSITORY" \
   --merge \

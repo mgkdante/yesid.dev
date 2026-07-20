@@ -96,10 +96,13 @@ describe('refresh-dev-from-prod orchestration', () => {
 		expect(script).not.toContain('required_check_count');
 	});
 
-	it('revalidates the draft head and base locks before every external stage', () => {
-		expect(script).toContain('--json isDraft,headRefOid,baseRefOid');
+	it('revalidates the draft branch names and commit locks before every external stage', () => {
+		expect(script).toContain('--json isDraft,headRefName,headRefOid,baseRefName,baseRefOid');
+		expect(script).toContain('"$refresh_branch"');
+		expect(script).toContain('\\tdevelop\\t');
 		expect(script).toContain('assert_preflight_lock');
-		expect(script.match(/^assert_preflight_lock$/gmu)).toHaveLength(3);
+		expect(script.match(/^assert_preflight_lock(?: false)?$/gmu)).toHaveLength(4);
+		expect(script).toContain('assert_preflight_lock false\nrun_gh pr merge');
 	});
 
 	it('closes the draft and deletes its branch when database refresh fails', () => {
@@ -134,13 +137,20 @@ esac
 				join(bin, 'gh'),
 				`#!/bin/sh
 log_file=${JSON.stringify(log)}
+head_ref_file=${JSON.stringify(join(harness, 'head-ref'))}
 if [ -n "\${DIRECTUS_BUILD_TOKEN+x}" ]; then printf 'leaked prod token to gh\\n' >> "$log_file"; fi
 printf 'gh %s\\n' "$*" >> "$log_file"
 case "$*" in
   "api repos/mgkdante/yesid.dev/rules/branches/develop "*) printf 'ci\\ngitleaks\\ntest\\n' ;;
-  *pr\\ create*) printf '%s\\n' 'https://github.com/mgkdante/yesid.dev/pull/999' ;;
+  *pr\\ create*)
+    while [ "$#" -gt 0 ]; do
+      if [ "$1" = "--head" ]; then shift; printf '%s\\n' "$1" > "$head_ref_file"; break; fi
+      shift
+    done
+    printf '%s\\n' 'https://github.com/mgkdante/yesid.dev/pull/999'
+    ;;
   *pr\\ checks*--json\\ name*) printf 'ci\\ngitleaks\\ntest\\n' ;;
-  *pr\\ view*) printf 'true\\t%s\\t%s\\n' '${snapshotSha}' '${developSha}' ;;
+  *pr\\ view*) printf 'true\\t%s\\t%s\\tdevelop\\t%s\\n' "$(cat "$head_ref_file")" '${snapshotSha}' '${developSha}' ;;
 esac
 `,
 			);
