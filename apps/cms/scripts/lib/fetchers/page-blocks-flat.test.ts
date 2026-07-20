@@ -168,6 +168,38 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					{ languages_code: 'fr', label: 'Courriel' },
 				],
 			},
+			{
+				id: 'phone',
+				status: 'published',
+				sort: 4,
+				href: 'tel:+12025550100',
+				icon: 'phone',
+				translations: [{ languages_code: 'en', label: 'Phone' }],
+			},
+			{
+				id: 'whatsapp',
+				status: 'published',
+				sort: 5,
+				href: 'https://wa.me/12025550100',
+				icon: 'whatsapp',
+				translations: [{ languages_code: 'en', label: 'WhatsApp' }],
+			},
+			{
+				id: 'sms',
+				status: 'published',
+				sort: 6,
+				href: 'sms:+12025550100',
+				icon: 'sms',
+				translations: [{ languages_code: 'en', label: 'SMS' }],
+			},
+			{
+				id: 'whatsapp-api',
+				status: 'published',
+				sort: 7,
+				href: 'https://api.whatsapp.com/send?phone=12025550100',
+				icon: 'whatsapp',
+				translations: [{ languages_code: 'en', label: 'WhatsApp API' }],
+			},
 		]);
 		expect(out).toEqual([
 			{

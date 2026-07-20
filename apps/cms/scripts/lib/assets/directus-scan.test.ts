@@ -1789,7 +1789,7 @@ describe("response validation, availability precedence, and sanitized failures",
       pageHandler: (call) => {
         if (call.surface === "route_seo") {
           throw new Error(
-            "Bearer read-secret; token=abc123; /home/mgkdante/private",
+            "Bearer read-secret; token=abc123; /home/operator/private",
           );
         }
         return undefined;
@@ -1813,7 +1813,7 @@ describe("response validation, availability precedence, and sanitized failures",
     for (const forbidden of [
       "read-secret",
       "abc123",
-      "/home/mgkdante",
+      "/home/operator",
       "Bearer",
     ]) {
       expect(canonical).not.toContain(forbidden);

@@ -106,9 +106,29 @@ export async function fetchTechStackPageContent({
 // contact-page
 // ---------------------------------------------------------------------------
 
+function isPrivatePhoneChannel(href: string): boolean {
+	const value = href.trim();
+	if (/^(?:tel|sms|whatsapp):/i.test(value)) return true;
+
+	try {
+		const hostname = new URL(value).hostname.toLowerCase();
+		return (
+			hostname === 'wa.me' ||
+			hostname === 'whatsapp.com' ||
+			hostname.endsWith('.whatsapp.com')
+		);
+	} catch {
+		return false;
+	}
+}
+
 export function toContactChannels(rows: readonly ContactChannelRow[]): ContactContent['socials'] {
 	return [...rows]
-		.filter((row) => row.status === undefined || row.status === 'published')
+		.filter(
+			(row) =>
+				(row.status === undefined || row.status === 'published') &&
+				!isPrivatePhoneChannel(str(row.href)),
+		)
 		.sort((a, b) => (a.sort ?? Number.MAX_SAFE_INTEGER) - (b.sort ?? Number.MAX_SAFE_INTEGER) || a.id.localeCompare(b.id))
 		.map((row) => ({
 			label: toLocalizedString(row.translations ?? [], 'label'),
