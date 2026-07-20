@@ -111,7 +111,7 @@ function isPrivatePhoneChannel(href: string): boolean {
 	if (/^(?:tel|sms|whatsapp):/i.test(value)) return true;
 
 	try {
-		const hostname = new URL(value).hostname.toLowerCase();
+		const hostname = new URL(value).hostname.toLowerCase().replace(/\.+$/, '');
 		return (
 			hostname === 'wa.me' ||
 			hostname === 'whatsapp.com' ||
