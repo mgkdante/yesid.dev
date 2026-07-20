@@ -43,7 +43,6 @@ export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'] as const;
 // --- Zod schemas (validate fixture JSON at load-time) ----------------------
 //
 // Per spec.md § Schema:
-//   - parent fields: 14 (id + 13 business fields; owner_phone added homework #12)
 //   - translation rows: at least 1 EN required (FR/ES optional, partial)
 //   - EN default_description must be 50-200 chars (SEO band); FR/ES allow
 //     empty strings since copy is added later via Data Studio
@@ -70,7 +69,6 @@ export const SiteMetaFixtureSchema = z
 		owner_locality: z.string().max(80),
 		owner_region: z.string().max(4),
 		owner_country: z.string().length(2),
-		owner_phone: z.string().regex(/^\+[0-9]{7,15}$/, 'E.164 phone'),
 		owner_knows_about: z.string(), // CSV
 		default_og_image: z.string().uuid().nullable(),
 		theme_color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
