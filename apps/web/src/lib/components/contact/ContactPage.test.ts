@@ -356,8 +356,8 @@ describe('ContactPage', () => {
 
 	it.each([
 		['email', 'mailto:contact@yesid.dev'],
-		['phone', 'tel:+18194465594'],
-		['whatsapp', 'https://wa.me/18194465594'],
+		['phone', 'tel:+12025550100'],
+		['whatsapp', 'https://wa.me/12025550100'],
 	])('tracks one direct contact event for %s', async (icon, href) => {
 		const content = {
 			...contactContent,
@@ -380,8 +380,8 @@ describe('ContactPage', () => {
 		['linkedin', 'https://www.linkedin.com/in/otaloray/'],
 		['cal-link-without-calendar-icon', 'https://cal.com/yesid-dev'],
 		['ordinary-https', 'https://example.com/contact'],
-		['insecure-whatsapp', 'http://wa.me/18194465594'],
-		['spoofed-whatsapp', 'https://wa.me.evil.example/18194465594'],
+		['insecure-whatsapp', 'http://wa.me/12025550100'],
+		['spoofed-whatsapp', 'https://wa.me.evil.example/12025550100'],
 		['malformed', 'not a url'],
 	])('does not track the ineligible channel %s', async (icon, href) => {
 		const content = {

@@ -16,6 +16,14 @@ function extractCredentialWrapper(): string {
 }
 
 describe('blog editorial date runbook credential wrapper', () => {
+	it('uses a configurable repository-local credential file', () => {
+		const wrapper = extractCredentialWrapper();
+
+		expect(wrapper).toContain('YESID_ENV_FILE');
+		expect(wrapper).toContain('${YESID_ENV_FILE:-.env}');
+		expect(wrapper).not.toContain('Yesito/projects');
+	});
+
 	it('fails closed before op when OP_TOKEN is missing', () => {
 		const script = `${extractCredentialWrapper()}
 

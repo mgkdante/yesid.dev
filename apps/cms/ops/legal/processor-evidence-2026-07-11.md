@@ -143,7 +143,7 @@ Existing records identify the operator as Yesid Fernando Otalora, describe no cu
 
 The operator confirmed they are not an OIQ member. Public EN/FR/ES person-title uses of `engineer`, `ingénieur`, and `ingeniero` require replacement with operator-approved non-reserved wording. Generic discipline and service phrases such as `database-engineering`, `data engineering`, and `ingénierie de données` are a separate category and must not be changed by a blind text replacement.
 
-The operator approved a Montreal service-area presentation and confirmed that they travel to clients in Montreal. The Gatineau street address is not a customer-facing location and is to remain hidden from the service-area profile. Public contact is `contact@yesid.dev`, phone and WhatsApp are `+1 819 446-5594`, and `admin@yesid.dev` is internal-only. These are approved NAP fields, not publication receipts.
+The operator approved a Montreal service-area presentation and confirmed that they travel to clients in Montreal. The Gatineau street address is not a customer-facing location and is to remain hidden from the service-area profile. Public contact is `contact@yesid.dev`; the approved phone and WhatsApp value is held outside git in the restricted NAP source; and `admin@yesid.dev` is internal-only. These are approved NAP fields, not publication receipts.
 
 Before profile or directory publication, record the remaining operator approval for:
 

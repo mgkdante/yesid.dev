@@ -17,7 +17,7 @@ interface MockLenis {
 
 let mockLenis: MockLenis | null = null;
 
-vi.mock('$lib/motion/utils/lenis.js', () => ({
+vi.mock('@yesid/motion/utils/lenis', () => ({
 	getLenis: () => mockLenis,
 }));
 

@@ -4,11 +4,9 @@
 -->
 <script lang="ts">
 	import type { BlogPost } from '$lib/types';
-	import { boop } from '$lib/motion/actions/boop.js';
-	import { magnetic } from '$lib/motion/actions/magnetic.js';
-	import { Badge } from '$lib/components/ui/badge';
+	import { boop, cursorGlow, magnetic } from '@yesid/motion/actions';
+	import { Badge } from '@yesid/ui/badge';
 	import { MetroStation } from '$lib/components/brand';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';

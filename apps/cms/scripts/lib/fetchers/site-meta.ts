@@ -63,7 +63,6 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 		owner: {
 			name: row.owner_name,
 			jobTitle: toLocalizedString(row.translations, 'owner_job_title'),
-			...(row.owner_phone && { phone: row.owner_phone }),
 			address: {
 				locality: row.owner_locality,
 				region: row.owner_region,
@@ -121,7 +120,6 @@ export async function fetchSiteMeta({ client }: FetcherContext): Promise<SiteMet
 				'owner_locality',
 				'owner_region',
 				'owner_country',
-				'owner_phone',
 				'owner_knows_about',
 				'default_og_image',
 				'theme_color',

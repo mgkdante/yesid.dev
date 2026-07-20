@@ -1,14 +1,14 @@
 <script lang="ts">
 	import '@fontsource-variable/inter';
 	import '@fontsource-variable/jetbrains-mono';
-	import '../app.css';
+	import '$lib/styles/site.css';
 	import '$lib/styles/terminal.css';
 	import Nav from '$lib/components/layout/Nav.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { prefersReducedMotion } from '$lib/motion/stores';
+	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
 	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
 	// server-side from $page.data.seo, which is populated by +layout.ts load.
@@ -22,7 +22,7 @@
 	import { provideLocale } from '$lib/utils/locale-context';
 	import { delocalizePath } from '$lib/utils/locale-routing';
 	import { attachLocaleHandoff } from '$lib/state/locale-handoff.svelte';
-	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
+	import { initLenis, destroyLenis } from '@yesid/motion/utils/lenis';
 	import { themeStore } from '$lib/stores/theme.svelte';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';

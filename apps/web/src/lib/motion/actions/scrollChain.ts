@@ -28,7 +28,7 @@
  * scrollTo current position with immediate:true stops the internal animation
  * and re-syncs targetScroll to the actual position).
  */
-import { getLenis } from '../utils/lenis.js';
+import { getLenis } from '@yesid/motion/utils/lenis';
 
 export function scrollChain(node: HTMLElement) {
 	function hasVerticalOverflow(): boolean {

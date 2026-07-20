@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { ChevronToggle } from '$lib/components/brand';
-	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
+	import { ChevronToggle } from '@yesid/ui/brand';
+	import { Collapsible, CollapsibleTrigger } from '@yesid/ui/collapsible';
+	import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
 
 	let {
 		open,

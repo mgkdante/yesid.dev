@@ -14,7 +14,7 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { getLenis } from '$lib/motion/utils/lenis.js';
+	import { getLenis } from '@yesid/motion/utils/lenis';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
 	import ProjectsStrip from './ProjectsStrip.svelte';

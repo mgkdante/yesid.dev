@@ -29,7 +29,7 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 	owner_locality: 'Montreal',
 	owner_region: 'QC',
 	owner_country: 'CA',
-	owner_phone: '+18194465594',
+	owner_phone: '+12025550100',
 	owner_knows_about: [
 		'PostgreSQL',
 		'dbt',
@@ -102,7 +102,6 @@ const EXPECTED_SITE_META: SiteMeta = {
 			fr: 'Développeur de solutions numériques à la pige',
 			es: 'Desarrollador freelance de soluciones digitales',
 		},
-		phone: '+18194465594',
 		address: {
 			locality: 'Montreal',
 			region: 'QC',
@@ -123,6 +122,15 @@ const EXPECTED_SITE_META: SiteMeta = {
 };
 
 describe('site-meta fetcher', () => {
+	it('does not publish a phone value stored in the private CMS field', () => {
+		const result = toSiteMeta({
+			...SITE_META_FIXTURE,
+			owner_phone: '+12025550100',
+		});
+
+		expect(result.owner).not.toHaveProperty('phone');
+	});
+
 	it('transforms a Directus singleton row into the current SiteMeta shape', () => {
 		const result = toSiteMeta(SITE_META_FIXTURE);
 		expect(result).toEqual(EXPECTED_SITE_META);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { getAnalyticsPolicy } from '$lib/analytics/policy';
 	import { Button } from '$lib/components/ui/button';
 	import { siteLabels } from '$lib/content';
@@ -22,25 +22,61 @@
 	);
 	const acceptLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.acceptLabel, locale));
 	const declineLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.declineLabel, locale));
+	const settingsLabel = $derived(
+		resolveLocale(siteLabels.ui.analyticsConsent.settingsLabel, locale),
+	);
 	const privacyLabel = $derived(resolveLocale(siteLabels.ui.analyticsConsent.privacyLabel, locale));
 	const privacyHref = $derived(localizeHref('/legal/privacy', locale));
 	const analyticsPolicy = $derived(
 		getAnalyticsPolicy(siteLabels.ui.analyticsConsent, $analyticsConsentStore),
 	);
+	const preferencesFocusRequests = analyticsConsentStore.preferencesFocusRequests;
+	const focusRequest = $derived($preferencesFocusRequests);
+	const preferencesMode = $derived($analyticsConsentStore.preferencesOpen);
+	const heading = $derived(preferencesMode ? settingsLabel : title);
+	const shouldShow = $derived(analyticsPolicy.showPrompt && (canShow || preferencesMode));
+	const acceptActive = $derived(preferencesMode && $analyticsConsentStore.choice === 'granted');
+	const declineActive = $derived(preferencesMode && $analyticsConsentStore.choice === 'denied');
+	let railElement = $state<HTMLElement | null>(null);
+
+	// TODO(CMS): replace declineLabel in preferences mode with site_labels.ui_analytics_consent_withdraw_label via the guarded CMS flow.
+	$effect(() => {
+		const request = focusRequest;
+		const target = railElement;
+		if (!preferencesMode || !shouldShow || !target) return;
+
+		void tick().then(() => {
+			if (
+				!railElement ||
+				railElement !== target ||
+				!preferencesMode ||
+				focusRequest !== request
+			)
+				return;
+			const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+				? 'auto'
+				: 'smooth';
+			target.scrollIntoView?.({ behavior, block: 'nearest' });
+			target.focus({ preventScroll: true });
+		});
+	});
 
 	onMount(() => analyticsConsentStore.init());
 </script>
 
-{#if canShow && analyticsPolicy.showPrompt}
+{#if shouldShow}
 	<section
+		bind:this={railElement}
+		id="analytics-consent"
 		data-testid="analytics-consent"
+		tabindex="-1"
 		aria-labelledby="analytics-consent-title"
 		aria-describedby="analytics-consent-description"
 		class="analytics-consent fixed inset-x-4 mx-auto sm:inset-x-6"
 	>
 		<div class="consent-layout">
 			<div class="consent-copy">
-				<h2 id="analytics-consent-title" class="sr-only">{title}</h2>
+				<h2 id="analytics-consent-title" class="sr-only">{heading}</h2>
 				<div class="consent-disclosure">
 					<p id="analytics-consent-description" class="consent-description">
 						{description}
@@ -55,12 +91,13 @@
 				</div>
 			</div>
 
-			<div class="consent-actions">
+			<div class="consent-actions" role="group" aria-labelledby="analytics-consent-title">
 				<Button
 					variant="ghost"
 					size="cta-sm"
-					class="min-h-11 min-w-0 w-full px-3 leading-tight whitespace-normal sm:w-auto sm:px-5 sm:whitespace-nowrap"
+					class={`consent-choice min-h-11 min-w-0 w-full px-3 leading-tight whitespace-normal sm:w-auto sm:px-5 sm:whitespace-nowrap${declineActive ? ' consent-choice-active' : ''}`}
 					data-testid="analytics-consent-decline"
+					aria-pressed={preferencesMode ? declineActive : undefined}
 					onclick={() => analyticsConsentStore.deny()}
 				>
 					{declineLabel}
@@ -68,8 +105,9 @@
 				<Button
 					variant="default"
 					size="cta-sm"
-					class="min-h-11 min-w-0 w-full px-3 leading-tight whitespace-normal hover:translate-y-0 hover:shadow-none sm:w-auto sm:px-5 sm:whitespace-nowrap"
+					class={`consent-choice min-h-11 min-w-0 w-full px-3 leading-tight whitespace-normal hover:translate-y-0 hover:shadow-none sm:w-auto sm:px-5 sm:whitespace-nowrap${acceptActive ? ' consent-choice-active' : ''}`}
 					data-testid="analytics-consent-accept"
+					aria-pressed={preferencesMode ? acceptActive : undefined}
 					onclick={() => analyticsConsentStore.grant()}
 				>
 					{acceptLabel}
@@ -136,6 +174,11 @@
 		justify-content: end;
 		align-items: stretch;
 		gap: 0.5rem;
+	}
+
+	:global(.consent-choice[aria-pressed='true']) {
+		border-color: var(--border-brand-active);
+		box-shadow: inset 0 0 0 1px var(--border-brand-active);
 	}
 
 	@media (min-width: 48rem) {

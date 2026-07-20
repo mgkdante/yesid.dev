@@ -1,0 +1,21 @@
+{
+	"tasks": {
+		"build": {
+			"outputs": [".svelte-kit/**", ".vercel/**", "dist/**"],
+			"env": [
+				"PUBLIC_DIRECTUS_URL",
+				"DIRECTUS_ADMIN_TOKEN",
+				"DIRECTUS_BUILD_TOKEN",
+				"DIRECTUS_DEV_BUILD_TOKEN",
+				"DIRECTUS_ADMIN_EMAIL",
+				"DIRECTUS_ADMIN_PASSWORD",
+				"DIRECTUS_READ_TOKEN",
+				"EXPORT_FALLBACKS_SKIP",
+				"EXPORT_FALLBACKS_LIVE",
+				"VERCEL_ENV",
+				"VERCEL_GIT_COMMIT_REF",
+				"OPENWEATHER_API_KEY"
+			]
+		}
+	}
+}

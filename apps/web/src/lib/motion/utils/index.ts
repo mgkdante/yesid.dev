@@ -8,7 +8,7 @@ export {
 	gsap,
 	ScrollTrigger,
 } from './gsap.js';
-export { isTouchDevice, isViewportAtMost } from './device.js';
+export { isTouchDevice, isViewportAtMost } from '@yesid/motion/utils/device';
 export { convertSvgToMorphPaths } from './morphHelpers.js';
-export { subscribe, unsubscribe } from './ticker.js';
+export { subscribe, unsubscribe } from '@yesid/motion/utils/ticker';
 export { captureFlipState, animateFlipTransition } from './flip.js';

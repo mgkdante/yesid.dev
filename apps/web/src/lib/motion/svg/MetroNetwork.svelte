@@ -22,7 +22,7 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { isViewportAtMost } from '$lib/motion/utils/device.js';
+	import { isViewportAtMost } from '@yesid/motion/utils/device';
 
 	interface Props {
 		svg: string;

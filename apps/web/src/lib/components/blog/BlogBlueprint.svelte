@@ -3,7 +3,7 @@
   Uses BlueprintShell for shared crosshairs, ref-labels, and CSS.
 -->
 <script lang="ts">
-	import { BlueprintShell } from '$lib/components/brand';
+	import { BlueprintShell } from '@yesid/ui/brand';
 	import BlueprintBridge from '$lib/components/svg/transit/BlueprintBridge.svelte';
 	import BlueprintTrackPlan from '$lib/components/svg/transit/BlueprintTrackPlan.svelte';
 	import BlueprintCatenary from '$lib/components/svg/transit/BlueprintCatenary.svelte';
@@ -12,7 +12,7 @@
 	import BlueprintDetailBogie from '$lib/components/svg/detail/BlueprintDetailBogie.svelte';
 </script>
 
-<BlueprintShell labels={['SEC-BLOG / DISPATCHES', 'DWG: TRANSIT-OPS-ELEV', 'SCALE NTS | REV.A']}>
+<BlueprintShell normalizeTextFont={false} labels={['SEC-BLOG / DISPATCHES', 'DWG: TRANSIT-OPS-ELEV', 'SCALE NTS | REV.A']}>
 	{#snippet hero()}
 		<BlueprintBridge class="h-full w-full" />
 	{/snippet}

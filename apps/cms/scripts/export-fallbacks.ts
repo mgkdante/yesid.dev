@@ -16,18 +16,19 @@
  *                            0 before any network). Used by hermetic CI builds
  *                            (web.yml) where the committed modules already ARE
  *                            the content source and no CMS should be contacted.
- *   EXPORT_FALLBACKS_LIVE  - set to 1 to force a live export on Vercel. With
- *                            VERCEL_ENV set it also means live-or-die: ANY
- *                            fallback (fetch failure, token failure, missing
- *                            cache) exits 1, production and preview alike, so
- *                            the build aborts and the prior deploy stays live.
- *                            Vercel builds without it skip the CMS fetch and
- *                            ship the committed modules (see the skip gate).
+ *   EXPORT_FALLBACKS_LIVE  - set to 1 only on Vercel Production and the
+ *                            develop-branch Preview. On those trusted targets
+ *                            ANY fallback exits 1, so the build aborts and the
+ *                            prior deploy stays live. Every other Vercel target
+ *                            skips before auth, even if this flag is mis-scoped.
  *   PUBLIC_DIRECTUS_URL    — Directus URL. Defaults to cms.dev.yesid.dev (P6 flip,
  *                            once dev mirrors prod). Set to https://cms.yesid.dev
  *                            for production builds (Vercel: encrypted env var
  *                            scoped to the Production environment).
- *   DIRECTUS_ADMIN_TOKEN   — preferred auth (or DIRECTUS_ADMIN_EMAIL +
+ *   DIRECTUS_BUILD_TOKEN   — read-only Production Build Bot credential.
+ *   DIRECTUS_DEV_BUILD_TOKEN — distinct read-only Build Bot credential used
+ *                            only by the develop-branch Preview.
+ *   DIRECTUS_ADMIN_TOKEN   — preferred local auth (or DIRECTUS_ADMIN_EMAIL +
  *                            DIRECTUS_ADMIN_PASSWORD fallback). If absent OR fetch
  *                            fails: under the live-or-die policy above the build
  *                            exits 1; local (soft-policy) runs try `.cms-cache.json`
@@ -114,8 +115,8 @@ export interface RunOptions {
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
 	/**
-	 * Fallback policy from resolveFallbackPolicy(). Under 'fail' (any Vercel
-	 * build with EXPORT_FALLBACKS_LIVE=1, production and preview alike) a fetch
+	 * Fallback policy from resolveFallbackPolicy(). Under 'fail' (Production or
+	 * the develop Preview with EXPORT_FALLBACKS_LIVE=1) a fetch
 	 * failure skips every fallback and the run reports a non-live outcome,
 	 * which main() turns into exit 1. Vercel keeps the prior deploy running,
 	 * so a loud failure is safe and far preferable to shipping stale content
@@ -266,8 +267,22 @@ function envFlag(value: string | undefined): boolean {
 	return ['1', 'true'].includes((value ?? '').toLowerCase());
 }
 
+const LIVE_PREVIEW_BRANCH = 'develop';
+
+function isTrustedVercelExportTarget(env: Env): boolean {
+	return (
+		env.VERCEL_ENV === 'production' ||
+		(env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF === LIVE_PREVIEW_BRANCH)
+	);
+}
+
 export function getExportSkipReason(env: Env = process.env): string | null {
 	if (envFlag(env.EXPORT_FALLBACKS_SKIP)) return 'EXPORT_FALLBACKS_SKIP';
+	if (env.VERCEL_ENV && !isTrustedVercelExportTarget(env)) {
+		return env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF
+			? `VERCEL_ENV=preview branch=${env.VERCEL_GIT_COMMIT_REF}`
+			: `VERCEL_ENV=${env.VERCEL_ENV}`;
+	}
 	if (env.VERCEL_ENV && !envFlag(env.EXPORT_FALLBACKS_LIVE)) return `VERCEL_ENV=${env.VERCEL_ENV}`;
 	return null;
 }
@@ -286,7 +301,7 @@ export type FallbackPolicy = 'fail' | 'soft';
  * remains the deliberate operator escape hatch for shipping committed modules.
  */
 export function resolveFallbackPolicy(env: Env = process.env): FallbackPolicy {
-	if (env.VERCEL_ENV && envFlag(env.EXPORT_FALLBACKS_LIVE)) return 'fail';
+	if (isTrustedVercelExportTarget(env) && envFlag(env.EXPORT_FALLBACKS_LIVE)) return 'fail';
 	return 'soft';
 }
 
@@ -576,8 +591,8 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		if (policy === 'fail') {
 			log.error(
 				`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): live CMS export failed and ` +
-					'EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on Vercel (live-or-die), preview and production alike. ' +
-					'Verify DIRECTUS_BUILD_TOKEN is set on this Vercel target and the CMS is reachable. ' +
+					'EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on this trusted Vercel target. ' +
+					'Verify its target-specific Build Bot token and pinned CMS URL. ' +
 					'The prior deploy stays live until this build succeeds.',
 			);
 			return { source: 'none', emitted: 0 };
@@ -654,8 +669,9 @@ async function main(): Promise<void> {
 	// Token resolution: lenient locally, strict on Vercel (live-or-die policy).
 	// On Vercel a missing token is an operator error: fail loud so the build
 	// surfaces the problem instead of shipping stale content silently.
-	// Operator step: set DIRECTUS_BUILD_TOKEN in Vercel (Preview + Production
-	// env var) using a read-only "Build Bot" token from Directus.
+	// Production uses DIRECTUS_BUILD_TOKEN against cms.yesid.dev. Only the
+	// develop Preview uses DIRECTUS_DEV_BUILD_TOKEN against cms.dev.yesid.dev.
+	// Arbitrary previews returned at the skip gate before reaching this point.
 	let token = '';
 	if (!dryRun) {
 		try {
@@ -664,8 +680,8 @@ async function main(): Promise<void> {
 			if (policy === 'fail') {
 				log.error(
 					`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): token resolution failed: ` +
-						`${(authErr as Error).message}. EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on Vercel ` +
-						'(live-or-die), preview and production alike. Set DIRECTUS_BUILD_TOKEN on this Vercel target.',
+						`${(authErr as Error).message}. EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on ` +
+						'this trusted Vercel target. Configure only its target-specific Build Bot token.',
 				);
 				process.exit(1);
 			}

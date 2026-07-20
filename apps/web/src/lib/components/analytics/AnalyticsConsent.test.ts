@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
+import { tick } from 'svelte';
 
 const consentMock = vi.hoisted(() => {
 	type State = {
@@ -9,6 +10,7 @@ const consentMock = vi.hoisted(() => {
 		preferencesOpen: boolean;
 	};
 	type Subscriber = (state: State) => void;
+	type FocusSubscriber = (request: number) => void;
 
 	let state: State = {
 		choice: 'unknown',
@@ -17,11 +19,20 @@ const consentMock = vi.hoisted(() => {
 		preferencesOpen: false,
 	};
 	const subscribers = new Set<Subscriber>();
+	const focusSubscribers = new Set<FocusSubscriber>();
+	let focusRequest = 0;
 	const store = {
 		subscribe(run: Subscriber) {
 			run(state);
 			subscribers.add(run);
 			return () => subscribers.delete(run);
+		},
+		preferencesFocusRequests: {
+			subscribe(run: FocusSubscriber) {
+				run(focusRequest);
+				focusSubscribers.add(run);
+				return () => focusSubscribers.delete(run);
+			},
 		},
 		init: vi.fn(() => () => {}),
 		grant: vi.fn(),
@@ -35,6 +46,10 @@ const consentMock = vi.hoisted(() => {
 			state = next;
 			for (const subscriber of subscribers) subscriber(state);
 		},
+		requestFocus() {
+			focusRequest += 1;
+			for (const subscriber of focusSubscribers) subscriber(focusRequest);
+		},
 		reset() {
 			state = {
 				choice: 'unknown',
@@ -42,6 +57,8 @@ const consentMock = vi.hoisted(() => {
 				available: false,
 				preferencesOpen: false,
 			};
+			focusRequest = 0;
+			for (const subscriber of focusSubscribers) subscriber(focusRequest);
 			store.init.mockClear();
 			store.grant.mockClear();
 			store.deny.mockClear();
@@ -145,11 +162,30 @@ const localizedCopy = {
 	},
 } as const;
 
+const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+let scrollIntoView: ReturnType<typeof vi.fn>;
+
 beforeEach(() => {
 	controlsMock.set();
 	consentMock.reset();
+	scrollIntoView = vi.fn();
+	Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+		configurable: true,
+		value: scrollIntoView,
+	});
 });
-afterEach(() => cleanup());
+afterEach(() => {
+	cleanup();
+	vi.restoreAllMocks();
+	if (originalScrollIntoView) {
+		Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+			configurable: true,
+			value: originalScrollIntoView,
+		});
+	} else {
+		Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
+	}
+});
 
 describe('AnalyticsConsent', () => {
 	it('obeys the visual gate while still initializing consent state', () => {
@@ -310,6 +346,127 @@ describe('AnalyticsConsent', () => {
 		render(AnalyticsConsent);
 
 		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+	});
+
+	it('renders explicitly opened preferences while the homepage intro gate is closed', () => {
+		consentMock.set({
+			choice: 'denied',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+
+		render(AnalyticsConsent, { props: { canShow: false } });
+
+		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+	});
+
+	it.each([
+		['granted', 'analytics-consent-accept', 'analytics-consent-decline'],
+		['denied', 'analytics-consent-decline', 'analytics-consent-accept'],
+	] as const)('marks the current %s choice in preferences mode', (choice, activeId, inactiveId) => {
+		consentMock.set({
+			choice,
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+
+		render(AnalyticsConsent);
+
+		expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Analytics preferences');
+		expect(screen.getByTestId(activeId)).toHaveAttribute('aria-pressed', 'true');
+		expect(screen.getByTestId(activeId)).toHaveClass('consent-choice-active');
+		expect(screen.getByTestId(inactiveId)).toHaveAttribute('aria-pressed', 'false');
+		expect(screen.getByTestId(inactiveId)).not.toHaveClass('consent-choice-active');
+	});
+
+	it('moves focus and smooth-scrolls to newly opened preferences', async () => {
+		vi.spyOn(window, 'matchMedia').mockReturnValue({ matches: false } as MediaQueryList);
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+
+		render(AnalyticsConsent);
+
+		const rail = screen.getByTestId('analytics-consent');
+		expect(rail).toHaveAttribute('id', 'analytics-consent');
+		expect(rail).toHaveAttribute('tabindex', '-1');
+		await vi.waitFor(() => expect(rail).toHaveFocus());
+		expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'nearest' });
+	});
+
+	it('uses instant scrolling for reduced motion and refocuses on every explicit reopen', async () => {
+		vi.spyOn(window, 'matchMedia').mockReturnValue({ matches: true } as MediaQueryList);
+		const openState = {
+			choice: 'denied' as const,
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		};
+		consentMock.set(openState);
+		render(AnalyticsConsent);
+		const rail = screen.getByTestId('analytics-consent');
+		await vi.waitFor(() => expect(rail).toHaveFocus());
+
+		const elsewhere = document.createElement('button');
+		document.body.append(elsewhere);
+		elsewhere.focus();
+		consentMock.requestFocus();
+
+		await vi.waitFor(() => expect(rail).toHaveFocus());
+		expect(scrollIntoView).toHaveBeenCalledTimes(2);
+		expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'auto', block: 'nearest' });
+		elsewhere.remove();
+	});
+
+	it('updates an open choice without stealing focus for an external store publication', async () => {
+		vi.spyOn(window, 'matchMedia').mockReturnValue({ matches: false } as MediaQueryList);
+		consentMock.set({
+			choice: 'denied',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+		render(AnalyticsConsent);
+		const rail = screen.getByTestId('analytics-consent');
+		await vi.waitFor(() => expect(rail).toHaveFocus());
+
+		const privacy = screen.getByTestId('analytics-consent-privacy');
+		privacy.focus();
+		consentMock.set({
+			choice: 'granted',
+			ready: true,
+			available: true,
+			preferencesOpen: true,
+		});
+		await tick();
+		await tick();
+
+		expect(privacy).toHaveFocus();
+		expect(screen.getByTestId('analytics-consent-accept')).toHaveAttribute(
+			'aria-pressed',
+			'true',
+		);
+		expect(scrollIntoView).toHaveBeenCalledOnce();
+	});
+
+	it('does not steal focus for the initial undecided prompt', async () => {
+		consentMock.set({
+			choice: 'unknown',
+			ready: true,
+			available: true,
+			preferencesOpen: false,
+		});
+
+		render(AnalyticsConsent);
+		await Promise.resolve();
+
+		expect(screen.getByTestId('analytics-consent')).not.toHaveFocus();
+		expect(scrollIntoView).not.toHaveBeenCalled();
 	});
 
 	it('stays hidden when analytics is disabled, even if preferences are open', () => {
