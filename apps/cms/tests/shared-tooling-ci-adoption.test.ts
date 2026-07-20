@@ -198,6 +198,23 @@ test('binds the schema-1 manifest to the same five workflow callers', () => {
 	);
 });
 
+test('caps shared-tooling classifier and required reporter jobs at five minutes', () => {
+	for (const [workflowName, workflow, jobs] of [
+		['web', web, ['classify', 'ci']],
+		['CMS', cms, ['classify', 'test']],
+	] as const) {
+		for (const jobName of jobs) {
+			const job = jobBlock(workflow, jobName);
+			expect(job, `${workflowName} ${jobName} job`).not.toBeNull();
+			if (!job) continue;
+			expect(
+				job.match(/^    timeout-minutes:\s*5$/gmu)?.length ?? 0,
+				`${workflowName} ${jobName} five-minute timeout`,
+			).toBe(1);
+		}
+	}
+});
+
 test('web reports required ci after classified work without weakening E2E', () => {
 	const classifier = jobBlock(web, 'classify');
 	const work = jobBlock(web, 'ci-work');
