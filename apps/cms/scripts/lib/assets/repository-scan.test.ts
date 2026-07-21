@@ -296,6 +296,22 @@ describe("dynamic media expression anchors", () => {
 });
 
 describe("scanRepository with an injected mini-repository", () => {
+  it("excludes inert runbook archives from the active asset surface", async () => {
+    const archivedSource =
+      "archive/cms-runbooks/2026-07-21/apps/web/src/Archived.svelte";
+    const miniRepo = await makeMiniRepo({
+      [archivedSource]: '<img src="/images/archived.png" alt="Archived">',
+      "apps/web/static/images/archived.png": new Uint8Array([1, 2, 3]),
+    });
+    const scan = await scanRepository({
+      repoRoot: miniRepo.root,
+      trackedFiles: miniRepo.trackedFiles,
+    });
+
+    expect(scan.usages.some(({ sourceFile }) => sourceFile.startsWith(archivedSource))).toBe(false);
+    expect(scan.findings.some(({ sourceFile }) => sourceFile.startsWith(archivedSource))).toBe(false);
+  });
+
   it("excludes the generated audit baseline from consumer evidence and scan recursion", async () => {
     const baselinePath = "apps/cms/fixtures/assets/audit-baseline.json";
     const imagePath = "apps/web/static/images/real.png";

@@ -66,7 +66,7 @@ export function buildFieldPlan(): SchemaStep[] {
 	}));
 }
 
-/** Exported for the prod promotion orchestrator (promote-launch-phase1-prod). */
+/** Exported for callers that provide their own target guard. */
 export async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
 	for (const step of plan) {
 		const res = await rest(ctx, step.method, step.path, step.payload);

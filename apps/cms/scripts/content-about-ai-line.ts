@@ -30,8 +30,7 @@ interface CtaLine {
 	text: string;
 }
 
-/** Idempotent insert. Exported for the prod promotion orchestrator
- *  (promote-launch-phase1-prod) — the caller owns the URL guard. */
+/** Idempotent insert. Exported for guarded orchestration; the caller owns the URL guard. */
 export async function apply(ctx: ApplyContext): Promise<void> {
 	const res = await rest(ctx, 'GET', '/items/block_about_content?fields=cta_lines');
 	if (res.status >= 400) {

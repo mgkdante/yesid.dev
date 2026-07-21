@@ -161,7 +161,7 @@ export async function apply(opts: { directusUrl: string; token: string; dryRun?:
 		}
 
 		// The relation does NOT auto-create the parent alias; create it explicitly
-		// (Directus convention; mirrors setup-stack-archetypes-schema step 9).
+		// (Directus convention: M2M relations do not create the parent alias).
 		if (await fieldExists(client, p.collection, 'tags')) {
 			log.push(`[skip] ${p.collection}.tags alias exists`);
 		} else {

@@ -47,8 +47,7 @@ async function apiPatch(ctx: ApplyContext, path: string, body: unknown): Promise
 	return res.json;
 }
 
-/** en+fr values (es rides the i18n drop). Exported for the prod promotion
- *  orchestrator (promote-launch-phase1-prod) — the caller owns the URL guard. */
+/** en+fr values (es rides the i18n drop). The caller owns the URL guard. */
 export async function apply(ctx: ApplyContext): Promise<void> {
 	const json = await apiGet(ctx, '/items/block_contact_content?fields=translations.id,translations.languages_code');
 	const rows = (json?.data?.translations ?? []) as Array<{ id: number; languages_code: string }>;
