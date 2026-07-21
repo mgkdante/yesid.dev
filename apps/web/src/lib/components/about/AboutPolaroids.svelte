@@ -14,6 +14,7 @@
 	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
+	import { mediaVariants } from '$lib/content/media-variants';
 	import { persisted } from '$lib/state/persisted.svelte';
 
 	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
@@ -37,6 +38,10 @@
 		polaroids.length > 0 ? ((polaroid.value % polaroids.length) + polaroids.length) % polaroids.length : 0,
 	);
 	const current = $derived(polaroids[currentIndex]);
+	const currentMedia = $derived(mediaVariants[current.src]);
+	const currentSrcset = $derived(
+		currentMedia?.variants.map((variant) => `${variant.path} ${variant.width}w`).join(', '),
+	);
 	const alt = $derived(resolveLocale(current.alt, locale));
 	const caption = $derived(resolveLocale(current.caption, locale));
 	const prevPhotoAria = resolveLocale(aboutPageContent.labels.polaroidPrevAria, locale);
@@ -71,6 +76,12 @@
 					<div class="rounded-sm bg-white p-1.5 pb-5 shadow-lg shadow-black/40">
 						<img
 							src={current.src}
+							srcset={currentSrcset}
+							sizes={currentMedia
+								? '(min-width: 1024px) min(16vw, 373px), (min-width: 640px) 192px, 160px'
+								: undefined}
+							width={currentMedia?.width}
+							height={currentMedia?.height}
 							{alt}
 							class="h-56 w-40 object-cover sm:h-64 sm:w-48 lg:h-[calc(100%-4rem)] lg:w-auto lg:max-h-[280px] lg:min-h-[160px]"
 							loading="lazy"
