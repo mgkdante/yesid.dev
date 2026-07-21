@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, test } from 'bun:test';
 import {
@@ -7,16 +7,11 @@ import {
 	HOME_DESCRIPTION_BY_LOCALE,
 	SERVICES_DESCRIPTION_BY_LOCALE,
 	SITE_META_BY_LOCALE,
-} from '../scripts/reconcile-reserved-person-titles';
+	TITLE_BY_LOCALE,
+} from '../fixtures/content/outcome-first-positioning';
 
 const REPO_ROOT = join(import.meta.dir, '..', '..', '..');
-const RECONCILER = 'apps/cms/scripts/reconcile-reserved-person-titles.ts';
-
-const TITLES = {
-	en: 'Freelance Digital Solutions Developer',
-	fr: 'Développeur de solutions numériques à la pige',
-	es: 'Desarrollador freelance de soluciones digitales',
-} as const;
+const TITLES = TITLE_BY_LOCALE;
 
 type Locale = keyof typeof TITLES;
 
@@ -174,31 +169,6 @@ function expectGeneratedLiteral(content: string, value: string): void {
 }
 
 describe('outcome-first positioning source contract', () => {
-	test('the guarded CMS reconciler remains replayable and its runbook is explicit', () => {
-		expect(existsSync(join(REPO_ROOT, RECONCILER))).toBe(true);
-
-		const readme = source('apps/cms/README.md');
-		expect(readme).toContain('source .env');
-		expect(readme).toContain('export OP_SERVICE_ACCOUNT_TOKEN="$OP_TOKEN"');
-		expect(readme).toContain(
-			'bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=dev --dry-run',
-		);
-		expect(readme).toContain(
-			'bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=prod --dry-run',
-		);
-		expect(
-			readme.match(
-				/bun apps\/cms\/scripts\/reconcile-reserved-person-titles\.ts --target=dev --dry-run/g,
-			),
-		).toHaveLength(2);
-		expect(
-			readme.match(
-				/bun apps\/cms\/scripts\/reconcile-reserved-person-titles\.ts --target=prod --dry-run/g,
-			),
-		).toHaveLength(2);
-		expect(readme).toContain('APPLY_PROD_OUTCOME_FIRST_POSITIONING');
-	});
-
 	test('the exact EN, FR, and ES global and route copy stays frozen across source and generated output', () => {
 		const siteMeta = byLocale(json('apps/cms/fixtures/singletons/site-meta.json').translations);
 		for (const locale of Object.keys(TITLES) as Locale[]) {
@@ -278,7 +248,7 @@ describe('outcome-first positioning source contract', () => {
 			source('apps/web/src/lib/content/site-meta.ts'),
 			source('apps/web/src/lib/content/route-seo.ts'),
 			source('apps/web/src/lib/content/site-content.ts'),
-			source(RECONCILER),
+			source('apps/cms/fixtures/content/outcome-first-positioning.ts'),
 			source('apps/cms/scripts/go2-message-pass.ts'),
 		];
 		for (const title of Object.values(TITLES)) {

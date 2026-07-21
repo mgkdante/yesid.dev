@@ -13,7 +13,7 @@
  * Neutral draft blocks (h2/h3/p/ul/ol) convert to Block Editor docs here:
  * deterministic ids + fixed timestamp keep the emitted module byte-stable.
  *
- * Requires setup-legal-pages-schema.ts --apply to have run first.
+ * Requires the legal-page fields represented by the committed snapshot.
  *
  * DEV-ONLY. Dry-run by default; pass --apply to write.
  */
@@ -190,8 +190,7 @@ async function upsertFooterLink(ctx: ApplyContext, sitePageId: string, slug: str
 	log.info(`  ok nav_links footer -> /legal/${slug}`);
 }
 
-/** The full seed pass. Exported for the prod promotion orchestrator
- *  (promote-launch-phase1-prod) — the caller owns the URL guard. */
+/** The full seed pass. Exported for guarded orchestration; the caller owns the URL guard. */
 export async function apply(ctx: ApplyContext): Promise<void> {
 	const pages = drafts.pages as DraftPage[];
 	for (const [i, page] of pages.entries()) {

@@ -271,27 +271,16 @@ CI workflows live at the repo root: `.github/workflows/cms.yml` (tests + gated s
 
 Full rationale lives in the Notion slice-18 spec and research pages.
 
-## Outcome-first positioning reconciliation
+## Outcome-first positioning source contract
 
-The guarded reconciler is dry-run by default and only accepts the live SQL-first copy as its previous state. Use the repository 1Password flow and verify convergence after every apply. Serialize the apply with CMS editing: while it runs, do not edit the affected `site_meta`, About, or route SEO rows. The script re-reads before and after every row PATCH, but Directus does not make that read-plus-write pair atomic.
+The active multilingual doctrine lives in
+`fixtures/content/outcome-first-positioning.ts`. The source-contract test checks
+that doctrine against the CMS fixtures, generated fallbacks, publication inputs,
+and social-card generators.
 
-```bash
-# Run from the repository root. OP_TOKEN is loaded from the root .env and
-# mapped to the variable expected by the 1Password CLI; neither value is printed.
-set -a
-source .env
-set +a
-export OP_SERVICE_ACCOUNT_TOKEN="$OP_TOKEN"
-
-op run --env-file=.env -- bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=dev --dry-run
-op run --env-file=.env -- bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=dev --apply
-op run --env-file=.env -- bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=dev --dry-run
-op run --env-file=.env -- bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=prod --dry-run
-op run --env-file=.env -- bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=prod --apply --confirm=APPLY_PROD_OUTCOME_FIRST_POSITIONING
-op run --env-file=.env -- bun apps/cms/scripts/reconcile-reserved-person-titles.ts --target=prod --dry-run
-```
-
-After each apply, rerun the matching dry-run and require `patches=0` before exporting fallbacks or claiming convergence.
+The completed one-shot reconciler is preserved as inert history under
+`archive/cms-runbooks/2026-07-21/`. It is not an active runbook. Restore files to
+their original paths using that archive's manifest before attempting a replay.
 
 ## Appendix: historical provisioning (April 2026)
 
