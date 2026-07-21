@@ -20,7 +20,7 @@
 		"tokens:build": "bun tools/build-tokens.ts",
 		"tokens:check": "bun tools/build-tokens.ts --check",
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
-		"check:engine-chunk": "node scripts/check-engine-chunk.mjs"
+		"check:client-payload": "node scripts/check-client-payload.mjs"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^10.4.0",
