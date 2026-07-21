@@ -143,6 +143,10 @@ jobs:
           EXPORT_FALLBACKS_SKIP: "1"
         run: bun x turbo run build --filter=@repo/web
 
+      - name: Client payload budgets
+        working-directory: apps/web
+        run: bun run check:client-payload
+
   ci:
     name: ci
     needs: [classify, ci-work]
