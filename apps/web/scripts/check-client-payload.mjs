@@ -92,13 +92,23 @@ function outputPath(file, label) {
 	return path;
 }
 
-function measure(file, label) {
+const outputContents = new Map();
+
+function readOutput(file, label) {
+	const path = outputPath(file, label);
+	if (outputContents.has(path)) return outputContents.get(path);
 	let content;
 	try {
-		content = readFileSync(outputPath(file, label));
+		content = readFileSync(path);
 	} catch {
 		fail(`cannot read ${label} output: ${file}`);
 	}
+	outputContents.set(path, content);
+	return content;
+}
+
+function measure(file, label) {
+	const content = readOutput(file, label);
 	return { raw: content.length, gzip: gzipSync(content).length };
 }
 
@@ -109,6 +119,7 @@ if (engine.isDynamicEntry !== true) fail(`${ENGINE_KEY} is not a dynamic entry`)
 if (/(^|\/)nodes\//.test(engine.file)) fail('engine output is a route node');
 
 const rootDirectImports = importKeys(root, ROOT_KEY);
+const rootDirectImportKeys = new Set(rootDirectImports);
 const directJsFiles = new Set();
 for (const key of rootDirectImports) {
 	const record = importRecord(key);
@@ -122,6 +133,10 @@ while (pending.length > 0) {
 	if (visited.has(key)) continue;
 	visited.add(key);
 	const record = importRecord(key);
+	readOutput(
+		record.file,
+		rootDirectImportKeys.has(key) ? 'direct static import' : 'static import graph',
+	);
 	if (key === ENGINE_KEY || record.file === engine.file) {
 		fail('engine is statically reachable from the root layout');
 	}

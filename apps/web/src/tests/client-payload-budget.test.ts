@@ -209,6 +209,29 @@ describe('manifest-backed client payload budgets', () => {
 		expect(result.stderr).toContain('FAIL: engine is statically reachable from the root layout');
 	});
 
+	it.each([
+		[
+			'missing',
+			'_app/immutable/chunks/missing-transitive.js',
+			'FAIL: cannot read static import graph output: _app/immutable/chunks/missing-transitive.js',
+		],
+		[
+			'escaping',
+			'../../../../outside.js',
+			'FAIL: static import graph output escapes the client directory',
+		],
+	])('fails closed for a %s transitive static output', (_case, file, diagnostic) => {
+		const { root } = fixture((manifest) => {
+			manifest['_shared.js'].imports = ['_transitive.js'];
+			manifest['_transitive.js'] = { file };
+		});
+
+		const result = runChecker(root);
+
+		expect(result.status).toBe(1);
+		expect(result.stderr).toContain(diagnostic);
+	});
+
 	it.each(BUDGET_ENV)('rejects invalid %s overrides', (name) => {
 		const { root } = fixture();
 
