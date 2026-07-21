@@ -4,11 +4,11 @@
   Parent coordinates timing via onReady callback.
 -->
 <script lang="ts">
-	import { durationSec } from '$lib/motion/tokens';
+	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 

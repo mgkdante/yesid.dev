@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BlueprintShell } from '$lib/components/brand';
+	import { BlueprintShell } from '@yesid/ui/brand';
 	import BlueprintAzurSide from '$lib/components/svg/azur/BlueprintAzurSide.svelte';
 	import BlueprintBridge from '$lib/components/svg/transit/BlueprintBridge.svelte';
 	import BlueprintCatenary from '$lib/components/svg/transit/BlueprintCatenary.svelte';
@@ -16,6 +16,7 @@
 </script>
 
 <BlueprintShell
+	normalizeTextFont={false}
 	class="cta-blueprint-background"
 	labels={['SEC-CTA / MOVE', 'DWG: MOVE-04', 'SCALE NTS | REV.A']}
 	data-testid="cta-blueprint-background"

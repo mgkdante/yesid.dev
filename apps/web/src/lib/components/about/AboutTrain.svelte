@@ -9,7 +9,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { Card } from '$lib/components/ui/card';
 	import { resolveLocale } from '$lib/utils/locale';

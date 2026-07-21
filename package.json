@@ -14,7 +14,7 @@
 		"dev:local-env": "bun --env-file=apps/web/.env.local run dev",
 		"build": "turbo run build",
 		"build:op": "op run --env-file=.env -- bun run --cwd apps/cms export:fallbacks && EXPORT_FALLBACKS_SKIP=1 turbo run build",
-		"test": "turbo run test --filter=!@yesid/motion --filter=!@yesid/gates",
+		"test": "turbo run test",
 		"check": "turbo run check",
 		"cms:sync:diff:op": "op run --env-file=.env -- bun run --cwd apps/cms sync:diff",
 		"cms:sync:push:op": "op run --env-file=.env -- bun run --cwd apps/cms sync:push",
@@ -24,13 +24,16 @@
 		"secrets:inject:cms": "op inject -i .env -o apps/cms/.env.local",
 		"secrets:whoami": "op whoami",
 		"secrets:ratelimit": "op service-account ratelimit",
-		"tokens:build": "bun run --cwd packages/tokens build",
-		"tokens:lint": "bun run --cwd packages/tokens lint:design-md",
-		"ci:tokens": "bun run tokens:build && git diff --exit-code apps/web/src/lib/styles/tokens.css apps/web/src/app.css apps/web/src/lib/motion/tokens.ts DESIGN.md",
+		"tokens:build": "bun run --cwd apps/web tokens:build",
+		"tokens:check": "bun run --cwd apps/web tokens:check",
+		"tokens:lint": "design.md lint DESIGN.md",
+		"ci:tokens": "bun run tokens:check && bun run tokens:lint",
 		"ci:content": "bun run --cwd apps/cms verify:content",
 		"setup:hooks": "git config core.hooksPath .githooks"
 	},
 	"devDependencies": {
+		"@google/design.md": "0.1.1",
+		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/config-v0.2.0/yesid-config-v0.2.0.tgz",
 		"turbo": "^2.5.0"
 	},
 	"engines": {

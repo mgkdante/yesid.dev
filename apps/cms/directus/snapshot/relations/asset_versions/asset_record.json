@@ -1,0 +1,25 @@
+{
+  "collection": "asset_versions",
+  "field": "asset_record",
+  "related_collection": "asset_records",
+  "meta": {
+    "junction_field": null,
+    "many_collection": "asset_versions",
+    "many_field": "asset_record",
+    "one_allowed_collections": null,
+    "one_collection": "asset_records",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "versions",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "asset_versions",
+    "column": "asset_record",
+    "foreign_key_table": "asset_records",
+    "foreign_key_column": "id",
+    "constraint_name": "asset_versions_asset_record_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "RESTRICT"
+  }
+}

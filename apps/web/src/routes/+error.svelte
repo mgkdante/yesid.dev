@@ -17,9 +17,9 @@
 	import type { ErrorPageContent } from '$lib/navigation/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { pathLocale, localizeHref } from '$lib/utils/locale-routing';
-	import { prefersReducedMotion } from '$lib/motion/stores';
-	import { Separator } from '$lib/components/ui/separator';
-	import { SectionLabel } from '$lib/components/brand';
+	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import { SectionLabel } from '@yesid/ui/brand';
 
 	// slice-28.6: error pages can render under /fr/* — derive the locale from
 	// the URL (error renders carry no params). Defensive optional chain: the
@@ -54,7 +54,7 @@
 
 <div class="error-page flex flex-col px-[var(--space-page-x)]">
 	<!-- Top hazard tape -->
-	<div data-testid="hazard-tape"><Separator variant="hazard" /></div>
+	<div data-testid="hazard-tape"><HazardSeparator /></div>
 
 	<!-- Centered content area — fills space between tapes -->
 	<div class="flex flex-1 flex-col items-center justify-center gap-5 py-4 sm:gap-6">

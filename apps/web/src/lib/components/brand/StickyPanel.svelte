@@ -1,40 +1,25 @@
-<!--
-  StickyPanel — sidebar panel with sticky positioning and brand border.
-  Brand primitive: replaces 4+ scattered sticky sidebar implementations.
--->
+<!-- Kept as a yesid.dev compatibility wrapper per vendor/design/ui/PARITY-NOTES.md. -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils';
-  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { StickyPanel as UiStickyPanel, type StickyPanelProps as UiStickyPanelProps } from '@yesid/ui/brand';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
-  export interface StickyPanelProps {
-    /** CSS top offset for sticky positioning */
-    top?: string;
-    /** Panel content */
-    children: Snippet;
-    class?: string;
-  }
+	export type StickyPanelProps = Omit<UiStickyPanelProps, 'class' | 'ref'>;
 
-  let {
-    top = '6rem',
-    children,
-    class: className = '',
-    ...rest
-  }: StickyPanelProps & Record<string, unknown> = $props();
+	let { children, top = '6rem', ...rest }: StickyPanelProps = $props();
+	let panel = $state<HTMLDivElement | null>(null);
+
+	$effect(() => {
+		if (!panel) return;
+		const lifecycle = scrollChain(panel);
+		return () => lifecycle?.destroy?.();
+	});
 </script>
 
-<div class={cn("panel scrollbar-hidden", className)} data-slot="sticky-panel" use:scrollChain style="top: {top};" {...rest}>
-  {@render children()}
-</div>
+<UiStickyPanel bind:ref={panel} class="yesid-sticky-panel" {top} {children} {...rest} />
 
 <style>
-  .panel {
-    position: sticky;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--surface-3);
-    padding: 1.25rem;
-    overflow-y: auto;
-    max-height: calc(100dvh - 8rem);
-  }
+	:global(.yesid-sticky-panel.yesid-sticky-panel.yesid-sticky-panel) {
+		background: var(--surface-3);
+		box-shadow: none;
+	}
 </style>

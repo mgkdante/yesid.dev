@@ -22,3 +22,9 @@ e52af934356e6cbce92001797dccdaa281217e3d:src/lib/data/contact-page.ts:generic-ap
 9da6638c7a308ef04a88ba735e5228a68453ba0f:.env.example:generic-api-key:10
 # Notion page-ID manifest captured as plan evidence (UUIDs, not keys)
 035b739e6bc7e3fbdf16e1bc39bd9fe106b89831:docs/superpowers/plans/phase-2-evidence/04-notion-page-manifest.json:generic-api-key:17
+# Static CollapsibleSection UI persistence key; never used for authentication
+0335a9392e9a9891be2c9adb26029b4d8cc6088b:apps/web/src/lib/components/projects/ProjectDetailPage.svelte:generic-api-key:451
+7ea1656b70c8028e878589a3f01b6344f9cd3d8b:apps/web/src/lib/components/projects/ProjectDetailPage.svelte:generic-api-key:451
+# Public W3C-incubated standards prose in a deleted design document
+eb7d25f5da2595268786106d68db1712c424289d:docs/specs/2026-04-17-slice-17h-brand-bundle-design.md:generic-api-key:392
+b59e939925c089ecdf784d949739d4777210a439:docs/specs/2026-04-17-slice-17h-brand-bundle-design.md:generic-api-key:392

@@ -547,7 +547,6 @@ function toSiteMetaFixture(row: RawSiteMeta) {
 		owner_locality: row.owner_locality,
 		owner_region: row.owner_region,
 		owner_country: row.owner_country,
-		owner_phone: row.owner_phone ?? '',
 		owner_knows_about: knows,
 		default_og_image: row.default_og_image,
 		theme_color: row.theme_color,

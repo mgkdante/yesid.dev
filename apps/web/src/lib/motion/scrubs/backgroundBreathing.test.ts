@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { gsap } from '$lib/motion/utils/gsap.js';
 import { backgroundBreathing } from './backgroundBreathing.js';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
 // Slice-23 Task 7. `backgroundBreathing` is a GSAP scrub factory that
 // animates a CSS custom property `--breathing-phase` between 0 and 1
@@ -10,8 +10,8 @@ import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 // `{ pause, resume, destroy }` so callers can mute breathing transiently
 // (e.g. while a sectionGlow is active).
 
-vi.mock('$lib/motion/stores/reducedMotion.js', async (importOriginal) => {
-	const mod = (await importOriginal()) as typeof import('$lib/motion/stores/reducedMotion.js');
+vi.mock('@yesid/motion/stores/reducedMotion', async (importOriginal) => {
+	const mod = (await importOriginal()) as typeof import('@yesid/motion/stores/reducedMotion');
 	return {
 		...mod,
 		isPrefersReducedMotion: vi.fn(() => false),

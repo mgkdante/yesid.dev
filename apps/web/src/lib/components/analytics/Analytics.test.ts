@@ -13,6 +13,7 @@ type HomeIntroPhase = 'pending' | 'running' | 'settled';
 
 type TestConsentStore = {
 	subscribe: (run: (state: ConsentState) => void) => () => void;
+	preferencesFocusRequests: { subscribe: (run: (request: number) => void) => () => void };
 	init: ReturnType<typeof vi.fn<() => () => void>>;
 	grant: ReturnType<typeof vi.fn<() => void>>;
 	deny: ReturnType<typeof vi.fn<() => void>>;
@@ -94,10 +95,12 @@ vi.mock('$lib/state/analytics-consent.svelte', async () => {
 		available: true,
 		preferencesOpen: false,
 	});
+	const preferencesFocusRequests = writable(0);
 
 	consentMock.set = state.set;
 	consentMock.store = {
 		subscribe: state.subscribe,
+		preferencesFocusRequests,
 		init: vi.fn(() => () => {}),
 		grant: vi.fn(),
 		deny: vi.fn(),
@@ -151,7 +154,12 @@ vi.mock('$lib/content', () => ({
 					fr: 'Autoriser l’analytique',
 					es: 'Permitir analítica',
 				},
-				declineLabel: { en: 'No thanks', fr: 'Non merci', es: 'No, gracias' },
+					declineLabel: { en: 'No thanks', fr: 'Non merci', es: 'No, gracias' },
+					settingsLabel: {
+						en: 'Analytics preferences',
+						fr: 'Préférences d’analytique',
+						es: 'Preferencias de analítica',
+					},
 				privacyLabel: {
 					en: 'Privacy details',
 					fr: 'Détails sur la vie privée',
