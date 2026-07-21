@@ -1226,8 +1226,10 @@ describe("yesid.dev real repository contract", () => {
       // 49→47 / 63→61 (2026-07-16): BlueprintShell + ChevronToggle moved into
       // the embedded @yesid/ui package (Wave 3 adoption); package internals are
       // library code, outside the site's asset-governance scan surface.
-      svgFiles: 47,
-      inlineSvgRoots: 61,
+      // 47→46 / 61→60 (2026-07-21): the unreachable BlogRouteMap component
+      // and its single inline SVG root were retired in Phase 2 C2.
+      svgFiles: 46,
+      inlineSvgRoots: 60,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });
