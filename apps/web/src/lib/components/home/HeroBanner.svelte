@@ -40,7 +40,7 @@
 	import { getLenis } from '@yesid/motion/utils/lenis';
 	import { generateHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
-	import { fetchLiveKpis, LIVE_POLL_MS, type LiveHeroSnapshot } from '$lib/content/live-kpis';
+	import { fetchLiveKpis, startLiveKpiPolling, type LiveHeroSnapshot } from '$lib/content/live-kpis';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -204,8 +204,7 @@
 			if (snapshot) applyLiveSnapshot(snapshot);
 			else if (live) dropToDemo(updatedAgoInitial);
 		};
-		void tickLive();
-		const timer = setInterval(tickLive, LIVE_POLL_MS);
+		const stopLivePolling = startLiveKpiPolling(tickLive);
 		// Advance the freshness stamp every second between polls: the data's
 		// age keeps counting whether or not we've refetched.
 		const stampTimer = setInterval(() => {
@@ -215,7 +214,7 @@
 			}
 		}, 1000);
 		return () => {
-			clearInterval(timer);
+			stopLivePolling();
 			clearInterval(stampTimer);
 		};
 	});

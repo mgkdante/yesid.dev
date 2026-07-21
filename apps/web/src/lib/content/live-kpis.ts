@@ -20,6 +20,21 @@ export const LIVE_KPIS_URL = 'https://transit.yesid.dev/api/v1/kpis';
  *  crosses a publish boundary and lands genuinely new data. */
 export const LIVE_POLL_MS = 45_000;
 
+export function startLiveKpiPolling(poll: () => void | Promise<void>): () => void {
+	let timer: ReturnType<typeof setInterval> | undefined;
+	const pollAndRearm = () => {
+		if (timer) clearInterval(timer);
+		timer = setInterval(pollAndRearm, LIVE_POLL_MS);
+		if (!document.hidden) void poll();
+	};
+	pollAndRearm();
+	document.addEventListener('visibilitychange', pollAndRearm);
+	return () => {
+		if (timer) clearInterval(timer);
+		document.removeEventListener('visibilitychange', pollAndRearm);
+	};
+}
+
 export interface LiveHeroSnapshot {
 	data: HeroData;
 	/** Seconds since snapshotAt, computed server-side at serve time. */
