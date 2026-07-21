@@ -234,9 +234,8 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 		);
 	});
 
-	it('WHITE role: reflective voice: métro dot cores and map cores', () => {
+	it('WHITE role: reflective voice: data-flow map cores', () => {
 		expect(read('lib/components/projects/DataFlowDiagram.svelte')).toContain('fill="var(--reflective)"');
-		expect(read('lib/components/blog/BlogRouteMap.svelte')).toContain('fill: var(--reflective);');
 	});
 
 	it('round 4 — blog/projects list items + content blocks draw one step thicker (3px frames)', () => {

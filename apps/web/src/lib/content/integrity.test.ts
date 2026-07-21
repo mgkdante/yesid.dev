@@ -14,7 +14,7 @@
 //     covers site-chrome literals that D2 carves out of schema validation.
 
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -200,6 +200,10 @@ describe('services data integrity', () => {
 });
 
 describe('chrome companion consolidation', () => {
+	it('retired BlogRouteMap component stays absent', () => {
+		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/blog/BlogRouteMap.svelte'))).toBe(false);
+	});
+
 	it('shared chrome consumers read from siteLabels instead of sharedChromeContent', () => {
 		const consumers = [
 			'lib/components/layout/Nav.svelte',
@@ -221,7 +225,6 @@ describe('chrome companion consolidation', () => {
 
 	it('blog chrome consumers read from siteLabels instead of blog companions', () => {
 		const consumers = [
-			'lib/components/blog/BlogRouteMap.svelte',
 			'lib/components/blog/BlogFilterSidebar.svelte',
 			'lib/components/blog/BlogListingPage.svelte',
 			'lib/components/blog/BlogDetailHeader.svelte',
