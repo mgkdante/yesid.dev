@@ -64,10 +64,8 @@ import { siteMeta } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import { routeSeoOverrides } from '$lib/content/route-seo';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
-import {
-	routeSeoFactories,
-	errorSeoFallback,
-} from './route-seo-factories';
+import { errorSeoFallback } from './error-seo-fallback';
+import { routeSeoFactories } from './route-seo-factories';
 import { composePageSeo } from './compose-page-seo';
 import type { SiteSeoDefaults } from '$lib/types';
 import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';

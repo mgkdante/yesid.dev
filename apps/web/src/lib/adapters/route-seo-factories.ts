@@ -6,9 +6,6 @@
 // dormant directus adapter was removed at slice-26 close — supplies both site
 // shapes and threads them through here; factories never re-fetch, never
 // import the adapter directly.
-//
-// `errorSeoFallback` is synchronous and serves as the last-resort SEO when
-// any other route's resolution throws (per +layout.ts try/catch chain).
 
 import type {
 	Locale,
@@ -321,28 +318,7 @@ export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	};
 }
 
-/**
- * /__error — last-resort SEO. noIndex: true (nothing to crawl). Pulls brand
- * suffix from siteMeta and fallback description from siteSeoDefaults.
- */
-export function errorSeoFallback(args: {
-	locale: Locale;
-	siteMeta: SiteMeta;
-	siteSeoDefaults: SiteSeoDefaults;
-}): PageSeo {
-	const { siteMeta, siteSeoDefaults } = args;
-	return {
-		title: { en: `Not Found | ${siteMeta.name}` },
-		description: siteSeoDefaults.defaultDescription,
-		canonical: SITE_HOST,
-		ogType: 'website',
-		noIndex: true,
-		// No jsonLd — route is noIndex, no point in structured data.
-	};
-}
-
 // Registry for composer dispatch. Maps a SvelteKit route id to its factory.
-// '/__error' is handled separately (synchronous, no params/adapter dep).
 export const routeSeoFactories: Record<
 	string,
 	(args: FactoryArgs) => Promise<PageSeo>

@@ -40,7 +40,7 @@ import { getPageSeo, getSiteSeoDefaults } from '$lib/repositories/meta';
 import { localeFromParams, stripLocaleSegment, delocalizePath } from '$lib/utils/locale-routing';
 import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
+import { errorSeoFallback } from '$lib/adapters/error-seo-fallback';
 import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
 import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
 import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
