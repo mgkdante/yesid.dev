@@ -206,6 +206,22 @@ export const assetUsageDeclarations = defineAssetUsages([
       "The active localized polaroid record determines the image rendered by the carousel.",
   },
   {
+    usageKey: "site.media.about-polaroid-srcset",
+    semanticKey: "site.media.uuid-mirror",
+    consumerType: "component",
+    consumerKey: "about-polaroid-carousel",
+    source:
+      "apps/web/src/lib/components/about/AboutPolaroids.svelte#img-srcset:currentSrcset",
+    route: "/about",
+    locale: null,
+    slot: "polaroid-photo-srcset",
+    required: true,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "The active localized polaroid record selects its generated responsive image variants.",
+  },
+  {
     usageKey: "site.media.about-language",
     semanticKey: "site.media.uuid-mirror",
     consumerType: "component",
