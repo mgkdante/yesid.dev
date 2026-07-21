@@ -12,7 +12,11 @@
 // this file is the contract's runtime coverage.
 
 import { describe, it, expect } from 'vitest';
+import { projects } from '$lib/content/projects';
+import { deriveProjectFacets } from '$lib/projects/project-facets';
 import { staticAdapter as adapter } from './static';
+
+const expectedProjectFacets = deriveProjectFacets(projects);
 
 describe('ContentAdapter contract', () => {
 	describe('projects port', () => {
@@ -51,19 +55,19 @@ describe('ContentAdapter contract', () => {
 			expect(pub.length).toBeLessThanOrEqual(all.length);
 		});
 
-		it('allTags() returns an array', async () => {
+		it('allTags() matches the shared project facet derivation', async () => {
 			const tags = await adapter.projects.allTags();
-			expect(Array.isArray(tags)).toBe(true);
+			expect(tags).toEqual(expectedProjectFacets.tags);
 		});
 
-		it('allStackItems() returns an array', async () => {
+		it('allStackItems() matches the shared project facet derivation', async () => {
 			const items = await adapter.projects.allStackItems();
-			expect(Array.isArray(items)).toBe(true);
+			expect(items).toEqual(expectedProjectFacets.stackItems);
 		});
 
-		it('serviceIdsForProjects() returns an array', async () => {
+		it('serviceIdsForProjects() matches the shared project facet derivation', async () => {
 			const ids = await adapter.projects.serviceIdsForProjects();
-			expect(Array.isArray(ids)).toBe(true);
+			expect(ids).toEqual(expectedProjectFacets.serviceIds);
 		});
 	});
 
