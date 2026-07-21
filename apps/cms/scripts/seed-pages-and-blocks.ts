@@ -750,7 +750,7 @@ export function toBlockProjectsPageContentTranslationRows(): ReadonlyArray<Direc
 			// back_to_* below.
 			// go2-t1c: aligned to the rendered strings (heading/empty_state new;
 			// intro overwritten to the previously hardcoded listing subtitle —
-			// matches the setup-site-labels-and-chrome --seed values).
+			// matches the committed site-label fixture values).
 			intro: 'Projects, pipelines, and systems I have built.',
 			heading: 'Projects',
 			empty_state: 'No projects match the selected filters.',

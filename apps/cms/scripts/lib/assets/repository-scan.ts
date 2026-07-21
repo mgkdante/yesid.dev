@@ -185,6 +185,7 @@ function absolutePath(repoRoot: string, repoPath: string): string {
 
 function isExcluded(repoPath: string): boolean {
 	if (
+		repoPath.startsWith("archive/cms-runbooks/") ||
 		repoPath.startsWith("apps/web/vendor/design/") ||
 		repoPath === "apps/cms/scripts/lib/assets/repository-scan.ts" ||
 		repoPath === "apps/cms/fixtures/assets/audit-baseline.json" ||

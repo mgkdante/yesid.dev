@@ -2,7 +2,7 @@
 /**
  * content-services slice — stack-collapsible chrome labels.
  *
- * Seeds two NEW site_labels columns (created by `setup:site-labels --apply`):
+ * Seeds two existing site_labels columns represented by the committed snapshot:
  *   - services_chrome_detail_stack_heading   ("Stack")
  *   - services_chrome_detail_see_stack_label ("See the full stack →")
  * onto the en + fr site_labels_translations rows. Values mirror the committed
@@ -10,9 +10,8 @@
  * source; the detail page reads
  * siteLabels.servicesChrome.detail.{stackHeading,seeStackLabel}.
  *
- * Why a targeted script (not `setup:site-labels --apply --seed`): the seed path
- * also overwrites the /projects intro row — out of scope for the services slice.
- * This patches ONLY the two new keys.
+ * This targeted script patches only the two service keys and does not overwrite
+ * the /projects intro row.
  *
  * DRY-RUN BY DEFAULT — pass --apply to write. Dev-only guard. Run from repo root:
  *   bun apps/cms/scripts/content-services-stack-labels.ts                        # plan

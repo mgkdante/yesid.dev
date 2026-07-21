@@ -83,9 +83,8 @@ export function validateDrop(drop: Drop): void {
 	});
 }
 
-/** The upsert loop against an already-constructed client. Exported for the
- *  prod promotion orchestrator (promote-launch-phase1-prod) — the CALLER owns
- *  the URL guard (assertDevCms here, the PROD-only assert there). */
+/** The upsert loop against an already-constructed client. The caller owns the
+ *  URL guard; this command keeps its DEV assertion. */
 export async function applyDrop(
 	client: ReturnType<typeof createClient>,
 	drop: Drop,

@@ -18,7 +18,7 @@
  * Idempotent by slug — existing archetypes are skipped, tech defaults are
  * PATCHed (same values on re-run).
  *
- * ⚠️ Run order: setup:archetypes --apply must have created the schema first.
+ * Requires the stack-archetype schema represented by the committed snapshot.
  *
  * Operator run:
  *   op run --env-file=.env -- bun --cwd apps/cms run seed:archetypes -- --apply
