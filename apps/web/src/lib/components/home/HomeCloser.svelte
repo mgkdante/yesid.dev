@@ -5,7 +5,7 @@
   Orchestrates GSAP master timeline across sub-components.
 -->
 <script lang="ts">
-	import { durationSec } from '$lib/motion/tokens';
+	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
@@ -24,7 +24,7 @@
 		siteMeta: SiteMeta;
 	} = $props();
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { pressBounce } from '$lib/motion/actions';
 	import { backgroundBreathing, type BreathingControls } from '$lib/motion/scrubs/index.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';

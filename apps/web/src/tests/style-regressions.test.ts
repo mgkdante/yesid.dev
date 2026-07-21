@@ -6,9 +6,10 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { styleRegressionViolations } from '@yesid/gates';
-import { YESID_FORBIDDEN } from '@yesid/gates/presets/yesid';
+import { YESID_FORBIDDEN } from '../../tools/design-gates';
 
 const SRC = resolve(process.cwd(), 'src');
+const UI_SRC = resolve(process.cwd(), 'vendor/design/ui/src');
 
 // Local .svelte tree walk — kept for the app-specific art-direction pinning
 // tests below (e.g. the stack-engine CTA-doctrine scan). The BRAND
@@ -41,7 +42,7 @@ describe('style regressions — broken utilities & undefined vars', () => {
 
 describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 	const separator = readFileSync(
-		resolve(SRC, 'lib/components/ui/separator/separator.svelte'),
+		resolve(UI_SRC, 'primitives/separator/separator.svelte'),
 		'utf-8',
 	);
 	const card = readFileSync(resolve(SRC, 'lib/components/ui/card/card.svelte'), 'utf-8');
@@ -104,12 +105,12 @@ describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 
 describe('GO2-W5 round 3 — bolder structure (operator: dividers thicker both modes, light art stronger)', () => {
 	const separator = readFileSync(
-		resolve(SRC, 'lib/components/ui/separator/separator.svelte'),
+		resolve(UI_SRC, 'primitives/separator/separator.svelte'),
 		'utf-8',
 	);
 	const card = readFileSync(resolve(SRC, 'lib/components/ui/card/card.svelte'), 'utf-8');
 	const shell = readFileSync(
-		resolve(SRC, 'lib/components/brand/BlueprintShell.svelte'),
+		resolve(UI_SRC, 'brand/BlueprintShell.svelte'),
 		'utf-8',
 	);
 	const servicesBp = readFileSync(
@@ -145,18 +146,11 @@ describe('GO2-W5 round 3 — bolder structure (operator: dividers thicker both m
 	});
 
 	it('listing blueprint shells are stronger on mobile without changing desktop base opacity', () => {
-		expect(shell).toMatch(
-			/@media \(max-width: 1023px\) \{[\s\S]*?\.hero-svg \{[\s\S]*?opacity: 0\.30;/,
+		const mobile = shell.slice(shell.indexOf('@media (max-width: 1023px)'));
+		const opacityValues = [...mobile.matchAll(/opacity:\s*([0-9.]+)/g)].map((match) =>
+			Number(match[1]),
 		);
-		expect(shell).toMatch(
-			/@media \(max-width: 1023px\) \{[\s\S]*?\.edge-details :global\(\.edge-detail\) \{[\s\S]*?opacity: 0\.30 !important;/,
-		);
-		expect(shell).toMatch(
-			/@media \(max-width: 1023px\) \{[\s\S]*?\[data-theme='light'\]\) \.hero-svg[\s\S]*?opacity: 0\.50;/,
-		);
-		expect(shell).toMatch(
-			/@media \(max-width: 1023px\) \{[\s\S]*?\[data-theme='light'\]\) \.edge-details :global\(\.edge-detail\)[\s\S]*?opacity: 0\.46 !important;/,
-		);
+		expect(opacityValues).toEqual([0.3, 0.3, 0.5, 0.46]);
 	});
 
 	it('the home services blueprint wall ships light-mode overrides (was dark-only opacities)', () => {
@@ -260,7 +254,10 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 
 describe('global readable typography system', () => {
 	const read = (rel: string) => readFileSync(resolve(SRC, rel), 'utf-8');
-	const tokens = read('lib/styles/tokens.css');
+	const tokens = readFileSync(
+		resolve(process.cwd(), 'vendor/design/tokens/tokens.css'),
+		'utf-8',
+	);
 
 	it('defines shared readable text tokens for cards, controls, tags, and back links', () => {
 		for (const token of [
@@ -401,10 +398,12 @@ describe('GO2-W5 round 5 — closer: fun SVGs, card parity, bolder rails, yellow
 	});
 
 	it('R5-3 — metro timeline spine draws at 3px with the bolder 32px roundel', () => {
-		const metro = read('lib/components/brand/MetroStation.svelte');
+		const metro = readFileSync(resolve(UI_SRC, 'brand/MetroStation.svelte'), 'utf-8');
+		const adapter = read('lib/components/brand/MetroStation.svelte');
 		expect(metro).toContain('viewBox="0 0 3 100"');
 		expect(metro.match(/stroke-width="3"/g)?.length).toBe(2);
-		expect(metro).toMatch(/\.station-badge-wrapper :global\(\.station-number-badge\) \{[\s\S]*?width: 2rem;/);
+		expect(metro).toMatch(/\[data-slot='badge'\]\.station-number-badge\) \{[\s\S]*?width: 2rem;/);
+		expect(adapter).toContain('class="station-number-badge"');
 	});
 
 	it('R5c — yellow-conversion doctrine: the conversion variant exists and carries the signage pair', () => {

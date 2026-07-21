@@ -6,6 +6,8 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 const ENDPOINT = 'https://plausible.io/api/event';
 const LOCAL_PRODUCTION_ORIGIN = 'http://yesid.dev:4173';
 const CONSENT_KEY = 'yesid:analytics-consent:v1';
+const PREFERENCES_OPEN_KEY = 'yesid:analytics-preferences-open:v1';
+const DENIAL_SAFETY_KEY = 'yesid:analytics-denial-safety:v1';
 const HERO_INTRO_KEY = 'yesid:hero-intro-day';
 const CONSENT_DISCLOSURES = [
 	{
@@ -245,6 +247,79 @@ test('analytics consent is a wide borderless desktop rail', async ({ page }) => 
 			];
 		}),
 	).toEqual(['0px', '0px', '0px', '0px']);
+});
+
+test('footer reliably reopens, refocuses, and reselects analytics consent', async ({ page }) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	await capturePlausible(page);
+
+	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
+
+	const preferences = page.getByTestId('analytics-preferences');
+	await preferences.click();
+
+	const rail = page.getByTestId('analytics-consent');
+	const accept = page.getByTestId('analytics-consent-accept');
+	const decline = page.getByTestId('analytics-consent-decline');
+	await expect(rail).toBeVisible();
+	await expect(rail).toBeFocused();
+	await expect(preferences).toHaveAttribute('aria-controls', 'analytics-consent');
+	await expect(preferences).toHaveAttribute('aria-expanded', 'true');
+	await expect(accept).toHaveAttribute('aria-pressed', 'true');
+	await expect(decline).toHaveAttribute('aria-pressed', 'false');
+	await expect
+		.poll(() => page.evaluate((key) => sessionStorage.getItem(key), PREFERENCES_OPEN_KEY))
+		.toBe('granted');
+
+	await page.reload();
+	await expect(rail).toBeVisible();
+	await expect(rail).toBeFocused();
+	await expect(accept).toHaveAttribute('aria-pressed', 'true');
+	await expect
+		.poll(() => page.evaluate((key) => sessionStorage.getItem(key), PREFERENCES_OPEN_KEY))
+		.toBe('granted');
+
+	await preferences.focus();
+	await page.keyboard.press('Enter');
+	await expect(rail).toBeFocused();
+	await expect
+		.poll(() => page.evaluate((key) => sessionStorage.getItem(key), PREFERENCES_OPEN_KEY))
+		.toBe('granted');
+
+	await decline.click();
+	await expect(rail).toHaveCount(0);
+	expect(
+		await page.evaluate(
+			([choiceKey, markerKey, safetyKey]) => ({
+				choice: localStorage.getItem(choiceKey),
+				marker: sessionStorage.getItem(markerKey),
+				safety: sessionStorage.getItem(safetyKey),
+			}),
+			[CONSENT_KEY, PREFERENCES_OPEN_KEY, DENIAL_SAFETY_KEY] as const,
+		),
+	).toEqual({ choice: 'denied', marker: null, safety: null });
+
+	await preferences.click();
+	await expect(rail).toBeVisible();
+	await expect(rail).toBeFocused();
+	await expect(decline).toHaveAttribute('aria-pressed', 'true');
+	await expect(accept).toHaveAttribute('aria-pressed', 'false');
+	await expect
+		.poll(() => page.evaluate((key) => sessionStorage.getItem(key), PREFERENCES_OPEN_KEY))
+		.toBe('denied');
+
+	await accept.click();
+	await expect(rail).toHaveCount(0);
+	expect(
+		await page.evaluate(
+			([choiceKey, markerKey]) => ({
+				choice: localStorage.getItem(choiceKey),
+				marker: sessionStorage.getItem(markerKey),
+			}),
+			[CONSENT_KEY, PREFERENCES_OPEN_KEY] as const,
+		),
+	).toEqual({ choice: 'granted', marker: null });
 });
 
 for (const { locale, path } of CONSENT_DISCLOSURES) {

@@ -14,8 +14,8 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { siteLabels } from '$lib/content';
-	import { Separator } from '$lib/components/ui/separator';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import * as Tabs from '@yesid/ui/tabs';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { onMount, onDestroy } from 'svelte';
 
@@ -132,7 +132,7 @@
 	});
 </script>
 
-<Separator variant="hazard" hazardSize="sm" />
+<HazardSeparator hazardSize="sm" />
 
 {#if mode === 'navigate'}
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
@@ -191,7 +191,7 @@
 		<Tabs.List
 			bind:ref={tabsListRef}
 			variant="line"
-			class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center {swipeActive ? 'swipe-lock' : ''}"
+				class="station-tabs flex h-8 w-full overflow-x-auto p-[3px] justify-start xl:justify-center {swipeActive ? 'swipe-lock' : ''}"
 			style="background: var(--primary); border: none;"
 			ontouchstart={onTouchStart}
 			ontouchmove={onTouchMove}

@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { SectionLabel } from '$lib/components/brand';
+	import { SectionLabel } from '@yesid/ui/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '$lib/utils';
 	import { pressBounce } from '$lib/motion/actions';

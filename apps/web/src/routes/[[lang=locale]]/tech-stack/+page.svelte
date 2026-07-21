@@ -2,7 +2,7 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
 	import { onMount, untrack } from 'svelte';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -10,9 +10,10 @@
 	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { StatusDot, SectionLabel } from '$lib/components/brand';
+	import { SectionLabel } from '@yesid/ui/brand';
+	import { StatusDot } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
+	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 
 	let { data } = $props();
 
@@ -191,7 +192,7 @@
 	     naturally edge-to-edge below --container-wide. The band wraps the
 	     loading placeholder too, so the frame is stable while the chunk lands. -->
 	<div class="engine-band" data-testid="engine-band">
-		<Separator variant="hazard" data-testid="engine-band-hazard-top" />
+		<HazardSeparator data-testid="engine-band-hazard-top" />
 		{#if EngineComponent}
 			<EngineComponent animate={engineAnimate} />
 		{:else}
@@ -199,7 +200,7 @@
 				<span class="engine-loading-line">{engineLoading}</span>
 			</section>
 		{/if}
-		<Separator variant="hazard" data-testid="engine-band-hazard-bottom" />
+		<HazardSeparator data-testid="engine-band-hazard-bottom" />
 	</div>
 
 	<!-- ═══ CTA ZONE ═══ -->

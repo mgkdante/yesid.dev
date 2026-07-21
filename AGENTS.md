@@ -137,6 +137,8 @@ Never mid-slice. Never on commits or hook fires.
 
 - **Runtime:** Bun only. Lockfile: `bun.lock`. `bun install` then `bun run setup:hooks`.
 - **Secrets:** 1Password (`op://yesid-dev/<item>/<field>`). Never plaintext in repo.
-- **Monorepo:** Turborepo, `apps/web` (SvelteKit) + `apps/cms` (Directus). Shared packages under `packages/`.
+- **Monorepo:** Turborepo, `apps/web` (SvelteKit) + `apps/cms` (Directus). The only product-owned package under `packages/` is `packages/shared`.
+- **Design-system customer boundary:** `yesid.dev-design` ships independently. This repo consumes one immutable release under `apps/web/vendor/design`; it does not own or run the upstream package suites. From `apps/web`, verify the pinned schema-2 release with `bun vendor/design/tools/adopt.ts --check --dest vendor/design`.
+- **Design tokens:** Vendored `apps/web/vendor/design/tokens/` is the design source. `apps/web/tools/build-tokens.ts` is the product-owned adapter; run `bun run tokens:build` from the repo root after either source changes.
 - **CMS:** dual-environment Directus on Railway (dev + prod). See Notion → 🏗️ Architecture → Dev vs Prod for the procedure.
-- **Pre-commit:** `.githooks/pre-commit` blocks edits to generated tokens unless `packages/tokens/tokens.json` is staged.
+- **Pre-commit:** `.githooks/pre-commit` requires the vendor manifest with vendored payload changes, and blocks generated `DESIGN.md` or `app.css` token-region changes unless the vendored token source or product adapter is staged.

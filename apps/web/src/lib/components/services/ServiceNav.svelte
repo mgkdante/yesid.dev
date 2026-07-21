@@ -11,8 +11,8 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { boop } from '$lib/motion/actions/boop.js';
-	import { SectionLabel } from '$lib/components/brand';
+	import { boop } from '@yesid/motion/actions';
+	import { SectionLabel } from '@yesid/ui/brand';
 
 	let {
 		prev,

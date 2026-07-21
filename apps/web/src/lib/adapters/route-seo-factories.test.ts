@@ -3,9 +3,13 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 import type { ContentAdapter } from './types';
-import { blogSlugSeoFactory, servicesIdSeoFactory } from './route-seo-factories';
+import {
+	blogSlugSeoFactory,
+	legalSlugSeoFactory,
+	servicesIdSeoFactory,
+} from './route-seo-factories';
 import { serviceFactory } from '../../tests/factories';
-import type { BlogPost, Service, SiteMeta, SiteSeoDefaults } from '$lib/types';
+import type { BlogPost, LegalPage, Service, SiteMeta, SiteSeoDefaults } from '$lib/types';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
@@ -290,5 +294,57 @@ describe('servicesIdSeoFactory', () => {
 		const service = serviceFactory.build({ id: 'internal-tooling' } as Partial<Service>);
 		const seo = await servicesIdSeoFactory(argsFor(service));
 		expect(seo.ogImage).toBeUndefined();
+	});
+});
+
+describe('legalSlugSeoFactory', () => {
+	it('uses the first substantive paragraph for each locale after a short revision line', async () => {
+		const intro = {
+			en: 'These terms explain the rules that apply when you visit and use the yesid.dev portfolio and contact website.',
+			fr: 'Ces conditions expliquent les règles qui s’appliquent lorsque vous visitez et utilisez le site portfolio et contact yesid.dev.',
+			es: 'Estas condiciones explican las reglas que se aplican cuando visita y utiliza el sitio de portafolio y contacto yesid.dev.',
+		};
+		const doc = (revision: string, description: string, locale: string) => ({
+			time: 1,
+			version: '2.31.2',
+			blocks: [
+				{ id: `${locale}-revision`, type: 'paragraph' as const, data: { text: revision } },
+				{ id: `${locale}-intro`, type: 'paragraph' as const, data: { text: description } },
+			],
+		});
+		const page: LegalPage = {
+			slug: 'terms',
+			title: {
+				en: 'Terms of Use',
+				fr: 'Conditions d’utilisation',
+				es: 'Condiciones de uso',
+			},
+			body: {
+				en: doc('Last updated: 2026-07-13', intro.en, 'en'),
+				fr: doc('Dernière mise à jour : 2026-07-13', intro.fr, 'fr'),
+				es: doc('Última actualización: 2026-07-13', intro.es, 'es'),
+			},
+		};
+		const localizedDefaults: SiteSeoDefaults = {
+			defaultOgImage: null,
+			themeColor: '#141414',
+			defaultDescription: {
+				en: 'English homepage fallback description that must not replace legal-page copy.',
+				fr: 'Description française de la page d’accueil qui ne doit pas remplacer le texte juridique.',
+				es: 'Descripción en español de la página de inicio que no debe reemplazar el texto legal.',
+			},
+		};
+
+		const seo = await legalSlugSeoFactory({
+			params: { slug: page.slug },
+			locale: 'en',
+			adapter: {
+				legal: { bySlug: async () => page },
+			} as unknown as ContentAdapter,
+			siteMeta,
+			siteSeoDefaults: localizedDefaults,
+		});
+
+		expect(seo.description).toEqual(intro);
 	});
 });

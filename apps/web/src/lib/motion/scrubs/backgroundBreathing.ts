@@ -1,5 +1,5 @@
 import { gsap } from '$lib/motion/utils/gsap.js';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
 /**
  * Options for `backgroundBreathing`.

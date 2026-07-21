@@ -7,9 +7,10 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
-	import { ChevronToggle } from '$lib/components/brand';
-	import { Badge } from '$lib/components/ui/badge';
+	import { Collapsible, CollapsibleTrigger } from '@yesid/ui/collapsible';
+	import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
+	import { ChevronToggle } from '@yesid/ui/brand';
+	import { Badge } from '@yesid/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import { persisted } from '$lib/state/persisted.svelte';
 	import { quietModeStore } from '$lib/state/quiet-mode.svelte';
@@ -98,7 +99,7 @@
 
 {#snippet headerContent()}
 	{#if index !== null}
-		<Badge variant="number" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
+		<Badge variant="number" class="text-[0.75rem]" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
 	{:else if icon}
 		{@render icon()}
 	{/if}

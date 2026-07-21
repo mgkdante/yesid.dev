@@ -3,7 +3,7 @@
 	import { asset } from '$lib/directus/assets';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 

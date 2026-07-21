@@ -1,0 +1,91 @@
+{
+  "collection": "asset_records",
+  "field": "delivery_mode",
+  "type": "string",
+  "meta": {
+    "collection": "asset_records",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "delivery_mode",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown",
+    "note": null,
+    "options": {
+      "choices": [
+        {
+          "text": "Local Img",
+          "value": "local-img"
+        },
+        {
+          "text": "Css Background",
+          "value": "css-background"
+        },
+        {
+          "text": "Og Meta",
+          "value": "og-meta"
+        },
+        {
+          "text": "Inline Svg",
+          "value": "inline-svg"
+        },
+        {
+          "text": "Sanitized Svg Img",
+          "value": "sanitized-svg-img"
+        },
+        {
+          "text": "Tokenized Inline Svg",
+          "value": "tokenized-inline-svg"
+        },
+        {
+          "text": "Code Component",
+          "value": "code-component"
+        },
+        {
+          "text": "Font Face",
+          "value": "font-face"
+        },
+        {
+          "text": "Download",
+          "value": "download"
+        },
+        {
+          "text": "Video",
+          "value": "video"
+        },
+        {
+          "text": "External Url",
+          "value": "external-url"
+        }
+      ]
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 18,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "delivery_mode",
+    "table": "asset_records",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

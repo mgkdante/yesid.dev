@@ -18,15 +18,19 @@ Define this wrapper once in the operator shell. It resolves credentials inside a
 ```bash
 with_yesid_op() (
   set +x
-  export OP_SERVICE_ACCOUNT_TOKEN="$(sed -n 's/^OP_TOKEN=//p' /home/mgkdante/Yesito/projects/brand/yesid.dev/.env)"
+  local env_file="${YESID_ENV_FILE:-.env}"
+  export OP_SERVICE_ACCOUNT_TOKEN="$(sed -n 's/^OP_TOKEN=//p' "$env_file")"
   trap 'unset OP_SERVICE_ACCOUNT_TOKEN' EXIT
   if [[ -z "${OP_SERVICE_ACCOUNT_TOKEN}" ]]; then
-    printf '%s\n' '[blog-editorial-dates] missing OP_TOKEN in /home/mgkdante/Yesito/projects/brand/yesid.dev/.env; stop before op run.' >&2
+    printf '[blog-editorial-dates] missing OP_TOKEN in %s; stop before op run.\n' "$env_file" >&2
     exit 1
   fi
-  op run --env-file=/home/mgkdante/Yesito/projects/brand/yesid.dev/.env -- "$@"
+  op run --env-file="$env_file" -- "$@"
 )
 ```
+
+Set `YESID_ENV_FILE` when the 1Password environment file is not at the
+repository-root `.env` path.
 
 Never print either the service-account token or the resolved Directus token. Do not enable shell tracing inside the wrapper.
 
