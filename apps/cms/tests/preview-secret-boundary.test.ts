@@ -26,9 +26,25 @@ describe('preview credential repository boundary', () => {
 			expect(env).toContain('VERCEL_GIT_COMMIT_REF');
 			expect(env).toContain('DIRECTUS_BUILD_TOKEN');
 			expect(env).toContain('DIRECTUS_DEV_BUILD_TOKEN');
+			expect(env).not.toContain('DIRECTUS_READ_TOKEN');
 			expect(env).not.toContain('WEB3FORMS_ACCESS_KEY');
 			expect(env).not.toContain('VITE_WEB3FORMS_ACCESS_KEY');
 		}
+	});
+
+	it('does not advertise the dead Directus read credential in tracked env templates', () => {
+		for (const path of [
+			'.env.example',
+			'.env.1password',
+			'apps/web/.env.1password',
+			'apps/web/.env.example',
+		]) {
+			expect(text(path)).not.toMatch(/^DIRECTUS_READ_TOKEN=/mu);
+		}
+	});
+
+	it('does not advertise the retired Directus integration switch in the web env template', () => {
+		expect(text('apps/web/.env.example')).not.toContain('RUN_DIRECTUS_INTEGRATION');
 	});
 
 	it('does not advertise dead Web3Forms env aliases in tracked env templates', () => {
