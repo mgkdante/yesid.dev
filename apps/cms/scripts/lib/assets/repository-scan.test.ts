@@ -1058,7 +1058,7 @@ describe("yesid.dev real repository contract", () => {
     expect(scan.usages).toContainEqual(
       expect.objectContaining({
         sourceFile: "apps/web/src/lib/adapters/static.ts",
-        sourceLine: 126,
+        sourceLine: 124,
         assetId: "repo-file:apps/web/static/images/montreal-metro.svg",
         deliveryMode: "inline-svg",
       }),
