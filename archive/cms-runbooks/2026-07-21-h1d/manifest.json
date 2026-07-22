@@ -1,0 +1,11 @@
+{
+	"schema": 1,
+	"archived_at": "2026-07-21",
+	"source": {
+		"repository": "mgkdante/yesid.dev",
+		"commit": "0bbb1be397784e66469bf07b113c2561a6ae07bd"
+	},
+	"files": [
+		{"source":"apps/cms/scripts/migrate-tech-stack-icon.ts","archive":"archive/cms-runbooks/2026-07-21-h1d/apps/cms/scripts/migrate-tech-stack-icon.ts","sha256":"1034ed3c8bcb9e4d7faa3c8babee1121e318784ab2872df35be4c01459c43583","restore":"git mv archive/cms-runbooks/2026-07-21-h1d/apps/cms/scripts/migrate-tech-stack-icon.ts apps/cms/scripts/migrate-tech-stack-icon.ts"}
+	]
+}
