@@ -82,6 +82,8 @@ test('runs the live production diff only from trusted main with a step-scoped to
 	const liveDiff = jobBlock('live-diff', 'push');
 
 	expect(jobCondition(liveDiff)).toBe(`    if: |
+      !cancelled() &&
+      needs.test.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       (
         github.event_name == 'push' ||
@@ -366,7 +368,7 @@ test('keeps every downstream CMS job body byte-stable', () => {
 		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
 	);
 	expect(sha256(jobBlock('live-diff', 'push'))).toBe(
-		'e0b16991ceac323a6c9112584e4263f982502fc8318d28a0f24a249bb471551e',
+		'0cedcf484a983112aec92c2cb527424eddf8210328a29a1f9d4d8def2e7b74e7',
 	);
 	expect(sha256(jobBlock('push', 'legal-service-area'))).toBe(
 		'e73949aa6577920e21cf1ebdbcf88a9567590662ab880e4238c07256e288a9d3',
