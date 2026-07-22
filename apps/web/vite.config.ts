@@ -14,14 +14,6 @@ export default defineConfig({
 		// one bits-ui context registry when they compose Root and Content.
 		dedupe: ['bits-ui'],
 	},
-	// Vitest stores its results cache (per-file test timings used for
-	// sequencing) under Vite's cacheDir at <cacheDir>/vitest/. The default is
-	// node_modules/.vite, which CI can't cache safely (bun install owns
-	// node_modules). Relocate it to .vitest/cache ONLY under Vitest — dev/build
-	// keep the default dep-optimizer location. CI restores apps/web/.vitest/cache
-	// in .github/actions/setup (slice-28.4, audit #132; pattern per Vitest 4
-	// cache docs).
-	cacheDir: process.env.VITEST ? '.vitest/cache' : undefined,
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
