@@ -13,6 +13,9 @@ const h1bBaseCommit = '48c3f35454656c47c9a9eb6e510a0073df5e19e5';
 const h1cArchiveRoot = 'archive/cms-runbooks/2026-07-21-h1c';
 const h1cManifestPath = join(repoRoot, h1cArchiveRoot, 'manifest.json');
 const h1cBaseCommit = '221ddd9e008334c39c4a5e5ece21fe6735c79850';
+const h1dArchiveRoot = 'archive/cms-runbooks/2026-07-21-h1d';
+const h1dManifestPath = join(repoRoot, h1dArchiveRoot, 'manifest.json');
+const h1dBaseCommit = '0bbb1be397784e66469bf07b113c2561a6ae07bd';
 
 const archivedSources = [
 	'apps/cms/scripts/add-project-hero-media-fields.ts',
@@ -56,6 +59,10 @@ const h1bArchivedSources = [
 const h1cArchivedSources = [
 	'apps/cms/scripts/seed-morph-shapes.ts',
 	'apps/cms/tests/seed-morph-shapes-dry-run.test.ts',
+] as const;
+
+const h1dArchivedSources = [
+	'apps/cms/scripts/migrate-tech-stack-icon.ts',
 ] as const;
 
 type Manifest = {
@@ -211,4 +218,36 @@ test('removes only the closed H1-C pair and keeps the live morph fixture contrac
 	for (const path of h1cArchivedSources) {
 		expect(existsSync(join(repoRoot, path)), path).toBe(false);
 	}
+});
+
+test('moves the completed H1-D backfill into its own recoverable archive batch', () => {
+	expect(existsSync(h1dManifestPath), 'H1-D archive manifest must exist').toBe(true);
+	if (!existsSync(h1dManifestPath)) return;
+
+	const manifest = JSON.parse(readFileSync(h1dManifestPath, 'utf8')) as Manifest;
+	expect(manifest.schema).toBe(1);
+	expect(manifest.source.commit).toBe(h1dBaseCommit);
+	expect(manifest.files.map(({ source }) => source)).toEqual([...h1dArchivedSources]);
+
+	for (const entry of manifest.files) {
+		const expectedArchive = `${h1dArchiveRoot}/${entry.source}`;
+		expect(entry.archive, entry.source).toBe(expectedArchive);
+		expect(entry.restore, entry.source).toBe(`git mv ${entry.archive} ${entry.source}`);
+		expect(existsSync(join(repoRoot, entry.archive)), entry.archive).toBe(true);
+		if (existsSync(join(repoRoot, entry.archive))) {
+			expect(entry.sha256, entry.archive).toBe(sha256(join(repoRoot, entry.archive)));
+		}
+	}
+});
+
+test('removes only the completed H1-D backfill and keeps the live bootstrap seed', () => {
+	for (const path of h1dArchivedSources) {
+		expect(existsSync(join(repoRoot, path)), path).toBe(false);
+	}
+	expect(existsSync(join(repoRoot, 'apps/cms/scripts/seed-tech-stack.ts'))).toBe(true);
+});
+
+test('removes the stale active reference to the completed H1-D backfill', () => {
+	const seedTechStack = readFileSync(join(repoRoot, 'apps/cms/scripts/seed-tech-stack.ts'), 'utf8');
+	expect(seedTechStack).not.toContain('migrate-tech-stack-icon.ts');
 });
