@@ -19,6 +19,8 @@ export interface LocalizedString {
 	es?: string;
 }
 
+const EXTRA_LOCALES = ['fr', 'es'] as const;
+
 /**
  * Flattens a Directus `translations` array into a `LocalizedString { en, fr?, es? }`.
  * Empty/null values per locale are dropped (matches integrity-test invariant:
@@ -39,10 +41,10 @@ export function toLocalizedString<T extends { languages_code: string }>(
 	}
 	const en = byLocale.get('en') ?? byLocale.get(fallback) ?? '';
 	const result: LocalizedString = { en };
-	const fr = byLocale.get('fr');
-	if (fr) result.fr = fr;
-	const es = byLocale.get('es');
-	if (es) result.es = es;
+	for (const locale of EXTRA_LOCALES) {
+		const value = byLocale.get(locale);
+		if (value) result[locale] = value;
+	}
 	return result;
 }
 
@@ -224,13 +226,9 @@ export function toLocalizedJSON<T extends { languages_code: string }>(
 function mergeJsonLocales(enTemplate: unknown, byLocale: Map<string, unknown>): unknown {
 	if (typeof enTemplate === 'string') {
 		const result: LocalizedString = { en: enTemplate };
-		const fr = byLocale.get('fr');
-		if (fr !== undefined && fr !== null && typeof fr === 'string' && fr.length > 0) {
-			result.fr = fr;
-		}
-		const es = byLocale.get('es');
-		if (es !== undefined && es !== null && typeof es === 'string' && es.length > 0) {
-			result.es = es;
+		for (const locale of EXTRA_LOCALES) {
+			const value = byLocale.get(locale);
+			if (typeof value === 'string' && value.length > 0) result[locale] = value;
 		}
 		return result;
 	}
