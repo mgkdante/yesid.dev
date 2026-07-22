@@ -173,6 +173,8 @@ jobs:
     # The live comparison needs the production API, so it runs only after main
     # is trusted: immediately post-merge or by an explicit dispatch from main.
     if: |
+      !cancelled() &&
+      needs.test.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       (
         github.event_name == 'push' ||
