@@ -76,6 +76,34 @@ test('external action refs use verified commit pins with major-version comments'
 	expect([...observed].sort()).toEqual([...expectedPinnedActionLines.keys()].sort());
 });
 
+test('CI retains remote caches but the shared setup caches only Bun installs', () => {
+	const setup = readFileSync(join(repoRoot, '.github', 'actions', 'setup', 'action.yml'), 'utf8');
+	const viteConfig = readFileSync(join(repoRoot, 'apps', 'web', 'vite.config.ts'), 'utf8');
+	const workflow = readFileSync(join(repoRoot, '.github', 'workflows', 'web.yml'), 'utf8');
+	const cacheUses = setup.match(/^\s+uses: actions\/cache@/gmu) ?? [];
+
+	expect(cacheUses).toHaveLength(1);
+	expect(setup).toContain('path: ~/.bun/install/cache');
+	expect(setup).not.toContain('.turbo/cache');
+	expect(setup).not.toContain('.vitest/cache');
+	expect(setup).not.toMatch(/^\s+key: turbo-/mu);
+	expect(setup).not.toMatch(/^\s+key: vitest-/mu);
+	expect(viteConfig).not.toMatch(/^\s*cacheDir:/mu);
+	expect(viteConfig).not.toContain('.vitest/cache');
+	expect(workflow.match(/^\s+TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}$/gmu)).toHaveLength(4);
+	expect(workflow.match(/^\s+TURBO_TEAM: \$\{\{ vars\.TURBO_TEAM \}\}$/gmu)).toHaveLength(4);
+	expect(workflow).toContain(
+		'uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4',
+	);
+	expect(workflow).toContain('path: ~/.cache/ms-playwright');
+	expect(workflow).toContain(
+		"key: playwright-${{ runner.os }}-${{ hashFiles('bun.lock') }}",
+	);
+	expect(workflow).toMatch(
+		/^\s+restore-keys:\s*\|\n\s+playwright-\$\{\{ runner\.os \}\}-$/mu,
+	);
+});
+
 test('secret scan verifies the gitleaks archive before extraction', () => {
 	const workflow = readFileSync(
 		join(repoRoot, '.github', 'workflows', 'secret-scan.yml'),
