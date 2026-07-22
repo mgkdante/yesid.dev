@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { workflowJobBlock, workflowStepBlock } from './helpers/workflow-source';
 
 const repoRoot = join(import.meta.dir, '..', '..', '..');
 
@@ -102,6 +103,58 @@ test('CI retains remote caches but the shared setup caches only Bun installs', (
 	expect(workflow).toMatch(
 		/^\s+restore-keys:\s*\|\n\s+playwright-\$\{\{ runner\.os \}\}-$/mu,
 	);
+});
+
+test('e2e installs Playwright system dependencies only without an exact browser cache hit', () => {
+	const workflow = readFileSync(join(repoRoot, '.github', 'workflows', 'web.yml'), 'utf8');
+	const e2e = workflowJobBlock(workflow, 'e2e', { expectedNext: 'e2e-merge-reports' });
+
+	expect(e2e).not.toBeNull();
+
+	const cache = workflowStepBlock(e2e!, 'Cache Playwright browsers');
+	const exactHitInstall = workflowStepBlock(
+		e2e!,
+		'Install Playwright Chromium (exact cache hit)',
+	);
+	const missInstall = workflowStepBlock(
+		e2e!,
+		'Install Playwright Chromium (+ system deps)',
+	);
+
+	expect(cache).not.toBeNull();
+	expect(cache).toContain('id: playwright-browser-cache');
+	expect(cache).toContain(
+		'uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4',
+	);
+	expect(cache).toContain('path: ~/.cache/ms-playwright');
+	expect(cache).toContain("key: playwright-${{ runner.os }}-${{ hashFiles('bun.lock') }}");
+	expect(cache).toMatch(
+		/^\s+restore-keys:\s*\|\n\s+playwright-\$\{\{ runner\.os \}\}-$/mu,
+	);
+
+	expect(exactHitInstall).not.toBeNull();
+	expect(exactHitInstall).toContain(
+		"if: steps.playwright-browser-cache.outputs.cache-hit == 'true'",
+	);
+	expect(exactHitInstall).toContain('working-directory: apps/web');
+	expect(exactHitInstall).toContain('run: bun x playwright install chromium');
+	expect(exactHitInstall).not.toContain('--with-deps');
+
+	expect(missInstall).not.toBeNull();
+	expect(missInstall).toContain(
+		"if: steps.playwright-browser-cache.outputs.cache-hit != 'true'",
+	);
+	expect(missInstall).toContain('working-directory: apps/web');
+	expect(missInstall).toContain('run: bun x playwright install --with-deps chromium');
+
+	expect(e2e!.match(/^\s+if: steps\.playwright-browser-cache\.outputs\.cache-hit .+$/gmu)).toEqual([
+		"        if: steps.playwright-browser-cache.outputs.cache-hit == 'true'",
+		"        if: steps.playwright-browser-cache.outputs.cache-hit != 'true'",
+	]);
+	expect(e2e!.match(/^\s+run: bun x playwright install.*$/gmu)).toEqual([
+		'        run: bun x playwright install chromium',
+		'        run: bun x playwright install --with-deps chromium',
+	]);
 });
 
 test('secret scan verifies the gitleaks archive before extraction', () => {
