@@ -1,14 +1,7 @@
 /**
- * LocalizedString helpers for the export-fallbacks pipeline.
- *
- * Mirrors `toLocalizedString` from apps/web/src/lib/adapters/directus.ts so the
- * generator emits the same sparse `{ en, fr?, es? }` shape that the static
- * adapter currently consumes. Kept standalone (no apps/web import) because the
- * adapter file pulls SvelteKit-only modules (`$env/dynamic/public`, `$lib/*`)
- * that don't resolve from a CLI script in apps/cms.
- *
- * If the apps/web version ever drifts from this one, the P7 drift verification
- * (regen vs committed) will surface the mismatch.
+ * Canonical localization transforms for the export-fallbacks pipeline. The
+ * generator owns the sparse `{ en, fr?, es? }` contract consumed by static
+ * content modules; generated-content verification catches output drift.
  */
 
 import type { Locale } from '@repo/shared';
@@ -201,8 +194,6 @@ import type { BlockEditorDoc, LocalizedBlockEditorDoc } from '@repo/shared';
  * row as the structural template, collecting matching paths from fr/es, and
  * produces a structure where every string leaf is a LocalizedString.
  *
- * Mirrors `toLocalizedJSON` in apps/web/src/lib/adapters/directus.ts.
- *
  * Non-string primitives (numbers, booleans) pass through unchanged from the
  * en row. Arrays merge element-wise by index.
  */
@@ -268,8 +259,7 @@ function mergeJsonLocales(enTemplate: unknown, byLocale: Map<string, unknown>): 
 
 /**
  * Compose a LocalizedBlockEditorDoc from translation rows whose `field` column
- * holds a BlockEditorDoc JSON value per locale. Mirrors `toLocalizedBlockEditorDoc`
- * in apps/web/src/lib/adapters/directus.ts. Required `en` falls back to an
+ * holds a BlockEditorDoc JSON value per locale. Required `en` falls back to an
  * empty single-paragraph doc when no English translation is present so the
  * LocalizedBlockEditorDocSchema's `.en` requirement is always satisfied.
  */

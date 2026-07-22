@@ -4,12 +4,9 @@
  * arrays). Covers /blog (block_blog_page_content) and /projects
  * (block_projects_page_content) page chrome.
  *
- * Architecture note: queries the block_* collection DIRECTLY rather than
- * fetching the parent `pages` row + projecting via M2A. Queried via
- * `readSingleton` + `asSingletonRow` (shape-tolerant during flips). The
- * runtime adapter still uses the full M2A loadPage() pattern for type-safe
- * page validation; the export script trades that integration check for
- * simpler code and the build-time drift gate (P7) catches mismatches.
+ * Queries each block_* singleton directly rather than projecting the parent
+ * pages M2A tree. These fetchers own the build-time page-chrome projections;
+ * generated-content verification catches output drift.
  */
 
 import { toLocalizedFields } from '../locale';

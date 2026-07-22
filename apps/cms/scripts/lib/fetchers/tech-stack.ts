@@ -1,7 +1,7 @@
 /**
  * tech-stack fetcher — reads `tech_stack` with translations (BlockEditorDoc per
  * locale) + icon_id M2O expansion + services/projects M2M junctions.
- * Mirrors apps/web/src/lib/adapters/directus.ts:2030 `toTechStackItem` + L2756.
+ * This module owns the build-time TechStackItem projection.
  */
 
 import { readItems } from '@directus/sdk';

@@ -7,8 +7,7 @@
  * (operator addendum) recompose under hero.terminal with a literal {count}
  * token interpolated by the /tech-stack component.
  *
- * Mirrors transformBlockTechStackPageContent + transformBlockContactContent in
- * apps/web/src/lib/adapters/directus.ts.
+ * This module owns both build-time block projections.
  */
 
 import { readItems } from '@directus/sdk';

@@ -1,9 +1,8 @@
 /**
  * Timeout + retry wrapper around native fetch for CMS build scripts.
  *
- * CMS-local counterpart to apps/web/src/lib/adapters/directus-queue.ts.
- * Uses Bottleneck (already a declared dep of @repo/cms) instead of p-queue
- * so we don't need a new dependency.
+ * This module owns the CMS request queue. It uses the package's existing
+ * Bottleneck dependency for bounded concurrency and rate limiting.
  *
  * Inject as:
  *   createDirectus(url, { globals: { fetch: createQueuedFetch() } }).with(rest())
