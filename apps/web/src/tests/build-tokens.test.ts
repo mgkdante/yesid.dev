@@ -131,7 +131,7 @@ describe('product-owned token adapter', () => {
 		expect(design).toContain(
 			'GENERATED FROM apps/web/vendor/design/tokens/tokens.json — DO NOT EDIT',
 		);
-		expect(design).toContain('`@yesid/ui/brand` (8 components:');
+		expect(design).toContain('`@yesid/ui/brand` (9 components:');
 		expect(design).toContain('13 primitive subpaths');
 		for (const [path, content] of immutableInputs) {
 			expect(readFileSync(resolve(root, path), 'utf8'), path).toBe(content);
