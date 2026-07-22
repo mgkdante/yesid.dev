@@ -176,10 +176,9 @@ jobs:
     # push. OPTIONAL SWITCH: add the "skip-e2e" label to a PR to skip e2e
     # (docs-only, or to unblock a merge if the suite is misbehaving).
     if: >-
-      ${{ github.event_name == 'workflow_dispatch'
-          || (github.event_name == 'pull_request'
-              && fromJSON(needs.classify.outputs.classification).relevant['ci-work']
-              && !contains(github.event.pull_request.labels.*.name, 'skip-e2e')) }}
+      ${{ github.event_name == 'pull_request'
+          && fromJSON(needs.classify.outputs.classification).relevant['ci-work']
+          && !contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
     # Gate the 3 shards on the cheap ci job: its build populates the turbo
     # remote cache, so shards replay it instead of running 4 identical builds.
     needs: [classify, ci]
@@ -191,12 +190,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { variant: two, shard: 1, total: 2 }
-          - { variant: two, shard: 2, total: 2 }
-          - { variant: three, shard: 1, total: 3 }
-          - { variant: three, shard: 2, total: 3 }
-          - { variant: three, shard: 3, total: 3 }
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
@@ -236,20 +230,20 @@ jobs:
           EXPORT_FALLBACKS_SKIP: "1"
         run: bun x turbo run build --filter=@repo/web
 
-      - name: Playwright e2e (${{ matrix.variant }} shard ${{ matrix.shard }}/${{ matrix.total }}, local hermetic preview)
+      - name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)
         working-directory: apps/web
         env:
           E2E_PREBUILT: "1"
         run: >-
           bun x playwright test
-          --shard=${{ matrix.shard }}/${{ matrix.total }}
+          --shard=${{ matrix.shard }}/3
           --reporter=blob
 
       - name: Upload blob report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: blob-report-${{ matrix.variant }}-${{ matrix.shard }}
+          name: blob-report-${{ matrix.shard }}
           path: apps/web/blob-report/
           retention-days: 14
 
@@ -273,7 +267,7 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: apps/web/all-blob-reports
-          pattern: blob-report-three-*
+          pattern: blob-report-*
           merge-multiple: true
 
       - name: Merge into HTML report
