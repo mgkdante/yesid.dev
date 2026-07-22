@@ -6,6 +6,7 @@
  */
 
 import { createLogger } from './lib/logger';
+import { parseProductionOnlyWriteCli } from './lib/prod-gate';
 import { type ApplyContext, rest } from './lib/schema-apply';
 import {
 	normalizePermissionPayload,
@@ -82,65 +83,17 @@ export interface PublicBlogPermissionCms {
 	): Promise<void>;
 }
 
-function normalizeUrl(value: string): string {
-	return value.replace(/\/+$/, '');
-}
-
 export function parseReconcileArgs(
 	argv: readonly string[],
 	publicDirectusUrl = process.env.PUBLIC_DIRECTUS_URL,
 ): ReconcileArgs {
-	const unknown = argv.find(
-		(argument) =>
-			argument !== '--target=prod' &&
-			argument !== '--apply' &&
-			argument !== '--dry-run' &&
-			!argument.startsWith('--confirm='),
+	return parseProductionOnlyWriteCli(
+		argv,
+		'public-blog-permission',
+		PROD_CONFIRM_PHRASE,
+		publicDirectusUrl,
+		PROD_CMS_URL,
 	);
-	if (unknown) {
-		if (unknown.startsWith('--target=')) {
-			throw new Error(
-				'[public-blog-permission] supports only --target=prod',
-			);
-		}
-		throw new Error(`[public-blog-permission] unknown argument: ${unknown}`);
-	}
-	if (argv.filter((argument) => argument === '--target=prod').length !== 1) {
-		throw new Error(
-			'[public-blog-permission] required: exactly one --target=prod',
-		);
-	}
-	if (argv.includes('--apply') && argv.includes('--dry-run')) {
-		throw new Error(
-			'[public-blog-permission] choose one: --dry-run or --apply',
-		);
-	}
-	const directusUrl = normalizeUrl(publicDirectusUrl ?? PROD_CMS_URL);
-	if (directusUrl !== PROD_CMS_URL) {
-		throw new Error(
-			`[public-blog-permission] Unsupported PUBLIC_DIRECTUS_URL: ${directusUrl}`,
-		);
-	}
-	const confirmations = argv
-		.filter((argument) => argument.startsWith('--confirm='))
-		.map((argument) => argument.slice('--confirm='.length));
-	if (confirmations.length > 1) {
-		throw new Error(
-			'[public-blog-permission] use at most one --confirm=<phrase>',
-		);
-	}
-	const apply = argv.includes('--apply');
-	if (apply && confirmations[0] !== PROD_CONFIRM_PHRASE) {
-		throw new Error(
-			`[public-blog-permission] PROD apply requires --confirm=${PROD_CONFIRM_PHRASE}`,
-		);
-	}
-	if (!apply && confirmations.length > 0) {
-		throw new Error(
-			'[public-blog-permission] --confirm is accepted only for PROD apply',
-		);
-	}
-	return { apply, directusUrl: PROD_CMS_URL };
 }
 
 export function selectDesiredPublicBlogPermission(

@@ -20,6 +20,7 @@
 import { readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync } from 'node:fs';
 import { join as joinPath, resolve as resolvePath } from 'node:path';
 import { getAdminToken } from './lib/auth';
+import { requireExactAcknowledgement } from './lib/prod-gate';
 
 export const PROD_DIRECTUS_URL = 'https://cms.yesid.dev';
 export const PROD_SCHEMA_PUSH_ACK = 'sync-push-can-delete-cms-data';
@@ -85,17 +86,22 @@ function normalizeUrl(value: string | undefined): string {
 
 function readOptionValues(args: readonly string[], names: readonly string[]): string[] {
 	const values: string[] = [];
+	const shortName = names.find((name) => /^-[a-z]$/i.test(name));
+	const forcePrefix = shortName === '-x' || shortName === '-o' ? 'f*' : '';
 	for (let i = 0; i < args.length; i++) {
-		const arg = args[i];
+		const arg = args[i] ?? '';
+		const compact = shortName
+			? arg.match(new RegExp(`^-d*${forcePrefix}${shortName.slice(1)}(.*)$`))
+			: null;
+		if (compact) {
+			values.push(compact[1] || args[++i] || '');
+			continue;
+		}
 		const eq = arg.indexOf('=');
 		const name = eq >= 0 ? arg.slice(0, eq) : arg;
 		if (!names.includes(name)) continue;
-		if (eq >= 0) {
-			values.push(arg.slice(eq + 1));
-		} else if (i + 1 < args.length) {
-			values.push(args[i + 1] ?? '');
-			i++;
-		}
+		if (eq >= 0) values.push(arg.slice(eq + 1));
+		else if (i + 1 < args.length) values.push(args[++i] ?? '');
 	}
 	return values;
 }
@@ -107,65 +113,46 @@ function splitCsv(values: readonly string[]): string[] {
 		.filter(Boolean);
 }
 
+function readLastCsvOption(args: readonly string[], names: readonly string[]): string[] {
+	const value = readLastOptionValue(args, names);
+	return value === undefined ? [] : splitCsv([value]);
+}
+
 function upsertCsvOption(
 	args: readonly string[],
 	names: readonly string[],
 	optionName: string,
 	value: string,
 ): string[] {
-	const out = [...args];
-	for (let i = 0; i < out.length; i++) {
-		const arg = out[i] ?? '';
-		const eq = arg.indexOf('=');
-		const name = eq >= 0 ? arg.slice(0, eq) : arg;
-		if (!names.includes(name)) continue;
-
-		if (eq >= 0) {
-			const current = splitCsv([arg.slice(eq + 1)]);
-			if (!current.includes(value)) current.push(value);
-			out[i] = `${name}=${current.join(',')}`;
-			return out;
-		}
-
-		const current = splitCsv([out[i + 1] ?? '']);
-		if (!current.includes(value)) current.push(value);
-		out[i + 1] = current.join(',');
-		return out;
-	}
-
-	return [...out, optionName, value];
+	const current = readLastCsvOption(args, names);
+	if (current.includes(value)) return [...args];
+	return [...args, optionName, [...current, value].join(',')];
 }
 
 export function buildDirectusSyncPushArgs(
 	userArgs: readonly string[],
 	env: SyncPushEnv,
 ): string[] {
-	const targetUrl = normalizeUrl(env.DIRECTUS_URL);
-	const isProd = targetUrl === PROD_DIRECTUS_URL;
+	const targetUrl = resolveDirectusUrl(userArgs, env.DIRECTUS_URL);
+	const isProd = new URL(targetUrl).hostname.replace(/\.$/, '') === 'cms.yesid.dev';
 
 	if (isProd) {
-		if (!isTruthy(env.DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH)) {
-			throw new Error(
-				`Refusing production sync:push to ${PROD_DIRECTUS_URL}. ` +
-					`Set DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH=1 and ` +
-					`DIRECTUS_SYNC_PUSH_ACK=${PROD_SCHEMA_PUSH_ACK} after reviewing sync:diff.`,
-			);
-		}
-		if (env.DIRECTUS_SYNC_PUSH_ACK !== PROD_SCHEMA_PUSH_ACK) {
-			throw new Error(
-				`Missing production push ack. Expected ` +
-					`DIRECTUS_SYNC_PUSH_ACK=${PROD_SCHEMA_PUSH_ACK}.`,
-			);
-		}
+		requireExactAcknowledgement(
+			isTruthy(env.DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH), true,
+			`Refusing production sync:push to ${PROD_DIRECTUS_URL}. ` +
+				`Set DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH=1 and ` +
+				`DIRECTUS_SYNC_PUSH_ACK=${PROD_SCHEMA_PUSH_ACK} after reviewing sync:diff.`,
+		);
+		requireExactAcknowledgement(
+			env.DIRECTUS_SYNC_PUSH_ACK, PROD_SCHEMA_PUSH_ACK,
+			`Missing production push ack. Expected ` +
+				`DIRECTUS_SYNC_PUSH_ACK=${PROD_SCHEMA_PUSH_ACK}.`,
+		);
 	}
 
 	const includePermissions = isTruthy(env.DIRECTUS_SYNC_INCLUDE_PERMISSIONS);
-	const onlyCollections = splitCsv(
-		readOptionValues(userArgs, ['--only-collections', '-o']),
-	);
-	const excludeCollections = splitCsv(
-		readOptionValues(userArgs, ['--exclude-collections', '-x']),
-	);
+	const onlyCollections = readLastCsvOption(userArgs, ['--only-collections', '-o']);
+	const excludeCollections = readLastCsvOption(userArgs, ['--exclude-collections', '-x']);
 
 	if (includePermissions) {
 		if (env.DIRECTUS_SYNC_PERMISSIONS_ACK !== PERMISSIONS_PUSH_ACK) {
@@ -214,6 +201,10 @@ export function extractDirectusUrlOverride(args: readonly string[]): string | un
 	return readLastOptionValue(args, ['--directus-url', '-u']);
 }
 
+function resolveDirectusUrl(args: readonly string[], envUrl?: string): string {
+	return normalizeUrl(extractDirectusUrlOverride(args) || envUrl);
+}
+
 /** directus-sync supports `--collections-path` (directly the path to the
  *  collections dump dir) and `--dump-path` (parent path, with collections at
  *  <dump-path>/collections). Returns the effective collections directory
@@ -234,7 +225,7 @@ export function extractCollectionsPathOverride(args: readonly string[]): string 
  *  using --config-path should bypass this wrapper.
  */
 export function refuseUnsupportedConfigPathOverride(args: readonly string[]): void {
-	if (readOptionValues(args, ['--config-path']).length > 0) {
+	if (readOptionValues(args, ['--config-path', '-c']).length > 0) {
 		throw new Error(
 			`[sync-push] --config-path override is not supported by the slice-18k per-env settings preflight. ` +
 				`Reading an arbitrary config file at preflight-time would require evaluating the user's directus-sync.config.* — out of scope for the wrapper. ` +
@@ -255,8 +246,8 @@ export function syncPushWillTouchSettings(args: readonly string[]): boolean {
 	if (args.includes('--no-collections')) {
 		return false;
 	}
-	const onlyCollections = splitCsv(readOptionValues(args, ['--only-collections', '-o']));
-	const excludeCollections = splitCsv(readOptionValues(args, ['--exclude-collections', '-x']));
+	const onlyCollections = readLastCsvOption(args, ['--only-collections', '-o']);
+	const excludeCollections = readLastCsvOption(args, ['--exclude-collections', '-x']);
 	if (excludeCollections.includes('settings')) {
 		return false;
 	}
@@ -388,8 +379,7 @@ async function main(): Promise<void> {
 	// wins over DIRECTUS_URL env which wins over PROD default. Same precedence
 	// directus-sync itself uses. The preflight MUST hit the same URL the push
 	// will target — otherwise we'd merge wrong-env values into settings.json.
-	const cliUrlOverride = extractDirectusUrlOverride(finalArgs);
-	const directusUrl = (cliUrlOverride || process.env.DIRECTUS_URL || PROD_DIRECTUS_URL).replace(/\/+$/, '');
+	const directusUrl = resolveDirectusUrl(finalArgs, process.env.DIRECTUS_URL);
 	const mergeContext = await preMergeProtectedSettings(cmsRoot, directusUrl, finalArgs);
 
 	let exitCode = 0;

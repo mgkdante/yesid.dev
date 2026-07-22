@@ -8,6 +8,7 @@
  */
 
 import { createLogger } from './lib/logger';
+import { parseProductionOnlyWriteCli } from './lib/prod-gate';
 import { type ApplyContext, rest } from './lib/schema-apply';
 import { isDeepStrictEqual } from 'node:util';
 
@@ -108,63 +109,17 @@ export interface PolicyQuarantineRenameCms {
 	patch(id: string, body: PolicyQuarantineRenamePatch): Promise<void>;
 }
 
-function normalizeUrl(value: string): string {
-	return value.replace(/\/+$/, '');
-}
-
 export function parseQuarantineRenameArgs(
 	argv: readonly string[],
 	publicDirectusUrl = process.env.PUBLIC_DIRECTUS_URL,
 ): QuarantineRenameArgs {
-	const unknown = argv.find(
-		(argument) =>
-			argument !== '--target=prod' &&
-			argument !== '--apply' &&
-			argument !== '--dry-run' &&
-			!argument.startsWith('--confirm='),
+	return parseProductionOnlyWriteCli(
+		argv,
+		'permission-policy-quarantine-name',
+		PROD_CONFIRM_PHRASE,
+		publicDirectusUrl,
+		PROD_CMS_URL,
 	);
-	if (unknown) {
-		if (unknown.startsWith('--target=')) {
-			throw new Error(`${ERROR_PREFIX} supports only --target=prod`);
-		}
-		throw new Error(`${ERROR_PREFIX} unknown argument: ${unknown}`);
-	}
-	if (argv.filter((argument) => argument === '--target=prod').length !== 1) {
-		throw new Error(`${ERROR_PREFIX} required: exactly one --target=prod`);
-	}
-	if (argv.filter((argument) => argument === '--apply').length > 1) {
-		throw new Error(`${ERROR_PREFIX} use at most one --apply`);
-	}
-	if (argv.filter((argument) => argument === '--dry-run').length > 1) {
-		throw new Error(`${ERROR_PREFIX} use at most one --dry-run`);
-	}
-	if (argv.includes('--apply') && argv.includes('--dry-run')) {
-		throw new Error(`${ERROR_PREFIX} choose one: --dry-run or --apply`);
-	}
-	const directusUrl = normalizeUrl(publicDirectusUrl ?? PROD_CMS_URL);
-	if (directusUrl !== PROD_CMS_URL) {
-		throw new Error(
-			`${ERROR_PREFIX} Unsupported PUBLIC_DIRECTUS_URL: ${directusUrl}`,
-		);
-	}
-	const confirmations = argv
-		.filter((argument) => argument.startsWith('--confirm='))
-		.map((argument) => argument.slice('--confirm='.length));
-	if (confirmations.length > 1) {
-		throw new Error(`${ERROR_PREFIX} use at most one --confirm=<phrase>`);
-	}
-	const apply = argv.includes('--apply');
-	if (apply && confirmations[0] !== PROD_CONFIRM_PHRASE) {
-		throw new Error(
-			`${ERROR_PREFIX} PROD apply requires --confirm=${PROD_CONFIRM_PHRASE}`,
-		);
-	}
-	if (!apply && confirmations.length > 0) {
-		throw new Error(
-			`${ERROR_PREFIX} --confirm is accepted only for PROD apply`,
-		);
-	}
-	return { apply, directusUrl: PROD_CMS_URL };
 }
 
 export function requireStaticAdminToken(
