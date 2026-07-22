@@ -66,6 +66,7 @@ const DESKTOP_ONLY_SPECS = [
 // (+ desktop-chrome where they assert it) and drop them off the two extra phones.
 const ONE_PHONE_SPECS = [
 	'**/smoke.spec.ts',
+	'**/cta-blueprint-band.spec.ts',
 	'**/mobile/services.spec.ts',
 	'**/mobile/services-detail.spec.ts',
 	'**/mobile/home.spec.ts',
