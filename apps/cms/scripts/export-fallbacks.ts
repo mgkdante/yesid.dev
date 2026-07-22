@@ -52,7 +52,7 @@ import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { buildEmitConfigs } from './lib/emitters/configs';
-import { emitModule } from './lib/emitters/emit-module';
+import { emitModule, type ModuleEmitConfig } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
 import {
 	GENERATED_MANIFEST_FILENAME,
@@ -93,7 +93,11 @@ import {
 } from './lib/fetchers/page-blocks-home';
 import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
 import type { CmsClient } from './lib/fetchers/types';
-import { buildMediaVariants } from './lib/media-variants';
+import {
+	prepareMediaVariants,
+	writeMediaVariants,
+	type PreparedMediaVariants,
+} from './lib/media-variants';
 import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 import assetManifest from '../fixtures/assets-manifest.json' with { type: 'json' };
 
@@ -158,6 +162,11 @@ type Env = Record<string, string | undefined>;
 interface MediaMirrorManifest {
 	sourceRoot: string;
 	assets: readonly { legacyPath: string }[];
+}
+
+interface FetchedExport {
+	data: ExportData;
+	preparedMediaVariants?: PreparedMediaVariants;
 }
 
 export function buildMirroredMediaAssetsFromManifest(
@@ -292,11 +301,11 @@ function logFallbackBanner(source: 'cache' | 'committed-modules', fetchError: st
 	for (const line of fallbackBannerLines(source, fetchError)) console.error(line);
 }
 
-async function fetchAll(opts: RunOptions): Promise<ExportData> {
+async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 	log.info(`fetch: source=${opts.directusUrl}`);
 	if (opts.dryRun) {
 		log.info('  dry-run: would fetch the complete export registry');
-		return {};
+		return { data: {} };
 	}
 
 	const fetchAllInner = async (): Promise<ExportData> => {
@@ -445,28 +454,30 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	// timer is cleared in raceWithStallGuard's finally, win or lose.
 	const out = await raceWithStallGuard(fetchAllInner(), FETCH_ALL_TIMEOUT_MS);
 
-	// media-variants runs OUTSIDE the network-timeout race: it is local-only
-	// (reads mirrored files on disk, writes webp variants next to them) and
-	// sharp encode time must not eat into the CMS fetch budget.
-	out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
+	// Variant preparation runs outside the network-timeout race: it is local-only
+	// and sharp encode time must not eat into the CMS fetch budget. Preparation
+	// retains encoded buffers but performs no writes; run() validates the complete
+	// snapshot before committing them.
+	const preparedMediaVariants = await prepareMediaVariants(
+		assetManifest as MediaMirrorManifest,
+	);
+	out.mediaVariants = preparedMediaVariants.data;
 	log.info(
-		`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
+		`  media-variants prepared (${Object.keys(out.mediaVariants).length} raster assets).`,
 	);
 
-	return out;
+	return { data: out, preparedMediaVariants };
 }
 
 /** Emits the complete validated registry. `source` records the data's
  * provenance so ci:content can reject committing a cache-emitted set. */
 async function emitAll(
-	data: ExportData,
+	configs: readonly ModuleEmitConfig[],
 	opts: RunOptions,
 	source: ManifestSource,
 ): Promise<number> {
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	log.info(`emit: target=${emitDir}`);
-
-	const configs = buildEmitConfigs(data, emitDir);
 
 	await mkdir(emitDir, { recursive: true });
 	const emittedHashes: Record<string, string> = {};
@@ -498,9 +509,12 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl} policy=${policy}`);
 
 	let data: ExportData;
+	let preparedMediaVariants: PreparedMediaVariants | undefined;
 	let dataFromCache = false;
 	try {
-		data = await fetchAll(opts);
+		const fetched = await fetchAll(opts);
+		data = fetched.data;
+		preparedMediaVariants = fetched.preparedMediaVariants;
 	} catch (fetchErr) {
 		const fetchMsg = (fetchErr as Error).message;
 		log.warn(`fetch failed: ${fetchMsg}`);
@@ -536,7 +550,13 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		return { source: 'live', emitted: 0 };
 	}
 
-	const emittedCount = await emitAll(data, opts, dataFromCache ? 'cache' : 'live');
+	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
+	const configs = buildEmitConfigs(data, emitDir);
+	if (preparedMediaVariants) {
+		await writeMediaVariants(preparedMediaVariants);
+		log.info(`media-variants: wrote ${preparedMediaVariants.writes.length} file(s).`);
+	}
+	const emittedCount = await emitAll(configs, opts, dataFromCache ? 'cache' : 'live');
 	if (dataFromCache) {
 		log.info('cache: skipped re-write (data sourced from cache).');
 	} else {
@@ -547,20 +567,6 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 }
 
 async function main(): Promise<void> {
-	// Hermetic-build escape hatch (slice-28.4, audit #137): CI and Vercel builds
-	// must not reach out to any live CMS. The committed content modules are
-	// already the authoritative source. Checked before ANY token resolution.
-	const skipReason = getExportSkipReason();
-	if (skipReason) {
-		if (process.env.VERCEL_ENV === 'production') {
-			log.warn(
-				`${skipReason} on a production build: shipping committed content modules as-is, no CMS refresh.`,
-			);
-		}
-		log.info(`${skipReason}: skipping export, committed content modules remain authoritative. Exiting 0.`);
-		return;
-	}
-
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
@@ -572,6 +578,23 @@ async function main(): Promise<void> {
 
 	const dryRun = values['dry-run'] === true;
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
+
+	// Hermetic-build escape hatch (slice-28.4, audit #137): CI and Vercel builds
+	// must not reach out to any live CMS. The committed content modules are
+	// already the authoritative source. CLI validation runs first so retired or
+	// unknown flags still fail, then this gate returns before token resolution,
+	// network access, directory creation, or file writes.
+	const skipReason = getExportSkipReason();
+	if (skipReason) {
+		if (process.env.VERCEL_ENV === 'production') {
+			log.warn(
+				`${skipReason} on a production build: shipping committed content modules as-is, no CMS refresh.`,
+			);
+		}
+		log.info(`${skipReason}: skipping export, committed content modules remain authoritative. Exiting 0.`);
+		return;
+	}
+
 	const url = defaultDirectusUrl();
 	const policy = resolveFallbackPolicy();
 

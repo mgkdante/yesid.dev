@@ -106,8 +106,8 @@ describe('fallbackBannerLines', () => {
 });
 
 describe('complete export boundary', () => {
-	it('rejects partial module selection because generation is all-or-nothing', async () => {
-		const process = Bun.spawn({
+	const runCli = async (env: Record<string, string> = {}) => {
+		const child = Bun.spawn({
 			cmd: [
 				Bun.which('bun') ?? 'bun',
 				joinPath(import.meta.dir, 'export-fallbacks.ts'),
@@ -115,19 +115,37 @@ describe('complete export boundary', () => {
 				'--module=services',
 			],
 			cwd: import.meta.dir,
-			env: { PATH: globalThis.process.env.PATH ?? '' },
+			env: { PATH: globalThis.process.env.PATH ?? '', ...env },
 			stdout: 'pipe',
 			stderr: 'pipe',
 		});
 		const [exitCode, stderr] = await Promise.all([
-			process.exited,
-			new Response(process.stderr).text(),
+			child.exited,
+			new Response(child.stderr).text(),
 		]);
+		return { exitCode, stderr };
+	};
 
+	it('rejects partial module selection because generation is all-or-nothing', async () => {
+		const { exitCode, stderr } = await runCli();
 		expect(exitCode).not.toBe(0);
 		expect(stderr).toContain('module');
 	});
 
+	it('validates retired flags before the explicit skip gate', async () => {
+		const { exitCode, stderr } = await runCli({ EXPORT_FALLBACKS_SKIP: '1' });
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
+	});
+
+	it('validates retired flags before an untrusted preview skip gate', async () => {
+		const { exitCode, stderr } = await runCli({
+			VERCEL_ENV: 'preview',
+			VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
+		});
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
+	});
 });
 
 describe('raceWithStallGuard', () => {

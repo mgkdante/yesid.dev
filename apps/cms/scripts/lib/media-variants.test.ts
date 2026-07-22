@@ -1,9 +1,53 @@
-// Pure-logic tests for the media-variant generator (width ladder, naming,
-// raster detection). File generation itself is exercised by running the
-// export module; these lock the decisions that shape committed output.
-
 import { describe, expect, it } from 'bun:test';
-import { isRasterAsset, pickVariantWidths, variantPathFor, VARIANT_WIDTHS } from './media-variants';
+import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
+import {
+	isRasterAsset,
+	pickVariantWidths,
+	prepareMediaVariants,
+	variantPathFor,
+	VARIANT_WIDTHS,
+	writeMediaVariants,
+} from './media-variants';
+
+describe('media variant write boundary', () => {
+	it('prepares encoded variants without writing until explicit commit', async () => {
+		const repoRoot = mkdtempSync(join(tmpdir(), 'media-variants-'));
+		const legacyPath = 'images/sample.png';
+		const sourcePath = join(repoRoot, 'static', legacyPath);
+		const firstVariantPath = join(repoRoot, 'static', variantPathFor(legacyPath, 240));
+
+		try {
+			mkdirSync(dirname(sourcePath), { recursive: true });
+			const { default: sharp } = await import('sharp');
+			await sharp({
+				create: {
+					width: 800,
+					height: 600,
+					channels: 4,
+					background: '#6644cc',
+				},
+			})
+				.png({ compressionLevel: 0 })
+				.toFile(sourcePath);
+
+			const prepared = await prepareMediaVariants(
+				{ sourceRoot: 'static', assets: [{ legacyPath }] },
+				repoRoot,
+			);
+
+			expect(prepared.data[`/${legacyPath}`]?.variants.length).toBeGreaterThan(0);
+			expect(prepared.writes.length).toBeGreaterThan(0);
+			expect(existsSync(firstVariantPath)).toBe(false);
+
+			await writeMediaVariants(prepared);
+			expect(existsSync(firstVariantPath)).toBe(true);
+		} finally {
+			rmSync(repoRoot, { recursive: true, force: true });
+		}
+	});
+});
 
 describe('isRasterAsset', () => {
 	it('accepts png/jpg/jpeg/webp and rejects svg/gif', () => {
