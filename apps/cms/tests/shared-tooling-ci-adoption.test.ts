@@ -317,13 +317,18 @@ test('CMS reports required test while every downstream job still needs test', ()
 	expect(reporter, 'CMS test reporter job').not.toBeNull();
 	if (!classifier || !work || !reporter) return;
 
+	expect(cms).toContain(
+		'  push:\n    branches: [main]\n  pull_request:\n    branches: [main, develop]',
+	);
+	expect(cms).not.toContain('  push:\n    branches: [main, develop]');
+	expect(classifier).toContain("if: ${{ github.event_name != 'push' }}");
 	expect(classifier).toContain('classification: ${{ steps.classify.outputs.classification }}');
 	expect(classifier).toContain(
 		`uses: ${sourceRepository}/${sharedActions.classify}@${sourceSha}`,
 	);
 	expect(work).toContain('needs: [classify]');
 	expect(work).toContain(
-		"if: ${{ fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}",
+		"if: ${{ github.event_name != 'push' && fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}",
 	);
 	const preservedWork = fromRunsOn(work);
 	expect(preservedWork).not.toBeNull();
@@ -336,10 +341,17 @@ test('CMS reports required test while every downstream job still needs test', ()
 	expect(reporter).toContain('name: test');
 	expect(reporter).toContain('needs: [classify, test-work]');
 	expect(reporter).toContain('if: ${{ always() }}');
-	expect(reporter).toContain(
-		`uses: ${sourceRepository}/${sharedActions.required}@${sourceSha}`,
-	);
-	expect(reporter).toContain('needs-json: ${{ toJSON(needs) }}');
+	expect(reporter.match(/^      - /gmu)).toHaveLength(2);
+	expect(
+		ordered(reporter, [
+			'name: Preserve trusted main-push dependency',
+			"if: ${{ github.event_name == 'push' }}",
+			"run: ':'",
+			`uses: ${sourceRepository}/${sharedActions.required}@${sourceSha}`,
+			"if: ${{ github.event_name != 'push' }}",
+			'needs-json: ${{ toJSON(needs) }}',
+		]),
+	).toBe(true);
 
 	for (const name of [
 		'diff',

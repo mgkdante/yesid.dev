@@ -7,8 +7,9 @@ name: cms
 # directus-extension-sync@3.0.6 on the Railway Directus image.
 #
 # Jobs:
-# - test (always): apps/cms unit tests plus the offline asset-audit regression
-#   gate (no network or CMS credentials).
+# - test-work (PR/dispatch): apps/cms unit tests plus the offline asset-audit
+#   regression gate (no network or CMS credentials).
+# - test (always): required-check reporter; main pushes reuse the merged PR gate.
 # - diff (main PR): required credential-free validation of the committed
 #   Directus snapshot contracts. Offline; never receives CMS credentials.
 # - live-diff (push to main or main-only diff dispatch): read-only preview of
@@ -44,7 +45,7 @@ on:
   # status checks on main; required checks must always run or the merge
   # gate hangs on docs-only PRs). Phase 7 caches make no-op runs cheap.
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
@@ -65,7 +66,7 @@ permissions:
   contents: read
   pull-requests: read
 
-# Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
+# Cancel in-progress duplicate runs on PR pushes; let main pushes
 # AND workflow_dispatch (which may apply to prod) run to completion.
 concurrency:
   group: cms-${{ github.workflow }}-${{ github.ref }}
@@ -73,6 +74,7 @@ concurrency:
 
 jobs:
   classify:
+    if: ${{ github.event_name != 'push' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -111,7 +113,7 @@ jobs:
 
   test-work:
     needs: [classify]
-    if: ${{ fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}
+    if: ${{ github.event_name != 'push' && fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -139,7 +141,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Preserve trusted main-push dependency
+        if: ${{ github.event_name == 'push' }}
+        run: ':'
+
       - uses: mgkdante/yesid.dev-design/.github/actions/required-context@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
+        if: ${{ github.event_name != 'push' }}
         with:
           needs-json: ${{ toJSON(needs) }}
 
