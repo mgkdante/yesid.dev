@@ -15,14 +15,15 @@
 
 import type { Locale, LocalizedString, PageSeo, SchemaOrgNode, SiteMeta } from '$lib/types';
 import {
-	buildBreadcrumbListNode,
-	buildCollectionPageNode,
 	buildPersonNode,
 	buildProfessionalServiceNode,
 	buildProfilePageNode,
 	buildWebSiteNode,
 } from '$lib/adapters/jsonld';
-import { crumbName } from '$lib/adapters/route-seo-factories';
+import {
+	buildCollectionRouteNodes,
+	buildRouteBreadcrumbNode,
+} from '$lib/adapters/route-jsonld';
 import { resolveLocale } from '$lib/utils/locale';
 import { canonicalFor } from '$lib/utils/seo-defaults';
 
@@ -68,13 +69,9 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		jsonLdFactory: (sm, locale) => [
 			buildPersonNode(sm, locale),
 			buildProfilePageNode(canonicalFor('/about', locale)),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/about', locale, 'About'), url: canonicalFor('/about', locale) },
-				],
-				canonicalFor('/about', locale),
-			),
+			buildRouteBreadcrumbNode('/about', locale, [
+				['/about', 'About'],
+			]),
 		],
 	},
 	'/contact': {
@@ -83,13 +80,9 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		fallbackTitle: { en: 'Contact' },
 		composedTitleStrategy: 'append-brand',
 		jsonLdFactory: (_sm, locale) => [
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/contact', locale, 'Contact'), url: canonicalFor('/contact', locale) },
-				],
-				canonicalFor('/contact', locale),
-			),
+			buildRouteBreadcrumbNode('/contact', locale, [
+				['/contact', 'Contact'],
+			]),
 		],
 	},
 	'/services': {
@@ -97,81 +90,56 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Services' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale, seoCopy) => [
-			buildCollectionPageNode({
-				name: crumbName('/services', locale, 'Services'),
+		jsonLdFactory: (_sm, locale, seoCopy) =>
+			buildCollectionRouteNodes({
+				path: '/services',
+				locale,
+				nameFallback: 'Services',
 				description: resolveLocale(seoCopy.description, locale),
-				url: canonicalFor('/services', locale),
 			}),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/services', locale, 'Services'), url: canonicalFor('/services', locale) },
-				],
-				canonicalFor('/services', locale),
-			),
-		],
 	},
 	'/projects': {
 		ogType: 'website',
 		noIndex: false,
 		fallbackTitle: { en: 'Projects' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale, seoCopy) => [
-			buildCollectionPageNode({
-				name: crumbName('/projects', locale, 'Projects'),
+		jsonLdFactory: (_sm, locale, seoCopy) =>
+			buildCollectionRouteNodes({
+				path: '/projects',
+				locale,
+				nameFallback: 'Projects',
 				description: resolveLocale(seoCopy.description, locale),
-				url: canonicalFor('/projects', locale),
 			}),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/projects', locale, 'Projects'), url: canonicalFor('/projects', locale) },
-				],
-				canonicalFor('/projects', locale),
-			),
-		],
 	},
 	'/blog': {
 		ogType: 'website',
 		noIndex: false,
 		fallbackTitle: { en: 'Blog' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale, seoCopy) => [
-			buildCollectionPageNode({
-				name: crumbName('/blog', locale, 'Blog'),
+		jsonLdFactory: (_sm, locale, seoCopy) =>
+			buildCollectionRouteNodes({
+				path: '/blog',
+				locale,
+				nameFallback: 'Blog',
 				description: resolveLocale(seoCopy.description, locale),
-				url: canonicalFor('/blog', locale),
 			}),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
-				],
-				canonicalFor('/blog', locale),
-			),
-		],
 	},
 	'/blog/personal': {
 		ogType: 'website',
 		noIndex: false,
 		fallbackTitle: { en: 'Personal Blog', fr: 'Blogue perso' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale, seoCopy) => [
-			buildCollectionPageNode({
-				name: crumbName('/blog/personal', locale, 'Personal Blog'),
+		jsonLdFactory: (_sm, locale, seoCopy) =>
+			buildCollectionRouteNodes({
+				path: '/blog/personal',
+				locale,
+				nameFallback: 'Personal Blog',
 				description: resolveLocale(seoCopy.description, locale),
-				url: canonicalFor('/blog/personal', locale),
-			}),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
-					{ name: crumbName('/blog/personal', locale, 'Personal'), url: canonicalFor('/blog/personal', locale) },
+				crumbs: [
+					['/blog', 'Blog'],
+					['/blog/personal', 'Personal'],
 				],
-				canonicalFor('/blog/personal', locale),
-			),
-		],
+			}),
 	},
 	'/tech-stack': {
 		ogType: 'website',
@@ -179,13 +147,9 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		fallbackTitle: { en: 'Tech Stack' },
 		composedTitleStrategy: 'append-brand',
 		jsonLdFactory: (_sm, locale) => [
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/tech-stack', locale, 'Tech Stack'), url: canonicalFor('/tech-stack', locale) },
-				],
-				canonicalFor('/tech-stack', locale),
-			),
+			buildRouteBreadcrumbNode('/tech-stack', locale, [
+				['/tech-stack', 'Tech Stack'],
+			]),
 		],
 	},
 };

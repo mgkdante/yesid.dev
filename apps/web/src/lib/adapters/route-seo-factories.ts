@@ -18,7 +18,6 @@ import type { ContentAdapter } from '$lib/adapters/types';
 import { extractText } from '@repo/shared';
 import { SITE_HOST, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 import { resolveLocale } from '$lib/utils/locale';
-import { resolveSitePage } from '$lib/utils/page-registry';
 import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
 import { asset } from '$lib/directus/assets';
 import {
@@ -27,16 +26,10 @@ import {
 } from '$lib/blog/translations';
 import {
 	buildBlogPostingNode,
-	buildBreadcrumbListNode,
 	buildCreativeWorkNode,
 	buildServiceNode,
 } from '$lib/adapters/jsonld';
-
-/** Breadcrumb display name from the trilingual site_pages registry; code fallback otherwise. */
-export function crumbName(path: string, locale: Locale, fallback: string): string {
-	const page = resolveSitePage(path);
-	return page ? resolveLocale(page.title, locale) : fallback;
-}
+import { buildRouteBreadcrumbNode } from '$lib/adapters/route-jsonld';
 
 export interface FactoryArgs {
 	params: Record<string, string>;
@@ -109,14 +102,10 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 		noIndex: false,
 		jsonLd: [
 			buildServiceNode(service, locale),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/services', locale, 'Services'), url: canonicalFor('/services', locale) },
-					{ name: resolveLocale(service.title, locale), url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/services/${service.id}`, locale, [
+				['/services', 'Services'],
+				[`/services/${service.id}`, '', resolveLocale(service.title, locale)],
+			]),
 		],
 	};
 
@@ -162,14 +151,10 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		noIndex: false,
 		jsonLd: [
 			buildCreativeWorkNode(project, locale),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/projects', locale, 'Projects'), url: canonicalFor('/projects', locale) },
-					{ name: resolveLocale(project.title, locale), url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/projects/${project.slug}`, locale, [
+				['/projects', 'Projects'],
+				[`/projects/${project.slug}`, '', resolveLocale(project.title, locale)],
+			]),
 		],
 	};
 
@@ -244,14 +229,10 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		localeHandoffId: `blog:${post.translationKey}`,
 		jsonLd: [
 			buildBlogPostingNode(post, locale, { imageUrl }),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
-					{ name: post.title, url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/blog/${post.slug}`, locale, [
+				['/blog', 'Blog'],
+				[`/blog/${post.slug}`, '', post.title],
+			]),
 		],
 	};
 
@@ -307,13 +288,9 @@ export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		ogType: 'website',
 		noIndex: false,
 		jsonLd: [
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: resolveLocale(page.title, locale), url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/legal/${page.slug}`, locale, [
+				[`/legal/${page.slug}`, '', resolveLocale(page.title, locale)],
+			]),
 		],
 	};
 }
