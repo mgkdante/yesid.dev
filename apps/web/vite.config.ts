@@ -69,6 +69,7 @@ export default defineConfig({
 						'src/lib/analytics/**/*.test.ts',
 						'src/lib/adapters/**/*.test.ts',
 						'src/lib/content/**/*.test.ts',
+						'src/lib/live/**/*.test.ts',
 						'src/lib/directus/**/*.test.ts',
 						'src/lib/repositories/**/*.test.ts',
 						'src/lib/schemas/**/*.test.ts',

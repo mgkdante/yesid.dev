@@ -8,7 +8,7 @@ const analyticsMocks = vi.hoisted(() => ({
 vi.mock('$lib/analytics/client', () => analyticsMocks);
 
 import HeroTextContent from './HeroTextContent.svelte';
-import { generateHeroData } from '$lib/content';
+import { generateHeroData } from '$lib/live';
 
 beforeEach(() => {
 	analyticsMocks.trackAnalyticsEvent.mockClear();

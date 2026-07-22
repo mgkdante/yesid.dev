@@ -114,7 +114,7 @@ import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { blogPageContent } from '$lib/content/blog-page';
 import { projectsPageContent } from '$lib/content/projects-page';
-import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { generateHeroData, INITIAL_HERO_DATA } from '$lib/live';
 import { morphShapes } from '$lib/content/morph-shapes';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
 // Slice 18d Phase 8 introduced this as the static fallback for

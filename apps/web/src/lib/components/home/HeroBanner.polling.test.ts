@@ -10,7 +10,7 @@ const source = readFileSync(
 describe('HeroBanner live KPI polling boundary', () => {
 	it('delegates automatic polling and tears down the helper lifecycle', () => {
 		expect(source).toMatch(
-			/import\s*\{[^}]*startLiveKpiPolling[^}]*\}\s*from\s*['"]\$lib\/content\/live-kpis['"]/s,
+			/import\s*\{[^}]*startLiveKpiPolling[^}]*\}\s*from\s*['"]\$lib\/live['"]/s,
 		);
 		expect(source).toMatch(
 			/const stopLivePolling = startLiveKpiPolling\(tickLive\);[\s\S]*return \(\) => \{[\s\S]*stopLivePolling\(\);/,

@@ -49,7 +49,7 @@
 		SiteMeta,
 		BlogPost,
 	} from '$lib/types';
-	import type { HeroData } from '$lib/content/hero-data';
+	import type { HeroData } from '$lib/live';
 
 	interface Props {
 		metroSvg: string;

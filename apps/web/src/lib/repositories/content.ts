@@ -10,7 +10,7 @@
 
 import { adapter } from '$lib/adapters';
 import type { AboutContent, ContactContent, LegalPage, PreviewContext } from '$lib/types';
-import type { HeroData } from '$lib/content/hero-data';
+import type { HeroData } from '$lib/live';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
 export async function getHeroContent(ctx?: PreviewContext) {
