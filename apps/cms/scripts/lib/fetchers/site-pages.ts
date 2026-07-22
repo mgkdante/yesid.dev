@@ -14,7 +14,7 @@
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import { SitePageSchema, type SitePage } from '@repo/shared';
-import { toLocalizedString } from '../locale';
+import { toLocalizedFields } from '../locale';
 import type { FetcherContext } from './types';
 
 export interface DirectusSitePageTranslation {
@@ -33,11 +33,10 @@ export interface DirectusSitePageRow {
 
 /** Pure transform — DirectusSitePageRow → SitePage. Tested standalone. */
 export function toSitePage(raw: DirectusSitePageRow): SitePage {
-	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
 	return {
 		path: raw.path,
 		type: raw.type,
-		title: toLocalizedString(tr, 'title'),
+		...toLocalizedFields(raw.translations, ['title']),
 	};
 }
 

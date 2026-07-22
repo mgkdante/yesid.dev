@@ -12,7 +12,7 @@
  */
 
 import { readItems } from '@directus/sdk';
-import { toLocalizedString, str } from '../locale';
+import { str, toLocalizedFields, toLocalizedString } from '../locale';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import {
 	TechStackPageContentSchema,
@@ -56,38 +56,33 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 	// the key only when real content exists.
 	const explainer = toLocalizedString(tr, 'stack_explainer');
 	return {
-		meta: {
-			title: toLocalizedString(tr, 'meta_title'),
-			description: toLocalizedString(tr, 'meta_description'),
-		},
+		meta: toLocalizedFields(tr, [
+			['title', 'meta_title'], ['description', 'meta_description'],
+		]),
 		hero: {
-			overline: toLocalizedString(tr, 'hero_overline'),
-			titleLine1: toLocalizedString(tr, 'hero_title_line1'),
-			titleLine2: toLocalizedString(tr, 'hero_title_line2'),
-			terminalAria: toLocalizedString(tr, 'hero_terminal_aria'),
-			stackKicker: toLocalizedString(tr, 'stack_kicker'),
-			engineLoading: toLocalizedString(tr, 'engine_loading'),
+			...toLocalizedFields(tr, [
+				['overline', 'hero_overline'], ['titleLine1', 'hero_title_line1'],
+				['titleLine2', 'hero_title_line2'], ['terminalAria', 'hero_terminal_aria'],
+				['stackKicker', 'stack_kicker'],
+				['engineLoading', 'engine_loading'],
+			]),
 			// Operator addendum: terminal line templates — literal {count} token
 			// interpolated by the component from data.items.length.
-			terminal: {
-				cmd: toLocalizedString(tr, 'terminal_cmd'),
-				loading: toLocalizedString(tr, 'terminal_loading'),
-				success: toLocalizedString(tr, 'terminal_success'),
-				cataloged: toLocalizedString(tr, 'terminal_cataloged'),
-				status: toLocalizedString(tr, 'terminal_status'),
-			},
-			stats: { technologies: toLocalizedString(tr, 'hero_stat_technologies') },
+			terminal: toLocalizedFields(tr, [
+				['cmd', 'terminal_cmd'], ['loading', 'terminal_loading'],
+				['success', 'terminal_success'], ['cataloged', 'terminal_cataloged'],
+				['status', 'terminal_status'],
+			]),
+			stats: toLocalizedFields(tr, [['technologies', 'hero_stat_technologies']]),
 			...(explainer.en.trim() ? { stackExplainer: explainer } : {}),
 		},
-		actions: {
-			getInTouch: toLocalizedString(tr, 'action_get_in_touch'),
-			viewServices: toLocalizedString(tr, 'action_view_services'),
-		},
-		cta: {
-			headingLine1: toLocalizedString(tr, 'cta_heading_line1'),
-			headingLine2: toLocalizedString(tr, 'cta_heading_line2'),
-			sub: toLocalizedString(tr, 'cta_sub'),
-		},
+		actions: toLocalizedFields(tr, [
+			['getInTouch', 'action_get_in_touch'], ['viewServices', 'action_view_services'],
+		]),
+		cta: toLocalizedFields(tr, [
+			['headingLine1', 'cta_heading_line1'], ['headingLine2', 'cta_heading_line2'],
+			['sub', 'cta_sub'],
+		]),
 	};
 }
 
@@ -131,7 +126,7 @@ export function toContactChannels(rows: readonly ContactChannelRow[]): ContactCo
 		)
 		.sort((a, b) => (a.sort ?? Number.MAX_SAFE_INTEGER) - (b.sort ?? Number.MAX_SAFE_INTEGER) || a.id.localeCompare(b.id))
 		.map((row) => ({
-			label: toLocalizedString(row.translations ?? [], 'label'),
+			...toLocalizedFields(row.translations ?? [], ['label']),
 			href: str(row.href),
 			icon: str(row.icon),
 		}));
@@ -152,56 +147,64 @@ export function toContactContent(
 		.map((field) => toLocalizedString(tr, field))
 		.filter((line) => line.en.trim());
 	return {
-		pageTitle: toLocalizedString(tr, 'page_title'),
-		stationLabel: toLocalizedString(tr, 'station_label'),
-		sendErrorMessage: toLocalizedString(tr, 'send_error_message'),
-		meta: {
-			title: toLocalizedString(tr, 'meta_title'),
-			description: toLocalizedString(tr, 'meta_description'),
-		},
+		...toLocalizedFields(tr, [
+			['pageTitle', 'page_title'], ['stationLabel', 'station_label'],
+			['sendErrorMessage', 'send_error_message'],
+		]),
+		meta: toLocalizedFields(tr, [
+			['title', 'meta_title'], ['description', 'meta_description'],
+		]),
 		infoTerminal: {
 			title: str(raw.info_terminal_title),
 			command: str(raw.info_terminal_command),
-			location: toLocalizedString(tr, 'info_location'),
-			responseTime: toLocalizedString(tr, 'info_response_time'),
-			languages: toLocalizedString(tr, 'info_languages'),
+			...toLocalizedFields(tr, [
+				['location', 'info_location'], ['responseTime', 'info_response_time'],
+				['languages', 'info_languages'],
+			]),
 			...(bestFit.length ? { bestFit } : {}),
 			sectionLabels: {
-				location: toLocalizedString(tr, 'info_section_label_location'),
-				connect: toLocalizedString(tr, 'info_section_label_connect'),
-				languages: toLocalizedString(tr, 'info_section_label_languages'),
+				...toLocalizedFields(tr, [
+					['location', 'info_section_label_location'], ['connect', 'info_section_label_connect'],
+					['languages', 'info_section_label_languages'],
+				]),
 				...(bestFitLabel.en.trim() ? { bestFit: bestFitLabel } : {}),
 			},
 		},
 		formTerminal: {
 			title: str(raw.form_terminal_title),
 			command: str(raw.form_terminal_command),
-			commandOutput: toLocalizedString(tr, 'form_command_output'),
+			...toLocalizedFields(tr, [['commandOutput', 'form_command_output']]),
 			fields: {
-				name: { label: localizedWithFallback(tr, 'form_field_name_label', raw.form_field_name_label), placeholder: toLocalizedString(tr, 'form_field_name_placeholder') },
-				email: { label: localizedWithFallback(tr, 'form_field_email_label', raw.form_field_email_label), placeholder: toLocalizedString(tr, 'form_field_email_placeholder') },
-				message: { label: localizedWithFallback(tr, 'form_field_message_label', raw.form_field_message_label), placeholder: toLocalizedString(tr, 'form_field_message_placeholder') },
+				name: {
+					label: localizedWithFallback(tr, 'form_field_name_label', raw.form_field_name_label),
+					...toLocalizedFields(tr, [['placeholder', 'form_field_name_placeholder']]),
+				},
+				email: {
+					label: localizedWithFallback(tr, 'form_field_email_label', raw.form_field_email_label),
+					...toLocalizedFields(tr, [['placeholder', 'form_field_email_placeholder']]),
+				},
+				message: {
+					label: localizedWithFallback(tr, 'form_field_message_label', raw.form_field_message_label),
+					...toLocalizedFields(tr, [['placeholder', 'form_field_message_placeholder']]),
+				},
 			},
-			submitLabel: toLocalizedString(tr, 'form_submit_label'),
-			bookingPrompt: toLocalizedString(tr, 'booking_prompt'),
-			bookingButtonLabel: toLocalizedString(tr, 'booking_button_label'),
+			...toLocalizedFields(tr, [
+				['submitLabel', 'form_submit_label'], ['bookingPrompt', 'booking_prompt'],
+				['bookingButtonLabel', 'booking_button_label'],
+			]),
 		},
-		validation: {
-			required: toLocalizedString(tr, 'validation_required'),
-			invalidEmail: toLocalizedString(tr, 'validation_invalid_email'),
-			errorSummary: toLocalizedString(tr, 'validation_error_summary'),
-		},
-		success: {
-			validating: toLocalizedString(tr, 'success_validating'),
-			sending: toLocalizedString(tr, 'success_sending'),
-			sent: toLocalizedString(tr, 'success_sent'),
-			responseTime: toLocalizedString(tr, 'success_response_time'),
-			meanwhile: toLocalizedString(tr, 'success_meanwhile'),
-			resetLabel: toLocalizedString(tr, 'success_reset_label'),
-			fieldOk: toLocalizedString(tr, 'success_field_ok'),
-			workLinkLabel: toLocalizedString(tr, 'success_work_link_label'),
-			blogLinkLabel: toLocalizedString(tr, 'success_blog_link_label'),
-		},
+		validation: toLocalizedFields(tr, [
+			['required', 'validation_required'], ['invalidEmail', 'validation_invalid_email'],
+			['errorSummary', 'validation_error_summary'],
+		]),
+		success: toLocalizedFields(tr, [
+			['validating', 'success_validating'], ['sending', 'success_sending'],
+			['sent', 'success_sent'], ['responseTime', 'success_response_time'],
+			['meanwhile', 'success_meanwhile'], ['resetLabel', 'success_reset_label'],
+			['fieldOk', 'success_field_ok'],
+			['workLinkLabel', 'success_work_link_label'],
+			['blogLinkLabel', 'success_blog_link_label'],
+		]),
 		socials,
 		web3formsKey: str(raw.web3forms_key),
 	};
