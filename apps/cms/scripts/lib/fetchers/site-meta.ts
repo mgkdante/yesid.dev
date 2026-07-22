@@ -8,7 +8,7 @@
  */
 
 import { readSingleton } from '@directus/sdk';
-import { toLocalizedString } from '../locale';
+import { toLocalizedFields } from '../locale';
 import { SiteMetaSchema, SiteSeoDefaultsSchema } from '@repo/shared/schemas';
 import type { SiteMeta, SiteSeoDefaults } from '@repo/shared';
 import type { FetcherContext } from './types';
@@ -57,12 +57,11 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 	const knowsAbout = rawKnows.map((s) => s.trim()).filter(Boolean);
 	return {
 		name: row.name,
-		tagline: toLocalizedString(row.translations, 'tagline'),
-		description: toLocalizedString(row.translations, 'description'),
+		...toLocalizedFields(row.translations, ['tagline', 'description']),
 		links,
 		owner: {
 			name: row.owner_name,
-			jobTitle: toLocalizedString(row.translations, 'owner_job_title'),
+			...toLocalizedFields(row.translations, [['jobTitle', 'owner_job_title']]),
 			address: {
 				locality: row.owner_locality,
 				region: row.owner_region,
@@ -82,7 +81,9 @@ export function toSiteSeoDefaults(row: DirectusSiteMetaRow): SiteSeoDefaults {
 	return {
 		defaultOgImage: row.default_og_image,
 		themeColor: row.theme_color,
-		defaultDescription: toLocalizedString(row.translations, 'default_description'),
+		...toLocalizedFields(row.translations, [
+			['defaultDescription', 'default_description'],
+		]),
 	};
 }
 

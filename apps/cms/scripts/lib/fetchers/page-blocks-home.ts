@@ -21,7 +21,7 @@
  * Mirrors apps/web/src/lib/adapters/directus.ts transformBlock<X> functions.
  */
 
-import { toLocalizedString, str } from '../locale';
+import { str, toLocalizedFields, toLocalizedString } from '../locale';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import {
 	HeroContentSchema,
@@ -51,33 +51,30 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 		Record<string, unknown> & { languages_code: string }
 	>;
 	return {
-		headline: {
-			line1: toLocalizedString(tr, 'headline_line1'),
-			line2: toLocalizedString(tr, 'headline_line2'),
-			ariaSuffix: toLocalizedString(tr, 'headline_aria_suffix'),
-		},
-		subheadline: toLocalizedString(tr, 'subheadline'),
-		subtitle: toLocalizedString(tr, 'subtitle'),
-		identity: toLocalizedString(tr, 'identity_line'),
-		ctaWork: toLocalizedString(tr, 'cta_work'),
-		ctaContact: toLocalizedString(tr, 'cta_contact'),
+		headline: toLocalizedFields(tr, [
+			['line1', 'headline_line1'], ['line2', 'headline_line2'],
+			['ariaSuffix', 'headline_aria_suffix'],
+		]),
+		...toLocalizedFields(tr, [
+			'subheadline', 'subtitle', ['identity', 'identity_line'],
+			['ctaWork', 'cta_work'], ['ctaContact', 'cta_contact'],
+		]),
 		sqlPanel: {
-			prompt: toLocalizedString(tr, 'sql_prompt'),
-			liveLabel: toLocalizedString(tr, 'sql_live_label'),
-			liveBadge: toLocalizedString(tr, 'sql_live_badge'),
-			columns: {
-				route: toLocalizedString(tr, 'sql_col_route'),
-				avgDelayS: toLocalizedString(tr, 'sql_col_avg_delay'),
-				vehicles: toLocalizedString(tr, 'sql_col_vehicles'),
-			},
-			metaTemplate: toLocalizedString(tr, 'sql_meta_template'),
+			...toLocalizedFields(tr, [
+				['prompt', 'sql_prompt'], ['liveLabel', 'sql_live_label'],
+				['liveBadge', 'sql_live_badge'],
+			]),
+			columns: toLocalizedFields(tr, [
+				['route', 'sql_col_route'], ['avgDelayS', 'sql_col_avg_delay'],
+				['vehicles', 'sql_col_vehicles'],
+			]),
+			...toLocalizedFields(tr, [['metaTemplate', 'sql_meta_template']]),
 		},
-		refreshButton: {
-			label: toLocalizedString(tr, 'refresh_label'),
-			helper: toLocalizedString(tr, 'refresh_helper'),
-			helperLive: toLocalizedString(tr, 'refresh_helper_live'),
-		},
-		heroAnim: { scrollDown: toLocalizedString(tr, 'scroll_down') },
+		refreshButton: toLocalizedFields(tr, [
+			['label', 'refresh_label'], ['helper', 'refresh_helper'],
+			['helperLive', 'refresh_helper_live'],
+		]),
+		heroAnim: toLocalizedFields(tr, [['scrollDown', 'scroll_down']]),
 	};
 }
 
@@ -94,43 +91,32 @@ export function toManifestoContent(raw: BlockRow): ManifestoContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const statement: ManifestoContent['statement'] = {
-		line1: toLocalizedString(tr, 'statement_line1'),
-		lineHuge: toLocalizedString(tr, 'statement_line_huge'),
-		line3Part1: toLocalizedString(tr, 'statement_line3_part1'),
-		line3Highlight: toLocalizedString(tr, 'statement_line3_highlight'),
-		line3Part2: toLocalizedString(tr, 'statement_line3_part2'),
-	};
-	const terminal: ManifestoContent['terminal'] = {
-		user: toLocalizedString(tr, 'terminal_user'),
-		command: toLocalizedString(tr, 'terminal_command'),
-	};
-	const edgeLeft: ManifestoContent['edgeLeft'] = {
-		sectionNumber: toLocalizedString(tr, 'edge_left_section_number'),
-		sectionName: toLocalizedString(tr, 'edge_left_section_name'),
-		location: toLocalizedString(tr, 'edge_left_location'),
-	};
-	const edgeRight: ManifestoContent['edgeRight'] = {
-		lat: toLocalizedString(tr, 'edge_right_lat'),
-		lng: toLocalizedString(tr, 'edge_right_lng'),
-		src: toLocalizedString(tr, 'edge_right_src'),
-		via: toLocalizedString(tr, 'edge_right_via'),
-		dst: toLocalizedString(tr, 'edge_right_dst'),
-		node: toLocalizedString(tr, 'edge_right_node'),
-		status: toLocalizedString(tr, 'edge_right_status'),
-	};
-	const edgeBottom: ManifestoContent['edgeBottom'] = {
-		connected: toLocalizedString(tr, 'edge_bottom_connected'),
-		line: toLocalizedString(tr, 'edge_bottom_line'),
-		url: toLocalizedString(tr, 'edge_bottom_url'),
-		version: toLocalizedString(tr, 'edge_bottom_version'),
-		scrollHint: toLocalizedString(tr, 'edge_bottom_scroll_hint'),
-	};
-	const transit: ManifestoContent['transit'] = {
-		arrivalLabel: toLocalizedString(tr, 'transit_arrival_label'),
-		platformBadge: toLocalizedString(tr, 'transit_platform_badge'),
-		directionBadge: toLocalizedString(tr, 'transit_direction_badge'),
-	};
+	const statement: ManifestoContent['statement'] = toLocalizedFields(tr, [
+		['line1', 'statement_line1'], ['lineHuge', 'statement_line_huge'],
+		['line3Part1', 'statement_line3_part1'], ['line3Highlight', 'statement_line3_highlight'],
+		['line3Part2', 'statement_line3_part2'],
+	]);
+	const terminal: ManifestoContent['terminal'] = toLocalizedFields(tr, [
+		['user', 'terminal_user'], ['command', 'terminal_command'],
+	]);
+	const edgeLeft: ManifestoContent['edgeLeft'] = toLocalizedFields(tr, [
+		['sectionNumber', 'edge_left_section_number'], ['sectionName', 'edge_left_section_name'],
+		['location', 'edge_left_location'],
+	]);
+	const edgeRight: ManifestoContent['edgeRight'] = toLocalizedFields(tr, [
+		['lat', 'edge_right_lat'], ['lng', 'edge_right_lng'], ['src', 'edge_right_src'],
+		['via', 'edge_right_via'], ['dst', 'edge_right_dst'], ['node', 'edge_right_node'],
+		['status', 'edge_right_status'],
+	]);
+	const edgeBottom: ManifestoContent['edgeBottom'] = toLocalizedFields(tr, [
+		['connected', 'edge_bottom_connected'], ['line', 'edge_bottom_line'],
+		['url', 'edge_bottom_url'], ['version', 'edge_bottom_version'],
+		['scrollHint', 'edge_bottom_scroll_hint'],
+	]);
+	const transit: ManifestoContent['transit'] = toLocalizedFields(tr, [
+		['arrivalLabel', 'transit_arrival_label'], ['platformBadge', 'transit_platform_badge'],
+		['directionBadge', 'transit_direction_badge'],
+	]);
 	const ticks = Array.isArray(raw.ticks) ? (raw.ticks as string[]) : [];
 
 	// pills: serviceId is plain (not translatable); label is LocalizedString
@@ -218,15 +204,16 @@ export async function fetchManifestoContent({ client }: FetcherContext): Promise
 // ---------------------------------------------------------------------------
 
 export function toProofReelContent(raw: BlockRow): ProofReelContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const tr = (raw.translations ?? []) as ReadonlyArray<
+		Record<string, unknown> & { languages_code: string }
+	>;
 	return {
-		heading: toLocalizedString(tr, 'heading'),
-		headingDot: toLocalizedString(tr, 'heading_dot'),
-		subheading: toLocalizedString(tr, 'subheading'),
-		sectionLabel: toLocalizedString(tr, 'section_label'),
-		viewAllLabel: toLocalizedString(tr, 'view_all_label'),
+		...toLocalizedFields(tr, [
+			'heading', ['headingDot', 'heading_dot'], 'subheading', ['sectionLabel', 'section_label'],
+			['viewAllLabel', 'view_all_label'],
+		]),
 		viewAllHref: typeof raw.view_all_href === 'string' ? raw.view_all_href : '/work',
-		toggleColorAria: toLocalizedString(tr, 'toggle_color_aria'),
+		...toLocalizedFields(tr, [['toggleColorAria', 'toggle_color_aria']]),
 	};
 }
 
@@ -244,14 +231,14 @@ export async function fetchProofReelContent({ client }: FetcherContext): Promise
 // ---------------------------------------------------------------------------
 
 export function toServicesGridContent(raw: BlockRow): ServicesGridContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
-	return {
-		heading: toLocalizedString(tr, 'heading'),
-		headingDot: toLocalizedString(tr, 'heading_dot'),
-		subheading: toLocalizedString(tr, 'subheading'),
-		viewIllustrationAria: toLocalizedString(tr, 'view_illustration_aria'),
-		viewAllLink: toLocalizedString(tr, 'view_all_link'),
-	};
+	const tr = (raw.translations ?? []) as ReadonlyArray<
+		Record<string, unknown> & { languages_code: string }
+	>;
+	return toLocalizedFields(tr, [
+		'heading', ['headingDot', 'heading_dot'], 'subheading',
+		['viewIllustrationAria', 'view_illustration_aria'],
+		['viewAllLink', 'view_all_link'],
+	]);
 }
 
 export async function fetchServicesGridContent({
@@ -275,19 +262,16 @@ export function toAboutIntroContent(raw: BlockRow): AboutIntroContent {
 	>;
 	const stackItems = Array.isArray(raw.stack_items) ? (raw.stack_items as string[]) : [];
 	return {
-		name: toLocalizedString(tr, 'name'),
-		title: toLocalizedString(tr, 'title'),
-		bio: toLocalizedString(tr, 'bio'),
-		moreLink: toLocalizedString(tr, 'more_link'),
-		stackLabel: toLocalizedString(tr, 'stack_label'),
+		...toLocalizedFields(tr, [
+			'name', 'title', 'bio', ['moreLink', 'more_link'],
+			['stackLabel', 'stack_label'],
+		]),
 		stackItems,
-		locationLabel: toLocalizedString(tr, 'location_label'),
-		location: {
-			city: toLocalizedString(tr, 'location_city'),
-			region: toLocalizedString(tr, 'location_region'),
-		},
-		interestsLabel: toLocalizedString(tr, 'interests_label'),
-		interests: toLocalizedString(tr, 'interests'),
+		...toLocalizedFields(tr, [['locationLabel', 'location_label']]),
+		location: toLocalizedFields(tr, [
+			['city', 'location_city'], ['region', 'location_region'],
+		]),
+		...toLocalizedFields(tr, [['interestsLabel', 'interests_label'], 'interests']),
 	};
 }
 
@@ -307,13 +291,12 @@ export async function fetchAboutIntroContent({
 // ---------------------------------------------------------------------------
 
 export function toCtaContent(raw: BlockRow): CtaContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
-	return {
-		heading: toLocalizedString(tr, 'heading'),
-		subtitle: toLocalizedString(tr, 'subtitle'),
-		ctaContact: toLocalizedString(tr, 'cta_contact'),
-		ctaGithub: toLocalizedString(tr, 'cta_github'),
-	};
+	const tr = (raw.translations ?? []) as ReadonlyArray<
+		Record<string, unknown> & { languages_code: string }
+	>;
+	return toLocalizedFields(tr, [
+		'heading', 'subtitle', ['ctaContact', 'cta_contact'], ['ctaGithub', 'cta_github'],
+	]);
 }
 
 export async function fetchCtaContent({ client }: FetcherContext): Promise<CtaContent> {
@@ -335,11 +318,9 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 		action: toLocalizedString(tr, `rows_${key}_action`),
 	});
 	return {
-		heading: toLocalizedString(tr, 'heading'),
-		headingDot: toLocalizedString(tr, 'heading_dot'),
-		subheading: toLocalizedString(tr, 'subheading'),
+		...toLocalizedFields(tr, ['heading', ['headingDot', 'heading_dot'], 'subheading']),
 		cta: {
-			label: toLocalizedString(tr, 'cta_label'),
+			...toLocalizedFields(tr, [['label', 'cta_label']]),
 			href: typeof raw.cta_href === 'string' ? raw.cta_href : '/contact',
 		},
 		rows: {
@@ -350,16 +331,14 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 			about: rowGroup('about'),
 		},
 		attribution: {
-			text: toLocalizedString(tr, 'attribution_text'),
+			...toLocalizedFields(tr, [['text', 'attribution_text']]),
 			url: str(raw.attribution_url),
 		},
-		terminal: {
-			title: toLocalizedString(tr, 'terminal_title'),
-			city: toLocalizedString(tr, 'terminal_city'),
-			encoding: toLocalizedString(tr, 'terminal_encoding'),
-			destinationsLabel: toLocalizedString(tr, 'terminal_destinations_label'),
-			prompt: toLocalizedString(tr, 'terminal_prompt'),
-		},
+		terminal: toLocalizedFields(tr, [
+			['title', 'terminal_title'], ['city', 'terminal_city'], ['encoding', 'terminal_encoding'],
+			['destinationsLabel', 'terminal_destinations_label'],
+			['prompt', 'terminal_prompt'],
+		]),
 	};
 }
 

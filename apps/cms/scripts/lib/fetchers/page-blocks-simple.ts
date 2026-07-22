@@ -12,7 +12,7 @@
  * simpler code and the build-time drift gate (P7) catches mismatches.
  */
 
-import { toLocalizedString } from '../locale';
+import { toLocalizedFields } from '../locale';
 import { fetchBlockSingleton } from './singleton';
 import {
 	BlogPageContentSchema,
@@ -63,52 +63,53 @@ function href(value: string | null | undefined, fallback: string): string {
 }
 
 export function toBlogPageContent(row: BlogPageRow): BlogPageContent {
-	const tr = (row.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
+	const tr = row.translations ?? [];
 	return {
-		intro: toLocalizedString(tr, 'intro'),
-		heading: toLocalizedString(tr, 'heading'),
-		backToDispatches: toLocalizedString(tr, 'back_to_dispatches'),
-		backToPersonal: toLocalizedString(tr, 'back_to_personal'),
-		personalHeading: toLocalizedString(tr, 'personal_heading'),
-		personalIntro: toLocalizedString(tr, 'personal_intro'),
-		toPersonalLabel: toLocalizedString(tr, 'to_personal_label'),
-		toPersonalSubtitle: toLocalizedString(tr, 'to_personal_subtitle'),
-		toProfessionalLabel: toLocalizedString(tr, 'to_professional_label'),
-		toProfessionalSubtitle: toLocalizedString(tr, 'to_professional_subtitle'),
+		...toLocalizedFields(tr, [
+			'intro', 'heading', ['backToDispatches', 'back_to_dispatches'],
+			['backToPersonal', 'back_to_personal'], ['personalHeading', 'personal_heading'],
+			['personalIntro', 'personal_intro'], ['toPersonalLabel', 'to_personal_label'],
+			['toPersonalSubtitle', 'to_personal_subtitle'],
+			['toProfessionalLabel', 'to_professional_label'],
+			['toProfessionalSubtitle', 'to_professional_subtitle'],
+		]),
 		entryRail: {
 			workWithMe: {
-				title: toLocalizedString(tr, 'entry_rail_work_title'),
-				prompt: toLocalizedString(tr, 'entry_rail_work_prompt'),
+				...toLocalizedFields(tr, [
+					['title', 'entry_rail_work_title'], ['prompt', 'entry_rail_work_prompt'],
+				]),
 				primary: {
-					label: toLocalizedString(tr, 'entry_rail_services_label'),
+					...toLocalizedFields(tr, [['label', 'entry_rail_services_label']]),
 					href: href(row.entry_rail_services_href, '/services'),
 				},
 				secondary: {
-					label: toLocalizedString(tr, 'entry_rail_contact_label'),
+					...toLocalizedFields(tr, [['label', 'entry_rail_contact_label']]),
 					href: href(row.entry_rail_contact_href, '/contact'),
 				},
 			},
 			routes: {
-				title: toLocalizedString(tr, 'entry_rail_routes_title'),
+				...toLocalizedFields(tr, [['title', 'entry_rail_routes_title']]),
 				links: [
 					{
-						label: toLocalizedString(tr, 'entry_rail_route_about_label'),
+						...toLocalizedFields(tr, [['label', 'entry_rail_route_about_label']]),
 						href: href(row.entry_rail_route_about_href, '/about'),
 					},
 					{
-						label: toLocalizedString(tr, 'entry_rail_route_case_studies_label'),
+						...toLocalizedFields(tr, [
+							['label', 'entry_rail_route_case_studies_label'],
+						]),
 						href: href(row.entry_rail_route_case_studies_href, '/projects'),
 					},
 					{
-						label: toLocalizedString(tr, 'entry_rail_route_services_label'),
+						...toLocalizedFields(tr, [['label', 'entry_rail_route_services_label']]),
 						href: href(row.entry_rail_route_services_href, '/services'),
 					},
 					{
-						label: toLocalizedString(tr, 'entry_rail_route_stack_label'),
+						...toLocalizedFields(tr, [['label', 'entry_rail_route_stack_label']]),
 						href: href(row.entry_rail_route_stack_href, '/tech-stack'),
 					},
 					{
-						label: toLocalizedString(tr, 'entry_rail_route_contact_label'),
+						...toLocalizedFields(tr, [['label', 'entry_rail_route_contact_label']]),
 						href: href(row.entry_rail_route_contact_href, '/contact'),
 					},
 				],
@@ -150,12 +151,9 @@ interface ProjectsPageRow {
 }
 
 export function toProjectsPageContent(row: ProjectsPageRow): ProjectsPageContent {
-	const tr = (row.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
-	return {
-		intro: toLocalizedString(tr, 'intro'),
-		heading: toLocalizedString(tr, 'heading'),
-		emptyState: toLocalizedString(tr, 'empty_state'),
-	};
+	return toLocalizedFields(row.translations ?? [], [
+		'intro', 'heading', ['emptyState', 'empty_state'],
+	]);
 }
 
 export async function fetchProjectsPageContent({

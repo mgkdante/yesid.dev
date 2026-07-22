@@ -21,7 +21,7 @@ import {
 	type StackArchetype,
 	type StackLayer,
 } from '@repo/shared/schemas';
-import { toLocalizedString } from '../locale';
+import { toLocalizedFields } from '../locale';
 import type { FetcherContext } from './types';
 
 export interface DirectusStackArchetypeTranslation {
@@ -91,9 +91,7 @@ export function toStackArchetype(raw: DirectusStackArchetypeRow): StackArchetype
 	const tr = raw.translations ?? [];
 	return {
 		slug: raw.slug,
-		title: toLocalizedString(tr, 'title'),
-		hook: toLocalizedString(tr, 'hook'),
-		description: toLocalizedString(tr, 'description'),
+		...toLocalizedFields(tr, ['title', 'hook', 'description']),
 		proofProjectSlug,
 		serviceId,
 		tech: orderArchetypeTechLinks(links).map((link) => ({

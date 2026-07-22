@@ -11,7 +11,7 @@
  */
 
 import { readItems } from '@directus/sdk';
-import { str, toLocalizedString } from '../locale';
+import { str, toLocalizedFields, toLocalizedString } from '../locale';
 import { ErrorPageContentSchema } from '@repo/shared/schemas';
 import type { ErrorPageContent } from '@repo/shared';
 import type { LocalizedString } from '@repo/shared';
@@ -74,9 +74,7 @@ export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent 
 	);
 
 	return {
-		label: toLocalizedString(tr, 'label'),
-		heading: toLocalizedString(tr, 'heading'),
-		description: toLocalizedString(tr, 'description'),
+		...toLocalizedFields(raw.translations ?? [], ['label', 'heading', 'description']),
 		terminalLine,
 		suggestions,
 	};

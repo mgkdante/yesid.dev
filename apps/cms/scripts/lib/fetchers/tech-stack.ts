@@ -6,7 +6,7 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { toLocalizedBlockEditorDoc, toLocalizedStringOrUndef } from '../locale';
+import { toLocalizedBlockEditorDoc, toLocalizedFields } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
 import type { StackLayer } from '@repo/shared/schemas';
 import { TechStackItemSchema } from '@repo/shared/schemas';
@@ -40,7 +40,9 @@ export interface DirectusTechStackRow {
 export function toTechStackItem(row: DirectusTechStackRow): TechStackItem {
 	// slice-29 engine fields are OPTIONAL — keys are omitted (not null) when the
 	// CMS has no value, so pre-slice-29 emitted modules stay byte-identical.
-	const enables = toLocalizedStringOrUndef(row.translations, 'enables');
+	const { enables } = toLocalizedFields(row.translations, [
+		['enables', 'enables', 'optional'],
+	]);
 	return {
 		id: row.id,
 		name: row.name,
