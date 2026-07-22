@@ -72,6 +72,59 @@ export function toLocalizedStringNullable<T extends { languages_code: string }>(
 	return hasAny ? toLocalizedString(rows, field) : null;
 }
 
+export type LocalizedFieldMode = 'optional' | 'nullable';
+
+export type LocalizedFieldEntry<Field extends string = string> = Field
+	| readonly [output: string, source: Field] | readonly [output: string, source: Field, mode: LocalizedFieldMode];
+
+type ResultForLocalizedFieldEntry<Entry> = Entry extends string
+	? { [Key in Entry]: LocalizedString }
+	: Entry extends readonly [infer Output extends string, string, infer Mode]
+		? Mode extends 'optional'
+			? { [Key in Output]?: LocalizedString }
+			: { [Key in Output]: LocalizedString | null }
+		: Entry extends readonly [infer Output extends string, string]
+			? { [Key in Output]: LocalizedString }
+			: never;
+
+type UnionToIntersection<Union> = (Union extends unknown ? (value: Union) => void : never) extends (
+	value: infer Intersection,
+) => void ? Intersection : never;
+
+export type LocalizedFieldResult<Fields extends readonly LocalizedFieldEntry[]> = {
+	[Key in keyof UnionToIntersection<ResultForLocalizedFieldEntry<Fields[number]>>]: UnionToIntersection<
+		ResultForLocalizedFieldEntry<Fields[number]>
+	>[Key];
+};
+
+/**
+ * Interpret an ordered, typed map of localized columns. Strings keep the same
+ * source/output name; tuples rename and can opt into absent-on-empty or null.
+ * Iteration order remains output order across omitted optional entries.
+ */
+export function toLocalizedFields<
+	T extends { languages_code: string },
+	const Fields extends readonly LocalizedFieldEntry<Extract<keyof T, string>>[],
+>(
+	translations: ReadonlyArray<T> | null | undefined,
+	fields: Fields,
+): LocalizedFieldResult<Fields> {
+	const result: Record<string, LocalizedString | null> = {};
+
+	for (const entry of fields) {
+		const [output, source, mode] = typeof entry === 'string' ? [entry, entry, undefined] : entry;
+		const value =
+			mode === 'optional'
+				? toLocalizedStringOrUndef(translations, source)
+				: mode === 'nullable'
+					? toLocalizedStringNullable(translations, source)
+					: toLocalizedString(translations, source);
+		if (value !== undefined) result[output] = value;
+	}
+
+	return result as LocalizedFieldResult<Fields>;
+}
+
 /** A repeater/junction row carrying an optional `sort` order column. */
 export interface SortableRow {
 	sort?: number | null;

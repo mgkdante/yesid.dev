@@ -11,7 +11,7 @@
  * they read from Directus and assert each one exists in the committed
  * snapshot:
  *
- *   1. every `ls('<field>')` literal in the site-labels fetcher has a
+ *   1. every source literal in the site-labels localized field maps has a
  *      snapshot field file under fields/site_labels_translations/
  *   2. every `readItems('<collection>')` / `readSingleton('<collection>')`
  *      literal across the fetchers has a snapshot collection file
@@ -42,13 +42,12 @@ function extractAll(source: string, re: RegExp): string[] {
 	return [...source.matchAll(re)].map((m) => m[1]!);
 }
 
-describe('site-labels fetcher ls() literals exist in the snapshot', () => {
+describe('site-labels localized field-map sources exist in the snapshot', () => {
 	const source = readFileSync(join(FETCHERS_DIR, 'site-labels.ts'), 'utf8');
-	const literals = [...new Set(extractAll(source, /\bls\('([^']+)'\)/g))];
+	const literals = [...new Set(extractAll(source, /\[\s*'[^']+'\s*,\s*'([^']+)'\s*\]/g))];
 
 	it('finds the expected scale of literals (sanity: the regex still matches)', () => {
-		// 148 at the time of the sweep; assert a floor so a refactor that breaks
-		// the regex fails loudly instead of vacuously passing on zero literals.
+		// Assert a floor so a syntax refactor cannot make this contract pass on zero.
 		expect(literals.length).toBeGreaterThanOrEqual(100);
 	});
 

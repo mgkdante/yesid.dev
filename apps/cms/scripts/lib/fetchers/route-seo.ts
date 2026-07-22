@@ -1,7 +1,7 @@
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import { RouteSeoOverrideSchema, type RouteSeoOverride } from '@repo/shared';
-import { toLocalizedStringNullable } from '../locale';
+import { toLocalizedFields } from '../locale';
 import type { FetcherContext } from './types';
 
 export interface DirectusRouteSeoTranslationRow {
@@ -38,8 +38,10 @@ export function toRouteSeoOverride(row: DirectusRouteSeoRow): RouteSeoOverride {
 	const value: RouteSeoOverride = {
 		path: row.path,
 		ogImage: fileId(row.og_image),
-		title: toLocalizedStringNullable(row.translations, 'title'),
-		description: toLocalizedStringNullable(row.translations, 'description'),
+		...toLocalizedFields(row.translations, [
+			['title', 'title', 'nullable'],
+			['description', 'description', 'nullable'],
+		]),
 	};
 	return RouteSeoOverrideSchema.parse(value);
 }

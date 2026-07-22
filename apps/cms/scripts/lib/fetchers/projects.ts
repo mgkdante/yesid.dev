@@ -10,7 +10,7 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { toLocalizedString, toLocalizedBlockEditorDoc, mapLocalizedRepeater } from '../locale';
+import { mapLocalizedRepeater, toLocalizedBlockEditorDoc, toLocalizedFields } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
 import { ProjectSchema } from '@repo/shared/schemas';
 import type { ImpactMetric, Project, ProjectSection, ProjectStatus } from '@repo/shared';
@@ -123,14 +123,14 @@ export function toProject(row: DirectusProject): Project {
 	const translations = row.translations ?? [];
 
 	const sections: ProjectSection[] = mapLocalizedRepeater(row.sections, (s) => ({
-		title: toLocalizedString(s.translations ?? [], 'title'),
+		...toLocalizedFields(s.translations ?? [], ['title']),
 		content: toLocalizedBlockEditorDoc(s.translations ?? [], 'content'),
 	}));
 
 	const impactMetrics: ImpactMetric[] = mapLocalizedRepeater(row.impact_metrics, (m) => {
 		const metric: ImpactMetric = {
 			value: m.value,
-			label: toLocalizedString(m.translations ?? [], 'label'),
+			...toLocalizedFields(m.translations ?? [], ['label']),
 		};
 		if (m.before) metric.before = m.before;
 		return metric;
@@ -138,8 +138,7 @@ export function toProject(row: DirectusProject): Project {
 
 	const project: Project = {
 		slug: row.id,
-		title: toLocalizedString(translations, 'title'),
-		oneLiner: toLocalizedString(translations, 'one_liner'),
+		...toLocalizedFields(translations, ['title', ['oneLiner', 'one_liner']]),
 		description: toLocalizedBlockEditorDoc(translations, 'description'),
 		stack: stackFromTechM2M(row.tech_stack),
 		tags: tagsFromM2M(row.tags),

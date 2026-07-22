@@ -9,7 +9,7 @@
  */
 
 import { readItems } from '@directus/sdk';
-import { toLocalizedString, mapLocalizedRepeater, str } from '../locale';
+import { mapLocalizedRepeater, str, toLocalizedFields } from '../locale';
 import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import type { FetcherContext } from './types';
@@ -88,7 +88,7 @@ function imageIdFromField(image: DirectusAboutLanguageRow['image']): string {
 export function toAboutLanguages(rows: readonly DirectusAboutLanguageRow[]): AboutContent['languages'] {
 	return mapLocalizedRepeater(rows, (row) => ({
 		id: row.id,
-		label: toLocalizedString(row.translations ?? [], 'label'),
+		...toLocalizedFields(row.translations ?? [], ['label']),
 		image: imageIdFromField(row.image),
 	})).filter((row) => row.id.length > 0 && row.label.en.length > 0 && row.image.length > 0);
 }
@@ -133,9 +133,10 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	});
 
 	const identity: AboutContent['identity'] = {
-		name: toLocalizedString(tr, 'identity_name'),
-		title: toLocalizedString(tr, 'identity_title'),
-		valueProp: toLocalizedString(tr, 'identity_value_prop'),
+		...toLocalizedFields(tr, [
+			['name', 'identity_name'], ['title', 'identity_title'],
+			['valueProp', 'identity_value_prop'],
+		]),
 		headshot: str(raw.headshot),
 		polaroids,
 	};
@@ -309,8 +310,9 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 
 	// --- weather: flat LS + parent boolean ---
 	const weather: AboutContent['weather'] = {
-		city: toLocalizedString(tr, 'weather_city'),
-		hook: toLocalizedString(tr, 'weather_hook'),
+		...toLocalizedFields(tr, [
+			['city', 'weather_city'], ['hook', 'weather_hook'],
+		]),
 		enabled: raw.weather_enabled === true,
 	};
 
@@ -327,9 +329,9 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			text: str(l.text),
 			color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
 		})),
-		buttonLabel: toLocalizedString(tr, 'cta_button_label'),
+		...toLocalizedFields(tr, [['buttonLabel', 'cta_button_label']]),
 		buttonHref: str(raw.cta_button_href),
-		availability: toLocalizedString(tr, 'cta_availability'),
+		...toLocalizedFields(tr, [['availability', 'cta_availability']]),
 		socials: rawCtaSocials.map((s) => ({
 			label: str(s.label),
 			href: str(s.href),
@@ -337,32 +339,25 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		})),
 	};
 
-	const stopLabels: AboutContent['stopLabels'] = {
-		identity: toLocalizedString(tr, 'stop_identity'),
-		metrics: toLocalizedString(tr, 'stop_metrics'),
-		testimonials: toLocalizedString(tr, 'stop_testimonials'),
-		process: toLocalizedString(tr, 'stop_process'),
-		stack: toLocalizedString(tr, 'stop_stack'),
-		clients: toLocalizedString(tr, 'stop_clients'),
-		interests: toLocalizedString(tr, 'stop_interests'),
-		snapshots: toLocalizedString(tr, 'stop_snapshots'),
-		location: toLocalizedString(tr, 'stop_location'),
-		next: toLocalizedString(tr, 'stop_next'),
-	};
-	const labels: AboutContent['labels'] = {
-		polaroidPrevAria: toLocalizedString(tr, 'label_polaroid_prev_aria'),
-		polaroidNextAria: toLocalizedString(tr, 'label_polaroid_next_aria'),
-		testimonialsCarouselAria: toLocalizedString(tr, 'label_testimonials_carousel_aria'),
-		testimonialsTabNavAria: toLocalizedString(tr, 'label_testimonials_tab_nav_aria'),
-		testimonialsPrevAria: toLocalizedString(tr, 'label_testimonials_prev_aria'),
-		testimonialsNextAria: toLocalizedString(tr, 'label_testimonials_next_aria'),
-		testimonialSlideAria: toLocalizedString(tr, 'label_testimonial_slide_aria'),
-		showTestimonialAria: toLocalizedString(tr, 'label_show_testimonial_aria'),
-	};
-	const meta: AboutContent['meta'] = {
-		title: toLocalizedString(tr, 'meta_title'),
-		description: toLocalizedString(tr, 'meta_description'),
-	};
+	const stopLabels: AboutContent['stopLabels'] = toLocalizedFields(tr, [
+		['identity', 'stop_identity'], ['metrics', 'stop_metrics'],
+		['testimonials', 'stop_testimonials'], ['process', 'stop_process'],
+		['stack', 'stop_stack'], ['clients', 'stop_clients'],
+		['interests', 'stop_interests'], ['snapshots', 'stop_snapshots'],
+		['location', 'stop_location'],
+		['next', 'stop_next'],
+	]);
+	const labels: AboutContent['labels'] = toLocalizedFields(tr, [
+		['polaroidPrevAria', 'label_polaroid_prev_aria'], ['polaroidNextAria', 'label_polaroid_next_aria'],
+		['testimonialsCarouselAria', 'label_testimonials_carousel_aria'],
+		['testimonialsTabNavAria', 'label_testimonials_tab_nav_aria'],
+		['testimonialsPrevAria', 'label_testimonials_prev_aria'], ['testimonialsNextAria', 'label_testimonials_next_aria'],
+		['testimonialSlideAria', 'label_testimonial_slide_aria'],
+		['showTestimonialAria', 'label_show_testimonial_aria'],
+	]);
+	const meta: AboutContent['meta'] = toLocalizedFields(tr, [
+		['title', 'meta_title'], ['description', 'meta_description'],
+	]);
 
 	return {
 		identity,
