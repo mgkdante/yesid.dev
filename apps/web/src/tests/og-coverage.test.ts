@@ -15,27 +15,35 @@ import { describe, it, expect } from 'vitest';
 import { getAllPosts } from '$lib/repositories/blog';
 import { getPublicProjects } from '$lib/repositories/project';
 import { match as ogTypeMatch } from '../params/ogType';
+import { ogCoverage } from '@yesid/gates';
 
 // The OG endpoint validates [slug] against this regex (Task 7). A slug
 // authored in CMS that doesn't match would render a 400 at request time.
 const SLUG_RE = /^[a-z0-9-]+$/;
 
+function assertOgCoverage(type: string, identifiers: readonly string[]) {
+	const coverage = ogCoverage({
+		expected: [type],
+		actual: ogTypeMatch(type) ? [type] : [],
+		identifiers,
+		isValidIdentifier: (identifier) => SLUG_RE.test(identifier),
+	});
+
+	expect(coverage.missing, `missing OG endpoint type "${type}"`).toEqual([]);
+	expect(coverage.extra, `unexpected OG endpoint type "${type}"`).toEqual([]);
+	expect(coverage.invalid, `${type} slugs must match ${SLUG_RE}`).toEqual([]);
+}
+
 describe('OG coverage gate', () => {
 	it('every published blog post has a slug accepted by the OG endpoint', async () => {
 		const posts = await getAllPosts();
 		expect(posts.length).toBeGreaterThan(0);
-		expect(ogTypeMatch('blog')).toBe(true);
-		for (const post of posts) {
-			expect(post.slug, `blog slug "${post.slug}" must match ${SLUG_RE}`).toMatch(SLUG_RE);
-		}
+		assertOgCoverage('blog', posts.map((post) => post.slug));
 	});
 
 	it('every published project has a slug accepted by the OG endpoint', async () => {
 		const projects = await getPublicProjects();
 		expect(projects.length).toBeGreaterThan(0);
-		expect(ogTypeMatch('project')).toBe(true);
-		for (const project of projects) {
-			expect(project.slug, `project slug "${project.slug}" must match ${SLUG_RE}`).toMatch(SLUG_RE);
-		}
+		assertOgCoverage('project', projects.map((project) => project.slug));
 	});
 });
