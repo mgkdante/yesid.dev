@@ -9,7 +9,6 @@
  * Run:
  *   bun apps/cms/scripts/export-fallbacks.ts                   # full export
  *   bun apps/cms/scripts/export-fallbacks.ts --dry-run         # validate flow, no writes, no network
- *   bun apps/cms/scripts/export-fallbacks.ts --module=services # single module
  *
  * Env:
  *   EXPORT_FALLBACKS_SKIP  — set to 1 to skip the export entirely (logs + exits
@@ -58,7 +57,6 @@ import { readCache, writeCache as persistCache } from './lib/cache';
 import {
 	GENERATED_MANIFEST_FILENAME,
 	hashContent,
-	loadManifest,
 	writeManifest,
 	type ManifestSource,
 } from './lib/generated-manifest';
@@ -111,7 +109,6 @@ export interface RunOptions {
 	directusUrl: string;
 	token: string;
 	dryRun: boolean;
-	module?: string;
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
 	/**
@@ -124,62 +121,6 @@ export interface RunOptions {
 	 * degrade, announced by a stderr banner.
 	 */
 	policy?: FallbackPolicy;
-}
-
-// `--module=<name>` filter values. A few emitted FILES are bundled under one
-// module name: `blog-posts` emits both blog.ts and blog-bodies.ts, and
-// `tech-stack` needs both tech-stack-page + tech-stack data — so there is no
-// `--module=blog-bodies`. A partial run merges its emitted hashes into the
-// manifest (see emitAll), so unrelated keys are preserved.
-export const ALL_MODULES = [
-	'site-meta',
-	'site-seo-defaults',
-	'route-seo',
-	'morph-shapes',
-	'error-pages',
-	'nav',
-	'site-pages',
-	'blog-posts',
-	'services',
-	'projects',
-	'tech-stack',
-	'stack-archetypes',
-	'site-labels',
-	'blog-page',
-	'projects-page',
-	'tech-stack-page',
-	'contact-page',
-	'legal-pages',
-	'hero',
-	'manifesto',
-	'proof-reel',
-	'services-grid',
-	'about-intro',
-	'cta',
-	'closer',
-	'about-page',
-	'media-assets',
-	'media-variants',
-] as const;
-type ModuleName = (typeof ALL_MODULES)[number];
-
-function shouldRun(filter: string | undefined, name: ModuleName): boolean {
-	return !filter || filter === name;
-}
-
-/**
- * Reject unknown `--module` values loudly. A typo used to filter every module
- * out silently: zero fetches, zero emits, and an EMPTY .cms-cache.json written
- * over the last-known-good cache (audit 2026-07-01, bucket A #6).
- */
-export function assertValidModuleFilter(
-	name: string | undefined,
-): asserts name is ModuleName | undefined {
-	if (name !== undefined && !(ALL_MODULES as readonly string[]).includes(name)) {
-		throw new Error(
-			`unknown --module '${name}'. Valid modules: ${ALL_MODULES.join(', ')}`,
-		);
-	}
 }
 
 /**
@@ -354,29 +295,24 @@ function logFallbackBanner(source: 'cache' | 'committed-modules', fetchError: st
 async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	log.info(`fetch: source=${opts.directusUrl}`);
 	if (opts.dryRun) {
-		log.info(`  dry-run: would fetch modules: ${ALL_MODULES.join(', ')}`);
-		if (opts.module) log.info(`  filtered to: ${opts.module}`);
+		log.info('  dry-run: would fetch the complete export registry');
 		return {};
 	}
 
 	const fetchAllInner = async (): Promise<ExportData> => {
 		const client = createClient(opts.directusUrl, opts.token) as unknown as CmsClient;
 		const out: ExportData = {};
-		if (shouldRun(opts.module, 'media-assets')) {
-			out.mediaAssets = buildMirroredMediaAssets();
-		}
+		out.mediaAssets = buildMirroredMediaAssets();
 
 		// Each task is [moduleName, async () => void that assigns to out.*].
-		// Only enqueue if shouldRun passes; then fan-out in parallel.
+		// Fan out the complete source set in parallel.
 		// The Bottleneck limiter inside createQueuedFetch() keeps actual
 		// in-flight HTTP requests ≤ 4 concurrent / ≤ 50 req/s.
 		const tasks: Array<Promise<void>> = [];
 
-		const enqueue = (name: ModuleName, task: () => Promise<void>) => {
-			if (shouldRun(opts.module, name)) {
-				log.info(`  ${name}...`);
-				tasks.push(task());
-			}
+		const enqueue = (name: string, task: () => Promise<void>) => {
+			log.info(`  ${name}...`);
+			tasks.push(task());
 		};
 
 		enqueue('site-meta', async () => {
@@ -512,20 +448,16 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	// media-variants runs OUTSIDE the network-timeout race: it is local-only
 	// (reads mirrored files on disk, writes webp variants next to them) and
 	// sharp encode time must not eat into the CMS fetch budget.
-	if (shouldRun(opts.module, 'media-variants')) {
-		out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
-		log.info(
-			`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
-		);
-	}
+	out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
+	log.info(
+		`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
+	);
 
 	return out;
 }
 
-/** Emits every populated module; returns the number of modules written so the
- *  caller can skip the cache write when nothing was emitted. `source` records
- *  the data's provenance in the manifest so ci:content can reject committing
- *  a cache-emitted set. */
+/** Emits the complete validated registry. `source` records the data's
+ * provenance so ci:content can reject committing a cache-emitted set. */
 async function emitAll(
 	data: ExportData,
 	opts: RunOptions,
@@ -535,10 +467,6 @@ async function emitAll(
 	log.info(`emit: target=${emitDir}`);
 
 	const configs = buildEmitConfigs(data, emitDir);
-	if (configs.length === 0) {
-		log.warn('emit: no modules to write (ExportData has no populated slots)');
-		return 0;
-	}
 
 	await mkdir(emitDir, { recursive: true });
 	const emittedHashes: Record<string, string> = {};
@@ -550,19 +478,8 @@ async function emitAll(
 	}
 	log.info(`emit: wrote ${configs.length} module(s).`);
 
-	// Record the SHA-256 of every emitted module so the pre-commit guard can
-	// detect hand-edits (the CMS is the source of truth; these files are cache).
-	// A `--module=<name>` partial run merges into the existing manifest so it
-	// never drops the hashes of modules it didn't re-emit; a full run replaces.
-	// Provenance is sticky on partial runs: a live --module run over a
-	// cache-emitted manifest still leaves the other modules cache-sourced, so
-	// only a full live export clears 'cache'.
-	const prior = opts.module ? await loadManifest(emitDir) : null;
-	const manifestFiles = opts.module ? { ...(prior?.files ?? {}), ...emittedHashes } : emittedHashes;
-	const manifestSource: ManifestSource =
-		source === 'cache' || prior?.source === 'cache' ? 'cache' : 'live';
-	await writeManifest(emitDir, manifestFiles, manifestSource);
-	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${Object.keys(manifestFiles).length} entries).`);
+	await writeManifest(emitDir, emittedHashes, source);
+	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${configs.length} entries).`);
 	return configs.length;
 }
 
@@ -579,7 +496,6 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 export async function run(opts: RunOptions): Promise<RunOutcome> {
 	const policy = opts.policy ?? 'soft';
 	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl} policy=${policy}`);
-	if (opts.module) log.info(`scope: --module=${opts.module}`);
 
 	let data: ExportData;
 	let dataFromCache = false;
@@ -623,10 +539,6 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 	const emittedCount = await emitAll(data, opts, dataFromCache ? 'cache' : 'live');
 	if (dataFromCache) {
 		log.info('cache: skipped re-write (data sourced from cache).');
-	} else if (emittedCount === 0) {
-		log.warn(
-			'cache: skipped write: zero modules emitted; an empty cache would poison the fallback path.',
-		);
 	} else {
 		await writeCache(data, opts);
 	}
@@ -653,15 +565,12 @@ async function main(): Promise<void> {
 		args: process.argv.slice(2),
 		options: {
 			'dry-run': { type: 'boolean', default: false },
-			module: { type: 'string' },
 			'emit-dir': { type: 'string' },
 		},
 		allowPositionals: false,
 	});
 
 	const dryRun = values['dry-run'] === true;
-	const moduleFilter = typeof values.module === 'string' ? values.module : undefined;
-	assertValidModuleFilter(moduleFilter);
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 	const url = defaultDirectusUrl();
 	const policy = resolveFallbackPolicy();
@@ -692,7 +601,7 @@ async function main(): Promise<void> {
 		}
 	}
 
-	const outcome = await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir, policy });
+	const outcome = await run({ directusUrl: url, token, dryRun, emitDir, policy });
 	const exitCode = decideExit(outcome, policy);
 	if (exitCode !== 0) process.exit(exitCode);
 }

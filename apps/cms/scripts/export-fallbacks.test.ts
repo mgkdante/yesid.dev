@@ -3,8 +3,6 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
-	ALL_MODULES,
-	assertValidModuleFilter,
 	buildMirroredMediaAssetsFromManifest,
 	decideExit,
 	fallbackBannerLines,
@@ -107,20 +105,29 @@ describe('fallbackBannerLines', () => {
 	});
 });
 
-describe('--module filter validation', () => {
-	it('accepts every known module name and the absent filter', () => {
-		for (const name of ALL_MODULES) {
-			expect(() => assertValidModuleFilter(name)).not.toThrow();
-		}
-		expect(() => assertValidModuleFilter(undefined)).not.toThrow();
+describe('complete export boundary', () => {
+	it('rejects partial module selection because generation is all-or-nothing', async () => {
+		const process = Bun.spawn({
+			cmd: [
+				Bun.which('bun') ?? 'bun',
+				joinPath(import.meta.dir, 'export-fallbacks.ts'),
+				'--dry-run',
+				'--module=services',
+			],
+			cwd: import.meta.dir,
+			env: { PATH: globalThis.process.env.PATH ?? '' },
+			stdout: 'pipe',
+			stderr: 'pipe',
+		});
+		const [exitCode, stderr] = await Promise.all([
+			process.exited,
+			new Response(process.stderr).text(),
+		]);
+
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
 	});
 
-	it('rejects a typo loudly instead of silently emitting nothing', () => {
-		expect(() => assertValidModuleFilter('servicess')).toThrow(
-			"unknown --module 'servicess'",
-		);
-		expect(() => assertValidModuleFilter('Services')).toThrow('Valid modules:');
-	});
 });
 
 describe('raceWithStallGuard', () => {
