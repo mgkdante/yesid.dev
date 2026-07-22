@@ -56,6 +56,7 @@
 		"@repo/shared": "workspace:*",
 		"@resvg/resvg-js": "^2.6.2",
 		"@yesid/motion": "file:vendor/design/motion",
+		"@yesid/seo-kit": "file:vendor/design/seo-kit",
 		"@yesid/tokens": "file:vendor/design/tokens",
 		"@yesid/ui": "file:vendor/design/ui",
 		"embla-carousel": "^8.6.0",

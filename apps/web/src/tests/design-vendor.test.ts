@@ -4,18 +4,18 @@ import { describe, expect, it } from 'vitest';
 
 const ROOT = resolve(process.cwd(), '../..');
 const VENDOR = resolve(process.cwd(), 'vendor/design');
-const PACKAGES = ['tokens', 'motion', 'gates', 'ui'] as const;
+const PACKAGES = ['tokens', 'motion', 'gates', 'seo-kit', 'ui'] as const;
 
 const PINNED_RELEASE = {
-	tag: 'v0.7.1',
-	tagObject: 'a4e50ea2662765ba70f44f21701ba29023025974',
-	peeledCommit: 'c0188172f07e6c4238b3397aa7e1b0d4ff154ee9',
-	assetName: 'yesid.dev-design-v0.7.1.tar',
-	assetSize: 3_491_840,
-	assetDigest: 'sha256:edcdd687d515b3bb0af30da13bc5eaf4af0240c6489df2bfcacfa1c73d422f5f',
+	tag: 'v0.8.0',
+	tagObject: '9cb29926a2c0715fec19f4b09e57a7da44722216',
+	peeledCommit: 'fa96aa676ad0bf23a2b970e786f5964018bd0d2a',
+	assetName: 'yesid.dev-design-v0.8.0.tar',
+	assetSize: 686_080,
+	assetDigest: 'sha256:29be1efb9f4c9b7a869901f5dbbfbc6ac2b08bb14faebea3928cd361189ce809',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
-	toolDigest: 'sha256:d27659e78f6464654875b233cf223d6a599ca377d8eaec9a89917cfcd8a6463c',
-	treeHash: 'sha256:f8fdb98957a2449bf4678e3c6126ce5b529b9a2756ee37de98555493d331b8f4',
+	toolDigest: 'sha256:749861816f7b8a7e70a3b856f93f310183e0ff6dd5f288746681fb95be51087d',
+	treeHash: 'sha256:c2f632348993ea91bf3e21740ec3729f4f56454ad44920d9d8fcae16abeff626',
 } as const;
 
 function readJson(path: string) {
@@ -79,9 +79,34 @@ describe('immutable design customer contract', () => {
 			devDependencies: Record<string, string>;
 		};
 		expect(appPackage.dependencies['@yesid/motion']).toBe('file:vendor/design/motion');
+		expect(appPackage.dependencies['@yesid/seo-kit']).toBe('file:vendor/design/seo-kit');
 		expect(appPackage.dependencies['@yesid/tokens']).toBe('file:vendor/design/tokens');
 		expect(appPackage.dependencies['@yesid/ui']).toBe('file:vendor/design/ui');
 		expect(appPackage.devDependencies['@yesid/gates']).toBe('file:vendor/design/gates');
+	});
+
+	it('delegates neutral SEO mechanics while product policy stays consumer-owned', () => {
+		const boundaries = [
+			['src/routes/sitemap.xml/+server.ts', "from '@yesid/seo-kit/sitemap'"],
+			['src/lib/adapters/jsonld.ts', "from '@yesid/seo-kit/jsonld'"],
+			['src/lib/og/render.ts', "from '@yesid/seo-kit/satori'"],
+			['src/tests/sitemap-coverage.test.ts', "from '@yesid/gates'"],
+			['src/tests/og-coverage.test.ts', "from '@yesid/gates'"],
+		] as const;
+
+		for (const [path, boundary] of boundaries) {
+			expect(readFileSync(join(process.cwd(), path), 'utf8'), path).toContain(boundary);
+		}
+		expect(readFileSync(join(process.cwd(), 'src/lib/og/render.ts'), 'utf8')).not.toContain(
+			"import satori from 'satori'",
+		);
+	});
+
+	it('keeps the consumer-owned Satori peer on the byte-parity version', () => {
+		const rootPackage = readJson(join(ROOT, 'package.json')) as {
+			overrides: Record<string, string>;
+		};
+		expect(rootPackage.overrides.satori).toBe('0.10.14');
 	});
 
 	it('runs only consumer-owned tests and direct integrity in CI', () => {
