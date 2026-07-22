@@ -121,6 +121,11 @@ describe('syncPushWillTouchSettings (slice-18k #120 settings-merge gating)', () 
 	it('returns false when settings is excluded via comma-list', () => {
 		expect(syncPushWillTouchSettings(['--exclude-collections', 'permissions,settings'])).toBe(false);
 	});
+
+	it('uses only the last repeated collection selector', () => {
+		expect(syncPushWillTouchSettings(['-osettings', '-opermissions'])).toBe(false);
+		expect(syncPushWillTouchSettings(['-xsettings', '-xpermissions'])).toBe(true);
+	});
 });
 
 describe('extractDirectusUrlOverride (Codex review v6 P2 fix — honor CLI URL override)', () => {
@@ -139,15 +144,19 @@ describe('extractDirectusUrlOverride (Codex review v6 P2 fix — honor CLI URL o
 		expect(extractDirectusUrlOverride(['--directus-url=https://eq.example.com'])).toBe(
 			'https://eq.example.com',
 		);
+		expect(extractDirectusUrlOverride(['-uhttps://compact.example.com'])).toBe(
+			'https://compact.example.com',
+		);
+		expect(extractDirectusUrlOverride(['-duhttps://cluster.example.com'])).toBe(
+			'https://cluster.example.com',
+		);
 	});
 
 	it('returns the LAST override if specified multiple times (last-wins, matches CLI parser convention)', () => {
 		expect(
 			extractDirectusUrlOverride([
-				'-u',
-				'https://first.example.com',
-				'-u',
-				'https://second.example.com',
+				'-uhttps://first.example.com',
+				'-duhttps://second.example.com',
 			]),
 		).toBe('https://second.example.com');
 	});
@@ -188,11 +197,15 @@ describe('refuseUnsupportedConfigPathOverride (Codex review v6 P2 fix — fail-c
 	});
 
 	it('throws when --config-path is passed (out of scope for preflight)', () => {
-		expect(() => refuseUnsupportedConfigPathOverride(['--config-path', '/some/config.cjs'])).toThrow(
-			/config-path override is not supported/,
-		);
-		expect(() => refuseUnsupportedConfigPathOverride(['--config-path=relative/conf.cjs'])).toThrow(
-			/config-path override is not supported/,
-		);
+		for (const args of [
+			['--config-path', '/some/config.cjs'],
+			['--config-path=relative/conf.cjs'],
+			['-c/some/config.cjs'],
+			['-dc/some/config.cjs'],
+		]) {
+			expect(() => refuseUnsupportedConfigPathOverride(args)).toThrow(
+				/config-path override is not supported/,
+			);
+		}
 	});
 });

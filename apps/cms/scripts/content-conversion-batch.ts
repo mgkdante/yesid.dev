@@ -23,9 +23,39 @@
 import { assertDevCms, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { requireExactAcknowledgement } from './lib/prod-gate';
 import { type ApplyContext, rest } from './lib/schema-apply';
 
 const log = createLogger('conversion-batch');
+export const PROD_CMS_URL = 'https://cms.yesid.dev';
+export const PROD_HOST_ACK = 'cms.yesid.dev';
+
+export function assertContentBatchTarget(
+	url: string,
+	argv: readonly string[],
+	env: Readonly<Record<string, string | undefined>>,
+): boolean {
+	const promoteProd = argv.includes('--promote-prod');
+	const acknowledgement = env.CONTENT_BATCH_ALLOW_PROD;
+	const production = url.replace(/\/+$/, '') === PROD_CMS_URL;
+	const supplied = promoteProd || acknowledgement !== undefined;
+	if (production) {
+		requireExactAcknowledgement(
+			promoteProd && acknowledgement === PROD_HOST_ACK,
+			true,
+			'Refusing production conversion batch without --promote-prod and ' +
+				`CONTENT_BATCH_ALLOW_PROD=${PROD_HOST_ACK}.`,
+		);
+	} else {
+		if (supplied) {
+			throw new Error(
+				'Production conversion acknowledgements are accepted only for cms.yesid.dev.',
+			);
+		}
+		assertDevCms(url);
+	}
+	return production;
+}
 
 type Values = Record<string, string>;
 
@@ -281,13 +311,9 @@ async function main(): Promise<void> {
 	// Prod promotion path (mirrors sync-push.ts's double-ack ethos): dev is
 	// the default and the guard stays; promoting the SAME canonical values to
 	// prod requires BOTH the flag and the ack env naming the prod host.
-	const prodAck =
-		process.argv.includes('--promote-prod') &&
-		process.env.CONTENT_BATCH_ALLOW_PROD === 'cms.yesid.dev';
-	if (prodAck) {
+	const production = assertContentBatchTarget(url, process.argv, process.env);
+	if (production) {
 		log.info('⚠️  PROD PROMOTION acknowledged (--promote-prod + CONTENT_BATCH_ALLOW_PROD).');
-	} else {
-		assertDevCms(url);
 	}
 	log.info(`target: ${url}${apply ? ' [apply]' : ' [dry-run]'}`);
 	log.info(`plan: ${TRANSLATION_PATCHES.length} translation patch groups, ` +

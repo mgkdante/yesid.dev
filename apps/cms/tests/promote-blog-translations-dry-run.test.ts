@@ -108,13 +108,24 @@ describe('promote-blog-translations CLI safety', () => {
 	it('rejects ambiguous and unknown flags', () => {
 		expect(() =>
 			parseArgs(['--target=dev', '--phase=stage', '--dry-run', '--apply']),
-		).toThrow('Choose either --dry-run or --apply');
+		).toThrow('choose one: --dry-run or --apply');
 		expect(() => parseArgs(['--target=dev', '--phase=ship'])).toThrow(
 			'Invalid phase',
 		);
 		expect(() => parseArgs(['--target=dev', '--phase=stage', '--aply'])).toThrow(
-			'Unknown argument',
+			'unknown argument',
 		);
+		expect(() =>
+			parseArgs([
+				'--target=prod',
+				'--phase=stage',
+				'--confirm=ONE',
+				'--confirm=TWO',
+			]),
+		).toThrow('use at most one --confirm=<phrase>');
+		expect(() =>
+			parseArgs(['--target=dev', '--phase=stage', '--confirm=IRRELEVANT']),
+		).toThrow('--confirm is accepted only for PROD apply');
 	});
 });
 
