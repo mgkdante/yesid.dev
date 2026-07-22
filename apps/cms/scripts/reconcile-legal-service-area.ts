@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 
 import { createHash } from 'node:crypto';
-import { isDeepStrictEqual, parseArgs as parseNodeArgs } from 'node:util';
+import { isDeepStrictEqual } from 'node:util';
 import { getAdminToken } from './lib/auth';
+import { parseProductionWriteCli } from './lib/prod-gate';
 import { type ApplyContext, rest } from './lib/schema-apply';
 import {
 	desiredContactDoc,
@@ -75,34 +76,11 @@ export type RestRequest = (
 ) => Promise<RestResponse>;
 
 export function parseCli(argv: readonly string[]): CliOptions {
-	const { values } = parseNodeArgs({
-		args: [...argv],
-		options: {
-			target: { type: 'string' },
-			apply: { type: 'boolean', default: false },
-			'dry-run': { type: 'boolean', default: false },
-			confirm: { type: 'string' },
-		},
-		strict: true,
-		allowPositionals: false,
-	});
-	if (values.target !== 'dev' && values.target !== 'prod') {
-		throw new Error('[legal-service-area] required: --target=dev|prod');
-	}
-	const apply = values.apply === true;
-	if (apply && values['dry-run'] === true) {
-		throw new Error('[legal-service-area] choose one: --dry-run or --apply');
-	}
-	if (values.target === 'prod' && apply) {
-		if (values.confirm !== PROD_CONFIRMATION) {
-			throw new Error(
-				`[legal-service-area] PROD apply requires --confirm=${PROD_CONFIRMATION}`,
-			);
-		}
-	} else if (values.confirm !== undefined) {
-		throw new Error('[legal-service-area] --confirm is accepted only for PROD apply');
-	}
-	return { target: values.target, apply };
+	return parseProductionWriteCli(
+		argv,
+		'legal-service-area',
+		PROD_CONFIRMATION,
+	);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

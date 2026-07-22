@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { isDeepStrictEqual, parseArgs as parseNodeArgs } from 'node:util';
+import { isDeepStrictEqual } from 'node:util';
 import consentFieldSnapshot from '../directus/snapshot/fields/site_labels_translations/ui_analytics_consent_description.json' with {
 	type: 'json',
 };
@@ -9,6 +9,7 @@ import labelsEs from '../fixtures/content/site-labels.es.json' with { type: 'jso
 import labelsFr from '../fixtures/content/site-labels.fr.json' with { type: 'json' };
 import legalDrafts from '../ops/legal/legal-pages-2026-07-09.json' with { type: 'json' };
 import { getAdminToken } from './lib/auth';
+import { parseProductionWriteCli } from './lib/prod-gate';
 import { type ApplyContext, rest } from './lib/schema-apply';
 import { toBlockEditorDoc } from './seed-legal-pages';
 
@@ -40,36 +41,11 @@ export interface CliOptions {
 }
 
 export function parseCli(argv: readonly string[]): CliOptions {
-	const { values } = parseNodeArgs({
-		args: [...argv],
-		options: {
-			target: { type: 'string' },
-			apply: { type: 'boolean', default: false },
-			'dry-run': { type: 'boolean', default: false },
-			confirm: { type: 'string' },
-		},
-		strict: true,
-		allowPositionals: false,
-	});
-	if (values.target !== 'dev' && values.target !== 'prod') {
-		throw new Error('[lean-high-intent-analytics] required: --target=dev|prod');
-	}
-	const apply = values.apply === true;
-	if (apply && values['dry-run'] === true) {
-		throw new Error('[lean-high-intent-analytics] choose one: --dry-run or --apply');
-	}
-	if (values.target === 'prod' && apply) {
-		if (values.confirm !== PROD_CONFIRMATION) {
-			throw new Error(
-				`[lean-high-intent-analytics] PROD apply requires --confirm=${PROD_CONFIRMATION}`,
-			);
-		}
-	} else if (values.confirm !== undefined) {
-		throw new Error(
-			'[lean-high-intent-analytics] --confirm is accepted only for PROD apply',
-		);
-	}
-	return { target: values.target, apply };
+	return parseProductionWriteCli(
+		argv,
+		'lean-high-intent-analytics',
+		PROD_CONFIRMATION,
+	);
 }
 
 interface DraftBlock {

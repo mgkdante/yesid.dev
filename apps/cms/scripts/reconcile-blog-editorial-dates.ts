@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 
-import { parseArgs as parseNodeArgs } from 'node:util';
 import { readItems, updateItemsBatch } from '@directus/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { parseProductionWriteCli } from './lib/prod-gate';
 import { createClient } from './lib/sdk';
 
 export const TARGET_URLS = {
@@ -19,35 +19,11 @@ export interface CliOptions {
 }
 
 export function parseCli(argv: readonly string[]): CliOptions {
-	const { values } = parseNodeArgs({
-		args: [...argv],
-		options: {
-			target: { type: 'string' },
-			apply: { type: 'boolean', default: false },
-			'dry-run': { type: 'boolean', default: false },
-			confirm: { type: 'string' },
-		},
-		strict: true,
-		allowPositionals: false,
-	});
-	if (values.target !== 'dev' && values.target !== 'prod') {
-		throw new Error('[blog-editorial-dates] required: --target=dev|prod');
-	}
-	const apply = values.apply === true;
-	const dryRun = values['dry-run'] === true;
-	if (apply && dryRun) {
-		throw new Error('[blog-editorial-dates] choose one: --dry-run or --apply');
-	}
-	if (values.target === 'prod' && apply) {
-		if (values.confirm !== PROD_CONFIRMATION) {
-			throw new Error(
-				`[blog-editorial-dates] PROD apply requires --confirm=${PROD_CONFIRMATION}`,
-			);
-		}
-	} else if (values.confirm !== undefined) {
-		throw new Error('[blog-editorial-dates] --confirm is accepted only for PROD apply');
-	}
-	return { target: values.target, apply };
+	return parseProductionWriteCli(
+		argv,
+		'blog-editorial-dates',
+		PROD_CONFIRMATION,
+	);
 }
 
 export type BlogLocale = 'en' | 'fr' | 'es';
