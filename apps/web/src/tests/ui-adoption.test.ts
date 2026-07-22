@@ -203,4 +203,16 @@ describe('@yesid/ui brand adoption contract', () => {
 		expect(cursor).toContain('background: var(--accent);');
 		expect(cursor).toContain('background: var(--accent-text);');
 	});
+
+	it('keeps quiet-mode product policy in a thin package adapter', () => {
+		const quietMode = read('apps/web/src/lib/components/shared/QuietModeButton.svelte');
+
+		expect(quietMode).toContain('QuietModeButton as UiQuietModeButton');
+		expect(quietMode).toContain('type QuietModeButtonCopy');
+		expect(quietMode).toContain("from '$lib/state/quiet-mode.svelte'");
+		expect(quietMode).toContain('onMount(() => quietModeStore.init())');
+		expect(quietMode).toContain('activeEffect="glow"');
+		expect(quietMode).not.toContain('<svg');
+		expect(quietMode).not.toContain('<style>');
+	});
 });

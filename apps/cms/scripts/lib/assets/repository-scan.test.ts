@@ -1244,8 +1244,11 @@ describe("yesid.dev real repository contract", () => {
       // library code, outside the site's asset-governance scan surface.
       // 47→46 / 61→60 (2026-07-21): the unreachable BlogRouteMap component
       // and its single inline SVG root were retired in Phase 2 C2.
-      svgFiles: 46,
-      inlineSvgRoots: 60,
+      // 46→45 / 60→58 (2026-07-22): QuietModeButton's two SVG roots moved
+      // into immutable @yesid/ui v0.9; package internals remain outside the
+      // product asset-governance scan surface.
+      svgFiles: 45,
+      inlineSvgRoots: 58,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });
