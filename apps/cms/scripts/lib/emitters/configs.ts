@@ -1,401 +1,312 @@
-/**
- * Per-module emit configs. One entry per generated `.ts` file under
- * apps/web/src/lib/content/.
- *
- * Each config maps an `ExportData` slot (filled by the P3 fetchers) to a
- * concrete output file with header + type imports + export declarations.
- *
- * Files marked "NEW" did not exist in the hand-written content layer; the
- * shape audit (slice-18m P1) introduced them so block_blog_page_content,
- * block_projects_page_content, and morph_shapes have first-class fallback
- * modules instead of being inlined as static.ts fallbacks.
- */
-
 import { resolve } from 'node:path';
 import type { ExportData } from '../../export-data';
-import type { ModuleEmitConfig } from './emit-module';
+import type {
+	ExportDecl,
+	ImportDecl,
+	ModuleEmitConfig,
+} from './emit-module';
 
-/**
- * Builds the emit configs for all generated modules. Skips a config if the
- * required `ExportData` slot is undefined — useful for `--module=<name>`
- * partial runs where only one fetcher populated its slot.
- */
-export function buildEmitConfigs(data: ExportData, contentDir: string): readonly ModuleEmitConfig[] {
-	const out: ModuleEmitConfig[] = [];
+type CompleteExportData = Required<ExportData>;
+type DataKey = keyof ExportData;
 
-	const path = (file: string) => resolve(contentDir, file);
+interface ExportModuleDefinition {
+	fileName: `${string}.ts`;
+	requires: readonly DataKey[];
+	description: string;
+	imports: readonly ImportDecl[] | ((data: CompleteExportData) => readonly ImportDecl[]);
+	exports: (data: CompleteExportData) => readonly ExportDecl[];
+}
 
-	if (data.siteMeta) {
-		out.push({
-			filePath: path('site-meta.ts'),
-			description: 'Site-wide brand identity (name, tagline, description, links, owner).',
-			imports: [{ symbols: ['SiteMeta'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'siteMeta', typeName: 'SiteMeta', value: data.siteMeta }],
-		});
+const typeImport = (from: string, ...symbols: string[]): ImportDecl => ({
+	symbols,
+	from,
+	typeOnly: true,
+});
+
+const declaration = (name: string, typeName: string, value: unknown): ExportDecl => ({
+	name,
+	typeName,
+	value,
+});
+
+const defineModule = (
+	fileName: ExportModuleDefinition['fileName'],
+	requires: readonly DataKey[],
+	description: string,
+	imports: ExportModuleDefinition['imports'],
+	exports: ExportModuleDefinition['exports'],
+): ExportModuleDefinition => ({ fileName, requires, description, imports, exports });
+
+const HOME_EXPORTS = [
+	['hero', 'heroContent', 'HeroContent'],
+	['manifesto', 'manifestoContent', 'ManifestoContent'],
+	['proofReel', 'proofReelContent', 'ProofReelContent'],
+	['servicesGrid', 'servicesGridContent', 'ServicesGridContent'],
+	['aboutIntro', 'aboutContent', 'AboutIntroContent'],
+	['cta', 'ctaContent', 'CtaContent'],
+	['closer', 'closerContent', 'CloserContent'],
+] as const satisfies readonly [DataKey, string, string][];
+
+/** The single typed owner of every CMS-generated content module. */
+export const EXPORT_MODULE_REGISTRY = [
+	defineModule(
+		'site-meta.ts',
+		['siteMeta'],
+		'Site-wide brand identity (name, tagline, description, links, owner).',
+		[typeImport('$lib/types', 'SiteMeta')],
+		(data) => [declaration('siteMeta', 'SiteMeta', data.siteMeta)],
+	),
+	defineModule(
+		'site-seo-defaults.ts',
+		['siteSeoDefaults'],
+		'SEO defaults (defaultOgImage UUID, themeColor, defaultDescription). CMS-driven from site_meta singleton.',
+		[typeImport('$lib/types', 'SiteSeoDefaults')],
+		(data) => [
+			declaration('STATIC_SITE_SEO_DEFAULTS', 'SiteSeoDefaults', data.siteSeoDefaults),
+		],
+	),
+	defineModule(
+		'route-seo.ts',
+		['routeSeo'],
+		'Published route_seo overrides for static route title, description, and OG image.',
+		[typeImport('$lib/types', 'RouteSeoOverride')],
+		(data) => [
+			declaration('routeSeoOverrides', 'readonly RouteSeoOverride[]', data.routeSeo),
+		],
+	),
+	defineModule(
+		'media-assets.ts',
+		['mediaAssets'],
+		'Directus media UUID to mirrored static asset path map. Generated from the CMS asset manifest.',
+		[],
+		(data) => [
+			declaration(
+				'mirroredMediaAssets',
+				'Readonly<Record<string, string>>',
+				data.mediaAssets,
+			),
+		],
+	),
+	defineModule(
+		'media-variants.ts',
+		['mediaVariants'],
+		'Responsive webp variants of the mirrored raster assets, keyed by original static path (intrinsic width/height + ascending-width variant set). Generated with the variant files themselves by lib/media-variants.ts; the web asset helper composes srcset/width/height from this map.',
+		[typeImport('$lib/types', 'MediaVariantEntry')],
+		(data) => [
+			declaration(
+				'mediaVariants',
+				'Readonly<Record<string, MediaVariantEntry>>',
+				data.mediaVariants,
+			),
+		],
+	),
+	defineModule(
+		'about-page.ts',
+		['aboutPage'],
+		'/about page content (identity, metrics, methodology, testimonials, etc.).',
+		[typeImport('$lib/types', 'AboutContent')],
+		(data) => [declaration('aboutPageContent', 'AboutContent', data.aboutPage)],
+	),
+	defineModule(
+		'contact-page.ts',
+		['contactPage'],
+		'/contact page content (terminals, validation, success states).',
+		[typeImport('$lib/types', 'ContactContent')],
+		(data) => [declaration('contactContent', 'ContactContent', data.contactPage)],
+	),
+	defineModule(
+		'site-content.ts',
+		HOME_EXPORTS.map(([key]) => key),
+		'Home-page block content (hero, manifesto, proof reel, services grid, about teaser, CTA, closer).',
+		(data) => [
+			typeImport(
+				'$lib/types',
+				...new Set([
+					...(data.hero.heroAnim ? ['HeroAnimContent'] : []),
+					...HOME_EXPORTS.map(([, , typeName]) => typeName),
+				]),
+			),
+		],
+		(data) => {
+			const heroAnim = data.hero.heroAnim;
+			return [
+				...(heroAnim
+					? [declaration('heroAnimContent', 'HeroAnimContent', heroAnim)]
+					: []),
+				...HOME_EXPORTS.map(([key, name, typeName]) =>
+					declaration(name, typeName, data[key]),
+				),
+			];
+		},
+	),
+	defineModule(
+		'tech-stack.ts',
+		['techStackPage', 'techStack'],
+		'/tech-stack page chrome + tech-stack items array, both CMS-derived.',
+		[typeImport('$lib/types', 'TechStackPageContent', 'TechStackItem')],
+		(data) => [
+			declaration(
+				'techStackPageContent',
+				'TechStackPageContent',
+				data.techStackPage,
+			),
+			declaration('techStackItems', 'readonly TechStackItem[]', data.techStack),
+		],
+	),
+	defineModule(
+		'stack-archetypes.ts',
+		['stackArchetypes'],
+		'Published stack_archetypes rows (slug, trilingual copy, proof project, service, layered tech links). Feeds the pure client-side Tech Stack Engine on /tech-stack — tech links arrive pre-sorted by (STACK_LAYERS render order, sort) so the blueprint derives its rows from data. NEW in slice-29.',
+		[typeImport('@repo/shared/schemas', 'StackArchetype')],
+		(data) => [
+			declaration('stackArchetypes', 'StackArchetype[]', data.stackArchetypes),
+		],
+	),
+	defineModule(
+		'blog.ts',
+		['blogPosts'],
+		'Blog posts (slugs, titles, excerpts, dates, tags, SVG illustration refs).',
+		[typeImport('$lib/types', 'BlogPost')],
+		(data) => [declaration('blogPosts', 'readonly BlogPost[]', data.blogPosts)],
+	),
+	defineModule(
+		'legal-pages.ts',
+		['legalPages'],
+		'Legal pages (OPS1): slug, title, per-locale Block Editor body for /legal/[slug].',
+		[typeImport('$lib/types', 'LegalPage')],
+		(data) => [declaration('legalPages', 'readonly LegalPage[]', data.legalPages)],
+	),
+	defineModule(
+		'blog-bodies.ts',
+		['blogBodies'],
+		'Block Editor body per published blog post, keyed by slug. Powers static blog.bodyBySlug + blog.html (serializeBlocksToHtml).',
+		[typeImport('$lib/types', 'BlockEditorDoc')],
+		(data) => [
+			declaration(
+				'blogBodies',
+				'Readonly<Record<string, BlockEditorDoc>>',
+				data.blogBodies,
+			),
+		],
+	),
+	defineModule(
+		'services.ts',
+		['services'],
+		'Services array (id, title, station, deliverables, sections, related projects).',
+		[typeImport('$lib/types', 'Service')],
+		(data) => [declaration('services', 'readonly Service[]', data.services)],
+	),
+	defineModule(
+		'projects.ts',
+		['projects'],
+		'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services).',
+		[typeImport('$lib/types', 'Project')],
+		(data) => [declaration('projects', 'readonly Project[]', data.projects)],
+	),
+	defineModule(
+		'error-pages.ts',
+		['errorPages'],
+		'All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.',
+		[typeImport('$lib/navigation/types', 'ErrorPageContent')],
+		(data) => [
+			declaration(
+				'errorPagesById',
+				'Readonly<Record<number, ErrorPageContent>>',
+				data.errorPages,
+			),
+		],
+	),
+	defineModule(
+		'nav.ts',
+		['nav', 'errorPageFallback'],
+		'Navigation links (header + menu + footer + mobile placements) + error page fallback.',
+		[
+			typeImport(
+				'$lib/navigation/types',
+				'NavLink',
+				'MenuItem',
+				'ErrorPageContent',
+			),
+		],
+		(data) => [
+			declaration('navLinks', 'readonly NavLink[]', data.nav.navLinks),
+			declaration('menuItems', 'readonly MenuItem[]', data.nav.menuItems),
+			declaration('footerLinks', 'readonly NavLink[]', data.nav.footerLinks),
+			declaration('mobileLinks', 'readonly NavLink[]', data.nav.mobileLinks),
+			declaration('errorPageContent', 'ErrorPageContent', data.errorPageFallback),
+		],
+	),
+	defineModule(
+		'site-pages.ts',
+		['sitePages'],
+		"Published site_pages registry rows (path, type, title). PUBLISHED rows only — a path's absence IS the hidden signal: the route gate 404s it, the sitemap drops it, and nav links pointing at it disappear (cascade applied in the nav fetcher). NEW in slice-26.1.",
+		[typeImport('$lib/types', 'SitePage')],
+		(data) => [declaration('sitePages', 'readonly SitePage[]', data.sitePages)],
+	),
+	defineModule(
+		'site-labels.ts',
+		['siteLabels'],
+		'Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton. slice-30 t1: also carries the code-owned chrome groups (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard) recomposed from the companion-shaped flat columns, so a future regen sources the companion/hero-data labels straight from Directus.',
+		[typeImport('$lib/types', 'SiteLabels')],
+		(data) => [declaration('siteLabels', 'SiteLabels', data.siteLabels)],
+	),
+	defineModule(
+		'blog-page.ts',
+		['blogPage'],
+		'/blog page chrome (intro, heading, back-nav labels). NEW in slice-18m — was previously inlined as a static fallback in adapters/static.ts.',
+		[typeImport('@repo/shared', 'BlogPageContent')],
+		(data) => [declaration('blogPageContent', 'BlogPageContent', data.blogPage)],
+	),
+	defineModule(
+		'projects-page.ts',
+		['projectsPage'],
+		'/projects page chrome (intro, heading, empty-state). NEW in slice-18m; heading/emptyState added in go2-t1c2.',
+		[typeImport('@repo/shared', 'ProjectsPageContent')],
+		(data) => [
+			declaration(
+				'projectsPageContent',
+				'ProjectsPageContent',
+				data.projectsPage,
+			),
+		],
+	),
+	defineModule(
+		'morph-shapes.ts',
+		['morphShapes'],
+		'Geometric morph-target library (id, label, path, viewbox, sort). NEW in slice-18m — was previously derived from utils/shapes.ts SHAPES const.',
+		[typeImport('$lib/types', 'MorphShape')],
+		(data) => [
+			declaration('morphShapes', 'readonly MorphShape[]', data.morphShapes),
+		],
+	),
+] as const satisfies readonly ExportModuleDefinition[];
+
+const REQUIRED_DATA_KEYS = [
+	...new Set(EXPORT_MODULE_REGISTRY.flatMap(({ requires }) => requires)),
+];
+
+function requireCompleteData(data: ExportData): asserts data is CompleteExportData {
+	const missing = REQUIRED_DATA_KEYS.filter((key) => data[key] === undefined);
+	if (missing.length > 0) {
+		throw new Error(`incomplete CMS export data; missing: ${missing.join(', ')}`);
 	}
+}
 
-	if (data.siteSeoDefaults) {
-		out.push({
-			filePath: path('site-seo-defaults.ts'),
-			description: 'SEO defaults (defaultOgImage UUID, themeColor, defaultDescription). CMS-driven from site_meta singleton.',
-			imports: [{ symbols: ['SiteSeoDefaults'], from: '$lib/types', typeOnly: true }],
-			exports: [
-				{
-					name: 'STATIC_SITE_SEO_DEFAULTS',
-					typeName: 'SiteSeoDefaults',
-					value: data.siteSeoDefaults,
-				},
-			],
-		});
-	}
-
-	if (data.routeSeo) {
-		out.push({
-			filePath: path('route-seo.ts'),
-			description: 'Published route_seo overrides for static route title, description, and OG image.',
-			imports: [{ symbols: ['RouteSeoOverride'], from: '$lib/types', typeOnly: true }],
-			exports: [
-				{
-					name: 'routeSeoOverrides',
-					typeName: 'readonly RouteSeoOverride[]',
-					value: data.routeSeo,
-				},
-			],
-		});
-	}
-
-	if (data.mediaAssets) {
-		out.push({
-			filePath: path('media-assets.ts'),
-			description: 'Directus media UUID to mirrored static asset path map. Generated from the CMS asset manifest.',
-			imports: [],
-			exports: [
-				{
-					name: 'mirroredMediaAssets',
-					typeName: 'Readonly<Record<string, string>>',
-					value: data.mediaAssets,
-				},
-			],
-		});
-	}
-
-	if (data.mediaVariants) {
-		out.push({
-			filePath: path('media-variants.ts'),
-			description:
-				'Responsive webp variants of the mirrored raster assets, keyed by original static path (intrinsic width/height + ascending-width variant set). Generated with the variant files themselves by lib/media-variants.ts; the web asset helper composes srcset/width/height from this map.',
-			imports: [{ symbols: ['MediaVariantEntry'], from: '$lib/types', typeOnly: true }],
-			exports: [
-				{
-					name: 'mediaVariants',
-					typeName: 'Readonly<Record<string, MediaVariantEntry>>',
-					value: data.mediaVariants,
-				},
-			],
-		});
-	}
-
-	if (data.aboutPage) {
-		out.push({
-			filePath: path('about-page.ts'),
-			description: '/about page content (identity, metrics, methodology, testimonials, etc.).',
-			imports: [{ symbols: ['AboutContent'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'aboutPageContent', typeName: 'AboutContent', value: data.aboutPage }],
-		});
-	}
-
-	if (data.contactPage) {
-		out.push({
-			filePath: path('contact-page.ts'),
-			description: '/contact page content (terminals, validation, success states).',
-			imports: [{ symbols: ['ContactContent'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'contactContent', typeName: 'ContactContent', value: data.contactPage }],
-		});
-	}
-
-	// site-content.ts collects all home-page block content under one barrel module.
-	// Each export's type is precise so consumers can import them individually.
-	const siteContentExports = [
-		{ key: 'hero', name: 'heroContent', typeName: 'HeroContent' },
-		{ key: 'manifesto', name: 'manifestoContent', typeName: 'ManifestoContent' },
-		{ key: 'proofReel', name: 'proofReelContent', typeName: 'ProofReelContent' },
-		{ key: 'servicesGrid', name: 'servicesGridContent', typeName: 'ServicesGridContent' },
-		{ key: 'aboutIntro', name: 'aboutContent', typeName: 'AboutIntroContent' },
-		{ key: 'cta', name: 'ctaContent', typeName: 'CtaContent' },
-		{ key: 'closer', name: 'closerContent', typeName: 'CloserContent' },
-	] as const;
-	const presentSiteContent = siteContentExports.filter((e) => data[e.key as keyof ExportData] !== undefined);
-	// slice-18k Phase 8 Codex final fix #1: site-content.ts aggregates 7 home-page
-	// blocks. Emitting with partial data (e.g. only data.hero present from a
-	// `--module=hero` run) would clobber sibling exports like manifestoContent,
-	// proofReelContent, etc. that consumers import. Require ALL slots present
-	// before emitting — partial runs leave the file untouched (no-op + warn).
-	if (presentSiteContent.length > 0 && presentSiteContent.length < siteContentExports.length) {
-		// Partial site-content — skip emit to avoid clobbering siblings.
-		// Caller should rerun without --module (or with --module=site-content
-		// once we add that grouped mode) to regenerate the full file.
-		// eslint-disable-next-line no-console
-		console.warn(
-			`[buildEmitConfigs] skipping site-content.ts emit: only ${presentSiteContent.length}/${siteContentExports.length} ` +
-				`required slots populated (${presentSiteContent.map((e) => e.key).join(', ')}). ` +
-				`Run without --module to regenerate the full shared file.`,
-		);
-	} else if (presentSiteContent.length === siteContentExports.length) {
-		// heroAnimContent is destructured from heroContent.heroAnim — emit it as a
-		// separate export so the existing import sites (e.g. `import { heroAnimContent }`)
-		// keep resolving without changes.
-		const heroAnim = data.hero?.heroAnim;
-		const heroAnimExports = heroAnim
-			? [{ name: 'heroAnimContent', typeName: 'HeroAnimContent', value: heroAnim }]
-			: [];
-		out.push({
-			filePath: path('site-content.ts'),
-			description: 'Home-page block content (hero, manifesto, proof reel, services grid, about teaser, CTA, closer).',
-			imports: [
-				{
-					symbols: [
-						...new Set([
-							...(heroAnim ? ['HeroAnimContent'] : []),
-							...presentSiteContent.map((e) => e.typeName),
-						]),
-					],
-					from: '$lib/types',
-					typeOnly: true,
-				},
-			],
-			exports: [
-				...heroAnimExports,
-				...presentSiteContent.map((e) => ({
-					name: e.name,
-					typeName: e.typeName,
-					value: data[e.key as keyof ExportData],
-				})),
-			],
-		});
-	}
-
-	// slice-18k Phase 8 Codex final fix #1: tech-stack.ts aggregates 2 modules
-	// (techStackPage from block_tech_stack_page_content + techStack from
-	// tech_stack collection). Partial emit would clobber sibling exports.
-	// Require both present before emitting.
-	if (data.techStackPage && data.techStack) {
-		// slice-18m follow-up (GH #63 + #64): tech-stack.ts emits BOTH the page
-		// chrome (techStackPageContent) AND the items array (techStackItems).
-		out.push({
-			filePath: path('tech-stack.ts'),
-			description: '/tech-stack page chrome + tech-stack items array, both CMS-derived.',
-			imports: [
-				{ symbols: ['TechStackPageContent', 'TechStackItem'], from: '$lib/types', typeOnly: true },
-			],
-			exports: [
-				{
-					name: 'techStackPageContent',
-					typeName: 'TechStackPageContent',
-					value: data.techStackPage,
-				},
-				{
-					name: 'techStackItems',
-					typeName: 'readonly TechStackItem[]',
-					value: data.techStack,
-				},
-			],
-		});
-	} else if (data.techStackPage || data.techStack) {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`[buildEmitConfigs] skipping tech-stack.ts emit: only ` +
-				`${data.techStackPage ? 'techStackPage' : 'techStack'} populated (need both). ` +
-				`Run without --module to regenerate the full shared file.`,
-		);
-	}
-
-	if (data.stackArchetypes) {
-		out.push({
-			filePath: path('stack-archetypes.ts'),
-			description:
-				'Published stack_archetypes rows (slug, trilingual copy, proof project, service, layered tech links). Feeds the pure client-side Tech Stack Engine on /tech-stack — tech links arrive pre-sorted by (STACK_LAYERS render order, sort) so the blueprint derives its rows from data. NEW in slice-29.',
-			imports: [{ symbols: ['StackArchetype'], from: '@repo/shared/schemas', typeOnly: true }],
-			exports: [
-				{
-					name: 'stackArchetypes',
-					typeName: 'StackArchetype[]',
-					value: data.stackArchetypes,
-				},
-			],
-		});
-	}
-
-	if (data.blogPosts) {
-		out.push({
-			filePath: path('blog.ts'),
-			description: 'Blog posts (slugs, titles, excerpts, dates, tags, SVG illustration refs).',
-			imports: [{ symbols: ['BlogPost'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'blogPosts', typeName: 'readonly BlogPost[]', value: data.blogPosts }],
-		});
-	}
-
-	if (data.legalPages) {
-		out.push({
-			filePath: path('legal-pages.ts'),
-			description: 'Legal pages (OPS1): slug, title, per-locale Block Editor body for /legal/[slug].',
-			imports: [{ symbols: ['LegalPage'], from: '$lib/types', typeOnly: true }],
-			exports: [
-				{ name: 'legalPages', typeName: 'readonly LegalPage[]', value: data.legalPages },
-			],
-		});
-	}
-
-	if (data.blogBodies) {
-		// Block Editor `body` per published post, keyed by slug. Mirrors the
-		// blog.html-cache.ts precedent (kept OUT of the $lib/content barrel) so the
-		// static adapter can serve blog.bodyBySlug + blog.html without a network
-		// round-trip. NEW in slice-27.1 — was previously a hardcoded `null` stub.
-		out.push({
-			filePath: path('blog-bodies.ts'),
-			description: 'Block Editor body per published blog post, keyed by slug. Powers static blog.bodyBySlug + blog.html (serializeBlocksToHtml).',
-			imports: [{ symbols: ['BlockEditorDoc'], from: '$lib/types', typeOnly: true }],
-			exports: [
-				{
-					name: 'blogBodies',
-					typeName: 'Readonly<Record<string, BlockEditorDoc>>',
-					value: data.blogBodies,
-				},
-			],
-		});
-	}
-
-	if (data.services) {
-		out.push({
-			filePath: path('services.ts'),
-			description: 'Services array (id, title, station, deliverables, sections, related projects).',
-			imports: [{ symbols: ['Service'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'services', typeName: 'readonly Service[]', value: data.services }],
-		});
-	}
-
-	if (data.projects) {
-		// projects.ts in the hand-written code uses RawProject (description + sections
-		// as plain LocalizedString); the static adapter calls rawProjectToProject to
-		// wrap into BlockEditorDoc at the port boundary. The CMS-derived fetcher already
-		// returns full Project shape (description as LocalizedBlockEditorDoc), so we emit
-		// against the Project type directly.
-		out.push({
-			filePath: path('projects.ts'),
-			description: 'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services).',
-			imports: [{ symbols: ['Project'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'projects', typeName: 'readonly Project[]', value: data.projects }],
-		});
-	}
-
-	// slice-27.1 FIX A: error-pages.ts emits the full per-statusCode map so the
-	// static adapter can mirror directus's _or: [status_code=N, status_code=0]
-	// lookup semantics. Keyed by numeric status_code (0 = generic fallback).
-	if (data.errorPages) {
-		out.push({
-			filePath: path('error-pages.ts'),
-			description: 'All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.',
-			imports: [
-				{
-					symbols: ['ErrorPageContent'],
-					from: '$lib/navigation/types',
-					typeOnly: true,
-				},
-			],
-			exports: [
-				{
-					name: 'errorPagesById',
-					typeName: 'Readonly<Record<number, ErrorPageContent>>',
-					value: data.errorPages,
-				},
-			],
-		});
-	}
-
-	// slice-18k Phase 8 Codex final fix #1: nav.ts aggregates nav (navLinks +
-	// menuItems) AND errorPageFallback. Partial emit would clobber sibling
-	// exports. Require both present before emitting.
-	if (data.nav && data.errorPageFallback) {
-		out.push({
-			filePath: path('nav.ts'),
-			description: 'Navigation links (header + menu + footer + mobile placements) + error page fallback.',
-			imports: [
-				{
-					symbols: ['NavLink', 'MenuItem', 'ErrorPageContent'],
-					from: '$lib/navigation/types',
-					typeOnly: true,
-				},
-			],
-			exports: [
-				{ name: 'navLinks', typeName: 'readonly NavLink[]', value: data.nav.navLinks },
-				{ name: 'menuItems', typeName: 'readonly MenuItem[]', value: data.nav.menuItems },
-				{ name: 'footerLinks', typeName: 'readonly NavLink[]', value: data.nav.footerLinks },
-				{ name: 'mobileLinks', typeName: 'readonly NavLink[]', value: data.nav.mobileLinks },
-				{
-					name: 'errorPageContent',
-					typeName: 'ErrorPageContent',
-					value: data.errorPageFallback,
-				},
-			],
-		});
-	} else if (data.nav || data.errorPageFallback) {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`[buildEmitConfigs] skipping nav.ts emit: only ` +
-				`${data.nav ? 'nav' : 'errorPageFallback'} populated (need both). ` +
-				`Run without --module to regenerate the full shared file.`,
-		);
-	}
-
-	if (data.sitePages) {
-		out.push({
-			filePath: path('site-pages.ts'),
-			description:
-				'Published site_pages registry rows (path, type, title). PUBLISHED rows only — a path\'s absence IS the hidden signal: the route gate 404s it, the sitemap drops it, and nav links pointing at it disappear (cascade applied in the nav fetcher). NEW in slice-26.1.',
-			imports: [{ symbols: ['SitePage'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'sitePages', typeName: 'readonly SitePage[]', value: data.sitePages }],
-		});
-	}
-
-	if (data.siteLabels) {
-		out.push({
-			filePath: path('site-labels.ts'),
-			description:
-				'Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton. slice-30 t1: also carries the code-owned chrome groups (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard) recomposed from the companion-shaped flat columns, so a future regen sources the companion/hero-data labels straight from Directus.',
-			imports: [{ symbols: ['SiteLabels'], from: '$lib/types', typeOnly: true }],
-			exports: [{ name: 'siteLabels', typeName: 'SiteLabels', value: data.siteLabels }],
-		});
-	}
-
-	if (data.blogPage) {
-		out.push({
-			filePath: path('blog-page.ts'),
-			description: '/blog page chrome (intro, heading, back-nav labels). NEW in slice-18m — was previously inlined as a static fallback in adapters/static.ts.',
-			imports: [{ symbols: ['BlogPageContent'], from: '@repo/shared', typeOnly: true }],
-			exports: [{ name: 'blogPageContent', typeName: 'BlogPageContent', value: data.blogPage }],
-		});
-	}
-
-	if (data.projectsPage) {
-		out.push({
-			filePath: path('projects-page.ts'),
-			description: '/projects page chrome (intro, heading, empty-state). NEW in slice-18m; heading/emptyState added in go2-t1c2.',
-			imports: [{ symbols: ['ProjectsPageContent'], from: '@repo/shared', typeOnly: true }],
-			exports: [
-				{ name: 'projectsPageContent', typeName: 'ProjectsPageContent', value: data.projectsPage },
-			],
-		});
-	}
-
-	if (data.morphShapes) {
-		out.push({
-			filePath: path('morph-shapes.ts'),
-			description: 'Geometric morph-target library (id, label, path, viewbox, sort). NEW in slice-18m — was previously derived from utils/shapes.ts SHAPES const.',
-			imports: [{ symbols: ['MorphShape'], from: '$lib/types', typeOnly: true }],
-			exports: [
-				{ name: 'morphShapes', typeName: 'readonly MorphShape[]', value: data.morphShapes },
-			],
-		});
-	}
-
-	return out;
+/** Validates one complete snapshot before deriving any file write configs. */
+export function buildEmitConfigs(
+	data: ExportData,
+	contentDir: string,
+): readonly ModuleEmitConfig[] {
+	requireCompleteData(data);
+	return EXPORT_MODULE_REGISTRY.map((definition) => {
+		return {
+			filePath: resolve(contentDir, definition.fileName),
+			description: definition.description,
+			imports:
+				typeof definition.imports === 'function'
+					? definition.imports(data)
+					: definition.imports,
+			exports: definition.exports(data),
+		};
+	});
 }
