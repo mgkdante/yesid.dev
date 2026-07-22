@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'bun:test';
-import { readFileSync } from 'node:fs';
-import { join as joinPath } from 'node:path';
 import { PresetsConfigSchema } from '../scripts/lib/schemas/presets';
+import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 describe('fixtures/brand/presets.json', () => {
-	const path = joinPath(import.meta.dir, '..', 'fixtures', 'brand', 'presets.json');
-	const raw = JSON.parse(readFileSync(path, 'utf8'));
+	const raw = readCmsFixtureJson('brand/presets.json');
 
 	it('parses against PresetsConfigSchema', () => {
 		expect(() => PresetsConfigSchema.parse(raw)).not.toThrow();

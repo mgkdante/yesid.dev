@@ -2,8 +2,8 @@
  * services fetcher — reads `services` with translations + deliverables + sections,
  * plus a single `projects_services` junction read to attach relatedProjects.
  *
- * Mirrors apps/web/src/lib/adapters/directus.ts:1596 `toService` + L1836 `fetchServices`.
- * Optimization vs runtime: batch-fetch the full junction once instead of N+1 per service.
+ * This module owns the build-time Service projection and batch-fetches the
+ * junction once instead of issuing one request per service.
  */
 
 import { readItems } from '@directus/sdk';

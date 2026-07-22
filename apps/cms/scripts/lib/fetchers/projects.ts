@@ -1,10 +1,9 @@
 /**
  * projects fetcher — reads `projects` with translations + sections + impact_metrics
- * + projects_services M2M. Mirrors apps/web/src/lib/adapters/directus.ts:1672 `toProject`
- * + L2298 `fetchProjects`.
+ * + projects_services M2M. This module owns the build-time Project projection.
  *
  * Directus status (`draft`/`published`/`archived`) maps to legacy
- * `public`/`private`/`wip` per 18e spec — the adapter is the only place the
+ * `public`/`private`/`wip` per 18e spec — this fetcher is the only place the
  * mapping happens; consumer code stays on the legacy enum.
  */
 

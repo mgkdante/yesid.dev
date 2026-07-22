@@ -10,6 +10,7 @@ import {
   type AssetSemanticKey,
   type Sha256Hex,
 } from "@repo/shared";
+import { readAllPages } from "../read-all-pages";
 
 export type CmsEnvironment = "dev" | "prod";
 export type CmsContentLocale = "en" | "fr" | "es";
@@ -1099,103 +1100,59 @@ async function readAllSurfaces(
     const operation = `readPage:${surface}`;
     const rows: unknown[] = [];
     const seen = new Set<string>();
-    let offset = 0;
     let complete = true;
     let availability: DirectusReadAvailability = "available";
     let rowCount: number | null = 0;
-    while (true) {
-      let response: CmsReadResponse;
-      try {
-        response = await client.readPage({
-          surface: surface as PageSurface,
-          fields: spec.fields,
-          sort: spec.sort,
-          limit: DIRECTUS_PAGE_SIZE,
-          offset,
-        });
-      } catch {
-        complete = false;
-        availability = "failed";
-        rowCount = null;
-        issues.push(
-          issue(environment, "request-failed", operation, null, surface),
-        );
-        break;
-      }
-      if (
-        !Number.isInteger(response.status) ||
-        response.status < 200 ||
-        response.status >= 300
-      ) {
-        const status = Number.isInteger(response.status)
-          ? response.status
-          : null;
-        complete = false;
-        availability = status === null ? "failed" : statusAvailability(status);
-        rowCount = null;
-        issues.push(
-          issue(
-            environment,
-            status === null ? "response-invalid" : statusIssueCode(status),
-            operation,
-            status,
-            surface,
-          ),
-        );
-        break;
-      }
-      if (!Array.isArray(response.data)) {
-        complete = false;
-        availability = "failed";
-        rowCount = null;
-        issues.push(
-          issue(
-            environment,
-            "response-invalid",
-            operation,
-            response.status,
-            surface,
-          ),
-        );
-        break;
-      }
-      if (response.data.length > DIRECTUS_PAGE_SIZE) {
-        complete = false;
-        availability = "failed";
-        rowCount = rows.length;
-        issues.push(
-          issue(
-            environment,
-            "response-invalid",
-            operation,
-            response.status,
-            surface,
-          ),
-        );
-        break;
-      }
-      const remainingCapacity = limits.maxRowsPerCollection - rows.length;
-      const pageRows = response.data.slice(0, Math.max(remainingCapacity, 0));
-      let invalid = false;
-      for (const rawRow of pageRows) {
-        if (!isObject(rawRow)) {
-          invalid = true;
-          issues.push(
-            issue(
-              environment,
-              "response-invalid",
-              operation,
-              response.status,
-              surface,
-            ),
-          );
-          break;
-        }
-        let id: string;
+    await readAllPages({
+      pageSize: DIRECTUS_PAGE_SIZE,
+      readPage: async ({ limit, offset }): Promise<CmsReadResponse | null> => {
         try {
-          id = rowKey(rawRow.id, `${surface}.id`);
+          return await client.readPage({
+            surface: surface as PageSurface,
+            fields: spec.fields,
+            sort: spec.sort,
+            limit,
+            offset,
+          });
         } catch {
-          invalid = true;
+          complete = false;
+          availability = "failed";
+          rowCount = null;
+          issues.push(
+            issue(environment, "request-failed", operation, null, surface),
+          );
+          return null;
+        }
+      },
+      visitPage: (response) => {
+        if (response === null) return "stop";
+        if (
+          !Number.isInteger(response.status) ||
+          response.status < 200 ||
+          response.status >= 300
+        ) {
+          const status = Number.isInteger(response.status)
+            ? response.status
+            : null;
+          complete = false;
+          availability =
+            status === null ? "failed" : statusAvailability(status);
+          rowCount = null;
+          issues.push(
+            issue(
+              environment,
+              status === null ? "response-invalid" : statusIssueCode(status),
+              operation,
+              status,
+              surface,
+            ),
+          );
+          return "stop";
+        }
+        if (!Array.isArray(response.data)) {
+          complete = false;
+          availability = "failed";
+          rowCount = null;
           issues.push(
             issue(
               environment,
@@ -1205,60 +1162,109 @@ async function readAllSurfaces(
               surface,
             ),
           );
-          break;
+          return "stop";
         }
-        if (seen.has(id)) {
-          invalid = true;
+        if (response.data.length > DIRECTUS_PAGE_SIZE) {
+          complete = false;
+          availability = "failed";
+          rowCount = rows.length;
           issues.push(
             issue(
               environment,
               "response-invalid",
               operation,
               response.status,
-              id,
+              surface,
             ),
           );
-          break;
+          return "stop";
         }
-        seen.add(id);
-        rows.push(rawRow);
-      }
-      if (invalid) {
-        complete = false;
-        availability = "failed";
+        const remainingCapacity = limits.maxRowsPerCollection - rows.length;
+        const pageRows = response.data.slice(0, Math.max(remainingCapacity, 0));
+        let invalid = false;
+        for (const rawRow of pageRows) {
+          if (!isObject(rawRow)) {
+            invalid = true;
+            issues.push(
+              issue(
+                environment,
+                "response-invalid",
+                operation,
+                response.status,
+                surface,
+              ),
+            );
+            break;
+          }
+          let id: string;
+          try {
+            id = rowKey(rawRow.id, `${surface}.id`);
+          } catch {
+            invalid = true;
+            issues.push(
+              issue(
+                environment,
+                "response-invalid",
+                operation,
+                response.status,
+                surface,
+              ),
+            );
+            break;
+          }
+          if (seen.has(id)) {
+            invalid = true;
+            issues.push(
+              issue(
+                environment,
+                "response-invalid",
+                operation,
+                response.status,
+                id,
+              ),
+            );
+            break;
+          }
+          seen.add(id);
+          rows.push(rawRow);
+        }
+        if (invalid) {
+          complete = false;
+          availability = "failed";
+          rowCount = rows.length;
+          return "stop";
+        }
         rowCount = rows.length;
-        break;
-      }
-      rowCount = rows.length;
-      if (response.data.length > remainingCapacity) {
-        complete = false;
-        issues.push(
-          issue(
-            environment,
-            "pagination-limit",
-            operation,
-            response.status,
-            surface,
-          ),
-        );
-        break;
-      }
-      if (response.data.length < DIRECTUS_PAGE_SIZE) break;
-      if (rows.length >= limits.maxRowsPerCollection) {
-        complete = false;
-        issues.push(
-          issue(
-            environment,
-            "pagination-limit",
-            operation,
-            response.status,
-            surface,
-          ),
-        );
-        break;
-      }
-      offset += DIRECTUS_PAGE_SIZE;
-    }
+        if (response.data.length > remainingCapacity) {
+          complete = false;
+          issues.push(
+            issue(
+              environment,
+              "pagination-limit",
+              operation,
+              response.status,
+              surface,
+            ),
+          );
+          return "stop";
+        }
+        if (response.data.length < DIRECTUS_PAGE_SIZE) return "stop";
+        if (rows.length >= limits.maxRowsPerCollection) {
+          complete = false;
+          issues.push(
+            issue(
+              environment,
+              "pagination-limit",
+              operation,
+              response.status,
+              surface,
+            ),
+          );
+          return "stop";
+        }
+        return "continue";
+      },
+    });
     data[surface] = rows;
     receipts.push({ surface, availability, complete, rowCount });
   }

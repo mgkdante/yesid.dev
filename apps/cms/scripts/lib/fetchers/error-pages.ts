@@ -1,13 +1,9 @@
 /**
- * error-pages fetcher — reads the `error_pages` flat collection and returns
- * the generic fallback row (status_code=0). This becomes `errorPageContent` in
- * the emitted nav.ts (matches today's single-fallback static export).
+ * error-pages fetcher owns both build-time projections from published rows:
+ * `errorPageContent` for the status_code=0 generic fallback and `errorPagesById`
+ * for the complete status-code map consumed by static content.
  *
- * Per-status-code variants stay runtime-only via the adapter port
- * (`content.errorPage(statusCode)`) — fallback is enough for the build-time
- * snapshot.
- *
- * Mirrors transformErrorPage at apps/web/src/lib/adapters/directus.ts:1955.
+ * Both projections use the same validated transform below.
  */
 
 import { readItems } from '@directus/sdk';
@@ -43,8 +39,7 @@ export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent 
 	const terminalLine = terminalLineLS.en;
 
 	// suggestions: per-locale JSON arrays. label is LocalizedString; href is plain
-	// (taken from the en row, same across locales). Walk each locale's array and
-	// merge by index — mirrors transformErrorPage in apps/web's adapter.
+	// (taken from the en row, same across locales). Merge locale rows by index.
 	const rawTr = (raw.translations ?? []) as ReadonlyArray<DirectusErrorPageTranslation>;
 	const suggestionsByLocale = new Map<string, Array<{ label: string; href: string }>>();
 	for (const row of rawTr) {
@@ -104,8 +99,7 @@ export async function fetchErrorPageFallback({ client }: FetcherContext): Promis
 
 /**
  * Fetch ALL published error_pages rows and return a Record keyed by status_code.
- * Used by the static adapter for per-statusCode errorPage lookup (mirrors the
- * directus adapter's _or: [status_code=N, status_code=0] semantics).
+ * The static consumer falls back from a requested status code to status_code=0.
  */
 export async function fetchAllErrorPages({
 	client,
