@@ -38,9 +38,14 @@
 		markHeroIntroCompleted,
 	} from '$lib/motion/utils/heroIntroReplay.js';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import { generateHeroData, siteLabels } from '$lib/content';
-	import type { HeroData } from '$lib/content';
-	import { fetchLiveKpis, startLiveKpiPolling, type LiveHeroSnapshot } from '$lib/content/live-kpis';
+	import { siteLabels } from '$lib/content';
+	import {
+		fetchLiveKpis,
+		generateHeroData,
+		startLiveKpiPolling,
+		type HeroData,
+		type LiveHeroSnapshot,
+	} from '$lib/live';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';

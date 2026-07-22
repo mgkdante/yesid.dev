@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { HeroDataSchema } from './hero-data';
-import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { INITIAL_HERO_DATA } from '$lib/live';
 
 // Regression guard: the dashboard card LABEL/SUB copy is CMS truth now
 // (siteLabels.heroDashboard, resolved in HeroMetrics by metric key). The metric
