@@ -1,0 +1,15 @@
+{
+	"schema": 1,
+	"archived_at": "2026-07-21",
+	"source": {
+		"repository": "mgkdante/yesid.dev",
+		"commit": "48c3f35454656c47c9a9eb6e510a0073df5e19e5"
+	},
+	"files": [
+		{"source":"apps/cms/scripts/generate-tech-stack-fixture.ts","archive":"archive/cms-runbooks/2026-07-21-h1b/apps/cms/scripts/generate-tech-stack-fixture.ts","sha256":"05c288dde79ea9521520ff17b27c8895637d7a65cad6dcaa7ed9d5dbd6e3f4c9","restore":"git mv archive/cms-runbooks/2026-07-21-h1b/apps/cms/scripts/generate-tech-stack-fixture.ts apps/cms/scripts/generate-tech-stack-fixture.ts"},
+		{"source":"apps/cms/scripts/migrate-markdown-to-blocks.ts","archive":"archive/cms-runbooks/2026-07-21-h1b/apps/cms/scripts/migrate-markdown-to-blocks.ts","sha256":"43a8724bd3620e0e21da9fc3dfac1a59ab4367562a3a6b94d7e63caaa8151935","restore":"git mv archive/cms-runbooks/2026-07-21-h1b/apps/cms/scripts/migrate-markdown-to-blocks.ts apps/cms/scripts/migrate-markdown-to-blocks.ts"},
+		{"source":"apps/cms/scripts/replace-blog-posts.ts","archive":"archive/cms-runbooks/2026-07-21-h1b/apps/cms/scripts/replace-blog-posts.ts","sha256":"75e2b18fc3e4eddcd52ffc276615f428388e4de1cfa5d8d851e933c09a214b8c","restore":"git mv archive/cms-runbooks/2026-07-21-h1b/apps/cms/scripts/replace-blog-posts.ts apps/cms/scripts/replace-blog-posts.ts"},
+		{"source":"apps/cms/tests/migrate-markdown-to-blocks.test.ts","archive":"archive/cms-runbooks/2026-07-21-h1b/apps/cms/tests/migrate-markdown-to-blocks.test.ts","sha256":"02a8e01d3a96983cfe06b8e287b0e862d938e2f0ecd1dff20a48495052229051","restore":"git mv archive/cms-runbooks/2026-07-21-h1b/apps/cms/tests/migrate-markdown-to-blocks.test.ts apps/cms/tests/migrate-markdown-to-blocks.test.ts"},
+		{"source":"apps/cms/tests/replace-blog-posts-dry-run.test.ts","archive":"archive/cms-runbooks/2026-07-21-h1b/apps/cms/tests/replace-blog-posts-dry-run.test.ts","sha256":"dfca212485378a189d21ecc5b81f8aa62905bed7b0aa26b06929a3bb2b573221","restore":"git mv archive/cms-runbooks/2026-07-21-h1b/apps/cms/tests/replace-blog-posts-dry-run.test.ts apps/cms/tests/replace-blog-posts-dry-run.test.ts"}
+	]
+}
