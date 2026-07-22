@@ -1,0 +1,12 @@
+{
+	"schema": 1,
+	"archived_at": "2026-07-21",
+	"source": {
+		"repository": "mgkdante/yesid.dev",
+		"commit": "221ddd9e008334c39c4a5e5ece21fe6735c79850"
+	},
+	"files": [
+		{"source":"apps/cms/scripts/seed-morph-shapes.ts","archive":"archive/cms-runbooks/2026-07-21-h1c/apps/cms/scripts/seed-morph-shapes.ts","sha256":"f247d78afd9ca58699e02a37960dc2a9dcbf4eb7304a49979dab5aa244f6b011","restore":"git mv archive/cms-runbooks/2026-07-21-h1c/apps/cms/scripts/seed-morph-shapes.ts apps/cms/scripts/seed-morph-shapes.ts"},
+		{"source":"apps/cms/tests/seed-morph-shapes-dry-run.test.ts","archive":"archive/cms-runbooks/2026-07-21-h1c/apps/cms/tests/seed-morph-shapes-dry-run.test.ts","sha256":"2e80fd070fbcb15599d86996536e8a84a9d1bad18d6b1574c1a8b2d72a417a06","restore":"git mv archive/cms-runbooks/2026-07-21-h1c/apps/cms/tests/seed-morph-shapes-dry-run.test.ts apps/cms/tests/seed-morph-shapes-dry-run.test.ts"}
+	]
+}
