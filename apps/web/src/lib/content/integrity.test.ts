@@ -36,7 +36,7 @@ import * as techStackModule from './tech-stack.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
-import { INITIAL_HERO_DATA } from './hero-data.js';
+import { INITIAL_HERO_DATA } from '$lib/live';
 import { techStackPageContent, techStackItems } from './tech-stack.js';
 import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';

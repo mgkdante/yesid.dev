@@ -44,7 +44,7 @@ import type {
 	LegalPage,
 } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem } from '$lib/navigation/types';
-import type { HeroData } from '$lib/content/hero-data';
+import type { HeroData } from '$lib/live';
 import type { PageSeo } from '$lib/schemas/seo';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 

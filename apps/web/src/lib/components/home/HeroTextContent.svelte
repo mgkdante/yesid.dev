@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import { pressBounce } from '$lib/motion/actions';
-	import type { HeroData } from '$lib/content';
+	import type { HeroData } from '$lib/live';
 	let {
 		headlineLine1,
 		headlineLine2,

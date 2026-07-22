@@ -3,7 +3,7 @@
   Receives metrics as props so the parent can swap data on refresh.
 -->
 <script lang="ts">
-  import type { HeroMetric } from '$lib/content/hero-data';
+  import type { HeroMetric } from '$lib/live';
   import { siteLabels } from '$lib/content/site-labels';
   import { MetricDisplay } from '$lib/components/brand';
   import { Card } from '$lib/components/ui/card';

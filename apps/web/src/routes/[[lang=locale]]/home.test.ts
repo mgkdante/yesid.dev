@@ -16,7 +16,7 @@ import {
 	ctaContent,
 	closerContent,
 } from '$lib/content/site-content';
-import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { INITIAL_HERO_DATA } from '$lib/live';
 import { getFeaturedProjects } from '$lib/projects/static-helpers';
 import { getVisibleServices } from '$lib/services/static-helpers';
 import { siteMeta } from '$lib/content/site-meta';
