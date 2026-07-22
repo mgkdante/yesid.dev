@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { z } from 'zod';
+import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 /**
  * Schema for fixtures/assets-id-map.json — emitted by migrate-assets.ts and
@@ -17,8 +18,7 @@ const AssetsIdMapSchema = z.record(
 );
 
 function loadIdMap(): Record<string, string> {
-	const path = joinPath(import.meta.dir, '..', 'fixtures', 'assets-id-map.json');
-	return JSON.parse(readFileSync(path, 'utf8'));
+	return readCmsFixtureJson('assets-id-map.json');
 }
 
 function loadSharedIdMap(): Record<string, string> {

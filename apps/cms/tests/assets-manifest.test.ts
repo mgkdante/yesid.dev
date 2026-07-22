@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'bun:test';
-import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import sharp from 'sharp';
 import {
@@ -8,6 +7,7 @@ import {
 	validateFolderReferences,
 	extractLegacyTopLevel,
 } from '../scripts/migrate-assets';
+import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 /**
  * Fixture shape assertion — `fixtures/assets-manifest.json` must parse against
@@ -19,13 +19,7 @@ import {
  */
 
 function loadManifest() {
-	const path = joinPath(
-		import.meta.dir,
-		'..',
-		'fixtures',
-		'assets-manifest.json',
-	);
-	return parseManifest(JSON.parse(readFileSync(path, 'utf8')));
+	return parseManifest(readCmsFixtureJson('assets-manifest.json'));
 }
 
 describe('fixtures/assets-manifest.json', () => {

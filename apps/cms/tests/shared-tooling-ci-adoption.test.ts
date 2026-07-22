@@ -2,6 +2,10 @@ import { expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import {
+	workflowJobBlock as jobBlock,
+	workflowStepBlock as namedStepBlock,
+} from './helpers/workflow-source';
 
 const repoRoot = join(import.meta.dir, '..', '..', '..');
 const workflowsRoot = join(repoRoot, '.github', 'workflows');
@@ -38,24 +42,6 @@ function workflowFiles(): string[] {
 		.filter((name) => /\.ya?ml$/u.test(name))
 		.map((name) => join(workflowsRoot, name))
 		.sort();
-}
-
-function jobBlock(workflow: string, name: string): string | null {
-	const jobsOffset = workflow.indexOf('\njobs:\n');
-	const start = workflow.indexOf(`\n  ${name}:\n`, jobsOffset);
-	if (jobsOffset < 0 || start < 0) return null;
-	const bodyStart = start + 1;
-	const next = /\n  [A-Za-z0-9_-]+:\n/gu.exec(workflow.slice(bodyStart));
-	const end = next ? bodyStart + next.index : workflow.length;
-	return workflow.slice(bodyStart, end).trimEnd();
-}
-
-function namedStepBlock(job: string, name: string): string | null {
-	const marker = `      - name: ${name}\n`;
-	const start = job.indexOf(marker);
-	if (start < 0) return null;
-	const next = job.indexOf('\n      - ', start + marker.length);
-	return job.slice(start, next < 0 ? job.length : next).trimEnd();
 }
 
 function fromRunsOn(job: string): string | null {

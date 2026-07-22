@@ -2,9 +2,7 @@
  * site-meta fetcher — reads the Directus `site_meta` singleton, flattens its
  * translations into LocalizedString, and returns a SiteMeta object matching
  * the shape `apps/web/src/lib/content/site-meta.ts` exports today.
- *
- * Mirrors the runtime adapter's `meta.site()` impl
- * (apps/web/src/lib/adapters/directus.ts ~L2100 toSiteMeta + L2183 fetchSingletonRow).
+ * This module owns the build-time SiteMeta projection.
  */
 
 import { readSingleton } from '@directus/sdk';
@@ -13,8 +11,7 @@ import { SiteMetaSchema, SiteSeoDefaultsSchema } from '@repo/shared/schemas';
 import type { SiteMeta, SiteSeoDefaults } from '@repo/shared';
 import type { FetcherContext } from './types';
 
-// Mirror of DirectusSiteMetaRow from apps/web/src/lib/adapters/directus.ts.
-// Inlined here so this fetcher compiles without crossing the apps/web boundary.
+// CMS input row kept local to the fetcher boundary.
 export interface DirectusSiteMetaTranslation {
 	languages_code: string;
 	tagline?: string | null;
@@ -74,7 +71,6 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 
 /**
  * SiteSeoDefaults transform — DirectusSiteMetaRow → SiteSeoDefaults.
- * Mirrors `toSiteSeoDefaults` from apps/web/src/lib/adapters/directus.ts.
  * Sourced from the same singleton row as toSiteMeta — no extra network call.
  */
 export function toSiteSeoDefaults(row: DirectusSiteMetaRow): SiteSeoDefaults {

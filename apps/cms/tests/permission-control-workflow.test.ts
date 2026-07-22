@@ -2,29 +2,19 @@ import { expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { workflowJobBlock, workflowStepBlock } from './helpers/workflow-source';
 
 const workflow = readFileSync(
 	join(import.meta.dir, '..', '..', '..', '.github', 'workflows', 'cms.yml'),
 	'utf8',
 );
-const jobsOffset = workflow.indexOf('\njobs:\n');
 const secretReference = /\$\{\{\s*secrets\s*(?:\.|\[)/;
 const topLevelEnvKey = /^(?:env|'env'|"env")\s*:/m;
 
 function jobBlock(name: string, next?: string): string {
-	const start = workflow.indexOf(`\n  ${name}:\n`, jobsOffset);
-	if (start < 0) throw new Error(`missing workflow job: ${name}`);
-	const bodyStart = start + 1;
-	const remainder = workflow.slice(bodyStart);
-	const nextMatch = /\n  ([a-zA-Z0-9_-]+):\n/.exec(remainder);
-	const actualNext = nextMatch?.[1];
-	if (next && actualNext !== next) {
-		throw new Error(
-			`expected workflow job ${next} after ${name}, found ${actualNext ?? 'EOF'}`,
-		);
-	}
-	const end = nextMatch ? bodyStart + nextMatch.index : workflow.length;
-	return workflow.slice(bodyStart, end).trimEnd();
+	const block = workflowJobBlock(workflow, name, { expectedNext: next });
+	if (!block) throw new Error(`missing workflow job: ${name}`);
+	return block;
 }
 
 function sha256(value: string): string {
@@ -32,13 +22,13 @@ function sha256(value: string): string {
 }
 
 function stepBlock(job: string, name: string, next?: string): string {
-	const start = job.indexOf(`      - name: ${name}\n`);
-	if (start < 0) throw new Error(`missing workflow step: ${name}`);
-	const nextOffset = next
-		? job.indexOf(`      - name: ${next}\n`, start + 1)
-		: -1;
-	const end = nextOffset >= 0 ? nextOffset : job.length;
-	return job.slice(start, end).trimEnd();
+	const block = workflowStepBlock(
+		job,
+		name,
+		next ? { beforeStep: next } : { throughJobEnd: true },
+	);
+	if (!block) throw new Error(`missing workflow step: ${name}`);
+	return block;
 }
 
 function jobCondition(job: string): string {

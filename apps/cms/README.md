@@ -110,6 +110,20 @@ bun run cms:sync:push:op
 
 ## Operations
 
+### Asset audit ownership boundary
+
+The asset audit is a read-only evidence pipeline with one owner per stage:
+
+- `scripts/lib/assets/repository-scan.ts` inventories repository assets and usages without CMS access.
+- `scripts/lib/assets/directus-scan.ts` performs bounded, GET-only reads from the fixed dev and prod CMS targets.
+- `scripts/lib/assets/audit.ts` correlates repository, registry, file, content, generated-output, OG, and SVG evidence into findings.
+- `scripts/lib/assets/report.ts` owns deterministic public serialization and hashing.
+- `scripts/audit-assets.ts` owns CLI options, credentials, target selection, gates, output paths, and baseline publication. Scanner and reconciliation modules do not read environment variables or write files.
+
+`bun run verify:assets-audit` is the credential-free CI gate. It scans repository truth, reads the committed `fixtures/assets/audit-baseline.json`, and writes the ignored `.asset-audit/report.json`. Offline receipts do not claim that live CMS scopes are current, and an offline run cannot replace the baseline.
+
+Live runs require `DIRECTUS_ADMIN_TOKEN`, use only the two fixed CMS URLs, and make GET-only requests. Replacing accepted debt is a separate publication action: it requires a complete live `--target=both` run plus `--update-baseline --confirm=UPDATE_ASSET_AUDIT_BASELINE`. Review both the report and baseline diff before committing the baseline; never commit `.asset-audit/report.json`.
+
 ### Seeding content domains
 
 Seed scripts are one-shot/idempotent per domain (`seed:services`, `seed:projects`, `seed:presets`, ...). Most domains were seeded once in slice-18 and are now maintained in Data Studio — re-run a seeder only when you know it's the right tool (several are stamped DONE in their headers).
