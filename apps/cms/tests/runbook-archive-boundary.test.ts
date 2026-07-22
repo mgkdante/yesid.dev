@@ -10,6 +10,9 @@ const baseCommit = 'b64e51f0d578132265ca8e5a330a753c55043a8f';
 const h1bArchiveRoot = 'archive/cms-runbooks/2026-07-21-h1b';
 const h1bManifestPath = join(repoRoot, h1bArchiveRoot, 'manifest.json');
 const h1bBaseCommit = '48c3f35454656c47c9a9eb6e510a0073df5e19e5';
+const h1cArchiveRoot = 'archive/cms-runbooks/2026-07-21-h1c';
+const h1cManifestPath = join(repoRoot, h1cArchiveRoot, 'manifest.json');
+const h1cBaseCommit = '221ddd9e008334c39c4a5e5ece21fe6735c79850';
 
 const archivedSources = [
 	'apps/cms/scripts/add-project-hero-media-fields.ts',
@@ -48,6 +51,11 @@ const h1bArchivedSources = [
 	'apps/cms/scripts/replace-blog-posts.ts',
 	'apps/cms/tests/migrate-markdown-to-blocks.test.ts',
 	'apps/cms/tests/replace-blog-posts-dry-run.test.ts',
+] as const;
+
+const h1cArchivedSources = [
+	'apps/cms/scripts/seed-morph-shapes.ts',
+	'apps/cms/tests/seed-morph-shapes-dry-run.test.ts',
 ] as const;
 
 type Manifest = {
@@ -168,5 +176,39 @@ test('removes only the closed H1-B graph and its CMS-only dependency', () => {
 		'replace-blog-posts',
 	]) {
 		expect(activeSource, stem).not.toContain(stem);
+	}
+});
+
+test('moves the completed H1-C seed pair into its own recoverable archive batch', () => {
+	expect(existsSync(h1cManifestPath), 'H1-C archive manifest must exist').toBe(true);
+	if (!existsSync(h1cManifestPath)) return;
+
+	const manifest = JSON.parse(readFileSync(h1cManifestPath, 'utf8')) as Manifest;
+	expect(manifest.schema).toBe(1);
+	expect(manifest.source.commit).toBe(h1cBaseCommit);
+	expect(manifest.files.map(({ source }) => source).sort()).toEqual([...h1cArchivedSources].sort());
+
+	for (const entry of manifest.files) {
+		const expectedArchive = `${h1cArchiveRoot}/${entry.source}`;
+		expect(entry.archive, entry.source).toBe(expectedArchive);
+		expect(entry.restore, entry.source).toBe(`git mv ${entry.archive} ${entry.source}`);
+		expect(existsSync(join(repoRoot, entry.source)), entry.source).toBe(false);
+		expect(existsSync(join(repoRoot, entry.archive)), entry.archive).toBe(true);
+		if (existsSync(join(repoRoot, entry.archive))) {
+			expect(entry.sha256, entry.archive).toBe(sha256(join(repoRoot, entry.archive)));
+		}
+	}
+});
+
+test('removes only the closed H1-C pair and keeps the live morph fixture contract', () => {
+	for (const path of [
+		'apps/cms/fixtures/collections/morph-shapes.json',
+		'apps/cms/tests/fixture-morph-shapes.test.ts',
+	]) {
+		expect(existsSync(join(repoRoot, path)), path).toBe(true);
+	}
+
+	for (const path of h1cArchivedSources) {
+		expect(existsSync(join(repoRoot, path)), path).toBe(false);
 	}
 });
