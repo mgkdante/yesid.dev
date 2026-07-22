@@ -1,5 +1,13 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { GET } from './+server';
+
+function fingerprint(body: string) {
+	return {
+		bytes: Buffer.byteLength(body),
+		sha256: createHash('sha256').update(body).digest('hex'),
+	};
+}
 
 describe('GET /robots.txt', () => {
 	async function fetchBody(hostname = 'yesid.dev') {
@@ -44,6 +52,14 @@ describe('GET /robots.txt', () => {
 		expect(body).toContain('Sitemap: https://yesid.dev/sitemap.xml');
 	});
 
+	it('locks the exact production bytes across design-package adoption', async () => {
+		const { body } = await fetchBody();
+		expect(fingerprint(body)).toEqual({
+			bytes: 176,
+			sha256: 'd355daa2c32d8f7f8cde67567c4aa85a072b740c2561040881f2c7765eb98f7f',
+		});
+	});
+
 	it('blocks every crawler and omits the production sitemap on non-production hosts', async () => {
 		const { body, cacheControl, robotsTag } = await fetchBody('dev.yesid.dev');
 		expect(body).toBe('User-agent: *\nDisallow: /\n');
@@ -51,5 +67,13 @@ describe('GET /robots.txt', () => {
 		expect(body).not.toContain('Sitemap:');
 		expect(cacheControl).toBe('no-store');
 		expect(robotsTag).toBe('noindex, nofollow, noarchive');
+	});
+
+	it('locks the exact non-production bytes across design-package adoption', async () => {
+		const { body } = await fetchBody('dev.yesid.dev');
+		expect(fingerprint(body)).toEqual({
+			bytes: 26,
+			sha256: '331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1',
+		});
 	});
 });

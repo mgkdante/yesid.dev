@@ -19,6 +19,7 @@ import { isPathPublished } from '$lib/utils/page-registry';
 import { delocalizePath } from '$lib/utils/locale-routing';
 import { PUBLISHED_LOCALES, canonicalFor } from '$lib/utils/seo-defaults';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
+import { sitemapCoverage } from '@yesid/gates';
 
 const ROUTES_DIR = 'src/routes';
 
@@ -106,11 +107,10 @@ describe('sitemap coverage gate', () => {
 			actual.add(delocalizePath(url.pathname === '' ? '/' : url.pathname));
 		}
 
-		const missingInSitemap = [...expected].filter((r) => !actual.has(r));
-		const extraInSitemap = [...actual].filter((r) => !expected.has(r));
+		const coverage = sitemapCoverage({ expected, actual });
 
-		expect(missingInSitemap, `routes missing from sitemap`).toEqual([]);
-		expect(extraInSitemap, `routes in sitemap but missing from src/routes`).toEqual([]);
+		expect(coverage.missing, `routes missing from sitemap`).toEqual([]);
+		expect(coverage.extra, `routes in sitemap but missing from src/routes`).toEqual([]);
 
 		// Every same-path chrome route appears once per published locale. Blog
 		// translations own distinct slugs, so each row appears at its body locale

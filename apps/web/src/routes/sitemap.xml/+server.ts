@@ -11,6 +11,10 @@ import { isPathPublished } from '$lib/utils/page-registry';
 import { sitePages } from '$lib/content/site-pages';
 import { groupBlogTranslations } from '$lib/blog/translations';
 import type { BlogPost, Locale, SitePage } from '$lib/types';
+import {
+	emitAlternateSitemapEntries,
+	emitSitemapDocument,
+} from '@yesid/seo-kit/sitemap';
 
 // Route ids that are always present in the router. Keep this list in sync
 // with the static-route set in $lib/adapters/route-seo-defaults.ts when
@@ -30,15 +34,6 @@ export const _STATIC_ROUTES: readonly string[] = [
 	'/tech-stack',
 ];
 
-function xmlEscape(s: string): string {
-	return s
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&apos;');
-}
-
 // slice-28.1 (audit #19): <lastmod> dropped entirely. It is optional per the
 // sitemaps spec, and the previous value was request-time noise — static
 // routes got "now" on every request, defeating crawler change detection.
@@ -52,32 +47,25 @@ function urlEntries(path: string, variants: readonly Locale[]): string[] {
 	const alternates = Object.fromEntries(
 		variants.map((locale) => [locale, canonicalFor(path, locale)]),
 	) as Partial<Record<Locale, string>>;
-	return exactUrlEntries(alternates, variants);
+	return _exactUrlEntries(alternates, variants);
 }
 
-function exactUrlEntries(
+export function _exactUrlEntries(
 	alternates: Partial<Record<Locale, string>>,
 	variants: readonly Locale[],
 ): string[] {
-	const multi = variants.length > 1;
-	return variants.map((v) => {
-		const loc = alternates[v];
-		if (!loc) throw new Error(`Missing sitemap alternate for ${v}`);
-		const altLinks = [
-			...variants.map(
-				(m) => {
-					const href = alternates[m];
-					if (!href) throw new Error(`Missing sitemap alternate for ${m}`);
-					return `    <xhtml:link rel="alternate" hreflang="${m}" href="${xmlEscape(href)}" />`;
-				},
-			),
-			...(multi
-				? [
-						`    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(alternates[DEFAULT_LOCALE] ?? loc)}" />`,
-					]
-				: []),
-		];
-		return `  <url>\n    <loc>${xmlEscape(loc)}</loc>\n${altLinks.join('\n')}\n  </url>`;
+	const sitemapVariants = variants.map((hreflang) => {
+		const href = alternates[hreflang];
+		if (!href) throw new Error(`Missing sitemap alternate for ${hreflang}`);
+		return { hreflang, href };
+	});
+
+	return emitAlternateSitemapEntries({
+		variants: sitemapVariants,
+		...(variants.length > 1
+			? { xDefaultHref: alternates[DEFAULT_LOCALE] ?? sitemapVariants[0]!.href }
+			: {}),
+		emptyElementStyle: 'spaced',
 	});
 }
 
@@ -90,8 +78,12 @@ export function _blogUrlEntries(posts: readonly BlogPost[]): string[] {
 				return [locale, canonicalFor(`/blog/${variant.slug}`, locale)];
 			}),
 		) as Partial<Record<Locale, string>>;
-		return exactUrlEntries(alternates, PUBLISHED_LOCALES);
+		return _exactUrlEntries(alternates, PUBLISHED_LOCALES);
 	});
+}
+
+export function _emitSitemapDocument(entries: readonly string[]): string {
+	return emitSitemapDocument(entries);
 }
 
 // Exported so the build-time coverage gate (Task 11) can diff expected vs
@@ -144,11 +136,7 @@ export async function _buildSitemapEntries(
 
 export const GET: RequestHandler = async () => {
 	const entries = await _buildSitemapEntries();
-
-	const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${entries.join('\n')}
-</urlset>`;
+	const xml = _emitSitemapDocument(entries);
 
 	return new Response(xml, {
 		headers: {
