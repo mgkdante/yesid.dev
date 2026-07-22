@@ -3,8 +3,6 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
-	ALL_MODULES,
-	assertValidModuleFilter,
 	buildMirroredMediaAssetsFromManifest,
 	decideExit,
 	fallbackBannerLines,
@@ -107,19 +105,46 @@ describe('fallbackBannerLines', () => {
 	});
 });
 
-describe('--module filter validation', () => {
-	it('accepts every known module name and the absent filter', () => {
-		for (const name of ALL_MODULES) {
-			expect(() => assertValidModuleFilter(name)).not.toThrow();
-		}
-		expect(() => assertValidModuleFilter(undefined)).not.toThrow();
+describe('complete export boundary', () => {
+	const runCli = async (env: Record<string, string> = {}) => {
+		const child = Bun.spawn({
+			cmd: [
+				Bun.which('bun') ?? 'bun',
+				joinPath(import.meta.dir, 'export-fallbacks.ts'),
+				'--dry-run',
+				'--module=services',
+			],
+			cwd: import.meta.dir,
+			env: { PATH: globalThis.process.env.PATH ?? '', ...env },
+			stdout: 'pipe',
+			stderr: 'pipe',
+		});
+		const [exitCode, stderr] = await Promise.all([
+			child.exited,
+			new Response(child.stderr).text(),
+		]);
+		return { exitCode, stderr };
+	};
+
+	it('rejects partial module selection because generation is all-or-nothing', async () => {
+		const { exitCode, stderr } = await runCli();
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
 	});
 
-	it('rejects a typo loudly instead of silently emitting nothing', () => {
-		expect(() => assertValidModuleFilter('servicess')).toThrow(
-			"unknown --module 'servicess'",
-		);
-		expect(() => assertValidModuleFilter('Services')).toThrow('Valid modules:');
+	it('validates retired flags before the explicit skip gate', async () => {
+		const { exitCode, stderr } = await runCli({ EXPORT_FALLBACKS_SKIP: '1' });
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
+	});
+
+	it('validates retired flags before an untrusted preview skip gate', async () => {
+		const { exitCode, stderr } = await runCli({
+			VERCEL_ENV: 'preview',
+			VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
+		});
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
 	});
 });
 
