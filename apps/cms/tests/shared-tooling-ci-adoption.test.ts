@@ -245,13 +245,40 @@ test('web reports required ci after classified work without weakening E2E', () =
 		"fromJSON(needs.classify.outputs.classification).relevant['ci-work']",
 	);
 	expect(e2e).toContain("!contains(github.event.pull_request.labels.*.name, 'skip-e2e')");
-	const strategyOffset = e2e.indexOf('    strategy:\n');
-	expect(strategyOffset).toBeGreaterThan(-1);
-	if (strategyOffset >= 0) {
-		expect(sha256(`${e2e.slice(strategyOffset).trimEnd()}\n`)).toBe(
-			'6e715bb868a9510518035ad9a1f514c2719cda4eac500b5d073ab5da342d2f22',
-		);
-	}
+	expect(e2e.match(/^    runs-on: ubuntu-latest$/gmu)).toHaveLength(1);
+	expect(e2e).toContain('timeout-minutes: 20');
+	expect(e2e).toContain(
+		'strategy:\n      fail-fast: false\n      matrix:\n        shard: [1, 2, 3]',
+	);
+	expect(
+		ordered(e2e, [
+			'uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5',
+			'uses: ./.github/actions/setup',
+			'name: Cache Playwright browsers',
+			'name: Install Playwright Chromium (exact cache hit)',
+			'name: Install Playwright Chromium (+ system deps)',
+			'name: Build (turbo, cache-eligible)',
+			'name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
+			'name: Upload blob report',
+		]),
+	).toBe(true);
+
+	const build = namedStepBlock(e2e, 'Build (turbo, cache-eligible)');
+	const playwright = namedStepBlock(
+		e2e,
+		'Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
+	);
+	const upload = namedStepBlock(e2e, 'Upload blob report');
+	expect(build).toContain('EXPORT_FALLBACKS_SKIP: "1"');
+	expect(build).toContain('run: bun x turbo run build --filter=@repo/web');
+	expect(playwright).toContain('E2E_PREBUILT: "1"');
+	expect(playwright).toContain('working-directory: apps/web');
+	expect(playwright).toContain('--shard=${{ matrix.shard }}/3');
+	expect(playwright).toContain('--reporter=blob');
+	expect(upload).toContain('if: ${{ !cancelled() }}');
+	expect(upload).toContain('name: blob-report-${{ matrix.shard }}');
+	expect(upload).toContain('path: apps/web/blob-report/');
+	expect(upload).toContain('retention-days: 14');
 });
 
 test('web exposes the Turbo remote-cache credential only to turbo-running steps', () => {
