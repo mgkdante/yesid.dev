@@ -1247,8 +1247,10 @@ describe("yesid.dev real repository contract", () => {
       // 46→45 / 60→58 (2026-07-22): QuietModeButton's two SVG roots moved
       // into immutable @yesid/ui v0.9; package internals remain outside the
       // product asset-governance scan surface.
-      svgFiles: 45,
-      inlineSvgRoots: 58,
+      // 45→44 / 58→57 (2026-07-23): the unreachable TableOfContents component
+      // and its single inline SVG root were retired in Phase 2 C1.
+      svgFiles: 44,
+      inlineSvgRoots: 57,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });

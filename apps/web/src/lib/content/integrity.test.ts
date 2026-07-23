@@ -204,6 +204,10 @@ describe('chrome companion consolidation', () => {
 		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/blog/BlogRouteMap.svelte'))).toBe(false);
 	});
 
+	it('retired TableOfContents component stays absent', () => {
+		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/shared/TableOfContents.svelte'))).toBe(false);
+	});
+
 	it('shared chrome consumers read from siteLabels instead of sharedChromeContent', () => {
 		const consumers = [
 			'lib/components/layout/Nav.svelte',
@@ -211,7 +215,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/layout/Footer.svelte',
 			'lib/components/layout/ThemeToggle.svelte',
 			'lib/components/layout/LanguageToggle.svelte',
-			'lib/components/shared/TableOfContents.svelte',
 			'lib/components/shared/FilterSummary.svelte',
 			'lib/components/shared/SearchInput.svelte',
 		];

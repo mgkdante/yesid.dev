@@ -87,9 +87,6 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(read('apps/web/src/lib/components/blog/BlogRow.svelte')).toContain(
 			"from '@yesid/ui/badge'",
 		);
-		expect(read('apps/web/src/lib/components/shared/TableOfContents.svelte')).toContain(
-			"from '@yesid/ui/scroll-area'",
-		);
 		expect(read('apps/web/src/lib/components/home/HomePage.svelte')).toContain(
 			"from '$lib/components/shared/HazardSeparator.svelte'",
 		);
