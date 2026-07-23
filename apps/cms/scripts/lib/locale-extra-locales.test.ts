@@ -67,7 +67,7 @@ describe('ordered extra-locale loop', () => {
 			'2be732712bb584f88be7c443177cc3667dfa3e578e678a8f69f4c1068db31df6',
 		);
 		expect(aggregateSha256(join(REPO_ROOT, 'apps/web/src/lib/content'))).toBe(
-			'1d0b4d458396fb99e5690f291ccc7137c677f55a6e7b82dd0e0836736921bcfd',
+			'cbf5c8750f6e0e8893353af1b4d85677ed8e4d1224ae9915c45e5057fa4fc403',
 		);
 		expect(aggregateSha256(join(REPO_ROOT, 'apps/web/static'))).toBe(
 			'a8c4c71e0c658c7e6db5db6010e3eec5fc6dc3e6ad11d00fbdcb8ff227e711db',

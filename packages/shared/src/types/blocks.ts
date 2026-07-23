@@ -258,8 +258,7 @@ export const LocalizedBlockEditorDocSchema: z.ZodType<LocalizedBlockEditorDoc> =
 });
 
 // ---------------------------------------------------------------------------
-// TOC heading helper type — consumed by extractHeadings (Task 13) +
-// TableOfContents.svelte (Phase 11 Task 77)
+// TOC heading helper type — consumed by extractHeadings and live TOC surfaces.
 // ---------------------------------------------------------------------------
 
 export interface TocHeading {
