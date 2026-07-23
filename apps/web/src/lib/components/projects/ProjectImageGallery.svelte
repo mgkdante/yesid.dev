@@ -288,7 +288,7 @@
 		transform: rotate(-45deg);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.project-image-gallery {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}

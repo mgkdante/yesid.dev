@@ -202,7 +202,7 @@
 		text-transform: uppercase;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		:global(.card-surface.blog-row) {
 			display: flex;
 			flex-direction: row;

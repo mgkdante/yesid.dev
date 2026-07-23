@@ -63,7 +63,7 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toMatch(/\.hero-columns \{[^}]*display: grid;[^}]*grid-template-columns: 1fr;/);
 		// …and the ≥768px grid is left-dominant 3fr/2fr with aligned bottoms
 		// (one rhythm line: terminal prompt and action row share the rail).
-		const desktop = src.match(/@media \(min-width: 768px\) \{[\s\S]*?\n\t\}/);
+		const desktop = src.match(/@media \(--tablet-min\) \{[\s\S]*?\n\t\}/);
 		expect(desktop, 'desktop hero media block must exist').not.toBeNull();
 		expect(desktop![0]).toMatch(
 			/\.hero-columns \{[^}]*grid-template-columns: minmax\(0, 3fr\) minmax\(0, 2fr\);[^}]*align-items: end;/,

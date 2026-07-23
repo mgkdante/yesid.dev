@@ -23,6 +23,7 @@
 		"check:client-payload": "node scripts/check-client-payload.mjs"
 	},
 	"devDependencies": {
+		"@csstools/postcss-global-data": "4.0.0",
 		"@faker-js/faker": "^10.4.0",
 		"@playwright/test": "^1.58.2",
 		"@sveltejs/adapter-vercel": "^6.3.1",
@@ -38,6 +39,7 @@
 		"happy-dom": "^20.8.9",
 		"interface-forge": "^2.6.6",
 		"paneforge": "^1.0.2",
+		"postcss-custom-media": "12.0.1",
 		"rollup-plugin-visualizer": "^7.0.1",
 		"svelte": "^5.54.0",
 		"svelte-check": "^4.4.2",

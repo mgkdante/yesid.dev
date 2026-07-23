@@ -171,7 +171,7 @@
     min-height: 420px;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .header-section {
       min-height: 440px;
     }
@@ -203,7 +203,7 @@
     padding: 4.5rem 1.25rem 2.5rem;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .header__content {
       padding: 5.5rem 2rem 3.75rem;
     }
@@ -256,7 +256,7 @@
     text-shadow: 0 0 60px color-mix(in srgb, var(--glow) 12%, transparent);
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .header-title {
       font-size: var(--text-display);
       text-shadow: 0 0 80px color-mix(in srgb, var(--glow) 12%, transparent);
@@ -271,7 +271,7 @@
     line-height: 1.45;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .header-subtitle {
       margin-bottom: 1.5rem;
       font-size: var(--text-detail-body-desktop);
@@ -290,7 +290,7 @@
     background: color-mix(in srgb, var(--primary) 3%, transparent);
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .header__pill {
       font-size: var(--text-caption);
       color: color-mix(in srgb, var(--primary) 90%, transparent);

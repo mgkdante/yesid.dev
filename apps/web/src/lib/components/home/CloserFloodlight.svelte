@@ -82,7 +82,7 @@
 		);
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		/* Floodlight on the ground, centered across full width */
 		.closer-floodlight-wrap {
 			position: absolute;

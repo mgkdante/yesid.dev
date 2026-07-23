@@ -522,7 +522,7 @@ pre, code, table {
   overflow-wrap: break-word;
   word-break: break-word;
 }
-@media (min-width: 1024px) {
+@media (--desktop-min) {
   .prose-dark {
     font-size: 1.125rem;
     line-height: 1.9;

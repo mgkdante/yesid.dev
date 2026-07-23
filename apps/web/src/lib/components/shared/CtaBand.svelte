@@ -115,7 +115,7 @@
 		line-height: 1.7;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.band-subtitle {
 			font-size: 1.25rem;
 		}

@@ -80,7 +80,7 @@
 		gap: 1.5rem;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.strip-inner {
 			padding: 1rem var(--space-page-x);
 			gap: 2rem;
@@ -98,7 +98,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.strip-label {
 			display: block;
 			flex-shrink: 0;
@@ -113,7 +113,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.strip-separator {
 			display: block;
 		}
@@ -128,7 +128,7 @@
 		overflow-x: auto;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.strip-links {
 			justify-content: space-evenly;
 		}

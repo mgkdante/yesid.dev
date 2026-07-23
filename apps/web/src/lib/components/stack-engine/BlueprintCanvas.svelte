@@ -583,7 +583,7 @@
 		paint-order: stroke;
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.bp-pair-note {
 			display: none;
 		}
@@ -602,7 +602,7 @@
 		line-height: 1.6;
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.bp-pair-list {
 			display: block;
 			width: fit-content;
