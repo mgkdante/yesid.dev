@@ -228,7 +228,7 @@
 	   margins, link gaps), NEVER the 44px tap targets. Retightened in slice-30
 	   after the LanguageToggle became a 3rd pill control (was overflowing the
 	   floating pill at 320–480px). */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.nav-pill {
 			padding: 8px 16px;
 		}
@@ -335,7 +335,7 @@
 		position: relative;
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.nav-pill-link {
 			font-size: var(--text-nav-link-mobile);
 		}

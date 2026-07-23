@@ -110,7 +110,7 @@ describe('BlogDetailPage', () => {
 		expect(source).toContain('<BlogEntryRail rail={entryRail} />');
 		expect(source).toContain('<BlogEntryRail rail={entryRail} mobile />');
 		expect(source).toMatch(/\.entry-column\s*\{[\s\S]*display:\s*none;/);
-		expect(source).toMatch(/@media \(min-width: 1024px\) \{[\s\S]*\.entry-column \{[\s\S]*display:\s*block;[\s\S]*grid-column:\s*3;/);
+		expect(source).toMatch(/@media \(--desktop-min\) \{[\s\S]*\.entry-column \{[\s\S]*display:\s*block;[\s\S]*grid-column:\s*3;/);
 	});
 
 	it('renders with data-testid', () => {
@@ -258,7 +258,7 @@ describe('BlogDetailPage', () => {
 		expect(source).toMatch(/\.sections-column\s*\{[\s\S]*?grid-column:\s*2;/);
 		expect(source).toMatch(/\.context-panel\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*5rem;/);
 		expect(source).not.toMatch(
-			/@media \(min-width: 1024px\) and \(max-width: 1279px\) \{[\s\S]*?grid-template-columns:\s*minmax\(12rem,\s*16rem\)\s+minmax\(0,\s*1fr\);/,
+			/@media \(--desktop-min\) and \(max-width: 1279px\) \{[\s\S]*?grid-template-columns:\s*minmax\(12rem,\s*16rem\)\s+minmax\(0,\s*1fr\);/,
 		);
 	});
 });

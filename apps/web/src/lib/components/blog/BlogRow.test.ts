@@ -40,7 +40,7 @@ describe('BlogRow', () => {
 		expect(source).toMatch(/\.blog-excerpt \{[\s\S]*font-size: var\(--text-card-body\);/);
 		expect(source).toMatch(/\.blog-topic-tags \{[\s\S]*grid-column: 1 \/ -1;/);
 		expect(source).toMatch(/:global\(\.blog-language-chip\) \{[\s\S]*border-color: var\(--accent-text\);[\s\S]*background: var\(--accent-surface\);[\s\S]*color: var\(--accent-text\);/);
-		expect(source).toMatch(/@media \(min-width: 768px\) \{[\s\S]*display: flex;[\s\S]*flex-direction: row;[\s\S]*\.blog-row-body \{[\s\S]*display: block;[\s\S]*\.blog-excerpt \{[\s\S]*grid-column: auto;[\s\S]*-webkit-line-clamp: 2;/);
+		expect(source).toMatch(/@media \(--tablet-min\) \{[\s\S]*display: flex;[\s\S]*flex-direction: row;[\s\S]*\.blog-row-body \{[\s\S]*display: block;[\s\S]*\.blog-excerpt \{[\s\S]*grid-column: auto;[\s\S]*-webkit-line-clamp: 2;/);
 	});
 
 	it('renders the post title', () => {

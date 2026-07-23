@@ -132,7 +132,7 @@
 		line-height: 1.8;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.teaser-bio {
 			font-size: 1.25rem;
 		}
@@ -190,7 +190,7 @@
 	   each column is exactly one About dashboard column
 	   ((100vw - px-3*2 - 5 seams) / 6), so four of them + 3 seams sit as a
 	   centered block; rows keep About's exact row height. */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.teaser-badges-bleed {
 			width: calc((100vw - 24px - 20px) / 6 * 4 + 12px);
 			margin-inline: auto;

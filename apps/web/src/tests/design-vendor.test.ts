@@ -7,15 +7,15 @@ const VENDOR = resolve(process.cwd(), 'vendor/design');
 const PACKAGES = ['tokens', 'motion', 'gates', 'seo-kit', 'ui'] as const;
 
 const PINNED_RELEASE = {
-	tag: 'v0.9.0',
-	tagObject: '7eb6be22d84303dc9f8d240645cdcd4dbb24b8a8',
-	peeledCommit: 'c25ffb1f4058cb2df498e9d365517d0d304881a4',
-	assetName: 'yesid.dev-design-v0.9.0.tar',
+	tag: 'v0.10.0',
+	tagObject: '4ac061f6caf38447ba60a199f556c57967938181',
+	peeledCommit: '06db187a5398d912949453db91ea23688a27c1ee',
+	assetName: 'yesid.dev-design-v0.10.0.tar',
 	assetSize: 706_560,
-	assetDigest: 'sha256:5a0c5a37cf112241c894674d713fb41aac8afb06fcf0841066674bbe2463d0cf',
+	assetDigest: 'sha256:9fccb5ad20d7dfa50e63fa60d5d110f7dc706368172757a68536b2e7375d1011',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
 	toolDigest: 'sha256:749861816f7b8a7e70a3b856f93f310183e0ff6dd5f288746681fb95be51087d',
-	treeHash: 'sha256:34cabf1c46b6be765f4b353b6cefe06b5c2477a1cf480d17be7bbf8af4046fbd',
+	treeHash: 'sha256:861f69b4cfc5ecd55c7a599483356ca93a7ef5712c0e90a5cccff51cde8660b6',
 } as const;
 
 function readJson(path: string) {

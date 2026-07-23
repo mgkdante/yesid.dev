@@ -309,7 +309,7 @@
 		transition: color var(--duration-fast), text-shadow var(--duration-fast);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.menu-label {
 			font-size: var(--text-menu-label-desktop);
 		}
@@ -361,7 +361,7 @@
 	   (restores the pre-mobile-sweep desktop layout). Placed after the base rules
 	   so source order wins; the footer override cancels the mobile margin-top:auto
 	   that would otherwise eat the free space and defeat justify-content. */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.menu-overlay {
 			justify-content: center;
 		}

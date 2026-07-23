@@ -151,7 +151,7 @@
 	}
 
 	/* Hide engineering annotations on smaller screens */
-	@media (max-width: 1023px) {
+	@media (--desktop-max) {
 		.ref-label,
 		.crosshair {
 			display: none;

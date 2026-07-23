@@ -7,7 +7,7 @@
 	padding-top: 5rem;
 }
 
-@media (min-width: 1024px) {
+@media (--desktop-min) {
 	.listing-blueprint-header {
 		height: calc(160px + 5rem);
 	}
@@ -29,7 +29,7 @@
 	line-height: 1;
 }
 
-@media (min-width: 1024px) {
+@media (--desktop-min) {
 	.listing-mobile-heading {
 		display: none;
 	}
@@ -44,7 +44,7 @@
 	margin-top: 0.35rem;
 }
 
-@media (min-width: 1024px) {
+@media (--desktop-min) {
 	.listing-header-subtitle {
 		font-size: 1.1rem;
 	}

@@ -243,7 +243,7 @@
 		-webkit-overflow-scrolling: touch;
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.data-flow-diagram.size-sm {
 			overflow-x: auto;
 			-webkit-overflow-scrolling: touch;

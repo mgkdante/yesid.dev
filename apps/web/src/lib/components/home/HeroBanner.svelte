@@ -705,7 +705,7 @@
 		min-height: 600svh;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.hero-section-reserve {
 			min-height: 900svh;
 		}
@@ -843,7 +843,7 @@
 		pointer-events: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.metro-caption {
 			font-size: var(--text-micro);
 		}
@@ -902,7 +902,7 @@
 	/* .scroll-block-cursor moved to app.css so the global .typewriter-cursor
 	   class can override its opacity when the typewriter is active (17e-4). */
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.scroll-prompt {
 			/* Computed per locale from the label length (see billboardVw): the
 			   largest size that never clips the nowrap line. Replaces the old

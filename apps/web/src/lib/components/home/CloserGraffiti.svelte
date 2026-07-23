@@ -231,7 +231,7 @@
 		overflow: visible;
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		/* Graffiti flows after content on mobile */
 		.closer-graffiti-wrap {
 			position: relative;

@@ -93,13 +93,13 @@ describe('ServiceCard', () => {
 		expect(source).toMatch(/\.service-viewport \{[\s\S]*?height: 100svh;/);
 		expect(source).toMatch(/\.viewport-inner \{[\s\S]*?position: sticky;/);
 		expect(source).toMatch(
-			/@media \(max-width: 767px\) \{[\s\S]*?\.service-viewport \{[\s\S]*?height: auto;/,
+			/@media \(--tablet-max\) \{[\s\S]*?\.service-viewport \{[\s\S]*?height: auto;/,
 		);
 		expect(source).toMatch(
-			/@media \(max-width: 767px\) \{[\s\S]*?\.viewport-inner \{[\s\S]*?position: static;/,
+			/@media \(--tablet-max\) \{[\s\S]*?\.viewport-inner \{[\s\S]*?position: static;/,
 		);
 		expect(source).toMatch(
-			/@media \(max-width: 767px\) \{[\s\S]*?\.service-viewport \{[\s\S]*?margin-bottom: clamp\(3rem, 12svh, 6rem\);/,
+			/@media \(--tablet-max\) \{[\s\S]*?\.service-viewport \{[\s\S]*?margin-bottom: clamp\(3rem, 12svh, 6rem\);/,
 		);
 	});
 
@@ -108,7 +108,7 @@ describe('ServiceCard', () => {
 
 		expect(source).toContain("index === 0 && 'service-viewport-first'");
 		expect(source).toMatch(
-			/@media \(max-width: 767px\) \{[\s\S]*?\.service-viewport-first \{[\s\S]*?padding-block-start: clamp\(1\.5rem, 5svh, 3rem\);/,
+			/@media \(--tablet-max\) \{[\s\S]*?\.service-viewport-first \{[\s\S]*?padding-block-start: clamp\(1\.5rem, 5svh, 3rem\);/,
 		);
 	});
 });

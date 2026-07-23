@@ -253,13 +253,13 @@
 		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.embla__slide {
 			flex-basis: clamp(340px, 44vw, 720px);
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.proof-reel-section {
 			padding-block: clamp(2.5rem, 6dvh, 4rem);
 		}
