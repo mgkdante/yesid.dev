@@ -326,7 +326,7 @@
     display: none;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .body-grid {
       display: grid;
       width: 100%;
@@ -364,7 +364,7 @@
     }
   }
 
-  @media (min-width: 1024px) and (max-width: 1279px) {
+  @media (--desktop-min) and (max-width: 1279px) {
     .body-grid {
       gap: 1.25rem;
     }
@@ -389,7 +389,7 @@
     display: none;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .toc-nav-shell {
       display: block;
     }
@@ -399,7 +399,7 @@
     margin-bottom: 1rem;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .meta-card {
       margin-top: 1rem;
       margin-bottom: 0;
@@ -440,7 +440,7 @@
     line-height: 1.8;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .blog-section-body {
       font-size: var(--text-detail-body-desktop);
       color: color-mix(in srgb, var(--foreground) 55%, transparent);
@@ -493,7 +493,7 @@
     transform: translateX(0);
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .toc-scroll {
       max-height: calc(100dvh - 6rem);
       overflow-y: auto;

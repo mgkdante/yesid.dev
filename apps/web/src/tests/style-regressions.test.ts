@@ -179,7 +179,7 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 
 	it('home blueprint wall keeps the desktop register on mobile and the project fallback is the blueprint sheet (homework #8)', () => {
 		const bp = read('lib/components/home/ServicesBlueprint.svelte');
-		expect(bp).not.toContain('@media (max-width: 767px)');
+		expect(bp).not.toContain('@media (--tablet-max)');
 		const card = read('lib/components/projects/ProjectCard.svelte');
 		expect(card).toContain('project-card-blueprint');
 		expect(card).toContain("digital-desktop.svg?raw");
@@ -361,7 +361,7 @@ describe('GO2-W5 round 5 — closer: fun SVGs, card parity, bolder rails, yellow
 	it('R5-1 — services panel runs the same remap + the fluid icon cap (desktop only)', () => {
 		const panel = read('lib/components/services/ServiceSvgPanel.svelte');
 		expect(panel).toMatch(/\.svg-art \{[\s\S]*?--accent: var\(--line-amber\);/);
-		expect(panel).toMatch(/@media \(min-width: 768px\) \{[\s\S]*?width: min\(224px, 100%\) !important;/);
+		expect(panel).toMatch(/@media \(--tablet-min\) \{[\s\S]*?width: min\(224px, 100%\) !important;/);
 		// Panel-wide hover drives the morph (round 6 renames the state to
 		// panelMorphed — hover AND tap share the one switch).
 		expect(panel).toContain('hovered={panelMorphed}');

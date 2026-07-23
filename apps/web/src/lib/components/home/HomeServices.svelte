@@ -219,7 +219,7 @@
 		padding: var(--space-section-y) var(--space-page-x);
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.services-section {
 			min-height: 100dvh;
 			display: flex;
@@ -303,7 +303,7 @@
 		z-index: 2;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.services-marker {
 			font-size: var(--text-menu-subtitle);
 			letter-spacing: 0.24em;
@@ -375,7 +375,7 @@
 		letter-spacing: 0;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.services-title {
 			font-size: calc(var(--text-card-title) + 0.25rem);
 		}
@@ -414,7 +414,7 @@
 		letter-spacing: 0;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.services-metric-value {
 			font-size: 1.75rem;
 		}
@@ -440,7 +440,7 @@
 	/* Mobile: shrink the icon zone so the cards aren't unnecessarily tall on
 	   single-column layouts. Round 5: scaled up in lockstep with desktop so
 	   the art stays the hero (72→96 tile, 48→64 art). */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.services-card {
 			grid-template-rows: 10rem 1fr auto;
 		}

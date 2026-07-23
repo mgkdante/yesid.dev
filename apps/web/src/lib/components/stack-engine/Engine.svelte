@@ -427,7 +427,7 @@
 		color: var(--engine-teach-ink);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.layer-legend {
 			display: flex;
 			gap: 1.25rem;

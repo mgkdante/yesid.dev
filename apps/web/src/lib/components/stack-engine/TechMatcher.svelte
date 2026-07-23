@@ -975,7 +975,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.shape-drawing-wide {
 			display: block;
 		}

@@ -137,7 +137,7 @@
 		scroll-snap-align: start;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.service-viewport {
 			height: 100dvh;
 		}
@@ -231,7 +231,7 @@
 	}
 
 	/* Mobile-only banner — hidden from tablet up (desktop keeps the side panel). */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.svg-mobile-banner {
 			display: none;
 		}
@@ -289,7 +289,7 @@
 
 	/* Mobile: card = usable area height, SVG stacked on top, flex centered.
 	   scroll-margin-top aligns tab clicks below the sticky tabs. */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.service-viewport {
 			height: auto;
 			min-height: 0;

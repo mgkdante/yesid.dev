@@ -288,7 +288,7 @@
 	}
 
 	/* ===== Mobile (<768px) ===== */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.closer-section {
 			flex-direction: column;
 			align-items: stretch;

@@ -668,7 +668,7 @@
 	   The nav is a fixed pill (out of flow), so main's border-box IS the
 	   fold: height 100dvh puts the footer entirely below it — the footer is
 	   NOT in the equation and appears only on scroll. */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		:global(main:has(.contact-grid)) {
 			/* main is a flex item (flex-1 = basis 0%): on the column main axis
 			   flex-basis beats `height`, so pin the basis to the viewport and
@@ -681,7 +681,7 @@
 		.mobile-heading { display: none; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.contact-grid {
 			display: grid;
 			/* Round 5: edge-title rule one step bolder, in lockstep with the

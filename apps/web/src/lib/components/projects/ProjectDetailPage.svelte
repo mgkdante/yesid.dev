@@ -592,7 +592,7 @@
 		z-index: var(--z-overlay);
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.detail-body {
 			grid-template-columns: 1fr 2fr 1fr;
 			gap: 2rem;
@@ -636,7 +636,7 @@
 		line-height: 1.8;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.section-body {
 			font-size: var(--text-detail-body-desktop);
 			color: color-mix(in srgb, var(--foreground) 55%, transparent);
@@ -656,7 +656,7 @@
 		position: relative;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.section-body :global(h3) {
 			font-size: var(--text-detail-subheading-desktop);
 			color: color-mix(in srgb, var(--foreground) 80%, transparent);

@@ -485,7 +485,7 @@
 
 	/* ═══ Responsive ═══ */
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		/* Micro-pass (4f): desktop control room is TWO columns — the reading
 		   column drives at ~60/40 and both columns sit on one bottom rhythm
 		   line (align-items: end → the terminal's resting prompt and the
@@ -508,7 +508,7 @@
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		/* Finale (4d): mobile stays composed — big but never broken. The clamp
 		   minima above already fit a 360px viewport; tighten the frame only.
 		   (4f: the bottom 2rem rides the section now that the action row lost

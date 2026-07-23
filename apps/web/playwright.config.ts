@@ -56,6 +56,7 @@ const DESKTOP_ONLY_SPECS = [
 	// Fold containment asserts the >=1024px viewport equation (100dvh main,
 	// footer below the fold, terminal-body internal scroll) — desktop-only.
 	'**/contact-fold.spec.ts',
+	'**/responsive-breakpoint-boundaries.spec.ts',
 	'**/theme-persistence.spec.ts',
 	'**/page-content/**'
 ];

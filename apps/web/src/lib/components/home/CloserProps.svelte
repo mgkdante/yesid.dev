@@ -88,7 +88,7 @@
 	.prop-barricade { left: 30%; width: 200px; }
 	.prop-balise { left: 45%; width: 156px; }
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		/* Props cluster around the centered floodlight */
 		.prop-sign {
 			left: calc(50% - 50px);

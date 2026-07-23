@@ -1,14 +1,27 @@
+import globalData from '@csstools/postcss-global-data';
 import { defineConfig } from 'vitest/config';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
+import { fileURLToPath } from 'node:url';
+import customMedia from 'postcss-custom-media';
 import { visualizer } from 'rollup-plugin-visualizer';
+
+const designTokensCss = fileURLToPath(new URL('./vendor/design/tokens/tokens.css', import.meta.url));
 
 // svelteTesting() is a Vite plugin from @testing-library/svelte that:
 //   - adds 'browser' to resolve.conditions (makes Svelte use index-client.js)
 //   - adds @testing-library/svelte* to ssr.noExternal (forces Vite transform)
 // It only activates when process.env.VITEST is set, so it's safe to include always.
 export default defineConfig({
+	css: {
+		postcss: {
+			plugins: [
+				globalData({ files: [designTokensCss] }),
+				customMedia({ preserve: false }),
+			],
+		},
+	},
 	resolve: {
 		// The file-vendored UI package and app-owned parity wrappers must share
 		// one bits-ui context registry when they compose Root and Content.

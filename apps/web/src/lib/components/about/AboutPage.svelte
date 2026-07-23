@@ -116,7 +116,7 @@
 	}
 
 	/* Tablet: 4 col (768px+) */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.dashboard {
 			grid-template-columns: repeat(4, 1fr);
 			grid-template-areas:
@@ -128,7 +128,7 @@
 	}
 
 	/* Desktop: 6 col × 4 row — the target layout (1024px+) */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.dashboard {
 			grid-template-columns: repeat(6, 1fr);
 			grid-template-rows: repeat(4, 1fr);
@@ -156,7 +156,7 @@
 	.area-cta          { grid-area: cta; }
 
 	/* Desktop: snapshots auto-size from grid row, remove min-height */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.area-snapshots { min-height: 0; }
 	}
 

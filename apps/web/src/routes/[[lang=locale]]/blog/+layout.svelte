@@ -49,7 +49,7 @@
 	/* Round 5: rails one step bolder (operator) — the edge-title rule draws
 	   at 2px / 35% primary (was 1px / 20%), the station dots and their lead
 	   lines step up with it. Both modes (primary is theme-mapped). */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.listing-layout {
 			display: grid;
 			grid-template-columns: auto 2px 1fr;
