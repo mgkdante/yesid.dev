@@ -852,7 +852,9 @@
 	/* Two-column hero grid: text | divider | SQL panel */
 	.hero-grid {
 		display: grid;
-		grid-template-columns: 1fr 1px 1fr;
+		/* WHY (measured 2026-07-29): minmax(0, 1fr) removes 1fr's automatic
+		   min-content floor; the 580px SQL panel otherwise clips live at 769–1120px. */
+		grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
 		gap: 32px;
 		align-items: start;
 	}
@@ -914,7 +916,7 @@
 	}
 
 	/* Mobile: single-column grid */
-	@media (max-width: 768px) {
+	@media (--tablet-max) {
 		.hero-grid {
 			grid-template-columns: 1fr;
 			gap: 0;

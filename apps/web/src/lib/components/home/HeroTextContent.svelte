@@ -270,7 +270,7 @@
 	/* Mobile: text + buttons MUST fit in 100svh - nav.
 	   Height is a hard constraint; text scales proportionally via svh *and* vw
 	   so "PIPELINES" doesn't overflow the viewport width on narrow phones. */
-	@media (max-width: 768px) {
+	@media (--tablet-max) {
 		.hero-viewport-text {
 			height: calc(100svh - 5rem);
 			display: flex;
@@ -318,7 +318,7 @@
 	/* Sub-660px-tall phones (e.g. 320x640) carrying the longer FR copy need a
 	   touch more shaved so nothing clips. iPhone SE (667) and Galaxy S23 (780)
 	   are above this floor and unaffected. */
-	@media (max-width: 768px) and (max-height: 660px) {
+	@media (--tablet-max) and (max-height: 660px) {
 		.hero-viewport-text :global([data-testid="hero-line1"]),
 		.hero-viewport-text :global([data-testid="hero-line2"]) {
 			font-size: clamp(2rem, min(10.5vw, 6svh), 3.5rem);
@@ -329,6 +329,27 @@
 		}
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
 			margin-block: 0.375rem;
+		}
+	}
+
+	@media (--tablet-min) and (--desktop-max) {
+		.hero-viewport-text :global([data-testid="hero-line1"]),
+		.hero-viewport-text :global([data-testid="hero-line2"]),
+		.hero-viewport-text :global([data-testid="hero-subheadline"]),
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			overflow-wrap: normal;
+			word-break: normal;
+			hyphens: none;
+		}
+		.hero-viewport-text :global([data-testid="hero-line1"]),
+		.hero-viewport-text :global([data-testid="hero-line2"]) {
+			font-size: clamp(3.5rem, calc(8.25vw - 0.5rem), 5rem);
+		}
+		.hero-viewport-text :global([data-testid="hero-subheadline"]) {
+			font-size: clamp(1.625rem, calc(4vw - 0.25rem), 2.375rem);
+		}
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			font-size: clamp(1rem, calc(2.0625vw - 0.125rem), 1.25rem);
 		}
 	}
 </style>

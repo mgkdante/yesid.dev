@@ -117,7 +117,7 @@
 		.manifesto__arrival .manifesto__arr-time { font-size: var(--text-mono); }
 	}
 
-	@media (max-width: 768px) {
+	@media (--tablet-max) {
 		.manifesto__chevrons { opacity: var(--opacity-faint); }
 		.manifesto__badge { font-size: 6px; padding: 2px 6px; }
 	}
