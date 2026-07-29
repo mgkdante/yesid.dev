@@ -68,8 +68,8 @@
 
 		// Register ScrollTrigger + apply site-wide config early so
 		// ScrollTrigger.isTouch and pin behavior are available for all
-		// consumers. Plugin-specific loading (DrawSVG, MorphSVG, Flip,
-		// MotionPath) happens lazily per-consumer at mount.
+		// consumers. Plugin-specific loading (DrawSVG, MorphSVG) happens
+		// lazily per-consumer at mount.
 		initScrollTriggerConfig();
 		initLenis();
 
