@@ -363,8 +363,8 @@ const ASSET_URL_PATTERN = /^\/assets\/([0-9a-f-]{36})(?:[?#].*)?$/;
 const ASSET_EXTENSION_PATTERN =
   /\.(?:avif|gif|jpe?g|png|webp|svg|ttf|otf|woff2?|mp4|webm|mov|m4v|pdf)(?:[?#].*)?$/i;
 const RUNTIME_BLOG_PATTERN = /^\/og\/blog\/([a-z0-9]+(?:-[a-z0-9]+)*)\.png$/;
-const RUNTIME_PROJECT_PATTERN =
-  /^\/og\/project\/([a-z0-9]+(?:-[a-z0-9]+)*)\.png(?:\?locale=(en|fr|es))?$/;
+export const RUNTIME_PROJECT_PATTERN =
+  /^\/og\/project\/([a-z0-9]+(?:-[a-z0-9]+)*)(?:\.(fr|es))?\.png$/;
 const PUBLIC_CREDENTIAL_REDACTION = "[redacted:credential]";
 const PUBLIC_ABSOLUTE_PATH_REDACTION = "[redacted:absolute-path]";
 const SENSITIVE_QUERY_PARAMETER_PATTERN =
@@ -3822,15 +3822,11 @@ function runtimeOgProof(
   }
   if (requirement.ownerType === "project") {
     const match = route.match(RUNTIME_PROJECT_PATTERN);
-    const locale = match?.[2] ?? null;
-    const localeValid =
-      requirement.locale === "en"
-        ? locale === null || locale === "en"
-        : locale === requirement.locale;
+    const locale = match?.[2] ?? "en";
     return Boolean(
       match &&
       match[1] === finalSegment &&
-      localeValid &&
+      locale === requirement.locale &&
       proof.evidenceUsageId === "declared:site.og.runtime-project" &&
       proof.semanticKey === "site.og.runtime-project" &&
       proof.consumerType === "project" &&

@@ -22,7 +22,7 @@ import { services } from '$lib/content/services';
 import { legalPages } from '$lib/content/legal-pages';
 import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
 import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '$lib/blog/translations';
-import type { BlogPost } from '$lib/types';
+import type { BlogPost, Project } from '$lib/types';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
 const LANG_PARAM_VALUES: readonly string[] = ['', ...PREFIX_LOCALES];
@@ -30,6 +30,19 @@ const LANG_PARAM_VALUES: readonly string[] = ['', ...PREFIX_LOCALES];
 /** Map a content locale to its `lang` route param ('en' → '', 'fr' → 'fr'). */
 function langParamFor(locale: string): string {
 	return (PREFIX_LOCALES as readonly string[]).includes(locale) ? locale : '';
+}
+
+function isAvailableProject(project: Project): boolean {
+	return project.status !== 'private';
+}
+
+function groupedBlogRows(posts: readonly BlogPost[]) {
+	return groupBlogTranslations(posts).flatMap((group) =>
+		BLOG_TRANSLATION_LOCALES.map((locale) => ({
+			locale,
+			slug: group.posts[locale].slug,
+		})),
+	);
 }
 
 /** Entries for a static page: one unprefixed EN plus every prefix locale. */
@@ -41,22 +54,28 @@ export function localeEntries(): Array<{ lang: string }> {
  * prerenders at its own locale-specific slug; grouping makes an incomplete
  * publication fail the build instead of silently omitting a counterpart. */
 export function blogEntriesFor(posts: readonly BlogPost[]): Array<{ lang: string; slug: string }> {
-	return groupBlogTranslations(posts).flatMap((group) =>
-		BLOG_TRANSLATION_LOCALES.map((locale) => {
-			const post = group.posts[locale];
-			return { lang: langParamFor(post.lang), slug: post.slug };
-		}),
-	);
+	return groupedBlogRows(posts).map(({ locale, slug }) => ({
+		lang: langParamFor(locale),
+		slug,
+	}));
 }
 
 export function blogEntries(): Array<{ lang: string; slug: string }> {
 	return blogEntriesFor(blogPosts);
 }
 
+export function ogBlogRows() {
+	return groupedBlogRows(blogPosts);
+}
+
+export function ogProjectSlugs(rows: readonly Project[] = projects): string[] {
+	return rows.filter(isAvailableProject).map((project) => project.slug);
+}
+
 /** Project detail entries: every public project × every published locale. */
 export function projectEntries(): Array<{ lang: string; slug: string }> {
 	return projects
-		.filter((project) => project.status !== 'private')
+		.filter(isAvailableProject)
 		.flatMap((project) => LANG_PARAM_VALUES.map((lang) => ({ lang, slug: project.slug })));
 }
 

@@ -12,6 +12,7 @@ import {
 	blogEntries,
 	blogEntriesFor,
 	localeEntries,
+	ogProjectSlugs,
 	projectEntries,
 	serviceEntries,
 } from './prerender-entries';
@@ -19,7 +20,7 @@ import { blogPosts } from '$lib/content/blog';
 import { projects } from '$lib/content/projects';
 import { services } from '$lib/content/services';
 import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
-import type { BlogPost } from '$lib/types';
+import type { BlogPost, Project } from '$lib/types';
 
 const LANG_VALUES = ['', ...PREFIX_LOCALES];
 
@@ -69,6 +70,13 @@ describe('prerender-entries', () => {
 		for (const entry of projectEntries()) {
 			expect(privateSlugs.has(entry.slug)).toBe(false);
 		}
+	});
+
+	it('ogProjectSlugs includes a WIP project while excluding a private project', () => {
+		const wip = { slug: 'work-in-progress', status: 'wip' } as Project;
+		const hidden = { slug: 'private-project', status: 'private' } as Project;
+
+		expect(ogProjectSlugs([wip, hidden])).toEqual(['work-in-progress']);
 	});
 
 	it('serviceEntries covers every visible service in every locale, and only those', () => {

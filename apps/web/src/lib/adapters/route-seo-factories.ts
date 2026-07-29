@@ -16,8 +16,9 @@ import type {
 } from '$lib/types';
 import type { ContentAdapter } from '$lib/adapters/types';
 import { extractText } from '@repo/shared';
-import { SITE_HOST, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
+import { SITE_HOST, canonicalFor } from '$lib/utils/seo-defaults';
 import { resolveLocale } from '$lib/utils/locale';
+import { ogImagePath } from '$lib/og/og-path';
 import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
 import { asset } from '$lib/directus/assets';
 import {
@@ -160,11 +161,11 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 
 	// OG image wiring (slice-15c). Only set when title.en is non-empty so
 	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
-	// Non-default locales request the per-locale render via ?locale= (the og
-	// endpoint resolves per-locale title with EN fallback).
+	// EN uses the bare slug; FR/ES use path suffixes so every locale can
+	// prerender to its own deployment-static PNG.
 	if (project.title?.en && project.title.en.length > 0) {
 		seo.ogImage = {
-			url: `/og/project/${project.slug}.png${locale !== DEFAULT_LOCALE ? `?locale=${locale}` : ''}`,
+			url: ogImagePath('project', project.slug, locale),
 			alt: {
 				en: `${project.title.en} — yesid.`,
 				...(project.title.fr && { fr: `${project.title.fr} — yesid.` }),
@@ -240,7 +241,7 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
-			url: imageUrl ?? `/og/blog/${post.slug}.png`,
+			url: imageUrl ?? ogImagePath('blog', post.slug, locale),
 			alt: { en: post.coverImageAlt ?? `${post.title} | ${siteMeta.name}` },
 			width: 1200,
 			height: 630,

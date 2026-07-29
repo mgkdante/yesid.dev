@@ -343,6 +343,69 @@ describe("scanRepository with an injected mini-repository", () => {
     ).toBe(false);
   });
 
+  it("treats only Vercel route source fields as matchers while accounting for destinations", async () => {
+    const vercelConfig = "apps/web/vercel.json";
+    const defaultOg = "apps/web/static/og/default.en.png";
+    const miniRepo = await makeMiniRepo({
+      [defaultOg]: new Uint8Array([1, 2, 3]),
+      [vercelConfig]: JSON.stringify({
+        rewrites: [
+          {
+            source: "/og/blog/(.*)",
+            destination: "/og/default.en.png",
+          },
+        ],
+        headers: [{ source: "/og/(.*)", headers: [] }],
+        metadata: { source: "/og/arbitrary/(.*)" },
+        redirects: [
+          {
+            source: "/og/project/(.*)",
+            destination: "/og/missing.png",
+          },
+        ],
+      }),
+    });
+    const scan = await scanRepository({
+      repoRoot: miniRepo.root,
+      trackedFiles: miniRepo.trackedFiles,
+    });
+
+    for (const routeSource of [
+      "/og/blog/(.*)",
+      "/og/(.*)",
+      "/og/project/(.*)",
+    ]) {
+      expect(
+        scan.findings.some(
+          (finding) =>
+            finding.sourceFile === vercelConfig &&
+            finding.rawRef === routeSource,
+        ),
+      ).toBe(false);
+    }
+    expect(
+      scan.usages.some(
+        (usage) =>
+          usage.assetId === `repo-file:${defaultOg}` &&
+          usage.sourceFile === vercelConfig,
+      ),
+    ).toBe(true);
+    expect(
+      scan.findings.some(
+        (finding) =>
+          finding.sourceFile === vercelConfig &&
+          finding.rawRef === "/og/arbitrary/(.*)",
+      ),
+    ).toBe(true);
+    expect(
+      scan.findings.some(
+        (finding) =>
+          finding.sourceFile === vercelConfig &&
+          finding.rawRef === "/og/missing.png",
+      ),
+    ).toBe(true);
+  });
+
   it("builds deterministic physical, component, usage, finding, hash, glob, and UUID evidence", async () => {
     const knownUuid = "11111111-1111-4111-8111-111111111111";
     const web3FormsUuid = "6887fd90-3348-4d31-ba03-bc0e285697b6";
@@ -1659,6 +1722,7 @@ describe("yesid.dev real repository contract", () => {
           "apps/web/src/lib/og/render.ts",
           "apps/web/src/lib/og/fonts.ts",
           "apps/web/src/lib/og/load-title.ts",
+          "apps/web/src/lib/og/og-path.ts",
           "apps/web/src/lib/og/fonts/Inter-Black.ttf",
           "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
           "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
