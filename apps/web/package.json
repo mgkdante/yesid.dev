@@ -57,6 +57,7 @@
 		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"@repo/shared": "workspace:*",
 		"@resvg/resvg-js": "^2.6.2",
+		"@yesid/i18n-core": "file:vendor/design/i18n-core",
 		"@yesid/motion": "file:vendor/design/motion",
 		"@yesid/seo-kit": "file:vendor/design/seo-kit",
 		"@yesid/tokens": "file:vendor/design/tokens",
