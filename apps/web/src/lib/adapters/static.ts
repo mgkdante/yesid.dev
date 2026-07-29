@@ -1,15 +1,18 @@
 // Static adapter — reads from $lib/content directly.
 //
-// BOUNDARY RULE (rewritten slice-28.5, audit #124 — the old "ONLY module that
-// imports from $lib/content" claim was false):
+// OWNER AUTHORIZATION: GO 2026-07-29 — G7 removes the verified pass-through
+// repository layer and amends this doctrine header.
+//
+// BOUNDARY RULE (rewritten slice-28.5, audit #124; amended G7 2026-07-29):
 //
 //   1. COLLECTION / PRIMARY data (projects, services, blog, tech-stack, page
 //      blocks, meta singletons, morph shapes — anything with an adapter port)
-//      must flow  load() -> $lib/repositories -> adapter -> this module.
-//      This module is the only RUNTIME reader of that data; it is what makes
-//      a slice-26 adapter re-point reach the render. HomeServices and
-//      FeaturedProjects were the last component-level bypasses for primary
-//      data; slice-28.5 threaded both through the home +page.server.ts.
+//      must flow server loader/helper -> $lib/adapters (the active swap point)
+//      -> this module -> $lib/content. Server consumers call typed adapter
+//      ports directly; display components receive resolved values as props.
+//      Those consumers must not import this module, raw primary content, or
+//      static helpers. This module remains the only RUNTIME reader of that data,
+//      so an adapter re-point still reaches every render.
 //   2. CMS CHROME SINGLETONS (siteLabels.*) MAY be imported directly by
 //      display components when the copy is global chrome, aria text, or route
 //      shell labels. They are build-cache values, not runtime CMS calls; routing
@@ -20,10 +23,13 @@
 //      generateHeroData() refresh (interactive mock regen, not CMS data);
 //      test files stubbing load output.
 //
-// Each method is a thin async wrapper around a content-layer export. No
-// transformation, no validation (Zod lands in Slice 17c between adapter and
-// repository). Missing a method is a compile error via the `: ContentAdapter`
-// annotation at the bottom.
+// The `staticAdapter: ContentAdapter` annotation below is the compile-time
+// port-coverage gate. Existing parsing, validation, serialization, lookup,
+// fallback, and error behavior stays in the adapter ports; G7 changes only
+// the call path.
+//
+// HomeServices and FeaturedProjects were the last component-level bypasses for
+// primary data; slice-28.5 threaded both through the home +page.server.ts.
 
 import { projects } from '$lib/content/projects';
 import {

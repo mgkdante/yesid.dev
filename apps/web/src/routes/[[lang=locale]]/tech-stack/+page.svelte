@@ -31,7 +31,7 @@
 	// read is $derived so it recomputes if `data` changes: a plain const
 	// captures only the initial value, which Svelte 5 flags.
 	// SEO meta + title emitted by <SeoHead> in +layout.svelte (Slice 15a).
-	// Chrome content flows through adapter → repository → load() post-17c
+	// Chrome content flows through adapter → load() post-17c
 	// (closed the 17b seam leak that had this file importing $lib/content).
 	const heroOverline = $derived(resolveLocale(data.techStackPage.hero.overline, locale));
 	const heroTitleLine1 = $derived(resolveLocale(data.techStackPage.hero.titleLine1, locale));
