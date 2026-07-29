@@ -6,10 +6,20 @@ import type { ContentAdapter } from './types';
 import {
 	blogSlugSeoFactory,
 	legalSlugSeoFactory,
+	projectsSlugSeoFactory,
 	servicesIdSeoFactory,
 } from './route-seo-factories';
-import { serviceFactory } from '../../tests/factories';
-import type { BlogPost, LegalPage, Service, SiteMeta, SiteSeoDefaults } from '$lib/types';
+import { projectFactory, serviceFactory } from '../../tests/factories';
+import type {
+	BlogPost,
+	LegalPage,
+	Locale,
+	Project,
+	Service,
+	SiteMeta,
+	SiteSeoDefaults,
+} from '$lib/types';
+import * as assetAudit from '../../../../cms/scripts/lib/assets/audit';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
@@ -75,6 +85,27 @@ function translatedVariant(
 		title: `${lang.toUpperCase()} ${post.title}`,
 		url: `${lang === 'en' ? '' : `/${lang}`}/blog/${slug}`,
 	};
+}
+
+async function projectOgUrls(project: Project): Promise<Record<Locale, string | undefined>> {
+	const adapter = {
+		projects: {
+			bySlug: async () => project,
+		},
+	} as unknown as ContentAdapter;
+	const entries = await Promise.all(
+		(['en', 'fr', 'es'] as const).map(async (locale) => {
+			const seo = await projectsSlugSeoFactory({
+				params: { slug: project.slug },
+				locale,
+				adapter,
+				siteMeta,
+				siteSeoDefaults,
+			});
+			return [locale, seo.ogImage?.url] as const;
+		}),
+	);
+	return Object.fromEntries(entries) as Record<Locale, string | undefined>;
 }
 
 describe('blogSlugSeoFactory', () => {
@@ -223,6 +254,7 @@ describe('blogSlugSeoFactory', () => {
 			en: 'https://yesid.dev/blog/staged-article',
 			fr: 'https://yesid.dev/fr/blog/article-en-preparation',
 		});
+		expect(seo.ogImage?.url).toBe('/og/blog/staged-article.png');
 	});
 
 	it('rejects an English slug requested under the French route', async () => {
@@ -251,6 +283,40 @@ describe('blogSlugSeoFactory', () => {
 				siteSeoDefaults,
 			}),
 		).rejects.toThrow('does not belong to locale fr');
+	});
+});
+
+describe('projectsSlugSeoFactory', () => {
+	const project = projectFactory.build({
+		slug: 'metro-map',
+		title: {
+			en: 'Metro Map',
+			fr: 'Carte du métro',
+			es: 'Mapa del metro',
+		},
+	});
+
+	it('emits bare EN and path-suffixed FR/ES OG image URLs', async () => {
+		expect(await projectOgUrls(project)).toEqual({
+			en: '/og/project/metro-map.png',
+			fr: '/og/project/metro-map.fr.png',
+			es: '/og/project/metro-map.es.png',
+		});
+	});
+
+	it('keeps the audit project-route pattern equal to factory output', async () => {
+		const pattern = (
+			assetAudit as unknown as { RUNTIME_PROJECT_PATTERN?: RegExp }
+		).RUNTIME_PROJECT_PATTERN;
+		expect(pattern).toBeInstanceOf(RegExp);
+		if (!(pattern instanceof RegExp)) return;
+
+		const urls = await projectOgUrls(project);
+		for (const locale of ['en', 'fr', 'es'] as const) {
+			const match = urls[locale]?.match(pattern);
+			expect(match?.[1], locale).toBe(project.slug);
+			expect(match?.[2], locale).toBe(locale === 'en' ? undefined : locale);
+		}
 	});
 });
 

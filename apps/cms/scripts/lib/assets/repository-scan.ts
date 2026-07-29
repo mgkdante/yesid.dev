@@ -152,6 +152,11 @@ const DIRECTUS_FILE_FIELDS = new Set([
   "poster",
   "thumbnail",
 ]);
+const VERCEL_ROUTE_SOURCE_COLLECTIONS = new Set([
+  "headers",
+  "redirects",
+  "rewrites",
+]);
 
 function compareOrdinal(left: string, right: string): number {
   return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
@@ -1511,19 +1516,31 @@ export async function scanRepository(
       addFinding("unsupported-pattern", repoPath, null, "invalid-json");
       return;
     }
-    function walk(value: unknown, field: string | null): void {
+    function walk(
+      value: unknown,
+      field: string | null,
+      jsonPath: readonly string[],
+    ): void {
       if (Array.isArray(value)) {
-        for (const item of value) walk(item, field);
+        for (const item of value) walk(item, field, jsonPath);
         return;
       }
       if (value && typeof value === "object") {
         for (const [key, child] of Object.entries(
           value as Record<string, unknown>,
         ).sort(([a], [b]) => compareOrdinal(a, b)))
-          walk(child, key);
+          walk(child, key, [...jsonPath, key]);
         return;
       }
       if (typeof value !== "string") return;
+      if (
+        repoPath === "apps/web/vercel.json" &&
+        field === "source" &&
+        jsonPath.length === 2 &&
+        VERCEL_ROUTE_SOURCE_COLLECTIONS.has(jsonPath[0]!)
+      ) {
+        return;
+      }
       const sourceLine = lineAt(
         source,
         Math.max(0, source.indexOf(JSON.stringify(value))),
@@ -1553,7 +1570,7 @@ export async function scanRepository(
         });
       }
     }
-    walk(parsed, null);
+    walk(parsed, null, []);
   }
 
   await addGeneratedProvenance();
@@ -1751,6 +1768,7 @@ export async function scanRepository(
           "apps/web/src/lib/og/render.ts",
           "apps/web/src/lib/og/fonts.ts",
           "apps/web/src/lib/og/load-title.ts",
+          "apps/web/src/lib/og/og-path.ts",
           "apps/web/src/lib/og/fonts/Inter-Black.ttf",
           "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
           "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",

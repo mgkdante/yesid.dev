@@ -21,8 +21,8 @@ vi.mock('$lib/og/fonts', () => ({
 
 import { GET } from './+server';
 
-function makeEvent(params: { type: string; slug: string }, search = ''): RequestEvent {
-  const url = new URL(`http://localhost/og/${params.type}/${params.slug}.png${search}`);
+function makeEvent(params: { type: string; slug: string }): RequestEvent {
+  const url = new URL(`http://localhost/og/${params.type}/${params.slug}.png`);
   return { params, url } as unknown as RequestEvent;
 }
 
@@ -32,59 +32,48 @@ describe('GET /og/[type]/[slug].png', () => {
     renderOgPngMock.mockReset();
   });
 
-  it('returns 200 image/png with cache headers on happy path', async () => {
+  it('returns 200 image/png on happy path', async () => {
     loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'BLOG', title: 'Hello' });
     renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
     const res = await GET(makeEvent({ type: 'blog', slug: 'hello-world' }));
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('image/png');
-    expect(res.headers.get('cache-control')).toBe(
-      'public, max-age=60, s-maxage=31536000, stale-while-revalidate=86400',
-    );
     const body = new Uint8Array(await res.arrayBuffer());
     expect(body[0]).toBe(0x89);
   });
 
-  it('400 on invalid slug shape', async () => {
-    const res = await GET(makeEvent({ type: 'blog', slug: 'Has Spaces!' }));
-    expect(res.status).toBe(400);
+  it('throws when the path slug cannot be decoded', async () => {
+    await expect(GET(makeEvent({ type: 'project', slug: 'transit-data-pipeline.de' }))).rejects.toThrow(
+      '[og] invalid slug parameter for project: "transit-data-pipeline.de"',
+    );
   });
 
-  it('302 to default OG on slug-not-found (edge-cached a day — slice-28.1, audit #24)', async () => {
+  it('throws when the title lookup returns null', async () => {
     loadOgTitleMock.mockResolvedValueOnce(null);
-    const res = await GET(makeEvent({ type: 'blog', slug: 'missing-slug' }));
-    expect(res.status).toBe(302);
-    expect(res.headers.get('location')).toBe('/og/default.en.png');
-    expect(res.headers.get('cache-control')).toBe('public, max-age=300, s-maxage=86400');
+    await expect(GET(makeEvent({ type: 'blog', slug: 'missing-slug' }))).rejects.toThrow(
+      '[og] missing title for blog: "missing-slug" (en)',
+    );
   });
 
-  it('302 to default OG when satori throws (edge-cached a day — slice-28.1, audit #24)', async () => {
+  it('throws an OG-prefixed error when rendering fails', async () => {
     loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'BLOG', title: 'x' });
     renderOgPngMock.mockRejectedValueOnce(new Error('satori boom'));
-    const res = await GET(makeEvent({ type: 'blog', slug: 'ok-slug' }));
-    expect(res.status).toBe(302);
-    expect(res.headers.get('location')).toBe('/og/default.en.png');
-    expect(res.headers.get('cache-control')).toBe('public, max-age=60, s-maxage=86400');
+    await expect(GET(makeEvent({ type: 'blog', slug: 'ok-slug' }))).rejects.toThrow(
+      '[og] render failed for blog: "ok-slug" (en)',
+    );
   });
 
-  it('forwards ?locale=fr to loadOgTitle', async () => {
+  it('decodes a project locale suffix before loading the title', async () => {
     loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'PROJECT', title: 't' });
     renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
-    await GET(makeEvent({ type: 'project', slug: 'p' }, '?locale=fr'));
+    await GET(makeEvent({ type: 'project', slug: 'p.fr' }));
     expect(loadOgTitleMock).toHaveBeenCalledWith('project', 'p', 'fr');
   });
 
-  it('defaults to en when locale param absent', async () => {
-    loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'BLOG', title: 't' });
+  it('defaults to en when a project locale suffix is absent', async () => {
+    loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'PROJECT', title: 't' });
     renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
-    await GET(makeEvent({ type: 'blog', slug: 's' }));
-    expect(loadOgTitleMock).toHaveBeenCalledWith('blog', 's', 'en');
-  });
-
-  it('falls back to DEFAULT_LOCALE on unsupported locale param', async () => {
-    loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'BLOG', title: 't' });
-    renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
-    await GET(makeEvent({ type: 'blog', slug: 's' }, '?locale=xx'));
-    expect(loadOgTitleMock).toHaveBeenCalledWith('blog', 's', 'en');
+    await GET(makeEvent({ type: 'project', slug: 'p' }));
+    expect(loadOgTitleMock).toHaveBeenCalledWith('project', 'p', 'en');
   });
 });

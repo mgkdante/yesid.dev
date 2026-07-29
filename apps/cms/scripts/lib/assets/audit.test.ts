@@ -2443,7 +2443,7 @@ describe("OG coverage grammar and resolution", () => {
           route:
             locale === "en"
               ? "/og/project/metro-map.png"
-              : `/og/project/metro-map.png?locale=${locale}`,
+              : `/og/project/metro-map.${locale}.png`,
         },
         proofUsageId: "declared:site.og.runtime-project",
       });
@@ -2502,7 +2502,10 @@ describe("OG coverage grammar and resolution", () => {
       },
     });
     setRow(invalid, "route.og.slot-04.fr", {
-      currentRef: { kind: "runtime-route", route: "/og/project/metro-map.png" },
+      currentRef: {
+        kind: "runtime-route",
+        route: "/og/project/metro-map.png?locale=fr",
+      },
     });
     const invalidReport = reconcileAssetAudit(
       auditInput({

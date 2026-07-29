@@ -37,6 +37,7 @@ import { legalPages } from "../../web/src/lib/content/legal-pages";
 import { projects } from "../../web/src/lib/content/projects";
 import { services } from "../../web/src/lib/content/services";
 import { sitePages } from "../../web/src/lib/content/site-pages";
+import { ogImagePath } from "../../web/src/lib/og/og-path";
 import { PUBLISHED_LOCALES } from "../../web/src/lib/utils/published-locales";
 import { parseAssetSemanticKey, type Sha256Hex } from "@repo/shared";
 
@@ -950,6 +951,7 @@ export function buildCurrentAssetOgGraph(input: {
   publishedLocales?: readonly string[];
 }): AssetAuditOgGraph {
   const blogs = groupedBlogs(input.blogs ?? blogPosts);
+  // Deliberately strict-public: the fixed 25-group/75-row audit excludes WIP even though OG prerender entries include it.
   const publicProjects = (input.projectRows ?? projects)
     .filter((project) => project.status === "public")
     .map((project) => project.slug)
@@ -1089,10 +1091,7 @@ export function buildCurrentAssetOgGraph(input: {
         ],
         currentRef: {
           kind: "runtime-route",
-          route:
-            locale === "en"
-              ? `/og/project/${projectSlug}.png`
-              : `/og/project/${projectSlug}.png?locale=${locale}`,
+          route: ogImagePath("project", projectSlug, locale),
         },
         proofUsageId: "declared:site.og.runtime-project",
         fallbackUsageKey: null,
