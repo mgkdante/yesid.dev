@@ -74,7 +74,7 @@
   the whole hero (headline + metrics + subhead + subtitle + CTAs) fits
   inside calc(100svh - 5rem) on short phones (iPhone SE etc).
 
-  Desktop (md+): 3 separate cards in a row — original layout, unchanged.
+  Tablet: 3 separate cards stack in the hero column; desktop: they return to one row.
 -->
 <!-- Mobile single-card layout -->
 <div class="md:hidden" data-testid="hero-metrics">
@@ -101,7 +101,7 @@
 </div>
 
 <!-- Desktop 3-card grid -->
-<div class="hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop">
+<div class="hero-metrics-desktop hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop">
   {#each metrics as metric (metric.key)}
     <Card
       class="md:px-5 md:py-4"
@@ -116,3 +116,17 @@
     </Card>
   {/each}
 </div>
+
+<style>
+  @media (--tablet-min) and (--desktop-max) {
+    .hero-metrics-desktop {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero-metrics-desktop :global([data-slot='metric-display'] > span) {
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+    }
+  }
+</style>

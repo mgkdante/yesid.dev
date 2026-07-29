@@ -13,13 +13,13 @@ const BREAKPOINTS = [
 		alias: '--tablet-min',
 		raw: '(min-width: 768px)',
 		rawPattern: /\(min-width:\s*768px\)/g,
-		expected: 30,
+		expected: 32,
 	},
 	{
 		alias: '--tablet-max',
 		raw: '(max-width: 767px)',
 		rawPattern: /\(max-width:\s*767px\)/g,
-		expected: 17,
+		expected: 23,
 	},
 	{
 		alias: '--desktop-min',
@@ -31,7 +31,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-max',
 		raw: '(max-width: 1023px)',
 		rawPattern: /\(max-width:\s*1023px\)/g,
-		expected: 4,
+		expected: 6,
 	},
 ] as const;
 
@@ -60,6 +60,24 @@ function mediaLines(): MediaLine[] {
 					: [],
 			),
 	);
+}
+
+function forbiddenTabletMaxConditions(): MediaLine[] {
+	const conditionPattern =
+		/\(\s*max-width\s*:\s*768px\s*\)|\(\s*width\s*<=\s*768px\s*\)|\(\s*768px\s*>=\s*width\s*\)/g;
+
+	// Scope: apps/web/src only; conditions outside product source are not part of this guard.
+	return sourceFiles().flatMap((path) => {
+		const source = readFileSync(path, 'utf8');
+		return [...source.matchAll(conditionPattern)].map((match) => {
+			const index = match.index ?? 0;
+			return {
+				path: relative(REPO_ROOT, path),
+				lineNumber: source.slice(0, index).split('\n').length,
+				text: match[0],
+			};
+		});
+	});
 }
 
 function digest(records: string[]): string {
@@ -92,7 +110,7 @@ function featureRecords(lines: MediaLine[]): string[] {
 }
 
 describe('canonical responsive breakpoint contract', () => {
-	it('migrates the frozen 94-feature, 39-path inventory to design aliases only', () => {
+	it('migrates the frozen 104-feature, 43-path inventory to design aliases only', () => {
 		const lines = mediaLines();
 		const canonicalLines = lines.filter((line) =>
 			BREAKPOINTS.some(
@@ -102,9 +120,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = new Set(canonicalLines.map(({ path }) => path));
 
-		expect(canonicalLines).toHaveLength(93);
-		expect(paths.size).toBe(39);
-		expect(featureRecords(canonicalLines)).toHaveLength(94);
+		expect(canonicalLines).toHaveLength(101);
+		expect(paths.size).toBe(43);
+		expect(featureRecords(canonicalLines)).toHaveLength(104);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
@@ -121,32 +139,33 @@ describe('canonical responsive breakpoint contract', () => {
 		}
 	});
 
+	it('rejects max-width 768px conditions in apps/web/src', () => {
+		const offenders = forbiddenTabletMaxConditions();
+		expect(
+			offenders,
+			offenders
+				.map(({ path, lineNumber, text }) => `${path}:${lineNumber}:${text}`)
+				.join('\n'),
+		).toHaveLength(0);
+	});
+
 	it('preserves every frozen media line and noncanonical conjunct byte-for-byte', () => {
 		const normalized = mediaLines().map(
 			({ path, lineNumber, text }) => `${path}:${lineNumber}:${canonicalize(text)}`,
 		);
 		const frozenFeatures = featureRecords(mediaLines());
 
-		expect(normalized).toHaveLength(146);
-		// 2026-07-29 (023): both digests rebased for a pure line-shift — ContactPage.svelte's
-		// two @media lines moved 671→652 / 684→665 (−19, script-block extraction of
-		// weather-refresh); text byte-identical, inventory unchanged (146 lines / 94 features).
+		expect(normalized).toHaveLength(148);
+		// 2026-07-29 D1(b), correction cycle 2: both digests intentionally move
+		// again for the two new dual-alias tablet-band lines in HeroTextContent
+		// and HeroMetrics. Each adds one --tablet-min and one --desktop-max
+		// feature; no existing media record moves (148 lines / 104 features /
+		// 43 paths). Orchestrator acceptance requires an independent computation.
 		expect(digest(normalized)).toBe(
-			'68782a3c376be4c399100fa341076e9f1b0cbd438e26b7b993f77b9b95ad04b2',
+			'e145b42634b4b0dc1cceabe6fb9c0f338348339ec29ac792d8107fdf6ad47526',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'b3eb5df1d534ee02cf15ec0c625f44d42291e2df38a9c1f95a4376d5158685b0',
-		);
-	});
-
-	it('keeps the six D1(b) max-width 768px lines outside this migration', () => {
-		const excluded = mediaLines()
-			.filter(({ text }) => /\(max-width:\s*768px\)/.test(text))
-			.map(({ path, lineNumber, text }) => `${path}:${lineNumber}:${text}`);
-
-		expect(excluded).toHaveLength(6);
-		expect(digest(excluded)).toBe(
-			'5b2d58b961b8e37eda49b92487e7dfc28b93e24cc5a46f8dd873a10d2c3d5e85',
+			'1909928a3f6867242a8afc7b6761f128a5c9ba7072dc475980974184dff0567e',
 		);
 	});
 
