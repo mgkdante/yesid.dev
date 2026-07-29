@@ -17,7 +17,7 @@ const EYEBROWS: Record<OgType, string> = {
 // Pulls the title for a (type, slug) pair via typed adapter ports,
 // returning a normalized { eyebrow, title } the renderer consumes.
 // Returns null on miss, empty title, or any adapter error — the endpoint
-// translates null into a 302 to the default OG image.
+// turns any null into a build-stopping [og] throw during prerender.
 export async function loadOgTitle(
   type: OgType,
   slug: string,

@@ -1,76 +1,59 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { loadOgTitle, type OgType } from '$lib/og/load-title';
+import { ogSlugParam, parseOgSlugParam } from '$lib/og/og-path';
 import { buildOgTree } from '$lib/og/template';
 import { renderOgPng } from '$lib/og/render';
 import { getOgFonts } from '$lib/og/fonts';
-import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE, isSupportedLocale } from '$lib/utils/locale';
-import { defaultOgImageFor } from '$lib/utils/seo-defaults';
+import { ogBlogRows, ogProjectSlugs } from '$lib/server/prerender-entries';
+import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 
-// Stays on the lambda: per-slug on-demand render, reads ?locale= (query params
-// are unavailable while prerendering). Explicit even though endpoints default
-// to prerender=false — the root layout prerenders every page, and this must
-// never silently join it on a kit-default change.
-export const prerender = false;
+// Prerender every known blog/project card into deployment-static PNGs. entries()
+// is exhaustive through the shared complete-blog and non-private-project
+// helpers; vercel.json owns the narrow fallback for unknown card paths.
+export const prerender = true;
+
+export function entries(): Array<{ type: OgType; slug: string }> {
+	return [
+		...ogBlogRows().map(({ slug, locale }) => ({
+			type: 'blog' as const,
+			slug: ogSlugParam('blog', slug, locale),
+		})),
+		...ogProjectSlugs().flatMap((baseSlug) =>
+			PUBLISHED_LOCALES.map((locale) => ({
+				type: 'project' as const,
+				slug: ogSlugParam('project', baseSlug, locale),
+			})),
+		),
+	];
+}
 
 // Eager-call so font failures surface at deploy time, not mid-request.
 // If this throws at module init, the whole route fails loud (500) — that
 // is intentional; a broken deploy must not silently fall back.
 getOgFonts();
 
-const SLUG_RE = /^[a-z0-9-]+$/;
-
-// slice-28.1 (audit #24): 302 fallbacks carry s-maxage=86400 so repeat
-// crawler hits on a missing/broken slug are served from the CDN edge instead
-// of re-invoking the lambda (the not-found path still does a CMS lookup, the
-// error path still attempts a render). Browser TTLs stay short (60s/300s);
-// Vercel's CDN cache resets on deploy, so a fixed render or newly published
-// slug surfaces with the next deploy at the latest.
-// slice-28.6: fallback target is locale-aware — defaultOgImageFor falls back
-// to the EN asset until the requested locale is published.
-const fallbackHeaders = (locale: Locale, browserTtl: number) => ({
-  location: defaultOgImageFor(locale),
-  'cache-control': `public, max-age=${browserTtl}, s-maxage=86400`,
-});
-
 const HAPPY_HEADERS = {
   'content-type': 'image/png',
-  'cache-control': 'public, max-age=60, s-maxage=31536000, stale-while-revalidate=86400',
 };
-
-// Locale gating uses the shared isSupportedLocale guard (SUPPORTED_LOCALES, the
-// type-valid set — NOT PUBLISHED_LOCALES). `loadOgTitle` handles per-locale
-// fallback internally via resolveLocale, so forwarding any supported locale is
-// safe; gating tighter would silently strip a valid query string and surprise
-// share-debugger crawlers.
 
 export const GET: RequestHandler = async (event) => {
   const { type, slug } = event.params as { type: OgType; slug: string };
 
-  // Validate slug shape — param matcher already validated `type`.
-  if (!SLUG_RE.test(slug)) {
-    return new Response('invalid slug', { status: 400 });
+  // Locale is path-encoded: project cards use bare EN or .fr/.es suffixes,
+  // while each localized blog slug identifies its own row. Throw on any bad
+  // parse, missing title, or render failure so prerender cannot write HTML at
+  // a .png path.
+  const parsed = parseOgSlugParam(type, slug);
+  if (!parsed) {
+    throw new Error(`[og] invalid slug parameter for ${type}: "${slug}"`);
   }
+  const { baseSlug, locale } = parsed;
 
-  // Locale resolution: ?locale= query param, else default. Unpublished
-  // locales fall back to default (matches defaultOgImageFor behavior).
-  const localeParam = event.url.searchParams.get('locale');
-  const locale: Locale =
-    localeParam && isSupportedLocale(localeParam) ? localeParam : DEFAULT_LOCALE;
-
-  // Slug lookup. Null → 302 short-TTL.
-  let titleResult;
-  try {
-    titleResult = await loadOgTitle(type, slug, locale);
-  } catch (err) {
-    console.error('[og]', type, slug, err);
-    return new Response(null, { status: 302, headers: fallbackHeaders(locale, 60) });
-  }
+  const titleResult = await loadOgTitle(type, baseSlug, locale);
   if (!titleResult) {
-    return new Response(null, { status: 302, headers: fallbackHeaders(locale, 300) });
+    throw new Error(`[og] missing title for ${type}: "${baseSlug}" (${locale})`);
   }
 
-  // Render. Any failure → 302 short-TTL + log.
   try {
     const tree = buildOgTree(titleResult);
     const png = await renderOgPng(tree);
@@ -79,8 +62,7 @@ export const GET: RequestHandler = async (event) => {
     // runtime in both Node and the Web Fetch standard. Verified at the
     // satori/resvg seam (Task 5) — png is always a finite, non-shared buffer.
     return new Response(png as BodyInit, { status: 200, headers: HAPPY_HEADERS });
-  } catch (err) {
-    console.error('[og]', type, slug, err);
-    return new Response(null, { status: 302, headers: fallbackHeaders(locale, 60) });
+  } catch (cause) {
+    throw new Error(`[og] render failed for ${type}: "${baseSlug}" (${locale})`, { cause });
   }
 };

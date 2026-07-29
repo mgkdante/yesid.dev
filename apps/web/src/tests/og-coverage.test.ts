@@ -1,48 +1,77 @@
-// Build-time OG coverage gate.
-//
-// Runs as part of the standard test suite (`bun run test`). Asserts that
-// every published blog post and project has a slug accepted by the OG
-// endpoint's URL pattern (/og/[type=ogType]/[slug].png), so that
-// per-route OG image generation cannot silently break when content is
-// authored with an unexpected slug shape or when a new content type is
-// shipped without updating OG wiring.
-//
-// Mirrors the sitemap-coverage pattern: enumerate via the same helpers
-// the route loaders use (getAllPosts, getPublicProjects), then assert
-// each row's slug matches the endpoint contract.
-
 import { describe, it, expect } from 'vitest';
 import { adapter } from '$lib/adapters';
 import { match as ogTypeMatch } from '../params/ogType';
+import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 import { ogCoverage } from '@yesid/gates';
+import {
+	OG_BASE_SLUG_RE,
+	ogImagePath,
+	ogSlugParam,
+	parseOgSlugParam,
+	type OgLocale,
+	type OgType,
+} from '$lib/og/og-path';
 
-// The OG endpoint validates [slug] against this regex (Task 7). A slug
-// authored in CMS that doesn't match would render a 400 at request time.
-const SLUG_RE = /^[a-z0-9-]+$/;
-
-function assertOgCoverage(type: string, identifiers: readonly string[]) {
+function assertOgCoverage(type: OgType, identifiers: readonly string[]) {
 	const coverage = ogCoverage({
 		expected: [type],
 		actual: ogTypeMatch(type) ? [type] : [],
 		identifiers,
-		isValidIdentifier: (identifier) => SLUG_RE.test(identifier),
+		isValidIdentifier: (identifier) => OG_BASE_SLUG_RE.test(identifier),
 	});
 
 	expect(coverage.missing, `missing OG endpoint type "${type}"`).toEqual([]);
 	expect(coverage.extra, `unexpected OG endpoint type "${type}"`).toEqual([]);
-	expect(coverage.invalid, `${type} slugs must match ${SLUG_RE}`).toEqual([]);
+	expect(coverage.invalid, `${type} base slugs must match ${OG_BASE_SLUG_RE}`).toEqual([]);
 }
 
 describe('OG coverage gate', () => {
-	it('every published blog post has a slug accepted by the OG endpoint', async () => {
+	it('keeps the route type matcher and every published base slug inside the codec domain', async () => {
 		const posts = await adapter.blog.all();
-		expect(posts.length).toBeGreaterThan(0);
+		const projects = await adapter.projects.public();
+
+		expect(ogTypeMatch('other')).toBe(false);
 		assertOgCoverage('blog', posts.map((post) => post.slug));
+		assertOgCoverage('project', projects.map((project) => project.slug));
 	});
 
-	it('every published project has a slug accepted by the OG endpoint', async () => {
+	it('round-trips every published OG path and keeps the real entry matrix injective', async () => {
+		const posts = await adapter.blog.all();
 		const projects = await adapter.projects.public();
-		expect(projects.length).toBeGreaterThan(0);
-		assertOgCoverage('project', projects.map((project) => project.slug));
+		const cases: Array<{ type: OgType; baseSlug: string; locale: OgLocale }> = [
+			...posts.map((post) => ({
+				type: 'blog' as const,
+				baseSlug: post.slug,
+				locale: post.lang,
+			})),
+			...projects.flatMap((project) =>
+				PUBLISHED_LOCALES.map((locale) => ({
+					type: 'project' as const,
+					baseSlug: project.slug,
+					locale,
+				})),
+			),
+		];
+
+		const paths = cases.map(({ type, baseSlug, locale }) => {
+			const param = ogSlugParam(type, baseSlug, locale);
+			const decoded = parseOgSlugParam(type, param);
+			expect(decoded?.baseSlug).toBe(baseSlug);
+			expect(decoded && ogSlugParam(type, decoded.baseSlug, decoded.locale)).toBe(param);
+			if (type === 'project') expect(decoded?.locale).toBe(locale);
+			return ogImagePath(type, baseSlug, locale);
+		});
+
+		expect(cases).toHaveLength(24);
+		expect(new Set(paths).size).toBe(paths.length);
+	});
+
+	it('rejects unrepresentable base slugs and malformed encoded params', () => {
+		expect(() => ogSlugParam('project', 'bad.slug', 'en')).toThrow(
+			'[og] unencodable slug for project: "bad.slug" — must match /^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+		);
+		expect(parseOgSlugParam('project', 'valid-slug.en')).toBeNull();
+		expect(parseOgSlugParam('project', 'valid-slug.de')).toBeNull();
+		expect(parseOgSlugParam('blog', 'valid-slug.fr')).toBeNull();
 	});
 });

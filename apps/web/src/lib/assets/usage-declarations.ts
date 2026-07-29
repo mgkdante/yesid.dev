@@ -125,7 +125,8 @@ export const assetUsageDeclarations = defineAssetUsages([
     required: true,
     deliveryMode: "og-meta",
     confidence: "declared-dynamic",
-    reason: "The blog slug and locale compose a runtime OG endpoint.",
+    reason:
+      "The localized blog slug selects a prerendered OG asset emitted during the web build.",
   },
   {
     usageKey: "site.og.runtime-project",
@@ -140,7 +141,8 @@ export const assetUsageDeclarations = defineAssetUsages([
     required: true,
     deliveryMode: "og-meta",
     confidence: "declared-dynamic",
-    reason: "The project slug and locale compose a runtime OG endpoint.",
+    reason:
+      "The project slug and path-encoded locale select a prerendered OG asset emitted during the web build.",
   },
   {
     usageKey: "site.media.uuid-mirror",
