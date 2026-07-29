@@ -128,11 +128,14 @@ describe('canonical responsive breakpoint contract', () => {
 		const frozenFeatures = featureRecords(mediaLines());
 
 		expect(normalized).toHaveLength(146);
+		// 2026-07-29 (023): both digests rebased for a pure line-shift — ContactPage.svelte's
+		// two @media lines moved 671→652 / 684→665 (−19, script-block extraction of
+		// weather-refresh); text byte-identical, inventory unchanged (146 lines / 94 features).
 		expect(digest(normalized)).toBe(
-			'394130b240b47a2f8feecc3337328afa9d45f07d5ea3bea551da1dedd54a34aa',
+			'68782a3c376be4c399100fa341076e9f1b0cbd438e26b7b993f77b9b95ad04b2',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'3b0160ba68e4d6f6d50edac4cfb34d4caa7b957f013aab0bce8437593342b595',
+			'b3eb5df1d534ee02cf15ec0c625f44d42291e2df38a9c1f95a4376d5158685b0',
 		);
 	});
 

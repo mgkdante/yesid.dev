@@ -7,7 +7,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -23,6 +23,7 @@
 	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
 	import ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte';
 	import type { WeatherData } from '$lib/utils/weather';
+	import { fetchFreshWeather } from '$lib/utils/weather-refresh';
 	import { escapeHtml } from '$lib/utils/code-fences';
 	import { isDirectContactHref } from '$lib/utils/high-intent-links';
 	import { pressBounce } from '$lib/motion/actions';
@@ -50,28 +51,8 @@
 	const workLinkLabel = $derived(resolveLocale(contactPage.success.workLinkLabel, locale));
 	const blogLinkLabel = $derived(resolveLocale(contactPage.success.blogLinkLabel, locale));
 
-	// --- Weather freshness (slice-28.1, audit #20/#122) ---
-	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
-	// day old). Render it immediately, then refresh from /api/weather after
-	// hydration. Any failure is a graceful no-op — the baked value stays.
 	let freshWeather = $state<WeatherData | null>(null);
 	const currentWeather = $derived(freshWeather ?? weather);
-
-	async function refreshWeather() {
-		try {
-			// Pass the active locale so OpenWeather localizes `condition` (fr/es),
-			// matching AboutWeather. EN omits the param, so its /api/weather URL
-			// (and CDN cache key) stays byte-identical. Without this, /fr re-fetched
-			// English weather after hydration, overwriting the correct SSR-baked value.
-			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
-			const res = await fetch(url);
-			if (!res.ok) return;
-			const data = (await res.json()) as WeatherData | null;
-			if (data && typeof data.temp === 'number') freshWeather = data;
-		} catch {
-			// Keep the SSR-baked value.
-		}
-	}
 
 	// --- Local time (Montreal) ---
 	let localTime = $state('');
@@ -126,7 +107,7 @@
 		hydrated = true;
 		updateTime();
 		timeInterval = setInterval(updateTime, 60_000);
-		void refreshWeather();
+		void fetchFreshWeather(locale).then((w) => { if (w) freshWeather = w; });
 		recomputeEdgeFit();
 		document.fonts?.ready.then(() => recomputeEdgeFit()).catch(() => {});
 		window.addEventListener('resize', onEdgeResize);
