@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import type { Locale } from '$lib/types';
+import { match } from '../../params/locale';
 import {
 	PREFIX_LOCALES,
 	pathLocale,
@@ -7,140 +9,231 @@ import {
 	localizeUrl,
 	isLocaleSwitch,
 	stripLocaleSegment,
+	isPrefixLocale,
 	localeFromParams,
 } from './locale-routing';
 
-describe('PREFIX_LOCALES', () => {
-	it('opens fr and es (L1: Spanish routing shipped 2026-07-09, dark until published)', () => {
+describe('yesid.dev locale routing wrapper', () => {
+	it('exact-levers', () => {
 		expect(PREFIX_LOCALES).toEqual(['fr', 'es']);
-	});
-});
-
-describe('pathLocale', () => {
-	it('reads the first segment when it is a known prefix', () => {
-		expect(pathLocale('/fr')).toBe('fr');
-		expect(pathLocale('/fr/')).toBe('fr');
-		expect(pathLocale('/fr/about')).toBe('fr');
-		expect(pathLocale('/es/about')).toBe('es'); // L1: es routing open
-	});
-	it('defaults to en otherwise', () => {
 		expect(pathLocale('/')).toBe('en');
-		expect(pathLocale('/about')).toBe('en');
-		expect(pathLocale('/france')).toBe('en'); // segment, not prefix-string match
-		expect(pathLocale('/de/about')).toBe('en'); // never-published prefix stays closed
-	});
-});
-
-describe('delocalizePath', () => {
-	it('strips a locale prefix', () => {
-		expect(delocalizePath('/fr')).toBe('/');
-		expect(delocalizePath('/fr/')).toBe('/');
-		expect(delocalizePath('/fr/about')).toBe('/about');
-		expect(delocalizePath('/fr/blog/some-post')).toBe('/blog/some-post');
-	});
-	it('passes locale-less paths through', () => {
-		expect(delocalizePath('/')).toBe('/');
-		expect(delocalizePath('/about')).toBe('/about');
-		expect(delocalizePath('/france')).toBe('/france');
-		expect(delocalizePath('')).toBe('/');
-	});
-});
-
-describe('localizeHref', () => {
-	it('prefixes internal page hrefs for fr', () => {
-		expect(localizeHref('/', 'fr')).toBe('/fr');
-		expect(localizeHref('/about', 'fr')).toBe('/fr/about');
-		expect(localizeHref('/services/data-pipeline', 'fr')).toBe('/fr/services/data-pipeline');
-	});
-	it('is identity for en', () => {
+		expect(pathLocale('/de/about')).toBe('en');
 		expect(localizeHref('/about', 'en')).toBe('/about');
-		expect(localizeHref('/', 'en')).toBe('/');
-	});
-	it('is idempotent (tolerates already-localized input)', () => {
-		expect(localizeHref('/fr/about', 'fr')).toBe('/fr/about');
-		expect(localizeHref('/fr/about', 'en')).toBe('/about');
-	});
-	it('never touches external/special/endpoint hrefs', () => {
-		expect(localizeHref('https://x.com/y', 'fr')).toBe('https://x.com/y');
-		expect(localizeHref('mailto:admin@yesid.dev', 'fr')).toBe('mailto:admin@yesid.dev');
-		expect(localizeHref('#section', 'fr')).toBe('#section');
-		expect(localizeHref('/og/default.en.png', 'fr')).toBe('/og/default.en.png');
-		expect(localizeHref('/sitemap.xml', 'fr')).toBe('/sitemap.xml');
-		expect(localizeHref('/robots.txt', 'fr')).toBe('/robots.txt');
-		expect(localizeHref('/work', 'fr')).toBe('/work');
-		expect(localizeHref('/api/weather', 'fr')).toBe('/api/weather');
-	});
-	it('prefixes es now that Spanish routing is open (L1)', () => {
+		expect(localizeHref('/about', 'fr')).toBe('/fr/about');
 		expect(localizeHref('/about', 'es')).toBe('/es/about');
-		expect(localizeHref('/es/about', 'en')).toBe('/about');
 	});
-});
 
-describe('localizeUrl (preserves query + hash across a locale switch)', () => {
-	const u = (s: string) => new URL(s, 'https://yesid.dev');
-	it('carries the query string and hash when prefixing to fr', () => {
-		expect(localizeUrl(u('/projects?service=web&tag=svelte'), 'fr')).toBe(
-			'/fr/projects?service=web&tag=svelte',
-		);
-		expect(localizeUrl(u('/blog?tag=ml#post-3'), 'fr')).toBe('/fr/blog?tag=ml#post-3');
-	});
-	it('carries query + hash for the en (identity) direction', () => {
-		expect(localizeUrl(u('/projects?service=web'), 'en')).toBe('/projects?service=web');
-		expect(localizeUrl(u('/fr/projects?service=web'), 'en')).toBe('/projects?service=web');
-	});
-	it('is idempotent on already-localized paths', () => {
-		expect(localizeUrl(u('/fr/projects?tag=a'), 'fr')).toBe('/fr/projects?tag=a');
-	});
-	it('works with no query or hash', () => {
-		expect(localizeUrl(u('/about'), 'fr')).toBe('/fr/about');
-		expect(localizeUrl(u('/'), 'fr')).toBe('/fr');
-	});
-	it('preserves a hash-only URL', () => {
-		expect(localizeUrl(u('/about#contact'), 'fr')).toBe('/fr/about#contact');
-	});
-});
+	it('core-corpus-fixtures', () => {
+		const pathLocaleFixtures: readonly [string, Locale][] = [
+			['', 'en'],
+			['/', 'en'],
+			['/about', 'en'],
+			['/fr', 'fr'],
+			['/fr/', 'fr'],
+			['/fr/about', 'fr'],
+			['/es', 'es'],
+			['/es/', 'es'],
+			['/es/about', 'es'],
+			['/france', 'en'],
+			['/de/about', 'en'],
+		];
+		const delocalizeFixtures: readonly [string, string][] = [
+			['', '/'],
+			['/', '/'],
+			['/about', '/about'],
+			['/fr', '/'],
+			['/fr/', '/'],
+			['/fr//', '//'],
+			['/fr/about', '/about'],
+			['/fr/blog/some-post', '/blog/some-post'],
+			['/es', '/'],
+			['/es/', '/'],
+			['/es/about', '/about'],
+			['/fr/fr/about', '/fr/about'],
+			['/es/fr/about', '/fr/about'],
+			['/france', '/france'],
+		];
+		const localizeFixtures: readonly [string, Locale, string][] = [
+			['/', 'en', '/'],
+			['/', 'fr', '/fr'],
+			['/', 'es', '/es'],
+			['/about', 'en', '/about'],
+			['/about', 'fr', '/fr/about'],
+			['/about', 'es', '/es/about'],
+			['/services/data-pipeline', 'fr', '/fr/services/data-pipeline'],
+			['/fr/about', 'en', '/about'],
+			['/fr/about', 'fr', '/fr/about'],
+			['/fr/about', 'es', '/es/about'],
+			['/es/about', 'en', '/about'],
+			['/es/about', 'fr', '/fr/about'],
+			['/fr/fr/about', 'es', '/es/fr/about'],
+		];
+		const urlFixtures: readonly [string, Locale, string][] = [
+			[
+				'/projects?service=web&tag=svelte',
+				'fr',
+				'/fr/projects?service=web&tag=svelte',
+			],
+			['/blog?tag=ml#post-3', 'fr', '/fr/blog?tag=ml#post-3'],
+			['/projects?service=web', 'en', '/projects?service=web'],
+			['/fr/projects?service=web', 'en', '/projects?service=web'],
+			['/fr/projects?tag=a', 'fr', '/fr/projects?tag=a'],
+			['/about', 'fr', '/fr/about'],
+			['/', 'fr', '/fr'],
+			['/about#contact', 'fr', '/fr/about#contact'],
+		];
+		const switchFixtures: readonly [string, string, boolean][] = [
+			['/about', '/fr/about', true],
+			['/fr/about', '/about', true],
+			['/', '/fr', true],
+			['/fr', '/', true],
+			['/projects', '/fr/projects', true],
+			['/projects', '/es/projects', true],
+			['/fr/about', '/es/about', true],
+			['/about', '/projects', false],
+			['/about', '/fr/projects', false],
+			['/fr/about', '/fr/projects', false],
+			['/about', '/about', false],
+			['/fr/about', '/fr/about', false],
+			['/', '/', false],
+		];
 
-describe('isLocaleSwitch (snapshot/restore gate)', () => {
-	it('is true for the same canonical page in a different locale', () => {
-		expect(isLocaleSwitch('/about', '/fr/about')).toBe(true);
-		expect(isLocaleSwitch('/fr/about', '/about')).toBe(true);
-		expect(isLocaleSwitch('/', '/fr')).toBe(true);
-		expect(isLocaleSwitch('/fr', '/')).toBe(true);
-		expect(isLocaleSwitch('/projects', '/fr/projects')).toBe(true);
+		for (const [pathname, expected] of pathLocaleFixtures) {
+			expect(pathLocale(pathname)).toBe(expected);
+		}
+		for (const [pathname, expected] of delocalizeFixtures) {
+			expect(delocalizePath(pathname)).toBe(expected);
+		}
+		for (const [href, locale, expected] of localizeFixtures) {
+			expect(localizeHref(href, locale)).toBe(expected);
+		}
+		for (const [href, locale, expected] of urlFixtures) {
+			expect(localizeUrl(new URL(href, 'https://yesid.dev'), locale)).toBe(expected);
+		}
+		for (const [fromPathname, toPathname, expected] of switchFixtures) {
+			expect(isLocaleSwitch(fromPathname, toPathname)).toBe(expected);
+		}
 	});
-	it('is false for a different page (a real navigation, not a switch)', () => {
-		expect(isLocaleSwitch('/about', '/projects')).toBe(false);
-		expect(isLocaleSwitch('/about', '/fr/projects')).toBe(false);
-		expect(isLocaleSwitch('/fr/about', '/fr/projects')).toBe(false);
-	});
-	it('is false when the locale is unchanged', () => {
-		expect(isLocaleSwitch('/about', '/about')).toBe(false);
-		expect(isLocaleSwitch('/fr/about', '/fr/about')).toBe(false);
-		expect(isLocaleSwitch('/', '/')).toBe(false);
-	});
-});
 
-describe('stripLocaleSegment', () => {
-	it('strips the optional-param segment from route ids', () => {
-		expect(stripLocaleSegment('/[[lang=locale]]')).toBe('/');
-		expect(stripLocaleSegment('/[[lang=locale]]/about')).toBe('/about');
-		expect(stripLocaleSegment('/[[lang=locale]]/services/[id]')).toBe('/services/[id]');
-	});
-	it('passes non-localized ids through', () => {
-		expect(stripLocaleSegment('/')).toBe('/');
-		expect(stripLocaleSegment('/og/[type=ogType]/[slug].png')).toBe('/og/[type=ogType]/[slug].png');
-		expect(stripLocaleSegment('/__error')).toBe('/__error');
-	});
-});
+	it('universal+yesid-exemptions+negative-controls', () => {
+		const hrefFixtures: readonly [string, Locale, string][] = [
+			['', 'fr', ''],
+			['#section', 'fr', '#section'],
+			['mailto:admin@yesid.dev', 'fr', 'mailto:admin@yesid.dev'],
+			['tel:+1', 'fr', 'tel:+1'],
+			['https://x.com/y', 'fr', 'https://x.com/y'],
+			['//cdn.example/f.js', 'fr', '//cdn.example/f.js'],
+			['about', 'fr', 'about'],
+			['./about', 'fr', './about'],
+			['../about', 'fr', '../about'],
+			['/api', 'fr', '/api'],
+			['/api/', 'fr', '/api/'],
+			['/api/weather', 'fr', '/api/weather'],
+			['/og', 'fr', '/og'],
+			['/og/', 'fr', '/og/'],
+			['/og/default.en.png', 'fr', '/og/default.en.png'],
+			['/sitemap.xml', 'fr', '/sitemap.xml'],
+			['/sitemap.xml/', 'fr', '/sitemap.xml/'],
+			['/robots.txt', 'fr', '/robots.txt'],
+			['/robots.txt/', 'fr', '/robots.txt/'],
+			['/work', 'fr', '/work'],
+			['/work/', 'fr', '/work/'],
+			['/work/resume', 'fr', '/fr/work/resume'],
+			['/manifest.webmanifest', 'fr', '/fr/manifest.webmanifest'],
+			['/v1/network.json', 'fr', '/fr/v1/network.json'],
+			['/A.PNG', 'fr', '/fr/A.PNG'],
+			['/a.b', 'fr', '/fr/a.b'],
+			['/fr/api/weather', 'es', '/es/api/weather'],
+		];
+		const urlFixtures: readonly [string, Locale, string][] = [
+			['/api/weather?a=1#z', 'fr', '/api/weather?a=1#z'],
+			['/work?a=1', 'fr', '/work?a=1'],
+			['/sitemap.xml?a=1', 'fr', '/sitemap.xml?a=1'],
+			['/og/d.png#z', 'fr', '/og/d.png#z'],
+			['/v1/n.json?a=1', 'fr', '/fr/v1/n.json?a=1'],
+			[
+				'/manifest.webmanifest?x=1',
+				'fr',
+				'/fr/manifest.webmanifest?x=1',
+			],
+		];
 
-describe('localeFromParams', () => {
+		for (const [href, locale, expected] of hrefFixtures) {
+			expect(localizeHref(href, locale)).toBe(expected);
+		}
+		for (const [href, locale, expected] of urlFixtures) {
+			expect(localizeUrl(new URL(href, 'https://yesid.dev'), locale)).toBe(expected);
+		}
+	});
+
+	it('build-branch localizeUrl', async () => {
+		vi.resetModules();
+		vi.doMock('$app/environment', () => ({ building: true }));
+
+		try {
+			const { localizeUrl: buildLocalizeUrl } = await import('./locale-routing');
+
+			expect(
+				buildLocalizeUrl(
+					new URL('/projects?service=web&tag=svelte#results', 'https://yesid.dev'),
+					'fr',
+				),
+			).toBe('/fr/projects');
+			expect(
+				buildLocalizeUrl(
+					new URL('/fr/projects?service=web#results', 'https://yesid.dev'),
+					'en',
+				),
+			).toBe('/projects');
+		} finally {
+			vi.doUnmock('$app/environment');
+			vi.resetModules();
+		}
+	});
+
+	it('route-id+matcher-wiring', () => {
+		const routeIdFixtures: readonly [string, string][] = [
+			['/', '/'],
+			['/[[lang=locale]]', '/'],
+			['/[[lang=locale]]/about', '/about'],
+			['/[[lang=locale]]/a/[id]', '/a/[id]'],
+			['/[[lang=locale]]/services/[id]', '/services/[id]'],
+			['/[[lang=locale]]x', '/[[lang=locale]]x'],
+			['/[[lang=locale]]/', '/'],
+			['/__error', '/__error'],
+			['/og/[type]/[slug].png', '/og/[type]/[slug].png'],
+			['/og/[type=ogType]/[slug].png', '/og/[type=ogType]/[slug].png'],
+		];
+		const matcherFixtures: readonly [string, boolean][] = [
+			['fr', true],
+			['es', true],
+			['en', false],
+			['', false],
+			['FR', false],
+			['france', false],
+			['about', false],
+			['/fr', false],
+			['de', false],
+		];
+
+		for (const [routeId, expected] of routeIdFixtures) {
+			expect(stripLocaleSegment(routeId)).toBe(expected);
+		}
+		for (const [segment, expected] of matcherFixtures) {
+			expect(isPrefixLocale(segment)).toBe(expected);
+			expect(match(segment)).toBe(expected);
+		}
+	});
+
 	it('prefers a valid params.lang', () => {
 		expect(localeFromParams({ lang: 'fr' })).toBe('fr');
 	});
+
 	it('falls back to the pathname (error renders have no params)', () => {
 		expect(localeFromParams({}, '/fr/missing-page')).toBe('fr');
 		expect(localeFromParams({}, '/missing-page')).toBe('en');
 	});
+
 	it('defaults to en', () => {
 		expect(localeFromParams({})).toBe('en');
 		expect(localeFromParams({ lang: 'zz' })).toBe('en');
