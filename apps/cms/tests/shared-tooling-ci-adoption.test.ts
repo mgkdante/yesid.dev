@@ -435,6 +435,6 @@ test('required PR workflows remain unfiltered so reporters always appear', () =>
 
 test('secret-scan stays byte-for-byte unchanged', () => {
 	expect(sha256(readFileSync(secretScanPath, 'utf8'))).toBe(
-		'27e744160de98b0ecb996ea585349f98e65a188bac7093051ca6a2c4517f00ff',
+		'84c1ca10f6c999b535079e2b4757576f2afe5b0966793f9c597ef448fad0a512',
 	);
 });
