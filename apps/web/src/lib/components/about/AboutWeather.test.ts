@@ -7,8 +7,8 @@
 // at the CSS-source tier in src/lib/styles/__tests__/motion-policy-css.test.ts
 // and at runtime in tests/reduced-motion.spec.ts (Playwright).
 
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/svelte';
 import AboutWeather from './AboutWeather.svelte';
 import { resolveWeatherScene, isNightHour, WEATHER_SCENES } from './weather-scene';
 import { aboutPageContent } from '$lib/content/about-page';
@@ -26,6 +26,31 @@ function sceneEl(): HTMLElement {
 	expect(el, 'scene root must render').not.toBeNull();
 	return el!;
 }
+
+describe('AboutWeather weather refresh', () => {
+	it('refreshes weather with the ?lang= param inside a fr locale provider', async () => {
+		const prevFetch = globalThis.fetch;
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ temp: 7, condition: 'ciel dégagé', icon: '01d' }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			}),
+		);
+		globalThis.fetch = fetchMock as typeof globalThis.fetch;
+		try {
+			render(AboutWeather, {
+				props: { config, weather: null, stop: '06', label: 'LOCATION' },
+				context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+			});
+			await waitFor(() => {
+				expect(fetchMock).toHaveBeenCalledWith('/api/weather?lang=fr');
+				expect(fetchMock).toHaveBeenCalledTimes(1);
+			});
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
+	});
+});
 
 describe('weather-scene resolver (condition → scene mapping)', () => {
 	it.each([
