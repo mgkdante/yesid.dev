@@ -1075,7 +1075,7 @@ describe("yesid.dev real repository contract", () => {
     expect(scan.usages).toContainEqual(
       expect.objectContaining({
         sourceFile: "apps/web/src/lib/adapters/static.ts",
-        sourceLine: 124,
+        sourceLine: 130,
         assetId: "repo-file:apps/web/static/images/montreal-metro.svg",
         deliveryMode: "inline-svg",
       }),
@@ -1646,22 +1646,33 @@ describe("yesid.dev real repository contract", () => {
         staticOgGenerator,
       ).has("apps/web/src/lib/assets/project-fallbacks/digital-desktop.svg"),
     ).toBe(true);
-    for (const type of ["blog", "project"]) {
+    for (const type of ["blog", "project"] as const) {
       const inputs = provenanceInputs(
         `generated-runtime:og:${type}`,
         "apps/web/src/routes/og/[type=ogType]/[slug].png/+server.ts",
       );
-      for (const expected of [
-        "apps/web/src/lib/og/template.ts",
-        "apps/web/src/lib/og/render.ts",
-        "apps/web/src/lib/og/fonts.ts",
-        "apps/web/src/lib/og/load-title.ts",
-        "apps/web/src/lib/og/fonts/Inter-Black.ttf",
-        "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
-        "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
-        `apps/web/src/lib/content/${type === "blog" ? "blog.ts" : "projects.ts"}`,
-      ])
-        expect(inputs.has(expected)).toBe(true);
+      // Curated provenance inputs (not a transitive closure).
+      expect(inputs).toEqual(
+        new Set([
+          "apps/web/src/routes/og/[type=ogType]/[slug].png/+server.ts",
+          "apps/web/src/lib/og/template.ts",
+          "apps/web/src/lib/og/render.ts",
+          "apps/web/src/lib/og/fonts.ts",
+          "apps/web/src/lib/og/load-title.ts",
+          "apps/web/src/lib/og/fonts/Inter-Black.ttf",
+          "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
+          "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
+          "apps/web/src/lib/adapters/index.ts",
+          "apps/web/src/lib/adapters/static.ts",
+          `apps/web/src/lib/${type === "blog" ? "blog" : "projects"}/static-helpers.ts`,
+          `apps/web/src/lib/content/${type === "blog" ? "blog.ts" : "projects.ts"}`,
+        ]),
+      );
+      expect(
+        [...inputs].some((input) =>
+          input.startsWith("apps/web/src/lib/repositories/"),
+        ),
+      ).toBe(false);
     }
     expect(
       first.generatedFrom.filter(

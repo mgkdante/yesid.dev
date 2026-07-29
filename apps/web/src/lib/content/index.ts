@@ -6,7 +6,7 @@
 // Canonical long-form version: $lib/adapters/static.ts header):
 // - COLLECTION / PRIMARY data (anything with an adapter port) is read at
 //   runtime only by $lib/adapters/static.ts; routes get it via
-//   $lib/repositories and pass it to components as props.
+//   $lib/adapters and pass it to components as props.
 // - CMS chrome singletons (`siteLabels.*`) may be imported directly by display
 //   components because generated content files are the edge cache.
 // - Static-fallback imports in layout/error shells + test stubs are sanctioned.

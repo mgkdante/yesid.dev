@@ -7,7 +7,7 @@ import { marked } from '$lib/server/markdown';
 import { fetchServiceSvgContents } from '$lib/utils';
 import { resolveLocale } from '$lib/utils/locale';
 import { localeFromParams } from '$lib/utils/locale-routing';
-import { getProjectBySlug, getServiceById } from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { projectEntries } from '$lib/server/prerender-entries';
 import { collectCodeHighlights } from '$lib/server/code-highlights';
 import type { Service } from '$lib/types';
@@ -16,14 +16,14 @@ export const entries = projectEntries;
 
 export async function load({ params, fetch, locals, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; locals: App.Locals; url: URL }) {
 	const ctx = { pageCache: locals.pageCache };
-	const project = await getProjectBySlug(params.slug, ctx);
+	const project = await adapter.projects.bySlug(params.slug, ctx);
 
 	if (!project || project.status === 'private') {
 		error(404, { message: 'Project not found' });
 	}
 
 	const servicesResolved = await Promise.all(
-		project.relatedServices.map((id) => getServiceById(id, ctx)),
+		project.relatedServices.map((id) => adapter.services.byId(id, ctx)),
 	);
 	const services: Service[] = servicesResolved.filter(
 		(s): s is Service => s !== undefined,

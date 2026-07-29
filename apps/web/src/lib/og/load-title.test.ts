@@ -3,9 +3,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const getPostBySlugMock = vi.fn();
 const getProjectBySlugMock = vi.fn();
 
-vi.mock('$lib/repositories', () => ({
-  getPostBySlug: (...args: unknown[]) => getPostBySlugMock(...args),
-  getProjectBySlug: (...args: unknown[]) => getProjectBySlugMock(...args),
+vi.mock('$lib/adapters', () => ({
+  adapter: {
+    blog: {
+      bySlug: (...args: unknown[]) => getPostBySlugMock(...args),
+    },
+    projects: {
+      bySlug: (...args: unknown[]) => getProjectBySlugMock(...args),
+    },
+  },
 }));
 
 import { loadOgTitle } from './load-title';

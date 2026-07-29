@@ -84,7 +84,6 @@ export default defineConfig({
 						'src/lib/content/**/*.test.ts',
 						'src/lib/live/**/*.test.ts',
 						'src/lib/directus/**/*.test.ts',
-						'src/lib/repositories/**/*.test.ts',
 						'src/lib/schemas/**/*.test.ts',
 						'src/lib/server/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',

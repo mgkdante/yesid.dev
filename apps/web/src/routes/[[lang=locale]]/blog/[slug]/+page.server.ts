@@ -1,11 +1,5 @@
 import { error } from '@sveltejs/kit';
-import {
-	getAllPosts,
-	getPostBySlug,
-	getPostBody,
-	getSvgContent,
-	getBlogPageContent,
-} from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
 import { blogEntries } from '$lib/server/prerender-entries';
 import { collectCodeHighlights } from '$lib/server/code-highlights';
@@ -23,14 +17,14 @@ export async function load({
 }) {
 	const ctx = { pageCache: locals.pageCache };
 	const locale = localeFromParams(params);
-	const post = await getPostBySlug(params.slug, ctx);
+	const post = await adapter.blog.bySlug(params.slug, ctx);
 	if (!post || post.lang !== locale) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts, blogPage] = await Promise.all([
-		getPostBody(params.slug, ctx),
-		getSvgContent(post, ctx),
-		getAllPosts(ctx),
-		getBlogPageContent(ctx),
+		adapter.blog.bodyBySlug(params.slug, ctx),
+		adapter.blog.svgContent(post, ctx),
+		adapter.blog.all(ctx),
+		adapter.content.blogPage(ctx),
 	]);
 
 	if (!body) error(404, 'Post body missing');

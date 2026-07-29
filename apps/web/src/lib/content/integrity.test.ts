@@ -135,6 +135,35 @@ describe('projects data integrity', () => {
 	});
 });
 
+describe('tech stack data integrity', () => {
+	it('loads a non-trivial curated tech set', () => {
+		expect(techStackItems.length).toBeGreaterThanOrEqual(15); // curated at go-day: 21 published (operator archived mobile ghosts; set grows with learning)
+	});
+
+	it('all IDs are unique', () => {
+		const ids = techStackItems.map((item) => item.id);
+		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	it('all relatedServices match existing service IDs', () => {
+		const serviceIds = new Set(services.map((service) => service.id));
+		for (const item of techStackItems) {
+			for (const serviceId of item.relatedServices) {
+				expect(serviceIds.has(serviceId), `${item.id}: service "${serviceId}" not found`).toBe(true);
+			}
+		}
+	});
+
+	it('all relatedProjects match existing project slugs', () => {
+		const projectSlugs = new Set(projects.map((project) => project.slug));
+		for (const item of techStackItems) {
+			for (const projectSlug of item.relatedProjects) {
+				expect(projectSlugs.has(projectSlug), `${item.id}: project "${projectSlug}" not found`).toBe(true);
+			}
+		}
+	});
+});
+
 describe('services data integrity', () => {
 	// WHY no hardcoded count: the station system is data-driven. Adding a service
 	// means adding one object to services.ts — no component changes. Tests validate
