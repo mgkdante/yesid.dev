@@ -1,6 +1,6 @@
 // Utility-layer barrel.
-// Pure client-safe engines — never CMS-owned. Imported by components, repositories,
-// adapters, and route loaders alike. Function names are globally unique so
+// Pure client-safe engines — never CMS-owned. Imported by components, adapters,
+// and route loaders alike. Function names are globally unique so
 // `export *` is safe.
 //
 // IMPORTANT: server-only utilities are NOT re-exported here — importing them

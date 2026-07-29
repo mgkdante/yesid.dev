@@ -1,4 +1,4 @@
-import { getAboutPageContent } from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { fetchMontrealWeather } from '$lib/utils/weather';
 import { localeFromParams } from '$lib/utils/locale-routing';
 import { localeEntries } from '$lib/server/prerender-entries';
@@ -20,7 +20,7 @@ export async function load({
 }) {
 	const ctx = { pageCache: locals.pageCache };
 
-	const aboutPage = await getAboutPageContent(ctx);
+	const aboutPage = await adapter.content.aboutPage(ctx);
 
 	if (!aboutPage.weather.enabled) {
 		return { aboutPage, weather: null };

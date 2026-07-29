@@ -1744,6 +1744,7 @@ export async function scanRepository(
           bytes: null,
           inlineSvgOrdinal: null,
         });
+        // Curated provenance inputs (not a transitive closure).
         const runtimeInputs = [
           runtimeRoute,
           "apps/web/src/lib/og/template.ts",
@@ -1753,7 +1754,9 @@ export async function scanRepository(
           "apps/web/src/lib/og/fonts/Inter-Black.ttf",
           "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
           "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
-          `apps/web/src/lib/repositories/${type}.ts`,
+          "apps/web/src/lib/adapters/index.ts",
+          "apps/web/src/lib/adapters/static.ts",
+          `apps/web/src/lib/${type === "blog" ? "blog" : "projects"}/static-helpers.ts`,
           `apps/web/src/lib/content/${type === "blog" ? "blog.ts" : "projects.ts"}`,
         ];
         for (const inputRef of runtimeInputs) {

@@ -6,11 +6,7 @@
 
 import { fetchServiceSvgContents } from '$lib/utils';
 import { deriveProjectFacets } from '$lib/projects/project-facets';
-import {
-	getPublicProjects,
-	getVisibleServices,
-	getProjectsPageContent,
-} from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { localeEntries } from '$lib/server/prerender-entries';
 
 export const entries = localeEntries;
@@ -19,9 +15,9 @@ export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; 
 	const ctx = { pageCache: locals.pageCache };
 
 	const [services, projects, projectsPage] = await Promise.all([
-		getVisibleServices(ctx),
-		getPublicProjects(ctx),
-		getProjectsPageContent(ctx),
+		adapter.services.visible(ctx),
+		adapter.projects.public(ctx),
+		adapter.content.projectsPage(ctx),
 	]);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
 	const { tags, stackItems, serviceIds } = deriveProjectFacets(projects);

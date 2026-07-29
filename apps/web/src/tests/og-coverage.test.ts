@@ -12,8 +12,7 @@
 // each row's slug matches the endpoint contract.
 
 import { describe, it, expect } from 'vitest';
-import { getAllPosts } from '$lib/repositories/blog';
-import { getPublicProjects } from '$lib/repositories/project';
+import { adapter } from '$lib/adapters';
 import { match as ogTypeMatch } from '../params/ogType';
 import { ogCoverage } from '@yesid/gates';
 
@@ -36,13 +35,13 @@ function assertOgCoverage(type: string, identifiers: readonly string[]) {
 
 describe('OG coverage gate', () => {
 	it('every published blog post has a slug accepted by the OG endpoint', async () => {
-		const posts = await getAllPosts();
+		const posts = await adapter.blog.all();
 		expect(posts.length).toBeGreaterThan(0);
 		assertOgCoverage('blog', posts.map((post) => post.slug));
 	});
 
 	it('every published project has a slug accepted by the OG endpoint', async () => {
-		const projects = await getPublicProjects();
+		const projects = await adapter.projects.public();
 		expect(projects.length).toBeGreaterThan(0);
 		assertOgCoverage('project', projects.map((project) => project.slug));
 	});

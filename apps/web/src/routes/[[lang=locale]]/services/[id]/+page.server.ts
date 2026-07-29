@@ -4,28 +4,23 @@
 
 import { error } from '@sveltejs/kit';
 import { fetchServiceSvgContents } from '$lib/utils';
-import {
-	getServiceById,
-	getVisibleServices,
-	getAdjacentServices,
-	getProjectsByService,
-} from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { serviceEntries } from '$lib/server/prerender-entries';
 
 export const entries = serviceEntries;
 
 export async function load({ params, fetch, locals }: { params: { id: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };
-	const service = await getServiceById(params.id, ctx);
+	const service = await adapter.services.byId(params.id, ctx);
 
 	if (!service || service.visible === false) {
 		error(404, { message: 'Service not found' });
 	}
 
-	const services = await getVisibleServices(ctx);
+	const services = await adapter.services.visible(ctx);
 	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		getAdjacentServices(params.id, ctx),
-		getProjectsByService(params.id, ctx),
+		adapter.services.adjacent(params.id, ctx),
+		adapter.projects.byService(params.id, ctx),
 		fetchServiceSvgContents(fetch, services),
 	]);
 
