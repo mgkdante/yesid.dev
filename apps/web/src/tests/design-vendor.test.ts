@@ -1,21 +1,23 @@
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = resolve(process.cwd(), '../..');
 const VENDOR = resolve(process.cwd(), 'vendor/design');
-const PACKAGES = ['tokens', 'motion', 'gates', 'seo-kit', 'ui'] as const;
+const PACKAGES = ['tokens', 'motion', 'gates', 'seo-kit', 'ui', 'analytics', 'i18n-core'] as const;
 
 const PINNED_RELEASE = {
-	tag: 'v0.10.0',
-	tagObject: '4ac061f6caf38447ba60a199f556c57967938181',
-	peeledCommit: '06db187a5398d912949453db91ea23688a27c1ee',
-	assetName: 'yesid.dev-design-v0.10.0.tar',
-	assetSize: 706_560,
-	assetDigest: 'sha256:9fccb5ad20d7dfa50e63fa60d5d110f7dc706368172757a68536b2e7375d1011',
+	tag: 'v0.12.0',
+	tagObject: 'aa48f0decf8015cb57cac31de8d8604c2211d4d8',
+	peeledCommit: '107c2dd621a7765f72dbab82461fef50b24bab4b',
+	assetName: 'yesid.dev-design-v0.12.0.tar',
+	assetSize: 819_200,
+	assetDigest: 'sha256:20c59d4cf2df4b7408fdebe6795b16faace40a7aa261e1577d4cfe70555fd4e9',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
-	toolDigest: 'sha256:749861816f7b8a7e70a3b856f93f310183e0ff6dd5f288746681fb95be51087d',
-	treeHash: 'sha256:861f69b4cfc5ecd55c7a599483356ca93a7ef5712c0e90a5cccff51cde8660b6',
+	toolDigest: 'sha256:650011070755661770506f51bc07f99ba6905fc62a573a4fcf0b668c00cbe2b8',
+	treeHash: 'sha256:1c53d0e963b2c6b78c3b0f685ddd99aa352eb043980417c55d118b43a5341236',
+	manifestDigest: '32bef03ac6a30be92cfe6641eac54d28a5c5d54e6dad636624e72f4d61c990e2',
 } as const;
 
 function readJson(path: string) {
@@ -56,6 +58,14 @@ describe('immutable design customer contract', () => {
 			toolDigest: PINNED_RELEASE.toolDigest,
 			treeHash: PINNED_RELEASE.treeHash,
 		});
+		const rawManifest = readFileSync(join(VENDOR, 'manifest.json'));
+		expect(createHash('sha256').update(rawManifest).digest('hex')).toBe(PINNED_RELEASE.manifestDigest);
+		expect(walkFiles(join(VENDOR, 'i18n-core')).map((path) => relative(VENDOR, path))).toEqual([
+			'i18n-core/package.json',
+			'i18n-core/src/index.ts',
+			'i18n-core/src/routing.ts',
+			'i18n-core/tsconfig.json',
+		]);
 	});
 
 	it('keeps upstream package internals out of the consumer workspace and test authority', () => {
@@ -73,16 +83,19 @@ describe('immutable design customer contract', () => {
 		expect(retainedTests).toEqual([]);
 	});
 
-	it('resolves every design package through the vendored customer boundary', () => {
+	it('resolves every consumed design package through the vendored customer boundary', () => {
 		const appPackage = readJson(join(process.cwd(), 'package.json')) as {
 			dependencies: Record<string, string>;
 			devDependencies: Record<string, string>;
 		};
+		expect(appPackage.dependencies['@yesid/i18n-core']).toBe('file:vendor/design/i18n-core');
 		expect(appPackage.dependencies['@yesid/motion']).toBe('file:vendor/design/motion');
 		expect(appPackage.dependencies['@yesid/seo-kit']).toBe('file:vendor/design/seo-kit');
 		expect(appPackage.dependencies['@yesid/tokens']).toBe('file:vendor/design/tokens');
 		expect(appPackage.dependencies['@yesid/ui']).toBe('file:vendor/design/ui');
 		expect(appPackage.devDependencies['@yesid/gates']).toBe('file:vendor/design/gates');
+		expect(appPackage.dependencies['@yesid/analytics']).toBeUndefined();
+		expect(appPackage.devDependencies['@yesid/analytics']).toBeUndefined();
 		expect(existsSync(join(VENDOR, 'ui/src/brand/QuietModeButton.svelte'))).toBe(true);
 	});
 
