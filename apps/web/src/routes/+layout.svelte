@@ -141,8 +141,12 @@
 	   sits at ~76px on every viewport (does not grow on mobile). Clearance =
 	   pill bottom + a 12px breathing gap = 88px. Every page's top reserve and
 	   every sticky/detail-header offset routes through this var so titles never
-	   tuck under the pill. Defined on the shell wrapper (cascades to all pages);
-	   tokens.css/app.css are generated + off-limits, so it lives here. */
+	   tuck under the pill — including the anchor scroll-margin rule in app.css
+	   (§13), which reads it back. Declared on the shell wrapper because that is
+	   the one node every page inherits from. (The vendored tokens.css IS
+	   generated and off-limits; app.css is NOT — only its TOKENS:START..END
+	   region is generated, per .githooks/pre-commit, and the rest is
+	   hand-maintained.) */
 	.circuit-grid {
 		--nav-clearance: 5.5rem; /* 88px */
 		--strip-h: 68px; /* Calibration switch: use 70px for the T=70 candidate. */

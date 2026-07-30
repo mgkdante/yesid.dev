@@ -633,5 +633,5 @@ pre, code, table {
 /* 13. Scroll offset for anchor links — headings land below the sticky nav */
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
 [data-section-index] {
-  scroll-margin-top: calc(var(--nav-height, 64px) + 1rem);
+  scroll-margin-top: calc(var(--nav-clearance, 5.5rem) + env(safe-area-inset-top, 0px) + 1rem);
 }
