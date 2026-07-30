@@ -124,6 +124,23 @@ describe('Footer', () => {
 		expect(nav).toBeInTheDocument();
 	});
 
+	it('renders shared group and link leaves inside the existing navigation landmark', () => {
+		render(Footer);
+
+		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
+		expect(nav.tagName).toBe('NAV');
+		expect(screen.getByText('EXPLORE')).toHaveAttribute('data-slot', 'footer-group-label');
+		expect(screen.getByText('EXPLORE').parentElement).toHaveAttribute('data-slot', 'footer-group');
+		expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute(
+			'data-slot',
+			'footer-link',
+		);
+		expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+			'data-slot',
+			'footer-link',
+		);
+	});
+
 	it('renders all 6 site navigation links', () => {
 		render(Footer);
 		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
@@ -234,6 +251,8 @@ describe('Footer analytics preferences', () => {
 		expect(preferences).toHaveTextContent(label);
 		expect(preferences.tagName).toBe('BUTTON');
 		expect(preferences).not.toHaveAttribute('href');
+		expect(preferences).toHaveAttribute('type', 'button');
+		expect(preferences).toHaveAttribute('data-slot', 'footer-link');
 		expect(preferences).toHaveAttribute('aria-controls', 'analytics-consent');
 		expect(preferences).toHaveAttribute('aria-expanded', 'false');
 	});

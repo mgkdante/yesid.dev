@@ -3,7 +3,7 @@
 The repository's root [LICENSE](LICENSE) applies only to original yesid.dev
 material.
 
-- `apps/web/vendor/design/` contains yesid.dev-design `v0.12.0`, distributed
+- `apps/web/vendor/design/` contains yesid.dev-design `v0.13.0`, distributed
   under the MIT License. Copyright © 2026 Yesid Otalora. See
   `apps/web/vendor/design/LICENSE`.
 - `apps/web/src/lib/og/fonts/Inter-Medium.ttf` and `Inter-Black.ttf` come from
