@@ -205,10 +205,10 @@
     /* accent for the shared .detail-header-grid dot-grid (app.css) — the blog
        header colors everything off its per-post --blog-accent */
     --header-accent: var(--blog-accent);
-    /* --nav-height was never defined (64px fallback under-reserved the 76px
-       pill by 12px, clipping the post title under the nav). Route through the
-       shared --nav-clearance (88px) so the negative-margin/padding pair reserves
-       the real pill height on this full-bleed detail page. */
+    /* Full-bleed detail page: the negative-margin/padding pair extends this
+       header's background up UNDER the nav while still reserving the pill's
+       real height. Both halves route through the shell's --nav-clearance (88px,
+       +layout.svelte) — the single source of truth every nav offset reads. */
     margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
     padding-top: var(--nav-clearance, 5.5rem);
     overflow: hidden;
@@ -296,7 +296,7 @@
     width: 100%;
     margin-inline: auto;
     /* Top padding clears the fixed floating nav. The wrapper's
-       -nav-height/+nav-height trick only extends the background up under the
+       -nav-clearance/+nav-clearance trick only extends the background up under the
        nav; it does NOT push content down, so the first element (the back link)
        must clear the nav here or it renders hidden beneath it. */
     padding: 4.5rem 1.25rem 2.5rem;

@@ -57,6 +57,11 @@ const DESKTOP_ONLY_SPECS = [
 	// footer below the fold, terminal-body internal scroll) — desktop-only.
 	'**/contact-fold.spec.ts',
 	'**/responsive-breakpoint-boundaries.spec.ts',
+	// Anchor-offset guard: viewport-INDEPENDENT clearance arithmetic plus a
+	// DESKTOP-only assertion (the project `.toc-column` rail is display:none
+	// below 1024px). Also scoped to a zero-safe-area-inset environment — see the
+	// SCOPING block at the top of the spec.
+	'**/nav-anchor-offset.spec.ts',
 	'**/theme-persistence.spec.ts',
 	'**/page-content/**'
 ];
