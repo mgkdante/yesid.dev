@@ -135,6 +135,7 @@
 	   tokens.css/app.css are generated + off-limits, so it lives here. */
 	.circuit-grid {
 		--nav-clearance: 5.5rem; /* 88px */
+		--strip-h: 68px; /* Calibration switch: use 70px for the T=70 candidate. */
 	}
 	:global(.pt-nav-clear) {
 		padding-top: var(--nav-clearance, 5.5rem);
