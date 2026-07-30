@@ -7332,6 +7332,22 @@
 			"requiredScopes": [
 				"repository"
 			]
+		},
+		{
+			"fingerprint": "f736738a343eeede06ad6f35a5f5502403336cb0ba2eae919774468c228e7d16",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "311c46644fbd0ca471f4c559c3b882f73ae11c7556c861d0fdecc61a260948ae",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
 		}
 	],
 	"releaseManifest": {

@@ -6,6 +6,7 @@
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
+	import { FooterGroup, FooterLink } from '@yesid/ui/footer';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
 	import type { NavLink } from '$lib/navigation/types';
 	import type { Locale } from '$lib/types';
@@ -94,60 +95,54 @@
 
 		<!-- EXPLORE: the site links -->
 		<nav aria-label={footerNavAria} class="flex flex-col gap-2">
-			<span class="footer-group-label">{exploreLabel}</span>
-			{#each exploreLinks as link}
-				<a
-					href={link.href}
-					class="footer-link self-start text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
-				>
-					{link.label}
-				</a>
-			{/each}
+			<!-- Parity hold: the shared leaf ships a 44px tap floor; adopting it changes footer geometry (recorded owner follow-up, not a silent change). Applies to all three groups below. -->
+			<FooterGroup label={exploreLabel} style="--size-tap-min: 0px;">
+				{#each exploreLinks as link}
+					<FooterLink href={link.href}>
+						{link.label}
+					</FooterLink>
+				{/each}
+			</FooterGroup>
 		</nav>
 
 		<!-- LEGAL: the framework pages -->
 		<nav aria-label={legalLabel} data-testid="footer-legal" class="flex flex-col gap-2">
-			<span class="footer-group-label">{legalLabel}</span>
-			{#each legalLinks as link}
-				<a
-					href={link.href}
-					class="footer-link self-start text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
-				>
-					{link.label}
-				</a>
-			{/each}
-			{#if analyticsPolicy.showPreferences}
-				<button
-					type="button"
-					data-testid="analytics-preferences"
-					aria-controls="analytics-consent"
-					aria-expanded={$analyticsConsentStore.preferencesOpen}
-					class="footer-link self-start text-left text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
-					onclick={() => analyticsConsentStore.openPreferences()}
-				>
-					{settingsLabel}
-				</button>
-			{/if}
+			<FooterGroup label={legalLabel} style="--size-tap-min: 0px;">
+				{#each legalLinks as link}
+					<FooterLink href={link.href}>
+						{link.label}
+					</FooterLink>
+				{/each}
+				{#if analyticsPolicy.showPreferences}
+					<FooterLink
+						type="button"
+						data-testid="analytics-preferences"
+						aria-controls="analytics-consent"
+						aria-expanded={$analyticsConsentStore.preferencesOpen}
+						onclick={() => analyticsConsentStore.openPreferences()}
+					>
+						{settingsLabel}
+					</FooterLink>
+				{/if}
+			</FooterGroup>
 		</nav>
 
 		<!-- CONNECT: off-site profiles -->
-		<div class="flex flex-col gap-2">
-			<span class="footer-group-label">{connectLabel}</span>
+		<FooterGroup label={connectLabel} style="--size-tap-min: 0px;">
 			{#each socialLinks as link}
 				<!-- rel="me": identity-verification backlink (IndieWeb/Mastodon
 				     verification, AI-era entity resolution) — these are Yesid's
 				     own profiles. -->
-				<a
+				<FooterLink
 					href={link.href}
 					target="_blank"
 					rel="me noopener noreferrer"
-					class="footer-link self-start text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					aria-label={link.label}
 				>
 					{link.label}
-				</a>
+				</FooterLink>
 			{/each}
-		</div>
+		</FooterGroup>
 	</div>
 
 	<!-- Row 2: Status bar — below the hazard rule. Operator trim: system
@@ -192,29 +187,20 @@
 		padding-bottom: env(safe-area-inset-bottom, 0px);
 	}
 
-	/* Receiver r2: column headings speak the amber wayfinding voice, like the
-	   contact terminal's section labels. */
-	.footer-group-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		letter-spacing: 2px;
-		text-transform: uppercase;
-		color: var(--accent-text);
-		margin-bottom: 2px;
-	}
-
 	/* GO-w2t5: underline draw, blueprint line at word scale (SAFE-ALWAYS). */
-	.footer-link {
-		background-image: linear-gradient(var(--primary), var(--primary));
-		background-repeat: no-repeat;
-		background-position: 0 100%;
-		background-size: 0% 1px;
-		transition:
-			background-size var(--duration-fast) var(--ease-out),
-			color var(--duration-fast) var(--ease-default);
-	}
-	.footer-link:hover,
-	.footer-link:focus-visible {
-		background-size: 100% 1px;
+	:global {
+		[data-testid='footer'] .footer-link {
+			background-image: linear-gradient(var(--primary), var(--primary));
+			background-repeat: no-repeat;
+			background-position: 0 100%;
+			background-size: 0% 1px;
+			transition:
+				background-size var(--duration-fast) var(--ease-out),
+				color var(--duration-fast) var(--ease-default);
+		}
+		[data-testid='footer'] .footer-link:hover,
+		[data-testid='footer'] .footer-link:focus-visible {
+			background-size: 100% 1px;
+		}
 	}
 </style>
