@@ -1,8 +1,9 @@
 <!--
   Magazine cover header for /blog/[slug].
-  Full-bleed cover story: circuit grid, ManifestoCanvas, watermark, CornerMarks,
-  rotated edge labels, category line, display title, tag pills, meta row.
-  Extends behind nav with negative margin. Same structural pattern as ProjectDetailHeader.
+  DetailHeaderShell owns the shared chrome (circuit grid, ManifestoCanvas,
+  CornerMarks, chevrons, back link, pills nav, quiet toggle, nav-clearance
+  container); this leaf owns the blog voice: watermark, rotated edge labels,
+  category line, display title, tag pills, meta row.
   No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">

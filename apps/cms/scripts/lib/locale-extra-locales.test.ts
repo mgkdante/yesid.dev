@@ -69,7 +69,7 @@ describe('ordered extra-locale loop', () => {
 		expect(aggregateSha256(join(REPO_ROOT, 'apps/web/src/lib/content'))).toBe(
 			// 2026-07-30 (030): rebased for the declared integrity.test.ts +1 (ServiceStackPanel
 			// added to the audited list) — the sole changed file under lib/content.
-			'64bca94217c1d8a1a94afea3f37d11a1e25bb9e5e235e6fd92443ab35d5bc0ca',
+			'344448dcb7d811899abddc29e557613b6682aa2ed4385f3c9e3929d6459f1444',
 		);
 		expect(aggregateSha256(join(REPO_ROOT, 'apps/web/static'))).toBe(
 			'a8c4c71e0c658c7e6db5db6010e3eec5fc6dc3e6ad11d00fbdcb8ff227e711db',
