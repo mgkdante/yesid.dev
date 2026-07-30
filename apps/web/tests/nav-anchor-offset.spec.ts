@@ -196,5 +196,25 @@ test.describe('anchor targets land below the floating nav pill', () => {
 			Math.abs(geometry.centre - viewportCentre),
 			`block centre ${geometry.centre} must sit within ±${band}px of viewport centre ${viewportCentre}`,
 		).toBeLessThanOrEqual(band);
+
+		// S5-440 fold-in: the cascade-reach guard. The PR's headline claim is that
+		// [data-section-index] blocks move WITH the headings — assert it directly on
+		// computed style, against the same independent oracle, so a future selector
+		// split (the exact thing the freeze adjudicated against) fails CI instead of
+		// slipping past the ±15% band above.
+		const clearancePx = await navClearancePx(page, '[data-section-index]');
+		const gapPx = await rootFontPx(page);
+		const margins = await page.evaluate(() =>
+			[...document.querySelectorAll('[data-section-index]')].map((el) =>
+				parseFloat(getComputedStyle(el).scrollMarginTop),
+			),
+		);
+		expect(margins.length).toBeGreaterThan(1);
+		for (const margin of margins) {
+			expect(margin, 'every [data-section-index] block carries the shell offset').toBeCloseTo(
+				clearancePx + gapPx,
+				0,
+			);
+		}
 	});
 });
