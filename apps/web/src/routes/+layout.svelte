@@ -57,6 +57,16 @@
 	// the root layout never remounts, so the orchestrator survives page swaps.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
 
+	// 039E: app.html carries <html lang="%lang%">, substituted server-side, and the
+	// client router never re-runs that substitution — so a client-routed locale
+	// switch left the document advertising the previous language to assistive
+	// technology, :lang() rules, and crawlers while the URL and copy had already
+	// moved. Syncing the element to the locale the layout already derives fixes
+	// that without a full document load, which would strand slice-34's handoff.
+	$effect(() => {
+		if (browser) document.documentElement.lang = locale;
+	});
+
 	$effect(() => {
 		if (data.morphShapes) {
 			setMorphShapes(data.morphShapes);
