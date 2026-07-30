@@ -19,7 +19,7 @@ const BREAKPOINTS = [
 		alias: '--tablet-max',
 		raw: '(max-width: 767px)',
 		rawPattern: /\(max-width:\s*767px\)/g,
-		expected: 23,
+		expected: 24,
 	},
 	{
 		alias: '--desktop-min',
@@ -110,7 +110,7 @@ function featureRecords(lines: MediaLine[]): string[] {
 }
 
 describe('canonical responsive breakpoint contract', () => {
-	it('migrates the frozen 104-feature, 43-path inventory to design aliases only', () => {
+	it('migrates the frozen 105-feature, 44-path inventory to design aliases only', () => {
 		const lines = mediaLines();
 		const canonicalLines = lines.filter((line) =>
 			BREAKPOINTS.some(
@@ -120,9 +120,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = new Set(canonicalLines.map(({ path }) => path));
 
-		expect(canonicalLines).toHaveLength(101);
-		expect(paths.size).toBe(43);
-		expect(featureRecords(canonicalLines)).toHaveLength(104);
+		expect(canonicalLines).toHaveLength(102);
+		expect(paths.size).toBe(44);
+		expect(featureRecords(canonicalLines)).toHaveLength(105);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
@@ -155,17 +155,17 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const frozenFeatures = featureRecords(mediaLines());
 
-		expect(normalized).toHaveLength(148);
-		// 2026-07-29 D1(b), correction cycle 2: both digests intentionally move
-		// again for the two new dual-alias tablet-band lines in HeroTextContent
-		// and HeroMetrics. Each adds one --tablet-min and one --desktop-max
-		// feature; no existing media record moves (148 lines / 104 features /
-		// 43 paths). Orchestrator acceptance requires an independent computation.
+		expect(normalized).toHaveLength(149);
+		// 2026-07-30 G8-1: the extracted ServiceStackPanel owns the moved
+		// --tablet-max stack-pill rule. That adds one media record, feature, and
+		// source path (149 lines / 105 features / 44 paths); --desktop-min stays
+		// at 43 because the parent's four-rule block survives.
+		// Orchestrator acceptance requires an independent computation.
 		expect(digest(normalized)).toBe(
-			'e145b42634b4b0dc1cceabe6fb9c0f338348339ec29ac792d8107fdf6ad47526',
+			'595310bf17c6a7e02e383c6b078165660e33a4745c3bc766af78708a8fab9252',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'1909928a3f6867242a8afc7b6761f128a5c9ba7072dc475980974184dff0567e',
+			'14f7adb0819ed47847f2cc075444428407761fbb74cc461803e6363d73444bae',
 		);
 	});
 

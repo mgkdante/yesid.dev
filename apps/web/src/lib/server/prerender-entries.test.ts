@@ -79,6 +79,10 @@ describe('prerender-entries', () => {
 		expect(ogProjectSlugs([wip, hidden])).toEqual(['work-in-progress']);
 	});
 
+	it('ogProjectSlugs binds generated projects by default', () => {
+		expect(ogProjectSlugs()).toEqual(['yesid-dev', 'transit-data-pipeline']);
+	});
+
 	it('serviceEntries covers every visible service in every locale, and only those', () => {
 		const entries = serviceEntries();
 		const visible = services.filter((s) => s.visible);
