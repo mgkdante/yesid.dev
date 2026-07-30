@@ -418,7 +418,7 @@ describe('analytics consent state', () => {
 		});
 	});
 
-	it('preserves a granted choice while opening preferences across the requested reload', () => {
+	it('preserves a granted choice while opening preferences without reloading', () => {
 		const harness = createHarness({ stored: 'granted' });
 		harness.store.init();
 
@@ -435,7 +435,7 @@ describe('analytics consent state', () => {
 			available: true,
 			preferencesOpen: true,
 		});
-		expect(harness.reload).toHaveBeenCalledOnce();
+		expect(harness.reload).not.toHaveBeenCalled();
 
 		const freshStore = harness.freshStore();
 		freshStore.init();
@@ -824,7 +824,7 @@ describe('analytics consent state', () => {
 		});
 	});
 
-	it('replaces a surviving grant with denied before reloading when removal fails', () => {
+	it('replaces a surviving grant with denied without reloading when removal fails', () => {
 		const harness = createHarness({ stored: 'granted', removeThrows: true });
 		harness.store.init();
 
@@ -841,7 +841,7 @@ describe('analytics consent state', () => {
 			available: true,
 			preferencesOpen: true,
 		});
-		expect(harness.reload).toHaveBeenCalledOnce();
+		expect(harness.reload).not.toHaveBeenCalled();
 
 		const freshStore = harness.freshStore();
 		freshStore.init();
@@ -971,7 +971,7 @@ describe('analytics consent state', () => {
 		});
 	});
 
-	it('keeps preferences open when a requested reload throws', () => {
+	it('keeps granted preferences open without requesting a reload', () => {
 		const harness = createHarness({ stored: 'granted', reloadThrows: true });
 		harness.store.init();
 
@@ -983,7 +983,7 @@ describe('analytics consent state', () => {
 			available: true,
 			preferencesOpen: true,
 		});
-		expect(harness.reload).toHaveBeenCalledOnce();
+		expect(harness.reload).not.toHaveBeenCalled();
 	});
 
 	it.each(['granted', 'denied'] as const)(

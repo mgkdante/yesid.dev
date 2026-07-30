@@ -257,7 +257,11 @@ test('footer reliably reopens, refocuses, and reselects analytics consent', asyn
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
 
 	const preferences = page.getByTestId('analytics-preferences');
+	await page.evaluate(() => Reflect.set(window, '__analyticsConsentPageSentinel', true));
 	await preferences.click();
+	expect(
+		await page.evaluate(() => Reflect.get(window, '__analyticsConsentPageSentinel')),
+	).toBe(true);
 
 	const rail = page.getByTestId('analytics-consent');
 	const accept = page.getByTestId('analytics-consent-accept');
