@@ -28,7 +28,6 @@ export interface AnalyticsConsentDependencies {
 	readSafetyMarker: () => string | null;
 	writeSafetyMarker: () => void;
 	removeSafetyMarker: () => void;
-	reload: () => void;
 	listen: (listener: (value: string | null) => void) => () => void;
 }
 
@@ -332,7 +331,6 @@ export function createAnalyticsConsentStore(
 		},
 		openPreferences(): void {
 			const previousChoice = current.choice;
-			const wasPreferencesOpen = current.preferencesOpen;
 			let markerWritten = false;
 			try {
 				dependencies.writePreferencesMarker(previousChoice);
@@ -382,18 +380,6 @@ export function createAnalyticsConsentStore(
 			}
 			commit({ ...current, choice: previousChoice, preferencesOpen: true });
 			requestPreferencesFocus();
-			if (
-				!wasPreferencesOpen &&
-				previousChoice === 'granted' &&
-				durablyRevoked &&
-				markerWritten
-			) {
-				try {
-					dependencies.reload();
-				} catch {
-					// Reload can be unavailable in embedded browsers; the prior choice remains in memory.
-				}
-			}
 		},
 	};
 }
@@ -425,9 +411,6 @@ export const analyticsConsentStore = createAnalyticsConsentStore({
 	},
 	removeSafetyMarker: () => {
 		if (browser) window.sessionStorage.removeItem(ANALYTICS_DENIAL_SAFETY_KEY);
-	},
-	reload: () => {
-		if (browser) window.location.reload();
 	},
 	listen: (listener) => {
 		if (!browser) return () => {};
