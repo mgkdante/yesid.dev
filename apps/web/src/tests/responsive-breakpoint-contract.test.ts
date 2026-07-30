@@ -25,7 +25,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
 		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 43,
+		expected: 42,
 	},
 	{
 		alias: '--desktop-max',
@@ -110,7 +110,7 @@ function featureRecords(lines: MediaLine[]): string[] {
 }
 
 describe('canonical responsive breakpoint contract', () => {
-	it('migrates the frozen 105-feature, 44-path inventory to design aliases only', () => {
+	it('migrates the frozen 104-feature, 44-path inventory to design aliases only', () => {
 		const lines = mediaLines();
 		const canonicalLines = lines.filter((line) =>
 			BREAKPOINTS.some(
@@ -120,9 +120,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = new Set(canonicalLines.map(({ path }) => path));
 
-		expect(canonicalLines).toHaveLength(102);
+		expect(canonicalLines).toHaveLength(101);
 		expect(paths.size).toBe(44);
-		expect(featureRecords(canonicalLines)).toHaveLength(105);
+		expect(featureRecords(canonicalLines)).toHaveLength(104);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
@@ -155,17 +155,16 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const frozenFeatures = featureRecords(mediaLines());
 
-		expect(normalized).toHaveLength(149);
-		// 2026-07-30 G8-1: the extracted ServiceStackPanel owns the moved
-		// --tablet-max stack-pill rule. That adds one media record, feature, and
-		// source path (149 lines / 105 features / 44 paths); --desktop-min stays
-		// at 43 because the parent's four-rule block survives.
+		expect(normalized).toHaveLength(148);
+		// 2026-07-30 PR-A 034: ProjectsStrip removes its --desktop-min override and
+		// StationTabs pins its measured line box (148 lines / 104 features /
+		// 44 paths; --desktop-min 42).
 		// Orchestrator acceptance requires an independent computation.
 		expect(digest(normalized)).toBe(
-			'6e6a7b0f9640b753a7d362579760e1eab683ca63153cf9f4b492a429e638aa02',
+			'add9a9cc67a81d11f2199e376c2cff69b19f1ddba15ebe7edb4a1b77155b68c3',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'acf39d3d36efc67a06d3499549b64f82419259a6df6f0f6d5188a3e5f0b1286b',
+			'43460f6b45545e0c0192ee70bc49e43c6e2724929336ee3d1db21c561e52969d',
 		);
 	});
 

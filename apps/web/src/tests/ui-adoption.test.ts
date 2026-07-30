@@ -129,7 +129,8 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(blogRow).toContain('size="xs"');
 		expect(projectCard).toContain('size="xs"');
 		expect(collapsible).toContain('text-[0.75rem]');
-		expect(stationTabs).toContain('h-8');
+		// The h-8 pin clipped the listing controls inside a 32px rail; strip geometry now owns the height.
+		expect(stationTabs).not.toContain('h-8');
 		expect(stationTabs).toContain('p-[3px]');
 	});
 

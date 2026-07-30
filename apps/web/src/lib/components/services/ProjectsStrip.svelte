@@ -76,15 +76,9 @@
 	.strip-inner {
 		display: flex;
 		align-items: center;
-		padding: 0.875rem var(--space-page-x);
+		min-height: calc(var(--strip-h) - 3px);
+		padding: calc((var(--strip-h) - 47px) / 2) var(--space-page-x);
 		gap: 1.5rem;
-	}
-
-	@media (--desktop-min) {
-		.strip-inner {
-			padding: 1rem var(--space-page-x);
-			gap: 2rem;
-		}
 	}
 
 	.strip-label {
@@ -145,7 +139,7 @@
 		font-weight: 600;
 		white-space: nowrap;
 		transition: opacity var(--duration-fast);
-		padding-block: 12px;
+		padding-block: 8px;
 		min-height: 44px;
 	}
 	.strip-link:hover {
