@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import * as policy from '../../tools/design-gates';
 
-const POLICY_DIGEST = 'sha256:5eb1d8d364bdfa6e9b1f5a84ddea47419ce6c9a7cec06b32adb784f7db6b0c20';
+const POLICY_DIGEST = 'sha256:5bec722ab3b6dff537a9e8e64381024ae2afb4c6913d00b180dbc8980125c1f6';
 
 function policySnapshot() {
 	return {
@@ -30,9 +30,9 @@ describe('yesid.dev-owned design-gate policy', () => {
 			identities: policy.YESID_IDENTITIES.length,
 		}).toEqual({
 			forbidden: 5,
-			colorMixFiles: 6,
+			colorMixFiles: 7,
 			markerAllowedFiles: 2,
-			brandTokens: 3,
+			brandTokens: 4,
 			aaPairs: 57,
 			identities: 2,
 		});

@@ -302,8 +302,7 @@ describe('global readable typography system', () => {
 
 	it('routes equal-intent back links through the shared back-link token', () => {
 		for (const rel of [
-			'lib/components/projects/ProjectDetailHeader.svelte',
-			'lib/components/blog/BlogDetailHeader.svelte',
+			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/services/ServiceDetailPage.svelte',
 		]) {
 			expect(read(rel), rel).toContain('var(--text-back-link)');

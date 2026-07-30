@@ -14,10 +14,7 @@
   const locale = getLocale();
   import { fillTemplate } from '$lib/utils/labels';
   import { siteLabels } from '$lib/content';
-  import { CornerMarks } from '$lib/components/brand';
-  import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
-  import { boop } from '@yesid/motion/actions';
-  import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
+  import DetailHeaderShell from '$lib/components/shared/DetailHeaderShell.svelte';
 
   let {
     post,
@@ -35,7 +32,6 @@
     blogPage?: import('@repo/shared').BlogPageContent;
   } = $props();
 
-  let headerEl = $state<HTMLElement>(undefined!);
   const detailChrome = siteLabels.blogChrome.detail;
 
   const backHref = $derived(
@@ -114,130 +110,57 @@
 
 </script>
 
-<div
-  bind:this={headerEl}
-  class="blog-detail-header"
-  style="--blog-accent: {accentColor};"
-  data-testid="blog-detail-header"
+<DetailHeaderShell
+  accent={accentColor}
+  testId="blog-detail-header"
+  rootClass="blog-detail-header"
+  mobileMinHeight={380}
+  {backHref}
+  {backLabel}
+  pills={post.tags}
+  pillsAriaLabel={postTagsAria}
 >
-  <div class="header__circuit-grid detail-header-grid"></div>
-  <ManifestoCanvas containerEl={headerEl} />
-
-  <section class="header-section w-full">
-    <!-- Background decorations (absolute layer behind content) -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <CornerMarks size="md" opacity={0.12} />
-
-      <!-- Chevrons (top-right, desktop only) -->
-      <div class="header__decoration absolute right-[55px] top-[70px] hidden items-center gap-1.5 lg:flex" aria-hidden="true">
-        {#each Array(3) as _}
-          <div class="h-3.5 w-3.5 rotate-[-45deg] border-b-2 border-r-2" style="border-color: var(--blog-accent);"></div>
-        {/each}
-      </div>
-
-      <!-- Watermark -->
-      <div class="header__watermark" aria-hidden="true">
-        {watermarkText}
-      </div>
-
-      <!-- Edge labels (rotated, desktop only) -->
-      <div class="header__edge header__edge-left hidden lg:block" aria-hidden="true">
-        {fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
-      </div>
-      <div class="header__edge header__edge-right hidden lg:block" aria-hidden="true">
-        {edgeDate} // {edgeReadingTimeText}
-      </div>
+  {#snippet decorations()}
+    <div class="header__watermark" aria-hidden="true">
+      {watermarkText}
     </div>
 
-    <div class="header__content">
-      <!-- Back link -->
-      <a
-        href={backHref}
-        class="header__back"
-        use:boop={{ scale: 1.05, timing: 200 }}
-      >
-        {backLabel}
-      </a>
-
-      <!-- Category line with ruled borders -->
-      <div class="header__cat-line">
-        {categoryLabel}
-      </div>
-
-      <!-- Display title -->
-      <h1 class="header__title">
-        {#each titleParts as part}
-          {#if part.highlight}
-            <span class="header__title-highlight">{part.text}</span>
-          {:else}
-            {part.text}
-          {/if}
-        {/each}
-      </h1>
-
-      <!-- Tag pills -->
-      <nav class="header__tags" aria-label={postTagsAria}>
-        {#each post.tags as tag}
-          <span class="header__pill">{tag}</span>
-        {/each}
-      </nav>
-
-      <!-- Meta row -->
-      <div class="header__meta">
-        <time datetime={post.date}>{formattedDate}</time>
-        <span class="header__meta-sep" aria-hidden="true"></span>
-        <span>{readingTimeText}</span>
-        <span class="header__meta-sep" aria-hidden="true"></span>
-        <span>{languageName}</span>
-      </div>
-
-      <div class="header__quiet">
-        <QuietModeButton />
-      </div>
+    <div class="header__edge header__edge-left hidden lg:block" aria-hidden="true">
+      {fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
     </div>
-  </section>
-</div>
+    <div class="header__edge header__edge-right hidden lg:block" aria-hidden="true">
+      {edgeDate} // {edgeReadingTimeText}
+    </div>
+  {/snippet}
+
+  {#snippet beforePills()}
+    <div class="header__cat-line">
+      {categoryLabel}
+    </div>
+
+    <h1 class="header__title">
+      {#each titleParts as part}
+        {#if part.highlight}
+          <span class="header__title-highlight">{part.text}</span>
+        {:else}
+          {part.text}
+        {/if}
+      {/each}
+    </h1>
+  {/snippet}
+
+  {#snippet afterPills()}
+    <div class="header__meta">
+      <time datetime={post.date}>{formattedDate}</time>
+      <span class="header__meta-sep" aria-hidden="true"></span>
+      <span>{readingTimeText}</span>
+      <span class="header__meta-sep" aria-hidden="true"></span>
+      <span>{languageName}</span>
+    </div>
+  {/snippet}
+</DetailHeaderShell>
 
 <style>
-  /* ── Container — extends behind nav ────────────────────────── */
-  .blog-detail-header {
-    position: relative;
-    /* accent for the shared .detail-header-grid dot-grid (app.css) — the blog
-       header colors everything off its per-post --blog-accent */
-    --header-accent: var(--blog-accent);
-    /* Full-bleed detail page: the negative-margin/padding pair extends this
-       header's background up UNDER the nav while still reserving the pill's
-       real height. Both halves route through the shell's --nav-clearance (88px,
-       +layout.svelte) — the single source of truth every nav offset reads. */
-    margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
-    padding-top: var(--nav-clearance, 5.5rem);
-    overflow: hidden;
-    background: var(--manifesto);
-    cursor: crosshair;
-  }
-
-  .header-section {
-    position: relative;
-    display: grid;
-    align-items: center;
-    min-height: 380px;
-  }
-
-  @media (--desktop-min) {
-    .header-section {
-      min-height: 440px;
-    }
-  }
-
-  /* ── BG Layer 1: Circuit Grid ──────────────────────────────────
-     Dot-grid pattern lives in the shared .detail-header-grid class (app.css),
-     driven by --header-accent. Only the surface-layout box stays here. */
-  .header__circuit-grid {
-    position: absolute;
-    inset: 0;
-    z-index: var(--z-base);
-  }
-
   /* ── Watermark ─────────────────────────────────────────────── */
   .header__watermark {
     position: absolute;
@@ -247,7 +170,7 @@
     font-size: clamp(100px, 14vw, 180px);
     font-weight: 900;
     /* contrast-exempt: decorative (aria-hidden watermark) */
-    color: color-mix(in srgb, var(--blog-accent) 2.5%, transparent);
+    color: color-mix(in srgb, var(--header-accent) 2.5%, transparent);
     text-transform: uppercase;
     letter-spacing: -0.06em;
     pointer-events: none;
@@ -264,7 +187,7 @@
     font-size: 10px;
     letter-spacing: 2px;
     /* contrast-exempt: decorative (aria-hidden edge ornament) */
-    color: var(--blog-accent); opacity: var(--chrome-ink-opacity);
+    color: var(--header-accent); opacity: var(--chrome-ink-opacity);
     text-transform: uppercase;
     white-space: nowrap;
     z-index: calc(var(--z-content) + 1);
@@ -280,61 +203,6 @@
     transform: translateY(-50%) rotate(90deg);
   }
 
-  /* ── Decorations ───────────────────────────────────────────── */
-  .header__decoration {
-    z-index: calc(var(--z-content) + 1);
-  }
-
-  /* ── Center Content ────────────────────────────────────────── */
-  .header__content {
-    position: relative;
-    z-index: calc(var(--z-content) + 9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    margin-inline: auto;
-    /* Top padding clears the fixed floating nav. The wrapper's
-       -nav-clearance/+nav-clearance trick only extends the background up under the
-       nav; it does NOT push content down, so the first element (the back link)
-       must clear the nav here or it renders hidden beneath it. */
-    padding: 4.5rem 1.25rem 2.5rem;
-  }
-
-  @media (--desktop-min) {
-    .header__content {
-      padding: 5.5rem 2rem 3.75rem;
-    }
-  }
-
-  /* ── Back link ─────────────────────────────────────────────── */
-  .header__back {
-    display: inline-block;
-    margin-bottom: 1.25rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-back-link);
-    letter-spacing: 0;
-    color: var(--blog-accent);
-    text-decoration: none;
-    opacity: 0.7;
-    transition: opacity var(--duration-normal) ease;
-  }
-
-  .header__back:hover {
-    opacity: 1;
-  }
-
-  .header__quiet {
-    margin-top: 1.25rem;
-  }
-
-  @media (--desktop-min) {
-    .header__back {
-      margin-bottom: 1.75rem;
-    }
-  }
-
   /* ── Category line with ruled borders ──────────────────────── */
   .header__cat-line {
     display: flex;
@@ -346,7 +214,7 @@
     font-size: 11px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--blog-accent);
+    color: var(--header-accent);
   }
 
   .header__cat-line::before,
@@ -354,7 +222,7 @@
     content: '';
     width: 40px;
     height: 1px;
-    background: color-mix(in srgb, var(--blog-accent) 30%, transparent);
+    background: color-mix(in srgb, var(--header-accent) 30%, transparent);
   }
 
   @media (--desktop-min) {
@@ -373,52 +241,16 @@
     line-height: 0.95;
     color: var(--foreground);
     margin-bottom: 1.25rem;
-    text-shadow: 0 0 60px color-mix(in srgb, var(--blog-accent) 12%, transparent);
+    text-shadow: 0 0 60px color-mix(in srgb, var(--header-accent) 12%, transparent);
   }
 
   .header__title-highlight {
-    color: var(--blog-accent);
+    color: var(--header-accent);
   }
 
   @media (--desktop-min) {
     .header__title {
-      text-shadow: 0 0 80px color-mix(in srgb, var(--blog-accent) 12%, transparent);
-    }
-  }
-
-  /* ── Tag pills ─────────────────────────────────────────────── */
-  .header__tags {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 1.25rem;
-  }
-
-  @media (--desktop-min) {
-    .header__tags {
-      gap: 8px;
-    }
-  }
-
-  .header__pill {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--blog-accent) 85%, transparent);
-    border: 1px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
-    border-radius: var(--radius-pill);
-    padding: 4px 12px;
-    background: color-mix(in srgb, var(--blog-accent) 3%, transparent);
-  }
-
-  @media (--desktop-min) {
-    .header__pill {
-      font-size: var(--text-caption);
-      color: color-mix(in srgb, var(--blog-accent) 90%, transparent);
-      border-color: color-mix(in srgb, var(--blog-accent) 15%, transparent);
-      padding: 7px 18px;
-      background: color-mix(in srgb, var(--blog-accent) 4%, transparent);
+      text-shadow: 0 0 80px color-mix(in srgb, var(--header-accent) 12%, transparent);
     }
   }
 
@@ -430,14 +262,14 @@
     gap: 1rem;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: color-mix(in srgb, var(--blog-accent) 85%, transparent);
+    color: color-mix(in srgb, var(--header-accent) 85%, transparent);
   }
 
   .header__meta-sep {
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: var(--blog-accent);
+    background: var(--header-accent);
     opacity: 0.4;
   }
 </style>
