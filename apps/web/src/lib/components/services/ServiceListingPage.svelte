@@ -49,10 +49,9 @@
 		const target = document.querySelector<HTMLElement>(`#service-${id}`);
 		if (!target) return;
 		// Lenis ignores CSS scroll-margin-top, so the mobile offset that clears the
-		// sticky tabs (.service-viewport scroll-margin-top: 8.75rem) was being dropped
-		// and the card landed jammed under the tabs. Read the computed value and pass it
-		// to Lenis as a negative offset. Desktop sets no scroll-margin-top (0), so its
-		// sticky-centered behaviour is unchanged.
+		// sticky tabs was being dropped and the card landed jammed under the tabs.
+		// Read the computed value and pass it to Lenis as a negative offset. Desktop
+		// sets no scroll-margin-top (0), so its sticky-centered behaviour is unchanged.
 		const offset = -(parseFloat(getComputedStyle(target).scrollMarginTop) || 0);
 		if (lenis) {
 			lenis.scrollTo(target, { offset });
@@ -183,5 +182,6 @@
 		position: sticky;
 		bottom: 0;
 		z-index: var(--z-rail);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
 	}
 </style>

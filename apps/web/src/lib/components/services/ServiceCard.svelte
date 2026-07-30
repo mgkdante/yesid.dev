@@ -295,7 +295,7 @@
 			min-height: 0;
 			padding-block: clamp(4rem, 14svh, 7rem);
 			margin-bottom: clamp(3rem, 12svh, 6rem);
-			scroll-margin-top: 8.75rem;
+			scroll-margin-top: calc(var(--nav-clearance) + var(--strip-h) + 1rem);
 			scroll-snap-align: none;
 		}
 		.service-viewport-first {

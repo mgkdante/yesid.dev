@@ -141,7 +141,7 @@
 		<nav
 			bind:this={navRef}
 			aria-label={serviceNavAria}
-			class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
+			class="station-tabs flex w-full overflow-x-auto p-[3px] justify-start xl:justify-center"
 			class:swipe-lock={swipeActive}
 			style="background: var(--primary); border: none;"
 			use:scrollChain
@@ -191,7 +191,7 @@
 		<Tabs.List
 			bind:ref={tabsListRef}
 			variant="line"
-				class="station-tabs flex h-8 w-full overflow-x-auto p-[3px] justify-start xl:justify-center {swipeActive ? 'swipe-lock' : ''}"
+			class="station-tabs flex w-full overflow-x-auto p-[3px] justify-start xl:justify-center {swipeActive ? 'swipe-lock' : ''}"
 			style="background: var(--primary); border: none;"
 			ontouchstart={onTouchStart}
 			ontouchmove={onTouchMove}
@@ -247,9 +247,11 @@
 		border-top: none;
 		border-left: none;
 		border-right: none;
-		padding: 1rem 1.25rem;
+		min-height: 44px;
+		padding: calc((var(--strip-h) - 12px - 1.25rem) / 2) 1.25rem;
 		font-family: var(--font-mono);
 		font-size: var(--text-small);
+		line-height: 1.25rem;
 		transition: opacity var(--duration-fast) var(--ease-default);
 	}
 
