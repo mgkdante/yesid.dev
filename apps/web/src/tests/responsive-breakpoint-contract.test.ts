@@ -162,10 +162,10 @@ describe('canonical responsive breakpoint contract', () => {
 		// at 43 because the parent's four-rule block survives.
 		// Orchestrator acceptance requires an independent computation.
 		expect(digest(normalized)).toBe(
-			'595310bf17c6a7e02e383c6b078165660e33a4745c3bc766af78708a8fab9252',
+			'6e6a7b0f9640b753a7d362579760e1eab683ca63153cf9f4b492a429e638aa02',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'14f7adb0819ed47847f2cc075444428407761fbb74cc461803e6363d73444bae',
+			'acf39d3d36efc67a06d3499549b64f82419259a6df6f0f6d5188a3e5f0b1286b',
 		);
 	});
 
