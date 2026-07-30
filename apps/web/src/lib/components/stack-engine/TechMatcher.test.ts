@@ -488,6 +488,28 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		expect(card.querySelector('[data-testid="shape-product"]')).toBeNull();
 	});
 
+	it('round 4 seam: product → clear → re-pick resets both the card and parent stepper', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine, animate: false } });
+		const stepper = screen.getByTestId('engine-stepper');
+		const current = () => stepper.querySelector('[aria-current="step"]')?.textContent ?? '';
+
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		await fireEvent.click(screen.getByTestId('shape-view-toggle'));
+		expect(screen.getByTestId('shape-product')).toBeTruthy();
+		expect(current()).toContain('see it as a product');
+
+		await fireEvent.click(screen.getByTestId('pick-clear'));
+		expect(screen.queryByTestId('build-shape')).toBeNull();
+		expect(current()).toContain('pick parts');
+
+		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
+		const card = screen.getByTestId('build-shape');
+		expect(card.querySelector('[data-testid="shape-blueprint"]')).toBeTruthy();
+		expect(card.querySelector('[data-testid="shape-product"]')).toBeNull();
+		expect(current()).toContain('read your build');
+	});
+
 	it('round 4 morph hygiene: exactly ONE flip id per tech in the card (only the visible drawing variant tags)', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine, animate: false } });
@@ -573,7 +595,7 @@ describe('TechMatcher finale 4c — the phrase leads, the journey guides', () =>
 // happy-dom can't compute scoped component CSS (engine-fullbleed precedent).
 describe('yellow-conversion rule — the availability door speaks accent, softly', () => {
 	const src = readFileSync(
-		resolve(process.cwd(), 'src/lib/components/stack-engine/TechMatcher.svelte'),
+		resolve(process.cwd(), 'src/lib/components/stack-engine/BuildShapeCard.svelte'),
 		'utf-8',
 	);
 
