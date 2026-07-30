@@ -12,10 +12,11 @@
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
-	import { boop, pressBounce } from '@yesid/motion/actions';
+	import { boop } from '@yesid/motion/actions';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
+	import ServiceStackPanel from './ServiceStackPanel.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
 	import TocNav from '$lib/components/shared/TocNav.svelte';
@@ -285,52 +286,17 @@
 				     Operator order: Stack first (open by default), then Related projects. -->
 				{#if hasStack || relatedProjects.length > 0}
 					<aside class="projects-panel">
-						{#if service.stack && service.stack.length > 0}
-							<CollapsibleSection
-								title="{stackLabel} ({service.stack.length})"
-								sectionKey="svc-stack-desktop"
-								open={true}
-							>
-								{#snippet icon()}
-									<SectionIcon name="layers" class="h-4 w-4 shrink-0 text-primary" />
-								{/snippet}
-								<div class="stack-pills">
-									{#each service.stack as tech}
-										<span class="stack-pill">{tech}</span>
-									{/each}
-								</div>
-								<a href={localizeHref('/tech-stack', locale)} class="projects-all tap-feedback">
-									{seeStackLabel}
-								</a>
-							</CollapsibleSection>
-						{/if}
-						{#if relatedProjects.length > 0}
-							<CollapsibleSection
-								title="{relatedProjectsHeading} ({relatedProjects.length})"
-								sectionKey="svc-related-desktop"
-								open={true}
-							>
-								{#snippet icon()}
-									<SectionIcon name="briefcase" class="h-4 w-4 shrink-0 text-primary" />
-								{/snippet}
-								<nav class="projects-list" aria-label={relatedProjectsAria}>
-									{#each relatedProjects as project}
-										<a
-											href={localizeHref(`/projects/${project.slug}`, locale)}
-											class="project-link tap-press"
-											use:boop={{ scale: 1.02, timing: 150 }}
-											use:pressBounce
-										>
-											<span class="project-dot" aria-hidden="true"></span>
-											<span class="project-name">{resolveLocale(project.title, locale)}</span>
-										</a>
-									{/each}
-								</nav>
-								<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
-									{seeAllProjectsLabel}
-								</a>
-							</CollapsibleSection>
-						{/if}
+						<ServiceStackPanel
+							variant="desktop"
+							stack={service.stack ?? []}
+							{relatedProjects}
+							{locale}
+							{stackLabel}
+							{seeStackLabel}
+							{relatedProjectsHeading}
+							{relatedProjectsAria}
+							{seeAllProjectsLabel}
+						/>
 					</aside>
 				{/if}
 			</div>
@@ -340,54 +306,17 @@
 		     Operator order: Stack first (open by default), then Related projects. -->
 		{#if hasStack || relatedProjects.length > 0}
 			<div class="projects-mobile">
-				{#if service.stack && service.stack.length > 0}
-					<CollapsibleSection
-						title="{stackLabel} ({service.stack.length})"
-						sectionKey="svc-stack-mobile"
-						anchor="svc-stack"
-						open={true}
-					>
-						{#snippet icon()}
-							<SectionIcon name="layers" class="h-4 w-4 shrink-0 text-primary" />
-						{/snippet}
-						<div class="stack-pills">
-							{#each service.stack as tech}
-								<span class="stack-pill">{tech}</span>
-							{/each}
-						</div>
-						<a href={localizeHref('/tech-stack', locale)} class="projects-all tap-feedback">
-							{seeStackLabel}
-						</a>
-					</CollapsibleSection>
-				{/if}
-				{#if relatedProjects.length > 0}
-					<CollapsibleSection
-						title="{relatedProjectsHeading} ({relatedProjects.length})"
-						sectionKey="svc-related-mobile"
-						anchor="svc-related"
-						open={true}
-					>
-						{#snippet icon()}
-							<SectionIcon name="briefcase" class="h-4 w-4 shrink-0 text-primary" />
-						{/snippet}
-						<nav class="projects-list" aria-label={relatedProjectsAria}>
-							{#each relatedProjects as project}
-								<a
-									href={localizeHref(`/projects/${project.slug}`, locale)}
-									class="project-link tap-press"
-									use:boop={{ scale: 1.02, timing: 150 }}
-									use:pressBounce
-								>
-									<span class="project-dot" aria-hidden="true"></span>
-									<span class="project-name">{resolveLocale(project.title, locale)}</span>
-								</a>
-							{/each}
-						</nav>
-						<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
-							{seeAllProjectsLabel}
-						</a>
-					</CollapsibleSection>
-				{/if}
+				<ServiceStackPanel
+					variant="mobile"
+					stack={service.stack ?? []}
+					{relatedProjects}
+					{locale}
+					{stackLabel}
+					{seeStackLabel}
+					{relatedProjectsHeading}
+					{relatedProjectsAria}
+					{seeAllProjectsLabel}
+				/>
 			</div>
 		{/if}
 
@@ -558,42 +487,6 @@
 		color: var(--secondary-foreground);
 		max-width: 60ch;
 		margin-bottom: 1.5rem;
-	}
-
-	/* Stack pills — visual pun: rendered as a literal vertical STACK of layers.
-	   Connected slabs (shared edges, square middles, rounded top/bottom) read as
-	   one stack rather than scattered tags. Shown inside the Stack
-	   CollapsibleSection, under Related projects (right rail / mobile). */
-	.stack-pills {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		gap: 0;
-		margin-bottom: 0.75rem;
-	}
-
-	.stack-pill {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		padding: 0.5rem 0.75rem;
-		border: 1.5px solid var(--primary);
-		border-bottom-width: 0;
-		border-radius: 0;
-		color: var(--primary);
-		background: color-mix(in srgb, var(--primary) 5%, transparent);
-		cursor: default;
-		text-align: left;
-	}
-
-	.stack-pill:first-child {
-		border-top-left-radius: var(--radius-md);
-		border-top-right-radius: var(--radius-md);
-	}
-
-	.stack-pill:last-child {
-		border-bottom-width: 1.5px;
-		border-bottom-left-radius: var(--radius-md);
-		border-bottom-right-radius: var(--radius-md);
 	}
 
 	/* ── Body area ── */
@@ -777,58 +670,6 @@
 		}
 	}
 
-	.projects-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.project-link {
-		display: flex;
-		align-items: center;
-		gap: 0.625rem;
-		padding: 0.625rem 0.75rem;
-		text-decoration: none;
-		color: var(--foreground);
-		font-size: var(--text-body);
-		font-weight: 500;
-		border-radius: var(--radius-md);
-		transition: background var(--duration-fast), color var(--duration-fast);
-	}
-	.project-link:hover {
-		background: color-mix(in srgb, var(--primary) 8%, transparent);
-	}
-	.project-link:hover .project-name {
-		color: var(--primary);
-	}
-
-	.project-dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		background: var(--primary);
-		flex-shrink: 0;
-	}
-
-	.project-name {
-		transition: color var(--duration-fast);
-	}
-
-	.projects-all {
-		display: inline-block;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		color: var(--primary);
-		text-decoration: none;
-		margin-top: 0.5rem;
-		padding-top: 0.75rem;
-		border-top: 1px solid var(--border-subtle);
-		transition: opacity var(--duration-fast);
-	}
-	.projects-all:hover {
-		text-decoration: underline;
-	}
-
 	/* ── Related projects mobile (bottom of page) ── */
 
 	.projects-mobile {
@@ -879,9 +720,5 @@
 			margin-bottom: 1rem;
 		}
 
-		.stack-pill {
-			font-size: var(--text-caption);
-			padding: 0.4rem 0.625rem;
-		}
 	}
 </style>

@@ -19,7 +19,10 @@ vi.mock('$lib/og/fonts', () => ({
   getOgFonts: () => [],
 }));
 
-import { GET } from './+server';
+import { blogPosts } from '$lib/content/blog';
+import { projects } from '$lib/content/projects';
+import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+import { entries, GET } from './+server';
 
 function makeEvent(params: { type: string; slug: string }): RequestEvent {
   const url = new URL(`http://localhost/og/${params.type}/${params.slug}.png`);
@@ -30,6 +33,25 @@ describe('GET /og/[type]/[slug].png', () => {
   beforeEach(() => {
     loadOgTitleMock.mockReset();
     renderOgPngMock.mockReset();
+  });
+
+  it('prerenders the exact raw blog and public-project path matrix', () => {
+    const expectedPaths = [
+      ...blogPosts.map((post) => `/og/blog/${post.slug}.png`),
+      ...projects
+        .filter((project) => project.status !== 'private')
+        .flatMap((project) =>
+          PUBLISHED_LOCALES.map(
+            (locale) =>
+              `/og/project/${project.slug}${locale === 'en' ? '' : `.${locale}`}.png`,
+          ),
+        ),
+    ].sort();
+    const actualPaths = entries()
+      .map(({ type, slug }) => `/og/${type}/${slug}.png`)
+      .sort();
+
+    expect(actualPaths).toEqual(expectedPaths);
   });
 
   it('returns 200 image/png on happy path', async () => {
