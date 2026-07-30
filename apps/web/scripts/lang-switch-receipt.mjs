@@ -19,13 +19,16 @@ const { chromium } = loadPlaywrightCore();
 // Run against a live Vite dev target:
 // node scripts/lang-switch-receipt.mjs http://127.0.0.1:5179
 //
-// Proves the in-app language switch performs a REAL document navigation.
-// `<html lang>` is stamped server-side only (hooks.server.ts transformPageChunk
-// over app.html's %lang%), so a client-routed switch changed the URL while
-// documentElement.lang — and every string resolved from it — stayed on the old
-// locale. yesid.dev has exactly ONE locale anchor (LanguageToggle, rendered by
-// Nav); it CYCLES en → fr → es → en, so this receipt walks the whole cycle and
-// re-checks the reload attribute on each hop's anchor before clicking it.
+// Proves the in-app language switch keeps documentElement.lang in step WITHOUT
+// replacing the document. `<html lang>` is stamped server-side (hooks.server.ts
+// transformPageChunk over app.html's %lang%), and the root layout's $effect
+// re-syncs it from the derived locale on every client-routed switch. A full
+// document load was REJECTED as the fix for this bug: it strands the slice-34.1
+// locale handoff (the new page's afterNavigate fires as `enter`, so the search
+// snapshot is never read). yesid.dev has exactly ONE locale anchor
+// (LanguageToggle, rendered by Nav); it CYCLES en → fr → es → en, so this
+// receipt walks the whole cycle asserting each hop stays in the SAME document
+// while lang tracks the locale.
 const targetArg = process.argv[2];
 if (!targetArg) {
 	throw new Error('Usage: node scripts/lang-switch-receipt.mjs <vite-dev-url>');
@@ -99,11 +102,11 @@ try {
 			const languageSwitch = page.getByTestId('language-toggle');
 			await languageSwitch.waitFor({ state: 'visible' });
 
-			// The client router must be hydrated before the click, or the click is a
-			// native document navigation and the receipt passes even when the reload
-			// attribute is absent — i.e. it would prove nothing about the fix. This
-			// has to be re-established on EVERY hop: each switch replaces the
-			// document, so the next click needs the fresh document hydrated too.
+			// The client router must be hydrated before the click, or the click falls
+			// back to a native document navigation — the document id would change and
+			// the sameDocument assertion below would FAIL as a hydration artifact
+			// rather than a real finding. Settle first so a failure can only mean the
+			// switch itself replaced the document.
 			await page.waitForLoadState('load');
 			await page.waitForLoadState('networkidle');
 
@@ -119,10 +122,9 @@ try {
 				page.waitForURL((url) => url.pathname === hop.expectedPath),
 				languageSwitch.click(),
 			]);
-			// data-sveltekit-reload makes this a full document navigation, so the
-			// asserted DOM belongs to a document that is still loading at
-			// domcontentloaded; wait for the heading itself rather than sampling
-			// whatever exists at that instant.
+			// The switch is client-routed: the localized content lands when SvelteKit
+			// resolves the async load, so wait for the expected heading itself rather
+			// than sampling whatever exists at that instant.
 			await page.waitForLoadState('load');
 
 			const finalUrl = new URL(page.url());
