@@ -280,6 +280,7 @@ describe('chrome companion consolidation', () => {
 			'lib/components/projects/ProjectGlancePanel.svelte',
 			'lib/components/projects/ProjectDetailHeader.svelte',
 			'lib/components/services/ServiceDetailPage.svelte',
+			'lib/components/services/ServiceStackPanel.svelte',
 		];
 
 		const offenders = consumers.filter((file) =>
