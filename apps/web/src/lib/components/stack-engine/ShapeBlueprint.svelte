@@ -53,6 +53,8 @@
 		BLUEPRINT_PAD as PAD,
 		BLUEPRINT_STAMP_H as STAMP_H,
 		layoutBlueprint,
+		shapeGhostId,
+		shapeLinks,
 	} from './blueprint-layout';
 	import { LAYER_NAMES } from './layer-teaching';
 	import { layerGapLine } from './stack-shape';
@@ -87,16 +89,12 @@
 	// <pattern> id must stay unique per instance (SVG ids are document-global).
 	const uid = $props.id();
 
-	/** Ghost placeholder id for a missing layer — never collides with tech ids. */
-	const ghostId = (layer: StackLayer): string => `ghost-${layer}`;
-
 	// Synthesized links: real picks in their layers + ONE ghost per missing
-	// layer. layoutBlueprint re-groups by STACK_LAYERS order, so the drawing
-	// always shows all four rows — the complete picture the operator asked for.
-	const links = $derived<ArchetypeTechLink[]>([
-		...picked.map((p, i) => ({ id: p.id, layer: p.layer, sort: i })),
-		...missing.map((layer) => ({ id: ghostId(layer), layer, sort: 0 })),
-	]);
+	// layer (shapeLinks — shared with BuildShapeCard's wrapper width).
+	// layoutBlueprint re-groups by STACK_LAYERS order, so the drawing always
+	// shows all four rows — the complete picture the operator asked for.
+	const ghostId = shapeGhostId;
+	const links = $derived<ArchetypeTechLink[]>(shapeLinks(picked, missing));
 
 	const layout = $derived(layoutBlueprint(links, { stacked }));
 	const frame = $derived(layout.frame);
@@ -422,7 +420,7 @@
 
 	/* The established bp-ghost treatment: group dims, rect dashes. */
 	.sbp-box-ghost {
-		opacity: var(--bp-ghost-opacity);
+		opacity: var(--bp-ghost-opacity, 0.4);
 	}
 
 	.sbp-box-ghost .sbp-box-rect {

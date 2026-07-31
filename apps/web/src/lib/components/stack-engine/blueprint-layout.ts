@@ -125,6 +125,25 @@ function blueprintFrame(
 	};
 }
 
+/** Ghost id for a missing layer in the compose ("Your build") drawing — ONE
+ *  definition so link construction and ghost detection can never drift. */
+export const shapeGhostId = (layer: StackLayer): string => `ghost-${layer}`;
+
+/** The compose drawing's link list: picks in pick order + one ghost per
+ *  missing layer. Shared by ShapeBlueprint (rendering) and BuildShapeCard
+ *  (the wrapper's definite width — S5-442 finding 1: a flex item with only a
+ *  max-width on the replaced SVG contributes the 300×150 CSS default object
+ *  size, so the wide drawing froze at ~300px at every viewport). */
+export function shapeLinks(
+	picked: readonly { id: string; layer: StackLayer }[],
+	missing: readonly StackLayer[],
+): ArchetypeTechLink[] {
+	return [
+		...picked.map((p, i) => ({ id: p.id, layer: p.layer, sort: i })),
+		...missing.map((layer) => ({ id: shapeGhostId(layer), layer, sort: 0 })),
+	];
+}
+
 export function layoutBlueprint(
 	links: readonly ArchetypeTechLink[],
 	opts: { stacked?: boolean; maxPerRow?: number } = {},

@@ -172,11 +172,14 @@ describe('canonical responsive breakpoint contract', () => {
 		// reduced-motion rule shifted 425 -> 434. Counts remain
 		// 145 lines / 101 features / 45 paths; aliases are 31/24/40/6.
 		// Independent derivations matched and every delta was attributed both ways.
+		// 2026-07-31 S5-442 cure: BuildShapeCard's definite-width rule (+7
+		// lines inside the --desktop-min block) shifted its later media lines;
+		// counts/features/paths unchanged. Attributed via the test's own diff.
 		expect(digest(normalized)).toBe(
-			'2b6109e85974548b1c36f423f3093f370d1f7efeed925752b2ae84d940eb135b',
+			'65bfa4048048506474d6ee29384dd2359bf25a9336b62b2eb3390bff0e7b3d1b',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'760b3a6e2d5541b8fd3c9399b4ac6c345e28866ae3bf76b445919ee35b32f0b1',
+			'b6c9ebd79ecf1a0d2ac362da75cb48887bdc5f517f755fa154c91e9fbb724c3c',
 		);
 	});
 

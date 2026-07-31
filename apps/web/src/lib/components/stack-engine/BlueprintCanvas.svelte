@@ -573,7 +573,7 @@
 
 	/* …missing techs ghost out (group opacity dims the layer tab with it). */
 	.bp-ghost {
-		opacity: var(--bp-ghost-opacity);
+		opacity: var(--bp-ghost-opacity, 0.4);
 	}
 
 	.bp-ghost .bp-box-rect {

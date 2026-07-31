@@ -19,6 +19,7 @@
 		layerGapLine,
 		readShape,
 	} from './stack-shape';
+	import { layoutBlueprint, shapeLinks } from './blueprint-layout';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
 	import ProductPreview from './ProductPreview.svelte';
 
@@ -119,6 +120,15 @@
 				Boolean(p.layer && (STACK_LAYERS as readonly string[]).includes(p.layer)),
 			)
 			.map(({ id, name, layer }) => ({ id, name, layer })),
+	);
+	/** The wide drawing's natural frame width — the SAME shapeLinks +
+	 *  layoutBlueprint derivation ShapeBlueprint renders from. The wrapper
+	 *  needs it as a DEFINITE width: with flex-basis auto and only a
+	 *  max-width on the replaced SVG, the flex item contributes the 300×150
+	 *  CSS default object size and the drawing freezes at ~300px at every
+	 *  desktop viewport (S5-442 finding 1). */
+	const wideFrameWidth = $derived(
+		layoutBlueprint(shapeLinks(shapePicked, shape.missing), { stacked: false }).frame.width,
 	);
 
 	// ── Finale (4c): THE PHRASE BUILDER — the card now LEADS with a
@@ -223,7 +233,7 @@
 			     one out of the a11y tree; only the VISIBLE one flip-tags
 			     (MediaQuery mirrors the CSS breakpoint). -->
 			{#if shapeView === 'drawing' || shapePicked.length === 0}
-				<div class="shape-drawing shape-drawing-wide">
+				<div class="shape-drawing shape-drawing-wide" style:--sbp-natural={`${wideFrameWidth}px`}>
 					<ShapeBlueprint
 						picked={shapePicked}
 						missing={shape.missing}
@@ -330,6 +340,12 @@
 
 		.shape-drawing-wide {
 			display: block;
+			/* DEFINITE width for the flex item: min() caps at the drawing's
+			   natural frame so small pick-counts keep the notes beside it,
+			   while crowded frames take the full line and scale down. Without
+			   this the replaced SVG contributes the 300×150 default object
+			   size and freezes as a thumbnail (S5-442 finding 1). */
+			width: min(100%, var(--sbp-natural, 100%));
 		}
 
 		.shape-drawing-stacked {
