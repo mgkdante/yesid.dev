@@ -112,7 +112,12 @@
 	});
 </script>
 
-<main class="tech-stack-page">
+<!-- The page landmark belongs to the root layout's `main`; this wrapper is a
+     plain <div> so /tech-stack ships exactly ONE main landmark (a `main` may
+     not descend from another `main` — axe landmark-no-duplicate-main /
+     landmark-main-is-top-level). The .tech-stack-page style hook below binds
+     by class, so the swap is markup-only. -->
+<div class="tech-stack-page">
 	<!-- ═══ HERO ZONE ═══ -->
 	<section class="hero" data-testid="tech-stack-hero">
 		<div class="hero-overline">
@@ -199,7 +204,7 @@
 	</div>
 
 	<CtaBand testidPrefix="tech-stack-cta" />
-</main>
+</div>
 
 <style>
 	.tech-stack-page {

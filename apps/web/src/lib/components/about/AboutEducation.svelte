@@ -18,7 +18,7 @@
 <div class="group h-full" use:cursorGlow>
 	<Card class="h-full p-3" data-testid="about-education">
 		<div class="relative flex h-full flex-col">
-			<StopLabel {stop} {label} />
+			<StopLabel {stop} {label} as="h2" />
 
 			<div class="edu-line mt-4 flex flex-1 flex-col justify-center">
 				{#each education as item}

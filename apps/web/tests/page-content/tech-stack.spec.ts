@@ -14,6 +14,20 @@ test.describe('/tech-stack page content', () => {
     expect(text?.trim().length).toBeGreaterThan(0);
   });
 
+  // WS10-041: the route used to wrap its content in a second <main>, nested
+  // inside the layout's — invalid HTML and a broken landmark map for assistive
+  // tech (axe landmark-no-duplicate-main / landmark-main-is-top-level). It also
+  // made every page.locator('main') on this route strict-mode ambiguous.
+  test('tech-stack ships exactly one <main> landmark', async ({ page }) => {
+    await page.goto('/tech-stack');
+
+    await expect(page.locator('main')).toHaveCount(1);
+    await expect(page.locator('main main')).toHaveCount(0);
+    // The hero and the engine band both live inside that single landmark.
+    await expect(page.locator('main [data-testid="tech-stack-hero"]')).toBeVisible();
+    await expect(page.locator('main [data-testid="engine-band"]')).toBeVisible();
+  });
+
   test('tech-stack hero renders terminal lines (visible or hidden per motion)', async ({ page }) => {
     await page.goto('/tech-stack');
 
