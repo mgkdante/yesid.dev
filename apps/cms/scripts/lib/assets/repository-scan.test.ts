@@ -1321,7 +1321,7 @@ describe("yesid.dev real repository contract", () => {
 
     const expectedImageTags = [
       "apps/web/src/lib/components/about/AboutEducation.svelte:34",
-      "apps/web/src/lib/components/about/AboutIdentity.svelte:59",
+      "apps/web/src/lib/components/about/AboutIdentity.svelte:61",
       "apps/web/src/lib/components/about/AboutLanguages.svelte:47",
       "apps/web/src/lib/components/about/AboutPolaroids.svelte:77",
       "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte:24",
