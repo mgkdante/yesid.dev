@@ -54,6 +54,46 @@ describe('AboutPage', () => {
 		expect(labels).toContain('STOP 08 · SNAPSHOTS');
 	});
 
+	// WS10-041: /about shipped ZERO heading elements in all three locales — the
+	// bento's information architecture was carried by styling alone (WCAG 1.3.1
+	// Info and Relationships, Level A; axe page-has-heading-one). The cure is
+	// markup semantics over the copy that already existed: the identity title
+	// becomes the single <h1>, and every other card's existing stop label
+	// becomes that card's <h2>. No new strings. This pins the outline so it
+	// cannot silently go back to zero.
+	it('exposes a programmatic heading outline: one h1, then h2 section titles', () => {
+		const { container } = render(AboutPage, {
+			props: { aboutPage: aboutPageContent, weather: null },
+		});
+		const headings = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+		const levels = headings.map((el) => Number(el.tagName[1]));
+
+		// Exactly one h1, and it leads the document order.
+		expect(levels.filter((l) => l === 1)).toHaveLength(1);
+		expect(levels[0]).toBe(1);
+		expect(headings[0].textContent?.trim()).toBe('Curious builder, lifelong tinkerer');
+
+		// Ten bento cards carry a stop label; the identity card's is the only one
+		// that stays a plain <div>, because its card is headed by the h1 instead.
+		// (AboutTrain is stopless chrome and contributes no heading.)
+		const stopLabels = Array.from(container.querySelectorAll('[data-slot="stop-label"]'));
+		expect(stopLabels).toHaveLength(10);
+		expect(stopLabels.filter((el) => el.tagName === 'H2')).toHaveLength(9);
+		expect(
+			stopLabels.find((el) => el.textContent === 'STOP 00 · IDENTITY')?.tagName,
+		).toBe('DIV');
+
+		// Every h2 is a stop label, and no deeper level exists yet.
+		expect(levels.filter((l) => l === 2)).toHaveLength(9);
+		expect(levels.filter((l) => l > 2)).toHaveLength(0);
+		expect(headings).toHaveLength(10);
+
+		// No skipped levels anywhere in document order (h1 -> h2 -> ... only).
+		for (let i = 1; i < levels.length; i++) {
+			expect(levels[i] - levels[i - 1]).toBeLessThanOrEqual(1);
+		}
+	});
+
 	it('renders the identity section', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-identity')).toBeTruthy();
@@ -69,7 +109,15 @@ describe('AboutPage', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		const identity = screen.getByTestId('about-identity');
 		expect(identity.querySelector('[data-slot="status-dot"]')).toBeNull();
-		expect(identity.querySelector('h1')).toBeNull();
+		// WS10-041: the card DOES carry an <h1> now — /about had zero headings
+		// (WCAG 1.3.1). It is the identity TITLE, wearing the label-station
+		// styling it always had; the old big NAME headline this line used to
+		// guard against stays gone (asserted below).
+		const identityH1s = identity.querySelectorAll('h1');
+		expect(identityH1s).toHaveLength(1);
+		expect(identityH1s[0].textContent?.trim()).toBe('Curious builder, lifelong tinkerer');
+		expect(identityH1s[0].getAttribute('class')).toBe('label-station text-caption');
+		expect(identityH1s[0].textContent?.trim()).not.toBe('Yesid');
 		expect(identity.textContent).toContain("I'm Yesid, a Montreal builder");
 		expect(screen.getByTestId('about-headshot-frame').getAttribute('class')).toContain('rounded-full');
 		expect(screen.getByTestId('about-headshot-frame').getAttribute('class')).toContain('overflow-hidden');

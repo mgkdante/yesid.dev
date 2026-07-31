@@ -18,7 +18,7 @@
 >
 <Card class="h-full p-3" data-testid="about-method">
 	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 
 		<div
 			class="mt-3 min-h-0 flex-1 overflow-y-auto pr-1"

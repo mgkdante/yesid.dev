@@ -63,7 +63,7 @@
 <div class="group h-full" use:cursorGlow>
 	<Card class="h-[19rem] p-3 sm:h-full sm:min-h-[19rem]" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
 		<div class="relative flex h-full flex-col">
-			<StopLabel {stop} {label} />
+			<StopLabel {stop} {label} as="h2" />
 
 			<div class="min-h-0 flex-1 overflow-y-auto pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite" use:scrollChain>
 				<div class="flex min-h-full flex-col justify-center">

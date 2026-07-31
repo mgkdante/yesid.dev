@@ -26,7 +26,7 @@
 <div class="group h-full" use:cursorGlow>
 	<Card class="relative h-full !gap-0 overflow-hidden !py-0" data-testid="about-languages">
 		<div class="language-stop-badge absolute top-3 left-4 z-20">
-			<StopLabel {stop} {label} />
+			<StopLabel {stop} {label} as="h2" />
 		</div>
 		<div class="relative flex h-full flex-col">
 			<div class="language-strip flex h-full min-h-36 flex-col">

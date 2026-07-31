@@ -68,7 +68,7 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: ALWAYS top-left, normal flow -->
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">

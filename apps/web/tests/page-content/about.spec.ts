@@ -27,6 +27,46 @@ test.describe('/about page content', () => {
     }
   });
 
+  // WS10-041: /about shipped ZERO heading elements in all three locales — no
+  // <h1> for search, and no way for a screen-reader user to navigate the bento
+  // by heading (WCAG 1.3.1 Level A; axe page-has-heading-one). The outline is
+  // built from copy that already existed: the identity title is the h1, and
+  // each remaining card's stop label is that card's h2.
+  for (const [locale, path] of [
+    ['en', '/about'],
+    ['fr', '/fr/about'],
+    ['es', '/es/about'],
+  ] as const) {
+    test(`about exposes one h1 and an h2 outline (${locale})`, async ({ page }) => {
+      const response = await page.goto(path);
+      expect(response?.status()).toBe(200);
+
+      await expect(page.locator('[data-testid="page-about"]')).toBeVisible();
+
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('h2')).toHaveCount(9);
+      await expect(page.locator('h3, h4, h5, h6')).toHaveCount(0);
+
+      // The h1 carries real localized copy (the identity title), not chrome.
+      const h1Text = await page.locator('h1').textContent();
+      expect(h1Text?.trim().length).toBeGreaterThan(0);
+      expect(h1Text?.trim()).not.toMatch(/^(STOP|ARRÊT|PARADA)\b/);
+
+      // Every h2 is a card stop label, and each one has text.
+      const stopHeadings = page.locator('h2[data-slot="stop-label"]');
+      await expect(stopHeadings).toHaveCount(9);
+      for (const text of await stopHeadings.allTextContents()) {
+        expect(text.trim().length).toBeGreaterThan(0);
+      }
+
+      // Document order: the h1 leads, so the outline never opens on an h2.
+      const firstLevel = await page.evaluate(
+        () => document.querySelector('h1, h2, h3, h4, h5, h6')?.tagName ?? null,
+      );
+      expect(firstLevel).toBe('H1');
+    });
+  }
+
   test('about-education renders non-empty schools + programs + icons', async ({ page }) => {
     await page.goto('/about');
     const eduCell = page.locator('[data-testid="about-education"]');

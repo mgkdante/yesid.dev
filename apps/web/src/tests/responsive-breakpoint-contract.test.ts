@@ -178,11 +178,20 @@ describe('canonical responsive breakpoint contract', () => {
 		// :434 -> :450; ShapeBlueprint's ghostId/links refactor shifted its
 		// reduced-motion :417 -> :415 (-2). Counts/features/paths unchanged;
 		// three records out, three in, all pure line-number shifts.
+		// 2026-07-31 WS10-041 (landmark cure): the /tech-stack route wrapper
+		// dropped its nested <main> for a <div> and gained the 5-line comment
+		// that explains why, shifting that ONE file's three @media lines by +5
+		// — --tablet-min :415 -> :420, --tablet-max :438 -> :443,
+		// reduced-motion :459 -> :464. No CSS was touched. Counts/features/paths
+		// unchanged (145 / 101 / 45; aliases 31/24/40/6). Verified bidirectionally:
+		// an independent re-derivation reproduces the digests below, and undoing
+		// exactly those three +5 shifts reproduces the two previous digests
+		// (65bfa404… / b6c9ebd7…) byte-for-byte — so nothing else moved.
 		expect(digest(normalized)).toBe(
-			'65bfa4048048506474d6ee29384dd2359bf25a9336b62b2eb3390bff0e7b3d1b',
+			'b2d39a3e5e2401b258ac751bed67026a73b17ed921d00db533a416db5061d3ff',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'b6c9ebd79ecf1a0d2ac362da75cb48887bdc5f517f755fa154c91e9fbb724c3c',
+			'ff4f089470473bf7ca18a30615da09c59fe9dd6a55b7408a7ba9d7f6e6328124',
 		);
 	});
 

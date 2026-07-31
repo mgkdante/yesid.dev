@@ -24,7 +24,7 @@
 >
 <Card class="h-full p-3" data-testid="about-metrics">
 	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 
 		<div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center sm:justify-around sm:gap-0">
 			{#each metrics as metric, i}

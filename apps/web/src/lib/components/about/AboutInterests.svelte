@@ -37,7 +37,7 @@
 <Card class="relative h-full !gap-0 !py-0" data-testid="about-interests">
 	<!-- Stop label: top-left, always -->
 	<div class="absolute top-3 left-4 z-20">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 	</div>
 
 	<!-- Diagonal strips container -->
