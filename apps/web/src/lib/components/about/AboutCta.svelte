@@ -36,7 +36,7 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 
 		<!-- Terminal window -->
 		<TerminalChrome title={terminalTitle} class="about-cta-terminal mt-3 flex-1 min-h-0">

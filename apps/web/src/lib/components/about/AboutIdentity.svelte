@@ -40,7 +40,9 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<!-- Stop label -->
+		<!-- Stop label. Every OTHER bento card renders its stop label as the
+		     card's <h2>; this one stays a plain <div> so the page's first heading
+		     is the <h1> below it and the outline reads h1 → h2…, never h2 → h1. -->
 		<StopLabel {stop} {label} />
 
 		<div
@@ -73,9 +75,15 @@
 
 			<!-- Text block -->
 			<div class="text-center md:pt-1 md:text-left">
-				<div class="label-station text-caption">
+				<!-- The identity title IS /about's single <h1> (WCAG 1.3.1): the page
+				     had no heading element at all, and this is the one existing text
+				     node that reads as the page title. Element only — the classes,
+				     copy and computed styles are unchanged (Tailwind preflight zeroes
+				     the h1 margin and inherits its weight, and .label-station owns the
+				     size), so nothing moves. -->
+				<h1 class="label-station text-caption">
 					{title}
-				</div>
+				</h1>
 				<!-- Gradient separator -->
 				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--primary), transparent);"></div>
 				<p class="mt-4 max-w-md text-small leading-relaxed text-[var(--secondary-foreground)]">

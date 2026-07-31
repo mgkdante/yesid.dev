@@ -54,7 +54,7 @@
 >
 <Card class="h-full p-3" data-testid="about-polaroids">
 	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 
 		<!-- Polaroid display. Reserve the tallest polaroid frame on mobile so the
 		     {#key currentIndex} remount (which briefly empties this slot) can't
