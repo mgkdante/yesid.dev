@@ -19,6 +19,7 @@
 		layerGapLine,
 		readShape,
 	} from './stack-shape';
+	import { layoutBlueprint, shapeLinks } from './blueprint-layout';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
 	import ProductPreview from './ProductPreview.svelte';
 
@@ -120,6 +121,15 @@
 			)
 			.map(({ id, name, layer }) => ({ id, name, layer })),
 	);
+	/** The wide drawing's natural frame width — the SAME shapeLinks +
+	 *  layoutBlueprint derivation ShapeBlueprint renders from. The wrapper
+	 *  needs it as a DEFINITE width: with flex-basis auto and only a
+	 *  max-width on the replaced SVG, the flex item contributes the 300×150
+	 *  CSS default object size and the drawing freezes at ~300px at every
+	 *  desktop viewport (S5-442 finding 1). */
+	const wideFrameWidth = $derived(
+		layoutBlueprint(shapeLinks(shapePicked, shape.missing), { stacked: false }).frame.width,
+	);
 
 	// ── Finale (4c): THE PHRASE BUILDER — the card now LEADS with a
 	// market-friendly product sentence composed by the layer grammar
@@ -133,11 +143,11 @@
 
 	// ── Round 4: 'see your build as a product' — the composed shape gets the
 	// same drawing ⇄ product flip as the archetypes. The drawing flip-tags
-	// only the VISIBLE variant (wide/stacked are CSS-swapped at 768px) so
+	// only the VISIBLE variant (wide/stacked are CSS-swapped at 1024px) so
 	// GSAP Flip never sees duplicate ids.
 	let shapeView = $state<'drawing' | 'product'>('drawing');
 	let shapeBoardEl: HTMLElement | null = $state(null);
-	const wideDrawing = new MediaQuery('(min-width: 768px)');
+	const wideDrawing = new MediaQuery('(min-width: 1024px)');
 
 	async function toggleShapeView(): Promise<void> {
 		const next = shapeView === 'drawing' ? 'product' : 'drawing';
@@ -216,13 +226,14 @@
 			{/if}
 		</div>
 		<div class="shape-board" bind:this={shapeBoardEl}>
-			<!-- Both variants render; CSS swaps at 768px (bp-pair-list
-			     precedent) — wide rows on desktop, the blueprint-layout
-			     stacked column on mobile. display:none keeps the hidden
+			<!-- Both variants render; CSS swaps at the desktop breakpoint.
+			     The 1:1 stacked column stays active through tablet widths;
+			     wide rows take over only once their 972px worst-case frame
+			     can preserve the pinned readability floor. display:none keeps the hidden
 			     one out of the a11y tree; only the VISIBLE one flip-tags
 			     (MediaQuery mirrors the CSS breakpoint). -->
 			{#if shapeView === 'drawing' || shapePicked.length === 0}
-				<div class="shape-drawing shape-drawing-wide">
+				<div class="shape-drawing shape-drawing-wide" style:--sbp-natural={`${wideFrameWidth}px`}>
 					<ShapeBlueprint
 						picked={shapePicked}
 						missing={shape.missing}
@@ -312,15 +323,29 @@
 		gap: 0.5rem;
 	}
 
-	/* The wide ⇄ stacked swap (bp-pair-list breakpoint): exactly one variant
-	   is ever displayed; display:none keeps the other out of the a11y tree. */
+	/* The wide ⇄ stacked swap: exactly one variant is displayed. The desktop
+	   threshold protects the worst-case wide frame's readability scale;
+	   display:none keeps the other variant out of the a11y tree. */
 	.shape-drawing-wide {
 		display: none;
 	}
 
-	@media (--tablet-min) {
+	@media (--desktop-min) {
+		/* At the 1024px boundary, the engine's fluid page gutters leave
+		   942.08px. This 8px card inset leaves at least 924px for the 972px
+		   worst-case frame: scale 0.9506, above the 53/56 floor (0.9464). */
+		.build-shape {
+			padding-inline: 0.5rem;
+		}
+
 		.shape-drawing-wide {
 			display: block;
+			/* DEFINITE width for the flex item: min() caps at the drawing's
+			   natural frame so small pick-counts keep the notes beside it,
+			   while crowded frames take the full line and scale down. Without
+			   this the replaced SVG contributes the 300×150 default object
+			   size and freezes as a thumbnail (S5-442 finding 1). */
+			width: min(100%, var(--sbp-natural, 100%));
 		}
 
 		.shape-drawing-stacked {

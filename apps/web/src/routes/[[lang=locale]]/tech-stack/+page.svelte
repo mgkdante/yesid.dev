@@ -14,6 +14,7 @@
 	import { StatusDot } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 
 	let { data } = $props();
 
@@ -51,9 +52,9 @@
 	});
 	const getInTouchLabel = $derived(resolveLocale(data.techStackPage.actions.getInTouch, locale));
 	const viewServicesLabel = $derived(resolveLocale(data.techStackPage.actions.viewServices, locale));
-	const ctaHeadingLine1 = $derived(resolveLocale(data.techStackPage.cta.headingLine1, locale));
-	const ctaHeadingLine2 = $derived(resolveLocale(data.techStackPage.cta.headingLine2, locale));
-	const ctaSub = $derived(resolveLocale(data.techStackPage.cta.sub, locale));
+	// techStackPage.cta remains a required generated/CMS compatibility object,
+	// but the route no longer renders those fields. Retirement belongs to the
+	// /stack story-redesign follow-up; the hero action labels stay consumed.
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -184,13 +185,8 @@
 	</section>
 
 	<!-- ═══ ENGINE ZONE (slice-29, own async chunk) ═══
-	     GO-w2t5 operator addendum: the zone is a full-bleed band — edge-to-edge
-	     on desktop, framed top + bottom by the shared full-width hazard strips
-	     (the /projects dashed orange divider, reused — not reinvented). Hero
-	     above and CTA below keep their constrained width EXACTLY ("perfect
-	     that way"). Mobile width behavior is unchanged: sections are already
-	     naturally edge-to-edge below --container-wide. The band wraps the
-	     loading placeholder too, so the frame is stable while the chunk lands. -->
+	     The full-bleed engine keeps its leading hazard. The shared CTA mounted
+	     immediately after it owns the single trailing transition. -->
 	<div class="engine-band" data-testid="engine-band">
 		<HazardSeparator data-testid="engine-band-hazard-top" />
 		{#if EngineComponent}
@@ -200,28 +196,9 @@
 				<span class="engine-loading-line">{engineLoading}</span>
 			</section>
 		{/if}
-		<HazardSeparator data-testid="engine-band-hazard-bottom" />
 	</div>
 
-	<!-- ═══ CTA ZONE ═══ -->
-	<section class="cta-zone" data-testid="tech-stack-cta">
-		<div class="cta-hazard" aria-hidden="true"></div>
-		<h2 class="cta-heading">
-			{ctaHeadingLine1}<span class="cta-accent">?</span><br>
-			{ctaHeadingLine2}<span class="cta-accent">.</span>
-		</h2>
-		<p class="cta-sub">
-			{ctaSub}
-		</p>
-		<div class="cta-buttons">
-			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
-				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
-			</Button>
-			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
-				{viewServicesLabel}
-			</Button>
-		</div>
-	</section>
+	<CtaBand testidPrefix="tech-stack-cta" />
 </main>
 
 <style>
@@ -433,56 +410,6 @@
 		color: var(--muted-foreground);
 	}
 
-	/* ═══ CTA ZONE ═══ */
-
-	.cta-zone {
-		max-width: var(--container-wide);
-		margin: 4rem auto 2rem;
-		padding: 0 var(--space-page-x);
-		text-align: center;
-	}
-
-	.cta-hazard {
-		width: 60px;
-		height: 3px;
-		margin: 0 auto 2rem;
-		background: repeating-linear-gradient(
-			-45deg,
-			var(--accent) 0px, var(--accent) 4px,
-			transparent 4px, transparent 8px
-		);
-	}
-
-	.cta-heading {
-		font-family: var(--font-heading);
-		font-size: clamp(1.5rem, 3vw, 2.5rem);
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		line-height: 1.2;
-		color: var(--foreground);
-		margin-bottom: 0.75rem;
-	}
-
-	.cta-accent { color: var(--primary); }
-
-	.cta-sub {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		color: var(--muted-foreground);
-		margin-bottom: 2rem;
-		max-width: 500px;
-		margin-inline: auto;
-		line-height: 1.6;
-	}
-
-	.cta-buttons {
-		display: flex;
-		justify-content: center;
-		gap: 1rem;
-		margin-bottom: 1rem;
-		flex-wrap: wrap;
-	}
-
 	/* ═══ Responsive ═══ */
 
 	@media (--tablet-min) {
@@ -527,10 +454,6 @@
 			flex-wrap: wrap;
 		}
 
-		.cta-zone {
-			margin-top: 3rem;
-			padding: 0 var(--space-page-x);
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

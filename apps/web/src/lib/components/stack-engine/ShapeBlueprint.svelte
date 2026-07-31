@@ -1,13 +1,13 @@
 <!--
   ShapeBlueprint (go2/w5 round 3, finale 4b) — the build shape IS a blueprint.
 
-  Finale (4b) — the READABILITY FLOOR: the drawing renders at 1:1, ALWAYS.
-  Big pick sets used to scale the whole svg down (width:100% against a fixed
-  container); now layoutBlueprint WRAPS crowded layers into multiple lines
-  (the drawing grows vertically) and the svg keeps its natural pixel width
-  inside a pan wrapper — at extreme widths the band pans horizontally instead
-  of shrinking a single box. The old 56svh letterbox is gone for the same
-  reason: tall drawings grow, the page scrolls, boxes stay readable.
+  Slice 037 — one horizontal fit policy: layoutBlueprint still WRAPS crowded
+  layers, but the SVG now follows BlueprintCanvas's responsive width +
+  natural max-width policy. Narrow containers letterbox the drawing instead
+  of opening a pan rail. ShapeBlueprint deliberately leaves the vertical cap
+  open: tall high-pick drawings must preserve the pinned box readability
+  floor, while BlueprintCanvas's bounded 12-archetype class uses its 56svh
+  cap.
 
   Finale (4b) — TOTAL CONNECTIVITY: sibling boxes in a line are tied by rails
   (kind 'rail' from blueprint-layout), so every box — ghosts included — joins
@@ -38,7 +38,8 @@
 
   Mobile: `stacked` renders the existing blueprint-layout stacked mode (one
   centered column, straight verticals). TechMatcher renders both variants and
-  CSS-toggles at 768px (bp-pair-list precedent).
+  CSS-toggles at 1024px so the 972px worst-case wide frame stays above the
+  pinned render-scale floor.
 
   Pure presentational: props in, SVG out — fully unit-testable, no engine
   state, no GSAP, nothing on the route entry chunk.
@@ -48,7 +49,13 @@
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-	import { layoutBlueprint } from './blueprint-layout';
+	import {
+		BLUEPRINT_PAD as PAD,
+		BLUEPRINT_STAMP_H as STAMP_H,
+		layoutBlueprint,
+		shapeGhostId,
+		shapeLinks,
+	} from './blueprint-layout';
 	import { LAYER_NAMES } from './layer-teaching';
 	import { layerGapLine } from './stack-shape';
 
@@ -82,18 +89,15 @@
 	// <pattern> id must stay unique per instance (SVG ids are document-global).
 	const uid = $props.id();
 
-	/** Ghost placeholder id for a missing layer — never collides with tech ids. */
-	const ghostId = (layer: StackLayer): string => `ghost-${layer}`;
-
 	// Synthesized links: real picks in their layers + ONE ghost per missing
-	// layer. layoutBlueprint re-groups by STACK_LAYERS order, so the drawing
-	// always shows all four rows — the complete picture the operator asked for.
-	const links = $derived<ArchetypeTechLink[]>([
-		...picked.map((p, i) => ({ id: p.id, layer: p.layer, sort: i })),
-		...missing.map((layer) => ({ id: ghostId(layer), layer, sort: 0 })),
-	]);
+	// layer (shapeLinks — shared with BuildShapeCard's wrapper width).
+	// layoutBlueprint re-groups by STACK_LAYERS order, so the drawing always
+	// shows all four rows — the complete picture the operator asked for.
+	const ghostId = shapeGhostId;
+	const links = $derived<ArchetypeTechLink[]>(shapeLinks(picked, missing));
 
 	const layout = $derived(layoutBlueprint(links, { stacked }));
+	const frame = $derived(layout.frame);
 	const ghostIds = $derived(new Set(missing.map(ghostId)));
 	const nameById = $derived(new Map(picked.map((p) => [p.id, p.name])));
 	const ghostBoxes = $derived(layout.boxes.filter((b) => ghostIds.has(b.id)));
@@ -108,22 +112,13 @@
 		return [...firstByLayer.values()];
 	});
 
-	// Same drawing geometry as BlueprintCanvas — the mini IS a blueprint.
-	const PAD = 24;
-	const STAMP_H = 36;
-	// go2/w5 legibility pass: 64 → 84. Row labels wear --text-caption (12px)
-	// now; right-anchored "INTERFACE" (9ch ≈ 70px) needs the wider gutter to
-	// stay inside the viewBox.
-	const LABEL_GUTTER = 84;
-
-	const gutter = $derived(stacked ? 0 : LABEL_GUTTER);
 	const viewBox = $derived(
-		`${-(PAD + gutter)} ${-PAD} ${layout.width + PAD * 2 + gutter} ${layout.height + STAMP_H + PAD * 2}`,
+		`${-(PAD + frame.labelGutter)} ${-PAD} ${frame.width} ${frame.height}`,
 	);
-	/** Finale (4b) readability floor: render scale = 1, exactly. The svg keeps
-	 *  its natural pixel width; the pan wrapper scrolls when the container is
-	 *  narrower. (Round 1 capped scale at ≤1; the floor pins it at 1.) */
-	const naturalWidth = $derived(layout.width + PAD * 2 + gutter);
+	/** Slice 037: match BlueprintCanvas's responsive-width/natural-max policy.
+	 *  High-pick drawings keep vertical growth so the pinned box readability
+	 *  floor survives; horizontal overflow scales down instead of panning. */
+	const naturalWidth = $derived(frame.width);
 
 	const complete = $derived(missing.length === 0);
 	const coveredCount = $derived(4 - missing.length);
@@ -163,14 +158,11 @@
 		`${GHOST_PREFIXES[locale]} ${layerGapLine(layer, locale)}`;
 </script>
 
-<!-- Finale (4b): contained horizontal pan — when even the wrapped drawing is
-     wider than the card column, the BAND scrolls; boxes never shrink. -->
-<div class="sbp-pan" data-testid={`${testid}-pan`}>
 <svg
 	class="shape-blueprint"
 	data-testid={testid}
 	{viewBox}
-	style:width={`${naturalWidth}px`}
+	style:max-width={`${naturalWidth}px`}
 	role="img"
 	aria-label={ariaLabel}
 >
@@ -186,15 +178,15 @@
 		aria-hidden="true"
 		x={-PAD}
 		y={-PAD}
-		width={layout.width + PAD * 2}
-		height={layout.height + PAD * 2}
+		width={frame.drawingWidth + PAD * 2}
+		height={frame.drawingHeight + PAD * 2}
 		fill={`url(#sbp-dot-grid-${uid})`}
 	/>
 	<g class="sbp-reg-ticks" aria-hidden="true">
 		<path d={`M ${-PAD} ${-PAD + 8} V ${-PAD} H ${-PAD + 8}`} />
-		<path d={`M ${layout.width + PAD - 8} ${-PAD} H ${layout.width + PAD} V ${-PAD + 8}`} />
-		<path d={`M ${-PAD} ${layout.height + PAD - 8} V ${layout.height + PAD} H ${-PAD + 8}`} />
-		<path d={`M ${layout.width + PAD - 8} ${layout.height + PAD} H ${layout.width + PAD} V ${layout.height + PAD - 8}`} />
+		<path d={`M ${frame.drawingWidth + PAD - 8} ${-PAD} H ${frame.drawingWidth + PAD} V ${-PAD + 8}`} />
+		<path d={`M ${-PAD} ${frame.drawingHeight + PAD - 8} V ${frame.drawingHeight + PAD} H ${-PAD + 8}`} />
+		<path d={`M ${frame.drawingWidth + PAD - 8} ${frame.drawingHeight + PAD} H ${frame.drawingWidth + PAD} V ${frame.drawingHeight + PAD - 8}`} />
 	</g>
 
 	{#if !stacked}
@@ -203,10 +195,10 @@
 		     all four names always print (the full picture). -->
 		<g class="sbp-row-labels" aria-hidden="true">
 			{#each layerLabels as box (box.layer)}
-				<text
-					class={`sbp-row-label sbp-ink-${box.layer}`}
-					x={-PAD - 6}
-					y={box.y + box.h / 2}
+					<text
+						class={`sbp-row-label sbp-ink-${box.layer}`}
+						x={-PAD - 6}
+						y={frame.offsetY + box.y + box.h / 2}
 					text-anchor="end"
 					dominant-baseline="central"
 				>
@@ -214,9 +206,21 @@
 				</text>
 			{/each}
 		</g>
-	{/if}
+		{/if}
 
-	<g class="sbp-connectors">
+	<!-- Slice 037 G3: fixed-size centered boxes retain their readability
+	     floor while drafting extensions occupy each short row's side space. -->
+	<g class="sbp-row-guides" aria-hidden="true">
+		{#each layout.rowGuides as guide (guide.layer + guide.path)}
+			<path class="sbp-row-guide" d={guide.path} />
+		{/each}
+	</g>
+
+	<g
+		data-testid={`${testid}-content`}
+		transform={`translate(${frame.offsetX} ${frame.offsetY})`}
+	>
+		<g class="sbp-connectors">
 		{#each layout.connectors as connector (connector.kind + connector.from + '→' + connector.to)}
 			<path
 				class="sbp-connector"
@@ -277,7 +281,7 @@
 	<!-- One full-ink annotation under EVERY ghost (the archetype canvas
 	     annotates only its first missing tech; here each empty layer teaches).
 	     Engine-paper halo: the connector line breaks for the label. -->
-	{#each ghostBoxes as box (box.id)}
+		{#each ghostBoxes as box (box.id)}
 		<text
 			class="sbp-annotation"
 			data-testid={`sbp-annotation-${box.layer}`}
@@ -286,49 +290,43 @@
 			text-anchor="middle"
 		>
 			{ghostAnnotation(box.layer)}
-		</text>
-	{/each}
+			</text>
+		{/each}
+	</g>
 
 	<!-- Title block — the drawing graduates: REV 0 while drafting, REV A when
 	     all four layers are covered. -->
 	<g class="sbp-stamp" data-testid="shape-blueprint-stamp">
-		<rect
-			class="sbp-stamp-frame"
-			x={-PAD}
-			y={layout.height + STAMP_H - 16}
-			width={layout.width + PAD * 2}
-			height="36"
+			<rect
+				class="sbp-stamp-frame"
+				x={-PAD}
+				y={frame.drawingHeight + STAMP_H - 16}
+				width={frame.drawingWidth + PAD * 2}
+				height="36"
 			rx="2"
 		/>
-		<text class="sbp-stamp-title" x={layout.width + PAD - 8} y={layout.height + STAMP_H} text-anchor="end">
+			<text class="sbp-stamp-title" x={frame.drawingWidth + PAD - 8} y={frame.drawingHeight + STAMP_H} text-anchor="end">
 			{resolveLocale({ en: 'YOUR BUILD', fr: 'TON BUILD', es: 'TU BUILD' }, locale)}
 		</text>
-		<text
-			class="sbp-stamp-meta"
-			x={layout.width + PAD - 8}
-			y={layout.height + STAMP_H + 14}
+			<text
+				class="sbp-stamp-meta"
+				x={frame.drawingWidth + PAD - 8}
+				y={frame.drawingHeight + STAMP_H + 14}
 			text-anchor="end"
 		>
 			REV {complete ? 'A' : '0'} · {picked.length} {partWord} · {coveredCount}/4 {layersWord}
 		</text>
-	</g>
+		</g>
 </svg>
-</div>
 
 <style>
-	/* Finale (4b): the pan rail. Wider-than-column drawings scroll INSIDE the
-	   band (contained pan); narrower ones center. No vertical cap — the
-	   drawing grows down and stays readable at any pick count. */
-	.sbp-pan {
-		width: 100%;
-		overflow-x: auto;
-		overscroll-behavior-x: contain;
-	}
-
+	/* Slice 037: same horizontal letterbox policy as BlueprintCanvas. The
+	   computed frame is the natural ceiling; narrower cards scale it down with
+	   no horizontal rail. The vertical-cap exception is intentional: composed
+	   high-pick frames can exceed the bounded 12-archetype class, and the
+	   pinned 10-pick readability floor takes precedence. */
 	.shape-blueprint {
-		/* width set inline = layout natural width (render scale = 1, the
-		   readability floor — boxes never shrink below 1:1). */
-		max-width: none;
+		width: 100%;
 		height: auto;
 		display: block;
 		margin: 0 auto;
@@ -341,9 +339,17 @@
 		stroke-width: 1;
 	}
 
+	.sbp-row-guide {
+		fill: none;
+		stroke: var(--border);
+		stroke-width: 1;
+		stroke-dasharray: 3 5;
+	}
+
 	/* go2/w5 legibility pass: every SVG label steps up one rung of the site
 	   type scale (tokens, never raw px) — labels --text-body, supporting ink
-	   --text-mono/--text-caption. The svg renders 1:1, so token px = real px. */
+	   --text-mono/--text-caption. The desktop boundary keeps the minimum
+	   letterbox scale above the pinned readability floor. */
 	.sbp-row-label {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
@@ -414,7 +420,7 @@
 
 	/* The established bp-ghost treatment: group dims, rect dashes. */
 	.sbp-box-ghost {
-		opacity: 0.4;
+		opacity: var(--bp-ghost-opacity, 0.4);
 	}
 
 	.sbp-box-ghost .sbp-box-rect {

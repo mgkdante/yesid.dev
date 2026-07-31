@@ -127,6 +127,19 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 		}
 	});
 
+	it('slice-037 G3: the build drawing renders full-width guides around short rows', () => {
+		const { container } = render(ShapeBlueprint, {
+			props: {
+				picked: [pick('postgresql', 'data', 'PostgreSQL')],
+				missing: ['interface', 'logic', 'infra'] satisfies StackLayer[],
+			},
+		});
+		const guides = container.querySelectorAll('.sbp-row-guide');
+		expect(guides).toHaveLength(4);
+		expect(guides[0]?.getAttribute('d')).toBe('M 0 28 H 108 M 300 28 H 408');
+		expect(guides[3]?.getAttribute('d')).toBe('M 0 340 H 108 M 300 340 H 408');
+	});
+
 	it('multi-pick layers widen their row: connectors fan per box AND a rail ties the siblings (finale)', () => {
 		const { container } = render(ShapeBlueprint, {
 			props: {
@@ -153,7 +166,7 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 		expect(rails[0].getAttribute('data-to')).toBe('threejs-threlte');
 	});
 
-	it('finale 4b readability floor: the drawing renders 1:1 in a pan wrapper and WRAPS crowded layers', () => {
+	it('slice-037: crowded layers use responsive letterbox sizing with no pan rail', () => {
 		// 6 interface picks + 1 data → the interface band wraps into 4 + 2.
 		const picked = [
 			...Array.from({ length: 6 }, (_, i) => pick(`ui-${i}`, 'interface', `UI ${i}`)),
@@ -163,15 +176,15 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 			props: { picked, missing: ['logic', 'infra'] satisfies StackLayer[] },
 		});
 		// Natural width caps at the 4-box wrap line: 4×192 + 3×24 = 840, plus
-		// 2×PAD 48 + LABEL_GUTTER 84 = 972 — and the svg renders EXACTLY that
-		// wide (render scale = 1, the floor), inside the horizontal pan rail.
+		// 2×PAD 48 + LABEL_GUTTER 84 = 972. The SVG may letterbox down to its
+		// container, but never grows above that natural frame and never pans.
 		// (Legibility pass: BOX 192×56, gutter 84 for the 12px row labels.)
 		const svg = container.querySelector(
 			'[data-testid="shape-blueprint"]',
 		) as SVGSVGElement;
-		expect(svg.style.width).toBe('972px');
-		expect(svg.style.maxWidth).toBe('');
-		expect(container.querySelector('[data-testid="shape-blueprint-pan"]')).toBeTruthy();
+		expect(svg.style.width).toBe('');
+		expect(svg.style.maxWidth).toBe('972px');
+		expect(container.querySelector('[data-testid="shape-blueprint-pan"]')).toBeNull();
 		// The interface band holds two lines; every box keeps full geometry.
 		const uiYs = new Set(
 			[...svg.querySelectorAll('.sbp-box-solid .sbp-box-rect')].map((r) =>
@@ -257,9 +270,10 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 			},
 		});
 		const svg = container.querySelector('[data-testid="shape-blueprint-stacked"]')!;
-		// Stacked layout: width = BOX_W 192 + 2×PAD 24 = 240, no label gutter —
-		// rendered 1:1 (finale floor: style.width, not a shrinkable max-width).
-		expect((svg as SVGSVGElement).style.width).toBe('240px');
+		// Stacked layout: width = BOX_W 192 + 2×PAD 24 = 240, no label gutter.
+		// It shares the responsive width + natural max-width policy.
+		expect((svg as SVGSVGElement).style.width).toBe('');
+		expect((svg as SVGSVGElement).style.maxWidth).toBe('240px');
 		// Straight verticals (L commands), not the wide variant's cubic curves.
 		for (const wire of svg.querySelectorAll('.sbp-connector')) {
 			expect(wire.getAttribute('d')).toContain('L');
