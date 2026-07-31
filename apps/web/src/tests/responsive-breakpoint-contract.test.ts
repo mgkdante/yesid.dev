@@ -25,7 +25,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
 		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 42,
+		expected: 39,
 	},
 	{
 		alias: '--desktop-max',
@@ -110,7 +110,7 @@ function featureRecords(lines: MediaLine[]): string[] {
 }
 
 describe('canonical responsive breakpoint contract', () => {
-	it('migrates the frozen 104-feature, 44-path inventory to design aliases only', () => {
+	it('preserves the extracted 101-feature, 45-path inventory with design aliases only', () => {
 		const lines = mediaLines();
 		const canonicalLines = lines.filter((line) =>
 			BREAKPOINTS.some(
@@ -120,9 +120,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = new Set(canonicalLines.map(({ path }) => path));
 
-		expect(canonicalLines).toHaveLength(101);
-		expect(paths.size).toBe(44);
-		expect(featureRecords(canonicalLines)).toHaveLength(104);
+		expect(canonicalLines).toHaveLength(98);
+		expect(paths.size).toBe(45);
+		expect(featureRecords(canonicalLines)).toHaveLength(101);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
@@ -155,16 +155,19 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const frozenFeatures = featureRecords(mediaLines());
 
-		expect(normalized).toHaveLength(148);
-		// 2026-07-30 PR-A 034: ProjectsStrip removes its --desktop-min override and
-		// StationTabs pins its measured line box (148 lines / 104 features /
-		// 44 paths; --desktop-min 42).
+		expect(normalized).toHaveLength(145);
+		// 2026-07-30 slice-038 PR-2: the shared detail-header extraction folds
+		// three duplicate --desktop-min features into DetailHeaderShell
+		// (145 lines / 101 features / 45 paths; --desktop-min 39).
 		// Orchestrator acceptance requires an independent computation.
+		// 2026-07-30 cure rebase: the S5's doc-comment fix in BlogDetailHeader
+		// grew its header comment by one line, shifting its two --desktop-min
+		// features 228->229 and 251->252. Attribution verified bidirectionally.
 		expect(digest(normalized)).toBe(
-			'add9a9cc67a81d11f2199e376c2cff69b19f1ddba15ebe7edb4a1b77155b68c3',
+			'9a8de9453f1a819e2665cbd9c0856280ce65e052a2e302d3d81fe90c6db8fa8f',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'43460f6b45545e0c0192ee70bc49e43c6e2724929336ee3d1db21c561e52969d',
+			'2204faba0efd0e15d9aebbdc1b07f623c8bda6ec1970570abb0482e542ee6340',
 		);
 	});
 
