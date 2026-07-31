@@ -172,9 +172,12 @@ describe('canonical responsive breakpoint contract', () => {
 		// reduced-motion rule shifted 425 -> 434. Counts remain
 		// 145 lines / 101 features / 45 paths; aliases are 31/24/40/6.
 		// Independent derivations matched and every delta was attributed both ways.
-		// 2026-07-31 S5-442 cure: BuildShapeCard's definite-width rule (+7
-		// lines inside the --desktop-min block) shifted its later media lines;
-		// counts/features/paths unchanged. Attributed via the test's own diff.
+		// 2026-07-31 S5-442 cure (full decomposition per the S5's re-audit):
+		// BuildShapeCard +10 script lines (import + wideFrameWidth) moved
+		// :323 -> :333 (--desktop-min), +6 CSS lines carried reduced-motion
+		// :434 -> :450; ShapeBlueprint's ghostId/links refactor shifted its
+		// reduced-motion :417 -> :415 (-2). Counts/features/paths unchanged;
+		// three records out, three in, all pure line-number shifts.
 		expect(digest(normalized)).toBe(
 			'65bfa4048048506474d6ee29384dd2359bf25a9336b62b2eb3390bff0e7b3d1b',
 		);
