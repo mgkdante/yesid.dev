@@ -2,9 +2,10 @@
   BlueprintCanvas (slice-29, go2/w5 layered learning) — the living blueprint.
 
   Pure SVG over layoutBlueprint(links): rows derive from layer data, never
-  hand coordinates (blueprint-layout.ts is UNTOUCHED — all go2/w5 geometry
-  lives in constants here). Every box carries data-flip-id=<tech id> so GSAP
-  Flip can pair it with the matching preview slot.
+  hand coordinates. Slice 037 keeps the frame and row-extension geometry in
+  that shared layout output so both renderers consume the same policy. Every
+  box carries data-flip-id=<tech id> so GSAP Flip can pair it with the
+  matching preview slot.
 
   Draw sequence (animate=true): rows stagger-pop → connectors draw via
   stroke-dash → annotations + pair notes fade → title block stamp → one-shot
@@ -33,7 +34,12 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 	import { techStackItems } from '$lib/content/tech-stack';
-	import { layoutBlueprint, ROW_GAP } from './blueprint-layout';
+	import {
+		BLUEPRINT_PAD as PAD,
+		BLUEPRINT_STAMP_H as STAMP_H,
+		layoutBlueprint,
+		ROW_GAP,
+	} from './blueprint-layout';
 	import { LAYER_NAMES } from './layer-teaching';
 
 	const locale = getLocale();
@@ -57,6 +63,7 @@
 	const nameById = new Map(techStackItems.map((t) => [t.id, t.name]));
 
 	const layout = $derived(layoutBlueprint(links, { stacked }));
+	const frame = $derived(layout.frame);
 	const matchedSet = $derived(new Set(matched ?? []));
 	const missingSet = $derived(new Set(missing ?? []));
 	/** Compose entry = caller provided matched/missing partition. */
@@ -77,14 +84,6 @@
 
 	const layerCount = $derived(new Set(layout.boxes.map((b) => b.layer)).size);
 
-	// Drawing geometry (declared before the stamp deriveds below read them).
-	const PAD = 24;
-	const STAMP_H = 36;
-	/** go2/w5 §8: left gutter for the layer row labels (engine renders only).
-	 *  Legibility pass: 64 → 84 — row labels wear --text-caption (12px) now;
-	 *  right-anchored "INTERFACE" (9ch ≈ 70px) needs the room. */
-	const LABEL_GUTTER = 84;
-
 	// go2/w5 taste round 2 (fit audit): the old `{TITLE} — REV A` single line
 	// overflowed the stamp frame on one-box-per-row blueprints. REV A now
 	// leads the meta line, and the title gets a deterministic textLength clamp
@@ -93,7 +92,7 @@
 	// --text-small (14px mono) + 2px letter-spacing ≈ 10.4px/char.
 	const stampTitle = $derived(title.toUpperCase());
 	const STAMP_CHAR_W = 10.4;
-	const stampAvail = $derived(layout.width + PAD * 2 - 16);
+	const stampAvail = $derived(frame.drawingWidth + PAD * 2 - 16);
 	const stampTitleLength = $derived(
 		stampTitle.length * STAMP_CHAR_W > stampAvail ? stampAvail : undefined,
 	);
@@ -157,17 +156,14 @@
 		return out;
 	});
 
-	const gutter = $derived(stacked ? 0 : LABEL_GUTTER);
 	const viewBox = $derived(
-		`${-(PAD + gutter)} ${-PAD} ${layout.width + PAD * 2 + gutter} ${layout.height + STAMP_H + PAD * 2}`,
+		`${-(PAD + frame.labelGutter)} ${-PAD} ${frame.width} ${frame.height}`,
 	);
 
-	/** GO-w2t5 sizing fix: cap rendered scale at 1 SVG unit = 1px. Launch
-	 *  archetypes are one box per row (width 160 → viewBox 272 with the label
-	 *  gutter), and the old flat `max-width: 720px` inflated them ~3.5× — "one
-	 *  node fills the viewport height" (operator playtest). Natural width =
-	 *  real pixels; 272px stays mobile-safe (< 360px viewports). */
-	const naturalWidth = $derived(layout.width + PAD * 2 + gutter);
+	/** Slice 037: all 12 published archetypes resolve to the 540×452 frame.
+	 *  Larger compose layouts may expand; CSS still caps scale at the frame's
+	 *  natural width and letterboxes down when the container is narrower. */
+	const naturalWidth = $derived(frame.width);
 
 	// Localized chrome words (parts/layers) + the canvas aria-label + the
 	// "complete it" annotation. Code-owned, em-dash-free. Exhaustive per-locale
@@ -292,15 +288,15 @@
 		aria-hidden="true"
 		x={-PAD}
 		y={-PAD}
-		width={layout.width + PAD * 2}
-		height={layout.height + PAD * 2}
+		width={frame.drawingWidth + PAD * 2}
+		height={frame.drawingHeight + PAD * 2}
 		fill="url(#bp-dot-grid)"
 	/>
 	<g class="bp-reg-ticks" aria-hidden="true">
 		<path d={`M ${-PAD} ${-PAD + 8} V ${-PAD} H ${-PAD + 8}`} />
-		<path d={`M ${layout.width + PAD - 8} ${-PAD} H ${layout.width + PAD} V ${-PAD + 8}`} />
-		<path d={`M ${-PAD} ${layout.height + PAD - 8} V ${layout.height + PAD} H ${-PAD + 8}`} />
-		<path d={`M ${layout.width + PAD - 8} ${layout.height + PAD} H ${layout.width + PAD} V ${layout.height + PAD - 8}`} />
+		<path d={`M ${frame.drawingWidth + PAD - 8} ${-PAD} H ${frame.drawingWidth + PAD} V ${-PAD + 8}`} />
+		<path d={`M ${-PAD} ${frame.drawingHeight + PAD - 8} V ${frame.drawingHeight + PAD} H ${-PAD + 8}`} />
+		<path d={`M ${frame.drawingWidth + PAD - 8} ${frame.drawingHeight + PAD} H ${frame.drawingWidth + PAD} V ${frame.drawingHeight + PAD - 8}`} />
 	</g>
 
 	{#if !stacked}
@@ -308,20 +304,33 @@
 		     beside every layer-colored element (hue never the sole carrier). -->
 		<g class="bp-row-labels" aria-hidden="true">
 			{#each rows as row, rowIndex (rowIndex)}
-				<text
-					class={`bp-row-label bp-ink-${row[0].layer}`}
-					x={-PAD - 6}
-					y={row[0].y + row[0].h / 2}
-					text-anchor="end"
+					<text
+						class={`bp-row-label bp-ink-${row[0].layer}`}
+						x={-PAD - 6}
+						y={frame.offsetY + row[0].y + row[0].h / 2}
+						text-anchor="end"
 					dominant-baseline="central"
 				>
 					{resolveLocale(LAYER_NAMES[row[0].layer], locale)}
 				</text>
 			{/each}
 		</g>
-	{/if}
+		{/if}
 
-	<g class="bp-connectors">
+	<!-- Slice 037 G3: the boxes stay centered at their readability-floor
+	     geometry; quiet drafting extensions make each short row span the
+	     reserved drawing width instead of leaving dead 108px side gutters. -->
+	<g class="bp-row-guides" aria-hidden="true">
+		{#each layout.rowGuides as guide (guide.layer + guide.path)}
+			<path class={`bp-row-guide bp-stroke-${guide.layer}`} d={guide.path} />
+		{/each}
+	</g>
+
+	<g
+		data-testid="blueprint-content"
+		transform={`translate(${frame.offsetX} ${frame.offsetY})`}
+	>
+		<g class="bp-connectors">
 		{#each layout.connectors as connector (connector.kind + connector.from + '→' + connector.to)}
 			<path
 				class={`bp-connector bp-from-${layerById.get(connector.from)}`}
@@ -403,7 +412,7 @@
 		{/each}
 	{/if}
 
-	{#if firstMissingBox}
+		{#if firstMissingBox}
 		<text
 			class="bp-annotation"
 			data-testid="bp-annotation"
@@ -412,34 +421,35 @@
 			text-anchor="middle"
 		>
 			{completeAnnotation}
-		</text>
-	{/if}
+			</text>
+		{/if}
+	</g>
 
 	<!-- go2/w5 §8: stamp → title block (rail plate): framed REV A line plus a
 	     parts · layers meta line. -->
 	<g class="bp-stamp" data-testid="blueprint-stamp">
-		<rect
-			class="bp-stamp-frame"
-			x={-PAD}
-			y={layout.height + STAMP_H - 16}
-			width={layout.width + PAD * 2}
-			height="36"
+			<rect
+				class="bp-stamp-frame"
+				x={-PAD}
+				y={frame.drawingHeight + STAMP_H - 16}
+				width={frame.drawingWidth + PAD * 2}
+				height="36"
 			rx="2"
 		/>
-		<text
-			class="bp-stamp-title"
-			x={layout.width + PAD - 8}
-			y={layout.height + STAMP_H}
+			<text
+				class="bp-stamp-title"
+				x={frame.drawingWidth + PAD - 8}
+				y={frame.drawingHeight + STAMP_H}
 			text-anchor="end"
 			textLength={stampTitleLength}
 			lengthAdjust={stampTitleLength === undefined ? undefined : 'spacingAndGlyphs'}
 		>
 			{stampTitle}
 		</text>
-		<text
-			class="bp-stamp-meta"
-			x={layout.width + PAD - 8}
-			y={layout.height + STAMP_H + 14}
+			<text
+				class="bp-stamp-meta"
+				x={frame.drawingWidth + PAD - 8}
+				y={frame.drawingHeight + STAMP_H + 14}
 			text-anchor="end"
 		>
 			REV A · {layout.boxes.length} {partsWord} · {layerCount} {layersWord}
@@ -460,7 +470,7 @@
 <style>
 	.blueprint-canvas {
 		width: 100%;
-		/* max-width set inline = layout natural width (render scale ≤ 1). */
+		/* max-width set inline = computed frame width (render scale ≤ 1). */
 		height: auto;
 		/* Safety net for tall compose blueprints: the default
 		   preserveAspectRatio (xMidYMid meet) letterboxes the drawing down —
@@ -479,6 +489,13 @@
 		fill: none;
 		stroke: var(--bp-grid-ink);
 		stroke-width: 1;
+	}
+
+	.bp-row-guide {
+		fill: none;
+		stroke: var(--border);
+		stroke-width: 1;
+		stroke-dasharray: 3 5;
 	}
 
 	/* go2/w5 §8: layer row labels — printed names in layer color. Legibility
@@ -556,7 +573,7 @@
 
 	/* …missing techs ghost out (group opacity dims the layer tab with it). */
 	.bp-ghost {
-		opacity: 0.4;
+		opacity: var(--bp-ghost-opacity);
 	}
 
 	.bp-ghost .bp-box-rect {

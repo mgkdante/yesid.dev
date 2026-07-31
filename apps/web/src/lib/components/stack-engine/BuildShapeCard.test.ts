@@ -75,8 +75,9 @@ describe('BuildShapeCard', () => {
 	});
 
 	it.each([
-		{ width: 767, visibleVariant: 'stacked' },
-		{ width: 768, visibleVariant: 'wide' },
+		{ width: 768, visibleVariant: 'stacked' },
+		{ width: 1023, visibleVariant: 'stacked' },
+		{ width: 1024, visibleVariant: 'wide' },
 	])(
 		'keeps one visible flip id per pick at $width px',
 		({ width, visibleVariant }) => {

@@ -14,7 +14,7 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 	const page = () => read('src/routes/[[lang=locale]]/tech-stack/+page.svelte');
 	const engine = () => read('src/lib/components/stack-engine/Engine.svelte');
 
-	it('route wraps the engine zone in an engine-band framed by TWO hazard separators', () => {
+	it('route keeps one top engine hazard and delegates the engine-to-CTA transition to CtaBand', () => {
 		const src = page();
 		expect(src).toContain('data-testid="engine-band"');
 		// Reuse the shared hazard composable (the /projects dashed orange divider) —
@@ -22,8 +22,13 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toContain(
 			"import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte'",
 		);
+		expect(src).toContain(
+			"import CtaBand from '$lib/components/shared/CtaBand.svelte'",
+		);
 		const hazards = src.match(/<HazardSeparator/g) ?? [];
-		expect(hazards).toHaveLength(2);
+		expect(hazards).toHaveLength(1);
+		expect(src).toContain('data-testid="engine-band-hazard-top"');
+		expect(src).not.toContain('engine-band-hazard-bottom');
 	});
 
 	it('engine-band is full-bleed: no max-width cap on the band rule', () => {
@@ -95,9 +100,11 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toMatch(/\.hero-terminal \{[^}]*font-size: clamp\(13px/);
 	});
 
-	it("CTA below keeps its constrained width EXACTLY ('perfect that way' still holds under the panel)", () => {
+	it('owner directive 2026-07-30: route mounts the shared full-bleed CTA band', () => {
 		const src = page();
-		expect(src).toMatch(/\.cta-zone \{[^}]*max-width: var\(--container-wide\);/);
+		expect(src).toContain('<CtaBand testidPrefix="tech-stack-cta" />');
+		expect(src).not.toContain('class="cta-zone"');
+		expect(src).not.toMatch(/\.cta-zone \{/);
 	});
 
 	it('taste round 2: the WHOLE engine chain is uncapped — section AND inner (gutters via padding only)', () => {

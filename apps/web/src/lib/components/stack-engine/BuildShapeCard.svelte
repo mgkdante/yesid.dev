@@ -133,11 +133,11 @@
 
 	// ── Round 4: 'see your build as a product' — the composed shape gets the
 	// same drawing ⇄ product flip as the archetypes. The drawing flip-tags
-	// only the VISIBLE variant (wide/stacked are CSS-swapped at 768px) so
+	// only the VISIBLE variant (wide/stacked are CSS-swapped at 1024px) so
 	// GSAP Flip never sees duplicate ids.
 	let shapeView = $state<'drawing' | 'product'>('drawing');
 	let shapeBoardEl: HTMLElement | null = $state(null);
-	const wideDrawing = new MediaQuery('(min-width: 768px)');
+	const wideDrawing = new MediaQuery('(min-width: 1024px)');
 
 	async function toggleShapeView(): Promise<void> {
 		const next = shapeView === 'drawing' ? 'product' : 'drawing';
@@ -216,9 +216,10 @@
 			{/if}
 		</div>
 		<div class="shape-board" bind:this={shapeBoardEl}>
-			<!-- Both variants render; CSS swaps at 768px (bp-pair-list
-			     precedent) — wide rows on desktop, the blueprint-layout
-			     stacked column on mobile. display:none keeps the hidden
+			<!-- Both variants render; CSS swaps at the desktop breakpoint.
+			     The 1:1 stacked column stays active through tablet widths;
+			     wide rows take over only once their 972px worst-case frame
+			     can preserve the pinned readability floor. display:none keeps the hidden
 			     one out of the a11y tree; only the VISIBLE one flip-tags
 			     (MediaQuery mirrors the CSS breakpoint). -->
 			{#if shapeView === 'drawing' || shapePicked.length === 0}
@@ -312,13 +313,21 @@
 		gap: 0.5rem;
 	}
 
-	/* The wide ⇄ stacked swap (bp-pair-list breakpoint): exactly one variant
-	   is ever displayed; display:none keeps the other out of the a11y tree. */
+	/* The wide ⇄ stacked swap: exactly one variant is displayed. The desktop
+	   threshold protects the worst-case wide frame's readability scale;
+	   display:none keeps the other variant out of the a11y tree. */
 	.shape-drawing-wide {
 		display: none;
 	}
 
-	@media (--tablet-min) {
+	@media (--desktop-min) {
+		/* At the 1024px boundary, the engine's fluid page gutters leave
+		   942.08px. This 8px card inset leaves at least 924px for the 972px
+		   worst-case frame: scale 0.9506, above the 53/56 floor (0.9464). */
+		.build-shape {
+			padding-inline: 0.5rem;
+		}
+
 		.shape-drawing-wide {
 			display: block;
 		}

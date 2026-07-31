@@ -5,8 +5,10 @@
 
 import { describe, it, expect } from 'vitest';
 import type { ArchetypeTechLink } from '@repo/shared/schemas';
+import { stackArchetypes } from '$lib/content/stack-archetypes';
 import {
 	layoutBlueprint,
+	BLUEPRINT_FRAME,
 	BOX_W,
 	BOX_H,
 	GUTTER,
@@ -77,6 +79,23 @@ describe('layoutBlueprint rows', () => {
 		const dataRow = boxes.filter((b) => b.layer === 'data');
 		expect(Math.min(...dataRow.map((b) => b.x))).toBe(0);
 		expect(Math.max(...dataRow.map((b) => b.x + b.w))).toBe(width);
+	});
+
+	it('extends short centered rows across the reserved drawing width', () => {
+		const layout = layoutBlueprint([
+			link('ui-left', 'interface', 1),
+			link('ui-right', 'interface', 2),
+			link('postgresql', 'data', 1),
+		]);
+		const dataBox = layout.boxes.find((box) => box.id === 'postgresql')!;
+
+		expect(dataBox.x).toBe(108);
+		expect(layout.rowGuides).toEqual([
+			{
+				layer: 'data',
+				path: 'M 0 236 H 108 M 300 236 H 408',
+			},
+		]);
 	});
 });
 
@@ -184,6 +203,44 @@ describe('GO-w2t5 at-a-glance geometry contract', () => {
 		// Finale (4b): the wrap point and the intra-band line gap.
 		expect(MAX_ROW_BOXES).toBe(4);
 		expect(LINE_GAP).toBe(16);
+	});
+});
+
+describe('slice-037 reserved archetype frame', () => {
+	it('all 12 published archetypes compute the same 540×452 frame', () => {
+		expect(stackArchetypes).toHaveLength(12);
+		for (const archetype of stackArchetypes) {
+			const { frame } = layoutBlueprint(archetype.tech);
+			expect(
+				{ width: frame.width, height: frame.height },
+				archetype.slug,
+			).toEqual(BLUEPRINT_FRAME);
+		}
+	});
+
+	it('centers intrinsic layouts inside the reserved drawing area', () => {
+		const fourRows = layoutBlueprint(DASHBOARD_LINKS);
+		expect(fourRows.frame).toMatchObject({
+			width: 540,
+			height: 452,
+			drawingWidth: 408,
+			drawingHeight: 368,
+			offsetX: 108,
+			offsetY: 0,
+			labelGutter: 84,
+		});
+
+		const shortWide = layoutBlueprint([
+			link('pg', 'data'),
+			link('alembic', 'data'),
+			link('docker', 'infra'),
+		]);
+		expect(shortWide.frame).toMatchObject({
+			width: 540,
+			height: 452,
+			offsetX: 0,
+			offsetY: 104,
+		});
 	});
 });
 

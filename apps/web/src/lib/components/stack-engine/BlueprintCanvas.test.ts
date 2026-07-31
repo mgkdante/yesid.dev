@@ -43,22 +43,25 @@ describe('BlueprintCanvas', () => {
 		expect(stamp.textContent).toContain('REV A · 4 parts · 4 layers');
 	});
 
-	it('taste round 2 fit audit: long titles on narrow layouts clamp via textLength', () => {
-		// One box per row → frame inner width 192 + 48 − 16 = 224 (legibility
-		// pass: BOX_W 192, title at --text-small + 2px tracking ≈ 10.4px/char);
-		// the 28-char title estimates 291.2px → the clamp engages at 224.
+	it('taste round 2 fit audit: titles wider than the reserved frame clamp via textLength', () => {
+		// Reserved drawing width 408 + 48px padding − 16px inset = 440px.
+		// This deliberately long title exceeds the frame and must still clamp.
 		const narrow: ArchetypeTechLink[] = [
 			{ id: 'python', layer: 'logic', sort: 1 },
 			{ id: 'postgresql', layer: 'data', sort: 2 },
 			{ id: 'github-actions', layer: 'infra', sort: 3 },
 		];
 		render(BlueprintCanvas, {
-			props: { links: narrow, title: 'A report that writes itself', animate: false },
+			props: {
+				links: narrow,
+				title: 'A report that writes itself every Monday morning',
+				animate: false,
+			},
 		});
 		const title = screen
 			.getByTestId('blueprint-stamp')
 			.querySelector('.bp-stamp-title')!;
-		expect(title.getAttribute('textLength')).toBe('224');
+		expect(title.getAttribute('textLength')).toBe('440');
 		expect(title.getAttribute('lengthAdjust')).toBe('spacingAndGlyphs');
 	});
 
@@ -115,27 +118,37 @@ describe('BlueprintCanvas', () => {
 		expect(canvas.querySelectorAll('path.bp-connector')).toHaveLength(3);
 	});
 
-	it('GO-w2t5 at-a-glance: svg max-width caps render scale at the layout natural width', () => {
+	it('slice-037: svg reserves the shared 540px frame and caps render scale there', () => {
 		render(BlueprintCanvas, {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
 		const canvas = screen.getByTestId('blueprint-canvas') as unknown as SVGSVGElement;
-		// BOX_W 192 + 2×PAD 24 + LABEL_GUTTER 84 (legibility pass) — a
-		// one-box-per-row blueprint must NOT blow up to 720px wide (operator
-		// playtest: "one node fills the viewport"); 324px stays mobile-safe
-		// (≤ the 327px content column of a 375px viewport).
-		expect(canvas.style.maxWidth).toBe('324px');
+		expect(canvas.style.maxWidth).toBe('540px');
 	});
 
-	it('GO-w2t5 at-a-glance: viewBox reflects the tightened geometry', () => {
+	it('slice-037: viewBox and content transform reserve and center the 540×452 frame', () => {
 		render(BlueprintCanvas, {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
-		// 4 rows: height 4×56 + 3×48 = 368; + STAMP_H 36 + 2×PAD 48 = 452.
-		// go2/w5: LABEL_GUTTER 84 extends the LEFT edge only (row labels).
 		expect(screen.getByTestId('blueprint-canvas').getAttribute('viewBox')).toBe(
-			'-108 -24 324 452',
+			'-108 -24 540 452',
 		);
+		expect(screen.getByTestId('blueprint-content').getAttribute('transform')).toBe(
+			'translate(108 0)',
+		);
+		expect(
+			screen.getByTestId('blueprint-canvas').querySelector('.bp-grid')?.getAttribute('width'),
+		).toBe('456');
+	});
+
+	it('slice-037 G3: visible row extensions fill both sides of centered one-box lines', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const guides = screen.getByTestId('blueprint-canvas').querySelectorAll('.bp-row-guide');
+		expect(guides).toHaveLength(4);
+		expect(guides[0]?.getAttribute('d')).toBe('M 0 28 H 108 M 300 28 H 408');
+		expect(guides[3]?.getAttribute('d')).toBe('M 0 340 H 108 M 300 340 H 408');
 	});
 
 	it('GO-w2t5: one parked signal path per connector (CSS keeps them invisible at rest)', () => {

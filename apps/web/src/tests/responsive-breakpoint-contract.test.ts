@@ -13,7 +13,7 @@ const BREAKPOINTS = [
 		alias: '--tablet-min',
 		raw: '(min-width: 768px)',
 		rawPattern: /\(min-width:\s*768px\)/g,
-		expected: 32,
+		expected: 31,
 	},
 	{
 		alias: '--tablet-max',
@@ -25,7 +25,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
 		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 39,
+		expected: 40,
 	},
 	{
 		alias: '--desktop-max',
@@ -163,11 +163,20 @@ describe('canonical responsive breakpoint contract', () => {
 		// 2026-07-30 cure rebase: the S5's doc-comment fix in BlogDetailHeader
 		// grew its header comment by one line, shifting its two --desktop-min
 		// features 228->229 and 251->252. Attribution verified bidirectionally.
+		// 2026-07-30 slice-037 combined A+B final source: route CTA deletion
+		// shifted 488/511/536 -> 415/438/459; Engine's grammar map shifted
+		// 430 -> 436; BlueprintCanvas shifted its @media doc line 342 -> 351
+		// and rules 514/586/605 -> 531/603/622; ShapeBlueprint shifted
+		// 409 -> 417. BuildShapeCard moved 321 --tablet-min -> 323
+		// --desktop-min to preserve the Shape readability floor, and its
+		// reduced-motion rule shifted 425 -> 434. Counts remain
+		// 145 lines / 101 features / 45 paths; aliases are 31/24/40/6.
+		// Independent derivations matched and every delta was attributed both ways.
 		expect(digest(normalized)).toBe(
-			'9a8de9453f1a819e2665cbd9c0856280ce65e052a2e302d3d81fe90c6db8fa8f',
+			'2b6109e85974548b1c36f423f3093f370d1f7efeed925752b2ae84d940eb135b',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'2204faba0efd0e15d9aebbdc1b07f623c8bda6ec1970570abb0482e542ee6340',
+			'760b3a6e2d5541b8fd3c9399b4ac6c345e28866ae3bf76b445919ee35b32f0b1',
 		);
 	});
 
