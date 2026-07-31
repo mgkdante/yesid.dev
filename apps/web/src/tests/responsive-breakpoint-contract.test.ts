@@ -160,11 +160,14 @@ describe('canonical responsive breakpoint contract', () => {
 		// three duplicate --desktop-min features into DetailHeaderShell
 		// (145 lines / 101 features / 45 paths; --desktop-min 39).
 		// Orchestrator acceptance requires an independent computation.
+		// 2026-07-30 cure rebase: the S5's doc-comment fix in BlogDetailHeader
+		// grew its header comment by one line, shifting its two --desktop-min
+		// features 228->229 and 251->252. Attribution verified bidirectionally.
 		expect(digest(normalized)).toBe(
-			'e77d54c566b9163534e0e11219b474e6d70fe94a904036fb0f0bad39561168a4',
+			'9a8de9453f1a819e2665cbd9c0856280ce65e052a2e302d3d81fe90c6db8fa8f',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'5d73dea632528809e217c5032dd12a1c1e3216c545d662dd7349f953fd696d8c',
+			'2204faba0efd0e15d9aebbdc1b07f623c8bda6ec1970570abb0482e542ee6340',
 		);
 	});
 
