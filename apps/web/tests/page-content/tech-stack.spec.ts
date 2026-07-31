@@ -104,10 +104,15 @@ test.describe('/tech-stack page content', () => {
     const cta = page.locator('[data-testid="tech-stack-cta"]');
     await expect(cta).toBeVisible();
 
-    // CTA should have heading and buttons
-    const heading = cta.locator('h2');
-    const text = await heading.textContent();
-    expect(text?.trim().length).toBeGreaterThan(0);
+    await expect(cta.locator('.band-heading')).toBeVisible();
+    await expect(cta.locator('[data-testid="tech-stack-cta-contact"]')).toHaveAttribute(
+      'href',
+      '/contact',
+    );
+    await expect(cta.locator('[data-testid="tech-stack-cta-github"]')).toHaveAttribute(
+      'target',
+      '_blank',
+    );
   });
 
   test('tech-stack respects reduced-motion preference', async ({ page }) => {
@@ -165,6 +170,14 @@ test.describe('/tech-stack page content', () => {
     // proving the locale path renders real translations (not EN fallback).
     const kicker = explainer.locator('.explainer-kicker');
     await expect(kicker).toHaveText('c\'est quoi un stack?');
+
+    // Shared CTA smoke: real FR block_cta copy plus the localized contact href.
+    const cta = page.locator('[data-testid="tech-stack-cta"]');
+    await expect(cta.locator('.band-line').nth(0)).toHaveText('Bâtissons quelque chose');
+    await expect(cta.locator('.band-line').nth(1)).toHaveText('qui avance.');
+    await expect(cta.locator('[data-testid="tech-stack-cta-contact"]')).toHaveAttribute(
+      'href',
+      '/fr/contact',
+    );
   });
 });
-

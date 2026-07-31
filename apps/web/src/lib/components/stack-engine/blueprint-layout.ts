@@ -44,6 +44,16 @@ export const LINE_GAP = 16;
 // (21 committed today, 28 at next regen) wraps the same way.
 export const MAX_ROW_BOXES = 4;
 
+// Slice 037: the published archetype class tops out at two boxes across and
+// four occupied rows. That 408×368 drawing area plus the shared 24px paper
+// padding, 84px row-label gutter, and 36px stamp yields one 540×452 slot.
+export const BLUEPRINT_PAD = 24;
+export const BLUEPRINT_STAMP_H = 36;
+export const BLUEPRINT_LABEL_GUTTER = 84;
+export const BLUEPRINT_DRAWING_WIDTH = 2 * BOX_W + GUTTER;
+export const BLUEPRINT_DRAWING_HEIGHT = 4 * BOX_H + 3 * ROW_GAP;
+export const BLUEPRINT_FRAME = { width: 540, height: 452 } as const;
+
 export interface BlueprintBox {
 	id: string;
 	layer: StackLayer;
@@ -63,14 +73,76 @@ export interface BlueprintConnector {
 	kind: 'flow' | 'rail';
 }
 
+export interface BlueprintRowGuide {
+	layer: StackLayer;
+	/** Frame-relative SVG path extending a centered short row to both edges. */
+	path: string;
+}
+
 export interface BlueprintLayout {
+	/** Intrinsic box-and-connector geometry before reserved-frame centering. */
 	width: number;
 	height: number;
+	/** Render slot derived from the intrinsic layout. Published archetypes all
+	 *  resolve to BLUEPRINT_FRAME; larger compose layouts expand instead of
+	 *  shrinking the readability-floor box geometry. */
+	frame: {
+		width: number;
+		height: number;
+		drawingWidth: number;
+		drawingHeight: number;
+		offsetX: number;
+		offsetY: number;
+		labelGutter: number;
+	};
 	boxes: BlueprintBox[];
 	connectors: BlueprintConnector[];
+	/** G3: quiet drafting extensions occupy the horizontal space around
+	 *  centered short rows without stretching the fixed-size boxes. */
+	rowGuides: BlueprintRowGuide[];
 }
 
 const rowWidth = (count: number): number => count * BOX_W + (count - 1) * GUTTER;
+
+function blueprintFrame(
+	width: number,
+	height: number,
+	stacked: boolean,
+): BlueprintLayout['frame'] {
+	// Mobile stacked compose drawings keep their intrinsic single-column slot;
+	// the 12 published archetypes use the non-stacked reserved frame.
+	const labelGutter = stacked ? 0 : BLUEPRINT_LABEL_GUTTER;
+	const drawingWidth = stacked ? width : Math.max(BLUEPRINT_DRAWING_WIDTH, width);
+	const drawingHeight = stacked ? height : Math.max(BLUEPRINT_DRAWING_HEIGHT, height);
+	return {
+		width: drawingWidth + BLUEPRINT_PAD * 2 + labelGutter,
+		height: drawingHeight + BLUEPRINT_STAMP_H + BLUEPRINT_PAD * 2,
+		drawingWidth,
+		drawingHeight,
+		offsetX: (drawingWidth - width) / 2,
+		offsetY: (drawingHeight - height) / 2,
+		labelGutter,
+	};
+}
+
+/** Ghost id for a missing layer in the compose ("Your build") drawing — ONE
+ *  definition so link construction and ghost detection can never drift. */
+export const shapeGhostId = (layer: StackLayer): string => `ghost-${layer}`;
+
+/** The compose drawing's link list: picks in pick order + one ghost per
+ *  missing layer. Shared by ShapeBlueprint (rendering) and BuildShapeCard
+ *  (the wrapper's definite width — S5-442 finding 1: a flex item with only a
+ *  max-width on the replaced SVG contributes the 300×150 CSS default object
+ *  size, so the wide drawing froze at ~300px at every viewport). */
+export function shapeLinks(
+	picked: readonly { id: string; layer: StackLayer }[],
+	missing: readonly StackLayer[],
+): ArchetypeTechLink[] {
+	return [
+		...picked.map((p, i) => ({ id: p.id, layer: p.layer, sort: i })),
+		...missing.map((layer) => ({ id: shapeGhostId(layer), layer, sort: 0 })),
+	];
+}
 
 export function layoutBlueprint(
 	links: readonly ArchetypeTechLink[],
@@ -107,8 +179,14 @@ export function layoutBlueprint(
 		return {
 			width: BOX_W,
 			height: boxes.length > 0 ? boxes.length * BOX_H + (boxes.length - 1) * ROW_GAP : 0,
+			frame: blueprintFrame(
+				BOX_W,
+				boxes.length > 0 ? boxes.length * BOX_H + (boxes.length - 1) * ROW_GAP : 0,
+				true,
+			),
 			boxes,
 			connectors,
+			rowGuides: [],
 		};
 	}
 
@@ -196,10 +274,29 @@ export function layoutBlueprint(
 		}
 	}
 
+	const height = lines.length > 0 ? lineYs[lineYs.length - 1] + BOX_H : 0;
+	const frame = blueprintFrame(width, height, false);
+	const rowGuides: BlueprintRowGuide[] = boxesByLine.flatMap((line) => {
+		const first = line[0];
+		const last = line[line.length - 1];
+		const left = frame.offsetX + first.x;
+		const right = frame.offsetX + last.x + last.w;
+		if (left <= 0 && right >= frame.drawingWidth) return [];
+
+		const guideY = frame.offsetY + first.y + first.h / 2;
+		const segments: string[] = [];
+		if (left > 0) segments.push(`M 0 ${guideY} H ${left}`);
+		if (right < frame.drawingWidth) {
+			segments.push(`M ${right} ${guideY} H ${frame.drawingWidth}`);
+		}
+		return [{ layer: first.layer, path: segments.join(' ') }];
+	});
 	return {
 		width,
-		height: lines.length > 0 ? lineYs[lineYs.length - 1] + BOX_H : 0,
+		height,
+		frame,
 		boxes,
 		connectors,
+		rowGuides,
 	};
 }
