@@ -78,7 +78,7 @@ jobs:
     outputs:
       classification: ${{ steps.classify.outputs.classification }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
         id: classify
@@ -115,7 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -154,7 +154,7 @@ jobs:
     timeout-minutes: 10
     needs: test
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -180,7 +180,7 @@ jobs:
     env:
       DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -208,7 +208,7 @@ jobs:
       DIRECTUS_URL: https://cms.yesid.dev
       DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -238,7 +238,7 @@ jobs:
     env:
       DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -270,7 +270,7 @@ jobs:
         run: bun apps/cms/scripts/verify-content-manifest.ts
 
       - name: Upload authenticated legal export
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: legal-service-area-live-export-${{ github.run_id }}
           path: |
@@ -295,7 +295,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -322,7 +322,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -352,7 +352,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -403,7 +403,7 @@ jobs:
     env:
       PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -456,7 +456,7 @@ jobs:
       DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
       DIRECTUS_URL: https://cms.yesid.dev
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - uses: ./.github/actions/setup
 
@@ -546,7 +546,7 @@ jobs:
         run: bun apps/cms/scripts/verify-content-manifest.ts
 
       - name: Upload authenticated live export + pre-apply snapshot
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: analytics-controls-live-export-${{ github.run_id }}
           path: |
