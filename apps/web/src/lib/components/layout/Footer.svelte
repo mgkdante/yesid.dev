@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { getAnalyticsPolicy } from '$lib/analytics/policy';
+	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';

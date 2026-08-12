@@ -8,10 +8,10 @@ import {
 import {
 	createAnalyticsClient,
 	type AnalyticsClient,
-	type AnalyticsEventName,
-} from '$lib/utils/analytics';
-import { getAnalyticsPolicy, type AnalyticsControlsInput } from './policy';
-import type { PlausibleTransport } from './transport';
+} from '@yesid/analytics/client';
+import { getAnalyticsPolicy, type AnalyticsControlsInput } from '@yesid/analytics/policy';
+import type { PlausibleTransport } from '@yesid/analytics/plausible';
+import { YESID_ANALYTICS_PRESET, type AnalyticsEventName } from './preset';
 
 export interface SiteAnalyticsClientDependencies {
 	isBrowser(): boolean;
@@ -23,8 +23,8 @@ export interface SiteAnalyticsClientDependencies {
 
 export function createSiteAnalyticsClient(
 	dependencies: SiteAnalyticsClientDependencies,
-): AnalyticsClient {
-	return createAnalyticsClient({
+): AnalyticsClient<AnalyticsEventName> {
+	return createAnalyticsClient(YESID_ANALYTICS_PRESET, {
 		loadTransport: dependencies.loadTransport,
 		getReferrer: dependencies.getReferrer,
 		canTrack: () =>
@@ -38,7 +38,7 @@ const client = createSiteAnalyticsClient({
 	getControls: () => siteLabels.ui.analyticsConsent,
 	getConsent: () => get(analyticsConsentStore),
 	getReferrer: () => (browser ? document.referrer : ''),
-	loadTransport: () => import('./transport'),
+	loadTransport: () => import('@yesid/analytics/plausible'),
 });
 
 export function trackPageview(url: URL): Promise<boolean> {
