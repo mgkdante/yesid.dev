@@ -44,7 +44,11 @@ interface ModuleUse {
 function sourceText(path: string): string {
 	const raw = readFileSync(path, 'utf8');
 	if (!path.endsWith('.svelte')) return raw;
-	return [...raw.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
+	return svelteScriptText(raw);
+}
+
+function svelteScriptText(raw: string): string {
+	return [...raw.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
 		.map((match) => match[1])
 		.join('\n');
 }
@@ -141,6 +145,19 @@ function relativeProductionPath(path: string): string {
 }
 
 describe('immutable design customer contract', () => {
+	it('extracts Svelte script tags without allowing tag casing to bypass the boundary audit', () => {
+		expect(
+			svelteScriptText(
+				'<SCRIPT lang="ts">import { analyticsClient } from "@yesid/analytics/client";</SCRIPT>',
+			),
+		).toContain('@yesid/analytics/client');
+		expect(
+			svelteScriptText(
+				'<ScRiPt context="module">import { createLocaleRouting } from "@yesid/i18n-core";</sCrIpT>',
+			),
+		).toContain('@yesid/i18n-core');
+	});
+
 	it('pins the exact schema-2 Release provenance and complete package closure', () => {
 		const manifest = readJson(join(VENDOR, 'manifest.json'));
 
