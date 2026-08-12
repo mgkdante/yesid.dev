@@ -1,12 +1,20 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
+import { Window } from 'happy-dom';
 import * as ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = resolve(process.cwd(), '../..');
 const VENDOR = resolve(process.cwd(), 'vendor/design');
 const PACKAGES = ['tokens', 'motion', 'gates', 'seo-kit', 'ui', 'analytics', 'i18n-core'] as const;
+const htmlWindow = new Window({
+	settings: {
+		disableJavaScriptEvaluation: true,
+		disableJavaScriptFileLoading: true,
+		disableCSSFileLoading: true,
+	},
+});
 
 const PINNED_RELEASE = {
 	tag: 'v0.13.0',
@@ -48,8 +56,10 @@ function sourceText(path: string): string {
 }
 
 function svelteScriptText(raw: string): string {
-	return [...raw.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
-		.map((match) => match[1])
+	const template = htmlWindow.document.createElement('template');
+	template.innerHTML = raw;
+	return [...template.content.querySelectorAll('script')]
+		.map((script) => script.textContent ?? '')
 		.join('\n');
 }
 
@@ -153,7 +163,7 @@ describe('immutable design customer contract', () => {
 		).toContain('@yesid/analytics/client');
 		expect(
 			svelteScriptText(
-				'<ScRiPt context="module">import { createLocaleRouting } from "@yesid/i18n-core";</sCrIpT>',
+				'<ScRiPt context="module">import { createLocaleRouting } from "@yesid/i18n-core";</sCrIpT >',
 			),
 		).toContain('@yesid/i18n-core');
 	});
