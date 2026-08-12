@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
 const ENDPOINT = 'https://plausible.io/api/event';
 const LOCAL_PRODUCTION_ORIGIN = 'http://yesid.dev:4173';
@@ -431,6 +432,78 @@ test('accepting consent sends exactly one initial pageview through the controlle
 	await waitForPageviews(payloads, 1);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
+	expectExactPageviewCount(payloads, 1);
+});
+
+test('successful contact form sends one property-free event without form data', async ({ page }) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+	await mockWeb3Forms(page, { success: true });
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/contact?utm_source=codex_ops2_qa&message=private`,
+	);
+	await waitForPageviews(payloads, 1);
+
+	const terminal = visibleContactTerminal(page);
+	await terminal.locator('#contact-name').fill('Private Test Name');
+	await terminal.locator('#contact-email').fill('private-test@example.com');
+	await terminal.locator('#contact-message').fill('Private form message');
+	await terminal.getByTestId('contact-submit').click();
+
+	await expect
+		.poll(() => eventsNamed(payloads, 'contact_form_success').length)
+		.toBe(1);
+	await drainCapturedRequests(page, payloads);
+
+	const events = eventsNamed(payloads, 'contact_form_success');
+	expect(events).toHaveLength(1);
+	expect(events[0]).toMatchObject({
+		name: 'contact_form_success',
+		domain: 'yesid.dev',
+	});
+	expect(events[0].props).toBeUndefined();
+	const trackedUrl = new URL(events[0].url);
+	expect(trackedUrl.pathname).toBe('/contact');
+	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+	expect(trackedUrl.searchParams.has('message')).toBe(false);
+	expect(JSON.stringify(events[0])).not.toContain('Private Test Name');
+	expect(JSON.stringify(events[0])).not.toContain('private-test@example.com');
+	expect(JSON.stringify(events[0])).not.toContain('Private form message');
+	expectExactPageviewCount(payloads, 1);
+});
+
+test('booking click sends one property-free event with the sanitized current page', async ({
+	page,
+}) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/contact?utm_source=codex_ops2_qa&booking=private`,
+	);
+	await waitForPageviews(payloads, 1);
+
+	const booking = visibleContactTerminal(page).getByTestId('contact-booking-link');
+	await expect(booking).toBeVisible();
+	await clickWithoutNavigation(booking);
+
+	await expect.poll(() => eventsNamed(payloads, 'booking_click').length).toBe(1);
+	await drainCapturedRequests(page, payloads);
+
+	const events = eventsNamed(payloads, 'booking_click');
+	expect(events).toHaveLength(1);
+	expect(events[0]).toMatchObject({
+		name: 'booking_click',
+		domain: 'yesid.dev',
+	});
+	expect(events[0].props).toBeUndefined();
+	const trackedUrl = new URL(events[0].url);
+	expect(trackedUrl.pathname).toBe('/contact');
+	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+	expect(trackedUrl.searchParams.has('booking')).toBe(false);
 	expectExactPageviewCount(payloads, 1);
 });
 

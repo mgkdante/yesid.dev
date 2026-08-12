@@ -40,6 +40,7 @@ import { sitePages } from "../../web/src/lib/content/site-pages";
 import { ogImagePath } from "../../web/src/lib/og/og-path";
 import { PUBLISHED_LOCALES } from "../../web/src/lib/utils/published-locales";
 import { parseAssetSemanticKey, type Sha256Hex } from "@repo/shared";
+import { createLocaleRouting } from "@yesid/i18n-core";
 
 const execFileAsync = promisify(execFile);
 const CMS_ROOT = resolve(import.meta.dir, "..");
@@ -732,6 +733,29 @@ interface ServiceOgSource {
 }
 
 const OG_LOCALES = Object.freeze(["en", "fr", "es"] as const);
+const ASSET_AUDIT_ROUTE_PATTERN = /^\/(?:[a-z0-9-]+(?:\/[a-z0-9-]+)*)?$/;
+const { localizeUrl } = createLocaleRouting<OgLocale>({
+  defaultLocale: "en",
+  prefixLocales: ["fr", "es"],
+  isPathExempt: () => false,
+  localeSegment: "/[[lang=locale]]",
+  preserveSearchAndHash: false,
+});
+
+export function localizeAssetAuditRoute(
+  route: string,
+  locale: OgLocale,
+): string {
+  if (
+    !ASSET_AUDIT_ROUTE_PATTERN.test(route) ||
+    /^\/(?:fr|es)(?:\/|$)/.test(route)
+  ) {
+    throw new TypeError(
+      `Asset-audit route must be an unlocalized root-relative path without query or hash: ${route}`,
+    );
+  }
+  return localizeUrl({ pathname: route, search: "", hash: "" }, locale);
+}
 const DEFAULT_OG_GROUPS = Object.freeze([
   { ownerType: "site", ownerKey: "home", route: "/" },
   { ownerType: "route", ownerKey: "blog-listing", route: "/blog" },
@@ -763,11 +787,6 @@ const SERVICE_OG_GROUPS = Object.freeze([
   "analytics-reporting",
   "web-development",
 ] as const);
-
-function localizedPublicRoute(route: string, locale: OgLocale): string {
-  if (locale === "en") return route;
-  return route === "/" ? `/${locale}` : `/${locale}${route}`;
-}
 
 function staticOgPath(
   family: "default" | "routes" | "services",
@@ -1028,7 +1047,7 @@ export function buildCurrentAssetOgGraph(input: {
         semanticKey: parseAssetSemanticKey(`og.site.default.${locale}`),
         ownerType: group.ownerType,
         ownerKey: group.ownerKey,
-        route: localizedPublicRoute(group.route, locale),
+        route: localizeAssetAuditRoute(group.route, locale),
         locale,
         repoPath: staticOgPath("default", "default", locale),
         sourceFile: "apps/web/src/lib/utils/seo-defaults.ts#defaultOgImageFor",
@@ -1047,7 +1066,7 @@ export function buildCurrentAssetOgGraph(input: {
         semanticKey: parseAssetSemanticKey(`og.route.${routeKey}.${locale}`),
         ownerType: "route",
         ownerKey: routeKey,
-        route: localizedPublicRoute(`/${routeKey}`, locale),
+        route: localizeAssetAuditRoute(`/${routeKey}`, locale),
         locale,
         repoPath: staticOgPath("routes", routeKey, locale),
         sourceFile: "apps/web/src/lib/utils/seo-defaults.ts#localizeOgCard",
@@ -1068,7 +1087,7 @@ export function buildCurrentAssetOgGraph(input: {
         ),
         ownerType: "service",
         ownerKey: serviceKey,
-        route: localizedPublicRoute(`/services/${serviceKey}`, locale),
+        route: localizeAssetAuditRoute(`/services/${serviceKey}`, locale),
         locale,
         repoPath: staticOgPath("services", serviceKey, locale),
         sourceFile:
@@ -1082,7 +1101,7 @@ export function buildCurrentAssetOgGraph(input: {
     for (const locale of OG_LOCALES) {
       requirements.push({
         usageKey: `og.project.${projectSlug}.${locale}`,
-        route: localizedPublicRoute(`/projects/${projectSlug}`, locale),
+        route: localizeAssetAuditRoute(`/projects/${projectSlug}`, locale),
         locale,
         ownerType: "project",
         ownerKey: projectSlug,
@@ -1108,7 +1127,7 @@ export function buildCurrentAssetOgGraph(input: {
       const slug = translations[locale].slug;
       requirements.push({
         usageKey: `og.blog.${translationKey}.${locale}`,
-        route: localizedPublicRoute(`/blog/${slug}`, locale),
+        route: localizeAssetAuditRoute(`/blog/${slug}`, locale),
         locale,
         ownerType: "blog",
         ownerKey: translationKey,
