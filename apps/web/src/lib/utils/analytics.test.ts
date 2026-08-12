@@ -1,16 +1,19 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
-	ANALYTICS_EVENTS,
 	createAnalyticsClient,
 	createPathnamePageviewTracker,
 	sanitizeAnalyticsReferrer,
 	sanitizeAnalyticsUrl,
-	type AnalyticsEventName,
-} from './analytics';
+} from '@yesid/analytics/client';
 import {
 	sendPlausibleEvent,
 	type PlausibleTransport,
-} from '$lib/analytics/transport';
+} from '@yesid/analytics/plausible';
+import {
+	ANALYTICS_EVENTS,
+	YESID_ANALYTICS_PRESET,
+	type AnalyticsEventName,
+} from '$lib/analytics/preset';
 
 function createTransport(options?: {
 	send?: PlausibleTransport['sendPlausibleEvent'];
@@ -30,7 +33,7 @@ function createClient(options?: {
 	const loadTransport = vi.fn(
 		options?.loadTransport ?? (async () => transport),
 	);
-	const client = createAnalyticsClient({
+	const client = createAnalyticsClient(YESID_ANALYTICS_PRESET, {
 		loadTransport,
 		canTrack: options?.canTrack ?? (() => true),
 		getReferrer: () => options?.referrer ?? '',
@@ -464,7 +467,7 @@ describe('createAnalyticsClient', () => {
 		const loadTransport = vi.fn(async (): Promise<PlausibleTransport> => {
 			throw new Error('import failed');
 		});
-		const client = createAnalyticsClient({
+		const client = createAnalyticsClient(YESID_ANALYTICS_PRESET, {
 			loadTransport,
 			canTrack: () => true,
 			getReferrer: () => '',
@@ -481,7 +484,7 @@ describe('createAnalyticsClient', () => {
 		const send = vi.fn<PlausibleTransport['sendPlausibleEvent']>(async () => true);
 		const transport = createTransport({ send });
 		const loadTransport = vi.fn(async () => transport);
-		const client = createAnalyticsClient({
+		const client = createAnalyticsClient(YESID_ANALYTICS_PRESET, {
 			loadTransport,
 			canTrack: () => true,
 			getReferrer: () => {

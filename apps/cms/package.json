@@ -29,6 +29,7 @@
 		"@aws-sdk/client-s3": "^3.1039.0",
 		"@directus/sdk": "^20.3.0",
 		"@repo/shared": "workspace:*",
+		"@yesid/i18n-core": "file:../web/vendor/design/i18n-core",
 		"bottleneck": "^2.19.5",
 		"bun-types": "latest",
 		"directus-sync": "^3.5.0",

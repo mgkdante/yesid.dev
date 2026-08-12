@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { get } from 'svelte/store';
-import { getAnalyticsPolicy } from '$lib/analytics/policy';
+import { getAnalyticsPolicy } from '@yesid/analytics/policy';
+import { YESID_ANALYTICS_PRESET } from '$lib/analytics/preset';
 import {
 	ANALYTICS_CONSENT_KEY,
 	ANALYTICS_DENIAL_SAFETY_KEY,
@@ -1025,6 +1026,7 @@ describe('analytics consent state', () => {
 	);
 
 	it('uses exact versioned durable and session keys', () => {
+		expect(YESID_ANALYTICS_PRESET.domain).toBe('yesid.dev');
 		expect(ANALYTICS_CONSENT_KEY).toBe('yesid:analytics-consent:v1');
 		expect(ANALYTICS_PREFERENCES_OPEN_KEY).toBe('yesid:analytics-preferences-open:v1');
 		expect(ANALYTICS_DENIAL_SAFETY_KEY).toBe('yesid:analytics-denial-safety:v1');
@@ -1044,5 +1046,78 @@ describe('analytics consent state', () => {
 		expect(storage.removeItem).toHaveBeenCalledOnce();
 		expect(storage.removeItem).toHaveBeenCalledWith('yesid:analytics-storage-probe:v1');
 		expect(storage.setItem).not.toHaveBeenCalledWith(ANALYTICS_CONSENT_KEY, expect.anything());
+	});
+
+	it('follows a substituted preset for the hostname guard and all four exported keys', async () => {
+		const substitutedPreset = {
+			domain: 'candidate.example',
+			events: [
+				'contact_form_success',
+				'booking_click',
+				'direct_contact_click',
+				'project_proof_click',
+			],
+			storageKeys: {
+				consent: 'candidate:consent',
+				preferencesOpen: 'candidate:preferences',
+				denialSafety: 'candidate:safety',
+				storageProbe: 'candidate:probe',
+			},
+		} as const;
+
+		vi.resetModules();
+		vi.doMock('$lib/analytics/preset', () => ({
+			YESID_ANALYTICS_PRESET: substitutedPreset,
+		}));
+
+		try {
+			const consent = await import('./analytics-consent.svelte');
+			expect([
+				consent.ANALYTICS_CONSENT_KEY,
+				consent.ANALYTICS_PREFERENCES_OPEN_KEY,
+				consent.ANALYTICS_DENIAL_SAFETY_KEY,
+				consent.ANALYTICS_STORAGE_PROBE_KEY,
+			]).toEqual([
+				substitutedPreset.storageKeys.consent,
+				substitutedPreset.storageKeys.preferencesOpen,
+				substitutedPreset.storageKeys.denialSafety,
+				substitutedPreset.storageKeys.storageProbe,
+			]);
+
+			const createDependencies = (hostname: string, probeDurableStorage: () => void) => ({
+				hostname: () => hostname,
+				probeDurableStorage,
+				read: () => null,
+				write: vi.fn(),
+				remove: vi.fn(),
+				readPreferencesMarker: () => null,
+				writePreferencesMarker: vi.fn(),
+				removePreferencesMarker: vi.fn(),
+				readSafetyMarker: () => null,
+				writeSafetyMarker: vi.fn(),
+				removeSafetyMarker: vi.fn(),
+				listen: vi.fn(() => () => {}),
+			});
+
+			const substitutedProbe = vi.fn();
+			const substitutedStore = consent.createAnalyticsConsentStore(
+				createDependencies(substitutedPreset.domain, substitutedProbe),
+			);
+			const stop = substitutedStore.init();
+			expect(get(substitutedStore)).toMatchObject({ ready: true, available: true });
+			expect(substitutedProbe).toHaveBeenCalledOnce();
+			stop();
+
+			const staleProbe = vi.fn();
+			const staleStore = consent.createAnalyticsConsentStore(
+				createDependencies('yesid.dev', staleProbe),
+			);
+			staleStore.init();
+			expect(get(staleStore)).toMatchObject({ ready: true, available: false });
+			expect(staleProbe).not.toHaveBeenCalled();
+		} finally {
+			vi.doUnmock('$lib/analytics/preset');
+			vi.resetModules();
+		}
 	});
 });

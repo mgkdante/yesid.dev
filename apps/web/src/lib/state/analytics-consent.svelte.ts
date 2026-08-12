@@ -1,10 +1,14 @@
 import { browser } from '$app/environment';
 import { writable, type Readable } from 'svelte/store';
+import { YESID_ANALYTICS_PRESET } from '$lib/analytics/preset';
 
-export const ANALYTICS_CONSENT_KEY = 'yesid:analytics-consent:v1';
-export const ANALYTICS_PREFERENCES_OPEN_KEY = 'yesid:analytics-preferences-open:v1';
-export const ANALYTICS_DENIAL_SAFETY_KEY = 'yesid:analytics-denial-safety:v1';
-export const ANALYTICS_STORAGE_PROBE_KEY = 'yesid:analytics-storage-probe:v1';
+export const ANALYTICS_CONSENT_KEY = YESID_ANALYTICS_PRESET.storageKeys.consent;
+export const ANALYTICS_PREFERENCES_OPEN_KEY =
+	YESID_ANALYTICS_PRESET.storageKeys.preferencesOpen;
+export const ANALYTICS_DENIAL_SAFETY_KEY =
+	YESID_ANALYTICS_PRESET.storageKeys.denialSafety;
+export const ANALYTICS_STORAGE_PROBE_KEY =
+	YESID_ANALYTICS_PRESET.storageKeys.storageProbe;
 
 export type AnalyticsConsentChoice = 'unknown' | 'granted' | 'denied';
 type DurableAnalyticsConsentChoice = Exclude<AnalyticsConsentChoice, 'unknown'>;
@@ -243,7 +247,7 @@ export function createAnalyticsConsentStore(
 		preferencesFocusRequests,
 		init(): () => void {
 			stopStorageListener();
-			const available = dependencies.hostname() === 'yesid.dev';
+			const available = dependencies.hostname() === YESID_ANALYTICS_PRESET.domain;
 			if (!available) {
 				commitUnavailable();
 				return () => {};
