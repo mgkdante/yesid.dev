@@ -78,7 +78,7 @@ jobs:
                   "prefixes": ["docs/"]
                 },
                 "irrelevant": {
-                  "paths": [".env.1password", ".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", ".mcp.json"],
+                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", ".mcp.json"],
                   "prefixes": [".claude/", ".codex/", ".githooks/"]
                 }
               }
