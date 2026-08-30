@@ -34,8 +34,8 @@ Schema is code: `apps/cms/directus/**` (collections + snapshot JSON) is the revi
 ```bash
 # 1) Author schema changes in Data Studio (dev first: cms.dev.yesid.dev).
 # 2) Preview the drift, then materialize it locally:
-bun run --env-file=apps/cms/.env --cwd apps/cms sync:diff   # read-only preview
-bun run --env-file=apps/cms/.env --cwd apps/cms sync:pull   # overwrite apps/cms/directus/** with remote state
+bun run --env-file=.env --cwd apps/cms sync:diff   # read-only preview
+bun run --env-file=.env --cwd apps/cms sync:pull   # overwrite apps/cms/directus/** with remote state
 # 3) Review the diff, commit, open a PR.
 git add apps/cms/directus/ && git commit -m "feat(cms): ..."
 ```
@@ -55,7 +55,7 @@ Real values live in the operator's chosen secret manager and the respective dash
 | `VERCEL_DEPLOY_HOOK_URL` | Railway service env (read by the publish Flow) | The single rebuild trigger: Flow POSTs it after a publish/archive; Vercel rebuilds the site |
 | `DIRECTUS_BUILD_TOKEN` | Vercel **Production only** | Read-only prod Build Bot token for `cms.yesid.dev`. Production live export also requires `EXPORT_FALLBACKS_LIVE=1` and the prod `PUBLIC_DIRECTUS_URL` |
 | `DIRECTUS_DEV_BUILD_TOKEN` | Vercel **Preview restricted to branch `develop` only**; operator secret environment for the refresh command | Distinct read-only dev Build Bot token for `cms.dev.yesid.dev`. The develop live export also requires branch-scoped `EXPORT_FALLBACKS_LIVE=1`. `refresh-dev-from-prod.sh` rebinds and authenticates this token after every Neon reset before R2 sync or the protected `develop` merge |
-| `LICENSE_KEY` | Railway service env (both services) + GH Actions secret `DIRECTUS_LICENSE_KEY` (contract-test) | Directus 12 Open Innovation Grant key (1P item "API — Directus — License", renews 2027-06-10; 5 activations bound to PUBLIC_URL) |
+| `LICENSE_KEY` | Railway service env (both services) + GH Actions secret `DIRECTUS_LICENSE_KEY` (contract-test) | Directus 12 Open Innovation Grant key (operator secret-manager record; renews 2027-06-10; 5 activations bound to PUBLIC_URL) |
 
 The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone: `/preview/*` routes and ISR revalidation webhooks never shipped, and slice-27.2 removed the runtime CMS seam they were designed for.
 
@@ -64,7 +64,7 @@ The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone:
 - **`VERCEL_DEPLOY_HOOK_URL`** — Vercel dashboard → yesid-dev project → Settings → Git → Deploy Hooks: create a new hook, copy the URL into the Railway service variable (`railway variables --service "Directus CMS" --set "VERCEL_DEPLOY_HOOK_URL=<new>"`), delete the old hook in Vercel, then verify by re-saving any published row and watching a Production build start. Update the operator's secret-manager record.
 - **Build Bot tokens** — rotate prod and dev independently. Pre-stage the new value in the operator's secret manager and only the matching Vercel target without deploying. Then PATCH that environment's single Build Bot token; this immediately invalidates the old value. Trigger and verify the target's live export at once. If it fails, PATCH the old value back and restore the matching Vercel variable. Never put either token or `EXPORT_FALLBACKS_LIVE` on generic Preview. Before a dev database refresh, the parent shell requires both Build Bot values and rejects equality without printing or passing the production value to a child process. The orchestrator then waits for every Neon operation, requires exactly one Build Bot, rebinds the dev token, and verifies `/users/me` with it before R2 sync or the protected `develop` merge.
 - **Prod admin token** — rotate in Data Studio (admin user → token), then update both consumers in the same sitting: the GH Actions secret `DIRECTUS_PROD_ADMIN_TOKEN` (`gh secret set`) and the operator's secret-manager record. A mid-deploy rotation orphaned CI once (slice-27.2) — do it between releases.
-- **`LICENSE_KEY`** — only on grant renewal: update the Railway vars on both services + the GH secret + the 1P item. Deactivate stale activations in Data Studio → Settings → License if URLs changed.
+- **`LICENSE_KEY`** — only on grant renewal: update the Railway vars on both services + the GH secret + the operator secret-manager record. Deactivate stale activations in Data Studio → Settings → License if URLs changed.
 
 ### Vercel target contract
 
@@ -96,8 +96,8 @@ bun install --frozen-lockfile  # run from the repository root with Bun 1.3.11
 bun test                 # fixture + seed-dry-run + sync-push + lib tests (no network)
 
 # From the repo root, reading a supplied gitignored apps/cms/.env directly:
-bun run --env-file=apps/cms/.env --cwd apps/cms sync:diff
-bun run --env-file=apps/cms/.env --cwd apps/cms sync:pull
+bun run --env-file=.env --cwd apps/cms sync:diff
+bun run --env-file=.env --cwd apps/cms sync:pull
 
 # Optional operator-specific shortcuts; not required for public setup:
 bun run cms:sync:diff:op
@@ -164,7 +164,7 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
      ```bash
      cd apps/cms && bun --env-file=.env run scripts/seed-brand-assets.ts
      ```
-     (`bun run --env-file=apps/cms/.env --cwd apps/cms ...` also parses correctly on bun 1.3.13; the broken form is `bun --cwd ... run ...` — see the gotcha note above.)
+     (`bun run --env-file=.env --cwd apps/cms ...` also parses correctly on Bun 1.3.11; the broken form is `bun --cwd ... run ...` — see the gotcha note above.)
    - For `site_meta.default_og_image`: upload `apps/web/static/og/default.en.png` to the `og/` folder via Directus admin UI (or a one-off upload script following the seed-brand-assets.ts pattern), then PATCH `site_meta.default_og_image` to the new UUID via admin UI or:
      ```bash
      curl -X PATCH "https://<env-cms-host>/items/site_meta" \

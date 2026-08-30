@@ -190,7 +190,7 @@ if [ "${#violations[@]}" -gt 0 ] || [ "${#missing_from_manifest[@]}" -gt 0 ]; th
   echo "  These files are an edge cache regenerated FROM the Directus CMS."
   echo "  The CMS is the source of truth — a prod rebuild OVERWRITES any"
   echo "  hand-edit. To change this content: edit the dev CMS, then run"
-  echo "    bun run --env-file=apps/cms/.env --cwd apps/cms export:fallbacks"
+  echo "    bun run --env-file=.env --cwd apps/cms export:fallbacks"
   echo "  and commit the regenerated .ts + generated.manifest.json together."
   echo ""
   if [ "${#violations[@]}" -gt 0 ]; then
