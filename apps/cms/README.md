@@ -2,7 +2,7 @@
 
 Directus 12 CMS backing [yesid.dev](https://yesid.dev). Two live environments on Railway, schema-as-code via directus-sync, content shipped to the consumer site through build-time export.
 
-Long-form decisions, research, and slice history live in Notion (Architecture → Dev vs Prod, plus the slice-18* artifact pages). This README is the operational reference for the CMS package.
+This README is the self-contained public operational reference for the CMS package.
 
 ## Current state
 
@@ -34,8 +34,8 @@ Schema is code: `apps/cms/directus/**` (collections + snapshot JSON) is the revi
 ```bash
 # 1) Author schema changes in Data Studio (dev first: cms.dev.yesid.dev).
 # 2) Preview the drift, then materialize it locally:
-op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:diff   # read-only preview
-op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:pull   # overwrite apps/cms/directus/** with remote state
+bun run --env-file=.env --cwd apps/cms sync:diff   # read-only preview
+bun run --env-file=.env --cwd apps/cms sync:pull   # overwrite apps/cms/directus/** with remote state
 # 3) Review the diff, commit, open a PR.
 git add apps/cms/directus/ && git commit -m "feat(cms): ..."
 ```
@@ -48,23 +48,23 @@ CI (`.github/workflows/cms.yml`): unit tests + credential-free snapshot-contract
 
 ## Shared secrets (cross-service)
 
-Real values live in 1Password and the respective dashboards, never in git. Directus production and dev credentials are deliberately distinct.
+Real values live in the operator's chosen secret manager and the respective dashboards, never in git. Directus production and dev credentials are deliberately distinct.
 
 | Secret | Lives in | Purpose |
 |---|---|---|
 | `VERCEL_DEPLOY_HOOK_URL` | Railway service env (read by the publish Flow) | The single rebuild trigger: Flow POSTs it after a publish/archive; Vercel rebuilds the site |
 | `DIRECTUS_BUILD_TOKEN` | Vercel **Production only** | Read-only prod Build Bot token for `cms.yesid.dev`. Production live export also requires `EXPORT_FALLBACKS_LIVE=1` and the prod `PUBLIC_DIRECTUS_URL` |
-| `DIRECTUS_DEV_BUILD_TOKEN` | Vercel **Preview restricted to branch `develop` only**; 1Password for the refresh command | Distinct read-only dev Build Bot token for `cms.dev.yesid.dev`. The develop live export also requires branch-scoped `EXPORT_FALLBACKS_LIVE=1`. `refresh-dev-from-prod.sh` rebinds and authenticates this token after every Neon reset before R2 sync or the protected `develop` merge |
-| `LICENSE_KEY` | Railway service env (both services) + GH Actions secret `DIRECTUS_LICENSE_KEY` (contract-test) | Directus 12 Open Innovation Grant key (1P item "API — Directus — License", renews 2027-06-10; 5 activations bound to PUBLIC_URL) |
+| `DIRECTUS_DEV_BUILD_TOKEN` | Vercel **Preview restricted to branch `develop` only**; operator secret environment for the refresh command | Distinct read-only dev Build Bot token for `cms.dev.yesid.dev`. The develop live export also requires branch-scoped `EXPORT_FALLBACKS_LIVE=1`. `refresh-dev-from-prod.sh` rebinds and authenticates this token after every Neon reset before R2 sync or the protected `develop` merge |
+| `LICENSE_KEY` | Railway service env (both services) + GH Actions secret `DIRECTUS_LICENSE_KEY` (contract-test) | Directus 12 Open Innovation Grant key (operator secret-manager record; renews 2027-06-10; 5 activations bound to PUBLIC_URL) |
 
 The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone: `/preview/*` routes and ISR revalidation webhooks never shipped, and slice-27.2 removed the runtime CMS seam they were designed for.
 
 ### Rotation runbook
 
-- **`VERCEL_DEPLOY_HOOK_URL`** — Vercel dashboard → yesid-dev project → Settings → Git → Deploy Hooks: create a new hook, copy the URL into the Railway service variable (`railway variables --service "Directus CMS" --set "VERCEL_DEPLOY_HOOK_URL=<new>"`), delete the old hook in Vercel, then verify by re-saving any published row and watching a Production build start. Update the 1P item.
-- **Build Bot tokens** — rotate prod and dev independently. Pre-stage the new value in 1Password and only the matching Vercel target without deploying. Then PATCH that environment's single Build Bot token; this immediately invalidates the old value. Trigger and verify the target's live export at once. If it fails, PATCH the old value back and restore the matching Vercel variable. Never put either token or `EXPORT_FALLBACKS_LIVE` on generic Preview. Before a dev database refresh, the parent shell requires both Build Bot values and rejects equality without printing or passing the production value to a child process. The orchestrator then waits for every Neon operation, requires exactly one Build Bot, rebinds the dev token, and verifies `/users/me` with it before R2 sync or the protected `develop` merge.
-- **Prod admin token** — rotate in Data Studio (admin user → token), then update BOTH consumers in the same sitting: the GH Actions secret `DIRECTUS_PROD_ADMIN_TOKEN` (`gh secret set`) and the 1P item "API — Directus — Prod/Dev" `admin_token` field. A mid-deploy rotation orphaned CI once (slice-27.2) — do it between releases.
-- **`LICENSE_KEY`** — only on grant renewal: update the Railway vars on both services + the GH secret + the 1P item. Deactivate stale activations in Data Studio → Settings → License if URLs changed.
+- **`VERCEL_DEPLOY_HOOK_URL`** — Vercel dashboard → yesid-dev project → Settings → Git → Deploy Hooks: create a new hook, copy the URL into the Railway service variable (`railway variables --service "Directus CMS" --set "VERCEL_DEPLOY_HOOK_URL=<new>"`), delete the old hook in Vercel, then verify by re-saving any published row and watching a Production build start. Update the operator's secret-manager record.
+- **Build Bot tokens** — rotate prod and dev independently. Pre-stage the new value in the operator's secret manager and only the matching Vercel target without deploying. Then PATCH that environment's single Build Bot token; this immediately invalidates the old value. Trigger and verify the target's live export at once. If it fails, PATCH the old value back and restore the matching Vercel variable. Never put either token or `EXPORT_FALLBACKS_LIVE` on generic Preview. Before a dev database refresh, the parent shell requires both Build Bot values and rejects equality without printing or passing the production value to a child process. The orchestrator then waits for every Neon operation, requires exactly one Build Bot, rebinds the dev token, and verifies `/users/me` with it before R2 sync or the protected `develop` merge.
+- **Prod admin token** — rotate in Data Studio (admin user → token), then update both consumers in the same sitting: the GH Actions secret `DIRECTUS_PROD_ADMIN_TOKEN` (`gh secret set`) and the operator's secret-manager record. A mid-deploy rotation orphaned CI once (slice-27.2) — do it between releases.
+- **`LICENSE_KEY`** — only on grant renewal: update the Railway vars on both services + the GH secret + the operator secret-manager record. Deactivate stale activations in Data Studio → Settings → License if URLs changed.
 
 ### Vercel target contract
 
@@ -92,21 +92,21 @@ docker build -t directus-local apps/cms && docker run --rm -p 8055:8055 --env-fi
 The `package.json` here is **scripts-only** tooling (seed, export, migration, sync, tests). Directus itself always runs from the pinned container image — this package ships config + schema dumps + scripts + tests.
 
 ```bash
-bun install              # installs @directus/sdk + directus-sync + zod + helpers
+bun install --frozen-lockfile  # run from the repository root with Bun 1.3.11
 bun test                 # fixture + seed-dry-run + sync-push + lib tests (no network)
 
-# From the repo root, 1Password-injected (see .env.example for the recipe):
-op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:diff
-op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:pull
+# From the repo root, reading a supplied gitignored apps/cms/.env directly:
+bun run --env-file=.env --cwd apps/cms sync:diff
+bun run --env-file=.env --cwd apps/cms sync:pull
 
-# Root package.json shortcuts (root .env):
+# Optional operator-specific shortcuts; not required for public setup:
 bun run cms:sync:diff:op
 bun run cms:sync:push:op
 ```
 
 > Bun 1.3.x flag-parsing gotcha: `bun --cwd <dir> run <script>` silently prints
 > `bun run` help instead of running the script. Use `bun run --cwd <dir> <script>`
-> (flags after `run`) or `cd` into the package first. Verified on bun 1.3.13.
+> (flags after `run`) or `cd` into the package first. Verified on the pinned Bun 1.3.11.
 
 ## Operations
 
@@ -129,8 +129,7 @@ Live runs require `DIRECTUS_ADMIN_TOKEN`, use only the two fixed CMS URLs, and m
 Seed scripts are one-shot/idempotent per domain (`seed:services`, `seed:projects`, `seed:presets`, ...). Most domains were seeded once in slice-18 and are now maintained in Data Studio — re-run a seeder only when you know it's the right tool (several are stamped DONE in their headers).
 
 ```bash
-# 1) Admin credentials from 1Password (no hand-copying).
-export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token")
+# 1) Supply DIRECTUS_ADMIN_TOKEN through the operator's chosen secret manager or shell.
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 
 # 2) Seed (from apps/cms).
@@ -165,7 +164,7 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
      ```bash
      cd apps/cms && bun --env-file=.env run scripts/seed-brand-assets.ts
      ```
-     (`bun run --env-file=apps/cms/.env --cwd apps/cms ...` also parses correctly on bun 1.3.13; the broken form is `bun --cwd ... run ...` — see the gotcha note above.)
+     (`bun run --env-file=.env --cwd apps/cms ...` also parses correctly on Bun 1.3.11; the broken form is `bun --cwd ... run ...` — see the gotcha note above.)
    - For `site_meta.default_og_image`: upload `apps/web/static/og/default.en.png` to the `og/` folder via Directus admin UI (or a one-off upload script following the seed-brand-assets.ts pattern), then PATCH `site_meta.default_og_image` to the new UUID via admin UI or:
      ```bash
      curl -X PATCH "https://<env-cms-host>/items/site_meta" \
@@ -207,8 +206,7 @@ Linux/macOS worktrees are unaffected (no CRLF in tracked files to begin with).
 Bulk-upload `apps/web/static/images/*` into Directus-managed R2 storage. Reads `fixtures/assets-manifest.json` for metadata + target folders; walks the source tree for the binaries.
 
 ```bash
-# 1) Pull the admin token from 1Password.
-export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token")
+# 1) Supply DIRECTUS_ADMIN_TOKEN through the operator's chosen secret manager or shell.
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 
 # 2) Dry-run first — prints what would upload without touching Directus.
@@ -234,7 +232,7 @@ Directus saved asset presets let consumers request named sizes via `?key=<preset
 ```bash
 # Idempotent — overwrites directus_settings.storage_asset_presets with the
 # declared SLICE_18_PRESETS array.
-export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token")
+# Supply DIRECTUS_ADMIN_TOKEN through the operator's chosen secret manager or shell.
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 bun run seed:presets
 ```
@@ -254,7 +252,7 @@ Pure consumer changes (component, styling, route) don't touch this package. Pure
 
 ```
 apps/cms/
-├── Dockerfile                   # directus/directus:11.17.3 + directus-extension-sync (Railway builds this)
+├── Dockerfile                   # directus/directus:12.0.0 + directus-extension-sync (Railway builds this)
 ├── directus-sync.config.cjs     # directus-sync CLI config (dumpPath, features, env connection)
 ├── directus/
 │   ├── collections/             # directus-sync dumps: flows, operations, permissions, policies, roles, settings, ...
@@ -266,7 +264,7 @@ apps/cms/
 │   └── lib/                     # shared fetchers/emitters/auth used by export + seeds
 ├── tests/                       # fixture + dry-run + sync-push tests (bun test, no network)
 ├── vercel.json                  # ignoreCommand guard from the standalone-repo era (skips any Vercel build rooted here); harmless
-├── .env.example                 # Railway env reference + local op-inject recipes
+├── .env.example                 # Railway env reference + secret-manager-neutral local setup
 └── README.md                    # this file
 ```
 
@@ -328,7 +326,7 @@ their original paths using that archive's manifest before attempting a replay.
 
 1. Open the Railway-assigned temporary domain.
 2. Log in with the bootstrap `ADMIN_EMAIL` + `ADMIN_PASSWORD`.
-3. Change the admin password to something stored only in 1Password.
+3. Change the admin password to something stored only in the operator's chosen secret manager.
 4. Railway → Variables → **delete** `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
 
 ### 5. Custom domain + DNS

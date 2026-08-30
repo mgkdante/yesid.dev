@@ -2,7 +2,7 @@
  * Zod schema for storage_asset_presets — used by seed-presets.ts to validate
  * the brand fixture before pushing to Directus.
  *
- * Mirrors the shape Directus 11.17 accepts for `directus_settings.storage_asset_presets`.
+ * Mirrors the committed `directus_settings.storage_asset_presets` configuration shape.
  * See: https://docs.directus.io/configuration/storage.html#asset-presets
  */
 import { z } from 'zod';
