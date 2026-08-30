@@ -2,7 +2,7 @@
 	"name": "@repo/cms",
 	"private": true,
 	"type": "module",
-	"description": "Config + snapshot + seed scripts for the Directus CMS backing yesid.dev. The Directus app itself runs from the pinned directus/directus:12.0.0 container on Railway — this repo ships schema, seed data, and ops tooling only.",
+	"description": "Config, snapshots, seed scripts, and operational tooling for the Directus CMS backing yesid.dev, configured for the pinned directus/directus:12.0.0 image.",
 	"scripts": {
 		"seed:services": "bun scripts/seed-services.ts",
 		"export:fallbacks": "bun scripts/export-fallbacks.ts",
@@ -31,7 +31,7 @@
 		"@repo/shared": "workspace:*",
 		"@yesid/i18n-core": "file:../web/vendor/design/i18n-core",
 		"bottleneck": "^2.19.5",
-		"bun-types": "latest",
+		"bun-types": "1.3.14",
 		"directus-sync": "^3.5.0",
 		"sharp": "^0.35.3",
 		"zod": "^4.3.6"

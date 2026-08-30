@@ -1,7 +1,6 @@
 // Block Editor document types + Zod schema.
 //
-// Slice-18 18f Phase 3 Task 10. Models Directus 11.17.3 Block Editor
-// (Editor.js v2.31.x) JSON shape.
+// Models the committed Directus Block Editor (Editor.js v2.31.x) JSON boundary.
 //
 // Per D14: types + Zod only. No runtime helpers in `types/`; pure utils
 // live in `utils/blocks.ts`.

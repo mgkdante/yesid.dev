@@ -58,7 +58,7 @@ snapshot.
 
 ## Local development
 
-Prerequisites: Bun 1.3+ and Node 22+.
+Prerequisites: Bun 1.3.11 and Node 22+.
 
 ```bash
 bun install --frozen-lockfile
@@ -75,6 +75,7 @@ Run the repository gates:
 bun run test
 bun run check
 bun run ci:tokens
+bun run ci:content
 bun run build
 ```
 
