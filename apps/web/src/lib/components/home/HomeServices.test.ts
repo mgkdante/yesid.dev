@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, waitFor } from '@testing-library/svelte';
 import HomeServices from './HomeServices.svelte';
 // slice-18i Phase 7C: HomeServices now requires servicesGrid prop.
 // slice-28.5 (#124): HomeServices also requires the services prop — the
@@ -18,12 +18,6 @@ describe('HomeServices', () => {
 		expect(screen.getByTestId('services-section')).toBeInTheDocument();
 	});
 
-
-
-
-
-
-
 	it('renders view-all link to /services', () => {
 		render(HomeServices, { props: { servicesGrid: servicesGridContent, services } });
 		const container = screen.getByTestId('services-viewall');
@@ -31,6 +25,40 @@ describe('HomeServices', () => {
 		const anchor = container.querySelector('a');
 		expect(anchor?.getAttribute('href')).toBe('/services');
 		expect(anchor?.textContent).toContain('View all services');
+	});
+
+	it('keeps the static service icon and diagnoses an inline SVG fetch failure', async () => {
+		const originalFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn().mockRejectedValue(new Error('no server'));
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const oneService = [
+			serviceFactory.build({
+				id: 'diagnostic-service',
+				title: { en: 'Diagnostic service' },
+				station: 1,
+				visible: true,
+				svg: 'diagnostic-service.svg',
+			}),
+		];
+
+		try {
+			const { container, unmount } = render(HomeServices, {
+				props: { servicesGrid: servicesGridContent, services: oneService },
+			});
+			expect(container.querySelector('.svg-inline-wrapper img')).toHaveAttribute(
+				'src',
+				'/svg/services/diagnostic-service.svg',
+			);
+			await waitFor(() => {
+				expect(warn).toHaveBeenCalledWith(
+					'[home-services] Decorative SVG fetch failed; keeping the static image.',
+				);
+			});
+			unmount();
+		} finally {
+			warn.mockRestore();
+			globalThis.fetch = originalFetch;
+		}
 	});
 
 	it('go2/w4: hover glow unwired — pointermove writes NO --glow vars on the section', () => {

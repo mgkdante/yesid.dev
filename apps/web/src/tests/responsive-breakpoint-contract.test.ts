@@ -187,11 +187,14 @@ describe('canonical responsive breakpoint contract', () => {
 		// an independent re-derivation reproduces the digests below, and undoing
 		// exactly those three +5 shifts reproduces the two previous digests
 		// (65bfa404… / b6c9ebd7…) byte-for-byte — so nothing else moved.
+		// 2026-08-30: decorative fallback diagnostics shifted media-query source
+		// lines in CloserGraffiti (+3), CloserProps (+5), and HomeServices (+2).
+		// The media text, feature counts, and path inventory are unchanged.
 		expect(digest(normalized)).toBe(
-			'b2d39a3e5e2401b258ac751bed67026a73b17ed921d00db533a416db5061d3ff',
+			'f5be4ffd331a824e0b4e98182416c61cb014c4c37916927d29765f48054187ec',
 		);
 		expect(digest(frozenFeatures)).toBe(
-			'ff4f089470473bf7ca18a30615da09c59fe9dd6a55b7408a7ba9d7f6e6328124',
+			'd3006b9fb600e0d54c300895055827318eac83cb28aa31f9950375b723fa3326',
 		);
 	});
 

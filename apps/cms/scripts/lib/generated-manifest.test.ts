@@ -116,10 +116,8 @@ describe('write/loadManifest round-trip', () => {
 });
 
 describe('GENERATED_HEADER_MARKER', () => {
-	// The marker is only useful if all four sites agree byte-for-byte: the
-	// emitter header, this constant, and the two bash guards that grep for it.
-	// A mismatch (the pre-2026-07 em-dash rot) silently disables both hand-edit
-	// guards, so each site is asserted here instead of trusted.
+	// The emitter constant and staged-content guard must agree byte-for-byte.
+	// A mismatch silently disables hand-edit protection.
 	const REPO_ROOT = resolve(import.meta.dir, '../../../..');
 
 	it('is a substring of every emitModule() output', () => {
@@ -137,13 +135,5 @@ describe('GENERATED_HEADER_MARKER', () => {
 	it('is the exact string the git pre-commit hook greps for', () => {
 		const hook = readFileSync(resolve(REPO_ROOT, '.githooks/pre-commit'), 'utf8');
 		expect(hook).toContain(`GENERATED_MARKER="${GENERATED_HEADER_MARKER}"`);
-	});
-
-	it('is the exact string the Claude PreToolUse hook greps for', () => {
-		const hook = readFileSync(
-			resolve(REPO_ROOT, '.claude/hooks/pretool-block-generated-ts.sh'),
-			'utf8',
-		);
-		expect(hook).toContain(`grep -q "${GENERATED_HEADER_MARKER}"`);
 	});
 });

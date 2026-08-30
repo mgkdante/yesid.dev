@@ -35,7 +35,10 @@
 		try {
 			res = await fetch('/svg/graffiti/the-end.svg');
 		} catch {
-			return []; // Tests run without a server — skip SVG injection
+			console.warn(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			return [];
 		}
 		const text = await res.text();
 		const parser = new DOMParser();

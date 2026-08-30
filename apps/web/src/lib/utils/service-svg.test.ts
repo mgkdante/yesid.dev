@@ -49,11 +49,19 @@ describe('fetchServiceSvgContents', () => {
 	});
 
 	it('falls back to fetch for unknown refs and degrades to empty on failure', async () => {
-		const contents = await fetchServiceSvgContents(failingFetch, [
-			service('mystery', 'not-in-the-repo.svg'),
-		]);
-		expect(contents['mystery']).toBe('');
-		expect(failingFetch).toHaveBeenCalledTimes(1);
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		try {
+			const contents = await fetchServiceSvgContents(failingFetch, [
+				service('mystery', 'not-in-the-repo.svg'),
+			]);
+			expect(contents['mystery']).toBe('');
+			expect(failingFetch).toHaveBeenCalledTimes(1);
+			expect(warn).toHaveBeenCalledWith(
+				'[service-svg] Decorative SVG fetch failed; using empty content.',
+			);
+		} finally {
+			warn.mockRestore();
+		}
 	});
 });
 

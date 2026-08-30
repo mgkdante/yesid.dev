@@ -64,12 +64,11 @@ describe('ordered extra-locale loop', () => {
 
 	test('pins committed generated-content and static byte oracles', () => {
 		expect(sha256(readFileSync(join(REPO_ROOT, 'apps/web/src/lib/content/generated.manifest.json')))).toBe(
-			'2be732712bb584f88be7c443177cc3667dfa3e578e678a8f69f4c1068db31df6',
+			'ec6b2549cebc35068b9f11be9de43e0be28968f403fbae1750ce9974d63f6d97',
 		);
 		expect(aggregateSha256(join(REPO_ROOT, 'apps/web/src/lib/content'))).toBe(
-			// 2026-07-30 (030): rebased for the declared integrity.test.ts +1 (ServiceStackPanel
-			// added to the audited list) — the sole changed file under lib/content.
-			'344448dcb7d811899abddc29e557613b6682aa2ed4385f3c9e3929d6459f1444',
+			// Site-label emitter description refreshed; generated data is unchanged.
+			'8340c46746d2b928d5803d5351187463698826965df434b1cc182603312cc6e0',
 		);
 		expect(aggregateSha256(join(REPO_ROOT, 'apps/web/static'))).toBe(
 			'a8c4c71e0c658c7e6db5db6010e3eec5fc6dc3e6ad11d00fbdcb8ff227e711db',

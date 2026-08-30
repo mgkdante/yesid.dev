@@ -17,7 +17,12 @@
 			const wrap = wrapperEl!.querySelector(`[data-prop="${name}"]`);
 			if (!wrap) return;
 			fetch(`/svg/graffiti/prop-${name}.svg`)
-				.catch(() => null) // Tests run without a server
+				.catch(() => {
+					console.warn(
+						'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+					);
+					return null;
+				})
 				.then((r) => r?.text())
 				.then((text) => {
 					if (!text) return;

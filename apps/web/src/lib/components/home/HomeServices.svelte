@@ -108,7 +108,9 @@
 
 				svgReady[i] = true;
 			} catch {
-				// Graceful fallback — SVG fetch failure keeps the static <img> placeholder.
+				console.warn(
+					'[home-services] Decorative SVG fetch failed; keeping the static image.',
+				);
 			}
 		});
 	});

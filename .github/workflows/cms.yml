@@ -95,18 +95,18 @@ jobs:
               },
               "jobs": {
                 "test-work": {
-                  "paths": [".claude/hooks/pretool-block-generated-ts.sh", ".githooks/pre-commit"],
+                  "paths": [".githooks/pre-commit"],
                   "prefixes": ["apps/cms/", "apps/web/", "gbp-assets/", "packages/"]
                 }
               },
               "ignore": {
                 "docs-only": {
-                  "paths": ["AGENTS.md", "CLAUDE.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
+                  "paths": ["AGENTS.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
                   "prefixes": ["docs/"]
                 },
                 "irrelevant": {
-                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", ".mcp.json", "DESIGN.md"],
-                  "prefixes": [".claude/", ".codex/", ".githooks/"]
+                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", "DESIGN.md"],
+                  "prefixes": [".githooks/"]
                 }
               }
             }

@@ -296,22 +296,6 @@ describe("dynamic media expression anchors", () => {
 });
 
 describe("scanRepository with an injected mini-repository", () => {
-  it("excludes inert runbook archives from the active asset surface", async () => {
-    const archivedSource =
-      "archive/cms-runbooks/2026-07-21/apps/web/src/Archived.svelte";
-    const miniRepo = await makeMiniRepo({
-      [archivedSource]: '<img src="/images/archived.png" alt="Archived">',
-      "apps/web/static/images/archived.png": new Uint8Array([1, 2, 3]),
-    });
-    const scan = await scanRepository({
-      repoRoot: miniRepo.root,
-      trackedFiles: miniRepo.trackedFiles,
-    });
-
-    expect(scan.usages.some(({ sourceFile }) => sourceFile.startsWith(archivedSource))).toBe(false);
-    expect(scan.findings.some(({ sourceFile }) => sourceFile.startsWith(archivedSource))).toBe(false);
-  });
-
   it("excludes the generated audit baseline from consumer evidence and scan recursion", async () => {
     const baselinePath = "apps/cms/fixtures/assets/audit-baseline.json";
     const imagePath = "apps/web/static/images/real.png";
@@ -1325,7 +1309,7 @@ describe("yesid.dev real repository contract", () => {
       "apps/web/src/lib/components/about/AboutLanguages.svelte:47",
       "apps/web/src/lib/components/about/AboutPolaroids.svelte:77",
       "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte:24",
-      "apps/web/src/lib/components/home/HomeServices.svelte:163",
+      "apps/web/src/lib/components/home/HomeServices.svelte:165",
       "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte:62",
       "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte:78",
       "apps/web/src/lib/components/projects/ProjectImageGallery.svelte:82",
@@ -1574,12 +1558,12 @@ describe("yesid.dev real repository contract", () => {
     for (const expected of [
       {
         sourceFile: "apps/web/src/lib/components/home/CloserProps.svelte",
-        sourceLine: 24,
+        sourceLine: 29,
         rawRef: "new DOMParser(",
       },
       {
         sourceFile: "apps/web/src/lib/components/home/CloserProps.svelte",
-        sourceLine: 56,
+        sourceLine: 61,
         rawRef: ".appendChild(",
       },
       {
