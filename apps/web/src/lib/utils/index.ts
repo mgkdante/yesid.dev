@@ -10,7 +10,7 @@
 //     (server-only — uses $env/dynamic/private; loaded from +page.server.ts only).
 //   - Type-only consumers (e.g. <WeatherData> in a component) are also imported
 //     directly: `import type { WeatherData } from '$lib/utils/weather'`.
-//   - Markdown rendering: `import { marked } from '$lib/server/markdown'`.
+//   - README rendering: `import { renderGithubReadme } from '$lib/server/markdown'`.
 //     Slice-23 kept it out of this barrel; consolidation-deploy-honesty moved
 //     it (with the Shiki highlighter it imports) into $lib/server so the build
 //     itself refuses any client-reachable import — highlighting is

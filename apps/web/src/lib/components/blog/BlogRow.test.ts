@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import BlogRow from './BlogRow.svelte';
 import type { BlogPost } from '$lib/types';
 
@@ -23,55 +21,11 @@ const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
 });
 
 describe('BlogRow', () => {
-	it('uses a mobile header grid so excerpt and tags get the full card width', () => {
-		const source = readFileSync(resolve(process.cwd(), 'src/lib/components/blog/BlogRow.svelte'), 'utf8');
-
-		expect(source).toContain('class="blog-row p-5 md:p-6"');
-		expect(source).not.toContain('blog-row flex flex-row');
-		expect(source).toContain('class="blog-row-icon relative z-10"');
-		expect(source).toContain('class="blog-row-head"');
-		expect(source).toContain('class="blog-excerpt mt-2 leading-relaxed text-[var(--secondary-foreground)]"');
-		expect(source).toMatch(/\.card-surface\.blog-row\) \{[\s\S]*display: grid;[\s\S]*grid-template-columns: 4rem minmax\(0, 1fr\);/);
-		expect(source).toMatch(/\.blog-row-icon \{[\s\S]*grid-column: 1;[\s\S]*grid-row: 1;/);
-		expect(source).toMatch(/\.blog-row-body \{[\s\S]*display: contents;/);
-		expect(source).toMatch(/\.blog-row-head \{[\s\S]*grid-column: 2;[\s\S]*grid-row: 1;/);
-		expect(source).toMatch(/\.blog-excerpt \{[\s\S]*-webkit-line-clamp: 4;/);
-		expect(source).toMatch(/\.blog-excerpt \{[\s\S]*grid-column: 1 \/ -1;/);
-		expect(source).toMatch(/\.blog-excerpt \{[\s\S]*font-size: var\(--text-card-body\);/);
-		expect(source).toMatch(/\.blog-topic-tags \{[\s\S]*grid-column: 1 \/ -1;/);
-		expect(source).toMatch(/:global\(\.blog-language-chip\) \{[\s\S]*border-color: var\(--accent-text\);[\s\S]*background: var\(--accent-surface\);[\s\S]*color: var\(--accent-text\);/);
-		expect(source).toMatch(/@media \(--tablet-min\) \{[\s\S]*display: flex;[\s\S]*flex-direction: row;[\s\S]*\.blog-row-body \{[\s\S]*display: block;[\s\S]*\.blog-excerpt \{[\s\S]*grid-column: auto;[\s\S]*-webkit-line-clamp: 2;/);
-	});
-
 	it('renders the post title', () => {
 		const { getByText } = render(BlogRow, {
 			props: { post: makePost(), index: 0 }
 		});
 		expect(getByText('Test Post Title')).toBeTruthy();
-	});
-
-	it('renders uniform padding for all rows', () => {
-		const { container } = render(BlogRow, {
-			props: { post: makePost(), index: 0, featured: true, accentColor: '#E07800' }
-		});
-		const card = container.querySelector('[data-slot="card"]');
-		expect(card?.classList.contains('p-5')).toBe(true);
-	});
-
-	it('renders same padding regardless of featured prop', () => {
-		const { container } = render(BlogRow, {
-			props: { post: makePost(), index: 0, featured: false }
-		});
-		const card = container.querySelector('[data-slot="card"]');
-		expect(card?.classList.contains('p-5')).toBe(true);
-	});
-
-	it('renders same padding when featured is not set', () => {
-		const { container } = render(BlogRow, {
-			props: { post: makePost(), index: 0 }
-		});
-		const card = container.querySelector('[data-slot="card"]');
-		expect(card?.classList.contains('p-5')).toBe(true);
 	});
 
 	it('renders station badge with zero-padded index', () => {

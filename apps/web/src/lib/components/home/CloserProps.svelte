@@ -17,10 +17,11 @@
 			const wrap = wrapperEl!.querySelector(`[data-prop="${name}"]`);
 			if (!wrap) return;
 			fetch(`/svg/graffiti/prop-${name}.svg`)
-				.catch(() => null) // Tests run without a server
-				.then((r) => r?.text())
+				.then((response) => {
+					if (!response.ok) throw new Error('Decorative SVG response was not successful.');
+					return response.text();
+				})
 				.then((text) => {
-					if (!text) return;
 					const parser = new DOMParser();
 					const doc = parser.parseFromString(text, 'image/svg+xml');
 					const svg = doc.querySelector('svg');
@@ -54,6 +55,11 @@
 					svg.appendChild(contentGroup);
 
 					wrap.appendChild(svg);
+				})
+				.catch(() => {
+					console.warn(
+						'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+					);
 				});
 		});
 	});

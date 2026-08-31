@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -35,6 +34,272 @@ const BREAKPOINTS = [
 	},
 ] as const;
 
+const RESPONSIVE_SOURCE_PATHS = [
+	'apps/web/src/app.css',
+	'apps/web/src/lib/components/about/AboutPage.svelte',
+	'apps/web/src/lib/components/blog/BlogDetailHeader.svelte',
+	'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
+	'apps/web/src/lib/components/blog/BlogEntryRail.svelte',
+	'apps/web/src/lib/components/blog/BlogRow.svelte',
+	'apps/web/src/lib/components/contact/ContactPage.svelte',
+	'apps/web/src/lib/components/home/CloserFloodlight.svelte',
+	'apps/web/src/lib/components/home/CloserGraffiti.svelte',
+	'apps/web/src/lib/components/home/CloserProps.svelte',
+	'apps/web/src/lib/components/home/CloserTerminalBoard.svelte',
+	'apps/web/src/lib/components/home/FeaturedProjects.svelte',
+	'apps/web/src/lib/components/home/HeroBanner.svelte',
+	'apps/web/src/lib/components/home/HeroMetrics.svelte',
+	'apps/web/src/lib/components/home/HeroTextContent.svelte',
+	'apps/web/src/lib/components/home/HomeAboutTeaser.svelte',
+	'apps/web/src/lib/components/home/HomeCloser.svelte',
+	'apps/web/src/lib/components/home/HomePage.svelte',
+	'apps/web/src/lib/components/home/HomeServices.svelte',
+	'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
+	'apps/web/src/lib/components/home/ManifestoTransit.svelte',
+	'apps/web/src/lib/components/home/ServicesBlueprint.svelte',
+	'apps/web/src/lib/components/layout/MenuOverlay.svelte',
+	'apps/web/src/lib/components/layout/Nav.svelte',
+	'apps/web/src/lib/components/projects/DataFlowDiagram.svelte',
+	'apps/web/src/lib/components/projects/ProjectCard.svelte',
+	'apps/web/src/lib/components/projects/ProjectDetailHeader.svelte',
+	'apps/web/src/lib/components/projects/ProjectDetailPage.svelte',
+	'apps/web/src/lib/components/projects/ProjectImageGallery.svelte',
+	'apps/web/src/lib/components/services/ProjectsStrip.svelte',
+	'apps/web/src/lib/components/services/ServiceCard.svelte',
+	'apps/web/src/lib/components/services/ServiceDetailPage.svelte',
+	'apps/web/src/lib/components/services/ServiceStackPanel.svelte',
+	'apps/web/src/lib/components/services/ServiceSvgPanel.svelte',
+	'apps/web/src/lib/components/shared/CtaBand.svelte',
+	'apps/web/src/lib/components/shared/CtaBlueprintBackground.svelte',
+	'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
+	'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
+	'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
+	'apps/web/src/lib/components/stack-engine/Engine.svelte',
+	'apps/web/src/lib/styles/listing-header.css',
+	'apps/web/src/lib/styles/listing-shell.css',
+	'apps/web/src/routes/[[lang=locale]]/blog/+layout.svelte',
+	'apps/web/src/routes/[[lang=locale]]/projects/+layout.svelte',
+	'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
+] as const;
+
+const NONCANONICAL_MEDIA_INVENTORY = [
+	{
+		path: 'apps/web/src/app.css',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 3,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/AboutLanguages.svelte',
+		condition: '(max-width: 499.98px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/AboutPage.svelte',
+		condition: '(min-width: 500px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/AboutTrain.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/WeatherScene.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+		condition: '(min-width: 48rem)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
+		condition: '(--desktop-min) and (max-width: 1279px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroBanner.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(--tablet-max) and (max-height: 660px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(max-height: 660px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HomeAboutTeaser.svelte',
+		condition: '(min-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeBottom.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeRight.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeRight.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeTop.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
+		condition: '(max-width: 359px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
+		condition: '(max-width: 479px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/Nav.svelte',
+		condition: '(max-width: 359px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/Nav.svelte',
+		condition: '(max-width: 479px)',
+		occurrences: 2,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/Nav.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/ThemeToggle.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/projects/ProjectCard.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/projects/ProjectHeroPreview.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
+		condition: '(min-width: 1280px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/CollapsibleSection.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/ErrorIllustration.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/StationTabs.svelte',
+		condition: '(min-width: 1280px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
+		condition: '(hover: hover)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/ProductPreview.svelte',
+		condition: '(max-width: 479px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/ShapeBlueprint.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/TechMatcher.svelte',
+		condition: '(max-width: 1279px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/TechMatcher.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+] as const;
+
 interface MediaLine {
 	path: string;
 	lineNumber: number;
@@ -62,6 +327,78 @@ function mediaLines(): MediaLine[] {
 	);
 }
 
+function stylesheetBodies(path: string): string[] {
+	const source = readFileSync(path, 'utf8');
+	if (path.endsWith('.css')) return [source];
+	return [...source.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(
+		([, body]) => body!,
+	);
+}
+
+function normalizeMediaCondition(condition: string): string {
+	return condition
+		.trim()
+		.replace(/\s+/g, ' ')
+		.replace(/\(\s+/g, '(')
+		.replace(/\s+\)/g, ')')
+		.replace(/\s*:\s*/g, ': ');
+}
+
+function isCanonicalAliasCondition(condition: string): boolean {
+	return condition
+		.split(/\s+and\s+/)
+		.every((feature) => /^\(--(?:tablet|desktop)-(?:min|max)\)$/.test(feature));
+}
+
+function isNoncanonicalResponsiveCondition(condition: string): boolean {
+	if (isCanonicalAliasCondition(condition)) return false;
+	return /(?:min|max)-(?:width|height)|(?:any-)?(?:hover|pointer):|prefers-reduced-motion:/.test(
+		condition,
+	);
+}
+
+function compareText(left: string, right: string): number {
+	return left === right ? 0 : left < right ? -1 : 1;
+}
+
+function noncanonicalMediaInventory() {
+	const counts = new Map<string, { path: string; condition: string; occurrences: number }>();
+	for (const path of sourceFiles()) {
+		const repoPath = relative(REPO_ROOT, path);
+		for (const body of stylesheetBodies(path)) {
+			const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '');
+			for (const [, rawCondition] of withoutComments.matchAll(/@media\s+([^{}]+?)\s*\{/g)) {
+				const condition = normalizeMediaCondition(rawCondition!);
+				if (!isNoncanonicalResponsiveCondition(condition)) continue;
+				const key = `${repoPath}\0${condition}`;
+				const current = counts.get(key);
+				counts.set(key, {
+					path: repoPath,
+					condition,
+					occurrences: (current?.occurrences ?? 0) + 1,
+				});
+			}
+		}
+	}
+	return [...counts.values()].sort(
+		(left, right) =>
+			compareText(left.path, right.path) || compareText(left.condition, right.condition),
+	);
+}
+
+function mediaBlock(css: string, condition: string): string {
+	const start = css.indexOf(`@media ${condition}`);
+	if (start === -1) throw new Error(`Missing media condition: ${condition}`);
+	const openingBrace = css.indexOf('{', start);
+	let depth = 0;
+	for (let index = openingBrace; index < css.length; index += 1) {
+		if (css[index] === '{') depth += 1;
+		if (css[index] === '}') depth -= 1;
+		if (depth === 0) return css.slice(start, index + 1);
+	}
+	throw new Error(`Unclosed media condition: ${condition}`);
+}
+
 function forbiddenTabletMaxConditions(): MediaLine[] {
 	const conditionPattern =
 		/\(\s*max-width\s*:\s*768px\s*\)|\(\s*width\s*<=\s*768px\s*\)|\(\s*768px\s*>=\s*width\s*\)/g;
@@ -80,12 +417,6 @@ function forbiddenTabletMaxConditions(): MediaLine[] {
 	});
 }
 
-function digest(records: string[]): string {
-	return createHash('sha256')
-		.update(`${[...records].sort().join('\n')}\n`)
-		.digest('hex');
-}
-
 function canonicalize(line: string): string {
 	let result = line;
 	for (const breakpoint of BREAKPOINTS) {
@@ -96,17 +427,15 @@ function canonicalize(line: string): string {
 	return result;
 }
 
-function featureRecords(lines: MediaLine[]): string[] {
-	const records: string[] = [];
+function featureCount(lines: MediaLine[]): number {
+	let count = 0;
 	for (const line of lines) {
 		const canonical = canonicalize(line.text);
 		for (const breakpoint of BREAKPOINTS) {
-			for (const match of canonical.matchAll(breakpoint.rawPattern)) {
-				records.push(`${line.path}:${line.lineNumber}:${match[0]}`);
-			}
+			count += [...canonical.matchAll(breakpoint.rawPattern)].length;
 		}
 	}
-	return records;
+	return count;
 }
 
 describe('canonical responsive breakpoint contract', () => {
@@ -118,11 +447,11 @@ describe('canonical responsive breakpoint contract', () => {
 					line.text.includes(`(${alias})`) || new RegExp(rawPattern.source).test(line.text),
 			),
 		);
-		const paths = new Set(canonicalLines.map(({ path }) => path));
+		const paths = [...new Set(canonicalLines.map(({ path }) => path))].sort();
 
 		expect(canonicalLines).toHaveLength(98);
-		expect(paths.size).toBe(45);
-		expect(featureRecords(canonicalLines)).toHaveLength(101);
+		expect(paths).toEqual(RESPONSIVE_SOURCE_PATHS);
+		expect(featureCount(canonicalLines)).toBe(101);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
@@ -149,50 +478,8 @@ describe('canonical responsive breakpoint contract', () => {
 		).toHaveLength(0);
 	});
 
-	it('preserves every frozen media line and noncanonical conjunct byte-for-byte', () => {
-		const normalized = mediaLines().map(
-			({ path, lineNumber, text }) => `${path}:${lineNumber}:${canonicalize(text)}`,
-		);
-		const frozenFeatures = featureRecords(mediaLines());
-
-		expect(normalized).toHaveLength(145);
-		// 2026-07-30 slice-038 PR-2: the shared detail-header extraction folds
-		// three duplicate --desktop-min features into DetailHeaderShell
-		// (145 lines / 101 features / 45 paths; --desktop-min 39).
-		// Orchestrator acceptance requires an independent computation.
-		// 2026-07-30 cure rebase: the S5's doc-comment fix in BlogDetailHeader
-		// grew its header comment by one line, shifting its two --desktop-min
-		// features 228->229 and 251->252. Attribution verified bidirectionally.
-		// 2026-07-30 slice-037 combined A+B final source: route CTA deletion
-		// shifted 488/511/536 -> 415/438/459; Engine's grammar map shifted
-		// 430 -> 436; BlueprintCanvas shifted its @media doc line 342 -> 351
-		// and rules 514/586/605 -> 531/603/622; ShapeBlueprint shifted
-		// 409 -> 417. BuildShapeCard moved 321 --tablet-min -> 323
-		// --desktop-min to preserve the Shape readability floor, and its
-		// reduced-motion rule shifted 425 -> 434. Counts remain
-		// 145 lines / 101 features / 45 paths; aliases are 31/24/40/6.
-		// Independent derivations matched and every delta was attributed both ways.
-		// 2026-07-31 S5-442 cure (full decomposition per the S5's re-audit):
-		// BuildShapeCard +10 script lines (import + wideFrameWidth) moved
-		// :323 -> :333 (--desktop-min), +6 CSS lines carried reduced-motion
-		// :434 -> :450; ShapeBlueprint's ghostId/links refactor shifted its
-		// reduced-motion :417 -> :415 (-2). Counts/features/paths unchanged;
-		// three records out, three in, all pure line-number shifts.
-		// 2026-07-31 WS10-041 (landmark cure): the /tech-stack route wrapper
-		// dropped its nested <main> for a <div> and gained the 5-line comment
-		// that explains why, shifting that ONE file's three @media lines by +5
-		// — --tablet-min :415 -> :420, --tablet-max :438 -> :443,
-		// reduced-motion :459 -> :464. No CSS was touched. Counts/features/paths
-		// unchanged (145 / 101 / 45; aliases 31/24/40/6). Verified bidirectionally:
-		// an independent re-derivation reproduces the digests below, and undoing
-		// exactly those three +5 shifts reproduces the two previous digests
-		// (65bfa404… / b6c9ebd7…) byte-for-byte — so nothing else moved.
-		expect(digest(normalized)).toBe(
-			'b2d39a3e5e2401b258ac751bed67026a73b17ed921d00db533a416db5061d3ff',
-		);
-		expect(digest(frozenFeatures)).toBe(
-			'ff4f089470473bf7ca18a30615da09c59fe9dd6a55b7408a7ba9d7f6e6328124',
-		);
+	it('preserves every noncanonical viewport, capability, and reduced-motion condition semantically', () => {
+		expect(noncanonicalMediaInventory()).toEqual(NONCANONICAL_MEDIA_INVENTORY);
 	});
 
 	it('loads the vendored definitions before removing aliases in Vite PostCSS', async () => {
@@ -224,6 +511,52 @@ describe('canonical responsive breakpoint contract', () => {
 		]);
 		expect(result.code).not.toContain('@custom-media');
 		expect(result.code).not.toMatch(/\(--(?:tablet|desktop)-(?:min|max)\)/);
+	});
+
+	it('preserves representative noncanonical layout and motion behavior through PostCSS', async () => {
+		const config = await resolveConfig(
+			{ root: process.cwd(), configFile: VITE_CONFIG, logLevel: 'silent' },
+			'serve',
+			'test',
+		);
+		const cases = [
+			{
+				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+				condition: '(min-width: 48rem)',
+				expected: [
+					'.consent-layout',
+					'grid-template-columns: minmax(0, 1fr) auto',
+					'.consent-actions',
+					'width: auto',
+				],
+			},
+			{
+				path: 'apps/web/src/lib/components/stack-engine/ProductPreview.svelte',
+				condition: '(max-width: 479px)',
+				expected: ['.slot-role', 'display: none', 'width: 12px', 'height: 12px'],
+			},
+			{
+				path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
+				condition: '(min-width: 1280px)',
+				expected: ['.project-grid', 'grid-template-columns: 1fr 1fr'],
+			},
+			{
+				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+				condition: '(prefers-reduced-motion: reduce)',
+				expected: ['.analytics-consent', 'animation: none'],
+			},
+		] as const;
+
+		for (const sample of cases) {
+			const absolutePath = resolve(REPO_ROOT, sample.path);
+			const result = await preprocessCSS(
+				stylesheetBodies(absolutePath).join('\n'),
+				`${absolutePath}?type=style&lang.css`,
+				config,
+			);
+			const block = mediaBlock(result.code, sample.condition);
+			for (const behavior of sample.expected) expect(block).toContain(behavior);
+		}
 	});
 
 	it('keeps the PostCSS dependency and absolute Vite wiring explicit', () => {

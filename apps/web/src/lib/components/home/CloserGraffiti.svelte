@@ -31,13 +31,17 @@
 	let graffitiTl: gsap.core.Timeline | undefined;
 
 	async function loadGraffiti(wrapper: Element): Promise<LetterData[]> {
-		let res: Response;
+		let text: string;
 		try {
-			res = await fetch('/svg/graffiti/the-end.svg');
+			const res = await fetch('/svg/graffiti/the-end.svg');
+			if (!res.ok) throw new Error('Decorative SVG response was not successful.');
+			text = await res.text();
 		} catch {
-			return []; // Tests run without a server — skip SVG injection
+			console.warn(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			return [];
 		}
-		const text = await res.text();
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(text, 'image/svg+xml');
 		const svg = doc.querySelector('svg');

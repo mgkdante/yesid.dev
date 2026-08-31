@@ -404,8 +404,6 @@ test('CMS classifier is strict and covers the frozen fixture matrix', () => {
 		{ label: 'web asset consumer', event: 'pull_request', paths: ['apps/web/src/routes/+page.svelte'], relevant: true, reason: 'matched' },
 		{ label: 'publication asset', event: 'pull_request', paths: ['gbp-assets/en/mark-dot.dark.png'], relevant: true, reason: 'matched' },
 		{ label: 'generated-content git guard', event: 'pull_request', paths: ['.githooks/pre-commit'], relevant: true, reason: 'matched' },
-		{ label: 'generated-content Claude guard', event: 'pull_request', paths: ['.claude/hooks/pretool-block-generated-ts.sh'], relevant: true, reason: 'matched' },
-		{ label: 'unrelated Claude config', event: 'pull_request', paths: ['.claude/settings.local.json'], relevant: false, reason: 'irrelevant' },
 		{ label: 'CMS', event: 'pull_request', paths: ['apps/cms/scripts/export-fallbacks.ts'], relevant: true, reason: 'matched' },
 		{ label: 'shared', event: 'pull_request', paths: ['packages/shared/src/index.ts'], relevant: true, reason: 'matched' },
 		{ label: 'control', event: 'pull_request', paths: ['.github/workflows/secret-scan.yml'], relevant: true, reason: 'control' },
