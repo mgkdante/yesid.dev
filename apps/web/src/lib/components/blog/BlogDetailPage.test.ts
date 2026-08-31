@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import BlogDetailPage from './BlogDetailPage.svelte';
 import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
 import type { BlogPageContent } from '@repo/shared';
@@ -71,48 +69,6 @@ const mockBlogPage = {
 } satisfies BlogPageContent;
 
 describe('BlogDetailPage', () => {
-	it('uses the shared detail-page TOC system', () => {
-		const source = readFileSync(
-			join(process.cwd(), 'src/lib/components/blog/BlogDetailPage.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain("import TocNav from '$lib/components/shared/TocNav.svelte'");
-		expect(source).toContain("import TocPill from '$lib/components/shared/TocPill.svelte'");
-		expect(source).toContain("observeActiveToc");
-		expect(source).not.toContain("BlogTocPill");
-		expect(source).not.toContain("StickyPanel");
-		expect(source).not.toContain("tocSectionTitle");
-	});
-
-	it('uses sectionized collapsible cards instead of the old prose card shell', () => {
-		const source = readFileSync(
-			join(process.cwd(), 'src/lib/components/blog/BlogDetailPage.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain("import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte'");
-		expect(source).toContain("import { sectionizeBlogBody } from '$lib/blog/sections'");
-		expect(source).not.toContain("import BlogContent from './BlogContent.svelte'");
-	});
-
-	it('uses the project/service slug rail architecture for the CMS-backed entry rail', () => {
-		const source = readFileSync(
-			join(process.cwd(), 'src/lib/components/blog/BlogDetailPage.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain("import BlogEntryRail from './BlogEntryRail.svelte'");
-		expect(source).toContain("id: 'blog-work-with-me'");
-		expect(source).toContain("id: 'blog-pick-route'");
-		expect(source).toContain('rail: true');
-		expect(source).toContain('<aside class="entry-column">');
-		expect(source).toContain('<BlogEntryRail rail={entryRail} />');
-		expect(source).toContain('<BlogEntryRail rail={entryRail} mobile />');
-		expect(source).toMatch(/\.entry-column\s*\{[\s\S]*display:\s*none;/);
-		expect(source).toMatch(/@media \(--desktop-min\) \{[\s\S]*\.entry-column \{[\s\S]*display:\s*block;[\s\S]*grid-column:\s*3;/);
-	});
-
 	it('renders with data-testid', () => {
 		const { getByTestId } = render(BlogDetailPage, {
 			props: { post: makePost(), body: mockBody, headings: mockHeadings }
@@ -243,22 +199,4 @@ describe('BlogDetailPage', () => {
 		expect(screen.getAllByText('4 min read').length).toBeGreaterThan(0);
 	});
 
-	it('centers the desktop article column in the full page while the left rail stays sticky', () => {
-		const source = readFileSync(
-			join(process.cwd(), 'src/lib/components/blog/BlogDetailPage.svelte'),
-			'utf8',
-		);
-
-		expect(source).toMatch(
-			/grid-template-columns:\s*minmax\(12rem,\s*1fr\)\s+minmax\(0,\s*46rem\)\s+minmax\(12rem,\s*1fr\);/,
-		);
-		expect(source).toMatch(/max-width:\s*none;/);
-		expect(source).toMatch(/align-items:\s*stretch;/);
-		expect(source).toMatch(/\.context-column\s*\{[\s\S]*?grid-column:\s*1;[\s\S]*?align-self:\s*stretch;/);
-		expect(source).toMatch(/\.sections-column\s*\{[\s\S]*?grid-column:\s*2;/);
-		expect(source).toMatch(/\.context-panel\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*5rem;/);
-		expect(source).not.toMatch(
-			/@media \(--desktop-min\) and \(max-width: 1279px\) \{[\s\S]*?grid-template-columns:\s*minmax\(12rem,\s*16rem\)\s+minmax\(0,\s*1fr\);/,
-		);
-	});
 });

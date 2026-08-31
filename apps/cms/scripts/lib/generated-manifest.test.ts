@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { readFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { emitModule } from './emitters/emit-module';
@@ -116,10 +116,8 @@ describe('write/loadManifest round-trip', () => {
 });
 
 describe('GENERATED_HEADER_MARKER', () => {
-	// The marker is only useful if all four sites agree byte-for-byte: the
-	// emitter header, this constant, and the two bash guards that grep for it.
-	// A mismatch (the pre-2026-07 em-dash rot) silently disables both hand-edit
-	// guards, so each site is asserted here instead of trusted.
+	// The emitter constant and staged-content guard must agree byte-for-byte.
+	// A mismatch silently disables hand-edit protection.
 	const REPO_ROOT = resolve(import.meta.dir, '../../../..');
 
 	it('is a substring of every emitModule() output', () => {
@@ -134,16 +132,97 @@ describe('GENERATED_HEADER_MARKER', () => {
 		expect(out.slice(0, 400)).toContain(GENERATED_HEADER_MARKER);
 	});
 
-	it('is the exact string the git pre-commit hook greps for', () => {
-		const hook = readFileSync(resolve(REPO_ROOT, '.githooks/pre-commit'), 'utf8');
-		expect(hook).toContain(`GENERATED_MARKER="${GENERATED_HEADER_MARKER}"`);
-	});
-
-	it('is the exact string the Claude PreToolUse hook greps for', () => {
-		const hook = readFileSync(
-			resolve(REPO_ROOT, '.claude/hooks/pretool-block-generated-ts.sh'),
-			'utf8',
+	it('blocks a staged hand-edit through the live pre-commit guard', async () => {
+		const temporaryDirectory = await mkdtemp(join(tmpdir(), 'generated-content-index-'));
+		const indexPath = join(temporaryDirectory, 'index');
+		const objectDirectory = join(temporaryDirectory, 'objects');
+		const target = 'apps/web/src/lib/content/site-labels.ts';
+		const repositoryObjectDirectory = resolve(
+			REPO_ROOT,
+			execFileSync('git', ['rev-parse', '--git-path', 'objects'], {
+				cwd: REPO_ROOT,
+				encoding: 'utf8',
+			}).trim(),
 		);
-		expect(hook).toContain(`grep -q "${GENERATED_HEADER_MARKER}"`);
+		const repositoryEnv = { ...process.env };
+		delete repositoryEnv.GIT_INDEX_FILE;
+		delete repositoryEnv.GIT_OBJECT_DIRECTORY;
+		delete repositoryEnv.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+		const env = {
+			...repositoryEnv,
+			GIT_INDEX_FILE: indexPath,
+			GIT_OBJECT_DIRECTORY: objectDirectory,
+			GIT_ALTERNATE_OBJECT_DIRECTORIES: repositoryObjectDirectory,
+		};
+		try {
+			await mkdir(objectDirectory);
+			const statusBefore = execFileSync(
+				'git',
+				['status', '--porcelain=v1', '--untracked-files=all'],
+				{ cwd: REPO_ROOT, env: repositoryEnv, encoding: 'utf8' },
+			);
+			execFileSync('git', ['read-tree', 'HEAD'], { cwd: REPO_ROOT, env });
+			const committed = await readFile(resolve(REPO_ROOT, target), 'utf8');
+			const stagedContent = `${committed}\n// staged hand edit: ${temporaryDirectory}\n`;
+			const expectedBlob = execFileSync('git', ['hash-object', '--stdin'], {
+				cwd: REPO_ROOT,
+				env: repositoryEnv,
+				encoding: 'utf8',
+				input: stagedContent,
+			}).trim();
+			expect(
+				spawnSync('git', ['cat-file', '-e', `${expectedBlob}^{blob}`], {
+					cwd: REPO_ROOT,
+					env: repositoryEnv,
+				}).status,
+			).not.toBe(0);
+			const blob = execFileSync('git', ['hash-object', '-w', '--stdin'], {
+				cwd: REPO_ROOT,
+				env,
+				encoding: 'utf8',
+				input: stagedContent,
+			}).trim();
+			expect(blob).toBe(expectedBlob);
+			expect(
+				await access(join(objectDirectory, blob.slice(0, 2), blob.slice(2))).then(
+					() => true,
+					() => false,
+				),
+			).toBe(true);
+			expect(
+				spawnSync('git', ['cat-file', '-e', `${blob}^{blob}`], { cwd: REPO_ROOT, env }).status,
+			).toBe(0);
+			execFileSync(
+				'git',
+				['update-index', '--add', '--cacheinfo', `100644,${blob},${target}`],
+				{ cwd: REPO_ROOT, env },
+			);
+
+			const result = spawnSync('bash', ['.githooks/pre-commit'], {
+				cwd: REPO_ROOT,
+				env,
+				encoding: 'utf8',
+			});
+			expect(result.status).toBe(1);
+			expect(`${result.stdout}${result.stderr}`).toContain(
+				'ERROR: a CMS-generated content module was hand-edited.',
+			);
+			expect(`${result.stdout}${result.stderr}`).toContain(target);
+			expect(
+				spawnSync('git', ['cat-file', '-e', `${blob}^{blob}`], {
+					cwd: REPO_ROOT,
+					env: repositoryEnv,
+				}).status,
+			).not.toBe(0);
+			expect(
+				execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], {
+					cwd: REPO_ROOT,
+					env: repositoryEnv,
+					encoding: 'utf8',
+				}),
+			).toBe(statusBefore);
+		} finally {
+			await rm(temporaryDirectory, { recursive: true, force: true });
+		}
 	});
 });

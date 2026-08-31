@@ -290,10 +290,6 @@ The active multilingual doctrine lives in
 that doctrine against the CMS fixtures, generated fallbacks, publication inputs,
 and social-card generators.
 
-The completed one-shot reconciler is preserved as inert history under
-`archive/cms-runbooks/2026-07-21/`. It is not an active runbook. Restore files to
-their original paths using that archive's manifest before attempting a replay.
-
 ## Appendix: historical provisioning (April 2026)
 
 > **Historical.** This checklist stood up the production instance in slice-18 (April 2026). Both environments have been live since; keep this only as a reference for standing up a *new* environment from zero. Where it conflicts with current state (e.g. snapshot paths, workflow names), current state wins.

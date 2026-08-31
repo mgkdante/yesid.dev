@@ -74,12 +74,12 @@ jobs:
               },
               "ignore": {
                 "docs-only": {
-                  "paths": ["AGENTS.md", "CLAUDE.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
+                  "paths": ["AGENTS.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
                   "prefixes": ["docs/"]
                 },
                 "irrelevant": {
-                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", ".mcp.json"],
-                  "prefixes": [".claude/", ".codex/", ".githooks/"]
+                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore"],
+                  "prefixes": [".githooks/"]
                 }
               }
             }

@@ -246,7 +246,7 @@ export const EXPORT_MODULE_REGISTRY = [
 	defineModule(
 		'site-labels.ts',
 		['siteLabels'],
-		'Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton. slice-30 t1: also carries the code-owned chrome groups (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard) recomposed from the companion-shaped flat columns, so a future regen sources the companion/hero-data labels straight from Directus.',
+		'Global UI microcopy from the site_labels singleton, including accessibility, navigation, project, blog, service, footer, email, and live-dashboard labels.',
 		[typeImport('$lib/types', 'SiteLabels')],
 		(data) => [declaration('siteLabels', 'SiteLabels', data.siteLabels)],
 	),
