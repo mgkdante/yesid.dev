@@ -165,7 +165,25 @@ function sanitizeReadmeHtml(html: string): string {
 	return sanitizeHtml(html, README_SANITIZER_OPTIONS);
 }
 
+function hasRawUrlAmbiguity(value: string): boolean {
+	const raw = /^(?:https?):\/\/([^/?#]*)([^?#]*)/iu.exec(value);
+	if (!raw) return false;
+	const [, authority, pathname] = raw;
+	if (authority?.includes(':')) return true;
+	for (const encodedSegment of pathname?.split('/') ?? []) {
+		let segment: string;
+		try {
+			segment = decodeURIComponent(encodedSegment);
+		} catch {
+			return true;
+		}
+		if (segment === '.' || segment === '..') return true;
+	}
+	return false;
+}
+
 function githubRawReadmeUrl(value: string): string | null {
+	if (hasRawUrlAmbiguity(value)) return null;
 	let url: URL;
 	try {
 		url = new URL(value);

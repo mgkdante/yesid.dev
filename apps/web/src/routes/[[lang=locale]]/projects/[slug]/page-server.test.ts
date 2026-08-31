@@ -140,11 +140,20 @@ describe('project README server boundary', () => {
 
 	it.each([
 		'http://github.com/mgkdante/yesid.dev/blob/main/README.md',
+		'https://github.com:443/mgkdante/yesid.dev/blob/main/README.md',
+		'https://raw.githubusercontent.com:443/mgkdante/yesid.dev/main/README.md',
 		'https://user:secret@github.com/mgkdante/yesid.dev/blob/main/README.md',
 		'https://github.example/mgkdante/yesid.dev/blob/main/README.md',
 		'https://github.com/mgkdante/yesid.dev/tree/main/README.md',
 		'https://github.com/mgkdante/yesid.dev/blob/main/not-a-readme.md',
 		'https://github.com/mgkdante/yesid.dev/blob/main/README.md?token=private',
+		'https://github.com/mgkdante/yesid.dev/blob/main/./README.md',
+		'https://github.com/mgkdante/yesid.dev/blob/main/docs/../README.md',
+		'https://github.com/mgkdante/yesid.dev/blob/main/%2e/README.md',
+		'https://github.com/mgkdante/yesid.dev/blob/main/%2e%2e/README.md',
+		'https://github.com/mgkdante/yesid.dev/blob/main/%2E%2e/README.md',
+		'https://raw.githubusercontent.com/mgkdante/yesid.dev/main/%2e/README.md',
+		'https://raw.githubusercontent.com/mgkdante/yesid.dev/main/%2E%2e/README.md',
 	])('rejects invalid or credential-bearing source without fetching: %s', async (readmeUrl) => {
 		const fetcher = vi.fn<typeof globalThis.fetch>().mockResolvedValue(
 			new Response('# Must not be fetched', { status: 200 }),
