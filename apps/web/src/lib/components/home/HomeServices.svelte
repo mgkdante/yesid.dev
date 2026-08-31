@@ -80,7 +80,12 @@
 					fetch(`/svg/services/${service.svg}`),
 					drawPluginPromise,
 				]);
-				if (!res.ok) return;
+				if (!res.ok) {
+					console.warn(
+						'[home-services] Decorative SVG fetch failed; keeping the static image.',
+					);
+					return;
+				}
 				const svgText = await res.text();
 
 				const wrapper = panel.querySelector('.svg-inline-wrapper');

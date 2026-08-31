@@ -88,6 +88,49 @@ describe('HomeCloser', () => {
 		warn.mockRestore();
 	});
 
+	it('diagnoses resolved HTTP failures while keeping both decorative fallbacks', async () => {
+		globalThis.fetch = vi.fn(async (input) =>
+			new Response('not svg', {
+				status: String(input).includes('the-end.svg') ? 500 : 404,
+			}),
+		) as unknown as typeof fetch;
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { container } = render(HomeCloser, { props });
+
+		expect(screen.getByTestId('closer-graffiti')).toBeInTheDocument();
+		expect(container.querySelectorAll('[data-prop]')).toHaveLength(4);
+		await waitFor(() => {
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+			);
+		});
+		warn.mockRestore();
+	});
+
+	it('diagnoses rejected response bodies while keeping both decorative fallbacks', async () => {
+		globalThis.fetch = vi.fn(async () => ({
+			ok: true,
+			text: vi.fn().mockRejectedValue(new Error('body unavailable')),
+		})) as unknown as typeof fetch;
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { container } = render(HomeCloser, { props });
+
+		expect(screen.getByTestId('closer-graffiti')).toBeInTheDocument();
+		expect(container.querySelectorAll('[data-prop]')).toHaveLength(4);
+		await waitFor(() => {
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+			);
+		});
+		warn.mockRestore();
+	});
+
 	it('GO-w2t5: ambient breathing mounts on the closer section (MOTION-GATED factory)', () => {
 		vi.mocked(gsap.to).mockClear();
 		render(HomeCloser, { props });

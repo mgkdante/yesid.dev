@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { emitModule } from './emitters/emit-module';
@@ -132,8 +132,37 @@ describe('GENERATED_HEADER_MARKER', () => {
 		expect(out.slice(0, 400)).toContain(GENERATED_HEADER_MARKER);
 	});
 
-	it('is the exact string the git pre-commit hook greps for', () => {
-		const hook = readFileSync(resolve(REPO_ROOT, '.githooks/pre-commit'), 'utf8');
-		expect(hook).toContain(`GENERATED_MARKER="${GENERATED_HEADER_MARKER}"`);
+	it('blocks a staged hand-edit through the live pre-commit guard', async () => {
+		const temporaryDirectory = await mkdtemp(join(tmpdir(), 'generated-content-index-'));
+		const indexPath = join(temporaryDirectory, 'index');
+		const target = 'apps/web/src/lib/content/site-labels.ts';
+		const env = { ...process.env, GIT_INDEX_FILE: indexPath };
+		try {
+			execFileSync('git', ['read-tree', 'HEAD'], { cwd: REPO_ROOT, env });
+			const committed = await readFile(resolve(REPO_ROOT, target), 'utf8');
+			const blob = execFileSync('git', ['hash-object', '-w', '--stdin'], {
+				cwd: REPO_ROOT,
+				encoding: 'utf8',
+				input: `${committed}\n// staged hand edit\n`,
+			}).trim();
+			execFileSync(
+				'git',
+				['update-index', '--add', '--cacheinfo', `100644,${blob},${target}`],
+				{ cwd: REPO_ROOT, env },
+			);
+
+			const result = spawnSync('bash', ['.githooks/pre-commit'], {
+				cwd: REPO_ROOT,
+				env,
+				encoding: 'utf8',
+			});
+			expect(result.status).toBe(1);
+			expect(`${result.stdout}${result.stderr}`).toContain(
+				'ERROR: a CMS-generated content module was hand-edited.',
+			);
+			expect(`${result.stdout}${result.stderr}`).toContain(target);
+		} finally {
+			await rm(temporaryDirectory, { recursive: true, force: true });
+		}
 	});
 });

@@ -61,6 +61,76 @@ describe('HomeServices', () => {
 		}
 	});
 
+	it.each([401, 404, 500])(
+		'keeps the static service icon and diagnoses a resolved HTTP %s',
+		async (status) => {
+			const originalFetch = globalThis.fetch;
+			globalThis.fetch = vi.fn().mockResolvedValue(new Response('not svg', { status }));
+			const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+			const oneService = [
+				serviceFactory.build({
+					id: 'diagnostic-service',
+					title: { en: 'Diagnostic service' },
+					station: 1,
+					visible: true,
+					svg: 'diagnostic-service.svg',
+				}),
+			];
+
+			try {
+				const { container, unmount } = render(HomeServices, {
+					props: { servicesGrid: servicesGridContent, services: oneService },
+				});
+				expect(container.querySelector('.svg-inline-wrapper img')).toHaveAttribute(
+					'src',
+					'/svg/services/diagnostic-service.svg',
+				);
+				await waitFor(() => {
+					expect(warn).toHaveBeenCalledWith(
+						'[home-services] Decorative SVG fetch failed; keeping the static image.',
+					);
+				});
+				unmount();
+			} finally {
+				warn.mockRestore();
+				globalThis.fetch = originalFetch;
+			}
+		},
+	);
+
+	it('keeps the static service icon when reading the response body rejects', async () => {
+		const originalFetch = globalThis.fetch;
+		const response = new Response('', { status: 200 });
+		vi.spyOn(response, 'text').mockRejectedValue(new Error('body unavailable'));
+		globalThis.fetch = vi.fn().mockResolvedValue(response);
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const oneService = [
+			serviceFactory.build({
+				id: 'diagnostic-service',
+				title: { en: 'Diagnostic service' },
+				station: 1,
+				visible: true,
+				svg: 'diagnostic-service.svg',
+			}),
+		];
+
+		try {
+			const { container, unmount } = render(HomeServices, {
+				props: { servicesGrid: servicesGridContent, services: oneService },
+			});
+			expect(container.querySelector('.svg-inline-wrapper img')).toBeInTheDocument();
+			await waitFor(() => {
+				expect(warn).toHaveBeenCalledWith(
+					'[home-services] Decorative SVG fetch failed; keeping the static image.',
+				);
+			});
+			unmount();
+		} finally {
+			warn.mockRestore();
+			globalThis.fetch = originalFetch;
+		}
+	});
+
 	it('go2/w4: hover glow unwired — pointermove writes NO --glow vars on the section', () => {
 		// Operator QA: the section-scale cursor glow is gone. The sectionGlow
 		// primitive itself survives (other consumers untouched); this section
