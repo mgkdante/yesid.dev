@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { emitModule } from './emitters/emit-module';
@@ -135,16 +135,63 @@ describe('GENERATED_HEADER_MARKER', () => {
 	it('blocks a staged hand-edit through the live pre-commit guard', async () => {
 		const temporaryDirectory = await mkdtemp(join(tmpdir(), 'generated-content-index-'));
 		const indexPath = join(temporaryDirectory, 'index');
+		const objectDirectory = join(temporaryDirectory, 'objects');
 		const target = 'apps/web/src/lib/content/site-labels.ts';
-		const env = { ...process.env, GIT_INDEX_FILE: indexPath };
-		try {
-			execFileSync('git', ['read-tree', 'HEAD'], { cwd: REPO_ROOT, env });
-			const committed = await readFile(resolve(REPO_ROOT, target), 'utf8');
-			const blob = execFileSync('git', ['hash-object', '-w', '--stdin'], {
+		const repositoryObjectDirectory = resolve(
+			REPO_ROOT,
+			execFileSync('git', ['rev-parse', '--git-path', 'objects'], {
 				cwd: REPO_ROOT,
 				encoding: 'utf8',
-				input: `${committed}\n// staged hand edit\n`,
+			}).trim(),
+		);
+		const repositoryEnv = { ...process.env };
+		delete repositoryEnv.GIT_INDEX_FILE;
+		delete repositoryEnv.GIT_OBJECT_DIRECTORY;
+		delete repositoryEnv.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+		const env = {
+			...repositoryEnv,
+			GIT_INDEX_FILE: indexPath,
+			GIT_OBJECT_DIRECTORY: objectDirectory,
+			GIT_ALTERNATE_OBJECT_DIRECTORIES: repositoryObjectDirectory,
+		};
+		try {
+			await mkdir(objectDirectory);
+			const statusBefore = execFileSync(
+				'git',
+				['status', '--porcelain=v1', '--untracked-files=all'],
+				{ cwd: REPO_ROOT, env: repositoryEnv, encoding: 'utf8' },
+			);
+			execFileSync('git', ['read-tree', 'HEAD'], { cwd: REPO_ROOT, env });
+			const committed = await readFile(resolve(REPO_ROOT, target), 'utf8');
+			const stagedContent = `${committed}\n// staged hand edit: ${temporaryDirectory}\n`;
+			const expectedBlob = execFileSync('git', ['hash-object', '--stdin'], {
+				cwd: REPO_ROOT,
+				env: repositoryEnv,
+				encoding: 'utf8',
+				input: stagedContent,
 			}).trim();
+			expect(
+				spawnSync('git', ['cat-file', '-e', `${expectedBlob}^{blob}`], {
+					cwd: REPO_ROOT,
+					env: repositoryEnv,
+				}).status,
+			).not.toBe(0);
+			const blob = execFileSync('git', ['hash-object', '-w', '--stdin'], {
+				cwd: REPO_ROOT,
+				env,
+				encoding: 'utf8',
+				input: stagedContent,
+			}).trim();
+			expect(blob).toBe(expectedBlob);
+			expect(
+				await access(join(objectDirectory, blob.slice(0, 2), blob.slice(2))).then(
+					() => true,
+					() => false,
+				),
+			).toBe(true);
+			expect(
+				spawnSync('git', ['cat-file', '-e', `${blob}^{blob}`], { cwd: REPO_ROOT, env }).status,
+			).toBe(0);
 			execFileSync(
 				'git',
 				['update-index', '--add', '--cacheinfo', `100644,${blob},${target}`],
@@ -161,6 +208,19 @@ describe('GENERATED_HEADER_MARKER', () => {
 				'ERROR: a CMS-generated content module was hand-edited.',
 			);
 			expect(`${result.stdout}${result.stderr}`).toContain(target);
+			expect(
+				spawnSync('git', ['cat-file', '-e', `${blob}^{blob}`], {
+					cwd: REPO_ROOT,
+					env: repositoryEnv,
+				}).status,
+			).not.toBe(0);
+			expect(
+				execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], {
+					cwd: REPO_ROOT,
+					env: repositoryEnv,
+					encoding: 'utf8',
+				}),
+			).toBe(statusBefore);
 		} finally {
 			await rm(temporaryDirectory, { recursive: true, force: true });
 		}

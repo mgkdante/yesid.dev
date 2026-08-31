@@ -82,6 +82,224 @@ const RESPONSIVE_SOURCE_PATHS = [
 	'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
 ] as const;
 
+const NONCANONICAL_MEDIA_INVENTORY = [
+	{
+		path: 'apps/web/src/app.css',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 3,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/AboutLanguages.svelte',
+		condition: '(max-width: 499.98px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/AboutPage.svelte',
+		condition: '(min-width: 500px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/AboutTrain.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/about/WeatherScene.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+		condition: '(min-width: 48rem)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
+		condition: '(--desktop-min) and (max-width: 1279px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroBanner.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(--tablet-max) and (max-height: 660px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(max-height: 660px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HomeAboutTeaser.svelte',
+		condition: '(min-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeBottom.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeRight.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeRight.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoEdgeTop.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
+		condition: '(max-width: 640px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
+		condition: '(max-width: 359px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
+		condition: '(max-width: 479px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/Nav.svelte',
+		condition: '(max-width: 359px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/Nav.svelte',
+		condition: '(max-width: 479px)',
+		occurrences: 2,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/Nav.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/ThemeToggle.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/projects/ProjectCard.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/projects/ProjectHeroPreview.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
+		condition: '(min-width: 1280px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/CollapsibleSection.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/ErrorIllustration.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/StationTabs.svelte',
+		condition: '(min-width: 1280px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
+		condition: '(hover: hover)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/ProductPreview.svelte',
+		condition: '(max-width: 479px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/ShapeBlueprint.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/TechMatcher.svelte',
+		condition: '(max-width: 1279px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/stack-engine/TechMatcher.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+] as const;
+
 interface MediaLine {
 	path: string;
 	lineNumber: number;
@@ -107,6 +325,78 @@ function mediaLines(): MediaLine[] {
 					: [],
 			),
 	);
+}
+
+function stylesheetBodies(path: string): string[] {
+	const source = readFileSync(path, 'utf8');
+	if (path.endsWith('.css')) return [source];
+	return [...source.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(
+		([, body]) => body!,
+	);
+}
+
+function normalizeMediaCondition(condition: string): string {
+	return condition
+		.trim()
+		.replace(/\s+/g, ' ')
+		.replace(/\(\s+/g, '(')
+		.replace(/\s+\)/g, ')')
+		.replace(/\s*:\s*/g, ': ');
+}
+
+function isCanonicalAliasCondition(condition: string): boolean {
+	return condition
+		.split(/\s+and\s+/)
+		.every((feature) => /^\(--(?:tablet|desktop)-(?:min|max)\)$/.test(feature));
+}
+
+function isNoncanonicalResponsiveCondition(condition: string): boolean {
+	if (isCanonicalAliasCondition(condition)) return false;
+	return /(?:min|max)-(?:width|height)|(?:any-)?(?:hover|pointer):|prefers-reduced-motion:/.test(
+		condition,
+	);
+}
+
+function compareText(left: string, right: string): number {
+	return left === right ? 0 : left < right ? -1 : 1;
+}
+
+function noncanonicalMediaInventory() {
+	const counts = new Map<string, { path: string; condition: string; occurrences: number }>();
+	for (const path of sourceFiles()) {
+		const repoPath = relative(REPO_ROOT, path);
+		for (const body of stylesheetBodies(path)) {
+			const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '');
+			for (const [, rawCondition] of withoutComments.matchAll(/@media\s+([^{}]+?)\s*\{/g)) {
+				const condition = normalizeMediaCondition(rawCondition!);
+				if (!isNoncanonicalResponsiveCondition(condition)) continue;
+				const key = `${repoPath}\0${condition}`;
+				const current = counts.get(key);
+				counts.set(key, {
+					path: repoPath,
+					condition,
+					occurrences: (current?.occurrences ?? 0) + 1,
+				});
+			}
+		}
+	}
+	return [...counts.values()].sort(
+		(left, right) =>
+			compareText(left.path, right.path) || compareText(left.condition, right.condition),
+	);
+}
+
+function mediaBlock(css: string, condition: string): string {
+	const start = css.indexOf(`@media ${condition}`);
+	if (start === -1) throw new Error(`Missing media condition: ${condition}`);
+	const openingBrace = css.indexOf('{', start);
+	let depth = 0;
+	for (let index = openingBrace; index < css.length; index += 1) {
+		if (css[index] === '{') depth += 1;
+		if (css[index] === '}') depth -= 1;
+		if (depth === 0) return css.slice(start, index + 1);
+	}
+	throw new Error(`Unclosed media condition: ${condition}`);
 }
 
 function forbiddenTabletMaxConditions(): MediaLine[] {
@@ -188,6 +478,10 @@ describe('canonical responsive breakpoint contract', () => {
 		).toHaveLength(0);
 	});
 
+	it('preserves every noncanonical viewport, capability, and reduced-motion condition semantically', () => {
+		expect(noncanonicalMediaInventory()).toEqual(NONCANONICAL_MEDIA_INVENTORY);
+	});
+
 	it('loads the vendored definitions before removing aliases in Vite PostCSS', async () => {
 		const config = await resolveConfig(
 			{ root: process.cwd(), configFile: VITE_CONFIG, logLevel: 'silent' },
@@ -217,6 +511,52 @@ describe('canonical responsive breakpoint contract', () => {
 		]);
 		expect(result.code).not.toContain('@custom-media');
 		expect(result.code).not.toMatch(/\(--(?:tablet|desktop)-(?:min|max)\)/);
+	});
+
+	it('preserves representative noncanonical layout and motion behavior through PostCSS', async () => {
+		const config = await resolveConfig(
+			{ root: process.cwd(), configFile: VITE_CONFIG, logLevel: 'silent' },
+			'serve',
+			'test',
+		);
+		const cases = [
+			{
+				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+				condition: '(min-width: 48rem)',
+				expected: [
+					'.consent-layout',
+					'grid-template-columns: minmax(0, 1fr) auto',
+					'.consent-actions',
+					'width: auto',
+				],
+			},
+			{
+				path: 'apps/web/src/lib/components/stack-engine/ProductPreview.svelte',
+				condition: '(max-width: 479px)',
+				expected: ['.slot-role', 'display: none', 'width: 12px', 'height: 12px'],
+			},
+			{
+				path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
+				condition: '(min-width: 1280px)',
+				expected: ['.project-grid', 'grid-template-columns: 1fr 1fr'],
+			},
+			{
+				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
+				condition: '(prefers-reduced-motion: reduce)',
+				expected: ['.analytics-consent', 'animation: none'],
+			},
+		] as const;
+
+		for (const sample of cases) {
+			const absolutePath = resolve(REPO_ROOT, sample.path);
+			const result = await preprocessCSS(
+				stylesheetBodies(absolutePath).join('\n'),
+				`${absolutePath}?type=style&lang.css`,
+				config,
+			);
+			const block = mediaBlock(result.code, sample.condition);
+			for (const behavior of sample.expected) expect(block).toContain(behavior);
+		}
 	});
 
 	it('keeps the PostCSS dependency and absolute Vite wiring explicit', () => {

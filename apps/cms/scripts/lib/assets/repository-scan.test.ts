@@ -10,6 +10,7 @@ import {
   type AssetUsageDeclaration,
 } from "@repo/shared";
 import { assetUsageDeclarations } from "../../../../web/src/lib/assets/usage-declarations";
+import { projects } from "../../../../web/src/lib/content/projects";
 import {
   canonicalizeRepositoryScan,
   hashRepositoryScan,
@@ -1429,50 +1430,123 @@ describe("yesid.dev real repository contract", () => {
           finding.rawRef === rawRef,
       );
     const directusSource = "apps/web/src/lib/content/projects.ts";
-    for (const [rawRef, expectedAssetId] of [
-      [
-        "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
-        "repo-file:apps/web/static/images/work/yesid-dev-home.png",
+    const expectedDirectusReferences = {
+      en: [
+        {
+          blockId: "img-desktop-en",
+          variant: "primary",
+          fileId: "6048a712-de42-4cca-ab51-6f92d64685c2",
+          rawRef: "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
+          assetId: "repo-file:apps/web/static/images/work/yesid-dev-home.png",
+        },
+        {
+          blockId: "img-desktop-en",
+          variant: "light",
+          fileId: "c2bb6564-62ab-46c4-962b-ab2c756fde9e",
+          rawRef: "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
+          assetId:
+            "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
+        },
+        {
+          blockId: "img-mobile-en",
+          variant: "primary",
+          fileId: "c2fad757-ecba-457c-aff7-47d3cc504081",
+          rawRef: "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
+          assetId:
+            "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
+        },
+        {
+          blockId: "img-mobile-en",
+          variant: "light",
+          fileId: "9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
+          rawRef: "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
+          assetId:
+            "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
+        },
       ],
-      [
-        "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-        "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
+      fr: [
+        {
+          blockId: "img-desktop-fr",
+          variant: "primary",
+          fileId: "6048a712-de42-4cca-ab51-6f92d64685c2",
+          rawRef: "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
+          assetId: "repo-file:apps/web/static/images/work/yesid-dev-home.png",
+        },
+        {
+          blockId: "img-desktop-fr",
+          variant: "light",
+          fileId: "c2bb6564-62ab-46c4-962b-ab2c756fde9e",
+          rawRef: "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
+          assetId:
+            "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
+        },
+        {
+          blockId: "img-mobile-fr",
+          variant: "primary",
+          fileId: "c2fad757-ecba-457c-aff7-47d3cc504081",
+          rawRef: "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
+          assetId:
+            "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
+        },
+        {
+          blockId: "img-mobile-fr",
+          variant: "light",
+          fileId: "9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
+          rawRef: "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
+          assetId:
+            "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
+        },
       ],
-      [
-        "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
-      ],
-      [
-        "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
-      ],
-      [
-        "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
-        "repo-file:apps/web/static/images/work/yesid-dev-home.png",
-      ],
-      [
-        "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-        "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
-      ],
-      [
-        "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
-      ],
-      [
-        "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
-      ],
-    ] as const) {
-      expect(hasLiteralEvidence(directusSource, rawRef)).toBe(true);
-      expect(
-        first.usages.some(
-          (usage) =>
-            usage.sourceFile === directusSource &&
-            usage.assetId === expectedAssetId &&
-            usage.unresolvedRef === rawRef &&
-            usage.cmsField === "directus_asset_url",
+    } as const;
+    const yesidProject = projects.find((project) => project.slug === "yesid-dev");
+    expect(yesidProject).toBeDefined();
+
+    for (const locale of ["en", "fr"] as const) {
+      const localeImageReferences = yesidProject!.sections.flatMap((section) =>
+        (section.content[locale]?.blocks ?? [])
+          .filter((block) => block.type === "image")
+          .flatMap((block) => [
+            {
+              blockId: block.id,
+              variant: "primary",
+              fileId: block.data.file.fileId,
+              rawRef: block.data.file.url,
+            },
+            ...(block.data.variants?.light
+              ? [
+                  {
+                    blockId: block.id,
+                    variant: "light",
+                    fileId: block.data.variants.light.fileId,
+                    rawRef: block.data.variants.light.url,
+                  },
+                ]
+              : []),
+          ]),
+      );
+      expect(localeImageReferences).toEqual(
+        expectedDirectusReferences[locale].map(
+          ({ blockId, variant, fileId, rawRef }) => ({
+            blockId,
+            variant,
+            fileId,
+            rawRef,
+          }),
         ),
-      ).toBe(true);
+      );
+    }
+
+    for (const { rawRef, assetId } of expectedDirectusReferences.en) {
+      const occurrences = first.usages.filter(
+        (usage) =>
+          usage.sourceFile === directusSource &&
+          usage.assetId === assetId &&
+          usage.unresolvedRef === rawRef &&
+          usage.cmsField === "directus_asset_url",
+      );
+      expect(occurrences).toHaveLength(2);
+      expect(occurrences.every((usage) => usage.sourceLine !== null)).toBe(true);
+      expect(new Set(occurrences.map((usage) => usage.sourceLine)).size).toBe(2);
     }
 
     const serviceSources = [
