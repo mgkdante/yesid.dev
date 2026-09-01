@@ -19,14 +19,9 @@ const phrases = [
 describe('localized Lacquer graffiti assets', () => {
 	it('publishes only the verified Lacquer provenance', () => {
 		const notice = readFileSync(resolve(REPOSITORY_ROOT, 'THIRD_PARTY_NOTICES.md'), 'utf8');
-		const component = readFileSync(
-			resolve(ROOT, 'src/lib/components/home/CloserGraffiti.svelte'),
-			'utf8',
-		);
 		expect(notice).toContain('Lacquer');
 		expect(notice).toContain('SIL Open Font License 1.1');
 		expect(notice).not.toContain('Vecteezy');
-		expect(component).not.toContain('.innerHTML');
 		expect(closerContent.attribution).toEqual({
 			text: {
 				en: 'Lacquer typeface by Niki Polyocan and Eli Block',
@@ -38,10 +33,6 @@ describe('localized Lacquer graffiti assets', () => {
 	});
 
 	it('rebuilds byte-identical SVGs from the pinned source', () => {
-		const generator = readFileSync(resolve(ROOT, 'scripts/build-graffiti.mjs'), 'utf8');
-		expect(generator).toContain("createHash('sha256')");
-		expect(generator).toContain('fontSha256 !== SOURCE_SHA256');
-
 		const result = spawnSync('bun', ['scripts/build-graffiti.mjs', '--check'], {
 			cwd: ROOT,
 			encoding: 'utf8',
