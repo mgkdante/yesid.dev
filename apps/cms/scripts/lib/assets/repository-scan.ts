@@ -125,6 +125,7 @@ const PHYSICAL_ROOTS = [
   "apps/web/static/",
   "apps/web/src/lib/assets/",
   "apps/web/src/lib/og/fonts/",
+  "apps/web/vendor/fonts/",
   "apps/cms/brand/",
   "apps/cms/icons/",
   "gbp-assets/",
@@ -243,7 +244,9 @@ function assetOrigin(repoPath: string): RepositoryAsset["origin"] {
     /\.w\d+\.webp$/i.test(repoPath) ||
     repoPath.startsWith("apps/web/static/og/") ||
     repoPath === "apps/web/static/brand/mark-512.png" ||
-    repoPath === "apps/web/static/svg/graffiti/the-end.svg"
+    /^apps\/web\/static\/svg\/graffiti\/the-end\.(?:en|fr|es)\.svg$/.test(
+      repoPath,
+    )
   ) {
     return "generated-file";
   }
@@ -1713,14 +1716,15 @@ export async function scanRepository(
       });
     }
 
-    const graffiti = assetsByPath.get(
-      "apps/web/static/svg/graffiti/the-end.svg",
-    )?.[0];
-    if (graffiti) {
+    for (const locale of ["en", "fr", "es"] as const) {
+      const graffiti = assetsByPath.get(
+        `apps/web/static/svg/graffiti/the-end.${locale}.svg`,
+      )?.[0];
+      if (!graffiti) continue;
       generatedFrom.push({
         outputAssetId: graffiti.id,
-        inputRef: "apps/web/scripts/compose-graffiti.py#letters",
-        generator: "apps/web/scripts/compose-graffiti.py",
+        inputRef: "apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf",
+        generator: "apps/web/scripts/build-graffiti.mjs",
         relation: "generated-by",
       });
     }
