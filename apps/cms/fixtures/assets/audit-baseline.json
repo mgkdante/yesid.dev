@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
 	"source": "live",
-	"generatedAt": "2026-09-01T15:51:19.497Z",
-	"repositoryRevision": "fe3ed85990e56c3f2aac5c7df8b25aef6216bf87",
+	"generatedAt": "2026-09-01T15:53:31.161Z",
+	"repositoryRevision": "a820679709b34156818983b6443a8c2054f97cf9",
 	"scopeReceipts": [
 		{
 			"reason": "complete",
@@ -55,7 +55,7 @@
 			"status": "evaluated"
 		}
 	],
-	"reportSha256": "e691df356db52c4545edd64aab1fc348944404f00dcec1cb4f021bb2e907cd5f",
+	"reportSha256": "73ffddc45dd29d0b9ab49f1fc73e05355d33092ac56adbd9668dccd321d23afe",
 	"repositoryAssetIds": [
 		"external:iconify:devicon:microsoftsqlserver",
 		"external:iconify:logos:airflow",
