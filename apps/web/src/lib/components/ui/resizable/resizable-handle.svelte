@@ -1,4 +1,4 @@
-<!-- Kept app-side per vendor/design/ui/PARITY-NOTES.md: yesid.dev keeps neutral chrome and a rounded-lg grip. -->
+<!-- Product invariant: neutral chrome and rounded grip stay local; see vendor/design/ui/README.md#resizable. -->
 <script lang="ts">
 	import * as ResizablePrimitive from "paneforge";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils";
