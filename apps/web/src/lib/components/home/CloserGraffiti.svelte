@@ -1,5 +1,5 @@
 <!--
-  CloserGraffiti — DrawSVG graffiti "THE END" animation subsystem.
+  CloserGraffiti — localized DrawSVG closer-lettering subsystem.
   Fetches SVG, parses letter paths, animates with DrawSVGPlugin.
   Parent coordinates timing via onReady callback.
 -->
@@ -27,13 +27,30 @@
 
 	// Darker base — the floodlight filter brightens the lit areas
 	const GRAFFITI_COLOR = '#8B4500';
+	const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 	let wrapperEl: HTMLElement | undefined = $state(undefined);
 	let graffitiTl: gsap.core.Timeline | undefined;
+
+	function setSvgAttributes(
+		element: SVGElement,
+		attributes: Readonly<Record<string, string | number>>,
+	): void {
+		for (const [name, value] of Object.entries(attributes)) {
+			element.setAttribute(name, String(value));
+		}
+	}
 
 	async function loadGraffiti(wrapper: Element): Promise<LetterData[]> {
 		let text: string;
 		try {
-			const res = await fetch('/svg/graffiti/the-end.svg');
+			let res: Response;
+			if (locale === 'fr') {
+				res = await fetch('/svg/graffiti/the-end.fr.svg');
+			} else if (locale === 'es') {
+				res = await fetch('/svg/graffiti/the-end.es.svg');
+			} else {
+				res = await fetch('/svg/graffiti/the-end.en.svg');
+			}
 			if (!res.ok) throw new Error('Decorative SVG response was not successful.');
 			text = await res.text();
 		} catch {
@@ -56,24 +73,56 @@
 		svg.classList.add('closer-graffiti-svg');
 
 		// Construction floodlight filter — light from bottom up
-		const defs = svg.querySelector('defs') || document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+		const defs = svg.querySelector('defs') || document.createElementNS(SVG_NAMESPACE, 'defs');
 		if (!svg.querySelector('defs')) svg.prepend(defs);
 
 		const vb = svg.getAttribute('viewBox')?.split(' ').map(Number) ?? [0, 0, 260, 280];
 		const cx = vb[2] / 2;  // center x of viewBox
 		const h = vb[3];       // height of viewBox
 
-		defs.innerHTML += `
-			<filter id="floodlight" x="-50%" y="-50%" width="200%" height="200%">
-				<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="5" diffuseConstant="1.4" lighting-color="var(--accent)">
-					<feSpotLight x="${cx}" y="${h + 200}" z="40" pointsAtX="${cx}" pointsAtY="0" pointsAtZ="0" specularExponent="8" limitingConeAngle="45"/>
-				</feDiffuseLighting>
-				<feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.4" k2="0.2" k3="0" k4="0"/>
-			</filter>
-		`;
+		const filter = document.createElementNS(SVG_NAMESPACE, 'filter');
+		setSvgAttributes(filter, {
+			id: 'floodlight',
+			x: '-50%',
+			y: '-50%',
+			width: '200%',
+			height: '200%',
+		});
+		const lighting = document.createElementNS(SVG_NAMESPACE, 'feDiffuseLighting');
+		setSvgAttributes(lighting, {
+			in: 'SourceGraphic',
+			result: 'light',
+			surfaceScale: 5,
+			diffuseConstant: 1.4,
+			'lighting-color': 'var(--accent)',
+		});
+		const spotlight = document.createElementNS(SVG_NAMESPACE, 'feSpotLight');
+		setSvgAttributes(spotlight, {
+			x: cx,
+			y: h + 200,
+			z: 40,
+			pointsAtX: cx,
+			pointsAtY: 0,
+			pointsAtZ: 0,
+			specularExponent: 8,
+			limitingConeAngle: 45,
+		});
+		lighting.appendChild(spotlight);
+		const composite = document.createElementNS(SVG_NAMESPACE, 'feComposite');
+		setSvgAttributes(composite, {
+			in: 'SourceGraphic',
+			in2: 'light',
+			operator: 'arithmetic',
+			k1: 1.4,
+			k2: 0.2,
+			k3: 0,
+			k4: 0,
+		});
+		filter.append(lighting, composite);
+		defs.appendChild(filter);
 
 		// Apply spotlight to the entire graffiti content
-		const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const contentGroup = document.createElementNS(SVG_NAMESPACE, 'g');
 		contentGroup.setAttribute('filter', 'url(#floodlight)');
 		const children = Array.from(svg.children).filter(c => c.tagName !== 'defs');
 		children.forEach(c => contentGroup.appendChild(c));
@@ -85,23 +134,24 @@
 		const groups = svg.querySelectorAll('g[data-letter]');
 		const result: LetterData[] = [];
 		groups.forEach((g) => {
-			const paths = Array.from(g.querySelectorAll('path'));
-			if (paths.length > 0) {
-				result.push({ main: paths[0], drips: paths.slice(1) });
+			const main = g.querySelector<SVGPathElement>('path[data-part="body"]');
+			const drips = Array.from(g.querySelectorAll<SVGPathElement>('path[data-part="drip"]'));
+			if (main) {
+				result.push({ main, drips });
 			}
 		});
 
 		// SVG renders in DOM order. Drips must paint on top of ALL letter
 		// shapes (including neighbouring letters). Move each drip into a
 		// layer at the end of the filtered content group.
-		const dripsLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const dripsLayer = document.createElementNS(SVG_NAMESPACE, 'g');
 		dripsLayer.setAttribute('data-layer', 'drips');
 		contentGroup.appendChild(dripsLayer);
 
 		result.forEach((letter) => {
 			const parentTransform = letter.main.closest('g[data-letter]')?.getAttribute('transform') ?? '';
 			letter.drips.forEach((drip) => {
-				const dripWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+				const dripWrapper = document.createElementNS(SVG_NAMESPACE, 'g');
 				dripWrapper.setAttribute('transform', parentTransform);
 				dripWrapper.appendChild(drip);
 				dripsLayer.appendChild(dripWrapper);
@@ -116,7 +166,13 @@
 		const allDrips = letterData.flatMap((l) => l.drips);
 		// Stroke hidden (DrawSVG 0%), no fill, drips collapsed
 		gsap.set(allMains, { drawSVG: '0%', fill: 'none' });
-		gsap.set(allDrips, { scaleY: 0, transformOrigin: 'top center', stroke: 'none', fill: GRAFFITI_COLOR });
+		gsap.set(allDrips, {
+			scaleY: 0,
+			svgOrigin: (_index, target) =>
+				`${(target as SVGPathElement).dataset.originX ?? '0'} ${(target as SVGPathElement).dataset.originY ?? '0'}`,
+			stroke: 'none',
+			fill: GRAFFITI_COLOR,
+		});
 	}
 
 	function animateGraffiti(letterData: LetterData[]): gsap.core.Timeline {
@@ -131,7 +187,7 @@
 		const tl = gsap.timeline();
 		graffitiTl = tl;
 
-		// Per-letter sequence: draw outline → snap fill → next letter
+		// First complete every letter body.
 		letterData.forEach((letter, i) => {
 			const offset = i * 0.6; // stagger start per letter
 
@@ -147,16 +203,23 @@
 				fill: GRAFFITI_COLOR,
 			}, offset + 0.65);
 
-			// Drips grow down from the filled letter
-			if (letter.drips.length > 0) {
-				tl.to(letter.drips, {
+		});
+
+		// Only after the final fill do the source-derived tails drip downward.
+		const allDrips = letterData.flatMap((letter) => letter.drips);
+		if (allDrips.length > 0) {
+			const finalFill = (letterData.length - 1) * 0.6 + 0.65;
+			tl.to(
+				allDrips,
+				{
 					scaleY: 1,
 					stagger: 0.08,
 					duration: durationSec('slower'),
 					ease: 'power2.in',
-				}, offset + 0.7);
-			}
-		});
+				},
+				finalFill + 0.15,
+			);
+		}
 
 		return tl;
 	}

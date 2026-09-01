@@ -31,8 +31,11 @@ material.
   [`iconify/icon-sets` collection registry](https://github.com/iconify/icon-sets/blob/master/collections.json).
   Collection licenses do not imply endorsement and do not settle separate
   trademark rights.
-- Graffiti vector elements are attributed as
-  [“Graffiti Vectors by Vecteezy”](https://www.vecteezy.com/free-vector/graffiti).
+- The localized closer graffiti SVGs are derived from the
+  [Lacquer](https://fonts.google.com/specimen/Lacquer) typeface by Niki
+  Polyocan and Eli Block. Copyright 2019 The Lacquer Project Authors. Lacquer
+  is distributed under the SIL Open Font License 1.1; the pinned source font
+  and licence are retained under `apps/web/vendor/fonts/lacquer/`.
 
 Separate license and attribution terms above are not replaced by the
 repository's all-rights-reserved license.

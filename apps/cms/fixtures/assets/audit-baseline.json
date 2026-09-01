@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
 	"source": "live",
-	"generatedAt": "2026-07-16T16:41:59.653Z",
-	"repositoryRevision": "c33c2194a2013ac67aba8a07135d5a64f8b77506",
+	"generatedAt": "2026-09-01T15:53:31.161Z",
+	"repositoryRevision": "a820679709b34156818983b6443a8c2054f97cf9",
 	"scopeReceipts": [
 		{
 			"reason": "complete",
@@ -25,9 +25,9 @@
 			"status": "evaluated"
 		},
 		{
-			"reason": "registry-missing",
+			"reason": "complete",
 			"scope": "prod-registry",
-			"status": "not-evaluated"
+			"status": "evaluated"
 		},
 		{
 			"reason": "complete",
@@ -50,12 +50,12 @@
 			"status": "evaluated"
 		},
 		{
-			"reason": "registry-missing",
+			"reason": "complete",
 			"scope": "svg-safety",
-			"status": "not-evaluated"
+			"status": "evaluated"
 		}
 	],
-	"reportSha256": "18c232c8fcd925ba2e37f3a97cde82e7e3faf413a6a8c0469a91bd1eb0f26bcc",
+	"reportSha256": "73ffddc45dd29d0b9ab49f1fc73e05355d33092ac56adbd9668dccd321d23afe",
 	"repositoryAssetIds": [
 		"external:iconify:devicon:microsoftsqlserver",
 		"external:iconify:logos:airflow",
@@ -97,9 +97,6 @@
 		"repo-component:apps/web/src/lib/components/about/WeatherScene.svelte#svg:3",
 		"repo-component:apps/web/src/lib/components/about/WeatherScene.svelte#svg:4",
 		"repo-component:apps/web/src/lib/components/blog/BlogFilterSidebar.svelte#svg:1",
-		"repo-component:apps/web/src/lib/components/blog/BlogRouteMap.svelte#svg:1",
-		"repo-component:apps/web/src/lib/components/brand/ChevronToggle.svelte#svg:1",
-		"repo-component:apps/web/src/lib/components/brand/MetroStation.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/home/CloserFloodlight.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/home/HeroTextContent.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/layout/LanguageToggle.svelte#svg:1",
@@ -108,8 +105,6 @@
 		"repo-component:apps/web/src/lib/components/projects/ProjectDetailHeader.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/projects/ProjectFilterSidebar.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/shared/ErrorIllustration.svelte#svg:1",
-		"repo-component:apps/web/src/lib/components/shared/QuietModeButton.svelte#svg:1",
-		"repo-component:apps/web/src/lib/components/shared/QuietModeButton.svelte#svg:2",
 		"repo-component:apps/web/src/lib/components/shared/SearchInput.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/shared/SectionIcon.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/shared/SectionIcon.svelte#svg:10",
@@ -121,7 +116,6 @@
 		"repo-component:apps/web/src/lib/components/shared/SectionIcon.svelte#svg:7",
 		"repo-component:apps/web/src/lib/components/shared/SectionIcon.svelte#svg:8",
 		"repo-component:apps/web/src/lib/components/shared/SectionIcon.svelte#svg:9",
-		"repo-component:apps/web/src/lib/components/shared/TableOfContents.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/stack-engine/ShapeBlueprint.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/svg/azur/BlueprintAzurBogie.svelte#svg:1",
@@ -307,13 +301,16 @@
 		"repo-file:apps/web/static/svg/graffiti/prop-barricade.svg",
 		"repo-file:apps/web/static/svg/graffiti/prop-helmet.svg",
 		"repo-file:apps/web/static/svg/graffiti/prop-sign.svg",
-		"repo-file:apps/web/static/svg/graffiti/the-end.svg",
+		"repo-file:apps/web/static/svg/graffiti/the-end.en.svg",
+		"repo-file:apps/web/static/svg/graffiti/the-end.es.svg",
+		"repo-file:apps/web/static/svg/graffiti/the-end.fr.svg",
 		"repo-file:apps/web/static/svg/services/service-database.svg",
 		"repo-file:apps/web/static/svg/services/service-pipeline.svg",
 		"repo-file:apps/web/static/svg/services/service-reporting.svg",
 		"repo-file:apps/web/static/svg/services/service-sql.svg",
 		"repo-file:apps/web/static/svg/services/service-tooling.svg",
 		"repo-file:apps/web/static/svg/services/service-web.svg",
+		"repo-file:apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf",
 		"repo-file:gbp-assets/en/cover-services.dark.png",
 		"repo-file:gbp-assets/en/cover-services.light.png",
 		"repo-file:gbp-assets/en/logo-wordmark.dark.png",
@@ -339,6 +336,15 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "00cb05196946a0091be14fbb8a97470509fc3fd08b71fc6fd5c5953a29d5520c",
+			"code": "stale-generated-output",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
 			]
 		},
 		{
@@ -490,6 +496,15 @@
 			]
 		},
 		{
+			"fingerprint": "0683eef63dd72a2f69135f97fccc0faf0a4dbf76754e59b680ee299feb1a7a19",
+			"code": "stale-generated-output",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
+			]
+		},
+		{
 			"fingerprint": "06c650c0e9c83937753a286bc772124ed1024df4e1fa8284c5de26c4cc0ee885",
 			"code": "hardcoded-file-id",
 			"severity": "error",
@@ -524,15 +539,6 @@
 		},
 		{
 			"fingerprint": "07eb561ac3183b5965d8b0c1a43fa584e99cb26c2ebe06320cd75009e4f1e66f",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
-			"fingerprint": "091034ac137999c474066f5b1df808adf3030c9bcfe6cb6bd8e778b4fb4734f5",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
@@ -578,6 +584,17 @@
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "0b57eb10edc3cd79071087af874a79984e1857184cea909824a285a22a40075a",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
 				"prod-content"
 			]
 		},
@@ -664,15 +681,6 @@
 			]
 		},
 		{
-			"fingerprint": "0db424910d6fb1aa6daaa3f3ac463ed5955aac7e09e3c0bed16b1c91adffc40e",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "0e6f1c76fe59c00edc20a7ca608a323aaeaf3203223f04e2e113eeeb92f901f4",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -749,29 +757,11 @@
 			]
 		},
 		{
-			"fingerprint": "1050f5ede60ba501377b8e9b9a799740f45075b52bf7e71bb3c1166430861d1b",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "10579a94a318fc38e7acb6d643c738dd407911fe683ae72014fd25e68b8171a4",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
-			]
-		},
-		{
-			"fingerprint": "109262bc272d105a8a4b998008ea72bedbc45d056239ababe360d61928ec0fe6",
-			"code": "stale-generated-output",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"generated-outputs"
 			]
 		},
 		{
@@ -943,6 +933,15 @@
 			]
 		},
 		{
+			"fingerprint": "1734ab704bba63379f61122ba36b7b63be1e16730d4f3b75920377208b4bc302",
+			"code": "stale-generated-output",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
+			]
+		},
+		{
 			"fingerprint": "17e388664e11f04304b05fc2e4a87c401338f6bb1f7d10184ac7d322ffad0e2a",
 			"code": "hardcoded-file-id",
 			"severity": "warning",
@@ -956,15 +955,6 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
-			]
-		},
-		{
-			"fingerprint": "18246620e967086e7a80fdfaab0f38e0c46d4878a587dcfec190f161df45595a",
-			"code": "stale-generated-output",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"generated-outputs"
 			]
 		},
 		{
@@ -1066,6 +1056,15 @@
 			]
 		},
 		{
+			"fingerprint": "1b63327408606a215040bd356ef55d756aa6916aee26b82dee498eed72ceb6ba",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "1bcba64c2fce8be0ad7fa5dc003d611b4a3eee68e4a4425f46314c27121f0826",
 			"code": "invalid-format",
 			"severity": "error",
@@ -1093,14 +1092,6 @@
 			"fingerprint": "1c9073efa78207502f585449f53b9b99e4a422c34914ed65229ab97fc736b369",
 			"code": "hardcoded-file-id",
 			"severity": "error",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
-			"fingerprint": "1d6197288861f353df8c7746a6327cc3d4157566a59b2cd5c19461c7a1dcd299",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
 			"requiredScopes": [
 				"repository"
 			]
@@ -1156,30 +1147,14 @@
 			]
 		},
 		{
-			"fingerprint": "1e92a5ac15452331172220014c2b2189290b9a2dee0797eea24a0ec84274de20",
-			"code": "untracked-repo-asset",
+			"fingerprint": "1eae047496415b850880d2d2ce710b8cc4f7f52d076018de7300da2c0808a4b5",
+			"code": "orphaned-directus-file",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository",
-				"dev-registry"
-			]
-		},
-		{
-			"fingerprint": "1eba006e9c7029e586c7dadcdcfc4515e71a535084255e32e607cdc1053b38e1",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
-			"fingerprint": "1f3506b456c566c80166a69b5f7c24c372a3ea077ecda8e31b1c4a7713d26c30",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
+				"prod-registry",
+				"prod-files",
+				"prod-content"
 			]
 		},
 		{
@@ -1214,6 +1189,15 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "1fcad6fd69d9689a414686ae4c6c1c05421c634e3db0acb41afe186be93040bc",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -1329,6 +1313,14 @@
 			]
 		},
 		{
+			"fingerprint": "23c9063f1257766f6217f4e33736325cd26d8a6bbd022e15268fce0ffc4db065",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "23cfc8995b7609e5882c596fe8890b69c604bc76700e12c1a38deae48ca220ac",
 			"code": "invalid-format",
 			"severity": "error",
@@ -1354,11 +1346,28 @@
 			]
 		},
 		{
+			"fingerprint": "24379b752b44133b8efc6aabf54d608bb3b8f3b714e859c78d84aaa0a63e2ab9",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "2446b27a557778ec9348efc87009e980ede08b763a49ddb0f71d8e9d1cc991a3",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "24c232d1c025f60b43591e42172c9e3837c446b0f902b0653671d1a9524010ac",
+			"code": "stale-generated-output",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
 			]
 		},
 		{
@@ -1464,14 +1473,6 @@
 			]
 		},
 		{
-			"fingerprint": "289a476f39bd181883cf5e1f1e80285928599b5525d7195fe6cc9f948c671c49",
-			"code": "unresolved-dynamic-usage",
-			"severity": "error",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
 			"fingerprint": "28f61e073ca398018ecff37b4a9b4cefb1d6e00c04717f307d08051d1f5527c4",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -1568,6 +1569,17 @@
 			]
 		},
 		{
+			"fingerprint": "2d3ef4037ca813a65e0ad8ce00b6b74124e5964443e06be86cf23aefd0f2601c",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "2de9e733a6fda1795771f40e708e2fbe4304be3194594b98690afca254356c52",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -1616,6 +1628,17 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "2f55a930b8181fccb3654ea4b258bd7b6f1fc371947cc3d0e9681db7a865c9d4",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
 			]
 		},
 		{
@@ -1706,6 +1729,17 @@
 			]
 		},
 		{
+			"fingerprint": "339283a8f18cae6013cc4d36471cf9a65cf2526388569aa0f5f8e173f5377b51",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "3399f017ceac870f10051190637003f9c79b3998936cfe52b9656631dc940ed1",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -1782,6 +1816,15 @@
 			]
 		},
 		{
+			"fingerprint": "355fd37ce5f57ded577a5af4b471878785fd96124e0e20b3483525c73073f23e",
+			"code": "stale-generated-output",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
+			]
+		},
+		{
 			"fingerprint": "35931a97349d73cfd5c01ce873a45f0a58bad76cbac04121d74ad746cfec7ee8",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -1825,20 +1868,20 @@
 			]
 		},
 		{
-			"fingerprint": "3618eff298686ae40589b4b9467d50bbd2c439c18d2b163ee34f8b12072e151b",
-			"code": "untracked-repo-asset",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "36a5483d37c599e509fe1d6feddbd5ec8f9214272a5ccd5f9c904fe7b7ecf04d",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "37ffb49f7504866d99c8f2ad305978eae22dae67e3128a4bdc724d0c525adac4",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -1873,6 +1916,15 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "3a0f77bbbaf4d9b58d7cbd5ec58be3adcfdebe464d296aaa7691c119d0483d79",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -1955,15 +2007,6 @@
 			]
 		},
 		{
-			"fingerprint": "3c7bb526424b866823f54842b0b8852db2e5d22300b5da3f87791ab6a20a8282",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "3caf36002cb9e6f65542d9e41cccf7e53855a6f5718359a0b38b5708ddbf494b",
 			"code": "unsafe-svg",
 			"severity": "error",
@@ -1995,14 +2038,6 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
-			]
-		},
-		{
-			"fingerprint": "3e0b45f809084902e16f3a19adee550249fd6c75eaace4264b98b28339ac820a",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository"
 			]
 		},
 		{
@@ -2217,15 +2252,6 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
-			]
-		},
-		{
-			"fingerprint": "449a807d32e6719fac1ece8b63852ab932e693ca9738801679b89df80814278f",
-			"code": "untracked-repo-asset",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
 			]
 		},
 		{
@@ -2645,15 +2671,6 @@
 			]
 		},
 		{
-			"fingerprint": "528d53aa81e71ccdf261bf4d7bb26de8ea9d7451f1e6e5dbafd3ec4f6410ac31",
-			"code": "stale-generated-output",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"generated-outputs"
-			]
-		},
-		{
 			"fingerprint": "532a946654513b60e694d4978a953c5bc3e44bfe3f3016d3dd30ba6d24980e5b",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -2705,6 +2722,17 @@
 			]
 		},
 		{
+			"fingerprint": "5428df942109b9dc3be707e95311c651f517cc1772767d018d2e94bef79ee7b3",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "542f53f69b700e8bdbd58a4dd351e394728aa45e31423b7241785d007a9219f3",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -2716,6 +2744,15 @@
 			"fingerprint": "5441490ffcc00cc6db1df44f61d60a87a430bbd0984b275cc0360b2a778366d1",
 			"code": "untracked-repo-asset",
 			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "5463a1303fc97e73a0012942f0f24a86c572807232dc97839688ba3a098b012a",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
@@ -2758,6 +2795,15 @@
 			"fingerprint": "561c161d59d027bec70bce92ed7e35d6d825d1a914494c3ce509b2c73de1f7a3",
 			"code": "untracked-repo-asset",
 			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "5628892ff9ad3026dc79969ec8baa2272e4cd9011855f9a134c3ead0627add92",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
@@ -2839,7 +2885,25 @@
 			]
 		},
 		{
+			"fingerprint": "592f11ee5e365d0ac54fb948ee93b9e3d5db6101ab069dcf3142dc1b98bb5dc6",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "59883326aa39c59b537eb6737bb5394f889132b7172eab71da1fd493dce47f40",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "59a48dff1503189a3ae0e0788efb49189eb9233c9d192bd38c6c0c42d9ff147d",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
@@ -2979,12 +3043,25 @@
 			]
 		},
 		{
-			"fingerprint": "5c0ac0ea326a494f1ba48d5c9d98415dc96f7cecc425c89e25f10629c66c945a",
-			"code": "untracked-repo-asset",
+			"fingerprint": "5be3458c1e14b0929ec3960bcb6f74b20a4bf89c74aadea2b66aa9206a38b9c7",
+			"code": "orphaned-directus-file",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository",
-				"dev-registry"
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "5cc44c7777a927141ae4c8d81f553e7a1b5bcd90fb63f25c5353ab3a0bd11eeb",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
 			]
 		},
 		{
@@ -3002,14 +3079,6 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
-			]
-		},
-		{
-			"fingerprint": "5d96ae638780dedf3a96a6d3da52892f477adcca55392cf61566dfd035d31000",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository"
 			]
 		},
 		{
@@ -3142,6 +3211,17 @@
 			]
 		},
 		{
+			"fingerprint": "629954ac4a9775dfc66efa033dc56e384997569df1aab85274eb7a1b3940df63",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "62a836894e767e6e5d0b566eecd5f629683b8551ab50726d8bcf31f3e3fd9de8",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -3239,6 +3319,17 @@
 			]
 		},
 		{
+			"fingerprint": "672e2f7be6f6f3870bc716b6142fa8ff508a65fb0a188eba1c6e5c2c8e485069",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "683fa72c4217488f1de39fed79fa39d054d98002a1d164f6cf1b72c4ce45aca8",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -3259,14 +3350,6 @@
 			"fingerprint": "688cd6315151ebcd87c18ec4fe0f23d180bf1886f1ae7402996bfefa720fe1ed",
 			"code": "invalid-format",
 			"severity": "error",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
-			"fingerprint": "695dfb309b868047af082e20f2a6796f214053429475cab993d9a4b2e4862357",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
 			"requiredScopes": [
 				"repository"
 			]
@@ -3520,20 +3603,20 @@
 			]
 		},
 		{
-			"fingerprint": "72aa4c9878def77b760b5ed037881e3ad9b0ef3c03afae68504da2be079e2303",
-			"code": "stale-generated-output",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"generated-outputs"
-			]
-		},
-		{
 			"fingerprint": "734414c92994a7f0509fa13af0d5aa1757407235341f953af80d8c1c472d48c4",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "735db485695099f5fc820864f9e62da9f49364306ddceb4fb617be1db540ba22",
+			"code": "stale-generated-output",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
 			]
 		},
 		{
@@ -3680,20 +3763,20 @@
 			]
 		},
 		{
+			"fingerprint": "7b986d87872cb642b01b2876f771afb14bfcd8a1eea2242bdb893f3402c8ea2e",
+			"code": "stale-generated-output",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
+			]
+		},
+		{
 			"fingerprint": "7bb61ca132705891135aa85246b2682f00166d01214a45ba618b2d20adfcbc64",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
-			]
-		},
-		{
-			"fingerprint": "7bbcc7a1b7f6bc2a680acf0b8c12ff9ca670264f67bfb1c0e90d9f763d4c8a96",
-			"code": "stale-generated-output",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"generated-outputs"
 			]
 		},
 		{
@@ -3798,15 +3881,6 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
-			]
-		},
-		{
-			"fingerprint": "8037a19c49150353b387f7d1408a0a3f735c35261c980207a70fd7fd6c699cb4",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
 			]
 		},
 		{
@@ -4234,6 +4308,15 @@
 			]
 		},
 		{
+			"fingerprint": "8d3c5ea5cc33d9819dde16365b2ca0aeef6a1de110efc3261147080498303bf8",
+			"code": "missing-record",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "8d64a2d4f0e9c4a9908c7d2eaf4a4678fd1d277988387c455e9fb38289b1e44c",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -4284,6 +4367,15 @@
 			]
 		},
 		{
+			"fingerprint": "8f7ff22be22405c36ca566f5d04ec57d0b35f0e843fa01a9bd8bc802d7c5f6da",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "904fae86632903e5e9c91a235cf5a94a939b3cfefab0c0ef3d248ab2819916ac",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -4299,14 +4391,6 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
-			]
-		},
-		{
-			"fingerprint": "909c0d59696c6c2c3c121b3b17b8bc3e16dde0f93d12e6d2085f05678ead76ff",
-			"code": "invalid-format",
-			"severity": "error",
-			"requiredScopes": [
-				"repository"
 			]
 		},
 		{
@@ -4344,24 +4428,6 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
-			]
-		},
-		{
-			"fingerprint": "918264c1220ac5a76a5fe019c265d16591372114a0e276d5af3257e82fed1dcf",
-			"code": "unsafe-svg",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"svg-safety"
-			]
-		},
-		{
-			"fingerprint": "91b41c10df83efdc39d119d676abc16adc78dcece96477de0a79115696202c74",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
 			]
 		},
 		{
@@ -4455,6 +4521,17 @@
 			"severity": "error",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "934a522e50794ebb91966c1b05883b6adeab4034576370b3bfddb49920382ac0",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
 			]
 		},
 		{
@@ -4619,6 +4696,15 @@
 			]
 		},
 		{
+			"fingerprint": "982653d0c3275f301805e19c4b986305ac913b98995cdaa82646f14ad394b53a",
+			"code": "unsafe-svg",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"svg-safety"
+			]
+		},
+		{
 			"fingerprint": "98860c62b7ad746529419c0708a6d28b37d598d456fb56c3e3bba4ec2180bc09",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -4688,14 +4774,6 @@
 			]
 		},
 		{
-			"fingerprint": "9bd66b8f612709e76d1eff21efa3bf137b0cb63974f73b9fa79ea66a5631971b",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
 			"fingerprint": "9c40644c6cc162428d8ece703228d861d5b129735a92856c509304de59467094",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -4747,11 +4825,12 @@
 			]
 		},
 		{
-			"fingerprint": "9f5c23978d1ea2d00ca219c0ba3ba8afb2683a204ba9ea1904761b75524753f5",
-			"code": "unresolved-dynamic-usage",
+			"fingerprint": "9f56e59cffc34b62de153d2cc6a8eb5467256b5c8648603db44519d450e7a03c",
+			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
-				"repository"
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -4763,20 +4842,20 @@
 			]
 		},
 		{
-			"fingerprint": "a000efd0758e8855b4423f19ed8246722a1d5ab92414753178253ba55ebc8d96",
-			"code": "unresolved-dynamic-usage",
-			"severity": "error",
-			"requiredScopes": [
-				"prod-content"
-			]
-		},
-		{
-			"fingerprint": "a012b28a8c564ebe7a6c7482e03ca8400de5dfb57bfaf8a493517f46b93ed442",
+			"fingerprint": "9f8c2c54df865cdeabfa7fc5ba5e69ef42f984776966c3768891471bae81e8c4",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "a000efd0758e8855b4423f19ed8246722a1d5ab92414753178253ba55ebc8d96",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -4978,15 +5057,6 @@
 			]
 		},
 		{
-			"fingerprint": "a6f4af0360f705548d7a09622b373ff2a8667b7d04053799c509de26b658672f",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "a6fe3b6822e99d3443fc30cdda49bb1fa47a4cf1f62c1724f0452353b4308dbb",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -5037,6 +5107,15 @@
 		},
 		{
 			"fingerprint": "a8c2c7d2500b929094bfed0557fc6ae885fb52f622e91d25c675a71ae03455a6",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "a9065ba3783c0e4e7a5192c20c989d16a7f929470a13fb5d92040682ad132bfb",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
@@ -5143,15 +5222,6 @@
 			]
 		},
 		{
-			"fingerprint": "ab812582817d2e7524d1137845f34202b35b4026584270148110ccd1012bf84a",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "ac1dbe328b28e6449f8e9d892abde866f86b7c66372b8aaf059dc5555b1dd8e6",
 			"code": "missing-record",
 			"severity": "error",
@@ -5183,6 +5253,15 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "adfb7d7a0ac74866262d60b0861cd2fde4eaaf2e5f9e4b285be0b538ff1dd7a5",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -5304,15 +5383,6 @@
 			]
 		},
 		{
-			"fingerprint": "b26b164d9f3cd27549b1c6e93632b8aa92f431729c9ea3ff273e17b68d0f12ec",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "b298c8c59a506cc4e2bac46ec685693b20e68f05d79877a884decee487c6741a",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
@@ -5389,6 +5459,15 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "b6147d1680b7402b4a3b09d9b7676932f3966ab9d1d6fefe8f19f37fbec1c57e",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -5674,6 +5753,14 @@
 			]
 		},
 		{
+			"fingerprint": "bf482b334fb7e8cbe5be1b4b623f73ecffb174bf163902889c172fdf90310b65",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "bf6cf0db9426af72e828b968e4f6bf7075d088dd6c0e073b715c462d6db6ea32",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
@@ -5865,15 +5952,6 @@
 			]
 		},
 		{
-			"fingerprint": "c6dab35c9833f471bbf38cb7eef08a0f43c5d8f153ddffc26e8599728faf5137",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "c745860787818da425f1821ef7295e88dba85b3beba7bee0c7f18d0325914754",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -5965,15 +6043,6 @@
 			]
 		},
 		{
-			"fingerprint": "ca81d08d11848c336b0505464dd49cb6bbedb6193eeecf1e19294bc8a5a6fb2b",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "ca942a77d9f59b3bdafcb5a0d029ef7018eca9f2638e9250d2ef09da8e16b926",
 			"code": "invalid-format",
 			"severity": "error",
@@ -5988,6 +6057,17 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "cb4a1c8bcc9f3d855bc26f2999f901012209a08ee566502a5d120674765288bc",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
 			]
 		},
 		{
@@ -6139,6 +6219,15 @@
 			]
 		},
 		{
+			"fingerprint": "d09cfbe889c2dd5731dfc29b6215c6f8d54d570b2388703a433595940befada5",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "d0e69d4d74595ae098e47056d1f5a3a8fe3dfd323f7725dd9a642568738852e6",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -6194,6 +6283,17 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "d1af53bad1164ffa33364e3e32dbbd354b4ef93392815bb8d5cba88f1f5f1aa6",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
 			]
 		},
 		{
@@ -6295,6 +6395,15 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "d58525312f28f4ab16c634f7670446838ebad4816de314881f895e647bfcaef0",
+			"code": "stale-generated-output",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"generated-outputs"
 			]
 		},
 		{
@@ -6469,6 +6578,15 @@
 			]
 		},
 		{
+			"fingerprint": "dafa63b2f70a42238b705747cd10913d0c65fd23023448c7ec6b08bf834968ed",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "db39aaa250a7f4fcc82aac466ca82e574ad5b847d6a6bfe0e4dcb193d8ba038f",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -6491,6 +6609,15 @@
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "dc7a536b19fe2916a22f689237cd05b6b5d679cf5ef6845e0316f60eaab98e8d",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -6664,15 +6791,6 @@
 			]
 		},
 		{
-			"fingerprint": "e5547c94c25c69642d1f37996b28303ba437c14011b27311440ef4a5beff1432",
-			"code": "unsafe-svg",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"svg-safety"
-			]
-		},
-		{
 			"fingerprint": "e572f668c9519a1a49527e75daad4ff8e757c87d220f67b09138c5cc93c1d32e",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -6748,15 +6866,7 @@
 			]
 		},
 		{
-			"fingerprint": "e75d4dd99b83ee4257dce7deb891ec921c15a33beb0847ddeb100c86f1f9a71e",
-			"code": "invalid-format",
-			"severity": "error",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
-			"fingerprint": "e80d413d7acd09589cc2e213ae3ed399eb3cb3124e23f8010b674ebe80a6481b",
+			"fingerprint": "e872ca294f080d8de5e8cff1aacfb6339dcc8f8d09405c9ece8a9b6d3cca60c9",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
@@ -6896,6 +7006,17 @@
 			]
 		},
 		{
+			"fingerprint": "ee57e086171c530299d35f8738f0c49c8f7ecc34b708877a036596616d932095",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "ee5be53b0486e89f01ab7894d85e6bbd0567f488ea5682645a6ed6674d37bce8",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -6922,15 +7043,6 @@
 			]
 		},
 		{
-			"fingerprint": "eeddefbac5e9258d29bc78cd6ccf626629cb6294a51860307fb96fb8c4d0e443",
-			"code": "untracked-repo-asset",
-			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
-			]
-		},
-		{
 			"fingerprint": "ef13881f83fedbbc426cccee4d13de3844d36157fffc61b3871029e2731b18e5",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -6943,15 +7055,6 @@
 			"fingerprint": "ef3157167848550fef09e917585000e08a5774112dad93623b4bb9debe3ac6c1",
 			"code": "stale-generated-output",
 			"severity": "error",
-			"requiredScopes": [
-				"repository",
-				"generated-outputs"
-			]
-		},
-		{
-			"fingerprint": "ef96563e488f86e6c6b5b40532350cf4843a2aabdde082734e6aaae20a1949f7",
-			"code": "stale-generated-output",
-			"severity": "warning",
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
@@ -6987,6 +7090,15 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "f077fc9a1a06651bcdceef8a552f514a044ecaa2013f341d8c905ac427f32819",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -7052,6 +7164,15 @@
 			]
 		},
 		{
+			"fingerprint": "f1a8e174043220425bd94a5555d938aab3b40930546c83133146e592330f0e63",
+			"code": "unsafe-svg",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"svg-safety"
+			]
+		},
+		{
 			"fingerprint": "f2b90207631d8f670903af9f54b6e1dfe52a660474d1d3cff076cd60135769d0",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -7062,6 +7183,15 @@
 		},
 		{
 			"fingerprint": "f2dbba3ca3c0fde1b15449d2d6ab1007256d570dc60532265cd0086fbec98278",
+			"code": "unsafe-svg",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"svg-safety"
+			]
+		},
+		{
+			"fingerprint": "f2f3471179e1f12b4b4b37dba8f5554d3467bb096bd960c2c2173bbd76104210",
 			"code": "unsafe-svg",
 			"severity": "error",
 			"requiredScopes": [
@@ -7116,6 +7246,17 @@
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "f6074eb7a55e02bb78975ed571302dfd5ca5ed0bd336005a884bfd106cf7be83",
+			"code": "orphaned-directus-file",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"prod-registry",
+				"prod-files",
 				"prod-content"
 			]
 		},
@@ -7186,14 +7327,6 @@
 			]
 		},
 		{
-			"fingerprint": "f8a480485315813b1a8f08aa82c9361bfe7e7e23b7fa20e4bb630edd19714911",
-			"code": "invalid-format",
-			"severity": "error",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
 			"fingerprint": "f8cf02497d21239e782e7b7bf26a10e79810b33054343ccc0a6fe6bc99d1bebb",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -7233,15 +7366,6 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
-			]
-		},
-		{
-			"fingerprint": "fa6c1c910497b4f41f282c0b50d7147ca0e78dcbdbd0ed669c699da06bde01b3",
-			"code": "untracked-repo-asset",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository",
-				"dev-registry"
 			]
 		},
 		{
@@ -7327,22 +7451,6 @@
 		},
 		{
 			"fingerprint": "fea770ee300e5a1795e6c8fee20b8369f84d44876a1fc518a055a76903c6e6ef",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
-			"fingerprint": "f736738a343eeede06ad6f35a5f5502403336cb0ba2eae919774468c228e7d16",
-			"code": "unresolved-dynamic-usage",
-			"severity": "warning",
-			"requiredScopes": [
-				"repository"
-			]
-		},
-		{
-			"fingerprint": "311c46644fbd0ca471f4c559c3b882f73ae11c7556c861d0fdecc61a260948ae",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [

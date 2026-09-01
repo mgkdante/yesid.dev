@@ -134,6 +134,12 @@ const SOURCE_PRESERVATION_SHA256 = {
 } as const;
 
 const CONSENT_DESCRIPTION_SENTINEL = '<task-6-consent-description>';
+const APPROVED_GRAFFITI_LABELS = {
+	'site-labels.fr.json': {
+		current: 'graffiti LA FIN',
+		preimage: 'graffiti THE END',
+	},
+} as const;
 const GENERATED_AT_SENTINEL = '<task-6-generated-at>';
 const REVISION_DATE_SENTINEL = '<task-6-revision-date>';
 const LEGAL_CLAUSE_SENTINEL = '<task-6-legal-clause>';
@@ -194,19 +200,21 @@ function canonicalJson(raw: string): string {
 	return `${JSON.stringify(JSON.parse(raw), null, '\t')}\n`;
 }
 
-function normalizeConsentDescriptionBytes(raw: string): string {
+function normalizeApprovedLabelBytes(raw: string, fixture: string): string {
 	const labels = JSON.parse(raw) as Record<string, string>;
-	const keyPrefix = '"ui_analytics_consent_description": ';
-	const keyAt = raw.indexOf(keyPrefix);
-	if (keyAt < 0 || raw.indexOf(keyPrefix, keyAt + keyPrefix.length) >= 0) {
-		throw new Error('expected exactly one analytics consent description key');
+	labels.ui_analytics_consent_description = CONSENT_DESCRIPTION_SENTINEL;
+
+	const graffiti = APPROVED_GRAFFITI_LABELS[
+		fixture as keyof typeof APPROVED_GRAFFITI_LABELS
+	];
+	if (graffiti) {
+		if (labels.a11y_closer_graffiti !== graffiti.current) {
+			throw new Error(`unexpected approved graffiti label in ${fixture}`);
+		}
+		labels.a11y_closer_graffiti = graffiti.preimage;
 	}
-	const valueAt = keyAt + keyPrefix.length;
-	const valueLiteral = JSON.stringify(labels.ui_analytics_consent_description);
-	if (!raw.startsWith(valueLiteral, valueAt)) {
-		throw new Error('analytics consent description is not at the expected JSON key');
-	}
-	return `${raw.slice(0, valueAt)}${JSON.stringify(CONSENT_DESCRIPTION_SENTINEL)}${raw.slice(valueAt + valueLiteral.length)}`;
+
+	return `${JSON.stringify(labels, null, '\t')}\n`;
 }
 
 function replaceExactlyOnce(value: string, segment: string, replacement: string): string {
@@ -293,12 +301,12 @@ describe('lean high-intent analytics source copy', () => {
 	}
 });
 
-describe('source preservation allows only the approved analytics and legal privacy leaves', () => {
+describe('source preservation allows only the approved analytics, graffiti, and legal privacy leaves', () => {
 	for (const { fixture } of Object.values(CONSENT_DESCRIPTIONS)) {
-		it(`${fixture} differs only at the authorized consent description`, () => {
+		it(`${fixture} differs only at the authorized labels`, () => {
 			const raw = readFileSync(join(CMS_ROOT, 'fixtures', 'content', fixture), 'utf8');
 			expect(raw).toBe(canonicalJson(raw));
-			expect(sha256(normalizeConsentDescriptionBytes(raw))).toBe(
+			expect(sha256(normalizeApprovedLabelBytes(raw, fixture))).toBe(
 				SOURCE_PRESERVATION_SHA256[fixture],
 			);
 		});

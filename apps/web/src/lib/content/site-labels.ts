@@ -29,8 +29,8 @@ export const siteLabels: SiteLabels = {
 		},
 		closerGraffiti: {
 			en: 'THE END graffiti',
-			es: 'grafiti THE END',
-			fr: 'graffiti THE END',
+			es: 'grafiti FIN',
+			fr: 'graffiti LA FIN',
 		},
 		moreMetrics: {
 			en: 'More metrics',

@@ -379,11 +379,11 @@ export const ctaContent: CtaContent = {
 export const closerContent: CloserContent = {
 	attribution: {
 		text: {
-			en: 'Graffiti Vectors by Vecteezy',
-			es: 'Graffiti Vectors by Vecteezy',
-			fr: 'Graffiti Vectors by Vecteezy',
+			en: 'Lacquer typeface by Niki Polyocan and Eli Block',
+			es: 'Tipografía Lacquer de Niki Polyocan y Eli Block',
+			fr: 'Police Lacquer par Niki Polyocan et Eli Block',
 		},
-		url: 'https://www.vecteezy.com/free-vector/graffiti',
+		url: 'https://fonts.google.com/specimen/Lacquer',
 	},
 	cta: {
 		href: '/contact',
