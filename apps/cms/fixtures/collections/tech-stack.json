@@ -509,7 +509,7 @@
             "id": "m00000001",
             "type": "paragraph",
             "data": {
-              "text": "GSAP (GreenSock Animation Platform) is a professional-grade JavaScript animation library. It animates any numeric property — CSS transforms, SVG attributes, canvas elements, even custom object values — with frame-accurate timing and buttery-smooth 60fps performance. Its plugin ecosystem includes ScrollTrigger for scroll-linked animations, DrawSVGPlugin for animating SVG path drawing, and MotionPathPlugin for moving elements along curves. GSAP is now fully free and open-source with all plugins included."
+              "text": "GSAP (GreenSock Animation Platform) is a professional-grade JavaScript animation library. It animates any numeric property — CSS transforms, SVG attributes, canvas elements, even custom object values — with frame-accurate timing and buttery-smooth 60fps performance. Its plugin ecosystem includes ScrollTrigger for scroll-linked animations, DrawSVGPlugin for animating SVG path drawing, and MotionPathPlugin for moving elements along curves. GSAP and its included plugins are available at no charge for permitted uses under the Standard \"No Charge\" GSAP License. GSAP is not open source."
             }
           }
         ]
