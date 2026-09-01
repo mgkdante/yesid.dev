@@ -1,4 +1,4 @@
-<!-- Kept app-side per vendor/design/ui/PARITY-NOTES.md: conversion styling and no shared pressBounce. -->
+<!-- Product invariant: conversion styling stays local; see vendor/design/ui/README.md#button. -->
 <script lang="ts" module>
 	import { cn, twMergeConfig, type WithElementRef } from "$lib/utils";
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from "svelte/elements";

@@ -1,4 +1,4 @@
-<!-- Kept app-side per vendor/design/ui/PARITY-NOTES.md: yesid.dev requires its bevel and hover shadow. -->
+<!-- Product invariant: bevel and hover shadow stay local; see vendor/design/ui/README.md#card. -->
 <script lang="ts">
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn, type WithElementRef } from "$lib/utils";
