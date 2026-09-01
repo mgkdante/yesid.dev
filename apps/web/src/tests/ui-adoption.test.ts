@@ -7,14 +7,17 @@ const read = (path: string) => readFileSync(resolve(REPO_ROOT, path), 'utf8');
 const exists = (path: string) => existsSync(resolve(REPO_ROOT, path));
 
 describe('@yesid/ui customer contract', () => {
-	it('installs the immutable release package and its governing parity notes', () => {
+	it('installs the immutable release package and its durable UI contract', () => {
 		const manifest = 'apps/web/vendor/design/ui/package.json';
+		const guide = 'apps/web/vendor/design/ui/README.md';
 		expect(exists(manifest), `${manifest} must be vendored`).toBe(true);
-		if (!exists(manifest)) return;
+		expect(exists(guide), `${guide} must be vendored`).toBe(true);
+		if (!exists(manifest) || !exists(guide)) return;
 
 		expect(JSON.parse(read(manifest)).name).toBe('@yesid/ui');
-		expect(read('apps/web/vendor/design/ui/PARITY-NOTES.md')).toContain('## Adoption matrix');
-		expect(read('apps/web/vendor/design/ui/PARITY-NOTES.md')).toContain('### Brand adoption matrix');
+		expect(read(guide)).toContain('## Primitive family seams');
+		expect(read(guide)).toContain('## Brand components and composed patterns');
+		expect(read(guide)).toContain('## Adoption verification contract');
 	});
 
 	it('initializes one app-owned UI configuration in both SvelteKit module graphs', () => {
@@ -134,15 +137,17 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(stationTabs).toContain('p-[3px]');
 	});
 
-	it('keeps hard-conflict components app-side with a parity-note pointer', () => {
-		for (const path of [
-			'apps/web/src/lib/components/ui/button/button.svelte',
-			'apps/web/src/lib/components/ui/card/card.svelte',
-			'apps/web/src/lib/components/ui/collapsible/collapsible-content.svelte',
-			'apps/web/src/lib/components/ui/resizable/resizable-handle.svelte',
-		]) {
+	it('keeps compatibility components app-side with durable contract pointers', () => {
+		for (const [path, anchor] of [
+			['apps/web/src/lib/components/ui/button/button.svelte', '#button'],
+			['apps/web/src/lib/components/ui/card/card.svelte', '#card'],
+			['apps/web/src/lib/components/ui/collapsible/collapsible-content.svelte', '#collapsible'],
+			['apps/web/src/lib/components/ui/resizable/resizable-handle.svelte', '#resizable'],
+			['apps/web/src/lib/components/brand/StickyPanel.svelte', '#stickypanel'],
+			['apps/web/src/lib/components/shared/TerminalCursor.svelte', '#terminalcursor'],
+		] as const) {
 			expect(exists(path), path).toBe(true);
-			expect(read(path), path).toContain('vendor/design/ui/PARITY-NOTES.md');
+			expect(read(path), path).toContain(`vendor/design/ui/README.md${anchor}`);
 		}
 	});
 });

@@ -1,4 +1,4 @@
-<!-- Kept as a yesid.dev compatibility wrapper per vendor/design/ui/PARITY-NOTES.md. -->
+<!-- Product compatibility adapter; see vendor/design/ui/README.md#terminalcursor. -->
 <script lang="ts">
 	import { TerminalCursor as UiTerminalCursor } from '@yesid/ui/brand';
 </script>
