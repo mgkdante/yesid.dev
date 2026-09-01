@@ -14,6 +14,11 @@ material.
   Inter `v4.1` and are distributed under the SIL Open Font License 1.1.
 - `apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf` comes from JetBrains Mono
   `v2.304` and is distributed under the SIL Open Font License 1.1.
+- `gsap@3.15.0`, including its bundled plugins, is licensed separately from
+  this repository's proprietary material. It is available at no charge for
+  permitted uses under the
+  [Standard "No Charge" GSAP License](https://gsap.com/community/standard-license/).
+  GSAP is not open source, and the license restrictions still apply.
 - `apps/web/src/lib/components/stack-engine/TechIcon.svelte` fetches icons at
   runtime from [`api.iconify.design`](https://api.iconify.design). The current
   prefixes and the official Iconify collection metadata are:
