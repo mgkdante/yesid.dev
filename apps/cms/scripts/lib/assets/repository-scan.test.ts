@@ -1150,13 +1150,24 @@ describe("yesid.dev real repository contract", () => {
       serviceGlobRows.every((usage) => usage.deliveryMode === "inline-svg"),
     ).toBe(true);
 
-    expect(scan.usages).toContainEqual(
-      expect.objectContaining({
-        sourceFile: "apps/web/src/lib/components/home/CloserGraffiti.svelte",
-        assetId: "repo-file:apps/web/static/svg/graffiti/the-end.svg",
-        deliveryMode: "inline-svg",
-      }),
+    const graffitiRows = scan.usages.filter(
+      (usage) =>
+        usage.sourceFile ===
+          "apps/web/src/lib/components/home/CloserGraffiti.svelte" &&
+        usage.assetId?.startsWith(
+          "repo-file:apps/web/static/svg/graffiti/the-end.",
+        ),
     );
+    expect(new Set(graffitiRows.map((usage) => usage.assetId))).toEqual(
+      new Set([
+        "repo-file:apps/web/static/svg/graffiti/the-end.en.svg",
+        "repo-file:apps/web/static/svg/graffiti/the-end.fr.svg",
+        "repo-file:apps/web/static/svg/graffiti/the-end.es.svg",
+      ]),
+    );
+    expect(
+      graffitiRows.every((usage) => usage.deliveryMode === "inline-svg"),
+    ).toBe(true);
   });
 
   it("locks corrected asset roots, comment-aware Svelte counts, provenance, and deterministic output", async () => {
@@ -1196,10 +1207,10 @@ describe("yesid.dev real repository contract", () => {
     const staticAssets = first.assets.filter((asset) =>
       asset.repoPath?.startsWith("apps/web/static/"),
     );
-    expect(staticAssets).toHaveLength(120);
+    expect(staticAssets).toHaveLength(122);
     expect(
       staticAssets.filter((asset) => asset.kind !== "document"),
-    ).toHaveLength(118);
+    ).toHaveLength(120);
     expect(
       staticAssets.filter(
         (asset) => asset.kind === "raster" && asset.repoPath?.endsWith(".png"),
@@ -1209,7 +1220,7 @@ describe("yesid.dev real repository contract", () => {
       staticAssets.filter((asset) => asset.repoPath?.endsWith(".webp")),
     ).toHaveLength(63);
     expect(staticAssets.filter((asset) => asset.kind === "svg")).toHaveLength(
-      18,
+      20,
     );
     expect(
       staticAssets.filter((asset) => asset.kind === "document"),
@@ -1228,6 +1239,19 @@ describe("yesid.dev real repository contract", () => {
           asset.kind === "font",
       ),
     ).toHaveLength(3);
+    expect(
+      first.assets.filter(
+        (asset) =>
+          asset.repoPath?.startsWith("apps/web/vendor/fonts/lacquer/") &&
+          asset.kind === "font",
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        repoPath: "apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf",
+        sha256:
+          "140c21f71907a16952926ee354c81081092c90d599c89fe8b4557baeaebbbe83",
+      }),
+    ]);
     expect(
       first.assets.some(
         (asset) => asset.repoPath === "apps/web/src/lib/og/fonts/README.md",
@@ -1806,16 +1830,18 @@ describe("yesid.dev real repository contract", () => {
         gbpGenerator,
       ),
     ).toEqual(new Set(["scripts/generate-gbp-assets.ts#markDot"]));
-    const graffitiInputs = provenanceInputs(
-      "repo-file:apps/web/static/svg/graffiti/the-end.svg",
-      "apps/web/scripts/compose-graffiti.py",
-    );
-    expect(graffitiInputs).toEqual(
-      new Set(["apps/web/scripts/compose-graffiti.py#letters"]),
-    );
-    expect(
-      graffitiInputs.has("apps/web/static/svg/graffiti/prop-sign.svg"),
-    ).toBe(false);
+    for (const locale of ["en", "fr", "es"] as const) {
+      const graffitiInputs = provenanceInputs(
+        `repo-file:apps/web/static/svg/graffiti/the-end.${locale}.svg`,
+        "apps/web/scripts/build-graffiti.mjs",
+      );
+      expect(graffitiInputs).toEqual(
+        new Set(["apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf"]),
+      );
+      expect(
+        graffitiInputs.has("apps/web/static/svg/graffiti/prop-sign.svg"),
+      ).toBe(false);
+    }
     expect(
       first.assets.filter((asset) => asset.origin === "external-provider")
         .length,

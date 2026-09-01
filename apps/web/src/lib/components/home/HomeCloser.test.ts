@@ -91,7 +91,7 @@ describe('HomeCloser', () => {
 	it('diagnoses resolved HTTP failures while keeping both decorative fallbacks', async () => {
 		globalThis.fetch = vi.fn(async (input) =>
 			new Response('not svg', {
-				status: String(input).includes('the-end.svg') ? 500 : 404,
+				status: String(input).includes('/svg/graffiti/the-end.') ? 500 : 404,
 			}),
 		) as unknown as typeof fetch;
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});

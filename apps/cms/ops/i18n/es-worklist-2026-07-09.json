@@ -1853,7 +1853,7 @@
 			},
 			"a11y_closer_graffiti": {
 				"en": "THE END graffiti",
-				"fr": "graffiti THE END",
+				"fr": "graffiti LA FIN",
 				"kind": "string"
 			},
 			"ui_marker_service": {
@@ -2622,12 +2622,12 @@
 		"fields": {
 			"attribution": {
 				"en": {
-					"text": "Graffiti Vectors by Vecteezy",
-					"url": "https://www.vecteezy.com/free-vector/graffiti"
+					"text": "Lacquer typeface by Niki Polyocan and Eli Block",
+					"url": "https://fonts.google.com/specimen/Lacquer"
 				},
 				"fr": {
-					"text": "Vecteurs graffiti par Vecteezy",
-					"url": "https://www.vecteezy.com/free-vector/graffiti"
+					"text": "Police Lacquer par Niki Polyocan et Eli Block",
+					"url": "https://fonts.google.com/specimen/Lacquer"
 				},
 				"kind": "json"
 			},
@@ -2721,8 +2721,8 @@
 				"kind": "string"
 			},
 			"attribution_text": {
-				"en": "Graffiti Vectors by Vecteezy",
-				"fr": "Graffiti Vectors by Vecteezy",
+				"en": "Lacquer typeface by Niki Polyocan and Eli Block",
+				"fr": "Police Lacquer par Niki Polyocan et Eli Block",
 				"kind": "string"
 			},
 			"terminal_title": {
