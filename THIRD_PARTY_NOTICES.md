@@ -3,7 +3,7 @@
 The repository's root [LICENSE](LICENSE) applies only to original yesid.dev
 material.
 
-- `apps/web/vendor/design/` contains yesid.dev-design `v0.13.1`, distributed
+- `apps/web/vendor/design/` contains yesid.dev-design `v0.13.2`, distributed
   under the MIT License. Copyright © 2026 Yesid Otalora. See
   `apps/web/vendor/design/LICENSE`.
 - The web runtime uses `@fontsource-variable/inter@5.2.8` and
