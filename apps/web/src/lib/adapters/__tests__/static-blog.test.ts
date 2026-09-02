@@ -3,7 +3,7 @@
 // Network-free, CI-runnable shape coverage. Born as the companion to the
 // RUN_PARITY harness (parity.harness.test.ts — deleted at slice-26 close
 // after Directus 12 passed it on both environments); now the canonical
-// suite for the three static blog methods fixed in T3 — bodyBySlug, html,
+// suite for the static blog methods fixed in T3 — bodyBySlug and
 // svgContent / svgContentsForPosts — asserting they keep the shapes the
 // retired directus adapter produced, using the committed CMS-derived
 // content modules (no network).
@@ -21,7 +21,6 @@ import {
 	BlockEditorDocSchema,
 	BlogPageContentSchema,
 	ProjectsPageContentSchema,
-	serializeBlocksToHtml,
 } from '@repo/shared';
 
 // A LocalizedString leaf is "clean" when no locale value is itself a
@@ -65,34 +64,6 @@ describe('staticAdapter.blog.bodyBySlug — mirrors directus shape', () => {
 
 	it('returns null for an unknown slug (directus returns null when no row/body)', async () => {
 		expect(await staticAdapter.blog.bodyBySlug('__does-not-exist__')).toBeNull();
-	});
-});
-
-describe('staticAdapter.blog.html — serializeBlocksToHtml(body), not the legacy markdown path', () => {
-	it('returns HTML equal to serializeBlocksToHtml of the post body', async () => {
-		const html = await staticAdapter.blog.html(slugWithBody);
-		const body = await staticAdapter.blog.bodyBySlug(slugWithBody);
-		expect(body).not.toBeNull();
-		expect(html).toBe(serializeBlocksToHtml(body!));
-	});
-
-	it('produces block-HTML serialization (no <h1> title prefix; headings carry id attrs)', async () => {
-		const html = await staticAdapter.blog.html(slugWithBody);
-		expect(html.length).toBeGreaterThan(0);
-		// The legacy markdown bridge prefixed an <h1> title and emitted id-less
-		// headings. The block serializer never prefixes an <h1> and ids every
-		// header. Assert the divergent legacy markers are gone.
-		expect(html.startsWith('<h1>')).toBe(false);
-		// If the body has any header block, the serialized output must include an
-		// id attribute on a heading tag (directus parity behaviour).
-		const hasHeader = blogBodies[slugWithBody]!.blocks.some((b) => b.type === 'header');
-		if (hasHeader) {
-			expect(html).toMatch(/<h[1-6] id="/);
-		}
-	});
-
-	it('returns empty string for an unknown slug', async () => {
-		expect(await staticAdapter.blog.html('__does-not-exist__')).toBe('');
 	});
 });
 
