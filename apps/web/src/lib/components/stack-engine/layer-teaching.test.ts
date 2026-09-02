@@ -5,7 +5,7 @@
 // every layer.
 
 import { describe, it, expect } from 'vitest';
-import { STACK_LAYERS } from '@repo/shared/schemas';
+import { STACK_LAYERS } from '@repo/shared/stack-layers';
 import { LAYER_TEACHING } from './layer-teaching';
 
 describe('LAYER_TEACHING', () => {

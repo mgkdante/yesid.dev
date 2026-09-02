@@ -16,7 +16,8 @@
   the first's caption off.
 -->
 <script lang="ts">
-	import type { StackArchetype, StackLayer } from '@repo/shared/schemas';
+	import type { StackArchetype } from '@repo/shared/schemas';
+	import type { StackLayer } from '@repo/shared/stack-layers';
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';

@@ -25,7 +25,7 @@
 //
 // Pure data-in/data-out — fully covered by stack-shape.test.ts.
 
-import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
+import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 import type { Locale, LocalizedString, TechStackItem } from '$lib/types';
 import { resolveLocale } from '$lib/utils/locale';
 import { LAYER_NAMES } from './layer-teaching';

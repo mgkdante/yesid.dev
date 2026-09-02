@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'bun:test';
-import { STACK_LAYERS, StackArchetypeSchema } from './stack-archetypes';
+import { STACK_LAYERS } from '@repo/shared/stack-layers';
+import { StackArchetypeSchema } from './stack-archetypes';
 
 // Minimal valid LocalizedString for test fixtures.
 const ls = (en: string) => ({ en });

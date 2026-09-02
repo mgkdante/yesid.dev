@@ -29,7 +29,8 @@
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
 	import { gsap } from 'gsap';
-	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
+	import type { ArchetypeTechLink } from '@repo/shared/schemas';
+	import type { StackLayer } from '@repo/shared/stack-layers';
 	import type { Locale, LocalizedString } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';

@@ -22,7 +22,7 @@
     narrowing: "{n} picks → {m} known builds".
 -->
 <script lang="ts">
-	import { STACK_LAYERS } from '@repo/shared/schemas';
+	import { STACK_LAYERS } from '@repo/shared/stack-layers';
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';

@@ -20,7 +20,7 @@
 	import { Flip } from 'gsap/Flip';
 	import { pushState } from '$app/navigation';
 	import { page } from '$app/state';
-	import { STACK_LAYERS } from '@repo/shared/schemas';
+	import { STACK_LAYERS } from '@repo/shared/stack-layers';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 

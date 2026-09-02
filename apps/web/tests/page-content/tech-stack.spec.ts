@@ -59,7 +59,6 @@ test.describe('/tech-stack page content', () => {
     await expect(statValue).toHaveCount(1);
     await expect(statValue).toBeVisible();
     const valueText = await statValue.textContent();
-    // The count is data.items.length — a positive integer.
     const match = valueText?.match(/\d+/);
     expect(match).toBeTruthy();
     expect(Number(match![0])).toBeGreaterThan(0);
