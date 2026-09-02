@@ -161,6 +161,11 @@ repairs. Do not replace them with ad-hoc Data Studio or REST mutations.
 - `seed-*` scripts own one content domain each. Some replace domain rows, so
   read the script contract, run its offline tests or dry-run, and confirm the
   target before any apply.
+- On an existing environment, capture `site_meta.default_og_image` and every
+  `icons.svg_override` before `seed-site-meta.ts` or `seed-icons.ts --reset`,
+  then reapply them afterward. Their fixtures may contain `null`;
+  `sync-push.ts` protects only `project_logo`, `public_foreground`, and
+  `public_favicon`, not these environment-specific references.
 - `migrate-assets.ts` and `setup-*` scripts own bounded migrations. They are
   not clean-clone setup steps and should not be replayed because a script is
   present.
