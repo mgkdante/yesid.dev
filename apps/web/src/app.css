@@ -1,13 +1,9 @@
-/* Semantic CSS custom properties (--background, --foreground, etc.) */
 @import '@yesid/tokens/tokens.css';
 
-/* Lenis smooth scroll base styles */
 @import 'lenis/dist/lenis.css';
 
-/* Tailwind CSS v4 (CSS-first config, no tailwind.config.js needed) */
 @import 'tailwindcss';
 
-/* Cross-browser mobile resets — Brave/Chrome/Safari Android consistency */
 *,
 *::before,
 *::after {
@@ -31,10 +27,7 @@ select {
 	appearance: none;
 }
 
-/* slice-19 Phase 3: tap-feedback primitive layer (Layer 1).
-   Pair with motion/actions/pressBounce for nuanced cases (Layer 2).
-   Reduced-motion preference disables transitions; the press style still applies
-   on :active so users see a state change without animation timing. */
+/* Touch feedback keeps an active state even when reduced motion removes timing. */
 @utility tap-press {
 	transition:
 		scale 120ms cubic-bezier(0.2, 0, 0, 1),
@@ -62,7 +55,6 @@ select {
 	}
 }
 
-/* shadcn-svelte component animations */
 @import 'tw-animate-css';
 
 /* Map dark: variant to our attribute-based theme switching.
@@ -70,14 +62,6 @@ select {
    pinned-dark scenes (e.g. the home closer) on light pages. */
 @custom-variant dark (&:is([data-theme="dark"] *, .theme-dark *));
 
-/*
-  Brand design tokens in Tailwind v4's CSS-first @theme format.
-  Source of truth for values that don't theme-switch (type scale, radii, shadows, spacing).
-  Narrative rationale lives in brand/foundations/*.md.
-
-  v4 naming convention: --color-* generates bg-*, text-*, border-* utilities.
-  --font-* generates font-* utilities. --radius-* generates rounded-* utilities.
-*/
 /* ===== TOKENS:START ===== */
 /* GENERATED FROM apps/web/vendor/design/tokens/tokens.json - DO NOT EDIT */
 /* Hand-edits to this region will be overwritten on the next build. */
@@ -174,17 +158,12 @@ select {
   /* Our extensions — same convention */
   --color-terminal: var(--terminal);
   --color-manifesto: var(--manifesto);
-  /* GO-W2.2 archived (2026-06): aliases pointed at vars defined nowhere.
-     --color-dim-foreground: var(--dim-foreground);
-     --color-light-foreground: var(--light-foreground); */
   --color-accent-text: var(--accent-text);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
   --color-success: var(--success);
   --color-primary-hover: var(--primary-hover);
   --color-accent-hover: var(--accent-hover);
-  /* Round 5c yellow-conversion doctrine: the theme-invariant signage pair as
-     utilities (bg/text-signage-*) — conversion buttons ride real sign colors. */
   --color-signage-bg: var(--signage-bg);
   --color-signage-text: var(--signage-text);
 }
@@ -455,8 +434,6 @@ pre, code, table {
   display: none;
 }
 
-/* 4–6. brand-glow-hover / img-desat / grid-responsive-cards — deleted in slice-28.3 (#110, orphaned) */
-
 /* 7–9. Label styles — mono uppercase patterns.
    Round-4 four-color doctrine: label-section = quiet in-card caption (muted);
    label-station = the YELLOW wayfinding voice for overlines/section labels —
@@ -601,8 +578,6 @@ pre, code, table {
 .led-pulse {
   animation: pulse-glow 2s ease-in-out infinite;
 }
-
-/* 12. grid-rows-collapse — deleted in slice-28.3 (#110, orphaned) */
 
 /* 13. Scroll offset for anchor links — headings land below the sticky nav */
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
