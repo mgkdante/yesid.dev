@@ -23,7 +23,6 @@ import type {
 	Service,
 	BlogPost,
 	BlogCategory,
-	BlogAnimation,
 	SiteMeta,
 	SiteSeoDefaults,
 	TechStackItem,
@@ -43,7 +42,7 @@ import type {
 	MorphShape,
 	LegalPage,
 } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem } from '$lib/navigation/types';
+import type { ErrorPageContent, NavLink } from '$lib/navigation/types';
 import type { HeroData } from '$lib/live';
 import type { PageSeo } from '$lib/schemas/seo';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
@@ -87,18 +86,13 @@ export interface ContentAdapter {
 // params, so the static adapter keeps its current arrow-function signatures.
 
 export interface ProjectPort {
-	all(ctx?: PreviewContext): Promise<readonly Project[]>;
 	bySlug(slug: string, ctx?: PreviewContext): Promise<Project | undefined>;
 	featured(ctx?: PreviewContext): Promise<readonly Project[]>;
 	public(ctx?: PreviewContext): Promise<readonly Project[]>;
 	byService(serviceId: string, ctx?: PreviewContext): Promise<readonly Project[]>;
-	allTags(ctx?: PreviewContext): Promise<readonly string[]>;
-	allStackItems(ctx?: PreviewContext): Promise<readonly string[]>;
-	serviceIdsForProjects(ctx?: PreviewContext): Promise<readonly string[]>;
 }
 
 export interface ServicePort {
-	all(ctx?: PreviewContext): Promise<readonly Service[]>;
 	byId(id: string, ctx?: PreviewContext): Promise<Service | undefined>;
 	visible(ctx?: PreviewContext): Promise<readonly Service[]>;
 	adjacent(id: string, ctx?: PreviewContext): Promise<{ prev?: Service; next?: Service }>;
@@ -107,36 +101,13 @@ export interface ServicePort {
 export interface BlogPort {
 	all(ctx?: PreviewContext): Promise<readonly BlogPost[]>;
 	bySlug(slug: string, ctx?: PreviewContext): Promise<BlogPost | undefined>;
-	html(slug: string, ctx?: PreviewContext): Promise<string>;
 	bodyBySlug(slug: string, ctx?: PreviewContext): Promise<BlockEditorDoc | null>;
 	byCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly BlogPost[]>;
-	byTag(
-		category: BlogCategory,
-		tag: string,
-		ctx?: PreviewContext,
-	): Promise<readonly BlogPost[]>;
-	tagsForCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly string[]>;
-	languagesForCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly Locale[]>;
-	latest(
-		count: number,
-		category?: BlogCategory,
-		ctx?: PreviewContext,
-	): Promise<readonly BlogPost[]>;
 	svgContent(post: BlogPost, ctx?: PreviewContext): Promise<string>;
 	svgContentsForPosts(
 		posts: readonly BlogPost[],
 		ctx?: PreviewContext,
 	): Promise<Record<string, string>>;
-	resolveSvgFallbackName(
-		slug: string,
-		category: BlogCategory,
-		ctx?: PreviewContext,
-	): Promise<string>;
-	resolveAnimation(
-		slug: string,
-		explicit: string | undefined,
-		ctx?: PreviewContext,
-	): Promise<BlogAnimation>;
 }
 
 export interface MetaPort {
@@ -186,9 +157,6 @@ export interface MetaPort {
 // methods will be cleaned up in Phase 5 (Task 10).
 export interface TechStackPort {
 	all(ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
-	byId(id: string, ctx?: PreviewContext): Promise<TechStackItem | undefined>;
-	/** Serialized longform docs; `locale` resolves per-locale with EN fallback (slice-28.6). */
-	content(id: string, locale?: Locale, ctx?: PreviewContext): Promise<string>;
 }
 
 export interface ContentPort {
@@ -201,14 +169,11 @@ export interface ContentPort {
 	about(ctx?: PreviewContext): Promise<AboutIntroContent>;
 	cta(ctx?: PreviewContext): Promise<CtaContent>;
 	closer(ctx?: PreviewContext): Promise<CloserContent>;
-	navLinks(ctx?: PreviewContext): Promise<readonly NavLink[]>;
-	menuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]>;
 	errorPage(statusCode: number, ctx?: PreviewContext): Promise<ErrorPageContent>;
 	/** Full /about page content — distinct from the home-page about teaser. */
 	aboutPage(ctx?: PreviewContext): Promise<AboutContent>;
 	contactPage(ctx?: PreviewContext): Promise<ContactContent>;
 	techStackPage(ctx?: PreviewContext): Promise<TechStackPageContent>;
-	heroMock(ctx?: PreviewContext): Promise<HeroData>;
 	initialHeroData(ctx?: PreviewContext): Promise<HeroData>;
 	/** /blog page chrome — block_blog_page_content (added slice-18i Phase 7). */
 	blogPage(ctx?: PreviewContext): Promise<BlogPageContent>;
