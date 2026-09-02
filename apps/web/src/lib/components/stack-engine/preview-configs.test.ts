@@ -13,7 +13,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
+import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 import {
 	PREVIEW_CONFIGS,
 	FRAME_SIZES,

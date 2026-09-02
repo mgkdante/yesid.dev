@@ -19,5 +19,5 @@ export async function load({ locals }: { locals: App.Locals }) {
 		adapter.content.techStackPage(ctx),
 	]);
 
-	return { items, techStackPage };
+	return { itemCount: items.length, techStackPage };
 };

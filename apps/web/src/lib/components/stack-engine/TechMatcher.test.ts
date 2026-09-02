@@ -8,7 +8,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { STACK_LAYERS } from '@repo/shared/schemas';
+import { STACK_LAYERS } from '@repo/shared/stack-layers';
 import TechMatcher from './TechMatcher.svelte';
 import { stackArchetypes } from '$lib/content/stack-archetypes';
 import { EngineState } from './engine-state.svelte';

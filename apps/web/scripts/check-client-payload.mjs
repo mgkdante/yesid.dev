@@ -26,7 +26,7 @@ function budget(name, fallback) {
 const budgets = {
 	rootEntry: budget('ROOT_LAYOUT_ENTRY_BUDGET_GZIP', 30_000),
 	rootPayload: budget('ROOT_LAYOUT_PAYLOAD_BUDGET_GZIP', 180_000),
-	engine: budget('ENGINE_CHUNK_BUDGET_GZIP', 25_000),
+	engine: budget('ENGINE_CHUNK_BUDGET_GZIP', 90_000),
 };
 
 let manifestSource;
@@ -96,20 +96,61 @@ const outputContents = new Map();
 
 function readOutput(file, label) {
 	const path = outputPath(file, label);
-	if (outputContents.has(path)) return outputContents.get(path);
-	let content;
-	try {
-		content = readFileSync(path);
-	} catch {
-		fail(`cannot read ${label} output: ${file}`);
+	if (!outputContents.has(path)) {
+		let content;
+		try {
+			content = readFileSync(path);
+		} catch {
+			fail(`cannot read ${label} output: ${file}`);
+		}
+		outputContents.set(path, content);
 	}
-	outputContents.set(path, content);
-	return content;
+	return { path, content: outputContents.get(path) };
 }
 
-function measure(file, label) {
-	const content = readOutput(file, label);
+function measureContent(content) {
 	return { raw: content.length, gzip: gzipSync(content).length };
+}
+
+function collectStaticClosure(entryKey, entryRecord, entryLabel) {
+	const outputs = new Map();
+	const keys = new Set();
+	const pending = [{ key: entryKey, record: entryRecord, depth: 0 }];
+
+	while (pending.length > 0) {
+		const current = pending.pop();
+		if (keys.has(current.key)) continue;
+		keys.add(current.key);
+
+		const record =
+			current.depth === 0 ? current.record : importRecord(current.key);
+		const imports = importKeys(record, current.key);
+		const label =
+			current.depth === 0
+				? entryLabel
+				: entryLabel === 'root layout' && current.depth === 1
+					? 'direct static import'
+					: 'static import graph';
+		const output = readOutput(record.file, label);
+		if (!outputs.has(output.path)) {
+			outputs.set(output.path, { file: record.file, content: output.content });
+		}
+
+		for (const key of imports) {
+			pending.push({ key, record: undefined, depth: current.depth + 1 });
+		}
+	}
+
+	return { keys, outputs };
+}
+
+function measureOutputs(outputs) {
+	const total = { raw: 0, gzip: 0 };
+	for (const { content } of outputs.values()) {
+		total.raw += content.length;
+		total.gzip += gzipSync(content).length;
+	}
+	return total;
 }
 
 const root = requiredRecord(ROOT_KEY, 'root layout');
@@ -118,48 +159,29 @@ const engine = requiredRecord(ENGINE_KEY, 'engine');
 if (engine.isDynamicEntry !== true) fail(`${ENGINE_KEY} is not a dynamic entry`);
 if (/(^|\/)nodes\//.test(engine.file)) fail('engine output is a route node');
 
-const rootDirectImports = importKeys(root, ROOT_KEY);
-const rootDirectImportKeys = new Set(rootDirectImports);
-const directJsFiles = new Set();
-for (const key of rootDirectImports) {
-	const record = importRecord(key);
-	if (record.file.endsWith('.js') && record.file !== root.file) directJsFiles.add(record.file);
+const rootClosure = collectStaticClosure(ROOT_KEY, root, 'root layout');
+const rootPath = outputPath(root.file, 'root layout');
+const rootEntry = measureContent(rootClosure.outputs.get(rootPath).content);
+const enginePath = outputPath(engine.file, 'engine');
+if (rootClosure.keys.has(ENGINE_KEY) || rootClosure.outputs.has(enginePath)) {
+	fail('engine is statically reachable from the root layout');
 }
-
-const visited = new Set();
-const pending = [...rootDirectImports];
-while (pending.length > 0) {
-	const key = pending.pop();
-	if (visited.has(key)) continue;
-	visited.add(key);
-	const record = importRecord(key);
-	readOutput(
-		record.file,
-		rootDirectImportKeys.has(key) ? 'direct static import' : 'static import graph',
-	);
-	if (key === ENGINE_KEY || record.file === engine.file) {
-		fail('engine is statically reachable from the root layout');
-	}
-	pending.push(...importKeys(record, key));
-}
-
-const rootEntry = measure(root.file, 'root layout');
-const payload = { ...rootEntry };
-for (const file of directJsFiles) {
-	const chunk = measure(file, 'direct static import');
-	payload.raw += chunk.raw;
-	payload.gzip += chunk.gzip;
-}
-const engineEntry = measure(engine.file, 'engine');
+const payload = measureOutputs(rootClosure.outputs);
+const engineClosure = collectStaticClosure(ENGINE_KEY, engine, 'engine');
+const engineIncrementalOutputs = new Map(
+	[...engineClosure.outputs].filter(([path]) => !rootClosure.outputs.has(path)),
+);
+const enginePayload = measureOutputs(engineIncrementalOutputs);
+const rootImportCount = rootClosure.outputs.size - 1;
 
 console.log(
 	`root layout entry: ${root.file} — ${rootEntry.raw} bytes raw, ${rootEntry.gzip} bytes gzip (budget ${budgets.rootEntry})`,
 );
 console.log(
-	`root layout payload: ${directJsFiles.size + 1} files (${directJsFiles.size} direct static ${directJsFiles.size === 1 ? 'import' : 'imports'}) — ${payload.raw} bytes raw, ${payload.gzip} bytes gzip (budget ${budgets.rootPayload})`,
+	`root layout payload: ${rootClosure.outputs.size} files (${rootImportCount} static ${rootImportCount === 1 ? 'import' : 'imports'}) — ${payload.raw} bytes raw, ${payload.gzip} bytes gzip (budget ${budgets.rootPayload})`,
 );
 console.log(
-	`engine dynamic entry: ${engine.file} — ${engineEntry.raw} bytes raw, ${engineEntry.gzip} bytes gzip (budget ${budgets.engine})`,
+	`engine incremental payload: ${engineIncrementalOutputs.size} ${engineIncrementalOutputs.size === 1 ? 'file' : 'files'} — ${enginePayload.raw} bytes raw, ${enginePayload.gzip} bytes gzip (budget ${budgets.engine})`,
 );
 
 if (rootEntry.gzip > budgets.rootEntry) {
@@ -170,8 +192,10 @@ if (rootEntry.gzip > budgets.rootEntry) {
 if (payload.gzip > budgets.rootPayload) {
 	fail(`root layout payload ${payload.gzip} bytes gzip > budget ${budgets.rootPayload} bytes gzip`);
 }
-if (engineEntry.gzip > budgets.engine) {
-	fail(`engine dynamic entry ${engineEntry.gzip} bytes gzip > budget ${budgets.engine} bytes gzip`);
+if (enginePayload.gzip > budgets.engine) {
+	fail(
+		`engine incremental payload ${enginePayload.gzip} bytes gzip > budget ${budgets.engine} bytes gzip`,
+	);
 }
 
 console.log('OK: client payload budgets pass');
