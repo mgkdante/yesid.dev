@@ -455,7 +455,8 @@ export interface PreviewContext {
 	locale?: Locale;
 
 	/**
-	 * Per-request page memo. Optional callers degrade to one fetch per call.
+	 * Optional request-scoped memo for adapters that support page-fetch deduplication.
+	 * Omitting it disables that deduplication.
 	 * `unknown` prevents an upward import into schemas that depend on this package.
 	 */
 	pageCache?: Map<string, Promise<unknown>>;
