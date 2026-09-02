@@ -2,14 +2,14 @@
 /**
  * setup-contact-best-fit-fields.ts
  *
- * Schema half of the contact BEST FIT block (launch Phase 1, homework #26b):
+ * Schema setup for the contact BEST FIT block:
  * a fourth info-terminal section naming the projects that fit best, following
  * the LANGUAGES-section precedent (flat per-locale columns, cheap to extend).
  *
  *   block_contact_content_translations.info_section_label_best_fit
  *   block_contact_content_translations.info_best_fit_1 / _2 / _3
  *
- * Values ship separately via content-contact-best-fit.ts.
+ * Current values are owned by fixtures and generated content.
  *
  * DEV-ONLY. Dry-run by default; pass --apply to write schema.
  */
@@ -31,19 +31,19 @@ const COLLECTION = 'block_contact_content_translations';
 const NEW_FIELDS: readonly FieldSpec[] = [
 	{
 		field: 'info_section_label_best_fit',
-		note: 'Info terminal BEST FIT section label (homework #26b). Stored uppercase like the sibling labels. Default: "BEST FIT"',
+		note: 'Info terminal BEST FIT section label. Stored uppercase like the sibling labels. Default: "BEST FIT"',
 	},
 	{
 		field: 'info_best_fit_1',
-		note: 'BEST FIT line 1 of 3: a project shape that fits best (homework #26b). Default: "Slow reports that need to be fast"',
+		note: 'BEST FIT line 1 of 3. Default: "Slow reports that need to be fast"',
 	},
 	{
 		field: 'info_best_fit_2',
-		note: 'BEST FIT line 2 of 3 (homework #26b). Default: "Manual data work that should run itself"',
+		note: 'BEST FIT line 2 of 3. Default: "Manual data work that should run itself"',
 	},
 	{
 		field: 'info_best_fit_3',
-		note: 'BEST FIT line 3 of 3 (homework #26b). Default: "Sites and stores wired to live data"',
+		note: 'BEST FIT line 3 of 3. Default: "Sites and stores wired to live data"',
 	},
 ];
 
