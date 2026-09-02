@@ -31,40 +31,24 @@
 // HomeServices and FeaturedProjects were the last component-level bypasses for
 // primary data; slice-28.5 threaded both through the home +page.server.ts.
 
-import { projects } from '$lib/content/projects';
 import {
 	getProjectBySlug,
 	getFeaturedProjects,
 	getPublicProjects,
 	getProjectsByService,
-	getAllTags,
-	getAllStackItems,
-	getServiceIdsForProjects,
 } from '$lib/projects/static-helpers';
-import { services } from '$lib/content/services';
 import {
 	getServiceById,
 	getVisibleServices,
 	getAdjacentServices,
 } from '$lib/services/static-helpers';
 import { blogPosts } from '$lib/content/blog';
-// Slice-27.1: blog.html + blog.bodyBySlug now mirror the directus adapter —
-// `bodyBySlug` reads the CMS-derived Block Editor doc from blog-bodies.ts and
-// `html` is `serializeBlocksToHtml(body)`, byte-identical to directus. This
-// replaced the legacy markdown→Shiki `getPostHtml` bridge (blog.html-cache.ts),
-// whose `<h1>`-prefixed / id-less serialization diverged from the runtime path.
 import { blogBodies } from '$lib/content/blog-bodies';
 import {
 	getPostBySlug,
 	getPostsByCategory,
-	getPostsByTag,
-	getTagsForCategory,
-	getLanguagesForCategory,
-	getLatestPosts,
 	getSvgContent,
 	getSvgContentsForPosts,
-	resolveSvgFallbackName,
-	resolveAnimation,
 } from '$lib/blog/static-helpers';
 import { siteMeta } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
@@ -81,11 +65,9 @@ import {
 	ProjectSchema,
 	ServiceSchema,
 	BlogPostSchema,
-	BlogAnimationSchema,
 	SiteMetaSchema,
 	TechStackItemSchema,
 	NavLinkSchema,
-	MenuItemSchema,
 	ErrorPageContentSchema,
 	AboutContentSchema,
 	ContactContentSchema,
@@ -99,9 +81,8 @@ import {
 	type ProjectsPageContent,
 } from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
-import { resolveLocale } from '$lib/utils/locale';
 import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
-import { serializeBlocksToHtml, BlockEditorDocSchema } from '@repo/shared';
+import { BlockEditorDocSchema } from '@repo/shared';
 import {
 	heroContent,
 	heroAnimContent,
@@ -120,7 +101,7 @@ import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { blogPageContent } from '$lib/content/blog-page';
 import { projectsPageContent } from '$lib/content/projects-page';
-import { generateHeroData, INITIAL_HERO_DATA } from '$lib/live';
+import { INITIAL_HERO_DATA } from '$lib/live';
 import { morphShapes } from '$lib/content/morph-shapes';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
 // Slice 18d Phase 8 introduced this as the static fallback for
@@ -143,7 +124,6 @@ import type { ContentAdapter } from './types';
 
 export const staticAdapter: ContentAdapter = {
 	projects: {
-		all: async () => parsePort('projects.all', z.array(ProjectSchema), projects),
 		bySlug: async (slug) => {
 			const p = getProjectBySlug(slug);
 			return parsePort('projects.bySlug', ProjectSchema.optional(), p);
@@ -154,13 +134,8 @@ export const staticAdapter: ContentAdapter = {
 			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects()),
 		byService: async (serviceId) =>
 			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId)),
-		// Utility ports — return primitives/strings, no schema needed (spec D2).
-		allTags: async () => getAllTags(),
-		allStackItems: async () => getAllStackItems(),
-		serviceIdsForProjects: async () => getServiceIdsForProjects(),
 	},
 	services: {
-		all: async () => parsePort('services.all', z.array(ServiceSchema), services),
 		byId: async (id) => parsePort('services.byId', ServiceSchema.optional(), getServiceById(id)),
 		visible: async () =>
 			parsePort('services.visible', z.array(ServiceSchema), getVisibleServices()),
@@ -184,28 +159,8 @@ export const staticAdapter: ContentAdapter = {
 		},
 		byCategory: async (category) =>
 			parsePort('blog.byCategory', z.array(BlogPostSchema), getPostsByCategory(category)),
-		byTag: async (category, tag) =>
-			parsePort('blog.byTag', z.array(BlogPostSchema), getPostsByTag(category, tag)),
-		latest: async (count, category) =>
-			parsePort('blog.latest', z.array(BlogPostSchema), getLatestPosts(count, category)),
-		resolveAnimation: async (slug, explicit) =>
-			parsePort('blog.resolveAnimation', BlogAnimationSchema, resolveAnimation(slug, explicit)),
-		// Utility ports — return strings/records, no schema needed (spec D2).
-		// Mirror directusAdapter.blog.html: serialize the Block Editor body to HTML
-		// (same wrapper + heading ids), or '' when the post has no body.
-		html: async (slug) => {
-			// Mirror directusAdapter.blog.html: validate the body through the same
-			// parsePort gate as bodyBySlug, then serialize (byte-identical wrapper +
-			// heading ids), or '' when the post has no body.
-			const raw = blogBodies[slug];
-			if (!raw) return '';
-			return serializeBlocksToHtml(parsePort('blog.bodyBySlug', BlockEditorDocSchema, raw));
-		},
-		tagsForCategory: async (category) => getTagsForCategory(category),
-		languagesForCategory: async (category) => getLanguagesForCategory(category),
 		svgContent: async (post) => getSvgContent(post),
 		svgContentsForPosts: async (posts) => getSvgContentsForPosts(posts),
-		resolveSvgFallbackName: async (slug, category) => resolveSvgFallbackName(slug, category),
 	},
 	meta: {
 		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
@@ -256,34 +211,16 @@ export const staticAdapter: ContentAdapter = {
 		},
 	},
 	techStack: {
-		// slice-18m follow-up (GH #63/#64): tech-stack data sourced from the
+		// slice-18m follow-up (GH #63/#64): tech-stack data is sourced from the
 		// CMS-derived `techStackItems` array (generated by export-fallbacks)
-		// rather than the legacy MD-glob parser. `content(id)` serializes the
-		// 3 BlockEditorDoc fields (what_it_is + what_i_use_it_for +
-		// why_i_use_it_instead) for the English locale — mirrors the runtime
-		// adapter pattern of the retired directus adapter.
+		// rather than the legacy MD-glob parser.
 		all: async () =>
 			parsePort('techStack.all', z.array(TechStackItemSchema), techStackItems),
-		byId: async (id) =>
-			parsePort(
-				'techStack.byId',
-				TechStackItemSchema.optional(),
-				techStackItems.find((it) => it.id === id),
-			),
-		content: async (id, locale = 'en') => {
-			const item = techStackItems.find((it) => it.id === id);
-			if (!item) return '';
-			return [
-				serializeBlocksToHtml(resolveLocale(item.what_it_is, locale)),
-				serializeBlocksToHtml(resolveLocale(item.what_i_use_it_for, locale)),
-				serializeBlocksToHtml(resolveLocale(item.why_i_use_it_instead, locale)),
-			].join('\n');
-		},
 	},
 	content: {
-		// Site-chrome literals — kept as `typeof import` shape via ContentPort,
-		// not wrapped (spec D2 non-goal). These are page chrome, not CMS-managed
-		// content; re-encoding as Zod adds maintenance cost with no CMS benefit.
+		// Site-content literals are kept as `typeof import` shape via ContentPort,
+		// not wrapped (spec D2 non-goal). Re-encoding as Zod adds maintenance cost
+		// with no CMS benefit.
 		hero: async () => heroContent,
 		heroAnim: async () => heroAnimContent,
 		manifesto: async () => manifestoContent,
@@ -293,8 +230,6 @@ export const staticAdapter: ContentAdapter = {
 		cta: async () => ctaContent,
 		closer: async () => closerContent,
 		// Schema-validated content ports.
-		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
-		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
 		// slice-27.1 FIX A: mirror directus's _or: [status_code=N, status_code=0]
 		// semantics — look up the specific status code first, then fall back to the
 		// 0-row (generic fallback). errorPagesById is keyed by status_code (number).
@@ -317,7 +252,6 @@ export const staticAdapter: ContentAdapter = {
 			parsePort('content.blogPage', BlogPageContentSchema, blogPageContent),
 		projectsPage: async (): Promise<ProjectsPageContent> =>
 			parsePort('content.projectsPage', ProjectsPageContentSchema, projectsPageContent),
-		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 		metroSvg: async () => metroSvgRaw,

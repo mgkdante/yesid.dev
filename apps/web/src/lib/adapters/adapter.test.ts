@@ -13,19 +13,11 @@
 
 import { describe, it, expect } from 'vitest';
 import { projects } from '$lib/content/projects';
-import { deriveProjectFacets } from '$lib/projects/project-facets';
+import { services } from '$lib/content/services';
 import { staticAdapter as adapter } from './static';
-
-const expectedProjectFacets = deriveProjectFacets(projects);
 
 describe('ContentAdapter contract', () => {
 	describe('projects port', () => {
-		it('all() returns a non-empty readonly array', async () => {
-			const result = await adapter.projects.all();
-			expect(Array.isArray(result)).toBe(true);
-			expect(result.length).toBeGreaterThan(0);
-		});
-
 		it('bySlug() returns undefined for unknown slug', async () => {
 			const result = await adapter.projects.bySlug('__nonexistent__');
 			expect(result).toBeUndefined();
@@ -33,27 +25,20 @@ describe('ContentAdapter contract', () => {
 		});
 
 		it('bySlug() returns a project for a real slug', async () => {
-			const all = await adapter.projects.all();
-			const first = all[0];
+			const first = projects[0];
 			const found = await adapter.projects.bySlug(first.slug);
 			expect(found).toBeDefined();
 			expect(found?.slug).toBe(first.slug);
 		});
 
 		it('featured() returns a subset of all()', async () => {
-			const [all, featured] = await Promise.all([
-				adapter.projects.all(),
-				adapter.projects.featured(),
-			]);
-			expect(featured.length).toBeLessThanOrEqual(all.length);
+			const featured = await adapter.projects.featured();
+			expect(featured.length).toBeLessThanOrEqual(projects.length);
 		});
 
 		it('public() returns a subset of all()', async () => {
-			const [all, pub] = await Promise.all([
-				adapter.projects.all(),
-				adapter.projects.public(),
-			]);
-			expect(pub.length).toBeLessThanOrEqual(all.length);
+			const pub = await adapter.projects.public();
+			expect(pub.length).toBeLessThanOrEqual(projects.length);
 		});
 
 		// G7 relocated these assertions from the composed-adapter repository
@@ -76,11 +61,8 @@ describe('ContentAdapter contract', () => {
 			// wip projects are visible — they show a "work in progress" badge on the UI.
 			// This test only asserts that wip is not filtered out, not that wip projects
 			// exist in the seed data.
-			const [publicProjects, all] = await Promise.all([
-				adapter.projects.public(),
-				adapter.projects.all(),
-			]);
-			const wipInSeed = all.filter((project) => project.status === 'wip');
+			const publicProjects = await adapter.projects.public();
+			const wipInSeed = projects.filter((project) => project.status === 'wip');
 			wipInSeed.forEach((project) => {
 				expect(publicProjects.some((candidate) => candidate.slug === project.slug)).toBe(true);
 			});
@@ -120,29 +102,9 @@ describe('ContentAdapter contract', () => {
 			expect(project?.impactMetrics).toBeDefined();
 			expect(project!.impactMetrics!.length).toBe(5);
 		});
-
-		it('allTags() matches the shared project facet derivation', async () => {
-			const tags = await adapter.projects.allTags();
-			expect(tags).toEqual(expectedProjectFacets.tags);
-		});
-
-		it('allStackItems() matches the shared project facet derivation', async () => {
-			const items = await adapter.projects.allStackItems();
-			expect(items).toEqual(expectedProjectFacets.stackItems);
-		});
-
-		it('serviceIdsForProjects() matches the shared project facet derivation', async () => {
-			const ids = await adapter.projects.serviceIdsForProjects();
-			expect(ids).toEqual(expectedProjectFacets.serviceIds);
-		});
 	});
 
 	describe('services port', () => {
-		it('all() returns a non-empty readonly array', async () => {
-			const result = await adapter.services.all();
-			expect(result.length).toBeGreaterThan(0);
-		});
-
 		it('byId() returns undefined for unknown id', async () => {
 			const result = await adapter.services.byId('__nonexistent__');
 			expect(result).toBeUndefined();
@@ -156,11 +118,8 @@ describe('ContentAdapter contract', () => {
 		});
 
 		it('visible() returns services, filtering hidden ones', async () => {
-			const [all, visible] = await Promise.all([
-				adapter.services.all(),
-				adapter.services.visible(),
-			]);
-			expect(visible.length).toBeLessThanOrEqual(all.length);
+			const visible = await adapter.services.visible();
+			expect(visible.length).toBeLessThanOrEqual(services.length);
 		});
 
 		it('adjacent() returns prev/next shape', async () => {
@@ -214,27 +173,6 @@ describe('ContentAdapter contract', () => {
 			expect(found?.slug).toBe(first.slug);
 		});
 
-		it('html() returns a string for a real slug', async () => {
-			const all = await adapter.blog.all();
-			const first = all[0];
-			const html = await adapter.blog.html(first.slug);
-			expect(typeof html).toBe('string');
-		});
-
-		it('tagsForCategory() returns an array', async () => {
-			const tags = await adapter.blog.tagsForCategory('professional');
-			expect(Array.isArray(tags)).toBe(true);
-		});
-
-		it('languagesForCategory() returns an array', async () => {
-			const langs = await adapter.blog.languagesForCategory('professional');
-			expect(Array.isArray(langs)).toBe(true);
-		});
-
-		it('latest(3) returns at most 3 posts', async () => {
-			const latest = await adapter.blog.latest(3);
-			expect(latest.length).toBeLessThanOrEqual(3);
-		});
 	});
 
 	describe('meta port', () => {
@@ -248,23 +186,9 @@ describe('ContentAdapter contract', () => {
 	});
 
 	describe('techStack port', () => {
-		// slice-18g: TechStackPort shrunk to all/byId/content (decisions Q1+Q2+Q5).
-		// allScenarios/connections removed; Phase 5 will update the Svelte consumers.
 		it('all() returns a non-empty readonly array', async () => {
 			const result = await adapter.techStack.all();
 			expect(result.length).toBeGreaterThan(0);
-		});
-
-		it('byId() returns undefined for unknown id', async () => {
-			const result = await adapter.techStack.byId('__nonexistent__');
-			expect(result).toBeUndefined();
-		});
-
-		it('content() returns a string for any id', async () => {
-			const all = await adapter.techStack.all();
-			const first = all[0];
-			const result = await adapter.techStack.content(first.id);
-			expect(typeof result).toBe('string');
 		});
 	});
 
@@ -272,23 +196,6 @@ describe('ContentAdapter contract', () => {
 		it('hero() returns content', async () => {
 			const result = await adapter.content.hero();
 			expect(result).toBeDefined();
-		});
-
-		it('navLinks() returns a non-empty array', async () => {
-			const result = await adapter.content.navLinks();
-			expect(result.length).toBeGreaterThan(0);
-		});
-
-		it('menuItems() returns a non-empty array', async () => {
-			const result = await adapter.content.menuItems();
-			expect(result.length).toBeGreaterThan(0);
-		});
-
-		it('heroMock() returns HeroData shape', async () => {
-			const result = await adapter.content.heroMock();
-			expect(result).toHaveProperty('metrics');
-			expect(result).toHaveProperty('queryRows');
-			expect(result).toHaveProperty('queryTime');
 		});
 
 		it('initialHeroData() returns HeroData shape', async () => {
