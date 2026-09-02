@@ -7,7 +7,7 @@ export const adapter: ContentAdapter = {
 	blog: staticAdapter.blog,
 	meta: staticAdapter.meta,
 	techStack: staticAdapter.techStack,
-	content: staticAdapter.content,
+	content: { ...staticAdapter.content },
 	nav: staticAdapter.nav,
 	legal: staticAdapter.legal,
 };

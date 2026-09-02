@@ -1,7 +1,9 @@
 import type { BlockEditorDoc } from './blocks';
 
+// Shared type-only contract: this package must not import app-level `$lib` modules.
 export type Locale = 'en' | 'fr' | 'es';
 
+// English is required; optional French and Spanish use the centralized locale fallback.
 export interface LocalizedString {
 	en: string;
 	fr?: string;
@@ -40,8 +42,11 @@ export type ProjectStatus = 'public' | 'private' | 'wip';
 // value is a display string ("30s", "500 GB"), label gives context.
 // before is optional — when present, cards show a before→after contrast.
 export interface ImpactMetric {
+	/** Locale-neutral display value including its unit, such as `30s` or `99.9%`. */
 	value: string;
+	/** Localized context for the value. */
 	label: LocalizedString;
+	/** Optional locale-neutral baseline for before-and-after comparisons. */
 	before?: string;
 }
 
@@ -152,15 +157,22 @@ export interface SiteMeta {
 }
 
 export interface SiteSeoDefaults {
+	/** Site-wide OG image fallback when a route has no override. */
 	defaultOgImage: string | null;
+	/** Value emitted by the theme-color meta tag. */
 	themeColor: string;
+	/** Description fallback when route and data-layer copy are absent. */
 	defaultDescription: LocalizedString;
 }
 
 export interface RouteSeoOverride {
+	/** Canonical route path beginning with `/`. */
 	path: string;
+	/** Route image override; null falls back to `SiteSeoDefaults.defaultOgImage`. */
 	ogImage: string | null;
+	/** Title body without the brand suffix; null uses the code-owned fallback. */
 	title: LocalizedString | null;
+	/** Null falls back to `SiteSeoDefaults.defaultDescription`. */
 	description: LocalizedString | null;
 }
 
@@ -275,6 +287,7 @@ export interface AboutEducationItem {
 	icon: 'champlain' | 'bishops';
 }
 
+/** Icon render priority is `svg_override`, then `iconify_id`, then the placeholder. */
 export interface IconRecord {
 	id: string;
 	name: string;
@@ -441,7 +454,10 @@ export interface LegalPage {
 export interface PreviewContext {
 	locale?: Locale;
 
-	// Keeps this foundational package from importing PageData schemas.
+	/**
+	 * Per-request page memo. Optional callers degrade to one fetch per call.
+	 * `unknown` prevents an upward import into schemas that depend on this package.
+	 */
 	pageCache?: Map<string, Promise<unknown>>;
 }
 
@@ -449,6 +465,7 @@ export interface HeroContent {
 	headline: {
 		line1: LocalizedString;
 		line2: LocalizedString;
+		/** Completes the animated visual headline for assistive technology. */
 		ariaSuffix: LocalizedString;
 	};
 	subheadline: LocalizedString;
@@ -529,6 +546,7 @@ export interface ProofReelContent {
 	sectionLabel: LocalizedString;
 	viewAllLabel: LocalizedString;
 	viewAllHref: string;
+	/** Aria-label template containing the `{title}` placeholder. */
 	toggleColorAria: LocalizedString;
 }
 
@@ -536,6 +554,7 @@ export interface ServicesGridContent {
 	heading: LocalizedString;
 	headingDot: LocalizedString;
 	subheading: LocalizedString;
+	/** Aria-label template containing the `{title}` placeholder. */
 	viewIllustrationAria: LocalizedString;
 	viewAllLink: LocalizedString;
 }
@@ -586,6 +605,7 @@ export interface CloserContent {
 		title: LocalizedString;
 		city: LocalizedString;
 		encoding: LocalizedString;
+		/** Footer label template containing the `{count}` placeholder. */
 		destinationsLabel: LocalizedString;
 		prompt: LocalizedString;
 	};
