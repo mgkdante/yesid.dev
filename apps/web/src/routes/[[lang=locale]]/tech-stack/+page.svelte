@@ -25,8 +25,7 @@
 	let EngineComponent = $state<Component<{ animate?: boolean }> | null>(null);
 	let engineAnimate = $state(true);
 
-	// Dynamic counts from data layer.
-	const itemCount = $derived(data.items.length);
+	const itemCount = $derived(data.itemCount);
 
 	// Pre-resolved chrome via the layout-provided locale (slice-28.6). Each
 	// read is $derived so it recomputes if `data` changes: a plain const
@@ -65,7 +64,7 @@
 
 	// CMS-driven line templates (go2-t1b2 operator addendum) with the previous
 	// hardcoded strings as code fallbacks. The literal {count} token is
-	// interpolated here from data.items.length — computed, never stored.
+	// interpolated here from the catalog count — computed, never stored.
 	const count = $derived(String(itemCount));
 	const terminalLines: TerminalLine[] = $derived([
 		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.cmd, locale) || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },

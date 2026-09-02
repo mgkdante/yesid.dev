@@ -22,7 +22,8 @@
 //
 // Deterministic: same links in, byte-identical layout out (tested).
 
-import { STACK_LAYERS, type ArchetypeTechLink, type StackLayer } from '@repo/shared/schemas';
+import type { ArchetypeTechLink } from '@repo/shared/schemas';
+import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 
 // go2/w5 legibility pass: 160×48 → 192×56 so the box labels can wear
 // --text-body (16px mono) with honest margins — the longest committed name

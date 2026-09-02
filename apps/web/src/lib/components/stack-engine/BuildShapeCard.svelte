@@ -3,7 +3,7 @@
 	import { MediaQuery } from 'svelte/reactivity';
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
-	import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
+	import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 	import type { Locale } from '$lib/types';
 	import { StatusDot } from '$lib/components/brand';
 	import { techStackItems } from '$lib/content/tech-stack';

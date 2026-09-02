@@ -11,7 +11,7 @@
 // (interface/logic/data/infra) stay verbatim — they double as the printed
 // layer labels.
 
-import type { StackLayer } from '@repo/shared/schemas';
+import type { StackLayer } from '@repo/shared/stack-layers';
 import type { LocalizedString } from '$lib/types';
 
 /** Printed layer names per locale (receiver r2): the canonical layer KEYS

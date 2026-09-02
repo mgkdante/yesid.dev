@@ -45,7 +45,8 @@
   state, no GSAP, nothing on the route entry chunk.
 -->
 <script lang="ts">
-	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
+	import type { ArchetypeTechLink } from '@repo/shared/schemas';
+	import type { StackLayer } from '@repo/shared/stack-layers';
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';

@@ -16,7 +16,7 @@ import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
 // PageData merges layout fields the component never reads — cast through
 // unknown (house pattern: home.test.ts stubData).
 const stubData = {
-	items: techStackItems,
+	itemCount: techStackItems.length,
 	techStackPage: techStackPageContent,
 } as unknown as PageData;
 
