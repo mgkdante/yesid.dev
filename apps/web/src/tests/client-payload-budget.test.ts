@@ -8,6 +8,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
+import { gzipSync } from 'node:zlib';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const REPOSITORY_ROOT = resolve(process.cwd(), '../..');
@@ -120,19 +121,37 @@ describe('manifest-backed client payload budgets', () => {
 		expect(result.stdout).toContain(
 			'root layout entry: _app/immutable/nodes/0.root.js — 47 bytes raw',
 		);
-		expect(result.stdout).toContain('root layout payload: 2 files (1 direct static import)');
 		expect(result.stdout).toContain(
-			'engine dynamic entry: _app/immutable/chunks/engine.js — 43 bytes raw',
+			'root layout payload: 2 files (1 static import)',
+		);
+		expect(result.stdout).toContain(
+			'engine incremental payload: 1 file — 43 bytes raw',
 		);
 		expect(result.stdout).toContain('OK: client payload budgets pass');
 	});
 
-	it('counts each direct JS output once and ignores dynamic, stale, CSS, and asset outputs', () => {
+	it('measures the transitive root closure once per output and ignores non-static outputs', () => {
 		const { root } = fixture((manifest, files) => {
-			manifest[ROOT_KEY].imports = ['_shared.js', '_shared.js', '_shared-alias.js'];
+			manifest[ROOT_KEY].imports = [
+				'_shared.js',
+				'_shared.js',
+				'_shared-alias.js',
+			];
 			manifest[ROOT_KEY].dynamicImports = ['_dynamic.js'];
-			manifest['_shared-alias.js'] = { file: '_app/immutable/chunks/shared.js' };
+			manifest['_shared.js'].imports = ['_root-transitive.js'];
+			manifest['_shared-alias.js'] = {
+				file: '_app/immutable/chunks/shared.js',
+				imports: ['_root-transitive-alias.js'],
+			};
+			manifest['_root-transitive.js'] = {
+				file: '_app/immutable/chunks/root-transitive.js',
+			};
+			manifest['_root-transitive-alias.js'] = {
+				file: '_app/immutable/chunks/root-transitive.js',
+			};
 			manifest[ROOT_KEY].file = '_app/immutable/nodes/0.root.js';
+			files['_app/immutable/chunks/root-transitive.js'] =
+				'export const rootTransitive = "counted-once";\n';
 			files['_app/immutable/assets/root.css'] = 'x'.repeat(50_000);
 			files['_app/immutable/assets/font.woff2'] = 'x'.repeat(50_000);
 			files['_app/immutable/chunks/dynamic.js'] = 'x'.repeat(50_000);
@@ -140,20 +159,66 @@ describe('manifest-backed client payload budgets', () => {
 		});
 		const expectedRaw =
 			Buffer.byteLength(DEFAULT_FILES['_app/immutable/nodes/0.root.js']) +
-			Buffer.byteLength(DEFAULT_FILES['_app/immutable/chunks/shared.js']);
+			Buffer.byteLength(DEFAULT_FILES['_app/immutable/chunks/shared.js']) +
+			Buffer.byteLength('export const rootTransitive = "counted-once";\n');
 
 		const result = runChecker(root);
 
 		expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
 		expect(result.stdout).toContain(
-			`root layout payload: 2 files (1 direct static import) — ${expectedRaw} bytes raw`,
+			`root layout payload: 3 files (2 static imports) — ${expectedRaw} bytes raw`,
 		);
+	});
+
+	it('measures the engine transitive closure while excluding root-shared outputs', () => {
+		const { root } = fixture((manifest, files) => {
+			manifest[ENGINE_KEY].imports = ['_shared.js', '_engine-transitive.js'];
+			manifest['_engine-transitive.js'] = {
+				file: '_app/immutable/chunks/engine-transitive.js',
+				imports: ['_shared-alias.js'],
+			};
+			manifest['_shared-alias.js'] = {
+				file: '_app/immutable/chunks/shared.js',
+			};
+			files['_app/immutable/chunks/engine-transitive.js'] =
+				'export const engineTransitive = "engine-only";\n';
+		});
+		const expectedRaw =
+			Buffer.byteLength(DEFAULT_FILES['_app/immutable/chunks/engine.js']) +
+			Buffer.byteLength('export const engineTransitive = "engine-only";\n');
+
+		const result = runChecker(root);
+
+		expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
+		expect(result.stdout).toContain(
+			`engine incremental payload: 2 files — ${expectedRaw} bytes raw`,
+		);
+	});
+
+	it('fails when an engine-only transitive output pushes the closure over budget', () => {
+		const { root } = fixture((manifest, files) => {
+			manifest[ENGINE_KEY].imports = ['_engine-only.js'];
+			manifest['_engine-only.js'] = {
+				file: '_app/immutable/chunks/engine-only.js',
+			};
+			files['_app/immutable/chunks/engine-only.js'] =
+				'export const engineOnly = "transitive payload";\n';
+		});
+		const entryBudget = String(
+			gzipSync(DEFAULT_FILES['_app/immutable/chunks/engine.js']).length,
+		);
+
+		const result = runChecker(root, { ENGINE_CHUNK_BUDGET_GZIP: entryBudget });
+
+		expect(result.status).toBe(1);
+		expect(result.stderr).toContain('FAIL: engine incremental payload');
+		expect(result.stderr).toContain(`budget ${entryBudget} bytes gzip`);
 	});
 
 	it.each([
 		['ROOT_LAYOUT_ENTRY_BUDGET_GZIP', 'root layout entry'],
 		['ROOT_LAYOUT_PAYLOAD_BUDGET_GZIP', 'root layout payload'],
-		['ENGINE_CHUNK_BUDGET_GZIP', 'engine dynamic entry'],
+		['ENGINE_CHUNK_BUDGET_GZIP', 'engine incremental payload'],
 	])('fails when %s is exceeded', (name, metric) => {
 		const { root } = fixture();
 
@@ -230,6 +295,40 @@ describe('manifest-backed client payload budgets', () => {
 
 		expect(result.status).toBe(1);
 		expect(result.stderr).toContain(diagnostic);
+	});
+
+	it.each([
+		[
+			'missing',
+			'_app/immutable/chunks/missing-engine-transitive.js',
+			'FAIL: cannot read static import graph output: _app/immutable/chunks/missing-engine-transitive.js',
+		],
+		[
+			'escaping',
+			'../../../../outside.js',
+			'FAIL: static import graph output escapes the client directory',
+		],
+	])('fails closed for a %s engine transitive output', (_case, file, diagnostic) => {
+		const { root } = fixture((manifest) => {
+			manifest[ENGINE_KEY].imports = ['_engine-transitive.js'];
+			manifest['_engine-transitive.js'] = { file };
+		});
+
+		const result = runChecker(root);
+
+		expect(result.status).toBe(1);
+		expect(result.stderr).toContain(diagnostic);
+	});
+
+	it('fails closed for an invalid engine static-import list', () => {
+		const { root } = fixture((manifest) => {
+			manifest[ENGINE_KEY].imports = [42 as unknown as string];
+		});
+
+		const result = runChecker(root);
+
+		expect(result.status).toBe(1);
+		expect(result.stderr).toContain(`FAIL: invalid static imports for manifest record: ${ENGINE_KEY}`);
 	});
 
 	it.each(BUDGET_ENV)('rejects invalid %s overrides', (name) => {

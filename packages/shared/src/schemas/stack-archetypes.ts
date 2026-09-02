@@ -10,10 +10,11 @@
 // two sides cannot drift.
 
 import { z } from 'zod';
+import { STACK_LAYERS, type StackLayer } from '../stack-layers';
 import { LocalizedStringSchema } from './shared';
 
-/** Canonical blueprint layers in render order — interface on top, infra at the bottom. */
-export const STACK_LAYERS = ['interface', 'logic', 'data', 'infra'] as const;
+export { STACK_LAYERS };
+export type { StackLayer };
 
 export const StackLayerSchema = z.enum(STACK_LAYERS);
 
@@ -41,6 +42,5 @@ export const StackArchetypeSchema = z.object({
 	tech: z.array(ArchetypeTechLinkSchema).min(1),
 });
 
-export type StackLayer = z.infer<typeof StackLayerSchema>;
 export type ArchetypeTechLink = z.infer<typeof ArchetypeTechLinkSchema>;
 export type StackArchetype = z.infer<typeof StackArchetypeSchema>;

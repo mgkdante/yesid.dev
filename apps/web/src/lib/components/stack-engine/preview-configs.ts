@@ -20,7 +20,8 @@
 // pulls the raw feeds and one cleans & reshapes). Roles live HERE in code
 // (zero CMS schema changes); the audit test enforces distinctness.
 
-import { STACK_LAYERS, type StackArchetype, type StackLayer } from '@repo/shared/schemas';
+import type { StackArchetype } from '@repo/shared/schemas';
+import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 import type { LocalizedString } from '$lib/types';
 
 export interface PreviewSlot {
