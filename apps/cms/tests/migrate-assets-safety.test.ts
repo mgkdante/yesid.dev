@@ -51,6 +51,15 @@ describe('parseMigrateAssetArgs', () => {
 		});
 	});
 
+	it('keeps explicit --dry-run in non-mutating preview mode', () => {
+		expect(parseMigrateAssetArgs(['--dry-run'])).toEqual({
+			sourceRoot: undefined,
+			dryRun: true,
+			reset: false,
+			preserveIdsFromMap: false,
+		});
+	});
+
 	it('accepts the exact confirmed destructive reset command', () => {
 		expect(
 			parseMigrateAssetArgs([
@@ -207,33 +216,41 @@ describe('parseMigrateAssetArgs', () => {
 	}
 });
 
+function expectCredentialFreePreview(argv: readonly string[]): void {
+	const authoritativeBefore = readFileSync(AUTHORITATIVE_MAP);
+	const sharedBefore = readFileSync(SHARED_MAP);
+	const result = Bun.spawnSync({
+		cmd: [process.execPath, 'apps/cms/scripts/migrate-assets.ts', ...argv],
+		cwd: REPO_ROOT,
+		env: {
+			PATH: process.env.PATH ?? '',
+			PUBLIC_DIRECTUS_URL: 'https://cms.dev.yesid.dev:1',
+			NO_COLOR: '1',
+		},
+		stdout: 'pipe',
+		stderr: 'pipe',
+	});
+	const stdout = result.stdout.toString();
+	const stderr = result.stderr.toString();
+	const output = `${stdout}\n${stderr}`;
+
+	expect(result.exitCode, output).toBe(0);
+	expect(output).toContain('dry-run (preview; no mutations)');
+	expect(output).toContain('DRY RUN — no uploads will happen.');
+	expect(output).not.toContain('DIRECTUS_ADMIN');
+	expect(output).not.toContain('fetch failed');
+	expect(output).not.toContain('ECONNREFUSED');
+	expect(readFileSync(AUTHORITATIVE_MAP).equals(authoritativeBefore)).toBe(true);
+	expect(readFileSync(SHARED_MAP).equals(sharedBefore)).toBe(true);
+}
+
 describe('migrate-assets entrypoint', () => {
 	it('runs empty argv as a credential-free preview without changing id maps', () => {
-		const authoritativeBefore = readFileSync(AUTHORITATIVE_MAP);
-		const sharedBefore = readFileSync(SHARED_MAP);
-		const result = Bun.spawnSync({
-			cmd: [process.execPath, 'apps/cms/scripts/migrate-assets.ts'],
-			cwd: REPO_ROOT,
-			env: {
-				PATH: process.env.PATH ?? '',
-				PUBLIC_DIRECTUS_URL: 'https://cms.dev.yesid.dev:1',
-				NO_COLOR: '1',
-			},
-			stdout: 'pipe',
-			stderr: 'pipe',
-		});
-		const stdout = result.stdout.toString();
-		const stderr = result.stderr.toString();
-		const output = `${stdout}\n${stderr}`;
+		expectCredentialFreePreview([]);
+	});
 
-		expect(result.exitCode, output).toBe(0);
-		expect(output).toContain('dry-run (preview; no mutations)');
-		expect(output).toContain('DRY RUN — no uploads will happen.');
-		expect(output).not.toContain('DIRECTUS_ADMIN');
-		expect(output).not.toContain('fetch failed');
-		expect(output).not.toContain('ECONNREFUSED');
-		expect(readFileSync(AUTHORITATIVE_MAP).equals(authoritativeBefore)).toBe(true);
-		expect(readFileSync(SHARED_MAP).equals(sharedBefore)).toBe(true);
+	it('runs explicit --dry-run as a credential-free preview without changing id maps', () => {
+		expectCredentialFreePreview(['--dry-run']);
 	});
 });
 

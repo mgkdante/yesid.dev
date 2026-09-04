@@ -11,7 +11,8 @@
  * Strategy:
  *   1. Load `fixtures/assets-manifest.json`, validate local inputs, and exit
  *      without credentials when running the default preview.
- *   2. Parse existing id maps, then auth and read manifest-owned remote rows.
+ *   2. Authenticate for apply mode, then require full existing-map parity
+ *      before remote adapter construction, access, or mutation.
  *   3. Reject duplicate paths and preserved-ID conflicts before any mutation.
  *   4. Ensure target folders exist; an explicit reset then deletes sequentially
  *      and requires an empty manifest-owned readback before uploads resume.
