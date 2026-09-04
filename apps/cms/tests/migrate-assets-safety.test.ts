@@ -664,11 +664,12 @@ describe('migrateAssets fail-closed lifecycle', () => {
 	// Mutation caught: serializing pre-readback state or dropping sibling-owned map keys.
 	it('writes identical maps from the converged readback and preserves brand ownership', async () => {
 		await withHarness(['images/b.svg', 'images/a.svg'], async (harness) => {
-			const existingMap =
+			const authoritativeMap =
 				'{\n\t"brand/logo.svg": "brand-id",\n\t"images/stale.svg": "stale-id"\n}\n';
-			for (const outputPath of harness.outputMapPaths) {
-				writeFileSync(outputPath, existingMap);
-			}
+			const reorderedSharedMap =
+				'{"images/stale.svg":"stale-id","brand/logo.svg":"brand-id"}\n';
+			writeFileSync(harness.outputMapPaths[0], authoritativeMap);
+			writeFileSync(harness.outputMapPaths[1], reorderedSharedMap);
 			const remote = new InMemoryAssetRemote([
 				remoteFile('images/b.svg', 'id-b'),
 				remoteFile('images/a.svg', 'id-a'),
@@ -693,6 +694,70 @@ describe('migrateAssets fail-closed lifecycle', () => {
 			).toBe(true);
 		});
 	});
+
+	const divergentMapCases: readonly {
+		name: string;
+		authoritative: string;
+		shared?: string;
+	}[] = [
+		{
+			name: 'manifest-owned IDs differ',
+			authoritative: '{"images/a.svg":"id-a"}\n',
+			shared: '{"images/a.svg":"different-id"}\n',
+		},
+		{
+			name: 'a sibling-owned key exists in only one map',
+			authoritative:
+				'{"brand/logo.svg":"brand-id","images/a.svg":"id-a"}\n',
+			shared: '{"images/a.svg":"id-a"}\n',
+		},
+		{
+			name: 'one of two configured maps is missing',
+			authoritative: '{"images/a.svg":"id-a"}\n',
+		},
+	];
+
+	for (const testCase of divergentMapCases) {
+		// Mutation caught: comparing only preserved intersections or accepting a partial mirror set.
+		it(`aborts before remote access when ${testCase.name}`, async () => {
+			await withHarness(['images/a.svg'], async (harness) => {
+				writeFileSync(harness.outputMapPaths[0], testCase.authoritative);
+				if (testCase.shared !== undefined) {
+					writeFileSync(harness.outputMapPaths[1], testCase.shared);
+				}
+				const remote = new InMemoryAssetRemote([
+					remoteFile('images/a.svg', 'id-a'),
+				]);
+
+				let failure: unknown;
+				try {
+					await migrateAssets(
+						harness.manifest,
+						migrationOptions(harness),
+						remote,
+					);
+				} catch (error) {
+					failure = error;
+				}
+
+				expect(remote.operations).toEqual([]);
+				expect(readFileSync(harness.outputMapPaths[0], 'utf8')).toBe(
+					testCase.authoritative,
+				);
+				if (testCase.shared === undefined) {
+					expect(existsSync(harness.outputMapPaths[1])).toBe(false);
+				} else {
+					expect(readFileSync(harness.outputMapPaths[1], 'utf8')).toBe(
+						testCase.shared,
+					);
+				}
+				expect(failure).toBeInstanceOf(Error);
+				expect((failure as Error).message).toContain(
+					'configured id-map outputs diverge',
+				);
+			});
+		});
+	}
 
 	// Mutation caught: downgrading malformed existing map JSON into a warning.
 	it('aborts malformed existing map JSON before touching the remote adapter', async () => {
@@ -725,7 +790,7 @@ describe('migrateAssets fail-closed lifecycle', () => {
 
 			await expect(
 				migrateAssets(harness.manifest, migrationOptions(harness), remote),
-			).rejects.toThrow('conflicting sibling-owned id-map value for brand/logo.svg');
+			).rejects.toThrow('configured id-map outputs diverge');
 
 			expect(remote.operations).toEqual([]);
 			expect(readFileSync(harness.outputMapPaths[0], 'utf8')).toContain(

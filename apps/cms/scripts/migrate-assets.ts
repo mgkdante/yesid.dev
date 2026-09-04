@@ -701,7 +701,7 @@ function loadPreservedMapEntries(
 	outputMapPaths: readonly string[],
 	manifestKeys: ReadonlySet<string>,
 ): Map<string, string> {
-	const preservedEntries = new Map<string, string>();
+	const existingMaps: { path: string; entries: Record<string, string> }[] = [];
 	for (const outPath of outputMapPaths) {
 		if (!existsSync(outPath)) continue;
 
@@ -715,21 +715,41 @@ function loadPreservedMapEntries(
 			throw new Error(`[migrate] invalid id-map object: ${outPath}`);
 		}
 
+		const entries: Record<string, string> = {};
 		for (const [key, value] of Object.entries(parsed)) {
 			if (typeof value !== 'string' || value.length === 0) {
 				throw new Error(`[migrate] invalid id-map value for ${key}: ${outPath}`);
 			}
-			if (manifestKeys.has(key) || key.startsWith('images/')) continue;
-			const existing = preservedEntries.get(key);
-			if (existing !== undefined && existing !== value) {
-				throw new Error(
-					`[migrate] conflicting sibling-owned id-map value for ${key}`,
-				);
-			}
-			preservedEntries.set(key, value);
+			entries[key] = value;
+		}
+		existingMaps.push({ path: outPath, entries });
+	}
+
+	if (existingMaps.length === 0) return new Map();
+	if (existingMaps.length !== outputMapPaths.length) {
+		const existingPaths = new Set(existingMaps.map((map) => map.path));
+		const missingPaths = outputMapPaths.filter((path) => !existingPaths.has(path));
+		throw new Error(
+			`[migrate] configured id-map outputs diverge: expected all ${outputMapPaths.length} maps to exist or none; missing ${missingPaths.join(', ')}`,
+		);
+	}
+
+	const normalizeEntries = (entries: Readonly<Record<string, string>>): string =>
+		JSON.stringify(
+			Object.entries(entries).sort(([left], [right]) => left.localeCompare(right)),
+		);
+	const firstMap = existingMaps[0];
+	if (!firstMap) return new Map();
+	const expectedEntries = normalizeEntries(firstMap.entries);
+	for (const candidate of existingMaps.slice(1)) {
+		if (normalizeEntries(candidate.entries) !== expectedEntries) {
+			throw new Error(
+				`[migrate] configured id-map outputs diverge: ${candidate.path} does not match ${firstMap.path}`,
+			);
 		}
 	}
-	return preservedEntries;
+
+	return collectPreservedIdMapEntries([firstMap.entries], manifestKeys);
 }
 
 function validateMigrationInputs(
