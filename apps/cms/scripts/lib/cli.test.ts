@@ -178,6 +178,42 @@ describe('parseSeedFlags', () => {
 			error: 'Invalid seed CLI flag: --help is not supported by this script.',
 		},
 		{
+			name: 'rejects duplicate reset without capability before reflecting destructive input',
+			capabilities: none,
+			argv: ['--reset', '--reset'],
+			error: 'Invalid seed CLI flag: --reset is not supported by this script.',
+		},
+		{
+			name: 'rejects duplicate exact confirmations without capability before reflecting consent input',
+			capabilities: none,
+			argv: ['--confirm-reset=RESET-SEED-DATA', '--confirm-reset=RESET-SEED-DATA'],
+			error: 'Invalid seed CLI flag: --confirm-reset is not supported by this script.',
+		},
+		{
+			name: 'rejects duplicate verbose without capability before reflecting diagnostic input',
+			capabilities: none,
+			argv: ['--verbose', '--verbose'],
+			error: 'Invalid seed CLI flag: --verbose is not supported by this script.',
+		},
+		{
+			name: 'rejects duplicate long help without capability before reflecting help input',
+			capabilities: none,
+			argv: ['--help', '--help'],
+			error: 'Invalid seed CLI flag: --help is not supported by this script.',
+		},
+		{
+			name: 'rejects duplicate short help without capability before reflecting help input',
+			capabilities: none,
+			argv: ['-h', '-h'],
+			error: 'Invalid seed CLI flag: --help is not supported by this script.',
+		},
+		{
+			name: 'rejects mixed help aliases without capability before treating them as duplicates',
+			capabilities: none,
+			argv: ['--help', '-h'],
+			error: 'Invalid seed CLI flag: --help is not supported by this script.',
+		},
+		{
 			name: 'rejects duplicate dry-run instead of accepting ambiguous modes',
 			capabilities: none,
 			argv: ['--dry-run', '--dry-run'],
