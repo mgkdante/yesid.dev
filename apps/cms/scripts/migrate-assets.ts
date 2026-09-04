@@ -22,13 +22,16 @@
  *
  * Usage:
  *   bun run migrate:assets
- *   bun run migrate:assets -- --source ../web/static --dry-run
- *   bun run migrate:assets -- --reset            (deletes prior, re-uploads)
+ *   bun run migrate:assets -- --apply
+ *   bun run migrate:assets -- --apply --reset --confirm-reset=RESET-MIGRATED-ASSETS
  *
  * CLI flags:
  *   --source <path>   Source root on disk (default: ../web/static at monorepo)
- *   --dry-run         Skip uploads; print what WOULD happen.
+ *   --dry-run         Preview uploads without mutations (the default mode).
+ *   --apply           Upload assets and write the id-map files.
  *   --reset           Delete previously-uploaded files first, then upload all.
+ *   --confirm-reset=RESET-MIGRATED-ASSETS
+ *                     Required confirmation for a destructive reset.
  *   --preserve-ids-from-map
  *                     Upload new files with IDs from assets-id-map.json.
  *
@@ -745,35 +748,91 @@ export async function migrateAssets(
 	return idMap;
 }
 
-function parseCliArgs(argv: readonly string[]): {
+export const MIGRATE_ASSETS_RESET_CONFIRMATION = 'RESET-MIGRATED-ASSETS';
+
+export function parseMigrateAssetArgs(argv: readonly string[]): {
 	sourceRoot?: string;
 	dryRun: boolean;
 	reset: boolean;
 	preserveIdsFromMap: boolean;
 } {
 	let sourceRoot: string | undefined;
-	let dryRun = false;
+	let apply = false;
+	let explicitDryRun = false;
 	let reset = false;
 	let preserveIdsFromMap = false;
+	let resetConfirmation: string | undefined;
+	const semanticFlags = new Set<string>();
+
+	const recordSemanticFlag = (flag: string): void => {
+		if (semanticFlags.has(flag)) {
+			throw new Error(`${flag} may only be specified once.`);
+		}
+		semanticFlags.add(flag);
+	};
+
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
-		if (arg === '--dry-run') dryRun = true;
-		else if (arg === '--reset') reset = true;
-		else if (arg === '--preserve-ids-from-map') preserveIdsFromMap = true;
-		else if (arg === '--source' && i + 1 < argv.length) {
-			sourceRoot = argv[i + 1];
-			i++;
+		if (arg === '--source') {
+			recordSemanticFlag('--source');
+			const source = argv[i + 1];
+			if (source === undefined) {
+				throw new Error('--source requires one following value.');
+			}
+			sourceRoot = source;
+			i += 1;
+		} else if (arg === '--apply') {
+			recordSemanticFlag('--apply');
+			apply = true;
+		} else if (arg === '--dry-run') {
+			recordSemanticFlag('--dry-run');
+			explicitDryRun = true;
+		} else if (arg === '--reset') {
+			recordSemanticFlag('--reset');
+			reset = true;
+		} else if (arg === '--preserve-ids-from-map') {
+			recordSemanticFlag('--preserve-ids-from-map');
+			preserveIdsFromMap = true;
+		} else if (arg?.startsWith('--confirm-reset=')) {
+			recordSemanticFlag('--confirm-reset');
+			resetConfirmation = arg.slice('--confirm-reset='.length);
+		} else {
+			throw new Error('Unsupported migrate-assets argument.');
 		}
 	}
-	return { sourceRoot, dryRun, reset, preserveIdsFromMap };
+
+	if (apply && explicitDryRun) {
+		throw new Error('Choose exactly one mode: --apply or --dry-run.');
+	}
+	if (resetConfirmation !== undefined && !reset) {
+		throw new Error('--confirm-reset requires --reset.');
+	}
+	if (reset && !apply) {
+		throw new Error('--reset requires --apply.');
+	}
+	if (reset && resetConfirmation === undefined) {
+		throw new Error('--reset requires its exact confirmation.');
+	}
+	if (
+		resetConfirmation !== undefined &&
+		resetConfirmation !== MIGRATE_ASSETS_RESET_CONFIRMATION
+	) {
+		throw new Error('Reset confirmation is invalid.');
+	}
+
+	return {
+		sourceRoot,
+		dryRun: !apply,
+		reset,
+		preserveIdsFromMap,
+	};
 }
 
 async function main(): Promise<void> {
+	const { sourceRoot: cliSource, dryRun, reset, preserveIdsFromMap } =
+		parseMigrateAssetArgs(process.argv.slice(2));
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	const { sourceRoot: cliSource, dryRun, reset, preserveIdsFromMap } = parseCliArgs(
-		process.argv.slice(2),
-	);
 
 	const manifestPath = joinPath(import.meta.dir, '..', 'fixtures', 'assets-manifest.json');
 	const manifestJson = JSON.parse(readFileSync(manifestPath, 'utf8')) as unknown;
@@ -818,7 +877,28 @@ async function main(): Promise<void> {
 		log.info(`preserving ${preserveIds.size} file ids from ${outputMapPaths[0]}`);
 	}
 
-	const token = dryRun ? 'dry-run' : await getAdminTokenLib(directusUrl);
+	const missing = findMissingSources(manifest, sourceRoot);
+	if (missing.length > 0) {
+		const list = missing
+			.map((entry) => `  - ${entry.entry.legacyPath} → ${entry.absPath}`)
+			.join('\n');
+		throw new Error(`[migrate] ${missing.length} source files missing:\n${list}`);
+	}
+	const folderErrors = validateFolderReferences(manifest);
+	if (folderErrors.length > 0) {
+		throw new Error(`[migrate] folder-reference errors:\n  ${folderErrors.join('\n  ')}`);
+	}
+
+	const mode = reset
+		? 'apply + destructive reset'
+		: dryRun
+			? 'dry-run (preview; no mutations)'
+			: 'apply';
+	log.info(`mode: ${mode}`);
+
+	const token = dryRun
+		? 'dry-run'
+		: await getAdminTokenLib(directusUrl, { allowBuildToken: false });
 
 	await migrateAssets(manifest, {
 		directusUrl,
