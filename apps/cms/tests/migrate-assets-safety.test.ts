@@ -1,10 +1,25 @@
 import { describe, expect, it } from 'bun:test';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import {
+	existsSync,
+	mkdirSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 
 import {
+	type AssetEntry,
+	type AssetMigrationRemote,
+	type AssetMigrationRemoteFile,
+	type AssetsManifest,
 	MIGRATE_ASSETS_RESET_CONFIRMATION,
+	deleteExistingMigratedAssets,
+	migrateAssets,
 	parseMigrateAssetArgs,
+	verifyRemoteAssetSet,
 } from '../scripts/migrate-assets';
 
 const REPO_ROOT = resolve(import.meta.dir, '..', '..', '..');
@@ -219,5 +234,506 @@ describe('migrate-assets entrypoint', () => {
 		expect(output).not.toContain('ECONNREFUSED');
 		expect(readFileSync(AUTHORITATIVE_MAP).equals(authoritativeBefore)).toBe(true);
 		expect(readFileSync(SHARED_MAP).equals(sharedBefore)).toBe(true);
+	});
+});
+
+const EXPECTED_RECEIPT_DIGEST =
+	'85363d6f752be4ed2c3fc185b47eb2c21ee8d755008d7de7908e86adb65d0e05';
+const EXPECTED_MAP =
+	'{\n\t"brand/logo.svg": "brand-id",\n\t"images/a.svg": "id-a",\n\t"images/b.svg": "id-b"\n}\n';
+
+interface Harness {
+	root: string;
+	sourceRoot: string;
+	outputMapPaths: readonly [string, string];
+	manifest: AssetsManifest;
+}
+
+async function withHarness(
+	legacyPaths: readonly string[],
+	run: (harness: Harness) => Promise<void>,
+): Promise<void> {
+	const root = mkdtempSync(join(tmpdir(), 'migrate-assets-safety-'));
+	const sourceRoot = join(root, 'source');
+	const outputRoot = join(root, 'maps');
+	mkdirSync(outputRoot, { recursive: true });
+
+	const assets: AssetEntry[] = legacyPaths.map((legacyPath, index) => ({
+		legacyPath,
+		folder: 'images',
+		title: `Asset ${index + 1}`,
+		description: `Asset ${index + 1} test description`,
+	}));
+	for (const entry of assets) {
+		const sourcePath = join(sourceRoot, entry.legacyPath);
+		mkdirSync(resolve(sourcePath, '..'), { recursive: true });
+		writeFileSync(
+			sourcePath,
+			'<svg xmlns="http://www.w3.org/2000/svg" width="10" height="20"></svg>',
+		);
+	}
+
+	try {
+		await run({
+			root,
+			sourceRoot,
+			outputMapPaths: [
+				join(outputRoot, 'authoritative.json'),
+				join(outputRoot, 'shared.json'),
+			],
+			manifest: {
+				description: 'Lifecycle test manifest',
+				sourceRoot: 'source',
+				folders: { images: 'Migrated images' },
+				assets,
+			},
+		});
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
+}
+
+function remoteFile(
+	legacyPath: string | null,
+	id: string,
+): AssetMigrationRemoteFile {
+	return {
+		id,
+		legacy_path: legacyPath,
+		type: 'image/svg+xml',
+		width: 10,
+		height: 20,
+	};
+}
+
+class InMemoryAssetRemote implements AssetMigrationRemote {
+	readonly operations: string[] = [];
+	readonly rows: AssetMigrationRemoteFile[];
+	readonly deleteFailures = new Set<string>();
+	readonly successfulDeleteWithoutRemoval = new Set<string>();
+	readonly uploadIds = new Map<string, string>();
+	listTransform?: (
+		rows: readonly AssetMigrationRemoteFile[],
+		call: number,
+	) => readonly AssetMigrationRemoteFile[];
+	private listCalls = 0;
+
+	constructor(rows: readonly AssetMigrationRemoteFile[]) {
+		this.rows = rows.map((row) => ({ ...row }));
+	}
+
+	async listFiles(
+		legacyPaths: readonly string[],
+	): Promise<readonly AssetMigrationRemoteFile[]> {
+		this.listCalls += 1;
+		this.operations.push(`list:${this.listCalls}`);
+		const wanted = new Set(legacyPaths);
+		const rows = this.rows
+			.filter((row) => row.legacy_path !== null && wanted.has(row.legacy_path))
+			.map((row) => ({ ...row }));
+		return this.listTransform?.(rows, this.listCalls) ?? rows;
+	}
+
+	async ensureFolders(folderNames: readonly string[]): Promise<Map<string, string>> {
+		this.operations.push(`ensure:${folderNames.join(',')}`);
+		return new Map(folderNames.map((name) => [name, `folder-${name}`]));
+	}
+
+	async deleteFile(id: string): Promise<void> {
+		this.operations.push(`delete:${id}`);
+		if (this.deleteFailures.has(id)) {
+			throw {
+				errors: [
+					{
+						message: 'Injected delete failure',
+						extensions: { code: 'DELETE_FAILED' },
+					},
+				],
+			};
+		}
+		if (this.successfulDeleteWithoutRemoval.has(id)) return;
+		const index = this.rows.findIndex((row) => row.id === id);
+		if (index >= 0) this.rows.splice(index, 1);
+	}
+
+	async updateFile(
+		id: string,
+		patch: { type?: string; width?: number; height?: number },
+	): Promise<void> {
+		this.operations.push(`update:${id}`);
+		const row = this.rows.find((candidate) => candidate.id === id);
+		if (!row) throw new Error(`No row ${id}`);
+		Object.assign(row, patch);
+	}
+
+	async uploadFile(
+		entry: AssetEntry,
+		_folderId: string,
+		sourceRoot: string,
+		desiredId?: string,
+	): Promise<string> {
+		this.operations.push(`upload:${entry.legacyPath}`);
+		readFileSync(join(sourceRoot, entry.legacyPath));
+		const id = desiredId ?? this.uploadIds.get(entry.legacyPath) ?? `id-${this.rows.length}`;
+		this.rows.push(remoteFile(entry.legacyPath, id));
+		return id;
+	}
+}
+
+function migrationOptions(
+	harness: Harness,
+	overrides: Partial<{
+		reset: boolean;
+		preserveIds: ReadonlyMap<string, string>;
+	}> = {},
+) {
+	return {
+		directusUrl: 'https://cms.dev.yesid.dev',
+		token: 'in-memory-only',
+		sourceRoot: harness.sourceRoot,
+		outputMapPaths: harness.outputMapPaths,
+		dryRun: false,
+		reset: overrides.reset ?? false,
+		preserveIds: overrides.preserveIds,
+	};
+}
+
+function expectNoMapFiles(outputMapPaths: readonly string[]): void {
+	for (const outputPath of outputMapPaths) {
+		expect(existsSync(outputPath)).toBe(false);
+	}
+}
+
+describe('migrateAssets fail-closed lifecycle', () => {
+	// Mutation caught: moving folder creation ahead of duplicate initial-row validation.
+	it('aborts duplicate initial legacy paths before every mutation and map write', async () => {
+		await withHarness(['images/a.svg'], async (harness) => {
+			const remote = new InMemoryAssetRemote([
+				remoteFile('images/a.svg', 'id-a'),
+				remoteFile('images/a.svg', 'id-a-duplicate'),
+			]);
+
+			await expect(
+				migrateAssets(harness.manifest, migrationOptions(harness), remote),
+			).rejects.toThrow('duplicate remote legacy_path: images/a.svg');
+
+			expect(remote.operations).toEqual(['list:1']);
+			expect(remote.rows).toHaveLength(2);
+			expectNoMapFiles(harness.outputMapPaths);
+		});
+	});
+
+	// Mutation caught: checking preserved IDs after folder creation or metadata repair.
+	it('aborts a preserved-ID conflict before the first remote mutation', async () => {
+		await withHarness(['images/a.svg'], async (harness) => {
+			const remote = new InMemoryAssetRemote([
+				remoteFile('images/a.svg', 'unexpected-id'),
+			]);
+
+			await expect(
+				migrateAssets(
+					harness.manifest,
+					migrationOptions(harness, {
+						preserveIds: new Map([['images/a.svg', 'id-a']]),
+					}),
+					remote,
+				),
+			).rejects.toThrow('preserved id conflicts found');
+
+			expect(remote.operations).toEqual(['list:1']);
+			expect(remote.rows[0]?.id).toBe('unexpected-id');
+			expectNoMapFiles(harness.outputMapPaths);
+		});
+	});
+
+	const deleteFailureCases = [
+		{
+			name: 'first delete',
+			failureId: 'id-a',
+			expectedOperations: ['list:1', 'ensure:images', 'delete:id-a'],
+			expectedSurvivors: ['id-a', 'id-b', 'id-c'],
+		},
+		{
+			name: 'mid-sequence delete',
+			failureId: 'id-b',
+			expectedOperations: [
+				'list:1',
+				'ensure:images',
+				'delete:id-a',
+				'delete:id-b',
+			],
+			expectedSurvivors: ['id-b', 'id-c'],
+		},
+	] as const;
+
+	for (const testCase of deleteFailureCases) {
+		// Mutation caught: swallowing a delete error, clearing survivors, or continuing reset work.
+		it(`stops at a ${testCase.name} failure and keeps the recoverable remote checkpoint`, async () => {
+			await withHarness(
+				['images/a.svg', 'images/b.svg', 'images/c.svg'],
+				async (harness) => {
+					const remote = new InMemoryAssetRemote([
+						remoteFile('images/a.svg', 'id-a'),
+						remoteFile('images/b.svg', 'id-b'),
+						remoteFile('images/c.svg', 'id-c'),
+					]);
+					remote.deleteFailures.add(testCase.failureId);
+
+					await expect(
+						migrateAssets(
+							harness.manifest,
+							migrationOptions(harness, { reset: true }),
+							remote,
+						),
+					).rejects.toThrow(
+						`Failed to delete migrated asset images/${testCase.failureId.slice(3)}.svg`,
+					);
+
+					expect(remote.operations).toEqual([...testCase.expectedOperations]);
+					expect(remote.rows.map((row) => row.id)).toEqual(
+						[...testCase.expectedSurvivors],
+					);
+					expectNoMapFiles(harness.outputMapPaths);
+				},
+			);
+		});
+	}
+
+	// Mutation caught: removing a checkpoint entry before its remote delete succeeds.
+	it('removes only successfully deleted entries from the reset checkpoint', async () => {
+		const remote = new InMemoryAssetRemote([
+			remoteFile('images/a.svg', 'id-a'),
+			remoteFile('images/b.svg', 'id-b'),
+			remoteFile('images/c.svg', 'id-c'),
+		]);
+		remote.deleteFailures.add('id-b');
+		const checkpoint = new Map([
+			['images/a.svg', 'id-a'],
+			['images/b.svg', 'id-b'],
+			['images/c.svg', 'id-c'],
+		]);
+
+		await expect(
+			deleteExistingMigratedAssets(checkpoint, (id) => remote.deleteFile(id)),
+		).rejects.toThrow('Failed to delete migrated asset images/b.svg');
+
+		expect([...checkpoint.entries()]).toEqual([
+			['images/b.svg', 'id-b'],
+			['images/c.svg', 'id-c'],
+		]);
+		expect(remote.rows.map((row) => row.id)).toEqual(['id-b', 'id-c']);
+	});
+
+	// Mutation caught: treating successful DELETE responses as proof of empty remote state.
+	it('aborts a reset when its deletion readback remains non-empty', async () => {
+		await withHarness(['images/a.svg', 'images/b.svg'], async (harness) => {
+			const remote = new InMemoryAssetRemote([
+				remoteFile('images/a.svg', 'id-a'),
+				remoteFile('images/b.svg', 'id-b'),
+			]);
+			remote.successfulDeleteWithoutRemoval.add('id-b');
+
+			await expect(
+				migrateAssets(
+					harness.manifest,
+					migrationOptions(harness, { reset: true }),
+					remote,
+				),
+			).rejects.toThrow('reset readback still found 1 manifest-owned remote file');
+
+			expect(remote.operations).toEqual([
+				'list:1',
+				'ensure:images',
+				'delete:id-a',
+				'delete:id-b',
+				'list:2',
+			]);
+			expect(remote.rows.map((row) => row.id)).toEqual(['id-b']);
+			expectNoMapFiles(harness.outputMapPaths);
+		});
+	});
+
+	const invalidFinalReadbacks: readonly {
+		name: string;
+		message: string;
+		transform: (
+			rows: readonly AssetMigrationRemoteFile[],
+		) => readonly AssetMigrationRemoteFile[];
+	}[] = [
+		{
+			name: 'a missing path',
+			message: 'missing remote legacy_path: images/b.svg',
+			transform: (rows) => rows.filter((row) => row.legacy_path !== 'images/b.svg'),
+		},
+		{
+			name: 'a duplicate path',
+			message: 'duplicate remote legacy_path: images/a.svg',
+			transform: (rows) => [rows[0]!, rows[0]!, rows[1]!],
+		},
+		{
+			name: 'an unexpected path',
+			message: 'unexpected remote legacy_path: images/unexpected.svg',
+			transform: (rows) => [
+				...rows,
+				remoteFile('images/unexpected.svg', 'unexpected-id'),
+			],
+		},
+		{
+			name: 'a null path',
+			message: 'remote file unexpected-id has a null legacy_path',
+			transform: (rows) => [...rows, remoteFile(null, 'unexpected-id')],
+		},
+		{
+			name: 'a wrong ID',
+			message: 'wrong remote id for images/b.svg: expected id-b, received wrong-id',
+			transform: (rows) =>
+				rows.map((row) =>
+					row.legacy_path === 'images/b.svg' ? { ...row, id: 'wrong-id' } : row,
+				),
+		},
+	];
+
+	for (const testCase of invalidFinalReadbacks) {
+		// Mutation caught: emitting either map before exact final-set verification succeeds.
+		it(`aborts both map writes when final readback contains ${testCase.name}`, async () => {
+			await withHarness(['images/a.svg', 'images/b.svg'], async (harness) => {
+				const remote = new InMemoryAssetRemote([]);
+				remote.uploadIds.set('images/a.svg', 'id-a');
+				remote.uploadIds.set('images/b.svg', 'id-b');
+				remote.listTransform = (rows, call) =>
+					call === 2 ? testCase.transform(rows) : rows;
+
+				await expect(
+					migrateAssets(harness.manifest, migrationOptions(harness), remote),
+				).rejects.toThrow(testCase.message);
+
+				expect(remote.operations).toEqual([
+					'list:1',
+					'ensure:images',
+					'upload:images/a.svg',
+					'upload:images/b.svg',
+					'list:2',
+				]);
+				expectNoMapFiles(harness.outputMapPaths);
+			});
+		});
+	}
+
+	// Mutation caught: hashing remote query order instead of canonical legacy-path order.
+	it('returns the same hand-derived receipt for either remote row order', () => {
+		const manifest: AssetsManifest = {
+			description: 'Receipt test',
+			sourceRoot: 'source',
+			folders: { images: 'Images' },
+			assets: [
+				{
+					legacyPath: 'images/a.svg',
+					folder: 'images',
+					title: 'A',
+					description: 'Asset A description',
+				},
+				{
+					legacyPath: 'images/b.svg',
+					folder: 'images',
+					title: 'B',
+					description: 'Asset B description',
+				},
+			],
+		};
+		const expectedIds = new Map([
+			['images/a.svg', 'id-a'],
+			['images/b.svg', 'id-b'],
+		]);
+		const forward = [
+			remoteFile('images/a.svg', 'id-a'),
+			remoteFile('images/b.svg', 'id-b'),
+		];
+		const reverse = [...forward].reverse();
+
+		for (const remoteRows of [forward, reverse]) {
+			const receipt = verifyRemoteAssetSet(manifest, expectedIds, remoteRows);
+			expect([...receipt.ids.entries()]).toEqual([
+				['images/a.svg', 'id-a'],
+				['images/b.svg', 'id-b'],
+			]);
+			expect(receipt.count).toBe(2);
+			expect(receipt.digest).toBe(EXPECTED_RECEIPT_DIGEST);
+		}
+	});
+
+	// Mutation caught: serializing pre-readback state or dropping sibling-owned map keys.
+	it('writes identical maps from the converged readback and preserves brand ownership', async () => {
+		await withHarness(['images/b.svg', 'images/a.svg'], async (harness) => {
+			const existingMap =
+				'{\n\t"brand/logo.svg": "brand-id",\n\t"images/stale.svg": "stale-id"\n}\n';
+			for (const outputPath of harness.outputMapPaths) {
+				writeFileSync(outputPath, existingMap);
+			}
+			const remote = new InMemoryAssetRemote([
+				remoteFile('images/b.svg', 'id-b'),
+				remoteFile('images/a.svg', 'id-a'),
+			]);
+
+			const verifiedIds = await migrateAssets(
+				harness.manifest,
+				migrationOptions(harness),
+				remote,
+			);
+
+			expect([...verifiedIds.entries()]).toEqual([
+				['images/a.svg', 'id-a'],
+				['images/b.svg', 'id-b'],
+			]);
+			expect(readFileSync(harness.outputMapPaths[0], 'utf8')).toBe(EXPECTED_MAP);
+			expect(readFileSync(harness.outputMapPaths[1], 'utf8')).toBe(EXPECTED_MAP);
+			expect(
+				readFileSync(harness.outputMapPaths[0]).equals(
+					readFileSync(harness.outputMapPaths[1]),
+				),
+			).toBe(true);
+		});
+	});
+
+	// Mutation caught: downgrading malformed existing map JSON into a warning.
+	it('aborts malformed existing map JSON before touching the remote adapter', async () => {
+		await withHarness(['images/a.svg'], async (harness) => {
+			writeFileSync(harness.outputMapPaths[0], '{not-json');
+			const remote = new InMemoryAssetRemote([]);
+
+			await expect(
+				migrateAssets(harness.manifest, migrationOptions(harness), remote),
+			).rejects.toThrow('invalid id-map JSON');
+
+			expect(remote.operations).toEqual([]);
+			expect(readFileSync(harness.outputMapPaths[0], 'utf8')).toBe('{not-json');
+			expect(existsSync(harness.outputMapPaths[1])).toBe(false);
+		});
+	});
+
+	// Mutation caught: choosing one sibling-owned value when mirrored maps conflict.
+	it('aborts conflicting sibling-owned map values before touching the remote adapter', async () => {
+		await withHarness(['images/a.svg'], async (harness) => {
+			writeFileSync(
+				harness.outputMapPaths[0],
+				'{"brand/logo.svg":"authoritative-id"}\n',
+			);
+			writeFileSync(
+				harness.outputMapPaths[1],
+				'{"brand/logo.svg":"conflicting-id"}\n',
+			);
+			const remote = new InMemoryAssetRemote([]);
+
+			await expect(
+				migrateAssets(harness.manifest, migrationOptions(harness), remote),
+			).rejects.toThrow('conflicting sibling-owned id-map value for brand/logo.svg');
+
+			expect(remote.operations).toEqual([]);
+			expect(readFileSync(harness.outputMapPaths[0], 'utf8')).toContain(
+				'authoritative-id',
+			);
+			expect(readFileSync(harness.outputMapPaths[1], 'utf8')).toContain(
+				'conflicting-id',
+			);
+		});
 	});
 });
