@@ -4,8 +4,8 @@
 // slice-28.5, audit #34). The services tree lives in Directus and Data Studio
 // is the authoring surface; export-fallbacks reads it back at build time.
 // Keep for fresh-environment bootstrap only — it throws on a populated DB
-// unless --reset is passed. Kept in-tree per the 27.2 archive-not-delete
-// convention.
+// unless an explicitly confirmed reset is applied. Kept in-tree per the 27.2
+// archive-not-delete convention.
 //
 /**
  * Seed the Directus `services` domain tree from `fixtures/collections/services.json`.
@@ -27,8 +27,11 @@
  *      one atomic SDK call.
  *   5. Read back + assert counts.
  *
- * Usage:
+ * Usage from apps/cms:
  *   bun run seed:services
+ *     # dry-run preview; no mutations
+ *   bun run seed:services --apply --reset --confirm-reset=RESET-SEED-DATA
+ *     # destructive recovery: clear and recreate
  *
  * Required env:
  *   DIRECTUS_ADMIN_TOKEN  — preferred (skips /auth/login)
@@ -48,7 +51,7 @@ import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
-import { parseSeedFlags } from './lib/cli';
+import { parseSeedFlags, RESET_SEED_DATA_CONFIRMATION } from './lib/cli';
 
 // --- Types (inlined; no cross-repo imports per D12) --------------------------
 
@@ -313,7 +316,8 @@ export async function seedServices(
 	if (existing.length > 0 && !opts.reset) {
 		throw new Error(
 			`[seed] found ${existing.length} existing services. ` +
-				`Seed currently runs in reset-only mode. Re-run with --reset to clear + recreate, ` +
+				`Seed currently runs in reset-only mode. ` +
+				`Re-run with --apply --reset --confirm-reset=${RESET_SEED_DATA_CONFIRMATION} to clear + recreate, ` +
 				`or switch to Data Studio for incremental edits. ` +
 				`(Upsert support lands with projects in 18e - see the Notion slice-18 plan.)`,
 		);
@@ -381,10 +385,14 @@ export async function seedServices(
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun, reset } = parseSeedFlags({ reset: true });
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
+	);
 
 	const services = loadServicesFixture();
 	log.info(`source: ${services.length} services from fixtures/collections/services.json`);

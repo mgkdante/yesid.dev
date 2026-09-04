@@ -161,16 +161,24 @@ repairs. Do not replace them with ad-hoc Data Studio or REST mutations.
 - `seed-*` scripts own one content domain each. Some replace domain rows, so
   read the script contract, run its offline tests or dry-run, and confirm the
   target before any apply.
+- Seed commands default to a preview with no mutations. Pass `--apply` for a
+  normal mutation. A destructive collection recovery requires the exact flags
+  `--apply --reset --confirm-reset=RESET-SEED-DATA`; scripts without a real
+  destructive reset reject reset flags.
 - On an existing environment, capture `site_meta.default_og_image` and every
-  `icons.svg_override` before `seed-site-meta.ts` or `seed-icons.ts --reset`,
-  then reapply them afterward. Their fixtures may contain `null`;
+  `icons.svg_override` before `seed-site-meta.ts --apply` or
+  `seed-icons.ts --apply --reset --confirm-reset=RESET-SEED-DATA`, then reapply
+  them afterward. Their fixtures may contain `null`;
   `sync-push.ts` protects only `project_logo`, `public_foreground`, and
   `public_favicon`, not these environment-specific references.
 - `migrate-assets.ts` and `setup-*` scripts own bounded migrations. They are
   not clean-clone setup steps and should not be replayed because a script is
   present.
 - `refresh-fixtures.ts` owns reconstruction of committed recovery fixtures
-  from an authenticated source; its output requires review before commit.
+  from an authenticated source. Its default dry-run still reads and validates
+  the development CMS but does not write files; pass `-- --apply` through the
+  `fixtures:refresh` package script to rewrite fixtures. Its output requires
+  review before commit.
 - `refresh-dev-from-prod.sh` owns the coordinated development recovery path:
   database refresh, development token rebind, R2 sync, and protected branch
   promotion. Use its preflight and tests rather than reproducing those steps

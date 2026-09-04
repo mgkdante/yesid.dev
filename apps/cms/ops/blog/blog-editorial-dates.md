@@ -77,7 +77,7 @@ Continue only when the final command reports `NO CHANGES`. Otherwise use the fai
 ```bash
 with_yesid_op \
   env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev \
-  bun run --cwd apps/cms fixtures:refresh
+  bun run --cwd apps/cms fixtures:refresh -- --apply
 with_yesid_op \
   env PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev \
   bun run --cwd apps/cms export:fallbacks

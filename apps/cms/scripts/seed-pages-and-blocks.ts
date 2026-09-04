@@ -42,10 +42,11 @@
  *
  * ## Flags
  *
- * --dry-run   Validate payloads via Zod + print counts/samples, no Directus writes.
- * --reset     Delete all target rows then recreate (FK CASCADE clears translations).
+ * --dry-run   Validate payloads via Zod + print counts/samples; preview only.
+ * --apply     Enable Directus mutations.
+ * --reset     With apply + exact confirmation, delete all target rows then recreate.
  * --verbose   Print each row shape during dry-run.
- * --help      Print this message.
+ * --help      Print this message and exit before environment checks.
  *
  * ## Live execution deferred
  *
@@ -55,9 +56,14 @@
  * → run this script live → pull snapshot → commit.
  *
  * Run from REPO ROOT:
- *   bun run apps/cms/scripts/seed-pages-and-blocks.ts -- --dry-run
- *   bun run apps/cms/scripts/seed-pages-and-blocks.ts -- --dry-run --verbose
- *   bun run apps/cms/scripts/seed-pages-and-blocks.ts -- --reset   (post-merge only)
+ *   bun run apps/cms/scripts/seed-pages-and-blocks.ts
+ *     # dry-run preview; no mutations
+ *   bun run apps/cms/scripts/seed-pages-and-blocks.ts --verbose
+ *     # verbose dry-run preview; no mutations
+ *   bun run apps/cms/scripts/seed-pages-and-blocks.ts --apply
+ *     # apply without clearing existing rows
+ *   bun run apps/cms/scripts/seed-pages-and-blocks.ts --apply --reset --confirm-reset=RESET-SEED-DATA
+ *     # destructive recovery (post-merge only)
  */
 
 import { createItem, deleteItem, readItems } from '@directus/sdk';
@@ -86,7 +92,7 @@ import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
-import { parseSeedFlags } from './lib/cli';
+import { parseSeedFlags, RESET_SEED_DATA_CONFIRMATION } from './lib/cli';
 
 const ContactSeedFixtureSchema = ContactContentSchema.omit({ socials: true });
 
@@ -1285,24 +1291,35 @@ export async function seedPagesAndBlocks(opts: SeedRunOptions): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-	const { dryRun, reset, verbose, help } = parseSeedFlags();
+	const { dryRun, reset, verbose, help } = parseSeedFlags({
+		reset: true,
+		verbose: true,
+		help: true,
+	});
 
 	if (help) {
 		console.log(`seed-pages-and-blocks — seed pages, block_*, nav_links, error_pages.
 
-  --dry-run    Validate via Zod + print counts/samples (no Directus writes)
-  --reset      Delete all target rows then recreate (post-merge only)
-  --verbose    Print sample payloads during --dry-run
-  --help       Print this message
+  (no flags)   Dry-run preview; validate and print counts/samples, no mutations
+  --dry-run    Explicit dry-run preview; no mutations
+  --apply      Enable Directus mutations
+  --apply --reset --confirm-reset=${RESET_SEED_DATA_CONFIRMATION}
+                Destructive recovery: delete all target rows then recreate
+  --verbose    Print sample payloads during a dry-run
+  --help       Print this message and exit
 
   Live execution deferred to post-merge per feedback_serial_cms_pushes.
-  Run from REPO ROOT: bun run apps/cms/scripts/seed-pages-and-blocks.ts -- --dry-run`);
+  Run from REPO ROOT: bun run apps/cms/scripts/seed-pages-and-blocks.ts`);
 		return;
 	}
 
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
+	);
 
 	if (dryRun) {
 		await seedPagesAndBlocks({ directusUrl, token: '', dryRun: true, verbose });

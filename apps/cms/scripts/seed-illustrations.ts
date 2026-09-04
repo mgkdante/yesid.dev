@@ -2,8 +2,8 @@
 //
 // DONE — one-shot seed, completed (slice-18f Phase 8; banner added in
 // slice-28.5, audit #34). The illustrations collection + uploaded SVG files
-// live in Directus. Keep for fresh-environment bootstrap only (--dry-run /
-// --reset guarded). Kept in-tree per the 27.2 archive-not-delete convention.
+// live in Directus. Keep for fresh-environment bootstrap only (--apply /
+// confirmed reset guarded). Kept in-tree per the 27.2 archive-not-delete convention.
 //
 /**
  * Seed the Directus `illustrations` collection from
@@ -22,7 +22,7 @@ import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
-import { parseSeedFlags } from './lib/cli';
+import { parseSeedFlags, RESET_SEED_DATA_CONFIRMATION } from './lib/cli';
 
 // --- Zod ----------------------------------------------------------------
 
@@ -117,7 +117,10 @@ export async function seedIllustrations(
 	} else {
 		const existing = await client.request(readItems('illustrations', { fields: ['id'], limit: -1 }));
 		if (existing.length > 0) {
-			throw new Error(`[seed-illustrations] found ${existing.length} existing rows. Re-run with --reset.`);
+			throw new Error(
+				`[seed-illustrations] found ${existing.length} existing rows. ` +
+					`Re-run with --apply --reset --confirm-reset=${RESET_SEED_DATA_CONFIRMATION}.`,
+			);
 		}
 	}
 
@@ -165,10 +168,14 @@ export async function seedIllustrations(
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun, reset } = parseSeedFlags({ reset: true });
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
+	);
 
 	const rows = loadIllustrationsFixture();
 

@@ -24,9 +24,12 @@
  * Pure helpers exported for tests/seed-route-seo-dry-run.test.ts.
  *
  * Run from REPO ROOT:
- *   bun run apps/cms/scripts/seed-route-seo.ts            # writes live (upsert by path)
- *   bun run apps/cms/scripts/seed-route-seo.ts --dry-run  # preview
- *   bun run apps/cms/scripts/seed-route-seo.ts --reset    # delete-all then recreate
+ *   bun run apps/cms/scripts/seed-route-seo.ts
+ *     # dry-run preview; no mutations
+ *   bun run apps/cms/scripts/seed-route-seo.ts --apply
+ *     # apply upserts by path
+ *   bun run apps/cms/scripts/seed-route-seo.ts --apply --reset --confirm-reset=RESET-SEED-DATA
+ *     # delete all rows, then recreate
  */
 
 import {
@@ -379,11 +382,13 @@ export async function seedRouteSeo(
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun, reset } = parseSeedFlags({ reset: true });
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
 	log.info(
-		`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`,
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
 	);
 
 	const fixtures = loadRouteSeoFixture();
