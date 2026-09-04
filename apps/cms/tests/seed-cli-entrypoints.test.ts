@@ -84,7 +84,7 @@ describe('seed CLI entrypoints', () => {
 				exitCode: result.exitCode,
 				describesMode: output.includes('mode: dry-run'),
 				describesBoundary: output.includes('no mutations'),
-				requestedCredentials: output.includes('Missing Directus admin credentials'),
+				requestedCredentials: output.includes('Need DIRECTUS_ADMIN_TOKEN'),
 				reachedNetwork: /fetch failed|ECONN|Connection refused/i.test(output),
 			}).toEqual({
 				entrypoint,
