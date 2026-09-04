@@ -701,7 +701,7 @@ function loadPreservedMapEntries(
 	outputMapPaths: readonly string[],
 	manifestKeys: ReadonlySet<string>,
 ): Map<string, string> {
-	const existingMaps: { path: string; entries: Record<string, string> }[] = [];
+	const existingMaps: { path: string; entries: Map<string, string> }[] = [];
 	for (const outPath of outputMapPaths) {
 		if (!existsSync(outPath)) continue;
 
@@ -715,12 +715,12 @@ function loadPreservedMapEntries(
 			throw new Error(`[migrate] invalid id-map object: ${outPath}`);
 		}
 
-		const entries: Record<string, string> = {};
+		const entries = new Map<string, string>();
 		for (const [key, value] of Object.entries(parsed)) {
 			if (typeof value !== 'string' || value.length === 0) {
 				throw new Error(`[migrate] invalid id-map value for ${key}: ${outPath}`);
 			}
-			entries[key] = value;
+			entries.set(key, value);
 		}
 		existingMaps.push({ path: outPath, entries });
 	}
@@ -734,9 +734,9 @@ function loadPreservedMapEntries(
 		);
 	}
 
-	const normalizeEntries = (entries: Readonly<Record<string, string>>): string =>
+	const normalizeEntries = (entries: ReadonlyMap<string, string>): string =>
 		JSON.stringify(
-			Object.entries(entries).sort(([left], [right]) => left.localeCompare(right)),
+			[...entries.entries()].sort(([left], [right]) => left.localeCompare(right)),
 		);
 	const firstMap = existingMaps[0];
 	if (!firstMap) return new Map();
@@ -749,7 +749,12 @@ function loadPreservedMapEntries(
 		}
 	}
 
-	return collectPreservedIdMapEntries([firstMap.entries], manifestKeys);
+	const preservedEntries = new Map<string, string>();
+	for (const [key, value] of firstMap.entries) {
+		if (manifestKeys.has(key) || key.startsWith('images/')) continue;
+		preservedEntries.set(key, value);
+	}
+	return preservedEntries;
 }
 
 function validateMigrationInputs(
@@ -932,14 +937,11 @@ export async function migrateAssets(
 	);
 	log.info(`verified remote asset set: count=${receipt.count} sha256=${receipt.digest}`);
 
-	const outputObj: Record<string, string> = {};
 	const outputEntries = [
 		...preservedEntries.entries(),
 		...receipt.ids.entries(),
 	].sort(([left], [right]) => left.localeCompare(right));
-	for (const [key, value] of outputEntries) {
-		outputObj[key] = value;
-	}
+	const outputObj = Object.fromEntries(outputEntries) as Record<string, string>;
 	const serialized = JSON.stringify(outputObj, null, '\t') + '\n';
 	const outputEntryCount = Object.keys(outputObj).length;
 	for (const outPath of opts.outputMapPaths) {

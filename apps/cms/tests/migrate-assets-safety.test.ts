@@ -712,6 +712,12 @@ describe('migrateAssets fail-closed lifecycle', () => {
 			shared: '{"images/a.svg":"id-a"}\n',
 		},
 		{
+			name: 'an exact __proto__ key exists in only one map',
+			authoritative:
+				'{"__proto__":"legacy-id","images/a.svg":"id-a"}\n',
+			shared: '{"images/a.svg":"id-a"}\n',
+		},
+		{
 			name: 'one of two configured maps is missing',
 			authoritative: '{"images/a.svg":"id-a"}\n',
 		},
