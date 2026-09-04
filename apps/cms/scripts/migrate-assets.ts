@@ -9,30 +9,34 @@
  * Editor-uploaded files leave `legacy_path` NULL — they are never matched here.
  *
  * Strategy:
- *   1. Load `fixtures/assets-manifest.json` + Zod-validate.
- *   2. Auth to Directus (static token or email/password) via lib/auth.
- *   3. Ensure target folders exist — create any missing ones.
- *   4. Query existing files by `legacy_path` to compute idempotency partition.
- *   5. (Optional, --reset) Delete previously-uploaded entries so the next pass
- *      uploads fresh — useful for re-running after manifest changes.
- *   6. For each entry not yet uploaded, push the file from
- *      `<source>/<legacyPath>` with title + description + folder + legacy_path.
- *      Wrapped in withRateLimit() to stay under instance RATE_LIMITER_*.
- *   7. Emit `fixtures/assets-id-map.json` with the legacyPath → file UUID map.
+ *   1. Load `fixtures/assets-manifest.json`, validate local inputs, and exit
+ *      without credentials when running the default preview.
+ *   2. Authenticate for apply mode, then require full existing-map parity
+ *      before remote adapter construction, access, or mutation.
+ *   3. Reject duplicate paths and preserved-ID conflicts before any mutation.
+ *   4. Ensure target folders exist; an explicit reset then deletes sequentially
+ *      and requires an empty manifest-owned readback before uploads resume.
+ *   5. Repair existing metadata and upload missing files from
+ *      `<source>/<legacyPath>` through the rate-limited Directus adapter.
+ *   6. Verify the final path/ID set, log its canonical SHA-256 receipt, and
+ *      emit byte-identical id maps while preserving sibling-owned entries.
  *
  * Usage:
  *   bun run migrate:assets
- *   bun run migrate:assets -- --source ../web/static --dry-run
- *   bun run migrate:assets -- --reset            (deletes prior, re-uploads)
+ *   bun run migrate:assets -- --apply
+ *   bun run migrate:assets -- --apply --reset --confirm-reset=RESET-MIGRATED-ASSETS
  *
  * CLI flags:
  *   --source <path>   Source root on disk (default: ../web/static at monorepo)
- *   --dry-run         Skip uploads; print what WOULD happen.
+ *   --dry-run         Preview uploads without mutations (the default mode).
+ *   --apply           Upload assets and write the id-map files.
  *   --reset           Delete previously-uploaded files first, then upload all.
+ *   --confirm-reset=RESET-MIGRATED-ASSETS
+ *                     Required confirmation for a destructive reset.
  *   --preserve-ids-from-map
  *                     Upload new files with IDs from assets-id-map.json.
  *
- * Required env:
+ * Required env for `--apply`:
  *   DIRECTUS_ADMIN_TOKEN  — preferred (skips /auth/login)
  *   OR
  *   DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD
@@ -53,6 +57,7 @@ import {
 	uploadFiles,
 } from '@directus/sdk';
 import { z } from 'zod';
+import { createHash } from 'node:crypto';
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { resolve as resolvePath, join as joinPath, relative } from 'node:path';
 
@@ -368,7 +373,7 @@ export function imageMetadataForSource(absPath: string, legacyPath: string): Ima
 }
 
 export function buildFileMetadataPatch(
-	file: Pick<DirectusFile, 'type' | 'width' | 'height'>,
+	file: Pick<AssetMigrationRemoteFile, 'type' | 'width' | 'height'>,
 	expected: ImageMetadata,
 ): { type?: string; width?: number; height?: number } {
 	const patch: { type?: string; width?: number; height?: number } = {};
@@ -475,8 +480,8 @@ interface MigrateOptions {
 	 * authoritative copy lives at `apps/cms/fixtures/assets-id-map.json`; a
 	 * mirror is written to `packages/shared/fixtures/assets-id-map.json` so
 	 * `@repo/shared.assetIdFor` resolves from a workspace-package import
-	 * without crossing the app-independence boundary (D12). Both paths are
-	 * written atomically in the same run — no manual `cp` needed afterward.
+	 * without crossing the app-independence boundary (D12). Both paths receive
+	 * identical bytes in one run, but the two filesystem writes are not atomic.
 	 */
 	outputMapPaths: readonly string[];
 	dryRun: boolean;
@@ -490,7 +495,7 @@ interface DirectusFolder {
 	parent: string | null;
 }
 
-interface DirectusFile {
+export interface AssetMigrationRemoteFile {
 	id: string;
 	legacy_path: string | null;
 	type?: string | null;
@@ -498,7 +503,25 @@ interface DirectusFile {
 	height?: number | null;
 }
 
-async function ensureFolders(
+export interface AssetMigrationRemote {
+	listFiles(
+		legacyPaths: readonly string[],
+	): Promise<readonly AssetMigrationRemoteFile[]>;
+	ensureFolders(folderNames: readonly string[]): Promise<Map<string, string>>;
+	deleteFile(id: string): Promise<void>;
+	updateFile(
+		id: string,
+		patch: { type?: string; width?: number; height?: number },
+	): Promise<void>;
+	uploadFile(
+		entry: AssetEntry,
+		folderId: string,
+		sourceRoot: string,
+		desiredId?: string,
+	): Promise<string>;
+}
+
+async function ensureDirectusFolders(
 	client: ReturnType<typeof createSdkClient>,
 	folderNames: readonly string[],
 ): Promise<Map<string, string>> {
@@ -552,12 +575,194 @@ const uploadOneRateLimited = withRateLimit(uploadOne, {
 	minTime: 100,
 });
 
-export async function migrateAssets(
+function createAssetMigrationRemote(opts: MigrateOptions): AssetMigrationRemote {
+	const client = createSdkClient(opts.directusUrl, opts.token);
+	return {
+		async listFiles(legacyPaths) {
+			return (await client.request(
+				readFiles({
+					fields: ['id', 'legacy_path', 'type', 'width', 'height'],
+					filter: { legacy_path: { _in: legacyPaths } },
+					limit: -1,
+				}),
+			)) as AssetMigrationRemoteFile[];
+		},
+		ensureFolders(folderNames) {
+			return ensureDirectusFolders(client, folderNames);
+		},
+		deleteFile: async (id: string): Promise<void> => {
+			await client.request(deleteFile(id));
+		},
+		updateFile: async (
+			id: string,
+			patch: { type?: string; width?: number; height?: number },
+		): Promise<void> => {
+			await client.request(updateFile(id, patch));
+		},
+		uploadFile(entry, folderId, sourceRoot, desiredId) {
+			return uploadOneRateLimited(client, entry, folderId, sourceRoot, desiredId);
+		},
+	};
+}
+
+function indexManifestOwnedRemoteFiles(
 	manifest: AssetsManifest,
-	opts: MigrateOptions,
-): Promise<Map<string, string>> {
-	// Fail loud if any source file is missing BEFORE touching Directus.
-	const missing = findMissingSources(manifest, opts.sourceRoot);
+	remoteFiles: readonly AssetMigrationRemoteFile[],
+): Map<string, AssetMigrationRemoteFile> {
+	const manifestPaths = new Set(manifest.assets.map((entry) => entry.legacyPath));
+	const byLegacyPath = new Map<string, AssetMigrationRemoteFile>();
+	for (const file of remoteFiles) {
+		if (file.legacy_path === null) {
+			throw new Error(`[migrate] remote file ${file.id} has a null legacy_path`);
+		}
+		if (!manifestPaths.has(file.legacy_path)) {
+			throw new Error(
+				`[migrate] unexpected remote legacy_path: ${file.legacy_path}`,
+			);
+		}
+		if (byLegacyPath.has(file.legacy_path)) {
+			throw new Error(
+				`[migrate] duplicate remote legacy_path: ${file.legacy_path}`,
+			);
+		}
+		byLegacyPath.set(file.legacy_path, file);
+	}
+	return byLegacyPath;
+}
+
+export function verifyRemoteAssetSet(
+	manifest: AssetsManifest,
+	expectedIds: ReadonlyMap<string, string>,
+	remoteFiles: readonly AssetMigrationRemoteFile[],
+): { ids: Map<string, string>; count: number; digest: string } {
+	const remoteByLegacyPath = indexManifestOwnedRemoteFiles(manifest, remoteFiles);
+	const manifestPaths = manifest.assets
+		.map((entry) => entry.legacyPath)
+		.sort((a, b) => a.localeCompare(b));
+
+	for (const legacyPath of manifestPaths) {
+		const file = remoteByLegacyPath.get(legacyPath);
+		if (!file) {
+			throw new Error(`[migrate] missing remote legacy_path: ${legacyPath}`);
+		}
+		const expectedId = expectedIds.get(legacyPath);
+		if (!expectedId) {
+			throw new Error(`[migrate] missing expected id for ${legacyPath}`);
+		}
+		if (file.id !== expectedId) {
+			throw new Error(
+				`[migrate] wrong remote id for ${legacyPath}: expected ${expectedId}, received ${file.id}`,
+			);
+		}
+	}
+
+	if (remoteFiles.length !== manifestPaths.length) {
+		throw new Error(
+			`[migrate] wrong remote file count: expected ${manifestPaths.length}, received ${remoteFiles.length}`,
+		);
+	}
+
+	const ids = new Map<string, string>();
+	let canonicalRows = '';
+	for (const legacyPath of manifestPaths) {
+		const id = remoteByLegacyPath.get(legacyPath)?.id;
+		if (!id) {
+			throw new Error(`[migrate] missing remote id for ${legacyPath}`);
+		}
+		ids.set(legacyPath, id);
+		canonicalRows += `${legacyPath}\t${id}\n`;
+	}
+
+	return {
+		ids,
+		count: ids.size,
+		digest: createHash('sha256').update(canonicalRows).digest('hex'),
+	};
+}
+
+export async function deleteExistingMigratedAssets(
+	existingByLegacyPath: Map<string, string>,
+	deleteRemoteFile: (id: string) => Promise<void>,
+): Promise<void> {
+	for (const [legacyPath, id] of existingByLegacyPath) {
+		try {
+			await deleteRemoteFile(id);
+		} catch (err) {
+			const details = parseErrors(err).join(' · ') || 'Unknown Directus error';
+			throw new DirectusError(
+				500,
+				`Failed to delete migrated asset ${legacyPath}: ${details}`,
+			);
+		}
+		existingByLegacyPath.delete(legacyPath);
+	}
+}
+
+function loadPreservedMapEntries(
+	outputMapPaths: readonly string[],
+	manifestKeys: ReadonlySet<string>,
+): Map<string, string> {
+	const existingMaps: { path: string; entries: Map<string, string> }[] = [];
+	for (const outPath of outputMapPaths) {
+		if (!existsSync(outPath)) continue;
+
+		let parsed: unknown;
+		try {
+			parsed = JSON.parse(readFileSync(outPath, 'utf8'));
+		} catch {
+			throw new Error(`[migrate] invalid id-map JSON: ${outPath}`);
+		}
+		if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+			throw new Error(`[migrate] invalid id-map object: ${outPath}`);
+		}
+
+		const entries = new Map<string, string>();
+		for (const [key, value] of Object.entries(parsed)) {
+			if (typeof value !== 'string' || value.length === 0) {
+				throw new Error(`[migrate] invalid id-map value for ${key}: ${outPath}`);
+			}
+			entries.set(key, value);
+		}
+		existingMaps.push({ path: outPath, entries });
+	}
+
+	if (existingMaps.length === 0) return new Map();
+	if (existingMaps.length !== outputMapPaths.length) {
+		const existingPaths = new Set(existingMaps.map((map) => map.path));
+		const missingPaths = outputMapPaths.filter((path) => !existingPaths.has(path));
+		throw new Error(
+			`[migrate] configured id-map outputs diverge: expected all ${outputMapPaths.length} maps to exist or none; missing ${missingPaths.join(', ')}`,
+		);
+	}
+
+	const normalizeEntries = (entries: ReadonlyMap<string, string>): string =>
+		JSON.stringify(
+			[...entries.entries()].sort(([left], [right]) => left.localeCompare(right)),
+		);
+	const firstMap = existingMaps[0];
+	if (!firstMap) return new Map();
+	const expectedEntries = normalizeEntries(firstMap.entries);
+	for (const candidate of existingMaps.slice(1)) {
+		if (normalizeEntries(candidate.entries) !== expectedEntries) {
+			throw new Error(
+				`[migrate] configured id-map outputs diverge: ${candidate.path} does not match ${firstMap.path}`,
+			);
+		}
+	}
+
+	const preservedEntries = new Map<string, string>();
+	for (const [key, value] of firstMap.entries) {
+		if (manifestKeys.has(key) || key.startsWith('images/')) continue;
+		preservedEntries.set(key, value);
+	}
+	return preservedEntries;
+}
+
+function validateMigrationInputs(
+	manifest: AssetsManifest,
+	sourceRoot: string,
+): void {
+	const missing = findMissingSources(manifest, sourceRoot);
 	if (missing.length > 0) {
 		const list = missing.map((m) => `  - ${m.entry.legacyPath} → ${m.absPath}`).join('\n');
 		throw new Error(`[migrate] ${missing.length} source files missing:\n${list}`);
@@ -566,6 +771,15 @@ export async function migrateAssets(
 	if (folderErrors.length > 0) {
 		throw new Error(`[migrate] folder-reference errors:\n  ${folderErrors.join('\n  ')}`);
 	}
+}
+
+export async function migrateAssets(
+	manifest: AssetsManifest,
+	opts: MigrateOptions,
+	remote?: AssetMigrationRemote,
+): Promise<Map<string, string>> {
+	// Fail loud if any source file is missing BEFORE touching Directus.
+	validateMigrationInputs(manifest, opts.sourceRoot);
 
 	log.info(`manifest: ${manifest.assets.length} assets`);
 	log.info(`source:   ${opts.sourceRoot}`);
@@ -583,74 +797,24 @@ export async function migrateAssets(
 		return new Map();
 	}
 
-	const client = createSdkClient(opts.directusUrl, opts.token);
-
-	// Ensure folders exist + collect their Directus IDs.
-	const folderIds = await ensureFolders(
-		client,
-		Object.keys(manifest.folders),
+	const manifestKeys = new Set(manifest.assets.map((entry) => entry.legacyPath));
+	const preservedEntries = loadPreservedMapEntries(
+		opts.outputMapPaths,
+		manifestKeys,
 	);
+	const migrationRemote = remote ?? createAssetMigrationRemote(opts);
 
-	// Idempotency: query existing files by legacy_path (replaces description-tag
-	// pattern from pre-18c version). Only files with a non-null legacy_path —
-	// editor-uploaded files leave the field NULL.
 	const wantedPaths = manifest.assets.map((a) => a.legacyPath);
-	const existingFiles = (await client.request(
-		readFiles({
-			fields: ['id', 'legacy_path', 'type', 'width', 'height'],
-			filter: { legacy_path: { _in: wantedPaths } },
-			limit: -1,
-		}),
-	)) as DirectusFile[];
+	let existingFilesByLegacyPath = indexManifestOwnedRemoteFiles(
+		manifest,
+		await migrationRemote.listFiles(wantedPaths),
+	);
 	const existingByLegacyPath = new Map<string, string>();
-	for (const f of existingFiles) {
-		if (f.legacy_path) existingByLegacyPath.set(f.legacy_path, f.id);
+	for (const [legacyPath, file] of existingFilesByLegacyPath) {
+		existingByLegacyPath.set(legacyPath, file.id);
 	}
 
-	if (opts.reset && existingByLegacyPath.size > 0) {
-		log.info(`reset: deleting ${existingByLegacyPath.size} previously-uploaded files...`);
-		for (const [legacyPath, id] of existingByLegacyPath) {
-			try {
-				await client.request(deleteFile(id));
-			} catch (err) {
-				const msgs = parseErrors(err);
-				log.warn(`  failed to delete ${legacyPath} (${id}): ${msgs.join(' · ')}`);
-			}
-		}
-		existingByLegacyPath.clear();
-	} else {
-		const manifestByLegacyPath = new Map(
-			manifest.assets.map((entry) => [entry.legacyPath, entry]),
-		);
-		for (const file of existingFiles) {
-			if (!file.legacy_path) continue;
-			const entry = manifestByLegacyPath.get(file.legacy_path);
-			if (!entry) continue;
-			const expectedMetadata = imageMetadataForSource(
-				resolveSourcePath(entry, opts.sourceRoot),
-				file.legacy_path,
-			);
-			const patch = buildFileMetadataPatch(file, expectedMetadata);
-			if (Object.keys(patch).length === 0) continue;
-			try {
-				await client.request(updateFile(file.id, patch));
-				const changes = Object.entries(patch)
-					.map(([key, value]) => `${key}=${value}`)
-					.join(', ');
-				log.info(
-					`repaired file metadata: ${file.legacy_path} (${changes})`,
-				);
-			} catch (err) {
-				const msgs = parseErrors(err);
-				throw new DirectusError(
-					500,
-					`Failed to repair file metadata for ${file.legacy_path}: ${msgs.join(' · ')}`,
-				);
-			}
-		}
-	}
-
-	if (!opts.reset && opts.preserveIds?.size) {
+	if (opts.preserveIds?.size) {
 		const conflicts = findPreservedIdConflicts(existingByLegacyPath, opts.preserveIds);
 		if (conflicts.length > 0) {
 			const list = conflicts
@@ -660,8 +824,64 @@ export async function migrateAssets(
 				)
 				.join('\n');
 			throw new Error(
-				`[migrate] ${conflicts.length} preserved id conflicts found. Re-run with --reset only after verifying these are disposable migrated assets.\n${list}`,
+				`[migrate] ${conflicts.length} preserved id conflicts found. Refusing remote mutation until the ownership conflict is resolved.\n${list}`,
 			);
+		}
+	}
+
+	const folderIds = await migrationRemote.ensureFolders(
+		Object.keys(manifest.folders),
+	);
+
+	if (opts.reset) {
+		if (existingByLegacyPath.size > 0) {
+			log.info(
+				`reset: deleting ${existingByLegacyPath.size} previously-uploaded files sequentially...`,
+			);
+			await deleteExistingMigratedAssets(
+				existingByLegacyPath,
+				(id) => migrationRemote.deleteFile(id),
+			);
+		}
+
+		const resetReadback = indexManifestOwnedRemoteFiles(
+			manifest,
+			await migrationRemote.listFiles(wantedPaths),
+		);
+		if (resetReadback.size > 0) {
+			throw new Error(
+				`[migrate] reset readback still found ${resetReadback.size} manifest-owned remote file${resetReadback.size === 1 ? '' : 's'}; refusing uploads and map writes`,
+			);
+		}
+		existingFilesByLegacyPath = new Map();
+	} else {
+		const manifestByLegacyPath = new Map(
+			manifest.assets.map((entry) => [entry.legacyPath, entry]),
+		);
+		for (const [legacyPath, file] of existingFilesByLegacyPath) {
+			const entry = manifestByLegacyPath.get(legacyPath);
+			if (!entry) continue;
+			const expectedMetadata = imageMetadataForSource(
+				resolveSourcePath(entry, opts.sourceRoot),
+				legacyPath,
+			);
+			const patch = buildFileMetadataPatch(file, expectedMetadata);
+			if (Object.keys(patch).length === 0) continue;
+			try {
+				await migrationRemote.updateFile(file.id, patch);
+				const changes = Object.entries(patch)
+					.map(([key, value]) => `${key}=${value}`)
+					.join(', ');
+				log.info(
+					`repaired file metadata: ${legacyPath} (${changes})`,
+				);
+			} catch (err) {
+				const msgs = parseErrors(err);
+				throw new DirectusError(
+					500,
+					`Failed to repair file metadata for ${legacyPath}: ${msgs.join(' · ')}`,
+				);
+			}
 		}
 	}
 
@@ -686,8 +906,7 @@ export async function migrateAssets(
 		let fileId: string;
 		const desiredId = opts.preserveIds?.get(entry.legacyPath);
 		try {
-			fileId = await uploadOneRateLimited(
-				client,
+			fileId = await migrationRemote.uploadFile(
 				entry,
 				folderId,
 				opts.sourceRoot,
@@ -712,28 +931,18 @@ export async function migrateAssets(
 		);
 	}
 
-	// Emit the id-map file. Stable-ordered for diff-friendliness. Preserve
-	// non-images keys owned by sibling seeders, such as brand/* from
-	// seed-brand-assets.ts, while still letting removed manifest images disappear.
-	const manifestKeys = new Set(manifest.assets.map((entry) => entry.legacyPath));
-	const existingMaps: Record<string, unknown>[] = [];
-	for (const outPath of opts.outputMapPaths) {
-		if (!existsSync(outPath)) continue;
-		try {
-			existingMaps.push(JSON.parse(readFileSync(outPath, 'utf8')) as Record<string, unknown>);
-		} catch {
-			log.warn(`could not read existing id-map for preserved entries: ${outPath}`);
-		}
-	}
-	const preservedEntries = collectPreservedIdMapEntries(existingMaps, manifestKeys);
+	const receipt = verifyRemoteAssetSet(
+		manifest,
+		idMap,
+		await migrationRemote.listFiles(wantedPaths),
+	);
+	log.info(`verified remote asset set: count=${receipt.count} sha256=${receipt.digest}`);
 
-	const outputObj: Record<string, string> = {};
-	for (const [key, value] of preservedEntries) {
-		outputObj[key] = value;
-	}
-	for (const key of [...idMap.keys()].sort()) {
-		outputObj[key] = idMap.get(key) ?? '';
-	}
+	const outputEntries = [
+		...preservedEntries.entries(),
+		...receipt.ids.entries(),
+	].sort(([left], [right]) => left.localeCompare(right));
+	const outputObj = Object.fromEntries(outputEntries) as Record<string, string>;
 	const serialized = JSON.stringify(outputObj, null, '\t') + '\n';
 	const outputEntryCount = Object.keys(outputObj).length;
 	for (const outPath of opts.outputMapPaths) {
@@ -742,38 +951,94 @@ export async function migrateAssets(
 	}
 	log.info('');
 
-	return idMap;
+	return receipt.ids;
 }
 
-function parseCliArgs(argv: readonly string[]): {
+export const MIGRATE_ASSETS_RESET_CONFIRMATION = 'RESET-MIGRATED-ASSETS';
+
+export function parseMigrateAssetArgs(argv: readonly string[]): {
 	sourceRoot?: string;
 	dryRun: boolean;
 	reset: boolean;
 	preserveIdsFromMap: boolean;
 } {
 	let sourceRoot: string | undefined;
-	let dryRun = false;
+	let apply = false;
+	let explicitDryRun = false;
 	let reset = false;
 	let preserveIdsFromMap = false;
+	let resetConfirmation: string | undefined;
+	const semanticFlags = new Set<string>();
+
+	const recordSemanticFlag = (flag: string): void => {
+		if (semanticFlags.has(flag)) {
+			throw new Error(`${flag} may only be specified once.`);
+		}
+		semanticFlags.add(flag);
+	};
+
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
-		if (arg === '--dry-run') dryRun = true;
-		else if (arg === '--reset') reset = true;
-		else if (arg === '--preserve-ids-from-map') preserveIdsFromMap = true;
-		else if (arg === '--source' && i + 1 < argv.length) {
-			sourceRoot = argv[i + 1];
-			i++;
+		if (arg === '--source') {
+			recordSemanticFlag('--source');
+			const source = argv[i + 1];
+			if (source === undefined || source.length === 0 || source.startsWith('-')) {
+				throw new Error('--source requires one non-empty, non-option value.');
+			}
+			sourceRoot = source;
+			i += 1;
+		} else if (arg === '--apply') {
+			recordSemanticFlag('--apply');
+			apply = true;
+		} else if (arg === '--dry-run') {
+			recordSemanticFlag('--dry-run');
+			explicitDryRun = true;
+		} else if (arg === '--reset') {
+			recordSemanticFlag('--reset');
+			reset = true;
+		} else if (arg === '--preserve-ids-from-map') {
+			recordSemanticFlag('--preserve-ids-from-map');
+			preserveIdsFromMap = true;
+		} else if (arg?.startsWith('--confirm-reset=')) {
+			recordSemanticFlag('--confirm-reset');
+			resetConfirmation = arg.slice('--confirm-reset='.length);
+		} else {
+			throw new Error('Unsupported migrate-assets argument.');
 		}
 	}
-	return { sourceRoot, dryRun, reset, preserveIdsFromMap };
+
+	if (apply && explicitDryRun) {
+		throw new Error('Choose exactly one mode: --apply or --dry-run.');
+	}
+	if (resetConfirmation !== undefined && !reset) {
+		throw new Error('--confirm-reset requires --reset.');
+	}
+	if (reset && !apply) {
+		throw new Error('--reset requires --apply.');
+	}
+	if (reset && resetConfirmation === undefined) {
+		throw new Error('--reset requires its exact confirmation.');
+	}
+	if (
+		resetConfirmation !== undefined &&
+		resetConfirmation !== MIGRATE_ASSETS_RESET_CONFIRMATION
+	) {
+		throw new Error('Reset confirmation is invalid.');
+	}
+
+	return {
+		sourceRoot,
+		dryRun: !apply,
+		reset,
+		preserveIdsFromMap,
+	};
 }
 
 async function main(): Promise<void> {
+	const { sourceRoot: cliSource, dryRun, reset, preserveIdsFromMap } =
+		parseMigrateAssetArgs(process.argv.slice(2));
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	const { sourceRoot: cliSource, dryRun, reset, preserveIdsFromMap } = parseCliArgs(
-		process.argv.slice(2),
-	);
 
 	const manifestPath = joinPath(import.meta.dir, '..', 'fixtures', 'assets-manifest.json');
 	const manifestJson = JSON.parse(readFileSync(manifestPath, 'utf8')) as unknown;
@@ -818,7 +1083,18 @@ async function main(): Promise<void> {
 		log.info(`preserving ${preserveIds.size} file ids from ${outputMapPaths[0]}`);
 	}
 
-	const token = dryRun ? 'dry-run' : await getAdminTokenLib(directusUrl);
+	validateMigrationInputs(manifest, sourceRoot);
+
+	const mode = reset
+		? 'apply + destructive reset'
+		: dryRun
+			? 'dry-run (preview; no mutations)'
+			: 'apply';
+	log.info(`mode: ${mode}`);
+
+	const token = dryRun
+		? 'dry-run'
+		: await getAdminTokenLib(directusUrl, { allowBuildToken: false });
 
 	await migrateAssets(manifest, {
 		directusUrl,
