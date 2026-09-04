@@ -39,7 +39,8 @@
  *
  * Usage (repo root):
  *   op run --env-file=apps/cms/.env -- bun run --cwd apps/cms fixtures:refresh
- *   ... fixtures:refresh --dry-run    # fetch + validate + report, no writes
+ *                                      # fetch + validate + report, no writes
+ *   ... fixtures:refresh -- --apply   # fetch + validate + rewrite fixtures
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -449,24 +450,41 @@ function countRows(filePath: string): number | null {
 	}
 }
 
-function writeFixture(filename: string, content: string, rows: number, dryRun: boolean): void {
+export type RefreshFixtureWriter = (
+	filePath: string,
+	content: string,
+	encoding: 'utf-8',
+) => void;
+
+function writeFixture(
+	filename: string,
+	content: string,
+	rows: number,
+	dryRun: boolean,
+	writeTextFile: RefreshFixtureWriter,
+): void {
 	const filePath = join(FIXTURES_DIR, filename);
 	const before = countRows(filePath);
 	if (dryRun) {
 		log.info(`dry-run: would write ${filename} (${before ?? '?'} -> ${rows} rows)`);
 		return;
 	}
-	writeFileSync(filePath, content, 'utf-8');
+	writeTextFile(filePath, content, 'utf-8');
 	log.info(`wrote ${filename} (${before ?? '?'} -> ${rows} rows)`);
 }
 
-function writeSingletonFixture(filename: string, content: string, dryRun: boolean): void {
+function writeSingletonFixture(
+	filename: string,
+	content: string,
+	dryRun: boolean,
+	writeTextFile: RefreshFixtureWriter,
+): void {
 	const filePath = join(SINGLETONS_DIR, filename);
 	if (dryRun) {
 		log.info(`dry-run: would write singletons/${filename}`);
 		return;
 	}
-	writeFileSync(filePath, content, 'utf-8');
+	writeTextFile(filePath, content, 'utf-8');
 	log.info(`wrote singletons/${filename}`);
 }
 
@@ -565,13 +583,94 @@ function toSiteMetaFixture(row: RawSiteMeta) {
 	};
 }
 
+export interface RefreshFixtureData {
+	projects: unknown;
+	services: unknown;
+	posts: unknown;
+	routeSeo: unknown;
+	siteMeta: unknown;
+}
+
+/** Validate fetched fixture data before crossing the local filesystem write boundary. */
+export function validateAndWriteRefreshFixtures(
+	data: RefreshFixtureData,
+	dryRun: boolean,
+	writeTextFile: RefreshFixtureWriter = writeFileSync,
+): void {
+	const projects = ProjectsFixtureSchema.parse(data.projects);
+	const services = ServicesFixtureSchema.parse(data.services);
+	const posts = BlogPostsFixtureSchema.parse(data.posts);
+	const routeSeo = RouteSeoFixtureSchema.parse(data.routeSeo);
+	const siteMeta = SiteMetaFixtureSchema.parse(data.siteMeta);
+	for (const post of posts) {
+		const result = BlockEditorDocSchema.safeParse(post.body);
+		if (!result.success) {
+			throw new Error(
+				`blog_posts/${post.id}: body fails BlockEditorDocSchema: ${JSON.stringify(result.error.issues)}`,
+			);
+		}
+	}
+
+	const serviceIds = new Set(services.map((service) => service.id));
+	for (const project of projects) {
+		for (const serviceId of project.related_services) {
+			if (!serviceIds.has(serviceId)) {
+				throw new Error(
+					`projects/${project.id}: related service "${serviceId}" missing from services fixture`,
+				);
+			}
+		}
+	}
+
+	writeFixture(
+		'projects.json',
+		`${stringifyInlinePrimitiveArrays(projects)}\n`,
+		projects.length,
+		dryRun,
+		writeTextFile,
+	);
+	writeFixture(
+		'services.json',
+		`${JSON.stringify(services, null, '\t')}\n`,
+		services.length,
+		dryRun,
+		writeTextFile,
+	);
+	writeFixture(
+		'blog-posts.json',
+		`${JSON.stringify(posts, null, 2)}\n`,
+		posts.length,
+		dryRun,
+		writeTextFile,
+	);
+	writeFixture(
+		'route-seo.json',
+		`${JSON.stringify(routeSeo, null, '\t')}\n`,
+		routeSeo.length,
+		dryRun,
+		writeTextFile,
+	);
+	writeSingletonFixture(
+		'site-meta.json',
+		`${JSON.stringify(siteMeta, null, '\t')}\n`,
+		dryRun,
+		writeTextFile,
+	);
+}
+
 // --- Main --------------------------------------------------------------------
 
 async function main(): Promise<void> {
-	const { dryRun } = parseSeedFlags();
+	const { dryRun } = parseSeedFlags({});
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`source CMS: ${directusUrl}${dryRun ? ' [dry-run]' : ''} (read-only)`);
+	log.info(
+		`source CMS: ${directusUrl} [mode: ${
+			dryRun
+				? 'dry-run (read/validate preview; no mutations)'
+				: 'apply (CMS read-only; local fixture writes enabled)'
+		}]`,
+	);
 
 	const token = await getAdminToken(directusUrl);
 	const client = createClient(directusUrl, token);
@@ -679,41 +778,7 @@ async function main(): Promise<void> {
 	const routeSeo = rawRouteSeo.map(toRouteSeoFixture);
 	const siteMeta = toSiteMetaFixture(rawSiteMeta);
 
-	// Validate against the seeders' schemas before writing anything.
-	ProjectsFixtureSchema.parse(projects);
-	ServicesFixtureSchema.parse(services);
-	BlogPostsFixtureSchema.parse(posts);
-	RouteSeoFixtureSchema.parse(routeSeo);
-	SiteMetaFixtureSchema.parse(siteMeta);
-	for (const p of posts) {
-		const result = BlockEditorDocSchema.safeParse(p.body);
-		if (!result.success) {
-			throw new Error(
-				`blog_posts/${p.id}: body fails BlockEditorDocSchema: ${JSON.stringify(result.error.issues)}`,
-			);
-		}
-	}
-
-	// Referential sanity: every related service the projects point at exists.
-	const serviceIds = new Set(services.map((s) => s.id));
-	for (const p of projects) {
-		for (const sid of p.related_services) {
-			if (!serviceIds.has(sid)) {
-				throw new Error(`projects/${p.id}: related service "${sid}" missing from services fixture`);
-			}
-		}
-	}
-
-	writeFixture(
-		'projects.json',
-		`${stringifyInlinePrimitiveArrays(projects)}\n`,
-		projects.length,
-		dryRun,
-	);
-	writeFixture('services.json', `${JSON.stringify(services, null, '\t')}\n`, services.length, dryRun);
-	writeFixture('blog-posts.json', `${JSON.stringify(posts, null, 2)}\n`, posts.length, dryRun);
-	writeFixture('route-seo.json', `${JSON.stringify(routeSeo, null, '\t')}\n`, routeSeo.length, dryRun);
-	writeSingletonFixture('site-meta.json', `${JSON.stringify(siteMeta, null, '\t')}\n`, dryRun);
+	validateAndWriteRefreshFixtures({ projects, services, posts, routeSeo, siteMeta }, dryRun);
 
 	log.info(dryRun ? 'dry-run complete (no files written).' : 'done.');
 }

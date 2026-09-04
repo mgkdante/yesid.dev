@@ -2,8 +2,8 @@
 //
 // DONE — one-shot seed, completed (slice-18g Phase 3; banner added in
 // slice-28.5, audit #32). tech_stack rows live in Directus and Data Studio is
-// the authoring surface. Keep for fresh-environment bootstrap only (--dry-run
-// / --reset guarded), and note bootstrap ORDER: run seed-icons first —
+// the authoring surface. Keep for fresh-environment bootstrap only (--apply /
+// confirmed reset guarded), and note bootstrap ORDER: run seed-icons first —
 // icon_id below is an M2O FK into the icons collection.
 //
 // SCHEMA FIX (slice-28.5, audit #32): the parent-row shape now writes
@@ -31,9 +31,12 @@
  *
  * Run from REPO ROOT (per 18f Phase 8 lesson — relative paths in fixture
  * resolve from cwd=repo-root):
- *   bun run apps/cms/scripts/seed-tech-stack.ts            # writes live
- *   bun run apps/cms/scripts/seed-tech-stack.ts --dry-run  # preview
- *   bun run apps/cms/scripts/seed-tech-stack.ts --reset    # delete-all then write
+ *   bun run apps/cms/scripts/seed-tech-stack.ts
+ *     # dry-run preview; no mutations
+ *   bun run apps/cms/scripts/seed-tech-stack.ts --apply
+ *     # write without clearing existing rows
+ *   bun run apps/cms/scripts/seed-tech-stack.ts --apply --reset --confirm-reset=RESET-SEED-DATA
+ *     # delete all rows, then recreate
  */
 
 import { createItem, deleteItem, readItems } from '@directus/sdk';
@@ -44,7 +47,7 @@ import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
-import { parseSeedFlags } from './lib/cli';
+import { parseSeedFlags, RESET_SEED_DATA_CONFIRMATION } from './lib/cli';
 
 // --- Types -----------------------------------------------------------------
 
@@ -279,7 +282,8 @@ export async function seedTechStack(
 		);
 		if (existing.length > 0) {
 			throw new Error(
-				`[seed] found ${existing.length} existing tech_stack items. Re-run with --reset to clear + recreate.`,
+				`[seed] found ${existing.length} existing tech_stack items. ` +
+					`Re-run with --apply --reset --confirm-reset=${RESET_SEED_DATA_CONFIRMATION} to clear + recreate.`,
 			);
 		}
 	}
@@ -393,10 +397,14 @@ export async function seedTechStack(
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun, reset } = parseSeedFlags({ reset: true });
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
+	);
 
 	const items = loadTechStackFixture();
 	log.info(`source: ${items.length} items from fixtures/collections/tech-stack.json`);

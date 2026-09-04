@@ -17,6 +17,9 @@
  * Pattern matches seed-illustrations.ts (18f) — uses lib/sdk + lib/auth +
  * lib/logger + lib/catch-error. No fixture collection: files map straight
  * to repo paths.
+ *
+ * With no flags, this is a preview with no mutations. Pass `--apply` to
+ * upload missing assets and update the committed asset UUID map.
  */
 
 import { readFolders, uploadFiles } from '@directus/sdk';
@@ -162,10 +165,14 @@ export async function seedBrandAssets(opts: SeedRunOptions): Promise<{ iconUuid:
 }
 
 async function main(): Promise<void> {
-	const { dryRun } = parseSeedFlags();
+	const { dryRun } = parseSeedFlags({});
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : 'apply'
+		}]`,
+	);
 
 	if (dryRun) {
 		await seedBrandAssets({ directusUrl, token: '', dryRun: true });
