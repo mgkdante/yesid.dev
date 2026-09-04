@@ -86,7 +86,22 @@ describe('parseMigrateAssetArgs', () => {
 		{
 			name: 'a missing --source value',
 			argv: ['--source'],
-			error: '--source requires one following value.',
+			error: '--source requires one non-empty, non-option value.',
+		},
+		{
+			name: 'a known option as the --source value',
+			argv: ['--source', '--dry-run', '--apply'],
+			error: '--source requires one non-empty, non-option value.',
+		},
+		{
+			name: 'an unknown option as the --source value',
+			argv: ['--source', '--unknown'],
+			error: '--source requires one non-empty, non-option value.',
+		},
+		{
+			name: 'an empty --source value',
+			argv: ['--source', ''],
+			error: '--source requires one non-empty, non-option value.',
 		},
 		{
 			name: 'duplicate --source flags',

@@ -555,12 +555,11 @@ const uploadOneRateLimited = withRateLimit(uploadOne, {
 	minTime: 100,
 });
 
-export async function migrateAssets(
+function validateMigrationInputs(
 	manifest: AssetsManifest,
-	opts: MigrateOptions,
-): Promise<Map<string, string>> {
-	// Fail loud if any source file is missing BEFORE touching Directus.
-	const missing = findMissingSources(manifest, opts.sourceRoot);
+	sourceRoot: string,
+): void {
+	const missing = findMissingSources(manifest, sourceRoot);
 	if (missing.length > 0) {
 		const list = missing.map((m) => `  - ${m.entry.legacyPath} → ${m.absPath}`).join('\n');
 		throw new Error(`[migrate] ${missing.length} source files missing:\n${list}`);
@@ -569,6 +568,14 @@ export async function migrateAssets(
 	if (folderErrors.length > 0) {
 		throw new Error(`[migrate] folder-reference errors:\n  ${folderErrors.join('\n  ')}`);
 	}
+}
+
+export async function migrateAssets(
+	manifest: AssetsManifest,
+	opts: MigrateOptions,
+): Promise<Map<string, string>> {
+	// Fail loud if any source file is missing BEFORE touching Directus.
+	validateMigrationInputs(manifest, opts.sourceRoot);
 
 	log.info(`manifest: ${manifest.assets.length} assets`);
 	log.info(`source:   ${opts.sourceRoot}`);
@@ -776,8 +783,8 @@ export function parseMigrateAssetArgs(argv: readonly string[]): {
 		if (arg === '--source') {
 			recordSemanticFlag('--source');
 			const source = argv[i + 1];
-			if (source === undefined) {
-				throw new Error('--source requires one following value.');
+			if (source === undefined || source.length === 0 || source.startsWith('-')) {
+				throw new Error('--source requires one non-empty, non-option value.');
 			}
 			sourceRoot = source;
 			i += 1;
@@ -877,17 +884,7 @@ async function main(): Promise<void> {
 		log.info(`preserving ${preserveIds.size} file ids from ${outputMapPaths[0]}`);
 	}
 
-	const missing = findMissingSources(manifest, sourceRoot);
-	if (missing.length > 0) {
-		const list = missing
-			.map((entry) => `  - ${entry.entry.legacyPath} → ${entry.absPath}`)
-			.join('\n');
-		throw new Error(`[migrate] ${missing.length} source files missing:\n${list}`);
-	}
-	const folderErrors = validateFolderReferences(manifest);
-	if (folderErrors.length > 0) {
-		throw new Error(`[migrate] folder-reference errors:\n  ${folderErrors.join('\n  ')}`);
-	}
+	validateMigrationInputs(manifest, sourceRoot);
 
 	const mode = reset
 		? 'apply + destructive reset'
