@@ -7,6 +7,31 @@ import {
 	TechStackPageContentSchema, ContactContentSchema, AboutContentSchema,
 } from '@repo/shared';
 
+function contactFixture(en: Record<string, unknown>, fr?: Record<string, unknown>) {
+	return {
+		id: 1, web3forms_key: 'k',
+		info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
+		form_terminal_title: 'form.sh', form_terminal_command: 'send',
+		translations: [{
+			languages_code: 'en',
+			page_title: 'Contact', station_label: '04', send_error_message: 'failed',
+			meta_title: 'Contact | yesid.', meta_description: 'desc',
+			info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
+			info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
+			info_section_label_languages: 'LANGUAGES',
+			form_command_output: 'ready', form_submit_label: 'send',
+			booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
+			form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
+			form_field_message_placeholder: 'What breaks?',
+			validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
+			success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
+			success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
+			success_work_link_label: 'work', success_blog_link_label: 'blog',
+			...en,
+		}, ...(fr ? [{ languages_code: 'fr', ...fr }] : [])],
+	};
+}
+
 describe('flat-column recomposition (go2-t1b2)', () => {
 	it('hero: flat columns recompose HeroContent', () => {
 		const row = {
@@ -55,31 +80,13 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 
 	it('contact: parent terminal chrome + flat LS columns recompose ContactContent', () => {
 		const row = {
-			id: 1, web3forms_key: 'k',
-			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
-			form_terminal_title: 'form.sh', form_terminal_command: 'send',
-			form_field_name_label: 'legacy-name', form_field_email_label: 'legacy-email', form_field_message_label: 'legacy-message',
-			translations: [{
-				languages_code: 'en',
-				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-				meta_title: 'Contact | yesid.', meta_description: 'desc',
-				info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
-				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
-				info_section_label_languages: 'LANGUAGES',
-				form_command_output: 'ready', form_submit_label: 'send',
-				booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
+			...contactFixture({
 				form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
-				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
-				form_field_message_placeholder: 'What breaks?',
-				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
-				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				success_work_link_label: 'work', success_blog_link_label: 'blog',
 			}, {
-				languages_code: 'fr',
 				form_field_name_label: 'nom', form_field_email_label: 'courriel', form_field_message_label: 'message',
 				success_work_link_label: 'services', success_blog_link_label: 'blogue',
-			}],
+			}),
+			form_field_name_label: 'legacy-name', form_field_email_label: 'legacy-email', form_field_message_label: 'legacy-message',
 		};
 		const channels = [{ label: { en: 'GitHub' }, href: 'https://g', icon: 'gh' }];
 		const out = toContactContent(row, channels);
@@ -98,34 +105,14 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 	});
 
 	it('contact: best-fit columns recompose the optional BEST FIT section (homework #26b)', () => {
-		const row = {
-			id: 1, web3forms_key: 'k',
-			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
-			form_terminal_title: 'form.sh', form_terminal_command: 'send',
-			translations: [{
-				languages_code: 'en',
-				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-				meta_title: 'Contact | yesid.', meta_description: 'desc',
-				info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
-				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
-				info_section_label_languages: 'LANGUAGES',
-				info_section_label_best_fit: 'BEST FIT',
-				info_best_fit_1: 'Slow reports', info_best_fit_2: 'Manual data work',
-				form_command_output: 'ready', form_submit_label: 'send',
-				booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
-				form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
-				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
-				form_field_message_placeholder: 'What breaks?',
-				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
-				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				success_work_link_label: 'work', success_blog_link_label: 'blog',
-			}, {
-				languages_code: 'fr',
-				info_section_label_best_fit: 'PROJETS IDÉAUX',
-				info_best_fit_1: 'Des rapports lents',
-			}],
-		};
+		const row = contactFixture({
+			form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
+			info_section_label_best_fit: 'BEST FIT',
+			info_best_fit_1: 'Slow reports', info_best_fit_2: 'Manual data work',
+		}, {
+			info_section_label_best_fit: 'PROJETS IDÉAUX',
+			info_best_fit_1: 'Des rapports lents',
+		});
 		const out = toContactContent(row, []);
 		// Empty line 3 is filtered; filled lines keep their per-locale values.
 		expect(out.infoTerminal.bestFit).toEqual([
@@ -233,27 +220,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 
 	it('contact: retired socials JSON is ignored when normalized channels are empty', () => {
 		const row = {
-			id: 1, web3forms_key: 'k',
-			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
-			form_terminal_title: 'form.sh', form_terminal_command: 'send',
+			...contactFixture({ socials: [{ label: 'Legacy', href: 'https://legacy.example', icon: 'legacy' }] }),
 			form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
-			translations: [{
-				languages_code: 'en',
-				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-				meta_title: 'Contact | yesid.', meta_description: 'desc',
-				info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
-				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
-				info_section_label_languages: 'LANGUAGES',
-				form_command_output: 'ready', form_submit_label: 'send',
-				booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
-				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
-				form_field_message_placeholder: 'What breaks?',
-				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
-				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				success_work_link_label: 'work', success_blog_link_label: 'blog',
-				socials: [{ label: 'Legacy', href: 'https://legacy.example', icon: 'legacy' }],
-			}],
 		};
 		const out = toContactContent(row, []);
 		expect(out.socials).toEqual([]);
