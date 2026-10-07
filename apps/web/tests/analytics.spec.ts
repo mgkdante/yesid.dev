@@ -447,9 +447,9 @@ test('successful contact form sends one property-free event without form data', 
 	await waitForPageviews(payloads, 1);
 
 	const terminal = visibleContactTerminal(page);
-	await terminal.locator('#contact-name').fill('Private Test Name');
-	await terminal.locator('#contact-email').fill('private-test@example.com');
-	await terminal.locator('#contact-message').fill('Private form message');
+	await terminal.getByLabel(/^(?:name|nom|nombre):$/i).fill('Private Test Name');
+	await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('private-test@example.com');
+	await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('Private form message');
 	await terminal.getByTestId('contact-submit').click();
 
 	await expect
