@@ -2,28 +2,34 @@
 // Runs on every Playwright project (desktop-chrome + 3 mobile profiles).
 
 import { test, expect } from '@playwright/test';
+import { visibleContactTerminal } from '../_support/helpers';
 
-test('contact form is interactive and inputs are tappable', async ({ page }) => {
-	await page.goto('/contact');
-
-	// Deterministic load gate: the contact page container is the landmark the old
-	// networkidle wait implicitly guarded. This web-first expect auto-retries.
-	await expect(page.locator('[data-testid="page-contact"]')).toBeVisible();
-
-	// ContactPage renders the form in both a mobile-stacked and a desktop-resizable
-	// container — both are in the DOM. Filter to the visible instance.
-	// Named inputs from ContactPage.svelte: id="contact-name", "contact-email", "contact-message"
-	const nameInput = page.locator('#contact-name').filter({ visible: true }).first();
-	await expect(nameInput).toBeVisible();
-	await nameInput.focus();
-
-	const box = await nameInput.boundingBox();
-	expect(box).not.toBeNull();
-	// All form fields have min-h-11 (44px); verify the rendered height
-	if (box) {
-		expect(box.height).toBeGreaterThanOrEqual(44);
-	}
-});
+for (const [path, labels] of [
+	['/contact', ['name', 'email', 'message']],
+	['/fr/contact', ['nom', 'courriel', 'message']],
+	['/es/contact', ['nombre', 'correo', 'mensaje']],
+] as const) {
+	test(`contact labels focus tappable fields and keyboard order is preserved: ${path}`, async ({ page }) => {
+		await page.goto(path);
+		const terminal = visibleContactTerminal(page);
+		await expect(terminal.getByTestId('contact-submit')).toBeEnabled();
+		for (const label of labels) {
+			const input = terminal.getByLabel(`${label}:`, { exact: true });
+			await terminal.getByText(`${label}:`, { exact: true }).click();
+			await expect(input).toBeFocused();
+			const box = await input.boundingBox();
+			expect(box).not.toBeNull();
+			expect(box!.height).toBeGreaterThanOrEqual(44);
+		}
+		await terminal.getByLabel(`${labels[0]}:`, { exact: true }).focus();
+		for (const label of labels.slice(1)) {
+			await page.keyboard.press('Tab');
+			await expect(terminal.getByLabel(`${label}:`, { exact: true })).toBeFocused();
+		}
+		await page.keyboard.press('Tab');
+		await expect(terminal.getByTestId('contact-submit')).toBeFocused();
+	});
+}
 
 test('contact submit button has touch-friendly size', async ({ page }) => {
 	await page.goto('/contact');

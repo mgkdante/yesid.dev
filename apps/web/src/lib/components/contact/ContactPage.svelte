@@ -130,6 +130,11 @@
 	const name = persisted<string>('contact-name', '');
 	const email = persisted<string>('contact-email', '');
 	const message = persisted<string>('contact-message', '');
+	const fields = [
+		{ key: 'name', state: name },
+		{ key: 'email', state: email },
+		{ key: 'message', state: message },
+	] as const;
 
 	// slice-34.3: seed the message from a ?bp= blueprint handoff, but never on a
 	// switch-restore — a restore must win over the blueprint prefill. The
@@ -342,7 +347,7 @@
 				</ResizablePane>
 				<ResizableHandle withHandle class="contact-resize-handle" />
 				<ResizablePane defaultSize={67} minSize={40}>
-					{@render formTerminal()}
+					{@render formTerminal('desktop')}
 				</ResizablePane>
 			</ResizablePaneGroup>
 		</div>
@@ -350,7 +355,7 @@
 		<!-- Mobile: Stacked -->
 		<div class="mobile-terminals">
 			{@render infoTerminal()}
-			{@render formTerminal()}
+			{@render formTerminal('mobile')}
 		</div>
 	</div>
 </div>
@@ -444,7 +449,7 @@
 {/snippet}
 
 <!-- ═══ FORM TERMINAL SNIPPET ═══ -->
-{#snippet formTerminal()}
+{#snippet formTerminal(layout: 'desktop' | 'mobile')}
 	<TerminalChrome title={contactPage.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
 		<div class="font-mono text-body leading-relaxed">
 			<!-- Command + output -->
@@ -463,62 +468,32 @@
 				>
 					<div class="flex flex-col gap-4">
 
-						<!-- Name field -->
-						<div class="flex flex-col gap-1">
-							<label for="contact-name" class="text-caption text-[var(--primary)]">
-								{fieldLabel('name')}:
-							</label>
-							<input
-								id="contact-name"
-								name="name"
-								type="text"
-								data-handoff-focus="contact-name"
-								bind:value={name.value}
-								placeholder={resolveLocale(contactPage.formTerminal.fields.name.placeholder, locale)}
-								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
-							/>
-							{#if submitted && errors.name}
-								<div class="text-caption text-[var(--destructive)]">✗ {errors.name}</div>
-							{/if}
-						</div>
-
-						<!-- Email field -->
-						<div class="flex flex-col gap-1">
-							<label for="contact-email" class="text-caption text-[var(--primary)]">
-								{fieldLabel('email')}:
-							</label>
-							<input
-								id="contact-email"
-								name="email"
-								type="email"
-								data-handoff-focus="contact-email"
-								bind:value={email.value}
-								placeholder={resolveLocale(contactPage.formTerminal.fields.email.placeholder, locale)}
-								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
-							/>
-							{#if submitted && errors.email}
-								<div class="text-caption text-[var(--destructive)]">✗ {errors.email}</div>
-							{/if}
-						</div>
-
-						<!-- Message field -->
-						<div class="flex flex-col gap-1">
-							<label for="contact-message" class="text-caption text-[var(--primary)]">
-								{fieldLabel('message')}:
-							</label>
-							<textarea
-								id="contact-message"
-								name="message"
-								data-handoff-focus="contact-message"
-								bind:value={message.value}
-								placeholder={resolveLocale(contactPage.formTerminal.fields.message.placeholder, locale)}
-								rows="6"
-								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
-							></textarea>
-							{#if submitted && errors.message}
-								<div class="text-caption text-[var(--destructive)]">✗ {errors.message}</div>
-							{/if}
-						</div>
+						{#each fields as { key, state }}
+							{@const id = `contact-${layout}-${key}`}
+							{@const error = submitted && errors[key]}
+							{@const attributes = {
+								id,
+								name: key,
+								'data-handoff-focus': `contact-${key}`,
+								'aria-invalid': error ? true : undefined,
+								'aria-describedby': error ? `${id}-error` : undefined,
+								placeholder: resolveLocale(contactPage.formTerminal.fields[key].placeholder, locale),
+								class: `form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 ${key === 'message' ? 'resize-none' : 'min-h-11'} ${fieldBorderClass(key)}`,
+							}}
+							<div class="flex flex-col gap-1">
+								<label for={id} class="text-caption text-[var(--primary)]">
+									{fieldLabel(key)}:
+								</label>
+								{#if key === 'message'}
+									<textarea {...attributes} bind:value={state.value} rows="6"></textarea>
+								{:else}
+									<input {...attributes} type={key === 'email' ? 'email' : 'text'} bind:value={state.value} />
+								{/if}
+								{#if error}
+									<div id={id + '-error'} class="text-caption text-[var(--destructive)]">✗ {error}</div>
+								{/if}
+							</div>
+						{/each}
 
 						<!-- Server-level error -->
 						{#if submitted && errors.form}

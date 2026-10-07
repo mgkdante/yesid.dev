@@ -92,12 +92,12 @@ test.describe('State across languages — contact form (session survives the swi
 		const terminal = visibleContactTerminal(page);
 		await expect(terminal).toBeVisible();
 		const draft = 'I would like to discuss a SvelteKit dashboard project.';
-		const messageEN = terminal.locator('#contact-message');
+		const messageEN = terminal.getByLabel(/^(?:message|mensaje):$/i);
 		await messageEN.fill(draft);
 		await expect(messageEN).toHaveValue(draft);
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL('**/fr/contact');
-		const messageFR = visibleContactTerminal(page).locator('#contact-message');
+		const messageFR = visibleContactTerminal(page).getByLabel(/^(?:message|mensaje):$/i);
 		await expect(messageFR).toHaveValue(draft);
 	});
 
@@ -105,22 +105,22 @@ test.describe('State across languages — contact form (session survives the swi
 		await page.goto('/fr/contact');
 		const terminal = visibleContactTerminal(page);
 		await expect(terminal).toBeVisible();
-		await terminal.locator('#contact-name').fill('Ada Lovelace');
-		await terminal.locator('#contact-email').fill('ada@example.com');
-		await terminal.locator('#contact-message').fill('Bonjour, parlons projet.');
+		await terminal.getByLabel(/^(?:name|nom|nombre):$/i).fill('Ada Lovelace');
+		await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('ada@example.com');
+		await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('Bonjour, parlons projet.');
 		// Click 1: FR → ES — the draft survives the first remount.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL('**/es/contact');
-		await expect(visibleContactTerminal(page).locator('#contact-message')).toHaveValue(
+		await expect(visibleContactTerminal(page).getByLabel(/^(?:message|mensaje):$/i)).toHaveValue(
 			'Bonjour, parlons projet.',
 		);
 		// Click 2: ES → EN — and the second one, all three fields intact.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => url.pathname === '/contact');
 		const after = visibleContactTerminal(page);
-		await expect(after.locator('#contact-name')).toHaveValue('Ada Lovelace');
-		await expect(after.locator('#contact-email')).toHaveValue('ada@example.com');
-		await expect(after.locator('#contact-message')).toHaveValue('Bonjour, parlons projet.');
+		await expect(after.getByLabel(/^(?:name|nom|nombre):$/i)).toHaveValue('Ada Lovelace');
+		await expect(after.getByLabel(/^(?:email|courriel|correo):$/i)).toHaveValue('ada@example.com');
+		await expect(after.getByLabel(/^(?:message|mensaje):$/i)).toHaveValue('Bonjour, parlons projet.');
 	});
 
 	test('a SENT message does not resurrect after the switch', async ({ page }) => {
@@ -128,9 +128,9 @@ test.describe('State across languages — contact form (session survives the swi
 		await page.goto('/contact');
 		const terminal = visibleContactTerminal(page);
 		await expect(terminal).toBeVisible();
-		await terminal.locator('#contact-name').fill('John Doe');
-		await terminal.locator('#contact-email').fill('john@example.com');
-		await terminal.locator('#contact-message').fill('Please reply, this is sent.');
+		await terminal.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
+		await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('john@example.com');
+		await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('Please reply, this is sent.');
 		await terminal.getByTestId('contact-submit').click();
 		await expect(terminal.getByTestId('contact-success')).toBeVisible({ timeout: 5000 });
 		await page.getByTestId('language-toggle').click();
@@ -138,7 +138,7 @@ test.describe('State across languages — contact form (session survives the swi
 		const after = visibleContactTerminal(page);
 		await expect(after.getByTestId('contact-success')).toBeVisible({ timeout: 5000 });
 		await expect(after.getByText('Please reply, this is sent.')).toHaveCount(0);
-		await expect(after.locator('#contact-message')).toHaveCount(0);
+		await expect(after.getByLabel(/^(?:message|mensaje):$/i)).toHaveCount(0);
 	});
 });
 
