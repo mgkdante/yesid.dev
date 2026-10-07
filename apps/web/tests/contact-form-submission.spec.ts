@@ -15,9 +15,9 @@ test.describe('Contact form submission', () => {
 		await mockWeb3Forms(page, { success: true });
 
 		const terminal = visibleContactTerminal(page);
-		await terminal.locator('#contact-name').fill('John Doe');
-		await terminal.locator('#contact-email').fill('john@example.com');
-		await terminal.locator('#contact-message').fill('I would like to discuss a project.');
+		await terminal.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
+		await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('john@example.com');
+		await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('I would like to discuss a project.');
 
 		await terminal.getByTestId('contact-submit').click();
 
@@ -32,22 +32,22 @@ test.describe('Contact form submission', () => {
 		await expect(success.getByText('Message sent successfully!')).toBeVisible({ timeout: 5000 });
 
 		// The input form is gone.
-		await expect(terminal.locator('#contact-name')).toHaveCount(0);
+		await expect(terminal.getByLabel(/^(?:name|nom|nombre):$/i)).toHaveCount(0);
 	});
 
 	test('contact form keeps the form (no success) when the API reports failure', async ({ page }) => {
 		await mockWeb3Forms(page, { success: false });
 
 		const terminal = visibleContactTerminal(page);
-		await terminal.locator('#contact-name').fill('John Doe');
-		await terminal.locator('#contact-email').fill('john@example.com');
-		await terminal.locator('#contact-message').fill('Test message');
+		await terminal.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
+		await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('john@example.com');
+		await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('Test message');
 
 		await terminal.getByTestId('contact-submit').click();
 
 		// No success state — the form stays mounted.
 		await expect(terminal.getByTestId('contact-success')).toHaveCount(0);
-		await expect(terminal.locator('#contact-name')).toBeVisible();
+		await expect(terminal.getByLabel(/^(?:name|nom|nombre):$/i)).toBeVisible();
 
 		// The form-level send error is shown (contactContent.sendErrorMessage),
 		// rendered with the ✗ marker.
@@ -60,9 +60,9 @@ test.describe('Contact form submission', () => {
 		await mockWeb3Forms(page, { success: true });
 
 		const terminal = visibleContactTerminal(page);
-		const nameInput = terminal.locator('#contact-name');
-		const emailInput = terminal.locator('#contact-email');
-		const messageInput = terminal.locator('#contact-message');
+		const nameInput = terminal.getByLabel(/^(?:name|nom|nombre):$/i);
+		const emailInput = terminal.getByLabel(/^(?:email|courriel|correo):$/i);
+		const messageInput = terminal.getByLabel(/^(?:message|mensaje):$/i);
 
 		await nameInput.fill('John Doe');
 		await emailInput.fill('john@example.com');

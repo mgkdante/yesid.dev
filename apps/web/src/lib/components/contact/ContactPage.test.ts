@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
 
@@ -16,15 +16,24 @@ import { contactContent } from '$lib/content/contact-page';
 // persisted() fields register into the same registry on mount).
 import { captureEntries, applyEntries } from '$lib/state/locale-handoff.svelte';
 
+let originalFetch: typeof fetch;
 beforeEach(() => {
+	originalFetch = globalThis.fetch;
 	analyticsMocks.trackAnalyticsEvent.mockClear();
 });
+afterEach(() => { globalThis.fetch = originalFetch; });
 
 async function typeInto(el: HTMLInputElement | HTMLTextAreaElement, value: string) {
 	el.value = value;
 	await fireEvent.input(el);
 	await tick();
 	await tick();
+}
+
+async function fillForm(name = 'Test User', email = 'test@example.com', message = 'Hello there') {
+	for (const [label, value] of [[/^name/i, name], [/^email/i, email], [/^message/i, message]] as const) {
+		await typeInto(screen.getAllByLabelText(label)[0] as HTMLInputElement | HTMLTextAreaElement, value);
+	}
 }
 
 async function submitForm(submitBtn: HTMLElement) {
@@ -67,12 +76,20 @@ describe('ContactPage', () => {
 		expect(terminals.length).toBeGreaterThanOrEqual(1);
 	});
 
-	it('renders all three form fields', () => {
+	it('associates both layouts with their own labeled fields and validation errors', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		// Labels appear twice (desktop + mobile), so use getAllByLabelText
-		expect(screen.getAllByLabelText(/^name/i).length).toBeGreaterThanOrEqual(1);
-		expect(screen.getAllByLabelText(/^email/i).length).toBeGreaterThanOrEqual(1);
-		expect(screen.getAllByLabelText(/^message/i).length).toBeGreaterThanOrEqual(1);
+		const fields = screen.getAllByRole('textbox') as (HTMLInputElement | HTMLTextAreaElement)[];
+		expect(fields).toHaveLength(6);
+		expect(new Set(fields.map((field) => field.id)).size).toBe(6);
+		for (const field of fields) {
+			expect(field).toHaveAccessibleName(`${field.name}:`);
+			expect(field.tagName).toBe(field.name === 'message' ? 'TEXTAREA' : 'INPUT');
+		}
+		await submitForm(screen.getAllByTestId('contact-submit')[0]);
+		for (const field of fields) {
+			expect(field).toHaveAttribute('aria-invalid', 'true');
+			expect(field).toHaveAccessibleDescription(`✗ required, ${field.name} cannot be empty`);
+		}
 	});
 
 	it('uses CMS-localized form field labels in labels and validation errors', async () => {
@@ -192,13 +209,7 @@ describe('ContactPage', () => {
 
 	it('shows invalid email error for bad format', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-
-		await typeInto(nameInputs[0], 'Test');
-		await typeInto(emailInputs[0], 'not-an-email');
-		await typeInto(messageInputs[0], 'Hello');
+		await fillForm('Test', 'not-an-email', 'Hello');
 
 		const submitBtns = screen.getAllByRole('button', { name: /send/i });
 		await submitForm(submitBtns[0]);
@@ -209,13 +220,7 @@ describe('ContactPage', () => {
 
 	it('shows success state after valid submit', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-
-		await typeInto(nameInputs[0], 'Test User');
-		await typeInto(emailInputs[0], 'test@example.com');
-		await typeInto(messageInputs[0], 'Hello there');
+		await fillForm();
 
 		const submitBtns = screen.getAllByRole('button', { name: /send/i });
 		await submitForm(submitBtns[0]);
@@ -240,23 +245,14 @@ describe('ContactPage', () => {
 			return prevFetch(input, init);
 		}) as typeof globalThis.fetch;
 
-		try {
-			render(ContactPage, { props: { contactPage: contactContent } });
-			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-			await typeInto(nameInputs[0], 'Test User');
-			await typeInto(emailInputs[0], 'test@example.com');
-			await typeInto(messageInputs[0], 'Hello there');
-			await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await fillForm();
+		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
 
-			await waitFor(() => {
-				expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
-			});
-			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
-		} finally {
-			globalThis.fetch = prevFetch;
-		}
+		await waitFor(() => {
+			expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
+		});
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
 	it('does not track a conversion when the Web3Forms request rejects', async () => {
@@ -266,30 +262,20 @@ describe('ContactPage', () => {
 			return prevFetch(input, init);
 		}) as typeof globalThis.fetch;
 
-		try {
-			render(ContactPage, { props: { contactPage: contactContent } });
-			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-			await typeInto(nameInputs[0], 'Test User');
-			await typeInto(emailInputs[0], 'test@example.com');
-			await typeInto(messageInputs[0], 'Hello there');
-			await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await fillForm();
+		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
 
-			await waitFor(() => {
-				expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
-			});
-			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
-		} finally {
-			globalThis.fetch = prevFetch;
-		}
+		await waitFor(() => {
+			expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
+		});
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
 	// Launch-edge batch: the Web3Forms round trip is 1-3s of network time — the
 	// button must disable (no double submits) and the terminal must show the
 	// in-flight line instead of dead air.
 	it('disables submit + shows the transmission line while the send is in flight', async () => {
-		const prevFetch = globalThis.fetch;
 		let resolveFetch!: (v: unknown) => void;
 		globalThis.fetch = vi.fn().mockReturnValue(
 			new Promise((resolve) => {
@@ -297,45 +283,36 @@ describe('ContactPage', () => {
 			}),
 		) as typeof globalThis.fetch;
 
-		try {
-			render(ContactPage, { props: { contactPage: contactContent } });
-			const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-			const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-			const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-			await typeInto(nameInputs[0], 'Test User');
-			await typeInto(emailInputs[0], 'test@example.com');
-			await typeInto(messageInputs[0], 'Hello there');
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await fillForm();
 
-			const submitBtns = screen.getAllByTestId('contact-submit') as HTMLButtonElement[];
-			await submitForm(submitBtns[0]);
+		const submitBtns = screen.getAllByTestId('contact-submit') as HTMLButtonElement[];
+		await submitForm(submitBtns[0]);
 
-			// In flight: disabled button, visible transmission line.
-			expect(submitBtns[0].disabled).toBe(true);
-			expect(screen.getAllByTestId('contact-sending-line').length).toBeGreaterThanOrEqual(1);
+		// In flight: disabled button, visible transmission line.
+		expect(submitBtns[0].disabled).toBe(true);
+		expect(screen.getAllByTestId('contact-sending-line').length).toBeGreaterThanOrEqual(1);
 
-			// A second submit while in flight must not re-fire the request.
-			// (The mount-time weather fetch shares the same stub — count only
-			// the Web3Forms calls.)
-			const web3formsCalls = () =>
-				(globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.filter((call) =>
-					String(call[0]).includes('web3forms'),
-				).length;
-			expect(web3formsCalls()).toBe(1);
-			await submitForm(submitBtns[0]);
-			expect(web3formsCalls()).toBe(1);
-			expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+		// A second submit while in flight must not re-fire the request.
+		// (The mount-time weather fetch shares the same stub — count only
+		// the Web3Forms calls.)
+		const web3formsCalls = () =>
+			(globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.filter((call) =>
+				String(call[0]).includes('web3forms'),
+			).length;
+		expect(web3formsCalls()).toBe(1);
+		await submitForm(submitBtns[0]);
+		expect(web3formsCalls()).toBe(1);
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 
-			// Resolve → the success sequence takes over.
-			resolveFetch({ json: async () => ({ success: true }) });
-			await waitFor(
-				() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1),
-				{ timeout: 4000 },
-			);
-			expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
-			expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
-		} finally {
-			globalThis.fetch = prevFetch;
-		}
+		// Resolve → the success sequence takes over.
+		resolveFetch({ json: async () => ({ success: true }) });
+		await waitFor(
+			() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1),
+			{ timeout: 4000 },
+		);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
 	});
 
 	it('tracks the calendar social row as a booking click', async () => {
@@ -420,13 +397,7 @@ describe('ContactPage', () => {
 		} as unknown as typeof contactContent;
 
 		render(ContactPage, { props: { contactPage: linkedContact } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-
-		await typeInto(nameInputs[0], 'Test User');
-		await typeInto(emailInputs[0], 'test@example.com');
-		await typeInto(messageInputs[0], 'Hello there');
+		await fillForm();
 
 		const submitBtns = screen.getAllByRole('button', { name: /send/i });
 		await submitForm(submitBtns[0]);
@@ -478,66 +449,51 @@ describe('ContactPage', () => {
 	// refreshes from /api/weather. Default setup.dom stub returns null (no
 	// fresh data) — these tests override fetch to exercise both branches.
 	it('refreshes weather from /api/weather on mount', async () => {
-		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn().mockResolvedValue(
 			new Response(JSON.stringify({ temp: 99, condition: 'fresh breeze', icon: '01d' }), {
 				status: 200,
 				headers: { 'Content-Type': 'application/json' },
 			}),
 		) as typeof globalThis.fetch;
-		try {
-			render(ContactPage, {
-				props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
-			});
-			await waitFor(() => {
-				expect(screen.getAllByText(/99°C/).length).toBeGreaterThanOrEqual(1);
-			});
-			expect(screen.getAllByText(/fresh breeze/i).length).toBeGreaterThanOrEqual(1);
-			expect(screen.queryAllByText(/12°C/).length).toBe(0);
-			// EN omits the ?lang= param so the CDN cache key stays byte-identical.
-			expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather');
-		} finally {
-			globalThis.fetch = prevFetch;
-		}
+		render(ContactPage, {
+			props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
+		});
+		await waitFor(() => {
+			expect(screen.getAllByText(/99°C/).length).toBeGreaterThanOrEqual(1);
+		});
+		expect(screen.getAllByText(/fresh breeze/i).length).toBeGreaterThanOrEqual(1);
+		expect(screen.queryAllByText(/12°C/).length).toBe(0);
+		// EN omits the ?lang= param so the CDN cache key stays byte-identical.
+		expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather');
 	});
 
 	// The client refresh must carry the active locale so OpenWeather localizes
 	// `condition` (fr/es). Regression guard for the bug where /fr re-fetched
 	// English weather after hydration, overwriting the correct SSR-baked value.
 	it('refreshes weather with the ?lang= param inside a fr locale provider', async () => {
-		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn().mockResolvedValue(
 			new Response(JSON.stringify({ temp: 99, condition: 'brise fraîche', icon: '01d' }), {
 				status: 200,
 				headers: { 'Content-Type': 'application/json' },
 			}),
 		) as typeof globalThis.fetch;
-		try {
-			render(ContactPage, {
-				props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } },
-				context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
-			});
-			await waitFor(() => {
-				expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather?lang=fr');
-			});
-		} finally {
-			globalThis.fetch = prevFetch;
-		}
+		render(ContactPage, {
+			props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } },
+			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+		});
+		await waitFor(() => {
+			expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather?lang=fr');
+		});
 	});
 
 	it('keeps the SSR-baked weather when /api/weather fails', async () => {
-		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn().mockRejectedValue(new Error('offline')) as typeof globalThis.fetch;
-		try {
-			render(ContactPage, {
-				props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
-			});
-			// Give the rejected refresh a microtask turn to (not) apply.
-			await new Promise((r) => setTimeout(r, 20));
-			expect(screen.getAllByText(/12°C/).length).toBeGreaterThanOrEqual(1);
-		} finally {
-			globalThis.fetch = prevFetch;
-		}
+		render(ContactPage, {
+			props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
+		});
+		// Give the rejected refresh a microtask turn to (not) apply.
+		await new Promise((r) => setTimeout(r, 20));
+		expect(screen.getAllByText(/12°C/).length).toBeGreaterThanOrEqual(1);
 	});
 });
 
@@ -603,13 +559,7 @@ describe('ContactPage — state across languages (slice-34.3)', () => {
 
 	it('clears the persisted draft after a successful submit (no resurrection)', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-
-		await typeInto(nameInputs[0], 'Test User');
-		await typeInto(emailInputs[0], 'test@example.com');
-		await typeInto(messageInputs[0], 'Hello there');
+		await fillForm();
 
 		const submitBtns = screen.getAllByRole('button', { name: /send/i });
 		await submitForm(submitBtns[0]);
@@ -628,13 +578,7 @@ describe('ContactPage — state across languages (slice-34.3)', () => {
 
 	it('handleReset clears the persisted draft and the success flag', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-
-		await typeInto(nameInputs[0], 'Test User');
-		await typeInto(emailInputs[0], 'test@example.com');
-		await typeInto(messageInputs[0], 'Hello there');
+		await fillForm();
 		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
 		await waitFor(() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1));
 

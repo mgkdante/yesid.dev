@@ -48,14 +48,27 @@ test.describe('Contact form validation', () => {
 		await expect(form.getByText('✗ 3 errors, fix and retry')).toBeVisible();
 	});
 
+	test('native email validation blocks malformed addresses before submission', async ({ page }) => {
+		const { submittedEmails } = await mockWeb3Forms(page);
+		const form = visibleContactTerminal(page);
+		await form.getByLabel(/^name:$/i).fill('Test User');
+		await form.getByLabel(/^message:$/i).fill('Test message');
+		const email = form.getByLabel(/^email:$/i);
+		await email.fill('not-an-email');
+		await form.getByTestId('contact-submit').click();
+		expect(await email.evaluate((input: HTMLInputElement) => input.validity.typeMismatch)).toBe(true);
+		await expect(email).toBeFocused();
+		expect(submittedEmails).toEqual([]);
+	});
+
 	test('contact form shows invalid email error', async ({ page }) => {
 		const form = visibleContactTerminal(page);
 
-		await form.locator('#contact-name').fill('John Doe');
+		await form.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
 		// Valid to <input type="email"> (has "@"), invalid to the app regex
 		// (domain has no dot) — so the app's own validation runs and reports it.
-		await form.locator('#contact-email').fill('john@nodomain');
-		await form.locator('#contact-message').fill('Test message');
+		await form.getByLabel(/^(?:email|courriel|correo):$/i).fill('john@nodomain');
+		await form.getByLabel(/^(?:message|mensaje):$/i).fill('Test message');
 
 		await form.getByTestId('contact-submit').click();
 
@@ -68,9 +81,9 @@ test.describe('Contact form validation', () => {
 		const { submittedEmails } = await mockWeb3Forms(page, { success: true });
 
 		const form = visibleContactTerminal(page);
-		await form.locator('#contact-name').fill('John Doe');
-		await form.locator('#contact-email').fill('john@nodomain');
-		await form.locator('#contact-message').fill('Test message');
+		await form.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
+		await form.getByLabel(/^(?:email|courriel|correo):$/i).fill('john@nodomain');
+		await form.getByLabel(/^(?:message|mensaje):$/i).fill('Test message');
 
 		await form.getByTestId('contact-submit').click();
 
@@ -89,8 +102,8 @@ test.describe('Contact form validation', () => {
 	test('contact form shows required field error for empty name', async ({ page }) => {
 		const form = visibleContactTerminal(page);
 
-		await form.locator('#contact-email').fill('test@example.com');
-		await form.locator('#contact-message').fill('Test message');
+		await form.getByLabel(/^(?:email|courriel|correo):$/i).fill('test@example.com');
+		await form.getByLabel(/^(?:message|mensaje):$/i).fill('Test message');
 
 		await form.getByTestId('contact-submit').click();
 
@@ -100,8 +113,8 @@ test.describe('Contact form validation', () => {
 	test('contact form shows required field error for empty email', async ({ page }) => {
 		const form = visibleContactTerminal(page);
 
-		await form.locator('#contact-name').fill('John Doe');
-		await form.locator('#contact-message').fill('Test message');
+		await form.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
+		await form.getByLabel(/^(?:message|mensaje):$/i).fill('Test message');
 
 		await form.getByTestId('contact-submit').click();
 
@@ -111,8 +124,8 @@ test.describe('Contact form validation', () => {
 	test('contact form shows required field error for empty message', async ({ page }) => {
 		const form = visibleContactTerminal(page);
 
-		await form.locator('#contact-name').fill('John Doe');
-		await form.locator('#contact-email').fill('test@example.com');
+		await form.getByLabel(/^(?:name|nom|nombre):$/i).fill('John Doe');
+		await form.getByLabel(/^(?:email|courriel|correo):$/i).fill('test@example.com');
 
 		await form.getByTestId('contact-submit').click();
 
@@ -133,9 +146,9 @@ test.describe('Contact form validation', () => {
 			await expect(visibleContactTerminal(page)).toBeVisible();
 
 			const form = visibleContactTerminal(page);
-			await form.locator('#contact-name').fill('Test User');
-			await form.locator('#contact-email').fill(email);
-			await form.locator('#contact-message').fill('Test message');
+			await form.getByLabel(/^(?:name|nom|nombre):$/i).fill('Test User');
+			await form.getByLabel(/^(?:email|courriel|correo):$/i).fill(email);
+			await form.getByLabel(/^(?:message|mensaje):$/i).fill('Test message');
 
 			await form.getByTestId('contact-submit').click();
 
