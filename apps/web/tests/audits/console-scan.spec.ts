@@ -66,10 +66,10 @@ test('contact form interaction — no console errors', async ({ page }) => {
 	// Fill the form but DO NOT submit. Verifies client-side validation +
 	// reactive form code doesn't surface errors. Per slice-16 spec the
 	// form must not be actually submitted.
-	const nameInput = terminal.locator('#contact-name');
+	const nameInput = terminal.getByLabel(/^(?:name|nom|nombre):$/i);
 	await nameInput.fill('audit-bot');
-	await terminal.locator('#contact-email').fill('audit@example.invalid');
-	await terminal.locator('#contact-message').fill('slice-16 console scan');
+	await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('audit@example.invalid');
+	await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('slice-16 console scan');
 
 	expect(problems, JSON.stringify(problems, null, 2)).toHaveLength(0);
 });
