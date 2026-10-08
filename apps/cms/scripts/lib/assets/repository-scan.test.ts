@@ -1207,18 +1207,18 @@ describe("yesid.dev real repository contract", () => {
     const staticAssets = first.assets.filter((asset) =>
       asset.repoPath?.startsWith("apps/web/static/"),
     );
-    expect(staticAssets).toHaveLength(122);
+    expect(staticAssets).toHaveLength(208);
     expect(
       staticAssets.filter((asset) => asset.kind !== "document"),
-    ).toHaveLength(120);
+    ).toHaveLength(206);
     expect(
       staticAssets.filter(
         (asset) => asset.kind === "raster" && asset.repoPath?.endsWith(".png"),
       ),
-    ).toHaveLength(37);
+    ).toHaveLength(46);
     expect(
       staticAssets.filter((asset) => asset.repoPath?.endsWith(".webp")),
-    ).toHaveLength(63);
+    ).toHaveLength(128);
     expect(staticAssets.filter((asset) => asset.kind === "svg")).toHaveLength(
       20,
     );
@@ -1454,78 +1454,60 @@ describe("yesid.dev real repository contract", () => {
           finding.rawRef === rawRef,
       );
     const directusSource = "apps/web/src/lib/content/projects.ts";
-    const expectedDirectusReferences = {
-      en: [
-        {
-          blockId: "img-desktop-en",
-          variant: "primary",
-          fileId: "6048a712-de42-4cca-ab51-6f92d64685c2",
-          rawRef: "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
-          assetId: "repo-file:apps/web/static/images/work/yesid-dev-home.png",
-        },
-        {
-          blockId: "img-desktop-en",
-          variant: "light",
-          fileId: "c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-          rawRef: "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-          assetId:
-            "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
-        },
-        {
-          blockId: "img-mobile-en",
-          variant: "primary",
-          fileId: "c2fad757-ecba-457c-aff7-47d3cc504081",
-          rawRef: "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
-          assetId:
-            "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
-        },
-        {
-          blockId: "img-mobile-en",
-          variant: "light",
-          fileId: "9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-          rawRef: "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-          assetId:
-            "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
-        },
-      ],
-      fr: [
-        {
-          blockId: "img-desktop-fr",
-          variant: "primary",
-          fileId: "6048a712-de42-4cca-ab51-6f92d64685c2",
-          rawRef: "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
-          assetId: "repo-file:apps/web/static/images/work/yesid-dev-home.png",
-        },
-        {
-          blockId: "img-desktop-fr",
-          variant: "light",
-          fileId: "c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-          rawRef: "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-          assetId:
-            "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
-        },
-        {
-          blockId: "img-mobile-fr",
-          variant: "primary",
-          fileId: "c2fad757-ecba-457c-aff7-47d3cc504081",
-          rawRef: "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
-          assetId:
-            "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
-        },
-        {
-          blockId: "img-mobile-fr",
-          variant: "light",
-          fileId: "9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-          rawRef: "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-          assetId:
-            "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
-        },
-      ],
-    } as const;
+    const expectedDirectusReferences = [
+      {
+        "variant": "primary",
+        "fileId": "d3cbe8e0-6eef-4bd3-be7b-ec11920c85c1",
+        "rawRef": "/assets/d3cbe8e0-6eef-4bd3-be7b-ec11920c85c1",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "228505cb-56af-4738-944a-143bb5d8480c",
+        "rawRef": "/assets/228505cb-56af-4738-944a-143bb5d8480c",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "a6e172a5-a284-4fb6-af79-6cfe88eee815",
+        "rawRef": "/assets/a6e172a5-a284-4fb6-af79-6cfe88eee815",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "eac07303-eacd-48d3-ac65-632a23a4677c",
+        "rawRef": "/assets/eac07303-eacd-48d3-ac65-632a23a4677c",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "c758fd83-ac47-4c2b-a293-a9051e74199d",
+        "rawRef": "/assets/c758fd83-ac47-4c2b-a293-a9051e74199d",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "162f42a4-658c-438b-bdab-cf11218be18e",
+        "rawRef": "/assets/162f42a4-658c-438b-bdab-cf11218be18e",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "42024627-5dab-496e-9d69-18387300802e",
+        "rawRef": "/assets/42024627-5dab-496e-9d69-18387300802e",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "f197e2c7-44e3-40a8-a51d-3d52bd6f92c8",
+        "rawRef": "/assets/f197e2c7-44e3-40a8-a51d-3d52bd6f92c8",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.jpg"
+      }
+    ] as const;
     const yesidProject = projects.find((project) => project.slug === "yesid-dev");
     expect(yesidProject).toBeDefined();
 
-    for (const locale of ["en", "fr"] as const) {
+    for (const locale of ["en", "fr", "es"] as const) {
       const localeImageReferences = yesidProject!.sections.flatMap((section) =>
         (section.content[locale]?.blocks ?? [])
           .filter((block) => block.type === "image")
@@ -1548,10 +1530,10 @@ describe("yesid.dev real repository contract", () => {
               : []),
           ]),
       );
-      expect(localeImageReferences).toEqual(
-        expectedDirectusReferences[locale].map(
-          ({ blockId, variant, fileId, rawRef }) => ({
-            blockId,
+      expect(new Set(localeImageReferences.map(({ blockId }) => blockId)).size).toBe(8);
+      expect(localeImageReferences.map(({ variant, fileId, rawRef }) => ({ variant, fileId, rawRef }))).toEqual(
+        expectedDirectusReferences.map(
+          ({ variant, fileId, rawRef }) => ({
             variant,
             fileId,
             rawRef,
@@ -1560,7 +1542,7 @@ describe("yesid.dev real repository contract", () => {
       );
     }
 
-    for (const { rawRef, assetId } of expectedDirectusReferences.en) {
+    for (const { rawRef, assetId } of expectedDirectusReferences) {
       const occurrences = first.usages.filter(
         (usage) =>
           usage.sourceFile === directusSource &&
@@ -1568,9 +1550,9 @@ describe("yesid.dev real repository contract", () => {
           usage.unresolvedRef === rawRef &&
           usage.cmsField === "directus_asset_url",
       );
-      expect(occurrences).toHaveLength(2);
+      expect(occurrences).toHaveLength(3);
       expect(occurrences.every((usage) => usage.sourceLine !== null)).toBe(true);
-      expect(new Set(occurrences.map((usage) => usage.sourceLine)).size).toBe(2);
+      expect(new Set(occurrences.map((usage) => usage.sourceLine)).size).toBe(3);
     }
 
     const serviceSources = [
@@ -1694,15 +1676,15 @@ describe("yesid.dev real repository contract", () => {
         "utf8",
       ),
     ) as { files: Record<string, string> };
-    expect(manifest.assets).toHaveLength(26);
-    expect(Object.keys(cmsMap)).toHaveLength(28);
+    expect(manifest.assets).toHaveLength(47);
+    expect(Object.keys(cmsMap)).toHaveLength(49);
     expect(sharedMap).toEqual(cmsMap);
     expect(Object.keys(generatedManifest.files)).toHaveLength(22);
     expect(
       first.generatedFrom.filter(
         (link) => link.generator === "apps/cms/scripts/lib/media-variants.ts",
       ),
-    ).toHaveLength(49);
+    ).toHaveLength(114);
     expect(
       new Set(
         first.generatedFrom

@@ -33,7 +33,7 @@ const DARK_CARD = 'rgb(26, 26, 26)'; // #1a1a1a --card / --surface-2 — solid p
 const DARK_PRIMARY = 'rgb(224, 120, 0)'; // #E07800 — orange standard action
 const DARK_ACCENT_TEXT = 'rgb(255, 182, 39)'; // #FFB627 — yellow voice
 
-test('home cards surface excerpt + station chip + metric + exploration line (non-zero boxes)', async ({ page }) => {
+test('home cards surface excerpt + station chip + authored metrics + exploration line (non-zero boxes)', async ({ page }) => {
 	await page.goto('/');
 	const section = page.getByTestId('proof-reel-section');
 	// Deterministic replacement for networkidle: the proof reel is the landmark
@@ -52,6 +52,8 @@ test('home cards surface excerpt + station chip + metric + exploration line (non
 	// `.line-bullet` under the card's Services badge row, so at least one roundel
 	// must render across the reel.
 	expect(await page.locator('.line-bullet').count()).toBeGreaterThan(0);
+	expect(await page.getByTestId('proof-metric-value').count()).toBeGreaterThan(0);
+	await expect(page.locator('[data-testid="proof-card"][href="/projects/cafe-arona"]').getByTestId('proof-metric-value')).toHaveCount(0);
 
 	// The orange exploration action survived as the section-level "view all"
 	// link (the per-card "see the build →" line was removed: the whole card is
@@ -70,9 +72,9 @@ test('home cards surface excerpt + station chip + metric + exploration line (non
 
 		// Yellow metric voice — self-contained computed-style assertion.
 		const metric = card.getByTestId('proof-metric-value').first();
-		await expect(metric, `card ${i} metric span`).toBeAttached();
-		const hasMetric = (((await metric.textContent()) ?? '').trim().length ?? 0) > 0;
+		const hasMetric = (await metric.count()) > 0;
 		if (hasMetric) {
+			expect((await metric.textContent())?.trim().length).toBeGreaterThan(0);
 			await expect(metric).toHaveCSS('color', DARK_ACCENT_TEXT);
 		}
 		// A card renders one station roundel per related station (many-to-many
