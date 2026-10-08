@@ -1853,3 +1853,32 @@ describe("yesid.dev real repository contract", () => {
     ).toBe(false);
   }, 15_000);
 });
+
+it("connects responsive derivative provenance to the tracked original", async () => {
+  const original = "apps/web/static/images/work/publication-original.png";
+  const derivative = "apps/web/static/images/work/publication-original.w240.webp";
+  const { root, trackedFiles } = await makeMiniRepo({
+    [original]: new Uint8Array([1, 2, 3]),
+    [derivative]: new Uint8Array([4, 5, 6]),
+    "apps/web/src/lib/content/media-variants.ts": [
+      "export const mediaVariants = {",
+      "\t'/images/work/publication-original.png': {",
+      "\t\tvariants: [{ path: '/images/work/publication-original.w240.webp' }],",
+      "\t}",
+      "};",
+    ].join("\n"),
+  });
+  const scan = await scanRepository({
+    repoRoot: root,
+    trackedFiles,
+    declarations: [],
+  });
+  const links = scan.generatedFrom.filter(
+    (link) => link.outputAssetId === "repo-file:" + derivative,
+  );
+  expect(links).toHaveLength(1);
+  expect(links[0]!.inputRef).toBe(original);
+  expect(
+    scan.assets.filter((asset) => asset.repoPath === links[0]!.inputRef),
+  ).toHaveLength(1);
+});

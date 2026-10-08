@@ -1617,7 +1617,8 @@ export async function scanRepository(
         if (!outputAsset) continue;
         generatedFrom.push({
           outputAssetId: outputAsset.id,
-          inputRef: currentOriginal,
+          inputRef:
+            resolveLiteralPath(variantsPath, currentOriginal) ?? currentOriginal,
           generator: "apps/cms/scripts/lib/media-variants.ts",
           relation: "derived-from",
         });
