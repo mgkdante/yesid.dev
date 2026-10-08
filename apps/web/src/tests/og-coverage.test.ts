@@ -62,7 +62,7 @@ describe('OG coverage gate', () => {
 			return ogImagePath(type, baseSlug, locale);
 		});
 
-		expect(cases).toHaveLength(24);
+		expect(cases).toHaveLength(42);
 		expect(new Set(paths).size).toBe(paths.length);
 	});
 

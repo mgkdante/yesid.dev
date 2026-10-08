@@ -25,6 +25,7 @@ import * as assetAudit from '../../../../cms/scripts/lib/assets/audit';
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
 const assetMock = vi.hoisted(() => ({ relative: false }));
 vi.mock('$lib/directus/assets', () => ({
+	assetImage: (id: string, preset?: string) => ({ src: assetMock.relative ? `/images/work/${id}.png` : `https://cms.example.com/assets/${id}${preset ? `?key=${preset}` : ''}`, ...(assetMock.relative ? {width:1440,height:1000} : {}) }),
 	asset: (id: string, preset?: string) =>
 		assetMock.relative
 			? `/images/work/${id}.png`
@@ -217,6 +218,8 @@ describe('blogSlugSeoFactory', () => {
 		expect(blogPosting?.image).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
 		);
+		expect(seo.ogImage?.width).toBe(1440);
+		expect(seo.ogImage?.height).toBe(1000);
 		// ogImage uses the same absolutized URL.
 		expect(seo.ogImage?.url).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',

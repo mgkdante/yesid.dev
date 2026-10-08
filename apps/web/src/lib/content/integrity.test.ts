@@ -339,7 +339,7 @@ describe('blogPosts data integrity', () => {
 		});
 	});
 
-	it('keeps the six EN/FR/ES families on the approved newest-first editorial schedule', () => {
+	it('preserves the six older families and adds four trilingual publication families', () => {
 		const expectedDates = new Map([
 			['the-two-hour-internet-slot', '2026-06-01'],
 			['how-i-learn-orbiting-a-system-until-it-clicks', '2026-06-09'],
@@ -348,12 +348,17 @@ describe('blogPosts data integrity', () => {
 			['50-to-0-an-oracle-always-free-vm', '2026-07-03'],
 			['does-your-website-need-instant-publishing', '2026-07-11'],
 		]);
-		expect(blogPosts).toHaveLength(18);
+		expect(blogPosts).toHaveLength(30);
 		for (const [translationKey, date] of expectedDates) {
 			const family = blogPosts.filter((post) => post.translationKey === translationKey);
 			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
 			expect(family.every((post) => post.date === date)).toBe(true);
 			expect(family.every((post) => post.dateModified === '2026-07-11')).toBe(true);
+		}
+		for (const key of ['missing-data-is-not-zero', 'before-product-catalogue-final', 'when-similar-components-stay-separate', 'changing-language-without-starting-over']) {
+			const family = blogPosts.filter((post) => post.translationKey === key);
+			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
+			expect(family.every((post) => post.date === '2026-10-08')).toBe(true);
 		}
 		expect(blogPosts.map((post) => post.date)).toEqual(
 			blogPosts.map((post) => post.date).toSorted().reverse(),
@@ -769,7 +774,8 @@ describe('LocalizedString guard + translation debt', () => {
 // receiver r2: full-bleed footer column headings (EXPLORE/LEGAL/CONNECT,
 // site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
 // OPS2 analytics-choice microcopy adds six EN/FR/ES-complete site-label leaves, 666 + 6 = 672.
-const LOCKED = { TOTAL: 672, WITH_FR: 672, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// October portfolio publication: 38 additional FR-complete project strings, no added translation debt.
+const LOCKED = { TOTAL: 710, WITH_FR: 710, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

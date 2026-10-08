@@ -4,26 +4,26 @@
 	"source": "live",
 	"files": {
 		"about-page.ts": "db39333ead6907d011aede55fe95af6282b9de7f42093784f04ebd66665c7ff6",
-		"blog-bodies.ts": "7fdb2d3b42d77e5edd7a7da72fb84b4190664c5a565cc8ff72b28c91b69323bd",
+		"blog-bodies.ts": "190da250a9c6f34ae10eb0ae4b616b3d6f0d0b440798799c7e5af6d25fd7886d",
 		"blog-page.ts": "c3134e2e3de40fd05d5f7fd0ef71f2f236866e96f61e07381d6d8d9f071ceaea",
-		"blog.ts": "8daa0c53d0cb6bae822eb982b2da75708ea5b9c7ebad77dc501464dff8b0188b",
+		"blog.ts": "350ec64f224e2c33452f57b1c5bccd2e7bfaa3a0b1b1e6650980078964a299d9",
 		"contact-page.ts": "7e9bff62d4f6390d4df90d3e8904e36e744efbef52bee1e3ff614539aa3ec190",
 		"error-pages.ts": "3a5df86609ed3c7f7fecbb04209d010bd6621b4566d5d0ed0bf2d7d4e52a32d0",
 		"legal-pages.ts": "290a914cbbd6dad2c04a6d9f17bf1f281c842f267ee69a1f9f23144ff4302b48",
-		"media-assets.ts": "7c0e12e8f3e34455238496e527ae4edaea3c0179a579bc377fa9427896d0a607",
-		"media-variants.ts": "e903030a2416c11e6f3b226af1795faecebf77d9bcd637d9671dc624bd91c99d",
+		"media-assets.ts": "2f1ffbe38f8a3a714adcc160d1de44333eb4b592095c4b68b419b1231fd9585a",
+		"media-variants.ts": "6a665815284097cc8a720dc39958c6c3da7374b371d8c9cca640e6a731920835",
 		"morph-shapes.ts": "105d648f74bf0fb7d4f0d9a0bccf8ce1519cc1d5ef180c89677d20a3602173d3",
 		"nav.ts": "232e3c855d5f534846004145a16cbf357ed9b4ec2b3ac5d559e27e85fde077be",
 		"projects-page.ts": "74503286ec615fb76db6b5dc921a3f1cf49f146cfd90c021c8420c0c9b13c17a",
-		"projects.ts": "ad834151aab840e3f4a5d83716d647db61258875493fca0112fcc494ac89e0c5",
+		"projects.ts": "58c3fabb767cb2200c9313bb9a24e8d5322dd33e721088327d1e94dbd4023a19",
 		"route-seo.ts": "95b07d9c9a2b2cf53a46c6f9e978c5b9433211cb53cc35664448ec97d5fd9fc8",
-		"services.ts": "7e1ec379abbafcfc02a439eba8670d57f854ed9f337332bffad42a7bdf7a5e8a",
+		"services.ts": "ec5aa8f8b5185b5228f566a45fc5e7ffd92c88c3815c8fbd8203daf12e5f4953",
 		"site-content.ts": "ff49ff5f84a03d9b5144b1102ad17664524464f8974dc4be2bfaf55b894c9819",
 		"site-labels.ts": "36f502b854bab90d85b8426be1f2aeb9219f9e15219a4ed46207029ad4732b53",
 		"site-meta.ts": "eaf48ceafa0d48a9f6af370f36e8fb8b102047c4ab56df50e9e4113ed0174924",
 		"site-pages.ts": "c2fe166b59cf691145431440b02952e30ceca8a893f1598d90e9e93a9e383a8e",
 		"site-seo-defaults.ts": "c85658079e8252b95627960f2218e923a12be89fa7892b3235bf8da7e2bf58df",
 		"stack-archetypes.ts": "8f4a7f3e6944149ed5ab362157b277395371b32a736d2fab9db023df11312977",
-		"tech-stack.ts": "431b1555c8b9fdb05d05c67c28a8914cb0a39fcdff8ac4495a2391159ca3c812"
+		"tech-stack.ts": "5d2b99171511c3f043296f1451a20333d124cac440fe74da2b774d11cf66be70"
 	}
 }

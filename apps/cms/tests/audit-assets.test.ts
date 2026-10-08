@@ -149,10 +149,10 @@ interface AuditAssetsSubject {
     counts: {
       siteStaticGroups: 13;
       serviceStaticGroups: 4;
-      projectRuntimeGroups: 2;
-      blogRuntimeGroups: 6;
-      totalGroups: 25;
-      totalRows: 75;
+      projectRuntimeGroups: 4;
+      blogRuntimeGroups: 10;
+      totalGroups: 31;
+      totalRows: 93;
     };
   };
   buildCurrentGeneratedOutputExpectations(
@@ -1113,7 +1113,7 @@ describe("current generated OG inventory contract", () => {
     ]);
   });
 
-  it("derives the exact 25-group/75-row graph and proves every static file binding", async () => {
+  it("derives the exact 31-group/93-row graph and proves every static file binding", async () => {
     const cli = requireSubject();
     const repository = await currentRepositoryScan();
     const graph = cli.buildCurrentAssetOgGraph({ repository });
@@ -1121,12 +1121,12 @@ describe("current generated OG inventory contract", () => {
     expect(graph.counts).toEqual({
       siteStaticGroups: 13,
       serviceStaticGroups: 4,
-      projectRuntimeGroups: 2,
-      blogRuntimeGroups: 6,
-      totalGroups: 25,
-      totalRows: 75,
+      projectRuntimeGroups: 4,
+      blogRuntimeGroups: 10,
+      totalGroups: 31,
+      totalRows: 93,
     });
-    expect(graph.ogCoverage).toHaveLength(75);
+    expect(graph.ogCoverage).toHaveLength(93);
     const staticRows = graph.ogCoverage.filter(
       (row) => row.currentRef?.kind === "repository-path",
     );
@@ -1162,7 +1162,7 @@ describe("current generated OG inventory contract", () => {
       locales.add(`${row.locale}:${row.route}`);
       groups.set(groupKey, locales);
     }
-    expect(groups.size).toBe(25);
+    expect(groups.size).toBe(31);
     expect([...groups.values()].every((rows) => rows.size === 3)).toBe(true);
   });
 

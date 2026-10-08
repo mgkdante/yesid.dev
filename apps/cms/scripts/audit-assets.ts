@@ -699,10 +699,10 @@ type OgLocale = "en" | "fr" | "es";
 export interface AssetAuditOgGraphCounts {
   siteStaticGroups: 13;
   serviceStaticGroups: 4;
-  projectRuntimeGroups: 2;
-  blogRuntimeGroups: 6;
-  totalGroups: 25;
-  totalRows: 75;
+  projectRuntimeGroups: 4;
+  blogRuntimeGroups: 10;
+  totalGroups: 31;
+  totalRows: 93;
 }
 
 export interface AssetAuditOgGraph {
@@ -970,7 +970,7 @@ export function buildCurrentAssetOgGraph(input: {
   publishedLocales?: readonly string[];
 }): AssetAuditOgGraph {
   const blogs = groupedBlogs(input.blogs ?? blogPosts);
-  // Deliberately strict-public: the fixed 25-group/75-row audit excludes WIP even though OG prerender entries include it.
+  // Deliberately strict-public: the fixed 31-group/93-row audit excludes WIP even though OG prerender entries include it.
   const publicProjects = (input.projectRows ?? projects)
     .filter((project) => project.status === "public")
     .map((project) => project.slug)
@@ -1021,12 +1021,12 @@ export function buildCurrentAssetOgGraph(input: {
   ) {
     throw new TypeError("The published OG locale inventory drifted");
   }
-  if (publicProjects.length !== 2) {
-    throw new TypeError("The canonical OG graph requires two public projects");
+  if (publicProjects.length !== 4) {
+    throw new TypeError("The canonical OG graph requires four public projects");
   }
-  if (blogs.size !== 6) {
+  if (blogs.size !== 10) {
     throw new TypeError(
-      "The canonical OG graph requires six blog translation groups",
+      "The canonical OG graph requires ten blog translation groups",
     );
   }
 
@@ -1164,10 +1164,10 @@ export function buildCurrentAssetOgGraph(input: {
     Number(staticConsumerProof.routes) * ROUTE_OG_GROUPS.length * 3 +
     Number(staticConsumerProof.services) * SERVICE_OG_GROUPS.length * 3;
   if (
-    requirements.length !== 75 ||
+    requirements.length !== 93 ||
     proofUsages.length !== expectedStaticProofs
   ) {
-    throw new TypeError("The canonical OG graph must contain 75 rows");
+    throw new TypeError("The canonical OG graph must contain 93 rows");
   }
   return {
     repository: {
@@ -1178,10 +1178,10 @@ export function buildCurrentAssetOgGraph(input: {
     counts: {
       siteStaticGroups: 13,
       serviceStaticGroups: 4,
-      projectRuntimeGroups: 2,
-      blogRuntimeGroups: 6,
-      totalGroups: 25,
-      totalRows: 75,
+      projectRuntimeGroups: 4,
+      blogRuntimeGroups: 10,
+      totalGroups: 31,
+      totalRows: 93,
     },
   };
 }

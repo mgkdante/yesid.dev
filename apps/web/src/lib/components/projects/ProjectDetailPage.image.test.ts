@@ -161,6 +161,15 @@ describe('ProjectDetailPage image placement', () => {
 						Node.DOCUMENT_POSITION_FOLLOWING,
 			),
 		).toBe(true);
+		const overviewTrigger = firstSection?.querySelector('button.section-header')!;
+		const optionalSection = container.querySelector('[data-section-index="1"]')!;
+		const optionalTrigger = optionalSection.querySelector('button.section-header')!;
+		expect(overviewTrigger.getAttribute('aria-expanded')).toBe('true');
+		expect(optionalTrigger.getAttribute('aria-expanded')).toBe('false');
+		expect(optionalSection.id).toBe('section-1');
+		expect(optionalSection.querySelector('[inert]')).toBeTruthy();
+		await fireEvent.click(optionalTrigger);
+		expect(optionalTrigger.getAttribute('aria-expanded')).toBe('true');
 		expect(screen.getByTestId('mermaid-diagram')).toBeInTheDocument();
 		expect(screen.getByText(/Directus CMS/)).toBeInTheDocument();
 		expect(screen.getAllByText(/export-fallbacks\.ts/).length).toBeGreaterThanOrEqual(2);

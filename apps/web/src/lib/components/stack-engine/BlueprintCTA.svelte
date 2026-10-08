@@ -66,7 +66,7 @@
 
 <div class="blueprint-cta" data-testid="blueprint-cta">
 	<div class="cta-row">
-		<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
+		<a class="cta-link cta-primary" data-testid="cta-blueprint" href={localizeHref(blueprintHref, locale)}>
 			{takeBlueprint}
 		</a>
 		{#if archetype.serviceId}
