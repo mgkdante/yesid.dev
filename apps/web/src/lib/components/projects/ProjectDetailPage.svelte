@@ -461,6 +461,7 @@
 			{#if firstArticleSection}
 				<div
 					class="section-block"
+					id="section-0"
 					data-section-index={0}
 				>
 					<CollapsibleSection
@@ -498,13 +499,14 @@
 				{@const i = offset + 1}
 				<div
 					class="section-block"
+					id={`section-${i}`}
 					data-section-index={i}
 				>
 					<CollapsibleSection
 						title={section.title}
 						sectionKey="proj-section-{i}"
 						index={i}
-						open={true}
+						open={false}
 						>
 							<div class="section-body">
 								<BlockRenderer doc={section.doc} {codeHighlights} />

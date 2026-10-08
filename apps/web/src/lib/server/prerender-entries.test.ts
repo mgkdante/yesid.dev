@@ -80,7 +80,7 @@ describe('prerender-entries', () => {
 	});
 
 	it('ogProjectSlugs binds generated projects by default', () => {
-		expect(ogProjectSlugs()).toEqual(['yesid-dev', 'transit-data-pipeline']);
+		expect(ogProjectSlugs()).toEqual(['transit-data-pipeline', 'cafe-arona', 'yesid-dev-design', 'yesid-dev']);
 	});
 
 	it('serviceEntries covers every visible service in every locale, and only those', () => {

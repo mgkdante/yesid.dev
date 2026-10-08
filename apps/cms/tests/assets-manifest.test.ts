@@ -76,9 +76,9 @@ describe('fixtures/assets-manifest.json', () => {
 		expect(m.sourceRoot).toBe('apps/web/static');
 	});
 
-	it('declares exactly 26 assets after the og route-card additions', () => {
+	it('declares exactly 47 assets after the portfolio screenshot additions', () => {
 		const m = loadManifest();
-		expect(m.assets.length).toBe(26);
+		expect(m.assets.length).toBe(47);
 		expect(m.assets.map((asset) => asset.legacyPath)).toEqual(
 			expect.arrayContaining([
 				'images/about/languages/quebec.svg',

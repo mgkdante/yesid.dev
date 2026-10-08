@@ -134,3 +134,18 @@ describe('CollapsibleSection — whole-card toggling (GO2-W5 final batch 6d)', (
 		expect(card.classList.contains('section-card--toggleable')).toBe(false);
 	});
 });
+
+describe('optional depth focus containment', () => {
+	it('keeps closed content mounted but inert until the reader opens it', async () => {
+		const { container, getByTestId } = render(CollapsibleSection, {
+			props: { title: 'Technical detail', open: false, children: bodyContent },
+		});
+		const body = container.querySelector('.section-body')!;
+		expect(getByTestId('body-link')).toBeTruthy();
+		expect(body.hasAttribute('inert')).toBe(true);
+		await fireEvent.click(container.querySelector('button.section-header')!);
+		expect(body.hasAttribute('inert')).toBe(false);
+		await fireEvent.click(container.querySelector('button.section-header')!);
+		expect(body.hasAttribute('inert')).toBe(true);
+	});
+});

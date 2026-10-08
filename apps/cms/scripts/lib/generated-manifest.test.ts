@@ -132,7 +132,7 @@ describe('GENERATED_HEADER_MARKER', () => {
 		expect(out.slice(0, 400)).toContain(GENERATED_HEADER_MARKER);
 	});
 
-	it('blocks a staged hand-edit through the live pre-commit guard', async () => {
+	it('allows handwritten content and blocks generated hand-edits without jq', async () => {
 		const temporaryDirectory = await mkdtemp(join(tmpdir(), 'generated-content-index-'));
 		const indexPath = join(temporaryDirectory, 'index');
 		const objectDirectory = join(temporaryDirectory, 'objects');
@@ -162,6 +162,27 @@ describe('GENERATED_HEADER_MARKER', () => {
 				{ cwd: REPO_ROOT, env: repositoryEnv, encoding: 'utf8' },
 			);
 			execFileSync('git', ['read-tree', 'HEAD'], { cwd: REPO_ROOT, env });
+			// Exercise the portable fallback even when the test host has jq.
+			const hookCommand =
+				'command() { if [ "$1" = "-v" ] && [ "$2" = "jq" ]; then return 1; fi; builtin command "$@"; }; source .githooks/pre-commit';
+			const handwrittenBlob = execFileSync('git', ['hash-object', '-w', '--stdin'], {
+				cwd: REPO_ROOT,
+				env,
+				encoding: 'utf8',
+				input: 'export const handwritten = true;\n',
+			}).trim();
+			execFileSync(
+				'git',
+				['update-index', '--add', '--cacheinfo',
+					`100644,${handwrittenBlob},apps/web/src/lib/content/hook-probe.test.ts`],
+				{ cwd: REPO_ROOT, env },
+			);
+			const handwrittenResult = spawnSync('bash', ['-c', hookCommand], {
+				cwd: REPO_ROOT,
+				env,
+				encoding: 'utf8',
+			});
+			expect(handwrittenResult.status).toBe(0);
 			const committed = await readFile(resolve(REPO_ROOT, target), 'utf8');
 			const stagedContent = `${committed}\n// staged hand edit: ${temporaryDirectory}\n`;
 			const expectedBlob = execFileSync('git', ['hash-object', '--stdin'], {
@@ -198,7 +219,7 @@ describe('GENERATED_HEADER_MARKER', () => {
 				{ cwd: REPO_ROOT, env },
 			);
 
-			const result = spawnSync('bash', ['.githooks/pre-commit'], {
+			const result = spawnSync('bash', ['-c', hookCommand], {
 				cwd: REPO_ROOT,
 				env,
 				encoding: 'utf8',

@@ -113,3 +113,16 @@ describe('scenario archetypes (service-optional)', () => {
 		expect(screen.getByTestId('cta-blueprint').getAttribute('href')).toContain('bp=automated-workflow~');
 	});
 });
+
+describe('localized blueprint handoff', () => {
+	it.each(['fr', 'es'] as const)('keeps %s and the complete selected blueprint query', (locale) => {
+		const { getByTestId } = render(BlueprintCTA, {
+			props: { archetype: dashboard, composeTechs: ['postgresql', 'docker'] },
+			context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+		});
+		const href = getByTestId('cta-blueprint').getAttribute('href')!;
+		const url = new URL(href, 'https://yesid.dev');
+		expect(url.pathname).toBe('/' + locale + '/contact');
+		expect(url.searchParams.get('bp')).toBe('data-dashboard~postgresql.docker');
+	});
+});
