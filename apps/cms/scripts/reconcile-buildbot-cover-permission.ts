@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, open, rename } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import declaration from '../directus/production/buildbot-cover-permission.json';
+import declaration from '../ops/permissions/buildbot-cover-permission.json';
 import { normalizePermissionPayload, type LivePermissionRow } from './lib/permission-control-drift';
 import { parseProductionOnlyWriteCli } from './lib/prod-gate';
 
