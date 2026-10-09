@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
-import declaration from '../directus/production/buildbot-cover-permission.json';
+import declaration from '../ops/permissions/buildbot-cover-permission.json';
 import { parseCoverArgs, reconcile } from '../scripts/reconcile-buildbot-cover-permission';
 
 // Only the external CMS transport is replaced; all planning and guards run.

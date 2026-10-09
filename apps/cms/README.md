@@ -161,9 +161,11 @@ SHA-256 before approving apply, including its guarded rollback. A workflow
 dispatch or matching hash records the operator's selection; neither proves
 that human approval was given.
 
-[`directus/production/buildbot-cover-permission.json`](directus/production/buildbot-cover-permission.json)
-is the production-only declaration, separate from the shared `directus/collections/permissions.json`
-dump so production file identities cannot become development configuration.
+[`ops/permissions/buildbot-cover-permission.json`](ops/permissions/buildbot-cover-permission.json)
+is the production-only operational declaration, separate from the shared
+`directus/collections/permissions.json` dump so production file identities cannot
+become development configuration. Its allowlist and pre-apply evidence belong
+to operations; the published cover references remain in audited content sources.
 Its `syncBinding` remains pending. This reconciler creates no sync mapping;
 do not use a full `sync:pull` to capture one, because pulling can create remote
 mappings for unrelated rows. Before any future permissions synchronization,
