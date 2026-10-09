@@ -72,22 +72,22 @@ describe('ContentAdapter contract', () => {
 			expect(await adapter.projects.byService('nonexistent')).toEqual([]);
 		});
 
-		it('transit-data-pipeline has location, environment, and version', async () => {
+		it('transit-data-pipeline has the documented locations and environment without an invented version', async () => {
 			const project = await adapter.projects.bySlug('transit-data-pipeline');
-			expect(project?.location).toBe('sherbrooke');
+			expect(project?.location).toBe('Montréal / Ottawa');
 			expect(project?.environment).toBe('production');
-			expect(project?.version).toBe('2.4.1');
+			expect(project?.version).toBeUndefined();
 		});
 
 		it('transit-data-pipeline has the expected impact metrics', async () => {
 			const project = await adapter.projects.bySlug('transit-data-pipeline');
 			expect(project?.impactMetrics).toBeDefined();
 			expect(project!.impactMetrics!.length).toBe(2);
-			// labels are now bilingual (en + Québécois fr from the FR pass); assert en.
-			expect(project!.impactMetrics![0].value).toBe('30s');
-			expect(project!.impactMetrics![0].label.en).toBe('Real-time refresh cycles');
-			expect(project!.impactMetrics![1].value).toBe('99.9%');
-			expect(project!.impactMetrics![1].label.en).toBe('Pipeline uptime');
+			// These describe the current implementation, without fabricated performance outcomes.
+			expect(project!.impactMetrics![0].value).toBe('2');
+			expect(project!.impactMetrics![0].label.en).toBe('Transit networks: Montréal and Ottawa');
+			expect(project!.impactMetrics![1].value).toBe('FR / EN');
+			expect(project!.impactMetrics![1].label.en).toBe('Interface languages');
 		});
 
 		it('projects without optional deployment fields still work', async () => {

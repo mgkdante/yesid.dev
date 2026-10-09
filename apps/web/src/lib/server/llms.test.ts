@@ -21,7 +21,8 @@ describe('llms.txt — Spanish section (L2 Phase 4)', () => {
 			expect(body).toContain('en español, francés e inglés');
 			expect(body).toContain('https://yesid.dev/es/contact');
 			expect(body).toContain('Available for remote and on-site work across Montréal.');
-			expect(body).not.toMatch(/Laval|Longueuil|Brossard|Gatineau|Ottawa|Sherbrooke/);
+			// Service geography belongs to the header; case studies can name their actual locations.
+			expect(body.split('## Services')[0]).not.toMatch(/Laval|Longueuil|Brossard|Gatineau|Ottawa|Sherbrooke/);
 		});
 
 		it(`${name} lists every visible service under /es with Spanish copy`, () => {

@@ -371,7 +371,12 @@ export const services: readonly Service[] = [
 			},
 			value: { en: '95+', es: '95+', fr: '95+' },
 		},
-		relatedProjects: ['yesid-dev', 'cafe-arona', 'transit-data-pipeline'],
+		relatedProjects: [
+			'yesid-dev',
+			'cafe-arona',
+			'transit-data-pipeline',
+			'yesid-dev-design',
+		],
 		sections: [
 			{
 				content: {

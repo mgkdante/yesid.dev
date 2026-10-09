@@ -821,8 +821,8 @@ function validateGeneratedOutputs(
 }
 
 function validateOgCoverage(rows: readonly OgCoverageRequirement[]): void {
-  if (!Array.isArray(rows) || rows.length !== 75) {
-    throw new TypeError("OG coverage must contain exactly 75 rows");
+  if (!Array.isArray(rows) || rows.length !== 93) {
+    throw new TypeError("OG coverage must contain exactly 93 rows");
   }
   const byUsageKey = new Map<string, OgCoverageRequirement>();
   const groups = new Map<string, Map<string, string>>();
@@ -908,8 +908,8 @@ function validateOgCoverage(rows: readonly OgCoverageRequirement[]): void {
     localeRoutes.set(row.locale, row.route);
     groups.set(groupKey, localeRoutes);
   }
-  if (groups.size !== 25)
-    throw new TypeError("OG coverage must contain exactly 25 groups");
+  if (groups.size !== 31)
+    throw new TypeError("OG coverage must contain exactly 31 groups");
   for (const localeRoutes of groups.values()) {
     const locales = new Set(localeRoutes.keys());
     if (

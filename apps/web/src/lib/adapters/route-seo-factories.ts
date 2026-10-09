@@ -20,7 +20,7 @@ import { SITE_HOST, canonicalFor } from '$lib/utils/seo-defaults';
 import { resolveLocale } from '$lib/utils/locale';
 import { ogImagePath } from '$lib/og/og-path';
 import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
-import { asset } from '$lib/directus/assets';
+import { assetImage } from '$lib/directus/assets';
 import {
 	BLOG_TRANSLATION_LOCALES,
 	findBlogTranslationVariants,
@@ -167,9 +167,9 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		seo.ogImage = {
 			url: ogImagePath('project', project.slug, locale),
 			alt: {
-				en: `${project.title.en} — yesid.`,
-				...(project.title.fr && { fr: `${project.title.fr} — yesid.` }),
-				...(project.title.es && { es: `${project.title.es} — yesid.` }),
+				en: `${project.title.en} | yesid.`,
+				...(project.title.fr && { fr: `${project.title.fr} | yesid.` }),
+				...(project.title.es && { es: `${project.title.es} | yesid.` }),
 			},
 			width: 1200,
 			height: 630,
@@ -212,13 +212,17 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		{ en: post.seoDescription ?? post.excerpt },
 		siteSeoDefaults.defaultDescription,
 	);
-	// asset() resolves to a RELATIVE mirrored path (e.g. /images/work/x.png) in
+	// assetImage() resolves to a RELATIVE mirrored path (e.g. /images/work/x.png) in
 	// production. JSON-LD `image` is validated as z.string().url() (absolute),
 	// so a relative path makes SchemaOrgNodeSchema.parse throw and the post
 	// silently falls back to error SEO, dropping all structured data. Absolutize
-	// against SITE_HOST; new URL(abs, SITE_HOST) is idempotent when asset()
+	// against SITE_HOST; new URL(abs, SITE_HOST) is idempotent when assetImage()
 	// already returned an absolute URL.
-	const rawImageUrl = post.coverImage ? asset(post.coverImage, 'og-1200') : undefined;
+	const coverSource = post.coverImage ? assetImage(post.coverImage, 'og-1200') : undefined;
+	// Tall gallery captures are readable on-page but unsuitable as social cards.
+	const portraitCover = (coverSource?.height ?? 0) > (coverSource?.width ?? Infinity);
+	const shareCover = portraitCover ? undefined : coverSource;
+	const rawImageUrl = shareCover?.src ?? (portraitCover ? ogImagePath('blog', post.slug, locale) : undefined);
 	const imageUrl = rawImageUrl ? new URL(rawImageUrl, SITE_HOST).href : undefined;
 	const seo: PageSeo = {
 		title: { en: `${titleBody} | ${siteMeta.name}` },
@@ -242,9 +246,9 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
 			url: imageUrl ?? ogImagePath('blog', post.slug, locale),
-			alt: { en: post.coverImageAlt ?? `${post.title} | ${siteMeta.name}` },
-			width: 1200,
-			height: 630,
+			alt: { en: (!portraitCover && post.coverImageAlt) || `${post.title} | ${siteMeta.name}` },
+			width: shareCover?.width ?? 1200,
+			height: shareCover?.height ?? 630,
 		};
 	}
 
