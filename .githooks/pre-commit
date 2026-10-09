@@ -150,7 +150,7 @@ manifest_hash_for() {
   printf '%s' "$MANIFEST_JSON" \
     | grep -oE "\"$bre\"[[:space:]]*:[[:space:]]*\"[0-9a-f]{64}\"" \
     | grep -oE '[0-9a-f]{64}' \
-    | head -1
+    | head -1 || true
 }
 
 violations=()

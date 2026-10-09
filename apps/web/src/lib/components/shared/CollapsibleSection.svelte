@@ -139,7 +139,7 @@
 			</div>
 		{/if}
 
-		<CollapsibleContent forceMount class="section-body">
+		<CollapsibleContent forceMount class="section-body" inert={!isOpen}>
 			<div class="min-h-0 overflow-hidden">
 				<div class="px-6 pb-6 pt-3">
 					{#if children}

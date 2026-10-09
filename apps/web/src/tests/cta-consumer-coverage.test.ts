@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import { projects } from '$lib/content/projects';
 import { services } from '$lib/content/services';
 import { SUPPORTED_LOCALES } from '$lib/utils/locale';
@@ -39,7 +39,7 @@ describe('shared CTA consumer coverage', () => {
 					"import CtaBand from '$lib/components/shared/CtaBand.svelte'",
 				),
 			)
-			.map((file) => relative(SRC, file))
+			.map((file) => relative(SRC, file).split(sep).join('/'))
 			.sort();
 		const auditedConsumers = consumers.map(([, file]) => file).sort();
 
@@ -55,20 +55,20 @@ describe('shared CTA consumer coverage', () => {
 			return source.includes("Let's build something") || source.includes('that moves.');
 		});
 		expect(
-			duplicateFiles.map((file) => relative(SRC, file)),
+			duplicateFiles.map((file) => relative(SRC, file).split(sep).join('/')),
 			'CTA copy belongs only to the generated content module',
 		).toEqual([]);
 	});
 
-	it('expands the shared component to the audited 24 localized route pages', () => {
+	it('expands the shared component to the audited 30 localized route pages', () => {
 		const visibleServices = services.filter((service) => service.visible);
 		const publicProjects = projects.filter((project) => project.status === 'public');
 
 		expect(visibleServices).toHaveLength(4);
-		expect(publicProjects).toHaveLength(2);
+		expect(publicProjects).toHaveLength(4);
 		expect(
 			(1 + visibleServices.length + publicProjects.length + 1) * SUPPORTED_LOCALES.length,
-		).toBe(24);
+		).toBe(30);
 	});
 
 	it('requires one shared blueprint composition rather than per-route art', () => {

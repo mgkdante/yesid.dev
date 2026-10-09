@@ -124,7 +124,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		id: 'airflow',
 		layer: 'logic',
 		name: 'Apache Airflow',
-		relatedProjects: ['transit-data-pipeline'],
+		relatedProjects: [],
 		relatedServices: ['data-pipeline'],
 		what_i_use_it_for: {
 			en: {
@@ -1228,7 +1228,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		id: 'power-bi',
 		layer: 'data',
 		name: 'Power BI',
-		relatedProjects: ['transit-data-pipeline'],
+		relatedProjects: [],
 		relatedServices: ['analytics-reporting'],
 		what_i_use_it_for: {
 			en: {
@@ -1919,7 +1919,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		id: 'svelte-5',
 		layer: 'interface',
 		name: 'Svelte 5',
-		relatedProjects: ['yesid-dev'],
+		relatedProjects: ['yesid-dev', 'transit-data-pipeline'],
 		relatedServices: ['web-development'],
 		what_i_use_it_for: {
 			en: {
@@ -2020,7 +2020,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		id: 'sveltekit',
 		layer: 'interface',
 		name: 'SvelteKit',
-		relatedProjects: ['yesid-dev'],
+		relatedProjects: ['yesid-dev', 'transit-data-pipeline'],
 		relatedServices: ['web-development'],
 		what_i_use_it_for: {
 			en: {
@@ -2430,7 +2430,12 @@ export const techStackItems: readonly TechStackItem[] = [
 		id: 'typescript',
 		layer: 'logic',
 		name: 'TypeScript',
-		relatedProjects: ['yesid-dev', 'cafe-arona'],
+		relatedProjects: [
+			'yesid-dev',
+			'transit-data-pipeline',
+			'cafe-arona',
+			'yesid-dev-design',
+		],
 		relatedServices: ['web-development'],
 		what_i_use_it_for: {
 			en: {
@@ -2834,7 +2839,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		id: 'dbt',
 		layer: 'logic',
 		name: 'dbt',
-		relatedProjects: ['transit-data-pipeline'],
+		relatedProjects: [],
 		relatedServices: ['data-pipeline'],
 		what_i_use_it_for: {
 			en: {

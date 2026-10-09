@@ -445,6 +445,349 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 		time: 1783742400003,
 		version: '2.31.2',
 	},
+	'cambiar-de-idioma-sin-empezar-de-nuevo': {
+		blocks: [
+			{
+				data: {
+					text: 'Imagina que ya escribiste las primeras líneas de un mensaje y decides pasar el sitio a español. Las etiquetas cambian. El mensaje desaparece.',
+				},
+				id: '55dfc2aaf018ed12-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Es un ejemplo de lo que puede fallar al cambiar de idioma, aunque las traducciones sean correctas. Las palabras llegaron a la nueva versión, pero el trabajo de la persona se quedó atrás.',
+				},
+				id: '301c61ba439cce0a-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'En <a href="http://yesid.dev">yesid.dev</a>, cada idioma tiene sus direcciones. El inglés usa la ruta principal, el francés agrega /fr y el español agrega /es. Así es posible entrar directamente a cada versión, pero la interfaz también debe contemplar el paso entre ellas.',
+				},
+				id: '8d7e8a081e5a9ddc-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La implementación guarda temporalmente la información que cada página haya registrado para ese cambio. Puede ser lo que alguien escribió, una opción elegida, el punto de lectura o una sección abierta. La nueva página puede recuperar esos datos. Es un traslado durante el cambio de idioma, no una promesa de guardar para siempre un mensaje sin terminar.',
+				},
+				id: '6296885d79e49c46-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Hay una diferencia importante. El texto de la interfaz debe cambiar de idioma. El mensaje que escribió la persona debe seguir siendo suyo. Traducir la etiqueta de un campo no es lo mismo que traducir las palabras de quien lo usa.',
+				},
+				id: 'cf746d5c26962601-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Lo mismo ocurre con un artículo. Si alguien ya llegó a la mitad, el sitio no debería tratarlo automáticamente como si acabara de entrar al inicio. Cuando el título y la dirección cambian entre idiomas, el sistema necesita reconocer que las páginas corresponden al mismo artículo.',
+				},
+				id: '1beca09fbd0c59a4-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Son detalles pequeños hasta que alguien pierde el punto donde iba.',
+				},
+				id: 'f929f3c6ed63ff79-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'También son comportamientos que conviene mostrar. Una revisión útil consiste en escribir texto de ejemplo sin enviarlo, cambiar de idioma y observar qué se conservó. Después se puede repetir con una sección abierta o un filtro seleccionado, y comprobar qué pasa cuando falta una traducción. Una captura de una página traducida no responde todas esas preguntas.',
+				},
+				id: '6eb920f68f1b4cf9-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'El mecanismo solo reconoce los valores que una página registra. Agregar otro campo implica decidir qué debe acompañarlo. Tampoco puede ofrecer una traducción que no existe. Esos límites importan al definir qué se puede prometer cuando alguien cambia de idioma.',
+				},
+				id: '57c5e6d621532739-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Me parece una forma útil de pensar un sitio multilingüe. Cambian las palabras, pero la persona todavía tiene algo por terminar.',
+				},
+				id: '63158e211bf01c01-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/es/projects/yesid-dev">Conocer el proyecto</a>',
+				},
+				id: 'c53f379c87a966d1-10',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
+	'ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif': {
+		blocks: [
+			{
+				data: {
+					text: 'Un site peut présenter une entreprise avant d’inclure un catalogue complet. Le site actuel de Café Arona est informatif et permet de prendre contact. Un catalogue pourra s’ajouter plus tard.',
+				},
+				id: 'd1608cdfad5e7e29-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ce contexte m’amène à séparer les décisions qui peuvent avancer de celles qui dépendent encore du produit.',
+				},
+				id: '71152788199cb54d-1',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Commencer par ce qu’on sait' },
+				id: '7263df529f4e4f8a-2',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Une entreprise peut déjà expliquer qui elle est, d’où vient son projet et comment la joindre. Elle peut préparer ses photos, réviser ses textes et décider qui sera responsable de les tenir à jour.',
+				},
+				id: '15ec719cfe6fdf2e-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ce travail sert aussi à découvrir ce qui manque. Une page d’équipe peut attendre un portrait. Une fiche de produit peut révéler qu’un format ou une méthode de préparation n’est pas encore confirmé. Le site devient un support de discussion concret avec le client.',
+				},
+				id: 'b58599fe022b1617-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					level: 2,
+					text: 'Garder les décisions provisoires visibles',
+				},
+				id: '4200219fcc09fcca-5',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Une maquette donne facilement l’impression que tout est réglé. Dès qu’un nom, une photo et un prix sont réunis dans une fiche, le produit semble prêt à commander.',
+				},
+				id: '2fa88b632a4daf92-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Une liste simple peut préciser le statut de chaque information : confirmée, en essai ou à fournir. Cette liste évite qu’un exemple de mise en page devienne une promesse au client final.',
+				},
+				id: '48d25cabc8bbe854-7',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Préparer les gestes de gestion' },
+				id: 'de0d8c11276c5f5b-8',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Avant l’ouverture, on peut déjà convenir de la façon dont l’équipe modifiera un texte, ajoutera une photo et vérifiera une traduction. Il faut également savoir qui approuve les prix et qui confirme les quantités disponibles.',
+				},
+				id: 'd0b956b73b0fa45b-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Le même raisonnement s’applique aux accès. La personne qui possède la boutique, celle qui met à jour les contenus et celle qui intervient sur le code n’ont pas nécessairement le même rôle.',
+				},
+				id: 'd8f02a1004e49327-10',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Un site informatif doit être utile en lui-même. Des contenus clairs, des pages modifiables et des responsabilités définies préparent l’ajout d’un catalogue, quand les renseignements seront prêts.',
+				},
+				id: '01924848ce91336f-11',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/fr/projects/cafe-arona">Découvrir le projet</a>',
+				},
+				id: '3657a9802e7b77e0-12',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
+	'changer-de-langue-sans-recommencer': {
+		blocks: [
+			{
+				data: {
+					text: 'Imaginez avoir commencé à écrire un message, puis décider de passer le site en français. Les libellés changent. Votre message disparaît.',
+				},
+				id: 'c98daf7387315611-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'C&#39;est un exemple de ce qu&#39;un changement de langue peut mal faire, même si les traductions sont justes. Les mots ont suivi, mais pas le travail de la personne.',
+				},
+				id: '8c13a29dd832eebe-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Sur <a href="http://yesid.dev">yesid.dev</a>, chaque langue a ses adresses. L&#39;anglais utilise la route principale, le français ajoute /fr et l&#39;espagnol ajoute /es. On peut ainsi accéder directement à chaque version. L&#39;interface doit aussi prévoir le passage de l&#39;une à l&#39;autre.',
+				},
+				id: '26ae33a6769dddcb-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'L&#39;implémentation garde temporairement les éléments d&#39;état inscrits pour ce transfert. Il peut s&#39;agir d&#39;une valeur saisie, d&#39;un choix, d&#39;une position de lecture ou d&#39;une section ouverte. La nouvelle page peut ensuite rétablir les éléments pertinents. Ce mécanisme accompagne le changement de langue; il ne promet pas de conserver indéfiniment un message inachevé.',
+				},
+				id: 'f26716fde59f81bf-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Il y a une distinction à garder en tête. Le texte de l&#39;interface doit changer de langue. Le message écrit par la personne doit rester le sien. Traduire un libellé et traduire les mots d&#39;un visiteur sont deux gestes différents.',
+				},
+				id: 'cf43d52d5c18b498-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Le même principe s&#39;applique à un article. Une personne rendue au milieu du texte ne devrait pas automatiquement être traitée comme si elle venait d&#39;arriver tout en haut. Si le titre et l&#39;adresse changent d&#39;une langue à l&#39;autre, le site doit reconnaître qu&#39;il s&#39;agit du même article.',
+				},
+				id: 'a0c8c5ae9bf14a88-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ces détails paraissent petits jusqu&#39;au moment où l&#39;on perd sa place.',
+				},
+				id: '64bc521242cb60cd-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ce sont aussi des comportements à montrer. Une vérification utile consiste à saisir du texte d&#39;exemple sans l&#39;envoyer, à changer de langue, puis à regarder ce qui a été conservé. On peut refaire l&#39;exercice avec une section ouverte ou un filtre choisi, et vérifier ce qui arrive lorsqu&#39;une traduction manque. Une capture d&#39;une page traduite ne répond pas à toutes ces questions.',
+				},
+				id: '89545366f57fdc50-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Le mécanisme ne connaît que les valeurs inscrites par une page. Ajouter un champ demande donc de décider ce qui doit l&#39;accompagner. Il ne peut pas non plus fournir une traduction qui n&#39;existe pas. Ces limites comptent dans ce qu&#39;un changement de langue peut promettre.',
+				},
+				id: '24eac391b62595b5-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'C&#39;est une façon utile d&#39;aborder un site multilingue. Les mots changent, mais la personne a toujours quelque chose à terminer.',
+				},
+				id: '390e9970a7c8e7e2-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/fr/projects/yesid-dev">Découvrir le projet</a>',
+				},
+				id: '219bce8950d117bf-10',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
+	'changing-language-should-not-mean-starting-over': {
+		blocks: [
+			{
+				data: {
+					text: 'Imagine writing the first few lines of a message, then deciding you would rather use the site in French. The labels change. Your message disappears.',
+				},
+				id: '733f3e29cf81c241-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'That is an example of what a language switch can get wrong even when every translation is correct. The words have moved to the new language, but the person&#39;s work has been left behind.',
+				},
+				id: '488881b129d67a4e-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'On <a href="http://yesid.dev">yesid.dev</a>, the language versions use different addresses. English uses the main route, French adds /fr, and Spanish adds /es. That makes each version directly accessible, but the interface also has to deal with moving between them.',
+				},
+				id: 'f4815712aebcfe86-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The implementation keeps a temporary record of registered page state during a language change. That can include an entered value, a selected item, a reading position, or an open section. The new page can then restore the relevant state. It is a transfer for that change of language, not a promise that the site saves an unfinished message forever.',
+				},
+				id: '95c92a7c018dc908-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'There is an important distinction here. The interface text should change language. A message someone wrote should remain theirs. Translating a field label and translating the visitor&#39;s own words are different actions.',
+				},
+				id: '4ea338a7590d230f-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The same thinking applies to an article. A reader who has reached the middle of a page should not automatically be treated as someone arriving at the top for the first time. When an article has a different title and address in another language, the site needs to recognise that the two pages belong to the same article.',
+				},
+				id: 'c47696be58d1ba2c-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'These are small details until someone loses their place.',
+				},
+				id: '0858a46ad1fe28d3-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'They are also behaviours to demonstrate, not just describe in source code. A useful check is to enter harmless example text without submitting it, change language, and inspect what stayed. Repeat with an open section or a selected filter. Check the behaviour when a translation is missing. A screenshot of a translated page cannot answer all of those questions.',
+				},
+				id: 'f72696802e09a9ed-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The mechanism only knows about the values a page registers. Adding another field means deciding what should travel with it. It also cannot supply a translation that does not exist. These limits matter when choosing what a language switch should promise.',
+				},
+				id: 'cd30acdc33a2ca5b-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'For me, this is a useful way to think about a multilingual site. Translation includes the words, but the visitor still has a task to finish.',
+				},
+				id: '5bde8fb0a9e72a46-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/projects/yesid-dev">Read the project story</a>',
+				},
+				id: '6fdedb7263e7976f-10',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
 	'comment-japprends-graviter-autour-dun-systeme-jusquau-declic': {
 		blocks: [
 			{
@@ -781,6 +1124,96 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 			},
 		],
 		time: 1783742400001,
+		version: '2.31.2',
+	},
+	'cuando-dos-componentes-parecidos-deberian-seguir-separados': {
+		blocks: [
+			{
+				data: {
+					text: 'Dos tarjetas pueden parecer de la misma familia y necesitar contratos distintos.',
+				},
+				id: '891f24a8b5e72cb5-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'En <a href="http://yesid.dev">yesid.dev</a>-design, los requisitos documentados de Transit y <a href="http://yesid.dev">yesid.dev</a> hacen concreta esa diferencia. Transit espera una tarjeta plana, sin sombra ni borde resaltado. <a href="http://yesid.dev">yesid.dev</a> conserva un bisel y una sombra al pasar el cursor. Comparten una identidad visual. Sus requisitos siguen siendo diferentes.',
+				},
+				id: 'aa48870a3966ce52-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Sería fácil poner los dos comportamientos en un paquete compartido si este pudiera preguntar qué producto lo está usando. Las reglas del proyecto excluyen precisamente esa dependencia. Cuando el código común conoce cada producto por su nombre, cada excepción nueva añade otro motivo para modificar la base.',
+				},
+				id: '601288dab9f5a0e3-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'El límite que elegí es más pequeño. El paquete se encarga del control o la superficie común. Un estilo o una adaptación del producto se encarga de la diferencia. Cada producto conserva las verificaciones que explican por qué existe su excepción.',
+				},
+				id: 'fe47cf828e593cfb-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Esto acepta cierta duplicación. También le da una razón y un lugar definido.',
+				},
+				id: '337e54f51678f7a9-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La pregunta es si las dos piezas comparten la misma responsabilidad. Su apariencia actual es una pista, pero no resuelve qué hacen, quién controla su estado ni qué cambios deberían recibir juntas.',
+				},
+				id: 'e1e3dcc00037f081-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Una sección plegable es otro ejemplo. En ambos productos puede tener un título, una flecha y contenido oculto. Aun así, puede cambiar la forma de recordar su estado, la composición del encabezado o el comportamiento del contenido cerrado. Compartir los controles básicos resulta útil. Compartir toda la sección también trasladaría decisiones que todavía le corresponden al producto.',
+				},
+				id: 'c83b704616fd4884-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'El repositorio aplica una regla de tres a los patrones compuestos: tres consumidores independientes deben necesitar el mismo contrato antes de convertirlo en una pieza compartida. Es una restricción de este proyecto, no una fórmula para todos los equipos. Obliga a detenerse antes de tratar un parecido como una abstracción estable.',
+				},
+				id: '8f5ffe93661994d4-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'También hay una consecuencia para las actualizaciones. Una vez que un componente es compartido, un cambio afecta a varios productos. Cada uno adopta una versión exacta y revisa su comportamiento. Un ejemplo que funciona en la galería no responde todas las preguntas sobre una página real.',
+				},
+				id: '6ced92ac7d9b89e4-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Esta forma de pensar vuelve más concreta la reutilización. ¿Qué se repite? ¿Qué cambia? ¿Cuáles diferencias son intencionales? ¿Quién decide cuándo deben cambiar?',
+				},
+				id: '2992bdb2919c9850-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La respuesta puede ser un componente compartido. También puede ser una pieza básica común con una adaptación local, o dos implementaciones separadas cuyas responsabilidades todavía están evolucionando. Lo útil es poder explicar y verificar el límite elegido.',
+				},
+				id: 'd6af5217cafbcd5e-10',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/es/projects/yesid-dev-design">Conocer el proyecto</a>',
+				},
+				id: '545ee6f03e4666f3-11',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
 		version: '2.31.2',
 	},
 	'de-50-a-0-una-vm-oracle-always-free': {
@@ -1569,6 +2002,82 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 		time: 1783742400000,
 		version: '2.31.2',
 	},
+	'missing-data-is-not-zero': {
+		blocks: [
+			{
+				data: {
+					text: 'One small message in Transit captures a much larger part of the data work: OC Transpo service alerts are unavailable because no alert feed is connected here.',
+				},
+				id: '6a35881282f37472-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'A number might look more satisfying. The message is more precise.',
+				},
+				id: '84a1c9156a31ee1e-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Zero alerts would mean that a relevant source had been checked and no alerts were found within the stated scope. An unconnected feed means that the information is unavailable. Presenting those situations in the same way would give the reader confidence the system has not earned.',
+				},
+				id: '034f565c4ec739f0-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The same issue appears in everyday dashboards. An empty cell might mean that information has not arrived, that a measure does not apply or that a value could not be calculated. Replacing every empty cell with zero makes a table more uniform while removing part of its meaning.',
+				},
+				id: 'bab385eb15de6fdb-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'That brings me to a question beyond the calculation: what will someone understand when they look at the result?',
+				},
+				id: '003280db4f0660f0-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'For Ottawa, the interface gives a straightforward answer. It says that alerts are unavailable, explains why and links to the official service notices. There is a useful next step without a claim that Transit knows whether disruptions exist.',
+				},
+				id: 'f6b053a91db97d7c-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Freshness needs similar care. A page that has just loaded may contain an older observation. The time someone opens a page, the time its data was published and the time a source reported an event are different things.',
+				},
+				id: 'bc602c867bb119d5-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'These are distinctions I’m working through with Transit. When examining an indicator, I can begin with three questions: what was observed, over which period, and what remains unknown? They help establish the meaning of a result before using it to support a conclusion.',
+				},
+				id: '5e7a5a28f0a92f06-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'An interface can acknowledge missing information and still be useful. It can name the gap, explain its scope and direct the reader to a source that may have the answer.',
+				},
+				id: '9f54c47464addf08-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/projects/transit-data-pipeline">Read the project story</a>',
+				},
+				id: '4cd6dd5c8a181f29-9',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
 	'pensar-en-matrices': {
 		blocks: [
 			{
@@ -1804,6 +2313,190 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 			},
 		],
 		time: 1783742400002,
+		version: '2.31.2',
+	},
+	'quand-deux-composants-semblables-devraient-rester-separes': {
+		blocks: [
+			{
+				data: {
+					text: 'Deux cartes peuvent avoir un air de famille et répondre à des exigences différentes.',
+				},
+				id: '906aa49ceeb4dfe9-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Dans <a href="http://yesid.dev">yesid.dev</a>-design, les contrats documentés de Transit et de <a href="http://yesid.dev">yesid.dev</a> rendent cette différence concrète. Transit demande une carte plate, sans ombre ni bordure en relief. <a href="http://yesid.dev">yesid.dev</a> conserve un biseau et une ombre au survol. Les deux appartiennent à la même famille visuelle. Leurs exigences ne sont pourtant pas les mêmes.',
+				},
+				id: '23c19af75651ada9-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'On pourrait placer les deux comportements dans un composant partagé et lui faire vérifier le nom du produit. Les règles du projet excluent justement ce lien. Dès que le code commun connaît chaque produit par son nom, toute nouvelle exception ajoute une raison de modifier la base.',
+				},
+				id: '92154b8a7273c465-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La limite que j&#39;ai choisie est plus petite. Le composant partagé prend en charge la commande ou la surface commune. Un style ou une adaptation propre au produit prend en charge la différence. Chaque produit conserve les vérifications qui expliquent pourquoi son exception existe.',
+				},
+				id: '8e6383bb8b4f6b68-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Cette décision laisse une part de duplication. Elle lui donne aussi une raison et un endroit précis.',
+				},
+				id: '8ef639426c239b0e-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La question est de savoir si les deux éléments ont la même responsabilité. Leur apparence actuelle donne un indice, mais elle ne dit pas tout de leur comportement, de la gestion de leur état ou des changements qu&#39;ils devraient recevoir ensemble.',
+				},
+				id: '1a2ea966a2c65c59-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Une section repliable en est un autre exemple. Les deux produits peuvent afficher un titre, un chevron et du contenu masqué. Ils peuvent tout de même différer dans la mémorisation de l&#39;état, la composition de l&#39;en-tête et le comportement du contenu fermé. Des commandes de base partagées restent utiles. Partager toute la section ferait aussi remonter des décisions qui appartiennent encore au produit.',
+				},
+				id: '5fa196268499b63d-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Le dépôt applique une règle de trois aux composants composés : trois consommateurs indépendants doivent demander le même contrat avant sa mise en commun. C&#39;est une contrainte de ce projet, pas une formule universelle. Elle oblige à prendre un recul utile avant de considérer qu&#39;une ressemblance justifie une abstraction stable.',
+				},
+				id: 'b63715d3a989dd4c-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Il y a aussi une conséquence sur les mises à jour. Dès qu&#39;un composant devient partagé, sa modification concerne plusieurs produits. Chacun adopte une version précise et révise son propre comportement. Un exemple qui fonctionne dans la galerie ne répond pas à toutes les questions d&#39;une vraie page.',
+				},
+				id: 'f95bd30657a43bad-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Cette façon de réfléchir rend la réutilisation plus concrète. Qu&#39;est-ce qui se répète? Qu&#39;est-ce qui diffère? Quelles différences sont voulues? Qui décide du moment où elles changent?',
+				},
+				id: 'b21faa9374551010-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La réponse peut être un composant commun. Elle peut aussi être un petit élément partagé avec une adaptation locale, ou deux réalisations séparées dont les responsabilités évoluent encore. Ce qui compte, c&#39;est de pouvoir expliquer et vérifier la limite choisie.',
+				},
+				id: 'aed04840fc8f7252-10',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/fr/projects/yesid-dev-design">Découvrir le projet</a>',
+				},
+				id: '0ced3869e13dc74c-11',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
+	'que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo': {
+		blocks: [
+			{
+				data: {
+					text: 'Un sitio puede presentar una empresa antes de incluir un catálogo completo. El sitio actual de Café Arona es informativo y permite ponerse en contacto. El catálogo se puede agregar más adelante.',
+				},
+				id: 'd04acc38ca3a0bf4-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Este contexto me lleva a separar las decisiones que se pueden tomar ahora de las que aún dependen del producto.',
+				},
+				id: '7a52481939c2aa12-1',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Empezar por lo que ya se conoce' },
+				id: '8a3936fbe2b4b0ec-2',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Una empresa puede explicar quiénes la conforman, cómo nació el proyecto y cómo contactarla. También puede preparar sus fotografías, revisar sus textos y decidir quién mantendrá esa información al día.',
+				},
+				id: 'ebc0de0fc1e7b959-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ese trabajo permite identificar lo que falta. La página del equipo puede estar esperando un retrato. Una ficha de producto puede mostrar que aún no se ha confirmado una presentación o un método de preparación. El sitio se convierte en un punto de partida concreto para conversar con el cliente.',
+				},
+				id: '5ec8ae46b26b9970-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					level: 2,
+					text: 'Identificar lo que sigue siendo provisional',
+				},
+				id: '800a826d598cebda-5',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Una página bien presentada puede hacer que una decisión pendiente parezca definitiva. Al reunir un nombre, una foto y un precio, el producto empieza a verse listo para pedir.',
+				},
+				id: '65f63d6660cfb146-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Una lista sencilla puede indicar el estado de cada dato: confirmado, en prueba o pendiente. Así se reduce el riesgo de que un ejemplo de diseño se convierta en una promesa para quien visita el sitio.',
+				},
+				id: 'a37fe60b8848fb0c-7',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Preparar las tareas habituales' },
+				id: '189aed9345950780-8',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Antes de abrir las ventas, el equipo puede acordar cómo cambiará un texto, reemplazará una foto y revisará una traducción. También necesita definir quién aprueba los precios y quién confirma las cantidades disponibles.',
+				},
+				id: 'af38ff42c0b3b9e4-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Con los accesos ocurre algo parecido. La persona propietaria de la tienda, quien actualiza el contenido y quien modifica el código pueden tener responsabilidades distintas.',
+				},
+				id: 'ceeb33a48a2ea5e9-10',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Un sitio informativo debe ser útil por sí mismo. Los contenidos claros, las páginas editables y las responsabilidades definidas facilitan agregar un catálogo cuando su información esté lista.',
+				},
+				id: '608232e3564da1a1-11',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/es/projects/cafe-arona">Conocer el proyecto</a>',
+				},
+				id: '2dd7facab5251a55-12',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
 		version: '2.31.2',
 	},
 	'the-two-hour-internet-slot': {
@@ -2161,6 +2854,158 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 		time: 1783742400005,
 		version: '2.31.2',
 	},
+	'un-dato-que-falta-no-equivale-a-cero': {
+		blocks: [
+			{
+				data: {
+					text: 'En Transit hay un mensaje pequeño que resume una parte importante del trabajo con los datos: los avisos de servicio de OC Transpo no están disponibles porque no hay un flujo de avisos conectado.',
+				},
+				id: '52d0bbae6433e6dd-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Una cifra podría parecer más convincente. Sin embargo, el mensaje es más preciso.',
+				},
+				id: '169b7e85a3d7194a-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Cero avisos significaría que se consultó una fuente pertinente y que no se encontraron avisos dentro del alcance indicado. Un flujo que no está conectado significa que esa información no está disponible. Mostrar ambas situaciones de la misma manera daría una certeza que el sistema no tiene.',
+				},
+				id: 'd6b925f25c087577-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'El mismo problema aparece en tableros de uso cotidiano. Una celda vacía puede indicar que un dato aún no ha llegado, que una medida no aplica o que no fue posible calcular un valor. Reemplazar todos esos espacios por cero hace que la tabla se vea más uniforme, pero elimina parte de su significado.',
+				},
+				id: 'fc1ebcd3457a8b2e-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Por eso, además de revisar el cálculo, me interesa otra pregunta: ¿qué va a entender la persona cuando vea el resultado?',
+				},
+				id: '515a5055ac6c4470-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'En el caso de Ottawa, la interfaz ofrece una respuesta sencilla. Indica que los avisos no están disponibles, explica la razón y enlaza los avisos oficiales. Así, la persona tiene un siguiente paso útil sin que Transit afirme conocer el estado de las interrupciones.',
+				},
+				id: 'c5277371b3d1239c-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La actualización de los datos exige un cuidado parecido. Una página que acaba de cargar puede contener una observación anterior. La hora de consulta, la hora de publicación y el momento en que la fuente reportó un evento son cosas distintas.',
+				},
+				id: 'dd5ed3e83188b79c-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Estas son algunas de las diferencias que estoy estudiando con Transit. Para revisar un indicador, puedo empezar con tres preguntas: qué se observó, durante qué periodo y qué sigue siendo desconocido. Ayudan a entender el resultado antes de usarlo para sostener una conclusión.',
+				},
+				id: 'e6cb7cf52423e207-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Una interfaz puede reconocer que falta información y seguir siendo útil. Puede explicar el vacío, señalar su alcance y orientar a la persona hacia una fuente que tenga la respuesta.',
+				},
+				id: 'cd4d2d016def3204-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/es/projects/transit-data-pipeline">Conocer el proyecto</a>',
+				},
+				id: 'af1d6ec46296cf77-9',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
+	'une-donnee-absente-nest-pas-un-zero': {
+		blocks: [
+			{
+				data: {
+					text: 'Dans Transit, un petit message résume une bonne partie du travail sur les données : les avis de service d’OC Transpo sont indisponibles parce qu’aucun flux d’avis n’est connecté ici.',
+				},
+				id: '43f34f090843a56f-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ce message paraît moins satisfaisant qu’un chiffre. Pourtant, il dit quelque chose de plus précis.',
+				},
+				id: '1705d8f2f6023028-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Zéro avis signifierait qu’on a pu consulter une source pertinente et qu’aucun avis n’y a été trouvé dans le périmètre annoncé. Un flux non connecté signifie qu’on ne dispose pas de cette information. Présenter les deux situations de la même façon donnerait une assurance que le système n’a pas.',
+				},
+				id: 'a91c9c03552eaef7-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Le même problème revient dans des tableaux de bord beaucoup plus ordinaires. Une cellule vide peut désigner une donnée pas encore reçue, une mesure qui ne s’applique pas ou une valeur qu’on n’a pas réussi à calculer. Remplacer toutes ces cellules par zéro rend le tableau plus uniforme, mais efface une partie de son sens.',
+				},
+				id: '5dc5432e8139ada2-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Je travaille donc sur une question qui dépasse le calcul : qu’est-ce que la personne va comprendre en regardant ce résultat?',
+				},
+				id: '3c52495e14b7f063-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Dans le cas d’Ottawa, la réponse prend une forme simple. L’interface indique que les avis sont indisponibles, explique pourquoi et offre un lien vers les avis officiels. La personne dispose d’un prochain geste utile, sans que le site prétende connaître l’état des perturbations.',
+				},
+				id: '5ae0a4dca9e29f75-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'La fraîcheur demande la même attention. Une page qui vient de se charger peut contenir une observation plus ancienne. L’heure de consultation, l’heure de publication et l’heure du signal reçu ne racontent pas la même chose.',
+				},
+				id: '1f5ff0749f272aa2-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Ces distinctions font partie de ce que j’approfondis avec Transit. Pour examiner un indicateur, je peux commencer par trois questions : qu’est-ce qui a été observé, sur quelle période, et que reste-t-il inconnu? Elles aident à comprendre le résultat avant de lui demander de soutenir une conclusion.',
+				},
+				id: 'a3d8b3a9a5f17c72-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Une interface claire peut afficher un manque d’information sans devenir inutile. Elle peut préciser ce manque, expliquer sa portée et orienter la personne vers une source qui en sait davantage.',
+				},
+				id: '50f6d3e433dcec57-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/fr/projects/transit-data-pipeline">Découvrir le projet</a>',
+				},
+				id: '3f6cf0377394fb3a-9',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
 	'votre-site-web-a-t-il-besoin-dune-publication-instantanee': {
 		blocks: [
 			{
@@ -2283,6 +3128,192 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 			},
 		],
 		time: 1783742400005,
+		version: '2.31.2',
+	},
+	'what-can-move-forward-before-the-product-catalogue-is-final': {
+		blocks: [
+			{
+				data: {
+					text: 'A website can present a business before it includes a complete product catalogue. Café Arona’s current site focuses on information and contact. A catalogue can be added later.',
+				},
+				id: '62d811137cffd6d0-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'That context helps me separate decisions we can make now from decisions that depend on the product.',
+				},
+				id: 'de5a600b3b57a9bd-1',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Start with what is known' },
+				id: 'a1da136a4dbf8b05-2',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'A business can explain who is involved, where the idea came from and how to get in touch. It can prepare photographs, review its writing and decide who will keep the content current.',
+				},
+				id: '19992bc37ad4f30f-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This work also reveals gaps. A team page may be waiting for a portrait. A product page may show that a package size or preparation method has not been confirmed. The website becomes something concrete to discuss with the client.',
+				},
+				id: 'b66aa5c904225611-4',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Keep provisional decisions visible' },
+				id: 'e4786278f07729db-5',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'A finished-looking page can make an unfinished decision seem settled. Put a name, photograph and price together, and a product starts to look ready to order.',
+				},
+				id: 'a2088786f13be1d2-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'A simple list can give each piece of information a status: confirmed, being tested or still needed. That makes it less likely that a layout example will turn into a promise to a customer.',
+				},
+				id: '04d9668c689cf653-7',
+				type: 'paragraph',
+			},
+			{
+				data: { level: 2, text: 'Prepare the everyday work' },
+				id: '094fbf516b3f6d43-8',
+				type: 'header',
+			},
+			{
+				data: {
+					text: 'Before opening, the team can agree on how it will edit text, replace a photograph and check a translation. It also needs to know who approves prices and who confirms available quantities.',
+				},
+				id: 'f3009c1cb51e818d-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The same applies to access. The person who owns the store, the person who updates its content and the person who changes its code may have different responsibilities.',
+				},
+				id: 'f1b91873c64f4224-10',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'An informational site should be useful on its own. Clear content, editable pages and defined responsibilities provide a foundation for adding a product catalogue later, when its information is ready.',
+				},
+				id: '6aa18498eea1894f-11',
+				type: 'paragraph',
+			},
+			{
+				data: {},
+				id: 'e6cb61bf8d706fb8-12',
+				type: 'delimiter',
+			},
+			{
+				data: {
+					text: '<a href="/projects/cafe-arona">Read the project story</a>',
+				},
+				id: 'acc5ba0dc8ae4fc7-13',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
+		version: '2.31.2',
+	},
+	'when-two-similar-components-should-stay-separate': {
+		blocks: [
+			{
+				data: {
+					text: 'Two cards can look related and still need different contracts.',
+				},
+				id: 'f0e109d7f4b29e0b-0',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'In <a href="http://yesid.dev">yesid.dev</a>-design, the recorded requirements for Transit and <a href="http://yesid.dev">yesid.dev</a> make that difference concrete. Transit expects a flat card without a shadow or highlighted edge. <a href="http://yesid.dev">yesid.dev</a> keeps a bevel and a hover shadow. Both belong to the same visual family. Their requirements still disagree.',
+				},
+				id: '32d667584c4c02ff-1',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'Putting both into a shared package would be easy if the package were allowed to ask which product was calling it. That is exactly the dependency the project&#39;s rules exclude. Once shared code knows every product by name, each new exception adds another reason to edit the foundation.',
+				},
+				id: '92afffd41fb4705b-2',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The boundary I chose is smaller. The package owns the common control or surface. A product-owned adapter or style owns the part that differs. Each product keeps the checks that explain why its exception exists.',
+				},
+				id: 'b529af048c785791-3',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'This accepts some duplication. It also gives that duplication a reason and a home.',
+				},
+				id: '9ffdc02cce29100b-4',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The question is whether two pieces share the same responsibility. Their current appearance is one clue, but it does not settle what they do, who controls their state or which changes they should receive together.',
+				},
+				id: '008af0740a8649d6-5',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'A collapsible section is another example. It may have a heading, a chevron and hidden content in both products. Yet the products can differ in persistence, header composition and how closed content behaves. Shared lower-level controls are useful there. Promoting the entire section would also promote decisions that still belong to the product.',
+				},
+				id: '89c89d98ca5b7ba2-6',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The repository uses a rule of three for composed patterns: three independent consumers must need the same contract before promotion. That is a constraint on this project, not a universal formula for every team. It forces a useful pause before treating resemblance as a stable abstraction.',
+				},
+				id: 'c7a61c2825da769b-7',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'There is a release consequence too. Once something becomes shared, a change has several audiences. Each product adopts an exact version and reviews its own behaviour. A passing gallery example cannot answer every question on a real product page.',
+				},
+				id: '9e1c0ac706052d00-8',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'I find this a useful way to make reuse more concrete. What repeats? What differs? Which differences are intentional? Who gets to decide when those differences change?',
+				},
+				id: 'fb3386c60ca5864e-9',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: 'The answer may be a shared component. It may also be a small common primitive with a local wrapper, or two separate implementations whose responsibilities are still evolving. The useful result is a boundary that can be explained and checked.',
+				},
+				id: '426bc218d7498bd8-10',
+				type: 'paragraph',
+			},
+			{
+				data: {
+					text: '<a href="/projects/yesid-dev-design">Read the project story</a>',
+				},
+				id: 'b0d5561e2204c7da-11',
+				type: 'paragraph',
+			},
+		],
+		time: 1791432000000,
 		version: '2.31.2',
 	},
 };

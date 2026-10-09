@@ -40,9 +40,9 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
 	});
 
-	it('contains exactly 28 entries, including brand assets, language flags and og route cards', () => {
+	it('contains exactly 49 entries, including the 21 portfolio screenshots', () => {
 		const m = loadIdMap();
-		expect(Object.keys(m).length).toBe(28);
+		expect(Object.keys(m).length).toBe(49);
 	});
 
 	it('keys are sorted alphabetically (diff-friendly)', () => {

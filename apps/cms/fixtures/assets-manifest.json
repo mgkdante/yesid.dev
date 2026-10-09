@@ -165,6 +165,132 @@
 			"folder": "og",
 			"title": "OG card — /projects",
 			"description": "Share card for the /projects listing route with the digital-infrastructure blueprint drawing."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.jpg",
+			"folder": "projects",
+			"title": "Accueil STM, partie supérieure visible.",
+			"description": "STM home page, upper portion. Browser capture, 8 October 2026."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.jpg",
+			"folder": "projects",
+			"title": "Carte du réseau STM et positions signalées. Image principale proposée.",
+			"description": "STM network map and reported vehicle positions. Browser capture, 8 October 2026; a snapshot, not a guarantee of continuous freshness."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.png",
+			"folder": "projects",
+			"title": "Ligne 48 à Ottawa, liste d’arrêts et prévisions; section défilée.",
+			"description": "Ottawa route 48, stops and predictions, scrolled mobile viewport. Browser capture, 6 October 2026; not a physical-device test."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.png",
+			"folder": "projects",
+			"title": "Arrêt 464 à Ottawa, disponibilité des avis et lien officiel au focus.",
+			"description": "Ottawa stop 464, unavailable alerts and the focused official link. Browser capture, 6 October 2026; visible focus alone is not an accessibility audit."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.png",
+			"folder": "projects",
+			"title": "Santé du réseau d’Ottawa; capture partielle.",
+			"description": "Ottawa network health, partial intermediate viewport. Browser capture, 6 October 2026. The broader automated check encountered a navigation blocker."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.png",
+			"folder": "projects",
+			"title": "Ligne 48 à Ottawa, directions et arrêts; section défilée.",
+			"description": "Ottawa route 48, directions and stops, scrolled desktop viewport. Browser capture, 6 October 2026; the broader automated check encountered a navigation blocker."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.jpg",
+			"folder": "projects",
+			"title": "Accueil de la boutique de développement Shopify, haut de page partiel.",
+			"description": "Café Arona’s Shopify development storefront, upper part of the home page. Browser capture, 8 October 2026. In development; client handover is still ahead."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.jpg",
+			"folder": "projects",
+			"title": "Accueil de la boutique de développement Shopify, vue mobile après rechargement.",
+			"description": "Café Arona’s Shopify development storefront, mobile viewport after reload. Browser capture, 8 October 2026; not a physical-device test or a completed client delivery."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.png",
+			"folder": "projects",
+			"title": "Histoire, archive Webflow bureau.",
+			"description": "Historical Webflow reference: the Our Story page. Capture date and CSS viewport were not recorded. This is the earlier website, not the current Shopify storefront."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.png",
+			"folder": "projects",
+			"title": "Galerie de composants, référence de test bureau sombre.",
+			"description": "Component Gallery reference, desktop dark theme/view. Full-page browser-test image; capture date not recorded. This is a demonstration, not a current production-site capture or an interaction test."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.png",
+			"folder": "projects",
+			"title": "Galerie de composants, référence de test bureau claire.",
+			"description": "Component Gallery reference, desktop light theme/view. Full-page browser-test image; capture date not recorded. This is a demonstration, not a current production-site capture or an interaction test."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.png",
+			"folder": "projects",
+			"title": "Galerie de composants, référence de test mobile sombre.",
+			"description": "Component Gallery reference, mobile dark theme/view. Full-page browser-test image; capture date not recorded. This is a demonstration, not a current production-site capture or an interaction test."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.png",
+			"folder": "projects",
+			"title": "Galerie de composants, référence de test mobile claire.",
+			"description": "Component Gallery reference, mobile light theme/view. Full-page browser-test image; capture date not recorded. This is a demonstration, not a current production-site capture or an interaction test."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.jpg",
+			"folder": "projects",
+			"title": "Contact anglais, bureau, formulaire vide.",
+			"description": "English contact page, desktop viewport, empty form. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.jpg",
+			"folder": "projects",
+			"title": "Contact français, viewport intermédiaire.",
+			"description": "French contact page, intermediate viewport. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.jpg",
+			"folder": "projects",
+			"title": "Contact espagnol, vue mobile supérieure.",
+			"description": "Spanish contact page, upper mobile viewport. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.jpg",
+			"folder": "projects",
+			"title": "Contact espagnol, formulaire mobile vide, section défilée.",
+			"description": "Spanish contact page, empty form in a scrolled mobile viewport. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.jpg",
+			"folder": "projects",
+			"title": "Stack anglais, vue mobile.",
+			"description": "English tools page, mobile viewport. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.jpg",
+			"folder": "projects",
+			"title": "Stack espagnol, viewport intermédiaire.",
+			"description": "Spanish tools page, intermediate viewport. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.jpg",
+			"folder": "projects",
+			"title": "Stack français, bureau. Image d’ouverture proposée.",
+			"description": "French tools page, desktop viewport. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.jpg",
+			"folder": "projects",
+			"title": "Blueprint français : scénario pédagogique de site web, pas une architecture livrée à un client.",
+			"description": "French Blueprint, an educational website scenario rather than a delivered client architecture. Browser capture, 8 October 2026; not a physical-device test. No form submitted."
 		}
 	]
 }

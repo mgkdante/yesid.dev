@@ -23,8 +23,9 @@ import * as assetAudit from '../../../../cms/scripts/lib/assets/audit';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
-const assetMock = vi.hoisted(() => ({ relative: false }));
+const assetMock = vi.hoisted(() => ({ relative: false, tall: false }));
 vi.mock('$lib/directus/assets', () => ({
+	assetImage: (id: string, preset?: string) => ({ src: assetMock.relative ? `/images/work/${id}.png` : `https://cms.example.com/assets/${id}${preset ? `?key=${preset}` : ''}`, ...(assetMock.relative ? {width:1440,height:assetMock.tall ? 6626 : 1000} : {}) }),
 	asset: (id: string, preset?: string) =>
 		assetMock.relative
 			? `/images/work/${id}.png`
@@ -33,6 +34,7 @@ vi.mock('$lib/directus/assets', () => ({
 
 afterEach(() => {
 	assetMock.relative = false;
+	assetMock.tall = false;
 });
 
 const siteMeta = {
@@ -109,6 +111,35 @@ async function projectOgUrls(project: Project): Promise<Record<Locale, string | 
 }
 
 describe('blogSlugSeoFactory', () => {
+	it.each(['en', 'fr', 'es'] as const)('uses the existing landscape share card for a tall cover in %s', async (lang) => {
+		assetMock.relative = true;
+		assetMock.tall = true;
+		const post = {
+			translationKey: 'component-boundaries',
+			slug: 'component-boundaries-' + lang,
+			title: 'Component boundaries',
+			excerpt: 'A practical explanation of why visually similar components can keep separate responsibilities.',
+			date: '2026-10-08',
+			lang,
+			category: 'professional',
+			tags: ['architecture'],
+			animation: 'draw',
+			svg: 'pro-code',
+			coverImage: '33333333-3333-4333-8333-333333333333',
+			coverImageAlt: 'A full-length component gallery screenshot.',
+			url: '/blog/component-boundaries-' + lang,
+			external: false,
+		} as BlogPost;
+		const seo = await blogSlugSeoFactory({
+			params: { slug: post.slug }, locale: lang, adapter: adapterFor(post), siteMeta, siteSeoDefaults,
+		});
+		const expected = 'https://yesid.dev/og/blog/' + post.slug + '.png';
+		expect(seo.ogImage).toEqual({
+			url: expected, alt: { en: 'Component boundaries | yesid.' }, width: 1200, height: 630,
+		});
+		expect(seo.jsonLd?.find((node) => node['@type'] === 'BlogPosting')?.image).toBe(expected);
+	});
+
 	it('uses CMS-backed post SEO fields for title, description, OG image, and JSON-LD', async () => {
 		const seoDescription =
 			'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.';
@@ -217,6 +248,8 @@ describe('blogSlugSeoFactory', () => {
 		expect(blogPosting?.image).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
 		);
+		expect(seo.ogImage?.width).toBe(1440);
+		expect(seo.ogImage?.height).toBe(1000);
 		// ogImage uses the same absolutized URL.
 		expect(seo.ogImage?.url).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',

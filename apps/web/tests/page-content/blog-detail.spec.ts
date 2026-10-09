@@ -66,19 +66,18 @@ test.describe('/blog/[slug] detail page content', () => {
 		expect(firstHeadingText?.trim().length).toBeGreaterThan(0);
 	});
 
-	test('blog detail TOC visible on desktop', async ({ page }) => {
+	test('blog detail desktop TOC matches authored headings', async ({ page }) => {
 		test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only TOC');
 
 		await gotoFirstPost(page);
 
 		// Desktop (>=1024px) shows the .context-column sidebar with a .toc-nav of
-		// .toc-item buttons — one per heading. Posts have headings, so the nav
-		// renders concrete items.
+		// .toc-item buttons, one per authored heading. Short prose-only posts
+		// retain the metadata sidebar without inventing TOC entries.
 		const tocColumn = page.locator('.context-column');
 		await expect(tocColumn).toBeVisible();
 
 		const tocItems = tocColumn.locator('.toc-item');
-		expect(await tocItems.count()).toBeGreaterThan(0);
 
 		// TOC item count mirrors authored headings: each authored top-level
 		// section card plus every h3/h4[id] sub-heading. A post with no authored
