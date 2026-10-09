@@ -153,6 +153,75 @@ Permission control follows the same rule. The read-only audit and candidate
 diagnostic own discovery. Targeted reconcilers and the guarded CMS workflow own
 repairs. Do not replace them with ad-hoc Data Studio or REST mutations.
 
+### Production Build Bot cover permission
+
+**New direct human approval is pending.** The publication's earlier asset-baseline
+approval does not authorize this access. Review the executable plan and its
+SHA-256 before approving apply, including its guarded rollback. A workflow
+dispatch or matching hash records the operator's selection; neither proves
+that human approval was given.
+
+[`directus/production/buildbot-cover-permission.json`](directus/production/buildbot-cover-permission.json)
+is the production-only declaration, separate from the shared `directus/collections/permissions.json`
+dump so production file identities cannot become development configuration.
+Its `syncBinding` remains pending. This reconciler creates no sync mapping;
+do not use a full `sync:pull` to capture one, because pulling can create remote
+mappings for unrelated rows. Before any future permissions synchronization,
+review a production-only load/save binding that preserves this exact rule and
+keeps its production UUIDs out of the shared development dump.
+It targets Build Bot policy `9ef59c42-2e10-43e4-b0f9-7b7c91bff997`,
+`directus_files:read`, and fields `id`, `title`, `description` for exactly:
+
+- `2c41a9a0-34aa-4e3b-b333-5e6dcd53497c`
+- `2d257b93-bb5c-451a-9f2e-143291d881ad`
+- `42024627-5dab-496e-9d69-18387300802e`
+- `4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d`
+
+This also permits authenticated image bytes and allowed preset transforms for
+those four files. It is not metadata-only. Anonymous access, other file IDs,
+file writes, users, policies, and the five preexisting asset-registry permission
+differences stay outside the change. The reconciler freezes the complete
+recipient graph and existing Build Bot permission preimage into its reviewed
+hash; it refuses changed recipients, prior permission drift, or conflicting
+file-read rows instead of reconciling the whole policy.
+
+Use the `cms` workflow on `main`; all four cover actions require passing tests
+and the `production` environment. The static administrator credential is
+available only to each reconciler step. Receipts are retained for 30 days in
+the `buildbot-cover-permission` artifact; keep the apply run ID and preserve
+its receipt if a longer rollback window is required.
+
+1. Dispatch `buildbot-cover-permission-preview`. Review `preview.json`, its
+   exact planned create, recipient/permission preimage, and plan SHA-256.
+2. After direct human approval, dispatch `buildbot-cover-permission-apply`
+   with that hash in `cover_permission_approval_sha256`. It previews again,
+   then applies only if the live preimage still matches the approved plan.
+   Save `apply.json`, including the returned numeric `createdId`.
+3. If rollback is authorized and needed, dispatch
+   `buildbot-cover-permission-rollback-preview` with the original apply run ID
+   in `cover_permission_apply_run_id`. The workflow downloads that completed
+   main CMS run's receipt from this repository, including when verification
+   failed after creation. Review `rollback-preview.json` and its plan hash.
+4. Dispatch `buildbot-cover-permission-rollback` with the same original apply
+   run ID and the reviewed rollback hash in `cover_permission_approval_sha256`.
+   It compares the full live row and preserved preimage before deleting only
+   the receipt's `createdId`, then verifies restoration. Any mismatch stops it.
+
+Never retry a failed or uncertain create blindly. Preserve the receipt and
+inspect the exact live row through the reconciler; an uncertain POST without
+a recorded ID needs investigation before another write. The guards do not
+provide atomic compare-and-swap against concurrent external administrator
+writes: coordinate a single writer for the operation. Do not substitute
+`sync:push --include-permissions` or a broad `--require-converged` audit.
+
+An administrator readback proves only the targeted permission change. After
+authorized apply, separately use the existing production Build Bot credential
+to verify the twelve blog cover expansions, exactly four accessible file IDs,
+a denied fifth file and ungranted metadata field, and unchanged anonymous
+access. Then run the normal CMS-to-production export/build/deploy pipeline and
+verify the new deployment's covers, SEO/JSON-LD, and full publication routes.
+Do not mark publication accepted from the permission receipt alone.
+
 ## Content, seed, and recovery tools
 
 - Data Studio owns routine editorial changes.
