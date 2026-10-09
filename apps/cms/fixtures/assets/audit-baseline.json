@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
 	"source": "live",
-	"generatedAt": "2026-09-01T15:53:31.161Z",
-	"repositoryRevision": "a820679709b34156818983b6443a8c2054f97cf9",
+	"generatedAt": "2026-10-09T14:59:33.434Z",
+	"repositoryRevision": "42548a4de221b21fed6897c57ec169ea191c88fa",
 	"scopeReceipts": [
 		{
 			"reason": "complete",
@@ -55,7 +55,7 @@
 			"status": "evaluated"
 		}
 	],
-	"reportSha256": "73ffddc45dd29d0b9ab49f1fc73e05355d33092ac56adbd9668dccd321d23afe",
+	"reportSha256": "f79e63d3117c8fa866da5a8d792c9e92563ae087e25df8ee28dbeb823e57ffce",
 	"repositoryAssetIds": [
 		"external:iconify:devicon:microsoftsqlserver",
 		"external:iconify:logos:airflow",
@@ -241,6 +241,92 @@
 		"repo-file:apps/web/static/images/about/polaroid-yesid.w600.webp",
 		"repo-file:apps/web/static/images/about/polaroid-yesid.webp",
 		"repo-file:apps/web/static/images/montreal-metro.svg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w1425.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w1440.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.w375.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w1440.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.w390.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.w390.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w1440.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.w390.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.w390.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w1440.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.w768.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.png",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w1280.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w1440.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w1430.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w1430.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.w758.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.w380.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.w758.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w1200.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w1430.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w600.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.w380.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.jpg",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.w240.webp",
+		"repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.w380.webp",
 		"repo-file:apps/web/static/images/work/yesid-dev-case-study.png",
 		"repo-file:apps/web/static/images/work/yesid-dev-case-study.w1200.webp",
 		"repo-file:apps/web/static/images/work/yesid-dev-case-study.w1440.webp",
@@ -365,6 +451,14 @@
 			]
 		},
 		{
+			"fingerprint": "011e6e97efdfd325f6cc4eb6ca8014a85e74a9da6334d653e03708fe521e3cc8",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "01b90fdc7f7a8b4cf6a093f8b6306bd33b4746bb08364d33070645e03ea6b785",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -417,11 +511,59 @@
 			]
 		},
 		{
+			"fingerprint": "035b0f248584774bae921da518c1d69899c5bf7b2da253e74bce982972f1e542",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "035c9c10ad855ba42d780c711b73843816435d73f8eee2d45f1c5b8cdbafc99b",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "035d28b142285eec9fc9bb61099315d056e4986083a04679befa2b3b2d21da08",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "0410df05929c5420b8717b493506cf96fca746288f0ae9dbbcde150af5314835",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "04155b01b10406af2f392e5541b3da21e39017a3a1e3cfd8f62355be6a05d1c8",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "04316f29e2e5a382d7c70b9cb3509297eb563f800cf1c81a183c177a2e90fd48",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "04d8c374a925ee5c8c9ed29da299ceb74e8328e868ad5d2ee086d48b28b2eef6",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -457,6 +599,14 @@
 			"fingerprint": "05710045edd033e73119db898846ece33b85818e8efcefa74a1526d48636bfd5",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "05f4f7fca315a57635df2df8541cb5d5e0a1dbcb023b6fe38b78e50de142524c",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
 			]
@@ -538,6 +688,14 @@
 			]
 		},
 		{
+			"fingerprint": "07e6372fce575c993c3cf39ad348b7db18c2edf45a711ac25af4f4e066a26f93",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "07eb561ac3183b5965d8b0c1a43fa584e99cb26c2ebe06320cd75009e4f1e66f",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -564,6 +722,14 @@
 			]
 		},
 		{
+			"fingerprint": "098f391b976d4c2d44a454e78e06ac3841e1ab8c390f9dbd4213154bea5ba5d7",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "0a8494c07e39ad9426bf63d37bcc82a00e77c2976520c6bea51ab0a0ca4f0d82",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -575,6 +741,14 @@
 			"fingerprint": "0ac58015a95c6d831937b1b5443f51765766258afcbea1dfc2938e96f3efb281",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "0ac69bfb65ed31919c52fdca11d85159974eef43da284d6d4708a62151ceae97",
+			"code": "hardcoded-file-id",
+			"severity": "error",
 			"requiredScopes": [
 				"repository"
 			]
@@ -604,6 +778,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "0bb49368b4d17c6f476fbbae0daecc36e7034fb614b0dbf462e809391c257f72",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -698,6 +880,14 @@
 			]
 		},
 		{
+			"fingerprint": "0f043ab71e8ed1c9bd7118ca15c4e22d9363b0ccb6e657112fb8c356d4fcf2b0",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "0f17e17555ad61c9da0ddf8673d3b6c9473044fa782caf053cec666279c324b5",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -720,6 +910,14 @@
 			"severity": "error",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "0f50df133703e3c2e48c107f0241cbd604d6fa49b05c743504d520823982f670",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -815,9 +1013,33 @@
 			]
 		},
 		{
+			"fingerprint": "129c20502de2a55be0bd8b2bfd0cb84d14951d1997544fcdcdaa8720d71ad5d3",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "12fa5fd2de07840b91284840c2fb3f952ba10a805f4ca0db5a347c381099a5f3",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "13918ae8933daa4c37449a3b452f07d60f9f582a56d2a49687eededcd1ff1fce",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "13edb3554310afb715f9a371d7f5589f63bc5a00e5f8359f6f397f00c0d31143",
+			"code": "hardcoded-file-id",
+			"severity": "error",
 			"requiredScopes": [
 				"repository"
 			]
@@ -883,6 +1105,14 @@
 			]
 		},
 		{
+			"fingerprint": "1579c34b767df5321630ccd43754ce8e92412ac2e1b296c95565c3f12f5f4d38",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "15d91cb25082deaa53a15e2d76a4410301235a6861a792b02f52796894fd51b7",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -905,6 +1135,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "166caa4a22c6c009dbcc2f2ecfc7b6e32cb0fa3568bd276623383e49b6d5339b",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -974,6 +1212,14 @@
 			]
 		},
 		{
+			"fingerprint": "191bd7b7d603b1f0c21f918dfa45e4b4a2a307a1e7f9a94cd36184b08eb7bb5d",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "19454f7d5a72592b3ec4d15ea37dfc76141690e157510f135efd7a8548c2e02a",
 			"code": "stale-generated-output",
 			"severity": "warning",
@@ -1012,6 +1258,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "1a20700ef83bb0d521cef9ad145489fede00f7f899bd891ac430ce4d9d2a8aeb",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1097,6 +1351,22 @@
 			]
 		},
 		{
+			"fingerprint": "1cd64bc9489918a6c14e62d61e30f22c18780664c50ff3647d57677e76f148a8",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "1d2f39f51eb80f46a4d12587d70cb5f97ed49f3affb079c3bf828807cd7b5991",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "1d7ad5b349cf1a071bb97c204b5f17cd1ee9e4f4fd3f50415d1b931840d1c4bc",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -1115,6 +1385,14 @@
 		},
 		{
 			"fingerprint": "1d9b8021e19d346fc49a18c609fe1ef3cc294599ce610d24c9748b5b5673211d",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "1df8a27379bf17db6e4b7b62c316bd1af4c01b1717a5ff51cc62e8acd152bc86",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
@@ -1155,6 +1433,14 @@
 				"prod-registry",
 				"prod-files",
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "1ebdf97a084ecf2b144a87a19525419974f7fded2b421cd064db4718dd9409bf",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1207,6 +1493,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "207ed4f2fa3541d256cfc9a624d9d1167f249e4dd00fd523f7b2ec68dfce239a",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1285,6 +1579,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "22d98f710619f518a6aa97ec43ee11c450e1fe999dd13475fc8b552c0e36d432",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1379,6 +1681,23 @@
 			]
 		},
 		{
+			"fingerprint": "24e6bb42a92b3e596a5b4a1c22790bc85351e9e9ea6580360e5f089462f544ce",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "25405a2e72c849143a23f719464764e2a81da7560dd407580f137339d04f596e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "258f20d27c55979a436066a22689a8931665e9848590df0126740194dfef8ee1",
 			"code": "missing-record",
 			"severity": "error",
@@ -1397,12 +1716,28 @@
 			]
 		},
 		{
+			"fingerprint": "2609c6ec8e0402beb04f55046c8ec03f88ba4b18fb56b277c873391ac236e522",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "262e56f63bfd6f22ff9f96b096b6ae3d4c4ab7489efcdc3a436ee1843e55a883",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "267853a8d09ebcb75fe5da4e7e3a3bccdd48f30a0026b6ab8af03d3935e6087a",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1437,6 +1772,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "2740b2faa5a6610d3bac87368834d30516ad820e79ee801626ab1ebb1e5fdcc8",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -1524,12 +1867,60 @@
 			]
 		},
 		{
+			"fingerprint": "2aa90a901541c205bfaffb861177f8c9e79a233680751df11c4c28155b80afc0",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "2ab30e65059d4857806fa5e7899bde7b068f5b8cb832374e9cce9765200b581e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "2ad38fd009e6d1ac747040141beed4fee505fc8e7a46300d6ef69461ed056901",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "2ae12b4a029dadb2be83189c3fdfbf7991ec21d5cb124b820a2b1adb4cbb2858",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "2b01d3f84faabad6bbed7379a48844a1ba1b870f2311f06df7945debc106841c",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "2ba6773250a844a6bf5e77c2d13e7693d3e1032d7c123454c1bbc1c023cd47c7",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "2c3fa1837a028c2dae6265b3ee354e7445e57a5917624c214a0de459985a6b5a",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1550,11 +1941,27 @@
 			]
 		},
 		{
+			"fingerprint": "2d02fcf2133ad41e7559438101e34faaf233098c71022e96f53312d7dbc8b740",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "2d1a960bfac806098c7c0f97950d18dd2c5f93bbe144cab698cfae438f20f135",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "2d23e24e2bbb5552287fa48f1caee450842faa8aa23dad0d591e613ca3ae2793",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -1603,6 +2010,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "2e503e60db31ad65bbeeef855c2763086101efaedbe33cfa3ab5e082a2c65dac",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -1677,6 +2092,14 @@
 			]
 		},
 		{
+			"fingerprint": "3145dca770edbe51dff2907bb371ce1ba57c3c1b6b55e40e3efe819af534c467",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "3172ac1aa0fd9b7f064536f834d57ba3d7a8a8f70a4045ba8bb6a667ab5f2839",
 			"code": "missing-record",
 			"severity": "error",
@@ -1700,6 +2123,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "322c9fdb3bef2e3dfd3813ac01ad86b7d9fcb960dbcf49630e9686d64ab89e50",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -1911,6 +2342,14 @@
 			]
 		},
 		{
+			"fingerprint": "38f96202a31668c60612ba9f5f5a1a6033dabce02c9bc8fba009199bdaa539e6",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "3951dd93690d226926dbeaf504f67ea0612d6d038bf9913d53edff52789045bb",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -1943,6 +2382,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "3af90bd384fa67fb658e7996a404f8db10519823a471d3e79dbcb03f6295a2f7",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2041,6 +2488,14 @@
 			]
 		},
 		{
+			"fingerprint": "3dffc8d0af398ba57d5d90d68efa9f4297cff860509be018fc19f89575c8a5e3",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "3e43c129f5fa84c4e8385fe0a59396c33bef1ba6223cfa525b1199b609b98e95",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -2094,6 +2549,15 @@
 			]
 		},
 		{
+			"fingerprint": "3f8b1428312be86d9e4eb5aa68abd8266b969694dde3d4b55f879b8671e7da8a",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "3f9f7663435b8c1d0e4ea5e35bfdaf4a2c1971ae0df5a7de33f7c7fdf1e5c6ed",
 			"code": "hardcoded-file-id",
 			"severity": "warning",
@@ -2107,6 +2571,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "3fcb0d4a0593f79c8978a706ceb907484e6028570cee34ea136ff6aee76405f2",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2125,6 +2597,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "400c83bd7bf8ef2e21a0ed4dd0864c8d63e4327014b9c3072b4ed844318db47b",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2169,11 +2649,35 @@
 			]
 		},
 		{
+			"fingerprint": "41447cc47beceb48a63fdac599a5f49443ad1f56c03fe097761c6ac7604caf8b",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "416d16e2eb061c849135e8728fae5fba7d028578b2d6c242a14328b84fff3991",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "41976845b9bb440ed213b4b9a51d02a2aeec32282fb581f8f07f93f687e6eac9",
 			"code": "hardcoded-file-id",
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "4212a29317a9275b1c18f927a59cda065e1009bc7c5adc31c0aae8eaecf4d7a9",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2212,12 +2716,28 @@
 			]
 		},
 		{
+			"fingerprint": "42982fd8a23e3db8900d5c29a1b0ed729c9a56e4fb59a74463df2b21136aaeb8",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "42a28277cf505697bf4362fbc7bd5ca76274375337a3ab423510fed39576e884",
 			"code": "missing-record",
 			"severity": "error",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "4308a2cf6eeef451c1e971b880f1c89053a96e0496bcd05a9ad5449022b31bda",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2230,11 +2750,27 @@
 			]
 		},
 		{
+			"fingerprint": "431ebddb6a1141609188b357054e626760916fad343f2ac71f8b289b45b1e7d0",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "432533432100de5a0a7969426e60319c37e4ca4218829aaa1cddb0bf907cf719",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "43f2a36d53093960af897c0f1a727274a972e74f99afe526cd84427324df4c71",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -2247,11 +2783,28 @@
 			]
 		},
 		{
+			"fingerprint": "445bbce010eca0aba32f1945056d824d799e0fe7caba02bb7eff2a77cd99b22c",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "446de0cbda3d0abf7ed3c8d7d36a11f8dae81ea67982cb65829d048ce565e9af",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "449da2a1e8bfe5027a57c6faa6d63d756247a95360959605753c55c2421f50bb",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -2268,6 +2821,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "4531160e09ad68e92647dc5e7a81886f7a83aaadd533800adf179540032cf3b4",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -2311,6 +2872,38 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "46878daa33a3988decf5733c23ece6b53651589703b38c3fa89322c70c1175ef",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "46911e7a0f84ee37b6cdc52db8dd1cba249193723886d86c3f3d1149eecbff55",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "46bc9691f631928e1ba0d9aab0c5719c1b6e0eb8048aa9d7f23eb314662ed610",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "46fcb0f3e40d12f44684f4e8524fd05dfd2b99270ec262b07a21b037659889e7",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2369,6 +2962,14 @@
 			]
 		},
 		{
+			"fingerprint": "4800b2ceae2eb80fde8e45a83ca14a4deb1ef1807e6419554c8dc53eb68a1436",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "480ddb5dc5e0589ccd73ac5800f2b30477692f427783b60100031b5220632a73",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
@@ -2392,6 +2993,22 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "487efd40b64a3fd2f62fde152eb7ee659a647dac0857e87f3e10c2443003733b",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "488f9d946a471c7e24c24a3b33d897ee3a93428d4d566cc1e190878505c251d5",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2419,6 +3036,14 @@
 			]
 		},
 		{
+			"fingerprint": "496c0ce23ce734ba4c064ff8b2056b13d258b6a5425f2431048785769bcb2f3f",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "49a45bb67f77422b4db0d0a9bb1405c985d0906990a8532a8aa06e0a80c55b6c",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
@@ -2438,6 +3063,14 @@
 		},
 		{
 			"fingerprint": "4a3a73bba2da55b2890a635a587bdaa02f6453d65cb1dd97e5ecba62e7c1ed3e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "4a3ecf5aa3bcfcd081bedccabbf7262e26ce17f954d93bf69bf587457dcc3cec",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
@@ -2470,6 +3103,14 @@
 			]
 		},
 		{
+			"fingerprint": "4b7661c5daa4f2c89870b1eaf00e773cf20b290ca8ea45089211de0e50afbb14",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "4b7694ff0b014731817fa26ef00335bebc8f30851f4278c3eea7cf2fea5ddc55",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -2487,11 +3128,36 @@
 			]
 		},
 		{
+			"fingerprint": "4c54454cb2f645317c80a5ad41c12caa4be6659e356f97cacf6ba8576aed4ec4",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "4c9f112079661339ef466553e415027ad933e5750c6d2405609e2f07c5e9e7c5",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "4cb683a265c92aee0b456e2c8ae9569ad7c22a381b53baf39e4c76f04044a6b3",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "4ce350eee4c85678209b6a9fbc02c647abb0482e7878ba41dce74263d62a33a8",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -2546,12 +3212,36 @@
 			]
 		},
 		{
+			"fingerprint": "4f1af25d4eaf672a8d1f66a3d3e121dc05dc89de6a32eb8e256f7cc02e8d59d3",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "4f29728b587be6c5187246a077c91a16d622a16cc47ae5ffd8e750256e397ae0",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "4f56ab0c3270bfd61738760beb2c1d671ced7bdfa48988def9634e25c83e4aff",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "4f806ffda3d06fe280f3903efc9f8aa0bf633b2f175eb593a43ad1ff746f1cc0",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -2572,6 +3262,14 @@
 			]
 		},
 		{
+			"fingerprint": "504a197077d326881ca0f6a7ef077130fd2c6ba444c17634d6f60a4c4f0e61d8",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "5055d1a5ae034301435b4cd05a05d6aaf65941c60dd7782ec3d09f0343277997",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -2580,11 +3278,35 @@
 			]
 		},
 		{
+			"fingerprint": "5063375259057f23db67dada0eeab63bd560eda912c2299584cef1ad8eb96b74",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "50726a2191327e03c0fc4880e512ba341aef7948e2792cf366bb9b5a5737cd61",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "50a684dbe6934ce33dcd4cbe4816dbdd1bfdfd28f579be2aca7a3deedcf87c0e",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "50bcece9284ea4599f723d122e7d6b6870f0dc69e038d9acf25f2ae61ead0b5f",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -2597,6 +3319,14 @@
 		},
 		{
 			"fingerprint": "5133d1de02d549948ca7ef510bc357f2908556149ff9e482a63daffa4daa7289",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "515501e1611d175ebb2aa51415347095b814bde808620c875f242362b9cf85dc",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
@@ -2750,6 +3480,14 @@
 			]
 		},
 		{
+			"fingerprint": "544c7962cf3f4aa2f88d1ed1e826acfd438e04a6dd99fffae75d928fdd07507e",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "5463a1303fc97e73a0012942f0f24a86c572807232dc97839688ba3a098b012a",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
@@ -2761,6 +3499,14 @@
 		{
 			"fingerprint": "551eddbc822d51747483b826231468fa30ede9b57d998b3e286dddbab50b5233",
 			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "555f2b55ade044e37673b7dd815f4d35e0b8df8e7a77f85bafbb0a42458f608c",
+			"code": "unresolved-dynamic-usage",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
@@ -2834,6 +3580,14 @@
 			]
 		},
 		{
+			"fingerprint": "58195c7348039add85a359ce978d83d93a301d0e96a827c308c871f72b5fb81f",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "582a88c46b2fcb0651146f7d156cb55818100872e1764153ab5a1a655e2d4d15",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -2903,6 +3657,14 @@
 			]
 		},
 		{
+			"fingerprint": "599ad50af8b28596ed86bdc407ee5d05e8eafbba78e01716f6dc5488fe93d5a4",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "59a48dff1503189a3ae0e0788efb49189eb9233c9d192bd38c6c0c42d9ff147d",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -2944,6 +3706,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "5a485b95767589ef4bb3d22edd1f816fe661a44adba3b5b844f6649bf8fad1de",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -2991,11 +3761,35 @@
 			]
 		},
 		{
+			"fingerprint": "5b31a23dddc3c2b7f8731e2df2102ab8731575aca9f3eee48418cd8a56baab98",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "5b4a423b00e8493c5c0d753b899d7f135a0a0668cb7f002cba820731590a296f",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "5b50eea7dde1a5948447681b4c795d14834adacea7cffd176e88c3108a98e678",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "5b54659013085daf5a98fe2c002657bfafe511897a7fe81d53d2d04615e2f4ba",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3043,6 +3837,14 @@
 			]
 		},
 		{
+			"fingerprint": "5bc360d39c7b544e3455344c73f6784768e0901f722313aa7bad81421331b721",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "5be3458c1e14b0929ec3960bcb6f74b20a4bf89c74aadea2b66aa9206a38b9c7",
 			"code": "orphaned-directus-file",
 			"severity": "warning",
@@ -3051,6 +3853,14 @@
 				"prod-registry",
 				"prod-files",
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "5c98059a0926620a1b0f3a3b63f30bfe3ab578b0e1820ab255f7f406e6153a86",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3176,6 +3986,14 @@
 			]
 		},
 		{
+			"fingerprint": "60d749c72f0ed53c807afbadf8f485c199e2852f22e1ded6eede427ce6145b82",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "619dc0297190ba82022fa34d72272cf2ec15317c50f61e7a8eb3ba21981a0e0f",
 			"code": "hardcoded-file-id",
 			"severity": "error",
@@ -3208,6 +4026,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "627ee72ce9b1e82289e590404de8f3ebde8dfa8c4986ed6ef0daeb54c5454445",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3246,6 +4072,14 @@
 			]
 		},
 		{
+			"fingerprint": "6337ca95cf85c5c918dd6fe406381f7309c059c42ed142da98b2f0ad3c31b7b5",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "63add289d6f1e46f4a93d97b47ed1dfbe38c06bfa09f2850dc82d67f32209865",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -3261,6 +4095,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "642422e98bb238e4d8119740d7709fcbf56423c92c09a6bb72af5b7a30b07974",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3316,6 +4158,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "670dd123507df5b3482b7faeaedb49deb5dd44c2859b4b83e59e8871a6417d5d",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3537,6 +4387,22 @@
 			]
 		},
 		{
+			"fingerprint": "6eb9a18f08b22fcd9e63742e62aaf6bb1e72aca4909d4d29c4044683c8d9e18e",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "6ebe89d1391d0259f59ad3f241dc580d006c488ac05df273b194a0825aa6e7ac",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "6f2af371584d066b0b5bf6aff005ce4fe68aa8d372b9a59a534a534e14f78b9f",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -3603,6 +4469,22 @@
 			]
 		},
 		{
+			"fingerprint": "728392f5d78a4ba683d0815190a608eda2845f740d8ffeced1f9d24fb71653b0",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "72c182e5271465ef5a691dd676668edbfb54231784c47c95da60c65d575ec632",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "734414c92994a7f0509fa13af0d5aa1757407235341f953af80d8c1c472d48c4",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -3617,6 +4499,30 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "73bacfbe2f34aff67f422134a85390ff7447d4d6bf2f920082f7912cba82a8bc",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "73be12ae5d92e34cafed0248ba6add3fb2f946b4a7050a285a985a7245c4fa4c",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "73c8b69e36e45dc6e9f9fd75571f76b0bd04e4f4016924fd4db086d13acf93ce",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3654,6 +4560,14 @@
 			]
 		},
 		{
+			"fingerprint": "74a7ecdf2c79ad6975223dfdbb0ee2f0e8301c014924b1bdf9b892b6bd94ea02",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "7538277faabbe1d5ca861a0c2ed542121f571fa593bf89bd486b8ce04887a6c7",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -3664,6 +4578,22 @@
 		{
 			"fingerprint": "755edda6cd5711e43324f11ef4c68de599ea771d2b53b7d29061650241b37e03",
 			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "7594f12abf903c22c4ef9ea9af16935b68034adbf6db3e3dc3baf9042e88a97e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "762aa9ad5c99c5c7a36adcee3ffb3fa08e889e8ee78a377d869b44b8324071ad",
+			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
@@ -3720,6 +4650,14 @@
 			]
 		},
 		{
+			"fingerprint": "78dfe6ae1dec4e203e0554b1eaccf7c6de03075b07cc9ead0fc05a3c6e4d855f",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "791ba41169b5f083d7be1cfac9276297242e48dc5e7bca84cda80a7334641887",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -3735,6 +4673,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "7b5d041d2a6348708ee2c2866348ce072bedfa0015ef8e77b7688ff347121491",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3763,6 +4709,14 @@
 			]
 		},
 		{
+			"fingerprint": "7b8c99ca9794738ab1489096803f662d5a2a740ff55187d3583027e746af8091",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "7b986d87872cb642b01b2876f771afb14bfcd8a1eea2242bdb893f3402c8ea2e",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -3772,11 +4726,35 @@
 			]
 		},
 		{
+			"fingerprint": "7ba4351368809321c5cbe86c35a7a345be605bfeb85b9dfa249d823515f6e338",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "7bb61ca132705891135aa85246b2682f00166d01214a45ba618b2d20adfcbc64",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "7c083c25df0b413741017fed7269c297e73ed0aae24ff9f3a6729b451684f80c",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "7c12fb1975a92e95a17bf0bc1959b6b5668e173bd5dbca0c62bec31e065b0d76",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3841,6 +4819,14 @@
 			]
 		},
 		{
+			"fingerprint": "7ef1917f83157b8f0d071dffaf4790fec3bd5193e3fcf8fd1a253ca129962133",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "7f0b21aace8c93813a485811cbf3b03492af27d35b5dc415757b9751032ce134",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -3881,6 +4867,30 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "8014b0fc7ff05bd1cbd9136c0a932d1a4c253d03ce3fc0d71a0aa904f9de2564",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "80ddf80725401e16e58782aded466f79f92c953ac2d8e670ed015af444d9c41e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "80f85cda13c5d89097328bc2abb15defaf208b17fa7a769efe5bc404f1bdba48",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -3953,6 +4963,14 @@
 			]
 		},
 		{
+			"fingerprint": "82ff2b68a6207f974a1a18d4364497e8d9dac1825c2af5217490580a6c3267b6",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "8306bd2b9f288efa770453064442bc2ff8785fa85271ad506b3c98789c360076",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -3967,6 +4985,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "83924e8f5f1e9886e8a2987fb47257ef8d81c95abfa3319550b6cba63d00548e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -4001,6 +5027,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "84221e7ef7ca61f48de962e12da326b9eaa7babd5d900507df61578fbe57a085",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -4082,6 +5116,14 @@
 			]
 		},
 		{
+			"fingerprint": "8580bff4f53b6d9faf548a421da2f562cb66176319eea6c4f46f5fc718de2d92",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "85a9d86d9fdc7211f062f02e51d0c28f79e430ccb97b59a7981fc09b7fb3ec62",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -4116,6 +5158,14 @@
 			]
 		},
 		{
+			"fingerprint": "861dd6767fe340247374ec38987a472b6596d967068d5628ee95a51e7d73fc52",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "863346a9fc346a0682815ab73d520045bec0c0266982195d1251ed3dbf0b0f96",
 			"code": "stale-generated-output",
 			"severity": "warning",
@@ -4134,8 +5184,24 @@
 			]
 		},
 		{
+			"fingerprint": "866ec004bb9fcc662e33d24b7de7e6f07e735c73ff0035a9d3a05f8afc20e2fb",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "8689df64d42118892dde3521f36518217a589f6ef94f1ac8b7a159243f38f454",
 			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "870508e32f2a31c1d97702a3fb3ced1fefec302caaba3fb300f45ab85a6fc2d8",
+			"code": "unresolved-dynamic-usage",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
@@ -4147,6 +5213,14 @@
 			"severity": "error",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "871a5b7107bdd39f04d233e5ec8067f9b60215195a1dbef4a2b82ec3256cf3ae",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -4189,6 +5263,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "89f8950d5405b437328c6dbb83ccee9163f8b6f5910b4f6ef8c870bfc72aa91b",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -4238,6 +5320,14 @@
 			]
 		},
 		{
+			"fingerprint": "8abbf7a6024f33e98807e5a4b5098b7767708e3e9c75d5728ccdd78524847d30",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "8ae460d5b35bd269f2280ece371d4ba1e68271c45f325c6963a46c59f49c8a36",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -4261,6 +5351,46 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "8b9f90b5cbc7905e1003ad5876a767855de9f5a66f81461c09f0ffa26f45027e",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "8bbba768a7865a522049d86cf71a5065c31e433b512bbe84285ad676479c2e11",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "8c2a24d7bb4102bba54cc22ddf76aad067951f24c5d0d2b7d2a8546e27aa0528",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "8c51c166fcc2740ca33382488ece1c2d1ee6e008fdb642cd296a2bea23e2e646",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "8c5620da9345d054d04fb690cf1a67d065ad0e5f79605443606755be2c5f6c3c",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -4291,12 +5421,28 @@
 			]
 		},
 		{
+			"fingerprint": "8cd171aed2c0e64f559239472dab0f667045482b8c356527bdf980eb28b64075",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "8d00c9b4ef464c60b89500325aefcbcfba50211fa8142b10d6e1f8346aebe063",
 			"code": "stale-generated-output",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "8d0edd107f16acb0a71d488e2886676e05eca857007de46908a47b2fb433248d",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -4431,6 +5577,15 @@
 			]
 		},
 		{
+			"fingerprint": "917d7c8c2ec7b20c6a746be27acda0a191aab0c8bd822730853e4d9ffbcf00ed",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "91dc6e821cc9df6a1da2dd355035607dce7506b33f45e07d310b26f1e340e1d4",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -4460,6 +5615,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "9257aef5e7d725cd37a07d1b14f0ef7d86c9736096c213fbbd65b3fb76a66bc7",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -4628,6 +5791,22 @@
 			]
 		},
 		{
+			"fingerprint": "95bdcf410699a5010aedee65a56e7c573f03718818f92eb729bd2c33815a04f2",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "960060d286f2c08566bde71840302bf57e08d4a851460dea0d2d44ef4c8898e2",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "96322136436003b89133d8fc7c50afe852e8a9cb75c886c3fa1ffe14466717a2",
 			"code": "hardcoded-file-id",
 			"severity": "error",
@@ -4676,6 +5855,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "974aab02caa4c021509fd71547af61dfa89435bfc85bb27c7d8d6ec3d4f7d75d",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -4782,6 +5969,39 @@
 			]
 		},
 		{
+			"fingerprint": "9cbc13496d37ed29f7b18a22de605841bfa36be350a92a4ff3986cfb9f11f420",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "9d4d9635305aeb5c00c679c533b60c2fd5a336e926c73ea76153d8bb06f0113f",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "9d5a3f562c1b79c7e3778c145ff269eeaa50c4e12bf857fc174e98ab180a35df",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "9da6fd333694f12d33046cffe04c910f5c3467e1bfa1bb1e28f4d53e2ad74605",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "9dc4605e14ecf36b35d358f96f1b93a7e22b5cf611df93435145ca4f861db92f",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -4867,6 +6087,14 @@
 			]
 		},
 		{
+			"fingerprint": "a03560ebd3ca5bb13d4c6fb3ac5e74f5f298704fca36b756cebeb4ffa63d0de1",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "a05abbaee1a783059a7be6d9bba3460f20aded3802ec400827567a7639b472f4",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -4888,6 +6116,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "a0aa408d43abbae6461e580e8b70ee3b3321d7aaf944f9b9f617937928a15248",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -4943,6 +6179,22 @@
 			]
 		},
 		{
+			"fingerprint": "a3f5e3ed683a7de870ceafcb51db64816ccdcebcdc4f1014a5add83b0c6fb5be",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "a421ee2e62dec5b15b21a80086509bfd4acad3975ff9a2179a9d883bb8fd43fe",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "a45ee19a0db5b24e654343e90f7be404d67f989a94fdd883ba5bb3469981dd82",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -4957,6 +6209,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "a4e07b8d09ba1f7bf2dde94bfcdbc22d57b82cb141422c302b1275188196b003",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -5124,6 +6384,14 @@
 			]
 		},
 		{
+			"fingerprint": "a9239171676b337998c8fc3f4ef7d6f39e8eefdc1272d320742744456385d3df",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "a932adb741fa43693aa4f94fbe1542ec74d96a33b891f8d4e44d877bcf52888c",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -5248,11 +6516,27 @@
 			]
 		},
 		{
+			"fingerprint": "ad5dc07207e21ea9621b504af72ea24cab73179e80a8813b950f91205665afac",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "ad9cc85a56adc9d0d02618a6bb4529dca8277cd40129ecce68259a8f26974a5c",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "ade93f54ca5d497b82422545cde837c626ca06ff67be9d3ad3017969591cc48f",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -5270,6 +6554,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "ae96d389fa4e11f0fb6fb718d416023ea055c7467661ab95e335610f1e5b7350",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -5340,6 +6632,14 @@
 			]
 		},
 		{
+			"fingerprint": "b0b9324a2503ee4f16fb9387f54c3fc9cc30f5a3a7600c2fe145597eb27d7a87",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "b11260306291fa764c55ec14445603a7eeb333ef1960c134754fa2669276f6a4",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -5392,7 +6692,23 @@
 			]
 		},
 		{
+			"fingerprint": "b2d0317acc5f61c5dcb5d12cf328511ac7e12fa26c61d49ad9d1d21819389ca9",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "b317c349a2a5d440f1fd3aa33e055676db668d1fc13d9c505d9fe405206b50c2",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "b31d4e73f07069954b483e9fc8ee8b3ab7f56d27ba85641654d04c222273dcb3",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
@@ -5453,6 +6769,30 @@
 			]
 		},
 		{
+			"fingerprint": "b50cf1032ca91794f73e972a8339aceffa64102a55a7b6aeb44ed211b76e8c48",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "b53908a5a9151f06c8365eccb40411d0c23adbf544bf26a2185eb0e7f39362c0",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "b555fcbdbfb3325efee11852d1997e045dde13cfb8c88b27b3468589c02bd293",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "b5a1d1d9487cdd0d0efd9abf86b2a32e19709b74e15068fc95e5e8fd3f2cb319",
 			"code": "stale-generated-output",
 			"severity": "warning",
@@ -5503,6 +6843,14 @@
 			]
 		},
 		{
+			"fingerprint": "b7b64bb9cddac0d1b72dc21430bb38930c0aab1c83ae368c6b3c61e89915b121",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "b7cd7635c08ee32f75313a355f2ccae6be342d0230163a5c77a436a9e82390cf",
 			"code": "untracked-repo-asset",
 			"severity": "warning",
@@ -5513,6 +6861,14 @@
 		},
 		{
 			"fingerprint": "b7ced64b397bdc718950e65cd296b0431375b040753b8aa373022be2455a40c9",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "b800de45e106b208d87d51a3756dd0e0373fcae70e525cfeff34fa4541f4f9b8",
 			"code": "invalid-format",
 			"severity": "error",
 			"requiredScopes": [
@@ -5584,11 +6940,35 @@
 			]
 		},
 		{
+			"fingerprint": "b948b0d423c4016e0cb5e9115c522c2657561b73802df60b76bc5c18c7a85135",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "b98b85674863e894cb1134a627012687352dad0b716c47b04eb13473020c6d0a",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "b9e226a8f8aa15afb68cdf5245001591bbc5f5d16e48676e862f030d02d3ddf0",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "b9ff6525eea1e8f13f0faad9115ecbcf9467be470972d4d6d16e0fb5c6dd8bc9",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -5618,6 +6998,14 @@
 			]
 		},
 		{
+			"fingerprint": "babf4ad3ba3e5ebbb6519cbce553e7bf38948b79dbc45c90c30ee49ba28f241b",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "bae765d3930a1d77f7303e24adeb0d8c17d5c85c71cde1532dc651c33f17a19a",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -5640,6 +7028,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "bc0537787aee80e13cc0b61f23bc847f1888aeaf943fcb1e2f2cb60849365c8e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -5686,6 +7082,22 @@
 			]
 		},
 		{
+			"fingerprint": "bd451ff35220dd9f2aeec4049e9c27e1c941e53781e1e179794f1767198787ab",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "bd59e8f358693fedcdbd6149112b882b88bbf3bf5f2af16690193834dd810b9c",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "bd5a74c7ad67da5eb93ce9be09dac014d40c03128a413274a466f9c875967dc9",
 			"code": "stale-generated-output",
 			"severity": "error",
@@ -5720,6 +7132,14 @@
 			]
 		},
 		{
+			"fingerprint": "be04c6dac7635d5334ed028a96464ceb61c16fedcb3f11c38f67a163947e4bb6",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "be0b796583b8409c9c3538216554b3be3e9cf68e7eacd1a40a0db27016494921",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -5742,6 +7162,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "beeea56707ec78dd017eb885c9c6fbc836434074cf720b79d65f5b0068fd24b4",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -5778,6 +7206,14 @@
 			]
 		},
 		{
+			"fingerprint": "bfaecd56dfbd3996adc2cd015455181229c6ec2c1285357c6844c8aa01837c7a",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "bfcff84ff0dea0d667ef5a5349b728c34e656005023d8c641b19f56c85e0563a",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -5797,6 +7233,14 @@
 		{
 			"fingerprint": "c0156588ef0b950b8e486ebc4aea8f390aa04e02d548fb2eaaf6a800e4ef82bc",
 			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "c01b43419cfd3c2c8f70870b2dff4fad0f5d433c24b14861ed176941e828cd8d",
+			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
 				"repository"
@@ -5843,6 +7287,22 @@
 			]
 		},
 		{
+			"fingerprint": "c2ab6b4ee54a3b20936b59c2840c702a1049d61b40492dd5783701cb2e13f624",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "c335611dbcdcad4288b5f89ae3202c4ba483744cddada5ac0bff54de4d2e84d9",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "c392105767e7a65dfb2e5d3d90496882fb19ea700c93b1560ab9ef843aa86ceb",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -5865,6 +7325,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "c3c912d0da17a206bf3a3957651c1eaf73e3464294c899848083b34d29f00602",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -5944,6 +7412,14 @@
 			]
 		},
 		{
+			"fingerprint": "c5ec8799e7432b8f7d34cbcc13d1ee491d8281918830aa312348bbd1a11180c9",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "c62cf982dce4e095ee6b175ca8437dae923b5fe3998b510c6dd69eb0687f084f",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -5965,6 +7441,15 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"repository"
+			]
+		},
+		{
+			"fingerprint": "c769afe43c1db7541eab423fefdd3842c87517b93b2695113218c342b97e005c",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -5998,6 +7483,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "c858022ec568658cfed8dd1e6a203d412f3efabfe9bdc3ca0a9e32a29e446ff9",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -6060,6 +7553,14 @@
 			]
 		},
 		{
+			"fingerprint": "cb18d66657157716c3017e56351473f811e9218d61374467abc82c68e432dce7",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "cb4a1c8bcc9f3d855bc26f2999f901012209a08ee566502a5d120674765288bc",
 			"code": "orphaned-directus-file",
 			"severity": "warning",
@@ -6077,6 +7578,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "cc19116247539c9522f8445a795f4c556a9ee7f7ec362816d24286f52d835dfd",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6106,6 +7615,14 @@
 			]
 		},
 		{
+			"fingerprint": "cd0d64dd0c5e62f4314513ae5e649ba636c5369ec44bc9a6ea68fa81935a4618",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "cd3bc8433cbb053fd3c83c9aad765262b4dd67a71c7b89039bad0b40f0f6289e",
 			"code": "stale-generated-output",
 			"severity": "warning",
@@ -6129,6 +7646,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "cd806afd3404aae7fe419d86d42862afcd08fd8aed77f37d99dad95f91fee175",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6211,6 +7736,14 @@
 			]
 		},
 		{
+			"fingerprint": "d02a9f5955206c59b69de025fde70846bc0139234e9a0f1d7fcb3a863311a81b",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "d036997eaa7a70de6e437ac6bed8108fe16dd1f868efedb00451acbc71f7c730",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -6225,6 +7758,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "d0d5a85261145c22913ff77d596211fbe4c76550a0dca07656b7ed23450498a3",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6305,6 +7846,15 @@
 			]
 		},
 		{
+			"fingerprint": "d1ca5373544ce091146b100d11a8022929745bb7de61e1ba05c09a22e18b9815",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "d1d19f17ddc1c7b627f58104b4edc6aa7fb5749fd25a1da2cb0943334edb8a63",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -6347,6 +7897,14 @@
 			]
 		},
 		{
+			"fingerprint": "d3397f95959665e11dfc78aea116c0ec9d581d72c53eeaa2da363831fc785cd5",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "d37b99c98b71f75d3a33d7841f3ee5c6b17b1115afbf9abebde3ead952aea3dd",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -6372,6 +7930,14 @@
 			]
 		},
 		{
+			"fingerprint": "d3e8cbdc4a2cfcac62a410a12203a66aa93f27adf706615dc153b2e41c481ec2",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "d3ee226ce9611d6ac8ce5bde3d10837bb531b308ead7abf0b6fcb490732b4bc1",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -6386,6 +7952,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "d4e0632d6b003d5ce245217a8468c85894246148858215524fb471d2f60c9a72",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -6404,6 +7978,14 @@
 			"requiredScopes": [
 				"repository",
 				"generated-outputs"
+			]
+		},
+		{
+			"fingerprint": "d5ef3ee7ed50cc9c79220bd8951330a710270bfa7bb793bca2f28f9aa6fd7b71",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6441,6 +8023,14 @@
 			]
 		},
 		{
+			"fingerprint": "d741bfa214719e8e8e12df0fd62d549f6c71c19629e66a11dee3b91fc38d10d0",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "d7461e6f53ee8170d7cbd7353f48639d315ec5d2fd8c812a178fc666391bb142",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -6463,6 +8053,22 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "d7966cb812883dc99fe1fe0479a791177763cbf7a84f18c262c4358bf9481b00",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "d80301c036a7b384ee5efd89418c4484843ff2f5322572d46e8750b19a144cb4",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6496,6 +8102,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "d8ef0c0a8bd42bfdaa0a81ba3a4a5d578a46fcd13f1dfed6e71a74dae14d7faa",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6543,6 +8157,14 @@
 			]
 		},
 		{
+			"fingerprint": "d9f3a973e127f52cf326ddb5ec5a85be2f04e681825e48c27a8c73192c178b82",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "da06548d23a26ed6e86674421d4d979d93d3801bf96098b0903284825e88e0e4",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -6566,6 +8188,14 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "da87a1bc8c3ec781f10e1e8adf718786a9c9bfe69e153574c222f9c29074d569",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6596,6 +8226,15 @@
 			]
 		},
 		{
+			"fingerprint": "db3c97ba5b82e88c109fd4f332537e4b581680071ce937271297ebb425cd427c",
+			"code": "untracked-repo-asset",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
+			]
+		},
+		{
 			"fingerprint": "db9693ade694e955b7937a101d9b63d1c773b0c4ee91ac382a734524a4fbe518",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -6604,7 +8243,31 @@
 			]
 		},
 		{
+			"fingerprint": "dbf0ffb8045695e13a84b6428a899adc8968fb1a9bd657640d64c5c376ca43b6",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "dbf7b36aeba5f486235192965e473e4dd3aeb512e2e74cc425e5d620de6440e0",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "dc0efd2cf81b34183967470d65657a74015e9ee9c59293cf0eb88c7dfbd75f7f",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "dc2a0066e33725cd0ae9ba4d64c47ae596ab376e21e4de0a4398bce95e0c00d1",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
 			"requiredScopes": [
@@ -6618,6 +8281,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "dcf85b4fb76b58bb189fb015b609fbfd10cf187fd5f47880f97dc32ac47f1d7a",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6636,6 +8307,14 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "dd9ab409aa0e11bda6dccdcb2337a07d523939e242ed0b38cbd1d9dbb29c1edc",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
 			]
 		},
 		{
@@ -6707,6 +8386,14 @@
 			]
 		},
 		{
+			"fingerprint": "e0afcb7843068b774ed1e839caafc1c5af8a2a2ebec7842744fd1072f59f7499",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "e0b5dcb4bcdedd4327069b9a4bd934d00420cd2e56a1b4b9bc0566cd2f47c240",
 			"code": "hardcoded-file-id",
 			"severity": "error",
@@ -6723,12 +8410,36 @@
 			]
 		},
 		{
+			"fingerprint": "e15bb4d3a76a21ecc9c9057000cd4138d309e1d42f2c145b6ed129cc44cc31de",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "e185252d73bbd89ad6b554abfb8e24122c8eadcca7341231dd114a0e5ee30282",
 			"code": "untracked-repo-asset",
 			"severity": "error",
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "e1eb64a9c186cc88f632c359ba18c7b9b96fa67a319779c3fe7383d0a73ab1c0",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "e24640c8dcd4e718609bbcfe6af2c43ea80ed7c1f310c99829268c9f3f922ad9",
+			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6771,6 +8482,22 @@
 			"requiredScopes": [
 				"repository",
 				"dev-registry"
+			]
+		},
+		{
+			"fingerprint": "e3c8a030215e5d4d03b1488e5395a074ac6ade1799f4ad6cd89527db834b0bf2",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "e417b184ba688d90e8aa78cd1022cd149aa6fa0078aec3d86a66ebbf7b4fe735",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6824,6 +8551,14 @@
 			]
 		},
 		{
+			"fingerprint": "e612d0dc405118ee26cd44eb6dcac4505afbdef34490176322b6f7a7e18ce948",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "e6850eaafce962f90ef4669cd6af6917489c44b00658350c903fe2c3f1203333",
 			"code": "unresolved-dynamic-usage",
 			"severity": "error",
@@ -6834,6 +8569,22 @@
 		{
 			"fingerprint": "e6879301c595aaeda83647f3767c18349748b60d2fdf516932c408189d196753",
 			"code": "unresolved-dynamic-usage",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "e68fea63f1dbd59a890a22a4821de4067bca8e5bac1f1df488a3564e2b68ac79",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "e710a5c34c90a29f931a16c62207aaed214d04a2ba9ef0078487cdda0f0ae0c8",
+			"code": "hardcoded-file-id",
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
@@ -6900,6 +8651,14 @@
 			]
 		},
 		{
+			"fingerprint": "e8acb39e141f3666c17e581369af53129308b07ae12c74eac11b0b9078077772",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "e8cf21e3874a1a934c6bb931c950b8e7270ce7c761ed54bb0db502ac9969dcfa",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -6925,6 +8684,14 @@
 			"severity": "error",
 			"requiredScopes": [
 				"dev-content"
+			]
+		},
+		{
+			"fingerprint": "e98edd5b490cee35227a30533a2401064cef70062394820aa7a35b650140129c",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -6981,6 +8748,14 @@
 		},
 		{
 			"fingerprint": "ed15484c3d14f5ff2c75e7be79e16e5e00baa9e101518c1007ee368305b53eb1",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "ed3a2aa21db7c2968644ebd06936752b5c235934f876f375e0b02ee1f1adec95",
 			"code": "hardcoded-file-id",
 			"severity": "error",
 			"requiredScopes": [
@@ -7191,6 +8966,14 @@
 			]
 		},
 		{
+			"fingerprint": "f2e16f936b53a5c7ef7a5024a1da53767e3c7c76b5b252b3a2544ba612d9574f",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "f2f3471179e1f12b4b4b37dba8f5554d3467bb096bd960c2c2173bbd76104210",
 			"code": "unsafe-svg",
 			"severity": "error",
@@ -7213,6 +8996,22 @@
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "f3e58d65e33397f8f8d6a230ce0ea1c0fe3bd7fdff448635465060f4d8bd55c9",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "f409e1e397cd655908fbaf18dbfd04e9e2958976acb32eab5268119f2e9d3b3b",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -7242,11 +9041,36 @@
 			]
 		},
 		{
+			"fingerprint": "f53d6f5f6ff66105f3b3ba1e55906adf79037470e8c8171f089669a99c07b905",
+			"code": "unresolved-dynamic-usage",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "f54743ef4506799b08f27e7979c394c407eaae16a8af3073de28d0f1a9a6ae25",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "f5a95a10f0af72643d41856e2cd795669f58453cf50bdf8d00ef2e9b11a7bc8a",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "f5f5cfb14e222712368a44f74dce5fdd3c67dad20077c45289a104e564ce4d5c",
+			"code": "untracked-repo-asset",
+			"severity": "error",
+			"requiredScopes": [
+				"repository",
+				"dev-registry"
 			]
 		},
 		{
@@ -7316,6 +9140,22 @@
 			"severity": "error",
 			"requiredScopes": [
 				"prod-content"
+			]
+		},
+		{
+			"fingerprint": "f7a93fd0ed2a7846ccb54fc6dc02f66b2ee6c7ab6b89d2d5fd992bfd0e9565d6",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "f7d8ada30ef3e3f6be559aee7d0631ec2c772843015d85ee197816c0bc98ce9c",
+			"code": "hardcoded-file-id",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
 			]
 		},
 		{
@@ -7389,6 +9229,14 @@
 			]
 		},
 		{
+			"fingerprint": "fb86656f027462647a71c95ee1fa9a8b46ba64fc48cb05ae07d36f89410a81cf",
+			"code": "invalid-format",
+			"severity": "error",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
 			"fingerprint": "fb9ee4cb644f5f4df744498caeee2b5b227036eab85c665d630d537ac59121c6",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
@@ -7441,6 +9289,14 @@
 			]
 		},
 		{
+			"fingerprint": "fd9db49aee761b402e3fb3c5a10cf5b0ccbf8c47fcb7bc9531bc6a9c74e7c11b",
+			"code": "hardcoded-file-id",
+			"severity": "warning",
+			"requiredScopes": [
+				"prod-content"
+			]
+		},
+		{
 			"fingerprint": "fe39ea690c067b8bcf3bbfa1e7ad714e39ab23f41a98f5048f4ae3c06c0facba",
 			"code": "untracked-repo-asset",
 			"severity": "error",
@@ -7453,6 +9309,14 @@
 			"fingerprint": "fea770ee300e5a1795e6c8fee20b8369f84d44876a1fc518a055a76903c6e6ef",
 			"code": "unresolved-dynamic-usage",
 			"severity": "warning",
+			"requiredScopes": [
+				"repository"
+			]
+		},
+		{
+			"fingerprint": "feeafdcd9f20b9b572874416d12ad138b692e3c29c1e5b531c0f417f3152740e",
+			"code": "hardcoded-file-id",
+			"severity": "error",
 			"requiredScopes": [
 				"repository"
 			]
