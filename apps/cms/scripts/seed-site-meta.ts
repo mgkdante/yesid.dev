@@ -9,16 +9,15 @@
  * Singleton-upsert semantics (per research.md § P4):
  *   `updateSingleton('site_meta', payload)` creates the row if it doesn't
  *   exist; overwrites the payload otherwise. There is exactly one row by
- *   construction (Directus enforces). `--reset` is accepted for CLI parity
- *   with collection seeds but is a no-op (we always upsert).
+ *   construction (Directus enforces). This script supports preview and apply;
+ *   reset is intentionally unsupported because the singleton is always upserted.
  *
  * Pure helpers (`loadSiteMetaFixture`) exported for
  * tests/seed-site-meta-dry-run.test.ts.
  *
  * Run from REPO ROOT:
- *   bun run apps/cms/scripts/seed-site-meta.ts            # writes live
- *   bun run apps/cms/scripts/seed-site-meta.ts --dry-run  # preview
- *   bun run apps/cms/scripts/seed-site-meta.ts --reset    # accepted no-op
+ *   bun run apps/cms/scripts/seed-site-meta.ts          # preview; no mutations
+ *   bun run apps/cms/scripts/seed-site-meta.ts --apply  # apply singleton upsert
  */
 
 import {
@@ -166,7 +165,6 @@ export interface SeedRunOptions {
 	directusUrl: string;
 	token: string;
 	dryRun?: boolean;
-	reset?: boolean; // accepted for CLI parity; no-op for singletons
 }
 
 export async function seedSiteMeta(
@@ -193,12 +191,6 @@ export async function seedSiteMeta(
 		}
 		log.info('dry-run complete (no writes).');
 		return;
-	}
-
-	if (opts.reset) {
-		log.warn(
-			'--reset is a no-op for singletons (always upsert). Continuing with upsert.',
-		);
 	}
 
 	const client = createClient<Schema>(opts.directusUrl, opts.token);
@@ -266,11 +258,13 @@ export async function seedSiteMeta(
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun } = parseSeedFlags({});
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
 	log.info(
-		`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset (no-op for singletons)]' : ''}`,
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : 'apply'
+		}]`,
 	);
 
 	const fixture = loadSiteMetaFixture();
@@ -285,7 +279,7 @@ async function main(): Promise<void> {
 	}
 
 	const token = await getAdminToken(directusUrl);
-	await seedSiteMeta(fixture, { directusUrl, token, reset });
+	await seedSiteMeta(fixture, { directusUrl, token });
 	log.info('done.');
 }
 

@@ -2,7 +2,7 @@
 //
 // DONE — one-shot seed, completed (slice-18h-ii Phase 3; banner added in
 // slice-28.5, audit #34). The icons collection (34 rows) lives in Directus.
-// Keep for fresh-environment bootstrap only (--dry-run / --reset guarded).
+// Keep for fresh-environment bootstrap only (--apply / confirmed reset guarded).
 // Kept in-tree per the 27.2 archive-not-delete convention.
 //
 /**
@@ -16,9 +16,12 @@
  * with notes documenting the deferral.
  *
  * Run from REPO ROOT:
- *   bun run apps/cms/scripts/seed-icons.ts            # writes live
- *   bun run apps/cms/scripts/seed-icons.ts --dry-run  # preview
- *   bun run apps/cms/scripts/seed-icons.ts --reset    # delete-all then write
+ *   bun run apps/cms/scripts/seed-icons.ts
+ *     # dry-run preview; no mutations
+ *   bun run apps/cms/scripts/seed-icons.ts --apply
+ *     # write without clearing existing rows
+ *   bun run apps/cms/scripts/seed-icons.ts --apply --reset --confirm-reset=RESET-SEED-DATA
+ *     # delete all rows, then recreate
  */
 
 import { createItem, deleteItem, readItems } from '@directus/sdk';
@@ -28,7 +31,7 @@ import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
-import { parseSeedFlags } from './lib/cli';
+import { parseSeedFlags, RESET_SEED_DATA_CONFIRMATION } from './lib/cli';
 
 // --- Zod schema (validate fixture JSON at load-time) -----------------------
 
@@ -134,7 +137,8 @@ export async function seedIcons(
 		const existing = await client.request(readItems('icons', { fields: ['id'], limit: -1 }));
 		if (existing.length > 0) {
 			throw new Error(
-				`[seed] found ${existing.length} existing icons rows. Re-run with --reset to clear + recreate.`,
+				`[seed] found ${existing.length} existing icons rows. ` +
+					`Re-run with --apply --reset --confirm-reset=${RESET_SEED_DATA_CONFIRMATION} to clear + recreate.`,
 			);
 		}
 	}
@@ -169,10 +173,14 @@ export async function seedIcons(
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun, reset } = parseSeedFlags({ reset: true });
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
+	);
 
 	const items = loadIconFixture();
 	log.info(`source: ${items.length} items from fixtures/collections/icons.json`);

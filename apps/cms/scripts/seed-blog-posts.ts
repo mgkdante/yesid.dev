@@ -3,7 +3,7 @@
 // DONE — one-shot seed, completed (slice-18f Phase 8; banner added in
 // slice-28.5, audit #34). blog_posts rows live in Directus and Data Studio is
 // the authoring surface; export-fallbacks reads them back at build time. Keep
-// for fresh-environment bootstrap only (--dry-run / --reset guarded). Kept
+// for fresh-environment bootstrap only (--apply / confirmed reset guarded). Kept
 // in-tree per the 27.2 archive-not-delete convention.
 //
 /**
@@ -28,7 +28,7 @@ import { assertDevCms, createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { DirectusError, parseErrors } from './lib/catch-error';
-import { parseSeedFlags } from './lib/cli';
+import { parseSeedFlags, RESET_SEED_DATA_CONFIRMATION } from './lib/cli';
 
 // --- Zod ---------------------------------------------------------------
 //
@@ -202,7 +202,10 @@ export async function seedBlogPosts(fixtures: readonly BlogPostFixture[], opts: 
 	} else {
 		const existing = await client.request(readItems('blog_posts', { fields: ['id'], limit: -1 }));
 		if (existing.length > 0) {
-			throw new Error(`[seed-blog-posts] found ${existing.length} existing rows. Re-run with --reset.`);
+			throw new Error(
+				`[seed-blog-posts] found ${existing.length} existing rows. ` +
+					`Re-run with --apply --reset --confirm-reset=${RESET_SEED_DATA_CONFIRMATION}.`,
+			);
 		}
 	}
 
@@ -225,10 +228,14 @@ export async function seedBlogPosts(fixtures: readonly BlogPostFixture[], opts: 
 }
 
 async function main(): Promise<void> {
-	const { dryRun, reset } = parseSeedFlags();
+	const { dryRun, reset } = parseSeedFlags({ reset: true });
 	const url = defaultDirectusUrl();
 	assertDevCms(url);
-	log.info(`target: ${url}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+	log.info(
+		`target: ${url} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : reset ? 'apply + destructive reset' : 'apply'
+		}]`,
+	);
 
 	const fixtures = loadBlogPostsFixture();
 	log.info(`source: ${fixtures.length} posts from fixtures/collections/blog-posts.json`);

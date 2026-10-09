@@ -14,6 +14,8 @@
  *   4. Read back + assert count.
  *
  * Pure helper `buildPresetPayload` exported for tests.
+ * With no flags, this is a preview with no mutations. Pass `--apply` to
+ * update Directus settings.
  */
 import { readSettings, updateSettings } from '@directus/sdk';
 import { readFileSync } from 'node:fs';
@@ -79,10 +81,14 @@ export function loadPresetsFixture(): PresetsConfig {
 }
 
 async function main(): Promise<void> {
-	const { dryRun } = parseSeedFlags();
+	const { dryRun } = parseSeedFlags({});
 	const directusUrl = defaultDirectusUrl();
 	assertDevCms(directusUrl);
-	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : ''}`);
+	log.info(
+		`target: ${directusUrl} [mode: ${
+			dryRun ? 'dry-run (preview; no mutations)' : 'apply'
+		}]`,
+	);
 
 	const config = loadPresetsFixture();
 	log.info(`source: ${config.presets.length} presets from fixtures/brand/presets.json`);
