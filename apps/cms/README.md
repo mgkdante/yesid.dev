@@ -166,15 +166,24 @@ repairs. Do not replace them with ad-hoc Data Studio or REST mutations.
   then reapply them afterward. Their fixtures may contain `null`;
   `sync-push.ts` protects only `project_logo`, `public_foreground`, and
   `public_favicon`, not these environment-specific references.
-- `migrate-assets.ts` and `setup-*` scripts own bounded migrations. They are
-  not clean-clone setup steps and should not be replayed because a script is
-  present.
+- `migrate-assets.ts` is a guarded one-off migration, and `setup-*` scripts own
+  other bounded migrations. They are not clean-clone setup steps and should
+  not be replayed because a script is present.
 - `refresh-fixtures.ts` owns reconstruction of committed recovery fixtures
   from an authenticated source; its output requires review before commit.
 - `refresh-dev-from-prod.sh` owns the coordinated development recovery path:
   database refresh, development token rebind, R2 sync, and protected branch
   promotion. Use its preflight and tests rather than reproducing those steps
   manually.
+
+Bare `migrate:assets` invocation is an offline preview and does not require CMS
+credentials. Remote writes require `--apply`. A destructive reset additionally
+requires `--reset --confirm-reset=RESET-MIGRATED-ASSETS`; it remains an explicit
+operator action because deleting Directus files can affect CMS references. The
+script emits both ID maps only after a final Directus readback verifies the
+manifest-owned path/ID set. Reset is recoverable and checkpointed: deletes run
+sequentially and stop at the first failure, but the remote deletes and two local
+map writes are not one atomic transaction.
 
 ## Asset and preset ownership
 
