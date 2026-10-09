@@ -162,13 +162,102 @@ test('offers separate, unambiguous permission audit and targeted repair dispatch
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, legal-service-area, analytics-controls, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
+		'options: [diff, push, legal-service-area, analytics-controls, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]',
 	);
 	expect(dispatch).toContain('guarded analytics-controls promotion');
 	expect(dispatch).toContain('read-only permission audit');
 	expect(dispatch).toContain('candidate diagnostic');
 	expect(dispatch).toContain('quarantine preview or rename');
 	expect(dispatch).toContain('targeted blog repair');
+});
+
+test('cover permission dispatch exposes no mutation path to previews, PRs, or non-main refs', () => {
+	const parsed = Bun.YAML.parse(workflow) as any;
+	const job = parsed.jobs['buildbot-cover-permission'];
+	expect(job).toBeDefined();
+	expect(job.needs).toBe('test');
+	expect(job.environment.name).toBe('production');
+	expect(job.permissions).toEqual({ contents: 'read', actions: 'read' });
+	expect(JSON.stringify(job.env)).not.toMatch(secretReference);
+	const steps = job.steps as Array<Record<string, any>>;
+	const mutations = steps.filter((step) => step.run?.includes('--apply'));
+	expect(mutations).toHaveLength(2);
+	const enabled = (condition: string, action: string, event: string, ref: string) =>
+		Function('github', `return (${condition});`)({
+			event_name: event,
+			ref,
+			event: { inputs: { action } },
+		});
+	for (const action of [
+		'buildbot-cover-permission-preview',
+		'buildbot-cover-permission-apply',
+		'buildbot-cover-permission-rollback-preview',
+		'buildbot-cover-permission-rollback',
+	]) {
+		expect(enabled(job.if, action, 'workflow_dispatch', 'refs/heads/main')).toBe(true);
+		expect(enabled(job.if, action, 'workflow_dispatch', 'refs/heads/develop')).toBe(false);
+		expect(enabled(job.if, action, 'pull_request', 'refs/heads/main')).toBe(false);
+		const writes = mutations.filter((step) => enabled(step.if, action, 'workflow_dispatch', 'refs/heads/main'));
+		expect(writes).toHaveLength(action.endsWith('preview') ? 0 : 1);
+		if (writes.length) {
+			expect(writes[0].run).toContain(action.endsWith('rollback')
+				? '--confirm=ROLLBACK_PROD_BUILDBOT_COVER_PERMISSION'
+				: '--confirm=APPLY_PROD_BUILDBOT_COVER_PERMISSION');
+		}
+	}
+	expect(enabled(job.if, 'push', 'workflow_dispatch', 'refs/heads/main')).toBe(false);
+	for (const step of steps.filter((step) => step.run?.includes('reconcile-buildbot-cover-permission.ts'))) {
+		expect(step.env.DIRECTUS_ADMIN_TOKEN).toBe('${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}');
+		expect(step.run).toContain('--target=prod');
+		expect(step.run).toContain('--receipt=');
+		expect(step.run).not.toContain('${{');
+	}
+	for (const step of mutations) {
+		expect(step.env.APPROVAL_SHA256).toBe('${{ inputs.cover_permission_approval_sha256 }}');
+		expect(step.run).toContain('--approval-sha256="$APPROVAL_SHA256"');
+	}
+	const block = jobBlock('buildbot-cover-permission');
+	expect(block).not.toMatch(/sync:push|--require-converged|DIRECTUS_SYNC_INCLUDE_PERMISSIONS/);
+});
+
+test('cover rollback uses the explicit trusted-run apply artifact and retains receipts', () => {
+	const parsed = Bun.YAML.parse(workflow) as any;
+	const job = parsed.jobs['buildbot-cover-permission'];
+	expect(job).toBeDefined();
+	const steps = job.steps as Array<Record<string, any>>;
+	const validate = steps.find((step) => step.name === 'Validate prior cover permission apply run')!;
+	expect(validate).toBeDefined();
+	expect(validate.env.PRIOR_APPLY_RUN_ID).toBe('${{ inputs.cover_permission_apply_run_id }}');
+	expect(validate.run).toContain('^[0-9]+$');
+	expect(validate.run).toContain('$GITHUB_REPOSITORY/actions/runs/$PRIOR_APPLY_RUN_ID');
+	for (const guard of ['.event == "workflow_dispatch"', '.head_branch == "main"', '.path == ".github/workflows/cms.yml"', '.status == "completed"']) {
+		expect(validate.run).toContain(guard);
+	}
+	expect(validate.run).not.toContain('.conclusion == "success"');
+	expect(validate.run).not.toContain('${{');
+	const download = steps.find((step) => step.uses?.startsWith('actions/download-artifact@'))!;
+	expect(download).toBeDefined();
+	expect(steps.indexOf(download)).toBeGreaterThan(steps.indexOf(validate));
+	expect(download.with).toMatchObject({
+		name: 'buildbot-cover-permission',
+		'run-id': '${{ inputs.cover_permission_apply_run_id }}',
+		repository: '${{ github.repository }}',
+		'github-token': '${{ github.token }}',
+		path: 'apps/cms/.permission-prior',
+	});
+	const rollbackSteps = steps.filter((step) => step.run?.includes('--rollback='));
+	expect(rollbackSteps).toHaveLength(2);
+	for (const step of rollbackSteps) {
+		expect(step.run).toContain('--rollback=.permission-prior/apply.json');
+		expect(steps.indexOf(step)).toBeGreaterThan(steps.indexOf(download));
+	}
+	expect(rollbackSteps[0].run).toContain('--dry-run');
+	expect(rollbackSteps[1].run).toContain('--apply');
+	const upload = steps.find((step) => step.uses?.startsWith('actions/upload-artifact@'))!;
+	expect(upload.if).toBe('always()');
+	expect(upload.with.name).toBe('buildbot-cover-permission');
+	expect(upload.with.path).toBe('apps/cms/.permission-receipts/*.json');
+	expect(upload.with['include-hidden-files']).toBe(true);
 });
 
 test('permission-control-audit is production-gated, authenticated, and GET-only', () => {
