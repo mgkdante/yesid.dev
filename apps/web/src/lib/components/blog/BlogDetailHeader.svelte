@@ -235,7 +235,7 @@
   /* ── Title ─────────────────────────────────────────────────── */
   .header__title {
     font-family: var(--font-heading);
-    font-size: clamp(28px, 6vw, 56px);
+    font-size: var(--page-display);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.04em;

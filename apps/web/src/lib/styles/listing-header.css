@@ -1,28 +1,27 @@
 /* Shared mobile/desktop blueprint header chrome for listing pages. */
 .listing-blueprint-header {
 	position: relative;
-	height: calc(100px + 5rem);
+	min-height: calc(100px + var(--nav-clearance));
 	overflow: hidden;
-	margin-top: -5rem;
-	padding-top: 5rem;
+	margin-top: calc(-1 * var(--nav-clearance));
+	padding-top: var(--nav-clearance);
 }
 
 @media (--desktop-min) {
 	.listing-blueprint-header {
-		height: calc(160px + 5rem);
+		min-height: calc(160px + var(--nav-clearance));
 	}
 }
 
 .listing-header-text {
-	position: absolute;
+	position: relative;
 	z-index: 20;
-	bottom: 1rem;
-	left: var(--space-page-x);
+	padding: 1rem var(--space-page-x);
 }
 
 .listing-mobile-heading {
 	font-family: var(--font-heading);
-	font-size: clamp(2rem, 5vw, 3rem);
+	font-size: var(--page-display);
 	font-weight: 900;
 	color: var(--foreground);
 	letter-spacing: 0;
@@ -37,7 +36,7 @@
 
 .listing-header-subtitle {
 	font-family: var(--font-mono);
-	font-size: 0.75rem;
+	font-size: 0.7var(--nav-clearance);
 	color: var(--accent-text);
 	letter-spacing: 0;
 	text-transform: uppercase;

@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from 'bits-ui';
+	import type { Snippet } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
@@ -14,18 +15,24 @@
 
 	let {
 		open = false,
+		active = $bindable(false),
+		chrome,
+		contentId,
 		pathname = '/',
 		locale = DEFAULT_LOCALE,
 		menuItems = staticMenuItems as readonly NavLink[],
 		onclose,
-		onanimationdone
+		oncloseautofocus
 	}: {
 		open: boolean;
+		active?: boolean;
+		chrome?: Snippet;
+		contentId?: string;
 		pathname: string;
 		locale?: Locale;
 		menuItems?: readonly NavLink[];
 		onclose?: () => void;
-		onanimationdone?: () => void;
+		oncloseautofocus?: (event: Event) => void;
 	} = $props();
 
 	// $derived (not const): the overlay rides the persistent Nav — it never
@@ -37,9 +44,8 @@
 
 	let overlayEl: HTMLElement = $state(null!);
 
-	// visible keeps the DOM alive during close animation.
-	// Dialog uses visible (not open) so focus trap + scroll lock persist through close animation.
-	let visible = $state(false);
+	// active keeps the DOM alive during close animation.
+	// Dialog uses active (not open) so focus trap + scroll lock persist through close animation.
 	let entering = $state(false);
 	let closing = $state(false);
 
@@ -52,9 +58,9 @@
 	$effect(() => {
 		if (open) {
 			entering = true;
-			visible = true;
+			active = true;
 			closing = false;
-		} else if (visible && !closing) {
+		} else if (active && !closing) {
 			closing = true;
 			if (isPrefersReducedMotion()) {
 				finishClose();
@@ -89,11 +95,10 @@
 	}
 
 	function finishClose() {
-		if (!visible) return;
-		visible = false;
+		if (!active || open || !closing) return;
+		active = false;
 		closing = false;
 		entering = false;
-		onanimationdone?.();
 	}
 
 	// Dialog ESC / overlay click → notify parent to close
@@ -102,14 +107,21 @@
 	}
 </script>
 
-<!-- Dialog.Root bound to visible so focus trap + scroll lock persist through close animation -->
-<DialogPrimitive.Root open={visible} onOpenChange={handleOpenChange}>
-	{#if visible}
+<!-- Dialog.Root bound to active so focus trap + scroll lock persist through close animation -->
+<DialogPrimitive.Root open={active} onOpenChange={handleOpenChange}>
+	{#if active}
 		<DialogPrimitive.Portal>
-			<DialogPrimitive.Content>
+			<DialogPrimitive.Content id={contentId} onCloseAutoFocus={oncloseautofocus}
+				onEscapeKeydown={(event) => { event.preventDefault(); onclose?.(); }}
+				onInteractOutside={(event) => { event.preventDefault(); onclose?.(); }}
+				onOpenAutoFocus={(event) => {
+					const toggle = document.querySelector<HTMLElement>('[data-testid="nav-menu-toggle"]');
+					if (toggle) { event.preventDefault(); toggle.focus({ preventScroll: true }); }
+				}}>
 				{#snippet child({ props })}
+					<div {...props} class="menu-dialog">
+						{@render chrome?.()}
 					<div
-						{...props}
 						class="menu-overlay {entering ? 'entering' : ''} {closing ? 'closing' : ''}"
 						bind:this={overlayEl}
 						ontransitionend={handleTransitionEnd}
@@ -150,12 +162,13 @@
 
 				<!-- Bottom label + locale switch (slice-28.6; hidden until 2+ published locales).
 				     go2/w5: the duplicate theme toggle is gone — the nav pill (which stays
-				     visible above the sheet) owns the only theme toggle. -->
+				     active above the sheet) owns the only theme toggle. -->
 				<div class="menu-footer">
 					<span class="menu-footer-line"></span>
 					<span class="menu-footer-label">{footerLabel}</span>
 					<span class="menu-footer-line"></span>
 				</div>
+					</div>
 					</div>
 				{/snippet}
 			</DialogPrimitive.Content>
@@ -164,11 +177,12 @@
 </DialogPrimitive.Root>
 
 <style>
+	.menu-dialog { position: fixed; inset: 0; z-index: var(--z-menu); background: var(--background); }
 	/* ── Overlay base ── */
 	.menu-overlay {
 		position: fixed;
 		inset: 0;
-		z-index: var(--z-menu);
+		z-index: 0;
 		background: var(--background);
 		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 4%, transparent) 0%, transparent 60%);
 		display: flex;
@@ -180,12 +194,13 @@
 		   overflow-y:auto + pan-y lets a tall list (large text / long locale)
 		   scroll rather than collide with the pill. */
 		justify-content: flex-start;
-		padding: calc(var(--nav-clearance, 5.5rem) + env(safe-area-inset-top, 0px)) 24px calc(56px + env(safe-area-inset-bottom, 0px));
+		top: calc(var(--nav-clearance) + 1rem);
+		padding: 0 24px calc(24px + env(safe-area-inset-bottom, 0px));
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		touch-action: pan-y;
 
-		/* Open state (default when visible) */
+		/* Open state (default when active) */
 		opacity: 1;
 		transform: scaleY(1);
 		transform-origin: top center;
@@ -355,22 +370,13 @@
 		white-space: nowrap;
 	}
 
-	/* Desktop: the flex-start top-align + nav-clearance padding is a small-screen
-	   guard so the menu options never ride up under the floating nav pill. Desktop
-	   has the vertical room, so center the links and pin the footer to the bottom
-	   (restores the pre-mobile-sweep desktop layout). Placed after the base rules
-	   so source order wins; the footer override cancels the mobile margin-top:auto
-	   that would otherwise eat the free space and defeat justify-content. */
-	@media (--tablet-min) {
-		.menu-overlay {
-			justify-content: center;
-		}
-		.menu-footer {
-			position: absolute;
-			bottom: 32px;
-			margin-top: 0;
-			padding-top: 0;
-		}
+	@media (max-height: 720px) {
+		.menu-label { font-size: clamp(1.5rem, 2vw, 1.75rem); }
+		.menu-item { padding-block: 10px; min-height: 44px; }
 	}
-
+	.menu-text { min-width: 0; overflow-wrap: anywhere; }
+	.menu-content { width: min(100%, 42rem); }
+	@media (prefers-reduced-motion: reduce) {
+		.menu-overlay, .menu-item { transition: none; }
+	}
 </style>

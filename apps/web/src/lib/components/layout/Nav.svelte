@@ -4,7 +4,8 @@
   Wordmark letters animated via GSAP SplitText on hover (4 rotating effects).
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { tick } from 'svelte';
+	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { wordmarkHover, magnetic } from '$lib/motion/actions';
 	import { navLinks as staticNavLinks, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
@@ -45,50 +46,61 @@
 	// Pill visual state (compact, z-index, toggle icon) follows this, not menuOpen.
 	let overlayActive = $state(false);
 
+
+	const contentId = $props.id();
+	let navigationVersion = 0;
+	let dismissVersion = 0;
+	let localeNavigation = false;
+
 	function toggleMenu() {
+		menuOpen = !menuOpen;
 		if (menuOpen) {
-			menuOpen = false;
-		} else if (!overlayActive) {
-			menuOpen = true;
+			dismissVersion = navigationVersion;
 			overlayActive = true;
 		}
 	}
 
-	function handleOverlayClose() {
-		menuOpen = false;
+	beforeNavigate(({ to, type }) => {
+		navigationVersion++;
+		const language = document.querySelector<HTMLAnchorElement>('[data-testid="language-toggle"]');
+		localeNavigation = menuOpen && type === 'link' && to?.url.href === language?.href;
+		if (!localeNavigation) {
+			menuOpen = false;
+			overlayActive = false;
+		}
+	});
+
+	afterNavigate(async () => {
+		if (!localeNavigation || !menuOpen) return;
+		localeNavigation = false;
+		dismissVersion = navigationVersion;
+		await tick();
+		document.querySelector<HTMLElement>('[data-testid="language-toggle"]')?.focus({ preventScroll: true });
+	});
+
+	async function restoreTrigger(event: Event) {
+		event.preventDefault();
+		const version = dismissVersion;
+		await tick();
+		if (!overlayActive && !menuOpen && version === navigationVersion) {
+			document.querySelector<HTMLElement>('[data-testid="nav-menu-toggle"]')?.focus({ preventScroll: true });
+		}
 	}
 
-	function handleOverlayDone() {
-		overlayActive = false;
+	function animateWordmark(node: HTMLAnchorElement) {
+		return wordmarkHover(node.querySelector<HTMLSpanElement>('[data-testid="nav-wordmark-letters"]')!, {
+			dotEl: node.querySelector<HTMLSpanElement>('[data-testid="nav-period"]')!,
+			autoPlay: true,
+			autoPlayDelay: 500,
+		});
 	}
-
-	let wordmarkEl: HTMLSpanElement;
-	let dotEl: HTMLSpanElement;
-	let wordmarkAction: ReturnType<typeof wordmarkHover> | undefined;
 
 	function isActive(href: string): boolean {
-		if (href === '/') return basePath === '/';
-		return basePath.startsWith(href);
+		return href === '/' ? basePath === '/' : basePath.startsWith(href);
 	}
-
-	function onKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape' && menuOpen) menuOpen = false;
-	}
-
-	onMount(() => {
-		wordmarkAction = wordmarkHover(wordmarkEl, {
-			dotEl,
-			autoPlay: true,
-			autoPlayDelay: 500
-		});
-	});
-
-	onDestroy(() => {
-		wordmarkAction?.destroy();
-	});
 </script>
 
-<svelte:window onkeydown={onKeydown} />
+{#snippet chrome()}
 
 <nav
 	data-testid="nav"
@@ -104,11 +116,11 @@
 		<a
 			href={localizeHref('/', locale)}
 			data-testid="nav-wordmark"
+			use:animateWordmark
 			class="nav-wordmark inline-flex min-h-11 items-center font-heading font-bold text-[var(--foreground)]"
 		>
-			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
+			<span data-testid="nav-wordmark-letters">yesid</span><span
 				data-testid="nav-period"
-				bind:this={dotEl}
 				class="text-primary">.</span
 			>
 		</a>
@@ -116,7 +128,7 @@
 		<!-- Divider + links: collapse when menu open -->
 		<span class="nav-divider nav-collapsible {overlayActive ? 'nav-collapsed' : ''}" aria-hidden="true"></span>
 
-		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
+		<div inert={overlayActive} class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
 			{#each headerLinks as link}
 <!-- Reveal the priority-2 link only once the pill has room for a third
 					 14px label. After the typography consolidation bumped
@@ -155,6 +167,8 @@
 			data-testid="nav-menu-toggle"
 			class="menu-toggle {overlayActive ? 'menu-toggle-open' : ''}"
 			aria-label={overlayActive ? closeMenuAria : openMenuAria}
+			aria-expanded={menuOpen}
+			aria-controls={contentId}
 			onclick={toggleMenu}
 		>
 			<span class="menu-toggle-line menu-toggle-top"></span>
@@ -163,12 +177,15 @@
 	</div>
 
 </nav>
+{/snippet}
 
-<MenuOverlay open={menuOpen} {pathname} {locale} {menuItems} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
+{#if !overlayActive}{@render chrome()}{/if}
+<MenuOverlay open={menuOpen} bind:active={overlayActive} {pathname} {locale} {menuItems} {chrome} {contentId}
+	onclose={() => { menuOpen = false; }} oncloseautofocus={restoreTrigger} />
 
 <style>
 	.nav-root {
-		top: calc(1rem + env(safe-area-inset-top, 0px));
+		top: var(--nav-top);
 	}
 	/* Taste round 2: the wayfinding chrome joins the brand grid — the pill
 	   border speaks the same bold brand-border as cards (was a 10% ghost) and
@@ -178,14 +195,14 @@
 		background: color-mix(in srgb, var(--background) 92%, transparent);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 2px solid var(--border-brand);
+		border: var(--nav-border) solid var(--border-brand);
 		border-radius: var(--radius-pill);
 		box-shadow: var(--shadow-nav);
-		padding: 12px 28px;
+		padding: var(--nav-padding-y) 28px;
 		transition: padding var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.nav-pill-compact {
-		padding: 12px 20px;
+		padding: var(--nav-padding-y) 20px;
 		box-shadow: none;
 		border-color: var(--border-brand-active);
 	}
@@ -202,6 +219,9 @@
 
 	.nav-pill-link {
 		font-size: var(--text-nav-link-desktop);
+		font-weight: 500;
+		white-space: nowrap;
+		position: relative;
 	}
 
 	.nav-divider {
@@ -230,10 +250,10 @@
 	   floating pill at 320–480px). */
 	@media (--tablet-max) {
 		.nav-pill {
-			padding: 8px 16px;
+			padding: var(--nav-padding-y) 16px;
 		}
 		.nav-pill-compact {
-			padding: 8px 14px;
+			padding: var(--nav-padding-y) 14px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-mobile);
@@ -251,10 +271,10 @@
 
 	@media (max-width: 479px) {
 		.nav-pill {
-			padding: 6px 8px;
+			padding: var(--nav-padding-y) 8px;
 		}
 		.nav-pill-compact {
-			padding: 6px 8px;
+			padding: var(--nav-padding-y) 8px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-compact);
@@ -274,10 +294,10 @@
 	   little room — squeeze the decorative spacing, never the hit areas. */
 	@media (max-width: 359px) {
 		.nav-pill {
-			padding: 6px 4px;
+			padding: var(--nav-padding-y) 4px;
 		}
 		.nav-pill-compact {
-			padding: 6px 4px;
+			padding: var(--nav-padding-y) 4px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-compact);
@@ -325,25 +345,6 @@
 	@media (prefers-reduced-motion: reduce) {
 		.nav-collapsible {
 			transition: none;
-		}
-	}
-
-	.nav-pill-link {
-		font-size: var(--text-nav-link-desktop);
-		font-weight: 500;
-		white-space: nowrap;
-		position: relative;
-	}
-
-	@media (--tablet-max) {
-		.nav-pill-link {
-			font-size: var(--text-nav-link-mobile);
-		}
-	}
-
-	@media (max-width: 479px) {
-		.nav-pill-link {
-			font-size: var(--text-nav-link-compact);
 		}
 	}
 

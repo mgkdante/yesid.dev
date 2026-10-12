@@ -604,7 +604,7 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:py-[max(5svh,2.5rem)]"
+			class="hero-text-layer absolute inset-0 flex items-start justify-center opacity-0 md:items-center md:pb-[max(5svh,2.5rem)]"
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-[var(--space-page-x)]">
@@ -847,6 +847,10 @@
 		.metro-caption {
 			font-size: var(--text-micro);
 		}
+	}
+
+	.hero-text-layer {
+		padding-top: calc(var(--nav-clearance) + 1rem);
 	}
 
 	/* Two-column hero grid: text | divider | SQL panel */
