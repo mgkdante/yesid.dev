@@ -40,6 +40,7 @@ describe('Nav supplied navigation', () => {
 		expect(within(pill).getAllByTestId('theme-toggle')).toHaveLength(1);
 		expect(within(pill).getByTestId('nav-menu-toggle')).toHaveAttribute('aria-expanded', 'false');
 		expect(within(pill).getByTestId('nav-menu-toggle').getAttribute('aria-controls')).toBeTruthy();
+		expect(within(pill).getByTestId('nav-menu-toggle').getAttribute('aria-label')).toBeTruthy();
 		expect(screen.queryByRole('dialog')).toBeNull();
 		expect(screen.getByTestId('nav-wordmark-letters')).toHaveTextContent('yesid');
 		expect(screen.getByTestId('nav-period')).toHaveTextContent('.');
