@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { beforeNavigate, afterNavigate } from '$app/navigation';
+	import { beforeNavigate, onNavigate, afterNavigate } from '$app/navigation';
 	import { wordmarkHover, magnetic } from '$lib/motion/actions';
 	import { navLinks as staticNavLinks, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
@@ -51,8 +51,10 @@
 	let navigationVersion = 0;
 	let dismissVersion = 0;
 	let localeNavigation = false;
+	const closingNavigations = new Set<() => void>();
 
 	function toggleMenu() {
+		if (closingNavigations.size) return;
 		menuOpen = !menuOpen;
 		if (menuOpen) {
 			dismissVersion = navigationVersion;
@@ -66,8 +68,19 @@
 		localeNavigation = menuOpen && type === 'link' && to?.url.href === language?.href;
 		if (!localeNavigation) {
 			menuOpen = false;
-			overlayActive = false;
 		}
+	});
+
+	onNavigate(() => {
+		if (!overlayActive || localeNavigation) return;
+		menuOpen = false;
+		return new Promise<void>((resolve) => closingNavigations.add(resolve));
+	});
+
+	$effect(() => {
+		if (overlayActive) return;
+		for (const resolve of closingNavigations) resolve();
+		closingNavigations.clear();
 	});
 
 	afterNavigate(async () => {

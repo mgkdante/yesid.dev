@@ -36,7 +36,7 @@
 
 .listing-header-subtitle {
 	font-family: var(--font-mono);
-	font-size: 0.7var(--nav-clearance);
+	font-size: 1rem;
 	color: var(--accent-text);
 	letter-spacing: 0;
 	text-transform: uppercase;
