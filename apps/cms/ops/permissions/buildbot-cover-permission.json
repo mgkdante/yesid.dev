@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "target": "https://cms.yesid.dev",
+  "proposalSha256": "f307674c4ffd6c915bf606f4c7924881eb74c6fcd2f0ad10382a143f22f4d07d",
+  "policySyncId": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+  "syncBinding": null,
+  "grant": {
+    "collection": "directus_files",
+    "action": "read",
+    "policy": "9ef59c42-2e10-43e4-b0f9-7b7c91bff997",
+    "permissions": {
+      "id": {
+        "_in": [
+          "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
+          "2d257b93-bb5c-451a-9f2e-143291d881ad",
+          "42024627-5dab-496e-9d69-18387300802e",
+          "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d"
+        ]
+      }
+    },
+    "fields": [
+      "id",
+      "title",
+      "description"
+    ],
+    "validation": null,
+    "presets": null
+  },
+  "expected": {
+    "roles": [
+      {
+        "id": "3e048651-9d1b-452e-9035-46a61afce206",
+        "name": "Build Bot",
+        "parent": null
+      }
+    ],
+    "users": [
+      {
+        "id": "87e8855d-2647-4ba8-b5aa-ffaeb70c91de",
+        "status": "active",
+        "role": "3e048651-9d1b-452e-9035-46a61afce206"
+      }
+    ],
+    "access": [
+      {
+        "id": "80163b7d-ae7e-4531-bff3-8e9d07e99f40",
+        "role": null,
+        "user": "87e8855d-2647-4ba8-b5aa-ffaeb70c91de",
+        "policy": "9ef59c42-2e10-43e4-b0f9-7b7c91bff997"
+      }
+    ],
+    "policies": [
+      {
+        "id": "9ef59c42-2e10-43e4-b0f9-7b7c91bff997",
+        "name": "Build Bot — content read",
+        "admin_access": false,
+        "app_access": false,
+        "enforce_tfa": false,
+        "ip_access": null
+      }
+    ],
+    "blogs": [
+      {
+        "id": "un-dato-que-falta-no-equivale-a-cero",
+        "translation_key": "missing-data-is-not-zero",
+        "lang": "es",
+        "status": "published",
+        "cover_image": {
+          "id": "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
+          "title": "transit — Carte du réseau STM et positions signalées.",
+          "description": "STM network map and reported positions. Browser capture, 8 October 2026."
+        }
+      },
+      {
+        "id": "missing-data-is-not-zero",
+        "translation_key": "missing-data-is-not-zero",
+        "lang": "en",
+        "status": "published",
+        "cover_image": {
+          "id": "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
+          "title": "transit — Carte du réseau STM et positions signalées.",
+          "description": "STM network map and reported positions. Browser capture, 8 October 2026."
+        }
+      },
+      {
+        "id": "une-donnee-absente-nest-pas-un-zero",
+        "translation_key": "missing-data-is-not-zero",
+        "lang": "fr",
+        "status": "published",
+        "cover_image": {
+          "id": "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
+          "title": "transit — Carte du réseau STM et positions signalées.",
+          "description": "STM network map and reported positions. Browser capture, 8 October 2026."
+        }
+      },
+      {
+        "id": "que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo",
+        "translation_key": "before-product-catalogue-final",
+        "lang": "es",
+        "status": "published",
+        "cover_image": {
+          "id": "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d",
+          "title": "cafe-arona — Accueil de la boutique de développement Shopify, haut de page partiel.",
+          "description": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
+        }
+      },
+      {
+        "id": "what-can-move-forward-before-the-product-catalogue-is-final",
+        "translation_key": "before-product-catalogue-final",
+        "lang": "en",
+        "status": "published",
+        "cover_image": {
+          "id": "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d",
+          "title": "cafe-arona — Accueil de la boutique de développement Shopify, haut de page partiel.",
+          "description": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
+        }
+      },
+      {
+        "id": "ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif",
+        "translation_key": "before-product-catalogue-final",
+        "lang": "fr",
+        "status": "published",
+        "cover_image": {
+          "id": "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d",
+          "title": "cafe-arona — Accueil de la boutique de développement Shopify, haut de page partiel.",
+          "description": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
+        }
+      },
+      {
+        "id": "when-two-similar-components-should-stay-separate",
+        "translation_key": "when-similar-components-stay-separate",
+        "lang": "en",
+        "status": "published",
+        "cover_image": {
+          "id": "2d257b93-bb5c-451a-9f2e-143291d881ad",
+          "title": "design — Galerie de composants, référence de test bureau sombre.",
+          "description": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
+        }
+      },
+      {
+        "id": "quand-deux-composants-semblables-devraient-rester-separes",
+        "translation_key": "when-similar-components-stay-separate",
+        "lang": "fr",
+        "status": "published",
+        "cover_image": {
+          "id": "2d257b93-bb5c-451a-9f2e-143291d881ad",
+          "title": "design — Galerie de composants, référence de test bureau sombre.",
+          "description": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
+        }
+      },
+      {
+        "id": "cuando-dos-componentes-parecidos-deberian-seguir-separados",
+        "translation_key": "when-similar-components-stay-separate",
+        "lang": "es",
+        "status": "published",
+        "cover_image": {
+          "id": "2d257b93-bb5c-451a-9f2e-143291d881ad",
+          "title": "design — Galerie de composants, référence de test bureau sombre.",
+          "description": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
+        }
+      },
+      {
+        "id": "cambiar-de-idioma-sin-empezar-de-nuevo",
+        "translation_key": "changing-language-without-starting-over",
+        "lang": "es",
+        "status": "published",
+        "cover_image": {
+          "id": "42024627-5dab-496e-9d69-18387300802e",
+          "title": "yesid.dev — Stack français, bureau.",
+          "description": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
+        }
+      },
+      {
+        "id": "changer-de-langue-sans-recommencer",
+        "translation_key": "changing-language-without-starting-over",
+        "lang": "fr",
+        "status": "published",
+        "cover_image": {
+          "id": "42024627-5dab-496e-9d69-18387300802e",
+          "title": "yesid.dev — Stack français, bureau.",
+          "description": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
+        }
+      },
+      {
+        "id": "changing-language-should-not-mean-starting-over",
+        "translation_key": "changing-language-without-starting-over",
+        "lang": "en",
+        "status": "published",
+        "cover_image": {
+          "id": "42024627-5dab-496e-9d69-18387300802e",
+          "title": "yesid.dev — Stack français, bureau.",
+          "description": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
+        }
+      }
+    ],
+    "recipients": [
+      {
+        "id": "80163b7d-ae7e-4531-bff3-8e9d07e99f40",
+        "role": null,
+        "user": "87e8855d-2647-4ba8-b5aa-ffaeb70c91de",
+        "policy": "9ef59c42-2e10-43e4-b0f9-7b7c91bff997"
+      }
+    ]
+  },
+  "permissionsSha256": "09925051c88e24e1fe9ad9cefbf0c8c9643525986d2681e0d5e68b2e5f0ee6b7",
+  "permissionsCount": 78
+}
