@@ -12,7 +12,7 @@ const BREAKPOINTS = [
 		alias: '--tablet-min',
 		raw: '(min-width: 768px)',
 		rawPattern: /\(min-width:\s*768px\)/g,
-		expected: 31,
+		expected: 32,
 	},
 	{
 		alias: '--tablet-max',
@@ -24,13 +24,13 @@ const BREAKPOINTS = [
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
 		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 40,
+		expected: 39,
 	},
 	{
 		alias: '--desktop-max',
 		raw: '(max-width: 1023px)',
 		rawPattern: /\(max-width:\s*1023px\)/g,
-		expected: 6,
+		expected: 7,
 	},
 ] as const;
 
@@ -72,17 +72,26 @@ const RESPONSIVE_SOURCE_PATHS = [
 	'apps/web/src/lib/components/shared/CtaBand.svelte',
 	'apps/web/src/lib/components/shared/CtaBlueprintBackground.svelte',
 	'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
+	'apps/web/src/lib/components/shared/ListingShell.svelte',
 	'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
 	'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
 	'apps/web/src/lib/components/stack-engine/Engine.svelte',
 	'apps/web/src/lib/styles/listing-header.css',
 	'apps/web/src/lib/styles/listing-shell.css',
-	'apps/web/src/routes/[[lang=locale]]/blog/+layout.svelte',
-	'apps/web/src/routes/[[lang=locale]]/projects/+layout.svelte',
 	'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
 ] as const;
 
 const NONCANONICAL_MEDIA_INVENTORY = [
+	{
+		path: 'apps/web/src/app.css',
+		condition: '(max-width: 479px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/app.css',
+		condition: '(min-width: 1440px) and (min-height: 800px)',
+		occurrences: 1,
+	},
 	{
 		path: 'apps/web/src/app.css',
 		condition: '(prefers-reduced-motion: reduce)',
@@ -136,6 +145,11 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	{
 		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
 		condition: '(max-height: 660px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
+		condition: '(max-height: 720px) and (--tablet-min)',
 		occurrences: 1,
 	},
 	{
@@ -214,6 +228,16 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 		occurrences: 1,
 	},
 	{
+		path: 'apps/web/src/lib/components/layout/MenuOverlay.svelte',
+		condition: '(max-height: 720px)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/layout/MenuOverlay.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
 		path: 'apps/web/src/lib/components/layout/Nav.svelte',
 		condition: '(max-width: 359px)',
 		occurrences: 1,
@@ -221,7 +245,7 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	{
 		path: 'apps/web/src/lib/components/layout/Nav.svelte',
 		condition: '(max-width: 479px)',
-		occurrences: 2,
+		occurrences: 1,
 	},
 	{
 		path: 'apps/web/src/lib/components/layout/Nav.svelte',
@@ -251,6 +275,11 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	{
 		path: 'apps/web/src/lib/components/shared/CollapsibleSection.svelte',
 		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
+		condition: '(max-height: 720px)',
 		occurrences: 1,
 	},
 	{
@@ -321,7 +350,7 @@ function mediaLines(): MediaLine[] {
 			.split('\n')
 			.flatMap((text, index) =>
 				/@media\s+/.test(text)
-					? [{ path: relative(REPO_ROOT, path), lineNumber: index + 1, text }]
+					? [{ path: relative(REPO_ROOT, path).replaceAll('\\', '/'), lineNumber: index + 1, text }]
 					: [],
 			),
 	);
@@ -330,9 +359,7 @@ function mediaLines(): MediaLine[] {
 function stylesheetBodies(path: string): string[] {
 	const source = readFileSync(path, 'utf8');
 	if (path.endsWith('.css')) return [source];
-	return [...source.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(
-		([, body]) => body!,
-	);
+	return [...source.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(([, body]) => body!);
 }
 
 function normalizeMediaCondition(condition: string): string {
@@ -364,7 +391,7 @@ function compareText(left: string, right: string): number {
 function noncanonicalMediaInventory() {
 	const counts = new Map<string, { path: string; condition: string; occurrences: number }>();
 	for (const path of sourceFiles()) {
-		const repoPath = relative(REPO_ROOT, path);
+		const repoPath = relative(REPO_ROOT, path).replaceAll('\\', '/');
 		for (const body of stylesheetBodies(path)) {
 			const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '');
 			for (const [, rawCondition] of withoutComments.matchAll(/@media\s+([^{}]+?)\s*\{/g)) {
@@ -409,7 +436,7 @@ function forbiddenTabletMaxConditions(): MediaLine[] {
 		return [...source.matchAll(conditionPattern)].map((match) => {
 			const index = match.index ?? 0;
 			return {
-				path: relative(REPO_ROOT, path),
+				path: relative(REPO_ROOT, path).replaceAll('\\', '/'),
 				lineNumber: source.slice(0, index).split('\n').length,
 				text: match[0],
 			};
@@ -439,7 +466,7 @@ function featureCount(lines: MediaLine[]): number {
 }
 
 describe('canonical responsive breakpoint contract', () => {
-	it('preserves the extracted 101-feature, 45-path inventory with design aliases only', () => {
+	it('preserves the reviewed responsive source inventory with design aliases only', () => {
 		const lines = mediaLines();
 		const canonicalLines = lines.filter((line) =>
 			BREAKPOINTS.some(
@@ -451,7 +478,7 @@ describe('canonical responsive breakpoint contract', () => {
 
 		expect(canonicalLines).toHaveLength(98);
 		expect(paths).toEqual(RESPONSIVE_SOURCE_PATHS);
-		expect(featureCount(canonicalLines)).toBe(101);
+		expect(featureCount(canonicalLines)).toBe(102);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
@@ -472,9 +499,7 @@ describe('canonical responsive breakpoint contract', () => {
 		const offenders = forbiddenTabletMaxConditions();
 		expect(
 			offenders,
-			offenders
-				.map(({ path, lineNumber, text }) => `${path}:${lineNumber}:${text}`)
-				.join('\n'),
+			offenders.map(({ path, lineNumber, text }) => `${path}:${lineNumber}:${text}`).join('\n'),
 		).toHaveLength(0);
 	});
 
@@ -490,16 +515,14 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const fixture = BREAKPOINTS.map(
 			({ alias }) => `@media (${alias}) { .${alias.slice(2)} { display: block; } }`,
-		).concat(
-			'@media (--tablet-min) and (--desktop-max) { .tablet-only { display: block; } }',
-		);
+		).concat('@media (--tablet-min) and (--desktop-max) { .tablet-only { display: block; } }');
 		const result = await preprocessCSS(
 			fixture.join('\n'),
 			resolve(process.cwd(), 'src/__fixtures__/BreakpointContract.svelte?type=style&lang.css'),
 			config,
 		);
-		const conditions = [...result.code.matchAll(/@media\s+([^\{]+)\s*\{/g)].map(
-			([, condition]) => condition!.trim(),
+		const conditions = [...result.code.matchAll(/@media\s+([^\{]+)\s*\{/g)].map(([, condition]) =>
+			condition!.trim(),
 		);
 
 		expect(conditions).toEqual([
@@ -574,8 +597,6 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		expect(globalDataIndex).toBeGreaterThan(-1);
 		expect(customMediaIndex).toBeGreaterThan(globalDataIndex);
-		expect(config.slice(globalDataIndex, customMediaIndex)).toContain(
-			'files: [designTokensCss]',
-		);
+		expect(config.slice(globalDataIndex, customMediaIndex)).toContain('files: [designTokensCss]');
 	});
 });

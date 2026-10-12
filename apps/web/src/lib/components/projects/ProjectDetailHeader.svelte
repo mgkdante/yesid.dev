@@ -145,13 +145,12 @@
 
   /* ── Title ─────────────────────────────────────��──────────── */
   .header-title {
-    font-size: 32px;
+    font-size: var(--page-display);
     text-shadow: 0 0 60px color-mix(in srgb, var(--glow) 12%, transparent);
   }
 
   @media (--desktop-min) {
     .header-title {
-      font-size: var(--text-display);
       text-shadow: 0 0 80px color-mix(in srgb, var(--glow) 12%, transparent);
     }
   }

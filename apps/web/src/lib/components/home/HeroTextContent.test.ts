@@ -16,9 +16,9 @@ beforeEach(() => {
 
 function baseProps(overrides: Record<string, unknown> = {}) {
 	return {
-		headlineLine1: 'PIPELINES THAT',
-		headlineLine2: "DON'T BREAK.",
-		headlineAriaSuffix: "don't break.",
+		headlineLine1: 'SYSTEMS WE BUILD',
+		headlineLine2: 'STAY AVAILABLE.',
+		headlineAriaSuffix: 'stay available.',
 		subheadlineText: 'sub',
 		subtitleText: 'subtitle',
 		identityText: 'freelance digital infrastructure - Montreal',

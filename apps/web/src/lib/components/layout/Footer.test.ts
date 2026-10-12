@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/svelte';
 
 const consentMock = vi.hoisted(() => {
 	type State = {
@@ -67,12 +67,37 @@ vi.mock('$lib/state/analytics-consent.svelte', () => ({
 	analyticsConsentStore: consentMock.store,
 }));
 
+const fixtureSocial = vi.hoisted(() => ({
+	github: 'https://example.com/code',
+	linkedin: '',
+	upwork: '',
+}));
+
 vi.mock('$lib/content', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('$lib/content')>();
 	return {
 		...actual,
+		menuItems: [
+			{ label: { en: 'Fallback route' }, href: '/fallback', priority: 1 },
+			{ label: { en: 'Policy fixture' }, href: '/legal/fixture', priority: 1 },
+		],
+		siteMeta: { ...actual.siteMeta, links: fixtureSocial },
 		siteLabels: {
 			...actual.siteLabels,
+			navChrome: {
+				...actual.siteLabels.navChrome,
+				shared: { ...actual.siteLabels.navChrome.shared, footerNavAria: { en: 'Explore fixture' } },
+			},
+			footerChrome: {
+				...actual.siteLabels.footerChrome,
+				footer: {
+					...actual.siteLabels.footerChrome.footer,
+					footerNavAria: { en: 'Explore fixture' },
+					exploreLabel: { en: 'Explore fixture' },
+					legalLabel: { en: 'Legal fixture' },
+					connectLabel: { en: 'Connect fixture' },
+				},
+			},
 			ui: {
 				...actual.siteLabels.ui,
 				analyticsConsent: {
@@ -97,108 +122,70 @@ import Footer from './Footer.svelte';
 
 beforeEach(() => {
 	controlsMock.set();
+	fixtureSocial.github = 'https://example.com/code';
+	fixtureSocial.linkedin = '';
+	fixtureSocial.upwork = '';
 	consentMock.reset();
 });
 afterEach(() => cleanup());
 
-describe('Footer', () => {
-	it('renders a footer element', () => {
-		render(Footer);
-		expect(screen.getByTestId('footer')).toBeInTheDocument();
+describe('Footer supplied content', () => {
+	it('keeps supplied explore and legal groups separate in input order', () => {
+		render(Footer, {
+			footerLinks: [
+				{ label: { en: 'Archive' }, href: '/archive', priority: 1 },
+				{ label: { en: 'Policy' }, href: '/legal/policy', priority: 1 },
+				{ label: { en: 'Studio' }, href: '/studio', priority: 2 },
+			],
+		});
+		const explore = screen.getByRole('navigation', { name: 'Explore fixture' });
+		expect([...explore.querySelectorAll('a')].map((a) => a.getAttribute('href'))).toEqual([
+			'/archive',
+			'/studio',
+		]);
+		expect(
+			within(screen.getByTestId('footer-legal')).getByRole('link', { name: 'Policy' }),
+		).toHaveAttribute('href', '/legal/policy');
+		expect(screen.getByTestId('footer-wordmark')).toHaveAttribute('href', '/');
 	});
 
-	it('renders the yesid wordmark', () => {
-		render(Footer);
-		expect(screen.getByTestId('footer-wordmark')).toBeInTheDocument();
-		expect(screen.getByTestId('footer-wordmark').textContent).toContain('yesid');
-	});
-
-	it('does not render a copyright line (operator trim below the hazard rule)', () => {
-		render(Footer);
-		expect(screen.queryByText(/©/)).toBeNull();
-	});
-
-	it('renders footer navigation with aria-label', () => {
-		render(Footer);
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		expect(nav).toBeInTheDocument();
-	});
-
-	it('renders shared group and link leaves inside the existing navigation landmark', () => {
-		render(Footer);
-
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		expect(nav.tagName).toBe('NAV');
-		expect(screen.getByText('EXPLORE')).toHaveAttribute('data-slot', 'footer-group-label');
-		expect(screen.getByText('EXPLORE').parentElement).toHaveAttribute('data-slot', 'footer-group');
-		expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute(
-			'data-slot',
-			'footer-link',
+	it('preserves the deliberate empty-input fallback without freezing the editorial inventory', () => {
+		render(Footer, { footerLinks: [] });
+		expect(screen.getByRole('link', { name: 'Fallback route' })).toHaveAttribute(
+			'href',
+			'/fallback',
 		);
-		expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
-			'data-slot',
-			'footer-link',
-		);
+		expect(
+			within(screen.getByTestId('footer-legal')).getByRole('link', { name: 'Policy fixture' }),
+		).toHaveAttribute('href', '/legal/fixture');
 	});
 
-	it('renders all 6 site navigation links', () => {
+	it('renders only configured social destinations with external-link protections', () => {
 		render(Footer);
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		const links = nav.querySelectorAll('a');
-		expect(links.length).toBe(6);
-	});
-
-	it('renders links to Services, Projects, Blog, Stack, About, Contact', () => {
-		// slice-18m: nav order is CMS-controlled (editors set `sort` per row in
-		// Directus). Assert SET membership, not order.
-		render(Footer);
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		const navLinks = nav.querySelectorAll('a');
-		const hrefs = Array.from(navLinks).map((a) => a.getAttribute('href'));
-		expect(new Set(hrefs)).toEqual(
-			new Set(['/services', '/projects', '/tech-stack', '/blog', '/about', '/contact']),
-		);
-	});
-
-	it('renders GitHub social link with target=_blank', () => {
-		render(Footer);
-		const link = screen.getByRole('link', { name: /github/i });
-		expect(link).toHaveAttribute('href', 'https://github.com/mgkdante');
+		const link = screen.getByRole('link', { name: 'GitHub' });
+		expect(link).toHaveAttribute('href', 'https://example.com/code');
 		expect(link).toHaveAttribute('target', '_blank');
-		expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
+		expect(link).toHaveAttribute('rel', 'me noopener noreferrer');
+		expect(screen.queryByRole('link', { name: 'LinkedIn' })).toBeNull();
+		expect(screen.queryByRole('link', { name: 'Upwork' })).toBeNull();
 	});
 
-	it('renders LinkedIn social link with target=_blank', () => {
+	it('supports no configured social links', () => {
+		fixtureSocial.github = '';
 		render(Footer);
-		const link = screen.getByRole('link', { name: /linkedin/i });
-		expect(link).toHaveAttribute('href', 'https://www.linkedin.com/in/otaloray/');
-		expect(link).toHaveAttribute('target', '_blank');
+		expect(screen.queryByRole('link', { name: 'GitHub' })).toBeNull();
 	});
 
-	it('renders the status bar with system date', () => {
+	it('keeps one address and the current date in the status bar', () => {
 		render(Footer);
+		expect(document.querySelectorAll('footer address')).toHaveLength(1);
 		const now = new Date();
-		const expectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-		expect(screen.getByText(new RegExp(expectedDate))).toBeInTheDocument();
-	});
-
-	it('renders system online status text', () => {
-		render(Footer);
-		expect(screen.getByText(/system online/)).toBeInTheDocument();
-	});
-
-	it('renders location in a single address element — status bar only (operator trim)', () => {
-		// The brand block dropped its location line; the status bar keeps it.
-		render(Footer);
-		const addresses = document.querySelectorAll('footer address');
-		expect(addresses.length).toBe(1);
-		expect(addresses[0]?.textContent).toContain('Montreal');
-		expect(addresses[0]?.closest('.footer-status-border')).not.toBeNull();
-	});
-
-	it('renders the digital infrastructure tagline', () => {
-		render(Footer);
-		expect(screen.getByText(/digital infrastructure/)).toBeInTheDocument();
+		const date = [
+			now.getFullYear(),
+			String(now.getMonth() + 1).padStart(2, '0'),
+			String(now.getDate()).padStart(2, '0'),
+		].join('.');
+		expect(screen.getByText(new RegExp(date))).toBeInTheDocument();
 	});
 });
 

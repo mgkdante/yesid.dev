@@ -95,8 +95,7 @@
 
 		<!-- EXPLORE: the site links -->
 		<nav aria-label={footerNavAria} class="flex flex-col gap-2">
-			<!-- Parity hold: the shared leaf ships a 44px tap floor; adopting it changes footer geometry (recorded owner follow-up, not a silent change). Applies to all three groups below. -->
-			<FooterGroup label={exploreLabel} style="--size-tap-min: 0px;">
+			<FooterGroup label={exploreLabel}>
 				{#each exploreLinks as link}
 					<FooterLink href={link.href}>
 						{link.label}
@@ -107,7 +106,7 @@
 
 		<!-- LEGAL: the framework pages -->
 		<nav aria-label={legalLabel} data-testid="footer-legal" class="flex flex-col gap-2">
-			<FooterGroup label={legalLabel} style="--size-tap-min: 0px;">
+			<FooterGroup label={legalLabel}>
 				{#each legalLinks as link}
 					<FooterLink href={link.href}>
 						{link.label}
@@ -128,7 +127,7 @@
 		</nav>
 
 		<!-- CONNECT: off-site profiles -->
-		<FooterGroup label={connectLabel} style="--size-tap-min: 0px;">
+		<FooterGroup label={connectLabel}>
 			{#each socialLinks as link}
 				<!-- rel="me": identity-verification backlink (IndieWeb/Mastodon
 				     verification, AI-era entity resolution) — these are Yesid's
