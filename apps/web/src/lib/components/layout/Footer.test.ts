@@ -160,15 +160,23 @@ describe('Footer supplied content', () => {
 		).toHaveAttribute('href', '/legal/fixture');
 	});
 
-	it('renders only configured social destinations with external-link protections', () => {
-		render(Footer);
-		const link = screen.getByRole('link', { name: 'GitHub' });
-		expect(link).toHaveAttribute('href', 'https://example.com/code');
-		expect(link).toHaveAttribute('target', '_blank');
-		expect(link).toHaveAttribute('rel', 'me noopener noreferrer');
-		expect(screen.queryByRole('link', { name: 'LinkedIn' })).toBeNull();
-		expect(screen.queryByRole('link', { name: 'Upwork' })).toBeNull();
-	});
+	it.each([
+		['github', 'GitHub'],
+		['linkedin', 'LinkedIn'],
+		['upwork', 'Upwork'],
+	] as const)(
+		'renders the configured %s destination with external-link protections',
+		(key, label) => {
+			fixtureSocial.github = '';
+			fixtureSocial[key] = 'https://example.com/profile';
+			render(Footer);
+			const link = screen.getByRole('link', { name: label });
+			expect(link).toHaveAttribute('href', 'https://example.com/profile');
+			expect(link).toHaveAttribute('target', '_blank');
+			expect(link).toHaveAttribute('rel', 'me noopener noreferrer');
+			expect(screen.getAllByRole('link', { name: /^(GitHub|LinkedIn|Upwork)$/ })).toHaveLength(1);
+		},
+	);
 
 	it('supports no configured social links', () => {
 		fixtureSocial.github = '';
