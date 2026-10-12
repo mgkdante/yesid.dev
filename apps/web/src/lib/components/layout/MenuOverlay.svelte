@@ -7,6 +7,7 @@
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
+	import { getLenis } from '@yesid/motion/utils/lenis';
 	import { menuItems as staticMenuItems, siteLabels } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
@@ -115,11 +116,13 @@
 				onEscapeKeydown={(event) => { event.preventDefault(); onclose?.(); }}
 				onInteractOutside={(event) => { event.preventDefault(); onclose?.(); }}
 				onOpenAutoFocus={(event) => {
+					// Cancel in-flight page momentum; bits-ui owns the ongoing modal lock.
+					getLenis()?.scrollTo(window.scrollY, { immediate: true });
 					const toggle = document.querySelector<HTMLElement>('[data-testid="nav-menu-toggle"]');
 					if (toggle) { event.preventDefault(); toggle.focus({ preventScroll: true }); }
 				}}>
 				{#snippet child({ props })}
-					<div {...props} class="menu-dialog">
+					<div {...props} class="menu-dialog" data-lenis-prevent>
 						{@render chrome?.()}
 					<div
 						class="menu-overlay {entering ? 'entering' : ''} {closing ? 'closing' : ''}"
