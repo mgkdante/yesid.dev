@@ -29,6 +29,65 @@ async function openMenu(page: Page, key = 'Enter') {
 }
 
 test.describe('responsive shell and interrupted menu', () => {
+	test('history navigation retains the closing dialog boundary until its transition completes', async ({
+		page,
+	}) => {
+		await page.emulateMedia({ reducedMotion: 'no-preference' });
+		await page.goto('/projects');
+		await openMenu(page);
+		await page.keyboard.press('Escape');
+		await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
+		await page.locator('a[href="/blog"]').first().click();
+		await page.waitForURL('**/blog');
+		await page.addStyleTag({
+			content: '.menu-overlay.closing { transition-duration: 1s !important; }',
+		});
+		for (const direction of ['back', 'forward']) {
+			await openMenu(page);
+			await page.evaluate(() => {
+				const state = window as typeof window & { menuDuringHistory?: boolean };
+				delete state.menuDuringHistory;
+				window.addEventListener(
+					'popstate',
+					() =>
+						requestAnimationFrame(() => {
+							state.menuDuringHistory =
+								Boolean(document.querySelector('[role="dialog"] .menu-overlay.closing')) &&
+								document.querySelectorAll('[role="dialog"] [data-testid="nav-pill"]').length ===
+									1 &&
+								document.body.style.overflow === 'hidden';
+						}),
+					{ once: true },
+				);
+			});
+			await page.keyboard.press('Escape');
+			if (direction === 'back') await page.goBack();
+			else await page.goForward();
+			await expect
+				.poll(() =>
+					page.evaluate(
+						() => (window as typeof window & { menuDuringHistory?: boolean }).menuDuringHistory,
+					),
+				)
+				.toBe(true);
+			await expect(page.getByRole('dialog')).toHaveCount(0);
+			await expect(page.getByTestId('nav-menu-toggle')).not.toBeFocused();
+		}
+	});
+	test('listing summary owns its readable size independently of inherited title sizing', async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 375, height: 667 });
+		await page.goto('/blog');
+		await page.locator('.listing-header-text').evaluate((el) => {
+			(el as HTMLElement).style.fontSize = '40px';
+		});
+		expect(
+			await page
+				.locator('.listing-header-subtitle')
+				.evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
+		).toBe(16);
+	});
 	test('long listing rail labels fit the short viewport without consuming the content column', async ({
 		page,
 	}) => {
