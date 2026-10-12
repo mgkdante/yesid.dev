@@ -29,6 +29,44 @@ async function openMenu(page: Page, key = 'Enter') {
 }
 
 test.describe('responsive shell and interrupted menu', () => {
+	test('wheel input scrolls the bounded menu while the background stays locked', async ({ page }) => {
+		await page.setViewportSize({ width: 683, height: 300 });
+		await page.emulateMedia({ reducedMotion: 'no-preference' });
+		await page.goto('/legal/privacy');
+		await openMenu(page);
+		const before = await page.evaluate(() => window.scrollY);
+		const panel = page.locator('.menu-overlay');
+		await panel.hover();
+		await page.mouse.wheel(0, 600);
+		await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+		expect(await page.evaluate(() => window.scrollY)).toBe(before);
+		await page.keyboard.press('Escape');
+		await expect(page.getByRole('dialog')).toHaveCount(0);
+		expect(await page.evaluate(() => window.scrollY)).toBe(before);
+	});
+	test('opening during a wheel glide holds the page through the dialog lifetime', async ({ page, isMobile }) => {
+		test.skip(isMobile, 'Lenis intentionally runs only on pointer desktops.');
+		await page.setViewportSize({ width: 1366, height: 600 });
+		await page.emulateMedia({ reducedMotion: 'no-preference' });
+		await page.goto('/legal/privacy');
+		await expect(page.locator('html')).toHaveClass(/\blenis\b/);
+		await page.getByTestId('nav-menu-toggle').focus();
+		await page.evaluate(() => document.fonts.ready);
+		await page.waitForTimeout(100); // Let the mounted GSAP ticker establish its first frame.
+		await page.mouse.move(1100, 450);
+		await page.mouse.wheel(0, 1000);
+		await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+		expect(await page.evaluate(() => window.scrollY)).toBeLessThan(1000);
+		await page.keyboard.press('Enter');
+		await expect(page.getByRole('dialog')).toHaveCount(1);
+		const before = await page.evaluate(() => window.scrollY);
+		// Observe longer than the existing 1.2s Lenis glide, including CSS closing.
+		await page.waitForTimeout(1300);
+		expect(await page.evaluate(() => window.scrollY)).toBe(before);
+		await page.keyboard.press('Escape');
+		await expect(page.getByRole('dialog')).toHaveCount(0);
+		expect(await page.evaluate(() => window.scrollY)).toBe(before);
+	});
 	test('history navigation retains the closing dialog boundary until its transition completes', async ({
 		page,
 	}) => {
@@ -122,9 +160,10 @@ test.describe('responsive shell and interrupted menu', () => {
 	});
 	for (const locale of ['en', 'fr', 'es'])
 		for (const width of [375, 1366]) {
-			test(`long supplied menu stays reachable in ${locale} at ${width}px`, async ({ page }) => {
+		for (const reducedMotion of ['reduce', 'no-preference'] as const) {
+			test(`long supplied menu stays reachable in ${locale} at ${width}px with ${reducedMotion}`, async ({ page }) => {
 				await page.setViewportSize({ width, height: 600 });
-				await page.emulateMedia({ reducedMotion: 'reduce' });
+				await page.emulateMedia({ reducedMotion });
 				const menu = Array.from({ length: 10 }, (_, i) => ({
 					href: `/fixture-${i}`,
 					priority: 1,
@@ -166,6 +205,15 @@ test.describe('responsive shell and interrupted menu', () => {
 					const first = await items.first().boundingBox();
 					const pill = await page.getByTestId('nav-pill').boundingBox();
 					expect(first!.y).toBeGreaterThanOrEqual(pill!.y + pill!.height);
+					const before = await page.evaluate(() => window.scrollY);
+					const panel = page.locator('.menu-overlay');
+					await panel.hover();
+					for (const delta of [10000, 10000, -10000, -10000]) {
+						await page.mouse.wheel(0, delta);
+						await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBe(delta > 0
+							? await panel.evaluate(el => el.scrollHeight - el.clientHeight) : 0);
+						expect(await page.evaluate(() => window.scrollY)).toBe(before);
+					}
 					await items.last().focus();
 					const last = await items.last().boundingBox();
 					expect(last!.x).toBeGreaterThanOrEqual(0);
@@ -176,6 +224,7 @@ test.describe('responsive shell and interrupted menu', () => {
 					await expect(page.getByRole('dialog')).toHaveCount(0);
 				}
 			});
+		}
 		}
 	for (const width of [1280, 1366]) {
 		test(`short-laptop headers expose title, summary or action, and content at ${width}x600`, async ({
