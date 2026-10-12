@@ -126,6 +126,12 @@
 </div>
 
 <style>
+	@media (--desktop-max) {
+		:global(html:has(.toc-pill-container) .section-header) {
+			scroll-margin-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+		}
+	}
+
 	.toc-pill-container {
 		position: fixed;
 		bottom: calc(20px + env(safe-area-inset-bottom, 0px));
