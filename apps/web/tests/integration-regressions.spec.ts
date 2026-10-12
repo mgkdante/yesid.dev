@@ -29,6 +29,22 @@ async function openMenu(page: Page, key = 'Enter') {
 }
 
 test.describe('responsive shell and interrupted menu', () => {
+	test('mobile TOC leaves the section reached by Tab visibly focused after collapse-all', async ({ page }) => {
+		await page.setViewportSize({ width: 683, height: 300 });
+		await page.goto('/projects/transit-data-pipeline');
+		await openMenu(page);
+		await page.keyboard.press('Escape');
+		await expect(page.getByRole('dialog')).toHaveCount(0);
+		await page.getByRole('button', { name: 'Collapse all', exact: true }).click();
+		await expect(page.getByRole('button', { name: 'Expand all', exact: true })).toBeVisible();
+		await page.keyboard.press('Tab');
+		await page.keyboard.press('Tab');
+		const section = page.locator('main .section-header:visible').first();
+		await expect(section).toBeFocused();
+		const focused = await section.boundingBox();
+		const toc = await page.getByTestId('toc-pill').boundingBox();
+		expect(focused!.y + focused!.height + 2).toBeLessThanOrEqual(toc!.y);
+	});
 	test('wheel input scrolls the bounded menu while the background stays locked', async ({ page }) => {
 		await page.setViewportSize({ width: 683, height: 300 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });

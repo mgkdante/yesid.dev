@@ -30,7 +30,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-max',
 		raw: '(max-width: 1023px)',
 		rawPattern: /\(max-width:\s*1023px\)/g,
-		expected: 7,
+		expected: 8,
 	},
 ] as const;
 
@@ -73,6 +73,7 @@ const RESPONSIVE_SOURCE_PATHS = [
 	'apps/web/src/lib/components/shared/CtaBlueprintBackground.svelte',
 	'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
 	'apps/web/src/lib/components/shared/ListingShell.svelte',
+	'apps/web/src/lib/components/shared/TocPill.svelte',
 	'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
 	'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
 	'apps/web/src/lib/components/stack-engine/Engine.svelte',
@@ -476,9 +477,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = [...new Set(canonicalLines.map(({ path }) => path))].sort();
 
-		expect(canonicalLines).toHaveLength(98);
+		expect(canonicalLines).toHaveLength(99);
 		expect(paths).toEqual(RESPONSIVE_SOURCE_PATHS);
-		expect(featureCount(canonicalLines)).toBe(102);
+		expect(featureCount(canonicalLines)).toBe(103);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
