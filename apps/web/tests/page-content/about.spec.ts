@@ -10,6 +10,10 @@ for (const locale of ['', '/fr', '/es'])
 			});
 			await page.goto(`${locale}/about`);
 			await expect(page.getByTestId('about-quote-controls')).toBeVisible();
+			for (const control of await page.getByTestId('about-quote-controls').locator('button').all()) {
+				const box = (await control.boundingBox())!;
+				expect(Math.min(box.width, box.height), 'quote controls keep a 44px target').toBeGreaterThanOrEqual(44);
+			}
 			for (const id of ['about-identity', 'about-method']) {
 				const sizes = await page.getByTestId(id).locator('p').evaluateAll(els => els.map(el => parseFloat(getComputedStyle(el).fontSize)));
 				expect(Math.min(...sizes), `${id} prose keeps the approved body-text floor`).toBeGreaterThanOrEqual(16);

@@ -14,6 +14,10 @@ for (const locale of ['', '/fr', '/es'])
 			await page.goto(`${locale}/contact`);
 			const terminal = visibleContactTerminal(page);
 			await expect(terminal.getByTestId('contact-submit')).toBeEnabled();
+			await expect.poll(() => page.locator('.edge-title').evaluate(el => parseFloat(getComputedStyle(el).getPropertyValue('--edge-title-size')))).toBeGreaterThan(0);
+			const title = (await page.locator('.edge-title').boundingBox())!;
+			expect(title.y).toBeGreaterThanOrEqual(0);
+			expect(title.y + title.height, 'the rail title remains readable in a short viewport').toBeLessThanOrEqual(600);
 			await page
 				.getByTestId('contact-info-terminal')
 				.filter({ visible: true })

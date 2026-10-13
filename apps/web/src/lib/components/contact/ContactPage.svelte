@@ -639,6 +639,10 @@
 		/* Edge title starts at top, extends behind nav */
 		.edge-title-column {
 			display: flex;
+			position: sticky;
+			top: 0;
+			height: 100dvh;
+			align-self: start;
 			align-items: center;
 			justify-content: center; /* centered within its own column */
 			writing-mode: vertical-rl;
