@@ -92,6 +92,10 @@ it('ignores canceled and download links and cancels pending corrections on histo
 	expect(trigger.scrollIntoView).not.toHaveBeenCalled();
 	history.replaceState(null, '', '/#nested');
 	link.click();
+	window.dispatchEvent(new PopStateEvent('popstate', { state: { readingPosition: 750 } }));
+	await frame();
+	expect(trigger.scrollIntoView).not.toHaveBeenCalled();
+	link.click();
 	document.getElementById('other')!.click();
 	await frame();
 	expect(trigger.scrollIntoView).not.toHaveBeenCalled();

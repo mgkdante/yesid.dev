@@ -94,8 +94,10 @@ export function observeActiveToc(setActive: (id: string) => void): () => void {
 		cancelAnimationFrame(fragmentFrame);
 		fragmentHref = '';
 	};
-	const onHistory = () => {
-		if (location.href !== fragmentHref) cancelFragment();
+	const onHistory = (event: PopStateEvent) => {
+		// A new native hash entry has null state. Router history can revisit
+		// the same URL at another reading position and must cancel the pending jump.
+		if (event.state !== null || location.href !== fragmentHref) cancelFragment();
 	};
 	function onHashLink(event: MouseEvent) {
 		if (
