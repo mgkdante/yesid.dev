@@ -97,8 +97,7 @@
 <style>
 	.detail-header-shell {
 		position: relative;
-		margin-top: calc(-1 * var(--nav-clearance, 5.5rem));
-		padding-top: var(--nav-clearance, 5.5rem);
+		padding-top: var(--nav-clearance);
 		overflow: hidden;
 		background: var(--manifesto);
 		cursor: crosshair;
@@ -164,7 +163,9 @@
 	}
 
 	.header__back {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
 		margin-bottom: 1.25rem;
 		font-family: var(--font-mono);
 		font-size: var(--text-back-link);
@@ -225,5 +226,11 @@
 
 	.header__quiet {
 		margin-top: 1.25rem;
+	}
+	@media (max-height: 720px) {
+		.header-section { min-height: 0; }
+		.header__content { padding-block: 1rem 1.5rem; }
+		.header__back { margin-bottom: 0.5rem; }
+		.header__quiet { margin-top: 0.75rem; }
 	}
 </style>

@@ -136,19 +136,7 @@
 </div>
 
 <style>
-	/* Single source of truth for top clearance under the floating nav pill.
-	   The pill is a constant ~60px tall fixed at top:16px, so its bottom edge
-	   sits at ~76px on every viewport (does not grow on mobile). Clearance =
-	   pill bottom + a 12px breathing gap = 88px. Every page's top reserve and
-	   every sticky/detail-header offset routes through this var so titles never
-	   tuck under the pill — including the anchor scroll-margin rule in app.css
-	   (§13), which reads it back. Declared on the shell wrapper because that is
-	   the one node every page inherits from. (The vendored tokens.css IS
-	   generated and off-limits; app.css is NOT — only its TOKENS:START..END
-	   region is generated, per .githooks/pre-commit, and the rest is
-	   hand-maintained.) */
 	.circuit-grid {
-		--nav-clearance: 5.5rem; /* 88px */
 		--strip-h: 68px; /* Calibration switch: use 70px for the T=70 candidate. */
 	}
 	:global(.pt-nav-clear) {
