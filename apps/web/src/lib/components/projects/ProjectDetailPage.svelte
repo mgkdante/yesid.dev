@@ -633,16 +633,14 @@
 
 	/* Section body text */
 	.section-body {
-		font-size: var(--text-detail-body-mobile);
-		color: color-mix(in srgb, var(--foreground) 50%, transparent);
+		font-size: 1.125rem;
+		color: color-mix(in srgb, var(--foreground) 85%, transparent);
 		line-height: 1.8;
 	}
 
 	@media (--desktop-min) {
 		.section-body {
-			font-size: var(--text-detail-body-desktop);
-			color: color-mix(in srgb, var(--foreground) 55%, transparent);
-			line-height: 1.9;
+			font-size: 1.25rem;
 		}
 	}
 

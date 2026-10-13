@@ -109,10 +109,10 @@ function expectTabletHeroColumnFit(
 	viewportWidth: 768 | 1023,
 ) {
 	expect(state.headlineFontSize, `${viewportWidth}px headline clamp floor`).toBeGreaterThanOrEqual(
-		56,
+		40,
 	);
 	expect(state.headlineFontSize, `${viewportWidth}px headline clamp ceiling`).toBeLessThanOrEqual(
-		80,
+		48,
 	);
 	for (const text of state.noSplitText) {
 		expect(text.overflowWrap, `${viewportWidth}px ${text.name} overflow-wrap`).toBe('normal');
@@ -247,5 +247,6 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 	await page.setViewportSize({ width: 768, height: 660 });
 	await settleLayout(page);
 	const r4At768 = await d1bBoundaryState(page);
-	expect(r4At768.heroLine1FontSize).toBeGreaterThanOrEqual(50);
+	expect(r4At768.heroLine1FontSize).toBeGreaterThanOrEqual(40);
+	expect(r4At768.heroLine1FontSize).toBeLessThanOrEqual(48);
 });

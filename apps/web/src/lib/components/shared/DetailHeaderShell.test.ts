@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { render, screen } from '@testing-library/svelte';
 import { createRawSnippet } from 'svelte';
 import { describe, expect, it } from 'vitest';
@@ -59,17 +57,27 @@ describe('DetailHeaderShell', () => {
 		]);
 	});
 
-	it('keeps the crosshair SVG caller-owned', () => {
-		const shellSource = readFileSync(
-			join(process.cwd(), 'src/lib/components/shared/DetailHeaderShell.svelte'),
-			'utf8',
-		);
-		const projectSource = readFileSync(
-			join(process.cwd(), 'src/lib/components/projects/ProjectDetailHeader.svelte'),
-			'utf8',
-		);
-
-		expect(shellSource.match(/<svg\b/g) ?? []).toHaveLength(0);
-		expect(projectSource.match(/<svg\b/g) ?? []).toHaveLength(1);
-	});
+	it.each([[], ['Un libellé traduit beaucoup plus long', 'Short']])(
+		'keeps optional metadata and changing pill sets independent of decorations',
+		(...pills) => {
+			const values = pills.filter((value): value is string => typeof value === 'string');
+			render(DetailHeaderShell, {
+				accent: 'var(--primary)',
+				testId: 'detail-header',
+				rootClass: 'fixture',
+				mobileMinHeight: 420,
+				backHref: '/archive',
+				backLabel: 'Return',
+				pills: values,
+				pillsAriaLabel: 'Fixture labels',
+				decorations: snippet('custom-decoration', 'Caller artwork'),
+				beforePills: snippet('before-pills', 'A variable title'),
+			});
+			expect(screen.getByTestId('custom-decoration')).toHaveTextContent('Caller artwork');
+			expect(screen.getByTestId('before-pills')).toHaveTextContent('A variable title');
+			expect(document.querySelectorAll('.header__pill')).toHaveLength(values.length);
+			expect(screen.queryByTestId('after-pills')).toBeNull();
+			expect(screen.getByRole('link', { name: 'Return' })).toHaveAttribute('href', '/archive');
+		},
+	);
 });
