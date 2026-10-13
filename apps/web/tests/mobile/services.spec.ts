@@ -118,3 +118,92 @@ test('375px station tab clicks land every service card below the tabs', async ({
 		expect(landing.cardTop).toBeLessThanOrEqual(landing.scrollMarginTop + 1);
 	}
 });
+
+for (const locale of ['', '/fr', '/es'])
+	test(`long stations track forward and reverse without rewriting the URL: ${locale || 'en'}`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 1366, height: 600 });
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		await page.goto(`${locale}/services?fixture=retained`);
+		await expect(page.locator('[data-testid="service-listing-page"]')).toBeVisible();
+		const ids = await page.locator('.service-viewport').evaluateAll((cards) =>
+			cards.map((card) => {
+				(card as HTMLElement).style.minHeight = '1800px';
+				return card.id.slice('service-'.length);
+			}),
+		);
+		expect(ids.length).toBeGreaterThan(1);
+		for (let cycle = 0; cycle < 3; cycle++)
+			for (const id of [...ids, ...ids.slice().reverse()]) {
+				await page
+					.locator(`#service-${id}`)
+					.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 160));
+				await expect(page.getByTestId(`station-tab-${id}`)).toHaveAttribute(
+					'aria-selected',
+					'true',
+				);
+				const title = (await page.locator(`#service-${id} .service-title`).innerText()).replace(
+					/\.$/,
+					'',
+				);
+				await expect(page.getByTestId('projects-strip').locator('.strip-label')).toContainText(
+					title,
+				);
+				expect(new URL(page.url()).search).toBe('?fixture=retained');
+			}
+	});
+
+for (const width of [1024, 1366])
+	test(`long service content remains inside its station at ${width}x600`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 600 });
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		await page.goto('/fr/services');
+		const card = page.locator('.service-viewport').first();
+		await expect(card.locator('.service-description')).toBeVisible();
+		await card.locator('.service-description').evaluate((el) => {
+			el.textContent =
+				'Un service avec une description détaillée et des exigences variables. '.repeat(24);
+		});
+		const bounds = await card.evaluate((el) => {
+			const card = el.getBoundingClientRect(),
+				inner = el.querySelector('.viewport-inner')!.getBoundingClientRect();
+			return {
+				cardBottom: card.bottom,
+				innerBottom: inner.bottom,
+				cardTop: card.top,
+				innerTop: inner.top,
+			};
+		});
+		expect(
+			bounds.innerBottom,
+			'content must not overlap the following station',
+		).toBeLessThanOrEqual(bounds.cardBottom + 1);
+		expect(bounds.innerTop).toBeGreaterThanOrEqual(bounds.cardTop);
+	});
+
+test('station activation follows a short viewport resize and cleared deep link', async ({
+	page,
+}) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.setViewportSize({ width: 1366, height: 600 });
+	await page.goto('/services');
+	const tabs = page.locator('[data-testid^="station-tab-"]');
+	await expect(tabs.first()).toBeVisible();
+	const id = (await tabs.nth(1).getAttribute('data-testid'))!.slice('station-tab-'.length);
+	await page.setViewportSize({ width: 683, height: 300 });
+	await expect(async () => {
+		await tabs.nth(1).press('Enter');
+		await expect(page).toHaveURL(new RegExp(`station=${id}`), {
+			timeout: 1000,
+		});
+	}).toPass();
+	await expect(page.getByTestId(`station-tab-${id}`)).toHaveAttribute('aria-selected', 'true');
+	await page.reload();
+	await expect(page.getByTestId(`station-tab-${id}`)).toHaveAttribute('aria-selected', 'true');
+	await page.setViewportSize({ width: 1024, height: 600 });
+	await page
+		.locator(`#service-${id}`)
+		.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY));
+	await expect(page.getByTestId(`station-tab-${id}`)).toHaveAttribute('aria-selected', 'true');
+});

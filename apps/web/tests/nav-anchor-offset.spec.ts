@@ -50,77 +50,96 @@ test.describe('native fragment clearance', () => {
 });
 
 test.describe('desktop table of contents', () => {
-	test('project TOC navigation centres a [data-section-index] block in the viewport', async ({
-		page,
-	}) => {
-		await page.goto(PROJECT_PATH);
-		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+	for (const expanded of [true, false])
+		test(`TOC lands a tall card's visible heading, expanded=${expanded}`, async ({ page }) => {
+			await page.setViewportSize({ width: 1366, height: 600 });
+			await page.emulateMedia({ reducedMotion: 'reduce' });
+			await page.goto(PROJECT_PATH);
+			const target = page.locator('[data-section-index]').nth(1);
+			const heading = target.locator('.section-header').first();
+			await expect(heading).toBeVisible();
+			await target
+				.locator('.section-body:not([data-slot="collapsible-content"])')
+				.first()
+				.evaluate((el) => {
+					const text = document.createElement('p');
+					text.textContent = 'Long fixture paragraph. '.repeat(500);
+					el.append(text);
+				});
+			{
+				await expect(async () => {
+					if ((await heading.getAttribute('aria-expanded')) !== String(expanded))
+						await heading.click();
+					await expect(heading).toHaveAttribute('aria-expanded', String(expanded));
+				}).toPass();
+			}
+			await page.evaluate(() => window.scrollTo(0, 0));
+			const toc = page.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)').nth(1);
+			await expect(async () => {
+				await toc.click();
+				await settleScroll(page);
+				const box = await heading.boundingBox();
+				expect(box!.y).toBeGreaterThanOrEqual(88);
+				expect(box!.y + box!.height).toBeLessThan(600);
+			}).toPass();
+			await expect(heading).toHaveAttribute('aria-expanded', String(expanded));
+			if (!expanded)
+				expect(
+					(await target.locator('[data-slot="collapsible-content"]').first().boundingBox())!.height,
+				).toBeLessThanOrEqual(1);
+		});
+});
 
-		// The desktop TOC lists only non-rail entries, in order: one button per
-		// article section (`section-N`), then README when present — and every one of
-		// those ids resolves through toc.ts to `[data-section-index="N"]`. Sub-items
-		// (README children) are excluded, so button i ⇒ [data-section-index="i"].
-		const tocItems = page.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)');
-		const blocks = page.locator('[data-section-index]');
-		const blockCount = await blocks.count();
-		expect(blockCount, 'project must render section blocks').toBeGreaterThan(1);
-		await expect(
-			tocItems,
-			'desktop TOC buttons must map 1:1 onto [data-section-index] blocks',
-		).toHaveCount(blockCount);
-
-		// Target the SECOND block: far enough from both document ends that a
-		// block:center scroll is never clamped by the scroll range.
-		const targetIndex = 1;
-		// The TOC button's onclick attaches on hydration, so the first click can land
-		// before it is wired (repo idiom — see mobile/small-device-fit.spec.ts). And
-		// the handler runs a SMOOTH scroll, so wait for the scroll to actually START
-		// before waiting for it to stop; otherwise "position unchanged" reads as
-		// "settled" while the animation has merely not begun (a vacuous pass at 0).
-		await expect(async () => {
-			const y0 = await page.evaluate(() => window.scrollY);
-			await tocItems.nth(targetIndex).click();
-			await page.waitForFunction((y) => Math.abs(window.scrollY - y) > 4, y0, {
-				timeout: 1500,
-			});
-		}).toPass({ timeout: 15_000 });
-		await settleScroll(page);
-
-		const geometry = await page.evaluate((index) => {
-			const el = document.querySelector(`[data-section-index="${index}"]`);
-			if (!el) throw new Error(`no [data-section-index="${index}"]`);
-			const rect = el.getBoundingClientRect();
-			return { centre: rect.top + rect.height / 2, viewport: window.innerHeight };
-		}, targetIndex);
-
-		// Central band: proves the block was CENTRED (not start-aligned, not left
-		// off-screen) without pinning a pixel — the scroll-margin-top change shifts a
-		// block:center landing by only M/2, which stays comfortably inside the band.
-		const viewportCentre = geometry.viewport / 2;
-		const band = geometry.viewport * 0.15;
-		expect(
-			Math.abs(geometry.centre - viewportCentre),
-			`block centre ${geometry.centre} must sit within ±${band}px of viewport centre ${viewportCentre}`,
-		).toBeLessThanOrEqual(band);
-
-		// S5-440 fold-in: the cascade-reach guard. The PR's headline claim is that
-		// [data-section-index] blocks move WITH the headings — assert it directly on
-		// computed style, against the same independent oracle, so a future selector
-		// split (the exact thing the freeze adjudicated against) fails CI instead of
-		// slipping past the ±15% band above.
-		const clearancePx = 88;
-		const gapPx = 16;
-		const margins = await page.evaluate(() =>
-			[...document.querySelectorAll('[data-section-index]')].map((el) =>
-				parseFloat(getComputedStyle(el).scrollMarginTop),
-			),
-		);
-		expect(margins.length).toBeGreaterThan(1);
-		for (const margin of margins) {
-			expect(margin, 'every [data-section-index] block carries the shell offset').toBeCloseTo(
-				clearancePx + gapPx,
-				0,
-			);
-		}
+test('a fragment into closed content reaches its visible trigger without expansion', async ({
+	page,
+}) => {
+	await page.setViewportSize({ width: 1366, height: 600 });
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto(PROJECT_PATH);
+	const target = page.locator('[data-section-index]').nth(1);
+	const trigger = target.locator('.section-header').first();
+	await expect(async () => {
+		if ((await trigger.getAttribute('aria-expanded')) === 'false') await trigger.press('Enter');
+		await expect(trigger).toHaveAttribute('aria-expanded', 'true', {
+			timeout: 1000,
+		});
+	}).toPass();
+	await trigger.press('Space');
+	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+	await target
+		.locator('.section-body:not([data-slot="collapsible-content"])')
+		.first()
+		.evaluate((el) => {
+			const heading = document.createElement('h3');
+			heading.id = 'fixture-fragment';
+			heading.textContent = 'Nested fixture heading';
+			el.append(heading);
+			const link = document.createElement('a');
+			link.href = '#fixture-fragment';
+			link.textContent = 'Open fixture fragment';
+			document.querySelector('main')!.prepend(link);
+		});
+	await page.getByRole('link', { name: 'Open fixture fragment' }).click();
+	await expect(page).toHaveURL(/#fixture-fragment$/);
+	await settleScroll(page);
+	const box = await trigger.boundingBox();
+	expect(box!.y).toBeGreaterThanOrEqual(88);
+	expect(box!.y + box!.height).toBeLessThanOrEqual(600);
+	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+	await page.evaluate(() => {
+		window.scrollBy(0, 240);
+		const link = document.createElement('a');
+		link.href = '/projects';
+		link.textContent = 'Fixture return to listing';
+		link.style.cssText = 'position:fixed;bottom:100px;right:30px;z-index:200';
+		document.body.append(link);
 	});
+	const readingY = await page.evaluate(() => scrollY);
+	await page.getByRole('link', { name: 'Fixture return to listing' }).click();
+	await expect(page).toHaveURL(/\/projects$/);
+	await page.goBack();
+	await expect(page).toHaveURL(/#fixture-fragment$/);
+	await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(readingY, 0);
+	await page.goForward();
+	await expect(page).toHaveURL(/\/projects$/);
 });

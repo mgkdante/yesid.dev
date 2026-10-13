@@ -5,6 +5,7 @@
   Mobile: collapsible glance panel + floating TOC pill + stacked sections.
 -->
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
 	import type { BlockEditorDoc, Project, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -32,7 +33,7 @@
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
 	import TocNav from '$lib/components/shared/TocNav.svelte';
 	import TocPill from '$lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '$lib/components/shared/toc';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
@@ -259,6 +260,7 @@
 
 	// One observer drives the active state for BOTH the desktop nav and the mobile
 	// pill (each receives activeHeadingId as a prop, no duplicate observers).
+	afterNavigate(onTocNavigate);
 	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
 
 	onMount(() => {
@@ -374,18 +376,6 @@
 		};
 	});
 
-	/** Map a TOC id to its DOM element via the shared resolver. `section-${i}` ids
-	 *  are SYNTHETIC and locale-stable (driven by section index, not localized
-	 *  text); README child ids are index-based too, so the same id resolves to the
-	 *  corresponding heading on both /projects/x and /fr/projects/x. */
-	function headingElement(id: string): Element | null {
-		return tocElement(id);
-	}
-
-	function scrollToHeading(id: string): void {
-		headingElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-	}
-
 	// slice-34.4: reading position survives a locale switch. The detail page's
 	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
 	// capture the active heading id and, after the page remounts in the new
@@ -397,7 +387,7 @@
 			restore: (snap) => {
 				const s = snap as { id?: string; y?: number } | null;
 				const id = s?.id;
-				const el = id ? headingElement(id) : null;
+				const el = id ? tocElement(id) : null;
 				if (el) {
 					// Instant, Lenis-aware jump to the heading's top, matching the
 					// IntersectionObserver's -20% top rootMargin so the restored
@@ -428,7 +418,7 @@
 				<TocNav
 					entries={tocEntries}
 					activeId={activeHeadingId}
-					onNavigate={scrollToHeading}
+					onNavigate={navigateToc}
 					heading={tocHeading}
 					sectionKey="proj-toc"
 					counterPrefix={tocCounterPrefix}

@@ -1,5 +1,52 @@
 import { test, expect } from '@playwright/test';
 
+for (const locale of ['', '/fr', '/es'])
+	for (const theme of ['light', 'dark']) {
+		test(`about prose determines card height: ${locale || 'en'} ${theme}`, async ({ page }) => {
+			await page.setViewportSize({ width: 1280, height: 600 });
+			await page.emulateMedia({
+				reducedMotion: 'reduce',
+				colorScheme: theme as 'light' | 'dark',
+			});
+			await page.goto(`${locale}/about`);
+			await expect(page.getByTestId('about-quote-controls')).toBeVisible();
+			for (const id of ['about-identity', 'about-method']) {
+				const sizes = await page.getByTestId(id).locator('p').evaluateAll(els => els.map(el => parseFloat(getComputedStyle(el).fontSize)));
+				expect(Math.min(...sizes), `${id} prose keeps the approved body-text floor`).toBeGreaterThanOrEqual(16);
+			}
+			for (const id of ['about-identity-scroll', 'about-method-scroll', 'about-quote-body']) {
+				const body = page.getByTestId(id);
+				await body.evaluate((el) => {
+					const paragraph = document.createElement('p');
+					paragraph.textContent =
+						'Representative longer localized prose with changing details. '.repeat(20);
+					el.append(paragraph);
+				});
+				expect(
+					await body.evaluate((el) => el.scrollHeight - el.clientHeight),
+					`${id} must grow with its prose`,
+				).toBeLessThanOrEqual(1);
+				expect(
+					await body.evaluate(
+						(el) =>
+							el.getBoundingClientRect().bottom -
+							el.closest('[data-slot="card"]')!.getBoundingClientRect().bottom,
+					),
+					`${id} must fit inside its card`,
+				).toBeLessThanOrEqual(1);
+			}
+			const terminal = page.getByTestId('about-cta').locator('.terminal-body');
+			expect(
+				await terminal.evaluate((el) => el.scrollHeight - el.clientHeight),
+			).toBeLessThanOrEqual(1);
+			await page.getByTestId('about-cta-button').focus();
+			await expect(page.getByTestId('about-cta-button')).toBeInViewport();
+			expect(
+				await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
+			).toBeLessThanOrEqual(1);
+		});
+	}
+
 test.describe('/about page content', () => {
   test('page-about renders with all bento cells visible', async ({ page }) => {
     const response = await page.goto('/about');
@@ -168,4 +215,3 @@ test.describe('/about page content', () => {
     expect(quoteText?.toLowerCase()).toContain('persévérance');
   });
 });
-

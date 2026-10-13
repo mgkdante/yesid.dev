@@ -6,6 +6,7 @@
   Same architectural role as ProjectDetailPage.
 -->
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
   import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
   import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
@@ -14,7 +15,7 @@
   import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
   import TocNav from '$lib/components/shared/TocNav.svelte';
   import TocPill from '$lib/components/shared/TocPill.svelte';
-  import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '$lib/components/shared/toc';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -147,11 +148,8 @@
     return entries;
   });
 
-  onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
-
-  function scrollToHeading(id: string): void {
-    tocElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  afterNavigate(onTocNavigate);
+	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
 
   // slice-34.4: reading position survives a locale switch.
   //
@@ -219,7 +217,7 @@
             <TocNav
               entries={tocEntries}
               activeId={activeHeadingId}
-              onNavigate={scrollToHeading}
+              onNavigate={navigateToc}
               heading={tocHeading}
               sectionKey="blog-toc"
               counterPrefix={tocCounterPrefix}

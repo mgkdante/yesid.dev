@@ -4,7 +4,6 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { fillTemplate } from '$lib/utils/labels';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
@@ -61,12 +60,12 @@
 </script>
 
 <div class="group h-full" use:cursorGlow>
-	<Card class="h-[19rem] p-3 sm:h-full sm:min-h-[19rem]" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
-		<div class="relative flex h-full flex-col">
+	<Card class="h-full min-h-[19rem] p-3" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
+		<div class="relative flex flex-col">
 			<StopLabel {stop} {label} as="h2" />
 
-			<div class="min-h-0 flex-1 overflow-y-auto pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite" use:scrollChain>
-				<div class="flex min-h-full flex-col justify-center">
+			<div class="pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite">
+				<div class="flex flex-col justify-center">
 					<div class="font-heading text-7xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 						&ldquo;
 					</div>
