@@ -97,7 +97,11 @@ describe('ServiceListingPage station (slice-34.5)', () => {
 			} });
 			const target = document.getElementById('service-data-pipeline')!;
 			const observer = observers.find(row => row.targets.includes(target))!;
-			observer.callback([{ target, isIntersecting: true, intersectionRatio: 0.001 } as IntersectionObserverEntry], {} as IntersectionObserver);
+			observer.callback([{
+				target, isIntersecting: true, intersectionRatio: 0.001,
+				boundingClientRect: target.getBoundingClientRect(),
+				intersectionRect: new DOMRect(0, 0, 100, 1), rootBounds: null, time: 0,
+			}], {} as IntersectionObserver);
 			await Promise.resolve();
 			expect(screen.getByRole('tab', { name: /02/ })).toHaveAttribute('aria-selected', 'true');
 			expect(screen.getByRole('link', { name: 'Fixture project' })).toHaveAttribute('href', '/projects/fixture-result');
