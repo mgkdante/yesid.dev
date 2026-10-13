@@ -86,7 +86,7 @@
 
 		// Deep-link / switch-restore: if ?station=<id> names a real station, scroll
 		// to it after the viewports have painted. The scroll is authoritative —
-		// activeId follows from the IO when the section crosses the 0.5 threshold.
+		// activeId follows when the section crosses the reading band.
 		const requested = $page.url.searchParams.get('station');
 		if (requested && sorted.some((s) => s.id === requested)) {
 			void tick().then(() => scrollToStation(requested));
@@ -95,22 +95,31 @@
 		const viewports = document.querySelectorAll<HTMLElement>('[id^="service-"]');
 		if (viewports.length === 0) return;
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-						const id = entry.target.id.replace('service-', '');
-						activeId = id;
+		let observer: IntersectionObserver;
+		function observeStations() {
+			observer?.disconnect();
+			const clearance = parseFloat(getComputedStyle(viewports[0]).scrollMarginTop) || 0;
+			const top = Math.min(innerHeight - 1, Math.max(innerHeight * 0.3, clearance));
+			observer = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) {
+							const id = entry.target.id.replace('service-', '');
+							activeId = id;
+						}
 					}
-				}
-			},
-			{ threshold: 0.5 }
-		);
+				},
+				{ rootMargin: `-${top}px 0px -${innerHeight - top - 1}px 0px` }
+			);
 
-		viewports.forEach((el) => observer.observe(el));
+			viewports.forEach((el) => observer.observe(el));
+		}
+		observeStations();
+		window.addEventListener('resize', observeStations);
 
 		return () => {
 			observer.disconnect();
+			window.removeEventListener('resize', observeStations);
 		};
 	});
 </script>

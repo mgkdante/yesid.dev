@@ -341,7 +341,7 @@
 
 		<!-- Desktop: Resizable split -->
 		<div class="desktop-terminals">
-			<ResizablePaneGroup direction="horizontal" class="h-full rounded-lg">
+			<ResizablePaneGroup direction="horizontal" class="h-auto rounded-lg">
 				<ResizablePane defaultSize={33} minSize={20}>
 					{@render infoTerminal()}
 				</ResizablePane>
@@ -600,7 +600,6 @@
 		display: block;
 		width: 100%;
 		padding-block: var(--space-section-y);
-		/* Desktop: entire page fits in 100dvh (nav + content + footer) */
 	}
 	.edge-title-column { display: none; }
 	.accent-rail { display: none; }
@@ -620,68 +619,30 @@
 	/* Mobile heading visible, hidden on desktop (rotated edge title replaces it) */
 	.mobile-heading { display: block; margin-bottom: 0.5rem; }
 
-	/* Desktop only: nav + page fill EXACTLY one viewport (operator spec).
-	   The nav is a fixed pill (out of flow), so main's border-box IS the
-	   fold: height 100dvh puts the footer entirely below it — the footer is
-	   NOT in the equation and appears only on scroll. */
 	@media (--desktop-min) {
-		:global(main:has(.contact-grid)) {
-			/* main is a flex item (flex-1 = basis 0%): on the column main axis
-			   flex-basis beats `height`, so pin the basis to the viewport and
-			   freeze grow/shrink — THIS is what makes 100dvh stick. */
-			flex: 0 0 100dvh;
-			height: 100dvh;
-			overflow: hidden;
-			padding-bottom: 1.5rem; /* breathing room at the fold */
-		}
 		.mobile-heading { display: none; }
-	}
-
-	@media (--desktop-min) {
 		.contact-grid {
 			display: grid;
 			/* Round 5: edge-title rule one step bolder, in lockstep with the
 			   blog/projects listing layouts (same Recipe-4 rail voice). */
-			grid-template-columns: auto 2px 1fr;
-			/* minmax(0, 1fr) row, NOT auto: an auto row grows past the grid's
-			   definite height and the whole cap chain below never engages —
-			   content then clips dead at main's overflow:hidden fold. This row
-			   is what forces .contact-content to the viewport equation so the
-			   terminals shrink and their bodies scroll. */
-			grid-template-rows: minmax(0, 1fr);
+			grid-template-columns: auto 2px minmax(0, 1fr);
 			padding-block: 0;
-			/* +5rem compensates the -5rem pull-up so the grid's bottom edge
-			   lands exactly at main's padding edge (the fold). */
-			height: calc(100% + 5rem);
-			/* Edge title + divider extend behind nav (same as blog/projects) */
-			margin-top: -5rem;
+			margin-top: calc(-1 * var(--nav-clearance));
 		}
 		.contact-content {
-			padding-top: calc(5rem + var(--space-card-gap)); /* clear nav + breathing */
+			padding-top: calc(var(--nav-clearance) + var(--space-card-gap));
 			padding-bottom: var(--space-card-gap);
 			padding-inline: var(--space-page-x);
 			display: flex;
 			flex-direction: column;
 		}
-		/* Terminals are CONTENT-height (operator call, post-100dvh): the cards
-		   stand as tall as their copy, not stretched to the fold. The flex
-		   chain (main 100dvh → grid → content column) only CAPS them: taller
-		   content (FR/ES wrap longer than EN) shrinks the card and scrolls
-		   inside the terminal body instead of clipping past the fold. */
-		.desktop-terminals :global([data-slot='terminal-chrome']) {
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			min-height: 0;
-		}
-		.desktop-terminals :global([data-slot='terminal-chrome'] .terminal-body) {
-			flex: 1 1 auto;
-			min-height: 0;
-			overflow-y: auto;
-		}
 		/* Edge title starts at top, extends behind nav */
 		.edge-title-column {
 			display: flex;
+			position: sticky;
+			top: 0;
+			height: 100dvh;
+			align-self: start;
 			align-items: center;
 			justify-content: center; /* centered within its own column */
 			writing-mode: vertical-rl;
@@ -710,9 +671,7 @@
 			background: color-mix(in srgb, var(--primary) 35%, transparent);
 		}
 
-		/* Swap visibility. flex 0 1 auto = content height with shrink-to-fit:
-		   the cards never stretch past their copy, and never past the fold. */
-		.desktop-terminals { display: block; flex: 0 1 auto; min-height: 0; }
+		.desktop-terminals { display: block; }
 		.mobile-terminals { display: none; }
 	}
 

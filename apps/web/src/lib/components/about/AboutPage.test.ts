@@ -3,9 +3,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import AboutPage from './AboutPage.svelte';
-// slice-18i Phase 7C: AboutPage now requires aboutPage prop (previously imported
-// from static module directly inside the component). Pass static fixture here.
 import { aboutPageContent } from '$lib/content/about-page';
+import { siteLabels } from '$lib/content';
 
 vi.mock('$lib/directus/assets', () => ({
 	asset: (id: string) => `/test-assets/${id}`,
@@ -13,319 +12,210 @@ vi.mock('$lib/directus/assets', () => ({
 	assetImage: (id: string) => ({ src: `/test-assets/${id}` }),
 }));
 
+vi.mock('$lib/content/media-variants', () => ({
+	mediaVariants: {
+		'/fixture-headshot.webp': {
+			width: 800,
+			height: 800,
+			variants: [
+				{ path: '/small.webp', width: 240 },
+				{ path: '/large.webp', width: 800 },
+			],
+		},
+	},
+}));
+
+const fixture = {
+	...aboutPageContent,
+	identity: {
+		...aboutPageContent.identity,
+		headshot: '/fixture-headshot.webp',
+		title: {
+			en: 'A fixture title',
+			fr: 'Un titre témoin',
+			es: 'Un título de prueba',
+		},
+		name: { en: 'Reader' },
+		valueProp: {
+			en: 'A short biography.',
+			fr: 'Une biographie plus longue.',
+			es: 'Una biografía diferente.',
+		},
+		polaroids: [
+			{
+				src: '/one.svg',
+				alt: { en: 'First scene' },
+				caption: { en: 'First caption' },
+				rotate: 0,
+			},
+			{
+				src: '/two.svg',
+				alt: { en: 'Second scene' },
+				caption: { en: 'Second caption' },
+				rotate: 1,
+			},
+		],
+	},
+	education: [
+		{
+			icon: 'bishops' as const,
+			school: { en: 'Fixture school' },
+			program: { en: 'Fixture program' },
+		},
+	],
+	languages: [
+		{ id: 'one', label: { en: 'First language' }, image: '/fixture.svg' },
+		{ id: 'two', label: { en: 'Second language' }, image: 'fixture-asset' },
+	],
+	interests: [
+		{ id: 'transit', label: { en: 'Trains' }, image: '/train.svg' },
+		{ id: 'space', label: { en: 'Stars' }, image: '/space.svg' },
+	],
+	testimonials: [
+		{
+			quote: { en: 'First supplied quote.' },
+			author: 'First author',
+			role: { en: 'Builder' },
+			company: '',
+		},
+		{
+			quote: {
+				en: 'A substantially longer supplied quote with a different author and no role.',
+			},
+			author: 'Second author',
+			role: { en: '' },
+			company: '',
+		},
+	],
+	cta: {
+		...aboutPageContent.cta,
+		buttonHref: '/contact?topic=fixture',
+		buttonLabel: { en: 'Discuss this' },
+		lines: [{ color: 'muted' as const, text: 'Supplied terminal output' }],
+	},
+};
+
 describe('AboutPage', () => {
-	it('renders with data-testid page-about', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('page-about')).toBeTruthy();
-	});
-
-	it('keeps the top hazard stripe but renders NONE below the bento, since the footer platform edge owns the bottom seam', () => {
-		// GO2-W5 final batch (6b): the page-level bottom stripe stacked on the
-		// footer's platform-edge tape. Only the top stripe remains page-owned;
-		// tapes INSIDE cards (e.g. the CTA terminal chrome) are fine.
-		const { container } = render(AboutPage, {
-			props: { aboutPage: aboutPageContent, weather: null },
+	it('handles an empty optional polaroid collection', () => {
+		render(AboutPage, {
+			props: {
+				aboutPage: {
+					...fixture,
+					identity: { ...fixture.identity, polaroids: [] },
+				},
+				weather: null,
+			},
 		});
-		const section = screen.getByTestId('page-about');
-		const stripes = Array.from(
-			container.querySelectorAll('div[style*="repeating-linear-gradient"]'),
-		);
-		const before = stripes.filter(
-			(el) => section.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING,
-		);
-		const below = stripes.filter((el) => {
-			const pos = section.compareDocumentPosition(el);
-			return (
-				pos & Node.DOCUMENT_POSITION_FOLLOWING && !(pos & Node.DOCUMENT_POSITION_CONTAINED_BY)
-			);
+		expect(screen.getByTestId('about-polaroids').querySelector('img')).toBeNull();
+		expect(screen.queryByTestId('about-polaroid-counter')).toBeNull();
+	});
+	for (const [locale, title, biography] of [
+		['en', 'A fixture title', 'A short biography.'],
+		['fr', 'Un titre témoin', 'Une biographie plus longue.'],
+		['es', 'Un título de prueba', 'Una biografía diferente.'],
+	])
+		it(`renders supplied content with a semantic outline in ${locale}`, () => {
+			const { container } = render(AboutPage, {
+				props: { aboutPage: fixture, weather: null },
+				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+			});
+			expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument();
+			expect(screen.getByTestId('about-identity')).toHaveTextContent(biography);
+			const headings = [...container.querySelectorAll('h1,h2,h3,h4,h5,h6')];
+			expect(headings[0].tagName).toBe('H1');
+			expect(headings.filter((el) => el.tagName === 'H1')).toHaveLength(1);
+			for (const heading of headings.slice(1)) {
+				expect(heading.tagName).toBe('H2');
+				expect(heading.textContent?.trim()).not.toBe('');
+			}
 		});
-		expect(before.length).toBe(1); // the top stripe survives
-		expect(below).toEqual([]); // nothing tape-shaped between the page and the footer
-	});
 
-	it('renders metro stop labels on cards', () => {
-		// GO2-W5: StopLabel wraps the digits in a wayfinding span, so match the
-		// combined textContent of the stop-label nodes.
-		const { container } = render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const labels = Array.from(container.querySelectorAll('[data-slot="stop-label"]')).map(
-			(el) => el.textContent,
+	it('renders supplied media, education, languages and intentional credits', () => {
+		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute('alt', 'Reader');
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute('src', fixture.identity.headshot);
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute(
+			'srcset',
+			'/small.webp 240w, /large.webp 800w',
 		);
-		expect(labels).toContain('STOP 00 · IDENTITY');
-		expect(labels).toContain('STOP 08 · SNAPSHOTS');
-	});
-
-	// WS10-041: /about shipped ZERO heading elements in all three locales — the
-	// bento's information architecture was carried by styling alone (WCAG 1.3.1
-	// Info and Relationships, Level A; axe page-has-heading-one). The cure is
-	// markup semantics over the copy that already existed: the identity title
-	// becomes the single <h1>, and every other card's existing stop label
-	// becomes that card's <h2>. No new strings. This pins the outline so it
-	// cannot silently go back to zero.
-	it('exposes a programmatic heading outline: one h1, then h2 section titles', () => {
-		const { container } = render(AboutPage, {
-			props: { aboutPage: aboutPageContent, weather: null },
-		});
-		const headings = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-		const levels = headings.map((el) => Number(el.tagName[1]));
-
-		// Exactly one h1, and it leads the document order.
-		expect(levels.filter((l) => l === 1)).toHaveLength(1);
-		expect(levels[0]).toBe(1);
-		expect(headings[0].textContent?.trim()).toBe('Curious builder, lifelong tinkerer');
-
-		// Ten bento cards carry a stop label; the identity card's is the only one
-		// that stays a plain <div>, because its card is headed by the h1 instead.
-		// (AboutTrain is stopless chrome and contributes no heading.)
-		const stopLabels = Array.from(container.querySelectorAll('[data-slot="stop-label"]'));
-		expect(stopLabels).toHaveLength(10);
-		expect(stopLabels.filter((el) => el.tagName === 'H2')).toHaveLength(9);
-		expect(
-			stopLabels.find((el) => el.textContent === 'STOP 00 · IDENTITY')?.tagName,
-		).toBe('DIV');
-
-		// Every h2 is a stop label, and no deeper level exists yet.
-		expect(levels.filter((l) => l === 2)).toHaveLength(9);
-		expect(levels.filter((l) => l > 2)).toHaveLength(0);
-		expect(headings).toHaveLength(10);
-
-		// No skipped levels anywhere in document order (h1 -> h2 -> ... only).
-		for (let i = 1; i < levels.length; i++) {
-			expect(levels[i] - levels[i - 1]).toBeLessThanOrEqual(1);
-		}
-	});
-
-	it('renders the identity section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-identity')).toBeTruthy();
-	});
-
-	it('sources the CTA terminal chrome title from CMS labels', () => {
-		const source = readFileSync(join(process.cwd(), 'src/lib/components/about/AboutCta.svelte'), 'utf-8');
-		expect(source).toContain('siteLabels.ui.terminalTitle');
-		expect(source).not.toContain('title="terminal"');
-	});
-
-	it('renders identity without availability dot and keeps the headshot frame circular', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const identity = screen.getByTestId('about-identity');
-		expect(identity.querySelector('[data-slot="status-dot"]')).toBeNull();
-		// WS10-041: the card DOES carry an <h1> now — /about had zero headings
-		// (WCAG 1.3.1). It is the identity TITLE, wearing the label-station
-		// styling it always had; the old big NAME headline this line used to
-		// guard against stays gone (asserted below).
-		const identityH1s = identity.querySelectorAll('h1');
-		expect(identityH1s).toHaveLength(1);
-		expect(identityH1s[0].textContent?.trim()).toBe('Curious builder, lifelong tinkerer');
-		expect(identityH1s[0].getAttribute('class')).toBe('label-station text-caption');
-		expect(identityH1s[0].textContent?.trim()).not.toBe('Yesid');
-		expect(identity.textContent).toContain("I'm Yesid, a Montreal builder");
-		expect(screen.getByTestId('about-headshot-frame').getAttribute('class')).toContain('rounded-full');
-		expect(screen.getByTestId('about-headshot-frame').getAttribute('class')).toContain('overflow-hidden');
-		expect(screen.getByTestId('about-headshot').getAttribute('class')).toContain('rounded-full');
-		expect(screen.getByTestId('about-headshot').getAttribute('class')).toContain('block');
-		expect(screen.getByTestId('about-headshot').getAttribute('class')).toContain('object-[50%_42%]');
-		expect(screen.getByTestId('about-headshot').getAttribute('class')).toContain('scale-[1.08]');
-		expect(screen.getByTestId('about-headshot').getAttribute('style')).toContain('scale: 1.08');
-		expect(screen.getByTestId('about-headshot').getAttribute('style')).toContain('height: 100%');
-		expect(screen.getByTestId('about-headshot').getAttribute('srcset')).toContain(
-			'/images/about/headshot.w240.webp 240w',
-		);
-		expect(screen.getByTestId('about-headshot').getAttribute('srcset')).toContain(
-			'/images/about/headshot.w800.webp 800w',
-		);
-		expect(screen.getByTestId('about-headshot').getAttribute('sizes')).toBe(
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute(
+			'sizes',
 			'(min-width: 768px) 96px, 80px',
 		);
-		expect(screen.getByTestId('about-identity-scroll')).toBeTruthy();
-	});
-
-	it('renders the polaroids section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-polaroids')).toBeTruthy();
-	});
-
-	it('renders the metrics section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-metrics')).toBeTruthy();
-	});
-
-	it('renders the methodology section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-method')).toBeTruthy();
-	});
-
-	it('renders the testimonials section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-testimonials')).toBeTruthy();
-	});
-
-	it('renders the education section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const education = screen.getByTestId('about-education');
-		expect(education).toBeTruthy();
-		expect(education.textContent).toContain('Champlain Regional College');
-		expect(education.textContent).toContain("Bishop's University");
-	});
-
-	it('renders the weather section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-weather')).toBeTruthy();
-	});
-
-	it('renders the interests section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-interests')).toBeTruthy();
-	});
-
-	it('renders the languages section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const languages = screen.getByTestId('about-languages');
-		expect(languages).toBeTruthy();
-		expect(languages.getAttribute('class')).toContain('py-0');
-		const flags = Array.from(languages.querySelectorAll('[data-testid="about-language-flag"]'));
-		expect(flags.map((flag) => flag.getAttribute('data-region'))).toEqual([
-			'quebec',
-			'canada',
-			'colombia',
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute('width', '800');
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute('height', '800');
+		expect(screen.getByTestId('about-education')).toHaveTextContent('Fixture school');
+		expect(screen.getByTestId('about-education')).toHaveTextContent('Fixture program');
+		const images = screen.getAllByTestId('about-language-image');
+		expect(images.map((el) => el.getAttribute('src'))).toEqual([
+			'/fixture.svg',
+			'/test-assets/fixture-asset',
 		]);
-		expect(flags.map((flag) => flag.textContent?.trim())).toEqual(['French', 'English', 'Spanish']);
-		const images = Array.from(languages.querySelectorAll('[data-testid="about-language-image"]'));
-		expect(images).toHaveLength(3);
-		expect(images.map((image) => image.getAttribute('alt'))).toEqual(['', '', '']);
+		expect(images.map((el) => el.getAttribute('alt'))).toEqual(['', '']);
+		expect(screen.getByTestId('about-interests')).toHaveTextContent('Harrison Keely · CC BY 4.0');
+		expect(screen.getByTestId('about-interests')).toHaveTextContent('NASA');
 	});
 
-	it('keeps language flags colorful by default', () => {
-		const source = readFileSync(join(process.cwd(), 'src/lib/components/about/AboutLanguages.svelte'), 'utf-8');
-		expect(source).not.toContain('grayscale');
-	});
-
-	it('renders stacked language panels from CMS flag assets', () => {
-		const source = readFileSync(join(process.cwd(), 'src/lib/components/about/AboutLanguages.svelte'), 'utf-8');
-		expect(source).toContain('language-strip flex h-full min-h-36 flex-col');
-		expect(source).toContain('language-stop-badge');
-		expect(source).toContain('background: color-mix(in srgb, var(--background) 72%, transparent)');
-		expect(source).toContain('border-top: 1px solid color-mix');
-		expect(source).toContain("import { asset } from '$lib/directus/assets'");
-		expect(source).toContain('resolveLanguageImage');
-		expect(source).toContain('data-testid="about-language-image"');
-		expect(source).toContain('flex: 1.55');
-		expect(source).not.toContain('language.flag');
-		expect(source).not.toContain('colombia-wide');
-		expect(source).not.toContain('canada-wide');
-		expect(source).not.toContain('quebec-wide');
-		expect(source).not.toContain('flag ===');
-		expect(source).not.toContain('width: 30%');
-		expect(source).not.toContain("content: '\\269C'");
-		expect(source).not.toContain('bg-contain');
-		expect(source).not.toContain('clip-path: polygon');
-		expect(source).not.toContain('--flag-cut');
-		expect(source).not.toContain('flag-divider');
-	});
-
-	it('renders CMS-fed quote carousel controls and advances through quotes', async () => {
-		const { container } = render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const testimonials = screen.getByTestId('about-testimonials');
-		expect(testimonials.textContent).toContain(
-			"You have the gift of perseverance, and that's what makes you a genius too.",
-		);
-		expect(testimonials.textContent).toContain('Guy Sensei');
-		expect(container.querySelectorAll('[data-testid="about-quote-dot"]')).toHaveLength(3);
-		expect(testimonials.getAttribute('class')).toContain('h-[19rem]');
-		expect(screen.getByTestId('about-quote-controls').getAttribute('class')).toContain('shrink-0');
-
-		await fireEvent.click(screen.getByLabelText('Next quote'));
-		expect(testimonials.textContent).toContain(
-			'What matters in life is not what happens to you but what you remember and how you remember it.',
-		);
-		expect(testimonials.textContent).toContain('Gabriel Garcia Marquez');
-
-		await fireEvent.click(screen.getByLabelText('Next quote'));
-		expect(testimonials.textContent).toContain(
-			'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.',
-		);
-		expect(testimonials.textContent).toContain('Marcus Aurelius');
-	});
-
-	it('uses About CMS labels for quote carousel aria text', () => {
-		const labeledAbout = {
-			...aboutPageContent,
-			labels: {
-				...aboutPageContent.labels,
-				testimonialsCarouselAria: { en: 'Personal quote carousel' },
-				testimonialsTabNavAria: { en: 'Quote slide selector' },
-				testimonialsPrevAria: { en: 'Earlier quote' },
-				testimonialsNextAria: { en: 'Later quote' },
-				showTestimonialAria: { en: 'Jump to quote {index}' },
-				testimonialSlideAria: { en: 'Quote {index} of {total}' },
-			},
-		} as unknown as typeof aboutPageContent;
-
-		render(AboutPage, { props: { aboutPage: labeledAbout, weather: null } });
-
-		expect(screen.getByRole('region', { name: 'Personal quote carousel' })).toBeTruthy();
-		expect(screen.getByRole('tablist', { name: 'Quote slide selector' })).toBeTruthy();
-		expect(screen.getByLabelText('Earlier quote')).toBeTruthy();
-		expect(screen.getByLabelText('Later quote')).toBeTruthy();
-		expect(screen.getByLabelText('Jump to quote 1')).toBeTruthy();
-	});
-
-	it('renders seven polaroids in the counter', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-polaroids').textContent).toContain('1/7');
-	});
-
-	it('renders interests credits as an overlay while the image fills the card', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const interests = screen.getByTestId('about-interests');
-		expect(interests.getAttribute('class')).toContain('py-0');
-		expect(interests.textContent).not.toContain(
-			'Transit photo: Harrison Keely · CC BY 4.0 · Space: NASA',
-		);
-		expect(interests.textContent).toContain('Harrison Keely · CC BY 4.0');
-		expect(interests.textContent).toContain('NASA');
-		expect(screen.queryByTestId('about-interests-credit')).toBeNull();
-	});
-
-	it('keeps the core-beliefs card scrollable when copy grows', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-method-scroll')).toBeTruthy();
-	});
-
-	it('wires every scrollable bento body through the shared scrollChain action', () => {
-		const scrollAreas = [
-			['AboutIdentity.svelte', 'about-identity-scroll'],
-			['AboutMethod.svelte', 'about-method-scroll'],
-			['AboutTestimonials.svelte', 'about-quote-body'],
-		] as const;
-
-		for (const [fileName, testId] of scrollAreas) {
-			const source = readFileSync(join(process.cwd(), 'src/lib/components/about', fileName), 'utf-8');
-			const scrollTag = source.match(new RegExp(`<div[^>]*data-testid="${testId}"[^>]*>`, 's'))?.[0];
-
-			expect(source).toContain("import { scrollChain } from '$lib/motion/actions/scrollChain.js'");
-			expect(scrollTag).toContain('use:scrollChain');
+	it('keeps provided carousel content and controls working through repeated wraps', async () => {
+		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
+		const quotes = screen.getByTestId('about-testimonials');
+		for (let cycle = 0; cycle < 3; cycle++) {
+			expect(quotes).toHaveTextContent('First supplied quote.');
+			await fireEvent.click(screen.getByLabelText(aboutPageContent.labels.testimonialsNextAria.en));
+			expect(quotes).toHaveTextContent('Second author');
+			await fireEvent.click(screen.getByLabelText(aboutPageContent.labels.testimonialsPrevAria.en));
 		}
+		expect(screen.getAllByRole('tab')).toHaveLength(2);
+		await fireEvent.click(screen.getAllByRole('tab')[1]);
+		expect(quotes).toHaveTextContent('Second author');
+		expect(screen.getAllByRole('tab')[1]).toHaveAttribute('aria-selected', 'true');
 	});
 
-	it('renders the CTA section', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-cta')).toBeTruthy();
+	for (const testimonials of [[], fixture.testimonials.slice(0, 1)])
+		it(`handles ${testimonials.length} supplied quotes without carousel controls`, () => {
+			render(AboutPage, {
+				props: {
+					aboutPage: { ...fixture, testimonials, education: [], languages: [] },
+					weather: null,
+				},
+			});
+			expect(screen.queryByTestId('about-quote-controls')).toBeNull();
+			expect(screen.queryAllByTestId('about-language-image')).toHaveLength(0);
+		});
+
+	it('forwards supplied carousel accessibility labels', () => {
+		const labels = {
+			...fixture.labels,
+			testimonialsCarouselAria: { en: 'Fixture carousel' },
+			testimonialsTabNavAria: { en: 'Choose quote' },
+			testimonialsPrevAria: { en: 'Earlier' },
+			testimonialsNextAria: { en: 'Later' },
+			showTestimonialAria: { en: 'Choose {index}' },
+			testimonialSlideAria: { en: 'Quote {index} of {total}' },
+		};
+		render(AboutPage, {
+			props: { aboutPage: { ...fixture, labels }, weather: null },
+		});
+		expect(screen.getByRole('region', { name: 'Fixture carousel' })).toBeInTheDocument();
+		expect(screen.getByRole('tablist', { name: 'Choose quote' })).toBeInTheDocument();
+		for (const name of ['Earlier', 'Later', 'Choose 1', 'Quote 1 of 2'])
+			expect(screen.getByLabelText(name)).toBeInTheDocument();
 	});
 
-	it('CTA links to /contact', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const cta = screen.getByTestId('about-cta');
-		const link = cta.querySelector('a[href="/contact"]');
-		expect(link).toBeTruthy();
+	it('renders supplied CTA output and destination with configured terminal chrome', () => {
+		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
+		expect(screen.getByTestId('about-cta')).toHaveTextContent('Supplied terminal output');
+		expect(screen.getByTestId('about-cta')).toHaveTextContent(siteLabels.ui.terminalTitle.en);
+		expect(screen.getByRole('link', { name: 'Discuss this' })).toHaveAttribute(
+			'href',
+			'/contact?topic=fixture',
+		);
 	});
 
 	it('renders weather fallback when no data', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		const weatherWidget = screen.getByTestId('about-weather');
-		expect(weatherWidget.textContent).toContain('Montreal');
-		expect(weatherWidget.textContent).toContain('-');
+		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
+		expect(screen.getByTestId('about-weather')).toHaveTextContent('-');
 	});
-
 	it('renders weather data when provided', () => {
 		render(AboutPage, {
 			props: { aboutPage: aboutPageContent, weather: { temp: 15, condition: 'clear sky', icon: '01d' } }

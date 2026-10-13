@@ -17,7 +17,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/svelte';
-import { serviceFactory } from '../../../tests/factories';
+import { serviceFactory, projectFactory } from '../../../tests/factories';
 
 // --- mocks ---
 // vi.mock factories are hoisted above the module body, so any state they close
@@ -78,6 +78,46 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe('ServiceListingPage station (slice-34.5)', () => {
+	it('updates related projects from a small visible portion without writing a passive URL', async () => {
+		const original = globalThis.IntersectionObserver;
+		const observers: { callback: IntersectionObserverCallback; targets: Element[] }[] = [];
+		globalThis.IntersectionObserver = class {
+			row: (typeof observers)[number];
+			constructor(callback: IntersectionObserverCallback) {
+				this.row = { callback, targets: [] };
+				observers.push(this.row);
+			}
+			observe(element: Element) { this.row.targets.push(element); }
+			disconnect() {}
+		} as unknown as typeof IntersectionObserver;
+		try {
+			render(ServiceListingPage, { props: {
+				...renderProps,
+				serviceProjects: { 'data-pipeline': [projectFactory.build({ slug: 'fixture-result', title: { en: 'Fixture project' } })] },
+			} });
+			const target = document.getElementById('service-data-pipeline')!;
+			const observer = observers.find(row => row.targets.includes(target))!;
+			observer.callback([{
+				target, isIntersecting: true, intersectionRatio: 0.001,
+				boundingClientRect: target.getBoundingClientRect(),
+				intersectionRect: new DOMRect(0, 0, 100, 1), rootBounds: null, time: 0,
+			}], {} as IntersectionObserver);
+			await Promise.resolve();
+			expect(screen.getByRole('tab', { name: /02/ })).toHaveAttribute('aria-selected', 'true');
+			expect(screen.getByRole('link', { name: 'Fixture project' })).toHaveAttribute('href', '/projects/fixture-result');
+			expect(gotoMock).not.toHaveBeenCalled();
+		} finally {
+			cleanup();
+			globalThis.IntersectionObserver = original;
+		}
+	});
+
+	it('handles an empty supplied station set', () => {
+		render(ServiceListingPage, { props: { services: [], serviceSvgContents: {}, serviceProjects: {} } });
+		expect(screen.queryAllByRole('tab')).toEqual([]);
+		expect(gotoMock).not.toHaveBeenCalled();
+	});
+
 	it('renders the listing page', () => {
 		renderPage();
 		expect(screen.getByTestId('service-listing-page')).toBeInTheDocument();

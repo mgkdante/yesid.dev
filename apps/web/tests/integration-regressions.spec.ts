@@ -595,3 +595,93 @@ test('nav pill stays painted ABOVE the menu sheet while it is open', async ({ pa
 	await page.click('[data-testid="nav-menu-toggle"]');
 	await expect(page.locator('.menu-overlay')).toBeHidden();
 });
+
+test.describe('section navigation keyboard continuity', () => {
+	for (const [width, height] of [
+		[375, 667],
+		[1366, 600],
+	])
+		for (const theme of ['light', 'dark']) {
+			test(`three section journeys at ${width} ${theme}`, async ({ page }) => {
+				await page.setViewportSize({ width, height });
+				await page.emulateMedia({ reducedMotion: 'reduce' });
+				await page.addInitScript((theme) => localStorage.setItem('theme', theme), theme);
+				await page.goto('/projects/transit-data-pipeline');
+				await openMenu(page);
+				await page.keyboard.press('Escape');
+				await expect(page.getByRole('dialog')).toHaveCount(0);
+				await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
+				const heading = page.locator('[data-section-index="1"] .section-header').first();
+				const title = await heading.locator('.section-title').innerText();
+				for (let cycle = 0; cycle < 3; cycle++) {
+					if (width < 1024) {
+						const pill = page.getByTestId('toc-pill').locator('button.toc-pill');
+						await pill.press('Enter');
+						await expect(page.locator('.toc-drawer')).toBeVisible();
+						await page.keyboard.press('Escape');
+						await expect(pill).toBeFocused();
+						await pill.press('Space');
+						await page
+							.locator('.toc-drawer-item:not(.toc-drawer-sub)')
+							.filter({ hasText: title })
+							.press('Enter');
+						await expect(pill).toBeFocused();
+						await expect(page.locator('.toc-drawer')).toHaveCount(0);
+					} else
+						await page
+							.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)')
+							.filter({ hasText: title })
+							.press('Enter');
+					await expect(async () => {
+						const box = (await heading.boundingBox())!;
+						expect(box.y).toBeGreaterThanOrEqual(width < 480 ? 76 : 88);
+						expect(box.y + box.height).toBeLessThan(height - (width < 1024 ? 70 : 0));
+						const before = await page.evaluate(() => scrollY);
+						await page.waitForTimeout(100);
+						expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(1);
+					}).toPass();
+					await expect(heading).toHaveAttribute('aria-expanded', 'false');
+					await heading.press('Enter');
+					await expect(heading).toHaveAttribute('aria-expanded', 'true');
+					await heading.press('Space');
+					await expect(heading).toHaveAttribute('aria-expanded', 'false');
+				}
+			});
+		}
+});
+
+for (const [width, height] of [
+	[375, 667],
+	[1366, 600],
+])
+	test(`programmatic collapse returns interior focus visibly at ${width}`, async ({ page }) => {
+		await page.setViewportSize({ width, height });
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		await page.goto('/projects/transit-data-pipeline');
+		await openMenu(page);
+		await page.keyboard.press('Escape');
+		await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
+		const section = page.locator('[data-section-index="0"]');
+		await section
+			.locator('.section-body:not([data-slot="collapsible-content"])')
+			.first()
+			.evaluate((el) => {
+				const link = document.createElement('a');
+				link.href = '#focus-fixture';
+				link.textContent = 'Interior focus fixture';
+				el.append(link);
+			});
+		await page.getByRole('link', { name: 'Interior focus fixture' }).focus();
+		const heading = section.locator('.section-header').first();
+		expect((await heading.boundingBox())!.y).toBeLessThan(0);
+		await page
+			.getByRole('button', { name: 'Collapse all', exact: true })
+			.evaluate((el: HTMLButtonElement) => el.click());
+		await expect(heading).toBeFocused();
+		await expect(heading).toHaveAttribute('aria-expanded', 'false');
+		await expect(async () => {
+			const box = (await heading.boundingBox())!;
+			expect(box.y).toBeGreaterThanOrEqual(width < 480 ? 76 : 88);
+			expect(box.y + box.height).toBeLessThanOrEqual(height - (width < 1024 ? 70 : 0));
+		}).toPass();
+	});
