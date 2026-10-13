@@ -1,10 +1,3 @@
-<!--
-  Full-viewport bento dashboard for /about.
-  6×4 CSS Grid with named areas. SELL-first → Personal → Action.
-  Wrapped in a plain section (w-full) — no shell needed for a bleed layout.
-  Cards stretch to fill — no voids, no fixed heights.
-  All content from aboutPageContent via data layer.
--->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -131,14 +124,11 @@
 	@media (--desktop-min) {
 		.dashboard {
 			grid-template-columns: repeat(6, 1fr);
-			grid-template-rows: repeat(4, 1fr);
 			grid-template-areas:
 				"identity  identity  metrics   metrics   testim    testim"
 				"process   process   stack     stack     testim    testim"
 				"clients   interests interests interests interests snapshots"
 				"train     weather   cta       cta       cta       snapshots";
-			/* Fill the available viewport height minus nav + header + stripes */
-			height: calc(100dvh - 5rem - 48px); /* viewport minus pill nav minus stripes/padding */
 		}
 	}
 

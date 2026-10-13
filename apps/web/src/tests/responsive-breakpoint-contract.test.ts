@@ -24,7 +24,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
 		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 39,
+		expected: 37,
 	},
 	{
 		alias: '--desktop-max',
@@ -477,9 +477,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = [...new Set(canonicalLines.map(({ path }) => path))].sort();
 
-		expect(canonicalLines).toHaveLength(99);
+		expect(canonicalLines).toHaveLength(97);
 		expect(paths).toEqual(RESPONSIVE_SOURCE_PATHS);
-		expect(featureCount(canonicalLines)).toBe(103);
+		expect(featureCount(canonicalLines)).toBe(101);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');

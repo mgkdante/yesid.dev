@@ -10,7 +10,7 @@
 <script lang="ts">
 	import { ChevronToggle, TocBadge } from '@yesid/ui/brand';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { flattenToc, tocElement, type TocEntry } from './toc';
+	import { flattenToc, navigateToc, type TocEntry } from './toc';
 
 	let {
 		entries,
@@ -34,7 +34,7 @@
 
 	function closeDrawer(restoreFocus = false): void {
 		drawerOpen = false;
-		if (restoreFocus) pillBtn?.focus();
+		if (restoreFocus) pillBtn?.focus({ preventScroll: true });
 	}
 
 	function onKeydown(e: KeyboardEvent): void {
@@ -53,11 +53,8 @@
 	});
 
 	function scrollTo(id: string): void {
-		const el = tocElement(id);
-		if (el) {
-			el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-			closeDrawer(true);
-		}
+		closeDrawer(true);
+		navigateToc(id);
 	}
 </script>
 

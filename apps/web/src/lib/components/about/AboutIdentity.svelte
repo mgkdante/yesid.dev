@@ -11,7 +11,6 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 	import { mediaVariants } from '$lib/content/media-variants';
@@ -39,18 +38,17 @@
 		aria-hidden="true"
 	></div>
 
-	<div class="relative flex h-full flex-col">
+	<div class="relative flex flex-col">
 		<!-- Stop label. Every OTHER bento card renders its stop label as the
 		     card's <h2>; this one stays a plain <div> so the page's first heading
 		     is the <h1> below it and the outline reads h1 → h2…, never h2 → h1. -->
 		<StopLabel {stop} {label} />
 
 		<div
-			class="min-h-0 flex-1 overflow-y-auto pr-1"
+			class="pr-1"
 			data-testid="about-identity-scroll"
-			use:scrollChain
 		>
-		<div class="flex min-h-full flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
+		<div class="flex flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
 			<!-- Headshot with gradient ring -->
 			<div class="relative shrink-0">
 				<div
@@ -86,7 +84,7 @@
 				</h1>
 				<!-- Gradient separator -->
 				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--primary), transparent);"></div>
-				<p class="mt-4 max-w-md text-small leading-relaxed text-[var(--secondary-foreground)]">
+				<p class="mt-4 max-w-md text-body leading-relaxed text-[var(--secondary-foreground)]">
 					{valueProp}
 				</p>
 			</div>

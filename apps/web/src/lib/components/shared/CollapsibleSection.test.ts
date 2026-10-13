@@ -136,6 +136,28 @@ describe('CollapsibleSection — whole-card toggling (GO2-W5 final batch 6d)', (
 });
 
 describe('optional depth focus containment', () => {
+	it('returns focus to its trigger when an external collapse hides the focused child', async () => {
+		const { container, getByTestId, rerender } = render(CollapsibleSection, {
+			props: { title: 'Technical detail', open: true, children: bodyContent },
+		});
+		getByTestId('body-link').focus();
+		await rerender({ open: false });
+		expect(container.querySelector('button.section-header')).toBe(document.activeElement);
+		expect(container.querySelector('.section-body')).toHaveAttribute('inert');
+	});
+
+	it('does not steal focus from outside when a section collapses', async () => {
+		const { rerender } = render(CollapsibleSection, {
+			props: { title: 'Unfocused detail', open: true, children: bodyContent },
+		});
+		const outside = document.createElement('button');
+		document.body.append(outside);
+		outside.focus();
+		await rerender({ open: false });
+		expect(document.activeElement).toBe(outside);
+		outside.remove();
+	});
+
 	it('keeps closed content mounted but inert until the reader opens it', async () => {
 		const { container, getByTestId } = render(CollapsibleSection, {
 			props: { title: 'Technical detail', open: false, children: bodyContent },
