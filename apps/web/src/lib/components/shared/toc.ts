@@ -45,12 +45,36 @@ export function tocElement(id: string): Element | null {
 		const el = document.querySelector(`[data-section-index="${id.slice('section-'.length)}"]`);
 		if (el) return el;
 	}
-	const tagged = Array.from(document.querySelectorAll(`[data-toc="${id}"]`));
+	const tagged = Array.from(document.querySelectorAll('[data-toc]')).filter(
+		(el) => el.getAttribute('data-toc') === id,
+	);
 	if (tagged.length > 0) {
 		const visible = tagged.find((el) => (el as HTMLElement).offsetParent !== null);
 		return visible ?? tagged[0];
 	}
 	return document.getElementById(id);
+}
+
+/** Land the readable heading, including a closed card's visible trigger. */
+export function navigateToc(id: string): void {
+	const element = tocElement(id);
+	if (!element) return;
+	const closed = element.closest('[inert]');
+	const card = closed?.closest('.section-card') ?? element;
+	const target = card.querySelector<HTMLElement>('.section-header') ?? card;
+	target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/** New fragment requests land visibly; history keeps the router's saved offset. */
+export function onTocNavigate({ type, to }: { type: string; to: { url: URL } | null }): void {
+	let id = to?.url.hash.slice(1);
+	if (!id || type === 'popstate') return;
+	try {
+		id = decodeURIComponent(id);
+	} catch {
+		return;
+	}
+	navigateToc(id);
 }
 
 /** Observe every TOC-target element on the page and report the active id as the
@@ -62,6 +86,49 @@ export function observeActiveToc(setActive: (id: string) => void): () => void {
 		'[data-section-index], [id^="readme-h-"], [data-toc], [data-testid="blog-section-body"] h3[id], [data-testid="blog-section-body"] h4[id]',
 	);
 	if (els.length === 0) return () => {};
+
+	let fragmentFrame = 0;
+	let fragmentHref = '';
+	const content = els[0].closest('main') ?? document;
+	const cancelFragment = () => {
+		cancelAnimationFrame(fragmentFrame);
+		fragmentHref = '';
+	};
+	const onHistory = () => {
+		if (location.href !== fragmentHref) cancelFragment();
+	};
+	function onHashLink(event: MouseEvent) {
+		if (
+			event.defaultPrevented ||
+			event.button ||
+			event.metaKey ||
+			event.ctrlKey ||
+			event.shiftKey ||
+			event.altKey
+		)
+			return;
+		const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
+		if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+		const url = new URL(link.href);
+		if (
+			!url.hash ||
+			url.origin !== location.origin ||
+			url.pathname !== location.pathname ||
+			url.search !== location.search
+		)
+			return;
+		cancelAnimationFrame(fragmentFrame);
+		fragmentHref = url.href;
+		// Same-document hashes bypass SvelteKit's afterNavigate hook. Let its
+		// history/default action finish, then correct only this requested landing.
+		fragmentFrame = requestAnimationFrame(() => {
+			if (location.href === url.href) onTocNavigate({ type: 'link', to: { url } });
+		});
+	}
+	// Main sees content cancellations before SvelteKit intercepts at the app root.
+	content.addEventListener('click', onHashLink as EventListener);
+	document.addEventListener('click', cancelFragment, true);
+	window.addEventListener('popstate', onHistory);
 
 	const observer = new IntersectionObserver(
 		(entries) => {
@@ -75,8 +142,14 @@ export function observeActiveToc(setActive: (id: string) => void): () => void {
 				else if (el.id) setActive(el.id);
 			}
 		},
-		{ rootMargin: '-20% 0px -70% 0px' }
+		{ rootMargin: '-20% 0px -70% 0px' },
 	);
 	els.forEach((el) => observer.observe(el));
-	return () => observer.disconnect();
+	return () => {
+		observer.disconnect();
+		content.removeEventListener('click', onHashLink as EventListener);
+		document.removeEventListener('click', cancelFragment, true);
+		window.removeEventListener('popstate', onHistory);
+		cancelFragment();
+	};
 }

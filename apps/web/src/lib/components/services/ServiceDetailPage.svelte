@@ -5,6 +5,7 @@
   Related projects in right panel (desktop) / bottom list (mobile). D186, D187, D189.
 -->
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
 	import type { Service, Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
@@ -21,7 +22,7 @@
 	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
 	import TocNav from '$lib/components/shared/TocNav.svelte';
 	import TocPill from '$lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+	import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '$lib/components/shared/toc';
 	import { onMount } from 'svelte';
 	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
 	import { SectionLabel } from '@yesid/ui/brand';
@@ -112,11 +113,9 @@
 	});
 
 	let activeTocId = $state('');
+	afterNavigate(onTocNavigate);
 	onMount(() => observeActiveToc((id) => (activeTocId = id)));
 
-	function scrollToToc(id: string): void {
-		tocElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-	}
 </script>
 
 <div class="service-detail" data-testid="service-detail-page">
@@ -210,7 +209,7 @@
 								<TocNav
 									entries={tocEntries}
 									activeId={activeTocId}
-									onNavigate={scrollToToc}
+									onNavigate={navigateToc}
 									heading={tocHeading}
 									sectionKey="svc-toc"
 									counterPrefix={tocCounterPrefix}

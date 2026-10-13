@@ -135,24 +135,42 @@ describe('ContactPage', () => {
 		expect(screen.getAllByTestId('contact-social-linkedin').length).toBeGreaterThanOrEqual(1);
 	});
 
-	it('renders the BEST FIT section with its lines (homework #26b)', () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		expect(screen.getAllByTestId('contact-best-fit').length).toBeGreaterThanOrEqual(1);
-		expect(screen.getAllByText('BEST FIT').length).toBeGreaterThanOrEqual(1);
-		expect(screen.getAllByText('Slow reports that need to be fast').length).toBeGreaterThanOrEqual(1);
-		expect(screen.getAllByText('Sites and stores wired to live data').length).toBeGreaterThanOrEqual(1);
-	});
-
-	it('renders the BEST FIT section in French inside a fr locale provider', () => {
-		render(ContactPage, {
-			props: { contactPage: contactContent },
-			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+	for (const [locale, label, item] of [
+		['en', 'Fixture needs', 'A changed brief'],
+		['fr', 'Besoins témoins', 'Un autre mandat'],
+		['es', 'Necesidades', 'Un encargo distinto'],
+	])
+		it(`renders supplied best-fit labels and items in ${locale}`, () => {
+			const supplied = {
+				...contactContent,
+				infoTerminal: {
+					...contactContent.infoTerminal,
+					sectionLabels: {
+						...contactContent.infoTerminal.sectionLabels,
+						bestFit: {
+							en: 'Fixture needs',
+							fr: 'Besoins témoins',
+							es: 'Necesidades',
+						},
+					},
+					bestFit: [
+						{
+							en: 'A changed brief',
+							fr: 'Un autre mandat',
+							es: 'Un encargo distinto',
+						},
+					],
+				},
+			};
+			render(ContactPage, {
+				props: { contactPage: supplied },
+				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+			});
+			for (const section of screen.getAllByTestId('contact-best-fit')) {
+				expect(section).toHaveTextContent(label);
+				expect(section).toHaveTextContent(item);
+			}
 		});
-		expect(screen.getAllByText('PROJETS IDÉAUX').length).toBeGreaterThanOrEqual(1);
-		expect(screen.getAllByText('Des rapports lents qui doivent aller vite').length).toBeGreaterThanOrEqual(1);
-		expect(screen.queryByText('BEST FIT')).toBeNull();
-	});
-
 	it('hides the BEST FIT section when the CMS carries no lines', () => {
 		const { bestFit: _bestFit, ...restInfo } = contactContent.infoTerminal;
 		const stripped = {
