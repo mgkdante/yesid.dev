@@ -35,7 +35,7 @@
 	transform: translateX(0);
 }
 
-.article-body.article-body .heading-anchor:focus-visible {
+.article-body.article-body :is(h2, h3, h4) .heading-anchor:focus-visible {
 	opacity: 1;
 	transform: translateX(0);
 }
