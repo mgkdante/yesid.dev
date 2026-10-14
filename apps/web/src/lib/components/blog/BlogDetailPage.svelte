@@ -1,11 +1,5 @@
-<!--
-  Blog detail page orchestrator for /blog/[slug].
-  Structure: full-bleed header + hazard separator + shared article body.
-  Desktop: shared TOC + post meta rail + sectionized article cards.
-  Mobile: post meta card + sectionized article cards + floating TOC pill.
-  Same architectural role as ProjectDetailPage.
--->
 <script lang="ts">
+	import '$lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
   import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
   import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
@@ -266,7 +260,7 @@
             open={true}
             accentColor={accentColor}
           >
-            <div class="blog-section-body prose-dark" data-testid="blog-section-body" style="--blog-accent: {accentColor};">
+            <div class="article-body blog-section-body prose-dark" data-testid="blog-section-body" style="--blog-accent: {accentColor};">
               <BlockRenderer doc={section.doc} {codeHighlights} />
             </div>
           </CollapsibleSection>
@@ -432,18 +426,6 @@
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
   }
 
-  .blog-section-body {
-    font-size: 1.125rem;
-    color: color-mix(in srgb, var(--foreground) 85%, transparent);
-    line-height: 1.8;
-  }
-
-  @media (--desktop-min) {
-    .blog-section-body {
-      font-size: 1.25rem;
-    }
-  }
-
   /* Clickables are ORANGE on every post (yellow = conversion only, operator
      call homework #6a); --blog-accent stays on the decorative voice below. */
   .blog-section-body :global(a) {
@@ -456,37 +438,6 @@
 
   .blog-section-body :global(blockquote) {
     border-left-color: var(--blog-accent);
-  }
-
-  .blog-section-body :global(h2),
-  .blog-section-body :global(h3),
-  .blog-section-body :global(h4) {
-    position: relative;
-  }
-
-  /* The "#" is a REAL copyable permalink (homework #7c): rendered inside the
-     heading by cms/blocks/Heading.svelte (h2-h4), revealed on hover/focus. */
-  .blog-section-body :global(.heading-anchor) {
-    position: absolute;
-    right: 100%;
-    margin-right: 0.5rem;
-    color: var(--primary);
-    text-decoration: none;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
-  }
-
-  .blog-section-body :global(h2):hover :global(.heading-anchor),
-  .blog-section-body :global(h3):hover :global(.heading-anchor),
-  .blog-section-body :global(h4):hover :global(.heading-anchor) {
-    opacity: var(--opacity-muted);
-    transform: translateX(0);
-  }
-
-  .blog-section-body :global(.heading-anchor):focus-visible {
-    opacity: 1;
-    transform: translateX(0);
   }
 
   @media (--desktop-min) {
