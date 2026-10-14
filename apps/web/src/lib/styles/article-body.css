@@ -1,0 +1,41 @@
+/* Match the former component-scoped specificity without styling collapsible containers. */
+.article-body.article-body {
+	font-size: 1.125rem;
+	color: color-mix(in srgb, var(--foreground) 85%, transparent);
+	line-height: 1.8;
+}
+
+@media (--desktop-min) {
+	.article-body.article-body {
+		font-size: 1.25rem;
+	}
+}
+
+.article-body.article-body h2,
+.article-body.article-body h3,
+.article-body.article-body h4 {
+	position: relative;
+}
+
+.article-body.article-body .heading-anchor {
+	position: absolute;
+	right: 100%;
+	margin-right: 0.5rem;
+	color: var(--primary);
+	text-decoration: none;
+	opacity: 0;
+	transform: translateX(-4px);
+	transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
+}
+
+.article-body.article-body h2:hover .heading-anchor,
+.article-body.article-body h3:hover .heading-anchor,
+.article-body.article-body h4:hover .heading-anchor {
+	opacity: var(--opacity-muted);
+	transform: translateX(0);
+}
+
+.article-body.article-body .heading-anchor:focus-visible {
+	opacity: 1;
+	transform: translateX(0);
+}

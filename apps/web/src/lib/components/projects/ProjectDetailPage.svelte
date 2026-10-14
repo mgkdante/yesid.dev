@@ -1,10 +1,5 @@
-<!--
-  Full detail page layout for /projects/[slug].
-  Structure: full-bleed header + gradient separator + 3-column CSS Grid body.
-  Desktop: TOC (left) + collapsible sections (center) + glance panel (right).
-  Mobile: collapsible glance panel + floating TOC pill + stacked sections.
--->
 <script lang="ts">
+	import '$lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
 	import type { BlockEditorDoc, Project, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
@@ -64,7 +59,6 @@
 	let readmeCopyResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	type SectionView = {
-		section: Project['sections'][number];
 		originalIndex: number;
 		title: string;
 		doc: BlockEditorDoc;
@@ -132,7 +126,6 @@
 		project.sections.map((section, originalIndex) => {
 			const doc = resolveLocale(section.content, locale);
 			return {
-				section,
 				originalIndex,
 				title: resolveLocale(section.title, locale),
 				doc,
@@ -448,23 +441,26 @@
 		</aside>
 
 		<div class="sections-column">
-			{#if firstArticleSection}
+			{#snippet articleSection(section: SectionView, index: number)}
 				<div
 					class="section-block"
-					id="section-0"
-					data-section-index={0}
+					id={`section-${index}`}
+					data-section-index={index}
 				>
 					<CollapsibleSection
-						title={firstArticleSection.title}
-						sectionKey="proj-section-0"
-						index={0}
-						open={true}
-						>
-							<div class="section-body">
-								<BlockRenderer doc={firstArticleSection.doc} {codeHighlights} />
-							</div>
-						</CollapsibleSection>
-					</div>
+						title={section.title}
+						sectionKey="proj-section-{index}"
+						{index}
+						open={index === 0}
+					>
+						<div class="article-body section-body">
+							<BlockRenderer doc={section.doc} {codeHighlights} />
+						</div>
+					</CollapsibleSection>
+				</div>
+			{/snippet}
+			{#if firstArticleSection}
+				{@render articleSection(firstArticleSection, 0)}
 			{/if}
 
 			{#if imageGallerySections.length > 0}
@@ -486,23 +482,7 @@
 			{/if}
 
 			{#each remainingArticleSections as section, offset}
-				{@const i = offset + 1}
-				<div
-					class="section-block"
-					id={`section-${i}`}
-					data-section-index={i}
-				>
-					<CollapsibleSection
-						title={section.title}
-						sectionKey="proj-section-{i}"
-						index={i}
-						open={false}
-						>
-							<div class="section-body">
-								<BlockRenderer doc={section.doc} {codeHighlights} />
-							</div>
-						</CollapsibleSection>
-					</div>
+				{@render articleSection(section, offset + 1)}
 			{/each}
 
 			{#if readmeHtml}
@@ -514,7 +494,7 @@
 						{#snippet icon()}
 							<SectionIcon name="github" class="h-5 w-5 shrink-0 text-primary" />
 						{/snippet}
-						<div class="prose-dark section-body" bind:this={readmeBody}>
+					<div class="article-body prose-dark section-body" bind:this={readmeBody}>
 							{@html processedReadmeHtml}
 						</div>
 					</CollapsibleSection>
@@ -621,29 +601,12 @@
 		margin-bottom: 1rem;
 	}
 
-	/* Section body text */
-	.section-body {
-		font-size: 1.125rem;
-		color: color-mix(in srgb, var(--foreground) 85%, transparent);
-		line-height: 1.8;
-	}
-
-	@media (--desktop-min) {
-		.section-body {
-			font-size: 1.25rem;
-		}
-	}
-
-	/* Sub-section h3 styling (within rendered HTML content). The orange
-	   left-edge bar retired per operator call (homework #7c): subheadings now
-	   carry the same real "#" permalink as the blog. */
 	.section-body :global(h3) {
 		font-family: var(--font-heading);
 		font-size: var(--text-detail-subheading-mobile);
 		font-weight: 600;
 		color: color-mix(in srgb, var(--foreground) 70%, transparent);
 		margin: 20px 0 12px;
-		position: relative;
 	}
 
 	@media (--desktop-min) {
@@ -654,33 +617,4 @@
 		}
 	}
 
-	/* h3 is already position:relative via its subheading rule above; h2/h4
-	   need it too so their permalinks anchor to the heading, not the column. */
-	.section-body :global(h2),
-	.section-body :global(h4) {
-		position: relative;
-	}
-
-	.section-body :global(.heading-anchor) {
-		position: absolute;
-		right: 100%;
-		margin-right: 0.5rem;
-		color: var(--primary);
-		text-decoration: none;
-		opacity: 0;
-		transform: translateX(-4px);
-		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
-	}
-
-	.section-body :global(h2):hover :global(.heading-anchor),
-	.section-body :global(h3):hover :global(.heading-anchor),
-	.section-body :global(h4):hover :global(.heading-anchor) {
-		opacity: var(--opacity-muted);
-		transform: translateX(0);
-	}
-
-	.section-body :global(.heading-anchor):focus-visible {
-		opacity: 1;
-		transform: translateX(0);
-	}
 </style>
