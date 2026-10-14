@@ -373,18 +373,18 @@ test('targeted repair audits before and after one exact-confirm fields-only reco
 
 test('keeps every downstream CMS job body byte-stable', () => {
 	expect(sha256(jobBlock('diff', 'live-diff'))).toBe(
-		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
+		'0dd4ac5221144d81ef0b3d2fea26548c7339c72b87585ca3a0e071bcb5fa910c',
 	);
 	expect(sha256(jobBlock('live-diff', 'push'))).toBe(
-		'e0b16991ceac323a6c9112584e4263f982502fc8318d28a0f24a249bb471551e',
+		'2d82bba6186f846b78b08233382386fa0a1c6db573980def80f6e15dc11b5a35',
 	);
 	expect(sha256(jobBlock('push', 'legal-service-area'))).toBe(
-		'e73949aa6577920e21cf1ebdbcf88a9567590662ab880e4238c07256e288a9d3',
+		'3c091dc6ca2e203ba16152713db1329dc708fa87b588e75494eb1eb63eff7e66',
 	);
 	expect(
 		sha256(jobBlock('legal-service-area', 'permission-control-audit')),
 	).toBe(
-		'b8c0b6e96f7421b7952b31bb7da5bffa60ff2aebcd2cf74e8fdcd397dd4b52d9',
+		'53f3d372dde9a82757d97d6470fe22d4f647cc22b60d8ed73880c04c303e859c',
 	);
 	expect(
 		sha256(
@@ -394,7 +394,7 @@ test('keeps every downstream CMS job body byte-stable', () => {
 			),
 		),
 	).toBe(
-		'517ae15e70704345eb9ea666c70f88ac78efe92ff8fcd1707a998237beb469a1',
+		'1d06ab2dfc0300ff3cf2ee86217ebd759d717ea06efb7c90add5ae29dbc0180c',
 	);
 	expect(
 		sha256(
@@ -404,11 +404,11 @@ test('keeps every downstream CMS job body byte-stable', () => {
 			),
 		),
 	).toBe(
-		'232efa0979ad4d4a29b06fdf3cc691f4e7eb5a1cf7c349a1fa17ce9cc5bb0aaf',
+		'00afbc951fa7a0455913531198c30f8c7d2b1848aa75805c68e56d315c0190d5',
 	);
 	expect(
 		sha256(jobBlock('public-blog-translation-key-repair', 'analytics-controls')),
-	).toBe('7da8f48ee5ece7cc4d219539581c6999bc51b28902cb8d5658de70af485f55dd');
+	).toBe('8c8bc68b427b6b86a7e95398d19d941400031ebb398834838ba282e006f69847');
 });
 
 test('analytics-controls is production-gated, scoped-lane-only, and exact-confirm (slice-40.1 Stage D)', () => {
