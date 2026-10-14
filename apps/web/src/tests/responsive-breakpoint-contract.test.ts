@@ -24,7 +24,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
 		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 37,
+		expected: 36,
 	},
 	{
 		alias: '--desktop-max',
@@ -77,6 +77,7 @@ const RESPONSIVE_SOURCE_PATHS = [
 	'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
 	'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
 	'apps/web/src/lib/components/stack-engine/Engine.svelte',
+	'apps/web/src/lib/styles/article-body.css',
 	'apps/web/src/lib/styles/listing-header.css',
 	'apps/web/src/lib/styles/listing-shell.css',
 	'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
@@ -477,9 +478,9 @@ describe('canonical responsive breakpoint contract', () => {
 		);
 		const paths = [...new Set(canonicalLines.map(({ path }) => path))].sort();
 
-		expect(canonicalLines).toHaveLength(97);
+		expect(canonicalLines).toHaveLength(96);
 		expect(paths).toEqual(RESPONSIVE_SOURCE_PATHS);
-		expect(featureCount(canonicalLines)).toBe(101);
+		expect(featureCount(canonicalLines)).toBe(100);
 
 		for (const breakpoint of BREAKPOINTS) {
 			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
