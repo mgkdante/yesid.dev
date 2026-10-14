@@ -11,7 +11,7 @@ const secretScanPath = join(workflowsRoot, 'secret-scan.yml');
 const manifestPath = join(repoRoot, '.github', 'shared-tooling.json');
 
 const sourceRepository = 'mgkdante/yesid.dev-design';
-const sourceSha = 'a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25';
+const sourceSha = 'bea5c51d1c8d0f123db45c018a646642a43f0f14';
 const sharedActions = {
 	classify: '.github/actions/classify-paths',
 	required: '.github/actions/required-context',
@@ -147,7 +147,7 @@ function expectStrictRules(rules: ClassifierRules, job: string): void {
 	}
 }
 
-test('pins exactly five shared-tooling callers to the frozen ST3 commit', () => {
+test('pins exactly five shared-tooling callers to the reviewed shared-tooling commit', () => {
 	const references: string[] = [];
 	for (const path of workflowFiles()) {
 		for (const line of readFileSync(path, 'utf8').split('\n')) {
@@ -263,7 +263,7 @@ test('web reports required ci after classified work without weakening E2E', () =
 	expect(strategyOffset).toBeGreaterThan(-1);
 	if (strategyOffset >= 0) {
 		expect(sha256(`${e2e.slice(strategyOffset).trimEnd()}\n`)).toBe(
-			'6e715bb868a9510518035ad9a1f514c2719cda4eac500b5d073ab5da342d2f22',
+			'f61c31498f542506ef2bbb6287e516177e7c3ca069ef68f4dc465b0b52852c3d',
 		);
 	}
 });
@@ -316,7 +316,7 @@ test('CMS reports required test while every downstream job still needs test', ()
 	expect(preservedWork).not.toBeNull();
 	if (preservedWork) {
 		expect(sha256(preservedWork)).toBe(
-			'188df159185725ac9b40cbb53f3c2bf7b1320cf932fc31820f5e0c40b588c17a',
+			'55c41dbb89a22fd5c11c1e6ccccaafb29976a54b26d5deccbf8be82b02f2ed69',
 		);
 	}
 
@@ -410,6 +410,6 @@ test('required PR workflows remain unfiltered so reporters always appear', () =>
 
 test('secret-scan stays byte-for-byte unchanged', () => {
 	expect(sha256(readFileSync(secretScanPath, 'utf8'))).toBe(
-		'27e744160de98b0ecb996ea585349f98e65a188bac7093051ca6a2c4517f00ff',
+		'ca32ece6e0031ce32573654f8f90debe5894532814b14e883f3b3aa9517cc41a',
 	);
 });

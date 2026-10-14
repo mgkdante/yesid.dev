@@ -7,19 +7,19 @@ const repoRoot = join(import.meta.dir, '..', '..', '..');
 const expectedPinnedActionLines = new Map([
 	[
 		'actions/cache',
-		'uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4',
+		'uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0',
 	],
 	[
 		'actions/checkout',
-		'uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5',
+		'uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1',
 	],
 	[
 		'actions/download-artifact',
-		'uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4',
+		'uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1',
 	],
 	[
 		'actions/upload-artifact',
-		'uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4',
+		'uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1',
 	],
 	[
 		'oven-sh/setup-bun',
@@ -27,15 +27,15 @@ const expectedPinnedActionLines = new Map([
 	],
 	[
 		'mgkdante/yesid.dev-design/.github/actions/classify-paths',
-		'uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25',
+		'uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@bea5c51d1c8d0f123db45c018a646642a43f0f14',
 	],
 	[
 		'mgkdante/yesid.dev-design/.github/actions/required-context',
-		'uses: mgkdante/yesid.dev-design/.github/actions/required-context@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25',
+		'uses: mgkdante/yesid.dev-design/.github/actions/required-context@bea5c51d1c8d0f123db45c018a646642a43f0f14',
 	],
 	[
 		'mgkdante/yesid.dev-design/.github/actions/shared-tooling-drift',
-		'uses: mgkdante/yesid.dev-design/.github/actions/shared-tooling-drift@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25',
+		'uses: mgkdante/yesid.dev-design/.github/actions/shared-tooling-drift@bea5c51d1c8d0f123db45c018a646642a43f0f14',
 	],
 ]);
 
@@ -66,7 +66,9 @@ test('external action refs use verified commit pins with major-version comments'
 			const sourceRef = stripped.slice('uses: '.length).split(' # ', 1)[0]!;
 			if (sourceRef.startsWith('./')) continue;
 			const action = sourceRef.slice(0, sourceRef.lastIndexOf('@'));
-			const expected = expectedPinnedActionLines.get(action);
+			const expected = action === 'actions/cache' && path === join(repoRoot, '.github', 'actions', 'setup', 'action.yml')
+				? 'uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4'
+				: expectedPinnedActionLines.get(action);
 			expect(expected, `${relative(repoRoot, path)} has unmapped external action ${sourceRef}`).toBeDefined();
 			expect(stripped, relative(repoRoot, path)).toBe(expected!);
 			observed.add(action);
