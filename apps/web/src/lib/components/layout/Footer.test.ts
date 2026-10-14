@@ -28,8 +28,8 @@ const consentMock = vi.hoisted(() => {
 			},
 			openPreferences,
 		},
-		set(next: State) {
-			state = next;
+		set(next: Partial<State> = {}) {
+			state = { choice: 'unknown', ready: true, available: true, preferencesOpen: false, ...next };
 			for (const subscriber of subscribers) subscriber(state);
 		},
 		reset() {
@@ -197,8 +197,8 @@ describe('Footer supplied content', () => {
 	});
 });
 
-describe('Footer — locale threading (slice-28.6)', () => {
-	it('renders footer nav labels via resolveLocale for fr', () => {
+describe('Footer locale threading', () => {
+	it('localizes French labels, navigation and wordmark without a second locale switcher', () => {
 		render(Footer, {
 			props: {
 				locale: 'fr',
@@ -206,22 +206,7 @@ describe('Footer — locale threading (slice-28.6)', () => {
 			},
 		});
 		expect(screen.getByText('Projets')).toBeInTheDocument();
-	});
-
-	it('never renders a locale switcher (operator trim — removed below the hazard rule)', () => {
-		// Even with two published locales the footer status bar no longer carries
-		// the EN|FR toggle (operator decision). Language switches via nav/route.
-		render(Footer, { props: { locale: 'fr' } });
 		expect(screen.queryByTestId('footer-locale-switch')).toBeNull();
-	});
-
-	it('localizes nav link hrefs and the wordmark for fr', () => {
-		render(Footer, {
-			props: {
-				locale: 'fr',
-				footerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
-			},
-		});
 		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('href', '/fr/projects');
 		expect(screen.getByTestId('footer-wordmark')).toHaveAttribute('href', '/fr');
 	});
@@ -233,12 +218,7 @@ describe('Footer analytics preferences', () => {
 		['fr', 'Préférences d’analytique'],
 		['es', 'Preferencias de analítica'],
 	] as const)('renders the %s settings label as a button', (locale, label) => {
-		consentMock.set({
-			choice: 'unknown',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set();
 
 		render(Footer, { props: { locale } });
 
@@ -253,12 +233,7 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it('reports the preferences rail as expanded when it is already open', () => {
-		consentMock.set({
-			choice: 'denied',
-			ready: true,
-			available: true,
-			preferencesOpen: true,
-		});
+		consentMock.set({ choice: 'denied', preferencesOpen: true });
 
 		render(Footer);
 
@@ -266,12 +241,7 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it('opens analytics preferences exactly once', async () => {
-		consentMock.set({
-			choice: 'granted',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set({ choice: 'granted' });
 		render(Footer);
 
 		await fireEvent.click(screen.getByTestId('analytics-preferences'));
@@ -280,8 +250,8 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it.each([
-		{ choice: 'unknown', ready: false, available: true, preferencesOpen: false },
-		{ choice: 'unknown', ready: true, available: false, preferencesOpen: false },
+		{ ready: false },
+		{ available: false },
 	] as const)('hides preferences until production-host state is ready', (state) => {
 		consentMock.set(state);
 
@@ -292,12 +262,7 @@ describe('Footer analytics preferences', () => {
 
 	it('keeps preferences available in enabled hidden mode after a saved denial', () => {
 		controlsMock.set(true, false);
-		consentMock.set({
-			choice: 'denied',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set({ choice: 'denied' });
 
 		render(Footer);
 
@@ -306,12 +271,7 @@ describe('Footer analytics preferences', () => {
 
 	it('hides preferences when analytics is disabled, even with a saved grant', () => {
 		controlsMock.set(false, false);
-		consentMock.set({
-			choice: 'granted',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set({ choice: 'granted' });
 
 		render(Footer);
 
