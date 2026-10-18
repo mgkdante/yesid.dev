@@ -110,9 +110,9 @@
 
 <!-- Dialog.Root bound to active so focus trap + scroll lock persist through close animation -->
 <DialogPrimitive.Root open={active} onOpenChange={handleOpenChange}>
-	{#if active}
-		<DialogPrimitive.Portal>
-			<DialogPrimitive.Content id={contentId} onCloseAutoFocus={oncloseautofocus}
+	<!-- Keep chrome mounted for pill/icon transitions and SSR. bits-ui enables
+	     modal behavior only while active; no ancestor establishes a stacking context. -->
+			<DialogPrimitive.Content forceMount id={contentId} onCloseAutoFocus={oncloseautofocus}
 				onEscapeKeydown={(event) => { event.preventDefault(); onclose?.(); }}
 				onInteractOutside={(event) => { event.preventDefault(); onclose?.(); }}
 				onOpenAutoFocus={(event) => {
@@ -122,8 +122,13 @@
 					if (toggle) { event.preventDefault(); toggle.focus({ preventScroll: true }); }
 				}}>
 				{#snippet child({ props })}
-					<div {...props} class="menu-dialog" data-lenis-prevent>
+					<div {...props} class="menu-dialog" class:menu-dialog-active={active}
+						role={active ? 'dialog' : undefined} aria-modal={active ? 'true' : undefined}
+						{...(active ? {} : { 'aria-labelledby': undefined, 'aria-describedby': undefined, tabindex: undefined })}
+						style:pointer-events={active ? 'auto' : 'none'} style:contain="none"
+						data-lenis-prevent={active ? true : undefined}>
 						{@render chrome?.()}
+					{#if active}
 					<div
 						class="menu-overlay {entering ? 'entering' : ''} {closing ? 'closing' : ''}"
 						bind:this={overlayEl}
@@ -172,22 +177,24 @@
 					<span class="menu-footer-line"></span>
 				</div>
 					</div>
+					{/if}
 					</div>
 				{/snippet}
 			</DialogPrimitive.Content>
-		</DialogPrimitive.Portal>
-	{/if}
 </DialogPrimitive.Root>
 
 <style>
-	.menu-dialog { position: fixed; inset: 0; z-index: var(--z-menu); background: var(--background); }
+	.menu-dialog { position: fixed; inset: 0; z-index: 50; }
+	.menu-dialog-active {
+		z-index: var(--z-menu);
+		background: var(--background);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 4%, transparent) 0%, transparent 60%);
+	}
 	/* ── Overlay base ── */
 	.menu-overlay {
 		position: fixed;
 		inset: 0;
 		z-index: 0;
-		background: var(--background);
-		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 4%, transparent) 0%, transparent 60%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -214,7 +221,7 @@
 	   (#A05500) is muted where dark's (#E07800) is bright, so the 4% mix tuned for
 	   dark reads as nothing here. Lift the mix so the warm cast lands with the same
 	   presence as dark (1:1 parity). */
-	:global([data-theme='light']) .menu-overlay {
+	:global([data-theme='light']) .menu-dialog-active {
 		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--glow) 16%, transparent) 0%, transparent 58%);
 	}
 
@@ -378,7 +385,7 @@
 		.menu-item { padding-block: 10px; min-height: 44px; }
 	}
 	.menu-text { min-width: 0; overflow-wrap: anywhere; }
-	.menu-content { width: min(100%, 42rem); }
+	.menu-content { width: fit-content; max-width: 100%; }
 	@media (prefers-reduced-motion: reduce) {
 		.menu-overlay, .menu-item { transition: none; }
 	}
