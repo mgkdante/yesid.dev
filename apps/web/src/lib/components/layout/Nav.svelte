@@ -192,7 +192,6 @@
 </nav>
 {/snippet}
 
-{#if !overlayActive}{@render chrome()}{/if}
 <MenuOverlay open={menuOpen} bind:active={overlayActive} {pathname} {locale} {menuItems} {chrome} {contentId}
 	onclose={() => { menuOpen = false; }} oncloseautofocus={restoreTrigger} />
 
@@ -342,23 +341,16 @@
 
 	/* Collapse links + divider when menu opens, grow back on close */
 	.nav-collapsible {
-		overflow: hidden;
+		overflow: visible;
 		transition: max-width var(--duration-slow) var(--ease-default), opacity var(--duration-normal) var(--ease-default), margin var(--duration-slow) var(--ease-default);
 		max-width: 300px;
 		opacity: 1;
 	}
 	.nav-collapsed {
+		overflow: hidden;
 		max-width: 0;
 		opacity: 0;
 		margin-inline: 0;
-	}
-
-	/* GO-w2t5 retier: the menu-open link collapse is a width/opacity slide —
-	   MOTION-GATED; snap instead of sliding under reduce. */
-	@media (prefers-reduced-motion: reduce) {
-		.nav-collapsible {
-			transition: none;
-		}
 	}
 
 	/* GO2-W5 "you are here" lamp: the active link gets an amber wayfinding
@@ -431,5 +423,12 @@
 	.menu-toggle-open .menu-toggle-bottom {
 		width: 16px;
 		transform: translateY(-3.25px) rotate(-45deg);
+	}
+
+	/* Pill collapse/growth and the icon morph snap under reduced motion. */
+	@media (prefers-reduced-motion: reduce) {
+		.nav-pill, .nav-collapsible, .menu-toggle-line {
+			transition: none;
+		}
 	}
 </style>
