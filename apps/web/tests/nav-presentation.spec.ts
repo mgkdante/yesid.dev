@@ -126,7 +126,8 @@ for (const [width, height] of [[320, 568], [375, 667], [768, 1024], [1024, 600],
 					await items.last().focus();
 					const last = await items.last().boundingBox();
 					expect(last!.y).toBeGreaterThanOrEqual(pill!.y + pill!.height);
-					expect(last!.y + last!.height).toBeLessThanOrEqual(height);
+					// Native focus rounds its scroll offset while item bounds retain fractional CSS pixels.
+					expect(last!.y + last!.height).toBeLessThanOrEqual(height + 1);
 					expect(last!.x).toBeGreaterThanOrEqual(0);
 					expect(last!.x + last!.width).toBeLessThanOrEqual(width);
 					await page.getByTestId('nav-menu-toggle').focus();
