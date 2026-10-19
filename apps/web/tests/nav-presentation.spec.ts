@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-for (const width of [375, 1366]) {
+for (const width of [375, 768, 1366]) {
 	test(`expanded menu centers its content on one continuous surface at ${width}px`, async ({ page }, testInfo) => {
 		await page.setViewportSize({ width, height: 667 });
 		await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -103,7 +103,7 @@ for (const width of [375, 1366]) {
 	});
 }
 
-for (const [width, height] of [[320, 568], [375, 667], [768, 1024], [1024, 600], [1366, 600], [1440, 900]]) {
+for (const [width, height] of [[320, 568], [375, 667], [768, 1024], [1024, 600], [1280, 600], [1366, 600], [1440, 900]]) {
 	for (const reducedMotion of ['reduce', 'no-preference'] as const) {
 		test(`menu fit and keyboard at ${width}x${height}, ${reducedMotion}`, async ({ page }) => {
 			test.setTimeout(90_000);
