@@ -7,7 +7,7 @@ import {
 
 for (const reducedMotion of ["reduce", "no-preference"] as const)
 for (const theme of ["light", "dark"] as const) {
-  for (const width of [375, 1366]) {
+  for (const width of [375, 768, 1366]) {
     for (const kind of ["blog", "projects"] as const) {
       test(`${kind} article reading contrast and scale — ${theme} ${width}px ${reducedMotion}`, async ({
         page,

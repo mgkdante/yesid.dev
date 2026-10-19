@@ -8,7 +8,9 @@ for (const locale of ['', '/fr', '/es'])
 				reducedMotion: 'reduce',
 				colorScheme: theme as 'light' | 'dark',
 			});
+			await page.addInitScript(value => localStorage.setItem('theme', value), theme);
 			await page.goto(`${locale}/about`);
+			await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
 			await expect(page.getByTestId('about-quote-controls')).toBeVisible();
 			for (const control of await page.getByTestId('about-quote-controls').locator('button').all()) {
 				const box = (await control.boundingBox())!;
@@ -111,12 +113,16 @@ test.describe('/about page content', () => {
       );
       expect(firstLevel).toBe('H1');
       for (const selector of ['.school', '.program', '.flag-label', 'blockquote']) {
-        for (const text of await page.getByTestId('page-about').locator(selector).allTextContents()) {
+        const collection = page.getByTestId('page-about').locator(selector);
+        expect(await collection.count(), `${selector} renders a nonempty collection`).toBeGreaterThan(0);
+        for (const text of await collection.allTextContents()) {
           expect(text.trim().length).toBeGreaterThan(0);
         }
       }
       for (const id of ['about-education', 'about-polaroids']) {
-        for (const image of await page.getByTestId(id).locator('img').all()) {
+        const images = page.getByTestId(id).locator('img');
+        expect(await images.count(), `${id} renders its media`).toBeGreaterThan(0);
+        for (const image of await images.all()) {
           expect(await image.getAttribute('src')).toBeTruthy();
           expect(await image.getAttribute('alt')).not.toBeNull();
         }
