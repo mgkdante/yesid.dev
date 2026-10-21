@@ -18,7 +18,7 @@ describe('Vercel revalidate on publish flow contract', () => {
 			status: 'active', trigger: 'event', options: { type: 'action' },
 		});
 		expect(new Set(flow?.options?.scope)).toEqual(
-			new Set(['items.create', 'items.update', 'items.delete']),
+			new Set(['items.create', 'items.update', 'items.delete', 'files.upload']),
 		);
 		const operation = operations.find((entry) => entry._syncId === flow?.operation);
 		expect(operation).toMatchObject({
