@@ -9,12 +9,51 @@ const analyticsMocks = vi.hoisted(() => ({
 vi.mock('$lib/analytics/client', () => analyticsMocks);
 
 import ContactPage from './ContactPage.svelte';
-// slice-18i Phase 7C: ContactPage now requires contactPage prop.
-import { contactContent } from '$lib/content/contact-page';
+import type { ContactContent } from '$lib/types';
 // slice-34.3: the orchestrator's capture/apply API lets us drive the locale-switch
 // round-trip at the unit level (registerSession is module-scoped; the component's
 // persisted() fields register into the same registry on mount).
 import { captureEntries, applyEntries } from '$lib/state/locale-handoff.svelte';
+
+const contactContent: ContactContent = {
+	pageTitle: { en: 'Contact fixture' },
+	stationLabel: { en: 'Fixture station' },
+	sendErrorMessage: { en: 'Fixture delivery failed' },
+	meta: { title: { en: 'Contact' }, description: { en: 'Fixture description' } },
+	web3formsKey: 'fixture-key',
+	infoTerminal: {
+		title: 'Fixture info', command: '$ info',
+		location: { en: 'A city' }, responseTime: { en: 'Soon' }, languages: { en: 'EN FR ES' },
+		bestFit: [{ en: 'A supplied need' }],
+		sectionLabels: {
+			location: { en: 'Place' }, connect: { en: 'Channels' },
+			languages: { en: 'Languages' }, bestFit: { en: 'Needs' },
+		},
+	},
+	formTerminal: {
+		title: 'Fixture form', command: '$ contact', commandOutput: { en: 'Ready' },
+		fields: {
+			name: { label: { en: 'name' }, placeholder: { en: 'Your name' } },
+			email: { label: { en: 'email' }, placeholder: { en: 'Your email' } },
+			message: { label: { en: 'message' }, placeholder: { en: 'Your note' } },
+		},
+		submitLabel: { en: 'Send' }, bookingPrompt: { en: 'Talk instead?' }, bookingButtonLabel: { en: 'Book' },
+	},
+	validation: {
+		required: { en: '{field} is required' }, invalidEmail: { en: 'Invalid email format' }, errorSummary: { en: '{count} errors' },
+	},
+	success: {
+		validating: { en: 'Checking' }, sending: { en: 'Sending' }, sent: { en: 'Delivered' },
+		responseTime: { en: 'Soon' }, meanwhile: { en: 'Visit {work} and {blog}.' },
+		resetLabel: { en: 'Send another' }, fieldOk: { en: 'OK' }, workLinkLabel: { en: 'work' }, blogLinkLabel: { en: 'blog' },
+	},
+	socials: [
+		{ label: { en: 'Calendar' }, href: 'https://cal.com/fixture', icon: 'calendar' },
+		{ label: { en: 'Email' }, href: 'mailto:fixture@example.com', icon: 'email' },
+		{ label: { en: 'GitHub' }, href: 'https://github.com/fixture', icon: 'github' },
+		{ label: { en: 'LinkedIn' }, href: 'https://linkedin.com/in/fixture', icon: 'linkedin' },
+	],
+};
 
 let originalFetch: typeof fetch;
 beforeEach(() => {
@@ -60,7 +99,7 @@ describe('ContactPage', () => {
 
 	it('renders the station label', () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		expect(screen.getByText(/NEXT STOP: YOU/)).toBeTruthy();
+		expect(screen.getByText('Fixture station')).toBeTruthy();
 	});
 
 	it('renders info terminal', () => {
@@ -84,12 +123,14 @@ describe('ContactPage', () => {
 		for (const field of fields) {
 			expect(field).toHaveAccessibleName(`${field.name}:`);
 			expect(field.tagName).toBe(field.name === 'message' ? 'TEXTAREA' : 'INPUT');
+			expect(field).toHaveAttribute('data-handoff-focus', `contact-${field.name}`);
 		}
 		await submitForm(screen.getAllByTestId('contact-submit')[0]);
 		for (const field of fields) {
 			expect(field).toHaveAttribute('aria-invalid', 'true');
-			expect(field).toHaveAccessibleDescription(`✗ required, ${field.name} cannot be empty`);
+			expect(field).toHaveAccessibleDescription(`✗ ${field.name} is required`);
 		}
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
 	it('uses CMS-localized form field labels in labels and validation errors', async () => {
@@ -107,7 +148,7 @@ describe('ContactPage', () => {
 				...contactContent.validation,
 				required: { en: 'Missing {field}' },
 			},
-		} as unknown as typeof contactContent;
+		} satisfies ContactContent;
 
 		render(ContactPage, { props: { contactPage: labeledContact } });
 		expect(screen.getAllByLabelText(/^full name/i).length).toBeGreaterThanOrEqual(1);
@@ -176,7 +217,7 @@ describe('ContactPage', () => {
 		const stripped = {
 			...contactContent,
 			infoTerminal: restInfo,
-		} as unknown as typeof contactContent;
+		} satisfies ContactContent;
 		render(ContactPage, { props: { contactPage: stripped } });
 		expect(screen.queryByTestId('contact-best-fit')).toBeNull();
 	});
@@ -215,16 +256,6 @@ describe('ContactPage', () => {
 		expect(ghLinks[0].getAttribute('target')).toBe('_blank');
 	});
 
-	it('shows validation errors on empty submit', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		const submitBtns = screen.getAllByRole('button', { name: /send/i });
-		await submitForm(submitBtns[0]);
-
-		const errors = screen.getAllByText(/✗/);
-		expect(errors.length).toBeGreaterThanOrEqual(3);
-		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
-	});
-
 	it('shows invalid email error for bad format', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		await fillForm('Test', 'not-an-email', 'Hello');
@@ -236,57 +267,19 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
-	it('shows success state after valid submit', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await fillForm();
-
-		const submitBtns = screen.getAllByRole('button', { name: /send/i });
-		await submitForm(submitBtns[0]);
-
-		// Wait for typed sequence to complete (~150ms * 9 lines)
-		await new Promise((r) => setTimeout(r, 2000));
-
-		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
-	});
-
-	it('does not track a conversion when Web3Forms reports failure', async () => {
+	it.each(['response failure', 'request rejection'])('does not track conversion after %s', async (failure) => {
 		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
 			if (String(input).includes('web3forms')) {
-				return new Response(JSON.stringify({ success: false }), {
-					status: 200,
-					headers: { 'Content-Type': 'application/json' },
-				});
+				if (failure === 'request rejection') throw new Error('offline');
+				return Response.json({ success: false });
 			}
 			return prevFetch(input, init);
 		}) as typeof globalThis.fetch;
-
 		render(ContactPage, { props: { contactPage: contactContent } });
 		await fillForm();
 		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
-
-		await waitFor(() => {
-			expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
-		});
-		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
-	});
-
-	it('does not track a conversion when the Web3Forms request rejects', async () => {
-		const prevFetch = globalThis.fetch;
-		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
-			if (String(input).includes('web3forms')) throw new Error('offline');
-			return prevFetch(input, init);
-		}) as typeof globalThis.fetch;
-
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await fillForm();
-		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
-
-		await waitFor(() => {
-			expect(screen.getAllByText(/Failed to send message/i).length).toBeGreaterThanOrEqual(1);
-		});
+		await waitFor(() => expect(screen.getAllByText(/Fixture delivery failed/).length).toBeGreaterThanOrEqual(1));
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
@@ -333,20 +326,10 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
 	});
 
-	it('tracks the calendar social row as a booking click', async () => {
+	it.each(['contact-social-calendar', 'contact-booking-link'])('tracks only booking_click for %s', async (testId) => {
 		render(ContactPage, { props: { contactPage: contactContent } });
-		await clickWithoutNavigating(screen.getAllByTestId('contact-social-calendar')[0]);
-
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
-	});
-
-	it('tracks the form booking escape hatch as a booking click', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await clickWithoutNavigating(screen.getAllByTestId('contact-booking-link')[0]);
-
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
+		await clickWithoutNavigating(screen.getAllByTestId(testId)[0]);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['booking_click']]);
 	});
 
 	it.each([
@@ -357,7 +340,7 @@ describe('ContactPage', () => {
 		const content = {
 			...contactContent,
 			socials: [{ label: { en: icon }, href, icon }],
-		} as typeof contactContent;
+		} satisfies ContactContent;
 
 		render(ContactPage, { props: { contactPage: content } });
 		await clickWithoutNavigating(
@@ -382,7 +365,7 @@ describe('ContactPage', () => {
 		const content = {
 			...contactContent,
 			socials: [{ label: { en: icon }, href, icon }],
-		} as typeof contactContent;
+		} satisfies ContactContent;
 
 		render(ContactPage, { props: { contactPage: content } });
 		await clickWithoutNavigating(
@@ -392,18 +375,7 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
-	it('keeps calendar separate from direct contact', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await clickWithoutNavigating(
-			screen.getAllByTestId('contact-social-calendar')[0],
-		);
-
-		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
-			['booking_click'],
-		]);
-	});
-
-	it('uses CMS success link labels inside the success template', async () => {
+	it('renders supplied success links, tracks once, and clears then resets the captured draft', async () => {
 		const linkedContact = {
 			...contactContent,
 			success: {
@@ -412,14 +384,14 @@ describe('ContactPage', () => {
 				workLinkLabel: { en: 'services' },
 				blogLinkLabel: { en: 'journal' },
 			},
-		} as unknown as typeof contactContent;
+		} satisfies ContactContent;
 
 		render(ContactPage, { props: { contactPage: linkedContact } });
 		await fillForm();
 
 		const submitBtns = screen.getAllByRole('button', { name: /send/i });
 		await submitForm(submitBtns[0]);
-		await new Promise((r) => setTimeout(r, 2000));
+		await waitFor(() => expect(screen.getAllByTestId('contact-success')[0]).toHaveTextContent('journal'), { timeout: 4000 });
 
 		const success = screen.getAllByTestId('contact-success')[0];
 		expect(success.textContent).toContain('services');
@@ -429,24 +401,22 @@ describe('ContactPage', () => {
 		const links = Array.from(success.querySelectorAll('a'));
 		expect(links.map((link) => link.textContent)).toEqual(['services', 'journal']);
 		expect(links.map((link) => link.getAttribute('href'))).toEqual(['/services', '/blog']);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_success']]);
+		const sent = captureEntries();
+		for (const key of ['contact-name', 'contact-email', 'contact-message']) expect(sent[key]).toBe('');
+		expect(sent['contact-success']).toBe(true);
+		await fireEvent.click(screen.getAllByRole('button', { name: 'Send another' })[0]);
+		await tick();
+		const reset = captureEntries();
+		expect(reset['contact-success']).toBe(false);
+		for (const key of ['contact-name', 'contact-email', 'contact-message']) expect(reset[key]).toBe('');
+		for (const field of screen.getAllByRole('textbox')) expect(field).toHaveValue('');
 	});
 
-	// slice-29: the Tech Stack Engine hands off via /contact?bp=… — the decoded
-	// blueprint arrives as initialMessage and pre-fills the message field.
-	it('pre-fills the message field from initialMessage (blueprint handoff)', () => {
-		const prefill =
-			"I'm interested in something like A data dashboard built on SvelteKit, REST API, PostgreSQL, Docker.";
-		render(ContactPage, {
-			props: { contactPage: contactContent, initialMessage: prefill },
-		});
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-		expect(messageInputs[0].value).toBe(prefill);
-	});
-
-	it('message field stays empty without initialMessage', () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-		expect(messageInputs[0].value).toBe('');
+	it.each([undefined, 'A supplied blueprint with several technologies.', 'A short request.'])('pre-fills %s only when provided outside restoration', async (initialMessage) => {
+		render(ContactPage, { props: { contactPage: contactContent, initialMessage } });
+		await tick();
+		for (const field of screen.getAllByLabelText(/^message/i)) expect(field).toHaveValue(initialMessage ?? '');
 	});
 
 	it('displays weather when provided', () => {
@@ -522,22 +492,6 @@ describe('ContactPage', () => {
 // the new locale, restore-beats-?bp=) is covered by the Playwright spec, which
 // drives the real beforeNavigate/afterNavigate orchestrator.
 describe('ContactPage — state across languages (slice-34.3)', () => {
-	beforeEach(() => {
-		// Each persisted() field registers into the module-scoped registry on mount
-		// and unregisters on the testing-library auto-unmount. Snapshot/clear any
-		// stragglers so a leaked key from a prior test can't bleed into capture().
-		applyEntries({}); // no-op, documents intent
-	});
-
-	it('the three inputs carry their stable data-handoff-focus keys', () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const emailInputs = screen.getAllByLabelText(/^email/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-		expect(nameInputs[0].getAttribute('data-handoff-focus')).toBe('contact-name');
-		expect(emailInputs[0].getAttribute('data-handoff-focus')).toBe('contact-email');
-		expect(messageInputs[0].getAttribute('data-handoff-focus')).toBe('contact-message');
-	});
 
 	it('registers name/email/message as session-scoped persisted state', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
@@ -575,48 +529,4 @@ describe('ContactPage — state across languages (slice-34.3)', () => {
 		expect(restored[0].value).toBe('carry me across the switch');
 	});
 
-	it('clears the persisted draft after a successful submit (no resurrection)', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await fillForm();
-
-		const submitBtns = screen.getAllByRole('button', { name: /send/i });
-		await submitForm(submitBtns[0]);
-		// success animation fires (fetch is stubbed to success in setup.dom)
-		await waitFor(() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1));
-
-		// The persisted draft is now empty + the locale-free success flag is set, so
-		// a subsequent switch carries an EMPTY form (the sent text can't come back)
-		// while re-showing the success screen.
-		const snap = captureEntries();
-		expect(snap['contact-name']).toBe('');
-		expect(snap['contact-email']).toBe('');
-		expect(snap['contact-message']).toBe('');
-		expect(snap['contact-success']).toBe(true);
-	});
-
-	it('handleReset clears the persisted draft and the success flag', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		await fillForm();
-		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
-		await waitFor(() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1));
-
-		// "Send another" → reset back to a genuinely empty, non-success state.
-		const resetBtns = screen.getAllByRole('button', { name: new RegExp(contactContent.success.resetLabel.en, 'i') });
-		await fireEvent.click(resetBtns[0]);
-		await tick();
-
-		const snap = captureEntries();
-		expect(snap['contact-success']).toBe(false);
-		expect(snap['contact-message']).toBe('');
-	});
-
-	// slice-29 guard preserved under slice-34.3: the ?bp= prefill still lands when
-	// NOT restoring (localeHandoff.restoring is false outside a switch).
-	it('still pre-fills from initialMessage when not restoring', async () => {
-		const prefill = "I'm interested in something like a SvelteKit dashboard.";
-		render(ContactPage, { props: { contactPage: contactContent, initialMessage: prefill } });
-		await tick();
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-		expect(messageInputs[0].value).toBe(prefill);
-	});
 });

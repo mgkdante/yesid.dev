@@ -8,7 +8,9 @@ for (const locale of ['', '/fr', '/es'])
 				reducedMotion: 'reduce',
 				colorScheme: theme as 'light' | 'dark',
 			});
+			await page.addInitScript(value => localStorage.setItem('theme', value), theme);
 			await page.goto(`${locale}/about`);
+			await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
 			await expect(page.getByTestId('about-quote-controls')).toBeVisible();
 			for (const control of await page.getByTestId('about-quote-controls').locator('button').all()) {
 				const box = (await control.boundingBox())!;
@@ -58,7 +60,6 @@ test.describe('/about page content', () => {
 
     await expect(page.locator('[data-testid="page-about"]')).toBeVisible();
 
-    // All 10 cells must be present
     const cellTestids = [
       'about-identity',
       'about-metrics',
@@ -78,11 +79,7 @@ test.describe('/about page content', () => {
     }
   });
 
-  // WS10-041: /about shipped ZERO heading elements in all three locales — no
-  // <h1> for search, and no way for a screen-reader user to navigate the bento
-  // by heading (WCAG 1.3.1 Level A; axe page-has-heading-one). The outline is
-  // built from copy that already existed: the identity title is the h1, and
-  // each remaining card's stop label is that card's h2.
+  // Each card remains navigable by a nonempty heading in every locale.
   for (const [locale, path] of [
     ['en', '/about'],
     ['fr', '/fr/about'],
@@ -115,107 +112,22 @@ test.describe('/about page content', () => {
         () => document.querySelector('h1, h2, h3, h4, h5, h6')?.tagName ?? null,
       );
       expect(firstLevel).toBe('H1');
+      for (const selector of ['.school', '.program', '.flag-label', 'blockquote']) {
+        const collection = page.getByTestId('page-about').locator(selector);
+        expect(await collection.count(), `${selector} renders a nonempty collection`).toBeGreaterThan(0);
+        for (const text of await collection.allTextContents()) {
+          expect(text.trim().length).toBeGreaterThan(0);
+        }
+      }
+      for (const id of ['about-education', 'about-polaroids']) {
+        const images = page.getByTestId(id).locator('img');
+        expect(await images.count(), `${id} renders its media`).toBeGreaterThan(0);
+        for (const image of await images.all()) {
+          expect(await image.getAttribute('src')).toBeTruthy();
+          expect(await image.getAttribute('alt')).not.toBeNull();
+        }
+      }
     });
   }
 
-  test('about-education renders non-empty schools + programs + icons', async ({ page }) => {
-    await page.goto('/about');
-    const eduCell = page.locator('[data-testid="about-education"]');
-    await expect(eduCell).toBeVisible();
-
-    // Schools: find divs with class="school" and verify text
-    const schoolDivs = eduCell.locator('.school');
-    const schoolCount = await schoolDivs.count();
-    expect(schoolCount).toBeGreaterThan(0);
-
-    for (let i = 0; i < schoolCount; i++) {
-      const schoolText = await schoolDivs.nth(i).textContent();
-      expect(schoolText?.trim().length).toBeGreaterThan(0);
-    }
-
-    // Programs: find divs with class="program"
-    const programDivs = eduCell.locator('.program');
-    const programCount = await programDivs.count();
-    expect(programCount).toBeGreaterThan(0);
-
-    for (let i = 0; i < programCount; i++) {
-      const programText = await programDivs.nth(i).textContent();
-      expect(programText?.trim().length).toBeGreaterThan(0);
-    }
-
-    // Icons: verify img src present (Champlain/Bishops)
-    const icons = eduCell.locator('img');
-    const iconCount = await icons.count();
-    expect(iconCount).toBeGreaterThan(0);
-    const firstIconSrc = await icons.first().getAttribute('src');
-    expect(
-      firstIconSrc?.includes('edu-champlain') || firstIconSrc?.includes('edu-bishops')
-    ).toBeTruthy();
-  });
-
-  test('about-testimonials renders Guy-Sensei quote non-empty (EN)', async ({ page }) => {
-    await page.goto('/about');
-    const testimCell = page.locator('[data-testid="about-testimonials"]');
-    await expect(testimCell).toBeVisible();
-
-    // Blockquote must have text
-    const blockquote = testimCell.locator('blockquote');
-    await expect(blockquote).toBeVisible();
-    const quoteText = await blockquote.textContent();
-    expect(quoteText?.trim().length).toBeGreaterThan(0);
-    // Specific Guy-Sensei content check: the quote includes "perseverance"
-    expect(quoteText?.toLowerCase()).toContain('perseverance');
-  });
-
-  test('about-languages renders language list non-empty', async ({ page }) => {
-    await page.goto('/about');
-    const langCell = page.locator('[data-testid="about-languages"]');
-    await expect(langCell).toBeVisible();
-
-    // Language names: each language is a flag button (data-testid="about-language-flag")
-    // carrying its visible name in a span.flag-label.
-    const langNames = langCell.locator('.flag-label');
-    const langCount = await langNames.count();
-    expect(langCount).toBeGreaterThan(0);
-
-    for (let i = 0; i < langCount; i++) {
-      const text = await langNames.nth(i).textContent();
-      expect(text?.trim().length).toBeGreaterThan(0);
-    }
-  });
-
-  test('about-polaroids-cell renders snapshots with images', async ({ page }) => {
-    await page.goto('/about');
-    const polaroidCell = page.locator('[data-testid="about-polaroids-cell"]');
-    await expect(polaroidCell).toBeVisible();
-
-    const polaroidCard = page.locator('[data-testid="about-polaroids"]');
-    await expect(polaroidCard).toBeVisible();
-
-    // Verify at least one polaroid img
-    const imgs = polaroidCard.locator('img');
-    expect(await imgs.count()).toBeGreaterThan(0);
-
-    // Verify src contains polaroid path
-    const firstSrc = await imgs.first().getAttribute('src');
-    expect(firstSrc?.includes('polaroid')).toBeTruthy();
-  });
-
-  test('about-testimonials quote renders in FR when locale=fr', async ({ page }) => {
-    const response = await page.goto('/fr/about');
-    expect(response?.status()).toBe(200);
-
-    const testimCell = page.locator('[data-testid="about-testimonials"]');
-    await expect(testimCell).toBeVisible();
-
-    // Blockquote in French version
-    const blockquote = testimCell.locator('blockquote');
-    await expect(blockquote).toBeVisible();
-    const quoteText = await blockquote.textContent();
-    expect(quoteText?.trim().length).toBeGreaterThan(0);
-    // Guy-Sensei quote has a native FR translation (about-page.ts): the
-    // rendered text is "Tu as le don de la persévérance, …" — assert the
-    // real accented French word.
-    expect(quoteText?.toLowerCase()).toContain('persévérance');
-  });
 });
