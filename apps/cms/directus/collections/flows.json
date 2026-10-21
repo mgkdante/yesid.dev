@@ -95,7 +95,8 @@
       "scope": [
         "items.update",
         "items.create",
-        "items.delete"
+        "items.delete",
+        "files.upload"
       ],
       "collections": [
         "pages",
