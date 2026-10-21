@@ -56,7 +56,9 @@ export async function fetchBlockSingleton<T = BlockRow>(
 	fields: unknown[] = ['*', { translations: ['*'] }],
 ): Promise<T> {
 	const result = await client.request(
-		readSingleton(collection as never, { fields: fields as never }),
+		readSingleton(collection as never, { fields: (collection.startsWith('block_') ? [...fields, 'status'] : fields) as never }),
 	);
-	return asSingletonRow<T>(result, label);
+	const row = asSingletonRow<T & { status?: string }>(result, label);
+	if (collection.startsWith('block_') && row.status !== 'published') throw new Error(`[${label}] block is not published (${row.status}); publish it before rebuilding.`);
+	return row;
 }
