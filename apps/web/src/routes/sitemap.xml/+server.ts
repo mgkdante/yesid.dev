@@ -7,7 +7,7 @@ export const prerender = false;
 
 import { adapter } from '$lib/adapters';
 import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
-import { isPathPublished } from '$lib/utils/page-registry';
+import { isPathPublished, STATIC_PAGE_PATHS } from '$lib/utils/page-registry';
 import { sitePages } from '$lib/content/site-pages';
 import { groupBlogTranslations } from '$lib/blog/translations';
 import type { BlogPost, Locale, SitePage } from '$lib/types';
@@ -23,16 +23,7 @@ import {
 // `_` prefix required — SvelteKit rejects any non-reserved named exports from
 // +server routes. Underscore-prefixed names are allowed. Imported by the build-
 // time coverage script (Task 11) so expected routes stay in one place.
-export const _STATIC_ROUTES: readonly string[] = [
-	'/',
-	'/about',
-	'/contact',
-	'/services',
-	'/projects',
-	'/blog',
-	'/blog/personal',
-	'/tech-stack',
-];
+export const _STATIC_ROUTES = STATIC_PAGE_PATHS;
 
 // slice-28.1 (audit #19): <lastmod> dropped entirely. It is optional per the
 // sitemaps spec, and the previous value was request-time noise — static

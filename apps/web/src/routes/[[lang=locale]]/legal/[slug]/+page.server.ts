@@ -3,6 +3,7 @@ import { adapter } from '$lib/adapters';
 import { legalEntries } from '$lib/server/prerender-entries';
 
 export const entries = legalEntries;
+export const prerender = entries().length > 0;
 
 export async function load({ params, locals }: { params: { slug: string }; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

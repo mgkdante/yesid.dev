@@ -2,12 +2,19 @@ import { describe, expect, it } from 'vitest';
 import { llmsTxt, llmsFullTxt } from './llms';
 import { blogPosts } from '$lib/content';
 import { canonicalFor } from '$lib/utils/seo-defaults';
+import { sitePages } from '$lib/content/site-pages';
 
 // L2 (launch Phase 4, AEO): the Spanish section is how AI answer engines
 // fielding Spanish queries meet native copy + the /es URLs. Both bodies
 // carry it; the header announces the site trilingual.
 
 describe('llms.txt — Spanish section (L2 Phase 4)', () => {
+	it.each([['llmsTxt', llmsTxt], ['llmsFullTxt', llmsFullTxt]] as const)('%s omits archived section links', (_, render) => {
+		const registry = sitePages.filter((page) => !['/blog', '/projects', '/services', '/contact'].includes(page.path));
+		const body = render(registry);
+		expect(body).not.toMatch(/https:\/\/yesid\.dev\/(?:es\/)?(?:blog|projects|services|contact)(?:\/|\b)/);
+		expect(body).toContain('Available for remote and on-site work');
+	});
 	for (const [name, body] of [
 		['llmsTxt', llmsTxt()],
 		['llmsFullTxt', llmsFullTxt()],

@@ -2,8 +2,10 @@ import { adapter } from '$lib/adapters';
 import { fetchMontrealWeather } from '$lib/utils/weather';
 import { localeFromParams } from '$lib/utils/locale-routing';
 import { localeEntries } from '$lib/server/prerender-entries';
+import type { EntryGenerator } from './$types';
 
-export const entries = localeEntries;
+export const entries = (() => localeEntries('/contact')) satisfies EntryGenerator;
+export const prerender = entries().length > 0;
 
 // slice-18i Phase 7C: thread pageCache ctx so loadPage('contact') memo-ises.
 export async function load({

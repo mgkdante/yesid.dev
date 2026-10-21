@@ -233,7 +233,9 @@ export function getExportSkipReason(env: Env = process.env): string | null {
 			? `VERCEL_ENV=preview branch=${env.VERCEL_GIT_COMMIT_REF}`
 			: `VERCEL_ENV=${env.VERCEL_ENV}`;
 	}
-	if (env.VERCEL_ENV && !envFlag(env.EXPORT_FALLBACKS_LIVE)) return `VERCEL_ENV=${env.VERCEL_ENV}`;
+	if (isTrustedVercelExportTarget(env) && !envFlag(env.EXPORT_FALLBACKS_LIVE)) {
+		throw new Error('Trusted CMS builds require EXPORT_FALLBACKS_LIVE=1; use EXPORT_FALLBACKS_SKIP=1 only for an explicit committed-content build.');
+	}
 	return null;
 }
 
@@ -579,11 +581,8 @@ async function main(): Promise<void> {
 	const dryRun = values['dry-run'] === true;
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 
-	// Hermetic-build escape hatch (slice-28.4, audit #137): CI and Vercel builds
-	// must not reach out to any live CMS. The committed content modules are
-	// already the authoritative source. CLI validation runs first so retired or
-	// unknown flags still fail, then this gate returns before token resolution,
-	// network access, directory creation, or file writes.
+	// Explicit offline builds and untrusted previews skip before authentication.
+	// Trusted targets require live export unless the offline override is deliberate.
 	const skipReason = getExportSkipReason();
 	if (skipReason) {
 		if (process.env.VERCEL_ENV === 'production') {

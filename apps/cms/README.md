@@ -3,8 +3,8 @@
 Directus 12 is the editorial source for [yesid.dev](https://yesid.dev). This
 package owns its schema, deterministic recovery inputs, build-time content
 export, assets, and guarded operator tooling. The public site serves generated
-SvelteKit content and does not read CMS data per request; Directus remains the
-runtime origin for `/assets/*` media.
+SvelteKit content and mirrored static media without per-request CMS reads.
+Directus serves editorial/source media; it is not the public site's media CDN.
 
 Production and development are separate Railway services at
 `https://cms.yesid.dev` and `https://cms.dev.yesid.dev`. Each uses its own Neon
@@ -76,7 +76,8 @@ before any module is emitted. The exporter writes the modules and
 records SHA-256 hashes and whether the source was `live` or `cache`.
 
 Trusted Vercel Production and the `develop` preview use live-or-fail export
-when `EXPORT_FALLBACKS_LIVE=1` is correctly scoped. Other previews skip CMS
+and require `EXPORT_FALLBACKS_LIVE=1` unless an operator explicitly selects
+`EXPORT_FALLBACKS_SKIP=1` for committed-content verification. Other previews skip CMS
 access. Local builds may use the last cache or leave the committed modules
 unchanged, with a visible warning. `bun run ci:content` rejects hash drift,
 unregistered generated files, missing modules, and a committed cache-sourced
@@ -93,6 +94,39 @@ Edit content in the development CMS, regenerate, review the generated diff,
 and then promote through the repository. Do not edit the generated TypeScript
 modules directly.
 
+CMS projects export only when published; draft is not public WIP. Required
+`block_*` singletons must be published or the live build fails before emitting
+new modules. Statusless configuration remains supported. An archived
+`site_pages` section is excluded consistently from route, OG, LLM and sitemap
+generation; a successful rebuild is still required to remove deployed output.
+
+Intentional runtime integrations are server-side weather, Transit KPI polling,
+Web3Forms contact submission and consent-gated analytics. Sitemap, robots and
+redirect handlers read generated content. `.cms-cache.json` is a local exporter
+fallback, not visitor content storage; optional GitHub README reads occur at
+build time. Vite development alone may fall back to CMS assets.
+
+### Image publication requires an explicit mirror release
+
+CMS file metadata events can request a rebuild, but cannot change committed
+image bytes. Register new images through the existing reviewed asset manifest
+and UUID mapping workflow first. For a registered image or same-ID replacement,
+read from the selected CMS into a preview, then write only the reviewed digest:
+
+```bash
+# In apps/cms, with the selected CMS URL and read credential injected securely:
+bun scripts/mirror-asset.ts --path=images/about/headshot.webp
+bun scripts/mirror-asset.ts --path=images/about/headshot.webp --apply-sha256=<reviewed-digest>
+```
+
+This reads one CMS image and changes local source bytes only; it does not upload,
+delete, change permissions or deploy. Review rights/provenance, the image diff
+and mapping, regenerate variants through the validated build, then use the
+separately approved source release. An unregistered UUID, invalid image, format
+mismatch or changed digest fails before replacing the mirror. CMS deletion does
+not erase existing repository/deployment bytes; removal needs its own reviewed
+source release. Preserve trashed provenance pages and potentially unique links.
+
 ### Rebuild state is runtime state
 
 The repository declares `Vercel revalidate on publish` and `Force Rebuild
@@ -105,6 +139,11 @@ Until a fresh authenticated read proves the live rows active, verify content
 delivery with an actual target build and deployed-content receipt. Keep flow
 audit and repair work in the guarded workflow; do not activate or edit live
 flows as part of ordinary content authoring.
+
+The closeout source definition covers create/update/delete for all 70 audited
+exporter dependencies (plus two retained legacy subscriptions). This is offline
+configuration assurance, not evidence of a real CMS-triggered deployment. Live
+activation/flow edits need an exact reviewed plan and separate approval.
 
 ## Locale contract
 
@@ -148,6 +187,11 @@ production without the acknowledgements documented in `.env.example`, keeps
 permissions out by default, and preserves environment-specific settings file
 references. A committed dump, successful diff, or green test does not prove
 the live environment matches it; keep the post-apply readback.
+
+Production pushes selecting policies or permissions are additionally blocked
+while the Ops Bot sync identity points to the quarantined duplicate. Existing
+acknowledgements do not override that hold. Use only separately approved,
+narrowly scoped flow work; do not apply the broad configuration diff.
 
 Permission control follows the same rule. The read-only audit and candidate
 diagnostic own discovery. Targeted reconcilers and the guarded CMS workflow own

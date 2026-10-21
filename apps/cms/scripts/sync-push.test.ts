@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'bun:test';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import {
+	PERMISSIONS_PUSH_ACK,
+	PROD_SCHEMA_PUSH_ACK,
 	PROTECTED_SETTINGS_FILE_FK_FIELDS,
 	extractCollectionsPathOverride,
 	extractDirectusUrlOverride,
@@ -7,6 +12,80 @@ import {
 	refuseUnsupportedConfigPathOverride,
 	syncPushWillTouchSettings,
 } from './sync-push';
+
+function runOfflinePush(args: string[], extraEnv: Record<string, string> = {}) {
+	const directory = mkdtempSync(join(tmpdir(), 'sync-push-guard-'));
+	const preload = join(directory, 'offline.ts');
+	writeFileSync(preload, `
+		globalThis.fetch = async () => { throw new Error('NETWORK_BLOCKED'); };
+		Bun.spawn = (options) => {
+			console.log(JSON.stringify(options.cmd.slice(2)));
+			return { exited: Promise.resolve(0) };
+		};
+	`);
+	try {
+		const result = Bun.spawnSync({
+			cmd: [process.execPath, '--preload', preload, resolve(import.meta.dir, 'sync-push.ts'), ...args],
+			env: {
+				PATH: process.env.PATH ?? '',
+				SystemRoot: process.env.SystemRoot ?? '',
+				DIRECTUS_URL: 'https://cms.yesid.dev',
+				DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH: '1',
+				DIRECTUS_SYNC_PUSH_ACK: PROD_SCHEMA_PUSH_ACK,
+				...extraEnv,
+			},
+			stdin: 'ignore', stdout: 'pipe', stderr: 'pipe',
+		});
+		return {
+			exitCode: result.exitCode,
+			stdout: new TextDecoder().decode(result.stdout),
+			stderr: new TextDecoder().decode(result.stderr),
+		};
+	} finally {
+		rmSync(directory, { recursive: true, force: true });
+	}
+}
+
+describe('production policy quarantine preflight', () => {
+	it.each([
+		['default push', [], {}],
+		['policy-only push', ['--only-collections', 'policies'], {}],
+		['last compact selector selecting policies', ['-oflows,operations', '-dfopolicies'], {}],
+		['last exclusion retaining policies', ['-xpolicies,permissions,settings', '-xsettings'], {}],
+		['production CLI override of a dev environment', ['-uhttps://CMS.YESID.DEV.:443/', '-opolicies'], {
+			DIRECTUS_URL: 'https://cms.dev.yesid.dev',
+		}],
+		['permissions push with both acknowledgements', ['--only-collections', 'permissions'], {
+			DIRECTUS_SYNC_INCLUDE_PERMISSIONS: '1',
+			DIRECTUS_SYNC_PERMISSIONS_ACK: PERMISSIONS_PUSH_ACK,
+		}],
+	] as const)('refuses %s before authentication or directus-sync execution', (_name, args, env) => {
+		const result = runOfflinePush([...args], env);
+		expect(result.exitCode).toBe(1);
+		expect(result.stderr).toMatch(/quarantined.*policy|policy.*quarantin/i);
+		expect(result.stderr).not.toContain('NETWORK_BLOCKED');
+		expect(result.stderr).not.toContain('cannot authenticate');
+		expect(result.stdout).toBe('');
+	});
+
+	it.each([
+		[['--only-collections', 'flows,operations'], {}],
+		[['-opolicies', '-oflows,operations'], {}],
+		[['--exclude-collections', 'policies,permissions,settings'], {}],
+		[['--only-collections', 'policies'], { DIRECTUS_URL: 'https://cms.dev.yesid.dev' }],
+	] as const)('preserves scoped or development push %j without reaching the network', (args, env) => {
+		const result = runOfflinePush([...args], env);
+		expect(result.exitCode).toBe(0);
+		expect(result.stderr).toBe('');
+		expect(JSON.parse(result.stdout)).toEqual(['push', ...args]);
+	});
+
+	it('preserves snapshot-only production pushes', () => {
+		const result = runOfflinePush(['--no-collections']);
+		expect(result.exitCode).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(['push', '--no-collections', '--exclude-collections', 'permissions']);
+	});
+});
 
 describe('mergeProtectedSettingsFields (slice-18k #120 per-env file FK auto-merge)', () => {
 	const baseRow = {

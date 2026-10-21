@@ -20,6 +20,7 @@ import { delocalizePath } from '$lib/utils/locale-routing';
 import { PUBLISHED_LOCALES, canonicalFor } from '$lib/utils/seo-defaults';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
 import { sitemapCoverage } from '@yesid/gates';
+import { sitePages } from '$lib/content/site-pages';
 
 const ROUTES_DIR = 'src/routes';
 
@@ -82,7 +83,12 @@ async function expandDynamic(route: string): Promise<string[]> {
 }
 
 describe('sitemap coverage gate', () => {
-	it('every declared public route appears in the sitemap, and vice versa', async () => {
+	it.each([
+		['published registry', sitePages],
+		['archived freeform', sitePages.filter((page) => page.path !== '/about')],
+		['archived blog', sitePages.filter((page) => page.path !== '/blog')],
+		['archived personal listing', sitePages.filter((page) => page.path !== '/blog/personal')],
+	] as const)('every declared public route matches the sitemap with %s', async (_, pages) => {
 		const declared = collectPageRoutes(ROUTES_DIR);
 
 		const expected = new Set<string>();
@@ -92,11 +98,11 @@ describe('sitemap coverage gate', () => {
 			// Registry gate (slice-26.1): routes whose site_pages entry is absent
 			// are 404'd by +layout.server.ts and must NOT appear in the sitemap.
 			for (const p of paths) {
-				if (isPathPublished(p)) expected.add(p);
+				if (isPathPublished(p, pages)) expected.add(p);
 			}
 		}
 
-		const entries = await _buildSitemapEntries();
+		const entries = await _buildSitemapEntries(pages);
 		const actual = new Set<string>();
 		for (const entry of entries) {
 			const m = entry.match(/<loc>([^<]+)<\/loc>/);
@@ -127,6 +133,7 @@ describe('sitemap coverage gate', () => {
 			}
 		}
 		for (const post of posts) {
+			if (!isPathPublished(`/blog/${post.slug}`, pages)) continue;
 			expect(rawActual, `missing ${post.lang} blog row ${post.slug}`).toContain(
 				canonicalFor(`/blog/${post.slug}`, post.lang),
 			);

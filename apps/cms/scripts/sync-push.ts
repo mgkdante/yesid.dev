@@ -243,18 +243,36 @@ export function refuseUnsupportedConfigPathOverride(args: readonly string[]): vo
  *  `settings` (not `directus_settings`).
  */
 export function syncPushWillTouchSettings(args: readonly string[]): boolean {
+	return syncPushWillTouchCollection(args, 'settings');
+}
+
+function syncPushWillTouchCollection(args: readonly string[], collection: string): boolean {
 	if (args.includes('--no-collections')) {
 		return false;
 	}
 	const onlyCollections = readLastCsvOption(args, ['--only-collections', '-o']);
 	const excludeCollections = readLastCsvOption(args, ['--exclude-collections', '-x']);
-	if (excludeCollections.includes('settings')) {
+	if (excludeCollections.includes(collection)) {
 		return false;
 	}
 	if (onlyCollections.length > 0) {
-		return onlyCollections.includes('settings');
+		return onlyCollections.includes(collection);
 	}
 	return true;
+}
+
+function refuseProductionPolicySync(directusUrl: string, args: readonly string[]): void {
+	if (new URL(directusUrl).hostname.replace(/\.$/, '') !== 'cms.yesid.dev') return;
+	// The released Ops Bot sync identity resolves to the quarantined duplicate.
+	// A push acknowledgement cannot authorize undoing that separation or adding grants.
+	if (['policies', 'permissions'].some((collection) => syncPushWillTouchCollection(args, collection))) {
+		throw new Error(
+			'[sync-push] Refusing production policy/permission sync:push: the Ops Bot sync identity ' +
+				'targets a quarantined policy. Narrow the push away from policies and permissions ' +
+				'or use a separately reviewed targeted identity/permission repair. Existing push ' +
+				'acknowledgements do not authorize undoing quarantine or repopulating grants.',
+		);
+	}
 }
 
 interface SettingsMergeContext {
@@ -380,6 +398,7 @@ async function main(): Promise<void> {
 	// directus-sync itself uses. The preflight MUST hit the same URL the push
 	// will target — otherwise we'd merge wrong-env values into settings.json.
 	const directusUrl = resolveDirectusUrl(finalArgs, process.env.DIRECTUS_URL);
+	refuseProductionPolicySync(directusUrl, finalArgs);
 	const mergeContext = await preMergeProtectedSettings(cmsRoot, directusUrl, finalArgs);
 
 	let exitCode = 0;

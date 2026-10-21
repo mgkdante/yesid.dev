@@ -13,7 +13,7 @@ const routeMocks = vi.hoisted(() => ({
 
 vi.mock('$lib/adapters', () => ({ adapter: routeMocks.adapter }));
 vi.mock('$lib/utils', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
-vi.mock('$lib/server/prerender-entries', () => ({ projectEntries: [] }));
+vi.mock('$lib/server/prerender-entries', () => ({ projectEntries: () => [] }));
 vi.mock('$lib/server/code-highlights', () => ({ collectCodeHighlights: () => ({}) }));
 
 import { load } from './+page.server';
