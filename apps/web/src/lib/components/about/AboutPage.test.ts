@@ -73,7 +73,7 @@ const fixture = {
 	],
 	testimonials: [
 		{
-			quote: { en: 'First supplied quote.' },
+			quote: { en: 'First supplied quote.', fr: 'Une citation témoin.', es: 'Una cita de prueba.' },
 			author: 'First author',
 			role: { en: 'Builder' },
 			company: '',
@@ -109,10 +109,10 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('about-polaroids').querySelector('img')).toBeNull();
 		expect(screen.queryByTestId('about-polaroid-counter')).toBeNull();
 	});
-	for (const [locale, title, biography] of [
-		['en', 'A fixture title', 'A short biography.'],
-		['fr', 'Un titre témoin', 'Une biographie plus longue.'],
-		['es', 'Un título de prueba', 'Una biografía diferente.'],
+	for (const [locale, title, biography, quote] of [
+		['en', 'A fixture title', 'A short biography.', 'First supplied quote.'],
+		['fr', 'Un titre témoin', 'Une biographie plus longue.', 'Une citation témoin.'],
+		['es', 'Un título de prueba', 'Una biografía diferente.', 'Una cita de prueba.'],
 	])
 		it(`renders supplied content with a semantic outline in ${locale}`, () => {
 			const { container } = render(AboutPage, {
@@ -121,6 +121,7 @@ describe('AboutPage', () => {
 			});
 			expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument();
 			expect(screen.getByTestId('about-identity')).toHaveTextContent(biography);
+			expect(screen.getByTestId('about-testimonials')).toHaveTextContent(quote);
 			const headings = [...container.querySelectorAll('h1,h2,h3,h4,h5,h6')];
 			expect(headings[0].tagName).toBe('H1');
 			expect(headings.filter((el) => el.tagName === 'H1')).toHaveLength(1);
@@ -146,6 +147,11 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('about-headshot')).toHaveAttribute('height', '800');
 		expect(screen.getByTestId('about-education')).toHaveTextContent('Fixture school');
 		expect(screen.getByTestId('about-education')).toHaveTextContent('Fixture program');
+		expect(screen.getByTestId('about-education').querySelector('img')).toHaveAttribute('src', '/images/about/edu-bishops.svg');
+		expect(screen.getByTestId('about-education').querySelector('img')).toHaveAttribute('alt', '');
+		expect(screen.getByRole('img', { name: 'First scene' })).toHaveAttribute('src', '/one.svg');
+		expect(screen.getByTestId('about-polaroids')).toHaveTextContent('First caption');
+		expect([...screen.getByTestId('about-languages').querySelectorAll('.flag-label')].map(el => el.textContent)).toEqual(['First language', 'Second language']);
 		const images = screen.getAllByTestId('about-language-image');
 		expect(images.map((el) => el.getAttribute('src'))).toEqual([
 			'/fixture.svg',

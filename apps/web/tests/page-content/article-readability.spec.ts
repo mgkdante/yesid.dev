@@ -5,13 +5,15 @@ import {
   projectDetailLinks,
 } from "../_support/helpers";
 
+for (const reducedMotion of ["reduce", "no-preference"] as const)
 for (const theme of ["light", "dark"] as const) {
-  for (const width of [375, 1366]) {
+  for (const width of [375, 768, 1366]) {
     for (const kind of ["blog", "projects"] as const) {
-      test(`${kind} article reading contrast and scale — ${theme} ${width}px`, async ({
+      test(`${kind} article reading contrast and scale — ${theme} ${width}px ${reducedMotion}`, async ({
         page,
       }) => {
         await page.setViewportSize({ width, height: 600 });
+        await page.emulateMedia({ reducedMotion });
         await page.addInitScript(
           (theme) => localStorage.setItem("theme", theme),
           theme,
@@ -97,6 +99,24 @@ for (const theme of ["light", "dark"] as const) {
             expect.soft(sample.left).toBeGreaterThanOrEqual(0);
             expect.soft(sample.right).toBeLessThanOrEqual(width);
           }
+        }
+        await body.evaluate((element) => {
+          for (const level of [2, 3, 4]) {
+            const heading = document.createElement(`h${level}`);
+            heading.dataset.permalinkFixture = String(level);
+            heading.innerHTML = `Fixture heading <a class="heading-anchor" href="#fixture-${level}">#</a>`;
+            element.append(heading);
+          }
+        });
+        for (const level of [2, 3, 4]) {
+          const heading = body.locator(`[data-permalink-fixture="${level}"]`);
+          const link = heading.locator("a");
+          await link.press("Shift");
+          await heading.hover();
+          await expect(link).toBeFocused();
+          expect(await link.evaluate(el => el.matches(":focus-visible") && el.parentElement!.matches(":hover"))).toBe(true);
+          await expect(link).toHaveCSS("opacity", "1");
+          expect(await link.evaluate(el => getComputedStyle(el).outlineStyle)).not.toBe("none");
         }
       });
     }
