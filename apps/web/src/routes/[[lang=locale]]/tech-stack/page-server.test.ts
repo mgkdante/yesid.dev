@@ -8,7 +8,7 @@ const routeMocks = vi.hoisted(() => ({
 }));
 
 vi.mock('$lib/adapters', () => ({ adapter: routeMocks.adapter }));
-vi.mock('$lib/server/prerender-entries', () => ({ localeEntries: [] }));
+vi.mock('$lib/server/prerender-entries', () => ({ localeEntries: () => [] }));
 
 import { load } from './+page.server';
 

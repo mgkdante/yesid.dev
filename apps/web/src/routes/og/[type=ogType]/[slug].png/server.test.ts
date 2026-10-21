@@ -23,6 +23,7 @@ import { blogPosts } from '$lib/content/blog';
 import { projects } from '$lib/content/projects';
 import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 import { entries, GET } from './+server';
+import * as registry from '$lib/utils/page-registry';
 
 function makeEvent(params: { type: string; slug: string }): RequestEvent {
   const url = new URL(`http://localhost/og/${params.type}/${params.slug}.png`);
@@ -31,8 +32,16 @@ function makeEvent(params: { type: string; slug: string }): RequestEvent {
 
 describe('GET /og/[type]/[slug].png', () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     loadOgTitleMock.mockReset();
     renderOgPngMock.mockReset();
+  });
+
+  it('returns 404 for an archived section even when its generated row remains', async () => {
+    vi.spyOn(registry, 'isPathPublished').mockReturnValue(false);
+    loadOgTitleMock.mockResolvedValue({ eyebrow: 'BLOG', title: 'Retained archived article' });
+    renderOgPngMock.mockResolvedValue(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+    await expect(GET(makeEvent({ type: 'blog', slug: 'retained-article' }))).rejects.toMatchObject({ status: 404 });
   });
 
   it('prerenders the exact raw blog and public-project path matrix', () => {

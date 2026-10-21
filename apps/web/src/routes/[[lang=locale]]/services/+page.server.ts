@@ -4,9 +4,11 @@
 import { fetchServiceSvgContents } from '$lib/utils';
 import { adapter } from '$lib/adapters';
 import { localeEntries } from '$lib/server/prerender-entries';
+import type { EntryGenerator } from './$types';
 import type { Project } from '$lib/types';
 
-export const entries = localeEntries;
+export const entries = (() => localeEntries('/services')) satisfies EntryGenerator;
+export const prerender = entries().length > 0;
 
 export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

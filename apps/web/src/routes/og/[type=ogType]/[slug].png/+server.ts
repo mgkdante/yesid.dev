@@ -1,4 +1,4 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import { error, type RequestHandler } from '@sveltejs/kit';
 import { loadOgTitle, type OgType } from '$lib/og/load-title';
 import { ogSlugParam, parseOgSlugParam } from '$lib/og/og-path';
 import { buildOgTree } from '$lib/og/template';
@@ -6,11 +6,12 @@ import { renderOgPng } from '$lib/og/render';
 import { getOgFonts } from '$lib/og/fonts';
 import { ogBlogRows, ogProjectSlugs } from '$lib/server/prerender-entries';
 import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+import { isPathPublished } from '$lib/utils/page-registry';
 
 // Prerender every known blog/project card into deployment-static PNGs. entries()
 // is exhaustive through the shared complete-blog and non-private-project
 // helpers; vercel.json owns the narrow fallback for unknown card paths.
-export const prerender = true;
+export const prerender = entries().length > 0;
 
 export function entries(): Array<{ type: OgType; slug: string }> {
 	return [
@@ -48,6 +49,9 @@ export const GET: RequestHandler = async (event) => {
     throw new Error(`[og] invalid slug parameter for ${type}: "${slug}"`);
   }
   const { baseSlug, locale } = parsed;
+  if (!isPathPublished(`/${type === 'project' ? 'projects' : 'blog'}/${baseSlug}`)) {
+    error(404, 'Not found');
+  }
 
   const titleResult = await loadOgTitle(type, baseSlug, locale);
   if (!titleResult) {
