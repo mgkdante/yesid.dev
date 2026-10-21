@@ -3,8 +3,8 @@
  * + projects_services M2M. This module owns the build-time Project projection.
  *
  * Directus status (`draft`/`published`/`archived`) maps to legacy
- * `public`/`private`/`wip` per 18e spec — this fetcher is the only place the
- * mapping happens; consumer code stays on the legacy enum.
+ * `public`/`private`. CMS drafts are unpublished; the consumer's legacy WIP
+ * presentation is not a publication state.
  */
 
 import { readItems } from '@directus/sdk';
@@ -111,7 +111,7 @@ export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): Proje
 		case 'published':
 			return 'public';
 		case 'draft':
-			return 'wip';
+			return 'private';
 		case 'archived':
 			return 'private';
 	}
@@ -171,6 +171,7 @@ export function toProject(row: DirectusProject): Project {
 export async function fetchProjects({ client }: FetcherContext): Promise<readonly Project[]> {
 	const rows = (await client.request(
 		readItems('projects', {
+			filter: { status: { _eq: 'published' } },
 			fields: [
 				'*',
 				{ translations: ['*'] } as unknown as string,
@@ -184,5 +185,5 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 		}),
 	)) as unknown as DirectusProject[];
 
-	return z.array(ProjectSchema).parse(rows.map(toProject));
+	return z.array(ProjectSchema).parse(rows.filter(row => row.status === 'published').map(toProject));
 }

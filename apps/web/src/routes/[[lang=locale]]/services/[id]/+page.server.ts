@@ -8,6 +8,7 @@ import { adapter } from '$lib/adapters';
 import { serviceEntries } from '$lib/server/prerender-entries';
 
 export const entries = serviceEntries;
+export const prerender = entries().length > 0;
 
 export async function load({ params, fetch, locals }: { params: { id: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

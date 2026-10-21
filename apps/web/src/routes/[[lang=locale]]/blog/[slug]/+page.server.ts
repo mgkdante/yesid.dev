@@ -7,6 +7,7 @@ import { getBlogPostsForLocale } from '$lib/blog/translations';
 import { localeFromParams } from '$lib/utils/locale-routing';
 
 export const entries = blogEntries;
+export const prerender = entries().length > 0;
 
 export async function load({
 	params,

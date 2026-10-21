@@ -8,8 +8,10 @@
 
 import { adapter } from '$lib/adapters';
 import { localeEntries } from '$lib/server/prerender-entries';
+import type { EntryGenerator } from './$types';
 
-export const entries = localeEntries;
+export const entries = (() => localeEntries('/tech-stack')) satisfies EntryGenerator;
+export const prerender = entries().length > 0;
 
 export async function load({ locals }: { locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };

@@ -13,6 +13,7 @@ import { collectCodeHighlights } from '$lib/server/code-highlights';
 import type { Service } from '$lib/types';
 
 export const entries = projectEntries;
+export const prerender = entries().length > 0;
 
 export async function load({ params, fetch, locals, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; locals: App.Locals; url: URL }) {
 	const ctx = { pageCache: locals.pageCache };
