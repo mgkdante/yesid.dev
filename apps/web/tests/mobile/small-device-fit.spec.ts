@@ -71,7 +71,9 @@ test.describe('small-device fit', () => {
 		await page.goto('/services');
 		await page.waitForLoadState('load');
 		const pb = await pillBottom(page);
-		const firstHeading = page.locator('main [role="tablist"], main h1').first();
+		// The service h1 is sr-only; its one-pixel clipping box is not the visible control.
+		const firstHeading = page.locator('main [role="tablist"]');
+		await expect(firstHeading).toBeVisible();
 		const top = (await firstHeading.boundingBox())!.y;
 		expect(top, 'first services heading top vs pill bottom').toBeGreaterThanOrEqual(pb);
 	});

@@ -4,7 +4,6 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { fillTemplate } from '$lib/utils/labels';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
@@ -61,12 +60,12 @@
 </script>
 
 <div class="group h-full" use:cursorGlow>
-	<Card class="h-[19rem] p-3 sm:h-full sm:min-h-[19rem]" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
-		<div class="relative flex h-full flex-col">
-			<StopLabel {stop} {label} />
+	<Card class="h-full min-h-[19rem] p-3" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
+		<div class="relative flex flex-col">
+			<StopLabel {stop} {label} as="h2" />
 
-			<div class="min-h-0 flex-1 overflow-y-auto pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite" use:scrollChain>
-				<div class="flex min-h-full flex-col justify-center">
+			<div class="pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite">
+				<div class="flex flex-col justify-center">
 					<div class="font-heading text-7xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 						&ldquo;
 					</div>
@@ -101,7 +100,7 @@
 					>
 						‹
 					</button>
-					<div class="flex items-center gap-2" role="tablist" aria-label={tabNavAria}>
+					<div class="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-1" role="tablist" aria-label={tabNavAria}>
 						{#each testimonials as _testimonial, i}
 							<button
 								type="button"
@@ -132,8 +131,9 @@
 <style>
 	.quote-arrow {
 		display: grid;
-		width: 2rem;
-		height: 2rem;
+		width: 2.75rem;
+		height: 2.75rem;
+		flex-shrink: 0;
 		place-items: center;
 		border: 1px solid var(--border-subtle);
 		border-radius: var(--radius-pill);
@@ -157,18 +157,28 @@
 	}
 
 	.quote-dot {
-		width: 0.55rem;
-		height: 0.55rem;
-		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-		border-radius: var(--radius-pill);
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border: 0;
 		background: transparent;
 		cursor: pointer;
+	}
+
+	.quote-dot::after {
+		content: '';
+		width: 0.55rem;
+		height: 0.55rem;
+		border: 1px solid var(--primary);
+		border-radius: var(--radius-pill);
+		background: transparent;
 		transition:
 			background var(--duration-fast) var(--ease-default),
 			transform var(--duration-fast) var(--ease-default);
 	}
 
-	.quote-dot-active {
+	.quote-dot-active::after {
 		background: var(--primary);
 		transform: scale(1.25);
 	}

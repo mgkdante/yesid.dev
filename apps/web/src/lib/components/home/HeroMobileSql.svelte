@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
-	import type { HeroData } from '$lib/content';
+	import type { HeroData } from '$lib/live';
 	let {
 		heroData,
 		sqlPrompt,

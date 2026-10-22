@@ -1,9 +1,9 @@
 // Hero-data schemas — runtime mirror of HeroMetric, HeroQueryRow, HeroData
-// from $lib/content/hero-data. The metric `key` is a string-literal union
+// from $lib/live. The metric `key` is a string-literal union
 // ('vehicles' | 'delay' | 'routes') mirrored as z.enum.
 
 import { z } from 'zod';
-import type { HeroMetric, HeroQueryRow, HeroData } from '$lib/content/hero-data';
+import type { HeroMetric, HeroQueryRow, HeroData } from '$lib/live';
 import type { AssertSchemaMatches } from '$lib/types';
 
 export const HeroMetricKeySchema = z.enum(['vehicles', 'delay', 'routes']);

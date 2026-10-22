@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { z } from 'zod';
+import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 /**
  * Schema for fixtures/assets-id-map.json — emitted by migrate-assets.ts and
@@ -17,8 +18,7 @@ const AssetsIdMapSchema = z.record(
 );
 
 function loadIdMap(): Record<string, string> {
-	const path = joinPath(import.meta.dir, '..', 'fixtures', 'assets-id-map.json');
-	return JSON.parse(readFileSync(path, 'utf8'));
+	return readCmsFixtureJson('assets-id-map.json');
 }
 
 function loadSharedIdMap(): Record<string, string> {
@@ -40,9 +40,9 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
 	});
 
-	it('contains exactly 28 entries, including brand assets, language flags and og route cards', () => {
+	it('contains exactly 49 entries, including the 21 portfolio screenshots', () => {
 		const m = loadIdMap();
-		expect(Object.keys(m).length).toBe(28);
+		expect(Object.keys(m).length).toBe(49);
 	});
 
 	it('keys are sorted alphabetically (diff-friendly)', () => {

@@ -125,6 +125,7 @@ const PHYSICAL_ROOTS = [
   "apps/web/static/",
   "apps/web/src/lib/assets/",
   "apps/web/src/lib/og/fonts/",
+  "apps/web/vendor/fonts/",
   "apps/cms/brand/",
   "apps/cms/icons/",
   "gbp-assets/",
@@ -151,6 +152,11 @@ const DIRECTUS_FILE_FIELDS = new Set([
   "og_image",
   "poster",
   "thumbnail",
+]);
+const VERCEL_ROUTE_SOURCE_COLLECTIONS = new Set([
+  "headers",
+  "redirects",
+  "rewrites",
 ]);
 
 function compareOrdinal(left: string, right: string): number {
@@ -238,7 +244,9 @@ function assetOrigin(repoPath: string): RepositoryAsset["origin"] {
     /\.w\d+\.webp$/i.test(repoPath) ||
     repoPath.startsWith("apps/web/static/og/") ||
     repoPath === "apps/web/static/brand/mark-512.png" ||
-    repoPath === "apps/web/static/svg/graffiti/the-end.svg"
+    /^apps\/web\/static\/svg\/graffiti\/the-end\.(?:en|fr|es)\.svg$/.test(
+      repoPath,
+    )
   ) {
     return "generated-file";
   }
@@ -1510,19 +1518,31 @@ export async function scanRepository(
       addFinding("unsupported-pattern", repoPath, null, "invalid-json");
       return;
     }
-    function walk(value: unknown, field: string | null): void {
+    function walk(
+      value: unknown,
+      field: string | null,
+      jsonPath: readonly string[],
+    ): void {
       if (Array.isArray(value)) {
-        for (const item of value) walk(item, field);
+        for (const item of value) walk(item, field, jsonPath);
         return;
       }
       if (value && typeof value === "object") {
         for (const [key, child] of Object.entries(
           value as Record<string, unknown>,
         ).sort(([a], [b]) => compareOrdinal(a, b)))
-          walk(child, key);
+          walk(child, key, [...jsonPath, key]);
         return;
       }
       if (typeof value !== "string") return;
+      if (
+        repoPath === "apps/web/vercel.json" &&
+        field === "source" &&
+        jsonPath.length === 2 &&
+        VERCEL_ROUTE_SOURCE_COLLECTIONS.has(jsonPath[0]!)
+      ) {
+        return;
+      }
       const sourceLine = lineAt(
         source,
         Math.max(0, source.indexOf(JSON.stringify(value))),
@@ -1552,7 +1572,7 @@ export async function scanRepository(
         });
       }
     }
-    walk(parsed, null);
+    walk(parsed, null, []);
   }
 
   await addGeneratedProvenance();
@@ -1597,7 +1617,8 @@ export async function scanRepository(
         if (!outputAsset) continue;
         generatedFrom.push({
           outputAssetId: outputAsset.id,
-          inputRef: currentOriginal,
+          inputRef:
+            resolveLiteralPath(variantsPath, currentOriginal) ?? currentOriginal,
           generator: "apps/cms/scripts/lib/media-variants.ts",
           relation: "derived-from",
         });
@@ -1696,14 +1717,15 @@ export async function scanRepository(
       });
     }
 
-    const graffiti = assetsByPath.get(
-      "apps/web/static/svg/graffiti/the-end.svg",
-    )?.[0];
-    if (graffiti) {
+    for (const locale of ["en", "fr", "es"] as const) {
+      const graffiti = assetsByPath.get(
+        `apps/web/static/svg/graffiti/the-end.${locale}.svg`,
+      )?.[0];
+      if (!graffiti) continue;
       generatedFrom.push({
         outputAssetId: graffiti.id,
-        inputRef: "apps/web/scripts/compose-graffiti.py#letters",
-        generator: "apps/web/scripts/compose-graffiti.py",
+        inputRef: "apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf",
+        generator: "apps/web/scripts/build-graffiti.mjs",
         relation: "generated-by",
       });
     }
@@ -1743,16 +1765,20 @@ export async function scanRepository(
           bytes: null,
           inlineSvgOrdinal: null,
         });
+        // Curated provenance inputs (not a transitive closure).
         const runtimeInputs = [
           runtimeRoute,
           "apps/web/src/lib/og/template.ts",
           "apps/web/src/lib/og/render.ts",
           "apps/web/src/lib/og/fonts.ts",
           "apps/web/src/lib/og/load-title.ts",
+          "apps/web/src/lib/og/og-path.ts",
           "apps/web/src/lib/og/fonts/Inter-Black.ttf",
           "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
           "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
-          `apps/web/src/lib/repositories/${type}.ts`,
+          "apps/web/src/lib/adapters/index.ts",
+          "apps/web/src/lib/adapters/static.ts",
+          `apps/web/src/lib/${type === "blog" ? "blog" : "projects"}/static-helpers.ts`,
           `apps/web/src/lib/content/${type === "blog" ? "blog.ts" : "projects.ts"}`,
         ];
         for (const inputRef of runtimeInputs) {

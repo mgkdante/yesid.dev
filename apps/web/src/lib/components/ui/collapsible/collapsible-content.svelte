@@ -1,4 +1,4 @@
-<!-- Kept app-side per vendor/design/ui/PARITY-NOTES.md: package Content changes mounting, DOM, and animation. -->
+<!-- Product invariant: transparent content semantics stay local; see vendor/design/ui/README.md#collapsible. -->
 <script lang="ts">
 	import { Collapsible as CollapsiblePrimitive } from "bits-ui";
 

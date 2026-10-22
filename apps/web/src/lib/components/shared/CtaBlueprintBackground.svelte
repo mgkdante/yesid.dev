@@ -183,7 +183,7 @@
 		opacity: 0.16;
 	}
 
-	@media (max-width: 1023px) {
+	@media (--desktop-max) {
 		:global(.cta-sheet--bridge) {
 			top: -2%;
 			left: -8%;
@@ -269,7 +269,7 @@
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		:global(.cta-sheet--catenary),
 		:global(.cta-sheet--geology),
 		:global(.cta-sheet--signal),

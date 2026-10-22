@@ -9,7 +9,7 @@
 
 import { readItems } from '@directus/sdk';
 import { LegalPageSchema, type LegalPage } from '@repo/shared';
-import { toLocalizedString } from '../locale';
+import { toLocalizedFields } from '../locale';
 import type { FetcherContext } from './types';
 
 export interface DirectusLegalPageTranslation {
@@ -39,7 +39,7 @@ export function toLegalPage(raw: DirectusLegalPageRow): LegalPage {
 	}
 	return {
 		slug: raw.id,
-		title: toLocalizedString(tr, 'title'),
+		...toLocalizedFields(tr, ['title']),
 		body: body as LegalPage['body'],
 	};
 }

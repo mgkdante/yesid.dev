@@ -3,7 +3,7 @@
 // engine's always-on teaching card.
 
 import { describe, it, expect } from 'vitest';
-import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
+import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 import type { TechStackItem } from '$lib/types';
 import {
 	AVAILABILITY_LINE,

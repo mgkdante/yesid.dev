@@ -7,7 +7,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -23,6 +23,7 @@
 	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
 	import ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte';
 	import type { WeatherData } from '$lib/utils/weather';
+	import { fetchFreshWeather } from '$lib/utils/weather-refresh';
 	import { escapeHtml } from '$lib/utils/code-fences';
 	import { isDirectContactHref } from '$lib/utils/high-intent-links';
 	import { pressBounce } from '$lib/motion/actions';
@@ -50,28 +51,8 @@
 	const workLinkLabel = $derived(resolveLocale(contactPage.success.workLinkLabel, locale));
 	const blogLinkLabel = $derived(resolveLocale(contactPage.success.blogLinkLabel, locale));
 
-	// --- Weather freshness (slice-28.1, audit #20/#122) ---
-	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
-	// day old). Render it immediately, then refresh from /api/weather after
-	// hydration. Any failure is a graceful no-op — the baked value stays.
 	let freshWeather = $state<WeatherData | null>(null);
 	const currentWeather = $derived(freshWeather ?? weather);
-
-	async function refreshWeather() {
-		try {
-			// Pass the active locale so OpenWeather localizes `condition` (fr/es),
-			// matching AboutWeather. EN omits the param, so its /api/weather URL
-			// (and CDN cache key) stays byte-identical. Without this, /fr re-fetched
-			// English weather after hydration, overwriting the correct SSR-baked value.
-			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
-			const res = await fetch(url);
-			if (!res.ok) return;
-			const data = (await res.json()) as WeatherData | null;
-			if (data && typeof data.temp === 'number') freshWeather = data;
-		} catch {
-			// Keep the SSR-baked value.
-		}
-	}
 
 	// --- Local time (Montreal) ---
 	let localTime = $state('');
@@ -126,7 +107,7 @@
 		hydrated = true;
 		updateTime();
 		timeInterval = setInterval(updateTime, 60_000);
-		void refreshWeather();
+		void fetchFreshWeather(locale).then((w) => { if (w) freshWeather = w; });
 		recomputeEdgeFit();
 		document.fonts?.ready.then(() => recomputeEdgeFit()).catch(() => {});
 		window.addEventListener('resize', onEdgeResize);
@@ -149,6 +130,11 @@
 	const name = persisted<string>('contact-name', '');
 	const email = persisted<string>('contact-email', '');
 	const message = persisted<string>('contact-message', '');
+	const fields = [
+		{ key: 'name', state: name },
+		{ key: 'email', state: email },
+		{ key: 'message', state: message },
+	] as const;
 
 	// slice-34.3: seed the message from a ?bp= blueprint handoff, but never on a
 	// switch-restore — a restore must win over the blueprint prefill. The
@@ -355,13 +341,13 @@
 
 		<!-- Desktop: Resizable split -->
 		<div class="desktop-terminals">
-			<ResizablePaneGroup direction="horizontal" class="h-full rounded-lg">
+			<ResizablePaneGroup direction="horizontal" class="h-auto rounded-lg">
 				<ResizablePane defaultSize={33} minSize={20}>
 					{@render infoTerminal()}
 				</ResizablePane>
 				<ResizableHandle withHandle class="contact-resize-handle" />
 				<ResizablePane defaultSize={67} minSize={40}>
-					{@render formTerminal()}
+					{@render formTerminal('desktop')}
 				</ResizablePane>
 			</ResizablePaneGroup>
 		</div>
@@ -369,7 +355,7 @@
 		<!-- Mobile: Stacked -->
 		<div class="mobile-terminals">
 			{@render infoTerminal()}
-			{@render formTerminal()}
+			{@render formTerminal('mobile')}
 		</div>
 	</div>
 </div>
@@ -463,7 +449,7 @@
 {/snippet}
 
 <!-- ═══ FORM TERMINAL SNIPPET ═══ -->
-{#snippet formTerminal()}
+{#snippet formTerminal(layout: 'desktop' | 'mobile')}
 	<TerminalChrome title={contactPage.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
 		<div class="font-mono text-body leading-relaxed">
 			<!-- Command + output -->
@@ -482,62 +468,32 @@
 				>
 					<div class="flex flex-col gap-4">
 
-						<!-- Name field -->
-						<div class="flex flex-col gap-1">
-							<label for="contact-name" class="text-caption text-[var(--primary)]">
-								{fieldLabel('name')}:
-							</label>
-							<input
-								id="contact-name"
-								name="name"
-								type="text"
-								data-handoff-focus="contact-name"
-								bind:value={name.value}
-								placeholder={resolveLocale(contactPage.formTerminal.fields.name.placeholder, locale)}
-								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
-							/>
-							{#if submitted && errors.name}
-								<div class="text-caption text-[var(--destructive)]">✗ {errors.name}</div>
-							{/if}
-						</div>
-
-						<!-- Email field -->
-						<div class="flex flex-col gap-1">
-							<label for="contact-email" class="text-caption text-[var(--primary)]">
-								{fieldLabel('email')}:
-							</label>
-							<input
-								id="contact-email"
-								name="email"
-								type="email"
-								data-handoff-focus="contact-email"
-								bind:value={email.value}
-								placeholder={resolveLocale(contactPage.formTerminal.fields.email.placeholder, locale)}
-								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
-							/>
-							{#if submitted && errors.email}
-								<div class="text-caption text-[var(--destructive)]">✗ {errors.email}</div>
-							{/if}
-						</div>
-
-						<!-- Message field -->
-						<div class="flex flex-col gap-1">
-							<label for="contact-message" class="text-caption text-[var(--primary)]">
-								{fieldLabel('message')}:
-							</label>
-							<textarea
-								id="contact-message"
-								name="message"
-								data-handoff-focus="contact-message"
-								bind:value={message.value}
-								placeholder={resolveLocale(contactPage.formTerminal.fields.message.placeholder, locale)}
-								rows="6"
-								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
-							></textarea>
-							{#if submitted && errors.message}
-								<div class="text-caption text-[var(--destructive)]">✗ {errors.message}</div>
-							{/if}
-						</div>
+						{#each fields as { key, state }}
+							{@const id = `contact-${layout}-${key}`}
+							{@const error = submitted && errors[key]}
+							{@const attributes = {
+								id,
+								name: key,
+								'data-handoff-focus': `contact-${key}`,
+								'aria-invalid': error ? true : undefined,
+								'aria-describedby': error ? `${id}-error` : undefined,
+								placeholder: resolveLocale(contactPage.formTerminal.fields[key].placeholder, locale),
+								class: `form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 ${key === 'message' ? 'resize-none' : 'min-h-11'} ${fieldBorderClass(key)}`,
+							}}
+							<div class="flex flex-col gap-1">
+								<label for={id} class="text-caption text-[var(--primary)]">
+									{fieldLabel(key)}:
+								</label>
+								{#if key === 'message'}
+									<textarea {...attributes} bind:value={state.value} rows="6"></textarea>
+								{:else}
+									<input {...attributes} type={key === 'email' ? 'email' : 'text'} bind:value={state.value} />
+								{/if}
+								{#if error}
+									<div id={id + '-error'} class="text-caption text-[var(--destructive)]">✗ {error}</div>
+								{/if}
+							</div>
+						{/each}
 
 						<!-- Server-level error -->
 						{#if submitted && errors.form}
@@ -644,7 +600,6 @@
 		display: block;
 		width: 100%;
 		padding-block: var(--space-section-y);
-		/* Desktop: entire page fits in 100dvh (nav + content + footer) */
 	}
 	.edge-title-column { display: none; }
 	.accent-rail { display: none; }
@@ -664,68 +619,30 @@
 	/* Mobile heading visible, hidden on desktop (rotated edge title replaces it) */
 	.mobile-heading { display: block; margin-bottom: 0.5rem; }
 
-	/* Desktop only: nav + page fill EXACTLY one viewport (operator spec).
-	   The nav is a fixed pill (out of flow), so main's border-box IS the
-	   fold: height 100dvh puts the footer entirely below it — the footer is
-	   NOT in the equation and appears only on scroll. */
-	@media (min-width: 1024px) {
-		:global(main:has(.contact-grid)) {
-			/* main is a flex item (flex-1 = basis 0%): on the column main axis
-			   flex-basis beats `height`, so pin the basis to the viewport and
-			   freeze grow/shrink — THIS is what makes 100dvh stick. */
-			flex: 0 0 100dvh;
-			height: 100dvh;
-			overflow: hidden;
-			padding-bottom: 1.5rem; /* breathing room at the fold */
-		}
+	@media (--desktop-min) {
 		.mobile-heading { display: none; }
-	}
-
-	@media (min-width: 1024px) {
 		.contact-grid {
 			display: grid;
 			/* Round 5: edge-title rule one step bolder, in lockstep with the
 			   blog/projects listing layouts (same Recipe-4 rail voice). */
-			grid-template-columns: auto 2px 1fr;
-			/* minmax(0, 1fr) row, NOT auto: an auto row grows past the grid's
-			   definite height and the whole cap chain below never engages —
-			   content then clips dead at main's overflow:hidden fold. This row
-			   is what forces .contact-content to the viewport equation so the
-			   terminals shrink and their bodies scroll. */
-			grid-template-rows: minmax(0, 1fr);
+			grid-template-columns: auto 2px minmax(0, 1fr);
 			padding-block: 0;
-			/* +5rem compensates the -5rem pull-up so the grid's bottom edge
-			   lands exactly at main's padding edge (the fold). */
-			height: calc(100% + 5rem);
-			/* Edge title + divider extend behind nav (same as blog/projects) */
-			margin-top: -5rem;
+			margin-top: calc(-1 * var(--nav-clearance));
 		}
 		.contact-content {
-			padding-top: calc(5rem + var(--space-card-gap)); /* clear nav + breathing */
+			padding-top: calc(var(--nav-clearance) + var(--space-card-gap));
 			padding-bottom: var(--space-card-gap);
 			padding-inline: var(--space-page-x);
 			display: flex;
 			flex-direction: column;
 		}
-		/* Terminals are CONTENT-height (operator call, post-100dvh): the cards
-		   stand as tall as their copy, not stretched to the fold. The flex
-		   chain (main 100dvh → grid → content column) only CAPS them: taller
-		   content (FR/ES wrap longer than EN) shrinks the card and scrolls
-		   inside the terminal body instead of clipping past the fold. */
-		.desktop-terminals :global([data-slot='terminal-chrome']) {
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			min-height: 0;
-		}
-		.desktop-terminals :global([data-slot='terminal-chrome'] .terminal-body) {
-			flex: 1 1 auto;
-			min-height: 0;
-			overflow-y: auto;
-		}
 		/* Edge title starts at top, extends behind nav */
 		.edge-title-column {
 			display: flex;
+			position: sticky;
+			top: 0;
+			height: 100dvh;
+			align-self: start;
 			align-items: center;
 			justify-content: center; /* centered within its own column */
 			writing-mode: vertical-rl;
@@ -754,9 +671,7 @@
 			background: color-mix(in srgb, var(--primary) 35%, transparent);
 		}
 
-		/* Swap visibility. flex 0 1 auto = content height with shrink-to-fit:
-		   the cards never stretch past their copy, and never past the fold. */
-		.desktop-terminals { display: block; flex: 0 1 auto; min-height: 0; }
+		.desktop-terminals { display: block; }
 		.mobile-terminals { display: none; }
 	}
 

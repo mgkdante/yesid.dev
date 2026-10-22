@@ -15,7 +15,7 @@ const CONFIG_LOCK_INTEGRITY =
 const CONFIG_BASE_DIGEST = '588a4acf72f44593561112fc945d410548b56cf556bbbc9bc745c1f7b218424f';
 const MATERIALIZED_BASE = 'node_modules/.yesid-shared-tooling/turbo/base.json';
 const YESID_TURBO_SEMANTIC_DIGEST =
-	'd2314110c1e21ab24c8fcbaa3eaf919c7f64e5fcca18f058484172d645a4583b';
+	'e75710fea665b5304d6e4d0029588894374d3c7a07d4330dc6088d2f7d3f47b6';
 
 const CONFIG_RECEIPT = {
 	schema: 1,
@@ -64,13 +64,21 @@ const TURBO_OVERLAY = {
 				'DIRECTUS_DEV_BUILD_TOKEN',
 				'DIRECTUS_ADMIN_EMAIL',
 				'DIRECTUS_ADMIN_PASSWORD',
-				'DIRECTUS_READ_TOKEN',
 				'EXPORT_FALLBACKS_SKIP',
 				'EXPORT_FALLBACKS_LIVE',
 				'VERCEL_ENV',
 				'VERCEL_GIT_COMMIT_REF',
 				'OPENWEATHER_API_KEY',
 			],
+		},
+	},
+} as const;
+
+const WEB_TURBO_CONFIG = {
+	extends: ['//'],
+	tasks: {
+		build: {
+			inputs: ['$TURBO_EXTENDS$', '!tests/**', '!playwright.config.ts'],
 		},
 	},
 } as const;
@@ -198,6 +206,51 @@ describe('yesid.dev shared-config canary', () => {
 		);
 		expect(sha256(JSON.stringify(canonicalize(json('turbo.json'))))).toBe(
 			YESID_TURBO_SEMANTIC_DIGEST,
+		);
+	});
+
+	it('locks the web package build-input policy', () => {
+		const path = 'apps/web/turbo.json';
+		expect(existsSync(join(REPOSITORY_ROOT, path))).toBe(true);
+		if (!existsSync(join(REPOSITORY_ROOT, path))) return;
+
+		expect(json(path)).toEqual(WEB_TURBO_CONFIG);
+	});
+
+	it('keeps Playwright-only files out of resolved web build inputs', () => {
+		const result = spawnSync(
+			'bun',
+			['x', 'turbo', 'run', 'build', '--filter=@repo/web', '--dry=json'],
+			{
+				cwd: REPOSITORY_ROOT,
+				encoding: 'utf8',
+			},
+		);
+		expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
+		if (result.status !== 0) return;
+
+		const dryRun = JSON.parse(result.stdout) as {
+			tasks: Array<{
+				package: string;
+				task: string;
+				inputs: Record<string, string>;
+			}>;
+		};
+		const build = dryRun.tasks.find(
+			(task) => task.package === '@repo/web' && task.task === 'build',
+		);
+		expect(build).toBeDefined();
+		if (!build) return;
+
+		const inputs = Object.keys(build.inputs);
+		expect(inputs.filter((path) => path.startsWith('tests/'))).toEqual([]);
+		expect(inputs).not.toContain('playwright.config.ts');
+		expect(inputs).toEqual(
+			expect.arrayContaining([
+				'.env.example',
+				'src/routes/+layout.svelte',
+				'src/tests/sitemap-coverage.test.ts',
+			]),
 		);
 	});
 

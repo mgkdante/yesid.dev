@@ -56,8 +56,7 @@ function buildFieldPlan(): SchemaStep[] {
 	}));
 }
 
-/** Schema + values in one pass. Exported for the prod promotion orchestrator
- *  (promote-launch-phase1-prod) — the caller owns the URL guard. */
+/** Schema + values in one pass. Exported for guarded orchestration. */
 export async function apply(ctx: ApplyContext): Promise<void> {
 	const plan = buildFieldPlan();
 	for (const step of plan) {

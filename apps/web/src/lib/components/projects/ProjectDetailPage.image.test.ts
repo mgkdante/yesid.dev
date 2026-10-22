@@ -82,6 +82,26 @@ describe('ProjectDetailPage image placement', () => {
 		document.documentElement.dataset.theme = 'dark';
 	});
 
+	it.each([0, 1, 3])('keeps %i supplied articles mounted with only the first initially open', (count) => {
+		const project = projectFactory.build({
+			sections: Array.from({ length: count }, (_, index) => ({
+				title: { en: `Article ${index}` }, content: { en: doc(`Body ${index}`) },
+			})),
+		});
+		const { container } = render(ProjectDetailPage, {
+			props: { project, services: [], serviceSvgContents: {} },
+		});
+		const sections = [...container.querySelectorAll('.sections-column > .section-block')];
+		expect(sections).toHaveLength(count);
+		for (const [index, section] of sections.entries()) {
+			expect(section.id).toBe(`section-${index}`);
+			expect(section).toHaveAttribute('data-section-index', String(index));
+			expect(section).toHaveTextContent(`Body ${index}`);
+			expect(section.querySelector('button.section-header')).toHaveAttribute('aria-expanded', String(index === 0));
+			expect(section.querySelector('[data-slot="collapsible-content"]')?.hasAttribute('inert')).toBe(index !== 0);
+		}
+	});
+
 	it('renders image-only sections under the TOC with an image icon and closes the viewer on backdrop click', async () => {
 		const project = projectFactory.build({
 			title: { en: 'yesid.dev' },
@@ -161,6 +181,15 @@ describe('ProjectDetailPage image placement', () => {
 						Node.DOCUMENT_POSITION_FOLLOWING,
 			),
 		).toBe(true);
+		const overviewTrigger = firstSection?.querySelector('button.section-header')!;
+		const optionalSection = container.querySelector('[data-section-index="1"]')!;
+		const optionalTrigger = optionalSection.querySelector('button.section-header')!;
+		expect(overviewTrigger.getAttribute('aria-expanded')).toBe('true');
+		expect(optionalTrigger.getAttribute('aria-expanded')).toBe('false');
+		expect(optionalSection.id).toBe('section-1');
+		expect(optionalSection.querySelector('[inert]')).toBeTruthy();
+		await fireEvent.click(optionalTrigger);
+		expect(optionalTrigger.getAttribute('aria-expanded')).toBe('true');
 		expect(screen.getByTestId('mermaid-diagram')).toBeInTheDocument();
 		expect(screen.getByText(/Directus CMS/)).toBeInTheDocument();
 		expect(screen.getAllByText(/export-fallbacks\.ts/).length).toBeGreaterThanOrEqual(2);

@@ -4,7 +4,7 @@ import {
 	sendPlausibleEvent,
 	type PlausibleEventPayload,
 	type PlausibleFetch,
-} from './transport';
+} from '@yesid/analytics/plausible';
 
 describe('controlled Plausible Events API transport', () => {
 	it('sends one official payload without installing autonomous browser listeners', async () => {

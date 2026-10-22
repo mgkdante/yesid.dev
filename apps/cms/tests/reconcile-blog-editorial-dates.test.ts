@@ -104,6 +104,7 @@ describe('blog editorial date schedule', () => {
 describe('blog editorial date CLI', () => {
 	it('defaults to dry-run and pins both CMS URLs', () => {
 		expect(parseCli(['--target=dev'])).toEqual({ target: 'dev', apply: false });
+		expect(parseCli(['--target', 'dev'])).toEqual({ target: 'dev', apply: false });
 		expect(TARGET_URLS).toEqual({
 			dev: 'https://cms.dev.yesid.dev',
 			prod: 'https://cms.yesid.dev',
@@ -120,6 +121,9 @@ describe('blog editorial date CLI', () => {
 				'--apply',
 				`--confirm=${PROD_CONFIRMATION}`,
 			]),
+		).toEqual({ target: 'prod', apply: true });
+		expect(
+			parseCli(['--target', 'prod', '--apply', '--confirm', PROD_CONFIRMATION]),
 		).toEqual({ target: 'prod', apply: true });
 	});
 

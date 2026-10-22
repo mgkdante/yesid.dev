@@ -5,7 +5,6 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
@@ -17,13 +16,12 @@
 	use:cursorGlow
 >
 <Card class="h-full p-3" data-testid="about-method">
-	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+	<div class="relative flex flex-col">
+		<StopLabel {stop} {label} as="h2" />
 
 		<div
-			class="mt-3 min-h-0 flex-1 overflow-y-auto pr-1"
+			class="mt-3 pr-1"
 			data-testid="about-method-scroll"
-			use:scrollChain
 		>
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 			{#each steps as step, i}
@@ -37,7 +35,7 @@
 						</div>
 						<div class="belief-title">{stepLabel}</div>
 					</div>
-					<p class="mt-2 text-caption leading-snug text-[var(--secondary-foreground)]">{stepDesc}</p>
+					<p class="mt-2 text-body leading-relaxed text-[var(--secondary-foreground)]">{stepDesc}</p>
 				</div>
 			{/each}
 		</div>

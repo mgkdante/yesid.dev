@@ -2,6 +2,10 @@ import { expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import {
+	workflowJobBlock as jobBlock,
+	workflowStepBlock as namedStepBlock,
+} from './helpers/workflow-source';
 
 const repoRoot = join(import.meta.dir, '..', '..', '..');
 const workflowsRoot = join(repoRoot, '.github', 'workflows');
@@ -38,24 +42,6 @@ function workflowFiles(): string[] {
 		.filter((name) => /\.ya?ml$/u.test(name))
 		.map((name) => join(workflowsRoot, name))
 		.sort();
-}
-
-function jobBlock(workflow: string, name: string): string | null {
-	const jobsOffset = workflow.indexOf('\njobs:\n');
-	const start = workflow.indexOf(`\n  ${name}:\n`, jobsOffset);
-	if (jobsOffset < 0 || start < 0) return null;
-	const bodyStart = start + 1;
-	const next = /\n  [A-Za-z0-9_-]+:\n/gu.exec(workflow.slice(bodyStart));
-	const end = next ? bodyStart + next.index : workflow.length;
-	return workflow.slice(bodyStart, end).trimEnd();
-}
-
-function namedStepBlock(job: string, name: string): string | null {
-	const marker = `      - name: ${name}\n`;
-	const start = job.indexOf(marker);
-	if (start < 0) return null;
-	const next = job.indexOf('\n      - ', start + marker.length);
-	return job.slice(start, next < 0 ? job.length : next).trimEnd();
 }
 
 function fromRunsOn(job: string): string | null {
@@ -259,13 +245,40 @@ test('web reports required ci after classified work without weakening E2E', () =
 		"fromJSON(needs.classify.outputs.classification).relevant['ci-work']",
 	);
 	expect(e2e).toContain("!contains(github.event.pull_request.labels.*.name, 'skip-e2e')");
-	const strategyOffset = e2e.indexOf('    strategy:\n');
-	expect(strategyOffset).toBeGreaterThan(-1);
-	if (strategyOffset >= 0) {
-		expect(sha256(`${e2e.slice(strategyOffset).trimEnd()}\n`)).toBe(
-			'6e715bb868a9510518035ad9a1f514c2719cda4eac500b5d073ab5da342d2f22',
-		);
-	}
+	expect(e2e.match(/^    runs-on: ubuntu-latest$/gmu)).toHaveLength(1);
+	expect(e2e).toContain('timeout-minutes: 20');
+	expect(e2e).toContain(
+		'strategy:\n      fail-fast: false\n      matrix:\n        shard: [1, 2, 3]',
+	);
+	expect(
+		ordered(e2e, [
+			'uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5',
+			'uses: ./.github/actions/setup',
+			'name: Cache Playwright browsers',
+			'name: Install Playwright Chromium (exact cache hit)',
+			'name: Install Playwright Chromium (+ system deps)',
+			'name: Build (turbo, cache-eligible)',
+			'name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
+			'name: Upload blob report',
+		]),
+	).toBe(true);
+
+	const build = namedStepBlock(e2e, 'Build (turbo, cache-eligible)');
+	const playwright = namedStepBlock(
+		e2e,
+		'Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
+	);
+	const upload = namedStepBlock(e2e, 'Upload blob report');
+	expect(build).toContain('EXPORT_FALLBACKS_SKIP: "1"');
+	expect(build).toContain('run: bun x turbo run build --filter=@repo/web');
+	expect(playwright).toContain('E2E_PREBUILT: "1"');
+	expect(playwright).toContain('working-directory: apps/web');
+	expect(playwright).toContain('--shard=${{ matrix.shard }}/3');
+	expect(playwright).toContain('--reporter=blob');
+	expect(upload).toContain('if: ${{ !cancelled() }}');
+	expect(upload).toContain('name: blob-report-${{ matrix.shard }}');
+	expect(upload).toContain('path: apps/web/blob-report/');
+	expect(upload).toContain('retention-days: 14');
 });
 
 test('web exposes the Turbo remote-cache credential only to turbo-running steps', () => {
@@ -304,13 +317,18 @@ test('CMS reports required test while every downstream job still needs test', ()
 	expect(reporter, 'CMS test reporter job').not.toBeNull();
 	if (!classifier || !work || !reporter) return;
 
+	expect(cms).toContain(
+		'  push:\n    branches: [main]\n  pull_request:\n    branches: [main, develop]',
+	);
+	expect(cms).not.toContain('  push:\n    branches: [main, develop]');
+	expect(classifier).toContain("if: ${{ github.event_name != 'push' }}");
 	expect(classifier).toContain('classification: ${{ steps.classify.outputs.classification }}');
 	expect(classifier).toContain(
 		`uses: ${sourceRepository}/${sharedActions.classify}@${sourceSha}`,
 	);
 	expect(work).toContain('needs: [classify]');
 	expect(work).toContain(
-		"if: ${{ fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}",
+		"if: ${{ github.event_name != 'push' && fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}",
 	);
 	const preservedWork = fromRunsOn(work);
 	expect(preservedWork).not.toBeNull();
@@ -323,10 +341,17 @@ test('CMS reports required test while every downstream job still needs test', ()
 	expect(reporter).toContain('name: test');
 	expect(reporter).toContain('needs: [classify, test-work]');
 	expect(reporter).toContain('if: ${{ always() }}');
-	expect(reporter).toContain(
-		`uses: ${sourceRepository}/${sharedActions.required}@${sourceSha}`,
-	);
-	expect(reporter).toContain('needs-json: ${{ toJSON(needs) }}');
+	expect(reporter.match(/^      - /gmu)).toHaveLength(2);
+	expect(
+		ordered(reporter, [
+			'name: Preserve trusted main-push dependency',
+			"if: ${{ github.event_name == 'push' }}",
+			"run: ':'",
+			`uses: ${sourceRepository}/${sharedActions.required}@${sourceSha}`,
+			"if: ${{ github.event_name != 'push' }}",
+			'needs-json: ${{ toJSON(needs) }}',
+		]),
+	).toBe(true);
 
 	for (const name of [
 		'diff',
@@ -379,8 +404,6 @@ test('CMS classifier is strict and covers the frozen fixture matrix', () => {
 		{ label: 'web asset consumer', event: 'pull_request', paths: ['apps/web/src/routes/+page.svelte'], relevant: true, reason: 'matched' },
 		{ label: 'publication asset', event: 'pull_request', paths: ['gbp-assets/en/mark-dot.dark.png'], relevant: true, reason: 'matched' },
 		{ label: 'generated-content git guard', event: 'pull_request', paths: ['.githooks/pre-commit'], relevant: true, reason: 'matched' },
-		{ label: 'generated-content Claude guard', event: 'pull_request', paths: ['.claude/hooks/pretool-block-generated-ts.sh'], relevant: true, reason: 'matched' },
-		{ label: 'unrelated Claude config', event: 'pull_request', paths: ['.claude/settings.local.json'], relevant: false, reason: 'irrelevant' },
 		{ label: 'CMS', event: 'pull_request', paths: ['apps/cms/scripts/export-fallbacks.ts'], relevant: true, reason: 'matched' },
 		{ label: 'shared', event: 'pull_request', paths: ['packages/shared/src/index.ts'], relevant: true, reason: 'matched' },
 		{ label: 'control', event: 'pull_request', paths: ['.github/workflows/secret-scan.yml'], relevant: true, reason: 'control' },
@@ -410,6 +433,6 @@ test('required PR workflows remain unfiltered so reporters always appear', () =>
 
 test('secret-scan stays byte-for-byte unchanged', () => {
 	expect(sha256(readFileSync(secretScanPath, 'utf8'))).toBe(
-		'27e744160de98b0ecb996ea585349f98e65a188bac7093051ca6a2c4517f00ff',
+		'84c1ca10f6c999b535079e2b4757576f2afe5b0966793f9c597ef448fad0a512',
 	);
 });

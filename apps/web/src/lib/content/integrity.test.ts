@@ -14,7 +14,7 @@
 //     covers site-chrome literals that D2 carves out of schema validation.
 
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -36,7 +36,7 @@ import * as techStackModule from './tech-stack.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
-import { INITIAL_HERO_DATA } from './hero-data.js';
+import { INITIAL_HERO_DATA } from '$lib/live';
 import { techStackPageContent, techStackItems } from './tech-stack.js';
 import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
@@ -135,6 +135,35 @@ describe('projects data integrity', () => {
 	});
 });
 
+describe('tech stack data integrity', () => {
+	it('loads a non-trivial curated tech set', () => {
+		expect(techStackItems.length).toBeGreaterThanOrEqual(15); // curated at go-day: 21 published (operator archived mobile ghosts; set grows with learning)
+	});
+
+	it('all IDs are unique', () => {
+		const ids = techStackItems.map((item) => item.id);
+		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	it('all relatedServices match existing service IDs', () => {
+		const serviceIds = new Set(services.map((service) => service.id));
+		for (const item of techStackItems) {
+			for (const serviceId of item.relatedServices) {
+				expect(serviceIds.has(serviceId), `${item.id}: service "${serviceId}" not found`).toBe(true);
+			}
+		}
+	});
+
+	it('all relatedProjects match existing project slugs', () => {
+		const projectSlugs = new Set(projects.map((project) => project.slug));
+		for (const item of techStackItems) {
+			for (const projectSlug of item.relatedProjects) {
+				expect(projectSlugs.has(projectSlug), `${item.id}: project "${projectSlug}" not found`).toBe(true);
+			}
+		}
+	});
+});
+
 describe('services data integrity', () => {
 	// WHY no hardcoded count: the station system is data-driven. Adding a service
 	// means adding one object to services.ts — no component changes. Tests validate
@@ -200,6 +229,14 @@ describe('services data integrity', () => {
 });
 
 describe('chrome companion consolidation', () => {
+	it('retired BlogRouteMap component stays absent', () => {
+		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/blog/BlogRouteMap.svelte'))).toBe(false);
+	});
+
+	it('retired TableOfContents component stays absent', () => {
+		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/shared/TableOfContents.svelte'))).toBe(false);
+	});
+
 	it('shared chrome consumers read from siteLabels instead of sharedChromeContent', () => {
 		const consumers = [
 			'lib/components/layout/Nav.svelte',
@@ -207,7 +244,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/layout/Footer.svelte',
 			'lib/components/layout/ThemeToggle.svelte',
 			'lib/components/layout/LanguageToggle.svelte',
-			'lib/components/shared/TableOfContents.svelte',
 			'lib/components/shared/FilterSummary.svelte',
 			'lib/components/shared/SearchInput.svelte',
 		];
@@ -221,10 +257,10 @@ describe('chrome companion consolidation', () => {
 
 	it('blog chrome consumers read from siteLabels instead of blog companions', () => {
 		const consumers = [
-			'lib/components/blog/BlogRouteMap.svelte',
 			'lib/components/blog/BlogFilterSidebar.svelte',
 			'lib/components/blog/BlogListingPage.svelte',
 			'lib/components/blog/BlogDetailHeader.svelte',
+			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/blog/BlogDetailPage.svelte',
 			'lib/components/cms/blocks/CodeBlock.svelte',
 		];
@@ -244,7 +280,9 @@ describe('chrome companion consolidation', () => {
 			'lib/components/projects/ProjectDetailPage.svelte',
 			'lib/components/projects/ProjectGlancePanel.svelte',
 			'lib/components/projects/ProjectDetailHeader.svelte',
+			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/services/ServiceDetailPage.svelte',
+			'lib/components/services/ServiceStackPanel.svelte',
 		];
 
 		const offenders = consumers.filter((file) =>
@@ -301,7 +339,7 @@ describe('blogPosts data integrity', () => {
 		});
 	});
 
-	it('keeps the six EN/FR/ES families on the approved newest-first editorial schedule', () => {
+	it('preserves the six older families and adds four trilingual publication families', () => {
 		const expectedDates = new Map([
 			['the-two-hour-internet-slot', '2026-06-01'],
 			['how-i-learn-orbiting-a-system-until-it-clicks', '2026-06-09'],
@@ -310,12 +348,17 @@ describe('blogPosts data integrity', () => {
 			['50-to-0-an-oracle-always-free-vm', '2026-07-03'],
 			['does-your-website-need-instant-publishing', '2026-07-11'],
 		]);
-		expect(blogPosts).toHaveLength(18);
+		expect(blogPosts).toHaveLength(30);
 		for (const [translationKey, date] of expectedDates) {
 			const family = blogPosts.filter((post) => post.translationKey === translationKey);
 			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
 			expect(family.every((post) => post.date === date)).toBe(true);
 			expect(family.every((post) => post.dateModified === '2026-07-11')).toBe(true);
+		}
+		for (const key of ['missing-data-is-not-zero', 'before-product-catalogue-final', 'when-similar-components-stay-separate', 'changing-language-without-starting-over']) {
+			const family = blogPosts.filter((post) => post.translationKey === key);
+			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
+			expect(family.every((post) => post.date === '2026-10-08')).toBe(true);
 		}
 		expect(blogPosts.map((post) => post.date)).toEqual(
 			blogPosts.map((post) => post.date).toSorted().reverse(),
@@ -731,7 +774,8 @@ describe('LocalizedString guard + translation debt', () => {
 // receiver r2: full-bleed footer column headings (EXPLORE/LEGAL/CONNECT,
 // site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
 // OPS2 analytics-choice microcopy adds six EN/FR/ES-complete site-label leaves, 666 + 6 = 672.
-const LOCKED = { TOTAL: 672, WITH_FR: 672, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// October portfolio publication: 38 additional FR-complete project strings, no added translation debt.
+const LOCKED = { TOTAL: 710, WITH_FR: 710, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

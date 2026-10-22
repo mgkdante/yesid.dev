@@ -38,9 +38,14 @@
 		markHeroIntroCompleted,
 	} from '$lib/motion/utils/heroIntroReplay.js';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import { generateHeroData, siteLabels } from '$lib/content';
-	import type { HeroData } from '$lib/content';
-	import { fetchLiveKpis, LIVE_POLL_MS, type LiveHeroSnapshot } from '$lib/content/live-kpis';
+	import { siteLabels } from '$lib/content';
+	import {
+		fetchLiveKpis,
+		generateHeroData,
+		startLiveKpiPolling,
+		type HeroData,
+		type LiveHeroSnapshot,
+	} from '$lib/live';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -204,8 +209,7 @@
 			if (snapshot) applyLiveSnapshot(snapshot);
 			else if (live) dropToDemo(updatedAgoInitial);
 		};
-		void tickLive();
-		const timer = setInterval(tickLive, LIVE_POLL_MS);
+		const stopLivePolling = startLiveKpiPolling(tickLive);
 		// Advance the freshness stamp every second between polls: the data's
 		// age keeps counting whether or not we've refetched.
 		const stampTimer = setInterval(() => {
@@ -215,7 +219,7 @@
 			}
 		}, 1000);
 		return () => {
-			clearInterval(timer);
+			stopLivePolling();
 			clearInterval(stampTimer);
 		};
 	});
@@ -600,7 +604,7 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:py-[max(5svh,2.5rem)]"
+			class="hero-text-layer absolute inset-0 flex items-start justify-center opacity-0 md:items-center md:pb-[max(5svh,2.5rem)]"
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-[var(--space-page-x)]">
@@ -701,7 +705,7 @@
 		min-height: 600svh;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.hero-section-reserve {
 			min-height: 900svh;
 		}
@@ -839,16 +843,22 @@
 		pointer-events: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.metro-caption {
 			font-size: var(--text-micro);
 		}
 	}
 
+	.hero-text-layer {
+		padding-top: calc(var(--nav-clearance) + 1rem);
+	}
+
 	/* Two-column hero grid: text | divider | SQL panel */
 	.hero-grid {
 		display: grid;
-		grid-template-columns: 1fr 1px 1fr;
+		/* WHY (measured 2026-07-29): minmax(0, 1fr) removes 1fr's automatic
+		   min-content floor; the 580px SQL panel otherwise clips live at 769–1120px. */
+		grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
 		gap: 32px;
 		align-items: start;
 	}
@@ -898,7 +908,7 @@
 	/* .scroll-block-cursor moved to app.css so the global .typewriter-cursor
 	   class can override its opacity when the typewriter is active (17e-4). */
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.scroll-prompt {
 			/* Computed per locale from the label length (see billboardVw): the
 			   largest size that never clips the nowrap line. Replaces the old
@@ -910,7 +920,7 @@
 	}
 
 	/* Mobile: single-column grid */
-	@media (max-width: 768px) {
+	@media (--tablet-max) {
 		.hero-grid {
 			grid-template-columns: 1fr;
 			gap: 0;

@@ -151,7 +151,7 @@
 		outline: none;
 	}
 
-	@media (min-width: 768px) and (max-width: 1023px) {
+	@media (--tablet-min) and (--desktop-max) {
 		.blog-entry-rail {
 			display: grid;
 			grid-template-columns: repeat(2, minmax(0, 1fr));

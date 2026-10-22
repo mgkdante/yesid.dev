@@ -10,6 +10,7 @@ import {
   type AssetUsageDeclaration,
 } from "@repo/shared";
 import { assetUsageDeclarations } from "../../../../web/src/lib/assets/usage-declarations";
+import { projects } from "../../../../web/src/lib/content/projects";
 import {
   canonicalizeRepositoryScan,
   hashRepositoryScan,
@@ -325,6 +326,69 @@ describe("scanRepository with an injected mini-repository", () => {
     expect(
       before.findings.some((finding) => finding.sourceFile === baselinePath),
     ).toBe(false);
+  });
+
+  it("treats only Vercel route source fields as matchers while accounting for destinations", async () => {
+    const vercelConfig = "apps/web/vercel.json";
+    const defaultOg = "apps/web/static/og/default.en.png";
+    const miniRepo = await makeMiniRepo({
+      [defaultOg]: new Uint8Array([1, 2, 3]),
+      [vercelConfig]: JSON.stringify({
+        rewrites: [
+          {
+            source: "/og/blog/(.*)",
+            destination: "/og/default.en.png",
+          },
+        ],
+        headers: [{ source: "/og/(.*)", headers: [] }],
+        metadata: { source: "/og/arbitrary/(.*)" },
+        redirects: [
+          {
+            source: "/og/project/(.*)",
+            destination: "/og/missing.png",
+          },
+        ],
+      }),
+    });
+    const scan = await scanRepository({
+      repoRoot: miniRepo.root,
+      trackedFiles: miniRepo.trackedFiles,
+    });
+
+    for (const routeSource of [
+      "/og/blog/(.*)",
+      "/og/(.*)",
+      "/og/project/(.*)",
+    ]) {
+      expect(
+        scan.findings.some(
+          (finding) =>
+            finding.sourceFile === vercelConfig &&
+            finding.rawRef === routeSource,
+        ),
+      ).toBe(false);
+    }
+    expect(
+      scan.usages.some(
+        (usage) =>
+          usage.assetId === `repo-file:${defaultOg}` &&
+          usage.sourceFile === vercelConfig,
+      ),
+    ).toBe(true);
+    expect(
+      scan.findings.some(
+        (finding) =>
+          finding.sourceFile === vercelConfig &&
+          finding.rawRef === "/og/arbitrary/(.*)",
+      ),
+    ).toBe(true);
+    expect(
+      scan.findings.some(
+        (finding) =>
+          finding.sourceFile === vercelConfig &&
+          finding.rawRef === "/og/missing.png",
+      ),
+    ).toBe(true);
   });
 
   it("builds deterministic physical, component, usage, finding, hash, glob, and UUID evidence", async () => {
@@ -946,6 +1010,7 @@ describe("yesid.dev real repository contract", () => {
         "site.cms.image-block",
         "site.media.about-identity-headshot",
         "site.media.about-polaroid",
+        "site.media.about-polaroid-srcset",
         "site.media.about-language",
         "site.projects.hero-primary",
         "site.projects.hero-secondary",
@@ -1058,7 +1123,6 @@ describe("yesid.dev real repository contract", () => {
     expect(scan.usages).toContainEqual(
       expect.objectContaining({
         sourceFile: "apps/web/src/lib/adapters/static.ts",
-        sourceLine: 126,
         assetId: "repo-file:apps/web/static/images/montreal-metro.svg",
         deliveryMode: "inline-svg",
       }),
@@ -1067,7 +1131,6 @@ describe("yesid.dev real repository contract", () => {
     const blogFallbackRows = scan.usages.filter(
       (usage) =>
         usage.sourceFile === "apps/web/src/lib/blog/static-helpers.ts" &&
-        usage.sourceLine === 33 &&
         usage.assetId?.startsWith(
           "repo-file:apps/web/src/lib/assets/blog-fallbacks/",
         ),
@@ -1080,7 +1143,6 @@ describe("yesid.dev real repository contract", () => {
     const serviceGlobRows = scan.usages.filter(
       (usage) =>
         usage.sourceFile === "apps/web/src/lib/utils/service-svg.ts" &&
-        usage.sourceLine === 28 &&
         usage.assetId?.startsWith("repo-file:apps/web/static/svg/services/"),
     );
     expect(serviceGlobRows).toHaveLength(6);
@@ -1088,14 +1150,24 @@ describe("yesid.dev real repository contract", () => {
       serviceGlobRows.every((usage) => usage.deliveryMode === "inline-svg"),
     ).toBe(true);
 
-    expect(scan.usages).toContainEqual(
-      expect.objectContaining({
-        sourceFile: "apps/web/src/lib/components/home/CloserGraffiti.svelte",
-        sourceLine: 36,
-        assetId: "repo-file:apps/web/static/svg/graffiti/the-end.svg",
-        deliveryMode: "inline-svg",
-      }),
+    const graffitiRows = scan.usages.filter(
+      (usage) =>
+        usage.sourceFile ===
+          "apps/web/src/lib/components/home/CloserGraffiti.svelte" &&
+        usage.assetId?.startsWith(
+          "repo-file:apps/web/static/svg/graffiti/the-end.",
+        ),
     );
+    expect(new Set(graffitiRows.map((usage) => usage.assetId))).toEqual(
+      new Set([
+        "repo-file:apps/web/static/svg/graffiti/the-end.en.svg",
+        "repo-file:apps/web/static/svg/graffiti/the-end.fr.svg",
+        "repo-file:apps/web/static/svg/graffiti/the-end.es.svg",
+      ]),
+    );
+    expect(
+      graffitiRows.every((usage) => usage.deliveryMode === "inline-svg"),
+    ).toBe(true);
   });
 
   it("locks corrected asset roots, comment-aware Svelte counts, provenance, and deterministic output", async () => {
@@ -1135,20 +1207,20 @@ describe("yesid.dev real repository contract", () => {
     const staticAssets = first.assets.filter((asset) =>
       asset.repoPath?.startsWith("apps/web/static/"),
     );
-    expect(staticAssets).toHaveLength(120);
+    expect(staticAssets).toHaveLength(208);
     expect(
       staticAssets.filter((asset) => asset.kind !== "document"),
-    ).toHaveLength(118);
+    ).toHaveLength(206);
     expect(
       staticAssets.filter(
         (asset) => asset.kind === "raster" && asset.repoPath?.endsWith(".png"),
       ),
-    ).toHaveLength(37);
+    ).toHaveLength(46);
     expect(
       staticAssets.filter((asset) => asset.repoPath?.endsWith(".webp")),
-    ).toHaveLength(63);
+    ).toHaveLength(128);
     expect(staticAssets.filter((asset) => asset.kind === "svg")).toHaveLength(
-      18,
+      20,
     );
     expect(
       staticAssets.filter((asset) => asset.kind === "document"),
@@ -1167,6 +1239,19 @@ describe("yesid.dev real repository contract", () => {
           asset.kind === "font",
       ),
     ).toHaveLength(3);
+    expect(
+      first.assets.filter(
+        (asset) =>
+          asset.repoPath?.startsWith("apps/web/vendor/fonts/lacquer/") &&
+          asset.kind === "font",
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        repoPath: "apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf",
+        sha256:
+          "140c21f71907a16952926ee354c81081092c90d599c89fe8b4557baeaebbbe83",
+      }),
+    ]);
     expect(
       first.assets.some(
         (asset) => asset.repoPath === "apps/web/src/lib/og/fonts/README.md",
@@ -1225,29 +1310,36 @@ describe("yesid.dev real repository contract", () => {
       // 49→47 / 63→61 (2026-07-16): BlueprintShell + ChevronToggle moved into
       // the embedded @yesid/ui package (Wave 3 adoption); package internals are
       // library code, outside the site's asset-governance scan surface.
-      svgFiles: 47,
-      inlineSvgRoots: 61,
+      // 47→46 / 61→60 (2026-07-21): the unreachable BlogRouteMap component
+      // and its single inline SVG root were retired in Phase 2 C2.
+      // 46→45 / 60→58 (2026-07-22): QuietModeButton's two SVG roots moved
+      // into immutable @yesid/ui v0.9; package internals remain outside the
+      // product asset-governance scan surface.
+      // 45→44 / 58→57 (2026-07-23): the unreachable TableOfContents component
+      // and its single inline SVG root were retired in Phase 2 C1.
+      svgFiles: 44,
+      inlineSvgRoots: 57,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });
     expect(first.assets.filter((asset) => asset.kind === "video")).toEqual([]);
 
     const expectedImageTags = [
-      "apps/web/src/lib/components/about/AboutEducation.svelte:34",
-      "apps/web/src/lib/components/about/AboutIdentity.svelte:59",
-      "apps/web/src/lib/components/about/AboutLanguages.svelte:47",
-      "apps/web/src/lib/components/about/AboutPolaroids.svelte:72",
-      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte:24",
-      "apps/web/src/lib/components/home/HomeServices.svelte:163",
-      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte:62",
-      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte:78",
-      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte:82",
-      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte:128",
-      "apps/web/src/lib/components/stack-engine/TechIcon.svelte:33",
+      "apps/web/src/lib/components/about/AboutEducation.svelte",
+      "apps/web/src/lib/components/about/AboutIdentity.svelte",
+      "apps/web/src/lib/components/about/AboutLanguages.svelte",
+      "apps/web/src/lib/components/about/AboutPolaroids.svelte",
+      "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte",
+      "apps/web/src/lib/components/home/HomeServices.svelte",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte",
+      "apps/web/src/lib/components/projects/ProjectHeroPreview.svelte",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte",
+      "apps/web/src/lib/components/projects/ProjectImageGallery.svelte",
+      "apps/web/src/lib/components/stack-engine/TechIcon.svelte",
     ].sort();
     expect(
       renderedImageTags
-        .map((tag) => `${tag.sourceFile}:${tag.sourceLine}`)
+        .map((tag) => tag.sourceFile)
         .sort(),
     ).toEqual(expectedImageTags);
     for (const tag of renderedImageTags) {
@@ -1283,6 +1375,7 @@ describe("yesid.dev real repository contract", () => {
       "apps/web/src/lib/components/about/AboutIdentity.svelte#img-srcset:headshotSrcset",
       "apps/web/src/lib/components/about/AboutLanguages.svelte#img-src:imageSrc",
       "apps/web/src/lib/components/about/AboutPolaroids.svelte#img-src:current.src",
+      "apps/web/src/lib/components/about/AboutPolaroids.svelte#img-srcset:currentSrcset",
       "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#img-src:source.src",
       "apps/web/src/lib/components/cms/blocks/ImageBlock.svelte#img-srcset:source.srcset",
       "apps/web/src/lib/components/home/HomeServices.svelte#img-src:/svg/services/{service.svg}",
@@ -1335,7 +1428,6 @@ describe("yesid.dev real repository contract", () => {
           (usage) =>
             usage.sourceFile ===
               "apps/web/src/lib/components/about/AboutEducation.svelte" &&
-            usage.sourceLine === 34 &&
             usage.assetId === educationAsset,
         ),
       ).toBe(true);
@@ -1344,101 +1436,139 @@ describe("yesid.dev real repository contract", () => {
       expect.objectContaining({
         assetId: "repo-file:apps/web/static/favicon.svg",
         sourceFile: "apps/web/src/app.html",
-        sourceLine: 42,
       }),
     );
 
     const hasLiteralEvidence = (
       sourceFile: string,
-      sourceLine: number,
       rawRef: string,
     ) =>
       first.usages.some(
         (usage) =>
           usage.sourceFile === sourceFile &&
-          usage.sourceLine === sourceLine &&
           usage.unresolvedRef === rawRef,
       ) ||
       first.findings.some(
         (finding) =>
           finding.sourceFile === sourceFile &&
-          finding.sourceLine === sourceLine &&
           finding.rawRef === rawRef,
       );
     const directusSource = "apps/web/src/lib/content/projects.ts";
-    for (const [sourceLine, rawRef, expectedAssetId] of [
-      [
-        136,
-        "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
-        "repo-file:apps/web/static/images/work/yesid-dev-home.png",
-      ],
-      [
-        148,
-        "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-        "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
-      ],
-      [
-        168,
-        "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
-      ],
-      [
-        180,
-        "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
-      ],
-      [
-        206,
-        "/assets/6048a712-de42-4cca-ab51-6f92d64685c2",
-        "repo-file:apps/web/static/images/work/yesid-dev-home.png",
-      ],
-      [
-        218,
-        "/assets/c2bb6564-62ab-46c4-962b-ab2c756fde9e",
-        "repo-file:apps/web/static/images/work/yesid-dev-home-light.png",
-      ],
-      [
-        238,
-        "/assets/c2fad757-ecba-457c-aff7-47d3cc504081",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile.png",
-      ],
-      [
-        250,
-        "/assets/9af53f0b-aeb9-4d3f-94a6-1ba3476a4f12",
-        "repo-file:apps/web/static/images/work/yesid-dev-mobile-light.png",
-      ],
-    ] as const) {
-      expect(hasLiteralEvidence(directusSource, sourceLine, rawRef)).toBe(true);
-      expect(
-        first.usages.some(
-          (usage) =>
-            usage.sourceFile === directusSource &&
-            usage.sourceLine === sourceLine &&
-            usage.assetId === expectedAssetId &&
-            usage.unresolvedRef === rawRef &&
-            usage.cmsField === "directus_asset_url",
+    const expectedDirectusReferences = [
+      {
+        "variant": "primary",
+        "fileId": "d3cbe8e0-6eef-4bd3-be7b-ec11920c85c1",
+        "rawRef": "/assets/d3cbe8e0-6eef-4bd3-be7b-ec11920c85c1",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "228505cb-56af-4738-944a-143bb5d8480c",
+        "rawRef": "/assets/228505cb-56af-4738-944a-143bb5d8480c",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "a6e172a5-a284-4fb6-af79-6cfe88eee815",
+        "rawRef": "/assets/a6e172a5-a284-4fb6-af79-6cfe88eee815",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "eac07303-eacd-48d3-ac65-632a23a4677c",
+        "rawRef": "/assets/eac07303-eacd-48d3-ac65-632a23a4677c",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "c758fd83-ac47-4c2b-a293-a9051e74199d",
+        "rawRef": "/assets/c758fd83-ac47-4c2b-a293-a9051e74199d",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "162f42a4-658c-438b-bdab-cf11218be18e",
+        "rawRef": "/assets/162f42a4-658c-438b-bdab-cf11218be18e",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "42024627-5dab-496e-9d69-18387300802e",
+        "rawRef": "/assets/42024627-5dab-496e-9d69-18387300802e",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.jpg"
+      },
+      {
+        "variant": "primary",
+        "fileId": "f197e2c7-44e3-40a8-a51d-3d52bd6f92c8",
+        "rawRef": "/assets/f197e2c7-44e3-40a8-a51d-3d52bd6f92c8",
+        "assetId": "repo-file:apps/web/static/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.jpg"
+      }
+    ] as const;
+    const yesidProject = projects.find((project) => project.slug === "yesid-dev");
+    expect(yesidProject).toBeDefined();
+
+    for (const locale of ["en", "fr", "es"] as const) {
+      const localeImageReferences = yesidProject!.sections.flatMap((section) =>
+        (section.content[locale]?.blocks ?? [])
+          .filter((block) => block.type === "image")
+          .flatMap((block) => [
+            {
+              blockId: block.id,
+              variant: "primary",
+              fileId: block.data.file.fileId,
+              rawRef: block.data.file.url,
+            },
+            ...(block.data.variants?.light
+              ? [
+                  {
+                    blockId: block.id,
+                    variant: "light",
+                    fileId: block.data.variants.light.fileId,
+                    rawRef: block.data.variants.light.url,
+                  },
+                ]
+              : []),
+          ]),
+      );
+      expect(new Set(localeImageReferences.map(({ blockId }) => blockId)).size).toBe(8);
+      expect(localeImageReferences.map(({ variant, fileId, rawRef }) => ({ variant, fileId, rawRef }))).toEqual(
+        expectedDirectusReferences.map(
+          ({ variant, fileId, rawRef }) => ({
+            variant,
+            fileId,
+            rawRef,
+          }),
         ),
-      ).toBe(true);
+      );
+    }
+
+    for (const { rawRef, assetId } of expectedDirectusReferences) {
+      const occurrences = first.usages.filter(
+        (usage) =>
+          usage.sourceFile === directusSource &&
+          usage.assetId === assetId &&
+          usage.unresolvedRef === rawRef &&
+          usage.cmsField === "directus_asset_url",
+      );
+      expect(occurrences).toHaveLength(3);
+      expect(occurrences.every((usage) => usage.sourceLine !== null)).toBe(true);
+      expect(new Set(occurrences.map((usage) => usage.sourceLine)).size).toBe(3);
     }
 
     const serviceSources = [
       "apps/web/src/lib/content/services.ts",
       "apps/cms/fixtures/collections/services.json",
     ] as const;
-    for (const [rawRef, generatedLine, fixtureLine] of [
-      ["service-database.svg", 118, 13],
-      ["service-pipeline.svg", 214, 114],
-      ["service-reporting.svg", 309, 208],
-      ["service-web.svg", 419, 299],
-      ["service-sql.svg", 502, 404],
-      ["service-tooling.svg", 580, 481],
+    for (const rawRef of [
+      "service-database.svg",
+      "service-pipeline.svg",
+      "service-reporting.svg",
+      "service-web.svg",
+      "service-sql.svg",
+      "service-tooling.svg",
     ] as const) {
-      expect(hasLiteralEvidence(serviceSources[0], generatedLine, rawRef)).toBe(
-        true,
-      );
-      expect(hasLiteralEvidence(serviceSources[1], fixtureLine, rawRef)).toBe(
-        true,
-      );
+      expect(hasLiteralEvidence(serviceSources[0], rawRef)).toBe(true);
+      expect(hasLiteralEvidence(serviceSources[1], rawRef)).toBe(true);
       expect(
         first.assets.some(
           (asset) =>
@@ -1455,29 +1585,24 @@ describe("yesid.dev real repository contract", () => {
     for (const expected of [
       {
         sourceFile: "apps/cms/fixtures/assets-manifest.json",
-        sourceLine: 14,
         rawRef: "images/montreal-metro.svg",
       },
       {
         sourceFile: "apps/cms/fixtures/collections/projects.json",
-        sourceLine: 8,
         rawRef: "images/work/yesid-dev-home.png",
       },
       {
         sourceFile: "apps/cms/scripts/seed-brand-assets.ts",
-        sourceLine: 48,
         rawRef: "brand/yesid-icon.svg",
       },
       {
         sourceFile: "apps/web/scripts/generate-og-cards.ts",
-        sourceLine: 72,
         rawRef: "src/lib/og/fonts/Inter-Black.ttf",
       },
     ]) {
       expect(
         hasLiteralEvidence(
           expected.sourceFile,
-          expected.sourceLine,
           expected.rawRef,
         ),
       ).toBe(true);
@@ -1486,22 +1611,18 @@ describe("yesid.dev real repository contract", () => {
     for (const expected of [
       {
         sourceFile: "apps/web/src/lib/components/home/CloserProps.svelte",
-        sourceLine: 24,
         rawRef: "new DOMParser(",
       },
       {
         sourceFile: "apps/web/src/lib/components/home/CloserProps.svelte",
-        sourceLine: 56,
         rawRef: ".appendChild(",
       },
       {
         sourceFile: "apps/web/src/lib/components/home/HomeServices.svelte",
-        sourceLine: 80,
         rawRef: "fetch(`/svg/services/${service.svg}`)",
       },
       {
         sourceFile: "apps/web/src/lib/components/home/HomeServices.svelte",
-        sourceLine: 88,
         rawRef: ".innerHTML",
       },
     ]) {
@@ -1555,15 +1676,15 @@ describe("yesid.dev real repository contract", () => {
         "utf8",
       ),
     ) as { files: Record<string, string> };
-    expect(manifest.assets).toHaveLength(26);
-    expect(Object.keys(cmsMap)).toHaveLength(28);
+    expect(manifest.assets).toHaveLength(47);
+    expect(Object.keys(cmsMap)).toHaveLength(49);
     expect(sharedMap).toEqual(cmsMap);
     expect(Object.keys(generatedManifest.files)).toHaveLength(22);
     expect(
       first.generatedFrom.filter(
         (link) => link.generator === "apps/cms/scripts/lib/media-variants.ts",
       ),
-    ).toHaveLength(49);
+    ).toHaveLength(114);
     expect(
       new Set(
         first.generatedFrom
@@ -1621,22 +1742,34 @@ describe("yesid.dev real repository contract", () => {
         staticOgGenerator,
       ).has("apps/web/src/lib/assets/project-fallbacks/digital-desktop.svg"),
     ).toBe(true);
-    for (const type of ["blog", "project"]) {
+    for (const type of ["blog", "project"] as const) {
       const inputs = provenanceInputs(
         `generated-runtime:og:${type}`,
         "apps/web/src/routes/og/[type=ogType]/[slug].png/+server.ts",
       );
-      for (const expected of [
-        "apps/web/src/lib/og/template.ts",
-        "apps/web/src/lib/og/render.ts",
-        "apps/web/src/lib/og/fonts.ts",
-        "apps/web/src/lib/og/load-title.ts",
-        "apps/web/src/lib/og/fonts/Inter-Black.ttf",
-        "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
-        "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
-        `apps/web/src/lib/content/${type === "blog" ? "blog.ts" : "projects.ts"}`,
-      ])
-        expect(inputs.has(expected)).toBe(true);
+      // Curated provenance inputs (not a transitive closure).
+      expect(inputs).toEqual(
+        new Set([
+          "apps/web/src/routes/og/[type=ogType]/[slug].png/+server.ts",
+          "apps/web/src/lib/og/template.ts",
+          "apps/web/src/lib/og/render.ts",
+          "apps/web/src/lib/og/fonts.ts",
+          "apps/web/src/lib/og/load-title.ts",
+          "apps/web/src/lib/og/og-path.ts",
+          "apps/web/src/lib/og/fonts/Inter-Black.ttf",
+          "apps/web/src/lib/og/fonts/Inter-Medium.ttf",
+          "apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf",
+          "apps/web/src/lib/adapters/index.ts",
+          "apps/web/src/lib/adapters/static.ts",
+          `apps/web/src/lib/${type === "blog" ? "blog" : "projects"}/static-helpers.ts`,
+          `apps/web/src/lib/content/${type === "blog" ? "blog.ts" : "projects.ts"}`,
+        ]),
+      );
+      expect(
+        [...inputs].some((input) =>
+          input.startsWith("apps/web/src/lib/repositories/"),
+        ),
+      ).toBe(false);
     }
     expect(
       first.generatedFrom.filter(
@@ -1679,16 +1812,18 @@ describe("yesid.dev real repository contract", () => {
         gbpGenerator,
       ),
     ).toEqual(new Set(["scripts/generate-gbp-assets.ts#markDot"]));
-    const graffitiInputs = provenanceInputs(
-      "repo-file:apps/web/static/svg/graffiti/the-end.svg",
-      "apps/web/scripts/compose-graffiti.py",
-    );
-    expect(graffitiInputs).toEqual(
-      new Set(["apps/web/scripts/compose-graffiti.py#letters"]),
-    );
-    expect(
-      graffitiInputs.has("apps/web/static/svg/graffiti/prop-sign.svg"),
-    ).toBe(false);
+    for (const locale of ["en", "fr", "es"] as const) {
+      const graffitiInputs = provenanceInputs(
+        `repo-file:apps/web/static/svg/graffiti/the-end.${locale}.svg`,
+        "apps/web/scripts/build-graffiti.mjs",
+      );
+      expect(graffitiInputs).toEqual(
+        new Set(["apps/web/vendor/fonts/lacquer/Lacquer-Regular.ttf"]),
+      );
+      expect(
+        graffitiInputs.has("apps/web/static/svg/graffiti/prop-sign.svg"),
+      ).toBe(false);
+    }
     expect(
       first.assets.filter((asset) => asset.origin === "external-provider")
         .length,
@@ -1717,4 +1852,33 @@ describe("yesid.dev real repository contract", () => {
       ),
     ).toBe(false);
   }, 15_000);
+});
+
+it("connects responsive derivative provenance to the tracked original", async () => {
+  const original = "apps/web/static/images/work/publication-original.png";
+  const derivative = "apps/web/static/images/work/publication-original.w240.webp";
+  const { root, trackedFiles } = await makeMiniRepo({
+    [original]: new Uint8Array([1, 2, 3]),
+    [derivative]: new Uint8Array([4, 5, 6]),
+    "apps/web/src/lib/content/media-variants.ts": [
+      "export const mediaVariants = {",
+      "\t'/images/work/publication-original.png': {",
+      "\t\tvariants: [{ path: '/images/work/publication-original.w240.webp' }],",
+      "\t}",
+      "};",
+    ].join("\n"),
+  });
+  const scan = await scanRepository({
+    repoRoot: root,
+    trackedFiles,
+    declarations: [],
+  });
+  const links = scan.generatedFrom.filter(
+    (link) => link.outputAssetId === "repo-file:" + derivative,
+  );
+  expect(links).toHaveLength(1);
+  expect(links[0]!.inputRef).toBe(original);
+  expect(
+    scan.assets.filter((asset) => asset.repoPath === links[0]!.inputRef),
+  ).toHaveLength(1);
 });

@@ -126,6 +126,10 @@ interface AuditAssetsSubject {
     generatedAt: string;
     repositoryRevision: string | null;
   }): AssetAuditBaseline;
+  localizeAssetAuditRoute(
+    route: string,
+    locale: "en" | "fr" | "es",
+  ): string;
   buildCurrentAssetOgGraph(input: {
     repository: RepositoryScan;
     blogs?: readonly {
@@ -145,10 +149,10 @@ interface AuditAssetsSubject {
     counts: {
       siteStaticGroups: 13;
       serviceStaticGroups: 4;
-      projectRuntimeGroups: 2;
-      blogRuntimeGroups: 6;
-      totalGroups: 25;
-      totalRows: 75;
+      projectRuntimeGroups: 4;
+      blogRuntimeGroups: 10;
+      totalGroups: 31;
+      totalRows: 93;
     };
   };
   buildCurrentGeneratedOutputExpectations(
@@ -198,6 +202,13 @@ const REPOSITORY_SOURCE_KINDS = new Set([
 ]);
 const repoRoot = resolve(import.meta.dir, "../../..");
 let repositoryScanPromise: Promise<RepositoryScan> | null = null;
+const EMPTY_REPOSITORY_SCAN = {
+  schemaVersion: 1,
+  assets: [],
+  usages: [],
+  generatedFrom: [],
+  findings: [],
+} as const satisfies RepositoryScan;
 
 function currentRepositoryScan(): Promise<RepositoryScan> {
   repositoryScanPromise ??= scanRepository({
@@ -1000,7 +1011,109 @@ describe("asset audit baseline publication boundary", () => {
 });
 
 describe("current generated OG inventory contract", () => {
-  it("derives the exact 25-group/75-row graph and proves every static file binding", async () => {
+  it("localizes only the closed unlocalized root-relative route domain", () => {
+    const cli = requireSubject();
+
+    expect(
+      [
+        ["/", "en"],
+        ["/", "fr"],
+        ["/", "es"],
+        ["/about", "en"],
+        ["/about", "fr"],
+        ["/about", "es"],
+      ].map(([route, locale]) =>
+        cli.localizeAssetAuditRoute(
+          route,
+          locale as "en" | "fr" | "es",
+        ),
+      ),
+    ).toEqual(["/", "/fr", "/es", "/about", "/fr/about", "/es/about"]);
+
+    for (const route of [
+      "about",
+      "https://evil.example/about",
+      "//evil.example/about",
+      "/blog/https://evil.example/about",
+      "/blog//evil.example/about",
+      "/about?campaign=private",
+      "/about#private",
+      "/blog/../private",
+      "/blog/%2Fprivate",
+      "/blog\\private",
+      "/fr",
+      "/fr/about",
+      "/es",
+      "/es/about",
+    ]) {
+      expect(() => cli.localizeAssetAuditRoute(route, "fr"), route).toThrow(
+        /unlocalized root-relative path without query or hash/i,
+      );
+    }
+  });
+
+  it("rejects hostile project and blog slugs before they can contaminate public routes", () => {
+    const cli = requireSubject();
+    const publicProject = projects.find(
+      (project) => project.status === "public",
+    )!;
+    const internalPost = blogPosts.find((post) => !post.external)!;
+
+    for (const slug of [
+      "post?token=secret",
+      "post#fragment",
+      "//evil.example/x",
+      "https://evil.example/x",
+    ]) {
+      expect(() =>
+        cli.buildCurrentAssetOgGraph({
+          repository: EMPTY_REPOSITORY_SCAN,
+          blogs: blogPosts.map((post) =>
+            post.slug === internalPost.slug ? { ...post, slug } : post,
+          ),
+        }),
+      ).toThrow(/unlocalized root-relative path without query or hash/i);
+
+      expect(() =>
+        cli.buildCurrentAssetOgGraph({
+          repository: EMPTY_REPOSITORY_SCAN,
+          projectRows: projects.map((project) =>
+            project.slug === publicProject.slug ? { ...project, slug } : project,
+          ),
+        }),
+      ).toThrow(/unlocalized root-relative path without query or hash/i);
+    }
+  });
+
+  it("maps root and non-root routes to the exact EN/FR/ES public paths", () => {
+    const cli = requireSubject();
+    const graph = cli.buildCurrentAssetOgGraph({
+      repository: EMPTY_REPOSITORY_SCAN,
+    });
+    const routesByUsageKey = new Map(
+      graph.ogCoverage.map((row) => [row.usageKey, row.route]),
+    );
+
+    expect(
+      [
+        "og.home.en",
+        "og.home.fr",
+        "og.home.es",
+        "og.route.about.en",
+        "og.route.about.fr",
+        "og.route.about.es",
+      ].map((usageKey) => [usageKey, routesByUsageKey.get(usageKey)]),
+    ).toEqual([
+      ["og.home.en", "/"],
+      ["og.home.fr", "/fr"],
+      ["og.home.es", "/es"],
+      ["og.route.about.en", "/about"],
+      ["og.route.about.fr", "/fr/about"],
+      ["og.route.about.es", "/es/about"],
+    ]);
+  });
+
+  it("derives the exact 31-group/93-row graph and proves every static file binding", async () => {
     const cli = requireSubject();
     const repository = await currentRepositoryScan();
     const graph = cli.buildCurrentAssetOgGraph({ repository });
@@ -1008,12 +1121,12 @@ describe("current generated OG inventory contract", () => {
     expect(graph.counts).toEqual({
       siteStaticGroups: 13,
       serviceStaticGroups: 4,
-      projectRuntimeGroups: 2,
-      blogRuntimeGroups: 6,
-      totalGroups: 25,
-      totalRows: 75,
+      projectRuntimeGroups: 4,
+      blogRuntimeGroups: 10,
+      totalGroups: 31,
+      totalRows: 93,
     });
-    expect(graph.ogCoverage).toHaveLength(75);
+    expect(graph.ogCoverage).toHaveLength(93);
     const staticRows = graph.ogCoverage.filter(
       (row) => row.currentRef?.kind === "repository-path",
     );
@@ -1049,7 +1162,7 @@ describe("current generated OG inventory contract", () => {
       locales.add(`${row.locale}:${row.route}`);
       groups.set(groupKey, locales);
     }
-    expect(groups.size).toBe(25);
+    expect(groups.size).toBe(31);
     expect([...groups.values()].every((rows) => rows.size === 3)).toBe(true);
   });
 
@@ -1089,6 +1202,20 @@ describe("current generated OG inventory contract", () => {
         cli.buildCurrentAssetOgGraph({ repository, ...mutation }),
       ).toThrow(/inventory|requires|incomplete|locale/i);
     }
+  });
+
+  it("rejects already-localized route inventory outside the closed input domain", () => {
+    const cli = requireSubject();
+    const localizedSitePages = sitePages.map((page) =>
+      page.path === "/about" ? { path: "/fr/about" } : page,
+    );
+
+    expect(() =>
+      cli.buildCurrentAssetOgGraph({
+        repository: EMPTY_REPOSITORY_SCAN,
+        sitePageRows: localizedSitePages,
+      }),
+    ).toThrow(/site-page OG inventory drifted/i);
   });
 
   it("reports a removed static card or runtime declaration as missing OG coverage", async () => {

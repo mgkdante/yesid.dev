@@ -19,12 +19,12 @@ The site is a multilingual SvelteKit application with:
 
 Each domain has one owner:
 
-| Path | Responsibility |
-|---|---|
-| `apps/web` | SvelteKit application, routes, product components, generated content adapters, and deployment |
-| `apps/cms` | Directus schema, deterministic fixtures, content export, and operational tooling |
-| `packages/shared` | Product-owned schemas and utilities shared by the web and CMS domains |
-| `apps/web/vendor/design` | Immutable `yesid.dev-design` Release; never edited by the consumer |
+| Path | Responsibility | Owner guide |
+|---|---|---|
+| `apps/web` | SvelteKit application, routes, product components, generated content adapters, and deployment | [`apps/web/README.md`](apps/web/README.md) |
+| `apps/cms` | Directus schema, deterministic fixtures, content export, and operational tooling | [`apps/cms/README.md`](apps/cms/README.md) |
+| `packages/shared` | Product-owned schemas, types, asset contracts, and runtime constants shared by the web and CMS domains | [`packages/shared/README.md`](packages/shared/README.md) |
+| `apps/web/vendor/design` | Immutable `yesid.dev-design` Release; never edited by the consumer | [`manifest.json`](apps/web/vendor/design/manifest.json) |
 
 Content moves in one direction:
 
@@ -58,7 +58,7 @@ snapshot.
 
 ## Local development
 
-Prerequisites: Bun 1.3+ and Node 22+.
+Prerequisites: Bun 1.3.11 and Node 22+.
 
 ```bash
 bun install --frozen-lockfile
@@ -75,6 +75,7 @@ Run the repository gates:
 bun run test
 bun run check
 bun run ci:tokens
+bun run ci:content
 bun run build
 ```
 

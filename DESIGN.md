@@ -101,6 +101,7 @@ components:
   BlueprintShell: {}
   ChevronToggle: {}
   MetroStation: {}
+  QuietModeButton: {}
   SectionLabel: {}
   StickyPanel: {}
   StopLabel: {}
@@ -115,7 +116,8 @@ dark-first, governed by the four-color infrastructure doctrine below. Every visu
 traces back to one of five principles: edge-to-edge layout, dark-first surfaces, one-orange
 interactivity (orange is the clickable hue — with a single doctrinal exception: yellow
 conversion buttons, see Colors), motion-with-intent, no fluff.
-Full narrative and implementation rules: Notion → Business → Brand.
+Public narrative and implementation rules: README.md, BOUNDARIES.md, and
+docs/BUILD-A-YESID-PRODUCT.md.
 
 ## Colors
 
@@ -154,7 +156,8 @@ Hard floors: body ≥ 16px, mono ≥ 13px, labels ≥ 12px, micro for chrome onl
 
 Four CSS Grid recipes: Full-Bleed · Contained · Content+Sidebars · Edge-Title-Grid. Container
 widths cap at `64rem` (content) / `72rem` (wide). Page gutters scale via `--space-page-x`.
-Section spacing scales via `--space-section-y`. Detailed recipes: Notion → Business → Brand.
+Section spacing scales via `--space-section-y`. Consumer integration guidance lives in
+docs/BUILD-A-YESID-PRODUCT.md.
 
 ## Elevation & Depth
 
@@ -169,9 +172,9 @@ Borders use semantic tokens (`border`, `border-subtle`, `border-strong`).
 
 ## Components
 
-See `@yesid/ui/brand` (8 components: `BlueprintShell`, `ChevronToggle`, `MetroStation`, `SectionLabel`, `StickyPanel`, `StopLabel`, `TerminalCursor`, `TocBadge`) and
-13 primitive subpaths (`@yesid/ui/badge`, `@yesid/ui/button`, `@yesid/ui/card`, `@yesid/ui/collapsible`, `@yesid/ui/combobox`, `@yesid/ui/resizable`, `@yesid/ui/scroll-area`, `@yesid/ui/separator`, `@yesid/ui/sheet`, `@yesid/ui/skeleton`, `@yesid/ui/tabs`, `@yesid/ui/toggle`, `@yesid/ui/toggle-group`). Design-system documentation:
-Notion → Business → Brand.
+See `@yesid/ui/brand` (9 components: `BlueprintShell`, `ChevronToggle`, `MetroStation`, `QuietModeButton`, `SectionLabel`, `StickyPanel`, `StopLabel`, `TerminalCursor`, `TocBadge`) and
+14 primitive subpaths (`@yesid/ui/badge`, `@yesid/ui/button`, `@yesid/ui/card`, `@yesid/ui/collapsible`, `@yesid/ui/combobox`, `@yesid/ui/footer`, `@yesid/ui/resizable`, `@yesid/ui/scroll-area`, `@yesid/ui/separator`, `@yesid/ui/sheet`, `@yesid/ui/skeleton`, `@yesid/ui/tabs`, `@yesid/ui/toggle`, `@yesid/ui/toggle-group`). Design-system documentation:
+the public `@yesid/ui` package documentation and the living Gallery.
 
 ## Do's and Don'ts
 
