@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { AnalyticsControlsInput } from './policy';
-import type { PlausibleTransport } from './transport';
+import type { AnalyticsControlsInput } from '@yesid/analytics/policy';
+import type { PlausibleTransport } from '@yesid/analytics/plausible';
 import type { AnalyticsConsentState } from '$lib/state/analytics-consent.svelte';
 import { createSiteAnalyticsClient } from './client';
 

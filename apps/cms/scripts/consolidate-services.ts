@@ -29,8 +29,8 @@
  *
  * DEV-ONLY since the pipeline-safety sweep: assertDevCms in main() refuses a
  * prod URL. The consolidation already shipped to prod (2026-06-12 GO-day);
- * any future prod replay must go through a deliberate prod-ack orchestrator
- * like promote-content-services-prod.ts, not by re-pointing this script.
+ * any future prod replay requires a newly reviewed production workflow,
+ * not a re-pointing of this DEV-only script.
  *
  * Auth: lib/auth getAdminToken resolves DIRECTUS_BUILD_TOKEN →
  * DIRECTUS_ADMIN_TOKEN → email+password. If the build token is read-scoped

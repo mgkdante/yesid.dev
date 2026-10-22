@@ -59,6 +59,11 @@
 	// Single source of truth the template binds to: the persisted value when keyed,
 	// otherwise the local bindable. Writes route back to whichever owns the state.
 	let isOpen = $derived(persistedOpen ? persistedOpen.value : open);
+	let trigger = $state<HTMLButtonElement>();
+	let content = $state<HTMLElement | null>(null);
+	$effect.pre(() => {
+		if (!isOpen && content?.contains(document.activeElement)) trigger?.focus();
+	});
 	function setOpen(next: boolean): void {
 		if (persistedOpen) persistedOpen.value = next;
 		else open = next;
@@ -125,6 +130,7 @@
 				{#snippet child({ props })}
 					<button
 						{...props}
+						bind:this={trigger}
 						type="button"
 						class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
 					>
@@ -139,7 +145,7 @@
 			</div>
 		{/if}
 
-		<CollapsibleContent forceMount class="section-body">
+		<CollapsibleContent bind:ref={content} forceMount class="section-body" inert={!isOpen}>
 			<div class="min-h-0 overflow-hidden">
 				<div class="px-6 pb-6 pt-3">
 					{#if children}

@@ -347,7 +347,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.blueprint-art--desktop {
 			display: flex;
 		}
@@ -494,7 +494,7 @@
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.project-card--proof .project-card-body {
 			padding: 1.25rem 1.75rem 1rem;
 		}
@@ -516,7 +516,7 @@
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.project-card--proof :global(.card-surface) {
 			min-height: clamp(20rem, 50dvh, 30rem);
 		}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { toProject, statusFromDirectus, type DirectusProject } from './projects';
+import { fetchProjects, toProject, statusFromDirectus, type DirectusProject } from './projects';
 import { ProjectSchema } from '@repo/shared/schemas';
 import type { BlockEditorDoc } from '@repo/shared';
 
@@ -59,10 +59,27 @@ const FIXTURE: DirectusProject = {
 };
 
 describe('statusFromDirectus mapping', () => {
-	it('maps draft -> wip, published -> public, archived -> private', () => {
-		expect(statusFromDirectus('draft')).toBe('wip');
+	it('keeps CMS drafts unpublished rather than treating them as public WIP', () => {
+		expect(statusFromDirectus('draft')).toBe('private');
 		expect(statusFromDirectus('published')).toBe('public');
 		expect(statusFromDirectus('archived')).toBe('private');
+	});
+	it('exports only published projects even if a CMS response includes unpublished rows', async () => {
+		const client = { request: async () => [FIXTURE, { ...FIXTURE, id: 'unpublished-draft', status: 'draft' }, { ...FIXTURE, id: 'archived-project', status: 'archived' }] };
+		const projects = await fetchProjects({ client } as Parameters<typeof fetchProjects>[0]);
+		expect(projects.map(project => project.slug)).toEqual([FIXTURE.id]);
+	});
+	it('reflects simulated publish, localized update and delete transitions without retaining an old row', async () => {
+		let rows: DirectusProject[] = [{ ...FIXTURE, status: 'draft' }];
+		const client = { request: async () => rows };
+		const read = () => fetchProjects({ client } as Parameters<typeof fetchProjects>[0]);
+		expect(await read()).toEqual([]);
+		rows = [{ ...FIXTURE }];
+		expect((await read())[0]?.title.en).toBe('Transit Operations Data Pipeline');
+		rows = [{ ...FIXTURE, translations: [...FIXTURE.translations!, { languages_code: 'fr', title: 'Titre modifié', one_liner: 'Résumé modifié' }] }];
+		expect((await read())[0]?.title.fr).toBe('Titre modifié');
+		rows = [];
+		expect(await read()).toEqual([]);
 	});
 });
 

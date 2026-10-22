@@ -36,11 +36,10 @@ import type { LayoutServerLoad } from './$types';
 export const prerender = true;
 import { isPathPublished } from '$lib/utils/page-registry';
 import { adapter } from '$lib/adapters';
-import { getPageSeo, getSiteSeoDefaults } from '$lib/repositories/meta';
 import { localeFromParams, stripLocaleSegment, delocalizePath } from '$lib/utils/locale-routing';
 import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
+import { errorSeoFallback } from '$lib/adapters/error-seo-fallback';
 import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
 import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
 import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
@@ -95,8 +94,8 @@ export const load: LayoutServerLoad = async ({ route, params, locals, url }) => 
 	const safeSeo = async () => {
 		try {
 			const [seo, siteSeoDefaults] = await Promise.all([
-				getPageSeo(routeId, locale, params as Record<string, string>, ctx),
-				getSiteSeoDefaults(ctx),
+				adapter.meta.forRoute(routeId, locale, params as Record<string, string>, ctx),
+				adapter.meta.siteSeoDefaults(ctx),
 			]);
 			return { seo, themeColor: siteSeoDefaults.themeColor };
 		} catch (err) {

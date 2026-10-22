@@ -3,15 +3,29 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
-	ALL_MODULES,
-	assertValidModuleFilter,
 	buildMirroredMediaAssetsFromManifest,
 	decideExit,
 	fallbackBannerLines,
 	getExportSkipReason,
 	raceWithStallGuard,
 	resolveFallbackPolicy,
+	run,
 } from './export-fallbacks';
+
+describe('failed live export retains last-good generated output', () => {
+	it('does not replace an existing content module after a real HTTP fetch failure', async () => {
+		const emitDir = joinPath(tmpdir(), `cms-export-failure-${crypto.randomUUID()}`);
+		mkdirSync(emitDir, { recursive: true });
+		const marker = joinPath(emitDir, 'site-meta.ts');
+		writeFileSync(marker, 'last approved generated content');
+		const server = Bun.serve({ port: 0, fetch: () => new Response('fixture CMS unavailable', { status: 403 }) });
+		try {
+			expect(await run({ directusUrl: server.url.origin, token: 'fixture', emitDir, dryRun: false, policy: 'fail' })).toEqual({ source: 'none', emitted: 0 });
+			expect(await Bun.file(marker).text()).toBe('last approved generated content');
+			expect(await Bun.file(joinPath(emitDir, 'generated.manifest.json')).exists()).toBe(false);
+		} finally { server.stop(true); rmSync(emitDir, { recursive: true, force: true }); }
+	});
+});
 
 describe('export-fallbacks skip policy', () => {
 	it('skips when EXPORT_FALLBACKS_SKIP is enabled', () => {
@@ -19,9 +33,11 @@ describe('export-fallbacks skip policy', () => {
 		expect(getExportSkipReason({ EXPORT_FALLBACKS_SKIP: 'true' })).toBe('EXPORT_FALLBACKS_SKIP');
 	});
 
-	it('skips Vercel builds by default so committed content remains authoritative', () => {
+	it('refuses a trusted target with a missing live flag instead of silently shipping old content', () => {
 		expect(getExportSkipReason({ VERCEL_ENV: 'preview' })).toBe('VERCEL_ENV=preview');
-		expect(getExportSkipReason({ VERCEL_ENV: 'production' })).toBe('VERCEL_ENV=production');
+		expect(() => getExportSkipReason({ VERCEL_ENV: 'production' })).toThrow('EXPORT_FALLBACKS_LIVE=1');
+		expect(() => getExportSkipReason({ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' })).toThrow('EXPORT_FALLBACKS_LIVE=1');
+		expect(getExportSkipReason({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_SKIP: '1' })).toBe('EXPORT_FALLBACKS_SKIP');
 	});
 
 	it('skips arbitrary preview branches even when the live flag is mis-scoped', () => {
@@ -79,7 +95,7 @@ describe('fallback policy (live-or-die)', () => {
 		).toBe('soft');
 	});
 
-	it('stays soft on Vercel without the LIVE flag (the skip gate exits first anyway)', () => {
+	it('leaves missing-live rejection to the trusted-target gate before fallback policy', () => {
 		expect(resolveFallbackPolicy({ VERCEL_ENV: 'preview' })).toBe('soft');
 		expect(resolveFallbackPolicy({ VERCEL_ENV: 'production' })).toBe('soft');
 	});
@@ -107,19 +123,46 @@ describe('fallbackBannerLines', () => {
 	});
 });
 
-describe('--module filter validation', () => {
-	it('accepts every known module name and the absent filter', () => {
-		for (const name of ALL_MODULES) {
-			expect(() => assertValidModuleFilter(name)).not.toThrow();
-		}
-		expect(() => assertValidModuleFilter(undefined)).not.toThrow();
+describe('complete export boundary', () => {
+	const runCli = async (env: Record<string, string> = {}) => {
+		const child = Bun.spawn({
+			cmd: [
+				Bun.which('bun') ?? 'bun',
+				joinPath(import.meta.dir, 'export-fallbacks.ts'),
+				'--dry-run',
+				'--module=services',
+			],
+			cwd: import.meta.dir,
+			env: { PATH: globalThis.process.env.PATH ?? '', ...env },
+			stdout: 'pipe',
+			stderr: 'pipe',
+		});
+		const [exitCode, stderr] = await Promise.all([
+			child.exited,
+			new Response(child.stderr).text(),
+		]);
+		return { exitCode, stderr };
+	};
+
+	it('rejects partial module selection because generation is all-or-nothing', async () => {
+		const { exitCode, stderr } = await runCli();
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
 	});
 
-	it('rejects a typo loudly instead of silently emitting nothing', () => {
-		expect(() => assertValidModuleFilter('servicess')).toThrow(
-			"unknown --module 'servicess'",
-		);
-		expect(() => assertValidModuleFilter('Services')).toThrow('Valid modules:');
+	it('validates retired flags before the explicit skip gate', async () => {
+		const { exitCode, stderr } = await runCli({ EXPORT_FALLBACKS_SKIP: '1' });
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
+	});
+
+	it('validates retired flags before an untrusted preview skip gate', async () => {
+		const { exitCode, stderr } = await runCli({
+			VERCEL_ENV: 'preview',
+			VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
+		});
+		expect(exitCode).not.toBe(0);
+		expect(stderr).toContain('module');
 	});
 });
 

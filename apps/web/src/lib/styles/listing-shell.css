@@ -62,13 +62,13 @@
 	padding: 0.875rem;
 }
 
-@media (min-width: 768px) {
+@media (--tablet-min) {
 	.listing-content {
 		padding: 2rem 1.5rem;
 	}
 }
 
-@media (min-width: 1024px) {
+@media (--desktop-min) {
 	.listing-grid {
 		grid-template-columns: clamp(220px, 22vw, 320px) 1fr;
 	}

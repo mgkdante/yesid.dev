@@ -68,15 +68,25 @@ describe('setup-blog-translation-key schema plan', () => {
 	});
 
 	it('rejects ambiguous or unknown write flags', () => {
-		expect(() => parseFlags([], DEV_CMS_URL)).toThrow('Missing --target=dev|prod');
+		expect(() => parseFlags([], DEV_CMS_URL)).toThrow('--target=dev|prod');
 		expect(() =>
 			parseFlags(['--target=dev', '--dry-run', '--apply'], DEV_CMS_URL),
-		).toThrow(
-			'Choose either --dry-run or --apply',
-		);
+		).toThrow('choose one: --dry-run or --apply');
 		expect(() => parseFlags(['--target=dev', '--prod'], DEV_CMS_URL)).toThrow(
-			'Unknown argument',
+			'unknown argument',
 		);
+		expect(() =>
+			parseFlags(['--target=dev', '--target=prod'], PROD_CMS_URL),
+		).toThrow('--target=dev|prod');
+		expect(() =>
+			parseFlags(
+				['--target=prod', '--confirm=ONE', '--confirm=TWO'],
+				PROD_CMS_URL,
+			),
+		).toThrow('use at most one --confirm=<phrase>');
+		expect(() =>
+			parseFlags(['--target=dev', '--confirm=IRRELEVANT'], DEV_CMS_URL),
+		).toThrow('--confirm is accepted only for PROD apply');
 	});
 
 	it('cross-checks the configured CMS URL against the explicit target', () => {

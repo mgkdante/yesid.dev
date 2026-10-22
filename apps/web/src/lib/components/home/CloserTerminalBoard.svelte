@@ -155,7 +155,7 @@
 	   each row into stacked full-width lines: [num] LABEL on top, the
 	   description on its own line, the action below. Keeps the same fields and
 	   colors; just gives the description room to read. */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.terminal-row {
 			grid-template-columns: auto 1fr;
 			grid-template-areas:

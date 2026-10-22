@@ -17,9 +17,9 @@
  * manifest together (commit passes); a hand-edit changes only the `.ts`
  * (hash mismatch → commit blocked, with a pointer back to the CMS).
  *
- * The manifest's `files` keys ARE the authoritative set of generated modules —
- * companions, tests, and `index.ts` are absent because the export script never
- * emits them, so they are never guarded.
+ * `EXPORT_MODULE_REGISTRY` is the authoritative generated-module set. A complete
+ * export mirrors those filenames and hashes here; companions, tests, and
+ * `index.ts` are absent because the registry never emits them.
  */
 
 import { createHash } from 'node:crypto';

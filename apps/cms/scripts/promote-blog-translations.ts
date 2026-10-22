@@ -29,6 +29,7 @@ import {
 import type { BlockEditorDoc } from '@repo/shared';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { parseProductionWriteCli } from './lib/prod-gate';
 import { createClient } from './lib/sdk';
 import {
 	loadBlogPostsFixture,
@@ -290,34 +291,14 @@ export function loadTranslationFixture(): readonly DesiredBlogPost[] {
 }
 
 export function parseArgs(argv: readonly string[]): ParsedArgs {
-	const isKnown = (arg: string) =>
-		arg === '--apply' ||
-		arg === '--dry-run' ||
-		arg.startsWith('--target=') ||
-		arg.startsWith('--phase=') ||
-		arg.startsWith('--confirm=');
-	const unknown = argv.find((arg) => !isKnown(arg));
-	if (unknown) {
-		throw new Error(`[promote-blog-translations] Unknown argument: ${unknown}`);
-	}
-	if (argv.includes('--apply') && argv.includes('--dry-run')) {
-		throw new Error(
-			'[promote-blog-translations] Choose either --dry-run or --apply, not both',
-		);
-	}
-
-	const targets = argv
-		.filter((arg) => arg.startsWith('--target='))
-		.map((arg) => arg.slice('--target='.length));
-	if (targets.length === 0) {
+	if (
+		!argv.some(
+			(argument) =>
+				argument === '--target' || argument.startsWith('--target='),
+		)
+	) {
 		throw new Error('[promote-blog-translations] Missing --target=dev|prod');
 	}
-	if (targets.length !== 1 || (targets[0] !== 'dev' && targets[0] !== 'prod')) {
-		throw new Error(
-			'[promote-blog-translations] Invalid target; use exactly one --target=dev|prod',
-		);
-	}
-
 	const phases = argv
 		.filter((arg) => arg.startsWith('--phase='))
 		.map((arg) => arg.slice('--phase='.length));
@@ -330,23 +311,16 @@ export function parseArgs(argv: readonly string[]): ParsedArgs {
 		);
 	}
 
-	const target = targets[0] as Target;
 	const phase = phases[0] as PromotionPhase;
-	const apply = argv.includes('--apply');
-	const confirmation = argv
-		.find((arg) => arg.startsWith('--confirm='))
-		?.slice('--confirm='.length);
-	if (apply && target === 'prod') {
-		const required =
-			phase === 'stage'
-				? PROD_STAGE_CONFIRM_PHRASE
-				: PROD_PUBLISH_CONFIRM_PHRASE;
-		if (confirmation !== required) {
-			throw new Error(
-				`[promote-blog-translations] PROD ${phase} refused. Re-run with --confirm=${required}`,
-			);
-		}
-	}
+	const required =
+		phase === 'stage'
+			? PROD_STAGE_CONFIRM_PHRASE
+			: PROD_PUBLISH_CONFIRM_PHRASE;
+	const { target, apply } = parseProductionWriteCli(
+		argv.filter((argument) => !argument.startsWith('--phase=')),
+		`promote-blog-translations/${phase}`,
+		required,
+	);
 
 	return {
 		apply,

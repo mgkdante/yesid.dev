@@ -39,6 +39,14 @@ export interface MediaVariantsManifestInput {
 	assets: readonly { legacyPath: string }[];
 }
 
+export interface PreparedMediaVariants {
+	data: Readonly<Record<string, MediaVariantEntry>>;
+	writes: readonly {
+		filePath: string;
+		content: Uint8Array;
+	}[];
+}
+
 export function isRasterAsset(legacyPath: string): boolean {
 	const ext = legacyPath.split('.').pop()?.toLowerCase() ?? '';
 	return RASTER_EXTENSIONS.has(ext);
@@ -68,16 +76,15 @@ export function variantPathFor(legacyPath: string, width: number): string {
 }
 
 /**
- * Generate variant files for every raster asset in the manifest and return
- * the media-variants module data, keyed by the original's static URL path
- * ('/images/work/a.png'). Writes are idempotent (existing variants are
- * overwritten). Keys and variant lists are emitted in deterministic order so
- * regeneration diffs stay minimal.
+ * Prepare every variant and its module data without touching the filesystem.
+ * The caller validates the complete CMS snapshot before committing `writes`.
+ * Keys, variants, and writes are deterministic so regeneration diffs stay
+ * minimal.
  */
-export async function buildMediaVariants(
+export async function prepareMediaVariants(
 	manifest: MediaVariantsManifestInput,
 	repoRoot = DEFAULT_REPO_ROOT,
-): Promise<Readonly<Record<string, MediaVariantEntry>>> {
+): Promise<PreparedMediaVariants> {
 	// Dynamic import: sharp is a native module, and export-fallbacks must be
 	// able to honor EXPORT_FALLBACKS_SKIP / VERCEL skip WITHOUT resolving it —
 	// a hermetic CI run on a platform without the prebuilt binary must not
@@ -85,6 +92,7 @@ export async function buildMediaVariants(
 	const { default: sharp } = await import('sharp');
 	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
 	const out: Record<string, MediaVariantEntry> = {};
+	const writes: Array<PreparedMediaVariants['writes'][number]> = [];
 
 	const rasterAssets = manifest.assets
 		.filter((a) => isRasterAsset(a.legacyPath))
@@ -122,12 +130,22 @@ export async function buildMediaVariants(
 				break;
 			}
 			const variantRelPath = variantPathFor(legacyPath, width);
-			await writeFile(resolve(staticRoot, variantRelPath), encoded);
+			writes.push({
+				filePath: resolve(staticRoot, variantRelPath),
+				content: encoded,
+			});
 			variants.push({ width, path: `/${variantRelPath}` });
 		}
 
 		out[`/${legacyPath}`] = { width: meta.width, height: meta.height, variants };
 	}
 
-	return out;
+	return { data: out, writes };
+}
+
+/** Commit a fully prepared plan in its deterministic asset/width order. */
+export async function writeMediaVariants(prepared: PreparedMediaVariants): Promise<void> {
+	for (const write of prepared.writes) {
+		await writeFile(write.filePath, write.content);
+	}
 }

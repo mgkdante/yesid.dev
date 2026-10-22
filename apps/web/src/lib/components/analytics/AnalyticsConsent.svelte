@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { getAnalyticsPolicy } from '$lib/analytics/policy';
+	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
 	import { Button } from '$lib/components/ui/button';
 	import { siteLabels } from '$lib/content';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';

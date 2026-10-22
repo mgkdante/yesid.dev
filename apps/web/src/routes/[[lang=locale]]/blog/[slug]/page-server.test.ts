@@ -1,15 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BlogPost, BlockEditorDoc } from '$lib/types';
 
-const repositoryMocks = vi.hoisted(() => ({
-	getAllPosts: vi.fn(),
-	getPostBySlug: vi.fn(),
-	getPostBody: vi.fn(),
-	getSvgContent: vi.fn(),
-	getBlogPageContent: vi.fn(),
+const adapterMocks = vi.hoisted(() => ({
+	adapter: {
+		blog: {
+			all: vi.fn(),
+			bySlug: vi.fn(),
+			bodyBySlug: vi.fn(),
+			svgContent: vi.fn(),
+		},
+		content: {
+			blogPage: vi.fn(),
+		},
+	},
 }));
 
-vi.mock('$lib/repositories', () => repositoryMocks);
+vi.mock('$lib/adapters', () => adapterMocks);
 vi.mock('$lib/server/code-highlights', () => ({ collectCodeHighlights: () => ({}) }));
 
 import { load } from './+page.server';
@@ -43,16 +49,24 @@ function locals(): App.Locals {
 
 describe('blog detail loader locale boundary', () => {
 	beforeEach(() => {
-		for (const mock of Object.values(repositoryMocks)) mock.mockReset();
-		repositoryMocks.getPostBody.mockResolvedValue(body);
-		repositoryMocks.getSvgContent.mockResolvedValue('<svg />');
-		repositoryMocks.getBlogPageContent.mockResolvedValue({ intro: { en: 'Blog' } });
+		for (const mock of [
+			adapterMocks.adapter.blog.all,
+			adapterMocks.adapter.blog.bySlug,
+			adapterMocks.adapter.blog.bodyBySlug,
+			adapterMocks.adapter.blog.svgContent,
+			adapterMocks.adapter.content.blogPage,
+		]) {
+			mock.mockReset();
+		}
+		adapterMocks.adapter.blog.bodyBySlug.mockResolvedValue(body);
+		adapterMocks.adapter.blog.svgContent.mockResolvedValue('<svg />');
+		adapterMocks.adapter.content.blogPage.mockResolvedValue({ intro: { en: 'Blog' } });
 	});
 
 	it('rejects a slug whose post language does not match the request locale', async () => {
 		const englishPost = post('en', 'article-en');
-		repositoryMocks.getPostBySlug.mockResolvedValue(englishPost);
-		repositoryMocks.getAllPosts.mockResolvedValue([englishPost]);
+		adapterMocks.adapter.blog.bySlug.mockResolvedValue(englishPost);
+		adapterMocks.adapter.blog.all.mockResolvedValue([englishPost]);
 
 		await expect(
 			load({ params: { lang: 'fr', slug: englishPost.slug }, locals: locals() }),
@@ -68,8 +82,8 @@ describe('blog detail loader locale boundary', () => {
 			post('en', 'second-en'),
 		];
 		const selected = posts[3];
-		repositoryMocks.getPostBySlug.mockResolvedValue(selected);
-		repositoryMocks.getAllPosts.mockResolvedValue(posts);
+		adapterMocks.adapter.blog.bySlug.mockResolvedValue(selected);
+		adapterMocks.adapter.blog.all.mockResolvedValue(posts);
 
 		const result = await load({
 			params: { lang: 'fr', slug: selected.slug },

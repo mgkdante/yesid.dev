@@ -16,6 +16,7 @@
 
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
+import { parseProductionWriteCli } from './lib/prod-gate';
 import {
 	type SchemaStep,
 	isAlreadyExists,
@@ -125,30 +126,11 @@ export function parseFlags(
 	argv: readonly string[],
 	publicDirectusUrl = process.env.PUBLIC_DIRECTUS_URL,
 ): ParsedArgs {
-	const isKnown = (arg: string) =>
-		arg === '--apply' ||
-		arg === '--dry-run' ||
-		arg.startsWith('--target=') ||
-		arg.startsWith('--confirm=');
-	const unknown = argv.find((arg) => !isKnown(arg));
-	if (unknown) {
-		throw new Error(`[setup-blog-translation-key] Unknown argument: ${unknown}`);
-	}
-	if (argv.includes('--apply') && argv.includes('--dry-run')) {
-		throw new Error('[setup-blog-translation-key] Choose either --dry-run or --apply');
-	}
-
-	const targets = argv
-		.filter((arg) => arg.startsWith('--target='))
-		.map((arg) => arg.slice('--target='.length));
-	if (targets.length === 0) {
-		throw new Error('[setup-blog-translation-key] Missing --target=dev|prod');
-	}
-	if (targets.length !== 1 || (targets[0] !== 'dev' && targets[0] !== 'prod')) {
-		throw new Error('[setup-blog-translation-key] Use exactly one --target=dev|prod');
-	}
-
-	const target = targets[0] as Target;
+	const { target, apply } = parseProductionWriteCli(
+		argv,
+		'setup-blog-translation-key',
+		PROD_SCHEMA_CONFIRM_PHRASE,
+	);
 	const expectedUrl = target === 'dev' ? DEV_CMS_URL : PROD_CMS_URL;
 	const configuredUrl = normalizeCmsUrl(publicDirectusUrl ?? expectedUrl);
 	if (configuredUrl !== DEV_CMS_URL && configuredUrl !== PROD_CMS_URL) {
@@ -162,22 +144,6 @@ export function parseFlags(
 		);
 	}
 
-	const confirmations = argv
-		.filter((arg) => arg.startsWith('--confirm='))
-		.map((arg) => arg.slice('--confirm='.length));
-	if (confirmations.length > 1) {
-		throw new Error('[setup-blog-translation-key] Use at most one --confirm=<phrase>');
-	}
-	const apply = argv.includes('--apply');
-	if (
-		apply &&
-		target === 'prod' &&
-		confirmations[0] !== PROD_SCHEMA_CONFIRM_PHRASE
-	) {
-		throw new Error(
-			`[setup-blog-translation-key] PROD write refused. Re-run with --confirm=${PROD_SCHEMA_CONFIRM_PHRASE}`,
-		);
-	}
 
 	return { apply, target, directusUrl: expectedUrl };
 }

@@ -196,6 +196,392 @@ export const mediaVariants: Readonly<Record<string, MediaVariantEntry>> = {
 		],
 		width: 1100,
 	},
+	'/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.jpg': {
+		height: 715,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-7a9b64663ee5-01-accueil-dev-desktop-1440x1000.w1425.webp',
+				width: 1425,
+			},
+		],
+		width: 1425,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.png': {
+		height: 2338,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d2080df18394-05__page-notre-histoire__webflow__desktop__default.w1440.webp',
+				width: 1440,
+			},
+		],
+		width: 1440,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.jpg': {
+		height: 811,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-cafe-arona-d93069dbd3ec-01-accueil-dev-mobile-390x844.w375.webp',
+				width: 375,
+			},
+		],
+		width: 375,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.png': {
+		height: 6626,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-59b84556362d-gallery-desktop-dark-reference.w1440.webp',
+				width: 1440,
+			},
+		],
+		width: 1440,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.png': {
+		height: 10666,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-a645de4fe20c-gallery-mobile-dark-reference.w390.webp',
+				width: 390,
+			},
+		],
+		width: 390,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.png': {
+		height: 10666,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-acd8004bbfd8-gallery-mobile-light-reference.w390.webp',
+				width: 390,
+			},
+		],
+		width: 390,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.png': {
+		height: 6626,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-design-dd5b6091c77f-gallery-desktop-light-reference.w1440.webp',
+				width: 1440,
+			},
+		],
+		width: 1440,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.png': {
+		height: 900,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-3a237b3fc322-04-ottawa-avis-mobile-20261006.w390.webp',
+				width: 390,
+			},
+		],
+		width: 390,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.png': {
+		height: 900,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-592093938e2a-03-ottawa-ligne-mobile-20261006.w390.webp',
+				width: 390,
+			},
+		],
+		width: 390,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.jpg': {
+		height: 1000,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-9f87721e55c3-02-stm-carte-desktop.w1440.webp',
+				width: 1440,
+			},
+		],
+		width: 1440,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.png': {
+		height: 900,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-b99f6be54d11-05-ottawa-reseau-intermediate-20261006.w768.webp',
+				width: 768,
+			},
+		],
+		width: 768,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.png': {
+		height: 900,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-d8748fe4b554-06-ottawa-ligne-desktop-20261006.w1280.webp',
+				width: 1280,
+			},
+		],
+		width: 1280,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.jpg': {
+		height: 723,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.w1440.webp',
+				width: 1440,
+			},
+		],
+		width: 1440,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.jpg': {
+		height: 993,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-01776a8a2c64-10-stack-blueprint-fr-desktop-1440x1000-production.w1430.webp',
+				width: 1430,
+			},
+		],
+		width: 1430,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.jpg': {
+		height: 993,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-1d2884854b51-03-contact-en-desktop-1440x1000-production.w1430.webp',
+				width: 1430,
+			},
+		],
+		width: 1430,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.jpg': {
+		height: 1011,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-66b70f580633-08-stack-es-intermediate-768x1024-production.w758.webp',
+				width: 758,
+			},
+		],
+		width: 758,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.jpg': {
+		height: 822,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-6f036fd51cb1-07-stack-en-mobile-390x844-production.w380.webp',
+				width: 380,
+			},
+		],
+		width: 380,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.jpg': {
+		height: 1011,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-b9c103bb93a7-04-contact-fr-intermediate-768x1024-production.w758.webp',
+				width: 758,
+			},
+		],
+		width: 758,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.jpg': {
+		height: 993,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w600.webp',
+				width: 600,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w1200.webp',
+				width: 1200,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-d02fc26ce7ee-09-stack-fr-desktop-1440x1000-production.w1430.webp',
+				width: 1430,
+			},
+		],
+		width: 1430,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.jpg': {
+		height: 822,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-dfb0c3e42599-05-contact-es-mobile-390x844-production.w380.webp',
+				width: 380,
+			},
+		],
+		width: 380,
+	},
+	'/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.jpg': {
+		height: 822,
+		variants: [
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.w240.webp',
+				width: 240,
+			},
+			{
+				path: '/images/work/portfolio-20261008/portfolio-20261008-yesid-dev-fcea6af36630-06-contact-form-es-mobile-390x844-production.w380.webp',
+				width: 380,
+			},
+		],
+		width: 380,
+	},
 	'/images/work/yesid-dev-case-study.png': {
 		height: 920,
 		variants: [

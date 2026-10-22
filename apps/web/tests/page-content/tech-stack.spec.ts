@@ -14,6 +14,20 @@ test.describe('/tech-stack page content', () => {
     expect(text?.trim().length).toBeGreaterThan(0);
   });
 
+  // WS10-041: the route used to wrap its content in a second <main>, nested
+  // inside the layout's — invalid HTML and a broken landmark map for assistive
+  // tech (axe landmark-no-duplicate-main / landmark-main-is-top-level). It also
+  // made every page.locator('main') on this route strict-mode ambiguous.
+  test('tech-stack ships exactly one <main> landmark', async ({ page }) => {
+    await page.goto('/tech-stack');
+
+    await expect(page.locator('main')).toHaveCount(1);
+    await expect(page.locator('main main')).toHaveCount(0);
+    // The hero and the engine band both live inside that single landmark.
+    await expect(page.locator('main [data-testid="tech-stack-hero"]')).toBeVisible();
+    await expect(page.locator('main [data-testid="engine-band"]')).toBeVisible();
+  });
+
   test('tech-stack hero renders terminal lines (visible or hidden per motion)', async ({ page }) => {
     await page.goto('/tech-stack');
 
@@ -45,7 +59,6 @@ test.describe('/tech-stack page content', () => {
     await expect(statValue).toHaveCount(1);
     await expect(statValue).toBeVisible();
     const valueText = await statValue.textContent();
-    // The count is data.items.length — a positive integer.
     const match = valueText?.match(/\d+/);
     expect(match).toBeTruthy();
     expect(Number(match![0])).toBeGreaterThan(0);
@@ -104,10 +117,15 @@ test.describe('/tech-stack page content', () => {
     const cta = page.locator('[data-testid="tech-stack-cta"]');
     await expect(cta).toBeVisible();
 
-    // CTA should have heading and buttons
-    const heading = cta.locator('h2');
-    const text = await heading.textContent();
-    expect(text?.trim().length).toBeGreaterThan(0);
+    await expect(cta.locator('.band-heading')).toBeVisible();
+    await expect(cta.locator('[data-testid="tech-stack-cta-contact"]')).toHaveAttribute(
+      'href',
+      '/contact',
+    );
+    await expect(cta.locator('[data-testid="tech-stack-cta-github"]')).toHaveAttribute(
+      'target',
+      '_blank',
+    );
   });
 
   test('tech-stack respects reduced-motion preference', async ({ page }) => {
@@ -165,6 +183,14 @@ test.describe('/tech-stack page content', () => {
     // proving the locale path renders real translations (not EN fallback).
     const kicker = explainer.locator('.explainer-kicker');
     await expect(kicker).toHaveText('c\'est quoi un stack?');
+
+    // Shared CTA smoke: real FR block_cta copy plus the localized contact href.
+    const cta = page.locator('[data-testid="tech-stack-cta"]');
+    await expect(cta.locator('.band-line').nth(0)).toHaveText('Bâtissons quelque chose');
+    await expect(cta.locator('.band-line').nth(1)).toHaveText('qui avance.');
+    await expect(cta.locator('[data-testid="tech-stack-cta-contact"]')).toHaveAttribute(
+      'href',
+      '/fr/contact',
+    );
   });
 });
-

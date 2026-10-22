@@ -4,41 +4,25 @@
 //
 // Service SVGs fetched via SvelteKit's `fetch` (works during SSR).
 
-import { fetchServiceSvgContents, uniqueSorted } from '$lib/utils';
-import {
-	getPublicProjects,
-	getVisibleServices,
-	getProjectsPageContent,
-} from '$lib/repositories';
+import { fetchServiceSvgContents } from '$lib/utils';
+import { deriveProjectFacets } from '$lib/projects/project-facets';
+import { adapter } from '$lib/adapters';
 import { localeEntries } from '$lib/server/prerender-entries';
-import type { Project } from '$lib/types';
+import type { EntryGenerator } from './$types';
 
-export const entries = localeEntries;
-
-function tagsFromProjects(projects: readonly Project[]): readonly string[] {
-	return uniqueSorted(projects.flatMap((project) => project.tags));
-}
-
-function stackItemsFromProjects(projects: readonly Project[]): readonly string[] {
-	return uniqueSorted(projects.flatMap((project) => project.stack));
-}
-
-function serviceIdsFromProjects(projects: readonly Project[]): readonly string[] {
-	return uniqueSorted(projects.flatMap((project) => project.relatedServices));
-}
+export const entries = (() => localeEntries('/projects')) satisfies EntryGenerator;
+export const prerender = entries().length > 0;
 
 export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };
 
 	const [services, projects, projectsPage] = await Promise.all([
-		getVisibleServices(ctx),
-		getPublicProjects(ctx),
-		getProjectsPageContent(ctx),
+		adapter.services.visible(ctx),
+		adapter.projects.public(ctx),
+		adapter.content.projectsPage(ctx),
 	]);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
-	const tags = tagsFromProjects(projects);
-	const stackItems = stackItemsFromProjects(projects);
-	const serviceIds = serviceIdsFromProjects(projects);
+	const { tags, stackItems, serviceIds } = deriveProjectFacets(projects);
 
 	return { projects, tags, stackItems, serviceIds, services, serviceSvgContents, projectsPage };
 };

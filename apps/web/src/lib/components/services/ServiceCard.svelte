@@ -132,24 +132,14 @@
 
 <style>
 	.service-viewport {
-		height: 100svh;
+		min-height: 100svh;
 		padding-inline: var(--space-page-x);
 		scroll-snap-align: start;
 	}
 
-	@media (min-width: 1024px) {
-		.service-viewport {
-			height: 100dvh;
-		}
-	}
-
-	/* Sticky inner centers content in the usable viewport area between
-	   the sticky tabs (top ~9rem) and projects strip (bottom ~3.5rem).
-	   top = usable-center minus estimated half-content-height.
-	   Works at every scroll position — no scroll-to hack needed. */
 	.viewport-inner {
 		position: sticky;
-		top: calc(50dvh - 13rem);
+		top: calc(var(--nav-clearance) + var(--strip-h) + 1rem);
 		display: flex;
 		align-items: center;
 		/* Original distance restored — the giant title (below) fills the row so the
@@ -231,7 +221,7 @@
 	}
 
 	/* Mobile-only banner — hidden from tablet up (desktop keeps the side panel). */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.svg-mobile-banner {
 			display: none;
 		}
@@ -289,13 +279,13 @@
 
 	/* Mobile: card = usable area height, SVG stacked on top, flex centered.
 	   scroll-margin-top aligns tab clicks below the sticky tabs. */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.service-viewport {
 			height: auto;
 			min-height: 0;
 			padding-block: clamp(4rem, 14svh, 7rem);
 			margin-bottom: clamp(3rem, 12svh, 6rem);
-			scroll-margin-top: 8.75rem;
+			scroll-margin-top: calc(var(--nav-clearance) + var(--strip-h) + 1rem);
 			scroll-snap-align: none;
 		}
 		.service-viewport-first {

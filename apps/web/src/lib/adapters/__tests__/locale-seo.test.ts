@@ -43,15 +43,3 @@ describe('meta.forRoute locale threading', () => {
 		expect(crumbs).not.toContain('Accueil');
 	});
 });
-
-describe('techStack.content locale param', () => {
-	it('defaults to en and accepts a locale (fr now translated by the FR pass)', async () => {
-		const items = await staticAdapter.techStack.all();
-		const id = items[0].id;
-		const en = await staticAdapter.techStack.content(id);
-		const fr = await staticAdapter.techStack.content(id, 'fr');
-		expect(en.length).toBeGreaterThan(0);
-		expect(fr.length).toBeGreaterThan(0);
-		expect(fr).not.toBe(en); // tech-stack longform now carries Québécois fr
-	});
-});

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
 	import { trackPageview } from '$lib/analytics/client';
-	import { getAnalyticsPolicy } from '$lib/analytics/policy';
+	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
 	import { siteLabels } from '$lib/content';
 	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
 	import { homeIntroStore } from '$lib/state/home-intro.svelte';
-	import { createPathnamePageviewTracker } from '$lib/utils/analytics';
+	import { createPathnamePageviewTracker } from '@yesid/analytics/client';
 	import AnalyticsConsent from './AnalyticsConsent.svelte';
 	import type { Locale } from '$lib/types';
 

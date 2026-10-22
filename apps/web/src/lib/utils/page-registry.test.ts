@@ -115,9 +115,7 @@ describe('resolveSitePage — archived sections (row absent)', () => {
 		const registry = without('/blog/personal');
 		expect(resolveSitePage('/blog', registry)?.path).toBe('/blog');
 		expect(resolveSitePage('/blog/some-post', registry)?.path).toBe('/blog');
-		// /blog/personal itself now falls through to the /blog listing prefix —
-		// the exact row is gone, but the path still resolves to the section.
-		expect(resolveSitePage('/blog/personal', registry)?.path).toBe('/blog');
+		expect(resolveSitePage('/blog/personal', registry)).toBeUndefined();
 	});
 
 	it('archived /services kills the section AND its detail pages', () => {

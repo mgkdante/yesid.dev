@@ -11,7 +11,7 @@ const HEADER = `/* GENERATED FROM packages/tokens/tokens.json - DO NOT EDIT */
  * These map shadcn-compatible aliases to primary semantic tokens via var().
  * A theme group may override any of these by declaring the same token name
  * explicitly (e.g. light accent-foreground #111111) — explicit wins, the
- * paired alias is skipped for that theme (GO-day W2 Track 2).
+ * paired alias is skipped for that theme.
  */
 const PAIRED_DEFS: ReadonlyArray<{ name: string; line: string }> = [
   { name: 'card-foreground', line: '--card-foreground: var(--foreground);' },
@@ -23,10 +23,21 @@ const PAIRED_DEFS: ReadonlyArray<{ name: string; line: string }> = [
   { name: 'input', line: '--input: var(--border);' },
 ];
 
+const BREAKPOINT_MEDIA = [
+  { token: 'tablet-min', feature: 'min-width' },
+  { token: 'tablet-max', feature: 'max-width' },
+  { token: 'desktop-min', feature: 'min-width' },
+  { token: 'desktop-max', feature: 'max-width' },
+] as const;
+
 interface FlatToken {
   cssName: string;
   token: Token;
 }
+
+const CSS_NAME_ALIASES: Readonly<Record<string, string>> = {
+  'size-stripH': 'strip-h',
+};
 
 /** Walk a subtree and yield CSS-name → token pairs. Skips $-prefixed metadata. */
 function flatten(tree: TokenTree, prefix = ''): FlatToken[] {
@@ -35,7 +46,7 @@ function flatten(tree: TokenTree, prefix = ''): FlatToken[] {
     if (k.startsWith('$')) continue;
     const name = prefix ? `${prefix}-${k}` : k;
     if (isLeaf(v)) {
-      out.push({ cssName: name, token: v });
+      out.push({ cssName: CSS_NAME_ALIASES[name] ?? name, token: v });
     } else {
       out.push(...flatten(v as TokenTree, name));
     }
@@ -73,6 +84,20 @@ function emitMedia(scheme: 'dark' | 'light', guard: string, items: FlatToken[]):
   );
 }
 
+function emitBreakpointMedia(tree: TokenTree): string {
+  const breakpoints = tree.breakpoint;
+  if (breakpoints === undefined) return '';
+  if (isLeaf(breakpoints)) throw new Error('breakpoint must be a token group');
+
+  return BREAKPOINT_MEDIA.map(({ token: tokenName, feature }) => {
+    const token = breakpoints[tokenName];
+    if (!isLeaf(token) || token.$type !== 'dimension' || typeof token.$value !== 'string') {
+      throw new Error(`breakpoint.${tokenName} must be a dimension token with a string value`);
+    }
+    return `@custom-media --${tokenName} (${feature}: ${serializeCss(token)});`;
+  }).join('\n');
+}
+
 export function generateTokensCss(tree: TokenTree): string {
   // :root holds brand + non-themed tokens (radius, duration, ease, z, opacity,
   // container, font, text, space, shadow, surface aliases, color.brand).
@@ -105,9 +130,11 @@ export function generateTokensCss(tree: TokenTree): string {
   // app.html inline script always sets one).
   const darkMedia = emitMedia('dark', ':root:not([data-theme="light"])', darkItems);
   const lightMedia = emitMedia('light', ':root:not([data-theme="dark"])', lightItems);
+  const breakpointMedia = emitBreakpointMedia(tree);
 
   return (
     HEADER + '\n' +
+    (breakpointMedia ? breakpointMedia + '\n\n' : '') +
     emitBlock(':root', null, rootItems, rootExtra) + '\n' +
     darkBlock + '\n' +
     lightBlock + '\n' +

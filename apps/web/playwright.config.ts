@@ -42,6 +42,7 @@ const DESKTOP_ONLY_SPECS = [
 	'**/state-lang-scroll.spec.ts',
 	'**/state-lang-layout.spec.ts',
 	'**/hero-intro-reload.spec.ts',
+	'**/graffiti-locales.spec.ts',
 	// Replay mechanics (scroll-pinned GSAP completion + day-key write) are tested
 	// once on desktop-chrome — the same as hero-intro-reload. The mobile profiles
 	// add an iPad-Mini scroll-geometry edge case (the intro completion does not
@@ -56,6 +57,12 @@ const DESKTOP_ONLY_SPECS = [
 	// Fold containment asserts the >=1024px viewport equation (100dvh main,
 	// footer below the fold, terminal-body internal scroll) — desktop-only.
 	'**/contact-fold.spec.ts',
+	'**/responsive-breakpoint-boundaries.spec.ts',
+	// Anchor-offset guard: viewport-INDEPENDENT clearance arithmetic plus a
+	// DESKTOP-only assertion (the project `.toc-column` rail is display:none
+	// below 1024px). Also scoped to a zero-safe-area-inset environment — see the
+	// SCOPING block at the top of the spec.
+	'**/nav-anchor-offset.spec.ts',
 	'**/theme-persistence.spec.ts',
 	'**/page-content/**'
 ];
@@ -66,6 +73,7 @@ const DESKTOP_ONLY_SPECS = [
 // (+ desktop-chrome where they assert it) and drop them off the two extra phones.
 const ONE_PHONE_SPECS = [
 	'**/smoke.spec.ts',
+	'**/cta-blueprint-band.spec.ts',
 	'**/mobile/services.spec.ts',
 	'**/mobile/services-detail.spec.ts',
 	'**/mobile/home.spec.ts',

@@ -3,24 +3,23 @@
 // +page.server.ts so we can thread event.locals.pageCache as ctx for
 // loadPage('tech-stack') memoization.
 //
-// Tech items come from the adapter (static content layer post-27.2) via the
-// repository boundary. Page chrome (techStackPage) flows through the adapter.
+// Tech items and page chrome come through the adapter (the active swap point)
+// from the static content layer post-27.2.
 
-import {
-	getAllTechItems,
-	getTechStackPageContent,
-} from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { localeEntries } from '$lib/server/prerender-entries';
+import type { EntryGenerator } from './$types';
 
-export const entries = localeEntries;
+export const entries = (() => localeEntries('/tech-stack')) satisfies EntryGenerator;
+export const prerender = entries().length > 0;
 
 export async function load({ locals }: { locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };
 
 	const [items, techStackPage] = await Promise.all([
-		getAllTechItems(),
-		getTechStackPageContent(ctx),
+		adapter.techStack.all(),
+		adapter.content.techStackPage(ctx),
 	]);
 
-	return { items, techStackPage };
+	return { itemCount: items.length, techStackPage };
 };

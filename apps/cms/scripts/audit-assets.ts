@@ -37,8 +37,10 @@ import { legalPages } from "../../web/src/lib/content/legal-pages";
 import { projects } from "../../web/src/lib/content/projects";
 import { services } from "../../web/src/lib/content/services";
 import { sitePages } from "../../web/src/lib/content/site-pages";
+import { ogImagePath } from "../../web/src/lib/og/og-path";
 import { PUBLISHED_LOCALES } from "../../web/src/lib/utils/published-locales";
 import { parseAssetSemanticKey, type Sha256Hex } from "@repo/shared";
+import { createLocaleRouting } from "@yesid/i18n-core";
 
 const execFileAsync = promisify(execFile);
 const CMS_ROOT = resolve(import.meta.dir, "..");
@@ -697,10 +699,10 @@ type OgLocale = "en" | "fr" | "es";
 export interface AssetAuditOgGraphCounts {
   siteStaticGroups: 13;
   serviceStaticGroups: 4;
-  projectRuntimeGroups: 2;
-  blogRuntimeGroups: 6;
-  totalGroups: 25;
-  totalRows: 75;
+  projectRuntimeGroups: 4;
+  blogRuntimeGroups: 10;
+  totalGroups: 31;
+  totalRows: 93;
 }
 
 export interface AssetAuditOgGraph {
@@ -731,6 +733,29 @@ interface ServiceOgSource {
 }
 
 const OG_LOCALES = Object.freeze(["en", "fr", "es"] as const);
+const ASSET_AUDIT_ROUTE_PATTERN = /^\/(?:[a-z0-9-]+(?:\/[a-z0-9-]+)*)?$/;
+const { localizeUrl } = createLocaleRouting<OgLocale>({
+  defaultLocale: "en",
+  prefixLocales: ["fr", "es"],
+  isPathExempt: () => false,
+  localeSegment: "/[[lang=locale]]",
+  preserveSearchAndHash: false,
+});
+
+export function localizeAssetAuditRoute(
+  route: string,
+  locale: OgLocale,
+): string {
+  if (
+    !ASSET_AUDIT_ROUTE_PATTERN.test(route) ||
+    /^\/(?:fr|es)(?:\/|$)/.test(route)
+  ) {
+    throw new TypeError(
+      `Asset-audit route must be an unlocalized root-relative path without query or hash: ${route}`,
+    );
+  }
+  return localizeUrl({ pathname: route, search: "", hash: "" }, locale);
+}
 const DEFAULT_OG_GROUPS = Object.freeze([
   { ownerType: "site", ownerKey: "home", route: "/" },
   { ownerType: "route", ownerKey: "blog-listing", route: "/blog" },
@@ -762,11 +787,6 @@ const SERVICE_OG_GROUPS = Object.freeze([
   "analytics-reporting",
   "web-development",
 ] as const);
-
-function localizedPublicRoute(route: string, locale: OgLocale): string {
-  if (locale === "en") return route;
-  return route === "/" ? `/${locale}` : `/${locale}${route}`;
-}
 
 function staticOgPath(
   family: "default" | "routes" | "services",
@@ -950,6 +970,7 @@ export function buildCurrentAssetOgGraph(input: {
   publishedLocales?: readonly string[];
 }): AssetAuditOgGraph {
   const blogs = groupedBlogs(input.blogs ?? blogPosts);
+  // Deliberately strict-public: the fixed 31-group/93-row audit excludes WIP even though OG prerender entries include it.
   const publicProjects = (input.projectRows ?? projects)
     .filter((project) => project.status === "public")
     .map((project) => project.slug)
@@ -1000,12 +1021,12 @@ export function buildCurrentAssetOgGraph(input: {
   ) {
     throw new TypeError("The published OG locale inventory drifted");
   }
-  if (publicProjects.length !== 2) {
-    throw new TypeError("The canonical OG graph requires two public projects");
+  if (publicProjects.length !== 4) {
+    throw new TypeError("The canonical OG graph requires four public projects");
   }
-  if (blogs.size !== 6) {
+  if (blogs.size !== 10) {
     throw new TypeError(
-      "The canonical OG graph requires six blog translation groups",
+      "The canonical OG graph requires ten blog translation groups",
     );
   }
 
@@ -1026,7 +1047,7 @@ export function buildCurrentAssetOgGraph(input: {
         semanticKey: parseAssetSemanticKey(`og.site.default.${locale}`),
         ownerType: group.ownerType,
         ownerKey: group.ownerKey,
-        route: localizedPublicRoute(group.route, locale),
+        route: localizeAssetAuditRoute(group.route, locale),
         locale,
         repoPath: staticOgPath("default", "default", locale),
         sourceFile: "apps/web/src/lib/utils/seo-defaults.ts#defaultOgImageFor",
@@ -1045,7 +1066,7 @@ export function buildCurrentAssetOgGraph(input: {
         semanticKey: parseAssetSemanticKey(`og.route.${routeKey}.${locale}`),
         ownerType: "route",
         ownerKey: routeKey,
-        route: localizedPublicRoute(`/${routeKey}`, locale),
+        route: localizeAssetAuditRoute(`/${routeKey}`, locale),
         locale,
         repoPath: staticOgPath("routes", routeKey, locale),
         sourceFile: "apps/web/src/lib/utils/seo-defaults.ts#localizeOgCard",
@@ -1066,7 +1087,7 @@ export function buildCurrentAssetOgGraph(input: {
         ),
         ownerType: "service",
         ownerKey: serviceKey,
-        route: localizedPublicRoute(`/services/${serviceKey}`, locale),
+        route: localizeAssetAuditRoute(`/services/${serviceKey}`, locale),
         locale,
         repoPath: staticOgPath("services", serviceKey, locale),
         sourceFile:
@@ -1080,7 +1101,7 @@ export function buildCurrentAssetOgGraph(input: {
     for (const locale of OG_LOCALES) {
       requirements.push({
         usageKey: `og.project.${projectSlug}.${locale}`,
-        route: localizedPublicRoute(`/projects/${projectSlug}`, locale),
+        route: localizeAssetAuditRoute(`/projects/${projectSlug}`, locale),
         locale,
         ownerType: "project",
         ownerKey: projectSlug,
@@ -1089,10 +1110,7 @@ export function buildCurrentAssetOgGraph(input: {
         ],
         currentRef: {
           kind: "runtime-route",
-          route:
-            locale === "en"
-              ? `/og/project/${projectSlug}.png`
-              : `/og/project/${projectSlug}.png?locale=${locale}`,
+          route: ogImagePath("project", projectSlug, locale),
         },
         proofUsageId: "declared:site.og.runtime-project",
         fallbackUsageKey: null,
@@ -1109,7 +1127,7 @@ export function buildCurrentAssetOgGraph(input: {
       const slug = translations[locale].slug;
       requirements.push({
         usageKey: `og.blog.${translationKey}.${locale}`,
-        route: localizedPublicRoute(`/blog/${slug}`, locale),
+        route: localizeAssetAuditRoute(`/blog/${slug}`, locale),
         locale,
         ownerType: "blog",
         ownerKey: translationKey,
@@ -1146,10 +1164,10 @@ export function buildCurrentAssetOgGraph(input: {
     Number(staticConsumerProof.routes) * ROUTE_OG_GROUPS.length * 3 +
     Number(staticConsumerProof.services) * SERVICE_OG_GROUPS.length * 3;
   if (
-    requirements.length !== 75 ||
+    requirements.length !== 93 ||
     proofUsages.length !== expectedStaticProofs
   ) {
-    throw new TypeError("The canonical OG graph must contain 75 rows");
+    throw new TypeError("The canonical OG graph must contain 93 rows");
   }
   return {
     repository: {
@@ -1160,10 +1178,10 @@ export function buildCurrentAssetOgGraph(input: {
     counts: {
       siteStaticGroups: 13,
       serviceStaticGroups: 4,
-      projectRuntimeGroups: 2,
-      blogRuntimeGroups: 6,
-      totalGroups: 25,
-      totalRows: 75,
+      projectRuntimeGroups: 4,
+      blogRuntimeGroups: 10,
+      totalGroups: 31,
+      totalRows: 93,
     },
   };
 }

@@ -4,6 +4,27 @@ import { flushSync } from 'svelte';
 import Fixture from './_quiet-mode-fixture.svelte';
 import { quietModeStore } from '$lib/state/quiet-mode.svelte';
 
+const localizedCases = [
+	{
+		locale: 'fr',
+		collapse: 'Tout replier',
+		expand: 'Tout déplier',
+		collapseTitle: 'Replier toutes les sections de la page',
+		expandTitle: 'Déplier toutes les sections de la page',
+		remember: 'Toujours replier',
+		forget: 'Ne plus replier',
+	},
+	{
+		locale: 'es',
+		collapse: 'Contraer todo',
+		expand: 'Expandir todo',
+		collapseTitle: 'Contraer todas las secciones de esta página',
+		expandTitle: 'Expandir todas las secciones de esta página',
+		remember: 'Empezar siempre contraído',
+		forget: 'No empezar contraído',
+	},
+] as const;
+
 // Homework #19b: both controls are plain buttons whose accessible name IS the
 // visible verb label ("Collapse all" / "Expand all"), flipping with state.
 // State styling hooks moved from aria-checked/aria-pressed to
@@ -101,4 +122,27 @@ describe('QuietModeButton', () => {
 		expect(collapseToggle).toHaveAttribute('data-collapsed', 'true');
 		expect(trigger).toHaveAttribute('aria-expanded', 'false');
 	});
+
+	it.each(localizedCases)(
+		'preserves CMS-backed $locale labels and titles through the package view',
+		async ({ locale, collapse, expand, collapseTitle, expandTitle, remember, forget }) => {
+			render(Fixture, {
+				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+			});
+			flushSync();
+
+			const collapseToggle = screen.getByRole('button', { name: collapse });
+			const rememberToggle = screen.getByRole('button', { name: remember });
+			expect(collapseToggle).toHaveAttribute('title', collapseTitle);
+			expect(rememberToggle).toHaveAttribute('title', remember);
+
+			await fireEvent.click(collapseToggle);
+			flushSync();
+			expect(screen.getByRole('button', { name: expand })).toHaveAttribute('title', expandTitle);
+
+			await fireEvent.click(rememberToggle);
+			flushSync();
+			expect(screen.getByRole('button', { name: forget })).toHaveAttribute('title', forget);
+		},
+	);
 });

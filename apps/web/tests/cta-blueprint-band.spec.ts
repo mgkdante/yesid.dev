@@ -6,6 +6,7 @@ const routes = [
 	['home', '/', 'home-cta-band'],
 	['service', '/services/database-engineering', 'service-cta-band'],
 	['project', '/projects/yesid-dev', 'project-cta-band'],
+	['tech-stack', '/tech-stack', 'tech-stack-cta'],
 ] as const;
 
 const viewports = [
@@ -344,10 +345,12 @@ for (const [viewportName, width, height] of viewports) {
 				}
 			}
 
-			expect(domSnapshots[1]).toBe(domSnapshots[0]);
-			expect(domSnapshots[2]).toBe(domSnapshots[0]);
-			expect(styleSnapshots[1]).toBe(styleSnapshots[0]);
-			expect(styleSnapshots[2]).toBe(styleSnapshots[0]);
+			for (const snapshot of domSnapshots.slice(1)) {
+				expect(snapshot).toBe(domSnapshots[0]);
+			}
+			for (const snapshot of styleSnapshots.slice(1)) {
+				expect(snapshot).toBe(styleSnapshots[0]);
+			}
 			for (const box of routeBoxes.slice(1)) {
 				expect(Math.abs(box.width - routeBoxes[0].width)).toBeLessThanOrEqual(1);
 				expect(Math.abs(box.height - routeBoxes[0].height)).toBeLessThanOrEqual(1);
