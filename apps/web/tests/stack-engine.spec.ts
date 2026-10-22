@@ -215,9 +215,8 @@ test('round 4 compose: undo + start over narrate through the counter; the build 
 	await expect(shape).not.toBeVisible();
 });
 
-test('finale 4d + micro-pass 4e: hero and engine band each run full bleed; CTA stays constrained', async ({
+test('finale 4d + micro-pass 4e: hero, engine band, and shared CTA each run full bleed', async ({
 	page,
-	isMobile,
 }) => {
 	await page.goto('/tech-stack');
 	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
@@ -238,22 +237,23 @@ test('finale 4d + micro-pass 4e: hero and engine band each run full bleed; CTA s
 	expect(Math.round(hero!.width)).toBe(pageWidth);
 	expect(Math.round(hero!.x)).toBe(0);
 
-	// The hazard frame (shared /projects divider) spans the full bleed too.
-	for (const tid of ['engine-band-hazard-top', 'engine-band-hazard-bottom']) {
+	// Owner directive 2026-07-30: the trailing engine hazard is removed because
+	// CtaBand owns the single engine-to-CTA transition with its leading separator.
+	for (const tid of ['engine-band-hazard-top']) {
 		const strip = await page.locator(`[data-testid="${tid}"]`).boundingBox();
 		expect(strip, `${tid} must render`).not.toBeNull();
 		expect(Math.round(strip!.width)).toBe(pageWidth);
 		expect(Math.round(strip!.x)).toBe(0);
 	}
+	await expect(page.locator('[data-testid="engine-band-hazard-bottom"]')).toHaveCount(0);
 
-	// Desktop only: the CTA below keeps its constrained width EXACTLY
-	// ("perfect that way") — container-wide cap < page width. On mobile every
-	// section is naturally edge-to-edge, so "constrained" is not observable.
-	if (!isMobile) {
-		const cta = await page.locator('[data-testid="tech-stack-cta"]').boundingBox();
-		expect(cta!.width).toBeLessThan(pageWidth);
-		expect(Math.round(band!.width)).toBeGreaterThan(Math.round(cta!.width));
-	}
+	// Owner directive 2026-07-30 supersedes the constrained-CTA acceptance:
+	// the shared band shell is a site-wide full-bleed surface.
+	const cta = await page.locator('[data-testid="tech-stack-cta"]').boundingBox();
+	expect(cta).not.toBeNull();
+	expect(Math.round(cta!.width)).toBe(pageWidth);
+	expect(Math.round(cta!.x)).toBe(0);
+	expect(Math.round(band!.width)).toBe(Math.round(cta!.width));
 });
 
 test('blueprint fits the viewport — whole drawing at a glance (GO-w2t5 operator playtest)', async ({
@@ -270,18 +270,22 @@ test('blueprint fits the viewport — whole drawing at a glance (GO-w2t5 operato
 	const viewport = page.viewportSize();
 	expect(box).not.toBeNull();
 	expect(viewport).not.toBeNull();
-	// Runs on desktop-chrome AND all three mobile projects.
+	// CI's desktop project owns this file; the test itself remains
+	// viewport-relative so its ≤85% geometry contract is explicit.
 	expect(box!.height).toBeLessThanOrEqual(viewport!.height * 0.85);
 	expect(box!.width).toBeLessThanOrEqual(viewport!.width);
 });
 
-// go2/w5 finale (4b): the READABILITY FLOOR at a HIGH pick count — boxes hold
-// their full size at 10 picks (the layout wraps/pans instead of shrinking),
-// on desktop AND every mobile project. (4c rides along: the phrase heading
-// and the journey stepper are live at the same time.)
+// go2/w5 finale (4b): the READABILITY FLOOR at a HIGH pick count. Slice 037
+// keeps the stacked drawing through tablet widths, then letterboxes the wide
+// drawing from the desktop boundary without crossing the floor. (4c rides
+// along: the phrase heading and journey stepper are live at the same time.)
 test('finale: 10 picks never shrink a box below the readable floor; the phrase still leads', async ({
 	page,
 }) => {
+	// Start at the former 768px failure boundary: the 1:1 stacked renderer
+	// must remain selected there.
+	await page.setViewportSize({ width: 768, height: 768 });
 	await page.goto('/tech-stack');
 	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
 
@@ -301,19 +305,27 @@ test('finale: 10 picks never shrink a box below the readable floor; the phrase s
 	await expect(page.locator('[data-testid="build-counter"]')).toContainText(/10 picks/);
 	await expect(stepper.locator('[aria-current="step"]')).toContainText('read your build');
 
-	// Exactly one drawing variant visible (wide ≥768px / stacked below)…
+	// Exactly one drawing variant is visible at the tablet boundary.
 	const drawing = page.locator(
 		'[data-testid="shape-blueprint"]:visible, [data-testid="shape-blueprint-stacked"]:visible',
 	);
 	await expect(drawing).toHaveCount(1);
 	await expect(drawing.locator('.sbp-box-solid')).toHaveCount(10);
-	// …and a rendered box keeps its FULL drawn size (BOX_W 192 × BOX_H 56 at
-	// render scale 1 — the floor, raised by the go2/w5 legibility pass so the
-	// 16px box labels keep their room; small tolerance for sub-pixel rounding).
-	const rect = await drawing.locator('.sbp-box-solid .sbp-box-rect').first().boundingBox();
-	expect(rect).not.toBeNull();
-	expect(rect!.width).toBeGreaterThanOrEqual(180);
-	expect(rect!.height).toBeGreaterThanOrEqual(53);
+	const assertReadableBox = async (boundary: string) => {
+		const rect = await drawing.locator('.sbp-box-solid .sbp-box-rect').first().boundingBox();
+		expect(rect, boundary).not.toBeNull();
+		expect(rect!.width, boundary).toBeGreaterThanOrEqual(180);
+		expect(rect!.height, boundary).toBeGreaterThanOrEqual(53);
+	};
+	await assertReadableBox('768px stacked boundary');
+
+	// Resize to the tightest wide-renderer boundary. The 972px frame
+	// letterboxes into the available card width, but its 0.9506 geometry
+	// scale remains above the 53/56 readability threshold.
+	await page.setViewportSize({ width: 1024, height: 768 });
+	await expect(drawing).toHaveCount(1);
+	await expect(drawing).toHaveAttribute('data-testid', 'shape-blueprint');
+	await assertReadableBox('1024px wide boundary');
 
 	// The phrase builder composes one market sentence over all 10 picks.
 	await expect(page.locator('[data-testid="shape-phrase"]')).toContainText(/^A .+\.$/);

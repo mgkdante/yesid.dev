@@ -8,7 +8,7 @@
 //
 // SCHEMA FIX (slice-28.5, audit #32): the parent-row shape now writes
 // `icon_id` (the M2O FK that replaced the legacy `icon` string when 18h-ii
-// dropped that field — see migrate-tech-stack-icon.ts). The fixture keeps its
+// dropped that field). The fixture keeps its
 // `icon` key; fixture icon values are verified identical to icons.id slugs,
 // so the seeder maps fixture.icon -> row.icon_id directly. Before this fix a
 // fresh bootstrap would have written a field the schema no longer has.

@@ -13,7 +13,8 @@
 //   - big wrapped pick sets (8, 15, 21 = every committed tech at once).
 
 import { describe, it, expect } from 'vitest';
-import { STACK_LAYERS, type ArchetypeTechLink, type StackLayer } from '@repo/shared/schemas';
+import type { ArchetypeTechLink } from '@repo/shared/schemas';
+import { STACK_LAYERS, type StackLayer } from '@repo/shared/stack-layers';
 import { layoutBlueprint, type BlueprintLayout } from './blueprint-layout';
 import { stackArchetypes } from '$lib/content/stack-archetypes';
 import { techStackItems } from '$lib/content/tech-stack';

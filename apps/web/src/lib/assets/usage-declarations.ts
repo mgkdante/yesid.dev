@@ -125,7 +125,8 @@ export const assetUsageDeclarations = defineAssetUsages([
     required: true,
     deliveryMode: "og-meta",
     confidence: "declared-dynamic",
-    reason: "The blog slug and locale compose a runtime OG endpoint.",
+    reason:
+      "The localized blog slug selects a prerendered OG asset emitted during the web build.",
   },
   {
     usageKey: "site.og.runtime-project",
@@ -140,7 +141,8 @@ export const assetUsageDeclarations = defineAssetUsages([
     required: true,
     deliveryMode: "og-meta",
     confidence: "declared-dynamic",
-    reason: "The project slug and locale compose a runtime OG endpoint.",
+    reason:
+      "The project slug and path-encoded locale select a prerendered OG asset emitted during the web build.",
   },
   {
     usageKey: "site.media.uuid-mirror",
@@ -204,6 +206,22 @@ export const assetUsageDeclarations = defineAssetUsages([
     confidence: "declared-dynamic",
     reason:
       "The active localized polaroid record determines the image rendered by the carousel.",
+  },
+  {
+    usageKey: "site.media.about-polaroid-srcset",
+    semanticKey: "site.media.uuid-mirror",
+    consumerType: "component",
+    consumerKey: "about-polaroid-carousel",
+    source:
+      "apps/web/src/lib/components/about/AboutPolaroids.svelte#img-srcset:currentSrcset",
+    route: "/about",
+    locale: null,
+    slot: "polaroid-photo-srcset",
+    required: true,
+    deliveryMode: "local-img",
+    confidence: "declared-dynamic",
+    reason:
+      "The active localized polaroid record selects its generated responsive image variants.",
   },
   {
     usageKey: "site.media.about-language",

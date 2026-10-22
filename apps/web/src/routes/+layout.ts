@@ -2,7 +2,7 @@ import type { LayoutLoad } from './$types';
 import { pathLocale } from '$lib/utils/locale-routing';
 import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
+import { errorSeoFallback } from '$lib/adapters/error-seo-fallback';
 import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,

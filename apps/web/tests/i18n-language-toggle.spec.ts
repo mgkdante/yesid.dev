@@ -52,12 +52,16 @@ test.describe('Language toggle — click navigation + content change', () => {
 
     // Assert the stable FR copy marker (CTA buttonLabel).
     await expect(page.locator('body')).toContainText('Envoyer un message');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
 
     // Click 1: FR → ES
     await toggle.click();
     await page.waitForURL('/es/about');
     await expect(page.locator('body')).toContainText('Enviar mensaje');
     await expect(page.locator('body')).not.toContainText('Envoyer un message');
+    // documentElement.lang must track the client-routed switch (039E): the
+    // server stamps it once via %lang%; the root layout re-syncs it in-place.
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es');
 
     // Click 2: ES → EN (no prefix)
     await toggle.click();
@@ -68,6 +72,7 @@ test.describe('Language toggle — click navigation + content change', () => {
     // Verify EN page copy is back and the ES marker is gone.
     await expect(page.locator('body')).toContainText('Send message');
     await expect(page.locator('body')).not.toContainText('Enviar mensaje');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   });
 
   test('language toggle preserves path across all routes (en → fr → es → en cycle)', async ({ page }) => {

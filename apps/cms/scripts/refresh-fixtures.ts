@@ -54,9 +54,8 @@ import { createLogger } from './lib/logger';
 import { parseSeedFlags, runMain } from './lib/cli';
 import {
 	mapLocalizedRepeater,
-	toLocalizedString,
-	toLocalizedStringOrUndef,
 	mapLocalizedField,
+	toLocalizedFields,
 } from './lib/locale';
 import {
 	stackFromTechM2M,
@@ -307,34 +306,40 @@ function toServiceFixture(row: RawService, relatedProjects: readonly string[]): 
 	const translations = row.translations ?? [];
 	const service: Service = {
 		id: row.id,
-		title: toLocalizedString(translations, 'title'),
-		description: toLocalizedString(translations, 'description'),
+		...toLocalizedFields(translations, ['title', 'description']),
 		station: row.station,
 		visible: row.visible ?? true,
 		relatedProjects: [...relatedProjects],
 	};
-	const subtitle = toLocalizedStringOrUndef(translations, 'subtitle');
-	if (subtitle) service.subtitle = subtitle;
-	const longDescription = toLocalizedStringOrUndef(translations, 'long_description');
-	if (longDescription) service.longDescription = longDescription;
+	Object.assign(
+		service,
+		toLocalizedFields(translations, [
+			['subtitle', 'subtitle', 'optional'],
+			['longDescription', 'long_description', 'optional'],
+		]),
+	);
 	if (row.svg) service.svg = row.svg;
-	const benefitHeadline = toLocalizedStringOrUndef(translations, 'benefit_headline');
-	if (benefitHeadline) service.benefitHeadline = benefitHeadline;
-	const impactValue = toLocalizedStringOrUndef(translations, 'impact_metric_value');
-	const impactLabel = toLocalizedStringOrUndef(translations, 'impact_metric_label');
-	if (impactValue && impactLabel) {
-		service.impactMetric = { value: impactValue, label: impactLabel };
+	Object.assign(
+		service,
+		toLocalizedFields(translations, [
+			['benefitHeadline', 'benefit_headline', 'optional'],
+			['valueProposition', 'value_proposition', 'optional'],
+		]),
+	);
+	const impactMetric = toLocalizedFields(translations, [
+		['value', 'impact_metric_value', 'optional'],
+		['label', 'impact_metric_label', 'optional'],
+	]);
+	if (impactMetric.value && impactMetric.label) {
+		service.impactMetric = { value: impactMetric.value, label: impactMetric.label };
 	}
-	const valueProposition = toLocalizedStringOrUndef(translations, 'value_proposition');
-	if (valueProposition) service.valueProposition = valueProposition;
 	const deliverables = mapLocalizedField(row.deliverables, 'label');
 	if (deliverables.length > 0) service.deliverables = deliverables;
 	const stack = stackFromTechM2M(row.tech_stack);
 	if (stack.length > 0) service.stack = stack;
-	const sections = mapLocalizedRepeater(row.sections, (s) => ({
-		title: toLocalizedString(s.translations ?? [], 'title'),
-		content: toLocalizedString(s.translations ?? [], 'content'),
-	}));
+	const sections = mapLocalizedRepeater(row.sections, (s) =>
+		toLocalizedFields(s.translations ?? [], ['title', 'content']),
+	);
 	if (sections.length > 0) service.sections = sections;
 
 	// Rebuild with the committed fixture's key order so diffs stay readable.

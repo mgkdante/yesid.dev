@@ -19,6 +19,7 @@ export const YESID_COLOR_MIX_FILES: readonly string[] = [
 	'src/lib/components/home/FeaturedProjects.svelte',
 	'src/lib/components/blog/BlogDetailHeader.svelte',
 	'src/lib/components/projects/ProjectDetailHeader.svelte',
+	'src/lib/components/shared/DetailHeaderShell.svelte',
 	'src/lib/components/shared/TocPill.svelte',
 ];
 
@@ -28,7 +29,7 @@ export const YESID_MARKER_ALLOWED_FILES: ReadonlySet<string> = new Set([
 ]);
 
 export const YESID_COLOR_MIX_CONFIG = {
-	brandTokens: ['primary', 'accent', 'blog-accent'],
+	brandTokens: ['primary', 'accent', 'blog-accent', 'header-accent'],
 	brandFloor: 85,
 	foregroundFloor: 65,
 	exemptMarker: 'contrast-exempt',

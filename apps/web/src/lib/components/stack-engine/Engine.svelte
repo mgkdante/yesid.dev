@@ -20,7 +20,7 @@
 	import { Flip } from 'gsap/Flip';
 	import { pushState } from '$app/navigation';
 	import { page } from '$app/state';
-	import { STACK_LAYERS } from '@repo/shared/schemas';
+	import { STACK_LAYERS } from '@repo/shared/stack-layers';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -320,7 +320,13 @@
 		--layer-data: var(--success);
 		--layer-infra: var(--muted-foreground);
 		--bp-grid-ink: color-mix(in srgb, var(--border) 45%, transparent);
+		--bp-ghost-opacity: 0.4;
 		--engine-teach-ink: var(--secondary-foreground);
+		/* Slice-037 grammar map: G1 is N/A because the drawing is the content,
+		   with no copy zone. G2 is the shared app-local ghost-opacity token.
+		   G3 keeps fixed-size boxes centered and extends every short row to
+		   both drawing edges with frame-relative drafting guides. G5 is moot
+		   because ladder tokens are not used on this engine surface. */
 		/* Taste round 2 (fit audit): what the engine band actually composites —
 		   route tint (3% primary) over the page background. Text halos that
 		   must mask connector lines (pair notes) use THIS, not raw
@@ -427,7 +433,7 @@
 		color: var(--engine-teach-ink);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.layer-legend {
 			display: flex;
 			gap: 1.25rem;

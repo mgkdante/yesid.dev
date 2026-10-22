@@ -117,7 +117,7 @@ export const SITE_META_TRANSLATION_EDITS: Record<'en' | 'fr' | 'es', Record<stri
 		owner_job_title: SELF_TITLE,
 	},
 	// This older narrow migration only owns the FR/ES person-title field. The
-	// guarded outcome-first reconciler owns the broader multilingual copy set.
+	// active outcome-first fixture owns the broader multilingual copy contract.
 	fr: { owner_job_title: 'Développeur de solutions numériques à la pige' },
 	es: { owner_job_title: 'Desarrollador freelance de soluciones digitales' },
 };

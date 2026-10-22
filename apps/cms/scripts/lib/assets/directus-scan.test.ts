@@ -778,6 +778,32 @@ describe("Directus surface contract and bounded reads", () => {
     ).toEqual(expect.objectContaining({ complete: false, rowCount: 100 }));
   });
 
+  it("accepts a short page that exactly fills a lowered row cap", async () => {
+    const client = makeClient({ pageRows: { site_pages: pageRows(50) } });
+    const snapshot = await scanDirectusAssets({
+      environment: "dev",
+      client,
+      limits: { maxRowsPerCollection: 50 },
+    });
+
+    expect(
+      client.calls.pages
+        .filter((call) => call.surface === "site_pages")
+        .map((call) => call.offset),
+    ).toEqual([0]);
+    expect(
+      snapshot.readReceipts.find((r) => r.surface === "site_pages"),
+    ).toEqual(
+      expect.objectContaining({ complete: true, rowCount: 50 }),
+    );
+    expect(snapshot.readIssues).not.toContainEqual(
+      expect.objectContaining({
+        code: "pagination-limit",
+        entityKey: "site_pages",
+      }),
+    );
+  });
+
   it("accepts lowered positive safe limits and rejects invalid or over-four concurrency overrides", async () => {
     const client = makeClient();
     await expect(

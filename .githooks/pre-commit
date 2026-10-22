@@ -13,11 +13,8 @@
 #                hashes match and the commit passes. A hand-edit changes only the
 #                .ts → hash mismatch → commit blocked.
 #
-# GUARD 3 is the real content enforcement layer: it catches edits made by ANY means
-# (Edit tool, Bash `sed`/`echo >`, a script, etc.) because it checks the staged
-# bytes at commit time. The companion Claude PreToolUse hook
-# (.claude/hooks/pretool-block-generated-ts.sh) is only fast edit-time feedback
-# for the Edit tools and does not, by itself, guarantee anything.
+# GUARD 3 checks staged bytes, so it catches generated-content edits regardless
+# of which editor or script produced them.
 #
 # Bypass (last resort, document in the PR): git commit --no-verify
 set -euo pipefail
@@ -127,8 +124,7 @@ fi
 CONTENT_DIR="apps/web/src/lib/content"
 MANIFEST_PATH="$CONTENT_DIR/generated.manifest.json"
 # ASCII hyphen on purpose: emit-module.ts writes this exact string. Keep the
-# three sites in sync (emitter header, this hook, the Claude PreToolUse hook);
-# apps/cms/scripts/lib/generated-manifest.test.ts asserts the sync.
+# emitter and this hook in sync; generated-manifest.test.ts asserts the match.
 GENERATED_MARKER="GENERATED FILE - do not edit by hand."
 
 # Read the manifest as it will be committed (index/stage-0 version — this is the
@@ -154,7 +150,7 @@ manifest_hash_for() {
   printf '%s' "$MANIFEST_JSON" \
     | grep -oE "\"$bre\"[[:space:]]*:[[:space:]]*\"[0-9a-f]{64}\"" \
     | grep -oE '[0-9a-f]{64}' \
-    | head -1
+    | head -1 || true
 }
 
 violations=()
@@ -190,7 +186,7 @@ if [ "${#violations[@]}" -gt 0 ] || [ "${#missing_from_manifest[@]}" -gt 0 ]; th
   echo "  These files are an edge cache regenerated FROM the Directus CMS."
   echo "  The CMS is the source of truth — a prod rebuild OVERWRITES any"
   echo "  hand-edit. To change this content: edit the dev CMS, then run"
-  echo "    op run --env-file=apps/cms/.env -- bun run --cwd apps/cms export:fallbacks"
+  echo "    bun run --env-file=.env --cwd apps/cms export:fallbacks"
   echo "  and commit the regenerated .ts + generated.manifest.json together."
   echo ""
   if [ "${#violations[@]}" -gt 0 ]; then

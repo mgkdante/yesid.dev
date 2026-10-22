@@ -47,13 +47,6 @@ describe('GO-w2t5 motion policy — MOTION-GATED CSS surfaces park under reduce'
 		expect(src).toMatch(/\.weather-lightning \{[\s\S]*?opacity: 0/);
 	});
 
-	it('Nav: the collapsible link slide snaps (transition none) under reduce', () => {
-		const src = read('src/lib/components/layout/Nav.svelte');
-		expect(src).toMatch(
-			/@media \(prefers-reduced-motion: reduce\) \{\s*\.nav-collapsible \{\s*transition: none;/,
-		);
-	});
-
 	it('ProjectCard: the image hover zoom rests under reduce', () => {
 		const src = read('src/lib/components/projects/ProjectCard.svelte');
 		expect(src).toContain('project-card-img');

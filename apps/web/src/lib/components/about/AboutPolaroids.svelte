@@ -14,6 +14,7 @@
 	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
+	import { mediaVariants } from '$lib/content/media-variants';
 	import { persisted } from '$lib/state/persisted.svelte';
 
 	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
@@ -37,8 +38,12 @@
 		polaroids.length > 0 ? ((polaroid.value % polaroids.length) + polaroids.length) % polaroids.length : 0,
 	);
 	const current = $derived(polaroids[currentIndex]);
-	const alt = $derived(resolveLocale(current.alt, locale));
-	const caption = $derived(resolveLocale(current.caption, locale));
+	const currentMedia = $derived(current ? mediaVariants[current.src] : undefined);
+	const currentSrcset = $derived(
+		currentMedia?.variants.map((variant) => `${variant.path} ${variant.width}w`).join(', '),
+	);
+	const alt = $derived(current ? resolveLocale(current.alt, locale) : '');
+	const caption = $derived(current ? resolveLocale(current.caption, locale) : '');
 	const prevPhotoAria = resolveLocale(aboutPageContent.labels.polaroidPrevAria, locale);
 	const nextPhotoAria = resolveLocale(aboutPageContent.labels.polaroidNextAria, locale);
 </script>
@@ -49,7 +54,8 @@
 >
 <Card class="h-full p-3" data-testid="about-polaroids">
 	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
+		{#if current}
 
 		<!-- Polaroid display. Reserve the tallest polaroid frame on mobile so the
 		     {#key currentIndex} remount (which briefly empties this slot) can't
@@ -71,6 +77,12 @@
 					<div class="rounded-sm bg-white p-1.5 pb-5 shadow-lg shadow-black/40">
 						<img
 							src={current.src}
+							srcset={currentSrcset}
+							sizes={currentMedia
+								? '(min-width: 1024px) min(16vw, 373px), (min-width: 640px) 192px, 160px'
+								: undefined}
+							width={currentMedia?.width}
+							height={currentMedia?.height}
 							{alt}
 							class="h-56 w-40 object-cover sm:h-64 sm:w-48 lg:h-[calc(100%-4rem)] lg:w-auto lg:max-h-[280px] lg:min-h-[160px]"
 							loading="lazy"
@@ -103,6 +115,7 @@
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4 2L6.5 5L4 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>
 		</div>
+		{/if}
 	</div>
 </Card>
 </div>

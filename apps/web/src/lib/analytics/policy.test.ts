@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getAnalyticsPolicy, normalizeAnalyticsControls } from './policy';
+import { getAnalyticsPolicy, normalizeAnalyticsControls } from '@yesid/analytics/policy';
 import type {
 	AnalyticsConsentChoice,
 	AnalyticsConsentState,

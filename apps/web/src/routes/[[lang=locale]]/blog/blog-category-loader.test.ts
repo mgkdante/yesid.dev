@@ -1,13 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BlogPost } from '$lib/types';
 
-const repositoryMocks = vi.hoisted(() => ({
-	getPostsByCategory: vi.fn(),
-	getSvgContentsForPosts: vi.fn(),
-	getBlogPageContent: vi.fn(),
+const adapterMocks = vi.hoisted(() => ({
+	adapter: {
+		blog: {
+			byCategory: vi.fn(),
+			svgContentsForPosts: vi.fn(),
+		},
+		content: {
+			blogPage: vi.fn(),
+		},
+	},
 }));
 
-vi.mock('$lib/repositories', () => repositoryMocks);
+vi.mock('$lib/adapters', () => adapterMocks);
 
 import { loadBlogCategory } from './blog-category-loader';
 
@@ -30,9 +36,9 @@ function post(lang: BlogPost['lang'], slug: string, tags: readonly string[]): Bl
 
 describe('loadBlogCategory', () => {
 	beforeEach(() => {
-		repositoryMocks.getPostsByCategory.mockReset();
-		repositoryMocks.getSvgContentsForPosts.mockReset();
-		repositoryMocks.getBlogPageContent.mockReset();
+		adapterMocks.adapter.blog.byCategory.mockReset();
+		adapterMocks.adapter.blog.svgContentsForPosts.mockReset();
+		adapterMocks.adapter.content.blogPage.mockReset();
 	});
 
 	it('filters posts to the request locale before deriving facets and SVG content', async () => {
@@ -41,9 +47,9 @@ describe('loadBlogCategory', () => {
 			post('fr', 'article-fr', ['francais', 'partage']),
 			post('es', 'article-es', ['espanol']),
 		];
-		repositoryMocks.getPostsByCategory.mockResolvedValue(posts);
-		repositoryMocks.getBlogPageContent.mockResolvedValue({ intro: { en: 'Blog' } });
-		repositoryMocks.getSvgContentsForPosts.mockImplementation(async (localePosts: BlogPost[]) =>
+		adapterMocks.adapter.blog.byCategory.mockResolvedValue(posts);
+		adapterMocks.adapter.content.blogPage.mockResolvedValue({ intro: { en: 'Blog' } });
+		adapterMocks.adapter.blog.svgContentsForPosts.mockImplementation(async (localePosts: BlogPost[]) =>
 			Object.fromEntries(localePosts.map((entry) => [entry.slug, `<svg id="${entry.slug}" />`])),
 		);
 
@@ -57,7 +63,7 @@ describe('loadBlogCategory', () => {
 		expect(result.tags).toEqual(['francais', 'partage']);
 		expect(result.languages).toEqual(['fr']);
 		expect(result.svgContents).toEqual({ 'article-fr': '<svg id="article-fr" />' });
-		expect(repositoryMocks.getSvgContentsForPosts).toHaveBeenCalledWith(
+		expect(adapterMocks.adapter.blog.svgContentsForPosts).toHaveBeenCalledWith(
 			[posts[1]],
 			expect.anything(),
 		);

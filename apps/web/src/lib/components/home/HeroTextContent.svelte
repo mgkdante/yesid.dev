@@ -11,7 +11,7 @@
 
 	const locale = getLocale();
 	import { pressBounce } from '$lib/motion/actions';
-	import type { HeroData } from '$lib/content';
+	import type { HeroData } from '$lib/live';
 	let {
 		headlineLine1,
 		headlineLine2,
@@ -66,7 +66,7 @@
 	</p>
 	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} {headlineAriaSuffix}">
 		<span
-			class="block text-hero-mobile text-[var(--foreground)] md:text-hero"
+			class="block text-[var(--foreground)]"
 			data-testid="hero-line1"
 			data-hero-stagger="1"
 		>
@@ -79,7 +79,7 @@
 	     ancestor would hide it). The h1 above still carries the full phrase. -->
 	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 		<span
-			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
+			class="block text-[var(--primary)]"
 			data-testid="hero-line2"
 		>
 			<span data-hero-stagger="1" aria-hidden="true">{headlineLine2}</span><button
@@ -267,26 +267,18 @@
 		}
 	}
 
+	[data-testid="hero-line1"], [data-testid="hero-line2"] { font-size: var(--page-display); }
+
 	/* Mobile: text + buttons MUST fit in 100svh - nav.
 	   Height is a hard constraint; text scales proportionally via svh *and* vw
 	   so "PIPELINES" doesn't overflow the viewport width on narrow phones. */
-	@media (max-width: 768px) {
+	@media (--tablet-max) {
 		.hero-viewport-text {
-			height: calc(100svh - 5rem);
+			min-height: calc(100svh - var(--nav-clearance));
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			padding-block: 0.5rem;
-		}
-		/* Fit the whole hero (headline through both CTAs) inside one short
-		   viewport so it stops clipping before the SQL demo. The headline floor
-		   drops and is svh-scaled via the house clamp(min, min(vw, svh), max)
-		   idiom so the SHORTEST phones (iPhone SE 667) and the longer FR copy
-		   both fit. Overrides the --text-hero-mobile token for mobile only;
-		   wider phones keep the 4rem ceiling. */
-		.hero-viewport-text :global([data-testid="hero-line1"]),
-		.hero-viewport-text :global([data-testid="hero-line2"]) {
-			font-size: clamp(2.25rem, min(11.5vw, 6.6svh), 4rem);
 		}
 		/* Tighten the inter-element spacing to reclaim vertical budget. */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
@@ -318,17 +310,34 @@
 	/* Sub-660px-tall phones (e.g. 320x640) carrying the longer FR copy need a
 	   touch more shaved so nothing clips. iPhone SE (667) and Galaxy S23 (780)
 	   are above this floor and unaffected. */
-	@media (max-width: 768px) and (max-height: 660px) {
-		.hero-viewport-text :global([data-testid="hero-line1"]),
-		.hero-viewport-text :global([data-testid="hero-line2"]) {
-			font-size: clamp(2rem, min(10.5vw, 6svh), 3.5rem);
-		}
+	@media (--tablet-max) and (max-height: 660px) {
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
-			font-size: var(--text-menu-subtitle);
+			font-size: 1rem;
 			line-height: 1.3;
 		}
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
 			margin-block: 0.375rem;
 		}
+	}
+
+	@media (--tablet-min) and (--desktop-max) {
+		.hero-viewport-text :global([data-testid="hero-line1"]),
+		.hero-viewport-text :global([data-testid="hero-line2"]),
+		.hero-viewport-text :global([data-testid="hero-subheadline"]),
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			overflow-wrap: normal;
+			word-break: normal;
+			hyphens: none;
+		}
+		.hero-viewport-text :global([data-testid="hero-subheadline"]) {
+			font-size: clamp(1.625rem, calc(4vw - 0.25rem), 2.375rem);
+		}
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			font-size: clamp(1rem, calc(2.0625vw - 0.125rem), 1.25rem);
+		}
+	}
+	@media (max-height: 720px) and (--tablet-min) {
+		.hero-viewport-text :global([data-hero-stagger="3"]) { margin-block: 0.75rem; }
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) { margin-top: 0.75rem; font-size: 1rem; line-height: 1.4; }
 	}
 </style>

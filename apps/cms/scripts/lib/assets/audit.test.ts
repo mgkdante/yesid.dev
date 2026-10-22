@@ -372,7 +372,7 @@ function generatedOutput(
 
 function ogMatrix(): OgCoverageRequirement[] {
   const rows: OgCoverageRequirement[] = [];
-  for (let group = 1; group <= 25; group += 1) {
+  for (let group = 1; group <= 31; group += 1) {
     const suffix = group.toString().padStart(2, "0");
     for (const locale of ["en", "fr", "es"] as const) {
       rows.push({
@@ -2278,7 +2278,7 @@ describe("OG coverage grammar and resolution", () => {
     matrix[index] = { ...matrix[index]!, ...patch };
   }
 
-  it("accepts exactly 25 groups with EN/FR/ES and rejects malformed matrices", () => {
+  it("accepts exactly 31 groups with EN/FR/ES and rejects malformed matrices", () => {
     expect(() => reconcileAssetAudit(auditInput())).not.toThrow();
     const missing = ogMatrix().slice(0, -1);
     expect(() =>
@@ -2443,7 +2443,7 @@ describe("OG coverage grammar and resolution", () => {
           route:
             locale === "en"
               ? "/og/project/metro-map.png"
-              : `/og/project/metro-map.png?locale=${locale}`,
+              : `/og/project/metro-map.${locale}.png`,
         },
         proofUsageId: "declared:site.og.runtime-project",
       });
@@ -2502,7 +2502,10 @@ describe("OG coverage grammar and resolution", () => {
       },
     });
     setRow(invalid, "route.og.slot-04.fr", {
-      currentRef: { kind: "runtime-route", route: "/og/project/metro-map.png" },
+      currentRef: {
+        kind: "runtime-route",
+        route: "/og/project/metro-map.png?locale=fr",
+      },
     });
     const invalidReport = reconcileAssetAudit(
       auditInput({

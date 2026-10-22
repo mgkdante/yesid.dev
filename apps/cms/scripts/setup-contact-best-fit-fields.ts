@@ -2,14 +2,14 @@
 /**
  * setup-contact-best-fit-fields.ts
  *
- * Schema half of the contact BEST FIT block (launch Phase 1, homework #26b):
+ * Schema setup for the contact BEST FIT block:
  * a fourth info-terminal section naming the projects that fit best, following
  * the LANGUAGES-section precedent (flat per-locale columns, cheap to extend).
  *
  *   block_contact_content_translations.info_section_label_best_fit
  *   block_contact_content_translations.info_best_fit_1 / _2 / _3
  *
- * Values ship separately via content-contact-best-fit.ts.
+ * Current values are owned by fixtures and generated content.
  *
  * DEV-ONLY. Dry-run by default; pass --apply to write schema.
  */
@@ -66,7 +66,7 @@ export function buildFieldPlan(): SchemaStep[] {
 	}));
 }
 
-/** Exported for the prod promotion orchestrator (promote-launch-phase1-prod). */
+/** Exported for callers that provide their own target guard. */
 export async function applyPlan(plan: readonly SchemaStep[], ctx: ApplyContext): Promise<void> {
 	for (const step of plan) {
 		const res = await rest(ctx, step.method, step.path, step.payload);

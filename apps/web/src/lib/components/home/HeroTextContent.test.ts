@@ -8,7 +8,7 @@ const analyticsMocks = vi.hoisted(() => ({
 vi.mock('$lib/analytics/client', () => analyticsMocks);
 
 import HeroTextContent from './HeroTextContent.svelte';
-import { generateHeroData } from '$lib/content';
+import { generateHeroData } from '$lib/live';
 
 beforeEach(() => {
 	analyticsMocks.trackAnalyticsEvent.mockClear();
@@ -16,9 +16,9 @@ beforeEach(() => {
 
 function baseProps(overrides: Record<string, unknown> = {}) {
 	return {
-		headlineLine1: 'PIPELINES THAT',
-		headlineLine2: "DON'T BREAK.",
-		headlineAriaSuffix: "don't break.",
+		headlineLine1: 'SYSTEMS WE BUILD',
+		headlineLine2: 'STAY AVAILABLE.',
+		headlineAriaSuffix: 'stay available.',
 		subheadlineText: 'sub',
 		subtitleText: 'subtitle',
 		identityText: 'freelance digital infrastructure - Montreal',

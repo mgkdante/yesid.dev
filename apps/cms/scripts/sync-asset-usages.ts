@@ -16,6 +16,7 @@ import {
   type NormalizedStoredUsage,
 } from "./lib/assets/directus-scan";
 import { canonicalizeAssetAuditReport } from "./lib/assets/report";
+import { readAllPages } from "./lib/read-all-pages";
 import { assertDevCms } from "./lib/sdk";
 import {
   loadLiveAssetAuditReport,
@@ -671,38 +672,46 @@ export function createAssetUsageSyncHttpClient(input: {
   return {
     async readStoredUsages() {
       const rows: NormalizedStoredUsage[] = [];
-      for (let offset = 0; ; offset += PAGE_SIZE) {
-        const query = new URLSearchParams({
-          fields: STORED_USAGE_FIELDS.join(","),
-          sort: "id",
-          limit: String(PAGE_SIZE),
-          offset: String(offset),
-        });
-        const response = await fetcher(
-          new URL(`/items/asset_usages?${query}`, input.url),
-          {
-            method: "GET",
-            headers: requestHeaders(input.token, false),
-            redirect: "error",
-            signal: AbortSignal.timeout(30_000),
-          },
-        );
-        if (!response.ok) {
-          throw new Error(`Asset usage CMS request failed (${response.status})`);
-        }
-        let body: unknown;
-        try {
-          body = await response.json();
-        } catch {
-          throw new Error("Asset usage CMS response was invalid");
-        }
-        if (!isRecord(body) || !Array.isArray(body.data)) {
-          throw new Error("Asset usage CMS response was invalid");
-        }
-        const page = body.data.map(normalizeStoredUsage);
-        rows.push(...page);
-        if (page.length < PAGE_SIZE) return rows;
-      }
+      await readAllPages({
+        pageSize: PAGE_SIZE,
+        readPage: async ({ limit, offset }) => {
+          const query = new URLSearchParams({
+            fields: STORED_USAGE_FIELDS.join(","),
+            sort: "id",
+            limit: String(limit),
+            offset: String(offset),
+          });
+          const response = await fetcher(
+            new URL(`/items/asset_usages?${query}`, input.url),
+            {
+              method: "GET",
+              headers: requestHeaders(input.token, false),
+              redirect: "error",
+              signal: AbortSignal.timeout(30_000),
+            },
+          );
+          if (!response.ok) {
+            throw new Error(
+              `Asset usage CMS request failed (${response.status})`,
+            );
+          }
+          let body: unknown;
+          try {
+            body = await response.json();
+          } catch {
+            throw new Error("Asset usage CMS response was invalid");
+          }
+          if (!isRecord(body) || !Array.isArray(body.data)) {
+            throw new Error("Asset usage CMS response was invalid");
+          }
+          return body.data.map(normalizeStoredUsage);
+        },
+        visitPage: (page) => {
+          rows.push(...page);
+          return page.length >= PAGE_SIZE ? "continue" : "stop";
+        },
+      });
+      return rows;
     },
     async applyAction(action) {
       const create = action.kind === "create";

@@ -14,6 +14,7 @@
 	import { StatusDot } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import CtaBand from '$lib/components/shared/CtaBand.svelte';
 
 	let { data } = $props();
 
@@ -24,14 +25,13 @@
 	let EngineComponent = $state<Component<{ animate?: boolean }> | null>(null);
 	let engineAnimate = $state(true);
 
-	// Dynamic counts from data layer.
-	const itemCount = $derived(data.items.length);
+	const itemCount = $derived(data.itemCount);
 
 	// Pre-resolved chrome via the layout-provided locale (slice-28.6). Each
 	// read is $derived so it recomputes if `data` changes: a plain const
 	// captures only the initial value, which Svelte 5 flags.
 	// SEO meta + title emitted by <SeoHead> in +layout.svelte (Slice 15a).
-	// Chrome content flows through adapter → repository → load() post-17c
+	// Chrome content flows through adapter → load() post-17c
 	// (closed the 17b seam leak that had this file importing $lib/content).
 	const heroOverline = $derived(resolveLocale(data.techStackPage.hero.overline, locale));
 	const heroTitleLine1 = $derived(resolveLocale(data.techStackPage.hero.titleLine1, locale));
@@ -51,9 +51,9 @@
 	});
 	const getInTouchLabel = $derived(resolveLocale(data.techStackPage.actions.getInTouch, locale));
 	const viewServicesLabel = $derived(resolveLocale(data.techStackPage.actions.viewServices, locale));
-	const ctaHeadingLine1 = $derived(resolveLocale(data.techStackPage.cta.headingLine1, locale));
-	const ctaHeadingLine2 = $derived(resolveLocale(data.techStackPage.cta.headingLine2, locale));
-	const ctaSub = $derived(resolveLocale(data.techStackPage.cta.sub, locale));
+	// techStackPage.cta remains a required generated/CMS compatibility object,
+	// but the route no longer renders those fields. Retirement belongs to the
+	// /stack story-redesign follow-up; the hero action labels stay consumed.
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -64,7 +64,7 @@
 
 	// CMS-driven line templates (go2-t1b2 operator addendum) with the previous
 	// hardcoded strings as code fallbacks. The literal {count} token is
-	// interpolated here from data.items.length — computed, never stored.
+	// interpolated here from the catalog count — computed, never stored.
 	const count = $derived(String(itemCount));
 	const terminalLines: TerminalLine[] = $derived([
 		{ text: fillTemplate(resolveLocale(data.techStackPage.hero.terminal.cmd, locale) || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },
@@ -111,7 +111,12 @@
 	});
 </script>
 
-<main class="tech-stack-page">
+<!-- The page landmark belongs to the root layout's `main`; this wrapper is a
+     plain <div> so /tech-stack ships exactly ONE main landmark (a `main` may
+     not descend from another `main` — axe landmark-no-duplicate-main /
+     landmark-main-is-top-level). The .tech-stack-page style hook below binds
+     by class, so the swap is markup-only. -->
+<div class="tech-stack-page">
 	<!-- ═══ HERO ZONE ═══ -->
 	<section class="hero" data-testid="tech-stack-hero">
 		<div class="hero-overline">
@@ -184,13 +189,8 @@
 	</section>
 
 	<!-- ═══ ENGINE ZONE (slice-29, own async chunk) ═══
-	     GO-w2t5 operator addendum: the zone is a full-bleed band — edge-to-edge
-	     on desktop, framed top + bottom by the shared full-width hazard strips
-	     (the /projects dashed orange divider, reused — not reinvented). Hero
-	     above and CTA below keep their constrained width EXACTLY ("perfect
-	     that way"). Mobile width behavior is unchanged: sections are already
-	     naturally edge-to-edge below --container-wide. The band wraps the
-	     loading placeholder too, so the frame is stable while the chunk lands. -->
+	     The full-bleed engine keeps its leading hazard. The shared CTA mounted
+	     immediately after it owns the single trailing transition. -->
 	<div class="engine-band" data-testid="engine-band">
 		<HazardSeparator data-testid="engine-band-hazard-top" />
 		{#if EngineComponent}
@@ -200,29 +200,10 @@
 				<span class="engine-loading-line">{engineLoading}</span>
 			</section>
 		{/if}
-		<HazardSeparator data-testid="engine-band-hazard-bottom" />
 	</div>
 
-	<!-- ═══ CTA ZONE ═══ -->
-	<section class="cta-zone" data-testid="tech-stack-cta">
-		<div class="cta-hazard" aria-hidden="true"></div>
-		<h2 class="cta-heading">
-			{ctaHeadingLine1}<span class="cta-accent">?</span><br>
-			{ctaHeadingLine2}<span class="cta-accent">.</span>
-		</h2>
-		<p class="cta-sub">
-			{ctaSub}
-		</p>
-		<div class="cta-buttons">
-			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
-				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
-			</Button>
-			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
-				{viewServicesLabel}
-			</Button>
-		</div>
-	</section>
-</main>
+	<CtaBand testidPrefix="tech-stack-cta" />
+</div>
 
 <style>
 	.tech-stack-page {
@@ -433,59 +414,9 @@
 		color: var(--muted-foreground);
 	}
 
-	/* ═══ CTA ZONE ═══ */
-
-	.cta-zone {
-		max-width: var(--container-wide);
-		margin: 4rem auto 2rem;
-		padding: 0 var(--space-page-x);
-		text-align: center;
-	}
-
-	.cta-hazard {
-		width: 60px;
-		height: 3px;
-		margin: 0 auto 2rem;
-		background: repeating-linear-gradient(
-			-45deg,
-			var(--accent) 0px, var(--accent) 4px,
-			transparent 4px, transparent 8px
-		);
-	}
-
-	.cta-heading {
-		font-family: var(--font-heading);
-		font-size: clamp(1.5rem, 3vw, 2.5rem);
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		line-height: 1.2;
-		color: var(--foreground);
-		margin-bottom: 0.75rem;
-	}
-
-	.cta-accent { color: var(--primary); }
-
-	.cta-sub {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		color: var(--muted-foreground);
-		margin-bottom: 2rem;
-		max-width: 500px;
-		margin-inline: auto;
-		line-height: 1.6;
-	}
-
-	.cta-buttons {
-		display: flex;
-		justify-content: center;
-		gap: 1rem;
-		margin-bottom: 1rem;
-		flex-wrap: wrap;
-	}
-
 	/* ═══ Responsive ═══ */
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		/* Micro-pass (4f): desktop control room is TWO columns — the reading
 		   column drives at ~60/40 and both columns sit on one bottom rhythm
 		   line (align-items: end → the terminal's resting prompt and the
@@ -508,7 +439,7 @@
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		/* Finale (4d): mobile stays composed — big but never broken. The clamp
 		   minima above already fit a 360px viewport; tighten the frame only.
 		   (4f: the bottom 2rem rides the section now that the action row lost
@@ -527,10 +458,6 @@
 			flex-wrap: wrap;
 		}
 
-		.cta-zone {
-			margin-top: 3rem;
-			padding: 0 var(--space-page-x);
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

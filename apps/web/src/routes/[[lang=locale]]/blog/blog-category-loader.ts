@@ -3,25 +3,20 @@
 // derivation lives here once and each +page.server.ts is a one-line call.
 // Plain .ts (no `+` prefix) so SvelteKit does not treat it as a route.
 
-import {
-	getPostsByCategory,
-	getSvgContentsForPosts,
-	getBlogPageContent,
-} from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { getBlogPostsForLocale } from '$lib/blog/translations';
 import { uniqueSorted } from '$lib/utils';
-import type { Locale } from '$lib/types';
+import type { BlogCategory, Locale } from '$lib/types';
 
-type BlogCategory = Parameters<typeof getPostsByCategory>[0];
 type LoadCtx = { pageCache: App.Locals['pageCache'] };
 
 export async function loadBlogCategory(category: BlogCategory, locale: Locale, ctx: LoadCtx) {
 	const [categoryPosts, blogPage] = await Promise.all([
-		getPostsByCategory(category, ctx),
-		getBlogPageContent(ctx),
+		adapter.blog.byCategory(category, ctx),
+		adapter.content.blogPage(ctx),
 	]);
 	const posts = getBlogPostsForLocale(categoryPosts, locale);
-	const svgContents = await getSvgContentsForPosts(posts, ctx);
+	const svgContents = await adapter.blog.svgContentsForPosts(posts, ctx);
 	const tags = uniqueSorted(posts.flatMap((post) => post.tags));
 	const languages = uniqueSorted(posts.map((post) => post.lang)) as readonly Locale[];
 
