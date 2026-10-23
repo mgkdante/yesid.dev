@@ -179,15 +179,16 @@ function expectNoTransportChunkRequest(requestedUrls: string[]): void {
 	expect(transportRequests).toHaveLength(0);
 }
 
-test('fresh homepage keeps consent absent while the GSAP intro owns the viewport', async ({
+test('fresh homepage shows consent while the hero waits for explicit activation', async ({
 	page,
 }) => {
 	await proxyProductionHostnameToPreview(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
 
-	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
-	await expect(page.getByTestId('analytics-consent')).toHaveCount(0);
+	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
+	await expect(page.locator('.pin-spacer')).toHaveCount(0);
+	await expect(page.getByTestId('analytics-consent')).toBeVisible();
 });
 
 test('same-day settled home shows consent, hides it for replay, and restores it after completion', async ({

@@ -1317,8 +1317,9 @@ describe("yesid.dev real repository contract", () => {
       // product asset-governance scan surface.
       // 45→44 / 58→57 (2026-07-23): the unreachable TableOfContents component
       // and its single inline SVG root were retired in Phase 2 C1.
-      svgFiles: 44,
-      inlineSvgRoots: 57,
+      // HeroDotAnnotation adds one product-owned inline SVG root.
+      svgFiles: 45,
+      inlineSvgRoots: 58,
       imageTags: 11,
     });
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });
