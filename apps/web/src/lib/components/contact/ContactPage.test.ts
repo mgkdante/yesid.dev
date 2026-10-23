@@ -60,7 +60,7 @@ beforeEach(() => {
 	originalFetch = globalThis.fetch;
 	analyticsMocks.trackAnalyticsEvent.mockClear();
 });
-afterEach(() => { globalThis.fetch = originalFetch; });
+afterEach(() => { globalThis.fetch = originalFetch; vi.useRealTimers(); });
 
 async function typeInto(el: HTMLInputElement | HTMLTextAreaElement, value: string) {
 	el.value = value;
@@ -324,6 +324,41 @@ describe('ContactPage', () => {
 		);
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('contact_form_success');
+	});
+
+	it('recovers a stalled send, preserves the draft, and lets the visitor retry', async () => {
+		let attempts = 0;
+		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+			if (!String(input).includes('web3forms')) return Response.json(null);
+			attempts++;
+			if (attempts > 1) return Response.json({ success: true });
+			return new Promise<Response>((_, reject) => {
+				init?.signal?.addEventListener('abort', () => reject(new DOMException('Timed out', 'AbortError')), { once: true });
+			});
+		}) as typeof globalThis.fetch;
+
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await fillForm('Visitor', 'visitor@example.com', 'Please keep this draft.');
+		vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+		const submit = screen.getAllByTestId('contact-submit')[0] as HTMLButtonElement;
+		await submitForm(submit);
+		expect(submit).toBeDisabled();
+		await vi.advanceTimersByTimeAsync(15_000);
+		await tick();
+
+		expect(submit).not.toBeDisabled();
+		expect(screen.getAllByText('✗ Fixture delivery failed').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByLabelText(/^name/i)[0]).toHaveValue('Visitor');
+		expect(screen.getAllByLabelText(/^email/i)[0]).toHaveValue('visitor@example.com');
+		expect(screen.getAllByLabelText(/^message/i)[0]).toHaveValue('Please keep this draft.');
+		expect(screen.queryAllByTestId('contact-success')).toHaveLength(0);
+		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+
+		await submitForm(submit);
+		await vi.advanceTimersByTimeAsync(1500);
+		await tick();
+		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_success']]);
 	});
 
 	it.each(['contact-social-calendar', 'contact-booking-link'])('tracks only booking_click for %s', async (testId) => {

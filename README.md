@@ -58,7 +58,7 @@ snapshot.
 
 ## Local development
 
-Prerequisites: Bun 1.3.11 and Node 22+.
+Prerequisites: Bun 1.4.4 and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+).
 
 ```bash
 bun install --frozen-lockfile
