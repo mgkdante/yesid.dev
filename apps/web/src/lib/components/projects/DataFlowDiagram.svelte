@@ -243,16 +243,17 @@
 		-webkit-overflow-scrolling: touch;
 	}
 
-	@media (--tablet-max) {
-		.data-flow-diagram.size-sm {
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-		}
+	/* Card nodes keep their physical scale regardless of the stack count.
+	   Longer pipelines scroll inside the card instead of shrinking the labels. */
+	.data-flow-diagram.size-sm {
+		contain: inline-size;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
 
-		.data-flow-diagram.size-sm svg {
-			width: max(100%, var(--df-svg-width));
-			max-width: none;
-		}
+	.data-flow-diagram.size-sm svg {
+		width: var(--df-svg-width);
+		max-width: none;
 	}
 
 	.data-flow-diagram.scrollable::-webkit-scrollbar {
