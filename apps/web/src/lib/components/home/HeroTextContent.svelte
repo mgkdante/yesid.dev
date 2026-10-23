@@ -3,7 +3,9 @@
   Parent coordinates scroll-driven animation via data-hero-stagger attributes.
 -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
+	import HeroDotAnnotation, { getLettering } from './HeroDotAnnotation.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -18,13 +20,13 @@
 		headlineAriaSuffix,
 		subheadlineText,
 		subtitleText,
-		identityText,
 		ctaWorkLabel,
 		ctaContactLabel,
 		heroData,
 		live = false,
-		introCompleted = false,
+		replayEnabled = false,
 		beaconSettled = false,
+		beaconPulsing = beaconSettled,
 		replayAriaLabel = 'Replay intro',
 		onReplay,
 	}: {
@@ -33,44 +35,118 @@
 		headlineAriaSuffix: string;
 		subheadlineText: string;
 		subtitleText: string;
-		/** Identity kicker (homework #20): "freelance digital infrastructure - Montreal". */
-		identityText: string;
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
 		heroData: HeroData;
 		/** True while REAL transit KPIs are on screen (homework #2 phase 2). */
 		live?: boolean;
-		/** go2/w5: arms the hero-dot replay button once the intro completed. */
-		introCompleted?: boolean;
-		/** The beacon dress (pulse + glow) renders only in SETTLED
-		    completed geometry (armed AND collapsed). The moment a replay
-		    starts, GSAP owns this same svg and scrubs it through ~213×
-		    zooms — an infinite CSS transform animation overrides GSAP's
-		    inline transform every frame, and a drop-shadow filter
-		    rasterizes a gigantic surface at zoom scale. Both read as "the
-		    animation glitches on clicking the dot" (operator-reported), so
-		    while any animation owns the dot it must be a BARE circle.
-		    (Radiating rings were tried and cut — operator: "remove the
-		    ring and we're golden".) */
+		replayEnabled?: boolean;
+		/** Final geometry enables title fitting and the annotation redraw. */
 		beaconSettled?: boolean;
+		/** Pulse only when settled or approaching at small scale, never at full-screen zoom. */
+		beaconPulsing?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
 		onReplay?: () => void;
 	} = $props();
+	const annotationLabel = { en: 'click me', fr: 'clique ici', es: 'haz clic' }[locale];
+	const lettering = getLettering(annotationLabel);
+	const lastWordIndex = $derived(headlineLine1.lastIndexOf(' '));
+	const headlineLead = $derived(headlineLine1.slice(0, lastWordIndex + 1));
+	const headlineLastWord = $derived(headlineLine1.slice(lastWordIndex + 1));
+	const finalWordIndex = $derived(headlineLine2.lastIndexOf(' '));
+	const finalLineLead = $derived(headlineLine2.slice(0, finalWordIndex + 1));
+	const finalWord = $derived(headlineLine2.slice(finalWordIndex + 1));
+	let heading: HTMLDivElement;
+	let headingWidth = $state(0);
+	let headingHeight = $state(0);
+	let arrow = $state('');
+	let arrowHead = $state('');
+	let annotationX = $state(0);
+	let annotationY = $state(25);
+	let annotationSlot: HTMLSpanElement;
+	let annotationReady = $state(false);
+	let textContent: HTMLDivElement;
+
+	function fitTitle() {
+		if (!heading || !beaconSettled) return;
+		heading.style.removeProperty('--hero-title-fit');
+		if (window.innerWidth >= 1024) return;
+		const layer = textContent.closest('[data-testid="hero-text-container"]');
+		if (!layer) return;
+		const style = getComputedStyle(layer);
+		const available = window.innerHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+		let high = parseFloat(getComputedStyle(heading.querySelector('[data-testid="hero-line1"]')!).fontSize);
+		let low = Math.min(24, high);
+		if (textContent.getBoundingClientRect().height <= available + 0.25) return;
+		for (let step = 0; step < 10; step++) {
+			const size = (low + high) / 2;
+			heading.style.setProperty('--hero-title-fit', `${size}px`);
+			if (textContent.getBoundingClientRect().height <= available + 0.25) low = size;
+			else high = size;
+		}
+		heading.style.setProperty('--hero-title-fit', `${low}px`);
+	}
+
+	function alignArrow() {
+		if (!heading || !beaconSettled) return;
+		const box = heading.getBoundingClientRect();
+		const dot = heading.querySelector('[data-testid="hero-dot"]')!.getBoundingClientRect();
+		const x = dot.right - box.left + 8;
+		const y = dot.top + dot.height / 2 - box.top;
+		const inkRight = Math.max(...['hero-line1', 'hero-line2'].flatMap((id) => {
+			const range = document.createRange();
+			const text = document.createTreeWalker(heading.querySelector(`[data-testid="${id}"]`)!, NodeFilter.SHOW_TEXT);
+			const rights: number[] = [];
+			while (text.nextNode()) {
+				if (!text.currentNode.textContent?.trim()) continue;
+				range.selectNodeContents(text.currentNode);
+				rights.push(...Array.from(range.getClientRects(), rect => rect.right - box.left));
+			}
+			return rights;
+		}));
+		let edge = Math.min(headingWidth - 8, Math.max(inkRight + 24, x + 48));
+		if (window.innerWidth < 1024) {
+			const slot = annotationSlot.getBoundingClientRect();
+			const lastWord = heading.querySelector('[data-testid="hero-line1-last"]')!.getBoundingClientRect();
+			annotationX = Math.max(lastWord.right - box.left + 12,
+				Math.min(headingWidth - lettering.width - 4, x - lettering.width - 12));
+			annotationY = slot.top - box.top;
+		} else {
+			annotationX = Math.max(0, edge - lettering.width - 40);
+			annotationY = 25;
+		}
+		const startX = annotationX + lettering.end.x + 1;
+		const startY = annotationY + lettering.end.y;
+		edge = Math.min(headingWidth - 8, Math.max(edge, startX + 20));
+		const bendY = Math.max(startY + 18, y - 12);
+		arrow = `M${startX} ${startY} C${Math.max(startX, edge - 16)} ${startY} ${edge} ${startY} ${edge} ${startY + 16} C${edge + 6} ${startY + 32} ${edge + 6} ${bendY - 16} ${edge} ${bendY} C${edge} ${y + 24} ${x + 25} ${y} ${x} ${y}`;
+		arrowHead = `M${x + 9} ${y - 5} L${x} ${y} L${x + 9} ${y + 5}`;
+	}
+
+	$effect(() => {
+		headingWidth; headingHeight; beaconSettled;
+		alignArrow();
+	});
+	$effect(() => { if (beaconSettled) fitTitle(); });
+	onMount(() => {
+		const resize = () => { fitTitle(); alignArrow(); };
+		void (document.fonts?.ready ?? Promise.resolve()).then(() => { resize(); annotationReady = true; });
+		window.addEventListener('resize', resize);
+		return () => window.removeEventListener('resize', resize);
+	});
 </script>
 
-<div class="hero-viewport-text">
-	<p class="hero-kicker" data-testid="hero-kicker" data-hero-stagger="1">
-		{identityText}
-	</p>
+<div class="hero-viewport-text" bind:this={textContent}>
+	<div class="hero-heading" bind:this={heading} bind:clientWidth={headingWidth} bind:clientHeight={headingHeight}>
 	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} {headlineAriaSuffix}">
 		<span
 			class="block text-[var(--foreground)]"
 			data-testid="hero-line1"
 			data-hero-stagger="1"
 		>
-			{headlineLine1}
+			{headlineLead}<span class="hero-title-tail"><span data-testid="hero-line1-last">{headlineLastWord}</span><span class="annotation-slot" style="width: {lettering.width + 16}px" bind:this={annotationSlot} aria-hidden="true"></span></span>
 		</span>
 	</h1>
 
@@ -82,31 +158,30 @@
 			class="block text-[var(--primary)]"
 			data-testid="hero-line2"
 		>
-			<span data-hero-stagger="1" aria-hidden="true">{headlineLine2}</span><button
+			<span data-hero-stagger="1" aria-hidden="true">{finalLineLead}</span><span class="hero-dot-word"><span data-hero-stagger="1" data-testid="hero-line2-last" aria-hidden="true">{finalWord}</span><span class="hero-dot-anchor"><button
 				type="button"
-				class="hero-dot-btn {introCompleted ? 'hero-dot-armed' : ''} {beaconSettled
+				class="hero-dot-btn {replayEnabled ? 'hero-dot-armed' : ''} {beaconPulsing && replayEnabled
 					? 'hero-dot-settled'
 					: ''}"
 				data-testid="hero-dot-replay"
-				disabled={!introCompleted}
-				aria-hidden={introCompleted ? undefined : 'true'}
-				aria-label={introCompleted ? replayAriaLabel : undefined}
+				disabled={!replayEnabled}
+				aria-hidden={replayEnabled ? undefined : 'true'}
+				aria-label={replayAriaLabel}
 				onclick={() => onReplay?.()}
 			><svg
 					class="hero-dot"
 					data-testid="hero-dot"
 					viewBox="0 0 10 10"
 					aria-hidden="true"
-				><circle cx="5" cy="5" r="5" fill="currentColor" /></svg></button>
+				><circle cx="5" cy="5" r="5" fill="currentColor" /></svg></button></span></span>
 		</span>
 	</p>
 
-	<!--
-	  Metric cards sit BELOW the headline "PIPELINES THAT DON'T BREAK." —
-	  previously they slotted between line 1 and line 2 which broke the visual
-	  flow of the two-line headline. data-hero-stagger="3" preserved so the
-	  GSAP reveal timeline keeps the same step-3 order regardless of DOM order.
-	-->
+	<HeroDotAnnotation {lettering} width={headingWidth} height={headingHeight}
+		x={annotationX} y={annotationY} {arrow} tip={arrowHead} visible={beaconSettled} ready={annotationReady} />
+	</div>
+
+	<!-- Keep the replay stagger order while placing metrics below the headline. -->
 	<div class="my-6 md:my-6" data-hero-stagger="3">
 		<HeroMetrics metrics={heroData.metrics} {live} />
 	</div>
@@ -120,7 +195,7 @@
 	</div>
 
 	<p
-		class="mt-5 text-subheading leading-[1.7] text-[var(--secondary-foreground)] md:text-heading"
+		class="mt-5 text-base leading-[1.5] text-[var(--secondary-foreground)]"
 		data-testid="hero-subtitle"
 		data-hero-stagger="6"
 	>
@@ -144,22 +219,14 @@
 </div>
 
 <style>
-	/* Identity kicker (homework #20): mono chrome above the headline. Stored
-	   human-case in the CMS; uppercased here so it reads as station chrome. */
-	.hero-kicker {
-		font-family: var(--font-mono);
-		font-size: var(--text-detail-kicker);
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		color: var(--accent-text);
-		margin-bottom: 0.75rem;
+	.hero-heading {
+		position: relative;
+		padding-block: 3.5rem 1.75rem;
+		padding-inline-end: 1.5rem;
 	}
-
-	@media (max-height: 660px) {
-		.hero-kicker {
-			margin-bottom: 0.375rem;
-		}
-	}
+	.hero-dot-anchor { display: inline-block; line-height: 0; }
+	.hero-dot-word { display: inline-block; white-space: nowrap; }
+	.annotation-slot { display: none; }
 
 	/* SVG period dot — replaces text "." for pixel-perfect zoom center.
 	   Sized in em so it scales with the heading font-size. The markup keeps
@@ -215,15 +282,9 @@
 	/* go2/w5 taste-2: HEARTBEAT pulse — a strong, unmistakable double-beat
 	   scale (lub-dub, then rest). transform only: zero layout shift, and the
 	   element-level scale can never clip the circle (the svg viewport scales
-	   with it, overflow stays visible). Arming requires the intro to have
-	   PLAYED, which reduced motion never does — and the reduce tier below
-	   still swaps scale for the round-1 opacity pulse as belt-and-suspenders
-	   (the affordance cue is assistive, so it keeps running). */
-	/* go2 beacon pass: heartbeat punch + sodium glow, em-scaled so desktop
-	   and mobile read identically loud. Scoped to .hero-dot-settled (NOT
-	   merely armed): armed stays true through a replay, and a
-	   pulsing/filtered dot under GSAP's zoom is the click-the-dot glitch.
-	   Settled drops the instant a replay starts. */
+	   with it, overflow stays visible). Playback stays unavailable under reduced motion. */
+	/* Resume the heartbeat during the final small-scale approach. It stays
+	   off during the large metro zoom and is cleared before every rewind. */
 	.hero-dot-settled .hero-dot {
 		animation: hero-dot-pulse 1.5s ease-in-out infinite;
 		transform-origin: center;
@@ -267,18 +328,30 @@
 		}
 	}
 
-	[data-testid="hero-line1"], [data-testid="hero-line2"] { font-size: var(--page-display); }
+	.hero-viewport-text { width: 100%; container-type: inline-size; }
+	[data-testid="hero-line1"], [data-testid="hero-line2"] {
+		font-size: var(--hero-title-fit, clamp(min(2.25rem, 10cqi), min(12cqi, 9svh), 7rem));
+	}
 
 	/* Mobile: text + buttons MUST fit in 100svh - nav.
 	   Height is a hard constraint; text scales proportionally via svh *and* vw
 	   so "PIPELINES" doesn't overflow the viewport width on narrow phones. */
-	@media (--tablet-max) {
+	@media (--desktop-max) {
+		.hero-heading { padding-top: 0; }
+		.hero-heading > h1 { margin-bottom: 0.5rem; }
+		.hero-title-tail { display: inline-block; white-space: nowrap; }
+		.annotation-slot { display: inline-block; height: 0; vertical-align: baseline; }
 		.hero-viewport-text {
-			min-height: calc(100svh - var(--nav-clearance));
+			min-height: calc(100svh - var(--nav-clearance) - 3rem);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
+			max-width: 44rem;
+			margin-inline: auto;
 			padding-block: 0.5rem;
+		}
+		[data-testid="hero-line1"], [data-testid="hero-line2"] {
+			font-size: var(--hero-title-fit, clamp(min(2.5rem, 10cqi), min(16cqi, 9svh), 7rem));
 		}
 		/* Tighten the inter-element spacing to reclaim vertical budget. */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
@@ -291,7 +364,7 @@
 		}
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
 			margin-top: 0.5rem;
-			line-height: 1.35;
+			line-height: 1.5;
 		}
 		/* The CTA row (the only flex descendant tagged stagger 6) — tighten the
 		   top gap + inter-button gap, and the button block padding, so both
@@ -299,11 +372,18 @@
 		.hero-viewport-text :global([data-hero-stagger="6"].flex) {
 			margin-top: 0.75rem;
 			gap: 0.625rem;
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 		.hero-viewport-text :global([data-testid="hero-cta-projects"]),
 		.hero-viewport-text :global([data-testid="hero-cta-contact"]) {
 			padding-top: 0.7rem;
 			padding-bottom: 0.7rem;
+			width: 100%;
+			height: 100%;
+			white-space: normal;
+			text-align: center;
+			padding-inline: 0.75rem;
 		}
 	}
 
@@ -311,12 +391,22 @@
 	   touch more shaved so nothing clips. iPhone SE (667) and Galaxy S23 (780)
 	   are above this floor and unaffected. */
 	@media (--tablet-max) and (max-height: 660px) {
+		.hero-heading { padding-block: 0 1.25rem; }
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
 			font-size: 1rem;
 			line-height: 1.3;
 		}
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
 			margin-block: 0.375rem;
+		}
+		.hero-viewport-text :global([data-testid^="hero-cta-"]) {
+			width: 100%;
+			height: 100%;
+			min-height: 44px;
+			padding-inline: 0.5rem;
+			font-size: 0.875rem;
+			white-space: normal;
+			text-align: center;
 		}
 	}
 
@@ -332,12 +422,9 @@
 		.hero-viewport-text :global([data-testid="hero-subheadline"]) {
 			font-size: clamp(1.625rem, calc(4vw - 0.25rem), 2.375rem);
 		}
-		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
-			font-size: clamp(1rem, calc(2.0625vw - 0.125rem), 1.25rem);
-		}
 	}
 	@media (max-height: 720px) and (--tablet-min) {
 		.hero-viewport-text :global([data-hero-stagger="3"]) { margin-block: 0.75rem; }
-		.hero-viewport-text :global([data-testid="hero-subtitle"]) { margin-top: 0.75rem; font-size: 1rem; line-height: 1.4; }
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) { margin-top: 0.75rem; }
 	}
 </style>

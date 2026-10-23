@@ -1495,7 +1495,23 @@ function discoverUsages(
   }
   const usages: DiscoveredAssetUsage[] = [];
   const issues: UsageBuildIssue[] = [];
-  for (const [groupKey, group] of groups) {
+  const componentGroups = [...groups].flatMap(([groupKey, group]): [Sha256Hex, UsageEvidence[]][] => {
+    const byComponent = new Map<string, UsageEvidence[]>();
+    for (const item of group) {
+      const asset = item.assetId ? indexes.repositoryAssets.get(item.assetId) : null;
+      // Only split pure, indexed component references. Other asset evidence
+      // keeps its existing context identity and conflict checks.
+      if (item.sourceKind !== "repository" || asset?.origin !== "code-component" ||
+        asset.kind !== "code-component" || !asset.repoPath) return [[groupKey, group]];
+      const references = byComponent.get(asset.repoPath) ?? [];
+      references.push(item);
+      byComponent.set(asset.repoPath, references);
+    }
+    if (byComponent.size < 2) return [[groupKey, group]];
+    return [...byComponent].map(([componentSource, references]) =>
+      [sha256(compactCanonical({ groupKey, componentSource })), references]);
+  });
+  for (const [groupKey, group] of componentGroups) {
     group.sort((left, right) =>
       compareUtf8(left.evidenceUsageId, right.evidenceUsageId),
     );

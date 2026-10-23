@@ -43,7 +43,7 @@ async function heroBoundaryState(page: Page) {
 				),
 			),
 			...Array.from(
-				tabletMetrics.querySelectorAll<HTMLElement>('[data-slot="metric-display"] > span'),
+				tabletMetrics.querySelectorAll<HTMLElement>('.metric-label-text, [data-slot="metric-display"] > .metric-value, [data-slot="metric-display"] > span:last-child'),
 			),
 		];
 		const elements = [
@@ -55,7 +55,7 @@ async function heroBoundaryState(page: Page) {
 			})),
 			{
 				name: '[data-testid="sql-panel"]',
-				element: document.querySelector<HTMLElement>('[data-testid="sql-panel"]')!,
+				element: document.querySelector<HTMLElement>('[data-testid="hero-mobile-sql"] [data-testid="sql-panel"]')!,
 				includeTextOverflow: false,
 			},
 			...noSplitText.map((element, index) => ({
@@ -109,10 +109,10 @@ function expectTabletHeroColumnFit(
 	viewportWidth: 768 | 1023,
 ) {
 	expect(state.headlineFontSize, `${viewportWidth}px headline clamp floor`).toBeGreaterThanOrEqual(
-		40,
+		56,
 	);
 	expect(state.headlineFontSize, `${viewportWidth}px headline clamp ceiling`).toBeLessThanOrEqual(
-		48,
+		82,
 	);
 	for (const text of state.noSplitText) {
 		expect(text.overflowWrap, `${viewportWidth}px ${text.name} overflow-wrap`).toBe('normal');
@@ -125,12 +125,12 @@ function expectTabletHeroColumnFit(
 	}
 	expect(state.metricCards, `${viewportWidth}px hero metric card count`).toHaveLength(3);
 	for (const [index, card] of state.metricCards.entries()) {
-		expect(card.width, `${viewportWidth}px metric card ${index + 1} width`).toBeGreaterThan(250);
+		expect(card.width, `${viewportWidth}px metric card ${index + 1} width`).toBeGreaterThan(170);
 		if (index === 0) continue;
 		expect(
 			card.top,
-			`${viewportWidth}px metric card ${index + 1} stacks below card ${index}`,
-		).toBeGreaterThanOrEqual(state.metricCards[index - 1]!.bottom - 1);
+			`${viewportWidth}px metric card ${index + 1} shares the row with card ${index}`,
+		).toBe(state.metricCards[index - 1]!.top);
 	}
 }
 
@@ -157,13 +157,6 @@ async function d1bBoundaryState(page: Page) {
 
 test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
-	await page.addInitScript(() => {
-		const today = new Date();
-		localStorage.setItem(
-			'yesid:hero-intro-day',
-			`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-		);
-	});
 	await page.setViewportSize({ width: 767, height: 900 });
 	await page.goto('/');
 	await expect(page.getByTestId('proof-reel-section')).toBeVisible();
@@ -194,11 +187,7 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 			`${rect.name} must stay within the 768px viewport`,
 		).toBe(true);
 	}
-	expect(heroAt768.gridTracks).toHaveLength(3);
-	expect(Math.abs(heroAt768.gridTracks[0]! - heroAt768.gridTracks[2]!)).toBeLessThanOrEqual(
-		0.5,
-	);
-	expect(heroAt768.gridTracks[1]).toBe(1);
+	expect(heroAt768.gridTracks).toHaveLength(1);
 	expectTabletHeroColumnFit(heroAt768, 768);
 	const d1bAt768 = await d1bBoundaryState(page);
 	expect(d1bAt768.metricFontSize).toBeGreaterThan(26);
@@ -220,11 +209,7 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 			`${rect.name} must stay within the 1023px viewport`,
 		).toBe(true);
 	}
-	expect(heroAt1023.gridTracks).toHaveLength(3);
-	expect(Math.abs(heroAt1023.gridTracks[0]! - heroAt1023.gridTracks[2]!)).toBeLessThanOrEqual(
-		0.5,
-	);
-	expect(heroAt1023.gridTracks[1]).toBe(1);
+	expect(heroAt1023.gridTracks).toHaveLength(1);
 	expectTabletHeroColumnFit(heroAt1023, 1023);
 
 	await page.setViewportSize({ width: 1024, height: 900 });
@@ -236,17 +221,13 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 	await page.setViewportSize({ width: 767, height: 660 });
 	await settleLayout(page);
 	const r4At767 = await d1bBoundaryState(page);
-	// R4 register: clamp(2rem, min(10.5vw, 6svh), 3.5rem) — at 767x660 the svh term
-	// wins (39.6px), far below the tablet band's 56px floor. Split at 50px: the two
-	// registers' computed values cannot collide (R4 tops out at 39.6 here; the band
-	// bottoms out at 56), so 50 is a stable discriminator where the static ranges
-	// (R4 <=56, band >=56) share the 56px edge and a strict comparison misfires.
-	expect(r4At767.heroLine1FontSize).toBeGreaterThanOrEqual(32);
-	expect(r4At767.heroLine1FontSize).toBeLessThan(50);
+	// The enlarged hero type fits the first panel at this short viewport.
+	expect(r4At767.heroLine1FontSize).toBeGreaterThanOrEqual(40);
+	expect(r4At767.heroLine1FontSize).toBeLessThanOrEqual(60);
 
 	await page.setViewportSize({ width: 768, height: 660 });
 	await settleLayout(page);
 	const r4At768 = await d1bBoundaryState(page);
 	expect(r4At768.heroLine1FontSize).toBeGreaterThanOrEqual(40);
-	expect(r4At768.heroLine1FontSize).toBeLessThanOrEqual(48);
+	expect(r4At768.heroLine1FontSize).toBeLessThanOrEqual(60);
 });
