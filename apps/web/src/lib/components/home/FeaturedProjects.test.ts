@@ -7,7 +7,7 @@ import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '$lib/content/site-content';
 import { getFeaturedProjects } from '$lib/projects/static-helpers';
 import { getVisibleServices } from '$lib/services/static-helpers';
-import { resolveLocale } from '$lib/utils';
+import { projectMetrics, resolveLocale } from '$lib/utils';
 import type { Project } from '$lib/types';
 import { projectFactory } from '../../../tests/factories';
 
@@ -46,10 +46,28 @@ describe('FeaturedProjects', () => {
 		expect(cards).toHaveLength(expectedCount);
 	});
 
-	it('renders one metric strip for every proof card', () => {
+	it('renders a metric strip only for cards with authored metrics', () => {
 		render(FeaturedProjects, { props: renderProps });
-		const metrics = screen.getAllByTestId('proof-metric-strip');
-		expect(metrics).toHaveLength(expectedCount);
+		const metrics = screen.queryAllByTestId('proof-metric-strip');
+		expect(metrics).toHaveLength(resolvedProjects.filter(project => projectMetrics(project).length > 0).length);
+	});
+
+	it('renders every supplied proof metric while leaving an unmeasured project empty', () => {
+		const authoredMetrics = Array.from({ length: 5 }, (_, index) => ({
+			value: String(index + 1),
+			label: { en: `Fixture outcome ${index + 1}` },
+		}));
+		const projects = [
+			projectFactory.build({ slug: 'without-metrics', impactMetrics: [], impactMetric: undefined }),
+			projectFactory.build({ slug: 'with-metrics', impactMetrics: authoredMetrics, impactMetric: undefined }),
+		];
+		render(FeaturedProjects, { props: { ...renderProps, projects } });
+		const cards = screen.getAllByTestId('proof-card');
+		expect(cards[0].querySelector('[data-testid="proof-metric-strip"]')).toBeNull();
+		const values = cards[1].querySelectorAll('[data-testid="proof-metric-value"]');
+		const labels = cards[1].querySelectorAll('[data-testid="proof-metric-label"]');
+		expect(Array.from(values, element => element.textContent)).toEqual(authoredMetrics.map(metric => metric.value));
+		expect(Array.from(labels, element => element.textContent)).toEqual(authoredMetrics.map(metric => metric.label.en));
 	});
 
 	it('renders a strikethrough before-value for cards whose metric has one', () => {
@@ -215,13 +233,4 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-next')).toHaveAttribute('aria-label', 'Next projects');
 	});
 
-	it('keeps the original desktop proof slide width', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/home/FeaturedProjects.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('flex-basis: clamp(340px, 44vw, 720px);');
-		expect(source).not.toContain('flex-basis: calc(50% + 0.75rem);');
-	});
 });

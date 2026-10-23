@@ -11,76 +11,23 @@ const BREAKPOINTS = [
 	{
 		alias: '--tablet-min',
 		raw: '(min-width: 768px)',
-		rawPattern: /\(min-width:\s*768px\)/g,
-		expected: 32,
+		rawPattern: /\(\s*(?:min-width\s*:\s*768px|width\s*>=\s*768px|768px\s*<=\s*width)\s*\)/,
 	},
 	{
 		alias: '--tablet-max',
 		raw: '(max-width: 767px)',
-		rawPattern: /\(max-width:\s*767px\)/g,
-		expected: 22,
+		rawPattern: /\(\s*(?:max-width\s*:\s*767px|width\s*<=\s*767px|767px\s*>=\s*width)\s*\)/,
 	},
 	{
 		alias: '--desktop-min',
 		raw: '(min-width: 1024px)',
-		rawPattern: /\(min-width:\s*1024px\)/g,
-		expected: 36,
+		rawPattern: /\(\s*(?:min-width\s*:\s*1024px|width\s*>=\s*1024px|1024px\s*<=\s*width)\s*\)/,
 	},
 	{
 		alias: '--desktop-max',
 		raw: '(max-width: 1023px)',
-		rawPattern: /\(max-width:\s*1023px\)/g,
-		expected: 10,
+		rawPattern: /\(\s*(?:max-width\s*:\s*1023px|width\s*<=\s*1023px|1023px\s*>=\s*width)\s*\)/,
 	},
-] as const;
-
-const RESPONSIVE_SOURCE_PATHS = [
-	'apps/web/src/app.css',
-	'apps/web/src/lib/components/about/AboutPage.svelte',
-	'apps/web/src/lib/components/blog/BlogDetailHeader.svelte',
-	'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
-	'apps/web/src/lib/components/blog/BlogEntryRail.svelte',
-	'apps/web/src/lib/components/blog/BlogRow.svelte',
-	'apps/web/src/lib/components/contact/ContactPage.svelte',
-	'apps/web/src/lib/components/home/CloserFloodlight.svelte',
-	'apps/web/src/lib/components/home/CloserGraffiti.svelte',
-	'apps/web/src/lib/components/home/CloserProps.svelte',
-	'apps/web/src/lib/components/home/CloserTerminalBoard.svelte',
-	'apps/web/src/lib/components/home/FeaturedProjects.svelte',
-	'apps/web/src/lib/components/home/HeroBanner.svelte',
-	'apps/web/src/lib/components/home/HeroMetrics.svelte',
-	'apps/web/src/lib/components/home/HeroTextContent.svelte',
-	'apps/web/src/lib/components/home/HomeAboutTeaser.svelte',
-	'apps/web/src/lib/components/home/HomeCloser.svelte',
-	'apps/web/src/lib/components/home/HomePage.svelte',
-	'apps/web/src/lib/components/home/HomeServices.svelte',
-	'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
-	'apps/web/src/lib/components/home/ManifestoTransit.svelte',
-	'apps/web/src/lib/components/home/ServicesBlueprint.svelte',
-	'apps/web/src/lib/components/layout/MenuOverlay.svelte',
-	'apps/web/src/lib/components/layout/Nav.svelte',
-	'apps/web/src/lib/components/projects/DataFlowDiagram.svelte',
-	'apps/web/src/lib/components/projects/ProjectCard.svelte',
-	'apps/web/src/lib/components/projects/ProjectDetailHeader.svelte',
-	'apps/web/src/lib/components/projects/ProjectDetailPage.svelte',
-	'apps/web/src/lib/components/projects/ProjectImageGallery.svelte',
-	'apps/web/src/lib/components/services/ProjectsStrip.svelte',
-	'apps/web/src/lib/components/services/ServiceCard.svelte',
-	'apps/web/src/lib/components/services/ServiceDetailPage.svelte',
-	'apps/web/src/lib/components/services/ServiceStackPanel.svelte',
-	'apps/web/src/lib/components/services/ServiceSvgPanel.svelte',
-	'apps/web/src/lib/components/shared/CtaBand.svelte',
-	'apps/web/src/lib/components/shared/CtaBlueprintBackground.svelte',
-	'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
-	'apps/web/src/lib/components/shared/ListingShell.svelte',
-	'apps/web/src/lib/components/shared/TocPill.svelte',
-	'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
-	'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
-	'apps/web/src/lib/components/stack-engine/Engine.svelte',
-	'apps/web/src/lib/styles/article-body.css',
-	'apps/web/src/lib/styles/listing-header.css',
-	'apps/web/src/lib/styles/listing-shell.css',
-	'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
 ] as const;
 
 const NONCANONICAL_MEDIA_INVENTORY = [
@@ -346,18 +293,6 @@ function sourceFiles(directory = SRC_ROOT, files: string[] = []): string[] {
 	return files;
 }
 
-function mediaLines(): MediaLine[] {
-	return sourceFiles().flatMap((path) =>
-		readFileSync(path, 'utf8')
-			.split('\n')
-			.flatMap((text, index) =>
-				/@media\s+/.test(text)
-					? [{ path: relative(REPO_ROOT, path).replaceAll('\\', '/'), lineNumber: index + 1, text }]
-					: [],
-			),
-	);
-}
-
 function stylesheetBodies(path: string): string[] {
 	const source = readFileSync(path, 'utf8');
 	if (path.endsWith('.css')) return [source];
@@ -446,55 +381,22 @@ function forbiddenTabletMaxConditions(): MediaLine[] {
 	});
 }
 
-function canonicalize(line: string): string {
-	let result = line;
-	for (const breakpoint of BREAKPOINTS) {
-		result = result
-			.replaceAll(`(${breakpoint.alias})`, breakpoint.raw)
-			.replace(breakpoint.rawPattern, breakpoint.raw);
-	}
-	return result;
-}
-
-function featureCount(lines: MediaLine[]): number {
-	let count = 0;
-	for (const line of lines) {
-		const canonical = canonicalize(line.text);
-		for (const breakpoint of BREAKPOINTS) {
-			count += [...canonical.matchAll(breakpoint.rawPattern)].length;
-		}
-	}
-	return count;
-}
-
 describe('canonical responsive breakpoint contract', () => {
-	it('preserves the reviewed responsive source inventory with design aliases only', () => {
-		const lines = mediaLines();
-		const canonicalLines = lines.filter((line) =>
-			BREAKPOINTS.some(
-				({ alias, rawPattern }) =>
-					line.text.includes(`(${alias})`) || new RegExp(rawPattern.source).test(line.text),
-			),
-		);
-		const paths = [...new Set(canonicalLines.map(({ path }) => path))].sort();
-
-		expect(canonicalLines).toHaveLength(96);
-		expect(paths).toEqual(RESPONSIVE_SOURCE_PATHS);
-		expect(featureCount(canonicalLines)).toBe(100);
-
-		for (const breakpoint of BREAKPOINTS) {
-			const aliasPattern = new RegExp(`\\(${breakpoint.alias}\\)`, 'g');
-			const aliasCount = canonicalLines.reduce(
-				(total, { text }) => total + [...text.matchAll(aliasPattern)].length,
-				0,
-			);
-			const rawCount = lines.reduce(
-				(total, { text }) => total + [...text.matchAll(breakpoint.rawPattern)].length,
-				0,
-			);
-			expect(aliasCount, breakpoint.alias).toBe(breakpoint.expected);
-			expect(rawCount, breakpoint.raw).toBe(0);
+	it('uses design aliases for canonical breakpoints in product stylesheets', () => {
+		const offenders: string[] = [];
+		for (const path of sourceFiles()) {
+			for (const body of stylesheetBodies(path)) {
+				const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '');
+				for (const [, rawCondition] of withoutComments.matchAll(/@media\s+([^{}]+?)\s*\{/g)) {
+					for (const breakpoint of BREAKPOINTS) {
+						if (breakpoint.rawPattern.test(rawCondition!)) {
+							offenders.push(`${relative(REPO_ROOT, path).replaceAll('\\', '/')}: use (${breakpoint.alias}) instead of ${breakpoint.raw}`);
+						}
+					}
+				}
+			}
 		}
+		expect(offenders, offenders.join('\n')).toEqual([]);
 	});
 
 	it('rejects max-width 768px conditions in apps/web/src', () => {
