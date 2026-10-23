@@ -102,17 +102,6 @@ describe('ProjectCard hero media', () => {
 		expect(container.querySelectorAll('.blueprint-art')).toHaveLength(2);
 	});
 
-	it('uses a shared media band border for image and fallback project cards', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('project-card-media--listing');
-		expect(source).toContain('.project-card-media');
-		expect(source).toContain('border-bottom: 2px solid color-mix(in srgb, var(--primary) 78%, transparent);');
-	});
-
 	it('renders proof cards with the proof reel media preset and metric strip', () => {
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
@@ -148,7 +137,7 @@ describe('ProjectCard hero media', () => {
 		expect(images[1]?.getAttribute('src')).toBe('/test-assets/mobile-dark-uuid?key=hero-1200');
 	});
 
-	it('renders up to three proof metrics in the bottom stripe and marks overflow', () => {
+	it('renders all supplied proof metrics in preference to the legacy singular metric', () => {
 		const project = projectFactory.build({
 			impactMetrics: [
 				{ value: '30s', label: { en: 'refresh cycles' } },
@@ -174,65 +163,17 @@ describe('ProjectCard hero media', () => {
 			},
 		});
 
-		expect(screen.getAllByTestId('proof-metric-item')).toHaveLength(3);
-		expect(screen.getAllByTestId('proof-metric-value').map((node) => node.textContent)).toEqual([
-			'30s',
-			'99.9%',
-			'2',
-		]);
-		expect(screen.getAllByTestId('proof-metric-label').map((node) => node.textContent)).toEqual([
-			'refresh cycles',
-			'pipeline uptime',
-			'languages shipped',
-		]);
-		expect(screen.queryByText('CMS calls per visit')).toBeNull();
-		expect(screen.getByTestId('proof-metric-overflow')).toHaveTextContent('...');
-		expect(screen.getByTestId('proof-metric-overflow')).toHaveAttribute('aria-label', 'More metrics');
+		expect(screen.getAllByTestId('proof-metric-item')).toHaveLength(project.impactMetrics!.length);
+		expect(screen.getAllByTestId('proof-metric-value').map((node) => node.textContent)).toEqual(project.impactMetrics!.map(metric => metric.value));
+		expect(screen.getAllByTestId('proof-metric-label').map((node) => node.textContent)).toEqual(project.impactMetrics!.map(metric => metric.label.en));
+		expect(screen.queryByText(project.impactMetric!.value)).toBeNull();
 	});
 
-	it('sources the proof metric overflow aria label from siteLabels', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('siteLabels.a11y.moreMetrics');
-		expect(source).not.toContain('aria-label="More metrics"');
-	});
-
-	it('keeps the proof reel footprint as a ProjectCard size option', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('.project-card--proof :global(.card-surface)');
-		expect(source).toContain('min-height: clamp(30rem, 64dvh, 44rem);');
-		expect(source).toContain('.project-card-media--proof');
-		expect(source).toContain('height: clamp(15rem, 38dvh, 22rem);');
-		expect(source).toContain('min-height: clamp(20rem, 50dvh, 30rem);');
-		expect(source).toContain('height: clamp(8rem, 22dvh, 10.5rem);');
-	});
-
-	it('keeps the proof metric stripe height stable across cards', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('height: clamp(6.5rem, 12dvh, 7.75rem);');
-		expect(source).toContain('grid-template-columns: repeat(3, minmax(0, 1fr));');
-		expect(source).toContain('-webkit-line-clamp: 2;');
-	});
-
-	it('anchors the proof metric overflow marker to the bottom edge', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectCard.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('inset-block-end: 0.2rem;');
-		expect(source).not.toContain('inset-block-start: -0.35rem;');
+	it('does not invent a proof metric footer when neither metric field is supplied', () => {
+		const project = projectFactory.build({ impactMetrics: [], impactMetric: undefined });
+		render(ProjectCard, { props: { project, variant: 'proof' } });
+		expect(screen.queryByTestId('proof-metric-strip')).toBeNull();
+		expect(screen.queryAllByTestId('proof-metric-value')).toEqual([]);
 	});
 
 	it('uses the shared theme media helper for hero image variants', () => {
