@@ -41,7 +41,7 @@
 		/** True while REAL transit KPIs are on screen (homework #2 phase 2). */
 		live?: boolean;
 		replayEnabled?: boolean;
-		/** Final geometry enables title fitting and the annotation redraw. */
+		/** Final geometry enables annotation positioning and redraw. */
 		beaconSettled?: boolean;
 		/** Pulse only when settled or approaching at small scale, never at full-screen zoom. */
 		beaconPulsing?: boolean;
@@ -67,27 +67,6 @@
 	let annotationY = $state(25);
 	let annotationSlot: HTMLSpanElement;
 	let annotationReady = $state(false);
-	let textContent: HTMLDivElement;
-
-	function fitTitle() {
-		if (!heading || !beaconSettled) return;
-		heading.style.removeProperty('--hero-title-fit');
-		if (window.innerWidth >= 1024) return;
-		const layer = textContent.closest('[data-testid="hero-text-container"]');
-		if (!layer) return;
-		const style = getComputedStyle(layer);
-		const available = window.innerHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
-		let high = parseFloat(getComputedStyle(heading.querySelector('[data-testid="hero-line1"]')!).fontSize);
-		let low = Math.min(24, high);
-		if (textContent.getBoundingClientRect().height <= available + 0.25) return;
-		for (let step = 0; step < 10; step++) {
-			const size = (low + high) / 2;
-			heading.style.setProperty('--hero-title-fit', `${size}px`);
-			if (textContent.getBoundingClientRect().height <= available + 0.25) low = size;
-			else high = size;
-		}
-		heading.style.setProperty('--hero-title-fit', `${low}px`);
-	}
 
 	function alignArrow() {
 		if (!heading || !beaconSettled) return;
@@ -129,16 +108,15 @@
 		headingWidth; headingHeight; beaconSettled;
 		alignArrow();
 	});
-	$effect(() => { if (beaconSettled) fitTitle(); });
 	onMount(() => {
-		const resize = () => { fitTitle(); alignArrow(); };
+		const resize = () => { alignArrow(); };
 		void (document.fonts?.ready ?? Promise.resolve()).then(() => { resize(); annotationReady = true; });
 		window.addEventListener('resize', resize);
 		return () => window.removeEventListener('resize', resize);
 	});
 </script>
 
-<div class="hero-viewport-text" bind:this={textContent}>
+<div class="hero-viewport-text">
 	<div class="hero-heading" bind:this={heading} bind:clientWidth={headingWidth} bind:clientHeight={headingHeight}>
 	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} {headlineAriaSuffix}">
 		<span
@@ -330,12 +308,11 @@
 
 	.hero-viewport-text { width: 100%; container-type: inline-size; }
 	[data-testid="hero-line1"], [data-testid="hero-line2"] {
-		font-size: var(--hero-title-fit, clamp(min(2.25rem, 10cqi), min(12cqi, 9svh), 7rem));
+		font-size: clamp(min(2.25rem, 10cqi), min(12cqi, 9svh), 7rem);
 	}
 
-	/* Mobile: text + buttons MUST fit in 100svh - nav.
-	   Height is a hard constraint; text scales proportionally via svh *and* vw
-	   so "PIPELINES" doesn't overflow the viewport width on narrow phones. */
+	/* Keep a strong fluid headline. Short screens and longer translations
+	   may grow beyond one viewport without shrinking the heading. */
 	@media (--desktop-max) {
 		.hero-heading { padding-top: 0; }
 		.hero-heading > h1 { margin-bottom: 0.5rem; }
@@ -351,7 +328,7 @@
 			padding-block: 0.5rem;
 		}
 		[data-testid="hero-line1"], [data-testid="hero-line2"] {
-			font-size: var(--hero-title-fit, clamp(min(2.5rem, 10cqi), min(16cqi, 9svh), 7rem));
+			font-size: clamp(min(2.5rem, 10cqi), min(16cqi, 9svh), 7rem);
 		}
 		/* Tighten the inter-element spacing to reclaim vertical budget. */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
