@@ -196,9 +196,13 @@
 		if (!validate()) return;
 
 		sending = true;
+		// A stalled provider must release the form without discarding the draft.
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort(), 15_000);
 		try {
 			const res = await fetch('https://api.web3forms.com/submit', {
 				method: 'POST',
+				signal: controller.signal,
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					access_key: contactPage.web3formsKey,
@@ -222,6 +226,8 @@
 			errors = { form: sendErrorMessage };
 			sending = false;
 			return;
+		} finally {
+			clearTimeout(timeout);
 		}
 
 		trackAnalyticsEvent('contact_form_success');

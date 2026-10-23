@@ -247,6 +247,12 @@ describe('ProjectDetailPage image placement', () => {
 			'src',
 			'/test-assets/mobile-uuid?key=hero-1200',
 		);
+		const galleryHeader = within(galleryRail).getByRole('button', { name: 'Images' });
+		await fireEvent.click(screen.getByTestId('project-image-gallery-lightbox-image'));
+		expect(galleryHeader).toHaveAttribute('aria-expanded', 'true');
+		expect(dialog.closest('[inert]')).toBeNull();
+		await fireEvent.click(within(dialog).getByText('Mobile showcase'));
+		expect(galleryHeader).toHaveAttribute('aria-expanded', 'true');
 
 		await fireEvent.click(screen.getByTestId('project-image-gallery-backdrop'));
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

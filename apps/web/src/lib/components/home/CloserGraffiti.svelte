@@ -40,25 +40,27 @@
 		}
 	}
 
-	async function loadGraffiti(wrapper: Element): Promise<LetterData[]> {
+	async function loadGraffiti(wrapper: Element, signal: AbortSignal): Promise<LetterData[]> {
 		let text: string;
 		try {
 			let res: Response;
 			if (locale === 'fr') {
-				res = await fetch('/svg/graffiti/the-end.fr.svg');
+				res = await fetch('/svg/graffiti/the-end.fr.svg', { signal });
 			} else if (locale === 'es') {
-				res = await fetch('/svg/graffiti/the-end.es.svg');
+				res = await fetch('/svg/graffiti/the-end.es.svg', { signal });
 			} else {
-				res = await fetch('/svg/graffiti/the-end.en.svg');
+				res = await fetch('/svg/graffiti/the-end.en.svg', { signal });
 			}
 			if (!res.ok) throw new Error('Decorative SVG response was not successful.');
 			text = await res.text();
 		} catch {
+			if (signal.aborted) return [];
 			console.warn(
 				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
 			);
 			return [];
 		}
+		if (signal.aborted) return [];
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(text, 'image/svg+xml');
 		const svg = doc.querySelector('svg');
@@ -226,9 +228,14 @@
 
 	onMount(() => {
 		if (!browser || !wrapperEl) return;
+		const host = wrapperEl;
+		const controller = new AbortController();
+		let disposed = false;
+		let scrollTrigger: ReturnType<typeof ScrollTrigger.create> | undefined;
+		let replayDraw: (() => gsap.core.Timeline) | undefined;
 
-		loadGraffiti(wrapperEl).then((letterData) => {
-			if (letterData.length === 0) return;
+		loadGraffiti(host, controller.signal).then((letterData) => {
+			if (disposed || letterData.length === 0) return;
 
 			const reduced = isPrefersReducedMotion();
 
@@ -243,8 +250,8 @@
 				// scroll-driven and gated off under reduced-motion. Use our
 				// own ScrollTrigger so the draw fires when the graffiti
 				// scrolls into view.
-				ScrollTrigger.create({
-					trigger: wrapperEl,
+				scrollTrigger = ScrollTrigger.create({
+					trigger: host,
 					start: 'top 80%',
 					once: true,
 					onEnter: () => animateGraffiti(letterData),
@@ -255,13 +262,21 @@
 			}
 
 			// Hover/tap replay — works under both motion preferences.
-			const replayDraw = () => animateGraffiti(letterData);
-			wrapperEl!.addEventListener('mouseenter', replayDraw);
-			wrapperEl!.addEventListener('touchstart', replayDraw, { passive: true });
+			replayDraw = () => animateGraffiti(letterData);
+			host.addEventListener('mouseenter', replayDraw);
+			host.addEventListener('touchstart', replayDraw, { passive: true });
 		});
 
 		return () => {
+			disposed = true;
+			controller.abort();
+			if (replayDraw) {
+				host.removeEventListener('mouseenter', replayDraw);
+				host.removeEventListener('touchstart', replayDraw);
+			}
+			scrollTrigger?.kill();
 			graffitiTl?.kill();
+			graffitiTl = undefined;
 		};
 	});
 </script>

@@ -30,7 +30,7 @@ The package is scripts-only. Directus itself runs from the container image;
 
 ## Clean-clone setup
 
-Use Bun 1.3.11 and Node 22 or newer. From the repository root:
+Use Bun 1.4.4 and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+). From the repository root:
 
 ```bash
 bun install --frozen-lockfile

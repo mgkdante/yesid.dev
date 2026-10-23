@@ -7,7 +7,7 @@ pipeline. It is public for inspection but remains proprietary; read
 
 ## Stack and repository layout
 
-- Bun 1.3.x and Node 22+
+- Bun 1.4.4+ and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+)
 - SvelteKit, Svelte 5, TypeScript, Tailwind CSS, and Vite in `apps/web`
 - Directus 12 content schema, fixtures, exporters, and operations in `apps/cms`
 - Shared product schemas and utilities in `packages/shared`
