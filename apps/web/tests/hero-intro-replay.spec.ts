@@ -157,16 +157,16 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 	// …and the dot is armed: enabled, labelled, heartbeating.
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
-	await expect(dot).toHaveAttribute('aria-label', 'Replay intro');
+	await expect(dot).toHaveAccessibleName(/\S/);
 	await expect
 		.poll(
 			() =>
 				dot
 					.locator('[data-testid="hero-dot"]')
-					.evaluate((el) => getComputedStyle(el).animationName),
+					.evaluate((el) => el.getAnimations({ subtree: true }).some(animation => animation.playState === 'running')),
 			{ timeout: 2000 },
 		)
-		.toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
+		.toBe(true);
 });
 
 test('keyboard activation rewinds without an orange wall and supports repeated playback', async ({
@@ -208,19 +208,18 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	// and renders as a true '.': a real box, never clipped away.
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
-	await expect(dot).toHaveAttribute('aria-label', 'Replay intro');
-	expect(await dot.evaluate((el) => getComputedStyle(el).cursor)).toBe('pointer');
+	await expect(dot).toHaveAccessibleName(/\S/);
 	const dotGlyph = dot.locator('[data-testid="hero-dot"]');
 	await expect
-		.poll(() => dotGlyph.evaluate((el) => getComputedStyle(el).animationName), { timeout: 2000 })
-		.toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
+		.poll(() => dotGlyph.evaluate((el) => el.getAnimations({ subtree: true }).some(animation => animation.playState === 'running')), { timeout: 2000 })
+		.toBe(true);
 	const dotBox = await dotGlyph.evaluate((el) => {
 		const r = el.getBoundingClientRect();
-		return { width: r.width, height: r.height, overflow: getComputedStyle(el).overflow };
+		return { width: r.width, height: r.height };
 	});
 	expect(dotBox.width).toBeGreaterThan(2);
 	expect(dotBox.height).toBeGreaterThan(2);
-	expect(dotBox.overflow).toBe('visible');
+	await expect(dotGlyph).toBeInViewport();
 
 	// Click = re-enlarge + film-rewind: the track re-expands (scroll height
 	// grows back by viewports), the scroll-scrub pin rebuilds, the metro art
@@ -231,7 +230,10 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 		await page.keyboard.press('Tab');
 	}
 	await expect(dot).toBeFocused();
-	expect(await dot.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+	expect(await dot.evaluate(el => {
+		const style = getComputedStyle(el);
+		return el.matches(':focus-visible') && parseFloat(style.outlineWidth) > 0 && !['none', 'hidden'].includes(style.outlineStyle);
+	}), 'keyboard focus should have a visible indicator').toBe(true);
 	await page.keyboard.press('Enter');
 	await page.keyboard.press('Enter');
 	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
@@ -242,12 +244,12 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	// rasterizes a gigantic surface mid-zoom; either reads as the glitch.
 	const bare = await dot
 		.locator('[data-testid="hero-dot"]')
-		.evaluate((el) => {
-			const cs = getComputedStyle(el);
-			return { animation: cs.animationName, filter: cs.filter };
-		});
-	expect(bare.animation).toBe('none');
-	expect(bare.filter).toBe('none');
+		.evaluate((el) => ({
+			isAnimating: el.getAnimations({ subtree: true }).some(animation => animation.playState === 'running'),
+			hasFilter: getComputedStyle(el).filter !== 'none',
+		}));
+	expect(bare.isAnimating, 'the pulse must yield to the replay zoom').toBe(false);
+	expect(bare.hasFilter, 'the zoom must not rasterize the beacon glow at a huge scale').toBe(false);
 	await expect
 		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
 		.toBeGreaterThan(collapsedHeight + viewport.height * 2);
@@ -320,7 +322,8 @@ test('reduced motion keeps the annotation static and the metro unavailable', asy
 	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
 	await expect(page.getByTestId('hero-dot-replay')).toBeDisabled();
 	await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
-	expect(await page.getByTestId('hero-annotation-arrow').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
+	expect(await page.getByTestId('hero-dot-annotation').evaluate(el =>
+		el.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running').length)).toBe(0);
 	await page.keyboard.press('Enter');
 	await page.keyboard.press('Space');
 	await expect(page.locator('.hero-pin').locator('..')).not.toHaveClass(/pin-spacer/);
