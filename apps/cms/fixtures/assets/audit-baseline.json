@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
 	"source": "live",
-	"generatedAt": "2026-10-09T14:59:33.434Z",
-	"repositoryRevision": "42548a4de221b21fed6897c57ec169ea191c88fa",
+	"generatedAt": "2026-10-23T12:37:22.784Z",
+	"repositoryRevision": "4cf6971f8a4d5188b43121b2c8972d65bc15f262",
 	"scopeReceipts": [
 		{
 			"reason": "complete",
@@ -55,7 +55,7 @@
 			"status": "evaluated"
 		}
 	],
-	"reportSha256": "f79e63d3117c8fa866da5a8d792c9e92563ae087e25df8ee28dbeb823e57ffce",
+	"reportSha256": "175d0136af0bcf85036a96807a442437626d1cae8c20cc50d4452cbe28927b17",
 	"repositoryAssetIds": [
 		"external:iconify:devicon:microsoftsqlserver",
 		"external:iconify:logos:airflow",
@@ -98,6 +98,7 @@
 		"repo-component:apps/web/src/lib/components/about/WeatherScene.svelte#svg:4",
 		"repo-component:apps/web/src/lib/components/blog/BlogFilterSidebar.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/home/CloserFloodlight.svelte#svg:1",
+		"repo-component:apps/web/src/lib/components/home/HeroDotAnnotation.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/home/HeroTextContent.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/layout/LanguageToggle.svelte#svg:1",
 		"repo-component:apps/web/src/lib/components/layout/ThemeToggle.svelte#svg:1",

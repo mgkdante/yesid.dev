@@ -1158,6 +1158,30 @@ describe("scope receipts and incomplete-scope safety", () => {
 });
 
 describe("usage discovery and stable identities", () => {
+  it("keeps a component's own SVG and an imported SVG component as separate usages", async () => {
+    const sourceFile = "apps/web/src/lib/Hero.svelte";
+    const mini = await makeMiniRepository({
+      [sourceFile]: `<script>import Note from './Note.svelte';</script><svg><circle r="5" /></svg><Note />`,
+      "apps/web/src/lib/Note.svelte": `<svg><path d="M0 0 L10 10" /></svg><svg><circle r="2" /></svg>`,
+    });
+    const repository = await scanRepository({ repoRoot: mini.root, trackedFiles: mini.trackedFiles });
+    const report = reconcileAssetAudit(auditInput({ repository }));
+    const usages = report.discoveredUsages.filter(usage => usage.sourceFile === sourceFile);
+    expect(usages).toHaveLength(2);
+    expect(findings(report, "invalid-format").filter(finding =>
+      finding.evidence.violatedInvariant === "identity-conflict",
+    )).toHaveLength(0);
+    const imported = repository.usages.find(usage => usage.sourceFile === sourceFile &&
+      usage.assetId?.includes("Note.svelte"))!;
+    const contradictory = reconcileAssetAudit(auditInput({ repository: {
+      ...repository,
+      usages: [...repository.usages, { ...imported, id: "contradictory-delivery", deliveryMode: "inline-svg" }],
+    } }));
+    expect(findings(contradictory, "invalid-format").some(finding =>
+      finding.evidence.violatedInvariant === "delivery-conflict",
+    )).toBe(true);
+  });
+
   it("joins static and CMS-brand repository paths to exact normalized legacy paths", () => {
     const staticTracked = trackedRasterFixture({
       semanticKey: "site.about.headshot",

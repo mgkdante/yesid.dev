@@ -18,7 +18,7 @@ const BREAKPOINTS = [
 		alias: '--tablet-max',
 		raw: '(max-width: 767px)',
 		rawPattern: /\(max-width:\s*767px\)/g,
-		expected: 24,
+		expected: 22,
 	},
 	{
 		alias: '--desktop-min',
@@ -30,7 +30,7 @@ const BREAKPOINTS = [
 		alias: '--desktop-max',
 		raw: '(max-width: 1023px)',
 		rawPattern: /\(max-width:\s*1023px\)/g,
-		expected: 8,
+		expected: 10,
 	},
 ] as const;
 
@@ -140,13 +140,13 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 		occurrences: 1,
 	},
 	{
-		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
-		condition: '(--tablet-max) and (max-height: 660px)',
+		path: 'apps/web/src/lib/components/home/HeroDotAnnotation.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
 		occurrences: 1,
 	},
 	{
 		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
-		condition: '(max-height: 660px)',
+		condition: '(--tablet-max) and (max-height: 660px)',
 		occurrences: 1,
 	},
 	{
