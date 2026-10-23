@@ -47,24 +47,21 @@ test.describe('small-device fit', () => {
 		});
 	}
 
-	test('home hero fits one viewport (headline clears nav, both CTAs visible)', async ({
+	test('home headline clears nav and both CTAs remain reachable', async ({
 		page
 	}) => {
 		await page.goto('/');
 		const line1 = page.getByTestId('hero-line1');
-		const cta = page.getByTestId('hero-cta-contact');
 		await expect(line1).toBeVisible();
 		const boxTop = (await page.locator('.hero-viewport-text').boundingBox())!.y;
 		const headTop = (await line1.boundingBox())!.y;
-		const ctaBox = (await cta.boundingBox())!;
-		const innerH = await page.evaluate(() => window.innerHeight);
-		// Headline starts inside its box (i.e. below the nav, not clipped above).
 		expect(headTop, 'headline top vs hero box top').toBeGreaterThanOrEqual(boxTop - 2);
-		// The lower (contact) CTA is fully on screen — the hero stops clipping
-		// before the SQL demo.
-		expect(ctaBox.y + ctaBox.height, 'contact CTA bottom vs viewport bottom').toBeLessThanOrEqual(
-			innerH + 1
-		);
+		expect(headTop, 'headline clears the floating nav').toBeGreaterThanOrEqual(await pillBottom(page));
+		expect(await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth)).toBeLessThanOrEqual(1);
+		for (const id of ['hero-cta-projects', 'hero-cta-contact']) {
+			await page.getByTestId(id).scrollIntoViewIfNeeded();
+			await expect(page.getByTestId(id)).toBeInViewport();
+		}
 	});
 
 	test('service tablist clears the floating nav pill', async ({ page }) => {

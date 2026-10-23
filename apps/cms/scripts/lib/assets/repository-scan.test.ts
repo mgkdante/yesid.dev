@@ -1285,11 +1285,9 @@ describe("yesid.dev real repository contract", () => {
         !repoPath.includes(".test.") &&
         !repoPath.includes(".spec."),
     );
-    let inlineSvgRoots = 0;
     let imageTags = 0;
     let videoTags = 0;
     let audioTags = 0;
-    let svgFiles = 0;
     const renderedImageTags: Array<{ sourceFile: string; sourceLine: number }> =
       [];
     for (const repoPath of productionSvelte) {
@@ -1298,30 +1296,26 @@ describe("yesid.dev real repository contract", () => {
         "utf8",
       );
       const surface = scanSvelteAssetSurface(repoPath, source);
-      inlineSvgRoots += surface.inlineSvgLines.length;
+      const componentAssets = first.assets.filter(
+        (asset) => asset.repoPath === repoPath && asset.origin === "code-component",
+      );
+      expect(componentAssets).toHaveLength(surface.inlineSvgLines.length);
+      for (const [index, sourceLine] of surface.inlineSvgLines.entries()) {
+        const asset = componentAssets.find(
+          (candidate) => candidate.inlineSvgOrdinal === index + 1,
+        );
+        expect(asset).toBeDefined();
+        expect(first.usages.some(
+          (usage) => usage.assetId === asset!.id && usage.sourceFile === repoPath && usage.sourceLine === sourceLine,
+        )).toBe(true);
+      }
       imageTags += surface.imageLines.length;
       videoTags += surface.videoLines.length;
       audioTags += surface.audioLines.length;
       for (const sourceLine of surface.imageLines)
         renderedImageTags.push({ sourceFile: repoPath, sourceLine });
-      if (surface.inlineSvgLines.length > 0) svgFiles += 1;
     }
-    expect({ svgFiles, inlineSvgRoots, imageTags }).toEqual({
-      // 49→47 / 63→61 (2026-07-16): BlueprintShell + ChevronToggle moved into
-      // the embedded @yesid/ui package (Wave 3 adoption); package internals are
-      // library code, outside the site's asset-governance scan surface.
-      // 47→46 / 61→60 (2026-07-21): the unreachable BlogRouteMap component
-      // and its single inline SVG root were retired in Phase 2 C2.
-      // 46→45 / 60→58 (2026-07-22): QuietModeButton's two SVG roots moved
-      // into immutable @yesid/ui v0.9; package internals remain outside the
-      // product asset-governance scan surface.
-      // 45→44 / 58→57 (2026-07-23): the unreachable TableOfContents component
-      // and its single inline SVG root were retired in Phase 2 C1.
-      // HeroDotAnnotation adds one product-owned inline SVG root.
-      svgFiles: 45,
-      inlineSvgRoots: 58,
-      imageTags: 11,
-    });
+    expect(imageTags).toBe(11);
     expect({ videoTags, audioTags }).toEqual({ videoTags: 0, audioTags: 0 });
     expect(first.assets.filter((asset) => asset.kind === "video")).toEqual([]);
 
