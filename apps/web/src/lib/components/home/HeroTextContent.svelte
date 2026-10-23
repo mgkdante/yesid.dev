@@ -26,6 +26,7 @@
 		live = false,
 		replayEnabled = false,
 		beaconSettled = false,
+		beaconPulsing = beaconSettled,
 		replayAriaLabel = 'Replay intro',
 		onReplay,
 	}: {
@@ -40,17 +41,10 @@
 		/** True while REAL transit KPIs are on screen (homework #2 phase 2). */
 		live?: boolean;
 		replayEnabled?: boolean;
-		/** The beacon dress (pulse + glow) renders only in SETTLED
-		    completed geometry (armed AND collapsed). The moment a replay
-		    starts, GSAP owns this same svg and scrubs it through ~213×
-		    zooms — an infinite CSS transform animation overrides GSAP's
-		    inline transform every frame, and a drop-shadow filter
-		    rasterizes a gigantic surface at zoom scale. Both read as "the
-		    animation glitches on clicking the dot" (operator-reported), so
-		    while any animation owns the dot it must be a BARE circle.
-		    (Radiating rings were tried and cut — operator: "remove the
-		    ring and we're golden".) */
+		/** Final geometry enables title fitting and the annotation redraw. */
 		beaconSettled?: boolean;
+		/** Pulse only when settled or approaching at small scale, never at full-screen zoom. */
+		beaconPulsing?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
@@ -166,7 +160,7 @@
 		>
 			<span data-hero-stagger="1" aria-hidden="true">{finalLineLead}</span><span class="hero-dot-word"><span data-hero-stagger="1" data-testid="hero-line2-last" aria-hidden="true">{finalWord}</span><span class="hero-dot-anchor"><button
 				type="button"
-				class="hero-dot-btn {replayEnabled ? 'hero-dot-armed' : ''} {beaconSettled && replayEnabled
+				class="hero-dot-btn {replayEnabled ? 'hero-dot-armed' : ''} {beaconPulsing && replayEnabled
 					? 'hero-dot-settled'
 					: ''}"
 				data-testid="hero-dot-replay"
@@ -289,11 +283,8 @@
 	   scale (lub-dub, then rest). transform only: zero layout shift, and the
 	   element-level scale can never clip the circle (the svg viewport scales
 	   with it, overflow stays visible). Playback stays unavailable under reduced motion. */
-	/* go2 beacon pass: heartbeat punch + sodium glow, em-scaled so desktop
-	   and mobile read identically loud. Scoped to .hero-dot-settled (NOT
-	   merely armed): armed stays true through a replay, and a
-	   pulsing/filtered dot under GSAP's zoom is the click-the-dot glitch.
-	   Settled drops the instant a replay starts. */
+	/* Resume the heartbeat during the final small-scale approach. It stays
+	   off during the large metro zoom and is cleared before every rewind. */
 	.hero-dot-settled .hero-dot {
 		animation: hero-dot-pulse 1.5s ease-in-out infinite;
 		transform-origin: center;

@@ -39,20 +39,31 @@
 		width: number; height: number; x: number; y: number;
 		arrow: string; tip: string; visible: boolean; ready: boolean;
 	} = $props();
-	let drawn = $state(false);
-	$effect(() => { drawn = !visible; });
+	let phase = $state<'hidden' | 'drawing' | 'drawn'>('hidden');
+	$effect(() => {
+		phase = 'hidden';
+		if (!visible || !ready) return;
+		// Let pin teardown, scroll anchoring and glyph measurement finish before
+		// starting the clock. Hidden strokes are undrawn, never completed ink.
+		let frame = requestAnimationFrame(() => {
+			frame = requestAnimationFrame(() => { phase = 'drawing'; });
+		});
+		return () => cancelAnimationFrame(frame);
+	});
 </script>
 
-<svg class="annotation" class:ready class:drawn class:concealed={!visible || !ready}
+<svg class="annotation" class:ready class:drawing={phase === 'drawing'} class:drawn={phase === 'drawn'}
+	class:concealed={!visible || !ready || phase === 'hidden'}
+	style="--arrow-delay: {(lettering.letters.at(-1)?.index ?? 0) * 0.16 + 0.32}s"
 	data-testid="hero-dot-annotation" viewBox="0 0 {width || 1} {height || 1}"
 	aria-hidden="true" focusable="false" fill="none" stroke="currentColor"
 	stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-	onanimationend={event => { if ((event.target as SVGElement).classList.contains('tip')) drawn = true; }}>
+	onanimationend={event => { if (phase === 'drawing' && (event.target as SVGElement).classList.contains('tip')) phase = 'drawn'; }}>
 	<g data-testid="hero-annotation-label" transform="translate({x} {y}) rotate({lettering.tilt}) scale({lettering.scale}) translate(0 -16)">
 		<title>{lettering.label}</title>
 		{#each lettering.letters as letter}
 			<path class="letter" data-testid="hero-annotation-letter" d={letter.d}
-				transform="translate({letter.x} 0)" pathLength="1" style="--delay: {letter.index * 0.06}s" />
+				transform="translate({letter.x} 0)" pathLength="1" style="--delay: {letter.index * 0.16}s" />
 		{/each}
 	</g>
 	<path class="arrow" data-testid="hero-annotation-arrow" d={arrow} pathLength="1" />
@@ -62,13 +73,13 @@
 <style>
 	.annotation { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--primary); pointer-events: none; }
 	.concealed { visibility: hidden; }
-	path { stroke-dasharray: 1; stroke-dashoffset: 0; }
-	.ready .letter { animation: draw 0.24s linear var(--delay) both; }
-	.ready .arrow { animation: draw 0.75s ease-out 0.8s both; }
-	.ready .tip { animation: draw 0.2s ease-out 1.55s both; }
+	path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+	.ready.drawing .letter { animation: draw 0.28s linear var(--delay) both; }
+	.ready.drawing .arrow { animation: draw 0.75s ease-out var(--arrow-delay) both; }
+	.ready.drawing .tip { animation: draw 0.2s ease-out calc(var(--arrow-delay) + 0.75s) both; }
 	.ready.drawn path { animation: none; stroke-dashoffset: 0; }
 	@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 	@media (prefers-reduced-motion: reduce) {
-		.ready .letter, .ready .arrow, .ready .tip { animation: none; stroke-dashoffset: 0; }
+		.ready.drawing .letter, .ready.drawing .arrow, .ready.drawing .tip { animation: none; stroke-dashoffset: 0; }
 	}
 </style>

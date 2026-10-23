@@ -82,6 +82,8 @@ export interface HeroTimelineOpts {
 	 * re-completion, so the collapse re-applies.
 	 */
 	onIntroComplete?: () => void;
+	/** The final small-scale approach may resume the dot heartbeat before release. */
+	onHeroApproach?: (approaching: boolean) => void;
 }
 
 // ---- Measurement utilities ----
@@ -186,6 +188,7 @@ export function createHeroTimeline(
 		stopBlink,
 		pinLength = '800%',
 		onIntroComplete,
+		onHeroApproach,
 		skipDeferredRefresh = false,
 	} = opts;
 
@@ -243,7 +246,10 @@ export function createHeroTimeline(
 	// Initial hero text scale — uses gsap.set so the ScrollTrigger can revert it.
 	gsap.set(heroTextContainer, { scale: calcHeroTextScale(heroDot) });
 
-	const tl = gsap.timeline();
+	let introCompleteArmed = false;
+	const tl = gsap.timeline({
+		onUpdate: () => onHeroApproach?.(introCompleteArmed && tl.time() >= 1.36),
+	});
 
 	// === Phase 1 (0–0.03): Berri + background appear ===
 	tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
@@ -373,7 +379,6 @@ export function createHeroTimeline(
 	// replay path rebuilds the pin and jumps straight to its end, and that
 	// jump must never read as a completion. Dropping below the threshold
 	// re-arms, so a replayed intro re-fires (the collapse re-applies).
-	let introCompleteArmed = false;
 	function finishIntro(self: { progress: number }): void {
 		if (self.progress === 1 && introCompleteArmed) {
 			introCompleteArmed = false;
