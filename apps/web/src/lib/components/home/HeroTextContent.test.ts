@@ -21,7 +21,6 @@ function baseProps(overrides: Record<string, unknown> = {}) {
 		headlineAriaSuffix: 'stay available.',
 		subheadlineText: 'sub',
 		subtitleText: 'subtitle',
-		identityText: 'freelance digital infrastructure - Montreal',
 		ctaWorkLabel: 'See the work',
 		ctaContactLabel: 'Contact',
 		heroData: generateHeroData(),
@@ -49,6 +48,19 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
 	});
 
+	it('removes the identity eyebrow from the hero', () => {
+		render(HeroTextContent, { props: baseProps() });
+		expect(screen.queryByTestId('hero-kicker')).toBeNull();
+	});
+
+	it.each([['en', 'click me'], ['fr', 'clique ici'], ['es', 'haz clic']])('localizes the annotation in %s', (locale, label) => {
+		render(HeroTextContent, {
+			props: baseProps({ beaconSettled: true }),
+			context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+		});
+		expect(screen.getByTestId('hero-annotation-label').textContent).toBe(label);
+	});
+
 	it('does not track the projects CTA as a booking click', async () => {
 		render(HeroTextContent, { props: baseProps() });
 		await clickWithoutNavigating(screen.getByTestId('hero-cta-projects'));
@@ -56,8 +68,8 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
-	it('renders the dot inside a button, dormant while the intro has not completed', () => {
-		render(HeroTextContent, { props: baseProps({ introCompleted: false }) });
+	it('keeps the native dot button dormant when playback is unavailable', () => {
+		render(HeroTextContent, { props: baseProps({ replayEnabled: false }) });
 		const btn = screen.getByTestId('hero-dot-replay');
 		expect(btn.tagName).toBe('BUTTON');
 		expect(btn).toBeDisabled();
@@ -67,8 +79,8 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(btn.querySelector('[data-testid="hero-dot"]')).not.toBeNull();
 	});
 
-	it('arms after intro completion: enabled, pulsing, aria "Replay intro"', () => {
-		render(HeroTextContent, { props: baseProps({ introCompleted: true }) });
+	it('exposes the available dot with its meaningful accessible label', () => {
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true }) });
 		const btn = screen.getByTestId('hero-dot-replay');
 		expect(btn).toBeEnabled();
 		expect(btn).not.toHaveAttribute('aria-hidden');
@@ -78,20 +90,20 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 
 	it('click on the armed dot fires onReplay', async () => {
 		const onReplay = vi.fn();
-		render(HeroTextContent, { props: baseProps({ introCompleted: true, onReplay }) });
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true, onReplay }) });
 		await fireEvent.click(screen.getByTestId('hero-dot-replay'));
 		expect(onReplay).toHaveBeenCalledTimes(1);
 	});
 
 	it('click on the dormant dot does nothing (disabled)', async () => {
 		const onReplay = vi.fn();
-		render(HeroTextContent, { props: baseProps({ introCompleted: false, onReplay }) });
+		render(HeroTextContent, { props: baseProps({ replayEnabled: false, onReplay }) });
 		await fireEvent.click(screen.getByTestId('hero-dot-replay'));
 		expect(onReplay).not.toHaveBeenCalled();
 	});
 
 	it('keeps the headline text hidden from AT while exposing the armed button', () => {
-		render(HeroTextContent, { props: baseProps({ introCompleted: true }) });
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true }) });
 		const line2 = screen.getByTestId('hero-line2');
 		// Decorative text span stays aria-hidden (h1 carries the aria-label)…
 		const textSpan = line2.querySelector('[data-hero-stagger="1"]');
@@ -104,5 +116,19 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 			expect(node).not.toHaveAttribute('aria-hidden', 'true');
 			node = node.parentElement;
 		}
+	});
+
+	it('renders click me as decorative native SVG outside the activation button', async () => {
+		const onReplay = vi.fn();
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true, beaconSettled: true, onReplay }) });
+		const annotation = screen.getByTestId('hero-dot-annotation');
+		expect(annotation.tagName.toLowerCase()).toBe('svg');
+		expect(annotation).toHaveAttribute('aria-hidden', 'true');
+		expect(annotation).toHaveAttribute('focusable', 'false');
+		expect(annotation).not.toHaveAttribute('tabindex');
+		expect(annotation.textContent).toBe('click me');
+		expect(annotation.closest('button, a')).toBeNull();
+		await fireEvent.click(annotation);
+		expect(onReplay).not.toHaveBeenCalled();
 	});
 });

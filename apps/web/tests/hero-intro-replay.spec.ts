@@ -1,21 +1,6 @@
-// Hero intro replay — go2/w5 deliverable 4 + taste round 2. Runs on every
-// Playwright project (desktop-chrome + mobile profiles → both breakpoints).
-//
-//   1. First visit of the day: the scroll intro plays as today; scrolling it
-//      through persists the localStorage day-key, arms the pulsing dot AND
-//      (taste-2) collapses the intro's scroll allowance in place — the page
-//      scroll height shrinks and the settled hero becomes natural top-of-page.
-//   2. Same-day reload: intro SKIPPED — land in the same collapsed geometry;
-//      the orange dot after "DON'T BREAK" heartbeats, is clickable (aria
-//      "Replay intro"); clicking RE-ENLARGES the track, film-rewinds to the
-//      top, and scrolling through again re-collapses.
-//   3. The metro art carries ONE caption ('STM métro + REM') that never
-//      overlaps the SVG; the old in-frame legend is gone.
-
 import { test, expect, type Page } from '@playwright/test';
 import { decodePng, pixelAt, isBrandOrange, type Rgb } from './lib/png.js';
 
-const KEY = 'yesid:hero-intro-day';
 
 // PAINT probe points (fractions of the viewport, below the floating nav).
 // The orange-wall regression painted brand orange at EVERY one of these;
@@ -47,7 +32,7 @@ async function expectNotOrangeWall(page: Page, moment: string): Promise<void> {
 /**
  * Drive the intro scroll-through DETERMINISTICALLY (CI-flake hardening): a
  * single scrollTo(bottom) jump can leave the GSAP scrub short of the pin end
- * on a loaded shard — the completion callback (day-key persist + collapse)
+ * on a loaded shard — the completion callback (track collapse)
  * then never fires and the poll below times out. Stepping a viewport at a
  * time emits real scroll events the scrub renders one by one, and the loop
  * exits on the true completion signal: the pin-spacer detaching.
@@ -70,29 +55,24 @@ async function scrollIntroThrough(page: Page): Promise<void> {
 	}
 }
 
-/** Local-timezone YYYY-MM-DD — must match heroIntroDayKey(). */
-function localDayKeyScript(storageKey: string): string {
-	return `(() => {
-		const now = new Date();
-		const m = String(now.getMonth() + 1).padStart(2, '0');
-		const d = String(now.getDate()).padStart(2, '0');
-		try { window.localStorage.setItem('${storageKey}', now.getFullYear() + '-' + m + '-' + d); } catch {}
-	})()`;
-}
-
-test('first visit plays the intro; scrolling through persists, arms the dot + collapses the track', async ({
+test('first visit stays idle; dot activation plays and completion collapses the track', async ({
 	page,
 }) => {
 	await page.goto('/');
 
-	// Fresh storage → intro state: no completed-state class, metro art present.
+	// Fresh storage starts with a visible headline and no metro track.
 	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
 	expect(
 		await page
 			.locator('[data-testid="hero-banner"]')
 			.evaluate((el) => el.classList.contains('hero-intro-done')),
-	).toBe(false);
-	await expect(page.locator('[data-testid="metro-network-container"]')).toBeVisible();
+	).toBe(true);
+	await expect(page.locator('[data-testid="metro-network-container"]')).toBeHidden();
+	await expect(page.locator('.hero-pin').locator('..')).not.toHaveClass(/pin-spacer/);
+	await page.getByTestId('hero-dot-replay').click();
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
+	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
+	await expect(page.getByTestId('metro-network-container')).toBeVisible();
 
 	// Taste-2: the in-frame legend is GONE; ONE caption names the art. The
 	// caption's shrink-wrapped text box must never overlap DRAWN metro ink at
@@ -146,8 +126,6 @@ test('first visit plays the intro; scrolling through persists, arms the dot + co
 	expect(inkHits, 'caption or metro svg missing').not.toBeNull();
 	expect(inkHits, `caption overlaps drawn metro ink: ${inkHits?.join(', ')}`).toEqual([]);
 
-	// Dot exists but is dormant until the intro completes.
-	await expect(page.locator('[data-testid="hero-dot-replay"]')).toBeDisabled();
 
 	// Wait for the scroll-scrub to mount (GSAP wraps the pin in .pin-spacer).
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
@@ -157,19 +135,15 @@ test('first visit plays the intro; scrolling through persists, arms the dot + co
 
 	// Scroll the intro through — stepped, so the scrub renders every segment
 	// and the completion signal (pin-spacer detach) is awaited BEFORE the
-	// day-key poll (CI shard 1 flaked on the old single-jump + key-first order).
+	// completion assertions.
 	await scrollIntroThrough(page);
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 
-	// Day-key persisted…
-	await expect
-		.poll(() => page.evaluate((k) => window.localStorage.getItem(k), KEY), { timeout: 15_000 })
-		.toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
 	// …taste-2: the intro's scroll allowance collapses IN PLACE — the
 	// completed-state class lands live, the pin spacer is gone, and the page
 	// scroll height shrinks by viewports (the settled hero is now natural
-	// top-of-page geometry, so same-day reloads restore 1:1).
+	// top-of-page geometry).
 	await expect(page.locator('[data-testid="hero-banner"]')).toHaveClass(/hero-intro-done/, {
 		timeout: 15_000,
 	});
@@ -195,12 +169,28 @@ test('first visit plays the intro; scrolling through persists, arms the dot + co
 		.toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
 });
 
-test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-collapses', async ({
+test('keyboard activation rewinds without an orange wall and supports repeated playback', async ({
 	page,
 }) => {
-	// Seed today's day-key BEFORE the app boots.
-	await page.addInitScript(localDayKeyScript(KEY));
+	await page.emulateMedia({ reducedMotion: 'no-preference' });
+	await page.addInitScript(() => {
+		const events: string[] = [];
+		Reflect.set(window, 'heroInkEvents', events);
+		document.addEventListener('animationstart', event => {
+			const id = (event.target as Element).getAttribute('data-testid');
+			if (id?.startsWith('hero-annotation-')) events.push(id);
+		});
+	});
 	await page.goto('/');
+	await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
+	const annotation = await page.getByTestId('hero-dot-annotation').elementHandle();
+	await expect.poll(() => page.evaluate(() => (Reflect.get(window, 'heroInkEvents') as string[]).at(-1))).toBe('hero-annotation-tip');
+	await expect.poll(() => page.getByTestId('hero-annotation-tip').evaluate(el => parseFloat(getComputedStyle(el).strokeDashoffset))).toBe(0);
+	const inkEvents = await page.evaluate(() => Reflect.get(window, 'heroInkEvents') as string[]);
+	expect(inkEvents.length).toBeGreaterThan(2);
+	expect(inkEvents.at(-2)).toBe('hero-annotation-arrow');
+	expect(inkEvents.at(-1)).toBe('hero-annotation-tip');
+	expect(inkEvents.slice(0, -2).every(id => id === 'hero-annotation-letter')).toBe(true);
 
 	// Completed state: collapse class on, metro art hidden, hero text visible.
 	const banner = page.locator('[data-testid="hero-banner"]');
@@ -236,13 +226,15 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 	// grows back by viewports), the scroll-scrub pin rebuilds, the metro art
 	// returns, and we ride the rewind back to the very top.
 	const collapsedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-	await dot.click();
-	// Operator lock: the click FORGETS the day-key immediately — a refresh
-	// from here on lands on the animation again ("still to do"). Completing
-	// the replay scroll-through below re-persists it.
-	await expect
-		.poll(() => page.evaluate(() => window.localStorage.getItem('yesid:hero-intro-day')))
-		.toBeNull();
+	for (let step = 0; step < 16; step++) {
+		if (await dot.evaluate(el => el === document.activeElement)) break;
+		await page.keyboard.press('Tab');
+	}
+	await expect(dot).toBeFocused();
+	expect(await dot.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+	await page.keyboard.press('Enter');
+	await page.keyboard.press('Enter');
+	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	// Glitch lock (operator: "the hero animation glitches on clicking the
 	// dot"): the moment a replay starts, GSAP owns the dot svg — the beacon
 	// dress must be GONE. An infinite CSS transform animation overrides
@@ -256,7 +248,6 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 		});
 	expect(bare.animation).toBe('none');
 	expect(bare.filter).toBe('none');
-	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	await expect
 		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
 		.toBeGreaterThan(collapsedHeight + viewport.height * 2);
@@ -308,4 +299,30 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 	await scrollIntroThrough(page);
 	await expect(banner).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
+	await expect.poll(() => page.evaluate(() => (Reflect.get(window, 'heroInkEvents') as string[]).filter(id => id === 'hero-annotation-tip').length)).toBe(2);
+	await expect.poll(() => page.getByTestId('hero-annotation-tip').evaluate(el => parseFloat(getComputedStyle(el).strokeDashoffset))).toBe(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'heroInkEvents'))).toEqual([...inkEvents, ...inkEvents]);
+	await dot.focus();
+	await page.keyboard.press('Space');
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(1);
+	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
+	await scrollIntroThrough(page);
+	await expect(banner).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+	await expect(dot).toBeFocused();
+	expect(await annotation!.evaluate(el => el.isConnected)).toBe(true);
+	await expect.poll(() => page.evaluate(() => (Reflect.get(window, 'heroInkEvents') as string[]).filter(id => id === 'hero-annotation-tip').length)).toBe(3);
+	expect(await page.evaluate(() => Reflect.get(window, 'heroInkEvents'))).toEqual([...inkEvents, ...inkEvents, ...inkEvents]);
+});
+
+test('reduced motion keeps the annotation static and the metro unavailable', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
+	await expect(page.getByTestId('hero-dot-replay')).toBeDisabled();
+	await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
+	expect(await page.getByTestId('hero-annotation-arrow').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
+	await page.keyboard.press('Enter');
+	await page.keyboard.press('Space');
+	await expect(page.locator('.hero-pin').locator('..')).not.toHaveClass(/pin-spacer/);
+	await expect(page.getByTestId('metro-network-container')).toBeHidden();
 });
