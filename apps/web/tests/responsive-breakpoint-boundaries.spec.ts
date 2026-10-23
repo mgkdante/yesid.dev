@@ -14,17 +14,36 @@ async function settleLayout(page: Page) {
 async function responsiveState(page: Page) {
 	return page.evaluate(() => {
 		const nav = document.querySelector<HTMLElement>('[data-testid="nav-pill"]')!;
-		const reel = document.querySelector<HTMLElement>('.embla')!;
-		const slide = document.querySelector<HTMLElement>('.embla__slide')!;
 		const rotatedTitle = document.querySelector<HTMLElement>('.rotated-title')!;
 		const section = document.querySelector<HTMLElement>('.home-section--left')!;
 		return {
 			navPaddingInline: getComputedStyle(nav).paddingInline,
-			slideRatio: slide.getBoundingClientRect().width / reel.getBoundingClientRect().width,
 			rotatedTitleDisplay: getComputedStyle(rotatedTitle).display,
 			gridTracks: getComputedStyle(section).gridTemplateColumns.split(' ').length,
 		};
 	});
+}
+
+async function expectWholeProjectCards(page: Page, width: number) {
+	let lastPosition = '';
+	let stableSince = 0;
+	await expect.poll(async () => {
+		const cards = await page.getByTestId('proof-reel-section').evaluate(section => {
+			const frame = section.querySelector('.embla')!.getBoundingClientRect();
+			return Array.from(section.querySelectorAll('[data-testid="proof-card"]'), card => {
+				const box = card.getBoundingClientRect();
+				const visible = Math.max(0, Math.min(frame.right, box.right) - Math.max(frame.left, box.left));
+				return { left: box.left, width: box.width, visible, complete: visible >= box.width - 1 };
+			});
+		});
+		const position = cards.map(card => `${card.left.toFixed(2)}:${card.width.toFixed(2)}`).join(',');
+		if (position !== lastPosition) { lastPosition = position; stableSince = Date.now(); }
+		return {
+			hasVisibleCard: cards.some(card => card.visible > 1),
+			partial: cards.filter(card => card.visible > 1 && !card.complete),
+			settled: Date.now() - stableSince >= 120,
+		};
+	}, { message: `${width}px carousel must settle with complete project cards` }).toEqual({ hasVisibleCard: true, partial: [], settled: true });
 }
 
 async function heroBoundaryState(page: Page) {
@@ -145,7 +164,7 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 
 	const at767 = await responsiveState(page);
 	expect(at767.navPaddingInline).toBe('16px');
-	expect(at767.slideRatio).toBeGreaterThan(0.9);
+	await expectWholeProjectCards(page, 767);
 	const d1bAt767 = await d1bBoundaryState(page);
 	expect(d1bAt767.metricFontSize).toBeLessThan(26);
 	expect(d1bAt767.beckDisplay).toBe('none');
@@ -156,7 +175,7 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 	await settleLayout(page);
 	const at768 = await responsiveState(page);
 	expect(at768.navPaddingInline).toBe('28px');
-	expect(at768.slideRatio).toBeLessThan(0.65);
+	await expectWholeProjectCards(page, 768);
 	const heroAt768 = await heroBoundaryState(page);
 	for (const rect of heroAt768.rects) {
 		expect(
@@ -176,6 +195,7 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 	await page.setViewportSize({ width: 1023, height: 900 });
 	await settleLayout(page);
 	const at1023 = await responsiveState(page);
+	await expectWholeProjectCards(page, 1023);
 	expect(at1023.rotatedTitleDisplay).toBe('none');
 	expect(at1023.gridTracks).toBe(1);
 	const heroAt1023 = await heroBoundaryState(page);
@@ -190,6 +210,7 @@ test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', a
 	await page.setViewportSize({ width: 1024, height: 900 });
 	await settleLayout(page);
 	const at1024 = await responsiveState(page);
+	await expectWholeProjectCards(page, 1024);
 	expect(at1024.rotatedTitleDisplay).toBe('flex');
 	expect(at1024.gridTracks).toBe(2);
 
