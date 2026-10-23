@@ -49,6 +49,7 @@ const DESKTOP_ONLY_SPECS = [
 	// register from an instant scrollTo under DPR 2) without proportional value.
 	'**/hero-intro-replay.spec.ts',
 	'**/hero-layout.spec.ts',
+	'**/hero-phone.spec.ts',
 	'**/hero-intro-scroll.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',

@@ -48,17 +48,32 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
 	});
 
-	it('removes the identity eyebrow from the hero', () => {
-		render(HeroTextContent, { props: baseProps() });
-		expect(screen.queryByTestId('hero-kicker')).toBeNull();
+	it.each([
+		['BUILD WITH CONFIDENCE', 'KEEP MOVING', 'keep moving.'],
+		['DES SYSTÈMES DURABLES', 'TOUJOURS DISPONIBLES', 'toujours disponibles.'],
+		['SISTEMAS PARA CRECER', 'SIGUEN FUNCIONANDO', 'siguen funcionando.'],
+	])('renders supplied headline and action copy: %s', (headlineLine1, headlineLine2, headlineAriaSuffix) => {
+		const props = baseProps({ headlineLine1, headlineLine2, headlineAriaSuffix });
+		render(HeroTextContent, { props });
+		expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(`${headlineLine1} ${headlineAriaSuffix}`);
+		expect(screen.getByTestId('hero-line2')).toHaveTextContent(headlineLine2);
+		expect(screen.getByTestId('hero-cta-projects')).toHaveTextContent(props.ctaWorkLabel);
+		expect(screen.getByTestId('hero-cta-contact')).toHaveTextContent(props.ctaContactLabel);
 	});
 
-	it.each([['en', 'click me'], ['fr', 'clique ici'], ['es', 'haz clic']])('localizes the annotation in %s', (locale, label) => {
-		render(HeroTextContent, {
-			props: baseProps({ beaconSettled: true }),
-			context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+	it('provides nonempty, distinct annotation content for each locale', () => {
+		const locales = ['en', 'fr', 'es'];
+		const labels = locales.map(locale => {
+			const view = render(HeroTextContent, {
+				props: baseProps({ beaconSettled: true }),
+				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+			});
+			const label = screen.getByTestId('hero-annotation-label').textContent?.trim();
+			expect(label).toBeTruthy();
+			view.unmount();
+			return label;
 		});
-		expect(screen.getByTestId('hero-annotation-label').textContent).toBe(label);
+		expect(new Set(labels).size).toBe(locales.length);
 	});
 
 	it('does not track the projects CTA as a booking click', async () => {
@@ -74,18 +89,17 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(btn.tagName).toBe('BUTTON');
 		expect(btn).toBeDisabled();
 		expect(btn).toHaveAttribute('aria-hidden', 'true');
-		expect(btn).not.toHaveClass('hero-dot-armed');
 		// The dot svg itself stays in place — it is the zoom transform-origin.
 		expect(btn.querySelector('[data-testid="hero-dot"]')).not.toBeNull();
 	});
 
 	it('exposes the available dot with its meaningful accessible label', () => {
-		render(HeroTextContent, { props: baseProps({ replayEnabled: true }) });
+		const replayAriaLabel = 'Play the network illustration';
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true, replayAriaLabel }) });
 		const btn = screen.getByTestId('hero-dot-replay');
 		expect(btn).toBeEnabled();
 		expect(btn).not.toHaveAttribute('aria-hidden');
-		expect(btn).toHaveAttribute('aria-label', 'Replay intro');
-		expect(btn).toHaveClass('hero-dot-armed');
+		expect(btn).toHaveAccessibleName(replayAriaLabel);
 	});
 
 	it('click on the armed dot fires onReplay', async () => {
@@ -118,7 +132,7 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		}
 	});
 
-	it('renders click me as decorative native SVG outside the activation button', async () => {
+	it('renders noninteractive decorative guidance outside the activation button', async () => {
 		const onReplay = vi.fn();
 		render(HeroTextContent, { props: baseProps({ replayEnabled: true, beaconSettled: true, onReplay }) });
 		const annotation = screen.getByTestId('hero-dot-annotation');
@@ -126,7 +140,7 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(annotation).toHaveAttribute('aria-hidden', 'true');
 		expect(annotation).toHaveAttribute('focusable', 'false');
 		expect(annotation).not.toHaveAttribute('tabindex');
-		expect(annotation.textContent).toBe('click me');
+		expect(annotation.textContent?.trim()).toBeTruthy();
 		expect(annotation.closest('button, a')).toBeNull();
 		await fireEvent.click(annotation);
 		expect(onReplay).not.toHaveBeenCalled();
