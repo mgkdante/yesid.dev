@@ -227,6 +227,7 @@
 
 	let replayEnabled = $state(false);
 	let introCollapsed = $state(true);
+	let heroApproaching = $state(false);
 	let replayArming = false;
 	let restoreReplayFocus = false;
 
@@ -273,6 +274,7 @@
 			startBlink: typewriter.startBlink,
 			stopBlink: typewriter.stopBlink,
 			pinLength: isMobile ? '300%' : '800%',
+			onHeroApproach: approaching => { heroApproaching = approaching; },
 			// Replay rebuilds refresh explicitly before their rewind starts —
 			// the factory's deferred refresh would land mid-rewind and its
 			// scroll restoration would cancel the native smooth scroll.
@@ -397,6 +399,7 @@
 	//      before the next paint, then the rewind starts.
 	async function handleReplay(): Promise<void> {
 		if (destroyed || replayArming || !replayEnabled || isPrefersReducedMotion()) return;
+		heroApproaching = false;
 		restoreReplayFocus = document.activeElement === heroTextContainer.querySelector('[data-testid="hero-dot-replay"]');
 		homeIntroStore.begin();
 		replayArming = true;
@@ -538,6 +541,7 @@
 						{live}
 						{replayEnabled}
 						beaconSettled={introCollapsed}
+						beaconPulsing={introCollapsed || heroApproaching}
 						{replayAriaLabel}
 						onReplay={handleReplay}
 					/>
