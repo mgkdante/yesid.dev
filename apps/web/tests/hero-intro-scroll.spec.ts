@@ -73,7 +73,9 @@ test('redraw presents progressive lettering after a real wheel completion', asyn
 	await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
 	await page.goto('/');
 	await page.getByTestId('hero-dot-replay').click();
+	await expect(page.locator('.hero-pin').locator('..')).toHaveClass(/pin-spacer/);
 	await expect.poll(() => page.evaluate(() => scrollY), { timeout: 15_000 }).toBeLessThan(1);
+	await expect.poll(() => page.getByTestId('hero-text-container').evaluate(el => getComputedStyle(el).opacity)).toBe('0');
 	const distance = await page.evaluate(() => {
 		const pin = document.querySelector('.hero-pin')!;
 		return parseFloat(getComputedStyle(pin.parentElement!).paddingBottom);
