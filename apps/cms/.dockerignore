@@ -1,0 +1,7 @@
+# The image needs only its Dockerfile and local noindex extension.
+# Keep dotenv files, fixtures, uploads and local dependencies out of the context.
+**
+!Dockerfile
+!extensions/noindex/package.json
+!extensions/noindex/src/index.js
+!extensions/noindex/dist/index.js
