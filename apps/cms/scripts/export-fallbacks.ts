@@ -495,7 +495,7 @@ async function emitAll(
 	log.info(`emit: wrote ${configs.length} module(s).`);
 
 	if (source === 'fixture') {
-		// Keep the live/cache manifest API unchanged during this isolated spike.
+		// Fixture provenance remains explicit; live/cache retain their manifest API.
 		await Bun.write(resolve(emitDir, GENERATED_MANIFEST_FILENAME),
 			JSON.stringify({ ...buildManifest(emittedHashes), source }, null, '\t') + '\n');
 	} else {
