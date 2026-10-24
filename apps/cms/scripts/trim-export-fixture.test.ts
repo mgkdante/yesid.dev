@@ -16,6 +16,34 @@ it('reads the committed fixture through readCache without derived media and is a
 	expect(trimExportData(fixture)).toEqual(fixture);
 	assertTrimmedExportData(fixture, fixture);
 	expect(JSON.parse(serializeFixture(fixture))).toEqual({ version: '1', directusUrl: 'fixture', data: fixture });
+	expect(serializeFixture(fixture)).toBe(await Bun.file(FIXTURE_PATH).text());
+});
+
+it('keeps bounded SEO, error headings and email-bearing paragraphs verbatim', () => {
+	const description = { en: 'Search description kept verbatim.', fr: 'Description conservée.' };
+	const source = {
+		routeSeo: [{ description }], siteSeoDefaults: { defaultDescription: description },
+		services: [{ seoDescription: description }], blogPosts: [{ seoDescription: description.en }],
+		errorPageFallback: { heading: { en: 'Missing page' } },
+		errorPages: { 500: { heading: { en: 'Server error' } } },
+		legalPages: [{ body: { en: { time: 1, version: '2.31.2', blocks: [
+			{ id: 'first', type: 'paragraph', data: { text: 'Prose to trim.' } },
+			{ id: 'email', type: 'paragraph', data: { text: 'Please contact contact@yesid.dev for help.' } },
+		] } } }],
+	} as unknown as ExportData;
+	const trimmed = trimExportData(source);
+	for (const key of ['routeSeo', 'siteSeoDefaults', 'services', 'blogPosts', 'errorPageFallback', 'errorPages'] as const) {
+		expect(trimmed[key]).toEqual(source[key]);
+	}
+	expect(trimmed.legalPages![0]!.body.en!.blocks[1]).toEqual(source.legalPages![0]!.body.en!.blocks[1]);
+});
+
+it('serializes primitive locale objects on one line and leaves nested objects pretty', () => {
+	const data = { locales: { en: 'escaped "value"', es: false, fr: null }, nested: { en: { text: 'Prose' } } } as unknown as ExportData;
+	const serialized = serializeFixture(data);
+	expect(serialized).toContain('"locales": {"en":"escaped \\"value\\"","es":false,"fr":null}');
+	expect(serialized).toContain('"nested": {\n');
+	expect(serializeFixture(JSON.parse(serialized).data)).toBe(serialized);
 });
 
 it('rejects changed identities, missing locales/media, renderer changes and malformed documents', async () => {

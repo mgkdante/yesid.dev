@@ -10,7 +10,7 @@ schema, editorial rows, or the vendored design-system source.
 | Interface | Contract |
 |---|---|
 | [`src/lib/adapters/`](src/lib/adapters/) | Route-facing content interface. `adapter` is the stable entry point and `staticAdapter` reads generated modules. |
-| [`src/lib/content/`](src/lib/content/) | Build-time runtime content. The CMS emitter registry produces 22 modules and `generated.manifest.json`; never edit those outputs by hand. |
+| [`src/lib/content/`](src/lib/content/) | Build-time runtime content. The CMS emitter registry produces 20 ignored modules; never edit those outputs by hand. |
 | [`src/lib/directus/assets.ts`](src/lib/directus/assets.ts) | The sanctioned media seam. Known file identities resolve to committed mirrors; unknown media may use Directus only in development and fails loudly in production. |
 | [`../../packages/shared/`](../../packages/shared/) | Product types, validation schemas, asset contracts, and dependency-free stack-layer constants. |
 | [`vendor/design/manifest.json`](vendor/design/manifest.json) | Immutable design Release receipt. Product code may adapt the released packages but must not patch the vendored tree or receipt. |
@@ -52,9 +52,8 @@ that separation when adding tracking or changing form behavior.
 
 ## Failure behavior
 
-- A trusted live content export must complete the whole 22-module registry
-  before emission. The content gate rejects missing, unregistered, or hash-drifted
-  generated output.
+- A trusted live content export must complete the whole 20-module registry
+  and pass legal-truth and SEO validators before emission.
 - Production rendering fails for an unmirrored media identity; development may
   use the explicit Directus fallback to preview new editorial media.
 - The sitemap, client-payload, token, vendor, locale, and browser gates are
@@ -77,6 +76,8 @@ Verify the immutable design receipt from this directory:
 bun vendor/design/tools/adopt.ts --check --dest vendor/design
 ```
 
-The build invokes the CMS exporter before Vite. Credential-free local and CI
-builds use the committed generated modules according to the exporter contract;
-see the CMS guide before attempting a connected export.
+Web dev, test, check and build generate ignored content modules from the shared
+fixture by default, without credentials or network. Trusted Vercel targets use
+live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
+Refresh the fixture from a live cache with
+`bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.

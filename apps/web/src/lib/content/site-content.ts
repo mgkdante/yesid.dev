@@ -3,9 +3,9 @@
 //
 // Home-page block content (hero, manifesto, proof reel, services grid, about teaser, CTA, closer).
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { HeroAnimContent, HeroContent, ManifestoContent, ProofReelContent, ServicesGridContent, AboutIntroContent, CtaContent, CloserContent } from '$lib/types';
@@ -60,14 +60,14 @@ export const heroContent: HeroContent = {
 	},
 	refreshButton: {
 		helper: {
-			en: 'Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.',
-			es: 'Regenera las métricas y los resultados de la consulta. Datos simulados, estilo pipeline STM, no un feed en vivo.',
-			fr: 'Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		helperLive: {
-			en: 'Refreshes metrics + query results from the live pipeline.',
-			es: 'Actualiza las métricas y los resultados de la consulta desde el pipeline en vivo.',
-			fr: 'Actualise les métriques et les résultats de requête depuis le pipeline en direct.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		label: {
 			en: 'PULL FRESH DATA',
@@ -100,9 +100,9 @@ export const heroContent: HeroContent = {
 		fr: 'Je fais parler les données, pour vrai.',
 	},
 	subtitle: {
-		en: 'Building reliable infrastructure for teams that can\'t afford downtime.',
-		es: 'Construyo infraestructura confiable para equipos que no pueden darse el lujo de una caída.',
-		fr: 'Je bâtis de l\'infrastructure fiable pour les équipes qui n\'ont pas les moyens d\'avoir des pannes.',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 };
 
@@ -284,13 +284,17 @@ export const manifestoContent: ManifestoContent = {
 };
 
 export const proofReelContent: ProofReelContent = {
-	heading: { en: 'PROOF', es: 'PRUEBAS', fr: 'PREUVES' },
+	heading: {
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
+	},
 	headingDot: { en: '.', es: '.', fr: '.' },
 	sectionLabel: { en: '// PROOF', es: '// PRUEBAS', fr: '// PREUVES' },
 	subheading: {
-		en: 'SELECTED WORK',
-		es: 'TRABAJOS ESCOGIDOS',
-		fr: 'TRAVAUX CHOISIS',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	toggleColorAria: {
 		en: 'Toggle color for {title}',
@@ -306,12 +310,16 @@ export const proofReelContent: ProofReelContent = {
 };
 
 export const servicesGridContent: ServicesGridContent = {
-	heading: { en: 'SERVICES', es: 'SERVICIOS', fr: 'SERVICES' },
+	heading: {
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
+	},
 	headingDot: { en: '.', es: '.', fr: '.' },
 	subheading: {
-		en: 'WHAT I BUILD',
-		es: 'LO QUE CONSTRUYO',
-		fr: 'CE QUE JE BÂTIS',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	viewAllLink: {
 		en: 'View all services →',
@@ -351,9 +359,9 @@ export const aboutContent: AboutIntroContent = {
 	stackItems: ['PostgreSQL', 'dbt + Airflow', 'Power BI', 'SvelteKit'],
 	stackLabel: { en: 'STACK', es: 'STACK', fr: 'STACK' },
 	title: {
-		en: 'Freelance Digital Solutions Developer',
-		es: 'Desarrollador freelance de soluciones digitales',
-		fr: 'Développeur de solutions numériques à la pige',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 };
 
@@ -365,23 +373,23 @@ export const ctaContent: CtaContent = {
 		fr: 'Voir sur GitHub',
 	},
 	heading: {
-		en: 'Let\'s build something\nthat moves',
-		es: 'Construyamos algo\nque se mueva',
-		fr: 'Bâtissons quelque chose\nqui avance',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	subtitle: {
-		en: 'Database, pipeline, dashboard, website: wherever it\'s stuck, that\'s where we start.',
-		es: 'Base de datos, pipeline, tablero, sitio web: donde se atasca la cosa, ahí empezamos.',
-		fr: 'Base de données, pipeline, tableau de bord, site web : peu importe où ça accroche, c\'est là qu\'on commence.',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 };
 
 export const closerContent: CloserContent = {
 	attribution: {
 		text: {
-			en: 'Lacquer typeface by Niki Polyocan and Eli Block',
-			es: 'Tipografía Lacquer de Niki Polyocan y Eli Block',
-			fr: 'Police Lacquer par Niki Polyocan et Eli Block',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		url: 'https://fonts.google.com/specimen/Lacquer',
 	},
@@ -393,42 +401,46 @@ export const closerContent: CloserContent = {
 			fr: 'Initialiser la connexion',
 		},
 	},
-	heading: { en: 'TERMINUS', es: 'TERMINAL', fr: 'TERMINUS' },
+	heading: {
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
+	},
 	headingDot: { en: '.', es: '.', fr: '.' },
 	rows: {
 		about: {
 			action: { en: 'cd', es: 'cd', fr: 'cd' },
 			description: {
-				en: 'About the builder',
-				es: 'Sobre quien construye',
-				fr: 'À propos du bâtisseur',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			label: { en: 'YESID', es: 'YESID', fr: 'YESID' },
 		},
 		connect: {
 			action: { en: 'GO', es: 'GO', fr: 'GO' },
 			description: {
-				en: 'GitHub · open-source work',
-				es: 'GitHub · trabajo open source',
-				fr: 'GitHub · travail open source',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			label: { en: 'GITHUB REPO', es: 'REPO GITHUB', fr: 'DÉPÔT GITHUB' },
 		},
 		contact: {
 			action: { en: 'GO', es: 'GO', fr: 'GO' },
 			description: {
-				en: 'Start a project together',
-				es: 'Empezar un proyecto juntos',
-				fr: 'Démarrer un projet ensemble',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			label: { en: 'CONTACT', es: 'CONTACTO', fr: 'CONTACT' },
 		},
 		read: {
 			action: { en: 'cd', es: 'cd', fr: 'cd' },
 			description: {
-				en: 'Writing and field notes',
-				es: 'Artículos y notas de campo',
-				fr: 'Notes et articles',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			label: { en: 'BLOG', es: 'BLOG', fr: 'BLOGUE' },
 		},
@@ -443,9 +455,9 @@ export const closerContent: CloserContent = {
 		},
 	},
 	subheading: {
-		en: 'END OF LINE',
-		es: 'FIN DE LA LÍNEA',
-		fr: 'FIN DE LA LIGNE',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	terminal: {
 		city: {
@@ -465,9 +477,9 @@ export const closerContent: CloserContent = {
 			fr: '// on va où, là?',
 		},
 		title: {
-			en: 'yesid@terminus:~/destinations',
-			es: 'yesid@terminus:~/destinations',
-			fr: 'yesid@terminus:~/destinations',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 };

@@ -4,16 +4,8 @@
 	"data": {
 		"siteMeta": {
 			"name": "yesid.",
-			"tagline": {
-				"en": "Digital infrastructure that moves.",
-				"fr": "Une infrastructure numérique qui bouge.",
-				"es": "Infraestructura digital que se mueve."
-			},
-			"description": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
+			"tagline": {"en":"Digital infrastructure that moves.","fr":"Une infrastructure numérique qui bouge.","es":"Infraestructura digital que se mueve."},
+			"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 			"links": {
 				"email": "contact@yesid.dev",
 				"github": "https://github.com/mgkdante",
@@ -22,11 +14,7 @@
 			},
 			"owner": {
 				"name": "Yesid",
-				"jobTitle": {
-					"en": "Freelance Digital Solutions Developer",
-					"fr": "Développeur de solutions numériques à la pige",
-					"es": "Desarrollador freelance de soluciones digitales"
-				},
+				"jobTitle": {"en":"Freelance Digital Solutions Developer","fr":"Développeur de solutions numériques à la pige","es":"Desarrollador freelance de soluciones digitales"},
 				"address": {
 					"locality": "Montreal",
 					"region": "QC",
@@ -48,11 +36,7 @@
 		"siteSeoDefaults": {
 			"defaultOgImage": null,
 			"themeColor": "#141414",
-			"defaultDescription": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			}
+			"defaultDescription": {"en":"yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.","es":"yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL."}
 		},
 		"morphShapes": [
 			{
@@ -88,134 +72,58 @@
 			{
 				"path": "/",
 				"ogImage": null,
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.","es":"yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL."}
 			},
 			{
 				"path": "/about",
 				"ogImage": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.","fr":"Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.","es":"Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables."}
 			},
 			{
 				"path": "/contact",
 				"ogImage": "a781a5a4-1abc-4be4-a75e-ee6000419a53",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montreal; available remotely.","fr":"Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal et disponible à distance.","es":"Escríbeme para trabajo freelance en bases de datos, pipelines, tableros o sitios web. PostgreSQL, dbt, Power BI, SvelteKit. En Montreal, disponible en remoto."}
 			},
 			{
 				"path": "/services",
 				"ogImage": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Digital solutions for Québec SMEs: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.","fr":"Solutions numériques pour les PME du Québec : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL fiables.","es":"Soluciones digitales para pymes de Québec: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real."}
 			},
 			{
 				"path": "/projects",
 				"ogImage": "864b5ad1-3dac-47ea-ad96-f175cad1b515",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.","fr":"Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure numérique.","es":"Trabajo freelance reciente: pipelines de transporte en tiempo real, plataformas analíticas, tableros, ETL e infraestructura para equipos en Montreal y Canadá."}
 			},
 			{
 				"path": "/blog",
 				"ogImage": null,
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Notes on digital infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.","fr":"Notes sur l'infrastructure numérique, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance.","es":"Notas sobre infraestructura digital, SQL, PostgreSQL, dbt, Power BI y sistemas analíticos para equipos en crecimiento. Consultor freelance en Montreal."}
 			},
 			{
 				"path": "/blog/personal",
 				"ogImage": null,
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well.","fr":"Notes hors travail: outils, lectures, expériences et projets parallèles. Plus personnel que le blog professionnel, mais toujours centré sur bien construire.","es":"Notas fuera del trabajo: herramientas, lecturas, experimentos y proyectos paralelos. Más largo que el blog profesional, siempre sobre construir bien las cosas."}
 			}
 		],
 		"errorPageFallback": {
-			"label": {
-				"en": "PAGE NOT FOUND",
-				"fr": "PAGE INTROUVABLE",
-				"es": "PÁGINA NO ENCONTRADA"
-			},
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"description": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
+			"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
+			"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
+			"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 			"terminalLine": "$ route --status 0 // generic fallback",
 			"suggestions": [
 				{
-					"label": {
-						"en": "Home",
-						"fr": "Accueil",
-						"es": "Inicio"
-					},
+					"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
 					"href": "/"
 				},
 				{
-					"label": {
-						"en": "Services",
-						"fr": "Services",
-						"es": "Servicios"
-					},
+					"label": {"en":"Services","fr":"Services","es":"Servicios"},
 					"href": "/services"
 				}
 			]
@@ -224,295 +132,159 @@
 			{
 				"path": "/",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/services",
 				"type": "listing",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/projects",
 				"type": "listing",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/blog",
 				"type": "listing",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/blog/personal",
 				"type": "listing",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/about",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/contact",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/legal/privacy",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/legal/terms",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/legal/cookies",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/legal/accessibility",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			{
 				"path": "/legal/notice",
 				"type": "freeform",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			}
 		],
 		"nav": {
 			"navLinks": [
 				{
-					"label": {
-						"en": "Services",
-						"fr": "Services",
-						"es": "Servicios"
-					},
+					"label": {"en":"Services","fr":"Services","es":"Servicios"},
 					"href": "/services",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Projects",
-						"fr": "Projets",
-						"es": "Proyectos"
-					},
+					"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
 					"href": "/projects",
 					"priority": 1
 				}
 			],
 			"menuItems": [
 				{
-					"label": {
-						"en": "Services",
-						"fr": "Services",
-						"es": "Servicios"
-					},
+					"label": {"en":"Services","fr":"Services","es":"Servicios"},
 					"href": "/services",
 					"priority": 1,
-					"subtitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				{
-					"label": {
-						"en": "Projects",
-						"fr": "Projets",
-						"es": "Proyectos"
-					},
+					"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
 					"href": "/projects",
 					"priority": 1,
-					"subtitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				{
-					"label": {
-						"en": "Blog",
-						"fr": "Blog",
-						"es": "Blog"
-					},
+					"label": {"en":"Blog","fr":"Blog","es":"Blog"},
 					"href": "/blog",
 					"priority": 1,
-					"subtitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				{
-					"label": {
-						"en": "About",
-						"fr": "À propos",
-						"es": "Acerca de"
-					},
+					"label": {"en":"About","fr":"À propos","es":"Acerca de"},
 					"href": "/about",
 					"priority": 1,
-					"subtitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				{
-					"label": {
-						"en": "Contact",
-						"fr": "Contact",
-						"es": "Contacto"
-					},
+					"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
 					"href": "/contact",
 					"priority": 1,
-					"subtitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				}
 			],
 			"footerLinks": [
 				{
-					"label": {
-						"en": "Blog",
-						"fr": "Blog",
-						"es": "Blog"
-					},
+					"label": {"en":"Blog","fr":"Blog","es":"Blog"},
 					"href": "/blog",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "About",
-						"fr": "À propos",
-						"es": "Acerca de"
-					},
+					"label": {"en":"About","fr":"À propos","es":"Acerca de"},
 					"href": "/about",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Contact",
-						"fr": "Contact",
-						"es": "Contacto"
-					},
+					"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
 					"href": "/contact",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Privacy Policy",
-						"fr": "Politique de confidentialité",
-						"es": "Política de privacidad"
-					},
+					"label": {"en":"Privacy Policy","fr":"Politique de confidentialité","es":"Política de privacidad"},
 					"href": "/legal/privacy",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Terms of Use",
-						"fr": "Conditions d'utilisation",
-						"es": "Condiciones de uso"
-					},
+					"label": {"en":"Terms of Use","fr":"Conditions d'utilisation","es":"Condiciones de uso"},
 					"href": "/legal/terms",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Cookie and Tracking Policy",
-						"fr": "Politique sur les témoins (cookies)",
-						"es": "Política de cookies"
-					},
+					"label": {"en":"Cookie and Tracking Policy","fr":"Politique sur les témoins (cookies)","es":"Política de cookies"},
 					"href": "/legal/cookies",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Accessibility Statement",
-						"fr": "Déclaration d'accessibilité",
-						"es": "Declaración de accesibilidad"
-					},
+					"label": {"en":"Accessibility Statement","fr":"Déclaration d'accessibilité","es":"Declaración de accesibilidad"},
 					"href": "/legal/accessibility",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Legal Notice",
-						"fr": "Avis juridique",
-						"es": "Aviso legal"
-					},
+					"label": {"en":"Legal Notice","fr":"Avis juridique","es":"Aviso legal"},
 					"href": "/legal/notice",
 					"priority": 1
 				}
 			],
 			"mobileLinks": [
 				{
-					"label": {
-						"en": "Services",
-						"fr": "Services",
-						"es": "Servicios"
-					},
+					"label": {"en":"Services","fr":"Services","es":"Servicios"},
 					"href": "/services",
 					"priority": 1
 				},
 				{
-					"label": {
-						"en": "Projects",
-						"fr": "Projets",
-						"es": "Proyectos"
-					},
+					"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
 					"href": "/projects",
 					"priority": 1
 				}
@@ -2198,16 +1970,8 @@
 		"services": [
 			{
 				"id": "database-engineering",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"station": 1,
 				"svg": "service-database.svg",
 				"visible": true,
@@ -2215,57 +1979,17 @@
 					"transit-data-pipeline",
 					"yesid-dev"
 				],
-				"valueProposition": {
-					"en": "First stop: your data lives here. A database is the filing cabinet behind your whole business, and everything else is built on top of it. I make yours store and update your data fast and safely, so it stays an asset instead of the thing that slows you down.",
-					"fr": "Premier arrêt : tes données vivent ici. Une base de données, c'est le classeur derrière toute ta business, et tout le reste est bâti par-dessus. Je fais en sorte que la tienne garde et mette à jour tes données vite et de façon sécuritaire, pour qu'elle reste un atout au lieu de la chose qui te ralentit.",
-					"es": "Primera parada: tus datos viven aquí. Una base de datos es el archivador detrás de todo tu negocio, y todo lo demás se construye encima. Hago que la tuya guarde y actualice tus datos rápido y de forma segura, para que siga siendo un activo y no la cosa que te frena."
-				},
-				"seoDescription": {
-					"en": "Freelance PostgreSQL and SQL Server consulting in Montreal: schema design, query tuning, migrations with rollback. Fast and safe as your business grows.",
-					"fr": "Pigiste PostgreSQL et SQL Server à Montréal : conception de schéma, requêtes optimisées, migrations avec rollback. Ta base reste rapide et sécuritaire.",
-					"es": "Consultoría freelance PostgreSQL y SQL Server en Montreal: diseño de esquemas, consultas afinadas, migraciones con rollback. Tu base sigue rápida y segura."
-				},
+				"valueProposition": {"en":"First stop: your data lives here. A database is the filing cabinet behind your whole business, and everything else is built on top of it. I make yours store and update your data fast and safely, so it stays an asset instead of the thing that slows you down.","fr":"Premier arrêt : tes données vivent ici. Une base de données, c'est le classeur derrière toute ta business, et tout le reste est bâti par-dessus. Je fais en sorte que la tienne garde et mette à jour tes données vite et de façon sécuritaire, pour qu'elle reste un atout au lieu de la chose qui te ralentit.","es":"Primera parada: tus datos viven aquí. Una base de datos es el archivador detrás de todo tu negocio, y todo lo demás se construye encima. Hago que la tuya guarde y actualice tus datos rápido y de forma segura, para que siga siendo un activo y no la cosa que te frena."},
+				"seoDescription": {"en":"Freelance PostgreSQL and SQL Server consulting in Montreal: schema design, query tuning, migrations with rollback. Fast and safe as your business grows.","fr":"Pigiste PostgreSQL et SQL Server à Montréal : conception de schéma, requêtes optimisées, migrations avec rollback. Ta base reste rapide et sécuritaire.","es":"Consultoría freelance PostgreSQL y SQL Server en Montreal: diseño de esquemas, consultas afinadas, migraciones con rollback. Tu base sigue rápida y segura."},
 				"deliverables": [
-					{
-						"en": "Query performance audit",
-						"fr": "Audit de performance des requêtes",
-						"es": "Auditoría de consultas lentas"
-					},
-					{
-						"en": "Optimized stored procedures",
-						"fr": "Procédures stockées optimisées",
-						"es": "Procedimientos almacenados optimizados"
-					},
-					{
-						"en": "Schema design and normalization review",
-						"fr": "Révision de la conception et de la normalisation du schéma",
-						"es": "Revisión del diseño y la normalización del esquema"
-					},
-					{
-						"en": "Index optimization strategy",
-						"fr": "Stratégie d'optimisation des index",
-						"es": "Estrategia de optimización de índices"
-					},
-					{
-						"en": "Migration scripts with rollback",
-						"fr": "Scripts de migration avec retour en arrière",
-						"es": "Scripts de migración con rollback"
-					},
-					{
-						"en": "Backup and recovery plan",
-						"fr": "Plan de sauvegarde et de récupération",
-						"es": "Plan de respaldo y recuperación"
-					},
-					{
-						"en": "Performance benchmarking",
-						"fr": "Mesure de la performance",
-						"es": "Medición de rendimiento"
-					},
-					{
-						"en": "Documentation, runbooks, and ER diagrams",
-						"fr": "Documentation, guides d'exploitation et diagrammes entité-relation",
-						"es": "Documentación, guías de operación y diagramas ER"
-					}
+					{"en":"Query performance audit","fr":"Audit de performance des requêtes","es":"Auditoría de consultas lentas"},
+					{"en":"Optimized stored procedures","fr":"Procédures stockées optimisées","es":"Procedimientos almacenados optimizados"},
+					{"en":"Schema design and normalization review","fr":"Révision de la conception et de la normalisation du schéma","es":"Revisión del diseño y la normalización del esquema"},
+					{"en":"Index optimization strategy","fr":"Stratégie d'optimisation des index","es":"Estrategia de optimización de índices"},
+					{"en":"Migration scripts with rollback","fr":"Scripts de migration avec retour en arrière","es":"Scripts de migración con rollback"},
+					{"en":"Backup and recovery plan","fr":"Plan de sauvegarde et de récupération","es":"Plan de respaldo y recuperación"},
+					{"en":"Performance benchmarking","fr":"Mesure de la performance","es":"Medición de rendimiento"},
+					{"en":"Documentation, runbooks, and ER diagrams","fr":"Documentation, guides d'exploitation et diagrammes entité-relation","es":"Documentación, guías de operación y diagramas ER"}
 				],
 				"stack": [
 					"PostgreSQL",
@@ -2278,112 +2002,40 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				],
-				"benefitHeadline": {
-					"en": "Queries that run in seconds, not minutes",
-					"fr": "Des requêtes qui roulent en secondes, pas en minutes",
-					"es": "Consultas que corren en segundos, no en minutos"
-				},
+				"benefitHeadline": {"en":"Queries that run in seconds, not minutes","fr":"Des requêtes qui roulent en secondes, pas en minutes","es":"Consultas que corren en segundos, no en minutos"},
 				"impactMetric": {
-					"value": {
-						"en": "$60/mo → $0",
-						"fr": "60 $/mois → 0 $",
-						"es": "$60/mes → $0"
-					},
-					"label": {
-						"en": "database hosting cost",
-						"fr": "coût d'hébergement",
-						"es": "costo de hosting de la base"
-					}
+					"value": {"en":"$60/mo → $0","fr":"60 $/mois → 0 $","es":"$60/mes → $0"},
+					"label": {"en":"database hosting cost","fr":"coût d'hébergement","es":"costo de hosting de la base"}
 				}
 			},
 			{
 				"id": "data-pipeline",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"station": 2,
 				"svg": "service-pipeline.svg",
 				"visible": true,
 				"relatedProjects": [
 					"transit-data-pipeline"
 				],
-				"valueProposition": {
-					"en": "Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it's created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day.",
-					"fr": "Prochain arrêt : tes données bougent. En ce moment, quelqu'un dans ton équipe recopie probablement des chiffres d'un système à l'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d'où elles sont créées jusqu'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour.",
-					"es": "Próxima parada: tus datos se mueven. Ahora mismo alguien en tu equipo seguramente copia números de un sistema a otro a mano cada semana. Yo monto una ruta que lleva tus datos de donde se crean hasta donde tu equipo los usa, sola, cada mañana, para que los mismos números frescos lleguen de la misma forma todos los días."
-				},
-				"seoDescription": {
-					"en": "Freelance data pipelines and automation in Montreal: Python, Airflow, dbt. Data that travels on its own and lands clean, on time, every morning.",
-					"fr": "Pigiste pipelines de données à Montréal : Python, Airflow, dbt. Tes données voyagent toutes seules et arrivent propres, à temps, chaque matin.",
-					"es": "Pipelines de datos y automatización freelance en Montreal: Python, Airflow, dbt. Datos que viajan solos y llegan limpios, a tiempo, cada mañana."
-				},
+				"valueProposition": {"en":"Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it's created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day.","fr":"Prochain arrêt : tes données bougent. En ce moment, quelqu'un dans ton équipe recopie probablement des chiffres d'un système à l'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d'où elles sont créées jusqu'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour.","es":"Próxima parada: tus datos se mueven. Ahora mismo alguien en tu equipo seguramente copia números de un sistema a otro a mano cada semana. Yo monto una ruta que lleva tus datos de donde se crean hasta donde tu equipo los usa, sola, cada mañana, para que los mismos números frescos lleguen de la misma forma todos los días."},
+				"seoDescription": {"en":"Freelance data pipelines and automation in Montreal: Python, Airflow, dbt. Data that travels on its own and lands clean, on time, every morning.","fr":"Pigiste pipelines de données à Montréal : Python, Airflow, dbt. Tes données voyagent toutes seules et arrivent propres, à temps, chaque matin.","es":"Pipelines de datos y automatización freelance en Montreal: Python, Airflow, dbt. Datos que viajan solos y llegan limpios, a tiempo, cada mañana."},
 				"deliverables": [
-					{
-						"en": "Pipeline architecture design",
-						"fr": "Conception de l'architecture du pipeline",
-						"es": "Diseño de arquitectura del pipeline"
-					},
-					{
-						"en": "ELT/ETL implementation",
-						"fr": "Implémentation ELT/ETL",
-						"es": "Implementación ELT/ETL"
-					},
-					{
-						"en": "Orchestration setup (Airflow/cron)",
-						"fr": "Mise en place de l'orchestration (Airflow/cron)",
-						"es": "Configuración de orquestación (Airflow/cron)"
-					},
-					{
-						"en": "Schema design and validation",
-						"fr": "Conception et validation du schéma",
-						"es": "Diseño y validación del esquema"
-					},
-					{
-						"en": "Error handling and alerting",
-						"fr": "Gestion des erreurs et alertes",
-						"es": "Manejo de errores y alertas"
-					},
-					{
-						"en": "Runbook and monitoring dashboard",
-						"fr": "Guide d'exploitation et tableau de bord de surveillance",
-						"es": "Guía de operación y tablero de monitoreo"
-					},
-					{
-						"en": "Workflow automation (approval flows, scheduled jobs)",
-						"fr": "Automatisation des flux de travail (flux d'approbation, tâches planifiées)",
-						"es": "Automatización de flujos de trabajo (aprobaciones, tareas programadas)"
-					}
+					{"en":"Pipeline architecture design","fr":"Conception de l'architecture du pipeline","es":"Diseño de arquitectura del pipeline"},
+					{"en":"ELT/ETL implementation","fr":"Implémentation ELT/ETL","es":"Implementación ELT/ETL"},
+					{"en":"Orchestration setup (Airflow/cron)","fr":"Mise en place de l'orchestration (Airflow/cron)","es":"Configuración de orquestación (Airflow/cron)"},
+					{"en":"Schema design and validation","fr":"Conception et validation du schéma","es":"Diseño y validación del esquema"},
+					{"en":"Error handling and alerting","fr":"Gestion des erreurs et alertes","es":"Manejo de errores y alertas"},
+					{"en":"Runbook and monitoring dashboard","fr":"Guide d'exploitation et tableau de bord de surveillance","es":"Guía de operación y tablero de monitoreo"},
+					{"en":"Workflow automation (approval flows, scheduled jobs)","fr":"Automatisation des flux de travail (flux d'approbation, tâches planifiées)","es":"Automatización de flujos de trabajo (aprobaciones, tareas programadas)"}
 				],
 				"stack": [
 					"Python",
@@ -2394,60 +2046,24 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				],
-				"benefitHeadline": {
-					"en": "Your data arrives clean, on time, every morning",
-					"fr": "Tes données arrivent propres, à temps, chaque matin",
-					"es": "Tus datos llegan limpios, a tiempo, cada mañana"
-				},
+				"benefitHeadline": {"en":"Your data arrives clean, on time, every morning","fr":"Tes données arrivent propres, à temps, chaque matin","es":"Tus datos llegan limpios, a tiempo, cada mañana"},
 				"impactMetric": {
-					"value": {
-						"en": "1.5TB+",
-						"fr": "1,5 To+",
-						"es": "1,5 TB+"
-					},
-					"label": {
-						"en": "migrated",
-						"fr": "migrées",
-						"es": "migrados"
-					}
+					"value": {"en":"1.5TB+","fr":"1,5 To+","es":"1,5 TB+"},
+					"label": {"en":"migrated","fr":"migrées","es":"migrados"}
 				}
 			},
 			{
 				"id": "analytics-reporting",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"station": 3,
 				"svg": "service-reporting.svg",
 				"visible": true,
@@ -2455,47 +2071,15 @@
 					"transit-data-pipeline",
 					"cafe-arona"
 				],
-				"valueProposition": {
-					"en": "Third stop: your data starts talking. I take numbers scattered across your tools and turn them into one set of dashboards that all agree with each other. Your team stops arguing about whose number is right and just decides.",
-					"fr": "Troisième arrêt : tes données se mettent à parler. Je prends des chiffres éparpillés dans tes outils et j'en fais une seule série de tableaux de bord qui s'accordent tous entre eux. Ton équipe arrête de se chicaner sur quel chiffre est le bon et prend ses décisions, point.",
-					"es": "Tercera parada: tus datos empiezan a hablar. Tomo los números regados por todas tus herramientas y los convierto en un solo juego de tableros que cuadran entre sí. Tu equipo deja de pelear por cuál número es el bueno y simplemente decide."
-				},
-				"seoDescription": {
-					"en": "Freelance Power BI dashboards and analytics in Montreal: KPIs, semantic layers, reports your team trusts. Decisions in 15 minutes, not 2 days.",
-					"fr": "Pigiste Power BI et analytique à Montréal : KPI, couche sémantique, tableaux de bord fiables. Ton équipe décide en 15 minutes, pas en 2 jours.",
-					"es": "Tableros Power BI y analítica freelance en Montreal: KPIs, capas semánticas, reportes en los que tu equipo confía. Decisiones en 15 minutos, no en 2 días."
-				},
+				"valueProposition": {"en":"Third stop: your data starts talking. I take numbers scattered across your tools and turn them into one set of dashboards that all agree with each other. Your team stops arguing about whose number is right and just decides.","fr":"Troisième arrêt : tes données se mettent à parler. Je prends des chiffres éparpillés dans tes outils et j'en fais une seule série de tableaux de bord qui s'accordent tous entre eux. Ton équipe arrête de se chicaner sur quel chiffre est le bon et prend ses décisions, point.","es":"Tercera parada: tus datos empiezan a hablar. Tomo los números regados por todas tus herramientas y los convierto en un solo juego de tableros que cuadran entre sí. Tu equipo deja de pelear por cuál número es el bueno y simplemente decide."},
+				"seoDescription": {"en":"Freelance Power BI dashboards and analytics in Montreal: KPIs, semantic layers, reports your team trusts. Decisions in 15 minutes, not 2 days.","fr":"Pigiste Power BI et analytique à Montréal : KPI, couche sémantique, tableaux de bord fiables. Ton équipe décide en 15 minutes, pas en 2 jours.","es":"Tableros Power BI y analítica freelance en Montreal: KPIs, capas semánticas, reportes en los que tu equipo confía. Decisiones en 15 minutos, no en 2 días."},
 				"deliverables": [
-					{
-						"en": "Semantic layer / data model design",
-						"fr": "Conception de la couche sémantique / du modèle de données",
-						"es": "Diseño de capa semántica / modelo de datos"
-					},
-					{
-						"en": "Power BI or Retool dashboards",
-						"fr": "Tableaux de bord Power BI ou Retool",
-						"es": "Tableros de Power BI o Retool"
-					},
-					{
-						"en": "KPI definition and documentation",
-						"fr": "Définition et documentation des KPI",
-						"es": "Definición y documentación de KPI"
-					},
-					{
-						"en": "Automated report delivery",
-						"fr": "Livraison automatisée des rapports",
-						"es": "Envío automático de reportes"
-					},
-					{
-						"en": "User training and onboarding",
-						"fr": "Formation et accompagnement des usagers",
-						"es": "Capacitación y onboarding de usuarios"
-					},
-					{
-						"en": "Performance tuning for large datasets",
-						"fr": "Optimisation de la performance pour les grands jeux de données",
-						"es": "Optimización de rendimiento para datos masivos"
-					}
+					{"en":"Semantic layer / data model design","fr":"Conception de la couche sémantique / du modèle de données","es":"Diseño de capa semántica / modelo de datos"},
+					{"en":"Power BI or Retool dashboards","fr":"Tableaux de bord Power BI ou Retool","es":"Tableros de Power BI o Retool"},
+					{"en":"KPI definition and documentation","fr":"Définition et documentation des KPI","es":"Definición y documentación de KPI"},
+					{"en":"Automated report delivery","fr":"Livraison automatisée des rapports","es":"Envío automático de reportes"},
+					{"en":"User training and onboarding","fr":"Formation et accompagnement des usagers","es":"Capacitación y onboarding de usuarios"},
+					{"en":"Performance tuning for large datasets","fr":"Optimisation de la performance pour les grands jeux de données","es":"Optimización de rendimiento para datos masivos"}
 				],
 				"stack": [
 					"Power BI",
@@ -2506,60 +2090,24 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				],
-				"benefitHeadline": {
-					"en": "Decisions in 15 minutes, not 2 days",
-					"fr": "Des décisions en 15 minutes, pas en 2 jours",
-					"es": "Decisiones en 15 minutos, no en 2 días"
-				},
+				"benefitHeadline": {"en":"Decisions in 15 minutes, not 2 days","fr":"Des décisions en 15 minutes, pas en 2 jours","es":"Decisiones en 15 minutos, no en 2 días"},
 				"impactMetric": {
-					"value": {
-						"en": "30s",
-						"fr": "30 s",
-						"es": "30 s"
-					},
-					"label": {
-						"en": "live data refresh",
-						"fr": "rafraîchissement en direct",
-						"es": "refresh en vivo"
-					}
+					"value": {"en":"30s","fr":"30 s","es":"30 s"},
+					"label": {"en":"live data refresh","fr":"rafraîchissement en direct","es":"refresh en vivo"}
 				}
 			},
 			{
 				"id": "web-development",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"station": 4,
 				"svg": "service-web.svg",
 				"visible": true,
@@ -2569,47 +2117,15 @@
 					"transit-data-pipeline",
 					"yesid-dev-design"
 				],
-				"valueProposition": {
-					"en": "Last stop on the line: your data reaches people. A fast website, online store, or dashboard takes everything sitting in your systems and shows it to customers and staff the way they'll actually use it. Pages load quick, the store takes orders, and your team sees what they need without digging.",
-					"fr": "Dernier arrêt sur la ligne : tes données rejoignent le monde. Un site web rapide, une boutique en ligne ou un tableau de bord prend tout ce qui dort dans tes systèmes et le montre à tes clients pis à ton staff de la façon dont ils vont vraiment s'en servir. Les pages chargent vite, la boutique prend les commandes, pis ton équipe voit ce qu'il lui faut sans avoir à fouiller.",
-					"es": "Última parada de la línea: tus datos llegan a la gente. Un sitio web rápido, una tienda en línea o un tablero toma todo lo que duerme en tus sistemas y se lo muestra a tus clientes y a tu equipo tal como lo van a usar de verdad. Las páginas cargan rápido, la tienda recibe pedidos y tu equipo ve lo que necesita sin ponerse a escarbar."
-				},
-				"seoDescription": {
-					"en": "Freelance web development in Montreal: SvelteKit sites, Shopify stores, live dashboards. Fast pages that put your data in front of people.",
-					"fr": "Pigiste web à Montréal : sites SvelteKit, boutiques Shopify, tableaux de bord rapides. Tes données et tes produits rejoignent le monde.",
-					"es": "Desarrollo web freelance en Montreal: sitios SvelteKit, tiendas Shopify, tableros en vivo. Páginas rápidas que ponen tus datos frente a la gente."
-				},
+				"valueProposition": {"en":"Last stop on the line: your data reaches people. A fast website, online store, or dashboard takes everything sitting in your systems and shows it to customers and staff the way they'll actually use it. Pages load quick, the store takes orders, and your team sees what they need without digging.","fr":"Dernier arrêt sur la ligne : tes données rejoignent le monde. Un site web rapide, une boutique en ligne ou un tableau de bord prend tout ce qui dort dans tes systèmes et le montre à tes clients pis à ton staff de la façon dont ils vont vraiment s'en servir. Les pages chargent vite, la boutique prend les commandes, pis ton équipe voit ce qu'il lui faut sans avoir à fouiller.","es":"Última parada de la línea: tus datos llegan a la gente. Un sitio web rápido, una tienda en línea o un tablero toma todo lo que duerme en tus sistemas y se lo muestra a tus clientes y a tu equipo tal como lo van a usar de verdad. Las páginas cargan rápido, la tienda recibe pedidos y tu equipo ve lo que necesita sin ponerse a escarbar."},
+				"seoDescription": {"en":"Freelance web development in Montreal: SvelteKit sites, Shopify stores, live dashboards. Fast pages that put your data in front of people.","fr":"Pigiste web à Montréal : sites SvelteKit, boutiques Shopify, tableaux de bord rapides. Tes données et tes produits rejoignent le monde.","es":"Desarrollo web freelance en Montreal: sitios SvelteKit, tiendas Shopify, tableros en vivo. Páginas rápidas que ponen tus datos frente a la gente."},
 				"deliverables": [
-					{
-						"en": "Full-stack SvelteKit application",
-						"fr": "Application SvelteKit pleine pile",
-						"es": "Aplicación SvelteKit full-stack"
-					},
-					{
-						"en": "Responsive design implementation",
-						"fr": "Mise en place d'un design adaptatif",
-						"es": "Implementación de diseño responsive"
-					},
-					{
-						"en": "API integration and data layer",
-						"fr": "Intégration API et couche de données",
-						"es": "Integración de API y capa de datos"
-					},
-					{
-						"en": "Authentication and authorization",
-						"fr": "Authentification et autorisation",
-						"es": "Autenticación y autorización"
-					},
-					{
-						"en": "Deployment and CI/CD setup",
-						"fr": "Déploiement et configuration CI/CD",
-						"es": "Despliegue y configuración CI/CD"
-					},
-					{
-						"en": "Performance optimization",
-						"fr": "Optimisation de la performance",
-						"es": "Optimización de rendimiento"
-					}
+					{"en":"Full-stack SvelteKit application","fr":"Application SvelteKit pleine pile","es":"Aplicación SvelteKit full-stack"},
+					{"en":"Responsive design implementation","fr":"Mise en place d'un design adaptatif","es":"Implementación de diseño responsive"},
+					{"en":"API integration and data layer","fr":"Intégration API et couche de données","es":"Integración de API y capa de datos"},
+					{"en":"Authentication and authorization","fr":"Authentification et autorisation","es":"Autenticación y autorización"},
+					{"en":"Deployment and CI/CD setup","fr":"Déploiement et configuration CI/CD","es":"Despliegue y configuración CI/CD"},
+					{"en":"Performance optimization","fr":"Optimisation de la performance","es":"Optimización de rendimiento"}
 				],
 				"stack": [
 					"SvelteKit",
@@ -2629,105 +2145,37 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				],
-				"benefitHeadline": {
-					"en": "A storefront as fast as the systems behind it",
-					"fr": "Une vitrine aussi rapide que les systèmes derrière",
-					"es": "Una vitrina tan rápida como los sistemas detrás"
-				},
+				"benefitHeadline": {"en":"A storefront as fast as the systems behind it","fr":"Une vitrine aussi rapide que les systèmes derrière","es":"Una vitrina tan rápida como los sistemas detrás"},
 				"impactMetric": {
-					"value": {
-						"en": "95+",
-						"fr": "95+",
-						"es": "95+"
-					},
-					"label": {
-						"en": "Lighthouse performance",
-						"fr": "performance Lighthouse",
-						"es": "rendimiento Lighthouse"
-					}
+					"value": {"en":"95+","fr":"95+","es":"95+"},
+					"label": {"en":"Lighthouse performance","fr":"performance Lighthouse","es":"rendimiento Lighthouse"}
 				}
 			},
 			{
 				"id": "sql-development",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"station": 5,
 				"svg": "service-sql.svg",
 				"visible": false,
 				"relatedProjects": [],
-				"subtitle": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"valueProposition": {
-					"en": "Slow queries cost money, in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.",
-					"fr": "Les requêtes lentes coûtent cher : en temps de calcul, en rapports qui retardent, en analystes frustrés qui attendent leurs données. J'examine ta couche SQL, je repère les requêtes qui coûtent cher et je les réécris pour la vitesse et la clarté. Tu obtiens des tableaux de bord plus rapides, des coûts de base de données plus bas, et du code que ton équipe peut vraiment entretenir.",
-					"es": "Las consultas lentas cuestan plata: en cómputo, en reportes que se atrasan, en analistas frustrados esperando sus datos. Reviso tu capa SQL, encuentro las consultas costosas y las reescribo para que queden rápidas y claras. Obtienes tableros más rápidos, costos de base de datos más bajos y código que tu equipo de verdad puede mantener."
-				},
+				"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"valueProposition": {"en":"Slow queries cost money, in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.","fr":"Les requêtes lentes coûtent cher : en temps de calcul, en rapports qui retardent, en analystes frustrés qui attendent leurs données. J'examine ta couche SQL, je repère les requêtes qui coûtent cher et je les réécris pour la vitesse et la clarté. Tu obtiens des tableaux de bord plus rapides, des coûts de base de données plus bas, et du code que ton équipe peut vraiment entretenir.","es":"Las consultas lentas cuestan plata: en cómputo, en reportes que se atrasan, en analistas frustrados esperando sus datos. Reviso tu capa SQL, encuentro las consultas costosas y las reescribo para que queden rápidas y claras. Obtienes tableros más rápidos, costos de base de datos más bajos y código que tu equipo de verdad puede mantener."},
 				"deliverables": [
-					{
-						"en": "Query performance audit",
-						"fr": "Audit de performance des requêtes",
-						"es": "Auditoría de consultas lentas"
-					},
-					{
-						"en": "Optimized stored procedures",
-						"fr": "Procédures stockées optimisées",
-						"es": "Procedimientos almacenados optimizados"
-					},
-					{
-						"en": "Index optimization strategy",
-						"fr": "Stratégie d'optimisation des index",
-						"es": "Estrategia de optimización de índices"
-					},
-					{
-						"en": "Schema refactoring plan",
-						"fr": "Plan de refonte du schéma",
-						"es": "Plan de rediseño del esquema"
-					},
-					{
-						"en": "Migration scripts with rollback",
-						"fr": "Scripts de migration avec retour en arrière",
-						"es": "Scripts de migración con rollback"
-					},
-					{
-						"en": "Documentation and runbook",
-						"fr": "Documentation et guide d'exploitation",
-						"es": "Documentación y guía de operación"
-					}
+					{"en":"Query performance audit","fr":"Audit de performance des requêtes","es":"Auditoría de consultas lentas"},
+					{"en":"Optimized stored procedures","fr":"Procédures stockées optimisées","es":"Procedimientos almacenados optimizados"},
+					{"en":"Index optimization strategy","fr":"Stratégie d'optimisation des index","es":"Estrategia de optimización de índices"},
+					{"en":"Schema refactoring plan","fr":"Plan de refonte du schéma","es":"Plan de rediseño del esquema"},
+					{"en":"Migration scripts with rollback","fr":"Scripts de migration avec retour en arrière","es":"Scripts de migración con rollback"},
+					{"en":"Documentation and runbook","fr":"Documentation et guide d'exploitation","es":"Documentación y guía de operación"}
 				],
 				"stack": [
 					"PostgreSQL",
@@ -2737,88 +2185,32 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				],
-				"benefitHeadline": {
-					"en": "Queries that run in seconds, not minutes",
-					"fr": "Des requêtes qui roulent en secondes, pas en minutes",
-					"es": "Consultas que corren en segundos, no en minutos"
-				},
+				"benefitHeadline": {"en":"Queries that run in seconds, not minutes","fr":"Des requêtes qui roulent en secondes, pas en minutes","es":"Consultas que corren en segundos, no en minutos"},
 				"impactMetric": {
-					"value": {
-						"en": "3x faster",
-						"fr": "3x plus vite",
-						"es": "3x más veloz"
-					},
-					"label": {
-						"en": "avg query improvement",
-						"fr": "amélioration moyenne des requêtes",
-						"es": "mejora promedio por consulta"
-					}
+					"value": {"en":"3x faster","fr":"3x plus vite","es":"3x más veloz"},
+					"label": {"en":"avg query improvement","fr":"amélioration moyenne des requêtes","es":"mejora promedio por consulta"}
 				}
 			},
 			{
 				"id": "internal-tooling",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"station": 6,
 				"svg": "service-tooling.svg",
 				"visible": false,
 				"relatedProjects": [],
-				"valueProposition": {
-					"en": "Your ops team is copying data between spreadsheets and Slack threads. I build internal tools, admin panels, approval workflows, data entry forms, that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.",
-					"fr": "Ton équipe des opérations copie des données entre des tableurs et des fils Slack. Je bâtis des outils internes, des panneaux d'administration, des flux d'approbation, des formulaires de saisie, qui centralisent les opérations et éliminent le travail manuel. Tu livres plus vite parce que ton équipe passe son temps sur les décisions, pas sur la saisie de données.",
-					"es": "Tu equipo de operaciones anda copiando datos entre hojas de cálculo e hilos de Slack. Construyo herramientas internas, paneles de administración, flujos de aprobación, formularios de captura, que centralizan las operaciones y eliminan el trabajo manual. Entregas más rápido porque tu equipo dedica su tiempo a decidir, no a digitar datos."
-				},
+				"valueProposition": {"en":"Your ops team is copying data between spreadsheets and Slack threads. I build internal tools, admin panels, approval workflows, data entry forms, that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.","fr":"Ton équipe des opérations copie des données entre des tableurs et des fils Slack. Je bâtis des outils internes, des panneaux d'administration, des flux d'approbation, des formulaires de saisie, qui centralisent les opérations et éliminent le travail manuel. Tu livres plus vite parce que ton équipe passe son temps sur les décisions, pas sur la saisie de données.","es":"Tu equipo de operaciones anda copiando datos entre hojas de cálculo e hilos de Slack. Construyo herramientas internas, paneles de administración, flujos de aprobación, formularios de captura, que centralizan las operaciones y eliminan el trabajo manual. Entregas más rápido porque tu equipo dedica su tiempo a decidir, no a digitar datos."},
 				"deliverables": [
-					{
-						"en": "Requirements and workflow mapping",
-						"fr": "Cartographie des besoins et des flux de travail",
-						"es": "Mapeo de necesidades y flujos de trabajo"
-					},
-					{
-						"en": "Retool or custom admin panel",
-						"fr": "Panneau d'administration Retool ou sur mesure",
-						"es": "Panel de admin en Retool o a la medida"
-					},
-					{
-						"en": "API integration layer",
-						"fr": "Couche d'intégration API",
-						"es": "Capa de integración de API"
-					},
-					{
-						"en": "Role-based access control",
-						"fr": "Contrôle d'accès par rôle",
-						"es": "Control de acceso por roles"
-					},
-					{
-						"en": "User onboarding documentation",
-						"fr": "Documentation d'accueil des utilisateurs",
-						"es": "Documentación de onboarding de usuarios"
-					},
-					{
-						"en": "Maintenance and extension guide",
-						"fr": "Guide d'entretien et d'extension",
-						"es": "Guía de mantenimiento y extensión"
-					}
+					{"en":"Requirements and workflow mapping","fr":"Cartographie des besoins et des flux de travail","es":"Mapeo de necesidades y flujos de trabajo"},
+					{"en":"Retool or custom admin panel","fr":"Panneau d'administration Retool ou sur mesure","es":"Panel de admin en Retool o a la medida"},
+					{"en":"API integration layer","fr":"Couche d'intégration API","es":"Capa de integración de API"},
+					{"en":"Role-based access control","fr":"Contrôle d'accès par rôle","es":"Control de acceso por roles"},
+					{"en":"User onboarding documentation","fr":"Documentation d'accueil des utilisateurs","es":"Documentación de onboarding de usuarios"},
+					{"en":"Maintenance and extension guide","fr":"Guide d'entretien et d'extension","es":"Guía de mantenimiento y extensión"}
 				],
 				"stack": [
 					"Retool",
@@ -2828,1044 +2220,300 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"content": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"content": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				],
-				"benefitHeadline": {
-					"en": "Your team stops copying between spreadsheets",
-					"fr": "Ton équipe arrête de copier d'un tableur à l'autre",
-					"es": "Tu equipo deja de copiar entre hojas de cálculo"
-				},
+				"benefitHeadline": {"en":"Your team stops copying between spreadsheets","fr":"Ton équipe arrête de copier d'un tableur à l'autre","es":"Tu equipo deja de copiar entre hojas de cálculo"},
 				"impactMetric": {
-					"value": {
-						"en": "80%",
-						"fr": "80 %",
-						"es": "80%"
-					},
-					"label": {
-						"en": "less manual data entry",
-						"fr": "de saisie manuelle en moins",
-						"es": "menos digitación manual"
-					}
+					"value": {"en":"80%","fr":"80 %","es":"80%"},
+					"label": {"en":"less manual data entry","fr":"de saisie manuelle en moins","es":"menos digitación manual"}
 				}
 			}
 		],
 		"siteLabels": {
 			"a11y": {
-				"navCapabilities": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"carouselPrev": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"carouselNext": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"navTechStack": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"toc": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"closerGraffiti": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"replayIntro": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"projectImageOpen": {
-					"en": "Fixture copy.{caption}",
-					"fr": "Fixture copy.{caption}",
-					"es": "Fixture copy.{caption}"
-				},
-				"projectImageClose": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"moreMetrics": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"architectureDiagram": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"technologyStackTemplate": {
-					"en": "Fixture copy.{stack}",
-					"fr": "Fixture copy.{stack}",
-					"es": "Fixture copy.{stack}"
-				},
-				"quietModeLabel": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"quietModeLabelCollapsed": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"quietModeEnable": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"quietModeDisable": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"quietModeRemember": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"quietModeForget": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"navCapabilities": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"carouselPrev": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"carouselNext": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"navTechStack": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"toc": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"closerGraffiti": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"replayIntro": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"projectImageOpen": {"en":"Fixture copy.{caption}","fr":"Fixture copy.{caption}","es":"Fixture copy.{caption}"},
+				"projectImageClose": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"moreMetrics": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"architectureDiagram": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"technologyStackTemplate": {"en":"Fixture copy.{stack}","fr":"Fixture copy.{stack}","es":"Fixture copy.{stack}"},
+				"quietModeLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"quietModeLabelCollapsed": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"quietModeEnable": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"quietModeDisable": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"quietModeRemember": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"quietModeForget": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			"ui": {
-				"markerService": {
-					"en": "{num}Fixture copy.",
-					"fr": "{num}Fixture copy.",
-					"es": "{num}Fixture copy."
-				},
-				"markerFeatured": {
-					"en": "{num}Fixture copy.",
-					"fr": "{num}Fixture copy.",
-					"es": "{num}Fixture copy."
-				},
-				"backToProjects": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"errorStatusNote": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"blogEditionTemplate": {
-					"en": "Fixture copy.{issue}",
-					"fr": "Fixture copy.{issue}",
-					"es": "Fixture copy.{issue}"
-				},
-				"copyrightTemplate": {
-					"en": "Fixture copy.{year}Fixture copy.",
-					"fr": "Fixture copy.{year}Fixture copy.",
-					"es": "Fixture copy.{year}Fixture copy."
-				},
-				"nounProject": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"categoryPersonal": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"categoryProfessional": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"watermarkPersonal": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"watermarkProfessional": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"metroCaption": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"stationsOneSystem": {
-					"en": "{count}Fixture copy.",
-					"fr": "{count}Fixture copy.",
-					"es": "{count}Fixture copy."
-				},
-				"terminalTitle": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"markerService": {"en":"{num}Fixture copy.","fr":"{num}Fixture copy.","es":"{num}Fixture copy."},
+				"markerFeatured": {"en":"{num}Fixture copy.","fr":"{num}Fixture copy.","es":"{num}Fixture copy."},
+				"backToProjects": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"errorStatusNote": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"blogEditionTemplate": {"en":"Fixture copy.{issue}","fr":"Fixture copy.{issue}","es":"Fixture copy.{issue}"},
+				"copyrightTemplate": {"en":"Fixture copy.{year}Fixture copy.","fr":"Fixture copy.{year}Fixture copy.","es":"Fixture copy.{year}Fixture copy."},
+				"nounProject": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"categoryPersonal": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"categoryProfessional": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"watermarkPersonal": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"watermarkProfessional": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"metroCaption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"stationsOneSystem": {"en":"{count}Fixture copy.","fr":"{count}Fixture copy.","es":"{count}Fixture copy."},
+				"terminalTitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"resultCount": {
-					"singular": {
-						"en": "{count}Fixture copy.",
-						"fr": "{count}Fixture copy.",
-						"es": "{count}Fixture copy."
-					},
-					"plural": {
-						"en": "{count}Fixture copy.",
-						"fr": "{count}Fixture copy.",
-						"es": "{count}Fixture copy."
-					}
+					"singular": {"en":"{count}Fixture copy.","fr":"{count}Fixture copy.","es":"{count}Fixture copy."},
+					"plural": {"en":"{count}Fixture copy.","fr":"{count}Fixture copy.","es":"{count}Fixture copy."}
 				},
 				"languageNames": {
-					"en": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"fr": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"es": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"en": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"fr": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"es": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				"analyticsConsent": {
 					"enabled": true,
 					"showBanner": true,
-					"title": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"acceptLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"declineLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"settingsLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"privacyLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"acceptLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"declineLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"settingsLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"privacyLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				}
 			},
 			"pages": {
-				"blogEdgeTitle": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"projectsEdgeTitle": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"homeSectionProjects": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"homeSectionServices": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"homeSectionAbout": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"homeSectionTerminus": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"blogEdgeTitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"projectsEdgeTitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"homeSectionProjects": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"homeSectionServices": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"homeSectionAbout": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"homeSectionTerminus": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			"email": {
-				"contactSubjectTemplate": {
-					"en": "Fixture copy.{name}Fixture copy.",
-					"fr": "Fixture copy.{name}Fixture copy.",
-					"es": "Fixture copy.{name}Fixture copy."
-				}
+				"contactSubjectTemplate": {"en":"Fixture copy.{name}Fixture copy.","fr":"Fixture copy.{name}Fixture copy.","es":"Fixture copy.{name}Fixture copy."}
 			},
 			"projectsChrome": {
 				"pageMeta": {
-					"title": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				"listing": {
-					"heading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"searchPlaceholder": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"seeAllLink": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"searchPlaceholder": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"seeAllLink": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"filters": {
-						"filtersLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"services": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"tags": {
-							"en": "Tags",
-							"fr": "Étiquettes",
-							"es": "Etiquetas"
-						},
-						"techStack": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"allLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"showingPrefix": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"filtersLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"services": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"},
+						"techStack": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"allLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"showingPrefix": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"card": {
-						"stackOverflowSuffix": {
-							"en": "Fixture copy.{count}Fixture copy.",
-							"fr": "Fixture copy.{count}Fixture copy.",
-							"es": "Fixture copy.{count}Fixture copy."
-						}
+						"stackOverflowSuffix": {"en":"Fixture copy.{count}Fixture copy.","fr":"Fixture copy.{count}Fixture copy.","es":"Fixture copy.{count}Fixture copy."}
 					}
 				},
 				"detail": {
-					"backToListingLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"tocSectionTitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"readmeSectionTitle": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"backToListingLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"tocSectionTitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"readmeSectionTitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"glance": {
-						"overview": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"impact": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"stack": {
-							"en": "Stack",
-							"fr": "Stack",
-							"es": "Stack"
-						},
-						"services": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"links": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"projectInfo": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"liveSiteLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"liveSiteLabelMobile": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"githubLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"repoPrivateLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"overview": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"impact": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"stack": {"en":"Stack","fr":"Stack","es":"Stack"},
+						"services": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"links": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"projectInfo": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"liveSiteLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"liveSiteLabelMobile": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"githubLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"repoPrivateLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"tocPill": {
-						"openAria": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"closeAria": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"openAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"closeAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				}
 			},
 			"blogChrome": {
 				"listing": {
-					"mobileHeading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"searchPlaceholder": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"resultNoun": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"noPostsMessage": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"noPostsEmptyMessage": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"mobileHeading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"searchPlaceholder": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"resultNoun": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"noPostsMessage": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"noPostsEmptyMessage": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"filters": {
-						"filtersLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"allLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"language": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"dateRange": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"from": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"to": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"tags": {
-							"en": "Tags",
-							"fr": "Étiquettes",
-							"es": "Etiquetas"
-						},
-						"showingPrefix": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"filtersLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"allLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"language": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"dateRange": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"from": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"to": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"},
+						"showingPrefix": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"routeMap": {
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"terminus": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"terminus": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				},
 				"detail": {
 					"code": {
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"copyAria": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"copyLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"errorLabel": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"copyAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"copyLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"errorLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"backNav": {
-						"toPersonal": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"toDispatches": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"toPersonal": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"toDispatches": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"header": {
-						"postTagsAria": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"readingTimeLabel": {
-							"en": "{minutes}Fixture copy.",
-							"fr": "{minutes}Fixture copy.",
-							"es": "{minutes}Fixture copy."
-						}
+						"postTagsAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"readingTimeLabel": {"en":"{minutes}Fixture copy.","fr":"{minutes}Fixture copy.","es":"{minutes}Fixture copy."}
 					},
 					"page": {
-						"readingMode": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"tocSectionTitle": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"metaCategory": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"metaWords": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"metaReadTime": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"metaLanguage": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"metaTags": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"readingMode": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"tocSectionTitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"metaCategory": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"metaWords": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"metaReadTime": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"metaLanguage": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"metaTags": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"tocPill": {
-						"openAria": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"closeAria": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"openAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"closeAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				}
 			},
 			"servicesChrome": {
 				"listing": {
-					"heading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"stationLabelTemplate": {
-						"en": "Fixture copy.{stationNum}Fixture copy.{totalStr}",
-						"fr": "Fixture copy.{stationNum}Fixture copy.{totalStr}",
-						"es": "Fixture copy.{stationNum}Fixture copy.{totalStr}"
-					},
-					"deepDiveLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"stationLabelTemplate": {"en":"Fixture copy.{stationNum}Fixture copy.{totalStr}","fr":"Fixture copy.{stationNum}Fixture copy.{totalStr}","es":"Fixture copy.{stationNum}Fixture copy.{totalStr}"},
+					"deepDiveLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"stationShortLabels": {
-						"database-engineering": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"data-pipeline": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"analytics-reporting": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"web-development": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"database-engineering": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"data-pipeline": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"analytics-reporting": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"web-development": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					},
 					"projectsStrip": {
-						"builtWithService": {
-							"en": "Fixture copy.{serviceTitle}",
-							"fr": "Fixture copy.{serviceTitle}",
-							"es": "Fixture copy.{serviceTitle}"
-						},
-						"builtWithFallback": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"projectSingular": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
-						"projectPlural": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						}
+						"builtWithService": {"en":"Fixture copy.{serviceTitle}","fr":"Fixture copy.{serviceTitle}","es":"Fixture copy.{serviceTitle}"},
+						"builtWithFallback": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"projectSingular": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+						"projectPlural": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 					}
 				},
 				"pageMeta": {
-					"title": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				"detail": {
-					"backToServicesLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"valuePropositionHeading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"deliverablesHeading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"relatedProjectsHeading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"relatedProjectsNavAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"serviceNavAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"stackHeading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"seeStackLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"backToServicesLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"valuePropositionHeading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"deliverablesHeading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"relatedProjectsHeading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"relatedProjectsNavAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"serviceNavAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"stackHeading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"seeStackLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				}
 			},
 			"navChrome": {
 				"directions": {
-					"previous": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"next": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"previous": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"next": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				"shared": {
-					"openMenuAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"closeMenuAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"themeToggleAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"footerNavAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"menuOverlayAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"menuOverlayFooterLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"localeSwitcherAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"searchPlaceholder": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"clearFiltersLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"tocToggleSectionAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"tocHeading": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"tocMobileButton": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"tocCloseAria": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"tocCounterPrefix": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"openMenuAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"closeMenuAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"themeToggleAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"footerNavAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"menuOverlayAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"menuOverlayFooterLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"localeSwitcherAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"searchPlaceholder": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"clearFiltersLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"tocToggleSectionAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"tocHeading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"tocMobileButton": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"tocCloseAria": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"tocCounterPrefix": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				}
 			},
 			"footerChrome": {
 				"relatedProjectsStrip": {
-					"builtWithLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"projectCountSingular": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"projectCountPlural": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"builtWithLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"projectCountSingular": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"projectCountPlural": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				},
 				"footer": {
-					"tagline": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"location": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"statusPrefix": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"exploreLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"legalLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"connectLabel": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					}
+					"tagline": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"location": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"statusPrefix": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"exploreLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"legalLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"connectLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 				}
 			},
 			"heroDashboard": {
-				"vehiclesLabel": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"vehiclesSub": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"vehiclesSubLive": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"delayLabel": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"delaySub": {
-					"en": "{coverage}Fixture copy.",
-					"fr": "{coverage}Fixture copy.",
-					"es": "{coverage}Fixture copy."
-				},
-				"routesLabel": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"routesSub": {
-					"en": "Fixture copy.{total}Fixture copy.",
-					"fr": "Fixture copy.{total}Fixture copy.",
-					"es": "Fixture copy.{total}Fixture copy."
-				}
+				"vehiclesLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"vehiclesSub": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"vehiclesSubLive": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"delayLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"delaySub": {"en":"{coverage}Fixture copy.","fr":"{coverage}Fixture copy.","es":"{coverage}Fixture copy."},
+				"routesLabel": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"routesSub": {"en":"Fixture copy.{total}Fixture copy.","fr":"Fixture copy.{total}Fixture copy.","es":"Fixture copy.{total}Fixture copy."}
 			}
 		},
 		"blogPage": {
-			"intro": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"backToDispatches": {
-				"en": "← back to Blog",
-				"fr": "← retour au blogue",
-				"es": "← volver al blog"
-			},
-			"backToPersonal": {
-				"en": "← back to personal corner",
-				"fr": "← retour au coin personnel",
-				"es": "← volver al rincón personal"
-			},
-			"personalHeading": {
-				"en": "Personal Corner",
-				"fr": "Coin perso",
-				"es": "Rincón personal"
-			},
-			"personalIntro": {
-				"en": "Trains, space, tools, and the off-work notes that still shape how I build.",
-				"fr": "Trains, espace, outils, et les notes hors mandat qui influencent encore ma façon de bâtir.",
-				"es": "Trenes, espacio, herramientas y esas notas por fuera del trabajo que todavía moldean mi manera de construir."
-			},
-			"toPersonalLabel": {
-				"en": "Personal Corner",
-				"fr": "Coin perso",
-				"es": "Rincón personal"
-			},
-			"toPersonalSubtitle": {
-				"en": "Off the clock",
-				"fr": "Hors mandat",
-				"es": "Fuera de horario"
-			},
-			"toProfessionalLabel": {
-				"en": "Back to Blog",
-				"fr": "Retour au blogue",
-				"es": "Volver al blog"
-			},
-			"toProfessionalSubtitle": {
-				"en": "Brand notes",
-				"fr": "Notes de marque",
-				"es": "Notas de marca"
-			},
+			"intro": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"backToDispatches": {"en":"← back to Blog","fr":"← retour au blogue","es":"← volver al blog"},
+			"backToPersonal": {"en":"← back to personal corner","fr":"← retour au coin personnel","es":"← volver al rincón personal"},
+			"personalHeading": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"},
+			"personalIntro": {"en":"Trains, space, tools, and the off-work notes that still shape how I build.","fr":"Trains, espace, outils, et les notes hors mandat qui influencent encore ma façon de bâtir.","es":"Trenes, espacio, herramientas y esas notas por fuera del trabajo que todavía moldean mi manera de construir."},
+			"toPersonalLabel": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"},
+			"toPersonalSubtitle": {"en":"Off the clock","fr":"Hors mandat","es":"Fuera de horario"},
+			"toProfessionalLabel": {"en":"Back to Blog","fr":"Retour au blogue","es":"Volver al blog"},
+			"toProfessionalSubtitle": {"en":"Brand notes","fr":"Notes de marque","es":"Notas de marca"},
 			"entryRail": {
 				"workWithMe": {
-					"title": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"prompt": {
-						"en": "Need a system that stays editable?",
-						"fr": "Besoin d’un système qui reste éditable?",
-						"es": "¿Necesitas un sistema que se mantenga editable?"
-					},
+					"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"prompt": {"en":"Need a system that stays editable?","fr":"Besoin d’un système qui reste éditable?","es":"¿Necesitas un sistema que se mantenga editable?"},
 					"primary": {
-						"label": {
-							"en": "View Services",
-							"fr": "Voir les services",
-							"es": "Ver servicios"
-						},
+						"label": {"en":"View Services","fr":"Voir les services","es":"Ver servicios"},
 						"href": "/services"
 					},
 					"secondary": {
-						"label": {
-							"en": "Start a Project",
-							"fr": "Démarrer un projet",
-							"es": "Empezar un proyecto"
-						},
+						"label": {"en":"Start a Project","fr":"Démarrer un projet","es":"Empezar un proyecto"},
 						"href": "/contact"
 					}
 				},
 				"routes": {
-					"title": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"links": [
 						{
-							"label": {
-								"en": "About the author",
-								"fr": "À propos de l'auteur",
-								"es": "Sobre el autor"
-							},
+							"label": {"en":"About the author","fr":"À propos de l'auteur","es":"Sobre el autor"},
 							"href": "/about"
 						},
 						{
-							"label": {
-								"en": "Case studies",
-								"fr": "Études de cas",
-								"es": "Casos de estudio"
-							},
+							"label": {"en":"Case studies","fr":"Études de cas","es":"Casos de estudio"},
 							"href": "/projects"
 						},
 						{
-							"label": {
-								"en": "Services",
-								"fr": "Services",
-								"es": "Servicios"
-							},
+							"label": {"en":"Services","fr":"Services","es":"Servicios"},
 							"href": "/services"
 						},
 						{
-							"label": {
-								"en": "Contact",
-								"fr": "Contact",
-								"es": "Contacto"
-							},
+							"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
 							"href": "/contact"
 						}
 					]
@@ -3873,268 +2521,92 @@
 			}
 		},
 		"projectsPage": {
-			"intro": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"emptyState": {
-				"en": "No projects match the selected filters.",
-				"fr": "Aucun projet ne correspond aux filtres sélectionnés.",
-				"es": "Ningún proyecto coincide con los filtros elegidos."
-			}
+			"intro": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"emptyState": {"en":"No projects match the selected filters.","fr":"Aucun projet ne correspond aux filtres sélectionnés.","es":"Ningún proyecto coincide con los filtros elegidos."}
 		},
 		"contactPage": {
-			"pageTitle": {
-				"en": "Contact",
-				"fr": "Contact",
-				"es": "Contacto"
-			},
-			"stationLabel": {
-				"en": "NEXT STOP: YOU",
-				"fr": "PROCHAIN ARRÊT : TOI",
-				"es": "PRÓXIMA PARADA: TÚ"
-			},
-			"sendErrorMessage": {
-				"en": "Failed to send message. Please try again.",
-				"fr": "L'envoi du message a échoué. Réessaie, s'il te plaît.",
-				"es": "No se pudo enviar el mensaje. Inténtalo de nuevo, por favor."
-			},
+			"pageTitle": {"en":"Contact","fr":"Contact","es":"Contacto"},
+			"stationLabel": {"en":"NEXT STOP: YOU","fr":"PROCHAIN ARRÊT : TOI","es":"PRÓXIMA PARADA: TÚ"},
+			"sendErrorMessage": {"en":"Failed to send message. Please try again.","fr":"L'envoi du message a échoué. Réessaie, s'il te plaît.","es":"No se pudo enviar el mensaje. Inténtalo de nuevo, por favor."},
 			"meta": {
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			"infoTerminal": {
 				"title": "Fixture copy.",
 				"command": "$ yesid --info",
-				"location": {
-					"en": "Montreal, QC, Canada",
-					"fr": "Montréal, QC, Canada",
-					"es": "Montreal, QC, Canadá"
-				},
-				"responseTime": {
-					"en": "~24h response time",
-					"fr": "réponse en ~24h",
-					"es": "respuesta en ~24h"
-				},
-				"languages": {
-					"en": "EN · FR · ES",
-					"fr": "EN · FR · ES",
-					"es": "EN · FR · ES"
-				},
+				"location": {"en":"Montreal, QC, Canada","fr":"Montréal, QC, Canada","es":"Montreal, QC, Canadá"},
+				"responseTime": {"en":"~24h response time","fr":"réponse en ~24h","es":"respuesta en ~24h"},
+				"languages": {"en":"EN · FR · ES","fr":"EN · FR · ES","es":"EN · FR · ES"},
 				"bestFit": [
-					{
-						"en": "Slow reports that need to be fast",
-						"fr": "Des rapports lents qui doivent aller vite",
-						"es": "Reportes lentos que deben ser rápidos"
-					},
-					{
-						"en": "Manual data work that should run itself",
-						"fr": "Du travail de données manuel qui devrait rouler tout seul",
-						"es": "Trabajo manual con datos que debería correr solo"
-					},
-					{
-						"en": "Sites and stores wired to live data",
-						"fr": "Des sites et boutiques branchés sur des données en direct",
-						"es": "Sitios y tiendas conectados a datos en vivo"
-					}
+					{"en":"Slow reports that need to be fast","fr":"Des rapports lents qui doivent aller vite","es":"Reportes lentos que deben ser rápidos"},
+					{"en":"Manual data work that should run itself","fr":"Du travail de données manuel qui devrait rouler tout seul","es":"Trabajo manual con datos que debería correr solo"},
+					{"en":"Sites and stores wired to live data","fr":"Des sites et boutiques branchés sur des données en direct","es":"Sitios y tiendas conectados a datos en vivo"}
 				],
 				"sectionLabels": {
-					"location": {
-						"en": "LOCATION",
-						"fr": "EMPLACEMENT",
-						"es": "UBICACIÓN"
-					},
-					"connect": {
-						"en": "CONNECT",
-						"fr": "CONNEXION",
-						"es": "CONECTA"
-					},
-					"languages": {
-						"en": "LANGUAGES",
-						"fr": "LANGUES",
-						"es": "IDIOMAS"
-					},
-					"bestFit": {
-						"en": "BEST FIT",
-						"fr": "PROJETS IDÉAUX",
-						"es": "PROYECTOS IDEALES"
-					}
+					"location": {"en":"LOCATION","fr":"EMPLACEMENT","es":"UBICACIÓN"},
+					"connect": {"en":"CONNECT","fr":"CONNEXION","es":"CONECTA"},
+					"languages": {"en":"LANGUAGES","fr":"LANGUES","es":"IDIOMAS"},
+					"bestFit": {"en":"BEST FIT","fr":"PROJETS IDÉAUX","es":"PROYECTOS IDEALES"}
 				}
 			},
 			"formTerminal": {
 				"title": "Fixture copy.",
 				"command": "$ yesid --contact",
-				"commandOutput": {
-					"en": "Opening contact form...",
-					"fr": "Ouverture du formulaire de contact...",
-					"es": "Abriendo formulario de contacto..."
-				},
+				"commandOutput": {"en":"Opening contact form...","fr":"Ouverture du formulaire de contact...","es":"Abriendo formulario de contacto..."},
 				"fields": {
 					"name": {
-						"label": {
-							"en": "name",
-							"fr": "nom",
-							"es": "nombre"
-						},
-						"placeholder": {
-							"en": "Your name",
-							"fr": "Ton nom",
-							"es": "Tu nombre"
-						}
+						"label": {"en":"name","fr":"nom","es":"nombre"},
+						"placeholder": {"en":"Your name","fr":"Ton nom","es":"Tu nombre"}
 					},
 					"email": {
-						"label": {
-							"en": "email",
-							"fr": "courriel",
-							"es": "correo"
-						},
-						"placeholder": {
-							"en": "you@company.com",
-							"fr": "toi@compagnie.com",
-							"es": "tu@empresa.com"
-						}
+						"label": {"en":"email","fr":"courriel","es":"correo"},
+						"placeholder": {"en":"you@company.com","fr":"toi@compagnie.com","es":"tu@empresa.com"}
 					},
 					"message": {
-						"label": {
-							"en": "message",
-							"fr": "message",
-							"es": "mensaje"
-						},
-						"placeholder": {
-							"en": "Tell me about your project...",
-							"fr": "Parle-moi de ton projet...",
-							"es": "Cuéntame de tu proyecto..."
-						}
+						"label": {"en":"message","fr":"message","es":"mensaje"},
+						"placeholder": {"en":"Tell me about your project...","fr":"Parle-moi de ton projet...","es":"Cuéntame de tu proyecto..."}
 					}
 				},
-				"submitLabel": {
-					"en": "send --message →",
-					"fr": "send --message →",
-					"es": "send --message →"
-				},
-				"bookingPrompt": {
-					"en": "Prefer to talk it through?",
-					"fr": "Tu préfères en jaser de vive voix?",
-					"es": "¿Prefieres hablarlo de viva voz?"
-				},
-				"bookingButtonLabel": {
-					"en": "book --intro-call →",
-					"fr": "book --intro-call →",
-					"es": "book --intro-call →"
-				}
+				"submitLabel": {"en":"send --message →","fr":"send --message →","es":"send --message →"},
+				"bookingPrompt": {"en":"Prefer to talk it through?","fr":"Tu préfères en jaser de vive voix?","es":"¿Prefieres hablarlo de viva voz?"},
+				"bookingButtonLabel": {"en":"book --intro-call →","fr":"book --intro-call →","es":"book --intro-call →"}
 			},
 			"validation": {
-				"required": {
-					"en": "required, {field} cannot be empty",
-					"fr": "requis, {field} ne peut pas être vide",
-					"es": "requerido, {field} no puede estar vacío"
-				},
-				"invalidEmail": {
-					"en": "invalid, enter a valid email address",
-					"fr": "invalide, entre une adresse courriel valide",
-					"es": "inválido, ingresa un correo válido"
-				},
-				"errorSummary": {
-					"en": "{count} errors, fix and retry",
-					"fr": "{count} erreurs, corrige et réessaie",
-					"es": "{count} errores, corrige y reintenta"
-				}
+				"required": {"en":"required, {field} cannot be empty","fr":"requis, {field} ne peut pas être vide","es":"requerido, {field} no puede estar vacío"},
+				"invalidEmail": {"en":"invalid, enter a valid email address","fr":"invalide, entre une adresse courriel valide","es":"inválido, ingresa un correo válido"},
+				"errorSummary": {"en":"{count} errors, fix and retry","fr":"{count} erreurs, corrige et réessaie","es":"{count} errores, corrige y reintenta"}
 			},
 			"success": {
-				"validating": {
-					"en": "Validating fields...",
-					"fr": "Validation des champs...",
-					"es": "Validando campos..."
-				},
-				"sending": {
-					"en": "Sending message...",
-					"fr": "Envoi du message...",
-					"es": "Enviando mensaje..."
-				},
-				"sent": {
-					"en": "Message sent successfully!",
-					"fr": "Message envoyé avec succès!",
-					"es": "¡Mensaje enviado con éxito!"
-				},
-				"responseTime": {
-					"en": "I'll get back to you within 24h",
-					"fr": "Je te reviens d'ici 24h",
-					"es": "Te respondo en menos de 24h"
-				},
-				"meanwhile": {
-					"en": "Meanwhile, check out my {work} or {blog}",
-					"fr": "En attendant, jette un œil à mes {work} ou mon {blog}",
-					"es": "Mientras tanto, échale un ojo a mis {work} o a mi {blog}"
-				},
-				"resetLabel": {
-					"en": "reset --form",
-					"fr": "reset --form",
-					"es": "reset --form"
-				},
-				"fieldOk": {
-					"en": "OK",
-					"fr": "OK",
-					"es": "OK"
-				},
-				"workLinkLabel": {
-					"en": "work",
-					"fr": "services",
-					"es": "servicios"
-				},
-				"blogLinkLabel": {
-					"en": "blog",
-					"fr": "blogue",
-					"es": "blog"
-				}
+				"validating": {"en":"Validating fields...","fr":"Validation des champs...","es":"Validando campos..."},
+				"sending": {"en":"Sending message...","fr":"Envoi du message...","es":"Enviando mensaje..."},
+				"sent": {"en":"Message sent successfully!","fr":"Message envoyé avec succès!","es":"¡Mensaje enviado con éxito!"},
+				"responseTime": {"en":"I'll get back to you within 24h","fr":"Je te reviens d'ici 24h","es":"Te respondo en menos de 24h"},
+				"meanwhile": {"en":"Meanwhile, check out my {work} or {blog}","fr":"En attendant, jette un œil à mes {work} ou mon {blog}","es":"Mientras tanto, échale un ojo a mis {work} o a mi {blog}"},
+				"resetLabel": {"en":"reset --form","fr":"reset --form","es":"reset --form"},
+				"fieldOk": {"en":"OK","fr":"OK","es":"OK"},
+				"workLinkLabel": {"en":"work","fr":"services","es":"servicios"},
+				"blogLinkLabel": {"en":"blog","fr":"blogue","es":"blog"}
 			},
 			"socials": [
 				{
-					"label": {
-						"en": "Book a 20-min intro call",
-						"fr": "Réserver un appel intro de 20 minutes",
-						"es": "Agenda una llamada intro de 20 min"
-					},
+					"label": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 minutes","es":"Agenda una llamada intro de 20 min"},
 					"href": "https://cal.com/yesid-dev",
 					"icon": "calendar"
 				},
 				{
-					"label": {
-						"en": "Email",
-						"fr": "Courriel",
-						"es": "Correo"
-					},
+					"label": {"en":"Email","fr":"Courriel","es":"Correo"},
 					"href": "mailto:contact@yesid.dev",
 					"icon": "email"
 				},
 				{
-					"label": {
-						"en": "GitHub",
-						"fr": "GitHub",
-						"es": "GitHub"
-					},
+					"label": {"en":"GitHub","fr":"GitHub","es":"GitHub"},
 					"href": "https://github.com/mgkdante",
 					"icon": "github"
 				},
 				{
-					"label": {
-						"en": "LinkedIn",
-						"fr": "LinkedIn",
-						"es": "LinkedIn"
-					},
+					"label": {"en":"LinkedIn","fr":"LinkedIn","es":"LinkedIn"},
 					"href": "https://www.linkedin.com/in/otaloray/",
 					"icon": "linkedin"
 				}
@@ -4144,16 +2616,8 @@
 		"projects": [
 			{
 				"slug": "transit-data-pipeline",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"oneLiner": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"oneLiner": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"description": {
 					"en": {
 						"time": 1791442800000,
@@ -4226,11 +2690,7 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4382,11 +2842,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4493,11 +2949,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4583,11 +3035,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4694,11 +3142,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4784,11 +3228,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4853,11 +3293,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4943,11 +3379,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -4991,11 +3423,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791432000000,
@@ -5380,28 +3808,16 @@
 				],
 				"impactMetric": {
 					"value": "2",
-					"label": {
-						"en": "Transit networks: Montréal and Ottawa",
-						"fr": "Réseaux de transport : Montréal et Ottawa",
-						"es": "Redes de transporte: Montreal y Ottawa"
-					}
+					"label": {"en":"Transit networks: Montréal and Ottawa","fr":"Réseaux de transport : Montréal et Ottawa","es":"Redes de transporte: Montreal y Ottawa"}
 				},
 				"impactMetrics": [
 					{
 						"value": "2",
-						"label": {
-							"en": "Transit networks: Montréal and Ottawa",
-							"fr": "Réseaux de transport : Montréal et Ottawa",
-							"es": "Redes de transporte: Montreal y Ottawa"
-						}
+						"label": {"en":"Transit networks: Montréal and Ottawa","fr":"Réseaux de transport : Montréal et Ottawa","es":"Redes de transporte: Montreal y Ottawa"}
 					},
 					{
 						"value": "FR / EN",
-						"label": {
-							"en": "Interface languages",
-							"fr": "Langues de l’interface",
-							"es": "Idiomas de la interfaz"
-						}
+						"label": {"en":"Interface languages","fr":"Langues de l’interface","es":"Idiomas de la interfaz"}
 					}
 				],
 				"location": "Montréal / Ottawa",
@@ -5409,16 +3825,8 @@
 			},
 			{
 				"slug": "cafe-arona",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"oneLiner": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"oneLiner": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"description": {
 					"en": {
 						"time": 1791442800000,
@@ -5482,11 +3890,7 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -5554,11 +3958,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -5668,11 +4068,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -5782,11 +4178,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -5950,11 +4342,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6022,11 +4410,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6094,11 +4478,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6166,11 +4546,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6238,11 +4614,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6310,11 +4682,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791432000000,
@@ -6468,16 +4836,8 @@
 			},
 			{
 				"slug": "yesid-dev-design",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"oneLiner": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"oneLiner": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"description": {
 					"en": {
 						"time": 1791442800000,
@@ -6538,11 +4898,7 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6655,11 +5011,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6727,11 +5079,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6820,11 +5168,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6913,11 +5257,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -6985,11 +5325,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7057,11 +5393,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7105,11 +5437,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791432000000,
@@ -7375,16 +5703,8 @@
 			},
 			{
 				"slug": "yesid-dev",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"oneLiner": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"oneLiner": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"description": {
 					"en": {
 						"time": 1791442800000,
@@ -7460,11 +5780,7 @@
 				],
 				"sections": [
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7532,11 +5848,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7580,11 +5892,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7649,11 +5957,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7697,11 +6001,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7745,11 +6045,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7814,11 +6110,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7862,11 +6154,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7931,11 +6219,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -7979,11 +6263,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -8027,11 +6307,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -8075,11 +6351,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -8123,11 +6395,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -8171,11 +6439,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791442800000,
@@ -8219,11 +6483,7 @@
 						}
 					},
 					{
-						"title": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"content": {
 							"en": {
 								"time": 1791432000000,
@@ -8728,52 +6988,28 @@
 				],
 				"impactMetric": {
 					"value": "3",
-					"label": {
-						"en": "Website languages",
-						"fr": "Langues du site",
-						"es": "Idiomas del sitio"
-					}
+					"label": {"en":"Website languages","fr":"Langues du site","es":"Idiomas del sitio"}
 				},
 				"impactMetrics": [
 					{
 						"value": "3",
-						"label": {
-							"en": "Website languages",
-							"fr": "Langues du site",
-							"es": "Idiomas del sitio"
-						}
+						"label": {"en":"Website languages","fr":"Langues du site","es":"Idiomas del sitio"}
 					},
 					{
 						"value": "SvelteKit",
-						"label": {
-							"en": "Website framework",
-							"fr": "Framework du site",
-							"es": "Framework del sitio"
-						}
+						"label": {"en":"Website framework","fr":"Framework du site","es":"Framework del sitio"}
 					},
 					{
 						"value": "Directus",
-						"label": {
-							"en": "Content editing",
-							"fr": "Gestion du contenu",
-							"es": "Edición del contenido"
-						}
+						"label": {"en":"Content editing","fr":"Gestion du contenu","es":"Edición del contenido"}
 					},
 					{
 						"value": "Neon",
-						"label": {
-							"en": "CMS database hosting",
-							"fr": "Hébergement de la base du CMS",
-							"es": "Alojamiento de la base del CMS"
-						}
+						"label": {"en":"CMS database hosting","fr":"Hébergement de la base du CMS","es":"Alojamiento de la base del CMS"}
 					},
 					{
 						"value": "Vercel",
-						"label": {
-							"en": "Website hosting",
-							"fr": "Hébergement du site",
-							"es": "Alojamiento del sitio"
-						}
+						"label": {"en":"Website hosting","fr":"Hébergement du site","es":"Alojamiento del sitio"}
 					}
 				]
 			}
@@ -8781,11 +7017,7 @@
 		"legalPages": [
 			{
 				"slug": "privacy",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"body": {
 					"en": {
 						"time": 1751500800000,
@@ -8814,6 +7046,13 @@
 								}
 							},
 							{
+								"id": "legal-privacy-en-012",
+								"type": "paragraph",
+								"data": {
+									"text": "If you write to contact@yesid.dev, I receive whatever you choose to send me."
+								}
+							},
+							{
 								"id": "legal-privacy-en-020",
 								"type": "nestedlist",
 								"data": {
@@ -8836,6 +7075,34 @@
 											"items": []
 										}
 									]
+								}
+							},
+							{
+								"id": "legal-privacy-en-035",
+								"type": "paragraph",
+								"data": {
+									"text": "To exercise any of these rights, write to contact@yesid.dev. I may need to verify your identity, and I will respond in writing within 30 days, as the law requires. There is no fee for a reasonable request."
+								}
+							},
+							{
+								"id": "legal-privacy-en-039",
+								"type": "paragraph",
+								"data": {
+									"text": "I am the person in charge of the protection of personal information for this site. Title: Privacy Officer. Name: Yesid Fernando Otalora. Contact: contact@yesid.dev."
+								}
+							},
+							{
+								"id": "legal-privacy-en-041",
+								"type": "paragraph",
+								"data": {
+									"text": "If anything about how I handle your personal information concerns you, please contact me first at contact@yesid.dev; I take this seriously and will respond quickly. If my answer does not satisfy you, you may file a complaint with the Commission d'accès à l'information du Québec (CAI), the public body that oversees the protection of personal information in Quebec. For matters that fall under federal law, for example if you are outside Quebec, you may also contact the Office of the Privacy Commissioner of Canada (OPC)."
+								}
+							},
+							{
+								"id": "legal-privacy-en-045",
+								"type": "paragraph",
+								"data": {
+									"text": "For any question about this policy or about your personal information: contact@yesid.dev, or the form on the contact page (/contact). You are welcome to write in English, French, or Spanish."
 								}
 							}
 						],
@@ -8868,6 +7135,13 @@
 								}
 							},
 							{
+								"id": "legal-privacy-fr-012",
+								"type": "paragraph",
+								"data": {
+									"text": "Si vous m'écrivez à contact@yesid.dev, je reçois ce que vous choisissez de m'envoyer."
+								}
+							},
+							{
 								"id": "legal-privacy-fr-020",
 								"type": "nestedlist",
 								"data": {
@@ -8890,6 +7164,34 @@
 											"items": []
 										}
 									]
+								}
+							},
+							{
+								"id": "legal-privacy-fr-035",
+								"type": "paragraph",
+								"data": {
+									"text": "Pour exercer l'un de ces droits, écrivez à contact@yesid.dev. Je pourrais devoir vérifier votre identité, et je vous répondrai par écrit dans un délai de 30 jours, comme la loi l'exige. Aucuns frais ne s'appliquent à une demande raisonnable."
+								}
+							},
+							{
+								"id": "legal-privacy-fr-039",
+								"type": "paragraph",
+								"data": {
+									"text": "Je suis la personne responsable de la protection des renseignements personnels pour ce site. Titre : Responsable de la protection des renseignements personnels. Nom : Yesid Fernando Otalora. Contact : contact@yesid.dev."
+								}
+							},
+							{
+								"id": "legal-privacy-fr-041",
+								"type": "paragraph",
+								"data": {
+									"text": "Si le traitement de vos renseignements personnels vous préoccupe, écrivez-moi d'abord à contact@yesid.dev : je prends la question au sérieux et je répondrai rapidement. Si ma réponse ne vous satisfait pas, vous pouvez porter plainte auprès de la Commission d'accès à l'information du Québec (CAI), l'organisme public qui veille à la protection des renseignements personnels au Québec. Pour les situations relevant de la loi fédérale, par exemple si vous êtes à l'extérieur du Québec, vous pouvez aussi vous adresser au Commissariat à la protection de la vie privée du Canada."
+								}
+							},
+							{
+								"id": "legal-privacy-fr-045",
+								"type": "paragraph",
+								"data": {
+									"text": "Pour toute question sur cette politique ou sur vos renseignements personnels : contact@yesid.dev, ou le formulaire de la page contact (/contact). Vous pouvez m'écrire en français, en anglais ou en espagnol."
 								}
 							}
 						],
@@ -8922,6 +7224,13 @@
 								}
 							},
 							{
+								"id": "legal-privacy-es-012",
+								"type": "paragraph",
+								"data": {
+									"text": "Si me escribe a contact@yesid.dev, recibo lo que usted decida enviarme."
+								}
+							},
+							{
 								"id": "legal-privacy-es-020",
 								"type": "nestedlist",
 								"data": {
@@ -8945,6 +7254,34 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-privacy-es-035",
+								"type": "paragraph",
+								"data": {
+									"text": "Para ejercer cualquiera de estos derechos, escriba a contact@yesid.dev. Es posible que deba verificar su identidad, y le responderé por escrito en un plazo de 30 días, como lo exige la ley. Una solicitud razonable no tiene ningún costo."
+								}
+							},
+							{
+								"id": "legal-privacy-es-039",
+								"type": "paragraph",
+								"data": {
+									"text": "Yo soy la persona a cargo de la protección de la información personal de este sitio. Cargo: Responsable de privacidad. Nombre: Yesid Fernando Otalora. Contacto: contact@yesid.dev."
+								}
+							},
+							{
+								"id": "legal-privacy-es-041",
+								"type": "paragraph",
+								"data": {
+									"text": "Si algo en la manera en que manejo su información personal le preocupa, por favor contácteme primero en contact@yesid.dev; me lo tomo en serio y le responderé con rapidez. Si mi respuesta no le satisface, puede presentar una queja ante la Comisión de acceso a la información de Quebec (CAI), el organismo público que supervisa la protección de la información personal en Quebec. Para asuntos que corresponden a la ley federal, por ejemplo si usted está fuera de Quebec, también puede contactar al Comisariado de Protección de la Privacidad de Canadá (OPC)."
+								}
+							},
+							{
+								"id": "legal-privacy-es-045",
+								"type": "paragraph",
+								"data": {
+									"text": "Para cualquier pregunta sobre esta política o sobre su información personal: contact@yesid.dev, o el formulario de la página de contacto (/contact). Con gusto puede escribirme en español, inglés o francés."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -8953,11 +7290,7 @@
 			},
 			{
 				"slug": "terms",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"body": {
 					"en": {
 						"time": 1751500800000,
@@ -8996,6 +7329,13 @@
 											"items": []
 										}
 									]
+								}
+							},
+							{
+								"id": "legal-terms-en-024",
+								"type": "paragraph",
+								"data": {
+									"text": "Questions about these terms are welcome in English, French, or Spanish. Write to contact@yesid.dev or use the contact page at /contact."
 								}
 							}
 						],
@@ -9039,6 +7379,13 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-terms-fr-024",
+								"type": "paragraph",
+								"data": {
+									"text": "Vos questions sur ces conditions sont les bienvenues, en français, en anglais ou en espagnol. Écrivez-moi à contact@yesid.dev ou utilisez la page de contact : /contact."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9081,6 +7428,13 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-terms-es-024",
+								"type": "paragraph",
+								"data": {
+									"text": "Sus preguntas sobre estas condiciones son bienvenidas en español, inglés o francés. Escriba a contact@yesid.dev o use la página de contacto en /contact."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9089,11 +7443,7 @@
 			},
 			{
 				"slug": "cookies",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"body": {
 					"en": {
 						"time": 1751500800000,
@@ -9132,6 +7482,13 @@
 											"items": []
 										}
 									]
+								}
+							},
+							{
+								"id": "legal-cookies-en-014",
+								"type": "paragraph",
+								"data": {
+									"text": "Questions about this policy are welcome at contact@yesid.dev or through the contact page, in English, French, or Spanish. Yesid Fernando Otalora acts as Privacy Officer for this site under section 3.1 of Law 25."
 								}
 							}
 						],
@@ -9175,6 +7532,13 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-cookies-fr-014",
+								"type": "paragraph",
+								"data": {
+									"text": "Pour toute question sur cette politique, écrivez-moi à contact@yesid.dev ou passez par la page contact, en français, en anglais ou en espagnol. Yesid Fernando Otalora agit comme Responsable de la protection des renseignements personnels de ce site en vertu de l'article 3.1 de la Loi 25."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9217,6 +7581,13 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-cookies-es-014",
+								"type": "paragraph",
+								"data": {
+									"text": "Cualquier pregunta sobre esta política es bienvenida en contact@yesid.dev o a través de la página de contacto, en español, inglés o francés. Yesid Fernando Otalora actúa como Responsable de la protección de la información personal de este sitio en virtud del artículo 3.1 de la Ley 25."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9225,11 +7596,7 @@
 			},
 			{
 				"slug": "accessibility",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"body": {
 					"en": {
 						"time": 1751500800000,
@@ -9284,6 +7651,20 @@
 											"items": []
 										}
 									]
+								}
+							},
+							{
+								"id": "legal-accessibility-en-009",
+								"type": "paragraph",
+								"data": {
+									"text": "If something on this site is hard or impossible for you to use, write to me at contact@yesid.dev. Mention which page you were on, what you were trying to do and, if possible, which browser and assistive technology you use. I normally reply within a few days. You can write in English, French or Spanish."
+								}
+							},
+							{
+								"id": "legal-accessibility-en-013",
+								"type": "paragraph",
+								"data": {
+									"text": "For any question or report about accessibility: contact@yesid.dev, or the form on the contact page at /contact."
 								}
 							}
 						],
@@ -9343,6 +7724,20 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-accessibility-fr-009",
+								"type": "paragraph",
+								"data": {
+									"text": "Si quelque chose sur ce site vous est difficile ou impossible à utiliser, écrivez-moi à contact@yesid.dev. Indiquez la page concernée, ce que vous tentiez de faire et, si possible, le navigateur et la technologie d'assistance que vous utilisez. Je réponds normalement en quelques jours. Vous pouvez m'écrire en français, en anglais ou en espagnol."
+								}
+							},
+							{
+								"id": "legal-accessibility-fr-013",
+								"type": "paragraph",
+								"data": {
+									"text": "Pour toute question ou tout signalement concernant l'accessibilité : contact@yesid.dev, ou le formulaire de la page contact à /contact."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9401,6 +7796,20 @@
 										}
 									]
 								}
+							},
+							{
+								"id": "legal-accessibility-es-009",
+								"type": "paragraph",
+								"data": {
+									"text": "Si algo en este sitio le resulta difícil o imposible de usar, escríbame a contact@yesid.dev. Mencione en qué página estaba, qué intentaba hacer y, si es posible, qué navegador y qué tecnología de asistencia utiliza. Normalmente respondo en pocos días. Puede escribirme en español, inglés o francés."
+								}
+							},
+							{
+								"id": "legal-accessibility-es-013",
+								"type": "paragraph",
+								"data": {
+									"text": "Para cualquier pregunta o reporte sobre accesibilidad: contact@yesid.dev, o el formulario de la página de contacto en /contact."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9409,11 +7818,7 @@
 			},
 			{
 				"slug": "notice",
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"body": {
 					"en": {
 						"time": 1751500800000,
@@ -9431,6 +7836,13 @@
 								"data": {
 									"text": "Fixture copy.",
 									"level": 2
+								}
+							},
+							{
+								"id": "legal-notice-en-013",
+								"type": "paragraph",
+								"data": {
+									"text": "You can reach me at contact@yesid.dev or through the contact page at /contact. I answer in English, French, or Spanish."
 								}
 							}
 						],
@@ -9453,6 +7865,13 @@
 									"text": "Fixture copy.",
 									"level": 2
 								}
+							},
+							{
+								"id": "legal-notice-fr-013",
+								"type": "paragraph",
+								"data": {
+									"text": "Vous pouvez m'écrire à contact@yesid.dev ou passer par la page de contact à /contact. Je réponds en français, en anglais ou en espagnol."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9474,6 +7893,13 @@
 									"text": "Fixture copy.",
 									"level": 2
 								}
+							},
+							{
+								"id": "legal-notice-es-013",
+								"type": "paragraph",
+								"data": {
+									"text": "Puede escribirme a contact@yesid.dev o usar la página de contacto en /contact. Respondo en inglés, francés o español."
+								}
 							}
 						],
 						"version": "2.31.2"
@@ -9483,282 +7909,90 @@
 		],
 		"hero": {
 			"headline": {
-				"line1": {
-					"en": "SYSTEMS THAT",
-					"fr": "DES SYSTÈMES QUI",
-					"es": "SISTEMAS QUE"
-				},
-				"line2": {
-					"en": "DON'T BREAK",
-					"fr": "NE CASSENT PAS",
-					"es": "NO SE ROMPEN"
-				},
-				"ariaSuffix": {
-					"en": "Don't Break.",
-					"fr": "Ne cassent pas.",
-					"es": "No se rompen."
-				}
+				"line1": {"en":"SYSTEMS THAT","fr":"DES SYSTÈMES QUI","es":"SISTEMAS QUE"},
+				"line2": {"en":"DON'T BREAK","fr":"NE CASSENT PAS","es":"NO SE ROMPEN"},
+				"ariaSuffix": {"en":"Don't Break.","fr":"Ne cassent pas.","es":"No se rompen."}
 			},
-			"subheadline": {
-				"en": "I make data tell the truth.",
-				"fr": "Je fais parler les données, pour vrai.",
-				"es": "Hago que los datos digan la verdad."
-			},
-			"subtitle": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"identity": {
-				"en": "freelance digital infrastructure - Montreal",
-				"fr": "infrastructure numérique à la pige - Montréal",
-				"es": "infraestructura digital freelance - Montreal"
-			},
-			"ctaWork": {
-				"en": "See how I build →",
-				"fr": "Vois comment je bâtis →",
-				"es": "Mira cómo construyo →"
-			},
-			"ctaContact": {
-				"en": "Book a 20-min intro call",
-				"fr": "Réserver un appel intro de 20 min",
-				"es": "Agenda tu llamada intro de 20 min"
-			},
+			"subheadline": {"en":"I make data tell the truth.","fr":"Je fais parler les données, pour vrai.","es":"Hago que los datos digan la verdad."},
+			"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"identity": {"en":"freelance digital infrastructure - Montreal","fr":"infrastructure numérique à la pige - Montréal","es":"infraestructura digital freelance - Montreal"},
+			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
+			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
 			"sqlPanel": {
-				"prompt": {
-					"en": "yesid@transit:gold>",
-					"fr": "yesid@transit:gold>",
-					"es": "yesid@transit:gold>"
-				},
-				"liveLabel": {
-					"en": "DEMO",
-					"fr": "DÉMO",
-					"es": "DEMO"
-				},
-				"liveBadge": {
-					"en": "LIVE",
-					"fr": "EN DIRECT",
-					"es": "EN VIVO"
-				},
+				"prompt": {"en":"yesid@transit:gold>","fr":"yesid@transit:gold>","es":"yesid@transit:gold>"},
+				"liveLabel": {"en":"DEMO","fr":"DÉMO","es":"DEMO"},
+				"liveBadge": {"en":"LIVE","fr":"EN DIRECT","es":"EN VIVO"},
 				"columns": {
-					"route": {
-						"en": "route",
-						"fr": "route",
-						"es": "route"
-					},
-					"avgDelayS": {
-						"en": "avg_delay_s",
-						"fr": "avg_delay_s",
-						"es": "avg_delay_s"
-					},
-					"vehicles": {
-						"en": "vehicles",
-						"fr": "vehicles",
-						"es": "vehicles"
-					}
+					"route": {"en":"route","fr":"route","es":"route"},
+					"avgDelayS": {"en":"avg_delay_s","fr":"avg_delay_s","es":"avg_delay_s"},
+					"vehicles": {"en":"vehicles","fr":"vehicles","es":"vehicles"}
 				},
-				"metaTemplate": {
-					"en": "5 rows · {queryTime}s · {updatedAgo}",
-					"fr": "5 lignes · {queryTime}s · {updatedAgo}",
-					"es": "5 filas · {queryTime}s · {updatedAgo}"
-				}
+				"metaTemplate": {"en":"5 rows · {queryTime}s · {updatedAgo}","fr":"5 lignes · {queryTime}s · {updatedAgo}","es":"5 filas · {queryTime}s · {updatedAgo}"}
 			},
 			"refreshButton": {
-				"label": {
-					"en": "PULL FRESH DATA",
-					"fr": "TIRER DES DONNÉES FRAÎCHES",
-					"es": "TRAER DATOS FRESCOS"
-				},
-				"helper": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"helperLive": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"label": {"en":"PULL FRESH DATA","fr":"TIRER DES DONNÉES FRAÎCHES","es":"TRAER DATOS FRESCOS"},
+				"helper": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"helperLive": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			},
 			"heroAnim": {
-				"scrollDown": {
-					"en": "NEXT STOP: SCROLL DOWN",
-					"fr": "PROCHAIN ARRÊT : FAIS DÉFILER",
-					"es": "PRÓXIMA PARADA: SIGUE BAJANDO"
-				}
+				"scrollDown": {"en":"NEXT STOP: SCROLL DOWN","fr":"PROCHAIN ARRÊT : FAIS DÉFILER","es":"PRÓXIMA PARADA: SIGUE BAJANDO"}
 			}
 		},
 		"manifesto": {
 			"statement": {
-				"line1": {
-					"en": "I BUILD THE",
-					"fr": "JE BÂTIS L'",
-					"es": "CONSTRUYO LA"
-				},
-				"lineHuge": {
-					"en": "INFRASTRUCTURE",
-					"fr": "INFRASTRUCTURE",
-					"es": "INFRAESTRUCTURA"
-				},
-				"line3Part1": {
-					"en": "YOUR",
-					"fr": "DONT",
-					"es": "QUE"
-				},
-				"line3Highlight": {
-					"en": "OPERATIONS",
-					"fr": "TES OPÉRATIONS",
-					"es": "TUS OPERACIONES"
-				},
-				"line3Part2": {
-					"en": "RUN ON",
-					"fr": "ONT BESOIN",
-					"es": "NECESITAN"
-				}
+				"line1": {"en":"I BUILD THE","fr":"JE BÂTIS L'","es":"CONSTRUYO LA"},
+				"lineHuge": {"en":"INFRASTRUCTURE","fr":"INFRASTRUCTURE","es":"INFRAESTRUCTURA"},
+				"line3Part1": {"en":"YOUR","fr":"DONT","es":"QUE"},
+				"line3Highlight": {"en":"OPERATIONS","fr":"TES OPÉRATIONS","es":"TUS OPERACIONES"},
+				"line3Part2": {"en":"RUN ON","fr":"ONT BESOIN","es":"NECESITAN"}
 			},
 			"terminal": {
-				"user": {
-					"en": "yesid@mtl",
-					"fr": "yesid@mtl",
-					"es": "yesid@mtl"
-				},
-				"command": {
-					"en": ":~$ cat manifesto.md",
-					"fr": ":~$ cat manifesto.md",
-					"es": ":~$ cat manifesto.md"
-				}
+				"user": {"en":"yesid@mtl","fr":"yesid@mtl","es":"yesid@mtl"},
+				"command": {"en":":~$ cat manifesto.md","fr":":~$ cat manifesto.md","es":":~$ cat manifesto.md"}
 			},
 			"pills": [
 				{
-					"label": {
-						"en": "databases",
-						"fr": "bases de données",
-						"es": "bases de datos"
-					},
+					"label": {"en":"databases","fr":"bases de données","es":"bases de datos"},
 					"serviceId": "database-engineering"
 				},
 				{
-					"label": {
-						"en": "pipelines",
-						"fr": "pipelines",
-						"es": "pipelines"
-					},
+					"label": {"en":"pipelines","fr":"pipelines","es":"pipelines"},
 					"serviceId": "data-pipeline"
 				},
 				{
-					"label": {
-						"en": "dashboards",
-						"fr": "tableaux de bord",
-						"es": "tableros"
-					},
+					"label": {"en":"dashboards","fr":"tableaux de bord","es":"tableros"},
 					"serviceId": "analytics-reporting"
 				},
 				{
-					"label": {
-						"en": "websites",
-						"fr": "sites web",
-						"es": "sitios web"
-					},
+					"label": {"en":"websites","fr":"sites web","es":"sitios web"},
 					"serviceId": "web-development"
 				}
 			],
 			"edgeLeft": {
-				"sectionNumber": {
-					"en": "SEC-02",
-					"fr": "SEC-02",
-					"es": "SEC-02"
-				},
-				"sectionName": {
-					"en": "MANIFESTO",
-					"fr": "MANIFESTE",
-					"es": "MANIFIESTO"
-				},
-				"location": {
-					"en": "MTL-QC",
-					"fr": "MTL-QC",
-					"es": "MTL-QC"
-				}
+				"sectionNumber": {"en":"SEC-02","fr":"SEC-02","es":"SEC-02"},
+				"sectionName": {"en":"MANIFESTO","fr":"MANIFESTE","es":"MANIFIESTO"},
+				"location": {"en":"MTL-QC","fr":"MTL-QC","es":"MTL-QC"}
 			},
 			"edgeRight": {
-				"lat": {
-					"en": "LAT 45.5017°N",
-					"fr": "LAT 45.5017°N",
-					"es": "LAT 45.5017°N"
-				},
-				"lng": {
-					"en": "LNG 73.5673°W",
-					"fr": "LNG 73.5673°W",
-					"es": "LNG 73.5673°W"
-				},
-				"src": {
-					"en": "SRC Sherbrooke, QC",
-					"fr": "SRC Sherbrooke, QC",
-					"es": "SRC Sherbrooke, QC"
-				},
-				"via": {
-					"en": "VIA Lennoxville, QC",
-					"fr": "VIA Lennoxville, QC",
-					"es": "VIA Lennoxville, QC"
-				},
-				"dst": {
-					"en": "DST Montréal, QC",
-					"fr": "DST Montréal, QC",
-					"es": "DST Montréal, QC"
-				},
-				"node": {
-					"en": "NODE berri-uqam",
-					"fr": "NODE berri-uqam",
-					"es": "NODE berri-uqam"
-				},
-				"status": {
-					"en": "STATUS active",
-					"fr": "STATUS active",
-					"es": "STATUS active"
-				}
+				"lat": {"en":"LAT 45.5017°N","fr":"LAT 45.5017°N","es":"LAT 45.5017°N"},
+				"lng": {"en":"LNG 73.5673°W","fr":"LNG 73.5673°W","es":"LNG 73.5673°W"},
+				"src": {"en":"SRC Sherbrooke, QC","fr":"SRC Sherbrooke, QC","es":"SRC Sherbrooke, QC"},
+				"via": {"en":"VIA Lennoxville, QC","fr":"VIA Lennoxville, QC","es":"VIA Lennoxville, QC"},
+				"dst": {"en":"DST Montréal, QC","fr":"DST Montréal, QC","es":"DST Montréal, QC"},
+				"node": {"en":"NODE berri-uqam","fr":"NODE berri-uqam","es":"NODE berri-uqam"},
+				"status": {"en":"STATUS active","fr":"STATUS active","es":"STATUS active"}
 			},
 			"edgeBottom": {
-				"connected": {
-					"en": "CONNECTED",
-					"fr": "CONNECTÉ",
-					"es": "CONECTADO"
-				},
-				"line": {
-					"en": "LIGNE ORANGE",
-					"fr": "LIGNE ORANGE",
-					"es": "LIGNE ORANGE"
-				},
-				"url": {
-					"en": "yesid.dev",
-					"fr": "yesid.dev",
-					"es": "yesid.dev"
-				},
-				"version": {
-					"en": "v2.0",
-					"fr": "v2.0",
-					"es": "v2.0"
-				},
-				"scrollHint": {
-					"en": "SCROLL ↓",
-					"fr": "DÉFILER ↓",
-					"es": "BAJA ↓"
-				}
+				"connected": {"en":"CONNECTED","fr":"CONNECTÉ","es":"CONECTADO"},
+				"line": {"en":"LIGNE ORANGE","fr":"LIGNE ORANGE","es":"LIGNE ORANGE"},
+				"url": {"en":"yesid.dev","fr":"yesid.dev","es":"yesid.dev"},
+				"version": {"en":"v2.0","fr":"v2.0","es":"v2.0"},
+				"scrollHint": {"en":"SCROLL ↓","fr":"DÉFILER ↓","es":"BAJA ↓"}
 			},
 			"transit": {
-				"arrivalLabel": {
-					"en": "PROCHAIN / NEXT",
-					"fr": "PROCHAIN / NEXT",
-					"es": "PROCHAIN / NEXT"
-				},
-				"platformBadge": {
-					"en": "QUAI / PLATFORM 2",
-					"fr": "QUAI / PLATFORM 2",
-					"es": "QUAI / PLATFORM 2"
-				},
-				"directionBadge": {
-					"en": "DIRECTION: CENTRE-VILLE",
-					"fr": "DIRECTION: CENTRE-VILLE",
-					"es": "DIRECTION: CENTRE-VILLE"
-				}
+				"arrivalLabel": {"en":"PROCHAIN / NEXT","fr":"PROCHAIN / NEXT","es":"PROCHAIN / NEXT"},
+				"platformBadge": {"en":"QUAI / PLATFORM 2","fr":"QUAI / PLATFORM 2","es":"QUAI / PLATFORM 2"},
+				"directionBadge": {"en":"DIRECTION: CENTRE-VILLE","fr":"DIRECTION: CENTRE-VILLE","es":"DIRECTION: CENTRE-VILLE"}
 			},
 			"ticks": [
 				"0",
@@ -9771,483 +8005,179 @@
 			],
 			"hiddenTransitLines": [
 				{
-					"name": {
-						"en": "LIGNE BLEUE",
-						"fr": "LIGNE BLEUE",
-						"es": "LIGNE BLEUE"
-					},
+					"name": {"en":"LIGNE BLEUE","fr":"LIGNE BLEUE","es":"LIGNE BLEUE"},
 					"color": "#003DA5"
 				},
 				{
-					"name": {
-						"en": "LIGNE VERTE",
-						"fr": "LIGNE VERTE",
-						"es": "LIGNE VERTE"
-					},
+					"name": {"en":"LIGNE VERTE","fr":"LIGNE VERTE","es":"LIGNE VERTE"},
 					"color": "#008F4F"
 				},
 				{
-					"name": {
-						"en": "LIGNE JAUNE",
-						"fr": "LIGNE JAUNE",
-						"es": "LIGNE JAUNE"
-					},
+					"name": {"en":"LIGNE JAUNE","fr":"LIGNE JAUNE","es":"LIGNE JAUNE"},
 					"color": "#F0CB00"
 				},
 				{
-					"name": {
-						"en": "REM",
-						"fr": "REM",
-						"es": "REM"
-					},
+					"name": {"en":"REM","fr":"REM","es":"REM"},
 					"color": "#78BE20"
 				},
 				{
-					"name": {
-						"en": "11 VAUDREUIL/HUDSON",
-						"fr": "11 VAUDREUIL/HUDSON",
-						"es": "11 VAUDREUIL/HUDSON"
-					},
+					"name": {"en":"11 VAUDREUIL/HUDSON","fr":"11 VAUDREUIL/HUDSON","es":"11 VAUDREUIL/HUDSON"},
 					"color": "#DA291C"
 				},
 				{
-					"name": {
-						"en": "12 SAINT-JÉRÔME",
-						"fr": "12 SAINT-JÉRÔME",
-						"es": "12 SAINT-JÉRÔME"
-					},
+					"name": {"en":"12 SAINT-JÉRÔME","fr":"12 SAINT-JÉRÔME","es":"12 SAINT-JÉRÔME"},
 					"color": "#009B3A"
 				},
 				{
-					"name": {
-						"en": "13 MONT-SAINT-HILAIRE",
-						"fr": "13 MONT-SAINT-HILAIRE",
-						"es": "13 MONT-SAINT-HILAIRE"
-					},
+					"name": {"en":"13 MONT-SAINT-HILAIRE","fr":"13 MONT-SAINT-HILAIRE","es":"13 MONT-SAINT-HILAIRE"},
 					"color": "#FFD100"
 				},
 				{
-					"name": {
-						"en": "14 CANDIAC",
-						"fr": "14 CANDIAC",
-						"es": "14 CANDIAC"
-					},
+					"name": {"en":"14 CANDIAC","fr":"14 CANDIAC","es":"14 CANDIAC"},
 					"color": "#7B2D8E"
 				},
 				{
-					"name": {
-						"en": "15 MASCOUCHE",
-						"fr": "15 MASCOUCHE",
-						"es": "15 MASCOUCHE"
-					},
+					"name": {"en":"15 MASCOUCHE","fr":"15 MASCOUCHE","es":"15 MASCOUCHE"},
 					"color": "#0072CE"
 				}
 			]
 		},
 		"proofReel": {
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"headingDot": {
-				"en": ".",
-				"fr": ".",
-				"es": "."
-			},
-			"subheading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"sectionLabel": {
-				"en": "// PROOF",
-				"fr": "// PREUVES",
-				"es": "// PRUEBAS"
-			},
-			"viewAllLabel": {
-				"en": "View all projects →",
-				"fr": "Voir tous les projets →",
-				"es": "Ver todos los proyectos →"
-			},
+			"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"headingDot": {"en":".","fr":".","es":"."},
+			"subheading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"sectionLabel": {"en":"// PROOF","fr":"// PREUVES","es":"// PRUEBAS"},
+			"viewAllLabel": {"en":"View all projects →","fr":"Voir tous les projets →","es":"Ver todos los proyectos →"},
 			"viewAllHref": "/projects",
-			"toggleColorAria": {
-				"en": "Toggle color for {title}",
-				"fr": "Activer la couleur pour {title}",
-				"es": "Alternar el color de {title}"
-			}
+			"toggleColorAria": {"en":"Toggle color for {title}","fr":"Activer la couleur pour {title}","es":"Alternar el color de {title}"}
 		},
 		"servicesGrid": {
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"headingDot": {
-				"en": ".",
-				"fr": ".",
-				"es": "."
-			},
-			"subheading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"viewIllustrationAria": {
-				"en": "View {title} illustration",
-				"fr": "Voir l'illustration de {title}",
-				"es": "Ver la ilustración de {title}"
-			},
-			"viewAllLink": {
-				"en": "View all services →",
-				"fr": "Voir tous les services →",
-				"es": "Ver todos los servicios →"
-			}
+			"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"headingDot": {"en":".","fr":".","es":"."},
+			"subheading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"viewIllustrationAria": {"en":"View {title} illustration","fr":"Voir l'illustration de {title}","es":"Ver la ilustración de {title}"},
+			"viewAllLink": {"en":"View all services →","fr":"Voir tous les services →","es":"Ver todos los servicios →"}
 		},
 		"aboutIntro": {
-			"name": {
-				"en": "Yesid",
-				"fr": "Yesid",
-				"es": "Yesid"
-			},
-			"title": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"bio": {
-				"en": "I take data, make it tell stories, and build the systems it moves through.",
-				"fr": "Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.",
-				"es": "Tomo los datos, hago que cuenten historias y construyo los sistemas por donde se mueven."
-			},
-			"moreLink": {
-				"en": "→ More about me",
-				"fr": "→ En savoir plus sur moi",
-				"es": "→ Más sobre mí"
-			},
-			"stackLabel": {
-				"en": "STACK",
-				"fr": "STACK",
-				"es": "STACK"
-			},
+			"name": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
+			"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"bio": {"en":"I take data, make it tell stories, and build the systems it moves through.","fr":"Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.","es":"Tomo los datos, hago que cuenten historias y construyo los sistemas por donde se mueven."},
+			"moreLink": {"en":"→ More about me","fr":"→ En savoir plus sur moi","es":"→ Más sobre mí"},
+			"stackLabel": {"en":"STACK","fr":"STACK","es":"STACK"},
 			"stackItems": [
 				"PostgreSQL",
 				"dbt + Airflow",
 				"Power BI",
 				"SvelteKit"
 			],
-			"locationLabel": {
-				"en": "LOCATION",
-				"fr": "EMPLACEMENT",
-				"es": "UBICACIÓN"
-			},
+			"locationLabel": {"en":"LOCATION","fr":"EMPLACEMENT","es":"UBICACIÓN"},
 			"location": {
-				"city": {
-					"en": "Montreal",
-					"fr": "Montréal",
-					"es": "Montreal"
-				},
-				"region": {
-					"en": "QC, Canada",
-					"fr": "QC, Canada",
-					"es": "QC, Canadá"
-				}
+				"city": {"en":"Montreal","fr":"Montréal","es":"Montreal"},
+				"region": {"en":"QC, Canada","fr":"QC, Canada","es":"QC, Canadá"}
 			},
-			"interestsLabel": {
-				"en": "INTERESTS",
-				"fr": "INTÉRÊTS",
-				"es": "INTERESES"
-			},
-			"interests": {
-				"en": "Manga · Transit · Space · Montreal food scene",
-				"fr": "Manga · Transport collectif · Espace · Scène bouffe de Montréal",
-				"es": "Manga · Transporte público · Espacio · Comida de Montreal"
-			}
+			"interestsLabel": {"en":"INTERESTS","fr":"INTÉRÊTS","es":"INTERESES"},
+			"interests": {"en":"Manga · Transit · Space · Montreal food scene","fr":"Manga · Transport collectif · Espace · Scène bouffe de Montréal","es":"Manga · Transporte público · Espacio · Comida de Montreal"}
 		},
 		"cta": {
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"subtitle": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"ctaContact": {
-				"en": "Get in touch",
-				"fr": "Parlons-en",
-				"es": "Hablemos"
-			},
-			"ctaGithub": {
-				"en": "View on GitHub",
-				"fr": "Voir sur GitHub",
-				"es": "Ver en GitHub"
-			}
+			"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"subtitle": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"ctaContact": {"en":"Get in touch","fr":"Parlons-en","es":"Hablemos"},
+			"ctaGithub": {"en":"View on GitHub","fr":"Voir sur GitHub","es":"Ver en GitHub"}
 		},
 		"closer": {
-			"heading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
-			"headingDot": {
-				"en": ".",
-				"fr": ".",
-				"es": "."
-			},
-			"subheading": {
-				"en": "Fixture copy.",
-				"fr": "Fixture copy.",
-				"es": "Fixture copy."
-			},
+			"heading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+			"headingDot": {"en":".","fr":".","es":"."},
+			"subheading": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 			"cta": {
-				"label": {
-					"en": "Initialize connection",
-					"fr": "Initialiser la connexion",
-					"es": "Inicializar conexión"
-				},
+				"label": {"en":"Initialize connection","fr":"Initialiser la connexion","es":"Inicializar conexión"},
 				"href": "/contact"
 			},
 			"rows": {
 				"stack": {
-					"label": {
-						"en": "STACK",
-						"fr": "STACK",
-						"es": "STACK"
-					},
-					"description": {
-						"en": "Tools and architecture",
-						"fr": "Outils et architecture",
-						"es": "Herramientas y arquitectura"
-					},
-					"action": {
-						"en": "cd",
-						"fr": "cd",
-						"es": "cd"
-					}
+					"label": {"en":"STACK","fr":"STACK","es":"STACK"},
+					"description": {"en":"Tools and architecture","fr":"Outils et architecture","es":"Herramientas y arquitectura"},
+					"action": {"en":"cd","fr":"cd","es":"cd"}
 				},
 				"contact": {
-					"label": {
-						"en": "CONTACT",
-						"fr": "CONTACT",
-						"es": "CONTACTO"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"action": {
-						"en": "GO",
-						"fr": "GO",
-						"es": "GO"
-					}
+					"label": {"en":"CONTACT","fr":"CONTACT","es":"CONTACTO"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"action": {"en":"GO","fr":"GO","es":"GO"}
 				},
 				"connect": {
-					"label": {
-						"en": "GITHUB REPO",
-						"fr": "DÉPÔT GITHUB",
-						"es": "REPO GITHUB"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"action": {
-						"en": "GO",
-						"fr": "GO",
-						"es": "GO"
-					}
+					"label": {"en":"GITHUB REPO","fr":"DÉPÔT GITHUB","es":"REPO GITHUB"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"action": {"en":"GO","fr":"GO","es":"GO"}
 				},
 				"read": {
-					"label": {
-						"en": "BLOG",
-						"fr": "BLOGUE",
-						"es": "BLOG"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"action": {
-						"en": "cd",
-						"fr": "cd",
-						"es": "cd"
-					}
+					"label": {"en":"BLOG","fr":"BLOGUE","es":"BLOG"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"action": {"en":"cd","fr":"cd","es":"cd"}
 				},
 				"about": {
-					"label": {
-						"en": "YESID",
-						"fr": "YESID",
-						"es": "YESID"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
-					"action": {
-						"en": "cd",
-						"fr": "cd",
-						"es": "cd"
-					}
+					"label": {"en":"YESID","fr":"YESID","es":"YESID"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+					"action": {"en":"cd","fr":"cd","es":"cd"}
 				}
 			},
 			"attribution": {
-				"text": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"text": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"url": "https://fonts.google.com/specimen/Lacquer"
 			},
 			"terminal": {
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"city": {
-					"en": "Montreal, QC",
-					"fr": "Montréal, QC",
-					"es": "Montreal, QC"
-				},
-				"encoding": {
-					"en": "UTF-8",
-					"fr": "UTF-8",
-					"es": "UTF-8"
-				},
-				"destinationsLabel": {
-					"en": "{count} destinations",
-					"fr": "{count} destinations",
-					"es": "{count} destinos"
-				},
-				"prompt": {
-					"en": "// where to next?",
-					"fr": "// on va où, là?",
-					"es": "// ¿y ahora a dónde?"
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"city": {"en":"Montreal, QC","fr":"Montréal, QC","es":"Montreal, QC"},
+				"encoding": {"en":"UTF-8","fr":"UTF-8","es":"UTF-8"},
+				"destinationsLabel": {"en":"{count} destinations","fr":"{count} destinations","es":"{count} destinos"},
+				"prompt": {"en":"// where to next?","fr":"// on va où, là?","es":"// ¿y ahora a dónde?"}
 			}
 		},
 		"aboutPage": {
 			"identity": {
-				"name": {
-					"en": "Yesid",
-					"fr": "Yesid",
-					"es": "Yesid"
-				},
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"valueProp": {
-					"en": "I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.",
-					"fr": "Moi, c'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les bases de données, les pipelines, les tableaux de bord et les sites web. Avec mes clients, j'explique ce que les choses veulent dire pour qu'ils gardent le volant.",
-					"es": "Soy Yesid, una persona de Montreal a la que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por bases de datos, pipelines, dashboards y sitios web. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante."
-				},
+				"name": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"valueProp": {"en":"I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.","fr":"Moi, c'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les bases de données, les pipelines, les tableaux de bord et les sites web. Avec mes clients, j'explique ce que les choses veulent dire pour qu'ils gardent le volant.","es":"Soy Yesid, una persona de Montreal a la que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por bases de datos, pipelines, dashboards y sitios web. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante."},
 				"headshot": "/images/about/headshot.webp",
 				"polaroids": [
 					{
 						"src": "/images/about/polaroid-1.webp",
-						"alt": {
-							"en": "Walking with my dog in Montreal",
-							"fr": "En promenade avec mon chien à Montréal",
-							"es": "Paseando con mi perro en Montreal"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"Walking with my dog in Montreal","fr":"En promenade avec mon chien à Montréal","es":"Paseando con mi perro en Montreal"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": -3
 					},
 					{
 						"src": "/images/about/polaroid-dante.webp",
-						"alt": {
-							"en": "Dante, the family dog",
-							"fr": "Dante, le chien de la famille",
-							"es": "Dante, el perro de la familia"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"Dante, the family dog","fr":"Dante, le chien de la famille","es":"Dante, el perro de la familia"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": 3
 					},
 					{
 						"src": "/images/about/polaroid-poupoune.webp",
-						"alt": {
-							"en": "Poupoune, my dog",
-							"fr": "Poupoune, mon chien",
-							"es": "Poupoune, mi perro"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"Poupoune, my dog","fr":"Poupoune, mon chien","es":"Poupoune, mi perro"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": -2
 					},
 					{
 						"src": "/images/about/polaroid-yesid.webp",
-						"alt": {
-							"en": "Yesid",
-							"fr": "Yesid",
-							"es": "Yesid"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": 2
 					},
 					{
 						"src": "/images/about/polaroid-family.webp",
-						"alt": {
-							"en": "With my family",
-							"fr": "Avec ma famille",
-							"es": "Con mi familia"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"With my family","fr":"Avec ma famille","es":"Con mi familia"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": -4
 					},
 					{
 						"src": "/images/about/polaroid-friends.webp",
-						"alt": {
-							"en": "With friends",
-							"fr": "Avec les amis",
-							"es": "Con amigos"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"With friends","fr":"Avec les amis","es":"Con amigos"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": 3
 					},
 					{
 						"src": "/images/about/polaroid-museum.webp",
-						"alt": {
-							"en": "At the art museum in Ottawa",
-							"fr": "Au musée d'art à Ottawa",
-							"es": "En el museo de arte de Ottawa"
-						},
-						"caption": {
-							"en": "Fixture copy.",
-							"fr": "Fixture copy.",
-							"es": "Fixture copy."
-						},
+						"alt": {"en":"At the art museum in Ottawa","fr":"Au musée d'art à Ottawa","es":"En el museo de arte de Ottawa"},
+						"caption": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 						"rotate": -3
 					}
 				]
@@ -10255,245 +8185,121 @@
 			"metrics": [
 				{
 					"value": "5+",
-					"label": {
-						"en": "years building data systems",
-						"fr": "années à bâtir des systèmes de données",
-						"es": "años construyendo sistemas de datos"
-					}
+					"label": {"en":"years building data systems","fr":"années à bâtir des systèmes de données","es":"años construyendo sistemas de datos"}
 				},
 				{
 					"value": "30+",
-					"label": {
-						"en": "databases designed & optimized",
-						"fr": "bases de données conçues et optimisées",
-						"es": "bases de datos diseñadas y optimizadas"
-					}
+					"label": {"en":"databases designed & optimized","fr":"bases de données conçues et optimisées","es":"bases de datos diseñadas y optimizadas"}
 				},
 				{
 					"value": "3x",
-					"label": {
-						"en": "avg. query speed improvement",
-						"fr": "amélioration moyenne des requêtes",
-						"es": "mejora promedio en las consultas"
-					}
+					"label": {"en":"avg. query speed improvement","fr":"amélioration moyenne des requêtes","es":"mejora promedio en las consultas"}
 				},
 				{
 					"value": "99.9%",
-					"label": {
-						"en": "pipeline uptime delivered",
-						"fr": "disponibilité livrée sur les pipelines",
-						"es": "disponibilidad lograda en pipelines"
-					}
+					"label": {"en":"pipeline uptime delivered","fr":"disponibilité livrée sur les pipelines","es":"disponibilidad lograda en pipelines"}
 				}
 			],
 			"methodology": [
 				{
 					"id": "curiosity",
-					"label": {
-						"en": "CURIOSITY",
-						"fr": "CURIOSITÉ",
-						"es": "CURIOSIDAD"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"label": {"en":"CURIOSITY","fr":"CURIOSITÉ","es":"CURIOSIDAD"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"station": 1
 				},
 				{
 					"id": "aesthetics",
-					"label": {
-						"en": "AESTHETICS",
-						"fr": "ESTHÉTIQUE",
-						"es": "ESTÉTICA"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"label": {"en":"AESTHETICS","fr":"ESTHÉTIQUE","es":"ESTÉTICA"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"station": 2
 				},
 				{
 					"id": "community",
-					"label": {
-						"en": "COMMUNITY",
-						"fr": "COMMUNAUTÉ",
-						"es": "COMUNIDAD"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"label": {"en":"COMMUNITY","fr":"COMMUNAUTÉ","es":"COMUNIDAD"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"station": 3
 				},
 				{
 					"id": "quality",
-					"label": {
-						"en": "QUALITY",
-						"fr": "QUALITÉ",
-						"es": "CALIDAD"
-					},
-					"description": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"label": {"en":"QUALITY","fr":"QUALITÉ","es":"CALIDAD"},
+					"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"station": 4
 				}
 			],
 			"testimonials": [
 				{
-					"quote": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"quote": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"author": "Guy Sensei",
-					"role": {
-						"en": "Sensei",
-						"fr": "Gaï Sensei",
-						"es": "Sensei"
-					},
+					"role": {"en":"Sensei","fr":"Gaï Sensei","es":"Sensei"},
 					"company": "Personal lore"
 				},
 				{
-					"quote": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"quote": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"author": "Gabriel Garcia Marquez",
-					"role": {
-						"en": "Writer",
-						"fr": "Écrivain",
-						"es": "Escritor"
-					},
+					"role": {"en":"Writer","fr":"Écrivain","es":"Escritor"},
 					"company": "Literature"
 				},
 				{
-					"quote": {
-						"en": "Fixture copy.",
-						"fr": "Fixture copy.",
-						"es": "Fixture copy."
-					},
+					"quote": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 					"author": "Marcus Aurelius",
-					"role": {
-						"en": "Stoic philosopher",
-						"fr": "Philosophe stoïcien",
-						"es": "Filósofo estoico"
-					},
+					"role": {"en":"Stoic philosopher","fr":"Philosophe stoïcien","es":"Filósofo estoico"},
 					"company": "Meditations"
 				}
 			],
 			"languages": [
 				{
 					"id": "quebec",
-					"label": {
-						"en": "French",
-						"fr": "Français",
-						"es": "Francés"
-					},
+					"label": {"en":"French","fr":"Français","es":"Francés"},
 					"image": "5f512546-d577-4e24-8a4e-e5518db6374e"
 				},
 				{
 					"id": "canada",
-					"label": {
-						"en": "English",
-						"fr": "Anglais",
-						"es": "Inglés"
-					},
+					"label": {"en":"English","fr":"Anglais","es":"Inglés"},
 					"image": "f1d1046b-d08a-4eca-8347-4b7d21c68c15"
 				},
 				{
 					"id": "colombia",
-					"label": {
-						"en": "Spanish",
-						"fr": "Espagnol",
-						"es": "Español"
-					},
+					"label": {"en":"Spanish","fr":"Espagnol","es":"Español"},
 					"image": "dd23a610-b9fc-4cd3-bfa4-4cc09af4ea84"
 				}
 			],
 			"education": [
 				{
-					"school": {
-						"en": "Champlain Regional College, Lennoxville",
-						"fr": "Champlain Regional College, Lennoxville",
-						"es": "Champlain Regional College, Lennoxville"
-					},
-					"program": {
-						"en": "DEC, Accounting & Management Technology",
-						"fr": "DEC, Techniques de comptabilité et de gestion",
-						"es": "DEC, Técnicas de contabilidad y gestión"
-					},
+					"school": {"en":"Champlain Regional College, Lennoxville","fr":"Champlain Regional College, Lennoxville","es":"Champlain Regional College, Lennoxville"},
+					"program": {"en":"DEC, Accounting & Management Technology","fr":"DEC, Techniques de comptabilité et de gestion","es":"DEC, Técnicas de contabilidad y gestión"},
 					"icon": "champlain"
 				},
 				{
-					"school": {
-						"en": "Bishop's University",
-						"fr": "Bishop's University",
-						"es": "Bishop's University"
-					},
-					"program": {
-						"en": "B.Sc. Computer Science, minor in Business Administration",
-						"fr": "B. Sc. informatique, mineure en administration des affaires",
-						"es": "B.Sc. en Ciencias de la Computación, minor en Administración de Empresas"
-					},
+					"school": {"en":"Bishop's University","fr":"Bishop's University","es":"Bishop's University"},
+					"program": {"en":"B.Sc. Computer Science, minor in Business Administration","fr":"B. Sc. informatique, mineure en administration des affaires","es":"B.Sc. en Ciencias de la Computación, minor en Administración de Empresas"},
 					"icon": "bishops"
 				}
 			],
 			"interests": [
 				{
 					"id": "anime",
-					"label": {
-						"en": "Manga",
-						"fr": "Manga",
-						"es": "Manga"
-					},
+					"label": {"en":"Manga","fr":"Manga","es":"Manga"},
 					"image": "/images/about/interests/anime.webp"
 				},
 				{
 					"id": "transit",
-					"label": {
-						"en": "Transit",
-						"fr": "Transport collectif",
-						"es": "Transporte"
-					},
+					"label": {"en":"Transit","fr":"Transport collectif","es":"Transporte"},
 					"image": "/images/about/interests/transit.webp"
 				},
 				{
 					"id": "space",
-					"label": {
-						"en": "Space",
-						"fr": "L'espace",
-						"es": "Espacio"
-					},
+					"label": {"en":"Space","fr":"L'espace","es":"Espacio"},
 					"image": "/images/about/interests/space.webp"
 				},
 				{
 					"id": "food",
-					"label": {
-						"en": "MTL Food",
-						"fr": "Bouffe MTL",
-						"es": "Comida MTL"
-					},
+					"label": {"en":"MTL Food","fr":"Bouffe MTL","es":"Comida MTL"},
 					"image": "/images/about/interests/food.webp"
 				}
 			],
 			"weather": {
-				"city": {
-					"en": "Montreal",
-					"fr": "Montréal",
-					"es": "Montreal"
-				},
-				"hook": {
-					"en": "Guess where I am?",
-					"fr": "Devine où je suis?",
-					"es": "¿Adivina dónde estoy?"
-				},
+				"city": {"en":"Montreal","fr":"Montréal","es":"Montreal"},
+				"hook": {"en":"Guess where I am?","fr":"Devine où je suis?","es":"¿Adivina dónde estoy?"},
 				"enabled": true
 			},
 			"cta": {
@@ -10508,7 +8314,7 @@
 						"color": "muted"
 					},
 					{
-						"text": "Fixture copy.",
+						"text": "> Email: contact@yesid.dev",
 						"color": "muted"
 					},
 					{
@@ -10520,11 +8326,7 @@
 						"color": "muted"
 					}
 				],
-				"buttonLabel": {
-					"en": "Send message →",
-					"fr": "Envoyer un message →",
-					"es": "Enviar mensaje →"
-				},
+				"buttonLabel": {"en":"Send message →","fr":"Envoyer un message →","es":"Enviar mensaje →"},
 				"buttonHref": "/contact",
 				"socials": [
 					{
@@ -10545,225 +8347,81 @@
 				]
 			},
 			"stopLabels": {
-				"identity": {
-					"en": "IDENTITY",
-					"fr": "IDENTITÉ",
-					"es": "IDENTIDAD"
-				},
-				"metrics": {
-					"en": "METRICS",
-					"fr": "MESURES",
-					"es": "MÉTRICAS"
-				},
-				"testimonials": {
-					"en": "QUOTE",
-					"fr": "CITATION",
-					"es": "CITA"
-				},
-				"process": {
-					"en": "CORE BELIEFS",
-					"fr": "CONVICTIONS",
-					"es": "CONVICCIONES"
-				},
-				"stack": {
-					"en": "EDUCATION",
-					"fr": "FORMATION",
-					"es": "FORMACIÓN"
-				},
-				"clients": {
-					"en": "LANGUAGES",
-					"fr": "LANGUES",
-					"es": "IDIOMAS"
-				},
-				"interests": {
-					"en": "INTERESTS",
-					"fr": "INTÉRÊTS",
-					"es": "INTERESES"
-				},
-				"snapshots": {
-					"en": "SNAPSHOTS",
-					"fr": "PHOTOS",
-					"es": "FOTOS"
-				},
-				"location": {
-					"en": "LOCATION",
-					"fr": "LOCALISATION",
-					"es": "UBICACIÓN"
-				},
-				"next": {
-					"en": "NEXT",
-					"fr": "SUITE",
-					"es": "SIGUE"
-				}
+				"identity": {"en":"IDENTITY","fr":"IDENTITÉ","es":"IDENTIDAD"},
+				"metrics": {"en":"METRICS","fr":"MESURES","es":"MÉTRICAS"},
+				"testimonials": {"en":"QUOTE","fr":"CITATION","es":"CITA"},
+				"process": {"en":"CORE BELIEFS","fr":"CONVICTIONS","es":"CONVICCIONES"},
+				"stack": {"en":"EDUCATION","fr":"FORMATION","es":"FORMACIÓN"},
+				"clients": {"en":"LANGUAGES","fr":"LANGUES","es":"IDIOMAS"},
+				"interests": {"en":"INTERESTS","fr":"INTÉRÊTS","es":"INTERESES"},
+				"snapshots": {"en":"SNAPSHOTS","fr":"PHOTOS","es":"FOTOS"},
+				"location": {"en":"LOCATION","fr":"LOCALISATION","es":"UBICACIÓN"},
+				"next": {"en":"NEXT","fr":"SUITE","es":"SIGUE"}
 			},
 			"labels": {
-				"polaroidPrevAria": {
-					"en": "Previous photo",
-					"fr": "Photo précédente",
-					"es": "Foto anterior"
-				},
-				"polaroidNextAria": {
-					"en": "Next photo",
-					"fr": "Photo suivante",
-					"es": "Foto siguiente"
-				},
-				"testimonialsCarouselAria": {
-					"en": "Personal quote",
-					"fr": "Citation personnelle",
-					"es": "Cita personal"
-				},
-				"testimonialsTabNavAria": {
-					"en": "Quote navigation",
-					"fr": "Navigation de citation",
-					"es": "Navegación de citas"
-				},
-				"testimonialsPrevAria": {
-					"en": "Previous quote",
-					"fr": "Citation précédente",
-					"es": "Cita anterior"
-				},
-				"testimonialsNextAria": {
-					"en": "Next quote",
-					"fr": "Citation suivante",
-					"es": "Cita siguiente"
-				},
-				"testimonialSlideAria": {
-					"en": "Testimonial {index} of {total}",
-					"fr": "Témoignage {index} sur {total}",
-					"es": "Testimonio {index} de {total}"
-				},
-				"showTestimonialAria": {
-					"en": "Show testimonial {index}",
-					"fr": "Afficher le témoignage {index}",
-					"es": "Mostrar testimonio {index}"
-				}
+				"polaroidPrevAria": {"en":"Previous photo","fr":"Photo précédente","es":"Foto anterior"},
+				"polaroidNextAria": {"en":"Next photo","fr":"Photo suivante","es":"Foto siguiente"},
+				"testimonialsCarouselAria": {"en":"Personal quote","fr":"Citation personnelle","es":"Cita personal"},
+				"testimonialsTabNavAria": {"en":"Quote navigation","fr":"Navigation de citation","es":"Navegación de citas"},
+				"testimonialsPrevAria": {"en":"Previous quote","fr":"Citation précédente","es":"Cita anterior"},
+				"testimonialsNextAria": {"en":"Next quote","fr":"Citation suivante","es":"Cita siguiente"},
+				"testimonialSlideAria": {"en":"Testimonial {index} of {total}","fr":"Témoignage {index} sur {total}","es":"Testimonio {index} de {total}"},
+				"showTestimonialAria": {"en":"Show testimonial {index}","fr":"Afficher le témoignage {index}","es":"Mostrar testimonio {index}"}
 			},
 			"meta": {
-				"title": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				}
+				"title": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."}
 			}
 		},
 		"errorPages": {
 			"0": {
-				"label": {
-					"en": "PAGE NOT FOUND",
-					"fr": "PAGE INTROUVABLE",
-					"es": "PÁGINA NO ENCONTRADA"
-				},
-				"heading": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
+				"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"terminalLine": "$ route --status 0 // generic fallback",
 				"suggestions": [
 					{
-						"label": {
-							"en": "Home",
-							"fr": "Accueil",
-							"es": "Inicio"
-						},
+						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
 						"href": "/"
 					},
 					{
-						"label": {
-							"en": "Services",
-							"fr": "Services",
-							"es": "Servicios"
-						},
+						"label": {"en":"Services","fr":"Services","es":"Servicios"},
 						"href": "/services"
 					}
 				]
 			},
 			"404": {
-				"label": {
-					"en": "ROUTE NOT FOUND",
-					"fr": "ROUTE INTROUVABLE",
-					"es": "RUTA NO ENCONTRADA"
-				},
-				"heading": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"label": {"en":"ROUTE NOT FOUND","fr":"ROUTE INTROUVABLE","es":"RUTA NO ENCONTRADA"},
+				"heading": {"en":"This station is under construction","fr":"Cette station est en construction","es":"Esta estación está en construcción"},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"terminalLine": "$ route --status 404 // requested path not in service",
 				"suggestions": [
 					{
-						"label": {
-							"en": "Services",
-							"fr": "Services",
-							"es": "Servicios"
-						},
+						"label": {"en":"Services","fr":"Services","es":"Servicios"},
 						"href": "/services"
 					},
 					{
-						"label": {
-							"en": "Projects",
-							"fr": "Projets",
-							"es": "Proyectos"
-						},
+						"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
 						"href": "/projects"
 					},
 					{
-						"label": {
-							"en": "Contact",
-							"fr": "Contact",
-							"es": "Contacto"
-						},
+						"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
 						"href": "/contact"
 					}
 				]
 			},
 			"500": {
-				"label": {
-					"en": "SYSTEM ERROR",
-					"fr": "ERREUR SYSTÈME",
-					"es": "ERROR DE SISTEMA"
-				},
-				"heading": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
-				"description": {
-					"en": "Fixture copy.",
-					"fr": "Fixture copy.",
-					"es": "Fixture copy."
-				},
+				"label": {"en":"SYSTEM ERROR","fr":"ERREUR SYSTÈME","es":"ERROR DE SISTEMA"},
+				"heading": {"en":"Something went wrong","fr":"Quelque chose a mal tourné","es":"Algo salió mal"},
+				"description": {"en":"Fixture copy.","fr":"Fixture copy.","es":"Fixture copy."},
 				"terminalLine": "$ route --status 500 // internal server error",
 				"suggestions": [
 					{
-						"label": {
-							"en": "Home",
-							"fr": "Accueil",
-							"es": "Inicio"
-						},
+						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
 						"href": "/"
 					},
 					{
-						"label": {
-							"en": "Contact",
-							"fr": "Contact",
-							"es": "Contacto"
-						},
+						"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
 						"href": "/contact"
 					}
 				]

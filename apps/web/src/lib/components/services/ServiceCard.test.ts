@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import { readFileSync } from 'node:fs';
@@ -47,7 +48,7 @@ describe('ServiceCard', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }
 		});
-		expect(screen.getByText('Service 01 / 06')).toBeTruthy();
+		expect(screen.getByText(siteLabels.servicesChrome.listing.stationLabelTemplate.en.replace('{stationNum}', '01').replace('{totalStr}', '06'))).toBeTruthy();
 	});
 
 	it('renders stack pills', () => {
@@ -62,7 +63,7 @@ describe('ServiceCard', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }
 		});
-		const links = screen.getAllByRole('link', { name: /deep dive/i });
+		const links = screen.getAllByRole('link', { name: siteLabels.servicesChrome.listing.deepDiveLabel.en });
 		expect(links.length).toBeGreaterThanOrEqual(1);
 		expect(links[0].getAttribute('href')).toBe('/services/sql-development');
 	});

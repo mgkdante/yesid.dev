@@ -1,29 +1,19 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { flushSync } from 'svelte';
 import Fixture from './_quiet-mode-fixture.svelte';
 import { quietModeStore } from '$lib/state/quiet-mode.svelte';
 
-const localizedCases = [
-	{
-		locale: 'fr',
-		collapse: 'Tout replier',
-		expand: 'Tout déplier',
-		collapseTitle: 'Replier toutes les sections de la page',
-		expandTitle: 'Déplier toutes les sections de la page',
-		remember: 'Toujours replier',
-		forget: 'Ne plus replier',
-	},
-	{
-		locale: 'es',
-		collapse: 'Contraer todo',
-		expand: 'Expandir todo',
-		collapseTitle: 'Contraer todas las secciones de esta página',
-		expandTitle: 'Expandir todas las secciones de esta página',
-		remember: 'Empezar siempre contraído',
-		forget: 'No empezar contraído',
-	},
-] as const;
+const localizedCases = (['fr', 'es'] as const).map(locale => ({
+	locale,
+	collapse: siteLabels.a11y.quietModeLabel[locale]!,
+	expand: siteLabels.a11y.quietModeLabelCollapsed[locale]!,
+	collapseTitle: siteLabels.a11y.quietModeEnable[locale]!,
+	expandTitle: siteLabels.a11y.quietModeDisable[locale]!,
+	remember: siteLabels.a11y.quietModeRemember[locale]!,
+	forget: siteLabels.a11y.quietModeForget[locale]!,
+}));
 
 // Homework #19b: both controls are plain buttons whose accessible name IS the
 // visible verb label ("Collapse all" / "Expand all"), flipping with state.
@@ -48,7 +38,7 @@ describe('QuietModeButton', () => {
 		render(Fixture);
 		flushSync();
 
-		const button = screen.getByRole('button', { name: 'Collapse all' });
+		const button = screen.getByTestId('quiet-mode-toggle');
 		const trigger = screen.getByRole('button', { name: /Fixture Section/i });
 
 		expect(button).toHaveAttribute('data-collapsed', 'false');
@@ -57,7 +47,7 @@ describe('QuietModeButton', () => {
 		await fireEvent.click(button);
 		flushSync();
 
-		expect(button).toHaveTextContent('Expand all');
+		expect(button).toHaveTextContent(siteLabels.a11y.quietModeLabelCollapsed.en);
 		expect(button).toHaveAttribute('data-collapsed', 'true');
 		expect(localStorage.getItem('quiet-mode')).toBe(null);
 		expect(document.documentElement.dataset.quietMode).toBe('true');
@@ -68,7 +58,7 @@ describe('QuietModeButton', () => {
 		render(Fixture);
 		flushSync();
 
-		const button = screen.getByRole('button', { name: 'Collapse all' });
+		const button = screen.getByTestId('quiet-mode-toggle');
 		const trigger = screen.getByRole('button', { name: /Fixture Section/i });
 
 		await fireEvent.click(button);
@@ -78,7 +68,7 @@ describe('QuietModeButton', () => {
 		await fireEvent.click(button);
 		flushSync();
 
-		expect(button).toHaveTextContent('Collapse all');
+		expect(button).toHaveTextContent(siteLabels.a11y.quietModeLabel.en);
 		expect(button).toHaveAttribute('data-collapsed', 'false');
 		expect(document.documentElement.dataset.quietMode).toBeUndefined();
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
@@ -88,10 +78,10 @@ describe('QuietModeButton', () => {
 		render(Fixture);
 		flushSync();
 
-		const collapseToggle = screen.getByRole('button', { name: 'Collapse all' });
-		const remember = screen.getByRole('button', { name: 'Always start collapsed' });
+		const collapseToggle = screen.getByTestId('quiet-mode-toggle');
+		const remember = screen.getByTestId('quiet-mode-remember');
 
-		expect(screen.getByText('Always start collapsed')).toBeTruthy();
+		expect(screen.getByTestId('quiet-mode-remember')).toHaveTextContent(siteLabels.a11y.quietModeRemember.en);
 		expect(remember).toHaveAttribute('data-remembered', 'false');
 
 		await fireEvent.click(collapseToggle);
@@ -100,14 +90,14 @@ describe('QuietModeButton', () => {
 
 		expect(localStorage.getItem('quiet-mode')).toBe('true');
 		expect(remember).toHaveAttribute('data-remembered', 'true');
-		expect(screen.getByText("Don't start collapsed")).toBeTruthy();
+		expect(screen.getByTestId('quiet-mode-remember')).toHaveTextContent(siteLabels.a11y.quietModeForget.en);
 
 		await fireEvent.click(remember);
 		flushSync();
 
 		expect(localStorage.getItem('quiet-mode')).toBe(null);
 		expect(remember).toHaveAttribute('data-remembered', 'false');
-		expect(screen.getByText('Always start collapsed')).toBeTruthy();
+		expect(screen.getByTestId('quiet-mode-remember')).toHaveTextContent(siteLabels.a11y.quietModeRemember.en);
 	});
 
 	it('opens with sections closed when the collapsed default was remembered', () => {
@@ -116,7 +106,7 @@ describe('QuietModeButton', () => {
 		render(Fixture);
 		flushSync();
 
-		const collapseToggle = screen.getByRole('button', { name: 'Expand all' });
+		const collapseToggle = screen.getByTestId('quiet-mode-toggle');
 		const trigger = screen.getByRole('button', { name: /Fixture Section/i });
 
 		expect(collapseToggle).toHaveAttribute('data-collapsed', 'true');
@@ -131,18 +121,22 @@ describe('QuietModeButton', () => {
 			});
 			flushSync();
 
-			const collapseToggle = screen.getByRole('button', { name: collapse });
-			const rememberToggle = screen.getByRole('button', { name: remember });
+			const collapseToggle = screen.getByTestId('quiet-mode-toggle');
+			const rememberToggle = screen.getByTestId('quiet-mode-remember');
+			expect(collapseToggle).toHaveAccessibleName(collapse);
 			expect(collapseToggle).toHaveAttribute('title', collapseTitle);
+			expect(rememberToggle).toHaveAccessibleName(remember);
 			expect(rememberToggle).toHaveAttribute('title', remember);
 
 			await fireEvent.click(collapseToggle);
 			flushSync();
-			expect(screen.getByRole('button', { name: expand })).toHaveAttribute('title', expandTitle);
+			expect(screen.getByTestId('quiet-mode-toggle')).toHaveAccessibleName(expand);
+			expect(screen.getByTestId('quiet-mode-toggle')).toHaveAttribute('title', expandTitle);
 
 			await fireEvent.click(rememberToggle);
 			flushSync();
-			expect(screen.getByRole('button', { name: forget })).toHaveAttribute('title', forget);
+			expect(screen.getByTestId('quiet-mode-remember')).toHaveAccessibleName(forget);
+			expect(screen.getByTestId('quiet-mode-remember')).toHaveAttribute('title', forget);
 		},
 	);
 });

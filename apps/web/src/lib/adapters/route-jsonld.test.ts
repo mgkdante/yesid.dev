@@ -132,27 +132,90 @@ describe('route JSON-LD extraction contract', () => {
 		}
 
 		expect(actual).toEqual({
-			'en:/': { bytes: 1972, sha256: 'd5b78ad6f606b4bb7653bf96effbc8309b015a01fe9d8f97cbf706a93796afc6' },
-			'fr:/': { bytes: 2021, sha256: 'd51605eeb1a95d8c8fd43b7e160d1ab6ed4e2a28ca38446af826d2e1a8790788' },
-			'es:/': { bytes: 1990, sha256: 'df9bcc22c50a662b4a1d6dc718be432cd287174b9fa1e58d320f752099f9e966' },
-			'en:/about': { bytes: 1050, sha256: '9ddcc965a733870f1117f85201a717331ec92461fc68436941fbfe70f48a70ab' },
-			'fr:/about': { bytes: 1083, sha256: 'ba593b6790d451407bc72182aa10b15d46df6a432f400079388d49dcdfd1363e' },
-			'es:/about': { bytes: 1081, sha256: 'a3f3757c0bda2c6b190879a9a52ece9ab5d79f708eabb647c41f5cf15d7d3d39' },
-			'en:/contact': { bytes: 305, sha256: '7ea24a7a80be512cb882174050831feeeed6f660ce0a0945e14df1af7c607057' },
-			'fr:/contact': { bytes: 320, sha256: '2d8bb14348614f59710bb59144af132962770d7f9f5f93fd22544b13fe939627' },
-			'es:/contact': { bytes: 320, sha256: '7b5a348bf560455b9d928034491dfb9f1e1e2ca74d11dc7636637373a8a16aa3' },
-			'en:/services': { bytes: 610, sha256: 'fa57b094e4283a4eac538dbc4137c7bb8f53811bdf0999ac2fc51d9ffc9f0620' },
-			'fr:/services': { bytes: 641, sha256: '24acd1233b6096d282800f8aa1f319f4d20639997bf9c98d1fdbf72dd0dbd847' },
-			'es:/services': { bytes: 638, sha256: 'ead8779ddd313c8b5d14273690a85edf01b5ced7c8eab6d54391cba9884d2400' },
-			'en:/projects': { bytes: 610, sha256: 'b90314a5ed51618fe41ea6520821d20a3fb5ddb962fbe65c1a47e9346563d669' },
-			'fr:/projects': { bytes: 639, sha256: 'b1e65cb437d327bbe41e9b325c5dc5222c0ada4797c4ed8029a46b72ff6e091c' },
-			'es:/projects': { bytes: 638, sha256: '6e1692603913140d0caf3382379341e6c373cee3bac72a61c407cb7d5ddb9a3d' },
-			'en:/blog': { bytes: 582, sha256: 'baf39ed9f371660e11419fbf82180e12d2c58f0e0d395616bd302b741169e33b' },
-			'fr:/blog': { bytes: 613, sha256: '740f3c6e0cbddae33b0bc952ab8468efb16596feacb27875eda3992ee89723a3' },
-			'es:/blog': { bytes: 608, sha256: 'b0e07d61ea0348bf677f523881d226dce3fac2fa1aa57b4f14cd5fde35957a06' },
-			'en:/blog/personal': { bytes: 729, sha256: '136894e58ea4807c415c0870a8192f390581d94460748b3c868636ae589a81a4' },
-			'fr:/blog/personal': { bytes: 753, sha256: 'ab5d4120c7dcbd423cacf1e895221af2ca4e3f707d3ec5c922014b63d85d8166' },
-			'es:/blog/personal': { bytes: 760, sha256: 'b3e1a3cdb302a98fc9bbb3998e9d919c978cc5e2334e575ec18eeaf2e0bc6b8b' },
+			"en:/": {
+				"bytes": 1660,
+				"sha256": "78e0019893f168c5a0952d20111a402977ef73166192d00899f51608c8935d6f"
+			},
+			"fr:/": {
+				"bytes": 1677,
+				"sha256": "5e8c314f4d4fa2bd48ee138d74eb9e0a678f4ab99b1352d4d2213f2ddcf27cdb"
+			},
+			"es:/": {
+				"bytes": 1676,
+				"sha256": "4e21ade1b1ae8c0fd20ea81f73b10eb60f45fc2941b87d1c70bb38d327604645"
+			},
+			"en:/about": {
+				"bytes": 1067,
+				"sha256": "21332c5c509fb33d9ce07fbbafd9793cd78f9f05d5f0be033fab2946442b73c8"
+			},
+			"fr:/about": {
+				"bytes": 1093,
+				"sha256": "0cd0ebda5ea5ba24752559198a47c393d14c33237c4bbaabaf37e601bfe24a77"
+			},
+			"es:/about": {
+				"bytes": 1092,
+				"sha256": "da1addcf7fb11f26486188876e44bee2ebd89f7181c61269cda273c5ddaccf36"
+			},
+			"en:/contact": {
+				"bytes": 320,
+				"sha256": "396ee2f8fde3b14a22ffba11e96f03b4ef9fa3040b61e423e2e3f7f4955b1858"
+			},
+			"fr:/contact": {
+				"bytes": 332,
+				"sha256": "aebcd8325ebc63cb0e865b9f8c7c96dab9ec3353e71d427ff2dce02164fb0363"
+			},
+			"es:/contact": {
+				"bytes": 332,
+				"sha256": "2da527e1d773ed37c9483acc3706fc3dfb1ce863a8c34b22a9c2c1522d68abc5"
+			},
+			"en:/services": {
+				"bytes": 629,
+				"sha256": "931a1e8e5dfba51ff1f202d1981f4060030325c24ce65d9b8779dab3b75e6d8b"
+			},
+			"fr:/services": {
+				"bytes": 657,
+				"sha256": "c23d5ea97eaf3a9878e76e2b32e8c7e5186e59d91194a62380d032b56b3761f7"
+			},
+			"es:/services": {
+				"bytes": 653,
+				"sha256": "64e1e05fc252d228f7ec357ca0daa4d44da3e42adad75357b36e3c2b591d2ed3"
+			},
+			"en:/projects": {
+				"bytes": 629,
+				"sha256": "73325a23ec8ac955c157a60909844291d8c0ee85ddde6ce83751788f1ff63c4b"
+			},
+			"fr:/projects": {
+				"bytes": 657,
+				"sha256": "1a06435a6be272515ea9f4e1279df1470bd3e10dab3d2b8d9fe000531bbd36d2"
+			},
+			"es:/projects": {
+				"bytes": 653,
+				"sha256": "8cf0d8a6da5799649585cede946b9438a291bbfc791d8c58e350176255771bc9"
+			},
+			"en:/blog": {
+				"bytes": 609,
+				"sha256": "0b08a38e40447a558dc0c5b6804efba413665b35ed611d79df7e5a2b999f26de"
+			},
+			"fr:/blog": {
+				"bytes": 637,
+				"sha256": "868b7f8008df389bcd4fa0589ef3cee753450c7a6e31bd5f85179dd1f6034842"
+			},
+			"es:/blog": {
+				"bytes": 633,
+				"sha256": "84ddc55ef77d3b9e1a4f48327c475b962b9433d14ef423f4c6714a9bf6362ba3"
+			},
+			"en:/blog/personal": {
+				"bytes": 743,
+				"sha256": "9f04852fdd9cdd90de544317e268fec6acc2e4643552039aca81206226cf7b55"
+			},
+			"fr:/blog/personal": {
+				"bytes": 774,
+				"sha256": "9608bddab4aca03350df09a34664baf91bde85ade24988ef76d997c094bd89fd"
+			},
+			"es:/blog/personal": {
+				"bytes": 770,
+				"sha256": "7b8f5423920991fd677e0c997ba1a56ba7342962b011c18dd1a6b0d52450f959"
+			}
 		});
 	});
 
@@ -204,18 +267,54 @@ describe('route JSON-LD extraction contract', () => {
 		}
 
 		expect(actual).toEqual({
-			'en:/services/[id]': { bytes: 776, sha256: '058dd521ad5ba038d0022e3d3f04113906ff911bc80eb06f2231d2bb81f42e1a' },
-			'en:/projects/[slug]': { bytes: 768, sha256: '8a0103c05e3d8019d52999875ec518b9023d86095c51e0a47b0bb754af167a69' },
-			'en:/blog/[slug]': { bytes: 878, sha256: '5eac3bd9ec3ebaac63ee4f77981dac4fd5a675b0b67585825751e652975d6e4d' },
-			'en:/legal/[slug]': { bytes: 322, sha256: '84ad8722d08f48317664d038fc43be7e76aaf3770696daa6c56ec9d05a26d9d8' },
-			'fr:/services/[id]': { bytes: 818, sha256: 'cf1e44fe89537a673fe623e9f0b0dc9b914aec45e332b3d14a5d26e8baabc692' },
-			'fr:/projects/[slug]': { bytes: 830, sha256: '9544848aadf9e7b75837d8846b481e0bbfa879ba5c5b03d24a7f27056c953062' },
-			'fr:/blog/[slug]': { bytes: 888, sha256: '410c94ede62b8d30c090bbe7573fecc3ee638a99c5d53108e812cb57ced35f84' },
-			'fr:/legal/[slug]': { bytes: 351, sha256: '1c1c8076a216289d8d55c0073f348d6ca35d41fa06b0f730a45869a8b02ea4c6' },
-			'es:/services/[id]': { bytes: 807, sha256: '383a3cc2eaa1fa3e11f1f8cf2e534969107d29617f5c3276d56328d474a27dc9' },
-			'es:/projects/[slug]': { bytes: 828, sha256: 'c50151697fc50f4745f5b232256b0e647c82e2db01e7f625e0e6b0c2c6663873' },
-			'es:/blog/[slug]': { bytes: 908, sha256: '3756e3c5f014ea06bdcd253c90c819fc86b7d8e6fca4077f0def715a0d055bf6' },
-			'es:/legal/[slug]': { bytes: 342, sha256: '1c9a17cab3842a6e1bebe1f3b76f3aa6813c1532f581f12ede6216e93bcc8504' },
+			"en:/services/[id]": {
+				"bytes": 790,
+				"sha256": "349f26b0d24ee088ccc1e39961826faf282d2ac3b439bd12241ce9119aac95f2"
+			},
+			"en:/projects/[slug]": {
+				"bytes": 782,
+				"sha256": "c6a609fbe133ffa8c5bfdebccb77a0d96f16106df1343f24f0b7bfeeafe275aa"
+			},
+			"en:/blog/[slug]": {
+				"bytes": 896,
+				"sha256": "f445d80139359bad5ac15b04ee59924618346e51aa1d1f1e08d1cb83fc80bc60"
+			},
+			"en:/legal/[slug]": {
+				"bytes": 331,
+				"sha256": "d1c2e07cfdc5400f8af6625fd3d1ee4cfcc5784e165fcbb68f71d4408a27028b"
+			},
+			"fr:/services/[id]": {
+				"bytes": 829,
+				"sha256": "9f34ec38a3264f13695e763f225628ce23550ae91ec759df9246951fcdd9f868"
+			},
+			"fr:/projects/[slug]": {
+				"bytes": 842,
+				"sha256": "3199ad264abae3b2bfe901b93933686dd22dba5bad49f2430a17a956625eeb94"
+			},
+			"fr:/blog/[slug]": {
+				"bytes": 903,
+				"sha256": "ef92ba78a5108353a83395e48294d06655cb5d045c6e7891b1caad9519bcddbf"
+			},
+			"fr:/legal/[slug]": {
+				"bytes": 357,
+				"sha256": "cd996fce07157236c1980eb6606e315c2b5993e687328e1ac05c74c1a3f218f8"
+			},
+			"es:/services/[id]": {
+				"bytes": 818,
+				"sha256": "a9117ed35b77f1401947bb0f4448fd71e526e679b7e94b80455ed9b907c91acc"
+			},
+			"es:/projects/[slug]": {
+				"bytes": 839,
+				"sha256": "3308ae1a1c13caddb7f4811dfbd473c9a785e6c0bd33fcc8254c8d307c46509b"
+			},
+			"es:/blog/[slug]": {
+				"bytes": 924,
+				"sha256": "05a3d57ec4ad3b675bf2f1a056794a7389ea4dcde817dff938d75728a4812752"
+			},
+			"es:/legal/[slug]": {
+				"bytes": 349,
+				"sha256": "93fc99f77507d1c61c80a0fb52033f07293997210f70490292e1118afdbc69c6"
+			}
 		});
 	});
 

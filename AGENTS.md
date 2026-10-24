@@ -15,7 +15,7 @@ pipeline. It is public for inspection but remains proprietary; read
 
 The browser and request-time application do not query Directus for page
 content. Directus is the editorial source, and the CMS exporter writes typed,
-committed modules under `apps/web/src/lib/content` for the SvelteKit build.
+ignored modules under `apps/web/src/lib/content` for the SvelteKit build.
 
 ## Local setup
 
@@ -38,21 +38,14 @@ Run the checks that match the files you changed, then the full local gates:
 bun run check
 bun run test
 bun run ci:tokens
-bun run ci:content
-EXPORT_FALLBACKS_SKIP=1 bun run build
+bun run build
 ```
 
-`EXPORT_FALLBACKS_SKIP=1` makes the build use the committed content modules
-without contacting a CMS. Run a live export only with an explicitly configured,
-authenticated environment:
-
-```bash
-bun run --env-file=.env --cwd apps/cms export:fallbacks
-```
-
-Generated content modules are not hand-edited. A valid export updates the
-modules and `apps/web/src/lib/content/generated.manifest.json` together.
-`bun run ci:content` verifies their hashes.
+Web dev, test, check and build generate ignored content modules from the shared
+fixture by default, without credentials or network. Trusted Vercel targets use
+live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
+Refresh the fixture from a live cache with
+`bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 
 ## Vendored design and tokens
 
@@ -78,14 +71,13 @@ Do not hand-edit `DESIGN.md` or the generated token region in
 
 ## Pre-commit integrity
 
-`.githooks/pre-commit` protects three repository boundaries:
+`.githooks/pre-commit` protects two repository boundaries:
 
 1. vendored design payload changes require their release manifest;
-2. generated token outputs require their source or adapter;
-3. CMS-generated content modules must match their recorded hashes.
+2. generated token outputs require their source or adapter.
 
-Install the hook with `bun run setup:hooks`. CI repeats the generated-content,
-vendor, and token checks so a clean clone does not rely on local hook setup.
+Install the hook with `bun run setup:hooks`. CI repeats the vendor
+and token checks so a clean clone does not rely on local hook setup.
 
 Keep changes small, preserve public behavior unless the task explicitly says
 otherwise, and add tests around observable behavior rather than source text or

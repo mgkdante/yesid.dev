@@ -3,9 +3,9 @@
 //
 // /blog page chrome (intro, heading, back-nav labels). NEW in slice-18m — was previously inlined as a static fallback in adapters/static.ts.
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { BlogPageContent } from '@repo/shared';
@@ -50,9 +50,9 @@ export const blogPageContent: BlogPageContent = {
 				},
 			],
 			title: {
-				en: 'Pick A Route',
-				es: 'Elige una ruta',
-				fr: 'Choisir une route',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 		},
 		workWithMe: {
@@ -78,17 +78,21 @@ export const blogPageContent: BlogPageContent = {
 				},
 			},
 			title: {
-				en: 'Work With Me',
-				es: 'Trabaja conmigo',
-				fr: 'Travailler ensemble',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 		},
 	},
-	heading: { en: 'Blog', es: 'Blog', fr: 'Blogue' },
+	heading: {
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
+	},
 	intro: {
-		en: 'Notes on digital infrastructure, databases, and building reliable systems.',
-		es: 'Notas sobre infraestructura digital, bases de datos y cómo construir sistemas confiables.',
-		fr: 'Des notes sur l\'infrastructure numérique, les bases de données et la construction de systèmes fiables.',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	personalHeading: {
 		en: 'Personal Corner',

@@ -3,9 +3,9 @@
 //
 // Navigation links (header + menu + footer + mobile placements) + error page fallback.
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { NavLink, MenuItem, ErrorPageContent } from '$lib/navigation/types';
@@ -29,9 +29,9 @@ export const menuItems: readonly MenuItem[] = [
 		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
 		priority: 1,
 		subtitle: {
-			en: 'what I build',
-			es: 'lo que construyo',
-			fr: 'ce que je construis',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -39,9 +39,9 @@ export const menuItems: readonly MenuItem[] = [
 		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 		priority: 1,
 		subtitle: {
-			en: 'proof it ships',
-			es: 'prueba de que se entrega',
-			fr: 'la preuve que ça livre',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -49,9 +49,9 @@ export const menuItems: readonly MenuItem[] = [
 		label: { en: 'Blog', es: 'Blog', fr: 'Blog' },
 		priority: 1,
 		subtitle: {
-			en: 'thoughts in transit',
-			es: 'pensamientos en tránsito',
-			fr: 'pensées en transit',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -59,9 +59,9 @@ export const menuItems: readonly MenuItem[] = [
 		label: { en: 'About', es: 'Acerca de', fr: 'À propos' },
 		priority: 1,
 		subtitle: {
-			en: 'the operator',
-			es: 'el operador',
-			fr: 'l\'opérateur',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -69,9 +69,9 @@ export const menuItems: readonly MenuItem[] = [
 		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 		priority: 1,
 		subtitle: {
-			en: 'open channel',
-			es: 'canal abierto',
-			fr: 'canal ouvert',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 ];
@@ -154,9 +154,9 @@ export const mobileLinks: readonly NavLink[] = [
 
 export const errorPageContent: ErrorPageContent = {
 	description: {
-		en: 'The page you were looking for could not be found.',
-		es: 'No se encontró la página que buscabas.',
-		fr: 'La page que tu cherchais est introuvable.',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	heading: {
 		en: 'This station is offline',

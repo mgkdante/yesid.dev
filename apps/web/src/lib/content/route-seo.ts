@@ -3,9 +3,9 @@
 //
 // Published route_seo overrides for static route title, description, and OG image.
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { RouteSeoOverride } from '$lib/types';
@@ -20,9 +20,9 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		ogImage: null,
 		path: '/',
 		title: {
-			en: 'yesid. | Digital Infrastructure that Moves.',
-			es: 'yesid. | Infraestructura digital que se mueve.',
-			fr: 'yesid. | Infrastructure numérique qui avance.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -34,9 +34,9 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		ogImage: '48bb90b1-0934-4cc9-a935-bc5ab719a71d',
 		path: '/about',
 		title: {
-			en: 'Freelance Digital Solutions Developer',
-			es: 'Desarrollador freelance de soluciones digitales',
-			fr: 'Développeur de solutions numériques à la pige',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -48,9 +48,9 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		ogImage: 'a781a5a4-1abc-4be4-a75e-ee6000419a53',
 		path: '/contact',
 		title: {
-			en: 'Hire a Digital Infrastructure Freelancer in Montreal',
-			es: 'Contrata un freelancer de infraestructura digital en Montreal',
-			fr: 'Engager un pigiste en infrastructure numérique à Montréal',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -62,9 +62,9 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		ogImage: 'dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7',
 		path: '/services',
 		title: {
-			en: 'Digital Infrastructure Services: Web, Data, Automation',
-			es: 'Infraestructura digital: web, datos, automatización',
-			fr: 'Infrastructure numérique: web, données, automatisation',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	{
@@ -75,7 +75,11 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		},
 		ogImage: '864b5ad1-3dac-47ea-ad96-f175cad1b515',
 		path: '/projects',
-		title: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
+		title: {
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
+		},
 	},
 	{
 		description: {
@@ -85,7 +89,11 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		},
 		ogImage: null,
 		path: '/blog',
-		title: { en: 'Blog', es: 'Blog', fr: 'Blog' },
+		title: {
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
+		},
 	},
 	{
 		description: {
@@ -96,9 +104,9 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 		ogImage: null,
 		path: '/blog/personal',
 		title: {
-			en: 'Personal Blog',
-			es: 'Blog personal',
-			fr: 'Blogue perso',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 ];

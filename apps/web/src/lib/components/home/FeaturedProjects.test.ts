@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import { readFileSync } from 'node:fs';
@@ -224,10 +225,10 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-count')).toHaveAttribute('aria-label', '01 / 03');
 		expect(screen.getByTestId('proof-prev')).toHaveTextContent('←');
 		expect(screen.getByTestId('proof-prev')).not.toHaveTextContent('03');
-		expect(screen.getByTestId('proof-prev')).toHaveAttribute('aria-label', 'Previous projects');
+		expect(screen.getByTestId('proof-prev')).toHaveAttribute('aria-label', siteLabels.a11y.carouselPrev.en);
 		expect(screen.getByTestId('proof-next')).toHaveTextContent('→');
 		expect(screen.getByTestId('proof-next')).not.toHaveTextContent('02');
-		expect(screen.getByTestId('proof-next')).toHaveAttribute('aria-label', 'Next projects');
+		expect(screen.getByTestId('proof-next')).toHaveAttribute('aria-label', siteLabels.a11y.carouselNext.en);
 	});
 
 });

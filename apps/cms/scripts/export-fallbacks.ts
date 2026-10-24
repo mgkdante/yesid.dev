@@ -1,48 +1,11 @@
 #!/usr/bin/env bun
 /**
- * Export Directus CMS state into static TS modules under apps/web/src/lib/content/.
- * Runs as the apps/web `prebuild` step — output is committed so CMS edits
- * surface as PR diffs. Since slice-27.2 (Directus dropped from the SSR data
- * path) these modules are NOT a fallback: they are the sole runtime content
- * source, regenerated per build. What this script emits is exactly what ships.
- *
- * Run:
- *   bun apps/cms/scripts/export-fallbacks.ts                   # full export
- *   bun apps/cms/scripts/export-fallbacks.ts --dry-run         # validate flow, no writes, no network
- *
- * Env:
- *   EXPORT_FALLBACKS_SOURCE — fixture loads the shared offline snapshot without
- *                            authentication or fetching. Forbidden on trusted targets.
- *   EXPORT_FALLBACKS_SKIP  — set to 1 to skip the export entirely (logs + exits
- *                            0 before any network). Used by hermetic CI builds
- *                            (web.yml) where the committed modules already ARE
- *                            the content source and no CMS should be contacted.
- *   EXPORT_FALLBACKS_LIVE  - set to 1 only on Vercel Production and the
- *                            develop-branch Preview. On those trusted targets
- *                            ANY fallback exits 1, so the build aborts and the
- *                            prior deploy stays live. Every other Vercel target
- *                            skips before auth, even if this flag is mis-scoped.
- *   PUBLIC_DIRECTUS_URL    — Directus URL. Defaults to cms.dev.yesid.dev (P6 flip,
- *                            once dev mirrors prod). Set to https://cms.yesid.dev
- *                            for production builds (Vercel: encrypted env var
- *                            scoped to the Production environment).
- *   DIRECTUS_BUILD_TOKEN   — read-only Production Build Bot credential.
- *   DIRECTUS_DEV_BUILD_TOKEN — distinct read-only Build Bot credential used
- *                            only by the develop-branch Preview.
- *   DIRECTUS_ADMIN_TOKEN   — preferred local auth (or DIRECTUS_ADMIN_EMAIL +
- *                            DIRECTUS_ADMIN_PASSWORD fallback). If absent OR fetch
- *                            fails: under the live-or-die policy above the build
- *                            exits 1; local (soft-policy) runs try `.cms-cache.json`
- *                            and degrade to a no-op (exit 0) if no cache exists,
- *                            printing an unmissable stderr banner either way
- *                            because the committed .ts files then become the
- *                            authoritative source for that build. The manifest
- *                            records the provenance (source: live|cache) and
- *                            ci:content rejects committing a cache-emitted set.
- *
- * Build-time integration: registered as the apps/web `prebuild` script (P6)
- * so `bun run build` regenerates content before Vite kicks off. Vercel runs
- * `prebuild` automatically — confirmed by Node npm convention which Bun honours.
+ * Generate ephemeral runtime modules before web dev, test, check and build.
+ * Local/CI/untrusted previews default to the shared fixture without credentials or network.
+ * Trusted Vercel targets always require live content and refuse fixture mode.
+ * EXPORT_FALLBACKS_SOURCE=live selects live export with local cache fallback.
+ * EXPORT_FALLBACKS_LIVE remains the trusted-target operator flag.
+ * Missing live content and cache fails the export.
  */
 
 import { parseArgs } from 'node:util';
@@ -57,13 +20,7 @@ import { createLogger } from './lib/logger';
 import { buildEmitConfigs } from './lib/emitters/configs';
 import { emitModule, type ModuleEmitConfig } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
-import {
-	GENERATED_MANIFEST_FILENAME,
-	hashContent,
-	buildManifest,
-	writeManifest,
-	type ManifestSource,
-} from './lib/generated-manifest';
+import { validateLiveExport } from './lib/validators/live-export';
 import type { ExportData } from './export-data';
 import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
 import { fetchRouteSeoOverrides } from './lib/fetchers/route-seo';
@@ -115,18 +72,10 @@ export interface RunOptions {
 	directusUrl: string;
 	token: string;
 	dryRun: boolean;
-	source?: 'fixture';
+	source?: 'fixture' | 'live';
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
-	/**
-	 * Fallback policy from resolveFallbackPolicy(). Under 'fail' (Production or
-	 * the develop Preview with EXPORT_FALLBACKS_LIVE=1) a fetch
-	 * failure skips every fallback and the run reports a non-live outcome,
-	 * which main() turns into exit 1. Vercel keeps the prior deploy running,
-	 * so a loud failure is safe and far preferable to shipping stale content
-	 * without any signal. 'soft' (local, the default) keeps the cache/no-op
-	 * degrade, announced by a stderr banner.
-	 */
+	/** Trusted targets fail on fetch errors; local live exports may use cache. */
 	policy?: FallbackPolicy;
 }
 
@@ -224,10 +173,6 @@ export function buildMirroredMediaAssets(): Readonly<Record<string, string>> {
 	);
 }
 
-function envFlag(value: string | undefined): boolean {
-	return ['1', 'true'].includes((value ?? '').toLowerCase());
-}
-
 const LIVE_PREVIEW_BRANCH = 'develop';
 
 function isTrustedVercelExportTarget(env: Env): boolean {
@@ -237,39 +182,19 @@ function isTrustedVercelExportTarget(env: Env): boolean {
 	);
 }
 
-export function getExportSkipReason(env: Env = process.env): string | null {
+export function resolveContentSource(env: Env = process.env): 'live' | 'fixture' {
 	if (env.EXPORT_FALLBACKS_SOURCE === 'fixture' && isTrustedVercelExportTarget(env)) {
 		throw new Error('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture; a live export is required.');
 	}
-	if (envFlag(env.EXPORT_FALLBACKS_SKIP)) return 'EXPORT_FALLBACKS_SKIP';
-	if (env.EXPORT_FALLBACKS_SOURCE === 'fixture') return null;
-	if (env.VERCEL_ENV && !isTrustedVercelExportTarget(env)) {
-		return env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF
-			? `VERCEL_ENV=preview branch=${env.VERCEL_GIT_COMMIT_REF}`
-			: `VERCEL_ENV=${env.VERCEL_ENV}`;
-	}
-	if (isTrustedVercelExportTarget(env) && !envFlag(env.EXPORT_FALLBACKS_LIVE)) {
-		throw new Error('Trusted CMS builds require EXPORT_FALLBACKS_LIVE=1; use EXPORT_FALLBACKS_SKIP=1 only for an explicit committed-content build.');
-	}
-	return null;
+	if (isTrustedVercelExportTarget(env)) return 'live';
+	return env.EXPORT_FALLBACKS_SOURCE === 'live' ? 'live' : 'fixture';
 }
 
 export type FallbackPolicy = 'fail' | 'soft';
 
-/**
- * Live-or-die policy (homework audit item 3, pipeline honesty): opting a
- * Vercel target into a live export (EXPORT_FALLBACKS_LIVE=1) also opts it
- * into failing loudly when that live export cannot happen. Production AND the
- * develop-branch preview (dev.yesid.dev, the QA truth surface) both fail;
- * a stale-but-green deploy is worse than a visibly failed build, because
- * Vercel keeps the previous deploy live. Local runs never set VERCEL_ENV,
- * so they keep the soft cache/no-op fallback (announced by a banner).
- * Note the skip gate (getExportSkipReason) runs first: EXPORT_FALLBACKS_SKIP=1
- * remains the deliberate operator escape hatch for shipping committed modules.
- */
+/** Trusted targets never fall back, regardless of the operator flag. */
 export function resolveFallbackPolicy(env: Env = process.env): FallbackPolicy {
-	if (isTrustedVercelExportTarget(env) && envFlag(env.EXPORT_FALLBACKS_LIVE)) return 'fail';
-	return 'soft';
+	return isTrustedVercelExportTarget(env) ? 'fail' : 'soft';
 }
 
 /** Where the run's emitted content came from; 'none' means nothing was emitted. */
@@ -283,10 +208,10 @@ export interface RunOutcome {
 
 /**
  * Pure exit-code decision so the policy matrix is unit-testable: under 'fail'
- * any non-live outcome is a build failure; under 'soft' everything exits 0.
+ * any non-live outcome fails; every policy fails when no content source exists.
  */
 export function decideExit(outcome: RunOutcome, policy: FallbackPolicy): number {
-	return policy === 'fail' && outcome.source !== 'live' ? 1 : 0;
+	return outcome.source === 'none' || (policy === 'fail' && outcome.source !== 'live') ? 1 : 0;
 }
 
 /**
@@ -295,13 +220,10 @@ export function decideExit(outcome: RunOutcome, policy: FallbackPolicy): number 
  * than a single WARN line. Pure line-builder so tests can assert the content.
  */
 export function fallbackBannerLines(
-	source: 'cache' | 'committed-modules',
+	source: 'cache',
 	fetchError: string,
 ): string[] {
-	const detail =
-		source === 'cache'
-			? 'emitting from .cms-cache.json (last-known-good snapshot), NOT the live CMS'
-			: 'nothing emitted; the committed .ts modules ship as-is and may be stale vs the CMS';
+	const detail = 'emitting from .cms-cache.json (last-known-good snapshot), NOT the live CMS';
 	return [
 		'!!==================================================================!!',
 		'!!  CONTENT FALLBACK IN USE: BUILD IS NOT LIVE CMS CONTENT           ',
@@ -309,12 +231,12 @@ export function fallbackBannerLines(
 		`!!  ${detail}`,
 		`!!  fetch error: ${fetchError}`,
 		'!!  Fix CMS connectivity and re-run export:fallbacks before          ',
-		'!!  trusting or committing this build output.                        ',
+		'!!  trusting this build output.                        ',
 		'!!==================================================================!!',
 	];
 }
 
-function logFallbackBanner(source: 'cache' | 'committed-modules', fetchError: string): void {
+function logFallbackBanner(source: 'cache', fetchError: string): void {
 	for (const line of fallbackBannerLines(source, fetchError)) console.error(line);
 }
 
@@ -474,34 +396,22 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 	return { data: out, preparedMediaVariants };
 }
 
-/** Emits the complete validated registry. `source` records the data's
- * provenance so ci:content can reject committing a cache-emitted set. */
+/** Emit only after the complete registry and live-content validators pass. */
 async function emitAll(
 	configs: readonly ModuleEmitConfig[],
 	opts: RunOptions,
-	source: ManifestSource | 'fixture',
 ): Promise<number> {
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	log.info(`emit: target=${emitDir}`);
 
 	await mkdir(emitDir, { recursive: true });
-	const emittedHashes: Record<string, string> = {};
 	for (const cfg of configs) {
 		const content = emitModule(cfg);
 		await Bun.write(cfg.filePath, content);
-		emittedHashes[relative(emitDir, cfg.filePath)] = hashContent(content);
 		log.info(`  ${relative(emitDir, cfg.filePath)} (${content.length} bytes)`);
 	}
 	log.info(`emit: wrote ${configs.length} module(s).`);
 
-	if (source === 'fixture') {
-		// Fixture provenance remains explicit; live/cache retain their manifest API.
-		await Bun.write(resolve(emitDir, GENERATED_MANIFEST_FILENAME),
-			JSON.stringify({ ...buildManifest(emittedHashes), source }, null, '\t') + '\n');
-	} else {
-		await writeManifest(emitDir, emittedHashes, source);
-	}
-	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${configs.length} entries).`);
 	return configs.length;
 }
 
@@ -516,9 +426,9 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 }
 
 export async function run(opts: RunOptions): Promise<RunOutcome> {
-	if (opts.source === 'fixture') {
+	if ((opts.source ?? resolveContentSource()) === 'fixture') {
 		// Defense in depth for callers that bypass the CLI's pre-auth gate.
-		getExportSkipReason({ ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' });
+		resolveContentSource({ ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' });
 		if (opts.policy === 'fail') throw new Error('Trusted CMS builds refuse fixture exports.');
 		const data = await readCache(EXPORT_FIXTURE_PATH);
 		if (!data) throw new Error(`Missing export fixture: ${EXPORT_FIXTURE_PATH}`);
@@ -529,9 +439,9 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		if (opts.dryRun) return { source: 'fixture', emitted: 0 };
 		await writeMediaVariants(prepared);
 		log.info(`fixture media-variants: wrote ${prepared.writes.length} file(s).`);
-		return { source: 'fixture', emitted: await emitAll(configs, opts, 'fixture') };
+		return { source: 'fixture', emitted: await emitAll(configs, opts) };
 	}
-	const policy = opts.policy ?? 'soft';
+	const policy = resolveFallbackPolicy() === 'fail' ? 'fail' : (opts.policy ?? 'soft');
 	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl} policy=${policy}`);
 
 	let data: ExportData;
@@ -547,7 +457,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		if (policy === 'fail') {
 			log.error(
 				`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): live CMS export failed and ` +
-					'EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on this trusted Vercel target. ' +
+					'Fallbacks are forbidden on this trusted Vercel target. ' +
 					'Verify its target-specific Build Bot token and pinned CMS URL. ' +
 					'The prior deploy stays live until this build succeeds.',
 			);
@@ -559,10 +469,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 			return null;
 		});
 		if (!cached) {
-			logFallbackBanner('committed-modules', fetchMsg);
-			log.warn(
-				'no cache available: exiting 0 without emitting (existing .ts files untouched).',
-			);
+			log.error('No live content or cache available; export failed without emitting.');
 			return { source: 'none', emitted: 0 };
 		}
 		logFallbackBanner('cache', fetchMsg);
@@ -577,12 +484,13 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 	}
 
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
+	if (!dataFromCache) validateLiveExport(data);
 	const configs = buildEmitConfigs(data, emitDir);
 	if (preparedMediaVariants) {
 		await writeMediaVariants(preparedMediaVariants);
 		log.info(`media-variants: wrote ${preparedMediaVariants.writes.length} file(s).`);
 	}
-	const emittedCount = await emitAll(configs, opts, dataFromCache ? 'cache' : 'live');
+	const emittedCount = await emitAll(configs, opts);
 	if (dataFromCache) {
 		log.info('cache: skipped re-write (data sourced from cache).');
 	} else {
@@ -593,8 +501,8 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 }
 
 async function main(): Promise<void> {
-	// Refuse fixture mode on trusted targets before parsing flags or honoring SKIP.
-	if (process.env.EXPORT_FALLBACKS_SOURCE === 'fixture') getExportSkipReason();
+	// Resolve before authentication or argument parsing, including trusted fixture refusal.
+	const source = resolveContentSource();
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
@@ -607,21 +515,8 @@ async function main(): Promise<void> {
 	const dryRun = values['dry-run'] === true;
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 
-	// Explicit offline builds and untrusted previews skip before authentication.
-	// Trusted targets require live export unless the offline override is deliberate.
-	const skipReason = getExportSkipReason();
-	if (skipReason) {
-		if (process.env.VERCEL_ENV === 'production') {
-			log.warn(
-				`${skipReason} on a production build: shipping committed content modules as-is, no CMS refresh.`,
-			);
-		}
-		log.info(`${skipReason}: skipping export, committed content modules remain authoritative. Exiting 0.`);
-		return;
-	}
-
-	if (process.env.EXPORT_FALLBACKS_SOURCE === 'fixture') {
-		await run({ source: 'fixture', directusUrl: 'fixture', token: '', dryRun, emitDir });
+	if (source === 'fixture') {
+		await run({ source, directusUrl: 'fixture', token: '', dryRun, emitDir });
 		return;
 	}
 
@@ -633,7 +528,7 @@ async function main(): Promise<void> {
 	// surfaces the problem instead of shipping stale content silently.
 	// Production uses DIRECTUS_BUILD_TOKEN against cms.yesid.dev. Only the
 	// develop Preview uses DIRECTUS_DEV_BUILD_TOKEN against cms.dev.yesid.dev.
-	// Arbitrary previews returned at the skip gate before reaching this point.
+	// Default fixture exports return before authentication.
 	let token = '';
 	if (!dryRun) {
 		try {
@@ -642,19 +537,19 @@ async function main(): Promise<void> {
 			if (policy === 'fail') {
 				log.error(
 					`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): token resolution failed: ` +
-						`${(authErr as Error).message}. EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on ` +
+						`${(authErr as Error).message}. Fallbacks are forbidden on ` +
 						'this trusted Vercel target. Configure only its target-specific Build Bot token.',
 				);
 				process.exit(1);
 			}
 			log.warn(`auth failed: ${(authErr as Error).message}`);
 			log.warn(
-				'continuing without token; will try cache fallback, else exit 0 (committed .ts files become authoritative).',
+				'continuing without token; will try cache fallback, else fail the export.',
 			);
 		}
 	}
 
-	const outcome = await run({ directusUrl: url, token, dryRun, emitDir, policy });
+	const outcome = await run({ source, directusUrl: url, token, dryRun, emitDir, policy });
 	const exitCode = decideExit(outcome, policy);
 	if (exitCode !== 0) process.exit(exitCode);
 }
