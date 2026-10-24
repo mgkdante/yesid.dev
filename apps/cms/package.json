@@ -2,7 +2,7 @@
 	"name": "@repo/cms",
 	"private": true,
 	"type": "module",
-	"description": "Config, snapshots, and operational tooling for the Directus CMS backing yesid.dev, configured for the pinned directus/directus:12.0.0 image.",
+	"description": "Config, snapshots, and operational tooling for the Directus CMS backing yesid.dev, configured for the pinned directus/directus:12.5.1 image.",
 	"scripts": {
 		"export:fallbacks": "bun scripts/export-fallbacks.ts",
 		"setup:asset-registry": "bun scripts/setup-asset-registry-schema.ts",
