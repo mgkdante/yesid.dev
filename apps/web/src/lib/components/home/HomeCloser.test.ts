@@ -23,26 +23,24 @@ describe('HomeCloser', () => {
 		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
 	});
 
-	it('renders the departure board with 5 rows', () => {
+	it('renders the departure board with 4 rows', () => {
 		render(HomeCloser, { props });
 		const board = screen.getByTestId('closer-board');
 		expect(board).toBeInTheDocument();
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows).toHaveLength(5);
+		expect(rows).toHaveLength(4);
 	});
 
 	it('renders fixed Terminus routes in the requested order', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows.map((row) => row.getAttribute('href'))).toEqual([
-			'/tech-stack',
 			'/contact',
 			'/about',
 			'/blog',
 			siteMeta.links.github,
 		]);
 		expect(rows.map((row) => row.textContent)).toEqual([
-			expect.stringContaining('STACK'),
 			expect.stringContaining('CONTACT'),
 			expect.stringContaining('YESID'),
 			expect.stringContaining('BLOG'),
@@ -53,8 +51,8 @@ describe('HomeCloser', () => {
 	it('renders the Blog row as the listing, not individual latest posts', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows[3].getAttribute('href')).toBe('/blog');
-		expect(rows[3].textContent).toContain('Writing and field notes');
+		expect(rows[2].getAttribute('href')).toBe('/blog');
+		expect(rows[2].textContent).toContain('Writing and field notes');
 		expect(screen.queryByText('First dispatch')).not.toBeInTheDocument();
 		expect(screen.queryByText('Second dispatch')).not.toBeInTheDocument();
 	});

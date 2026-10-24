@@ -16,7 +16,7 @@ const rail = {
 			{ label: { en: 'About the author' }, href: '/about' },
 			{ label: { en: 'Case studies' }, href: '/projects' },
 			{ label: { en: 'Services' }, href: '/services' },
-			{ label: { en: 'Stack' }, href: '/tech-stack' },
+			{ label: { en: 'Stack' }, href: '/services' },
 			{ label: { en: 'Contact' }, href: '/contact' },
 		],
 	},
@@ -40,7 +40,7 @@ describe('BlogEntryRail', () => {
 		expect(routeLinks[0]).toHaveTextContent('About the author');
 		expect(routeLinks[0]).toHaveAttribute('href', '/about');
 		expect(screen.getByRole('link', { name: 'Case studies' })).toHaveAttribute('href', '/projects');
-		expect(screen.getByRole('link', { name: 'Stack' })).toHaveAttribute('href', '/tech-stack');
+		expect(screen.getByRole('link', { name: 'Stack' })).toHaveAttribute('href', '/services');
 		expect(routeLinks).toHaveLength(5);
 	});
 });

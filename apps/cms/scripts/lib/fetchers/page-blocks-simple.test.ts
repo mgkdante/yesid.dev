@@ -28,7 +28,6 @@ describe('blog-page transform', () => {
 				entry_rail_routes_title: 'Pick A Route',
 				entry_rail_route_case_studies_label: 'Case studies',
 				entry_rail_route_services_label: 'Services',
-				entry_rail_route_stack_label: 'Stack',
 				entry_rail_route_about_label: 'About the author',
 				entry_rail_route_contact_label: 'Contact',
 			},
@@ -48,7 +47,6 @@ describe('blog-page transform', () => {
 				entry_rail_routes_title: 'Choisir une route',
 				entry_rail_route_case_studies_label: 'Études de cas',
 				entry_rail_route_services_label: 'Services',
-				entry_rail_route_stack_label: 'Stack',
 				entry_rail_route_about_label: 'À propos de l\'auteur',
 				entry_rail_route_contact_label: 'Contact',
 			},
@@ -57,7 +55,6 @@ describe('blog-page transform', () => {
 		entry_rail_contact_href: '/contact',
 		entry_rail_route_case_studies_href: '/projects',
 		entry_rail_route_services_href: '/services',
-		entry_rail_route_stack_href: '/tech-stack',
 		entry_rail_route_about_href: '/about',
 		entry_rail_route_contact_href: '/contact',
 	};
@@ -109,7 +106,6 @@ describe('blog-page transform', () => {
 			'/about',
 			'/projects',
 			'/services',
-			'/tech-stack',
 			'/contact',
 		]);
 		expect(result.entryRail.routes.links[0].label).toEqual({

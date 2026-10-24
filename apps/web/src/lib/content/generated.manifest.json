@@ -5,7 +5,7 @@
 	"files": {
 		"about-page.ts": "db39333ead6907d011aede55fe95af6282b9de7f42093784f04ebd66665c7ff6",
 		"blog-bodies.ts": "190da250a9c6f34ae10eb0ae4b616b3d6f0d0b440798799c7e5af6d25fd7886d",
-		"blog-page.ts": "c3134e2e3de40fd05d5f7fd0ef71f2f236866e96f61e07381d6d8d9f071ceaea",
+		"blog-page.ts": "53a3fc7a48764a511052ddf15e8f778cb70ae665d0ecd119512d2ca9a6d878b0",
 		"blog.ts": "350ec64f224e2c33452f57b1c5bccd2e7bfaa3a0b1b1e6650980078964a299d9",
 		"contact-page.ts": "7e9bff62d4f6390d4df90d3e8904e36e744efbef52bee1e3ff614539aa3ec190",
 		"error-pages.ts": "3a5df86609ed3c7f7fecbb04209d010bd6621b4566d5d0ed0bf2d7d4e52a32d0",
@@ -22,8 +22,6 @@
 		"site-labels.ts": "36f502b854bab90d85b8426be1f2aeb9219f9e15219a4ed46207029ad4732b53",
 		"site-meta.ts": "eaf48ceafa0d48a9f6af370f36e8fb8b102047c4ab56df50e9e4113ed0174924",
 		"site-pages.ts": "1d7bd8d646fb806294c53e1adc582a18d3f1b216983747967dab28cd8a1c2803",
-		"site-seo-defaults.ts": "c85658079e8252b95627960f2218e923a12be89fa7892b3235bf8da7e2bf58df",
-		"stack-archetypes.ts": "8f4a7f3e6944149ed5ab362157b277395371b32a736d2fab9db023df11312977",
-		"tech-stack.ts": "5d2b99171511c3f043296f1451a20333d124cac440fe74da2b774d11cf66be70"
+		"site-seo-defaults.ts": "c85658079e8252b95627960f2218e923a12be89fa7892b3235bf8da7e2bf58df"
 	}
 }

@@ -8,7 +8,6 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { gzipSync } from 'node:zlib';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const REPOSITORY_ROOT = resolve(process.cwd(), '../..');
@@ -16,11 +15,9 @@ const CHECKER = resolve(REPOSITORY_ROOT, 'apps/web/scripts/check-client-payload.
 const PACKAGE_JSON = resolve(REPOSITORY_ROOT, 'apps/web/package.json');
 const WORKFLOW = resolve(REPOSITORY_ROOT, '.github/workflows/web.yml');
 const ROOT_KEY = '.svelte-kit/generated/client-optimized/nodes/0.js';
-const ENGINE_KEY = 'src/lib/components/stack-engine/Engine.svelte';
 const BUDGET_ENV = [
 	'ROOT_LAYOUT_ENTRY_BUDGET_GZIP',
 	'ROOT_LAYOUT_PAYLOAD_BUDGET_GZIP',
-	'ENGINE_CHUNK_BUDGET_GZIP',
 ] as const;
 const temporaryRoots: string[] = [];
 
@@ -36,7 +33,6 @@ type Manifest = Record<string, ManifestRecord>;
 const DEFAULT_FILES: Record<string, string> = {
 	'_app/immutable/nodes/0.root.js': 'export const rootLayout = "root-layout-entry";\n',
 	'_app/immutable/chunks/shared.js': 'export const shared = "direct-static-import";\n',
-	'_app/immutable/chunks/engine.js': 'export const engine = "lazy-engine-entry";\n',
 	'_app/immutable/chunks/dynamic.js': 'export const dynamic = "ignored-dynamic-import";\n',
 	'_app/immutable/chunks/stale.js': 'export const stale = "ignored-unreferenced-output";\n',
 };
@@ -47,11 +43,6 @@ function defaultManifest(): Manifest {
 			file: '_app/immutable/nodes/0.root.js',
 			imports: ['_shared.js'],
 			dynamicImports: ['_dynamic.js'],
-			isDynamicEntry: true,
-		},
-		[ENGINE_KEY]: {
-			file: '_app/immutable/chunks/engine.js',
-			imports: ['_shared.js'],
 			isDynamicEntry: true,
 		},
 		'_shared.js': { file: '_app/immutable/chunks/shared.js' },
@@ -111,7 +102,7 @@ afterEach(() => {
 });
 
 describe('manifest-backed client payload budgets', () => {
-	it('reports all three metrics and passes a valid build', () => {
+	it('reports both root metrics and passes a valid build', () => {
 		const { root } = fixture();
 
 		const result = runChecker(root);
@@ -123,9 +114,6 @@ describe('manifest-backed client payload budgets', () => {
 		);
 		expect(result.stdout).toContain(
 			'root layout payload: 2 files (1 static import)',
-		);
-		expect(result.stdout).toContain(
-			'engine incremental payload: 1 file — 43 bytes raw',
 		);
 		expect(result.stdout).toContain('OK: client payload budgets pass');
 	});
@@ -170,55 +158,9 @@ describe('manifest-backed client payload budgets', () => {
 		);
 	});
 
-	it('measures the engine transitive closure while excluding root-shared outputs', () => {
-		const { root } = fixture((manifest, files) => {
-			manifest[ENGINE_KEY].imports = ['_shared.js', '_engine-transitive.js'];
-			manifest['_engine-transitive.js'] = {
-				file: '_app/immutable/chunks/engine-transitive.js',
-				imports: ['_shared-alias.js'],
-			};
-			manifest['_shared-alias.js'] = {
-				file: '_app/immutable/chunks/shared.js',
-			};
-			files['_app/immutable/chunks/engine-transitive.js'] =
-				'export const engineTransitive = "engine-only";\n';
-		});
-		const expectedRaw =
-			Buffer.byteLength(DEFAULT_FILES['_app/immutable/chunks/engine.js']) +
-			Buffer.byteLength('export const engineTransitive = "engine-only";\n');
-
-		const result = runChecker(root);
-
-		expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
-		expect(result.stdout).toContain(
-			`engine incremental payload: 2 files — ${expectedRaw} bytes raw`,
-		);
-	});
-
-	it('fails when an engine-only transitive output pushes the closure over budget', () => {
-		const { root } = fixture((manifest, files) => {
-			manifest[ENGINE_KEY].imports = ['_engine-only.js'];
-			manifest['_engine-only.js'] = {
-				file: '_app/immutable/chunks/engine-only.js',
-			};
-			files['_app/immutable/chunks/engine-only.js'] =
-				'export const engineOnly = "transitive payload";\n';
-		});
-		const entryBudget = String(
-			gzipSync(DEFAULT_FILES['_app/immutable/chunks/engine.js']).length,
-		);
-
-		const result = runChecker(root, { ENGINE_CHUNK_BUDGET_GZIP: entryBudget });
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain('FAIL: engine incremental payload');
-		expect(result.stderr).toContain(`budget ${entryBudget} bytes gzip`);
-	});
-
 	it.each([
 		['ROOT_LAYOUT_ENTRY_BUDGET_GZIP', 'root layout entry'],
 		['ROOT_LAYOUT_PAYLOAD_BUDGET_GZIP', 'root layout payload'],
-		['ENGINE_CHUNK_BUDGET_GZIP', 'engine incremental payload'],
 	])('fails when %s is exceeded', (name, metric) => {
 		const { root } = fixture();
 
@@ -227,51 +169,6 @@ describe('manifest-backed client payload budgets', () => {
 		expect(result.status).toBe(1);
 		expect(result.stderr).toContain(`FAIL: ${metric}`);
 		expect(result.stderr).toContain('budget 1 bytes gzip');
-	});
-
-	it('requires the engine manifest record to be a dynamic entry', () => {
-		const { root } = fixture((manifest) => {
-			manifest[ENGINE_KEY].isDynamicEntry = false;
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain(`FAIL: ${ENGINE_KEY} is not a dynamic entry`);
-	});
-
-	it('rejects an engine output emitted as a route node', () => {
-		const { root } = fixture((manifest, files) => {
-			manifest[ENGINE_KEY].file = '_app/immutable/nodes/engine.js';
-			files['_app/immutable/nodes/engine.js'] = files['_app/immutable/chunks/engine.js'];
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain('FAIL: engine output is a route node');
-	});
-
-	it('rejects an engine that is directly statically reachable from the root layout', () => {
-		const { root } = fixture((manifest) => {
-			manifest[ROOT_KEY].imports = ['_shared.js', ENGINE_KEY];
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain('FAIL: engine is statically reachable from the root layout');
-	});
-
-	it('rejects an engine that is transitively statically reachable from the root layout', () => {
-		const { root } = fixture((manifest) => {
-			manifest['_shared.js'].imports = [ENGINE_KEY];
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain('FAIL: engine is statically reachable from the root layout');
 	});
 
 	it.each([
@@ -295,40 +192,6 @@ describe('manifest-backed client payload budgets', () => {
 
 		expect(result.status).toBe(1);
 		expect(result.stderr).toContain(diagnostic);
-	});
-
-	it.each([
-		[
-			'missing',
-			'_app/immutable/chunks/missing-engine-transitive.js',
-			'FAIL: cannot read static import graph output: _app/immutable/chunks/missing-engine-transitive.js',
-		],
-		[
-			'escaping',
-			'../../../../outside.js',
-			'FAIL: static import graph output escapes the client directory',
-		],
-	])('fails closed for a %s engine transitive output', (_case, file, diagnostic) => {
-		const { root } = fixture((manifest) => {
-			manifest[ENGINE_KEY].imports = ['_engine-transitive.js'];
-			manifest['_engine-transitive.js'] = { file };
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain(diagnostic);
-	});
-
-	it('fails closed for an invalid engine static-import list', () => {
-		const { root } = fixture((manifest) => {
-			manifest[ENGINE_KEY].imports = [42 as unknown as string];
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain(`FAIL: invalid static imports for manifest record: ${ENGINE_KEY}`);
 	});
 
 	it.each(BUDGET_ENV)('rejects invalid %s overrides', (name) => {
@@ -360,7 +223,6 @@ describe('manifest-backed client payload budgets', () => {
 
 	it.each([
 		[ROOT_KEY, 'root layout'],
-		[ENGINE_KEY, 'engine'],
 	])('fails closed when required manifest key %s is missing', (key, label) => {
 		const { root } = fixture((manifest) => {
 			delete manifest[key];
@@ -386,7 +248,6 @@ describe('manifest-backed client payload budgets', () => {
 	it.each([
 		['root layout', '_app/immutable/nodes/0.root.js'],
 		['direct static import', '_app/immutable/chunks/shared.js'],
-		['engine', '_app/immutable/chunks/engine.js'],
 	])('fails closed when the %s output file is missing', (label, path) => {
 		const { root } = fixture((_manifest, files) => {
 			delete files[path];
@@ -396,17 +257,6 @@ describe('manifest-backed client payload budgets', () => {
 
 		expect(result.status).toBe(1);
 		expect(result.stderr).toContain(`FAIL: cannot read ${label} output: ${path}`);
-	});
-
-	it('fails closed when a manifest output escapes the client directory', () => {
-		const { root } = fixture((manifest) => {
-			manifest[ENGINE_KEY].file = '../../../../outside.js';
-		});
-
-		const result = runChecker(root);
-
-		expect(result.status).toBe(1);
-		expect(result.stderr).toContain('FAIL: engine output escapes the client directory');
 	});
 
 	it('wires the renamed checker exactly once immediately after the CI build', () => {
@@ -423,7 +273,6 @@ describe('manifest-backed client payload budgets', () => {
 		expect(packageJson.scripts['check:client-payload']).toBe(
 			'node scripts/check-client-payload.mjs',
 		);
-		expect(packageJson.scripts['check:engine-chunk']).toBeUndefined();
 		expect(workflow.split(gate)).toHaveLength(2);
 
 		const buildHeading = '      - name: Build';

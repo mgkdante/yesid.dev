@@ -27,7 +27,7 @@ import type { SitePage } from '$lib/types';
 
 /** Concrete page routes need their own published row, never a parent's fallback. */
 export const STATIC_PAGE_PATHS: readonly string[] = [
-	'/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal', '/tech-stack',
+	'/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal',
 ];
 
 /** Endpoint-style surfaces that must never be registry-gated. */

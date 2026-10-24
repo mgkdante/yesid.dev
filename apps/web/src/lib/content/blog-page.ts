@@ -45,10 +45,6 @@ export const blogPageContent: BlogPageContent = {
 					label: { en: 'Services', es: 'Servicios', fr: 'Services' },
 				},
 				{
-					href: '/tech-stack',
-					label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
-				},
-				{
 					href: '/contact',
 					label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 				},

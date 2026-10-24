@@ -35,9 +35,6 @@
 	// Static content
 	const ctaLabel = $derived(resolveLocale(closerContent.cta.label, locale));
 	const ctaHref = $derived(closerContent.cta.href);
-	const stackLabel = $derived(resolveLocale(closerContent.rows.stack.label, locale));
-	const stackDesc = $derived(resolveLocale(closerContent.rows.stack.description, locale));
-	const stackAction = $derived(resolveLocale(closerContent.rows.stack.action, locale));
 	const contactLabel = $derived(resolveLocale(closerContent.rows.contact.label, locale));
 	const contactDesc = $derived(resolveLocale(closerContent.rows.contact.description, locale));
 	const contactAction = $derived(resolveLocale(closerContent.rows.contact.action, locale));
@@ -67,13 +64,6 @@
 		primary: boolean;
 	};
 	const rows = $derived([
-		{
-			label: stackLabel,
-			description: stackDesc,
-			action: stackAction,
-			href: '/tech-stack',
-			primary: false,
-		},
 		{
 			label: contactLabel,
 			description: contactDesc,

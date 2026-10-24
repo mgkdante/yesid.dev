@@ -67,7 +67,6 @@
 	);
 	// Services chrome — CMS truth (site_labels → servicesChrome.detail / .listing).
 	let stackLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.stackHeading, locale));
-	let seeStackLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.seeStackLabel, locale));
 	let hasStack = $derived((service.stack?.length ?? 0) > 0);
 	let backLinkLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.backToServicesLabel, locale));
 	let valuePropositionHeading = $derived(
@@ -291,7 +290,6 @@
 							{relatedProjects}
 							{locale}
 							{stackLabel}
-							{seeStackLabel}
 							{relatedProjectsHeading}
 							{relatedProjectsAria}
 							{seeAllProjectsLabel}
@@ -311,7 +309,6 @@
 					{relatedProjects}
 					{locale}
 					{stackLabel}
-					{seeStackLabel}
 					{relatedProjectsHeading}
 					{relatedProjectsAria}
 					{seeAllProjectsLabel}

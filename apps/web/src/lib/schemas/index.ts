@@ -1,7 +1,6 @@
 // Web-local schemas and parsing helpers. Shared content contracts live in @repo/shared.
 
 export * from './parse';
-export * from './tech-stack';
 export * from './hero-data';
 export { PageSeoSchema, type PageSeo } from './seo';
 

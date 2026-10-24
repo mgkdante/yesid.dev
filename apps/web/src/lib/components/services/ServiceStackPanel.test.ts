@@ -17,7 +17,6 @@ describe('ServiceStackPanel', () => {
 			relatedProjects,
 			locale: 'en',
 			stackLabel: 'Stack',
-			seeStackLabel: 'See the stack',
 			relatedProjectsHeading: 'Related projects',
 			relatedProjectsAria: 'Related projects',
 			seeAllProjectsLabel: 'See all projects',

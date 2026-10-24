@@ -72,15 +72,12 @@ import { fetchLegalPages } from './lib/fetchers/legal-pages';
 import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
-import { fetchTechStack } from './lib/fetchers/tech-stack';
-import { fetchStackArchetypes } from './lib/fetchers/stack-archetypes';
 import { fetchSiteLabels } from './lib/fetchers/site-labels';
 import {
 	fetchBlogPageContent,
 	fetchProjectsPageContent,
 } from './lib/fetchers/page-blocks-simple';
 import {
-	fetchTechStackPageContent,
 	fetchContactContent,
 } from './lib/fetchers/page-blocks-medium';
 import {
@@ -387,14 +384,6 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 			out.projects = await fetchProjects({ client });
 			log.info(`  projects done (${out.projects.length} projects).`);
 		});
-		enqueue('tech-stack', async () => {
-			out.techStack = await fetchTechStack({ client });
-			log.info(`  tech-stack done (${out.techStack.length} items).`);
-		});
-		enqueue('stack-archetypes', async () => {
-			out.stackArchetypes = await fetchStackArchetypes({ client });
-			log.info(`  stack-archetypes done (${out.stackArchetypes.length} archetypes).`);
-		});
 		enqueue('site-labels', async () => {
 			out.siteLabels = await fetchSiteLabels({ client });
 			log.info('  site-labels done.');
@@ -406,10 +395,6 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 		enqueue('projects-page', async () => {
 			out.projectsPage = await fetchProjectsPageContent({ client });
 			log.info('  projects-page done.');
-		});
-		enqueue('tech-stack-page', async () => {
-			out.techStackPage = await fetchTechStackPageContent({ client });
-			log.info('  tech-stack-page done.');
 		});
 		enqueue('contact-page', async () => {
 			out.contactPage = await fetchContactContent({ client });

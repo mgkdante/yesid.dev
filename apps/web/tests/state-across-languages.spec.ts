@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
 // State across languages (slice-34 foundation) — the language switch must CARRY
-// in-progress URL state (filters ?service=…, ?station=…, the engine seed) across
+// in-progress URL state (filters ?service=…, ?station=…) across
 // EN⇄FR instead of silently dropping it (localizeHref was pathname-only). The
 // query is preserved verbatim, so these assertions don't depend on real filter
 // ids. Session-scope survival (search text, contact draft, carousel) is proven
