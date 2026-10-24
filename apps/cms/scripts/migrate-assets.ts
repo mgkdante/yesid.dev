@@ -714,8 +714,8 @@ export async function migrateAssets(
 	}
 
 	// Emit the id-map file. Stable-ordered for diff-friendliness. Preserve
-	// non-images keys owned by sibling seeders, such as brand/* from
-	// seed-brand-assets.ts, while still letting removed manifest images disappear.
+	// non-image keys, such as the brand/* admin chrome identities,
+	// while still letting removed manifest images disappear.
 	const manifestKeys = new Set(manifest.assets.map((entry) => entry.legacyPath));
 	const existingMaps: Record<string, unknown>[] = [];
 	for (const outPath of opts.outputMapPaths) {

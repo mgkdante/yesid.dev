@@ -1,6 +1,5 @@
 /**
- * Zod schema for storage_asset_presets — used by seed-presets.ts to validate
- * the brand fixture before pushing to Directus.
+ * Zod schema for storage_asset_presets — validates the retained brand fixture.
  *
  * Mirrors the committed `directus_settings.storage_asset_presets` configuration shape.
  * See: https://docs.directus.io/configuration/storage.html#asset-presets
