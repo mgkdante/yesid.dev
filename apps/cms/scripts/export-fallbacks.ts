@@ -11,6 +11,8 @@
  *   bun apps/cms/scripts/export-fallbacks.ts --dry-run         # validate flow, no writes, no network
  *
  * Env:
+ *   EXPORT_FALLBACKS_SOURCE — fixture loads the shared offline snapshot without
+ *                            authentication or fetching. Forbidden on trusted targets.
  *   EXPORT_FALLBACKS_SKIP  — set to 1 to skip the export entirely (logs + exits
  *                            0 before any network). Used by hermetic CI builds
  *                            (web.yml) where the committed modules already ARE
@@ -58,6 +60,7 @@ import { readCache, writeCache as persistCache } from './lib/cache';
 import {
 	GENERATED_MANIFEST_FILENAME,
 	hashContent,
+	buildManifest,
 	writeManifest,
 	type ManifestSource,
 } from './lib/generated-manifest';
@@ -106,11 +109,13 @@ const log = createLogger('export-fallbacks');
 // apps/web/src/lib/content/. Both work from monorepo root and from apps/cms/.
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_WEB_CONTENT_DIR = resolve(SCRIPT_DIR, '../../web/src/lib/content');
+const EXPORT_FIXTURE_PATH = resolve(SCRIPT_DIR, '../../../packages/shared/fixtures/export-data.json');
 
 export interface RunOptions {
 	directusUrl: string;
 	token: string;
 	dryRun: boolean;
+	source?: 'fixture';
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
 	/**
@@ -233,7 +238,11 @@ function isTrustedVercelExportTarget(env: Env): boolean {
 }
 
 export function getExportSkipReason(env: Env = process.env): string | null {
+	if (env.EXPORT_FALLBACKS_SOURCE === 'fixture' && isTrustedVercelExportTarget(env)) {
+		throw new Error('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture; a live export is required.');
+	}
 	if (envFlag(env.EXPORT_FALLBACKS_SKIP)) return 'EXPORT_FALLBACKS_SKIP';
+	if (env.EXPORT_FALLBACKS_SOURCE === 'fixture') return null;
 	if (env.VERCEL_ENV && !isTrustedVercelExportTarget(env)) {
 		return env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF
 			? `VERCEL_ENV=preview branch=${env.VERCEL_GIT_COMMIT_REF}`
@@ -264,7 +273,7 @@ export function resolveFallbackPolicy(env: Env = process.env): FallbackPolicy {
 }
 
 /** Where the run's emitted content came from; 'none' means nothing was emitted. */
-export type ContentSource = 'live' | 'cache' | 'none';
+export type ContentSource = 'live' | 'cache' | 'fixture' | 'none';
 
 export interface RunOutcome {
 	source: ContentSource;
@@ -470,7 +479,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 async function emitAll(
 	configs: readonly ModuleEmitConfig[],
 	opts: RunOptions,
-	source: ManifestSource,
+	source: ManifestSource | 'fixture',
 ): Promise<number> {
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	log.info(`emit: target=${emitDir}`);
@@ -485,7 +494,13 @@ async function emitAll(
 	}
 	log.info(`emit: wrote ${configs.length} module(s).`);
 
-	await writeManifest(emitDir, emittedHashes, source);
+	if (source === 'fixture') {
+		// Keep the live/cache manifest API unchanged during this isolated spike.
+		await Bun.write(resolve(emitDir, GENERATED_MANIFEST_FILENAME),
+			JSON.stringify({ ...buildManifest(emittedHashes), source }, null, '\t') + '\n');
+	} else {
+		await writeManifest(emitDir, emittedHashes, source);
+	}
 	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${configs.length} entries).`);
 	return configs.length;
 }
@@ -501,6 +516,21 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 }
 
 export async function run(opts: RunOptions): Promise<RunOutcome> {
+	if (opts.source === 'fixture') {
+		// Defense in depth for callers that bypass the CLI's pre-auth gate.
+		getExportSkipReason({ ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' });
+		if (opts.policy === 'fail') throw new Error('Trusted CMS builds refuse fixture exports.');
+		const data = await readCache(EXPORT_FIXTURE_PATH);
+		if (!data) throw new Error(`Missing export fixture: ${EXPORT_FIXTURE_PATH}`);
+		data.mediaAssets = buildMirroredMediaAssets();
+		const prepared = await prepareMediaVariants(assetManifest as MediaMirrorManifest);
+		data.mediaVariants = prepared.data;
+		const configs = buildEmitConfigs(data, opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR);
+		if (opts.dryRun) return { source: 'fixture', emitted: 0 };
+		await writeMediaVariants(prepared);
+		log.info(`fixture media-variants: wrote ${prepared.writes.length} file(s).`);
+		return { source: 'fixture', emitted: await emitAll(configs, opts, 'fixture') };
+	}
 	const policy = opts.policy ?? 'soft';
 	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl} policy=${policy}`);
 
@@ -563,6 +593,8 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 }
 
 async function main(): Promise<void> {
+	// Refuse fixture mode on trusted targets before parsing flags or honoring SKIP.
+	if (process.env.EXPORT_FALLBACKS_SOURCE === 'fixture') getExportSkipReason();
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
@@ -585,6 +617,11 @@ async function main(): Promise<void> {
 			);
 		}
 		log.info(`${skipReason}: skipping export, committed content modules remain authoritative. Exiting 0.`);
+		return;
+	}
+
+	if (process.env.EXPORT_FALLBACKS_SOURCE === 'fixture') {
+		await run({ source: 'fixture', directusUrl: 'fixture', token: '', dryRun, emitDir });
 		return;
 	}
 

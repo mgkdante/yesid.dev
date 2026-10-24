@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { tmpdir } from 'node:os';
+import { verifyContentDir } from './verify-content-manifest';
 import {
 	buildMirroredMediaAssetsFromManifest,
 	decideExit,
@@ -11,6 +12,52 @@ import {
 	resolveFallbackPolicy,
 	run,
 } from './export-fallbacks';
+
+describe('offline export fixture', () => {
+	const fixtureCli = async (args: string[], env: Record<string, string> = {}) => {
+		const child = Bun.spawn({
+			cmd: [process.execPath, '--no-env-file', joinPath(import.meta.dir, 'export-fallbacks.ts'), ...args],
+			cwd: joinPath(import.meta.dir, '..'),
+			env: { PATH: process.env.PATH ?? '', SystemRoot: process.env.SystemRoot ?? '',
+				EXPORT_FALLBACKS_SOURCE: 'fixture', PUBLIC_DIRECTUS_URL: 'http://127.0.0.1:1', ...env },
+			stdout: 'pipe', stderr: 'pipe',
+		});
+		const [exitCode, stdout, stderr] = await Promise.all([
+			child.exited, new Response(child.stdout).text(), new Response(child.stderr).text(),
+		]);
+		return { exitCode, output: stdout + stderr };
+	};
+
+	it('emits all modules and matching fixture manifest without credentials or a reachable CMS', async () => {
+		const emitDir = joinPath(import.meta.dir, '..', `.fixture-export-test-${crypto.randomUUID()}`);
+		try {
+			const result = await fixtureCli(['--emit-dir', emitDir], {
+				VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/offline',
+			});
+			expect(result.exitCode).toBe(0);
+			expect(result.output).not.toMatch(/auth failed|fetch:|cache fallback/);
+			const manifest = await Bun.file(joinPath(emitDir, 'generated.manifest.json')).json();
+			expect(manifest.source).toBe('fixture');
+			expect(Object.keys(manifest.files)).toHaveLength(22);
+			expect(await verifyContentDir(emitDir)).toEqual({ verified: Object.keys(manifest.files), violations: [] });
+			expect(await Bun.file(joinPath(emitDir, '.cms-cache.json')).exists()).toBe(false);
+		} finally { rmSync(emitDir, { recursive: true, force: true }); }
+	}, 30_000);
+
+	it('refuses production and develop before SKIP, LIVE, argument parsing or authentication', async () => {
+		for (const env of [
+			{ VERCEL_ENV: 'production' },
+			{ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' },
+		]) {
+			for (const overrides of [{}, { EXPORT_FALLBACKS_SKIP: '1', EXPORT_FALLBACKS_LIVE: '1' }]) {
+				const result = await fixtureCli(['--unknown'], { ...env, ...overrides });
+				expect(result.exitCode).toBe(1);
+				expect(result.output).toContain('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture');
+				expect(result.output).not.toMatch(/auth failed|fetch:|Unknown option/);
+			}
+		}
+	});
+});
 
 describe('failed live export retains last-good generated output', () => {
 	it('does not replace an existing content module after a real HTTP fetch failure', async () => {
