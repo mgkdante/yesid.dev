@@ -7,22 +7,17 @@ import type { EntryGenerator } from './$types';
 export const entries = (() => localeEntries('/about')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;
 
-// slice-18i Phase 7C: thread pageCache ctx so loadPage('about') memo-ises.
 // Intentionally untyped (no PageServerLoad annotation) — the generated
 // +page.server.ts type constrains the return to include App.PageData.seo,
 // which is provided by +layout.ts, not the page server load.
 export async function load({
-	locals,
 	params,
 	url,
 }: {
-	locals: App.Locals;
 	params: Partial<Record<string, string>>;
 	url: URL;
 }) {
-	const ctx = { pageCache: locals.pageCache };
-
-	const aboutPage = await adapter.content.aboutPage(ctx);
+	const aboutPage = await adapter.content.aboutPage();
 
 	if (!aboutPage.weather.enabled) {
 		return { aboutPage, weather: null };

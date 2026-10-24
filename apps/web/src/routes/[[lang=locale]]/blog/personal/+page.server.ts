@@ -9,8 +9,6 @@ import { localeFromParams } from '$lib/utils/locale-routing';
 export const entries = (() => localeEntries('/blog/personal')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;
 
-export async function load({ locals, params }: { locals: App.Locals; params: Record<string, string> }) {
-	return loadBlogCategory('personal', localeFromParams(params), {
-		pageCache: locals.pageCache,
-	});
+export async function load({ params }: { params: Record<string, string> }) {
+	return loadBlogCategory('personal', localeFromParams(params));
 }

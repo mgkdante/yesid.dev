@@ -43,10 +43,6 @@ function post(lang: BlogPost['lang'], slug: string): BlogPost {
 	};
 }
 
-function locals(): App.Locals {
-	return { pageCache: new Map() } as unknown as App.Locals;
-}
-
 describe('blog detail loader locale boundary', () => {
 	beforeEach(() => {
 		for (const mock of [
@@ -69,7 +65,7 @@ describe('blog detail loader locale boundary', () => {
 		adapterMocks.adapter.blog.all.mockResolvedValue([englishPost]);
 
 		await expect(
-			load({ params: { lang: 'fr', slug: englishPost.slug }, locals: locals() }),
+			load({ params: { lang: 'fr', slug: englishPost.slug } }),
 		).rejects.toMatchObject({ status: 404 });
 	});
 
@@ -87,7 +83,6 @@ describe('blog detail loader locale boundary', () => {
 
 		const result = await load({
 			params: { lang: 'fr', slug: selected.slug },
-			locals: locals(),
 		});
 
 		expect(result.postIndex).toBe(2);

@@ -1,7 +1,3 @@
-// slice-18i Phase 7C: converted from universal +page.ts to server-only
-// +page.server.ts so we can thread event.locals.pageCache as ctx for
-// loadPage('projects') memoization and add projectsPage chrome content.
-//
 // Service SVGs fetched via SvelteKit's `fetch` (works during SSR).
 
 import { fetchServiceSvgContents } from '$lib/utils';
@@ -13,13 +9,11 @@ import type { EntryGenerator } from './$types';
 export const entries = (() => localeEntries('/projects')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;
 
-export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
-	const ctx = { pageCache: locals.pageCache };
-
+export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 	const [services, projects, projectsPage] = await Promise.all([
-		adapter.services.visible(ctx),
-		adapter.projects.public(ctx),
-		adapter.content.projectsPage(ctx),
+		adapter.services.visible(),
+		adapter.projects.public(),
+		adapter.content.projectsPage(),
 	]);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
 	const { tags, stackItems, serviceIds } = deriveProjectFacets(projects);

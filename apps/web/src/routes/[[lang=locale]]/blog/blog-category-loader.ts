@@ -8,15 +8,13 @@ import { getBlogPostsForLocale } from '$lib/blog/translations';
 import { uniqueSorted } from '$lib/utils';
 import type { BlogCategory, Locale } from '$lib/types';
 
-type LoadCtx = { pageCache: App.Locals['pageCache'] };
-
-export async function loadBlogCategory(category: BlogCategory, locale: Locale, ctx: LoadCtx) {
+export async function loadBlogCategory(category: BlogCategory, locale: Locale) {
 	const [categoryPosts, blogPage] = await Promise.all([
-		adapter.blog.byCategory(category, ctx),
-		adapter.content.blogPage(ctx),
+		adapter.blog.byCategory(category),
+		adapter.content.blogPage(),
 	]);
 	const posts = getBlogPostsForLocale(categoryPosts, locale);
-	const svgContents = await adapter.blog.svgContentsForPosts(posts, ctx);
+	const svgContents = await adapter.blog.svgContentsForPosts(posts);
 	const tags = uniqueSorted(posts.flatMap((post) => post.tags));
 	const languages = uniqueSorted(posts.map((post) => post.lang)) as readonly Locale[];
 

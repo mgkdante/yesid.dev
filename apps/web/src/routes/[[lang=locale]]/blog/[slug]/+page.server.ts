@@ -11,21 +11,18 @@ export const prerender = entries().length > 0;
 
 export async function load({
 	params,
-	locals,
 }: {
 	params: { slug: string; lang?: string };
-	locals: App.Locals;
 }) {
-	const ctx = { pageCache: locals.pageCache };
 	const locale = localeFromParams(params);
-	const post = await adapter.blog.bySlug(params.slug, ctx);
+	const post = await adapter.blog.bySlug(params.slug);
 	if (!post || post.lang !== locale) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts, blogPage] = await Promise.all([
-		adapter.blog.bodyBySlug(params.slug, ctx),
-		adapter.blog.svgContent(post, ctx),
-		adapter.blog.all(ctx),
-		adapter.content.blogPage(ctx),
+		adapter.blog.bodyBySlug(params.slug),
+		adapter.blog.svgContent(post),
+		adapter.blog.all(),
+		adapter.content.blogPage(),
 	]);
 
 	if (!body) error(404, 'Post body missing');
