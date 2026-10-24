@@ -79,25 +79,6 @@ describe('aboutPageContent', () => {
 	});
 
 	describe('testimonials', () => {
-		it('has the CMS-fed quote carousel entries in order', () => {
-			expect(aboutPageContent.testimonials).toHaveLength(3);
-			expect(aboutPageContent.testimonials[0]?.quote.en).toBe(
-				"You have the gift of perseverance, and that's what makes you a genius too.",
-			);
-			expect(aboutPageContent.testimonials[0]?.quote.fr).toBe(
-				"Tu as le don de la persévérance, et c'est ce qui fait de toi un génie.",
-			);
-			expect(aboutPageContent.testimonials[0]?.author).toBe('Guy Sensei');
-			expect(aboutPageContent.testimonials[1]?.quote.en).toBe(
-				'What matters in life is not what happens to you but what you remember and how you remember it.',
-			);
-			expect(aboutPageContent.testimonials[1]?.author).toBe('Gabriel Garcia Marquez');
-			expect(aboutPageContent.testimonials[2]?.quote.en).toBe(
-				'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.',
-			);
-			expect(aboutPageContent.testimonials[2]?.author).toBe('Marcus Aurelius');
-		});
-
 		it('every testimonial has required fields', () => {
 			for (const t of aboutPageContent.testimonials) {
 				expect(t.quote.en.length).toBeGreaterThan(0);

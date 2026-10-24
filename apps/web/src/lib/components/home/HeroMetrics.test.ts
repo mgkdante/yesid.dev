@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HeroMetrics from './HeroMetrics.svelte';
@@ -40,19 +41,19 @@ describe('HeroMetrics', () => {
 
   it('renders labels for each metric', () => {
     render(HeroMetrics, { props: { metrics } });
-    expect(screen.getAllByText('VEHICLES TRACKED').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('AVG DELAY').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('ROUTES LIVE').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesLabel.en).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.delayLabel.en).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.routesLabel.en).length).toBeGreaterThan(0);
   });
 
   it('renders sub-labels for each metric (CMS templates, EN, {coverage}/{total} filled)', () => {
     render(HeroMetrics, { props: { metrics } });
     // Honesty pass: the demo dashboard stopped claiming a live STM feed.
-    expect(screen.getAllByText('DEMO · STM-STYLE').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesSub.en).length).toBeGreaterThan(0);
     // delaySub template '{coverage}% COVERAGE' with coverage=87.6
-    expect(screen.getAllByText('87.6% COVERAGE').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.delaySub.en.replace('{coverage}', String(metrics.find(m => m.key === 'delay')!.coverage))).length).toBeGreaterThan(0);
     // routesSub template 'OF {total} TOTAL' with total=227
-    expect(screen.getAllByText('OF 227 TOTAL').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.routesSub.en.replace('{total}', String(metrics.find(m => m.key === 'routes')!.total))).length).toBeGreaterThan(0);
     // No unsubstituted placeholders leak through.
     expect(screen.queryByText(/\{coverage\}|\{total\}/)).toBeNull();
   });
@@ -68,18 +69,16 @@ describe('HeroMetrics — fr locale (CMS truth)', () => {
 
   it('renders French labels from siteLabels.heroDashboard', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
-    expect(screen.getAllByText('VÉHICULES SUIVIS').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('RETARD MOYEN').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('LIGNES EN DIRECT').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesLabel.fr!).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.delayLabel.fr!).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.routesLabel.fr!).length).toBeGreaterThan(0);
   });
 
   it('renders French subs with {coverage}/{total} substituted', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
-    expect(screen.getAllByText('DÉMO · STYLE STM').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('87.6% DE COUVERTURE').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('SUR 227 AU TOTAL').length).toBeGreaterThan(0);
-    // The EN copy must NOT leak into the French render.
-    expect(screen.queryByText('VEHICLES TRACKED')).toBeNull();
-    expect(screen.queryByText('OF 227 TOTAL')).toBeNull();
+    expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesSub.fr!).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.delaySub.fr!.replace('{coverage}', String(metrics.find(m => m.key === 'delay')!.coverage))).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.routesSub.fr!.replace('{total}', String(metrics.find(m => m.key === 'routes')!.total))).length).toBeGreaterThan(0);
+
   });
 });

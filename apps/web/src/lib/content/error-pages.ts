@@ -3,9 +3,9 @@
 //
 // All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { ErrorPageContent } from '$lib/navigation/types';
@@ -13,9 +13,9 @@ import type { ErrorPageContent } from '$lib/navigation/types';
 export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'0': {
 		description: {
-			en: 'The page you were looking for could not be found.',
-			es: 'No se encontró la página que buscabas.',
-			fr: 'La page que tu cherchais est introuvable.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		heading: {
 			en: 'This station is offline',
@@ -41,9 +41,9 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	},
 	'404': {
 		description: {
-			en: 'The route you requested doesn\'t exist or has been rerouted. Here are some active lines:',
-			es: 'La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:',
-			fr: 'La route demandée n\'existe pas ou a été redirigée. Voici quelques lignes actives :',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		heading: {
 			en: 'This station is under construction',
@@ -73,9 +73,9 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	},
 	'500': {
 		description: {
-			en: 'The server encountered an unexpected error. Please try again later.',
-			es: 'El servidor encontró un error inesperado. Intenta de nuevo más tarde.',
-			fr: 'Le serveur a rencontré une erreur inattendue. Réessaie plus tard.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		heading: {
 			en: 'Something went wrong',

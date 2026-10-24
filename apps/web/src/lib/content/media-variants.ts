@@ -3,9 +3,9 @@
 //
 // Responsive webp variants of the mirrored raster assets, keyed by original static path (intrinsic width/height + ascending-width variant set). Generated with the variant files themselves by lib/media-variants.ts; the web asset helper composes srcset/width/height from this map.
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { MediaVariantEntry } from '$lib/types';

@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import ProjectsStrip from './ProjectsStrip.svelte';
@@ -28,7 +29,7 @@ describe('ProjectsStrip', () => {
 
 	it('renders the plural project count for many projects', () => {
 		render(ProjectsStrip, { props: { projects: mockProjects } });
-		expect(screen.getByText('2 PROJECTS')).toBeTruthy();
+		expect(screen.getByText(`2 ${siteLabels.servicesChrome.listing.projectsStrip.projectPlural.en}`)).toBeTruthy();
 	});
 
 	it('renders one project with the singular count', () => {
@@ -36,24 +37,24 @@ describe('ProjectsStrip', () => {
 		const link = screen.getByRole('link', { name: 'Transit Data Pipeline' });
 		expect(link.getAttribute('href')).toBe('/projects/transit-data-pipeline');
 		expect(screen.getAllByRole('link')).toHaveLength(1);
-		expect(screen.getByText('1 PROJECT')).toBeTruthy();
+		expect(screen.getByText(`1 ${siteLabels.servicesChrome.listing.projectsStrip.projectSingular.en}`)).toBeTruthy();
 	});
 
 	it('renders contextual label when serviceTitle is provided', () => {
 		render(ProjectsStrip, {
 			props: { projects: mockProjects, serviceTitle: 'SQL Development' }
 		});
-		expect(screen.getByText('Built with SQL Development')).toBeTruthy();
+		expect(screen.getByText(siteLabels.servicesChrome.listing.projectsStrip.builtWithService.en.replace('{serviceTitle}', 'SQL Development'))).toBeTruthy();
 	});
 
 	it('renders default label when serviceTitle is omitted', () => {
 		render(ProjectsStrip, { props: { projects: mockProjects } });
-		expect(screen.getByText('Built with this')).toBeTruthy();
+		expect(screen.getByText(siteLabels.servicesChrome.listing.projectsStrip.builtWithFallback.en)).toBeTruthy();
 	});
 
 	it('renders empty state when no projects', () => {
 		render(ProjectsStrip, { props: { projects: [] } });
-		expect(screen.getByText('0 PROJECTS')).toBeTruthy();
+		expect(screen.getByText(`0 ${siteLabels.servicesChrome.listing.projectsStrip.projectPlural.en}`)).toBeTruthy();
 		expect(screen.queryAllByRole('link')).toHaveLength(0);
 	});
 });

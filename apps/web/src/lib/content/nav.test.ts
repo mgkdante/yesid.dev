@@ -35,15 +35,6 @@ describe('menuItems', () => {
 		}
 	});
 
-	it('includes Services with subtitle "what I build"', () => {
-		const services = menuItems.find(i => i.href === '/services');
-		expect(services?.subtitle!.en).toBe('what I build');
-	});
-
-	it('includes Contact with subtitle "open channel"', () => {
-		const contact = menuItems.find(i => i.href === '/contact');
-		expect(contact?.subtitle!.en).toBe('open channel');
-	});
 });
 
 describe('footerLinks', () => {

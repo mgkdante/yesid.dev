@@ -3,9 +3,9 @@
 //
 // /contact page content (terminals, validation, success states).
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { ContactContent } from '$lib/types';
@@ -55,7 +55,7 @@ export const contactContent: ContactContent = {
 			es: 'send --message →',
 			fr: 'send --message →',
 		},
-		title: 'yesid@mtl ~ /contact',
+		title: 'Fixture copy.',
 	},
 	infoTerminal: {
 		bestFit: [
@@ -101,18 +101,18 @@ export const contactContent: ContactContent = {
 			languages: { en: 'LANGUAGES', es: 'IDIOMAS', fr: 'LANGUES' },
 			location: { en: 'LOCATION', es: 'UBICACIÓN', fr: 'EMPLACEMENT' },
 		},
-		title: 'yesid@mtl ~ /info',
+		title: 'Fixture copy.',
 	},
 	meta: {
 		description: {
-			en: 'Get in touch for freelance digital infrastructure, databases, pipelines, dashboards, and websites. Montreal, ~24h response time.',
-			es: 'Escríbeme para infraestructura digital freelance: bases de datos, pipelines, tableros y sitios web. Montreal, respuesta en ~24h.',
-			fr: 'Écris-moi pour de l\'infrastructure numérique à la pige : bases de données, pipelines, tableaux de bord et sites web. Montréal, réponse en ~24h.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		title: {
-			en: 'Contact · yesid.',
-			es: 'Contacto · yesid.',
-			fr: 'Contact · yesid.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	pageTitle: { en: 'Contact', es: 'Contacto', fr: 'Contact' },

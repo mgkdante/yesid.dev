@@ -3,18 +3,18 @@
 //
 // Site-wide brand identity (name, tagline, description, links, owner).
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { SiteMeta } from '$lib/types';
 
 export const siteMeta: SiteMeta = {
 	description: {
-		en: 'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
-		es: 'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
-		fr: 'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
+		en: 'Fixture copy.',
+		es: 'Fixture copy.',
+		fr: 'Fixture copy.',
 	},
 	links: {
 		email: 'contact@yesid.dev',

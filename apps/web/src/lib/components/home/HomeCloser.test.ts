@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
@@ -52,7 +53,7 @@ describe('HomeCloser', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows[2].getAttribute('href')).toBe('/blog');
-		expect(rows[2].textContent).toContain('Writing and field notes');
+		expect(rows[2].textContent).toContain(closerContent.rows.read.description.en);
 		expect(screen.queryByText('First dispatch')).not.toBeInTheDocument();
 		expect(screen.queryByText('Second dispatch')).not.toBeInTheDocument();
 	});
@@ -72,7 +73,7 @@ describe('HomeCloser', () => {
 		expect(graffiti).toBeInTheDocument();
 		// SVG is loaded dynamically via fetch in onMount — not present in unit tests
 		expect(graffiti.getAttribute('role')).toBe('img');
-		expect(graffiti.getAttribute('aria-label')).toContain('THE END');
+		expect(graffiti.getAttribute('aria-label')).toBe(siteLabels.a11y.closerGraffiti.en);
 		expect(container.querySelectorAll('[data-prop]')).toHaveLength(4);
 
 		await waitFor(() => {

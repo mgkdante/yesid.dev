@@ -3,9 +3,9 @@
 //
 // /about page content (identity, metrics, methodology, testimonials, etc.).
 //
-// Source: live Directus CMS state via `bun run export:fallbacks`
-// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
-// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.
+// Ephemeral output; commit fixture or CMS source changes instead.
 // ----------------------------------------------------------------------
 
 import type { AboutContent } from '$lib/types';
@@ -20,16 +20,16 @@ export const aboutPageContent: AboutContent = {
 		},
 		command: '$ yesid --contact',
 		lines: [
-			{ color: 'orange', text: '> Ready for new projects' },
-			{ color: 'muted', text: '> AI-accelerated, human-owned' },
+			{ color: 'orange', text: 'Fixture copy.' },
+			{ color: 'muted', text: 'Fixture copy.' },
 			{ color: 'muted', text: '> Email: contact@yesid.dev' },
 			{
 				color: 'muted',
-				text: '> GitHub: https://github.com/mgkdante',
+				text: 'Fixture copy.https://github.com/mgkdante',
 			},
 			{
 				color: 'muted',
-				text: '> LinkedIn: https://www.linkedin.com/in/otaloray/',
+				text: 'Fixture copy.https://www.linkedin.com/in/otaloray/',
 			},
 		],
 		socials: [
@@ -89,9 +89,9 @@ export const aboutPageContent: AboutContent = {
 					fr: 'En promenade avec mon chien à Montréal',
 				},
 				caption: {
-					en: 'Off-duty mode',
-					es: 'Modo descanso',
-					fr: 'Mode relâche',
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
 				},
 				rotate: -3,
 				src: '/images/about/polaroid-1.webp',
@@ -103,9 +103,9 @@ export const aboutPageContent: AboutContent = {
 					fr: 'Dante, le chien de la famille',
 				},
 				caption: {
-					en: 'Dante, the family\'s good boy',
-					es: 'Dante, el consentido de la familia',
-					fr: 'Dante, le bon chien de la famille',
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
 				},
 				rotate: 3,
 				src: '/images/about/polaroid-dante.webp',
@@ -116,13 +116,21 @@ export const aboutPageContent: AboutContent = {
 					es: 'Poupoune, mi perro',
 					fr: 'Poupoune, mon chien',
 				},
-				caption: { en: 'Poupoune 🐾', es: 'Poupoune 🐾', fr: 'Poupoune 🐾' },
+				caption: {
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
+				},
 				rotate: -2,
 				src: '/images/about/polaroid-poupoune.webp',
 			},
 			{
 				alt: { en: 'Yesid', es: 'Yesid', fr: 'Yesid' },
-				caption: { en: 'That\'s me', es: 'Ese soy yo', fr: 'C\'est moi' },
+				caption: {
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
+				},
 				rotate: 2,
 				src: '/images/about/polaroid-yesid.webp',
 			},
@@ -132,7 +140,11 @@ export const aboutPageContent: AboutContent = {
 					es: 'Con mi familia',
 					fr: 'Avec ma famille',
 				},
-				caption: { en: 'Family', es: 'Familia', fr: 'La famille' },
+				caption: {
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
+				},
 				rotate: -4,
 				src: '/images/about/polaroid-family.webp',
 			},
@@ -142,7 +154,11 @@ export const aboutPageContent: AboutContent = {
 					es: 'Con amigos',
 					fr: 'Avec les amis',
 				},
-				caption: { en: 'Friends', es: 'Parceros', fr: 'Les amis' },
+				caption: {
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
+				},
 				rotate: 3,
 				src: '/images/about/polaroid-friends.webp',
 			},
@@ -153,18 +169,18 @@ export const aboutPageContent: AboutContent = {
 					fr: 'Au musée d\'art à Ottawa',
 				},
 				caption: {
-					en: 'Museum day, Ottawa',
-					es: 'Día de museo, Ottawa',
-					fr: 'Journée musée, Ottawa',
+					en: 'Fixture copy.',
+					es: 'Fixture copy.',
+					fr: 'Fixture copy.',
 				},
 				rotate: -3,
 				src: '/images/about/polaroid-museum.webp',
 			},
 		],
 		title: {
-			en: 'Curious builder, lifelong tinkerer',
-			es: 'Constructor curioso, cacharreador eterno',
-			fr: 'Bâtisseur curieux, bricoleur depuis toujours',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		valueProp: {
 			en: 'I\'m Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.',
@@ -259,22 +275,22 @@ export const aboutPageContent: AboutContent = {
 	],
 	meta: {
 		description: {
-			en: 'Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.',
-			es: 'Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables.',
-			fr: 'Développeur de solutions numériques à la pige à Montréal. J\'aide les PME du Québec avec le web, l\'automatisation, l\'analytique, les bases de données et SQL.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 		title: {
-			en: 'About · yesid.',
-			es: 'Sobre mí · yesid.',
-			fr: 'À propos · yesid.',
+			en: 'Fixture copy.',
+			es: 'Fixture copy.',
+			fr: 'Fixture copy.',
 		},
 	},
 	methodology: [
 		{
 			description: {
-				en: 'I take things apart to learn how they work, then build better ones.',
-				es: 'Desarmo las cosas para entender cómo funcionan, y luego construyo unas mejores.',
-				fr: 'Je démonte les choses pour comprendre comment elles marchent, puis j\'en construis de meilleures.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			id: 'curiosity',
 			label: { en: 'CURIOSITY', es: 'CURIOSIDAD', fr: 'CURIOSITÉ' },
@@ -282,9 +298,9 @@ export const aboutPageContent: AboutContent = {
 		},
 		{
 			description: {
-				en: 'If it works but it\'s ugly, it\'s only half done.',
-				es: 'Si funciona pero es feo, solo está hecho a medias.',
-				fr: 'Si ça fonctionne mais que c\'est laid, ce n\'est qu\'à moitié fait.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			id: 'aesthetics',
 			label: { en: 'AESTHETICS', es: 'ESTÉTICA', fr: 'ESTHÉTIQUE' },
@@ -292,9 +308,9 @@ export const aboutPageContent: AboutContent = {
 		},
 		{
 			description: {
-				en: 'Good tools lift the people around them, that’s the whole point.',
-				es: 'Las buenas herramientas impulsan a quienes las rodean, de eso se trata todo.',
-				fr: 'Les bons outils élèvent les gens autour d\'eux, c\'est tout l\'intérêt.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			id: 'community',
 			label: { en: 'COMMUNITY', es: 'COMUNIDAD', fr: 'COMMUNAUTÉ' },
@@ -302,9 +318,9 @@ export const aboutPageContent: AboutContent = {
 		},
 		{
 			description: {
-				en: 'I\'d rather build it right than build it twice.',
-				es: 'Prefiero construirlo bien a construirlo dos veces.',
-				fr: 'Je préfère bien le bâtir que le bâtir deux fois.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			id: 'quality',
 			label: { en: 'QUALITY', es: 'CALIDAD', fr: 'QUALITÉ' },
@@ -366,9 +382,9 @@ export const aboutPageContent: AboutContent = {
 			author: 'Guy Sensei',
 			company: 'Personal lore',
 			quote: {
-				en: 'You have the gift of perseverance, and that\'s what makes you a genius too.',
-				es: 'Tienes el don de la perseverancia, y eso es lo que también te hace un genio.',
-				fr: 'Tu as le don de la persévérance, et c\'est ce qui fait de toi un génie.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			role: { en: 'Sensei', es: 'Sensei', fr: 'Gaï Sensei' },
 		},
@@ -376,9 +392,9 @@ export const aboutPageContent: AboutContent = {
 			author: 'Gabriel Garcia Marquez',
 			company: 'Literature',
 			quote: {
-				en: 'What matters in life is not what happens to you but what you remember and how you remember it.',
-				es: 'La vida no es la que uno vivió, sino la que uno recuerda y cómo la recuerda para contarla.',
-				fr: 'Ce qui compte dans la vie, ce n\'est pas ce qui t\'arrive, mais ce dont tu te souviens et la façon dont tu t\'en souviens.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			role: { en: 'Writer', es: 'Escritor', fr: 'Écrivain' },
 		},
@@ -386,9 +402,9 @@ export const aboutPageContent: AboutContent = {
 			author: 'Marcus Aurelius',
 			company: 'Meditations',
 			quote: {
-				en: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.',
-				es: 'Todo lo que oímos es una opinión, no un hecho. Todo lo que vemos es una perspectiva, no la verdad.',
-				fr: 'Tout ce que nous entendons est une opinion, pas un fait. Tout ce que nous voyons est une perspective, pas la vérité.',
+				en: 'Fixture copy.',
+				es: 'Fixture copy.',
+				fr: 'Fixture copy.',
 			},
 			role: {
 				en: 'Stoic philosopher',

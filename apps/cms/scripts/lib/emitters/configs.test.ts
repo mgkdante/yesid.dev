@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'bun:test';
 import { basename } from 'node:path';
-import generatedManifest from '../../../../web/src/lib/content/generated.manifest.json' with { type: 'json' };
 import type { ExportData } from '../../export-data';
 import { buildEmitConfigs } from './configs';
 
@@ -46,18 +45,23 @@ describe('export module registry', () => {
 		).toThrow('incomplete CMS export data');
 	});
 
-	it('owns exactly the generated module set protected by the hash manifest', () => {
+	it('owns exactly the ignored generated module set', () => {
 		const registeredFiles = buildEmitConfigs(completeExportData, '/tmp/out')
 			.map((config) => basename(config.filePath))
 			.sort();
 
-		expect(registeredFiles).toEqual(Object.keys(generatedManifest.files).sort());
+		expect(registeredFiles).toEqual([
+			'about-page.ts', 'blog-bodies.ts', 'blog-page.ts', 'blog.ts', 'contact-page.ts',
+			'error-pages.ts', 'legal-pages.ts', 'media-assets.ts', 'media-variants.ts', 'morph-shapes.ts',
+			'nav.ts', 'projects-page.ts', 'projects.ts', 'route-seo.ts', 'services.ts', 'site-content.ts',
+			'site-labels.ts', 'site-meta.ts', 'site-pages.ts', 'site-seo-defaults.ts',
+		].sort());
 	});
 
 	it('emits route-seo.ts as generated CMS route overrides', () => {
 		const configs = buildEmitConfigs(completeExportData, '/tmp/out');
 
-		const routeSeo = configs.find((config) => config.filePath.endsWith('/route-seo.ts'));
+		const routeSeo = configs.find((config) => basename(config.filePath) === 'route-seo.ts');
 		expect(routeSeo).toBeDefined();
 		expect(routeSeo?.imports).toContainEqual({
 			symbols: ['RouteSeoOverride'],
@@ -74,7 +78,7 @@ describe('export module registry', () => {
 	it('emits blog.ts as generated cache only', () => {
 		const configs = buildEmitConfigs(completeExportData, '/tmp/out');
 
-		const blog = configs.find((config) => config.filePath.endsWith('/blog.ts'));
+		const blog = configs.find((config) => basename(config.filePath) === 'blog.ts');
 		expect(blog).toBeDefined();
 		expect(blog?.description).not.toContain('companion');
 	});
@@ -90,7 +94,7 @@ describe('export module registry', () => {
 			'/tmp/out',
 		);
 
-		const media = configs.find((config) => config.filePath.endsWith('/media-assets.ts'));
+		const media = configs.find((config) => basename(config.filePath) === 'media-assets.ts');
 		expect(media).toBeDefined();
 		expect(media?.exports).toContainEqual({
 			name: 'mirroredMediaAssets',
@@ -105,7 +109,7 @@ describe('export module registry', () => {
 		const configs = buildEmitConfigs(completeExportData, '/tmp/out');
 
 		for (const fileName of ['contact-page.ts', 'site-content.ts', 'services.ts', 'projects.ts', 'nav.ts']) {
-			const config = configs.find((entry) => entry.filePath.endsWith(`/${fileName}`));
+			const config = configs.find((entry) => basename(entry.filePath) === fileName);
 			expect(config).toBeDefined();
 			expect(config?.description).not.toContain('companion');
 		}
@@ -114,8 +118,8 @@ describe('export module registry', () => {
 	it('imports navigation interfaces from the code-owned navigation module', () => {
 		const configs = buildEmitConfigs(completeExportData, '/tmp/out');
 
-		const nav = configs.find((entry) => entry.filePath.endsWith('/nav.ts'));
-		const errors = configs.find((entry) => entry.filePath.endsWith('/error-pages.ts'));
+		const nav = configs.find((entry) => basename(entry.filePath) === 'nav.ts');
+		const errors = configs.find((entry) => basename(entry.filePath) === 'error-pages.ts');
 		expect(nav?.imports).toContainEqual({
 			symbols: ['NavLink', 'MenuItem', 'ErrorPageContent'],
 			from: '$lib/navigation/types',

@@ -36,11 +36,10 @@ Use Bun 1.4.4 and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+). From th
 bun install --frozen-lockfile
 bun run setup:hooks
 bun run --cwd apps/cms test
-bun run ci:content
 ```
 
-The default web development command uses the committed content modules and
-does not need CMS credentials:
+The default web development command generates content from the shared fixture
+and does not need CMS credentials:
 
 ```bash
 bun run dev
@@ -66,33 +65,19 @@ local files or their deployment target.
 Content moves through one interface:
 
 ```text
-Directus -> export-fallbacks.ts -> 22 typed modules + hash manifest -> SvelteKit build
+Directus or shared fixture -> export-fallbacks.ts -> 20 ignored typed modules -> SvelteKit
 ```
 
-[`scripts/lib/emitters/configs.ts`](scripts/lib/emitters/configs.ts) owns the
-exact 22-module registry. A complete fetch must satisfy the whole registry
-before any module is emitted. The exporter writes the modules and
-`apps/web/src/lib/content/generated.manifest.json` together. The manifest
-records SHA-256 hashes and whether the source was `live` or `cache`.
+Web dev, test, check and build generate ignored content modules from the shared
+fixture by default, without credentials or network. Trusted Vercel targets use
+live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
+Refresh the fixture from a live cache with
+`bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 
-Trusted Vercel Production and the `develop` preview use live-or-fail export
-and require `EXPORT_FALLBACKS_LIVE=1` unless an operator explicitly selects
-`EXPORT_FALLBACKS_SKIP=1` for committed-content verification. Other previews skip CMS
-access. Local builds may use the last cache or leave the committed modules
-unchanged, with a visible warning. `bun run ci:content` rejects hash drift,
-unregistered generated files, missing modules, and a committed cache-sourced
-manifest.
-
-To perform an authorized live export from a configured `apps/cms/.env`:
-
-```bash
-bun run --env-file=.env --cwd apps/cms export:fallbacks
-bun run ci:content
-```
-
-Edit content in the development CMS, regenerate, review the generated diff,
-and then promote through the repository. Do not edit the generated TypeScript
-modules directly.
+The exporter validates the complete registry before emitting. Every live export
+also validates legal truths and explicit SEO description lengths. Trusted Vercel
+fetch failures fail the build. Explicit local live exports may fall back to the
+last live cache; missing live content and cache fails the export.
 
 CMS projects export only when published; draft is not public WIP. Required
 `block_*` singletons must be published or the live build fails before emitting
@@ -302,8 +287,8 @@ and Production; this is target scoping, not a claim that a second credential exi
 |---|---|---|---|
 | Vercel Production | `https://cms.yesid.dev` | `DIRECTUS_BUILD_TOKEN` | `EXPORT_FALLBACKS_LIVE=1`; live or fail |
 | `develop` preview | `https://cms.dev.yesid.dev` | `DIRECTUS_DEV_BUILD_TOKEN` | `EXPORT_FALLBACKS_LIVE=1`; live or fail |
-| Generic preview | none required | none | Skip CMS export and use committed modules |
-| Local | development origin when configured | local operator credential | Soft fallback with an explicit warning |
+| Generic preview | none required | none | Generate from the shared fixture |
+| Local | none by default | none by default | Fixture; explicit `EXPORT_FALLBACKS_SOURCE=live` permits live/cache export |
 
 Production and development credentials must be distinct and bound only to
 their matching target. Generic previews receive neither build credential nor
@@ -318,5 +303,4 @@ credential change.
 - [Shared content interfaces](../../packages/shared/src/types/content.ts)
 - [Asset-registry interface](../../packages/shared/src/asset-registry.ts)
 - [Outcome-first positioning source](fixtures/content/outcome-first-positioning.ts)
-- [Generated-content manifest](../web/src/lib/content/generated.manifest.json)
 - [Security reporting](../../SECURITY.md)

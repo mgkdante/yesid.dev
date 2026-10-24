@@ -224,7 +224,6 @@ test('web reports required ci after classified work without weakening E2E', () =
 	expect(ordered(work, [
 		'name: Type check (svelte-kit sync + svelte-check)',
 		'name: Unit tests',
-		'name: Content-manifest integrity (ci:content)',
 		'name: Vendored design integrity (schema 2)',
 		'name: Product token drift (ci:tokens)',
 		'name: Product shared-package tests',
@@ -269,7 +268,7 @@ test('web reports required ci after classified work without weakening E2E', () =
 		'Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
 	);
 	const upload = namedStepBlock(e2e, 'Upload blob report');
-	expect(build).toContain('EXPORT_FALLBACKS_SKIP: "1"');
+	expect(build).toContain('EXPORT_FALLBACKS_SOURCE: "fixture"');
 	expect(build).toContain('run: bun x turbo run build --filter=@repo/web');
 	expect(playwright).toContain('E2E_PREBUILT: "1"');
 	expect(playwright).toContain('working-directory: apps/web');

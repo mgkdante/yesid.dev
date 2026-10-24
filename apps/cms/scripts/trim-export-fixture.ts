@@ -18,9 +18,11 @@ const PROSE = /^(text|title|heading|subheading|description|defaultDescription|ex
 const IDENTITY = /^(id|slug|translationKey|lang|path|href|url|relatedProjects|relatedServices|stack|tags)$/;
 const LOCALE = /^(en|es|fr)$/;
 const UUID = /[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/i;
+const EMAIL = /[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 
 /** Keep inline markup, links, template slots and asset references verbatim. */
 function shortCopy(value: string): string {
+	if (EMAIL.test(value)) return value;
 	// Protect tokens individually so a slot or link does not retain its whole paragraph.
 	const tokens = /(<\/?[a-z][^>]*>|\{[^{}\r\n]+\}|(?:https?:\/\/|mailto:)[^\s<>"']+|[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/gi;
 	return value.split(tokens).map((part, index) =>
@@ -29,7 +31,7 @@ function shortCopy(value: string): string {
 }
 
 function hasReferences(value: unknown): boolean {
-	if (typeof value === 'string') return UUID.test(value) || /href\s*=|https?:|mailto:|\{[^{}]+\}/.test(value);
+	if (typeof value === 'string') return EMAIL.test(value) || UUID.test(value) || /href\s*=|https?:|mailto:|\{[^{}]+\}/.test(value);
 	if (Array.isArray(value)) return value.some(hasReferences);
 	return isObject(value) && Object.entries(value).some(([key, entry]) =>
 		IDENTITY.test(key) || key === 'file' || hasReferences(entry),
@@ -48,7 +50,11 @@ function blockBranch(block: JsonObject): string {
 	]);
 }
 
-function trimValue(value: unknown, field = '', labels = false): unknown {
+function trimValue(value: unknown, field = '', labels = false, path: string[] = []): unknown {
+	// Explicit SEO fields feed PageSeoSchema; keep their bounded copy intact.
+	if (field === 'seoDescription' || field === 'defaultDescription' ||
+		(path[0] === 'routeSeo' && field === 'description') ||
+		((path[0] === 'errorPageFallback' || path[0] === 'errorPages') && field === 'heading')) return value;
 	if (IDENTITY.test(field)) return value;
 	if (typeof value === 'string') return PROSE.test(field) || labels ? shortCopy(value) : value;
 	if (Array.isArray(value)) {
@@ -64,11 +70,11 @@ function trimValue(value: unknown, field = '', labels = false): unknown {
 				return first || hasReferences(block.data);
 			});
 		}
-		return entries.map((entry) => trimValue(entry, field, labels));
+		return entries.map((entry) => trimValue(entry, field, labels, path));
 	}
 	if (!isObject(value)) return value;
 	return Object.fromEntries(Object.entries(value).map(([key, entry]) => [
-		key, trimValue(entry, LOCALE.test(key) ? field : key, labels || key === 'siteLabels'),
+		key, trimValue(entry, LOCALE.test(key) ? field : key, labels || key === 'siteLabels', [...path, key]),
 	]));
 }
 
@@ -80,7 +86,10 @@ export function trimExportData(data: ExportData): ExportData {
 
 export function serializeFixture(data: ExportData): string {
 	// readCache owns the versioned envelope parser used by the exporter.
-	return JSON.stringify({ version: '1', directusUrl: 'fixture', data }, null, '\t') + '\n';
+	const pretty = JSON.stringify({ version: '1', directusUrl: 'fixture', data }, null, '\t');
+	// JSON strings cannot contain literal newlines. Match only primitive locale objects.
+	return pretty.replace(/\{\n(?:\t+"(?:en|es|fr)": (?:"(?:[^"\\]|\\.)*"|true|false|null|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?),?\n)+\t*\}/g,
+		(object) => JSON.stringify(JSON.parse(object))) + '\n';
 }
 
 /** Domain identity includes array order and every locale/key; editor block IDs are metadata. */
@@ -150,5 +159,5 @@ if (import.meta.main) {
 	const fixture = serializeFixture(trimmed);
 	await mkdir(dirname(FIXTURE_PATH), { recursive: true });
 	await writeFile(FIXTURE_PATH, fixture, 'utf8');
-	console.info(`fixture: ${FIXTURE_PATH} (${fixture.split('\n').length - 1} lines; invariants passed)`);
+	console.info(`fixture: ${FIXTURE_PATH} (${fixture.split('\n').length - 1} lines, ${Buffer.byteLength(fixture)} bytes; invariants passed)`);
 }

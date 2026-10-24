@@ -94,7 +94,7 @@ describe('AboutPolaroids (render contract)', () => {
 		expect(image).toHaveAttribute('width', '1100');
 		expect(image).toHaveAttribute('height', '1382');
 		expect(image.parentElement?.parentElement).toHaveStyle('transform: rotate(3deg)');
-		expect(screen.getByText("Dante, the family's good boy")).toBeInTheDocument();
+		expect(screen.getByText(polaroids[1].caption.en)).toBeInTheDocument();
 		expect(counter().textContent).toBe(`2/${total}`);
 		expect(captureEntries()['about-polaroid']).toBe(1);
 	});

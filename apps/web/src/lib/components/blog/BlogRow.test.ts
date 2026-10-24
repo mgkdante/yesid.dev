@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import BlogRow from './BlogRow.svelte';
@@ -64,7 +65,7 @@ describe('BlogRow', () => {
 		const en = render(BlogRow, { props: { post: makePost({ lang: 'en' }), index: 0 } });
 		const metaRow = en.getByTestId('blog-meta-row');
 		expect(metaRow.textContent).toContain('2025-01-15');
-		expect(en.getByTestId('blog-lang-chip').textContent?.trim()).toBe('English');
+		expect(en.getByTestId('blog-lang-chip').textContent?.trim()).toBe(siteLabels.ui.languageNames.en.en);
 		expect(metaRow.querySelector('[data-testid="blog-lang-chip"]')).toBeTruthy();
 		expect(en.container.querySelector('[data-testid="blog-topic-tags"] [data-testid="blog-lang-chip"]')).toBeNull();
 		en.unmount();
@@ -73,7 +74,7 @@ describe('BlogRow', () => {
 			props: { post: makePost({ lang: 'en' }), index: 0 },
 			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
 		});
-		expect(fr.getByTestId('blog-lang-chip').textContent?.trim()).toBe('Anglais');
+		expect(fr.getByTestId('blog-lang-chip').textContent?.trim()).toBe(siteLabels.ui.languageNames.en.fr);
 	});
 
 	it('localizes internal post urls from the post language, independent of the listing context', () => {
