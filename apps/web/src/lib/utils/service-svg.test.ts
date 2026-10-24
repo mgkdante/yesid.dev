@@ -12,7 +12,7 @@ import { fetchServiceSvgContents, getServiceSvgUrl } from './service-svg';
 import type { Service } from '$lib/types';
 
 const failingFetch = vi.fn(async () => {
-	throw new Error('network unavailable (simulates Vercel preview 401 wall)');
+	throw new Error('network unavailable');
 }) as unknown as typeof fetch;
 
 function service(id: string, svg?: string): Service {
@@ -49,11 +49,58 @@ describe('fetchServiceSvgContents', () => {
 	});
 
 	it('falls back to fetch for unknown refs and degrades to empty on failure', async () => {
-		const contents = await fetchServiceSvgContents(failingFetch, [
-			service('mystery', 'not-in-the-repo.svg'),
-		]);
-		expect(contents['mystery']).toBe('');
-		expect(failingFetch).toHaveBeenCalledTimes(1);
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		try {
+			const contents = await fetchServiceSvgContents(failingFetch, [
+				service('mystery', 'not-in-the-repo.svg'),
+			]);
+			expect(contents['mystery']).toBe('');
+			expect(failingFetch).toHaveBeenCalledTimes(1);
+			expect(warn).toHaveBeenCalledWith(
+				'[service-svg] Decorative SVG fetch failed; using empty content.',
+			);
+		} finally {
+			warn.mockRestore();
+		}
+	});
+
+	it.each([401, 404, 500])(
+		'diagnoses a resolved HTTP %s while preserving empty content',
+		async (status) => {
+			const fetchFn = vi.fn(
+				async () => new Response('not svg', { status }),
+			) as unknown as typeof fetch;
+			const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+			try {
+				const contents = await fetchServiceSvgContents(fetchFn, [
+					service('mystery', 'not-in-the-repo.svg'),
+				]);
+				expect(contents).toEqual({ mystery: '' });
+				expect(warn).toHaveBeenCalledWith(
+					'[service-svg] Decorative SVG fetch failed; using empty content.',
+				);
+			} finally {
+				warn.mockRestore();
+			}
+		},
+	);
+
+	it('diagnoses a rejected response body while preserving empty content', async () => {
+		const response = new Response('', { status: 200 });
+		vi.spyOn(response, 'text').mockRejectedValue(new Error('body unavailable'));
+		const fetchFn = vi.fn(async () => response) as unknown as typeof fetch;
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		try {
+			const contents = await fetchServiceSvgContents(fetchFn, [
+				service('mystery', 'not-in-the-repo.svg'),
+			]);
+			expect(contents).toEqual({ mystery: '' });
+			expect(warn).toHaveBeenCalledWith(
+				'[service-svg] Decorative SVG fetch failed; using empty content.',
+			);
+		} finally {
+			warn.mockRestore();
+		}
 	});
 });
 

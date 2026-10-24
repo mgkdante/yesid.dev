@@ -12,9 +12,8 @@ export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
 
 /**
  * Type guard: is an arbitrary value one of the SUPPORTED_LOCALES? Narrows to
- * Locale on success and accepts null/undefined so query-param guards (?lang=,
- * ?locale=) can pass `url.searchParams.get(...)` straight in. Shared by the
- * weather + OG endpoints so the membership check lives in one place.
+ * Locale on success and accepts null/undefined so query-param guards such as
+ * the weather endpoint can pass `url.searchParams.get(...)` straight in.
  */
 export function isSupportedLocale(value: string | null | undefined): value is Locale {
 	return value != null && (SUPPORTED_LOCALES as readonly string[]).includes(value);

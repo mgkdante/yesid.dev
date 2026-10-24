@@ -57,6 +57,16 @@
 	// the root layout never remounts, so the orchestrator survives page swaps.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
 
+	// 039E: app.html carries <html lang="%lang%">, substituted server-side, and the
+	// client router never re-runs that substitution — so a client-routed locale
+	// switch left the document advertising the previous language to assistive
+	// technology, :lang() rules, and crawlers while the URL and copy had already
+	// moved. Syncing the element to the locale the layout already derives fixes
+	// that without a full document load, which would strand slice-34's handoff.
+	$effect(() => {
+		if (browser) document.documentElement.lang = locale;
+	});
+
 	$effect(() => {
 		if (data.morphShapes) {
 			setMorphShapes(data.morphShapes);
@@ -68,8 +78,8 @@
 
 		// Register ScrollTrigger + apply site-wide config early so
 		// ScrollTrigger.isTouch and pin behavior are available for all
-		// consumers. Plugin-specific loading (DrawSVG, MorphSVG, Flip,
-		// MotionPath) happens lazily per-consumer at mount.
+		// consumers. Plugin-specific loading (DrawSVG, MorphSVG) happens
+		// lazily per-consumer at mount.
 		initScrollTriggerConfig();
 		initLenis();
 
@@ -126,15 +136,8 @@
 </div>
 
 <style>
-	/* Single source of truth for top clearance under the floating nav pill.
-	   The pill is a constant ~60px tall fixed at top:16px, so its bottom edge
-	   sits at ~76px on every viewport (does not grow on mobile). Clearance =
-	   pill bottom + a 12px breathing gap = 88px. Every page's top reserve and
-	   every sticky/detail-header offset routes through this var so titles never
-	   tuck under the pill. Defined on the shell wrapper (cascades to all pages);
-	   tokens.css/app.css are generated + off-limits, so it lives here. */
 	.circuit-grid {
-		--nav-clearance: 5.5rem; /* 88px */
+		--strip-h: 68px; /* Calibration switch: use 70px for the T=70 candidate. */
 	}
 	:global(.pt-nav-clear) {
 		padding-top: var(--nav-clearance, 5.5rem);

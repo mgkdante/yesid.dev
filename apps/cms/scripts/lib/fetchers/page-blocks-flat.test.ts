@@ -1,11 +1,36 @@
 import { describe, expect, it } from 'bun:test';
 import { toHeroContent, toManifestoContent, toCloserContent, toAboutIntroContent } from './page-blocks-home';
-import { toTechStackPageContent, toContactContent, toContactChannels } from './page-blocks-medium';
+import { toContactContent, toContactChannels } from './page-blocks-medium';
 import { toAboutContent, toAboutLanguages } from './page-blocks-about';
 import {
 	HeroContentSchema, ManifestoContentSchema, CloserContentSchema,
-	TechStackPageContentSchema, ContactContentSchema, AboutContentSchema,
+	ContactContentSchema, AboutContentSchema,
 } from '@repo/shared';
+
+function contactFixture(en: Record<string, unknown>, fr?: Record<string, unknown>) {
+	return {
+		id: 1, web3forms_key: 'k',
+		info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
+		form_terminal_title: 'form.sh', form_terminal_command: 'send',
+		translations: [{
+			languages_code: 'en',
+			page_title: 'Contact', station_label: '04', send_error_message: 'failed',
+			meta_title: 'Contact | yesid.', meta_description: 'desc',
+			info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
+			info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
+			info_section_label_languages: 'LANGUAGES',
+			form_command_output: 'ready', form_submit_label: 'send',
+			booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
+			form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
+			form_field_message_placeholder: 'What breaks?',
+			validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
+			success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
+			success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
+			success_work_link_label: 'work', success_blog_link_label: 'blog',
+			...en,
+		}, ...(fr ? [{ languages_code: 'fr', ...fr }] : [])],
+	};
+}
 
 describe('flat-column recomposition (go2-t1b2)', () => {
 	it('hero: flat columns recompose HeroContent', () => {
@@ -55,31 +80,13 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 
 	it('contact: parent terminal chrome + flat LS columns recompose ContactContent', () => {
 		const row = {
-			id: 1, web3forms_key: 'k',
-			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
-			form_terminal_title: 'form.sh', form_terminal_command: 'send',
-			form_field_name_label: 'legacy-name', form_field_email_label: 'legacy-email', form_field_message_label: 'legacy-message',
-			translations: [{
-				languages_code: 'en',
-				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-				meta_title: 'Contact | yesid.', meta_description: 'desc',
-				info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
-				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
-				info_section_label_languages: 'LANGUAGES',
-				form_command_output: 'ready', form_submit_label: 'send',
-				booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
+			...contactFixture({
 				form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
-				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
-				form_field_message_placeholder: 'What breaks?',
-				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
-				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				success_work_link_label: 'work', success_blog_link_label: 'blog',
 			}, {
-				languages_code: 'fr',
 				form_field_name_label: 'nom', form_field_email_label: 'courriel', form_field_message_label: 'message',
 				success_work_link_label: 'services', success_blog_link_label: 'blogue',
-			}],
+			}),
+			form_field_name_label: 'legacy-name', form_field_email_label: 'legacy-email', form_field_message_label: 'legacy-message',
 		};
 		const channels = [{ label: { en: 'GitHub' }, href: 'https://g', icon: 'gh' }];
 		const out = toContactContent(row, channels);
@@ -98,34 +105,14 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 	});
 
 	it('contact: best-fit columns recompose the optional BEST FIT section (homework #26b)', () => {
-		const row = {
-			id: 1, web3forms_key: 'k',
-			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
-			form_terminal_title: 'form.sh', form_terminal_command: 'send',
-			translations: [{
-				languages_code: 'en',
-				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-				meta_title: 'Contact | yesid.', meta_description: 'desc',
-				info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
-				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
-				info_section_label_languages: 'LANGUAGES',
-				info_section_label_best_fit: 'BEST FIT',
-				info_best_fit_1: 'Slow reports', info_best_fit_2: 'Manual data work',
-				form_command_output: 'ready', form_submit_label: 'send',
-				booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
-				form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
-				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
-				form_field_message_placeholder: 'What breaks?',
-				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
-				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				success_work_link_label: 'work', success_blog_link_label: 'blog',
-			}, {
-				languages_code: 'fr',
-				info_section_label_best_fit: 'PROJETS IDÉAUX',
-				info_best_fit_1: 'Des rapports lents',
-			}],
-		};
+		const row = contactFixture({
+			form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
+			info_section_label_best_fit: 'BEST FIT',
+			info_best_fit_1: 'Slow reports', info_best_fit_2: 'Manual data work',
+		}, {
+			info_section_label_best_fit: 'PROJETS IDÉAUX',
+			info_best_fit_1: 'Des rapports lents',
+		});
 		const out = toContactContent(row, []);
 		// Empty line 3 is filtered; filled lines keep their per-locale values.
 		expect(out.infoTerminal.bestFit).toEqual([
@@ -233,27 +220,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 
 	it('contact: retired socials JSON is ignored when normalized channels are empty', () => {
 		const row = {
-			id: 1, web3forms_key: 'k',
-			info_terminal_title: 'info.sh', info_terminal_command: 'cat info',
-			form_terminal_title: 'form.sh', form_terminal_command: 'send',
+			...contactFixture({ socials: [{ label: 'Legacy', href: 'https://legacy.example', icon: 'legacy' }] }),
 			form_field_name_label: 'name', form_field_email_label: 'email', form_field_message_label: 'message',
-			translations: [{
-				languages_code: 'en',
-				page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-				meta_title: 'Contact | yesid.', meta_description: 'desc',
-				info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
-				info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
-				info_section_label_languages: 'LANGUAGES',
-				form_command_output: 'ready', form_submit_label: 'send',
-				booking_prompt: 'Prefer a call?', booking_button_label: 'book --intro-call →',
-				form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
-				form_field_message_placeholder: 'What breaks?',
-				validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-				success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
-				success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
-				success_work_link_label: 'work', success_blog_link_label: 'blog',
-				socials: [{ label: 'Legacy', href: 'https://legacy.example', icon: 'legacy' }],
-			}],
 		};
 		const out = toContactContent(row, []);
 		expect(out.socials).toEqual([]);
@@ -351,7 +319,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(() => AboutContentSchema.shape.languages.parse(out)).not.toThrow();
 	});
 
-	it('manifesto + tech-stack-page + about-intro flat columns parse', () => {
+	it('manifesto + about-intro flat columns parse', () => {
 		const m = toManifestoContent({
 			id: 1, ticks: ['a'],
 			translations: [{
@@ -371,80 +339,6 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		});
 		expect(m.statement.lineHuge).toEqual({ en: 'PIPELINES' });
 		expect(() => ManifestoContentSchema.parse(m)).not.toThrow();
-
-		const ts = toTechStackPageContent({
-			id: 1,
-			translations: [{
-				languages_code: 'en',
-				meta_title: 'Tech | yesid.', meta_description: 'd',
-				hero_overline: 'o', hero_title_line1: 'TECH', hero_title_line2: 'STACK',
-				hero_terminal_aria: 'Hero terminal', hero_stat_technologies: '{n} technologies',
-				stack_kicker: 'what is a stack?',
-				engine_loading: '~ loading the map...',
-				terminal_cmd: '~ yesid --stack --verbose', terminal_loading: '→ loading {count} nodes...',
-				terminal_success: '✓ successful', terminal_cataloged: '→ {count} technologies cataloged',
-				terminal_status: 'interactive map online.',
-				action_get_in_touch: 'Get in touch', action_view_services: 'View services',
-				cta_heading_line1: 'h1', cta_heading_line2: 'h2', cta_sub: 's', cta_availability: 'a',
-			}],
-		});
-		expect(ts.hero.stats.technologies).toEqual({ en: '{n} technologies' });
-		// Operator addendum: hero terminal templates recompose under hero.terminal,
-		// keeping the literal {count} token for component-side interpolation.
-		expect(ts.hero.terminal).toEqual({
-			cmd: { en: '~ yesid --stack --verbose' },
-			loading: { en: '→ loading {count} nodes...' },
-			success: { en: '✓ successful' },
-			cataloged: { en: '→ {count} technologies cataloged' },
-			status: { en: 'interactive map online.' },
-		});
-		// go2/w5: stack_explainer column absent → the optional key is OMITTED
-		// (a bare { en: '' } would fail LocalizedStringSchema's non-blank en).
-		expect(ts.hero.stackExplainer).toBeUndefined();
-		expect((ts.hero as Record<string, unknown>).stackKicker).toEqual({ en: 'what is a stack?' });
-		expect((ts.hero as Record<string, unknown>).engineLoading).toEqual({ en: '~ loading the map...' });
-		expect(() => TechStackPageContentSchema.parse(ts)).not.toThrow();
-
-		// go2/w5 present case: a populated stack_explainer column recomposes as
-		// hero.stackExplainer (per-locale) and still parses.
-		const tsWithExplainer = toTechStackPageContent({
-			id: 1,
-			translations: [
-				{
-					languages_code: 'en',
-					meta_title: 'Tech | yesid.', meta_description: 'd',
-					hero_overline: 'o', hero_title_line1: 'TECH', hero_title_line2: 'STACK',
-					hero_terminal_aria: 'Hero terminal', hero_stat_technologies: '{n} technologies',
-					stack_kicker: 'what is a stack?',
-					engine_loading: '~ loading the map...',
-					terminal_cmd: '~ yesid --stack --verbose', terminal_loading: '→ loading {count} nodes...',
-					terminal_success: '✓ successful', terminal_cataloged: '→ {count} technologies cataloged',
-					terminal_status: 'interactive map online.',
-					stack_explainer: 'A "stack" is just the parts list.',
-					action_get_in_touch: 'Get in touch', action_view_services: 'View services',
-					cta_heading_line1: 'h1', cta_heading_line2: 'h2', cta_sub: 's', cta_availability: 'a',
-				},
-				{
-					languages_code: 'fr',
-					stack_kicker: 'c\'est quoi un stack?',
-					engine_loading: '~ chargement de la carte...',
-					stack_explainer: 'Un « stack », c\'est la liste des pièces.',
-				},
-			],
-		});
-		expect(tsWithExplainer.hero.stackKicker).toEqual({
-			en: 'what is a stack?',
-			fr: 'c\'est quoi un stack?',
-		});
-		expect(tsWithExplainer.hero.engineLoading).toEqual({
-			en: '~ loading the map...',
-			fr: '~ chargement de la carte...',
-		});
-		expect(tsWithExplainer.hero.stackExplainer).toEqual({
-			en: 'A "stack" is just the parts list.',
-			fr: 'Un « stack », c\'est la liste des pièces.',
-		});
-		expect(() => TechStackPageContentSchema.parse(tsWithExplainer)).not.toThrow();
 
 		const ai = toAboutIntroContent({
 			id: 1, stack_items: ['Bun'],

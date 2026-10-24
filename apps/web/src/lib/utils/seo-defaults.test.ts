@@ -62,7 +62,7 @@ describe('localizeOgCard', () => {
 
 	it('passes through already locale-aware and dynamic URLs untouched', () => {
 		const passthrough = [
-			'/og/project/my-project.png?locale=fr',
+			'/og/project/my-project.fr.png',
 			'/og/blog/my-post.png',
 			'https://yesid.dev/images/work/cover.png',
 			'/og/default.fr.png',

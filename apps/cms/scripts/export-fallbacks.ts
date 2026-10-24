@@ -1,67 +1,26 @@
 #!/usr/bin/env bun
 /**
- * Export Directus CMS state into static TS modules under apps/web/src/lib/content/.
- * Runs as the apps/web `prebuild` step — output is committed so CMS edits
- * surface as PR diffs. Since slice-27.2 (Directus dropped from the SSR data
- * path) these modules are NOT a fallback: they are the sole runtime content
- * source, regenerated per build. What this script emits is exactly what ships.
- *
- * Run:
- *   bun apps/cms/scripts/export-fallbacks.ts                   # full export
- *   bun apps/cms/scripts/export-fallbacks.ts --dry-run         # validate flow, no writes, no network
- *   bun apps/cms/scripts/export-fallbacks.ts --module=services # single module
- *
- * Env:
- *   EXPORT_FALLBACKS_SKIP  — set to 1 to skip the export entirely (logs + exits
- *                            0 before any network). Used by hermetic CI builds
- *                            (web.yml) where the committed modules already ARE
- *                            the content source and no CMS should be contacted.
- *   EXPORT_FALLBACKS_LIVE  - set to 1 only on Vercel Production and the
- *                            develop-branch Preview. On those trusted targets
- *                            ANY fallback exits 1, so the build aborts and the
- *                            prior deploy stays live. Every other Vercel target
- *                            skips before auth, even if this flag is mis-scoped.
- *   PUBLIC_DIRECTUS_URL    — Directus URL. Defaults to cms.dev.yesid.dev (P6 flip,
- *                            once dev mirrors prod). Set to https://cms.yesid.dev
- *                            for production builds (Vercel: encrypted env var
- *                            scoped to the Production environment).
- *   DIRECTUS_BUILD_TOKEN   — read-only Production Build Bot credential.
- *   DIRECTUS_DEV_BUILD_TOKEN — distinct read-only Build Bot credential used
- *                            only by the develop-branch Preview.
- *   DIRECTUS_ADMIN_TOKEN   — preferred local auth (or DIRECTUS_ADMIN_EMAIL +
- *                            DIRECTUS_ADMIN_PASSWORD fallback). If absent OR fetch
- *                            fails: under the live-or-die policy above the build
- *                            exits 1; local (soft-policy) runs try `.cms-cache.json`
- *                            and degrade to a no-op (exit 0) if no cache exists,
- *                            printing an unmissable stderr banner either way
- *                            because the committed .ts files then become the
- *                            authoritative source for that build. The manifest
- *                            records the provenance (source: live|cache) and
- *                            ci:content rejects committing a cache-emitted set.
- *
- * Build-time integration: registered as the apps/web `prebuild` script (P6)
- * so `bun run build` regenerates content before Vite kicks off. Vercel runs
- * `prebuild` automatically — confirmed by Node npm convention which Bun honours.
+ * Generate ephemeral runtime modules before web dev, test, check and build.
+ * Local/CI/untrusted previews default to the shared fixture without credentials or network.
+ * Trusted Vercel targets always require live content and refuse fixture mode.
+ * EXPORT_FALLBACKS_SOURCE=live selects live export with local cache fallback.
+ * EXPORT_FALLBACKS_LIVE remains the trusted-target operator flag.
+ * Missing live content and cache fails the export.
  */
 
 import { parseArgs } from 'node:util';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 import { buildEmitConfigs } from './lib/emitters/configs';
-import { emitModule } from './lib/emitters/emit-module';
+import { emitModule, type ModuleEmitConfig } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
-import {
-	GENERATED_MANIFEST_FILENAME,
-	hashContent,
-	loadManifest,
-	writeManifest,
-	type ManifestSource,
-} from './lib/generated-manifest';
+import { validateLiveExport } from './lib/validators/live-export';
 import type { ExportData } from './export-data';
 import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
 import { fetchRouteSeoOverrides } from './lib/fetchers/route-seo';
@@ -73,15 +32,12 @@ import { fetchLegalPages } from './lib/fetchers/legal-pages';
 import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
-import { fetchTechStack } from './lib/fetchers/tech-stack';
-import { fetchStackArchetypes } from './lib/fetchers/stack-archetypes';
 import { fetchSiteLabels } from './lib/fetchers/site-labels';
 import {
 	fetchBlogPageContent,
 	fetchProjectsPageContent,
 } from './lib/fetchers/page-blocks-simple';
 import {
-	fetchTechStackPageContent,
 	fetchContactContent,
 } from './lib/fetchers/page-blocks-medium';
 import {
@@ -95,7 +51,11 @@ import {
 } from './lib/fetchers/page-blocks-home';
 import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
 import type { CmsClient } from './lib/fetchers/types';
-import { buildMediaVariants } from './lib/media-variants';
+import {
+	prepareMediaVariants,
+	writeMediaVariants,
+	type PreparedMediaVariants,
+} from './lib/media-variants';
 import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 import assetManifest from '../fixtures/assets-manifest.json' with { type: 'json' };
 
@@ -106,80 +66,17 @@ const log = createLogger('export-fallbacks');
 // apps/web/src/lib/content/. Both work from monorepo root and from apps/cms/.
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_WEB_CONTENT_DIR = resolve(SCRIPT_DIR, '../../web/src/lib/content');
+const EXPORT_FIXTURE_PATH = resolve(SCRIPT_DIR, '../../../packages/shared/fixtures/export-data.json');
 
 export interface RunOptions {
 	directusUrl: string;
 	token: string;
 	dryRun: boolean;
-	module?: string;
+	source?: 'fixture' | 'live';
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
-	/**
-	 * Fallback policy from resolveFallbackPolicy(). Under 'fail' (Production or
-	 * the develop Preview with EXPORT_FALLBACKS_LIVE=1) a fetch
-	 * failure skips every fallback and the run reports a non-live outcome,
-	 * which main() turns into exit 1. Vercel keeps the prior deploy running,
-	 * so a loud failure is safe and far preferable to shipping stale content
-	 * without any signal. 'soft' (local, the default) keeps the cache/no-op
-	 * degrade, announced by a stderr banner.
-	 */
+	/** Trusted targets fail on fetch errors; local live exports may use cache. */
 	policy?: FallbackPolicy;
-}
-
-// `--module=<name>` filter values. A few emitted FILES are bundled under one
-// module name: `blog-posts` emits both blog.ts and blog-bodies.ts, and
-// `tech-stack` needs both tech-stack-page + tech-stack data — so there is no
-// `--module=blog-bodies`. A partial run merges its emitted hashes into the
-// manifest (see emitAll), so unrelated keys are preserved.
-export const ALL_MODULES = [
-	'site-meta',
-	'site-seo-defaults',
-	'route-seo',
-	'morph-shapes',
-	'error-pages',
-	'nav',
-	'site-pages',
-	'blog-posts',
-	'services',
-	'projects',
-	'tech-stack',
-	'stack-archetypes',
-	'site-labels',
-	'blog-page',
-	'projects-page',
-	'tech-stack-page',
-	'contact-page',
-	'legal-pages',
-	'hero',
-	'manifesto',
-	'proof-reel',
-	'services-grid',
-	'about-intro',
-	'cta',
-	'closer',
-	'about-page',
-	'media-assets',
-	'media-variants',
-] as const;
-type ModuleName = (typeof ALL_MODULES)[number];
-
-function shouldRun(filter: string | undefined, name: ModuleName): boolean {
-	return !filter || filter === name;
-}
-
-/**
- * Reject unknown `--module` values loudly. A typo used to filter every module
- * out silently: zero fetches, zero emits, and an EMPTY .cms-cache.json written
- * over the last-known-good cache (audit 2026-07-01, bucket A #6).
- */
-export function assertValidModuleFilter(
-	name: string | undefined,
-): asserts name is ModuleName | undefined {
-	if (name !== undefined && !(ALL_MODULES as readonly string[]).includes(name)) {
-		throw new Error(
-			`unknown --module '${name}'. Valid modules: ${ALL_MODULES.join(', ')}`,
-		);
-	}
 }
 
 /**
@@ -216,7 +113,12 @@ type Env = Record<string, string | undefined>;
 
 interface MediaMirrorManifest {
 	sourceRoot: string;
-	assets: readonly { legacyPath: string }[];
+	assets: readonly { legacyPath: string; sha256: string }[];
+}
+
+interface FetchedExport {
+	data: ExportData;
+	preparedMediaVariants?: PreparedMediaVariants;
 }
 
 export function buildMirroredMediaAssetsFromManifest(
@@ -228,6 +130,7 @@ export function buildMirroredMediaAssetsFromManifest(
 	const mirrored: Record<string, string> = {};
 	const missingIds: string[] = [];
 	const missingFiles: string[] = [];
+	const mismatchedFiles: string[] = [];
 
 	for (const item of manifest.assets) {
 		const id = ids[item.legacyPath];
@@ -239,6 +142,10 @@ export function buildMirroredMediaAssetsFromManifest(
 			missingFiles.push(item.legacyPath);
 			continue;
 		}
+		const digest = createHash('sha256')
+			.update(readFileSync(resolve(staticRoot, item.legacyPath)))
+			.digest('hex');
+		if (digest !== item.sha256) mismatchedFiles.push(item.legacyPath);
 		mirrored[id] = `/${item.legacyPath}`;
 	}
 
@@ -253,6 +160,9 @@ export function buildMirroredMediaAssetsFromManifest(
 		);
 	}
 
+	if (mismatchedFiles.length > 0) {
+		throw new Error(`[media-assets] sha256 mismatch for mirrored asset(s): ${mismatchedFiles.join(', ')}`);
+	}
 	return mirrored;
 }
 
@@ -261,10 +171,6 @@ export function buildMirroredMediaAssets(): Readonly<Record<string, string>> {
 		assetManifest as MediaMirrorManifest,
 		assetIdMap as Record<string, string>,
 	);
-}
-
-function envFlag(value: string | undefined): boolean {
-	return ['1', 'true'].includes((value ?? '').toLowerCase());
 }
 
 const LIVE_PREVIEW_BRANCH = 'develop';
@@ -276,37 +182,29 @@ function isTrustedVercelExportTarget(env: Env): boolean {
 	);
 }
 
-export function getExportSkipReason(env: Env = process.env): string | null {
-	if (envFlag(env.EXPORT_FALLBACKS_SKIP)) return 'EXPORT_FALLBACKS_SKIP';
-	if (env.VERCEL_ENV && !isTrustedVercelExportTarget(env)) {
-		return env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF
-			? `VERCEL_ENV=preview branch=${env.VERCEL_GIT_COMMIT_REF}`
-			: `VERCEL_ENV=${env.VERCEL_ENV}`;
+export function resolveContentSource(env: Env = process.env): 'live' | 'fixture' {
+	if (env.EXPORT_FALLBACKS_SOURCE === 'fixture' && isTrustedVercelExportTarget(env)) {
+		throw new Error('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture; a live export is required.');
 	}
-	if (env.VERCEL_ENV && !envFlag(env.EXPORT_FALLBACKS_LIVE)) return `VERCEL_ENV=${env.VERCEL_ENV}`;
-	return null;
+	if (isTrustedVercelExportTarget(env)) return 'live';
+	if (env.VERCEL_ENV) {
+		if (env.EXPORT_FALLBACKS_SOURCE === 'live') {
+			log.warn(`Ignoring EXPORT_FALLBACKS_SOURCE=live on untrusted Vercel target ${env.VERCEL_ENV}; using fixture without CMS access.`);
+		}
+		return 'fixture';
+	}
+	return env.EXPORT_FALLBACKS_SOURCE === 'live' ? 'live' : 'fixture';
 }
 
 export type FallbackPolicy = 'fail' | 'soft';
 
-/**
- * Live-or-die policy (homework audit item 3, pipeline honesty): opting a
- * Vercel target into a live export (EXPORT_FALLBACKS_LIVE=1) also opts it
- * into failing loudly when that live export cannot happen. Production AND the
- * develop-branch preview (dev.yesid.dev, the QA truth surface) both fail;
- * a stale-but-green deploy is worse than a visibly failed build, because
- * Vercel keeps the previous deploy live. Local runs never set VERCEL_ENV,
- * so they keep the soft cache/no-op fallback (announced by a banner).
- * Note the skip gate (getExportSkipReason) runs first: EXPORT_FALLBACKS_SKIP=1
- * remains the deliberate operator escape hatch for shipping committed modules.
- */
+/** Trusted targets never fall back, regardless of the operator flag. */
 export function resolveFallbackPolicy(env: Env = process.env): FallbackPolicy {
-	if (isTrustedVercelExportTarget(env) && envFlag(env.EXPORT_FALLBACKS_LIVE)) return 'fail';
-	return 'soft';
+	return isTrustedVercelExportTarget(env) ? 'fail' : 'soft';
 }
 
 /** Where the run's emitted content came from; 'none' means nothing was emitted. */
-export type ContentSource = 'live' | 'cache' | 'none';
+export type ContentSource = 'live' | 'cache' | 'fixture' | 'none';
 
 export interface RunOutcome {
 	source: ContentSource;
@@ -316,10 +214,10 @@ export interface RunOutcome {
 
 /**
  * Pure exit-code decision so the policy matrix is unit-testable: under 'fail'
- * any non-live outcome is a build failure; under 'soft' everything exits 0.
+ * any non-live outcome fails; every policy fails when no content source exists.
  */
 export function decideExit(outcome: RunOutcome, policy: FallbackPolicy): number {
-	return policy === 'fail' && outcome.source !== 'live' ? 1 : 0;
+	return outcome.source === 'none' || (policy === 'fail' && outcome.source !== 'live') ? 1 : 0;
 }
 
 /**
@@ -328,13 +226,10 @@ export function decideExit(outcome: RunOutcome, policy: FallbackPolicy): number 
  * than a single WARN line. Pure line-builder so tests can assert the content.
  */
 export function fallbackBannerLines(
-	source: 'cache' | 'committed-modules',
+	source: 'cache',
 	fetchError: string,
 ): string[] {
-	const detail =
-		source === 'cache'
-			? 'emitting from .cms-cache.json (last-known-good snapshot), NOT the live CMS'
-			: 'nothing emitted; the committed .ts modules ship as-is and may be stale vs the CMS';
+	const detail = 'emitting from .cms-cache.json (last-known-good snapshot), NOT the live CMS';
 	return [
 		'!!==================================================================!!',
 		'!!  CONTENT FALLBACK IN USE: BUILD IS NOT LIVE CMS CONTENT           ',
@@ -342,41 +237,36 @@ export function fallbackBannerLines(
 		`!!  ${detail}`,
 		`!!  fetch error: ${fetchError}`,
 		'!!  Fix CMS connectivity and re-run export:fallbacks before          ',
-		'!!  trusting or committing this build output.                        ',
+		'!!  trusting this build output.                        ',
 		'!!==================================================================!!',
 	];
 }
 
-function logFallbackBanner(source: 'cache' | 'committed-modules', fetchError: string): void {
+function logFallbackBanner(source: 'cache', fetchError: string): void {
 	for (const line of fallbackBannerLines(source, fetchError)) console.error(line);
 }
 
-async function fetchAll(opts: RunOptions): Promise<ExportData> {
+async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 	log.info(`fetch: source=${opts.directusUrl}`);
 	if (opts.dryRun) {
-		log.info(`  dry-run: would fetch modules: ${ALL_MODULES.join(', ')}`);
-		if (opts.module) log.info(`  filtered to: ${opts.module}`);
-		return {};
+		log.info('  dry-run: would fetch the complete export registry');
+		return { data: {} };
 	}
 
 	const fetchAllInner = async (): Promise<ExportData> => {
 		const client = createClient(opts.directusUrl, opts.token) as unknown as CmsClient;
 		const out: ExportData = {};
-		if (shouldRun(opts.module, 'media-assets')) {
-			out.mediaAssets = buildMirroredMediaAssets();
-		}
+		out.mediaAssets = buildMirroredMediaAssets();
 
 		// Each task is [moduleName, async () => void that assigns to out.*].
-		// Only enqueue if shouldRun passes; then fan-out in parallel.
+		// Fan out the complete source set in parallel.
 		// The Bottleneck limiter inside createQueuedFetch() keeps actual
 		// in-flight HTTP requests ≤ 4 concurrent / ≤ 50 req/s.
 		const tasks: Array<Promise<void>> = [];
 
-		const enqueue = (name: ModuleName, task: () => Promise<void>) => {
-			if (shouldRun(opts.module, name)) {
-				log.info(`  ${name}...`);
-				tasks.push(task());
-			}
+		const enqueue = (name: string, task: () => Promise<void>) => {
+			log.info(`  ${name}...`);
+			tasks.push(task());
 		};
 
 		enqueue('site-meta', async () => {
@@ -431,14 +321,6 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 			out.projects = await fetchProjects({ client });
 			log.info(`  projects done (${out.projects.length} projects).`);
 		});
-		enqueue('tech-stack', async () => {
-			out.techStack = await fetchTechStack({ client });
-			log.info(`  tech-stack done (${out.techStack.length} items).`);
-		});
-		enqueue('stack-archetypes', async () => {
-			out.stackArchetypes = await fetchStackArchetypes({ client });
-			log.info(`  stack-archetypes done (${out.stackArchetypes.length} archetypes).`);
-		});
 		enqueue('site-labels', async () => {
 			out.siteLabels = await fetchSiteLabels({ client });
 			log.info('  site-labels done.');
@@ -450,10 +332,6 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('projects-page', async () => {
 			out.projectsPage = await fetchProjectsPageContent({ client });
 			log.info('  projects-page done.');
-		});
-		enqueue('tech-stack-page', async () => {
-			out.techStackPage = await fetchTechStackPageContent({ client });
-			log.info('  tech-stack-page done.');
 		});
 		enqueue('contact-page', async () => {
 			out.contactPage = await fetchContactContent({ client });
@@ -509,60 +387,37 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	// timer is cleared in raceWithStallGuard's finally, win or lose.
 	const out = await raceWithStallGuard(fetchAllInner(), FETCH_ALL_TIMEOUT_MS);
 
-	// media-variants runs OUTSIDE the network-timeout race: it is local-only
-	// (reads mirrored files on disk, writes webp variants next to them) and
-	// sharp encode time must not eat into the CMS fetch budget.
-	if (shouldRun(opts.module, 'media-variants')) {
-		out.mediaVariants = await buildMediaVariants(assetManifest as MediaMirrorManifest);
-		log.info(
-			`  media-variants done (${Object.keys(out.mediaVariants).length} raster assets).`,
-		);
-	}
+	// Variant preparation runs outside the network-timeout race: it is local-only
+	// and sharp encode time must not eat into the CMS fetch budget. Preparation
+	// retains encoded buffers but performs no writes; run() validates the complete
+	// snapshot before committing them.
+	const preparedMediaVariants = await prepareMediaVariants(
+		assetManifest as MediaMirrorManifest,
+	);
+	out.mediaVariants = preparedMediaVariants.data;
+	log.info(
+		`  media-variants prepared (${Object.keys(out.mediaVariants).length} raster assets).`,
+	);
 
-	return out;
+	return { data: out, preparedMediaVariants };
 }
 
-/** Emits every populated module; returns the number of modules written so the
- *  caller can skip the cache write when nothing was emitted. `source` records
- *  the data's provenance in the manifest so ci:content can reject committing
- *  a cache-emitted set. */
+/** Emit only after the complete registry and live-content validators pass. */
 async function emitAll(
-	data: ExportData,
+	configs: readonly ModuleEmitConfig[],
 	opts: RunOptions,
-	source: ManifestSource,
 ): Promise<number> {
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	log.info(`emit: target=${emitDir}`);
 
-	const configs = buildEmitConfigs(data, emitDir);
-	if (configs.length === 0) {
-		log.warn('emit: no modules to write (ExportData has no populated slots)');
-		return 0;
-	}
-
 	await mkdir(emitDir, { recursive: true });
-	const emittedHashes: Record<string, string> = {};
 	for (const cfg of configs) {
 		const content = emitModule(cfg);
 		await Bun.write(cfg.filePath, content);
-		emittedHashes[relative(emitDir, cfg.filePath)] = hashContent(content);
 		log.info(`  ${relative(emitDir, cfg.filePath)} (${content.length} bytes)`);
 	}
 	log.info(`emit: wrote ${configs.length} module(s).`);
 
-	// Record the SHA-256 of every emitted module so the pre-commit guard can
-	// detect hand-edits (the CMS is the source of truth; these files are cache).
-	// A `--module=<name>` partial run merges into the existing manifest so it
-	// never drops the hashes of modules it didn't re-emit; a full run replaces.
-	// Provenance is sticky on partial runs: a live --module run over a
-	// cache-emitted manifest still leaves the other modules cache-sourced, so
-	// only a full live export clears 'cache'.
-	const prior = opts.module ? await loadManifest(emitDir) : null;
-	const manifestFiles = opts.module ? { ...(prior?.files ?? {}), ...emittedHashes } : emittedHashes;
-	const manifestSource: ManifestSource =
-		source === 'cache' || prior?.source === 'cache' ? 'cache' : 'live';
-	await writeManifest(emitDir, manifestFiles, manifestSource);
-	log.info(`emit: updated ${GENERATED_MANIFEST_FILENAME} (${Object.keys(manifestFiles).length} entries).`);
 	return configs.length;
 }
 
@@ -577,21 +432,39 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 }
 
 export async function run(opts: RunOptions): Promise<RunOutcome> {
-	const policy = opts.policy ?? 'soft';
+	const source = resolveContentSource({ ...process.env, EXPORT_FALLBACKS_SOURCE: opts.source ?? process.env.EXPORT_FALLBACKS_SOURCE });
+	if (source === 'fixture') {
+		// Defense in depth for callers that bypass the CLI's pre-auth gate.
+		resolveContentSource({ ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' });
+		if (opts.policy === 'fail') throw new Error('Trusted CMS builds refuse fixture exports.');
+		const data = await readCache(EXPORT_FIXTURE_PATH);
+		if (!data) throw new Error(`Missing export fixture: ${EXPORT_FIXTURE_PATH}`);
+		data.mediaAssets = buildMirroredMediaAssets();
+		const prepared = await prepareMediaVariants(assetManifest as MediaMirrorManifest);
+		data.mediaVariants = prepared.data;
+		const configs = buildEmitConfigs(data, opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR);
+		if (opts.dryRun) return { source: 'fixture', emitted: 0 };
+		await writeMediaVariants(prepared);
+		log.info(`fixture media-variants: wrote ${prepared.writes.length} file(s).`);
+		return { source: 'fixture', emitted: await emitAll(configs, opts) };
+	}
+	const policy = resolveFallbackPolicy() === 'fail' ? 'fail' : (opts.policy ?? 'soft');
 	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl} policy=${policy}`);
-	if (opts.module) log.info(`scope: --module=${opts.module}`);
 
 	let data: ExportData;
+	let preparedMediaVariants: PreparedMediaVariants | undefined;
 	let dataFromCache = false;
 	try {
-		data = await fetchAll(opts);
+		const fetched = await fetchAll(opts);
+		data = fetched.data;
+		preparedMediaVariants = fetched.preparedMediaVariants;
 	} catch (fetchErr) {
 		const fetchMsg = (fetchErr as Error).message;
 		log.warn(`fetch failed: ${fetchMsg}`);
 		if (policy === 'fail') {
 			log.error(
 				`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): live CMS export failed and ` +
-					'EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on this trusted Vercel target. ' +
+					'Fallbacks are forbidden on this trusted Vercel target. ' +
 					'Verify its target-specific Build Bot token and pinned CMS URL. ' +
 					'The prior deploy stays live until this build succeeds.',
 			);
@@ -603,10 +476,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 			return null;
 		});
 		if (!cached) {
-			logFallbackBanner('committed-modules', fetchMsg);
-			log.warn(
-				'no cache available: exiting 0 without emitting (existing .ts files untouched).',
-			);
+			log.error('No live content or cache available; export failed without emitting.');
 			return { source: 'none', emitted: 0 };
 		}
 		logFallbackBanner('cache', fetchMsg);
@@ -620,13 +490,21 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		return { source: 'live', emitted: 0 };
 	}
 
-	const emittedCount = await emitAll(data, opts, dataFromCache ? 'cache' : 'live');
+	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
+	try {
+		validateLiveExport(data);
+	} catch (error) {
+		if (dataFromCache) throw new Error(`CMS cache is stale: ${(error as Error).message}`, { cause: error });
+		throw error;
+	}
+	const configs = buildEmitConfigs(data, emitDir);
+	if (preparedMediaVariants) {
+		await writeMediaVariants(preparedMediaVariants);
+		log.info(`media-variants: wrote ${preparedMediaVariants.writes.length} file(s).`);
+	}
+	const emittedCount = await emitAll(configs, opts);
 	if (dataFromCache) {
 		log.info('cache: skipped re-write (data sourced from cache).');
-	} else if (emittedCount === 0) {
-		log.warn(
-			'cache: skipped write: zero modules emitted; an empty cache would poison the fallback path.',
-		);
 	} else {
 		await writeCache(data, opts);
 	}
@@ -635,34 +513,25 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 }
 
 async function main(): Promise<void> {
-	// Hermetic-build escape hatch (slice-28.4, audit #137): CI and Vercel builds
-	// must not reach out to any live CMS. The committed content modules are
-	// already the authoritative source. Checked before ANY token resolution.
-	const skipReason = getExportSkipReason();
-	if (skipReason) {
-		if (process.env.VERCEL_ENV === 'production') {
-			log.warn(
-				`${skipReason} on a production build: shipping committed content modules as-is, no CMS refresh.`,
-			);
-		}
-		log.info(`${skipReason}: skipping export, committed content modules remain authoritative. Exiting 0.`);
-		return;
-	}
-
+	// Resolve before authentication or argument parsing, including trusted fixture refusal.
+	const source = resolveContentSource();
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
 			'dry-run': { type: 'boolean', default: false },
-			module: { type: 'string' },
 			'emit-dir': { type: 'string' },
 		},
 		allowPositionals: false,
 	});
 
 	const dryRun = values['dry-run'] === true;
-	const moduleFilter = typeof values.module === 'string' ? values.module : undefined;
-	assertValidModuleFilter(moduleFilter);
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
+
+	if (source === 'fixture') {
+		await run({ source, directusUrl: 'fixture', token: '', dryRun, emitDir });
+		return;
+	}
+
 	const url = defaultDirectusUrl();
 	const policy = resolveFallbackPolicy();
 
@@ -671,7 +540,7 @@ async function main(): Promise<void> {
 	// surfaces the problem instead of shipping stale content silently.
 	// Production uses DIRECTUS_BUILD_TOKEN against cms.yesid.dev. Only the
 	// develop Preview uses DIRECTUS_DEV_BUILD_TOKEN against cms.dev.yesid.dev.
-	// Arbitrary previews returned at the skip gate before reaching this point.
+	// Default fixture exports return before authentication.
 	let token = '';
 	if (!dryRun) {
 		try {
@@ -680,19 +549,19 @@ async function main(): Promise<void> {
 			if (policy === 'fail') {
 				log.error(
 					`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): token resolution failed: ` +
-						`${(authErr as Error).message}. EXPORT_FALLBACKS_LIVE=1 forbids fallbacks on ` +
+						`${(authErr as Error).message}. Fallbacks are forbidden on ` +
 						'this trusted Vercel target. Configure only its target-specific Build Bot token.',
 				);
 				process.exit(1);
 			}
 			log.warn(`auth failed: ${(authErr as Error).message}`);
 			log.warn(
-				'continuing without token; will try cache fallback, else exit 0 (committed .ts files become authoritative).',
+				'continuing without token; will try cache fallback, else fail the export.',
 			);
 		}
 	}
 
-	const outcome = await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir, policy });
+	const outcome = await run({ source, directusUrl: url, token, dryRun, emitDir, policy });
 	const exitCode = decideExit(outcome, policy);
 	if (exitCode !== 0) process.exit(exitCode);
 }

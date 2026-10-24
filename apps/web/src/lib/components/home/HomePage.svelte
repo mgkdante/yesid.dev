@@ -49,7 +49,7 @@
 		SiteMeta,
 		BlogPost,
 	} from '$lib/types';
-	import type { HeroData } from '$lib/content/hero-data';
+	import type { HeroData } from '$lib/live';
 
 	interface Props {
 		metroSvg: string;
@@ -376,7 +376,7 @@
 	}
 
 	/* Left-side heading: heading | content */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.home-section--left {
 			grid-template-columns: clamp(4.5rem, 8vw, 8rem) 1fr;
 		}
@@ -393,7 +393,7 @@
 	}
 
 	/* Hide rotated titles on mobile */
-	@media (max-width: 1023px) {
+	@media (--desktop-max) {
 		.rotated-title {
 			display: none;
 		}

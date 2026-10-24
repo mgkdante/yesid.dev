@@ -1,3 +1,4 @@
+import { siteLabels } from '../../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
 
@@ -99,7 +100,7 @@ test.describe('/projects/[slug] detail page content', () => {
 		// section exists, its h2 title renders as a real, visible heading.
 		const readmeHeading = page
 			.locator('.sections-column h2.section-title')
-			.filter({ hasText: /readme/i });
+			.filter({ hasText: siteLabels.projectsChrome.detail.readmeSectionTitle.en });
 		if (await readmeHeading.count() > 0) {
 			await expect(readmeHeading.first()).toBeVisible();
 		}
@@ -114,14 +115,14 @@ test.describe('/projects/[slug] detail page content', () => {
 		await expect(glancePanel).toBeVisible();
 
 		// The panel always carries an Overview sub-section with non-empty prose.
-		const overviewTitle = glancePanel.locator('h2.section-title').filter({ hasText: /overview/i });
+		const overviewTitle = glancePanel.locator('h2.section-title').filter({ hasText: siteLabels.projectsChrome.detail.glance.overview.en });
 		await expect(overviewTitle).toBeVisible();
 		const overview = glancePanel.locator('.glance-overview');
 		await expect(overview).toBeVisible();
 		expect((await overview.innerText()).trim().length).toBeGreaterThan(0);
 
 		// And a Stack sub-section listing at least one technology badge.
-		const stackTitle = glancePanel.locator('h2.section-title').filter({ hasText: /stack/i });
+		const stackTitle = glancePanel.locator('h2.section-title').filter({ hasText: siteLabels.projectsChrome.detail.glance.stack.en });
 		await expect(stackTitle).toBeVisible();
 	});
 });
@@ -142,7 +143,7 @@ test.describe('/projects/[slug] repo-private links state (homework #13)', () => 
 
 		const privateState = linksCard.getByTestId('project-repo-private');
 		await expect(privateState).toBeVisible();
-		await expect(privateState).toHaveText(/Private repo \(for now\)/);
+		await expect(privateState).toHaveText(siteLabels.projectsChrome.detail.glance.repoPrivateLabel.en);
 
 		// No GitHub anchor ships in ANY links-card instance (visible or hidden):
 		// repoUrl is set on this project, so a zero count proves the suppression.
@@ -157,6 +158,6 @@ test.describe('/projects/[slug] repo-private links state (homework #13)', () => 
 
 		const privateState = page.getByTestId('project-repo-private').filter({ visible: true }).first();
 		await expect(privateState).toBeVisible();
-		await expect(privateState).toHaveText(/Dépôt privé \(pour le moment\)/);
+		await expect(privateState).toHaveText(siteLabels.projectsChrome.detail.glance.repoPrivateLabel.fr!);
 	});
 });

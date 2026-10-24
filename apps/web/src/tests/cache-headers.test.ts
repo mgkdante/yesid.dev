@@ -91,13 +91,6 @@ describe('hooks.server handle() cache headers', () => {
 		expect(response.headers.get('vercel-cdn-cache-control')).toBeNull();
 	});
 
-	it('initializes the per-request pageCache Map on locals', async () => {
-		const event = makeEvent();
-		await runHandle(event, htmlResponse());
-		expect(event.locals.pageCache).toBeInstanceOf(Map);
-		expect(event.locals.pageCache.size).toBe(0);
-	});
-
 	it.each(['yesid.dev', 'www.yesid.dev'])('keeps production host %s indexable', async (hostname) => {
 		const response = await runHandle(makeEvent({ hostname }), htmlResponse());
 		expect(response.headers.get('x-robots-tag')).toBeNull();

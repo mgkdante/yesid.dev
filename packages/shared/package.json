@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
-	"description": "Shared domain types + Zod schemas for the yesid.dev monorepo. Type-only + Zod — no runtime helpers, no app-specific imports.",
+	"description": "Shared product types, schemas, asset contracts, and runtime constants with no app-specific imports.",
 	"scripts": {
 		"test": "bun test"
 	},

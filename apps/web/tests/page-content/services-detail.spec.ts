@@ -1,3 +1,4 @@
+import { siteLabels } from '../../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, serviceDetailLinks } from '../_support/helpers';
 
@@ -66,10 +67,10 @@ test.describe('/services/[id] detail page content', () => {
     // CollapsibleSection renders each title in <h2 class="section-title">.
     // Real copy: "How This Helps You" (value proposition) + "Typical Deliverables".
     await expect(
-      page.locator('h2.section-title', { hasText: 'How This Helps You' })
+      page.locator('h2.section-title', { hasText: siteLabels.servicesChrome.detail.valuePropositionHeading.en })
     ).toBeVisible();
     await expect(
-      page.locator('h2.section-title', { hasText: 'Typical Deliverables' })
+      page.locator('h2.section-title', { hasText: siteLabels.servicesChrome.detail.deliverablesHeading.en })
     ).toBeVisible();
 
     // Deliverables list is populated (the first service has 8).
@@ -84,7 +85,7 @@ test.describe('/services/[id] detail page content', () => {
     // "Related Projects (N)" and the list holds N project links.
     const relatedHeading = page
       .locator('h2.section-title')
-      .filter({ hasText: /related projects/i })
+      .filter({ hasText: siteLabels.servicesChrome.detail.relatedProjectsHeading.en })
       .first();
     await expect(relatedHeading).toBeVisible();
 

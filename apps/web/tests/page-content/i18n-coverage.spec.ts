@@ -8,7 +8,6 @@ test.describe('i18n bilingual coverage', () => {
     { path: '/blog', testid: 'blog-listing' },
     { path: '/blog/personal', testid: 'blog-listing' },
     { path: '/contact', testid: 'page-contact' },
-    { path: '/tech-stack', testid: 'tech-stack-hero' },
   ];
 
   for (const { path, testid } of pages) {

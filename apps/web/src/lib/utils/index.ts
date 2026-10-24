@@ -1,6 +1,6 @@
 // Utility-layer barrel.
-// Pure client-safe engines — never CMS-owned. Imported by components, repositories,
-// adapters, and route loaders alike. Function names are globally unique so
+// Pure client-safe engines — never CMS-owned. Imported by components, adapters,
+// and route loaders alike. Function names are globally unique so
 // `export *` is safe.
 //
 // IMPORTANT: server-only utilities are NOT re-exported here — importing them
@@ -10,7 +10,7 @@
 //     (server-only — uses $env/dynamic/private; loaded from +page.server.ts only).
 //   - Type-only consumers (e.g. <WeatherData> in a component) are also imported
 //     directly: `import type { WeatherData } from '$lib/utils/weather'`.
-//   - Markdown rendering: `import { marked } from '$lib/server/markdown'`.
+//   - README rendering: `import { renderGithubReadme } from '$lib/server/markdown'`.
 //     Slice-23 kept it out of this barrel; consolidation-deploy-honesty moved
 //     it (with the Shiki highlighter it imports) into $lib/server so the build
 //     itself refuses any client-reachable import — highlighting is
@@ -22,6 +22,4 @@ export * from './collections'
 export * from './locale'
 export * from './project-metrics'
 export * from './service-colors'
-export * from './shapes'
-export * from './stack-roles'
 export * from './service-svg'

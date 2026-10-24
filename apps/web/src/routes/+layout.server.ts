@@ -36,11 +36,10 @@ import type { LayoutServerLoad } from './$types';
 export const prerender = true;
 import { isPathPublished } from '$lib/utils/page-registry';
 import { adapter } from '$lib/adapters';
-import { getPageSeo, getSiteSeoDefaults } from '$lib/repositories/meta';
 import { localeFromParams, stripLocaleSegment, delocalizePath } from '$lib/utils/locale-routing';
 import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
+import { errorSeoFallback } from '$lib/adapters/error-seo-fallback';
 import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
 import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
 import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
@@ -51,7 +50,7 @@ import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
 // runtime appears to call setHeaders internally for caching, conflicting
 // with the manual setHeaders call. Single source of truth: hooks.server.ts.
 
-export const load: LayoutServerLoad = async ({ route, params, locals, url }) => {
+export const load: LayoutServerLoad = async ({ route, params, url }) => {
 	// Route ids stay keyed by their canonical (unprefixed) form everywhere
 	// downstream — route-seo registries, getPageSeo, the composer (slice-28.6).
 	const routeId = stripLocaleSegment(route.id ?? '/__error');
@@ -68,14 +67,12 @@ export const load: LayoutServerLoad = async ({ route, params, locals, url }) => 
 	// slice-28.6: locale from params.lang (page routes) with a pathname
 	// fallback (error renders carry no params).
 	const locale = localeFromParams(params as Record<string, string>, url.pathname);
-	const ctx = { pageCache: locals.pageCache };
-
 	const safeByPlacement = async (
 		placement: 'header' | 'footer' | 'mobile' | 'menu',
 		fallback: readonly NavLink[] = [],
 	): Promise<readonly NavLink[]> => {
 		try {
-			return await adapter.nav.byPlacement(placement, ctx);
+			return await adapter.nav.byPlacement(placement);
 		} catch {
 			return fallback;
 		}
@@ -86,7 +83,7 @@ export const load: LayoutServerLoad = async ({ route, params, locals, url }) => 
 			return staticErrorPageContent;
 		}
 		try {
-			return await adapter.content.errorPage(0, ctx);
+			return await adapter.content.errorPage(0);
 		} catch {
 			return staticErrorPageContent;
 		}
@@ -95,8 +92,8 @@ export const load: LayoutServerLoad = async ({ route, params, locals, url }) => 
 	const safeSeo = async () => {
 		try {
 			const [seo, siteSeoDefaults] = await Promise.all([
-				getPageSeo(routeId, locale, params as Record<string, string>, ctx),
-				getSiteSeoDefaults(ctx),
+				adapter.meta.forRoute(routeId, locale, params as Record<string, string>),
+				adapter.meta.siteSeoDefaults(),
 			]);
 			return { seo, themeColor: siteSeoDefaults.themeColor };
 		} catch (err) {
@@ -118,7 +115,7 @@ export const load: LayoutServerLoad = async ({ route, params, locals, url }) => 
 		try {
 			// CMS-generated shapes via the adapter port ($lib/content/morph-shapes
 			// since slice-28.5 #120).
-			return await adapter.content.morphShapes(ctx);
+			return await adapter.content.morphShapes();
 		} catch {
 			// Last-resort hand-written seed — see the FALLBACK SEED banner in
 			// utils/shapes.ts.

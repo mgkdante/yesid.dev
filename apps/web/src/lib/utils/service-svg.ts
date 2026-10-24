@@ -65,11 +65,14 @@ export async function fetchServiceSvgContents(
 			if (!url) return [service.id, ''] as const;
 			try {
 				const response = await fetchFn(url);
-				if (!response.ok) return [service.id, ''] as const;
+				if (!response.ok) {
+					console.warn('[service-svg] Decorative SVG fetch failed; using empty content.');
+					return [service.id, ''] as const;
+				}
 				const text = await response.text();
 				return [service.id, text] as const;
 			} catch {
-				// Graceful fallback — missing SVG doesn't break the page
+				console.warn('[service-svg] Decorative SVG fetch failed; using empty content.');
 				return [service.id, ''] as const;
 			}
 		})

@@ -6,7 +6,7 @@
 // the hero's multi-phase choreography is specialized and composes GSAP
 // primitives directly (design spec §4.3).
 //
-// Phase map (normalized timeline 0–1.55):
+// Phase map (normalized timeline 0–1.40):
 //   Phase 1  (0–0.03):     Berri + background appear
 //   Phase 1b (0.03–0.15):  Light on/off pulse on Berri + scrollPrompt
 //   Phase 2  (0.17–0.45):  SCROLL DOWN fades out, lines drawSVG 0% → 100%
@@ -15,8 +15,7 @@
 //   Phase 5  (0.65–0.95):  Zoom svgWrapper to Berri-UQAM
 //   Phase 6  (1.00–1.05):  Cross-fade svgWrapper out / heroTextContainer in
 //   Phase 7  (1.05–1.40):  Zoom heroTextContainer back to scale=1
-//   Phase 8  (1.10–1.48):  Hero text elements stagger in
-//   Phase 9  (1.55):       Brief hold before unpin
+//   Phase 8  (1.10–1.40):  Hero text elements stagger in; release at final pose
 //
 // Precondition: caller must `await loadDrawSVG()` + `await loadCustomEase()`
 // at route setup before invoking. Factory is synchronous.
@@ -76,13 +75,15 @@ export interface HeroTimelineOpts {
 	/**
 	 * go2/w5 replayable intro: fired when the scrub progress crosses INTO the
 	 * end of the pin from below (the visitor scrolled the intro through).
-	 * HeroBanner persists the localStorage day-key + collapses the track here.
+	 * HeroBanner collapses the track here after the visible sequence completes.
 	 * Taste-2 latch semantics: a first render already AT the end never fires
 	 * (the replay path jumps a rebuilt pin straight to its end), and dropping
 	 * back below the threshold re-arms it — a replayed intro fires again on
 	 * re-completion, so the collapse re-applies.
 	 */
 	onIntroComplete?: () => void;
+	/** The final small-scale approach may resume the dot heartbeat before release. */
+	onHeroApproach?: (approaching: boolean) => void;
 }
 
 // ---- Measurement utilities ----
@@ -187,6 +188,7 @@ export function createHeroTimeline(
 		stopBlink,
 		pinLength = '800%',
 		onIntroComplete,
+		onHeroApproach,
 		skipDeferredRefresh = false,
 	} = opts;
 
@@ -244,7 +246,10 @@ export function createHeroTimeline(
 	// Initial hero text scale — uses gsap.set so the ScrollTrigger can revert it.
 	gsap.set(heroTextContainer, { scale: calcHeroTextScale(heroDot) });
 
-	const tl = gsap.timeline();
+	let introCompleteArmed = false;
+	const tl = gsap.timeline({
+		onUpdate: () => onHeroApproach?.(introCompleteArmed && tl.time() >= 1.36),
+	});
 
 	// === Phase 1 (0–0.03): Berri + background appear ===
 	tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
@@ -347,7 +352,7 @@ export function createHeroTimeline(
 		1.05,
 	);
 
-	// === Phase 8 (1.10–1.48): Hero text stagger in during zoom-out ===
+	// === Phase 8 (1.10–1.40): Reveals finish with the zoom, without an idle tail ===
 	const s1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]');
 	const s2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]');
 	const s3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]');
@@ -361,11 +366,8 @@ export function createHeroTimeline(
 	tl.to(s3, { opacity: 1, duration: 0.12, ease: 'power1.out' }, 1.22);
 	tl.to(s4, { opacity: 1, duration: 0.12, ease: 'power1.out' }, 1.26);
 	tl.to(s5, { opacity: 1, duration: 0.1, ease: 'power1.out' }, 1.3);
-	tl.to(s6, { opacity: 1, duration: 0.1, stagger: 0.02, ease: 'power1.out' }, 1.32);
-	tl.to(s7, { opacity: 1, y: 0, duration: 0.1, ease: 'power1.out' }, 1.38);
-
-	// === Phase 9 (1.55): Brief hold before unpin ===
-	tl.set({}, {}, 1.55);
+	tl.to(s6, { opacity: 1, duration: 0.1, stagger: 0.02, ease: 'power1.out' }, 1.28);
+	tl.to(s7, { opacity: 1, y: 0, duration: 0.1, ease: 'power1.out' }, 1.30);
 
 	// Desktop (Lenis): scrub:true = 1:1 tracking, Lenis provides smoothing.
 	// Mobile (native touch): scrub:0.5 = small buffer for stable touch feel.
@@ -373,12 +375,16 @@ export function createHeroTimeline(
 
 	// go2/w5 taste-2: ARMED-CROSSING completion latch. "Scrolled it through"
 	// = the scrub was genuinely below the end threshold on this instance and
-	// then crossed into it (0.99 tolerates scrub smoothing never emitting
-	// exactly 1). A first render already at the end stays silent — the
+	// then reached the exact pin end. A first render already at the end stays silent — the
 	// replay path rebuilds the pin and jumps straight to its end, and that
 	// jump must never read as a completion. Dropping below the threshold
 	// re-arms, so a replayed intro re-fires (the collapse re-applies).
-	let introCompleteArmed = false;
+	function finishIntro(self: { progress: number }): void {
+		if (self.progress === 1 && introCompleteArmed) {
+			introCompleteArmed = false;
+			onIntroComplete?.();
+		}
+	}
 
 	const st = ScrollTrigger.create({
 		trigger: pinContainer,
@@ -394,13 +400,13 @@ export function createHeroTimeline(
 			} else if (self.progress <= 0.005 && self.direction === -1) {
 				startBlink();
 			}
-			if (self.progress < 0.99) {
+			if (self.progress < 1) {
 				introCompleteArmed = true;
-			} else if (introCompleteArmed) {
-				introCompleteArmed = false;
-				onIntroComplete?.();
+			} else if (!isTouch) {
+				finishIntro(self);
 			}
 		},
+		onScrubComplete: finishIntro,
 	});
 
 	// Force-sync timeline to current scroll position after layout settles.

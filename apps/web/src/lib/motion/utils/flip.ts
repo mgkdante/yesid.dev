@@ -6,13 +6,12 @@
 // and cards tween between their old and new positions. This is interaction-driven
 // (filter click = user input), so it's doctrine-compatible.
 //
-// **Precondition:** consumers must `await loadFlip()` at onMount before the
-// first captureFlipState() call. captureFlipState() is synchronous because
-// Flip.getState() must measure the DOM at the exact moment before the reflow.
+// Registration is module-local and synchronous. captureFlipState() stays
+// synchronous because Flip.getState() must measure the DOM at the exact moment
+// before the reflow.
 //
 // Usage:
-//   import { loadFlip, captureFlipState, animateFlipTransition } from '$lib/motion/utils';
-//   onMount(async () => { await loadFlip(); /* ... */ });
+//   import { captureFlipState, animateFlipTransition } from '$lib/motion/utils';
 //   // before filter changes:
 //   flipState = captureFlipState();
 //   // after filter-derived list has rendered:
@@ -21,9 +20,8 @@
 import { tick } from 'svelte';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { gsap } from '$lib/motion/utils/gsap.js';
-// Flip imported directly — plugin is runtime-registered by loadFlip() at
-// consumer mount (BlogListingPage / ProjectListingPage); this import only
-// provides the symbol for Flip.getState() / Flip.from().
+// Flip is imported directly so ensureFlipRegistered() registers the same
+// symbol used by Flip.getState() / Flip.from().
 //
 // CJS interop: gsap/Flip ships as CommonJS, so static `import { Flip }` fails
 // in Node ESM SSR (Vercel) with "Named export 'Flip' not found". Use default
@@ -34,6 +32,14 @@ import { durationSec } from '@yesid/motion/tokens';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Flip: typeof import('gsap/Flip').Flip = (gsapFlipModule as any).Flip ?? (gsapFlipModule as any);
 
+let flipRegistered = false;
+
+function ensureFlipRegistered(): void {
+	if (flipRegistered) return;
+	gsap.registerPlugin(Flip);
+	flipRegistered = true;
+}
+
 /** State snapshot captured by {@link captureFlipState} for replay via `Flip.from()`. */
 export type FlipState = ReturnType<typeof Flip.getState> | null;
 
@@ -41,8 +47,7 @@ export type FlipState = ReturnType<typeof Flip.getState> | null;
  * Capture current FLIP state for filter transitions.
  * Call BEFORE the filter value changes.
  *
- * Precondition: the Flip plugin must already be registered (consumer
- * awaits `loadFlip()` at onMount).
+ * Registration is handled internally immediately before `Flip.getState()`.
  *
  * @returns FLIP state object, or null if reduced motion / no elements
  */
@@ -50,6 +55,7 @@ export function captureFlipState(): FlipState {
 	if (isPrefersReducedMotion() || typeof document === 'undefined') return null;
 	const cards = document.querySelectorAll('[data-flip-id]');
 	if (cards.length === 0) return null;
+	ensureFlipRegistered();
 	return Flip.getState(cards);
 }
 
@@ -80,6 +86,7 @@ export function animateFlipTransition(
 			gsap.set(batchItems, { opacity: 1, y: 0 });
 			gsap.set(cards, { opacity: 1, y: 0, x: 0, scale: 1 });
 
+			ensureFlipRegistered();
 			Flip.from(flipState, {
 				targets: cards,
 				duration: durationSec('slower'),

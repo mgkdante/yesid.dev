@@ -67,10 +67,10 @@
 	}: ProjectCardProps = $props();
 
 	// Rendered card widths: listing = 2-col grid beside the sidebar (~40vw
-	// desktop, full-width mobile); proof = embla slide clamp(340px, 44vw, 720px).
+	// desktop, full-width mobile); proof = one to four whole carousel slots.
 	const mediaSizes = $derived(
 		variant === 'proof'
-			? '(min-width: 768px) min(44vw, 720px), 92vw'
+			? '(min-width: 1800px) 25vw, (min-width: 1400px) 33vw, (min-width: 1000px) 50vw, 92vw'
 			: '(min-width: 768px) 40vw, 92vw',
 	);
 
@@ -97,7 +97,6 @@
 	const stackLabel = listingChrome.filters.techStack;
 	const servicesLabel = listingChrome.filters.services;
 	const stackOverflowTemplate = resolveLocale(listingChrome.card.stackOverflowSuffix, locale);
-	const moreMetricsLabel = resolveLocale(siteLabels.a11y.moreMetrics, locale);
 	const stackOverflow = $derived(
 		project.stack.length > 5
 			? stackOverflowTemplate.replace('{count}', String(project.stack.length - 5))
@@ -105,12 +104,11 @@
 	);
 
 	const proofMetrics = $derived(projectMetrics(project));
-	const visibleProofMetrics = $derived(proofMetrics.slice(0, 3));
-	const hasProofMetricOverflow = $derived(proofMetrics.length > 3);
 </script>
 
 <a
 	href={localizeHref(`/projects/${project.slug}`, locale)}
+	aria-label={resolveLocale(project.title, locale)}
 	class={cn("tap-press project-card group block h-full", `project-card--${variant}`, className)}
 	data-testid={testId}
 	data-flip-id={project.slug}
@@ -129,7 +127,7 @@
 					{project}
 					preset={mediaPreset}
 					alt={resolveLocale(project.title, locale)}
-					imageClass="project-card-img transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
+					imageClass={cn('project-card-img', !isProof && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
 					{eager}
 					sizes={mediaSizes}
 				/>
@@ -234,10 +232,10 @@
 			{/if}
 		</div>
 
-		{#if isProof}
+		{#if isProof && proofMetrics.length > 0}
 			<div class="project-card-proof-metric" data-testid="{metricTestPrefix}-metric-strip">
 				<div class="project-card-proof-metric__grid">
-					{#each visibleProofMetrics as metric}
+					{#each proofMetrics as metric}
 						<div class="project-card-proof-metric__item" data-testid="{metricTestPrefix}-metric-item">
 							{#if metric.before}
 								<span
@@ -251,17 +249,6 @@
 							</div>
 						</div>
 					{/each}
-					{#if hasProofMetricOverflow}
-						<div class="project-card-proof-metric__overflow" data-testid="{metricTestPrefix}-metric-overflow" aria-label={moreMetricsLabel}>...</div>
-					{/if}
-					{#if visibleProofMetrics.length === 0}
-						<div class="project-card-proof-metric__item" aria-hidden="true">
-							<div class="project-card-proof-metric__line">
-								<span class="proof-metric-value"></span>
-								<span class="proof-metric-label"></span>
-							</div>
-						</div>
-					{/if}
 				</div>
 			</div>
 		{/if}
@@ -347,7 +334,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.blueprint-art--desktop {
 			display: flex;
 		}
@@ -366,7 +353,8 @@
 	}
 
 	.project-card-media--proof {
-		height: clamp(15rem, 38dvh, 22rem);
+		height: 14rem;
+		flex-shrink: 0;
 	}
 
 	.project-card-title {
@@ -396,17 +384,17 @@
 		margin-top: auto;
 		display: flex;
 		align-items: stretch;
-		height: clamp(6.5rem, 12dvh, 7.75rem);
+		min-height: 6.5rem;
+		flex-shrink: 0;
 		padding: 0.95rem 1.25rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-		overflow: hidden;
 	}
 
 	.project-card-proof-metric__grid {
 		display: grid;
 		width: 100%;
 		min-width: 0;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
 		align-items: stretch;
 		gap: 0.75rem;
 		position: relative;
@@ -421,28 +409,8 @@
 		border-inline-end: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
 	}
 
-	.project-card-proof-metric__item:nth-child(3),
 	.project-card-proof-metric__item:last-child {
 		border-inline-end: 0;
-	}
-
-	.project-card-proof-metric__overflow {
-		position: absolute;
-		inset-block-end: 0.2rem;
-		inset-inline-end: -0.15rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 1.75rem;
-		height: 1.75rem;
-		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-		border-radius: var(--radius-pill);
-		background: var(--card);
-		font-family: var(--font-heading);
-		font-size: 1rem;
-		font-weight: 800;
-		line-height: 1;
-		color: var(--primary);
 	}
 
 	.project-card-proof-metric__line {
@@ -459,32 +427,24 @@
 		text-decoration: line-through;
 		margin-bottom: 0.25rem;
 		max-width: 100%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		overflow-wrap: anywhere;
 	}
 
 	.proof-metric-value {
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: var(--text-metric-value-default);
+		font-size: var(--text-metric-value-mobile);
 		line-height: 1;
 		color: var(--accent-text);
 		max-width: 100%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		overflow-wrap: anywhere;
 	}
 
 	.proof-metric-label {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		color: var(--muted-foreground);
-		display: -webkit-box;
-		overflow: hidden;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
+		overflow-wrap: anywhere;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 	}
@@ -494,17 +454,13 @@
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.project-card--proof .project-card-body {
 			padding: 1.25rem 1.75rem 1rem;
 		}
 
 		.project-card-proof-metric {
 			padding-inline: 1.75rem;
-		}
-
-		.proof-metric-value {
-			font-size: var(--text-metric-value-desktop);
 		}
 
 		.proof-metric-label {
@@ -516,13 +472,9 @@
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.project-card--proof :global(.card-surface) {
 			min-height: clamp(20rem, 50dvh, 30rem);
-		}
-
-		.project-card-media--proof {
-			height: clamp(8rem, 22dvh, 10.5rem);
 		}
 
 		.project-card-proof-metric {
@@ -535,10 +487,6 @@
 
 		.project-card-proof-metric__item {
 			padding-inline-end: 0.5rem;
-		}
-
-		.proof-metric-value {
-			font-size: var(--text-metric-value-mobile);
 		}
 
 		.proof-metric-label {

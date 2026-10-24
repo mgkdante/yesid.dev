@@ -21,7 +21,6 @@ const FULL_REGISTRY: readonly SitePage[] = [
 	{ path: '/projects', type: 'listing', title: { en: 'Projects' } },
 	{ path: '/blog', type: 'listing', title: { en: 'Blog' } },
 	{ path: '/blog/personal', type: 'listing', title: { en: 'Personal Blog' } },
-	{ path: '/tech-stack', type: 'freeform', title: { en: 'Tech Stack' } },
 	{ path: '/about', type: 'freeform', title: { en: 'About' } },
 	{ path: '/contact', type: 'freeform', title: { en: 'Contact' } },
 ];
@@ -115,9 +114,7 @@ describe('resolveSitePage — archived sections (row absent)', () => {
 		const registry = without('/blog/personal');
 		expect(resolveSitePage('/blog', registry)?.path).toBe('/blog');
 		expect(resolveSitePage('/blog/some-post', registry)?.path).toBe('/blog');
-		// /blog/personal itself now falls through to the /blog listing prefix —
-		// the exact row is gone, but the path still resolves to the section.
-		expect(resolveSitePage('/blog/personal', registry)?.path).toBe('/blog');
+		expect(resolveSitePage('/blog/personal', registry)).toBeUndefined();
 	});
 
 	it('archived /services kills the section AND its detail pages', () => {
@@ -161,8 +158,7 @@ describe('isPathPublished — the route-gate predicate', () => {
 	});
 
 	it('archived sections + their details fail (404 cascade)', () => {
-		const registry = without('/tech-stack', '/projects');
-		expect(isPathPublished('/tech-stack', registry)).toBe(false);
+		const registry = without('/projects');
 		expect(isPathPublished('/projects', registry)).toBe(false);
 		expect(isPathPublished('/projects/some-project', registry)).toBe(false);
 	});
@@ -173,14 +169,13 @@ describe('isPathPublished — the route-gate predicate', () => {
 });
 
 describe('committed registry sanity (regenerated every build)', () => {
-	it('contains the 13 seeded paths, root included', () => {
+	it('contains the 12 seeded paths, root included', () => {
 		expect(sitePages.map((p) => p.path)).toEqual([
 			'/',
 			'/services',
 			'/projects',
 			'/blog',
 			'/blog/personal',
-			'/tech-stack',
 			'/about',
 			'/contact',
 			// OPS1 legal framework (launch Phase 1)

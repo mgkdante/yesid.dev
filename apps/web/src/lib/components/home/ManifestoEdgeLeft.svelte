@@ -147,7 +147,7 @@
 		.manifesto__edge-left { left: 8px; font-size: 7px; gap: 16px; }
 	}
 
-	@media (max-width: 768px) {
+	@media (--tablet-max) {
 		.manifesto__beck-line { display: none; }
 		.manifesto__roundel { font-size: 7px; }
 		.manifesto__roundel-dot { width: 8px; height: 8px; }
