@@ -249,7 +249,6 @@ describe('outcome-first positioning source contract', () => {
 			source('apps/web/src/lib/content/route-seo.ts'),
 			source('apps/web/src/lib/content/site-content.ts'),
 			source('apps/cms/fixtures/content/outcome-first-positioning.ts'),
-			source('apps/cms/scripts/go2-message-pass.ts'),
 		];
 		for (const title of Object.values(TITLES)) {
 			for (const content of generated) expect(content).toContain(title);
@@ -277,7 +276,6 @@ describe('outcome-first positioning source contract', () => {
 		const about = byLocale(route('/about').translations);
 		const services = byLocale(route('/services').translations);
 		const identitySurfaces = [
-			'apps/cms/scripts/go2-message-pass.ts',
 			'apps/cms/fixtures/content/about-page.json',
 			'apps/cms/fixtures/content/site-content.json',
 			'apps/cms/fixtures/assets-manifest.json',

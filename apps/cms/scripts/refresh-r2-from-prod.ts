@@ -37,7 +37,7 @@ import {
 
 const PROD_BUCKET = process.env.R2_PROD_BUCKET ?? 'yesid-dev-cms';
 const DEV_BUCKET = process.env.R2_DEV_BUCKET ?? 'yesid-dev-cms-dev';
-const ENDPOINT = process.env.R2_ENDPOINT;
+const ENDPOINT = process.env.R2_ENDPOINT ?? process.env.STORAGE_S3_ENDPOINT;
 const ACCESS_KEY = process.env.R2_ACCESS_KEY ?? process.env.STORAGE_S3_KEY;
 const SECRET_KEY = process.env.R2_SECRET_KEY ?? process.env.STORAGE_S3_SECRET;
 
@@ -47,7 +47,7 @@ if (PROD_BUCKET === DEV_BUCKET) {
 	process.exit(1);
 }
 if (!ENDPOINT || !ACCESS_KEY || !SECRET_KEY) {
-	console.error('Missing required env: R2_ENDPOINT, R2_ACCESS_KEY (or STORAGE_S3_KEY), R2_SECRET_KEY (or STORAGE_S3_SECRET).');
+	console.error('Missing required env: R2_ENDPOINT (or STORAGE_S3_ENDPOINT), R2_ACCESS_KEY (or STORAGE_S3_KEY), R2_SECRET_KEY (or STORAGE_S3_SECRET).');
 	process.exit(1);
 }
 

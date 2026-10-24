@@ -4,7 +4,6 @@ import illustrationsFixture from '../fixtures/collections/illustrations.json' wi
 import { z } from 'zod';
 import { BlockEditorDocSchema } from '@repo/shared';
 import { createHash } from 'node:crypto';
-import { BLOG_EDITORIAL_FAMILIES } from '../scripts/reconcile-blog-editorial-dates';
 
 // AM2.5: blog_posts is mono-language. Flat `title` + `excerpt` on parent.
 // No `blog_posts_translations` collection; no `translations` array.
@@ -117,9 +116,14 @@ describe('apps/cms/fixtures/collections/blog-posts.json', () => {
 
 	it('matches the approved editorial date in every EN/FR/ES family', () => {
 		const posts = BlogPostFixtureSchema.parse(postsFixture) as FixturePost[];
-		const expectedDates = new Map(
-			BLOG_EDITORIAL_FAMILIES.map((family) => [family.translationKey, family.date]),
-		);
+		const expectedDates = new Map([
+			['the-two-hour-internet-slot', '2026-06-01'],
+			['how-i-learn-orbiting-a-system-until-it-clicks', '2026-06-09'],
+			['thinking-in-matrices', '2026-06-17'],
+			['ai-accelerated-human-owned-my-actual-workflow', '2026-06-25'],
+			['50-to-0-an-oracle-always-free-vm', '2026-07-03'],
+			['does-your-website-need-instant-publishing', '2026-07-11'],
+		]);
 		for (const post of posts) {
 			expect(post.date_published).toBe(expectedDates.get(post.translation_key));
 		}

@@ -175,6 +175,7 @@ bun run --env-file=.env --cwd apps/cms sync:pull
 `apps/cms/directus/` dump with remote state, so review its complete diff and
 stage only that directory. Production apply belongs to the environment-gated
 `push` job in [`.github/workflows/cms.yml`](../../.github/workflows/cms.yml).
+The `flows-push` dispatch audits permissions, previews, pushes only `flows`, and checks convergence.
 The package command below exists for an explicitly authorized apply and always
 runs through the repository guard wrapper:
 
