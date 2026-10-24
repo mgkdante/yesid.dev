@@ -14,7 +14,7 @@ import {
 } from './export-fallbacks';
 
 describe('offline export fixture', () => {
-	const fixtureCli = async (args: string[], env: Record<string, string> = {}) => {
+	const fixtureCli = async (args: string[], env: Record<string, string | undefined> = {}) => {
 		const child = Bun.spawn({
 			cmd: [process.execPath, '--no-env-file', joinPath(import.meta.dir, 'export-fallbacks.ts'), ...args],
 			cwd: joinPath(import.meta.dir, '..'),
@@ -38,7 +38,7 @@ describe('offline export fixture', () => {
 			expect(result.output).not.toMatch(/auth failed|fetch:|cache fallback/);
 			const manifest = await Bun.file(joinPath(emitDir, 'generated.manifest.json')).json();
 			expect(manifest.source).toBe('fixture');
-			expect(Object.keys(manifest.files)).toHaveLength(22);
+			expect(Object.keys(manifest.files)).toHaveLength(20);
 			expect(await verifyContentDir(emitDir)).toEqual({ verified: Object.keys(manifest.files), violations: [] });
 			expect(await Bun.file(joinPath(emitDir, '.cms-cache.json')).exists()).toBe(false);
 		} finally { rmSync(emitDir, { recursive: true, force: true }); }

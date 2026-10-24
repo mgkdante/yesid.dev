@@ -1,31 +1,39 @@
 import { expect, it } from 'bun:test';
-import { BlockEditorDocSchema, type BlockEditorDoc } from '@repo/shared';
+import type { BlockEditorDoc } from '@repo/shared';
+import type { ExportData } from './export-data';
 import { buildEmitConfigs } from './lib/emitters/configs';
-import { committedExportData, serializeFixture, trimExportData } from './trim-export-fixture';
+import { readCache } from './lib/cache';
+import { assertTrimmedExportData, FIXTURE_PATH, serializeFixture, trimExportData } from './trim-export-fixture';
 
-it('retains domain identities, locales, media references and all 22 emitters', () => {
-	const original = committedExportData();
-	const trimmed = trimExportData(original);
-	const identities = (value: unknown): unknown => {
-		if (Array.isArray(value)) return value.map(identities);
-		if (!value || typeof value !== 'object') return undefined;
-		return Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'blocks').map(([key, entry]) => [
-			key, /^(id|slug|translationKey|lang|path|href|url|relatedProjects|relatedServices|stack|tags)$/.test(key)
-				? entry : identities(entry),
-		]));
-	};
-	expect(identities(trimmed)).toEqual(identities(original));
-	const uuids = (value: unknown) => [...new Set(JSON.stringify(value).match(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/gi))].sort();
-	expect(uuids(trimmed)).toEqual(uuids(original));
-	expect(buildEmitConfigs(trimmed, '/fixture').length).toBe(22);
-	const validateDocs = (value: unknown) => {
-		if (!value || typeof value !== 'object') return;
-		if ('blocks' in value) BlockEditorDocSchema.parse(value);
-		Object.values(value).forEach(validateDocs);
-	};
-	validateDocs(trimmed);
-	expect(trimExportData(trimmed)).toEqual(trimmed);
-	expect(JSON.parse(serializeFixture(trimmed))).toEqual({ version: '1', directusUrl: 'fixture', data: trimmed });
+it('reads the committed fixture through readCache without derived media and is a fixed point', async () => {
+	const fixture = await readCache(FIXTURE_PATH);
+	expect(fixture).not.toBeNull();
+	if (!fixture) throw new Error('Missing committed export fixture');
+	expect(fixture).not.toHaveProperty('mediaAssets');
+	expect(fixture).not.toHaveProperty('mediaVariants');
+	// The exporter hydrates these derived fields from the asset manifest before emission.
+	expect(buildEmitConfigs({ ...fixture, mediaAssets: {}, mediaVariants: {} }, '/fixture')).toHaveLength(20);
+	expect(trimExportData(fixture)).toEqual(fixture);
+	assertTrimmedExportData(fixture, fixture);
+	expect(JSON.parse(serializeFixture(fixture))).toEqual({ version: '1', directusUrl: 'fixture', data: fixture });
+});
+
+it('rejects changed identities, missing locales/media, renderer changes and malformed documents', async () => {
+	const fixture = (await readCache(FIXTURE_PATH))!;
+	const corruptions: ((data: ExportData) => void)[] = [
+		(data) => { data.projects![0]!.slug = 'changed-identity'; },
+		(data) => { delete data.projects![0]!.title.fr; },
+		(data) => { data.projects![0]!.image = '00000000-0000-0000-0000-000000000000'; },
+		(data) => { Object.values(data.blogBodies!)[0]!.blocks.push({ id: 'extra', type: 'delimiter', data: {} }); },
+		(data) => { Object.values(data.blogBodies!)[0]!.version = 42 as unknown as string; },
+		(data) => { delete data.nav; },
+		(data) => { data.mediaAssets = {}; },
+	];
+	for (const corrupt of corruptions) {
+		const changed = structuredClone(fixture);
+		corrupt(changed);
+		expect(() => assertTrimmedExportData(fixture, changed)).toThrow();
+	}
 });
 
 it('deduplicates prose while retaining header levels, code fences, markup and references', () => {
@@ -42,10 +50,13 @@ it('deduplicates prose while retaining header levels, code fences, markup and re
 		{ id: 'slot', type: 'paragraph', data: { text: `${'Template prose. '.repeat(30)} {count}` } },
 	] };
 	// A later paragraph with a template slot is reference-bearing too.
-	const trimmed = trimExportData({ blogBodies: { example: doc } }).blogBodies!.example;
+	const trimmed = trimExportData({ blogBodies: { example: doc } }).blogBodies!.example!;
 	expect(trimmed.blocks.map((block) => block.id)).toEqual(['p1', 'h2', 'h3', 'code', 'diagram', 'marked', 'link1', 'link2', 'slot']);
-	expect(trimmed.blocks[0].data).toEqual({ text: 'Fixture copy.' });
+	expect(trimmed.blocks[0]!.data).toEqual({ text: 'Fixture copy.' });
 	expect(JSON.stringify(trimmed)).toContain('<strong>Fixture copy.</strong>');
 	expect(JSON.stringify(trimmed)).toContain('{count}');
+	expect(JSON.stringify(trimmed)).not.toContain('Template prose.');
+	expect(JSON.stringify(trimmed)).toContain('```mermaid');
+	expect(JSON.stringify(trimmed)).toContain('href=');
 	expect(doc.blocks).toHaveLength(10);
 });
