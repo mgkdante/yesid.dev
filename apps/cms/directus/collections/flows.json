@@ -11,6 +11,7 @@
       "cron": "*/2 * * * *"
     },
     "operation": "bd029e69-6067-4f92-9721-00bba2735ef1",
+    "folder": null,
     "_syncId": "196caf88-5082-477e-b396-d6b0a5bd31c4"
   },
   {
@@ -80,6 +81,7 @@
       ]
     },
     "operation": "dc01c036-4e5b-44a2-bd3d-87031b718d8f",
+    "folder": null,
     "_syncId": "4e59885c-8e18-41fd-b8f4-89f0f6baa951"
   },
   {
@@ -174,6 +176,7 @@
       ]
     },
     "operation": "_sync_op_vercel_revalidate_post_hook",
+    "folder": null,
     "_syncId": "6696d9f8-6ff1-4286-838a-57675262d08b"
   },
   {
@@ -210,6 +213,7 @@
       ]
     },
     "operation": "_sync_op_translation_reminder_check_published",
+    "folder": null,
     "_syncId": "c80a68ad-dabf-4ccc-95cc-e97095f51d90"
   },
   {
@@ -229,6 +233,7 @@
       "async": false
     },
     "operation": "a7c9d628-b970-4f38-bb4b-0c532901d0e1",
+    "folder": null,
     "_syncId": "d86a5982-6ab4-4474-ace8-cfd16962a9a4"
   }
 ]

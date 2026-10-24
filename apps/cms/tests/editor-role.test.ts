@@ -26,7 +26,8 @@ type Policy = { name: string; admin_access: boolean; app_access: boolean; roles:
 type Perm = { collection: string; action: string; policy: string };
 
 const UNRELATED_PERMISSION_COUNT = 767;
-const UNRELATED_PERMISSION_SHA256 = '8215ed32788bc3d687f1acadafbbbb2dcf680e2678d59ef97fd2d9d789e258fc';
+// slice-43.12 removed translation_key from the public blog_posts read to match live.
+const UNRELATED_PERMISSION_SHA256 = '00d743495f6006ec6b9a15e5950dd222e385d394894a780d7d2747d944d06e83';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 
