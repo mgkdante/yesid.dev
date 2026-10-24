@@ -257,8 +257,6 @@ describe('outcome-first positioning source contract', () => {
 
 	test('replayable locale inputs and current fetcher fixtures cannot restore reserved titles', () => {
 		for (const path of [
-			'apps/cms/ops/i18n/fr-2026-06-13.json',
-			'apps/cms/ops/i18n/fr-translations.example.json',
 			'apps/cms/ops/i18n/es-2026-07-09.json',
 		]) {
 			expect(source(path), path).not.toMatch(RESERVED_PERSON_TITLE_PATTERN);

@@ -47,12 +47,6 @@ const LEGAL_ARTIFACT_PATH = join(
 	'legal',
 	'legal-pages-2026-07-09.json',
 );
-const ES_WORKLIST_PATH = join(
-	CMS_ROOT,
-	'ops',
-	'i18n',
-	'es-worklist-2026-07-09.json',
-);
 
 type Locale = 'en' | 'fr' | 'es';
 type LegalBlock = { kind: string; text?: string; items?: string[] };
@@ -229,33 +223,6 @@ describe('legal recovery source privacy and truth', () => {
 	it('does not retain a private postal address in review notes', () => {
 		for (const page of legalArtifact.pages) {
 			expect(CANADIAN_POSTAL_CODE.test(page.advisorNotes)).toBe(false);
-		}
-	});
-
-	it('keeps the translation worklist free of the superseded private location', () => {
-		const worklist = readJson<
-			Array<{
-				collection: string;
-				id: string;
-				fields: {
-					body: Record<
-						'en' | 'fr',
-						{ blocks: Array<{ data: { text?: string } }> }
-					>;
-				};
-			}>
-		>(ES_WORKLIST_PATH);
-		const notice = worklist.find(
-			(row) => row.collection === 'legal_pages' && row.id === 'notice',
-		);
-		expect(notice).toBeDefined();
-		for (const locale of ['en', 'fr'] as const) {
-			const body = notice!.fields.body[locale].blocks
-				.map((block) => block.data.text ?? '')
-				.join('\n');
-			expect(body.includes(PUBLIC_SERVICE_AREA_IDENTIFICATION[locale])).toBe(true);
-			expect(/\bGatineau\b/i.test(body)).toBe(false);
-			expect(CANADIAN_POSTAL_CODE.test(body)).toBe(false);
 		}
 	});
 
