@@ -56,7 +56,7 @@ it('rejects changed identities, missing locales/media, renderer changes and malf
 		(data) => { Object.values(data.blogBodies!)[0]!.version = 42 as unknown as string; },
 		(data) => { delete data.nav; },
 		(data) => { data.mediaAssets = {}; },
-		(data) => { data.cta!.heading.en = data.cta!.heading.en.replace('\n', ' '); },
+		(data) => { data.cta!.heading.en = data.cta!.heading.en.replaceAll('\n', ' '); },
 		(data) => { data.legalPages![0]!.body.en!.blocks.splice(1, 1); },
 		(data) => {
 			const doc = Object.values(data.blogBodies!).find(doc => doc.blocks.filter(block => block.type === 'header').length > 1)!;
