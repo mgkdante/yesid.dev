@@ -613,7 +613,7 @@ test.describe('section navigation keyboard continuity', () => {
 				await expect(page.getByRole('dialog')).toHaveCount(0);
 				await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
 				const heading = page.locator('[data-section-index="1"] .section-header').first();
-				const title = await heading.locator('.section-title').innerText();
+				// Section index 1 has number badge 02; copy may repeat across sections.
 				for (let cycle = 0; cycle < 3; cycle++) {
 					if (width < 1024) {
 						const pill = page.getByTestId('toc-pill').locator('button.toc-pill');
@@ -624,14 +624,14 @@ test.describe('section navigation keyboard continuity', () => {
 						await pill.press('Space');
 						await page
 							.locator('.toc-drawer-item:not(.toc-drawer-sub)')
-							.filter({ hasText: title })
+							.filter({ has: page.locator('.toc-drawer-badge').getByText('02', { exact: true }) })
 							.press('Enter');
 						await expect(pill).toBeFocused();
 						await expect(page.locator('.toc-drawer')).toHaveCount(0);
 					} else
 						await page
 							.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)')
-							.filter({ hasText: title })
+							.filter({ has: page.locator('.toc-badge').getByText('02', { exact: true }) })
 							.press('Enter');
 					await expect(async () => {
 						const box = (await heading.boundingBox())!;

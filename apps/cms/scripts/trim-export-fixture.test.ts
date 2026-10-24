@@ -57,6 +57,7 @@ it('rejects changed identities, missing locales/media, renderer changes and malf
 		(data) => { delete data.nav; },
 		(data) => { data.mediaAssets = {}; },
 		(data) => { data.cta!.heading.en = data.cta!.heading.en.replaceAll('\n', ' '); },
+		(data) => { data.cta!.subtitle.en = 'Changed short copy'; },
 		(data) => { data.legalPages![0]!.body.en!.blocks.splice(1, 1); },
 		(data) => {
 			const doc = Object.values(data.blogBodies!).find(doc => doc.blocks.filter(block => block.type === 'header').length > 1)!;
@@ -87,8 +88,8 @@ it('deduplicates prose while retaining header levels, code fences, markup and re
 	// A later paragraph with a template slot is reference-bearing too.
 	const trimmed = trimExportData({ blogBodies: { example: doc } }).blogBodies!.example!;
 	expect(trimmed.blocks.map((block) => block.id)).toEqual(['p1', 'h2', 'h2-again', 'h3', 'code', 'diagram', 'marked', 'link1', 'link2', 'slot']);
-	expect(trimmed.blocks[0]!.data).toEqual({ text: 'Fixture copy (en, text).' });
-	expect(JSON.stringify(trimmed)).toContain('<strong>Fixture copy (en, text).</strong>');
+	expect(trimmed.blocks[0]!.data.text).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
+	expect(JSON.stringify(trimmed)).toMatch(/<strong>Fixture copy \(en, text, [0-9a-f]{8}\)\.<\/strong>/);
 	expect(JSON.stringify(trimmed)).toContain('{count}');
 	expect(JSON.stringify(trimmed)).not.toContain('Template prose.');
 	expect(JSON.stringify(trimmed)).toContain('```mermaid');
@@ -96,18 +97,42 @@ it('deduplicates prose while retaining header levels, code fences, markup and re
 	expect(doc.blocks).toHaveLength(11);
 });
 
+it('keeps every short string verbatim, including the 200-character boundary in every field', () => {
+	const short = '\n<strong>{name}</strong>'.padStart(200, 'x');
+	const values = { title: 'x'.repeat(200), heading: { en: short, fr: 'Titre court' },
+		text: '<strong>Short copy</strong>\n{count}', arbitraryField: 'Unchanged',
+		siteLabels: { helper: { en: short, es: 'Texto breve' } } };
+	expect(trimExportData(values as unknown as ExportData)).toEqual(values);
+});
+
+it('gives different long source strings distinct stable placeholders for the same locale and field', () => {
+	const source = { legalPages: [{ body: { en: { time: 1, version: '2.31.2', blocks: [
+		{ id: 'one', type: 'paragraph', data: { text: 'a'.repeat(201) } },
+		{ id: 'two', type: 'paragraph', data: { text: 'b'.repeat(201) } },
+	] } } }] } as unknown as ExportData;
+	const trimmed = trimExportData(source);
+	const [first, second] = trimmed.legalPages![0]!.body.en!.blocks.map(block => block.data.text);
+	expect(first).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
+	expect(second).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
+	expect(second).not.toBe(first);
+	expect(trimExportData(source)).toEqual(trimmed);
+	expect(trimExportData(trimmed)).toEqual(trimmed);
+});
+
 it('preserves line breaks, every legal paragraph and distinct locale/field placeholders', () => {
 	const paragraphs: BlockEditorDoc = { time: 1, version: '2.31.2', blocks: [
 		{ id: 'one', type: 'paragraph', data: { text: 'First paragraph.' } },
 		{ id: 'two', type: 'paragraph', data: { text: 'Second paragraph.\nAnother line.' } },
 	] };
-	const source = { cta: { heading: { en: 'First\nSecond', fr: 'Premier\nDeuxième' }, subtitle: { en: 'Subtitle' } },
+	const long = 'Prose. '.repeat(40);
+	const source = { cta: { heading: { en: `${long}\nSecond`, fr: `${long}\nSecond` }, subtitle: { en: `${long}\nSecond` } },
 		siteLabels: { ui: { languageNames: { en: { en: 'English', fr: 'Anglais' }, fr: { en: 'French', fr: 'Français' } } } },
 		legalPages: [{ body: { en: paragraphs } }] } as unknown as ExportData;
 	const trimmed = trimExportData(source);
 	expect(trimmed.cta!.heading.en.split('\n')).toHaveLength(2);
+	expect(trimmed.cta!.heading.en).toMatch(/^Fixture copy \(en, heading, [0-9a-f]{8}\)\.\n/);
 	expect(trimmed.cta!.heading.fr).not.toBe(trimmed.cta!.heading.en);
-	expect(trimmed.cta!.subtitle.en).not.toBe(trimmed.cta!.heading.en.split('\n')[0]);
+	expect(trimmed.cta!.subtitle.en).not.toBe(trimmed.cta!.heading.en);
 	expect(trimmed.legalPages![0]!.body.en!.blocks.map(block => block.id)).toEqual(['one', 'two']);
 	expect(JSON.stringify(trimmed.legalPages)).toContain('\\n');
 	expect(trimmed.siteLabels!.ui.languageNames.en.fr).not.toBe(trimmed.siteLabels!.ui.languageNames.fr.fr);

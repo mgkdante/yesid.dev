@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 /** Build a compact, reviewable offline fixture from an authenticated export cache. */
 import { mkdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { isDeepStrictEqual, parseArgs } from 'node:util';
 import { BlockEditorDocSchema } from '@repo/shared';
@@ -22,12 +23,16 @@ const EMAIL = /[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 
 /** Keep inline markup, links, template slots and asset references verbatim. */
 function shortCopy(value: string, locale: string, field: string): string {
-	if (EMAIL.test(value)) return value;
+	if (value.length <= 200 || EMAIL.test(value)) return value;
+	const hash = createHash('sha256').update(value).digest('hex').slice(0, 8);
+	const placeholder = `Fixture copy (${locale}, ${field}, ${hash}).`;
 	// Protect tokens individually so a slot or link does not retain its whole paragraph.
+	// Keep emitted placeholders when re-trimming a markup-heavy field over 200 chars.
 	const tokens = /(<\/?[a-z][^>]*>|\{[^{}\r\n]+\}|(?:https?:\/\/|mailto:)[^\s<>"']+|[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/gi;
 	return value.split(/(\r\n|\n|\r)/).map((line, index) => index % 2 ? line :
 		line.split(tokens).map((part, tokenIndex) =>
-			tokenIndex % 2 || !part.trim() ? part : `Fixture copy (${locale}, ${field}).`,
+			tokenIndex % 2 || !part.trim() || /^Fixture copy \((?:en|es|fr), [^()\r\n]+, [0-9a-f]{8}\)\.$/.test(part)
+				? part : placeholder,
 		).join(''),
 	).join('');
 }
@@ -123,17 +128,18 @@ function identities(value: unknown, path: string[] = []): unknown {
 }
 
 /** Compare each retained string against its source, matching blocks by stable editor ID. */
-function assertLineBreaks(source: unknown, trimmed: unknown): void {
+function assertRetainedStrings(source: unknown, trimmed: unknown): void {
 	if (typeof source === 'string' && typeof trimmed === 'string') {
+		if (source.length <= 200 && source !== trimmed) throw new Error('Trim changed short copy');
 		if (!isDeepStrictEqual(source.match(/\r\n|\n|\r/g), trimmed.match(/\r\n|\n|\r/g))) {
 			throw new Error('Trim changed line breaks');
 		}
 	} else if (Array.isArray(source) && Array.isArray(trimmed)) {
-		trimmed.forEach((entry, index) => assertLineBreaks(
+		trimmed.forEach((entry, index) => assertRetainedStrings(
 			isObject(entry) && 'id' in entry ? source.find(item => isObject(item) && item.id === entry.id) : source[index], entry,
 		));
 	} else if (isObject(source) && isObject(trimmed)) {
-		for (const [key, value] of Object.entries(trimmed)) assertLineBreaks(source[key], value);
+		for (const [key, value] of Object.entries(trimmed)) assertRetainedStrings(source[key], value);
 	}
 }
 
@@ -166,7 +172,7 @@ export function assertTrimmedExportData(source: ExportData, trimmed: ExportData)
 	if (!isDeepStrictEqual(protectedTokens(editorial), protectedTokens(trimmed))) {
 		throw new Error('Trim changed media UUIDs, inline markup, template slots or links');
 	}
-	assertLineBreaks(editorial, trimmed);
+	assertRetainedStrings(editorial, trimmed);
 	validateDocs(trimmed);
 	// Fixture mode supplies both derived maps before building configs. The source
 	// cache already has them; hermetic fixture validation can use empty maps.
