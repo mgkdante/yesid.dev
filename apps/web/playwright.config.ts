@@ -1,4 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+// Specs import ignored content modules during collection, before globalSetup or
+// webServer runs. Emit them here so fresh local runs and --list work too.
+if (process.env.TEST_WORKER_INDEX === undefined) {
+	execFileSync('bun', ['run', '--cwd', fileURLToPath(new URL('../cms', import.meta.url)), 'export:fallbacks'], {
+		env: { ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' },
+		stdio: 'inherit'
+	});
+}
 
 // slice-19 Phase 1 Task 1: mobile device matrix for permanent mobile UX coverage.
 //
