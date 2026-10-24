@@ -1,9 +1,11 @@
+import { blogPageContent } from '../src/lib/content/blog-page';
+import { aboutPageContent } from '../src/lib/content/about-page';
 import { test, expect } from '@playwright/test';
 
 // i18n / trilingual routing + SEO coverage (slice-28.6 launch).
 // Verifies published routes across EN (/), FR (/fr/*), and ES (/es/*),
 // language toggle navigates correctly, content changes language, and 404s
-// reject invalid locales. No live CMS dependency — all content is committed
+// reject invalid locales. No live CMS dependency — content is generated from the shared fixture
 // and static at build time (post-27.2 adapter).
 
 const STATIC_ROUTES = [
@@ -242,14 +244,14 @@ test('language toggle: navigating preserves path (/services → /fr/services)', 
 test('content language: /about EN page renders English copy', async ({ page }) => {
   await page.goto('/about');
   // Identity title is a prominent, locale-specific about-page marker.
-  await expect(page.locator('body')).toContainText('Curious builder, lifelong tinkerer');
-  await expect(page.getByTestId('about-cta-button')).toContainText('Send message');
+  await expect(page.getByTestId('about-identity').getByRole('heading', { level: 1 })).toHaveText(aboutPageContent.identity.title.en);
+  await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.en);
 });
 
 test('content language: /fr/about FR page renders French copy', async ({ page }) => {
   await page.goto('/fr/about');
-  await expect(page.locator('body')).toContainText('Bâtisseur curieux, bricoleur depuis toujours');
-  await expect(page.getByTestId('about-cta-button')).toContainText('Envoyer un message');
+  await expect(page.getByTestId('about-identity').getByRole('heading', { level: 1 })).toHaveText(aboutPageContent.identity.title.fr!);
+  await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.fr!);
 });
 
 test('content language: /blog EN renders English intro', async ({ page }) => {
@@ -262,7 +264,7 @@ test('content language: /blog EN renders English intro', async ({ page }) => {
   const subtitle = page.locator('.listing-header-subtitle');
   await expect(subtitle).toBeVisible();
   await expect(subtitle).toContainText(
-    'Notes on digital infrastructure, databases, and building reliable systems.',
+    blogPageContent.intro.en,
   );
 });
 
@@ -271,7 +273,7 @@ test('content language: /fr/blog FR renders French intro', async ({ page }) => {
   const subtitle = page.locator('.listing-header-subtitle');
   await expect(subtitle).toBeVisible();
   await expect(subtitle).toContainText(
-    "Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.",
+    blogPageContent.intro.fr!,
   );
 });
 

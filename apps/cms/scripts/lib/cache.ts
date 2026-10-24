@@ -8,7 +8,7 @@
  *
  * The cache is meant to be ephemeral: it's gitignored, regenerated on every
  * successful run, and can be deleted at any time (a fresh build will recreate
- * it OR exit-0-without-emitting if both CMS and cache are unavailable).
+ * it, or fail if both CMS and cache are unavailable).
  */
 
 import { existsSync } from 'node:fs';

@@ -1,112 +1,148 @@
+import { legalTruth, demoFeedDisclosures } from './lib/validators/live-export';
 import { describe, expect, it } from 'bun:test';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
-import { tmpdir } from 'node:os';
+import { readCache, writeCache } from './lib/cache';
+import { FIXTURE_PATH } from './trim-export-fixture';
 import {
 	buildMirroredMediaAssetsFromManifest,
 	decideExit,
 	fallbackBannerLines,
-	getExportSkipReason,
+	resolveContentSource,
 	raceWithStallGuard,
 	resolveFallbackPolicy,
 	run,
 } from './export-fallbacks';
 
+describe('offline export fixture', () => {
+	const fixtureCli = async (args: string[], env: Record<string, string | undefined> = {}) => {
+		const child = Bun.spawn({
+			cmd: [process.execPath, '--no-env-file', joinPath(import.meta.dir, 'export-fallbacks.ts'), ...args],
+			cwd: joinPath(import.meta.dir, '..'),
+			env: { PATH: process.env.PATH ?? '', SystemRoot: process.env.SystemRoot ?? '',
+				EXPORT_FALLBACKS_SOURCE: 'fixture', PUBLIC_DIRECTUS_URL: 'http://127.0.0.1:1', ...env },
+			stdout: 'pipe', stderr: 'pipe',
+		});
+		const [exitCode, stdout, stderr] = await Promise.all([
+			child.exited, new Response(child.stdout).text(), new Response(child.stderr).text(),
+		]);
+		return { exitCode, output: stdout + stderr };
+	};
+
+	it('emits all modules without credentials or a reachable CMS', async () => {
+		const emitDir = joinPath(import.meta.dir, '..', `.fixture-export-test-${crypto.randomUUID()}`);
+		try {
+			const result = await fixtureCli(['--emit-dir', emitDir], {
+				VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/offline', EXPORT_FALLBACKS_SOURCE: 'live',
+			});
+			expect(result.exitCode).toBe(0);
+			expect(result.output).toContain('Ignoring EXPORT_FALLBACKS_SOURCE=live on untrusted Vercel target');
+			expect(result.output).not.toMatch(/auth failed|fetch:|cache fallback/);
+			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
+			expect(readdirSync(emitDir).filter(file => file.endsWith('.json'))).toEqual([]);
+			expect(await Bun.file(joinPath(emitDir, '.cms-cache.json')).exists()).toBe(false);
+		} finally { rmSync(emitDir, { recursive: true, force: true }); }
+	}, 30_000);
+
+	it('refuses production and develop before LIVE, argument parsing or authentication', async () => {
+		for (const env of [
+			{ VERCEL_ENV: 'production' },
+			{ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' },
+		]) {
+			for (const overrides of [{}, { EXPORT_FALLBACKS_LIVE: '1' }]) {
+				const result = await fixtureCli(['--unknown'], { ...env, ...overrides });
+				expect(result.exitCode).toBe(1);
+				expect(result.output).toContain('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture');
+				expect(result.output).not.toMatch(/auth failed|fetch:|Unknown option/);
+			}
+		}
+	});
+});
+
 describe('failed live export retains last-good generated output', () => {
 	it('does not replace an existing content module after a real HTTP fetch failure', async () => {
-		const emitDir = joinPath(tmpdir(), `cms-export-failure-${crypto.randomUUID()}`);
+		const emitDir = joinPath(import.meta.dir, '..', `.export-failure-test-${crypto.randomUUID()}`);
 		mkdirSync(emitDir, { recursive: true });
 		const marker = joinPath(emitDir, 'site-meta.ts');
 		writeFileSync(marker, 'last approved generated content');
 		const server = Bun.serve({ port: 0, fetch: () => new Response('fixture CMS unavailable', { status: 403 }) });
 		try {
-			expect(await run({ directusUrl: server.url.origin, token: 'fixture', emitDir, dryRun: false, policy: 'fail' })).toEqual({ source: 'none', emitted: 0 });
+			expect(await run({ source: 'live', directusUrl: server.url.origin, token: 'fixture', emitDir, dryRun: false, policy: 'fail' })).toEqual({ source: 'none', emitted: 0 });
 			expect(await Bun.file(marker).text()).toBe('last approved generated content');
-			expect(await Bun.file(joinPath(emitDir, 'generated.manifest.json')).exists()).toBe(false);
+			expect(readdirSync(emitDir)).toEqual(['site-meta.ts']);
+		} finally { server.stop(true); rmSync(emitDir, { recursive: true, force: true }); }
+	});
+
+	it('fails without live content or cache, and emits all modules from an available cache', async () => {
+		const emitDir = joinPath(import.meta.dir, '..', `.cache-export-test-${crypto.randomUUID()}`);
+		const server = Bun.serve({ port: 0, fetch: () => new Response('unavailable', { status: 403 }) });
+		const opts = { source: 'live' as const, directusUrl: server.url.origin, token: 'fixture', emitDir, dryRun: false, policy: 'soft' as const };
+		try {
+			const missing = await run(opts);
+			expect(missing).toEqual({ source: 'none', emitted: 0 });
+			expect(decideExit(missing, 'soft')).toBe(1);
+			const cached = { ...(await readCache(FIXTURE_PATH))!, mediaAssets: {}, mediaVariants: {} };
+			cached.siteLabels!.ui.analyticsConsent.description = { ...legalTruth.consent };
+			cached.siteLabels!.heroDashboard.vehiclesSub = { ...demoFeedDisclosures };
+			cached.legalPages = cached.legalPages!.map(page => ({ ...page, body: Object.fromEntries(
+				(['en', 'fr', 'es'] as const).map(locale => [locale, { time: 1, version: '2.31.2', blocks: [
+					'contact@yesid.dev', 'Plausible Analytics Cloud ' + legalTruth.clause[locale],
+					legalTruth.revision[locale] + ' 2026-07-15', ...legalTruth.modes[locale],
+					page.slug === 'privacy' ? legalTruth.privacyProfile[locale] : legalTruth.cookieProfile[locale],
+				].map((text, index) => ({ id: String(index), type: 'paragraph', data: { text } })) }]),
+			) }));
+			const cache = joinPath(emitDir, '.cms-cache.json');
+			await writeCache(cache, cached, 'synthetic');
+			const before = await Bun.file(cache).text();
+			expect(await run(opts)).toEqual({ source: 'cache', emitted: 20 });
+			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
+			expect(await Bun.file(cache).text()).toBe(before);
+			const emitted = await Bun.file(joinPath(emitDir, 'site-meta.ts')).text();
+			cached.siteLabels!.ui.analyticsConsent.description.en = 'Obsolete consent description';
+			await writeCache(cache, cached, 'synthetic');
+			await expect(run(opts)).rejects.toThrow('CMS cache is stale');
+			expect(await Bun.file(joinPath(emitDir, 'site-meta.ts')).text()).toBe(emitted);
 		} finally { server.stop(true); rmSync(emitDir, { recursive: true, force: true }); }
 	});
 });
 
-describe('export-fallbacks skip policy', () => {
-	it('skips when EXPORT_FALLBACKS_SKIP is enabled', () => {
-		expect(getExportSkipReason({ EXPORT_FALLBACKS_SKIP: '1' })).toBe('EXPORT_FALLBACKS_SKIP');
-		expect(getExportSkipReason({ EXPORT_FALLBACKS_SKIP: 'true' })).toBe('EXPORT_FALLBACKS_SKIP');
+describe('content source and fallback policy matrix', () => {
+	it.each([
+		['local default', {}, 'fixture', 'soft'],
+		['CI default', { CI: 'true' }, 'fixture', 'soft'],
+		['local fixture', { EXPORT_FALLBACKS_SOURCE: 'fixture' }, 'fixture', 'soft'],
+		['local explicit live', { EXPORT_FALLBACKS_SOURCE: 'live' }, 'live', 'soft'],
+		['local LIVE flag alone', { EXPORT_FALLBACKS_LIVE: '1' }, 'fixture', 'soft'],
+		['untrusted preview', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/test' }, 'fixture', 'soft'],
+		['untrusted preview with LIVE flag', { VERCEL_ENV: 'preview', EXPORT_FALLBACKS_LIVE: '1' }, 'fixture', 'soft'],
+		['untrusted preview explicit live', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/test', EXPORT_FALLBACKS_SOURCE: 'live' }, 'fixture', 'soft'],
+		['preview without branch explicit live', { VERCEL_ENV: 'preview', EXPORT_FALLBACKS_SOURCE: 'live' }, 'fixture', 'soft'],
+		['Vercel development explicit live', { VERCEL_ENV: 'development', EXPORT_FALLBACKS_SOURCE: 'live' }, 'fixture', 'soft'],
+		['Vercel development', { VERCEL_ENV: 'development' }, 'fixture', 'soft'],
+		['production', { VERCEL_ENV: 'production' }, 'live', 'fail'],
+		['production with LIVE flag', { VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: '1' }, 'live', 'fail'],
+		['production explicit live', { VERCEL_ENV: 'production', EXPORT_FALLBACKS_SOURCE: 'live' }, 'live', 'fail'],
+		['develop preview', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' }, 'live', 'fail'],
+		['develop preview explicit live', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop', EXPORT_FALLBACKS_SOURCE: 'live' }, 'live', 'fail'],
+	] as const)('%s', (_label, env, source, policy) => {
+		expect(resolveContentSource(env)).toBe(source);
+		expect(resolveFallbackPolicy(env)).toBe(policy);
 	});
-
-	it('refuses a trusted target with a missing live flag instead of silently shipping old content', () => {
-		expect(getExportSkipReason({ VERCEL_ENV: 'preview' })).toBe('VERCEL_ENV=preview');
-		expect(() => getExportSkipReason({ VERCEL_ENV: 'production' })).toThrow('EXPORT_FALLBACKS_LIVE=1');
-		expect(() => getExportSkipReason({ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' })).toThrow('EXPORT_FALLBACKS_LIVE=1');
-		expect(getExportSkipReason({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_SKIP: '1' })).toBe('EXPORT_FALLBACKS_SKIP');
+	it.each([
+		{ VERCEL_ENV: 'production' },
+		{ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' },
+	])('refuses fixture on trusted target %j', env => {
+		expect(() => resolveContentSource({ ...env, EXPORT_FALLBACKS_SOURCE: 'fixture' })).toThrow('refuse');
 	});
-
-	it('skips arbitrary preview branches even when the live flag is mis-scoped', () => {
-		expect(
-			getExportSkipReason({
-				VERCEL_ENV: 'preview',
-				VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
-				EXPORT_FALLBACKS_LIVE: '1',
-			}),
-		).toBe('VERCEL_ENV=preview branch=feature/untrusted-preview');
-	});
-
-	it('allows live CMS exports only on production and the develop preview', () => {
-		expect(getExportSkipReason({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: '1' })).toBeNull();
-		expect(
-			getExportSkipReason({
-				VERCEL_ENV: 'preview',
-				VERCEL_GIT_COMMIT_REF: 'develop',
-				EXPORT_FALLBACKS_LIVE: '1',
-			}),
-		).toBeNull();
-	});
-
-	it('does not skip local explicit export commands by default', () => {
-		expect(getExportSkipReason({})).toBeNull();
-	});
-});
-
-describe('fallback policy (live-or-die)', () => {
-	it('is soft for local builds regardless of the LIVE flag', () => {
-		expect(resolveFallbackPolicy({})).toBe('soft');
-		expect(resolveFallbackPolicy({ EXPORT_FALLBACKS_LIVE: '1' })).toBe('soft');
-	});
-
-	it('is fail only on trusted Vercel targets that opted into a live export', () => {
-		expect(
-			resolveFallbackPolicy({
-				VERCEL_ENV: 'preview',
-				VERCEL_GIT_COMMIT_REF: 'develop',
-				EXPORT_FALLBACKS_LIVE: '1',
-			}),
-		).toBe('fail');
-		expect(
-			resolveFallbackPolicy({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: 'true' }),
-		).toBe('fail');
-	});
-
-	it('stays soft for an arbitrary preview even when the live flag drifts onto it', () => {
-		expect(
-			resolveFallbackPolicy({
-				VERCEL_ENV: 'preview',
-				VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
-				EXPORT_FALLBACKS_LIVE: '1',
-			}),
-		).toBe('soft');
-	});
-
-	it('leaves missing-live rejection to the trusted-target gate before fallback policy', () => {
-		expect(resolveFallbackPolicy({ VERCEL_ENV: 'preview' })).toBe('soft');
-		expect(resolveFallbackPolicy({ VERCEL_ENV: 'production' })).toBe('soft');
-	});
-
-	it('decideExit fails every non-live outcome under fail, never under soft', () => {
-		expect(decideExit({ source: 'live', emitted: 27 }, 'fail')).toBe(0);
-		expect(decideExit({ source: 'cache', emitted: 27 }, 'fail')).toBe(1);
-		expect(decideExit({ source: 'none', emitted: 0 }, 'fail')).toBe(1);
-		expect(decideExit({ source: 'live', emitted: 27 }, 'soft')).toBe(0);
-		expect(decideExit({ source: 'cache', emitted: 27 }, 'soft')).toBe(0);
-		expect(decideExit({ source: 'none', emitted: 0 }, 'soft')).toBe(0);
+	it('fails when no content source exists and forbids cache on trusted targets', () => {
+		for (const policy of ['soft', 'fail'] as const) {
+			expect(decideExit({ source: 'none', emitted: 0 }, policy)).toBe(1);
+			expect(decideExit({ source: 'live', emitted: 20 }, policy)).toBe(0);
+		}
+		expect(decideExit({ source: 'cache', emitted: 20 }, 'soft')).toBe(0);
+		expect(decideExit({ source: 'fixture', emitted: 20 }, 'soft')).toBe(0);
+		expect(decideExit({ source: 'cache', emitted: 20 }, 'fail')).toBe(1);
+		expect(decideExit({ source: 'fixture', emitted: 20 }, 'fail')).toBe(1);
 	});
 });
 
@@ -117,9 +153,6 @@ describe('fallbackBannerLines', () => {
 		expect(cacheBanner.join('\n')).toContain('source: cache');
 		expect(cacheBanner.join('\n')).toContain('fetch error: ECONNREFUSED');
 
-		const shipBanner = fallbackBannerLines('committed-modules', 'boom');
-		expect(shipBanner.join('\n')).toContain('source: committed-modules');
-		expect(shipBanner.join('\n')).toContain('may be stale vs the CMS');
 	});
 });
 
@@ -127,7 +160,8 @@ describe('complete export boundary', () => {
 	const runCli = async (env: Record<string, string> = {}) => {
 		const child = Bun.spawn({
 			cmd: [
-				Bun.which('bun') ?? 'bun',
+				process.execPath,
+				'--no-env-file',
 				joinPath(import.meta.dir, 'export-fallbacks.ts'),
 				'--dry-run',
 				'--module=services',
@@ -150,13 +184,7 @@ describe('complete export boundary', () => {
 		expect(stderr).toContain('module');
 	});
 
-	it('validates retired flags before the explicit skip gate', async () => {
-		const { exitCode, stderr } = await runCli({ EXPORT_FALLBACKS_SKIP: '1' });
-		expect(exitCode).not.toBe(0);
-		expect(stderr).toContain('module');
-	});
-
-	it('validates retired flags before an untrusted preview skip gate', async () => {
+	it('validates retired flags before an untrusted preview fixture export', async () => {
 		const { exitCode, stderr } = await runCli({
 			VERCEL_ENV: 'preview',
 			VERCEL_GIT_COMMIT_REF: 'feature/untrusted-preview',
@@ -217,7 +245,7 @@ describe('raceWithStallGuard', () => {
 
 describe('media asset mirror export', () => {
 	it('emits UUID to site-local URL mappings only when the static mirror file exists', () => {
-		const root = joinPath(tmpdir(), `media-mirror-${Date.now()}`);
+		const root = joinPath(import.meta.dir, '..', `media-mirror-${Date.now()}`);
 		mkdirSync(joinPath(root, 'images', 'work'), { recursive: true });
 		writeFileSync(joinPath(root, 'images', 'work', 'cover.png'), 'image-bytes');
 
@@ -250,7 +278,7 @@ describe('media asset mirror export', () => {
 	});
 
 	it('fails the export when a manifest asset has no local mirror file', () => {
-		const root = joinPath(tmpdir(), `media-mirror-missing-${Date.now()}`);
+		const root = joinPath(import.meta.dir, '..', `media-mirror-missing-${Date.now()}`);
 
 		expect(() =>
 			buildMirroredMediaAssetsFromManifest(
@@ -264,7 +292,7 @@ describe('media asset mirror export', () => {
 	});
 
 	it('fails the export when a manifest asset has no Directus UUID mapping', () => {
-		const root = joinPath(tmpdir(), `media-mirror-unmapped-${Date.now()}`);
+		const root = joinPath(import.meta.dir, '..', `media-mirror-unmapped-${Date.now()}`);
 		mkdirSync(joinPath(root, 'images'), { recursive: true });
 		writeFileSync(joinPath(root, 'images', 'orphan.png'), 'image-bytes');
 

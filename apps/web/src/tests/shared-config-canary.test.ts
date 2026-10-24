@@ -15,7 +15,7 @@ const CONFIG_LOCK_INTEGRITY =
 const CONFIG_BASE_DIGEST = '588a4acf72f44593561112fc945d410548b56cf556bbbc9bc745c1f7b218424f';
 const MATERIALIZED_BASE = 'node_modules/.yesid-shared-tooling/turbo/base.json';
 const YESID_TURBO_SEMANTIC_DIGEST =
-	'e75710fea665b5304d6e4d0029588894374d3c7a07d4330dc6088d2f7d3f47b6';
+	'dba060ff9c4a79a89d2f72c722b2a5ad50f9beca0dd16245c4f665439e9626b5';
 
 const CONFIG_RECEIPT = {
 	schema: 1,
@@ -54,24 +54,56 @@ const TSCONFIGS = [
 ] as const;
 
 const TURBO_OVERLAY = {
-	tasks: {
-		build: {
-			outputs: ['.svelte-kit/**', '.vercel/**', 'dist/**'],
-			env: [
-				'PUBLIC_DIRECTUS_URL',
-				'DIRECTUS_ADMIN_TOKEN',
-				'DIRECTUS_BUILD_TOKEN',
-				'DIRECTUS_DEV_BUILD_TOKEN',
-				'DIRECTUS_ADMIN_EMAIL',
-				'DIRECTUS_ADMIN_PASSWORD',
-				'EXPORT_FALLBACKS_SKIP',
-				'EXPORT_FALLBACKS_LIVE',
-				'VERCEL_ENV',
-				'VERCEL_GIT_COMMIT_REF',
-				'OPENWEATHER_API_KEY',
+	"tasks": {
+		"build": {
+			"outputs": [
+				".svelte-kit/**",
+				".vercel/**",
+				"dist/**"
 			],
+			"env": [
+				"PUBLIC_DIRECTUS_URL",
+				"DIRECTUS_ADMIN_TOKEN",
+				"DIRECTUS_BUILD_TOKEN",
+				"DIRECTUS_DEV_BUILD_TOKEN",
+				"DIRECTUS_ADMIN_EMAIL",
+				"DIRECTUS_ADMIN_PASSWORD",
+				"EXPORT_FALLBACKS_SOURCE",
+				"EXPORT_FALLBACKS_LIVE",
+				"VERCEL_ENV",
+				"VERCEL_GIT_COMMIT_REF",
+				"OPENWEATHER_API_KEY"
+			],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/.env.local",
+				"!**/.env.*.local",
+				"$TURBO_ROOT$/packages/shared/fixtures/**",
+				"$TURBO_ROOT$/apps/cms/scripts/**",
+				"$TURBO_ROOT$/apps/cms/fixtures/**"
+			]
 		},
-	},
+		"test": {
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/.env.local",
+				"!**/.env.*.local",
+				"$TURBO_ROOT$/packages/shared/fixtures/**",
+				"$TURBO_ROOT$/apps/cms/scripts/**",
+				"$TURBO_ROOT$/apps/cms/fixtures/**"
+			]
+		},
+		"check": {
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/.env.local",
+				"!**/.env.*.local",
+				"$TURBO_ROOT$/packages/shared/fixtures/**",
+				"$TURBO_ROOT$/apps/cms/scripts/**",
+				"$TURBO_ROOT$/apps/cms/fixtures/**"
+			]
+		}
+	}
 } as const;
 
 const WEB_TURBO_CONFIG = {

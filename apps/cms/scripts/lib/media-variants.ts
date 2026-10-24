@@ -85,10 +85,7 @@ export async function prepareMediaVariants(
 	manifest: MediaVariantsManifestInput,
 	repoRoot = DEFAULT_REPO_ROOT,
 ): Promise<PreparedMediaVariants> {
-	// Dynamic import: sharp is a native module, and export-fallbacks must be
-	// able to honor EXPORT_FALLBACKS_SKIP / VERCEL skip WITHOUT resolving it —
-	// a hermetic CI run on a platform without the prebuilt binary must not
-	// crash at import time for a step it will never execute.
+	// Load sharp only when preparing variants, after source resolution and auth.
 	const { default: sharp } = await import('sharp');
 	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
 	const out: Record<string, MediaVariantEntry> = {};

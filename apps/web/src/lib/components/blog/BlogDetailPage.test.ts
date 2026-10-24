@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/svelte';
 import BlogDetailPage from './BlogDetailPage.svelte';
@@ -146,7 +147,7 @@ describe('BlogDetailPage', () => {
 
 		expect(screen.getByTestId('blog-meta-card')).toBeTruthy();
 		expect(screen.getByText('420')).toBeTruthy();
-		expect(screen.getAllByText('4 min read').length).toBeGreaterThan(0);
+		expect(screen.getAllByText(siteLabels.blogChrome.detail.header.readingTimeLabel.en.replace('{minutes}', '4')).length).toBeGreaterThan(0);
 		expect(screen.getByText('sql · postgresql')).toBeTruthy();
 	});
 
@@ -196,7 +197,7 @@ describe('BlogDetailPage', () => {
 			props: { post: makePost(), body: mockBody, headings: mockHeadings, readingTime: 4 }
 		});
 
-		expect(screen.getAllByText('4 min read').length).toBeGreaterThan(0);
+		expect(screen.getAllByText(siteLabels.blogChrome.detail.header.readingTimeLabel.en.replace('{minutes}', '4')).length).toBeGreaterThan(0);
 	});
 
 });

@@ -1,3 +1,6 @@
+import { blogPageContent } from '../src/lib/content/blog-page';
+import { siteLabels } from '../src/lib/content/site-labels';
+import { aboutPageContent } from '../src/lib/content/about-page';
 import { test, expect } from '@playwright/test';
 
 const FIRST_ARTICLE = {
@@ -30,7 +33,7 @@ test.describe('Language toggle — click navigation + content change', () => {
 
     // /about has no contact form — assert a stable EN copy marker instead.
     // about-page.ts CTA buttonLabel: { en: 'Send message →', fr: 'Envoyer un message →' }.
-    await expect(page.locator('body')).toContainText('Send message');
+    await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.en);
 
     // Click toggle → should navigate to /fr/about
     await toggle.click();
@@ -38,9 +41,9 @@ test.describe('Language toggle — click navigation + content change', () => {
     expect(page.url()).toContain('/fr/about');
 
     // Verify FR page renders the French copy marker.
-    await expect(page.locator('body')).toContainText('Envoyer un message');
+    await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.fr!);
     // And the EN marker is gone (genuine language change).
-    await expect(page.locator('body')).not.toContainText('Send message');
+    await expect(page.getByTestId('about-cta-button')).not.toContainText(aboutPageContent.cta.buttonLabel.en);
   });
 
   test('clicking language toggle on FR page cycles FR → ES → EN (click-twice)', async ({ page }) => {
@@ -51,14 +54,14 @@ test.describe('Language toggle — click navigation + content change', () => {
     await expect(toggle).toBeVisible();
 
     // Assert the stable FR copy marker (CTA buttonLabel).
-    await expect(page.locator('body')).toContainText('Envoyer un message');
+    await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.fr!);
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
 
     // Click 1: FR → ES
     await toggle.click();
     await page.waitForURL('/es/about');
-    await expect(page.locator('body')).toContainText('Enviar mensaje');
-    await expect(page.locator('body')).not.toContainText('Envoyer un message');
+    await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.es!);
+    await expect(page.getByTestId('about-cta-button')).not.toContainText(aboutPageContent.cta.buttonLabel.fr!);
     // documentElement.lang must track the client-routed switch (039E): the
     // server stamps it once via %lang%; the root layout re-syncs it in-place.
     await expect(page.locator('html')).toHaveAttribute('lang', 'es');
@@ -70,8 +73,8 @@ test.describe('Language toggle — click navigation + content change', () => {
     expect(page.url()).not.toContain('/es');
 
     // Verify EN page copy is back and the ES marker is gone.
-    await expect(page.locator('body')).toContainText('Send message');
-    await expect(page.locator('body')).not.toContainText('Enviar mensaje');
+    await expect(page.getByTestId('about-cta-button')).toContainText(aboutPageContent.cta.buttonLabel.en);
+    await expect(page.getByTestId('about-cta-button')).not.toContainText(aboutPageContent.cta.buttonLabel.es!);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   });
 
@@ -133,7 +136,7 @@ test.describe('Language toggle — click navigation + content change', () => {
     await expect(toggle).toHaveAttribute('href', FIRST_ARTICLE.en);
   });
 
-  test('blog page: EN /blog shows "Blog", FR /fr/blog shows "Blogue"', async ({ page }) => {
+  test('blog mobile heading and desktop subtitle follow the active locale', async ({ page }) => {
     // The blog listing heading (siteLabels.blogChrome.listing.mobileHeading,
     // { en: 'Blog', fr: 'Blogue' }) renders in <h1.listing-mobile-heading> with a
     // trailing accent "." span -> textContent is "Blog."/"Blogue.". It is
@@ -149,18 +152,18 @@ test.describe('Language toggle — click navigation + content change', () => {
 
     // EN
     await page.goto('/blog');
-    await expect(heading).toHaveText('Blog.');
+    await expect(heading).toHaveText(siteLabels.blogChrome.listing.mobileHeading.en + '.');
     await expect(subtitle).toBeVisible();
     await expect(subtitle).toHaveText(
-      'Notes on digital infrastructure, databases, and building reliable systems.'
+      blogPageContent.intro.en
     );
 
     // FR
     await page.goto('/fr/blog');
-    await expect(heading).toHaveText('Blogue.');
+    await expect(heading).toHaveText(siteLabels.blogChrome.listing.mobileHeading.fr! + '.');
     await expect(subtitle).toBeVisible();
     await expect(subtitle).toHaveText(
-      "Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables."
+      blogPageContent.intro.fr!
     );
   });
 

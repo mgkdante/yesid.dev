@@ -34,7 +34,7 @@ Directus
    ▼
 typed build-time export ──► SvelteKit build ──► Vercel
        │
-       └── committed fallback snapshot for deterministic local and CI builds
+       └── shared fixture for deterministic local and CI generation
 ```
 
 The public application does not query Directus for page data at request time.
@@ -65,9 +65,11 @@ bun install --frozen-lockfile
 bun run dev
 ```
 
-The default local site uses committed content fallbacks. Connected CMS
-operations require the environment references documented in `.env.example`;
-never commit resolved credentials.
+Web dev, test, check and build generate ignored content modules from the shared
+fixture by default, without credentials or network. Trusted Vercel targets use
+live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
+Refresh the fixture from a live cache with
+`bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 
 Run the repository gates:
 
@@ -75,7 +77,6 @@ Run the repository gates:
 bun run test
 bun run check
 bun run ci:tokens
-bun run ci:content
 bun run build
 ```
 

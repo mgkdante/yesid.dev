@@ -1,4 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+// Specs import ignored content modules during collection, before globalSetup or
+// webServer runs. Emit them here so fresh local runs and --list work too.
+if (process.env.TEST_WORKER_INDEX === undefined) {
+	execFileSync('bun', ['run', '--cwd', fileURLToPath(new URL('../cms', import.meta.url)), 'export:fallbacks'], {
+		env: { ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' },
+		stdio: 'inherit'
+	});
+}
 
 // slice-19 Phase 1 Task 1: mobile device matrix for permanent mobile UX coverage.
 //
@@ -148,12 +159,8 @@ export default defineConfig({
 					// CI cold-build (vite build + check:sitemap) can exceed the
 					// default 60s before the preview answers on :4173.
 					timeout: 180_000,
-					// Hermetic build: skip the export-fallbacks prebuild so the local
-					// e2e build NEVER contacts the live CMS (the committed content
-					// modules already ARE the content source). This both honors the
-					// "CMS only at build time, never live" contract and keeps the
-					// local-preview e2e path fully offline — zero edge requests.
-					env: { EXPORT_FALLBACKS_SKIP: '1' }
+					// Generate hermetic fixture content before the local build.
+					env: { EXPORT_FALLBACKS_SOURCE: 'fixture' }
 				}
 			}),
 	testDir: 'tests',

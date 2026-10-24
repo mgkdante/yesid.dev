@@ -2,7 +2,6 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import assetIds from '../../../../packages/shared/fixtures/assets-id-map.json';
-import generatedManifest from '../lib/content/generated.manifest.json';
 
 const srcRoot = join(import.meta.dirname, '..');
 
@@ -11,25 +10,26 @@ const srcRoot = join(import.meta.dirname, '..');
 const reviewedSinks = [
 	{ file: 'lib/components/brand/SvgIcon.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/cms/blocks/CodeBlock.svelte', reason: 'server Shiki output or escaped plain code' },
-	{ file: 'lib/components/cms/blocks/Heading.svelte', reason: 'committed Editor.js inline HTML' },
-	{ file: 'lib/components/cms/blocks/ImageBlock.svelte', reason: 'committed Editor.js caption HTML' },
+	{ file: 'lib/components/cms/blocks/Heading.svelte', reason: 'exported Editor.js inline HTML' },
+	{ file: 'lib/components/cms/blocks/ImageBlock.svelte', reason: 'exported Editor.js caption HTML' },
 	{ file: 'lib/components/cms/blocks/MermaidDiagram.svelte', reason: 'Mermaid strict mode output' },
-	{ file: 'lib/components/cms/blocks/NestedList.svelte', reason: 'committed Editor.js inline HTML' },
-	{ file: 'lib/components/cms/blocks/Paragraph.svelte', reason: 'committed Editor.js HTML with inline code formatting' },
-	{ file: 'lib/components/cms/blocks/Quote.svelte', reason: 'committed Editor.js inline HTML' },
-	{ file: 'lib/components/contact/ContactPage.svelte', reason: 'committed CMS line template with escaped link labels and localized internal links' },
+	{ file: 'lib/components/cms/blocks/NestedList.svelte', reason: 'exported Editor.js inline HTML' },
+	{ file: 'lib/components/cms/blocks/Paragraph.svelte', reason: 'exported Editor.js HTML with inline code formatting' },
+	{ file: 'lib/components/cms/blocks/Quote.svelte', reason: 'exported Editor.js inline HTML' },
+	{ file: 'lib/components/contact/ContactPage.svelte', reason: 'exported CMS line template with escaped link labels and localized internal links' },
 	{ file: 'lib/components/home/CloserGraffiti.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/home/CloserProps.svelte', reason: 'static committed asset and fixed SVG filter markup' },
 	{ file: 'lib/components/home/HomeServices.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectCard.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectDetailPage.svelte', reason: 'sanitize-html README content and Mermaid strict mode output' },
-	{ file: 'lib/components/projects/ProjectImageGallery.svelte', reason: 'committed Editor.js caption HTML' },
+	{ file: 'lib/components/projects/ProjectImageGallery.svelte', reason: 'exported Editor.js caption HTML' },
 	{ file: 'lib/components/seo/JsonLd.svelte', reason: 'JSON-LD serializer escapes < before embedding in a script element' },
 	{ file: 'lib/motion/svg/MetroNetwork.svelte', reason: 'static committed asset' },
 ];
 
 function sourceFiles(dir: string): string[] {
 	return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+		if (entry.name === '.cms-cache.json') return [];
 		const path = join(dir, entry.name);
 		if (entry.isDirectory()) return entry.name === 'tests' ? [] : sourceFiles(path);
 		if (/\.(test|spec)\./.test(entry.name)) return [];
@@ -87,7 +87,9 @@ describe('injection detector', () => {
 describe('asset boundaries', () => {
 	it('keeps literal Directus asset URLs and registered UUIDs out of hand-written source', () => {
 		const uuids = Object.values(assetIds);
-		const generated = new Set(Object.keys(generatedManifest.files).map((file) => `lib/content/${file}`));
+		const generated = new Set(sources.filter(({ file, source }) =>
+			file.startsWith('lib/content/') && source.includes('GENERATED FILE - do not edit by hand.'),
+		).map(({ file }) => file));
 		const assetUrl = /\/assets\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/i;
 		const violations = sources
 			.filter(({ file }) => !generated.has(file))

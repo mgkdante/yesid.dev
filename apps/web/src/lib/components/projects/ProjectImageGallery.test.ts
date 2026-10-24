@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import type { BlockEditorDoc } from '@repo/shared';
 import ProjectImageGallery from './ProjectImageGallery.svelte';
+import { siteLabels } from '$lib/content/site-labels';
 
 const doc: BlockEditorDoc = {
 	time: 1700000000000,
@@ -28,7 +29,7 @@ describe('ProjectImageGallery keyboard access', () => {
 			trigger.focus();
 			await fireEvent.click(trigger);
 			const dialog = screen.getByRole('dialog');
-			const close = within(dialog).getByRole('button', { name: 'Close image' });
+			const close = within(dialog).getByRole('button', { name: siteLabels.a11y.projectImageClose.en });
 			await waitFor(() => expect(close).toHaveFocus());
 			await fireEvent.keyDown(close, { key: 'Escape' });
 			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
@@ -39,7 +40,7 @@ describe('ProjectImageGallery keyboard access', () => {
 	it('keeps forward and reverse Tab on the modal control rather than the next background image', async () => {
 		render(ProjectImageGallery, { props: { doc } });
 		await fireEvent.click(screen.getAllByTestId('project-image-gallery-trigger')[0]!);
-		const close = within(screen.getByRole('dialog')).getByRole('button', { name: 'Close image' });
+		const close = within(screen.getByRole('dialog')).getByRole('button', { name: siteLabels.a11y.projectImageClose.en });
 		await waitFor(() => expect(close).toHaveFocus());
 
 		for (const shiftKey of [false, true]) {
@@ -57,7 +58,7 @@ describe('ProjectImageGallery keyboard access', () => {
 		for (const dismiss of ['button', 'backdrop']) {
 			trigger.focus();
 			await fireEvent.click(trigger);
-			const close = within(screen.getByRole('dialog')).getByRole('button', { name: 'Close image' });
+			const close = within(screen.getByRole('dialog')).getByRole('button', { name: siteLabels.a11y.projectImageClose.en });
 			await waitFor(() => expect(close).toHaveFocus());
 			await fireEvent.click(dismiss === 'button' ? close : screen.getByTestId('project-image-gallery-backdrop'));
 			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());

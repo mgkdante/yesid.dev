@@ -1,3 +1,4 @@
+import { siteLabels } from '../src/lib/content/site-labels';
 // go2 integration regression locks — two operator-reported deploy bugs.
 //
 // BUG 1 — service SVGs "nowhere to be found" on /services + /services/[id].
@@ -35,8 +36,8 @@ test.describe('responsive shell and interrupted menu', () => {
 		await openMenu(page);
 		await page.keyboard.press('Escape');
 		await expect(page.getByRole('dialog')).toHaveCount(0);
-		await page.getByRole('button', { name: 'Collapse all', exact: true }).click();
-		await expect(page.getByRole('button', { name: 'Expand all', exact: true })).toBeVisible();
+		await page.getByTestId('quiet-mode-toggle').click();
+		await expect(page.getByTestId('quiet-mode-toggle')).toHaveText(siteLabels.a11y.quietModeLabelCollapsed.en);
 		await page.keyboard.press('Tab');
 		await page.keyboard.press('Tab');
 		const section = page.locator('main .section-header:visible').first();
@@ -612,7 +613,7 @@ test.describe('section navigation keyboard continuity', () => {
 				await expect(page.getByRole('dialog')).toHaveCount(0);
 				await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
 				const heading = page.locator('[data-section-index="1"] .section-header').first();
-				const title = await heading.locator('.section-title').innerText();
+				// Section index 1 has number badge 02; copy may repeat across sections.
 				for (let cycle = 0; cycle < 3; cycle++) {
 					if (width < 1024) {
 						const pill = page.getByTestId('toc-pill').locator('button.toc-pill');
@@ -623,14 +624,14 @@ test.describe('section navigation keyboard continuity', () => {
 						await pill.press('Space');
 						await page
 							.locator('.toc-drawer-item:not(.toc-drawer-sub)')
-							.filter({ hasText: title })
+							.filter({ has: page.locator('.toc-drawer-badge').getByText('02', { exact: true }) })
 							.press('Enter');
 						await expect(pill).toBeFocused();
 						await expect(page.locator('.toc-drawer')).toHaveCount(0);
 					} else
 						await page
 							.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)')
-							.filter({ hasText: title })
+							.filter({ has: page.locator('.toc-badge').getByText('02', { exact: true }) })
 							.press('Enter');
 					await expect(async () => {
 						const box = (await heading.boundingBox())!;
@@ -675,7 +676,7 @@ for (const [width, height] of [
 		const heading = section.locator('.section-header').first();
 		expect((await heading.boundingBox())!.y).toBeLessThan(0);
 		await page
-			.getByRole('button', { name: 'Collapse all', exact: true })
+			.getByTestId('quiet-mode-toggle')
 			.evaluate((el: HTMLButtonElement) => el.click());
 		await expect(heading).toBeFocused();
 		await expect(heading).toHaveAttribute('aria-expanded', 'false');
