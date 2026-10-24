@@ -41,15 +41,6 @@ export const sitePages: readonly SitePage[] = [
 		type: 'listing',
 	},
 	{
-		path: '/tech-stack',
-		title: {
-			en: 'Tech Stack',
-			es: 'Stack tecnológico',
-			fr: 'Stack technique',
-		},
-		type: 'listing',
-	},
-	{
 		path: '/about',
 		title: { en: 'About', es: 'Acerca de', fr: 'À propos' },
 		type: 'freeform',

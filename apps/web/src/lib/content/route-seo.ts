@@ -101,18 +101,4 @@ export const routeSeoOverrides: readonly RouteSeoOverride[] = [
 			fr: 'Blogue perso',
 		},
 	},
-	{
-		description: {
-			en: 'The tools, languages, and platforms yesid. works with daily: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript, and the glue that holds them together.',
-			es: 'Las herramientas, lenguajes y plataformas que yesid. usa a diario: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript y el pegamento que lo une todo.',
-			fr: 'Les outils, langages et plateformes que yesid. utilise au quotidien: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript et la colle qui tient tout ensemble.',
-		},
-		ogImage: null,
-		path: '/tech-stack',
-		title: {
-			en: 'Tech Stack',
-			es: 'Stack técnico',
-			fr: 'Stack technique',
-		},
-	},
 ];
