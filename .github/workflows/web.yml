@@ -219,6 +219,12 @@ jobs:
           EXPORT_FALLBACKS_SOURCE: "fixture"
         run: bun x turbo run build --filter=@repo/web
 
+      # Cached build output does not include the ignored modules imported by specs.
+      - name: Emit fixture content for Playwright specs
+        env:
+          EXPORT_FALLBACKS_SOURCE: "fixture"
+        run: bun run --cwd apps/cms export:fallbacks
+
       - name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)
         working-directory: apps/web
         env:

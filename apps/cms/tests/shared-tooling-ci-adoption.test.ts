@@ -257,12 +257,14 @@ test('web reports required ci after classified work without weakening E2E', () =
 			'name: Install Playwright Chromium (exact cache hit)',
 			'name: Install Playwright Chromium (+ system deps)',
 			'name: Build (turbo, cache-eligible)',
+			'name: Emit fixture content for Playwright specs',
 			'name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
 			'name: Upload blob report',
 		]),
 	).toBe(true);
 
 	const build = namedStepBlock(e2e, 'Build (turbo, cache-eligible)');
+	const content = namedStepBlock(e2e, 'Emit fixture content for Playwright specs');
 	const playwright = namedStepBlock(
 		e2e,
 		'Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
@@ -270,6 +272,8 @@ test('web reports required ci after classified work without weakening E2E', () =
 	const upload = namedStepBlock(e2e, 'Upload blob report');
 	expect(build).toContain('EXPORT_FALLBACKS_SOURCE: "fixture"');
 	expect(build).toContain('run: bun x turbo run build --filter=@repo/web');
+	expect(content).toContain('EXPORT_FALLBACKS_SOURCE: "fixture"');
+	expect(content).toContain('run: bun run --cwd apps/cms export:fallbacks');
 	expect(playwright).toContain('E2E_PREBUILT: "1"');
 	expect(playwright).toContain('working-directory: apps/web');
 	expect(playwright).toContain('--shard=${{ matrix.shard }}/3');
