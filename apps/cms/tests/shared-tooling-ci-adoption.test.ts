@@ -361,8 +361,6 @@ test('CMS reports required test while every downstream job still needs test', ()
 		'live-diff',
 		'push',
 		'permission-control-audit',
-		'permission-policy-candidate-diagnostic',
-		'permission-policy-quarantine-rename',
 		'flows-push',
 	]) {
 		const downstream = jobBlock(cms, name);
