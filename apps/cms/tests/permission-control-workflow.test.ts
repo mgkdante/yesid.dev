@@ -44,16 +44,6 @@ function jobPreamble(job: string): string {
 	return job.slice(0, end).trimEnd();
 }
 
-test('asset audit regression gate stays inside the credential-free test job', () => {
-	const testJob = jobBlock('test-work', 'test');
-	expect(testJob).toContain('name: Verify asset audit baseline (offline, no CMS)');
-	expect(testJob).toContain('run: bun run verify:assets-audit');
-	expect(testJob).not.toContain('DIRECTUS_ADMIN_TOKEN');
-	expect(testJob).not.toContain('PUBLIC_DIRECTUS_URL');
-	expect(testJob).not.toContain('op run');
-	expect(testJob).not.toContain('--update-baseline');
-});
-
 test('keeps the required PR diff check credential-free and offline', () => {
 	const diff = jobBlock('diff', 'live-diff');
 

@@ -7,8 +7,7 @@ name: cms
 # directus-extension-sync@3.0.6 on the Railway Directus image.
 #
 # Jobs:
-# - test-work (PR/dispatch): apps/cms unit tests plus the offline asset-audit
-#   regression gate (no network or CMS credentials).
+# - test-work (PR/dispatch): apps/cms unit tests (no network or CMS credentials).
 # - test (always): required-check reporter; main pushes reuse the merged PR gate.
 # - diff (main PR): required credential-free validation of the committed
 #   Directus snapshot contracts. Offline; never receives CMS credentials.
@@ -134,10 +133,6 @@ jobs:
       - name: Run apps/cms unit tests (fixtures + seed dry-runs + sync-push + lib)
         working-directory: apps/cms
         run: bun test
-
-      - name: Verify asset audit baseline (offline, no CMS)
-        working-directory: apps/cms
-        run: bun run verify:assets-audit
 
       # Schema codegen drift check removed in slice-28.3 (#78): the generated
       # packages/shared/src/types/directus-schema.ts had zero consumers, and

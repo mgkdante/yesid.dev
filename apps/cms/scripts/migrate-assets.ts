@@ -72,6 +72,7 @@ void requireEnv;
 
 export const AssetEntrySchema = z.object({
 	legacyPath: z.string().min(1),
+	sha256: z.string().regex(/^[0-9a-f]{64}$/).optional(),
 	folder: z.string().min(1),
 	title: z.string().min(1),
 	description: z.string().min(1),

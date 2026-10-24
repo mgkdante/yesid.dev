@@ -296,10 +296,14 @@ Do not mark publication accepted from the permission receipt alone.
 `packages/shared/src/asset-registry.ts` owns semantic keys, release entries,
 usage declarations, kinds, roles, and delivery modes. The Directus snapshot
 owns `asset_records`, `asset_versions`, and `asset_usages`. The corresponding
-setup and sync scripts are guarded migration tools, not alternate schema
+setup scripts are guarded migration tools, not alternate schema
 authorities.
 
-`fixtures/assets-manifest.json` owns the repository-to-CMS migration inventory.
+`fixtures/assets-manifest.json` owns the repository-to-CMS migration inventory
+and the SHA-256 digest of each committed mirror. Export verifies those bytes
+before emitting; manifest tests check every digest. Web guards reject literal
+Directus asset identities and new raw HTML/SVG injection files outside the
+reviewed allowlist.
 `fixtures/assets-id-map.json` is the committed mapping consumed by export and
 tests; file UUIDs are environment-specific and must not be copied into another
 environment as configuration. `fixtures/brand/presets.json` owns the four
@@ -308,28 +312,6 @@ to `directus_settings.storage_asset_presets`.
 
 The current OpenWeather setup uses one existing key, independently scoped to `develop`
 and Production; this is target scoping, not a claim that a second credential exists.
-
-### Asset audit ownership boundary
-
-The asset audit is a read-only evidence pipeline with one owner per stage:
-
-- `scripts/lib/assets/repository-scan.ts` inventories repository assets and
-  references without CMS access.
-- `scripts/lib/assets/directus-scan.ts` performs bounded, GET-only reads from
-  the fixed development and production CMS targets.
-- `scripts/lib/assets/audit.ts` reconciles repository, registry, file, content,
-  generated-output, OG, and SVG evidence.
-- `scripts/lib/assets/report.ts` owns deterministic public serialization and
-  hashing.
-- `scripts/audit-assets.ts` owns CLI options, credentials, target selection,
-  gates, output paths, and baseline publication.
-
-`bun run verify:assets-audit` is the credential-free CI gate. It reads
-`fixtures/assets/audit-baseline.json` and writes the ignored
-`.asset-audit/report.json`; an offline report does not prove live CMS state.
-Replacing the accepted baseline is a separate publication action requiring a
-complete live run with `--update-baseline` and
-`--confirm=UPDATE_ASSET_AUDIT_BASELINE`, followed by review of both diffs.
 
 ## Environment contract
 

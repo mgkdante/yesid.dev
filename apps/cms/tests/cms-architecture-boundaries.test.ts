@@ -36,24 +36,4 @@ describe("CMS architecture boundaries", () => {
     }
   });
 
-  it("documents the asset-audit ownership and publication boundary", () => {
-    const readme = readFileSync(join(cmsRoot, "README.md"), "utf8");
-    for (const contract of [
-      "### Asset audit ownership boundary",
-      "scripts/lib/assets/repository-scan.ts",
-      "scripts/lib/assets/directus-scan.ts",
-      "scripts/lib/assets/audit.ts",
-      "scripts/lib/assets/report.ts",
-      "scripts/audit-assets.ts",
-      "bun run verify:assets-audit",
-      ".asset-audit/report.json",
-      "fixtures/assets/audit-baseline.json",
-      "credential-free",
-      "GET-only",
-      "--update-baseline",
-      "--confirm=UPDATE_ASSET_AUDIT_BASELINE",
-    ]) {
-      expect(readme, contract).toContain(contract);
-    }
-  });
 });
