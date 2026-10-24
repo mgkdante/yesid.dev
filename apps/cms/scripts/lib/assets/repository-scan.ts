@@ -477,11 +477,11 @@ function scanSvgFetchInsertions(
     " ".repeat(comment.length),
   );
   const fetchPattern =
-    /\bfetch\s*\(\s*(?:'[^']*\.svg[^']*'|"[^"]*\.svg[^"]*"|`[^`]*\.svg[^`]*`)\s*\)/g;
+    /(\bfetch\s*\(\s*(?:'[^']*\.svg[^']*'|"[^"]*\.svg[^"]*"|`[^`]*\.svg[^`]*`)\s*)(?:,[^)]*)?\)/g;
   for (const match of masked.matchAll(fetchPattern)) {
     insertions.push({
       sourceLine: lineAt(masked, match.index ?? 0) + lineOffset,
-      rawRef: match[0],
+      rawRef: `${match[1]})`,
     });
   }
   return insertions;

@@ -66,4 +66,10 @@ describe('markdown renderer', () => {
 		expect(html).toContain('<h1>Safe heading</h1>');
 		expect(html).not.toMatch(/<script|onerror|onclick|javascript:|data:text\/html/i);
 	});
+
+	it('discards deeply nested iframe fallback without exhausting the sanitizer stack', async () => {
+		const html = await render('<iframe>'.repeat(2500));
+
+		expect(html).not.toContain('<iframe');
+	});
 });
