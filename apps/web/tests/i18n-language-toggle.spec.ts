@@ -1,4 +1,5 @@
 import { blogPageContent } from '../src/lib/content/blog-page';
+import { siteLabels } from '../src/lib/content/site-labels';
 import { aboutPageContent } from '../src/lib/content/about-page';
 import { test, expect } from '@playwright/test';
 
@@ -135,7 +136,7 @@ test.describe('Language toggle — click navigation + content change', () => {
     await expect(toggle).toHaveAttribute('href', FIRST_ARTICLE.en);
   });
 
-  test('blog page: EN /blog shows "Blog", FR /fr/blog shows "Blogue"', async ({ page }) => {
+  test('blog mobile heading and desktop subtitle follow the active locale', async ({ page }) => {
     // The blog listing heading (siteLabels.blogChrome.listing.mobileHeading,
     // { en: 'Blog', fr: 'Blogue' }) renders in <h1.listing-mobile-heading> with a
     // trailing accent "." span -> textContent is "Blog."/"Blogue.". It is
@@ -151,7 +152,7 @@ test.describe('Language toggle — click navigation + content change', () => {
 
     // EN
     await page.goto('/blog');
-    await expect(heading).toHaveText(blogPageContent.heading.en + '.');
+    await expect(heading).toHaveText(siteLabels.blogChrome.listing.mobileHeading.en + '.');
     await expect(subtitle).toBeVisible();
     await expect(subtitle).toHaveText(
       blogPageContent.intro.en
@@ -159,7 +160,7 @@ test.describe('Language toggle — click navigation + content change', () => {
 
     // FR
     await page.goto('/fr/blog');
-    await expect(heading).toHaveText(blogPageContent.heading.fr! + '.');
+    await expect(heading).toHaveText(siteLabels.blogChrome.listing.mobileHeading.fr! + '.');
     await expect(subtitle).toBeVisible();
     await expect(subtitle).toHaveText(
       blogPageContent.intro.fr!

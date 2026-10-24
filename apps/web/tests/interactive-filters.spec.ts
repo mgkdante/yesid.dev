@@ -140,15 +140,12 @@ test.describe('Blog listing filters', () => {
     const sidebar = desktopSidebar(page);
 
     // The Tags group is collapsed by default — expand it first.
-    await sidebar.locator('button.label-section', { hasText: siteLabels.blogChrome.listing.filters.tags.en }).click();
+    const tagsToggle = sidebar.getByRole('button', { name: siteLabels.blogChrome.listing.filters.tags.en, exact: true });
+    await tagsToggle.click();
 
-    // Blog tag items carry no data-testid and render as role="radio" buttons; target
-    // the first real tag chip (not the "All" reset) via the shared filter-btn class.
-    const tagBtn = sidebar
-      .locator('button.filter-btn')
-      .filter({ hasNotText: siteLabels.blogChrome.listing.filters.allLabel.en })
-      .filter({ hasNotText: siteLabels.ui.languageNames.en.en })
-      .first();
+    // The expanded Tags group contains the reset radio followed by its tag chips.
+    const tagsGroup = tagsToggle.locator('..').locator('.filter-collapse.filter-open');
+    const tagBtn = tagsGroup.getByRole('radio').nth(1);
     await expect(tagBtn).toBeVisible();
     await tagBtn.click();
 
