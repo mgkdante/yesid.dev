@@ -17,7 +17,6 @@ export * from './services'
 export * from './blog'
 export * from './site-meta'
 export * from './route-seo'
-export * from './tech-stack'
 export * from './site-content'
 export * from './nav'
 export * from './about-page'
@@ -26,6 +25,3 @@ export * from './blog-page'
 export * from './projects-page'
 export * from './morph-shapes'
 export * from './site-labels'
-
-// tech-stack.companion.ts deleted in slice-18m follow-up (GH #63/#64) — items
-// + page chrome now both emit from CMS via tech-stack.ts.

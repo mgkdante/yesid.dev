@@ -7,9 +7,9 @@
 // meta.forRoute() composes through composePageSeo.
 //
 // composePageSeo is the pure composer used by staticAdapter.meta.forRoute()
-// for static routes. The 8 static routes are owned by codeRouteSeoDefaults
+// for static routes. The 7 static routes are owned by codeRouteSeoDefaults
 // (apps/web/src/lib/adapters/route-seo-defaults.ts). This parity test
-// asserts that for every one of those 8 routes, composePageSeo (with no
+// asserts that for every one of those 7 routes, composePageSeo (with no
 // CMS routeOverride — the cold-start case) produces a valid PageSeo with
 // the expected fallback chain behavior:
 //
@@ -41,7 +41,7 @@ import { siteMeta } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import type { Locale } from '$lib/types';
 
-describe('composePageSeo — parity across 8 static routes (#80b)', () => {
+describe('composePageSeo — parity across 7 static routes (#80b)', () => {
 	const STATIC_ROUTE_IDS = [
 		'/',
 		'/about',
@@ -50,7 +50,6 @@ describe('composePageSeo — parity across 8 static routes (#80b)', () => {
 		'/projects',
 		'/blog',
 		'/blog/personal',
-		'/tech-stack',
 	] as const;
 
 	for (const routeId of STATIC_ROUTE_IDS) {

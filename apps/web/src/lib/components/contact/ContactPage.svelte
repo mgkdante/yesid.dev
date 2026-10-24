@@ -30,17 +30,12 @@
 	import { trackAnalyticsEvent } from '$lib/analytics/client';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
-	// slice-29: initialMessage carries the decoded ?bp= blueprint prefill from
-	// the Tech Stack Engine handoff (computed client-side in the route so
-	// CDN-cached HTML can't bake a stale blueprint in).
 	let {
 		contactPage,
 		weather = null,
-		initialMessage = null,
 	}: {
 		contactPage: ContactContent;
 		weather?: WeatherData | null;
-		initialMessage?: string | null;
 	} = $props();
 
 	// $derived on the contactPage reads so they recompute if the prop changes:
@@ -136,15 +131,6 @@
 		{ key: 'message', state: message },
 	] as const;
 
-	// slice-34.3: seed the message from a ?bp= blueprint handoff, but never on a
-	// switch-restore — a restore must win over the blueprint prefill. The
-	// persisted() setter assigns the restored value unconditionally, so guarding
-	// here lets restore beat both the '' default and this effect.
-	$effect(() => {
-		if (!localeHandoff.restoring && initialMessage && message.value === '') {
-			message.value = initialMessage;
-		}
-	});
 	let submitted = $state(false);
 	let errors = $state<Record<string, string>>({});
 	let showSuccess = $state(false);

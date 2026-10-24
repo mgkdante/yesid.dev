@@ -24,7 +24,7 @@ test.describe('Sitemap.xml i18n coverage', () => {
     expect(xml).toContain('<loc>https://yesid.dev/projects</loc>');
     expect(xml).toContain('<loc>https://yesid.dev/blog</loc>');
     expect(xml).toContain('<loc>https://yesid.dev/blog/personal</loc>');
-    expect(xml).toContain('<loc>https://yesid.dev/tech-stack</loc>');
+    expect(xml).not.toContain('<loc>https://yesid.dev/tech-stack</loc>');
   });
 
   test('sitemap includes all static FR routes (/fr-prefixed)', async ({ page }) => {
@@ -37,7 +37,7 @@ test.describe('Sitemap.xml i18n coverage', () => {
     expect(xml).toContain('<loc>https://yesid.dev/fr/projects</loc>');
     expect(xml).toContain('<loc>https://yesid.dev/fr/blog</loc>');
     expect(xml).toContain('<loc>https://yesid.dev/fr/blog/personal</loc>');
-    expect(xml).toContain('<loc>https://yesid.dev/fr/tech-stack</loc>');
+    expect(xml).not.toContain('<loc>https://yesid.dev/fr/tech-stack</loc>');
   });
 
   test('sitemap includes all static ES routes (/es-prefixed)', async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('Sitemap.xml i18n coverage', () => {
     expect(xml).toContain('<loc>https://yesid.dev/es/projects</loc>');
     expect(xml).toContain('<loc>https://yesid.dev/es/blog</loc>');
     expect(xml).toContain('<loc>https://yesid.dev/es/blog/personal</loc>');
-    expect(xml).toContain('<loc>https://yesid.dev/es/tech-stack</loc>');
+    expect(xml).not.toContain('<loc>https://yesid.dev/es/tech-stack</loc>');
   });
 
   test('sitemap: each route entry has hreflang cluster (en + fr + es + x-default)', async ({ page }) => {

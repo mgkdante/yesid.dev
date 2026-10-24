@@ -36,7 +36,6 @@ model of each image and SVG family.
   not import either application.
 - Generated modules conform to shared contracts but remain owned by the CMS
   emitter registry. App code must not become a second generator.
-- Runtime-only consumers should use `@repo/shared/stack-layers` instead of the
   Zod schema barrel when they only need the canonical layer tuple and type.
 
 ## Locale and privacy policy

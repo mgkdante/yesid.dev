@@ -38,7 +38,6 @@ interface BlogPageTranslation {
 	entry_rail_routes_title?: string | null;
 	entry_rail_route_case_studies_label?: string | null;
 	entry_rail_route_services_label?: string | null;
-	entry_rail_route_stack_label?: string | null;
 	entry_rail_route_about_label?: string | null;
 	entry_rail_route_contact_label?: string | null;
 }
@@ -49,7 +48,6 @@ interface BlogPageRow {
 	entry_rail_contact_href?: string | null;
 	entry_rail_route_case_studies_href?: string | null;
 	entry_rail_route_services_href?: string | null;
-	entry_rail_route_stack_href?: string | null;
 	entry_rail_route_about_href?: string | null;
 	entry_rail_route_contact_href?: string | null;
 	translations?: BlogPageTranslation[];
@@ -102,10 +100,6 @@ export function toBlogPageContent(row: BlogPageRow): BlogPageContent {
 						href: href(row.entry_rail_route_services_href, '/services'),
 					},
 					{
-						...toLocalizedFields(tr, [['label', 'entry_rail_route_stack_label']]),
-						href: href(row.entry_rail_route_stack_href, '/tech-stack'),
-					},
-					{
 						...toLocalizedFields(tr, [['label', 'entry_rail_route_contact_label']]),
 						href: href(row.entry_rail_route_contact_href, '/contact'),
 					},
@@ -126,7 +120,6 @@ export async function fetchBlogPageContent({ client }: FetcherContext): Promise<
 			'entry_rail_contact_href',
 			'entry_rail_route_case_studies_href',
 			'entry_rail_route_services_href',
-			'entry_rail_route_stack_href',
 			'entry_rail_route_about_href',
 			'entry_rail_route_contact_href',
 			{ translations: ['*'] },

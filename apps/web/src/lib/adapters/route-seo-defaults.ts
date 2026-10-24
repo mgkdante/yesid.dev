@@ -5,8 +5,8 @@
 // should not be authored in CMS: ogType, noIndex, title composition strategy,
 // and JSON-LD factories.
 //
-// Kept tightly scoped: 8 static routes (`/`, `/about`, `/contact`, `/services`,
-// `/projects`, `/blog`, `/blog/personal`, `/tech-stack`). Dynamic routes
+// Kept tightly scoped: 7 static routes (`/`, `/about`, `/contact`, `/services`,
+// `/projects`, `/blog`, `/blog/personal`). Dynamic routes
 // (`/services/[id]`, `/projects/[slug]`, `/blog/[slug]`) have their own
 // factories in `route-seo-factories.ts`.
 //
@@ -140,16 +140,5 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 					['/blog/personal', 'Personal'],
 				],
 			}),
-	},
-	'/tech-stack': {
-		ogType: 'website',
-		noIndex: false,
-		fallbackTitle: { en: 'Tech Stack' },
-		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (_sm, locale) => [
-			buildRouteBreadcrumbNode('/tech-stack', locale, [
-				['/tech-stack', 'Tech Stack'],
-			]),
-		],
 	},
 };

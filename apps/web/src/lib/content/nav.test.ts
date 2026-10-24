@@ -4,10 +4,10 @@ import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from 
 describe('navLinks', () => {
 	// slice-18m: nav links are CMS-derived. Order + copy are editor-controlled,
 	// so tests assert structural validity instead of specific text/order.
-	it('contains the 3 primary nav links (Services, Projects, Stack)', () => {
-		expect(navLinks).toHaveLength(3);
+	it('contains the 2 primary nav links (Services, Projects)', () => {
+		expect(navLinks).toHaveLength(2);
 		const hrefs = navLinks.map((l) => l.href).sort();
-		expect(hrefs).toEqual(['/projects', '/services', '/tech-stack']);
+		expect(hrefs).toEqual(['/projects', '/services']);
 	});
 
 	it('every link has a non-empty English label', () => {
@@ -24,8 +24,8 @@ describe('navLinks', () => {
 });
 
 describe('menuItems', () => {
-	it('contains all 6 navigation items', () => {
-		expect(menuItems).toHaveLength(6);
+	it('contains all 5 navigation items', () => {
+		expect(menuItems).toHaveLength(5);
 	});
 
 	it('has subtitles for all items', () => {

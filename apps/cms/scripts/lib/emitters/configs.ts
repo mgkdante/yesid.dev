@@ -140,29 +140,6 @@ export const EXPORT_MODULE_REGISTRY = [
 		},
 	),
 	defineModule(
-		'tech-stack.ts',
-		['techStackPage', 'techStack'],
-		'/tech-stack page chrome + tech-stack items array, both CMS-derived.',
-		[typeImport('$lib/types', 'TechStackPageContent', 'TechStackItem')],
-		(data) => [
-			declaration(
-				'techStackPageContent',
-				'TechStackPageContent',
-				data.techStackPage,
-			),
-			declaration('techStackItems', 'readonly TechStackItem[]', data.techStack),
-		],
-	),
-	defineModule(
-		'stack-archetypes.ts',
-		['stackArchetypes'],
-		'Published stack_archetypes rows (slug, trilingual copy, proof project, service, layered tech links). Feeds the pure client-side Tech Stack Engine on /tech-stack — tech links arrive pre-sorted by (STACK_LAYERS render order, sort) so the blueprint derives its rows from data. NEW in slice-29.',
-		[typeImport('@repo/shared/schemas', 'StackArchetype')],
-		(data) => [
-			declaration('stackArchetypes', 'StackArchetype[]', data.stackArchetypes),
-		],
-	),
-	defineModule(
 		'blog.ts',
 		['blogPosts'],
 		'Blog posts (slugs, titles, excerpts, dates, tags, SVG illustration refs).',

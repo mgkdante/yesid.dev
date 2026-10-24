@@ -184,10 +184,6 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		expect(types).toEqual(['BlogPosting', 'BreadcrumbList']);
 	});
 
-	it('/tech-stack emits BreadcrumbList only', async () => {
-		expect(await typesFor('/tech-stack')).toEqual(['BreadcrumbList']);
-	});
-
 	it('/__error emits no jsonLd (noIndex route, per spec)', async () => {
 		const seo = await adapter.meta.forRoute('/__error', 'en');
 		expect(seo.jsonLd === undefined || seo.jsonLd.length === 0).toBe(true);

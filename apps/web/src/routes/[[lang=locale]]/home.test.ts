@@ -227,10 +227,10 @@ describe('Home page', () => {
 		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
 	});
 
-	it('renders closer departure board with 5 rows', () => {
+	it('renders closer departure board with 4 rows', () => {
 		renderPage();
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows).toHaveLength(5);
+		expect(rows).toHaveLength(4);
 	});
 
 });

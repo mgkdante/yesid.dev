@@ -23,14 +23,6 @@ declare global {
 		interface PageData {
 			seo: PageSeo;
 		}
-		/**
-		 * go2/w5 round 4: the Tech Stack Engine's shallow-routing state —
-		 * opening an archetype drawing pushes one history entry carrying the
-		 * slug, so browser back closes the drawing instead of leaving /tech-stack.
-		 */
-		interface PageState {
-			stackEngineDetail?: string;
-		}
 		// interface Platform {}
 	}
 }

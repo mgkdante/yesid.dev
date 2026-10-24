@@ -13,7 +13,6 @@ operations.
 | `@repo/shared` | Compatibility aggregate for existing consumers, including content and asset contracts. Prefer a narrower subpath in new code. |
 | `@repo/shared/types` | Type-only product content interfaces. |
 | `@repo/shared/schemas` | Zod validation schemas for CMS inputs and generated content. This interface carries a runtime Zod dependency. |
-| `@repo/shared/stack-layers` | Canonical stack-layer tuple and derived type without the schema barrel's runtime dependency. |
 
 The dependency direction is always applications to shared contracts:
 

@@ -77,7 +77,6 @@ describe('@yesid/ui primitive adoption contract', () => {
 			'apps/web/src/lib/components/shared/CtaBand.svelte',
 			'apps/web/src/lib/components/shared/StationTabs.svelte',
 			'apps/web/src/routes/+error.svelte',
-			'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
 		]) {
 			expect(read(path), path).toContain(
 				"from '$lib/components/shared/HazardSeparator.svelte'",

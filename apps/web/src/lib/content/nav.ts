@@ -21,11 +21,6 @@ export const navLinks: readonly NavLink[] = [
 		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 		priority: 1,
 	},
-	{
-		href: '/tech-stack',
-		label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
-		priority: 2,
-	},
 ];
 
 export const menuItems: readonly MenuItem[] = [
@@ -47,16 +42,6 @@ export const menuItems: readonly MenuItem[] = [
 			en: 'proof it ships',
 			es: 'prueba de que se entrega',
 			fr: 'la preuve que ça livre',
-		},
-	},
-	{
-		href: '/tech-stack',
-		label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
-		priority: 1,
-		subtitle: {
-			en: 'the toolbox',
-			es: 'la caja de herramientas',
-			fr: 'la boîte à outils',
 		},
 	},
 	{
@@ -164,11 +149,6 @@ export const mobileLinks: readonly NavLink[] = [
 		href: '/projects',
 		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 		priority: 1,
-	},
-	{
-		href: '/tech-stack',
-		label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
-		priority: 2,
 	},
 ];
 

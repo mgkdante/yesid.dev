@@ -8,8 +8,8 @@
 // adapter is fully static — every route renders from the committed content
 // modules under src/lib/content (regenerated at build time by the
 // export-fallbacks prebuild). The old CMS_LIVE env gate predates that revert
-// and is gone: /about and /tech-stack are asserted unconditionally like every
-// other route. No route needs a reachable Directus to pass.
+// and is gone: /about is asserted unconditionally like every other page.
+// No route needs a reachable Directus to pass.
 //
 // Route strategy (all 200 from static content modules):
 //   - /           → data-testid="hero-banner" + non-empty hero-line1
@@ -19,7 +19,7 @@
 //   - /blog/personal → data-testid="blog-listing" (Personal Corner; slice-28.1, audit #29)
 //   - /contact    → data-testid="contact-info-terminal"
 //   - /about      → nav + non-empty <main>
-//   - /tech-stack → data-testid="tech-stack-hero"
+//   - /tech-stack → permanent locale-aware Services redirect
 //   - unknown     → 404, error page testids visible
 
 import { test, expect } from '@playwright/test';
@@ -104,17 +104,16 @@ test('route /about returns 200 and renders nav + main content', async ({ page })
 	expect((await page.locator('main').textContent())?.trim().length ?? 0).toBeGreaterThan(0);
 });
 
-test('route /tech-stack returns 200 and renders page content', async ({ page }) => {
-	const response = await page.goto('/tech-stack');
-	expect(response?.status()).toBe(200);
-	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
-	// Hero section is the page-level structural anchor — present iff the
-	// tech-stack page content block rendered without throwing.
-	await expect(page.locator('[data-testid="tech-stack-hero"]')).toBeVisible();
-	// slice-29: the Tech Stack Engine mounts below the hero via its own async
-	// chunk — visible once hydration finishes loading it.
-	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
-});
+for (const [path, location] of [
+	['/tech-stack', '/services'],
+	['/fr/tech-stack', '/fr/services'],
+]) {
+	test(`route ${path} permanently redirects to ${location}`, async ({ request }) => {
+		const response = await request.get(path, { maxRedirects: 0 });
+		expect(response.status()).toBe(301);
+		expect(response.headers()['location']).toBe(location);
+	});
+}
 
 // ---------------------------------------------------------------------------
 // 404 route — unknown path activates +error.svelte

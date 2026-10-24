@@ -25,7 +25,6 @@ import type {
 	BlogCategory,
 	SiteMeta,
 	SiteSeoDefaults,
-	TechStackItem,
 	Locale,
 	AboutContent,
 	ContactContent,
@@ -44,7 +43,7 @@ import type {
 import type { ErrorPageContent, NavLink } from '$lib/navigation/types';
 import type { HeroData } from '$lib/live';
 import type { PageSeo } from '$lib/schemas/seo';
-import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
+import type { BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
 export interface NavPort {
 	/**
@@ -68,7 +67,6 @@ export interface ContentAdapter {
 	services: ServicePort;
 	blog: BlogPort;
 	meta: MetaPort;
-	techStack: TechStackPort;
 	content: ContentPort;
 	/** Nav sub-port — reads nav_links by placement slot. Added in slice-18i Phase 5. */
 	nav: NavPort;
@@ -140,14 +138,6 @@ export interface MetaPort {
 	): Promise<PageSeo>;
 }
 
-// Shrunk in slice-18g Phase 4 Task 9: byLayer/byDomain/connections/
-// incomingConnections/outgoing+incomingRelations/allScenarios/scenarioForDomains
-// removed (decisions Q1+Q2+Q5). Legacy /tech-stack components that called those
-// methods will be cleaned up in Phase 5 (Task 10).
-export interface TechStackPort {
-	all(): Promise<readonly TechStackItem[]>;
-}
-
 export interface ContentPort {
 	hero(): Promise<HeroContent>;
 	heroAnim(): Promise<HeroAnimContent>;
@@ -162,7 +152,6 @@ export interface ContentPort {
 	/** Full /about page content — distinct from the home-page about teaser. */
 	aboutPage(): Promise<AboutContent>;
 	contactPage(): Promise<ContactContent>;
-	techStackPage(): Promise<TechStackPageContent>;
 	initialHeroData(): Promise<HeroData>;
 	/** /blog page chrome — block_blog_page_content (added slice-18i Phase 7). */
 	blogPage(): Promise<BlogPageContent>;

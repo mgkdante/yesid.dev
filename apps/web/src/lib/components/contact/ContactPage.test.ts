@@ -448,12 +448,6 @@ describe('ContactPage', () => {
 		for (const field of screen.getAllByRole('textbox')) expect(field).toHaveValue('');
 	});
 
-	it.each([undefined, 'A supplied blueprint with several technologies.', 'A short request.'])('pre-fills %s only when provided outside restoration', async (initialMessage) => {
-		render(ContactPage, { props: { contactPage: contactContent, initialMessage } });
-		await tick();
-		for (const field of screen.getAllByLabelText(/^message/i)) expect(field).toHaveValue(initialMessage ?? '');
-	});
-
 	it('displays weather when provided', () => {
 		render(ContactPage, {
 			props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
@@ -524,7 +518,7 @@ describe('ContactPage', () => {
 // These assert the locale-handoff WIRING at the unit level: the three fields are
 // persisted() (so a switch carries them), focus is keyed for restore, and a sent
 // message can't resurrect. The full switch-restore animation (success re-shown in
-// the new locale, restore-beats-?bp=) is covered by the Playwright spec, which
+// the new locale) is covered by the Playwright spec, which
 // drives the real beforeNavigate/afterNavigate orchestrator.
 describe('ContactPage — state across languages (slice-34.3)', () => {
 
