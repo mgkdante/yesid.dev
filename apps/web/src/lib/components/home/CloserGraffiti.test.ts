@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { cleanup, render, screen, waitFor } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
@@ -69,9 +70,9 @@ describe('CloserGraffiti', () => {
 	});
 
 	it.each([
-		{ locale: 'en', asset: '/svg/graffiti/the-end.en.svg', label: 'THE END graffiti' },
-		{ locale: 'fr', asset: '/svg/graffiti/the-end.fr.svg', label: 'graffiti LA FIN' },
-		{ locale: 'es', asset: '/svg/graffiti/the-end.es.svg', label: 'grafiti FIN' },
+		{ locale: 'en', asset: '/svg/graffiti/the-end.en.svg', label: siteLabels.a11y.closerGraffiti.en },
+		{ locale: 'fr', asset: '/svg/graffiti/the-end.fr.svg', label: siteLabels.a11y.closerGraffiti.fr },
+		{ locale: 'es', asset: '/svg/graffiti/the-end.es.svg', label: siteLabels.a11y.closerGraffiti.es },
 	] as const)('loads the $locale artwork and exposes its localized label', async ({ locale, asset, label }) => {
 		const requests: string[] = [];
 		globalThis.fetch = vi.fn(async (input) => {

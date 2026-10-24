@@ -22,14 +22,7 @@ describe('localized Lacquer graffiti assets', () => {
 		expect(notice).toContain('Lacquer');
 		expect(notice).toContain('SIL Open Font License 1.1');
 		expect(notice).not.toContain('Vecteezy');
-		expect(closerContent.attribution).toEqual({
-			text: {
-				en: 'Lacquer typeface by Niki Polyocan and Eli Block',
-				es: 'Tipografía Lacquer de Niki Polyocan y Eli Block',
-				fr: 'Police Lacquer par Niki Polyocan et Eli Block',
-			},
-			url: 'https://fonts.google.com/specimen/Lacquer',
-		});
+		expect(closerContent.attribution.url).toBe('https://fonts.google.com/specimen/Lacquer');
 	});
 
 	it('rebuilds byte-identical SVGs from the pinned source', () => {

@@ -64,3 +64,26 @@ apps/web/static/images/*.source.svg
 
 # superpowers brainstorm sessions
 .superpowers/
+
+# Ephemeral CMS exports; index.ts and content tests remain source-controlled.
+/apps/web/src/lib/content/about-page.ts
+/apps/web/src/lib/content/blog-bodies.ts
+/apps/web/src/lib/content/blog-page.ts
+/apps/web/src/lib/content/blog.ts
+/apps/web/src/lib/content/contact-page.ts
+/apps/web/src/lib/content/error-pages.ts
+/apps/web/src/lib/content/legal-pages.ts
+/apps/web/src/lib/content/media-assets.ts
+/apps/web/src/lib/content/media-variants.ts
+/apps/web/src/lib/content/morph-shapes.ts
+/apps/web/src/lib/content/nav.ts
+/apps/web/src/lib/content/projects-page.ts
+/apps/web/src/lib/content/projects.ts
+/apps/web/src/lib/content/route-seo.ts
+/apps/web/src/lib/content/services.ts
+/apps/web/src/lib/content/site-content.ts
+/apps/web/src/lib/content/site-labels.ts
+/apps/web/src/lib/content/site-meta.ts
+/apps/web/src/lib/content/site-pages.ts
+/apps/web/src/lib/content/site-seo-defaults.ts
+/apps/web/src/lib/content/generated[.]manifest.json

@@ -1,3 +1,4 @@
+import { siteLabels } from '../src/lib/content/site-labels';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,23 +11,10 @@ const CONSENT_KEY = 'yesid:analytics-consent:v1';
 const PREFERENCES_OPEN_KEY = 'yesid:analytics-preferences-open:v1';
 const DENIAL_SAFETY_KEY = 'yesid:analytics-denial-safety:v1';
 const HERO_INTRO_KEY = 'yesid:hero-intro-day';
-const CONSENT_DISCLOSURES = [
-	{
-		locale: 'English',
-		path: '/projects',
-		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
-	},
-	{
-		locale: 'French',
-		path: '/fr/projects',
-		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
-	},
-	{
-		locale: 'Spanish',
-		path: '/es/projects',
-		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
-	},
-] as const;
+const CONSENT_DISCLOSURES = (['en', 'fr', 'es'] as const).map(locale => ({
+	locale, path: (locale === 'en' ? '' : '/' + locale) + '/projects',
+	copy: siteLabels.ui.analyticsConsent.description[locale]!,
+}));
 const CLIENT_CHUNKS_DIR = fileURLToPath(
 	new URL('../.svelte-kit/output/client/_app/immutable/chunks/', import.meta.url),
 );
@@ -396,7 +384,7 @@ test('mobile blog TOC does not block the analytics consent action', async ({ pag
 });
 
 for (const { locale, path, copy } of CONSENT_DISCLOSURES) {
-	test(`${locale} consent renders the exact high-intent disclosure`, async ({ page }) => {
+	test(`${locale} consent renders the localized content description`, async ({ page }) => {
 		await proxyProductionHostnameToPreview(page);
 
 		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
