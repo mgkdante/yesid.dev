@@ -9,9 +9,14 @@ for (const locale of ['en', 'fr', 'es'] as const) {
       expect(response?.status()).toBe(200);
       await expect(page.getByTestId('page-legal')).toBeVisible();
       await expect(page.locator('h1')).toHaveText(content.title[locale] ?? content.title.en);
-      const expected = (content.body[locale] ?? content.body.en)!.blocks
+      const htmlParagraphs = (content.body[locale] ?? content.body.en)!.blocks
         .filter(block => block.type === 'paragraph')
-        .map(block => String(block.data.text).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' '));
+        .map(block => String(block.data.text));
+      const expected = await page.evaluate((paragraphs) => paragraphs.map((html) => {
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        return template.content.textContent ?? '';
+      }), htmlParagraphs);
       const paragraphs = page.getByTestId('legal-body').locator('p');
       await expect(paragraphs).toHaveText(expected);
       await expect(page.getByTestId('legal-body')).toContainText('contact@yesid.dev');
