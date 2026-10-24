@@ -1,3 +1,4 @@
+import { siteLabels } from '../src/lib/content/site-labels';
 import { expect, test } from '@playwright/test';
 
 const cases = [
@@ -7,7 +8,7 @@ const cases = [
 		asset: '/svg/graffiti/the-end.en.svg',
 		phrase: 'THE END',
 		letters: 'THEEND',
-		label: 'THE END graffiti'
+		label: siteLabels.a11y.closerGraffiti.en
 	},
 	{
 		locale: 'fr',
@@ -15,7 +16,7 @@ const cases = [
 		asset: '/svg/graffiti/the-end.fr.svg',
 		phrase: 'LA FIN',
 		letters: 'LAFIN',
-		label: 'graffiti LA FIN'
+		label: siteLabels.a11y.closerGraffiti.fr!
 	},
 	{
 		locale: 'es',
@@ -23,7 +24,7 @@ const cases = [
 		asset: '/svg/graffiti/the-end.es.svg',
 		phrase: 'FIN',
 		letters: 'FIN',
-		label: 'grafiti FIN'
+		label: siteLabels.a11y.closerGraffiti.es!
 	}
 ] as const;
 

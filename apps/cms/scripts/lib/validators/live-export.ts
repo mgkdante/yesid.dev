@@ -144,4 +144,14 @@ export function validateSeoDescriptions(data: ExportData): void {
 export function validateLiveExport(data: ExportData): void {
 	validateLegalTruth(data);
 	validateSeoDescriptions(data);
+	validateDemoFeedDisclosure(data);
+}
+
+/** cafc9f02 HeroMetrics: demo dashboard copy must not claim a live STM feed. */
+export const demoFeedDisclosures = { en: 'DEMO · STM-STYLE', fr: 'DÉMO · STYLE STM' } as const;
+
+export function validateDemoFeedDisclosure(data: ExportData): void {
+	for (const locale of ['en', 'fr'] as const) {
+		requireTruth(data.siteLabels?.heroDashboard?.vehiclesSub[locale] === demoFeedDisclosures[locale], locale + ' demo-feed disclosure');
+	}
 }

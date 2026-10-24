@@ -56,6 +56,12 @@ it('rejects changed identities, missing locales/media, renderer changes and malf
 		(data) => { Object.values(data.blogBodies!)[0]!.version = 42 as unknown as string; },
 		(data) => { delete data.nav; },
 		(data) => { data.mediaAssets = {}; },
+		(data) => { data.cta!.heading.en = data.cta!.heading.en.replace('\n', ' '); },
+		(data) => { data.legalPages![0]!.body.en!.blocks.splice(1, 1); },
+		(data) => {
+			const doc = Object.values(data.blogBodies!).find(doc => doc.blocks.filter(block => block.type === 'header').length > 1)!;
+			doc.blocks.splice(doc.blocks.findIndex(block => block.type === 'header'), 1);
+		},
 	];
 	for (const corrupt of corruptions) {
 		const changed = structuredClone(fixture);
@@ -69,6 +75,7 @@ it('deduplicates prose while retaining header levels, code fences, markup and re
 		{ id: 'p1', type: 'paragraph', data: { text: 'Long prose. '.repeat(30) } },
 		{ id: 'p2', type: 'paragraph', data: { text: 'Repeated prose. '.repeat(30) } },
 		{ id: 'h2', type: 'header', data: { text: 'Section', level: 2 } },
+		{ id: 'h2-again', type: 'header', data: { text: 'Another section', level: 2 } },
 		{ id: 'h3', type: 'header', data: { text: 'Subsection', level: 3 } },
 		{ id: 'code', type: 'code', data: { code: '```ts\nconst value = 1;\n```' } },
 		{ id: 'diagram', type: 'code', data: { code: '```mermaid\ngraph LR; A-->B\n```' } },
@@ -79,12 +86,29 @@ it('deduplicates prose while retaining header levels, code fences, markup and re
 	] };
 	// A later paragraph with a template slot is reference-bearing too.
 	const trimmed = trimExportData({ blogBodies: { example: doc } }).blogBodies!.example!;
-	expect(trimmed.blocks.map((block) => block.id)).toEqual(['p1', 'h2', 'h3', 'code', 'diagram', 'marked', 'link1', 'link2', 'slot']);
-	expect(trimmed.blocks[0]!.data).toEqual({ text: 'Fixture copy.' });
-	expect(JSON.stringify(trimmed)).toContain('<strong>Fixture copy.</strong>');
+	expect(trimmed.blocks.map((block) => block.id)).toEqual(['p1', 'h2', 'h2-again', 'h3', 'code', 'diagram', 'marked', 'link1', 'link2', 'slot']);
+	expect(trimmed.blocks[0]!.data).toEqual({ text: 'Fixture copy (en, text).' });
+	expect(JSON.stringify(trimmed)).toContain('<strong>Fixture copy (en, text).</strong>');
 	expect(JSON.stringify(trimmed)).toContain('{count}');
 	expect(JSON.stringify(trimmed)).not.toContain('Template prose.');
 	expect(JSON.stringify(trimmed)).toContain('```mermaid');
 	expect(JSON.stringify(trimmed)).toContain('href=');
-	expect(doc.blocks).toHaveLength(10);
+	expect(doc.blocks).toHaveLength(11);
+});
+
+it('preserves line breaks, every legal paragraph and distinct locale/field placeholders', () => {
+	const paragraphs: BlockEditorDoc = { time: 1, version: '2.31.2', blocks: [
+		{ id: 'one', type: 'paragraph', data: { text: 'First paragraph.' } },
+		{ id: 'two', type: 'paragraph', data: { text: 'Second paragraph.\nAnother line.' } },
+	] };
+	const source = { cta: { heading: { en: 'First\nSecond', fr: 'Premier\nDeuxième' }, subtitle: { en: 'Subtitle' } },
+		siteLabels: { ui: { languageNames: { en: { en: 'English', fr: 'Anglais' }, fr: { en: 'French', fr: 'Français' } } } },
+		legalPages: [{ body: { en: paragraphs } }] } as unknown as ExportData;
+	const trimmed = trimExportData(source);
+	expect(trimmed.cta!.heading.en.split('\n')).toHaveLength(2);
+	expect(trimmed.cta!.heading.fr).not.toBe(trimmed.cta!.heading.en);
+	expect(trimmed.cta!.subtitle.en).not.toBe(trimmed.cta!.heading.en.split('\n')[0]);
+	expect(trimmed.legalPages![0]!.body.en!.blocks.map(block => block.id)).toEqual(['one', 'two']);
+	expect(JSON.stringify(trimmed.legalPages)).toContain('\\n');
+	expect(trimmed.siteLabels!.ui.languageNames.en.fr).not.toBe(trimmed.siteLabels!.ui.languageNames.fr.fr);
 });

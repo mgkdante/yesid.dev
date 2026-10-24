@@ -21,12 +21,14 @@ const UUID = /[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/i;
 const EMAIL = /[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 
 /** Keep inline markup, links, template slots and asset references verbatim. */
-function shortCopy(value: string): string {
+function shortCopy(value: string, locale: string, field: string): string {
 	if (EMAIL.test(value)) return value;
 	// Protect tokens individually so a slot or link does not retain its whole paragraph.
 	const tokens = /(<\/?[a-z][^>]*>|\{[^{}\r\n]+\}|(?:https?:\/\/|mailto:)[^\s<>"']+|[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/gi;
-	return value.split(tokens).map((part, index) =>
-		index % 2 || !part.trim() ? part : 'Fixture copy.',
+	return value.split(/(\r\n|\n|\r)/).map((line, index) => index % 2 ? line :
+		line.split(tokens).map((part, tokenIndex) =>
+			tokenIndex % 2 || !part.trim() ? part : `Fixture copy (${locale}, ${field}).`,
+		).join(''),
 	).join('');
 }
 
@@ -50,19 +52,19 @@ function blockBranch(block: JsonObject): string {
 	]);
 }
 
-function trimValue(value: unknown, field = '', labels = false, path: string[] = []): unknown {
+function trimValue(value: unknown, field = '', labels = false, path: string[] = [], locale = 'en', postLocales: Record<string, string> = {}): unknown {
 	// Explicit SEO fields feed PageSeoSchema; keep their bounded copy intact.
 	if (field === 'seoDescription' || field === 'defaultDescription' ||
 		(path[0] === 'routeSeo' && field === 'description') ||
 		((path[0] === 'errorPageFallback' || path[0] === 'errorPages') && field === 'heading')) return value;
 	if (IDENTITY.test(field)) return value;
-	if (typeof value === 'string') return PROSE.test(field) || labels ? shortCopy(value) : value;
+	if (typeof value === 'string') return PROSE.test(field) || labels ? shortCopy(value, locale, field) : value;
 	if (Array.isArray(value)) {
 		let entries = value;
-		if (field === 'blocks') {
+		if (field === 'blocks' && path[0] !== 'legalPages') {
 			const seen = new Set<string>();
 			entries = value.filter((block) => {
-				if (!isObject(block)) return true;
+				if (!isObject(block) || block.type !== 'paragraph') return true;
 				const branch = blockBranch(block);
 				const first = !seen.has(branch);
 				seen.add(branch);
@@ -70,18 +72,23 @@ function trimValue(value: unknown, field = '', labels = false, path: string[] = 
 				return first || hasReferences(block.data);
 			});
 		}
-		return entries.map((entry) => trimValue(entry, field, labels, path));
+		return entries.map((entry) => trimValue(entry, field, labels, path, locale, postLocales));
 	}
 	if (!isObject(value)) return value;
+	const rowLocale = typeof value.lang === 'string' && LOCALE.test(value.lang) ? value.lang : locale;
+	const localizedPrimitive = Object.keys(value).every(key => LOCALE.test(key)) &&
+		Object.values(value).every(entry => entry === null || typeof entry !== 'object');
 	return Object.fromEntries(Object.entries(value).map(([key, entry]) => [
-		key, trimValue(entry, LOCALE.test(key) ? field : key, labels || key === 'siteLabels', [...path, key]),
+		key, trimValue(entry, LOCALE.test(key) ? (localizedPrimitive ? field : `${field}.${key}`) : key, labels || key === 'siteLabels', [...path, key],
+			LOCALE.test(key) ? key : path[0] === 'blogBodies' && path.length === 1 ? (postLocales[key] ?? rowLocale) : rowLocale, postLocales),
 	]));
 }
 
 export function trimExportData(data: ExportData): ExportData {
 	// Derived from the asset manifest during fixture export, exactly as for live data.
 	const { mediaAssets: _assets, mediaVariants: _variants, ...editorial } = data;
-	return trimValue(editorial) as ExportData;
+	const postLocales = Object.fromEntries((data.blogPosts ?? []).map(post => [post.slug, post.lang]));
+	return trimValue(editorial, '', false, [], 'en', postLocales) as ExportData;
 }
 
 export function serializeFixture(data: ExportData): string {
@@ -102,16 +109,32 @@ function blockIdentities(value: unknown, path = ''): unknown[] {
 	);
 }
 
-function identities(value: unknown): unknown {
-	if (Array.isArray(value)) return value.map(identities);
+function identities(value: unknown, path: string[] = []): unknown {
+	if (Array.isArray(value)) return value.map(entry => identities(entry, path));
 	if (!isObject(value)) return null;
 	return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key,
 		key === 'blocks' && Array.isArray(entry)
-			? [...new Set(entry.map((block) => JSON.stringify([
+			? { branches: [...new Set(entry.map((block) => JSON.stringify([
 				blockBranch(block as JsonObject), blockIdentities((block as JsonObject).data),
-			])))].sort()
-			: IDENTITY.test(key) ? entry : identities(entry),
+			])))].sort(), structure: entry.filter(block => path[0] === 'legalPages' || block.type !== 'paragraph')
+				.map(block => [block.id, block.type]) }
+			: IDENTITY.test(key) ? entry : identities(entry, [...path, key]),
 	]));
+}
+
+/** Compare each retained string against its source, matching blocks by stable editor ID. */
+function assertLineBreaks(source: unknown, trimmed: unknown): void {
+	if (typeof source === 'string' && typeof trimmed === 'string') {
+		if (!isDeepStrictEqual(source.match(/\r\n|\n|\r/g), trimmed.match(/\r\n|\n|\r/g))) {
+			throw new Error('Trim changed line breaks');
+		}
+	} else if (Array.isArray(source) && Array.isArray(trimmed)) {
+		trimmed.forEach((entry, index) => assertLineBreaks(
+			isObject(entry) && 'id' in entry ? source.find(item => isObject(item) && item.id === entry.id) : source[index], entry,
+		));
+	} else if (isObject(source) && isObject(trimmed)) {
+		for (const [key, value] of Object.entries(trimmed)) assertLineBreaks(source[key], value);
+	}
 }
 
 function protectedTokens(value: unknown): string[] {
@@ -143,6 +166,7 @@ export function assertTrimmedExportData(source: ExportData, trimmed: ExportData)
 	if (!isDeepStrictEqual(protectedTokens(editorial), protectedTokens(trimmed))) {
 		throw new Error('Trim changed media UUIDs, inline markup, template slots or links');
 	}
+	assertLineBreaks(editorial, trimmed);
 	validateDocs(trimmed);
 	// Fixture mode supplies both derived maps before building configs. The source
 	// cache already has them; hermetic fixture validation can use empty maps.

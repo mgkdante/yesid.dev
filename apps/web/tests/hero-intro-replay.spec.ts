@@ -1,3 +1,4 @@
+import { siteLabels } from '../src/lib/content/site-labels';
 import { test, expect, type Page } from '@playwright/test';
 import { decodePng, pixelAt, isBrandOrange, type Rgb } from './lib/png.js';
 
@@ -84,7 +85,7 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 	await expect(page.locator('[data-testid="metro-legend"]')).toHaveCount(0);
 	const caption = page.locator('[data-testid="metro-caption"]');
 	await expect(caption).toHaveCount(1);
-	expect(await caption.textContent()).toContain('STM métro + REM');
+	expect(await caption.textContent()).toContain(siteLabels.ui.metroCaption.en);
 	const inkHits = await page.evaluate(() => {
 		const svg = document.querySelector('[data-testid="metro-network-container"] svg');
 		const cap = document.querySelector('[data-testid="metro-caption"]');

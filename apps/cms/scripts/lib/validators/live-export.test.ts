@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'bun:test';
 import type { ExportData } from '../../export-data';
-import { legalTruth, validateLiveExport, validateSeoDescriptions } from './live-export';
+import { legalTruth, demoFeedDisclosures, validateDemoFeedDisclosure, validateLiveExport, validateSeoDescriptions } from './live-export';
 
 const locales = ['en', 'fr', 'es'] as const;
 
 function syntheticContent(): ExportData {
 	const description = { en: 'A complete synthetic SEO description for testing the route metadata contract.' };
 	return {
-		siteLabels: { ui: { analyticsConsent: { description: { ...legalTruth.consent } } } },
+		siteLabels: { ui: { analyticsConsent: { description: { ...legalTruth.consent } } }, heroDashboard: { vehiclesSub: { ...demoFeedDisclosures } } },
 		siteSeoDefaults: { defaultDescription: description },
 		routeSeo: [{ path: '/', description }, { path: '/fallback', description: null }],
 		services: [{ id: 'test', seoDescription: description }],
@@ -100,4 +100,12 @@ describe('live content validation', () => {
 			expect(() => validateSeoDescriptions(data)).toThrow('SEO description');
 		}
 	});
+});
+
+it('requires the approved EN/FR demo-feed disclosures', () => {
+	for (const locale of ['en', 'fr'] as const) {
+		const data = syntheticContent();
+		data.siteLabels!.heroDashboard.vehiclesSub[locale] = 'Live STM feed';
+		expect(() => validateDemoFeedDisclosure(data)).toThrow('demo-feed disclosure');
+	}
 });
