@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { legalPages } from '../lib/content/legal-pages';
+import { siteLabels } from '../lib/content/site-labels';
 
 type Locale = 'en' | 'fr' | 'es';
+
+const CONSENT_DESCRIPTIONS: Record<Locale, string> = {
+	en: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
+	fr: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
+	es: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
+};
 
 const LEGAL_CLAUSES: Record<Locale, string> = {
 	en: "and four conversion events: a successful contact-form submission, a click to book a call, a click on a direct contact channel, and a click to inspect a project's live site or public source repository. I do not attach contact-form fields, destination URLs, link labels, or custom properties to those events.",
@@ -92,6 +99,18 @@ const REVISION_LABELS: Record<Locale, string> = {
 
 for (const locale of ['en', 'fr', 'es'] as const) {
 	describe(`${locale.toUpperCase()} served legal truth`, () => {
+		it('serves the approved consent description', () => {
+			expect(siteLabels.ui.analyticsConsent.description[locale]).toBe(CONSENT_DESCRIPTIONS[locale]);
+		});
+
+		it('keeps the private home location out of every legal page', () => {
+			for (const page of legalPages) {
+				const content = JSON.stringify({ title: page.title[locale], body: page.body[locale] });
+				expect(content).not.toMatch(/\bGatineau\b/i);
+				expect(content).not.toMatch(/\b[A-Z]\d[A-Z][ -]?\d[A-Z]\d\b/i);
+			}
+		});
+
 		it('publishes the public contact address on every legal page', () => {
 			expect(legalPages.map((page) => page.slug)).toEqual([
 				'privacy', 'terms', 'cookies', 'accessibility', 'notice',

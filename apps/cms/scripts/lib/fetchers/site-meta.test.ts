@@ -7,8 +7,8 @@
  * exports. Catches transform bugs at unit-test time (sub-second) before P7's
  * end-to-end drift check runs against live CMS.
  *
- * Fixture is hand-crafted to mirror the live `site_meta` row as seeded by
- * `apps/cms/scripts/seed-site-meta.ts` and reflected in `siteMeta` today.
+ * Fixture is hand-crafted to mirror the live `site_meta` row
+ * reflected in `siteMeta` today.
  */
 
 import { describe, expect, it } from 'bun:test';

@@ -8,7 +8,7 @@ import { readCmsFixtureJson } from './helpers/cms-fixtures';
  * Schema for fixtures/assets-id-map.json — emitted by migrate-assets.ts and
  * consumed by 18e-18i (and packages/shared via re-export). Slice 18l added the
  * `brand/` namespace for Directus admin chrome assets (icon + wordmark SVGs
- * uploaded by seed-brand-assets.ts and referenced from settings.json); the
+ * referenced from settings.json); the
  * brand-svg-og-cards slice added `og/` for route share cards wired through
  * route_seo.og_image.
  */
