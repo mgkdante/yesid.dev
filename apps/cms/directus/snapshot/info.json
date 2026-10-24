@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "directus": "12.0.0",
+  "directus": "12.5.1",
   "vendor": "postgres",
   "systemFields": [
     {

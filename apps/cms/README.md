@@ -15,7 +15,7 @@ built-in `s3` storage driver.
 
 | Path | Owner |
 |---|---|
-| [`Dockerfile`](Dockerfile) | Pinned `directus/directus:12.0.0` image, `directus-extension-sync@3.0.6`, and the local no-index extension |
+| [`Dockerfile`](Dockerfile) | Digest-pinned `directus/directus:12.5.1` with Node 22.23.4; separately packaged `directus-extension-sync@3.0.6` and the local no-index extension |
 | [`directus/`](directus/) | Reviewable directus-sync collections and schema snapshot |
 | [`fixtures/`](fixtures/) | Retained asset inventories, preset declarations, site labels, and positioning inputs |
 | [`scripts/lib/fetchers/`](scripts/lib/fetchers/) | Read-side adapters from Directus rows to product content interfaces |
