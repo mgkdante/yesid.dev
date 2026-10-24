@@ -134,6 +134,16 @@ describe("scanSvelteAssetSurface", () => {
     ).toBe(true);
   });
 
+  it("detects SVG fetch options while preserving the URL-only raw reference", () => {
+    const surface = scanSvelteAssetSurface(
+      "apps/web/src/lib/Demo.svelte",
+      "<script>\nfetch('/svg/graffiti/the-end.svg', { signal });\n</script>",
+    );
+    expect(surface.rawInsertionLines).toEqual([
+      { sourceLine: 2, rawRef: "fetch('/svg/graffiti/the-end.svg')" },
+    ]);
+  });
+
   it("normalizes parsed Unicode/newlines without changing one-based source lines", () => {
     const surface = scanSvelteAssetSurface(
       "apps/web/src/lib/Cafe.svelte",
