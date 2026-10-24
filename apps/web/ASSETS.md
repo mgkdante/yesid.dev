@@ -10,7 +10,7 @@ pipeline (`apps/cms/README.md` § Asset migration).
 
 | Path | What | Served |
 | --- | --- | --- |
-| `apps/cms/brand/yesid-wordmark.svg` | Canonical outlined wordmark: "yesid" + orange period as paths (no font dependency). Regenerate via a fresh Inter shaping pass if the brand ever changes; the site header/footer render the wordmark as HTML text, this file is the asset-of-record. | Directus admin chrome via `seed:brand-assets` |
+| `apps/cms/brand/yesid-wordmark.svg` | Canonical outlined wordmark: "yesid" + orange period as paths (no font dependency). Regenerate via a fresh Inter shaping pass if the brand ever changes; the site header/footer render the wordmark as HTML text, this file is the asset-of-record. | Directus admin chrome |
 | `apps/cms/brand/yesid-icon.svg` | Orange dot icon | Directus admin chrome (`project_logo`) |
 | `apps/web/static/favicon.svg` | The one committed favicon (initial paint; `theme.svelte.ts` repaints it as a data-URI per theme) | Static `/favicon.svg` via `app.html` |
 
@@ -44,6 +44,7 @@ pipeline (`apps/cms/README.md` § Asset migration).
   `aria-hidden`, unfocusable, clipped by its band, and motion-safe.
 - Until the code-component reconciliation policy lands, this map is the selectable
   catalog for those keys. Do not create partial Directus code-component records:
-  partial linking changes live usage identities while the offline scanner correctly
-  remains repository-only. The guarded asset-audit baseline inventories the four
-  component roots in the meantime.
+  partial linking changes live usage identities.
+- Current checks verify manifest SHA-256 digests and UUID-map/manifest consistency.
+  `assets.ts` rejects unknown UUIDs in production, and the web asset-boundary guard
+  checks literal asset identities and raw HTML/SVG injection files.

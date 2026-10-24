@@ -9,14 +9,7 @@ import {
 describe('production write gate', () => {
 	test('is the single owner for every active production mutator', () => {
 		for (const script of [
-			'promote-blog-translations.ts',
-			'promote-lean-high-intent-analytics.ts',
-			'reconcile-blog-editorial-dates.ts',
-			'reconcile-legal-public-contact.ts',
-			'reconcile-legal-service-area.ts',
 			'reconcile-permission-policy-quarantine-name.ts',
-			'reconcile-public-blog-permission.ts',
-			'setup-blog-translation-key.ts',
 			'sync-push.ts',
 		]) {
 			const source = readFileSync(new URL(`../scripts/${script}`, import.meta.url), 'utf8');

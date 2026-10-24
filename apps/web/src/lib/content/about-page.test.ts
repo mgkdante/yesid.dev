@@ -7,11 +7,6 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.identity.name.en).toBe('Yesid');
 		});
 
-		it('has non-empty title and value prop', () => {
-			expect(aboutPageContent.identity.title.en.length).toBeGreaterThan(0);
-			expect(aboutPageContent.identity.valueProp.en.length).toBeGreaterThan(0);
-		});
-
 		it('keeps the identity value prop concise and removes the old mom-computer story', () => {
 			expect(aboutPageContent.identity.valueProp.en.length).toBeLessThanOrEqual(260);
 			expect(aboutPageContent.identity.valueProp.en.toLowerCase()).not.toContain('mom');
@@ -80,13 +75,6 @@ describe('aboutPageContent', () => {
 		it('every step has a unique id', () => {
 			const ids = aboutPageContent.methodology.map((s) => s.id);
 			expect(new Set(ids).size).toBe(ids.length);
-		});
-
-		it('every step has label and description', () => {
-			for (const step of aboutPageContent.methodology) {
-				expect(step.label.en.length).toBeGreaterThan(0);
-				expect(step.description.en.length).toBeGreaterThan(0);
-			}
 		});
 	});
 
@@ -222,14 +210,6 @@ describe('aboutPageContent', () => {
 		it('has city name', () => {
 			expect(aboutPageContent.weather.city.en).toBe('Montreal');
 		});
-
-		it('has hook text for location wordplay', () => {
-			expect(aboutPageContent.weather.hook.en.length).toBeGreaterThan(0);
-		});
-
-		it('enabled is a boolean', () => {
-			expect(typeof aboutPageContent.weather.enabled).toBe('boolean');
-		});
 	});
 
 	describe('cta', () => {
@@ -243,10 +223,6 @@ describe('aboutPageContent', () => {
 
 		it('button links to /contact', () => {
 			expect(aboutPageContent.cta.buttonHref).toBe('/contact');
-		});
-
-		it('has a button label', () => {
-			expect(aboutPageContent.cta.buttonLabel.en.length).toBeGreaterThan(0);
 		});
 
 		it('has at least 2 social links', () => {

@@ -62,18 +62,20 @@ import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';
 import { z } from 'zod';
 import {
 	parsePort,
+	TechStackItemSchema,
+	HeroDataSchema,
+} from '$lib/schemas';
+import {
 	ProjectSchema,
 	ServiceSchema,
 	BlogPostSchema,
 	SiteMetaSchema,
-	TechStackItemSchema,
 	NavLinkSchema,
 	ErrorPageContentSchema,
 	AboutContentSchema,
 	ContactContentSchema,
 	TechStackPageContentSchema,
-	HeroDataSchema,
-} from '$lib/schemas';
+} from '@repo/shared';
 import {
 	BlogPageContentSchema,
 	ProjectsPageContentSchema,
@@ -103,7 +105,7 @@ import { blogPageContent } from '$lib/content/blog-page';
 import { projectsPageContent } from '$lib/content/projects-page';
 import { INITIAL_HERO_DATA } from '$lib/live';
 import { morphShapes } from '$lib/content/morph-shapes';
-import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { MorphShapeSchema } from '@repo/shared';
 // Slice 18d Phase 8 introduced this as the static fallback for
 // content.metroSvg; since slice-27.2 (static-only data path — the directus
 // fetch layer was removed at slice-26 close) the build-time `?raw` import IS

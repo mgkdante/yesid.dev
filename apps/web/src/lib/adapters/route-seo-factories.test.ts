@@ -19,7 +19,6 @@ import type {
 	SiteMeta,
 	SiteSeoDefaults,
 } from '$lib/types';
-import * as assetAudit from '../../../../cms/scripts/lib/assets/audit';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
@@ -337,20 +336,6 @@ describe('projectsSlugSeoFactory', () => {
 		});
 	});
 
-	it('keeps the audit project-route pattern equal to factory output', async () => {
-		const pattern = (
-			assetAudit as unknown as { RUNTIME_PROJECT_PATTERN?: RegExp }
-		).RUNTIME_PROJECT_PATTERN;
-		expect(pattern).toBeInstanceOf(RegExp);
-		if (!(pattern instanceof RegExp)) return;
-
-		const urls = await projectOgUrls(project);
-		for (const locale of ['en', 'fr', 'es'] as const) {
-			const match = urls[locale]?.match(pattern);
-			expect(match?.[1], locale).toBe(project.slug);
-			expect(match?.[2], locale).toBe(locale === 'en' ? undefined : locale);
-		}
-	});
 });
 
 describe('servicesIdSeoFactory', () => {
@@ -365,7 +350,6 @@ describe('servicesIdSeoFactory', () => {
 		return {
 			params: { id: service.id },
 			locale: 'en' as const,
-			ctx: undefined,
 			adapter: { services: { byId: async () => service } } as unknown as ContentAdapter,
 			siteMeta,
 			siteSeoDefaults,

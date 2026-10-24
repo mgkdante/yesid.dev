@@ -1,8 +1,7 @@
 /**
  * Directus SDK client factory + env helpers.
  *
- * Extracted from seed-services.ts in 18c Task 25 (F7). Consumed by every
- * script in apps/cms/scripts/ that needs a Directus REST client.
+ * Shared by scripts in apps/cms/scripts/ that need a Directus REST client.
  */
 
 import { createDirectus, rest, staticToken } from '@directus/sdk';
@@ -26,7 +25,7 @@ export const DEV_CMS_HOSTNAME = 'cms.dev.yesid.dev';
 
 /**
  * Guard: refuse to run a mutating ops script against anything but the dev
- * Directus instance. Every seed / migration / content script calls this right
+ * Directus instance. Mutating migration and content scripts call this right
  * after resolving its target URL, so a stray prod URL aborts before any write.
  * Prod promotion is a separate, deliberate, operator-gated path.
  *

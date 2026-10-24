@@ -2,34 +2,9 @@
 // Phase 1: constrained random data simulating STM transit pipeline KPIs.
 // Phase 2 (future): wire to live Neon Postgres API, fall back to this on error.
 
-export interface HeroMetric {
-  // Code-owned dynamic data only — value/unit/key plus the numbers the CMS
-  // sub-templates interpolate. The dashboard card LABEL/SUB copy is CMS truth
-  // now: HeroMetrics resolves it from siteLabels.heroDashboard keyed by `key`
-  // (slice fr-leaks-cms-truth). Numbers/units and the "STM" wordmark stay
-  // verbatim; only the words localize, and they live in Directus.
-  value: number;
-  unit?: string;
-  key: 'vehicles' | 'delay' | 'routes';
-  // Dynamic numbers the CMS sub-templates interpolate: {coverage} (delay card,
-  // per-render %) and {total} (routes card, constant route count). Optional so
-  // bare fixtures still satisfy HeroMetric; HeroMetrics substitutes them into
-  // siteLabels.heroDashboard.delaySub / .routesSub.
-  coverage?: number;
-  total?: number;
-}
+import type { HeroData, HeroQueryRow } from '$lib/schemas/hero-data';
 
-export interface HeroQueryRow {
-  route: string;
-  avgDelayS: number;
-  vehicles: number;
-}
-
-export interface HeroData {
-  metrics: HeroMetric[];
-  queryRows: HeroQueryRow[];
-  queryTime: number;
-}
+export type { HeroMetric, HeroQueryRow, HeroData } from '$lib/schemas/hero-data';
 
 // Real STM bus route numbers for realistic mock data.
 export const STM_ROUTES = [

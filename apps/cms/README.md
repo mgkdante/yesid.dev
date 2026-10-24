@@ -1,8 +1,8 @@
 # yesid.dev CMS
 
 Directus 12 is the editorial source for [yesid.dev](https://yesid.dev). This
-package owns its schema, deterministic recovery inputs, build-time content
-export, assets, and guarded operator tooling. The public site serves generated
+package owns its schema, build-time content export, assets, and guarded
+operator tooling. The public site serves generated
 SvelteKit content and mirrored static media without per-request CMS reads.
 Directus serves editorial/source media; it is not the public site's media CDN.
 
@@ -17,10 +17,10 @@ built-in `s3` storage driver.
 |---|---|
 | [`Dockerfile`](Dockerfile) | Pinned `directus/directus:12.0.0` image, `directus-extension-sync@3.0.6`, and the local no-index extension |
 | [`directus/`](directus/) | Reviewable directus-sync collections and schema snapshot |
-| [`fixtures/`](fixtures/) | Validated bootstrap, recovery, asset, and content inputs; not a substitute for current live CMS state |
+| [`fixtures/`](fixtures/) | Retained asset inventories, preset declarations, site labels, and positioning inputs |
 | [`scripts/lib/fetchers/`](scripts/lib/fetchers/) | Read-side adapters from Directus rows to product content interfaces |
 | [`scripts/lib/emitters/`](scripts/lib/emitters/) | The single registry and formatter for generated content modules |
-| [`scripts/`](scripts/) | Export, audit, seed, migration, reconciliation, and recovery entry points |
+| [`scripts/`](scripts/) | Export, audit, migration, reconciliation, and recovery entry points |
 | [`tests/`](tests/) | Offline schema, fixture, boundary, and dry-run contracts |
 | [`../web/src/lib/content/`](../web/src/lib/content/) | Generated modules consumed by SvelteKit; never edit them by hand |
 | [`../../packages/shared/`](../../packages/shared/) | Shared content schemas and the asset-registry interface |
@@ -156,13 +156,12 @@ the web publication layer currently exposes all three locale routes. Support
 for a locale is not proof that every field has a translation; content
 integrity tests own that coverage evidence.
 
-Locale-aware seeders and fetchers must preserve the same three-code interface.
+Locale-aware fetchers must preserve the same three-code interface.
 
 ## Schema workflow
 
-`directus/` is schema and configuration. Editorial rows live in Directus;
-fixtures are explicit seed or recovery inputs. Keep those responsibilities
-separate.
+`directus/` is schema and configuration. Editorial rows live in Directus.
+Retained fixtures hold asset and content contracts; they do not restore editorial rows.
 
 From the repository root with a configured ignored `apps/cms/.env`:
 
@@ -175,6 +174,7 @@ bun run --env-file=.env --cwd apps/cms sync:pull
 `apps/cms/directus/` dump with remote state, so review its complete diff and
 stage only that directory. Production apply belongs to the environment-gated
 `push` job in [`.github/workflows/cms.yml`](../../.github/workflows/cms.yml).
+The `flows-push` dispatch audits permissions, previews, pushes only `flows`, and checks convergence.
 The package command below exists for an explicitly authorized apply and always
 runs through the repository guard wrapper:
 
@@ -268,68 +268,33 @@ access. Then run the normal CMS-to-production export/build/deploy pipeline and
 verify the new deployment's covers, SEO/JSON-LD, and full publication routes.
 Do not mark publication accepted from the permission receipt alone.
 
-## Content, seed, and recovery tools
+## Recovery
 
-- Data Studio owns routine editorial changes.
-- `fixtures/content/`, `fixtures/collections/`, and `fixtures/singletons/` are
-  validated bootstrap and disaster-recovery inputs.
-- `seed-*` scripts own one content domain each. Some replace domain rows, so
-  read the script contract, run its offline tests or dry-run, and confirm the
-  target before any apply.
-- On an existing environment, capture `site_meta.default_og_image` and every
-  `icons.svg_override` before `seed-site-meta.ts` or `seed-icons.ts --reset`,
-  then reapply them afterward. Their fixtures may contain `null`;
-  `sync-push.ts` protects only `project_logo`, `public_foreground`, and
-  `public_favicon`, not these environment-specific references.
-- `migrate-assets.ts` and `setup-*` scripts own bounded migrations. They are
-  not clean-clone setup steps and should not be replayed because a script is
-  present.
-- `refresh-fixtures.ts` owns reconstruction of committed recovery fixtures
-  from an authenticated source; its output requires review before commit.
-- `refresh-dev-from-prod.sh` owns the coordinated development recovery path:
-  database refresh, development token rebind, R2 sync, and protected branch
-  promotion. Use its preflight and tests rather than reproducing those steps
-  manually.
+- DEV recovery: `refresh-dev-from-prod.sh` resets Neon from PROD and syncs R2.
+- PROD recovery: use Neon instant restore within the project history window.
+- Schema and configuration recovery: use guarded `sync-push`.
 
 ## Asset and preset ownership
 
 `packages/shared/src/asset-registry.ts` owns semantic keys, release entries,
 usage declarations, kinds, roles, and delivery modes. The Directus snapshot
 owns `asset_records`, `asset_versions`, and `asset_usages`. The corresponding
-setup and sync scripts are guarded migration tools, not alternate schema
+setup scripts are guarded migration tools, not alternate schema
 authorities.
 
-`fixtures/assets-manifest.json` owns the repository-to-CMS migration inventory.
+`fixtures/assets-manifest.json` owns the repository-to-CMS migration inventory
+and the SHA-256 digest of each committed mirror. Export verifies those bytes
+before emitting; manifest tests check every digest. Web guards reject literal
+Directus asset identities and new raw HTML/SVG injection files outside the
+reviewed allowlist.
 `fixtures/assets-id-map.json` is the committed mapping consumed by export and
 tests; file UUIDs are environment-specific and must not be copied into another
 environment as configuration. `fixtures/brand/presets.json` owns the four
-named transform declarations, and `seed-presets.ts` validates and applies them
-to `directus_settings.storage_asset_presets`.
+named transform declarations, also recorded in
+`directus/collections/settings.json` as `storage_asset_presets`.
 
 The current OpenWeather setup uses one existing key, independently scoped to `develop`
 and Production; this is target scoping, not a claim that a second credential exists.
-
-### Asset audit ownership boundary
-
-The asset audit is a read-only evidence pipeline with one owner per stage:
-
-- `scripts/lib/assets/repository-scan.ts` inventories repository assets and
-  references without CMS access.
-- `scripts/lib/assets/directus-scan.ts` performs bounded, GET-only reads from
-  the fixed development and production CMS targets.
-- `scripts/lib/assets/audit.ts` reconciles repository, registry, file, content,
-  generated-output, OG, and SVG evidence.
-- `scripts/lib/assets/report.ts` owns deterministic public serialization and
-  hashing.
-- `scripts/audit-assets.ts` owns CLI options, credentials, target selection,
-  gates, output paths, and baseline publication.
-
-`bun run verify:assets-audit` is the credential-free CI gate. It reads
-`fixtures/assets/audit-baseline.json` and writes the ignored
-`.asset-audit/report.json`; an offline report does not prove live CMS state.
-Replacing the accepted baseline is a separate publication action requiring a
-complete live run with `--update-baseline` and
-`--confirm=UPDATE_ASSET_AUDIT_BASELINE`, followed by review of both diffs.
 
 ## Environment contract
 

@@ -1,15 +1,12 @@
-// HeroContentSchema — mirrors HeroContent from types/content.
-// Home page hero section (top of /).
-
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 import { HeroAnimContentSchema } from './hero-anim';
-import type { HeroContent } from '../types/content';
 
 export const HeroContentSchema = z.object({
 	headline: z.object({
 		line1: LocalizedStringSchema,
 		line2: LocalizedStringSchema,
+		/** Completes the animated visual headline for assistive technology. */
 		ariaSuffix: LocalizedStringSchema,
 	}),
 	subheadline: LocalizedStringSchema,
@@ -38,8 +35,8 @@ export const HeroContentSchema = z.object({
 		/** Helper when real KPIs are on screen. */
 		helperLive: LocalizedStringSchema,
 	}),
-	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
-	 *  block_hero_translations. Carried through typed PageData so
-	 *  content.heroAnim() reads directly without an out-of-band cache. */
+	/** Scroll-hint copy from the hero_anim column in block_hero_translations. */
 	heroAnim: HeroAnimContentSchema,
-}) satisfies z.ZodType<HeroContent>;
+});
+
+export type HeroContent = z.infer<typeof HeroContentSchema>;

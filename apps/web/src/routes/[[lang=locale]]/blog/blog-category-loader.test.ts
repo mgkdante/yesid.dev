@@ -56,7 +56,6 @@ describe('loadBlogCategory', () => {
 		const result = await loadBlogCategory(
 			'professional',
 			'fr',
-			{ pageCache: new Map() } as unknown as { pageCache: App.Locals['pageCache'] },
 		);
 
 		expect(result.posts.map((entry) => entry.slug)).toEqual(['article-fr']);
@@ -65,7 +64,6 @@ describe('loadBlogCategory', () => {
 		expect(result.svgContents).toEqual({ 'article-fr': '<svg id="article-fr" />' });
 		expect(adapterMocks.adapter.blog.svgContentsForPosts).toHaveBeenCalledWith(
 			[posts[1]],
-			expect.anything(),
 		);
 	});
 });

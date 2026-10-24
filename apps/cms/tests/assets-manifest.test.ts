@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'bun:test';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import sharp from 'sharp';
 import {
@@ -14,8 +16,7 @@ import { readCmsFixtureJson } from './helpers/cms-fixtures';
  * the Zod schema authored alongside the migration script. Drift on either
  * side is caught in CI before any upload runs.
  *
- * Scope: repo-local. No network. No Directus. No filesystem reads beyond the
- * manifest itself.
+ * Scope: repo-local. No network or Directus; reads the manifest and mirrors.
  */
 
 function loadManifest() {
@@ -23,6 +24,16 @@ function loadManifest() {
 }
 
 describe('fixtures/assets-manifest.json', () => {
+	it('every sha256 matches the committed mirrored file bytes', () => {
+		const manifest = loadManifest();
+		const repoRoot = joinPath(import.meta.dir, '../../..');
+		for (const entry of manifest.assets) {
+			const bytes = readFileSync(joinPath(repoRoot, manifest.sourceRoot, entry.legacyPath));
+			expect(entry.sha256, entry.legacyPath).toMatch(/^[0-9a-f]{64}$/);
+			expect(createHash('sha256').update(bytes).digest('hex'), entry.legacyPath).toBe(entry.sha256!);
+		}
+	});
+
 	it('parses against AssetsManifestSchema (no silent drift)', () => {
 		expect(() => loadManifest()).not.toThrow();
 	});

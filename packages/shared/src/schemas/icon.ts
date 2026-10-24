@@ -1,10 +1,3 @@
-// IconRecordSchema — single runtime mirror of IconRecord in ../types/content.
-// Consolidated here from the apps/web + apps/cms copies (site-hardening-a-plus).
-//
-// Per the slice-18h-ii Q5 pivot: iconify_id format validation uses a
-// .transform() that WARNS and coerces to null on mismatch (non-throwing —
-// degraded path renders placeholder; doesn't break the entire tech-stack page).
-
 import { z } from 'zod';
 
 // Iconify ID format: <prefix>:<name>
@@ -15,6 +8,7 @@ const ICONIFY_ID_REGEX = /^[a-z][a-z0-9-]*:[a-z0-9-]+$/;
 export const IconRecordSchema = z.object({
 	id: z.string(),
 	name: z.string(),
+	/** Render priority is svg_override, then iconify_id, then the placeholder. */
 	iconify_id: z
 		.string()
 		.nullable()
@@ -31,3 +25,5 @@ export const IconRecordSchema = z.object({
 });
 
 export type IconRecordParsed = z.infer<typeof IconRecordSchema>;
+
+export type IconRecord = z.infer<typeof IconRecordSchema>;

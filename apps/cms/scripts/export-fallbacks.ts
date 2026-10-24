@@ -46,7 +46,8 @@
 import { parseArgs } from 'node:util';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
@@ -161,7 +162,7 @@ type Env = Record<string, string | undefined>;
 
 interface MediaMirrorManifest {
 	sourceRoot: string;
-	assets: readonly { legacyPath: string }[];
+	assets: readonly { legacyPath: string; sha256: string }[];
 }
 
 interface FetchedExport {
@@ -178,6 +179,7 @@ export function buildMirroredMediaAssetsFromManifest(
 	const mirrored: Record<string, string> = {};
 	const missingIds: string[] = [];
 	const missingFiles: string[] = [];
+	const mismatchedFiles: string[] = [];
 
 	for (const item of manifest.assets) {
 		const id = ids[item.legacyPath];
@@ -189,6 +191,10 @@ export function buildMirroredMediaAssetsFromManifest(
 			missingFiles.push(item.legacyPath);
 			continue;
 		}
+		const digest = createHash('sha256')
+			.update(readFileSync(resolve(staticRoot, item.legacyPath)))
+			.digest('hex');
+		if (digest !== item.sha256) mismatchedFiles.push(item.legacyPath);
 		mirrored[id] = `/${item.legacyPath}`;
 	}
 
@@ -203,6 +209,9 @@ export function buildMirroredMediaAssetsFromManifest(
 		);
 	}
 
+	if (mismatchedFiles.length > 0) {
+		throw new Error(`[media-assets] sha256 mismatch for mirrored asset(s): ${mismatchedFiles.join(', ')}`);
+	}
 	return mirrored;
 }
 

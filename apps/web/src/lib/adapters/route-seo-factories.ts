@@ -1,7 +1,7 @@
 // Dynamic-route SEO factories — extracted from apps/web/src/lib/content/meta.ts
 // in slice-18 18h Phase 4 Task 11.
 //
-// Each factory consumes (params, locale, ctx, adapter, siteMeta, siteSeoDefaults)
+// Each factory consumes (params, locale, adapter, siteMeta, siteSeoDefaults)
 // and returns a PageSeo. The caller — staticAdapter.meta.forRoute() since the
 // dormant directus adapter was removed at slice-26 close — supplies both site
 // shapes and threads them through here; factories never re-fetch, never
@@ -10,7 +10,6 @@
 import type {
 	Locale,
 	PageSeo,
-	PreviewContext,
 	SiteMeta,
 	SiteSeoDefaults,
 } from '$lib/types';
@@ -35,7 +34,6 @@ import { buildRouteBreadcrumbNode } from '$lib/adapters/route-jsonld';
 export interface FactoryArgs {
 	params: Record<string, string>;
 	locale: Locale;
-	ctx?: PreviewContext;
 	adapter: ContentAdapter;
 	siteMeta: SiteMeta;
 	siteSeoDefaults: SiteSeoDefaults;
@@ -85,8 +83,8 @@ const SERVICE_OG_CARD_IDS: ReadonlySet<string> = new Set([
 
 /** /services/[id] — pulls service from collection adapter; brand suffix from siteMeta. */
 export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const service = await adapter.services.byId(params.id, ctx);
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const service = await adapter.services.byId(params.id);
 	if (!service) throw new Error(`Unknown service id: ${params.id}`);
 	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	const seo: PageSeo = {
@@ -128,8 +126,8 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 
 /** /projects/[slug] — pulls project from collection adapter; brand suffix from siteMeta. */
 export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const project = await adapter.projects.bySlug(params.slug, ctx);
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const project = await adapter.projects.bySlug(params.slug);
 	if (!project) throw new Error(`Unknown project slug: ${params.slug}`);
 	// Extract plain text from LocalizedBlockEditorDoc before passing to fitDescriptionForSeo.
 	const descriptionText: { en: string; fr?: string; es?: string } = {
@@ -181,10 +179,10 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 
 /** /blog/[slug] — pulls post from collection adapter; brand suffix from siteMeta. */
 export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
 	const [post, posts] = await Promise.all([
-		adapter.blog.bySlug(params.slug, ctx),
-		adapter.blog.all(ctx),
+		adapter.blog.bySlug(params.slug),
+		adapter.blog.all(),
 	]);
 	if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
 	if (post.lang !== locale) {
@@ -275,8 +273,8 @@ function legalDescriptionFor(doc: { blocks: Array<{ type: string; data: unknown 
 /** /legal/[slug] — title from the CMS legal page (OPS1); description derived
  *  from the first substantive body paragraph per locale, siteSeoDefaults fallback. */
 export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const page = await adapter.legal.bySlug(params.slug, ctx);
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const page = await adapter.legal.bySlug(params.slug);
 	if (!page) throw new Error(`Unknown legal slug: ${params.slug}`);
 	const canonicalUrl = canonicalFor(`/legal/${page.slug}`, locale);
 	const enDescription = legalDescriptionFor(page.body.en);
