@@ -29,9 +29,12 @@ one product-owned contract.
 ## Content and locale contracts
 
 Directus remains the editorial source. The CMS emitter registry validates and
-writes the 22 generated modules consumed by `apps/web`; this package defines
-their shapes but neither reads Directus nor emits runtime content. Generated
-modules and their manifest must never be edited by hand.
+writes the 20 generated modules consumed by `apps/web` at build time. Trusted
+Vercel builds export live from Directus; other builds default to this package's
+committed fixture, `packages/shared/fixtures/export-data.json`, refreshed with
+`apps/cms/scripts/trim-export-fixture.ts` from a live export snapshot. Generated
+modules are never committed. This package defines their shapes and hosts the
+fixture but neither reads Directus nor emits runtime content.
 
 The locale union is exactly `en`, `fr`, and `es`. English is required in shared
 localized values; French and Spanish may fall back to English at the field
