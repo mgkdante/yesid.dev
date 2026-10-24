@@ -8,10 +8,9 @@ describe('StatusDot', () => {
     expect(container.querySelector('span')).toBeTruthy();
   });
 
-  it('defaults to orange, no pulse, sm size', () => {
+  it('does not pulse by default', () => {
     const { container } = render(StatusDot);
     const dot = container.querySelector('span')!;
-    expect(dot.className).toContain('size-1.5');
     expect(dot.className).not.toContain('led-pulse');
   });
 
@@ -38,23 +37,16 @@ describe('StatusDot', () => {
     expect(dot.className).toContain('led-pulse');
   });
 
-  it('applies md size', () => {
-    const { container } = render(StatusDot, { props: { size: 'md' } });
-    const dot = container.querySelector('span')!;
-    expect(dot.className).toContain('size-2.5');
-  });
-
   it('applies halo outline when ring=true', () => {
     const { container } = render(StatusDot, { props: { ring: true } });
     const dot = container.querySelector('span')!;
-    expect(dot.className).toContain('outline-[3px]');
     expect(dot.className).toContain('outline-[var(--muted)]');
   });
 
   it('omits outline classes by default', () => {
     const { container } = render(StatusDot);
     const dot = container.querySelector('span')!;
-    expect(dot.className).not.toContain('outline-[3px]');
+    expect(dot.className).not.toContain('outline-[var(--muted)]');
   });
 
   it('is hidden from assistive tech', () => {

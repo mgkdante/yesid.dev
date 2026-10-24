@@ -1,9 +1,5 @@
-// CloserContentSchema — mirrors CloserContent from types/content.
-// Home page — Closer (TERMINUS / end-of-line block).
-
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { CloserContent } from '../types/content';
 
 export const CloserContentSchema = z.object({
 	heading: LocalizedStringSchema,
@@ -48,7 +44,10 @@ export const CloserContentSchema = z.object({
 		title: LocalizedStringSchema,
 		city: LocalizedStringSchema,
 		encoding: LocalizedStringSchema,
+		/** Footer label template containing the {count} placeholder. */
 		destinationsLabel: LocalizedStringSchema,
 		prompt: LocalizedStringSchema,
 	}),
-}) satisfies z.ZodType<CloserContent>;
+});
+
+export type CloserContent = z.infer<typeof CloserContentSchema>;

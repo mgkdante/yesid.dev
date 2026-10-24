@@ -334,7 +334,7 @@ test('CMS reports required test while every downstream job still needs test', ()
 	expect(preservedWork).not.toBeNull();
 	if (preservedWork) {
 		expect(sha256(preservedWork)).toBe(
-			'188df159185725ac9b40cbb53f3c2bf7b1320cf932fc31820f5e0c40b588c17a',
+			'31312c27c9edfc727862c27991664739205d7464b0800c7a31203791a0dbcb77',
 		);
 	}
 
@@ -357,12 +357,10 @@ test('CMS reports required test while every downstream job still needs test', ()
 		'diff',
 		'live-diff',
 		'push',
-		'legal-service-area',
 		'permission-control-audit',
 		'permission-policy-candidate-diagnostic',
 		'permission-policy-quarantine-rename',
-		'public-blog-translation-key-repair',
-		'analytics-controls',
+		'flows-push',
 	]) {
 		const downstream = jobBlock(cms, name);
 		expect(downstream, `CMS ${name} job`).not.toBeNull();

@@ -1,11 +1,5 @@
-// Nav schemas — single runtime mirrors of NavLink, MenuItem and
-// ErrorPageContent in ../types/content (the interfaces moved there from
-// apps/web alongside this consolidation, site-hardening-a-plus). Per spec D3
-// no new constraints beyond what TS already encodes.
-
 import { z } from 'zod';
-import { LocalizedStringSchema, type AssertSchemaMatches } from './shared';
-import type { NavLink, MenuItem, ErrorPageContent } from '../types/content';
+import { LocalizedStringSchema } from './shared';
 
 // `priority: 1 | 2` - TS numeric literal union preserved via z.union.
 // subtitle and icon are optional - present on menu/footer placement rows.
@@ -38,8 +32,6 @@ export const ErrorPageContentSchema = z.object({
 		.readonly(),
 });
 
-// Drift detectors — compile error (`true satisfies never`) on schema/type drift.
-// MenuItem is a type alias of NavLink, so its parity is asserted type-to-type.
-true satisfies AssertSchemaMatches<z.infer<typeof NavLinkSchema>, NavLink>;
-true satisfies AssertSchemaMatches<MenuItem, NavLink>;
-true satisfies AssertSchemaMatches<z.infer<typeof ErrorPageContentSchema>, ErrorPageContent>;
+export type NavLink = z.infer<typeof NavLinkSchema>;
+export type MenuItem = z.infer<typeof MenuItemSchema>;
+export type ErrorPageContent = z.infer<typeof ErrorPageContentSchema>;

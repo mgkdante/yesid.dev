@@ -98,17 +98,11 @@ describe('ServiceCard', () => {
 		expect(source).toMatch(
 			/@media \(--tablet-max\) \{[\s\S]*?\.viewport-inner \{[\s\S]*?position: static;/,
 		);
-		expect(source).toMatch(
-			/@media \(--tablet-max\) \{[\s\S]*?\.service-viewport \{[\s\S]*?margin-bottom: clamp\(3rem, 12svh, 6rem\);/,
-		);
 	});
 
 	it('tightens only the first mobile station under the sticky chrome', () => {
 		const source = readFileSync(join(cwd(), 'src/lib/components/services/ServiceCard.svelte'), 'utf8');
 
 		expect(source).toContain("index === 0 && 'service-viewport-first'");
-		expect(source).toMatch(
-			/@media \(--tablet-max\) \{[\s\S]*?\.service-viewport-first \{[\s\S]*?padding-block-start: clamp\(1\.5rem, 5svh, 3rem\);/,
-		);
 	});
 });

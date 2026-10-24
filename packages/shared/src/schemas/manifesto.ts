@@ -1,9 +1,5 @@
-// ManifestoContentSchema — mirrors ManifestoContent from types/content.
-// Home page — Manifesto section (section 2).
-
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { ManifestoContent } from '../types/content';
 
 export const ManifestoContentSchema = z.object({
 	statement: z.object({
@@ -56,4 +52,6 @@ export const ManifestoContentSchema = z.object({
 			color: z.string(),
 		}),
 	).readonly(),
-}) satisfies z.ZodType<ManifestoContent>;
+});
+
+export type ManifestoContent = z.infer<typeof ManifestoContentSchema>;

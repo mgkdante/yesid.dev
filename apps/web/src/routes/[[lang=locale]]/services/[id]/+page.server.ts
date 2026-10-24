@@ -10,18 +10,17 @@ import { serviceEntries } from '$lib/server/prerender-entries';
 export const entries = serviceEntries;
 export const prerender = entries().length > 0;
 
-export async function load({ params, fetch, locals }: { params: { id: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
-	const ctx = { pageCache: locals.pageCache };
-	const service = await adapter.services.byId(params.id, ctx);
+export async function load({ params, fetch }: { params: { id: string }; fetch: typeof globalThis.fetch }) {
+	const service = await adapter.services.byId(params.id);
 
 	if (!service || service.visible === false) {
 		error(404, { message: 'Service not found' });
 	}
 
-	const services = await adapter.services.visible(ctx);
+	const services = await adapter.services.visible();
 	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		adapter.services.adjacent(params.id, ctx),
-		adapter.projects.byService(params.id, ctx),
+		adapter.services.adjacent(params.id),
+		adapter.projects.byService(params.id),
 		fetchServiceSvgContents(fetch, services),
 	]);
 

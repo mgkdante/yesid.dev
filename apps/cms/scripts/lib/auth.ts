@@ -1,17 +1,17 @@
 /**
  * Directus admin-token resolution with fallback flow.
  *
- * Extracted from seed-services.ts in 18c Task 26 (F7). Supports three auth paths:
+ * Supports three auth paths:
  *   1. Vercel build tokens — DIRECTUS_BUILD_TOKEN on production and the distinct
  *      DIRECTUS_DEV_BUILD_TOKEN on the develop preview. Arbitrary preview branches
  *      are never allowed to resolve a build credential.
- *   2. DIRECTUS_ADMIN_TOKEN — fallback for local dev / seed scripts (admin-level
+ *   2. DIRECTUS_ADMIN_TOKEN — fallback for local development and operator scripts (admin-level
  *      static token, skips network call).
  *   3. DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD — last resort via
  *      POST /auth/login.
  *
  * CLI scripts read the static token from the environment. Supply it through
- * the operator's chosen secret manager or shell before running a seed command.
+ * the operator's chosen secret manager or shell before running an operator command.
  */
 
 export interface AdminTokenOptions {

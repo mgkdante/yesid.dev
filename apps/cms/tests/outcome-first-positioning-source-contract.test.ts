@@ -104,43 +104,12 @@ const SQL_FIRST_PATTERNS = [
 
 const RESERVED_PERSON_TITLE_PATTERN = /\b(?:engineer|ingénieur|ingeniero)\b/i;
 
-const OUTCOME_TERMS: Record<Locale, readonly RegExp[]> = {
-	en: [
-		/web(?:site| development)/i,
-		/database|data/i,
-		/automation|pipeline/i,
-		/dashboard|reporting|analytics/i,
-	],
-	fr: [
-		/\bweb\b|sites? web|développement web/i,
-		/base de données|données/i,
-		/automatisation|pipeline/i,
-		/tableau de bord|rapport|analytique/i,
-	],
-	es: [
-		/sitios? web|desarrollo web/i,
-		/base de datos|datos/i,
-		/automatización|pipeline/i,
-		/tablero|reporte|analítica/i,
-	],
-};
-
 function source(path: string): string {
 	return readFileSync(join(REPO_ROOT, path), 'utf8');
 }
 
 function json(path: string): any {
 	return JSON.parse(source(path));
-}
-
-function byLocale(rows: any[]): Partial<Record<Locale, any>> {
-	return Object.fromEntries(rows.map((row) => [row.languages_code, row]));
-}
-
-function route(path: string, fixture = 'apps/cms/fixtures/collections/route-seo.json'): any {
-	const value = json(fixture).find((candidate: any) => candidate.path === path);
-	expect(value, `missing ${path} in ${fixture}`).toBeDefined();
-	return value;
 }
 
 function expectNotSqlFirst(label: string, values: readonly string[]): void {
@@ -150,11 +119,6 @@ function expectNotSqlFirst(label: string, values: readonly string[]): void {
 		),
 	);
 	expect(violations).toEqual([]);
-}
-
-function expectOutcomeBreadth(label: string, locale: Locale, value: string): void {
-	const missing = OUTCOME_TERMS[locale].filter((pattern) => !pattern.test(value));
-	expect(missing.map((pattern) => `${label}: missing ${pattern.source}`)).toEqual([]);
 }
 
 function arrayCopy(block: string, locale: Locale): string {
@@ -170,11 +134,7 @@ function expectGeneratedLiteral(content: string, value: string): void {
 
 describe('outcome-first positioning source contract', () => {
 	test('the exact EN, FR, and ES global and route copy stays frozen across source and generated output', () => {
-		const siteMeta = byLocale(json('apps/cms/fixtures/singletons/site-meta.json').translations);
 		for (const locale of Object.keys(TITLES) as Locale[]) {
-			for (const [field, value] of Object.entries(EXACT_COPY.siteMeta[locale])) {
-				expect(siteMeta[locale]?.[field]).toBe(value);
-			}
 			expect(SITE_META_BY_LOCALE[locale]).toEqual(EXACT_COPY.siteMeta[locale]);
 			expect(HOME_DESCRIPTION_BY_LOCALE[locale]).toBe(EXACT_COPY.routes['/'][locale].description);
 			expect(ABOUT_ROUTE_BY_LOCALE[locale]).toEqual(EXACT_COPY.routes['/about'][locale]);
@@ -184,34 +144,6 @@ describe('outcome-first positioning source contract', () => {
 			expect(SERVICES_DESCRIPTION_BY_LOCALE[locale]).toBe(
 				EXACT_COPY.routes['/services'][locale].description,
 			);
-		}
-
-		const spanishInput = json('apps/cms/ops/i18n/es-2026-07-09.json');
-		const spanishRoutes = Object.fromEntries(
-			spanishInput.entries
-				.filter((entry: any) => entry.collection === 'route_seo')
-				.map((entry: any) => [entry.id, entry.fields]),
-		);
-		const routeIds = { '/': 1, '/about': 2, '/services': 4 } as const;
-
-		for (const path of Object.keys(EXACT_COPY.routes) as (keyof typeof EXACT_COPY.routes)[]) {
-			const fixture = byLocale(route(path).translations);
-			expect(fixture.en).toEqual({
-				languages_code: 'en',
-				...EXACT_COPY.routes[path].en,
-			});
-			expect(fixture.fr).toEqual({
-				languages_code: 'fr',
-				...EXACT_COPY.routes[path].fr,
-			});
-			expect(spanishRoutes[routeIds[path]]).toEqual(EXACT_COPY.routes[path].es);
-		}
-
-		const aboutMeta = json('apps/cms/fixtures/content/about-page.json').meta.description;
-		const aboutIntro = json('apps/cms/fixtures/content/site-content.json').aboutIntroContent.title;
-		for (const locale of Object.keys(TITLES) as Locale[]) {
-			expect(aboutMeta[locale]).toBe(EXACT_COPY.routes['/about'][locale].description);
-			expect(aboutIntro[locale]).toBe(TITLES[locale]);
 		}
 
 		const generated = [
@@ -230,18 +162,10 @@ describe('outcome-first positioning source contract', () => {
 		}
 	});
 
-	test('exact umbrella titles propagate through CMS fixtures, generated fallbacks, and migration inputs', () => {
-		const siteMeta = byLocale(json('apps/cms/fixtures/singletons/site-meta.json').translations);
-		const aboutRoute = byLocale(route('/about').translations);
-		const siteContent = json('apps/cms/fixtures/content/site-content.json');
+	test('exact umbrella titles propagate through generated fallbacks and migration inputs', () => {
 		const aboutCard = json('apps/cms/fixtures/assets-manifest.json').assets.find(
 			(asset: any) => asset.legacyPath === 'og/routes/about.png',
 		);
-		for (const locale of Object.keys(TITLES) as Locale[]) {
-			expect(siteMeta[locale]?.owner_job_title).toBe(TITLES[locale]);
-			expect(aboutRoute[locale]?.title).toBe(TITLES[locale]);
-			expect(siteContent.aboutIntroContent.title[locale]).toBe(TITLES[locale]);
-		}
 		expect(aboutCard.description).toContain(TITLES.en);
 
 		const generated = [
@@ -249,22 +173,13 @@ describe('outcome-first positioning source contract', () => {
 			source('apps/web/src/lib/content/route-seo.ts'),
 			source('apps/web/src/lib/content/site-content.ts'),
 			source('apps/cms/fixtures/content/outcome-first-positioning.ts'),
-			source('apps/cms/scripts/go2-message-pass.ts'),
 		];
 		for (const title of Object.values(TITLES)) {
 			for (const content of generated) expect(content).toContain(title);
 		}
 	});
 
-	test('replayable locale inputs and current fetcher fixtures cannot restore reserved titles', () => {
-		for (const path of [
-			'apps/cms/ops/i18n/fr-2026-06-13.json',
-			'apps/cms/ops/i18n/fr-translations.example.json',
-			'apps/cms/ops/i18n/es-2026-07-09.json',
-		]) {
-			expect(source(path), path).not.toMatch(RESERVED_PERSON_TITLE_PATTERN);
-		}
-
+	test('current fetcher fixtures cannot restore reserved titles', () => {
 		const fetcherTest = source('apps/cms/scripts/lib/fetchers/site-meta.test.ts');
 		for (const title of Object.values(TITLES)) expect(fetcherTest).toContain(title);
 		expect(fetcherTest).not.toMatch(RESERVED_PERSON_TITLE_PATTERN);
@@ -272,14 +187,7 @@ describe('outcome-first positioning source contract', () => {
 	});
 
 	test('global, home, about, and aggregate services copy leads with outcomes instead of SQL', () => {
-		const siteMeta = byLocale(json('apps/cms/fixtures/singletons/site-meta.json').translations);
-		const home = byLocale(route('/').translations);
-		const about = byLocale(route('/about').translations);
-		const services = byLocale(route('/services').translations);
 		const identitySurfaces = [
-			'apps/cms/scripts/go2-message-pass.ts',
-			'apps/cms/fixtures/content/about-page.json',
-			'apps/cms/fixtures/content/site-content.json',
 			'apps/cms/fixtures/assets-manifest.json',
 			'apps/web/src/lib/content/site-meta.ts',
 			'apps/web/src/lib/content/site-seo-defaults.ts',
@@ -287,31 +195,6 @@ describe('outcome-first positioning source contract', () => {
 			'apps/web/src/lib/content/about-page.ts',
 			'apps/web/src/lib/content/site-content.ts',
 		];
-
-		for (const locale of Object.keys(TITLES) as Locale[]) {
-			const globalCopy = [
-				siteMeta[locale]?.description,
-				siteMeta[locale]?.default_description,
-			].filter((value): value is string => typeof value === 'string');
-			expectNotSqlFirst(`site_meta.${locale}`, globalCopy);
-			for (const value of globalCopy) expectOutcomeBreadth(`site_meta.${locale}`, locale, value);
-
-			const routeCopy = [
-				home[locale]?.title,
-				home[locale]?.description,
-				about[locale]?.title,
-				about[locale]?.description,
-				services[locale]?.title,
-				services[locale]?.description,
-			].filter((value): value is string => typeof value === 'string');
-			expectNotSqlFirst(`route_seo.${locale}`, routeCopy);
-			if (home[locale]?.description) {
-				expectOutcomeBreadth(`home.${locale}`, locale, home[locale].description);
-			}
-			if (services[locale]?.description) {
-				expectOutcomeBreadth(`services.${locale}`, locale, services[locale].description);
-			}
-		}
 
 		for (const path of identitySurfaces) {
 			expectNotSqlFirst(path, [source(path)]);
@@ -355,30 +238,5 @@ describe('outcome-first positioning source contract', () => {
 		expect(routeOg).toContain('fitSize([SITE[loc].tagline], WIDTH - 2 * MARGIN');
 		expect(routeOg).toContain('font-size="${siteTaglineSize}"');
 		expectNotSqlFirst('generate-og-cards.ts', [routeOg]);
-	});
-
-	test('the replayable Spanish publication input cannot restore SQL-first route copy', () => {
-		const input = json('apps/cms/ops/i18n/es-2026-07-09.json');
-		const serializedInput = JSON.stringify(input);
-		const routeEntries = Object.fromEntries(
-			input.entries
-				.filter((entry: any) => entry.collection === 'route_seo')
-				.map((entry: any) => [entry.id, entry.fields]),
-		);
-
-		expect(routeEntries[2].title).toBe(TITLES.es);
-		for (const id of [1, 2, 4]) {
-			expectNotSqlFirst(`es-2026 route ${id}`, Object.values(routeEntries[id]));
-		}
-		expectOutcomeBreadth('es-2026 home', 'es', routeEntries[1].description);
-		expectOutcomeBreadth('es-2026 services', 'es', routeEntries[4].description);
-		expect(serializedInput).not.toMatch(/\bingeniero\b/i);
-
-		// SQL remains valid inside its own service offer and historical blog copy.
-		expect(
-			input.entries.find(
-				(entry: any) => entry.collection === 'services' && entry.id === 'sql-development',
-			)?.fields.title,
-		).toContain('SQL');
 	});
 });

@@ -45,20 +45,22 @@ import { stackArchetypes } from './stack-archetypes.js';
 import { siteLabels as siteLabelsModule } from './site-labels.js';
 import { StackArchetypeSchema, STACK_LAYERS } from '@repo/shared/schemas';
 import {
+	TechStackItemSchema,
+	HeroDataSchema,
+} from '$lib/schemas';
+import {
 	ProjectSchema,
 	ServiceSchema,
 	BlogPostSchema,
 	SiteMetaSchema,
-	TechStackItemSchema,
 	AboutContentSchema,
 	ContactContentSchema,
 	TechStackPageContentSchema,
-	HeroDataSchema,
 	NavLinkSchema,
 	MenuItemSchema,
 	ErrorPageContentSchema,
 	SitePageSchema,
-} from '$lib/schemas';
+} from '@repo/shared';
 
 const CONTENT_TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const WEB_SRC_DIR = join(CONTENT_TEST_DIR, '..', '..');

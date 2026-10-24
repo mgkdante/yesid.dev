@@ -233,12 +233,7 @@ describe('immutable design customer contract', () => {
 		expect(appPackage.devDependencies['@yesid/gates']).toBe('file:vendor/design/gates');
 		expect(appPackage.dependencies['@yesid/analytics']).toBe('file:vendor/design/analytics');
 		expect(appPackage.devDependencies['@yesid/analytics']).toBeUndefined();
-		expect(cmsPackage.devDependencies['@yesid/i18n-core']).toBe(
-			'file:../web/vendor/design/i18n-core',
-		);
-		expect(
-			realpathSync(join(ROOT, 'apps/cms/node_modules/@yesid/i18n-core')),
-		).toBe(realpathSync(join(process.cwd(), 'node_modules/@yesid/i18n-core')));
+		expect(cmsPackage.devDependencies['@yesid/i18n-core']).toBeUndefined();
 		expect(existsSync(join(ROOT, 'apps/cms/vendor/design/i18n-core'))).toBe(false);
 		expect(existsSync(join(VENDOR, 'ui/src/brand/QuietModeButton.svelte'))).toBe(true);
 	});
@@ -350,27 +345,12 @@ describe('immutable design customer contract', () => {
 		expect(duplicateMechanics).toEqual([]);
 	});
 
-	it('keeps CMS locale reuse inside the repository-audit tooling boundary', () => {
-		const auditPath = join(ROOT, 'apps/cms/scripts/audit-assets.ts');
-		const uses = moduleUses(auditPath);
-		expect(
-			uses.some(
-				(use) =>
-					use.specifier === '@yesid/i18n-core' &&
-					!use.typeOnly &&
-					use.bindings.includes('createLocaleRouting'),
-			),
-		).toBe(true);
-		expect(declaredNames(auditPath).has('localizedPublicRoute')).toBe(false);
-
+	it('keeps production i18n consumers inside the locale-routing boundary', () => {
 		const i18nConsumers = productionSources()
 			.filter((path) => moduleUses(path).some((use) => use.specifier === '@yesid/i18n-core'))
 			.map(relativeProductionPath)
 			.sort();
-		expect(i18nConsumers).toEqual([
-			'apps/cms/scripts/audit-assets.ts',
-			'apps/web/src/lib/utils/locale-routing.ts',
-		]);
+		expect(i18nConsumers).toEqual(['apps/web/src/lib/utils/locale-routing.ts']);
 	});
 
 	it('delegates neutral SEO mechanics while product policy stays consumer-owned', () => {

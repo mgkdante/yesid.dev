@@ -10,11 +10,10 @@ import type { Project } from '$lib/types';
 export const entries = (() => localeEntries('/services')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;
 
-export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
-	const ctx = { pageCache: locals.pageCache };
+export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 	const [services, projects] = await Promise.all([
-		adapter.services.visible(ctx),
-		adapter.projects.public(ctx),
+		adapter.services.visible(),
+		adapter.projects.public(),
 	]);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
 	const serviceProjects: Record<string, readonly Project[]> = {};
