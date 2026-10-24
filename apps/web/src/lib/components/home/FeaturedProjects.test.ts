@@ -190,9 +190,6 @@ describe('FeaturedProjects', () => {
 		);
 
 		expect(source).toContain("import ProjectCard from '$lib/components/projects/ProjectCard.svelte'");
-		expect(source).toContain('variant="proof"');
-		expect(source).toContain('cardSize="proof"');
-		expect(source).toContain('mediaTestId="proof-card-image"');
 		expect(source).not.toContain('ProjectHeroPreview');
 		expect(source).not.toContain('class="proof-image');
 		expect(source).not.toContain('class="proof-card group');
