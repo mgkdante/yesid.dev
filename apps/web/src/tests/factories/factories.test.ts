@@ -23,7 +23,6 @@ import { MorphShapeSchema } from '@repo/shared';
 import { HeroDataSchema } from '$lib/schemas/hero-data';
 import { PersonSchema } from '$lib/schemas/jsonld';
 import { SiteSeoDefaultsSchema } from '@repo/shared';
-import { IconRecordSchema } from '@repo/shared';
 
 // Factories
 import { routeSeoFactory } from './route-seo.factory';
@@ -38,7 +37,6 @@ import { morphShapeFactory } from './morph-shape.factory';
 import { heroDataFactory } from './hero-data.factory';
 import { jsonldFactory } from './jsonld.factory';
 import { siteSeoDefaultsFactory } from './site-seo-defaults.factory';
-import { iconRecordFactory } from './icon-record.factory';
 
 describe('routeSeoFactory', () => {
 	it('produces a value that satisfies RouteSeoOverrideSchema', () => {
@@ -231,21 +229,5 @@ describe('siteSeoDefaultsFactory', () => {
 		const three = siteSeoDefaultsFactory.batch(3);
 		expect(three).toHaveLength(3);
 		three.forEach((d) => expect(() => SiteSeoDefaultsSchema.parse(d)).not.toThrow());
-	});
-});
-
-describe('iconRecordFactory', () => {
-	it('produces a value that satisfies IconRecordSchema', () => {
-		expect(() => IconRecordSchema.parse(iconRecordFactory.build())).not.toThrow();
-	});
-	it('respects overrides', () => {
-		const icon = iconRecordFactory.build({ name: 'database' });
-		expect(icon.name).toBe('database');
-		expect(() => IconRecordSchema.parse(icon)).not.toThrow();
-	});
-	it('batch produces N valid instances', () => {
-		const five = iconRecordFactory.batch(5);
-		expect(five).toHaveLength(5);
-		five.forEach((i) => expect(() => IconRecordSchema.parse(i)).not.toThrow());
 	});
 });

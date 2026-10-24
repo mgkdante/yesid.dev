@@ -20,4 +20,3 @@ export { morphShapeFactory } from './morph-shape.factory';
 export { heroDataFactory } from './hero-data.factory';
 export { jsonldFactory } from './jsonld.factory';
 export { siteSeoDefaultsFactory } from './site-seo-defaults.factory';
-export { iconRecordFactory } from './icon-record.factory';

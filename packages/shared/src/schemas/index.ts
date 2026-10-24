@@ -37,6 +37,5 @@ export * from './project';
 export * from './site-meta';
 export * from './blog';
 export * from './service';
-export * from './icon';
 export * from './morph-shape';
 export * from './nav';

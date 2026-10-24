@@ -21,7 +21,6 @@ export type {
 	AboutLabels,
 	AboutContent,
 } from '../schemas/about-page';
-export type { IconRecord } from '../schemas/icon';
 export type {
 	ContactTerminalField,
 	ContactInfoTerminal,
