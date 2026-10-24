@@ -357,12 +357,10 @@ test('CMS reports required test while every downstream job still needs test', ()
 		'diff',
 		'live-diff',
 		'push',
-		'legal-service-area',
 		'permission-control-audit',
 		'permission-policy-candidate-diagnostic',
 		'permission-policy-quarantine-rename',
-		'public-blog-translation-key-repair',
-		'analytics-controls',
+		'flows-push',
 	]) {
 		const downstream = jobBlock(cms, name);
 		expect(downstream, `CMS ${name} job`).not.toBeNull();

@@ -18,6 +18,7 @@
  */
 
 import { describe, expect, it } from 'bun:test';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
@@ -76,4 +77,86 @@ describe('projects fixture cross-checks the committed generated module', () => {
 			.filter((id) => !generated.includes(`'${id}'`) && !generated.includes(`"${id}"`));
 		expect(missing).toEqual([]);
 	});
+});
+
+function readJson<T>(path: string): T {
+	return JSON.parse(readFileSync(path, 'utf8')) as T;
+}
+
+const CONSENT_DESCRIPTIONS = {
+	en: {
+		fixture: 'site-labels.json',
+		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
+	},
+	fr: {
+		fixture: 'site-labels.fr.json',
+		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
+	},
+	es: {
+		fixture: 'site-labels.es.json',
+		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
+	},
+} as const satisfies Record<'en' | 'fr' | 'es', { fixture: string; copy: string }>;
+
+const SOURCE_PRESERVATION_SHA256 = {
+	'site-labels.json': '04f75b348f0287dd637a5f8e87b1f45caa43a1d475f22307c80b3644abbd2217',
+	'site-labels.fr.json': '9cb55b693bbc431ee259291627dcaac8e3308565f44013ec7dc690c6d050d3dd',
+	'site-labels.es.json': '52ebd03c73a03b53f9f61eaf798124fae9c8a38bac3a1ede01e5dceaf4eca6ec',
+} as const;
+
+const CONSENT_DESCRIPTION_SENTINEL = '<task-6-consent-description>';
+const APPROVED_GRAFFITI_LABELS = {
+	'site-labels.fr.json': {
+		current: 'graffiti LA FIN',
+		preimage: 'graffiti THE END',
+	},
+} as const;
+function sha256(value: string): string {
+	return createHash('sha256').update(value).digest('hex');
+}
+
+function canonicalJson(raw: string): string {
+	return `${JSON.stringify(JSON.parse(raw), null, '\t')}\n`;
+}
+
+function normalizeApprovedLabelBytes(raw: string, fixture: string): string {
+	const labels = JSON.parse(raw) as Record<string, string>;
+	labels.ui_analytics_consent_description = CONSENT_DESCRIPTION_SENTINEL;
+
+	const graffiti = APPROVED_GRAFFITI_LABELS[
+		fixture as keyof typeof APPROVED_GRAFFITI_LABELS
+	];
+	if (graffiti) {
+		if (labels.a11y_closer_graffiti !== graffiti.current) {
+			throw new Error(`unexpected approved graffiti label in ${fixture}`);
+		}
+		labels.a11y_closer_graffiti = graffiti.preimage;
+	}
+
+	return `${JSON.stringify(labels, null, '\t')}\n`;
+}
+
+describe('approved analytics consent fixture copy', () => {
+	for (const locale of ['en', 'fr', 'es'] as const) {
+		it(`uses the approved ${locale.toUpperCase()} consent description`, () => {
+			const { fixture, copy } = CONSENT_DESCRIPTIONS[locale];
+			const labels = readJson<Record<string, string>>(
+				join(CMS_ROOT, 'fixtures', 'content', fixture),
+			);
+			expect(labels.ui_analytics_consent_description).toBe(copy);
+		});
+	}
+});
+
+describe('source preservation allows only the approved consent and graffiti labels', () => {
+	for (const { fixture } of Object.values(CONSENT_DESCRIPTIONS)) {
+		it(`${fixture} differs only at the authorized labels`, () => {
+			const raw = readFileSync(join(CMS_ROOT, 'fixtures', 'content', fixture), 'utf8');
+			expect(raw).toBe(canonicalJson(raw));
+			expect(sha256(normalizeApprovedLabelBytes(raw, fixture))).toBe(
+				SOURCE_PRESERVATION_SHA256[fixture],
+			);
+		});
+	}
+
 });

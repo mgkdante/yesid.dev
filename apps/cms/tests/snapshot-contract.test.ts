@@ -267,3 +267,22 @@ describe('asset registry plan is captured exactly in the schema snapshot', () =>
 		}
 	});
 });
+
+describe('published blog and consent snapshot contracts', () => {
+ it('keeps translation_key required, indexed, nullable=false and non-unique', () => {
+  const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/blog_posts/translation_key.json'), 'utf8'));
+  expect(field.field).toBe('translation_key');
+  expect(field.meta.required).toBe(true);
+  expect(field.schema).toMatchObject({ is_indexed: true, is_nullable: false, is_unique: false });
+ });
+ it('exposes translation_key in the explicit public blog read permission', () => {
+  const permissions = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/permissions.json'), 'utf8')) as Array<{ _syncId: string; fields: string[] }>;
+  expect(permissions.find(row => row._syncId === '_sync_perm_blog_posts_public_read')?.fields).toContain('translation_key');
+ });
+ it('keeps the consent description field at varchar(500)', () => {
+  const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/site_labels_translations/ui_analytics_consent_description.json'), 'utf8'));
+  expect(field.type).toBe('string');
+  expect(field.schema.data_type).toBe('character varying');
+  expect(field.schema.max_length).toBe(500);
+ });
+});

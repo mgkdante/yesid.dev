@@ -13,7 +13,7 @@
  * apps/web/src/lib/content/tech-stack.ts, proof projects against projects.ts,
  * services against services.ts.
  *
- * Mirrors the archive-lorem-posts shape: lib/* helpers, DRY-RUN BY DEFAULT
+ * Uses shared lib/* helpers and runs DRY-RUN BY DEFAULT
  * (no network, no token needed), pure exported plan builder for tests.
  * Idempotent by slug — existing archetypes are skipped, tech defaults are
  * PATCHed (same values on re-run).
