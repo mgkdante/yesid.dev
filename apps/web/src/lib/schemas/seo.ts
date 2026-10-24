@@ -4,11 +4,10 @@
 // happens in Slice 17c.
 
 import { z } from 'zod';
-import { LocalizedStringSchema } from './shared';
+import { LocalizedStringSchema } from '@repo/shared';
 import { SchemaOrgNodeSchema } from './jsonld';
 
-// Re-export for back-compat — relocated to ./shared in slice-17c so every
-// domain schema can consume it without pulling in the SEO graph.
+// Preserve the existing SEO import surface for the shared primitive.
 export { LocalizedStringSchema };
 
 export const PageSeoSchema = z.object({

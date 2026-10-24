@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 
 import { staticAdapter } from '$lib/adapters/static';
 import { errorPagesById } from '$lib/content/error-pages';
-import { ErrorPageContentSchema } from '$lib/schemas';
+import { ErrorPageContentSchema } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
 // FIX A — content.errorPage per-statusCode lookup

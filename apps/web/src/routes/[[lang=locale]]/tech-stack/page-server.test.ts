@@ -21,17 +21,13 @@ describe('tech-stack loader payload boundary', () => {
 	it('returns only the catalog count with the page chrome', async () => {
 		const items = [{ slug: 'typescript' }, { slug: 'svelte' }, { slug: 'directus' }];
 		const techStackPage = { hero: { titleLine1: { en: 'Tools' } } };
-		const pageCache = new Map();
 		routeMocks.adapter.techStack.all.mockResolvedValue(items);
 		routeMocks.adapter.content.techStackPage.mockResolvedValue(techStackPage);
 
-		const result = await load({
-			locals: { pageCache } as unknown as App.Locals,
-		});
+		const result = await load();
 
 		expect(routeMocks.adapter.techStack.all).toHaveBeenCalledOnce();
 		expect(routeMocks.adapter.content.techStackPage).toHaveBeenCalledOnce();
-		expect(routeMocks.adapter.content.techStackPage).toHaveBeenCalledWith({ pageCache });
 		expect(result).toEqual({ itemCount: items.length, techStackPage });
 		expect(result).not.toHaveProperty('items');
 	});

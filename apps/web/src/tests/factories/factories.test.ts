@@ -12,19 +12,19 @@
 import { describe, it, expect } from 'vitest';
 
 // Schemas
-import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
-import { ServiceSchema } from '$lib/schemas/service';
-import { ProjectSchema } from '$lib/schemas/project';
-import { BlogPostSchema } from '$lib/schemas/blog';
-import { SiteMetaSchema } from '$lib/schemas/meta';
-import { NavLinkSchema, ErrorPageContentSchema } from '$lib/schemas/nav';
+import { RouteSeoOverrideSchema } from '@repo/shared';
+import { ServiceSchema } from '@repo/shared';
+import { ProjectSchema } from '@repo/shared';
+import { BlogPostSchema } from '@repo/shared';
+import { SiteMetaSchema } from '@repo/shared';
+import { NavLinkSchema, ErrorPageContentSchema } from '@repo/shared';
 import { PageSeoSchema } from '$lib/schemas/seo';
-import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { MorphShapeSchema } from '@repo/shared';
 import { HeroDataSchema } from '$lib/schemas/hero-data';
 import { TechStackItemSchema } from '$lib/schemas/tech-stack';
 import { PersonSchema } from '$lib/schemas/jsonld';
-import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
-import { IconRecordSchema } from '$lib/schemas/icon';
+import { SiteSeoDefaultsSchema } from '@repo/shared';
+import { IconRecordSchema } from '@repo/shared';
 
 // Factories
 import { routeSeoFactory } from './route-seo.factory';

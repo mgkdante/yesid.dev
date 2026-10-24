@@ -15,16 +15,15 @@ import type { Service } from '$lib/types';
 export const entries = projectEntries;
 export const prerender = entries().length > 0;
 
-export async function load({ params, fetch, locals, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; locals: App.Locals; url: URL }) {
-	const ctx = { pageCache: locals.pageCache };
-	const project = await adapter.projects.bySlug(params.slug, ctx);
+export async function load({ params, fetch, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; url: URL }) {
+	const project = await adapter.projects.bySlug(params.slug);
 
 	if (!project || project.status === 'private') {
 		error(404, { message: 'Project not found' });
 	}
 
 	const servicesResolved = await Promise.all(
-		project.relatedServices.map((id) => adapter.services.byId(id, ctx)),
+		project.relatedServices.map((id) => adapter.services.byId(id)),
 	);
 	const services: Service[] = servicesResolved.filter(
 		(s): s is Service => s !== undefined,

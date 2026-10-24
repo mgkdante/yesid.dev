@@ -27,10 +27,6 @@ const FETCH_DIAGNOSTIC = '[project-readme] fetch failed; section omitted';
 
 let warnSpy: ReturnType<typeof vi.spyOn>;
 
-function locals(): App.Locals {
-	return { pageCache: new Map() } as unknown as App.Locals;
-}
-
 function project(readmeUrl?: string): Project {
 	return projectFactory.build({
 		slug: 'readme-project',
@@ -45,7 +41,6 @@ async function loadProject(selected: Project, fetcher: typeof globalThis.fetch) 
 	return load({
 		params: { slug: selected.slug },
 		fetch: fetcher,
-		locals: locals(),
 		url: new URL(`https://yesid.dev/projects/${selected.slug}`),
 	});
 }

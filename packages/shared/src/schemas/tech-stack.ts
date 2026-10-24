@@ -1,16 +1,14 @@
-// Tech-stack schema — single runtime mirror of TechStackItem in
-// ../types/content. Consolidated here from the apps/web + apps/cms copies
+// Tech-stack content schema and inferred type, consolidated from apps/web + apps/cms
 // (site-hardening-a-plus). History: reshaped in slice-18g (legacy layer/
 // domains/connectsTo/proficiency/connectionNotes dropped, 3
 // LocalizedBlockEditorDoc body fields added); engine support fields added in
 // slice-29.
 
 import { z } from 'zod';
-import { LocalizedStringSchema, type AssertSchemaMatches } from './shared';
+import { LocalizedStringSchema } from './shared';
 import { LocalizedBlockEditorDocSchema } from '../types/blocks';
 import { StackLayerSchema } from './stack-archetypes';
 import { IconRecordSchema } from './icon';
-import type { TechStackItem } from '../types/content';
 
 export const TechStackItemSchema = z.object({
 	id: z.string().min(1),
@@ -26,5 +24,4 @@ export const TechStackItemSchema = z.object({
 	enables: LocalizedStringSchema.optional(),
 });
 
-// Drift detector — compile error (`true satisfies never`) on schema/type drift.
-true satisfies AssertSchemaMatches<z.infer<typeof TechStackItemSchema>, TechStackItem>;
+export type TechStackItem = z.infer<typeof TechStackItemSchema>;

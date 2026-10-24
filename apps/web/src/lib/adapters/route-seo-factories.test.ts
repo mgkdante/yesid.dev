@@ -350,7 +350,6 @@ describe('servicesIdSeoFactory', () => {
 		return {
 			params: { id: service.id },
 			locale: 'en' as const,
-			ctx: undefined,
 			adapter: { services: { byId: async () => service } } as unknown as ContentAdapter,
 			siteMeta,
 			siteSeoDefaults,

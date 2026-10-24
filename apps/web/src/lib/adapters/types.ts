@@ -37,7 +37,6 @@ import type {
 	AboutIntroContent,
 	CtaContent,
 	CloserContent,
-	PreviewContext,
 	BlockEditorDoc,
 	MorphShape,
 	LegalPage,
@@ -55,14 +54,13 @@ export interface NavPort {
 	 */
 	byPlacement(
 		placement: 'header' | 'footer' | 'mobile' | 'menu',
-		ctx?: PreviewContext,
 	): Promise<readonly NavLink[]>;
 }
 
 export interface LegalPort {
 	/** All published legal pages, sort order (OPS1: /legal/[slug]). */
-	all(ctx?: PreviewContext): Promise<readonly LegalPage[]>;
-	bySlug(slug: string, ctx?: PreviewContext): Promise<LegalPage | undefined>;
+	all(): Promise<readonly LegalPage[]>;
+	bySlug(slug: string): Promise<LegalPage | undefined>;
 }
 
 export interface ContentAdapter {
@@ -78,35 +76,27 @@ export interface ContentAdapter {
 	legal: LegalPort;
 }
 
-// Every port method accepts an optional trailing `ctx?: PreviewContext`. The
-// name is historical — the D6 /shares share-token preview design was never
-// wired and is moot post-27.2; today ctx carries the per-request pageCache
-// memo (threaded from event.locals by the server loads) plus an optional
-// locale override. TS allows implementations to omit trailing optional
-// params, so the static adapter keeps its current arrow-function signatures.
-
 export interface ProjectPort {
-	bySlug(slug: string, ctx?: PreviewContext): Promise<Project | undefined>;
-	featured(ctx?: PreviewContext): Promise<readonly Project[]>;
-	public(ctx?: PreviewContext): Promise<readonly Project[]>;
-	byService(serviceId: string, ctx?: PreviewContext): Promise<readonly Project[]>;
+	bySlug(slug: string): Promise<Project | undefined>;
+	featured(): Promise<readonly Project[]>;
+	public(): Promise<readonly Project[]>;
+	byService(serviceId: string): Promise<readonly Project[]>;
 }
 
 export interface ServicePort {
-	byId(id: string, ctx?: PreviewContext): Promise<Service | undefined>;
-	visible(ctx?: PreviewContext): Promise<readonly Service[]>;
-	adjacent(id: string, ctx?: PreviewContext): Promise<{ prev?: Service; next?: Service }>;
+	byId(id: string): Promise<Service | undefined>;
+	visible(): Promise<readonly Service[]>;
+	adjacent(id: string): Promise<{ prev?: Service; next?: Service }>;
 }
 
 export interface BlogPort {
-	all(ctx?: PreviewContext): Promise<readonly BlogPost[]>;
-	bySlug(slug: string, ctx?: PreviewContext): Promise<BlogPost | undefined>;
-	bodyBySlug(slug: string, ctx?: PreviewContext): Promise<BlockEditorDoc | null>;
-	byCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly BlogPost[]>;
-	svgContent(post: BlogPost, ctx?: PreviewContext): Promise<string>;
+	all(): Promise<readonly BlogPost[]>;
+	bySlug(slug: string): Promise<BlogPost | undefined>;
+	bodyBySlug(slug: string): Promise<BlockEditorDoc | null>;
+	byCategory(category: BlogCategory): Promise<readonly BlogPost[]>;
+	svgContent(post: BlogPost): Promise<string>;
 	svgContentsForPosts(
 		posts: readonly BlogPost[],
-		ctx?: PreviewContext,
 	): Promise<Record<string, string>>;
 }
 
@@ -117,7 +107,7 @@ export interface MetaPort {
 	 * with the same TS shape as before — pre-existing consumers (jsonLd
 	 * factories, Footer, About) are unaffected.
 	 */
-	site(ctx?: PreviewContext): Promise<SiteMeta>;
+	site(): Promise<SiteMeta>;
 
 	/**
 	 * Site-wide SEO defaults (slice-18 18h Q9): defaultOgImage UUID, themeColor
@@ -126,7 +116,7 @@ export interface MetaPort {
 	 * raw row — calling both `site()` and `siteSeoDefaults()` in the same
 	 * request triggers ONE CMS round-trip.
 	 */
-	siteSeoDefaults(ctx?: PreviewContext): Promise<SiteSeoDefaults>;
+	siteSeoDefaults(): Promise<SiteSeoDefaults>;
 
 	/**
 	 * Resolve PageSeo for a route + locale + optional dynamic params.
@@ -147,7 +137,6 @@ export interface MetaPort {
 		routeId: string,
 		locale: Locale,
 		params?: Record<string, string>,
-		ctx?: PreviewContext,
 	): Promise<PageSeo>;
 }
 
@@ -156,29 +145,29 @@ export interface MetaPort {
 // removed (decisions Q1+Q2+Q5). Legacy /tech-stack components that called those
 // methods will be cleaned up in Phase 5 (Task 10).
 export interface TechStackPort {
-	all(ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
+	all(): Promise<readonly TechStackItem[]>;
 }
 
 export interface ContentPort {
-	hero(ctx?: PreviewContext): Promise<HeroContent>;
-	heroAnim(ctx?: PreviewContext): Promise<HeroAnimContent>;
-	manifesto(ctx?: PreviewContext): Promise<ManifestoContent>;
-	proofReel(ctx?: PreviewContext): Promise<ProofReelContent>;
-	servicesGrid(ctx?: PreviewContext): Promise<ServicesGridContent>;
+	hero(): Promise<HeroContent>;
+	heroAnim(): Promise<HeroAnimContent>;
+	manifesto(): Promise<ManifestoContent>;
+	proofReel(): Promise<ProofReelContent>;
+	servicesGrid(): Promise<ServicesGridContent>;
 	/** Home-page About teaser — distinct from the /about page (aboutPage below). */
-	about(ctx?: PreviewContext): Promise<AboutIntroContent>;
-	cta(ctx?: PreviewContext): Promise<CtaContent>;
-	closer(ctx?: PreviewContext): Promise<CloserContent>;
-	errorPage(statusCode: number, ctx?: PreviewContext): Promise<ErrorPageContent>;
+	about(): Promise<AboutIntroContent>;
+	cta(): Promise<CtaContent>;
+	closer(): Promise<CloserContent>;
+	errorPage(statusCode: number): Promise<ErrorPageContent>;
 	/** Full /about page content — distinct from the home-page about teaser. */
-	aboutPage(ctx?: PreviewContext): Promise<AboutContent>;
-	contactPage(ctx?: PreviewContext): Promise<ContactContent>;
-	techStackPage(ctx?: PreviewContext): Promise<TechStackPageContent>;
-	initialHeroData(ctx?: PreviewContext): Promise<HeroData>;
+	aboutPage(): Promise<AboutContent>;
+	contactPage(): Promise<ContactContent>;
+	techStackPage(): Promise<TechStackPageContent>;
+	initialHeroData(): Promise<HeroData>;
 	/** /blog page chrome — block_blog_page_content (added slice-18i Phase 7). */
-	blogPage(ctx?: PreviewContext): Promise<BlogPageContent>;
+	blogPage(): Promise<BlogPageContent>;
 	/** /projects page chrome — block_projects_page_content (added slice-18i Phase 7). */
-	projectsPage(ctx?: PreviewContext): Promise<ProjectsPageContent>;
+	projectsPage(): Promise<ProjectsPageContent>;
 	/**
 	 * Inlined SVG markup for the Montreal-metro hero animation.
 	 *
@@ -187,11 +176,11 @@ export interface ContentPort {
 	 * The result is consumed by MetroNetwork.svelte through SSR `+page.server.ts`
 	 * load and inlined as raw HTML so it remains a valid LCP candidate.
 	 */
-	metroSvg(ctx?: PreviewContext): Promise<string>;
+	metroSvg(): Promise<string>;
 	/**
 	 * The geometric morph-target library (CMS-managed via the
 	 * morph_shapes collection). Replaces the hardcoded SHAPES const
 	 * in apps/web/src/lib/utils/shapes.ts.
 	 */
-	morphShapes(ctx?: PreviewContext): Promise<readonly MorphShape[]>;
+	morphShapes(): Promise<readonly MorphShape[]>;
 }
