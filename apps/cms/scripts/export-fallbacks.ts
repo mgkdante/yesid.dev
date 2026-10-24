@@ -187,6 +187,12 @@ export function resolveContentSource(env: Env = process.env): 'live' | 'fixture'
 		throw new Error('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture; a live export is required.');
 	}
 	if (isTrustedVercelExportTarget(env)) return 'live';
+	if (env.VERCEL_ENV) {
+		if (env.EXPORT_FALLBACKS_SOURCE === 'live') {
+			log.warn(`Ignoring EXPORT_FALLBACKS_SOURCE=live on untrusted Vercel target ${env.VERCEL_ENV}; using fixture without CMS access.`);
+		}
+		return 'fixture';
+	}
 	return env.EXPORT_FALLBACKS_SOURCE === 'live' ? 'live' : 'fixture';
 }
 
@@ -426,7 +432,8 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 }
 
 export async function run(opts: RunOptions): Promise<RunOutcome> {
-	if ((opts.source ?? resolveContentSource()) === 'fixture') {
+	const source = resolveContentSource({ ...process.env, EXPORT_FALLBACKS_SOURCE: opts.source ?? process.env.EXPORT_FALLBACKS_SOURCE });
+	if (source === 'fixture') {
 		// Defense in depth for callers that bypass the CLI's pre-auth gate.
 		resolveContentSource({ ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' });
 		if (opts.policy === 'fail') throw new Error('Trusted CMS builds refuse fixture exports.');
@@ -484,7 +491,12 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 	}
 
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
-	if (!dataFromCache) validateLiveExport(data);
+	try {
+		validateLiveExport(data);
+	} catch (error) {
+		if (dataFromCache) throw new Error(`CMS cache is stale: ${(error as Error).message}`, { cause: error });
+		throw error;
+	}
 	const configs = buildEmitConfigs(data, emitDir);
 	if (preparedMediaVariants) {
 		await writeMediaVariants(preparedMediaVariants);

@@ -1,3 +1,4 @@
+import { legalTruth, demoFeedDisclosures } from './lib/validators/live-export';
 import { describe, expect, it } from 'bun:test';
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
@@ -32,9 +33,10 @@ describe('offline export fixture', () => {
 		const emitDir = joinPath(import.meta.dir, '..', `.fixture-export-test-${crypto.randomUUID()}`);
 		try {
 			const result = await fixtureCli(['--emit-dir', emitDir], {
-				VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/offline',
+				VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/offline', EXPORT_FALLBACKS_SOURCE: 'live',
 			});
 			expect(result.exitCode).toBe(0);
+			expect(result.output).toContain('Ignoring EXPORT_FALLBACKS_SOURCE=live on untrusted Vercel target');
 			expect(result.output).not.toMatch(/auth failed|fetch:|cache fallback/);
 			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
 			expect(readdirSync(emitDir).filter(file => file.endsWith('.json'))).toEqual([]);
@@ -80,12 +82,26 @@ describe('failed live export retains last-good generated output', () => {
 			expect(missing).toEqual({ source: 'none', emitted: 0 });
 			expect(decideExit(missing, 'soft')).toBe(1);
 			const cached = { ...(await readCache(FIXTURE_PATH))!, mediaAssets: {}, mediaVariants: {} };
+			cached.siteLabels!.ui.analyticsConsent.description = { ...legalTruth.consent };
+			cached.siteLabels!.heroDashboard.vehiclesSub = { ...demoFeedDisclosures };
+			cached.legalPages = cached.legalPages!.map(page => ({ ...page, body: Object.fromEntries(
+				(['en', 'fr', 'es'] as const).map(locale => [locale, { time: 1, version: '2.31.2', blocks: [
+					'contact@yesid.dev', 'Plausible Analytics Cloud ' + legalTruth.clause[locale],
+					legalTruth.revision[locale] + ' 2026-07-15', ...legalTruth.modes[locale],
+					page.slug === 'privacy' ? legalTruth.privacyProfile[locale] : legalTruth.cookieProfile[locale],
+				].map((text, index) => ({ id: String(index), type: 'paragraph', data: { text } })) }]),
+			) }));
 			const cache = joinPath(emitDir, '.cms-cache.json');
 			await writeCache(cache, cached, 'synthetic');
 			const before = await Bun.file(cache).text();
 			expect(await run(opts)).toEqual({ source: 'cache', emitted: 20 });
 			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
 			expect(await Bun.file(cache).text()).toBe(before);
+			const emitted = await Bun.file(joinPath(emitDir, 'site-meta.ts')).text();
+			cached.siteLabels!.ui.analyticsConsent.description.en = 'Obsolete consent description';
+			await writeCache(cache, cached, 'synthetic');
+			await expect(run(opts)).rejects.toThrow('CMS cache is stale');
+			expect(await Bun.file(joinPath(emitDir, 'site-meta.ts')).text()).toBe(emitted);
 		} finally { server.stop(true); rmSync(emitDir, { recursive: true, force: true }); }
 	});
 });
@@ -99,6 +115,9 @@ describe('content source and fallback policy matrix', () => {
 		['local LIVE flag alone', { EXPORT_FALLBACKS_LIVE: '1' }, 'fixture', 'soft'],
 		['untrusted preview', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/test' }, 'fixture', 'soft'],
 		['untrusted preview with LIVE flag', { VERCEL_ENV: 'preview', EXPORT_FALLBACKS_LIVE: '1' }, 'fixture', 'soft'],
+		['untrusted preview explicit live', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feature/test', EXPORT_FALLBACKS_SOURCE: 'live' }, 'fixture', 'soft'],
+		['preview without branch explicit live', { VERCEL_ENV: 'preview', EXPORT_FALLBACKS_SOURCE: 'live' }, 'fixture', 'soft'],
+		['Vercel development explicit live', { VERCEL_ENV: 'development', EXPORT_FALLBACKS_SOURCE: 'live' }, 'fixture', 'soft'],
 		['Vercel development', { VERCEL_ENV: 'development' }, 'fixture', 'soft'],
 		['production', { VERCEL_ENV: 'production' }, 'live', 'fail'],
 		['production with LIVE flag', { VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: '1' }, 'live', 'fail'],

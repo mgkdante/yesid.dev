@@ -1,3 +1,4 @@
+import { siteLabels } from '../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 
 // networkidle is banned in this suite (see tests/_support/helpers.ts): against the
@@ -56,7 +57,7 @@ test.describe('Project listing filters', () => {
   test('clicking a tag filter button updates URL param', async ({ page }) => {
     // The Tags group is collapsed by default — expand it before its items are clickable.
     const sidebar = desktopSidebar(page);
-    await sidebar.locator('button.label-section', { hasText: 'Tags' }).click();
+    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.tags.en }).click();
 
     const filterBtn = sidebar.locator('[data-testid^="tag-filter-"]').first();
     await expect(filterBtn).toBeVisible();
@@ -95,7 +96,7 @@ test.describe('Project listing filters', () => {
     await expect(page).toHaveURL(/[?&]service=/);
 
     // FilterSummary's "clear filters" control resets all params.
-    const clearBtn = page.getByRole('button', { name: /clear filters/i });
+    const clearBtn = page.getByRole('button', { name: siteLabels.navChrome.shared.clearFiltersLabel.en });
     await expect(clearBtn).toBeVisible();
     await clearBtn.click();
 
@@ -112,7 +113,7 @@ test.describe('Project listing filters', () => {
     await expect(page).toHaveURL(/[?&]service=/);
 
     // Expand Tags, then apply a tag filter — both params must coexist (AND logic).
-    await sidebar.locator('button.label-section', { hasText: 'Tags' }).click();
+    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.tags.en }).click();
     const tagBtn = sidebar.locator('[data-testid^="tag-filter-"]').first();
     await expect(tagBtn).toBeVisible();
     await tagBtn.click();
@@ -139,14 +140,14 @@ test.describe('Blog listing filters', () => {
     const sidebar = desktopSidebar(page);
 
     // The Tags group is collapsed by default — expand it first.
-    await sidebar.locator('button.label-section', { hasText: 'Tags' }).click();
+    await sidebar.locator('button.label-section', { hasText: siteLabels.blogChrome.listing.filters.tags.en }).click();
 
     // Blog tag items carry no data-testid and render as role="radio" buttons; target
     // the first real tag chip (not the "All" reset) via the shared filter-btn class.
     const tagBtn = sidebar
       .locator('button.filter-btn')
-      .filter({ hasNotText: 'All' })
-      .filter({ hasNotText: 'English' })
+      .filter({ hasNotText: siteLabels.blogChrome.listing.filters.allLabel.en })
+      .filter({ hasNotText: siteLabels.ui.languageNames.en.en })
       .first();
     await expect(tagBtn).toBeVisible();
     await tagBtn.click();
