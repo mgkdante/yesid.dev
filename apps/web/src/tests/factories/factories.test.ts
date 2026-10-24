@@ -21,7 +21,6 @@ import { NavLinkSchema, ErrorPageContentSchema } from '@repo/shared';
 import { PageSeoSchema } from '$lib/schemas/seo';
 import { MorphShapeSchema } from '@repo/shared';
 import { HeroDataSchema } from '$lib/schemas/hero-data';
-import { TechStackItemSchema } from '$lib/schemas/tech-stack';
 import { PersonSchema } from '$lib/schemas/jsonld';
 import { SiteSeoDefaultsSchema } from '@repo/shared';
 import { IconRecordSchema } from '@repo/shared';
@@ -37,7 +36,6 @@ import { errorPageFactory } from './error-page.factory';
 import { pageSeoFactory } from './page-seo.factory';
 import { morphShapeFactory } from './morph-shape.factory';
 import { heroDataFactory } from './hero-data.factory';
-import { techStackFactory } from './tech-stack.factory';
 import { jsonldFactory } from './jsonld.factory';
 import { siteSeoDefaultsFactory } from './site-seo-defaults.factory';
 import { iconRecordFactory } from './icon-record.factory';
@@ -201,22 +199,6 @@ describe('heroDataFactory', () => {
 		const three = heroDataFactory.batch(3);
 		expect(three).toHaveLength(3);
 		three.forEach((d) => expect(() => HeroDataSchema.parse(d)).not.toThrow());
-	});
-});
-
-describe('techStackFactory', () => {
-	it('produces a value that satisfies TechStackItemSchema', () => {
-		expect(() => TechStackItemSchema.parse(techStackFactory.build())).not.toThrow();
-	});
-	it('respects overrides', () => {
-		const item = techStackFactory.build({ name: 'Postgres' });
-		expect(item.name).toBe('Postgres');
-		expect(() => TechStackItemSchema.parse(item)).not.toThrow();
-	});
-	it('batch produces N valid instances', () => {
-		const three = techStackFactory.batch(3);
-		expect(three).toHaveLength(3);
-		three.forEach((t) => expect(() => TechStackItemSchema.parse(t)).not.toThrow());
 	});
 });
 

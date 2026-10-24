@@ -6,7 +6,6 @@ const CLIENT_DIR = resolve('.svelte-kit/output/client');
 const MANIFEST_PATH = resolve(CLIENT_DIR, '.vite/manifest.json');
 const MANIFEST_DISPLAY_PATH = '.svelte-kit/output/client/.vite/manifest.json';
 const ROOT_KEY = '.svelte-kit/generated/client-optimized/nodes/0.js';
-const ENGINE_KEY = 'src/lib/components/stack-engine/Engine.svelte';
 
 function fail(message) {
 	console.error(`FAIL: ${message}`);
@@ -26,7 +25,6 @@ function budget(name, fallback) {
 const budgets = {
 	rootEntry: budget('ROOT_LAYOUT_ENTRY_BUDGET_GZIP', 30_000),
 	rootPayload: budget('ROOT_LAYOUT_PAYLOAD_BUDGET_GZIP', 180_000),
-	engine: budget('ENGINE_CHUNK_BUDGET_GZIP', 90_000),
 };
 
 let manifestSource;
@@ -154,24 +152,11 @@ function measureOutputs(outputs) {
 }
 
 const root = requiredRecord(ROOT_KEY, 'root layout');
-const engine = requiredRecord(ENGINE_KEY, 'engine');
-
-if (engine.isDynamicEntry !== true) fail(`${ENGINE_KEY} is not a dynamic entry`);
-if (/(^|\/)nodes\//.test(engine.file)) fail('engine output is a route node');
 
 const rootClosure = collectStaticClosure(ROOT_KEY, root, 'root layout');
 const rootPath = outputPath(root.file, 'root layout');
 const rootEntry = measureContent(rootClosure.outputs.get(rootPath).content);
-const enginePath = outputPath(engine.file, 'engine');
-if (rootClosure.keys.has(ENGINE_KEY) || rootClosure.outputs.has(enginePath)) {
-	fail('engine is statically reachable from the root layout');
-}
 const payload = measureOutputs(rootClosure.outputs);
-const engineClosure = collectStaticClosure(ENGINE_KEY, engine, 'engine');
-const engineIncrementalOutputs = new Map(
-	[...engineClosure.outputs].filter(([path]) => !rootClosure.outputs.has(path)),
-);
-const enginePayload = measureOutputs(engineIncrementalOutputs);
 const rootImportCount = rootClosure.outputs.size - 1;
 
 console.log(
@@ -179,9 +164,6 @@ console.log(
 );
 console.log(
 	`root layout payload: ${rootClosure.outputs.size} files (${rootImportCount} static ${rootImportCount === 1 ? 'import' : 'imports'}) — ${payload.raw} bytes raw, ${payload.gzip} bytes gzip (budget ${budgets.rootPayload})`,
-);
-console.log(
-	`engine incremental payload: ${engineIncrementalOutputs.size} ${engineIncrementalOutputs.size === 1 ? 'file' : 'files'} — ${enginePayload.raw} bytes raw, ${enginePayload.gzip} bytes gzip (budget ${budgets.engine})`,
 );
 
 if (rootEntry.gzip > budgets.rootEntry) {
@@ -191,11 +173,6 @@ if (rootEntry.gzip > budgets.rootEntry) {
 }
 if (payload.gzip > budgets.rootPayload) {
 	fail(`root layout payload ${payload.gzip} bytes gzip > budget ${budgets.rootPayload} bytes gzip`);
-}
-if (enginePayload.gzip > budgets.engine) {
-	fail(
-		`engine incremental payload ${enginePayload.gzip} bytes gzip > budget ${budgets.engine} bytes gzip`,
-	);
 }
 
 console.log('OK: client payload budgets pass');

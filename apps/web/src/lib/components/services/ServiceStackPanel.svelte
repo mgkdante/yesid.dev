@@ -21,7 +21,6 @@
 		relatedProjects,
 		locale,
 		stackLabel,
-		seeStackLabel,
 		relatedProjectsHeading,
 		relatedProjectsAria,
 		seeAllProjectsLabel,
@@ -31,7 +30,6 @@
 		relatedProjects: readonly Project[];
 		locale: Locale;
 		stackLabel: string;
-		seeStackLabel: string;
 		relatedProjectsHeading: string;
 		relatedProjectsAria: string;
 		seeAllProjectsLabel: string;
@@ -59,9 +57,6 @@
 				<span class="stack-pill">{tech}</span>
 			{/each}
 		</div>
-		<a href={localizeHref('/tech-stack', locale)} class="projects-all tap-feedback">
-			{seeStackLabel}
-		</a>
 	</CollapsibleSection>
 {/if}
 {#if relatedProjects.length}

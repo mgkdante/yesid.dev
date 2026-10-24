@@ -25,7 +25,6 @@ describe("CMS architecture boundaries", () => {
       "scripts/lib/fetchers/projects.ts",
       "scripts/lib/fetchers/services.ts",
       "scripts/lib/fetchers/site-meta.ts",
-      "scripts/lib/fetchers/tech-stack.ts",
     ]) {
       const source = readFileSync(join(cmsRoot, relativePath), "utf8");
       for (const staleClaim of staleClaims) {

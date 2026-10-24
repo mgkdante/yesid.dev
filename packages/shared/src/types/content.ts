@@ -22,7 +22,6 @@ export type {
 	AboutContent,
 } from '../schemas/about-page';
 export type { IconRecord } from '../schemas/icon';
-export type { TechStackItem } from '../schemas/tech-stack';
 export type {
 	ContactTerminalField,
 	ContactInfoTerminal,

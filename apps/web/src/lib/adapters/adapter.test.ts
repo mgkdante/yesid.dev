@@ -185,13 +185,6 @@ describe('ContentAdapter contract', () => {
 		});
 	});
 
-	describe('techStack port', () => {
-		it('all() returns a non-empty readonly array', async () => {
-			const result = await adapter.techStack.all();
-			expect(result.length).toBeGreaterThan(0);
-		});
-	});
-
 	describe('content port', () => {
 		it('hero() returns content', async () => {
 			const result = await adapter.content.hero();

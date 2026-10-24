@@ -60,7 +60,7 @@ const mockBlogPage = {
 			links: [
 				{ label: { en: 'Case studies' }, href: '/projects' },
 				{ label: { en: 'Services' }, href: '/services' },
-				{ label: { en: 'Stack' }, href: '/tech-stack' },
+				{ label: { en: 'Stack' }, href: '/services' },
 				{ label: { en: 'About' }, href: '/about' },
 				{ label: { en: 'Contact' }, href: '/contact' },
 			],

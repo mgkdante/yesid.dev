@@ -6,7 +6,6 @@ export const adapter: ContentAdapter = {
 	projects: staticAdapter.projects,
 	blog: staticAdapter.blog,
 	meta: staticAdapter.meta,
-	techStack: staticAdapter.techStack,
 	content: { ...staticAdapter.content },
 	nav: staticAdapter.nav,
 	legal: staticAdapter.legal,

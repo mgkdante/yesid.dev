@@ -80,7 +80,6 @@ test.describe('Language toggle — click navigation + content change', () => {
       { en: '/services', fr: '/fr/services', es: '/es/services' },
       { en: '/projects', fr: '/fr/projects', es: '/es/projects' },
       { en: '/blog', fr: '/fr/blog', es: '/es/blog' },
-      { en: '/tech-stack', fr: '/fr/tech-stack', es: '/es/tech-stack' },
     ];
 
     for (const { en, fr, es } of testPaths) {

@@ -12,7 +12,6 @@ const consumers = [
 	['home', 'lib/components/home/HomePage.svelte', 'home-cta-band'],
 	['service', 'lib/components/services/ServiceDetailPage.svelte', 'service-cta-band'],
 	['project', 'lib/components/projects/ProjectDetailPage.svelte', 'project-cta-band'],
-	['tech-stack', 'routes/[[lang=locale]]/tech-stack/+page.svelte', 'tech-stack-cta'],
 ] as const;
 
 function svelteFiles(dir: string, files: string[] = []): string[] {
@@ -60,15 +59,15 @@ describe('shared CTA consumer coverage', () => {
 		).toEqual([]);
 	});
 
-	it('expands the shared component to the audited 30 localized route pages', () => {
+	it('expands the shared component to the audited 27 localized route pages', () => {
 		const visibleServices = services.filter((service) => service.visible);
 		const publicProjects = projects.filter((project) => project.status === 'public');
 
 		expect(visibleServices).toHaveLength(4);
 		expect(publicProjects).toHaveLength(4);
 		expect(
-			(1 + visibleServices.length + publicProjects.length + 1) * SUPPORTED_LOCALES.length,
-		).toBe(30);
+			(1 + visibleServices.length + publicProjects.length) * SUPPORTED_LOCALES.length,
+		).toBe(27);
 	});
 
 	it('requires one shared blueprint composition rather than per-route art', () => {

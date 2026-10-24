@@ -6,7 +6,6 @@ const routes = [
 	['home', '/', 'home-cta-band'],
 	['service', '/services/database-engineering', 'service-cta-band'],
 	['project', '/projects/yesid-dev', 'project-cta-band'],
-	['tech-stack', '/tech-stack', 'tech-stack-cta'],
 ] as const;
 
 const viewports = [

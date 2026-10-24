@@ -241,41 +241,6 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 		condition: '(min-width: 1280px)',
 		occurrences: 1,
 	},
-	{
-		path: 'apps/web/src/lib/components/stack-engine/BlueprintCanvas.svelte',
-		condition: '(hover: hover)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/stack-engine/BuildShapeCard.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/stack-engine/ProductPreview.svelte',
-		condition: '(max-width: 479px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/stack-engine/ShapeBlueprint.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/stack-engine/TechMatcher.svelte',
-		condition: '(max-width: 1279px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/stack-engine/TechMatcher.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
 ] as const;
 
 interface MediaLine {
@@ -456,11 +421,6 @@ describe('canonical responsive breakpoint contract', () => {
 					'.consent-actions',
 					'width: auto',
 				],
-			},
-			{
-				path: 'apps/web/src/lib/components/stack-engine/ProductPreview.svelte',
-				condition: '(max-width: 479px)',
-				expected: ['.slot-role', 'display: none', 'width: 12px', 'height: 12px'],
 			},
 			{
 				path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',

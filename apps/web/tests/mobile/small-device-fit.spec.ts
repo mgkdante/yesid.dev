@@ -12,7 +12,7 @@ import { expect, test } from '@playwright/test';
 // real-device viewports it now runs under (iphone-se + galaxy-s23 profiles,
 // plus iphone-12 via the single-phone set).
 //
-const ROUTES = ['/', '/services', '/projects', '/blog', '/contact', '/tech-stack', '/about'];
+const ROUTES = ['/', '/services', '/projects', '/blog', '/contact', '/about'];
 
 // Reduced motion renders the home hero in its final static state (the GSAP
 // intro otherwise hides the text behind an animation). Applied via media
