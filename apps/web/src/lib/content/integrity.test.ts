@@ -32,20 +32,14 @@ import * as legalPagesModule from './legal-pages.js';
 import * as metaModule from './site-meta.js';
 import * as blogModule from './blog.js';
 import * as blogPageModule from './blog-page.js';
-import * as techStackModule from './tech-stack.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from '$lib/live';
-import { techStackPageContent, techStackItems } from './tech-stack.js';
 import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
-import * as stackArchetypesModule from './stack-archetypes.js';
-import { stackArchetypes } from './stack-archetypes.js';
 import { siteLabels as siteLabelsModule } from './site-labels.js';
-import { StackArchetypeSchema, STACK_LAYERS } from '@repo/shared/schemas';
 import {
-	TechStackItemSchema,
 	HeroDataSchema,
 } from '$lib/schemas';
 import {
@@ -55,7 +49,6 @@ import {
 	SiteMetaSchema,
 	AboutContentSchema,
 	ContactContentSchema,
-	TechStackPageContentSchema,
 	NavLinkSchema,
 	MenuItemSchema,
 	ErrorPageContentSchema,
@@ -134,35 +127,6 @@ describe('projects data integrity', () => {
 				expect(validServiceIds.has(sid), `service "${sid}" in project "${p.slug}" not found`).toBe(true);
 			});
 		});
-	});
-});
-
-describe('tech stack data integrity', () => {
-	it('loads a non-trivial curated tech set', () => {
-		expect(techStackItems.length).toBeGreaterThanOrEqual(15); // curated at go-day: 21 published (operator archived mobile ghosts; set grows with learning)
-	});
-
-	it('all IDs are unique', () => {
-		const ids = techStackItems.map((item) => item.id);
-		expect(new Set(ids).size).toBe(ids.length);
-	});
-
-	it('all relatedServices match existing service IDs', () => {
-		const serviceIds = new Set(services.map((service) => service.id));
-		for (const item of techStackItems) {
-			for (const serviceId of item.relatedServices) {
-				expect(serviceIds.has(serviceId), `${item.id}: service "${serviceId}" not found`).toBe(true);
-			}
-		}
-	});
-
-	it('all relatedProjects match existing project slugs', () => {
-		const projectSlugs = new Set(projects.map((project) => project.slug));
-		for (const item of techStackItems) {
-			for (const projectSlug of item.relatedProjects) {
-				expect(projectSlugs.has(projectSlug), `${item.id}: project "${projectSlug}" not found`).toBe(true);
-			}
-		}
 	});
 });
 
@@ -399,66 +363,6 @@ describe('sitePages registry integrity (slice-26.1)', () => {
 	});
 });
 
-describe('stackArchetypes engine data integrity (slice-29)', () => {
-	it('all slugs are unique and URL-safe', () => {
-		const slugs = stackArchetypes.map((a) => a.slug);
-		expect(new Set(slugs).size).toBe(slugs.length);
-		slugs.forEach((s) => expect(s).toMatch(/^[a-z0-9-]+$/));
-	});
-
-	it('every tech link references a committed tech-stack item', () => {
-		const validTechIds = new Set(techStackItems.map((t) => t.id));
-		stackArchetypes.forEach((a) => {
-			a.tech.forEach((link) => {
-				expect(
-					validTechIds.has(link.id),
-					`tech "${link.id}" in archetype "${a.slug}" not found in techStackItems`
-				).toBe(true);
-			});
-		});
-	});
-
-	it('every present proofProjectSlug references a committed project (scenarios may omit)', () => {
-		const validSlugs = new Set(projects.map((p) => p.slug));
-		stackArchetypes.forEach((a) => {
-			if (a.proofProjectSlug === undefined) return;
-			expect(
-				validSlugs.has(a.proofProjectSlug),
-				`proof project "${a.proofProjectSlug}" in archetype "${a.slug}" not found`
-			).toBe(true);
-		});
-	});
-
-	it('every present serviceId references a committed service (scenarios may omit)', () => {
-		const validIds = new Set(services.map((s) => s.id));
-		stackArchetypes.forEach((a) => {
-			if (a.serviceId === undefined) return;
-			expect(
-				validIds.has(a.serviceId),
-				`service "${a.serviceId}" in archetype "${a.slug}" not found`
-			).toBe(true);
-		});
-	});
-
-	it('tech links arrive pre-sorted by STACK_LAYERS render order', () => {
-		stackArchetypes.forEach((a) => {
-			const indices = a.tech.map((l) => STACK_LAYERS.indexOf(l.layer));
-			const sorted = [...indices].sort((x, y) => x - y);
-			expect(indices).toEqual(sorted);
-		});
-	});
-
-	it('every referenced tech has a committed layer + enables (preview taps never blank)', () => {
-		const byId = new Map(techStackItems.map((t) => [t.id, t]));
-		const referenced = new Set(stackArchetypes.flatMap((a) => a.tech.map((l) => l.id)));
-		for (const id of referenced) {
-			const item = byId.get(id);
-			expect(item?.layer, `tech "${id}" missing layer`).toBeTruthy();
-			expect(item?.enables?.en?.trim(), `tech "${id}" missing enables.en`).toBeTruthy();
-		}
-	});
-});
-
 // ─────────────────────────────────────────────────────────────────────────
 // Seed data parses through schemas (slice-17c)
 // ─────────────────────────────────────────────────────────────────────────
@@ -489,18 +393,6 @@ describe('seed data parses through schemas', () => {
 		expect(() => SiteMetaSchema.parse(siteMeta)).not.toThrow();
 	});
 
-	it('tech-stack items → TechStackItemSchema[]', () => {
-		expect(() => z.array(TechStackItemSchema).parse(techStackItems)).not.toThrow();
-	});
-
-	// tech-stack scenarios test removed in slice-18g — StackScenario type and
-	// schema were dropped (decisions Q1+Q2). Phase 5 will add a new integrity
-	// test once the static helpers are updated to the new TechStackItem shape.
-
-	it('techStackPageContent → TechStackPageContentSchema', () => {
-		expect(() => TechStackPageContentSchema.parse(techStackPageContent)).not.toThrow();
-	});
-
 	it('aboutPageContent → AboutContentSchema', () => {
 		expect(() => AboutContentSchema.parse(aboutPageContent)).not.toThrow();
 	});
@@ -527,10 +419,6 @@ describe('seed data parses through schemas', () => {
 
 	it('sitePages → SitePageSchema[]', () => {
 		expect(() => z.array(SitePageSchema).parse(sitePages)).not.toThrow();
-	});
-
-	it('stackArchetypes → StackArchetypeSchema[]', () => {
-		expect(() => z.array(StackArchetypeSchema).parse(stackArchetypes)).not.toThrow();
 	});
 });
 
@@ -646,15 +534,12 @@ const WALKER_SOURCES: Array<[string, unknown]> = [
 	['meta', metaModule],
 	['blog', blogModule],
 	['blog-page', blogPageModule],
-	['tech-stack', techStackModule],
 	// site-seo-defaults carries defaultDescription (en-only at present).
 	['site-seo-defaults', siteSeoDefaultsModule],
 	// route_seo static route SEO overrides, emitted from CMS.
 	['route-seo', routeSeoModule],
 	// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
 	['site-pages', sitePagesModule],
-	// stack_archetypes engine recipes (slice-29).
-	['stack-archetypes', stackArchetypesModule],
 	// site_labels microcopy singleton (go2-t1c2) — en-only seeds.
 	['site-labels', siteLabelsModule],
 ];
@@ -723,7 +608,7 @@ describe('LocalizedString guard + translation debt', () => {
 // ─── LOCKED COUNTS — single bump point ─────────────────────────────────────
 // These WILL move exactly once more during the GO-day campaign:
 //   - The slice-28.6 FR content drop (WITH_FR jumps toward TOTAL, NO_FR → ~0
-//     for launch surfaces; tech-stack longform fr stays deferred).
+//     for launch surfaces).
 // Update procedure: run `bunx vitest run src/lib/content/integrity.test.ts`,
 // read the printed snapshot, set the consts, sanity-check the DIRECTION
 // (WITH_FR never decreases; ES_WITHOUT_FR stays 0 until a deliberate ES pass).
@@ -777,7 +662,10 @@ describe('LocalizedString guard + translation debt', () => {
 // site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
 // OPS2 analytics-choice microcopy adds six EN/FR/ES-complete site-label leaves, 666 + 6 = 672.
 // October portfolio publication: 38 additional FR-complete project strings, no added translation debt.
-const LOCKED = { TOTAL: 710, WITH_FR: 710, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// Slice 43.2: the CMS retirement removed 7 nav/registry/SEO strings; deleting
+// the retired content sources removes 82 more. The lead's live regeneration
+// removes the final blog rail string (621 → 620).
+const LOCKED = { TOTAL: 620, WITH_FR: 620, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

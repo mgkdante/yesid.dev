@@ -1,29 +1,16 @@
 /**
- * Medium-complexity page-block fetchers — tech-stack-page + contact-page.
- *
- * go2-t1b2: both transforms read FLAT columns (terminal chrome scalars on the
- * parent row; per-locale strings on translations) and recompose the exact
- * module shapes the legacy JSON columns produced. The hero terminal templates
- * (operator addendum) recompose under hero.terminal with a literal {count}
- * token interpolated by the /tech-stack component.
- *
- * This module owns both build-time block projections.
+ * Contact-page block fetcher: flat terminal chrome and translated fields
+ * recompose the build-time page projection.
  */
 
 import { readItems } from '@directus/sdk';
 import { str, toLocalizedFields, toLocalizedString } from '../locale';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import {
-	TechStackPageContentSchema,
 	ContactContentSchema,
-	type TechStackPageContent,
 	type ContactContent,
 } from '@repo/shared';
 import type { FetcherContext } from './types';
-
-// ---------------------------------------------------------------------------
-// tech-stack-page
-// ---------------------------------------------------------------------------
 
 interface ContactChannelRow {
 	id: string;
@@ -43,57 +30,6 @@ function localizedWithFallback(
 	if (localized.en.trim()) return localized;
 	const fallbackText = str(fallback).trim();
 	return fallbackText ? { ...localized, en: fallbackText } : localized;
-}
-
-export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<
-		Record<string, unknown> & { languages_code: string }
-	>;
-	// go2/w5: stack_explainer is optional in the schema (pre-seed builds parse
-	// without it). toLocalizedString returns { en: '' } when the column is
-	// empty and LocalizedStringSchema rejects whitespace-only en — so include
-	// the key only when real content exists.
-	const explainer = toLocalizedString(tr, 'stack_explainer');
-	return {
-		meta: toLocalizedFields(tr, [
-			['title', 'meta_title'], ['description', 'meta_description'],
-		]),
-		hero: {
-			...toLocalizedFields(tr, [
-				['overline', 'hero_overline'], ['titleLine1', 'hero_title_line1'],
-				['titleLine2', 'hero_title_line2'], ['terminalAria', 'hero_terminal_aria'],
-				['stackKicker', 'stack_kicker'],
-				['engineLoading', 'engine_loading'],
-			]),
-			// Operator addendum: terminal line templates — literal {count} token
-			// interpolated by the component from data.items.length.
-			terminal: toLocalizedFields(tr, [
-				['cmd', 'terminal_cmd'], ['loading', 'terminal_loading'],
-				['success', 'terminal_success'], ['cataloged', 'terminal_cataloged'],
-				['status', 'terminal_status'],
-			]),
-			stats: toLocalizedFields(tr, [['technologies', 'hero_stat_technologies']]),
-			...(explainer.en.trim() ? { stackExplainer: explainer } : {}),
-		},
-		actions: toLocalizedFields(tr, [
-			['getInTouch', 'action_get_in_touch'], ['viewServices', 'action_view_services'],
-		]),
-		cta: toLocalizedFields(tr, [
-			['headingLine1', 'cta_heading_line1'], ['headingLine2', 'cta_heading_line2'],
-			['sub', 'cta_sub'],
-		]),
-	};
-}
-
-export async function fetchTechStackPageContent({
-	client,
-}: FetcherContext): Promise<TechStackPageContent> {
-	const row = await fetchBlockSingleton<BlockRow>(
-		client,
-		'block_tech_stack_page_content',
-		'fetchTechStackPageContent/block_tech_stack_page_content',
-	);
-	return TechStackPageContentSchema.parse(toTechStackPageContent(row));
 }
 
 // ---------------------------------------------------------------------------

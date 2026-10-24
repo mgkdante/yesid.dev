@@ -14,7 +14,6 @@ const STATIC_ROUTES = [
   '/projects',
   '/blog',
   '/blog/personal',
-  '/tech-stack',
 ];
 
 const LOCALE_PAIRS = ['en', 'fr'];
@@ -31,8 +30,6 @@ test.describe('i18n routing — static routes render 200 in EN + FR', () => {
       // Structural anchor: the page shell mounted (nav visible by default).
       if (route === '/') {
         await expect(page.getByTestId('hero-banner')).toBeVisible();
-      } else if (route === '/tech-stack') {
-        await expect(page.getByTestId('tech-stack-hero')).toBeVisible();
       } else {
         await expect(page.getByTestId('nav')).toBeVisible();
       }
@@ -45,8 +42,6 @@ test.describe('i18n routing — static routes render 200 in EN + FR', () => {
       // Same structural anchors, just under /fr prefix.
       if (route === '/') {
         await expect(page.getByTestId('hero-banner')).toBeVisible();
-      } else if (route === '/tech-stack') {
-        await expect(page.getByTestId('tech-stack-hero')).toBeVisible();
       } else {
         await expect(page.getByTestId('nav')).toBeVisible();
       }

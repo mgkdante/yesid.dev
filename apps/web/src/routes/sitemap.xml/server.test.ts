@@ -69,7 +69,6 @@ describe('GET /sitemap.xml', () => {
 			'/projects',
 			'/blog',
 			'/blog/personal',
-			'/tech-stack',
 		]) {
 			const canonical = path === '/' ? 'https://yesid.dev' : `https://yesid.dev${path}`;
 			expect(body, `missing ${canonical}`).toContain(`<loc>${canonical}</loc>`);
@@ -207,7 +206,7 @@ describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () 
 
 	it('full registry → every static route present (parity with today)', async () => {
 		const paths = pathnamesOf(await _buildSitemapEntries(sitePages));
-		for (const p of ['/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal', '/tech-stack']) {
+		for (const p of ['/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal']) {
 			expect(paths).toContain(p);
 		}
 	});

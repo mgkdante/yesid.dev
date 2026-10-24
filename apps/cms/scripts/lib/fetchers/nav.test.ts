@@ -83,7 +83,7 @@ describe('nav fetcher transform', () => {
 // ---------------------------------------------------------------------------
 
 const PUBLISHED_PAGE: DirectusSitePageRef = {
-	path: '/tech-stack',
+	path: '/services',
 	status: 'published',
 	translations: [
 		{ languages_code: 'en', title: 'Tech Stack' },
@@ -113,7 +113,7 @@ const PAGE_LINKED_ROW: DirectusNavLinkRow = {
 describe('cascade contract — label + href resolution', () => {
 	it('href comes from page.path when the link is page-linked (legacy href ignored)', () => {
 		const result = toNavLink(PAGE_LINKED_ROW);
-		expect(result.href).toBe('/tech-stack');
+		expect(result.href).toBe('/services');
 	});
 
 	it('href falls back to link.href when page is null (reserved for external links)', () => {

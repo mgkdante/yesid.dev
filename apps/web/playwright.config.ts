@@ -22,7 +22,7 @@ const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 // tags, sitemap XML, canonical/hreflang, theme tokens, form-validation copy)
 // gain nothing from re-running on three phones — verify once; (b) they assert a
 // DESKTOP composition (the service hero's `.svg-desktop` panel, the project/blog
-// `.toc-column`, the projects filter sidebar, the stack-engine shape grid) that
+// `.toc-column`, the projects filter sidebar) that
 // is display:none / restructured below 768px. Mobile UX has its own coverage
 // under tests/mobile/. (Pattern set by i18n-routing; extended for the slice-30
 // e2e expansion — the page-content/, contact-form, theme, filter and locale
@@ -34,11 +34,9 @@ const DESKTOP_ONLY_SPECS = [
 	'**/audits/console-scan.spec.ts',
 	'**/weather-scenes.spec.ts',
 	'**/audits/light-mode.spec.ts',
-	'**/stack-engine.spec.ts',
 	'**/i18n-routing.spec.ts',
 	'**/i18n-language-toggle.spec.ts',
 	'**/state-across-languages.spec.ts',
-	'**/state-lang-engine.spec.ts',
 	'**/state-lang-scroll.spec.ts',
 	'**/state-lang-layout.spec.ts',
 	'**/hero-intro-reload.spec.ts',
@@ -161,9 +159,8 @@ export default defineConfig({
 	testDir: 'tests',
 	testMatch: '**/*.spec.ts',
 	// Desktop-layout audits assert a desktop composition (e.g. the service hero's
-	// `.svg-desktop` panel is display:none below 768px; the stack-engine shape
-	// grid is a desktop arrangement). They are meaningless on the phone matrix —
-	// run them on desktop-chrome only. Mobile UX has its own coverage under
+	// `.svg-desktop` panel is display:none below 768px). They are meaningless
+	// on the phone matrix — run them on desktop-chrome only. Mobile UX has its own coverage under
 	// tests/mobile/, and the viewport-agnostic specs (smoke, pages, console-scan,
 	// reduced-motion, …) still run everywhere.
 	projects: [

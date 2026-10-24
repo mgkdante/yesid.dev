@@ -8,7 +8,6 @@ export * from './shared';
 export * from './about-page';
 export * from './contact-page';
 export * from './legal-pages';
-export * from './tech-stack-page';
 
 // Home-page block schemas (added in slice-18i Task 1.1 Phase C)
 export * from './hero';
@@ -33,15 +32,10 @@ export * from './route-seo';
 // site_labels global UI microcopy singleton (go2-t1c)
 export * from './site-labels';
 
-// stack_archetypes rows + canonical blueprint layers (slice-29 Tech Stack Engine)
-export * from './stack-archetypes';
-
 // Content contracts shared by both apps.
 export * from './project';
 export * from './site-meta';
 export * from './blog';
 export * from './service';
-export * from './icon';
 export * from './morph-shape';
 export * from './nav';
-export * from './tech-stack';

@@ -28,7 +28,6 @@ const STATIC_ROUTES = [
 	'/projects',
 	'/blog',
 	'/blog/personal',
-	'/tech-stack',
 ] as const;
 
 function fingerprint(value: unknown) {
@@ -154,9 +153,6 @@ describe('route JSON-LD extraction contract', () => {
 			'en:/blog/personal': { bytes: 729, sha256: '136894e58ea4807c415c0870a8192f390581d94460748b3c868636ae589a81a4' },
 			'fr:/blog/personal': { bytes: 753, sha256: 'ab5d4120c7dcbd423cacf1e895221af2ca4e3f707d3ec5c922014b63d85d8166' },
 			'es:/blog/personal': { bytes: 760, sha256: 'b3e1a3cdb302a98fc9bbb3998e9d919c978cc5e2334e575ec18eeaf2e0bc6b8b' },
-			'en:/tech-stack': { bytes: 317, sha256: 'cb6735fc1520f656dd27e31d8fa9b428bdd9f3646b4f971d61b5ee937820bc46' },
-			'fr:/tech-stack': { bytes: 337, sha256: '51e61e07000e2e5a964f66de616a3923bb37333d9b43a4dc1d7696f0c13aab00' },
-			'es:/tech-stack': { bytes: 339, sha256: '3814a2d824750d6f5d3d446169a973123ff7bc25dbed9ca2794b6fb31e60b890' },
 		});
 	});
 
