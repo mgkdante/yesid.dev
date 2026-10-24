@@ -19,12 +19,12 @@ The site is a multilingual SvelteKit application with:
 
 Each domain has one owner:
 
-| Path | Responsibility |
-|---|---|
-| `apps/web` | SvelteKit application, routes, product components, generated content adapters, and deployment |
-| `apps/cms` | Directus schema, deterministic fixtures, content export, and operational tooling |
-| `packages/shared` | Product-owned schemas and utilities shared by the web and CMS domains |
-| `apps/web/vendor/design` | Immutable `yesid.dev-design` Release; never edited by the consumer |
+| Path | Responsibility | Owner guide |
+|---|---|---|
+| `apps/web` | SvelteKit application, routes, product components, generated content adapters, and deployment | [`apps/web/README.md`](apps/web/README.md) |
+| `apps/cms` | Directus schema, deterministic fixtures, content export, and operational tooling | [`apps/cms/README.md`](apps/cms/README.md) |
+| `packages/shared` | Product-owned schemas, types, asset contracts, and runtime constants shared by the web and CMS domains | [`packages/shared/README.md`](packages/shared/README.md) |
+| `apps/web/vendor/design` | Immutable `yesid.dev-design` Release; never edited by the consumer | [`manifest.json`](apps/web/vendor/design/manifest.json) |
 
 Content moves in one direction:
 
@@ -34,7 +34,7 @@ Directus
    ▼
 typed build-time export ──► SvelteKit build ──► Vercel
        │
-       └── committed fallback snapshot for deterministic local and CI builds
+       └── shared fixture for deterministic local and CI generation
 ```
 
 The public application does not query Directus for page data at request time.
@@ -58,16 +58,18 @@ snapshot.
 
 ## Local development
 
-Prerequisites: Bun 1.3+ and Node 22+.
+Prerequisites: Bun 1.4.4 and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+).
 
 ```bash
 bun install --frozen-lockfile
 bun run dev
 ```
 
-The default local site uses committed content fallbacks. Connected CMS
-operations require the environment references documented in `.env.example`;
-never commit resolved credentials.
+Web dev, test, check and build generate ignored content modules from the shared
+fixture by default, without credentials or network. Trusted Vercel targets use
+live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
+Refresh the fixture from a live cache with
+`bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 
 Run the repository gates:
 

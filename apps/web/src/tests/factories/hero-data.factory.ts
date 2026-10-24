@@ -5,7 +5,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { HeroData } from '$lib/content/hero-data';
+import type { HeroData } from '$lib/live';
 
 export const heroDataFactory = new Factory<HeroData>(() => ({
 	metrics: [

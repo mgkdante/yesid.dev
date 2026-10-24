@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import sharp from 'sharp';
@@ -8,27 +9,31 @@ import {
 	validateFolderReferences,
 	extractLegacyTopLevel,
 } from '../scripts/migrate-assets';
+import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 /**
  * Fixture shape assertion — `fixtures/assets-manifest.json` must parse against
  * the Zod schema authored alongside the migration script. Drift on either
  * side is caught in CI before any upload runs.
  *
- * Scope: repo-local. No network. No Directus. No filesystem reads beyond the
- * manifest itself.
+ * Scope: repo-local. No network or Directus; reads the manifest and mirrors.
  */
 
 function loadManifest() {
-	const path = joinPath(
-		import.meta.dir,
-		'..',
-		'fixtures',
-		'assets-manifest.json',
-	);
-	return parseManifest(JSON.parse(readFileSync(path, 'utf8')));
+	return parseManifest(readCmsFixtureJson('assets-manifest.json'));
 }
 
 describe('fixtures/assets-manifest.json', () => {
+	it('every sha256 matches the committed mirrored file bytes', () => {
+		const manifest = loadManifest();
+		const repoRoot = joinPath(import.meta.dir, '../../..');
+		for (const entry of manifest.assets) {
+			const bytes = readFileSync(joinPath(repoRoot, manifest.sourceRoot, entry.legacyPath));
+			expect(entry.sha256, entry.legacyPath).toMatch(/^[0-9a-f]{64}$/);
+			expect(createHash('sha256').update(bytes).digest('hex'), entry.legacyPath).toBe(entry.sha256!);
+		}
+	});
+
 	it('parses against AssetsManifestSchema (no silent drift)', () => {
 		expect(() => loadManifest()).not.toThrow();
 	});
@@ -82,9 +87,9 @@ describe('fixtures/assets-manifest.json', () => {
 		expect(m.sourceRoot).toBe('apps/web/static');
 	});
 
-	it('declares exactly 26 assets after the og route-card additions', () => {
+	it('declares exactly 47 assets after the portfolio screenshot additions', () => {
 		const m = loadManifest();
-		expect(m.assets.length).toBe(26);
+		expect(m.assets.length).toBe(47);
 		expect(m.assets.map((asset) => asset.legacyPath)).toEqual(
 			expect.arrayContaining([
 				'images/about/languages/quebec.svg',

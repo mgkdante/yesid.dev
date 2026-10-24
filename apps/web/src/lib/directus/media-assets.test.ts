@@ -5,7 +5,6 @@ import { mirroredMediaAssets } from '$lib/content/media-assets';
 import { projects } from '$lib/content/projects';
 import { routeSeoOverrides } from '$lib/content/route-seo';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { techStackItems } from '$lib/content/tech-stack';
 
 describe('generated media asset mirror coverage', () => {
 	it('mirrors every CMS media UUID currently emitted into visitor-rendered content', () => {
@@ -44,7 +43,6 @@ function collectRenderedMediaIds(): Set<string> {
 	collectImageBlockIds(blogBodies, ids);
 
 	for (const language of aboutPageContent.languages) add(language.image);
-	for (const item of techStackItems) add(item.icon?.svg_override);
 
 	return ids;
 }

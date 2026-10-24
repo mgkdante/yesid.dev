@@ -1,16 +1,5 @@
-// SiteMetaSchema + SiteSeoDefaultsSchema — single runtime mirrors of the
-// SiteMeta / SiteSeoDefaults interfaces in ../types/content, both backed by
-// the same `site_meta` singleton row. Consolidated here from the apps/web +
-// apps/cms copies (site-hardening-a-plus): the owner.phone field-stripping
-// bug came from exactly this duplication.
-//
-// Strictness budget (spec D3): mirror TS as-is. `email`, `github`, etc. stay
-// `z.string()` — the TS interface accepts any string for these, and
-// tightening to `.email()` / `.url()` here would reject existing seed values.
-
 import { z } from 'zod';
-import { LocalizedStringSchema, type AssertSchemaMatches } from './shared';
-import type { SiteMeta, SiteLinks, SiteAddress, SiteOwner, SiteSeoDefaults } from '../types/content';
+import { LocalizedStringSchema } from './shared';
 
 export const SiteLinksSchema = z.object({
 	email: z.string(),
@@ -30,8 +19,6 @@ export const SiteOwnerSchema = z.object({
 	jobTitle: LocalizedStringSchema,
 	phone: z.string().optional(),
 	address: SiteAddressSchema,
-	// `knowsAbout` is `readonly string[]` in TS. `.readonly()` makes z.infer
-	// produce the same marker so bidirectional drift detection compiles.
 	knowsAbout: z.array(z.string()).readonly(),
 });
 
@@ -44,14 +31,16 @@ export const SiteMetaSchema = z.object({
 });
 
 export const SiteSeoDefaultsSchema = z.object({
+	/** Site-wide OG image fallback when a route has no override. */
 	defaultOgImage: z.string().uuid().nullable(),
+	/** Value emitted by the theme-color meta tag. */
 	themeColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+	/** Description fallback when route and data-layer copy are absent. */
 	defaultDescription: LocalizedStringSchema,
 });
 
-// Drift detectors — compile error (`true satisfies never`) on schema/type drift.
-true satisfies AssertSchemaMatches<z.infer<typeof SiteLinksSchema>, SiteLinks>;
-true satisfies AssertSchemaMatches<z.infer<typeof SiteAddressSchema>, SiteAddress>;
-true satisfies AssertSchemaMatches<z.infer<typeof SiteOwnerSchema>, SiteOwner>;
-true satisfies AssertSchemaMatches<z.infer<typeof SiteMetaSchema>, SiteMeta>;
-true satisfies AssertSchemaMatches<z.infer<typeof SiteSeoDefaultsSchema>, SiteSeoDefaults>;
+export type SiteLinks = z.infer<typeof SiteLinksSchema>;
+export type SiteAddress = z.infer<typeof SiteAddressSchema>;
+export type SiteOwner = z.infer<typeof SiteOwnerSchema>;
+export type SiteMeta = z.infer<typeof SiteMetaSchema>;
+export type SiteSeoDefaults = z.infer<typeof SiteSeoDefaultsSchema>;

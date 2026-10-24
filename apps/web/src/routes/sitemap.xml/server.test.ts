@@ -1,8 +1,22 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { GET, _blogUrlEntries, _buildSitemapEntries } from './+server';
+import {
+	GET,
+	_blogUrlEntries,
+	_buildSitemapEntries,
+	_emitSitemapDocument,
+	_exactUrlEntries,
+} from './+server';
 import { sitePages } from '$lib/content/site-pages';
 import { canonicalFor } from '$lib/utils/seo-defaults';
 import type { BlogPost } from '$lib/types';
+
+function fingerprint(body: string) {
+	return {
+		bytes: Buffer.byteLength(body),
+		sha256: createHash('sha256').update(body).digest('hex'),
+	};
+}
 
 function translatedPost(lang: BlogPost['lang'], slug: string): BlogPost {
 	return {
@@ -55,7 +69,6 @@ describe('GET /sitemap.xml', () => {
 			'/projects',
 			'/blog',
 			'/blog/personal',
-			'/tech-stack',
 		]) {
 			const canonical = path === '/' ? 'https://yesid.dev' : `https://yesid.dev${path}`;
 			expect(body, `missing ${canonical}`).toContain(`<loc>${canonical}</loc>`);
@@ -88,6 +101,21 @@ describe('GET /sitemap.xml', () => {
 		const { body } = await fetchBody();
 		expect(body.startsWith('<?xml')).toBe(true);
 		expect(body).toContain('</urlset>');
+	});
+
+	it('locks exact neutral-emitter bytes for a frozen product fixture', () => {
+		const entries = _exactUrlEntries(
+			{
+				en: 'https://yesid.dev/about?a=1&b=2',
+				fr: 'https://yesid.dev/fr/about?a=1&b=2',
+			},
+			['en', 'fr'],
+		);
+		const body = _emitSitemapDocument(entries);
+		expect(fingerprint(body)).toEqual({
+			bytes: 863,
+			sha256: '69c0a7a4fb1251329e1a9d5ab38eac4d833174accc58b9b3954e77e33a2127c7',
+		});
 	});
 
 	it('emits no <lastmod> (request-time noise, dropped in slice-28.1 — audit #19)', async () => {
@@ -178,7 +206,7 @@ describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () 
 
 	it('full registry → every static route present (parity with today)', async () => {
 		const paths = pathnamesOf(await _buildSitemapEntries(sitePages));
-		for (const p of ['/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal', '/tech-stack']) {
+		for (const p of ['/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal']) {
 			expect(paths).toContain(p);
 		}
 	});

@@ -4,8 +4,9 @@
   The SQL query itself is static (always the same analysis query).
 -->
 <script lang="ts">
-  import type { HeroQueryRow } from '$lib/content/hero-data';
+  import type { HeroQueryRow } from '$lib/live';
   import { StatusDot } from '$lib/components/brand';
+  import TransitInfoLink from './TransitInfoLink.svelte';
 
   interface Props {
     rows: HeroQueryRow[];
@@ -46,8 +47,8 @@
 >
   <!-- Header: prompt + live dot -->
   <div class="mb-4 flex items-center justify-between">
-    <span class="text-caption tracking-[1px] text-[var(--terminal-ink-muted)] md:text-mono" data-testid="sql-prompt">
-      {prompt}
+    <span class="flex items-center gap-2 text-caption tracking-[1px] text-[var(--terminal-ink-muted)] md:text-mono" data-testid="sql-prompt">
+      {prompt}<TransitInfoLink />
     </span>
     <span class="flex items-center gap-1.5 text-caption text-[var(--terminal-ink-muted)]" data-testid="sql-live">
       <StatusDot color="green" pulse />

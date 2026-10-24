@@ -3,9 +3,9 @@
   Receives metrics as props so the parent can swap data on refresh.
 -->
 <script lang="ts">
-  import type { HeroMetric } from '$lib/content/hero-data';
+  import type { HeroMetric } from '$lib/live';
   import { siteLabels } from '$lib/content/site-labels';
-  import { MetricDisplay } from '$lib/components/brand';
+  import TransitInfoLink from './TransitInfoLink.svelte';
   import { Card } from '$lib/components/ui/card';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
@@ -68,18 +68,19 @@
   }
 </script>
 
-<!--
-  Mobile: all 3 metrics inside a single Card, laid out horizontally with
-  thin dividers. Saves ~150px of vertical space vs 3 stacked cards so
-  the whole hero (headline + metrics + subhead + subtitle + CTAs) fits
-  inside calc(100svh - 5rem) on short phones (iPhone SE etc).
+{#snippet metricDisplay(metric: HeroMetric, size: 'sm' | 'lg')}
+  <div class="flex flex-col" data-slot="metric-display">
+    <span class="label-metric metric-label"><span class="metric-label-text">{metricLabel(metric)}</span><TransitInfoLink label={metricLabel(metric)} /></span>
+    <span class="metric-value font-heading font-extrabold leading-none text-accent-text {size === 'sm' ? 'text-subheading' : 'text-title'}">{formatValue(metric)}{metric.unit ?? ''}</span>
+    <span class="mt-1 font-mono text-caption text-[var(--muted-foreground)]">{metricSub(metric)}</span>
+  </div>
+{/snippet}
 
-  Desktop (md+): 3 separate cards in a row — original layout, unchanged.
--->
+<!-- Compact stacked rows on narrow phones; a card row where space permits. -->
 <!-- Mobile single-card layout -->
-<div class="md:hidden" data-testid="hero-metrics">
+<div class="hero-metrics-mobile md:hidden" data-testid="hero-metrics">
   <Card class="px-4 py-3.5" data-testid="metric-card-mobile">
-    <div class="flex items-stretch justify-between gap-3">
+    <div class="hero-metrics-row flex items-stretch justify-between gap-3">
       {#each metrics as metric, i (metric.key)}
         {#if i > 0}
           <div
@@ -87,13 +88,8 @@
             aria-hidden="true"
           ></div>
         {/if}
-        <div class="flex-1 text-center">
-          <MetricDisplay
-            label={metricLabel(metric)}
-            value="{formatValue(metric)}{metric.unit ?? ''}"
-            sublabel={metricSub(metric)}
-            size="sm"
-          />
+        <div class="hero-metric-item flex-1 text-start">
+          {@render metricDisplay(metric, 'sm')}
         </div>
       {/each}
     </div>
@@ -101,18 +97,47 @@
 </div>
 
 <!-- Desktop 3-card grid -->
-<div class="hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop">
+<div class="hero-metrics-desktop hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop">
   {#each metrics as metric (metric.key)}
     <Card
       class="md:px-5 md:py-4"
       data-testid="metric-card"
     >
-      <MetricDisplay
-        label={metricLabel(metric)}
-        value="{formatValue(metric)}{metric.unit ?? ''}"
-        sublabel={metricSub(metric)}
-        size="lg"
-      />
+      {@render metricDisplay(metric, 'lg')}
     </Card>
   {/each}
 </div>
+
+<style>
+  .metric-label { display: flex; align-items: center; justify-content: start; gap: 0.5rem; }
+  .metric-label-text { min-width: 0; flex: 1; white-space: normal; }
+  .metric-value { white-space: nowrap; }
+  @container (max-width: 480px) {
+    .hero-metrics-mobile { display: block; }
+    .hero-metrics-desktop { display: none; }
+    .hero-metrics-mobile :global([data-slot='card']) { padding-block: 0.5rem; }
+    .hero-metrics-row { flex-direction: column; gap: 0.25rem; }
+    .hero-metrics-row > [aria-hidden] { width: 100%; height: 1px; }
+    .hero-metric-item { text-align: start; }
+    .hero-metric-item .metric-label { justify-content: start; }
+    .hero-metric-item :global([data-slot='metric-display']) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 0.75rem;
+    }
+    .hero-metric-item :global(.metric-value) { grid-column: 2; grid-row: 1 / span 2; }
+    .hero-metric-item :global([data-slot='metric-display'] > span:last-child) { margin-top: 0; }
+  }
+  @media (--tablet-min) and (--desktop-max) {
+    .hero-metrics-desktop {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-metrics-desktop :global([data-slot='metric-display'] > span) {
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+    }
+  }
+</style>

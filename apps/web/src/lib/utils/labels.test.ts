@@ -9,8 +9,4 @@ describe('fillTemplate', () => {
 	it('leaves unknown placeholders intact', () => {
 		expect(fillTemplate('{num} / SERVICE', {})).toBe('{num} / SERVICE');
 	});
-	it('interpolates {count} in the tech-stack hero terminal templates (operator addendum)', () => {
-		expect(fillTemplate('→ loading {count} nodes...', { count: '42' })).toBe('→ loading 42 nodes...');
-		expect(fillTemplate('→ {count} technologies cataloged', { count: '42' })).toBe('→ 42 technologies cataloged');
-	});
 });

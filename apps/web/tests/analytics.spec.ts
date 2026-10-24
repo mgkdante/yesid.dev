@@ -1,7 +1,9 @@
+import { siteLabels } from '../src/lib/content/site-labels';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
 const ENDPOINT = 'https://plausible.io/api/event';
 const LOCAL_PRODUCTION_ORIGIN = 'http://yesid.dev:4173';
@@ -9,23 +11,10 @@ const CONSENT_KEY = 'yesid:analytics-consent:v1';
 const PREFERENCES_OPEN_KEY = 'yesid:analytics-preferences-open:v1';
 const DENIAL_SAFETY_KEY = 'yesid:analytics-denial-safety:v1';
 const HERO_INTRO_KEY = 'yesid:hero-intro-day';
-const CONSENT_DISCLOSURES = [
-	{
-		locale: 'English',
-		path: '/projects',
-		copy: 'Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.',
-	},
-	{
-		locale: 'French',
-		path: '/fr/projects',
-		copy: 'Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.',
-	},
-	{
-		locale: 'Spanish',
-		path: '/es/projects',
-		copy: 'Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario.',
-	},
-] as const;
+const CONSENT_DISCLOSURES = (['en', 'fr', 'es'] as const).map(locale => ({
+	locale, path: (locale === 'en' ? '' : '/' + locale) + '/projects',
+	copy: siteLabels.ui.analyticsConsent.description[locale]!,
+}));
 const CLIENT_CHUNKS_DIR = fileURLToPath(
 	new URL('../.svelte-kit/output/client/_app/immutable/chunks/', import.meta.url),
 );
@@ -178,15 +167,16 @@ function expectNoTransportChunkRequest(requestedUrls: string[]): void {
 	expect(transportRequests).toHaveLength(0);
 }
 
-test('fresh homepage keeps consent absent while the GSAP intro owns the viewport', async ({
+test('fresh homepage shows consent while the hero waits for explicit activation', async ({
 	page,
 }) => {
 	await proxyProductionHostnameToPreview(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
 
-	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
-	await expect(page.getByTestId('analytics-consent')).toHaveCount(0);
+	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
+	await expect(page.locator('.pin-spacer')).toHaveCount(0);
+	await expect(page.getByTestId('analytics-consent')).toBeVisible();
 });
 
 test('same-day settled home shows consent, hides it for replay, and restores it after completion', async ({
@@ -257,7 +247,11 @@ test('footer reliably reopens, refocuses, and reselects analytics consent', asyn
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
 
 	const preferences = page.getByTestId('analytics-preferences');
+	await page.evaluate(() => Reflect.set(window, '__analyticsConsentPageSentinel', true));
 	await preferences.click();
+	expect(
+		await page.evaluate(() => Reflect.get(window, '__analyticsConsentPageSentinel')),
+	).toBe(true);
 
 	const rail = page.getByTestId('analytics-consent');
 	const accept = page.getByTestId('analytics-consent-accept');
@@ -390,7 +384,7 @@ test('mobile blog TOC does not block the analytics consent action', async ({ pag
 });
 
 for (const { locale, path, copy } of CONSENT_DISCLOSURES) {
-	test(`${locale} consent renders the exact high-intent disclosure`, async ({ page }) => {
+	test(`${locale} consent renders the localized content description`, async ({ page }) => {
 		await proxyProductionHostnameToPreview(page);
 
 		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
@@ -427,6 +421,78 @@ test('accepting consent sends exactly one initial pageview through the controlle
 	await waitForPageviews(payloads, 1);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
+	expectExactPageviewCount(payloads, 1);
+});
+
+test('successful contact form sends one property-free event without form data', async ({ page }) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+	await mockWeb3Forms(page, { success: true });
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/contact?utm_source=codex_ops2_qa&message=private`,
+	);
+	await waitForPageviews(payloads, 1);
+
+	const terminal = visibleContactTerminal(page);
+	await terminal.getByLabel(/^(?:name|nom|nombre):$/i).fill('Private Test Name');
+	await terminal.getByLabel(/^(?:email|courriel|correo):$/i).fill('private-test@example.com');
+	await terminal.getByLabel(/^(?:message|mensaje):$/i).fill('Private form message');
+	await terminal.getByTestId('contact-submit').click();
+
+	await expect
+		.poll(() => eventsNamed(payloads, 'contact_form_success').length)
+		.toBe(1);
+	await drainCapturedRequests(page, payloads);
+
+	const events = eventsNamed(payloads, 'contact_form_success');
+	expect(events).toHaveLength(1);
+	expect(events[0]).toMatchObject({
+		name: 'contact_form_success',
+		domain: 'yesid.dev',
+	});
+	expect(events[0].props).toBeUndefined();
+	const trackedUrl = new URL(events[0].url);
+	expect(trackedUrl.pathname).toBe('/contact');
+	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+	expect(trackedUrl.searchParams.has('message')).toBe(false);
+	expect(JSON.stringify(events[0])).not.toContain('Private Test Name');
+	expect(JSON.stringify(events[0])).not.toContain('private-test@example.com');
+	expect(JSON.stringify(events[0])).not.toContain('Private form message');
+	expectExactPageviewCount(payloads, 1);
+});
+
+test('booking click sends one property-free event with the sanitized current page', async ({
+	page,
+}) => {
+	await grantBeforeLoad(page);
+	await proxyProductionHostnameToPreview(page);
+	const payloads = await capturePlausible(page);
+
+	await page.goto(
+		`${LOCAL_PRODUCTION_ORIGIN}/contact?utm_source=codex_ops2_qa&booking=private`,
+	);
+	await waitForPageviews(payloads, 1);
+
+	const booking = visibleContactTerminal(page).getByTestId('contact-booking-link');
+	await expect(booking).toBeVisible();
+	await clickWithoutNavigation(booking);
+
+	await expect.poll(() => eventsNamed(payloads, 'booking_click').length).toBe(1);
+	await drainCapturedRequests(page, payloads);
+
+	const events = eventsNamed(payloads, 'booking_click');
+	expect(events).toHaveLength(1);
+	expect(events[0]).toMatchObject({
+		name: 'booking_click',
+		domain: 'yesid.dev',
+	});
+	expect(events[0].props).toBeUndefined();
+	const trackedUrl = new URL(events[0].url);
+	expect(trackedUrl.pathname).toBe('/contact');
+	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+	expect(trackedUrl.searchParams.has('booking')).toBe(false);
 	expectExactPageviewCount(payloads, 1);
 });
 

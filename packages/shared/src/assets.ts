@@ -11,25 +11,8 @@
  */
 import idMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 
-export type AssetLegacyPath = keyof typeof idMap;
-
 /**
- * Look up a Directus file UUID by its legacy path. Throws if the path isn't
- * in the map. Fail loud so missing assets surface at boot, not at render.
- */
-export function assetIdFor(legacyPath: AssetLegacyPath): string {
-	const id = (idMap as Record<string, string>)[legacyPath];
-	if (!id) {
-		throw new Error(
-			`[assets] no Directus file id for legacyPath "${legacyPath}". Did the manifest change without re-running migrate-assets?`,
-		);
-	}
-	return id;
-}
-
-/**
- * Untyped variant for cases where the legacyPath is built dynamically and
- * type-narrowing isn't possible. Returns undefined on miss.
+ * Look up a Directus file UUID by legacy path. Returns undefined on miss.
  */
 export function assetIdForOrUndefined(legacyPath: string): string | undefined {
 	return (idMap as Record<string, string>)[legacyPath];

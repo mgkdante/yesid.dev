@@ -1,14 +1,7 @@
 /**
- * LocalizedString helpers for the export-fallbacks pipeline.
- *
- * Mirrors `toLocalizedString` from apps/web/src/lib/adapters/directus.ts so the
- * generator emits the same sparse `{ en, fr?, es? }` shape that the static
- * adapter currently consumes. Kept standalone (no apps/web import) because the
- * adapter file pulls SvelteKit-only modules (`$env/dynamic/public`, `$lib/*`)
- * that don't resolve from a CLI script in apps/cms.
- *
- * If the apps/web version ever drifts from this one, the P7 drift verification
- * (regen vs committed) will surface the mismatch.
+ * Canonical localization transforms for the export-fallbacks pipeline. The
+ * generator owns the sparse `{ en, fr?, es? }` contract consumed by static
+ * content modules; generated-content verification catches output drift.
  */
 
 import type { Locale } from '@repo/shared';
@@ -18,6 +11,8 @@ export interface LocalizedString {
 	fr?: string;
 	es?: string;
 }
+
+const EXTRA_LOCALES = ['fr', 'es'] as const;
 
 /**
  * Flattens a Directus `translations` array into a `LocalizedString { en, fr?, es? }`.
@@ -39,10 +34,10 @@ export function toLocalizedString<T extends { languages_code: string }>(
 	}
 	const en = byLocale.get('en') ?? byLocale.get(fallback) ?? '';
 	const result: LocalizedString = { en };
-	const fr = byLocale.get('fr');
-	if (fr) result.fr = fr;
-	const es = byLocale.get('es');
-	if (es) result.es = es;
+	for (const locale of EXTRA_LOCALES) {
+		const value = byLocale.get(locale);
+		if (value) result[locale] = value;
+	}
 	return result;
 }
 
@@ -70,6 +65,59 @@ export function toLocalizedStringNullable<T extends { languages_code: string }>(
 		return typeof v === 'string' && v.length > 0;
 	});
 	return hasAny ? toLocalizedString(rows, field) : null;
+}
+
+export type LocalizedFieldMode = 'optional' | 'nullable';
+
+export type LocalizedFieldEntry<Field extends string = string> = Field
+	| readonly [output: string, source: Field] | readonly [output: string, source: Field, mode: LocalizedFieldMode];
+
+type ResultForLocalizedFieldEntry<Entry> = Entry extends string
+	? { [Key in Entry]: LocalizedString }
+	: Entry extends readonly [infer Output extends string, string, infer Mode]
+		? Mode extends 'optional'
+			? { [Key in Output]?: LocalizedString }
+			: { [Key in Output]: LocalizedString | null }
+		: Entry extends readonly [infer Output extends string, string]
+			? { [Key in Output]: LocalizedString }
+			: never;
+
+type UnionToIntersection<Union> = (Union extends unknown ? (value: Union) => void : never) extends (
+	value: infer Intersection,
+) => void ? Intersection : never;
+
+export type LocalizedFieldResult<Fields extends readonly LocalizedFieldEntry[]> = {
+	[Key in keyof UnionToIntersection<ResultForLocalizedFieldEntry<Fields[number]>>]: UnionToIntersection<
+		ResultForLocalizedFieldEntry<Fields[number]>
+	>[Key];
+};
+
+/**
+ * Interpret an ordered, typed map of localized columns. Strings keep the same
+ * source/output name; tuples rename and can opt into absent-on-empty or null.
+ * Iteration order remains output order across omitted optional entries.
+ */
+export function toLocalizedFields<
+	T extends { languages_code: string },
+	const Fields extends readonly LocalizedFieldEntry<Extract<keyof T, string>>[],
+>(
+	translations: ReadonlyArray<T> | null | undefined,
+	fields: Fields,
+): LocalizedFieldResult<Fields> {
+	const result: Record<string, LocalizedString | null> = {};
+
+	for (const entry of fields) {
+		const [output, source, mode] = typeof entry === 'string' ? [entry, entry, undefined] : entry;
+		const value =
+			mode === 'optional'
+				? toLocalizedStringOrUndef(translations, source)
+				: mode === 'nullable'
+					? toLocalizedStringNullable(translations, source)
+					: toLocalizedString(translations, source);
+		if (value !== undefined) result[output] = value;
+	}
+
+	return result as LocalizedFieldResult<Fields>;
 }
 
 /** A repeater/junction row carrying an optional `sort` order column. */
@@ -146,8 +194,6 @@ import type { BlockEditorDoc, LocalizedBlockEditorDoc } from '@repo/shared';
  * row as the structural template, collecting matching paths from fr/es, and
  * produces a structure where every string leaf is a LocalizedString.
  *
- * Mirrors `toLocalizedJSON` in apps/web/src/lib/adapters/directus.ts.
- *
  * Non-string primitives (numbers, booleans) pass through unchanged from the
  * en row. Arrays merge element-wise by index.
  */
@@ -171,13 +217,9 @@ export function toLocalizedJSON<T extends { languages_code: string }>(
 function mergeJsonLocales(enTemplate: unknown, byLocale: Map<string, unknown>): unknown {
 	if (typeof enTemplate === 'string') {
 		const result: LocalizedString = { en: enTemplate };
-		const fr = byLocale.get('fr');
-		if (fr !== undefined && fr !== null && typeof fr === 'string' && fr.length > 0) {
-			result.fr = fr;
-		}
-		const es = byLocale.get('es');
-		if (es !== undefined && es !== null && typeof es === 'string' && es.length > 0) {
-			result.es = es;
+		for (const locale of EXTRA_LOCALES) {
+			const value = byLocale.get(locale);
+			if (typeof value === 'string' && value.length > 0) result[locale] = value;
 		}
 		return result;
 	}
@@ -217,8 +259,7 @@ function mergeJsonLocales(enTemplate: unknown, byLocale: Map<string, unknown>): 
 
 /**
  * Compose a LocalizedBlockEditorDoc from translation rows whose `field` column
- * holds a BlockEditorDoc JSON value per locale. Mirrors `toLocalizedBlockEditorDoc`
- * in apps/web/src/lib/adapters/directus.ts. Required `en` falls back to an
+ * holds a BlockEditorDoc JSON value per locale. Required `en` falls back to an
  * empty single-paragraph doc when no English translation is present so the
  * LocalizedBlockEditorDocSchema's `.en` requirement is always satisfied.
  */

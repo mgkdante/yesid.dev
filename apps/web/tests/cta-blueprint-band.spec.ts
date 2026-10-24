@@ -1,3 +1,4 @@
+import { ctaContent } from '../src/lib/content/site-content';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, expect, type Page } from '@playwright/test';
@@ -344,10 +345,12 @@ for (const [viewportName, width, height] of viewports) {
 				}
 			}
 
-			expect(domSnapshots[1]).toBe(domSnapshots[0]);
-			expect(domSnapshots[2]).toBe(domSnapshots[0]);
-			expect(styleSnapshots[1]).toBe(styleSnapshots[0]);
-			expect(styleSnapshots[2]).toBe(styleSnapshots[0]);
+			for (const snapshot of domSnapshots.slice(1)) {
+				expect(snapshot).toBe(domSnapshots[0]);
+			}
+			for (const snapshot of styleSnapshots.slice(1)) {
+				expect(snapshot).toBe(styleSnapshots[0]);
+			}
 			for (const box of routeBoxes.slice(1)) {
 				expect(Math.abs(box.width - routeBoxes[0].width)).toBeLessThanOrEqual(1);
 				expect(Math.abs(box.height - routeBoxes[0].height)).toBeLessThanOrEqual(1);
@@ -387,13 +390,12 @@ test('French detail route keeps the same shared band with localized semantics', 
 	await assertBandGeometry(page, 'service-cta-band');
 
 	const band = page.getByTestId('service-cta-band');
-	await expect(band.locator('.band-line').nth(0)).toHaveText('Bâtissons quelque chose');
-	await expect(band.locator('.band-line').nth(1)).toHaveText('qui avance.');
-	await expect(band.locator('.band-subtitle')).toHaveText(
-		"Base de données, pipeline, tableau de bord, site web : peu importe où ça accroche, c'est là qu'on commence.",
-	);
-	await expect(band.getByRole('link', { name: 'Parlons-en' })).toHaveAttribute('href', '/fr/contact');
-	await expect(band.getByRole('link', { name: 'Voir sur GitHub' })).toBeVisible();
+	const lines = ctaContent.heading.fr!.split('\n');
+	await expect(band.locator('.band-line')).toHaveText(lines.map((line, index) => line + (index === lines.length - 1 ? '.' : '')));
+	await expect(band.locator('.band-subtitle')).toHaveText(ctaContent.subtitle.fr!);
+	await expect(band.getByTestId('service-cta-band-contact')).toHaveAttribute('href', '/fr/contact');
+	await expect(band.getByTestId('service-cta-band-contact')).toHaveText(ctaContent.ctaContact.fr!);
+	await expect(band.getByTestId('service-cta-band-github')).toHaveText(ctaContent.ctaGithub.fr!);
 });
 
 test('reduced motion keeps the same complete static blueprint composition', async ({ page }) => {

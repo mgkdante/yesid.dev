@@ -1,5 +1,5 @@
 <!--
-  HomeCloser — Section 5: Transit terminus departure board + graffiti "THE END".
+  HomeCloser — Section 5: Transit terminus departure board + localized graffiti.
   Merges Blog Teaser + About Strip + Dual CTA into one conversion-focused closer.
   Desktop: board left, graffiti right. Mobile: graffiti behind, board full-width.
   Orchestrates GSAP master timeline across sub-components.
@@ -35,9 +35,6 @@
 	// Static content
 	const ctaLabel = $derived(resolveLocale(closerContent.cta.label, locale));
 	const ctaHref = $derived(closerContent.cta.href);
-	const stackLabel = $derived(resolveLocale(closerContent.rows.stack.label, locale));
-	const stackDesc = $derived(resolveLocale(closerContent.rows.stack.description, locale));
-	const stackAction = $derived(resolveLocale(closerContent.rows.stack.action, locale));
 	const contactLabel = $derived(resolveLocale(closerContent.rows.contact.label, locale));
 	const contactDesc = $derived(resolveLocale(closerContent.rows.contact.description, locale));
 	const contactAction = $derived(resolveLocale(closerContent.rows.contact.action, locale));
@@ -67,13 +64,6 @@
 		primary: boolean;
 	};
 	const rows = $derived([
-		{
-			label: stackLabel,
-			description: stackDesc,
-			action: stackAction,
-			href: '/tech-stack',
-			primary: false,
-		},
 		{
 			label: contactLabel,
 			description: contactDesc,
@@ -141,7 +131,7 @@
 		if (!browser || !sectionEl) return;
 
 		const reduced = isPrefersReducedMotion();
-		// CloserGraffiti uses DrawSVG (strokes the "THE END" letters). Preload
+		// CloserGraffiti uses DrawSVG for the localized closer lettering. Preload
 		// before CloserGraffiti's async onReady fires so the timeline can use
 		// `drawSVG: '100%'` tweens immediately.
 		await loadDrawSVG();
@@ -178,7 +168,7 @@
 	data-testid="closer-section"
 	class="closer-section relative"
 >
-	<!-- Graffiti "THE END" — SVG loaded dynamically for DrawSVG animation -->
+	<!-- Locale-specific graffiti — SVG loaded dynamically for DrawSVG animation -->
 	<CloserGraffiti onReady={handleGraffitiReady} />
 
 	<!-- Floodlight fixture — ground level, centered on graffiti -->
@@ -288,7 +278,7 @@
 	}
 
 	/* ===== Mobile (<768px) ===== */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.closer-section {
 			flex-direction: column;
 			align-items: stretch;

@@ -5,7 +5,7 @@
  */
 
 import type { BlockEditorDoc, MediaVariantEntry, SitePage } from '@repo/shared';
-import type { StackArchetype, SiteLabels } from '@repo/shared/schemas';
+import type { SiteLabels } from '@repo/shared/schemas';
 import type { RouteSeoOverride } from '@repo/shared';
 import type {
 	SiteMeta,
@@ -15,13 +15,11 @@ import type {
 	BlogPost,
 	Service,
 	Project,
-	TechStackItem,
 	LegalPage,
 } from '@repo/shared';
 import type {
 	BlogPageContent,
 	ProjectsPageContent,
-	TechStackPageContent,
 	ContactContent,
 	HeroContent,
 	ManifestoContent,
@@ -53,12 +51,6 @@ export interface ExportData {
 	blogBodies?: Record<string, BlockEditorDoc>;
 	services?: readonly Service[];
 	projects?: readonly Project[];
-	techStack?: readonly TechStackItem[];
-	/**
-	 * Published stack_archetypes rows (slice-29 Tech Stack Engine) — goal
-	 * recipes whose layered tech links draw the /tech-stack blueprint.
-	 */
-	stackArchetypes?: readonly StackArchetype[];
 	/**
 	 * Global UI microcopy (go2-t1c): aria labels, card markers, edge titles,
 	 * email templates from the site_labels singleton.
@@ -66,7 +58,6 @@ export interface ExportData {
 	siteLabels?: SiteLabels;
 	blogPage?: BlogPageContent;
 	projectsPage?: ProjectsPageContent;
-	techStackPage?: TechStackPageContent;
 	contactPage?: ContactContent;
 	/** Published legal_pages rows (OPS1): /legal/[slug] title + per-locale body. */
 	legalPages?: readonly LegalPage[];

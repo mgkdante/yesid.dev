@@ -1,16 +1,15 @@
 /**
  * projects fetcher — reads `projects` with translations + sections + impact_metrics
- * + projects_services M2M. Mirrors apps/web/src/lib/adapters/directus.ts:1672 `toProject`
- * + L2298 `fetchProjects`.
+ * + projects_services M2M. This module owns the build-time Project projection.
  *
  * Directus status (`draft`/`published`/`archived`) maps to legacy
- * `public`/`private`/`wip` per 18e spec — the adapter is the only place the
- * mapping happens; consumer code stays on the legacy enum.
+ * `public`/`private`. CMS drafts are unpublished; the consumer's legacy WIP
+ * presentation is not a publication state.
  */
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { toLocalizedString, toLocalizedBlockEditorDoc, mapLocalizedRepeater } from '../locale';
+import { mapLocalizedRepeater, toLocalizedBlockEditorDoc, toLocalizedFields } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
 import { ProjectSchema } from '@repo/shared/schemas';
 import type { ImpactMetric, Project, ProjectSection, ProjectStatus } from '@repo/shared';
@@ -112,7 +111,7 @@ export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): Proje
 		case 'published':
 			return 'public';
 		case 'draft':
-			return 'wip';
+			return 'private';
 		case 'archived':
 			return 'private';
 	}
@@ -123,14 +122,14 @@ export function toProject(row: DirectusProject): Project {
 	const translations = row.translations ?? [];
 
 	const sections: ProjectSection[] = mapLocalizedRepeater(row.sections, (s) => ({
-		title: toLocalizedString(s.translations ?? [], 'title'),
+		...toLocalizedFields(s.translations ?? [], ['title']),
 		content: toLocalizedBlockEditorDoc(s.translations ?? [], 'content'),
 	}));
 
 	const impactMetrics: ImpactMetric[] = mapLocalizedRepeater(row.impact_metrics, (m) => {
 		const metric: ImpactMetric = {
 			value: m.value,
-			label: toLocalizedString(m.translations ?? [], 'label'),
+			...toLocalizedFields(m.translations ?? [], ['label']),
 		};
 		if (m.before) metric.before = m.before;
 		return metric;
@@ -138,8 +137,7 @@ export function toProject(row: DirectusProject): Project {
 
 	const project: Project = {
 		slug: row.id,
-		title: toLocalizedString(translations, 'title'),
-		oneLiner: toLocalizedString(translations, 'one_liner'),
+		...toLocalizedFields(translations, ['title', ['oneLiner', 'one_liner']]),
 		description: toLocalizedBlockEditorDoc(translations, 'description'),
 		stack: stackFromTechM2M(row.tech_stack),
 		tags: tagsFromM2M(row.tags),
@@ -173,6 +171,7 @@ export function toProject(row: DirectusProject): Project {
 export async function fetchProjects({ client }: FetcherContext): Promise<readonly Project[]> {
 	const rows = (await client.request(
 		readItems('projects', {
+			filter: { status: { _eq: 'published' } },
 			fields: [
 				'*',
 				{ translations: ['*'] } as unknown as string,
@@ -186,5 +185,5 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 		}),
 	)) as unknown as DirectusProject[];
 
-	return z.array(ProjectSchema).parse(rows.map(toProject));
+	return z.array(ProjectSchema).parse(rows.filter(row => row.status === 'published').map(toProject));
 }

@@ -17,7 +17,7 @@
 
   Persistent chrome (rides Nav): locale + url are PROPS (ThemeToggle convention).
   The switch preserves query AND hash — so in-progress state (filters,
-  ?station, the engine seed) survives the language change.
+  ?station) survives the language change.
 -->
 <script lang="ts">
 	import { siteLabels } from '$lib/content';

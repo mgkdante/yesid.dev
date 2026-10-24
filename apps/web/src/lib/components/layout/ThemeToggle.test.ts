@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ThemeToggle from './ThemeToggle.svelte';
@@ -16,7 +17,7 @@ describe('ThemeToggle', () => {
 		const btn = screen.getByTestId('theme-toggle');
 		expect(btn).toHaveAttribute('role', 'switch');
 		expect(btn).toHaveAttribute('aria-checked', 'true');
-		expect(btn).toHaveAccessibleName('Dark theme');
+		expect(btn).toHaveAccessibleName(siteLabels.navChrome.shared.themeToggleAria.en);
 	});
 
 	it('click flips the document theme and aria state', async () => {

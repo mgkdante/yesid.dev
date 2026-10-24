@@ -17,11 +17,11 @@
 # exactly one Build Bot on cms.dev.yesid.dev, rebinds the distinct dev token,
 # and authenticates as that user. Any failure leaves the PR unmerged.
 #
-# Usage (recommended — wraps all op:// resolutions in one call):
-#   op run --env-file=apps/cms/.env -- ./apps/cms/scripts/refresh-dev-from-prod.sh
+# Usage (required values supplied by the operator's chosen secret manager or shell):
+#   ./apps/cms/scripts/refresh-dev-from-prod.sh
 #
-# Required env (resolved by op):
-#   NEON_API_KEY                  — Neon API key (1P: 'Neon API key')
+# Required env:
+#   NEON_API_KEY                  — Neon API key
 #   DIRECTUS_ADMIN_TOKEN          — admin token for the dev token rebind
 #   DIRECTUS_BUILD_TOKEN          — prod Build Bot token (comparison only)
 #   DIRECTUS_DEV_BUILD_TOKEN      — distinct read-only dev Build Bot token

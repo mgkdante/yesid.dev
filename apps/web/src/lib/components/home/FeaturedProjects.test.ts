@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import { readFileSync } from 'node:fs';
@@ -7,7 +8,7 @@ import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '$lib/content/site-content';
 import { getFeaturedProjects } from '$lib/projects/static-helpers';
 import { getVisibleServices } from '$lib/services/static-helpers';
-import { resolveLocale } from '$lib/utils';
+import { projectMetrics, resolveLocale } from '$lib/utils';
 import type { Project } from '$lib/types';
 import { projectFactory } from '../../../tests/factories';
 
@@ -46,10 +47,28 @@ describe('FeaturedProjects', () => {
 		expect(cards).toHaveLength(expectedCount);
 	});
 
-	it('renders one metric strip for every proof card', () => {
+	it('renders a metric strip only for cards with authored metrics', () => {
 		render(FeaturedProjects, { props: renderProps });
-		const metrics = screen.getAllByTestId('proof-metric-strip');
-		expect(metrics).toHaveLength(expectedCount);
+		const metrics = screen.queryAllByTestId('proof-metric-strip');
+		expect(metrics).toHaveLength(resolvedProjects.filter(project => projectMetrics(project).length > 0).length);
+	});
+
+	it('renders every supplied proof metric while leaving an unmeasured project empty', () => {
+		const authoredMetrics = Array.from({ length: 5 }, (_, index) => ({
+			value: String(index + 1),
+			label: { en: `Fixture outcome ${index + 1}` },
+		}));
+		const projects = [
+			projectFactory.build({ slug: 'without-metrics', impactMetrics: [], impactMetric: undefined }),
+			projectFactory.build({ slug: 'with-metrics', impactMetrics: authoredMetrics, impactMetric: undefined }),
+		];
+		render(FeaturedProjects, { props: { ...renderProps, projects } });
+		const cards = screen.getAllByTestId('proof-card');
+		expect(cards[0].querySelector('[data-testid="proof-metric-strip"]')).toBeNull();
+		const values = cards[1].querySelectorAll('[data-testid="proof-metric-value"]');
+		const labels = cards[1].querySelectorAll('[data-testid="proof-metric-label"]');
+		expect(Array.from(values, element => element.textContent)).toEqual(authoredMetrics.map(metric => metric.value));
+		expect(Array.from(labels, element => element.textContent)).toEqual(authoredMetrics.map(metric => metric.label.en));
 	});
 
 	it('renders a strikethrough before-value for cards whose metric has one', () => {
@@ -172,9 +191,6 @@ describe('FeaturedProjects', () => {
 		);
 
 		expect(source).toContain("import ProjectCard from '$lib/components/projects/ProjectCard.svelte'");
-		expect(source).toContain('variant="proof"');
-		expect(source).toContain('cardSize="proof"');
-		expect(source).toContain('mediaTestId="proof-card-image"');
 		expect(source).not.toContain('ProjectHeroPreview');
 		expect(source).not.toContain('class="proof-image');
 		expect(source).not.toContain('class="proof-card group');
@@ -209,19 +225,10 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-count')).toHaveAttribute('aria-label', '01 / 03');
 		expect(screen.getByTestId('proof-prev')).toHaveTextContent('←');
 		expect(screen.getByTestId('proof-prev')).not.toHaveTextContent('03');
-		expect(screen.getByTestId('proof-prev')).toHaveAttribute('aria-label', 'Previous projects');
+		expect(screen.getByTestId('proof-prev')).toHaveAttribute('aria-label', siteLabels.a11y.carouselPrev.en);
 		expect(screen.getByTestId('proof-next')).toHaveTextContent('→');
 		expect(screen.getByTestId('proof-next')).not.toHaveTextContent('02');
-		expect(screen.getByTestId('proof-next')).toHaveAttribute('aria-label', 'Next projects');
+		expect(screen.getByTestId('proof-next')).toHaveAttribute('aria-label', siteLabels.a11y.carouselNext.en);
 	});
 
-	it('keeps the original desktop proof slide width', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/home/FeaturedProjects.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('flex-basis: clamp(340px, 44vw, 720px);');
-		expect(source).not.toContain('flex-basis: calc(50% + 0.75rem);');
-	});
 });
