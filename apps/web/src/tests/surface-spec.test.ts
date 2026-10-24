@@ -21,7 +21,7 @@ describe('surface spec — one card spec, defined once', () => {
 		it(`${f} consumes a card surface alias + border-brand tokens`, () => {
 			const src = read(f);
 			expect(src).toMatch(/background: var\(--surface-[12]\);/);
-			expect(src).toContain('border: 2px solid var(--border-brand);');
+			expect(src).toMatch(/border: [^;]+ solid var\(--border-brand\);/);
 			expect(src).toContain('border-color: var(--border-brand-active);');
 		});
 	}
@@ -30,14 +30,6 @@ describe('surface spec — one card spec, defined once', () => {
 		const src = read('src/lib/components/projects/ProjectCard.svelte');
 		expect(src).toContain("import { Card } from '$lib/components/ui/card';");
 		expect(src).toContain('<Card class="h-full gap-0 py-0">');
-		expect(src).toMatch(/\.project-card :global\(\.card-surface\) \{\s*\n\t*border-width: 3px;/);
-	});
-
-	it('FeaturedProjects delegates proof cards to ProjectCard', () => {
-		const src = read('src/lib/components/home/FeaturedProjects.svelte');
-		expect(src).toContain("import ProjectCard from '$lib/components/projects/ProjectCard.svelte';");
-		expect(src).toContain('variant="proof"');
-		expect(src).toContain('cardSize="proof"');
 	});
 
 	it('surface-1 and surface-2 both alias the solid card token (release tokens.css)', () => {

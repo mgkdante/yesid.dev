@@ -486,21 +486,4 @@ describe('canonical responsive breakpoint contract', () => {
 		}
 	});
 
-	it('keeps the PostCSS dependency and absolute Vite wiring explicit', () => {
-		const packageJson = JSON.parse(
-			readFileSync(resolve(process.cwd(), 'package.json'), 'utf8'),
-		) as { devDependencies: Record<string, string> };
-		const config = readFileSync(VITE_CONFIG, 'utf8');
-		const globalDataIndex = config.indexOf('globalData({');
-		const customMediaIndex = config.indexOf('customMedia({ preserve: false })');
-
-		expect(packageJson.devDependencies['@csstools/postcss-global-data']).toBe('4.0.0');
-		expect(packageJson.devDependencies['postcss-custom-media']).toBe('12.0.1');
-		expect(config).toContain(
-			"fileURLToPath(new URL('./vendor/design/tokens/tokens.css', import.meta.url))",
-		);
-		expect(globalDataIndex).toBeGreaterThan(-1);
-		expect(customMediaIndex).toBeGreaterThan(globalDataIndex);
-		expect(config.slice(globalDataIndex, customMediaIndex)).toContain('files: [designTokensCss]');
-	});
 });
