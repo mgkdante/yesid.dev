@@ -44,6 +44,7 @@ pipeline (`apps/cms/README.md` § Asset migration).
   `aria-hidden`, unfocusable, clipped by its band, and motion-safe.
 - Until the code-component reconciliation policy lands, this map is the selectable
   catalog for those keys. Do not create partial Directus code-component records:
-  partial linking changes live usage identities while the offline scanner correctly
-  remains repository-only. The guarded asset-audit baseline inventories the four
-  component roots in the meantime.
+  partial linking changes live usage identities.
+- Current checks verify manifest SHA-256 digests and UUID-map/manifest consistency.
+  `assets.ts` rejects unknown UUIDs in production, and the web asset-boundary guard
+  checks literal asset identities and raw HTML/SVG injection files.

@@ -228,6 +228,7 @@ describe('media asset mirror export', () => {
 					assets: [
 						{
 							legacyPath: 'images/work/cover.png',
+							sha256: '2c8648d103e3dd7ad87660da0f126a1443b6d21ac1bd3ec000c5e24e2373a90c',
 						},
 					],
 				},
@@ -235,6 +236,14 @@ describe('media asset mirror export', () => {
 			);
 
 			expect(mirrored).toEqual({ 'uuid-cover': '/images/work/cover.png' });
+			writeFileSync(joinPath(root, 'images', 'work', 'cover.png'), 'changed-bytes');
+			expect(() => buildMirroredMediaAssetsFromManifest(
+				{ sourceRoot: root, assets: [{
+					legacyPath: 'images/work/cover.png',
+					sha256: '2c8648d103e3dd7ad87660da0f126a1443b6d21ac1bd3ec000c5e24e2373a90c',
+				}] },
+				{ 'images/work/cover.png': 'uuid-cover' },
+			)).toThrow('[media-assets] sha256 mismatch');
 		} finally {
 			rmSync(root, { recursive: true, force: true });
 		}
@@ -247,7 +256,7 @@ describe('media asset mirror export', () => {
 			buildMirroredMediaAssetsFromManifest(
 				{
 					sourceRoot: root,
-					assets: [{ legacyPath: 'images/work/missing.png' }],
+					assets: [{ legacyPath: 'images/work/missing.png', sha256: '0'.repeat(64) }],
 				},
 				{ 'images/work/missing.png': 'uuid-missing' },
 			),
@@ -264,7 +273,7 @@ describe('media asset mirror export', () => {
 				buildMirroredMediaAssetsFromManifest(
 					{
 						sourceRoot: root,
-						assets: [{ legacyPath: 'images/orphan.png' }],
+						assets: [{ legacyPath: 'images/orphan.png', sha256: '0'.repeat(64) }],
 					},
 					{},
 				),

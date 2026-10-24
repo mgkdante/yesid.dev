@@ -6,6 +6,7 @@
 *.ts text eol=lf
 *.tsx text eol=lf
 *.svelte text eol=lf
+*.svg text eol=lf
 *.json text eol=lf
 .githooks/* text eol=lf
 apps/web/src/lib/og/fonts/LICENSE-JetBrains-Mono.txt text eol=lf whitespace=-blank-at-eol

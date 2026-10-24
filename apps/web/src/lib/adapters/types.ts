@@ -185,7 +185,7 @@ export interface ContentPort {
 	 * Slice 18d Phase 8: source flipped from a Vite `?raw` build-time import
 	 * to a Directus-fetched asset (`/assets/<uuid>`) via the assets id-map.
 	 * The result is consumed by MetroNetwork.svelte through SSR `+page.server.ts`
-	 * load and inlined via `{@html}` so it remains a valid LCP candidate.
+	 * load and inlined as raw HTML so it remains a valid LCP candidate.
 	 */
 	metroSvg(ctx?: PreviewContext): Promise<string>;
 	/**
