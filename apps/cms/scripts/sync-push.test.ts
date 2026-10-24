@@ -46,7 +46,7 @@ function runOfflinePush(args: string[], extraEnv: Record<string, string> = {}) {
 	}
 }
 
-describe('production policy quarantine preflight', () => {
+describe('production deferred asset-registry grants preflight', () => {
 	it.each([
 		['default push', [], {}],
 		['policy-only push', ['--only-collections', 'policies'], {}],
@@ -62,7 +62,7 @@ describe('production policy quarantine preflight', () => {
 	] as const)('refuses %s before authentication or directus-sync execution', (_name, args, env) => {
 		const result = runOfflinePush([...args], env);
 		expect(result.exitCode).toBe(1);
-		expect(result.stderr).toMatch(/quarantined.*policy|policy.*quarantin/i);
+		expect(result.stderr).toMatch(/deferred asset-registry grants that production intentionally lacks/);
 		expect(result.stderr).not.toContain('NETWORK_BLOCKED');
 		expect(result.stderr).not.toContain('cannot authenticate');
 		expect(result.stdout).toBe('');

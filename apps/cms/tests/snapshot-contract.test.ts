@@ -275,9 +275,20 @@ describe('published blog and consent snapshot contracts', () => {
   expect(field.meta.required).toBe(true);
   expect(field.schema).toMatchObject({ is_indexed: true, is_nullable: false, is_unique: false });
  });
- it('exposes translation_key in the explicit public blog read permission', () => {
+ it('keeps translation_key out of the anonymous blog read permission adopted from live', () => {
   const permissions = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/permissions.json'), 'utf8')) as Array<{ _syncId: string; fields: string[] }>;
-  expect(permissions.find(row => row._syncId === '_sync_perm_blog_posts_public_read')?.fields).toContain('translation_key');
+  const publicRead = permissions.find(row => row._syncId === '_sync_perm_blog_posts_public_read');
+  expect(publicRead).toBeDefined();
+  expect(publicRead!.fields).not.toContain('translation_key');
+ });
+ it('exposes translation_key to the Build Bot blog read used by the build-time exporter', () => {
+  const policies = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/policies.json'), 'utf8')) as Array<{ _syncId: string; name: string }>;
+  const buildBot = policies.find(row => row.name === 'Build Bot — content read');
+  expect(buildBot).toBeDefined();
+  const permissions = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/permissions.json'), 'utf8')) as Array<{ policy: string; collection: string; action: string; fields: string[] }>;
+  const blogRead = permissions.find(row => row.policy === buildBot!._syncId && row.collection === 'blog_posts' && row.action === 'read');
+  expect(blogRead).toBeDefined();
+  expect(blogRead!.fields.some(field => field === '*' || field === 'translation_key')).toBe(true);
  });
  it('keeps the consent description field at varchar(500)', () => {
   const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/site_labels_translations/ui_analytics_consent_description.json'), 'utf8'));

@@ -104,17 +104,6 @@ test('keeps every production-mutating dispatch job on main', () => {
       github.ref == 'refs/heads/main'`,
 		},
 		{
-			name: 'permission-policy-quarantine-rename',
-			next: 'flows-push',
-			condition: `    if: |
-      github.event_name == 'workflow_dispatch' &&
-      (
-        github.event.inputs.action == 'permission-policy-quarantine-preview' ||
-        github.event.inputs.action == 'permission-policy-quarantine-rename'
-      ) &&
-      github.ref == 'refs/heads/main'`,
-		},
-		{
 			name: 'flows-push',
 			condition: `    if: |
       github.event_name == 'workflow_dispatch' &&
@@ -136,12 +125,10 @@ test('offers separate, unambiguous permission audit and targeted repair dispatch
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, flows-push, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]',
+		'options: [diff, push, flows-push, permission-control-audit, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]',
 	);
 	expect(dispatch).toContain('flows-only push');
 	expect(dispatch).toContain('read-only permission audit');
-	expect(dispatch).toContain('candidate diagnostic');
-	expect(dispatch).toContain('quarantine preview or rename');
 });
 
 test('cover permission dispatch exposes no mutation path to previews, PRs, or non-main refs', () => {
@@ -236,7 +223,7 @@ test('cover rollback uses the explicit trusted-run apply artifact and retains re
 test('permission-control-audit is production-gated, authenticated, and GET-only', () => {
 	const audit = jobBlock(
 		'permission-control-audit',
-		'permission-policy-candidate-diagnostic',
+		'flows-push',
 	);
 
 	expect(audit).toContain(
@@ -268,113 +255,6 @@ test('permission-control-audit is production-gated, authenticated, and GET-only'
 	}
 });
 
-test('permission-policy-candidate-diagnostic is main-only, production-gated, and GET-only', () => {
-	const diagnostic = jobBlock(
-		'permission-policy-candidate-diagnostic',
-		'permission-policy-quarantine-rename',
-	);
-	expect(diagnostic).toContain(
-		"github.event.inputs.action == 'permission-policy-candidate-diagnostic'",
-	);
-	expect(diagnostic).toContain("github.ref == 'refs/heads/main'");
-	expect(diagnostic).toContain('needs: test');
-	expect(diagnostic).toContain('name: production');
-	expect(diagnostic).toContain(
-		'DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}',
-	);
-	expect(diagnostic.slice(0, diagnostic.indexOf('    steps:'))).not.toContain(
-		'DIRECTUS_ADMIN_TOKEN',
-	);
-	expect(diagnostic.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(1);
-	expect(diagnostic).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
-	expect(diagnostic).toContain(
-		'name: Diagnose duplicate desired-policy candidates (read-only)',
-	);
-	expect(diagnostic).toContain(
-		'run: bun scripts/diagnose-permission-policy-candidates.ts --target=prod --dry-run',
-	);
-	for (const forbidden of [
-		'--apply',
-		'--confirm=',
-		'sync:push',
-		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
-	]) {
-		expect(diagnostic).not.toContain(forbidden);
-	}
-});
-
-test('policy quarantine preview is separate and rename-only steps are statically mutation-gated', () => {
-	const rename = jobBlock(
-		'permission-policy-quarantine-rename',
-		'flows-push',
-	);
-	expect(rename).toContain(
-		"github.event.inputs.action == 'permission-policy-quarantine-preview'",
-	);
-	expect(rename).toContain(
-		"github.event.inputs.action == 'permission-policy-quarantine-rename'",
-	);
-	expect(rename).toContain("github.ref == 'refs/heads/main'");
-	expect(rename).toContain('needs: test');
-	expect(rename).toContain('name: production');
-	expect(rename).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
-	expect(rename.slice(0, rename.indexOf('    steps:'))).not.toContain(
-		'DIRECTUS_ADMIN_TOKEN',
-	);
-	expect(rename.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(4);
-
-	const previewCommand =
-		'bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run';
-	const previewStepName = 'Preview guarded duplicate-policy quarantine rename';
-	const applyStepName = 'Apply and verify guarded duplicate-policy quarantine rename';
-	const readBackStepName = 'Prove duplicate-policy quarantine rename read-back';
-	const auditStepName =
-		'Audit all production Directus permissions after rename (read-only)';
-	const previewStep = stepBlock(rename, previewStepName, applyStepName);
-	const applyStep = stepBlock(rename, applyStepName, readBackStepName);
-	const readBackStep = stepBlock(rename, readBackStepName, auditStepName);
-	const auditStep = stepBlock(rename, auditStepName);
-	const renameOnlyCondition =
-		"if: github.event.inputs.action == 'permission-policy-quarantine-rename'";
-	const confirmation =
-		'--confirm=APPLY_PROD_PERMISSION_POLICY_QUARANTINE_RENAME';
-	const auditCommand =
-		'bun scripts/audit-permission-control-drift.ts --target=prod --dry-run';
-	const preview = rename.indexOf(previewCommand);
-	const apply = rename.indexOf(confirmation);
-	const readBack = rename.indexOf(previewCommand, preview + 1);
-	const audit = rename.indexOf(auditCommand, readBack + 1);
-
-	expect(preview).toBeGreaterThan(-1);
-	expect(apply).toBeGreaterThan(preview);
-	expect(readBack).toBeGreaterThan(apply);
-	expect(audit).toBeGreaterThan(readBack);
-	expect(previewStep).toContain(previewCommand);
-	expect(previewStep).not.toContain('if:');
-	expect(previewStep).not.toMatch(/--apply|--confirm=|audit-permission-control-drift/);
-	for (const guardedStep of [applyStep, readBackStep, auditStep]) {
-		expect(guardedStep).toContain(renameOnlyCondition);
-		expect(guardedStep).not.toContain(
-			'permission-policy-quarantine-preview',
-		);
-	}
-	expect(applyStep).toContain('--apply');
-	expect(applyStep).toContain(confirmation);
-	expect(readBackStep).toContain(previewCommand);
-	expect(auditStep).toContain(auditCommand);
-	expect(rename.match(/--apply/g)).toHaveLength(1);
-	expect(rename.match(/--confirm=/g)).toHaveLength(1);
-	expect(rename.match(/audit-permission-control-drift\.ts/g)).toHaveLength(1);
-	expect(rename).not.toContain('--require-converged');
-	for (const forbidden of [
-		'sync:push',
-		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
-		'include_permissions',
-	]) {
-		expect(rename).not.toContain(forbidden);
-	}
-});
-
 test('keeps every downstream CMS job body byte-stable', () => {
 	expect(sha256(jobBlock('diff', 'live-diff'))).toBe(
 		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
@@ -389,21 +269,11 @@ test('keeps every downstream CMS job body byte-stable', () => {
 		sha256(
 			jobBlock(
 				'permission-control-audit',
-				'permission-policy-candidate-diagnostic',
+				'flows-push',
 			),
 		),
 	).toBe(
 		'517ae15e70704345eb9ea666c70f88ac78efe92ff8fcd1707a998237beb469a1',
-	);
-	expect(
-		sha256(
-			jobBlock(
-				'permission-policy-candidate-diagnostic',
-				'permission-policy-quarantine-rename',
-			),
-		),
-	).toBe(
-		'232efa0979ad4d4a29b06fdf3cc691f4e7eb5a1cf7c349a1fa17ce9cc5bb0aaf',
 	);
 });
 

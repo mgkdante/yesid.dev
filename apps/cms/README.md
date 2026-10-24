@@ -173,22 +173,23 @@ permissions out by default, and preserves environment-specific settings file
 references. A committed dump, successful diff, or green test does not prove
 the live environment matches it; keep the post-apply readback.
 
-Production pushes selecting policies or permissions are additionally blocked
-while the Ops Bot sync identity points to the quarantined duplicate. Existing
-acknowledgements do not override that hold. Use only separately approved,
-narrowly scoped flow work; do not apply the broad configuration diff.
+slice-43.12 (2026-10-24) retired the duplicate Ops Bot role/policy and rebound
+the repository's Ops Bot role, policy and permission sync ids on DEV and PROD.
+Production pushes selecting policies or permissions remain blocked by
+`sync-push.ts` because the dump declares 31 deferred asset-registry grants
+(and 10 Editor bookmarks in presets) that production intentionally lacks.
+Existing acknowledgements do not override that hold. Use only separately
+approved, narrowly scoped flow work; do not apply the broad configuration diff.
 
-Permission control follows the same rule. The read-only audit and candidate
-diagnostic own discovery. Targeted reconcilers and the guarded CMS workflow own
-repairs. Do not replace them with ad-hoc Data Studio or REST mutations.
+Permission control follows the same rule. The read-only audit owns discovery.
+Targeted reconcilers and the guarded CMS workflow own repairs. Do not replace
+them with ad-hoc Data Studio or REST mutations.
 
 ### Production Build Bot cover permission
 
-**New direct human approval is pending.** The publication's earlier asset-baseline
-approval does not authorize this access. Review the executable plan and its
-SHA-256 before approving apply, including its guarded rollback. A workflow
-dispatch or matching hash records the operator's selection; neither proves
-that human approval was given.
+Applied to production on 2026-10-12 by the `buildbot-cover-permission` lane
+(cms run 38205771447). The grant stays out of the shared dump and unmapped by
+design. Its receipt artifact expires 2026-11-11.
 
 [`ops/permissions/buildbot-cover-permission.json`](ops/permissions/buildbot-cover-permission.json)
 is the production-only operational declaration, separate from the shared
@@ -215,6 +216,12 @@ differences stay outside the change. The reconciler freezes the complete
 recipient graph and existing Build Bot permission preimage into its reviewed
 hash; it refuses changed recipients, prior permission drift, or conflicting
 file-read rows instead of reconciling the whole policy.
+
+The declaration pins the Build Bot permission count and hash
+(`permissionsCount` / `permissionsSha256`). Any other Build Bot permission
+change — for example retiring the three dead reads on `site_blocks`,
+`site_catalog`, `site_layout` (collections that no longer exist) — must re-pin
+the declaration or wait until the rollback window has closed.
 
 Use the `cms` workflow on `main`; all four cover actions require passing tests
 and the `production` environment. The static administrator credential is

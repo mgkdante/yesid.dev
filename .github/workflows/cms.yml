@@ -17,12 +17,6 @@ name: cms
 #   cms.yesid.dev. Gated behind production environment for operator review.
 # - permission-control-audit (workflow_dispatch): GET-only semantic comparison
 #   of the repository permission declaration with production.
-# - permission-policy-candidate-diagnostic (workflow_dispatch): GET-only
-#   candidate evidence when a desired policy name is duplicated in production.
-#   Its policy aliases are informational only; the quarantine reconciler's raw
-#   /access query is the sole attachment-topology authority.
-# - permission-policy-quarantine-preview / rename (workflow_dispatch): guarded
-#   preview or name-only quarantine rename for one proven duplicate policy.
 # - buildbot-cover-permission (workflow_dispatch): production-only four-cover
 #   preview, approved create, or receipt-bound preview/rollback.
 #
@@ -50,9 +44,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action: diff preview, push config apply, flows-only push, read-only permission audit, candidate diagnostic, quarantine preview or rename, guarded cover permission'
+        description: 'Action: diff preview, push config apply, flows-only push, read-only permission audit, guarded cover permission'
         type: choice
-        options: [diff, push, flows-push, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]
+        options: [diff, push, flows-push, permission-control-audit, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]
         default: diff
         required: true
       include_permissions:
@@ -254,88 +248,6 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: Audit production Directus permissions semantically (read-only)
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: bun scripts/audit-permission-control-drift.ts --target=prod --dry-run
-
-  permission-policy-candidate-diagnostic:
-    # GET-only evidence for every live candidate sharing a desired policy name.
-    # The script prints role labels and direct-user role labels, never user PII,
-    # and cannot invoke a reconciler or directus-sync.
-    if: |
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'permission-policy-candidate-diagnostic' &&
-      github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: test
-    environment:
-      name: production
-      url: https://cms.yesid.dev
-    env:
-      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-
-      - uses: ./.github/actions/setup
-
-      - name: Diagnose duplicate desired-policy candidates (read-only)
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: bun scripts/diagnose-permission-policy-candidates.ts --target=prod --dry-run
-
-  permission-policy-quarantine-rename:
-    # Guarded name-only reconciliation for one immutable policy id. The script
-    # refuses effective-access flags, permissions, unexpected name topology,
-    # or any raw access-row change. Preview dispatch cannot reach write steps.
-    if: |
-      github.event_name == 'workflow_dispatch' &&
-      (
-        github.event.inputs.action == 'permission-policy-quarantine-preview' ||
-        github.event.inputs.action == 'permission-policy-quarantine-rename'
-      ) &&
-      github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: test
-    environment:
-      name: production
-      url: https://cms.yesid.dev
-    env:
-      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-
-      - uses: ./.github/actions/setup
-
-      - name: Preview guarded duplicate-policy quarantine rename
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run
-
-      - name: Apply and verify guarded duplicate-policy quarantine rename
-        if: github.event.inputs.action == 'permission-policy-quarantine-rename'
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: >-
-          bun scripts/reconcile-permission-policy-quarantine-name.ts
-          --target=prod
-          --apply
-          --confirm=APPLY_PROD_PERMISSION_POLICY_QUARANTINE_RENAME
-
-      - name: Prove duplicate-policy quarantine rename read-back
-        if: github.event.inputs.action == 'permission-policy-quarantine-rename'
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run
-
-      - name: Audit all production Directus permissions after rename (read-only)
-        if: github.event.inputs.action == 'permission-policy-quarantine-rename'
         working-directory: apps/cms
         env:
           DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}

@@ -9,7 +9,6 @@ import {
 describe('production write gate', () => {
 	test('is the single owner for every active production mutator', () => {
 		for (const script of [
-			'reconcile-permission-policy-quarantine-name.ts',
 			'sync-push.ts',
 		]) {
 			const source = readFileSync(new URL(`../scripts/${script}`, import.meta.url), 'utf8');
