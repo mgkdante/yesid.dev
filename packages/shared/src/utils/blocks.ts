@@ -202,8 +202,7 @@ export function wrapPlainText(str: string): BlockEditorDoc {
 
 /**
  * Serialize an Editor.js doc to an HTML string. LIVE in the static adapter
- * (the runtime content layer post-27.2): `static.blog.html()` and the
- * tech-stack search-text flattening both call it, and the dormant
+ * (the runtime content layer post-27.2): `static.blog.html()` calls it, and the dormant
  * directus adapter + cms export emitters mirror the same serialization.
  * (An earlier note called this a "legacy bridge to be removed in 18i" —
  * inverted: the static adapter became the live adapter and kept it.)

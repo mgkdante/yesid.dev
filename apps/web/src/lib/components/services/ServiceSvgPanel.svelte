@@ -103,7 +103,7 @@
 	   ≥768px only: below that, ServiceCard's mobile listing downsizes this
 	   same panel to a 48px icon via its --svg-icon-size override — the cap
 	   must not outrank it (mobile detail pages use the banner variant). */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.svg-panel:not(.svg-panel--banner) .svg-art :global([data-slot='svg-icon']) {
 			width: min(224px, 100%) !important;
 			height: min(224px, 100%) !important;

@@ -1,143 +1,67 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, within } from '@testing-library/svelte';
 import Nav from './Nav.svelte';
+import type { NavLink } from '$lib/navigation/types';
 
-describe('Nav — Pill Structure', () => {
-	it('renders a nav element', () => {
-		render(Nav);
-		expect(screen.getByTestId('nav')).toBeInTheDocument();
-	});
+const links: readonly NavLink[] = [
+	{ label: { en: 'Studio', fr: 'Atelier', es: 'Taller' }, href: '/studio', priority: 1 },
+	{ label: { en: 'Notes', fr: 'Carnet', es: 'Apuntes' }, href: '/notes', priority: 2 },
+	{ label: { en: 'Fallback label' }, href: '/archive', priority: 1 },
+];
 
-	it('renders the pill container', () => {
-		render(Nav);
-		expect(screen.getByTestId('nav-pill')).toBeInTheDocument();
-	});
-
-	it('renders wordmark linking to /', () => {
-		render(Nav);
-		const wordmark = screen.getByTestId('nav-wordmark');
-		expect(wordmark).toBeInTheDocument();
-		expect(wordmark.closest('a')).toHaveAttribute('href', '/');
-	});
-
-	it('renders the orange dot in the wordmark', () => {
-		render(Nav);
-		const dot = screen.getByTestId('nav-period');
-		expect(dot).toBeInTheDocument();
-		expect(dot).toHaveTextContent('.');
-	});
-
-	it('renders wordmark-letters container for SplitText', () => {
-		render(Nav);
-		const letters = screen.getByTestId('nav-wordmark-letters');
-		expect(letters).toBeInTheDocument();
-		expect(letters.textContent).toBe('yesid');
-	});
-
-	it('renders primary nav links', () => {
-		render(Nav);
-		expect(screen.getByRole('link', { name: 'Services' })).toHaveAttribute('href', '/services');
-		expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute('href', '/projects');
-		expect(screen.getByRole('link', { name: 'Stack' })).toHaveAttribute('href', '/tech-stack');
-	});
-
-	it('marks active link with aria-current="page"', () => {
-		render(Nav, { props: { pathname: '/services' } });
-		expect(screen.getByRole('link', { name: 'Services' })).toHaveAttribute('aria-current', 'page');
-	});
-
-	it('does not mark inactive links with aria-current', () => {
-		render(Nav, { props: { pathname: '/services' } });
-		expect(screen.getByRole('link', { name: 'Projects' })).not.toHaveAttribute('aria-current');
-	});
-
-	it('renders the menu toggle button', () => {
-		render(Nav);
-		expect(screen.getByTestId('nav-menu-toggle')).toBeInTheDocument();
-		expect(screen.getByTestId('nav-menu-toggle')).toHaveAttribute('aria-label', 'Open menu');
-	});
-
-	it('renders the theme toggle inside the pill', () => {
-		render(Nav);
-		expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
-	});
-
-});
-
-describe('Nav — mobile compaction (go2/w5)', () => {
-	// The wordmark anchor carries .nav-wordmark: white-space nowrap +
-	// flex-shrink 0 so "yesid." can NEVER wrap, no matter how narrow the
-	// viewport gets. Geometry is asserted in tests/mobile/nav.spec.ts
-	// (Playwright viewport matrix); this locks the CSS hook in place.
-	it('wordmark anchor carries the nav-wordmark no-wrap hook', () => {
-		render(Nav);
-		expect(screen.getByTestId('nav-wordmark')).toHaveClass('nav-wordmark');
-	});
-
-	it('exactly one theme toggle lives in the chrome (nav owns it)', () => {
-		render(Nav);
-		expect(screen.getAllByTestId('theme-toggle')).toHaveLength(1);
-	});
-});
-
-describe('Nav — locale threading (slice-28.6)', () => {
-	it('threads exact translated blog alternates to the language toggle', () => {
-		render(Nav, {
-			props: {
-				pathname: '/blog/english-slug',
-				url: new URL('https://yesid.dev/blog/english-slug'),
-				locale: 'en',
-				localeAlternates: {
-					en: 'https://yesid.dev/blog/english-slug',
-					fr: 'https://yesid.dev/fr/blog/slug-francais',
-					es: 'https://yesid.dev/es/blog/slug-espanol',
-				},
-				headerLinks: [],
+describe('Nav supplied navigation', () => {
+	it.each([
+		['en', '', ['Studio', 'Notes', 'Fallback label']],
+		['fr', '/fr', ['Atelier', 'Carnet', 'Fallback label']],
+		['es', '/es', ['Taller', 'Apuntes', 'Fallback label']],
+	] as const)(
+		'preserves supplied order, destinations, fallback and active state in %s',
+		(locale, prefix, labels) => {
+			render(Nav, {
+				locale,
+				pathname: `${prefix}/notes/example`,
+				headerLinks: links,
 				menuItems: [],
+			});
+			const nav = screen.getByTestId('nav');
+			const supplied = links.map((link) => nav.querySelector(`a[href="${prefix}${link.href}"]`)!);
+			expect(supplied.map((link) => link.textContent?.trim())).toEqual(labels);
+			expect(supplied[1]).toHaveAttribute('aria-current', 'page');
+			expect(supplied[0]).not.toHaveAttribute('aria-current');
+			expect([...nav.querySelectorAll('.nav-links a')]).toEqual(supplied);
+			expect(screen.getByTestId('nav-wordmark')).toHaveAttribute('href', prefix || '/');
+		},
+	);
+
+	it('renders one pill with one control of each kind and a closed-menu relationship', () => {
+		render(Nav, { headerLinks: [], menuItems: [] });
+		const pill = screen.getByTestId('nav-pill');
+		expect(screen.getAllByTestId('nav-pill')).toHaveLength(1);
+		expect(within(pill).getAllByTestId('theme-toggle')).toHaveLength(1);
+		expect(within(pill).getByTestId('nav-menu-toggle')).toHaveAttribute('aria-expanded', 'false');
+		expect(within(pill).getByTestId('nav-menu-toggle').getAttribute('aria-controls')).toBeTruthy();
+		expect(within(pill).getByTestId('nav-menu-toggle').getAttribute('aria-label')).toBeTruthy();
+		expect(screen.queryByRole('dialog')).toBeNull();
+		expect(screen.getByTestId('nav-wordmark-letters')).toHaveTextContent('yesid');
+		expect(screen.getByTestId('nav-period')).toHaveTextContent('.');
+	});
+
+	it('threads exact translated slugs and query/hash to the language control', () => {
+		render(Nav, {
+			pathname: '/blog/example',
+			url: new URL('https://yesid.dev/blog/example?tag=data#section'),
+			locale: 'en',
+			headerLinks: [],
+			menuItems: [],
+			localeAlternates: {
+				en: 'https://yesid.dev/blog/example',
+				fr: 'https://yesid.dev/fr/blog/exemple',
+				es: 'https://yesid.dev/es/blog/ejemplo',
 			},
 		});
-
 		expect(screen.getByTestId('language-toggle')).toHaveAttribute(
 			'href',
-			'/fr/blog/slug-francais',
+			'/fr/blog/exemple?tag=data#section',
 		);
-	});
-
-	it('renders link labels via resolveLocale — fr prop yields fr labels', () => {
-		render(Nav, {
-			props: {
-				pathname: '/',
-				locale: 'fr',
-				headerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
-				menuItems: [],
-			},
-		});
-		expect(screen.getByText('Projets')).toBeInTheDocument();
-		expect(screen.queryByText('Projects')).toBeNull();
-	});
-
-	it('marks the active link from a locale-prefixed pathname', () => {
-		render(Nav, {
-			props: {
-				pathname: '/fr/projects',
-				locale: 'fr',
-				headerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
-				menuItems: [],
-			},
-		});
-		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('aria-current', 'page');
-	});
-
-	it('localizes internal link hrefs for fr', () => {
-		render(Nav, {
-			props: {
-				pathname: '/fr',
-				locale: 'fr',
-				headerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
-				menuItems: [],
-			},
-		});
-		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('href', '/fr/projects');
-		expect(screen.getByTestId('nav-wordmark').closest('a')).toHaveAttribute('href', '/fr');
 	});
 });

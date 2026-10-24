@@ -46,9 +46,9 @@ export function emitModule(config: ModuleEmitConfig): string {
 		'//',
 		`// ${config.description}`,
 		'//',
-		'// Source: live Directus CMS state via `bun run export:fallbacks`',
-		'// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via',
-		"// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.",
+		'// Source: shared fixture or live Directus CMS state via `bun run export:fallbacks`',
+		'// (apps/cms/scripts/export-fallbacks.ts). Regenerated before web consumers.',
+		"// Ephemeral output; commit fixture or CMS source changes instead.",
 		'// ----------------------------------------------------------------------',
 	];
 

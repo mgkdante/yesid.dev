@@ -1,18 +1,17 @@
 /**
  * Directus admin-token resolution with fallback flow.
  *
- * Extracted from seed-services.ts in 18c Task 26 (F7). Supports three auth paths:
+ * Supports three auth paths:
  *   1. Vercel build tokens — DIRECTUS_BUILD_TOKEN on production and the distinct
  *      DIRECTUS_DEV_BUILD_TOKEN on the develop preview. Arbitrary preview branches
  *      are never allowed to resolve a build credential.
- *   2. DIRECTUS_ADMIN_TOKEN — fallback for local dev / seed scripts (admin-level
+ *   2. DIRECTUS_ADMIN_TOKEN — fallback for local development and operator scripts (admin-level
  *      static token, skips network call).
  *   3. DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD — last resort via
  *      POST /auth/login.
  *
- * CLI scripts typically retrieve the static token via 1Password:
- *   DIRECTUS_ADMIN_TOKEN=$(op read op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token) \
- *     bun run seed:services
+ * CLI scripts read the static token from the environment. Supply it through
+ * the operator's chosen secret manager or shell before running an operator command.
  */
 
 export interface AdminTokenOptions {
@@ -56,7 +55,7 @@ export async function getAdminToken(
 	if (!email || !password) {
 		throw new Error(
 			'Need DIRECTUS_ADMIN_TOKEN, or DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD. ' +
-				'Typical run: DIRECTUS_ADMIN_TOKEN=$(op read ...) bun run seed:services',
+				'Supply the selected credential through the environment before running this command.',
 		);
 	}
 	const res = await fetch(`${directusUrl}/auth/login`, {

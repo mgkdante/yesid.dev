@@ -23,11 +23,6 @@ function isDataPage(pathname: string, response: Response): boolean {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// Per-request memoization for loadPage(slug, ctx). One Map per HTTP
-	// request — multiple content.* calls within the same request resolve
-	// through the cache after the first fetch.
-	event.locals.pageCache = new Map();
-
 	// i18n (slice-28.6): app.html carries <html lang="%lang%">; locale is
 	// path-derived so each URL is one cacheable representation (no Vary,
 	// CDN-safe) and error renders get the right lang too.
@@ -78,9 +73,7 @@ export const handleError: HandleServerError = async ({ error, event, status }) =
 
 	let cmsErrorPage: ErrorPageContent | undefined;
 	try {
-		cmsErrorPage = await adapter.content.errorPage(status, {
-			pageCache: event.locals.pageCache,
-		});
+		cmsErrorPage = await adapter.content.errorPage(status);
 	} catch {
 		// Adapter read failed during error handling — $page.data.errorPage
 		// (status=0 fallback from +layout.server.ts) will be used by

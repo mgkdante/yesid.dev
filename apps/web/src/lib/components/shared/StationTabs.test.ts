@@ -1,3 +1,4 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import StationTabs from './StationTabs.svelte';
@@ -15,10 +16,10 @@ const mockServices = [
 describe('StationTabs', () => {
 	it('renders the 4 station short labels', () => {
 		render(StationTabs, { props: { services: mockServices, activeId: 'database-engineering' } });
-		expect(screen.getByText('Databases')).toBeTruthy();
-		expect(screen.getByText('Pipelines')).toBeTruthy();
-		expect(screen.getByText('Dashboards')).toBeTruthy();
-		expect(screen.getByText('Websites')).toBeTruthy();
+		for (const service of mockServices) {
+			const label = siteLabels.servicesChrome.listing.stationShortLabels[service.id as keyof typeof siteLabels.servicesChrome.listing.stationShortLabels].en;
+			expect(screen.getByTestId('station-tab-' + service.id)).toHaveTextContent(label);
+		}
 	});
 
 	it('renders station numbers', () => {

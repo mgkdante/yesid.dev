@@ -1,14 +1,5 @@
-// ServiceSchema — single runtime mirror of the Service interface in
-// ../types/content. Consolidated here from the apps/web + apps/cms copies
-// (site-hardening-a-plus). The cms copy carried a vestigial `icon` field that
-// neither the shared type nor any fetcher mapped — dropped here; the drift
-// detectors below make that class of divergence a compile error.
-//
-// Strictness budget (spec D3): mirror TS as-is — no URL/slug tightening.
-
 import { z } from 'zod';
-import { LocalizedStringSchema, type AssertSchemaMatches } from './shared';
-import type { Service, ServiceSection } from '../types/content';
+import { LocalizedStringSchema } from './shared';
 
 export const ServiceSectionSchema = z.object({
 	title: LocalizedStringSchema,
@@ -24,12 +15,17 @@ const ServiceImpactMetricSchema = z.object({
 });
 
 export const ServiceSchema = z.object({
+	/** Stable kebab-case identifier used by project service links. */
 	id: z.string().min(1),
 	title: LocalizedStringSchema,
 	description: LocalizedStringSchema,
+	/** Sequential journey position starting at 1; no fixed maximum. */
 	station: z.number(),
+	/** Illustration filename that cascades to projects linked to this service. */
 	svg: z.string().optional(),
+	/** False hides the service from listings and filters; absence defaults to visible. */
 	visible: z.boolean().optional(),
+	/** Project slugs must reference existing projects. */
 	relatedProjects: z.array(z.string()),
 
 	// Detail page fields (all optional for backward compat)
@@ -46,7 +42,5 @@ export const ServiceSchema = z.object({
 	impactMetric: ServiceImpactMetricSchema.optional(),
 });
 
-// Drift detectors — compile error (`true satisfies never`) if a schema and its
-// TS interface diverge in either direction.
-true satisfies AssertSchemaMatches<z.infer<typeof ServiceSectionSchema>, ServiceSection>;
-true satisfies AssertSchemaMatches<z.infer<typeof ServiceSchema>, Service>;
+export type ServiceSection = z.infer<typeof ServiceSectionSchema>;
+export type Service = z.infer<typeof ServiceSchema>;

@@ -6,15 +6,25 @@ import type { ContentAdapter } from './types';
 import {
 	blogSlugSeoFactory,
 	legalSlugSeoFactory,
+	projectsSlugSeoFactory,
 	servicesIdSeoFactory,
 } from './route-seo-factories';
-import { serviceFactory } from '../../tests/factories';
-import type { BlogPost, LegalPage, Service, SiteMeta, SiteSeoDefaults } from '$lib/types';
+import { projectFactory, serviceFactory } from '../../tests/factories';
+import type {
+	BlogPost,
+	LegalPage,
+	Locale,
+	Project,
+	Service,
+	SiteMeta,
+	SiteSeoDefaults,
+} from '$lib/types';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
-const assetMock = vi.hoisted(() => ({ relative: false }));
+const assetMock = vi.hoisted(() => ({ relative: false, tall: false }));
 vi.mock('$lib/directus/assets', () => ({
+	assetImage: (id: string, preset?: string) => ({ src: assetMock.relative ? `/images/work/${id}.png` : `https://cms.example.com/assets/${id}${preset ? `?key=${preset}` : ''}`, ...(assetMock.relative ? {width:1440,height:assetMock.tall ? 6626 : 1000} : {}) }),
 	asset: (id: string, preset?: string) =>
 		assetMock.relative
 			? `/images/work/${id}.png`
@@ -23,6 +33,7 @@ vi.mock('$lib/directus/assets', () => ({
 
 afterEach(() => {
 	assetMock.relative = false;
+	assetMock.tall = false;
 });
 
 const siteMeta = {
@@ -77,7 +88,57 @@ function translatedVariant(
 	};
 }
 
+async function projectOgUrls(project: Project): Promise<Record<Locale, string | undefined>> {
+	const adapter = {
+		projects: {
+			bySlug: async () => project,
+		},
+	} as unknown as ContentAdapter;
+	const entries = await Promise.all(
+		(['en', 'fr', 'es'] as const).map(async (locale) => {
+			const seo = await projectsSlugSeoFactory({
+				params: { slug: project.slug },
+				locale,
+				adapter,
+				siteMeta,
+				siteSeoDefaults,
+			});
+			return [locale, seo.ogImage?.url] as const;
+		}),
+	);
+	return Object.fromEntries(entries) as Record<Locale, string | undefined>;
+}
+
 describe('blogSlugSeoFactory', () => {
+	it.each(['en', 'fr', 'es'] as const)('uses the existing landscape share card for a tall cover in %s', async (lang) => {
+		assetMock.relative = true;
+		assetMock.tall = true;
+		const post = {
+			translationKey: 'component-boundaries',
+			slug: 'component-boundaries-' + lang,
+			title: 'Component boundaries',
+			excerpt: 'A practical explanation of why visually similar components can keep separate responsibilities.',
+			date: '2026-10-08',
+			lang,
+			category: 'professional',
+			tags: ['architecture'],
+			animation: 'draw',
+			svg: 'pro-code',
+			coverImage: '33333333-3333-4333-8333-333333333333',
+			coverImageAlt: 'A full-length component gallery screenshot.',
+			url: '/blog/component-boundaries-' + lang,
+			external: false,
+		} as BlogPost;
+		const seo = await blogSlugSeoFactory({
+			params: { slug: post.slug }, locale: lang, adapter: adapterFor(post), siteMeta, siteSeoDefaults,
+		});
+		const expected = 'https://yesid.dev/og/blog/' + post.slug + '.png';
+		expect(seo.ogImage).toEqual({
+			url: expected, alt: { en: 'Component boundaries | yesid.' }, width: 1200, height: 630,
+		});
+		expect(seo.jsonLd?.find((node) => node['@type'] === 'BlogPosting')?.image).toBe(expected);
+	});
+
 	it('uses CMS-backed post SEO fields for title, description, OG image, and JSON-LD', async () => {
 		const seoDescription =
 			'Why raw SQL can beat ORM abstractions for PostgreSQL work when control, performance, and readable query behavior matter.';
@@ -186,6 +247,8 @@ describe('blogSlugSeoFactory', () => {
 		expect(blogPosting?.image).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
 		);
+		expect(seo.ogImage?.width).toBe(1440);
+		expect(seo.ogImage?.height).toBe(1000);
 		// ogImage uses the same absolutized URL.
 		expect(seo.ogImage?.url).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
@@ -223,6 +286,7 @@ describe('blogSlugSeoFactory', () => {
 			en: 'https://yesid.dev/blog/staged-article',
 			fr: 'https://yesid.dev/fr/blog/article-en-preparation',
 		});
+		expect(seo.ogImage?.url).toBe('/og/blog/staged-article.png');
 	});
 
 	it('rejects an English slug requested under the French route', async () => {
@@ -254,6 +318,26 @@ describe('blogSlugSeoFactory', () => {
 	});
 });
 
+describe('projectsSlugSeoFactory', () => {
+	const project = projectFactory.build({
+		slug: 'metro-map',
+		title: {
+			en: 'Metro Map',
+			fr: 'Carte du métro',
+			es: 'Mapa del metro',
+		},
+	});
+
+	it('emits bare EN and path-suffixed FR/ES OG image URLs', async () => {
+		expect(await projectOgUrls(project)).toEqual({
+			en: '/og/project/metro-map.png',
+			fr: '/og/project/metro-map.fr.png',
+			es: '/og/project/metro-map.es.png',
+		});
+	});
+
+});
+
 describe('servicesIdSeoFactory', () => {
 	const CARD_IDS = [
 		'database-engineering',
@@ -266,7 +350,6 @@ describe('servicesIdSeoFactory', () => {
 		return {
 			params: { id: service.id },
 			locale: 'en' as const,
-			ctx: undefined,
 			adapter: { services: { byId: async () => service } } as unknown as ContentAdapter,
 			siteMeta,
 			siteSeoDefaults,

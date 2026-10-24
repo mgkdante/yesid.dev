@@ -1,5 +1,6 @@
+import { siteLabels } from '$lib/content/site-labels';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, waitFor } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
 // slice-18i Phase 7C: HomeCloser now requires closer prop.
 import { closerContent } from '$lib/content/site-content';
@@ -23,26 +24,24 @@ describe('HomeCloser', () => {
 		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
 	});
 
-	it('renders the departure board with 5 rows', () => {
+	it('renders the departure board with 4 rows', () => {
 		render(HomeCloser, { props });
 		const board = screen.getByTestId('closer-board');
 		expect(board).toBeInTheDocument();
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows).toHaveLength(5);
+		expect(rows).toHaveLength(4);
 	});
 
 	it('renders fixed Terminus routes in the requested order', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows.map((row) => row.getAttribute('href'))).toEqual([
-			'/tech-stack',
 			'/contact',
 			'/about',
 			'/blog',
 			siteMeta.links.github,
 		]);
 		expect(rows.map((row) => row.textContent)).toEqual([
-			expect.stringContaining('STACK'),
 			expect.stringContaining('CONTACT'),
 			expect.stringContaining('YESID'),
 			expect.stringContaining('BLOG'),
@@ -53,8 +52,8 @@ describe('HomeCloser', () => {
 	it('renders the Blog row as the listing, not individual latest posts', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows[3].getAttribute('href')).toBe('/blog');
-		expect(rows[3].textContent).toContain('Writing and field notes');
+		expect(rows[2].getAttribute('href')).toBe('/blog');
+		expect(rows[2].textContent).toContain(closerContent.rows.read.description.en);
 		expect(screen.queryByText('First dispatch')).not.toBeInTheDocument();
 		expect(screen.queryByText('Second dispatch')).not.toBeInTheDocument();
 	});
@@ -67,13 +66,68 @@ describe('HomeCloser', () => {
 		expect(cta.textContent).toContain('Initialize connection');
 	});
 
-	it('renders graffiti wrapper for dynamic SVG load', () => {
-		render(HomeCloser, { props });
+	it('keeps decorative fallbacks and diagnoses failed SVG loads', async () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { container } = render(HomeCloser, { props });
 		const graffiti = screen.getByTestId('closer-graffiti');
 		expect(graffiti).toBeInTheDocument();
 		// SVG is loaded dynamically via fetch in onMount — not present in unit tests
 		expect(graffiti.getAttribute('role')).toBe('img');
-		expect(graffiti.getAttribute('aria-label')).toContain('THE END');
+		expect(graffiti.getAttribute('aria-label')).toBe(siteLabels.a11y.closerGraffiti.en);
+		expect(container.querySelectorAll('[data-prop]')).toHaveLength(4);
+
+		await waitFor(() => {
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+			);
+		});
+		warn.mockRestore();
+	});
+
+	it('diagnoses resolved HTTP failures while keeping both decorative fallbacks', async () => {
+		globalThis.fetch = vi.fn(async (input) =>
+			new Response('not svg', {
+				status: String(input).includes('/svg/graffiti/the-end.') ? 500 : 404,
+			}),
+		) as unknown as typeof fetch;
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { container } = render(HomeCloser, { props });
+
+		expect(screen.getByTestId('closer-graffiti')).toBeInTheDocument();
+		expect(container.querySelectorAll('[data-prop]')).toHaveLength(4);
+		await waitFor(() => {
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+			);
+		});
+		warn.mockRestore();
+	});
+
+	it('diagnoses rejected response bodies while keeping both decorative fallbacks', async () => {
+		globalThis.fetch = vi.fn(async () => ({
+			ok: true,
+			text: vi.fn().mockRejectedValue(new Error('body unavailable')),
+		})) as unknown as typeof fetch;
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { container } = render(HomeCloser, { props });
+
+		expect(screen.getByTestId('closer-graffiti')).toBeInTheDocument();
+		expect(container.querySelectorAll('[data-prop]')).toHaveLength(4);
+		await waitFor(() => {
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-graffiti] Decorative SVG fetch failed; skipping animated graffiti.',
+			);
+			expect(warn).toHaveBeenCalledWith(
+				'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
+			);
+		});
+		warn.mockRestore();
 	});
 
 	it('GO-w2t5: ambient breathing mounts on the closer section (MOTION-GATED factory)', () => {

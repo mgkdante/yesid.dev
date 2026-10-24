@@ -1,3 +1,5 @@
+import { siteLabels } from '../src/lib/content/site-labels';
+import { contactContent } from '../src/lib/content/contact-page';
 import { test, expect } from '@playwright/test';
 import { visibleContactTerminal } from './_support/helpers';
 
@@ -17,8 +19,8 @@ test.describe('French locale coverage', () => {
     // English keys in both locales, so we assert the FR chrome that IS localized:
     // the info terminal renders French section headers (EMPLACEMENT / CONNEXION).
     const infoTerminal = page.locator('[data-testid="contact-info-terminal"]').first();
-    await expect(infoTerminal).toContainText('EMPLACEMENT');
-    await expect(infoTerminal).toContainText('CONNEXION');
+    await expect(infoTerminal).toContainText(contactContent.infoTerminal.sectionLabels.location.fr!);
+    await expect(infoTerminal).toContainText(contactContent.infoTerminal.sectionLabels.connect.fr!);
 
     // Soft check: the form exposes its three terminal field labels.
     const labelTexts = await form.locator('label').allTextContents();
@@ -43,8 +45,7 @@ test.describe('French locale coverage', () => {
     // Empty-submit yields "✗ requis, <field> ne peut pas être vide" (contact-page.ts validation.required.fr).
     const errorMsg = page.locator('text=/✗/').first();
     await expect(errorMsg).toBeVisible();
-    await expect(errorMsg).toContainText('requis');
-    await expect(errorMsg).toContainText('ne peut pas être vide');
+    await expect(errorMsg).toContainText(contactContent.validation.required.fr!.replace('{field}', contactContent.formTerminal.fields.name.label.fr!));
   });
 
   test('route /fr/projects renders French content', async ({ page }) => {
@@ -69,10 +70,9 @@ test.describe('French locale coverage', () => {
     await expect(page.locator('[data-testid="nav"]')).toBeVisible();
 
     // The desktop filter sidebar carries the localized search placeholder.
-    // (blog.companion.ts searchPlaceholder.fr === 'Chercher des articles...')
     const search = page.locator('[data-testid="blog-search-sidebar"]');
     await expect(search).toBeVisible();
-    await expect(search).toHaveAttribute('placeholder', 'Chercher des articles...');
+    await expect(search).toHaveAttribute('placeholder', siteLabels.blogChrome.listing.searchPlaceholder.fr!);
   });
 
   test('route /fr/blog language filter contains only the active locale', async ({ page }) => {
@@ -92,16 +92,16 @@ test.describe('French locale coverage', () => {
 
     // The Language FilterGroup renders whenever ≥1 language exists; it surfaces
     // the localized section label "Langue" plus per-language buttons.
-    await expect(langFilter).toContainText('Langue');
+    await expect(langFilter).toContainText(siteLabels.blogChrome.listing.filters.language.fr!);
 
     // The server narrows the listing before deriving facets. The only language
     // option on the French route is therefore French; persisted EN/ES filters
     // cannot hide the active-locale posts after a locale switch.
     const buttons = langFilter.locator('button');
     expect(await buttons.count()).toBeGreaterThan(0);
-    await expect(langFilter.locator('button', { hasText: 'Français' })).toBeVisible();
-    await expect(langFilter.locator('button', { hasText: 'Anglais' })).toHaveCount(0);
-    await expect(langFilter.locator('button', { hasText: 'Espagnol' })).toHaveCount(0);
+    await expect(langFilter.locator('button', { hasText: siteLabels.ui.languageNames.fr.fr! })).toBeVisible();
+    await expect(langFilter.locator('button', { hasText: siteLabels.ui.languageNames.en.fr! })).toHaveCount(0);
+    await expect(langFilter.locator('button', { hasText: siteLabels.ui.languageNames.es.fr! })).toHaveCount(0);
   });
 
   test('English route /contact is distinct from /fr/contact', async ({ page }) => {
@@ -111,7 +111,7 @@ test.describe('French locale coverage', () => {
     expect(enResponse?.status()).toBe(200);
 
     const enInfoTerminal = page.locator('[data-testid="contact-info-terminal"]').first();
-    await expect(enInfoTerminal).toContainText('LOCATION');
+    await expect(enInfoTerminal).toContainText(contactContent.infoTerminal.sectionLabels.location.en);
     const enForm = page.locator('form').filter({ visible: true }).first();
     const enLabels = await enForm.locator('label').allTextContents();
     const enInfo = await enInfoTerminal.textContent();
@@ -121,7 +121,7 @@ test.describe('French locale coverage', () => {
     expect(frResponse?.status()).toBe(200);
 
     const frInfoTerminal = page.locator('[data-testid="contact-info-terminal"]').first();
-    await expect(frInfoTerminal).toContainText('EMPLACEMENT');
+    await expect(frInfoTerminal).toContainText(contactContent.infoTerminal.sectionLabels.location.fr!);
     const frForm = page.locator('form').filter({ visible: true }).first();
     const frLabels = await frForm.locator('label').allTextContents();
     const frInfo = await frInfoTerminal.textContent();
@@ -132,9 +132,9 @@ test.describe('French locale coverage', () => {
 
     // The two routes are genuinely distinct: the info terminal localizes its
     // section headers (LOCATION on EN, EMPLACEMENT on FR — contact-page.ts).
-    expect(enInfo).toContain('LOCATION');
-    expect(frInfo).toContain('EMPLACEMENT');
-    expect(frInfo).not.toContain('LOCATION');
+    expect(enInfo).toContain(contactContent.infoTerminal.sectionLabels.location.en);
+    expect(frInfo).toContain(contactContent.infoTerminal.sectionLabels.location.fr!);
+    expect(frInfo).not.toContain(contactContent.infoTerminal.sectionLabels.location.en);
   });
 
   test('route /fr/services renders and navigates correctly', async ({ page }) => {

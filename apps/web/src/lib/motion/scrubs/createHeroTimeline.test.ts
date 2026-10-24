@@ -268,6 +268,8 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		onUpdate({ progress: 0.5, direction: 1 });
 		expect(onIntroComplete).not.toHaveBeenCalled();
 		onUpdate({ progress: 0.999, direction: 1 });
+		expect(onIntroComplete).not.toHaveBeenCalled();
+		onUpdate({ progress: 1, direction: 1 });
 		expect(onIntroComplete).toHaveBeenCalledTimes(1);
 
 		// Holding at the end does not re-fire.
@@ -279,6 +281,33 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		onUpdate({ progress: 1, direction: 1 });
 		expect(onIntroComplete).toHaveBeenCalledTimes(2);
 		destroy();
+	});
+
+	it('touch completion waits for the visual scrub after reaching the pin end', () => {
+		const descriptor = Object.getOwnPropertyDescriptor(ScrollTrigger, 'isTouch')!;
+		Object.defineProperty(ScrollTrigger, 'isTouch', { value: 1, configurable: true });
+		const createSpy = vi.spyOn(ScrollTrigger, 'create');
+		const onIntroComplete = vi.fn();
+		let destroy: (() => void) | undefined;
+		try {
+			destroy = createHeroTimeline(refs.pinContainer, {
+				svgWrapper: refs.svgWrapper, heroTextContainer: refs.heroTextContainer,
+				heroDot: refs.heroDot, scrollPrompt: refs.scrollPrompt,
+				startBlink: () => {}, stopBlink: () => {}, onIntroComplete,
+			});
+			const vars = createSpy.mock.calls.find(call => call[0].pin)![0];
+			const state = (progress: number) => ({ progress, direction: 1 }) as ScrollTrigger;
+			vars.onUpdate!(state(0.5));
+			vars.onUpdate!(state(1));
+			expect(onIntroComplete).not.toHaveBeenCalled();
+			vars.onScrubComplete!(state(1));
+			expect(onIntroComplete).toHaveBeenCalledTimes(1);
+			vars.onScrubComplete!(state(1));
+			expect(onIntroComplete).toHaveBeenCalledTimes(1);
+		} finally {
+			destroy?.();
+			Object.defineProperty(ScrollTrigger, 'isTouch', descriptor);
+		}
 	});
 
 	it('omitting onIntroComplete keeps onUpdate safe at full progress', () => {

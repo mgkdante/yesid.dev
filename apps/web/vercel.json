@@ -1,5 +1,17 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"installCommand": "cd ../.. && npx --yes --allow-scripts=bun --package=bun@1.4.4 -- bun install --frozen-lockfile",
+	"buildCommand": "npx --yes --allow-scripts=bun --package=bun@1.4.4 -- bun run build",
+	"rewrites": [
+		{
+			"source": "/og/blog/(.*)",
+			"destination": "/og/default.en.png"
+		},
+		{
+			"source": "/og/project/(.*)",
+			"destination": "/og/default.en.png"
+		}
+	],
 	"headers": [
 		{
 			"source": "/(.*)",
@@ -13,6 +25,19 @@
 				{
 					"key": "X-Robots-Tag",
 					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/og/(.*)",
+			"headers": [
+				{
+					"key": "Cache-Control",
+					"value": "public, max-age=60, must-revalidate"
+				},
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=31536000"
 				}
 			]
 		}

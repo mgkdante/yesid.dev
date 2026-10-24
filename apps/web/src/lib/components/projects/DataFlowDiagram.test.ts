@@ -1,7 +1,4 @@
-import { render } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
+import { render, screen } from '@testing-library/svelte';
 import { describe, expect, it, vi } from 'vitest';
 import DataFlowDiagram from './DataFlowDiagram.svelte';
 
@@ -9,35 +6,33 @@ vi.mock('@yesid/motion/stores/reducedMotion', () => ({
 	isPrefersReducedMotion: () => true,
 }));
 
-describe('DataFlowDiagram card sizing', () => {
-	it('keeps the card stack diagram readable instead of shrinking on mobile', () => {
+vi.mock('$lib/content', () => ({
+	siteLabels: { a11y: { technologyStackTemplate: { en: 'Fixture stack: {stack}' } } },
+}));
+
+describe('DataFlowDiagram content and interaction', () => {
+	it.each([
+		{ size: 'sm' as const, stack: ['TypeScript'] },
+		{ size: 'sm' as const, stack: ['SvelteKit', 'Directus', 'Neon', 'Vercel', 'Bun'] },
+		{ size: 'lg' as const, stack: ['A longer technology label', 'A second technology'] },
+	])('renders supplied stack nodes and accessible data in $size mode', ({ size, stack }) => {
 		const { container } = render(DataFlowDiagram, {
-			props: {
-				stack: ['SvelteKit', 'Directus', 'Neon', 'Vercel', 'Bun'],
-				size: 'sm',
-			},
+			props: { stack, size },
 		});
 
-		const diagram = container.querySelector('.data-flow-diagram');
-		const svg = container.querySelector('svg');
-		const firstLabel = container.querySelector('.df-node text');
-
-		expect(svg?.getAttribute('aria-label')).toBe('Technology stack: SvelteKit, Directus, Neon, Vercel, Bun');
-		expect(Number(svg?.getAttribute('width'))).toBeGreaterThanOrEqual(580);
-		expect(Number(svg?.getAttribute('height'))).toBeGreaterThanOrEqual(58);
-		expect(Number(firstLabel?.getAttribute('font-size'))).toBeGreaterThanOrEqual(11);
-		expect(diagram?.getAttribute('style')).toContain('--df-svg-width');
-	});
-
-	it('lets mobile card diagrams scroll at natural width instead of forcing tiny text', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/DataFlowDiagram.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('.data-flow-diagram.size-sm svg');
-		expect(source).toContain('width: max(100%, var(--df-svg-width));');
-		expect(source).toContain('max-width: none;');
+		const svg = screen.getByRole('img');
+		expect(svg).toHaveAccessibleName(`Fixture stack: ${stack.join(', ')}`);
+		const viewBox = svg.getAttribute('viewBox')!.split(/\s+/).map(Number);
+		expect(viewBox.every(Number.isFinite)).toBe(true);
+		expect(viewBox[2]).toBeGreaterThan(0);
+		expect(viewBox[3]).toBeGreaterThan(0);
+		const nodes = container.querySelectorAll('.df-node');
+		expect(nodes).toHaveLength(stack.length);
+		for (const node of nodes) {
+			expect(node.querySelector('text')?.textContent?.trim()).toBeTruthy();
+			expect(Number(node.querySelector('rect')?.getAttribute('width'))).toBeGreaterThan(0);
+			expect(Number(node.querySelector('rect')?.getAttribute('height'))).toBeGreaterThan(0);
+		}
 	});
 
 	it('marks the scrollable stack as a nested carousel drag surface', () => {
@@ -50,14 +45,6 @@ describe('DataFlowDiagram card sizing', () => {
 
 		const diagram = container.querySelector('.data-flow-diagram');
 		expect(diagram?.getAttribute('data-carousel-drag-ignore')).toBe('true');
-
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/DataFlowDiagram.svelte'),
-			'utf8',
-		);
-		expect(source).toContain('siteLabels.a11y.technologyStackTemplate');
-		expect(source).not.toContain('aria-label="Technology stack: {stack.join');
-		expect(source).toContain('onwheel={containHorizontalStackWheel}');
 	});
 
 	it('lets vertical wheel events bubble so project cards do not interrupt page scroll', () => {

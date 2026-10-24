@@ -19,7 +19,7 @@
  * (and its module state) survive page swaps.
  *
  * `persisted()` is the ergonomic consumer; pages with scroll register a
- * ScrollContext; async-mounted consumers (engine, Embla) read `pendingRestore`.
+ * ScrollContext; async-mounted consumers (Embla) read `pendingRestore`.
  */
 import { browser } from '$app/environment';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
@@ -51,7 +51,7 @@ export interface ScrollContext {
 const sessionRegistry = new Map<string, SessionEntry>();
 let scrollContext: ScrollContext | null = null;
 
-// The blob currently being restored. Async consumers (engine constructor, Embla
+// The blob currently being restored. Async consumers (Embla
 // onInit) read their value from here instead of racing `afterNavigate`.
 let pendingBlob: HandoffBlob | null = null;
 let activeSwitchKey: string | null = null;
@@ -262,7 +262,7 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 
 	beforeNavigate((nav) => {
 		// Any navigation ends the previous page's pending async restore — clear it so
-		// a slow async consumer (e.g. the dynamically-imported stack-engine) that
+		// a slow async consumer (e.g. a dynamically imported component) that
 		// already read it on THIS page cannot be re-seeded with stale data on a later
 		// page. The blob is consumed for the lifetime of the page it was restored on.
 		if (!nav.from || !nav.to) return;
@@ -325,7 +325,7 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 		activeSwitchKey = null;
 		activeStableIdentity = null;
 		// Keep `pendingBlob` in memory (NOT cleared here). Async-mounted consumers —
-		// e.g. the stack-engine, which loads via dynamic import() and constructs AFTER
+		// e.g. a component that loads via dynamic import() and constructs AFTER
 		// this restore window — read their seed from pendingRestore() during the rest
 		// of the page's life. It is cleared on the next beforeNavigate (above).
 		restoringState = false;

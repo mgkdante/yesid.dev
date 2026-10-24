@@ -1,10 +1,10 @@
 <!--
   HeroMobileSql — Mobile SQL panel section (below the pin, scrolls naturally).
-  Hidden on md+ (desktop has it in-grid). Same data/handlers as desktop panel.
+  Hidden on lg+ (desktop has it in-grid). Same data/handlers as desktop panel.
 -->
 <script lang="ts">
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
-	import type { HeroData } from '$lib/content';
+	import type { HeroData } from '$lib/live';
 	let {
 		heroData,
 		sqlPrompt,
@@ -32,7 +32,7 @@
 	} = $props();
 </script>
 
-<div class="md:hidden" data-testid="hero-mobile-sql">
+<div class="lg:hidden" data-testid="hero-mobile-sql">
 	<!-- Horizontal divider — mirrors the vertical desktop divider -->
 	<div class="hero-divider-h mx-6"></div>
 

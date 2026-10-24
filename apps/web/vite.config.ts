@@ -1,27 +1,32 @@
+import globalData from '@csstools/postcss-global-data';
 import { defineConfig } from 'vitest/config';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
+import { fileURLToPath } from 'node:url';
+import customMedia from 'postcss-custom-media';
 import { visualizer } from 'rollup-plugin-visualizer';
+
+const designTokensCss = fileURLToPath(new URL('./vendor/design/tokens/tokens.css', import.meta.url));
 
 // svelteTesting() is a Vite plugin from @testing-library/svelte that:
 //   - adds 'browser' to resolve.conditions (makes Svelte use index-client.js)
 //   - adds @testing-library/svelte* to ssr.noExternal (forces Vite transform)
 // It only activates when process.env.VITEST is set, so it's safe to include always.
 export default defineConfig({
+	css: {
+		postcss: {
+			plugins: [
+				globalData({ files: [designTokensCss] }),
+				customMedia({ preserve: false }),
+			],
+		},
+	},
 	resolve: {
 		// The file-vendored UI package and app-owned parity wrappers must share
 		// one bits-ui context registry when they compose Root and Content.
 		dedupe: ['bits-ui'],
 	},
-	// Vitest stores its results cache (per-file test timings used for
-	// sequencing) under Vite's cacheDir at <cacheDir>/vitest/. The default is
-	// node_modules/.vite, which CI can't cache safely (bun install owns
-	// node_modules). Relocate it to .vitest/cache ONLY under Vitest — dev/build
-	// keep the default dep-optimizer location. CI restores apps/web/.vitest/cache
-	// in .github/actions/setup (slice-28.4, audit #132; pattern per Vitest 4
-	// cache docs).
-	cacheDir: process.env.VITEST ? '.vitest/cache' : undefined,
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
@@ -77,14 +82,15 @@ export default defineConfig({
 						'src/lib/analytics/**/*.test.ts',
 						'src/lib/adapters/**/*.test.ts',
 						'src/lib/content/**/*.test.ts',
+						'src/lib/live/**/*.test.ts',
 						'src/lib/directus/**/*.test.ts',
-						'src/lib/repositories/**/*.test.ts',
 						'src/lib/schemas/**/*.test.ts',
 						'src/lib/server/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',
 						'src/lib/state/**/*.test.ts',
 						'src/lib/styles/**/*.test.ts',
 						'src/lib/og/**/*.test.ts',
+						'src/lib/projects/**/*.test.ts',
 						'src/params/**/*.test.ts',
 						'src/tests/**/*.test.ts',
 					],

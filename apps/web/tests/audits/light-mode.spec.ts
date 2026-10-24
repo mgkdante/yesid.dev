@@ -20,7 +20,6 @@ const ROUTES = [
 	'/blog/personal',
 	'/about',
 	'/contact',
-	'/tech-stack',
 	'/this-route-does-not-exist',
 ];
 

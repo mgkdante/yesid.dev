@@ -2,15 +2,19 @@
 // Server-only so service/project CMS reads are serialized through __data.json.
 
 import { fetchServiceSvgContents } from '$lib/utils';
-import { getVisibleServices, getPublicProjects } from '$lib/repositories';
+import { adapter } from '$lib/adapters';
 import { localeEntries } from '$lib/server/prerender-entries';
+import type { EntryGenerator } from './$types';
 import type { Project } from '$lib/types';
 
-export const entries = localeEntries;
+export const entries = (() => localeEntries('/services')) satisfies EntryGenerator;
+export const prerender = entries().length > 0;
 
-export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
-	const ctx = { pageCache: locals.pageCache };
-	const [services, projects] = await Promise.all([getVisibleServices(ctx), getPublicProjects(ctx)]);
+export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
+	const [services, projects] = await Promise.all([
+		adapter.services.visible(),
+		adapter.projects.public(),
+	]);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
 	const serviceProjects: Record<string, readonly Project[]> = {};
 	services.forEach((service) => {
