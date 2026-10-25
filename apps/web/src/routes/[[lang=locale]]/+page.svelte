@@ -7,7 +7,7 @@
   as props. No component imports static content modules directly anymore.
 -->
 <script lang="ts">
-	import HomePage from '$lib/components/home/HomePage.svelte';
+	import HomePage from '#lib/components/home/HomePage.svelte';
 
 	let { data } = $props();
 </script>

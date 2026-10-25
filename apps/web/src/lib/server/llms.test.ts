@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { llmsTxt, llmsFullTxt } from './llms';
-import { blogPosts } from '$lib/content';
-import { canonicalFor } from '$lib/utils/seo-defaults';
-import { sitePages } from '$lib/content/site-pages';
+import { blogPosts } from '#lib/content/index.ts';
+import { canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
 
 // L2 (launch Phase 4, AEO): the Spanish section is how AI answer engines
 // fielding Spanish queries meet native copy + the /es URLs. Both bodies

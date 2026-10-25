@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { adapter } from '$lib/adapters';
-import { match as ogTypeMatch } from '../params/ogType';
-import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+import { adapter } from '#lib/adapters/index.ts';
+import { params } from '../params';
+
+async function ogTypeMatch(value: string): Promise<boolean> {
+	return !(await params.ogType['~standard'].validate(value)).issues;
+}
+import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { ogCoverage } from '@yesid/gates';
 import {
 	OG_BASE_SLUG_RE,
@@ -10,12 +14,12 @@ import {
 	parseOgSlugParam,
 	type OgLocale,
 	type OgType,
-} from '$lib/og/og-path';
+} from '#lib/og/og-path.ts';
 
-function assertOgCoverage(type: OgType, identifiers: readonly string[]) {
+async function assertOgCoverage(type: OgType, identifiers: readonly string[]) {
 	const coverage = ogCoverage({
 		expected: [type],
-		actual: ogTypeMatch(type) ? [type] : [],
+		actual: await ogTypeMatch(type) ? [type] : [],
 		identifiers,
 		isValidIdentifier: (identifier) => OG_BASE_SLUG_RE.test(identifier),
 	});
@@ -30,9 +34,9 @@ describe('OG coverage gate', () => {
 		const posts = await adapter.blog.all();
 		const projects = await adapter.projects.public();
 
-		expect(ogTypeMatch('other')).toBe(false);
-		assertOgCoverage('blog', posts.map((post) => post.slug));
-		assertOgCoverage('project', projects.map((project) => project.slug));
+		expect(await ogTypeMatch('other')).toBe(false);
+		await assertOgCoverage('blog', posts.map((post) => post.slug));
+		await assertOgCoverage('project', projects.map((project) => project.slug));
 	});
 
 	it('round-trips every published OG path and keeps the real entry matrix injective', async () => {

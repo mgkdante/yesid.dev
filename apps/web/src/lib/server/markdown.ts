@@ -7,7 +7,7 @@ import {
 	parseCodeFence,
 	renderCodeTerminalHtml,
 	renderMermaidPlaceholderHtml,
-} from '$lib/utils/code-fences';
+} from '#lib/utils/code-fences.ts';
 import { highlightCodeHtml } from './syntax-highlight';
 
 const README_DIAGNOSTICS = {

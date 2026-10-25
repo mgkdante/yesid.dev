@@ -3,14 +3,14 @@
 // static content layer post-27.2).
 
 import { error } from '@sveltejs/kit';
-import { renderGithubReadme } from '$lib/server/markdown';
-import { fetchServiceSvgContents } from '$lib/utils';
-import { resolveLocale } from '$lib/utils/locale';
-import { localeFromParams } from '$lib/utils/locale-routing';
-import { adapter } from '$lib/adapters';
-import { projectEntries } from '$lib/server/prerender-entries';
-import { collectCodeHighlights } from '$lib/server/code-highlights';
-import type { Service } from '$lib/types';
+import { renderGithubReadme } from '#lib/server/markdown.ts';
+import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
+import { adapter } from '#lib/adapters/index.ts';
+import { projectEntries } from '#lib/server/prerender-entries.ts';
+import { collectCodeHighlights } from '#lib/server/code-highlights.ts';
+import type { Service } from '#lib/types.ts';
 
 export const entries = projectEntries;
 export const prerender = entries().length > 0;
@@ -19,7 +19,7 @@ export async function load({ params, fetch, url }: { params: { slug: string; lan
 	const project = await adapter.projects.bySlug(params.slug);
 
 	if (!project || project.status === 'private') {
-		error(404, { message: 'Project not found' });
+		error(404, 'Project not found');
 	}
 
 	const servicesResolved = await Promise.all(

@@ -5,7 +5,7 @@ import { gzipSync } from 'node:zlib';
 const CLIENT_DIR = resolve('.svelte-kit/output/client');
 const MANIFEST_PATH = resolve(CLIENT_DIR, '.vite/manifest.json');
 const MANIFEST_DISPLAY_PATH = '.svelte-kit/output/client/.vite/manifest.json';
-const ROOT_KEY = '.svelte-kit/generated/client-optimized/nodes/0.js';
+const ROOT_KEY = '.svelte-kit/generated/build/client-optimized/nodes/0.js';
 
 function fail(message) {
 	console.error(`FAIL: ${message}`);

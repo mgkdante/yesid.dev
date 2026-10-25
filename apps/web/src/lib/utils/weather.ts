@@ -1,5 +1,5 @@
 // Shared weather fetch for Montreal.
-// Server-side only — uses $env/dynamic/private. Client code may import the
+// Server-side only — uses $app/env/private. Client code may import the
 // WeatherData TYPE only (type imports are erased; the env import must never
 // reach the browser bundle).
 //
@@ -11,11 +11,11 @@
 //     can be that stale.
 //   - GET /api/weather re-exposes this util with a 30-minute edge TTL;
 //     ContactPage/AboutWeather refresh from it after hydration.
+import { building } from '$app/env';
 
-import { building } from '$app/environment';
-import { env } from '$env/dynamic/private';
-import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
+import { OPENWEATHER_API_KEY } from '$app/env/private';
+import type { Locale } from '#lib/types.ts';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 
 export interface WeatherData {
 	temp: number;
@@ -57,14 +57,14 @@ const cache = new Map<string, CacheEntry>();
 export async function fetchMontrealWeather(
 	locale: Locale = DEFAULT_LOCALE,
 ): Promise<WeatherData | null> {
-	// Prerender guard: $env/dynamic/* is unreadable while prerendering (SvelteKit
-	// throws), and a build-time snapshot would be stale anyway. Prerendered pages
+	// Runtime env values are unavailable while prerendering, and a build-time
+	// snapshot would be stale anyway. Prerendered pages
 	// ship without baked weather; WeatherScene/AboutWeather hydrate from
 	// GET /api/weather, which stays a dynamic (non-prerendered) endpoint.
 	if (building) {
 		return null;
 	}
-	if (!env.OPENWEATHER_API_KEY) {
+	if (!OPENWEATHER_API_KEY) {
 		return null;
 	}
 
@@ -76,9 +76,7 @@ export async function fetchMontrealWeather(
 	}
 
 	try {
-		const res = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?q=Montreal,CA&units=metric&lang=${lang}&appid=${env.OPENWEATHER_API_KEY}`
-		);
+		const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Montreal,CA&units=metric&lang=${lang}&appid=${OPENWEATHER_API_KEY}`);
 
 		if (res.ok) {
 			const data = await res.json();

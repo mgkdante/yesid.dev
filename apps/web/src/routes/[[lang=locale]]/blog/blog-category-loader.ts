@@ -3,10 +3,10 @@
 // derivation lives here once and each +page.server.ts is a one-line call.
 // Plain .ts (no `+` prefix) so SvelteKit does not treat it as a route.
 
-import { adapter } from '$lib/adapters';
-import { getBlogPostsForLocale } from '$lib/blog/translations';
-import { uniqueSorted } from '$lib/utils';
-import type { BlogCategory, Locale } from '$lib/types';
+import { adapter } from '#lib/adapters/index.ts';
+import { getBlogPostsForLocale } from '#lib/blog/translations.ts';
+import { uniqueSorted } from '#lib/utils/index.ts';
+import type { BlogCategory, Locale } from '#lib/types.ts';
 
 export async function loadBlogCategory(category: BlogCategory, locale: Locale) {
 	const [categoryPosts, blogPage] = await Promise.all([

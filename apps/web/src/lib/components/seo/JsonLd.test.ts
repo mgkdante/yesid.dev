@@ -1,7 +1,7 @@
 import { render } from '@testing-library/svelte';
 import { afterEach, describe, expect, it } from 'vitest';
 import JsonLd from './JsonLd.svelte';
-import type { SchemaOrgNode } from '$lib/schemas/seo';
+import type { SchemaOrgNode } from '#lib/schemas/seo.ts';
 
 const PERSON_NODE: SchemaOrgNode = {
 	'@type': 'Person',

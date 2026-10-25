@@ -3,7 +3,7 @@
 // so intent-preserving redirect target is /services/data-pipeline.
 // See permanentRedirect() for the CDN-edge pattern rationale.
 
-import { permanentRedirect } from '$lib/server/redirect';
+import { permanentRedirect } from '#lib/server/redirect.ts';
 
 // Stays on the lambda: permanentRedirect() carries CDN cache headers a
 // prerendered redirect entry would lose.

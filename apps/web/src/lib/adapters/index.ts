@@ -12,3 +12,5 @@ export const adapter: ContentAdapter = {
 };
 
 export type { ContentAdapter } from './types';
+
+export { resolveStaticErrorPage } from './static';

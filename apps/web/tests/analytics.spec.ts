@@ -37,8 +37,7 @@ async function proxyProductionHostnameToPreview(page: Page): Promise<string[]> {
 		requestedUrls.push(route.request().url());
 		const localUrl = new URL(route.request().url());
 		localUrl.hostname = 'localhost';
-		const response = await route.fetch({ url: localUrl.toString() });
-		await route.fulfill({ response });
+		await route.continue({ url: localUrl.toString() });
 	});
 	return requestedUrls;
 }

@@ -1,37 +1,28 @@
-<!--
-  Full work listing page layout: header, desktop and mobile filters, and a card grid
-  with GSAP Flip animation on filter changes.
-  Service + tag filters use AND logic with URL params via goto().
-  Desktop: sticky left sidebar (~220px) + main grid on the right.
-  Mobile: search + in-flow collapsible filters.
-  Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
-  No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
--->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import type { Project, ProjectsPageContent, Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import '$lib/styles/listing-header.css';
-	import '$lib/styles/listing-shell.css';
+	import { browser } from '$app/env';
+	import { page } from '$app/state';
+	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
+	import type { Project, ProjectsPageContent, Service } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import '#lib/styles/listing-header.css';
+	import '#lib/styles/listing-shell.css';
 
 	const locale = getLocale();
-	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
-	import SearchInput from '$lib/components/shared/SearchInput.svelte';
-	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
-	import ListingMobileFilters from '$lib/components/shared/ListingMobileFilters.svelte';
-	import { startListingBlueprintScrub } from '$lib/components/shared/listing-blueprint-scrub';
+	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
+	import SearchInput from '#lib/components/shared/SearchInput.svelte';
+	import FilterSummary from '#lib/components/shared/FilterSummary.svelte';
+	import ListingMobileFilters from '#lib/components/shared/ListingMobileFilters.svelte';
+	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
-	import { MetroStation } from '$lib/components/brand';
+	import { MetroStation } from '#lib/components/brand/index.ts';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { siteLabels } from '$lib/content';
-	import { persisted } from '$lib/state/persisted.svelte';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
 
 	let {
 		projects,
@@ -79,9 +70,9 @@
 	// (url.searchParams is unreadable at build), so SSR HTML is always the
 	// unfiltered listing — the only representation a static file can carry —
 	// and ?service/?tag/?stack deep-links apply on hydration.
-	let activeService = $derived(browser ? $page.url.searchParams.get('service') : null);
-	let activeTag = $derived(browser ? $page.url.searchParams.get('tag') : null);
-	let activeStack = $derived(browser ? $page.url.searchParams.get('stack') : null);
+	let activeService = $derived(browser ? page.url.searchParams.get('service') : null);
+	let activeTag = $derived(browser ? page.url.searchParams.get('tag') : null);
+	let activeStack = $derived(browser ? page.url.searchParams.get('stack') : null);
 	// slice-34.1: free-text search is session-scoped (the locale-free string IS the
 	// query the user typed — valid verbatim in any locale) so it survives a language
 	// switch via the locale-handoff orchestrator. The tag/service/stack filters live
@@ -126,13 +117,13 @@
 	// FLIP animation on filter changes
 	async function updateFilter(type: 'service' | 'tag' | 'stack', value: string | null) {
 		flipState = captureFlipState();
-		const url = new URL($page.url);
+		const url = new URL(page.url.href);
 		if (value) {
 			url.searchParams.set(type, value);
 		} else {
 			url.searchParams.delete(type);
 		}
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
 	function handleServiceSelect(serviceId: string | null) {
@@ -157,11 +148,11 @@
 	async function clearFilters() {
 		flipState = captureFlipState();
 		searchQuery.value = '';
-		const url = new URL($page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.delete('service');
 		url.searchParams.delete('tag');
 		url.searchParams.delete('stack');
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
 	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
@@ -197,7 +188,21 @@
 	});
 </script>
 
-<div bind:this={listingSectionEl} data-testid="project-listing" class="w-full pb-16">
+<!--
+  Full work listing page layout: header, desktop and mobile filters, and a card grid
+  with GSAP Flip animation on filter changes.
+  Service + tag filters use AND logic with URL params via goto().
+  Desktop: sticky left sidebar (~220px) + main grid on the right.
+  Mobile: search + in-flow collapsible filters.
+  Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
+  No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
+-->
+
+<div
+	bind:this={listingSectionEl}
+	data-testid="project-listing"
+	class="w-full pb-16"
+>
 	<!-- Blueprint header: full-bleed, outside container -->
 	<div bind:this={blueprintWrapEl} class="listing-blueprint-header" data-batch="project-item">
 		<ProjectsBlueprint />
@@ -214,13 +219,13 @@
 		<aside class="listing-filter-column">
 			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
 				<ProjectFilterSidebar
-					{serviceIds}
-					{serviceMap}
+					serviceIds={serviceIds}
+					serviceMap={serviceMap}
 					tags={allTags}
 					stack={allStack}
-					{activeService}
-					{activeTag}
-					{activeStack}
+					activeService={activeService}
+					activeTag={activeTag}
+					activeStack={activeStack}
 					onServiceSelect={handleServiceSelect}
 					onTagSelect={handleTagSelect}
 					onStackSelect={handleStackSelect}
@@ -232,57 +237,63 @@
 		<!-- Listing content with padding -->
 		<div class="listing-content">
 
-		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
-		<div class="mb-4 lg:hidden">
+			<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
+			<div class="mb-4 lg:hidden">
 			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery.value} testId="project-search-mobile" />
-		</div>
+			</div>
 
-		<ListingMobileFilters
-			open={mobileFiltersOpen.value}
-			label={mobileFiltersLabel}
-			testId="project-filter-mobile"
-			onOpenChange={setMobileFiltersOpen}
-		>
-			<ProjectFilterSidebar
-				{serviceIds}
-				{serviceMap}
-				tags={allTags}
-				stack={allStack}
-				{activeService}
-				{activeTag}
-				{activeStack}
-				showSearch={false}
-				onServiceSelect={handleServiceSelect}
-				onTagSelect={handleTagSelect}
-				onStackSelect={handleStackSelect}
-				bind:searchQuery={searchQuery.value}
-			/>
-		</ListingMobileFilters>
+			<ListingMobileFilters
+				open={mobileFiltersOpen.value}
+				label={mobileFiltersLabel}
+				testId="project-filter-mobile"
+				onOpenChange={setMobileFiltersOpen}
+			>
+				<ProjectFilterSidebar
+					serviceIds={serviceIds}
+					serviceMap={serviceMap}
+					tags={allTags}
+					stack={allStack}
+					activeService={activeService}
+					activeTag={activeTag}
+					activeStack={activeStack}
+					showSearch={false}
+					onServiceSelect={handleServiceSelect}
+					onTagSelect={handleTagSelect}
+					onStackSelect={handleStackSelect}
+					bind:searchQuery={searchQuery.value}
+				/>
+			</ListingMobileFilters>
 
-		<!-- Active filter summary -->
-		{#if hasActiveFilters}
+			<!-- Active filter summary -->
+			{#if hasActiveFilters}
 			<FilterSummary count={filteredProjects.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
-		{/if}
+			{/if}
 
-		<!-- Card grid -->
-		{#if filteredProjects.length === 0}
+			<!-- Card grid -->
+			{#if filteredProjects.length === 0}
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
 				{emptyStateText}
 			</p>
-		{:else}
-			<div class="project-grid">
-				{#each filteredProjects as project, i (project.slug)}
-					<div class="flex gap-3" data-batch="project-item">
-						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
-						<div class="min-w-0 flex-1">
-							<!-- First card is the listing's LCP candidate: eager + high priority.
+			{:else}
+				<div class="project-grid">
+					{#each filteredProjects as project, i (project.slug)}
+						<div class="flex gap-3" data-batch="project-item">
+							<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
+							<div class="min-w-0 flex-1">
+								<!-- First card is the listing's LCP candidate: eager + high priority.
 							     The rest stay lazy. -->
-							<ProjectCard {project} {services} {serviceSvgContents} eager={i === 0} />
+
+								<ProjectCard
+									project={project}
+									services={services}
+									serviceSvgContents={serviceSvgContents}
+									eager={i === 0}
+								/>
+							</div>
 						</div>
-					</div>
-				{/each}
-			</div>
-		{/if}
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</section>
 </div>

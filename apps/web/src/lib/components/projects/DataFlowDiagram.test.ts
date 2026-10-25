@@ -6,7 +6,7 @@ vi.mock('@yesid/motion/stores/reducedMotion', () => ({
 	isPrefersReducedMotion: () => true,
 }));
 
-vi.mock('$lib/content', () => ({
+vi.mock('#lib/content/index.ts', () => ({
 	siteLabels: { a11y: { technologyStackTemplate: { en: 'Fixture stack: {stack}' } } },
 }));
 

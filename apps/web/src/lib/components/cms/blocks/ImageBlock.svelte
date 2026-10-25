@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import type { ImageBlock } from '@repo/shared';
-	import { assetImage } from '$lib/directus/assets';
+	import { assetImage } from '#lib/directus/assets.ts';
 
 	let { data }: { data: ImageBlock['data'] } = $props();
 

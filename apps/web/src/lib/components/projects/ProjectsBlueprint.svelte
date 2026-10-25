@@ -4,12 +4,12 @@
 -->
 <script lang="ts">
 	import { BlueprintShell } from '@yesid/ui/brand';
-	import BlueprintTBM from '$lib/components/svg/tunneling/BlueprintTBM.svelte';
-	import BlueprintTunnelSection from '$lib/components/svg/tunneling/BlueprintTunnelSection.svelte';
-	import BlueprintErector from '$lib/components/svg/tunneling/BlueprintErector.svelte';
-	import BlueprintGeology from '$lib/components/svg/tunneling/BlueprintGeology.svelte';
-	import BlueprintVentShaft from '$lib/components/svg/tunneling/BlueprintVentShaft.svelte';
-	import BlueprintGroutInjection from '$lib/components/svg/tunneling/BlueprintGroutInjection.svelte';
+	import BlueprintTBM from '#lib/components/svg/tunneling/BlueprintTBM.svelte';
+	import BlueprintTunnelSection from '#lib/components/svg/tunneling/BlueprintTunnelSection.svelte';
+	import BlueprintErector from '#lib/components/svg/tunneling/BlueprintErector.svelte';
+	import BlueprintGeology from '#lib/components/svg/tunneling/BlueprintGeology.svelte';
+	import BlueprintVentShaft from '#lib/components/svg/tunneling/BlueprintVentShaft.svelte';
+	import BlueprintGroutInjection from '#lib/components/svg/tunneling/BlueprintGroutInjection.svelte';
 </script>
 
 <BlueprintShell normalizeTextFont={false} labels={['SEC-PROJ / TUNNELING', 'DWG: TBM-EPB-SECTION', 'SCALE NTS | REV.B']}>

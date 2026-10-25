@@ -1,7 +1,7 @@
-import { adapter } from '$lib/adapters';
-import { fetchMontrealWeather } from '$lib/utils/weather';
-import { localeFromParams } from '$lib/utils/locale-routing';
-import { localeEntries } from '$lib/server/prerender-entries';
+import { adapter } from '#lib/adapters/index.ts';
+import { fetchMontrealWeather } from '#lib/utils/weather.ts';
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
+import { localeEntries } from '#lib/server/prerender-entries.ts';
 import type { EntryGenerator } from './$types';
 
 export const entries = (() => localeEntries('/contact')) satisfies EntryGenerator;

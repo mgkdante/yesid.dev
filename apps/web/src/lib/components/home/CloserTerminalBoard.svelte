@@ -3,10 +3,10 @@
   Data-driven rows: each row links to a destination (contact, GitHub, blog, about).
 -->
 <script lang="ts">
-	import { TerminalChrome } from '$lib/components/brand';
-	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { localizeHref } from '$lib/utils/locale-routing';
+	import { TerminalChrome } from '#lib/components/brand/index.ts';
+	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
 

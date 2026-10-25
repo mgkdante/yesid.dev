@@ -2,9 +2,9 @@
 // One module = one place to change when the canonical host changes, when a new
 // locale launches, or when the default OG image is updated.
 
-import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
-import { delocalizePath } from '$lib/utils/locale-routing';
+import type { Locale } from '#lib/types.ts';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+import { delocalizePath } from '#lib/utils/locale-routing.ts';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).

@@ -7,9 +7,9 @@ import {
 	_emitSitemapDocument,
 	_exactUrlEntries,
 } from './+server';
-import { sitePages } from '$lib/content/site-pages';
-import { canonicalFor } from '$lib/utils/seo-defaults';
-import type { BlogPost } from '$lib/types';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { canonicalFor } from '#lib/utils/seo-defaults.ts';
+import type { BlogPost } from '#lib/types.ts';
 
 function fingerprint(body: string) {
 	return {
@@ -76,7 +76,7 @@ describe('GET /sitemap.xml', () => {
 	});
 
 	it('includes dynamic blog routes for every published post', async () => {
-		const { adapter } = await import('$lib/adapters');
+		const { adapter } = await import('#lib/adapters/index.ts');
 		const posts = await adapter.blog.all();
 		const { body } = await fetchBody();
 		for (const post of posts) {

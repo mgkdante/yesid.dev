@@ -10,10 +10,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { gsap } from '$lib/motion/utils/gsap.js';
-	import { Card } from '$lib/components/ui/card';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { gsap } from '#lib/motion/utils/gsap.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 	import {
 		TRAIN_ROCKET_SHAPES,
 		TRAIN_ROCKET_VIEWBOX,

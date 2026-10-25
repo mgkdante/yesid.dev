@@ -16,15 +16,15 @@
 // build-time cache) — the same arrays the sitemap builder enumerates, so
 // prerender coverage and sitemap coverage stay in lockstep.
 
-import { blogPosts } from '$lib/content/blog';
-import { projects } from '$lib/content/projects';
-import { services } from '$lib/content/services';
-import { legalPages } from '$lib/content/legal-pages';
-import { sitePages } from '$lib/content/site-pages';
-import { isPathPublished } from '$lib/utils/page-registry';
-import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
-import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '$lib/blog/translations';
-import type { BlogPost, Project, Service, SitePage } from '$lib/types';
+import { blogPosts } from '#lib/content/blog.ts';
+import { projects } from '#lib/content/projects.ts';
+import { services } from '#lib/content/services.ts';
+import { legalPages } from '#lib/content/legal-pages.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { PREFIX_LOCALES } from '#lib/utils/locale-routing.ts';
+import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '#lib/blog/translations.ts';
+import type { BlogPost, Project, Service, SitePage } from '#lib/types.ts';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
 const LANG_PARAM_VALUES: readonly string[] = ['', ...PREFIX_LOCALES];
