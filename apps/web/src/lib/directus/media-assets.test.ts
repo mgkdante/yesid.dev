@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { aboutPageContent } from '$lib/content/about-page';
-import { blogBodies } from '$lib/content/blog-bodies';
-import { mirroredMediaAssets } from '$lib/content/media-assets';
-import { projects } from '$lib/content/projects';
-import { routeSeoOverrides } from '$lib/content/route-seo';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { techStackItems } from '$lib/content/tech-stack';
+import { aboutPageContent } from '#lib/content/about-page.ts';
+import { blogBodies } from '#lib/content/blog-bodies.ts';
+import { mirroredMediaAssets } from '#lib/content/media-assets.ts';
+import { projects } from '#lib/content/projects.ts';
+import { routeSeoOverrides } from '#lib/content/route-seo.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
 
 describe('generated media asset mirror coverage', () => {
 	it('mirrors every CMS media UUID currently emitted into visitor-rendered content', () => {
@@ -44,7 +43,6 @@ function collectRenderedMediaIds(): Set<string> {
 	collectImageBlockIds(blogBodies, ids);
 
 	for (const language of aboutPageContent.languages) add(language.image);
-	for (const item of techStackItems) add(item.icon?.svg_override);
 
 	return ids;
 }

@@ -20,7 +20,7 @@ vi.mock('../utils/gsap.js', async (importOriginal) => {
 });
 
 // Mock shapes utils so getMorphShapes doesn't invoke the real adapter.
-vi.mock('$lib/utils/shapes', () => ({
+vi.mock('#lib/utils/shapes.ts', () => ({
 	getMorphShapes: vi.fn(async () => [
 		{ id: 'triangle', label: 'Triangle', path: 'M24 8 L40 38 L8 38 Z', viewbox: '0 0 48 48', sort: 1 },
 		{ id: 'circle', label: 'Circle', path: 'M24 8 A16 16 0 1 1 23.99 8 Z', viewbox: '0 0 48 48', sort: 2 },

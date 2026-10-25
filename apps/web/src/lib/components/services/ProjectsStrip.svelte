@@ -4,16 +4,16 @@
   Layout: label | separator | project links (scrollable) | count
 -->
 <script lang="ts">
-	import type { Project } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Project } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import { cn } from '$lib/utils';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { cn } from '#lib/utils/index.ts';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
 
 	export interface ProjectsStripProps {
 		/** Projects to display */
@@ -76,15 +76,9 @@
 	.strip-inner {
 		display: flex;
 		align-items: center;
-		padding: 0.875rem var(--space-page-x);
+		min-height: calc(var(--strip-h) - 3px);
+		padding: calc((var(--strip-h) - 47px) / 2) var(--space-page-x);
 		gap: 1.5rem;
-	}
-
-	@media (min-width: 1024px) {
-		.strip-inner {
-			padding: 1rem var(--space-page-x);
-			gap: 2rem;
-		}
 	}
 
 	.strip-label {
@@ -98,7 +92,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.strip-label {
 			display: block;
 			flex-shrink: 0;
@@ -113,7 +107,7 @@
 		display: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.strip-separator {
 			display: block;
 		}
@@ -128,7 +122,7 @@
 		overflow-x: auto;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.strip-links {
 			justify-content: space-evenly;
 		}
@@ -145,7 +139,7 @@
 		font-weight: 600;
 		white-space: nowrap;
 		transition: opacity var(--duration-fast);
-		padding-block: 12px;
+		padding-block: 8px;
 		min-height: 44px;
 	}
 	.strip-link:hover {

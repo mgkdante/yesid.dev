@@ -5,14 +5,14 @@
   Stop label always top-left.
 -->
 <script lang="ts">
-	import type { AboutInterest } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutInterest } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 
 	let { interests, stop, label }: { interests: readonly AboutInterest[]; stop: string; label: string } = $props();
 
@@ -37,7 +37,7 @@
 <Card class="relative h-full !gap-0 !py-0" data-testid="about-interests">
 	<!-- Stop label: top-left, always -->
 	<div class="absolute top-3 left-4 z-20">
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 	</div>
 
 	<!-- Diagonal strips container -->

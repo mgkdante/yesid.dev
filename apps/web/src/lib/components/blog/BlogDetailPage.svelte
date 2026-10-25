@@ -1,30 +1,25 @@
-<!--
-  Blog detail page orchestrator for /blog/[slug].
-  Structure: full-bleed header + hazard separator + shared article body.
-  Desktop: shared TOC + post meta rail + sectionized article cards.
-  Mobile: post meta card + sectionized article cards + floating TOC pill.
-  Same architectural role as ProjectDetailPage.
--->
 <script lang="ts">
-  import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
-  import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import '#lib/styles/article-body.css';
+	import { afterNavigate } from '$app/navigation';
+  import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
+  import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
-  import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
-  import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-  import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
-  import TocNav from '$lib/components/shared/TocNav.svelte';
-  import TocPill from '$lib/components/shared/TocPill.svelte';
-  import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+  import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
+  import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+  import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+  import TocNav from '#lib/components/shared/TocNav.svelte';
+  import TocPill from '#lib/components/shared/TocPill.svelte';
+  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-  import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
-  import { resolveLocale } from '$lib/utils/locale';
-  import { getLocale } from '$lib/utils/locale-context';
-  import { sectionizeBlogBody } from '$lib/blog/sections';
+  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+  import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
+  import { resolveLocale } from '#lib/utils/locale.ts';
+  import { getLocale } from '#lib/utils/locale-context.ts';
+  import { sectionizeBlogBody } from '#lib/blog/sections.ts';
 
   const locale = getLocale();
-  import { siteLabels } from '$lib/content';
+  import { siteLabels } from '#lib/content/index.ts';
 
   // go2/w4: reading mode removed per operator QA. The default reading
   // experience is the only one. The readingMode field stays dormant in the
@@ -147,11 +142,8 @@
     return entries;
   });
 
-  onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
-
-  function scrollToHeading(id: string): void {
-    tocElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  afterNavigate(onTocNavigate);
+	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
 
   // slice-34.4: reading position survives a locale switch.
   //
@@ -219,7 +211,7 @@
             <TocNav
               entries={tocEntries}
               activeId={activeHeadingId}
-              onNavigate={scrollToHeading}
+              onNavigate={navigateToc}
               heading={tocHeading}
               sectionKey="blog-toc"
               counterPrefix={tocCounterPrefix}
@@ -268,7 +260,7 @@
             open={true}
             accentColor={accentColor}
           >
-            <div class="blog-section-body prose-dark" data-testid="blog-section-body" style="--blog-accent: {accentColor};">
+            <div class="article-body blog-section-body prose-dark" data-testid="blog-section-body" style="--blog-accent: {accentColor};">
               <BlockRenderer doc={section.doc} {codeHighlights} />
             </div>
           </CollapsibleSection>
@@ -326,7 +318,7 @@
     display: none;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .body-grid {
       display: grid;
       width: 100%;
@@ -364,7 +356,7 @@
     }
   }
 
-  @media (min-width: 1024px) and (max-width: 1279px) {
+  @media (--desktop-min) and (max-width: 1279px) {
     .body-grid {
       gap: 1.25rem;
     }
@@ -389,7 +381,7 @@
     display: none;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .toc-nav-shell {
       display: block;
     }
@@ -399,7 +391,7 @@
     margin-bottom: 1rem;
   }
 
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .meta-card {
       margin-top: 1rem;
       margin-bottom: 0;
@@ -434,20 +426,6 @@
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
   }
 
-  .blog-section-body {
-    font-size: var(--text-detail-body-mobile);
-    color: color-mix(in srgb, var(--foreground) 50%, transparent);
-    line-height: 1.8;
-  }
-
-  @media (min-width: 1024px) {
-    .blog-section-body {
-      font-size: var(--text-detail-body-desktop);
-      color: color-mix(in srgb, var(--foreground) 55%, transparent);
-      line-height: 1.9;
-    }
-  }
-
   /* Clickables are ORANGE on every post (yellow = conversion only, operator
      call homework #6a); --blog-accent stays on the decorative voice below. */
   .blog-section-body :global(a) {
@@ -462,38 +440,7 @@
     border-left-color: var(--blog-accent);
   }
 
-  .blog-section-body :global(h2),
-  .blog-section-body :global(h3),
-  .blog-section-body :global(h4) {
-    position: relative;
-  }
-
-  /* The "#" is a REAL copyable permalink (homework #7c): rendered inside the
-     heading by cms/blocks/Heading.svelte (h2-h4), revealed on hover/focus. */
-  .blog-section-body :global(.heading-anchor) {
-    position: absolute;
-    right: 100%;
-    margin-right: 0.5rem;
-    color: var(--primary);
-    text-decoration: none;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
-  }
-
-  .blog-section-body :global(h2):hover :global(.heading-anchor),
-  .blog-section-body :global(h3):hover :global(.heading-anchor),
-  .blog-section-body :global(h4):hover :global(.heading-anchor) {
-    opacity: var(--opacity-muted);
-    transform: translateX(0);
-  }
-
-  .blog-section-body :global(.heading-anchor):focus-visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  @media (min-width: 1024px) {
+  @media (--desktop-min) {
     .toc-scroll {
       max-height: calc(100dvh - 6rem);
       overflow-y: auto;

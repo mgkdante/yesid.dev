@@ -14,7 +14,7 @@
 //     covers site-chrome literals that D2 carves out of schema validation.
 
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -32,33 +32,28 @@ import * as legalPagesModule from './legal-pages.js';
 import * as metaModule from './site-meta.js';
 import * as blogModule from './blog.js';
 import * as blogPageModule from './blog-page.js';
-import * as techStackModule from './tech-stack.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
-import { INITIAL_HERO_DATA } from './hero-data.js';
-import { techStackPageContent, techStackItems } from './tech-stack.js';
+import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
 import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
-import * as stackArchetypesModule from './stack-archetypes.js';
-import { stackArchetypes } from './stack-archetypes.js';
 import { siteLabels as siteLabelsModule } from './site-labels.js';
-import { StackArchetypeSchema, STACK_LAYERS } from '@repo/shared/schemas';
+import {
+	HeroDataSchema,
+} from '#lib/schemas/index.ts';
 import {
 	ProjectSchema,
 	ServiceSchema,
 	BlogPostSchema,
 	SiteMetaSchema,
-	TechStackItemSchema,
 	AboutContentSchema,
 	ContactContentSchema,
-	TechStackPageContentSchema,
-	HeroDataSchema,
 	NavLinkSchema,
 	MenuItemSchema,
 	ErrorPageContentSchema,
 	SitePageSchema,
-} from '$lib/schemas';
+} from '@repo/shared';
 
 const CONTENT_TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const WEB_SRC_DIR = join(CONTENT_TEST_DIR, '..', '..');
@@ -200,6 +195,14 @@ describe('services data integrity', () => {
 });
 
 describe('chrome companion consolidation', () => {
+	it('retired BlogRouteMap component stays absent', () => {
+		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/blog/BlogRouteMap.svelte'))).toBe(false);
+	});
+
+	it('retired TableOfContents component stays absent', () => {
+		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/shared/TableOfContents.svelte'))).toBe(false);
+	});
+
 	it('shared chrome consumers read from siteLabels instead of sharedChromeContent', () => {
 		const consumers = [
 			'lib/components/layout/Nav.svelte',
@@ -207,7 +210,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/layout/Footer.svelte',
 			'lib/components/layout/ThemeToggle.svelte',
 			'lib/components/layout/LanguageToggle.svelte',
-			'lib/components/shared/TableOfContents.svelte',
 			'lib/components/shared/FilterSummary.svelte',
 			'lib/components/shared/SearchInput.svelte',
 		];
@@ -221,10 +223,10 @@ describe('chrome companion consolidation', () => {
 
 	it('blog chrome consumers read from siteLabels instead of blog companions', () => {
 		const consumers = [
-			'lib/components/blog/BlogRouteMap.svelte',
 			'lib/components/blog/BlogFilterSidebar.svelte',
 			'lib/components/blog/BlogListingPage.svelte',
 			'lib/components/blog/BlogDetailHeader.svelte',
+			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/blog/BlogDetailPage.svelte',
 			'lib/components/cms/blocks/CodeBlock.svelte',
 		];
@@ -244,7 +246,9 @@ describe('chrome companion consolidation', () => {
 			'lib/components/projects/ProjectDetailPage.svelte',
 			'lib/components/projects/ProjectGlancePanel.svelte',
 			'lib/components/projects/ProjectDetailHeader.svelte',
+			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/services/ServiceDetailPage.svelte',
+			'lib/components/services/ServiceStackPanel.svelte',
 		];
 
 		const offenders = consumers.filter((file) =>
@@ -301,7 +305,7 @@ describe('blogPosts data integrity', () => {
 		});
 	});
 
-	it('keeps the six EN/FR/ES families on the approved newest-first editorial schedule', () => {
+	it('preserves the six older families and adds four trilingual publication families', () => {
 		const expectedDates = new Map([
 			['the-two-hour-internet-slot', '2026-06-01'],
 			['how-i-learn-orbiting-a-system-until-it-clicks', '2026-06-09'],
@@ -310,12 +314,17 @@ describe('blogPosts data integrity', () => {
 			['50-to-0-an-oracle-always-free-vm', '2026-07-03'],
 			['does-your-website-need-instant-publishing', '2026-07-11'],
 		]);
-		expect(blogPosts).toHaveLength(18);
+		expect(blogPosts).toHaveLength(30);
 		for (const [translationKey, date] of expectedDates) {
 			const family = blogPosts.filter((post) => post.translationKey === translationKey);
 			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
 			expect(family.every((post) => post.date === date)).toBe(true);
 			expect(family.every((post) => post.dateModified === '2026-07-11')).toBe(true);
+		}
+		for (const key of ['missing-data-is-not-zero', 'before-product-catalogue-final', 'when-similar-components-stay-separate', 'changing-language-without-starting-over']) {
+			const family = blogPosts.filter((post) => post.translationKey === key);
+			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
+			expect(family.every((post) => post.date === '2026-10-08')).toBe(true);
 		}
 		expect(blogPosts.map((post) => post.date)).toEqual(
 			blogPosts.map((post) => post.date).toSorted().reverse(),
@@ -354,66 +363,6 @@ describe('sitePages registry integrity (slice-26.1)', () => {
 	});
 });
 
-describe('stackArchetypes engine data integrity (slice-29)', () => {
-	it('all slugs are unique and URL-safe', () => {
-		const slugs = stackArchetypes.map((a) => a.slug);
-		expect(new Set(slugs).size).toBe(slugs.length);
-		slugs.forEach((s) => expect(s).toMatch(/^[a-z0-9-]+$/));
-	});
-
-	it('every tech link references a committed tech-stack item', () => {
-		const validTechIds = new Set(techStackItems.map((t) => t.id));
-		stackArchetypes.forEach((a) => {
-			a.tech.forEach((link) => {
-				expect(
-					validTechIds.has(link.id),
-					`tech "${link.id}" in archetype "${a.slug}" not found in techStackItems`
-				).toBe(true);
-			});
-		});
-	});
-
-	it('every present proofProjectSlug references a committed project (scenarios may omit)', () => {
-		const validSlugs = new Set(projects.map((p) => p.slug));
-		stackArchetypes.forEach((a) => {
-			if (a.proofProjectSlug === undefined) return;
-			expect(
-				validSlugs.has(a.proofProjectSlug),
-				`proof project "${a.proofProjectSlug}" in archetype "${a.slug}" not found`
-			).toBe(true);
-		});
-	});
-
-	it('every present serviceId references a committed service (scenarios may omit)', () => {
-		const validIds = new Set(services.map((s) => s.id));
-		stackArchetypes.forEach((a) => {
-			if (a.serviceId === undefined) return;
-			expect(
-				validIds.has(a.serviceId),
-				`service "${a.serviceId}" in archetype "${a.slug}" not found`
-			).toBe(true);
-		});
-	});
-
-	it('tech links arrive pre-sorted by STACK_LAYERS render order', () => {
-		stackArchetypes.forEach((a) => {
-			const indices = a.tech.map((l) => STACK_LAYERS.indexOf(l.layer));
-			const sorted = [...indices].sort((x, y) => x - y);
-			expect(indices).toEqual(sorted);
-		});
-	});
-
-	it('every referenced tech has a committed layer + enables (preview taps never blank)', () => {
-		const byId = new Map(techStackItems.map((t) => [t.id, t]));
-		const referenced = new Set(stackArchetypes.flatMap((a) => a.tech.map((l) => l.id)));
-		for (const id of referenced) {
-			const item = byId.get(id);
-			expect(item?.layer, `tech "${id}" missing layer`).toBeTruthy();
-			expect(item?.enables?.en?.trim(), `tech "${id}" missing enables.en`).toBeTruthy();
-		}
-	});
-});
-
 // ─────────────────────────────────────────────────────────────────────────
 // Seed data parses through schemas (slice-17c)
 // ─────────────────────────────────────────────────────────────────────────
@@ -444,18 +393,6 @@ describe('seed data parses through schemas', () => {
 		expect(() => SiteMetaSchema.parse(siteMeta)).not.toThrow();
 	});
 
-	it('tech-stack items → TechStackItemSchema[]', () => {
-		expect(() => z.array(TechStackItemSchema).parse(techStackItems)).not.toThrow();
-	});
-
-	// tech-stack scenarios test removed in slice-18g — StackScenario type and
-	// schema were dropped (decisions Q1+Q2). Phase 5 will add a new integrity
-	// test once the static helpers are updated to the new TechStackItem shape.
-
-	it('techStackPageContent → TechStackPageContentSchema', () => {
-		expect(() => TechStackPageContentSchema.parse(techStackPageContent)).not.toThrow();
-	});
-
 	it('aboutPageContent → AboutContentSchema', () => {
 		expect(() => AboutContentSchema.parse(aboutPageContent)).not.toThrow();
 	});
@@ -482,10 +419,6 @@ describe('seed data parses through schemas', () => {
 
 	it('sitePages → SitePageSchema[]', () => {
 		expect(() => z.array(SitePageSchema).parse(sitePages)).not.toThrow();
-	});
-
-	it('stackArchetypes → StackArchetypeSchema[]', () => {
-		expect(() => z.array(StackArchetypeSchema).parse(stackArchetypes)).not.toThrow();
 	});
 });
 
@@ -601,15 +534,12 @@ const WALKER_SOURCES: Array<[string, unknown]> = [
 	['meta', metaModule],
 	['blog', blogModule],
 	['blog-page', blogPageModule],
-	['tech-stack', techStackModule],
 	// site-seo-defaults carries defaultDescription (en-only at present).
 	['site-seo-defaults', siteSeoDefaultsModule],
 	// route_seo static route SEO overrides, emitted from CMS.
 	['route-seo', routeSeoModule],
 	// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
 	['site-pages', sitePagesModule],
-	// stack_archetypes engine recipes (slice-29).
-	['stack-archetypes', stackArchetypesModule],
 	// site_labels microcopy singleton (go2-t1c2) — en-only seeds.
 	['site-labels', siteLabelsModule],
 ];
@@ -678,7 +608,7 @@ describe('LocalizedString guard + translation debt', () => {
 // ─── LOCKED COUNTS — single bump point ─────────────────────────────────────
 // These WILL move exactly once more during the GO-day campaign:
 //   - The slice-28.6 FR content drop (WITH_FR jumps toward TOTAL, NO_FR → ~0
-//     for launch surfaces; tech-stack longform fr stays deferred).
+//     for launch surfaces).
 // Update procedure: run `bunx vitest run src/lib/content/integrity.test.ts`,
 // read the printed snapshot, set the consts, sanity-check the DIRECTION
 // (WITH_FR never decreases; ES_WITHOUT_FR stays 0 until a deliberate ES pass).
@@ -731,7 +661,12 @@ describe('LocalizedString guard + translation debt', () => {
 // receiver r2: full-bleed footer column headings (EXPLORE/LEGAL/CONNECT,
 // site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
 // OPS2 analytics-choice microcopy adds six EN/FR/ES-complete site-label leaves, 666 + 6 = 672.
-const LOCKED = { TOTAL: 672, WITH_FR: 672, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// October portfolio publication: 38 additional FR-complete project strings, no added translation debt.
+// Slice 43.2: the CMS retirement removed 7 nav/registry/SEO strings; deleting
+// the retired content sources removes 82 more. The lead's live regeneration
+// removes the final blog rail string (621 → 620).
+// WO-43.14: the desktop Contact link adds one FR-complete label.
+const LOCKED = { TOTAL: 621, WITH_FR: 621, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

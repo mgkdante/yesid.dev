@@ -18,26 +18,14 @@
 // `<descriptor>w` entries. The fixed-size social card preset (`og-1200`) also
 // carries a numeric suffix but is used at its native size for OG images.
 //
-// Factory pattern keeps the helper unit-testable without touching
-// $env/static/public; the default binding at the bottom reads the env once
-// lazily for consumer ergonomics.
-//
-// Static (build-time) env, NOT $env/dynamic/public: dynamic env is unreadable
-// while prerendering, and this module runs during prerender for every page
-// with images. The namespace import + `in` guard (instead of a named import)
-// keeps builds green in contexts where PUBLIC_DIRECTUS_URL is unset (hermetic
-// CI, dev deploys) — a named import of an absent static env var is a build
-// error. Unset resolves to '', which only matters when an asset misses the
-// mirror map (dev-only fallback path; production fails loud regardless).
+// The factory keeps the helper testable. The default binding uses a build-time
+// public URL, which defaults to '' when unset so hermetic builds stay valid.
 
-import { dev } from '$app/environment';
-import * as staticPublicEnv from '$env/static/public';
-import { mirroredMediaAssets } from '$lib/content/media-assets';
-import { mediaVariants } from '$lib/content/media-variants';
-import type { MediaVariantEntry } from '$lib/types';
-
-const PUBLIC_DIRECTUS_URL =
-	(staticPublicEnv as Record<string, string | undefined>).PUBLIC_DIRECTUS_URL ?? '';
+import { dev } from '$app/env';
+import { PUBLIC_DIRECTUS_URL } from '$app/env/public';
+import { mirroredMediaAssets } from '#lib/content/media-assets.ts';
+import { mediaVariants } from '#lib/content/media-variants.ts';
+import type { MediaVariantEntry } from '#lib/types.ts';
 
 /**
  * Canonical preset list — the exact set seeded in Directus
@@ -48,15 +36,15 @@ const PUBLIC_DIRECTUS_URL =
  * too, since typos here are low-impact (result is a 404 on the asset URL, not
  * a crash).
  */
-export type AssetPreset =
-	| 'hero-1200'
-	| 'card-600'
-	| 'thumb-240'
-	| 'og-1200'
+export type AssetPreset = 
+	'hero-1200' |
+	'card-600' |
+	'thumb-240' |
+	'og-1200' |
 	// Allow arbitrary preset names while still auto-completing the canonical
 	// set. Every string literal is assignable to `string & {}`, but the union
 	// members take precedence in IDE suggestions.
-	| (string & {});
+	(string & {  });
 
 /**
  * Everything an <img> needs for responsive rendering. `srcset`/`width`/
@@ -118,9 +106,9 @@ export function createAssets(baseUrl: string, options: CreateAssetsOptions = {})
 	const buildSrcSet: AssetHelpers['buildSrcSet'] = (id, presets) =>
 		presets
 			.map((preset) => {
-				const width = parsePresetWidth(preset);
-				const url = asset(id, preset);
-				return width > 0 ? `${url} ${width}w` : url;
+		const width = parsePresetWidth(preset);
+		const url = asset(id, preset);
+		return width > 0 ? `${url} ${width}w` : url;
 			})
 			.join(', ');
 

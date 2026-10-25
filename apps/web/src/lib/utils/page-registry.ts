@@ -10,7 +10,7 @@
 //
 // Resolution rules:
 //   1. '/' always resolves (system root — the site cannot 404 its own home).
-//   2. Exact path match wins ('/blog/personal' has its own registry row).
+//   2. Concrete page routes require their own published registry row.
 //   3. Detail routes resolve to their LONGEST matching listing prefix:
 //      '/services/sql-development' → '/services'; '/blog/some-post' → '/blog'.
 //      Longest-prefix means '/blog/personal' (when it had children) would win
@@ -20,10 +20,15 @@
 //
 // Non-page surfaces (OG images, sitemap.xml, robots.txt, /work resume
 // redirect, /api/*) are exempt: they don't render HTML pages and several
-// must keep working even for archived sections.
+// apply their own content-specific publication guards where needed.
 
-import { sitePages } from '$lib/content/site-pages';
-import type { SitePage } from '$lib/types';
+import { sitePages } from '#lib/content/site-pages.ts';
+import type { SitePage } from '#lib/types.ts';
+
+/** Concrete page routes need their own published row, never a parent's fallback. */
+export const STATIC_PAGE_PATHS: readonly string[] = [
+	'/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal',
+];
 
 /** Endpoint-style surfaces that must never be registry-gated. */
 const EXEMPT_EXACT = new Set(['/sitemap.xml', '/robots.txt', '/work']);
@@ -55,6 +60,7 @@ export function resolveSitePage(
 
 	const exact = pages.find((p) => p.path === path);
 	if (exact) return exact;
+	if (STATIC_PAGE_PATHS.includes(path)) return undefined;
 
 	let best: SitePage | undefined;
 	for (const page of pages) {

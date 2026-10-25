@@ -1,40 +1,28 @@
-<!--
-  HomePage — orchestrator for the home page sections.
-  7 sections: Hero, Manifesto, Services, About teaser, Featured Projects,
-  CTA band, Closer. (Services lead the story per operator 2026-07-03:
-  context → identity → proof. About teaser + CTA band went live in the
-  homework #21c batch.)
-  Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
-
-  slice-18i Phase 7C: all page-block content flows as props from +page.svelte
-  (loaded server-side from Directus M2A). Components no longer import static
-  content modules directly.
--->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import HeroBanner from './HeroBanner.svelte';
 	import Manifesto from './Manifesto.svelte';
 	import FeaturedProjects from './FeaturedProjects.svelte';
 	import HomeServices from './HomeServices.svelte';
 	import HomeAboutTeaser from './HomeAboutTeaser.svelte';
-	import CtaBand from '$lib/components/shared/CtaBand.svelte';
+	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import { SectionHeading } from '$lib/components/brand';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
-	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { SectionHeading } from '#lib/components/brand/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.ts';
 	import {
 		registerScrollContext,
 		lenisAwareScrollTo,
 		localeHandoff,
-	} from '$lib/state/locale-handoff.svelte';
+	} from '#lib/state/locale-handoff.svelte.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -48,8 +36,8 @@
 		Service,
 		SiteMeta,
 		BlogPost,
-	} from '$lib/types';
-	import type { HeroData } from '$lib/content/hero-data';
+	} from '#lib/types.ts';
+	import type { HeroData } from '#lib/live/index.ts';
 
 	interface Props {
 		metroSvg: string;
@@ -171,33 +159,33 @@
 		// fraction * maxScroll via the Lenis-aware recipe.
 		destroyFns.push(
 			registerScrollContext({
-				capture: () => {
-					const max = maxScroll();
-					return {
-						kind: 'home-fraction',
-						fraction: max > 0 ? window.scrollY / max : 0,
+			capture: () => {
+				const max = maxScroll();
+				return {
+					kind: 'home-fraction',
+					fraction: max > 0 ? window.scrollY / max : 0,
 						y: window.scrollY,
-					};
-				},
-				restore: async (snap) => {
-					const s = snap as { fraction?: number; y?: number } | null;
-					const fraction = Math.min(1, Math.max(0, s?.fraction ?? 0));
+				};
+			},
+			restore: async (snap) => {
+				const s = snap as { fraction?: number; y?: number } | null;
+				const fraction = Math.min(1, Math.max(0, s?.fraction ?? 0));
 
-					// Wait for the pin ScrollTrigger to materialize on the freshly
-					// remounted page. HeroBanner builds it inside setupIntro() and
-					// defers ScrollTrigger.refresh() to a rAF, so the pin (and the
-					// final document height) is not ready synchronously after paint.
-					// Poll a bounded number of frames; once the pin exists we refresh
-					// to lock its start/end + the document height, then jump.
-					//
-					// Intro collapsed (same-day reload / completed): NO pin trigger
-					// ever appears — the poll times out fast and we jump against the
-					// short collapsed height, which is correct for that state.
-					await waitForPinOrTimeout(30);
-					const pin = findPinTrigger();
-					if (pin) ScrollTrigger.refresh();
+				// Wait for the pin ScrollTrigger to materialize on the freshly
+				// remounted page. HeroBanner builds it inside setupIntro() and
+				// defers ScrollTrigger.refresh() to a rAF, so the pin (and the
+				// final document height) is not ready synchronously after paint.
+				// Poll a bounded number of frames; once the pin exists we refresh
+				// to lock its start/end + the document height, then jump.
+				//
+				// Intro collapsed (same-day reload / completed): NO pin trigger
+				// ever appears — the poll times out fast and we jump against the
+				// short collapsed height, which is correct for that state.
+				await waitForPinOrTimeout(30);
+				const pin = findPinTrigger();
+				if (pin) ScrollTrigger.refresh();
 
-					lenisAwareScrollTo(Math.round(fraction * maxScroll()));
+				lenisAwareScrollTo(Math.round(fraction * maxScroll()));
 				},
 			}),
 		);
@@ -225,36 +213,47 @@
 	});
 </script>
 
+<!--
+  HomePage — orchestrator for the home page sections.
+  7 sections: Hero, Manifesto, Services, About teaser, Featured Projects,
+  CTA band, Closer. (Services lead the story per operator 2026-07-03:
+  context → identity → proof. About teaser + CTA band went live in the
+  homework #21c batch.)
+  Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
+
+  slice-18i Phase 7C: all page-block content flows as props from +page.svelte
+  (loaded server-side from Directus M2A). Components no longer import static
+  content modules directly.
+-->
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
 <section class="w-full">
-	<HeroBanner {metroSvg} {hero} {heroAnim} {initialHeroData} />
+	<HeroBanner
+		metroSvg={metroSvg}
+		hero={hero}
+		heroAnim={heroAnim}
+		initialHeroData={initialHeroData}
+	/>
 </section>
 
 <HazardSeparator />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
-<section class="w-full">
-	<Manifesto {manifesto} />
-</section>
-
+<section class="w-full"><Manifesto manifesto={manifesto} /></section>
 <HazardSeparator />
 
 <!-- Section 3: Services — rotated title RIGHT, blueprint background spans
      full width. Operator 2026-07-03: services lead so the story builds
      context (what I do) → identity (who I am) → proof (what I built). -->
-<section bind:this={servicesSectionEl} class="home-section home-section--right relative" style={rotatedVar}>
-	<div class="absolute inset-0 -z-10 pointer-events-none">
-		<ServicesBlueprint />
-	</div>
-	<div class="home-section-heading-mobile">
-		<SectionHeading heading={sectionServices} />
-	</div>
-	<div class="home-section-content">
-		<HomeServices {servicesGrid} {services} />
-	</div>
-	<div class="rotated-title rotated-title--right">
-		<SectionHeading heading={sectionServices} />
-	</div>
+
+<section
+	bind:this={servicesSectionEl}
+	class="home-section home-section--right relative"
+	style={rotatedVar}
+>
+	<div class="absolute inset-0 -z-10 pointer-events-none"><ServicesBlueprint /></div>
+	<div class="home-section-heading-mobile"><SectionHeading heading={sectionServices} /></div>
+	<div class="home-section-content"><HomeServices servicesGrid={servicesGrid} services={services} /></div>
+	<div class="rotated-title rotated-title--right"><SectionHeading heading={sectionServices} /></div>
 </section>
 
 <HazardSeparator />
@@ -262,16 +261,14 @@
 <!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
      titled section alternates: Services R → About L → Projects R → Terminus L;
      only the CTA goes untitled, it's special). -->
-<section class="home-section home-section--left" style={rotatedVar}>
-	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading={sectionAbout} />
-	</div>
-	<div class="home-section-heading-mobile">
-		<SectionHeading heading={sectionAbout} />
-	</div>
-	<div class="home-section-content">
-		<HomeAboutTeaser {about} />
-	</div>
+
+<section
+	class="home-section home-section--left"
+	style={rotatedVar}
+>
+	<div class="rotated-title rotated-title--left"><SectionHeading heading={sectionAbout} /></div>
+	<div class="home-section-heading-mobile"><SectionHeading heading={sectionAbout} /></div>
+	<div class="home-section-content"><HomeAboutTeaser about={about} /></div>
 </section>
 
 <HazardSeparator />
@@ -285,7 +282,13 @@
 	<div class="home-section-content">
 		<!-- go2/home-cards: services join the proof reel so each card can name
 		     the station that built it (same prop the services grid consumes). -->
-		<FeaturedProjects {proofReel} projects={featuredProjects} {services} {serviceSvgContents} />
+
+		<FeaturedProjects
+			proofReel={proofReel}
+			projects={featuredProjects}
+			services={services}
+			serviceSvgContents={serviceSvgContents}
+		/>
 	</div>
 	<div class="rotated-title rotated-title--right">
 		<SectionHeading heading={sectionProjects} />
@@ -295,22 +298,25 @@
 <!-- Section 4b: CTA band — the mid-page conversion action. The hazard strip
      is INSIDE CtaBand now (every CTA wears it), so no separate separator. -->
 <section class="w-full">
-	<CtaBand {cta} {siteMeta} testidPrefix="home-cta-band" />
+	<CtaBand
+		cta={cta}
+		siteMeta={siteMeta}
+		testidPrefix="home-cta-band"
+	/>
 </section>
 
 <HazardSeparator />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-<section bind:this={closerSectionEl} class="home-section home-section--left" style={rotatedVar}>
-	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading={sectionTerminus} />
-	</div>
-	<div class="home-section-heading-mobile">
-		<SectionHeading heading={sectionTerminus} />
-	</div>
-	<div class="home-section-content">
-		<HomeCloser {closer} {siteMeta} />
-	</div>
+
+<section
+	bind:this={closerSectionEl}
+	class="home-section home-section--left"
+	style={rotatedVar}
+>
+	<div class="rotated-title rotated-title--left"><SectionHeading heading={sectionTerminus} /></div>
+	<div class="home-section-heading-mobile"><SectionHeading heading={sectionTerminus} /></div>
+	<div class="home-section-content"><HomeCloser closer={closer} siteMeta={siteMeta} /></div>
 </section>
 
 <style>
@@ -376,7 +382,7 @@
 	}
 
 	/* Left-side heading: heading | content */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.home-section--left {
 			grid-template-columns: clamp(4.5rem, 8vw, 8rem) 1fr;
 		}
@@ -393,7 +399,7 @@
 	}
 
 	/* Hide rotated titles on mobile */
-	@media (max-width: 1023px) {
+	@media (--desktop-max) {
 		.rotated-title {
 			display: none;
 		}

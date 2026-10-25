@@ -2,19 +2,22 @@
 // Generated at build time from the same CMS-derived content caches the pages
 // read, so both files track CMS truth on every publish→rebuild. Server-only:
 // nothing here may reach the client bundle.
-import { blogPosts, contactContent, projects, services, siteMeta } from '$lib/content';
-import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '$lib/utils/seo-defaults';
-import { resolveLocale } from '$lib/utils/locale';
-import type { BlogPost, LocalizedString } from '$lib/types';
+import { blogPosts, contactContent, projects, services, siteMeta } from '#lib/content/index.ts';
+import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { isPathPublished } from '#lib/utils/page-registry.ts';
+import type { BlogPost, LocalizedString, SitePage } from '#lib/types.ts';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
 const es = (value: LocalizedString): string => resolveLocale(value, 'es');
 
-const visibleServices = () => [...services].filter((s) => s.visible !== false).sort((a, b) => a.station - b.station);
+const visibleServices = (pages: readonly SitePage[]) => [...services].filter((s) => s.visible !== false && isPathPublished(`/services/${s.id}`, pages)).sort((a, b) => a.station - b.station);
 
 // Web-side ProjectStatus is 'public' | 'private' | 'wip' (NOT Directus's
 // draft/published/archived — the fetcher maps them). Public only.
-const publishedProjects = () => projects.filter((p) => p.status === 'public');
+const publishedProjects = (pages: readonly SitePage[]) => projects.filter((p) => p.status === 'public' && isPathPublished(`/projects/${p.slug}`, pages));
+const publishedBlogPosts = (pages: readonly SitePage[]) => blogPosts.filter((post) => isPathPublished(`/blog/${post.slug}`, pages));
 
 const absolute = (path: string): string => (path.startsWith('http') ? path : `${SITE_HOST}${path}`);
 const blogUrl = (post: BlogPost): string =>
@@ -44,7 +47,8 @@ function header(): string {
 	].join('\n');
 }
 
-function contactSection(): string {
+function contactSection(pages: readonly SitePage[]): string {
+	if (!isPathPublished('/contact', pages)) return '';
 	const lines = contactContent.socials.map((s) => `- ${en(s.label)}: ${s.href}`);
 	return ['## Contact', ...lines].join('\n');
 }
@@ -53,26 +57,26 @@ function contactSection(): string {
 // Spanish queries ("desarrollador web que hable español en Montréal",
 // "consultor de datos Québec") meet native Spanish copy with the /es URLs.
 // Service titles/descriptions come from the same CMS caches as the /es pages.
-function spanishSection(): string {
-	const serviceLines = visibleServices().map(
+function spanishSection(pages: readonly SitePage[]): string {
+	const serviceLines = visibleServices(pages).map(
 		(s) => `- [${es(s.title)}](${SITE_HOST}/es/services/${s.id}): ${es(s.description)}`,
 	);
 	return [
 		'## Español — soluciones digitales en Montreal, Québec',
 		`Yesid O. trabaja como Desarrollador freelance de soluciones digitales en Montreal y atiende en español, francés e inglés. Ayuda a pymes de Québec con sitios web y e-commerce, automatización y pipelines, tableros y analítica, y bases de datos y SQL. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
 		...serviceLines,
-		`Contacto en español: ${SITE_HOST}/es/contact`,
+		...(isPathPublished('/contact', pages) ? [`Contacto en español: ${SITE_HOST}/es/contact`] : []),
 	].join('\n');
 }
 
-export function llmsTxt(): string {
-	const serviceLines = visibleServices().map(
+export function llmsTxt(pages: readonly SitePage[] = sitePages): string {
+	const serviceLines = visibleServices(pages).map(
 		(s) => `- [${en(s.title)}](${SITE_HOST}/services/${s.id}): ${en(s.description)}`,
 	);
-	const projectLines = publishedProjects().map(
+	const projectLines = publishedProjects(pages).map(
 		(p) => `- [${en(p.title)}](${SITE_HOST}/projects/${p.slug}): ${en(p.oneLiner)}`,
 	);
-	const blogLines = blogPosts.map(
+	const blogLines = publishedBlogPosts(pages).map(
 		(p) => `- [${p.title}](${blogUrl(p)}) (${p.lang}): ${p.excerpt}`,
 	);
 	return [
@@ -87,17 +91,17 @@ export function llmsTxt(): string {
 		'## Blog',
 		...blogLines,
 		'',
-		spanishSection(),
+		spanishSection(pages),
 		'',
-		contactSection(),
+		contactSection(pages),
 		'',
 		`Full detail: ${SITE_HOST}/llms-full.txt`,
 		'',
 	].join('\n');
 }
 
-export function llmsFullTxt(): string {
-	const serviceBlocks = visibleServices().map((s) => {
+export function llmsFullTxt(pages: readonly SitePage[] = sitePages): string {
+	const serviceBlocks = visibleServices(pages).map((s) => {
 		const lines = [`### ${en(s.title)} (${SITE_HOST}/services/${s.id})`, '', en(s.description)];
 		if (s.benefitHeadline) lines.push('', `Benefit: ${en(s.benefitHeadline)}`);
 		if (s.impactMetric) lines.push(`Impact: ${en(s.impactMetric.value)} (${en(s.impactMetric.label)})`);
@@ -107,7 +111,7 @@ export function llmsFullTxt(): string {
 		if (s.stack?.length) lines.push('', `Stack: ${s.stack.join(', ')}`);
 		return lines.join('\n');
 	});
-	const projectBlocks = publishedProjects().map((p) => {
+	const projectBlocks = publishedProjects(pages).map((p) => {
 		const lines = [`### ${en(p.title)} (${SITE_HOST}/projects/${p.slug})`, '', en(p.oneLiner)];
 		const metrics = p.impactMetrics ?? (p.impactMetric ? [p.impactMetric] : []);
 		if (metrics.length) {
@@ -117,7 +121,7 @@ export function llmsFullTxt(): string {
 		if (p.liveUrl) lines.push(`Live: ${p.liveUrl}`);
 		return lines.join('\n');
 	});
-	const blogBlocks = blogPosts.map(
+	const blogBlocks = publishedBlogPosts(pages).map(
 		(p) => `### ${p.title} (${blogUrl(p)})\n\nLanguage: ${p.lang}. ${p.excerpt}`,
 	);
 	return [
@@ -135,9 +139,9 @@ export function llmsFullTxt(): string {
 		'',
 		blogBlocks.join('\n\n'),
 		'',
-		spanishSection(),
+		spanishSection(pages),
 		'',
-		contactSection(),
+		contactSection(pages),
 		'',
 	].join('\n');
 }

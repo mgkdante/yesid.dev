@@ -4,7 +4,7 @@
 //
 // +layout.server.ts is a pure data function with no DOM or SvelteKit SSR
 // runtime dependency — it calls adapter methods and returns a plain object.
-// The adapter is mocked via vi.mock('$lib/adapters') so no network calls
+// The adapter is mocked via vi.mock('#lib/adapters/index.ts') so no network calls
 // are issued.
 //
 // The `load` function is called without arguments (it uses no event fields —
@@ -23,9 +23,9 @@ import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
 	errorPageContent as staticErrorPageContent,
-} from '$lib/content/nav';
-import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
-import type { MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
+} from '#lib/content/nav.ts';
+import type { NavLink, ErrorPageContent } from '#lib/navigation/types.ts';
+import type { MorphShape, PageSeo, SiteSeoDefaults } from '#lib/types.ts';
 
 // ---------------------------------------------------------------------------
 // Shared mock capture surface
@@ -37,10 +37,10 @@ const mockMorphShapes = vi.fn();
 const mockForRoute = vi.fn();
 const mockSiteSeoDefaults = vi.fn();
 
-// Mock '$lib/adapters' before importing the subject.
+// Mock '#lib/adapters/index.ts' before importing the subject.
 // Vitest hoists vi.mock() calls, so this is safe even though the import
 // of the subject appears below.
-vi.mock('$lib/adapters', () => ({
+vi.mock('#lib/adapters/index.ts', () => ({
 	adapter: {
 		nav: {
 			byPlacement: (...args: unknown[]) => mockByPlacement(...args),
@@ -92,7 +92,7 @@ async function callLoad(
 	}) => Promise<LayoutData>)({
 		route: { id: routeId },
 		params,
-		locals: { pageCache: new Map() },
+		locals: {},
 		url: new URL(`https://yesid.dev${pathname}`),
 		setHeaders: vi.fn(),
 	})) as LayoutData;
@@ -207,7 +207,6 @@ describe('+layout.server load', () => {
 				'/about',
 				'fr',
 				{ lang: 'fr' },
-				expect.objectContaining({ pageCache: expect.any(Map) }),
 			);
 		});
 		it('derives fr from the pathname on error renders (no params)', async () => {
@@ -256,7 +255,7 @@ describe('+layout.server load', () => {
 			const result = await callLoad(null);
 
 			expect(result.errorPage).toEqual(fakeErrorPage);
-			expect(mockErrorPage).toHaveBeenCalledWith(0, expect.objectContaining({ pageCache: expect.any(Map) }));
+			expect(mockErrorPage).toHaveBeenCalledWith(0);
 		});
 	});
 
@@ -274,7 +273,7 @@ describe('+layout.server load', () => {
 			expect(placements).toContain('menu');
 		});
 
-		it('resolves route SEO on the server with route params and request ctx', async () => {
+		it('resolves route SEO on the server with route params', async () => {
 			mockByPlacement.mockResolvedValue([]);
 			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
 
@@ -284,11 +283,8 @@ describe('+layout.server load', () => {
 				'/projects/[slug]',
 				'en',
 				{ slug: 'transit-data-pipeline' },
-				expect.objectContaining({ pageCache: expect.any(Map) }),
 			);
-			expect(mockSiteSeoDefaults).toHaveBeenCalledWith(
-				expect.objectContaining({ pageCache: expect.any(Map) }),
-			);
+			expect(mockSiteSeoDefaults).toHaveBeenCalledWith();
 		});
 
 		it('loads morph shapes on the server for client animation hydration', async () => {
@@ -297,9 +293,7 @@ describe('+layout.server load', () => {
 
 			await callLoad('/');
 
-			expect(mockMorphShapes).toHaveBeenCalledWith(
-				expect.objectContaining({ pageCache: expect.any(Map) }),
-			);
+			expect(mockMorphShapes).toHaveBeenCalledWith();
 		});
 	});
 

@@ -12,7 +12,7 @@
 // Lazy (per-consumer at mount):
 //   /                     -> loadDrawSVG() + loadCustomEase() in HeroBanner,
 //                            loadDrawSVG() in DataFlowDiagram/HomeCloser
-//   /blog, /projects      -> loadDrawSVG() + loadFlip()
+//   /blog, /projects      -> loadDrawSVG(); Flip registers at first eligible capture
 //   any route with SvgIcon -> loadDrawSVG() + loadMorphSVG() (morph path is lazy
 //                            since SvgIcon does its own Promise.all at mount)
 

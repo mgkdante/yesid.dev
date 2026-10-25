@@ -1,21 +1,16 @@
-<!--
-  Services listing page — page-level Lenis scroll, no nested scroll container.
-  Sticky StationTabs at top, sticky ProjectsStrip at bottom.
-  IntersectionObserver tracks which service viewport is in view. D190, D191.
--->
 <script lang="ts">
 	import { onMount, tick, untrack } from 'svelte';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import type { Service, Project } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { browser } from '$app/env';
+	import { page } from '$app/state';
+	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
+	import type { Service, Project } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import StationTabs from '$lib/components/shared/StationTabs.svelte';
+	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
 	import ProjectsStrip from './ProjectsStrip.svelte';
 
@@ -48,14 +43,9 @@
 		const lenis = getLenis();
 		const target = document.querySelector<HTMLElement>(`#service-${id}`);
 		if (!target) return;
-		// Lenis ignores CSS scroll-margin-top, so the mobile offset that clears the
-		// sticky tabs (.service-viewport scroll-margin-top: 8.75rem) was being dropped
-		// and the card landed jammed under the tabs. Read the computed value and pass it
-		// to Lenis as a negative offset. Desktop sets no scroll-margin-top (0), so its
-		// sticky-centered behaviour is unchanged.
-		const offset = -(parseFloat(getComputedStyle(target).scrollMarginTop) || 0);
 		if (lenis) {
-			lenis.scrollTo(target, { offset });
+			// Lenis already honours the target's CSS scroll-margin-top.
+			lenis.scrollTo(target);
 		} else {
 			// Native fallback already honours scroll-margin-top.
 			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -70,7 +60,7 @@
 	async function handleTabSelect(id: string) {
 		activeId = id;
 		if (!browser) return;
-		const url = new URL($page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('station', id);
 		// Await the navigation BEFORE scrolling. replaceState keeps the tab-click out
 		// of the history stack (a scroll position, not a destination). On touch devices
@@ -78,7 +68,7 @@
 		// goto settled cancelled it mid-animation: the tab highlighted but the page
 		// never moved. Desktop survived because Lenis owns its own scroll. Awaiting goto
 		// fixes the mobile tab-scroll.
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 		scrollToStation(id);
 	}
 
@@ -87,8 +77,8 @@
 
 		// Deep-link / switch-restore: if ?station=<id> names a real station, scroll
 		// to it after the viewports have painted. The scroll is authoritative —
-		// activeId follows from the IO when the section crosses the 0.5 threshold.
-		const requested = $page.url.searchParams.get('station');
+		// activeId follows when the section crosses the reading band.
+		const requested = page.url.searchParams.get('station');
 		if (requested && sorted.some((s) => s.id === requested)) {
 			void tick().then(() => scrollToStation(requested));
 		}
@@ -96,34 +86,51 @@
 		const viewports = document.querySelectorAll<HTMLElement>('[id^="service-"]');
 		if (viewports.length === 0) return;
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-						const id = entry.target.id.replace('service-', '');
-						activeId = id;
+		let observer: IntersectionObserver;
+		function observeStations() {
+			observer?.disconnect();
+			const clearance = parseFloat(getComputedStyle(viewports[0]).scrollMarginTop) || 0;
+			const top = Math.min(innerHeight - 1, Math.max(innerHeight * 0.3, clearance));
+			observer = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) {
+							const id = entry.target.id.replace('service-', '');
+							activeId = id;
+						}
 					}
-				}
-			},
-			{ threshold: 0.5 }
-		);
+				},
+				{ rootMargin: `-${top}px 0px -${innerHeight - top - 1}px 0px` }
+			);
 
-		viewports.forEach((el) => observer.observe(el));
+			viewports.forEach((el) => observer.observe(el));
+		}
+		observeStations();
+		window.addEventListener('resize', observeStations);
 
 		return () => {
 			observer.disconnect();
+			window.removeEventListener('resize', observeStations);
 		};
 	});
 </script>
 
-<div class="services-page" data-testid="service-listing-page">
-	<h1 class="sr-only">{resolveLocale(siteLabels.servicesChrome.listing.heading, locale)}</h1>
+<!--
+  Services listing page — page-level Lenis scroll, no nested scroll container.
+  Sticky StationTabs at top, sticky ProjectsStrip at bottom.
+  IntersectionObserver tracks which service viewport is in view. D190, D191.
+-->
 
+<div
+	class="services-page"
+	data-testid="service-listing-page"
+>
+	<h1 class="sr-only">{resolveLocale(siteLabels.servicesChrome.listing.heading, locale)}</h1>
 	<!-- Sticky station tabs -->
 	<div class="tabs-bar">
 		<StationTabs
 			services={sorted}
-			{activeId}
+			activeId={activeId}
 			mode="scroll"
 			onSelect={handleTabSelect}
 		/>
@@ -132,7 +139,7 @@
 	<!-- Service viewports — page-level scroll, no nested container -->
 	{#each sorted as service, i (service.id)}
 		<ServiceCard
-			{service}
+			service={service}
 			svgContent={serviceSvgContents[service.id] ?? ''}
 			index={i}
 			total={sorted.length}
@@ -174,7 +181,7 @@
 		position: absolute;
 		inset-inline: 0;
 		bottom: 100%;
-		height: calc(var(--nav-clearance, 5.5rem) + env(safe-area-inset-top, 0px) + 0.5rem);
+		height: calc(var(--nav-clearance) + 0.5rem);
 		background: var(--background);
 		pointer-events: none;
 	}
@@ -183,5 +190,6 @@
 		position: sticky;
 		bottom: 0;
 		z-index: var(--z-rail);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
 	}
 </style>

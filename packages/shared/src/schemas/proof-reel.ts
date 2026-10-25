@@ -1,9 +1,5 @@
-// ProofReelContentSchema — mirrors ProofReelContent from types/content.
-// Home page — Proof Reel (featured projects section).
-
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { ProofReelContent } from '../types/content';
 
 export const ProofReelContentSchema = z.object({
 	heading: LocalizedStringSchema,
@@ -12,5 +8,8 @@ export const ProofReelContentSchema = z.object({
 	sectionLabel: LocalizedStringSchema,
 	viewAllLabel: LocalizedStringSchema,
 	viewAllHref: z.string(),
+	/** Aria-label template containing the {title} placeholder. */
 	toggleColorAria: LocalizedStringSchema,
-}) satisfies z.ZodType<ProofReelContent>;
+});
+
+export type ProofReelContent = z.infer<typeof ProofReelContentSchema>;

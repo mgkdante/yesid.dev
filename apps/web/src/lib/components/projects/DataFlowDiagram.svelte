@@ -13,12 +13,12 @@
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '#lib/motion/utils/gsap.ts';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 
@@ -243,16 +243,17 @@
 		-webkit-overflow-scrolling: touch;
 	}
 
-	@media (max-width: 767px) {
-		.data-flow-diagram.size-sm {
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-		}
+	/* Card nodes keep their physical scale regardless of the stack count.
+	   Longer pipelines scroll inside the card instead of shrinking the labels. */
+	.data-flow-diagram.size-sm {
+		contain: inline-size;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
 
-		.data-flow-diagram.size-sm svg {
-			width: max(100%, var(--df-svg-width));
-			max-width: none;
-		}
+	.data-flow-diagram.size-sm svg {
+		width: var(--df-svg-width);
+		max-width: none;
 	}
 
 	.data-flow-diagram.scrollable::-webkit-scrollbar {

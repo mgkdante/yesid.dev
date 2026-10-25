@@ -1,22 +1,22 @@
 import type { LayoutLoad } from './$types';
-import { pathLocale } from '$lib/utils/locale-routing';
-import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
+import { pathLocale } from '#lib/utils/locale-routing.ts';
+import { siteMeta as STATIC_SITE_META } from '#lib/content/site-meta.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
+import { errorSeoFallback } from '#lib/adapters/error-seo-fallback.ts';
 import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
 	footerLinks as staticFooterLinks,
 	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
-} from '$lib/content/nav';
-import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
+} from '#lib/content/nav.ts';
+import type { NavLink, ErrorPageContent } from '#lib/navigation/types.ts';
 // slice-28.5 (#120): client fallback reads the GENERATED morph-shapes module
 // (same source the static adapter serves), not the utils/shapes.ts seed —
 // otherwise a CSR-only render would show pre-CMS shapes while SSR shows CMS
 // shapes. The seed remains the catch{} fallback in +layout.server.ts only.
-import { morphShapes as generatedMorphShapes } from '$lib/content/morph-shapes';
-import type { Locale, MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
+import { morphShapes as generatedMorphShapes } from '#lib/content/morph-shapes.ts';
+import type { Locale, MorphShape, PageSeo, SiteSeoDefaults } from '#lib/types.ts';
 
 /** Shape of the layout-data slots merged from +layout.server.ts. */
 interface LayoutSlotData {

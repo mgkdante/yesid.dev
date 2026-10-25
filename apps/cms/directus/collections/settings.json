@@ -72,6 +72,11 @@
       },
       {
         "type": "module",
+        "id": "flows",
+        "enabled": true
+      },
+      {
+        "type": "module",
         "id": "deployments",
         "enabled": true
       },
@@ -170,6 +175,8 @@
     "mcp_oauth_enabled": true,
     "mcp_oauth_dcr_enabled": true,
     "mcp_oauth_cimd_enabled": false,
+    "default_save_action": "save-and-quit",
+    "preview_base_url": null,
     "_syncId": "_sync_default_settings"
   }
 ]

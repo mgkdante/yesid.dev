@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
-import { llmsFullTxt } from '$lib/server/llms';
+import { llmsFullTxt } from '#lib/server/llms.ts';
 
-// Prerendered at build time (entry registered in svelte.config.js — the file
+// Prerendered at build time (entry registered in vite.config.ts — the file
 // is linked from nowhere, so the crawler would never discover it).
 export const prerender = true;
 

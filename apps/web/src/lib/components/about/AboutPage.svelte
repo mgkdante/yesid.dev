@@ -1,17 +1,10 @@
-<!--
-  Full-viewport bento dashboard for /about.
-  6×4 CSS Grid with named areas. SELL-first → Personal → Action.
-  Wrapped in a plain section (w-full) — no shell needed for a bleed layout.
-  Cards stretch to fill — no voids, no fixed heights.
-  All content from aboutPageContent via data layer.
--->
 <script lang="ts">
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import type { AboutContent } from '$lib/types';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import type { AboutContent } from '#lib/types.ts';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';
@@ -116,7 +109,7 @@
 	}
 
 	/* Tablet: 4 col (768px+) */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.dashboard {
 			grid-template-columns: repeat(4, 1fr);
 			grid-template-areas:
@@ -128,17 +121,14 @@
 	}
 
 	/* Desktop: 6 col × 4 row — the target layout (1024px+) */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.dashboard {
 			grid-template-columns: repeat(6, 1fr);
-			grid-template-rows: repeat(4, 1fr);
 			grid-template-areas:
 				"identity  identity  metrics   metrics   testim    testim"
 				"process   process   stack     stack     testim    testim"
 				"clients   interests interests interests interests snapshots"
 				"train     weather   cta       cta       cta       snapshots";
-			/* Fill the available viewport height minus nav + header + stripes */
-			height: calc(100dvh - 5rem - 48px); /* viewport minus pill nav minus stripes/padding */
 		}
 	}
 
@@ -156,7 +146,7 @@
 	.area-cta          { grid-area: cta; }
 
 	/* Desktop: snapshots auto-size from grid row, remove min-height */
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.area-snapshots { min-height: 0; }
 	}
 

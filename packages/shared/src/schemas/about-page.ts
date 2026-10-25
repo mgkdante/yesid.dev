@@ -1,32 +1,13 @@
-// About-page schemas — runtime mirror of AboutContent + its 13 nested
-// interfaces from types/content. Relocated from apps/web/src/lib/schemas/
-// to @repo/shared/schemas in slice-18i Task 1.1 Phase B.
-// `meta` uses shared PageMetaSchema; `socials` shape matches contact-page.
-
 import { z } from 'zod';
 import { LocalizedStringSchema, PageMetaSchema } from './shared';
-import type {
-	AboutContent,
-	AboutPolaroid,
-	AboutIdentity,
-	AboutMetric,
-	AboutMethodStep,
-	AboutTestimonial,
-	AboutLanguage,
-	AboutInterest,
-	AboutEducationItem,
-	AboutWeatherConfig,
-	AboutCta,
-	AboutStopLabels,
-	AboutLabels,
-} from '../types/content';
 
 export const AboutPolaroidSchema = z.object({
 	src: z.string(),
 	alt: LocalizedStringSchema,
 	caption: LocalizedStringSchema,
+	/** Degrees of tilt for the stacked polaroid layout. */
 	rotate: z.number(),
-}) satisfies z.ZodType<AboutPolaroid>;
+});
 
 export const AboutIdentitySchema = z.object({
 	name: LocalizedStringSchema,
@@ -34,20 +15,21 @@ export const AboutIdentitySchema = z.object({
 	valueProp: LocalizedStringSchema,
 	headshot: z.string(),
 	polaroids: z.array(AboutPolaroidSchema).readonly(),
-}) satisfies z.ZodType<AboutIdentity>;
+});
 
 export const AboutMetricSchema = z.object({
+	/** Display string allowing formats such as 12+, 3x, or 99%. */
 	value: z.string(),
 	label: LocalizedStringSchema,
 	icon: z.string().optional(),
-}) satisfies z.ZodType<AboutMetric>;
+});
 
 export const AboutMethodStepSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	description: LocalizedStringSchema,
 	station: z.number(),
-}) satisfies z.ZodType<AboutMethodStep>;
+});
 
 export const AboutTestimonialSchema = z.object({
 	quote: LocalizedStringSchema,
@@ -55,41 +37,37 @@ export const AboutTestimonialSchema = z.object({
 	role: LocalizedStringSchema,
 	company: z.string(),
 	logo: z.string().optional(),
-}) satisfies z.ZodType<AboutTestimonial>;
+});
 
 export const AboutLanguageSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	image: z.string(),
-}) satisfies z.ZodType<AboutLanguage>;
+});
 
 export const AboutInterestSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	image: z.string(),
-}) satisfies z.ZodType<AboutInterest>;
+});
 
 export const AboutEducationItemSchema = z.object({
 	school: LocalizedStringSchema,
 	program: LocalizedStringSchema,
 	icon: z.enum(['champlain', 'bishops']),
-}) satisfies z.ZodType<AboutEducationItem>;
+});
 
 export const AboutWeatherConfigSchema = z.object({
 	city: LocalizedStringSchema,
 	hook: LocalizedStringSchema,
 	enabled: z.boolean(),
-}) satisfies z.ZodType<AboutWeatherConfig>;
+});
 
-// AboutCta.lines uses a narrow color union, mirrored as z.enum.
 const AboutCtaLineSchema = z.object({
 	text: z.string(),
 	color: z.enum(['orange', 'muted', 'accent']),
 });
 
-// Shared social-link shape (AboutCta.socials + ContactContent.socials both
-// use `{ label, href, icon }` with readonly wrapping). Exported so consumers
-// can import the primitive shape directly without re-deriving it.
 export const AboutSocialLinkSchema = z.object({
 	label: z.string(),
 	href: z.string(),
@@ -102,7 +80,7 @@ export const AboutCtaSchema = z.object({
 	buttonLabel: LocalizedStringSchema,
 	buttonHref: z.string(),
 	socials: z.array(AboutSocialLinkSchema).readonly(),
-}) satisfies z.ZodType<AboutCta>;
+});
 
 export const AboutStopLabelsSchema = z.object({
 	identity: LocalizedStringSchema,
@@ -115,7 +93,7 @@ export const AboutStopLabelsSchema = z.object({
 	snapshots: LocalizedStringSchema,
 	location: LocalizedStringSchema,
 	next: LocalizedStringSchema,
-}) satisfies z.ZodType<AboutStopLabels>;
+});
 
 export const AboutLabelsSchema = z.object({
 	polaroidPrevAria: LocalizedStringSchema,
@@ -124,9 +102,11 @@ export const AboutLabelsSchema = z.object({
 	testimonialsTabNavAria: LocalizedStringSchema,
 	testimonialsPrevAria: LocalizedStringSchema,
 	testimonialsNextAria: LocalizedStringSchema,
+	/** Template placeholders: {index} and {total}. */
 	testimonialSlideAria: LocalizedStringSchema,
+	/** Template placeholder: {index}. */
 	showTestimonialAria: LocalizedStringSchema,
-}) satisfies z.ZodType<AboutLabels>;
+});
 
 export const AboutContentSchema = z.object({
 	identity: AboutIdentitySchema,
@@ -141,4 +121,18 @@ export const AboutContentSchema = z.object({
 	stopLabels: AboutStopLabelsSchema,
 	labels: AboutLabelsSchema,
 	meta: PageMetaSchema,
-}) satisfies z.ZodType<AboutContent>;
+});
+
+export type AboutPolaroid = z.infer<typeof AboutPolaroidSchema>;
+export type AboutIdentity = z.infer<typeof AboutIdentitySchema>;
+export type AboutMetric = z.infer<typeof AboutMetricSchema>;
+export type AboutMethodStep = z.infer<typeof AboutMethodStepSchema>;
+export type AboutTestimonial = z.infer<typeof AboutTestimonialSchema>;
+export type AboutLanguage = z.infer<typeof AboutLanguageSchema>;
+export type AboutInterest = z.infer<typeof AboutInterestSchema>;
+export type AboutEducationItem = z.infer<typeof AboutEducationItemSchema>;
+export type AboutWeatherConfig = z.infer<typeof AboutWeatherConfigSchema>;
+export type AboutCta = z.infer<typeof AboutCtaSchema>;
+export type AboutStopLabels = z.infer<typeof AboutStopLabelsSchema>;
+export type AboutLabels = z.infer<typeof AboutLabelsSchema>;
+export type AboutContent = z.infer<typeof AboutContentSchema>;

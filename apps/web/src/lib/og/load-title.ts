@@ -1,6 +1,6 @@
-import { getPostBySlug, getProjectBySlug } from '$lib/repositories';
-import type { Locale } from '$lib/types';
-import { resolveLocale } from '$lib/utils/locale';
+import { adapter } from '#lib/adapters/index.ts';
+import type { Locale } from '#lib/types.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
 
 export type OgType = 'blog' | 'project';
 
@@ -14,10 +14,10 @@ const EYEBROWS: Record<OgType, string> = {
   project: 'PROJECT',
 };
 
-// Pulls the title for a (type, slug) pair via existing repository helpers,
+// Pulls the title for a (type, slug) pair via typed adapter ports,
 // returning a normalized { eyebrow, title } the renderer consumes.
-// Returns null on miss, empty title, or any repository error — the endpoint
-// translates null into a 302 to the default OG image.
+// Returns null on miss, empty title, or any adapter error — the endpoint
+// turns any null into a build-stopping [og] throw during prerender.
 export async function loadOgTitle(
   type: OgType,
   slug: string,
@@ -25,14 +25,14 @@ export async function loadOgTitle(
 ): Promise<OgTitleResult | null> {
   try {
     if (type === 'blog') {
-      const post = await getPostBySlug(slug);
+      const post = await adapter.blog.bySlug(slug);
       const title = post?.title;
       if (!title) return null;
       return { eyebrow: EYEBROWS.blog, title };
     }
 
     // type === 'project'
-    const project = await getProjectBySlug(slug);
+    const project = await adapter.projects.bySlug(slug);
     // Mirror the detail route guard: archived projects (status 'private') 404
     // there, so their OG image must fall back to the default too — never render
     // a share card for a hidden project.

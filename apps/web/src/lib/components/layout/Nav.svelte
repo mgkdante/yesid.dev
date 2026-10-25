@@ -1,17 +1,13 @@
-<!--
-  Floating pill navigation. Centered at top: 16px, full-capsule shape.
-  Three primary links. Menu toggle for overlay (Task 4).
-  Wordmark letters animated via GSAP SplitText on hover (4 rotating effects).
--->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { wordmarkHover, magnetic } from '$lib/motion/actions';
-	import { navLinks as staticNavLinks, siteLabels } from '$lib/content';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
+	import { tick } from 'svelte';
+	import { beforeNavigate, onNavigate, afterNavigate } from '$app/navigation';
+	import { wordmarkHover, magnetic } from '#lib/motion/actions/index.ts';
+	import { navLinks as staticNavLinks, siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
 	import MenuOverlay from './MenuOverlay.svelte';
-	import type { NavLink } from '$lib/navigation/types';
-	import type { Locale, PageSeo } from '$lib/types';
+	import type { NavLink } from '#lib/navigation/types.ts';
+	import type { Locale, PageSeo } from '#lib/types.ts';
 	import ThemeToggle from './ThemeToggle.svelte';
 	import LanguageToggle from './LanguageToggle.svelte';
 
@@ -21,10 +17,11 @@
 		locale = DEFAULT_LOCALE,
 		localeAlternates,
 		headerLinks = staticNavLinks as readonly NavLink[],
-		menuItems = [] as readonly NavLink[],
-	}: {
-		pathname?: string;
+		menuItems = [] as readonly NavLink[]
+
 		/** Full current URL — threaded to LanguageToggle so the switch keeps query + hash. */
+	}: { 
+		pathname?: string;
 		url?: URL;
 		locale?: Locale;
 		localeAlternates?: PageSeo['localeAlternates'];
@@ -45,130 +42,190 @@
 	// Pill visual state (compact, z-index, toggle icon) follows this, not menuOpen.
 	let overlayActive = $state(false);
 
+
+	const contentId = $props.id();
+	let navigationVersion = 0;
+	let dismissVersion = 0;
+	let localeNavigation = false;
+	const closingNavigations = new Set<() => void>();
+
 	function toggleMenu() {
+		if (closingNavigations.size) return;
+		menuOpen = !menuOpen;
 		if (menuOpen) {
-			menuOpen = false;
-		} else if (!overlayActive) {
-			menuOpen = true;
+			dismissVersion = navigationVersion;
 			overlayActive = true;
 		}
 	}
 
-	function handleOverlayClose() {
+	beforeNavigate(({ to, type, shallow }) => {
+		if (shallow && type === 'goto') return;
+
+		navigationVersion++;
+		const language = document.querySelector<HTMLAnchorElement>('[data-testid="language-toggle"]');
+		localeNavigation = menuOpen && type === 'link' && to?.url.href === language?.href;
+		if (!localeNavigation) {
+			menuOpen = false;
+		}
+	});
+
+	onNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+		if (!overlayActive || localeNavigation) return;
 		menuOpen = false;
+		return new Promise<void>((resolve) => closingNavigations.add(resolve));
+	});
+
+	$effect(() => {
+		if (overlayActive) return;
+		for (const resolve of closingNavigations) resolve();
+		closingNavigations.clear();
+	});
+
+	afterNavigate(async ({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+		if (!localeNavigation || !menuOpen) return;
+		localeNavigation = false;
+		dismissVersion = navigationVersion;
+		await tick();
+		document.querySelector<HTMLElement>('[data-testid="language-toggle"]')?.focus({ preventScroll: true });
+	});
+
+	async function restoreTrigger(event: Event) {
+		event.preventDefault();
+		const version = dismissVersion;
+		await tick();
+		if (!overlayActive && !menuOpen && version === navigationVersion) {
+			document.querySelector<HTMLElement>('[data-testid="nav-menu-toggle"]')?.focus({ preventScroll: true });
+		}
 	}
 
-	function handleOverlayDone() {
-		overlayActive = false;
+	function animateWordmark(node: HTMLAnchorElement) {
+		return wordmarkHover(node.querySelector<HTMLSpanElement>('[data-testid="nav-wordmark-letters"]')!, {
+			dotEl: node.querySelector<HTMLSpanElement>('[data-testid="nav-period"]')!,
+			autoPlay: true,
+			autoPlayDelay: 500,
+		});
 	}
-
-	let wordmarkEl: HTMLSpanElement;
-	let dotEl: HTMLSpanElement;
-	let wordmarkAction: ReturnType<typeof wordmarkHover> | undefined;
 
 	function isActive(href: string): boolean {
-		if (href === '/') return basePath === '/';
-		return basePath.startsWith(href);
+		return href === '/' ? basePath === '/' : basePath.startsWith(href);
 	}
-
-	function onKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape' && menuOpen) menuOpen = false;
-	}
-
-	onMount(() => {
-		wordmarkAction = wordmarkHover(wordmarkEl, {
-			dotEl,
-			autoPlay: true,
-			autoPlayDelay: 500
-		});
-	});
-
-	onDestroy(() => {
-		wordmarkAction?.destroy();
-	});
 </script>
 
-<svelte:window onkeydown={onKeydown} />
+<!--
+  Floating pill navigation. Centered at top: 16px, full-capsule shape.
+  Three primary links. Menu toggle for overlay (Task 4).
+  Wordmark letters animated via GSAP SplitText on hover (4 rotating effects).
+-->
 
-<nav
-	data-testid="nav"
-	class="fixed left-0 right-0 flex flex-col items-center pointer-events-none nav-root"
-	style:z-index={overlayActive ? 70 : 50}
->
-	<!-- Pill -->
-	<div
-		data-testid="nav-pill"
-		class="nav-pill pointer-events-auto flex items-center gap-0 {overlayActive ? 'nav-pill-compact' : ''}"
+{#snippet chrome()}
+	<nav
+		data-testid="nav"
+		class="fixed left-0 right-0 flex flex-col items-center pointer-events-none nav-root"
+		style:z-index={overlayActive ? 70 : 50}
 	>
-		<!-- Wordmark — .nav-wordmark guarantees "yesid." never wraps (go2/w5) -->
-		<a
-			href={localizeHref('/', locale)}
-			data-testid="nav-wordmark"
-			class="nav-wordmark inline-flex min-h-11 items-center font-heading font-bold text-[var(--foreground)]"
+		<!-- Pill -->
+		<div
+			data-testid="nav-pill"
+			class="nav-pill pointer-events-auto flex items-center gap-0 {overlayActive ? 'nav-pill-compact' : ''}"
 		>
-			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
+			<!-- Wordmark — .nav-wordmark guarantees "yesid." never wraps (go2/w5) -->
+			<a
+				href={localizeHref('/', locale)}
+				data-testid="nav-wordmark"
+				use:animateWordmark
+				class="nav-wordmark inline-flex min-h-11 items-center font-heading font-bold text-[var(--foreground)]"
+			>
+			<span data-testid="nav-wordmark-letters">yesid</span><span
 				data-testid="nav-period"
-				bind:this={dotEl}
 				class="text-primary">.</span
 			>
-		</a>
+			</a>
 
-		<!-- Divider + links: collapse when menu open -->
-		<span class="nav-divider nav-collapsible {overlayActive ? 'nav-collapsed' : ''}" aria-hidden="true"></span>
+			<!-- Divider + links: collapse when menu open -->
 
-		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
-			{#each headerLinks as link}
-<!-- Reveal the priority-2 link only once the pill has room for a third
+			<span
+				class="nav-divider nav-collapsible {overlayActive ? 'nav-collapsed' : ''}"
+				aria-hidden="true"
+			></span>
+
+			<div
+				inert={overlayActive}
+				class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}"
+			>
+				{#each headerLinks as link}
+					<!-- Reveal the priority-2 link only once the pill has room for a third
 					 14px label. After the typography consolidation bumped
 					 --text-nav-link-mobile 13px->14px, three labels overflowed the
 					 rail in a ~480-489px band; 500px clears it with margin. -->
-				<span
-					class={link.priority === 2 ? 'hidden min-[500px]:block' : undefined}
-					use:magnetic={{ strength: 6, radius: 50 }}
-				>
-					<a
-						href={localizeHref(link.href, locale)}
-						class="nav-pill-link inline-flex min-h-11 items-center px-1 transition-all {isActive(link.href)
-							? 'text-primary nav-link-active'
-							: 'text-secondary-foreground hover:text-primary hover:nav-link-glow active:text-primary'}"
-						aria-current={isActive(link.href) ? 'page' : undefined}
+					<span
+						class={link.priority === 2 ? 'hidden min-[500px]:block' : undefined}
+						use:magnetic={{ strength: 6, radius: 50 }}
+					>
+						<a
+							href={localizeHref(link.href, locale)}
+							class="nav-pill-link inline-flex min-h-11 items-center px-1 transition-all {isActive(link.href)
+								? 'text-primary nav-link-active'
+								: 'text-secondary-foreground hover:text-primary hover:nav-link-glow active:text-primary'}"
+							aria-current={isActive(link.href) ? 'page' : undefined}
 					>
 						{resolveLocale(link.label, locale)}
 					</a>
-				</span>
-			{/each}
-		</div>
+					</span>
+				{/each}
+			</div>
 
-		<!-- Divider -->
-		<span class="nav-divider" aria-hidden="true"></span>
+			<!-- Divider -->
+			<span class="nav-divider" aria-hidden="true"></span>
 
-		<!-- Theme toggle (GO-W2.2) -->
-		<ThemeToggle {locale} />
+			<!-- Theme toggle (GO-W2.2) -->
+			<ThemeToggle locale={locale} />
 
-		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
+			<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
 		     Persistent (stays visible above the open menu sheet) — it is the SINGLE locale switcher;
 		     the sheet's duplicate locale switch was removed. -->
-		<LanguageToggle {locale} {url} {localeAlternates} />
 
-		<!-- Menu toggle -->
-		<button
-			data-testid="nav-menu-toggle"
-			class="menu-toggle {overlayActive ? 'menu-toggle-open' : ''}"
-			aria-label={overlayActive ? closeMenuAria : openMenuAria}
-			onclick={toggleMenu}
-		>
-			<span class="menu-toggle-line menu-toggle-top"></span>
-			<span class="menu-toggle-line menu-toggle-bottom"></span>
-		</button>
-	</div>
+			<LanguageToggle
+				locale={locale}
+				url={url}
+				localeAlternates={localeAlternates}
+			/>
 
-</nav>
+			<!-- Menu toggle -->
+			<button
+				data-testid="nav-menu-toggle"
+				class="menu-toggle {overlayActive ? 'menu-toggle-open' : ''}"
+				aria-label={overlayActive ? closeMenuAria : openMenuAria}
+				aria-expanded={menuOpen}
+				aria-controls={contentId}
+				onclick={toggleMenu}
+			>
+				<span class="menu-toggle-line menu-toggle-top"></span>
+				<span class="menu-toggle-line menu-toggle-bottom"></span>
+			</button>
+		</div>
 
-<MenuOverlay open={menuOpen} {pathname} {locale} {menuItems} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
+	</nav>
+{/snippet}
+
+<MenuOverlay
+	open={menuOpen}
+	bind:active={overlayActive}
+	pathname={pathname}
+	locale={locale}
+	menuItems={menuItems}
+	chrome={chrome}
+	contentId={contentId}
+	onclose={() => {
+		menuOpen = false;
+	}}
+	oncloseautofocus={restoreTrigger}
+/>
 
 <style>
 	.nav-root {
-		top: calc(1rem + env(safe-area-inset-top, 0px));
+		top: var(--nav-top);
 	}
 	/* Taste round 2: the wayfinding chrome joins the brand grid — the pill
 	   border speaks the same bold brand-border as cards (was a 10% ghost) and
@@ -178,14 +235,14 @@
 		background: color-mix(in srgb, var(--background) 92%, transparent);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 2px solid var(--border-brand);
+		border: var(--nav-border) solid var(--border-brand);
 		border-radius: var(--radius-pill);
 		box-shadow: var(--shadow-nav);
-		padding: 12px 28px;
+		padding: var(--nav-padding-y) 28px;
 		transition: padding var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.nav-pill-compact {
-		padding: 12px 20px;
+		padding: var(--nav-padding-y) 20px;
 		box-shadow: none;
 		border-color: var(--border-brand-active);
 	}
@@ -202,6 +259,9 @@
 
 	.nav-pill-link {
 		font-size: var(--text-nav-link-desktop);
+		font-weight: 500;
+		white-space: nowrap;
+		position: relative;
 	}
 
 	.nav-divider {
@@ -228,12 +288,12 @@
 	   margins, link gaps), NEVER the 44px tap targets. Retightened in slice-30
 	   after the LanguageToggle became a 3rd pill control (was overflowing the
 	   floating pill at 320–480px). */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.nav-pill {
-			padding: 8px 16px;
+			padding: var(--nav-padding-y) 16px;
 		}
 		.nav-pill-compact {
-			padding: 8px 14px;
+			padding: var(--nav-padding-y) 14px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-mobile);
@@ -251,10 +311,10 @@
 
 	@media (max-width: 479px) {
 		.nav-pill {
-			padding: 6px 8px;
+			padding: var(--nav-padding-y) 8px;
 		}
 		.nav-pill-compact {
-			padding: 6px 8px;
+			padding: var(--nav-padding-y) 8px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-compact);
@@ -274,10 +334,10 @@
 	   little room — squeeze the decorative spacing, never the hit areas. */
 	@media (max-width: 359px) {
 		.nav-pill {
-			padding: 6px 4px;
+			padding: var(--nav-padding-y) 4px;
 		}
 		.nav-pill-compact {
-			padding: 6px 4px;
+			padding: var(--nav-padding-y) 4px;
 		}
 		.nav-wordmark {
 			font-size: var(--text-nav-brand-compact);
@@ -309,48 +369,22 @@
 
 	/* Collapse links + divider when menu opens, grow back on close */
 	.nav-collapsible {
-		overflow: hidden;
+		overflow: visible;
 		transition: max-width var(--duration-slow) var(--ease-default), opacity var(--duration-normal) var(--ease-default), margin var(--duration-slow) var(--ease-default);
 		max-width: 300px;
 		opacity: 1;
 	}
 	.nav-collapsed {
+		overflow: hidden;
 		max-width: 0;
 		opacity: 0;
 		margin-inline: 0;
 	}
 
-	/* GO-w2t5 retier: the menu-open link collapse is a width/opacity slide —
-	   MOTION-GATED; snap instead of sliding under reduce. */
-	@media (prefers-reduced-motion: reduce) {
-		.nav-collapsible {
-			transition: none;
-		}
-	}
-
-	.nav-pill-link {
-		font-size: var(--text-nav-link-desktop);
-		font-weight: 500;
-		white-space: nowrap;
-		position: relative;
-	}
-
-	@media (max-width: 767px) {
-		.nav-pill-link {
-			font-size: var(--text-nav-link-mobile);
-		}
-	}
-
-	@media (max-width: 479px) {
-		.nav-pill-link {
-			font-size: var(--text-nav-link-compact);
-		}
-	}
-
 	/* GO2-W5 "you are here" lamp: the active link gets an amber wayfinding
 	   dot (absolute — zero layout shift). Underline/hover voice stays
 	   primary; the dot is indicator-only, never the interactive hue. */
-	.nav-pill-link[aria-current='page']::after {
+	.nav-pill-link[aria-current="page"]::after {
 		content: '';
 		position: absolute;
 		left: 50%;
@@ -417,5 +451,12 @@
 	.menu-toggle-open .menu-toggle-bottom {
 		width: 16px;
 		transform: translateY(-3.25px) rotate(-45deg);
+	}
+
+	/* Pill collapse/growth and the icon morph snap under reduced motion. */
+	@media (prefers-reduced-motion: reduce) {
+		.nav-pill, .nav-collapsible, .menu-toggle-line {
+			transition: none;
+		}
 	}
 </style>

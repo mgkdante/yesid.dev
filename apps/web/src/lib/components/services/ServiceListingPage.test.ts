@@ -7,17 +7,17 @@
 //   - the param is written ONLY on an explicit tab click (handleTabSelect),
 //     never from the IntersectionObserver scroll-spy (which would spam
 //     replaceState during scroll);
-//   - the write uses goto(replaceState, noScroll) — a scroll position, not a
+//   - the write preserves scroll, resets focus and replaces history — not a
 //     history destination, and the Lenis scroll owns the motion;
 //   - on mount, a present-and-valid ?station=<id> re-scrolls to #service-<id>
 //     using the same Lenis-aware scroll (the deep-link / switch-restore path).
 //
-// $app/stores, $app/navigation and the Lenis singleton are mocked so the
+// $app/state, $app/navigation and the Lenis singleton are mocked so the
 // router/scroll side-effects are observable without a live SvelteKit runtime.
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/svelte';
-import { serviceFactory } from '../../../tests/factories';
+import { serviceFactory, projectFactory } from '../../../tests/factories';
 
 // --- mocks ---
 // vi.mock factories are hoisted above the module body, so any state they close
@@ -32,16 +32,8 @@ const mocks = vi.hoisted(() => ({
 vi.mock('$app/navigation', () => ({
 	goto: (...args: unknown[]) => mocks.gotoFn(...args),
 }));
-vi.mock('$app/stores', () => ({
-	// `page` is a store; the component reads $page.url.searchParams. The custom
-	// store reads the live `mocks.url` holder on every subscribe so each test can
-	// set a different URL before render.
-	page: {
-		subscribe(run: (value: { url: URL }) => void) {
-			run({ url: mocks.url });
-			return () => {};
-		},
-	},
+vi.mock('$app/state', () => ({
+	page: { get url() { return mocks.url; } },
 }));
 vi.mock('@yesid/motion/utils/lenis', () => ({
 	getLenis: () => mocks.lenis,
@@ -78,23 +70,65 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe('ServiceListingPage station (slice-34.5)', () => {
+	it('updates related projects from a small visible portion without writing a passive URL', async () => {
+		const original = globalThis.IntersectionObserver;
+		const observers: { callback: IntersectionObserverCallback; targets: Element[] }[] = [];
+		globalThis.IntersectionObserver = class {
+			row: (typeof observers)[number];
+			constructor(callback: IntersectionObserverCallback) {
+				this.row = { callback, targets: [] };
+				observers.push(this.row);
+			}
+			observe(element: Element) { this.row.targets.push(element); }
+			disconnect() {}
+		} as unknown as typeof IntersectionObserver;
+		try {
+			render(ServiceListingPage, { props: {
+				...renderProps,
+				serviceProjects: { 'data-pipeline': [projectFactory.build({ slug: 'fixture-result', title: { en: 'Fixture project' } })] },
+			} });
+			const target = document.getElementById('service-data-pipeline')!;
+			const observer = observers.find(row => row.targets.includes(target))!;
+			observer.callback([{
+				target, isIntersecting: true, intersectionRatio: 0.001,
+				boundingClientRect: target.getBoundingClientRect(),
+				intersectionRect: new DOMRect(0, 0, 100, 1), rootBounds: null, time: 0,
+			}], {} as IntersectionObserver);
+			await Promise.resolve();
+			expect(screen.getByRole('tab', { name: /02/ })).toHaveAttribute('aria-selected', 'true');
+			expect(screen.getByRole('link', { name: 'Fixture project' })).toHaveAttribute('href', '/projects/fixture-result');
+			expect(gotoMock).not.toHaveBeenCalled();
+		} finally {
+			cleanup();
+			globalThis.IntersectionObserver = original;
+		}
+	});
+
+	it('handles an empty supplied station set', () => {
+		render(ServiceListingPage, { props: { services: [], serviceSvgContents: {}, serviceProjects: {} } });
+		expect(screen.queryAllByRole('tab')).toEqual([]);
+		expect(gotoMock).not.toHaveBeenCalled();
+	});
+
 	it('renders the listing page', () => {
 		renderPage();
 		expect(screen.getByTestId('service-listing-page')).toBeInTheDocument();
 	});
 
-	it('writes ?station=<id> via replaceState+noScroll on an explicit tab click', async () => {
+	it('writes ?station=<id> while preserving scroll and resetting focus', async () => {
 		renderPage();
 		// StationTabs (mode="scroll") renders each station as a button; click the
 		// second one and assert the URL write contract.
 		const tabs = screen.getAllByRole('tab');
 		expect(tabs.length).toBe(services.length);
+		tabs[1]!.focus();
 		await fireEvent.click(tabs[1]!); // data-pipeline
 
 		expect(gotoMock).toHaveBeenCalledTimes(1);
 		const [url, opts] = gotoMock.mock.calls[0]!;
 		expect(String(url)).toContain('station=data-pipeline');
-		expect(opts).toMatchObject({ replaceState: true, noScroll: true });
+		expect(opts).toMatchObject({ replaceState: true, reset: false });
+		expect(document.activeElement).toBe(document.body);
 	});
 
 	it('triggers the Lenis-aware scroll on an explicit tab click', async () => {

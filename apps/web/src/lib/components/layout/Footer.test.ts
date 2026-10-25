@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/svelte';
 
 const consentMock = vi.hoisted(() => {
 	type State = {
@@ -28,8 +28,8 @@ const consentMock = vi.hoisted(() => {
 			},
 			openPreferences,
 		},
-		set(next: State) {
-			state = next;
+		set(next: Partial<State> = {}) {
+			state = { choice: 'unknown', ready: true, available: true, preferencesOpen: false, ...next };
 			for (const subscriber of subscribers) subscriber(state);
 		},
 		reset() {
@@ -63,16 +63,41 @@ const controlsMock = vi.hoisted(() => {
 	};
 });
 
-vi.mock('$lib/state/analytics-consent.svelte', () => ({
+vi.mock('#lib/state/analytics-consent.svelte.ts', () => ({
 	analyticsConsentStore: consentMock.store,
 }));
 
-vi.mock('$lib/content', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/content')>();
+const fixtureSocial = vi.hoisted(() => ({
+	github: 'https://example.com/code',
+	linkedin: '',
+	upwork: '',
+}));
+
+vi.mock('#lib/content/index.ts', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/content/index.ts')>();
 	return {
 		...actual,
+		menuItems: [
+			{ label: { en: 'Fallback route' }, href: '/fallback', priority: 1 },
+			{ label: { en: 'Policy fixture' }, href: '/legal/fixture', priority: 1 },
+		],
+		siteMeta: { ...actual.siteMeta, links: fixtureSocial },
 		siteLabels: {
 			...actual.siteLabels,
+			navChrome: {
+				...actual.siteLabels.navChrome,
+				shared: { ...actual.siteLabels.navChrome.shared, footerNavAria: { en: 'Explore fixture' } },
+			},
+			footerChrome: {
+				...actual.siteLabels.footerChrome,
+				footer: {
+					...actual.siteLabels.footerChrome.footer,
+					footerNavAria: { en: 'Explore fixture' },
+					exploreLabel: { en: 'Explore fixture' },
+					legalLabel: { en: 'Legal fixture' },
+					connectLabel: { en: 'Connect fixture' },
+				},
+			},
 			ui: {
 				...actual.siteLabels.ui,
 				analyticsConsent: {
@@ -97,96 +122,83 @@ import Footer from './Footer.svelte';
 
 beforeEach(() => {
 	controlsMock.set();
+	fixtureSocial.github = 'https://example.com/code';
+	fixtureSocial.linkedin = '';
+	fixtureSocial.upwork = '';
 	consentMock.reset();
 });
 afterEach(() => cleanup());
 
-describe('Footer', () => {
-	it('renders a footer element', () => {
-		render(Footer);
-		expect(screen.getByTestId('footer')).toBeInTheDocument();
+describe('Footer supplied content', () => {
+	it('keeps supplied explore and legal groups separate in input order', () => {
+		render(Footer, {
+			footerLinks: [
+				{ label: { en: 'Archive' }, href: '/archive', priority: 1 },
+				{ label: { en: 'Policy' }, href: '/legal/policy', priority: 1 },
+				{ label: { en: 'Studio' }, href: '/studio', priority: 2 },
+			],
+		});
+		const explore = screen.getByRole('navigation', { name: 'Explore fixture' });
+		expect([...explore.querySelectorAll('a')].map((a) => a.getAttribute('href'))).toEqual([
+			'/archive',
+			'/studio',
+		]);
+		expect(
+			within(screen.getByTestId('footer-legal')).getByRole('link', { name: 'Policy' }),
+		).toHaveAttribute('href', '/legal/policy');
+		expect(screen.getByTestId('footer-wordmark')).toHaveAttribute('href', '/');
 	});
 
-	it('renders the yesid wordmark', () => {
-		render(Footer);
-		expect(screen.getByTestId('footer-wordmark')).toBeInTheDocument();
-		expect(screen.getByTestId('footer-wordmark').textContent).toContain('yesid');
-	});
-
-	it('does not render a copyright line (operator trim below the hazard rule)', () => {
-		render(Footer);
-		expect(screen.queryByText(/©/)).toBeNull();
-	});
-
-	it('renders footer navigation with aria-label', () => {
-		render(Footer);
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		expect(nav).toBeInTheDocument();
-	});
-
-	it('renders all 6 site navigation links', () => {
-		render(Footer);
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		const links = nav.querySelectorAll('a');
-		expect(links.length).toBe(6);
-	});
-
-	it('renders links to Services, Projects, Blog, Stack, About, Contact', () => {
-		// slice-18m: nav order is CMS-controlled (editors set `sort` per row in
-		// Directus). Assert SET membership, not order.
-		render(Footer);
-		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
-		const navLinks = nav.querySelectorAll('a');
-		const hrefs = Array.from(navLinks).map((a) => a.getAttribute('href'));
-		expect(new Set(hrefs)).toEqual(
-			new Set(['/services', '/projects', '/tech-stack', '/blog', '/about', '/contact']),
+	it('preserves the deliberate empty-input fallback without freezing the editorial inventory', () => {
+		render(Footer, { footerLinks: [] });
+		expect(screen.getByRole('link', { name: 'Fallback route' })).toHaveAttribute(
+			'href',
+			'/fallback',
 		);
+		expect(
+			within(screen.getByTestId('footer-legal')).getByRole('link', { name: 'Policy fixture' }),
+		).toHaveAttribute('href', '/legal/fixture');
 	});
 
-	it('renders GitHub social link with target=_blank', () => {
+	it.each([
+		['github', 'GitHub'],
+		['linkedin', 'LinkedIn'],
+		['upwork', 'Upwork'],
+	] as const)(
+		'renders the configured %s destination with external-link protections',
+		(key, label) => {
+			fixtureSocial.github = '';
+			fixtureSocial[key] = 'https://example.com/profile';
+			render(Footer);
+			const link = screen.getByRole('link', { name: label });
+			expect(link).toHaveAttribute('href', 'https://example.com/profile');
+			expect(link).toHaveAttribute('target', '_blank');
+			expect(link).toHaveAttribute('rel', 'me noopener noreferrer');
+			expect(screen.getAllByRole('link', { name: /^(GitHub|LinkedIn|Upwork)$/ })).toHaveLength(1);
+		},
+	);
+
+	it('supports no configured social links', () => {
+		fixtureSocial.github = '';
 		render(Footer);
-		const link = screen.getByRole('link', { name: /github/i });
-		expect(link).toHaveAttribute('href', 'https://github.com/mgkdante');
-		expect(link).toHaveAttribute('target', '_blank');
-		expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
+		expect(screen.queryByRole('link', { name: 'GitHub' })).toBeNull();
 	});
 
-	it('renders LinkedIn social link with target=_blank', () => {
+	it('keeps one address and the current date in the status bar', () => {
 		render(Footer);
-		const link = screen.getByRole('link', { name: /linkedin/i });
-		expect(link).toHaveAttribute('href', 'https://www.linkedin.com/in/otaloray/');
-		expect(link).toHaveAttribute('target', '_blank');
-	});
-
-	it('renders the status bar with system date', () => {
-		render(Footer);
+		expect(document.querySelectorAll('footer address')).toHaveLength(1);
 		const now = new Date();
-		const expectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-		expect(screen.getByText(new RegExp(expectedDate))).toBeInTheDocument();
-	});
-
-	it('renders system online status text', () => {
-		render(Footer);
-		expect(screen.getByText(/system online/)).toBeInTheDocument();
-	});
-
-	it('renders location in a single address element — status bar only (operator trim)', () => {
-		// The brand block dropped its location line; the status bar keeps it.
-		render(Footer);
-		const addresses = document.querySelectorAll('footer address');
-		expect(addresses.length).toBe(1);
-		expect(addresses[0]?.textContent).toContain('Montreal');
-		expect(addresses[0]?.closest('.footer-status-border')).not.toBeNull();
-	});
-
-	it('renders the digital infrastructure tagline', () => {
-		render(Footer);
-		expect(screen.getByText(/digital infrastructure/)).toBeInTheDocument();
+		const date = [
+			now.getFullYear(),
+			String(now.getMonth() + 1).padStart(2, '0'),
+			String(now.getDate()).padStart(2, '0'),
+		].join('.');
+		expect(screen.getByText(new RegExp(date))).toBeInTheDocument();
 	});
 });
 
-describe('Footer — locale threading (slice-28.6)', () => {
-	it('renders footer nav labels via resolveLocale for fr', () => {
+describe('Footer locale threading', () => {
+	it('localizes French labels, navigation and wordmark without a second locale switcher', () => {
 		render(Footer, {
 			props: {
 				locale: 'fr',
@@ -194,22 +206,7 @@ describe('Footer — locale threading (slice-28.6)', () => {
 			},
 		});
 		expect(screen.getByText('Projets')).toBeInTheDocument();
-	});
-
-	it('never renders a locale switcher (operator trim — removed below the hazard rule)', () => {
-		// Even with two published locales the footer status bar no longer carries
-		// the EN|FR toggle (operator decision). Language switches via nav/route.
-		render(Footer, { props: { locale: 'fr' } });
 		expect(screen.queryByTestId('footer-locale-switch')).toBeNull();
-	});
-
-	it('localizes nav link hrefs and the wordmark for fr', () => {
-		render(Footer, {
-			props: {
-				locale: 'fr',
-				footerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
-			},
-		});
 		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('href', '/fr/projects');
 		expect(screen.getByTestId('footer-wordmark')).toHaveAttribute('href', '/fr');
 	});
@@ -221,12 +218,7 @@ describe('Footer analytics preferences', () => {
 		['fr', 'Préférences d’analytique'],
 		['es', 'Preferencias de analítica'],
 	] as const)('renders the %s settings label as a button', (locale, label) => {
-		consentMock.set({
-			choice: 'unknown',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set();
 
 		render(Footer, { props: { locale } });
 
@@ -234,17 +226,14 @@ describe('Footer analytics preferences', () => {
 		expect(preferences).toHaveTextContent(label);
 		expect(preferences.tagName).toBe('BUTTON');
 		expect(preferences).not.toHaveAttribute('href');
+		expect(preferences).toHaveAttribute('type', 'button');
+		expect(preferences).toHaveAttribute('data-slot', 'footer-link');
 		expect(preferences).toHaveAttribute('aria-controls', 'analytics-consent');
 		expect(preferences).toHaveAttribute('aria-expanded', 'false');
 	});
 
 	it('reports the preferences rail as expanded when it is already open', () => {
-		consentMock.set({
-			choice: 'denied',
-			ready: true,
-			available: true,
-			preferencesOpen: true,
-		});
+		consentMock.set({ choice: 'denied', preferencesOpen: true });
 
 		render(Footer);
 
@@ -252,12 +241,7 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it('opens analytics preferences exactly once', async () => {
-		consentMock.set({
-			choice: 'granted',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set({ choice: 'granted' });
 		render(Footer);
 
 		await fireEvent.click(screen.getByTestId('analytics-preferences'));
@@ -266,8 +250,8 @@ describe('Footer analytics preferences', () => {
 	});
 
 	it.each([
-		{ choice: 'unknown', ready: false, available: true, preferencesOpen: false },
-		{ choice: 'unknown', ready: true, available: false, preferencesOpen: false },
+		{ ready: false },
+		{ available: false },
 	] as const)('hides preferences until production-host state is ready', (state) => {
 		consentMock.set(state);
 
@@ -278,12 +262,7 @@ describe('Footer analytics preferences', () => {
 
 	it('keeps preferences available in enabled hidden mode after a saved denial', () => {
 		controlsMock.set(true, false);
-		consentMock.set({
-			choice: 'denied',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set({ choice: 'denied' });
 
 		render(Footer);
 
@@ -292,12 +271,7 @@ describe('Footer analytics preferences', () => {
 
 	it('hides preferences when analytics is disabled, even with a saved grant', () => {
 		controlsMock.set(false, false);
-		consentMock.set({
-			choice: 'granted',
-			ready: true,
-			available: true,
-			preferencesOpen: false,
-		});
+		consentMock.set({ choice: 'granted' });
 
 		render(Footer);
 

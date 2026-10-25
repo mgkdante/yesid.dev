@@ -1,13 +1,13 @@
 <script lang="ts">
 	import '@fontsource-variable/inter';
 	import '@fontsource-variable/jetbrains-mono';
-	import '$lib/styles/site.css';
-	import '$lib/styles/terminal.css';
-	import Nav from '$lib/components/layout/Nav.svelte';
-	import Footer from '$lib/components/layout/Footer.svelte';
-	import { page } from '$app/stores';
+	import '#lib/styles/site.css';
+	import '#lib/styles/terminal.css';
+	import Nav from '#lib/components/layout/Nav.svelte';
+	import Footer from '#lib/components/layout/Footer.svelte';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
 	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
@@ -16,20 +16,20 @@
 	// no direct import here. The Slice 12 `buildPersonSchema` block it replaced
 	// is gone; the Slice 17b "documented exception" reading siteMeta directly
 	// is likewise resolved.
-	import SeoHead from '$lib/components/seo/SeoHead.svelte';
-	import Analytics from '$lib/components/analytics/Analytics.svelte';
-	import { DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { provideLocale } from '$lib/utils/locale-context';
-	import { delocalizePath } from '$lib/utils/locale-routing';
-	import { attachLocaleHandoff } from '$lib/state/locale-handoff.svelte';
+	import SeoHead from '#lib/components/seo/SeoHead.svelte';
+	import Analytics from '#lib/components/analytics/Analytics.svelte';
+	import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import { provideLocale } from '#lib/utils/locale-context.ts';
+	import { delocalizePath } from '#lib/utils/locale-routing.ts';
+	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { initLenis, destroyLenis } from '@yesid/motion/utils/lenis';
-	import { themeStore } from '$lib/stores/theme.svelte';
-	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
-	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
-	import { setMorphShapes } from '$lib/utils/shapes';
+	import { themeStore } from '#lib/stores/theme.svelte.ts';
+	import { initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
+	import { initGlobalRipple } from '#lib/motion/utils/globalRipple.ts';
+	import { setMorphShapes } from '#lib/utils/shapes.ts';
 	import type { LayoutData } from './$types';
-	import type { NavLink } from '$lib/navigation/types';
-	import type { MorphShape } from '$lib/types';
+	import type { NavLink } from '#lib/navigation/types.ts';
+	import type { MorphShape } from '#lib/types.ts';
 
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
@@ -57,6 +57,16 @@
 	// the root layout never remounts, so the orchestrator survives page swaps.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
 
+	// 039E: app.html carries <html lang="%lang%">, substituted server-side, and the
+	// client router never re-runs that substitution — so a client-routed locale
+	// switch left the document advertising the previous language to assistive
+	// technology, :lang() rules, and crawlers while the URL and copy had already
+	// moved. Syncing the element to the locale the layout already derives fixes
+	// that without a full document load, which would strand slice-34's handoff.
+	$effect(() => {
+		if (browser) document.documentElement.lang = locale;
+	});
+
 	$effect(() => {
 		if (data.morphShapes) {
 			setMorphShapes(data.morphShapes);
@@ -68,8 +78,8 @@
 
 		// Register ScrollTrigger + apply site-wide config early so
 		// ScrollTrigger.isTouch and pin behavior are available for all
-		// consumers. Plugin-specific loading (DrawSVG, MorphSVG, Flip,
-		// MotionPath) happens lazily per-consumer at mount.
+		// consumers. Plugin-specific loading (DrawSVG, MorphSVG) happens
+		// lazily per-consumer at mount.
 		initScrollTriggerConfig();
 		initLenis();
 
@@ -91,50 +101,45 @@
 	// Home page + project detail pages have manifesto-style headers.
 	// Compares the canonical (delocalized) pathname so /fr/projects/x gets the
 	// same treatment as /projects/x (slice-28.6).
-	const basePath = $derived(delocalizePath($page.url.pathname));
-	let isFullBleed = $derived(
-		basePath === '/' ||
-		(basePath.startsWith('/projects/') && basePath !== '/projects') ||
-		(basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal')
-	);
+	const basePath = $derived(delocalizePath(page.url.pathname));
+
+	let isFullBleed = $derived(basePath === '/' || basePath.startsWith('/projects/') && basePath !== '/projects' || basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal');
 </script>
 
-<SeoHead seo={data.seo} {locale} themeColor={data.themeColor} />
-<Analytics {locale} isHome={basePath === '/'} />
+<SeoHead
+	seo={data.seo}
+	locale={locale}
+	themeColor={data.themeColor}
+/>
 
-<div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
+<Analytics locale={locale} isHome={basePath === '/'} />
+
+<div
+	class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]"
+>
 	<Nav
-		pathname={$page.url.pathname}
-		url={$page.url}
-		{locale}
+		pathname={page.url.pathname}
+		url={new URL(page.url.href)}
+		locale={locale}
 		localeAlternates={data.seo.localeAlternates}
-		{headerLinks}
-		{menuItems}
+		headerLinks={headerLinks}
+		menuItems={menuItems}
 	/>
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
-	{#key $page.url.pathname}
-		<main class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
-			{@render children()}
-		</main>
+	{#key page.url.pathname}
+		<main
+			class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}"
+		>{@render children()}</main>
 	{/key}
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-	<div class="relative z-[45]">
-		<Footer {locale} {footerLinks} />
-	</div>
+	<div class="relative z-[45]"><Footer locale={locale} footerLinks={footerLinks} /></div>
 </div>
 
 <style>
-	/* Single source of truth for top clearance under the floating nav pill.
-	   The pill is a constant ~60px tall fixed at top:16px, so its bottom edge
-	   sits at ~76px on every viewport (does not grow on mobile). Clearance =
-	   pill bottom + a 12px breathing gap = 88px. Every page's top reserve and
-	   every sticky/detail-header offset routes through this var so titles never
-	   tuck under the pill. Defined on the shell wrapper (cascades to all pages);
-	   tokens.css/app.css are generated + off-limits, so it lives here. */
 	.circuit-grid {
-		--nav-clearance: 5.5rem; /* 88px */
+		--strip-h: 68px; /* Calibration switch: use 70px for the T=70 candidate. */
 	}
 	:global(.pt-nav-clear) {
 		padding-top: var(--nav-clearance, 5.5rem);

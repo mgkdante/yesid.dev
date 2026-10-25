@@ -1,7 +1,5 @@
 import { render, screen } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import CtaBand from './CtaBand.svelte';
 
 const cta = {
@@ -49,10 +47,4 @@ describe('CtaBand', () => {
 		expect(container.querySelectorAll('[data-testid="cta-blueprint-background"]')).toHaveLength(1);
 	});
 
-	it('uses the page background instead of a separate grey band surface', () => {
-		const source = readFileSync(resolve(process.cwd(), 'src/lib/components/shared/CtaBand.svelte'), 'utf8');
-
-		expect(source).toContain('background-color: var(--background)');
-		expect(source).not.toContain('background-color: var(--muted)');
-	});
 });

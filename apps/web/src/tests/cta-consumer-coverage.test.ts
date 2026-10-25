@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
-import { projects } from '$lib/content/projects';
-import { services } from '$lib/content/services';
-import { SUPPORTED_LOCALES } from '$lib/utils/locale';
+import { join, relative, resolve, sep } from 'node:path';
+import { projects } from '#lib/content/projects.ts';
+import { services } from '#lib/content/services.ts';
+import { SUPPORTED_LOCALES } from '#lib/utils/locale.ts';
 
 const SRC = resolve(process.cwd(), 'src');
 const read = (path: string) => readFileSync(resolve(SRC, path), 'utf8');
@@ -26,7 +26,7 @@ function svelteFiles(dir: string, files: string[] = []): string[] {
 describe('shared CTA consumer coverage', () => {
 	it.each(consumers)('%s mounts the same CtaBand component', (_, file, prefix) => {
 		const source = read(file);
-		expect(source).toContain("import CtaBand from '$lib/components/shared/CtaBand.svelte'");
+		expect(source).toContain("import CtaBand from '#lib/components/shared/CtaBand.svelte'");
 		expect(source).toContain('<CtaBand');
 		expect(source).toContain(`testidPrefix="${prefix}"`);
 	});
@@ -35,10 +35,10 @@ describe('shared CTA consumer coverage', () => {
 		const importers = svelteFiles(SRC)
 			.filter((file) =>
 				readFileSync(file, 'utf8').includes(
-					"import CtaBand from '$lib/components/shared/CtaBand.svelte'",
+					"import CtaBand from '#lib/components/shared/CtaBand.svelte'",
 				),
 			)
-			.map((file) => relative(SRC, file))
+			.map((file) => relative(SRC, file).split(sep).join('/'))
 			.sort();
 		const auditedConsumers = consumers.map(([, file]) => file).sort();
 
@@ -54,18 +54,20 @@ describe('shared CTA consumer coverage', () => {
 			return source.includes("Let's build something") || source.includes('that moves.');
 		});
 		expect(
-			duplicateFiles.map((file) => relative(SRC, file)),
+			duplicateFiles.map((file) => relative(SRC, file).split(sep).join('/')),
 			'CTA copy belongs only to the generated content module',
 		).toEqual([]);
 	});
 
-	it('expands the shared component to the audited 21 localized route pages', () => {
+	it('expands the shared component to the audited 27 localized route pages', () => {
 		const visibleServices = services.filter((service) => service.visible);
 		const publicProjects = projects.filter((project) => project.status === 'public');
 
 		expect(visibleServices).toHaveLength(4);
-		expect(publicProjects).toHaveLength(2);
-		expect((1 + visibleServices.length + publicProjects.length) * SUPPORTED_LOCALES.length).toBe(21);
+		expect(publicProjects).toHaveLength(4);
+		expect(
+			(1 + visibleServices.length + publicProjects.length) * SUPPORTED_LOCALES.length,
+		).toBe(27);
 	});
 
 	it('requires one shared blueprint composition rather than per-route art', () => {

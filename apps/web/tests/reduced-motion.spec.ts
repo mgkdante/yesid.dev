@@ -74,27 +74,4 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		}
 	});
 
-	test('reduce: engine renders final blueprint state; signal dashes stay parked', async ({
-		page,
-	}) => {
-		await page.emulateMedia({ reducedMotion: 'reduce' });
-		await page.goto('/tech-stack');
-		await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
-		await page.locator('[data-testid="archetype-card-data-dashboard"]').click();
-
-		const canvas = page.locator('[data-testid="blueprint-canvas"]');
-		await expect(canvas).toBeVisible();
-
-		// animate=false branch gsap.set()s final states: rows fully visible.
-		const rowOpacity = await canvas
-			.locator('.bp-row')
-			.first()
-			.evaluate((el) => getComputedStyle(el).opacity);
-		expect(Number(rowOpacity)).toBe(1);
-
-		// Fun-pass stays dark for reduce users: signals rest at CSS opacity 0.
-		const signals = canvas.locator('.bp-signal');
-		expect(await signals.count()).toBeGreaterThan(0);
-		expect(await signals.first().evaluate((el) => getComputedStyle(el).opacity)).toBe('0');
-	});
 });

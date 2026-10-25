@@ -1,15 +1,18 @@
 // Static adapter — reads from $lib/content directly.
 //
-// BOUNDARY RULE (rewritten slice-28.5, audit #124 — the old "ONLY module that
-// imports from $lib/content" claim was false):
+// OWNER AUTHORIZATION: GO 2026-07-29 — G7 removes the verified pass-through
+// repository layer and amends this doctrine header.
 //
-//   1. COLLECTION / PRIMARY data (projects, services, blog, tech-stack, page
+// BOUNDARY RULE (rewritten slice-28.5, audit #124; amended G7 2026-07-29):
+//
+//   1. COLLECTION / PRIMARY data (projects, services, blog, page
 //      blocks, meta singletons, morph shapes — anything with an adapter port)
-//      must flow  load() -> $lib/repositories -> adapter -> this module.
-//      This module is the only RUNTIME reader of that data; it is what makes
-//      a slice-26 adapter re-point reach the render. HomeServices and
-//      FeaturedProjects were the last component-level bypasses for primary
-//      data; slice-28.5 threaded both through the home +page.server.ts.
+//      must flow server loader/helper -> $lib/adapters (the active swap point)
+//      -> this module -> $lib/content. Server consumers call typed adapter
+//      ports directly; display components receive resolved values as props.
+//      Those consumers must not import this module, raw primary content, or
+//      static helpers. This module remains the only RUNTIME reader of that data,
+//      so an adapter re-point still reaches every render.
 //   2. CMS CHROME SINGLETONS (siteLabels.*) MAY be imported directly by
 //      display components when the copy is global chrome, aria text, or route
 //      shell labels. They are build-cache values, not runtime CMS calls; routing
@@ -20,84 +23,65 @@
 //      generateHeroData() refresh (interactive mock regen, not CMS data);
 //      test files stubbing load output.
 //
-// Each method is a thin async wrapper around a content-layer export. No
-// transformation, no validation (Zod lands in Slice 17c between adapter and
-// repository). Missing a method is a compile error via the `: ContentAdapter`
-// annotation at the bottom.
+// The `staticAdapter: ContentAdapter` annotation below is the compile-time
+// port-coverage gate. Existing parsing, validation, serialization, lookup,
+// fallback, and error behavior stays in the adapter ports; G7 changes only
+// the call path.
+//
+// HomeServices and FeaturedProjects were the last component-level bypasses for
+// primary data; slice-28.5 threaded both through the home +page.server.ts.
 
-import { projects } from '$lib/content/projects';
 import {
 	getProjectBySlug,
 	getFeaturedProjects,
 	getPublicProjects,
 	getProjectsByService,
-	getAllTags,
-	getAllStackItems,
-	getServiceIdsForProjects,
-} from '$lib/projects/static-helpers';
-import { services } from '$lib/content/services';
+} from '#lib/projects/static-helpers.ts';
 import {
 	getServiceById,
 	getVisibleServices,
 	getAdjacentServices,
-} from '$lib/services/static-helpers';
-import { blogPosts } from '$lib/content/blog';
-// Slice-27.1: blog.html + blog.bodyBySlug now mirror the directus adapter —
-// `bodyBySlug` reads the CMS-derived Block Editor doc from blog-bodies.ts and
-// `html` is `serializeBlocksToHtml(body)`, byte-identical to directus. This
-// replaced the legacy markdown→Shiki `getPostHtml` bridge (blog.html-cache.ts),
-// whose `<h1>`-prefixed / id-less serialization diverged from the runtime path.
-import { blogBodies } from '$lib/content/blog-bodies';
+} from '#lib/services/static-helpers.ts';
+import { blogPosts } from '#lib/content/blog.ts';
+import { blogBodies } from '#lib/content/blog-bodies.ts';
 import {
 	getPostBySlug,
 	getPostsByCategory,
-	getPostsByTag,
-	getTagsForCategory,
-	getLanguagesForCategory,
-	getLatestPosts,
 	getSvgContent,
 	getSvgContentsForPosts,
-	resolveSvgFallbackName,
-	resolveAnimation,
-} from '$lib/blog/static-helpers';
-import { siteMeta } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { routeSeoOverrides } from '$lib/content/route-seo';
+} from '#lib/blog/static-helpers.ts';
+import { siteMeta } from '#lib/content/site-meta.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
+import { routeSeoOverrides } from '#lib/content/route-seo.ts';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
-import {
-	routeSeoFactories,
-	errorSeoFallback,
-} from './route-seo-factories';
+import { errorSeoFallback } from './error-seo-fallback';
+import { routeSeoFactories } from './route-seo-factories';
 import { composePageSeo } from './compose-page-seo';
-import type { SiteSeoDefaults } from '$lib/types';
-import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';
+import type { SiteSeoDefaults } from '#lib/types.ts';
+import { PageSeoSchema, type PageSeo } from '#lib/schemas/seo.ts';
 import { z } from 'zod';
 import {
 	parsePort,
+	HeroDataSchema,
+} from '#lib/schemas/index.ts';
+import {
 	ProjectSchema,
 	ServiceSchema,
 	BlogPostSchema,
-	BlogAnimationSchema,
 	SiteMetaSchema,
-	TechStackItemSchema,
 	NavLinkSchema,
-	MenuItemSchema,
 	ErrorPageContentSchema,
 	AboutContentSchema,
 	ContactContentSchema,
-	TechStackPageContentSchema,
-	HeroDataSchema,
-} from '$lib/schemas';
+} from '@repo/shared';
 import {
 	BlogPageContentSchema,
 	ProjectsPageContentSchema,
 	type BlogPageContent,
 	type ProjectsPageContent,
 } from '@repo/shared/schemas';
-import type { Locale } from '$lib/types';
-import { resolveLocale } from '$lib/utils/locale';
-import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
-import { serializeBlocksToHtml, BlockEditorDocSchema } from '@repo/shared';
+import type { Locale } from '#lib/types.ts';
+import { BlockEditorDocSchema } from '@repo/shared';
 import {
 	heroContent,
 	heroAnimContent,
@@ -107,25 +91,25 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-} from '$lib/content/site-content';
-import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '$lib/content/nav';
-import { legalPages } from '$lib/content/legal-pages';
+} from '#lib/content/site-content.ts';
+import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '#lib/content/nav.ts';
+import { legalPages } from '#lib/content/legal-pages.ts';
 import { LegalPageSchema } from '@repo/shared';
-import { errorPagesById } from '$lib/content/error-pages';
-import { aboutPageContent } from '$lib/content/about-page';
-import { contactContent } from '$lib/content/contact-page';
-import { blogPageContent } from '$lib/content/blog-page';
-import { projectsPageContent } from '$lib/content/projects-page';
-import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
-import { morphShapes } from '$lib/content/morph-shapes';
-import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { errorPagesById } from '#lib/content/error-pages.ts';
+import { aboutPageContent } from '#lib/content/about-page.ts';
+import { contactContent } from '#lib/content/contact-page.ts';
+import { blogPageContent } from '#lib/content/blog-page.ts';
+import { projectsPageContent } from '#lib/content/projects-page.ts';
+import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
+import { morphShapes } from '#lib/content/morph-shapes.ts';
+import { MorphShapeSchema } from '@repo/shared';
 // Slice 18d Phase 8 introduced this as the static fallback for
 // content.metroSvg; since slice-27.2 (static-only data path — the directus
 // fetch layer was removed at slice-26 close) the build-time `?raw` import IS
 // the live source.
 import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
 import { assetIdForOrUndefined } from '@repo/shared';
-import type { Project } from '$lib/types';
+import type { Project } from '#lib/types.ts';
 
 import type { ContentAdapter } from './types';
 
@@ -137,9 +121,15 @@ import type { ContentAdapter } from './types';
 // runtime shape now.
 // ---------------------------------------------------------------------------
 
+/** Synchronous so Kit can use the error content during SSR rendering failures. */
+export function resolveStaticErrorPage(statusCode?: number) {
+	const specific = statusCode !== undefined ? errorPagesById[statusCode] : undefined;
+	const fallback = errorPagesById[0] ?? errorPageContent;
+	return parsePort('content.errorPage', ErrorPageContentSchema, specific ?? fallback);
+}
+
 export const staticAdapter: ContentAdapter = {
 	projects: {
-		all: async () => parsePort('projects.all', z.array(ProjectSchema), projects),
 		bySlug: async (slug) => {
 			const p = getProjectBySlug(slug);
 			return parsePort('projects.bySlug', ProjectSchema.optional(), p);
@@ -150,13 +140,8 @@ export const staticAdapter: ContentAdapter = {
 			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects()),
 		byService: async (serviceId) =>
 			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId)),
-		// Utility ports — return primitives/strings, no schema needed (spec D2).
-		allTags: async () => getAllTags(),
-		allStackItems: async () => getAllStackItems(),
-		serviceIdsForProjects: async () => getServiceIdsForProjects(),
 	},
 	services: {
-		all: async () => parsePort('services.all', z.array(ServiceSchema), services),
 		byId: async (id) => parsePort('services.byId', ServiceSchema.optional(), getServiceById(id)),
 		visible: async () =>
 			parsePort('services.visible', z.array(ServiceSchema), getVisibleServices()),
@@ -180,28 +165,8 @@ export const staticAdapter: ContentAdapter = {
 		},
 		byCategory: async (category) =>
 			parsePort('blog.byCategory', z.array(BlogPostSchema), getPostsByCategory(category)),
-		byTag: async (category, tag) =>
-			parsePort('blog.byTag', z.array(BlogPostSchema), getPostsByTag(category, tag)),
-		latest: async (count, category) =>
-			parsePort('blog.latest', z.array(BlogPostSchema), getLatestPosts(count, category)),
-		resolveAnimation: async (slug, explicit) =>
-			parsePort('blog.resolveAnimation', BlogAnimationSchema, resolveAnimation(slug, explicit)),
-		// Utility ports — return strings/records, no schema needed (spec D2).
-		// Mirror directusAdapter.blog.html: serialize the Block Editor body to HTML
-		// (same wrapper + heading ids), or '' when the post has no body.
-		html: async (slug) => {
-			// Mirror directusAdapter.blog.html: validate the body through the same
-			// parsePort gate as bodyBySlug, then serialize (byte-identical wrapper +
-			// heading ids), or '' when the post has no body.
-			const raw = blogBodies[slug];
-			if (!raw) return '';
-			return serializeBlocksToHtml(parsePort('blog.bodyBySlug', BlockEditorDocSchema, raw));
-		},
-		tagsForCategory: async (category) => getTagsForCategory(category),
-		languagesForCategory: async (category) => getLanguagesForCategory(category),
 		svgContent: async (post) => getSvgContent(post),
 		svgContentsForPosts: async (posts) => getSvgContentsForPosts(posts),
-		resolveSvgFallbackName: async (slug, category) => resolveSvgFallbackName(slug, category),
 	},
 	meta: {
 		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
@@ -216,7 +181,7 @@ export const staticAdapter: ContentAdapter = {
 			locale: Locale,
 			params?: Record<string, string>,
 		): Promise<PageSeo> => {
-			const { adapter } = await import('$lib/adapters');
+			const { adapter } = await import('#lib/adapters/index.ts');
 			const dynamicFactory = routeSeoFactories[routeId];
 			if (dynamicFactory) {
 				return PageSeoSchema.parse(await dynamicFactory({
@@ -251,35 +216,10 @@ export const staticAdapter: ContentAdapter = {
 			}));
 		},
 	},
-	techStack: {
-		// slice-18m follow-up (GH #63/#64): tech-stack data sourced from the
-		// CMS-derived `techStackItems` array (generated by export-fallbacks)
-		// rather than the legacy MD-glob parser. `content(id)` serializes the
-		// 3 BlockEditorDoc fields (what_it_is + what_i_use_it_for +
-		// why_i_use_it_instead) for the English locale — mirrors the runtime
-		// adapter pattern of the retired directus adapter.
-		all: async () =>
-			parsePort('techStack.all', z.array(TechStackItemSchema), techStackItems),
-		byId: async (id) =>
-			parsePort(
-				'techStack.byId',
-				TechStackItemSchema.optional(),
-				techStackItems.find((it) => it.id === id),
-			),
-		content: async (id, locale = 'en') => {
-			const item = techStackItems.find((it) => it.id === id);
-			if (!item) return '';
-			return [
-				serializeBlocksToHtml(resolveLocale(item.what_it_is, locale)),
-				serializeBlocksToHtml(resolveLocale(item.what_i_use_it_for, locale)),
-				serializeBlocksToHtml(resolveLocale(item.why_i_use_it_instead, locale)),
-			].join('\n');
-		},
-	},
 	content: {
-		// Site-chrome literals — kept as `typeof import` shape via ContentPort,
-		// not wrapped (spec D2 non-goal). These are page chrome, not CMS-managed
-		// content; re-encoding as Zod adds maintenance cost with no CMS benefit.
+		// Site-content literals are kept as `typeof import` shape via ContentPort,
+		// not wrapped (spec D2 non-goal). Re-encoding as Zod adds maintenance cost
+		// with no CMS benefit.
 		hero: async () => heroContent,
 		heroAnim: async () => heroAnimContent,
 		manifesto: async () => manifestoContent,
@@ -289,21 +229,12 @@ export const staticAdapter: ContentAdapter = {
 		cta: async () => ctaContent,
 		closer: async () => closerContent,
 		// Schema-validated content ports.
-		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
-		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
 		// slice-27.1 FIX A: mirror directus's _or: [status_code=N, status_code=0]
 		// semantics — look up the specific status code first, then fall back to the
 		// 0-row (generic fallback). errorPagesById is keyed by status_code (number).
-		errorPage: async (statusCode?: number) => {
-			const specific = statusCode !== undefined ? errorPagesById[statusCode] : undefined;
-			const fallback = errorPagesById[0] ?? errorPageContent;
-			const chosen = specific ?? fallback;
-			return parsePort('content.errorPage', ErrorPageContentSchema, chosen);
-		},
+		errorPage: async (statusCode?: number) => resolveStaticErrorPage(statusCode),
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
-		techStackPage: async () =>
-			parsePort('content.techStackPage', TechStackPageContentSchema, techStackPageContent),
 		// slice-27.1 T4: source the generated CMS modules (blog-page.ts /
 		// projects-page.ts, emitted from dev Directus by export-fallbacks) instead
 		// of inline stubs. Drops the prior placeholder copy that was missing
@@ -313,7 +244,6 @@ export const staticAdapter: ContentAdapter = {
 			parsePort('content.blogPage', BlogPageContentSchema, blogPageContent),
 		projectsPage: async (): Promise<ProjectsPageContent> =>
 			parsePort('content.projectsPage', ProjectsPageContentSchema, projectsPageContent),
-		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 		metroSvg: async () => metroSvgRaw,

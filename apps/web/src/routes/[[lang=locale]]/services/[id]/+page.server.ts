@@ -3,29 +3,24 @@
 // resolve once on the server and hydrate via __data.json.
 
 import { error } from '@sveltejs/kit';
-import { fetchServiceSvgContents } from '$lib/utils';
-import {
-	getServiceById,
-	getVisibleServices,
-	getAdjacentServices,
-	getProjectsByService,
-} from '$lib/repositories';
-import { serviceEntries } from '$lib/server/prerender-entries';
+import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { adapter } from '#lib/adapters/index.ts';
+import { serviceEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = serviceEntries;
+export const prerender = entries().length > 0;
 
-export async function load({ params, fetch, locals }: { params: { id: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
-	const ctx = { pageCache: locals.pageCache };
-	const service = await getServiceById(params.id, ctx);
+export async function load({ params, fetch }: { params: { id: string }; fetch: typeof globalThis.fetch }) {
+	const service = await adapter.services.byId(params.id);
 
 	if (!service || service.visible === false) {
-		error(404, { message: 'Service not found' });
+		error(404, 'Service not found');
 	}
 
-	const services = await getVisibleServices(ctx);
+	const services = await adapter.services.visible();
 	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		getAdjacentServices(params.id, ctx),
-		getProjectsByService(params.id, ctx),
+		adapter.services.adjacent(params.id),
+		adapter.projects.byService(params.id),
 		fetchServiceSvgContents(fetch, services),
 	]);
 

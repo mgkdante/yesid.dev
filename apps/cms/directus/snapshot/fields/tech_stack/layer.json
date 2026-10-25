@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "default blueprint layer — per-archetype links may override",
+    "note": "Legacy technology layer retained as schema metadata; project and service stacks export technology names only.",
     "options": {
       "choices": [
         {

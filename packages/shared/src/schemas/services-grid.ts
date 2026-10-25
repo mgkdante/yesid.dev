@@ -1,14 +1,13 @@
-// ServicesGridContentSchema — mirrors ServicesGridContent from types/content.
-// Home page — Services grid (section 3).
-
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { ServicesGridContent } from '../types/content';
 
 export const ServicesGridContentSchema = z.object({
 	heading: LocalizedStringSchema,
 	headingDot: LocalizedStringSchema,
 	subheading: LocalizedStringSchema,
+	/** Aria-label template containing the {title} placeholder. */
 	viewIllustrationAria: LocalizedStringSchema,
 	viewAllLink: LocalizedStringSchema,
-}) satisfies z.ZodType<ServicesGridContent>;
+});
+
+export type ServicesGridContent = z.infer<typeof ServicesGridContentSchema>;

@@ -5,16 +5,15 @@
   All text from data layer via props.
 -->
 <script lang="ts">
-	import type { AboutIdentity } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutIdentity } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
-	import { mediaVariants } from '$lib/content/media-variants';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
+	import { mediaVariants } from '#lib/content/media-variants.ts';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 
@@ -39,16 +38,17 @@
 		aria-hidden="true"
 	></div>
 
-	<div class="relative flex h-full flex-col">
-		<!-- Stop label -->
+	<div class="relative flex flex-col">
+		<!-- Stop label. Every OTHER bento card renders its stop label as the
+		     card's <h2>; this one stays a plain <div> so the page's first heading
+		     is the <h1> below it and the outline reads h1 → h2…, never h2 → h1. -->
 		<StopLabel {stop} {label} />
 
 		<div
-			class="min-h-0 flex-1 overflow-y-auto pr-1"
+			class="pr-1"
 			data-testid="about-identity-scroll"
-			use:scrollChain
 		>
-		<div class="flex min-h-full flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
+		<div class="flex flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
 			<!-- Headshot with gradient ring -->
 			<div class="relative shrink-0">
 				<div
@@ -73,12 +73,18 @@
 
 			<!-- Text block -->
 			<div class="text-center md:pt-1 md:text-left">
-				<div class="label-station text-caption">
+				<!-- The identity title IS /about's single <h1> (WCAG 1.3.1): the page
+				     had no heading element at all, and this is the one existing text
+				     node that reads as the page title. Element only — the classes,
+				     copy and computed styles are unchanged (Tailwind preflight zeroes
+				     the h1 margin and inherits its weight, and .label-station owns the
+				     size), so nothing moves. -->
+				<h1 class="label-station text-caption">
 					{title}
-				</div>
+				</h1>
 				<!-- Gradient separator -->
 				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--primary), transparent);"></div>
-				<p class="mt-4 max-w-md text-small leading-relaxed text-[var(--secondary-foreground)]">
+				<p class="mt-4 max-w-md text-body leading-relaxed text-[var(--secondary-foreground)]">
 					{valueProp}
 				</p>
 			</div>

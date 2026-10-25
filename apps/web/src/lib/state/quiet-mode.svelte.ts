@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 const STORAGE_KEY = 'quiet-mode';
 
@@ -72,7 +72,10 @@ export const quietModeStore = {
 	init(): () => void {
 		const stored = readRemembered();
 		remembered = stored;
-		setEnabled(stored);
+		// Restore the preference without issuing an Expand all action on mount.
+		// Each section keeps its default or its restored locale-handoff state.
+		enabled = stored;
+		syncDocument(stored);
 		return () => {};
 	},
 	resetForTest(): void {

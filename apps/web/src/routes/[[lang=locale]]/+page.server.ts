@@ -1,34 +1,13 @@
-import {
-	getMetroSvg,
-	getHeroContent,
-	getHeroAnimContent,
-	getManifestoContent,
-	getProofReelContent,
-	getServicesGridContent,
-	getAboutContent,
-	getCtaContent,
-	getCloserContent,
-	getInitialHeroData,
-	getVisibleServices,
-	getFeaturedProjects,
-	getSiteMeta,
-} from '$lib/repositories';
-import { fetchServiceSvgContents } from '$lib/utils';
-import { localeEntries } from '$lib/server/prerender-entries';
+import { adapter } from '#lib/adapters/index.ts';
+import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { localeEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = localeEntries;
 
-// slice-18i Phase 7C: home route now fetches ALL page-block content via the
-// repository/adapter pipeline, threading event.locals.pageCache as ctx so
-// loadPage('home') is called once and all block projections share that result.
-//
-// Previously only metroSvg was returned here; components still imported
-// heroContent, heroAnimContent, INITIAL_HERO_DATA, etc. directly from static
-// modules, bypassing Directus entirely. This restores the spec §6 guarantee:
-// all 7 routes render from Directus M2A.
+// Home page content resolves through the adapter.
 //
 // slice-28.5 (audit #124): services + featuredProjects now also resolve here
-// through the repository layer, closing the last primary-data adapter bypass —
+// through the adapter layer, closing the last primary-data adapter bypass —
 // HomeServices/FeaturedProjects previously called the $lib/content companions
 // directly, so a future adapter re-point (slice-26) would not have reached
 // them. featuredProjects now comes from the project row `featured` toggle,
@@ -37,9 +16,7 @@ export const entries = localeEntries;
 // Promise.all ensures all blocks resolve concurrently within a single request.
 // Intentionally untyped (no PageServerLoad annotation) — App.PageData.seo is
 // provided by +layout.ts and not required from the page server load.
-export async function load({ locals, fetch }: { locals: App.Locals; fetch: typeof globalThis.fetch }) {
-	const ctx = { pageCache: locals.pageCache };
-
+export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 	const [
 		metroSvg,
 		hero,
@@ -54,22 +31,22 @@ export async function load({ locals, fetch }: { locals: App.Locals; fetch: typeo
 		services,
 		siteMeta,
 	] = await Promise.all([
-		getMetroSvg(ctx),
-		getHeroContent(ctx),
-		getHeroAnimContent(ctx),
-		getManifestoContent(ctx),
-		getProofReelContent(ctx),
-		getServicesGridContent(ctx),
-		getAboutContent(ctx),
-		getCtaContent(ctx),
-		getCloserContent(ctx),
-		getInitialHeroData(ctx),
-		getVisibleServices(ctx),
-		getSiteMeta(ctx),
+		adapter.content.metroSvg(),
+		adapter.content.hero(),
+		adapter.content.heroAnim(),
+		adapter.content.manifesto(),
+		adapter.content.proofReel(),
+		adapter.content.servicesGrid(),
+		adapter.content.about(),
+		adapter.content.cta(),
+		adapter.content.closer(),
+		adapter.content.initialHeroData(),
+		adapter.services.visible(),
+		adapter.meta.site(),
 	]);
 
 	const [featuredProjects, serviceSvgContents] = await Promise.all([
-		getFeaturedProjects(ctx),
+		adapter.projects.featured(),
 		fetchServiceSvgContents(fetch, services),
 	]);
 

@@ -27,7 +27,7 @@ describe('site-labels transform', () => {
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
 	});
 
-	it('recomposes the slice-30 chrome columns into companion-shaped groups', () => {
+	it('recomposes translated CMS columns into the SiteLabels chrome groups', () => {
 		const row = {
 			id: 'u1',
 			analytics_enabled: true,
@@ -39,14 +39,14 @@ describe('site-labels transform', () => {
 			],
 		};
 		const out = toSiteLabels(row);
-		// projects companion → projectsChrome (with FR merged from the fr row).
+		// Project chrome with French values merged from the translated row.
 		expect(out.projectsChrome.pageMeta.title).toEqual({ en: 'Projects | yesid.', fr: 'Projets | yesid.' });
 		expect(out.projectsChrome.listing.filters.techStack).toEqual({ en: 'Tech Stack', fr: 'Stack technique' });
 		expect(out.projectsChrome.detail.glance.liveSiteLabelMobile).toEqual({
 			en: '↗ Live Site',
 			fr: '↗ Site en ligne',
 		});
-		// blog / services / nav / footer companions.
+		// Blog, services, navigation, and footer chrome.
 		expect(out.blogChrome.listing.mobileHeading).toEqual({ en: 'Blog', fr: 'Blogue' });
 		expect(out.blogChrome.detail.code.title).toEqual({ en: 'code', fr: 'code' });
 		expect(out.servicesChrome.detail.backToServicesLabel).toEqual({
@@ -66,7 +66,7 @@ describe('site-labels transform', () => {
 			en: '// digital infrastructure',
 			fr: '// infrastructure numérique',
 		});
-		// hero-data dashboard labelI18n/subI18n (subs are runtime-templated).
+		// Live dashboard labels with runtime-templated supporting text.
 		expect(out.heroDashboard.vehiclesLabel).toEqual({ en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' });
 		expect(out.heroDashboard.delaySub).toEqual({ en: '{coverage}% COVERAGE', fr: '{coverage}% DE COUVERTURE' });
 		expect(out.ui.analyticsConsent).toEqual({

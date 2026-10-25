@@ -5,17 +5,17 @@
   Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutCta } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutCta } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { siteLabels } from '$lib/content';
+	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel, TerminalChrome } from '$lib/components/brand';
-	import { Button } from '$lib/components/ui/button';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel, TerminalChrome } from '#lib/components/brand/index.ts';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 
 	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 
@@ -35,11 +35,11 @@
 		aria-hidden="true"
 	></div>
 
-	<div class="relative flex h-full flex-col">
-		<StopLabel {stop} {label} />
+	<div class="relative flex flex-col">
+		<StopLabel {stop} {label} as="h2" />
 
 		<!-- Terminal window -->
-		<TerminalChrome title={terminalTitle} class="about-cta-terminal mt-3 flex-1 min-h-0">
+		<TerminalChrome title={terminalTitle} class="mt-3">
 			<div class="break-words font-mono text-sm leading-relaxed">
 				<!-- Command -->
 				<div class="text-[var(--secondary-foreground)]">
@@ -74,18 +74,3 @@
 	</div>
 </Card>
 </div>
-
-<style>
-	/* Language-independent fit (receiver r2): the bento cell is fixed; when
-	   lines wrap taller (FR/ES button labels, long URLs), the terminal body
-	   scrolls inside the chrome instead of overflowing the card. */
-	:global(.about-cta-terminal) {
-		display: flex;
-		flex-direction: column;
-	}
-	:global(.about-cta-terminal .terminal-body) {
-		flex: 1 1 auto;
-		min-height: 0;
-		overflow-y: auto;
-	}
-</style>

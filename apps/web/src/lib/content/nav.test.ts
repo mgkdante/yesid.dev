@@ -4,10 +4,10 @@ import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from 
 describe('navLinks', () => {
 	// slice-18m: nav links are CMS-derived. Order + copy are editor-controlled,
 	// so tests assert structural validity instead of specific text/order.
-	it('contains the 3 primary nav links (Services, Projects, Stack)', () => {
+	it('contains the 3 header nav links (Services, Projects, Contact)', () => {
 		expect(navLinks).toHaveLength(3);
 		const hrefs = navLinks.map((l) => l.href).sort();
-		expect(hrefs).toEqual(['/projects', '/services', '/tech-stack']);
+		expect(hrefs).toEqual(['/contact', '/projects', '/services']);
 	});
 
 	it('every link has a non-empty English label', () => {
@@ -24,8 +24,8 @@ describe('navLinks', () => {
 });
 
 describe('menuItems', () => {
-	it('contains all 6 navigation items', () => {
-		expect(menuItems).toHaveLength(6);
+	it('contains all 5 navigation items', () => {
+		expect(menuItems).toHaveLength(5);
 	});
 
 	it('has subtitles for all items', () => {
@@ -35,15 +35,6 @@ describe('menuItems', () => {
 		}
 	});
 
-	it('includes Services with subtitle "what I build"', () => {
-		const services = menuItems.find(i => i.href === '/services');
-		expect(services?.subtitle!.en).toBe('what I build');
-	});
-
-	it('includes Contact with subtitle "open channel"', () => {
-		const contact = menuItems.find(i => i.href === '/contact');
-		expect(contact?.subtitle!.en).toBe('open channel');
-	});
 });
 
 describe('footerLinks', () => {

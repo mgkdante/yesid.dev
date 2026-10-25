@@ -14,7 +14,7 @@ import { LocalizedStringSchema } from './shared';
 
 // 'listing'  — has detail child routes (/services/[id], /blog/[slug], ...).
 //              Detail paths resolve to their longest listing prefix.
-// 'freeform' — standalone editorial page (/about, /tech-stack, ...).
+// 'freeform' — standalone editorial page (/about, ...).
 // 'system'   — structural page the site cannot run without (e.g. '/').
 export const SitePageTypeSchema = z.enum(['freeform', 'listing', 'system']);
 

@@ -15,14 +15,14 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-} from '$lib/content/site-content';
-import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
-import { getFeaturedProjects } from '$lib/projects/static-helpers';
-import { getVisibleServices } from '$lib/services/static-helpers';
-import { siteMeta } from '$lib/content/site-meta';
-import type { Project } from '$lib/types';
+} from '#lib/content/site-content.ts';
+import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
+import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
+import { getVisibleServices } from '#lib/services/static-helpers.ts';
+import { siteMeta } from '#lib/content/site-meta.ts';
+import type { Project } from '#lib/types.ts';
 
-vi.mock('$lib/directus/assets', () => ({
+vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, preset?: string) => ({
@@ -227,10 +227,10 @@ describe('Home page', () => {
 		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
 	});
 
-	it('renders closer departure board with 5 rows', () => {
+	it('renders closer departure board with 4 rows', () => {
 		renderPage();
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows).toHaveLength(5);
+		expect(rows).toHaveLength(4);
 	});
 
 });

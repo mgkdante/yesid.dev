@@ -1,36 +1,28 @@
 import { error } from '@sveltejs/kit';
-import {
-	getAllPosts,
-	getPostBySlug,
-	getPostBody,
-	getSvgContent,
-	getBlogPageContent,
-} from '$lib/repositories';
+import { adapter } from '#lib/adapters/index.ts';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
-import { blogEntries } from '$lib/server/prerender-entries';
-import { collectCodeHighlights } from '$lib/server/code-highlights';
-import { getBlogPostsForLocale } from '$lib/blog/translations';
-import { localeFromParams } from '$lib/utils/locale-routing';
+import { blogEntries } from '#lib/server/prerender-entries.ts';
+import { collectCodeHighlights } from '#lib/server/code-highlights.ts';
+import { getBlogPostsForLocale } from '#lib/blog/translations.ts';
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
 
 export const entries = blogEntries;
+export const prerender = entries().length > 0;
 
 export async function load({
 	params,
-	locals,
 }: {
 	params: { slug: string; lang?: string };
-	locals: App.Locals;
 }) {
-	const ctx = { pageCache: locals.pageCache };
 	const locale = localeFromParams(params);
-	const post = await getPostBySlug(params.slug, ctx);
+	const post = await adapter.blog.bySlug(params.slug);
 	if (!post || post.lang !== locale) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts, blogPage] = await Promise.all([
-		getPostBody(params.slug, ctx),
-		getSvgContent(post, ctx),
-		getAllPosts(ctx),
-		getBlogPageContent(ctx),
+		adapter.blog.bodyBySlug(params.slug),
+		adapter.blog.svgContent(post),
+		adapter.blog.all(),
+		adapter.content.blogPage(),
 	]);
 
 	if (!body) error(404, 'Post body missing');

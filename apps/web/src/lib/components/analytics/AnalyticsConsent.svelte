@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { getAnalyticsPolicy } from '$lib/analytics/policy';
-	import { Button } from '$lib/components/ui/button';
-	import { siteLabels } from '$lib/content';
-	import { analyticsConsentStore } from '$lib/state/analytics-consent.svelte';
-	import { DEFAULT_LOCALE, resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import type { Locale } from '$lib/types';
+	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
+	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import type { Locale } from '#lib/types.ts';
 
 	let {
 		locale = DEFAULT_LOCALE,

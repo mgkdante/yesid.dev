@@ -1,132 +1,5 @@
 [
   {
-    "name": "Flush Build to Vercel",
-    "icon": "cloud_upload",
-    "color": "#3399FF",
-    "description": "DISABLED 2026-06-14 (immediate-only rebuild). Was the debounced 2-min CRON polling build_queue.cms_dirty. Disabled to (1) stop the every-2-min DB poll that kept the Neon branch awake, and (2) remove the redundant double-rebuild — 'Vercel revalidate on publish' handles rebuilds immediately on publish. Re-enable (status=active, with 'Mark Dirty on CMS Publish') to restore debounced builds. Requires FLOWS_ENV_ALLOW_LIST=VERCEL_DEPLOY_HOOK_PROD.",
-    "status": "inactive",
-    "trigger": "schedule",
-    "accountability": "all",
-    "options": {
-      "cron": "*/2 * * * *"
-    },
-    "operation": "bd029e69-6067-4f92-9721-00bba2735ef1",
-    "_syncId": "196caf88-5082-477e-b396-d6b0a5bd31c4"
-  },
-  {
-    "name": "Mark Dirty on CMS Publish",
-    "icon": "build_circle",
-    "color": "#E07800",
-    "description": "DISABLED 2026-06-14 (immediate-only rebuild). Set build_queue.cms_dirty=true to feed the debounced Flush-Build cron, which is now disabled. Re-enable together with 'Flush Build to Vercel' to restore debounced builds.",
-    "status": "inactive",
-    "trigger": "event",
-    "accountability": "all",
-    "options": {
-      "type": "action",
-      "scope": [
-        "items.create",
-        "items.update",
-        "items.delete"
-      ],
-      "collections": [
-        "pages",
-        "route_seo",
-        "blog_posts",
-        "error_pages",
-        "morph_shapes",
-        "nav_links",
-        "projects",
-        "projects_services",
-        "services",
-        "site_meta",
-        "tech_stack",
-        "block_about_content",
-        "block_about_intro",
-        "block_blog_page_content",
-        "block_closer",
-        "block_contact_content",
-        "block_cta",
-        "block_hero",
-        "block_manifesto",
-        "block_projects_page_content",
-        "block_proof_reel",
-        "block_services_grid",
-        "block_tech_stack_page_content",
-        "pages_translations",
-        "route_seo_translations",
-        "blog_posts_translations",
-        "error_pages_translations",
-        "nav_links_translations",
-        "projects_translations",
-        "projects_sections_translations",
-        "projects_impact_metrics_translations",
-        "services_translations",
-        "services_sections_translations",
-        "services_deliverables_translations",
-        "site_meta_translations",
-        "tech_stack_translations",
-        "block_about_content_translations",
-        "block_about_intro_translations",
-        "block_blog_page_content_translations",
-        "block_closer_translations",
-        "block_contact_content_translations",
-        "block_cta_translations",
-        "block_hero_translations",
-        "block_manifesto_translations",
-        "block_projects_page_content_translations",
-        "block_proof_reel_translations",
-        "block_services_grid_translations",
-        "block_tech_stack_page_content_translations"
-      ]
-    },
-    "operation": "dc01c036-4e5b-44a2-bd3d-87031b718d8f",
-    "_syncId": "4e59885c-8e18-41fd-b8f4-89f0f6baa951"
-  },
-  {
-    "name": "Vercel revalidate on publish",
-    "icon": "bolt",
-    "color": "#E07800",
-    "description": "POST to the environment's Vercel deploy hook when a configured content or site-settings row is created or updated. Triggers a full SvelteKit rebuild; statusless settings such as site_labels rebuild immediately.",
-    "status": "active",
-    "trigger": "event",
-    "accountability": "all",
-    "options": {
-      "type": "action",
-      "scope": [
-        "items.update",
-        "items.create"
-      ],
-      "collections": [
-        "pages",
-        "pages_blocks",
-        "blog_posts",
-        "projects",
-        "services",
-        "tech_stack",
-        "nav_links",
-        "error_pages",
-        "site_meta",
-        "site_labels",
-        "block_about_content",
-        "block_about_intro",
-        "block_blog_page_content",
-        "block_closer",
-        "block_contact_content",
-        "block_cta",
-        "block_hero",
-        "block_manifesto",
-        "block_projects_page_content",
-        "block_proof_reel",
-        "block_services_grid",
-        "block_tech_stack_page_content",
-        "site_pages",
-        "stack_archetypes"
-      ]
-    },
-    "operation": "_sync_op_vercel_revalidate_post_hook",
-    "_syncId": "6696d9f8-6ff1-4286-838a-57675262d08b"
-  },
-  {
     "name": "Translation reminder on publish",
     "icon": "translate",
     "color": "#E07800",
@@ -144,7 +17,6 @@
         "blog_posts",
         "projects",
         "services",
-        "tech_stack",
         "block_about_content",
         "block_about_intro",
         "block_blog_page_content",
@@ -155,18 +27,18 @@
         "block_manifesto",
         "block_projects_page_content",
         "block_proof_reel",
-        "block_services_grid",
-        "block_tech_stack_page_content"
+        "block_services_grid"
       ]
     },
     "operation": "_sync_op_translation_reminder_check_published",
+    "folder": null,
     "_syncId": "c80a68ad-dabf-4ccc-95cc-e97095f51d90"
   },
   {
-    "name": "Force Rebuild (this environment)",
+    "name": "Publish site",
     "icon": "rocket_launch",
     "color": "#E07800",
-    "description": "Manual trigger: POSTs THIS environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL) with buildCache=false to force an immediate fresh rebuild. Branch-correct per Railway env (dev Directus -> dev.yesid.dev, prod -> yesid.dev). Run it from the build_queue singleton (Site Config -> Build refresh flag -> Run Flow). Requires VERCEL_DEPLOY_HOOK_URL in FLOWS_ENV_ALLOW_LIST (already allow-listed by 'Vercel revalidate on publish').",
+    "description": "D6 manual Publish (2026-10-25): one build per editing session. Run from Site Config (build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
     "status": "active",
     "trigger": "manual",
     "accountability": "all",
@@ -176,9 +48,12 @@
       ],
       "location": "item",
       "requireSelection": false,
-      "async": false
+      "async": false,
+      "requireConfirmation": true,
+      "confirmationDescription": "Publish site: rebuild this environment's website from the current published CMS content (one build, about 3 minutes)."
     },
     "operation": "a7c9d628-b970-4f38-bb4b-0c532901d0e1",
+    "folder": null,
     "_syncId": "d86a5982-6ab4-4474-ace8-cfd16962a9a4"
   }
 ]

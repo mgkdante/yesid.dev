@@ -10,15 +10,14 @@
 // Returns JSON `null` (200) when the key is missing or the upstream fetch
 // fails — clients keep whatever value was SSR-baked.
 
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // Stays on the lambda: live weather is the entire point of this endpoint —
 // prerendered pages ship without baked weather and hydrate from here.
 export const prerender = false;
-import { fetchMontrealWeather } from '$lib/utils/weather';
-import { isSupportedLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import type { Locale } from '$lib/types';
+import { fetchMontrealWeather } from '#lib/utils/weather.ts';
+import { isSupportedLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+import type { Locale } from '#lib/types.ts';
 
 // Resolve the locale from ?lang= (client passes the active locale). Unknown or
 // missing values fall back to EN — the cache-control below is locale-agnostic,
@@ -30,7 +29,7 @@ function localeFromQuery(url: URL): Locale {
 
 export const GET: RequestHandler = async ({ url }) => {
 	const weather = await fetchMontrealWeather(localeFromQuery(url));
-	return json(weather, {
+	return Response.json(weather, {
 		headers: {
 			'cache-control': 'public, max-age=0, s-maxage=1800, stale-while-revalidate=3600',
 		},

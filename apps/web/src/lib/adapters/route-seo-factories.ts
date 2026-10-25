@@ -1,50 +1,39 @@
 // Dynamic-route SEO factories — extracted from apps/web/src/lib/content/meta.ts
 // in slice-18 18h Phase 4 Task 11.
 //
-// Each factory consumes (params, locale, ctx, adapter, siteMeta, siteSeoDefaults)
+// Each factory consumes (params, locale, adapter, siteMeta, siteSeoDefaults)
 // and returns a PageSeo. The caller — staticAdapter.meta.forRoute() since the
 // dormant directus adapter was removed at slice-26 close — supplies both site
 // shapes and threads them through here; factories never re-fetch, never
 // import the adapter directly.
-//
-// `errorSeoFallback` is synchronous and serves as the last-resort SEO when
-// any other route's resolution throws (per +layout.ts try/catch chain).
 
 import type {
 	Locale,
 	PageSeo,
-	PreviewContext,
 	SiteMeta,
 	SiteSeoDefaults,
-} from '$lib/types';
-import type { ContentAdapter } from '$lib/adapters/types';
+} from '#lib/types.ts';
+import type { ContentAdapter } from '#lib/adapters/types.ts';
 import { extractText } from '@repo/shared';
-import { SITE_HOST, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
-import { resolveLocale } from '$lib/utils/locale';
-import { resolveSitePage } from '$lib/utils/page-registry';
-import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
-import { asset } from '$lib/directus/assets';
+import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
+import { ogImagePath } from '#lib/og/og-path.ts';
+import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
+import { assetImage } from '#lib/directus/assets.ts';
 import {
 	BLOG_TRANSLATION_LOCALES,
 	findBlogTranslationVariants,
-} from '$lib/blog/translations';
+} from '#lib/blog/translations.ts';
 import {
 	buildBlogPostingNode,
-	buildBreadcrumbListNode,
 	buildCreativeWorkNode,
 	buildServiceNode,
-} from '$lib/adapters/jsonld';
-
-/** Breadcrumb display name from the trilingual site_pages registry; code fallback otherwise. */
-export function crumbName(path: string, locale: Locale, fallback: string): string {
-	const page = resolveSitePage(path);
-	return page ? resolveLocale(page.title, locale) : fallback;
-}
+} from '#lib/adapters/jsonld.ts';
+import { buildRouteBreadcrumbNode } from '#lib/adapters/route-jsonld.ts';
 
 export interface FactoryArgs {
 	params: Record<string, string>;
 	locale: Locale;
-	ctx?: PreviewContext;
 	adapter: ContentAdapter;
 	siteMeta: SiteMeta;
 	siteSeoDefaults: SiteSeoDefaults;
@@ -94,8 +83,8 @@ const SERVICE_OG_CARD_IDS: ReadonlySet<string> = new Set([
 
 /** /services/[id] — pulls service from collection adapter; brand suffix from siteMeta. */
 export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const service = await adapter.services.byId(params.id, ctx);
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const service = await adapter.services.byId(params.id);
 	if (!service) throw new Error(`Unknown service id: ${params.id}`);
 	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	const seo: PageSeo = {
@@ -112,14 +101,10 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 		noIndex: false,
 		jsonLd: [
 			buildServiceNode(service, locale),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/services', locale, 'Services'), url: canonicalFor('/services', locale) },
-					{ name: resolveLocale(service.title, locale), url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/services/${service.id}`, locale, [
+				['/services', 'Services'],
+				[`/services/${service.id}`, '', resolveLocale(service.title, locale)],
+			]),
 		],
 	};
 
@@ -141,8 +126,8 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 
 /** /projects/[slug] — pulls project from collection adapter; brand suffix from siteMeta. */
 export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const project = await adapter.projects.bySlug(params.slug, ctx);
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const project = await adapter.projects.bySlug(params.slug);
 	if (!project) throw new Error(`Unknown project slug: ${params.slug}`);
 	// Extract plain text from LocalizedBlockEditorDoc before passing to fitDescriptionForSeo.
 	const descriptionText: { en: string; fr?: string; es?: string } = {
@@ -165,28 +150,24 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		noIndex: false,
 		jsonLd: [
 			buildCreativeWorkNode(project, locale),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/projects', locale, 'Projects'), url: canonicalFor('/projects', locale) },
-					{ name: resolveLocale(project.title, locale), url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/projects/${project.slug}`, locale, [
+				['/projects', 'Projects'],
+				[`/projects/${project.slug}`, '', resolveLocale(project.title, locale)],
+			]),
 		],
 	};
 
 	// OG image wiring (slice-15c). Only set when title.en is non-empty so
 	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
-	// Non-default locales request the per-locale render via ?locale= (the og
-	// endpoint resolves per-locale title with EN fallback).
+	// EN uses the bare slug; FR/ES use path suffixes so every locale can
+	// prerender to its own deployment-static PNG.
 	if (project.title?.en && project.title.en.length > 0) {
 		seo.ogImage = {
-			url: `/og/project/${project.slug}.png${locale !== DEFAULT_LOCALE ? `?locale=${locale}` : ''}`,
+			url: ogImagePath('project', project.slug, locale),
 			alt: {
-				en: `${project.title.en} — yesid.`,
-				...(project.title.fr && { fr: `${project.title.fr} — yesid.` }),
-				...(project.title.es && { es: `${project.title.es} — yesid.` }),
+				en: `${project.title.en} | yesid.`,
+				...(project.title.fr && { fr: `${project.title.fr} | yesid.` }),
+				...(project.title.es && { es: `${project.title.es} | yesid.` }),
 			},
 			width: 1200,
 			height: 630,
@@ -198,10 +179,10 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 
 /** /blog/[slug] — pulls post from collection adapter; brand suffix from siteMeta. */
 export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
 	const [post, posts] = await Promise.all([
-		adapter.blog.bySlug(params.slug, ctx),
-		adapter.blog.all(ctx),
+		adapter.blog.bySlug(params.slug),
+		adapter.blog.all(),
 	]);
 	if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
 	if (post.lang !== locale) {
@@ -229,13 +210,17 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		{ en: post.seoDescription ?? post.excerpt },
 		siteSeoDefaults.defaultDescription,
 	);
-	// asset() resolves to a RELATIVE mirrored path (e.g. /images/work/x.png) in
+	// assetImage() resolves to a RELATIVE mirrored path (e.g. /images/work/x.png) in
 	// production. JSON-LD `image` is validated as z.string().url() (absolute),
 	// so a relative path makes SchemaOrgNodeSchema.parse throw and the post
 	// silently falls back to error SEO, dropping all structured data. Absolutize
-	// against SITE_HOST; new URL(abs, SITE_HOST) is idempotent when asset()
+	// against SITE_HOST; new URL(abs, SITE_HOST) is idempotent when assetImage()
 	// already returned an absolute URL.
-	const rawImageUrl = post.coverImage ? asset(post.coverImage, 'og-1200') : undefined;
+	const coverSource = post.coverImage ? assetImage(post.coverImage, 'og-1200') : undefined;
+	// Tall gallery captures are readable on-page but unsuitable as social cards.
+	const portraitCover = (coverSource?.height ?? 0) > (coverSource?.width ?? Infinity);
+	const shareCover = portraitCover ? undefined : coverSource;
+	const rawImageUrl = shareCover?.src ?? (portraitCover ? ogImagePath('blog', post.slug, locale) : undefined);
 	const imageUrl = rawImageUrl ? new URL(rawImageUrl, SITE_HOST).href : undefined;
 	const seo: PageSeo = {
 		title: { en: `${titleBody} | ${siteMeta.name}` },
@@ -247,14 +232,10 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		localeHandoffId: `blog:${post.translationKey}`,
 		jsonLd: [
 			buildBlogPostingNode(post, locale, { imageUrl }),
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
-					{ name: post.title, url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/blog/${post.slug}`, locale, [
+				['/blog', 'Blog'],
+				[`/blog/${post.slug}`, '', post.title],
+			]),
 		],
 	};
 
@@ -262,10 +243,10 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
-			url: imageUrl ?? `/og/blog/${post.slug}.png`,
-			alt: { en: post.coverImageAlt ?? `${post.title} | ${siteMeta.name}` },
-			width: 1200,
-			height: 630,
+			url: imageUrl ?? ogImagePath('blog', post.slug, locale),
+			alt: { en: (!portraitCover && post.coverImageAlt) || `${post.title} | ${siteMeta.name}` },
+			width: shareCover?.width ?? 1200,
+			height: shareCover?.height ?? 630,
 		};
 	}
 
@@ -292,8 +273,8 @@ function legalDescriptionFor(doc: { blocks: Array<{ type: string; data: unknown 
 /** /legal/[slug] — title from the CMS legal page (OPS1); description derived
  *  from the first substantive body paragraph per locale, siteSeoDefaults fallback. */
 export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
-	const page = await adapter.legal.bySlug(params.slug, ctx);
+	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const page = await adapter.legal.bySlug(params.slug);
 	if (!page) throw new Error(`Unknown legal slug: ${params.slug}`);
 	const canonicalUrl = canonicalFor(`/legal/${page.slug}`, locale);
 	const enDescription = legalDescriptionFor(page.body.en);
@@ -310,39 +291,14 @@ export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		ogType: 'website',
 		noIndex: false,
 		jsonLd: [
-			buildBreadcrumbListNode(
-				[
-					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
-					{ name: resolveLocale(page.title, locale), url: canonicalUrl },
-				],
-				canonicalUrl,
-			),
+			buildRouteBreadcrumbNode(`/legal/${page.slug}`, locale, [
+				[`/legal/${page.slug}`, '', resolveLocale(page.title, locale)],
+			]),
 		],
 	};
 }
 
-/**
- * /__error — last-resort SEO. noIndex: true (nothing to crawl). Pulls brand
- * suffix from siteMeta and fallback description from siteSeoDefaults.
- */
-export function errorSeoFallback(args: {
-	locale: Locale;
-	siteMeta: SiteMeta;
-	siteSeoDefaults: SiteSeoDefaults;
-}): PageSeo {
-	const { siteMeta, siteSeoDefaults } = args;
-	return {
-		title: { en: `Not Found | ${siteMeta.name}` },
-		description: siteSeoDefaults.defaultDescription,
-		canonical: SITE_HOST,
-		ogType: 'website',
-		noIndex: true,
-		// No jsonLd — route is noIndex, no point in structured data.
-	};
-}
-
 // Registry for composer dispatch. Maps a SvelteKit route id to its factory.
-// '/__error' is handled separately (synchronous, no params/adapter dep).
 export const routeSeoFactories: Record<
 	string,
 	(args: FactoryArgs) => Promise<PageSeo>

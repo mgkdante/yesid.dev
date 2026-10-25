@@ -2,29 +2,19 @@ import { expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { workflowJobBlock, workflowStepBlock } from './helpers/workflow-source';
 
 const workflow = readFileSync(
 	join(import.meta.dir, '..', '..', '..', '.github', 'workflows', 'cms.yml'),
 	'utf8',
 );
-const jobsOffset = workflow.indexOf('\njobs:\n');
 const secretReference = /\$\{\{\s*secrets\s*(?:\.|\[)/;
 const topLevelEnvKey = /^(?:env|'env'|"env")\s*:/m;
 
 function jobBlock(name: string, next?: string): string {
-	const start = workflow.indexOf(`\n  ${name}:\n`, jobsOffset);
-	if (start < 0) throw new Error(`missing workflow job: ${name}`);
-	const bodyStart = start + 1;
-	const remainder = workflow.slice(bodyStart);
-	const nextMatch = /\n  ([a-zA-Z0-9_-]+):\n/.exec(remainder);
-	const actualNext = nextMatch?.[1];
-	if (next && actualNext !== next) {
-		throw new Error(
-			`expected workflow job ${next} after ${name}, found ${actualNext ?? 'EOF'}`,
-		);
-	}
-	const end = nextMatch ? bodyStart + nextMatch.index : workflow.length;
-	return workflow.slice(bodyStart, end).trimEnd();
+	const block = workflowJobBlock(workflow, name, { expectedNext: next });
+	if (!block) throw new Error(`missing workflow job: ${name}`);
+	return block;
 }
 
 function sha256(value: string): string {
@@ -32,13 +22,13 @@ function sha256(value: string): string {
 }
 
 function stepBlock(job: string, name: string, next?: string): string {
-	const start = job.indexOf(`      - name: ${name}\n`);
-	if (start < 0) throw new Error(`missing workflow step: ${name}`);
-	const nextOffset = next
-		? job.indexOf(`      - name: ${next}\n`, start + 1)
-		: -1;
-	const end = nextOffset >= 0 ? nextOffset : job.length;
-	return job.slice(start, end).trimEnd();
+	const block = workflowStepBlock(
+		job,
+		name,
+		next ? { beforeStep: next } : { throughJobEnd: true },
+	);
+	if (!block) throw new Error(`missing workflow step: ${name}`);
+	return block;
 }
 
 function jobCondition(job: string): string {
@@ -53,16 +43,6 @@ function jobPreamble(job: string): string {
 	if (end < 0) throw new Error('missing job steps boundary');
 	return job.slice(0, end).trimEnd();
 }
-
-test('asset audit regression gate stays inside the credential-free test job', () => {
-	const testJob = jobBlock('test-work', 'test');
-	expect(testJob).toContain('name: Verify asset audit baseline (offline, no CMS)');
-	expect(testJob).toContain('run: bun run verify:assets-audit');
-	expect(testJob).not.toContain('DIRECTUS_ADMIN_TOKEN');
-	expect(testJob).not.toContain('PUBLIC_DIRECTUS_URL');
-	expect(testJob).not.toContain('op run');
-	expect(testJob).not.toContain('--update-baseline');
-});
 
 test('keeps the required PR diff check credential-free and offline', () => {
 	const diff = jobBlock('diff', 'live-diff');
@@ -92,6 +72,8 @@ test('runs the live production diff only from trusted main with a step-scoped to
 	const liveDiff = jobBlock('live-diff', 'push');
 
 	expect(jobCondition(liveDiff)).toBe(`    if: |
+      !cancelled() &&
+      needs.test.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       (
         github.event_name == 'push' ||
@@ -115,44 +97,17 @@ test('keeps every production-mutating dispatch job on main', () => {
 	const mutatingJobs: Array<{ name: string; next?: string; condition: string }> = [
 		{
 			name: 'push',
-			next: 'legal-service-area',
+			next: 'permission-control-audit',
 			condition: `    if: |
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.action == 'push' &&
       github.ref == 'refs/heads/main'`,
 		},
 		{
-			name: 'legal-service-area',
-			next: 'permission-control-audit',
+			name: 'flows-push',
 			condition: `    if: |
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'legal-service-area' &&
-      github.ref == 'refs/heads/main'`,
-		},
-		{
-			name: 'permission-policy-quarantine-rename',
-			next: 'public-blog-translation-key-repair',
-			condition: `    if: |
-      github.event_name == 'workflow_dispatch' &&
-      (
-        github.event.inputs.action == 'permission-policy-quarantine-preview' ||
-        github.event.inputs.action == 'permission-policy-quarantine-rename'
-      ) &&
-      github.ref == 'refs/heads/main'`,
-		},
-		{
-			name: 'public-blog-translation-key-repair',
-			next: 'analytics-controls',
-			condition: `    if: |
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'public-blog-translation-key-repair' &&
-      github.ref == 'refs/heads/main'`,
-		},
-		{
-			name: 'analytics-controls',
-			condition: `    if: |
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.action == 'analytics-controls' &&
+      github.event.inputs.action == 'flows-push' &&
       github.ref == 'refs/heads/main'`,
 		},
 	];
@@ -170,19 +125,105 @@ test('offers separate, unambiguous permission audit and targeted repair dispatch
 		workflow.indexOf('\n# Cancel in-progress'),
 	);
 	expect(dispatch).toContain(
-		'options: [diff, push, legal-service-area, analytics-controls, permission-control-audit, permission-policy-candidate-diagnostic, permission-policy-quarantine-preview, permission-policy-quarantine-rename, public-blog-translation-key-repair]',
+		'options: [diff, push, flows-push, permission-control-audit, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]',
 	);
-	expect(dispatch).toContain('guarded analytics-controls promotion');
+	expect(dispatch).toContain('flows-only push');
 	expect(dispatch).toContain('read-only permission audit');
-	expect(dispatch).toContain('candidate diagnostic');
-	expect(dispatch).toContain('quarantine preview or rename');
-	expect(dispatch).toContain('targeted blog repair');
+});
+
+test('cover permission dispatch exposes no mutation path to previews, PRs, or non-main refs', () => {
+	const parsed = Bun.YAML.parse(workflow) as any;
+	const job = parsed.jobs['buildbot-cover-permission'];
+	expect(job).toBeDefined();
+	expect(job.needs).toBe('test');
+	expect(job.environment.name).toBe('production');
+	expect(job.permissions).toEqual({ contents: 'read', actions: 'read' });
+	expect(JSON.stringify(job.env)).not.toMatch(secretReference);
+	const steps = job.steps as Array<Record<string, any>>;
+	const mutations = steps.filter((step) => step.run?.includes('--apply'));
+	expect(mutations).toHaveLength(2);
+	const enabled = (condition: string, action: string, event: string, ref: string) =>
+		Function('github', `return (${condition});`)({
+			event_name: event,
+			ref,
+			event: { inputs: { action } },
+		});
+	for (const action of [
+		'buildbot-cover-permission-preview',
+		'buildbot-cover-permission-apply',
+		'buildbot-cover-permission-rollback-preview',
+		'buildbot-cover-permission-rollback',
+	]) {
+		expect(enabled(job.if, action, 'workflow_dispatch', 'refs/heads/main')).toBe(true);
+		expect(enabled(job.if, action, 'workflow_dispatch', 'refs/heads/develop')).toBe(false);
+		expect(enabled(job.if, action, 'pull_request', 'refs/heads/main')).toBe(false);
+		const writes = mutations.filter((step) => enabled(step.if, action, 'workflow_dispatch', 'refs/heads/main'));
+		expect(writes).toHaveLength(action.endsWith('preview') ? 0 : 1);
+		if (writes.length) {
+			expect(writes[0].run).toContain(action.endsWith('rollback')
+				? '--confirm=ROLLBACK_PROD_BUILDBOT_COVER_PERMISSION'
+				: '--confirm=APPLY_PROD_BUILDBOT_COVER_PERMISSION');
+		}
+	}
+	expect(enabled(job.if, 'push', 'workflow_dispatch', 'refs/heads/main')).toBe(false);
+	for (const step of steps.filter((step) => step.run?.includes('reconcile-buildbot-cover-permission.ts'))) {
+		expect(step.env.DIRECTUS_ADMIN_TOKEN).toBe('${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}');
+		expect(step.run).toContain('--target=prod');
+		expect(step.run).toContain('--receipt=');
+		expect(step.run).not.toContain('${{');
+	}
+	for (const step of mutations) {
+		expect(step.env.APPROVAL_SHA256).toBe('${{ inputs.cover_permission_approval_sha256 }}');
+		expect(step.run).toContain('--approval-sha256="$APPROVAL_SHA256"');
+	}
+	const block = jobBlock('buildbot-cover-permission');
+	expect(block).not.toMatch(/sync:push|--require-converged|DIRECTUS_SYNC_INCLUDE_PERMISSIONS/);
+});
+
+test('cover rollback uses the explicit trusted-run apply artifact and retains receipts', () => {
+	const parsed = Bun.YAML.parse(workflow) as any;
+	const job = parsed.jobs['buildbot-cover-permission'];
+	expect(job).toBeDefined();
+	const steps = job.steps as Array<Record<string, any>>;
+	const validate = steps.find((step) => step.name === 'Validate prior cover permission apply run')!;
+	expect(validate).toBeDefined();
+	expect(validate.env.PRIOR_APPLY_RUN_ID).toBe('${{ inputs.cover_permission_apply_run_id }}');
+	expect(validate.run).toContain('^[0-9]+$');
+	expect(validate.run).toContain('$GITHUB_REPOSITORY/actions/runs/$PRIOR_APPLY_RUN_ID');
+	for (const guard of ['.event == "workflow_dispatch"', '.head_branch == "main"', '.path == ".github/workflows/cms.yml"', '.status == "completed"']) {
+		expect(validate.run).toContain(guard);
+	}
+	expect(validate.run).not.toContain('.conclusion == "success"');
+	expect(validate.run).not.toContain('${{');
+	const download = steps.find((step) => step.uses?.startsWith('actions/download-artifact@'))!;
+	expect(download).toBeDefined();
+	expect(steps.indexOf(download)).toBeGreaterThan(steps.indexOf(validate));
+	expect(download.with).toMatchObject({
+		name: 'buildbot-cover-permission',
+		'run-id': '${{ inputs.cover_permission_apply_run_id }}',
+		repository: '${{ github.repository }}',
+		'github-token': '${{ github.token }}',
+		path: 'apps/cms/.permission-prior',
+	});
+	const rollbackSteps = steps.filter((step) => step.run?.includes('--rollback='));
+	expect(rollbackSteps).toHaveLength(2);
+	for (const step of rollbackSteps) {
+		expect(step.run).toContain('--rollback=.permission-prior/apply.json');
+		expect(steps.indexOf(step)).toBeGreaterThan(steps.indexOf(download));
+	}
+	expect(rollbackSteps[0].run).toContain('--dry-run');
+	expect(rollbackSteps[1].run).toContain('--apply');
+	const upload = steps.find((step) => step.uses?.startsWith('actions/upload-artifact@'))!;
+	expect(upload.if).toBe('always()');
+	expect(upload.with.name).toBe('buildbot-cover-permission');
+	expect(upload.with.path).toBe('apps/cms/.permission-receipts/*.json');
+	expect(upload.with['include-hidden-files']).toBe(true);
 });
 
 test('permission-control-audit is production-gated, authenticated, and GET-only', () => {
 	const audit = jobBlock(
 		'permission-control-audit',
-		'permission-policy-candidate-diagnostic',
+		'flows-push',
 	);
 
 	expect(audit).toContain(
@@ -209,165 +250,8 @@ test('permission-control-audit is production-gated, authenticated, and GET-only'
 		'--apply',
 		'sync:push',
 		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
-		'reconcile-public-blog-permission.ts',
 	]) {
 		expect(audit).not.toContain(forbidden);
-	}
-});
-
-test('permission-policy-candidate-diagnostic is main-only, production-gated, and GET-only', () => {
-	const diagnostic = jobBlock(
-		'permission-policy-candidate-diagnostic',
-		'permission-policy-quarantine-rename',
-	);
-	expect(diagnostic).toContain(
-		"github.event.inputs.action == 'permission-policy-candidate-diagnostic'",
-	);
-	expect(diagnostic).toContain("github.ref == 'refs/heads/main'");
-	expect(diagnostic).toContain('needs: test');
-	expect(diagnostic).toContain('name: production');
-	expect(diagnostic).toContain(
-		'DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}',
-	);
-	expect(diagnostic.slice(0, diagnostic.indexOf('    steps:'))).not.toContain(
-		'DIRECTUS_ADMIN_TOKEN',
-	);
-	expect(diagnostic.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(1);
-	expect(diagnostic).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
-	expect(diagnostic).toContain(
-		'name: Diagnose duplicate desired-policy candidates (read-only)',
-	);
-	expect(diagnostic).toContain(
-		'run: bun scripts/diagnose-permission-policy-candidates.ts --target=prod --dry-run',
-	);
-	for (const forbidden of [
-		'--apply',
-		'--confirm=',
-		'sync:push',
-		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
-		'reconcile-public-blog-permission.ts',
-	]) {
-		expect(diagnostic).not.toContain(forbidden);
-	}
-});
-
-test('policy quarantine preview is separate and rename-only steps are statically mutation-gated', () => {
-	const rename = jobBlock(
-		'permission-policy-quarantine-rename',
-		'public-blog-translation-key-repair',
-	);
-	expect(rename).toContain(
-		"github.event.inputs.action == 'permission-policy-quarantine-preview'",
-	);
-	expect(rename).toContain(
-		"github.event.inputs.action == 'permission-policy-quarantine-rename'",
-	);
-	expect(rename).toContain("github.ref == 'refs/heads/main'");
-	expect(rename).toContain('needs: test');
-	expect(rename).toContain('name: production');
-	expect(rename).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
-	expect(rename.slice(0, rename.indexOf('    steps:'))).not.toContain(
-		'DIRECTUS_ADMIN_TOKEN',
-	);
-	expect(rename.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(4);
-
-	const previewCommand =
-		'bun scripts/reconcile-permission-policy-quarantine-name.ts --target=prod --dry-run';
-	const previewStepName = 'Preview guarded duplicate-policy quarantine rename';
-	const applyStepName = 'Apply and verify guarded duplicate-policy quarantine rename';
-	const readBackStepName = 'Prove duplicate-policy quarantine rename read-back';
-	const auditStepName =
-		'Audit all production Directus permissions after rename (read-only)';
-	const previewStep = stepBlock(rename, previewStepName, applyStepName);
-	const applyStep = stepBlock(rename, applyStepName, readBackStepName);
-	const readBackStep = stepBlock(rename, readBackStepName, auditStepName);
-	const auditStep = stepBlock(rename, auditStepName);
-	const renameOnlyCondition =
-		"if: github.event.inputs.action == 'permission-policy-quarantine-rename'";
-	const confirmation =
-		'--confirm=APPLY_PROD_PERMISSION_POLICY_QUARANTINE_RENAME';
-	const auditCommand =
-		'bun scripts/audit-permission-control-drift.ts --target=prod --dry-run';
-	const preview = rename.indexOf(previewCommand);
-	const apply = rename.indexOf(confirmation);
-	const readBack = rename.indexOf(previewCommand, preview + 1);
-	const audit = rename.indexOf(auditCommand, readBack + 1);
-
-	expect(preview).toBeGreaterThan(-1);
-	expect(apply).toBeGreaterThan(preview);
-	expect(readBack).toBeGreaterThan(apply);
-	expect(audit).toBeGreaterThan(readBack);
-	expect(previewStep).toContain(previewCommand);
-	expect(previewStep).not.toContain('if:');
-	expect(previewStep).not.toMatch(/--apply|--confirm=|audit-permission-control-drift/);
-	for (const guardedStep of [applyStep, readBackStep, auditStep]) {
-		expect(guardedStep).toContain(renameOnlyCondition);
-		expect(guardedStep).not.toContain(
-			'permission-policy-quarantine-preview',
-		);
-	}
-	expect(applyStep).toContain('--apply');
-	expect(applyStep).toContain(confirmation);
-	expect(readBackStep).toContain(previewCommand);
-	expect(auditStep).toContain(auditCommand);
-	expect(rename.match(/--apply/g)).toHaveLength(1);
-	expect(rename.match(/--confirm=/g)).toHaveLength(1);
-	expect(rename.match(/audit-permission-control-drift\.ts/g)).toHaveLength(1);
-	expect(rename).not.toContain('--require-converged');
-	for (const forbidden of [
-		'sync:push',
-		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
-		'include_permissions',
-		'reconcile-public-blog-permission.ts',
-		'reconcile-legal-service-area.ts',
-	]) {
-		expect(rename).not.toContain(forbidden);
-	}
-});
-
-test('targeted repair audits before and after one exact-confirm fields-only reconciler', () => {
-	const repair = jobBlock('public-blog-translation-key-repair', 'analytics-controls');
-	expect(repair).toContain(
-		"github.event.inputs.action == 'public-blog-translation-key-repair'",
-	);
-	expect(repair).toContain("github.ref == 'refs/heads/main'");
-	expect(repair).toContain('needs: test');
-	expect(repair).toContain('name: production');
-	expect(repair).toContain(
-		'DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}',
-	);
-	expect(repair.slice(0, repair.indexOf('    steps:'))).not.toContain(
-		'DIRECTUS_ADMIN_TOKEN',
-	);
-	expect(repair.match(/DIRECTUS_PROD_ADMIN_TOKEN/g)).toHaveLength(4);
-	expect(repair).toContain('PUBLIC_DIRECTUS_URL: https://cms.yesid.dev');
-
-	const auditCommand =
-		'bun scripts/audit-permission-control-drift.ts --target=prod --dry-run';
-	const convergenceAuditCommand = `${auditCommand} --require-converged`;
-	const previewCommand =
-		'bun scripts/reconcile-public-blog-permission.ts --target=prod --dry-run';
-	const confirmation =
-		'--confirm=APPLY_PROD_PUBLIC_BLOG_TRANSLATION_KEY_PERMISSION';
-	const firstAudit = repair.indexOf(auditCommand);
-	const preview = repair.indexOf(previewCommand);
-	const apply = repair.indexOf(confirmation);
-	const convergenceAudit = repair.indexOf(convergenceAuditCommand);
-
-	expect(firstAudit).toBeGreaterThan(-1);
-	expect(preview).toBeGreaterThan(firstAudit);
-	expect(apply).toBeGreaterThan(preview);
-	expect(convergenceAudit).toBeGreaterThan(apply);
-	expect(repair.indexOf(auditCommand, convergenceAudit + 1)).toBe(-1);
-	expect(repair.match(/--apply/g)).toHaveLength(1);
-	expect(repair.match(/--confirm=/g)).toHaveLength(1);
-	for (const forbidden of [
-		'sync:push',
-		'DIRECTUS_SYNC_INCLUDE_PERMISSIONS',
-		'include_permissions',
-		'reconcile-legal-service-area.ts',
-	]) {
-		expect(repair).not.toContain(forbidden);
 	}
 });
 
@@ -376,74 +260,52 @@ test('keeps every downstream CMS job body byte-stable', () => {
 		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
 	);
 	expect(sha256(jobBlock('live-diff', 'push'))).toBe(
-		'e0b16991ceac323a6c9112584e4263f982502fc8318d28a0f24a249bb471551e',
+		'0cedcf484a983112aec92c2cb527424eddf8210328a29a1f9d4d8def2e7b74e7',
 	);
-	expect(sha256(jobBlock('push', 'legal-service-area'))).toBe(
+	expect(sha256(jobBlock('push', 'permission-control-audit'))).toBe(
 		'e73949aa6577920e21cf1ebdbcf88a9567590662ab880e4238c07256e288a9d3',
-	);
-	expect(
-		sha256(jobBlock('legal-service-area', 'permission-control-audit')),
-	).toBe(
-		'b8c0b6e96f7421b7952b31bb7da5bffa60ff2aebcd2cf74e8fdcd397dd4b52d9',
 	);
 	expect(
 		sha256(
 			jobBlock(
 				'permission-control-audit',
-				'permission-policy-candidate-diagnostic',
+				'flows-push',
 			),
 		),
 	).toBe(
 		'517ae15e70704345eb9ea666c70f88ac78efe92ff8fcd1707a998237beb469a1',
 	);
-	expect(
-		sha256(
-			jobBlock(
-				'permission-policy-candidate-diagnostic',
-				'permission-policy-quarantine-rename',
-			),
-		),
-	).toBe(
-		'232efa0979ad4d4a29b06fdf3cc691f4e7eb5a1cf7c349a1fa17ce9cc5bb0aaf',
-	);
-	expect(
-		sha256(jobBlock('public-blog-translation-key-repair', 'analytics-controls')),
-	).toBe('7da8f48ee5ece7cc4d219539581c6999bc51b28902cb8d5658de70af485f55dd');
 });
 
-test('analytics-controls is production-gated, scoped-lane-only, and exact-confirm (slice-40.1 Stage D)', () => {
-	const job = jobBlock('analytics-controls');
-
-	// Dispatch-only, behind the production environment gate, after tests.
-	expect(job).toContain("github.event.inputs.action == 'analytics-controls'");
-	expect(job).toContain('needs: test');
-	expect(job).toContain('name: production');
-	expect(job).toContain('DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}');
-
-	// Scoped lanes ONLY — never a broad push, never permissions.
-	expect(job).toContain('sync:push -- --no-collections');
-	expect(job).toContain('sync:push -- --no-snapshot --only-collections flows');
-	expect(job).not.toContain('run: bun run sync:push\n');
-	expect(job).not.toContain('DIRECTUS_SYNC_INCLUDE_PERMISSIONS');
-	expect(job).not.toContain('include_permissions');
-
-	// Content lane: dry-run before AND after one exact-confirm apply.
-	const applies = job.split('--confirm=APPLY_PROD_LEAN_HIGH_INTENT_ANALYTICS').length - 1;
-	expect(applies).toBe(1);
-	const dryRuns =
-		job.split(
-			'promote-lean-high-intent-analytics.ts --target=prod --dry-run',
-		).length - 1;
-	expect(dryRuns).toBe(2);
-
-	// Owner flag-preservation proof: prod row must read true/true.
-	expect(job).toContain('analytics_enabled');
-	expect(job).toContain('analytics_consent_show_banner');
-	expect(job).toContain('FLAG ASSERTION FAILED');
-
-	// Drift audits bracket the promotion; live export + manifest verify close it.
-	expect(job).toContain('audit-permission-control-drift.ts --target=prod --dry-run');
-	expect(job).toContain('--module=site-labels');
-	expect(job).toContain('--module=legal-pages');
-	expect(job).toContain('verify-content-manifest.ts');
+test('flows-push keeps the production gate and pushes only the flows collection', () => {
+	const parsed = Bun.YAML.parse(workflow) as any;
+	const job = parsed.jobs['flows-push'];
+	expect(job.needs).toBe('test');
+	expect(job['timeout-minutes']).toBe(30);
+	expect(job.environment).toEqual({ name: 'production', url: 'https://cms.yesid.dev' });
+	expect(job.env).toEqual({
+		DIRECTUS_ADMIN_TOKEN: '${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}',
+		DIRECTUS_URL: 'https://cms.yesid.dev',
+	});
+	expect(job.steps.slice(0, 2).map((step: any) => step.uses)).toEqual([
+		'actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd',
+		'./.github/actions/setup',
+	]);
+	const operations = job.steps.slice(2);
+	expect(operations.map((step: any) => step.run)).toEqual([
+		'bun scripts/audit-permission-control-drift.ts --target=prod --dry-run',
+		'bun run sync:diff',
+		'bun run sync:push -- --no-snapshot --only-collections flows',
+		'bun run sync:diff',
+	]);
+	expect(operations[0]['continue-on-error']).toBe(true);
+	expect(operations[2].env).toEqual({
+		DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH: '1',
+		DIRECTUS_SYNC_PUSH_ACK: 'sync-push-can-delete-cms-data',
+	});
+	for (const step of operations) {
+		expect(step['working-directory']).toBe('apps/cms');
+		expect(step.if).toBeUndefined();
+	}
+	for (const step of operations.slice(1)) expect(step['continue-on-error']).toBeUndefined();
 });
