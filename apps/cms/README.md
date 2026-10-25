@@ -93,7 +93,7 @@ build time. Vite development alone may fall back to CMS assets.
 
 ### Image publication requires an explicit mirror release
 
-CMS file metadata events can request a rebuild, but cannot change committed
+CMS edits require the manual Publish action and cannot change committed
 image bytes. Register new images through the existing reviewed asset manifest
 and UUID mapping workflow first. For a registered image or same-ID replacement,
 read from the selected CMS into a preview, then write only the reviewed digest:
@@ -112,23 +112,20 @@ mismatch or changed digest fails before replacing the mirror. CMS deletion does
 not erase existing repository/deployment bytes; removal needs its own reviewed
 source release. Preserve trashed provenance pages and potentially unique links.
 
-### Rebuild state is runtime state
+### Publish once per editing session (D6)
 
-The repository declares `Vercel revalidate on publish` and `Force Rebuild
-(this environment)` as active. That declaration is desired configuration, not
-proof of live behavior: the latest authenticated operator read found both
-named live flows inactive. Saving CMS content is therefore not evidence that a
-rebuild ran, and manual Flow execution must not be assumed to work.
+After editing, open Site Config (`build_queue`) → Flows → **Publish site** and
+confirm. This manual action requests one build of the current published CMS
+content for this environment, taking about 3 minutes. It POSTs the environment's
+`VERCEL_DEPLOY_HOOK_URL` (allow-listed in `FLOWS_ENV_ALLOW_LIST`) with
+`buildCache=false`. Edits never rebuild the site by themselves; no polling flow
+remains. The legacy refresh flag is retained as dead schema and has no effect
+on publishing.
 
-Until a fresh authenticated read proves the live rows active, verify content
-delivery with an actual target build and deployed-content receipt. Keep flow
-audit and repair work in the guarded workflow; do not activate or edit live
-flows as part of ordinary content authoring.
-
-The closeout source definition covers create/update/delete for all 70 audited
-exporter dependencies (plus two retained legacy subscriptions). This is offline
-configuration assurance, not evidence of a real CMS-triggered deployment. Live
-activation/flow edits need an exact reviewed plan and separate approval.
+The only other declared flow logs translation reminders on publish. Repository
+contracts verify the intended configuration offline; verify delivery with an
+actual target build and deployed-content receipt. Live configuration changes
+remain separately authorized operator work.
 
 ## Locale contract
 
@@ -279,8 +276,9 @@ and the SHA-256 digest of each committed mirror. Export verifies those bytes
 before emitting; manifest tests check every digest. Web guards reject literal
 Directus asset identities and new raw HTML/SVG injection files outside the
 reviewed allowlist.
-`fixtures/assets-id-map.json` is the committed mapping consumed by export and
-tests; file UUIDs are environment-specific and must not be copied into another
+`fixtures/assets-id-map.json` and its shared-package mirror are a frozen record
+of the 18d migration, consumed by export and tests. They are not a regeneration
+target. File UUIDs are environment-specific and must not be copied into another
 environment as configuration. `fixtures/brand/presets.json` owns the four
 named transform declarations, also recorded in
 `directus/collections/settings.json` as `storage_asset_presets`.

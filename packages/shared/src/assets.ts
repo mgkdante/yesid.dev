@@ -1,13 +1,12 @@
 /**
- * Typed accessor for the asset-id map emitted by 18d migrate-assets.
+ * Typed accessor for the frozen asset-id map from the 18d migration.
  *
  * 18e-18i + the metro-svg consumer in 18d phase 8 use this to resolve a
  * legacyPath to its Directus file UUID.
  *
  * Source of truth: apps/cms/fixtures/assets-id-map.json (authoritative);
- * packages/shared/fixtures/assets-id-map.json is a mirror. BOTH copies are
- * emitted by apps/cms/scripts/migrate-assets.ts (GH #40). Refresh them by
- * re-running migrate-assets, never by hand-editing either file.
+ * packages/shared/fixtures/assets-id-map.json is a mirror. Both copies are a
+ * frozen record of the 18d migration (GH #40), not a regeneration target.
  */
 import idMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 
