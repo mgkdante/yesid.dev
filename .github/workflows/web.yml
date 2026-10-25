@@ -136,6 +136,10 @@ jobs:
         working-directory: apps/web
         run: bun run check:client-payload
 
+      - name: Content-Security-Policy check
+        working-directory: apps/web
+        run: bun run check:csp
+
   ci:
     name: ci
     needs: [classify, ci-work]

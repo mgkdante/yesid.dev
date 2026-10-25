@@ -175,74 +175,79 @@ test.describe('responsive shell and interrupted menu', () => {
 			expect(summary!.y + summary!.height).toBeLessThanOrEqual(header!.y + header!.height);
 		}
 	});
-	for (const locale of ['en', 'fr', 'es'])
-		for (const width of [375, 1366]) {
-		for (const reducedMotion of ['reduce', 'no-preference'] as const) {
-			test(`long supplied menu stays reachable in ${locale} at ${width}px with ${reducedMotion}`, async ({ page }) => {
-				await page.setViewportSize({ width, height: 600 });
-				await page.emulateMedia({ reducedMotion });
-				const menu = Array.from({ length: 10 }, (_, i) => ({
-					href: `/fixture-${i}`,
-					priority: 1,
-					label: {
-						en: `Research and reliable infrastructure ${i}`,
-						fr: `Recherche et infrastructure fiable ${i}`,
-						es: `Investigación e infraestructura confiable ${i}`,
-					},
-					...(i % 2
-						? {}
-						: {
-								subtitle: {
-									en: 'Optional supporting detail',
-									fr: 'Précision facultative',
-									es: 'Detalle opcional',
-								},
-							}),
-				}));
-				await page.route('**/legal/privacy', async (route) => {
-					const response = await route.fetch();
-					const html = await response.text();
-					expect(html).toMatch(/menuItems:\[[\s\S]*?\](?=,|})/);
-					await route.fulfill({
-						response,
-						body: html.replace(
-							/menuItems:\[[\s\S]*?\](?=,|})/,
-							`menuItems:${JSON.stringify(menu)}`,
-						),
+	test.describe('with supplied menu data', () => {
+		test.use({ bypassCSP: true });
+		// This fixture rewrites the inline hydration payload, invalidating its CSP hash by design.
+		// CSP enforcement is covered by check:csp; every other test runs under the real policy.
+		for (const locale of ['en', 'fr', 'es'])
+			for (const width of [375, 1366]) {
+			for (const reducedMotion of ['reduce', 'no-preference'] as const) {
+				test(`long supplied menu stays reachable in ${locale} at ${width}px with ${reducedMotion}`, async ({ page }) => {
+					await page.setViewportSize({ width, height: 600 });
+					await page.emulateMedia({ reducedMotion });
+					const menu = Array.from({ length: 10 }, (_, i) => ({
+						href: `/fixture-${i}`,
+						priority: 1,
+						label: {
+							en: `Research and reliable infrastructure ${i}`,
+							fr: `Recherche et infrastructure fiable ${i}`,
+							es: `Investigación e infraestructura confiable ${i}`,
+						},
+						...(i % 2
+							? {}
+							: {
+									subtitle: {
+										en: 'Optional supporting detail',
+										fr: 'Précision facultative',
+										es: 'Detalle opcional',
+									},
+								}),
+					}));
+					await page.route('**/legal/privacy', async (route) => {
+						const response = await route.fetch();
+						const html = await response.text();
+						expect(html).toMatch(/menuItems:\[[\s\S]*?\](?=,|})/);
+						await route.fulfill({
+							response,
+							body: html.replace(
+								/menuItems:\[[\s\S]*?\](?=,|})/,
+								`menuItems:${JSON.stringify(menu)}`,
+							),
+						});
 					});
-				});
-				await page.goto(`${locale === 'en' ? '' : '/' + locale}/legal/privacy`);
-				for (const theme of ['dark', 'light']) {
-					await page.evaluate((value) => {
-						document.documentElement.dataset.theme = value;
-					}, theme);
-					await openMenu(page);
-					const items = page.getByRole('dialog').locator('[data-menu-item]');
-					await expect(items).toHaveCount(menu.length);
-					const first = await items.first().boundingBox();
-					const pill = await page.getByTestId('nav-pill').boundingBox();
-					expect(first!.y).toBeGreaterThanOrEqual(pill!.y + pill!.height);
-					const before = await page.evaluate(() => window.scrollY);
-					const panel = page.locator('.menu-overlay');
-					await panel.hover();
-					for (const delta of [10000, 10000, -10000, -10000]) {
-						await page.mouse.wheel(0, delta);
-						await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBe(delta > 0
-							? await panel.evaluate(el => el.scrollHeight - el.clientHeight) : 0);
-						expect(await page.evaluate(() => window.scrollY)).toBe(before);
+					await page.goto(`${locale === 'en' ? '' : '/' + locale}/legal/privacy`);
+					for (const theme of ['dark', 'light']) {
+						await page.evaluate((value) => {
+							document.documentElement.dataset.theme = value;
+						}, theme);
+						await openMenu(page);
+						const items = page.getByRole('dialog').locator('[data-menu-item]');
+						await expect(items).toHaveCount(menu.length);
+						const first = await items.first().boundingBox();
+						const pill = await page.getByTestId('nav-pill').boundingBox();
+						expect(first!.y).toBeGreaterThanOrEqual(pill!.y + pill!.height);
+						const before = await page.evaluate(() => window.scrollY);
+						const panel = page.locator('.menu-overlay');
+						await panel.hover();
+						for (const delta of [10000, 10000, -10000, -10000]) {
+							await page.mouse.wheel(0, delta);
+							await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBe(delta > 0
+								? await panel.evaluate(el => el.scrollHeight - el.clientHeight) : 0);
+							expect(await page.evaluate(() => window.scrollY)).toBe(before);
+						}
+						await items.last().focus();
+						const last = await items.last().boundingBox();
+						expect(last!.x).toBeGreaterThanOrEqual(0);
+						expect(last!.x + last!.width).toBeLessThanOrEqual(width);
+						expect(last!.y).toBeGreaterThanOrEqual(pill!.y + pill!.height);
+						expect(last!.y + last!.height).toBeLessThanOrEqual(601);
+						await page.keyboard.press('Escape');
+						await expect(page.getByRole('dialog')).toHaveCount(0);
 					}
-					await items.last().focus();
-					const last = await items.last().boundingBox();
-					expect(last!.x).toBeGreaterThanOrEqual(0);
-					expect(last!.x + last!.width).toBeLessThanOrEqual(width);
-					expect(last!.y).toBeGreaterThanOrEqual(pill!.y + pill!.height);
-					expect(last!.y + last!.height).toBeLessThanOrEqual(601);
-					await page.keyboard.press('Escape');
-					await expect(page.getByRole('dialog')).toHaveCount(0);
-				}
-			});
-		}
-		}
+				});
+			}
+			}
+	});
 	for (const width of [1280, 1366]) {
 		test(`short-laptop headers expose title, summary or action, and content at ${width}x600`, async ({
 			page,
