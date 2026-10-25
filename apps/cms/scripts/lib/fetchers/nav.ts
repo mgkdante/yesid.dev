@@ -20,8 +20,7 @@
  * Archiving a site_pages row therefore drops every nav/footer/menu/mobile
  * link pointing at it on the next build — no nav_links edit required.
  *
- * Output keeps the pre-26.1 NavLink shape (label/href/priority/subtitle/icon)
- * so the emitted nav.ts and its consumers stay byte-compatible.
+ * Output carries label, href, priority, and optional subtitle.
  */
 
 import { readItems } from '@directus/sdk';
@@ -35,10 +34,6 @@ export interface DirectusNavLinkTranslation {
 	languages_code: string;
 	label?: string | null;
 	subtitle?: string | null;
-}
-
-export interface DirectusNavLinkIconRow {
-	name?: string | null;
 }
 
 export interface DirectusSitePageRef {
@@ -61,7 +56,6 @@ export interface DirectusNavLinkRow {
 	 * was lost — the cascade treats that as unverifiable and hides the link.
 	 */
 	page?: DirectusSitePageRef | string | null;
-	icon?: DirectusNavLinkIconRow | string | null;
 	translations?: DirectusNavLinkTranslation[];
 }
 
@@ -105,15 +99,6 @@ export function toNavLink(raw: DirectusNavLinkRow): NavLink {
 	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
 	const priority = raw.priority === 1 || raw.priority === 2 ? (raw.priority as 1 | 2) : 1;
 
-	// Resolve icon M2O FK to an icon name string.
-	let icon: string | undefined;
-	if (raw.icon && typeof raw.icon === 'object' && 'name' in raw.icon) {
-		const name = (raw.icon as DirectusNavLinkIconRow).name;
-		if (name) icon = name;
-	} else if (typeof raw.icon === 'string' && raw.icon.length > 0) {
-		icon = raw.icon;
-	}
-
 	const page = raw.page && typeof raw.page === 'object' ? raw.page : null;
 	const pageTr = (page?.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
 
@@ -135,7 +120,6 @@ export function toNavLink(raw: DirectusNavLinkRow): NavLink {
 		priority,
 	};
 	if (subtitleLS !== undefined) result.subtitle = subtitleLS;
-	if (icon !== undefined) result.icon = icon;
 	return result;
 }
 
@@ -149,7 +133,6 @@ export async function fetchNavData({ client }: FetcherContext): Promise<NavData>
 			fields: [
 				'*',
 				'translations.*',
-				'icon.*',
 				'page.path',
 				'page.status',
 				'page.translations.*',

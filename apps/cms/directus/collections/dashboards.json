@@ -23,7 +23,7 @@
   {
     "name": "Ops & deploy",
     "icon": "rocket_launch",
-    "note": "Deploy + build state at a glance. Is a rebuild pending? What changed recently? Force a rebuild: Site Config -> Build refresh flag -> Run Flow -> Force Rebuild.",
+    "note": "Recent CMS activity and D6 manual Publish. After editing, open Site Config (build_queue) → Flows → Publish site and confirm one build per editing session. Edits never rebuild the site by themselves.",
     "color": "#E07800",
     "_syncId": "_sync_dashboard_ops_deploy"
   }

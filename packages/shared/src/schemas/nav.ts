@@ -2,13 +2,12 @@ import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 
 // `priority: 1 | 2` - TS numeric literal union preserved via z.union.
-// subtitle and icon are optional - present on menu/footer placement rows.
+// subtitle is optional - present on menu/footer placement rows.
 export const NavLinkSchema = z.object({
 	label: LocalizedStringSchema,
 	href: z.string(),
 	priority: z.union([z.literal(1), z.literal(2)]),
 	subtitle: LocalizedStringSchema.optional(),
-	icon: z.string().optional(),
 });
 
 /**
