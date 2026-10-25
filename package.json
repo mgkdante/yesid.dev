@@ -39,6 +39,7 @@
 		"devalue": "5.9.3",
 		"dompurify": "3.4.17",
 		"fast-xml-builder": "1.1.7",
+		"happy-dom": "21.0.4",
 		"nanoid": "3.3.18",
 		"postcss": "8.5.23",
 		"satori": "0.10.14",
