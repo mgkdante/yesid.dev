@@ -4,7 +4,7 @@
   Place inside a relative-positioned parent.
 -->
 <script lang="ts">
-  import { cn } from '$lib/utils';
+  import { cn } from '#lib/utils/index.ts';
   import type { HTMLAttributes } from 'svelte/elements';
 
   export interface CornerMarksProps extends HTMLAttributes<HTMLDivElement> {

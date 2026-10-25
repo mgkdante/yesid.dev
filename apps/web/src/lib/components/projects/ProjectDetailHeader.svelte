@@ -5,16 +5,16 @@
   Extends behind nav with negative margin.
 -->
 <script lang="ts">
-  import type { Project } from '$lib/types';
-  import { resolveLocale } from '$lib/utils/locale';
-  import { localizeHref } from '$lib/utils/locale-routing';
-  import { getLocale } from '$lib/utils/locale-context';
+  import type { Project } from '#lib/types.ts';
+  import { resolveLocale } from '#lib/utils/locale.ts';
+  import { localizeHref } from '#lib/utils/locale-routing.ts';
+  import { getLocale } from '#lib/utils/locale-context.ts';
 
   const locale = getLocale();
-  import { getStackRole } from '$lib/utils/stack-roles';
-  import { projectMetrics } from '$lib/utils/project-metrics';
-  import { siteLabels } from '$lib/content';
-  import DetailHeaderShell from '$lib/components/shared/DetailHeaderShell.svelte';
+  import { getStackRole } from '#lib/utils/stack-roles.ts';
+  import { projectMetrics } from '#lib/utils/project-metrics.ts';
+  import { siteLabels } from '#lib/content/index.ts';
+  import DetailHeaderShell from '#lib/components/shared/DetailHeaderShell.svelte';
 
   let { project }: { project: Project } = $props();
 

@@ -11,7 +11,7 @@
 // ($lib/server/markdown).
 
 import type { BlockEditorDoc } from '@repo/shared';
-import { parseCodeFence } from '$lib/utils/code-fences';
+import { parseCodeFence } from '#lib/utils/code-fences.ts';
 import { highlightCodeHtml } from './syntax-highlight';
 
 /** block.id → Shiki-highlighted HTML for that block's fence body. */

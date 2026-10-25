@@ -1,19 +1,13 @@
-<!--
-  HomeCloser — Section 5: Transit terminus departure board + localized graffiti.
-  Merges Blog Teaser + About Strip + Dual CTA into one conversion-focused closer.
-  Desktop: board left, graffiti right. Mobile: graffiti behind, board full-width.
-  Orchestrates GSAP master timeline across sub-components.
--->
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
-	import { resolveLocale } from '$lib/utils';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { browser } from '$app/env';
+	import { resolveLocale } from '#lib/utils/index.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 
-	import type { CloserContent, SiteMeta } from '$lib/types';
+	import type { CloserContent, SiteMeta } from '#lib/types.ts';
 
 	// slice-18i Phase 7C: closerContent now flows as a prop from the server load.
 	let {
@@ -23,10 +17,10 @@
 		closer: CloserContent;
 		siteMeta: SiteMeta;
 	} = $props();
-	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
+	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '#lib/motion/utils/gsap.ts';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { pressBounce } from '$lib/motion/actions';
-	import { backgroundBreathing, type BreathingControls } from '$lib/motion/scrubs/index.js';
+	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import { backgroundBreathing, type BreathingControls } from '#lib/motion/scrubs/index.ts';
 	import CloserGraffiti from './CloserGraffiti.svelte';
 	import CloserFloodlight from './CloserFloodlight.svelte';
 	import CloserProps from './CloserProps.svelte';
@@ -163,6 +157,13 @@
 	});
 </script>
 
+<!--
+  HomeCloser — Section 5: Transit terminus departure board + localized graffiti.
+  Merges Blog Teaser + About Strip + Dual CTA into one conversion-focused closer.
+  Desktop: board left, graffiti right. Mobile: graffiti behind, board full-width.
+  Orchestrates GSAP master timeline across sub-components.
+-->
+
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
@@ -181,7 +182,7 @@
 	<div class="closer-content relative z-10">
 		<!-- Terminal departure board -->
 		<CloserTerminalBoard
-			{rows}
+			rows={rows}
 			terminalTitle={terminalTitleText}
 			cityLabel={terminalCityLabel}
 			encodingLabel={terminalEncodingLabel}
@@ -227,7 +228,7 @@
 			transparent 75%
 		);
 	}
-	:global([data-theme='light']) .closer-section::before {
+	:global([data-theme="light"]) .closer-section::before {
 		background: radial-gradient(
 			ellipse 80% 55% at 50% 100%,
 			color-mix(in srgb, var(--glow) calc(8% + var(--breathing-phase, 0) * 8%), transparent),

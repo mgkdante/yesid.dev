@@ -13,19 +13,19 @@
 // `composedTitleStrategy` lets the home route keep its full CMS title
 // verbatim, while other static routes append the brand suffix.
 
-import type { Locale, LocalizedString, PageSeo, SchemaOrgNode, SiteMeta } from '$lib/types';
+import type { Locale, LocalizedString, PageSeo, SchemaOrgNode, SiteMeta } from '#lib/types.ts';
 import {
 	buildPersonNode,
 	buildProfessionalServiceNode,
 	buildProfilePageNode,
 	buildWebSiteNode,
-} from '$lib/adapters/jsonld';
+} from '#lib/adapters/jsonld.ts';
 import {
 	buildCollectionRouteNodes,
 	buildRouteBreadcrumbNode,
-} from '$lib/adapters/route-jsonld';
-import { resolveLocale } from '$lib/utils/locale';
-import { canonicalFor } from '$lib/utils/seo-defaults';
+} from '#lib/adapters/route-jsonld.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
+import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 
 export interface CodeRouteSeoDefaults {
 	/** Per-route OG type — `<meta property="og:type">`. */

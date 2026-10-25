@@ -1,11 +1,11 @@
 // Load function for /services index page.
 // Server-only so service/project CMS reads are serialized through __data.json.
 
-import { fetchServiceSvgContents } from '$lib/utils';
-import { adapter } from '$lib/adapters';
-import { localeEntries } from '$lib/server/prerender-entries';
+import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { adapter } from '#lib/adapters/index.ts';
+import { localeEntries } from '#lib/server/prerender-entries.ts';
 import type { EntryGenerator } from './$types';
-import type { Project } from '$lib/types';
+import type { Project } from '#lib/types.ts';
 
 export const entries = (() => localeEntries('/services')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;

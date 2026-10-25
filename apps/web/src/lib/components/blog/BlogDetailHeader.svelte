@@ -7,15 +7,15 @@
   No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">
-  import type { BlogPost } from '$lib/types';
-  import { resolveLocale } from '$lib/utils/locale';
-  import { getLocale } from '$lib/utils/locale-context';
-  import { localizeHref } from '$lib/utils/locale-routing';
+  import type { BlogPost } from '#lib/types.ts';
+  import { resolveLocale } from '#lib/utils/locale.ts';
+  import { getLocale } from '#lib/utils/locale-context.ts';
+  import { localizeHref } from '#lib/utils/locale-routing.ts';
 
   const locale = getLocale();
-  import { fillTemplate } from '$lib/utils/labels';
-  import { siteLabels } from '$lib/content';
-  import DetailHeaderShell from '$lib/components/shared/DetailHeaderShell.svelte';
+  import { fillTemplate } from '#lib/utils/labels.ts';
+  import { siteLabels } from '#lib/content/index.ts';
+  import DetailHeaderShell from '#lib/components/shared/DetailHeaderShell.svelte';
 
   let {
     post,

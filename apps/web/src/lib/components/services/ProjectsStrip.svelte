@@ -4,16 +4,16 @@
   Layout: label | separator | project links (scrollable) | count
 -->
 <script lang="ts">
-	import type { Project } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Project } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import { cn } from '$lib/utils';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { cn } from '#lib/utils/index.ts';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
 
 	export interface ProjectsStripProps {
 		/** Projects to display */

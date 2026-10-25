@@ -1,12 +1,5 @@
-<!--
-  ManifestoCanvas — Interactive circuit node canvas for the manifesto section.
-  Renders grid-aligned nodes that glow on cursor proximity.
-  Draws trace connections between nearby active nodes.
-  Emits concentric ripple pulses on click/tap.
-  Respects prefers-reduced-motion: static nodes only.
--->
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { subscribe, unsubscribe } from '@yesid/motion/utils/ticker';
 
@@ -269,7 +262,20 @@
 	});
 </script>
 
-<canvas bind:this={canvas} class="manifesto__canvas" data-testid="manifesto-canvas"></canvas>
+<!--
+  ManifestoCanvas — Interactive circuit node canvas for the manifesto section.
+  Renders grid-aligned nodes that glow on cursor proximity.
+  Draws trace connections between nearby active nodes.
+  Emits concentric ripple pulses on click/tap.
+  Respects prefers-reduced-motion: static nodes only.
+-->
+
+<canvas
+	bind:this={canvas}
+	class="manifesto__canvas"
+	data-testid="manifesto-canvas"
+></canvas>
+
 <div
 	bind:this={warmGlow}
 	class="manifesto__warm-glow"
@@ -307,7 +313,7 @@
 	   8% so the cast reads with the same presence as dark (1:1 parity). The shared
 	   .manifesto__warm-glow class also drives the blog + project detail headers, so
 	   this lifts all three at once. */
-	:global([data-theme='light']) .manifesto__warm-glow {
+	:global([data-theme="light"]) .manifesto__warm-glow {
 		background: radial-gradient(
 			ellipse,
 			color-mix(in srgb, var(--glow) 16%, transparent) 0%,

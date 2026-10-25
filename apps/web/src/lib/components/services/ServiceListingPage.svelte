@@ -1,21 +1,16 @@
-<!--
-  Services listing page — page-level Lenis scroll, no nested scroll container.
-  Sticky StationTabs at top, sticky ProjectsStrip at bottom.
-  IntersectionObserver tracks which service viewport is in view. D190, D191.
--->
 <script lang="ts">
 	import { onMount, tick, untrack } from 'svelte';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import type { Service, Project } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { browser } from '$app/env';
+	import { page } from '$app/state';
+	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
+	import type { Service, Project } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import StationTabs from '$lib/components/shared/StationTabs.svelte';
+	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
 	import ProjectsStrip from './ProjectsStrip.svelte';
 
@@ -65,7 +60,7 @@
 	async function handleTabSelect(id: string) {
 		activeId = id;
 		if (!browser) return;
-		const url = new URL($page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('station', id);
 		// Await the navigation BEFORE scrolling. replaceState keeps the tab-click out
 		// of the history stack (a scroll position, not a destination). On touch devices
@@ -73,7 +68,7 @@
 		// goto settled cancelled it mid-animation: the tab highlighted but the page
 		// never moved. Desktop survived because Lenis owns its own scroll. Awaiting goto
 		// fixes the mobile tab-scroll.
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 		scrollToStation(id);
 	}
 
@@ -83,7 +78,7 @@
 		// Deep-link / switch-restore: if ?station=<id> names a real station, scroll
 		// to it after the viewports have painted. The scroll is authoritative —
 		// activeId follows when the section crosses the reading band.
-		const requested = $page.url.searchParams.get('station');
+		const requested = page.url.searchParams.get('station');
 		if (requested && sorted.some((s) => s.id === requested)) {
 			void tick().then(() => scrollToStation(requested));
 		}
@@ -120,14 +115,22 @@
 	});
 </script>
 
-<div class="services-page" data-testid="service-listing-page">
-	<h1 class="sr-only">{resolveLocale(siteLabels.servicesChrome.listing.heading, locale)}</h1>
+<!--
+  Services listing page — page-level Lenis scroll, no nested scroll container.
+  Sticky StationTabs at top, sticky ProjectsStrip at bottom.
+  IntersectionObserver tracks which service viewport is in view. D190, D191.
+-->
 
+<div
+	class="services-page"
+	data-testid="service-listing-page"
+>
+	<h1 class="sr-only">{resolveLocale(siteLabels.servicesChrome.listing.heading, locale)}</h1>
 	<!-- Sticky station tabs -->
 	<div class="tabs-bar">
 		<StationTabs
 			services={sorted}
-			{activeId}
+			activeId={activeId}
 			mode="scroll"
 			onSelect={handleTabSelect}
 		/>
@@ -136,7 +139,7 @@
 	<!-- Service viewports — page-level scroll, no nested container -->
 	{#each sorted as service, i (service.id)}
 		<ServiceCard
-			{service}
+			service={service}
 			svgContent={serviceSvgContents[service.id] ?? ''}
 			index={i}
 			total={sorted.length}

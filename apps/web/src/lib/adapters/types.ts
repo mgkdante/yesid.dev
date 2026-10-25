@@ -39,10 +39,10 @@ import type {
 	BlockEditorDoc,
 	MorphShape,
 	LegalPage,
-} from '$lib/types';
-import type { ErrorPageContent, NavLink } from '$lib/navigation/types';
-import type { HeroData } from '$lib/live';
-import type { PageSeo } from '$lib/schemas/seo';
+} from '#lib/types.ts';
+import type { ErrorPageContent, NavLink } from '#lib/navigation/types.ts';
+import type { HeroData } from '#lib/live/index.ts';
+import type { PageSeo } from '#lib/schemas/seo.ts';
 import type { BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
 export interface NavPort {

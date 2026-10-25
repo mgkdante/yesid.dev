@@ -11,7 +11,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import AboutWeather from './AboutWeather.svelte';
 import { resolveWeatherScene, isNightHour, WEATHER_SCENES } from './weather-scene';
-import { aboutPageContent } from '$lib/content/about-page';
+import { aboutPageContent } from '#lib/content/about-page.ts';
 
 const config = aboutPageContent.weather;
 

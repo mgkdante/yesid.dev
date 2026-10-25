@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
-import { isProductionHostname, NOINDEX_POLICY } from '$lib/server/indexing';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
+import { SITE_HOST } from '#lib/utils/seo-defaults.ts';
 
 // Stays on the lambda (edge-cached via s-maxage); explicit opt-out matching
 // sitemap.xml — the two crawl surfaces keep one caching model.

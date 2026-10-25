@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BlockEditorDoc } from '@repo/shared';
-import { sectionizeBlogBody } from '$lib/blog/sections';
+import { sectionizeBlogBody } from '#lib/blog/sections.ts';
 
 const baseDoc = (blocks: BlockEditorDoc['blocks']): BlockEditorDoc => ({
 	time: 1700000000000,

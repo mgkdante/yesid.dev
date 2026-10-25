@@ -34,15 +34,15 @@ import type { LayoutServerLoad } from './$types';
 // routes (+server.ts: og/, api/, sitemap.xml, robots.txt, /work, service
 // redirects) opt out individually — they stay on the lambda.
 export const prerender = true;
-import { isPathPublished } from '$lib/utils/page-registry';
-import { adapter } from '$lib/adapters';
-import { localeFromParams, stripLocaleSegment, delocalizePath } from '$lib/utils/locale-routing';
-import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/error-seo-fallback';
-import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
-import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
-import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
+import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { adapter } from '#lib/adapters/index.ts';
+import { localeFromParams, stripLocaleSegment, delocalizePath } from '#lib/utils/locale-routing.ts';
+import { siteMeta as STATIC_SITE_META } from '#lib/content/site-meta.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
+import { errorSeoFallback } from '#lib/adapters/error-seo-fallback.ts';
+import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '#lib/content/nav.ts';
+import { FALLBACK_MORPH_SHAPES } from '#lib/utils/shapes.ts';
+import type { NavLink, ErrorPageContent } from '#lib/navigation/types.ts';
 
 // CDN cache-control headers are set centrally in hooks.server.ts via
 // response.headers.set (not setHeaders). Setting them here too triggered a
@@ -62,7 +62,7 @@ export const load: LayoutServerLoad = async ({ route, params, url }) => {
 	// Registry paths are locale-less, so the gate compares the delocalized
 	// pathname ('/fr/about' gates as '/about').
 	if (route.id !== null && !isPathPublished(delocalizePath(url.pathname))) {
-		error(404, { message: 'Not found' });
+		error(404, 'Not found');
 	}
 	// slice-28.6: locale from params.lang (page routes) with a pathname
 	// fallback (error renders carry no params).

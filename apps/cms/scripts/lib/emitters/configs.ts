@@ -53,14 +53,14 @@ export const EXPORT_MODULE_REGISTRY = [
 		'site-meta.ts',
 		['siteMeta'],
 		'Site-wide brand identity (name, tagline, description, links, owner).',
-		[typeImport('$lib/types', 'SiteMeta')],
+		[typeImport('#lib/types.ts', 'SiteMeta')],
 		(data) => [declaration('siteMeta', 'SiteMeta', data.siteMeta)],
 	),
 	defineModule(
 		'site-seo-defaults.ts',
 		['siteSeoDefaults'],
 		'SEO defaults (defaultOgImage UUID, themeColor, defaultDescription). CMS-driven from site_meta singleton.',
-		[typeImport('$lib/types', 'SiteSeoDefaults')],
+		[typeImport('#lib/types.ts', 'SiteSeoDefaults')],
 		(data) => [
 			declaration('STATIC_SITE_SEO_DEFAULTS', 'SiteSeoDefaults', data.siteSeoDefaults),
 		],
@@ -69,7 +69,7 @@ export const EXPORT_MODULE_REGISTRY = [
 		'route-seo.ts',
 		['routeSeo'],
 		'Published route_seo overrides for static route title, description, and OG image.',
-		[typeImport('$lib/types', 'RouteSeoOverride')],
+		[typeImport('#lib/types.ts', 'RouteSeoOverride')],
 		(data) => [
 			declaration('routeSeoOverrides', 'readonly RouteSeoOverride[]', data.routeSeo),
 		],
@@ -91,7 +91,7 @@ export const EXPORT_MODULE_REGISTRY = [
 		'media-variants.ts',
 		['mediaVariants'],
 		'Responsive webp variants of the mirrored raster assets, keyed by original static path (intrinsic width/height + ascending-width variant set). Generated with the variant files themselves by lib/media-variants.ts; the web asset helper composes srcset/width/height from this map.',
-		[typeImport('$lib/types', 'MediaVariantEntry')],
+		[typeImport('#lib/types.ts', 'MediaVariantEntry')],
 		(data) => [
 			declaration(
 				'mediaVariants',
@@ -104,14 +104,14 @@ export const EXPORT_MODULE_REGISTRY = [
 		'about-page.ts',
 		['aboutPage'],
 		'/about page content (identity, metrics, methodology, testimonials, etc.).',
-		[typeImport('$lib/types', 'AboutContent')],
+		[typeImport('#lib/types.ts', 'AboutContent')],
 		(data) => [declaration('aboutPageContent', 'AboutContent', data.aboutPage)],
 	),
 	defineModule(
 		'contact-page.ts',
 		['contactPage'],
 		'/contact page content (terminals, validation, success states).',
-		[typeImport('$lib/types', 'ContactContent')],
+		[typeImport('#lib/types.ts', 'ContactContent')],
 		(data) => [declaration('contactContent', 'ContactContent', data.contactPage)],
 	),
 	defineModule(
@@ -120,7 +120,7 @@ export const EXPORT_MODULE_REGISTRY = [
 		'Home-page block content (hero, manifesto, proof reel, services grid, about teaser, CTA, closer).',
 		(data) => [
 			typeImport(
-				'$lib/types',
+				'#lib/types.ts',
 				...new Set([
 					...(data.hero.heroAnim ? ['HeroAnimContent'] : []),
 					...HOME_EXPORTS.map(([, , typeName]) => typeName),
@@ -143,21 +143,21 @@ export const EXPORT_MODULE_REGISTRY = [
 		'blog.ts',
 		['blogPosts'],
 		'Blog posts (slugs, titles, excerpts, dates, tags, SVG illustration refs).',
-		[typeImport('$lib/types', 'BlogPost')],
+		[typeImport('#lib/types.ts', 'BlogPost')],
 		(data) => [declaration('blogPosts', 'readonly BlogPost[]', data.blogPosts)],
 	),
 	defineModule(
 		'legal-pages.ts',
 		['legalPages'],
 		'Legal pages (OPS1): slug, title, per-locale Block Editor body for /legal/[slug].',
-		[typeImport('$lib/types', 'LegalPage')],
+		[typeImport('#lib/types.ts', 'LegalPage')],
 		(data) => [declaration('legalPages', 'readonly LegalPage[]', data.legalPages)],
 	),
 	defineModule(
 		'blog-bodies.ts',
 		['blogBodies'],
 		'Block Editor body per published blog post, keyed by slug. Powers static blog.bodyBySlug + blog.html (serializeBlocksToHtml).',
-		[typeImport('$lib/types', 'BlockEditorDoc')],
+		[typeImport('#lib/types.ts', 'BlockEditorDoc')],
 		(data) => [
 			declaration(
 				'blogBodies',
@@ -170,21 +170,21 @@ export const EXPORT_MODULE_REGISTRY = [
 		'services.ts',
 		['services'],
 		'Services array (id, title, station, deliverables, sections, related projects).',
-		[typeImport('$lib/types', 'Service')],
+		[typeImport('#lib/types.ts', 'Service')],
 		(data) => [declaration('services', 'readonly Service[]', data.services)],
 	),
 	defineModule(
 		'projects.ts',
 		['projects'],
 		'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services).',
-		[typeImport('$lib/types', 'Project')],
+		[typeImport('#lib/types.ts', 'Project')],
 		(data) => [declaration('projects', 'readonly Project[]', data.projects)],
 	),
 	defineModule(
 		'error-pages.ts',
 		['errorPages'],
 		'All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.',
-		[typeImport('$lib/navigation/types', 'ErrorPageContent')],
+		[typeImport('#lib/navigation/types.ts', 'ErrorPageContent')],
 		(data) => [
 			declaration(
 				'errorPagesById',
@@ -199,7 +199,7 @@ export const EXPORT_MODULE_REGISTRY = [
 		'Navigation links (header + menu + footer + mobile placements) + error page fallback.',
 		[
 			typeImport(
-				'$lib/navigation/types',
+				'#lib/navigation/types.ts',
 				'NavLink',
 				'MenuItem',
 				'ErrorPageContent',
@@ -217,14 +217,14 @@ export const EXPORT_MODULE_REGISTRY = [
 		'site-pages.ts',
 		['sitePages'],
 		"Published site_pages registry rows (path, type, title). PUBLISHED rows only — a path's absence IS the hidden signal: the route gate 404s it, the sitemap drops it, and nav links pointing at it disappear (cascade applied in the nav fetcher). NEW in slice-26.1.",
-		[typeImport('$lib/types', 'SitePage')],
+		[typeImport('#lib/types.ts', 'SitePage')],
 		(data) => [declaration('sitePages', 'readonly SitePage[]', data.sitePages)],
 	),
 	defineModule(
 		'site-labels.ts',
 		['siteLabels'],
 		'Global UI microcopy from the site_labels singleton, including accessibility, navigation, project, blog, service, footer, email, and live-dashboard labels.',
-		[typeImport('$lib/types', 'SiteLabels')],
+		[typeImport('#lib/types.ts', 'SiteLabels')],
 		(data) => [declaration('siteLabels', 'SiteLabels', data.siteLabels)],
 	),
 	defineModule(
@@ -251,7 +251,7 @@ export const EXPORT_MODULE_REGISTRY = [
 		'morph-shapes.ts',
 		['morphShapes'],
 		'Geometric morph-target library (id, label, path, viewbox, sort). NEW in slice-18m — was previously derived from utils/shapes.ts SHAPES const.',
-		[typeImport('$lib/types', 'MorphShape')],
+		[typeImport('#lib/types.ts', 'MorphShape')],
 		(data) => [
 			declaration('morphShapes', 'readonly MorphShape[]', data.morphShapes),
 		],

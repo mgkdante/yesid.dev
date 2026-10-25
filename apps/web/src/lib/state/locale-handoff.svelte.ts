@@ -21,10 +21,10 @@
  * `persisted()` is the ergonomic consumer; pages with scroll register a
  * ScrollContext; async-mounted consumers (Embla) read `pendingRestore`.
  */
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { tick } from 'svelte';
-import { delocalizePath, isLocaleSwitch, pathLocale } from '$lib/utils/locale-routing';
+import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
 import {
 	makeBlob,
@@ -261,6 +261,8 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 	if (!browser) return;
 
 	beforeNavigate((nav) => {
+		if (nav.shallow && nav.type === 'goto') return;
+
 		// Any navigation ends the previous page's pending async restore — clear it so
 		// a slow async consumer (e.g. a dynamically imported component) that
 		// already read it on THIS page cannot be re-seeded with stale data on a later
@@ -287,6 +289,7 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 	});
 
 	afterNavigate(async (nav) => {
+		if (nav.shallow && nav.type === 'goto') return;
 		if (nav.type === 'enter') return; // initial hydration — nothing to restore
 		if (!nav.from || !nav.to) return;
 		if (!activeSwitchKey && !isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) {

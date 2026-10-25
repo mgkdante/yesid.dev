@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render } from '@testing-library/svelte';
 import { flushSync } from 'svelte';
-import { captureEntries } from '$lib/state/locale-handoff.svelte';
+import { captureEntries } from '#lib/state/locale-handoff.svelte.ts';
 import { projectFactory } from '../../../tests/factories';
 import ServiceStackPanel from './ServiceStackPanel.svelte';
 

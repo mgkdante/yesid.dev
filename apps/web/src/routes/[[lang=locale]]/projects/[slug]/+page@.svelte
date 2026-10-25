@@ -3,7 +3,7 @@
   Renders the ProjectDetailPage component with data from the loader.
 -->
 <script lang="ts">
-	import ProjectDetailPage from '$lib/components/projects/ProjectDetailPage.svelte';
+	import ProjectDetailPage from '#lib/components/projects/ProjectDetailPage.svelte';
 
 	let { data } = $props();
 </script>

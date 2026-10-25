@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { BlogPost } from '$lib/types';
+import type { BlogPost } from '#lib/types.ts';
 
 const adapterMocks = vi.hoisted(() => ({
 	adapter: {
@@ -13,7 +13,7 @@ const adapterMocks = vi.hoisted(() => ({
 	},
 }));
 
-vi.mock('$lib/adapters', () => adapterMocks);
+vi.mock('#lib/adapters/index.ts', () => adapterMocks);
 
 import { loadBlogCategory } from './blog-category-loader';
 

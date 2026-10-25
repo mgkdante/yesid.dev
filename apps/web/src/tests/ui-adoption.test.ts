@@ -29,10 +29,10 @@ describe('@yesid/ui customer contract', () => {
 		expect(initializer).toContain("from '@yesid/ui/cn'");
 		expect(initializer).toContain('configureUi()');
 		expect(clientHooks).toContain('ClientInit');
-		expect(clientHooks).toContain("from '$lib/ui/configure'");
+		expect(clientHooks).toContain("from '#lib/ui/configure.ts'");
 		expect(clientHooks).toContain('initializeUi()');
 		expect(serverHooks).toContain('ServerInit');
-		expect(serverHooks).toContain("from '$lib/ui/configure'");
+		expect(serverHooks).toContain("from '#lib/ui/configure.ts'");
 		expect(serverHooks).toContain('initializeUi()');
 		expect(layout).not.toContain('configureUi');
 	});
@@ -45,7 +45,7 @@ describe('@yesid/ui customer contract', () => {
 
 		expect(siteCss).toContain("@import '../../app.css';");
 		expect(siteCss).toContain('@source "../../../vendor/design/ui/src";');
-		expect(layout).toContain("import '$lib/styles/site.css';");
+		expect(layout).toContain("import '#lib/styles/site.css';");
 		expect(cn).toContain("from '@yesid/ui/cn'");
 		expect(cn).not.toContain("from './create-cn'");
 		expect(exists('apps/web/src/lib/utils/create-cn.ts')).toBe(false);
@@ -79,7 +79,7 @@ describe('@yesid/ui primitive adoption contract', () => {
 			'apps/web/src/routes/+error.svelte',
 		]) {
 			expect(read(path), path).toContain(
-				"from '$lib/components/shared/HazardSeparator.svelte'",
+				"from '#lib/components/shared/HazardSeparator.svelte'",
 			);
 			expect(read(path), path).not.toContain("from '@yesid/ui/separator'");
 		}
@@ -90,7 +90,7 @@ describe('@yesid/ui primitive adoption contract', () => {
 			"from '@yesid/ui/badge'",
 		);
 		expect(read('apps/web/src/lib/components/home/HomePage.svelte')).toContain(
-			"from '$lib/components/shared/HazardSeparator.svelte'",
+			"from '#lib/components/shared/HazardSeparator.svelte'",
 		);
 		expect(read('apps/web/src/lib/components/shared/StationTabs.svelte')).toContain(
 			"from '@yesid/ui/tabs'",
@@ -110,11 +110,11 @@ describe('@yesid/ui primitive adoption contract', () => {
 
 		expect(collapsible).toContain("from '@yesid/ui/collapsible'");
 		expect(collapsible).toContain(
-			"CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte'",
+			"CollapsibleContent from '#lib/components/ui/collapsible/collapsible-content.svelte'",
 		);
 		expect(contact).toContain("from '@yesid/ui/resizable'");
 		expect(contact).toContain(
-			"ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte'",
+			"ResizableHandle from '#lib/components/ui/resizable/resizable-handle.svelte'",
 		);
 		expect(exists('apps/web/src/lib/components/ui/collapsible/collapsible.svelte')).toBe(false);
 		expect(exists('apps/web/src/lib/components/ui/collapsible/collapsible-trigger.svelte')).toBe(false);
@@ -211,7 +211,7 @@ describe('@yesid/ui brand adoption contract', () => {
 
 		expect(quietMode).toContain('QuietModeButton as UiQuietModeButton');
 		expect(quietMode).toContain('type QuietModeButtonCopy');
-		expect(quietMode).toContain("from '$lib/state/quiet-mode.svelte'");
+		expect(quietMode).toContain("from '#lib/state/quiet-mode.svelte.ts'");
 		expect(quietMode).toContain('onMount(() => quietModeStore.init())');
 		expect(quietMode).toContain('activeEffect="glow"');
 		expect(quietMode).not.toContain('<svg');

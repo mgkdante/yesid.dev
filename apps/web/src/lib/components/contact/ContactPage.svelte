@@ -6,28 +6,28 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { computeRotatedTitleSize } from '$lib/utils/rotated-title-fit';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { fillTemplate } from '$lib/utils/labels';
-	import { siteLabels } from '$lib/content';
-	import { persisted } from '$lib/state/persisted.svelte';
-	import { localeHandoff } from '$lib/state/locale-handoff.svelte';
-	import type { ContactContent } from '$lib/types';
-	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { TerminalChrome } from '$lib/components/brand';
-	import { Button } from '$lib/components/ui/button';
+	import { fillTemplate } from '#lib/utils/labels.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { localeHandoff } from '#lib/state/locale-handoff.svelte.ts';
+	import type { ContactContent } from '#lib/types.ts';
+	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
+	import { TerminalChrome } from '#lib/components/brand/index.ts';
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
-	import ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte';
-	import type { WeatherData } from '$lib/utils/weather';
-	import { fetchFreshWeather } from '$lib/utils/weather-refresh';
-	import { escapeHtml } from '$lib/utils/code-fences';
-	import { isDirectContactHref } from '$lib/utils/high-intent-links';
-	import { pressBounce } from '$lib/motion/actions';
-	import { trackAnalyticsEvent } from '$lib/analytics/client';
+	import ResizableHandle from '#lib/components/ui/resizable/resizable-handle.svelte';
+	import type { WeatherData } from '#lib/utils/weather.ts';
+	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
+	import { escapeHtml } from '#lib/utils/code-fences.ts';
+	import { isDirectContactHref } from '#lib/utils/high-intent-links.ts';
+	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
 	let {

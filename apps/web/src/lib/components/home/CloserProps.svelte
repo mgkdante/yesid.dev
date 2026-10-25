@@ -1,11 +1,6 @@
-<!--
-  CloserProps — Construction prop SVGs fetched and injected with 3D lighting.
-  Props are absolutely positioned at the bottom of the parent section.
-  display:contents wrapper preserves absolute positioning relative to parent.
--->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 
 	let wrapperEl: HTMLElement | undefined = $state(undefined);
 
@@ -14,57 +9,62 @@
 
 		const propFiles = ['sign', 'helmet', 'barricade', 'balise'] as const;
 		propFiles.forEach((name, idx) => {
-			const wrap = wrapperEl!.querySelector(`[data-prop="${name}"]`);
+			const wrap = (wrapperEl!).querySelector(`[data-prop="${name}"]`);
 			if (!wrap) return;
 			fetch(`/svg/graffiti/prop-${name}.svg`)
 				.then((response) => {
-					if (!response.ok) throw new Error('Decorative SVG response was not successful.');
-					return response.text();
+				if (!response.ok) throw new Error('Decorative SVG response was not successful.');
+				return response.text();
 				})
 				.then((text) => {
-					const parser = new DOMParser();
-					const doc = parser.parseFromString(text, 'image/svg+xml');
-					const svg = doc.querySelector('svg');
-					if (!svg) return;
-					svg.classList.add('prop-svg');
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(text, 'image/svg+xml');
+				const svg = doc.querySelector('svg');
+				if (!svg) return;
+				svg.classList.add('prop-svg');
 
-					// Add floodlight-style 3D lighting
-					const vb = svg.getAttribute('viewBox')?.split(' ').map(Number) ?? [0, 0, 100, 100];
-					const cx = vb[2] / 2;
-					const h = vb[3];
-					const defs = svg.querySelector('defs') || document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-					if (!svg.querySelector('defs')) svg.prepend(defs);
-					const filterId = `prop-light-${idx}`;
-					const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-					filter.setAttribute('id', filterId);
-					filter.setAttribute('x', '-50%');
-					filter.setAttribute('y', '-50%');
-					filter.setAttribute('width', '200%');
-					filter.setAttribute('height', '200%');
-					filter.innerHTML = `
+				// Add floodlight-style 3D lighting
+				const vb = svg.getAttribute('viewBox')?.split(' ').map(Number) ?? [0, 0, 100, 100];
+				const cx = vb[2] / 2;
+				const h = vb[3];
+				const defs = svg.querySelector('defs') || document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+				if (!svg.querySelector('defs')) svg.prepend(defs);
+				const filterId = `prop-light-${idx}`;
+				const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+				filter.setAttribute('id', filterId);
+				filter.setAttribute('x', '-50%');
+				filter.setAttribute('y', '-50%');
+				filter.setAttribute('width', '200%');
+				filter.setAttribute('height', '200%');
+				filter.innerHTML = `
 						<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="4" diffuseConstant="1.3" lighting-color="var(--accent)">
 							<feSpotLight x="${cx}" y="${h + 100}" z="50" pointsAtX="${cx}" pointsAtY="0" pointsAtZ="0" specularExponent="8" limitingConeAngle="45"/>
 						</feDiffuseLighting>
 						<feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.3" k2="0.2" k3="0" k4="0"/>
 					`;
-					defs.appendChild(filter);
-					const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-					contentGroup.setAttribute('filter', `url(#${filterId})`);
-					const children = Array.from(svg.children).filter(c => c.tagName !== 'defs');
-					children.forEach(c => contentGroup.appendChild(c));
-					svg.appendChild(contentGroup);
+				defs.appendChild(filter);
+				const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+				contentGroup.setAttribute('filter', `url(#${filterId})`);
+				const children = Array.from(svg.children).filter((c) => c.tagName !== 'defs');
+				children.forEach((c) => contentGroup.appendChild(c));
+				svg.appendChild(contentGroup);
 
-					wrap.appendChild(svg);
+				wrap.appendChild(svg);
 				})
 				.catch(() => {
 					console.warn(
 						'[closer-props] Decorative SVG fetch failed; keeping static prop layout.',
 					);
-				});
+			});
 		});
 	});
 </script>
 
+<!--
+  CloserProps — Construction prop SVGs fetched and injected with 3D lighting.
+  Props are absolutely positioned at the bottom of the parent section.
+  display:contents wrapper preserves absolute positioning relative to parent.
+-->
 <!-- display:contents preserves absolute positioning relative to parent section -->
 <div bind:this={wrapperEl} style:display="contents">
 	<div class="prop prop-sign" data-prop="sign" aria-hidden="true"></div>

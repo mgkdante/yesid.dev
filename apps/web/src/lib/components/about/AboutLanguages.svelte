@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { AboutLanguage } from '$lib/types';
-	import { asset } from '$lib/directus/assets';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutLanguage } from '#lib/types.ts';
+	import { asset } from '#lib/directus/assets.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 
 	const locale = getLocale();
 

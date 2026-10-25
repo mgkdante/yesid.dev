@@ -56,7 +56,7 @@ test.describe('reading position survives a locale switch (slice-34.4)', () => {
 		);
 
 		// Toggle the locale (the fingerpost preserves path+query+hash and sets
-		// data-sveltekit-noscroll, so the orchestrator owns scroll restore).
+		// data-sveltekit-reset="false", so the orchestrator owns scroll restore).
 		const toggle = page.getByTestId('language-toggle');
 		await expect(toggle).toBeVisible();
 		await toggle.click();
