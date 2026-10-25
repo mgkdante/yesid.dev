@@ -25,9 +25,10 @@ import {
 type Policy = { name: string; admin_access: boolean; app_access: boolean; roles: Array<{ role: string | null }>; _syncId: string };
 type Perm = { collection: string; action: string; policy: string };
 
-const UNRELATED_PERMISSION_COUNT = 709;
+const UNRELATED_PERMISSION_COUNT = 754;
 // slice-43.15 retires unused CMS collections and their explicit nav/stack fields.
-const UNRELATED_PERMISSION_SHA256 = 'fcdb22d1bd939e22ca1bdf73fa24a3973dba6169be18f41a52a8df3db8510bcb';
+// slice-43.22 adds 45 AI Editor rows to adopt the live grant extension.
+const UNRELATED_PERMISSION_SHA256 = 'c2f8492957452c33222cfef531103cffd304f5c23f8b40f33d3f2ff8302a95da';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 
