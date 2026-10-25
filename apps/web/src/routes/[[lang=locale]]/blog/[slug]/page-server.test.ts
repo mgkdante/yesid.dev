@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { BlogPost, BlockEditorDoc } from '#lib/types.js';
+import type { BlogPost, BlockEditorDoc } from '#lib/types.ts';
 
 const adapterMocks = vi.hoisted(() => ({
 	adapter: {
@@ -15,8 +15,8 @@ const adapterMocks = vi.hoisted(() => ({
 	},
 }));
 
-vi.mock('#lib/adapters/index.js', () => adapterMocks);
-vi.mock('#lib/server/code-highlights.js', () => ({ collectCodeHighlights: () => ({}) }));
+vi.mock('#lib/adapters/index.ts', () => adapterMocks);
+vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: () => ({}) }));
 
 import { load } from './+page.server';
 

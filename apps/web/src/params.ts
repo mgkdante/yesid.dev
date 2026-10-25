@@ -1,6 +1,5 @@
-// @migration-task 'src/params' contains entries that are not parameter matchers (ogType.test.ts) and was left in place - migrate them and delete the directory manually
 import { defineParams } from '@sveltejs/kit/params';
-import { isPrefixLocale } from '#lib/utils/locale-routing.js';
+import { isPrefixLocale } from '#lib/utils/prefix-locales.ts';
 
 // SvelteKit matcher for the optional [[lang=locale]] segment. Accepts ONLY
 // locales that are routable as prefixes (never 'en' — EN is unprefixed; a
@@ -12,7 +11,9 @@ const matchLocale = (value: string) => isPrefixLocale(value);
 // Restricts /og/[type]/... to known content types.
 const matchOgType = (value: string) => value === 'blog' || value === 'project';
 
+// Keep the locale parser's output a string: prerender entries use '' for the
+// omitted optional prefix. Runtime validation still accepts only FR/ES.
 export const params = defineParams({
-	locale: (param) => (matchLocale(param) ? param : undefined),
+	locale: (param): string | undefined => (matchLocale(param) ? param : undefined),
 	ogType: (param) => (matchOgType(param) ? param : undefined)
 });

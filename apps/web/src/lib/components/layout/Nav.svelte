@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { beforeNavigate, onNavigate, afterNavigate } from '$app/navigation';
-	import { wordmarkHover, magnetic } from '#lib/motion/actions/index.js';
-	import { navLinks as staticNavLinks, siteLabels } from '#lib/content/index.js';
-	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
-	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.js';
+	import { wordmarkHover, magnetic } from '#lib/motion/actions/index.ts';
+	import { navLinks as staticNavLinks, siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
 	import MenuOverlay from './MenuOverlay.svelte';
-	import type { NavLink } from '#lib/navigation/types.js';
-	import type { Locale, PageSeo } from '#lib/types.js';
+	import type { NavLink } from '#lib/navigation/types.ts';
+	import type { Locale, PageSeo } from '#lib/types.ts';
 	import ThemeToggle from './ThemeToggle.svelte';
 	import LanguageToggle from './LanguageToggle.svelte';
 

@@ -1,7 +1,15 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/svelte';
 import MenuOverlay from './MenuOverlay.svelte';
-import type { NavLink } from '#lib/navigation/types.js';
+import type { NavLink } from '#lib/navigation/types.ts';
+
+// Drain the dialog's deferred body-scroll restoration before happy-dom teardown.
+beforeEach(() => vi.useFakeTimers());
+afterEach(async () => {
+	cleanup();
+	await vi.runOnlyPendingTimersAsync();
+	vi.useRealTimers();
+});
 
 const links: readonly NavLink[] = [
 	{

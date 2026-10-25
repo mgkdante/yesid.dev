@@ -115,6 +115,9 @@ export default defineConfig({
 		],
 	},
 	test: {
+		// Vitest 5's disk cache does not restore Svelte's virtual CSS metadata.
+		// Compile components in-process so their styles remain available to Vite.
+		fsModuleCache: false,
 		// Two projects: "data" for pure logic tests (node, fast),
 		// "dom" for component/motion tests (happy-dom, full mocks).
 		// Split introduced in the 2026-04-08 testing-optimization pass

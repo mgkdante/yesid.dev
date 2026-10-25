@@ -29,17 +29,17 @@
 import { describe, expect, it, vi } from 'vitest';
 
 // composePageSeo calls asset(uuid) which needs PUBLIC_DIRECTUS_URL.
-// setup.data.ts mocks `$env/static/public` to `{}`; override here so the
+// setup.data.ts mocks `$app/env/public` to `{}`; override here so the
 // asset URL builder doesn't throw.
-vi.mock('$env/static/public', () => ({
+vi.mock('$app/env/public', () => ({
 	PUBLIC_DIRECTUS_URL: 'https://cms.yesid.dev',
 }));
 
 import { composePageSeo } from '../compose-page-seo';
 import { codeRouteSeoDefaults } from '../route-seo-defaults';
-import { siteMeta } from '#lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
-import type { Locale } from '#lib/types.js';
+import { siteMeta } from '#lib/content/site-meta.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
+import type { Locale } from '#lib/types.ts';
 
 describe('composePageSeo — parity across 7 static routes (#80b)', () => {
 	const STATIC_ROUTE_IDS = [

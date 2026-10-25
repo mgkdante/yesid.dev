@@ -3,17 +3,17 @@
   Metro timeline layout: station badge + vertical line | content card.
 -->
 <script lang="ts">
-	import type { BlogPost } from '#lib/types.js';
+	import type { BlogPost } from '#lib/types.ts';
 	import { boop, cursorGlow, magnetic } from '@yesid/motion/actions';
 	import { Badge } from '@yesid/ui/badge';
-	import { MetroStation } from '#lib/components/brand/index.js';
-	import { SvgIcon } from '#lib/components/brand/index.js';
-	import { Card } from '#lib/components/ui/card/index.js';
-	import { cn } from '#lib/utils/index.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { siteLabels } from '#lib/content/index.js';
+	import { MetroStation } from '#lib/components/brand/index.ts';
+	import { SvgIcon } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
+	import { cn } from '#lib/utils/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	const locale = getLocale();
 

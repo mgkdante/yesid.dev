@@ -2,26 +2,26 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
-	import type { BlogPost, Locale } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
+	import type { BlogPost, Locale } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 	import '#lib/styles/listing-header.css';
 	import '#lib/styles/listing-shell.css';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
-	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
 	import SearchInput from '#lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '#lib/components/shared/FilterSummary.svelte';
 	import ListingMobileFilters from '#lib/components/shared/ListingMobileFilters.svelte';
-	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.js';
+	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.js';
-	import { persisted } from '#lib/state/persisted.svelte.js';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
 
 	let {
 		posts,
@@ -114,13 +114,13 @@
 
 	function handleTagSelect(tag: string | null) {
 		flipState = captureFlipState();
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		if (tag) {
 			url.searchParams.set('tag', tag);
 		} else {
 			url.searchParams.delete('tag');
 		}
-		goto(url.toString(), { replaceState: true, noScroll: true });
+		gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
 	function handleLangSelect(lang: Locale | null) {

@@ -12,7 +12,7 @@
 // (s-maxage=86400) rather than invoking the lambda for every legacy hit. The
 // raw-Response detail lives in permanentRedirect().
 
-import { permanentRedirect } from '#lib/server/redirect.js';
+import { permanentRedirect } from '#lib/server/redirect.ts';
 
 // Stays on the lambda: permanentRedirect() carries CDN cache headers a
 // prerendered redirect entry would lose.

@@ -5,14 +5,14 @@
   Stop label always top-left.
 -->
 <script lang="ts">
-	import type { AboutInterest } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import type { AboutInterest } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.js';
-	import { Card } from '#lib/components/ui/card/index.js';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 
 	let { interests, stop, label }: { interests: readonly AboutInterest[]; stop: string; label: string } = $props();
 

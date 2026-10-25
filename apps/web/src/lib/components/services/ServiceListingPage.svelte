@@ -2,13 +2,13 @@
 	import { onMount, tick, untrack } from 'svelte';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
-	import type { Service, Project } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
+	import type { Service, Project } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { getLenis } from '@yesid/motion/utils/lenis';
 	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
@@ -60,7 +60,7 @@
 	async function handleTabSelect(id: string) {
 		activeId = id;
 		if (!browser) return;
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('station', id);
 		// Await the navigation BEFORE scrolling. replaceState keeps the tab-click out
 		// of the history stack (a scroll position, not a destination). On touch devices
@@ -68,7 +68,7 @@
 		// goto settled cancelled it mid-animation: the tab highlighted but the page
 		// never moved. Desktop survived because Lenis owns its own scroll. Awaiting goto
 		// fixes the mobile tab-scroll.
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 		scrollToStation(id);
 	}
 

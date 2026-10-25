@@ -36,34 +36,34 @@ import {
 	getFeaturedProjects,
 	getPublicProjects,
 	getProjectsByService,
-} from '#lib/projects/static-helpers.js';
+} from '#lib/projects/static-helpers.ts';
 import {
 	getServiceById,
 	getVisibleServices,
 	getAdjacentServices,
-} from '#lib/services/static-helpers.js';
-import { blogPosts } from '#lib/content/blog';
-import { blogBodies } from '#lib/content/blog-bodies';
+} from '#lib/services/static-helpers.ts';
+import { blogPosts } from '#lib/content/blog.ts';
+import { blogBodies } from '#lib/content/blog-bodies.ts';
 import {
 	getPostBySlug,
 	getPostsByCategory,
 	getSvgContent,
 	getSvgContentsForPosts,
-} from '#lib/blog/static-helpers.js';
-import { siteMeta } from '#lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
-import { routeSeoOverrides } from '#lib/content/route-seo';
+} from '#lib/blog/static-helpers.ts';
+import { siteMeta } from '#lib/content/site-meta.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
+import { routeSeoOverrides } from '#lib/content/route-seo.ts';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import { errorSeoFallback } from './error-seo-fallback';
 import { routeSeoFactories } from './route-seo-factories';
 import { composePageSeo } from './compose-page-seo';
-import type { SiteSeoDefaults } from '#lib/types.js';
-import { PageSeoSchema, type PageSeo } from '#lib/schemas/seo.js';
+import type { SiteSeoDefaults } from '#lib/types.ts';
+import { PageSeoSchema, type PageSeo } from '#lib/schemas/seo.ts';
 import { z } from 'zod';
 import {
 	parsePort,
 	HeroDataSchema,
-} from '#lib/schemas/index.js';
+} from '#lib/schemas/index.ts';
 import {
 	ProjectSchema,
 	ServiceSchema,
@@ -80,7 +80,7 @@ import {
 	type BlogPageContent,
 	type ProjectsPageContent,
 } from '@repo/shared/schemas';
-import type { Locale } from '#lib/types.js';
+import type { Locale } from '#lib/types.ts';
 import { BlockEditorDocSchema } from '@repo/shared';
 import {
 	heroContent,
@@ -91,17 +91,17 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-} from '#lib/content/site-content';
-import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '#lib/content/nav';
-import { legalPages } from '#lib/content/legal-pages';
+} from '#lib/content/site-content.ts';
+import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '#lib/content/nav.ts';
+import { legalPages } from '#lib/content/legal-pages.ts';
 import { LegalPageSchema } from '@repo/shared';
-import { errorPagesById } from '#lib/content/error-pages';
-import { aboutPageContent } from '#lib/content/about-page';
-import { contactContent } from '#lib/content/contact-page';
-import { blogPageContent } from '#lib/content/blog-page';
-import { projectsPageContent } from '#lib/content/projects-page';
-import { INITIAL_HERO_DATA } from '#lib/live/index.js';
-import { morphShapes } from '#lib/content/morph-shapes';
+import { errorPagesById } from '#lib/content/error-pages.ts';
+import { aboutPageContent } from '#lib/content/about-page.ts';
+import { contactContent } from '#lib/content/contact-page.ts';
+import { blogPageContent } from '#lib/content/blog-page.ts';
+import { projectsPageContent } from '#lib/content/projects-page.ts';
+import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
+import { morphShapes } from '#lib/content/morph-shapes.ts';
 import { MorphShapeSchema } from '@repo/shared';
 // Slice 18d Phase 8 introduced this as the static fallback for
 // content.metroSvg; since slice-27.2 (static-only data path — the directus
@@ -109,7 +109,7 @@ import { MorphShapeSchema } from '@repo/shared';
 // the live source.
 import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
 import { assetIdForOrUndefined } from '@repo/shared';
-import type { Project } from '#lib/types.js';
+import type { Project } from '#lib/types.ts';
 
 import type { ContentAdapter } from './types';
 
@@ -120,6 +120,13 @@ import type { ContentAdapter } from './types';
 // `withImageUuid(filename → UUID)` shims are gone; the static array IS the
 // runtime shape now.
 // ---------------------------------------------------------------------------
+
+/** Synchronous so Kit can use the error content during SSR rendering failures. */
+export function resolveStaticErrorPage(statusCode?: number) {
+	const specific = statusCode !== undefined ? errorPagesById[statusCode] : undefined;
+	const fallback = errorPagesById[0] ?? errorPageContent;
+	return parsePort('content.errorPage', ErrorPageContentSchema, specific ?? fallback);
+}
 
 export const staticAdapter: ContentAdapter = {
 	projects: {
@@ -174,7 +181,7 @@ export const staticAdapter: ContentAdapter = {
 			locale: Locale,
 			params?: Record<string, string>,
 		): Promise<PageSeo> => {
-			const { adapter } = await import('#lib/adapters/index.js');
+			const { adapter } = await import('#lib/adapters/index.ts');
 			const dynamicFactory = routeSeoFactories[routeId];
 			if (dynamicFactory) {
 				return PageSeoSchema.parse(await dynamicFactory({
@@ -225,12 +232,7 @@ export const staticAdapter: ContentAdapter = {
 		// slice-27.1 FIX A: mirror directus's _or: [status_code=N, status_code=0]
 		// semantics — look up the specific status code first, then fall back to the
 		// 0-row (generic fallback). errorPagesById is keyed by status_code (number).
-		errorPage: async (statusCode?: number) => {
-			const specific = statusCode !== undefined ? errorPagesById[statusCode] : undefined;
-			const fallback = errorPagesById[0] ?? errorPageContent;
-			const chosen = specific ?? fallback;
-			return parsePort('content.errorPage', ErrorPageContentSchema, chosen);
-		},
+		errorPage: async (statusCode?: number) => resolveStaticErrorPage(statusCode),
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		// slice-27.1 T4: source the generated CMS modules (blog-page.ts /

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { BlockEditorDoc, ImageBlock } from '@repo/shared';
-	import { assetImage, type AssetImageSource } from '#lib/directus/assets.js';
-	import { siteLabels } from '#lib/content/index.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.js';
+	import { assetImage, type AssetImageSource } from '#lib/directus/assets.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 

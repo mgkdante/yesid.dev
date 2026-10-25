@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
 	import { browser } from '$app/env';
-	import { resolveLocale } from '#lib/utils/index.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { resolveLocale } from '#lib/utils/index.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { fillTemplate } from '#lib/utils/labels.js';
-	import { siteLabels } from '#lib/content/index.js';
+	import { fillTemplate } from '#lib/utils/labels.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 
-	import { morphHover, pressBounce, cursorGlow, cardParallax } from '#lib/motion/actions/index.js';
-	import { gsap, loadDrawSVG } from '#lib/motion/utils/gsap.js';
-	import { SectionHeading } from '#lib/components/brand/index.js';
-	import type { Service, ServicesGridContent } from '#lib/types.js';
+	import { morphHover, pressBounce, cursorGlow, cardParallax } from '#lib/motion/actions/index.ts';
+	import { gsap, loadDrawSVG } from '#lib/motion/utils/gsap.ts';
+	import { SectionHeading } from '#lib/components/brand/index.ts';
+	import type { Service, ServicesGridContent } from '#lib/types.ts';
 
 	// slice-28.5 (#124): services arrive as a prop from the home
 	// +page.server.ts load (repository -> adapter), replacing the previous

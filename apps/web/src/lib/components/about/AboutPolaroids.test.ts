@@ -15,8 +15,8 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { flushSync } from 'svelte';
 import { render, screen, cleanup, fireEvent } from '@testing-library/svelte';
 import AboutPolaroids from './AboutPolaroids.svelte';
-import { aboutPageContent } from '#lib/content/about-page';
-import { captureEntries, applyEntries } from '#lib/state/locale-handoff.svelte.js';
+import { aboutPageContent } from '#lib/content/about-page.ts';
+import { captureEntries, applyEntries } from '#lib/state/locale-handoff.svelte.ts';
 
 const polaroids = aboutPageContent.identity.polaroids;
 const total = polaroids.length;

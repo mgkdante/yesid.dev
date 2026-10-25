@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { siteLabels } from '#lib/content/index.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { buildMermaidThemeVariables } from '#lib/utils/mermaid-theme.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { buildMermaidThemeVariables } from '#lib/utils/mermaid-theme.ts';
 
 	let { code }: { code: string } = $props();
 

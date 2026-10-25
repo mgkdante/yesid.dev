@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
 	import type { ParagraphBlock } from '@repo/shared';
-	import { escapeHtml } from '#lib/utils/code-fences.js';
+	import { escapeHtml } from '#lib/utils/code-fences.ts';
 
 	let { data }: { data: ParagraphBlock['data'] } = $props();
 

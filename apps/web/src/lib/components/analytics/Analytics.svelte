@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import { trackPageview } from '#lib/analytics/client.js';
+	import { trackPageview } from '#lib/analytics/client.ts';
 	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
-	import { siteLabels } from '#lib/content/index.js';
-	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.js';
-	import { homeIntroStore } from '#lib/state/home-intro.svelte.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
+	import { homeIntroStore } from '#lib/state/home-intro.svelte.ts';
 	import { createPathnamePageviewTracker } from '@yesid/analytics/client';
 	import AnalyticsConsent from './AnalyticsConsent.svelte';
-	import type { Locale } from '#lib/types.js';
+	import type { Locale } from '#lib/types.ts';
 
 	let { locale, isHome = false }: { locale: Locale; isHome?: boolean } = $props();
 	let currentUrl = $state<URL | null>(null);

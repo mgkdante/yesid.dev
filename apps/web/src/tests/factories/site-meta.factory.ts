@@ -6,7 +6,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { SiteMeta } from '#lib/types.js';
+import type { SiteMeta } from '#lib/types.ts';
 
 const localizedString = () => ({
 	en: faker.lorem.sentence(),

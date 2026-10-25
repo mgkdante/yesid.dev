@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { aboutPageContent } from '#lib/content/about-page';
-import { blogBodies } from '#lib/content/blog-bodies';
-import { mirroredMediaAssets } from '#lib/content/media-assets';
-import { projects } from '#lib/content/projects';
-import { routeSeoOverrides } from '#lib/content/route-seo';
-import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
+import { aboutPageContent } from '#lib/content/about-page.ts';
+import { blogBodies } from '#lib/content/blog-bodies.ts';
+import { mirroredMediaAssets } from '#lib/content/media-assets.ts';
+import { projects } from '#lib/content/projects.ts';
+import { routeSeoOverrides } from '#lib/content/route-seo.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
 
 describe('generated media asset mirror coverage', () => {
 	it('mirrors every CMS media UUID currently emitted into visitor-rendered content', () => {

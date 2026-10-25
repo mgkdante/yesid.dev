@@ -11,7 +11,7 @@
 // before the reflow.
 //
 // Usage:
-//   import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/index.js';
+//   import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/index.ts';
 //   // before filter changes:
 //   flipState = captureFlipState();
 //   // after filter-derived list has rendered:
@@ -19,7 +19,7 @@
 
 import { tick } from 'svelte';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-import { gsap } from '#lib/motion/utils/gsap.js';
+import { gsap } from '#lib/motion/utils/gsap.ts';
 // Flip is imported directly so ensureFlipRegistered() registers the same
 // symbol used by Flip.getState() / Flip.from().
 //

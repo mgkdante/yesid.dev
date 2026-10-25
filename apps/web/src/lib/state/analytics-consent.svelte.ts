@@ -1,6 +1,6 @@
 import { browser } from '$app/env';
 import { writable, type Readable } from 'svelte/store';
-import { YESID_ANALYTICS_PRESET } from '#lib/analytics/preset.js';
+import { YESID_ANALYTICS_PRESET } from '#lib/analytics/preset.ts';
 
 export const ANALYTICS_CONSENT_KEY = YESID_ANALYTICS_PRESET.storageKeys.consent;
 export const ANALYTICS_PREFERENCES_OPEN_KEY =

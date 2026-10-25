@@ -1,5 +1,5 @@
-import type { Service } from '#lib/types.js';
-import { services } from '#lib/content/services';
+import type { Service } from '#lib/types.ts';
+import { services } from '#lib/content/services.ts';
 
 export function getServiceById(id: string): Service | undefined {
 	return services.find((service) => service.id === id);

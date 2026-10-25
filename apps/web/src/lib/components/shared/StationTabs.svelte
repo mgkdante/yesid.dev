@@ -9,14 +9,14 @@
   Active tab gets dark bottom border, bold label. Inactive tabs fade by distance.
 -->
 <script lang="ts">
-	import type { Service } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
-	import { siteLabels } from '#lib/content/index.js';
+	import type { Service } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import * as Tabs from '@yesid/ui/tabs';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.js';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
 	import { onMount, onDestroy } from 'svelte';
 
 	// StationTabs lives inside remounting pages ({#key pathname} in the root

@@ -6,14 +6,14 @@
 	import { onMount } from 'svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
 	import HeroDotAnnotation, { getLettering } from './HeroDotAnnotation.svelte';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { trackAnalyticsEvent } from '#lib/analytics/client.js';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
 	const locale = getLocale();
-	import { pressBounce } from '#lib/motion/actions/index.js';
-	import type { HeroData } from '#lib/live/index.js';
+	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import type { HeroData } from '#lib/live/index.ts';
 	let {
 		headlineLine1,
 		headlineLine2,

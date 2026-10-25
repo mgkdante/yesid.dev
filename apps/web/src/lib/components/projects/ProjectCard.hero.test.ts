@@ -5,9 +5,9 @@ import { join } from 'node:path';
 import { cwd } from 'node:process';
 import ProjectCard from './ProjectCard.svelte';
 import { projectFactory } from '../../../tests/factories';
-import { themeStore } from '#lib/stores/theme.svelte.js';
+import { themeStore } from '#lib/stores/theme.svelte.ts';
 
-vi.mock('#lib/directus/assets.js', () => ({
+vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, preset?: string) => ({
@@ -182,7 +182,7 @@ describe('ProjectCard hero media', () => {
 			'utf8',
 		);
 
-		expect(source).toContain("from '#lib/utils/theme-media'");
+		expect(source).toContain("from '#lib/utils/theme-media.ts'");
 		expect(source).not.toContain('new MutationObserver');
 	});
 

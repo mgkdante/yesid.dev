@@ -5,15 +5,15 @@
   All text from data layer via props.
 -->
 <script lang="ts">
-	import type { AboutIdentity } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import type { AboutIdentity } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.js';
-	import { Card } from '#lib/components/ui/card/index.js';
-	import { mediaVariants } from '#lib/content/media-variants';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
+	import { mediaVariants } from '#lib/content/media-variants.ts';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 

@@ -1,8 +1,8 @@
 import { cleanup, render } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import HeroBanner from './HeroBanner.svelte';
-import { heroContent, heroAnimContent } from '#lib/content/site-content';
-import { INITIAL_HERO_DATA, LIVE_KPIS_URL, LIVE_POLL_MS } from '#lib/live/index.js';
+import { heroContent, heroAnimContent } from '#lib/content/site-content.ts';
+import { INITIAL_HERO_DATA, LIVE_KPIS_URL, LIVE_POLL_MS } from '#lib/live/index.ts';
 
 afterEach(() => {
 	cleanup();

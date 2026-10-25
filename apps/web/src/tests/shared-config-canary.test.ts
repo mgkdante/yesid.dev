@@ -6,8 +6,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-// @migration-task svelte.config was removed; switch to `import { loadConfig } from '@sveltejs/load-config'` to read your config
-import webConfig from '../../svelte.config.js';
+import { loadWebConfig } from './load-web-config';
+
+const webConfig = await loadWebConfig();
 
 const REPOSITORY_ROOT = fileURLToPath(new URL('../../../../', import.meta.url));
 const CONFIG_URL =
@@ -34,7 +35,9 @@ const TSCONFIGS = [
 	[
 		'apps/web/tsconfig.json',
 		{
-			extends: ['./.svelte-kit/tsconfig.json', '@yesid/config/tsconfig/svelte-kit.json'],
+			extends: ['$app/tsconfig', '@yesid/config/tsconfig/svelte-kit.json'],
+			compilerOptions: { rewriteRelativeImportExtensions: false },
+			include: ['src', 'vite.config.ts', 'playwright.config.ts', 'tests'],
 		},
 	],
 	[
@@ -209,11 +212,11 @@ describe('yesid.dev shared-config canary', () => {
 	});
 
 	it('uses projectRunes while preserving the local Vercel and prerender policy', () => {
-		const source = text('apps/web/svelte.config.js');
+		const source = text('apps/web/vite.config.ts');
 		expect(source).toContain("from '@yesid/config/svelte/project-runes.js'");
 		expect(source).not.toContain("from 'node:path'");
 		expect(source).toMatch(/adapter:\s*adapter\(\{\s*runtime:\s*'nodejs22\.x'\s*\}\)/u);
-		expect(webConfig.kit?.prerender?.entries).toEqual(['*', '/llms.txt', '/llms-full.txt']);
+		expect(webConfig.prerender?.entries).toEqual(['*', '/llms.txt', '/llms-full.txt']);
 
 		const runes = webConfig.compilerOptions?.runes;
 		expect(runes).toBeTypeOf('function');

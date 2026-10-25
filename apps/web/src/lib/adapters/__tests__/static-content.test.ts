@@ -11,8 +11,8 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { staticAdapter } from '#lib/adapters/static.js';
-import { errorPagesById } from '#lib/content/error-pages';
+import { staticAdapter, resolveStaticErrorPage } from '#lib/adapters/static.ts';
+import { errorPagesById } from '#lib/content/error-pages.ts';
 import { ErrorPageContentSchema } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
@@ -20,6 +20,12 @@ import { ErrorPageContentSchema } from '@repo/shared';
 // ---------------------------------------------------------------------------
 
 describe('staticAdapter.content.errorPage — per-statusCode lookup (FIX A)', () => {
+	it.each([undefined, 0, 404, 500, 9999])('sync lookup and async port agree for %s', async (status) => {
+		const result = resolveStaticErrorPage(status);
+		expect(result).not.toBeInstanceOf(Promise);
+		expect(result).toEqual(await staticAdapter.content.errorPage(status ?? 0));
+	});
+
 	it('errorPagesById has a 0-fallback row', () => {
 		expect(errorPagesById[0]).toBeDefined();
 		expect(ErrorPageContentSchema.safeParse(errorPagesById[0]).success).toBe(true);

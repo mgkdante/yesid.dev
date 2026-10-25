@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
-	import type { ManifestoContent } from '#lib/types.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import type { ManifestoContent } from '#lib/types.ts';
 
 	// slice-18i Phase 7C: manifestoContent now flows as a prop from the server load.
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { createCrescendoScrub } from '#lib/motion/scrubs/index.js';
-	import { boop } from '#lib/motion/actions/index.js';
+	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
+	import { boop } from '#lib/motion/actions/index.ts';
 	import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
 	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';

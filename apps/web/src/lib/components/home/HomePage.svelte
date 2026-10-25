@@ -10,19 +10,19 @@
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { SectionHeading } from '#lib/components/brand/index.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { ScrollTrigger } from '#lib/motion/utils/gsap.js';
-	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.js';
+	import { SectionHeading } from '#lib/components/brand/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.ts';
 	import {
 		registerScrollContext,
 		lenisAwareScrollTo,
 		localeHandoff,
-	} from '#lib/state/locale-handoff.svelte.js';
+	} from '#lib/state/locale-handoff.svelte.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -36,8 +36,8 @@
 		Service,
 		SiteMeta,
 		BlogPost,
-	} from '#lib/types.js';
-	import type { HeroData } from '#lib/live/index.js';
+	} from '#lib/types.ts';
+	import type { HeroData } from '#lib/live/index.ts';
 
 	interface Props {
 		metroSvg: string;

@@ -1,6 +1,6 @@
-import { adapter } from '#lib/adapters/index.js';
-import type { Locale } from '#lib/types.js';
-import { resolveLocale } from '#lib/utils/locale.js';
+import { adapter } from '#lib/adapters/index.ts';
+import type { Locale } from '#lib/types.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
 
 export type OgType = 'blog' | 'project';
 

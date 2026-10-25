@@ -11,9 +11,9 @@
 	import CollapsibleContent from '#lib/components/ui/collapsible/collapsible-content.svelte';
 	import { ChevronToggle } from '@yesid/ui/brand';
 	import { Badge } from '@yesid/ui/badge';
-	import { Card } from '#lib/components/ui/card/index.js';
-	import { persisted } from '#lib/state/persisted.svelte.js';
-	import { quietModeStore } from '#lib/state/quiet-mode.svelte.js';
+	import { Card } from '#lib/components/ui/card/index.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { quietModeStore } from '#lib/state/quiet-mode.svelte.ts';
 
 	let {
 		title,

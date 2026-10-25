@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const getPostBySlugMock = vi.fn();
 const getProjectBySlugMock = vi.fn();
 
-vi.mock('#lib/adapters/index.js', () => ({
+vi.mock('#lib/adapters/index.ts', () => ({
   adapter: {
     blog: {
       bySlug: (...args: unknown[]) => getPostBySlugMock(...args),

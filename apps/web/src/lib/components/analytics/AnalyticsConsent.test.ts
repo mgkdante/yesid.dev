@@ -85,11 +85,11 @@ const controlsMock = vi.hoisted(() => {
 	};
 });
 
-vi.mock('#lib/state/analytics-consent.svelte.js', () => ({
+vi.mock('#lib/state/analytics-consent.svelte.ts', () => ({
 	analyticsConsentStore: consentMock.store,
 }));
 
-vi.mock('#lib/content/index.js', () => ({
+vi.mock('#lib/content/index.ts', () => ({
 	siteLabels: {
 		ui: {
 			analyticsConsent: {

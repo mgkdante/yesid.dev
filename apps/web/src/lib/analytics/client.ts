@@ -1,10 +1,10 @@
 import { browser } from '$app/env';
 import { get } from 'svelte/store';
-import { siteLabels } from '#lib/content/index.js';
+import { siteLabels } from '#lib/content/index.ts';
 import {
 	analyticsConsentStore,
 	type AnalyticsConsentState,
-} from '#lib/state/analytics-consent.svelte.js';
+} from '#lib/state/analytics-consent.svelte.ts';
 import {
 	createAnalyticsClient,
 	type AnalyticsClient,

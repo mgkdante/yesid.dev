@@ -14,8 +14,8 @@
   presentation div — SvgIcon inside is aria-hidden too).
 -->
 <script lang="ts">
-	import { cn } from '#lib/utils/index.js';
-	import { SvgIcon, CornerMarks } from '#lib/components/brand/index.js';
+	import { cn } from '#lib/utils/index.ts';
+	import { SvgIcon, CornerMarks } from '#lib/components/brand/index.ts';
 
 	export interface ServiceSvgPanelProps {
 		/** Raw SVG content string */

@@ -13,10 +13,10 @@
 	// Slice 15a resolved the SEO half: root +layout.ts falls back to
 	// getPageSeo('/__error', locale), so 404s ship noindex,nofollow server-side.
 	import { page } from '$app/state';
-	import { errorPageContent as staticErrorPageContent, siteLabels } from '#lib/content/index.js';
-	import type { ErrorPageContent } from '#lib/navigation/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { pathLocale, localizeHref } from '#lib/utils/locale-routing.js';
+	import { errorPageContent as staticErrorPageContent, siteLabels } from '#lib/content/index.ts';
+	import type { ErrorPageContent } from '#lib/navigation/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { pathLocale, localizeHref } from '#lib/utils/locale-routing.ts';
 	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import { SectionLabel } from '@yesid/ui/brand';

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import type { AboutContent } from '#lib/types.js';
+	import type { AboutContent } from '#lib/types.ts';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';

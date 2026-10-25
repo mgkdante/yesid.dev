@@ -21,29 +21,29 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick, untrack } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { homeIntroStore } from '#lib/state/home-intro.svelte.js';
+	import { homeIntroStore } from '#lib/state/home-intro.svelte.ts';
 	import {
 		initScrollTriggerConfig,
 		loadDrawSVG,
 		loadCustomEase,
 		ScrollTrigger,
 		gsap,
-	} from '#lib/motion/utils/gsap.js';
-	import { createHeroTimeline } from '#lib/motion/scrubs/index.js';
-	import { createTypewriter } from '#lib/motion/utils/heroTypewriter.js';
+	} from '#lib/motion/utils/gsap.ts';
+	import { createHeroTimeline } from '#lib/motion/scrubs/index.ts';
+	import { createTypewriter } from '#lib/motion/utils/heroTypewriter.ts';
 	import { isViewportAtMost } from '@yesid/motion/utils/device';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 	import {
 		fetchLiveKpis,
 		generateHeroData,
 		startLiveKpiPolling,
 		type HeroData,
 		type LiveHeroSnapshot,
-	} from '#lib/live/index.js';
-	import type { HeroContent, HeroAnimContent } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	} from '#lib/live/index.ts';
+	import type { HeroContent, HeroAnimContent } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import MetroNetwork from '#lib/motion/svg/MetroNetwork.svelte';
