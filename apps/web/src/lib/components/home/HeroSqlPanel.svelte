@@ -4,8 +4,8 @@
   The SQL query itself is static (always the same analysis query).
 -->
 <script lang="ts">
-  import type { HeroQueryRow } from '$lib/live';
-  import { StatusDot } from '$lib/components/brand';
+  import type { HeroQueryRow } from '#lib/live/index.ts';
+  import { StatusDot } from '#lib/components/brand/index.ts';
   import TransitInfoLink from './TransitInfoLink.svelte';
 
   interface Props {

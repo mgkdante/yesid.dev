@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { BlogEntryRail as BlogEntryRailContent } from '@repo/shared';
-	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { localizeHref } from '$lib/utils/locale-routing';
+	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { siteMeta } from '$lib/content/site-meta';
+import { siteMeta } from '#lib/content/site-meta.ts';
 import { adapter } from './index';
 import {
 	BRAND_LOGO,
@@ -16,8 +16,8 @@ import {
 	buildCreativeWorkNode,
 	buildProfessionalServiceNode,
 } from './jsonld';
-import type { BlogPost } from '$lib/types';
-import { canonicalFor } from '$lib/utils/seo-defaults';
+import type { BlogPost } from '#lib/types.ts';
+import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 
 describe('PERSON_ID / WEBSITE_ID constants', () => {
 	it('PERSON_ID resolves against SITE_HOST with #person fragment', () => {

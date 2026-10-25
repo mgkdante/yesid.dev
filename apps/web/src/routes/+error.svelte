@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import ErrorIllustration from '$lib/components/shared/ErrorIllustration.svelte';
-	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
+	import ErrorIllustration from '#lib/components/shared/ErrorIllustration.svelte';
+	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
 	// slice-18i Phase 5 Task 5.4: error page copy is sourced from
 	// $page.data.errorPage (pre-resolved by +layout.server.ts via
 	// adapter.content.errorPage(0) — status 0 = generic-fallback row, served
@@ -12,27 +12,25 @@
 	//
 	// Slice 15a resolved the SEO half: root +layout.ts falls back to
 	// getPageSeo('/__error', locale), so 404s ship noindex,nofollow server-side.
-	import { page } from '$app/stores';
-	import { errorPageContent as staticErrorPageContent, siteLabels } from '$lib/content';
-	import type { ErrorPageContent } from '$lib/navigation/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { pathLocale, localizeHref } from '$lib/utils/locale-routing';
+	import { page } from '$app/state';
+	import { errorPageContent as staticErrorPageContent, siteLabels } from '#lib/content/index.ts';
+	import type { ErrorPageContent } from '#lib/navigation/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { pathLocale, localizeHref } from '#lib/utils/locale-routing.ts';
 	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import { SectionLabel } from '@yesid/ui/brand';
 
 	// slice-28.6: error pages can render under /fr/* — derive the locale from
 	// the URL (error renders carry no params). Defensive optional chain: the
 	// error page is the last surface that may throw (and bare test renders
 	// provide no $page.url).
-	const locale = $derived(pathLocale($page.url?.pathname ?? '/'));
+	const locale = $derived(pathLocale(page.url?.pathname ?? '/'));
 
 	// Prefer the status-specific row resolved by handleError (stashed on
 	// $page.error.cmsErrorPage). Fall back to the layout's status=0 fallback
 	// row ($page.data.errorPage), then to the static inline fixture.
-	const errorPage: ErrorPageContent = $derived(
-		$page.error?.cmsErrorPage ?? $page.data?.errorPage ?? staticErrorPageContent,
-	);
+	const errorPage: ErrorPageContent = $derived(page.error?.cmsErrorPage ?? page.data?.errorPage ?? staticErrorPageContent);
 
 	const label = $derived(resolveLocale(errorPage.label, locale));
 	const heading = $derived(resolveLocale(errorPage.heading, locale));
@@ -40,7 +38,7 @@
 	const terminalLine = $derived(errorPage.terminalLine);
 	const suggestions = $derived(
 		errorPage.suggestions.map((s) => ({
-			label: resolveLocale(s.label, locale),
+		label: resolveLocale(s.label, locale),
 			href: localizeHref(s.href, locale),
 		})),
 	);
@@ -110,8 +108,8 @@
 			<span style="color: var(--primary);">$</span>
 			<span style="color: var(--secondary-foreground);"> route </span>
 			<span style="color: var(--secondary-foreground);">--status</span>
-			<span style="color: var(--primary);"> {$page.status}</span>
-			<span style="color: var(--muted-foreground);"> {resolveLocale(siteLabels.ui.errorStatusNote, locale) || '// requested path not in service'}</span>
+			<span style="color: var(--primary);">{page.status}</span>
+			<span style="color: var(--muted-foreground);">{resolveLocale(siteLabels.ui.errorStatusNote, locale) || '// requested path not in service'}</span>
 			{#if mounted && !$prefersReducedMotion}
 				<TerminalCursor />
 			{/if}

@@ -65,7 +65,7 @@ describe('export module registry', () => {
 		expect(routeSeo).toBeDefined();
 		expect(routeSeo?.imports).toContainEqual({
 			symbols: ['RouteSeoOverride'],
-			from: '$lib/types',
+			from: '#lib/types.ts',
 			typeOnly: true,
 		});
 		expect(routeSeo?.exports).toContainEqual({
@@ -122,12 +122,12 @@ describe('export module registry', () => {
 		const errors = configs.find((entry) => basename(entry.filePath) === 'error-pages.ts');
 		expect(nav?.imports).toContainEqual({
 			symbols: ['NavLink', 'MenuItem', 'ErrorPageContent'],
-			from: '$lib/navigation/types',
+			from: '#lib/navigation/types.ts',
 			typeOnly: true,
 		});
 		expect(errors?.imports).toContainEqual({
 			symbols: ['ErrorPageContent'],
-			from: '$lib/navigation/types',
+			from: '#lib/navigation/types.ts',
 			typeOnly: true,
 		});
 	});

@@ -4,26 +4,26 @@ import type { RequestEvent } from '@sveltejs/kit';
 const loadOgTitleMock = vi.fn();
 const renderOgPngMock = vi.fn();
 
-vi.mock('$lib/og/load-title', () => ({
+vi.mock('#lib/og/load-title.ts', () => ({
   loadOgTitle: (...args: unknown[]) => loadOgTitleMock(...args),
 }));
-vi.mock('$lib/og/render', () => ({
+vi.mock('#lib/og/render.ts', () => ({
   renderOgPng: (...args: unknown[]) => renderOgPngMock(...args),
 }));
 // Avoid loading real fonts during endpoint tests.
-vi.mock('$lib/og/template', () => ({
+vi.mock('#lib/og/template.ts', () => ({
   buildOgTree: () => ({ type: 'div', props: { children: [] } }),
 }));
 // Stub fonts to prevent the eager-load module-init failure path.
-vi.mock('$lib/og/fonts', () => ({
+vi.mock('#lib/og/fonts.ts', () => ({
   getOgFonts: () => [],
 }));
 
-import { blogPosts } from '$lib/content/blog';
-import { projects } from '$lib/content/projects';
-import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+import { blogPosts } from '#lib/content/blog.ts';
+import { projects } from '#lib/content/projects.ts';
+import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { entries, GET } from './+server';
-import * as registry from '$lib/utils/page-registry';
+import * as registry from '#lib/utils/page-registry.ts';
 
 function makeEvent(params: { type: string; slug: string }): RequestEvent {
   const url = new URL(`http://localhost/og/${params.type}/${params.slug}.png`);

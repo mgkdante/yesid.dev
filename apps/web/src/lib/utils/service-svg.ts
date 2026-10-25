@@ -16,10 +16,10 @@
 // protection, works on every adapter.
 //
 // Services are threaded in as a parameter rather than imported from
-// `$lib/content/services` directly — closes a 17b seam leak flagged by the
+// `#lib/content/services.ts` directly — closes a 17b seam leak flagged by the
 // 17c pre-implementation audit so every data read flows through the adapter.
 
-import type { Service } from '$lib/types';
+import type { Service } from '#lib/types.ts';
 
 // Raw SVG sources, resolved at build time. Keys are root-relative paths
 // ('/static/svg/services/service-database.svg'). publicDir files ARE part of

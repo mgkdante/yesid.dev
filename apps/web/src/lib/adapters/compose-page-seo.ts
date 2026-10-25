@@ -23,9 +23,9 @@ import type {
 	RouteSeoOverride,
 	SiteMeta,
 	SiteSeoDefaults,
-} from '$lib/types';
-import { canonicalFor } from '$lib/utils/seo-defaults';
-import { asset } from '$lib/directus/assets';
+} from '#lib/types.ts';
+import { canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { asset } from '#lib/directus/assets.ts';
 import type { CodeRouteSeoDefaults } from './route-seo-defaults';
 
 /** Append the brand suffix to every locale present in `body` (slice-28.6). */

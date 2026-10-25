@@ -1,8 +1,8 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import BlogRow from './BlogRow.svelte';
-import type { BlogPost } from '$lib/types';
+import type { BlogPost } from '#lib/types.ts';
 
 // Minimal BlogPost fixture for testing — only required fields populated
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({

@@ -5,10 +5,10 @@ const analyticsMocks = vi.hoisted(() => ({
 	trackAnalyticsEvent: vi.fn(),
 }));
 
-vi.mock('$lib/analytics/client', () => analyticsMocks);
+vi.mock('#lib/analytics/client.ts', () => analyticsMocks);
 
 import HeroTextContent from './HeroTextContent.svelte';
-import { generateHeroData } from '$lib/live';
+import { generateHeroData } from '#lib/live/index.ts';
 
 beforeEach(() => {
 	analyticsMocks.trackAnalyticsEvent.mockClear();

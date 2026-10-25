@@ -1,6 +1,6 @@
 <!-- Product invariant: conversion styling stays local; see vendor/design/ui/README.md#button. -->
 <script lang="ts" module>
-	import { cn, twMergeConfig, type WithElementRef } from "$lib/utils";
+	import { cn, twMergeConfig, type WithElementRef } from "#lib/utils/index.ts";
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from "svelte/elements";
 	import { type VariantProps, tv } from "tailwind-variants";
 
