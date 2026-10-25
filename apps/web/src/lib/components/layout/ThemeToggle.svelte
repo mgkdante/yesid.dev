@@ -5,10 +5,10 @@
   Colors are tokens; the lit lens glows with the theme's own primary.
 -->
 <script lang="ts">
-	import { themeStore } from '#lib/stores/theme.svelte.js';
-	import { siteLabels } from '#lib/content/index.js';
-	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
-	import type { Locale } from '#lib/types.js';
+	import { themeStore } from '#lib/stores/theme.svelte.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import type { Locale } from '#lib/types.ts';
 
 	// PERSISTENT CHROME (rides Nav/MenuOverlay — never remounts): locale is a
 	// prop with $derived strings, NOT getLocale() (init-frozen). slice-28.6.

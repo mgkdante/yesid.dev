@@ -28,8 +28,8 @@
 // network + Phase 5 zoom preserved — see design spec §5.1.
 //
 // Usage:
-//   import { loadDrawSVG, loadCustomEase } from '#lib/motion/utils/gsap.js';
-//   import { createHeroTimeline } from '#lib/motion/scrubs/index.js';
+//   import { loadDrawSVG, loadCustomEase } from '#lib/motion/utils/gsap.ts';
+//   import { createHeroTimeline } from '#lib/motion/scrubs/index.ts';
 //   onMount(async () => {
 //     await Promise.all([loadDrawSVG(), loadCustomEase()]);
 //     const isMobile = window.matchMedia('(max-width: 1023px)').matches;
@@ -43,7 +43,7 @@
 //   onDestroy(() => destroy?.());
 
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.js';
+import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
 // CustomEase imported directly — plugin is runtime-registered by loadCustomEase()
 // at HeroBanner mount; this import only provides the symbol for CustomEase.create().
 import { CustomEase } from 'gsap/CustomEase';

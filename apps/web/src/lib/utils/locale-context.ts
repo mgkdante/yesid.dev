@@ -9,8 +9,8 @@
 // receives `locale` as a prop and derives reactively, because it never
 // remounts. Any NEW persistent component must follow the prop pattern.
 import { getContext, setContext } from 'svelte';
-import type { Locale } from '#lib/types.js';
-import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
+import type { Locale } from '#lib/types.ts';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 
 const KEY = Symbol.for('yesid.locale');
 

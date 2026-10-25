@@ -2,13 +2,13 @@
 	import emblaCarouselSvelte from 'embla-carousel-svelte';
 	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
-	import { allowCarouselDrag } from '#lib/utils/carousel-drag.js';
-	import { resolveLocale } from '#lib/utils/index.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { persisted } from '#lib/state/persisted.svelte.js';
-	import { pendingRestore } from '#lib/state/locale-handoff.svelte.js';
-	import { siteLabels } from '#lib/content/index.js';
-	import type { Project, ProofReelContent, Service } from '#lib/types.js';
+	import { allowCarouselDrag } from '#lib/utils/carousel-drag.ts';
+	import { resolveLocale } from '#lib/utils/index.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { pendingRestore } from '#lib/state/locale-handoff.svelte.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import type { Project, ProofReelContent, Service } from '#lib/types.ts';
 	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
 
 	const locale = getLocale();

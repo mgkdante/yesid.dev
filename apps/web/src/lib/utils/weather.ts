@@ -1,5 +1,5 @@
 // Shared weather fetch for Montreal.
-// Server-side only — uses $env/dynamic/private. Client code may import the
+// Server-side only — uses $app/env/private. Client code may import the
 // WeatherData TYPE only (type imports are erased; the env import must never
 // reach the browser bundle).
 //
@@ -14,8 +14,8 @@
 import { building } from '$app/env';
 
 import { OPENWEATHER_API_KEY } from '$app/env/private';
-import type { Locale } from '#lib/types.js';
-import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
+import type { Locale } from '#lib/types.ts';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 
 export interface WeatherData {
 	temp: number;
@@ -57,8 +57,8 @@ const cache = new Map<string, CacheEntry>();
 export async function fetchMontrealWeather(
 	locale: Locale = DEFAULT_LOCALE,
 ): Promise<WeatherData | null> {
-	// Prerender guard: $env/dynamic/* is unreadable while prerendering (SvelteKit
-	// throws), and a build-time snapshot would be stale anyway. Prerendered pages
+	// Runtime env values are unavailable while prerendering, and a build-time
+	// snapshot would be stale anyway. Prerendered pages
 	// ship without baked weather; WeatherScene/AboutWeather hydrate from
 	// GET /api/weather, which stays a dynamic (non-prerendered) endpoint.
 	if (building) {

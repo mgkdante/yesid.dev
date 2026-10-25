@@ -1,8 +1,26 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { onNavigate } from '$app/navigation';
+
+vi.mock('$app/navigation', () => ({ onNavigate: vi.fn(), goto: vi.fn() }));
 import { render, screen } from '@testing-library/svelte';
 import LanguageToggle from './LanguageToggle.svelte';
 
 describe('LanguageToggle — fingerpost signpost', () => {
+	it('resets focus after a scroll-preserving locale link navigation', () => {
+		render(LanguageToggle, { props: { locale: 'en', url: new URL('https://yesid.dev/about'), availableLocales: ['en', 'fr'] } });
+		const link = screen.getByTestId('language-toggle');
+		link.focus();
+		const callback = vi.mocked(onNavigate).mock.calls.at(-1)![0];
+		const navigation = { type: 'link', to: { url: new URL('https://yesid.dev/fr/about') } } as Parameters<typeof callback>[0];
+		const after = callback(navigation);
+		expect(document.activeElement).toBe(link);
+		expect(typeof after).toBe('function');
+		if (typeof after !== 'function') throw new Error('Missing focus reset callback');
+		after();
+		expect(document.activeElement).toBe(document.body);
+		expect(link).toHaveAttribute('data-sveltekit-reset', 'false');
+	});
+
 	it('renders NOTHING when fewer than 2 locales are published (today: ["en"])', () => {
 		render(LanguageToggle, { props: { locale: 'en', url: new URL('https://yesid.dev/about'), availableLocales: ['en'] } });
 		expect(screen.queryByTestId('language-toggle')).toBeNull();
@@ -109,14 +127,14 @@ describe('LanguageToggle — fingerpost signpost', () => {
 		expect(toggle.getAttribute('href')).toBe(
 			'/es/blog?ref=home#section-2',
 		);
-		expect(toggle).not.toHaveAttribute('data-sveltekit-noscroll');
+		expect(toggle).not.toHaveAttribute('data-sveltekit-reset');
 	});
 
-	it('carries data-sveltekit-noscroll so scroll is maintained across the switch', () => {
+	it('carries data-sveltekit-reset so scroll is maintained across the switch', () => {
 		render(LanguageToggle, {
 			props: { locale: 'en', url: new URL('https://yesid.dev/'), availableLocales: ['en', 'fr'] },
 		});
-		expect(screen.getByTestId('language-toggle')).toHaveAttribute('data-sveltekit-noscroll');
+		expect(screen.getByTestId('language-toggle')).toHaveAttribute('data-sveltekit-reset', 'false');
 	});
 });
 

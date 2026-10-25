@@ -7,15 +7,15 @@
   (the stack has its own page), no parallax, no scroll tricks. Big fonts.
 -->
 <script lang="ts">
-	import type { AboutIntroContent } from '#lib/types.js';
-	import { aboutPageContent } from '#lib/content/index.js';
+	import type { AboutIntroContent } from '#lib/types.ts';
+	import { aboutPageContent } from '#lib/content/index.ts';
 	import AboutLanguages from '#lib/components/about/AboutLanguages.svelte';
 	import AboutEducation from '#lib/components/about/AboutEducation.svelte';
 	import AboutWeather from '#lib/components/about/AboutWeather.svelte';
 	import AboutInterests from '#lib/components/about/AboutInterests.svelte';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
 

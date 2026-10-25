@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
-import { projects } from '#lib/content/projects';
-import { services } from '#lib/content/services';
-import { SUPPORTED_LOCALES } from '#lib/utils/locale.js';
+import { projects } from '#lib/content/projects.ts';
+import { services } from '#lib/content/services.ts';
+import { SUPPORTED_LOCALES } from '#lib/utils/locale.ts';
 
 const SRC = resolve(process.cwd(), 'src');
 const read = (path: string) => readFileSync(resolve(SRC, path), 'utf8');

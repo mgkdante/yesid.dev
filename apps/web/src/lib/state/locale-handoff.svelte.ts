@@ -24,7 +24,7 @@
 import { browser } from '$app/env';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { tick } from 'svelte';
-import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.js';
+import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
 import {
 	makeBlob,

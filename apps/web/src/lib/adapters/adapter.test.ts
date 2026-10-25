@@ -12,8 +12,8 @@
 // this file is the contract's runtime coverage.
 
 import { describe, it, expect } from 'vitest';
-import { projects } from '#lib/content/projects';
-import { services } from '#lib/content/services';
+import { projects } from '#lib/content/projects.ts';
+import { services } from '#lib/content/services.ts';
 import { staticAdapter as adapter } from './static';
 
 describe('ContentAdapter contract', () => {

@@ -2,13 +2,13 @@
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.js';
+	import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	type LetterData = { main: SVGPathElement; drips: SVGPathElement[] };
 

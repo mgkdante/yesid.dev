@@ -9,14 +9,14 @@
 -->
 <script lang="ts">
 	import type { CodeBlock } from '@repo/shared';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { parseCodeFence, renderPlainCodeHtml } from '#lib/utils/code-fences.js';
-	import { TerminalChrome } from '#lib/components/brand/index.js';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { parseCodeFence, renderPlainCodeHtml } from '#lib/utils/code-fences.ts';
+	import { TerminalChrome } from '#lib/components/brand/index.ts';
 	import MermaidDiagram from './MermaidDiagram.svelte';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	let {
 		data,

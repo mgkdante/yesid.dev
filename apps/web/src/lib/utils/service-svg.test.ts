@@ -9,7 +9,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { fetchServiceSvgContents, getServiceSvgUrl } from './service-svg';
-import type { Service } from '#lib/types.js';
+import type { Service } from '#lib/types.ts';
 
 const failingFetch = vi.fn(async () => {
 	throw new Error('network unavailable');

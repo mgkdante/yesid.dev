@@ -1,7 +1,7 @@
 import { browser } from '$app/env';
-import { themeStore, type Theme } from '#lib/stores/theme.svelte.js';
+import { themeStore, type Theme } from '#lib/stores/theme.svelte.ts';
 
-export type { Theme } from '#lib/stores/theme.svelte.js';
+export type { Theme } from '#lib/stores/theme.svelte.ts';
 
 function normalizeTheme(value: unknown, fallback: Theme = 'dark'): Theme {
 	return value === 'light' || value === 'dark' ? value : fallback;

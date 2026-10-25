@@ -18,12 +18,12 @@ import type {
 	Service,
 	SiteMeta,
 	SiteSeoDefaults,
-} from '#lib/types.js';
+} from '#lib/types.ts';
 
 // Mutable mock state so a single test can exercise the production behaviour
 // where asset() resolves to a RELATIVE mirrored path instead of an absolute URL.
 const assetMock = vi.hoisted(() => ({ relative: false, tall: false }));
-vi.mock('#lib/directus/assets.js', () => ({
+vi.mock('#lib/directus/assets.ts', () => ({
 	assetImage: (id: string, preset?: string) => ({ src: assetMock.relative ? `/images/work/${id}.png` : `https://cms.example.com/assets/${id}${preset ? `?key=${preset}` : ''}`, ...(assetMock.relative ? {width:1440,height:assetMock.tall ? 6626 : 1000} : {}) }),
 	asset: (id: string, preset?: string) =>
 		assetMock.relative

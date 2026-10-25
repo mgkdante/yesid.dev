@@ -5,8 +5,8 @@
 // redirect() can't carry headers, and this permanent redirect should serve
 // from the CDN edge (s-maxage=86400) rather than invoking the lambda per hit.
 
-import { permanentRedirect } from '#lib/server/redirect.js';
-import { localeFromParams, localizeHref } from '#lib/utils/locale-routing.js';
+import { permanentRedirect } from '#lib/server/redirect.ts';
+import { localeFromParams, localizeHref } from '#lib/utils/locale-routing.ts';
 import type { RequestHandler } from './$types';
 
 // Stays on the lambda: permanentRedirect() carries CDN cache headers a

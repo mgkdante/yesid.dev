@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { siteLabels } from '#lib/content/index.js';
-	import { PUBLISHED_LOCALES, SITE_HOST } from '#lib/utils/seo-defaults.js';
-	import { localizeHref, localizeUrl } from '#lib/utils/locale-routing.js';
-	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { PUBLISHED_LOCALES, SITE_HOST } from '#lib/utils/seo-defaults.ts';
+	import { localizeHref, localizeUrl } from '#lib/utils/locale-routing.ts';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 	import { building } from '$app/env';
-	import type { Locale } from '#lib/types.js';
+	import { onNavigate } from '$app/navigation';
+	import { resetFocusAfterNavigation } from '#lib/utils/navigation-focus.ts';
+	import type { Locale } from '#lib/types.ts';
 
 	let {
 		class: className = '',
@@ -37,6 +39,14 @@
 	);
 	const switcherAria = $derived(resolveLocale(siteLabels.navChrome.shared.localeSwitcherAria, locale));
 	const ariaLabel = $derived(`${switcherAria}: ${NAMES[locale] ?? locale}`);
+
+	// The link keeps native routing/preloading; only its focus reset is restored.
+	onNavigate((navigation) => {
+		if (navigation.type === 'link' && preservePageState &&
+			navigation.to?.url.href === new URL(nextHref, url).href) {
+			return resetFocusAfterNavigation();
+		}
+	});
 
 	function currentUrlSuffix(): string {
 		return building ? '' : url.search + url.hash;
@@ -121,7 +131,7 @@
 		href={nextHref}
 		data-testid="language-toggle"
 		data-sveltekit-preload-data="hover"
-		data-sveltekit-noscroll={preservePageState ? '' : undefined}
+		data-sveltekit-reset={preservePageState ? 'false' : undefined}
 		class="lang-post tap-press {className}"
 		aria-label={ariaLabel}
 		title={NAMES[locale] ?? locale}

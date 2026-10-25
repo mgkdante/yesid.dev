@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { SchemaOrgNode } from '#lib/schemas/seo.js';
-	import { serializeJsonLd } from '#lib/utils/json-ld-serialize.js';
+	import type { SchemaOrgNode } from '#lib/schemas/seo.ts';
+	import { serializeJsonLd } from '#lib/utils/json-ld-serialize.ts';
 
 	let { nodes }: { nodes: readonly SchemaOrgNode[] } = $props();
 

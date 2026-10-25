@@ -118,12 +118,12 @@ describe('emitModule', () => {
 		const out = emitModule({
 			filePath: '/tmp/test.ts',
 			description: 'Test fixture.',
-			imports: [{ symbols: ['SiteMeta'], from: '$lib/types', typeOnly: true }],
+			imports: [{ symbols: ['SiteMeta'], from: '#lib/types.ts', typeOnly: true }],
 			exports: [{ name: 'siteMeta', typeName: 'SiteMeta', value: { name: 'yesid.' } }],
 		});
 		expect(out).toContain('// GENERATED FILE');
 		expect(out).toContain('// Test fixture.');
-		expect(out).toContain("import type { SiteMeta } from '$lib/types';");
+		expect(out).toContain("import type { SiteMeta } from '#lib/types.ts';");
 		expect(out).toContain('export const siteMeta: SiteMeta');
 		expect(out.endsWith('\n')).toBe(true);
 		// No double-blank-line between header → import.

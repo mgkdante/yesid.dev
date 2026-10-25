@@ -1,7 +1,7 @@
 import { render } from '@testing-library/svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SeoHead from './SeoHead.svelte';
-import type { PageSeo } from '#lib/schemas/seo.js';
+import type { PageSeo } from '#lib/schemas/seo.ts';
 
 const validSeo: PageSeo = {
 	title: { en: 'Test Page | yesid.' },

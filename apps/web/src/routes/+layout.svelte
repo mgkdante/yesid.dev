@@ -18,18 +18,18 @@
 	// is likewise resolved.
 	import SeoHead from '#lib/components/seo/SeoHead.svelte';
 	import Analytics from '#lib/components/analytics/Analytics.svelte';
-	import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
-	import { provideLocale } from '#lib/utils/locale-context.js';
-	import { delocalizePath } from '#lib/utils/locale-routing.js';
-	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.js';
+	import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import { provideLocale } from '#lib/utils/locale-context.ts';
+	import { delocalizePath } from '#lib/utils/locale-routing.ts';
+	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { initLenis, destroyLenis } from '@yesid/motion/utils/lenis';
-	import { themeStore } from '#lib/stores/theme.svelte.js';
-	import { initScrollTriggerConfig } from '#lib/motion/utils/gsap.js';
-	import { initGlobalRipple } from '#lib/motion/utils/globalRipple.js';
-	import { setMorphShapes } from '#lib/utils/shapes.js';
+	import { themeStore } from '#lib/stores/theme.svelte.ts';
+	import { initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
+	import { initGlobalRipple } from '#lib/motion/utils/globalRipple.ts';
+	import { setMorphShapes } from '#lib/utils/shapes.ts';
 	import type { LayoutData } from './$types';
-	import type { NavLink } from '#lib/navigation/types.js';
-	import type { MorphShape } from '#lib/types.js';
+	import type { NavLink } from '#lib/navigation/types.ts';
+	import type { MorphShape } from '#lib/types.ts';
 
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
@@ -119,7 +119,7 @@
 >
 	<Nav
 		pathname={page.url.pathname}
-		url={page.url}
+		url={new URL(page.url.href)}
 		locale={locale}
 		localeAlternates={data.seo.localeAlternates}
 		headerLinks={headerLinks}

@@ -6,14 +6,14 @@
 // block sanity-checks the real committed registry.
 
 import { describe, expect, it } from 'vitest';
-import type { SitePage } from '#lib/types.js';
+import type { SitePage } from '#lib/types.ts';
 import {
 	isPathPublished,
 	isRegistryExempt,
 	normalizePathname,
 	resolveSitePage,
 } from './page-registry';
-import { sitePages } from '#lib/content/site-pages';
+import { sitePages } from '#lib/content/site-pages.ts';
 
 const FULL_REGISTRY: readonly SitePage[] = [
 	{ path: '/', type: 'system', title: { en: 'Home' } },

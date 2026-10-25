@@ -1,4 +1,4 @@
-import { siteLabels } from '#lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import { readFileSync } from 'node:fs';

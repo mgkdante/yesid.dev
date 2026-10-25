@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { get } from 'svelte/store';
 import { getAnalyticsPolicy } from '@yesid/analytics/policy';
-import { YESID_ANALYTICS_PRESET } from '#lib/analytics/preset.js';
+import { YESID_ANALYTICS_PRESET } from '#lib/analytics/preset.ts';
 import {
 	ANALYTICS_CONSENT_KEY,
 	ANALYTICS_DENIAL_SAFETY_KEY,
@@ -1066,7 +1066,7 @@ describe('analytics consent state', () => {
 		} as const;
 
 		vi.resetModules();
-		vi.doMock('#lib/analytics/preset.js', () => ({
+		vi.doMock('#lib/analytics/preset.ts', () => ({
 			YESID_ANALYTICS_PRESET: substitutedPreset,
 		}));
 
@@ -1116,7 +1116,7 @@ describe('analytics consent state', () => {
 			expect(get(staleStore)).toMatchObject({ ready: true, available: false });
 			expect(staleProbe).not.toHaveBeenCalled();
 		} finally {
-			vi.doUnmock('#lib/analytics/preset.js');
+			vi.doUnmock('#lib/analytics/preset.ts');
 			vi.resetModules();
 		}
 	});

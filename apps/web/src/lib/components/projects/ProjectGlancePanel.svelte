@@ -6,20 +6,20 @@
   state doesn't collide, 1-column metrics, non-sticky).
 -->
 <script lang="ts">
-  import type { Project, Service } from '#lib/types.js';
-  import { resolveLocale } from '#lib/utils/locale.js';
-  import { getLocale } from '#lib/utils/locale-context.js';
-  import { projectMetrics } from '#lib/utils/project-metrics.js';
+  import type { Project, Service } from '#lib/types.ts';
+  import { resolveLocale } from '#lib/utils/locale.ts';
+  import { getLocale } from '#lib/utils/locale-context.ts';
+  import { projectMetrics } from '#lib/utils/project-metrics.ts';
 
   const locale = getLocale();
-  import { MetricDisplay } from '#lib/components/brand/index.js';
+  import { MetricDisplay } from '#lib/components/brand/index.ts';
   import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
   import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
   import ServiceBadge from './ServiceBadge.svelte';
-  import { siteLabels } from '#lib/content/index.js';
+  import { siteLabels } from '#lib/content/index.ts';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
   import ProjectLinksCard from './ProjectLinksCard.svelte';
-  import { scrollChain } from '#lib/motion/actions/scrollChain.js';
+  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
 
   const glanceChrome = siteLabels.projectsChrome.detail.glance;
   const glanceOverviewTitle = resolveLocale(glanceChrome.overview, locale);

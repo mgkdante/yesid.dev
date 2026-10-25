@@ -18,10 +18,10 @@ import { ProjectSchema } from '@repo/shared';
 import { BlogPostSchema } from '@repo/shared';
 import { SiteMetaSchema } from '@repo/shared';
 import { NavLinkSchema, ErrorPageContentSchema } from '@repo/shared';
-import { PageSeoSchema } from '#lib/schemas/seo.js';
+import { PageSeoSchema } from '#lib/schemas/seo.ts';
 import { MorphShapeSchema } from '@repo/shared';
-import { HeroDataSchema } from '#lib/schemas/hero-data.js';
-import { PersonSchema } from '#lib/schemas/jsonld.js';
+import { HeroDataSchema } from '#lib/schemas/hero-data.ts';
+import { PersonSchema } from '#lib/schemas/jsonld.ts';
 import { SiteSeoDefaultsSchema } from '@repo/shared';
 
 // Factories

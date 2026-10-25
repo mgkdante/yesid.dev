@@ -1,12 +1,12 @@
 <script lang="ts">
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
-	import type { BlockEditorDoc, Project, Service } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import type { BlockEditorDoc, Project, Service } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	// TOC chrome, CMS-sourced (navChrome.shared), shared across detail pages.
 	const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
@@ -28,7 +28,7 @@
 	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
 	import TocNav from '#lib/components/shared/TocNav.svelte';
 	import TocPill from '#lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.js';
+	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
@@ -36,8 +36,8 @@
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/env';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.js';
-	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.js';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
 
 	let {
 		project,

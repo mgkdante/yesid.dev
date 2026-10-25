@@ -5,8 +5,8 @@
 -->
 <script lang="ts">
 	import BlogListingPage from '#lib/components/blog/BlogListingPage.svelte';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	let { data } = $props();
 

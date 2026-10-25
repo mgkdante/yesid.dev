@@ -35,13 +35,13 @@ import * as blogPageModule from './blog-page.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
-import { INITIAL_HERO_DATA } from '#lib/live/index.js';
+import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
 import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
 import { siteLabels as siteLabelsModule } from './site-labels.js';
 import {
 	HeroDataSchema,
-} from '#lib/schemas/index.js';
+} from '#lib/schemas/index.ts';
 import {
 	ProjectSchema,
 	ServiceSchema,
@@ -665,7 +665,8 @@ describe('LocalizedString guard + translation debt', () => {
 // Slice 43.2: the CMS retirement removed 7 nav/registry/SEO strings; deleting
 // the retired content sources removes 82 more. The lead's live regeneration
 // removes the final blog rail string (621 → 620).
-const LOCKED = { TOTAL: 620, WITH_FR: 620, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
+// WO-43.14: the desktop Contact link adds one FR-complete label.
+const LOCKED = { TOTAL: 621, WITH_FR: 621, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

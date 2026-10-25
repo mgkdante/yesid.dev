@@ -2,27 +2,27 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
-	import type { Project, ProjectsPageContent, Service } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
+	import type { Project, ProjectsPageContent, Service } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 	import '#lib/styles/listing-header.css';
 	import '#lib/styles/listing-shell.css';
 
 	const locale = getLocale();
-	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.js';
+	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
 	import SearchInput from '#lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '#lib/components/shared/FilterSummary.svelte';
 	import ListingMobileFilters from '#lib/components/shared/ListingMobileFilters.svelte';
-	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.js';
+	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
-	import { MetroStation } from '#lib/components/brand/index.js';
+	import { MetroStation } from '#lib/components/brand/index.ts';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.js';
-	import { siteLabels } from '#lib/content/index.js';
-	import { persisted } from '#lib/state/persisted.svelte.js';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
 
 	let {
 		projects,
@@ -117,13 +117,13 @@
 	// FLIP animation on filter changes
 	async function updateFilter(type: 'service' | 'tag' | 'stack', value: string | null) {
 		flipState = captureFlipState();
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		if (value) {
 			url.searchParams.set(type, value);
 		} else {
 			url.searchParams.delete(type);
 		}
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
 	function handleServiceSelect(serviceId: string | null) {
@@ -148,11 +148,11 @@
 	async function clearFilters() {
 		flipState = captureFlipState();
 		searchQuery.value = '';
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.delete('service');
 		url.searchParams.delete('tag');
 		url.searchParams.delete('stack');
-		await goto(url.toString(), { replaceState: true, noScroll: true });
+		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
 	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final

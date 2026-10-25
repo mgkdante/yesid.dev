@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { trackAnalyticsEvent } from '#lib/analytics/client.js';
-	import type { Project } from '#lib/types.js';
-	import { isProjectProofHref } from '#lib/utils/high-intent-links.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
-	import { siteLabels } from '#lib/content/index.js';
+	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
+	import type { Project } from '#lib/types.ts';
+	import { isProjectProofHref } from '#lib/utils/high-intent-links.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
 

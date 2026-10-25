@@ -8,9 +8,9 @@
 -->
 <script lang="ts">
 	import { untrack } from 'svelte';
-	import type { Locale, Project } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import type { Locale, Project } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { boop, pressBounce } from '@yesid/motion/actions';
 	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
 	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';

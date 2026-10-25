@@ -1,5 +1,5 @@
-import type { Project } from '#lib/types.js';
-import { projects } from '#lib/content/projects';
+import type { Project } from '#lib/types.ts';
+import { projects } from '#lib/content/projects.ts';
 
 export function getProjectBySlug(slug: string): Project | undefined {
 	return projects.find((project) => project.slug === slug);

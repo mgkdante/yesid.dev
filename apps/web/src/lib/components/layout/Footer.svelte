@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
-	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.js';
-	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
-	import { localizeHref } from '#lib/utils/locale-routing.js';
-	import { wordmarkHover } from '#lib/motion/actions/index.js';
-	import { StatusDot } from '#lib/components/brand/index.js';
+	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { wordmarkHover } from '#lib/motion/actions/index.ts';
+	import { StatusDot } from '#lib/components/brand/index.ts';
 	import { FooterGroup, FooterLink } from '@yesid/ui/footer';
-	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.js';
-	import type { NavLink } from '#lib/navigation/types.js';
-	import type { Locale } from '#lib/types.js';
+	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
+	import type { NavLink } from '#lib/navigation/types.ts';
+	import type { Locale } from '#lib/types.ts';
 
 	// footerLinks: adapter-sourced footer placement links (from +layout.server.ts).
 	// Falls back to the menu items (which serve as footer fallback in static mode).

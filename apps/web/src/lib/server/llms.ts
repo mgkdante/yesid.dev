@@ -2,12 +2,12 @@
 // Generated at build time from the same CMS-derived content caches the pages
 // read, so both files track CMS truth on every publish→rebuild. Server-only:
 // nothing here may reach the client bundle.
-import { blogPosts, contactContent, projects, services, siteMeta } from '#lib/content/index.js';
-import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.js';
-import { resolveLocale } from '#lib/utils/locale.js';
-import { sitePages } from '#lib/content/site-pages';
-import { isPathPublished } from '#lib/utils/page-registry.js';
-import type { BlogPost, LocalizedString, SitePage } from '#lib/types.js';
+import { blogPosts, contactContent, projects, services, siteMeta } from '#lib/content/index.ts';
+import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { isPathPublished } from '#lib/utils/page-registry.ts';
+import type { BlogPost, LocalizedString, SitePage } from '#lib/types.ts';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
 const es = (value: LocalizedString): string => resolveLocale(value, 'es');

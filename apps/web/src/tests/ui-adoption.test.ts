@@ -29,10 +29,10 @@ describe('@yesid/ui customer contract', () => {
 		expect(initializer).toContain("from '@yesid/ui/cn'");
 		expect(initializer).toContain('configureUi()');
 		expect(clientHooks).toContain('ClientInit');
-		expect(clientHooks).toContain("from '#lib/ui/configure'");
+		expect(clientHooks).toContain("from '#lib/ui/configure.ts'");
 		expect(clientHooks).toContain('initializeUi()');
 		expect(serverHooks).toContain('ServerInit');
-		expect(serverHooks).toContain("from '#lib/ui/configure'");
+		expect(serverHooks).toContain("from '#lib/ui/configure.ts'");
 		expect(serverHooks).toContain('initializeUi()');
 		expect(layout).not.toContain('configureUi');
 	});
@@ -211,7 +211,7 @@ describe('@yesid/ui brand adoption contract', () => {
 
 		expect(quietMode).toContain('QuietModeButton as UiQuietModeButton');
 		expect(quietMode).toContain('type QuietModeButtonCopy');
-		expect(quietMode).toContain("from '#lib/state/quiet-mode.svelte'");
+		expect(quietMode).toContain("from '#lib/state/quiet-mode.svelte.ts'");
 		expect(quietMode).toContain('onMount(() => quietModeStore.init())');
 		expect(quietMode).toContain('activeEffect="glow"');
 		expect(quietMode).not.toContain('<svg');

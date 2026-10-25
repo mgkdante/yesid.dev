@@ -6,9 +6,9 @@ import { cwd } from 'node:process';
 import type { BlockEditorDoc } from '@repo/shared';
 import ProjectDetailPage from './ProjectDetailPage.svelte';
 import { projectFactory } from '../../../tests/factories';
-import { themeStore } from '#lib/stores/theme.svelte.js';
+import { themeStore } from '#lib/stores/theme.svelte.ts';
 
-vi.mock('#lib/directus/assets.js', () => ({
+vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, preset?: string) => ({
@@ -267,7 +267,7 @@ describe('ProjectDetailPage image placement', () => {
 		expect(source).toContain('--project-image-gallery-mat');
 		expect(source).toContain('[data-theme="light"]');
 		expect(source).toContain('#fff');
-		expect(source).toContain("from '#lib/utils/theme-media'");
+		expect(source).toContain("from '#lib/utils/theme-media.ts'");
 		expect(source).toContain('siteLabels.a11y.projectImageOpen');
 		expect(source).toContain('siteLabels.a11y.projectImageClose');
 		expect(source).not.toContain('aria-label="Open {stripHtml(image.data.caption)}"');

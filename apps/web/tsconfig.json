@@ -3,6 +3,9 @@
 		"$app/tsconfig",
 		"@yesid/config/tsconfig/svelte-kit.json"
 	],
+	"compilerOptions": {
+		"rewriteRelativeImportExtensions": false
+	},
 	"include": [
 		"src",
 		"vite.config.ts",

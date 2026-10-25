@@ -5,17 +5,17 @@
   Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutCta } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
-	import { getLocale } from '#lib/utils/locale-context.js';
+	import type { AboutCta } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
-	import { siteLabels } from '#lib/content/index.js';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel, TerminalChrome } from '#lib/components/brand/index.js';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { Card } from '#lib/components/ui/card/index.js';
+	import { StopLabel, TerminalChrome } from '#lib/components/brand/index.ts';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 
 	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 

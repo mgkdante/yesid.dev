@@ -3,9 +3,9 @@
 // resolve once on the server and hydrate via __data.json.
 
 import { error } from '@sveltejs/kit';
-import { fetchServiceSvgContents } from '#lib/utils/index.js';
-import { adapter } from '#lib/adapters/index.js';
-import { serviceEntries } from '#lib/server/prerender-entries.js';
+import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { adapter } from '#lib/adapters/index.ts';
+import { serviceEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = serviceEntries;
 export const prerender = entries().length > 0;
@@ -14,7 +14,7 @@ export async function load({ params, fetch }: { params: { id: string }; fetch: t
 	const service = await adapter.services.byId(params.id);
 
 	if (!service || service.visible === false) {
-		error(404, { message: 'Service not found' });
+		error(404, 'Service not found');
 	}
 
 	const services = await adapter.services.visible();

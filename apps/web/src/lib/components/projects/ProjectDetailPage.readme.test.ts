@@ -10,7 +10,7 @@ const mermaidMock = vi.hoisted(() => ({
 }));
 
 vi.mock('mermaid', () => ({ default: mermaidMock }));
-vi.mock('#lib/directus/assets.js', () => ({
+vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string) => `/test-assets/${id}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string) => ({ src: `/test-assets/${id}` }),

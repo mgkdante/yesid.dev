@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { PageSeo } from '#lib/schemas/seo.js';
-	import type { Locale } from '#lib/types.js';
-	import { resolveLocale } from '#lib/utils/locale.js';
+	import type { PageSeo } from '#lib/schemas/seo.ts';
+	import type { Locale } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
 	import {
 		PUBLISHED_LOCALES,
 		SITE_HOST,
@@ -10,7 +10,7 @@
 		canonicalFor,
 		defaultOgImageFor,
 		localizeOgCard,
-	} from '#lib/utils/seo-defaults.js';
+	} from '#lib/utils/seo-defaults.ts';
 	import { dev as runtimeDev } from '$app/env';
 	import JsonLd from './JsonLd.svelte';
 

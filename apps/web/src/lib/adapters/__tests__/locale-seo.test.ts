@@ -1,13 +1,13 @@
-import { sitePages } from '#lib/content/site-pages';
+import { sitePages } from '#lib/content/site-pages.ts';
 // slice-28.6 T6 — locale threading through the SEO layer. Pre-flip contract:
 // locale 'en' output is byte-identical to before; 'fr' resolves FR strings
 // where the trilingual content layer has them, while canonicals stay EN
 // (fr ∉ PUBLISHED_LOCALES until the flip).
 import { describe, it, expect } from 'vitest';
-import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.js';
-import { staticAdapter } from '#lib/adapters/static.js';
-import { buildPersonNode } from '#lib/adapters/jsonld.js';
-import { siteMeta } from '#lib/content/site-meta';
+import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
+import { staticAdapter } from '#lib/adapters/static.ts';
+import { buildPersonNode } from '#lib/adapters/jsonld.ts';
+import { siteMeta } from '#lib/content/site-meta.ts';
 
 describe('appendBrandPerLocale', () => {
 	it('suffixes every provided locale, skips absent ones', () => {

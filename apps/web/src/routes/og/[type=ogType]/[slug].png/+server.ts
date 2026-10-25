@@ -1,12 +1,12 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { loadOgTitle, type OgType } from '#lib/og/load-title.js';
-import { ogSlugParam, parseOgSlugParam } from '#lib/og/og-path.js';
-import { buildOgTree } from '#lib/og/template.js';
-import { renderOgPng } from '#lib/og/render.js';
-import { getOgFonts } from '#lib/og/fonts.js';
-import { ogBlogRows, ogProjectSlugs } from '#lib/server/prerender-entries.js';
-import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.js';
-import { isPathPublished } from '#lib/utils/page-registry.js';
+import { loadOgTitle, type OgType } from '#lib/og/load-title.ts';
+import { ogSlugParam, parseOgSlugParam } from '#lib/og/og-path.ts';
+import { buildOgTree } from '#lib/og/template.ts';
+import { renderOgPng } from '#lib/og/render.ts';
+import { getOgFonts } from '#lib/og/fonts.ts';
+import { ogBlogRows, ogProjectSlugs } from '#lib/server/prerender-entries.ts';
+import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
+import { isPathPublished } from '#lib/utils/page-registry.ts';
 
 // Prerender every known blog/project card into deployment-static PNGs. entries()
 // is exhaustive through the shared complete-blog and non-private-project

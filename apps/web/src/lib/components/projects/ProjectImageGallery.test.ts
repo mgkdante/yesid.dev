@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import type { BlockEditorDoc } from '@repo/shared';
 import ProjectImageGallery from './ProjectImageGallery.svelte';
-import { siteLabels } from '#lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels.ts';
 
 const doc: BlockEditorDoc = {
 	time: 1700000000000,

@@ -7,12 +7,12 @@
 //   - the param is written ONLY on an explicit tab click (handleTabSelect),
 //     never from the IntersectionObserver scroll-spy (which would spam
 //     replaceState during scroll);
-//   - the write uses goto(replaceState, noScroll) — a scroll position, not a
+//   - the write preserves scroll, resets focus and replaces history — not a
 //     history destination, and the Lenis scroll owns the motion;
 //   - on mount, a present-and-valid ?station=<id> re-scrolls to #service-<id>
 //     using the same Lenis-aware scroll (the deep-link / switch-restore path).
 //
-// $app/stores, $app/navigation and the Lenis singleton are mocked so the
+// $app/state, $app/navigation and the Lenis singleton are mocked so the
 // router/scroll side-effects are observable without a live SvelteKit runtime.
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -32,16 +32,8 @@ const mocks = vi.hoisted(() => ({
 vi.mock('$app/navigation', () => ({
 	goto: (...args: unknown[]) => mocks.gotoFn(...args),
 }));
-vi.mock('$app/stores', () => ({
-	// `page` is a store; the component reads $page.url.searchParams. The custom
-	// store reads the live `mocks.url` holder on every subscribe so each test can
-	// set a different URL before render.
-	page: {
-		subscribe(run: (value: { url: URL }) => void) {
-			run({ url: mocks.url });
-			return () => {};
-		},
-	},
+vi.mock('$app/state', () => ({
+	page: { get url() { return mocks.url; } },
 }));
 vi.mock('@yesid/motion/utils/lenis', () => ({
 	getLenis: () => mocks.lenis,
@@ -123,18 +115,20 @@ describe('ServiceListingPage station (slice-34.5)', () => {
 		expect(screen.getByTestId('service-listing-page')).toBeInTheDocument();
 	});
 
-	it('writes ?station=<id> via replaceState+noScroll on an explicit tab click', async () => {
+	it('writes ?station=<id> while preserving scroll and resetting focus', async () => {
 		renderPage();
 		// StationTabs (mode="scroll") renders each station as a button; click the
 		// second one and assert the URL write contract.
 		const tabs = screen.getAllByRole('tab');
 		expect(tabs.length).toBe(services.length);
+		tabs[1]!.focus();
 		await fireEvent.click(tabs[1]!); // data-pipeline
 
 		expect(gotoMock).toHaveBeenCalledTimes(1);
 		const [url, opts] = gotoMock.mock.calls[0]!;
 		expect(String(url)).toContain('station=data-pipeline');
-		expect(opts).toMatchObject({ replaceState: true, noScroll: true });
+		expect(opts).toMatchObject({ replaceState: true, reset: false });
+		expect(document.activeElement).toBe(document.body);
 	});
 
 	it('triggers the Lenis-aware scroll on an explicit tab click', async () => {

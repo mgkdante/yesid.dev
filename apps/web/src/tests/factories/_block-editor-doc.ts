@@ -10,7 +10,7 @@
 
 import { faker } from '@faker-js/faker';
 import type { BlockEditorDoc } from '@repo/shared';
-import type { LocalizedBlockEditorDoc } from '#lib/types.js';
+import type { LocalizedBlockEditorDoc } from '#lib/types.ts';
 
 /**
  * Build a minimal valid BlockEditorDoc: one paragraph block.

@@ -6,14 +6,14 @@ const analyticsMocks = vi.hoisted(() => ({
 	trackAnalyticsEvent: vi.fn(),
 }));
 
-vi.mock('#lib/analytics/client.js', () => analyticsMocks);
+vi.mock('#lib/analytics/client.ts', () => analyticsMocks);
 
 import ContactPage from './ContactPage.svelte';
-import type { ContactContent } from '#lib/types.js';
+import type { ContactContent } from '#lib/types.ts';
 // slice-34.3: the orchestrator's capture/apply API lets us drive the locale-switch
 // round-trip at the unit level (registerSession is module-scoped; the component's
 // persisted() fields register into the same registry on mount).
-import { captureEntries, applyEntries } from '#lib/state/locale-handoff.svelte.js';
+import { captureEntries, applyEntries } from '#lib/state/locale-handoff.svelte.ts';
 
 const contactContent: ContactContent = {
 	pageTitle: { en: 'Contact fixture' },

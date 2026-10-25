@@ -5,7 +5,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { BlogPost } from '#lib/types.js';
+import type { BlogPost } from '#lib/types.ts';
 
 export const blogPostFactory = new Factory<BlogPost>(() => ({
 	translationKey: faker.lorem.slug(),

@@ -1,9 +1,9 @@
 // Fetch and facet derivation is shared with /blog/personal via loadBlogCategory.
 
 import { loadBlogCategory } from './blog-category-loader';
-import { localeEntries } from '#lib/server/prerender-entries.js';
+import { localeEntries } from '#lib/server/prerender-entries.ts';
 import type { EntryGenerator } from './$types';
-import { localeFromParams } from '#lib/utils/locale-routing.js';
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
 
 export const entries = (() => localeEntries('/blog')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;

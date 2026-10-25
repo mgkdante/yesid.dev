@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { Locale } from '#lib/types.js';
-import { findBlogTranslationVariants, groupBlogTranslations } from '#lib/blog/translations.js';
+import type { Locale } from '#lib/types.ts';
+import { findBlogTranslationVariants, groupBlogTranslations } from '#lib/blog/translations.ts';
 
 const locales = ['en', 'fr', 'es'] as const satisfies readonly Locale[];
 

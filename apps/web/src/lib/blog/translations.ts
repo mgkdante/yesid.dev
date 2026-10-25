@@ -1,4 +1,4 @@
-import type { Locale } from '#lib/types.js';
+import type { Locale } from '#lib/types.ts';
 
 export const BLOG_TRANSLATION_LOCALES = ['en', 'fr', 'es'] as const satisfies readonly Locale[];
 

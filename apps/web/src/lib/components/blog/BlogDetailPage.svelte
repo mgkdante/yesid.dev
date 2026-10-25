@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
-  import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.js';
+  import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
   import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
@@ -9,17 +9,17 @@
   import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
   import TocNav from '#lib/components/shared/TocNav.svelte';
   import TocPill from '#lib/components/shared/TocPill.svelte';
-  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.js';
+  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { scrollChain } from '#lib/motion/actions/scrollChain.js';
-  import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.js';
-  import { resolveLocale } from '#lib/utils/locale.js';
-  import { getLocale } from '#lib/utils/locale-context.js';
-  import { sectionizeBlogBody } from '#lib/blog/sections.js';
+  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+  import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
+  import { resolveLocale } from '#lib/utils/locale.ts';
+  import { getLocale } from '#lib/utils/locale-context.ts';
+  import { sectionizeBlogBody } from '#lib/blog/sections.ts';
 
   const locale = getLocale();
-  import { siteLabels } from '#lib/content/index.js';
+  import { siteLabels } from '#lib/content/index.ts';
 
   // go2/w4: reading mode removed per operator QA. The default reading
   // experience is the only one. The readingMode field stays dormant in the
