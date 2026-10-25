@@ -269,6 +269,10 @@ Do not mark publication accepted from the permission receipt alone.
 - PROD recovery: use Neon instant restore within the project history window.
 - Schema and configuration recovery: use guarded `sync-push`.
 
+Run `op run --env-file=apps/cms/.env -- bash apps/cms/scripts/refresh-dev-from-prod.sh` from the repository root.
+For non-interactive use, prefix that command with `REFRESH_DEV_CONFIRM=wipe-dev` and append `--yes`; this confirms wiping all dev state.
+Required checks have 600 seconds to register, polling every 10 seconds; override with a positive integer in `REFRESH_CHECK_REGISTRATION_TIMEOUT_SECONDS`.
+
 ## Asset and preset ownership
 
 `packages/shared/src/asset-registry.ts` owns semantic keys, release entries,
