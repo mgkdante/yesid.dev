@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 /**
- * Schema for fixtures/assets-id-map.json — emitted by migrate-assets.ts and
+ * Schema for fixtures/assets-id-map.json — a frozen record of the 18d migration,
  * consumed by 18e-18i (and packages/shared via re-export). Slice 18l added the
  * `brand/` namespace for Directus admin chrome assets (icon + wordmark SVGs
  * referenced from settings.json); the

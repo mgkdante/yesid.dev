@@ -213,25 +213,18 @@
   },
   {
     "dashboard": "_sync_dashboard_ops_deploy",
-    "name": "Rebuild pending?",
-    "icon": "pending_actions",
+    "name": "Publish site",
+    "icon": "rocket_launch",
     "color": null,
     "show_header": true,
-    "note": "1 = a publish is queued for the next build flush (build_queue.cms_dirty = true)",
-    "type": "metric",
+    "note": "D6: publish once per editing session.",
+    "type": "label",
     "position_x": 1,
     "position_y": 1,
     "width": 8,
     "height": 6,
     "options": {
-      "collection": "build_queue",
-      "field": "id",
-      "function": "count",
-      "filter": {
-        "cms_dirty": {
-          "_eq": true
-        }
-      }
+      "text": "Publish: Site Config (build_queue) → Flows → Publish site, once per editing session. About 3 minutes per build."
     },
     "_syncId": "_sync_panel_ops_rebuild_pending"
   },
