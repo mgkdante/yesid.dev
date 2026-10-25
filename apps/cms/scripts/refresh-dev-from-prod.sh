@@ -18,7 +18,8 @@
 # and authenticates as that user. Any failure leaves the PR unmerged.
 #
 # Usage (required values supplied by the operator's chosen secret manager or shell):
-#   ./apps/cms/scripts/refresh-dev-from-prod.sh
+#   ./apps/cms/scripts/refresh-dev-from-prod.sh [--yes]
+#   Non-interactive: REFRESH_DEV_CONFIRM=wipe-dev with --yes
 #
 # Required env:
 #   NEON_API_KEY                  — Neon API key
@@ -37,6 +38,25 @@
 
 set -euo pipefail
 
+if (( $# > 1 )) || { (( $# == 1 )) && [[ "$1" != "--yes" ]]; }; then
+  echo "Usage: $0 [--yes]" >&2
+  exit 1
+fi
+confirmation_explicit=false
+if [[ "${1:-}" == "--yes" && "${REFRESH_DEV_CONFIRM:-}" == "wipe-dev" ]]; then
+  confirmation_explicit=true
+fi
+if [[ "$confirmation_explicit" != "true" ]] && ! test -t 0; then
+  echo "ERROR: stdin is not a TTY; to wipe ALL dev state and replace it with prod's, use --yes with REFRESH_DEV_CONFIRM=wipe-dev." >&2
+  exit 1
+fi
+
+registration_timeout_seconds="${REFRESH_CHECK_REGISTRATION_TIMEOUT_SECONDS-600}"
+if [[ ! "$registration_timeout_seconds" =~ ^[1-9][0-9]*$ ]]; then
+  echo "ERROR: REFRESH_CHECK_REGISTRATION_TIMEOUT_SECONDS must be a positive integer." >&2
+  exit 1
+fi
+
 NEON_PROJECT_ID="${NEON_PROJECT_ID:-sparkling-sky-51665073}"
 NEON_DEV_BRANCH_ID="${NEON_DEV_BRANCH_ID:-br-divine-union-amd1lou6}"
 R2_PROD_BUCKET="${R2_PROD_BUCKET:-yesid-dev-cms}"
@@ -48,8 +68,20 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 : "${HOME:?HOME is required for Git and GitHub authentication}"
 
+collect_platform_environment() {
+  platform_environment=()
+  local name
+  for name in SYSTEMROOT WINDIR APPDATA LOCALAPPDATA USERPROFILE TEMP TMP COMSPEC PATHEXT; do
+    if [[ -n "${!name:-}" ]]; then
+      platform_environment+=("$name=${!name}")
+    fi
+  done
+}
+collect_platform_environment
+
 run_database_refresh() {
   env -i \
+    ${platform_environment[@]+"${platform_environment[@]}"} \
     PATH="$PATH" \
     LANG="${LANG:-C.UTF-8}" \
     NEON_API_KEY="$NEON_API_KEY" \
@@ -62,6 +94,7 @@ run_database_refresh() {
 
 run_r2_refresh() {
   env -i \
+    ${platform_environment[@]+"${platform_environment[@]}"} \
     PATH="$PATH" \
     LANG="${LANG:-C.UTF-8}" \
     STORAGE_S3_KEY="$STORAGE_S3_KEY" \
@@ -74,6 +107,7 @@ run_r2_refresh() {
 
 run_git() {
   env -i \
+    ${platform_environment[@]+"${platform_environment[@]}"} \
     HOME="$HOME" \
     PATH="$PATH" \
     LANG="${LANG:-C.UTF-8}" \
@@ -83,6 +117,7 @@ run_git() {
 
 run_gh() {
   env -i \
+    ${platform_environment[@]+"${platform_environment[@]}"} \
     HOME="$HOME" \
     PATH="$PATH" \
     LANG="${LANG:-C.UTF-8}" \
@@ -91,7 +126,7 @@ run_gh() {
 }
 
 run_public() {
-  env -i PATH="$PATH" LANG="${LANG:-C.UTF-8}" "$@"
+  env -i ${platform_environment[@]+"${platform_environment[@]}"} PATH="$PATH" LANG="${LANG:-C.UTF-8}" "$@"
 }
 
 required_vars=(
@@ -165,10 +200,12 @@ echo "  R2: $R2_PROD_BUCKET → $R2_DEV_BUCKET"
 echo "  Git: origin/main tree → checked PR → origin/develop"
 echo "============================================================"
 echo ""
-read -rp "Proceed? This wipes ALL dev state and replaces with prod's. (y/N): " ans
-if [[ "$ans" != "y" && "$ans" != "Y" ]]; then
-  echo "Aborted."
-  exit 1
+if [[ "$confirmation_explicit" != "true" ]]; then
+  read -rp "Wipe ALL dev state and replace it with prod's? (y/N): " ans
+  if [[ "$ans" != "y" && "$ans" != "Y" ]]; then
+    echo "Aborted."
+    exit 1
+  fi
 fi
 echo ""
 
@@ -243,7 +280,8 @@ assert_preflight_lock() {
 }
 
 observed_required_contexts=""
-for _ in {1..30}; do
+registration_deadline=$((SECONDS + registration_timeout_seconds))
+while true; do
   observed_required_contexts="$(
     run_gh pr checks "$pr_url" \
       --repo "$GITHUB_REPOSITORY" \
@@ -255,10 +293,24 @@ for _ in {1..30}; do
   if [[ "$observed_required_contexts" == "$required_contexts" ]]; then
     break
   fi
-  run_public sleep 2
+  registration_remaining_seconds=$((registration_deadline - SECONDS))
+  if (( registration_remaining_seconds <= 0 )); then
+    break
+  fi
+  registration_poll_seconds=10
+  if (( registration_remaining_seconds < registration_poll_seconds )); then
+    registration_poll_seconds=$registration_remaining_seconds
+  fi
+  run_public sleep "$registration_poll_seconds"
 done
 if [[ "$observed_required_contexts" != "$required_contexts" ]]; then
   echo "ERROR: required checks did not register for $pr_url" >&2
+  echo "Missing required contexts:" >&2
+  while IFS= read -r required_context; do
+    if [[ $'\n'"$observed_required_contexts"$'\n' != *$'\n'"$required_context"$'\n'* ]]; then
+      printf '  %s\n' "$required_context" >&2
+    fi
+  done <<< "$required_contexts"
   exit 1
 fi
 run_gh pr checks "$pr_url" \

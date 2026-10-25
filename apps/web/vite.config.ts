@@ -2,6 +2,7 @@ import adapter from '@sveltejs/adapter-vercel';
 import { projectRunes } from '@yesid/config/svelte/project-runes.js';
 import { readFileSync } from 'node:fs';
 import { hashThemeScript } from './scripts/csp-script-hash.mjs';
+import { createCspDirectives } from './scripts/csp-policy.mjs';
 import globalData from '@csstools/postcss-global-data';
 import { defineConfig } from 'vitest/config';
 import tailwindcss from '@tailwindcss/vite';
@@ -51,24 +52,7 @@ export default defineConfig({
 
 			csp: {
 				mode: 'hash',
-				directives: {
-					'default-src': ['self'],
-					'script-src': ['self', themeScriptHash],
-					'style-src': ['self', 'unsafe-inline'],
-					'img-src': ['self', 'data:', 'blob:'],
-					'font-src': ['self', 'data:'],
-					'connect-src': [
-						'self',
-						'https://plausible.io',
-						'https://api.web3forms.com',
-						'https://transit.yesid.dev'
-					],
-					'manifest-src': ['self'],
-					'frame-src': ['none'],
-					'object-src': ['none'],
-					'base-uri': ['self'],
-					'form-action': ['self']
-				}
+				directives: createCspDirectives({ themeScriptHash, vercelEnv: process.env.VERCEL_ENV })
 			},
 			prerender: {
 				// '*' keeps the default crawl; the llms files are linked from nowhere,
