@@ -31,8 +31,7 @@ const config = {
 				'frame-src': ['none'],
 				'object-src': ['none'],
 				'base-uri': ['self'],
-				'form-action': ['self'],
-				'upgrade-insecure-requests': true
+				'form-action': ['self']
 			}
 		},
 		prerender: {
