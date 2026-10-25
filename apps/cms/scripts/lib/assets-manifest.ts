@@ -50,4 +50,3 @@ export function validateFolderReferences(manifest: AssetsManifest): string[] {
 	}
 	return errors;
 }
-
