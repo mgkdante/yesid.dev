@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { adapter } from '$lib/adapters';
+import { adapter } from '#lib/adapters/index.js';
 import { match as ogTypeMatch } from '../params/ogType';
-import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.js';
 import { ogCoverage } from '@yesid/gates';
 import {
 	OG_BASE_SLUG_RE,
@@ -10,7 +10,7 @@ import {
 	parseOgSlugParam,
 	type OgLocale,
 	type OgType,
-} from '$lib/og/og-path';
+} from '#lib/og/og-path.js';
 
 function assertOgCoverage(type: OgType, identifiers: readonly string[]) {
 	const coverage = ogCoverage({

@@ -6,7 +6,7 @@
   default (true here, matching the project/service section call sites).
 -->
 <script lang="ts">
-	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
 
 	let { sectionKey, open = true }: { sectionKey?: string; open?: boolean } = $props();
 </script>

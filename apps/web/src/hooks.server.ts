@@ -1,9 +1,9 @@
-import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
-import { adapter } from '$lib/adapters';
-import { isProductionHostname, NOINDEX_POLICY } from '$lib/server/indexing';
-import { pathLocale } from '$lib/utils/locale-routing';
-import type { ErrorPageContent } from '$lib/navigation/types';
-import { initializeUi } from '$lib/ui/configure';
+import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { adapter } from '#lib/adapters/index.js';
+import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.js';
+import { pathLocale } from '#lib/utils/locale-routing.js';
+import type { ErrorPageContent } from '#lib/navigation/types.js';
+import { initializeUi } from '#lib/ui/configure.js';
 
 export const init: ServerInit = () => {
 	initializeUi();
@@ -68,8 +68,9 @@ export const handleError: HandleServerError = async ({ error, event, status }) =
 	// in prerender failures ("Error: 500 /about" with no cause).
 	console.error(`[handleError] ${status} ${event.url.pathname}`, error);
 
-	const message =
-		error instanceof Error ? error.message : (typeof error === 'string' ? error : 'An unexpected error occurred');
+	const message = error instanceof Error
+		? error.message
+		: typeof error === 'string' ? error : 'An unexpected error occurred';
 
 	let cmsErrorPage: ErrorPageContent | undefined;
 	try {

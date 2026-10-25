@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { llmsFullTxt } from '$lib/server/llms';
+import { llmsFullTxt } from '#lib/server/llms.js';
 
 // Prerendered at build time (entry registered in svelte.config.js — the file
 // is linked from nowhere, so the crawler would never discover it).

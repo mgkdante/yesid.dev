@@ -1,11 +1,11 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
 // slice-18i Phase 7C: HomeCloser now requires closer prop.
-import { closerContent } from '$lib/content/site-content';
-import { siteMeta } from '$lib/content/site-meta';
-import { gsap } from '$lib/motion/utils/gsap';
+import { closerContent } from '#lib/content/site-content';
+import { siteMeta } from '#lib/content/site-meta';
+import { gsap } from '#lib/motion/utils/gsap.js';
 
 const props = { closer: closerContent, siteMeta };
 

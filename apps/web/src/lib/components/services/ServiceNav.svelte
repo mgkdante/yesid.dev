@@ -4,13 +4,13 @@
   Omits either side when the current service is first or last.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Service } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.js';
 	import { boop } from '@yesid/motion/actions';
 	import { SectionLabel } from '@yesid/ui/brand';
 

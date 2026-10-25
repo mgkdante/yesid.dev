@@ -6,28 +6,28 @@
 -->
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import type { Service, Project } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Service, Project } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.js';
 	import { boop } from '@yesid/motion/actions';
-	import StationTabs from '$lib/components/shared/StationTabs.svelte';
+	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import ServiceStackPanel from './ServiceStackPanel.svelte';
-	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
-	import TocNav from '$lib/components/shared/TocNav.svelte';
-	import TocPill from '$lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '$lib/components/shared/toc';
+	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+	import TocNav from '#lib/components/shared/TocNav.svelte';
+	import TocPill from '#lib/components/shared/TocPill.svelte';
+	import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.js';
 	import { onMount } from 'svelte';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import { SectionLabel } from '@yesid/ui/brand';
-	import CtaBand from '$lib/components/shared/CtaBand.svelte';
-	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
+	import CtaBand from '#lib/components/shared/CtaBand.svelte';
+	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 
 	let {
 		service,

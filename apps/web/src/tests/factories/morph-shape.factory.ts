@@ -4,7 +4,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { MorphShape } from '$lib/types';
+import type { MorphShape } from '#lib/types.js';
 
 export const morphShapeFactory = new Factory<MorphShape>(() => ({
 	id: faker.lorem.slug(),

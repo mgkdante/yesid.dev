@@ -1,8 +1,8 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HeroMetrics from './HeroMetrics.svelte';
-import { INITIAL_HERO_DATA } from '$lib/live';
+import { INITIAL_HERO_DATA } from '#lib/live/index.js';
 // Note: HeroMetrics renders TWO variants — a single-card mobile variant
 // (data-testid="metric-card-mobile") and a 3-card desktop variant
 // (data-testid="metric-card"). Both are in the DOM at all times; CSS

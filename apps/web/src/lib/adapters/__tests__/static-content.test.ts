@@ -11,8 +11,8 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { staticAdapter } from '$lib/adapters/static';
-import { errorPagesById } from '$lib/content/error-pages';
+import { staticAdapter } from '#lib/adapters/static.js';
+import { errorPagesById } from '#lib/content/error-pages';
 import { ErrorPageContentSchema } from '@repo/shared';
 
 // ---------------------------------------------------------------------------

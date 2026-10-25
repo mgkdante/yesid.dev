@@ -8,11 +8,11 @@
 	import type { Snippet } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import { menuItems as staticMenuItems, siteLabels } from '$lib/content';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
-	import type { NavLink } from '$lib/navigation/types';
-	import type { Locale } from '$lib/types';
+	import { menuItems as staticMenuItems, siteLabels } from '#lib/content/index.js';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
+	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.js';
+	import type { NavLink } from '#lib/navigation/types.js';
+	import type { Locale } from '#lib/types.js';
 
 	let {
 		open = false,

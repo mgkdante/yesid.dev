@@ -35,13 +35,13 @@ import * as blogPageModule from './blog-page.js';
 import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
-import { INITIAL_HERO_DATA } from '$lib/live';
+import { INITIAL_HERO_DATA } from '#lib/live/index.js';
 import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
 import { siteLabels as siteLabelsModule } from './site-labels.js';
 import {
 	HeroDataSchema,
-} from '$lib/schemas';
+} from '#lib/schemas/index.js';
 import {
 	ProjectSchema,
 	ServiceSchema,

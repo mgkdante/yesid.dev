@@ -1,5 +1,5 @@
-import type { ParamMatcher } from '@sveltejs/kit';
-import { isPrefixLocale } from '$lib/utils/locale-routing';
+import type { ParamMatcher } from '@sveltejs/kit/params';
+import { isPrefixLocale } from '#lib/utils/locale-routing.js';
 
 // SvelteKit matcher for the optional [[lang=locale]] segment. Accepts ONLY
 // locales that are routable as prefixes (never 'en' — EN is unprefixed; a

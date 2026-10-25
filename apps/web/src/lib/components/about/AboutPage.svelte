@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import type { AboutContent } from '$lib/types';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+	import type { AboutContent } from '#lib/types.js';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';

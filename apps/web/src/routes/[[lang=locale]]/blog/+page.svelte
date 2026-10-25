@@ -4,9 +4,9 @@
   "Personal Corner" link navigates to /blog/personal.
 -->
 <script lang="ts">
-	import BlogListingPage from '$lib/components/blog/BlogListingPage.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import BlogListingPage from '#lib/components/blog/BlogListingPage.svelte';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	let { data } = $props();
 

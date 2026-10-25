@@ -34,15 +34,15 @@ import type { LayoutServerLoad } from './$types';
 // routes (+server.ts: og/, api/, sitemap.xml, robots.txt, /work, service
 // redirects) opt out individually — they stay on the lambda.
 export const prerender = true;
-import { isPathPublished } from '$lib/utils/page-registry';
-import { adapter } from '$lib/adapters';
-import { localeFromParams, stripLocaleSegment, delocalizePath } from '$lib/utils/locale-routing';
-import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { errorSeoFallback } from '$lib/adapters/error-seo-fallback';
-import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
-import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
-import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
+import { isPathPublished } from '#lib/utils/page-registry.js';
+import { adapter } from '#lib/adapters/index.js';
+import { localeFromParams, stripLocaleSegment, delocalizePath } from '#lib/utils/locale-routing.js';
+import { siteMeta as STATIC_SITE_META } from '#lib/content/site-meta';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
+import { errorSeoFallback } from '#lib/adapters/error-seo-fallback.js';
+import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '#lib/content/nav';
+import { FALLBACK_MORPH_SHAPES } from '#lib/utils/shapes.js';
+import type { NavLink, ErrorPageContent } from '#lib/navigation/types.js';
 
 // CDN cache-control headers are set centrally in hooks.server.ts via
 // response.headers.set (not setHeaders). Setting them here too triggered a

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/svelte';
 import Nav from './Nav.svelte';
-import type { NavLink } from '$lib/navigation/types';
+import type { NavLink } from '#lib/navigation/types.js';
 
 const links: readonly NavLink[] = [
 	{ label: { en: 'Studio', fr: 'Atelier', es: 'Taller' }, href: '/studio', priority: 1 },

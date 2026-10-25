@@ -1,27 +1,27 @@
 import { describe, it, expect, vi } from 'vitest';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
-import { siteLabels } from '$lib/content';
+import { siteLabels } from '#lib/content/index.js';
 import BlockRenderer from './BlockRenderer.svelte';
 // Server-side highlighter (Shiki) — fine to import in vitest (node context);
 // the client bundle guard only applies to app code. Tests build the highlight
 // map with the real helper so the load → BlockRenderer → CodeBlock seam is
 // exercised end-to-end.
-import { collectCodeHighlights } from '$lib/server/code-highlights';
+import { collectCodeHighlights } from '#lib/server/code-highlights.js';
 import type { BlockEditorDoc } from '@repo/shared';
 
 // Stub Directus asset helper — PUBLIC_DIRECTUS_URL is unset in the test env
 // (setup.dom.ts mocks $env/dynamic/public as { env: {} }), so the real asset()
 // throws. Provide a deterministic stub that embeds the UUID in the URL so
 // assertions on src can simply use toContain('uuid-123').
-vi.mock('$lib/directus/assets', () => ({
+vi.mock('#lib/directus/assets.js', () => ({
 	asset: (id: string, _preset?: string) => `/test-assets/${id}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, _preset?: string) => ({ src: `/test-assets/${id}` }),
 }));
 
 // Use a distinctive editorial title so a hardcoded "code" cannot pass.
-vi.mock('$lib/content', async (importOriginal) => {
-	const content = await importOriginal<typeof import('$lib/content')>();
+vi.mock('#lib/content/index.js', async (importOriginal) => {
+	const content = await importOriginal<typeof import('#lib/content/index.js')>();
 	const labels = structuredClone(content.siteLabels);
 	labels.blogChrome.detail.code.title = { en: 'CMS code window' };
 	labels.a11y.architectureDiagram = { en: 'CMS architecture label' };

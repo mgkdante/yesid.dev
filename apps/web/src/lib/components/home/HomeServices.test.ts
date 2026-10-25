@@ -6,8 +6,8 @@ import HomeServices from './HomeServices.svelte';
 // component no longer calls getVisibleServices() itself; the home
 // +page.server.ts resolves it through the repository layer. The test stub
 // derives the same data from the content module the static adapter reads.
-import { servicesGridContent } from '$lib/content/site-content';
-import { getVisibleServices } from '$lib/services/static-helpers';
+import { servicesGridContent } from '#lib/content/site-content';
+import { getVisibleServices } from '#lib/services/static-helpers.js';
 import { serviceFactory } from '../../../tests/factories';
 
 const services = getVisibleServices();

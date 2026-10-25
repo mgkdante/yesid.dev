@@ -11,11 +11,11 @@
 //     can be that stale.
 //   - GET /api/weather re-exposes this util with a 30-minute edge TTL;
 //     ContactPage/AboutWeather refresh from it after hydration.
+import { building } from '$app/env';
 
-import { building } from '$app/environment';
-import { env } from '$env/dynamic/private';
-import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
+import { OPENWEATHER_API_KEY } from '$app/env/private';
+import type { Locale } from '#lib/types.js';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
 
 export interface WeatherData {
 	temp: number;
@@ -64,7 +64,7 @@ export async function fetchMontrealWeather(
 	if (building) {
 		return null;
 	}
-	if (!env.OPENWEATHER_API_KEY) {
+	if (!OPENWEATHER_API_KEY) {
 		return null;
 	}
 
@@ -76,9 +76,7 @@ export async function fetchMontrealWeather(
 	}
 
 	try {
-		const res = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?q=Montreal,CA&units=metric&lang=${lang}&appid=${env.OPENWEATHER_API_KEY}`
-		);
+		const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Montreal,CA&units=metric&lang=${lang}&appid=${OPENWEATHER_API_KEY}`);
 
 		if (res.ok) {
 			const data = await res.json();

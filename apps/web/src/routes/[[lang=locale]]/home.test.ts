@@ -15,14 +15,14 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-} from '$lib/content/site-content';
-import { INITIAL_HERO_DATA } from '$lib/live';
-import { getFeaturedProjects } from '$lib/projects/static-helpers';
-import { getVisibleServices } from '$lib/services/static-helpers';
-import { siteMeta } from '$lib/content/site-meta';
-import type { Project } from '$lib/types';
+} from '#lib/content/site-content';
+import { INITIAL_HERO_DATA } from '#lib/live/index.js';
+import { getFeaturedProjects } from '#lib/projects/static-helpers.js';
+import { getVisibleServices } from '#lib/services/static-helpers.js';
+import { siteMeta } from '#lib/content/site-meta';
+import type { Project } from '#lib/types.js';
 
-vi.mock('$lib/directus/assets', () => ({
+vi.mock('#lib/directus/assets.js', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, preset?: string) => ({

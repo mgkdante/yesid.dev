@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit';
-import { adapter } from '$lib/adapters';
+import { adapter } from '#lib/adapters/index.js';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
-import { blogEntries } from '$lib/server/prerender-entries';
-import { collectCodeHighlights } from '$lib/server/code-highlights';
-import { getBlogPostsForLocale } from '$lib/blog/translations';
-import { localeFromParams } from '$lib/utils/locale-routing';
+import { blogEntries } from '#lib/server/prerender-entries.js';
+import { collectCodeHighlights } from '#lib/server/code-highlights.js';
+import { getBlogPostsForLocale } from '#lib/blog/translations.js';
+import { localeFromParams } from '#lib/utils/locale-routing.js';
 
 export const entries = blogEntries;
 export const prerender = entries().length > 0;

@@ -1,32 +1,27 @@
-<!--
-  Shared blog listing layout used by BOTH /blog (professional) and /blog/personal.
-  Parameterized by category — no category logic inside, just renders what it's given.
-  Includes desktop filters and mobile in-flow filters.
--->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
+	import { browser } from '$app/env';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import type { BlogPost, Locale } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import '$lib/styles/listing-header.css';
-	import '$lib/styles/listing-shell.css';
+	import type { BlogPost, Locale } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
+	import '#lib/styles/listing-header.css';
+	import '#lib/styles/listing-shell.css';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
-	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
-	import SearchInput from '$lib/components/shared/SearchInput.svelte';
-	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
-	import ListingMobileFilters from '$lib/components/shared/ListingMobileFilters.svelte';
-	import { startListingBlueprintScrub } from '$lib/components/shared/listing-blueprint-scrub';
+	import { siteLabels } from '#lib/content/index.js';
+	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.js';
+	import SearchInput from '#lib/components/shared/SearchInput.svelte';
+	import FilterSummary from '#lib/components/shared/FilterSummary.svelte';
+	import ListingMobileFilters from '#lib/components/shared/ListingMobileFilters.svelte';
+	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.js';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { persisted } from '$lib/state/persisted.svelte';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.js';
+	import { persisted } from '#lib/state/persisted.svelte.js';
 
 	let {
 		posts,
@@ -61,7 +56,7 @@
 	// Browser-gated: the page prerenders (url.searchParams is unreadable at
 	// build), so SSR HTML is the unfiltered listing and ?tag deep-links apply
 	// on hydration.
-	let activeTag = $derived(browser ? $page.url.searchParams.get('tag') : null);
+	let activeTag = $derived(browser ? page.url.searchParams.get('tag') : null);
 	const activeLang = persisted<Locale | null>('blog-lang', null); // null = show all languages
 	const searchQuery = persisted('blog-q', '');
 	const dateFrom = persisted('blog-from', '');
@@ -119,7 +114,7 @@
 
 	function handleTagSelect(tag: string | null) {
 		flipState = captureFlipState();
-		const url = new URL($page.url);
+		const url = new URL(page.url);
 		if (tag) {
 			url.searchParams.set('tag', tag);
 		} else {
@@ -183,6 +178,12 @@
 	});
 </script>
 
+<!--
+  Shared blog listing layout used by BOTH /blog (professional) and /blog/personal.
+  Parameterized by category — no category logic inside, just renders what it's given.
+  Includes desktop filters and mobile in-flow filters.
+-->
+
 <div
 	bind:this={listingSectionEl}
 	data-testid="blog-listing"
@@ -209,11 +210,11 @@
 			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
 				<BlogFilterSidebar
 					tags={allTags}
-					{languages}
-					{activeTag}
+					languages={languages}
+					activeTag={activeTag}
 					activeLang={compatibleLang}
-					{accentColor}
-					{cornerLink}
+					accentColor={accentColor}
+					cornerLink={cornerLink}
 					bind:searchQuery={searchQuery.value}
 					onTagSelect={handleTagSelect}
 					onLangSelect={handleLangSelect}
@@ -226,32 +227,32 @@
 		<!-- Listing content with padding -->
 		<div class="listing-content">
 
-		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
-		<div class="mb-4 lg:hidden">
+			<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
+			<div class="mb-4 lg:hidden">
 			<SearchInput placeholder={resolveLocale(listingChrome.searchPlaceholder, locale)} bind:value={searchQuery.value} testId="blog-search-mobile" />
-		</div>
+			</div>
 
-		<ListingMobileFilters
-			open={mobileFiltersOpen.value}
-			label={mobileFiltersLabel}
-			testId="blog-filter-mobile"
-			onOpenChange={setMobileFiltersOpen}
-		>
-			<BlogFilterSidebar
-				tags={allTags}
-				{languages}
-				{activeTag}
-				activeLang={compatibleLang}
-				{accentColor}
-				{cornerLink}
-				showSearch={false}
-				bind:searchQuery={searchQuery.value}
-				onTagSelect={handleTagSelect}
-				onLangSelect={handleLangSelect}
-				bind:dateFrom={dateFrom.value}
-				bind:dateTo={dateTo.value}
-			/>
-		</ListingMobileFilters>
+			<ListingMobileFilters
+				open={mobileFiltersOpen.value}
+				label={mobileFiltersLabel}
+				testId="blog-filter-mobile"
+				onOpenChange={setMobileFiltersOpen}
+			>
+				<BlogFilterSidebar
+					tags={allTags}
+					languages={languages}
+					activeTag={activeTag}
+					activeLang={compatibleLang}
+					accentColor={accentColor}
+					cornerLink={cornerLink}
+					showSearch={false}
+					bind:searchQuery={searchQuery.value}
+					onTagSelect={handleTagSelect}
+					onLangSelect={handleLangSelect}
+					bind:dateFrom={dateFrom.value}
+					bind:dateTo={dateTo.value}
+				/>
+			</ListingMobileFilters>
 
 		{#if hasActiveFilters}
 			<FilterSummary count={filteredPosts.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
@@ -261,24 +262,24 @@
 			<!-- Two empty states: "your filters matched nothing" vs "this section has
 			     no posts at all" (blaming filters that don't exist reads as a bug). -->
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-				{resolveLocale(
+					{resolveLocale(
 					hasActiveFilters ? listingChrome.noPostsMessage : listingChrome.noPostsEmptyMessage,
-					locale
-				)}
-			</p>
-		{:else}
-			<div class="flex flex-col gap-4">
-				{#each filteredPosts as post, i (post.slug)}
-					<BlogRow
-						{post}
-						svgContent={svgContents[post.slug] ?? ''}
-						{accentColor}
-						index={i}
-						data-flip-id={post.slug}
-					/>
-				{/each}
-			</div>
-		{/if}
+						locale
+					)}
+				</p>
+			{:else}
+				<div class="flex flex-col gap-4">
+					{#each filteredPosts as post, i (post.slug)}
+						<BlogRow
+							post={post}
+							svgContent={svgContents[post.slug] ?? ''}
+							accentColor={accentColor}
+							index={i}
+							data-flip-id={post.slug}
+						/>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</section>
 </div>

@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Window } from 'happy-dom';
+
+// @migration-task svelte.config was removed; switch to `import { loadConfig } from '@sveltejs/load-config'` to read your config
 import config from '../../svelte.config.js';
 import { extractInlineScripts, hashThemeScript } from '../../scripts/csp-script-hash.mjs';
 

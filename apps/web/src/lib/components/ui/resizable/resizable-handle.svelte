@@ -1,7 +1,7 @@
 <!-- Product invariant: neutral chrome and rounded grip stay local; see vendor/design/ui/README.md#resizable. -->
 <script lang="ts">
 	import * as ResizablePrimitive from "paneforge";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils";
+	import { cn, type WithoutChildrenOrChild } from "#lib/utils/index.js";
 
 	let {
 		ref = $bindable(null),

@@ -7,7 +7,7 @@
 // redirect() can't carry headers, and this permanent redirect should serve
 // from the CDN edge (s-maxage=86400) rather than invoking the lambda per hit.
 
-import { permanentRedirect } from '$lib/server/redirect';
+import { permanentRedirect } from '#lib/server/redirect.js';
 
 // Stays on the lambda: permanentRedirect() carries CDN cache headers a
 // prerendered redirect entry would lose.

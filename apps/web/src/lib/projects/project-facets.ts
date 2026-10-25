@@ -1,5 +1,5 @@
-import type { Project } from '$lib/types';
-import { uniqueSorted } from '$lib/utils';
+import type { Project } from '#lib/types.js';
+import { uniqueSorted } from '#lib/utils/index.js';
 
 export function deriveProjectFacets(projects: readonly Project[]): {
 	tags: readonly string[];

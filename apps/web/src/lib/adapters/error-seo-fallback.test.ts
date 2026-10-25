@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import type { SiteMeta, SiteSeoDefaults } from '$lib/types';
+import type { SiteMeta, SiteSeoDefaults } from '#lib/types.js';
 import { errorSeoFallback } from './error-seo-fallback';
 
 const WEB_ROOT = process.cwd();
@@ -35,8 +35,8 @@ const siteSeoDefaults = {
 
 describe('errorSeoFallback boundary', () => {
 	it.each([
-		['src/routes/+layout.ts', '$lib/adapters/error-seo-fallback'],
-		['src/routes/+layout.server.ts', '$lib/adapters/error-seo-fallback'],
+		['src/routes/+layout.ts', '#lib/adapters/error-seo-fallback.js'],
+		['src/routes/+layout.server.ts', '#lib/adapters/error-seo-fallback.js'],
 		['src/lib/adapters/static.ts', './error-seo-fallback'],
 	])('%s imports the focused fallback module directly', (path, moduleSpecifier) => {
 		const source = readSource(path);
@@ -58,7 +58,7 @@ describe('errorSeoFallback boundary', () => {
 			([, moduleSpecifier]) => moduleSpecifier
 		);
 
-		expect(moduleSpecifiers).toEqual(['$lib/types', '$lib/utils/seo-defaults']);
+		expect(moduleSpecifiers).toEqual(['#lib/types', '$lib/utils/seo-defaults']);
 		expect(source).not.toContain('route-seo-factories');
 	});
 

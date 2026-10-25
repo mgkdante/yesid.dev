@@ -6,7 +6,7 @@ const analyticsMocks = vi.hoisted(() => ({
 	trackAnalyticsEvent: vi.fn(),
 }));
 
-vi.mock('$lib/analytics/client', () => analyticsMocks);
+vi.mock('#lib/analytics/client.js', () => analyticsMocks);
 
 import ProjectLinksCard from './ProjectLinksCard.svelte';
 

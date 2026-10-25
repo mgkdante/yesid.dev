@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { resolveLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from './locale.js';
-import type { LocalizedString } from '$lib/types';
+import type { LocalizedString } from '#lib/types.js';
 
 describe('resolveLocale', () => {
 	const full: LocalizedString = {

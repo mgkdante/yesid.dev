@@ -1,7 +1,7 @@
-import { adapter } from '$lib/adapters';
-import { fetchMontrealWeather } from '$lib/utils/weather';
-import { localeFromParams } from '$lib/utils/locale-routing';
-import { localeEntries } from '$lib/server/prerender-entries';
+import { adapter } from '#lib/adapters/index.js';
+import { fetchMontrealWeather } from '#lib/utils/weather.js';
+import { localeFromParams } from '#lib/utils/locale-routing.js';
+import { localeEntries } from '#lib/server/prerender-entries.js';
 import type { EntryGenerator } from './$types';
 
 export const entries = (() => localeEntries('/about')) satisfies EntryGenerator;

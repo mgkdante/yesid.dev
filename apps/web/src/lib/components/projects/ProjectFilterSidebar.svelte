@@ -7,12 +7,12 @@
   active/tag-active styles and deselect logic live in one place.
 -->
 <script lang="ts">
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
-	import { siteLabels } from '$lib/content';
+	import FilterGroup from '#lib/components/shared/FilterGroup.svelte';
+	import { siteLabels } from '#lib/content/index.js';
 
 	let {
 		serviceIds,

@@ -4,17 +4,17 @@
   Bold orange accents, benefit headline, impact metric. D186.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Service } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.js';
 	import { SectionLabel } from '@yesid/ui/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
-	import { cn } from '$lib/utils';
-	import { pressBounce } from '$lib/motion/actions';
+	import { cn } from '#lib/utils/index.js';
+	import { pressBounce } from '#lib/motion/actions/index.js';
 
 	export interface ServiceCardProps {
 		/** The service data to display */

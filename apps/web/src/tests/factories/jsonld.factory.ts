@@ -9,7 +9,7 @@
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
 import type { z } from 'zod';
-import type { PersonSchema } from '$lib/schemas/jsonld';
+import type { PersonSchema } from '#lib/schemas/jsonld.js';
 
 type Person = z.infer<typeof PersonSchema>;
 

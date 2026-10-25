@@ -13,7 +13,7 @@ import {
 	ANALYTICS_EVENTS,
 	YESID_ANALYTICS_PRESET,
 	type AnalyticsEventName,
-} from '$lib/analytics/preset';
+} from '#lib/analytics/preset.js';
 
 function createTransport(options?: {
 	send?: PlausibleTransport['sendPlausibleEvent'];

@@ -16,9 +16,9 @@ import type { RequestHandler } from './$types';
 // Stays on the lambda: live weather is the entire point of this endpoint —
 // prerendered pages ship without baked weather and hydrate from here.
 export const prerender = false;
-import { fetchMontrealWeather } from '$lib/utils/weather';
-import { isSupportedLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import type { Locale } from '$lib/types';
+import { fetchMontrealWeather } from '#lib/utils/weather.js';
+import { isSupportedLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
+import type { Locale } from '#lib/types.js';
 
 // Resolve the locale from ?lang= (client passes the active locale). Unknown or
 // missing values fall back to EN — the cache-control below is locale-agnostic,

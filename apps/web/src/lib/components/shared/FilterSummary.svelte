@@ -12,10 +12,10 @@
   which was wrong for French zero ("0 résultat", not "0 résultats").
 -->
 <script lang="ts">
-	import type { Locale, LocalizedString } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { siteLabels } from '$lib/content';
+	import type { Locale, LocalizedString } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
+	import { siteLabels } from '#lib/content/index.js';
 
 	const locale = getLocale();
 

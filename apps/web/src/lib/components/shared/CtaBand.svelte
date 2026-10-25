@@ -6,14 +6,14 @@
   per-surface data-testids come from `testidPrefix`.
 -->
 <script lang="ts">
-	import type { CtaContent, SiteMeta } from '$lib/types';
-	import { ctaContent, siteMeta as siteMetaContent } from '$lib/content';
-	import { Button } from '$lib/components/ui/button';
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { pressBounce } from '$lib/motion/actions';
+	import type { CtaContent, SiteMeta } from '#lib/types.js';
+	import { ctaContent, siteMeta as siteMetaContent } from '#lib/content/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
+	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { pressBounce } from '#lib/motion/actions/index.js';
 	import CtaBlueprintBackground from './CtaBlueprintBackground.svelte';
 
 	const locale = getLocale();

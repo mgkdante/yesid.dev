@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { Locale } from '$lib/types';
+import type { Locale } from '#lib/types.js';
 import { match } from '../../params/locale';
 import {
 	PREFIX_LOCALES,

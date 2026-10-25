@@ -3,12 +3,12 @@
   Receives metrics as props so the parent can swap data on refresh.
 -->
 <script lang="ts">
-  import type { HeroMetric } from '$lib/live';
-  import { siteLabels } from '$lib/content/site-labels';
+  import type { HeroMetric } from '#lib/live/index.js';
+  import { siteLabels } from '#lib/content/site-labels';
   import TransitInfoLink from './TransitInfoLink.svelte';
-  import { Card } from '$lib/components/ui/card';
-  import { resolveLocale } from '$lib/utils/locale';
-  import { getLocale } from '$lib/utils/locale-context';
+  import { Card } from '#lib/components/ui/card/index.js';
+  import { resolveLocale } from '#lib/utils/locale.js';
+  import { getLocale } from '#lib/utils/locale-context.js';
 
   const locale = getLocale();
 

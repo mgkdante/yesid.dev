@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SitePage } from '$lib/types';
+import type { SitePage } from '#lib/types.js';
 
 const registry = vi.hoisted(() => ({ pages: [] as readonly SitePage[] }));
-vi.mock('$lib/content/site-pages', () => ({ get sitePages() { return registry.pages; } }));
+vi.mock('#lib/content/site-pages', () => ({ get sitePages() { return registry.pages; } }));
 
 beforeEach(async () => {
 	vi.resetModules();
-	const { sitePages } = await vi.importActual<{ sitePages: readonly SitePage[] }>('$lib/content/site-pages');
+	const { sitePages } = await vi.importActual<{ sitePages: readonly SitePage[] }>('#lib/content/site-pages');
 	registry.pages = sitePages.filter((page) => !['/about', '/blog', '/projects', '/services'].includes(page.path));
 });
 

@@ -87,7 +87,7 @@ vi.mock('$app/navigation', async () => {
 	return { afterNavigate: navigationMock.afterNavigate };
 });
 
-vi.mock('$lib/state/analytics-consent.svelte', async () => {
+vi.mock('#lib/state/analytics-consent.svelte.js', async () => {
 	const { writable } = await import('svelte/store');
 	const state = writable<ConsentState>({
 		choice: 'unknown',
@@ -110,7 +110,7 @@ vi.mock('$lib/state/analytics-consent.svelte', async () => {
 	return { analyticsConsentStore: consentMock.store };
 });
 
-vi.mock('$lib/state/home-intro.svelte', async () => {
+vi.mock('#lib/state/home-intro.svelte.js', async () => {
 	const { writable } = await import('svelte/store');
 	const state = writable<HomeIntroPhase>('pending');
 
@@ -125,11 +125,11 @@ vi.mock('$lib/state/home-intro.svelte', async () => {
 	return { homeIntroStore: introMock.store };
 });
 
-vi.mock('$lib/analytics/client', () => ({
+vi.mock('#lib/analytics/client.js', () => ({
 	trackPageview: analyticsMock.trackPageview,
 }));
 
-vi.mock('$lib/content', () => ({
+vi.mock('#lib/content/index.js', () => ({
 	siteLabels: {
 		ui: {
 			analyticsConsent: {

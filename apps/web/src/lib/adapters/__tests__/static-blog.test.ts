@@ -13,10 +13,10 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { staticAdapter } from '$lib/adapters/static';
-import { blogPosts } from '$lib/content/blog';
-import { blogBodies } from '$lib/content/blog-bodies';
-import { footerLinks, mobileLinks } from '$lib/content/nav';
+import { staticAdapter } from '#lib/adapters/static.js';
+import { blogPosts } from '#lib/content/blog';
+import { blogBodies } from '#lib/content/blog-bodies';
+import { footerLinks, mobileLinks } from '#lib/content/nav';
 import {
 	BlockEditorDocSchema,
 	BlogPageContentSchema,
@@ -136,13 +136,13 @@ describe('staticAdapter.nav.byPlacement — footer + mobile match generated modu
 	});
 
 	it('header still returns navLinks (no regression)', async () => {
-		const { navLinks } = await import('$lib/content/nav');
+		const { navLinks } = await import('#lib/content/nav');
 		const result = await staticAdapter.nav.byPlacement('header');
 		expect(result).toEqual(navLinks);
 	});
 
 	it('menu still returns menuItems (no regression)', async () => {
-		const { menuItems } = await import('$lib/content/nav');
+		const { menuItems } = await import('#lib/content/nav');
 		const result = await staticAdapter.nav.byPlacement('menu');
 		expect(result).toEqual(menuItems);
 	});

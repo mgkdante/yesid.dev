@@ -38,7 +38,7 @@ function importedNames(specifiers: string): string[] {
 		.filter(Boolean);
 }
 
-describe('$lib/live domain boundary', () => {
+describe('#lib/live domain boundary', () => {
 	it('owns the hero demo and live KPI modules outside generated content', () => {
 		const staleContentModules = ['hero-data.ts', 'hero-data.test.ts', 'live-kpis.ts', 'live-kpis.test.ts']
 			.map((name) => join(CONTENT, name))

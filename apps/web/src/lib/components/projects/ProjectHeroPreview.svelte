@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Project } from '$lib/types';
-	import { assetImage } from '$lib/directus/assets';
-	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '$lib/utils/theme-media';
+	import type { Project } from '#lib/types.js';
+	import { assetImage } from '#lib/directus/assets.js';
+	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.js';
 	import { onMount } from 'svelte';
 
 	let {

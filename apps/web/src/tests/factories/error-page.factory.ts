@@ -6,7 +6,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { ErrorPageContent } from '$lib/navigation/types';
+import type { ErrorPageContent } from '#lib/navigation/types.js';
 
 const localizedString = () => ({
 	en: faker.lorem.sentence(),

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const fetchMontrealWeatherMock = vi.fn();
 
-vi.mock('$lib/utils/weather', () => ({
+vi.mock('#lib/utils/weather.js', () => ({
 	fetchMontrealWeather: (...args: unknown[]) => fetchMontrealWeatherMock(...args),
 }));
 

@@ -4,7 +4,7 @@
   Uses +page@.svelte to bypass the blog listing layout (same as project detail).
 -->
 <script lang="ts">
-	import BlogDetailPage from '$lib/components/blog/BlogDetailPage.svelte';
+	import BlogDetailPage from '#lib/components/blog/BlogDetailPage.svelte';
 
 	let { data } = $props();
 </script>

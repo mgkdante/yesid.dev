@@ -3,9 +3,9 @@
 // resolve once on the server and hydrate via __data.json.
 
 import { error } from '@sveltejs/kit';
-import { fetchServiceSvgContents } from '$lib/utils';
-import { adapter } from '$lib/adapters';
-import { serviceEntries } from '$lib/server/prerender-entries';
+import { fetchServiceSvgContents } from '#lib/utils/index.js';
+import { adapter } from '#lib/adapters/index.js';
+import { serviceEntries } from '#lib/server/prerender-entries.js';
 
 export const entries = serviceEntries;
 export const prerender = entries().length > 0;
