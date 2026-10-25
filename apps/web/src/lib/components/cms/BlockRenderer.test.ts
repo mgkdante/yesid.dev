@@ -1,25 +1,40 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, render } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import { siteLabels } from '#lib/content/index.ts';
 import BlockRenderer from './BlockRenderer.svelte';
 // Server-side highlighter (Shiki) — fine to import in vitest (node context);
 // the client bundle guard only applies to app code. Tests build the highlight
 // map with the real helper so the load → BlockRenderer → CodeBlock seam is
 // exercised end-to-end.
-import { collectCodeHighlights } from '$lib/server/code-highlights';
+import { collectCodeHighlights } from '#lib/server/code-highlights.ts';
 import type { BlockEditorDoc } from '@repo/shared';
 
 // Stub Directus asset helper — PUBLIC_DIRECTUS_URL is unset in the test env
-// (setup.dom.ts mocks $env/dynamic/public as { env: {} }), so the real asset()
+// (setup.dom.ts mocks $app/env/public with an empty media URL), so the real asset()
 // throws. Provide a deterministic stub that embeds the UUID in the URL so
 // assertions on src can simply use toContain('uuid-123').
-vi.mock('$lib/directus/assets', () => ({
+vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, _preset?: string) => `/test-assets/${id}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, _preset?: string) => ({ src: `/test-assets/${id}` }),
 }));
+
+// Use a distinctive editorial title so a hardcoded "code" cannot pass.
+vi.mock('#lib/content/index.ts', async (importOriginal) => {
+	const content = await importOriginal<typeof import('#lib/content/index.ts')>();
+	const labels = structuredClone(content.siteLabels);
+	labels.blogChrome.detail.code.title = { en: 'CMS code window' };
+	labels.a11y.architectureDiagram = { en: 'CMS architecture label' };
+	return { ...content, siteLabels: labels };
+});
+
+vi.mock('$app/env', () => ({ browser: true }));
+
+const mermaid = vi.hoisted(() => ({
+	initialize: vi.fn(),
+	render: vi.fn(async (_id: string, _source: string) => ({ svg: '<svg><text>Diagram</text></svg>' })),
+}));
+vi.mock('mermaid', () => ({ default: mermaid }));
 
 describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 	const baseDoc = (blocks: BlockEditorDoc['blocks']): BlockEditorDoc => ({
@@ -214,7 +229,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		);
 	});
 
-	it('renders mermaid code blocks as CMS-authored diagrams', () => {
+	it('renders mermaid code blocks as CMS-authored diagrams', async () => {
 		const doc = baseDoc([
 			{
 				id: 'm1',
@@ -231,41 +246,65 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		expect(diagram?.textContent).toContain('Directus CMS');
 		expect(diagram?.textContent).toContain('generated TypeScript cache');
 		expect(container.querySelector('.copy-btn')).toBeNull();
+		await waitFor(() => expect(diagram?.querySelector('svg')).toBeInTheDocument());
 	});
 
-	it('configures Mermaid with theme-aware brand colors', () => {
-		// The theme-variable builder lives in the extracted $lib/utils/mermaid-theme
-		// module: it reads the brand CSS custom properties via getComputedStyle so
-		// the palette tracks the active light/dark theme.
-		const themeSource = readFileSync(
-			join(cwd(), 'src/lib/utils/mermaid-theme.ts'),
-			'utf8',
-		);
-		expect(themeSource).toContain('themeVariables');
-		expect(themeSource).toContain('getComputedStyle');
-		expect(themeSource).toContain('--primary');
-		expect(themeSource).toContain('--accent');
+	it('re-renders Mermaid with the active palette when the document theme changes', async () => {
+		const previousTheme = document.documentElement.getAttribute('data-theme');
+		// happy-dom caches descendant styles across ancestor attribute changes.
+		// Supply computed CSS at the browser boundary; use the real theme builder.
+		const computedStyle = vi.spyOn(globalThis, 'getComputedStyle').mockImplementation(() => {
+			const style = document.createElement('div').style;
+			const dark = document.documentElement.dataset.theme === 'dark';
+			style.setProperty('--primary', dark ? '#ee8800' : '#884400');
+			style.setProperty('--accent', dark ? '#ffcc44' : '#775500');
+			return style;
+		});
+		document.documentElement.dataset.theme = 'dark';
+		mermaid.initialize.mockClear();
+		mermaid.render.mockClear();
+		const source = 'flowchart LR\n  cms --> cache';
+		try {
+			const { container, unmount } = render(BlockRenderer, {
+				doc: baseDoc([{ id: 'theme-diagram', type: 'code', data: { code: 'mermaid\n' + source } }]),
+			});
+			await waitFor(() => expect(mermaid.render).toHaveBeenCalledTimes(1));
+			expect(mermaid.initialize).toHaveBeenLastCalledWith(expect.objectContaining({
+				themeVariables: expect.objectContaining({ primaryBorderColor: '#ee8800', lineColor: '#ffcc44' }),
+			}));
+			expect(mermaid.render).toHaveBeenLastCalledWith(expect.any(String), source);
+			await waitFor(() => expect(container.querySelector('svg')?.textContent).toBe('Diagram'));
+			expect(container.querySelector('[aria-label]')).toHaveAttribute(
+				'aria-label', siteLabels.a11y.architectureDiagram.en,
+			);
 
-		// The component consumes that builder and re-themes on a data-theme flip.
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/cms/blocks/MermaidDiagram.svelte'),
-			'utf8',
-		);
-		expect(source).toContain('buildMermaidThemeVariables');
-		expect(source).toContain('MutationObserver');
-		expect(source).toContain('siteLabels.a11y.architectureDiagram');
-		expect(source).not.toContain('aria-label="Architecture diagram"');
-		expect(source).not.toContain("svg = ''");
+			let finishRender!: (result: { svg: string }) => void;
+			mermaid.render.mockImplementationOnce(() => new Promise((resolve) => { finishRender = resolve; }));
+			document.documentElement.dataset.theme = 'light';
+			await waitFor(() => expect(mermaid.render).toHaveBeenCalledTimes(2));
+			expect(mermaid.initialize).toHaveBeenLastCalledWith(expect.objectContaining({
+				themeVariables: expect.objectContaining({ primaryBorderColor: '#884400', lineColor: '#775500' }),
+			}));
+			expect(mermaid.render).toHaveBeenLastCalledWith(expect.any(String), source);
+			// Keep the existing drawing visible while its replacement is rendering.
+			expect(container.querySelector('svg')?.textContent).toBe('Diagram');
+			finishRender({ svg: '<svg><text>Light diagram</text></svg>' });
+			await waitFor(() => expect(container.querySelector('svg')?.textContent).toBe('Light diagram'));
+			await unmount();
+		} finally {
+			cleanup();
+			computedStyle.mockRestore();
+			if (previousTheme === null) document.documentElement.removeAttribute('data-theme');
+			else document.documentElement.setAttribute('data-theme', previousTheme);
+		}
 	});
 
-	it('sources code terminal chrome text from CMS labels', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/cms/blocks/CodeBlock.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('codeChrome.title');
-		expect(source).not.toContain('title="code"');
+	it('renders the CMS code chrome title', () => {
+		const { container } = render(BlockRenderer, {
+			doc: baseDoc([{ id: 'chrome-title', type: 'code', data: { code: 'SELECT 1;' } }]),
+		});
+		expect(container.querySelector('[data-slot="terminal-chrome"] .terminal-title'))
+			.toHaveTextContent('CMS code window');
 	});
 
 	it('escapes plain text in code block (XSS attempt)', () => {

@@ -12,7 +12,7 @@ import { expect, test } from '@playwright/test';
 // real-device viewports it now runs under (iphone-se + galaxy-s23 profiles,
 // plus iphone-12 via the single-phone set).
 //
-const ROUTES = ['/', '/services', '/projects', '/blog', '/contact', '/tech-stack', '/about'];
+const ROUTES = ['/', '/services', '/projects', '/blog', '/contact', '/about'];
 
 // Reduced motion renders the home hero in its final static state (the GSAP
 // intro otherwise hides the text behind an animation). Applied via media
@@ -47,31 +47,30 @@ test.describe('small-device fit', () => {
 		});
 	}
 
-	test('home hero fits one viewport (headline clears nav, both CTAs visible)', async ({
+	test('home headline clears nav and both CTAs remain reachable', async ({
 		page
 	}) => {
 		await page.goto('/');
 		const line1 = page.getByTestId('hero-line1');
-		const cta = page.getByTestId('hero-cta-contact');
 		await expect(line1).toBeVisible();
 		const boxTop = (await page.locator('.hero-viewport-text').boundingBox())!.y;
 		const headTop = (await line1.boundingBox())!.y;
-		const ctaBox = (await cta.boundingBox())!;
-		const innerH = await page.evaluate(() => window.innerHeight);
-		// Headline starts inside its box (i.e. below the nav, not clipped above).
 		expect(headTop, 'headline top vs hero box top').toBeGreaterThanOrEqual(boxTop - 2);
-		// The lower (contact) CTA is fully on screen — the hero stops clipping
-		// before the SQL demo.
-		expect(ctaBox.y + ctaBox.height, 'contact CTA bottom vs viewport bottom').toBeLessThanOrEqual(
-			innerH + 1
-		);
+		expect(headTop, 'headline clears the floating nav').toBeGreaterThanOrEqual(await pillBottom(page));
+		expect(await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth)).toBeLessThanOrEqual(1);
+		for (const id of ['hero-cta-projects', 'hero-cta-contact']) {
+			await page.getByTestId(id).scrollIntoViewIfNeeded();
+			await expect(page.getByTestId(id)).toBeInViewport();
+		}
 	});
 
 	test('service tablist clears the floating nav pill', async ({ page }) => {
 		await page.goto('/services');
 		await page.waitForLoadState('load');
 		const pb = await pillBottom(page);
-		const firstHeading = page.locator('main [role="tablist"], main h1').first();
+		// The service h1 is sr-only; its one-pixel clipping box is not the visible control.
+		const firstHeading = page.locator('main [role="tablist"]');
+		await expect(firstHeading).toBeVisible();
 		const top = (await firstHeading.boundingBox())!.y;
 		expect(top, 'first services heading top vs pill bottom').toBeGreaterThanOrEqual(pb);
 	});

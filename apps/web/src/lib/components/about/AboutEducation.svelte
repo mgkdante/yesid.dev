@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { AboutEducationItem } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutEducationItem } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 
 	const locale = getLocale();
 
@@ -18,7 +18,7 @@
 <div class="group h-full" use:cursorGlow>
 	<Card class="h-full p-3" data-testid="about-education">
 		<div class="relative flex h-full flex-col">
-			<StopLabel {stop} {label} />
+			<StopLabel {stop} {label} as="h2" />
 
 			<div class="edu-line mt-4 flex flex-1 flex-col justify-center">
 				{#each education as item}

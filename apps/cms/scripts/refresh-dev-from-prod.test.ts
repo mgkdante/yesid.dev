@@ -206,6 +206,20 @@ esac
 		}
 	});
 
+	it('forwards R2 configuration using names that the child reads, including fallbacks', () => {
+		const r2Phase = script.slice(script.indexOf('run_r2_refresh()'), script.indexOf('run_git()'));
+		const child = readFileSync(join(import.meta.dir, 'refresh-r2-from-prod.ts'), 'utf8');
+		const forwarded = [...r2Phase.matchAll(/^\s+([A-Z][A-Z0-9_]*)=/gm)]
+			.map((match) => match[1]!)
+			.filter((name) => !['PATH', 'LANG'].includes(name));
+		expect(forwarded).toHaveLength(5);
+		for (const name of forwarded) {
+			expect(child, `${name} must be read by the R2 child`).toMatch(
+				new RegExp(`process\\.env\\.${name}\\b`),
+			);
+		}
+	});
+
 	it('gives each subprocess only the credentials required for its phase', () => {
 		const databasePhase = script.slice(
 			script.indexOf('run_database_refresh()'),

@@ -2,9 +2,9 @@
 // One module = one place to change when the canonical host changes, when a new
 // locale launches, or when the default OG image is updated.
 
-import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
-import { delocalizePath } from '$lib/utils/locale-routing';
+import type { Locale } from '#lib/types.ts';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+import { delocalizePath } from '#lib/utils/locale-routing.ts';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).
@@ -80,8 +80,9 @@ const LOCALIZED_OG_CARDS: ReadonlySet<string> = new Set([
 /**
  * Swap a static EN OG card for its per-locale sibling. Returns the URL unchanged
  * for EN, unpublished locales, cards without a minted variant, and any dynamic
- * (/og/project, /og/blog), absolute, or query-string URL, so the already
- * locale-aware surfaces pass through untouched. This is the single swap point:
+ * (/og/project, /og/blog), absolute, or query-string URL. Project and blog
+ * prerenders are already path-localized, so they pass through untouched.
+ * This is the single swap point:
  * both route cards (compose-page-seo) and service cards (route-seo-factories)
  * flow their url through SeoHead, which calls this.
  */

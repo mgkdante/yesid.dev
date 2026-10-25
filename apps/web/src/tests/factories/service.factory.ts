@@ -6,7 +6,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { Service } from '$lib/types';
+import type { Service } from '#lib/types.ts';
 
 const localizedString = () => ({
 	en: faker.lorem.words(3),

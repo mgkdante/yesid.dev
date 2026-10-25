@@ -1,10 +1,14 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { writable, type Readable } from 'svelte/store';
+import { YESID_ANALYTICS_PRESET } from '#lib/analytics/preset.ts';
 
-export const ANALYTICS_CONSENT_KEY = 'yesid:analytics-consent:v1';
-export const ANALYTICS_PREFERENCES_OPEN_KEY = 'yesid:analytics-preferences-open:v1';
-export const ANALYTICS_DENIAL_SAFETY_KEY = 'yesid:analytics-denial-safety:v1';
-export const ANALYTICS_STORAGE_PROBE_KEY = 'yesid:analytics-storage-probe:v1';
+export const ANALYTICS_CONSENT_KEY = YESID_ANALYTICS_PRESET.storageKeys.consent;
+export const ANALYTICS_PREFERENCES_OPEN_KEY =
+	YESID_ANALYTICS_PRESET.storageKeys.preferencesOpen;
+export const ANALYTICS_DENIAL_SAFETY_KEY =
+	YESID_ANALYTICS_PRESET.storageKeys.denialSafety;
+export const ANALYTICS_STORAGE_PROBE_KEY =
+	YESID_ANALYTICS_PRESET.storageKeys.storageProbe;
 
 export type AnalyticsConsentChoice = 'unknown' | 'granted' | 'denied';
 type DurableAnalyticsConsentChoice = Exclude<AnalyticsConsentChoice, 'unknown'>;
@@ -28,7 +32,6 @@ export interface AnalyticsConsentDependencies {
 	readSafetyMarker: () => string | null;
 	writeSafetyMarker: () => void;
 	removeSafetyMarker: () => void;
-	reload: () => void;
 	listen: (listener: (value: string | null) => void) => () => void;
 }
 
@@ -244,7 +247,7 @@ export function createAnalyticsConsentStore(
 		preferencesFocusRequests,
 		init(): () => void {
 			stopStorageListener();
-			const available = dependencies.hostname() === 'yesid.dev';
+			const available = dependencies.hostname() === YESID_ANALYTICS_PRESET.domain;
 			if (!available) {
 				commitUnavailable();
 				return () => {};
@@ -332,7 +335,6 @@ export function createAnalyticsConsentStore(
 		},
 		openPreferences(): void {
 			const previousChoice = current.choice;
-			const wasPreferencesOpen = current.preferencesOpen;
 			let markerWritten = false;
 			try {
 				dependencies.writePreferencesMarker(previousChoice);
@@ -382,28 +384,20 @@ export function createAnalyticsConsentStore(
 			}
 			commit({ ...current, choice: previousChoice, preferencesOpen: true });
 			requestPreferencesFocus();
-			if (
-				!wasPreferencesOpen &&
-				previousChoice === 'granted' &&
-				durablyRevoked &&
-				markerWritten
-			) {
-				try {
-					dependencies.reload();
-				} catch {
-					// Reload can be unavailable in embedded browsers; the prior choice remains in memory.
-				}
-			}
 		},
 	};
 }
 
 export const analyticsConsentStore = createAnalyticsConsentStore({
-	hostname: () => (browser ? window.location.hostname : ''),
+	hostname: () => browser ? window.location.hostname : '',
 	probeDurableStorage: () => {
 		if (browser) probeDurableAnalyticsStorage(window.localStorage);
 	},
-	read: () => (browser ? window.localStorage.getItem(ANALYTICS_CONSENT_KEY) : null),
+
+	read: () => browser
+		? window.localStorage.getItem(ANALYTICS_CONSENT_KEY)
+		: null,
+
 	write: (value) => {
 		if (browser) window.localStorage.setItem(ANALYTICS_CONSENT_KEY, value);
 	},
@@ -425,9 +419,6 @@ export const analyticsConsentStore = createAnalyticsConsentStore({
 	},
 	removeSafetyMarker: () => {
 		if (browser) window.sessionStorage.removeItem(ANALYTICS_DENIAL_SAFETY_KEY);
-	},
-	reload: () => {
-		if (browser) window.location.reload();
 	},
 	listen: (listener) => {
 		if (!browser) return () => {};

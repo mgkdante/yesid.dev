@@ -1,10 +1,9 @@
 /**
  * blog-posts fetcher — reads `blog_posts` (flat, mono-language per row per AM2.5).
- * Mirrors `toBlogPost` in apps/web/src/lib/adapters/directus.ts.
+ * This module owns the build-time BlogPost projection.
  *
  * SVG fallback resolution: when a row has no svg_illustration FK, hashes the
- * slug to pick from PRO/PERSONAL fallback lists — same deterministic policy
- * as the adapter (`resolveSvgFallbackNameSync` in the same directus.ts).
+ * slug to pick from the canonical PRO/PERSONAL fallback lists.
  */
 
 import { readItems } from '@directus/sdk';
@@ -156,10 +155,9 @@ interface DirectusBlogBodyRow {
 /**
  * Fetch the Block Editor `body` for every published post, keyed by slug (= row id).
  *
- * Mirrors `directusAdapter.blog.bodyBySlug` (apps/web/src/lib/adapters/directus.ts):
- * each value is the row's `body` validated against BlockEditorDocSchema. Posts
+ * Each value is the row's `body` validated against BlockEditorDocSchema. Posts
  * whose `body` is null are omitted so the static `bodyBySlug` returns `null` for
- * them — byte-identical to the runtime adapter's `if (body === null) return null`.
+ * them.
  */
 export async function fetchBlogBodies({
 	client,

@@ -7,7 +7,7 @@
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
-import type { PageSeo } from '$lib/schemas/seo';
+import type { PageSeo } from '#lib/schemas/seo.ts';
 
 // 60-ish char description per locale: faker.lorem.paragraph(1) returns
 // ~50-80 chars depending on word lengths. We pad with a stable suffix to

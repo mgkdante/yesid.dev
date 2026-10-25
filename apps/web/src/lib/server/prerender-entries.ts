@@ -16,13 +16,15 @@
 // build-time cache) — the same arrays the sitemap builder enumerates, so
 // prerender coverage and sitemap coverage stay in lockstep.
 
-import { blogPosts } from '$lib/content/blog';
-import { projects } from '$lib/content/projects';
-import { services } from '$lib/content/services';
-import { legalPages } from '$lib/content/legal-pages';
-import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
-import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '$lib/blog/translations';
-import type { BlogPost } from '$lib/types';
+import { blogPosts } from '#lib/content/blog.ts';
+import { projects } from '#lib/content/projects.ts';
+import { services } from '#lib/content/services.ts';
+import { legalPages } from '#lib/content/legal-pages.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { PREFIX_LOCALES } from '#lib/utils/locale-routing.ts';
+import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '#lib/blog/translations.ts';
+import type { BlogPost, Project, Service, SitePage } from '#lib/types.ts';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
 const LANG_PARAM_VALUES: readonly string[] = ['', ...PREFIX_LOCALES];
@@ -32,42 +34,61 @@ function langParamFor(locale: string): string {
 	return (PREFIX_LOCALES as readonly string[]).includes(locale) ? locale : '';
 }
 
+function isAvailableProject(project: Project): boolean {
+	return project.status !== 'private';
+}
+
+function groupedBlogRows(posts: readonly BlogPost[], pages: readonly SitePage[]) {
+	return groupBlogTranslations(posts.filter((post) => isPathPublished(`/blog/${post.slug}`, pages))).flatMap((group) =>
+		BLOG_TRANSLATION_LOCALES.map((locale) => ({
+			locale,
+			slug: group.posts[locale].slug,
+		})),
+	);
+}
+
 /** Entries for a static page: one unprefixed EN plus every prefix locale. */
-export function localeEntries(): Array<{ lang: string }> {
-	return LANG_PARAM_VALUES.map((lang) => ({ lang }));
+export function localeEntries(path = '/', pages: readonly SitePage[] = sitePages): Array<{ lang: string }> {
+	return isPathPublished(path, pages) ? LANG_PARAM_VALUES.map((lang) => ({ lang })) : [];
 }
 
 /** Blog detail entries for complete EN/FR/ES translation groups. Each row
  * prerenders at its own locale-specific slug; grouping makes an incomplete
  * publication fail the build instead of silently omitting a counterpart. */
-export function blogEntriesFor(posts: readonly BlogPost[]): Array<{ lang: string; slug: string }> {
-	return groupBlogTranslations(posts).flatMap((group) =>
-		BLOG_TRANSLATION_LOCALES.map((locale) => {
-			const post = group.posts[locale];
-			return { lang: langParamFor(post.lang), slug: post.slug };
-		}),
-	);
+export function blogEntriesFor(posts: readonly BlogPost[], pages: readonly SitePage[] = sitePages): Array<{ lang: string; slug: string }> {
+	return groupedBlogRows(posts, pages).map(({ locale, slug }) => ({
+		lang: langParamFor(locale),
+		slug,
+	}));
 }
 
 export function blogEntries(): Array<{ lang: string; slug: string }> {
 	return blogEntriesFor(blogPosts);
 }
 
+export function ogBlogRows(pages: readonly SitePage[] = sitePages) {
+	return groupedBlogRows(blogPosts, pages);
+}
+
+export function ogProjectSlugs(rows: readonly Project[] = projects, pages: readonly SitePage[] = sitePages): string[] {
+	return rows.filter((project) => isAvailableProject(project) && isPathPublished(`/projects/${project.slug}`, pages)).map((project) => project.slug);
+}
+
 /** Project detail entries: every public project × every published locale. */
-export function projectEntries(): Array<{ lang: string; slug: string }> {
+export function projectEntries(pages: readonly SitePage[] = sitePages): Array<{ lang: string; slug: string }> {
 	return projects
-		.filter((project) => project.status !== 'private')
+		.filter((project) => isAvailableProject(project) && isPathPublished(`/projects/${project.slug}`, pages))
 		.flatMap((project) => LANG_PARAM_VALUES.map((lang) => ({ lang, slug: project.slug })));
 }
 
 /** Service detail entries: every visible service × every published locale. */
-export function serviceEntries(): Array<{ lang: string; id: string }> {
-	return services
-		.filter((service) => service.visible)
+export function serviceEntries(pages: readonly SitePage[] = sitePages, rows: readonly Service[] = services): Array<{ lang: string; id: string }> {
+	return rows
+		.filter((service) => service.visible !== false && isPathPublished(`/services/${service.id}`, pages))
 		.flatMap((service) => LANG_PARAM_VALUES.map((lang) => ({ lang, id: service.id })));
 }
 
 /** Legal page entries (OPS1): every legal page × every published locale. */
-export function legalEntries(): Array<{ lang: string; slug: string }> {
-	return legalPages.flatMap((page) => LANG_PARAM_VALUES.map((lang) => ({ lang, slug: page.slug })));
+export function legalEntries(pages: readonly SitePage[] = sitePages): Array<{ lang: string; slug: string }> {
+	return legalPages.filter((page) => isPathPublished(`/legal/${page.slug}`, pages)).flatMap((page) => LANG_PARAM_VALUES.map((lang) => ({ lang, slug: page.slug })));
 }

@@ -1,32 +1,18 @@
-<!--
-  HomeServices — Section 4: Benefit-led services grid.
-
-  Slice-23: Station Card layout. Each service card has an icon hero
-  zone at the top (centered SVG icon, "0N / SERVICE" marker top-left,
-  radial glow), the service title + benefit headline below, and a
-  slim footer band with the impact metric.
-
-  Round 5b: 2×2 grid on desktop (≥1024px) — four stations, two per row —
-  1 column on tablet/mobile.
-  Carnegie-informed: benefit text leads, service title is the visual
-  star — same content priority as before, restructured into the
-  Station Card frame.
--->
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
-	import { browser } from '$app/environment';
-	import { resolveLocale } from '$lib/utils';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { browser } from '$app/env';
+	import { resolveLocale } from '#lib/utils/index.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { fillTemplate } from '$lib/utils/labels';
-	import { siteLabels } from '$lib/content';
+	import { fillTemplate } from '#lib/utils/labels.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 
-	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
-	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
-	import { SectionHeading } from '$lib/components/brand';
-	import type { Service, ServicesGridContent } from '$lib/types';
+	import { morphHover, pressBounce, cursorGlow, cardParallax } from '#lib/motion/actions/index.ts';
+	import { gsap, loadDrawSVG } from '#lib/motion/utils/gsap.ts';
+	import { SectionHeading } from '#lib/components/brand/index.ts';
+	import type { Service, ServicesGridContent } from '#lib/types.ts';
 
 	// slice-28.5 (#124): services arrive as a prop from the home
 	// +page.server.ts load (repository -> adapter), replacing the previous
@@ -80,7 +66,12 @@
 					fetch(`/svg/services/${service.svg}`),
 					drawPluginPromise,
 				]);
-				if (!res.ok) return;
+				if (!res.ok) {
+					console.warn(
+						'[home-services] Decorative SVG fetch failed; keeping the static image.',
+					);
+					return;
+				}
 				const svgText = await res.text();
 
 				const wrapper = panel.querySelector('.svg-inline-wrapper');
@@ -108,12 +99,28 @@
 
 				svgReady[i] = true;
 			} catch {
-				// Graceful fallback — SVG fetch failure keeps the static <img> placeholder.
+				console.warn(
+					'[home-services] Decorative SVG fetch failed; keeping the static image.',
+				);
 			}
 		});
 	});
 </script>
 
+<!--
+  HomeServices — Section 4: Benefit-led services grid.
+
+  Slice-23: Station Card layout. Each service card has an icon hero
+  zone at the top (centered SVG icon, "0N / SERVICE" marker top-left,
+  radial glow), the service title + benefit headline below, and a
+  slim footer band with the impact metric.
+
+  Round 5b: 2×2 grid on desktop (≥1024px) — four stations, two per row —
+  1 column on tablet/mobile.
+  Carnegie-informed: benefit text leads, service title is the visual
+  star — same content priority as before, restructured into the
+  Station Card frame.
+-->
 <!-- go2/w4 operator QA: sectionGlow unwired — no section-scale hover glow here.
      The primitive itself lives on in $lib/motion/actions for other consumers. -->
 <section
@@ -219,7 +226,7 @@
 		padding: var(--space-section-y) var(--space-page-x);
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.services-section {
 			min-height: 100dvh;
 			display: flex;
@@ -303,7 +310,7 @@
 		z-index: 2;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.services-marker {
 			font-size: var(--text-menu-subtitle);
 			letter-spacing: 0.24em;
@@ -375,7 +382,7 @@
 		letter-spacing: 0;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.services-title {
 			font-size: calc(var(--text-card-title) + 0.25rem);
 		}
@@ -414,7 +421,7 @@
 		letter-spacing: 0;
 	}
 
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.services-metric-value {
 			font-size: 1.75rem;
 		}
@@ -440,7 +447,7 @@
 	/* Mobile: shrink the icon zone so the cards aren't unnecessarily tall on
 	   single-column layouts. Round 5: scaled up in lockstep with desktop so
 	   the art stays the hero (72→96 tile, 48→64 art). */
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.services-card {
 			grid-template-rows: 10rem 1fr auto;
 		}

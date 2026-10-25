@@ -1,6 +1,8 @@
+import { sitePages } from '#lib/content/site-pages.ts';
+import { siteMeta } from '#lib/content/site-meta.ts';
 import { describe, expect, it } from 'vitest';
 import { adapter } from './index';
-import { routeSeoOverrides } from '$lib/content/route-seo';
+import { routeSeoOverrides } from '#lib/content/route-seo.ts';
 
 const overrideByPath = new Map(routeSeoOverrides.map((entry) => [entry.path, entry]));
 
@@ -8,7 +10,7 @@ describe('adapter.meta.forRoute', () => {
 	it('resolves a static route by id', async () => {
 		const seo = await adapter.meta.forRoute('/about', 'en');
 		expect(seo.title.en).toBe(
-			'Freelance Digital Solutions Developer | yesid.',
+			`${overrideByPath.get('/about')!.title!.en} | ${siteMeta.name}`,
 		);
 		expect(seo.canonical).toBe('https://yesid.dev/about');
 	});
@@ -168,11 +170,11 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		expect(breadcrumb).toBeDefined();
 		if (breadcrumb && breadcrumb['@type'] === 'BreadcrumbList') {
 			expect(breadcrumb.itemListElement).toHaveLength(3);
-			expect(breadcrumb.itemListElement[1].name).toBe('Blog');
+			expect(breadcrumb.itemListElement[1].name).toBe(sitePages.find(page => page.path === '/blog')!.title.en);
 			// slice-28.6: crumb names come from the trilingual site_pages
 			// registry — its en title for this row is 'Personal Corner'
 			// (previously a hardcoded 'Personal' literal).
-			expect(breadcrumb.itemListElement[2].name).toBe('Personal Corner');
+			expect(breadcrumb.itemListElement[2].name).toBe(sitePages.find(page => page.path === '/blog/personal')!.title.en);
 		}
 	});
 
@@ -182,10 +184,6 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		if (!post) return;
 		const types = await typesFor('/blog/[slug]', { slug: post.slug });
 		expect(types).toEqual(['BlogPosting', 'BreadcrumbList']);
-	});
-
-	it('/tech-stack emits BreadcrumbList only', async () => {
-		expect(await typesFor('/tech-stack')).toEqual(['BreadcrumbList']);
 	});
 
 	it('/__error emits no jsonLd (noIndex route, per spec)', async () => {

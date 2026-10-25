@@ -8,12 +8,12 @@
 	import { untrack } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { Collapsible, CollapsibleTrigger } from '@yesid/ui/collapsible';
-	import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
+	import CollapsibleContent from '#lib/components/ui/collapsible/collapsible-content.svelte';
 	import { ChevronToggle } from '@yesid/ui/brand';
 	import { Badge } from '@yesid/ui/badge';
-	import { Card } from '$lib/components/ui/card';
-	import { persisted } from '$lib/state/persisted.svelte';
-	import { quietModeStore } from '$lib/state/quiet-mode.svelte';
+	import { Card } from '#lib/components/ui/card/index.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { quietModeStore } from '#lib/state/quiet-mode.svelte.ts';
 
 	let {
 		title,
@@ -59,6 +59,11 @@
 	// Single source of truth the template binds to: the persisted value when keyed,
 	// otherwise the local bindable. Writes route back to whichever owns the state.
 	let isOpen = $derived(persistedOpen ? persistedOpen.value : open);
+	let trigger = $state<HTMLButtonElement>();
+	let content = $state<HTMLElement | null>(null);
+	$effect.pre(() => {
+		if (!isOpen && content?.contains(document.activeElement)) trigger?.focus();
+	});
 	function setOpen(next: boolean): void {
 		if (persistedOpen) persistedOpen.value = next;
 		else open = next;
@@ -125,6 +130,7 @@
 				{#snippet child({ props })}
 					<button
 						{...props}
+						bind:this={trigger}
 						type="button"
 						class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
 					>
@@ -139,7 +145,7 @@
 			</div>
 		{/if}
 
-		<CollapsibleContent forceMount class="section-body">
+		<CollapsibleContent bind:ref={content} forceMount class="section-body" inert={!isOpen}>
 			<div class="min-h-0 overflow-hidden">
 				<div class="px-6 pb-6 pt-3">
 					{#if children}

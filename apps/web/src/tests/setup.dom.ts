@@ -49,22 +49,10 @@ HTMLCanvasElement.prototype.getContext = (() => {
 
 // NOTE: matchMedia stub REMOVED — happy-dom implements it natively (v9.19.0+).
 
-// SvelteKit $env/dynamic/* virtual modules assume Node's `process.env`. In
-// happy-dom (DOM-tier tests) `process` isn't defined, so importing the real
-// modules throws TypeError at top-level evaluation of any $env-importing
-// module (e.g. $lib/directus/assets, the live media-URL seam). Stub them as
-// empty objects; tests that need a value mock the module locally.
-//
-// The dormant directus-adapter mock that used to live here was removed at
-// slice-26 close together with $lib/adapters/directus itself (Directus 12
-// verified on both environments; the git history holds the module).
-vi.mock('$env/dynamic/private', () => ({ env: {} }));
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-// $env/static/public resolves from the local .env at transform time, so its
-// contents differ between dev machines and CI. Stub for determinism (vitest's
-// mock proxy throws on any key absent from the factory, so list every var the
-// app touches); tests that need a real value mock the module locally.
-vi.mock('$env/static/public', () => ({ PUBLIC_DIRECTUS_URL: '' }));
+// Keep runtime environment imports deterministic and prevent weather requests.
+// Tests that exercise a configured key can override this mock locally.
+vi.mock('$app/env/private', () => ({ OPENWEATHER_API_KEY: '' }));
+vi.mock('$app/env/public', () => ({ PUBLIC_DIRECTUS_URL: '' }));
 
 // happy-dom does not implement IntersectionObserver. Stub it so any Svelte
 // component using IO-based scroll triggers (lazy load, scroll-driven motion,

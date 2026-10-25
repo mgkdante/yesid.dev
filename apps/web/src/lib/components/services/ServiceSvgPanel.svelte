@@ -14,8 +14,8 @@
   presentation div — SvgIcon inside is aria-hidden too).
 -->
 <script lang="ts">
-	import { cn } from '$lib/utils';
-	import { SvgIcon, CornerMarks } from '$lib/components/brand';
+	import { cn } from '#lib/utils/index.ts';
+	import { SvgIcon, CornerMarks } from '#lib/components/brand/index.ts';
 
 	export interface ServiceSvgPanelProps {
 		/** Raw SVG content string */
@@ -103,7 +103,7 @@
 	   ≥768px only: below that, ServiceCard's mobile listing downsizes this
 	   same panel to a 48px icon via its --svg-icon-size override — the cap
 	   must not outrank it (mobile detail pages use the banner variant). */
-	@media (min-width: 768px) {
+	@media (--tablet-min) {
 		.svg-panel:not(.svg-panel--banner) .svg-art :global([data-slot='svg-icon']) {
 			width: min(224px, 100%) !important;
 			height: min(224px, 100%) !important;

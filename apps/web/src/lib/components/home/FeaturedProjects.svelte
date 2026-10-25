@@ -2,14 +2,14 @@
 	import emblaCarouselSvelte from 'embla-carousel-svelte';
 	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
-	import { allowCarouselDrag } from '$lib/utils/carousel-drag';
-	import { resolveLocale } from '$lib/utils';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { persisted } from '$lib/state/persisted.svelte';
-	import { pendingRestore } from '$lib/state/locale-handoff.svelte';
-	import { siteLabels } from '$lib/content';
-	import type { Project, ProofReelContent, Service } from '$lib/types';
-	import ProjectCard from '$lib/components/projects/ProjectCard.svelte';
+	import { allowCarouselDrag } from '#lib/utils/carousel-drag.ts';
+	import { resolveLocale } from '#lib/utils/index.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { pendingRestore } from '#lib/state/locale-handoff.svelte.ts';
+	import { siteLabels } from '#lib/content/index.ts';
+	import type { Project, ProofReelContent, Service } from '#lib/types.ts';
+	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
 
 	const locale = getLocale();
 
@@ -57,6 +57,8 @@
 	}
 
 	let emblaApi: EmblaCarouselType | undefined = $state(undefined);
+	let canScrollPrevious = $state(false);
+	let canScrollForward = $state(false);
 	const card = persisted<number>('featured-card', 0);
 	let currentIndex = $derived(card.value);
 	const activeIndex = $derived(clampCarouselIndex(currentIndex, total));
@@ -68,7 +70,7 @@
 		loop: true,
 		align: 'start' as const,
 		slidesToScroll: 1,
-		containScroll: false as const,
+		containScroll: 'trimSnaps' as const,
 		watchDrag: allowCarouselDrag,
 	};
 
@@ -81,10 +83,15 @@
 		if (target !== emblaApi.selectedScrollSnap()) {
 			emblaApi.scrollTo(target, true);
 		}
-		card.value = emblaApi.selectedScrollSnap();
-		emblaApi.on('select', () => {
-			if (emblaApi) card.value = emblaApi.selectedScrollSnap();
-		});
+		const syncPosition = () => {
+			if (!emblaApi) return;
+			card.value = emblaApi.selectedScrollSnap();
+			canScrollPrevious = emblaApi.canScrollPrev();
+			canScrollForward = emblaApi.canScrollNext();
+		};
+		syncPosition();
+		emblaApi.on('select', syncPosition);
+		emblaApi.on('reInit', syncPosition);
 	}
 
 	function scrollPrev() {
@@ -134,6 +141,7 @@
 			onclick={scrollPrev}
 			aria-label={previousControlAria}
 			data-testid="proof-prev"
+			disabled={!canScrollPrevious}
 		>
 			<span class="proof-control-arrow" aria-hidden="true">←</span>
 		</button>
@@ -143,6 +151,7 @@
 			onclick={scrollNext}
 			aria-label={nextControlAria}
 			data-testid="proof-next"
+			disabled={!canScrollForward}
 		>
 			<span class="proof-control-arrow" aria-hidden="true">→</span>
 		</button>
@@ -161,10 +170,13 @@
 
 <style>
 	.proof-reel-section {
+		container: proof-reel / inline-size;
 		padding-block: clamp(2rem, 4dvh, 4rem);
 	}
 
 	.embla {
+		--proof-columns: 1;
+		--proof-gap: 1.25rem;
 		overflow-x: clip;
 		overflow-y: visible;
 		margin-bottom: 1.5rem;
@@ -173,13 +185,14 @@
 
 	.embla__container {
 		display: flex;
+		margin-left: calc(-1 * var(--proof-gap));
 		touch-action: pan-y pinch-zoom;
 	}
 
 	.embla__slide {
-		flex: 0 0 100%;
+		flex: 0 0 calc(100% / var(--proof-columns));
 		min-width: 0;
-		margin-right: 1.25rem;
+		padding-left: var(--proof-gap);
 		display: flex;
 	}
 
@@ -211,6 +224,11 @@
 	.proof-control-btn:hover {
 		background: color-mix(in srgb, var(--primary) 10%, transparent);
 		border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+	}
+
+	.proof-control-btn:disabled {
+		opacity: 0.4;
+		cursor: default;
 	}
 
 	.proof-control-arrow {
@@ -253,13 +271,18 @@
 		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
-	@media (min-width: 768px) {
-		.embla__slide {
-			flex-basis: clamp(340px, 44vw, 720px);
-		}
+	/* Choose whole slots from the space left after the section's title rail. */
+	@container proof-reel (min-width: 45.25rem) {
+		.embla { --proof-columns: 2; }
+	}
+	@container proof-reel (min-width: 68.5rem) {
+		.embla { --proof-columns: 3; }
+	}
+	@container proof-reel (min-width: 91.75rem) {
+		.embla { --proof-columns: 4; }
 	}
 
-	@media (max-width: 767px) {
+	@media (--tablet-max) {
 		.proof-reel-section {
 			padding-block: clamp(2.5rem, 6dvh, 4rem);
 		}

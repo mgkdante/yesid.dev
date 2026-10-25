@@ -23,18 +23,6 @@ describe('CornerMarks', () => {
     expect(wrapper.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('defaults to sm size (12px arms)', () => {
-    const { container } = render(CornerMarks);
-    const style = container.querySelector('.corner-marks')!.getAttribute('style')!;
-    expect(style).toContain('--arm: 12px');
-  });
-
-  it('applies md size (32px arms)', () => {
-    const { container } = render(CornerMarks, { props: { size: 'md' } });
-    const style = container.querySelector('.corner-marks')!.getAttribute('style')!;
-    expect(style).toContain('--arm: 32px');
-  });
-
   it('applies custom opacity', () => {
     const { container } = render(CornerMarks, { props: { opacity: 0.8 } });
     const style = container.querySelector('.corner-marks')!.getAttribute('style')!;

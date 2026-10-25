@@ -17,8 +17,7 @@
       "block_manifesto",
       "block_projects_page_content",
       "block_proof_reel",
-      "block_services_grid",
-      "block_tech_stack_page_content"
+      "block_services_grid"
     ],
     "one_collection": null,
     "one_collection_field": "collection",

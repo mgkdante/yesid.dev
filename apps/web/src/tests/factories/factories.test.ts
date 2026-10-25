@@ -12,19 +12,17 @@
 import { describe, it, expect } from 'vitest';
 
 // Schemas
-import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
-import { ServiceSchema } from '$lib/schemas/service';
-import { ProjectSchema } from '$lib/schemas/project';
-import { BlogPostSchema } from '$lib/schemas/blog';
-import { SiteMetaSchema } from '$lib/schemas/meta';
-import { NavLinkSchema, ErrorPageContentSchema } from '$lib/schemas/nav';
-import { PageSeoSchema } from '$lib/schemas/seo';
-import { MorphShapeSchema } from '$lib/schemas/morph-shape';
-import { HeroDataSchema } from '$lib/schemas/hero-data';
-import { TechStackItemSchema } from '$lib/schemas/tech-stack';
-import { PersonSchema } from '$lib/schemas/jsonld';
-import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
-import { IconRecordSchema } from '$lib/schemas/icon';
+import { RouteSeoOverrideSchema } from '@repo/shared';
+import { ServiceSchema } from '@repo/shared';
+import { ProjectSchema } from '@repo/shared';
+import { BlogPostSchema } from '@repo/shared';
+import { SiteMetaSchema } from '@repo/shared';
+import { NavLinkSchema, ErrorPageContentSchema } from '@repo/shared';
+import { PageSeoSchema } from '#lib/schemas/seo.ts';
+import { MorphShapeSchema } from '@repo/shared';
+import { HeroDataSchema } from '#lib/schemas/hero-data.ts';
+import { PersonSchema } from '#lib/schemas/jsonld.ts';
+import { SiteSeoDefaultsSchema } from '@repo/shared';
 
 // Factories
 import { routeSeoFactory } from './route-seo.factory';
@@ -37,10 +35,8 @@ import { errorPageFactory } from './error-page.factory';
 import { pageSeoFactory } from './page-seo.factory';
 import { morphShapeFactory } from './morph-shape.factory';
 import { heroDataFactory } from './hero-data.factory';
-import { techStackFactory } from './tech-stack.factory';
 import { jsonldFactory } from './jsonld.factory';
 import { siteSeoDefaultsFactory } from './site-seo-defaults.factory';
-import { iconRecordFactory } from './icon-record.factory';
 
 describe('routeSeoFactory', () => {
 	it('produces a value that satisfies RouteSeoOverrideSchema', () => {
@@ -204,22 +200,6 @@ describe('heroDataFactory', () => {
 	});
 });
 
-describe('techStackFactory', () => {
-	it('produces a value that satisfies TechStackItemSchema', () => {
-		expect(() => TechStackItemSchema.parse(techStackFactory.build())).not.toThrow();
-	});
-	it('respects overrides', () => {
-		const item = techStackFactory.build({ name: 'Postgres' });
-		expect(item.name).toBe('Postgres');
-		expect(() => TechStackItemSchema.parse(item)).not.toThrow();
-	});
-	it('batch produces N valid instances', () => {
-		const three = techStackFactory.batch(3);
-		expect(three).toHaveLength(3);
-		three.forEach((t) => expect(() => TechStackItemSchema.parse(t)).not.toThrow());
-	});
-});
-
 describe('jsonldFactory (Person variant)', () => {
 	it('produces a value that satisfies PersonSchema', () => {
 		expect(() => PersonSchema.parse(jsonldFactory.build())).not.toThrow();
@@ -249,21 +229,5 @@ describe('siteSeoDefaultsFactory', () => {
 		const three = siteSeoDefaultsFactory.batch(3);
 		expect(three).toHaveLength(3);
 		three.forEach((d) => expect(() => SiteSeoDefaultsSchema.parse(d)).not.toThrow());
-	});
-});
-
-describe('iconRecordFactory', () => {
-	it('produces a value that satisfies IconRecordSchema', () => {
-		expect(() => IconRecordSchema.parse(iconRecordFactory.build())).not.toThrow();
-	});
-	it('respects overrides', () => {
-		const icon = iconRecordFactory.build({ name: 'database' });
-		expect(icon.name).toBe('database');
-		expect(() => IconRecordSchema.parse(icon)).not.toThrow();
-	});
-	it('batch produces N valid instances', () => {
-		const five = iconRecordFactory.batch(5);
-		expect(five).toHaveLength(5);
-		five.forEach((i) => expect(() => IconRecordSchema.parse(i)).not.toThrow());
 	});
 });

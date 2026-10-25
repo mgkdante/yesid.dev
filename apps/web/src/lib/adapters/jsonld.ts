@@ -11,11 +11,10 @@
 // Factories that take a locale apply `resolveLocale(localizedString, locale)`
 // on their text fields — the produced node is already locale-resolved.
 
-import { SchemaOrgNodeSchema } from '$lib/schemas/jsonld';
+import { SchemaOrgNodeSchema } from '#lib/schemas/jsonld.ts';
 import type {
 	BlogPosting,
 	BreadcrumbList,
-	BreadcrumbListItem,
 	CollectionPage,
 	CreativeWork,
 	Person,
@@ -23,11 +22,17 @@ import type {
 	ProfilePage,
 	Service as ServiceNode,
 	WebSite,
-} from '$lib/schemas/jsonld';
-import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
-import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+} from '#lib/schemas/jsonld.ts';
+import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '#lib/types.ts';
+import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { extractText } from '@repo/shared';
+import {
+	buildBreadcrumbListJsonLd,
+	buildCollectionPageJsonLd,
+	buildProfilePageJsonLd,
+	buildWebSiteJsonLd,
+} from '@yesid/seo-kit/jsonld';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
@@ -85,14 +90,13 @@ export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE)
 }
 
 export function buildWebSiteNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE): WebSite {
-	const built = {
-		'@type': 'WebSite' as const,
-		'@id': WEBSITE_ID,
+	const built = buildWebSiteJsonLd({
+		id: WEBSITE_ID,
 		name: meta.name,
 		url: SITE_HOST,
 		description: resolveLocale(meta.description, locale),
 		publisher: { '@id': PERSON_ID },
-	};
+	});
 
 	return SchemaOrgNodeSchema.parse(built) as WebSite;
 }
@@ -148,11 +152,10 @@ export interface BreadcrumbInput {
 }
 
 export function buildProfilePageNode(canonicalUrl: string): ProfilePage {
-	const built = {
-		'@type': 'ProfilePage' as const,
-		'@id': `${canonicalUrl}#profilepage`,
+	const built = buildProfilePageJsonLd({
+		id: `${canonicalUrl}#profilepage`,
 		mainEntity: { '@id': PERSON_ID },
-	};
+	});
 	return SchemaOrgNodeSchema.parse(built) as ProfilePage;
 }
 
@@ -160,18 +163,10 @@ export function buildBreadcrumbListNode(
 	items: readonly BreadcrumbInput[],
 	canonicalUrl: string,
 ): BreadcrumbList {
-	const itemListElement: BreadcrumbListItem[] = items.map((item, index) => ({
-		'@type': 'ListItem' as const,
-		position: index + 1,
-		name: item.name,
-		item: item.url,
-	}));
-
-	const built = {
-		'@type': 'BreadcrumbList' as const,
-		'@id': `${canonicalUrl}#breadcrumb`,
-		itemListElement,
-	};
+	const built = buildBreadcrumbListJsonLd({
+		id: `${canonicalUrl}#breadcrumb`,
+		items,
+	});
 	return SchemaOrgNodeSchema.parse(built) as BreadcrumbList;
 }
 
@@ -180,13 +175,12 @@ export function buildCollectionPageNode(args: {
 	description: string;
 	url: string;
 }): CollectionPage {
-	const built = {
-		'@type': 'CollectionPage' as const,
-		'@id': `${args.url}#collectionpage`,
+	const built = buildCollectionPageJsonLd({
+		id: `${args.url}#collectionpage`,
 		name: args.name,
 		description: args.description,
 		url: args.url,
-	};
+	});
 	return SchemaOrgNodeSchema.parse(built) as CollectionPage;
 }
 

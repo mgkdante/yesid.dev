@@ -1,16 +1,12 @@
-<!--
-  Full detail page layout for /projects/[slug].
-  Structure: full-bleed header + gradient separator + 3-column CSS Grid body.
-  Desktop: TOC (left) + collapsible sections (center) + glance panel (right).
-  Mobile: collapsible glance panel + floating TOC pill + stacked sections.
--->
 <script lang="ts">
-	import type { BlockEditorDoc, Project, Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import '#lib/styles/article-body.css';
+	import { afterNavigate } from '$app/navigation';
+	import type { BlockEditorDoc, Project, Service } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	// TOC chrome, CMS-sourced (navChrome.shared), shared across detail pages.
 	const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
@@ -26,22 +22,22 @@
 	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import CtaBand from '$lib/components/shared/CtaBand.svelte';
-	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
-	import TocNav from '$lib/components/shared/TocNav.svelte';
-	import TocPill from '$lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, tocElement, type TocEntry } from '$lib/components/shared/toc';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import CtaBand from '#lib/components/shared/CtaBand.svelte';
+	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+	import TocNav from '#lib/components/shared/TocNav.svelte';
+	import TocPill from '#lib/components/shared/TocPill.svelte';
+	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
 	import ProjectLinksCard from './ProjectLinksCard.svelte';
-	import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import { onMount, tick } from 'svelte';
-	import { browser } from '$app/environment';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
+	import { browser } from '$app/env';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
 
 	let {
 		project,
@@ -49,21 +45,21 @@
 		serviceSvgContents,
 		readmeHtml,
 		codeHighlights
-	}: {
+
+		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
+	}: { 
 		project: Project;
 		services: Service[];
 		serviceSvgContents: Record<string, string>;
 		readmeHtml?: string;
-		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
-		codeHighlights?: Readonly<Record<string, string>>;
-	} = $props();
+		codeHighlights?: Readonly<Record<string, string>>
+	 } = $props();
 
 	let activeHeadingId = $state('');
 	let readmeBody = $state<HTMLElement | null>(null);
 	let readmeCopyResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	type SectionView = {
-		section: Project['sections'][number];
 		originalIndex: number;
 		title: string;
 		doc: BlockEditorDoc;
@@ -131,7 +127,6 @@
 		project.sections.map((section, originalIndex) => {
 			const doc = resolveLocale(section.content, locale);
 			return {
-				section,
 				originalIndex,
 				title: resolveLocale(section.title, locale),
 				doc,
@@ -202,13 +197,12 @@
 		return readmeHtml.replace(
 			/<(h[1-6])([^>]*)>([\s\S]*?)<\/\1>/gi,
 			(match, tag, attrs, inner) => {
-				const id = `readme-h-${idx++}`;
-				const anchor = /^h[234]$/i.test(tag)
-					? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
-					: '';
-				return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
-			},
-		);
+			const id = `readme-h-${idx++}`;
+			const anchor = (/^h[234]$/i).test(tag)
+				? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
+				: '';
+			return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
+		});
 	});
 
 	function mermaidCssVar(style: CSSStyleDeclaration, name: string, fallback: string): string {
@@ -259,7 +253,8 @@
 
 	// One observer drives the active state for BOTH the desktop nav and the mobile
 	// pill (each receives activeHeadingId as a prop, no duplicate observers).
-	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
+	afterNavigate(onTocNavigate);
+	onMount(() => observeActiveToc((id) => activeHeadingId = id));
 
 	onMount(() => {
 		if (!browser || !readmeHtml) return;
@@ -374,18 +369,6 @@
 		};
 	});
 
-	/** Map a TOC id to its DOM element via the shared resolver. `section-${i}` ids
-	 *  are SYNTHETIC and locale-stable (driven by section index, not localized
-	 *  text); README child ids are index-based too, so the same id resolves to the
-	 *  corresponding heading on both /projects/x and /fr/projects/x. */
-	function headingElement(id: string): Element | null {
-		return tocElement(id);
-	}
-
-	function scrollToHeading(id: string): void {
-		headingElement(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-	}
-
 	// slice-34.4: reading position survives a locale switch. The detail page's
 	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
 	// capture the active heading id and, after the page remounts in the new
@@ -397,7 +380,7 @@
 			restore: (snap) => {
 				const s = snap as { id?: string; y?: number } | null;
 				const id = s?.id;
-				const el = id ? headingElement(id) : null;
+				const el = id ? tocElement(id) : null;
 				if (el) {
 					// Instant, Lenis-aware jump to the heading's top, matching the
 					// IntersectionObserver's -20% top rootMargin so the restored
@@ -416,7 +399,7 @@
 
 <article data-testid="project-detail-page">
 	<!-- Full-bleed header -->
-	<ProjectDetailHeader {project} />
+	<ProjectDetailHeader project={project} />
 
 	<!-- Edge-to-edge hazard stripes -->
 	<HazardSeparator />
@@ -428,7 +411,7 @@
 				<TocNav
 					entries={tocEntries}
 					activeId={activeHeadingId}
-					onNavigate={scrollToHeading}
+					onNavigate={navigateToc}
 					heading={tocHeading}
 					sectionKey="proj-toc"
 					counterPrefix={tocCounterPrefix}
@@ -458,22 +441,24 @@
 		</aside>
 
 		<div class="sections-column">
-			{#if firstArticleSection}
+			{#snippet articleSection(section: SectionView, index: number)}
 				<div
 					class="section-block"
-					data-section-index={0}
+					id={`section-${index}`}
+					data-section-index={index}
 				>
 					<CollapsibleSection
-						title={firstArticleSection.title}
-						sectionKey="proj-section-0"
-						index={0}
-						open={true}
-						>
-							<div class="section-body">
-								<BlockRenderer doc={firstArticleSection.doc} {codeHighlights} />
-							</div>
-						</CollapsibleSection>
-					</div>
+						title={section.title}
+						sectionKey="proj-section-{index}"
+						index={index}
+						open={index === 0}
+					>
+						<div class="article-body section-body"><BlockRenderer doc={section.doc} codeHighlights={codeHighlights} /></div>
+					</CollapsibleSection>
+				</div>
+			{/snippet}
+			{#if firstArticleSection}
+				{@render articleSection(firstArticleSection, 0)}
 			{/if}
 
 			{#if imageGallerySections.length > 0}
@@ -495,22 +480,7 @@
 			{/if}
 
 			{#each remainingArticleSections as section, offset}
-				{@const i = offset + 1}
-				<div
-					class="section-block"
-					data-section-index={i}
-				>
-					<CollapsibleSection
-						title={section.title}
-						sectionKey="proj-section-{i}"
-						index={i}
-						open={true}
-						>
-							<div class="section-body">
-								<BlockRenderer doc={section.doc} {codeHighlights} />
-							</div>
-						</CollapsibleSection>
-					</div>
+				{@render articleSection(section, offset + 1)}
 			{/each}
 
 			{#if readmeHtml}
@@ -522,7 +492,7 @@
 						{#snippet icon()}
 							<SectionIcon name="github" class="h-5 w-5 shrink-0 text-primary" />
 						{/snippet}
-						<div class="prose-dark section-body" bind:this={readmeBody}>
+					<div class="article-body prose-dark section-body" bind:this={readmeBody}>
 							{@html processedReadmeHtml}
 						</div>
 					</CollapsibleSection>
@@ -531,7 +501,13 @@
 		</div>
 
 		<aside class="glance-column">
-			<ProjectGlancePanel {project} {services} {serviceSvgContents} showLinks={false} {codeHighlights} />
+			<ProjectGlancePanel
+				project={project}
+				services={services}
+				serviceSvgContents={serviceSvgContents}
+				showLinks={false}
+				codeHighlights={codeHighlights}
+			/>
 		</aside>
 	</div>
 
@@ -539,7 +515,13 @@
 	     the sections like the services detail mobile rail. Replaces the old
 	     condensed "Project Info" panel. -->
 	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
-		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile {codeHighlights} />
+		<ProjectGlancePanel
+			project={project}
+			services={services}
+			serviceSvgContents={serviceSvgContents}
+			mobile
+			codeHighlights={codeHighlights}
+		/>
 	</div>
 
 	<!-- End-of-case-study CTA: THE site conversion band, recycled and centered
@@ -592,7 +574,7 @@
 		z-index: var(--z-overlay);
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.detail-body {
 			grid-template-columns: 1fr 2fr 1fr;
 			gap: 2rem;
@@ -629,34 +611,15 @@
 		margin-bottom: 1rem;
 	}
 
-	/* Section body text */
-	.section-body {
-		font-size: var(--text-detail-body-mobile);
-		color: color-mix(in srgb, var(--foreground) 50%, transparent);
-		line-height: 1.8;
-	}
-
-	@media (min-width: 1024px) {
-		.section-body {
-			font-size: var(--text-detail-body-desktop);
-			color: color-mix(in srgb, var(--foreground) 55%, transparent);
-			line-height: 1.9;
-		}
-	}
-
-	/* Sub-section h3 styling (within rendered HTML content). The orange
-	   left-edge bar retired per operator call (homework #7c): subheadings now
-	   carry the same real "#" permalink as the blog. */
 	.section-body :global(h3) {
 		font-family: var(--font-heading);
 		font-size: var(--text-detail-subheading-mobile);
 		font-weight: 600;
 		color: color-mix(in srgb, var(--foreground) 70%, transparent);
 		margin: 20px 0 12px;
-		position: relative;
 	}
 
-	@media (min-width: 1024px) {
+	@media (--desktop-min) {
 		.section-body :global(h3) {
 			font-size: var(--text-detail-subheading-desktop);
 			color: color-mix(in srgb, var(--foreground) 80%, transparent);
@@ -664,33 +627,4 @@
 		}
 	}
 
-	/* h3 is already position:relative via its subheading rule above; h2/h4
-	   need it too so their permalinks anchor to the heading, not the column. */
-	.section-body :global(h2),
-	.section-body :global(h4) {
-		position: relative;
-	}
-
-	.section-body :global(.heading-anchor) {
-		position: absolute;
-		right: 100%;
-		margin-right: 0.5rem;
-		color: var(--primary);
-		text-decoration: none;
-		opacity: 0;
-		transform: translateX(-4px);
-		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
-	}
-
-	.section-body :global(h2):hover :global(.heading-anchor),
-	.section-body :global(h3):hover :global(.heading-anchor),
-	.section-body :global(h4):hover :global(.heading-anchor) {
-		opacity: var(--opacity-muted);
-		transform: translateX(0);
-	}
-
-	.section-body :global(.heading-anchor):focus-visible {
-		opacity: 1;
-		transform: translateX(0);
-	}
 </style>

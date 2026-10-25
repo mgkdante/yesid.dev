@@ -1,4 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+// Specs import ignored content modules during collection, before globalSetup or
+// webServer runs. Emit them here so fresh local runs and --list work too.
+if (process.env.TEST_WORKER_INDEX === undefined) {
+	execFileSync('bun', ['run', '--cwd', fileURLToPath(new URL('../cms', import.meta.url)), 'export:fallbacks'], {
+		env: { ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' },
+		stdio: 'inherit'
+	});
+}
 
 // slice-19 Phase 1 Task 1: mobile device matrix for permanent mobile UX coverage.
 //
@@ -22,7 +33,7 @@ const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 // tags, sitemap XML, canonical/hreflang, theme tokens, form-validation copy)
 // gain nothing from re-running on three phones — verify once; (b) they assert a
 // DESKTOP composition (the service hero's `.svg-desktop` panel, the project/blog
-// `.toc-column`, the projects filter sidebar, the stack-engine shape grid) that
+// `.toc-column`, the projects filter sidebar) that
 // is display:none / restructured below 768px. Mobile UX has its own coverage
 // under tests/mobile/. (Pattern set by i18n-routing; extended for the slice-30
 // e2e expansion — the page-content/, contact-form, theme, filter and locale
@@ -34,19 +45,22 @@ const DESKTOP_ONLY_SPECS = [
 	'**/audits/console-scan.spec.ts',
 	'**/weather-scenes.spec.ts',
 	'**/audits/light-mode.spec.ts',
-	'**/stack-engine.spec.ts',
 	'**/i18n-routing.spec.ts',
 	'**/i18n-language-toggle.spec.ts',
 	'**/state-across-languages.spec.ts',
-	'**/state-lang-engine.spec.ts',
 	'**/state-lang-scroll.spec.ts',
 	'**/state-lang-layout.spec.ts',
 	'**/hero-intro-reload.spec.ts',
+	'**/graffiti-locales.spec.ts',
 	// Replay mechanics (scroll-pinned GSAP completion + day-key write) are tested
 	// once on desktop-chrome — the same as hero-intro-reload. The mobile profiles
 	// add an iPad-Mini scroll-geometry edge case (the intro completion does not
 	// register from an instant scrollTo under DPR 2) without proportional value.
 	'**/hero-intro-replay.spec.ts',
+	'**/hero-layout.spec.ts',
+	'**/hero-phone.spec.ts',
+	'**/home-projects-layout.spec.ts',
+	'**/hero-intro-scroll.spec.ts',
 	'**/i18n-sitemap-coverage.spec.ts',
 	'**/locale-coverage-fr.spec.ts',
 	'**/analytics.spec.ts',
@@ -56,6 +70,12 @@ const DESKTOP_ONLY_SPECS = [
 	// Fold containment asserts the >=1024px viewport equation (100dvh main,
 	// footer below the fold, terminal-body internal scroll) — desktop-only.
 	'**/contact-fold.spec.ts',
+	'**/responsive-breakpoint-boundaries.spec.ts',
+	// Anchor-offset guard: viewport-INDEPENDENT clearance arithmetic plus a
+	// DESKTOP-only assertion (the project `.toc-column` rail is display:none
+	// below 1024px). Also scoped to a zero-safe-area-inset environment — see the
+	// SCOPING block at the top of the spec.
+	'**/nav-anchor-offset.spec.ts',
 	'**/theme-persistence.spec.ts',
 	'**/page-content/**'
 ];
@@ -66,6 +86,7 @@ const DESKTOP_ONLY_SPECS = [
 // (+ desktop-chrome where they assert it) and drop them off the two extra phones.
 const ONE_PHONE_SPECS = [
 	'**/smoke.spec.ts',
+	'**/cta-blueprint-band.spec.ts',
 	'**/mobile/services.spec.ts',
 	'**/mobile/services-detail.spec.ts',
 	'**/mobile/home.spec.ts',
@@ -138,20 +159,15 @@ export default defineConfig({
 					// CI cold-build (vite build + check:sitemap) can exceed the
 					// default 60s before the preview answers on :4173.
 					timeout: 180_000,
-					// Hermetic build: skip the export-fallbacks prebuild so the local
-					// e2e build NEVER contacts the live CMS (the committed content
-					// modules already ARE the content source). This both honors the
-					// "CMS only at build time, never live" contract and keeps the
-					// local-preview e2e path fully offline — zero edge requests.
-					env: { EXPORT_FALLBACKS_SKIP: '1' }
+					// Generate hermetic fixture content before the local build.
+					env: { EXPORT_FALLBACKS_SOURCE: 'fixture' }
 				}
 			}),
 	testDir: 'tests',
 	testMatch: '**/*.spec.ts',
 	// Desktop-layout audits assert a desktop composition (e.g. the service hero's
-	// `.svg-desktop` panel is display:none below 768px; the stack-engine shape
-	// grid is a desktop arrangement). They are meaningless on the phone matrix —
-	// run them on desktop-chrome only. Mobile UX has its own coverage under
+	// `.svg-desktop` panel is display:none below 768px). They are meaningless
+	// on the phone matrix — run them on desktop-chrome only. Mobile UX has its own coverage under
 	// tests/mobile/, and the viewport-agnostic specs (smoke, pages, console-scan,
 	// reduced-motion, …) still run everywhere.
 	projects: [

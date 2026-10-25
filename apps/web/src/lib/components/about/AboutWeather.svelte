@@ -8,15 +8,16 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { AboutWeatherConfig } from '$lib/types';
-	import type { WeatherData } from '$lib/utils/weather';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutWeatherConfig } from '#lib/types.ts';
+	import type { WeatherData } from '#lib/utils/weather.ts';
+	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 	import WeatherScene from './WeatherScene.svelte';
 	import WeatherGlyph from './WeatherGlyph.svelte';
 	import { resolveWeatherScene, isNightHour } from './weather-scene';
@@ -33,10 +34,6 @@
 		label: string;
 	} = $props();
 
-	// --- Weather freshness (slice-28.1, audit #20/#122) ---
-	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
-	// day old). Render it immediately, then refresh from /api/weather after
-	// hydration. Any failure is a graceful no-op; the baked value stays.
 	let freshWeather = $state<WeatherData | null>(null);
 	const currentWeather = $derived(freshWeather ?? weather ?? null);
 
@@ -47,23 +44,8 @@
 
 	onMount(() => {
 		clientNight = isNightHour(new Date().getHours());
-		void refreshWeather();
+		void fetchFreshWeather(locale).then((w) => { if (w) freshWeather = w; });
 	});
-
-	async function refreshWeather() {
-		try {
-			// Pass the active locale so OpenWeather localizes `condition`
-			// (fr/es). EN omits the param, so its /api/weather URL (and CDN key)
-			// stays byte-identical to before.
-			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
-			const res = await fetch(url);
-			if (!res.ok) return;
-			const data = (await res.json()) as WeatherData | null;
-			if (data && typeof data.temp === 'number') freshWeather = data;
-		} catch {
-			// Keep the SSR-baked value.
-		}
-	}
 
 	const city = $derived(resolveLocale(config.city, locale));
 	const hook = $derived(resolveLocale(config.hook, locale));
@@ -86,7 +68,7 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: ALWAYS top-left, normal flow -->
-		<StopLabel {stop} {label} />
+		<StopLabel {stop} {label} as="h2" />
 
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">

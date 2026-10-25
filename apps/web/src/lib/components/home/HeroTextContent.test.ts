@@ -5,10 +5,10 @@ const analyticsMocks = vi.hoisted(() => ({
 	trackAnalyticsEvent: vi.fn(),
 }));
 
-vi.mock('$lib/analytics/client', () => analyticsMocks);
+vi.mock('#lib/analytics/client.ts', () => analyticsMocks);
 
 import HeroTextContent from './HeroTextContent.svelte';
-import { generateHeroData } from '$lib/content';
+import { generateHeroData } from '#lib/live/index.ts';
 
 beforeEach(() => {
 	analyticsMocks.trackAnalyticsEvent.mockClear();
@@ -16,12 +16,11 @@ beforeEach(() => {
 
 function baseProps(overrides: Record<string, unknown> = {}) {
 	return {
-		headlineLine1: 'PIPELINES THAT',
-		headlineLine2: "DON'T BREAK.",
-		headlineAriaSuffix: "don't break.",
+		headlineLine1: 'SYSTEMS WE BUILD',
+		headlineLine2: 'STAY AVAILABLE.',
+		headlineAriaSuffix: 'stay available.',
 		subheadlineText: 'sub',
 		subtitleText: 'subtitle',
-		identityText: 'freelance digital infrastructure - Montreal',
 		ctaWorkLabel: 'See the work',
 		ctaContactLabel: 'Contact',
 		heroData: generateHeroData(),
@@ -49,6 +48,34 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
 	});
 
+	it.each([
+		['BUILD WITH CONFIDENCE', 'KEEP MOVING', 'keep moving.'],
+		['DES SYSTÈMES DURABLES', 'TOUJOURS DISPONIBLES', 'toujours disponibles.'],
+		['SISTEMAS PARA CRECER', 'SIGUEN FUNCIONANDO', 'siguen funcionando.'],
+	])('renders supplied headline and action copy: %s', (headlineLine1, headlineLine2, headlineAriaSuffix) => {
+		const props = baseProps({ headlineLine1, headlineLine2, headlineAriaSuffix });
+		render(HeroTextContent, { props });
+		expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(`${headlineLine1} ${headlineAriaSuffix}`);
+		expect(screen.getByTestId('hero-line2')).toHaveTextContent(headlineLine2);
+		expect(screen.getByTestId('hero-cta-projects')).toHaveTextContent(props.ctaWorkLabel);
+		expect(screen.getByTestId('hero-cta-contact')).toHaveTextContent(props.ctaContactLabel);
+	});
+
+	it('provides nonempty, distinct annotation content for each locale', () => {
+		const locales = ['en', 'fr', 'es'];
+		const labels = locales.map(locale => {
+			const view = render(HeroTextContent, {
+				props: baseProps({ beaconSettled: true }),
+				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+			});
+			const label = screen.getByTestId('hero-annotation-label').textContent?.trim();
+			expect(label).toBeTruthy();
+			view.unmount();
+			return label;
+		});
+		expect(new Set(labels).size).toBe(locales.length);
+	});
+
 	it('does not track the projects CTA as a booking click', async () => {
 		render(HeroTextContent, { props: baseProps() });
 		await clickWithoutNavigating(screen.getByTestId('hero-cta-projects'));
@@ -56,42 +83,41 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
-	it('renders the dot inside a button, dormant while the intro has not completed', () => {
-		render(HeroTextContent, { props: baseProps({ introCompleted: false }) });
+	it('keeps the native dot button dormant when playback is unavailable', () => {
+		render(HeroTextContent, { props: baseProps({ replayEnabled: false }) });
 		const btn = screen.getByTestId('hero-dot-replay');
 		expect(btn.tagName).toBe('BUTTON');
 		expect(btn).toBeDisabled();
 		expect(btn).toHaveAttribute('aria-hidden', 'true');
-		expect(btn).not.toHaveClass('hero-dot-armed');
 		// The dot svg itself stays in place — it is the zoom transform-origin.
 		expect(btn.querySelector('[data-testid="hero-dot"]')).not.toBeNull();
 	});
 
-	it('arms after intro completion: enabled, pulsing, aria "Replay intro"', () => {
-		render(HeroTextContent, { props: baseProps({ introCompleted: true }) });
+	it('exposes the available dot with its meaningful accessible label', () => {
+		const replayAriaLabel = 'Play the network illustration';
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true, replayAriaLabel }) });
 		const btn = screen.getByTestId('hero-dot-replay');
 		expect(btn).toBeEnabled();
 		expect(btn).not.toHaveAttribute('aria-hidden');
-		expect(btn).toHaveAttribute('aria-label', 'Replay intro');
-		expect(btn).toHaveClass('hero-dot-armed');
+		expect(btn).toHaveAccessibleName(replayAriaLabel);
 	});
 
 	it('click on the armed dot fires onReplay', async () => {
 		const onReplay = vi.fn();
-		render(HeroTextContent, { props: baseProps({ introCompleted: true, onReplay }) });
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true, onReplay }) });
 		await fireEvent.click(screen.getByTestId('hero-dot-replay'));
 		expect(onReplay).toHaveBeenCalledTimes(1);
 	});
 
 	it('click on the dormant dot does nothing (disabled)', async () => {
 		const onReplay = vi.fn();
-		render(HeroTextContent, { props: baseProps({ introCompleted: false, onReplay }) });
+		render(HeroTextContent, { props: baseProps({ replayEnabled: false, onReplay }) });
 		await fireEvent.click(screen.getByTestId('hero-dot-replay'));
 		expect(onReplay).not.toHaveBeenCalled();
 	});
 
 	it('keeps the headline text hidden from AT while exposing the armed button', () => {
-		render(HeroTextContent, { props: baseProps({ introCompleted: true }) });
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true }) });
 		const line2 = screen.getByTestId('hero-line2');
 		// Decorative text span stays aria-hidden (h1 carries the aria-label)…
 		const textSpan = line2.querySelector('[data-hero-stagger="1"]');
@@ -104,5 +130,19 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 			expect(node).not.toHaveAttribute('aria-hidden', 'true');
 			node = node.parentElement;
 		}
+	});
+
+	it('renders noninteractive decorative guidance outside the activation button', async () => {
+		const onReplay = vi.fn();
+		render(HeroTextContent, { props: baseProps({ replayEnabled: true, beaconSettled: true, onReplay }) });
+		const annotation = screen.getByTestId('hero-dot-annotation');
+		expect(annotation.tagName.toLowerCase()).toBe('svg');
+		expect(annotation).toHaveAttribute('aria-hidden', 'true');
+		expect(annotation).toHaveAttribute('focusable', 'false');
+		expect(annotation).not.toHaveAttribute('tabindex');
+		expect(annotation.textContent?.trim()).toBeTruthy();
+		expect(annotation.closest('button, a')).toBeNull();
+		await fireEvent.click(annotation);
+		expect(onReplay).not.toHaveBeenCalled();
 	});
 });

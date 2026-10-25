@@ -2,9 +2,22 @@
 	"$schema": "https://turbo.build/schema.json",
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build"],
-			"outputs": [".svelte-kit/**", ".vercel/**", "dist/**"],
-			"inputs": ["$TURBO_DEFAULT$", "!**/.env.local", "!**/.env.*.local"],
+			"dependsOn": [
+				"^build"
+			],
+			"outputs": [
+				".svelte-kit/**",
+				".vercel/**",
+				"dist/**"
+			],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/.env.local",
+				"!**/.env.*.local",
+				"$TURBO_ROOT$/packages/shared/fixtures/**",
+				"$TURBO_ROOT$/apps/cms/scripts/**",
+				"$TURBO_ROOT$/apps/cms/fixtures/**"
+			],
 			"env": [
 				"PUBLIC_DIRECTUS_URL",
 				"DIRECTUS_ADMIN_TOKEN",
@@ -12,8 +25,7 @@
 				"DIRECTUS_DEV_BUILD_TOKEN",
 				"DIRECTUS_ADMIN_EMAIL",
 				"DIRECTUS_ADMIN_PASSWORD",
-				"DIRECTUS_READ_TOKEN",
-				"EXPORT_FALLBACKS_SKIP",
+				"EXPORT_FALLBACKS_SOURCE",
 				"EXPORT_FALLBACKS_LIVE",
 				"VERCEL_ENV",
 				"VERCEL_GIT_COMMIT_REF",
@@ -21,11 +33,29 @@
 			]
 		},
 		"test": {
-			"dependsOn": ["^build"],
-			"outputs": []
+			"dependsOn": [
+				"^build"
+			],
+			"outputs": [],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/.env.local",
+				"!**/.env.*.local",
+				"$TURBO_ROOT$/packages/shared/fixtures/**",
+				"$TURBO_ROOT$/apps/cms/scripts/**",
+				"$TURBO_ROOT$/apps/cms/fixtures/**"
+			]
 		},
 		"check": {
-			"outputs": []
+			"outputs": [],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/.env.local",
+				"!**/.env.*.local",
+				"$TURBO_ROOT$/packages/shared/fixtures/**",
+				"$TURBO_ROOT$/apps/cms/scripts/**",
+				"$TURBO_ROOT$/apps/cms/fixtures/**"
+			]
 		},
 		"dev": {
 			"cache": false,

@@ -11,7 +11,7 @@
  * they read from Directus and assert each one exists in the committed
  * snapshot:
  *
- *   1. every `ls('<field>')` literal in the site-labels fetcher has a
+ *   1. every source literal in the site-labels localized field maps has a
  *      snapshot field file under fields/site_labels_translations/
  *   2. every `readItems('<collection>')` / `readSingleton('<collection>')`
  *      literal across the fetchers has a snapshot collection file
@@ -42,13 +42,12 @@ function extractAll(source: string, re: RegExp): string[] {
 	return [...source.matchAll(re)].map((m) => m[1]!);
 }
 
-describe('site-labels fetcher ls() literals exist in the snapshot', () => {
+describe('site-labels localized field-map sources exist in the snapshot', () => {
 	const source = readFileSync(join(FETCHERS_DIR, 'site-labels.ts'), 'utf8');
-	const literals = [...new Set(extractAll(source, /\bls\('([^']+)'\)/g))];
+	const literals = [...new Set(extractAll(source, /\[\s*'[^']+'\s*,\s*'([^']+)'\s*\]/g))];
 
 	it('finds the expected scale of literals (sanity: the regex still matches)', () => {
-		// 148 at the time of the sweep; assert a floor so a refactor that breaks
-		// the regex fails loudly instead of vacuously passing on zero literals.
+		// Assert a floor so a syntax refactor cannot make this contract pass on zero.
 		expect(literals.length).toBeGreaterThanOrEqual(100);
 	});
 
@@ -267,4 +266,34 @@ describe('asset registry plan is captured exactly in the schema snapshot', () =>
 			}
 		}
 	});
+});
+
+describe('published blog and consent snapshot contracts', () => {
+ it('keeps translation_key required, indexed, nullable=false and non-unique', () => {
+  const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/blog_posts/translation_key.json'), 'utf8'));
+  expect(field.field).toBe('translation_key');
+  expect(field.meta.required).toBe(true);
+  expect(field.schema).toMatchObject({ is_indexed: true, is_nullable: false, is_unique: false });
+ });
+ it('keeps translation_key out of the anonymous blog read permission adopted from live', () => {
+  const permissions = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/permissions.json'), 'utf8')) as Array<{ _syncId: string; fields: string[] }>;
+  const publicRead = permissions.find(row => row._syncId === '_sync_perm_blog_posts_public_read');
+  expect(publicRead).toBeDefined();
+  expect(publicRead!.fields).not.toContain('translation_key');
+ });
+ it('exposes translation_key to the Build Bot blog read used by the build-time exporter', () => {
+  const policies = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/policies.json'), 'utf8')) as Array<{ _syncId: string; name: string }>;
+  const buildBot = policies.find(row => row.name === 'Build Bot — content read');
+  expect(buildBot).toBeDefined();
+  const permissions = JSON.parse(readFileSync(join(CMS_ROOT, 'directus/collections/permissions.json'), 'utf8')) as Array<{ policy: string; collection: string; action: string; fields: string[] }>;
+  const blogRead = permissions.find(row => row.policy === buildBot!._syncId && row.collection === 'blog_posts' && row.action === 'read');
+  expect(blogRead).toBeDefined();
+  expect(blogRead!.fields.some(field => field === '*' || field === 'translation_key')).toBe(true);
+ });
+ it('keeps the consent description field at varchar(500)', () => {
+  const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/site_labels_translations/ui_analytics_consent_description.json'), 'utf8'));
+  expect(field.type).toBe('string');
+  expect(field.schema.data_type).toBe('character varying');
+  expect(field.schema.max_length).toBe(500);
+ });
 });

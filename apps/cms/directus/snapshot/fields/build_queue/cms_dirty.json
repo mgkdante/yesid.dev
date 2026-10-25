@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "boolean",
-    "note": "True when at least one CMS publish has happened since the last build flush. Flow A (Mark Dirty on CMS Publish) sets this to true. Flow B (Flush Build to Vercel) reads this on a 2-min CRON, fires the per-env webhook if true, then resets to false. Toggle manually in admin to force-trigger or force-suppress the next CRON tick.",
+    "note": "Legacy refresh flag retained as dead schema. D6 manual Publish site does not read or write this field; changing it never triggers a build.",
     "options": null,
     "readonly": false,
     "required": false,

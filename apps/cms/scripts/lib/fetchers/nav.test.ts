@@ -13,7 +13,6 @@ const HEADER_ROW: DirectusNavLinkRow = {
 	placement: 'header',
 	href: '/services',
 	priority: 1,
-	icon: null,
 	translations: [
 		{ languages_code: 'en', label: 'Services' },
 		{ languages_code: 'fr', label: 'Services' },
@@ -27,7 +26,6 @@ const MENU_ROW: DirectusNavLinkRow = {
 	placement: 'menu',
 	href: '/about',
 	priority: 1,
-	icon: { name: 'user' },
 	translations: [
 		{ languages_code: 'en', label: 'About', subtitle: 'the operator' },
 		{ languages_code: 'fr', label: 'À propos', subtitle: "l'opérateur" },
@@ -45,9 +43,8 @@ describe('nav fetcher transform', () => {
 		});
 	});
 
-	it('resolves icon M2O FK to a string when present', () => {
+	it('preserves the menu subtitle', () => {
 		const result = toNavLink(MENU_ROW);
-		expect(result.icon).toBe('user');
 		expect(result.subtitle).toEqual({
 			en: 'the operator',
 			fr: "l'opérateur",
@@ -66,10 +63,11 @@ describe('nav fetcher transform', () => {
 		expect(result.priority).toBe(1);
 	});
 
-	it('handles string icon (already-resolved)', () => {
-		const stringIcon: DirectusNavLinkRow = { ...HEADER_ROW, icon: 'home' };
-		const result = toNavLink(stringIcon);
-		expect(result.icon).toBe('home');
+	it('ignores legacy icon data in old cached rows', () => {
+		for (const icon of ['home', { name: 'user' }]) {
+			const cachedRow = { ...HEADER_ROW, icon };
+			expect(toNavLink(cachedRow)).not.toHaveProperty('icon');
+		}
 	});
 
 	it('output parses through NavLinkSchema (Zod gate)', () => {
@@ -83,7 +81,7 @@ describe('nav fetcher transform', () => {
 // ---------------------------------------------------------------------------
 
 const PUBLISHED_PAGE: DirectusSitePageRef = {
-	path: '/tech-stack',
+	path: '/services',
 	status: 'published',
 	translations: [
 		{ languages_code: 'en', title: 'Tech Stack' },
@@ -106,14 +104,13 @@ const PAGE_LINKED_ROW: DirectusNavLinkRow = {
 	priority: 1,
 	sort: 1,
 	page: PUBLISHED_PAGE,
-	icon: null,
 	translations: [],
 };
 
 describe('cascade contract — label + href resolution', () => {
 	it('href comes from page.path when the link is page-linked (legacy href ignored)', () => {
 		const result = toNavLink(PAGE_LINKED_ROW);
-		expect(result.href).toBe('/tech-stack');
+		expect(result.href).toBe('/services');
 	});
 
 	it('href falls back to link.href when page is null (reserved for external links)', () => {

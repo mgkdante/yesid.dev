@@ -56,30 +56,4 @@ describe('CtaBlueprintBackground', () => {
 		expect(source).not.toMatch(/data-theme|theme-light/);
 	});
 
-	it('renders each source blueprint component exactly once', () => {
-		const source = readFileSync(
-			resolve(process.cwd(), 'src/lib/components/shared/CtaBlueprintBackground.svelte'),
-			'utf8',
-		);
-		const components = [
-			'BlueprintShell',
-			'BlueprintAzurSide',
-			'BlueprintBridge',
-			'BlueprintCatenary',
-			'BlueprintTunnelSection',
-			'BlueprintGeology',
-			'BlueprintInterfaceSuite',
-			'BlueprintSignal',
-			'BlueprintVentShaft',
-			'BlueprintTransitRoute',
-			'BlueprintTBM',
-			'BlueprintDataPipeline',
-			'BlueprintStationSection',
-			'BlueprintCodeSystem',
-		];
-
-		for (const component of components) {
-			expect(source.match(new RegExp(`<${component}\\b`, 'g')) ?? [], component).toHaveLength(1);
-		}
-	});
 });

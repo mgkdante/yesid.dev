@@ -7,14 +7,17 @@ const read = (path: string) => readFileSync(resolve(REPO_ROOT, path), 'utf8');
 const exists = (path: string) => existsSync(resolve(REPO_ROOT, path));
 
 describe('@yesid/ui customer contract', () => {
-	it('installs the immutable release package and its governing parity notes', () => {
+	it('installs the immutable release package and its durable UI contract', () => {
 		const manifest = 'apps/web/vendor/design/ui/package.json';
+		const guide = 'apps/web/vendor/design/ui/README.md';
 		expect(exists(manifest), `${manifest} must be vendored`).toBe(true);
-		if (!exists(manifest)) return;
+		expect(exists(guide), `${guide} must be vendored`).toBe(true);
+		if (!exists(manifest) || !exists(guide)) return;
 
 		expect(JSON.parse(read(manifest)).name).toBe('@yesid/ui');
-		expect(read('apps/web/vendor/design/ui/PARITY-NOTES.md')).toContain('## Adoption matrix');
-		expect(read('apps/web/vendor/design/ui/PARITY-NOTES.md')).toContain('### Brand adoption matrix');
+		expect(read(guide)).toContain('## Primitive family seams');
+		expect(read(guide)).toContain('## Brand components and composed patterns');
+		expect(read(guide)).toContain('## Adoption verification contract');
 	});
 
 	it('initializes one app-owned UI configuration in both SvelteKit module graphs', () => {
@@ -26,10 +29,10 @@ describe('@yesid/ui customer contract', () => {
 		expect(initializer).toContain("from '@yesid/ui/cn'");
 		expect(initializer).toContain('configureUi()');
 		expect(clientHooks).toContain('ClientInit');
-		expect(clientHooks).toContain("from '$lib/ui/configure'");
+		expect(clientHooks).toContain("from '#lib/ui/configure.ts'");
 		expect(clientHooks).toContain('initializeUi()');
 		expect(serverHooks).toContain('ServerInit');
-		expect(serverHooks).toContain("from '$lib/ui/configure'");
+		expect(serverHooks).toContain("from '#lib/ui/configure.ts'");
 		expect(serverHooks).toContain('initializeUi()');
 		expect(layout).not.toContain('configureUi');
 	});
@@ -42,7 +45,7 @@ describe('@yesid/ui customer contract', () => {
 
 		expect(siteCss).toContain("@import '../../app.css';");
 		expect(siteCss).toContain('@source "../../../vendor/design/ui/src";');
-		expect(layout).toContain("import '$lib/styles/site.css';");
+		expect(layout).toContain("import '#lib/styles/site.css';");
 		expect(cn).toContain("from '@yesid/ui/cn'");
 		expect(cn).not.toContain("from './create-cn'");
 		expect(exists('apps/web/src/lib/utils/create-cn.ts')).toBe(false);
@@ -74,10 +77,9 @@ describe('@yesid/ui primitive adoption contract', () => {
 			'apps/web/src/lib/components/shared/CtaBand.svelte',
 			'apps/web/src/lib/components/shared/StationTabs.svelte',
 			'apps/web/src/routes/+error.svelte',
-			'apps/web/src/routes/[[lang=locale]]/tech-stack/+page.svelte',
 		]) {
 			expect(read(path), path).toContain(
-				"from '$lib/components/shared/HazardSeparator.svelte'",
+				"from '#lib/components/shared/HazardSeparator.svelte'",
 			);
 			expect(read(path), path).not.toContain("from '@yesid/ui/separator'");
 		}
@@ -87,11 +89,8 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(read('apps/web/src/lib/components/blog/BlogRow.svelte')).toContain(
 			"from '@yesid/ui/badge'",
 		);
-		expect(read('apps/web/src/lib/components/shared/TableOfContents.svelte')).toContain(
-			"from '@yesid/ui/scroll-area'",
-		);
 		expect(read('apps/web/src/lib/components/home/HomePage.svelte')).toContain(
-			"from '$lib/components/shared/HazardSeparator.svelte'",
+			"from '#lib/components/shared/HazardSeparator.svelte'",
 		);
 		expect(read('apps/web/src/lib/components/shared/StationTabs.svelte')).toContain(
 			"from '@yesid/ui/tabs'",
@@ -111,11 +110,11 @@ describe('@yesid/ui primitive adoption contract', () => {
 
 		expect(collapsible).toContain("from '@yesid/ui/collapsible'");
 		expect(collapsible).toContain(
-			"CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte'",
+			"CollapsibleContent from '#lib/components/ui/collapsible/collapsible-content.svelte'",
 		);
 		expect(contact).toContain("from '@yesid/ui/resizable'");
 		expect(contact).toContain(
-			"ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte'",
+			"ResizableHandle from '#lib/components/ui/resizable/resizable-handle.svelte'",
 		);
 		expect(exists('apps/web/src/lib/components/ui/collapsible/collapsible.svelte')).toBe(false);
 		expect(exists('apps/web/src/lib/components/ui/collapsible/collapsible-trigger.svelte')).toBe(false);
@@ -132,19 +131,22 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(blogRow).toContain('size="xs"');
 		expect(projectCard).toContain('size="xs"');
 		expect(collapsible).toContain('text-[0.75rem]');
-		expect(stationTabs).toContain('h-8');
+		// The h-8 pin clipped the listing controls inside a 32px rail; strip geometry now owns the height.
+		expect(stationTabs).not.toContain('h-8');
 		expect(stationTabs).toContain('p-[3px]');
 	});
 
-	it('keeps hard-conflict components app-side with a parity-note pointer', () => {
-		for (const path of [
-			'apps/web/src/lib/components/ui/button/button.svelte',
-			'apps/web/src/lib/components/ui/card/card.svelte',
-			'apps/web/src/lib/components/ui/collapsible/collapsible-content.svelte',
-			'apps/web/src/lib/components/ui/resizable/resizable-handle.svelte',
-		]) {
+	it('keeps compatibility components app-side with durable contract pointers', () => {
+		for (const [path, anchor] of [
+			['apps/web/src/lib/components/ui/button/button.svelte', '#button'],
+			['apps/web/src/lib/components/ui/card/card.svelte', '#card'],
+			['apps/web/src/lib/components/ui/collapsible/collapsible-content.svelte', '#collapsible'],
+			['apps/web/src/lib/components/ui/resizable/resizable-handle.svelte', '#resizable'],
+			['apps/web/src/lib/components/brand/StickyPanel.svelte', '#stickypanel'],
+			['apps/web/src/lib/components/shared/TerminalCursor.svelte', '#terminalcursor'],
+		] as const) {
 			expect(exists(path), path).toBe(true);
-			expect(read(path), path).toContain('vendor/design/ui/PARITY-NOTES.md');
+			expect(read(path), path).toContain(`vendor/design/ui/README.md${anchor}`);
 		}
 	});
 });
@@ -202,5 +204,17 @@ describe('@yesid/ui brand adoption contract', () => {
 		expect(cursor).toContain('height: 14px;');
 		expect(cursor).toContain('background: var(--accent);');
 		expect(cursor).toContain('background: var(--accent-text);');
+	});
+
+	it('keeps quiet-mode product policy in a thin package adapter', () => {
+		const quietMode = read('apps/web/src/lib/components/shared/QuietModeButton.svelte');
+
+		expect(quietMode).toContain('QuietModeButton as UiQuietModeButton');
+		expect(quietMode).toContain('type QuietModeButtonCopy');
+		expect(quietMode).toContain("from '#lib/state/quiet-mode.svelte.ts'");
+		expect(quietMode).toContain('onMount(() => quietModeStore.init())');
+		expect(quietMode).toContain('activeEffect="glow"');
+		expect(quietMode).not.toContain('<svg');
+		expect(quietMode).not.toContain('<style>');
 	});
 });

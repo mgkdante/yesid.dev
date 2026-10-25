@@ -1,9 +1,9 @@
-import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
-import { adapter } from '$lib/adapters';
-import { isProductionHostname, NOINDEX_POLICY } from '$lib/server/indexing';
-import { pathLocale } from '$lib/utils/locale-routing';
-import type { ErrorPageContent } from '$lib/navigation/types';
-import { initializeUi } from '$lib/ui/configure';
+import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { resolveStaticErrorPage } from '#lib/adapters/index.ts';
+import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
+import { pathLocale } from '#lib/utils/locale-routing.ts';
+import type { ErrorPageContent } from '#lib/navigation/types.ts';
+import { initializeUi } from '#lib/ui/configure.ts';
 
 export const init: ServerInit = () => {
 	initializeUi();
@@ -23,11 +23,6 @@ function isDataPage(pathname: string, response: Response): boolean {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// Per-request memoization for loadPage(slug, ctx). One Map per HTTP
-	// request — multiple content.* calls within the same request resolve
-	// through the cache after the first fetch.
-	event.locals.pageCache = new Map();
-
 	// i18n (slice-28.6): app.html carries <html lang="%lang%">; locale is
 	// path-derived so each URL is one cacheable representation (no Vary,
 	// CDN-safe) and error renders get the right lang too.
@@ -67,20 +62,25 @@ export const handle: Handle = async ({ event, resolve }) => {
  * Fail-graceful: if the adapter read throws during error handling, the
  * error page still renders using the layout's status=0 fallback row.
  */
-export const handleError: HandleServerError = async ({ error, event, status }) => {
+export const handleError: HandleServerError = ({ error, event, kind }) => {
+	// error() bodies already carry their intended status, message and properties.
+	// Returning nothing keeps the expected-error response unchanged.
+	if (kind === 'app') return;
+	const status = kind === 'unknown' ? 500 : error.status;
 	// A custom handleError REPLACES kit's default console logging — without
 	// this line the real exception is invisible in Vercel function logs and
 	// in prerender failures ("Error: 500 /about" with no cause).
-	console.error(`[handleError] ${status} ${event.url.pathname}`, error);
+	if (status !== 404) {
+		console.error(`[handleError] ${status} ${event.url.pathname}`, error);
+	}
 
-	const message =
-		error instanceof Error ? error.message : (typeof error === 'string' ? error : 'An unexpected error occurred');
+	const message = kind !== 'unknown' ? error.message : error instanceof Error
+		? error.message
+		: typeof error === 'string' ? error : 'An unexpected error occurred';
 
 	let cmsErrorPage: ErrorPageContent | undefined;
 	try {
-		cmsErrorPage = await adapter.content.errorPage(status, {
-			pageCache: event.locals.pageCache,
-		});
+		cmsErrorPage = resolveStaticErrorPage(status);
 	} catch {
 		// Adapter read failed during error handling — $page.data.errorPage
 		// (status=0 fallback from +layout.server.ts) will be used by

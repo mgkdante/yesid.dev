@@ -2,17 +2,16 @@
  * services fetcher — reads `services` with translations + deliverables + sections,
  * plus a single `projects_services` junction read to attach relatedProjects.
  *
- * Mirrors apps/web/src/lib/adapters/directus.ts:1596 `toService` + L1836 `fetchServices`.
- * Optimization vs runtime: batch-fetch the full junction once instead of N+1 per service.
+ * This module owns the build-time Service projection and batch-fetches the
+ * junction once instead of issuing one request per service.
  */
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import {
-	toLocalizedString,
-	toLocalizedStringOrUndef,
 	mapLocalizedField,
 	mapLocalizedRepeater,
+	toLocalizedFields,
 } from '../locale';
 import { ServiceSchema } from '@repo/shared/schemas';
 import type { Service, ServiceSection } from '@repo/shared';
@@ -79,29 +78,30 @@ export function toService(row: DirectusService): Service {
 	const service: Service = {
 		id: row.id,
 		station: row.station,
-		title: toLocalizedString(translations, 'title'),
-		description: toLocalizedString(translations, 'description'),
+		...toLocalizedFields(translations, ['title', 'description']),
 		relatedProjects: [],
 	};
 	if (row.svg) service.svg = row.svg;
 	if (row.visible !== null && row.visible !== undefined) service.visible = row.visible;
-	const subtitle = toLocalizedStringOrUndef(translations, 'subtitle');
-	if (subtitle) service.subtitle = subtitle;
-	const longDescription = toLocalizedStringOrUndef(translations, 'long_description');
-	if (longDescription) service.longDescription = longDescription;
-	const valueProposition = toLocalizedStringOrUndef(translations, 'value_proposition');
-	if (valueProposition) service.valueProposition = valueProposition;
-	const seoDescription = toLocalizedStringOrUndef(translations, 'seo_description');
-	if (seoDescription) service.seoDescription = seoDescription;
-	const benefitHeadline = toLocalizedStringOrUndef(translations, 'benefit_headline');
-	if (benefitHeadline) service.benefitHeadline = benefitHeadline;
+	Object.assign(
+		service,
+		toLocalizedFields(translations, [
+			['subtitle', 'subtitle', 'optional'],
+			['longDescription', 'long_description', 'optional'],
+			['valueProposition', 'value_proposition', 'optional'],
+			['seoDescription', 'seo_description', 'optional'],
+			['benefitHeadline', 'benefit_headline', 'optional'],
+		]),
+	);
 	const stack = stackFromTechM2M(row.tech_stack);
 	if (stack.length > 0) service.stack = stack;
 
-	const impactValue = toLocalizedStringOrUndef(translations, 'impact_metric_value');
-	const impactLabel = toLocalizedStringOrUndef(translations, 'impact_metric_label');
-	if (impactValue && impactLabel) {
-		service.impactMetric = { value: impactValue, label: impactLabel };
+	const impactMetric = toLocalizedFields(translations, [
+		['value', 'impact_metric_value', 'optional'],
+		['label', 'impact_metric_label', 'optional'],
+	]);
+	if (impactMetric.value && impactMetric.label) {
+		service.impactMetric = { value: impactMetric.value, label: impactMetric.label };
 	}
 
 	const deliverables = mapLocalizedField(row.deliverables, 'label');
@@ -109,10 +109,7 @@ export function toService(row: DirectusService): Service {
 
 	const sections = mapLocalizedRepeater(
 		row.sections,
-		(s): ServiceSection => ({
-			title: toLocalizedString(s.translations ?? [], 'title'),
-			content: toLocalizedString(s.translations ?? [], 'content'),
-		}),
+		(s): ServiceSection => toLocalizedFields(s.translations ?? [], ['title', 'content']),
 	);
 	if (sections.length > 0) service.sections = sections;
 

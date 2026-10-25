@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Project } from '$lib/types';
-	import { assetImage } from '$lib/directus/assets';
-	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '$lib/utils/theme-media';
+	import type { Project } from '#lib/types.ts';
+	import { assetImage } from '#lib/directus/assets.ts';
+	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 
 	let {
@@ -129,6 +129,7 @@
 
 	.project-hero-preview__image {
 		display: block;
+		min-height: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: contain;

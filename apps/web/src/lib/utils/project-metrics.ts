@@ -1,4 +1,4 @@
-import type { Project, ImpactMetric } from '$lib/types';
+import type { Project, ImpactMetric } from '#lib/types.ts';
 
 /**
  * Resolve a project's impact metrics, coalescing the current `impactMetrics`

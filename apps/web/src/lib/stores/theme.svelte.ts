@@ -5,13 +5,13 @@
  *
  * Dark is the brand default: no-JS and no stored choice both resolve dark.
  */
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 export type Theme = 'dark' | 'light';
 
 const THEME_SURFACE: Record<Theme, string> = {
 	dark: '#141414', // --background (dark) — taste round 2: restored near-black board
-	light: '#F3F6FB', // --background (light) — GO2-W5 warm station paper
+	light: '#F3F6FB' // --background (light) — GO2-W5 warm station paper
 };
 
 // The favicon is the brand mark: the dot inside its outer ring. It tracks the
@@ -35,11 +35,7 @@ const FAVICON_DOT: Record<Theme, string> = {
  * unit test asserts the two never drift apart.
  */
 export function faviconSvg(color: string): string {
-	return (
-		'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
-		`<circle cx="16" cy="16" r="14" fill="none" stroke="${color}" stroke-width="2" opacity="0.85"/>` +
-		`<circle cx="16" cy="16" r="10.5" fill="${color}"/></svg>`
-	);
+	return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' + `<circle cx="16" cy="16" r="14" fill="none" stroke="${color}" stroke-width="2" opacity="0.85"/>` + `<circle cx="16" cy="16" r="10.5" fill="${color}"/></svg>`;
 }
 
 function faviconHref(theme: Theme): string {

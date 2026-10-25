@@ -6,16 +6,16 @@
   because they are not button group patterns.
 -->
 <script lang="ts">
-	import type { Locale } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { localizeHref } from '$lib/utils/locale-routing';
+	import type { Locale } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
-	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
-	import { persisted } from '$lib/state/persisted.svelte';
+	import FilterGroup from '#lib/components/shared/FilterGroup.svelte';
+	import { persisted } from '#lib/state/persisted.svelte.ts';
 	import { ChevronToggle } from '@yesid/ui/brand';
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
 	const listingChrome = siteLabels.blogChrome.listing;
