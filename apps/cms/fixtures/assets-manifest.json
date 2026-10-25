@@ -1,5 +1,5 @@
 {
-	"description": "Asset migration manifest for Slice 18 18d. Each entry maps an apps/web/static/<path> to its target Directus folder + metadata. Consumed by scripts/migrate-assets.ts.",
+	"description": "Asset inventory from the Slice 18 18d migration, with reviewed mirror additions. Each entry maps an apps/web/static/<path> to its Directus folder and metadata. Consumed by export-fallbacks.ts and mirror-asset.ts; the asset-id map is a frozen record of the migration.",
 	"sourceRoot": "apps/web/static",
 	"folders": {
 		"services": "Service-detail page assets — populated by 18e+.",
