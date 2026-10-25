@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { Window } from 'happy-dom';
 import { checkHtml, scriptHash } from '../../scripts/check-csp';
 
 const source = '\n  window.ready = true;\n';
@@ -12,7 +13,23 @@ function page(head: string, body = ''): string {
 }
 const fixture = page(meta, `<script>${source}</script>`);
 const template = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const themeSource = template.match(/<script>([\s\S]*?)<\/script>/)![1];
+const themeSource = (() => {
+	const window = new Window({
+		settings: {
+			enableJavaScriptEvaluation: false,
+			disableJavaScriptFileLoading: true,
+			enableCSSFileLoading: false,
+			enableImageFileLoading: false,
+		},
+	});
+	try {
+		const scripts = new window.DOMParser().parseFromString(template, 'text/html').querySelectorAll('script');
+		if (scripts.length !== 1) throw new Error('Expected exactly one app.html theme script');
+		return scripts[0].textContent;
+	} finally {
+		window.close();
+	}
+})();
 const themeHash = `'sha256-${createHash('sha256').update(themeSource.replace(/\r\n?/g, '\n')).digest('base64')}'`;
 const themeMeta = meta.replace(hash, `${hash} ${themeHash}`);
 
