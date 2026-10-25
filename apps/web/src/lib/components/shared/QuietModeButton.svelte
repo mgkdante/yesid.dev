@@ -4,10 +4,10 @@
 		type QuietModeButtonCopy,
 	} from '@yesid/ui/brand';
 	import { onMount } from 'svelte';
-	import { siteLabels } from '$lib/content';
-	import { quietModeStore } from '$lib/state/quiet-mode.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { siteLabels } from '#lib/content/index.js';
+	import { quietModeStore } from '#lib/state/quiet-mode.svelte.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	let { class: className = '' }: { class?: string } = $props();
 

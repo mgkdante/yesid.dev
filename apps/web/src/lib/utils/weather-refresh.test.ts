@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
-import { fetchFreshWeather } from '$lib/utils/weather-refresh';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
+import { fetchFreshWeather } from '#lib/utils/weather-refresh.js';
 
 function installFetchMock() {
 	const fetchMock = vi.fn<typeof fetch>();

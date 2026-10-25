@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import MenuOverlay from './MenuOverlay.svelte';
-import type { NavLink } from '$lib/navigation/types';
+import type { NavLink } from '#lib/navigation/types.js';
 
 const links: readonly NavLink[] = [
 	{

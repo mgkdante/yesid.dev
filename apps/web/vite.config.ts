@@ -1,3 +1,7 @@
+import adapter from '@sveltejs/adapter-vercel';
+import { projectRunes } from '@yesid/config/svelte/project-runes.js';
+import { readFileSync } from 'node:fs';
+import { hashThemeScript } from './scripts/csp-script-hash.mjs';
 import globalData from '@csstools/postcss-global-data';
 import { defineConfig } from 'vitest/config';
 import tailwindcss from '@tailwindcss/vite';
@@ -8,6 +12,11 @@ import customMedia from 'postcss-custom-media';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 const designTokensCss = fileURLToPath(new URL('./vendor/design/tokens/tokens.css', import.meta.url));
+
+// SvelteKit hashes its bootstrap, but app.html scripts need their own hash.
+const template = readFileSync(new URL('./src/app.html', import.meta.url), 'utf8');
+
+const themeScriptHash = hashThemeScript(template);
 
 // svelteTesting() is a Vite plugin from @testing-library/svelte that:
 //   - adds 'browser' to resolve.conditions (makes Svelte use index-client.js)
@@ -29,7 +38,44 @@ export default defineConfig({
 	},
 	plugins: [
 		tailwindcss(),
-		sveltekit(),
+		sveltekit({
+			extensions: ['.svelte'],
+			compilerOptions: {
+				// defaults to rune mode for the project, except for `node_modules`. Can be removed in svelte 6.
+				runes: projectRunes(import.meta.dirname)
+			},
+
+			// Pin to Node 22 LTS. The adapter auto-detects the runtime but Bun ships
+			// a newer Node.js ABI that the adapter rejects — explicit runtime avoids this.
+			adapter: adapter({ runtime: 'nodejs22.x' }),
+
+			csp: {
+				mode: 'hash',
+				directives: {
+					'default-src': ['self'],
+					'script-src': ['self', themeScriptHash],
+					'style-src': ['self', 'unsafe-inline'],
+					'img-src': ['self', 'data:', 'blob:'],
+					'font-src': ['self', 'data:'],
+					'connect-src': [
+						'self',
+						'https://plausible.io',
+						'https://api.web3forms.com',
+						'https://transit.yesid.dev'
+					],
+					'manifest-src': ['self'],
+					'frame-src': ['none'],
+					'object-src': ['none'],
+					'base-uri': ['self'],
+					'form-action': ['self']
+				}
+			},
+			prerender: {
+				// '*' keeps the default crawl; the llms files are linked from nowhere,
+				// so the crawler needs them as explicit entries.
+				entries: ['*', '/llms.txt', '/llms-full.txt']
+			}
+		}),
 		svelteTesting(),
 		// Bundle size visualizer — emits dist/stats.html on production build.
 		// Opened via `bun run bundle-size` (see package.json).

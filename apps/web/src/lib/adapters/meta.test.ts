@@ -1,8 +1,8 @@
-import { sitePages } from '$lib/content/site-pages';
-import { siteMeta } from '$lib/content/site-meta';
+import { sitePages } from '#lib/content/site-pages';
+import { siteMeta } from '#lib/content/site-meta';
 import { describe, expect, it } from 'vitest';
 import { adapter } from './index';
-import { routeSeoOverrides } from '$lib/content/route-seo';
+import { routeSeoOverrides } from '#lib/content/route-seo';
 
 const overrideByPath = new Map(routeSeoOverrides.map((entry) => [entry.path, entry]));
 

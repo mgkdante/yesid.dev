@@ -11,7 +11,7 @@
 // Factories that take a locale apply `resolveLocale(localizedString, locale)`
 // on their text fields — the produced node is already locale-resolved.
 
-import { SchemaOrgNodeSchema } from '$lib/schemas/jsonld';
+import { SchemaOrgNodeSchema } from '#lib/schemas/jsonld.js';
 import type {
 	BlogPosting,
 	BreadcrumbList,
@@ -22,10 +22,10 @@ import type {
 	ProfilePage,
 	Service as ServiceNode,
 	WebSite,
-} from '$lib/schemas/jsonld';
-import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
-import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+} from '#lib/schemas/jsonld.js';
+import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '#lib/types.js';
+import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
+import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.js';
 import { extractText } from '@repo/shared';
 import {
 	buildBreadcrumbListJsonLd,

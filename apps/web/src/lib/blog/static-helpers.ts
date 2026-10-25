@@ -1,5 +1,5 @@
-import type { BlogCategory, BlogPost } from '$lib/types';
-import { blogPosts } from '$lib/content/blog';
+import type { BlogCategory, BlogPost } from '#lib/types.js';
+import { blogPosts } from '#lib/content/blog';
 
 const fallbackSvgs = import.meta.glob('/src/lib/assets/blog-fallbacks/*.svg', {
 	query: '?raw',

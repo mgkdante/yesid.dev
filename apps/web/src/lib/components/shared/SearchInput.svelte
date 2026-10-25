@@ -3,11 +3,11 @@
   Used in both mobile (inline) and sidebar (sideLeft) contexts.
 -->
 <script lang="ts">
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.js';
 
 	export interface SearchInputProps {
 		placeholder?: string;

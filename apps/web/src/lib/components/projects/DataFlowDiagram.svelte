@@ -13,12 +13,12 @@
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.js';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '#lib/motion/utils/gsap.js';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
 

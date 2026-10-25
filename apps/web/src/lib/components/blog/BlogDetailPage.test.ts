@@ -1,8 +1,8 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels';
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/svelte';
 import BlogDetailPage from './BlogDetailPage.svelte';
-import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
+import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.js';
 import type { BlogPageContent } from '@repo/shared';
 
 // Minimal BlogPost fixture, only required fields populated.

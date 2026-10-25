@@ -8,22 +8,22 @@
   Hover triggers border glow + SVG morph. No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
-	import type { Project, Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Project, Service } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
 	import { cursorGlow, magnetic } from '@yesid/motion/actions';
-	import { SvgIcon } from '$lib/components/brand';
+	import { SvgIcon } from '#lib/components/brand/index.js';
 	import { Badge } from '@yesid/ui/badge';
-	import { Card } from '$lib/components/ui/card';
-	import DataFlowDiagram from '$lib/components/projects/DataFlowDiagram.svelte';
-	import { cn, serviceLineColor, projectMetrics } from '$lib/utils';
-	import { siteLabels } from '$lib/content';
+	import { Card } from '#lib/components/ui/card/index.js';
+	import DataFlowDiagram from '#lib/components/projects/DataFlowDiagram.svelte';
+	import { cn, serviceLineColor, projectMetrics } from '#lib/utils/index.js';
+	import { siteLabels } from '#lib/content/index.js';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';
-	import digitalDesktopBlueprint from '$lib/assets/project-fallbacks/digital-desktop.svg?raw';
-	import digitalMobileBlueprint from '$lib/assets/project-fallbacks/digital-mobile.svg?raw';
+	import digitalDesktopBlueprint from '#lib/assets/project-fallbacks/digital-desktop.svg?raw';
+	import digitalMobileBlueprint from '#lib/assets/project-fallbacks/digital-mobile.svg?raw';
 
 	type ProjectCardVariant = 'listing' | 'proof';
 	type ProjectCardSize = 'listing' | 'proof';

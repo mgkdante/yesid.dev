@@ -305,7 +305,7 @@ describe('immutable design customer contract', () => {
 		expect(
 			consentUses.some(
 				(use) =>
-					use.specifier === '$lib/analytics/preset' &&
+					use.specifier === '#lib/analytics/preset.js' &&
 					!use.typeOnly &&
 					use.bindings.includes('YESID_ANALYTICS_PRESET'),
 			),

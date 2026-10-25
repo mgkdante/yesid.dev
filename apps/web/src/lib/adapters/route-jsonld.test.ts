@@ -10,10 +10,10 @@ import {
 	projectsSlugSeoFactory,
 	servicesIdSeoFactory,
 } from './route-seo-factories';
-import { siteMeta } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
+import { siteMeta } from '#lib/content/site-meta';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
 import { blogPostFactory, projectFactory, serviceFactory } from '../../tests/factories';
-import type { BlogPost, LegalPage, Locale, Project, Service } from '$lib/types';
+import type { BlogPost, LegalPage, Locale, Project, Service } from '#lib/types.js';
 
 vi.mock('$env/static/public', () => ({
 	PUBLIC_DIRECTUS_URL: 'https://cms.yesid.dev',
@@ -322,9 +322,9 @@ describe('route JSON-LD extraction contract', () => {
 		const defaultsSource = readFileSync(new URL('./route-seo-defaults.ts', import.meta.url), 'utf8');
 		const factoriesSource = readFileSync(new URL('./route-seo-factories.ts', import.meta.url), 'utf8');
 
-		expect(defaultsSource).not.toContain("from '$lib/adapters/route-seo-factories'");
-		expect(defaultsSource).toContain("from '$lib/adapters/route-jsonld'");
-		expect(factoriesSource).toContain("from '$lib/adapters/route-jsonld'");
+		expect(defaultsSource).not.toContain("from '#lib/adapters/route-seo-factories'");
+		expect(defaultsSource).toContain("from '#lib/adapters/route-jsonld'");
+		expect(factoriesSource).toContain("from '#lib/adapters/route-jsonld'");
 		expect(defaultsSource.match(/buildBreadcrumbListNode\(/g) ?? []).toHaveLength(0);
 		expect(factoriesSource.match(/buildBreadcrumbListNode\(/g) ?? []).toHaveLength(0);
 	});

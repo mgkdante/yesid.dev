@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getLocale } from '$lib/utils/locale-context';
+	import { getLocale } from '#lib/utils/locale-context.js';
 	const locale = getLocale();
 </script>
 

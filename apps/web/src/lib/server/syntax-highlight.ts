@@ -4,7 +4,7 @@
 // build if anything client-reachable tries.
 import { createHighlighter } from 'shiki';
 import type { ThemeRegistration } from 'shiki';
-import { renderPlainCodeHtml } from '$lib/utils/code-fences';
+import { renderPlainCodeHtml } from '#lib/utils/code-fences.js';
 
 const brandTheme: ThemeRegistration = {
 	name: 'yesid-brand',

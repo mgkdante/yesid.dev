@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { PageSeo } from '$lib/schemas/seo';
-	import type { Locale } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
+	import type { PageSeo } from '#lib/schemas/seo.js';
+	import type { Locale } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
 	import {
 		PUBLISHED_LOCALES,
 		SITE_HOST,
@@ -10,8 +10,8 @@
 		canonicalFor,
 		defaultOgImageFor,
 		localizeOgCard,
-	} from '$lib/utils/seo-defaults';
-	import { dev as runtimeDev } from '$app/environment';
+	} from '#lib/utils/seo-defaults.js';
+	import { dev as runtimeDev } from '$app/env';
 	import JsonLd from './JsonLd.svelte';
 
 	// `dev` is a prop (not just the runtime import) so tests can force the path.
@@ -42,7 +42,7 @@
 	const pathForCanonical = $derived(seo.canonical.replace(SITE_HOST, '') || '/');
 	const alternateLocales = $derived(
 		seo.localeAlternates
-			? PUBLISHED_LOCALES.filter((l) => Boolean(seo.localeAlternates?.[l]))
+		? PUBLISHED_LOCALES.filter((l) => Boolean(seo.localeAlternates?.[l]))
 			: PUBLISHED_LOCALES,
 	);
 	const otherLocales = $derived(
@@ -50,7 +50,7 @@
 	);
 	const xDefaultHref = $derived(
 		seo.localeAlternates
-			? seo.localeAlternates.en
+		? seo.localeAlternates.en
 			: canonicalFor(pathForCanonical, 'en'),
 	);
 

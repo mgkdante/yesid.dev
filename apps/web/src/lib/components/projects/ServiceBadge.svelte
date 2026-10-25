@@ -6,14 +6,14 @@
   Hover: subtle glow, bg shift, slight scale, and SVG morph.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { localizeHref } from '$lib/utils/locale-routing';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { serviceLineColor } from '$lib/utils/service-colors';
+	import type { Service } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { localizeHref } from '#lib/utils/locale-routing.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
+	import { serviceLineColor } from '#lib/utils/service-colors.js';
 
 	const locale = getLocale();
-	import { SvgIcon } from '$lib/components/brand';
+	import { SvgIcon } from '#lib/components/brand/index.js';
 
 	let {
 		service,

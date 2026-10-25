@@ -7,9 +7,9 @@
 // byte-identical to the pre-i18n form; fr/es append it so OpenWeather localizes
 // `condition`.
 
-import type { Locale } from '$lib/types';
-import type { WeatherData } from '$lib/utils/weather';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
+import type { Locale } from '#lib/types.js';
+import type { WeatherData } from '#lib/utils/weather.js';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
 
 export async function fetchFreshWeather(locale: Locale): Promise<WeatherData | null> {
 	try {

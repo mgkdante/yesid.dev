@@ -12,24 +12,24 @@ import type {
 	PageSeo,
 	SiteMeta,
 	SiteSeoDefaults,
-} from '$lib/types';
-import type { ContentAdapter } from '$lib/adapters/types';
+} from '#lib/types.js';
+import type { ContentAdapter } from '#lib/adapters/types.js';
 import { extractText } from '@repo/shared';
-import { SITE_HOST, canonicalFor } from '$lib/utils/seo-defaults';
-import { resolveLocale } from '$lib/utils/locale';
-import { ogImagePath } from '$lib/og/og-path';
-import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
-import { assetImage } from '$lib/directus/assets';
+import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.js';
+import { resolveLocale } from '#lib/utils/locale.js';
+import { ogImagePath } from '#lib/og/og-path.js';
+import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.js';
+import { assetImage } from '#lib/directus/assets.js';
 import {
 	BLOG_TRANSLATION_LOCALES,
 	findBlogTranslationVariants,
-} from '$lib/blog/translations';
+} from '#lib/blog/translations.js';
 import {
 	buildBlogPostingNode,
 	buildCreativeWorkNode,
 	buildServiceNode,
-} from '$lib/adapters/jsonld';
-import { buildRouteBreadcrumbNode } from '$lib/adapters/route-jsonld';
+} from '#lib/adapters/jsonld.js';
+import { buildRouteBreadcrumbNode } from '#lib/adapters/route-jsonld.js';
 
 export interface FactoryArgs {
 	params: Record<string, string>;

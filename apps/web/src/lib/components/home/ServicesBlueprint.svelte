@@ -4,18 +4,18 @@
   Inline Svelte SVG components enable CSS var tokenization (currentColor → var(--primary)).
 -->
 <script lang="ts">
-	import BlueprintAzurSide from '$lib/components/svg/azur/BlueprintAzurSide.svelte';
-	import BlueprintAzurFront from '$lib/components/svg/azur/BlueprintAzurFront.svelte';
-	import BlueprintAzurTop from '$lib/components/svg/azur/BlueprintAzurTop.svelte';
-	import BlueprintAzurBogie from '$lib/components/svg/azur/BlueprintAzurBogie.svelte';
-	import BlueprintAzurCross from '$lib/components/svg/azur/BlueprintAzurCross.svelte';
-	import BlueprintMr73Side from '$lib/components/svg/azur/BlueprintMr73Side.svelte';
-	import BlueprintDetailBogie from '$lib/components/svg/detail/BlueprintDetailBogie.svelte';
-	import BlueprintDetailDoor from '$lib/components/svg/detail/BlueprintDetailDoor.svelte';
-	import BlueprintDetailInterior from '$lib/components/svg/detail/BlueprintDetailInterior.svelte';
-	import BlueprintDetailHandrails from '$lib/components/svg/detail/BlueprintDetailHandrails.svelte';
-	import BlueprintDetailWindow from '$lib/components/svg/detail/BlueprintDetailWindow.svelte';
-	import BlueprintDetailSeat from '$lib/components/svg/detail/BlueprintDetailSeat.svelte';
+	import BlueprintAzurSide from '#lib/components/svg/azur/BlueprintAzurSide.svelte';
+	import BlueprintAzurFront from '#lib/components/svg/azur/BlueprintAzurFront.svelte';
+	import BlueprintAzurTop from '#lib/components/svg/azur/BlueprintAzurTop.svelte';
+	import BlueprintAzurBogie from '#lib/components/svg/azur/BlueprintAzurBogie.svelte';
+	import BlueprintAzurCross from '#lib/components/svg/azur/BlueprintAzurCross.svelte';
+	import BlueprintMr73Side from '#lib/components/svg/azur/BlueprintMr73Side.svelte';
+	import BlueprintDetailBogie from '#lib/components/svg/detail/BlueprintDetailBogie.svelte';
+	import BlueprintDetailDoor from '#lib/components/svg/detail/BlueprintDetailDoor.svelte';
+	import BlueprintDetailInterior from '#lib/components/svg/detail/BlueprintDetailInterior.svelte';
+	import BlueprintDetailHandrails from '#lib/components/svg/detail/BlueprintDetailHandrails.svelte';
+	import BlueprintDetailWindow from '#lib/components/svg/detail/BlueprintDetailWindow.svelte';
+	import BlueprintDetailSeat from '#lib/components/svg/detail/BlueprintDetailSeat.svelte';
 </script>
 
 <!-- Round-4 (operator: "don't forget the blueprints on the home page"):

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getLocale } from '$lib/utils/locale-context';
+	import { getLocale } from '#lib/utils/locale-context.js';
 	let { label = 'SQL' }: { label?: string } = $props();
 	const openLabel = {
 		en: 'Open Transit in a new tab',

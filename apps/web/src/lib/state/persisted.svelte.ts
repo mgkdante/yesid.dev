@@ -14,7 +14,7 @@
  * Keep the binding plain: `bind:value={q.value}` works because `.value` reads/
  * writes a real `$state` underneath. Do not wrap the rune object in another bind.
  */
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { registerSession, peekRestore } from './locale-handoff.svelte';
 
 export type LocaleFree = string | number | boolean | null | LocaleFree[];
@@ -47,8 +47,9 @@ export function persisted<T extends LocaleFree>(key: string, initial: T): Persis
 	// collapsible would otherwise render open for a frame then animate shut).
 	// peekRestore returns the handoff value during a restore, undefined otherwise
 	// (a normal mount/reload) → falls back to `initial`.
-	const seeded = browser ? (peekRestore(key) as V | undefined) : undefined;
-	let current = $state<V>(seeded !== undefined ? seeded : (initial as unknown as V));
+	const seeded = browser ? peekRestore(key) as V | undefined : undefined;
+
+	let current = $state<V>(seeded !== undefined ? seeded : initial as unknown as V);
 
 	if (browser) {
 		$effect(() => {

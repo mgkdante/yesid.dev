@@ -1,25 +1,25 @@
 <script lang="ts">
-	import '$lib/styles/article-body.css';
+	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
-  import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
-  import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
+  import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.js';
+  import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
-  import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
-  import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-  import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
-  import TocNav from '$lib/components/shared/TocNav.svelte';
-  import TocPill from '$lib/components/shared/TocPill.svelte';
-  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '$lib/components/shared/toc';
+  import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
+  import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+  import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+  import TocNav from '#lib/components/shared/TocNav.svelte';
+  import TocPill from '#lib/components/shared/TocPill.svelte';
+  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.js';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-  import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
-  import { resolveLocale } from '$lib/utils/locale';
-  import { getLocale } from '$lib/utils/locale-context';
-  import { sectionizeBlogBody } from '$lib/blog/sections';
+  import { scrollChain } from '#lib/motion/actions/scrollChain.js';
+  import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.js';
+  import { resolveLocale } from '#lib/utils/locale.js';
+  import { getLocale } from '#lib/utils/locale-context.js';
+  import { sectionizeBlogBody } from '#lib/blog/sections.js';
 
   const locale = getLocale();
-  import { siteLabels } from '$lib/content';
+  import { siteLabels } from '#lib/content/index.js';
 
   // go2/w4: reading mode removed per operator QA. The default reading
   // experience is the only one. The readingMode field stays dormant in the

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { siteLabels } from '$lib/content';
-	import ListingShell from '$lib/components/shared/ListingShell.svelte';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
+	import { siteLabels } from '#lib/content/index.js';
+	import ListingShell from '#lib/components/shared/ListingShell.svelte';
 
 	let { children } = $props();
 

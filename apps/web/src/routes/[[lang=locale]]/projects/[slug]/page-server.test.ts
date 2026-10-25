@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Project } from '$lib/types';
-import { projects } from '$lib/content/projects';
+import type { Project } from '#lib/types.js';
+import { projects } from '#lib/content/projects';
 import { projectFactory } from '../../../../tests/factories';
 
 const routeMocks = vi.hoisted(() => ({
@@ -11,10 +11,10 @@ const routeMocks = vi.hoisted(() => ({
 	fetchServiceSvgContents: vi.fn(),
 }));
 
-vi.mock('$lib/adapters', () => ({ adapter: routeMocks.adapter }));
-vi.mock('$lib/utils', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
-vi.mock('$lib/server/prerender-entries', () => ({ projectEntries: () => [] }));
-vi.mock('$lib/server/code-highlights', () => ({ collectCodeHighlights: () => ({}) }));
+vi.mock('#lib/adapters/index.js', () => ({ adapter: routeMocks.adapter }));
+vi.mock('#lib/utils/index.js', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
+vi.mock('#lib/server/prerender-entries.js', () => ({ projectEntries: () => [] }));
+vi.mock('#lib/server/code-highlights.js', () => ({ collectCodeHighlights: () => ({}) }));
 
 import { load } from './+page.server';
 

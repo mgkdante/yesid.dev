@@ -3,14 +3,14 @@
 // static content layer post-27.2).
 
 import { error } from '@sveltejs/kit';
-import { renderGithubReadme } from '$lib/server/markdown';
-import { fetchServiceSvgContents } from '$lib/utils';
-import { resolveLocale } from '$lib/utils/locale';
-import { localeFromParams } from '$lib/utils/locale-routing';
-import { adapter } from '$lib/adapters';
-import { projectEntries } from '$lib/server/prerender-entries';
-import { collectCodeHighlights } from '$lib/server/code-highlights';
-import type { Service } from '$lib/types';
+import { renderGithubReadme } from '#lib/server/markdown.js';
+import { fetchServiceSvgContents } from '#lib/utils/index.js';
+import { resolveLocale } from '#lib/utils/locale.js';
+import { localeFromParams } from '#lib/utils/locale-routing.js';
+import { adapter } from '#lib/adapters/index.js';
+import { projectEntries } from '#lib/server/prerender-entries.js';
+import { collectCodeHighlights } from '#lib/server/code-highlights.js';
+import type { Service } from '#lib/types.js';
 
 export const entries = projectEntries;
 export const prerender = entries().length > 0;

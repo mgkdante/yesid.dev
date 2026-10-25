@@ -5,15 +5,15 @@
   Stop number computed from prop.
 -->
 <script lang="ts">
-	import type { AboutMetric } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutMetric } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import { MetricDisplay } from '$lib/components/brand';
+	import { MetricDisplay } from '#lib/components/brand/index.js';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 
 	let { metrics, stop, label }: { metrics: readonly AboutMetric[]; stop: string; label: string } = $props();
 </script>

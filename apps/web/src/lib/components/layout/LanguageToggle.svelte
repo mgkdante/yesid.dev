@@ -1,47 +1,27 @@
-<!--
-  LanguageToggle — a fingerpost signpost (the wayfinding direction pole),
-  drawn FLAT — line-art, like the ThemeToggle traffic-light beside it.
-
-  A small vertical pole with one pointed fingerboard per published locale
-  (EN / FR / ES), the CURRENT locale's board emphasised with a solid --primary
-  fill + an amber rule (--border-rule-accent) underline — exactly the way the
-  theme toggle fills its current signal lens. Pure SVG, simple strokes, solid
-  fills: NO gradients, NO drop-shadow glows, NO filter animations. A drawing.
-
-  Data-driven by PUBLISHED_LOCALES: one board per published locale, cycling on
-  click. Same-path pages preserve their route; translated articles use exact
-  locale slugs and fall back to the target blog index when a row is unavailable.
-
-  On switch the boards give a gentle swing (a signpost catching the change);
-  disabled under prefers-reduced-motion.
-
-  Persistent chrome (rides Nav): locale + url are PROPS (ThemeToggle convention).
-  The switch preserves query AND hash — so in-progress state (filters,
-  ?station) survives the language change.
--->
 <script lang="ts">
-	import { siteLabels } from '$lib/content';
-	import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
-	import { localizeHref, localizeUrl } from '$lib/utils/locale-routing';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
-	import { building } from '$app/environment';
-	import type { Locale } from '$lib/types';
+	import { siteLabels } from '#lib/content/index.js';
+	import { PUBLISHED_LOCALES, SITE_HOST } from '#lib/utils/seo-defaults.js';
+	import { localizeHref, localizeUrl } from '#lib/utils/locale-routing.js';
+	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.js';
+	import { building } from '$app/env';
+	import type { Locale } from '#lib/types.js';
 
 	let {
 		class: className = '',
 		locale = DEFAULT_LOCALE,
 		url = new URL('https://yesid.dev/'),
 		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
-		localeAlternates,
-	}: {
+		localeAlternates
+
+		/** Full current URL — the switch preserves its path, query AND hash. */
+		/** Exact translated canonicals for routes whose locale variants use different slugs. */
+	}: { 
 		class?: string;
 		locale?: Locale;
-		/** Full current URL — the switch preserves its path, query AND hash. */
 		url?: URL;
 		availableLocales?: readonly Locale[];
-		/** Exact translated canonicals for routes whose locale variants use different slugs. */
-		localeAlternates?: Partial<Record<Locale, string>>;
-	} = $props();
+		localeAlternates?: Partial<Record<Locale, string>>
+	 } = $props();
 
 	// Two-letter codes on the boards (legible at signpost scale); full self-names
 	// drive the accessible label/title (a French/Spanish speaker hears theirs).
@@ -88,31 +68,53 @@
 	const vbHeight = $derived(8 + SPAN * availableLocales.length); // 2 boards → 44 (unchanged)
 	// Rendered at the two-board scale (36px tall for the 44-unit post) at every
 	// count, so 15 SVG units paint the same on-screen size with 2 AND 3 boards.
-	const svgHeight = $derived(Math.round(((vbHeight * 36) / 44) * 10) / 10);
-	const boards = $derived(
-		availableLocales.map((loc, k) => {
-			const yTop = 4 + k * SPAN + (SPAN - PLATE_H) / 2;
-			const mid = yTop + PLATE_H / 2;
-			const right = k % 2 === 1;
-			// Plate outline (pointed pennant) — the locked silhouette.
-			const path = right
-				? `M30 ${yTop} H49 L54 ${mid} L49 ${yTop + PLATE_H} H30 Z`
-				: `M26 ${yTop} H7 L2 ${mid} L7 ${yTop + PLATE_H} H26 Z`;
-			return {
-				code: CODE[loc] ?? loc.slice(0, 2).toUpperCase(),
-				path,
-				fontSize: FONT_SIZE,
-				ruleY: yTop + PLATE_H + 1.4,
-				ruleX1: right ? 31 : 8,
-				ruleX2: right ? 47.5 : 25,
-				tx: right ? 39 : 16,
-				ty: mid + FONT_SIZE * 0.36,
-				active: loc === locale,
+	const svgHeight = $derived(Math.round(vbHeight * 36 / 44 * 10) / 10);
+
+	const boards = $derived(availableLocales.map((loc, k) => {
+		const yTop = 4 + k * SPAN + (SPAN - PLATE_H) / 2;
+		const mid = yTop + PLATE_H / 2;
+		const right = k % 2 === 1;
+		// Plate outline (pointed pennant) — the locked silhouette.
+		const path = right
+			? `M30 ${yTop} H49 L54 ${mid} L49 ${yTop + PLATE_H} H30 Z`
+			: `M26 ${yTop} H7 L2 ${mid} L7 ${yTop + PLATE_H} H26 Z`;
+		return {
+			code: CODE[loc] ?? loc.slice(0, 2).toUpperCase(),
+			path,
+			fontSize: FONT_SIZE,
+			ruleY: yTop + PLATE_H + 1.4,
+			ruleX1: right ? 31 : 8,
+			ruleX2: right ? 47.5 : 25,
+			tx: right ? 39 : 16,
+			ty: mid + FONT_SIZE * 0.36,
+			active: loc === locale,
 				delay: k * 60,
-			};
+		};
 		}),
 	);
 </script>
+
+<!--
+  LanguageToggle — a fingerpost signpost (the wayfinding direction pole),
+  drawn FLAT — line-art, like the ThemeToggle traffic-light beside it.
+
+  A small vertical pole with one pointed fingerboard per published locale
+  (EN / FR / ES), the CURRENT locale's board emphasised with a solid --primary
+  fill + an amber rule (--border-rule-accent) underline — exactly the way the
+  theme toggle fills its current signal lens. Pure SVG, simple strokes, solid
+  fills: NO gradients, NO drop-shadow glows, NO filter animations. A drawing.
+
+  Data-driven by PUBLISHED_LOCALES: one board per published locale, cycling on
+  click. Same-path pages preserve their route; translated articles use exact
+  locale slugs and fall back to the target blog index when a row is unavailable.
+
+  On switch the boards give a gentle swing (a signpost catching the change);
+  disabled under prefers-reduced-motion.
+
+  Persistent chrome (rides Nav): locale + url are PROPS (ThemeToggle convention).
+  The switch preserves query AND hash — so in-progress state (filters,
+  ?station) survives the language change.
+-->
 
 {#if availableLocales.length >= 2}
 	<a
@@ -127,8 +129,17 @@
 	>
 		<svg viewBox="0 0 56 {vbHeight}" width="46" height={svgHeight} aria-hidden="true">
 			<!-- POLE: simple shaft with a small finial cap. -->
-			<line class="pole" x1="28" y1="6" x2="28" y2={vbHeight - 3} stroke-linecap="round" />
-			<circle class="finial" cx="28" cy="4" r="2" />
+
+			<line
+				class="pole"
+				x1="28"
+				y1="6"
+				x2="28"
+				y2={vbHeight - 3}
+				stroke-linecap="round"
+			></line>
+
+			<circle class="finial" cx="28" cy="4" r="2"></circle>
 
 			{#key locale}
 				<g class="boards">
@@ -139,10 +150,16 @@
 							style="--d:{b.delay}ms; transform-origin:28px {b.ty - 3.8}px;"
 						>
 							<!-- fingerboard: flat outline (current locale fills solid --primary) -->
-							<path class="plate" d={b.path} />
+							<path class="plate" d={b.path}></path>
 							<!-- amber rule beneath the current plate (signage underline) -->
 							{#if b.active}
-								<line class="rule" x1={b.ruleX1} y1={b.ruleY} x2={b.ruleX2} y2={b.ruleY} />
+								<line
+									class="rule"
+									x1={b.ruleX1}
+									y1={b.ruleY}
+									x2={b.ruleX2}
+									y2={b.ruleY}
+								></line>
 							{/if}
 							<text x={b.tx} y={b.ty} font-size={b.fontSize}>{b.code}</text>
 						</g>

@@ -3,16 +3,16 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import AboutPage from './AboutPage.svelte';
-import { aboutPageContent } from '$lib/content/about-page';
-import { siteLabels } from '$lib/content';
+import { aboutPageContent } from '#lib/content/about-page';
+import { siteLabels } from '#lib/content/index.js';
 
-vi.mock('$lib/directus/assets', () => ({
+vi.mock('#lib/directus/assets.js', () => ({
 	asset: (id: string) => `/test-assets/${id}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string) => ({ src: `/test-assets/${id}` }),
 }));
 
-vi.mock('$lib/content/media-variants', () => ({
+vi.mock('#lib/content/media-variants', () => ({
 	mediaVariants: {
 		'/fixture-headshot.webp': {
 			width: 800,

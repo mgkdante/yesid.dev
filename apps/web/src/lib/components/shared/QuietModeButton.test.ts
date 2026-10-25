@@ -1,9 +1,9 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { flushSync } from 'svelte';
 import Fixture from './_quiet-mode-fixture.svelte';
-import { quietModeStore } from '$lib/state/quiet-mode.svelte';
+import { quietModeStore } from '#lib/state/quiet-mode.svelte.js';
 
 const localizedCases = (['fr', 'es'] as const).map(locale => ({
 	locale,

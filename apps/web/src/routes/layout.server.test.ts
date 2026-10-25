@@ -4,7 +4,7 @@
 //
 // +layout.server.ts is a pure data function with no DOM or SvelteKit SSR
 // runtime dependency — it calls adapter methods and returns a plain object.
-// The adapter is mocked via vi.mock('$lib/adapters') so no network calls
+// The adapter is mocked via vi.mock('#lib/adapters/index.js') so no network calls
 // are issued.
 //
 // The `load` function is called without arguments (it uses no event fields —
@@ -23,9 +23,9 @@ import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
 	errorPageContent as staticErrorPageContent,
-} from '$lib/content/nav';
-import type { NavLink, ErrorPageContent } from '$lib/navigation/types';
-import type { MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
+} from '#lib/content/nav';
+import type { NavLink, ErrorPageContent } from '#lib/navigation/types.js';
+import type { MorphShape, PageSeo, SiteSeoDefaults } from '#lib/types.js';
 
 // ---------------------------------------------------------------------------
 // Shared mock capture surface
@@ -37,10 +37,10 @@ const mockMorphShapes = vi.fn();
 const mockForRoute = vi.fn();
 const mockSiteSeoDefaults = vi.fn();
 
-// Mock '$lib/adapters' before importing the subject.
+// Mock '#lib/adapters/index.js' before importing the subject.
 // Vitest hoists vi.mock() calls, so this is safe even though the import
 // of the subject appears below.
-vi.mock('$lib/adapters', () => ({
+vi.mock('#lib/adapters/index.js', () => ({
 	adapter: {
 		nav: {
 			byPlacement: (...args: unknown[]) => mockByPlacement(...args),

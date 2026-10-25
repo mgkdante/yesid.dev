@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { load } from './+layout';
-import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
+import { DEFAULT_LOCALE } from '#lib/utils/seo-defaults.js';
 import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
 	footerLinks as staticFooterLinks,
 	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
-} from '$lib/content/nav';
-import type { ErrorPageContent, NavLink } from '$lib/navigation/types';
-import type { PageSeo } from '$lib/types';
+} from '#lib/content/nav';
+import type { ErrorPageContent, NavLink } from '#lib/navigation/types.js';
+import type { PageSeo } from '#lib/types.js';
 
 const fakeSeo: PageSeo = {
 	title: { en: 'Custom route | yesid.dev' },

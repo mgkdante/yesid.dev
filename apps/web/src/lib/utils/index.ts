@@ -6,11 +6,11 @@
 // IMPORTANT: server-only utilities are NOT re-exported here — importing them
 // through the barrel would pull `$env/dynamic/private` into the browser bundle.
 // Import them directly by specific path:
-//   - Weather fetch: `import { fetchMontrealWeather } from '$lib/utils/weather'`
+//   - Weather fetch: `import { fetchMontrealWeather } from '#lib/utils/weather'`
 //     (server-only — uses $env/dynamic/private; loaded from +page.server.ts only).
 //   - Type-only consumers (e.g. <WeatherData> in a component) are also imported
-//     directly: `import type { WeatherData } from '$lib/utils/weather'`.
-//   - README rendering: `import { renderGithubReadme } from '$lib/server/markdown'`.
+//     directly: `import type { WeatherData } from '#lib/utils/weather'`.
+//   - README rendering: `import { renderGithubReadme } from '#lib/server/markdown'`.
 //     Slice-23 kept it out of this barrel; consolidation-deploy-honesty moved
 //     it (with the Shiki highlighter it imports) into $lib/server so the build
 //     itself refuses any client-reachable import — highlighting is

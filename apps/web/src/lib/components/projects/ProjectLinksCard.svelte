@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { trackAnalyticsEvent } from '$lib/analytics/client';
-	import type { Project } from '$lib/types';
-	import { isProjectProofHref } from '$lib/utils/high-intent-links';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
-	import { siteLabels } from '$lib/content';
-	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
+	import { trackAnalyticsEvent } from '#lib/analytics/client.js';
+	import type { Project } from '#lib/types.js';
+	import { isProjectProofHref } from '#lib/utils/high-intent-links.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
+	import { siteLabels } from '#lib/content/index.js';
+	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
 
 	const locale = getLocale();
 	const glanceChrome = siteLabels.projectsChrome.detail.glance;

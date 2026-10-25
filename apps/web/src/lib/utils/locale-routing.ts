@@ -8,11 +8,11 @@
 // EN URL until 'fr' joins PUBLISHED_LOCALES — so FR can be QA'd live, unindexed,
 // and the launch is a one-line flip.
 
-import { building } from '$app/environment';
+import { building } from '$app/env';
 import { createLocaleRouting } from '@yesid/i18n-core';
-import type { Locale } from '$lib/types';
-import { DEFAULT_LOCALE } from '$lib/utils/locale';
-import { isRegistryExempt } from '$lib/utils/page-registry';
+import type { Locale } from '#lib/types.js';
+import { DEFAULT_LOCALE } from '#lib/utils/locale.js';
+import { isRegistryExempt } from '#lib/utils/page-registry.js';
 
 /** Locales that may appear as a URL path prefix. EN is never prefixed.
  *  L1: 'es' opened 2026-07-09 (dark-QA state: /es resolves + prerenders but

@@ -36,34 +36,34 @@ import {
 	getFeaturedProjects,
 	getPublicProjects,
 	getProjectsByService,
-} from '$lib/projects/static-helpers';
+} from '#lib/projects/static-helpers.js';
 import {
 	getServiceById,
 	getVisibleServices,
 	getAdjacentServices,
-} from '$lib/services/static-helpers';
-import { blogPosts } from '$lib/content/blog';
-import { blogBodies } from '$lib/content/blog-bodies';
+} from '#lib/services/static-helpers.js';
+import { blogPosts } from '#lib/content/blog';
+import { blogBodies } from '#lib/content/blog-bodies';
 import {
 	getPostBySlug,
 	getPostsByCategory,
 	getSvgContent,
 	getSvgContentsForPosts,
-} from '$lib/blog/static-helpers';
-import { siteMeta } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import { routeSeoOverrides } from '$lib/content/route-seo';
+} from '#lib/blog/static-helpers.js';
+import { siteMeta } from '#lib/content/site-meta';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
+import { routeSeoOverrides } from '#lib/content/route-seo';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import { errorSeoFallback } from './error-seo-fallback';
 import { routeSeoFactories } from './route-seo-factories';
 import { composePageSeo } from './compose-page-seo';
-import type { SiteSeoDefaults } from '$lib/types';
-import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';
+import type { SiteSeoDefaults } from '#lib/types.js';
+import { PageSeoSchema, type PageSeo } from '#lib/schemas/seo.js';
 import { z } from 'zod';
 import {
 	parsePort,
 	HeroDataSchema,
-} from '$lib/schemas';
+} from '#lib/schemas/index.js';
 import {
 	ProjectSchema,
 	ServiceSchema,
@@ -80,7 +80,7 @@ import {
 	type BlogPageContent,
 	type ProjectsPageContent,
 } from '@repo/shared/schemas';
-import type { Locale } from '$lib/types';
+import type { Locale } from '#lib/types.js';
 import { BlockEditorDocSchema } from '@repo/shared';
 import {
 	heroContent,
@@ -91,17 +91,17 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-} from '$lib/content/site-content';
-import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '$lib/content/nav';
-import { legalPages } from '$lib/content/legal-pages';
+} from '#lib/content/site-content';
+import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '#lib/content/nav';
+import { legalPages } from '#lib/content/legal-pages';
 import { LegalPageSchema } from '@repo/shared';
-import { errorPagesById } from '$lib/content/error-pages';
-import { aboutPageContent } from '$lib/content/about-page';
-import { contactContent } from '$lib/content/contact-page';
-import { blogPageContent } from '$lib/content/blog-page';
-import { projectsPageContent } from '$lib/content/projects-page';
-import { INITIAL_HERO_DATA } from '$lib/live';
-import { morphShapes } from '$lib/content/morph-shapes';
+import { errorPagesById } from '#lib/content/error-pages';
+import { aboutPageContent } from '#lib/content/about-page';
+import { contactContent } from '#lib/content/contact-page';
+import { blogPageContent } from '#lib/content/blog-page';
+import { projectsPageContent } from '#lib/content/projects-page';
+import { INITIAL_HERO_DATA } from '#lib/live/index.js';
+import { morphShapes } from '#lib/content/morph-shapes';
 import { MorphShapeSchema } from '@repo/shared';
 // Slice 18d Phase 8 introduced this as the static fallback for
 // content.metroSvg; since slice-27.2 (static-only data path — the directus
@@ -109,7 +109,7 @@ import { MorphShapeSchema } from '@repo/shared';
 // the live source.
 import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
 import { assetIdForOrUndefined } from '@repo/shared';
-import type { Project } from '$lib/types';
+import type { Project } from '#lib/types.js';
 
 import type { ContentAdapter } from './types';
 
@@ -174,7 +174,7 @@ export const staticAdapter: ContentAdapter = {
 			locale: Locale,
 			params?: Record<string, string>,
 		): Promise<PageSeo> => {
-			const { adapter } = await import('$lib/adapters');
+			const { adapter } = await import('#lib/adapters/index.js');
 			const dynamicFactory = routeSeoFactories[routeId];
 			if (dynamicFactory) {
 				return PageSeoSchema.parse(await dynamicFactory({

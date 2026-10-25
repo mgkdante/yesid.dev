@@ -1,18 +1,18 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 import FeaturedProjects from './FeaturedProjects.svelte';
-import { proofReelContent } from '$lib/content/site-content';
-import { getFeaturedProjects } from '$lib/projects/static-helpers';
-import { getVisibleServices } from '$lib/services/static-helpers';
-import { projectMetrics, resolveLocale } from '$lib/utils';
-import type { Project } from '$lib/types';
+import { proofReelContent } from '#lib/content/site-content';
+import { getFeaturedProjects } from '#lib/projects/static-helpers.js';
+import { getVisibleServices } from '#lib/services/static-helpers.js';
+import { projectMetrics, resolveLocale } from '#lib/utils/index.js';
+import type { Project } from '#lib/types.js';
 import { projectFactory } from '../../../tests/factories';
 
-vi.mock('$lib/directus/assets', () => ({
+vi.mock('#lib/directus/assets.js', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
 	buildSrcSet: () => '',
 	assetImage: (id: string, preset?: string) => ({
@@ -190,7 +190,7 @@ describe('FeaturedProjects', () => {
 			'utf8',
 		);
 
-		expect(source).toContain("import ProjectCard from '$lib/components/projects/ProjectCard.svelte'");
+		expect(source).toContain("import ProjectCard from '#lib/components/projects/ProjectCard.svelte'");
 		expect(source).not.toContain('ProjectHeroPreview');
 		expect(source).not.toContain('class="proof-image');
 		expect(source).not.toContain('class="proof-card group');
@@ -202,7 +202,7 @@ describe('FeaturedProjects', () => {
 			'utf8',
 		);
 
-		expect(source).toContain("import { allowCarouselDrag } from '$lib/utils/carousel-drag'");
+		expect(source).toContain("import { allowCarouselDrag } from '#lib/utils/carousel-drag'");
 		expect(source).toContain('watchDrag: allowCarouselDrag');
 	});
 

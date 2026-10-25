@@ -28,7 +28,7 @@ describe('surface spec — one card spec, defined once', () => {
 
 	it('ProjectCard consumes the shared Card surface instead of owning another surface spec', () => {
 		const src = read('src/lib/components/projects/ProjectCard.svelte');
-		expect(src).toContain("import { Card } from '$lib/components/ui/card';");
+		expect(src).toContain("import { Card } from '#lib/components/ui/card';");
 		expect(src).toContain('<Card class="h-full gap-0 py-0">');
 	});
 
@@ -72,10 +72,10 @@ describe('surface spec — one card spec, defined once', () => {
 		const headerCss = read('src/lib/styles/listing-header.css');
 		const shellCss = read('src/lib/styles/listing-shell.css');
 
-		expect(blog).toContain("import '$lib/styles/listing-header.css';");
-		expect(projects).toContain("import '$lib/styles/listing-header.css';");
-		expect(blog).toContain("import '$lib/styles/listing-shell.css';");
-		expect(projects).toContain("import '$lib/styles/listing-shell.css';");
+		expect(blog).toContain("import '#lib/styles/listing-header.css';");
+		expect(projects).toContain("import '#lib/styles/listing-header.css';");
+		expect(blog).toContain("import '#lib/styles/listing-shell.css';");
+		expect(projects).toContain("import '#lib/styles/listing-shell.css';");
 		expect(blog).toContain('class="listing-blueprint-header"');
 		expect(projects).toContain('class="listing-blueprint-header"');
 		expect(blog).toContain('class="listing-grid"');
@@ -99,8 +99,8 @@ describe('surface spec — one card spec, defined once', () => {
 		expect(projects).toContain('<ProjectsBlueprint />');
 
 		for (const src of [blog, projects]) {
-			expect(src).toContain("import { startListingBlueprintScrub } from '$lib/components/shared/listing-blueprint-scrub';");
-			expect(src).not.toContain("import { isViewportAtMost } from '$lib/motion/utils/device.js';");
+			expect(src).toContain("import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub';");
+			expect(src).not.toContain("import { isViewportAtMost } from '#lib/motion/utils/device.js';");
 			expect(src).not.toContain('createDrawScrub(blueprintWrapEl');
 		}
 	});

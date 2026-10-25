@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { StopLabel as UiStopLabel, type StopLabelProps as UiStopLabelProps } from '@yesid/ui/brand';
-	import type { Locale } from '$lib/types';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { Locale } from '#lib/types.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	export interface StopLabelProps extends Omit<UiStopLabelProps, 'prefix'> {
 		label: string;

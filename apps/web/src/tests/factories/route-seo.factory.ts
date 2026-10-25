@@ -12,7 +12,7 @@
 //   slice-17f Research page for details.
 
 import { Factory } from 'interface-forge';
-import type { RouteSeoOverride } from '$lib/types';
+import type { RouteSeoOverride } from '#lib/types.js';
 
 export const routeSeoFactory = new Factory<RouteSeoOverride>(() => ({
 	path: '/',

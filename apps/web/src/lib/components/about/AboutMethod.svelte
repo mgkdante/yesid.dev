@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { AboutMethodStep } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutMethodStep } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 
 	let { steps, stop, label }: { steps: readonly AboutMethodStep[]; stop: string; label: string } = $props();
 </script>

@@ -14,13 +14,13 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { adapter } from '$lib/adapters';
-import { isPathPublished } from '$lib/utils/page-registry';
-import { delocalizePath } from '$lib/utils/locale-routing';
-import { PUBLISHED_LOCALES, canonicalFor } from '$lib/utils/seo-defaults';
+import { adapter } from '#lib/adapters/index.js';
+import { isPathPublished } from '#lib/utils/page-registry.js';
+import { delocalizePath } from '#lib/utils/locale-routing.js';
+import { PUBLISHED_LOCALES, canonicalFor } from '#lib/utils/seo-defaults.js';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
 import { sitemapCoverage } from '@yesid/gates';
-import { sitePages } from '$lib/content/site-pages';
+import { sitePages } from '#lib/content/site-pages';
 
 const ROUTES_DIR = 'src/routes';
 

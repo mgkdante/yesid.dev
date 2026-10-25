@@ -1,8 +1,8 @@
-import { siteLabels } from '$lib/content/site-labels';
+import { siteLabels } from '#lib/content/site-labels';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ThemeToggle from './ThemeToggle.svelte';
-import { themeStore } from '$lib/stores/theme.svelte';
+import { themeStore } from '#lib/stores/theme.svelte.js';
 
 describe('ThemeToggle', () => {
 	beforeEach(() => {

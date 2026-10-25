@@ -3,7 +3,7 @@ import { SHAPES, SHAPE_KEYS, pickRandomShape, getMorphShapes } from './shapes.js
 import type { MorphShape } from '@repo/shared';
 
 // Mock the adapter's content.morphShapes
-vi.mock('$lib/adapters', () => ({
+vi.mock('#lib/adapters/index.js', () => ({
 	adapter: {
 		content: {
 			morphShapes: vi.fn(),
@@ -11,7 +11,7 @@ vi.mock('$lib/adapters', () => ({
 	},
 }));
 
-import { adapter } from '$lib/adapters';
+import { adapter } from '#lib/adapters/index.js';
 const morphShapesMock = adapter.content.morphShapes as ReturnType<typeof vi.fn>;
 
 const sampleShapes: readonly MorphShape[] = [

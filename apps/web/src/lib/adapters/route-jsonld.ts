@@ -1,8 +1,8 @@
-import type { Locale } from '$lib/types';
+import type { Locale } from '#lib/types.js';
 import { buildBreadcrumbListNode, buildCollectionPageNode } from './jsonld';
-import { resolveLocale } from '$lib/utils/locale';
-import { resolveSitePage } from '$lib/utils/page-registry';
-import { canonicalFor } from '$lib/utils/seo-defaults';
+import { resolveLocale } from '#lib/utils/locale.js';
+import { resolveSitePage } from '#lib/utils/page-registry.js';
+import { canonicalFor } from '#lib/utils/seo-defaults.js';
 
 export type RouteCrumb = readonly [path: string, fallback: string, name?: string];
 

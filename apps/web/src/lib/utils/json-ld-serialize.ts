@@ -1,4 +1,4 @@
-import type { SchemaOrgNode } from '$lib/schemas/seo';
+import type { SchemaOrgNode } from '#lib/schemas/seo.js';
 
 /**
  * Serialize nodes into a JSON-LD @graph blob.

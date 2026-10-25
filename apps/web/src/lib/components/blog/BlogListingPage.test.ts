@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/svelte';
 import { tick } from 'svelte';
-import type { BlogPost } from '$lib/types';
-import { applyEntries, captureEntries } from '$lib/state/locale-handoff.svelte';
+import type { BlogPost } from '#lib/types.js';
+import { applyEntries, captureEntries } from '#lib/state/locale-handoff.svelte.js';
 
 vi.mock('$app/navigation', () => ({ goto: vi.fn() }));
 vi.mock('$app/stores', () => ({
@@ -13,10 +13,10 @@ vi.mock('$app/stores', () => ({
 		},
 	},
 }));
-vi.mock('$lib/components/shared/listing-blueprint-scrub', () => ({
+vi.mock('#lib/components/shared/listing-blueprint-scrub.js', () => ({
 	startListingBlueprintScrub: async () => undefined,
 }));
-vi.mock('$lib/motion/utils/flip.js', () => ({
+vi.mock('#lib/motion/utils/flip.js', () => ({
 	captureFlipState: () => null,
 	animateFlipTransition: () => undefined,
 }));

@@ -5,17 +5,17 @@
   Stop label always top-left.
 -->
 <script lang="ts">
-	import type { AboutPolaroid } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutPolaroid } from '#lib/types.js';
+	import { resolveLocale } from '#lib/utils/locale.js';
+	import { getLocale } from '#lib/utils/locale-context.js';
 
 	const locale = getLocale();
-	import { aboutPageContent } from '$lib/content/about-page';
+	import { aboutPageContent } from '#lib/content/about-page';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
-	import { mediaVariants } from '$lib/content/media-variants';
-	import { persisted } from '$lib/state/persisted.svelte';
+	import { StopLabel } from '#lib/components/brand/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
+	import { mediaVariants } from '#lib/content/media-variants';
+	import { persisted } from '#lib/state/persisted.svelte.js';
 
 	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
 

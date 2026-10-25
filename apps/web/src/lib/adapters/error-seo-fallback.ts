@@ -1,5 +1,5 @@
-import type { Locale, PageSeo, SiteMeta, SiteSeoDefaults } from '$lib/types';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import type { Locale, PageSeo, SiteMeta, SiteSeoDefaults } from '#lib/types.js';
+import { SITE_HOST } from '#lib/utils/seo-defaults.js';
 
 /**
  * /__error — last-resort SEO. noIndex: true (nothing to crawl). Pulls brand

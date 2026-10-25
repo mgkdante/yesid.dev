@@ -6,20 +6,20 @@
   state doesn't collide, 1-column metrics, non-sticky).
 -->
 <script lang="ts">
-  import type { Project, Service } from '$lib/types';
-  import { resolveLocale } from '$lib/utils/locale';
-  import { getLocale } from '$lib/utils/locale-context';
-  import { projectMetrics } from '$lib/utils/project-metrics';
+  import type { Project, Service } from '#lib/types.js';
+  import { resolveLocale } from '#lib/utils/locale.js';
+  import { getLocale } from '#lib/utils/locale-context.js';
+  import { projectMetrics } from '#lib/utils/project-metrics.js';
 
   const locale = getLocale();
-  import { MetricDisplay } from '$lib/components/brand';
-  import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-  import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
+  import { MetricDisplay } from '#lib/components/brand/index.js';
+  import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+  import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
   import ServiceBadge from './ServiceBadge.svelte';
-  import { siteLabels } from '$lib/content';
-  import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+  import { siteLabels } from '#lib/content/index.js';
+  import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
   import ProjectLinksCard from './ProjectLinksCard.svelte';
-  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+  import { scrollChain } from '#lib/motion/actions/scrollChain.js';
 
   const glanceChrome = siteLabels.projectsChrome.detail.glance;
   const glanceOverviewTitle = resolveLocale(glanceChrome.overview, locale);

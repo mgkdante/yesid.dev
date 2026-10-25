@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { boop } from '@yesid/motion/actions';
-	import { CornerMarks } from '$lib/components/brand';
-	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
-	import QuietModeButton from '$lib/components/shared/QuietModeButton.svelte';
+	import { CornerMarks } from '#lib/components/brand/index.js';
+	import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
+	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 
 	type Props = {
 		accent: string;

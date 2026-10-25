@@ -37,9 +37,9 @@ vi.mock('$env/static/public', () => ({
 
 import { composePageSeo } from '../compose-page-seo';
 import { codeRouteSeoDefaults } from '../route-seo-defaults';
-import { siteMeta } from '$lib/content/site-meta';
-import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
-import type { Locale } from '$lib/types';
+import { siteMeta } from '#lib/content/site-meta';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults';
+import type { Locale } from '#lib/types.js';
 
 describe('composePageSeo — parity across 7 static routes (#80b)', () => {
 	const STATIC_ROUTE_IDS = [

@@ -30,11 +30,11 @@
 // error. Unset resolves to '', which only matters when an asset misses the
 // mirror map (dev-only fallback path; production fails loud regardless).
 
-import { dev } from '$app/environment';
+import { dev } from '$app/env';
 import * as staticPublicEnv from '$env/static/public';
-import { mirroredMediaAssets } from '$lib/content/media-assets';
-import { mediaVariants } from '$lib/content/media-variants';
-import type { MediaVariantEntry } from '$lib/types';
+import { mirroredMediaAssets } from '#lib/content/media-assets';
+import { mediaVariants } from '#lib/content/media-variants';
+import type { MediaVariantEntry } from '#lib/types.js';
 
 const PUBLIC_DIRECTUS_URL =
 	(staticPublicEnv as Record<string, string | undefined>).PUBLIC_DIRECTUS_URL ?? '';
@@ -48,15 +48,15 @@ const PUBLIC_DIRECTUS_URL =
  * too, since typos here are low-impact (result is a 404 on the asset URL, not
  * a crash).
  */
-export type AssetPreset =
-	| 'hero-1200'
-	| 'card-600'
-	| 'thumb-240'
-	| 'og-1200'
+export type AssetPreset = 
+	'hero-1200' |
+	'card-600' |
+	'thumb-240' |
+	'og-1200' |
 	// Allow arbitrary preset names while still auto-completing the canonical
 	// set. Every string literal is assignable to `string & {}`, but the union
 	// members take precedence in IDE suggestions.
-	| (string & {});
+	(string & {  });
 
 /**
  * Everything an <img> needs for responsive rendering. `srcset`/`width`/
@@ -118,9 +118,9 @@ export function createAssets(baseUrl: string, options: CreateAssetsOptions = {})
 	const buildSrcSet: AssetHelpers['buildSrcSet'] = (id, presets) =>
 		presets
 			.map((preset) => {
-				const width = parsePresetWidth(preset);
-				const url = asset(id, preset);
-				return width > 0 ? `${url} ${width}w` : url;
+		const width = parsePresetWidth(preset);
+		const url = asset(id, preset);
+		return width > 0 ? `${url} ${width}w` : url;
 			})
 			.join(', ');
 
