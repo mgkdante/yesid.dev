@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Idempotency key for migrate-assets (slice-18d). Set by the migration script; do NOT edit post-migration. Format: `images/<relative-path-from-static>`.",
+    "note": "Frozen record of the 18d asset migration; do NOT edit post-migration. The asset-id map preserves its original file identities. Format: `images/<relative-path-from-static>`.",
     "options": null,
     "readonly": true,
     "required": false,

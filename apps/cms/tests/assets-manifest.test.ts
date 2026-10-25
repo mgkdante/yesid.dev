@@ -8,13 +8,12 @@ import {
 	parseManifest,
 	validateFolderReferences,
 	extractLegacyTopLevel,
-} from '../scripts/migrate-assets';
+} from '../scripts/lib/assets-manifest';
 import { readCmsFixtureJson } from './helpers/cms-fixtures';
 
 /**
  * Fixture shape assertion — `fixtures/assets-manifest.json` must parse against
- * the Zod schema authored alongside the migration script. Drift on either
- * side is caught in CI before any upload runs.
+ * the retained Zod schema. Drift is caught in CI before export or mirroring.
  *
  * Scope: repo-local. No network or Directus; reads the manifest and mirrors.
  */

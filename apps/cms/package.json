@@ -6,7 +6,6 @@
 	"scripts": {
 		"export:fallbacks": "bun scripts/export-fallbacks.ts",
 		"setup:asset-registry": "bun scripts/setup-asset-registry-schema.ts",
-		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
 		"sync:push": "bun scripts/sync-push.ts",
 		"sync:diff": "directus-sync diff",
