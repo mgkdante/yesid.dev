@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "memory",
     "item_duplication_fields": null,
-    "note": "Tech stack items + the tech-stack page intro.",
+    "note": "Technology-names group containing only tech_stack, used for project and service stacks.",
     "preview_url": null,
     "singleton": false,
     "sort": 5,
