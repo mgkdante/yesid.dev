@@ -1,6 +1,6 @@
-import { adapter } from '$lib/adapters';
-import { fetchServiceSvgContents } from '$lib/utils';
-import { localeEntries } from '$lib/server/prerender-entries';
+import { adapter } from '#lib/adapters/index.ts';
+import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { localeEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = localeEntries;
 

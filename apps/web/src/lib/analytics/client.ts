@@ -1,10 +1,10 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { get } from 'svelte/store';
-import { siteLabels } from '$lib/content';
+import { siteLabels } from '#lib/content/index.ts';
 import {
 	analyticsConsentStore,
 	type AnalyticsConsentState,
-} from '$lib/state/analytics-consent.svelte';
+} from '#lib/state/analytics-consent.svelte.ts';
 import {
 	createAnalyticsClient,
 	type AnalyticsClient,
@@ -37,8 +37,8 @@ const client = createSiteAnalyticsClient({
 	isBrowser: () => browser,
 	getControls: () => siteLabels.ui.analyticsConsent,
 	getConsent: () => get(analyticsConsentStore),
-	getReferrer: () => (browser ? document.referrer : ''),
-	loadTransport: () => import('@yesid/analytics/plausible'),
+	getReferrer: () => browser ? document.referrer : '',
+	loadTransport: () => import('@yesid/analytics/plausible')
 });
 
 export function trackPageview(url: URL): Promise<boolean> {

@@ -14,7 +14,7 @@ const REPOSITORY_ROOT = resolve(process.cwd(), '../..');
 const CHECKER = resolve(REPOSITORY_ROOT, 'apps/web/scripts/check-client-payload.mjs');
 const PACKAGE_JSON = resolve(REPOSITORY_ROOT, 'apps/web/package.json');
 const WORKFLOW = resolve(REPOSITORY_ROOT, '.github/workflows/web.yml');
-const ROOT_KEY = '.svelte-kit/generated/client-optimized/nodes/0.js';
+const ROOT_KEY = '.svelte-kit/generated/build/client-optimized/nodes/0.js';
 const BUDGET_ENV = [
 	'ROOT_LAYOUT_ENTRY_BUDGET_GZIP',
 	'ROOT_LAYOUT_PAYLOAD_BUDGET_GZIP',

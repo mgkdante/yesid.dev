@@ -2,9 +2,9 @@
 // Phase 1: constrained random data simulating STM transit pipeline KPIs.
 // Phase 2 (future): wire to live Neon Postgres API, fall back to this on error.
 
-import type { HeroData, HeroQueryRow } from '$lib/schemas/hero-data';
+import type { HeroData, HeroQueryRow } from '#lib/schemas/hero-data.ts';
 
-export type { HeroMetric, HeroQueryRow, HeroData } from '$lib/schemas/hero-data';
+export type { HeroMetric, HeroQueryRow, HeroData } from '#lib/schemas/hero-data.ts';
 
 // Real STM bus route numbers for realistic mock data.
 export const STM_ROUTES = [

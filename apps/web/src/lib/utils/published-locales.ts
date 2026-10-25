@@ -11,6 +11,6 @@
 // batch 2026-07-02) so bare-bun scripts (scripts/generate-og-default.ts) can
 // import it without dragging in locale-routing's virtual `$app/environment`.
 // App code should keep importing it from $lib/utils/seo-defaults (re-export).
-import type { Locale } from '$lib/types';
+import type { Locale } from '#lib/types.ts';
 
 export const PUBLISHED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'];

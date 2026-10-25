@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { Locale } from '$lib/types';
-import { match } from '../../params/locale';
+import type { Locale } from '#lib/types.ts';
+import { createLocaleRouting } from '@yesid/i18n-core';
+import { SUPPORTED_LOCALES } from './locale';
+import { isPrefixLocale as pureIsPrefixLocale } from './prefix-locales';
+import { params } from '../../params';
 import {
 	PREFIX_LOCALES,
 	pathLocale,
@@ -14,6 +17,20 @@ import {
 } from './locale-routing';
 
 describe('yesid.dev locale routing wrapper', () => {
+	it('shares the pure prefix predicate and preserves the core predicate semantics', () => {
+		const core = createLocaleRouting<Locale>({
+			defaultLocale: 'en',
+			prefixLocales: PREFIX_LOCALES,
+			isPathExempt: () => false,
+			localeSegment: '/[[lang=locale]]',
+			preserveSearchAndHash: false,
+		});
+		expect(isPrefixLocale).toBe(pureIsPrefixLocale);
+		for (const code of [...SUPPORTED_LOCALES, '', 'en', 'xx', 'FR']) {
+			expect(pureIsPrefixLocale(code), code).toBe(core.isPrefixLocale(code));
+		}
+	});
+
 	it('exact-levers', () => {
 		expect(PREFIX_LOCALES).toEqual(['fr', 'es']);
 		expect(pathLocale('/')).toBe('en');
@@ -168,7 +185,7 @@ describe('yesid.dev locale routing wrapper', () => {
 
 	it('build-branch localizeUrl', async () => {
 		vi.resetModules();
-		vi.doMock('$app/environment', () => ({ building: true }));
+		vi.doMock('$app/env', () => ({ building: true }));
 
 		try {
 			const { localizeUrl: buildLocalizeUrl } = await import('./locale-routing');
@@ -186,12 +203,12 @@ describe('yesid.dev locale routing wrapper', () => {
 				),
 			).toBe('/projects');
 		} finally {
-			vi.doUnmock('$app/environment');
+			vi.doUnmock('$app/env');
 			vi.resetModules();
 		}
 	});
 
-	it('route-id+matcher-wiring', () => {
+	it('route-id+matcher-wiring', async () => {
 		const routeIdFixtures: readonly [string, string][] = [
 			['/', '/'],
 			['/[[lang=locale]]', '/'],
@@ -221,7 +238,8 @@ describe('yesid.dev locale routing wrapper', () => {
 		}
 		for (const [segment, expected] of matcherFixtures) {
 			expect(isPrefixLocale(segment)).toBe(expected);
-			expect(match(segment)).toBe(expected);
+			const result = await params.locale['~standard'].validate(segment);
+			expect(!result.issues).toBe(expected);
 		}
 	});
 

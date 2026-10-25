@@ -5,12 +5,12 @@ import type { RequestHandler } from './$types';
 // kit-default change would be a stale-SEO footgun.
 export const prerender = false;
 
-import { adapter } from '$lib/adapters';
-import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
-import { isPathPublished, STATIC_PAGE_PATHS } from '$lib/utils/page-registry';
-import { sitePages } from '$lib/content/site-pages';
-import { groupBlogTranslations } from '$lib/blog/translations';
-import type { BlogPost, Locale, SitePage } from '$lib/types';
+import { adapter } from '#lib/adapters/index.ts';
+import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '#lib/utils/seo-defaults.ts';
+import { isPathPublished, STATIC_PAGE_PATHS } from '#lib/utils/page-registry.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { groupBlogTranslations } from '#lib/blog/translations.ts';
+import type { BlogPost, Locale, SitePage } from '#lib/types.ts';
 import {
 	emitAlternateSitemapEntries,
 	emitSitemapDocument,

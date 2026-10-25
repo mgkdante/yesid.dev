@@ -8,16 +8,16 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { AboutWeatherConfig } from '$lib/types';
-	import type { WeatherData } from '$lib/utils/weather';
-	import { fetchFreshWeather } from '$lib/utils/weather-refresh';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { AboutWeatherConfig } from '#lib/types.ts';
+	import type { WeatherData } from '#lib/utils/weather.ts';
+	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '$lib/components/brand';
-	import { Card } from '$lib/components/ui/card';
+	import { StopLabel } from '#lib/components/brand/index.ts';
+	import { Card } from '#lib/components/ui/card/index.ts';
 	import WeatherScene from './WeatherScene.svelte';
 	import WeatherGlyph from './WeatherGlyph.svelte';
 	import { resolveWeatherScene, isNightHour } from './weather-scene';

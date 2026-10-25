@@ -3,7 +3,7 @@ import { getAnalyticsPolicy, normalizeAnalyticsControls } from '@yesid/analytics
 import type {
 	AnalyticsConsentChoice,
 	AnalyticsConsentState,
-} from '$lib/state/analytics-consent.svelte';
+} from '#lib/state/analytics-consent.svelte.ts';
 
 describe('analytics control normalization', () => {
 	it.each([

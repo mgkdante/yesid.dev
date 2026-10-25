@@ -9,15 +9,15 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { BlogAnimation } from '$lib/types';
-	import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
+	import type { BlogAnimation } from '#lib/types.ts';
+	import { getMorphShapes, pickRandomShape } from '#lib/utils/shapes.ts';
 	import type { MorphShape } from '@repo/shared';
 	// Slice-23: reduced-motion guards removed per operator policy. Draw-on-
 	// load entrance + hover/tap path morphing are not vestibular triggers
 	// (visual transformation, brief, user-initiated for hover/tap).
-	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
-	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
-	import { cn } from '$lib/utils';
+	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+	import { convertSvgToMorphPaths } from '#lib/motion/utils/morphHelpers.ts';
+	import { cn } from '#lib/utils/index.ts';
 
 	let {
 		svgContent,

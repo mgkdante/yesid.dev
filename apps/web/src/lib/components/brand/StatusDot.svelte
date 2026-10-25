@@ -3,7 +3,7 @@
   Brand primitive: replaces 8+ scattered LED dot implementations.
 -->
 <script lang="ts">
-  import { cn } from '$lib/utils';
+  import { cn } from '#lib/utils/index.ts';
   import type { HTMLAttributes } from 'svelte/elements';
 
   export interface StatusDotProps extends HTMLAttributes<HTMLSpanElement> {

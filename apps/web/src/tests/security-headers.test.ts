@@ -2,8 +2,12 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Window } from 'happy-dom';
-import config from '../../svelte.config.js';
+
+import { loadWebConfig } from './load-web-config';
+
 import { extractInlineScripts, hashThemeScript } from '../../scripts/csp-script-hash.mjs';
+
+const config = await loadWebConfig();
 
 const vercel = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
 
@@ -114,7 +118,11 @@ describe('production security policy', () => {
 			window.close();
 		}
 		const hash = `sha256-${createHash('sha256').update(source.replace(/\r\n?/g, '\n')).digest('base64')}`;
-		expect(config.kit?.csp).toEqual({
+		// The resolved config includes inactive defaults (undefined/false).
+		// Compare every active directive, including any unexpected additions.
+		const activeDirectives = (directives: NonNullable<typeof config.csp>['directives']) =>
+			Object.fromEntries(Object.entries(directives ?? {}).filter(([, value]) => value !== undefined && value !== false));
+		expect({ mode: config.csp?.mode, directives: activeDirectives(config.csp?.directives) }).toEqual({
 			mode: 'hash',
 			directives: {
 				'default-src': ['self'],
@@ -130,5 +138,6 @@ describe('production security policy', () => {
 				'form-action': ['self'],
 			},
 		});
+		expect(activeDirectives(config.csp?.reportOnly)).toEqual({});
 	});
 });

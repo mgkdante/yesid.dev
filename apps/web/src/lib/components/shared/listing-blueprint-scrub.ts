@@ -1,8 +1,8 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { isViewportAtMost } from '@yesid/motion/utils/device';
-import { loadDrawSVG, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
-import { createDrawScrub } from '$lib/motion/scrubs/index.js';
+import { loadDrawSVG, initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
+import { createDrawScrub } from '#lib/motion/scrubs/index.ts';
 
 export async function startListingBlueprintScrub(
 	blueprintWrapEl: HTMLElement | undefined,

@@ -38,7 +38,7 @@ function importedNames(specifiers: string): string[] {
 		.filter(Boolean);
 }
 
-describe('$lib/live domain boundary', () => {
+describe('#lib/live domain boundary', () => {
 	it('owns the hero demo and live KPI modules outside generated content', () => {
 		const staleContentModules = ['hero-data.ts', 'hero-data.test.ts', 'live-kpis.ts', 'live-kpis.test.ts']
 			.map((name) => join(CONTENT, name))
@@ -64,19 +64,19 @@ describe('$lib/live domain boundary', () => {
 		expect(liveIndex).toMatch(/export \* from ['"]\.\/hero-data['"]/);
 		expect(liveIndex).toMatch(/export \* from ['"]\.\/live-kpis['"]/);
 		expect(contentIndex).not.toMatch(/export \* from ['"]\.\/(?:hero-data|live-kpis)['"]/);
-		expect(contentIndex).not.toMatch(/['"](?:\$lib\/live|\.\.\/live)(?:\/[^'"]*)?['"]/);
+		expect(contentIndex).not.toMatch(/['"](?:(?:\$lib|#lib)\/live|\.\.\/live)(?:\/[^'"]*)?['"]/);
 	});
 
 	it('keeps every live symbol consumer off the content boundary', () => {
 		const violations = sourceFiles(SRC).flatMap((path) => {
 			const source = readFileSync(path, 'utf8');
 			const reasons: string[] = [];
-			if (/from\s+['"]\$lib\/content\/(?:hero-data|live-kpis)(?:\.js)?['"]/.test(source)) {
+			if (/from\s+['"](?:\$lib|#lib)\/content\/(?:hero-data|live-kpis)(?:\.(?:js|ts))?['"]/.test(source)) {
 				reasons.push('imports a removed content subpath');
 			}
 
 			for (const match of source.matchAll(
-				/import\s+(?:type\s+)?\{([^{}]*)\}\s+from\s+['"]\$lib\/content['"]/g,
+				/import\s+(?:type\s+)?\{([^{}]*)\}\s+from\s+['"](?:\$lib\/content|#lib\/content\/index\.ts)['"]/g,
 			)) {
 				const names = importedNames(match[1]).filter((name) => LIVE_SYMBOLS.has(name));
 				if (names.length > 0) reasons.push(`imports live symbols from content: ${names.join(', ')}`);

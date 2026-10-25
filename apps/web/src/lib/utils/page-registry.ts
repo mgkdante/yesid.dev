@@ -22,8 +22,8 @@
 // redirect, /api/*) are exempt: they don't render HTML pages and several
 // apply their own content-specific publication guards where needed.
 
-import { sitePages } from '$lib/content/site-pages';
-import type { SitePage } from '$lib/types';
+import { sitePages } from '#lib/content/site-pages.ts';
+import type { SitePage } from '#lib/types.ts';
 
 /** Concrete page routes need their own published row, never a parent's fallback. */
 export const STATIC_PAGE_PATHS: readonly string[] = [

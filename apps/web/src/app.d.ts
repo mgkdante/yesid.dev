@@ -1,7 +1,7 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-import type { PageSeo } from '$lib/schemas/seo';
-import type { ErrorPageContent } from '$lib/navigation/types';
+import type { PageSeo } from '#lib/schemas/seo.ts';
+import type { ErrorPageContent } from '#lib/navigation/types.ts';
 
 declare global {
 	namespace App {

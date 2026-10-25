@@ -63,7 +63,7 @@ const controlsMock = vi.hoisted(() => {
 	};
 });
 
-vi.mock('$lib/state/analytics-consent.svelte', () => ({
+vi.mock('#lib/state/analytics-consent.svelte.ts', () => ({
 	analyticsConsentStore: consentMock.store,
 }));
 
@@ -73,8 +73,8 @@ const fixtureSocial = vi.hoisted(() => ({
 	upwork: '',
 }));
 
-vi.mock('$lib/content', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('$lib/content')>();
+vi.mock('#lib/content/index.ts', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('#lib/content/index.ts')>();
 	return {
 		...actual,
 		menuItems: [

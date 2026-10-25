@@ -4,12 +4,12 @@
 -->
 <script lang="ts">
 	import { BlueprintShell } from '@yesid/ui/brand';
-	import BlueprintBridge from '$lib/components/svg/transit/BlueprintBridge.svelte';
-	import BlueprintTrackPlan from '$lib/components/svg/transit/BlueprintTrackPlan.svelte';
-	import BlueprintCatenary from '$lib/components/svg/transit/BlueprintCatenary.svelte';
-	import BlueprintSignal from '$lib/components/svg/transit/BlueprintSignal.svelte';
-	import BlueprintStationSection from '$lib/components/svg/transit/BlueprintStationSection.svelte';
-	import BlueprintDetailBogie from '$lib/components/svg/detail/BlueprintDetailBogie.svelte';
+	import BlueprintBridge from '#lib/components/svg/transit/BlueprintBridge.svelte';
+	import BlueprintTrackPlan from '#lib/components/svg/transit/BlueprintTrackPlan.svelte';
+	import BlueprintCatenary from '#lib/components/svg/transit/BlueprintCatenary.svelte';
+	import BlueprintSignal from '#lib/components/svg/transit/BlueprintSignal.svelte';
+	import BlueprintStationSection from '#lib/components/svg/transit/BlueprintStationSection.svelte';
+	import BlueprintDetailBogie from '#lib/components/svg/detail/BlueprintDetailBogie.svelte';
 </script>
 
 <BlueprintShell normalizeTextFont={false} labels={['SEC-BLOG / DISPATCHES', 'DWG: TRANSIT-OPS-ELEV', 'SCALE NTS | REV.A']}>

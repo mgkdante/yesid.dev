@@ -1,19 +1,14 @@
-<!--
-  CloserGraffiti — localized DrawSVG closer-lettering subsystem.
-  Fetches SVG, parses letter paths, animates with DrawSVGPlugin.
-  Parent coordinates timing via onReady callback.
--->
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { browser } from '$app/env';
+	import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	type LetterData = { main: SVGPathElement; drips: SVGPathElement[] };
 
@@ -126,8 +121,8 @@
 		// Apply spotlight to the entire graffiti content
 		const contentGroup = document.createElementNS(SVG_NAMESPACE, 'g');
 		contentGroup.setAttribute('filter', 'url(#floodlight)');
-		const children = Array.from(svg.children).filter(c => c.tagName !== 'defs');
-		children.forEach(c => contentGroup.appendChild(c));
+		const children = Array.from(svg.children).filter((c) => c.tagName !== 'defs');
+		children.forEach((c) => contentGroup.appendChild(c));
 		svg.appendChild(contentGroup);
 
 		wrapper.appendChild(svg);
@@ -280,6 +275,12 @@
 		};
 	});
 </script>
+
+<!--
+  CloserGraffiti — localized DrawSVG closer-lettering subsystem.
+  Fetches SVG, parses letter paths, animates with DrawSVGPlugin.
+  Parent coordinates timing via onReady callback.
+-->
 
 <div
 	bind:this={wrapperEl}

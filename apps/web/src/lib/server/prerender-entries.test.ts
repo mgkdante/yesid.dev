@@ -18,12 +18,12 @@ import {
 	projectEntries,
 	serviceEntries,
 } from './prerender-entries';
-import { blogPosts } from '$lib/content/blog';
-import { projects } from '$lib/content/projects';
-import { services } from '$lib/content/services';
-import { sitePages } from '$lib/content/site-pages';
-import { PREFIX_LOCALES } from '$lib/utils/locale-routing';
-import type { BlogPost, Project, Service } from '$lib/types';
+import { blogPosts } from '#lib/content/blog.ts';
+import { projects } from '#lib/content/projects.ts';
+import { services } from '#lib/content/services.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { PREFIX_LOCALES } from '#lib/utils/locale-routing.ts';
+import type { BlogPost, Project, Service } from '#lib/types.ts';
 
 const LANG_VALUES = ['', ...PREFIX_LOCALES];
 

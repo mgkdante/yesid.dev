@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { closerContent } from '$lib/content/site-content';
+import { closerContent } from '#lib/content/site-content.ts';
 
 const ROOT = process.cwd();
 const REPOSITORY_ROOT = resolve(ROOT, '../..');

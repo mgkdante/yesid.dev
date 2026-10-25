@@ -6,9 +6,9 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import StatusDot from './StatusDot.svelte';
-  import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-  import { cn } from '$lib/utils';
-  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+  import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+  import { cn } from '#lib/utils/index.ts';
+  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
 
   export interface TerminalFooterItem {
     label: string;

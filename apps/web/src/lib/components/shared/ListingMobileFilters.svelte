@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { ChevronToggle } from '@yesid/ui/brand';
 	import { Collapsible, CollapsibleTrigger } from '@yesid/ui/collapsible';
-	import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
+	import CollapsibleContent from '#lib/components/ui/collapsible/collapsible-content.svelte';
 
 	let {
 		open,

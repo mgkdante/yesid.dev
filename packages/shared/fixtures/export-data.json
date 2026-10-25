@@ -201,6 +201,11 @@
 					"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
 					"href": "/projects",
 					"priority": 1
+				},
+				{
+					"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
+					"href": "/contact",
+					"priority": 2
 				}
 			],
 			"menuItems": [

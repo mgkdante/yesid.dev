@@ -1,12 +1,12 @@
 <script lang="ts">
-	import '$lib/styles/article-body.css';
+	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
-	import type { BlockEditorDoc, Project, Service } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { getLocale } from '$lib/utils/locale-context';
+	import type { BlockEditorDoc, Project, Service } from '#lib/types.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { siteLabels } from '$lib/content';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	// TOC chrome, CMS-sourced (navChrome.shared), shared across detail pages.
 	const tocHeading = resolveLocale(siteLabels.navChrome.shared.tocHeading, locale);
@@ -22,22 +22,22 @@
 	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
-	import HazardSeparator from '$lib/components/shared/HazardSeparator.svelte';
-	import CtaBand from '$lib/components/shared/CtaBand.svelte';
-	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '$lib/components/shared/SectionIcon.svelte';
-	import TocNav from '$lib/components/shared/TocNav.svelte';
-	import TocPill from '$lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '$lib/components/shared/toc';
+	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import CtaBand from '#lib/components/shared/CtaBand.svelte';
+	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
+	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+	import TocNav from '#lib/components/shared/TocNav.svelte';
+	import TocPill from '#lib/components/shared/TocPill.svelte';
+	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
 	import ProjectLinksCard from './ProjectLinksCard.svelte';
-	import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import { onMount, tick } from 'svelte';
-	import { browser } from '$app/environment';
-	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
-	import { registerScrollContext, lenisAwareScrollTo } from '$lib/state/locale-handoff.svelte';
+	import { browser } from '$app/env';
+	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
 
 	let {
 		project,
@@ -45,14 +45,15 @@
 		serviceSvgContents,
 		readmeHtml,
 		codeHighlights
-	}: {
+
+		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
+	}: { 
 		project: Project;
 		services: Service[];
 		serviceSvgContents: Record<string, string>;
 		readmeHtml?: string;
-		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
-		codeHighlights?: Readonly<Record<string, string>>;
-	} = $props();
+		codeHighlights?: Readonly<Record<string, string>>
+	 } = $props();
 
 	let activeHeadingId = $state('');
 	let readmeBody = $state<HTMLElement | null>(null);
@@ -196,13 +197,12 @@
 		return readmeHtml.replace(
 			/<(h[1-6])([^>]*)>([\s\S]*?)<\/\1>/gi,
 			(match, tag, attrs, inner) => {
-				const id = `readme-h-${idx++}`;
-				const anchor = /^h[234]$/i.test(tag)
-					? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
-					: '';
-				return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
-			},
-		);
+			const id = `readme-h-${idx++}`;
+			const anchor = (/^h[234]$/i).test(tag)
+				? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
+				: '';
+			return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
+		});
 	});
 
 	function mermaidCssVar(style: CSSStyleDeclaration, name: string, fallback: string): string {
@@ -254,7 +254,7 @@
 	// One observer drives the active state for BOTH the desktop nav and the mobile
 	// pill (each receives activeHeadingId as a prop, no duplicate observers).
 	afterNavigate(onTocNavigate);
-	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
+	onMount(() => observeActiveToc((id) => activeHeadingId = id));
 
 	onMount(() => {
 		if (!browser || !readmeHtml) return;
@@ -399,7 +399,7 @@
 
 <article data-testid="project-detail-page">
 	<!-- Full-bleed header -->
-	<ProjectDetailHeader {project} />
+	<ProjectDetailHeader project={project} />
 
 	<!-- Edge-to-edge hazard stripes -->
 	<HazardSeparator />
@@ -450,12 +450,10 @@
 					<CollapsibleSection
 						title={section.title}
 						sectionKey="proj-section-{index}"
-						{index}
+						index={index}
 						open={index === 0}
 					>
-						<div class="article-body section-body">
-							<BlockRenderer doc={section.doc} {codeHighlights} />
-						</div>
+						<div class="article-body section-body"><BlockRenderer doc={section.doc} codeHighlights={codeHighlights} /></div>
 					</CollapsibleSection>
 				</div>
 			{/snippet}
@@ -503,7 +501,13 @@
 		</div>
 
 		<aside class="glance-column">
-			<ProjectGlancePanel {project} {services} {serviceSvgContents} showLinks={false} {codeHighlights} />
+			<ProjectGlancePanel
+				project={project}
+				services={services}
+				serviceSvgContents={serviceSvgContents}
+				showLinks={false}
+				codeHighlights={codeHighlights}
+			/>
 		</aside>
 	</div>
 
@@ -511,7 +515,13 @@
 	     the sections like the services detail mobile rail. Replaces the old
 	     condensed "Project Info" panel. -->
 	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
-		<ProjectGlancePanel {project} {services} {serviceSvgContents} mobile {codeHighlights} />
+		<ProjectGlancePanel
+			project={project}
+			services={services}
+			serviceSvgContents={serviceSvgContents}
+			mobile
+			codeHighlights={codeHighlights}
+		/>
 	</div>
 
 	<!-- End-of-case-study CTA: THE site conversion band, recycled and centered
