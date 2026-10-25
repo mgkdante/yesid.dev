@@ -188,6 +188,12 @@ Applied to production on 2026-10-12 by the `buildbot-cover-permission` lane
 (cms run 38205771447). The grant stays out of the shared dump and unmapped by
 design. Its receipt artifact expires 2026-11-11.
 
+slice-43.15 (2026-10-25) retired seven tech-stack collections, which removed
+seven Build Bot read rows, so the declaration's preimage is re-pinned to the
+live set (71 rows). The 2026-10-12 receipt still records the old preimage, so
+the rollback lane refuses it. To withdraw the grant now, delete its single
+`directus_files` row on the Build Bot policy, with a preimage check.
+
 [`ops/permissions/buildbot-cover-permission.json`](ops/permissions/buildbot-cover-permission.json)
 is the production-only operational declaration, separate from the shared
 `directus/collections/permissions.json` dump so production file identities cannot
