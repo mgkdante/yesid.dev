@@ -454,7 +454,7 @@ test.describe('theme toggle behaviour', () => {
 		await expect(page.getByTestId('theme-toggle').first()).toBeVisible();
 		await page.getByTestId('theme-toggle').first().click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#F3F6FB');
+		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', /^#f3f6fb$/i);
 		expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('light');
 
 		await page.getByRole('link', { name: 'Projects' }).first().click();

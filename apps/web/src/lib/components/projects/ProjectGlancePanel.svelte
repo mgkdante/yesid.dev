@@ -19,7 +19,7 @@
   import { siteLabels } from '#lib/content/index.ts';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
   import ProjectLinksCard from './ProjectLinksCard.svelte';
-  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+  import { scrollChain } from '@yesid/motion/actions';
 
   const glanceChrome = siteLabels.projectsChrome.detail.glance;
   const glanceOverviewTitle = resolveLocale(glanceChrome.overview, locale);

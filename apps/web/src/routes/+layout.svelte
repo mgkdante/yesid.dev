@@ -9,6 +9,8 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
+	import { SiteRoot } from '@yesid/ui/layout';
+	import { theme } from '@yesid/ui/state';
 
 	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
 	// server-side from $page.data.seo, which is populated by +layout.ts load.
@@ -22,11 +24,10 @@
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath } from '#lib/utils/locale-routing.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
-	import { initLenis, destroyLenis } from '@yesid/motion/utils/lenis';
-	import { themeStore } from '#lib/stores/theme.svelte.ts';
 	import { initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
 	import { initGlobalRipple } from '#lib/motion/utils/globalRipple.ts';
 	import { setMorphShapes } from '#lib/utils/shapes.ts';
+	import { setFavicon } from '#lib/utils/favicon.ts';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '#lib/navigation/types.ts';
 	import type { MorphShape } from '#lib/types.ts';
@@ -68,33 +69,28 @@
 	});
 
 	$effect(() => {
+		setFavicon(theme.current);
+	});
+
+	$effect(() => {
 		if (data.morphShapes) {
 			setMorphShapes(data.morphShapes);
 		}
 	});
 
+	// Register ScrollTrigger + apply site-wide config early so
+	// ScrollTrigger.isTouch and pin behavior are available for all
+	// consumers. Runs before SiteRoot mounts: initLenis reads isTouch to skip
+	// touch devices. Plugin-specific loading (DrawSVG, MorphSVG) happens
+	// lazily per-consumer at mount.
+	if (browser) initScrollTriggerConfig();
+
 	onMount(() => {
 		if (!browser) return;
 
-		// Register ScrollTrigger + apply site-wide config early so
-		// ScrollTrigger.isTouch and pin behavior are available for all
-		// consumers. Plugin-specific loading (DrawSVG, MorphSVG) happens
-		// lazily per-consumer at mount.
-		initScrollTriggerConfig();
-		initLenis();
-
 		// Slice-23: site-wide click ripple. Anywhere the user clicks/taps
 		// spawns the Manifesto-style two-ring expanding ripple.
-		const cleanupRipple = initGlobalRipple();
-
-		// GO-W2.2: re-sync theme store with the pre-paint attribute.
-		const cleanupTheme = themeStore.init();
-
-		return () => {
-			destroyLenis();
-			cleanupRipple();
-			cleanupTheme();
-		};
+		return initGlobalRipple();
 	});
 
 	// Full-bleed pages skip pt-20 (hero is full-viewport).
@@ -106,36 +102,38 @@
 	let isFullBleed = $derived(basePath === '/' || basePath.startsWith('/projects/') && basePath !== '/projects' || basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal');
 </script>
 
-<SeoHead
-	seo={data.seo}
-	locale={locale}
-	themeColor={data.themeColor}
-/>
-
-<Analytics locale={locale} isHome={basePath === '/'} />
-
-<div
-	class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]"
->
-	<Nav
-		pathname={page.url.pathname}
-		url={new URL(page.url.href)}
+<SiteRoot>
+	<SeoHead
+		seo={data.seo}
 		locale={locale}
-		localeAlternates={data.seo.localeAlternates}
-		headerLinks={headerLinks}
-		menuItems={menuItems}
+		themeColor={data.themeColor}
 	/>
 
-	<!-- Page content fades in on route change; instant when reduced motion is on -->
-	{#key page.url.pathname}
-		<main
-			class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}"
-		>{@render children()}</main>
-	{/key}
+	<Analytics locale={locale} isHome={basePath === '/'} />
 
-	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-	<div class="relative z-[45]"><Footer locale={locale} footerLinks={footerLinks} /></div>
-</div>
+	<div
+		class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]"
+	>
+		<Nav
+			pathname={page.url.pathname}
+			url={new URL(page.url.href)}
+			locale={locale}
+			localeAlternates={data.seo.localeAlternates}
+			headerLinks={headerLinks}
+			menuItems={menuItems}
+		/>
+
+		<!-- Page content fades in on route change; instant when reduced motion is on -->
+		{#key page.url.pathname}
+			<main
+				class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}"
+			>{@render children()}</main>
+		{/key}
+
+		<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
+		<div class="relative z-[45]"><Footer locale={locale} footerLinks={footerLinks} /></div>
+	</div>
+</SiteRoot>
 
 <style>
 	.circuit-grid {

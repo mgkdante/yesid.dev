@@ -13,7 +13,7 @@
 	import { Badge } from '@yesid/ui/badge';
 	import { Card } from '#lib/components/ui/card/index.ts';
 	import { persisted } from '#lib/state/persisted.svelte.ts';
-	import { quietModeStore } from '#lib/state/quiet-mode.svelte.ts';
+	import { quietMode } from '@yesid/ui/state';
 
 	let {
 		title,
@@ -70,16 +70,16 @@
 	}
 
 	$effect(() => {
-		quietModeStore.closeSignal;
-		if (collapsible && quietModeStore.enabled) setOpen(false);
+		quietMode.closeSignal;
+		if (collapsible && quietMode.enabled) setOpen(false);
 	});
 
-	let lastQuietOpenSignal = quietModeStore.openSignal;
+	let lastQuietOpenSignal = quietMode.openSignal;
 	$effect(() => {
-		const signal = quietModeStore.openSignal;
+		const signal = quietMode.openSignal;
 		if (signal === lastQuietOpenSignal) return;
 		lastQuietOpenSignal = signal;
-		if (collapsible && !quietModeStore.enabled) setOpen(true);
+		if (collapsible && !quietMode.enabled) setOpen(true);
 	});
 
 	// GO2-W5 final batch (6d): the WHOLE card is the toggle surface.

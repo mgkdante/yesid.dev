@@ -6,7 +6,7 @@ import { cwd } from 'node:process';
 import type { BlockEditorDoc } from '@repo/shared';
 import ProjectDetailPage from './ProjectDetailPage.svelte';
 import { projectFactory } from '../../../tests/factories';
-import { themeStore } from '#lib/stores/theme.svelte.ts';
+import { theme } from '@yesid/ui/state';
 
 vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
@@ -78,7 +78,7 @@ const technicalDoc = (): BlockEditorDoc => ({
 
 describe('ProjectDetailPage image placement', () => {
 	afterEach(() => {
-		themeStore.set('dark');
+		theme.set('dark');
 		document.documentElement.dataset.theme = 'dark';
 	});
 
@@ -277,7 +277,7 @@ describe('ProjectDetailPage image placement', () => {
 	});
 
 	it('uses CMS light image variants for thumbnails and expanded images from the document theme', async () => {
-		themeStore.set('dark');
+		theme.set('dark');
 		document.documentElement.dataset.theme = 'light';
 		const project = projectFactory.build({
 			title: { en: 'yesid.dev' },

@@ -13,7 +13,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import { cn } from '#lib/utils/index.ts';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 
 	export interface ProjectsStripProps {
 		/** Projects to display */

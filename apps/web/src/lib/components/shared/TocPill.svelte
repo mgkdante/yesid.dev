@@ -9,7 +9,7 @@
 -->
 <script lang="ts">
 	import { ChevronToggle, TocBadge } from '@yesid/ui/brand';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 	import { flattenToc, navigateToc, type TocEntry } from './toc';
 
 	let {

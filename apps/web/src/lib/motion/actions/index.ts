@@ -1,8 +1,7 @@
 // Motion actions barrel. PARITY FLIP (2026-07-03): the Tier-1 signature
 // vocabulary now lives in @yesid/motion (vendored from an immutable release); the
-// two Tier-2 actions (morphHover, scrollChain) stay app-local — they are
-// component/scrub-coupled (MorphSVG helpers + ScrollTrigger scrub machinery)
-// and are deliberately NOT extracted into the package (rule-of-three pending).
+// Tier-2 action morphHover stays app-local — it is component-coupled (MorphSVG
+// helpers) and is deliberately NOT extracted into the package (rule-of-three pending).
 // The exported surface is byte-identical to yesid.dev @ 2bdb611d.
 
 // Tier-1 (from @yesid/motion) — the 9-signature Snappy-Doctrine vocabulary:
@@ -22,4 +21,3 @@ export {
 
 // Tier-2 (stay app-local):
 export { morphHover, type MorphHoverParams } from './morphHover.js';
-export { scrollChain } from './scrollChain.js';

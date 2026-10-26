@@ -44,7 +44,7 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	{
 		path: 'apps/web/src/app.css',
 		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 3,
+		occurrences: 1,
 	},
 	{
 		path: 'apps/web/src/lib/components/about/AboutLanguages.svelte',
@@ -198,11 +198,6 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	},
 	{
 		path: 'apps/web/src/lib/components/layout/Nav.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/ThemeToggle.svelte',
 		condition: '(prefers-reduced-motion: reduce)',
 		occurrences: 1,
 	},

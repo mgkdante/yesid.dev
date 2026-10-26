@@ -12,7 +12,7 @@
   import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+  import { scrollChain } from '@yesid/motion/actions';
   import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
   import { resolveLocale } from '#lib/utils/locale.ts';
   import { getLocale } from '#lib/utils/locale-context.ts';

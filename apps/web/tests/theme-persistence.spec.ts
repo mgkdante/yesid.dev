@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Ground truth (src/lib/components/layout/ThemeToggle.svelte + src/lib/stores/theme.svelte.ts + src/app.html):
+// Ground truth (@yesid/ui ThemeToggle + @yesid/ui/state theme + src/app.html):
 //   - toggle control: data-testid="theme-toggle", role="switch", aria-checked={isDark}
 //   - localStorage key: 'theme', values 'dark' | 'light'
 //   - theme reflected on <html data-theme="...">; pre-paint script always writes 'dark' or 'light' (never null); dark is default
@@ -83,7 +83,7 @@ test.describe('Theme toggle persistence', () => {
 		// Toggle to light -> store rewrites the meta to the light surface.
 		await toggle.click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-		await expect(themeMeta).toHaveAttribute('content', '#F3F6FB');
+		await expect(themeMeta).toHaveAttribute('content', /^#f3f6fb$/i);
 
 		const newColor = await themeMeta.getAttribute('content');
 		expect(newColor).toMatch(/^#[0-9A-F]{6}$/i);

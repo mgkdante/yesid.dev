@@ -8,7 +8,7 @@
 	import MenuOverlay from './MenuOverlay.svelte';
 	import type { NavLink } from '#lib/navigation/types.ts';
 	import type { Locale, PageSeo } from '#lib/types.ts';
-	import ThemeToggle from './ThemeToggle.svelte';
+	import { ThemeToggle } from '@yesid/ui/brand';
 	import LanguageToggle from './LanguageToggle.svelte';
 
 	let {
@@ -180,7 +180,7 @@
 			<span class="nav-divider" aria-hidden="true"></span>
 
 			<!-- Theme toggle (GO-W2.2) -->
-			<ThemeToggle locale={locale} />
+			<ThemeToggle label={resolveLocale(siteLabels.navChrome.shared.themeToggleAria, locale)} />
 
 			<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
 		     Persistent (stays visible above the open menu sheet) — it is the SINGLE locale switcher;

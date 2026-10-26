@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { cwd } from 'node:process';
 import ProjectCard from './ProjectCard.svelte';
 import { projectFactory } from '../../../tests/factories';
-import { themeStore } from '#lib/stores/theme.svelte.ts';
+import { theme } from '@yesid/ui/state';
 
 vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
@@ -17,12 +17,12 @@ vi.mock('#lib/directus/assets.ts', () => ({
 
 describe('ProjectCard hero media', () => {
 	afterEach(() => {
-		themeStore.set('dark');
+		theme.set('dark');
 		document.documentElement.dataset.theme = 'dark';
 	});
 
 	it('renders split primary and secondary hero images in light mode when both are present', () => {
-		themeStore.set('light');
+		theme.set('light');
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
 			imageLight: 'desktop-light-uuid',
@@ -46,7 +46,7 @@ describe('ProjectCard hero media', () => {
 	});
 
 	it('renders a single hero image when the secondary hero is empty', () => {
-		themeStore.set('dark');
+		theme.set('dark');
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
 			imageLight: 'desktop-light-uuid',
@@ -67,7 +67,7 @@ describe('ProjectCard hero media', () => {
 	});
 
 	it('uses the document theme for hero image variants on first render', () => {
-		themeStore.set('dark');
+		theme.set('dark');
 		document.documentElement.dataset.theme = 'light';
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',

@@ -36,7 +36,7 @@
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/env';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
 
 	let {
