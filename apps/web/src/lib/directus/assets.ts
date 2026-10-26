@@ -26,6 +26,7 @@ import { PUBLIC_DIRECTUS_URL } from '$app/env/public';
 import { mirroredMediaAssets } from '#lib/content/media-assets.ts';
 import { mediaVariants } from '#lib/content/media-variants.ts';
 import type { MediaVariantEntry } from '#lib/types.ts';
+import { variantImage } from '#lib/utils/variant-image.ts';
 
 /**
  * Canonical preset list — the exact set seeded in Directus
@@ -115,14 +116,7 @@ export function createAssets(baseUrl: string, options: CreateAssetsOptions = {})
 	const assetImage: AssetHelpers['assetImage'] = (id, preset) => {
 		const mirrored = mirrors[id];
 		if (mirrored) {
-			const entry = variants[mirrored];
-			if (!entry) return { src: mirrored };
-			return {
-				src: mirrored,
-				srcset: entry.variants.map((v) => `${v.path} ${v.width}w`).join(', '),
-				width: entry.width,
-				height: entry.height,
-			};
+			return variantImage(mirrored, variants);
 		}
 		// Dev-only Directus fallback (unknown/unmirrored id): preset transforms
 		// stand in for the missing variant files.
