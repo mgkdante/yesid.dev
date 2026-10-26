@@ -59,7 +59,10 @@ async function expectImagesFillPanes(card: Locator) {
 		await expect.poll(() => image.evaluate(img => img.getAnimations().every(animation => animation.playState !== 'running'))).toBe(true);
 		const paint = await image.evaluate((img: HTMLImageElement) => {
 			const box = img.getBoundingClientRect();
-			const pane = img.parentElement!.getBoundingClientRect();
+			const frame = img.parentElement!;
+			const outer = frame.getBoundingClientRect();
+			// Inside the pane's border: the divider between screenshots is not a gap.
+			const pane = { left: outer.left + frame.clientLeft, top: outer.top + frame.clientTop, width: frame.clientWidth, height: frame.clientHeight, right: outer.left + frame.clientLeft + frame.clientWidth, bottom: outer.top + frame.clientTop + frame.clientHeight };
 			const fit = getComputedStyle(img).objectFit;
 			let width = box.width;
 			let height = box.height;
@@ -145,7 +148,7 @@ test('navigation and resizing settle on whole cards and keep every project reach
 	if (await previous.isEnabled()) { await previous.click(); await expectWholeCards(reel); }
 });
 
-test('hover keeps both project image panes complete', async ({ page }) => {
+test('hover keeps project image panes filled', async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 900 });
 	await page.goto('/');
 	const reel = page.getByTestId('proof-reel-section');
@@ -184,3 +187,16 @@ for (const width of [390, 1440]) {
 		expect(await page.locator('[data-testid="project-hero-preview"][data-split="true"]').count(), 'some project supplies a phone screenshot').toBeGreaterThan(0);
 	});
 }
+
+test('a light first load shows the same project screenshots as switching to light', async ({ page }) => {
+	await page.addInitScript(() => localStorage.setItem('theme', 'light'));
+	await page.goto('/projects');
+	const images = page.getByTestId('project-hero-preview-image');
+	await expect(images.first()).toBeVisible();
+	const sources = () => images.evaluateAll(nodes => nodes.map(node => node.getAttribute('src')));
+	const firstLoad = await sources();
+	await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+	await expect.poll(sources).not.toEqual(firstLoad);
+	await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+	await expect.poll(sources).toEqual(firstLoad);
+});

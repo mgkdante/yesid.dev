@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Project } from '#lib/types.ts';
 	import { assetImage } from '#lib/directus/assets.ts';
-	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
+	import { resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 
 	let {
@@ -27,7 +27,9 @@
 		sizes?: string;
 	} = $props();
 
-	let activeTheme = $state<Theme>(getActiveTheme());
+	// Start from the server markup's dark theme: hydration keeps the server's src,
+	// so the mount-time sync must be a real change for light variants to load.
+	let activeTheme = $state<Theme>('dark');
 
 	onMount(() => {
 		return watchTheme((theme) => {
