@@ -338,6 +338,118 @@
 			"title": "Blueprint français : scénario pédagogique de site web, pas une architecture livrée à un client.",
 			"description": "French Blueprint, an educational website scenario rather than a delivered client architecture. Browser capture, 8 October 2026; not a physical-device test. No form submitted.",
 			"sha256": "01776a8a2c6443ae358e17505042eef8054e4cc60bdd31c93895332175fcebc5"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-home-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — accueil STM, ordinateur, thème sombre.",
+			"description": "Transit STM home page on desktop in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "02cb92d6acb0dd9568fd68863806536f27310afe689af4ebdb33b796fba24fc4"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-home-desktop-light.jpg",
+			"folder": "projects",
+			"title": "Transit — accueil STM, ordinateur, thème clair.",
+			"description": "Transit STM home page on desktop in light mode. Browser capture, 26 October 2026.",
+			"sha256": "86774f7a8546b1f25139557ab58dacf15836546d4889d9ad0ac05b4e1af94cdf"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-hotspots-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — retards critiques, ordinateur, thème sombre.",
+			"description": "Transit STM hotspots on desktop in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "be3def699811a8779cb7ef1c869a2701ae35b4d16e48b5925f6690f5f17198e4"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-hotspots-desktop-light.jpg",
+			"folder": "projects",
+			"title": "Transit — retards critiques, ordinateur, thème clair.",
+			"description": "Transit STM hotspots on desktop in light mode. Browser capture, 26 October 2026.",
+			"sha256": "5467b6bb6252376cb1beca90b85d8da2a292fd3407828e89af4b090edbef28b2"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-map-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — carte STM, ordinateur, thème sombre.",
+			"description": "Transit live STM map on desktop in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "c1b4d07b7af04144294f6de8c462379af7bcb62369b1d45aeca83008417d7b42"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-map-desktop-light.jpg",
+			"folder": "projects",
+			"title": "Transit — carte STM, ordinateur, thème clair.",
+			"description": "Transit live STM map on desktop in light mode. Browser capture, 26 October 2026.",
+			"sha256": "2791dc333aee95357adfd7d0dfba352a2ee4b37afd8b0ab59192855c2dc6452a"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-map-mobile-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — carte STM, mobile, thème sombre.",
+			"description": "Transit live STM map on a phone in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "e9ba8e1ba978b02a264b06c0106a5ad87bf68a8460dfc599ba2a09f58e0117e9"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-map-mobile-light.jpg",
+			"folder": "projects",
+			"title": "Transit — carte STM, mobile, thème clair.",
+			"description": "Transit live STM map on a phone in light mode. Browser capture, 26 October 2026.",
+			"sha256": "2770247fe802fa8f91121ff8049fd275daf434d52d8511ce6c0018482c2b36f2"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-octranspo-map-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — carte OC Transpo, ordinateur, thème sombre.",
+			"description": "Transit live OC Transpo map on desktop in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "2696a6b47d24216c98d1e6c4697596cc02d0fcbbd73a456db3b2080ed63b0340"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-octranspo-map-desktop-light.jpg",
+			"folder": "projects",
+			"title": "Transit — carte OC Transpo, ordinateur, thème clair.",
+			"description": "Transit live OC Transpo map on desktop in light mode. Browser capture, 26 October 2026.",
+			"sha256": "5d867763874f0831d7aecc76fa0d184afff11ff80ce1ca47aadd9a78ccc98379"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-route-mobile-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — ligne 24 Sherbrooke, mobile, thème sombre.",
+			"description": "Transit Line 24 Sherbrooke reliability on a phone in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "43f1080d1bb658bc7771d64e530845e6887109c2545ca2a63899cd88b40822d0"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-route-mobile-light.jpg",
+			"folder": "projects",
+			"title": "Transit — ligne 24 Sherbrooke, mobile, thème clair.",
+			"description": "Transit Line 24 Sherbrooke reliability on a phone in light mode. Browser capture, 26 October 2026.",
+			"sha256": "2822a51a6d2f959defd260f847e45b939dfe22a2ce845b64f2f9ea72a81124ca"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-status-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — état des données, ordinateur, thème sombre.",
+			"description": "Transit data health and publish gate verdicts on desktop in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "c616e016f28f9bb437f712b63ac9b1243fd9a6de91fc5918bab0335a94512349"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-status-desktop-light.jpg",
+			"folder": "projects",
+			"title": "Transit — état des données, ordinateur, thème clair.",
+			"description": "Transit data health and publish gate verdicts on desktop in light mode. Browser capture, 26 October 2026.",
+			"sha256": "deb25ab080889b957d84aeeec1bb785f6734abc227fb33613310c8ade0f74e2b"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-stop-mobile-dark.jpg",
+			"folder": "projects",
+			"title": "Transit — arrêt Sherbrooke / Atwater, mobile, thème sombre.",
+			"description": "Transit Sherbrooke / Atwater stop reliability on a phone in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "d9e96eb5d5ec461fa7595ff4fd9024760ce668be747b4d3caaf7626818782953"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/transit-stop-mobile-light.jpg",
+			"folder": "projects",
+			"title": "Transit — arrêt Sherbrooke / Atwater, mobile, thème clair.",
+			"description": "Transit Sherbrooke / Atwater stop reliability on a phone in light mode. Browser capture, 26 October 2026.",
+			"sha256": "46cc78018f70563269760119afd8e8059766cb9db9e8da38300555d6ddbdd027"
 		}
 	]
 }
