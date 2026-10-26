@@ -1,11 +1,13 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { preprocessCSS, resolveConfig } from 'vite';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { preprocessCSS, resolveConfig, type ResolvedConfig } from 'vite';
 
 const REPO_ROOT = resolve(process.cwd(), '../..');
 const SRC_ROOT = resolve(process.cwd(), 'src');
 const VITE_CONFIG = resolve(process.cwd(), 'vite.config.ts');
+// Cold Vite config + plugin graph load: ~1.1s idle, ~3.5s under the full parallel suite.
+const VITE_CONFIG_SETUP_TIMEOUT_MS = 20_000;
 
 const BREAKPOINTS = [
 	{
@@ -347,6 +349,16 @@ function forbiddenTabletMaxConditions(): MediaLine[] {
 }
 
 describe('canonical responsive breakpoint contract', () => {
+	let config: ResolvedConfig;
+
+	beforeAll(async () => {
+		config = await resolveConfig(
+			{ root: process.cwd(), configFile: VITE_CONFIG, logLevel: 'silent' },
+			'serve',
+			'test',
+		);
+	}, VITE_CONFIG_SETUP_TIMEOUT_MS);
+
 	it('uses design aliases for canonical breakpoints in product stylesheets', () => {
 		const offenders: string[] = [];
 		for (const path of sourceFiles()) {
@@ -377,11 +389,6 @@ describe('canonical responsive breakpoint contract', () => {
 	});
 
 	it('loads the vendored definitions before removing aliases in Vite PostCSS', async () => {
-		const config = await resolveConfig(
-			{ root: process.cwd(), configFile: VITE_CONFIG, logLevel: 'silent' },
-			'serve',
-			'test',
-		);
 		const fixture = BREAKPOINTS.map(
 			({ alias }) => `@media (${alias}) { .${alias.slice(2)} { display: block; } }`,
 		).concat('@media (--tablet-min) and (--desktop-max) { .tablet-only { display: block; } }');
@@ -406,11 +413,6 @@ describe('canonical responsive breakpoint contract', () => {
 	});
 
 	it('preserves representative noncanonical layout and motion behavior through PostCSS', async () => {
-		const config = await resolveConfig(
-			{ root: process.cwd(), configFile: VITE_CONFIG, logLevel: 'silent' },
-			'serve',
-			'test',
-		);
 		const cases = [
 			{
 				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
