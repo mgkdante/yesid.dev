@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "build_circle",
     "item_duplication_fields": null,
-    "note": "Site Config singleton for the D6 manual Publish site action. Run Flows → Publish site once per editing session. The legacy refresh flag is retained but no longer queues or triggers builds.",
+    "note": "Site Config singleton for the D6 manual Publish site action. Run Flows → Publish site once per editing session.",
     "preview_url": null,
     "singleton": true,
     "sort": 6,
