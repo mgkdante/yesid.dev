@@ -8,6 +8,7 @@
 	import type { AboutInterest } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { variantImage } from '#lib/utils/variant-image.ts';
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
@@ -15,6 +16,11 @@
 	import { Card } from '#lib/components/ui/card/index.ts';
 
 	let { interests, stop, label }: { interests: readonly AboutInterest[]; stop: string; label: string } = $props();
+
+	// Cover-cropped photo width tracks card height: about 800px on the tall tablet card
+	// (snapshots sets a 380px row min-height below 1024px), about 340px on phones.
+	// Re-derive these values if the bento layout changes.
+	const INTEREST_SIZES = '(min-width: 1024px) calc(20vw + 48px), (min-width: 768px) 800px, 340px';
 
 	// Mobile tap toggle: track which strip is active (-1 = none)
 	let activeIndex = $state(-1);
@@ -43,6 +49,7 @@
 	<!-- Diagonal strips container -->
 	<div class="flex h-full min-h-36">
 		{#each interests as interest, i}
+			{@const media = variantImage(interest.image)}
 			{@const interestLabel = resolveLocale(interest.label, locale)}
 			<button
 				type="button"
@@ -56,9 +63,20 @@
 				     go2/w4: treatment is theme-aware, dark keeps the darkened
 				     look, light whitens instead (filters live in <style>). -->
 				<div
-					class="strip-bg absolute inset-[-20px] bg-cover bg-center transition-all duration-500 ease-out"
-					style="background-image: url('{interest.image}'); transform: skewX(-8deg) scale(1.2);"
-				></div>
+					class="strip-bg absolute inset-[-20px] transition-all duration-500 ease-out"
+					style="transform: skewX(-8deg) scale(1.2);"
+				>
+					<img
+						src={media.src}
+						srcset={media.srcset}
+						sizes={media.srcset ? INTEREST_SIZES : undefined}
+						width={media.width}
+						height={media.height}
+						alt=""
+						loading="lazy"
+						decoding="async"
+					/>
+				</div>
 
 				<!-- Theme-tinted overlay for text readability (background-mix,
 				     not hardcoded black: dark ink in dark mode, paper in light). -->
@@ -93,6 +111,15 @@
 </div>
 
 <style>
+	/* The unlayered global media rule outranks @layer utilities. */
+	.strip-bg img {
+		width: 100%;
+		height: 100%;
+		max-width: none;
+		object-fit: cover;
+		object-position: center;
+	}
+
 	/* go2/w4 operator QA: theme-aware image treatment. Dark mode keeps the
 	   original darkened B&W (brightness 0.3 + ink overlay); light mode
 	   WHITENS instead (brightness up + paper overlay) so the strips read as
