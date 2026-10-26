@@ -72,7 +72,7 @@ pipeline ([Asset and preset ownership](../cms/README.md#asset-and-preset-ownersh
 | --- | --- | --- |
 | `apps/cms/brand/yesid-wordmark.svg` | Canonical outlined wordmark: "yesid" + orange period as paths (no font dependency). Regenerate via a fresh Inter shaping pass if the brand ever changes; the site header/footer render the wordmark as HTML text, this file is the asset-of-record. | Directus admin chrome |
 | `apps/cms/brand/yesid-icon.svg` | Orange dot icon | Directus admin chrome (`project_logo`) |
-| `apps/web/static/favicon.svg` | Primary favicon (initial paint; `theme.svelte.ts` repaints it as a data-URI per theme) | Static `/favicon.svg` via `app.html` |
+| `apps/web/static/favicon.svg` | Primary favicon (initial paint; `lib/utils/favicon.ts` repaints it as a data-URI per theme) | Static `/favicon.svg` via `app.html` |
 | `apps/web/static/favicon.ico` | 16/32/48 px ICO generated from `favicon.svg`, for clients that request `/favicon.ico` by convention | Static `/favicon.ico` |
 | `apps/web/static/apple-touch-icon.png` | 180×180 opaque touch icon generated from `favicon.svg` on `#141414` | Static `/apple-touch-icon.png` via `app.html` |
 
