@@ -29,7 +29,8 @@ const UNRELATED_PERMISSION_COUNT = 754;
 // slice-43.15 retires unused CMS collections and their explicit nav/stack fields.
 // slice-43.22 adds 45 AI Editor rows to adopt the live grant extension.
 // slice-43.26 adopts the live public-read row filters and file metadata fields.
-const UNRELATED_PERMISSION_SHA256 = 'a00486492a2f1cf594493a3453a7fa10c5072437a5a70fe44d0b45b8bfe867b1';
+// slice-43.27 removes the retired icons prefix from AI Editor comment permissions.
+const UNRELATED_PERMISSION_SHA256 = 'db3acfba7fbf10aeacbc6b3907a14658c8ed688678727ed17914cf444473a6bc';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 

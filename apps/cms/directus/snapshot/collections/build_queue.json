@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "build_queue",
     "color": null,
-    "display_template": "cms_dirty: {{cms_dirty}}",
+    "display_template": "Site Config",
     "group": "site_config",
     "hidden": false,
     "icon": "build_circle",
