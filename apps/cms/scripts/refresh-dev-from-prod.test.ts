@@ -1,10 +1,20 @@
 import { describe, expect, it } from 'bun:test';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 const script = readFileSync(join(import.meta.dir, 'refresh-dev-from-prod.sh'), 'utf8');
+const BASH = harnessBash();
+
+// On Windows, PowerShell/CMD resolve bare bash to WSL, which cannot see the Windows-path stubs; use Git Bash, with its tools dir on a ';'-separated PATH.
+function harnessBash(): string {
+	if (process.platform !== 'win32') return 'bash';
+	const execPath = spawnSync('git', ['--exec-path'], { encoding: 'utf8' }).stdout.trim();
+	const bash = join(execPath, '..', '..', '..', 'usr', 'bin', 'bash.exe');
+	if (!existsSync(bash)) throw new Error(`refresh-dev-from-prod tests need Git for Windows bash; not found at ${bash}`);
+	return bash;
+}
 
 function executable(path: string, contents: string): void {
 	writeFileSync(path, contents);
@@ -114,7 +124,7 @@ if [ "$1" -lt 10 ]; then /bin/sleep "$1"; fi
 		);
 
 		const result = spawnSync(
-			'bash',
+			BASH,
 			[join(import.meta.dir, 'refresh-dev-from-prod.sh'), ...(options.args ?? ['--yes'])],
 			{
 				cwd: join(import.meta.dir, '../../..'),
@@ -123,7 +133,7 @@ if [ "$1" -lt 10 ]; then /bin/sleep "$1"; fi
 				env: {
 					HOME: harness,
 					LANG: 'C.UTF-8',
-					PATH: `${bin}:${process.env.PATH ?? ''}`,
+					PATH: process.platform === 'win32' ? [bin, dirname(BASH), process.env.PATH ?? ''].join(';') : `${bin}:${process.env.PATH ?? ''}`,
 					NEON_API_KEY: 'neon-secret',
 					DIRECTUS_ADMIN_TOKEN: 'admin-secret',
 					DIRECTUS_BUILD_TOKEN: 'prod-build-secret',
