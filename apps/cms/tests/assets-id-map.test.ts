@@ -2,7 +2,11 @@ import { describe, expect, it } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { z } from 'zod';
+import { parseManifest } from '../scripts/lib/assets-manifest';
 import { readCmsFixtureJson } from './helpers/cms-fixtures';
+
+// Directus admin chrome assets referenced from settings are not in the upload manifest.
+const ADMIN_CHROME_KEYS = ['brand/yesid-icon.svg', 'brand/yesid-wordmark.svg'];
 
 /**
  * Schema for fixtures/assets-id-map.json — a frozen record of the 18d migration,
@@ -40,9 +44,11 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
 	});
 
-	it('contains exactly 49 entries, including the 21 portfolio screenshots', () => {
-		const m = loadIdMap();
-		expect(Object.keys(m).length).toBe(49);
+	it('maps every manifest asset plus the admin chrome, and nothing else', () => {
+		const manifestPaths = parseManifest(readCmsFixtureJson('assets-manifest.json')).assets.map(
+			(asset) => asset.legacyPath,
+		);
+		expect(Object.keys(loadIdMap()).sort()).toEqual([...manifestPaths, ...ADMIN_CHROME_KEYS].sort());
 	});
 
 	it('keys are sorted alphabetically (diff-friendly)', () => {
