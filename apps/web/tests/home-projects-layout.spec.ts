@@ -26,11 +26,32 @@ async function expectWholeCards(reel: Locator) {
 		};
 	}, { message: `the settled carousel at ${reel.page().viewportSize()?.width}px must contain only complete cards` }).toEqual({ hasVisibleCard: true, partial: [], settled: true });
 	const visible = (await cardPositions(reel)).filter(card => card.visible > 1);
-	expect(visible.length).toBeLessThanOrEqual(4);
+	expect(visible.length).toBeLessThanOrEqual(2);
 	return visible;
 }
 
-async function expectImagesInside(card: Locator) {
+async function expectEvenSplit(card: Locator) {
+	const split = await card.evaluate(element => ({
+		card: element.querySelector('article')!.getBoundingClientRect().toJSON(),
+		media: element.querySelector('[data-testid$="card-image"]')!.getBoundingClientRect().toJSON(),
+		info: element.querySelector('[data-testid="project-card-info"]')!.getBoundingClientRect().toJSON(),
+	}));
+	expect(Math.abs(split.media.height - split.info.height), `media and info take equal halves: ${JSON.stringify(split)}`).toBeLessThanOrEqual(2);
+	expect(split.media.bottom).toBeLessThanOrEqual(split.info.top + 1);
+	expect(split.info.bottom).toBeLessThanOrEqual(split.card.bottom + 1);
+}
+
+async function expectPanesSideBySide(card: Locator) {
+	const panes = await card.locator('[data-testid="project-hero-preview"] > *').evaluateAll(nodes => nodes.map(node => node.getBoundingClientRect().toJSON()));
+	if (panes.length < 2) return;
+	const [desktop, phone] = panes;
+	expect(Math.abs(desktop.top - phone.top)).toBeLessThanOrEqual(1);
+	expect(Math.abs(desktop.height - phone.height)).toBeLessThanOrEqual(1);
+	expect(phone.left).toBeGreaterThanOrEqual(desktop.right - 1);
+	expect(phone.width, 'the phone pane stays narrower than the desktop pane').toBeLessThan(desktop.width);
+}
+
+async function expectImagesFillPanes(card: Locator) {
 	for (const image of await card.getByTestId('project-hero-preview-image').all()) {
 		await image.scrollIntoViewIfNeeded();
 		const loadingContext = await image.evaluate((img: HTMLImageElement) => ({ source: img.currentSrc || img.src, card: img.closest('a')?.getAttribute('href'), box: img.getBoundingClientRect().toJSON(), pane: img.parentElement!.getBoundingClientRect().toJSON(), viewport: { width: innerWidth, height: innerHeight }, scroll: scrollY }));
@@ -47,16 +68,16 @@ async function expectImagesInside(card: Locator) {
 				width = img.naturalWidth * scale;
 				height = img.naturalHeight * scale;
 			}
-			const left = box.left + (box.width - width) / 2;
-			const top = box.top + (box.height - height) / 2;
+			const covers = box.left <= pane.left + 1 && box.right >= pane.right - 1 && box.top <= pane.top + 1 && box.bottom >= pane.bottom - 1
+				&& width >= box.width - 1 && height >= box.height - 1;
 			return {
-				clipped: left < pane.left - 1 || left + width > pane.right + 1 || top < pane.top - 1 || top + height > pane.bottom + 1,
+				covers,
 				distortion: (width / height) / (img.naturalWidth / img.naturalHeight),
-				content: { left, top, width, height },
+				content: { width, height },
 				pane: { left: pane.left, top: pane.top, width: pane.width, height: pane.height },
 			};
 		});
-		expect(paint.clipped, `the complete source image fits its pane: ${JSON.stringify(paint)}`).toBe(false);
+		expect(paint.covers, `the image paints its whole pane with no empty bands: ${JSON.stringify(paint)}`).toBe(true);
 		expect(paint.distortion).toBeCloseTo(1, 2);
 	}
 }
@@ -77,11 +98,11 @@ for (const [width, height, locale] of screens) {
 			const reel = page.getByTestId('proof-reel-section');
 			await reel.scrollIntoViewIfNeeded();
 			const visible = await expectWholeCards(reel);
-			for (const card of await reel.getByTestId('proof-card').all()) await expectCardContentInside(card);
+			for (const card of await reel.getByTestId('proof-card').all()) { await expectCardContentInside(card); await expectEvenSplit(card); await expectPanesSideBySide(card); }
 			const scales = await reel.locator('.df-node text').evaluateAll(labels => labels.map(label => label.getBoundingClientRect().height).filter(Boolean));
 			expect(scales.length).toBeGreaterThan(0);
 			expect(Math.max(...scales) / Math.min(...scales), 'short and long stacks retain the same type scale').toBeLessThan(1.25);
-			for (const card of visible) await expectImagesInside(reel.getByTestId('proof-card').nth(card.index));
+			for (const card of visible) await expectImagesFillPanes(reel.getByTestId('proof-card').nth(card.index));
 			const frames = await reel.getByTestId('proof-card-image').evaluateAll(images => images.map(image => image.getBoundingClientRect().height));
 			expect(Math.max(...frames) / Math.min(...frames), 'every project keeps the same image frame').toBeLessThan(1.1);
 			await reel.screenshot({ path: testInfo.outputPath('projects.png'), animations: 'disabled' });
@@ -118,7 +139,7 @@ test('navigation and resizing settle on whole cards and keep every project reach
 		}
 	}
 	expect(seen.size).toBe(total);
-	expect(Math.max(...counts)).toBe(Math.min(total, 4));
+	expect(Math.max(...counts)).toBe(Math.min(total, 2));
 	expect(Math.min(...counts)).toBe(1);
 	const previous = reel.getByTestId('proof-prev');
 	if (await previous.isEnabled()) { await previous.click(); await expectWholeCards(reel); }
@@ -135,9 +156,9 @@ test('hover keeps both project image panes complete', async ({ page }) => {
 		for (const visible of await expectWholeCards(reel)) {
 			if (seen.has(visible.index)) continue;
 			const card = reel.getByTestId('proof-card').nth(visible.index);
-			await expectImagesInside(card);
+			await expectImagesFillPanes(card);
 			await card.getByTestId('proof-card-image').hover();
-			await expectImagesInside(card);
+			await expectImagesFillPanes(card);
 			seen.add(visible.index);
 		}
 		if (await reel.getByTestId('proof-next').isDisabled()) break;
@@ -155,8 +176,11 @@ for (const width of [390, 1440]) {
 		await expect(cards.first()).toBeVisible();
 		for (const card of await cards.all()) {
 			await expect(card).toHaveAccessibleName(/\S/);
-			await expectImagesInside(card);
+			await expectImagesFillPanes(card);
+			await expectEvenSplit(card);
+			await expectPanesSideBySide(card);
 			expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth + 1), 'listing content stays inside its card').toBe(true);
 		}
+		expect(await page.locator('[data-testid="project-hero-preview"][data-split="true"]').count(), 'some project supplies a phone screenshot').toBeGreaterThan(0);
 	});
 }

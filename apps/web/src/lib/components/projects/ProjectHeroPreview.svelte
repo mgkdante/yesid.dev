@@ -47,8 +47,7 @@
 
 	const primaryImage = $derived(primaryId ? assetImage(primaryId, preset) : undefined);
 	const secondaryImage = $derived(secondaryId ? assetImage(secondaryId, preset) : undefined);
-	// The secondary pane is a narrow strip (clamp(5.75rem, 26%, 24rem)).
-	const SECONDARY_SIZES = '(min-width: 768px) 12vw, 26vw';
+	const SECONDARY_SIZES = '(min-width: 768px) 16vw, 40vw';
 </script>
 
 {#if primaryId}
@@ -94,45 +93,42 @@
 
 <style>
 	.project-hero-preview {
-		--project-hero-preview-mat: #050505;
-		--project-hero-preview-rule: color-mix(in srgb, var(--primary) 78%, transparent);
-		--project-hero-preview-secondary-width: clamp(5.75rem, 26%, 24rem);
 		display: flex;
 		width: 100%;
 		height: 100%;
 		min-height: 0;
 		overflow: hidden;
-		background: color-mix(in srgb, var(--border-subtle) 72%, transparent);
-	}
-
-	:global([data-theme="light"]) .project-hero-preview,
-	:global(.theme-light) .project-hero-preview {
-		--project-hero-preview-mat: #fff;
 	}
 
 	.project-hero-preview__pane {
-		display: grid;
+		position: relative;
 		min-width: 0;
-		place-items: center;
 		overflow: hidden;
-		background: var(--project-hero-preview-mat);
 	}
 
 	.project-hero-preview__pane--primary {
-		flex: 1 1 auto;
+		flex: 1 1 0;
 	}
 
 	.project-hero-preview__pane--secondary {
-		flex: 0 0 var(--project-hero-preview-secondary-width);
-		border-left: 2px solid var(--project-hero-preview-rule);
+		flex: 0 0 auto;
+		height: 100%;
+		max-width: 40%;
+		/* A phone viewport, whatever length the capture is. */
+		aspect-ratio: 9 / 19.5;
+		border-left: 2px solid color-mix(in srgb, var(--primary) 78%, transparent);
 	}
 
+	/* Screenshots fill their pane and crop from the bottom, keeping the page
+	   header in frame. Absolute so an image never sizes the card's media row. */
 	.project-hero-preview__image {
+		position: absolute;
+		inset: 0;
 		display: block;
-		min-height: 0;
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
+		object-fit: cover;
+		object-position: top center;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

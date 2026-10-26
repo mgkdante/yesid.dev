@@ -198,11 +198,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		/* Top-align (not center) so the menu options ALWAYS begin below the
-		   floating nav pill. Centering let the top item ride up under the pill
-		   on short screens. The top padding reserves the shared nav clearance;
-		   overflow-y:auto + pan-y lets a tall list (large text / long locale)
-		   scroll rather than collide with the pill. */
+		/* The overlay starts below the nav pill; auto margins on the menu and
+		   footer centre them as one group in the space left. Unlike
+		   justify-content: center, the margins collapse to zero when the group
+		   is taller than the overlay, so the first item can never ride up under
+		   the pill and the list scrolls instead. */
 		justify-content: flex-start;
 		top: calc(var(--nav-clearance) + 1rem);
 		padding: 0 24px calc(24px + env(safe-area-inset-bottom, 0px));
@@ -277,6 +277,7 @@
 		flex-direction: column;
 		gap: 0;
 		position: relative;
+		margin-top: auto;
 	}
 
 	/* Stop dot container */
@@ -357,10 +358,8 @@
 
 	/* Footer */
 	.menu-footer {
-		/* In-flow (margin-top:auto pushes it to the bottom) instead of absolute,
-		   so it can never overlap the last menu item now that the list is
-		   top-aligned + scrollable. */
-		margin-top: auto;
+		/* In-flow so it can never overlap the last menu item. */
+		margin-bottom: auto;
 		padding-top: 24px;
 		flex-shrink: 0;
 		display: flex;

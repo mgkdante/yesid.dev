@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-for (const width of [375, 768, 1366]) {
+for (const [width, height] of [[375, 667], [768, 667], [1366, 667], [2560, 1440]]) {
 	test(`expanded menu centers its content on one continuous surface at ${width}px`, async ({ page }, testInfo) => {
-		await page.setViewportSize({ width, height: 667 });
+		await page.setViewportSize({ width, height });
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/legal/privacy');
 		await page.evaluate(() => document.fonts.ready);
@@ -35,17 +35,26 @@ for (const width of [375, 768, 1366]) {
 				return { left: box.left, right: Math.max(...text), center: innerWidth / 2 };
 			});
 			expect(Math.abs((geometry.left + geometry.right) / 2 - geometry.center)).toBeLessThanOrEqual(2);
+			const vertical = await page.locator('.menu-overlay').evaluate(panel => {
+				const area = panel.getBoundingClientRect();
+				const bottom = area.bottom - parseFloat(getComputedStyle(panel).paddingBottom);
+				const group = { top: panel.querySelector('.menu-content')!.getBoundingClientRect().top, bottom: panel.querySelector('.menu-footer')!.getBoundingClientRect().bottom };
+				const pill = document.querySelector('[data-testid="nav-pill"]')!.getBoundingClientRect();
+				return { above: group.top - area.top, below: bottom - group.bottom, pillClear: group.top - pill.bottom, scrolls: panel.scrollHeight > panel.clientHeight + 1 };
+			});
+			expect(vertical.pillClear, 'the menu starts below the nav pill').toBeGreaterThanOrEqual(0);
+			if (!vertical.scrolls) expect(Math.abs(vertical.above - vertical.below), `menu and footer sit centred below the pill: ${JSON.stringify(vertical)}`).toBeLessThanOrEqual(2);
 			const surface = await page.getByRole('dialog').evaluate(el => {
 				const panel = el.querySelector('.menu-overlay')!;
 				return { top: el.getBoundingClientRect().top, height: el.getBoundingClientRect().height,
 					background: getComputedStyle(el).backgroundImage,
 					panelColor: getComputedStyle(panel).backgroundColor, panelImage: getComputedStyle(panel).backgroundImage };
 			});
-			expect(surface).toMatchObject({ top: 0, height: 667, panelColor: 'rgba(0, 0, 0, 0)', panelImage: 'none' });
+			expect(surface).toMatchObject({ top: 0, height, panelColor: 'rgba(0, 0, 0, 0)', panelImage: 'none' });
 			expect(surface.background).toContain('radial-gradient');
 			await page.locator('.menu-overlay').evaluate(el => { el.scrollTop = el.scrollHeight; });
 			const footer = await page.locator('.menu-footer').boundingBox();
-			expect(footer!.y + footer!.height).toBeLessThanOrEqual(667);
+			expect(footer!.y + footer!.height).toBeLessThanOrEqual(height);
 			if (width === 1366) await page.screenshot({ path: testInfo.outputPath(`menu-footer-${theme}.png`) });
 		}
 	});
