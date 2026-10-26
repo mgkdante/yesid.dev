@@ -31,7 +31,7 @@ describe('page landmark — exactly one <main>, owned by the root layout', () =>
 	it('opens a <main> in +layout.svelte and nowhere else', () => {
 		const openers = svelteFiles(SRC)
 			.map((path) => ({
-				path: relative(SRC, path),
+				path: relative(SRC, path).replaceAll('\\', '/'),
 				count: (readFileSync(path, 'utf-8').match(/<main[\s>]/g) ?? []).length,
 			}))
 			.filter(({ count }) => count > 0);

@@ -154,6 +154,10 @@ function relativeProductionPath(path: string): string {
 	return relative(ROOT, path).replaceAll('\\', '/');
 }
 
+function vendorPath(path: string): string {
+	return relative(VENDOR, path).replaceAll('\\', '/');
+}
+
 describe('immutable design customer contract', () => {
 	it('extracts Svelte script tags without allowing tag casing to bypass the boundary audit', () => {
 		expect(
@@ -194,7 +198,7 @@ describe('immutable design customer contract', () => {
 		});
 		const rawManifest = readFileSync(join(VENDOR, 'manifest.json'));
 		expect(createHash('sha256').update(rawManifest).digest('hex')).toBe(PINNED_RELEASE.manifestDigest);
-		expect(walkFiles(join(VENDOR, 'i18n-core')).map((path) => relative(VENDOR, path))).toEqual([
+		expect(walkFiles(join(VENDOR, 'i18n-core')).map(vendorPath)).toEqual([
 			'i18n-core/README.md',
 			'i18n-core/package.json',
 			'i18n-core/src/index.ts',
@@ -212,7 +216,7 @@ describe('immutable design customer contract', () => {
 
 		const retainedTests = PACKAGES.flatMap((name) =>
 			walkFiles(join(VENDOR, name))
-				.map((path) => relative(VENDOR, path))
+				.map(vendorPath)
 				.filter((path) => /(?:^|\/)(?:__tests__|test-fixtures)(?:\/|$)|(?:^|\/)vitest\.|\.(?:test|spec)\.[^.]+$/.test(path)),
 		);
 		expect(retainedTests).toEqual([]);
