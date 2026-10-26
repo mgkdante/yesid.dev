@@ -8,8 +8,7 @@
  *
  * Per-env file-FK protection (slice-18k #120):
  *   `directus_settings.{project_logo, public_foreground, public_favicon}` are
- *   per-env file UUIDs (committed as null per per-env file FK rule, see
- *   README § Operations § Per-env file FK fields). Before invoking directus-
+ *   per-env file UUIDs (committed as null). Before invoking directus-
  *   sync push, this wrapper reads the live env's current values for those
  *   fields and merges them into the committed settings.json in place; after
  *   push completes the file is restored from a backup so git stays clean.
@@ -28,8 +27,7 @@ export const PERMISSIONS_PUSH_ACK = 'permissions-push-can-delete-parallel-work';
 
 /** Settings fields that hold per-env file UUIDs. Committed as null in
  *  apps/cms/directus/collections/settings.json (per slice-18k #120 fix); the
- *  live env value is merged in at push-time by this wrapper. See
- *  apps/cms/README.md § Operations § Per-env file FK fields.
+ *  live env value is merged in at push-time by this wrapper.
  */
 export const PROTECTED_SETTINGS_FILE_FK_FIELDS = [
 	'project_logo',
