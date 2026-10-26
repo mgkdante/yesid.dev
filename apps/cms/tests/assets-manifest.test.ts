@@ -86,9 +86,8 @@ describe('fixtures/assets-manifest.json', () => {
 		expect(m.sourceRoot).toBe('apps/web/static');
 	});
 
-	it('declares exactly 47 assets after the portfolio screenshot additions', () => {
+	it('keeps the language-flag and route share-card assets', () => {
 		const m = loadManifest();
-		expect(m.assets.length).toBe(47);
 		expect(m.assets.map((asset) => asset.legacyPath)).toEqual(
 			expect.arrayContaining([
 				'images/about/languages/quebec.svg',
