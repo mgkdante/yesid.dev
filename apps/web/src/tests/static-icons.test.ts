@@ -14,6 +14,8 @@ describe('static icons', () => {
 			expect(ico[entry + 1]).toBe(size);
 			const offset = ico.readUInt32LE(entry + 12);
 			expect(ico.subarray(offset, offset + 8)).toEqual(pngSignature);
+			expect(ico.readUInt32BE(offset + 16)).toBe(size);
+			expect(ico.readUInt32BE(offset + 20)).toBe(size);
 		}
 	});
 
@@ -23,10 +25,13 @@ describe('static icons', () => {
 		expect(png.toString('ascii', 12, 16)).toBe('IHDR');
 		expect(png.readUInt32BE(16)).toBe(180);
 		expect(png.readUInt32BE(20)).toBe(180);
+		expect(png[25]).toBe(2);
 	});
 
-	it('declares the apple-touch-icon link', () => {
-		expect(readFileSync('src/app.html', 'utf8')).toContain(
+	it('declares the apple-touch-icon link and exactly one theme-aware favicon', () => {
+		const html = readFileSync('src/app.html', 'utf8');
+		expect(html.match(/\brel="icon"/g)).toHaveLength(1);
+		expect(html).toContain(
 			'<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />',
 		);
 	});
