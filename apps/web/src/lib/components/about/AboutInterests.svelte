@@ -17,7 +17,10 @@
 
 	let { interests, stop, label }: { interests: readonly AboutInterest[]; stop: string; label: string } = $props();
 
-	const INTEREST_SIZES = '(min-width: 1024px) calc(20vw + 48px), (min-width: 768px) calc(15vw + 48px), calc(30vw + 48px)';
+	// Cover-cropped photo width tracks card height: about 800px on the tall tablet card
+	// (snapshots sets a 380px row min-height below 1024px), about 340px on phones.
+	// Re-derive these values if the bento layout changes.
+	const INTEREST_SIZES = '(min-width: 1024px) calc(20vw + 48px), (min-width: 768px) 800px, 340px';
 
 	// Mobile tap toggle: track which strip is active (-1 = none)
 	let activeIndex = $state(-1);
@@ -72,7 +75,6 @@
 						alt=""
 						loading="lazy"
 						decoding="async"
-						class="h-full w-full max-w-none object-cover object-center"
 					/>
 				</div>
 
@@ -109,6 +111,15 @@
 </div>
 
 <style>
+	/* The unlayered global media rule outranks @layer utilities. */
+	.strip-bg img {
+		width: 100%;
+		height: 100%;
+		max-width: none;
+		object-fit: cover;
+		object-position: center;
+	}
+
 	/* go2/w4 operator QA: theme-aware image treatment. Dark mode keeps the
 	   original darkened B&W (brightness 0.3 + ink overlay); light mode
 	   WHITENS instead (brightness up + paper overlay) so the strips read as
