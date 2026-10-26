@@ -253,8 +253,8 @@ describe('extractCollectionsPathOverride (Codex review v6 P2 fix — honor CLI p
 	});
 
 	it('derives collections dir from --dump-path when --collections-path is absent', () => {
-		expect(extractCollectionsPathOverride(['--dump-path', '/abs/dump'])).toBe('/abs/dump/collections');
-		expect(extractCollectionsPathOverride(['--dump-path=relative/dump'])).toBe('relative/dump/collections');
+		expect(extractCollectionsPathOverride(['--dump-path', '/abs/dump'])?.replaceAll('\\', '/')).toBe('/abs/dump/collections');
+		expect(extractCollectionsPathOverride(['--dump-path=relative/dump'])?.replaceAll('\\', '/')).toBe('relative/dump/collections');
 	});
 
 	it('--collections-path wins over --dump-path when both set', () => {
