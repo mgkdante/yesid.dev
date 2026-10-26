@@ -13,7 +13,6 @@
         "items.update"
       ],
       "collections": [
-        "pages",
         "blog_posts",
         "projects",
         "services",

@@ -22,7 +22,7 @@ function hasPublishedFilter(filter: unknown): boolean {
 }
 
 describe('Public read policy (slice-43.26)', () => {
-	for (const collection of ['nav_links', 'pages', 'site_pages', 'error_pages', 'blog_posts', 'projects', 'tech_stack']) {
+	for (const collection of ['nav_links', 'site_pages', 'error_pages', 'blog_posts', 'projects', 'tech_stack']) {
 		it(`reads only published ${collection}`, () => {
 			expect([
 				{ status: { _eq: 'published' } },
