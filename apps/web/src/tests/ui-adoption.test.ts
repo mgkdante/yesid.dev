@@ -211,8 +211,7 @@ describe('@yesid/ui brand adoption contract', () => {
 
 		expect(quietMode).toContain('QuietModeButton as UiQuietModeButton');
 		expect(quietMode).toContain('type QuietModeButtonCopy');
-		expect(quietMode).toContain("from '#lib/state/quiet-mode.svelte.ts'");
-		expect(quietMode).toContain('onMount(() => quietModeStore.init())');
+		expect(quietMode).not.toContain('onMount');
 		expect(quietMode).toContain('activeEffect="glow"');
 		expect(quietMode).not.toContain('<svg');
 		expect(quietMode).not.toContain('<style>');

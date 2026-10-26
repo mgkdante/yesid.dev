@@ -3,64 +3,9 @@
 @import 'lenis/dist/lenis.css';
 
 @import 'tailwindcss';
-
-*,
-*::before,
-*::after {
-	-webkit-tap-highlight-color: transparent;
-}
-html {
-	-webkit-text-size-adjust: 100%;
-	text-size-adjust: 100%;
-}
-button,
-[type="button"],
-[type="submit"],
-[type="reset"] {
-	-webkit-appearance: none;
-	appearance: none;
-}
-input,
-textarea,
-select {
-	-webkit-appearance: none;
-	appearance: none;
-}
-
-/* Touch feedback keeps an active state even when reduced motion removes timing. */
-@utility tap-press {
-	transition:
-		scale 120ms cubic-bezier(0.2, 0, 0, 1),
-		opacity 120ms cubic-bezier(0.2, 0, 0, 1);
-
-	&:active {
-		scale: 0.97;
-		opacity: 0.92;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
-	}
-}
-
-@utility tap-feedback {
-	transition: opacity 120ms ease-out;
-
-	&:active {
-		opacity: 0.7;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
-	}
-}
+@import '@yesid/ui/base.css';
 
 @import 'tw-animate-css';
-
-/* Map dark: variant to our attribute-based theme switching.
-   GO-W2.2: .theme-dark wrapper included so dark: utilities also fire inside
-   pinned-dark scenes (e.g. the home closer) on light pages. */
-@custom-variant dark (&:is([data-theme="dark"] *, .theme-dark *));
 
 /* ===== TOKENS:START ===== */
 /* GENERATED FROM apps/web/vendor/design/tokens/tokens.json - DO NOT EDIT */
@@ -183,12 +128,7 @@ select {
   --chrome-ink-opacity: 0.4;
 }
 
-/* Dark theme is the default — tokens.css handles var(--background) etc.
-   This ensures a clean base before any components load. */
 html {
-  background-color: var(--background);
-  color: var(--foreground);
-  overflow-x: clip; /* No Overflow Guarantee — Layer 1: viewport boundary */
   /* Always reserve a real scrollbar track so a page-height change (e.g. blog
      Quiet Mode collapsing the article) can't toggle the scrollbar and shift
      content sideways. Unlike scrollbar-gutter:stable, a real scrollbar IS
@@ -196,107 +136,6 @@ html {
      measure edge-to-edge (the full-width band invariant holds). On overlay /
      zero-width-scrollbar platforms this reserves 0px and is a no-op. */
   overflow-y: scroll;
-  overscroll-behavior: none; /* Prevent pull-to-refresh & bounce in pinned sections */
-}
-
-/* No Overflow Guarantee — Layer 2: text breaks before overflowing */
-body {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-/* No Overflow Guarantee — Layer 3: media scales to fit parent */
-img, svg, video, iframe, canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-/* No Overflow Guarantee — Layer 7: preformatted content scrolls internally */
-pre, code, table {
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-/* Brand text selection — yellow highlight with black text */
-::selection {
-  background: var(--accent);
-  color: #000000;
-}
-
-/* GO-w2t5: keyboard-focus polish — engineered, on-brand ring everywhere.
-   Today only ui/* primitives have rings; nav links, manifesto pills, toc
-   pills and filter chips fall back to UA defaults. @layer base so component
-   focus utilities (utilities layer, higher precedence) still win where they
-   define their own ring. :where() keeps specificity at the pseudo-class only. */
-@layer base {
-  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-  }
-}
-
-/* Brand scrollbar — orange thumb on dark track, site-wide */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--primary) 40%, transparent) transparent;
-}
-*::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-*::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 35%, transparent);
-  border-radius: 3px;
-}
-*::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--primary) 60%, transparent);
-}
-
-/* GO2-W5: scrollbar on cream — light-mode thumb mix raised 35% → 50% so the
-   orange route-thumb reads on warm paper. */
-[data-theme="light"] *,
-.theme-light * {
-  scrollbar-color: color-mix(in srgb, var(--primary) 50%, transparent) transparent;
-}
-[data-theme="light"] *::-webkit-scrollbar-thumb,
-.theme-light *::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 50%, transparent);
-}
-
-/* Circuit grid background — site-wide except nav/footer.
-   Applied via main content wrapper in +layout.svelte or per-section.
-   GO2-W5 "NX track schematic": same 80px rhythm (no layout change) plus a
-   16px fine schematic grid and a 400px amber block-boundary vertical. All
-   colors come from the grid-* tokens so both modes tune independently.
-   The sodium-lamp glow (--grid-glow) is NOT part of the page recipe — it
-   belongs exclusively to the hero intro animation (see HeroBanner's
-   .hero-lamp): document- or viewport-anchored variants both read as
-   background glitches around the intro's geometry flips (operator-rejected
-   twice).
-
-   Taste round 2 SOLIDITY fix, go2 integration revision: the grid is the
-   wrapper's OWN background-image — an element's background paints below all
-   of its content by definition, so solid surfaces genuinely occlude the grid
-   and transparent sections still show it through (the round-2 goal). The
-   round-2 mechanism (isolation: isolate + a z-index:-1 ::before) achieved
-   the same paint order but made the wrapper a stacking context, which
-   trapped the fixed Nav (z 70) underneath the body-portaled MenuOverlay
-   (z 60): the navbar vanished whenever the menu sheet opened. No isolation
-   here, ever — Nav must compete with the overlay at the root context.
-   background-image (not the background shorthand) so the Tailwind
-   bg-[var(--background)] color on the layout wrapper keeps painting
-   underneath the gradient stack. */
-.circuit-grid {
-  position: relative;
-  background-image:
-    repeating-linear-gradient(90deg, var(--grid-block-marker) 0px, transparent 1px, transparent 400px),
-    repeating-linear-gradient(90deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
-    repeating-linear-gradient(0deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
-    repeating-linear-gradient(90deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px),
-    repeating-linear-gradient(0deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -306,30 +145,6 @@ pre, code, table {
    [data-theme="light"] / .theme-light.
    ═══════════════════════════════════════════════════════════════ */
 
-/* Shadows: dark elevates with orange glow on black; light elevates with
-   warm ink shadows on paper (GO2-W5: blacks warmed rgba(20,20,20) →
-   rgba(28,24,19); card keeps the folded enamel-bevel catch-light). Glow
-   mixes are halved, not removed, so hover affordances stay brand-warm. */
-[data-theme="light"], .theme-light {
-	--shadow-card: 0 1px 2px rgba(28, 24, 19, 0.06), 0 4px 12px rgba(28, 24, 19, 0.08), inset 0 1px 0 var(--edge-highlight);
-	--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1), 0 0 0 1px rgba(28, 24, 19, 0.04);
-	--shadow-section: 0 8px 32px rgba(28, 24, 19, 0.08);
-	--shadow-glow-sm: 0 0 6px color-mix(in srgb, var(--primary) 18%, transparent);
-	--shadow-glow-md: 0 0 12px color-mix(in srgb, var(--primary) 12%, transparent);
-	--shadow-glow-lg: 0 0 24px color-mix(in srgb, var(--primary) 9%, transparent), 0 0 60px color-mix(in srgb, var(--primary) 4%, transparent);
-	--shadow-sheet: 0 -8px 32px rgba(28, 24, 19, 0.12);
-}
-
-/* GO2-W5 round 3: light mode "needs more demarcation with its structural
-   lines" (operator). The brand grid — card/panel/nav edges drawn with
-   --border-brand — runs a stronger mix on paper than on the dark board
-   (45% → 60%), so with the system-wide 2px step light lands slightly more
-   pronounced than dark, as directed. Solid rules (--border-rule/-accent)
-   are already full-strength in both modes and only gain thickness. */
-[data-theme="light"], .theme-light {
-	--border-brand: color-mix(in srgb, var(--primary) 60%, transparent);
-}
-
 /* GO2-W5: inline code chips in light mode — manila label on the paper
    (var(--muted) + strong border) instead of var(--card): a #FFFDF8 chip is
    near-invisible on #F7F2E9 prose and disappears entirely inside cards. */
@@ -337,32 +152,6 @@ pre, code, table {
 .theme-light .prose-dark code:not(pre code) {
 	background: var(--muted);
 	border-color: var(--border-strong);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   Global keyframes — single source, referenced by brand primitives.
-   Component-level duplicates removed in Phase B (17a-2b).
-   ═══════════════════════════════════════════════════════════════ */
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 0 0 4px 1px rgb(var(--primary-rgb) / 0.5);
-  }
-  50% {
-    opacity: 0.7;
-    box-shadow: 0 0 10px 4px rgb(var(--primary-rgb) / 0.8);
-  }
-}
-
-@keyframes station-ping {
-  0% { transform: scale(1); opacity: 0.6; }
-  75%, 100% { transform: scale(2.5); opacity: 0; }
 }
 
 /* Hero typewriter cursor (slice 17e-4). Global so the .typewriter-cursor
@@ -404,27 +193,11 @@ pre, code, table {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .led-pulse { animation: none; }
   .typewriter-cursor {
     animation: none;
     visibility: visible;
   }
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   Brand utility classes — shared patterns extracted from components.
-   Wired into consumers in Phase B (17a-2b).
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Dashed divider — filter group separators.
-   Taste round 2: delimitations speak the route-set voice — solid-orange
-   dashed rule (NX diagram energy) instead of a neutral gray.
-   Round 3: one step thicker (1px → 2px) — operator wants the dividers
-   bolder in both modes. */
-.divider-dashed {
-  border-top: 2px dashed var(--border-rule);
-}
-
 
 /* App-owned geometry is inherited by the shell and body-portaled dialogs. */
 :root {
@@ -439,45 +212,6 @@ pre, code, table {
 @media (max-width: 479px) { :root { --nav-padding-y: 6px; } }
 @media (--tablet-min) and (--desktop-max) { :root { --page-display: clamp(2.5rem, 4vw, 3rem); } }
 @media (min-width: 1440px) and (min-height: 800px) { :root { --page-display: var(--text-display); } }
-
-/* Hidden scrollbar — preserves scroll, hides chrome */
-.scrollbar-hidden {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none;
-}
-
-/* 7–9. Label styles — mono uppercase patterns.
-   Round-4 four-color doctrine: label-section = quiet in-card caption (muted);
-   label-station = the YELLOW wayfinding voice for overlines/section labels —
-   the precedent every marker/overline follows ("01 / SERVICE", "01 / FEATURED",
-   listing-header sublines); label-metric = quiet metric caption (the metric
-   VALUE carries the yellow callout voice — see MetricDisplay). */
-.label-section {
-  font-family: var(--font-mono);
-  font-size: var(--text-caption);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted-foreground);
-}
-/* GO2-W5: station labels ARE wayfinding signage — yellow voice as text
-   (accent-text holds AA everywhere; worst case 4.71:1 light). */
-.label-station {
-  font-family: var(--font-mono);
-  font-size: var(--text-small);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--accent-text);
-}
-.label-metric {
-  font-family: var(--font-mono);
-  font-size: var(--text-caption);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted-foreground);
-}
 
 /* 10. Prose for dark markdown content — shared base for blog + work detail */
 .prose-dark {
@@ -587,11 +321,6 @@ pre, code, table {
   max-width: 100%;
   border-radius: var(--radius-md);
   margin: 1rem 0;
-}
-
-/* 11. LED pulse animation — status dots and indicators */
-.led-pulse {
-  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* 13. Scroll offset for anchor links — headings land below the sticky nav */

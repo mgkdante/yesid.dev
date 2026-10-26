@@ -16,7 +16,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import * as Tabs from '@yesid/ui/tabs';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 	import { onMount, onDestroy } from 'svelte';
 
 	// StationTabs lives inside remounting pages ({#key pathname} in the root

@@ -1,15 +1,15 @@
 import { browser } from '$app/env';
-import { themeStore, type Theme } from '#lib/stores/theme.svelte.ts';
+import { theme, type Theme } from '@yesid/ui/state';
 
-export type { Theme } from '#lib/stores/theme.svelte.ts';
+export type { Theme } from '@yesid/ui/state';
 
 function normalizeTheme(value: unknown, fallback: Theme = 'dark'): Theme {
 	return value === 'light' || value === 'dark' ? value : fallback;
 }
 
 export function getActiveTheme(): Theme {
-	if (!browser) return themeStore.theme;
-	return normalizeTheme(document.documentElement.dataset.theme, themeStore.theme);
+	if (!browser) return theme.current;
+	return normalizeTheme(document.documentElement.dataset.theme, theme.current);
 }
 
 export function resolveThemeValue<T>(theme: Theme, darkValue: T, lightValue?: T): T {

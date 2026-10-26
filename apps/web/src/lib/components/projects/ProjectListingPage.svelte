@@ -20,7 +20,7 @@
 	import { MetroStation } from '#lib/components/brand/index.ts';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { persisted } from '#lib/state/persisted.svelte.ts';
 

@@ -12,6 +12,11 @@ const appCSS = readFileSync(
   'utf-8'
 );
 
+const baseCSS = readFileSync(
+  resolve(process.cwd(), 'vendor/design/ui/base.css'),
+  'utf-8'
+);
+
 describe('Design System Tokens', () => {
   describe('Type scale', () => {
     const requiredTokens = [
@@ -163,18 +168,18 @@ describe('Design System Tokens', () => {
       expect(tokensCSS).toContain('--shadow-card: 0 0 16px color-mix(in srgb, var(--primary) 8%, transparent), 0 2px 8px rgba(10, 7, 4, 0.35), inset 0 1px 0 var(--edge-highlight);');
     });
 
-    it('app.css ships warm light shadow overrides and leaves prose code theme-aware', () => {
-      expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1)');
-      expect(appCSS).toContain('inset 0 1px 0 var(--edge-highlight)');
+    it('base.css ships warm light shadow overrides and app.css leaves prose code theme-aware', () => {
+      expect(baseCSS).toContain('--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1)');
+      expect(baseCSS).toContain('inset 0 1px 0 var(--edge-highlight)');
       expect(appCSS).not.toMatch(/\[data-theme="light"\] \.prose-dark pre/);
       expect(appCSS).not.toMatch(/\.theme-light \.prose-dark pre/);
       expect(appCSS).not.toContain('background: #141414 !important;');
     });
 
-    it('app.css grid recipe is the NX track schematic (block markers + fine grid)', () => {
-      expect(appCSS).toContain('var(--grid-block-marker) 0px, transparent 1px, transparent 400px');
-      expect(appCSS).toContain('var(--grid-line-major) 0px, transparent 1px, transparent 80px');
-      expect(appCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
+    it('base.css grid recipe is the NX track schematic (block markers + fine grid)', () => {
+      expect(baseCSS).toContain('var(--grid-block-marker) 0px, transparent 1px, transparent 400px');
+      expect(baseCSS).toContain('var(--grid-line-major) 0px, transparent 1px, transparent 80px');
+      expect(baseCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
     });
 
     it('the page grid paints UNDER content as the wrapper background, with NO stacking context', () => {
@@ -185,11 +190,11 @@ describe('Design System Tokens', () => {
       // fixed Nav (z 70) under the body-portaled MenuOverlay (z 60) — the
       // navbar vanished while the menu sheet was open. Isolation (or any
       // ::before resurrection) on .circuit-grid is a regression.
-      const grid = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
+      const grid = baseCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
       expect(grid).toContain('background-image:');
       expect(grid).not.toContain('isolation');
       expect(grid).not.toContain('z-index');
-      expect(appCSS).not.toMatch(/\.circuit-grid::before/);
+      expect(baseCSS).not.toMatch(/\.circuit-grid::before/);
     });
 
     it('the sodium lamp belongs to the intro animation ONLY — never to page chrome', () => {
@@ -218,7 +223,7 @@ describe('Design System Tokens', () => {
     });
 
     it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule, round-3 2px)', () => {
-      const divider = appCSS.match(/\.divider-dashed \{([\s\S]*?)\}/)?.[1] ?? '';
+      const divider = baseCSS.match(/\.divider-dashed \{([\s\S]*?)\}/)?.[1] ?? '';
       expect(divider).toContain('border-top: 2px dashed var(--border-rule);');
     });
 
@@ -226,14 +231,14 @@ describe('Design System Tokens', () => {
       // Operator: light "still needs more demarcation with its structural
       // lines" — the light page runs a stronger --border-brand mix than the
       // :root 45% so the 2px grid reads slightly more pronounced than dark.
-      const lightOverride = appCSS.match(
+      const lightOverride = baseCSS.match(
         /\[data-theme="light"\], \.theme-light \{\s*\n\t--border-brand:([^;]*);/,
       )?.[1] ?? '';
       expect(lightOverride.trim()).toBe('color-mix(in srgb, var(--primary) 60%, transparent)');
     });
 
     it('station labels speak the wayfinding voice (.label-station = accent-text)', () => {
-      const labelStation = appCSS.match(/\.label-station \{([\s\S]*?)\}/)?.[1] ?? '';
+      const labelStation = baseCSS.match(/\.label-station \{([\s\S]*?)\}/)?.[1] ?? '';
       expect(labelStation).toContain('color: var(--accent-text);');
     });
   });

@@ -3,9 +3,7 @@
 		QuietModeButton as UiQuietModeButton,
 		type QuietModeButtonCopy,
 	} from '@yesid/ui/brand';
-	import { onMount } from 'svelte';
 	import { siteLabels } from '#lib/content/index.ts';
-	import { quietModeStore } from '#lib/state/quiet-mode.svelte.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
@@ -21,19 +19,6 @@
 		remember: resolveLocale(a11y.quietModeRemember, locale),
 		forget: resolveLocale(a11y.quietModeForget, locale),
 	};
-	const enabled = $derived(quietModeStore.enabled);
-	const remembered = $derived(quietModeStore.remembered);
-
-	onMount(() => quietModeStore.init());
 </script>
 
-<UiQuietModeButton
-	{copy}
-	{enabled}
-	{remembered}
-	onToggle={() => quietModeStore.toggle()}
-	onRememberToggle={() =>
-		remembered ? quietModeStore.forgetDefault() : quietModeStore.rememberCurrent()}
-	activeEffect="glow"
-	class={className}
-/>
+<UiQuietModeButton {copy} activeEffect="glow" class={className} />

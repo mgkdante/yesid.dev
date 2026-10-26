@@ -20,7 +20,7 @@
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 	import { persisted } from '#lib/state/persisted.svelte.ts';
 
 	let {

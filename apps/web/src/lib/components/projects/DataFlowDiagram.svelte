@@ -16,7 +16,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '#lib/motion/utils/gsap.ts';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 

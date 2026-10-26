@@ -208,7 +208,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/layout/Nav.svelte',
 			'lib/components/layout/MenuOverlay.svelte',
 			'lib/components/layout/Footer.svelte',
-			'lib/components/layout/ThemeToggle.svelte',
 			'lib/components/layout/LanguageToggle.svelte',
 			'lib/components/shared/FilterSummary.svelte',
 			'lib/components/shared/SearchInput.svelte',

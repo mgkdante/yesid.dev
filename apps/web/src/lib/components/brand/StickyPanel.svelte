@@ -1,7 +1,7 @@
 <!-- Product compatibility adapter; see vendor/design/ui/README.md#stickypanel. -->
 <script lang="ts">
 	import { StickyPanel as UiStickyPanel, type StickyPanelProps as UiStickyPanelProps } from '@yesid/ui/brand';
-	import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+	import { scrollChain } from '@yesid/motion/actions';
 
 	export type StickyPanelProps = Omit<UiStickyPanelProps, 'class' | 'ref'>;
 

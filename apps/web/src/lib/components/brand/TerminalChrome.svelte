@@ -8,7 +8,7 @@
   import StatusDot from './StatusDot.svelte';
   import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
   import { cn } from '#lib/utils/index.ts';
-  import { scrollChain } from '#lib/motion/actions/scrollChain.ts';
+  import { scrollChain } from '@yesid/motion/actions';
 
   export interface TerminalFooterItem {
     label: string;

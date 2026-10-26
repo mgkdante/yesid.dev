@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { flushSync } from 'svelte';
 import Fixture from './_quiet-mode-fixture.svelte';
-import { quietModeStore } from '#lib/state/quiet-mode.svelte.ts';
+import { quietMode } from '@yesid/ui/state';
 
 const localizedCases = (['fr', 'es'] as const).map(locale => ({
 	locale,
@@ -23,14 +23,14 @@ const localizedCases = (['fr', 'es'] as const).map(locale => ({
 describe('QuietModeButton', () => {
 	beforeEach(() => {
 		localStorage.clear();
-		quietModeStore.resetForTest();
+		quietMode.resetForTest();
 		document.documentElement.removeAttribute('data-quiet-mode');
 	});
 
 	afterEach(() => {
 		cleanup();
 		localStorage.clear();
-		quietModeStore.resetForTest();
+		quietMode.resetForTest();
 		document.documentElement.removeAttribute('data-quiet-mode');
 	});
 
@@ -102,6 +102,7 @@ describe('QuietModeButton', () => {
 
 	it('opens with sections closed when the collapsed default was remembered', () => {
 		localStorage.setItem('quiet-mode', 'true');
+		quietMode.init();
 
 		render(Fixture);
 		flushSync();
