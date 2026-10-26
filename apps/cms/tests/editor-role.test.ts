@@ -30,7 +30,8 @@ const UNRELATED_PERMISSION_COUNT = 754;
 // slice-43.22 adds 45 AI Editor rows to adopt the live grant extension.
 // slice-43.26 adopts the live public-read row filters and file metadata fields.
 // slice-43.27 removes the retired icons prefix from AI Editor comment permissions.
-const UNRELATED_PERMISSION_SHA256 = 'db3acfba7fbf10aeacbc6b3907a14658c8ed688678727ed17914cf444473a6bc';
+// slice-43.28 removes the deleted empty icons folder from the public file filter.
+const UNRELATED_PERMISSION_SHA256 = '3e6947e563a49471d4271f0a4c94ffd313971c445cbecf8f41ddca09e0c5b8cd';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 

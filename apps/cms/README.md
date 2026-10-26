@@ -119,8 +119,7 @@ confirm. This manual action requests one build of the current published CMS
 content for this environment, taking about 3 minutes. It POSTs the environment's
 `VERCEL_DEPLOY_HOOK_URL` (allow-listed in `FLOWS_ENV_ALLOW_LIST`) with
 `buildCache=false`. Edits never rebuild the site by themselves; no polling flow
-remains. The legacy refresh flag is retained as dead schema and has no effect
-on publishing.
+remains.
 
 The only other declared flow logs translation reminders on publish. Repository
 contracts verify the intended configuration offline; verify delivery with an
