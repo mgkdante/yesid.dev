@@ -14,13 +14,6 @@
     "_syncId": "_sync_dashboard_catalog"
   },
   {
-    "name": "Content health",
-    "icon": "monitoring",
-    "note": "Pages + blocks + activity at a glance.",
-    "color": "#E07800",
-    "_syncId": "_sync_dashboard_content_health"
-  },
-  {
     "name": "Ops & deploy",
     "icon": "rocket_launch",
     "note": "Recent CMS activity and D6 manual Publish. After editing, open Site Config (build_queue) → Flows → Publish site and confirm one build per editing session. Edits never rebuild the site by themselves.",

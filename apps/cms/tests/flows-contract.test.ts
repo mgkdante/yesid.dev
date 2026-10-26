@@ -135,7 +135,7 @@ describe('D6 manual Publish flow contract', () => {
 		expect(reminder?.options).toEqual({
 			type: 'action', scope: ['items.update'],
 			collections: [
-				'pages', 'blog_posts', 'projects', 'services', 'block_about_content',
+				'blog_posts', 'projects', 'services', 'block_about_content',
 				'block_about_intro', 'block_blog_page_content', 'block_closer',
 				'block_contact_content', 'block_cta', 'block_hero', 'block_manifesto',
 				'block_projects_page_content', 'block_proof_reel', 'block_services_grid',
