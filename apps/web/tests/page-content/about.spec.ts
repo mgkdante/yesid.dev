@@ -54,6 +54,24 @@ for (const locale of ['', '/fr', '/es'])
 	}
 
 test.describe('/about page content', () => {
+  test('interest images fill their strips on phones and tablets', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 1024 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto('/about');
+      await page.getByTestId('about-interests').scrollIntoViewIfNeeded();
+      const dimensions = await page.locator('[data-testid="about-interests"] .strip-bg img').evaluateAll(els => els.map(el => {
+        const image = el.getBoundingClientRect();
+        const parent = el.parentElement!.getBoundingClientRect();
+        return { width: image.width, height: image.height, parentWidth: parent.width, parentHeight: parent.height };
+      }));
+      expect(dimensions.length).toBeGreaterThan(0);
+      for (const image of dimensions) {
+        expect(image.height).toBeGreaterThanOrEqual(image.parentHeight - 1);
+        expect(image.width).toBeGreaterThanOrEqual(image.parentWidth - 1);
+      }
+    }
+  });
+
   test('page-about renders with all bento cells visible', async ({ page }) => {
     const response = await page.goto('/about');
     expect(response?.status()).toBe(200);

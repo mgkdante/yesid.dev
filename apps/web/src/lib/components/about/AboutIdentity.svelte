@@ -13,17 +13,14 @@
 	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '#lib/components/brand/index.ts';
 	import { Card } from '#lib/components/ui/card/index.ts';
-	import { mediaVariants } from '#lib/content/media-variants.ts';
+	import { variantImage } from '#lib/utils/variant-image.ts';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 
 	const name = $derived(resolveLocale(identity.name, locale));
 	const title = $derived(resolveLocale(identity.title, locale));
 	const valueProp = $derived(resolveLocale(identity.valueProp, locale));
-	const headshotMedia = $derived(mediaVariants[identity.headshot]);
-	const headshotSrcset = $derived(
-		headshotMedia?.variants.map((variant) => `${variant.path} ${variant.width}w`).join(', '),
-	);
+	const headshotMedia = $derived(variantImage(identity.headshot));
 </script>
 
 <div
@@ -57,11 +54,11 @@
 				>
 					<div class="h-full w-full overflow-hidden rounded-full">
 						<img
-							src={identity.headshot}
-							srcset={headshotSrcset}
+							src={headshotMedia.src}
+							srcset={headshotMedia.srcset}
 							sizes="(min-width: 768px) 96px, 80px"
-							width={headshotMedia?.width}
-							height={headshotMedia?.height}
+							width={headshotMedia.width}
+							height={headshotMedia.height}
 							alt={name}
 							class="block h-full w-full scale-[1.08] rounded-full object-cover object-[50%_42%]"
 							style="width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 42%; scale: 1.08;"

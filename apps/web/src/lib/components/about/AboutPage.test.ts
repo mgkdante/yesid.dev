@@ -22,6 +22,14 @@ vi.mock('#lib/content/media-variants.ts', () => ({
 				{ path: '/large.webp', width: 800 },
 			],
 		},
+		'/fixture-interest.webp': {
+			width: 600,
+			height: 400,
+			variants: [
+				{ path: '/interest-small.webp', width: 240 },
+				{ path: '/interest-large.webp', width: 600 },
+			],
+		},
 	},
 }));
 
@@ -68,7 +76,7 @@ const fixture = {
 		{ id: 'two', label: { en: 'Second language' }, image: 'fixture-asset' },
 	],
 	interests: [
-		{ id: 'transit', label: { en: 'Trains' }, image: '/train.svg' },
+		{ id: 'transit', label: { en: 'Trains' }, image: '/fixture-interest.webp' },
 		{ id: 'space', label: { en: 'Stars' }, image: '/space.svg' },
 	],
 	testimonials: [
@@ -96,6 +104,35 @@ const fixture = {
 };
 
 describe('AboutPage', () => {
+	it('renders decorative interest images with responsive variants and no background images', () => {
+		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
+		const interests = screen.getByTestId('about-interests');
+		const image = interests.querySelector('img[src="/fixture-interest.webp"]');
+		expect(image?.closest('.strip-bg')).not.toBeNull();
+		expect(image).toHaveAttribute('src', '/fixture-interest.webp');
+		expect(image).toHaveAttribute(
+			'srcset',
+			'/interest-small.webp 240w, /interest-large.webp 600w',
+		);
+		expect(image).toHaveAttribute(
+			'sizes',
+			'(min-width: 1024px) calc(20vw + 48px), (min-width: 768px) 800px, 340px',
+		);
+		expect(image).toHaveAttribute('width', '600');
+		expect(image).toHaveAttribute('height', '400');
+		expect(image).toHaveAttribute('loading', 'lazy');
+		expect(image).toHaveAttribute('decoding', 'async');
+		expect(image).toHaveAttribute('alt', '');
+		const unmappedImage = interests.querySelector('img[src="/space.svg"]');
+		expect(unmappedImage).toHaveAttribute('src', '/space.svg');
+		for (const attribute of ['srcset', 'sizes', 'width', 'height']) {
+			expect(unmappedImage).not.toHaveAttribute(attribute);
+		}
+		for (const element of interests.querySelectorAll<HTMLElement>('[style]')) {
+			expect(element.style.backgroundImage).toBe('');
+		}
+	});
+
 	it('handles an empty optional polaroid collection', () => {
 		render(AboutPage, {
 			props: {
