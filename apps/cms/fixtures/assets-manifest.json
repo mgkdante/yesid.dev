@@ -450,6 +450,104 @@
 			"title": "Transit — arrêt Sherbrooke / Atwater, mobile, thème clair.",
 			"description": "Transit Sherbrooke / Atwater stop reliability on a phone in light mode. Browser capture, 26 October 2026.",
 			"sha256": "46cc78018f70563269760119afd8e8059766cb9db9e8da38300555d6ddbdd027"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-blog-es-mobile-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — blog es mobile dark",
+			"description": "yesid.dev phone screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "79b835364e5c76f71b50567c2272c186917250558f4fecefea51d3535dc5ea00"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-blog-es-mobile-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — blog es mobile light",
+			"description": "yesid.dev phone screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "6ec1dc0d36391741b2c952c04f9c7bb31dfb72e3c16316bbf6baa4eb072cbcee"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-contact-fr-mobile-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — contact fr mobile dark",
+			"description": "yesid.dev phone screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "6377f10011f6e6b1e52dc7dddc4a7d5d47abc3808a413289a6951c0f6320aed4"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-contact-fr-mobile-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — contact fr mobile light",
+			"description": "yesid.dev phone screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "39ffacc7fcb1e21a721dbe7984a11bcc9042f1c368f7954cc83281eed79ab953"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-home-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — home desktop dark",
+			"description": "yesid.dev desktop screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "505db5789e46c58f6a9ff14b15995dad1fdfb52036c4ebcfdcb4ab05e71b398d"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-home-desktop-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — home desktop light",
+			"description": "yesid.dev desktop screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "e94ea859e824678398c7ab592d51c3cb23ce15e40bc317d798a3b3caf86612ea"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-home-mobile-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — home mobile dark",
+			"description": "yesid.dev phone screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "c2393abd259f9f75a8d13a201e549edd41e251083767b3b61ce339bf5c0600b0"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-home-mobile-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — home mobile light",
+			"description": "yesid.dev phone screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "263ac1c77ddd019c582bd2bd5a51ff88dbae0b19db185ab8d95b57f7221953cd"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-project-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — project desktop dark",
+			"description": "yesid.dev desktop screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "1855e1d0ec0c15265374d36d91bd2b908896995445f2bdcc3a909c1642275a77"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-project-desktop-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — project desktop light",
+			"description": "yesid.dev desktop screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "2a93a0e146c15c10d8205fa20f0230587411e7dd1a39930f38826ceb7963c891"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-projects-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — projects desktop dark",
+			"description": "yesid.dev desktop screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "420ddd7e075f10832b110d6def7a4c434a9e7d896e4893088c8b37278713d88d"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-projects-desktop-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — projects desktop light",
+			"description": "yesid.dev desktop screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "e3a259da0d71ae841e1b84d15b8337f418b2c46eb56e1d730c151a6b272189f7"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-services-desktop-dark.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — services desktop dark",
+			"description": "yesid.dev desktop screenshot in dark mode. Browser capture, 26 October 2026.",
+			"sha256": "08f47b966d6035a6194d0394689134850518ad87f33e785f8362e0a8e834d3b0"
+		},
+		{
+			"legacyPath": "images/work/portfolio-20261026/yesid-dev-services-desktop-light.jpg",
+			"folder": "projects",
+			"title": "yesid.dev — services desktop light",
+			"description": "yesid.dev desktop screenshot in light mode. Browser capture, 26 October 2026.",
+			"sha256": "75d4952353adb220829bc8b6a64b180ab2887323b73f866a20bce012b419af06"
 		}
 	]
 }
