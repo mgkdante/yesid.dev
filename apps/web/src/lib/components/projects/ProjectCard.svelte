@@ -1,6 +1,6 @@
 <!--
   Single project card for the /projects listing page.
-  Layout: short media banner -> title -> description -> service badges
+  Layout: media (top half) over info (bottom half): title -> description -> service badges
          -> tech stack inline diagram -> tag pills.
   Banner shows project image if available, otherwise the digital-infrastructure
   blueprint sheet (homework #8b): mobile-device drawing on mobile viewports,
@@ -67,10 +67,10 @@
 	}: ProjectCardProps = $props();
 
 	// Rendered card widths: listing = 2-col grid beside the sidebar (~40vw
-	// desktop, full-width mobile); proof = one to four whole carousel slots.
+	// desktop, full-width mobile); proof = one or two whole carousel slots.
 	const mediaSizes = $derived(
 		variant === 'proof'
-			? '(min-width: 1800px) 25vw, (min-width: 1400px) 33vw, (min-width: 1000px) 50vw, 92vw'
+			? '(min-width: 768px) 50vw, 92vw'
 			: '(min-width: 768px) 40vw, 92vw',
 	);
 
@@ -119,7 +119,7 @@
 >
 	<div class="h-full" use:cursorGlow>
 	<Card class="h-full gap-0 py-0">
-		<article class="flex h-full flex-col">
+		<article class="project-card-layout h-full flex-1">
 		<!-- Media banner: image, or the digital-infrastructure blueprint sheet fallback -->
 		{#if project.image}
 			<div class={mediaClass} data-testid={mediaTestId}>
@@ -150,7 +150,7 @@
 			</div>
 		{/if}
 
-		<!-- Content area — all content stacks naturally below the banner -->
+		<div class="project-card-info flex min-w-0 flex-col" data-testid="project-card-info">
 		<div class="project-card-body flex flex-1 flex-col p-4">
 			<!-- Title below the gradient, not overlaid -->
 			<h2
@@ -252,6 +252,7 @@
 				</div>
 			</div>
 		{/if}
+		</div>
 
 		</article>
 	</Card>
@@ -344,17 +345,15 @@
 		}
 	}
 
-	.project-card-media--listing {
-		height: 13rem;
+	/* Media and info split the card evenly; whichever half needs more room
+	   grows both, so long copy makes the card taller instead of squeezing it. */
+	.project-card-layout {
+		display: grid;
+		grid-template-rows: 1fr 1fr;
 	}
 
 	.project-card--proof :global(.card-surface) {
 		min-height: clamp(30rem, 64dvh, 44rem);
-	}
-
-	.project-card-media--proof {
-		height: 14rem;
-		flex-shrink: 0;
 	}
 
 	.project-card-title {

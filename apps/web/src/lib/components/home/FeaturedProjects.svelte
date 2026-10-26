@@ -271,15 +271,9 @@
 		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
-	/* Choose whole slots from the space left after the section's title rail. */
+	/* One whole card, or two once both fit; never more, even on ultrawide. */
 	@container proof-reel (min-width: 45.25rem) {
 		.embla { --proof-columns: 2; }
-	}
-	@container proof-reel (min-width: 68.5rem) {
-		.embla { --proof-columns: 3; }
-	}
-	@container proof-reel (min-width: 91.75rem) {
-		.embla { --proof-columns: 4; }
 	}
 
 	@media (--tablet-max) {
