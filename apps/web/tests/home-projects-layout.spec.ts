@@ -193,6 +193,9 @@ test('a light first load shows the same project screenshots as switching to ligh
 	await page.goto('/projects');
 	const images = page.getByTestId('project-hero-preview-image');
 	await expect(images.first()).toBeVisible();
+	// The server renders dark screenshots and the mounted preview swaps in light ones,
+	// so read the first load only once the page has hydrated (Lenis is on for desktop).
+	await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis'))).toBe(true);
 	const sources = () => images.evaluateAll(nodes => nodes.map(node => node.getAttribute('src')));
 	const firstLoad = await sources();
 	await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });

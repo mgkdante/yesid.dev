@@ -566,6 +566,7 @@
 					<Button
 						variant="ghost"
 						onclick={handleReset}
+						data-testid="contact-reset"
 						class="mt-4 self-start font-mono text-caption tap-feedback min-h-11 px-4"
 					>
 						{resolveLocale(contactPage.success.resetLabel, locale)}
