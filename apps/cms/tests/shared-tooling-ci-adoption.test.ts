@@ -245,7 +245,7 @@ test('web reports required ci after classified work without weakening E2E', () =
 	);
 	expect(e2e).toContain("!contains(github.event.pull_request.labels.*.name, 'skip-e2e')");
 	expect(e2e.match(/^    runs-on: ubuntu-latest$/gmu)).toHaveLength(1);
-	expect(e2e).toContain('timeout-minutes: 20');
+	expect(e2e).toContain('timeout-minutes: 30');
 	expect(e2e).toContain(
 		'strategy:\n      fail-fast: false\n      matrix:\n        shard: [1, 2, 3]',
 	);
@@ -253,9 +253,7 @@ test('web reports required ci after classified work without weakening E2E', () =
 		ordered(e2e, [
 			'uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5',
 			'uses: ./.github/actions/setup',
-			'name: Cache Playwright browsers',
-			'name: Install Playwright Chromium (exact cache hit)',
-			'name: Install Playwright Chromium (+ system deps)',
+			'name: Install Playwright Chromium',
 			'name: Build (turbo, cache-eligible)',
 			'name: Emit fixture content for Playwright specs',
 			'name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)',
