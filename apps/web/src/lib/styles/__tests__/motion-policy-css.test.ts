@@ -71,7 +71,7 @@ describe('GO-w2t5 micro-interactions — SAFE-ALWAYS additions present', () => {
 	});
 
 	it('footer links draw their underline', () => {
-		const src = read('src/lib/components/layout/Footer.svelte');
+		const src = read('vendor/design/ui/src/primitives/footer/footer-link.svelte');
 		expect(src).toContain('footer-link');
 		expect(src).toMatch(/\.footer-link \{[\s\S]*?background-size: 0% 1px;/);
 	});

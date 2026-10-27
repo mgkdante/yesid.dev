@@ -196,7 +196,7 @@ describe('chrome companion consolidation', () => {
 		const consumers = [
 			'lib/components/layout/Nav.svelte',
 			'lib/components/layout/MenuOverlay.svelte',
-			'lib/components/layout/Footer.svelte',
+			'routes/+layout.svelte',
 			'lib/components/layout/LanguageToggle.svelte',
 		];
 
@@ -211,8 +211,6 @@ describe('chrome companion consolidation', () => {
 		const consumers = [
 			'lib/components/blog/BlogFilterSidebar.svelte',
 			'lib/components/blog/BlogListingPage.svelte',
-			'lib/components/blog/BlogDetailHeader.svelte',
-			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/blog/BlogDetailPage.svelte',
 			'lib/components/cms/blocks/CodeBlock.svelte',
 		];
@@ -231,8 +229,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/projects/ProjectFilterSidebar.svelte',
 			'lib/components/projects/ProjectDetailPage.svelte',
 			'lib/components/projects/ProjectGlancePanel.svelte',
-			'lib/components/projects/ProjectDetailHeader.svelte',
-			'lib/components/shared/DetailHeaderShell.svelte',
 			'lib/components/services/ServiceDetailPage.svelte',
 			'lib/components/services/ServiceStackPanel.svelte',
 		];

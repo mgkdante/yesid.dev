@@ -4,6 +4,7 @@
 	import type { BlockEditorDoc, Project, Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
 	import { siteLabels } from '#lib/content/index.ts';
@@ -22,29 +23,27 @@
 	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
+	import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
+	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 	import {
 		CollapsibleSection,
 		SectionIcon,
 		TocNav,
-		TocPill,
-		landTocFragments,
 		navigateToc,
-		observeActiveToc,
 		onTocNavigate,
 		tocElement,
 		type TocEntry,
 	} from '@yesid/ui/brand';
+	import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
 	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
-	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
+	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
 	import ProjectLinksCard from './ProjectLinksCard.svelte';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/env';
-	import { scrollChain } from '@yesid/motion/actions';
 	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
 
 	let {
@@ -62,6 +61,11 @@
 		readmeHtml?: string;
 		codeHighlights?: Readonly<Record<string, string>>
 	 } = $props();
+
+	const backToListingLabel =
+		resolveLocale(siteLabels.ui.backToProjects, locale) ||
+		resolveLocale(detailChrome.backToListingLabel, locale);
+	const subtitle = $derived(resolveLocale(project.oneLiner, locale));
 
 	let activeHeadingId = $state('');
 	/** Storage key scoped to this project, so one project's open sections never leak into another. */
@@ -261,17 +265,7 @@
 		};
 	}
 
-	// One observer drives the active state for BOTH the desktop nav and the mobile
-	// pill (each receives activeHeadingId as a prop, no duplicate observers).
 	afterNavigate(onTocNavigate);
-	onMount(() => {
-		const stopObserving = observeActiveToc((id) => (activeHeadingId = id), YESID_TOC_SELECTOR);
-		const stopLanding = landTocFragments();
-		return () => {
-			stopObserving();
-			stopLanding();
-		};
-	});
 
 	onMount(() => {
 		if (!browser || !readmeHtml) return;
@@ -414,17 +408,73 @@
 	);
 </script>
 
-<article data-testid="project-detail-page">
-	<!-- Full-bleed header -->
-	<ProjectDetailHeader project={project} />
+{#snippet after()}
+	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
+		<ProjectGlancePanel
+			project={project}
+			services={services}
+			serviceSvgContents={serviceSvgContents}
+			mobile
+			codeHighlights={codeHighlights}
+		/>
+	</div>
 
-	<!-- Edge-to-edge hazard stripes -->
-	<HazardSeparator />
+	<section class="cta-area" data-testid="project-cta">
+		<CtaBand testidPrefix="project-cta-band" />
+	</section>
+{/snippet}
 
-	<!-- Body: 3-column CSS Grid with TOC left, sections center, panel right -->
-	<div class="detail-body">
-		<aside class="toc-column">
-			<div class="toc-rail toc-scroll" use:scrollChain>
+<div style="padding-top: var(--chrome-offset);">
+	{#snippet right()}
+		<div class="glance-column">
+			<ProjectGlancePanel
+				project={project}
+				services={services}
+				serviceSvgContents={serviceSvgContents}
+				showLinks={false}
+				codeHighlights={codeHighlights}
+			/>
+		</div>
+	{/snippet}
+
+	<DetailFrame
+		data-testid="project-detail-page"
+		{right}
+		{after}
+		bind:activeId={activeHeadingId}
+		toc={{
+			entries: tocEntries,
+			pillEntries: mobileTocEntries,
+			openAria: tocOpenAria,
+			closeAria: tocCloseAria,
+			onNavigate: navigateToc,
+			selector: YESID_TOC_SELECTOR,
+			landFragments: true,
+		}}
+	>
+		{#snippet header()}
+			<ArticleHeader
+				title={resolveLocale(project.title, locale)}
+				{subtitle}
+				backHref={localizeHref('/projects', locale)}
+				backLabel={backToListingLabel}
+				accent="var(--primary)"
+				testId="project-detail-header"
+			>
+				{#snippet decorations()}
+					<ProjectHeaderTelemetry {project} />
+				{/snippet}
+				{#snippet canvas(el)}
+					<ManifestoCanvas containerEl={el} />
+				{/snippet}
+				{#snippet controls()}
+					<QuietModeButton />
+				{/snippet}
+			</ArticleHeader>
+		{/snippet}
+
+		{#snippet left()}
+			<div class="toc-column">
 				<TocNav
 					entries={tocEntries}
 					activeId={activeHeadingId}
@@ -455,7 +505,7 @@
 					</div>
 				{/if}
 			</div>
-		</aside>
+		{/snippet}
 
 		<div class="sections-column">
 			{#snippet articleSection(section: SectionView, index: number)}
@@ -516,42 +566,8 @@
 				</div>
 			{/if}
 		</div>
-
-		<aside class="glance-column">
-			<ProjectGlancePanel
-				project={project}
-				services={services}
-				serviceSvgContents={serviceSvgContents}
-				showLinks={false}
-				codeHighlights={codeHighlights}
-			/>
-		</aside>
-	</div>
-
-	<!-- Mobile glance: the SAME panels as desktop (Services-style), rendered below
-	     the sections like the services detail mobile rail. Replaces the old
-	     condensed "Project Info" panel. -->
-	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
-		<ProjectGlancePanel
-			project={project}
-			services={services}
-			serviceSvgContents={serviceSvgContents}
-			mobile
-			codeHighlights={codeHighlights}
-		/>
-	</div>
-
-	<!-- End-of-case-study CTA: THE site conversion band, recycled and centered
-	     on every surface that mounts it (operator round 2026-07-03). -->
-	<section class="cta-area" data-testid="project-cta">
-		<CtaBand testidPrefix="project-cta-band" />
-	</section>
-</article>
-
-<!-- Mobile floating TOC pill -->
-{#if mobileTocEntries.length > 0}
-	<TocPill entries={mobileTocEntries} activeId={activeHeadingId} openAria={tocOpenAria} closeAria={tocCloseAria} />
-{/if}
+	</DetailFrame>
+</div>
 
 <style>
 	/* End-of-case-study CTA: the shared band brings its own centered layout
@@ -567,52 +583,16 @@
 		margin-bottom: 1rem;
 	}
 
-	/* Body: 3-column grid layout */
-	.detail-body {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: var(--space-card-gap);
-		padding-inline: var(--space-page-x);
-		padding-block: 1.5rem;
-	}
-
-	.toc-column,
-	.glance-column {
-		display: none;
-	}
-
-	.toc-column,
 	.sections-column {
 		position: relative;
 	}
 
-	.toc-column:has(:global(.project-image-gallery__lightbox)),
-	.sections-column:has(:global(.project-image-gallery__lightbox)) {
+	.sections-column:has(:global(.project-image-gallery__lightbox)),
+	:global([data-slot='detail-shell-left']:has(.project-image-gallery__lightbox)) {
 		z-index: var(--z-overlay);
 	}
 
-	@media (--desktop-min) {
-		.detail-body {
-			grid-template-columns: 1fr 2fr 1fr;
-			gap: 2rem;
-			padding-block: 2.5rem;
-		}
-		.toc-column,
-		.glance-column {
-			display: block;
-		}
-	}
-
-	/* Bare sticky TOC rail without a StickyPanel box (matches the clean services rail).
-	   The TOC's CollapsibleSection card carries its own framing. */
-	.toc-rail {
-		position: sticky;
-		top: 5rem;
-	}
-
-	/* No height cap because the TOC is as long as it needs (no internal-scroll clip).
-	   The .toc-rail above keeps it sticky; the center column is the longest. */
-	.toc-scroll {
+	.toc-column {
 		padding-bottom: 1rem;
 	}
 

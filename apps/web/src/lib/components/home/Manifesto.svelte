@@ -348,37 +348,6 @@
 		background: color-mix(in srgb, var(--accent) 22%, transparent);
 	}
 
-	/* ── Ripple keyframes (for ManifestoCanvas) ───────────────────── */
-	:global(.manifesto__ripple) {
-		position: absolute;
-		border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
-		border-radius: 50%;
-		transform: translate(-50%, -50%);
-		pointer-events: none;
-		z-index: calc(var(--z-content) + 3);
-		animation: ripple-expand 1.2s ease-out forwards;
-	}
-
-	:global(.manifesto__ripple-inner) {
-		position: absolute;
-		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-		border-radius: 50%;
-		transform: translate(-50%, -50%);
-		pointer-events: none;
-		z-index: calc(var(--z-content) + 3);
-		animation: ripple-inner 0.8s ease-out forwards;
-	}
-
-	@keyframes ripple-expand {
-		0% { width: 0; height: 0; opacity: 0.6; }
-		100% { width: 200px; height: 200px; opacity: 0; }
-	}
-
-	@keyframes ripple-inner {
-		0% { width: 0; height: 0; opacity: 0.8; }
-		100% { width: 100px; height: 100px; opacity: 0; }
-	}
-
 	/* ── Responsive ──────────────────────────────────────────────── */
 	@media (max-width: 640px) {
 		.manifesto__pill { font-size: 10px; padding: 12px 16px; min-height: 44px; }

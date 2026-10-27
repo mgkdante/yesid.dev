@@ -5,7 +5,7 @@ import type { Project, ImpactMetric } from '#lib/types.ts';
  * array with the legacy singular `impactMetric`. Returns [] when neither is set.
  *
  * Centralizes the data-shape concern so the view components (ProjectCard,
- * ProjectGlancePanel, ProjectDetailHeader) stop each re-deriving the same
+ * ProjectGlancePanel, ProjectHeaderTelemetry) stop each re-deriving the same
  * fallback — keeping the legacy-field handling out of the presentation layer.
  */
 export function projectMetrics(

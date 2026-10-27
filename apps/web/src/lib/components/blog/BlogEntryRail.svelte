@@ -23,7 +23,7 @@
 </script>
 
 <div
-	class="blog-entry-rail {mobile ? '' : 'blog-entry-rail--sticky'} {className}"
+	class="blog-entry-rail {className}"
 	data-testid={mobile ? 'blog-entry-rail-mobile' : 'blog-entry-rail'}
 >
 	<div class="entry-panel" data-toc={mobile ? 'blog-work-with-me' : undefined}>
@@ -71,11 +71,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-	}
-
-	.blog-entry-rail--sticky {
-		position: sticky;
-		top: 5rem;
 	}
 
 	p {

@@ -4,12 +4,14 @@
 	import '#lib/styles/site.css';
 	import '#lib/styles/terminal.css';
 	import Nav from '#lib/components/layout/Nav.svelte';
-	import Footer from '#lib/components/layout/Footer.svelte';
+	import FooterWordmark from '#lib/components/layout/FooterWordmark.svelte';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { SiteRoot } from '@yesid/ui/layout';
+	import { SiteFooter, SiteRoot } from '@yesid/ui/layout';
+	import { FooterLink } from '@yesid/ui/footer';
+	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
 	import { theme } from '@yesid/ui/state';
 
 	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
@@ -20,9 +22,11 @@
 	// is likewise resolved.
 	import SeoHead from '#lib/components/seo/SeoHead.svelte';
 	import Analytics from '#lib/components/analytics/Analytics.svelte';
-	import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
+	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
+	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
-	import { delocalizePath } from '#lib/utils/locale-routing.ts';
+	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
 	import { initGlobalRipple } from '#lib/motion/utils/globalRipple.ts';
@@ -99,8 +103,47 @@
 	// same treatment as /projects/x (slice-28.6).
 	const basePath = $derived(delocalizePath(page.url.pathname));
 
+	const LIVE_LABEL = { en: 'Live', fr: 'En direct', es: 'En vivo' } as const;
+	const footer = siteLabels.footerChrome.footer;
+	const footerNav = $derived(
+		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
+			label: resolveLocale(item.label, locale),
+			href: localizeHref(item.href, locale),
+			legal: item.href.startsWith('/legal/'),
+		})),
+	);
+	const socialLinks = (['GitHub', 'LinkedIn', 'Upwork'] as const).flatMap((label) => {
+		const href = siteMeta.links[label.toLowerCase() as 'github' | 'linkedin' | 'upwork'];
+		return href ? [{ href, label, ariaLabel: label, external: true, me: true }] : [];
+	});
+	const analyticsPolicy = $derived(
+		getAnalyticsPolicy(siteLabels.ui.analyticsConsent, $analyticsConsentStore),
+	);
+
 	let isFullBleed = $derived(basePath === '/' || basePath.startsWith('/projects/') && basePath !== '/projects' || basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal');
 </script>
+
+{#snippet footerBrand()}
+	<FooterWordmark {locale} />
+{/snippet}
+
+{#snippet footerAddress()}
+	<address class="not-italic">{resolveLocale(footer.location, locale)}</address>
+{/snippet}
+
+{#snippet analyticsPreferences()}
+	{#if analyticsPolicy.showPreferences}
+		<FooterLink
+			type="button"
+			data-testid="analytics-preferences"
+			aria-controls="analytics-consent"
+			aria-expanded={$analyticsConsentStore.preferencesOpen}
+			onclick={() => analyticsConsentStore.openPreferences()}
+		>
+			{resolveLocale(siteLabels.ui.analyticsConsent.settingsLabel, locale)}
+		</FooterLink>
+	{/if}
+{/snippet}
 
 <SiteRoot>
 	<SeoHead
@@ -131,7 +174,29 @@
 		{/key}
 
 		<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-		<div class="relative z-[45]"><Footer locale={locale} footerLinks={footerLinks} /></div>
+		<div class="relative z-[45]">
+			<SiteFooter
+				brand={footerBrand}
+				tagline={resolveLocale(footer.tagline, locale)}
+				groups={[
+					{
+						label: resolveLocale(footer.exploreLabel, locale),
+						navLabel: resolveLocale(siteLabels.navChrome.shared.footerNavAria, locale),
+						links: footerNav.filter((link) => !link.legal),
+					},
+					{
+						label: resolveLocale(footer.legalLabel, locale),
+						testId: 'footer-legal',
+						links: footerNav.filter((link) => link.legal),
+						after: analyticsPreferences,
+					},
+					{ label: resolveLocale(footer.connectLabel, locale), links: socialLinks },
+				]}
+				statusStart={footerAddress}
+				statusPrefix={resolveLocale(footer.statusPrefix, locale)}
+				liveLabel={LIVE_LABEL[locale]}
+			/>
+		</div>
 	</div>
 </SiteRoot>
 

@@ -22,7 +22,7 @@
 // longer carries ANY internally-scrollable card to drive this contract. The
 // scrollChain action is unchanged and still guards the glide-cancel behaviour;
 // its surviving internally-scrollable home is the BLOG detail reading rail
-// (`.context-panel.toc-scroll`, capped at `calc(100dvh - 6rem)` from 1024px up).
+// (the frame's `railScroll` left rail, capped at the viewport below the chrome from 1024px up).
 // These tests now exercise that rail across two posts whose TOCs overflow.
 
 import { test, expect, type Page, type Locator } from '@playwright/test';
@@ -34,7 +34,7 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
 const BLOG_URL_A = '/blog/how-i-learn-orbiting-a-system-until-it-clicks';
 const BLOG_URL_B = '/blog/50-to-0-an-oracle-always-free-vm';
 // The blog reading rail: the TOC + meta scroll card in the left context column.
-const CONTEXT_RAIL = '.context-column .context-panel.toc-scroll';
+const CONTEXT_RAIL = '[data-slot="detail-shell-left"]';
 const TICK = 120; // one notched mouse-wheel detent
 const SETTLE = 60; // ms between synthetic wheel events (human-burst spacing)
 

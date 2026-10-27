@@ -20,7 +20,7 @@ test.describe('/projects/[slug] detail page content', () => {
 		const header = page.locator('[data-testid="project-detail-header"]');
 		await expect(header).toBeVisible();
 		// Header carries the project title as an h1.
-		await expect(header.locator('h1.header-title')).toHaveText(/.+/);
+		await expect(header.getByRole('heading', { level: 1 })).toHaveText(/.+/);
 	});
 
 	test('project sections render as h2 headings with data-section-index', async ({ page }) => {
