@@ -10,6 +10,7 @@ import {
 	servicesIdSeoFactory,
 } from './route-seo-factories';
 import { projectFactory, serviceFactory } from '../../tests/factories';
+import { PageSeoSchema } from '#lib/schemas/seo.ts';
 import type {
 	BlogPost,
 	LegalPage,
@@ -326,6 +327,66 @@ describe('projectsSlugSeoFactory', () => {
 			fr: 'Carte du métro',
 			es: 'Mapa del metro',
 		},
+	});
+
+	it.each(['en', 'fr', 'es'] as const)('bounds long search titles while preserving project identity in %s', async (locale) => {
+		const title = {
+			en: 'A multilingual portfolio connecting content, software, and reviewed releases',
+			fr: 'Un portfolio multilingue qui relie le contenu, les logiciels et les publications vérifiées',
+			es: 'Un portafolio multilingüe que conecta contenido, software y publicaciones verificadas',
+		};
+		const description = {
+			time: 1, version: '2.31.2',
+			blocks: [{ id: 'description', type: 'paragraph' as const, data: { text: siteSeoDefaults.defaultDescription.en } }],
+		};
+		const longProject = projectFactory.build({
+			slug: 'multilingual-portfolio', title,
+			description: { en: description, fr: description, es: description },
+		});
+		const original = structuredClone(longProject);
+		const canonical = `https://yesid.dev${locale === 'en' ? '' : `/${locale}`}/projects/${longProject.slug}`;
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: longProject.slug },
+			locale,
+			adapter: { projects: { bySlug: async () => longProject } } as unknown as ContentAdapter,
+			siteMeta,
+			siteSeoDefaults,
+		}));
+
+		for (const lang of ['en', 'fr', 'es'] as const) {
+			const searchTitle = seo.title[lang]!;
+			const suffix = ` | ${siteMeta.name}`;
+			const body = searchTitle.slice(0, -suffix.length);
+			expect(searchTitle.length).toBeLessThanOrEqual(70);
+			expect(searchTitle.endsWith(suffix)).toBe(true);
+			expect(body.length).toBeGreaterThan(0);
+			expect(title[lang].startsWith(body)).toBe(true);
+		}
+		expect(seo.canonical).toBe(canonical);
+		expect(seo.ogType).toBe('article');
+		expect(seo.noIndex).toBe(false);
+		expect(seo.jsonLd).toEqual(expect.arrayContaining([
+			expect.objectContaining({ '@type': 'CreativeWork', '@id': canonical, url: canonical, name: title[locale] }),
+			expect.objectContaining({ '@type': 'BreadcrumbList', itemListElement: expect.arrayContaining([
+				expect.objectContaining({ name: title[locale], item: canonical }),
+			]) }),
+		]));
+		expect(longProject).toEqual(original);
+	});
+
+	it('keeps short localized titles and missing translations unchanged', async () => {
+		for (const title of [project.title, { en: project.title.en }]) {
+			const seo = await projectsSlugSeoFactory({
+				params: { slug: project.slug },
+				locale: 'en',
+				adapter: { projects: { bySlug: async () => ({ ...project, title }) } } as unknown as ContentAdapter,
+				siteMeta,
+				siteSeoDefaults,
+			});
+			expect(seo.title).toEqual(Object.fromEntries(
+				Object.entries(title).map(([lang, text]) => [lang, `${text} | ${siteMeta.name}`]),
+			));
+		}
 	});
 
 	it('emits bare EN and path-suffixed FR/ES OG image URLs', async () => {
