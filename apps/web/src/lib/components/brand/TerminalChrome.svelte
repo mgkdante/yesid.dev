@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import StatusDot from './StatusDot.svelte';
+  import { StatusDot } from '@yesid/ui/brand';
   import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
   import { cn } from '#lib/utils/index.ts';
   import { scrollChain } from '@yesid/motion/actions';

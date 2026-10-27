@@ -13,7 +13,7 @@
 
 	const locale = getLocale();
 	import FilterGroup from '#lib/components/shared/FilterGroup.svelte';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 	import { ChevronToggle } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 

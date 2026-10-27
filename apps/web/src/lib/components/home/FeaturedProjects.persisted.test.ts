@@ -1,13 +1,7 @@
-// FeaturedProjects — slice-34.5 selections (persisted-wiring slice).
-//
-// The featured-projects carousel's focused card survives a language switch. The
-// component wires the snap index to persisted('featured-card', 0) — a locale-free
-// integer registered with the locale-handoff orchestrator. The actual scroll
-// restore happens inside onEmblaInit (Embla is async), which can't fire in
-// happy-dom (no layout engine), so these tests cover the parts that DO run on the
-// server-equivalent mount: the registration with the orchestrator and the counter
-// reflecting the persisted value. The end-to-end scroll restore is exercised by
-// the Playwright spec.
+// FeaturedProjects: the focused card is stored with persisted('featured-card'),
+// so it survives a remount. Embla's scroll restore runs in onEmblaInit, which
+// can't fire in happy-dom (no layout engine); the Playwright spec covers it. These
+// tests cover the counter reflecting the stored value.
 //
 // Render shape mirrors FeaturedProjects.test.ts (CMS-decoupling precedent).
 
@@ -19,7 +13,7 @@ import { proofReelContent } from '#lib/content/site-content.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
 import { getVisibleServices } from '#lib/services/static-helpers.ts';
 import type { Project } from '#lib/types.ts';
-import { captureEntries, applyEntries } from '#lib/state/locale-handoff.svelte.ts';
+import { persisted } from '@yesid/ui/state';
 
 vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
@@ -41,37 +35,19 @@ function currentCounter(): HTMLElement {
 
 afterEach(() => cleanup());
 
-describe('FeaturedProjects (slice-34.5 switch survival)', () => {
-	it('registers the card index under "featured-card" so a switch captures it', () => {
-		render(FeaturedProjects, { props: renderProps });
-		flushSync(); // run the persisted() registration $effect
-		// Default snap index captured — a locale-free integer, valid in any locale.
-		expect(captureEntries()['featured-card']).toBe(0);
-	});
-
-	it('the position counter reflects the persisted card value (currentIndex mirror)', () => {
+describe('FeaturedProjects (remount)', () => {
+	it('starts on the first card on a cold mount', () => {
 		render(FeaturedProjects, { props: renderProps });
 		flushSync();
-		// Cold mount: card.value defaults to 0 → "01".
 		expect(currentCounter().textContent).toBe('01');
 	});
 
-	it('restoring the carried index re-renders the counter after a remount', () => {
-		// Cold render → capture a non-zero snapshot via the registered setter, as the
-		// orchestrator does on the remounted page (Embla init would resync the live
-		// scroll position; here we assert the rune→DOM path the counter depends on).
-		const first = render(FeaturedProjects, { props: renderProps });
-		flushSync();
-
+	it('keeps the focused card across a remount', () => {
 		const restoredIndex = Math.max(0, resolvedProjects.length - 1);
-		const restoredLabel = String(restoredIndex + 1).padStart(2, '0');
-		// Simulate the orchestrator restoring the final valid index.
-		applyEntries({ 'featured-card': restoredIndex });
-		flushSync();
-		expect(currentCounter().textContent).toBe(restoredLabel);
+		persisted<number>('featured-card', 0).value = restoredIndex;
 
-		first.unmount();
-		// After unmount the entry is gone — no stale leak across pages.
-		expect('featured-card' in captureEntries()).toBe(false);
+		render(FeaturedProjects, { props: renderProps });
+		flushSync();
+		expect(currentCounter().textContent).toBe(String(restoredIndex + 1).padStart(2, '0'));
 	});
 });

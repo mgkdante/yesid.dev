@@ -219,11 +219,6 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 		occurrences: 1,
 	},
 	{
-		path: 'apps/web/src/lib/components/shared/CollapsibleSection.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
 		path: 'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
 		condition: '(max-height: 720px)',
 		occurrences: 1,

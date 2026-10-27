@@ -15,7 +15,8 @@
 -->
 <script lang="ts">
 	import { cn } from '#lib/utils/index.ts';
-	import { SvgIcon, CornerMarks } from '#lib/components/brand/index.ts';
+	import { CornerMarks } from '@yesid/ui/brand';
+	import { SvgIcon } from '#lib/components/brand/index.ts';
 
 	export interface ServiceSvgPanelProps {
 		/** Raw SVG content string */

@@ -1,8 +1,8 @@
 <!--
   Stack + related-projects fragment shared by the service detail desktop rail
-  and mobile block. `variant` is mount-stable: CollapsibleSection captures its
-  persistence key once at initialization, so callers must remount rather than
-  change the variant on a live instance.
+  and mobile block. `variant` and `serviceId` are mount-stable: CollapsibleSection
+  captures its persistence key once at initialization, so callers must remount
+  rather than change them on a live instance.
   The duplicate related-projects nav aria-label across variants is intentional:
   display:none removes the inactive variant from the accessibility tree.
 -->
@@ -12,11 +12,11 @@
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { boop, pressBounce } from '@yesid/motion/actions';
-	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+	import { CollapsibleSection, SectionIcon } from '@yesid/ui/brand';
 
 	let {
 		variant,
+		serviceId,
 		stack,
 		relatedProjects,
 		locale,
@@ -26,6 +26,7 @@
 		seeAllProjectsLabel,
 	}: {
 		variant: 'desktop' | 'mobile';
+		serviceId: string;
 		stack: readonly string[];
 		relatedProjects: readonly Project[];
 		locale: Locale;
@@ -36,8 +37,9 @@
 	} = $props();
 
 	const mountVariant = untrack(() => variant);
-	const stackKey = `svc-stack-${mountVariant}`;
-	const relatedKey = `svc-related-${mountVariant}`;
+	const mountServiceId = untrack(() => serviceId);
+	const stackKey = `${mountServiceId}:svc-stack-${mountVariant}`;
+	const relatedKey = `${mountServiceId}:svc-related-${mountVariant}`;
 	const stackAnchor = mountVariant === 'mobile' ? 'svc-stack' : undefined;
 	const relatedAnchor = mountVariant === 'mobile' ? 'svc-related' : undefined;
 </script>

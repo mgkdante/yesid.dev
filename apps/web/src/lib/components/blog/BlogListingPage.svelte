@@ -21,7 +21,7 @@
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import { scrollChain } from '@yesid/motion/actions';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 
 	let {
 		posts,

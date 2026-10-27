@@ -3,13 +3,12 @@
  *
  * A language switch (/about → /fr/about) changes the pathname, and
  * +layout.svelte wraps <main> in `{#key $page.url.pathname}`, so the WHOLE page
- * subtree unmounts and remounts — every in-memory rune is destroyed. This module
- * bridges the gap:
- *   - in `beforeNavigate` of a switch, it snapshots every registered session
- *     value (+ scroll + focus) into a versioned sessionStorage blob keyed by the
- *     delocalized path (or a stable translation-group identity), and raises
- *     `restoring`;
- *   - in `afterNavigate` on the remounted page, it restores them AFTER paint,
+ * subtree unmounts and remounts. Component state survives through `persisted()`
+ * (plain sessionStorage); this module carries what that cannot:
+ *   - in `beforeNavigate` of a switch, it snapshots scroll + focus into a
+ *     versioned sessionStorage blob keyed by the delocalized path (or a stable
+ *     translation-group identity), and raises `restoring`;
+ *   - in `afterNavigate` on the remounted page, it restores scroll AFTER paint,
  *     restores focus/selection by stable key (the old element is gone), clears
  *     the blob (switch-scoped), and lowers `restoring`.
  *
@@ -18,8 +17,7 @@
  * component initialization. The root layout never remounts, so the orchestrator
  * (and its module state) survive page swaps.
  *
- * `persisted()` is the ergonomic consumer; pages with scroll register a
- * ScrollContext; async-mounted consumers (Embla) read `pendingRestore`.
+ * Pages with their own scroll anchor register a ScrollContext.
  */
 import { browser } from '$app/env';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
@@ -36,28 +34,17 @@ import {
 
 const STORAGE_PREFIX = 'yesid:lstate:';
 
-export interface SessionEntry {
-	get: () => unknown;
-	set: (value: unknown) => void;
-}
-
 /** A page registers ONE scroll strategy; the orchestrator delegates capture/restore. */
 export interface ScrollContext {
 	capture: () => unknown;
 	restore: (snapshot: unknown) => void | Promise<void>;
 }
 
-// --- module-scoped registries (populated client-side only) ---
-const sessionRegistry = new Map<string, SessionEntry>();
 let scrollContext: ScrollContext | null = null;
-
-// The blob currently being restored. Async consumers (Embla
-// onInit) read their value from here instead of racing `afterNavigate`.
-let pendingBlob: HandoffBlob | null = null;
 let activeSwitchKey: string | null = null;
 let activeStableIdentity: string | null = null;
 
-// Mask flag — surfaces that flash on restore (scroll, collapsibles) hold their
+// Mask flag — surfaces that flash on restore (scroll) hold their
 // region while this is true. Mutated client-side only; SSR always reads false.
 let restoringState = $state(false);
 
@@ -88,60 +75,11 @@ export function isLocaleHandoffNavigation(
 	return isLocaleSwitch(fromPathname, toPathname) || Boolean(normalizedIdentity(stableIdentity));
 }
 
-// --- registration API ---
-export function registerSession(key: string, entry: SessionEntry): () => void {
-	sessionRegistry.set(key, entry);
-	return () => {
-		// only delete if this exact entry still owns the key (guards remount races)
-		if (sessionRegistry.get(key) === entry) sessionRegistry.delete(key);
-	};
-}
-
 export function registerScrollContext(ctx: ScrollContext): () => void {
 	scrollContext = ctx;
 	return () => {
 		if (scrollContext === ctx) scrollContext = null;
 	};
-}
-
-/** The value a consumer should seed itself with on this switch-restore, if any. */
-export function pendingRestore(key: string): unknown {
-	return pendingBlob?.entries[key];
-}
-
-/**
- * Synchronously read a consumer's restored value DURING a switch so it can
- * initialize directly in its restored state at construction — no
- * default-then-restore flash (e.g. a collapsible that would otherwise render open
- * for a frame then visibly animate shut). Prefers the in-memory blob (set by
- * afterNavigate for late async mounts), else reads the sessionStorage blob written
- * in beforeNavigate, which is still present for the duration of the remount. Gated
- * on `restoringState` so it never returns stale data outside an active restore
- * (a normal mount or a plain reload reads nothing → consumer keeps its default).
- */
-export function peekRestore(key: string): unknown {
-	if (!browser) return undefined;
-	if (pendingBlob) return pendingBlob.entries[key];
-	if (!restoringState) return undefined;
-	try {
-		const scope = activeSwitchKey ?? delocalizePath(window.location.pathname);
-		return parseBlob(sessionStorage.getItem(storageKey(scope)), scope)?.entries[key];
-	} catch {
-		return undefined;
-	}
-}
-
-// --- registry capture/apply (exported for unit tests) ---
-export function captureEntries(): Record<string, unknown> {
-	const entries: Record<string, unknown> = {};
-	for (const [key, entry] of sessionRegistry) entries[key] = entry.get();
-	return entries;
-}
-
-export function applyEntries(entries: Record<string, unknown>): void {
-	for (const [key, value] of Object.entries(entries)) {
-		sessionRegistry.get(key)?.set(value);
-	}
 }
 
 // --- focus (the element dies on remount → re-derive by stable data-handoff-focus) ---
@@ -248,7 +186,6 @@ function snapshot(scope: string, nowMs: number): void {
 	writeBlob(
 		makeBlob({
 			path: scope,
-			entries: captureEntries(),
 			scroll: captureScroll(),
 			focus: captureFocus(),
 			ts: nowMs,
@@ -263,15 +200,10 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 	beforeNavigate((nav) => {
 		if (nav.shallow && nav.type === 'goto') return;
 
-		// Any navigation ends the previous page's pending async restore — clear it so
-		// a slow async consumer (e.g. a dynamically imported component) that
-		// already read it on THIS page cannot be re-seeded with stale data on a later
-		// page. The blob is consumed for the lifetime of the page it was restored on.
 		if (!nav.from || !nav.to) return;
 		// Idempotency: a rapid second switch fired mid-restore must NOT overwrite the
 		// good blob with half-restored / default state — keep the in-flight one.
 		if (restoringState) return;
-		pendingBlob = null;
 		activeSwitchKey = null;
 		activeStableIdentity = null;
 		const stableIdentity = normalizedIdentity(getStableIdentity());
@@ -316,21 +248,15 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 			restoringState = false;
 			return;
 		}
-		pendingBlob = blob;
 		// The {#key} subtree just remounted — wait for it to paint before we touch it.
 		await tick();
 		await nextFrame();
 		await nextFrame();
-		applyEntries(blob.entries);
 		await restoreScroll(blob.scroll);
 		restoreFocus(blob.focus);
 		clearBlob(scope);
 		activeSwitchKey = null;
 		activeStableIdentity = null;
-		// Keep `pendingBlob` in memory (NOT cleared here). Async-mounted consumers —
-		// e.g. a component that loads via dynamic import() and constructs AFTER
-		// this restore window — read their seed from pendingRestore() during the rest
-		// of the page's life. It is cleared on the next beforeNavigate (above).
 		restoringState = false;
 	});
 }

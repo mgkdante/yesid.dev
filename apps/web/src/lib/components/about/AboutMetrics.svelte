@@ -10,7 +10,7 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { MetricDisplay } from '#lib/components/brand/index.ts';
+	import { MetricDisplay } from '@yesid/ui/brand';
 	import { cursorGlow } from '@yesid/motion/actions';
 	import { StopLabel } from '#lib/components/brand/index.ts';
 	import { Card } from '#lib/components/ui/card/index.ts';

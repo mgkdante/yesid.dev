@@ -105,13 +105,8 @@ describe('@yesid/ui primitive adoption contract', () => {
 	});
 
 	it('adopts matching roots while retaining conflicting Collapsible Content and Resizable Handle', () => {
-		const collapsible = read('apps/web/src/lib/components/shared/CollapsibleSection.svelte');
 		const contact = read('apps/web/src/lib/components/contact/ContactPage.svelte');
 
-		expect(collapsible).toContain("from '@yesid/ui/collapsible'");
-		expect(collapsible).toContain(
-			"CollapsibleContent from '#lib/components/ui/collapsible/collapsible-content.svelte'",
-		);
 		expect(contact).toContain("from '@yesid/ui/resizable'");
 		expect(contact).toContain(
 			"ResizableHandle from '#lib/components/ui/resizable/resizable-handle.svelte'",
@@ -124,13 +119,11 @@ describe('@yesid/ui primitive adoption contract', () => {
 	it('pins consumer classes where package defaults differ', () => {
 		const blogRow = read('apps/web/src/lib/components/blog/BlogRow.svelte');
 		const projectCard = read('apps/web/src/lib/components/projects/ProjectCard.svelte');
-		const collapsible = read('apps/web/src/lib/components/shared/CollapsibleSection.svelte');
 		const stationTabs = read('apps/web/src/lib/components/shared/StationTabs.svelte');
 
-		// xs is already byte-equivalent; number needs yesid.dev's literal 12px type.
+		// xs is already byte-equivalent.
 		expect(blogRow).toContain('size="xs"');
 		expect(projectCard).toContain('size="xs"');
-		expect(collapsible).toContain('text-[0.75rem]');
 		// The h-8 pin clipped the listing controls inside a 32px rail; strip geometry now owns the height.
 		expect(stationTabs).not.toContain('h-8');
 		expect(stationTabs).toContain('p-[3px]');
@@ -165,7 +158,7 @@ describe('@yesid/ui brand adoption contract', () => {
 		expect(read('apps/web/src/lib/components/blog/BlogBlueprint.svelte')).toContain(
 			"from '@yesid/ui/brand'",
 		);
-		expect(read('apps/web/src/lib/components/shared/TocNav.svelte')).toContain(
+		expect(read('apps/web/src/lib/components/projects/ProjectDetailPage.svelte')).toContain(
 			"from '@yesid/ui/brand'",
 		);
 	});

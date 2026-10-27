@@ -5,11 +5,18 @@
   import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
-  import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
-  import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
-  import TocNav from '#lib/components/shared/TocNav.svelte';
-  import TocPill from '#lib/components/shared/TocPill.svelte';
-  import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
+  import {
+    CollapsibleSection,
+    SectionIcon,
+    TocNav,
+    TocPill,
+    landTocFragments,
+    navigateToc,
+    observeActiveToc,
+    onTocNavigate,
+    type TocEntry,
+  } from '@yesid/ui/brand';
+  import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
   import { scrollChain } from '@yesid/motion/actions';
@@ -83,6 +90,8 @@
 
   // Shared active heading state, drives TOC + pill.
   let activeHeadingId = $state('');
+  /** Storage key scoped to this post's locale-free id, so one post's open sections never leak into another. */
+  const scoped = (key: string) => `${post.translationKey}:${key}`;
   const articleSections = $derived(sectionizeBlogBody(body, post.title));
   const entryRail = $derived(blogPage?.entryRail);
 
@@ -143,7 +152,14 @@
   });
 
   afterNavigate(onTocNavigate);
-	onMount(() => observeActiveToc((id) => (activeHeadingId = id)));
+  onMount(() => {
+    const stopObserving = observeActiveToc((id) => (activeHeadingId = id), YESID_TOC_SELECTOR);
+    const stopLanding = landTocFragments();
+    return () => {
+      stopObserving();
+      stopLanding();
+    };
+  });
 
   // slice-34.4: reading position survives a locale switch.
   //
@@ -213,14 +229,14 @@
               activeId={activeHeadingId}
               onNavigate={navigateToc}
               heading={tocHeading}
-              sectionKey="blog-toc"
+              sectionKey={scoped('blog-toc')}
               counterPrefix={tocCounterPrefix}
             />
           </div>
         {/if}
 
         <div class="meta-card" data-testid="blog-meta-card">
-          <CollapsibleSection title={categoryName} sectionKey="blog-meta" open={true} accentColor={accentColor}>
+          <CollapsibleSection title={categoryName} sectionKey={scoped('blog-meta')} open={true} accentColor={accentColor}>
             {#snippet icon()}
               <SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
             {/snippet}
@@ -254,7 +270,7 @@
         <div class="blog-section-block">
           <CollapsibleSection
             title={section.title}
-            sectionKey={section.id}
+            sectionKey={scoped(section.id)}
             anchor={section.anchor}
             index={i}
             open={true}
