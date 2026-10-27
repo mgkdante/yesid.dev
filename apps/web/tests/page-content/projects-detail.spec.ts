@@ -1,4 +1,5 @@
 import { siteLabels } from '../../src/lib/content/site-labels';
+import { projects } from '../../src/lib/content/projects';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
 
@@ -128,12 +129,18 @@ test.describe('/projects/[slug] detail page content', () => {
 });
 
 test.describe('/projects/[slug] repo-private links state (homework #13)', () => {
-	// yesid-dev ships repoPrivate: true in committed content, alongside a real
-	// liveUrl AND a repoUrl. ProjectLinksCard must suppress the GitHub link and
-	// render the honest non-link span instead (an honest state beats a 404),
-	// while the live-site link keeps rendering next to it.
+	// A project with a private repo, a repoUrl AND a live site. ProjectLinksCard must
+	// suppress the GitHub link and render the honest non-link span instead (an honest
+	// state beats a 404), while the live-site link keeps rendering next to it. Picked
+	// from content so a repo going public doesn't silently drop this coverage.
+	const project = projects.find((candidate) => candidate.repoPrivate && candidate.repoUrl && candidate.liveUrl);
+
+	test.beforeEach(() => {
+		expect(project, 'content has a private-repo project with a live site').toBeDefined();
+	});
+
 	test('private repo renders honest non-link state instead of a GitHub link', async ({ page }) => {
-		await page.goto('/projects/yesid-dev');
+		await page.goto(`/projects/${project!.slug}`);
 		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
 
 		// The links card renders twice (desktop toc rail + hidden mobile glance).
@@ -149,11 +156,11 @@ test.describe('/projects/[slug] repo-private links state (homework #13)', () => 
 		// repoUrl is set on this project, so a zero count proves the suppression.
 		await expect(page.getByTestId('project-links-card').locator('a[href*="github.com"]')).toHaveCount(0);
 		// The live-site link still renders: the private state coexists with real links.
-		await expect(linksCard.locator('a[href="https://yesid.dev"]')).toBeVisible();
+		await expect(linksCard.locator(`a[href="${project!.liveUrl}"]`)).toBeVisible();
 	});
 
 	test('FR locale renders the translated private-repo label', async ({ page }) => {
-		await page.goto('/fr/projects/yesid-dev');
+		await page.goto(`/fr/projects/${project!.slug}`);
 		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
 
 		const privateState = page.getByTestId('project-repo-private').filter({ visible: true }).first();
