@@ -1,16 +1,12 @@
 #!/usr/bin/env bun
 import { generateDesignMd } from '@yesid/tokens/generators/design-md';
-import {
-	generateThemeBlock,
-	replaceThemeRegion,
-} from '@yesid/tokens/generators/theme-block';
 import { parseTokens } from '@yesid/tokens/parse';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const tokenSourcePath = 'apps/web/vendor/design/tokens/tokens.json' as const;
-export const artifactPaths = ['apps/web/src/app.css', 'DESIGN.md'] as const;
+export const artifactPaths = ['DESIGN.md'] as const;
 
 type ArtifactPath = (typeof artifactPaths)[number];
 type ProductBuild = Record<ArtifactPath, string>;
@@ -85,14 +81,7 @@ function restamp(content: string, artifact: ArtifactPath): string {
 export function createProductBuild(root = defaultRoot): ProductBuild {
 	const tokens = parseTokens(parseJson(root, tokenSourcePath));
 	const inventory = readUiInventory(root);
-	const theme = restamp(generateThemeBlock(tokens), 'apps/web/src/app.css');
-	const appCss = replaceThemeRegion(read(root, 'apps/web/src/app.css'), theme);
-	const design = restamp(generateDesignMd(tokens, inventory), 'DESIGN.md');
-
-	return {
-		'apps/web/src/app.css': appCss,
-		'DESIGN.md': design,
-	};
+	return { 'DESIGN.md': restamp(generateDesignMd(tokens, inventory), 'DESIGN.md') };
 }
 
 export function staleProductArtifacts(root = defaultRoot): ArtifactPath[] {

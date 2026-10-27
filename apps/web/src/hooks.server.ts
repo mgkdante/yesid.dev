@@ -4,6 +4,7 @@ import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
 import type { ErrorPageContent } from '#lib/navigation/types.ts';
 import { initializeUi } from '#lib/ui/configure.ts';
+import { preloadFont } from '@yesid/tokens/fonts';
 
 export const init: ServerInit = () => {
 	initializeUi();
@@ -32,7 +33,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 		// Preload the self-hosted variable fonts (+ js/css) via Link headers:
 		// without this the woff2 is only discovered through the CSS chain and
 		// font-display swap flashes fallback type on a text-LCP site.
-		preload: ({ type }) => type === 'font' || type === 'js' || type === 'css',
+		preload: ({ type, path }) =>
+			type === 'js' || type === 'css' || (type === 'font' && preloadFont(path)),
 	});
 	if (!isProductionHostname(event.url.hostname)) {
 		response.headers.set('x-robots-tag', NOINDEX_POLICY);

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import '@fontsource-variable/inter';
-	import '@fontsource-variable/jetbrains-mono';
+	import '@yesid/tokens/fonts.css';
 	import '#lib/styles/site.css';
 	import '#lib/styles/terminal.css';
 	import Nav from '#lib/components/layout/Nav.svelte';
@@ -173,8 +172,8 @@
 			>{@render children()}</main>
 		{/key}
 
-		<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-		<div class="relative z-[45]">
+		<!-- Footer wrapper: z-footer paints over the fixed rail (z-rail) -->
+		<div class="relative z-footer">
 			<SiteFooter
 				brand={footerBrand}
 				tagline={resolveLocale(footer.tagline, locale)}

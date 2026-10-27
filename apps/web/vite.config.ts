@@ -89,6 +89,7 @@ export default defineConfig({
 		// module" on `/`. Inline it (+ siblings) at SSR build time to avoid
 		// the runtime resolution mismatch.
 		noExternal: [
+			'@yesid/tokens',
 			'bits-ui',
 			'gsap',
 			'embla-carousel',
