@@ -11,7 +11,7 @@
 
 	import { morphHover, pressBounce, cursorGlow, cardParallax } from '#lib/motion/actions/index.ts';
 	import { gsap, loadDrawSVG } from '#lib/motion/utils/gsap.ts';
-	import { SectionHeading } from '#lib/components/brand/index.ts';
+	import { SectionHeading } from '@yesid/ui/brand';
 	import type { Service, ServicesGridContent } from '#lib/types.ts';
 
 	// slice-28.5 (#124): services arrive as a prop from the home

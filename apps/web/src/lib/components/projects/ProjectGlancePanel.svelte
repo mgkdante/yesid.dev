@@ -12,9 +12,7 @@
   import { projectMetrics } from '#lib/utils/project-metrics.ts';
 
   const locale = getLocale();
-  import { MetricDisplay } from '#lib/components/brand/index.ts';
-  import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
-  import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
+  import { CollapsibleSection, MetricDisplay, SectionIcon } from '@yesid/ui/brand';
   import ServiceBadge from './ServiceBadge.svelte';
   import { siteLabels } from '#lib/content/index.ts';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
@@ -47,8 +45,8 @@
     codeHighlights?: Readonly<Record<string, string>>;
   } = $props();
 
-  /** Suffix section keys so the mobile + desktop instances don't share open state. */
-  const k = (key: string) => (mobile ? `${key}-m` : key);
+  /** Scope section keys to this project, and suffix them so the mobile + desktop instances don't share open state. */
+  const k = (key: string) => `${project.slug}:${mobile ? `${key}-m` : key}`;
 
   const allMetrics = $derived(projectMetrics(project));
 

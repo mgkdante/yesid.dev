@@ -15,7 +15,7 @@
 	import { StopLabel } from '#lib/components/brand/index.ts';
 	import { Card } from '#lib/components/ui/card/index.ts';
 	import { variantImage } from '#lib/utils/variant-image.ts';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 
 	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { boop } from '@yesid/motion/actions';
-	import { CornerMarks } from '#lib/components/brand/index.ts';
+	import { CornerMarks } from '@yesid/ui/brand';
 	import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
 	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 

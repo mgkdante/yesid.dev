@@ -18,14 +18,21 @@
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import ServiceStackPanel from './ServiceStackPanel.svelte';
-	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
-	import TocNav from '#lib/components/shared/TocNav.svelte';
-	import TocPill from '#lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
+	import {
+		CollapsibleSection,
+		SectionIcon,
+		SectionLabel,
+		TocNav,
+		TocPill,
+		landTocFragments,
+		navigateToc,
+		observeActiveToc,
+		onTocNavigate,
+		type TocEntry,
+	} from '@yesid/ui/brand';
+	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
 	import { onMount } from 'svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { SectionLabel } from '@yesid/ui/brand';
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 
@@ -113,7 +120,17 @@
 
 	let activeTocId = $state('');
 	afterNavigate(onTocNavigate);
-	onMount(() => observeActiveToc((id) => (activeTocId = id)));
+	onMount(() => {
+		const stopObserving = observeActiveToc((id) => (activeTocId = id), YESID_TOC_SELECTOR);
+		const stopLanding = landTocFragments();
+		return () => {
+			stopObserving();
+			stopLanding();
+		};
+	});
+
+	/** Storage key scoped to this service, so one service's open sections never leak into another. */
+	const scoped = (key: string) => `${service.id}:${key}`;
 
 </script>
 
@@ -210,7 +227,7 @@
 									activeId={activeTocId}
 									onNavigate={navigateToc}
 									heading={tocHeading}
-									sectionKey="svc-toc"
+									sectionKey={scoped('svc-toc')}
 									counterPrefix={tocCounterPrefix}
 								/>
 							</div>
@@ -236,7 +253,7 @@
 					<!-- Value Proposition -->
 					{#if service.valueProposition}
 						<div>
-							<CollapsibleSection title={valuePropositionHeading} sectionKey="svc-valueprop" anchor="svc-valueprop" open={true}>
+							<CollapsibleSection title={valuePropositionHeading} sectionKey={scoped('svc-valueprop')} anchor="svc-valueprop" open={true}>
 								{#snippet icon()}
 									<SectionIcon name="eye" class="h-4 w-4 shrink-0 text-primary" />
 								{/snippet}
@@ -250,7 +267,7 @@
 					<!-- Deliverables -->
 					{#if service.deliverables && service.deliverables.length > 0}
 						<div>
-							<CollapsibleSection title={deliverablesHeading} sectionKey="svc-deliverables" anchor="svc-deliverables" open={true}>
+							<CollapsibleSection title={deliverablesHeading} sectionKey={scoped('svc-deliverables')} anchor="svc-deliverables" open={true}>
 								{#snippet icon()}
 									<SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
 								{/snippet}
@@ -270,7 +287,7 @@
 					{#if service.sections}
 						{#each service.sections as section, i}
 							<div>
-								<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey="svc-section-{i}" anchor="svc-section-{i}" open={true} index={i}>
+								<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey={scoped(`svc-section-${i}`)} anchor="svc-section-{i}" open={true} index={i}>
 									<p class="section-body">
 										{resolveLocale(section.content, locale)}
 									</p>
@@ -286,6 +303,7 @@
 					<aside class="projects-panel">
 						<ServiceStackPanel
 							variant="desktop"
+							serviceId={service.id}
 							stack={service.stack ?? []}
 							{relatedProjects}
 							{locale}
@@ -305,6 +323,7 @@
 			<div class="projects-mobile">
 				<ServiceStackPanel
 					variant="mobile"
+					serviceId={service.id}
 					stack={service.stack ?? []}
 					{relatedProjects}
 					{locale}

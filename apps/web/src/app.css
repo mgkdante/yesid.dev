@@ -1,7 +1,5 @@
 @import '@yesid/tokens/tokens.css';
 
-@import 'lenis/dist/lenis.css';
-
 @import 'tailwindcss';
 @import '@yesid/ui/base.css';
 

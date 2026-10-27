@@ -20,7 +20,6 @@ export const YESID_COLOR_MIX_FILES: readonly string[] = [
 	'src/lib/components/blog/BlogDetailHeader.svelte',
 	'src/lib/components/projects/ProjectDetailHeader.svelte',
 	'src/lib/components/shared/DetailHeaderShell.svelte',
-	'src/lib/components/shared/TocPill.svelte',
 ];
 
 export const YESID_MARKER_ALLOWED_FILES: ReadonlySet<string> = new Set([

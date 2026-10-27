@@ -1,32 +1,38 @@
 <!--
-  TocPill - floating pill at the bottom-center of the viewport on mobile (<lg).
-  Shared across detail pages. Shows the active heading + counter; tapping opens a
-  drawer with the full TOC (same badge marks as the section cards, via TocBadge).
-
-  The PAGE owns the active id (one IntersectionObserver via observeActiveToc) and
-  passes it in. The pill renders, it doesn't track. a11y labels come in as props
-  so each page sources its own localized chrome.
+  Mobile table of contents: a floating pill with the active heading and counter that opens a
+  drawer of entries. The page owns the active id.
 -->
-<script lang="ts">
-	import { ChevronToggle, TocBadge } from '@yesid/ui/brand';
-	import { scrollChain } from '@yesid/motion/actions';
-	import { flattenToc, navigateToc, type TocEntry } from './toc';
+<script lang="ts" module>
+	import type { TocEntry } from './toc.js';
 
-	let {
-		entries,
-		activeId,
-		openAria,
-		closeAria
-	}: {
+	export interface TocPillProps {
 		entries: TocEntry[];
 		activeId: string;
+		/** Appended to the visible text to form the pill's accessible name. */
 		openAria: string;
 		closeAria: string;
-	} = $props();
+		/** Defaults to `navigateToc`, which jumps instead of gliding under reduced motion. */
+		onNavigate?: (id: string) => void;
+	}
+</script>
+
+<script lang="ts">
+	import { scrollChain } from '@yesid/motion/actions';
+	import ChevronToggle from './ChevronToggle.svelte';
+	import TocBadge from './TocBadge.svelte';
+	import { flattenToc, navigateToc, resolveTocCounter } from './toc.js';
+
+	let { entries, activeId, openAria, closeAria, onNavigate = navigateToc }: TocPillProps = $props();
 
 	const flat = $derived(flattenToc(entries));
-	const activeIndex = $derived(Math.max(0, flat.findIndex((e) => e.id === activeId)));
+	const activeIndex = $derived(
+		Math.max(
+			0,
+			flat.findIndex((e) => e.id === activeId),
+		),
+	);
 	const activeName = $derived(flat[activeIndex]?.title ?? '');
+	const counter = $derived(resolveTocCounter(entries, activeId));
 
 	let drawerOpen = $state(false);
 	let pillBtn = $state<HTMLButtonElement>();
@@ -44,8 +50,6 @@
 		}
 	}
 
-	// Move focus into the drawer when it opens (first item) so keyboard users land
-	// inside it; focus returns to the pill button when it closes (closeDrawer).
 	$effect(() => {
 		if (drawerOpen && drawerEl) {
 			drawerEl.querySelector<HTMLElement>('.toc-drawer-item')?.focus();
@@ -54,33 +58,27 @@
 
 	function scrollTo(id: string): void {
 		closeDrawer(true);
-		navigateToc(id);
+		onNavigate(id);
 	}
 </script>
 
 <svelte:window onkeydown={onKeydown} />
 
 <div class="toc-pill-container lg:hidden" data-testid="toc-pill">
-	<!--
-		A11y: the button shows visible text ("{activeName} {n}/{total}") while
-		openAria carries the purpose ("Table of contents"). Lighthouse 2.5.3
-		(label-content-name-mismatch) requires the visible text to appear as a
-		prefix of the accessible name. Compose aria-label so it starts with the
-		same visible string, then appends the purpose.
-	-->
 	<button
 		bind:this={pillBtn}
 		class="tap-press toc-pill"
 		onclick={() => (drawerOpen = !drawerOpen)}
 		aria-expanded={drawerOpen}
-		aria-label={`${activeName} ${activeIndex + 1}/${flat.length} · ${openAria}`}
+		aria-label={`${activeName} ${counter.current}/${counter.total} · ${openAria}`}
 	>
+		<!-- The accessible name starts with the visible text (WCAG 2.5.3, label in name). -->
 		<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
 		<span class="toc-pill-name font-mono text-caption">
 			{activeName}
 		</span>
 		<span class="toc-pill-counter font-mono text-micro">
-			{activeIndex + 1}/{flat.length}
+			{counter.current}/{counter.total}
 		</span>
 		<ChevronToggle open={drawerOpen} size="sm" direction="down" />
 	</button>
@@ -93,20 +91,21 @@
 			aria-label={closeAria}
 		></button>
 
-		<div class="toc-drawer" use:scrollChain bind:this={drawerEl}>
+		<div class="toc-drawer" bind:this={drawerEl} use:scrollChain>
 			<nav class="toc-drawer-nav flex flex-col gap-0.5 p-4">
-				{#each entries as entry}
+				{#each entries as entry (entry.id)}
 					<button
 						class="tap-press toc-drawer-item"
 						class:active={activeId === entry.id}
 						aria-current={activeId === entry.id ? 'location' : undefined}
 						onclick={() => scrollTo(entry.id)}
 					>
-						<span class="toc-drawer-badge"><TocBadge badge={entry.badge} iconClass="h-4 w-4 shrink-0 text-primary" /></span>
+						<span class="toc-drawer-badge"
+							><TocBadge badge={entry.badge} iconClass="h-4 w-4 shrink-0 text-primary" /></span
+						>
 						<span class="toc-drawer-label">{entry.title}</span>
 					</button>
-					<!-- Nested sub-headings -->
-					{#each entry.children as child}
+					{#each entry.children as child (child.id)}
 						<button
 							class="tap-press toc-drawer-item toc-drawer-sub"
 							class:active={activeId === child.id}
@@ -123,7 +122,8 @@
 </div>
 
 <style>
-	@media (--desktop-max) {
+	/* Keeps headings landed by navigation clear of the pill. 1023.98px is below the desktop token. */
+	@media (max-width: 1023.98px) {
 		:global(html:has(.toc-pill-container) .section-header) {
 			scroll-margin-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 		}
@@ -143,7 +143,6 @@
 		gap: 8px;
 		padding: 12px 20px;
 		min-height: 44px;
-		/* Never wider than the viewport (with a little breathing room). */
 		max-width: calc(100vw - 2rem);
 		background: color-mix(in srgb, var(--background) 95%, transparent);
 		border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
@@ -153,8 +152,6 @@
 		white-space: nowrap;
 	}
 
-	/* The active title shrinks + ellipsizes when the pill hits its max-width; the
-	   dot, counter and chevron stay fixed. min-width:0 lets the flex item shrink. */
 	.toc-pill-name {
 		min-width: 0;
 		overflow: hidden;
@@ -186,6 +183,7 @@
 		max-width: 90vw;
 		max-height: 60dvh;
 		overflow-y: auto;
+		overscroll-behavior: contain;
 		background: color-mix(in srgb, var(--background) 97%, transparent);
 		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		border-radius: 12px;
@@ -206,13 +204,13 @@
 		font-family: var(--font-heading);
 		font-size: var(--text-mono);
 		color: color-mix(in srgb, var(--foreground) 65%, transparent);
-		transition: background var(--duration-fast) var(--ease-default),
+		transition:
+			background var(--duration-fast) var(--ease-default),
 			color var(--duration-fast) var(--ease-default);
 		text-align: left;
 		width: 100%;
 	}
 
-	/* Fixed-width badge slot keeps labels aligned across number/icon/sub rows. */
 	.toc-drawer-badge {
 		display: inline-flex;
 		align-items: center;
@@ -241,7 +239,6 @@
 		outline-offset: 2px;
 	}
 
-	/* Sub-headings indented (no badge slot; align under the parent's label). */
 	.toc-drawer-sub {
 		padding-left: 40px;
 		font-size: var(--text-caption);
@@ -254,5 +251,11 @@
 
 	.toc-drawer-sub.active {
 		color: var(--primary);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.toc-drawer-item {
+			transition: none;
+		}
 	}
 </style>

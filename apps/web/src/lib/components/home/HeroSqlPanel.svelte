@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import type { HeroQueryRow } from '#lib/live/index.ts';
-  import { StatusDot } from '#lib/components/brand/index.ts';
+  import { StatusDot } from '@yesid/ui/brand';
   import TransitInfoLink from './TransitInfoLink.svelte';
 
   interface Props {

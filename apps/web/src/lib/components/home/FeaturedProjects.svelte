@@ -5,8 +5,7 @@
 	import { allowCarouselDrag } from '#lib/utils/carousel-drag.ts';
 	import { resolveLocale } from '#lib/utils/index.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
-	import { pendingRestore } from '#lib/state/locale-handoff.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 	import { siteLabels } from '#lib/content/index.ts';
 	import type { Project, ProofReelContent, Service } from '#lib/types.ts';
 	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
@@ -77,9 +76,7 @@
 	function onEmblaInit(event: CustomEvent<EmblaCarouselType>) {
 		emblaApi = event.detail;
 		const snapCount = emblaApi.scrollSnapList().length;
-		const pending = pendingRestore('featured-card');
-		const saved = typeof pending === 'number' ? pending : card.value;
-		const target = snapCount > 0 ? Math.min(Math.max(saved, 0), snapCount - 1) : 0;
+		const target = snapCount > 0 ? Math.min(Math.max(card.value, 0), snapCount - 1) : 0;
 		if (target !== emblaApi.selectedScrollSnap()) {
 			emblaApi.scrollTo(target, true);
 		}

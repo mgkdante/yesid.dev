@@ -52,7 +52,6 @@ describe('contrast floors on color: declarations', () => {
 			'src/lib/components/home/HeroSqlPanel.svelte',
 			'src/lib/components/about/AboutCta.svelte',
 			'src/lib/components/about/AboutWeather.svelte',
-			'src/lib/components/shared/CollapsibleSection.svelte',
 			'src/lib/components/contact/ContactPage.svelte',
 			'src/lib/components/blog/BlogRow.svelte',
 		]) {
