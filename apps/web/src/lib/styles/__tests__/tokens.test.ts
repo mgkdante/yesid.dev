@@ -12,6 +12,11 @@ const appCSS = readFileSync(
   'utf-8'
 );
 
+const themeCSS = readFileSync(
+  resolve(process.cwd(), 'vendor/design/tokens/theme.css'),
+  'utf-8'
+);
+
 const baseCSS = readFileSync(
   resolve(process.cwd(), 'vendor/design/ui/base.css'),
   'utf-8'
@@ -25,15 +30,15 @@ describe('Design System Tokens', () => {
       '--text-small', '--text-caption', '--text-mono'
     ];
 
-    it.each(requiredTokens)('defines %s in @theme (app.css)', (token) => {
-      expect(appCSS).toContain(token);
+    it.each(requiredTokens)('defines %s in @theme (theme.css)', (token) => {
+      expect(themeCSS).toContain(token);
     });
 
     it('uses clamp() for fluid headings', () => {
-      expect(appCSS).toMatch(/--text-display:\s*clamp\(/);
-      expect(appCSS).toMatch(/--text-title:\s*clamp\(/);
-      expect(appCSS).toMatch(/--text-heading:\s*clamp\(/);
-      expect(appCSS).toMatch(/--text-hero:\s*clamp\(/);
+      expect(themeCSS).toMatch(/--text-display:\s*clamp\(/);
+      expect(themeCSS).toMatch(/--text-title:\s*clamp\(/);
+      expect(themeCSS).toMatch(/--text-heading:\s*clamp\(/);
+      expect(themeCSS).toMatch(/--text-hero:\s*clamp\(/);
     });
   });
 
@@ -109,11 +114,11 @@ describe('Design System Tokens', () => {
 
   describe('@theme radius naming', () => {
     it('uses unified radius names (not split-brain)', () => {
-      expect(appCSS).toContain('--radius-sm');
-      expect(appCSS).toContain('--radius-md');
-      expect(appCSS).toContain('--radius-lg');
-      expect(appCSS).toContain('--radius-pill');
-      expect(appCSS).not.toContain('--radius-brand:');
+      expect(themeCSS).toContain('--radius-sm');
+      expect(themeCSS).toContain('--radius-md');
+      expect(themeCSS).toContain('--radius-lg');
+      expect(themeCSS).toContain('--radius-pill');
+      expect(themeCSS).not.toContain('--radius-brand:');
     });
   });
 

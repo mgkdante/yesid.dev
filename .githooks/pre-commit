@@ -45,24 +45,8 @@ fi
 TOKEN_GENERATED_FULL=(
   "DESIGN.md"
 )
-TOKEN_MIXED_APP_CSS="apps/web/src/app.css"
 # Regex matching any file path that legitimately invalidates generated outputs.
 TOKEN_SOURCE_REGEX='^(apps/web/vendor/design/tokens/.+|apps/web/tools/build-tokens\.ts)$'
-
-app_css_token_region() {
-  awk '
-    /\/\* ===== TOKENS:START ===== \*\// { in_region=1 }
-    in_region { print }
-    /\/\* ===== TOKENS:END ===== \*\// { in_region=0 }
-  '
-}
-
-app_css_token_region_changed() {
-  local head_region staged_region
-  head_region="$(git show "HEAD:$TOKEN_MIXED_APP_CSS" 2>/dev/null | app_css_token_region || true)"
-  staged_region="$(git show ":$TOKEN_MIXED_APP_CSS" 2>/dev/null | app_css_token_region || true)"
-  [ "$head_region" != "$staged_region" ]
-}
 
 token_generated_staged=0
 for f in "${TOKEN_GENERATED_FULL[@]}"; do
@@ -71,9 +55,6 @@ for f in "${TOKEN_GENERATED_FULL[@]}"; do
     break
   fi
 done
-if staged | grep -qx "$TOKEN_MIXED_APP_CSS" && app_css_token_region_changed; then
-  token_generated_staged=1
-fi
 
 if [ "$token_generated_staged" -eq 1 ]; then
   if ! staged | grep -qE "$TOKEN_SOURCE_REGEX"; then
@@ -87,9 +68,6 @@ if [ "$token_generated_staged" -eq 1 ]; then
     for f in "${TOKEN_GENERATED_FULL[@]}"; do
       if staged | grep -qx "$f"; then echo "  • $f"; fi
     done
-    if staged | grep -qx "$TOKEN_MIXED_APP_CSS" && app_css_token_region_changed; then
-      echo "  • $TOKEN_MIXED_APP_CSS (generated token region)"
-    fi
     echo ""
     echo "Bypass (last resort): git commit --no-verify"
     exit 1

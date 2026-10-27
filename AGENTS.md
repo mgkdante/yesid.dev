@@ -66,8 +66,7 @@ bun run tokens:build
 bun run ci:tokens
 ```
 
-Do not hand-edit `DESIGN.md` or the generated token region in
-`apps/web/src/app.css`.
+Do not hand-edit `DESIGN.md`.
 
 ## Pre-commit integrity
 
