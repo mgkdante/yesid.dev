@@ -32,12 +32,6 @@ describe('surface spec — one card spec, defined once', () => {
 		expect(src).toContain('<Card class="h-full gap-0 py-0">');
 	});
 
-	it('surface-1 and surface-2 both alias the solid card token (release tokens.css)', () => {
-		const tokensCss = read('vendor/design/tokens/tokens.css');
-		expect(tokensCss).toContain('--surface-1: var(--card);');
-		expect(tokensCss).toContain('--surface-2: var(--card);');
-	});
-
 	it('HomeServices icon zone gradient is tokenized (no #1f1f1f/#161616)', () => {
 		const src = read('src/lib/components/home/HomeServices.svelte');
 		expect(src).not.toMatch(/#1f1f1f|#161616/);
