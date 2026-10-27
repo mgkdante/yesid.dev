@@ -1,26 +1,20 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
 	import type { BlogPost, Locale } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import '#lib/styles/listing-header.css';
-	import '#lib/styles/listing-shell.css';
 
 	const locale = getLocale();
 	import { siteLabels } from '#lib/content/index.ts';
 	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
-	import SearchInput from '#lib/components/shared/SearchInput.svelte';
-	import FilterSummary from '#lib/components/shared/FilterSummary.svelte';
-	import ListingMobileFilters from '#lib/components/shared/ListingMobileFilters.svelte';
 	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '@yesid/motion/actions';
+	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
+	import { ListingFrame } from '@yesid/ui/layout';
 	import { persisted } from '@yesid/ui/state';
 
 	let {
@@ -46,6 +40,12 @@
 	const listingChrome = siteLabels.blogChrome.listing;
 	const mobileHeadingText = $derived(mobileHeading ?? resolveLocale(listingChrome.mobileHeading, locale));
 	const mobileFiltersLabel = resolveLocale(listingChrome.filters.filtersLabel, locale);
+	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
+	const countLabel = {
+		singular: resolveLocale(siteLabels.ui.resultCount.singular, locale),
+		plural: resolveLocale(siteLabels.ui.resultCount.plural, locale)
+	};
+	const clearLabel = resolveLocale(siteLabels.navChrome.shared.clearFiltersLabel, locale);
 
 	// Filter state. slice-34.1: search/language/date are session-scoped so they
 	// survive a language switch via the locale-handoff orchestrator — each stored
@@ -61,7 +61,6 @@
 	const searchQuery = persisted('blog-q', '');
 	const dateFrom = persisted('blog-from', '');
 	const dateTo = persisted('blog-to', '');
-	const mobileFiltersOpen = persisted('blog-mobile-filters-open', false);
 	const compatibleLang = $derived(
 		activeLang.value && languages.includes(activeLang.value) ? activeLang.value : null,
 	);
@@ -71,10 +70,6 @@
 			activeLang.value = null;
 		}
 	});
-
-	function setMobileFiltersOpen(next: boolean): void {
-		mobileFiltersOpen.value = next;
-	}
 
 	// Apply all filters
 	let filteredPosts = $derived.by(() => {
@@ -160,128 +155,99 @@
 
 	// Blueprint artwork renders on every viewport. DrawSVG scroll-scrub is a
 	// desktop-only enhancement so mobile keeps native scroll behavior.
-	let blueprintWrapEl = $state<HTMLElement>(undefined!);
-	let listingSectionEl = $state<HTMLElement>(undefined!);
-	let destroyDrawScrub: (() => void) | undefined;
-
-	onMount(() => {
+	function startScrub(header: HTMLElement, frame: HTMLElement) {
 		let cancelled = false;
-		void startListingBlueprintScrub(blueprintWrapEl, listingSectionEl).then((destroy) => {
-			if (cancelled) destroy?.();
-			else destroyDrawScrub = destroy;
+		let destroy: (() => void) | undefined;
+		void startListingBlueprintScrub(header, frame).then((stop) => {
+			if (cancelled) stop?.();
+			else destroy = stop;
 		});
-
 		return () => {
 			cancelled = true;
-			destroyDrawScrub?.();
+			destroy?.();
 		};
-	});
+	}
 </script>
 
 <!--
   Shared blog listing layout used by BOTH /blog (professional) and /blog/personal.
   Parameterized by category — no category logic inside, just renders what it's given.
-  Includes desktop filters and mobile in-flow filters.
+  ListingFrame owns the header, search, collapsible filter panel and results column.
 -->
 
 <div
-	bind:this={listingSectionEl}
 	data-testid="blog-listing"
-	class="w-full pb-16"
+	class="w-full"
 	style={accentColor !== 'var(--accent)' ? `--accent: ${accentColor};` : ''}
 >
-	<!-- Section 1: Header — blueprint visualization -->
-	<section class="w-full">
-		<div bind:this={blueprintWrapEl} class="listing-blueprint-header" data-batch="blog-item">
+	<ListingFrame
+		heading={mobileHeadingText}
+		edgeTitle={resolveLocale(siteLabels.pages.blogEdgeTitle, locale)}
+		{subtitle}
+		onHeaderMount={startScrub}
+		filterLabel={mobileFiltersLabel}
+		filterPersistKey="blog-mobile-filters-open"
+	>
+		{#snippet blueprint()}
 			<BlogBlueprint />
-			<!-- Subtitle: always visible, overlaid on blueprints -->
-			<div class="listing-header-text">
-				<h1 class="listing-mobile-heading">{mobileHeadingText}<span class="text-[var(--primary)]">.</span></h1>
-				<div class="listing-header-subtitle">{subtitle}</div>
-			</div>
-		</div>
-	</section>
+		{/snippet}
 
-	<HazardSeparator />
+		{#snippet search()}
+			<SearchInput
+				label={searchPlaceholder}
+				placeholder={searchPlaceholder}
+				bind:value={searchQuery.value}
+				testId="blog-search-sidebar"
+			/>
+		{/snippet}
 
-	<!-- Section 2: Listing — filter sidebar + posts in CSS Grid -->
-	<section class="listing-grid">
-		<aside class="listing-filter-column">
-			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
-				<BlogFilterSidebar
-					tags={allTags}
-					languages={languages}
-					activeTag={activeTag}
-					activeLang={compatibleLang}
-					accentColor={accentColor}
-					cornerLink={cornerLink}
-					bind:searchQuery={searchQuery.value}
-					onTagSelect={handleTagSelect}
-					onLangSelect={handleLangSelect}
-					bind:dateFrom={dateFrom.value}
-					bind:dateTo={dateTo.value}
-				/>
-			</div>
-		</aside>
-
-		<!-- Listing content with padding -->
-		<div class="listing-content">
-
-			<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
-			<div class="mb-4 lg:hidden">
-			<SearchInput placeholder={resolveLocale(listingChrome.searchPlaceholder, locale)} bind:value={searchQuery.value} testId="blog-search-mobile" />
-			</div>
-
-			<ListingMobileFilters
-				open={mobileFiltersOpen.value}
-				label={mobileFiltersLabel}
-				testId="blog-filter-mobile"
-				onOpenChange={setMobileFiltersOpen}
-			>
-				<BlogFilterSidebar
-					tags={allTags}
-					languages={languages}
-					activeTag={activeTag}
-					activeLang={compatibleLang}
-					accentColor={accentColor}
-					cornerLink={cornerLink}
-					showSearch={false}
-					bind:searchQuery={searchQuery.value}
-					onTagSelect={handleTagSelect}
-					onLangSelect={handleLangSelect}
-					bind:dateFrom={dateFrom.value}
-					bind:dateTo={dateTo.value}
-				/>
-			</ListingMobileFilters>
+		{#snippet filters()}
+			<BlogFilterSidebar
+				tags={allTags}
+				languages={languages}
+				activeTag={activeTag}
+				activeLang={compatibleLang}
+				cornerLink={cornerLink}
+				onTagSelect={handleTagSelect}
+				onLangSelect={handleLangSelect}
+				bind:dateFrom={dateFrom.value}
+				bind:dateTo={dateTo.value}
+			/>
+		{/snippet}
 
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredPosts.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
+			<FilterSummary
+				count={filteredPosts.length}
+				{countLabel}
+				{locale}
+				{clearLabel}
+				onClear={clearFilters}
+			/>
 		{/if}
 
 		{#if filteredPosts.length === 0}
 			<!-- Two empty states: "your filters matched nothing" vs "this section has
 			     no posts at all" (blaming filters that don't exist reads as a bug). -->
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-					{resolveLocale(
+				{resolveLocale(
 					hasActiveFilters ? listingChrome.noPostsMessage : listingChrome.noPostsEmptyMessage,
-						locale
-					)}
-				</p>
-			{:else}
-				<div class="flex flex-col gap-4">
-					{#each filteredPosts as post, i (post.slug)}
-						<BlogRow
-							post={post}
-							svgContent={svgContents[post.slug] ?? ''}
-							accentColor={accentColor}
-							index={i}
-							data-flip-id={post.slug}
-						/>
-					{/each}
-				</div>
-			{/if}
-		</div>
-	</section>
+					locale
+				)}
+			</p>
+		{:else}
+			<div class="flex flex-col gap-4">
+				{#each filteredPosts as post, i (post.slug)}
+					<BlogRow
+						post={post}
+						svgContent={svgContents[post.slug] ?? ''}
+						accentColor={accentColor}
+						index={i}
+						data-flip-id={post.slug}
+					/>
+				{/each}
+			</div>
+		{/if}
+	</ListingFrame>
 </div>
 
 <style>

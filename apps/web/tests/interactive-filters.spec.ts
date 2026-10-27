@@ -20,18 +20,12 @@ import { test, expect } from '@playwright/test';
 //   - Blog sidebar: language group renders only "All" + "English" (no FR posts exist,
 //     so languagesFromPosts === ['en']); tag items have NO testIdPrefix and use
 //     role="radio" (bits-ui ToggleGroup), so they're targeted via button.filter-btn.
-//   - Listing consolidation refactor: ListingMobileFilters now WRAPS the same
-//     ProjectFilterSidebar/BlogFilterSidebar used on desktop, so
-//     [data-testid="project-filter-sidebar"] (and blog-filter-sidebar) resolves to
-//     TWO elements — the desktop <aside> in .listing-filter-column and the copy
-//     inside the mobile panel (data-testid="*-filter-mobile", which is lg:hidden).
-//     Every sidebar/item locator below is scoped to the DESKTOP sidebar via
-//     .listing-filter-column so it stays unique AND visible at the desktop-chrome
-//     viewport (>=1024px); the mobile copy is display:none there.
+//   - ListingFrame renders each sidebar once, inside .listing-filter-column (always
+//     shown from 1024px, behind a toggle below it). Every sidebar/item locator below
+//     is scoped to it so it stays unique AND visible at the desktop-chrome viewport.
 
 test.describe('Project listing filters', () => {
-  // Desktop sidebar = the one in .listing-filter-column (visible >=1024px); the
-  // mobile-panel copy carries the same testid but is lg:hidden on desktop-chrome.
+  // Desktop sidebar = the one in .listing-filter-column (always shown >=1024px).
   const desktopSidebar = (page: import('@playwright/test').Page) =>
     page.locator('.listing-filter-column [data-testid="project-filter-sidebar"]');
 
@@ -44,7 +38,7 @@ test.describe('Project listing filters', () => {
 
   test('clicking a service filter button updates URL param', async ({ page }) => {
     // Services group is open by default — its first item button is clickable.
-    // Scope to the desktop sidebar so we hit the visible button, not the mobile copy.
+    // Scope to the desktop sidebar so we hit the visible button.
     const filterBtn = desktopSidebar(page).locator('[data-testid^="service-filter-"]').first();
     await expect(filterBtn).toBeVisible();
 
@@ -75,8 +69,7 @@ test.describe('Project listing filters', () => {
 
     // A term that matches nothing must collapse the grid to zero and surface the
     // empty state — proving the search input actually drives the filter. The
-    // search input lives only on the desktop sidebar (the mobile copy renders
-    // with showSearch={false}), so project-search-sidebar is already unique.
+    // search input is rendered once, so project-search-sidebar is already unique.
     const searchInput = page.locator('[data-testid="project-search-sidebar"]');
     await searchInput.fill('zzzznomatchterm');
 
@@ -124,8 +117,7 @@ test.describe('Project listing filters', () => {
 });
 
 test.describe('Blog listing filters', () => {
-  // Desktop sidebar = the one in .listing-filter-column (visible >=1024px); the
-  // mobile-panel copy (blog-filter-mobile) carries the same testid but is lg:hidden.
+  // Desktop sidebar = the one in .listing-filter-column (always shown >=1024px).
   const desktopSidebar = (page: import('@playwright/test').Page) =>
     page.locator('.listing-filter-column [data-testid="blog-filter-sidebar"]');
 

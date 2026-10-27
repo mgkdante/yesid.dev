@@ -17,16 +17,16 @@ const htmlWindow = new Window({
 });
 
 const PINNED_RELEASE = {
-	tag: 'v0.15.0',
-	tagObject: 'e3e3dd76e30547be8e31a2fe925ffa0daad2d010',
-	peeledCommit: '60cb1aceccfa65b8d0720327bbaf46a67f9ca699',
-	assetName: 'yesid.dev-design-v0.15.0.tar',
-	assetSize: 1_064_960,
-	assetDigest: 'sha256:e22c153631057245f35aed6a6f38ae3feaa4f426c24807403a2b6bff15dae13e',
+	tag: 'v0.16.0',
+	tagObject: '7be617ec08a281e9ed350c24b3ac613fd09525ce',
+	peeledCommit: 'a4a64c8fbe963746034be8092cc8ec944de2b25e',
+	assetName: 'yesid.dev-design-v0.16.0.tar',
+	assetSize: 1_116_160,
+	assetDigest: 'sha256:b9e1d96af4fe0a06df9e1a15322efb6b8a48b801de31a79f13bfbc739a9ecaf9',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
 	toolDigest: 'sha256:3d688b437650357ca30a5c3e37e64885a2fb4a9b76f37baf5ee554f5f98956f6',
-	treeHash: 'sha256:3941a40c1fcf66e56675d92c9c9e63925b6e513c206aab5ee7c3ef83df300611',
-	manifestDigest: '494c2ea72a7525de09da0e5a8697f10fe388060265286f965a965e9403b020b7',
+	treeHash: 'sha256:496540c51636fad7b786ab61e1ab97b87798f5bedb8f72a45acec63b0993b104',
+	manifestDigest: '8ff11614a07d43e776268afe5324d588f3a15e6a7938a3074a1c733121c4ab0b',
 } as const;
 
 function readJson(path: string) {

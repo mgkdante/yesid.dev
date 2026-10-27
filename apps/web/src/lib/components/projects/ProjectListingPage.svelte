@@ -1,26 +1,20 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
 	import type { Project, ProjectsPageContent, Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import '#lib/styles/listing-header.css';
-	import '#lib/styles/listing-shell.css';
 
 	const locale = getLocale();
 	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
-	import SearchInput from '#lib/components/shared/SearchInput.svelte';
-	import FilterSummary from '#lib/components/shared/FilterSummary.svelte';
-	import ListingMobileFilters from '#lib/components/shared/ListingMobileFilters.svelte';
 	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { MetroStation } from '#lib/components/brand/index.ts';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { scrollChain } from '@yesid/motion/actions';
+	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
+	import { ListingFrame } from '@yesid/ui/layout';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { persisted } from '@yesid/ui/state';
 
@@ -53,6 +47,11 @@
 		resolveLocale(projectsPage.heading, locale) || resolveLocale(listingChrome.heading, locale)
 	);
 	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
+	const countLabel = {
+		singular: resolveLocale(siteLabels.ui.resultCount.singular, locale),
+		plural: resolveLocale(siteLabels.ui.resultCount.plural, locale)
+	};
+	const clearLabel = resolveLocale(siteLabels.navChrome.shared.clearFiltersLabel, locale);
 	const mobileFiltersLabel = resolveLocale(listingChrome.filters.filtersLabel, locale);
 	const listingIntro = $derived(resolveLocale(projectsPage.intro, locale));
 	const emptyStateText = $derived(
@@ -78,10 +77,6 @@
 	// switch via the locale-handoff orchestrator. The tag/service/stack filters live
 	// in the URL and are carried for free by localizeUrl.
 	const searchQuery = persisted('projects-q', '');
-	const mobileFiltersOpen = persisted('projects-mobile-filters-open', false);
-	function setMobileFiltersOpen(next: boolean): void {
-		mobileFiltersOpen.value = next;
-	}
 
 	// Apply filters: service + tag + stack + search use AND logic
 	let filteredProjects = $derived.by(() => {
@@ -170,132 +165,101 @@
 
 	// Blueprint artwork renders on every viewport. DrawSVG scroll-scrub is a
 	// desktop-only enhancement so mobile keeps native scroll behavior.
-	let blueprintWrapEl = $state<HTMLElement>(undefined!);
-	let listingSectionEl = $state<HTMLElement>(undefined!);
-	let destroyDrawScrub: (() => void) | undefined;
-
-	onMount(() => {
+	function startScrub(header: HTMLElement, frame: HTMLElement) {
 		let cancelled = false;
-		void startListingBlueprintScrub(blueprintWrapEl, listingSectionEl).then((destroy) => {
-			if (cancelled) destroy?.();
-			else destroyDrawScrub = destroy;
+		let destroy: (() => void) | undefined;
+		void startListingBlueprintScrub(header, frame).then((stop) => {
+			if (cancelled) stop?.();
+			else destroy = stop;
 		});
-
 		return () => {
 			cancelled = true;
-			destroyDrawScrub?.();
+			destroy?.();
 		};
-	});
+	}
 </script>
 
 <!--
-  Full work listing page layout: header, desktop and mobile filters, and a card grid
-  with GSAP Flip animation on filter changes.
+  Full work listing page: ListingFrame owns the header, search, collapsible filter
+  panel and results column; this page supplies the content and the card grid with
+  GSAP Flip animation on filter changes.
   Service + tag filters use AND logic with URL params via goto().
-  Desktop: sticky left sidebar (~220px) + main grid on the right.
-  Mobile: search + in-flow collapsible filters.
   Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
   No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
 -->
 
-<div
-	bind:this={listingSectionEl}
-	data-testid="project-listing"
-	class="w-full pb-16"
->
-	<!-- Blueprint header: full-bleed, outside container -->
-	<div bind:this={blueprintWrapEl} class="listing-blueprint-header" data-batch="project-item">
-		<ProjectsBlueprint />
-		<div class="listing-header-text">
-			<h1 class="listing-mobile-heading">{listingHeading}<span class="text-[var(--primary)]">.</span></h1>
-			<div class="listing-header-subtitle">{listingIntro}</div>
-		</div>
-	</div>
+<div data-testid="project-listing" class="w-full">
+	<ListingFrame
+		heading={listingHeading}
+		edgeTitle={resolveLocale(siteLabels.pages.projectsEdgeTitle, locale)}
+		subtitle={listingIntro}
+		onHeaderMount={startScrub}
+		filterLabel={mobileFiltersLabel}
+		filterPersistKey="projects-mobile-filters-open"
+	>
+		{#snippet blueprint()}
+			<ProjectsBlueprint />
+		{/snippet}
 
-	<HazardSeparator />
+		{#snippet search()}
+			<SearchInput
+				label={searchPlaceholder}
+				placeholder={searchPlaceholder}
+				bind:value={searchQuery.value}
+				testId="project-search-sidebar"
+			/>
+		{/snippet}
 
-	<!-- Section 2: Listing — filter sidebar (desktop) + cards -->
-	<section class="listing-grid">
-		<aside class="listing-filter-column">
-			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
-				<ProjectFilterSidebar
-					serviceIds={serviceIds}
-					serviceMap={serviceMap}
-					tags={allTags}
-					stack={allStack}
-					activeService={activeService}
-					activeTag={activeTag}
-					activeStack={activeStack}
-					onServiceSelect={handleServiceSelect}
-					onTagSelect={handleTagSelect}
-					onStackSelect={handleStackSelect}
-					bind:searchQuery={searchQuery.value}
-				/>
-			</div>
-		</aside>
+		{#snippet filters()}
+			<ProjectFilterSidebar
+				serviceIds={serviceIds}
+				serviceMap={serviceMap}
+				tags={allTags}
+				stack={allStack}
+				activeService={activeService}
+				activeTag={activeTag}
+				activeStack={activeStack}
+				onServiceSelect={handleServiceSelect}
+				onTagSelect={handleTagSelect}
+				onStackSelect={handleStackSelect}
+			/>
+		{/snippet}
 
-		<!-- Listing content with padding -->
-		<div class="listing-content">
+		{#if hasActiveFilters}
+			<FilterSummary
+				count={filteredProjects.length}
+				{countLabel}
+				{locale}
+				{clearLabel}
+				onClear={clearFilters}
+			/>
+		{/if}
 
-			<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
-			<div class="mb-4 lg:hidden">
-			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery.value} testId="project-search-mobile" />
-			</div>
-
-			<ListingMobileFilters
-				open={mobileFiltersOpen.value}
-				label={mobileFiltersLabel}
-				testId="project-filter-mobile"
-				onOpenChange={setMobileFiltersOpen}
-			>
-				<ProjectFilterSidebar
-					serviceIds={serviceIds}
-					serviceMap={serviceMap}
-					tags={allTags}
-					stack={allStack}
-					activeService={activeService}
-					activeTag={activeTag}
-					activeStack={activeStack}
-					showSearch={false}
-					onServiceSelect={handleServiceSelect}
-					onTagSelect={handleTagSelect}
-					onStackSelect={handleStackSelect}
-					bind:searchQuery={searchQuery.value}
-				/>
-			</ListingMobileFilters>
-
-			<!-- Active filter summary -->
-			{#if hasActiveFilters}
-			<FilterSummary count={filteredProjects.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
-			{/if}
-
-			<!-- Card grid -->
-			{#if filteredProjects.length === 0}
+		{#if filteredProjects.length === 0}
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
 				{emptyStateText}
 			</p>
-			{:else}
-				<div class="project-grid">
-					{#each filteredProjects as project, i (project.slug)}
-						<div class="flex gap-3" data-batch="project-item">
-							<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
-							<div class="min-w-0 flex-1">
-								<!-- First card is the listing's LCP candidate: eager + high priority.
+		{:else}
+			<div class="project-grid">
+				{#each filteredProjects as project, i (project.slug)}
+					<div class="flex gap-3" data-batch="project-item">
+						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
+						<div class="min-w-0 flex-1">
+							<!-- First card is the listing's LCP candidate: eager + high priority.
 							     The rest stay lazy. -->
 
-								<ProjectCard
-									project={project}
-									services={services}
-									serviceSvgContents={serviceSvgContents}
-									eager={i === 0}
-								/>
-							</div>
+							<ProjectCard
+								project={project}
+								services={services}
+								serviceSvgContents={serviceSvgContents}
+								eager={i === 0}
+							/>
 						</div>
-					{/each}
-				</div>
-			{/if}
-		</div>
-	</section>
+					</div>
+				{/each}
+			</div>
+		{/if}
+	</ListingFrame>
 </div>
 
 <style>

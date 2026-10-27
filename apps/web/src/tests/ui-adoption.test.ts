@@ -67,11 +67,9 @@ describe('@yesid/ui primitive adoption contract', () => {
 		for (const path of [
 			'apps/web/src/lib/components/about/AboutPage.svelte',
 			'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
-			'apps/web/src/lib/components/blog/BlogListingPage.svelte',
 			'apps/web/src/lib/components/brand/TerminalChrome.svelte',
 			'apps/web/src/lib/components/home/HomePage.svelte',
 			'apps/web/src/lib/components/projects/ProjectDetailPage.svelte',
-			'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
 			'apps/web/src/lib/components/services/ProjectsStrip.svelte',
 			'apps/web/src/lib/components/services/ServiceDetailPage.svelte',
 			'apps/web/src/lib/components/shared/CtaBand.svelte',
@@ -95,16 +93,13 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(read('apps/web/src/lib/components/shared/StationTabs.svelte')).toContain(
 			"from '@yesid/ui/tabs'",
 		);
-		expect(read('apps/web/src/lib/components/shared/FilterGroup.svelte')).toContain(
-			"from '@yesid/ui/toggle-group'",
-		);
 
 		for (const family of ['badge', 'scroll-area', 'separator', 'tabs', 'toggle', 'toggle-group']) {
 			expect(exists(`apps/web/src/lib/components/ui/${family}`), family).toBe(false);
 		}
 	});
 
-	it('adopts matching roots while retaining conflicting Collapsible Content and Resizable Handle', () => {
+	it('adopts matching roots while retaining the conflicting Resizable Handle', () => {
 		const contact = read('apps/web/src/lib/components/contact/ContactPage.svelte');
 
 		expect(contact).toContain("from '@yesid/ui/resizable'");
@@ -133,7 +128,6 @@ describe('@yesid/ui primitive adoption contract', () => {
 		for (const [path, anchor] of [
 			['apps/web/src/lib/components/ui/button/button.svelte', '#button'],
 			['apps/web/src/lib/components/ui/card/card.svelte', '#card'],
-			['apps/web/src/lib/components/ui/collapsible/collapsible-content.svelte', '#collapsible'],
 			['apps/web/src/lib/components/ui/resizable/resizable-handle.svelte', '#resizable'],
 			['apps/web/src/lib/components/brand/StickyPanel.svelte', '#stickypanel'],
 			['apps/web/src/lib/components/shared/TerminalCursor.svelte', '#terminalcursor'],

@@ -198,8 +198,6 @@ describe('chrome companion consolidation', () => {
 			'lib/components/layout/MenuOverlay.svelte',
 			'lib/components/layout/Footer.svelte',
 			'lib/components/layout/LanguageToggle.svelte',
-			'lib/components/shared/FilterSummary.svelte',
-			'lib/components/shared/SearchInput.svelte',
 		];
 
 		const offenders = consumers.filter((file) =>
