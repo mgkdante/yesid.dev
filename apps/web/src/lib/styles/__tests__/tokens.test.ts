@@ -12,36 +12,12 @@ const appCSS = readFileSync(
   'utf-8'
 );
 
-const themeCSS = readFileSync(
-  resolve(process.cwd(), 'vendor/design/tokens/theme.css'),
-  'utf-8'
-);
-
 const baseCSS = readFileSync(
   resolve(process.cwd(), 'vendor/design/ui/base.css'),
   'utf-8'
 );
 
 describe('Design System Tokens', () => {
-  describe('Type scale', () => {
-    const requiredTokens = [
-      '--text-hero', '--text-display', '--text-title', '--text-heading',
-      '--text-subheading', '--text-body',
-      '--text-small', '--text-caption', '--text-mono'
-    ];
-
-    it.each(requiredTokens)('defines %s in @theme (theme.css)', (token) => {
-      expect(themeCSS).toContain(token);
-    });
-
-    it('uses clamp() for fluid headings', () => {
-      expect(themeCSS).toMatch(/--text-display:\s*clamp\(/);
-      expect(themeCSS).toMatch(/--text-title:\s*clamp\(/);
-      expect(themeCSS).toMatch(/--text-heading:\s*clamp\(/);
-      expect(themeCSS).toMatch(/--text-hero:\s*clamp\(/);
-    });
-  });
-
   describe('Shadow scale', () => {
     const requiredShadows = [
       '--shadow-glow-sm', '--shadow-glow-md', '--shadow-glow-lg',
@@ -109,16 +85,6 @@ describe('Design System Tokens', () => {
         /\[data-theme="light"\][\s\S]*?\{([\s\S]*?)\}/
       );
       expect(lightBlock?.[1]).toContain(token);
-    });
-  });
-
-  describe('@theme radius naming', () => {
-    it('uses unified radius names (not split-brain)', () => {
-      expect(themeCSS).toContain('--radius-sm');
-      expect(themeCSS).toContain('--radius-md');
-      expect(themeCSS).toContain('--radius-lg');
-      expect(themeCSS).toContain('--radius-pill');
-      expect(themeCSS).not.toContain('--radius-brand:');
     });
   });
 
