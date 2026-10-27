@@ -66,15 +66,11 @@ describe('@yesid/ui primitive adoption contract', () => {
 		expect(read(wrapper)).toContain('maxWidth="none"');
 		for (const path of [
 			'apps/web/src/lib/components/about/AboutPage.svelte',
-			'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
 			'apps/web/src/lib/components/brand/TerminalChrome.svelte',
 			'apps/web/src/lib/components/home/HomePage.svelte',
-			'apps/web/src/lib/components/projects/ProjectDetailPage.svelte',
 			'apps/web/src/lib/components/services/ProjectsStrip.svelte',
-			'apps/web/src/lib/components/services/ServiceDetailPage.svelte',
 			'apps/web/src/lib/components/shared/CtaBand.svelte',
 			'apps/web/src/lib/components/shared/StationTabs.svelte',
-			'apps/web/src/routes/+error.svelte',
 		]) {
 			expect(read(path), path).toContain(
 				"from '#lib/components/shared/HazardSeparator.svelte'",

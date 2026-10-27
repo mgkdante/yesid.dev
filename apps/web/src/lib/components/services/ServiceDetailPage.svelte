@@ -23,16 +23,12 @@
 		SectionIcon,
 		SectionLabel,
 		TocNav,
-		TocPill,
-		landTocFragments,
 		navigateToc,
-		observeActiveToc,
 		onTocNavigate,
 		type TocEntry,
 	} from '@yesid/ui/brand';
+	import { DetailFrame } from '@yesid/ui/layout';
 	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
-	import { onMount } from 'svelte';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 
@@ -120,19 +116,59 @@
 
 	let activeTocId = $state('');
 	afterNavigate(onTocNavigate);
-	onMount(() => {
-		const stopObserving = observeActiveToc((id) => (activeTocId = id), YESID_TOC_SELECTOR);
-		const stopLanding = landTocFragments();
-		return () => {
-			stopObserving();
-			stopLanding();
-		};
-	});
+	const hasImpact = $derived(Boolean(metricValue) || tocEntries.length > 0);
+	const hasSidePanel = $derived(hasStack || relatedProjects.length > 0);
 
 	/** Storage key scoped to this service, so one service's open sections never leak into another. */
 	const scoped = (key: string) => `${service.id}:${key}`;
 
 </script>
+
+{#snippet impact()}
+	<div class="impact-column">
+		{#if metricValue}
+			<div class="impact-metric">
+				<span class="impact-value">{metricValue}</span>
+				{#if metricLabel}
+					<span class="impact-label">{metricLabel}</span>
+				{/if}
+			</div>
+			{#if benefitHeadline}
+				<div class="impact-separator" aria-hidden="true"></div>
+				<p class="benefit-headline">{benefitHeadline}</p>
+			{/if}
+		{/if}
+
+		{#if tocEntries.length > 0}
+			<div class="impact-toc">
+				<TocNav
+					entries={tocEntries}
+					activeId={activeTocId}
+					onNavigate={navigateToc}
+					heading={tocHeading}
+					sectionKey={scoped('svc-toc')}
+					counterPrefix={tocCounterPrefix}
+				/>
+			</div>
+		{/if}
+	</div>
+{/snippet}
+
+{#snippet projectsAside()}
+	<div class="projects-panel">
+		<ServiceStackPanel
+			variant="desktop"
+			serviceId={service.id}
+			stack={service.stack ?? []}
+			{relatedProjects}
+			{locale}
+			{stackLabel}
+			{relatedProjectsHeading}
+			{relatedProjectsAria}
+			{seeAllProjectsLabel}
+		/>
+	</div>
+{/snippet}
 
 <div class="service-detail" data-testid="service-detail-page">
 	<!-- Station tabs — navigate mode (orange strip).
@@ -148,7 +184,7 @@
 		/>
 	</div>
 
-	<article class="detail-article">
+	{#snippet header()}
 		<!-- Hero — asymmetric split: text left, SVG right -->
 		<div class="hero-area">
 			<a
@@ -198,125 +234,9 @@
 				<QuietModeButton />
 			</div>
 		</div>
+	{/snippet}
 
-		<HazardSeparator />
-
-		<!-- Body: impact column | content sections | projects panel -->
-		<div class="body-area">
-			<div class="body-grid">
-				<!-- Impact metric column — desktop only, sticky -->
-				{#if metricValue || tocEntries.length > 0}
-					<aside class="impact-column">
-						{#if metricValue}
-							<div class="impact-metric">
-								<span class="impact-value">{metricValue}</span>
-								{#if metricLabel}
-									<span class="impact-label">{metricLabel}</span>
-								{/if}
-							</div>
-							{#if benefitHeadline}
-								<div class="impact-separator" aria-hidden="true"></div>
-								<p class="benefit-headline">{benefitHeadline}</p>
-							{/if}
-						{/if}
-
-						{#if tocEntries.length > 0}
-							<div class="impact-toc">
-								<TocNav
-									entries={tocEntries}
-									activeId={activeTocId}
-									onNavigate={navigateToc}
-									heading={tocHeading}
-									sectionKey={scoped('svc-toc')}
-									counterPrefix={tocCounterPrefix}
-								/>
-							</div>
-						{/if}
-					</aside>
-				{/if}
-
-				<!-- Content sections -->
-				<div class="sections">
-					<!-- Mobile-only inline metric -->
-					{#if metricValue}
-						<div class="metric-inline">
-							<span class="metric-inline-value">{metricValue}</span>
-							{#if metricLabel}
-								<span class="metric-inline-label">{metricLabel}</span>
-							{/if}
-							{#if benefitHeadline}
-								<p class="metric-inline-headline">{benefitHeadline}</p>
-							{/if}
-						</div>
-					{/if}
-
-					<!-- Value Proposition -->
-					{#if service.valueProposition}
-						<div>
-							<CollapsibleSection title={valuePropositionHeading} sectionKey={scoped('svc-valueprop')} anchor="svc-valueprop" open={true}>
-								{#snippet icon()}
-									<SectionIcon name="eye" class="h-4 w-4 shrink-0 text-primary" />
-								{/snippet}
-								<p class="section-body">
-									{resolveLocale(service.valueProposition, locale)}
-								</p>
-							</CollapsibleSection>
-						</div>
-					{/if}
-
-					<!-- Deliverables -->
-					{#if service.deliverables && service.deliverables.length > 0}
-						<div>
-							<CollapsibleSection title={deliverablesHeading} sectionKey={scoped('svc-deliverables')} anchor="svc-deliverables" open={true}>
-								{#snippet icon()}
-									<SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
-								{/snippet}
-								<div class="deliverables-grid">
-									{#each service.deliverables as deliverable}
-										<div class="deliverable-item">
-											<span class="deliverable-dot" aria-hidden="true"></span>
-											<span>{resolveLocale(deliverable, locale)}</span>
-										</div>
-									{/each}
-								</div>
-							</CollapsibleSection>
-						</div>
-					{/if}
-
-					<!-- Custom sections -->
-					{#if service.sections}
-						{#each service.sections as section, i}
-							<div>
-								<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey={scoped(`svc-section-${i}`)} anchor="svc-section-{i}" open={true} index={i}>
-									<p class="section-body">
-										{resolveLocale(section.content, locale)}
-									</p>
-								</CollapsibleSection>
-							</div>
-						{/each}
-					{/if}
-				</div>
-
-				<!-- Stack + Related projects — right panel (desktop), hidden on mobile.
-				     Operator order: Stack first (open by default), then Related projects. -->
-				{#if hasStack || relatedProjects.length > 0}
-					<aside class="projects-panel">
-						<ServiceStackPanel
-							variant="desktop"
-							serviceId={service.id}
-							stack={service.stack ?? []}
-							{relatedProjects}
-							{locale}
-							{stackLabel}
-							{relatedProjectsHeading}
-							{relatedProjectsAria}
-							{seeAllProjectsLabel}
-						/>
-					</aside>
-				{/if}
-			</div>
-		</div>
-
+	{#snippet after()}
 		<!-- Stack + Related projects — mobile only, before prev/next.
 		     Operator order: Stack first (open by default), then Related projects. -->
 		{#if hasStack || relatedProjects.length > 0}
@@ -346,22 +266,91 @@
 		<section class="cta-area" data-testid="service-cta">
 			<CtaBand testidPrefix="service-cta-band" />
 		</section>
-	</article>
+	{/snippet}
 
-	<!-- Mobile floating TOC pill -->
-	{#if tocEntries.length > 0}
-		<TocPill entries={tocEntries} activeId={activeTocId} openAria={tocOpenAria} closeAria={tocCloseAria} />
-	{/if}
+	<DetailFrame
+		{header}
+		{after}
+		style="--detail-rail-top: calc(var(--chrome-offset) + 4rem + 2rem);"
+		left={hasImpact ? impact : undefined}
+		right={hasSidePanel ? projectsAside : undefined}
+		bind:activeId={activeTocId}
+		toc={{
+			entries: tocEntries,
+			openAria: tocOpenAria,
+			closeAria: tocCloseAria,
+			onNavigate: navigateToc,
+			selector: YESID_TOC_SELECTOR,
+			landFragments: true,
+		}}
+	>
+		<div class="sections">
+			<!-- Mobile-only inline metric -->
+			{#if metricValue}
+				<div class="metric-inline">
+					<span class="metric-inline-value">{metricValue}</span>
+					{#if metricLabel}
+						<span class="metric-inline-label">{metricLabel}</span>
+					{/if}
+					{#if benefitHeadline}
+						<p class="metric-inline-headline">{benefitHeadline}</p>
+					{/if}
+				</div>
+			{/if}
+
+			<!-- Value Proposition -->
+			{#if service.valueProposition}
+				<div>
+					<CollapsibleSection title={valuePropositionHeading} sectionKey={scoped('svc-valueprop')} anchor="svc-valueprop" open={true}>
+						{#snippet icon()}
+							<SectionIcon name="eye" class="h-4 w-4 shrink-0 text-primary" />
+						{/snippet}
+						<p class="section-body">
+							{resolveLocale(service.valueProposition, locale)}
+						</p>
+					</CollapsibleSection>
+				</div>
+			{/if}
+
+			<!-- Deliverables -->
+			{#if service.deliverables && service.deliverables.length > 0}
+				<div>
+					<CollapsibleSection title={deliverablesHeading} sectionKey={scoped('svc-deliverables')} anchor="svc-deliverables" open={true}>
+						{#snippet icon()}
+							<SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
+						{/snippet}
+						<div class="deliverables-grid">
+							{#each service.deliverables as deliverable}
+								<div class="deliverable-item">
+									<span class="deliverable-dot" aria-hidden="true"></span>
+									<span>{resolveLocale(deliverable, locale)}</span>
+								</div>
+							{/each}
+						</div>
+					</CollapsibleSection>
+				</div>
+			{/if}
+
+			<!-- Custom sections -->
+			{#if service.sections}
+				{#each service.sections as section, i}
+					<div>
+						<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey={scoped(`svc-section-${i}`)} anchor="svc-section-{i}" open={true} index={i}>
+							<p class="section-body">
+								{resolveLocale(section.content, locale)}
+							</p>
+						</CollapsibleSection>
+					</div>
+				{/each}
+			{/if}
+		</div>
+	</DetailFrame>
 </div>
 
 <style>
 	.service-detail {
 		/* transparent so the root .circuit-grid shows through, matching /projects */
 		min-height: 100dvh;
-	}
-
-	.detail-article {
-		padding-bottom: 0;
 	}
 
 	/* ── Top band (round 6) ── */
@@ -504,40 +493,11 @@
 		margin-bottom: 1.5rem;
 	}
 
-	/* ── Body area ── */
-
-	.body-area {
-		padding: 2rem var(--space-page-x) 0;
-	}
-
-	.body-grid {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-
-	@media (--desktop-min) {
-		.body-grid {
-			display: grid;
-			grid-template-columns: 1fr 2fr 1fr;
-			gap: clamp(1.25rem, 2vw, 2.5rem);
-			align-items: start;
-		}
-	}
-
-	/* ── Impact column (desktop only, sticky) ── */
+	/* ── Impact column ── */
 
 	.impact-column {
-		display: none;
-	}
-
-	@media (--desktop-min) {
-		.impact-column {
-			display: flex;
-			flex-direction: column;
-			position: sticky;
-			top: calc(5rem + 4rem + 2rem);
-		}
+		display: flex;
+		flex-direction: column;
 	}
 
 	.impact-metric {
@@ -672,17 +632,9 @@
 	/* ── Related projects panel (desktop right column) ── */
 
 	.projects-panel {
-		display: none;
-	}
-
-	@media (--desktop-min) {
-		.projects-panel {
-			display: flex;
-			flex-direction: column;
-			gap: 1rem;
-			position: sticky;
-			top: calc(5rem + 4rem + 2rem);
-		}
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	/* ── Related projects mobile (bottom of page) ── */

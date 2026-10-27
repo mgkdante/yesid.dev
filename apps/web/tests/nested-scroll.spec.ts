@@ -22,7 +22,7 @@
 // longer carries ANY internally-scrollable card to drive this contract. The
 // scrollChain action is unchanged and still guards the glide-cancel behaviour;
 // its surviving internally-scrollable home is the BLOG detail reading rail
-// (`.context-panel.toc-scroll`, capped at `calc(100dvh - 6rem)` from 1024px up).
+// (the frame's `railScroll` left rail, capped at the viewport below the chrome from 1024px up).
 // These tests now exercise that rail across two posts whose TOCs overflow.
 
 import { test, expect, type Page, type Locator } from '@playwright/test';
@@ -34,7 +34,7 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
 const BLOG_URL_A = '/blog/how-i-learn-orbiting-a-system-until-it-clicks';
 const BLOG_URL_B = '/blog/50-to-0-an-oracle-always-free-vm';
 // The blog reading rail: the TOC + meta scroll card in the left context column.
-const CONTEXT_RAIL = '.context-column .context-panel.toc-scroll';
+const CONTEXT_RAIL = '[data-slot="detail-shell-left"]';
 const TICK = 120; // one notched mouse-wheel detent
 const SETTLE = 60; // ms between synthetic wheel events (human-burst spacing)
 
@@ -70,7 +70,7 @@ async function scrollCardToBottomAndHandOff(page: Page, selector: string): Promi
 		await page.mouse.wheel(0, TICK);
 		await page.waitForTimeout(SETTLE);
 		const s = await cardState(page, selector);
-		if (s.cardTop >= s.cardMax) break;
+		if (s.cardTop >= s.cardMax - 1) break;
 	}
 	expect((await cardState(page, selector)).cardTop).toBeGreaterThan(0);
 	// Two extra ticks at the boundary — wheel chains to Lenis, page glide starts.
@@ -106,7 +106,10 @@ function wheelReversalContract(name: string, route: string, selector: string) {
 
 		await scrollCardToBottomAndHandOff(page, selector);
 		const atBottom = await cardState(page, selector);
-		expect(atBottom.cardTop).toBe(atBottom.cardMax);
+		expect(
+			atBottom.cardMax - atBottom.cardTop,
+			'card reaches the bottom within one rounded CSS pixel',
+		).toBeLessThanOrEqual(1);
 
 		// IMMEDIATE reversal — the bug scenario. First up-tick must move the CARD.
 		await page.mouse.wheel(0, -TICK);

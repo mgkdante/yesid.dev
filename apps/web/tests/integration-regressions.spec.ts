@@ -268,7 +268,7 @@ test.describe('responsive shell and interrupted menu', () => {
 				await page.evaluate(() => document.fonts.ready);
 				const pill = await page.getByTestId('nav-pill').boundingBox();
 				const heading = await page.locator('main h1').boundingBox();
-				const header = await page.locator('.detail-header-shell').boundingBox();
+				const header = await page.locator('[data-slot="article-header"]').boundingBox();
 				expect(
 					await page.locator('main h1').evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
 				).toBeLessThanOrEqual(56);

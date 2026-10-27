@@ -17,15 +17,9 @@ export const YESID_COLOR_MIX_FILES: readonly string[] = [
 	'src/lib/components/home/Manifesto.svelte',
 	'src/lib/components/layout/MenuOverlay.svelte',
 	'src/lib/components/home/FeaturedProjects.svelte',
-	'src/lib/components/blog/BlogDetailHeader.svelte',
-	'src/lib/components/projects/ProjectDetailHeader.svelte',
-	'src/lib/components/shared/DetailHeaderShell.svelte',
 ];
 
-export const YESID_MARKER_ALLOWED_FILES: ReadonlySet<string> = new Set([
-	'src/lib/components/projects/ProjectDetailHeader.svelte',
-	'src/lib/components/blog/BlogDetailHeader.svelte',
-]);
+export const YESID_MARKER_ALLOWED_FILES: ReadonlySet<string> = new Set<string>();
 
 export const YESID_COLOR_MIX_CONFIG = {
 	brandTokens: ['primary', 'accent', 'blog-accent', 'header-accent'],

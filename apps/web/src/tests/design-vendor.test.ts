@@ -17,16 +17,16 @@ const htmlWindow = new Window({
 });
 
 const PINNED_RELEASE = {
-	tag: 'v0.16.0',
-	tagObject: '7be617ec08a281e9ed350c24b3ac613fd09525ce',
-	peeledCommit: 'a4a64c8fbe963746034be8092cc8ec944de2b25e',
-	assetName: 'yesid.dev-design-v0.16.0.tar',
-	assetSize: 1_116_160,
-	assetDigest: 'sha256:b9e1d96af4fe0a06df9e1a15322efb6b8a48b801de31a79f13bfbc739a9ecaf9',
+	tag: 'v0.17.0',
+	tagObject: '9d01b265331753dc63de1cfbb30153572d608f99',
+	peeledCommit: 'bde0a0fa342788c251371ff65312a276430e3652',
+	assetName: 'yesid.dev-design-v0.17.0.tar',
+	assetSize: 1_208_320,
+	assetDigest: 'sha256:b79f18b2a634954812ef6f75cc47cfa6852976e256e79ece0f805cf9768b08bd',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
 	toolDigest: 'sha256:3d688b437650357ca30a5c3e37e64885a2fb4a9b76f37baf5ee554f5f98956f6',
-	treeHash: 'sha256:496540c51636fad7b786ab61e1ab97b87798f5bedb8f72a45acec63b0993b104',
-	manifestDigest: '8ff11614a07d43e776268afe5324d588f3a15e6a7938a3074a1c733121c4ab0b',
+	treeHash: 'sha256:072ee3f40909731c468caa5965b8538a60d289a61f12e267503741f283ec774a',
+	manifestDigest: '073e4056a6348217bbea36ce680351f8a0776b93dc5a8977bda6627a2c9f90ff',
 } as const;
 
 function readJson(path: string) {
@@ -290,7 +290,7 @@ describe('immutable design customer contract', () => {
 		).toBe(true);
 		expect(
 			hasImport(
-				'src/lib/components/layout/Footer.svelte',
+				'src/routes/+layout.svelte',
 				'@yesid/analytics/policy',
 				'getAnalyticsPolicy',
 			),
@@ -325,7 +325,7 @@ describe('immutable design customer contract', () => {
 			'apps/web/src/lib/analytics/preset.ts',
 			'apps/web/src/lib/components/analytics/Analytics.svelte',
 			'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
-			'apps/web/src/lib/components/layout/Footer.svelte',
+			'apps/web/src/routes/+layout.svelte',
 		]);
 
 		expect(existsSync(join(process.cwd(), 'src/lib/analytics/policy.ts'))).toBe(false);

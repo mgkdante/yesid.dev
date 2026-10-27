@@ -2,27 +2,26 @@
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
   import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
-  import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-  import BlogDetailHeader from './BlogDetailHeader.svelte';
+  import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
+  import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
   import {
     CollapsibleSection,
     SectionIcon,
     TocNav,
-    TocPill,
-    landTocFragments,
     navigateToc,
-    observeActiveToc,
     onTocNavigate,
     type TocEntry,
   } from '@yesid/ui/brand';
+  import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
   import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { scrollChain } from '@yesid/motion/actions';
   import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
   import { resolveLocale } from '#lib/utils/locale.ts';
   import { getLocale } from '#lib/utils/locale-context.ts';
+  import { localizeHref } from '#lib/utils/locale-routing.ts';
+  import { fillTemplate } from '#lib/utils/labels.ts';
   import { sectionizeBlogBody } from '#lib/blog/sections.ts';
 
   const locale = getLocale();
@@ -88,6 +87,38 @@
     resolveLocale(siteLabels.ui.languageNames[post.lang], locale) || post.lang
   );
 
+  const detailChrome = siteLabels.blogChrome.detail;
+  const backHref = $derived(
+    localizeHref(post.category === 'personal' ? '/blog/personal' : '/blog', post.lang)
+  );
+  const backLabel = $derived.by(() => {
+    const cms = blogPage
+      ? resolveLocale(post.category === 'personal' ? blogPage.backToPersonal : blogPage.backToDispatches, locale)
+      : '';
+    if (cms.trim()) return cms;
+    return resolveLocale(
+      post.category === 'personal' ? detailChrome.backNav.toPersonal : detailChrome.backNav.toDispatches,
+      locale
+    );
+  });
+  const watermark = $derived(
+    resolveLocale(
+      post.category === 'personal' ? siteLabels.ui.watermarkPersonal : siteLabels.ui.watermarkProfessional,
+      locale
+    )
+  );
+  const editionTemplate =
+    resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
+  const dateLocale = locale === 'fr' ? 'fr-CA' : locale === 'es' ? 'es' : 'en-US';
+  const formattedDate = $derived(
+    new Date(`${post.date}T00:00:00`).toLocaleDateString(dateLocale, { month: 'short', year: 'numeric' })
+  );
+  const headerMeta = $derived([
+    { text: formattedDate, datetime: post.date },
+    readingTimeText,
+    languageName,
+  ]);
+
   // Shared active heading state, drives TOC + pill.
   let activeHeadingId = $state('');
   /** Storage key scoped to this post's locale-free id, so one post's open sections never leak into another. */
@@ -152,14 +183,6 @@
   });
 
   afterNavigate(onTocNavigate);
-  onMount(() => {
-    const stopObserving = observeActiveToc((id) => (activeHeadingId = id), YESID_TOC_SELECTOR);
-    const stopLanding = landTocFragments();
-    return () => {
-      stopObserving();
-      stopLanding();
-    };
-  });
 
   // slice-34.4: reading position survives a locale switch.
   //
@@ -211,17 +234,10 @@
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
 </script>
 
-<article data-testid="blog-detail-page" style="--blog-accent: {accentColor};">
-  <!-- Full-bleed header -->
-  <BlogDetailHeader {post} {svgContent} {accentColor} {readingTime} {postIndex} {blogPage} />
-
-  <!-- Edge-to-edge hazard stripes -->
-  <HazardSeparator />
-
-  <!-- Body: shared article grid (TOC/meta rail | section cards) -->
-  <div class="body-grid">
-    <aside class="context-column">
-      <div class="context-panel toc-scroll" use:scrollChain>
+<div style="padding-top: var(--chrome-offset);">
+  {#snippet left()}
+    <div class="context-column">
+      <div class="context-panel toc-scroll">
         {#if tocEntries.length > 0}
           <div class="toc-nav-shell">
             <TocNav
@@ -263,7 +279,66 @@
           </CollapsibleSection>
         </div>
       </div>
-    </aside>
+    </div>
+  {/snippet}
+
+  {#snippet right()}
+    {#if entryRail}
+      <div class="entry-column">
+        <BlogEntryRail rail={entryRail} />
+      </div>
+    {/if}
+  {/snippet}
+
+  {#snippet after()}
+    {#if entryRail}
+      <div class="entry-mobile lg:hidden px-[var(--space-page-x)] pb-8">
+        <BlogEntryRail rail={entryRail} mobile />
+      </div>
+    {/if}
+  {/snippet}
+
+  <DetailFrame
+    {left}
+    {right}
+    {after}
+    data-testid="blog-detail-page"
+    style="--blog-accent: {accentColor};"
+    measure="46rem"
+    railScroll
+    leftMobile
+    bind:activeId={activeHeadingId}
+    toc={{
+      entries: tocEntries,
+      openAria: tocOpenAria,
+      closeAria: tocCloseAria,
+      onNavigate: navigateToc,
+      selector: YESID_TOC_SELECTOR,
+      landFragments: true,
+    }}
+  >
+    {#snippet header()}
+      <ArticleHeader
+        title={post.title}
+        highlight={post.tags[0]}
+        category={categoryName}
+        {watermark}
+        edgeLeft={fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
+        edgeRight={`${post.date.replace(/-/g, '.')} // ${readingTimeText.toUpperCase()}`}
+        meta={headerMeta}
+        {backHref}
+        {backLabel}
+        accent={accentColor}
+        testId="blog-detail-header"
+      >
+        {#snippet canvas(el)}
+          <ManifestoCanvas containerEl={el} />
+        {/snippet}
+        {#snippet controls()}
+          <QuietModeButton />
+        {/snippet}
+      </ArticleHeader>
+    {/snippet}
 
     <div class="sections-column" data-testid="blog-sections">
       {#each articleSections as section, i (section.id)}
@@ -283,46 +358,10 @@
         </div>
       {/each}
     </div>
-
-    {#if entryRail}
-      <aside class="entry-column">
-        <BlogEntryRail rail={entryRail} />
-      </aside>
-    {/if}
-  </div>
-
-  {#if entryRail}
-    <div class="entry-mobile lg:hidden px-[var(--space-page-x)] pb-8">
-      <BlogEntryRail rail={entryRail} mobile />
-    </div>
-  {/if}
-</article>
-
-<!-- Mobile floating TOC pill -->
-{#if tocEntries.length > 0}
-  <TocPill entries={tocEntries} activeId={activeHeadingId} openAria={tocOpenAria} closeAria={tocCloseAria} />
-{/if}
+  </DetailFrame>
+</div>
 
 <style>
-  /* ── Shared article grid ───────────────────────── */
-  .body-grid {
-    max-width: var(--container-wide);
-    margin: 0 auto;
-    padding-inline: var(--space-page-x);
-    padding-block: 1.5rem;
-    min-width: 0;
-    overflow-x: clip;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-card-gap);
-  }
-
-  .context-column,
-  .sections-column,
-  .entry-column {
-    min-width: 0;
-  }
-
   .sections-column {
     display: flex;
     flex-direction: column;
@@ -330,67 +369,19 @@
     width: 100%;
   }
 
-  .entry-column {
-    display: none;
-  }
-
   @media (--desktop-min) {
-    .body-grid {
-      display: grid;
-      width: 100%;
-      max-width: none;
-      grid-template-columns: minmax(12rem, 1fr) minmax(0, 46rem) minmax(12rem, 1fr);
-      gap: 2rem;
-      align-items: stretch;
-      padding-block: 2.5rem;
+    .context-column,
+    .entry-column {
+      width: min(18rem, 100%);
     }
 
     .context-column {
-      grid-column: 1;
-      align-self: stretch;
-      justify-self: end;
-      width: min(18rem, 100%);
-    }
-
-    .sections-column {
-      grid-column: 2;
-      justify-self: center;
-      max-width: 46rem;
-    }
-
-    .entry-column {
-      display: block;
-      grid-column: 3;
-      align-self: stretch;
-      justify-self: start;
-      width: min(18rem, 100%);
-    }
-
-    .context-panel {
-      position: sticky;
-      top: 5rem;
+      margin-inline-start: auto;
     }
   }
 
-  @media (--desktop-min) and (max-width: 1279px) {
-    .body-grid {
-      gap: 1.25rem;
-    }
-
-    .context-column {
-      width: 100%;
-      justify-self: stretch;
-    }
-
-    .sections-column {
-      max-width: none;
-      justify-self: stretch;
-    }
-
-    .entry-column {
-      width: 100%;
-      justify-self: stretch;
-    }
+  .toc-scroll {
+    padding-bottom: 1rem;
   }
 
   .toc-nav-shell {
@@ -454,14 +445,6 @@
 
   .blog-section-body :global(blockquote) {
     border-left-color: var(--blog-accent);
-  }
-
-  @media (--desktop-min) {
-    .toc-scroll {
-      max-height: calc(100dvh - 6rem);
-      overflow-y: auto;
-      padding-bottom: 1rem;
-    }
   }
 
   /* go2/w4: reading-mode switch + dim styles removed per operator QA. */

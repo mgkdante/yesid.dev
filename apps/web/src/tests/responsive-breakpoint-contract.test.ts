@@ -79,11 +79,6 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 		occurrences: 1,
 	},
 	{
-		path: 'apps/web/src/lib/components/blog/BlogDetailPage.svelte',
-		condition: '(--desktop-min) and (max-width: 1279px)',
-		occurrences: 1,
-	},
-	{
 		path: 'apps/web/src/lib/components/home/HeroBanner.svelte',
 		condition: '(prefers-reduced-motion: reduce)',
 		occurrences: 1,
@@ -120,6 +115,11 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	},
 	{
 		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
+		condition: '(prefers-reduced-motion: reduce)',
+		occurrences: 1,
+	},
+	{
+		path: 'apps/web/src/lib/components/home/ManifestoCanvas.svelte',
 		condition: '(prefers-reduced-motion: reduce)',
 		occurrences: 1,
 	},
@@ -216,16 +216,6 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	{
 		path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
 		condition: '(min-width: 1280px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/shared/DetailHeaderShell.svelte',
-		condition: '(max-height: 720px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/shared/ErrorIllustration.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
 		occurrences: 1,
 	},
 	{

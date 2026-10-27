@@ -57,10 +57,9 @@
   const metricColors = ['var(--primary)', 'var(--accent)'] as const;
 </script>
 
-<!-- Bare sticky rail (no StickyPanel box) so it reads clean like the services
-     detail rail. scrollChain keeps the nested-scroll exemption on this element. -->
+<!-- Bare rail (no StickyPanel box); scrollChain keeps the nested-scroll exemption on this element. -->
 <div
-  class="glance-rail scrollbar-hidden {mobile ? '' : 'glance-rail--sticky'}"
+  class="glance-rail scrollbar-hidden"
   data-testid="project-glance-panel{mobile ? '-mobile' : ''}"
   use:scrollChain
 >
@@ -146,20 +145,11 @@
 </div>
 
 <style>
-  /* Bare rail without a border/background box (matches the services detail rail) and
-     NO height cap (as long as its content needs, no internal-scroll clip). Stays
-     sticky: the center column is the longest, so the rail pins at the top while
-     the article scrolls past it. */
+  /* Bare rail without a border/background box and no height cap. */
   .glance-rail {
     overflow-x: hidden;
     padding-bottom: 1rem;
   }
-  /* Desktop rail pins; the mobile instance flows below the sections (no sticky). */
-  .glance-rail--sticky {
-    position: sticky;
-    top: 5rem;
-  }
-
   /* Body-size overview (operator call 2026-07-03: as big as the rest of the
      case-study text); standard muted body color so the larger type stays
      readable instead of half-transparent. */
