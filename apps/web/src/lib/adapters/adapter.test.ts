@@ -82,12 +82,16 @@ describe('ContentAdapter contract', () => {
 		it('transit-data-pipeline has the expected impact metrics', async () => {
 			const project = await adapter.projects.bySlug('transit-data-pipeline');
 			expect(project?.impactMetrics).toBeDefined();
-			expect(project!.impactMetrics!.length).toBe(2);
+			expect(project!.impactMetrics!.length).toBe(4);
 			// These describe the current implementation, without fabricated performance outcomes.
-			expect(project!.impactMetrics![0].value).toBe('2');
-			expect(project!.impactMetrics![0].label.en).toBe('Transit networks: Montréal and Ottawa');
-			expect(project!.impactMetrics![1].value).toBe('FR / EN');
-			expect(project!.impactMetrics![1].label.en).toBe('Interface languages');
+			expect(project!.impactMetrics![0].value).toBe('8 880');
+			expect(project!.impactMetrics![0].label.en).toBe('tests passing in CI on the live site\'s code');
+			expect(project!.impactMetrics![1].value).toBe('30 s');
+			expect(project!.impactMetrics![1].label.en).toBe('between live updates');
+			expect(project!.impactMetrics![2].value).toBe('71 304');
+			expect(project!.impactMetrics![2].label.en).toBe('checks before STM\'s history went live on October 26');
+			expect(project!.impactMetrics![3].value).toBe('1 533');
+			expect(project!.impactMetrics![3].label.en).toBe('buses live on the two maps at 7:30 a.m. ET on October 26');
 		});
 
 		it('projects without optional deployment fields still work', async () => {
