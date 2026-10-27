@@ -159,6 +159,9 @@ test.describe('Contact form validation', () => {
 			await expect(terminal.getByTestId('contact-success')).toBeVisible();
 			// No validation error survived (the form is gone entirely).
 			await expect(page.getByText('✗ invalid, enter a valid email address')).toHaveCount(0);
+			// A sent form stays sent for the tab until the reader resets it.
+			await terminal.getByTestId('contact-reset').click();
+			await expect(terminal.getByTestId('contact-success')).toHaveCount(0);
 		}
 
 		// Every valid email reached the Web3Forms call (validation never blocked it).
