@@ -70,7 +70,7 @@ async function scrollCardToBottomAndHandOff(page: Page, selector: string): Promi
 		await page.mouse.wheel(0, TICK);
 		await page.waitForTimeout(SETTLE);
 		const s = await cardState(page, selector);
-		if (s.cardTop >= s.cardMax) break;
+		if (s.cardTop >= s.cardMax - 1) break;
 	}
 	expect((await cardState(page, selector)).cardTop).toBeGreaterThan(0);
 	// Two extra ticks at the boundary — wheel chains to Lenis, page glide starts.
@@ -106,7 +106,10 @@ function wheelReversalContract(name: string, route: string, selector: string) {
 
 		await scrollCardToBottomAndHandOff(page, selector);
 		const atBottom = await cardState(page, selector);
-		expect(atBottom.cardTop).toBe(atBottom.cardMax);
+		expect(
+			atBottom.cardMax - atBottom.cardTop,
+			'card reaches the bottom within one rounded CSS pixel',
+		).toBeLessThanOrEqual(1);
 
 		// IMMEDIATE reversal — the bug scenario. First up-tick must move the CARD.
 		await page.mouse.wheel(0, -TICK);
