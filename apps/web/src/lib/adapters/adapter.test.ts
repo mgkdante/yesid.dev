@@ -91,16 +91,16 @@ describe('ContentAdapter contract', () => {
 		});
 
 		it('projects without optional deployment fields still work', async () => {
-			const project = await adapter.projects.bySlug('yesid-dev');
+			const source = projects.find(
+				(p) => !p.location && !p.environment && !p.version && p.impactMetrics?.length,
+			);
+			expect(source, 'Expected a project with impact metrics and no optional deployment fields').toBeDefined();
+			const project = await adapter.projects.bySlug(source!.slug);
 			expect(project).toBeDefined();
-			// yesid-dev carries none of the deployment-style metadata fields…
 			expect(project?.location).toBeUndefined();
 			expect(project?.environment).toBeUndefined();
 			expect(project?.version).toBeUndefined();
-			// …but its case study (content-projects.1) does define impact metrics, so
-			// the optional fields are exercised both present and absent on one project.
-			expect(project?.impactMetrics).toBeDefined();
-			expect(project!.impactMetrics!.length).toBe(5);
+			expect(project?.impactMetrics).toEqual(source!.impactMetrics);
 		});
 	});
 
