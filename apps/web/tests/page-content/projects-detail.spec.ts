@@ -1,3 +1,4 @@
+import { projects } from '../../src/lib/content/projects';
 import { siteLabels } from '../../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
@@ -128,12 +129,14 @@ test.describe('/projects/[slug] detail page content', () => {
 });
 
 test.describe('/projects/[slug] repo-private links state (homework #13)', () => {
-	// yesid-dev ships repoPrivate: true in committed content, alongside a real
-	// liveUrl AND a repoUrl. ProjectLinksCard must suppress the GitHub link and
-	// render the honest non-link span instead (an honest state beats a 404),
-	// while the live-site link keeps rendering next to it.
+	// Select a private repository with real repo/live URLs from the generated fixture.
+	// Its repository link must be suppressed while the live-site link stays visible.
+	const candidate = projects.find((project) =>
+		project.repoPrivate === true && project.repoUrl?.trim() && project.liveUrl?.trim()
+	);
 	test('private repo renders honest non-link state instead of a GitHub link', async ({ page }) => {
-		await page.goto('/projects/yesid-dev');
+		test.skip(!candidate, 'Fixture has no private-repo project with repoUrl and liveUrl');
+		await page.goto(`/projects/${candidate!.slug}`);
 		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
 
 		// The links card renders twice (desktop toc rail + hidden mobile glance).
@@ -148,16 +151,21 @@ test.describe('/projects/[slug] repo-private links state (homework #13)', () => 
 		// No GitHub anchor ships in ANY links-card instance (visible or hidden):
 		// repoUrl is set on this project, so a zero count proves the suppression.
 		await expect(page.getByTestId('project-links-card').locator('a[href*="github.com"]')).toHaveCount(0);
+		await expect(page.getByTestId('project-links-card').locator(`a[href="${candidate!.repoUrl}"]`)).toHaveCount(0);
 		// The live-site link still renders: the private state coexists with real links.
-		await expect(linksCard.locator('a[href="https://yesid.dev"]')).toBeVisible();
+		await expect(linksCard.locator(`a[href="${candidate!.liveUrl}"]`)).toBeVisible();
 	});
 
 	test('FR locale renders the translated private-repo label', async ({ page }) => {
-		await page.goto('/fr/projects/yesid-dev');
+		test.skip(!candidate, 'Fixture has no private-repo project with repoUrl and liveUrl');
+		await page.goto(`/fr/projects/${candidate!.slug}`);
 		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
 
 		const privateState = page.getByTestId('project-repo-private').filter({ visible: true }).first();
 		await expect(privateState).toBeVisible();
 		await expect(privateState).toHaveText(siteLabels.projectsChrome.detail.glance.repoPrivateLabel.fr!);
+		await expect(page.getByTestId('project-links-card').locator('a[href*="github.com"]')).toHaveCount(0);
+		await expect(page.getByTestId('project-links-card').locator(`a[href="${candidate!.repoUrl}"]`)).toHaveCount(0);
+		await expect(page.getByTestId('project-links-card').filter({ visible: true }).first().locator(`a[href="${candidate!.liveUrl}"]`)).toBeVisible();
 	});
 });
