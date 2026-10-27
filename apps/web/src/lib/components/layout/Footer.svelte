@@ -5,7 +5,7 @@
 	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { wordmarkHover } from '#lib/motion/actions/index.ts';
-	import { StatusDot } from '#lib/components/brand/index.ts';
+	import { StatusDot } from '@yesid/ui/brand';
 	import { FooterGroup, FooterLink } from '@yesid/ui/footer';
 	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
 	import type { NavLink } from '#lib/navigation/types.ts';

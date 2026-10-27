@@ -19,7 +19,7 @@
 
 	const locale = getLocale();
 	import { ToggleGroup, ToggleGroupItem } from '@yesid/ui/toggle-group';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 
 	const defaultAllLabel = { en: 'All', fr: 'Tous', es: 'Todos' };
 

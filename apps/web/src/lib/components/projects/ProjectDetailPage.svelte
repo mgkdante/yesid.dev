@@ -24,11 +24,19 @@
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
-	import CollapsibleSection from '#lib/components/shared/CollapsibleSection.svelte';
-	import SectionIcon from '#lib/components/shared/SectionIcon.svelte';
-	import TocNav from '#lib/components/shared/TocNav.svelte';
-	import TocPill from '#lib/components/shared/TocPill.svelte';
-	import { observeActiveToc, tocElement, navigateToc, onTocNavigate, type TocEntry } from '#lib/components/shared/toc.ts';
+	import {
+		CollapsibleSection,
+		SectionIcon,
+		TocNav,
+		TocPill,
+		landTocFragments,
+		navigateToc,
+		observeActiveToc,
+		onTocNavigate,
+		tocElement,
+		type TocEntry,
+	} from '@yesid/ui/brand';
+	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
@@ -56,6 +64,8 @@
 	 } = $props();
 
 	let activeHeadingId = $state('');
+	/** Storage key scoped to this project, so one project's open sections never leak into another. */
+	const scoped = (key: string) => `${project.slug}:${key}`;
 	let readmeBody = $state<HTMLElement | null>(null);
 	let readmeCopyResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -254,7 +264,14 @@
 	// One observer drives the active state for BOTH the desktop nav and the mobile
 	// pill (each receives activeHeadingId as a prop, no duplicate observers).
 	afterNavigate(onTocNavigate);
-	onMount(() => observeActiveToc((id) => activeHeadingId = id));
+	onMount(() => {
+		const stopObserving = observeActiveToc((id) => (activeHeadingId = id), YESID_TOC_SELECTOR);
+		const stopLanding = landTocFragments();
+		return () => {
+			stopObserving();
+			stopLanding();
+		};
+	});
 
 	onMount(() => {
 		if (!browser || !readmeHtml) return;
@@ -413,7 +430,7 @@
 					activeId={activeHeadingId}
 					onNavigate={navigateToc}
 					heading={tocHeading}
-					sectionKey="proj-toc"
+					sectionKey={scoped('proj-toc')}
 					counterPrefix={tocCounterPrefix}
 				/>
 				{#if imageGallerySections.length > 0}
@@ -421,7 +438,7 @@
 						{#each imageGallerySections as gallery (gallery.originalIndex)}
 							<CollapsibleSection
 								title={gallery.title}
-								sectionKey="proj-gallery-{gallery.originalIndex}"
+								sectionKey={scoped(`proj-gallery-${gallery.originalIndex}`)}
 								open={true}
 							>
 								{#snippet icon()}
@@ -434,7 +451,7 @@
 				{/if}
 				{#if hasProjectLinks}
 					<div class="toc-links-stack">
-						<ProjectLinksCard project={project} sectionKey="glance-links-left-rail" />
+						<ProjectLinksCard project={project} sectionKey={scoped('glance-links-left-rail')} />
 					</div>
 				{/if}
 			</div>
@@ -449,7 +466,7 @@
 				>
 					<CollapsibleSection
 						title={section.title}
-						sectionKey="proj-section-{index}"
+						sectionKey={scoped(`proj-section-${index}`)}
 						index={index}
 						open={index === 0}
 					>
@@ -466,7 +483,7 @@
 					{#each imageGallerySections as gallery (gallery.originalIndex)}
 						<CollapsibleSection
 							title={gallery.title}
-							sectionKey="proj-gallery-mobile-{gallery.originalIndex}"
+							sectionKey={scoped(`proj-gallery-mobile-${gallery.originalIndex}`)}
 							anchor={`project-gallery-${gallery.originalIndex}`}
 							open={true}
 						>
@@ -488,7 +505,7 @@
 					class="section-block"
 					data-section-index={articleSections.length}
 				>
-					<CollapsibleSection title={readmeSectionTitle} sectionKey="proj-readme" open={true}>
+					<CollapsibleSection title={readmeSectionTitle} sectionKey={scoped('proj-readme')} open={true}>
 						{#snippet icon()}
 							<SectionIcon name="github" class="h-5 w-5 shrink-0 text-primary" />
 						{/snippet}

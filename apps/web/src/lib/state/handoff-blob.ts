@@ -28,8 +28,6 @@ export interface HandoffBlob {
 	v: number;
 	/** Restore scope: delocalized path or stable translated-route identity. */
 	path: string;
-	/** Registered session values, keyed by `persisted()` key — locale-free primitives. */
-	entries: Record<string, unknown>;
 	/** Scroll snapshot — shape owned by the active scroll-context (offset/fraction/anchor). */
 	scroll: unknown;
 	focus: FocusSnapshot | null;
@@ -39,7 +37,6 @@ export interface HandoffBlob {
 
 export function makeBlob(args: {
 	path: string;
-	entries: Record<string, unknown>;
 	scroll: unknown;
 	focus: FocusSnapshot | null;
 	ts: number;
@@ -53,8 +50,7 @@ export function serializeBlob(blob: HandoffBlob): string {
 
 /**
  * Parse + gate a stored blob. Returns null (discard) for malformed JSON, a
- * version mismatch, a scope mismatch (snapshot taken on a different page), or a
- * structurally invalid `entries` map.
+ * version mismatch, or a scope mismatch (snapshot taken on a different page).
  */
 export function parseBlob(raw: string | null, expectedPath: string): HandoffBlob | null {
 	if (!raw) return null;
@@ -68,6 +64,5 @@ export function parseBlob(raw: string | null, expectedPath: string): HandoffBlob
 	const blob = parsed as Partial<HandoffBlob>;
 	if (blob.v !== HANDOFF_BLOB_VERSION) return null;
 	if (blob.path !== expectedPath) return null;
-	if (typeof blob.entries !== 'object' || blob.entries === null) return null;
 	return blob as HandoffBlob;
 }

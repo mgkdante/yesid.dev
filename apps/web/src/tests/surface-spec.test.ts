@@ -43,10 +43,6 @@ describe('surface spec — one card spec, defined once', () => {
 		expect(src).not.toMatch(/#1f1f1f|#161616/);
 	});
 
-	it('TocPill sheets use the shadow-sheet token', () => {
-		expect(read('src/lib/components/shared/TocPill.svelte')).toContain('var(--shadow-sheet)');
-	});
-
 	it('ServiceBadge hover does not use a border token as background', () => {
 		expect(read('src/lib/components/projects/ServiceBadge.svelte')).not.toContain('background-color: var(--border-strong)');
 	});

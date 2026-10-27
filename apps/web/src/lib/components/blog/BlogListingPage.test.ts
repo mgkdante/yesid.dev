@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import type { BlogPost } from '#lib/types.ts';
-import { applyEntries, captureEntries } from '#lib/state/locale-handoff.svelte.ts';
+import { persisted } from '@yesid/ui/state';
 
 vi.mock('$app/navigation', () => ({ goto: vi.fn() }));
 vi.mock('$app/state', () => ({
@@ -35,8 +35,9 @@ const englishPost: BlogPost = {
 
 afterEach(() => cleanup());
 
-describe('BlogListingPage language-filter handoff', () => {
+describe('BlogListingPage language filter', () => {
 	it('clears an incompatible persisted language instead of hiding the active-locale posts', async () => {
+		persisted<string | null>('blog-lang', null).value = 'fr';
 		render(BlogListingPage, {
 			props: {
 				posts: [englishPost],
@@ -46,12 +47,9 @@ describe('BlogListingPage language-filter handoff', () => {
 			},
 		});
 		await tick();
-
-		applyEntries({ 'blog-lang': 'fr' });
-		await tick();
 		await tick();
 
-		expect(captureEntries()['blog-lang']).toBeNull();
+		expect(persisted<string | null>('blog-lang', 'fr').value).toBeNull();
 		expect(screen.getByText('English article')).toBeInTheDocument();
 	});
 });

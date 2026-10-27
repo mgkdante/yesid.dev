@@ -22,7 +22,7 @@
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
 	import { scrollChain } from '@yesid/motion/actions';
 	import { siteLabels } from '#lib/content/index.ts';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 
 	let {
 		projects,

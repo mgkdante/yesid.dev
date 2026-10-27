@@ -10,10 +10,7 @@ vi.mock('#lib/analytics/client.ts', () => analyticsMocks);
 
 import ContactPage from './ContactPage.svelte';
 import type { ContactContent } from '#lib/types.ts';
-// slice-34.3: the orchestrator's capture/apply API lets us drive the locale-switch
-// round-trip at the unit level (registerSession is module-scoped; the component's
-// persisted() fields register into the same registry on mount).
-import { captureEntries, applyEntries } from '#lib/state/locale-handoff.svelte.ts';
+import { persisted } from '@yesid/ui/state';
 
 const contactContent: ContactContent = {
 	pageTitle: { en: 'Contact fixture' },
@@ -437,14 +434,12 @@ describe('ContactPage', () => {
 		expect(links.map((link) => link.textContent)).toEqual(['services', 'journal']);
 		expect(links.map((link) => link.getAttribute('href'))).toEqual(['/services', '/blog']);
 		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_success']]);
-		const sent = captureEntries();
-		for (const key of ['contact-name', 'contact-email', 'contact-message']) expect(sent[key]).toBe('');
-		expect(sent['contact-success']).toBe(true);
+		for (const key of ['contact-name', 'contact-email', 'contact-message']) expect(persisted(key, 'x').value).toBe('');
+		expect(persisted('contact-success', false).value).toBe(true);
 		await fireEvent.click(screen.getAllByRole('button', { name: 'Send another' })[0]);
 		await tick();
-		const reset = captureEntries();
-		expect(reset['contact-success']).toBe(false);
-		for (const key of ['contact-name', 'contact-email', 'contact-message']) expect(reset[key]).toBe('');
+		expect(persisted('contact-success', true).value).toBe(false);
+		for (const key of ['contact-name', 'contact-email', 'contact-message']) expect(persisted(key, 'x').value).toBe('');
 		for (const field of screen.getAllByRole('textbox')) expect(field).toHaveValue('');
 	});
 
@@ -514,48 +509,31 @@ describe('ContactPage', () => {
 	});
 });
 
-// slice-34.3 — state across languages (the flagship contact surface).
-// These assert the locale-handoff WIRING at the unit level: the three fields are
-// persisted() (so a switch carries them), focus is keyed for restore, and a sent
-// message can't resurrect. The full switch-restore animation (success re-shown in
-// the new locale) is covered by the Playwright spec, which
-// drives the real beforeNavigate/afterNavigate orchestrator.
-describe('ContactPage — state across languages (slice-34.3)', () => {
-
-	it('registers name/email/message as session-scoped persisted state', async () => {
-		render(ContactPage, { props: { contactPage: contactContent } });
-		const nameInputs = screen.getAllByLabelText(/^name/i) as HTMLInputElement[];
-		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
-
-		await typeInto(nameInputs[0], 'Ada');
-		await typeInto(messageInputs[0], 'half-typed message');
-
-		// The orchestrator can SEE the typed values via the registry — that's what
-		// gets snapshotted into sessionStorage before a switch.
-		const snap = captureEntries();
-		expect(snap['contact-name']).toBe('Ada');
-		expect(snap['contact-message']).toBe('half-typed message');
-		// The persisted values are locale-free primitives (user text), never copy.
-		expect(typeof snap['contact-message']).toBe('string');
-	});
-
-	it('restores a captured draft into a freshly-mounted form (the switch round-trip)', async () => {
-		// First mount: type, then capture (the pre-switch snapshot).
+// A language switch remounts the page, so the draft and the sent state must come back.
+describe('ContactPage state across remounts', () => {
+	it('restores a half-typed draft into a freshly mounted form', async () => {
 		const first = render(ContactPage, { props: { contactPage: contactContent } });
 		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
 		await typeInto(messageInputs[0], 'carry me across the switch');
-		const snap = captureEntries();
-		first.unmount(); // {#key} remount destroys the old subtree
+		first.unmount();
 
-		// Second mount = the remounted page on the new locale. Apply the snapshot;
-		// the persisted() fields pick it up through their registered setters.
 		render(ContactPage, { props: { contactPage: contactContent } });
-		applyEntries(snap);
-		await tick();
 		await tick();
 
 		const restored = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
 		expect(restored[0].value).toBe('carry me across the switch');
 	});
 
+	it('re-shows the success screen on a later mount until "send another"', async () => {
+		persisted('contact-success', false).value = true;
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await tick();
+
+		expect(screen.getAllByTestId('contact-success')[0]).toHaveTextContent('Delivered');
+
+		await fireEvent.click(screen.getAllByRole('button', { name: 'Send another' })[0]);
+		await tick();
+		expect(screen.queryAllByTestId('contact-success')).toHaveLength(0);
+		expect(persisted('contact-success', true).value).toBe(false);
+	});
 });

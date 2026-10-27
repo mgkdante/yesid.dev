@@ -1,6 +1,6 @@
 <script lang="ts">
 	import QuietModeButton from './QuietModeButton.svelte';
-	import CollapsibleSection from './CollapsibleSection.svelte';
+	import { CollapsibleSection } from '@yesid/ui/brand';
 </script>
 
 <QuietModeButton />

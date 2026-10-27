@@ -14,8 +14,7 @@
 	const locale = getLocale();
 	import { fillTemplate } from '#lib/utils/labels.ts';
 	import { siteLabels } from '#lib/content/index.ts';
-	import { persisted } from '#lib/state/persisted.svelte.ts';
-	import { localeHandoff } from '#lib/state/locale-handoff.svelte.ts';
+	import { persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
 	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '#lib/components/brand/index.ts';
@@ -117,11 +116,8 @@
 	});
 
 	// --- Form state ---
-	// slice-34.3: the flagship "state across languages" surface — a half-typed
-	// message must survive a locale switch. name/email/message are session-scoped
-	// via persisted(); the orchestrator snapshots them before the {#key}-remount
-	// and restores them on the new locale's page. Locale-free invariant holds:
-	// these are user-typed primitives, never translated copy.
+	// A half-typed message survives a locale switch or a reload: name/email/message
+	// are tab-scoped via persisted(). They are user-typed primitives, never copy.
 	const name = persisted<string>('contact-name', '');
 	const email = persisted<string>('contact-email', '');
 	const message = persisted<string>('contact-message', '');
@@ -136,13 +132,11 @@
 	let showSuccess = $state(false);
 	let successLines = $state<{ text: string; color: string; visible: boolean }[]>([]);
 
-	// slice-34.3: persist ONLY the locale-free "the send succeeded" bit. The
-	// success lines are translated → re-derived (rebuildSuccessLines) on restore,
-	// never stored. On a switch-restore of a sent form, re-show the success screen
-	// in the NEW locale.
+	// Only the locale-free "the send succeeded" bit is stored. The success lines are
+	// translated, so any mount of a sent form rebuilds them in the current locale.
 	const wasSuccessful = persisted<boolean>('contact-success', false);
 	$effect(() => {
-		if (localeHandoff.restoring && wasSuccessful.value && !showSuccess) {
+		if (wasSuccessful.value && !showSuccess) {
 			rebuildSuccessLines();
 			showSuccess = true;
 		}
@@ -222,10 +216,9 @@
 	}
 
 	// --- Success animation sequence ---
-	// slice-34.3: the success lines are TRANSLATED — they are re-derived in the
-	// current locale, never persisted. rebuildSuccessLines() rebuilds them visible
-	// (used on a switch-restore); playSuccessSequence() reveals them line-by-line
-	// after a real submit.
+	// The success lines are translated, so they are re-derived in the current locale,
+	// never persisted. rebuildSuccessLines() shows them at once on a later mount;
+	// playSuccessSequence() reveals them line by line after a real send.
 	function buildSuccessLines() {
 		const okText = resolveLocale(contactPage.success.fieldOk, locale);
 		return [
@@ -241,16 +234,14 @@
 		];
 	}
 
-	// Switch-restore path: the form already succeeded in the OTHER locale; rebuild
-	// the (translated) lines fully visible in THIS locale — no typed animation.
+	// The form already succeeded earlier in this tab: show the lines fully visible.
 	function rebuildSuccessLines() {
 		successLines = buildSuccessLines().map((l) => ({ ...l, visible: true }));
 	}
 
 	async function playSuccessSequence() {
-		// slice-34.3: the send succeeded — clear the persisted draft so a sent
-		// message can't resurrect on a later locale switch, and flip the locale-free
-		// success flag so a switch mid-success-screen re-shows it in the new locale.
+		// Clear the persisted draft so a sent message can't resurrect, and flag the
+		// success so a later mount re-shows the success screen.
 		name.value = '';
 		email.value = '';
 		message.value = '';
@@ -267,8 +258,8 @@
 
 	// --- Reset ---
 	function handleReset() {
-		// slice-34.3: clear the persisted sessions too (incl. the success flag) so
-		// "send another" starts genuinely empty and survives a later switch as empty.
+		// Clear the persisted sessions too (incl. the success flag) so "send another"
+		// starts empty and stays empty on a later mount.
 		name.value = '';
 		email.value = '';
 		message.value = '';

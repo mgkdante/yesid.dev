@@ -6,7 +6,7 @@
   orchestrator restore round-trip in one render.
 -->
 <script lang="ts">
-	import { persisted } from './persisted.svelte';
+	import { persisted } from '@yesid/ui/state';
 	import Child from './_filters-search-child-fixture.svelte';
 
 	const q = persisted('fixture-projects-q', '');

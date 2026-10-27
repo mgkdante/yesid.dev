@@ -10,7 +10,7 @@
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
-	import { SectionHeading } from '#lib/components/brand/index.ts';
+	import { SectionHeading } from '@yesid/ui/brand';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { ScrollTrigger } from '#lib/motion/utils/gsap.ts';
