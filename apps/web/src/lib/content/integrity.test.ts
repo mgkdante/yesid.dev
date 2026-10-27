@@ -15,6 +15,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -22,23 +23,11 @@ import { projects } from './projects.js';
 import { services } from './services.js';
 import { siteMeta } from './site-meta.js';
 import { blogPosts } from './blog.js';
-import * as siteContentModule from './site-content.js';
-import * as navModule from './nav.js';
-import * as servicesModule from './services.js';
-import * as projectsModule from './projects.js';
 import { aboutPageContent } from './about-page.js';
 import { contactContent } from './contact-page.js';
-import * as legalPagesModule from './legal-pages.js';
-import * as metaModule from './site-meta.js';
-import * as blogModule from './blog.js';
-import * as blogPageModule from './blog-page.js';
-import * as siteSeoDefaultsModule from './site-seo-defaults.js';
-import * as routeSeoModule from './route-seo.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
-import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
-import { siteLabels as siteLabelsModule } from './site-labels.js';
 import {
 	HeroDataSchema,
 } from '#lib/schemas/index.ts';
@@ -445,8 +434,8 @@ interface LocalizedStringStats {
 	full: number; // en + fr + es
 	withFr: number; // non-empty fr (regardless of es)
 	withEs: number; // non-empty es
-	esWithoutFr: number; // POLICY violation counter: FR-first ordering (slice-28.6)
-	noFr: number; // FR debt (the number the FR drop drives toward 0)
+	esWithoutFr: string[]; // paths violating FR-first ordering
+	missingFr: string[]; // paths missing non-empty French translations
 	malformed: string[]; // paths where `en` is missing/empty
 	total: number;
 }
@@ -493,10 +482,10 @@ function walkContent(
 		const hasEs = isNonEmptyString(ls.es);
 		if (hasFr && hasEs) stats.full++;
 		if (hasFr) stats.withFr++;
-		else stats.noFr++;
+		else stats.missingFr.push(`${path}.fr`);
 		if (hasEs) {
 			stats.withEs++;
-			if (!hasFr) stats.esWithoutFr++;
+			if (!hasFr) stats.esWithoutFr.push(path);
 		}
 		return;
 	}
@@ -514,34 +503,18 @@ function walkContent(
 }
 
 function newStats(): LocalizedStringStats {
-	return { full: 0, withFr: 0, withEs: 0, esWithoutFr: 0, noFr: 0, malformed: [], total: 0 };
+	return { full: 0, withFr: 0, withEs: 0, esWithoutFr: [], missingFr: [], malformed: [], total: 0 };
 }
 
-// Module-keyed walker sources. ⚠️ EVERY new generated module (e.g. a future
-// chrome/labels module) MUST be added here or its strings silently escape the
-// debt report and the locked counts below.
-const WALKER_SOURCES: Array<[string, unknown]> = [
-	['site-content', siteContentModule],
-	['nav', navModule],
-	['services', servicesModule],
-	['projects', projectsModule],
-	['about-page', aboutPageContent],
-	['contact-page', contactContent],
-	// legal_pages rows (OPS1) — title is the walked LocalizedString; bodies are
-	// LocalizedBlockEditorDocs (per-locale docs, not string leaves).
-	['legal-pages', legalPagesModule],
-	['meta', metaModule],
-	['blog', blogModule],
-	['blog-page', blogPageModule],
-	// site-seo-defaults carries defaultDescription (en-only at present).
-	['site-seo-defaults', siteSeoDefaultsModule],
-	// route_seo static route SEO overrides, emitted from CMS.
-	['route-seo', routeSeoModule],
-	// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
-	['site-pages', sitePagesModule],
-	// site_labels microcopy singleton (go2-t1c2) — en-only seeds.
-	['site-labels', siteLabelsModule],
-];
+// Load runtime registry metadata without adding CMS fetcher types to the web program.
+const { EXPORT_MODULE_REGISTRY }: {
+	EXPORT_MODULE_REGISTRY: readonly { fileName: string }[];
+} = createRequire(import.meta.url)('../../../../cms/scripts/lib/emitters/configs.ts');
+
+// Discover every generated module; the exporter registry independently guards coverage.
+const WALKER_SOURCES = Object.entries(
+	import.meta.glob(['./*.ts', '!./*.test.ts', '!./index.ts'], { eager: true }),
+);
 
 function scanAll(): LocalizedStringStats {
 	const stats = newStats();
@@ -579,8 +552,8 @@ describe('LocalizedString guard + translation debt', () => {
 			`  Full (en + fr + es):            ${stats.full} (${pct(stats.full)}%)`,
 			`  With fr:                        ${stats.withFr} (${pct(stats.withFr)}%)`,
 			`  With es:                        ${stats.withEs} (${pct(stats.withEs)}%)`,
-			`  FR debt (no fr):                ${stats.noFr} (${pct(stats.noFr)}%)`,
-			`  es-without-fr (policy):         ${stats.esWithoutFr}`,
+			`  FR debt (no fr):                ${stats.missingFr.length} (${pct(stats.missingFr.length)}%)`,
+			`  es-without-fr (policy):         ${stats.esWithoutFr.length}`,
 			`  Malformed (missing en):         ${stats.malformed.length}`,
 			'',
 		];
@@ -604,69 +577,6 @@ describe('LocalizedString guard + translation debt', () => {
 // translations entered out of order (or an accidental ES backfill) and stays
 // a hard failure.
 //
-// ─── LOCKED COUNTS — single bump point ─────────────────────────────────────
-// These WILL move exactly once more during the GO-day campaign:
-//   - The slice-28.6 FR content drop (WITH_FR jumps toward TOTAL, NO_FR → ~0
-//     for launch surfaces).
-// Update procedure: run `bunx vitest run src/lib/content/integrity.test.ts`,
-// read the printed snapshot, set the consts, sanity-check the DIRECTION
-// (WITH_FR never decreases; ES_WITHOUT_FR stays 0 until a deliberate ES pass).
-// Baselines at rewrite time (post-T10): full 82 / en-only 432 / partial 0
-// → WITH_FR 82, NO_FR 432, TOTAL 514.
-// go2/w4: +1 en-only — siteLabels.ui.backToProjects ("← All Projects" wired
-// to site_labels per operator QA) → NO_FR 433, TOTAL 515.
-// go2/w5: +3 en-only, then taste-2 merges the two metro legend labels into
-// ONE siteLabels.ui.metroCaption ('STM métro + REM' — names the hero metro
-// art) — net +2 with a11y.replayIntro (hero dot replay button aria)
-// → NO_FR 435, TOTAL 517.
-// slice-30 t1: the site_labels singleton gains 6 code-owned chrome groups
-// (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard)
-// recomposed from the companion + hero-data labels. +97 LocalizedString leaves,
-// ALL with fr (the chrome translations seed) → WITH_FR + TOTAL both +97
-// (530 → 627), NO_FR stays 0.
-// fr-leak fix (FilterSummary pluralization): the hardcoded English `+ "s"` rule
-// in FilterSummary.svelte was wrong for French zero ("0 résultat", not "résultats").
-// Replaced with locale-aware singular/plural count templates. Originally parked in
-// the editable companions (blogListingContent.resultCount + sharedChromeContent
-// .projectCount, +4 leaves → 631) pending the generic CMS field.
-// fr-leaks-cms-truth: that CMS field now exists — `siteLabels.ui.resultCount`
-// {singular,plural} (en+fr) was seeded into Directus and regenerated into the
-// site_labels singleton. BlogListingPage + ProjectListingPage now read the CMS
-// field via FilterSummary's countLabel prop, and the two interim companion fields
-// were removed (single source = CMS). Net for the walker: the regen added 10
-// fr-complete leaves to site-labels (the operator's seed batch, incl. the 2
-// resultCount leaves) and the 4 interim companion leaves were removed
-// → WITH_FR + TOTAL both 631 + 10 − 4 = 637, NO_FR stays 0.
-// homework batch 2026-07-02: +2 fr-complete leaves — the cal.com booking
-// contact channel label (contactContent.socials) and the glance repoPrivateLabel
-// (siteLabels.projectsChrome.detail.glance) → 627 + 2 = 629.
-// conversion batch (homework #19/#20/#21/#25): +21 fr-complete leaves —
-// 12 site-labels (quiet-mode collapsed label, blog unfiltered empty state,
-// 5 services detail CTA, 5 projects detail CTA), 1 hero identity kicker,
-// 4 contact (bookingPrompt, bookingButtonLabel, languages + its section
-// label), 4 per-service seoDescription → 629 + 21 = 650.
-// live KPIs (homework #2 phase 2): +3 fr-complete leaves — hero sqlPanel
-// liveBadge + refreshButton helperLive, heroDashboard vehiclesSubLive
-// (LIVE-state labels; DEMO stays the default) → 650 + 3 = 653.
-// operator round 2026-07-03: -10 fr-complete leaves — both detail-CTA label
-// groups retired; the shared block_cta band is the one CTA → 653 - 10 = 643.
-// About rotated title (pages_home_section_about, EN+FR) → 643 + 1 = 644.
-// launch Phase 1 (homework #26b): contact BEST FIT section — 1 section label
-// + 3 lines, all fr-complete → 644 + 4 = 648.
-// launch Phase 1 (OPS1): 5 legal pages — legal_pages titles (en+fr), their
-// site_pages registry titles (en+fr+es), and the 5 footer nav labels derived
-// from those titles → 648 + 15 = 663. Bodies are LocalizedBlockEditorDocs,
-// invisible to the string walker; their ES pass lands with L1.
-// receiver r2: full-bleed footer column headings (EXPLORE/LEGAL/CONNECT,
-// site_labels footerChrome, en+fr+es) → 663 + 3 = 666.
-// OPS2 analytics-choice microcopy adds six EN/FR/ES-complete site-label leaves, 666 + 6 = 672.
-// October portfolio publication: 38 additional FR-complete project strings, no added translation debt.
-// Slice 43.2: the CMS retirement removed 7 nav/registry/SEO strings; deleting
-// the retired content sources removes 82 more. The lead's live regeneration
-// removes the final blog rail string (621 → 620).
-// WO-43.14: the desktop Contact link adds one FR-complete label.
-const LOCKED = { TOTAL: 621, WITH_FR: 621, NO_FR: 0, ES_WITHOUT_FR: 0 } as const;
-
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
 		// Canary: if SUPPORTED_LOCALES changes in locale.ts, this test reminds
@@ -676,22 +586,19 @@ describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
 	});
 
-	it(`fr coverage is locked at ${LOCKED.WITH_FR}`, () => {
-		// Increase = FR translations landed (confirm intentional, bump const).
-		// Decrease = translations stripped — investigate before touching the const.
-		expect(scanAll().withFr).toBe(LOCKED.WITH_FR);
-	});
-
-	it(`fr debt (no-fr fields) is locked at ${LOCKED.NO_FR}`, () => {
-		expect(scanAll().noFr).toBe(LOCKED.NO_FR);
+	it('every LocalizedString has a non-empty French value', () => {
+		const { missingFr } = scanAll();
+		expect(missingFr, `Missing French translations:\n  ${missingFr.join('\n  ')}`).toEqual([]);
 	});
 
 	it('FR-first ordering: no field has es without fr', () => {
-		// Replaces the old partial===0 lock ("FR and ES land simultaneously").
-		expect(scanAll().esWithoutFr).toBe(LOCKED.ES_WITHOUT_FR);
+		const { esWithoutFr } = scanAll();
+		expect(esWithoutFr, `Spanish without French:\n  ${esWithoutFr.join('\n  ')}`).toEqual([]);
 	});
 
-	it('total walked surface is locked (new modules must register in WALKER_SOURCES)', () => {
-		expect(scanAll().total).toBe(LOCKED.TOTAL);
+	it('walked modules match the canonical exporter registry', () => {
+		expect(WALKER_SOURCES.map(([name]) => name).sort()).toEqual(
+			EXPORT_MODULE_REGISTRY.map(({ fileName }) => `./${fileName}`).sort(),
+		);
 	});
 });
