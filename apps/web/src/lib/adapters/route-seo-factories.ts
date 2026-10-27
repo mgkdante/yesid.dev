@@ -142,8 +142,13 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 			? descriptionText
 			: fitDescriptionForSeo(project.oneLiner, fallback);
 	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
+	const titleBody = {
+		en: titleBodyForSeo(undefined, project.title.en, siteMeta.name),
+		...(project.title.fr && { fr: titleBodyForSeo(undefined, project.title.fr, siteMeta.name) }),
+		...(project.title.es && { es: titleBodyForSeo(undefined, project.title.es, siteMeta.name) }),
+	};
 	const seo: PageSeo = {
-		title: appendBrandPerLocale(project.title, siteMeta.name),
+		title: appendBrandPerLocale(titleBody, siteMeta.name),
 		description: desc,
 		canonical: canonicalUrl,
 		ogType: 'article',

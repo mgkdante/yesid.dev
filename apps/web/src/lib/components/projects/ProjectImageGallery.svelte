@@ -4,7 +4,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import { getActiveTheme, resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
+	import { resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 
@@ -12,7 +12,7 @@
 
 	let { doc }: { doc: BlockEditorDoc } = $props();
 
-	let activeTheme = $state<Theme>(getActiveTheme());
+	let activeTheme = $state<Theme>('dark');
 
 	const images = $derived(doc.blocks.filter((block): block is ImageBlock => block.type === 'image'));
 	let activeImage = $state<ImageBlock | null>(null);
