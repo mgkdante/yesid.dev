@@ -12,15 +12,14 @@
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
-	import FilterGroup from '#lib/components/shared/FilterGroup.svelte';
 	import { persisted } from '@yesid/ui/state';
-	import { ChevronToggle } from '@yesid/ui/brand';
+	import { ChevronToggle, FilterGroup, FilterSection } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
 	const listingChrome = siteLabels.blogChrome.listing;
 	const labels = listingChrome.filters;
-	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
+	const allLabel = resolveLocale({ en: 'All', fr: 'Tous', es: 'Todos' }, locale);
 	const languageLabel = (lang: Locale) => resolveLocale(siteLabels.ui.languageNames[lang], locale) || lang;
 
 	// WHY: date range section is not a FilterGroup, so it needs its own collapse state.
@@ -33,12 +32,9 @@
 		languages = [],
 		activeTag = null,
 		activeLang = null,
-		accentColor = 'var(--primary)',
 		cornerLink = null,
-		showSearch = true,
 		onTagSelect,
 		onLangSelect,
-		searchQuery = $bindable(''),
 		dateFrom = $bindable(''),
 		dateTo = $bindable('')
 	}: {
@@ -46,56 +42,34 @@
 		languages?: readonly Locale[];
 		activeTag: string | null;
 		activeLang: Locale | null;
-		accentColor?: string;
 		cornerLink?: { href: string; label: string; subtitle: string } | null;
-		showSearch?: boolean;
 		onTagSelect: (tag: string | null) => void;
 		onLangSelect: (lang: Locale | null) => void;
-		searchQuery?: string;
 		dateFrom?: string;
 		dateTo?: string;
 	} = $props();
 </script>
 
 <aside data-testid="blog-filter-sidebar">
-	<!-- Search -->
-	{#if showSearch}
-		<div class="pt-3 mb-6 pb-5 divider-dashed">
-			<div class="relative">
-				<input
-					type="text"
-					placeholder={searchPlaceholder}
-					bind:value={searchQuery}
-					class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
-					data-testid="blog-search-sidebar"
-				/>
-				<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-					<circle cx="7" cy="7" r="5"/>
-					<line x1="11" y1="11" x2="14" y2="14"/>
-				</svg>
-			</div>
-		</div>
-	{/if}
-
 	<!-- Language filter — surfaces the languages present in the active posts, like
 	     Tags (shown whenever ≥1 language exists, even when posts are EN-only). -->
 	{#if languages.length >= 1}
-		<div class="mt-5 divider-dashed pt-3">
-				<FilterGroup
+		<FilterSection>
+			<FilterGroup
 				label={resolveLocale(labels.language, locale)}
 				items={languages.map((lang) => ({ key: lang, label: languageLabel(lang) }))}
 				activeKey={activeLang}
-				{accentColor}
+				{allLabel}
 				allowDeselect={false}
 				collapsible={true}
 				persistKey="blog-filter-language"
 				onSelect={(key) => onLangSelect(key as Locale | null)}
 			/>
-		</div>
+		</FilterSection>
 	{/if}
 
 	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
-	<div class="mt-5 divider-dashed pt-3">
+	<FilterSection>
 	<button
 		class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
 		onclick={() => (dateOpen.value = !dateOpen.value)}
@@ -125,26 +99,26 @@
 			</div>
 		</div>
 	</div>
-	</div>
+	</FilterSection>
 
 	<!-- Tags filter — closed by default -->
-	<div class="mt-5 divider-dashed pt-3">
+	<FilterSection>
 		<FilterGroup
 			label={resolveLocale(labels.tags, locale)}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
 			activeKey={activeTag}
-			{accentColor}
+			{allLabel}
 			allowDeselect={false}
 			collapsible={true}
 			startOpen={false}
 			persistKey="blog-filter-tags"
 			onSelect={onTagSelect}
 		/>
-	</div>
+	</FilterSection>
 
 	<!-- Corner link — inline, not a button group -->
 	{#if cornerLink}
-		<div class="mt-5 divider-dashed pt-3">
+		<FilterSection>
 			<a
 				href={localizeHref(cornerLink.href, locale)}
 				class="flex w-full items-center gap-1.5 rounded border px-2 py-1.5 text-sm font-semibold no-underline transition-colors"
@@ -155,7 +129,7 @@
 			<div class="mt-1 pl-2 text-sm italic text-[var(--muted-foreground)]">
 				{cornerLink.subtitle}
 			</div>
-		</div>
+		</FilterSection>
 	{/if}
 </aside>
 

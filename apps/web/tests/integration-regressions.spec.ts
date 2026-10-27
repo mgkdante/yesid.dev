@@ -150,13 +150,13 @@ test.describe('responsive shell and interrupted menu', () => {
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/blog');
 		const title = page.locator('.listing-layout > .edge-title-column .edge-title');
-		// Rendering stress fixture; ListingShell's unit test separately proves the supplied text contract.
+		// Rendering stress fixture: overwrite the edge title with long text.
 		await title.evaluate((el) => {
 			el.textContent = 'Un catalogue de travaux et de recherches.';
 		});
 		const bounds = await title.boundingBox();
 		expect(bounds!.height).toBeLessThanOrEqual(568);
-		const content = await page.locator('.listing-layout > .listing-content').boundingBox();
+		const content = await page.locator('.listing-layout > .listing-main').boundingBox();
 		expect(content!.width).toBeGreaterThan(300);
 	});
 	test('wrapped listing titles and summaries stay below the narrow-screen pill', async ({

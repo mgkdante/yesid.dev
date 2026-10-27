@@ -80,11 +80,8 @@ test.describe('French locale coverage', () => {
 
     // (networkidle removed: the very next assertion is a web-first toBeVisible()
     // that auto-waits for the filter sidebar — the wait was redundant.)
-    // The listing-consolidation refactor wraps the SAME BlogFilterSidebar inside the
-    // mobile filter panel (data-testid="blog-filter-mobile"), so blog-filter-sidebar
-    // now resolves to TWO elements. Scope to the desktop copy — the one living in the
-    // listing grid (.listing-filter-column), which is first in DOM and the visible one
-    // at desktop width (the mobile panel is lg:hidden).
+    // The sidebar lives in the listing grid's filter column (.listing-filter-column),
+    // which ListingFrame always shows at desktop width.
     const langFilter = page
       .locator('.listing-grid [data-testid="blog-filter-sidebar"]')
       .first();
