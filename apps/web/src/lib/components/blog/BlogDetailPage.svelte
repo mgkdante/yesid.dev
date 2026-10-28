@@ -19,7 +19,7 @@
   import { onMount } from 'svelte';
   import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
   import { resolveLocale } from '#lib/utils/locale.ts';
-  import { getLocale } from '#lib/utils/locale-context.ts';
+  import { getLocale, intl } from '#lib/utils/locale-context.ts';
   import { localizeHref } from '#lib/utils/locale-routing.ts';
   import { fillTemplate } from '#lib/utils/labels.ts';
   import { sectionizeBlogBody } from '#lib/blog/sections.ts';
@@ -109,9 +109,8 @@
   );
   const editionTemplate =
     resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
-  const dateLocale = locale === 'fr' ? 'fr-CA' : locale === 'es' ? 'es' : 'en-US';
   const formattedDate = $derived(
-    new Date(`${post.date}T00:00:00`).toLocaleDateString(dateLocale, { month: 'short', year: 'numeric' })
+    intl.dateTime(locale, { month: 'short', year: 'numeric' }).format(new Date(`${post.date}T00:00:00`))
   );
   const headerMeta = $derived([
     { text: formattedDate, datetime: post.date },
@@ -259,7 +258,7 @@
             <dl class="meta-list">
               <div class="meta-list__item">
                 <dt>{metaWordsLabel}</dt>
-                <dd>{wordCount.toLocaleString()}</dd>
+                <dd>{intl.number(locale).format(wordCount)}</dd>
               </div>
               <div class="meta-list__item">
                 <dt>{metaReadTimeLabel}</dt>

@@ -9,12 +9,12 @@
 	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
-	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { getLocale, intl } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { fillTemplate } from '#lib/utils/labels.ts';
 	import { siteLabels } from '#lib/content/index.ts';
-	import { persisted } from '@yesid/ui/state';
+	import { clock, persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
 	import { TerminalCursor } from '@yesid/ui/brand';
 	import TerminalChrome from '#lib/components/brand/TerminalChrome.svelte';
@@ -48,21 +48,6 @@
 	let freshWeather = $state<WeatherData | null>(null);
 	const currentWeather = $derived(freshWeather ?? weather);
 
-	// --- Local time (Montreal) ---
-	let localTime = $state('');
-	let timeInterval: ReturnType<typeof setInterval> | undefined;
-
-	function updateTime() {
-		const formatter = new Intl.DateTimeFormat('en-CA', {
-			timeZone: 'America/Montreal',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false,
-			timeZoneName: 'short',
-		});
-		localTime = formatter.format(new Date());
-	}
-
 	// Hydration gate (consolidation-deploy-honesty): the page is prerendered,
 	// so the static HTML paints before handleSubmit is attached. A submit in
 	// that window would fall back to a NATIVE GET submit — full reload with the
@@ -70,6 +55,17 @@
 	// (Web3Forms fetch), so the honest pre-hydration state is a disabled
 	// button; it enables the moment the handler exists.
 	let hydrated = $state(false);
+
+	// --- Local time (Montreal), client-only: the page is prerendered ---
+	const montrealTime = intl.dateTime('en', {
+		timeZone: 'America/Montreal',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false,
+		timeZoneName: 'short',
+	});
+	const localTime = $derived(hydrated ? montrealTime.format(clock.now) : '');
+	$effect(() => clock.subscribe());
 
 	// Rotated edge-title fit (operator spec 2026-07-03, shared logic with the
 	// home rotated titles): the label is measured and sized to exactly fill
@@ -99,8 +95,6 @@
 
 	onMount(() => {
 		hydrated = true;
-		updateTime();
-		timeInterval = setInterval(updateTime, 60_000);
 		void fetchFreshWeather(locale).then((w) => { if (w) freshWeather = w; });
 		recomputeEdgeFit();
 		document.fonts?.ready.then(() => recomputeEdgeFit()).catch(() => {});
@@ -108,7 +102,6 @@
 	});
 
 	onDestroy(() => {
-		if (timeInterval) clearInterval(timeInterval);
 		if (typeof window !== 'undefined') {
 			cancelAnimationFrame(edgeFitRaf);
 			window.removeEventListener('resize', onEdgeResize);

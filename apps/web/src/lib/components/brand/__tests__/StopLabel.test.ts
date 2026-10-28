@@ -19,7 +19,7 @@ describe('StopLabel', () => {
   ] as const)('keeps the app-owned %s prefix', (locale, expected) => {
     const { container } = render(StopLabel, {
       props: { stop: '03', label: 'STACK' },
-      context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+      context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
     });
     expect(container.querySelector('.stop-label')?.textContent).toBe(expected);
   });

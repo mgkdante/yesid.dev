@@ -118,7 +118,7 @@ describe('QuietModeButton', () => {
 		'preserves CMS-backed $locale labels and titles through the package view',
 		async ({ locale, collapse, expand, collapseTitle, expandTitle, remember, forget }) => {
 			render(Fixture, {
-				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+				context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 			});
 			flushSync();
 

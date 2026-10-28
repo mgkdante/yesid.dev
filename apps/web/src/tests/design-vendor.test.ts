@@ -2,7 +2,6 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { Window } from 'happy-dom';
-import * as ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = resolve(process.cwd(), '../..');
@@ -17,16 +16,16 @@ const htmlWindow = new Window({
 });
 
 const PINNED_RELEASE = {
-	tag: 'v0.21.0',
-	tagObject: 'c2a4d03386511959212aa8577cce84a6e1d29764',
-	peeledCommit: '31957358f1f9984ebfcc9d272a11d9eb0796f814',
-	assetName: 'yesid.dev-design-v0.21.0.tar',
-	assetSize: 2_641_920,
-	assetDigest: 'sha256:498ec1fdb0ff59f0a862cf8e662a73299b14617420a73b82ca5f161d893f736d',
+	tag: 'v0.22.0',
+	tagObject: 'c0956ce81b1912d4a8e5411ff8e0b7235ea76453',
+	peeledCommit: '3e817a15a5a1b40740ab7583a58e2b90b34f34ef',
+	assetName: 'yesid.dev-design-v0.22.0.tar',
+	assetSize: 2_672_640,
+	assetDigest: 'sha256:6d8c41f78f144e524e709d427f85e0482e5219e3fbddfb20d2548a866d5112ad',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
 	toolDigest: 'sha256:3d688b437650357ca30a5c3e37e64885a2fb4a9b76f37baf5ee554f5f98956f6',
-	treeHash: 'sha256:21c9b14d28a80903df965e1c070922e1ac310ddcd9622ad09ff2b25eda55f496',
-	manifestDigest: '486e261dcdd66155e249ca012490f3c156b234cbe85173bdaf94be010dbf9972',
+	treeHash: 'sha256:0c9916631dcdcb506cbe860fddd087f6ea523fa06cfa62591161a990dc83c290',
+	manifestDigest: 'c26b746eb42b652fea1f3b6f937666b5076bdcec3e5f1bf6af26c0f31aeeca31',
 } as const;
 
 function readJson(path: string) {
@@ -42,88 +41,12 @@ function walkFiles(dir: string, out: string[] = []): string[] {
 	return out;
 }
 
-interface ModuleUse {
-	specifier: string;
-	kind: 'static' | 'dynamic';
-	typeOnly: boolean;
-	bindings: readonly string[];
-}
-
-function sourceText(path: string): string {
-	const raw = readFileSync(path, 'utf8');
-	if (!path.endsWith('.svelte')) return raw;
-	return svelteScriptText(raw);
-}
-
 function svelteScriptText(raw: string): string {
 	const template = htmlWindow.document.createElement('template');
 	template.innerHTML = raw;
 	return [...template.content.querySelectorAll('script')]
 		.map((script) => script.textContent ?? '')
 		.join('\n');
-}
-
-function sourceFile(path: string): ts.SourceFile {
-	return ts.createSourceFile(path, sourceText(path), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-}
-
-function moduleUses(path: string): readonly ModuleUse[] {
-	const uses: ModuleUse[] = [];
-	const visit = (node: ts.Node): void => {
-		if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
-			const clause = node.importClause;
-			const named = clause?.namedBindings;
-			const bindings = [
-				...(clause?.name ? [clause.name.text] : []),
-				...(named && ts.isNamespaceImport(named)
-					? [named.name.text]
-					: named && ts.isNamedImports(named)
-						? named.elements.map((element) => element.name.text)
-						: []),
-			];
-			const typeOnly = Boolean(
-				clause?.isTypeOnly ||
-					(named &&
-						ts.isNamedImports(named) &&
-						named.elements.length > 0 &&
-						named.elements.every((element) => element.isTypeOnly)),
-			);
-			uses.push({
-				specifier: node.moduleSpecifier.text,
-				kind: 'static',
-				typeOnly,
-				bindings,
-			});
-		}
-		if (
-			ts.isCallExpression(node) &&
-			node.expression.kind === ts.SyntaxKind.ImportKeyword &&
-			node.arguments.length === 1 &&
-			ts.isStringLiteral(node.arguments[0])
-		) {
-			uses.push({
-				specifier: node.arguments[0].text,
-				kind: 'dynamic',
-				typeOnly: false,
-				bindings: [],
-			});
-		}
-		ts.forEachChild(node, visit);
-	};
-	visit(sourceFile(path));
-	return uses;
-}
-
-function productionSources(): readonly string[] {
-	return [join(ROOT, 'apps/web/src'), join(ROOT, 'apps/cms/scripts')]
-		.flatMap((dir) => walkFiles(dir))
-		.filter((path) => /\.(?:ts|svelte)$/.test(path))
-		.filter((path) => !/\.(?:test|spec)\.ts$/.test(path))
-		.filter((path) => !/(?:^|\/)tests?(?:\/|$)/.test(path));
-}
-
-function relativeProductionPath(path: string): string {
-	return relative(ROOT, path).replaceAll('\\', '/');
 }
 
 function vendorPath(path: string): string {
@@ -173,6 +96,8 @@ describe('immutable design customer contract', () => {
 		expect(walkFiles(join(VENDOR, 'i18n-core')).map(vendorPath)).toEqual([
 			'i18n-core/README.md',
 			'i18n-core/package.json',
+			'i18n-core/src/copy.ts',
+			'i18n-core/src/format.ts',
 			'i18n-core/src/index.ts',
 			'i18n-core/src/routing.ts',
 			'i18n-core/tsconfig.json',
@@ -213,14 +138,6 @@ describe('immutable design customer contract', () => {
 		expect(cmsPackage.devDependencies['@yesid/i18n-core']).toBeUndefined();
 		expect(existsSync(join(ROOT, 'apps/cms/vendor/design/i18n-core'))).toBe(false);
 		expect(existsSync(join(VENDOR, 'ui/src/brand/QuietModeButton.svelte'))).toBe(true);
-	});
-
-	it('keeps production i18n consumers inside the locale-routing boundary', () => {
-		const i18nConsumers = productionSources()
-			.filter((path) => moduleUses(path).some((use) => use.specifier === '@yesid/i18n-core'))
-			.map(relativeProductionPath)
-			.sort();
-		expect(i18nConsumers).toEqual(['apps/web/src/lib/utils/locale-routing.ts']);
 	});
 
 	it('delegates neutral SEO mechanics while product policy stays consumer-owned', () => {

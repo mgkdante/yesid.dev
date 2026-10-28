@@ -72,13 +72,13 @@ describe('BlogRow', () => {
 
 		const fr = render(BlogRow, {
 			props: { post: makePost({ lang: 'en' }), index: 0 },
-			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
 		});
 		expect(fr.getByTestId('blog-lang-chip').textContent?.trim()).toBe(siteLabels.ui.languageNames.en.fr);
 	});
 
 	it('localizes internal post urls from the post language, independent of the listing context', () => {
-		const frContext = () => new Map([[Symbol.for('yesid.locale'), () => 'fr']]);
+		const frContext = () => new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]);
 		const enPost = render(BlogRow, {
 			props: { post: makePost(), index: 0 },
 			context: frContext(),

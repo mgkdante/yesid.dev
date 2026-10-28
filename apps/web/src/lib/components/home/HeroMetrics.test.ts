@@ -62,10 +62,10 @@ describe('HeroMetrics', () => {
 // Regression: the dashboard card copy is CMS truth (siteLabels.heroDashboard).
 // Inside a fr locale provider HeroMetrics must render the French labels/subs,
 // with the {coverage}/{total} placeholders still substituted. The locale
-// context keys on Symbol.for('yesid.locale') (see $lib/utils/locale-context).
+// context keys on Symbol.for('@yesid/ui/locale') (see $lib/utils/locale-context).
 describe('HeroMetrics — fr locale (CMS truth)', () => {
   const metrics = INITIAL_HERO_DATA.metrics;
-  const frContext = new Map([[Symbol.for('yesid.locale'), () => 'fr']]);
+  const frContext = new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]);
 
   it('renders French labels from siteLabels.heroDashboard', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
