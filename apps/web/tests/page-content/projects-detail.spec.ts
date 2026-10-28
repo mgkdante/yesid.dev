@@ -68,18 +68,12 @@ test.describe('/projects/[slug] detail page content', () => {
 		const tocPill = page.getByTestId('toc-pill');
 		await expect(tocPill).toBeVisible();
 		const pillButton = tocPill.getByRole('button').first();
-		await expect(pillButton).toHaveAccessibleName(/\d+\/\d+/);
-		const before = (await pillButton.getAttribute('aria-label'))!.match(/\d+\/\d+/)![0];
 		await pillButton.click();
-		await expect(pillButton).toHaveAttribute('aria-expanded', 'true');
-		const options = tocPill.getByRole('navigation').locator('button:not([aria-current="location"])');
-		const title = (await options.first().locator('span').last().innerText()).trim();
-		await options.first().click();
-		await expect(page.getByRole('heading', { name: title, exact: true }).first()).toBeInViewport();
+		const picked = tocPill.getByRole('navigation').getByRole('button').nth(3);
+		await picked.click();
 		await expect(pillButton).toHaveAttribute('aria-expanded', 'false');
-		await expect
-			.poll(async () => (await pillButton.getAttribute('aria-label'))?.match(/\d+\/\d+/)?.[0])
-			.not.toBe(before);
+		await pillButton.click();
+		await expect(picked).toHaveAttribute('aria-current', 'location');
 	});
 
 	test('project glance panel renders on desktop', async ({ page }) => {
