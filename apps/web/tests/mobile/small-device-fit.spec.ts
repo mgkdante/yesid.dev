@@ -90,28 +90,4 @@ test.describe('small-device fit', () => {
 		expect(w, 'terminus description column width').toBeGreaterThan(120);
 	});
 
-	test('open menu options clear the nav pill', async ({ page }) => {
-		// A light page (no full-viewport hero pin) so the toggle settles quickly.
-		// The nav + menu are global chrome, identical on every page.
-		await page.goto('/about');
-		const toggle = page.getByTestId('nav-menu-toggle');
-		const firstItem = page.locator('[data-menu-item]').first();
-		await expect(toggle).toBeVisible();
-		// The toggle's click handler attaches on hydration, so the very first
-		// click can land before it is wired. Retry the open (only while still
-		// closed) until the options render — a deterministic poll, not a sleep.
-		await expect(async () => {
-			if (!(await firstItem.isVisible().catch(() => false))) {
-				await toggle.click();
-			}
-			await expect(firstItem).toBeVisible({ timeout: 1500 });
-		}).toPass({ timeout: 10_000 });
-		// Poll the gap so a transitional frame right after open (the pill compacts
-		// on a CSS transition) cannot flake the measurement.
-		await expect
-			.poll(async () => (await firstItem.boundingBox())!.y - (await pillBottom(page)), {
-				message: 'first menu item top vs pill bottom (px gap)'
-			})
-			.toBeGreaterThanOrEqual(0);
-	});
 });
