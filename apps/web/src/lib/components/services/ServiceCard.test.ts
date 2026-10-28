@@ -1,9 +1,6 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
 import ServiceCard from './ServiceCard.svelte';
 import { serviceFactory } from '../../../tests/factories';
 
@@ -78,24 +75,5 @@ describe('ServiceCard', () => {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }
 		});
 		expect(screen.getByTestId('service-card-sql-development')).toBeTruthy();
-	});
-
-	it('keeps desktop station pinning while mobile stations use normal document flow', () => {
-		const source = readFileSync(join(cwd(), 'src/lib/components/services/ServiceCard.svelte'), 'utf8');
-
-		expect(source).toMatch(/\.service-viewport \{[\s\S]*?height: 100svh;/);
-		expect(source).toMatch(/\.viewport-inner \{[\s\S]*?position: sticky;/);
-		expect(source).toMatch(
-			/@media \(--tablet-max\) \{[\s\S]*?\.service-viewport \{[\s\S]*?height: auto;/,
-		);
-		expect(source).toMatch(
-			/@media \(--tablet-max\) \{[\s\S]*?\.viewport-inner \{[\s\S]*?position: static;/,
-		);
-	});
-
-	it('tightens only the first mobile station under the sticky chrome', () => {
-		const source = readFileSync(join(cwd(), 'src/lib/components/services/ServiceCard.svelte'), 'utf8');
-
-		expect(source).toContain("index === 0 && 'service-viewport-first'");
 	});
 });

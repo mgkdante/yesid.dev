@@ -1,7 +1,20 @@
 // Services listing page mobile-flow spec — slice-19 Phase 4 Task 26.
 // Runs on every Playwright project (desktop-chrome + 3 mobile profiles).
 
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+import { DEFAULT_LOCALE } from '../../src/lib/utils/locale';
+import { PUBLISHED_LOCALES } from '../../src/lib/utils/published-locales';
+
+const listing = (locale: string) => (locale === DEFAULT_LOCALE ? '/services' : `/${locale}/services`);
+const tokenPx = (page: Page, token: string) =>
+	page.evaluate((value) => {
+		const probe = document.body.appendChild(document.createElement('span'));
+		probe.style.fontSize = `var(${value})`;
+		const size = parseFloat(getComputedStyle(probe).fontSize);
+		probe.remove();
+		return size;
+	}, token);
 
 test('services page loads + service card is visible', async ({ page }) => {
 	await page.goto('/services');
@@ -200,3 +213,52 @@ test('station activation follows a short viewport resize and cleared deep link',
 		.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY));
 	await expect(page.getByTestId(`station-tab-${id}`)).toHaveAttribute('aria-selected', 'true');
 });
+
+for (const locale of PUBLISHED_LOCALES)
+	test(`${locale}: on phones each service title shares its row with the service icon`, async ({ page, isMobile }) => {
+		test.skip(!isMobile, 'phone layout');
+		await page.goto(listing(locale));
+		await page.evaluate(() => document.fonts.ready);
+		const [heading, display] = [await tokenPx(page, '--text-heading'), await tokenPx(page, '--text-display')];
+		const cards = page.locator('[data-testid^="service-card-"]');
+		expect(await cards.count()).toBeGreaterThan(0);
+		for (const card of await cards.all()) {
+			const title = card.getByRole('heading', { level: 2 });
+			const icon = card.getByTestId('service-svg-panel').filter({ visible: true });
+			const [titleBox, iconBox] = [(await title.boundingBox())!, (await icon.boundingBox())!];
+			expect(Math.abs(titleBox.y + titleBox.height / 2 - (iconBox.y + iconBox.height / 2))).toBeLessThanOrEqual(1);
+			expect(iconBox.x + iconBox.width).toBeLessThanOrEqual(titleBox.x);
+			expect(await title.evaluate((el) => el.scrollWidth <= el.clientWidth), 'the title wraps inside its column').toBe(true);
+			const size = await title.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+			expect(size).toBeGreaterThan(heading);
+			expect(size).toBeLessThan(display);
+		}
+	});
+
+for (const locale of PUBLISHED_LOCALES)
+	test(`${locale}: on desktop the first station centres under the tabs on short and tall screens`, async ({ page, isMobile }) => {
+		test.skip(isMobile, 'desktop layout');
+		const width = page.viewportSize()!.width;
+		for (const height of [600, 1080]) {
+			await page.setViewportSize({ width, height });
+			await page.goto(listing(locale));
+			await page.evaluate(() => document.fonts.ready);
+			const hero = await tokenPx(page, '--text-hero');
+			for (const title of await page.locator('[data-testid^="service-card-"]').getByRole('heading', { level: 2 }).all())
+				expect(await title.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeLessThan(hero);
+
+			const tabs = (await page.getByRole('tablist').boundingBox())!;
+			const tabsBottom = tabs.y + tabs.height;
+			const entry = await page.locator('[data-testid^="service-card-"]').first().evaluate((card) => {
+				const block = card.firstElementChild!;
+				return { ...block.getBoundingClientRect().toJSON(), pinTop: parseFloat(getComputedStyle(block).top) };
+			});
+			const gap = entry.pinTop - tabsBottom;
+			const area = height - tabsBottom;
+			if (entry.height <= area - 2 * gap) {
+				expect(Math.abs(entry.top + entry.height / 2 - (tabsBottom + area / 2))).toBeLessThanOrEqual(1);
+			} else {
+				expect(Math.abs(entry.top - entry.pinTop), 'too tall to centre: it starts where later stations pin').toBeLessThanOrEqual(1);
+			}
+		}
+	});

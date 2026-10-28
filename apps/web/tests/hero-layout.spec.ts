@@ -143,29 +143,76 @@ for (const locale of ['en', 'fr', 'es']) {
 	});
 }
 
-test('below 1024px the SQL example opens from its tab and folds back to it', async ({ page }) => {
+const transitionsDone = (el: Element) =>
+	Promise.allSettled(el.getAnimations({ subtree: true }).filter((a) => a instanceof CSSTransition).map((a) => a.finished));
+
+test('below 1024px one binder tab pulls the SQL example down and folds it back', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto('/');
 	const region = page.getByTestId('hero-mobile-sql');
-	// The opener comes first; it stays the same element as its state changes.
-	const show = region.getByRole('button').first();
-	await expect(show).toHaveAttribute('aria-expanded', 'false');
-	await expect(show).toHaveAttribute('aria-controls', /\S/);
-	const example = page.locator(`#${await show.getAttribute('aria-controls')}`);
-	await expect(example).toHaveAttribute('aria-hidden', 'true');
+	const exampleId = await region.getByRole('button', { expanded: false }).getAttribute('aria-controls');
+	const tab = region.locator(`[aria-controls="${exampleId}"]`);
+	const example = page.locator(`#${exampleId}`);
+	const closedName = await tab.evaluate((el) => {
+		const copy = el.cloneNode(true) as Element;
+		copy.querySelectorAll('[aria-hidden="true"]').forEach((node) => node.remove());
+		return copy.textContent!.trim();
+	});
 
-	await show.click();
-	await expect(show).toHaveAttribute('aria-expanded', 'true');
-	await expect(example).not.toHaveAttribute('aria-hidden');
+	const tugged = tab.evaluate((el) => new Promise<boolean>((resolve) => el.addEventListener('animationstart', () => resolve(true), { once: true })));
+	await tab.scrollIntoViewIfNeeded();
+	expect(await tugged, 'the tab tugs the first time it is fully in view').toBe(true);
+
+	const gap = () =>
+		page.evaluate((id) => {
+			const tabBox = document.querySelector(`[aria-controls="${id}"]`)!.getBoundingClientRect();
+			const exampleBox = document.getElementById(id!)!.getBoundingClientRect();
+			const titleBox = document.querySelector('[data-testid="hero-text-container"]')!.getBoundingClientRect();
+			return { belowExample: tabBox.top - exampleBox.bottom, belowTitle: tabBox.top - titleBox.bottom };
+		}, exampleId);
+
+	await expect(example).toHaveAttribute('aria-hidden', 'true');
+	expect((await gap()).belowTitle).toBeGreaterThanOrEqual(0);
+
+	await tab.click();
+	await expect(tab).toHaveAttribute('aria-expanded', 'true');
+	await expect(tab).not.toHaveAccessibleName(closedName);
+	await expect(tab).toBeFocused();
+	await expect(region.getByRole('button', { expanded: false })).toHaveCount(0);
+	await example.evaluate(transitionsDone);
 	await expect(example.getByTestId('sql-panel')).toBeVisible();
+	const open = await gap();
+	expect(open.belowExample, 'the tab ends at the foot of the revealed example').toBeGreaterThanOrEqual(0);
+	expect(open.belowExample).toBeLessThanOrEqual(2);
 
-	// The fold-up tab is the example's last control; closing hands focus back to the opener.
-	await example.getByRole('button').last().click();
-	await expect(show).toHaveAttribute('aria-expanded', 'false');
-	await expect(show).toBeFocused();
+	await tab.click();
+	await expect(tab).toHaveAttribute('aria-expanded', 'false');
+	await expect(tab).toHaveAccessibleName(closedName);
+	await expect(tab).toBeFocused();
+	await example.evaluate(transitionsDone);
 	await expect(example).toHaveAttribute('aria-hidden', 'true');
+	expect((await gap()).belowTitle, 'the tab returns under the title block').toBeGreaterThanOrEqual(0);
 
 	await page.setViewportSize({ width: 1280, height: 800 });
 	await expect(region).toBeHidden();
 	await expect(page.getByTestId('sql-panel').filter({ visible: true })).toHaveCount(1);
+});
+
+test('under reduced motion the binder tab opens and closes without animating', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/');
+	const region = page.getByTestId('hero-mobile-sql');
+	const exampleId = await region.getByRole('button', { expanded: false }).getAttribute('aria-controls');
+	const tab = region.locator(`[aria-controls="${exampleId}"]`);
+	const animating = () => region.evaluate((el) => el.getAnimations({ subtree: true }).length);
+
+	await tab.scrollIntoViewIfNeeded();
+	expect(await animating()).toBe(0);
+	await tab.click();
+	await expect(tab).toHaveAttribute('aria-expanded', 'true');
+	expect(await animating()).toBe(0);
+	await tab.click();
+	await expect(tab).toHaveAttribute('aria-expanded', 'false');
+	expect(await animating()).toBe(0);
 });

@@ -1,7 +1,12 @@
 <!--
-  HeroMobileSql — the SQL example under the stacked hero (below lg), closed behind a binder tab that
-  hangs from the amber rule; a tab at its foot folds it back up. Desktop shows the panel in the grid.
+  HeroMobileSql — the SQL example under the stacked hero (below lg), folded up behind a binder tab that
+  hangs from the amber rule. Pulling the tab draws the example down and the tab rides at its foot;
+  the same tab folds it back. Desktop shows the panel in the grid.
 -->
+<script lang="ts" module>
+	let tugged = false;
+</script>
+
 <script lang="ts">
 	import * as Collapsible from '@yesid/ui/collapsible';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
@@ -34,66 +39,74 @@
 	} = $props();
 
 	const tabs = {
-		en: { show: 'See a small example', hide: 'Hide the example' },
-		fr: { show: 'Voir un petit exemple', hide: "Masquer l'exemple" },
-		es: { show: 'Ver un pequeño ejemplo', hide: 'Ocultar el ejemplo' },
+		en: { show: 'See a small example', close: 'Close' },
+		fr: { show: 'Voir un petit exemple', close: 'Fermer' },
+		es: { show: 'Ver un pequeño ejemplo', close: 'Cerrar' },
 	}[getLocale()];
 
 	const exampleId = $props.id();
 	let open = $state(false);
-	let showTab = $state<HTMLButtonElement | null>(null);
+	let tab = $state<HTMLButtonElement | null>(null);
+	let tug = $state(false);
 
-	function hide() {
-		open = false;
-		showTab?.focus();
-	}
+	// Once per page load, the first time the whole tab is in view, it tugs so it reads as pullable.
+	$effect(() => {
+		if (!tab || tugged) return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				observer.disconnect();
+				tugged = true;
+				tug = true;
+			},
+			{ threshold: 1 },
+		);
+		observer.observe(tab);
+		return () => observer.disconnect();
+	});
 </script>
 
 <div class="hero-sql pb-10 lg:hidden" data-testid="hero-mobile-sql">
 	<Collapsible.Root bind:open>
-		<!-- Horizontal divider — mirrors the vertical desktop divider -->
-		<div class="hero-divider-h mx-6"></div>
-		<div class="flex justify-center">
-			<Collapsible.Trigger bind:ref={showTab} class="binder-tab tap-press" aria-controls={exampleId}>
-				{tabs.show}<span class="binder-tab-mark" aria-hidden="true">{open ? '▴' : '▾'}</span>
-			</Collapsible.Trigger>
-		</div>
-
 		<Collapsible.Content id={exampleId}>
-			<div class="w-full px-[var(--space-page-x)] pt-6">
-				<HeroSqlPanel
-					rows={heroData.queryRows}
-					queryTime={heroData.queryTime}
-					prompt={sqlPrompt}
-					liveLabel={sqlLiveLabel}
-					columnRoute={sqlColumnRoute}
-					columnAvgDelay={sqlColumnAvgDelay}
-					columnVehicles={sqlColumnVehicles}
-					metaTemplate={sqlMetaTemplate}
-					{updatedAgo}
-				/>
+			<div class="example pb-8">
+				<div class="hero-divider-h mx-6"></div>
+				<div class="w-full px-[var(--space-page-x)] pt-6">
+					<HeroSqlPanel
+						rows={heroData.queryRows}
+						queryTime={heroData.queryTime}
+						prompt={sqlPrompt}
+						liveLabel={sqlLiveLabel}
+						columnRoute={sqlColumnRoute}
+						columnAvgDelay={sqlColumnAvgDelay}
+						columnVehicles={sqlColumnVehicles}
+						metaTemplate={sqlMetaTemplate}
+						{updatedAgo}
+					/>
 
-				<div class="mt-8 text-center">
-					<button
-						class="refresh-btn tap-press"
-						data-testid="hero-refresh-mobile"
-						onclick={onRefresh}
-					>
-						<span class="text-xl">&#x21bb;</span>
-						{refreshLabel}
-					</button>
-					<div class="mt-2 font-mono text-caption text-[var(--muted-foreground)]">
-						{refreshHelper}
+					<div class="mt-8 text-center">
+						<button
+							class="refresh-btn tap-press"
+							data-testid="hero-refresh-mobile"
+							onclick={onRefresh}
+						>
+							<span class="text-xl">&#x21bb;</span>
+							{refreshLabel}
+						</button>
+						<div class="mt-2 font-mono text-caption text-[var(--muted-foreground)]">
+							{refreshHelper}
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="hero-divider-h mx-6 mt-8"></div>
-			<div class="flex justify-center">
-				<button type="button" class="binder-tab tap-press" onclick={hide}>
-					{tabs.hide}<span class="binder-tab-mark" aria-hidden="true">▴</span>
-				</button>
-			</div>
 		</Collapsible.Content>
+		<!-- Horizontal divider — mirrors the vertical desktop divider -->
+		<div class="hero-divider-h mx-6"></div>
+		<div class="flex justify-center">
+			<Collapsible.Trigger bind:ref={tab} class="binder-tab tap-press {tug ? 'tug' : ''}" aria-controls={exampleId}>
+				{open ? tabs.close : tabs.show}<span class="binder-tab-mark" aria-hidden="true">{open ? '▴' : '▾'}</span>
+			</Collapsible.Trigger>
+		</div>
 	</Collapsible.Root>
 </div>
 
@@ -133,6 +146,25 @@
 	.hero-sql :global(.binder-tab:focus-visible) {
 		outline: 2px solid var(--primary-foreground);
 		outline-offset: -6px;
+	}
+
+	/* The example slides down from behind the rule in step with the opening panel, so its foot
+	   (and the tab under it) leads. */
+	:global([data-state='closed']) .example {
+		translate: 0 -100%;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.example {
+			transition: translate var(--duration-slow) var(--ease-default);
+		}
+		.hero-sql :global(.binder-tab.tug) {
+			animation: binder-tug var(--duration-slower) var(--ease-bounce);
+		}
+	}
+	@keyframes binder-tug {
+		40% {
+			translate: 0 0.5rem;
+		}
 	}
 
 	/* Refresh button — orange gradient, glow, JetBrains Mono */
