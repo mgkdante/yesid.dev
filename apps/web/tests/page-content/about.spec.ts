@@ -20,6 +20,37 @@ for (const locale of ['', '/fr', '/es'])
 				const sizes = await page.getByTestId(id).locator('p').evaluateAll(els => els.map(el => parseFloat(getComputedStyle(el).fontSize)));
 				expect(Math.min(...sizes), `${id} prose keeps the approved body-text floor`).toBeGreaterThanOrEqual(16);
 			}
+			const card = page.getByTestId('about-testimonials');
+			const dots = card.getByRole('tab');
+			for (const viewport of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }, { width: 820, height: 1180 }, { width: 1280, height: 600 }]) {
+				await page.setViewportSize(viewport);
+				for (const dot of await dots.all()) {
+					await expect(async () => {
+						await dot.click();
+						await expect(dot).toHaveAttribute('aria-selected', 'true', { timeout: 1000 });
+					}).toPass();
+					await expect(dot).toBeFocused();
+					const geometry = await card.evaluate((el) => {
+						const style = getComputedStyle(el), bounds = el.getBoundingClientRect();
+						const label = el.querySelector('[data-slot="stop-label"]')!;
+						const controls = el.querySelector('[data-testid="about-quote-controls"]')!;
+						const quote = el.querySelector('[data-testid="about-quote-body"]')!.firstElementChild!.getBoundingClientRect();
+						const top = label.getBoundingClientRect().bottom + parseFloat(getComputedStyle(label).marginBottom);
+						const bottom = controls.getBoundingClientRect().top - parseFloat(getComputedStyle(controls).marginTop);
+						return {
+							topGap: label.getBoundingClientRect().top - bounds.top - parseFloat(style.borderTopWidth) - parseFloat(style.paddingTop),
+							bottomGap: bounds.bottom - parseFloat(style.borderBottomWidth) - parseFloat(style.paddingBottom) - controls.getBoundingClientRect().bottom,
+							centreOffset: (quote.top + quote.bottom - top - bottom) / 2,
+							clearsLabel: quote.top >= top,
+							clearsControls: quote.bottom <= bottom,
+						};
+					});
+					expect(Math.abs(geometry.topGap), 'the stop label stays at the padded card top').toBeLessThanOrEqual(1);
+					expect(Math.abs(geometry.bottomGap), 'controls sit at the padded card bottom').toBeLessThanOrEqual(1);
+					expect(Math.abs(geometry.centreOffset), 'quote and attribution centre between label and controls').toBeLessThanOrEqual(1);
+					expect(geometry.clearsLabel && geometry.clearsControls, 'quote content does not overlap the label or controls').toBe(true);
+				}
+			}
 			for (const id of ['about-identity-scroll', 'about-method-scroll', 'about-quote-body']) {
 				const body = page.getByTestId(id);
 				await body.evaluate((el) => {

@@ -72,14 +72,14 @@
 			<SectionLabel text={stationLabelText} variant="station" class="mb-4 block" />
 
 			<div class="title-row">
+				<h2 class="service-title">
+					{title}<span class="title-dot">.</span>
+				</h2>
 				{#if svgContent}
 					<div class="svg-mobile-banner">
 						<ServiceSvgPanel {svgContent} variant="banner" />
 					</div>
 				{/if}
-				<h2 class="service-title">
-					{title}<span class="title-dot">.</span>
-				</h2>
 			</div>
 
 			{#if subtitle}

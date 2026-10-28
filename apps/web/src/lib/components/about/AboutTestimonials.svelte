@@ -61,10 +61,10 @@
 
 <div class="group h-full" use:cursorGlow>
 	<Card class="h-full min-h-[19rem] p-3" data-testid="about-testimonials" role="region" aria-label={carouselAria}>
-		<div class="relative flex flex-col">
+		<div class="relative flex flex-1 flex-col">
 			<StopLabel {stop} {label} as="h2" />
 
-			<div class="pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite">
+			<div class="flex flex-1 flex-col justify-center pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite">
 				<div class="flex flex-col justify-center">
 					<div class="font-heading text-7xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 						&ldquo;
