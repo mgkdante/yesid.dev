@@ -215,7 +215,7 @@ test('station activation follows a short viewport resize and cleared deep link',
 });
 
 for (const locale of PUBLISHED_LOCALES)
-	test(`${locale}: on phones each service title shares its row with the service icon`, async ({ page, isMobile }) => {
+	test(`${locale}: on phones each service title precedes the icon in the same row`, async ({ page, isMobile }) => {
 		test.skip(!isMobile, 'phone layout');
 		await page.goto(listing(locale));
 		await page.evaluate(() => document.fonts.ready);
@@ -227,7 +227,8 @@ for (const locale of PUBLISHED_LOCALES)
 			const icon = card.getByTestId('service-svg-panel').filter({ visible: true });
 			const [titleBox, iconBox] = [(await title.boundingBox())!, (await icon.boundingBox())!];
 			expect(Math.abs(titleBox.y + titleBox.height / 2 - (iconBox.y + iconBox.height / 2))).toBeLessThanOrEqual(1);
-			expect(iconBox.x + iconBox.width).toBeLessThanOrEqual(titleBox.x);
+			expect(titleBox.x + titleBox.width).toBeLessThanOrEqual(iconBox.x);
+			expect(await title.evaluate((el, panel) => Boolean(el.compareDocumentPosition(panel!) & Node.DOCUMENT_POSITION_FOLLOWING), await icon.elementHandle()), 'the title is read before the icon').toBe(true);
 			expect(await title.evaluate((el) => el.scrollWidth <= el.clientWidth), 'the title wraps inside its column').toBe(true);
 			const size = await title.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
 			expect(size).toBeGreaterThan(heading);
