@@ -15,7 +15,6 @@ export const YESID_FORBIDDEN: readonly ForbiddenPattern[] = [
 
 export const YESID_COLOR_MIX_FILES: readonly string[] = [
 	'src/lib/components/home/Manifesto.svelte',
-	'src/lib/components/layout/MenuOverlay.svelte',
 	'src/lib/components/home/FeaturedProjects.svelte',
 ];
 

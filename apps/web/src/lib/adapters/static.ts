@@ -18,7 +18,7 @@
 //      shell labels. They are build-cache values, not runtime CMS calls; routing
 //      them through every load() would add plumbing with no client benefit.
 //   3. SANCTIONED EXCEPTIONS: +layout.ts / +layout.server.ts / +error.svelte /
-//      Nav / MenuOverlay / Footer static-fallback imports (CSR-only fallback
+//      SiteHeader / Footer static-fallback imports (CSR-only fallback
 //      when server data is absent); HeroBanner's client-side
 //      generateHeroData() refresh (interactive mock regen, not CMS data);
 //      test files stubbing load output.

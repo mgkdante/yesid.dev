@@ -2,15 +2,14 @@
 	import '@yesid/tokens/fonts.css';
 	import '#lib/styles/site.css';
 	import '#lib/styles/terminal.css';
-	import Nav from '#lib/components/layout/Nav.svelte';
-	import FooterWordmark from '#lib/components/layout/FooterWordmark.svelte';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { onNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import { viewTransition } from '@yesid/motion/utils/viewTransition';
 	import '@yesid/motion/ripple.css';
-	import { SiteFooter, SiteRoot } from '@yesid/ui/layout';
+	import { SiteFooter, SiteHeader, SiteRoot } from '@yesid/ui/layout';
+	import { Wordmark } from '@yesid/ui/brand';
 	import { FooterLink } from '@yesid/ui/footer';
 	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
 	import { theme } from '@yesid/ui/state';
@@ -28,6 +27,7 @@
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
+	import { PUBLISHED_LOCALES, languageHref } from '#lib/utils/seo-defaults.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
 	import { initGlobalRipple } from '@yesid/motion/utils/globalRipple';
@@ -35,7 +35,7 @@
 	import { setFavicon } from '#lib/utils/favicon.ts';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '#lib/navigation/types.ts';
-	import type { MorphShape } from '#lib/types.ts';
+	import type { Locale, MorphShape } from '#lib/types.ts';
 
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
@@ -45,13 +45,13 @@
 		morphShapes?: readonly MorphShape[];
 	}; children: import('svelte').Snippet } = $props();
 
-	// Nav slots — threaded from +layout.server.ts via the adapter.nav port.
-	// Passed as props so Nav/Footer don't import from $lib/content directly.
+	// Header slots — threaded from +layout.server.ts via the adapter.nav port.
+	// Passed as props so SiteHeader/Footer don't import from $lib/content directly.
 	const headerLinks = $derived(data.headerLinks ?? []);
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
 
-	// slice-28.6: request locale. Persistent chrome (Nav/MenuOverlay/Footer/
+	// slice-28.6: request locale. Persistent chrome (SiteHeader/Footer/
 	// SeoHead) receives it as a prop ($derived — it never remounts); everything
 	// under {#key $page.url.pathname} reads it via getLocale() context
 	// (page components remount per pathname, so an init-time read is correct).
@@ -104,6 +104,11 @@
 	// Compares the canonical (delocalized) pathname so /fr/projects/x gets the
 	// same treatment as /projects/x (slice-28.6).
 	const basePath = $derived(delocalizePath(page.url.pathname));
+	const navChrome = siteLabels.navChrome.shared;
+	const isCurrent = (href: string) => (href === '/' ? basePath === '/' : basePath.startsWith(href));
+	const nextLocale = $derived(
+		PUBLISHED_LOCALES[(Math.max(0, PUBLISHED_LOCALES.indexOf(locale)) + 1) % PUBLISHED_LOCALES.length],
+	);
 
 	const LIVE_LABEL = { en: 'Live', fr: 'En direct', es: 'En vivo' } as const;
 	const footer = siteLabels.footerChrome.footer;
@@ -126,7 +131,7 @@
 </script>
 
 {#snippet footerBrand()}
-	<FooterWordmark {locale} />
+	<Wordmark href={localizeHref('/', locale)} data-testid="footer-wordmark" class="items-baseline text-2xl" />
 {/snippet}
 
 {#snippet footerAddress()}
@@ -159,13 +164,35 @@
 	<div
 		class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]"
 	>
-		<Nav
-			pathname={page.url.pathname}
-			url={new URL(page.url.href)}
-			locale={locale}
-			localeAlternates={data.seo.localeAlternates}
-			headerLinks={headerLinks}
-			menuItems={menuItems}
+		<SiteHeader
+			navigation={{ beforeNavigate, onNavigate, afterNavigate }}
+			home={localizeHref('/', locale)}
+			links={headerLinks.map((link) => ({
+				href: localizeHref(link.href, locale),
+				label: resolveLocale(link.label, locale),
+				current: isCurrent(link.href),
+				priority: link.priority,
+			}))}
+			menuItems={menuItems.map((item) => ({
+				href: localizeHref(item.href, locale),
+				label: resolveLocale(item.label, locale),
+				subtitle: item.subtitle ? resolveLocale(item.subtitle, locale) : undefined,
+				current: isCurrent(item.href),
+			}))}
+			labels={{
+				openMenu: resolveLocale(navChrome.openMenuAria, locale),
+				closeMenu: resolveLocale(navChrome.closeMenuAria, locale),
+				menu: resolveLocale(navChrome.menuOverlayAria, locale),
+				theme: resolveLocale(navChrome.themeToggleAria, locale),
+				menuFooter: resolveLocale(navChrome.menuOverlayFooterLabel, locale),
+			}}
+			language={{
+				locale,
+				locales: PUBLISHED_LOCALES,
+				href: (next) => languageHref(new URL(page.url.href), next as Locale, data.seo.localeAlternates),
+				label: resolveLocale(navChrome.localeSwitcherAria, locale),
+				preserveState: !data.seo.localeAlternates || Boolean(data.seo.localeAlternates[nextLocale]),
+			}}
 		/>
 
 		{#key page.url.pathname}

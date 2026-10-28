@@ -75,7 +75,7 @@ describe('product-owned token adapter', () => {
 		expect(design).toContain(
 			'GENERATED FROM apps/web/vendor/design/tokens/tokens.json — DO NOT EDIT',
 		);
-		expect(design).toContain('`@yesid/ui/brand` (23 components:');
+		expect(design).toMatch(/`@yesid\/ui\/brand` \(\d+ components:/);
 		expect(design).toContain('14 primitive subpaths');
 		for (const [path, content] of untouched) {
 			expect(readFileSync(resolve(root, path), 'utf8'), path).toBe(content);

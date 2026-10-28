@@ -35,11 +35,6 @@ const BREAKPOINTS = [
 const NONCANONICAL_MEDIA_INVENTORY = [
 	{
 		path: 'apps/web/src/app.css',
-		condition: '(max-width: 479px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/app.css',
 		condition: '(min-width: 1440px) and (min-height: 800px)',
 		occurrences: 1,
 	},
@@ -160,46 +155,6 @@ const NONCANONICAL_MEDIA_INVENTORY = [
 	},
 	{
 		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
-		condition: '(max-width: 359px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
-		condition: '(max-width: 479px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/LanguageToggle.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/MenuOverlay.svelte',
-		condition: '(max-height: 720px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/MenuOverlay.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/Nav.svelte',
-		condition: '(max-width: 359px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/Nav.svelte',
-		condition: '(max-width: 479px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/layout/Nav.svelte',
 		condition: '(prefers-reduced-motion: reduce)',
 		occurrences: 1,
 	},
