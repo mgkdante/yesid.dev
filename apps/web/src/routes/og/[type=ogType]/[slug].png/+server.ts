@@ -1,9 +1,9 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { loadOgTitle, type OgType } from '#lib/og/load-title.ts';
 import { ogSlugParam, parseOgSlugParam } from '#lib/og/og-path.ts';
-import { buildOgTree } from '#lib/og/template.ts';
-import { renderOgPng } from '#lib/og/render.ts';
-import { getOgFonts } from '#lib/og/fonts.ts';
+import { Resvg } from '@resvg/resvg-js';
+import { OG_WIDTH, renderOgPng } from '@yesid/seo-kit/og';
+import { ogFonts } from '@yesid/seo-kit/og/fonts';
 import { ogBlogRows, ogProjectSlugs } from '#lib/server/prerender-entries.ts';
 import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { isPathPublished } from '#lib/utils/page-registry.ts';
@@ -27,11 +27,6 @@ export function entries(): Array<{ type: OgType; slug: string }> {
 		),
 	];
 }
-
-// Eager-call so font failures surface at deploy time, not mid-request.
-// If this throws at module init, the whole route fails loud (500) — that
-// is intentional; a broken deploy must not silently fall back.
-getOgFonts();
 
 const HAPPY_HEADERS = {
   'content-type': 'image/png',
@@ -59,8 +54,11 @@ export const GET: RequestHandler = async (event) => {
   }
 
   try {
-    const tree = buildOgTree(titleResult);
-    const png = await renderOgPng(tree);
+    const png = await renderOgPng(
+      { ...titleResult, wordmark: 'yesid', handle: 'yesid.dev', location: 'Montréal · QC' },
+      ogFonts,
+      (svg) => new Resvg(svg, { fitTo: { mode: 'width', value: OG_WIDTH } }).render().asPng(),
+    );
     // Cast: BodyInit's lib.dom.d.ts shape rejects Uint8Array<ArrayBufferLike>
     // (only accepts ArrayBufferView<ArrayBuffer>), but Response accepts it at
     // runtime in both Node and the Web Fetch standard. Verified at the

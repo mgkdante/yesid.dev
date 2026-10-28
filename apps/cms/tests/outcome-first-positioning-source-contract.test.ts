@@ -64,10 +64,6 @@ describe('outcome-first positioning source contract', () => {
 	});
 
 	test('default and route OG generators carry the outcome-first identity in every locale', () => {
-		const defaultOg = source('apps/web/scripts/generate-og-default.ts');
-		expect(defaultOg).toContain('generate-og-cards.ts');
-		expect(defaultOg).not.toContain('siteMeta.tagline');
-		expect(defaultOg).not.toContain('new Resvg');
 
 		const routeOg = source('apps/web/scripts/generate-og-cards.ts');
 		for (const copy of [

@@ -1,3 +1,4 @@
+import { robotsTxt } from '@yesid/seo-kit/sitemap';
 import type { RequestHandler } from './$types';
 import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
 import { SITE_HOST } from '#lib/utils/seo-defaults.ts';
@@ -8,7 +9,7 @@ export const prerender = false;
 
 export const GET: RequestHandler = async ({ url }) => {
 	if (!isProductionHostname(url.hostname)) {
-		return new Response('User-agent: *\nDisallow: /\n', {
+		return new Response(robotsTxt({ indexing: false }), {
 			headers: {
 				'content-type': 'text/plain; charset=utf-8',
 				'cache-control': 'no-store',
@@ -17,15 +18,11 @@ export const GET: RequestHandler = async ({ url }) => {
 		});
 	}
 
-	const body = `User-agent: *
-Allow: /
-
-Sitemap: ${SITE_HOST}/sitemap.xml
-
-# AI crawlers: condensed, CMS-fresh site context
-# ${SITE_HOST}/llms.txt
-# ${SITE_HOST}/llms-full.txt
-`;
+	const body = robotsTxt({
+		indexing: true,
+		sitemap: `${SITE_HOST}/sitemap.xml`,
+		notes: ['AI crawlers: condensed, CMS-fresh site context', `${SITE_HOST}/llms.txt`, `${SITE_HOST}/llms-full.txt`],
+	});
 	return new Response(body, {
 		headers: {
 			'content-type': 'text/plain; charset=utf-8',

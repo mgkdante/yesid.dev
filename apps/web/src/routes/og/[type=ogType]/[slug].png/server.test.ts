@@ -7,17 +7,12 @@ const renderOgPngMock = vi.fn();
 vi.mock('#lib/og/load-title.ts', () => ({
   loadOgTitle: (...args: unknown[]) => loadOgTitleMock(...args),
 }));
-vi.mock('#lib/og/render.ts', () => ({
+vi.mock('@yesid/seo-kit/og', () => ({
+  OG_WIDTH: 1200,
   renderOgPng: (...args: unknown[]) => renderOgPngMock(...args),
 }));
-// Avoid loading real fonts during endpoint tests.
-vi.mock('#lib/og/template.ts', () => ({
-  buildOgTree: () => ({ type: 'div', props: { children: [] } }),
-}));
-// Stub fonts to prevent the eager-load module-init failure path.
-vi.mock('#lib/og/fonts.ts', () => ({
-  getOgFonts: () => [],
-}));
+// Avoid decoding the real fonts during endpoint tests.
+vi.mock('@yesid/seo-kit/og/fonts', () => ({ ogFonts: [] }));
 
 import { blogPosts } from '#lib/content/blog.ts';
 import { projects } from '#lib/content/projects.ts';

@@ -43,9 +43,9 @@ const OUT = `${REPO}/gbp-assets`;
 const require = createRequire(`${WEB}/package.json`);
 const { Resvg } = require('@resvg/resvg-js') as typeof import('@resvg/resvg-js');
 const FONT_FILES = [
-	`${WEB}/src/lib/og/fonts/Inter-Black.ttf`,
-	`${WEB}/src/lib/og/fonts/Inter-Medium.ttf`,
-	`${WEB}/src/lib/og/fonts/JetBrainsMono-Medium.ttf`,
+	`${WEB}/vendor/design/seo-kit/fonts/Inter-Black.ttf`,
+	`${WEB}/vendor/design/seo-kit/fonts/Inter-Medium.ttf`,
+	`${WEB}/vendor/design/seo-kit/fonts/JetBrainsMono-Medium.ttf`,
 ];
 const YELLOW = '#FFB627';
 // Every DOT is the vivid brand orange on BOTH themes (operator: the dots must

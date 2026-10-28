@@ -227,7 +227,6 @@ describe('immutable design customer contract', () => {
 		const boundaries = [
 			['src/routes/sitemap.xml/+server.ts', "from '@yesid/seo-kit/sitemap'"],
 			['src/lib/adapters/jsonld.ts', "from '@yesid/seo-kit/jsonld'"],
-			['src/lib/og/render.ts', "from '@yesid/seo-kit/satori'"],
 			['src/tests/sitemap-coverage.test.ts', "from '@yesid/gates'"],
 			['src/tests/og-coverage.test.ts', "from '@yesid/gates'"],
 		] as const;
@@ -235,9 +234,6 @@ describe('immutable design customer contract', () => {
 		for (const [path, boundary] of boundaries) {
 			expect(readFileSync(join(process.cwd(), path), 'utf8'), path).toContain(boundary);
 		}
-		expect(readFileSync(join(process.cwd(), 'src/lib/og/render.ts'), 'utf8')).not.toContain(
-			"import satori from 'satori'",
-		);
 	});
 
 	it('keeps the consumer-owned Satori peer on the byte-parity version', () => {
