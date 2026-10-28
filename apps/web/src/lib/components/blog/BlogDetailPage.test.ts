@@ -92,7 +92,7 @@ describe('BlogDetailPage', () => {
 				headings: mockHeadings,
 				blogPage: mockBlogPage,
 			},
-			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
 		});
 		expect(french.getByRole('link', { name: 'back to Blog' })).toHaveAttribute(
 			'href',
@@ -107,7 +107,7 @@ describe('BlogDetailPage', () => {
 				headings: mockHeadings,
 				blogPage: mockBlogPage,
 			},
-			context: new Map([[Symbol.for('yesid.locale'), () => 'es']]),
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'es']]),
 		});
 		expect(spanishPersonal.getByRole('link', { name: 'back to personal' })).toHaveAttribute(
 			'href',

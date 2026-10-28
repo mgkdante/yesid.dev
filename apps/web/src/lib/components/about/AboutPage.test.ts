@@ -154,7 +154,7 @@ describe('AboutPage', () => {
 		it(`renders supplied content with a semantic outline in ${locale}`, () => {
 			const { container } = render(AboutPage, {
 				props: { aboutPage: fixture, weather: null },
-				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+				context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 			});
 			expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument();
 			expect(screen.getByTestId('about-identity')).toHaveTextContent(biography);

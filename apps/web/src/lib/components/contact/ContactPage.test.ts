@@ -202,7 +202,7 @@ describe('ContactPage', () => {
 			};
 			render(ContactPage, {
 				props: { contactPage: supplied },
-				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+				context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 			});
 			for (const section of screen.getAllByTestId('contact-best-fit')) {
 				expect(section).toHaveTextContent(label);
@@ -491,7 +491,7 @@ describe('ContactPage', () => {
 		) as typeof globalThis.fetch;
 		render(ContactPage, {
 			props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } },
-			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
 		});
 		await waitFor(() => {
 			expect(globalThis.fetch).toHaveBeenCalledWith('/api/weather?lang=fr');

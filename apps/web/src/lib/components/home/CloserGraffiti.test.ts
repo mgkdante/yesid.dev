@@ -81,7 +81,7 @@ describe('CloserGraffiti', () => {
 		}) as typeof fetch;
 
 		render(CloserGraffiti, {
-			context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 		});
 
 		await waitFor(() => expect(requests).toEqual([asset]));

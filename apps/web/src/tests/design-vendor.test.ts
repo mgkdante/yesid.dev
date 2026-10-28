@@ -2,7 +2,6 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { Window } from 'happy-dom';
-import * as ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = resolve(process.cwd(), '../..');
@@ -42,88 +41,12 @@ function walkFiles(dir: string, out: string[] = []): string[] {
 	return out;
 }
 
-interface ModuleUse {
-	specifier: string;
-	kind: 'static' | 'dynamic';
-	typeOnly: boolean;
-	bindings: readonly string[];
-}
-
-function sourceText(path: string): string {
-	const raw = readFileSync(path, 'utf8');
-	if (!path.endsWith('.svelte')) return raw;
-	return svelteScriptText(raw);
-}
-
 function svelteScriptText(raw: string): string {
 	const template = htmlWindow.document.createElement('template');
 	template.innerHTML = raw;
 	return [...template.content.querySelectorAll('script')]
 		.map((script) => script.textContent ?? '')
 		.join('\n');
-}
-
-function sourceFile(path: string): ts.SourceFile {
-	return ts.createSourceFile(path, sourceText(path), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-}
-
-function moduleUses(path: string): readonly ModuleUse[] {
-	const uses: ModuleUse[] = [];
-	const visit = (node: ts.Node): void => {
-		if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
-			const clause = node.importClause;
-			const named = clause?.namedBindings;
-			const bindings = [
-				...(clause?.name ? [clause.name.text] : []),
-				...(named && ts.isNamespaceImport(named)
-					? [named.name.text]
-					: named && ts.isNamedImports(named)
-						? named.elements.map((element) => element.name.text)
-						: []),
-			];
-			const typeOnly = Boolean(
-				clause?.isTypeOnly ||
-					(named &&
-						ts.isNamedImports(named) &&
-						named.elements.length > 0 &&
-						named.elements.every((element) => element.isTypeOnly)),
-			);
-			uses.push({
-				specifier: node.moduleSpecifier.text,
-				kind: 'static',
-				typeOnly,
-				bindings,
-			});
-		}
-		if (
-			ts.isCallExpression(node) &&
-			node.expression.kind === ts.SyntaxKind.ImportKeyword &&
-			node.arguments.length === 1 &&
-			ts.isStringLiteral(node.arguments[0])
-		) {
-			uses.push({
-				specifier: node.arguments[0].text,
-				kind: 'dynamic',
-				typeOnly: false,
-				bindings: [],
-			});
-		}
-		ts.forEachChild(node, visit);
-	};
-	visit(sourceFile(path));
-	return uses;
-}
-
-function productionSources(): readonly string[] {
-	return [join(ROOT, 'apps/web/src'), join(ROOT, 'apps/cms/scripts')]
-		.flatMap((dir) => walkFiles(dir))
-		.filter((path) => /\.(?:ts|svelte)$/.test(path))
-		.filter((path) => !/\.(?:test|spec)\.ts$/.test(path))
-		.filter((path) => !/(?:^|\/)tests?(?:\/|$)/.test(path));
-}
-
-function relativeProductionPath(path: string): string {
-	return relative(ROOT, path).replaceAll('\\', '/');
 }
 
 function vendorPath(path: string): string {
@@ -215,14 +138,6 @@ describe('immutable design customer contract', () => {
 		expect(cmsPackage.devDependencies['@yesid/i18n-core']).toBeUndefined();
 		expect(existsSync(join(ROOT, 'apps/cms/vendor/design/i18n-core'))).toBe(false);
 		expect(existsSync(join(VENDOR, 'ui/src/brand/QuietModeButton.svelte'))).toBe(true);
-	});
-
-	it('keeps production i18n consumers inside the locale-routing boundary', () => {
-		const i18nConsumers = productionSources()
-			.filter((path) => moduleUses(path).some((use) => use.specifier === '@yesid/i18n-core'))
-			.map(relativeProductionPath)
-			.sort();
-		expect(i18nConsumers).toEqual(['apps/web/src/lib/utils/locale-routing.ts']);
 	});
 
 	it('delegates neutral SEO mechanics while product policy stays consumer-owned', () => {

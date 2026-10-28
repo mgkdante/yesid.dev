@@ -66,7 +66,7 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		const labels = locales.map(locale => {
 			const view = render(HeroTextContent, {
 				props: baseProps({ beaconSettled: true }),
-				context: new Map([[Symbol.for('yesid.locale'), () => locale]]),
+				context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 			});
 			const label = screen.getByTestId('hero-annotation-label').textContent?.trim();
 			expect(label).toBeTruthy();

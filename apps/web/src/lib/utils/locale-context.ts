@@ -1,26 +1,10 @@
-// Svelte context bridge for the request locale — slice-28.6.
-//
-// WHY context, not $page.data, for the mechanically-converted call sites:
-//   - page components remount under +layout.svelte's {#key $page.url.pathname},
-//     so an init-time `const locale = getLocale()` is always current;
-//   - without a provider (component unit tests) it returns DEFAULT_LOCALE,
-//     which is byte-identical to the previous hardcoded 'en' — zero test churn.
-// Persistent chrome (SiteHeader/Footer/SeoHead) does NOT use this — it
-// receives `locale` as a prop and derives reactively, because it never
-// remounts. Any NEW persistent component must follow the prop pattern.
-import { getContext, setContext } from 'svelte';
+import { createIntl } from '@yesid/i18n-core';
+import { createLocaleContext } from '@yesid/ui/state';
 import type { Locale } from '#lib/types.ts';
 import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 
-const KEY = Symbol.for('yesid.locale');
+// The root layout provides the request locale. Page components remount per pathname, so an
+// init-time getLocale() is current; persistent chrome takes `locale` as a prop instead.
+export const { provide: provideLocale, get: getLocale } = createLocaleContext<Locale>(DEFAULT_LOCALE);
 
-/** Call once from +layout.svelte during init. `read` closes over reactive data. */
-export function provideLocale(read: () => Locale): void {
-	setContext(KEY, read);
-}
-
-/** Current request locale; DEFAULT_LOCALE when rendered without the app layout. */
-export function getLocale(): Locale {
-	const read = getContext<(() => Locale) | undefined>(KEY);
-	return read ? read() : DEFAULT_LOCALE;
-}
+export const intl = createIntl<Locale>({ en: 'en-CA', fr: 'fr-CA', es: 'es' });

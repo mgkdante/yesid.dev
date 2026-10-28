@@ -40,7 +40,7 @@ describe('AboutWeather weather refresh', () => {
 		try {
 			render(AboutWeather, {
 				props: { config, weather: null, stop: '06', label: 'LOCATION' },
-				context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+				context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
 			});
 			await waitFor(() => {
 				expect(fetchMock).toHaveBeenCalledWith('/api/weather?lang=fr');
