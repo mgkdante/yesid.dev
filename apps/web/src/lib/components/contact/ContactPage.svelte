@@ -16,8 +16,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import { clock, persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
-	import { TerminalCursor } from '@yesid/ui/brand';
-	import TerminalChrome from '#lib/components/brand/TerminalChrome.svelte';
+	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
 	import { Button } from '@yesid/ui/button';
 	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
 	import { ResizableHandle } from '@yesid/ui/resizable';
@@ -338,7 +337,7 @@
 
 <!-- ═══ INFO TERMINAL SNIPPET ═══ -->
 {#snippet infoTerminal()}
-	<TerminalChrome title={contactPage.infoTerminal.title} class="h-full" data-testid="contact-info-terminal">
+	<TerminalPanel title={contactPage.infoTerminal.title} class="h-full" data-testid="contact-info-terminal">
 		<div class="font-mono text-body leading-relaxed">
 			<!-- Command line -->
 			<div class="mb-4 text-[var(--secondary-foreground)]">
@@ -421,12 +420,12 @@
 				<TerminalCursor />
 			</div>
 		</div>
-	</TerminalChrome>
+	</TerminalPanel>
 {/snippet}
 
 <!-- ═══ FORM TERMINAL SNIPPET ═══ -->
 {#snippet formTerminal(layout: 'desktop' | 'mobile')}
-	<TerminalChrome title={contactPage.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
+	<TerminalPanel title={contactPage.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
 		<div class="font-mono text-body leading-relaxed">
 			<!-- Command + output -->
 			<div class="mb-1 text-[var(--secondary-foreground)]">
@@ -568,7 +567,7 @@
 			{/if}
 
 		</div>
-	</TerminalChrome>
+	</TerminalPanel>
 {/snippet}
 
 <style>

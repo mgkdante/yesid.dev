@@ -1,5 +1,6 @@
 <script lang="ts">
 	let { class: className = '', ...rest }: { class?: string; style?: string; [key: string]: unknown } = $props();
+	const uid = $props.id();
 </script>
 
 <svg class={className} {...rest} viewBox="0 0 550 700" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
@@ -37,31 +38,31 @@
 
 	<!-- === CROSS-SECTION HATCHING (wall thickness ~50mm ≈ 3.25px, using 5px for visibility) === -->
 	<defs>
-		<clipPath id="hatch-left">
+		<clipPath id="{uid}-hatch-left">
 			<rect x="193" y="155" width="5" height="227"/>
 		</clipPath>
-		<clipPath id="hatch-right">
+		<clipPath id="{uid}-hatch-right">
 			<rect x="352" y="155" width="5" height="227"/>
 		</clipPath>
-		<clipPath id="hatch-roof">
+		<clipPath id="{uid}-hatch-roof">
 			<path d="M 193 185 Q 193 162, 210 155 Q 275 138, 340 155 Q 357 162, 357 185 L 352 185 Q 352 167, 338 160 Q 275 145, 212 160 Q 198 167, 198 185 Z"/>
 		</clipPath>
-		<clipPath id="hatch-floor">
+		<clipPath id="{uid}-hatch-floor">
 			<rect x="193" y="377" width="164" height="5"/>
 		</clipPath>
-		<pattern id="hatch-pattern" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+		<pattern id="{uid}-hatch-pattern" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
 			<line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="0.7" opacity="0.6"/>
 		</pattern>
 	</defs>
 
 	<!-- Left wall hatching -->
-	<rect x="188" y="150" width="12" height="232" fill="url(#hatch-pattern)" clip-path="url(#hatch-left)"/>
+	<rect x="188" y="150" width="12" height="232" fill="url(#{uid}-hatch-pattern)" clip-path="url(#{uid}-hatch-left)"/>
 	<!-- Right wall hatching -->
-	<rect x="348" y="150" width="12" height="232" fill="url(#hatch-pattern)" clip-path="url(#hatch-right)"/>
+	<rect x="348" y="150" width="12" height="232" fill="url(#{uid}-hatch-pattern)" clip-path="url(#{uid}-hatch-right)"/>
 	<!-- Roof hatching -->
-	<rect x="190" y="130" width="170" height="60" fill="url(#hatch-pattern)" clip-path="url(#hatch-roof)"/>
+	<rect x="190" y="130" width="170" height="60" fill="url(#{uid}-hatch-pattern)" clip-path="url(#{uid}-hatch-roof)"/>
 	<!-- Floor hatching -->
-	<rect x="190" y="374" width="170" height="12" fill="url(#hatch-pattern)" clip-path="url(#hatch-floor)"/>
+	<rect x="190" y="374" width="170" height="12" fill="url(#{uid}-hatch-pattern)" clip-path="url(#{uid}-hatch-floor)"/>
 
 	<!-- Inner wall lines (showing wall thickness) -->
 	<path d="

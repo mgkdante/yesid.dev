@@ -151,7 +151,7 @@ test.describe('light mode — per-page audit', () => {
 	test('hazard separators render real black+yellow tape in light mode', async ({ page }) => {
 		// GO2-W5 non-negotiable: light-mode hazard strips stay BLACK+YELLOW
 		// (theme-invariant tokens), never orange+white. Probe the strip under
-		// the closer board's titlebar (TerminalChrome composes Separator).
+		// the closer board's titlebar (TerminalPanel composes Separator).
 		await page.goto('/');
 		await expect(page.getByTestId('closer-board')).toBeVisible(); // probe target painted
 		const bgImage = await page.evaluate(() => {

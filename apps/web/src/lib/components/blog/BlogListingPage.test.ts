@@ -8,9 +8,7 @@ vi.mock('$app/navigation', () => ({ goto: vi.fn() }));
 vi.mock('$app/state', () => ({
 	page: { url: new URL('http://localhost/blog') },
 }));
-vi.mock('#lib/components/shared/listing-blueprint-scrub.ts', () => ({
-	startListingBlueprintScrub: async () => undefined,
-}));
+vi.mock('@yesid/motion/utils/blueprintScrub', () => ({ blueprintScrub: () => undefined }));
 vi.mock('#lib/motion/utils/flip.ts', () => ({
 	captureFlipState: () => null,
 	animateFlipTransition: () => undefined,

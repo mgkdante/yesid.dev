@@ -2,7 +2,6 @@
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
   import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
-  import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
   import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
   import {
@@ -330,9 +329,6 @@
         accent={accentColor}
         testId="blog-detail-header"
       >
-        {#snippet canvas(el)}
-          <ManifestoCanvas containerEl={el} />
-        {/snippet}
         {#snippet controls()}
           <QuietModeButton />
         {/snippet}

@@ -134,7 +134,7 @@ const README_SANITIZER_OPTIONS: IOptions = {
 		},
 		span: {
 			color: [
-				/^var\(--(?:primary|accent-text|muted-foreground|secondary-foreground|terminal-ink|terminal-ink-muted)\)$/,
+				/^var\(--syntax-(?:keyword|string|number|function|comment|punctuation|plain)\)$/,
 			],
 			'font-style': [/^(?:italic|normal)$/],
 		},

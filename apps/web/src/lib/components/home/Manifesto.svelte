@@ -14,8 +14,7 @@
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
 	import { boop } from '@yesid/motion/actions';
-	import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
-	import { TerminalCursor } from '@yesid/ui/brand';
+	import { ManifestoCanvas, TerminalCursor } from '@yesid/ui/brand';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
 	import ManifestoEdgeRight from './ManifestoEdgeRight.svelte';
 	import ManifestoEdgeTop from './ManifestoEdgeTop.svelte';
