@@ -1,7 +1,3 @@
-<!--
-  ProjectsBlueprint — Tunneling infrastructure blueprint background for the projects header.
-  Uses BlueprintShell for shared crosshairs, ref-labels, and CSS.
--->
 <script lang="ts">
 	import { BlueprintShell } from '@yesid/ui/brand';
 	import { BlueprintTBM, BlueprintTunnelSection, BlueprintErector, BlueprintGeology, BlueprintVentShaft, BlueprintGroutInjection } from '@yesid/ui/blueprints';

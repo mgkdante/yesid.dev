@@ -1,7 +1,3 @@
-<!--
-  BlogBlueprint — Transit infrastructure blueprint background for the blog header.
-  Uses BlueprintShell for shared crosshairs, ref-labels, and CSS.
--->
 <script lang="ts">
 	import { BlueprintShell } from '@yesid/ui/brand';
 	import { BlueprintBridge, BlueprintTrackPlan, BlueprintCatenary, BlueprintSignal, BlueprintStationSection, BlueprintDetailBogie } from '@yesid/ui/blueprints';
