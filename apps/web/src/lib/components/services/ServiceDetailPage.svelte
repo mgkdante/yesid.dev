@@ -17,6 +17,7 @@
 	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
+	import HeroDotAnnotation, { CLICK_ME, getLettering } from '#lib/components/home/HeroDotAnnotation.svelte';
 	import ServiceStackPanel from './ServiceStackPanel.svelte';
 	import {
 		CollapsibleSection,
@@ -71,6 +72,13 @@
 	// Services chrome — CMS truth (site_labels → servicesChrome.detail / .listing).
 	let stackLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.stackHeading, locale));
 	let hasStack = $derived((service.stack?.length ?? 0) > 0);
+	// The hero's hand-lettered "click me", left of the logo, its arrow ending at the logo's edge.
+	const clickMe = getLettering(CLICK_ME[locale]);
+	const clickStart = { x: 4 + clickMe.end.x + 2, y: 20 + clickMe.end.y };
+	const clickWidth = Math.ceil(clickStart.x + 30);
+	const clickArrow = `M${clickStart.x} ${clickStart.y} C${clickStart.x + 6} ${clickStart.y + 26} ${clickWidth - 26} 52 ${clickWidth - 2} 52`;
+	const clickTip = `M${clickWidth - 11} 47 L${clickWidth - 2} 52 L${clickWidth - 11} 57`;
+
 	let backLinkLabel = $derived(resolveLocale(siteLabels.servicesChrome.detail.backToServicesLabel, locale));
 	let valuePropositionHeading = $derived(
 		resolveLocale(siteLabels.servicesChrome.detail.valuePropositionHeading, locale)
@@ -184,6 +192,12 @@
 		/>
 	</div>
 
+	{#snippet clickMeNote()}
+		<span class="click-me" style="width: {clickWidth}px">
+			<HeroDotAnnotation lettering={clickMe} width={clickWidth} height={64} x={4} y={20} arrow={clickArrow} tip={clickTip} visible ready />
+		</span>
+	{/snippet}
+
 	{#snippet header()}
 		<!-- Hero — asymmetric split: text left, SVG right -->
 		<div class="hero-area">
@@ -218,6 +232,7 @@
 				<!-- SVG panel — desktop/tablet only (wrapper controls visibility). -->
 				{#if svgContent}
 					<div class="svg-desktop">
+						{@render clickMeNote()}
 						<ServiceSvgPanel {svgContent} />
 					</div>
 				{/if}
@@ -226,6 +241,7 @@
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
 			{#if svgContent}
 				<div class="svg-mobile">
+					{@render clickMeNote()}
 					<ServiceSvgPanel {svgContent} variant="banner" />
 				</div>
 			{/if}
@@ -420,6 +436,27 @@
 	@media (--tablet-min) {
 		.svg-desktop {
 			display: block;
+		}
+	}
+
+	.svg-desktop,
+	.svg-mobile {
+		position: relative;
+	}
+	.click-me {
+		position: absolute;
+		top: 1rem;
+		right: calc(100% + 0.25rem);
+		height: 64px;
+		pointer-events: none;
+	}
+	/* The banner's logo is centred, so the note sits left of its middle; too tight below 360px. */
+	.svg-mobile .click-me {
+		right: calc(50% + 4.25rem);
+	}
+	@media (max-width: 359px) {
+		.svg-mobile .click-me {
+			display: none;
 		}
 	}
 
