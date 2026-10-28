@@ -46,6 +46,7 @@ const DESKTOP_ONLY_SPECS = [
 	'**/weather-scenes.spec.ts',
 	'**/audits/light-mode.spec.ts',
 	'**/i18n-routing.spec.ts',
+	'**/head.spec.ts',
 	'**/i18n-language-toggle.spec.ts',
 	'**/state-across-languages.spec.ts',
 	'**/state-lang-scroll.spec.ts',
