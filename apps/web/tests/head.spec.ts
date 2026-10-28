@@ -72,9 +72,10 @@ for (const section of ['/blog/', '/projects/']) {
 }
 
 test('robots follows the host indexing policy', async ({ page }) => {
-	const robots = await (await page.request.get('/robots.txt')).text();
-	const document = await page.goto('/');
-	if (/^Disallow: \/$/m.test(robots)) expect(document!.headers()['x-robots-tag']).toContain('noindex');
+	// Prerendered documents are static (the host adds their header), so the policy shows on robots itself.
+	const response = await page.request.get('/robots.txt');
+	const robots = await response.text();
+	if (/^Disallow: \/$/m.test(robots)) expect(response.headers()['x-robots-tag']).toContain('noindex');
 	else expect(robots).toMatch(/^Sitemap: \S+\/sitemap\.xml$/m);
 });
 
