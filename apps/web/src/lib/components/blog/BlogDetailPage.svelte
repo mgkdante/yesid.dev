@@ -428,12 +428,6 @@
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
   }
 
-  /* Clickables are ORANGE on every post (yellow = conversion only, operator
-     call homework #6a); --blog-accent stays on the decorative voice below. */
-  .blog-section-body :global(a) {
-    color: var(--primary);
-  }
-
   .blog-section-body :global(code) {
     color: var(--blog-accent);
   }

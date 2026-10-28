@@ -25,13 +25,6 @@ async function expectStation(page: Page, id: string) {
 		'aria-selected',
 		'true'
 	);
-	const title = (await card.locator('.service-title').innerText()).replace(
-		/\.$/,
-		''
-	);
-	await expect(
-		page.getByTestId('projects-strip').locator('.strip-label')
-	).toContainText(title);
 	expect(new URL(page.url()).searchParams.get('station')).toBe(id);
 	expect(new URL(page.url()).searchParams.get('source')).toBe('deep-link');
 }

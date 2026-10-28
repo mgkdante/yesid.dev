@@ -85,14 +85,6 @@
 
 			<p class="service-description">{description}</p>
 
-			{#if service.stack && service.stack.length > 0}
-				<div class="stack-pills">
-					{#each service.stack as tech}
-						<span class="stack-pill">{tech}</span>
-					{/each}
-				</div>
-			{/if}
-
 			<div class="cta-row">
 				{#if metricValue}
 					<div class="metric-inline">
@@ -187,24 +179,6 @@
 		color: var(--secondary-foreground);
 		max-width: 55ch;
 		margin-bottom: 1.5rem;
-	}
-
-	.stack-pills {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-bottom: 1.5rem;
-	}
-
-	.stack-pill {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		padding: 0.25rem 0.625rem;
-		border: 1.5px solid var(--primary);
-		border-radius: var(--radius-pill);
-		color: var(--primary);
-		background: transparent;
-		cursor: default;
 	}
 
 	.cta-row {
@@ -336,13 +310,6 @@
 		.benefit-headline {
 			font-size: var(--text-subheading);
 			margin-bottom: 1rem;
-		}
-		.stack-pills {
-			margin-bottom: 1rem;
-		}
-		.stack-pill {
-			font-size: var(--text-micro);
-			padding: 0.125rem 0.5rem;
 		}
 		.metric-value {
 			font-size: clamp(34px, 8vw, 46px);

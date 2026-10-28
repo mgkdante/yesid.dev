@@ -3,6 +3,12 @@
 	import '#lib/styles/site.css';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
+	import type { Component } from 'svelte';
+	import Wrench from '@lucide/svelte/icons/wrench';
+	import FolderOpen from '@lucide/svelte/icons/folder-open';
+	import Newspaper from '@lucide/svelte/icons/newspaper';
+	import UserRound from '@lucide/svelte/icons/user-round';
+	import Mail from '@lucide/svelte/icons/mail';
 	import { browser } from '$app/env';
 	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import { viewTransition } from '@yesid/motion/utils/viewTransition';
@@ -84,6 +90,13 @@
 	// same treatment as /projects/x (slice-28.6).
 	const basePath = $derived(delocalizePath(page.url.pathname));
 	const navChrome = siteLabels.navChrome.shared;
+	const MENU_ICONS: Record<string, Component<{ class?: string }>> = {
+		'/services': Wrench,
+		'/projects': FolderOpen,
+		'/blog': Newspaper,
+		'/about': UserRound,
+		'/contact': Mail,
+	};
 	const isCurrent = (href: string) => (href === '/' ? basePath === '/' : basePath.startsWith(href));
 	const nextLocale = $derived(
 		PUBLISHED_LOCALES[(Math.max(0, PUBLISHED_LOCALES.indexOf(locale)) + 1) % PUBLISHED_LOCALES.length],
@@ -151,13 +164,13 @@
 				label: resolveLocale(item.label, locale),
 				subtitle: item.subtitle ? resolveLocale(item.subtitle, locale) : undefined,
 				current: isCurrent(item.href),
+				icon: MENU_ICONS[item.href],
 			}))}
 			labels={{
 				openMenu: resolveLocale(navChrome.openMenuAria, locale),
 				closeMenu: resolveLocale(navChrome.closeMenuAria, locale),
 				menu: resolveLocale(navChrome.menuOverlayAria, locale),
 				theme: resolveLocale(navChrome.themeToggleAria, locale),
-				menuFooter: resolveLocale(navChrome.menuOverlayFooterLabel, locale),
 			}}
 			language={{
 				locale,

@@ -17,7 +17,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/svelte';
-import { serviceFactory, projectFactory } from '../../../tests/factories';
+import { serviceFactory } from '../../../tests/factories';
 
 // --- mocks ---
 // vi.mock factories are hoisted above the module body, so any state they close
@@ -53,7 +53,6 @@ const services = [
 const renderProps = {
 	services,
 	serviceSvgContents: Object.fromEntries(services.map((s) => [s.id, ''])),
-	serviceProjects: Object.fromEntries(services.map((s) => [s.id, []])),
 };
 
 function renderPage() {
@@ -85,7 +84,6 @@ describe('ServiceListingPage station (slice-34.5)', () => {
 		try {
 			render(ServiceListingPage, { props: {
 				...renderProps,
-				serviceProjects: { 'data-pipeline': [projectFactory.build({ slug: 'fixture-result', title: { en: 'Fixture project' } })] },
 			} });
 			const target = document.getElementById('service-data-pipeline')!;
 			const observer = observers.find(row => row.targets.includes(target))!;
@@ -96,7 +94,6 @@ describe('ServiceListingPage station (slice-34.5)', () => {
 			}], {} as IntersectionObserver);
 			await Promise.resolve();
 			expect(screen.getByRole('tab', { name: /02/ })).toHaveAttribute('aria-selected', 'true');
-			expect(screen.getByRole('link', { name: 'Fixture project' })).toHaveAttribute('href', '/projects/fixture-result');
 			expect(gotoMock).not.toHaveBeenCalled();
 		} finally {
 			cleanup();
@@ -105,7 +102,7 @@ describe('ServiceListingPage station (slice-34.5)', () => {
 	});
 
 	it('handles an empty supplied station set', () => {
-		render(ServiceListingPage, { props: { services: [], serviceSvgContents: {}, serviceProjects: {} } });
+		render(ServiceListingPage, { props: { services: [], serviceSvgContents: {} } });
 		expect(screen.queryAllByRole('tab')).toEqual([]);
 		expect(gotoMock).not.toHaveBeenCalled();
 	});

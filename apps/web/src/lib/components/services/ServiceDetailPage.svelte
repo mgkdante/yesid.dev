@@ -377,7 +377,7 @@
 	/* ── Hero ── */
 
 	.hero-area {
-		padding: 2rem var(--space-page-x) 2rem;
+		padding: 0.5rem var(--space-page-x) 2rem;
 	}
 
 	.back-link {
@@ -387,7 +387,7 @@
 		font-size: var(--text-back-link);
 		color: var(--primary);
 		text-decoration: none;
-		margin-bottom: 1.5rem;
+		margin-bottom: 0.5rem;
 		margin-left: -0.5rem; /* compensate px-2 so text stays visually flush */
 		min-height: 2.75rem; /* 44px touch target */
 		padding-inline: 0.5rem;

@@ -345,11 +345,16 @@
 		}
 	}
 
-	/* Media and info split the card evenly; whichever half needs more room
+	/* Media and info split the card evenly (a quarter and three quarters on phones); whichever part needs more room
 	   grows both, so long copy makes the card taller instead of squeezing it. */
 	.project-card-layout {
 		display: grid;
 		grid-template-rows: 1fr 1fr;
+	}
+	@media (--tablet-max) {
+		.project-card-layout {
+			grid-template-rows: 1fr 3fr;
+		}
 	}
 
 	.project-card--proof :global(.card-surface) {
