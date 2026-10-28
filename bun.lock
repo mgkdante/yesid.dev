@@ -27,6 +27,7 @@
       "name": "@repo/web",
       "version": "0.0.1",
       "dependencies": {
+        "@lucide/svelte": "^1.18.0",
         "@repo/shared": "workspace:*",
         "@resvg/resvg-js": "^2.6.2",
         "@yesid/analytics": "file:vendor/design/analytics",
