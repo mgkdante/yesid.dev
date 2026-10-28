@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, devices, type Page } from '@playwright/test';
 
 const screens = [[320, 640], [360, 780], [390, 844], [540, 720], [720, 540], [768, 1024], [840, 956], [912, 768], [1024, 768], [1280, 600], [1440, 900]];
 
@@ -146,44 +146,60 @@ for (const locale of ['en', 'fr', 'es']) {
 const transitionsDone = (el: Element) =>
 	Promise.allSettled(el.getAnimations({ subtree: true }).filter((a) => a instanceof CSSTransition).map((a) => a.finished));
 
-test('below 1024px one binder tab pulls the SQL example down and folds it back', async ({ page }) => {
-	await page.setViewportSize({ width: 390, height: 844 });
+// The stacked hero's binder tab, its example and the title block, in document coordinates.
+async function binderTab(page: Page) {
+	await page.setViewportSize(devices['iPhone 12'].viewport);
 	await page.goto('/');
 	const region = page.getByTestId('hero-mobile-sql');
-	const exampleId = await region.getByRole('button', { expanded: false }).getAttribute('aria-controls');
+	const exampleId = (await region.getByRole('button', { expanded: false }).getAttribute('aria-controls'))!;
 	const tab = region.locator(`[aria-controls="${exampleId}"]`);
 	const example = page.locator(`#${exampleId}`);
+	const geometry = () =>
+		page.evaluate((id) => {
+			const box = (el: Element) => {
+				const r = el.getBoundingClientRect();
+				return { top: r.top + scrollY, bottom: r.bottom + scrollY, height: r.height };
+			};
+			return {
+				tab: box(document.querySelector(`[aria-controls="${id}"]`)!),
+				example: box(document.getElementById(id)!),
+				title: box(document.querySelector('[data-testid="hero-text-container"]')!),
+			};
+		}, exampleId);
+	return { region, tab, example, geometry };
+}
+
+test('below 1024px one binder tab pulls the SQL example down and folds it back', async ({ page }) => {
+	const { region, tab, example, geometry } = await binderTab(page);
 	const closedName = await tab.evaluate((el) => {
 		const copy = el.cloneNode(true) as Element;
 		copy.querySelectorAll('[aria-hidden="true"]').forEach((node) => node.remove());
 		return copy.textContent!.trim();
 	});
 
-	const tugged = tab.evaluate((el) => new Promise<boolean>((resolve) => el.addEventListener('animationstart', () => resolve(true), { once: true })));
+	const tugged = tab.evaluate((el) => new Promise<boolean>((resolve) => el.addEventListener('animationend', () => resolve(true), { once: true })));
 	await tab.scrollIntoViewIfNeeded();
 	expect(await tugged, 'the tab tugs the first time it is fully in view').toBe(true);
 
-	const gap = () =>
-		page.evaluate((id) => {
-			const tabBox = document.querySelector(`[aria-controls="${id}"]`)!.getBoundingClientRect();
-			const exampleBox = document.getElementById(id!)!.getBoundingClientRect();
-			const titleBox = document.querySelector('[data-testid="hero-text-container"]')!.getBoundingClientRect();
-			return { belowExample: tabBox.top - exampleBox.bottom, belowTitle: tabBox.top - titleBox.bottom };
-		}, exampleId);
-
 	await expect(example).toHaveAttribute('aria-hidden', 'true');
-	expect((await gap()).belowTitle).toBeGreaterThanOrEqual(0);
+	const closed = await geometry();
+	expect(closed.tab.top, 'closed, the tab hangs under the title block').toBeGreaterThanOrEqual(closed.title.bottom);
 
 	await tab.click();
 	await expect(tab).toHaveAttribute('aria-expanded', 'true');
 	await expect(tab).not.toHaveAccessibleName(closedName);
 	await expect(tab).toBeFocused();
-	await expect(region.getByRole('button', { expanded: false })).toHaveCount(0);
 	await example.evaluate(transitionsDone);
 	await expect(example.getByTestId('sql-panel')).toBeVisible();
-	const open = await gap();
-	expect(open.belowExample, 'the tab ends at the foot of the revealed example').toBeGreaterThanOrEqual(0);
-	expect(open.belowExample).toBeLessThanOrEqual(2);
+	const open = await geometry();
+	expect(open.example.height).toBeGreaterThan(0);
+	expect(open.tab.top - open.example.bottom, 'the tab ends at the foot of the revealed example').toBeGreaterThanOrEqual(0);
+	expect(open.tab.top - open.example.bottom).toBeLessThanOrEqual(2);
+
+	for (const other of await region.getByRole('button').and(page.locator(':not([aria-controls])')).all()) {
+		await other.click();
+		await expect(tab, 'only the tab folds the example').toHaveAttribute('aria-expanded', 'true');
+	}
 
 	await tab.click();
 	await expect(tab).toHaveAttribute('aria-expanded', 'false');
@@ -191,28 +207,39 @@ test('below 1024px one binder tab pulls the SQL example down and folds it back',
 	await expect(tab).toBeFocused();
 	await example.evaluate(transitionsDone);
 	await expect(example).toHaveAttribute('aria-hidden', 'true');
-	expect((await gap()).belowTitle, 'the tab returns under the title block').toBeGreaterThanOrEqual(0);
+	const folded = await geometry();
+	expect(folded.example.height).toBeLessThanOrEqual(1);
+	expect(Math.abs(folded.tab.top - closed.tab.top), 'the tab returns to its resting place').toBeLessThanOrEqual(1);
 
-	await page.setViewportSize({ width: 1280, height: 800 });
+	await page.setViewportSize(devices['Desktop Chrome'].viewport);
 	await expect(region).toBeHidden();
 	await expect(page.getByTestId('sql-panel').filter({ visible: true })).toHaveCount(1);
+	await page.setViewportSize(devices['iPhone 12'].viewport);
+	await expect(region).toBeVisible();
+	expect(await tab.evaluate((el) => el.getAnimations().length), 'the tug plays once per page load').toBe(0);
 });
 
-test('under reduced motion the binder tab opens and closes without animating', async ({ page }) => {
+test('under reduced motion the binder tab opens and closes instantly', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
-	await page.setViewportSize({ width: 390, height: 844 });
-	await page.goto('/');
-	const region = page.getByTestId('hero-mobile-sql');
-	const exampleId = await region.getByRole('button', { expanded: false }).getAttribute('aria-controls');
-	const tab = region.locator(`[aria-controls="${exampleId}"]`);
+	const { region, tab, geometry } = await binderTab(page);
 	const animating = () => region.evaluate((el) => el.getAnimations({ subtree: true }).length);
 
 	await tab.scrollIntoViewIfNeeded();
+	const closed = await geometry();
 	expect(await animating()).toBe(0);
+
 	await tab.click();
 	await expect(tab).toHaveAttribute('aria-expanded', 'true');
 	expect(await animating()).toBe(0);
+	const open = await geometry();
+	expect(open.example.height).toBeGreaterThan(0);
+	expect(open.tab.top - open.example.bottom).toBeGreaterThanOrEqual(0);
+	expect(open.tab.top - open.example.bottom).toBeLessThanOrEqual(2);
+
 	await tab.click();
 	await expect(tab).toHaveAttribute('aria-expanded', 'false');
 	expect(await animating()).toBe(0);
+	const folded = await geometry();
+	expect(folded.example.height).toBeLessThanOrEqual(1);
+	expect(Math.abs(folded.tab.top - closed.tab.top)).toBeLessThanOrEqual(1);
 });

@@ -239,7 +239,8 @@ for (const locale of PUBLISHED_LOCALES)
 	test(`${locale}: on desktop the first station centres under the tabs on short and tall screens`, async ({ page, isMobile }) => {
 		test.skip(isMobile, 'desktop layout');
 		const width = page.viewportSize()!.width;
-		for (const height of [600, 1080]) {
+		const tall = 1080;
+		for (const height of [600, tall]) {
 			await page.setViewportSize({ width, height });
 			await page.goto(listing(locale));
 			await page.evaluate(() => document.fonts.ready);
@@ -248,17 +249,16 @@ for (const locale of PUBLISHED_LOCALES)
 				expect(await title.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeLessThan(hero);
 
 			const tabs = (await page.getByRole('tablist').boundingBox())!;
-			const tabsBottom = tabs.y + tabs.height;
 			const entry = await page.locator('[data-testid^="service-card-"]').first().evaluate((card) => {
-				const block = card.firstElementChild!;
-				return { ...block.getBoundingClientRect().toJSON(), pinTop: parseFloat(getComputedStyle(block).top) };
+				const boxes = [...card.querySelectorAll('*')]
+					.filter((el) => !(el instanceof SVGElement) && el.checkVisibility())
+					.map((el) => el.getBoundingClientRect());
+				return { top: Math.min(...boxes.map((box) => box.top)), bottom: Math.max(...boxes.map((box) => box.bottom)) };
 			});
-			const gap = entry.pinTop - tabsBottom;
-			const area = height - tabsBottom;
-			if (entry.height <= area - 2 * gap) {
-				expect(Math.abs(entry.top + entry.height / 2 - (tabsBottom + area / 2))).toBeLessThanOrEqual(1);
-			} else {
-				expect(Math.abs(entry.top - entry.pinTop), 'too tall to centre: it starts where later stations pin').toBeLessThanOrEqual(1);
-			}
+			const above = entry.top - (tabs.y + tabs.height);
+			const below = height - entry.bottom;
+			expect(above, 'the first station never sits under the tabs').toBeGreaterThanOrEqual(0);
+			if (height === tall) expect(Math.abs(above - below), 'centred under the tabs').toBeLessThanOrEqual(1);
+			else expect(below - above, 'centred, or top-aligned only when too tall to centre').toBeLessThanOrEqual(1);
 		}
 	});

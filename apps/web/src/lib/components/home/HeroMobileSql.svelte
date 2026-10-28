@@ -103,7 +103,12 @@
 		<!-- Horizontal divider — mirrors the vertical desktop divider -->
 		<div class="hero-divider-h mx-6"></div>
 		<div class="flex justify-center">
-			<Collapsible.Trigger bind:ref={tab} class="binder-tab tap-press {tug ? 'tug' : ''}" aria-controls={exampleId}>
+			<Collapsible.Trigger
+				bind:ref={tab}
+				class="binder-tab tap-press {tug ? 'tug' : ''}"
+				aria-controls={exampleId}
+				onanimationend={() => (tug = false)}
+			>
 				{open ? tabs.close : tabs.show}<span class="binder-tab-mark" aria-hidden="true">{open ? '▴' : '▾'}</span>
 			</Collapsible.Trigger>
 		</div>
