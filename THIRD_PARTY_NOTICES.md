@@ -3,7 +3,7 @@
 The repository's root [LICENSE](LICENSE) applies only to original yesid.dev
 material.
 
-- `apps/web/vendor/design/` contains yesid.dev-design `v0.20.0`, distributed
+- `apps/web/vendor/design/` contains yesid.dev-design `v0.21.0`, distributed
   under the MIT License. Copyright © 2026 Yesid Otalora. See
   `apps/web/vendor/design/LICENSE`.
 - `apps/web/vendor/design/motion/lenis.css` is copied from Lenis 1.3, Copyright
