@@ -1,6 +1,6 @@
 <!--
   ServiceCard — per-viewport service block for the /services listing page.
-  Asymmetric split: text left, SVG panel right (stacked on mobile).
+  Asymmetric split: text left, SVG panel right (on mobile the icon sits beside the title).
   Bold orange accents, benefit headline, impact metric. D186.
 -->
 <script lang="ts">
@@ -71,9 +71,16 @@
 		<div class="service-text">
 			<SectionLabel text={stationLabelText} variant="station" class="mb-4 block" />
 
-			<h2 class="service-title">
-				{title}<span class="title-dot">.</span>
-			</h2>
+			<div class="title-row">
+				{#if svgContent}
+					<div class="svg-mobile-banner">
+						<ServiceSvgPanel {svgContent} variant="banner" />
+					</div>
+				{/if}
+				<h2 class="service-title">
+					{title}<span class="title-dot">.</span>
+				</h2>
+			</div>
 
 			{#if subtitle}
 				<p class="service-subtitle">{subtitle}</p>
@@ -101,14 +108,6 @@
 				</a>
 			</div>
 		</div>
-
-		<!-- Mobile-only SVG banner — operator order: metric → art → deep dive.
-		     The text column above ends on the metric; the CTA row closes below. -->
-		{#if svgContent}
-			<div class="svg-mobile-banner">
-				<ServiceSvgPanel {svgContent} variant="banner" />
-			</div>
-		{/if}
 
 		<!-- Mobile: full-width deep-dive CTA. Desktop: SVG panel only. -->
 		<div class="card-bottom">
@@ -145,10 +144,10 @@
 		min-width: 0;
 	}
 
-	/* Giant — matches the detail page's hero title size. */
+	/* A step below the hero type, height-aware like --text-hero so a station fits its viewport. */
 	.service-title {
 		font-family: var(--font-heading);
-		font-size: clamp(56px, 8vw, 104px);
+		font-size: clamp(48px, min(6.5vw, 10svh), 88px);
 		font-weight: 900;
 		color: var(--foreground);
 		line-height: 1.02;
@@ -194,10 +193,17 @@
 		overflow: hidden; /* clips SVG during initial render — prevents size flash */
 	}
 
-	/* Mobile-only banner — hidden from tablet up (desktop keeps the side panel). */
+	/* The first station centres in the viewport area under the sticky tabs: the bottom padding
+	   mirrors the nav and tabs above it. Later stations keep their pinned top. */
 	@media (--tablet-min) {
 		.svg-mobile-banner {
 			display: none;
+		}
+		.service-viewport-first {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-block: 1rem calc(var(--nav-clearance) + var(--strip-h) + 1rem);
 		}
 	}
 
@@ -251,7 +257,7 @@
 		flex-shrink: 0;
 	}
 
-	/* Mobile: card = usable area height, SVG stacked on top, flex centered.
+	/* Mobile: one column, the service icon beside the title.
 	   scroll-margin-top aligns tab clicks below the sticky tabs. */
 	@media (--tablet-max) {
 		.service-viewport {
@@ -287,11 +293,22 @@
 			flex: 1;
 			text-align: center;
 		}
-		/* Banner icon bounded so the capped viewport keeps its rhythm. */
+		.title-row {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			margin-bottom: 0.5rem;
+		}
+		.svg-mobile-banner {
+			flex: none;
+		}
+		.svg-mobile-banner :global(.svg-panel--banner) {
+			padding: 0.5rem;
+		}
+		/* !important outranks SvgIcon's inline size, as in ServiceSvgPanel. */
 		.svg-mobile-banner :global([data-slot='svg-icon']) {
-			--svg-icon-size: 96px;
-			width: 96px;
-			height: 96px;
+			width: 48px !important;
+			height: 48px !important;
 		}
 		.service-subtitle {
 			display: none;
@@ -302,10 +319,12 @@
 			line-height: 1.55;
 			margin-bottom: 1rem;
 		}
-		/* Big on mobile too — matches the detail page's mobile title size. */
+		/* Sized so the longest word fits beside the icon; break-word only for the narrowest phones. */
 		.service-title {
-			font-size: clamp(40px, 11vw, 60px);
-			margin-bottom: 0.5rem;
+			font-size: clamp(28px, 8.4vw, 36px);
+			margin-bottom: 0;
+			min-width: 0;
+			overflow-wrap: break-word;
 		}
 		.benefit-headline {
 			font-size: var(--text-subheading);

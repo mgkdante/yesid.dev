@@ -101,9 +101,7 @@
 	   inline size against the padded panel area; !important outranks the
 	   inline style. The inner <svg> tracks its container via viewBox (the
 	   app.css media rule: max-width 100% + height auto).
-	   ≥768px only: below that, ServiceCard's mobile listing downsizes this
-	   same panel to a 48px icon via its --svg-icon-size override — the cap
-	   must not outrank it (mobile detail pages use the banner variant). */
+	   ≥768px only: phones show the banner variant instead. */
 	@media (--tablet-min) {
 		.svg-panel:not(.svg-panel--banner) .svg-art :global([data-slot='svg-icon']) {
 			width: min(224px, 100%) !important;
