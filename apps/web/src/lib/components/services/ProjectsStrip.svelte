@@ -86,7 +86,6 @@
 		font-size: var(--text-caption);
 		text-transform: uppercase;
 		letter-spacing: 2px;
-		opacity: 0.45;
 		font-weight: 700;
 		white-space: nowrap;
 		display: none;
@@ -160,7 +159,6 @@
 		font-family: var(--font-mono);
 		font-size: var(--text-micro);
 		letter-spacing: 1px;
-		opacity: 0.4;
 		white-space: nowrap;
 	}
 </style>
