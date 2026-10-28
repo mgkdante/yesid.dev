@@ -51,7 +51,9 @@
 
 	// Once per page load, the first time the whole tab is in view, it tugs so it reads as pullable.
 	$effect(() => {
-		if (!tab || tugged) return;
+		const el = tab;
+		if (!el || tugged) return;
+		const settle = () => (tug = false);
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (!entry.isIntersecting) return;
@@ -61,8 +63,14 @@
 			},
 			{ threshold: 1 },
 		);
-		observer.observe(tab);
-		return () => observer.disconnect();
+		observer.observe(el);
+		el.addEventListener('animationend', settle);
+		el.addEventListener('animationcancel', settle);
+		return () => {
+			observer.disconnect();
+			el.removeEventListener('animationend', settle);
+			el.removeEventListener('animationcancel', settle);
+		};
 	});
 </script>
 
@@ -103,12 +111,7 @@
 		<!-- Horizontal divider — mirrors the vertical desktop divider -->
 		<div class="hero-divider-h mx-6"></div>
 		<div class="flex justify-center">
-			<Collapsible.Trigger
-				bind:ref={tab}
-				class="binder-tab tap-press {tug ? 'tug' : ''}"
-				aria-controls={exampleId}
-				onanimationend={() => (tug = false)}
-			>
+			<Collapsible.Trigger bind:ref={tab} class="binder-tab tap-press {tug ? 'tug' : ''}" aria-controls={exampleId}>
 				{open ? tabs.close : tabs.show}<span class="binder-tab-mark" aria-hidden="true">{open ? '▴' : '▾'}</span>
 			</Collapsible.Trigger>
 		</div>

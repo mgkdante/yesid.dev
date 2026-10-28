@@ -177,9 +177,14 @@ test('below 1024px one binder tab pulls the SQL example down and folds it back',
 		return copy.textContent!.trim();
 	});
 
-	const tugged = tab.evaluate((el) => new Promise<boolean>((resolve) => el.addEventListener('animationend', () => resolve(true), { once: true })));
+	const tugged = tab.evaluate((el) => new Promise<boolean>((resolve) => el.addEventListener('animationstart', () => resolve(true), { once: true })));
 	await tab.scrollIntoViewIfNeeded();
 	expect(await tugged, 'the tab tugs the first time it is fully in view').toBe(true);
+	// Hidden mid-tug by the desktop layout, then shown again: the cut-short tug does not replay.
+	await page.setViewportSize(devices['Desktop Chrome'].viewport);
+	await page.setViewportSize(devices['iPhone 12'].viewport);
+	await expect(region).toBeVisible();
+	expect(await tab.evaluate((el) => el.getAnimations().length), 'a tug cut short does not replay').toBe(0);
 
 	await expect(example).toHaveAttribute('aria-hidden', 'true');
 	const closed = await geometry();
