@@ -57,7 +57,7 @@ test.describe('/projects/[slug] detail page content', () => {
 	});
 
 	test('project detail renders TOC pill on mobile', async ({ page }) => {
-		test.skip(test.info().project.name === 'desktop-chrome', 'mobile-only TOC pill');
+		await page.setViewportSize({ width: 390, height: 844 });
 
 		await gotoFirstProject(page);
 
