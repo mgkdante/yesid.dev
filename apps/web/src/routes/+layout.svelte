@@ -122,8 +122,6 @@
 	{#if analyticsPolicy.showPreferences}
 		<FooterLink
 			type="button"
-			data-testid="analytics-preferences"
-			aria-controls="analytics-consent"
 			aria-expanded={$analyticsConsentStore.preferencesOpen}
 			onclick={() => analyticsConsentStore.openPreferences()}
 		>

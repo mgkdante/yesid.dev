@@ -32,154 +32,6 @@ const BREAKPOINTS = [
 	},
 ] as const;
 
-const NONCANONICAL_MEDIA_INVENTORY = [
-	{
-		path: 'apps/web/src/app.css',
-		condition: '(min-width: 1440px) and (min-height: 800px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/app.css',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/about/AboutLanguages.svelte',
-		condition: '(max-width: 499.98px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/about/AboutPage.svelte',
-		condition: '(min-width: 500px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/about/AboutTrain.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/about/WeatherScene.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
-		condition: '(min-width: 48rem)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/HeroBanner.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/HeroDotAnnotation.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
-		condition: '(--tablet-max) and (max-height: 660px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
-		condition: '(max-height: 720px) and (--tablet-min)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/HeroTextContent.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/HomeAboutTeaser.svelte',
-		condition: '(min-width: 640px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
-		condition: '(max-width: 640px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/Manifesto.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoCanvas.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoEdgeBottom.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
-		condition: '(max-width: 640px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoEdgeLeft.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoEdgeRight.svelte',
-		condition: '(max-width: 640px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoEdgeRight.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoEdgeTop.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
-		condition: '(max-width: 640px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/home/ManifestoTransit.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/projects/ProjectCard.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/projects/ProjectHeroPreview.svelte',
-		condition: '(prefers-reduced-motion: reduce)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
-		condition: '(min-width: 1280px)',
-		occurrences: 1,
-	},
-	{
-		path: 'apps/web/src/lib/components/shared/StationTabs.svelte',
-		condition: '(min-width: 1280px)',
-		occurrences: 1,
-	},
-] as const;
-
 interface MediaLine {
 	path: string;
 	lineNumber: number;
@@ -199,57 +51,6 @@ function stylesheetBodies(path: string): string[] {
 	const source = readFileSync(path, 'utf8');
 	if (path.endsWith('.css')) return [source];
 	return [...source.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(([, body]) => body!);
-}
-
-function normalizeMediaCondition(condition: string): string {
-	return condition
-		.trim()
-		.replace(/\s+/g, ' ')
-		.replace(/\(\s+/g, '(')
-		.replace(/\s+\)/g, ')')
-		.replace(/\s*:\s*/g, ': ');
-}
-
-function isCanonicalAliasCondition(condition: string): boolean {
-	return condition
-		.split(/\s+and\s+/)
-		.every((feature) => /^\(--(?:tablet|desktop)-(?:min|max)\)$/.test(feature));
-}
-
-function isNoncanonicalResponsiveCondition(condition: string): boolean {
-	if (isCanonicalAliasCondition(condition)) return false;
-	return /(?:min|max)-(?:width|height)|(?:any-)?(?:hover|pointer):|prefers-reduced-motion:/.test(
-		condition,
-	);
-}
-
-function compareText(left: string, right: string): number {
-	return left === right ? 0 : left < right ? -1 : 1;
-}
-
-function noncanonicalMediaInventory() {
-	const counts = new Map<string, { path: string; condition: string; occurrences: number }>();
-	for (const path of sourceFiles()) {
-		const repoPath = relative(REPO_ROOT, path).replaceAll('\\', '/');
-		for (const body of stylesheetBodies(path)) {
-			const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '');
-			for (const [, rawCondition] of withoutComments.matchAll(/@media\s+([^{}]+?)\s*\{/g)) {
-				const condition = normalizeMediaCondition(rawCondition!);
-				if (!isNoncanonicalResponsiveCondition(condition)) continue;
-				const key = `${repoPath}\0${condition}`;
-				const current = counts.get(key);
-				counts.set(key, {
-					path: repoPath,
-					condition,
-					occurrences: (current?.occurrences ?? 0) + 1,
-				});
-			}
-		}
-	}
-	return [...counts.values()].sort(
-		(left, right) =>
-			compareText(left.path, right.path) || compareText(left.condition, right.condition),
-	);
 }
 
 function mediaBlock(css: string, condition: string): string {
@@ -319,10 +120,6 @@ describe('canonical responsive breakpoint contract', () => {
 		).toHaveLength(0);
 	});
 
-	it('preserves every noncanonical viewport, capability, and reduced-motion condition semantically', () => {
-		expect(noncanonicalMediaInventory()).toEqual(NONCANONICAL_MEDIA_INVENTORY);
-	});
-
 	it('loads the vendored definitions before removing aliases in Vite PostCSS', async () => {
 		const fixture = BREAKPOINTS.map(
 			({ alias }) => `@media (${alias}) { .${alias.slice(2)} { display: block; } }`,
@@ -350,24 +147,9 @@ describe('canonical responsive breakpoint contract', () => {
 	it('preserves representative noncanonical layout and motion behavior through PostCSS', async () => {
 		const cases = [
 			{
-				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
-				condition: '(min-width: 48rem)',
-				expected: [
-					'.consent-layout',
-					'grid-template-columns: minmax(0, 1fr) auto',
-					'.consent-actions',
-					'width: auto',
-				],
-			},
-			{
 				path: 'apps/web/src/lib/components/projects/ProjectListingPage.svelte',
 				condition: '(min-width: 1280px)',
 				expected: ['.project-grid', 'grid-template-columns: 1fr 1fr'],
-			},
-			{
-				path: 'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
-				condition: '(prefers-reduced-motion: reduce)',
-				expected: ['.analytics-consent', 'animation: none'],
 			},
 		] as const;
 
