@@ -15,23 +15,23 @@
 	{#snippet details()}
 		<BlueprintTrackPlan
 			class="edge-detail"
-			style="top:2%;left:0;width:45%;height:50%;opacity:0.18;"
+			style="top:2%;left:0;width:45%;height:50%;"
 		/>
 		<BlueprintCatenary
 			class="edge-detail"
-			style="top:0;right:0;width:48%;height:42%;opacity:0.16;"
+			style="top:0;right:0;width:48%;height:42%;"
 		/>
 		<BlueprintDetailBogie
 			class="edge-detail"
-			style="bottom:2%;left:2%;width:22%;height:42%;opacity:0.16;"
+			style="bottom:2%;left:2%;width:22%;height:42%;"
 		/>
 		<BlueprintStationSection
 			class="edge-detail"
-			style="bottom:0;left:28%;width:35%;height:52%;opacity:0.14;"
+			style="bottom:0;left:28%;width:35%;height:52%;"
 		/>
 		<BlueprintSignal
 			class="edge-detail"
-			style="bottom:4%;right:8%;width:10%;height:58%;opacity:0.20;"
+			style="bottom:4%;right:8%;width:10%;height:58%;"
 		/>
 	{/snippet}
 </BlueprintShell>
