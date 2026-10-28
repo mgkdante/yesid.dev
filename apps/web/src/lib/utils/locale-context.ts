@@ -5,7 +5,7 @@
 //     so an init-time `const locale = getLocale()` is always current;
 //   - without a provider (component unit tests) it returns DEFAULT_LOCALE,
 //     which is byte-identical to the previous hardcoded 'en' — zero test churn.
-// Persistent chrome (Nav/MenuOverlay/Footer/SeoHead) does NOT use this — it
+// Persistent chrome (SiteHeader/Footer/SeoHead) does NOT use this — it
 // receives `locale` as a prop and derives reactively, because it never
 // remounts. Any NEW persistent component must follow the prop pattern.
 import { getContext, setContext } from 'svelte';

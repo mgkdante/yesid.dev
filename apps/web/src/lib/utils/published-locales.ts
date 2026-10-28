@@ -4,7 +4,7 @@
 //   - hreflang link tags to include this locale
 //   - sitemap to iterate routes × this locale
 //   - canonicalFor to emit /{locale}-prefixed canonicals
-//   - the EN|FR locale switcher (MenuOverlay/Footer) to become visible
+//   - the EN|FR locale switcher (SiteHeader) to become visible
 //   - a `static/og/default.{locale}.png` asset to be needed
 //
 // Lives in its own dependency-free module (split from seo-defaults, homework

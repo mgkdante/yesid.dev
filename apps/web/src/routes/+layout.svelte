@@ -45,13 +45,13 @@
 		morphShapes?: readonly MorphShape[];
 	}; children: import('svelte').Snippet } = $props();
 
-	// Nav slots — threaded from +layout.server.ts via the adapter.nav port.
-	// Passed as props so Nav/Footer don't import from $lib/content directly.
+	// Header slots — threaded from +layout.server.ts via the adapter.nav port.
+	// Passed as props so SiteHeader/Footer don't import from $lib/content directly.
 	const headerLinks = $derived(data.headerLinks ?? []);
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
 
-	// slice-28.6: request locale. Persistent chrome (Nav/MenuOverlay/Footer/
+	// slice-28.6: request locale. Persistent chrome (SiteHeader/Footer/
 	// SeoHead) receives it as a prop ($derived — it never remounts); everything
 	// under {#key $page.url.pathname} reads it via getLocale() context
 	// (page components remount per pathname, so an init-time read is correct).
