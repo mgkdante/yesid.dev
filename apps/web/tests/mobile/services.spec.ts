@@ -143,13 +143,6 @@ for (const locale of ['', '/fr', '/es'])
 					'aria-selected',
 					'true',
 				);
-				const title = (await page.locator(`#service-${id} .service-title`).innerText()).replace(
-					/\.$/,
-					'',
-				);
-				await expect(page.getByTestId('projects-strip').locator('.strip-label')).toContainText(
-					title,
-				);
 				expect(new URL(page.url()).search).toBe('?fixture=retained');
 			}
 	});

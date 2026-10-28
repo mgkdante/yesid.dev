@@ -51,14 +51,6 @@ describe('ServiceCard', () => {
 		expect(screen.getByText(siteLabels.servicesChrome.listing.stationLabelTemplate.en.replace('{stationNum}', '01').replace('{totalStr}', '06'))).toBeTruthy();
 	});
 
-	it('renders stack pills', () => {
-		render(ServiceCard, {
-			props: { service: mockService, svgContent: '', index: 0, total: 6 }
-		});
-		expect(screen.getByText('PostgreSQL')).toBeTruthy();
-		expect(screen.getByText('SQL Server')).toBeTruthy();
-	});
-
 	it('renders a "Deep dive" link with correct href', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }

@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
-	import HeroDotAnnotation, { getLettering } from './HeroDotAnnotation.svelte';
+	import HeroDotAnnotation, { CLICK_ME, getLettering } from './HeroDotAnnotation.svelte';
 	import { Button } from '@yesid/ui/button';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -50,8 +50,7 @@
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
 		onReplay?: () => void;
 	} = $props();
-	const annotationLabel = { en: 'click me', fr: 'clique ici', es: 'haz clic' }[locale];
-	const lettering = getLettering(annotationLabel);
+	const lettering = getLettering(CLICK_ME[locale]);
 	const lastWordIndex = $derived(headlineLine1.lastIndexOf(' '));
 	const headlineLead = $derived(headlineLine1.slice(0, lastWordIndex + 1));
 	const headlineLastWord = $derived(headlineLine1.slice(lastWordIndex + 1));

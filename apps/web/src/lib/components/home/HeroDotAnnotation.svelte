@@ -12,6 +12,7 @@
 		a: { d: 'M9 6 C2 0 -4 17 5 15 L10 5 8 16', width: 12, end: [8, 16] },
 		z: { d: 'M1 6 11 5 0 16 11 15', width: 12, end: [11, 15] },
 	};
+	export const CLICK_ME = { en: 'click me', fr: 'clique ici', es: 'haz clic' } as const;
 	export function getLettering(label: string) {
 		let width = 0;
 		let end = { x: 0, y: 0 };

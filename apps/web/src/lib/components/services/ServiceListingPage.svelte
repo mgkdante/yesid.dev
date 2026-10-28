@@ -3,7 +3,7 @@
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
-	import type { Service, Project } from '#lib/types.ts';
+	import type { Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
@@ -12,16 +12,13 @@
 	import { getLenis } from '@yesid/motion/utils/lenis';
 	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
-	import ProjectsStrip from './ProjectsStrip.svelte';
 
 	let {
 		services,
 		serviceSvgContents,
-		serviceProjects
 	}: {
 		services: readonly Service[];
 		serviceSvgContents: Record<string, string>;
-		serviceProjects: Record<string, readonly Project[]>;
 	} = $props();
 
 	let sorted = $derived(
@@ -31,11 +28,6 @@
 	// untrack: activeId deliberately seeds from the first station once, then the
 	// IntersectionObserver and tab clicks own it.
 	let activeId = $state(untrack(() => sorted[0]?.id ?? ''));
-	let currentProjects = $derived(serviceProjects[activeId] ?? []);
-	let currentServiceTitle = $derived(() => {
-		const svc = sorted.find((s) => s.id === activeId);
-		return svc ? resolveLocale(svc.title, locale) : undefined;
-	});
 
 	// Lenis-aware scroll to a station viewport — the authoritative motion; activeId
 	// follows from the IntersectionObserver once the section lands in view.
@@ -117,7 +109,7 @@
 
 <!--
   Services listing page — page-level Lenis scroll, no nested scroll container.
-  Sticky StationTabs at top, sticky ProjectsStrip at bottom.
+  Sticky StationTabs at top.
   IntersectionObserver tracks which service viewport is in view. D190, D191.
 -->
 
@@ -146,13 +138,6 @@
 		/>
 	{/each}
 
-	<!-- Sticky projects strip -->
-	<div class="strip-bar">
-		<ProjectsStrip
-			projects={currentProjects}
-			serviceTitle={currentServiceTitle()}
-		/>
-	</div>
 </div>
 
 <style>
@@ -186,10 +171,4 @@
 		pointer-events: none;
 	}
 
-	.strip-bar {
-		position: sticky;
-		bottom: 0;
-		z-index: var(--z-rail);
-		padding-bottom: env(safe-area-inset-bottom, 0px);
-	}
 </style>

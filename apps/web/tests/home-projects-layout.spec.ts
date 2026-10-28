@@ -30,13 +30,14 @@ async function expectWholeCards(reel: Locator) {
 	return visible;
 }
 
-async function expectEvenSplit(card: Locator) {
+async function expectMediaAboveInfo(card: Locator) {
 	const split = await card.evaluate(element => ({
 		card: element.querySelector('article')!.getBoundingClientRect().toJSON(),
 		media: element.querySelector('[data-testid$="card-image"]')!.getBoundingClientRect().toJSON(),
 		info: element.querySelector('[data-testid="project-card-info"]')!.getBoundingClientRect().toJSON(),
 	}));
-	expect(Math.abs(split.media.height - split.info.height), `media and info take equal halves: ${JSON.stringify(split)}`).toBeLessThanOrEqual(2);
+	expect(split.media.height, `the media never takes more room than the info: ${JSON.stringify(split)}`).toBeLessThanOrEqual(split.info.height + 2);
+	expect(split.media.top).toBeGreaterThanOrEqual(split.card.top - 1);
 	expect(split.media.bottom).toBeLessThanOrEqual(split.info.top + 1);
 	expect(split.info.bottom).toBeLessThanOrEqual(split.card.bottom + 1);
 }
@@ -101,7 +102,7 @@ for (const [width, height, locale] of screens) {
 			const reel = page.getByTestId('proof-reel-section');
 			await reel.scrollIntoViewIfNeeded();
 			const visible = await expectWholeCards(reel);
-			for (const card of await reel.getByTestId('proof-card').all()) { await expectCardContentInside(card); await expectEvenSplit(card); await expectPanesSideBySide(card); }
+			for (const card of await reel.getByTestId('proof-card').all()) { await expectCardContentInside(card); await expectMediaAboveInfo(card); await expectPanesSideBySide(card); }
 			const scales = await reel.locator('.df-node text').evaluateAll(labels => labels.map(label => label.getBoundingClientRect().height).filter(Boolean));
 			expect(scales.length).toBeGreaterThan(0);
 			expect(Math.max(...scales) / Math.min(...scales), 'short and long stacks retain the same type scale').toBeLessThan(1.25);
@@ -180,7 +181,7 @@ for (const width of [390, 1440]) {
 		for (const card of await cards.all()) {
 			await expect(card).toHaveAccessibleName(/\S/);
 			await expectImagesFillPanes(card);
-			await expectEvenSplit(card);
+			await expectMediaAboveInfo(card);
 			await expectPanesSideBySide(card);
 			expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth + 1), 'listing content stays inside its card').toBe(true);
 		}

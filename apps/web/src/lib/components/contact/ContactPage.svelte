@@ -545,8 +545,8 @@
 										: 'text-[var(--secondary-foreground)]'} text-small">
 								{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 									{@html line.text
-										.replace('{work}', `<a href="${localizeHref('/services', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${escapeHtml(workLinkLabel)}</a>`)
-										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${escapeHtml(blogLinkLabel)}</a>`)}
+										.replace('{work}', `<a href="${localizeHref('/services', locale)}">${escapeHtml(workLinkLabel)}</a>`)
+										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}">${escapeHtml(blogLinkLabel)}</a>`)}
 								{:else}
 									{line.text}
 								{/if}

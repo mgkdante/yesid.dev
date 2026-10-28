@@ -142,3 +142,30 @@ for (const locale of ['en', 'fr', 'es']) {
 		}
 	});
 }
+
+test('below 1024px the SQL example opens from its tab and folds back to it', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/');
+	const region = page.getByTestId('hero-mobile-sql');
+	// The opener comes first; it stays the same element as its state changes.
+	const show = region.getByRole('button').first();
+	await expect(show).toHaveAttribute('aria-expanded', 'false');
+	await expect(show).toHaveAttribute('aria-controls', /\S/);
+	const example = page.locator(`#${await show.getAttribute('aria-controls')}`);
+	await expect(example).toHaveAttribute('aria-hidden', 'true');
+
+	await show.click();
+	await expect(show).toHaveAttribute('aria-expanded', 'true');
+	await expect(example).not.toHaveAttribute('aria-hidden');
+	await expect(example.getByTestId('sql-panel')).toBeVisible();
+
+	// The fold-up tab is the example's last control; closing hands focus back to the opener.
+	await example.getByRole('button').last().click();
+	await expect(show).toHaveAttribute('aria-expanded', 'false');
+	await expect(show).toBeFocused();
+	await expect(example).toHaveAttribute('aria-hidden', 'true');
+
+	await page.setViewportSize({ width: 1280, height: 800 });
+	await expect(region).toBeHidden();
+	await expect(page.getByTestId('sql-panel').filter({ visible: true })).toHaveCount(1);
+});

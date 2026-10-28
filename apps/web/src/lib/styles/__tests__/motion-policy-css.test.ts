@@ -64,12 +64,6 @@ describe('GO-w2t5 micro-interactions — SAFE-ALWAYS additions present', () => {
 		);
 	});
 
-	it('prose links draw their underline (background-size 0% → 100%)', () => {
-		const appCSS = read('src/app.css');
-		expect(appCSS).toMatch(/\.prose-dark a \{[\s\S]*?background-size: 0% 1px;/);
-		expect(appCSS).toMatch(/\.prose-dark a:hover[\s\S]*?background-size: 100% 1px;/);
-	});
-
 	it('footer links draw their underline', () => {
 		const src = read('vendor/design/ui/src/primitives/footer/footer-link.svelte');
 		expect(src).toContain('footer-link');

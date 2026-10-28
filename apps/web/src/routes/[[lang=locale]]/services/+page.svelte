@@ -9,5 +9,4 @@
 <ServiceListingPage
 	services={data.services}
 	serviceSvgContents={data.serviceSvgContents}
-	serviceProjects={data.serviceProjects}
 />

@@ -133,12 +133,6 @@
 		locale,
 	);
 	let updatedAgo: string = $state(updatedAgoInitial);
-	// Section min-height reserves scroll space for the pin + trailing content.
-	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
-	// trailing content because SQL is in-grid). Mobile pin is 300% → need
-	// only 100% + 300% + ~150svh HeroMobileSql + a small buffer = 600svh.
-	// Applied via CSS media query below so SSR renders correctly; inline
-	// style remains for reduced-motion (collapses to a single viewport).
 
 	function spinRefreshIcon() {
 		if (refreshIcon) {
@@ -617,11 +611,11 @@
 <style>
 	/* Section scroll reservation — matches the pin-length per breakpoint.
 	   Mobile pin = 300% → 100lvh trigger + 300lvh pin extension = 400lvh +
-	   ~150lvh HeroMobileSql natural-flow content + 50lvh buffer = 600lvh.
+	   the closed HeroMobileSql tab + 50lvh buffer = 450lvh.
 	   Desktop pin = 800% → 100lvh + 800lvh = 900lvh, no trailing content
 	   (SQL panel is in-grid inside the pin). */
 	.hero-section-reserve {
-		min-height: 600svh;
+		min-height: 450svh;
 	}
 
 	@media (--desktop-min) {

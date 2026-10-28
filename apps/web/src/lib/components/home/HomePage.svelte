@@ -250,7 +250,7 @@
 	class="home-section home-section--right relative"
 	style={rotatedVar}
 >
-	<div class="absolute inset-0 -z-10 pointer-events-none"><ServicesBlueprint /></div>
+	<div class="absolute inset-0 -z-10 pointer-events-none opacity-55"><ServicesBlueprint /></div>
 	<div class="home-section-heading-mobile"><SectionHeading heading={sectionServices} /></div>
 	<div class="home-section-content"><HomeServices servicesGrid={servicesGrid} services={services} /></div>
 	<div class="rotated-title rotated-title--right"><SectionHeading heading={sectionServices} /></div>
