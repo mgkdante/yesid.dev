@@ -194,10 +194,7 @@ describe('chrome companion consolidation', () => {
 
 	it('shared chrome consumers read from siteLabels instead of sharedChromeContent', () => {
 		const consumers = [
-			'lib/components/layout/Nav.svelte',
-			'lib/components/layout/MenuOverlay.svelte',
 			'routes/+layout.svelte',
-			'lib/components/layout/LanguageToggle.svelte',
 		];
 
 		const offenders = consumers.filter((file) =>

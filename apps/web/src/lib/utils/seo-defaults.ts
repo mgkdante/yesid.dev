@@ -2,9 +2,10 @@
 // One module = one place to change when the canonical host changes, when a new
 // locale launches, or when the default OG image is updated.
 
+import { building } from '$app/env';
 import type { Locale } from '#lib/types.ts';
 import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
-import { delocalizePath } from '#lib/utils/locale-routing.ts';
+import { delocalizePath, localizeHref, localizeUrl } from '#lib/utils/locale-routing.ts';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).
@@ -106,4 +107,15 @@ export function canonicalFor(pathname: string, locale: Locale): string {
 		locale !== DEFAULT_LOCALE && PUBLISHED_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
 	const prefix = effective === DEFAULT_LOCALE ? '' : `/${effective}`;
 	return `${SITE_HOST}${prefix}${base === '/' ? '' : base}`;
+}
+
+/** The current page in `target` for the language switch: the page's exact translated alternate when it
+ *  has alternates (the blog index when that translation is missing), else the same path. Keeps query and hash. */
+export function languageHref(url: URL, target: Locale, alternates?: Partial<Record<Locale, string>>): string {
+	if (!alternates) return localizeUrl(url, target);
+	const suffix = building ? '' : url.search + url.hash;
+	const exact = alternates[target];
+	if (!exact) return localizeHref('/blog', target) + suffix;
+	const href = new URL(exact, url.origin);
+	return (href.origin === new URL(SITE_HOST).origin ? href.pathname : href.href) + suffix;
 }

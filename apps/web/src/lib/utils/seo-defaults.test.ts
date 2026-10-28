@@ -7,6 +7,7 @@ import {
 	PUBLISHED_LOCALES,
 	canonicalFor,
 	localizeOgCard,
+	languageHref,
 } from './seo-defaults';
 
 // Every committed OG card the resolver may localize. Resolved at build time so
@@ -111,5 +112,30 @@ describe('canonicalFor', () => {
 
 	it('published prefix locales canonicalize to their own home URL (FR live)', () => {
 		expect(canonicalFor('/', 'fr')).toBe(`${SITE_HOST}/fr`);
+	});
+});
+
+describe('languageHref', () => {
+	const alternates = {
+		en: 'https://yesid.dev/blog/english-slug',
+		fr: 'https://yesid.dev/fr/blog/slug-francais',
+	};
+
+	it('keeps the path, query and hash when the page has no alternates', () => {
+		expect(languageHref(new URL('https://yesid.dev/projects?service=web#card-3'), 'fr')).toBe(
+			'/fr/projects?service=web#card-3',
+		);
+	});
+
+	it('uses the exact translated slug, relative on any host', () => {
+		expect(languageHref(new URL('http://localhost:4173/blog/english-slug?ref=home#s2'), 'fr', alternates)).toBe(
+			'/fr/blog/slug-francais?ref=home#s2',
+		);
+	});
+
+	it('falls back to the target blog index when the translation is missing', () => {
+		expect(languageHref(new URL('https://yesid.dev/fr/blog/slug-francais?ref=home#s2'), 'es', alternates)).toBe(
+			'/es/blog?ref=home#s2',
+		);
 	});
 });

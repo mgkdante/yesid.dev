@@ -70,18 +70,12 @@ html {
   }
 }
 
-/* App-owned geometry is inherited by the shell and body-portaled dialogs. */
+/* App-owned page geometry. */
 :root {
-  --nav-top: calc(1rem + env(safe-area-inset-top, 0px));
-  --nav-control: 44px;
-  --nav-padding-y: 12px;
-  --nav-border: 2px;
-  --nav-clearance: calc(var(--nav-top) + var(--nav-control) + 2 * var(--nav-padding-y) + 2 * var(--nav-border));
   --chrome-offset: var(--nav-clearance);
   --page-display: clamp(3rem, 4vw, 3.5rem);
 }
-@media (--tablet-max) { :root { --nav-padding-y: 8px; --page-display: clamp(2rem, 5vw, 2.5rem); } }
-@media (max-width: 479px) { :root { --nav-padding-y: 6px; } }
+@media (--tablet-max) { :root { --page-display: clamp(2rem, 5vw, 2.5rem); } }
 @media (--tablet-min) and (--desktop-max) { :root { --page-display: clamp(2.5rem, 4vw, 3rem); } }
 @media (min-width: 1440px) and (min-height: 800px) { :root { --page-display: var(--text-display); } }
 
