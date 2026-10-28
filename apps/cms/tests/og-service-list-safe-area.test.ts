@@ -5,7 +5,10 @@ import { describe, expect, test } from 'bun:test';
 import sharp from 'sharp';
 
 const REPO_ROOT = join(import.meta.dir, '..', '..', '..');
-const MUTED = { r: 0x9c, g: 0xa3, b: 0xaf };
+// The cards draw the service list in the token palette's muted text.
+const tokens = JSON.parse(readFileSync(join(REPO_ROOT, 'apps/web/vendor/design/tokens/tokens.json'), 'utf8'));
+const muted: string = tokens.color.dark['muted-foreground'].$value;
+const MUTED = { r: parseInt(muted.slice(1, 3), 16), g: parseInt(muted.slice(3, 5), 16), b: parseInt(muted.slice(5, 7), 16) };
 
 function closeToMuted(r: number, g: number, b: number): boolean {
 	return Math.abs(r - MUTED.r) <= 8 && Math.abs(g - MUTED.g) <= 8 && Math.abs(b - MUTED.b) <= 8;
