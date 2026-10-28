@@ -3,7 +3,7 @@
 The repository's root [LICENSE](LICENSE) applies only to original yesid.dev
 material.
 
-- `apps/web/vendor/design/` contains yesid.dev-design `v0.20.0`, distributed
+- `apps/web/vendor/design/` contains yesid.dev-design `v0.21.0`, distributed
   under the MIT License. Copyright © 2026 Yesid Otalora. See
   `apps/web/vendor/design/LICENSE`.
 - `apps/web/vendor/design/motion/lenis.css` is copied from Lenis 1.3, Copyright
@@ -13,9 +13,9 @@ material.
   variable fonts (from `@fontsource-variable` 5.2.8), distributed under the SIL
   Open Font License 1.1. The license texts sit beside the files. These are
   distinct from the OG font files listed below.
-- `apps/web/src/lib/og/fonts/Inter-Medium.ttf` and `Inter-Black.ttf` come from
+- `apps/web/vendor/design/seo-kit/fonts/Inter-Medium.ttf` and `Inter-Black.ttf` come from
   Inter `v4.1` and are distributed under the SIL Open Font License 1.1.
-- `apps/web/src/lib/og/fonts/JetBrainsMono-Medium.ttf` comes from JetBrains Mono
+- `apps/web/vendor/design/seo-kit/fonts/JetBrainsMono-Medium.ttf` comes from JetBrains Mono
   `v2.304` and is distributed under the SIL Open Font License 1.1.
 - `gsap@3.15.0`, including its bundled plugins, is licensed separately from
   this repository's proprietary material. It is available at no charge for

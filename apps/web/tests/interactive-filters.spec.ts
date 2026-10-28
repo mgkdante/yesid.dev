@@ -136,7 +136,7 @@ test.describe('Blog listing filters', () => {
     await tagsToggle.click();
 
     // The expanded Tags group contains the reset radio followed by its tag chips.
-    const tagsGroup = tagsToggle.locator('..').locator('.filter-collapse.filter-open');
+    const tagsGroup = page.locator(`[id="${await tagsToggle.getAttribute('aria-controls')}"]`);
     const tagBtn = tagsGroup.getByRole('radio').nth(1);
     await expect(tagBtn).toBeVisible();
     await tagBtn.click();

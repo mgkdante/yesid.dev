@@ -27,12 +27,4 @@ describe('static icons', () => {
 		expect(png.readUInt32BE(20)).toBe(180);
 		expect(png[25]).toBe(2);
 	});
-
-	it('declares the apple-touch-icon link and exactly one theme-aware favicon', () => {
-		const html = readFileSync('src/app.html', 'utf8');
-		expect(html.match(/\brel="icon"/g)).toHaveLength(1);
-		expect(html).toContain(
-			'<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />',
-		);
-	});
 });

@@ -3,8 +3,10 @@
 // locale launches, or when the default OG image is updated.
 
 import { building } from '$app/env';
+import type { SeoHeadProps } from '@yesid/ui/head';
+import type { PageSeo } from '#lib/schemas/seo.ts';
 import type { Locale } from '#lib/types.ts';
-import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
+import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 import { delocalizePath, localizeHref, localizeUrl } from '#lib/utils/locale-routing.ts';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
@@ -50,8 +52,7 @@ export { DEFAULT_LOCALE };
  * Returns the default OG image path for a given locale.
  *
  * For published locales, returns `/og/default.{locale}.png`, a committed asset
- * under `static/og/` produced by scripts/generate-og-cards.ts. The legacy
- * generate-og-default.ts entry point delegates to that canonical renderer.
+ * under `static/og/` produced by scripts/generate-og-cards.ts.
  * For unpublished locales, falls back to the EN default so `og:image` always
  * resolves to a real file.
  */
@@ -118,4 +119,40 @@ export function languageHref(url: URL, target: Locale, alternates?: Partial<Reco
 	if (!exact) return localizeHref('/blog', target) + suffix;
 	const href = new URL(exact, url.origin);
 	return (href.origin === new URL(SITE_HOST).origin ? href.pathname : href.href) + suffix;
+}
+
+/** The page head for one locale: the resolution the old SeoHead component did. */
+export function seoHeadProps(seo: PageSeo, locale: Locale, themeColor?: string): SeoHeadProps {
+	const title = resolveLocale(seo.title, locale);
+	const image = seo.ogImage ? localizeOgCard(seo.ogImage.url, locale) : defaultOgImageFor(locale);
+	const path = seo.canonical.replace(SITE_HOST, '') || '/';
+	const locales = seo.localeAlternates
+		? PUBLISHED_LOCALES.filter((l) => Boolean(seo.localeAlternates?.[l]))
+		: PUBLISHED_LOCALES;
+	const xDefault = seo.localeAlternates ? seo.localeAlternates.en : canonicalFor(path, 'en');
+	return {
+		title,
+		description: resolveLocale(seo.description, locale),
+		siteName: SITE_NAME,
+		canonical: seo.canonical,
+		alternates: seo.singleLocale
+			? []
+			: [
+					...locales.map((l) => ({ hreflang: l, href: seo.localeAlternates?.[l] ?? canonicalFor(path, l) })),
+					...(xDefault ? [{ hreflang: 'x-default', href: xDefault }] : []),
+				],
+		ogLocale: `${locale}_CA`,
+		ogLocaleAlternates: locales.filter((l) => l !== locale).map((l) => `${l}_CA`),
+		image: {
+			url: image.startsWith('http') ? image : `${SITE_HOST}${image}`,
+			alt: seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} · ${title}`,
+			width: seo.ogImage?.width,
+			height: seo.ogImage?.height,
+		},
+		type: seo.ogType,
+		noIndex: seo.noIndex,
+		twitter: { site: TWITTER_HANDLE, creator: TWITTER_HANDLE },
+		themeColor,
+		jsonLd: seo.jsonLd,
+	};
 }

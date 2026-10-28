@@ -2,9 +2,10 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Window } from 'happy-dom';
-import { hashScript, hashThemeScript } from './csp-script-hash.mjs';
+import { createHash } from 'node:crypto';
+import boot from '@yesid/ui/boot.json' with { type: 'json' };
 
-const THEME_SCRIPT_HASH = `'${hashThemeScript(readFileSync(new URL('../src/app.html', import.meta.url), 'utf8'))}'`;
+const THEME_SCRIPT_HASH = `'${boot.hash}'`;
 
 export const CONNECT_SOURCES = [
 	"'self'",
@@ -14,7 +15,7 @@ export const CONNECT_SOURCES = [
 ];
 
 export function scriptHash(source: string): string {
-	return `'${hashScript(source)}'`;
+	return `'sha256-${createHash('sha256').update(source.replace(/\r\n?/g, '\n')).digest('base64')}'`;
 }
 
 /** Parse HTML without executing scripts or fetching any resources. */
@@ -66,7 +67,7 @@ export function checkHtml(html: string): string[] {
 			if (meta && !(meta.compareDocumentPosition(script) & window.Node.DOCUMENT_POSITION_FOLLOWING)) {
 				preMetaScripts++;
 				if (hash !== THEME_SCRIPT_HASH) {
-					errors.push(`CSP meta must precede executable script ${index + 1} unless it matches the app.html theme script`);
+					errors.push(`CSP meta must precede executable script ${index + 1} unless it is the theme boot script`);
 				}
 				if (preMetaScripts > 1) errors.push('more than one executable script precedes the CSP meta');
 			}

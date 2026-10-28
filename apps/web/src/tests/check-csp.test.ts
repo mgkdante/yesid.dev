@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { injectThemeBoot } from '@yesid/ui/head';
 import { describe, expect, it } from 'vitest';
-import { Window } from 'happy-dom';
 import { checkHtml, scriptHash } from '../../scripts/check-csp';
 
 const source = '\n  window.ready = true;\n';
@@ -12,24 +11,7 @@ function page(head: string, body = ''): string {
 	return `<!doctype html><html><head>${head}</head><body>${body}</body></html>`;
 }
 const fixture = page(meta, `<script>${source}</script>`);
-const template = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
-const themeSource = (() => {
-	const window = new Window({
-		settings: {
-			enableJavaScriptEvaluation: false,
-			disableJavaScriptFileLoading: true,
-			enableCSSFileLoading: false,
-			enableImageFileLoading: false,
-		},
-	});
-	try {
-		const scripts = new window.DOMParser().parseFromString(template, 'text/html').querySelectorAll('script');
-		if (scripts.length !== 1) throw new Error('Expected exactly one app.html theme script');
-		return scripts[0].textContent;
-	} finally {
-		window.close();
-	}
-})();
+const themeSource = injectThemeBoot('%yesid.themeBoot%').slice('<script>'.length, -'</script>'.length);
 const themeHash = `'sha256-${createHash('sha256').update(themeSource.replace(/\r\n?/g, '\n')).digest('base64')}'`;
 const themeMeta = meta.replace(hash, `${hash} ${themeHash}`);
 
@@ -43,7 +25,7 @@ describe('post-build CSP guard', () => {
 		expect(checkHtml(page(`${meta}<script>${source}</script>`, `<script>${source}</script>`))).toEqual([]);
 	});
 
-	it.each(['\n', '\r\n', '\r'])('permits the app.html theme script before the CSP with %j line endings', (ending) => {
+	it.each(['\n', '\r\n', '\r'])('permits the theme boot script before the CSP with %j line endings', (ending) => {
 		const theme = themeSource.replace(/\r\n?/g, '\n').replaceAll('\n', ending);
 		expect(checkHtml(page(`<script>${theme}</script>${themeMeta}`, `<script>${source}</script>`))).toEqual([]);
 	});
@@ -65,7 +47,7 @@ describe('post-build CSP guard', () => {
 	it.each([`<script>${source}</script>`, '<script src="/app.js"></script>', `<script src="/app.js">${themeSource}</script>`])(
 		'rejects a CSP meta after an executable script: %s',
 		(script) => {
-			expect(checkHtml(page(script + meta))).toContain('CSP meta must precede executable script 1 unless it matches the app.html theme script');
+			expect(checkHtml(page(script + meta))).toContain('CSP meta must precede executable script 1 unless it is the theme boot script');
 		},
 	);
 

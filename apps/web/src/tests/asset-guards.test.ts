@@ -23,7 +23,6 @@ const reviewedSinks = [
 	{ file: 'lib/components/projects/ProjectCard.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectDetailPage.svelte', reason: 'sanitize-html README content and Mermaid strict mode output' },
 	{ file: 'lib/components/projects/ProjectImageGallery.svelte', reason: 'exported Editor.js caption HTML' },
-	{ file: 'lib/components/seo/JsonLd.svelte', reason: 'JSON-LD serializer escapes < before embedding in a script element' },
 	{ file: 'lib/motion/svg/MetroNetwork.svelte', reason: 'static committed asset' },
 ];
 

@@ -12,27 +12,21 @@
 	import { Wordmark } from '@yesid/ui/brand';
 	import { FooterLink } from '@yesid/ui/footer';
 	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
-	import { theme } from '@yesid/ui/state';
 
-	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
-	// server-side from $page.data.seo, which is populated by +layout.ts load.
-	// Slice 15b: JSON-LD is emitted by <JsonLd> mounted inside <SeoHead> —
-	// no direct import here. The Slice 12 `buildPersonSchema` block it replaced
-	// is gone; the Slice 17b "documented exception" reading siteMeta directly
-	// is likewise resolved.
-	import SeoHead from '#lib/components/seo/SeoHead.svelte';
+	// SEO is layout-authoritative: @yesid/ui/head renders tags server-side.
+	// seoHeadProps resolves the page SEO and JSON-LD for the current locale.
+	import { SeoHead } from '@yesid/ui/head';
 	import Analytics from '#lib/components/analytics/Analytics.svelte';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
 	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
-	import { PUBLISHED_LOCALES, languageHref } from '#lib/utils/seo-defaults.ts';
+	import { PUBLISHED_LOCALES, languageHref, seoHeadProps } from '#lib/utils/seo-defaults.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
 	import { initGlobalRipple } from '@yesid/motion/utils/globalRipple';
 	import { setMorphShapes } from '#lib/utils/shapes.ts';
-	import { setFavicon } from '#lib/utils/favicon.ts';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '#lib/navigation/types.ts';
 	import type { Locale, MorphShape } from '#lib/types.ts';
@@ -72,10 +66,6 @@
 	// that without a full document load, which would strand slice-34's handoff.
 	$effect(() => {
 		if (browser) document.documentElement.lang = locale;
-	});
-
-	$effect(() => {
-		setFavicon(theme.current);
 	});
 
 	$effect(() => {
@@ -153,11 +143,7 @@
 {/snippet}
 
 <SiteRoot>
-	<SeoHead
-		seo={data.seo}
-		locale={locale}
-		themeColor={data.themeColor}
-	/>
+	<SeoHead {...seoHeadProps(data.seo, locale, data.themeColor)} />
 
 	<Analytics locale={locale} isHome={basePath === '/'} />
 

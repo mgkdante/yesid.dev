@@ -1,3 +1,4 @@
+import { injectThemeBoot } from '@yesid/ui/head';
 import type { Handle, HandleServerError } from '@sveltejs/kit/hooks';
 import { resolveStaticErrorPage } from '#lib/adapters/index.ts';
 import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
@@ -24,7 +25,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// CDN-safe) and error renders get the right lang too.
 	const lang = pathLocale(event.url.pathname);
 	const response = await resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang),
+		transformPageChunk: ({ html }) => injectThemeBoot(html.replace('%lang%', lang)),
 		// Preload the self-hosted variable fonts (+ js/css) via Link headers:
 		// without this the woff2 is only discovered through the CSS chain and
 		// font-display swap flashes fallback type on a text-LCP site.

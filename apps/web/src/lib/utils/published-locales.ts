@@ -8,7 +8,7 @@
 //   - a `static/og/default.{locale}.png` asset to be needed
 //
 // Lives in its own dependency-free module (split from seo-defaults, homework
-// batch 2026-07-02) so bare-bun scripts (scripts/generate-og-default.ts) can
+// batch 2026-07-02) so bare-bun scripts (scripts/generate-og-cards.ts) can
 // import it without dragging in locale-routing's virtual `$app/environment`.
 // App code should keep importing it from $lib/utils/seo-defaults (re-export).
 import type { Locale } from '#lib/types.ts';

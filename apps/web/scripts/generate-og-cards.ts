@@ -6,7 +6,7 @@
  * Mints the static card set: four service cards, the /services, /contact,
  * /about and /projects route cards, home defaults and the general site card,
  * each in en + fr + es. 1200x630 PNG, hard budget <150KB, text inside 80px
- * margins, bg #141414 / text #F5F5F0 / orange #E07800 / yellow #FFB627.
+ * margins, colors from the token palette.
  *
  * EN keeps the legacy no-suffix filename (services/<id>.png, routes/<route>.png)
  * so the existing SeoHead + media-assets wiring is untouched; fr + es land at
@@ -22,16 +22,17 @@
  * keeping this renderer deterministic and reviewable. Every card carries the
  * outlined wordmark ("yesid" + orange period) from the canonical brand SVG.
  *
- * This is the canonical renderer; generate-og-default.ts is a compatibility
- * wrapper that delegates here. Cards use hand-built SVG -> resvg with the
- * vendored OG TTFs (Inter 500/900, JetBrains Mono 500). The /about card embeds
- * the headshot; sharp converts the committed webp to PNG at render time.
+ * Cards use hand-built SVG -> resvg with the packaged OG TTFs (Inter 500/900,
+ * JetBrains Mono 500). The /about card embeds the headshot; sharp converts the
+ * committed webp to PNG at render time.
  *
  *   bun scripts/generate-og-cards.ts                 # writes into static/og
  *   bun scripts/generate-og-cards.ts --out <dir>     # mockup run
  */
 
 import { Resvg } from '@resvg/resvg-js';
+import { OG_PALETTE } from '@yesid/seo-kit/og';
+import { ogFontFiles } from '@yesid/seo-kit/og/files';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
@@ -48,11 +49,7 @@ const HEIGHT = 630;
 const MARGIN = 80;
 const BUDGET_BYTES = 150_000;
 
-const BG = '#141414';
-const TEXT = '#F5F5F0';
-const MUTED = '#9CA3AF';
-const ORANGE = '#E07800';
-const YELLOW = '#FFB627';
+const { background: BG, foreground: TEXT, muted: MUTED, accent: ORANGE, accentText: YELLOW } = OG_PALETTE;
 
 type Locale = 'en' | 'fr' | 'es';
 const LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
@@ -68,11 +65,7 @@ const SELECTED_LOCALES: readonly Locale[] = requestedLocale ? [requestedLocale a
 /** EN keeps the legacy no-suffix path; fr/es get a .<locale> suffix. */
 const suffix = (loc: Locale) => (loc === 'en' ? '' : `.${loc}`);
 
-const FONT_FILES = [
-	resolve(WEB_ROOT, 'src/lib/og/fonts/Inter-Black.ttf'),
-	resolve(WEB_ROOT, 'src/lib/og/fonts/Inter-Medium.ttf'),
-	resolve(WEB_ROOT, 'src/lib/og/fonts/JetBrainsMono-Medium.ttf'),
-];
+const FONT_FILES = [...ogFontFiles];
 
 // --- Brand wordmark (canonical outlined paths) ---------------------------
 

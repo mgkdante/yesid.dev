@@ -9,7 +9,7 @@
 *.svg text eol=lf
 *.json text eol=lf
 .githooks/* text eol=lf
-apps/web/src/lib/og/fonts/LICENSE-JetBrains-Mono.txt text eol=lf whitespace=-blank-at-eol
+apps/web/vendor/design/seo-kit/fonts/LICENSE-JetBrains-Mono.txt text eol=lf whitespace=-blank-at-eol
 
 # Binary assets: never touch
 *.png binary

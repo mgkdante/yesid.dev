@@ -169,28 +169,28 @@
 			"folder": "og",
 			"title": "OG card — /services",
 			"description": "Share card for the /services listing route: Digital Infrastructure title with the four-station service list.",
-			"sha256": "44d4333e763d5ab4b09c54f0e6307985cd77cae715f9b24eaa79982f4183fd89"
+			"sha256": "6c9ee70dcba09be6c68e471337ec337d287e92547520c839df1f1ac9ff06be6a"
 		},
 		{
 			"legacyPath": "og/routes/contact.png",
 			"folder": "og",
 			"title": "OG card — /contact",
 			"description": "Share card for the /contact route in the yellow signage voice: Let's talk.",
-			"sha256": "be9d03dcdc40ba2722e306bcffd64637933191a2e579579bf0dee4052179a759"
+			"sha256": "3d4d50e6b220949a3c4e1262bf1cdc5d27bb783800f29c9f0f7388f05e58742f"
 		},
 		{
 			"legacyPath": "og/routes/about.png",
 			"folder": "og",
 			"title": "OG card — /about",
 			"description": "Share card for the /about route: Yesid O., Freelance Digital Solutions Developer, with headshot.",
-			"sha256": "74eb8c45016f666811c6142319e819229b44ab41551e3b2b588ac3f37d90057c"
+			"sha256": "4bf927a13d80feb3e9b4836577242e300142e1e19cad6a0e0e51dde13c852c8d"
 		},
 		{
 			"legacyPath": "og/routes/projects.png",
 			"folder": "og",
 			"title": "OG card — /projects",
 			"description": "Share card for the /projects listing route with the digital-infrastructure blueprint drawing.",
-			"sha256": "fa092ea2b5fab43bb86975f5ed7929feb847865016d3d3686a46ffc1add5c37e"
+			"sha256": "8d9e573118a3d54eaca149babbe5f40794026504fac752be423c49c21207f161"
 		},
 		{
 			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.jpg",

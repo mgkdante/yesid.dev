@@ -1,7 +1,6 @@
 import adapter from '@sveltejs/adapter-vercel';
 import { projectRunes } from '@yesid/config/svelte/project-runes.js';
-import { readFileSync } from 'node:fs';
-import { hashThemeScript } from './scripts/csp-script-hash.mjs';
+import boot from '@yesid/ui/boot.json' with { type: 'json' };
 import { createCspDirectives } from './scripts/csp-policy.mjs';
 import globalData from '@csstools/postcss-global-data';
 import { defineConfig } from 'vitest/config';
@@ -14,10 +13,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 const designTokensCss = fileURLToPath(new URL('./vendor/design/tokens/tokens.css', import.meta.url));
 
-// SvelteKit hashes its bootstrap, but app.html scripts need their own hash.
-const template = readFileSync(new URL('./src/app.html', import.meta.url), 'utf8');
-
-const themeScriptHash = hashThemeScript(template);
+// SvelteKit hashes its bootstrap; the theme script hash comes from @yesid/ui/boot.json.
 
 // svelteTesting() is a Vite plugin from @testing-library/svelte that:
 //   - adds 'browser' to resolve.conditions (makes Svelte use index-client.js)
@@ -52,7 +48,7 @@ export default defineConfig({
 
 			csp: {
 				mode: 'hash',
-				directives: createCspDirectives({ themeScriptHash, vercelEnv: process.env.VERCEL_ENV })
+				directives: createCspDirectives({ themeScriptHash: boot.hash as `sha256-${string}`, vercelEnv: process.env.VERCEL_ENV })
 			},
 			prerender: {
 				// '*' keeps the default crawl; the llms files are linked from nowhere,
@@ -90,6 +86,7 @@ export default defineConfig({
 		// the runtime resolution mismatch.
 		noExternal: [
 			'@yesid/tokens',
+			'@yesid/seo-kit',
 			'bits-ui',
 			'gsap',
 			'embla-carousel',
