@@ -147,7 +147,10 @@ test('below 1024px the SQL example opens from its tab and folds back to it', asy
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto('/');
 	const region = page.getByTestId('hero-mobile-sql');
-	const show = region.getByRole('button', { expanded: false });
+	// The opener comes first; it stays the same element as its state changes.
+	const show = region.getByRole('button').first();
+	await expect(show).toHaveAttribute('aria-expanded', 'false');
+	await expect(show).toHaveAttribute('aria-controls', /\S/);
 	const example = page.locator(`#${await show.getAttribute('aria-controls')}`);
 	await expect(example).toHaveAttribute('aria-hidden', 'true');
 

@@ -39,6 +39,7 @@
 		es: { show: 'Ver un pequeño ejemplo', hide: 'Ocultar el ejemplo' },
 	}[getLocale()];
 
+	const exampleId = $props.id();
 	let open = $state(false);
 	let showTab = $state<HTMLButtonElement | null>(null);
 
@@ -53,12 +54,12 @@
 		<!-- Horizontal divider — mirrors the vertical desktop divider -->
 		<div class="hero-divider-h mx-6"></div>
 		<div class="flex justify-center">
-			<Collapsible.Trigger bind:ref={showTab} class="binder-tab tap-press">
+			<Collapsible.Trigger bind:ref={showTab} class="binder-tab tap-press" aria-controls={exampleId}>
 				{tabs.show}<span class="binder-tab-mark" aria-hidden="true">{open ? '▴' : '▾'}</span>
 			</Collapsible.Trigger>
 		</div>
 
-		<Collapsible.Content>
+		<Collapsible.Content id={exampleId}>
 			<div class="w-full px-[var(--space-page-x)] pt-6">
 				<HeroSqlPanel
 					rows={heroData.queryRows}
