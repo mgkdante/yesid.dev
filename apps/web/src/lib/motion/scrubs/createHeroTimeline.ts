@@ -2,9 +2,8 @@
 //
 // Composes ScrollTrigger + pin + DrawSVG stroke-scrub + station/label fades +
 // Phase 5 Berri-UQAM zoom + Phase 6 cross-fade + Phase 7 hero text zoom-out
-// into a single self-contained factory. Does NOT delegate to createDrawScrub —
-// the hero's multi-phase choreography is specialized and composes GSAP
-// primitives directly (design spec §4.3).
+// into a single self-contained factory that composes GSAP primitives directly
+// (design spec §4.3).
 //
 // Phase map (normalized timeline 0–1.40):
 //   Phase 1  (0–0.03):     Berri + background appear

@@ -92,7 +92,7 @@ function blueprint(rel: string, x: number, y: number, targetW: number, t: Theme)
 	const s = targetW / open[2];
 	return `<g transform="translate(${x},${y}) scale(${s})" fill="none" opacity="${t.blueprint}">${inner}</g>`;
 }
-const AZUR = 'src/lib/components/svg/azur/BlueprintAzurSide.svelte';
+const AZUR = 'vendor/design/ui/src/blueprints/BlueprintAzurSide.svelte';
 
 function crosshairs(w: number, h: number, t: Theme): string {
 	const o = t.chrome, I = 46;

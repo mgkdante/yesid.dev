@@ -24,7 +24,6 @@
 	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
 	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
-	import ManifestoCanvas from '#lib/components/home/ManifestoCanvas.svelte';
 	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 	import {
 		CollapsibleSection,
@@ -463,9 +462,6 @@
 			>
 				{#snippet decorations()}
 					<ProjectHeaderTelemetry {project} />
-				{/snippet}
-				{#snippet canvas(el)}
-					<ManifestoCanvas containerEl={el} />
 				{/snippet}
 				{#snippet controls()}
 					<QuietModeButton />

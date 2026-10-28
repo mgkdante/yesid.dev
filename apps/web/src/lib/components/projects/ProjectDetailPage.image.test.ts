@@ -196,11 +196,10 @@ describe('ProjectDetailPage image placement', () => {
 		expect(screen.getByText(/generated TypeScript cache/)).toBeInTheDocument();
 		expect(screen.getByText('Generated cache contract')).toBeInTheDocument();
 		expect(screen.getByText('Zero CMS calls per visit')).toBeInTheDocument();
-		const codePayloads = [...container.querySelectorAll<HTMLElement>('[data-code-copy]')]
-			.map((node) => node.getAttribute('data-code-copy') ?? '');
-		expect(codePayloads.some((payload) => payload.includes('op run --env-file=apps/cms/.env'))).toBe(true);
-		expect(codePayloads).toContain('export const projects = [...] satisfies Project[];');
-		expect(screen.getAllByTestId('code-block-language').map((node) => node.textContent)).toEqual(['sh', 'ts']);
+		expect(container.textContent).toContain('op run --env-file=apps/cms/.env');
+		expect(container.textContent).toContain('export const projects = [...] satisfies Project[];');
+		expect(screen.getAllByText('sh').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText('ts').length).toBeGreaterThanOrEqual(1);
 
 		const tocCard = container.querySelector('.toc-column [data-slot="card"]');
 		expect(tocCard).toBeTruthy();

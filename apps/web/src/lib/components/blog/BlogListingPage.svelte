@@ -9,7 +9,7 @@
 	const locale = getLocale();
 	import { siteLabels } from '#lib/content/index.ts';
 	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
-	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
+	import { blueprintScrub } from '@yesid/motion/utils/blueprintScrub';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
@@ -153,20 +153,6 @@
 		});
 	});
 
-	// Blueprint artwork renders on every viewport. DrawSVG scroll-scrub is a
-	// desktop-only enhancement so mobile keeps native scroll behavior.
-	function startScrub(header: HTMLElement, frame: HTMLElement) {
-		let cancelled = false;
-		let destroy: (() => void) | undefined;
-		void startListingBlueprintScrub(header, frame).then((stop) => {
-			if (cancelled) stop?.();
-			else destroy = stop;
-		});
-		return () => {
-			cancelled = true;
-			destroy?.();
-		};
-	}
 </script>
 
 <!--
@@ -184,7 +170,7 @@
 		heading={mobileHeadingText}
 		edgeTitle={resolveLocale(siteLabels.pages.blogEdgeTitle, locale)}
 		{subtitle}
-		onHeaderMount={startScrub}
+		onHeaderMount={blueprintScrub}
 		filterLabel={mobileFiltersLabel}
 		filterPersistKey="blog-mobile-filters-open"
 	>

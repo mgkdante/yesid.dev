@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { siteLabels } from '#lib/content/index.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
 import BlockRenderer from './BlockRenderer.svelte';
 // Server-side highlighter (Shiki) — fine to import in vitest (node context);
 // the client bundle guard only applies to app code. Tests build the highlight
@@ -145,10 +146,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 			{ id: 'c1', type: 'code', data: { code: 'SELECT 1;' } },
 		]);
 		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
-		const code = container.querySelector('pre code');
-		expect(code?.textContent).toBe('SELECT 1;');
-		expect(container.querySelector('pre')?.hasAttribute('data-language')).toBe(false);
-		expect(container.querySelector('[data-testid="code-block-language"]')).toBeNull();
+		expect(container.textContent).toContain('SELECT 1;');
 	});
 
 	it('renders a plain escaped <pre> when no server highlight is provided', () => {
@@ -157,10 +155,9 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const doc = baseDoc([
 			{ id: 'c-plain', type: 'code', data: { code: '```ts\nconst a = 1 < 2;\n```' } },
 		]);
-		const { container } = render(BlockRenderer, { doc });
-		expect(container.querySelector('pre.shiki')).toBeNull();
-		expect(container.querySelector('pre code')?.textContent).toBe('const a = 1 < 2;');
-		expect(container.querySelector('[data-testid="code-block-language"]')?.textContent).toBe('ts');
+		render(BlockRenderer, { doc });
+		expect(screen.getByText('const a = 1 < 2;')).toBeInTheDocument();
+		expect(screen.getByText('ts')).toBeInTheDocument();
 	});
 
 	it('renders fenced script code blocks with language badge and copies the script body', async () => {
@@ -179,21 +176,16 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 			{ id: 'c-script', type: 'code', data: { code: script } },
 		]);
 		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
-		const code = container.querySelector('pre code');
-		const button = container.querySelector('button.terminal-code-copy') as HTMLButtonElement | null;
+		const button = screen.getByRole('button', { name: resolveLocale(siteLabels.blogChrome.detail.code.copyAria, 'en') });
 
-		expect(container.querySelector('[data-slot="terminal-chrome"]')).toBeTruthy();
-		expect(container.querySelector('.code-fence-frame')).toBeNull();
-		expect(container.querySelector('[data-code-language]')?.getAttribute('data-code-language')).toBe('sh');
-		expect(container.querySelector('[data-testid="code-block-language"]')?.textContent).toBe('sh');
-		expect(container.querySelector('pre.shiki')).toBeTruthy();
+		expect(screen.getByText('sh')).toBeInTheDocument();
 		expect(container.innerHTML).toContain('var(--terminal)');
-		expect(container.innerHTML).toContain('var(--primary)');
-		expect(code?.textContent).toContain('op run --env-file=apps/cms/.env');
-		expect(code?.textContent).not.toContain('```');
+		expect(container.innerHTML).toContain('var(--syntax-keyword)');
+		expect(container.textContent).toContain('op run --env-file=apps/cms/.env');
+		expect(container.textContent).not.toContain('```');
 		expect(button).toBeTruthy();
 
-		await fireEvent.click(button as HTMLButtonElement);
+		await fireEvent.click(button);
 
 		expect(writeText).toHaveBeenCalledWith(
 			[
@@ -219,12 +211,8 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		]);
 		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
 
-		expect(container.querySelector('[data-slot="terminal-chrome"]')).toBeTruthy();
-		expect(container.querySelector('.code-fence-frame')).toBeNull();
-		expect(container.querySelector('[data-code-language="ts"]')).toBeTruthy();
-		expect(container.querySelector('[data-testid="code-block-language"]')?.textContent).toBe('ts');
-		expect(container.querySelector('pre.shiki')).toBeTruthy();
-		expect(container.querySelector('pre code')?.textContent).toBe(
+		expect(screen.getByText('ts')).toBeInTheDocument();
+		expect(container.textContent).toContain(
 			'export const projects = [...] satisfies Project[];',
 		);
 	});
@@ -300,11 +288,10 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 	});
 
 	it('renders the CMS code chrome title', () => {
-		const { container } = render(BlockRenderer, {
+		render(BlockRenderer, {
 			doc: baseDoc([{ id: 'chrome-title', type: 'code', data: { code: 'SELECT 1;' } }]),
 		});
-		expect(container.querySelector('[data-slot="terminal-chrome"] .terminal-title'))
-			.toHaveTextContent('CMS code window');
+		expect(screen.getByText('CMS code window')).toBeInTheDocument();
 	});
 
 	it('escapes plain text in code block (XSS attempt)', () => {

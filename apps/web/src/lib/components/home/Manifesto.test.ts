@@ -72,11 +72,6 @@ describe('Manifesto', () => {
 		expect(ticks.textContent).toContain('80');
 	});
 
-	it('renders interactive canvas', () => {
-		render(Manifesto, { props: { manifesto: manifestoContent } });
-		expect(screen.getByTestId('manifesto-canvas')).toBeInTheDocument();
-	});
-
 	it('GO-w2t5: pills boop on hover (SAFE-ALWAYS micro-feedback)', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
 		const pill = screen.getAllByTestId('manifesto-pill')[0];

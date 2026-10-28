@@ -1,18 +1,6 @@
 <script lang="ts">
 	import { BlueprintShell } from '@yesid/ui/brand';
-	import BlueprintAzurSide from '#lib/components/svg/azur/BlueprintAzurSide.svelte';
-	import BlueprintBridge from '#lib/components/svg/transit/BlueprintBridge.svelte';
-	import BlueprintCatenary from '#lib/components/svg/transit/BlueprintCatenary.svelte';
-	import BlueprintSignal from '#lib/components/svg/transit/BlueprintSignal.svelte';
-	import BlueprintStationSection from '#lib/components/svg/transit/BlueprintStationSection.svelte';
-	import BlueprintGeology from '#lib/components/svg/tunneling/BlueprintGeology.svelte';
-	import BlueprintTBM from '#lib/components/svg/tunneling/BlueprintTBM.svelte';
-	import BlueprintTunnelSection from '#lib/components/svg/tunneling/BlueprintTunnelSection.svelte';
-	import BlueprintVentShaft from '#lib/components/svg/tunneling/BlueprintVentShaft.svelte';
-	import BlueprintTransitRoute from '#lib/components/svg/cta/BlueprintTransitRoute.svelte';
-	import BlueprintInterfaceSuite from '#lib/components/svg/cta/BlueprintInterfaceSuite.svelte';
-	import BlueprintDataPipeline from '#lib/components/svg/cta/BlueprintDataPipeline.svelte';
-	import BlueprintCodeSystem from '#lib/components/svg/cta/BlueprintCodeSystem.svelte';
+	import { BlueprintAzurSide, BlueprintBridge, BlueprintCatenary, BlueprintSignal, BlueprintStationSection, BlueprintGeology, BlueprintTBM, BlueprintTunnelSection, BlueprintVentShaft, BlueprintTransitRoute, BlueprintInterfaceSuite, BlueprintDataPipeline, BlueprintCodeSystem } from '@yesid/ui/blueprints';
 </script>
 
 <BlueprintShell

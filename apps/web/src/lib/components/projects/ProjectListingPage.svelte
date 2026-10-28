@@ -8,7 +8,7 @@
 
 	const locale = getLocale();
 	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
-	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
+	import { blueprintScrub } from '@yesid/motion/utils/blueprintScrub';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { MetroStation } from '@yesid/ui/brand';
@@ -163,20 +163,6 @@
 		});
 	});
 
-	// Blueprint artwork renders on every viewport. DrawSVG scroll-scrub is a
-	// desktop-only enhancement so mobile keeps native scroll behavior.
-	function startScrub(header: HTMLElement, frame: HTMLElement) {
-		let cancelled = false;
-		let destroy: (() => void) | undefined;
-		void startListingBlueprintScrub(header, frame).then((stop) => {
-			if (cancelled) stop?.();
-			else destroy = stop;
-		});
-		return () => {
-			cancelled = true;
-			destroy?.();
-		};
-	}
 </script>
 
 <!--
@@ -193,7 +179,7 @@
 		heading={listingHeading}
 		edgeTitle={resolveLocale(siteLabels.pages.projectsEdgeTitle, locale)}
 		subtitle={listingIntro}
-		onHeaderMount={startScrub}
+		onHeaderMount={blueprintScrub}
 		filterLabel={mobileFiltersLabel}
 		filterPersistKey="projects-mobile-filters-open"
 	>

@@ -27,7 +27,7 @@ describe('markdown renderer', () => {
 
 		expect(html).toContain('background-color:var(--terminal)');
 		expect(html).toContain('color:var(--terminal-ink)');
-		expect(html).toContain('var(--primary)');
+		expect(html).toContain('var(--syntax-keyword)');
 		expect(html).not.toContain('#1a1814');
 		expect(html).not.toContain('#e8e4de');
 		expect(html).not.toContain('#E07800');

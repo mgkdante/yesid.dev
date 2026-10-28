@@ -122,8 +122,8 @@ html {
 .prose-dark a:focus-visible {
   background-size: 100% 1px;
 }
-.prose-dark pre,
-.prose-dark pre.shiki {
+.prose-dark pre:not(.terminal-code-body > pre),
+.prose-dark pre.shiki:not(.terminal-code-body > pre) {
   background: var(--terminal) !important;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -133,6 +133,9 @@ html {
   font-size: var(--text-mono);
   line-height: 1.6;
   max-width: 100%;
+}
+.terminal-code {
+  margin: 1rem 0;
 }
 .prose-dark pre code {
   font-family: var(--font-mono);

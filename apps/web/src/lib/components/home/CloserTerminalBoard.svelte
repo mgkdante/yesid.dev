@@ -3,8 +3,7 @@
   Data-driven rows: each row links to a destination (contact, GitHub, blog, about).
 -->
 <script lang="ts">
-	import TerminalChrome from '#lib/components/brand/TerminalChrome.svelte';
-	import { TerminalCursor } from '@yesid/ui/brand';
+	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
@@ -34,7 +33,7 @@
 	} = $props();
 </script>
 
-<TerminalChrome
+<TerminalPanel
 	title={terminalTitle}
 	noPadding
 	footer={[
@@ -75,7 +74,7 @@
 		<span class="terminal-line-num">&nbsp;</span>
 		<TerminalCursor />
 	</div>
-</TerminalChrome>
+</TerminalPanel>
 
 <style>
 	.terminal-welcome {

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '@yesid/tokens/fonts.css';
 	import '#lib/styles/site.css';
-	import '#lib/styles/terminal.css';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';

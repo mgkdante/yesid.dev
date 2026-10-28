@@ -10,11 +10,10 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { TerminalCursor } from '@yesid/ui/brand';
+	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
 	import StopLabel from '#lib/components/brand/StopLabel.svelte';
-	import TerminalChrome from '#lib/components/brand/TerminalChrome.svelte';
 	import { Button } from '@yesid/ui/button';
 	import { Card } from '@yesid/ui/card';
 
@@ -40,7 +39,7 @@
 		<StopLabel {stop} {label} as="h2" />
 
 		<!-- Terminal window -->
-		<TerminalChrome title={terminalTitle} class="mt-3">
+		<TerminalPanel title={terminalTitle} class="mt-3">
 			<div class="break-words font-mono text-sm leading-relaxed">
 				<!-- Command -->
 				<div class="text-[var(--secondary-foreground)]">
@@ -64,7 +63,7 @@
 					<TerminalCursor />
 				</div>
 			</div>
-		</TerminalChrome>
+		</TerminalPanel>
 
 		<!-- Action row: the About view's one "talk to Yesid" conversion → yellow. -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
