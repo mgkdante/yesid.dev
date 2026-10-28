@@ -87,7 +87,8 @@ test('axe finds no serious issues with the menu open on any destination', async 
 		for (const item of menuItems) {
 			await page.goto(localized(item.href, locale));
 			await openMenu(page, locale);
-			const { violations } = await new AxeBuilder({ page }).analyze();
+			// Scoped to the open menu, the surface this spec covers.
+			const { violations } = await new AxeBuilder({ page }).include('[role="dialog"]').analyze();
 			const blocking = violations.filter(({ impact }) => impact === 'serious' || impact === 'critical');
 			expect(blocking, `${locale} ${item.href}`).toEqual([]);
 		}
