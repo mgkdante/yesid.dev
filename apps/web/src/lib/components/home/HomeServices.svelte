@@ -9,8 +9,9 @@
 	import { fillTemplate } from '#lib/utils/labels.ts';
 	import { siteLabels } from '#lib/content/index.ts';
 
-	import { morphHover, pressBounce, cursorGlow, cardParallax } from '#lib/motion/actions/index.ts';
-	import { gsap, loadDrawSVG } from '#lib/motion/utils/gsap.ts';
+	import { pressBounce, cursorGlow, cardParallax } from '@yesid/motion/actions';
+	import { morphHover } from '#lib/motion/actions/morphHover.js';
+	import { gsap, loadDrawSVG } from '@yesid/motion/utils/gsap';
 	import { SectionHeading } from '@yesid/ui/brand';
 	import type { Service, ServicesGridContent } from '#lib/types.ts';
 

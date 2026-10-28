@@ -5,8 +5,8 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import { Card } from '@yesid/ui/card';
 
 	let { steps, stop, label }: { steps: readonly AboutMethodStep[]; stop: string; label: string } = $props();
 </script>

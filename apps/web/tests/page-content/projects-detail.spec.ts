@@ -57,7 +57,7 @@ test.describe('/projects/[slug] detail page content', () => {
 	});
 
 	test('project detail renders TOC pill on mobile', async ({ page }) => {
-		test.skip(test.info().project.name === 'desktop-chrome', 'mobile-only TOC pill');
+		await page.setViewportSize({ width: 390, height: 844 });
 
 		await gotoFirstProject(page);
 
@@ -65,13 +65,15 @@ test.describe('/projects/[slug] detail page content', () => {
 		// Scroll well past the header to trigger the hero IntersectionObserver.
 		await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
-		const tocPill = page.locator('[data-testid="project-toc-pill"]');
+		const tocPill = page.getByTestId('toc-pill');
 		await expect(tocPill).toBeVisible();
-
-		// The pill is a real button exposing a heading name + counter.
-		const pillButton = tocPill.locator('button.toc-pill');
-		await expect(pillButton).toBeVisible();
-		await expect(tocPill.locator('.toc-pill-counter')).toHaveText(/\d+\/\d+/);
+		const pillButton = tocPill.getByRole('button').first();
+		await pillButton.click();
+		const picked = tocPill.getByRole('navigation').getByRole('button').nth(3);
+		await picked.click();
+		await expect(pillButton).toHaveAttribute('aria-expanded', 'false');
+		await pillButton.click();
+		await expect(picked).toHaveAttribute('aria-current', 'location');
 	});
 
 	test('project glance panel renders on desktop', async ({ page }) => {

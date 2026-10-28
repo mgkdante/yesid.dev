@@ -1,14 +1,9 @@
-import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import type { Handle, HandleServerError } from '@sveltejs/kit/hooks';
 import { resolveStaticErrorPage } from '#lib/adapters/index.ts';
 import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
 import type { ErrorPageContent } from '#lib/navigation/types.ts';
-import { initializeUi } from '#lib/ui/configure.ts';
 import { preloadFont } from '@yesid/tokens/fonts';
-
-export const init: ServerInit = () => {
-	initializeUi();
-};
 
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
 const PUBLIC_CDN_CACHE_CONTROL = 'max-age=86400, stale-while-revalidate=604800';

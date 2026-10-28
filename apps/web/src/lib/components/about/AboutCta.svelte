@@ -10,12 +10,13 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
+	import { TerminalCursor } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel, TerminalChrome } from '#lib/components/brand/index.ts';
-	import { Button } from '#lib/components/ui/button/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import TerminalChrome from '#lib/components/brand/TerminalChrome.svelte';
+	import { Button } from '@yesid/ui/button';
+	import { Card } from '@yesid/ui/card';
 
 	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 

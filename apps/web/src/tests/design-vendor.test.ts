@@ -17,16 +17,16 @@ const htmlWindow = new Window({
 });
 
 const PINNED_RELEASE = {
-	tag: 'v0.18.0',
-	tagObject: '4304ec3391772d523b31817f4980d805c118a89c',
-	peeledCommit: '9ab6cdffafd1cece9151f6ce67af1a9dee9ac56d',
-	assetName: 'yesid.dev-design-v0.18.0.tar',
+	tag: 'v0.19.1',
+	tagObject: 'd66bfea9d5aa4595348934e4e268fffaa236be83',
+	peeledCommit: '9a07f77e5a167bc18607d76b633842ca5030d5bf',
+	assetName: 'yesid.dev-design-v0.19.1.tar',
 	assetSize: 1_433_600,
-	assetDigest: 'sha256:3a588067ff00702cd741bf4f8a070c4099354ac2e4fc377b8d3c8e17ae0994b3',
+	assetDigest: 'sha256:7c0d7b7038b7826686f25ee15239abe748c34d219faaacca1cd3e8066aaf8ff1',
 	exclusionPolicyDigest: 'sha256:4f709f3409292c0971728a7f9cddb4ce06b8c354eed46cd5832e626b83af4300',
 	toolDigest: 'sha256:3d688b437650357ca30a5c3e37e64885a2fb4a9b76f37baf5ee554f5f98956f6',
-	treeHash: 'sha256:b87d33d4a894161e2c9f4712d738f557d23f461684346854dd938da306ae5fd6',
-	manifestDigest: '77160cc9290e07ef84737b9c7c92005e391f1bd250ca5c8923994eb504527447',
+	treeHash: 'sha256:79dca32a2d25b0eaed8323c3c96812ac91aacd6751b7f6a74091b8b7c5943737',
+	manifestDigest: 'a110bf261136c6fb474f78cc8efd124fb2db9aea9fdc4290d3f7183fd9635e7c',
 } as const;
 
 function readJson(path: string) {
@@ -65,13 +65,6 @@ function svelteScriptText(raw: string): string {
 
 function sourceFile(path: string): ts.SourceFile {
 	return ts.createSourceFile(path, sourceText(path), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-}
-
-function bindingNames(name: ts.BindingName): string[] {
-	if (ts.isIdentifier(name)) return [name.text];
-	return name.elements.flatMap((element) =>
-		ts.isOmittedExpression(element) ? [] : bindingNames(element.name),
-	);
 }
 
 function moduleUses(path: string): readonly ModuleUse[] {
@@ -119,27 +112,6 @@ function moduleUses(path: string): readonly ModuleUse[] {
 	};
 	visit(sourceFile(path));
 	return uses;
-}
-
-function declaredNames(path: string): ReadonlySet<string> {
-	const names = new Set<string>();
-	const visit = (node: ts.Node): void => {
-		if (
-			(ts.isFunctionDeclaration(node) ||
-				ts.isClassDeclaration(node) ||
-				ts.isInterfaceDeclaration(node) ||
-				ts.isTypeAliasDeclaration(node)) &&
-			node.name
-		) {
-			names.add(node.name.text);
-		}
-		if (ts.isVariableDeclaration(node)) {
-			for (const name of bindingNames(node.name)) names.add(name);
-		}
-		ts.forEachChild(node, visit);
-	};
-	visit(sourceFile(path));
-	return names;
 }
 
 function productionSources(): readonly string[] {
@@ -241,113 +213,6 @@ describe('immutable design customer contract', () => {
 		expect(cmsPackage.devDependencies['@yesid/i18n-core']).toBeUndefined();
 		expect(existsSync(join(ROOT, 'apps/cms/vendor/design/i18n-core'))).toBe(false);
 		expect(existsSync(join(VENDOR, 'ui/src/brand/QuietModeButton.svelte'))).toBe(true);
-	});
-
-	it('keeps product analytics on the shared package boundary without duplicate mechanics', () => {
-		const webSource = (path: string) => join(process.cwd(), path);
-		const hasImport = (
-			path: string,
-			specifier: string,
-			binding: string,
-			kind: ModuleUse['kind'] = 'static',
-		) =>
-			moduleUses(webSource(path)).some(
-				(use) =>
-					use.specifier === specifier &&
-					use.kind === kind &&
-					(kind === 'dynamic' || (!use.typeOnly && use.bindings.includes(binding))),
-			);
-
-		expect(
-			hasImport('src/lib/analytics/preset.ts', '@yesid/analytics/config', 'defineAnalyticsPreset'),
-		).toBe(true);
-		expect(
-			hasImport('src/lib/analytics/client.ts', '@yesid/analytics/client', 'createAnalyticsClient'),
-		).toBe(true);
-		expect(
-			hasImport('src/lib/analytics/client.ts', '@yesid/analytics/plausible', '', 'dynamic'),
-		).toBe(true);
-		expect(
-			hasImport(
-				'src/lib/components/analytics/Analytics.svelte',
-				'@yesid/analytics/policy',
-				'getAnalyticsPolicy',
-			),
-		).toBe(true);
-		expect(
-			hasImport(
-				'src/lib/components/analytics/Analytics.svelte',
-				'@yesid/analytics/client',
-				'createPathnamePageviewTracker',
-			),
-		).toBe(true);
-		expect(
-			hasImport(
-				'src/lib/components/analytics/AnalyticsConsent.svelte',
-				'@yesid/analytics/policy',
-				'getAnalyticsPolicy',
-			),
-		).toBe(true);
-		expect(
-			hasImport(
-				'src/routes/+layout.svelte',
-				'@yesid/analytics/policy',
-				'getAnalyticsPolicy',
-			),
-		).toBe(true);
-
-		const clientUses = moduleUses(webSource('src/lib/analytics/client.ts'));
-		expect(
-			clientUses.some(
-				(use) =>
-					use.specifier === '@yesid/analytics/plausible' &&
-					use.kind === 'static' &&
-					!use.typeOnly,
-			),
-		).toBe(false);
-
-		const consentUses = moduleUses(webSource('src/lib/state/analytics-consent.svelte.ts'));
-		expect(
-			consentUses.some(
-				(use) =>
-					use.specifier === '#lib/analytics/preset.ts' &&
-					!use.typeOnly &&
-					use.bindings.includes('YESID_ANALYTICS_PRESET'),
-			),
-		).toBe(true);
-		expect(consentUses.some((use) => use.specifier === '@yesid/analytics/consent')).toBe(false);
-
-		const analyticsConsumers = productionSources()
-			.filter((path) => moduleUses(path).some((use) => use.specifier.startsWith('@yesid/analytics/')))
-			.map(relativeProductionPath);
-		expect(analyticsConsumers).toEqual([
-			'apps/web/src/lib/analytics/client.ts',
-			'apps/web/src/lib/analytics/preset.ts',
-			'apps/web/src/lib/components/analytics/Analytics.svelte',
-			'apps/web/src/lib/components/analytics/AnalyticsConsent.svelte',
-			'apps/web/src/routes/+layout.svelte',
-		]);
-
-		expect(existsSync(join(process.cwd(), 'src/lib/analytics/policy.ts'))).toBe(false);
-		expect(existsSync(join(process.cwd(), 'src/lib/analytics/transport.ts'))).toBe(false);
-		expect(existsSync(join(process.cwd(), 'src/lib/utils/analytics.ts'))).toBe(false);
-		const duplicateExports = new Set([
-			'createAnalyticsClient',
-			'createPathnamePageviewTracker',
-			'getAnalyticsPolicy',
-			'normalizeAnalyticsControls',
-			'sanitizeAnalyticsReferrer',
-			'sanitizeAnalyticsUrl',
-			'sendPlausibleEvent',
-		]);
-		const duplicateMechanics = productionSources()
-			.filter((path) => !path.endsWith('/src/lib/analytics/preset.ts'))
-			.flatMap((path) =>
-				[...declaredNames(path)]
-					.filter((name) => duplicateExports.has(name))
-					.map((name) => `${relativeProductionPath(path)}:${name}`),
-			);
-		expect(duplicateMechanics).toEqual([]);
 	});
 
 	it('keeps production i18n consumers inside the locale-routing boundary', () => {

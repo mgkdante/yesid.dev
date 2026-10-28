@@ -1,7 +1,7 @@
 // Shared helpers for MorphSVGPlugin-based SVG morph animations.
 // Centralizes the convertToPath boilerplate used by HomeServices, BlogSvgIcon, WorkSvgIcon.
 
-import { MorphSVGPlugin } from './gsap.js';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 
 const SVG_SHAPE_SELECTOR = 'path, circle, ellipse, rect, line, polyline, polygon';
 

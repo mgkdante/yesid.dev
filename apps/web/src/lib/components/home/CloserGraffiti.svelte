@@ -2,7 +2,7 @@
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+	import { gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';

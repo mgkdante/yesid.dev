@@ -17,7 +17,14 @@
 //     render/prerender-time only, CodeBlock consumes pre-highlighted HTML.
 // Documented in CONSTITUTION.md § Data Architecture (17b-9).
 
-export * from './cn'
+export {
+	cn,
+	twMergeConfig,
+	type WithoutChild,
+	type WithoutChildren,
+	type WithoutChildrenOrChild,
+	type WithElementRef,
+} from '@yesid/ui/cn';
 export * from './collections'
 export * from './locale'
 export * from './project-metrics'

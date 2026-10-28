@@ -11,8 +11,8 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import { Card } from '@yesid/ui/card';
 	import { variantImage } from '#lib/utils/variant-image.ts';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();

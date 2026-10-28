@@ -12,8 +12,8 @@
 	const locale = getLocale();
 	import { MetricDisplay } from '@yesid/ui/brand';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import { Card } from '@yesid/ui/card';
 
 	let { metrics, stop, label }: { metrics: readonly AboutMetric[]; stop: string; label: string } = $props();
 </script>

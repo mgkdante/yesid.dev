@@ -7,7 +7,9 @@
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { prefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
+	import { onNavigate } from '$app/navigation';
+	import { viewTransition } from '@yesid/motion/utils/viewTransition';
+	import '@yesid/motion/ripple.css';
 	import { SiteFooter, SiteRoot } from '@yesid/ui/layout';
 	import { FooterLink } from '@yesid/ui/footer';
 	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
@@ -27,8 +29,8 @@
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
-	import { initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
-	import { initGlobalRipple } from '#lib/motion/utils/globalRipple.ts';
+	import { initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
+	import { initGlobalRipple } from '@yesid/motion/utils/globalRipple';
 	import { setMorphShapes } from '#lib/utils/shapes.ts';
 	import { setFavicon } from '#lib/utils/favicon.ts';
 	import type { LayoutData } from './$types';
@@ -60,6 +62,7 @@
 	// beforeNavigate/afterNavigate register during component initialization, and
 	// the root layout never remounts, so the orchestrator survives page swaps.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
+	onNavigate(viewTransition);
 
 	// 039E: app.html carries <html lang="%lang%">, substituted server-side, and the
 	// client router never re-runs that substitution — so a client-routed locale
@@ -165,10 +168,9 @@
 			menuItems={menuItems}
 		/>
 
-		<!-- Page content fades in on route change; instant when reduced motion is on -->
 		{#key page.url.pathname}
 			<main
-				class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}"
+				class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'}"
 			>{@render children()}</main>
 		{/key}
 
@@ -207,48 +209,4 @@
 		padding-top: var(--nav-clearance, 5.5rem);
 	}
 
-	@keyframes page-fade-in {
-		from { opacity: 0; }
-		to { opacity: 1; }
-	}
-
-	:global(.animate-page-fade-in) {
-		animation: page-fade-in 250ms ease-out;
-	}
-
-	/* Slice-23: site-wide click ripple — appended to <body> by
-	   motion/utils/globalRipple.ts on every pointerdown. Two expanding
-	   rings (outer brand-primary, inner accent) for Manifesto-style
-	   click feedback that works on desktop + mobile. position: fixed
-	   so ripples stay where pressed regardless of scroll. :global()
-	   because the elements live on <body>, outside any component scope. */
-	:global(.global-ripple) {
-		position: fixed;
-		border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
-		border-radius: 50%;
-		transform: translate(-50%, -50%);
-		pointer-events: none;
-		z-index: var(--z-ripple);
-		animation: global-ripple-expand 1.2s ease-out forwards;
-	}
-
-	:global(.global-ripple-inner) {
-		position: fixed;
-		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-		border-radius: 50%;
-		transform: translate(-50%, -50%);
-		pointer-events: none;
-		z-index: var(--z-ripple);
-		animation: global-ripple-inner-expand 0.8s ease-out forwards;
-	}
-
-	@keyframes global-ripple-expand {
-		0%   { width: 0;     height: 0;     opacity: 0.6; }
-		100% { width: 200px; height: 200px; opacity: 0;   }
-	}
-
-	@keyframes global-ripple-inner-expand {
-		0%   { width: 0;     height: 0;     opacity: 0.8; }
-		100% { width: 100px; height: 100px; opacity: 0;   }
-	}
 </style>

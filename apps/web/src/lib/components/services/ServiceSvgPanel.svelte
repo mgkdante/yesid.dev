@@ -16,7 +16,7 @@
 <script lang="ts">
 	import { cn } from '#lib/utils/index.ts';
 	import { CornerMarks } from '@yesid/ui/brand';
-	import { SvgIcon } from '#lib/components/brand/index.ts';
+	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 
 	export interface ServiceSvgPanelProps {
 		/** Raw SVG content string */

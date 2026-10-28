@@ -8,7 +8,7 @@
 // route setup BEFORE calling this factory. The factory is synchronous.
 //
 // Usage:
-//   import { loadDrawSVG } from '#lib/motion/utils/gsap.ts';
+//   import { loadDrawSVG } from '@yesid/motion/utils/gsap';
 //   onMount(async () => {
 //     await loadDrawSVG();
 //     destroy = createDrawScrub(blueprintSvg, { section: listingSection });
@@ -19,7 +19,7 @@
 // NOT registered; destroy is a no-op.
 
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+import { gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
 
 export interface DrawScrubOpts {
 	/** Scroll-trigger ancestor — usually the containing section. */

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { wordmarkHover } from '#lib/motion/actions/index.ts';
+	import { wordmarkHover } from '@yesid/motion/actions';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import type { Locale } from '#lib/types.ts';
 

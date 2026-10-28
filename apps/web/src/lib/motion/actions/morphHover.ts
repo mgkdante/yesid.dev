@@ -23,7 +23,7 @@
 // Usage:
 //   <button use:morphHover={{ enabled: svgReady[i] }}>...</button>
 
-import { gsap, loadMorphSVG } from '../utils/gsap.js';
+import { gsap, loadMorphSVG } from '@yesid/motion/utils/gsap';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
 import { isViewportAtMost } from '@yesid/motion/utils/device';
 import { getMorphShapes, pickRandomShape } from '#lib/utils/shapes.ts';

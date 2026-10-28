@@ -16,16 +16,16 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import { persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
-	import TerminalCursor from '#lib/components/shared/TerminalCursor.svelte';
-	import { TerminalChrome } from '#lib/components/brand/index.ts';
-	import { Button } from '#lib/components/ui/button/index.ts';
+	import { TerminalCursor } from '@yesid/ui/brand';
+	import TerminalChrome from '#lib/components/brand/TerminalChrome.svelte';
+	import { Button } from '@yesid/ui/button';
 	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
-	import ResizableHandle from '#lib/components/ui/resizable/resizable-handle.svelte';
+	import { ResizableHandle } from '@yesid/ui/resizable';
 	import type { WeatherData } from '#lib/utils/weather.ts';
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
 	import { escapeHtml } from '#lib/utils/code-fences.ts';
 	import { isDirectContactHref } from '#lib/utils/high-intent-links.ts';
-	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import { pressBounce } from '@yesid/motion/actions';
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.

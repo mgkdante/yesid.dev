@@ -5,7 +5,7 @@ import HomeCloser from './HomeCloser.svelte';
 // slice-18i Phase 7C: HomeCloser now requires closer prop.
 import { closerContent } from '#lib/content/site-content.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
-import { gsap } from '#lib/motion/utils/gsap.ts';
+import { gsap } from '@yesid/motion/utils/gsap';
 
 const props = { closer: closerContent, siteMeta };
 

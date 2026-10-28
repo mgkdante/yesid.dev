@@ -1,4 +1,4 @@
-import { gsap } from '#lib/motion/utils/gsap.ts';
+import { gsap } from '@yesid/motion/utils/gsap';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
 /**

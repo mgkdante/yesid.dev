@@ -28,7 +28,7 @@
 		loadCustomEase,
 		ScrollTrigger,
 		gsap,
-	} from '#lib/motion/utils/gsap.ts';
+	} from '@yesid/motion/utils/gsap';
 	import { createHeroTimeline } from '#lib/motion/scrubs/index.ts';
 	import { createTypewriter } from '#lib/motion/utils/heroTypewriter.ts';
 	import { isViewportAtMost } from '@yesid/motion/utils/device';

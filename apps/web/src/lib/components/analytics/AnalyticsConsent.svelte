@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
-	import { Button } from '#lib/components/ui/button/index.ts';
+	import { Button } from '@yesid/ui/button';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';

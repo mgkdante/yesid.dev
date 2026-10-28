@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { gsap } from '#lib/motion/utils/gsap.ts';
+import { gsap } from '@yesid/motion/utils/gsap';
 import { backgroundBreathing } from './backgroundBreathing.js';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 

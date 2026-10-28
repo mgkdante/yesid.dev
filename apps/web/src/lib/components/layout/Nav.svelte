@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { beforeNavigate, onNavigate, afterNavigate } from '$app/navigation';
-	import { wordmarkHover, magnetic } from '#lib/motion/actions/index.ts';
+	import { wordmarkHover, magnetic } from '@yesid/motion/actions';
 	import { navLinks as staticNavLinks, siteLabels } from '#lib/content/index.ts';
 	import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
