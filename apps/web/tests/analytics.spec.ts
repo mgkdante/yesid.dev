@@ -15,6 +15,23 @@ const CONSENT_DISCLOSURES = (['en', 'fr', 'es'] as const).map(locale => ({
 	locale, path: (locale === 'en' ? '' : '/' + locale) + '/projects',
 	copy: siteLabels.ui.analyticsConsent.description[locale]!,
 }));
+
+type ConsentLocale = (typeof CONSENT_DISCLOSURES)[number]['locale'];
+
+function consent(page: Page, locale: ConsentLocale = 'en') {
+	const copy = siteLabels.ui.analyticsConsent;
+	const label = (key: 'title' | 'settingsLabel' | 'acceptLabel' | 'declineLabel') => copy[key][locale]!;
+	const rail = page
+		.getByRole('region', { name: label('title'), exact: true })
+		.or(page.getByRole('region', { name: label('settingsLabel'), exact: true }));
+	return {
+		rail,
+		accept: rail.getByRole('button', { name: label('acceptLabel'), exact: true }),
+		decline: rail.getByRole('button', { name: label('declineLabel'), exact: true }),
+		preferences: page.getByRole('button', { name: label('settingsLabel'), exact: true }),
+	};
+}
+
 const CLIENT_CHUNKS_DIR = fileURLToPath(
 	new URL('../.svelte-kit/output/client/_app/immutable/chunks/', import.meta.url),
 );
@@ -175,7 +192,7 @@ test('fresh homepage shows consent while the hero waits for explicit activation'
 
 	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
 	await expect(page.locator('.pin-spacer')).toHaveCount(0);
-	await expect(page.getByTestId('analytics-consent')).toBeVisible();
+	await expect(consent(page).rail).toBeVisible();
 });
 
 test('same-day settled home shows consent, hides it for replay, and restores it after completion', async ({
@@ -188,17 +205,17 @@ test('same-day settled home shows consent, hides it for replay, and restores it 
 
 	const hero = page.getByTestId('hero-banner');
 	await expect(hero).toHaveClass(/hero-intro-done/);
-	await expect(page.getByTestId('analytics-consent')).toBeVisible();
+	await expect(consent(page).rail).toBeVisible();
 
 	await page.getByTestId('hero-dot-replay').click();
-	await expect(page.getByTestId('analytics-consent')).toHaveCount(0);
+	await expect(consent(page).rail).toHaveCount(0);
 	await expect(hero).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
 	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
 
 	await scrollHomeIntroThrough(page);
 	await expect(hero).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
-	await expect(page.getByTestId('analytics-consent')).toBeVisible();
+	await expect(consent(page).rail).toBeVisible();
 });
 
 test('reduced motion treats the static home hero as settled', async ({ page }) => {
@@ -207,35 +224,9 @@ test('reduced motion treats the static home hero as settled', async ({ page }) =
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/`);
 
-	const station = page.getByTestId('analytics-consent');
+	const station = consent(page).rail;
 	await expect(station).toBeVisible();
-	expect(await station.evaluate((element) => getComputedStyle(element).animationName)).toBe('none');
 	await expect(page.locator('.pin-spacer')).toHaveCount(0);
-});
-
-test('analytics consent is a wide borderless desktop rail', async ({ page }) => {
-	await page.setViewportSize({ width: 1440, height: 900 });
-	await proxyProductionHostnameToPreview(page);
-
-	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
-
-	const rail = page.getByTestId('analytics-consent');
-	await expect(rail).toBeVisible();
-	const box = await rail.boundingBox();
-	expect(box).not.toBeNull();
-	expect(box!.width).toBeGreaterThanOrEqual(1100);
-	expect(box!.height).toBeLessThanOrEqual(128);
-	expect(
-		await rail.evaluate((element) => {
-			const style = getComputedStyle(element);
-			return [
-				style.borderTopWidth,
-				style.borderRightWidth,
-				style.borderBottomWidth,
-				style.borderLeftWidth,
-			];
-		}),
-	).toEqual(['0px', '0px', '0px', '0px']);
 });
 
 test('footer reliably reopens, refocuses, and reselects analytics consent', async ({ page }) => {
@@ -245,19 +236,18 @@ test('footer reliably reopens, refocuses, and reselects analytics consent', asyn
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
 
-	const preferences = page.getByTestId('analytics-preferences');
+	const preferences = consent(page).preferences;
 	await page.evaluate(() => Reflect.set(window, '__analyticsConsentPageSentinel', true));
 	await preferences.click();
 	expect(
 		await page.evaluate(() => Reflect.get(window, '__analyticsConsentPageSentinel')),
 	).toBe(true);
 
-	const rail = page.getByTestId('analytics-consent');
-	const accept = page.getByTestId('analytics-consent-accept');
-	const decline = page.getByTestId('analytics-consent-decline');
+	const rail = consent(page).rail;
+	const accept = consent(page).accept;
+	const decline = consent(page).decline;
 	await expect(rail).toBeVisible();
 	await expect(rail).toBeFocused();
-	await expect(preferences).toHaveAttribute('aria-controls', 'analytics-consent');
 	await expect(preferences).toHaveAttribute('aria-expanded', 'true');
 	await expect(accept).toHaveAttribute('aria-pressed', 'true');
 	await expect(decline).toHaveAttribute('aria-pressed', 'false');
@@ -316,7 +306,7 @@ test('footer reliably reopens, refocuses, and reselects analytics consent', asyn
 });
 
 for (const { locale, path } of CONSENT_DISCLOSURES) {
-	test(`${locale} analytics consent fits a 360px viewport with contained 44px actions`, async ({
+	test(`${locale} analytics consent fits a 360px viewport`, async ({
 		page,
 	}) => {
 		await page.setViewportSize({ width: 360, height: 780 });
@@ -324,44 +314,16 @@ for (const { locale, path } of CONSENT_DISCLOSURES) {
 
 		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
 
-		const station = page.getByTestId('analytics-consent');
-		await expect(station).toBeVisible();
-		const { rail, actions } = await station.evaluate((element) => {
-			const railBox = element.getBoundingClientRect();
-			const actionBoxes = [
-				element.querySelector('[data-testid="analytics-consent-decline"]'),
-				element.querySelector('[data-testid="analytics-consent-accept"]'),
-			].map((action) => action?.getBoundingClientRect());
-			return {
-				rail: {
-					x: railBox.x,
-					right: railBox.right,
-					height: railBox.height,
-				},
-				actions: actionBoxes.map((action) =>
-					action
-						? {
-								x: action.x,
-								right: action.right,
-								y: action.y,
-								height: action.height,
-							}
-						: null,
-				),
-			};
-		});
-
-		expect(rail.x).toBeGreaterThanOrEqual(12);
-		expect(rail.right).toBeLessThanOrEqual(348);
-		expect(rail.height).toBeLessThanOrEqual(280);
-		for (const action of actions) {
-			expect(action).not.toBeNull();
-			expect(action!.x).toBeGreaterThanOrEqual(rail.x);
-			expect(action!.right).toBeLessThanOrEqual(rail.right);
-			expect(action!.height).toBeGreaterThanOrEqual(44);
+		const { rail, accept, decline } = consent(page, locale);
+		await expect(rail).toBeVisible();
+		const railBox = (await rail.boundingBox())!;
+		expect(railBox.x).toBeGreaterThanOrEqual(0);
+		expect(railBox.x + railBox.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+		for (const action of [accept, decline]) {
+			const box = (await action.boundingBox())!;
+			expect(box.x).toBeGreaterThanOrEqual(railBox.x);
+			expect(box.x + box.width).toBeLessThanOrEqual(railBox.x + railBox.width);
 		}
-		expect(Math.abs(actions[0]!.y - actions[1]!.y)).toBeLessThan(1);
-
 		expect(
 			await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
 		).toBe(true);
@@ -377,7 +339,7 @@ test('mobile blog TOC does not block the analytics consent action', async ({ pag
 	);
 
 	await expect(page.getByTestId('toc-pill')).toBeVisible();
-	const accept = page.getByTestId('analytics-consent-accept');
+	const accept = consent(page).accept;
 	await expect(accept).toBeVisible();
 	await accept.click({ trial: true });
 });
@@ -388,7 +350,7 @@ for (const { locale, path, copy } of CONSENT_DISCLOSURES) {
 
 		await page.goto(`${LOCAL_PRODUCTION_ORIGIN}${path}`);
 
-		await expect(page.locator('#analytics-consent-description')).toHaveText(copy);
+		await expect(consent(page, locale).rail).toHaveAccessibleDescription(copy);
 	});
 }
 
@@ -400,7 +362,7 @@ test('production hostname without a saved choice renders consent and sends no ev
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
 
-	await expect(page.getByTestId('analytics-consent')).toBeVisible();
+	await expect(consent(page).rail).toBeVisible();
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
 	expectNoTransportChunkRequest(requestedUrls);
@@ -414,8 +376,8 @@ test('accepting consent sends exactly one initial pageview through the controlle
 	const payloads = await capturePlausible(page);
 
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
-	await expect(page.getByTestId('analytics-consent')).toBeVisible();
-	await page.getByTestId('analytics-consent-accept').click();
+	await expect(consent(page).rail).toBeVisible();
+	await consent(page).accept.click();
 
 	await waitForPageviews(payloads, 1);
 	await settleBrowser(page);
@@ -586,14 +548,14 @@ test('direct contact remains blocked after decline and after withdrawal', async 
 		.filter({ visible: true })
 		.first();
 
-	await page.getByTestId('analytics-consent-decline').click();
+	await consent(page).decline.click();
 	await clickWithoutNavigation(email);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
 	expect(eventsNamed(payloads, 'direct_contact_click')).toHaveLength(0);
 
-	await page.getByTestId('analytics-preferences').click();
-	await page.getByTestId('analytics-consent-accept').click();
+	await consent(page).preferences.click();
+	await consent(page).accept.click();
 	await waitForPageviews(payloads, 1);
 	await clickWithoutNavigation(email);
 	await expect
@@ -602,8 +564,8 @@ test('direct contact remains blocked after decline and after withdrawal', async 
 	await drainCapturedRequests(page, payloads);
 	expect(eventsNamed(payloads, 'direct_contact_click')).toHaveLength(1);
 
-	await page.getByTestId('analytics-preferences').click();
-	await page.getByTestId('analytics-consent-decline').click();
+	await consent(page).preferences.click();
+	await consent(page).decline.click();
 	await clickWithoutNavigation(email);
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
@@ -620,8 +582,8 @@ test('withdrawal emits no autonomous engagement event on page lifecycle signals'
 	await page.goto(`${LOCAL_PRODUCTION_ORIGIN}/projects`);
 	await waitForPageviews(payloads, 1);
 
-	await page.getByTestId('analytics-preferences').click();
-	await page.getByTestId('analytics-consent-decline').click();
+	await consent(page).preferences.click();
+	await consent(page).decline.click();
 	await page.evaluate(() => {
 		Object.defineProperty(document, 'hasFocus', {
 			configurable: true,

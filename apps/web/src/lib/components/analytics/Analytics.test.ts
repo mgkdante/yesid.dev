@@ -196,21 +196,21 @@ describe('Analytics', () => {
 	it('defers only the home consent surface until the intro settles', async () => {
 		render(Analytics, { props: { locale: 'en', isHome: true } });
 
-		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(screen.queryByRole('region')).toBeNull();
 
 		introMock.set('settled');
 		await tick();
-		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+		expect(screen.getByRole('region')).toBeInTheDocument();
 
 		introMock.set('running');
 		await tick();
-		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(screen.queryByRole('region')).toBeNull();
 	});
 
 	it('shows an unknown consent choice immediately on non-home routes', () => {
 		render(Analytics, { props: { locale: 'en', isHome: false } });
 
-		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+		expect(screen.getByRole('region')).toBeInTheDocument();
 	});
 
 	it('tracks the consent transition and pathname changes without query or hash duplicates', async () => {
@@ -357,7 +357,7 @@ describe('Analytics', () => {
 		navigationMock.visit(currentUrl);
 		await tick();
 
-		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(screen.queryByRole('region')).toBeNull();
 		expect(analyticsMock.trackPageview).toHaveBeenCalledOnce();
 		expect(analyticsMock.trackPageview).toHaveBeenCalledWith(currentUrl);
 	});
@@ -376,7 +376,7 @@ describe('Analytics', () => {
 		await tick();
 
 		expect(analyticsMock.trackPageview).not.toHaveBeenCalled();
-		expect(screen.queryByTestId('analytics-consent')).toBeNull();
+		expect(screen.queryByRole('region')).toBeNull();
 	});
 
 	it('pauses while preferences are open and reports an unconsumed destination after grant', async () => {
@@ -399,7 +399,7 @@ describe('Analytics', () => {
 		await tick();
 
 		expect(analyticsMock.trackPageview).toHaveBeenCalledTimes(1);
-		expect(screen.getByTestId('analytics-consent')).toBeInTheDocument();
+		expect(screen.getByRole('region')).toBeInTheDocument();
 
 		consentMock.set({
 			choice: 'granted',
