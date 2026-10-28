@@ -15,7 +15,7 @@
 	// Slice-23: reduced-motion guards removed per operator policy. Draw-on-
 	// load entrance + hover/tap path morphing are not vestibular triggers
 	// (visual transformation, brief, user-initiated for hover/tap).
-	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
 	import { convertSvgToMorphPaths } from '#lib/motion/utils/morphHelpers.ts';
 	import { cn } from '#lib/utils/index.ts';
 

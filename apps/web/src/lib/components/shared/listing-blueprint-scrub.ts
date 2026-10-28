@@ -1,7 +1,7 @@
 import { browser } from '$app/env';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { isViewportAtMost } from '@yesid/motion/utils/device';
-import { loadDrawSVG, initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
+import { loadDrawSVG, initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
 import { createDrawScrub } from '#lib/motion/scrubs/index.ts';
 
 export async function startListingBlueprintScrub(

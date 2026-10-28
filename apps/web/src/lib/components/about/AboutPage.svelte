@@ -4,7 +4,7 @@
 
 	const locale = getLocale();
 	import type { AboutContent } from '#lib/types.ts';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { Separator } from '@yesid/ui/separator';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';
@@ -34,7 +34,7 @@
 
 <!-- Top Stripe -->
 <div class="px-3 pt-1" aria-hidden="true">
-	<HazardSeparator />
+	<Separator variant="hazard" />
 </div>
 
 <!-- Bento Dashboard -->

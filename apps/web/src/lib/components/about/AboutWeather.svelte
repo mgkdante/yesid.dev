@@ -16,8 +16,8 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import { Card } from '@yesid/ui/card';
 	import WeatherScene from './WeatherScene.svelte';
 	import WeatherGlyph from './WeatherGlyph.svelte';
 	import { resolveWeatherScene, isNightHour } from './weather-scene';

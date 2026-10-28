@@ -13,7 +13,7 @@
 	import { serviceLineColor } from '#lib/utils/service-colors.ts';
 
 	const locale = getLocale();
-	import { SvgIcon } from '#lib/components/brand/index.ts';
+	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 
 	let {
 		service,

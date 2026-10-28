@@ -10,8 +10,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { gsap } from '#lib/motion/utils/gsap.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import { gsap } from '@yesid/motion/utils/gsap';
+	import { Card } from '@yesid/ui/card';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import {

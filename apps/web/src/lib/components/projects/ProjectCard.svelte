@@ -15,9 +15,9 @@
 
 	const locale = getLocale();
 	import { cursorGlow, magnetic } from '@yesid/motion/actions';
-	import { SvgIcon } from '#lib/components/brand/index.ts';
+	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 	import { Badge } from '@yesid/ui/badge';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import { Card } from '@yesid/ui/card';
 	import DataFlowDiagram from '#lib/components/projects/DataFlowDiagram.svelte';
 	import { cn, serviceLineColor, projectMetrics } from '#lib/utils/index.ts';
 	import { siteLabels } from '#lib/content/index.ts';

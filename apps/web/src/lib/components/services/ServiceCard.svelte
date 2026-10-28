@@ -14,7 +14,7 @@
 	import { SectionLabel } from '@yesid/ui/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '#lib/utils/index.ts';
-	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import { pressBounce } from '@yesid/motion/actions';
 
 	export interface ServiceCardProps {
 		/** The service data to display */

@@ -6,9 +6,9 @@
 	import type { BlogPost } from '#lib/types.ts';
 	import { boop, cursorGlow, magnetic } from '@yesid/motion/actions';
 	import { Badge } from '@yesid/ui/badge';
-	import { MetroStation } from '#lib/components/brand/index.ts';
-	import { SvgIcon } from '#lib/components/brand/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import { MetroStation } from '@yesid/ui/brand';
+	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
+	import { Card } from '@yesid/ui/card';
 	import { cn } from '#lib/utils/index.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';

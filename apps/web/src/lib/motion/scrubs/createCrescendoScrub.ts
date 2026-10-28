@@ -12,7 +12,7 @@
 // registered; destroy is a no-op.
 
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-import { ScrollTrigger, initScrollTriggerConfig } from '#lib/motion/utils/gsap.ts';
+import { ScrollTrigger, initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
 import type { EaseKey } from '@yesid/motion/tokens';
 
 export interface CrescendoOpts {

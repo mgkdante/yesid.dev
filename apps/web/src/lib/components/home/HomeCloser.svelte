@@ -17,9 +17,9 @@
 		closer: CloserContent;
 		siteMeta: SiteMeta;
 	} = $props();
-	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '#lib/motion/utils/gsap.ts';
+	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '@yesid/motion/utils/gsap';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
-	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import { pressBounce } from '@yesid/motion/actions';
 	import { backgroundBreathing, type BreathingControls } from '#lib/motion/scrubs/index.ts';
 	import CloserGraffiti from './CloserGraffiti.svelte';
 	import CloserFloodlight from './CloserFloodlight.svelte';

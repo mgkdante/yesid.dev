@@ -65,13 +65,21 @@ test.describe('/projects/[slug] detail page content', () => {
 		// Scroll well past the header to trigger the hero IntersectionObserver.
 		await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
-		const tocPill = page.locator('[data-testid="project-toc-pill"]');
+		const tocPill = page.getByTestId('toc-pill');
 		await expect(tocPill).toBeVisible();
-
-		// The pill is a real button exposing a heading name + counter.
-		const pillButton = tocPill.locator('button.toc-pill');
-		await expect(pillButton).toBeVisible();
-		await expect(tocPill.locator('.toc-pill-counter')).toHaveText(/\d+\/\d+/);
+		const pillButton = tocPill.getByRole('button').first();
+		await expect(pillButton).toHaveAccessibleName(/\d+\/\d+/);
+		const before = (await pillButton.getAttribute('aria-label'))!.match(/\d+\/\d+/)![0];
+		await pillButton.click();
+		await expect(pillButton).toHaveAttribute('aria-expanded', 'true');
+		const options = tocPill.getByRole('navigation').locator('button:not([aria-current="location"])');
+		const title = (await options.first().locator('span').last().innerText()).trim();
+		await options.first().click();
+		await expect(page.getByRole('heading', { name: title, exact: true }).first()).toBeInViewport();
+		await expect(pillButton).toHaveAttribute('aria-expanded', 'false');
+		await expect
+			.poll(async () => (await pillButton.getAttribute('aria-label'))?.match(/\d+\/\d+/)?.[0])
+			.not.toBe(before);
 	});
 
 	test('project glance panel renders on desktop', async ({ page }) => {

@@ -6,7 +6,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { StatusDot } from '@yesid/ui/brand';
-  import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+  import { Separator } from '@yesid/ui/separator';
   import { cn } from '#lib/utils/index.ts';
   import { scrollChain } from '@yesid/motion/actions';
 
@@ -78,7 +78,7 @@
   </div>
 
   <!-- Accent stripe -->
-  <HazardSeparator hazardSize="sm" />
+  <Separator variant="hazard" hazardSize="sm" />
 
   <!-- Body -->
   <div class="terminal-body" class:no-pad={noPadding} use:scrollChain>

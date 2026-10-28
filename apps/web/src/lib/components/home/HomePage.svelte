@@ -9,11 +9,11 @@
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { Separator } from '@yesid/ui/separator';
 	import { SectionHeading } from '@yesid/ui/brand';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import { ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+	import { ScrollTrigger } from '@yesid/motion/utils/gsap';
 	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.ts';
 	import {
 		registerScrollContext,
@@ -235,11 +235,11 @@
 	/>
 </section>
 
-<HazardSeparator />
+<Separator variant="hazard" />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
 <section class="w-full"><Manifesto manifesto={manifesto} /></section>
-<HazardSeparator />
+<Separator variant="hazard" />
 
 <!-- Section 3: Services — rotated title RIGHT, blueprint background spans
      full width. Operator 2026-07-03: services lead so the story builds
@@ -256,7 +256,7 @@
 	<div class="rotated-title rotated-title--right"><SectionHeading heading={sectionServices} /></div>
 </section>
 
-<HazardSeparator />
+<Separator variant="hazard" />
 
 <!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
      titled section alternates: Services R → About L → Projects R → Terminus L;
@@ -271,7 +271,7 @@
 	<div class="home-section-content"><HomeAboutTeaser about={about} /></div>
 </section>
 
-<HazardSeparator />
+<Separator variant="hazard" />
 
 <!-- Section 4: Featured Projects — rotated title RIGHT; the proof lands with
      the service context already established above it. -->
@@ -305,7 +305,7 @@
 	/>
 </section>
 
-<HazardSeparator />
+<Separator variant="hazard" />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
 

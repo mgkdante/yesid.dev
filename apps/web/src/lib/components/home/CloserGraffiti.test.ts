@@ -1,7 +1,7 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
 import { cleanup, render, screen, waitFor } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { gsap, ScrollTrigger } from '#lib/motion/utils/gsap.ts';
+import { gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
 import { tick } from 'svelte';
 import CloserGraffiti from './CloserGraffiti.svelte';
 

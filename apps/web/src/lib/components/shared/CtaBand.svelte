@@ -8,12 +8,12 @@
 <script lang="ts">
 	import type { CtaContent, SiteMeta } from '#lib/types.ts';
 	import { ctaContent, siteMeta as siteMetaContent } from '#lib/content/index.ts';
-	import { Button } from '#lib/components/ui/button/index.ts';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { Button } from '@yesid/ui/button';
+	import { Separator } from '@yesid/ui/separator';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
-	import { pressBounce } from '#lib/motion/actions/index.ts';
+	import { pressBounce } from '@yesid/motion/actions';
 	import CtaBlueprintBackground from './CtaBlueprintBackground.svelte';
 
 	const locale = getLocale();
@@ -32,7 +32,7 @@
 </script>
 
 <!-- Every CTA wears the hazard band on top (operator rule 2026-07-03). -->
-<HazardSeparator />
+<Separator variant="hazard" />
 <section class="cta-band-shell circuit-grid" data-testid={testidPrefix}>
 	<CtaBlueprintBackground />
 	<div class="cta-band">

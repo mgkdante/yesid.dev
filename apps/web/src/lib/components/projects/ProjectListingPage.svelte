@@ -11,7 +11,7 @@
 	import { startListingBlueprintScrub } from '#lib/components/shared/listing-blueprint-scrub.ts';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
-	import { MetroStation } from '#lib/components/brand/index.ts';
+	import { MetroStation } from '@yesid/ui/brand';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
 	import { ListingFrame } from '@yesid/ui/layout';

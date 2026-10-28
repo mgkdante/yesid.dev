@@ -14,7 +14,7 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { siteLabels } from '#lib/content/index.ts';
-	import HazardSeparator from '#lib/components/shared/HazardSeparator.svelte';
+	import { Separator } from '@yesid/ui/separator';
 	import * as Tabs from '@yesid/ui/tabs';
 	import { scrollChain } from '@yesid/motion/actions';
 	import { onMount, onDestroy } from 'svelte';
@@ -132,7 +132,7 @@
 	});
 </script>
 
-<HazardSeparator hazardSize="sm" />
+<Separator variant="hazard" hazardSize="sm" />
 
 {#if mode === 'navigate'}
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->

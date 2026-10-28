@@ -11,8 +11,8 @@ vi.mock('@yesid/motion/stores/reducedMotion', async (importOriginal) => {
 
 // Mock the lazy loader so the test doesn't try to dynamic-import gsap/MorphSVGPlugin.
 // Real plugin behaviour isn't tested here — that's an integration concern.
-vi.mock('../utils/gsap.js', async (importOriginal) => {
-	const mod = (await importOriginal()) as typeof import('../utils/gsap.js');
+vi.mock('@yesid/motion/utils/gsap', async (importOriginal) => {
+	const mod = (await importOriginal()) as typeof import('@yesid/motion/utils/gsap');
 	return {
 		...mod,
 		loadMorphSVG: vi.fn(async () => {}),

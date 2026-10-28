@@ -12,8 +12,8 @@
 	const locale = getLocale();
 	import { aboutPageContent } from '#lib/content/about-page.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
-	import { StopLabel } from '#lib/components/brand/index.ts';
-	import { Card } from '#lib/components/ui/card/index.ts';
+	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import { Card } from '@yesid/ui/card';
 	import { variantImage } from '#lib/utils/variant-image.ts';
 	import { persisted } from '@yesid/ui/state';
 

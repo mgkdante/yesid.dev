@@ -35,6 +35,7 @@ describe('ProjectImageGallery keyboard access', () => {
 			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 			await waitFor(() => expect(trigger).toHaveFocus());
 		}
+		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));
 	});
 
 	it('keeps forward and reverse Tab on the modal control rather than the next background image', async () => {
@@ -49,6 +50,9 @@ describe('ProjectImageGallery keyboard access', () => {
 			expect(event.defaultPrevented).toBe(true);
 			expect(close).toHaveFocus();
 		}
+		await fireEvent.click(close);
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));
 	});
 
 	it('restores its opener after backdrop and close-button dismissal on repeated opens', async () => {
@@ -64,5 +68,6 @@ describe('ProjectImageGallery keyboard access', () => {
 			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 			await waitFor(() => expect(trigger).toHaveFocus());
 		}
+		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));
 	});
 });
