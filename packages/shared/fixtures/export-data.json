@@ -2602,7 +2602,8 @@
 						"title": {"en":"code","fr":"code","es":"código"},
 						"copyAria": {"en":"Copy code to clipboard","fr":"Copier le code dans le presse-papiers","es":"Copiar código al portapapeles"},
 						"copyLabel": {"en":"Copy","fr":"Copier","es":"Copiar"},
-						"errorLabel": {"en":"Error","fr":"Erreur","es":"Error"}
+						"errorLabel": {"en":"Error","fr":"Erreur","es":"Error"},
+						"copiedLabel": {"en":"Copied","fr":"Copié","es":"Copiado"}
 					},
 					"backNav": {
 						"toPersonal": {"en":"← back to personal corner","fr":"← retour au coin personnel","es":"← volver al rincón personal"},

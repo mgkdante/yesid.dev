@@ -127,6 +127,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 					['title', 'blog_chrome_detail_code_title'], ['copyAria', 'blog_chrome_detail_code_copy_aria'],
 					['copyLabel', 'blog_chrome_detail_code_copy_label'],
 					['errorLabel', 'blog_chrome_detail_code_error_label'],
+					['copiedLabel', 'blog_chrome_detail_code_copied_label'],
 				]),
 				backNav: toLocalizedFields(tr, [
 					['toPersonal', 'blog_chrome_detail_back_nav_to_personal'],

@@ -12,6 +12,6 @@
 	project={data.project}
 	services={data.services}
 	serviceSvgContents={data.serviceSvgContents}
-	readmeHtml={data.readmeHtml}
+	readme={data.readme}
 	codeHighlights={data.codeHighlights}
 />

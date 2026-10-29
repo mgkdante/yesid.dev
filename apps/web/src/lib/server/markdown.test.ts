@@ -5,52 +5,18 @@ const RAW_README = 'https://raw.githubusercontent.com/mgkdante/yesid.dev/main/RE
 
 async function render(markdown: string): Promise<string> {
 	const request = (async () => new Response(markdown, { status: 200 })) as typeof globalThis.fetch;
-	const html = await renderGithubReadme(RAW_README, request);
-	expect(html).toBeDefined();
-	return html!;
+	const readme = await renderGithubReadme(RAW_README, request);
+	expect(readme).toBeDefined();
+	return readme!.map((part) => ('html' in part ? part.html : '')).join('');
 }
 
 describe('markdown renderer', () => {
-	it('wraps README TypeScript fences in the shared terminal chrome', async () => {
-		const html = await render(['```typescript', 'const x: number = 1;', '```'].join('\n'));
-
-		expect(html).toContain('data-slot="terminal-chrome"');
-		expect(html).not.toContain('code-fence-frame');
-		expect(html).toContain('data-code-language="ts"');
-		expect(html).toContain('terminal-code-copy');
-		expect(html).toContain('const');
-		expect(html).toContain('x');
-	});
-
-	it('uses CSS variables for Shiki colors so README code respects light and dark themes', async () => {
-		const html = await render(['```typescript', 'const x: number = 1;', '```'].join('\n'));
-
-		expect(html).toContain('background-color:var(--terminal)');
-		expect(html).toContain('color:var(--terminal-ink)');
-		expect(html).toContain('var(--syntax-keyword)');
-		expect(html).not.toContain('#1a1814');
-		expect(html).not.toContain('#e8e4de');
-		expect(html).not.toContain('#E07800');
-	});
-
-	it('wraps README shell fences in the same terminal chrome', async () => {
-		const html = await render(['```bash', 'bun test', '```'].join('\n'));
-
-		expect(html).toContain('data-slot="terminal-chrome"');
-		expect(html).not.toContain('code-fence-frame');
-		expect(html).toContain('data-code-language="sh"');
-		expect(html).toContain('data-code-copy="bun test"');
-		expect(html).toContain('terminal-code-copy');
-		expect(html).toContain('bun');
-		expect(html).toContain('test');
-	});
-
-	it('emits Mermaid placeholders instead of highlighting diagrams as code', async () => {
-		const html = await render(['```mermaid', 'flowchart LR', '  a --> b', '```'].join('\n'));
-
-		expect(html).toContain('data-mermaid-source');
-		expect(html).toContain('flowchart LR');
-		expect(html).not.toContain('class="shiki"');
+	it('splits top-level fences out of the prose and highlights only code', async () => {
+		const request = (async () => new Response(['# Title', '', '```ts', 'const x = 1;', '```', '', '```mermaid', 'flowchart LR', '```'].join('\n'))) as typeof globalThis.fetch;
+		const readme = await renderGithubReadme(RAW_README, request);
+		expect(readme?.map((part) => ('html' in part ? 'html' : part.fence))).toEqual(['html', '```ts\nconst x = 1;\n```', '```mermaid\nflowchart LR\n```']);
+		expect(readme?.[1]).toHaveProperty('highlighted', expect.stringContaining('const'));
+		expect(readme?.[2]).toHaveProperty('highlighted', undefined);
 	});
 
 	it('removes executable README markup and unsafe URL schemes', async () => {
