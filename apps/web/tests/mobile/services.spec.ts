@@ -56,10 +56,7 @@ test('375px station tab clicks land every service card below the tabs', async ({
 	const tabsBar = page.locator('[data-testid="service-listing-page"] > .tabs-bar');
 	const stripGeometry = await tabsBar.evaluate((element) => ({
 		rendered: element.getBoundingClientRect().height,
-		target: Number.parseFloat(
-			getComputedStyle(document.querySelector<HTMLElement>('.circuit-grid')!)
-				.getPropertyValue('--strip-h'),
-		),
+		target: Number.parseFloat(getComputedStyle(element).getPropertyValue('--strip-h')),
 	}));
 	expect(Math.abs(stripGeometry.rendered - stripGeometry.target)).toBeLessThanOrEqual(1);
 

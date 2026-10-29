@@ -231,16 +231,18 @@ for (const width of [390, 820, 1920]) {
 		expect(samples[3].written).toBeCloseTo(samples[1].written, 1);
 		expect(samples[4].written).toBeCloseTo(samples[0].written, 1);
 		for (const landed of [samples[2], samples[6]]) expect(landed.written).toBeGreaterThan(letters - 0.1);
-		const groundBackground = await page.locator('.construction-extension').evaluate((ground) => {
+		const groundPainter = await page.locator('.construction-extension').evaluate((ground) => {
 			for (let element: Element | null = ground; element; element = element.parentElement) {
 				const style = getComputedStyle(element);
 				if (style.backgroundImage !== 'none' || !['transparent', 'rgba(0, 0, 0, 0)'].includes(style.backgroundColor)) {
-					return style.backgroundImage;
+					return element.tagName;
 				}
 			}
-			return 'none';
+			return null;
 		});
-		expect(groundBackground).toContain('linear-gradient');
+		// The ground paints nothing of its own, so the fixed page grid shows through it.
+		expect(groundPainter).toBe('HTML');
+		await expect(page.getByTestId('site-grid')).toHaveCSS('background-image', /linear-gradient/);
 		const art = await props
 			.locator('[data-construction-prop] > svg')
 			.evaluateAll((elements) =>
