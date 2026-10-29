@@ -71,6 +71,19 @@ for (const locale of PUBLISHED_LOCALES) {
 			});
 			await note.scrollIntoViewIfNeeded();
 			await expect(note).toBeVisible();
+			await expect(note.locator('svg')).toHaveClass(/ready/);
+			const reducedReplay = await note.evaluate(async element => {
+				const started: string[] = [];
+				const record = (event: Event) => { if (event instanceof AnimationEvent) started.push(event.animationName); };
+				element.addEventListener('animationstart', record);
+				element.dispatchEvent(new Event('mouseenter'));
+				// Observe the two render boundaries that apply a keyed replay and its styles.
+				await new Promise(requestAnimationFrame);
+				await new Promise(requestAnimationFrame);
+				element.removeEventListener('animationstart', record);
+				return started;
+			});
+			expect(reducedReplay).toEqual([]);
 			expect(
 				await note
 					.locator('path')

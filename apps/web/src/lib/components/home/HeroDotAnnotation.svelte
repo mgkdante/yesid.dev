@@ -60,6 +60,6 @@
 		.available { visibility: visible; }
 		.sequential.available .letter { opacity: 1; }
 		.available path { animation: none; stroke-dashoffset: 0; }
-		.ready.drawing .letter, .ready.drawing .arrow, .ready.drawing .tip { animation: none; stroke-dashoffset: 0; }
+		.ready.drawing .letter, .ready.drawing.sequential .letter, .ready.drawing .arrow, .ready.drawing .tip { animation: none; stroke-dashoffset: 0; }
 	}
 </style>
