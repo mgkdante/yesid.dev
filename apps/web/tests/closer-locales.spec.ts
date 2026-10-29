@@ -102,6 +102,7 @@ for (const locale of PUBLISHED_LOCALES) {
 				return {
 					progress: Number(document.querySelector('[data-slot="construction-props"]')!.getAttribute('data-progress')),
 					visible: note.getBoundingClientRect().top < innerHeight,
+					offset: note.getBoundingClientRect().top - document.querySelector('.closer-core')!.getBoundingClientRect().top,
 					animations: note.getAnimations({ subtree: true }).length,
 					ink: [...note.querySelectorAll('path')].map(
 						(path) => Number(getComputedStyle(path).opacity) && 1 - parseFloat(getComputedStyle(path).strokeDashoffset),
@@ -115,7 +116,7 @@ for (const locale of PUBLISHED_LOCALES) {
 			}, 1.7 - position);
 			return read();
 		};
-		const samples = [];
+		const samples: Awaited<ReturnType<typeof read>>[] = [];
 		for (let step = 0; step < 20; step++) samples.push(await at(step / 20));
 		const totals = samples.map((sample) => sample.ink.reduce((sum, value) => sum + value, 0));
 		const letters = samples[0].ink.length;
@@ -125,8 +126,10 @@ for (const locale of PUBLISHED_LOCALES) {
 			expect(ink.filter((value) => value > 0 && value < 1).length).toBeLessThanOrEqual(1);
 			ink.slice(1).forEach((value, i) => expect(value).toBeLessThanOrEqual(ink[i]));
 		}
-		// Equal scroll steps add equal ink, so a stroke stops wherever the scroll stops, and the
-		// writing only completes as the reveal does.
+		// Equal scroll steps raise the ending and add ink by equal amounts, so a stroke stops wherever
+		// the scroll stops, and the writing only completes as the reveal does.
+		const rises = samples.slice(1).map((sample, i) => samples[i].offset - sample.offset);
+		for (const rise of rises) expect(Math.abs(rise - rises[0])).toBeLessThanOrEqual(1);
 		const steps = totals.slice(1).map((total, i) => total - totals[i]).filter((step, i) => totals[i] > 0 && totals[i + 1] < letters);
 		expect(steps.length).toBeGreaterThan(5);
 		for (const step of steps) expect(step).toBeCloseTo(steps[0], 1);

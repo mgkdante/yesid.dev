@@ -196,13 +196,12 @@
 	.closer-section {
 		/* The 100px ground under the board unfolds with the reveal; unfolded, it is the original bottom clearance. */
 		--closer-ground-fold: calc((1 - var(--closer-reveal, 1)) * 100px);
-		--closer-ground: calc(100px - var(--closer-ground-fold));
 		background: transparent; position: relative; overflow-y: clip;
 		--construction-end-inset: calc(4% + clamp(160px, 18vw, 260px) + 1rem);
 	}
 	.closer-core { min-height: calc(100dvh - 100px); display: flex; align-items: center; padding: var(--space-section-y) var(--space-page-x) 0; position: relative; }
 	.ground-anchor { height: 0; width: 1px; pointer-events: none; }
-	.construction-extension { height: var(--closer-ground); }
+	.construction-extension { height: calc(100px - var(--closer-ground-fold)); }
 	/* From tablet width the props spread along the ground beside the ending. */
 	@media (--tablet-min) {
 		.closer-section :global(.around .floor) {
@@ -253,8 +252,8 @@
 		position: absolute; right: 4%; bottom: calc(20% - 80px);
 		width: clamp(160px, 18vw, 260px); max-width: 260px; aspect-ratio: 1;
 		z-index: calc(var(--z-content) + 1); overflow: visible;
-		/* Hidden below the ground, including any ground already unfolded, until its stage begins. */
-		translate: 0 calc((1 - var(--closer-note, 1)) * (var(--closer-note-drop, 0px) + var(--closer-ground)));
+		/* Starts just below the ground and rises linearly over its scroll window. */
+		translate: 0 calc((1 - var(--closer-note, 1)) * var(--closer-note-drop, 0px));
 	}
 	@media (--tablet-max) {
 		.closer-note {
@@ -263,7 +262,7 @@
 			order: 2; margin: 24px auto 0;
 		}
 		/* The ending stacks under the board and fills that space, so the ground stays folded; the props still reveal. */
-		.closer-section { --closer-ground: 0px; }
+		.construction-extension { height: 0; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.closer-section { --closer-ground-fold: 0px; }
