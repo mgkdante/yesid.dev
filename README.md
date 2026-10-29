@@ -27,8 +27,9 @@ bun run dev
 ```
 
 The site runs at http://localhost:5173. Local builds read content from a
-committed fixture, so you need no credentials and no CMS access. Vercel builds
-export live content from Directus instead.
+committed fixture, so you need no credentials and no CMS access. Vercel
+production builds and `develop` previews export live content from Directus;
+other previews use the fixture.
 
 Check, test and build:
 
