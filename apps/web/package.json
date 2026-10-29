@@ -30,10 +30,8 @@
 		"precheck:sitemap": "EXPORT_FALLBACKS_SOURCE=fixture bun ../../apps/cms/scripts/export-fallbacks.ts"
 	},
 	"devDependencies": {
-		"@axe-core/playwright": "4.12.1",
 		"@csstools/postcss-global-data": "4.0.0",
 		"@faker-js/faker": "^10.4.0",
-		"@playwright/test": "^1.58.2",
 		"@sveltejs/adapter-vercel": "^7.0.1",
 		"@sveltejs/kit": "^3.1.0",
 		"@sveltejs/load-config": "^0.2.3",

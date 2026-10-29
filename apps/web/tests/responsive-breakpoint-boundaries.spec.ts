@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 test.use({ colorScheme: 'dark' });
 
 async function settleLayout(page: Page) {
@@ -152,6 +154,7 @@ async function d1bBoundaryState(page: Page) {
 }
 
 test('canonical aliases preserve the 767/768 and 1023/1024 layout boundaries', async ({ page }) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.setViewportSize({ width: 767, height: 900 });
 	await page.goto('/');

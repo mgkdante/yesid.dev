@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { legalPages } from '../../src/lib/content/legal-pages';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 for (const locale of ['en', 'fr', 'es'] as const) {
   const prefix = locale === 'en' ? '' : '/' + locale;
   for (const content of legalPages) {

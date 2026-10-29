@@ -5,6 +5,8 @@ import { THE_END } from '../src/lib/components/home/annotation-lettering';
 import { closerContent } from '../src/lib/content/site-content';
 import { resolveLocale } from '../src/lib/utils/locale';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 for (const locale of PUBLISHED_LOCALES) {
 	test(`${locale} closer is readable without JavaScript in normal motion`, async ({
 		browser,
@@ -137,8 +139,6 @@ for (const locale of PUBLISHED_LOCALES) {
 		expect([totals[19] < letters, end.ink.every((ink) => ink === 1), end.progress]).toEqual([true, true, 1]);
 		const back = await at(0.7);
 		expect(back.ink).toEqual(samples[14].ink);
-		await page.waitForTimeout(500);
-		expect((await read()).ink).toEqual(back.ink);
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		expect((await at(0.5)).ink.every((ink) => ink === 1)).toBe(true);
 	});

@@ -1,6 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 import { gotoFirstDetail, blogPostLinks } from '../_support/helpers';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 /**
  * Navigate to the first real blog post detail page and return its href.
  * Wraps the shared gotoFirstDetail helper, which waits on the

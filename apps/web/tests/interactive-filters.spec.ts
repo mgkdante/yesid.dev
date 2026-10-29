@@ -1,6 +1,8 @@
 import { siteLabels } from '../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 // networkidle is banned in this suite (see tests/_support/helpers.ts): against the
 // live preview the contact info-terminal fires a one-shot fetch('/api/weather') +
 // a DOM clock interval, so "network idle" never settles deterministically. Each

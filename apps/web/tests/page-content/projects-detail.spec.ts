@@ -3,6 +3,8 @@ import { siteLabels } from '../../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 // Open the first real /projects/[slug] detail page. The shared helper asserts a
 // link exists, navigates, and waits on the project-detail-page landmark (no
 // networkidle) — replacing the hand-rolled open-first-project boilerplate.
@@ -57,6 +59,7 @@ test.describe('/projects/[slug] detail page content', () => {
 	});
 
 	test('project detail renders TOC pill on mobile', async ({ page }) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 		await page.setViewportSize({ width: 390, height: 844 });
 
 		await gotoFirstProject(page);

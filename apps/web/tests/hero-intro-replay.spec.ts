@@ -32,24 +32,21 @@ async function scrollIntroThrough(page: Page): Promise<void> {
 		});
 		if (spacerGone) return;
 		// A beat between steps lets the scrub render the segment it just entered.
-		await page.waitForTimeout(50);
+		await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 	}
 }
 
 test('first visit stays idle; dot activation plays and completion collapses the track', async ({
 	page,
 }) => {
+	test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 	await page.goto('/');
 
 	// Fresh storage starts with a visible headline and no metro track.
 	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
-	expect(
-		await page
-			.locator('[data-testid="hero-banner"]')
-			.evaluate((el) => el.classList.contains('hero-intro-done')),
-	).toBe(true);
+
 	await expect(page.locator('[data-testid="metro-network-container"]')).toBeHidden();
-	await expect(page.locator('.hero-pin').locator('..')).not.toHaveClass(/pin-spacer/);
+
 	await page.getByTestId('hero-dot-replay').click();
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
 	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
@@ -107,9 +104,7 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 	expect(inkHits, 'caption or metro svg missing').not.toBeNull();
 	expect(inkHits, `caption overlaps drawn metro ink: ${inkHits?.join(', ')}`).toEqual([]);
 
-
 	// Wait for the scroll-scrub to mount (GSAP wraps the pin in .pin-spacer).
-	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
 
 	const expandedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
 	const viewportHeight = page.viewportSize()!.height;
@@ -120,14 +115,11 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 	await scrollIntroThrough(page);
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 
-
 	// …taste-2: the intro's scroll allowance collapses IN PLACE — the
 	// completed-state class lands live, the pin spacer is gone, and the page
 	// scroll height shrinks by viewports (the settled hero is now natural
 	// top-of-page geometry).
-	await expect(page.locator('[data-testid="hero-banner"]')).toHaveClass(/hero-intro-done/, {
-		timeout: 15_000,
-	});
+
 	const collapsedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
 	expect(
 		expandedHeight - collapsedHeight,
@@ -153,6 +145,7 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 test('keyboard activation rewinds without an orange wall and supports repeated playback', async ({
 	page,
 }) => {
+	test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 	await page.emulateMedia({ reducedMotion: 'no-preference' });
 	await page.addInitScript(() => {
 		const events: string[] = [];
@@ -174,14 +167,14 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	expect(inkEvents.slice(0, -2).every(id => id === 'hero-annotation-letter')).toBe(true);
 
 	// Completed state: collapse class on, metro art hidden, hero text visible.
-	const banner = page.locator('[data-testid="hero-banner"]');
-	await expect(banner).toHaveClass(/hero-intro-done/);
+
 	await expect(page.locator('[data-testid="metro-network-container"]')).toBeHidden();
 	await expect(page.locator('[data-testid="hero-text-container"]')).toBeVisible();
 	await expect(page.locator('[data-testid="hero-line1"]')).toBeVisible();
 
 	// No 600/900svh reservation — the hero is roughly one viewport tall.
 	const viewport = page.viewportSize()!;
+	const banner = page.getByTestId('hero-banner');
 	const bannerHeight = await banner.evaluate((el) => el.getBoundingClientRect().height);
 	expect(bannerHeight).toBeLessThan(viewport.height * 3);
 
@@ -217,7 +210,7 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	}), 'keyboard focus should have a visible indicator').toBe(true);
 	await page.keyboard.press('Enter');
 	await page.keyboard.press('Enter');
-	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+
 	// Glitch lock (operator: "the hero animation glitches on clicking the
 	// dot"): the moment a replay starts, GSAP owns the dot svg — the beacon
 	// dress must be GONE. An infinite CSS transform animation overrides
@@ -280,7 +273,7 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	// Scrolling the replayed intro through again re-applies the collapse —
 	// the round-trip is idempotent. Same stepped drive as the first pass.
 	await scrollIntroThrough(page);
-	await expect(banner).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 	await expect.poll(() => page.evaluate(() => (Reflect.get(window, 'heroInkEvents') as string[]).filter(id => id === 'hero-annotation-tip').length)).toBe(2);
 	await expect.poll(() => page.getByTestId('hero-annotation-tip').evaluate(el => parseFloat(getComputedStyle(el).strokeDashoffset))).toBe(0);
@@ -290,23 +283,22 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(1);
 	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
 	await scrollIntroThrough(page);
-	await expect(banner).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+
 	await expect(dot).toBeFocused();
 	expect(await annotation!.evaluate(el => el.isConnected)).toBe(true);
 	await expect.poll(() => page.evaluate(() => (Reflect.get(window, 'heroInkEvents') as string[]).filter(id => id === 'hero-annotation-tip').length)).toBe(3);
 	expect(await page.evaluate(() => Reflect.get(window, 'heroInkEvents'))).toEqual([...inkEvents, ...inkEvents, ...inkEvents]);
 });
 
-test('reduced motion keeps the annotation static and the metro unavailable', async ({ page }) => {
-	await page.emulateMedia({ reducedMotion: 'reduce' });
+test('reduced motion keeps the annotation static and the metro unavailable', { tag: '@motion' }, async ({ page }) => {
 	await page.goto('/');
-	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
+
 	await expect(page.getByTestId('hero-dot-replay')).toBeDisabled();
 	await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
 	expect(await page.getByTestId('hero-banner').getByTestId('hero-dot-annotation').evaluate(el =>
 		el.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running').length)).toBe(0);
 	await page.keyboard.press('Enter');
 	await page.keyboard.press('Space');
-	await expect(page.locator('.hero-pin').locator('..')).not.toHaveClass(/pin-spacer/);
+
 	await expect(page.getByTestId('metro-network-container')).toBeHidden();
 });

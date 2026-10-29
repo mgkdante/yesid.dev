@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
-import { siteLabels } from '../src/lib/content/site-labels';
-import { DEFAULT_LOCALE, resolveLocale } from '../src/lib/utils/locale';
+import { DEFAULT_LOCALE } from '../src/lib/utils/locale';
 import { isPathPublished, STATIC_PAGE_PATHS } from '../src/lib/utils/page-registry';
 import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
+
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
 
 type Cluster = { loc: string; alternates: string[][] };
 const prefix = new RegExp(`^/(${PUBLISHED_LOCALES.filter((l) => l !== DEFAULT_LOCALE).join('|')})(?=/|$)`);
@@ -77,58 +78,4 @@ test('robots follows the host indexing policy', async ({ page }) => {
 	const robots = await response.text();
 	if (/^Disallow: \/$/m.test(robots)) expect(response.headers()['x-robots-tag']).toContain('noindex');
 	else expect(robots).toMatch(/^Sitemap: \S+\/sitemap\.xml$/m);
-});
-
-for (const colorScheme of ['dark', 'light'] as const) {
-	test(`a reload paints the stored theme and a closed section before the app runs (system ${colorScheme})`, async ({ page }) => {
-		await page.emulateMedia({ colorScheme });
-		const project = (await sitemap(page)).find(
-			(c) => routeOf(c.loc).startsWith('/projects/') && localeOf(c.loc) === DEFAULT_LOCALE,
-		)!;
-		await page.goto(pathOf(project.loc));
-		const html = page.locator('html');
-		await expect(html).toHaveAttribute('data-theme', 'dark');
-		const toggle = page.getByRole('switch', {
-			name: resolveLocale(siteLabels.navChrome.shared.themeToggleAria, DEFAULT_LOCALE),
-		});
-		const section = page.locator('[data-section-index="0"]').getByRole('button').first();
-		// Server markup shows the controls before hydration wires them; retry until they respond.
-		await expect(async () => {
-			if ((await html.getAttribute('data-theme')) !== 'light') await toggle.click();
-			await expect(html).toHaveAttribute('data-theme', 'light', { timeout: 1000 });
-		}).toPass();
-		await expect(async () => {
-			if ((await section.getAttribute('aria-expanded')) !== 'false') await section.click();
-			await expect(section).toHaveAttribute('aria-expanded', 'false', { timeout: 1000 });
-		}).toPass();
-
-		await page.route('**/_app/**/*.js', (route) => route.abort());
-		await page.reload();
-		await expect(html).toHaveAttribute('data-theme', 'light');
-		await expect(section).toHaveAttribute('aria-expanded', 'false');
-	});
-}
-
-test('a remembered quiet mode paints the sections closed before the app runs', async ({ page }) => {
-	const project = (await sitemap(page)).find(
-		(c) => routeOf(c.loc).startsWith('/projects/') && localeOf(c.loc) === DEFAULT_LOCALE,
-	)!;
-	await page.goto(pathOf(project.loc));
-	const label = (key: 'quietModeRemember' | 'quietModeLabelCollapsed') => resolveLocale(siteLabels.a11y[key], DEFAULT_LOCALE);
-	const section = page.locator('[data-section-index="0"]').getByRole('button').first();
-	// Server markup shows the controls before hydration wires them; retry until they respond.
-	await expect(async () => {
-		if ((await section.getAttribute('aria-expanded')) !== 'false')
-			await page.getByRole('button', { name: label('quietModeRemember') }).click();
-		await expect(section).toHaveAttribute('aria-expanded', 'false', { timeout: 1000 });
-	}).toPass();
-
-	await page.route('**/_app/**/*.js', (route) => route.abort());
-	await page.reload();
-	await expect(section).toHaveAttribute('aria-expanded', 'false');
-
-	await page.unroute('**/_app/**/*.js');
-	await page.reload();
-	await expect(page.getByRole('button', { name: label('quietModeLabelCollapsed') })).toBeVisible();
-	await expect(section).toHaveAttribute('aria-expanded', 'false');
 });

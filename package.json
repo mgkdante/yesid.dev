@@ -25,6 +25,8 @@
 		"secrets:ratelimit": "op service-account ratelimit"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "4.12.1",
+		"@playwright/test": "^1.58.2",
 		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.29.0/yesid-config-0.29.0.tgz",
 		"turbo": "^2.5.0"
 	},

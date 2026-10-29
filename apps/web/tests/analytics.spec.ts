@@ -1,6 +1,8 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 const ENDPOINT = 'https://plausible.io/api/event';
 
 type Payload = {

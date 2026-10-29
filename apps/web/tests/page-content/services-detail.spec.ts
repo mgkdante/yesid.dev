@@ -2,6 +2,8 @@ import { siteLabels } from '../../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, serviceDetailLinks } from '../_support/helpers';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 // Ground truth (src/lib/content/services.ts + ServiceDetailPage.svelte):
 // The /services listing's first station (sorted by station number) is
 // `database-engineering`. It carries an SVG panel, an impact metric

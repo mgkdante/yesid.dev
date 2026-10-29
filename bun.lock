@@ -5,6 +5,8 @@
     "": {
       "name": "yesid-dev",
       "devDependencies": {
+        "@axe-core/playwright": "4.12.1",
+        "@playwright/test": "^1.58.2",
         "@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.29.0/yesid-config-0.29.0.tgz",
         "turbo": "^2.5.0",
       },
@@ -46,10 +48,8 @@
         "zod": "^4.3.6",
       },
       "devDependencies": {
-        "@axe-core/playwright": "4.12.1",
         "@csstools/postcss-global-data": "4.0.0",
         "@faker-js/faker": "^10.4.0",
-        "@playwright/test": "^1.58.2",
         "@sveltejs/adapter-vercel": "^7.0.1",
         "@sveltejs/kit": "^3.1.0",
         "@sveltejs/load-config": "^0.2.3",

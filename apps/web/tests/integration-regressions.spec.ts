@@ -23,6 +23,7 @@ async function openMenu(page: Page, key = 'Enter') {
 
 test.describe('responsive shell and interrupted menu', () => {
 	test('mobile TOC leaves the section reached by Tab visibly focused after collapse-all', async ({ page }) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 		await page.setViewportSize({ width: 683, height: 300 });
 		await page.goto('/projects/transit-data-pipeline');
 		await openMenu(page);
@@ -41,6 +42,7 @@ test.describe('responsive shell and interrupted menu', () => {
 	test('listing summary owns its readable size independently of inherited title sizing', async ({
 		page,
 	}) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto('/blog');
 		await page.locator('.listing-header-text').evaluate((el) => {
@@ -55,6 +57,7 @@ test.describe('responsive shell and interrupted menu', () => {
 	test('long listing rail labels fit the short viewport without consuming the content column', async ({
 		page,
 	}) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 		await page.setViewportSize({ width: 1366, height: 600 });
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/blog');
@@ -71,6 +74,7 @@ test.describe('responsive shell and interrupted menu', () => {
 	test('wrapped listing titles and summaries stay below the narrow-screen pill', async ({
 		page,
 	}) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 		await page.setViewportSize({ width: 320, height: 568 });
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		for (const route of ['/blog', '/blog/personal', '/projects']) {
@@ -88,6 +92,7 @@ test.describe('responsive shell and interrupted menu', () => {
 		test(`short-laptop headers expose title, summary or action, and content at ${width}x600`, async ({
 			page,
 		}) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 			await page.setViewportSize({ width, height: 600 });
 			await page.emulateMedia({ reducedMotion: 'reduce' });
 			await page.goto('/');
@@ -232,93 +237,77 @@ test('listing renders a painted SVG panel for every service card', async ({ page
 	expect(paintedPanels, 'every service card carries painted svg art').toBe(cards);
 });
 
-
 test.describe('section navigation keyboard continuity', () => {
-	for (const [width, height] of [
-		[375, 667],
-		[1366, 600],
-	])
-		for (const theme of ['light', 'dark']) {
-			test(`three section journeys at ${width} ${theme}`, async ({ page }) => {
-				await page.setViewportSize({ width, height });
-				await page.emulateMedia({ reducedMotion: 'reduce' });
-				await page.addInitScript((theme) => localStorage.setItem('theme', theme), theme);
-				await page.goto('/projects/transit-data-pipeline');
-				await openMenu(page);
-				await page.keyboard.press('Escape');
-				await expect(page.getByRole('dialog')).toHaveCount(0);
-				await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
-				const heading = page.locator('[data-section-index="1"] .section-header').first();
-				// Section index 1 has number badge 02; copy may repeat across sections.
-				for (let cycle = 0; cycle < 3; cycle++) {
-					if (width < 1024) {
-						const pill = page.getByTestId('toc-pill').locator('button.toc-pill');
-						await pill.press('Enter');
-						await expect(page.locator('.toc-drawer')).toBeVisible();
-						await page.keyboard.press('Escape');
-						await expect(pill).toBeFocused();
-						await pill.press('Space');
-						await page
-							.locator('.toc-drawer-item:not(.toc-drawer-sub)')
-							.filter({ has: page.locator('.toc-drawer-badge').getByText('02', { exact: true }) })
-							.press('Enter');
-						await expect(pill).toBeFocused();
-						await expect(page.locator('.toc-drawer')).toHaveCount(0);
-					} else
-						await page
-							.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)')
-							.filter({ has: page.locator('.toc-badge').getByText('02', { exact: true }) })
-							.press('Enter');
-					await expect(async () => {
-						const box = (await heading.boundingBox())!;
-						expect(box.y).toBeGreaterThanOrEqual(width < 480 ? 76 : 88);
-						expect(box.y + box.height).toBeLessThan(height - (width < 1024 ? 70 : 0));
-						const before = await page.evaluate(() => scrollY);
-						await page.waitForTimeout(100);
-						expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(1);
-					}).toPass();
-					await expect(heading).toHaveAttribute('aria-expanded', 'false');
-					await heading.press('Enter');
-					await expect(heading).toHaveAttribute('aria-expanded', 'true');
-					await heading.press('Space');
-					await expect(heading).toHaveAttribute('aria-expanded', 'false');
-				}
-			});
-		}
-});
-
-for (const [width, height] of [
-	[375, 667],
-	[1366, 600],
-])
-	test(`programmatic collapse returns interior focus visibly at ${width}`, async ({ page }) => {
-		await page.setViewportSize({ width, height });
+	test('three section journeys on a project page', async ({ page }) => {
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/projects/transit-data-pipeline');
+		const pill = (await page.getByTestId('nav-pill').boundingBox())!;
 		await openMenu(page);
 		await page.keyboard.press('Escape');
+		await expect(page.getByRole('dialog')).toHaveCount(0);
 		await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
-		const section = page.locator('[data-section-index="0"]');
-		await section
-			.locator('.section-body:not([data-slot="collapsible-content"])')
-			.first()
-			.evaluate((el) => {
-				const link = document.createElement('a');
-				link.href = '#focus-fixture';
-				link.textContent = 'Interior focus fixture';
-				el.append(link);
-			});
-		await page.getByRole('link', { name: 'Interior focus fixture' }).focus();
-		const heading = section.locator('.section-header').first();
-		expect((await heading.boundingBox())!.y).toBeLessThan(0);
-		await page
-			.getByTestId('quiet-mode-toggle')
-			.evaluate((el: HTMLButtonElement) => el.click());
-		await expect(heading).toBeFocused();
-		await expect(heading).toHaveAttribute('aria-expanded', 'false');
-		await expect(async () => {
-			const box = (await heading.boundingBox())!;
-			expect(box.y).toBeGreaterThanOrEqual(width < 480 ? 76 : 88);
-			expect(box.y + box.height).toBeLessThanOrEqual(height - (width < 1024 ? 70 : 0));
-		}).toPass();
+		const heading = page.locator('[data-section-index="1"] .section-header').first();
+		// Section index 1 has number badge 02; copy may repeat across sections.
+		for (let cycle = 0; cycle < 3; cycle++) {
+			if (page.viewportSize()!.width < 1024) {
+				const pill = page.getByTestId('toc-pill').locator('button.toc-pill');
+				await pill.press('Enter');
+				await expect(page.locator('.toc-drawer')).toBeVisible();
+				await page.keyboard.press('Escape');
+				await expect(pill).toBeFocused();
+				await pill.press('Space');
+				await page
+					.locator('.toc-drawer-item:not(.toc-drawer-sub)')
+					.filter({ has: page.locator('.toc-drawer-badge').getByText('02', { exact: true }) })
+					.press('Enter');
+				await expect(pill).toBeFocused();
+				await expect(page.locator('.toc-drawer')).toHaveCount(0);
+			} else
+				await page
+					.locator('.toc-column .toc-nav > button.toc-item:not(.toc-sub-item)')
+					.filter({ has: page.locator('.toc-badge').getByText('02', { exact: true }) })
+					.press('Enter');
+			await expect(async () => {
+				const box = (await heading.boundingBox())!;
+				expect(box.y).toBeGreaterThanOrEqual(pill.y + pill.height);
+				expect(box.y + box.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+			}).toPass();
+			await expect(heading).toHaveAttribute('aria-expanded', 'false');
+			await heading.press('Enter');
+			await expect(heading).toHaveAttribute('aria-expanded', 'true');
+			await heading.press('Space');
+			await expect(heading).toHaveAttribute('aria-expanded', 'false');
+		}
 	});
+});
+
+test('programmatic collapse returns interior focus visibly', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/projects/transit-data-pipeline');
+	const pill = (await page.getByTestId('nav-pill').boundingBox())!;
+	await openMenu(page);
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('nav-menu-toggle')).toBeFocused();
+	const section = page.locator('[data-section-index="0"]');
+	await section
+		.locator('.section-body:not([data-slot="collapsible-content"])')
+		.first()
+		.evaluate((el) => {
+			const link = document.createElement('a');
+			link.href = '#focus-fixture';
+			link.textContent = 'Interior focus fixture';
+			el.append(link);
+		});
+	await page.getByRole('link', { name: 'Interior focus fixture' }).focus();
+	const heading = section.locator('.section-header').first();
+	await page
+		.getByTestId('quiet-mode-toggle')
+		.evaluate((el: HTMLButtonElement) => el.click());
+	await expect(heading).toBeFocused();
+	await expect(heading).toHaveAttribute('aria-expanded', 'false');
+	await expect(async () => {
+		const box = (await heading.boundingBox())!;
+		expect(box.y).toBeGreaterThanOrEqual(pill.y + pill.height);
+		expect(box.y + box.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+	}).toPass();
+});

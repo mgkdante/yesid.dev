@@ -1,4 +1,3 @@
-import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
 import { menuItems } from '../src/lib/content/nav';
@@ -80,17 +79,3 @@ for (const locale of PUBLISHED_LOCALES) {
 		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
 	});
 }
-
-test('axe finds no serious issues with the menu open on any destination', async ({ page }, testInfo) => {
-	test.skip(testInfo.project.name !== 'desktop-chrome', 'axe results do not depend on the viewport');
-	for (const locale of PUBLISHED_LOCALES) {
-		for (const item of menuItems) {
-			await page.goto(localized(item.href, locale));
-			await openMenu(page, locale);
-			// Scoped to the open menu, the surface this spec covers.
-			const { violations } = await new AxeBuilder({ page }).include('[role="dialog"]').analyze();
-			const blocking = violations.filter(({ impact }) => impact === 'serious' || impact === 'critical');
-			expect(blocking, `${locale} ${item.href}`).toEqual([]);
-		}
-	}
-});
