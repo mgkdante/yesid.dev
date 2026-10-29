@@ -35,7 +35,6 @@ of each image and SVG family.
   not import either application.
 - Generated modules conform to shared contracts but remain owned by the CMS
   emitter registry. App code must not become a second generator.
-  Zod schema barrel when they only need the canonical layer tuple and type.
 
 ## Locale and privacy policy
 
@@ -88,9 +87,7 @@ Regenerate both binary icons from `favicon.svg` if the mark changes.
 
 ### Rules
 
-- Dead art gets deleted, not parked: the pre-componentization `static/svg/blueprint/`
-  exports get deleted. If a file has zero
-  references, it goes.
+- Dead art gets deleted, not parked. If a file has zero references, it goes.
 - Template-string fetches (`/svg/services/${service.svg}`)
   and `?raw` globs break silently on renames: unit tests stub `/svg/` fetches
   (`src/tests/setup.dom.ts`), so run the local e2e after moving anything here.
