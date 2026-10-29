@@ -18,7 +18,7 @@ const CONFIG_LOCK_INTEGRITY =
 const CONFIG_BASE_DIGEST = '588a4acf72f44593561112fc945d410548b56cf556bbbc9bc745c1f7b218424f';
 const MATERIALIZED_BASE = 'node_modules/.yesid-shared-tooling/turbo/base.json';
 const YESID_TURBO_SEMANTIC_DIGEST =
-	'01a7dfb25a6ec23126030636711e7bc0f45acfbeb7040ec484fca47310b72eaf';
+	'dba060ff9c4a79a89d2f72c722b2a5ad50f9beca0dd16245c4f665439e9626b5';
 
 const CONFIG_RECEIPT = {
 	schema: 1,
@@ -68,7 +68,6 @@ const TURBO_OVERLAY = {
 			],
 			"env": [
 				"PUBLIC_DIRECTUS_URL",
-				"PUBLIC_PLAUSIBLE_DOMAIN",
 				"DIRECTUS_ADMIN_TOKEN",
 				"DIRECTUS_BUILD_TOKEN",
 				"DIRECTUS_DEV_BUILD_TOKEN",

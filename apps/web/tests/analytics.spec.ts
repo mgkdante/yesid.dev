@@ -331,8 +331,10 @@ test('internal path navigation emits one additional pageview', async ({ page, ba
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
 	expectExactPageviewCount(payloads, 2);
+	expect(eventsNamed(payloads, 'engagement').length).toBeGreaterThan(0);
 	for (const payload of nonSentinel(payloads)) {
 		expect(payload.d).toBe('yesid.dev');
+		expect(payload.p).toBeUndefined();
 		const url = new URL(payload.u);
 		expect([...url.searchParams.keys()].every(key => key === 'utm_source')).toBe(true);
 		expect(url.hash).toBe('');
