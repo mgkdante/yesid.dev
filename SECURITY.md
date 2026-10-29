@@ -2,7 +2,9 @@
 
 Do not report suspected vulnerabilities through a public issue.
 
-Email `contact@yesid.dev` with the subject `[security]`. Include the affected
+Report them privately through GitHub's
+[private vulnerability reporting](https://github.com/mgkdante/yesid.dev/security/advisories/new),
+or email `contact@yesid.dev` with the subject `[security]`. Include the affected
 URL or component, reproduction steps, likely impact, and whether the details
 have been disclosed elsewhere.
 

@@ -57,6 +57,5 @@ bun run --cwd packages/shared test
 ```
 
 Content export, recovery, and environment rules belong to the
-[CMS owner guide](../../apps/cms/README.md). Web rendering, media fallback,
-privacy, and vendor-receipt rules belong to the
-[web owner guide](../../apps/web/README.md).
+[CMS owner guide](../../apps/cms/README.md). Web rendering, media fallback and
+privacy rules belong to the [web owner guide](../../apps/web/README.md).

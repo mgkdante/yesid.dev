@@ -19,6 +19,3 @@ export const PresetEntrySchema = z.object({
 export const PresetsConfigSchema = z.object({
 	presets: z.array(PresetEntrySchema).min(1),
 });
-
-export type PresetEntry = z.infer<typeof PresetEntrySchema>;
-export type PresetsConfig = z.infer<typeof PresetsConfigSchema>;

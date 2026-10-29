@@ -257,6 +257,16 @@ for (const width of [390, 820, 1920]) {
 			expect(art[i].right).toBeLessThanOrEqual(width);
 			if (i) expect(art[i].left).toBeGreaterThanOrEqual(art[i - 1].right);
 		}
+		if (width === 390) {
+			const row = await page.evaluate(() =>
+				[...document.querySelectorAll('[data-construction-prop] > svg'), document.querySelector('[data-slot="closer-floodlight"] svg')!]
+					.map((svg) => ({ name: (svg.parentElement as HTMLElement).dataset.constructionProp ?? 'lamp', ...svg.getBoundingClientRect().toJSON() }))
+					.sort((a, b) => a.left - b.left),
+			);
+			expect(row.map((box) => box.name)).toEqual(['balise', 'sign', 'lamp', 'helmet', 'barricade']);
+			const gaps = row.slice(1).map((box, i) => box.left - row[i].right);
+			for (const gap of gaps) expect(Math.abs(gap - gaps[0]), `390px gaps ${gaps.join(', ')}`).toBeLessThanOrEqual(1);
+		}
 		await expect(
 			page.locator(
 				'[data-slot="closer-floodlight"] [data-slot="construction-floodlight"]',
