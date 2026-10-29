@@ -24,7 +24,7 @@ Each domain has one owner:
 | `apps/web` | SvelteKit application, routes, product components, generated content adapters, and deployment | [`apps/web/README.md`](apps/web/README.md) |
 | `apps/cms` | Directus schema, deterministic fixtures, content export, and operational tooling | [`apps/cms/README.md`](apps/cms/README.md) |
 | `packages/shared` | Product-owned schemas, types, asset contracts, and runtime constants shared by the web and CMS domains | [`packages/shared/README.md`](packages/shared/README.md) |
-| `apps/web/vendor/design` | Immutable `yesid.dev-design` Release; never edited by the consumer | [`manifest.json`](apps/web/vendor/design/manifest.json) |
+| `@yesid/*` | yesid.dev-design v0.28.0 release tarballs, pinned by URL in `apps/web/package.json` and by integrity in `bun.lock` | [design repo](https://github.com/mgkdante/yesid.dev-design) |
 
 Content moves in one direction:
 
@@ -42,19 +42,11 @@ Directus remains the editorial source; the deployed build owns delivery.
 
 ## Design-system customer boundary
 
-`yesid.dev-design` is released independently. This repository vendors one
-exact schema-2 Release under `apps/web/vendor/design` and owns only its product
-adapters, product policy, composed components, generated outputs, and product
-tests.
+`yesid.dev-design` is released independently. This repository installs one exact release's package tarballs by URL and owns only its product code. A bump changes the tag in every `@yesid` URL, runs `bun install`, and lands in its own pull request.
 
-From `apps/web`, verify the customer payload:
+Design tokens: [upstream DESIGN.md](https://github.com/mgkdante/yesid.dev-design/blob/main/DESIGN.md).
 
-```bash
-bun vendor/design/tools/adopt.ts --check --dest vendor/design
-```
-
-Future upgrades use a reviewed exact-tag adoption. Never patch the vendored
-snapshot.
+Never patch the packages.
 
 ## Local development
 
@@ -76,7 +68,6 @@ Run the repository gates:
 ```bash
 bun run test
 bun run check
-bun run ci:tokens
 bun run build
 ```
 

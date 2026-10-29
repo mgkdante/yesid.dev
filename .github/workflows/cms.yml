@@ -96,7 +96,7 @@ jobs:
               },
               "jobs": {
                 "test-work": {
-                  "paths": [".githooks/pre-commit"],
+                  "paths": [],
                   "prefixes": ["apps/cms/", "apps/web/", "gbp-assets/", "packages/"]
                 }
               },
@@ -106,8 +106,8 @@ jobs:
                   "prefixes": ["docs/"]
                 },
                 "irrelevant": {
-                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore", "DESIGN.md"],
-                  "prefixes": [".githooks/"]
+                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore"],
+                  "prefixes": []
                 }
               }
             }

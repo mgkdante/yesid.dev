@@ -44,7 +44,6 @@
 		es: { show: 'Ver un pequeño ejemplo', close: 'Cerrar' },
 	}[getLocale()];
 
-	const exampleId = $props.id();
 	let open = $state(false);
 	let tab = $state<HTMLButtonElement | null>(null);
 	let tug = $state(false);
@@ -76,7 +75,7 @@
 
 <div class="hero-sql pb-10 lg:hidden" data-testid="hero-mobile-sql">
 	<Collapsible.Root bind:open>
-		<Collapsible.Content id={exampleId}>
+		<Collapsible.Content>
 			<div class="example pb-8">
 				<div class="hero-divider-h mx-6"></div>
 				<div class="w-full px-[var(--space-page-x)] pt-6">
@@ -111,7 +110,7 @@
 		<!-- Horizontal divider — mirrors the vertical desktop divider -->
 		<div class="hero-divider-h mx-6"></div>
 		<div class="flex justify-center">
-			<Collapsible.Trigger bind:ref={tab} class="binder-tab tap-press {tug ? 'tug' : ''}" aria-controls={exampleId}>
+			<Collapsible.Trigger bind:ref={tab} class="binder-tab tap-press {tug ? 'tug' : ''}">
 				{open ? tabs.close : tabs.show}<span class="binder-tab-mark" aria-hidden="true">{open ? '▴' : '▾'}</span>
 			</Collapsible.Trigger>
 		</div>

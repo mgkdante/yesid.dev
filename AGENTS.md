@@ -11,7 +11,7 @@ pipeline. It is public for inspection but remains proprietary; read
 - SvelteKit, Svelte 5, TypeScript, Tailwind CSS, and Vite in `apps/web`
 - Directus 12 content schema, fixtures, exporters, and operations in `apps/cms`
 - Shared product schemas and utilities in `packages/shared`
-- An immutable design-system release in `apps/web/vendor/design`
+- The `@yesid/*` design-system packages, installed from one exact yesid.dev-design release
 
 The browser and request-time application do not query Directus for page
 content. Directus is the editorial source, and the CMS exporter writes typed,
@@ -21,7 +21,6 @@ ignored modules under `apps/web/src/lib/content` for the SvelteKit build.
 
 ```bash
 bun install --frozen-lockfile
-bun run setup:hooks
 bun run dev
 ```
 
@@ -37,7 +36,6 @@ Run the checks that match the files you changed, then the full local gates:
 ```bash
 bun run check
 bun run test
-bun run ci:tokens
 bun run build
 ```
 
@@ -47,36 +45,9 @@ live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
 Refresh the fixture from a live cache with
 `bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 
-## Vendored design and tokens
+## Design system
 
-`apps/web/vendor/design` is one complete, immutable schema-2 release from
-`yesid.dev-design`. Do not patch files inside that directory. From
-`apps/web`, verify the adopted release with:
-
-```bash
-bun vendor/design/tools/adopt.ts --check --dest vendor/design
-```
-
-The vendored token sources feed the product-owned adapter at
-`apps/web/tools/build-tokens.ts`. After an authorized token-source or adapter
-change, regenerate and verify outputs from the repository root:
-
-```bash
-bun run tokens:build
-bun run ci:tokens
-```
-
-Do not hand-edit `DESIGN.md`.
-
-## Pre-commit integrity
-
-`.githooks/pre-commit` protects two repository boundaries:
-
-1. vendored design payload changes require their release manifest;
-2. generated token outputs require their source or adapter.
-
-Install the hook with `bun run setup:hooks`. CI repeats the vendor
-and token checks so a clean clone does not rely on local hook setup.
+`@yesid/*` come from one exact yesid.dev-design release, installed by URL (`apps/web/package.json`, root `package.json` for `@yesid/config`) and pinned by integrity in `bun.lock`. Never patch them under `node_modules`; change them upstream and bump.
 
 Keep changes small, preserve public behavior unless the task explicitly says
 otherwise, and add tests around observable behavior rather than source text or

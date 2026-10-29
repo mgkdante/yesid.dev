@@ -21,6 +21,7 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick, untrack } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
+	import { clock } from '@yesid/ui/state';
 	import { homeIntroStore } from '#lib/state/home-intro.svelte.ts';
 	import {
 		initScrollTriggerConfig,
@@ -132,7 +133,7 @@
 		{ en: 'regenerated just now', fr: "régénéré à l'instant", es: 'regenerado recién' },
 		locale,
 	);
-	let updatedAgo: string = $state(updatedAgoInitial);
+	let demoStamp: string = $state(updatedAgoInitial);
 
 	function spinRefreshIcon() {
 		if (refreshIcon) {
@@ -145,10 +146,16 @@
 		}
 	}
 
-	// freshnessS is computed server-side at serve time; we keep advancing it
-	// locally (1s ticker below) so the stamp reads as truly live between
-	// polls (operator call 2026-07-03), not frozen at the fetch moment.
-	let liveBase: { freshnessS: number; receivedAt: number } | null = null;
+	// freshnessS is computed server-side at serve time; the shared clock keeps
+	// advancing it so the stamp reads as truly live between polls
+	// (operator call 2026-07-03), not frozen at the fetch moment.
+	let liveBase = $state<{ freshnessS: number; receivedAt: number } | null>(null);
+	$effect(() => clock.subscribe());
+	const updatedAgo = $derived(
+		liveBase
+			? liveStamp(liveBase.freshnessS + Math.max(0, Math.round((clock.now - liveBase.receivedAt) / 1000)))
+			: demoStamp,
+	);
 
 	function liveStamp(seconds: number): string {
 		if (locale === 'fr') return `il y a ${seconds} s`;
@@ -160,21 +167,20 @@
 		heroData = snapshot.data;
 		live = true;
 		liveBase = { freshnessS: snapshot.freshnessS, receivedAt: Date.now() };
-		updatedAgo = liveStamp(snapshot.freshnessS);
 	}
 
 	function dropToDemo(stamp: string) {
 		live = false;
 		liveBase = null;
 		heroData = generateHeroData();
-		updatedAgo = stamp;
+		demoStamp = stamp;
 	}
 
 	function handleRefresh() {
 		spinRefreshIcon();
 		if (!liveEnabled) {
 			heroData = generateHeroData();
-			updatedAgo = updatedAgoJustNow;
+			demoStamp = updatedAgoJustNow;
 			return;
 		}
 		void fetchLiveKpis().then((snapshot) => {
@@ -197,18 +203,7 @@
 			else if (live) dropToDemo(updatedAgoInitial);
 		};
 		const stopLivePolling = startLiveKpiPolling(tickLive);
-		// Advance the freshness stamp every second between polls: the data's
-		// age keeps counting whether or not we've refetched.
-		const stampTimer = setInterval(() => {
-			if (live && liveBase) {
-				const elapsed = Math.round((Date.now() - liveBase.receivedAt) / 1000);
-				updatedAgo = liveStamp(liveBase.freshnessS + elapsed);
-			}
-		}, 1000);
-		return () => {
-			stopLivePolling();
-			clearInterval(stampTimer);
-		};
+		return stopLivePolling;
 	});
 
 	let cleanup: (() => void) | undefined;

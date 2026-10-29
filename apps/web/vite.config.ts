@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import customMedia from 'postcss-custom-media';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-const designTokensCss = fileURLToPath(new URL('./vendor/design/tokens/tokens.css', import.meta.url));
+const designTokensCss = fileURLToPath(import.meta.resolve('@yesid/tokens/tokens.css'));
 
 // SvelteKit hashes its bootstrap; the theme script hash comes from @yesid/ui/boot.json.
 
@@ -29,7 +29,7 @@ export default defineConfig({
 		},
 	},
 	resolve: {
-		// The file-vendored UI package and app-owned parity wrappers must share
+		// The installed UI package and app-owned wrappers must share
 		// one bits-ui context registry when they compose Root and Content.
 		dedupe: ['bits-ui'],
 	},

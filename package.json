@@ -22,16 +22,10 @@
 		"secrets:inject:web": "op inject -i .env -o apps/web/.env.local",
 		"secrets:inject:cms": "op inject -i .env -o apps/cms/.env.local",
 		"secrets:whoami": "op whoami",
-		"secrets:ratelimit": "op service-account ratelimit",
-		"tokens:build": "bun run --cwd apps/web tokens:build",
-		"tokens:check": "bun run --cwd apps/web tokens:check",
-		"tokens:lint": "design.md lint DESIGN.md",
-		"ci:tokens": "bun run tokens:check && bun run tokens:lint",
-		"setup:hooks": "git config core.hooksPath .githooks"
+		"secrets:ratelimit": "op service-account ratelimit"
 	},
 	"devDependencies": {
-		"@google/design.md": "0.1.1",
-		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/config-v0.2.0/yesid-config-v0.2.0.tgz",
+		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.28.0/yesid-config-0.28.0.tgz",
 		"turbo": "^2.5.0"
 	},
 	"overrides": {
