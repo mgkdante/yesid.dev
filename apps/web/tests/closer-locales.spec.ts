@@ -166,16 +166,16 @@ for (const locale of PUBLISHED_LOCALES) {
 }
 
 for (const width of [390, 820, 1920]) {
-	test(`${width}px ground keeps four distinct props and follows scroll without moving its anchor`, async ({
+	test(`${width}px props follow scroll and the ground unfolds only beside the ending`, async ({
 		page,
 	}) => {
 		await page.setViewportSize({ width, height: 900 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await page.goto('/');
 		const props = page.locator('[data-slot="construction-props"]');
-		await expect(props).toHaveAttribute(
-			'data-state',
-			width < 768 ? 'static' : 'hidden',
+		await expect(props).toHaveAttribute('data-state', 'hidden');
+		const besideEnding = await page.locator('.closer-note').evaluate(
+			(note) => getComputedStyle(note).position === 'absolute',
 		);
 		const samples = [];
 		for (const fraction of [0.98, 0.825, 0.7, 0.825, 0.98, 0.7]) {
@@ -189,32 +189,46 @@ for (const width of [390, 820, 1920]) {
 						top: anchor.getBoundingClientRect().top,
 					};
 				}, fraction);
-			if (width >= 768)
-				await expect
-					.poll(async () => Number(await props.getAttribute('data-progress')))
-					.toBeCloseTo(Math.max(0, Math.min(1, (0.95 - fraction) / 0.25)), 2);
+			await expect
+				.poll(async () => Number(await props.getAttribute('data-progress')))
+				.toBeCloseTo(Math.max(0, Math.min(1, (0.95 - fraction) / 0.25)), 2);
 			const sample = await page
 				.locator('.ground-anchor')
 				.evaluate((anchor) => ({
 					top: anchor.getBoundingClientRect().top,
 					scroll: document.scrollingElement!.scrollTop,
-					height: document
+					ground: document
 						.querySelector('.construction-extension')!
 						.getBoundingClientRect().height,
+					sectionHeight: document.querySelector('[data-testid="closer-section"]')!.getBoundingClientRect().height,
+					sectionBottom: document.querySelector('[data-testid="closer-section"]')!.getBoundingClientRect().bottom,
+					ctaBottom: document.querySelector('[data-testid="closer-cta"]')!.getBoundingClientRect().bottom,
 				}));
 			expect(Math.abs(sample.top - requested.top)).toBeLessThanOrEqual(1);
 			expect(Math.abs(sample.scroll - requested.scroll)).toBeLessThanOrEqual(1);
+			expect(sample.sectionBottom).toBeGreaterThan(sample.ctaBottom);
 			samples.push(sample);
 		}
-		if (width >= 768) {
-			expect(samples[2].height).toBeGreaterThan(samples[1].height);
-			expect(samples[1].height).toBeGreaterThan(samples[0].height);
+		if (besideEnding) {
+			expect(samples[2].ground).toBeGreaterThan(samples[1].ground);
+			expect(samples[1].ground).toBeGreaterThan(samples[0].ground);
 			expect(
-				Math.abs(samples[4].height - samples[0].height),
+				Math.abs(samples[4].ground - samples[0].ground),
 			).toBeLessThanOrEqual(1);
+			expect(Math.abs(samples[5].sectionHeight - page.viewportSize()!.height)).toBeLessThanOrEqual(1);
 		} else {
-			expect(samples.every((sample) => sample.height === 0)).toBe(true);
+			expect(samples.every((sample) => sample.ground === 0)).toBe(true);
 		}
+		const groundBackground = await page.locator('.construction-extension').evaluate((ground) => {
+			for (let element: Element | null = ground; element; element = element.parentElement) {
+				const style = getComputedStyle(element);
+				if (style.backgroundImage !== 'none' || !['transparent', 'rgba(0, 0, 0, 0)'].includes(style.backgroundColor)) {
+					return style.backgroundImage;
+				}
+			}
+			return 'none';
+		});
+		expect(groundBackground).toContain('repeating-linear-gradient');
 		const art = await props
 			.locator('[data-construction-prop] > svg')
 			.evaluateAll((elements) =>

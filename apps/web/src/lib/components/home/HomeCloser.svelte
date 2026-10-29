@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
-	import { MediaQuery } from 'svelte/reactivity';
 	import { browser } from '$app/env';
 	import { resolveLocale } from '#lib/utils/index.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -96,7 +95,6 @@
 	let groundAnchor = $state<HTMLElement>();
 	let revealProgress = $state(1);
 	let replay = $state(0);
-	const wideGround = new MediaQuery('(min-width: 768px)', false);
 	const closingLabel = THE_END[locale];
 	const words = closingLabel.split(' ').map(getLettering);
 	const wordWidth = Math.max(...words.map(word => word.width));
@@ -145,7 +143,7 @@
 	bind:this={sectionEl}
 	data-testid="closer-section"
 	class="closer-section relative"
-	style="--construction-extension: calc({wideGround.current ? revealProgress : 0} * clamp(100px, 24svh, 240px));"
+	style="--closer-reveal: {revealProgress};"
 >
 	<div class="closer-core">
 	<div class="closer-note" bind:this={noteEl} role="img" aria-label={closingLabel}>
@@ -177,7 +175,7 @@
 	<div class="ground-anchor" bind:this={groundAnchor} aria-hidden="true"></div>
 	<div class="construction-extension" aria-hidden="true"></div>
 	<CloserFloodlight />
-	<ConstructionProps lighting layout={wideGround.current ? 'spread' : 'around-fixture'} revealAt={wideGround.current ? groundAnchor : undefined} bind:progress={revealProgress} />
+	<ConstructionProps lighting layout="around-fixture" revealAt={groundAnchor} bind:progress={revealProgress} />
 </section>
 
 <style>
@@ -189,14 +187,15 @@
 	   (--terminal === --background, the round-2 contract), never on the
 	   section wrapper. */
 	.closer-section {
+		/* The 100px ground under the board unfolds with the reveal; unfolded, it is the original bottom clearance. */
+		--closer-ground-fold: calc((1 - var(--closer-reveal, 1)) * 100px);
 		background: transparent; position: relative;
 		--construction-end-inset: calc(4% + clamp(160px, 18vw, 260px) + 1rem);
 	}
-	.closer-core { min-height: 100dvh; display: flex; align-items: center; padding: var(--space-section-y) var(--space-page-x) 100px; position: relative; }
+	.closer-core { min-height: calc(100dvh - 100px); display: flex; align-items: center; padding: var(--space-section-y) var(--space-page-x) 0; position: relative; }
 	.ground-anchor { height: 0; width: 1px; pointer-events: none; }
-	.construction-extension { height: var(--construction-extension); }
-	/* SSR cannot know the viewport. Keep the static fallback balanced above phone
-	   width until the media query can select the package's enhanced layout. */
+	.construction-extension { height: calc(100px - var(--closer-ground-fold)); }
+	/* From tablet width the props spread along the ground beside the ending. */
 	@media (--tablet-min) {
 		.closer-section :global(.around .floor) {
 			position: absolute; inset-inline: clamp(16px, 4vw, 64px) var(--construction-end-inset);
@@ -252,8 +251,11 @@
 			width: clamp(140px, 40vw, 200px); max-width: none;
 			order: 2; margin: 24px auto 0;
 		}
+		/* The ending stacks under the board and fills that space, so the ground stays folded; the props still reveal. */
+		.construction-extension { height: 0; }
 	}
 	@media (prefers-reduced-motion: reduce) {
+		.closer-section { --closer-ground-fold: 0px; }
 		.closer-note :global(svg) { visibility: visible; }
 		.closer-note :global(path) { animation: none; stroke-dashoffset: 0; }
 	}
@@ -296,6 +298,7 @@
 	/* ===== Mobile (<768px) ===== */
 	@media (--tablet-max) {
 		.closer-core {
+			min-height: 100dvh;
 			flex-direction: column;
 			align-items: stretch;
 			justify-content: center;
