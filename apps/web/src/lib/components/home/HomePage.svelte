@@ -105,10 +105,6 @@
 		if (size !== null) rotatedTitleSize = size;
 	}
 
-	// GO-w2t5 → go2/w4: backgroundBreathing lives inside HomeCloser (each
-	// section component owns its own effect). HomeServices' sectionGlow was
-	// unwired in w4 per operator QA — the primitive stays in
-	// $lib/motion/actions. Bindings stay for future section-scoped motion.
 	// Crescendo scrubs were removed from the rotated titles per operator
 	// feedback — titles are sticky-only without scale animation, so the
 	// visual no longer overflows section bounds.

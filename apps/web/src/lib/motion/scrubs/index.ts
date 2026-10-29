@@ -8,8 +8,3 @@
 
 export { createCrescendoScrub, type CrescendoOpts } from './createCrescendoScrub.js';
 export { createHeroTimeline, type HeroTimelineOpts } from './createHeroTimeline.js';
-export {
-	backgroundBreathing,
-	type BreathingOpts,
-	type BreathingControls,
-} from './backgroundBreathing.js';

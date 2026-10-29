@@ -58,14 +58,16 @@ for (const locale of ['', '/fr', '/es'])
 					expect(geometry.clearsLabel && geometry.clearsControls, 'quote content does not overlap the label or controls').toBe(true);
 				}
 			}
-			for (const id of ['about-identity-scroll', 'about-method-scroll', 'about-quote-body']) {
+			for (const id of ['about-quote-body', 'about-identity-scroll', 'about-method-scroll']) {
 				const body = page.getByTestId(id);
+				const beforeHeight = await body.evaluate(el => el.closest('[data-slot="card"]')!.getBoundingClientRect().height);
 				await body.evaluate((el) => {
 					const paragraph = document.createElement('p');
 					paragraph.textContent =
 						'Representative longer localized prose with changing details. '.repeat(20);
-					el.append(paragraph);
+					(el.querySelector('blockquote') ?? el).append(paragraph);
 				});
+				if (id === 'about-quote-body') expect(await body.evaluate(el => el.closest('[data-slot="card"]')!.getBoundingClientRect().height), 'a longer inactive quote expands the card too').toBeGreaterThan(beforeHeight);
 				expect(
 					await body.evaluate((el) => el.scrollHeight - el.clientHeight),
 					`${id} must grow with its prose`,
