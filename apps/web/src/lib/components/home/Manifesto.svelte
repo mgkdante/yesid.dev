@@ -236,8 +236,9 @@
 		position: absolute;
 		inset: 0;
 		background-image:
-			repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 0px, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px, transparent 80px),
-			repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 6%, transparent) 0px, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px, transparent 80px);
+			linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px),
+			linear-gradient(180deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px);
+		background-size: 80px 80px;
 		z-index: var(--z-base);
 	}
 

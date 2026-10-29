@@ -213,7 +213,7 @@ for (const width of [390, 820, 1920]) {
 			}
 			return 'none';
 		});
-		expect(groundBackground).toContain('repeating-linear-gradient');
+		expect(groundBackground).toContain('linear-gradient');
 		const art = await props
 			.locator('[data-construction-prop] > svg')
 			.evaluateAll((elements) =>
