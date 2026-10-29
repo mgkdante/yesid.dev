@@ -127,10 +127,11 @@
 
 <SiteRoot lang={locale}>
 	<SeoHead {...seoHeadProps(data.seo, locale, data.themeColor)} />
+	<div class="site-grid circuit-grid" data-testid="site-grid" aria-hidden="true"></div>
 
 	<div
 		style:overflow-anchor={basePath === '/' ? 'none' : undefined}
-		class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]"
+		class="site-shell flex min-h-screen flex-col overflow-x-clip font-body text-[var(--foreground)]"
 	>
 		<SiteHeader
 			navigation={{ beforeNavigate, onNavigate, afterNavigate }}
@@ -197,7 +198,10 @@
 </SiteRoot>
 
 <style>
-	.circuit-grid {
+	/* The page grid stays put while content scrolls over it; section grids scroll with their
+	   sections. Sized to the large viewport so phones don't jump when the URL bar moves. */
+	.site-grid { position: fixed; inset: 0 0 auto; height: 100lvh; z-index: -1; pointer-events: none; }
+	.site-shell {
 		--strip-h: 68px; /* Calibration switch: use 70px for the T=70 candidate. */
 	}
 	:global(.pt-nav-clear) {

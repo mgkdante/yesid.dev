@@ -223,6 +223,8 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
+		/* Clips the fixed circuit grid, so it holds still with the page grid while the section scrolls. */
+		clip-path: inset(0);
 		background: var(--manifesto);
 		cursor: crosshair;
 	}
@@ -233,8 +235,9 @@
 	   manifesto schematic reads in both modes instead of subliminal. */
 	.manifesto__circuit-grid {
 		opacity: var(--manifesto-background-strength);
-		position: absolute;
-		inset: 0;
+		position: fixed;
+		inset: 0 0 auto;
+		height: 100lvh;
 		background-image:
 			linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px),
 			linear-gradient(180deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px);

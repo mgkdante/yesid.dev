@@ -178,7 +178,7 @@ async function assertBandGeometry(page: Page, prefix: string): Promise<void> {
 			overflowX: shell.overflowX,
 			overflowY: shell.overflowY,
 			shellBackground: shell.backgroundColor,
-			pageBackground: getComputedStyle(document.documentElement).backgroundColor,
+			shellImage: shell.backgroundImage,
 			foregroundBackground: getComputedStyle(fg).backgroundColor,
 			backgroundPointerEvents: getComputedStyle(bg).pointerEvents,
 			backgroundZ: Number(getComputedStyle(bg).zIndex),
@@ -187,7 +187,8 @@ async function assertBandGeometry(page: Page, prefix: string): Promise<void> {
 	});
 	expect(['clip', 'hidden']).toContain(shellStyles.overflowX);
 	expect(['clip', 'hidden']).toContain(shellStyles.overflowY);
-	expect(shellStyles.shellBackground).toBe(shellStyles.pageBackground);
+	// The band paints nothing of its own, so the fixed page grid shows through it.
+	expect([shellStyles.shellBackground, shellStyles.shellImage]).toEqual(['rgba(0, 0, 0, 0)', 'none']);
 	expect(shellStyles.foregroundBackground).toBe('rgba(0, 0, 0, 0)');
 	expect(shellStyles.backgroundPointerEvents).toBe('none');
 	expect(shellStyles.backgroundZ).toBeLessThan(shellStyles.foregroundZ);
@@ -308,6 +309,8 @@ for (const [viewportName, width, height] of viewports) {
 				const box = await band.boundingBox();
 				expect(box).not.toBeNull();
 				routeBoxes.push({ width: box!.width, height: box!.height });
+				// Only the home page draws the band's blueprints a step bolder.
+				await expect(band.getByTestId('cta-blueprint-background')).toHaveCSS('opacity', routeName === 'home' ? '0.75' : '0.55');
 				domSnapshots.push(
 					await band.evaluate(
 						(element, routePrefix) => element.outerHTML.replaceAll(routePrefix, 'cta-band'),

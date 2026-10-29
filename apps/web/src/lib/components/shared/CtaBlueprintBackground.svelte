@@ -69,7 +69,7 @@
 	:global(.cta-blueprint-background) {
 		pointer-events: none;
 		contain: paint;
-		opacity: 0.55;
+		opacity: var(--cta-blueprint-ink, 0.55);
 	}
 
 	:global(.cta-sheet) {
