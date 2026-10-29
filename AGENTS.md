@@ -5,6 +5,19 @@ multilingual portfolio and information site backed by a build-time content
 pipeline. It is public for inspection but remains proprietary; read
 `CONTRIBUTING.md`, `LICENSE`, and `SECURITY.md` before proposing work.
 
+## Project context (Notion)
+Profile: https://app.notion.com/p/4033e8630690813cba9afa4949d1c849
+Start page: https://app.notion.com/p/4083e863069080df9e63d165128a1522
+This project's guide: https://app.notion.com/p/3f33e86306908116baf8c70ce55b9069
+Shared formats (roadmap, slice, spec, handoff, session): https://app.notion.com/p/4003e8630690809b8045d8ad3a439995
+
+- You MUST start every session by fetching my enabled Notion Skills via `notion-get-enabled-skills`.
+- When Notion is connected, read the project guide before planning; re-read live records before relying on any status.
+- Save durable facts about me as Notion Memories (parent "memory"), not in this file.
+- Repository instructions own local commands and constraints; Notion owns plans, decisions and handoffs.
+- Without Notion access, say what you couldn't read and propose the Notion update instead of claiming it.
+- Never use em dashes in anything written for Yesito.
+
 ## Stack and repository layout
 
 - Bun 1.4.4+ and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+)
