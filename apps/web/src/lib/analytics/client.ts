@@ -1,51 +1,14 @@
-import { browser } from '$app/env';
-import { get } from 'svelte/store';
-import { siteLabels } from '#lib/content/index.ts';
-import {
-	analyticsConsentStore,
-	type AnalyticsConsentState,
-} from '#lib/state/analytics-consent.svelte.ts';
-import {
-	createAnalyticsClient,
-	type AnalyticsClient,
-} from '@yesid/analytics/client';
-import { getAnalyticsPolicy, type AnalyticsControlsInput } from '@yesid/analytics/policy';
-import type { PlausibleTransport } from '@yesid/analytics/plausible';
+import { PUBLIC_PLAUSIBLE_DOMAIN } from '$app/env/public';
+import { createAnalytics, type Analytics } from '@yesid/analytics/client';
 import { YESID_ANALYTICS_PRESET, type AnalyticsEventName } from './preset';
 
-export interface SiteAnalyticsClientDependencies {
-	isBrowser(): boolean;
-	getControls(): AnalyticsControlsInput;
-	getConsent(): AnalyticsConsentState;
-	getReferrer(): string;
-	loadTransport(): Promise<PlausibleTransport>;
-}
+let analytics: Analytics<AnalyticsEventName> | undefined;
 
-export function createSiteAnalyticsClient(
-	dependencies: SiteAnalyticsClientDependencies,
-): AnalyticsClient<AnalyticsEventName> {
-	return createAnalyticsClient(YESID_ANALYTICS_PRESET, {
-		loadTransport: dependencies.loadTransport,
-		getReferrer: dependencies.getReferrer,
-		canTrack: () =>
-			dependencies.isBrowser() &&
-			getAnalyticsPolicy(dependencies.getControls(), dependencies.getConsent()).canTrack,
-	});
-}
-
-const client = createSiteAnalyticsClient({
-	isBrowser: () => browser,
-	getControls: () => siteLabels.ui.analyticsConsent,
-	getConsent: () => get(analyticsConsentStore),
-	getReferrer: () => browser ? document.referrer : '',
-	loadTransport: () => import('@yesid/analytics/plausible')
-});
-
-export function trackPageview(url: URL): Promise<boolean> {
-	return client.trackPageview(url);
+/** Starts measurement once, from the root layout's mount. */
+export function startAnalytics(): void {
+	analytics ??= createAnalytics(YESID_ANALYTICS_PRESET, { domain: PUBLIC_PLAUSIBLE_DOMAIN });
 }
 
 export function trackAnalyticsEvent(name: AnalyticsEventName): void {
-	if (!browser) return;
-	void client.trackEvent(name, new URL(window.location.href));
+	analytics?.trackEvent(name);
 }

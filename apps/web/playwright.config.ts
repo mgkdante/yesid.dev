@@ -161,7 +161,7 @@ export default defineConfig({
 					// default 60s before the preview answers on :4173.
 					timeout: 180_000,
 					// Generate hermetic fixture content before the local build.
-					env: { EXPORT_FALLBACKS_SOURCE: 'fixture' }
+					env: { EXPORT_FALLBACKS_SOURCE: 'fixture', PUBLIC_PLAUSIBLE_DOMAIN: 'yesid.dev' }
 				}
 			}),
 	testDir: 'tests',

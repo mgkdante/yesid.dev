@@ -1,7 +1,7 @@
 # yesid.dev web application
 
 This package owns the public SvelteKit application: routes, product components,
-prerendering, SEO, consented analytics, contact delivery, and the Vercel build.
+prerendering, SEO, cookieless analytics, contact delivery, and the Vercel build.
 It consumes editorial content and shared contracts; it does not own Directus
 schema, editorial rows, or the vendored design-system source.
 
@@ -46,9 +46,7 @@ separate controls. Do not infer one from another or add a locale in only one
 layer.
 
 Contact delivery and analytics are separate privacy domains. The contact form
-sends its fields to Web3Forms. Plausible loads only after consent and receives
-only the app's allowlisted analytics events, never contact-form fields. Preserve
-that separation when adding tracking or changing form behavior.
+sends its fields to Web3Forms. Plausible runs only when `PUBLIC_PLAUSIBLE_DOMAIN` is set at build time (Vercel Production: `yesid.dev`) and the page is served from that host; it receives pageviews and the four allowlisted events, never form fields, and sets no cookies or storage. Preserve that separation when adding tracking or changing form behavior.
 
 ## Failure behavior
 
