@@ -12,8 +12,8 @@ import { render, screen, waitFor } from '@testing-library/svelte';
 import AboutWeather from './AboutWeather.svelte';
 import { resolveWeatherScene, isNightHour, WEATHER_SCENES } from './weather-scene';
 import { aboutPageContent } from '#lib/content/about-page.ts';
-import { PUBLISHED_LOCALES } from '#lib/utils/published-locales';
-import { resolveLocale } from '#lib/utils/locale';
+import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
 
 const config = aboutPageContent.weather;
 

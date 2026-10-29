@@ -18,7 +18,7 @@
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import HeroDotAnnotation from '#lib/components/home/HeroDotAnnotation.svelte';
-	import { CLICK_ME, getLettering } from '#lib/components/home/annotation-lettering';
+	import { CLICK_ME, getLettering } from '#lib/components/home/annotation-lettering.ts';
 	import ServiceStackPanel from './ServiceStackPanel.svelte';
 	import {
 		CollapsibleSection,
