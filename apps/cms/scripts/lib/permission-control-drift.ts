@@ -171,20 +171,6 @@ function livePolicyMaps(livePolicies: readonly LivePolicyRow[]): {
 	return { nameById, idsByName };
 }
 
-export function resolveLivePolicyId(
-	livePolicies: readonly LivePolicyRow[],
-	policyName: string,
-): string {
-	const { idsByName } = livePolicyMaps(livePolicies);
-	const ids = idsByName.get(policyName) ?? [];
-	if (ids.length !== 1) {
-		throw new Error(
-			`[permission-control-drift] expected exactly one live policy named "${policyName}"; found ${ids.length}`,
-		);
-	}
-	return ids[0]!;
-}
-
 function livePolicyId(permission: LivePermissionRow): string | null {
 	const policy: unknown = permission.policy;
 	if (policy === null) return null;

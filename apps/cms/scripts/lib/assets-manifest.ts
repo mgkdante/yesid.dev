@@ -16,7 +16,6 @@ export const AssetsManifestSchema = z.object({
 	assets: z.array(AssetEntrySchema).min(1),
 });
 
-export type AssetEntry = z.infer<typeof AssetEntrySchema>;
 export type AssetsManifest = z.infer<typeof AssetsManifestSchema>;
 
 /** Parse + validate the manifest; throws on shape drift. */
