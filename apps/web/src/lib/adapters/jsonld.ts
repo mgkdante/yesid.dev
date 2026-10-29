@@ -42,8 +42,7 @@ export const BUSINESS_ID = `${SITE_HOST}/#business`;
  * The brand mark of record: the orange dot inside its outer ring, on a
  * transparent ground. Google wants Organization.logo to be a crawlable raster
  * of at least 112x112 that "looks how you intend on a purely white background",
- * so this is the 512px dark-orange cut. scripts/generate-gbp-assets.ts emits it
- * from the same markDot() geometry as the GBP avatar, so the two never drift.
+ * so this is the 512px dark-orange cut, committed under static/brand/.
  */
 export const BRAND_LOGO = `${SITE_HOST}/brand/mark-512.png`;
 export const PERSON_IMAGE = `${SITE_HOST}/images/about/headshot.webp`;
