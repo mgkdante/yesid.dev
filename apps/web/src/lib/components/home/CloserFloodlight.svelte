@@ -23,12 +23,12 @@
 		z-index: calc(var(--z-content) + 3);
 		line-height: 0;
 		overflow: visible;
+		translate: 0 calc((1 - var(--closer-lamp, 1)) * 100%);
 	}
 	.closer-floodlight {
 		width: clamp(40px, 5vw, 64px);
 		height: auto;
 		display: block;
-		translate: 0 calc((1 - var(--closer-lamp, 1)) * 100%);
 	}
 
 	/* Light beam — originates from the lens and widens upward to the ending. */
@@ -85,7 +85,7 @@
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.closer-floodlight { translate: none; }
+		.closer-floodlight-wrap { translate: none; }
 		.closer-beam { scale: none; }
 	}
 </style>

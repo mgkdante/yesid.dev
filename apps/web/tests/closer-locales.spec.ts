@@ -92,34 +92,55 @@ for (const locale of PUBLISHED_LOCALES) {
 		},
 	);
 
-	test(`${locale} scroll writes the ending one letter at a time with nothing on a timer`, async ({ page }) => {
+	test(`${locale} scroll writes the ending one letter at a time across the 100vh before the reveal ends`, async ({ page }) => {
 		await page.setViewportSize({ width: 1280, height: 900 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await page.goto(locale === DEFAULT_LOCALE ? '/' : '/' + locale);
-		const inkAt = async (progress: number) => {
-			await page.locator('.ground-anchor').evaluate((anchor, fraction) => {
-				document.scrollingElement!.scrollTop += anchor.getBoundingClientRect().top - innerHeight * fraction;
-			}, 0.95 - progress * 0.25);
-			await expect
-				.poll(async () => Number(await page.locator('[data-slot="construction-props"]').getAttribute('data-progress')))
-				.toBeCloseTo(progress, 2);
-			return page.locator('.closer-note').evaluate((note) => ({
-				animations: note.getAnimations({ subtree: true }).length,
-				ink: [...note.querySelectorAll('path')].map(
-					(path) => Number(getComputedStyle(path).opacity) && 1 - parseFloat(getComputedStyle(path).strokeDashoffset),
-				),
-			}));
+		const read = () =>
+			page.locator('.closer-note').evaluate(async (note) => {
+				await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+				return {
+					progress: Number(document.querySelector('[data-slot="construction-props"]')!.getAttribute('data-progress')),
+					visible: note.getBoundingClientRect().top < innerHeight,
+					offset: note.getBoundingClientRect().top - document.querySelector('.closer-core')!.getBoundingClientRect().top,
+					animations: note.getAnimations({ subtree: true }).length,
+					ink: [...note.querySelectorAll('path')].map(
+						(path) => Number(getComputedStyle(path).opacity) && 1 - parseFloat(getComputedStyle(path).strokeDashoffset),
+					),
+				};
+			});
+		// 0 puts the ground anchor 170vh down the viewport, 1 at 70vh, where the reveal completes.
+		const at = async (position: number) => {
+			await page.locator('.ground-anchor').evaluate((anchor, top) => {
+				document.scrollingElement!.scrollTop += anchor.getBoundingClientRect().top - innerHeight * top;
+			}, 1.7 - position);
+			return read();
 		};
-		expect((await inkAt(0.58)).ink.every((ink) => ink === 0)).toBe(true);
-		for (let step = 1; step < 20; step++) {
-			const { animations, ink } = await inkAt(0.6 + step * 0.01);
+		const samples: Awaited<ReturnType<typeof read>>[] = [];
+		for (let step = 0; step < 20; step++) samples.push(await at(step / 20));
+		const totals = samples.map((sample) => sample.ink.reduce((sum, value) => sum + value, 0));
+		const letters = samples[0].ink.length;
+		for (const { animations, ink, visible } of samples) {
 			expect(animations).toBe(0);
+			expect(ink.some((value) => value > 0)).toBe(visible);
 			expect(ink.filter((value) => value > 0 && value < 1).length).toBeLessThanOrEqual(1);
 			ink.slice(1).forEach((value, i) => expect(value).toBeLessThanOrEqual(ink[i]));
 		}
-		expect((await inkAt(0.82)).ink.every((ink) => ink === 1)).toBe(true);
-		const halfway = (await inkAt(0.7)).ink;
-		expect(halfway.includes(1) && halfway.includes(0)).toBe(true);
+		// Equal scroll steps raise the ending and add ink by equal amounts, so a stroke stops wherever
+		// the scroll stops, and the writing only completes as the reveal does.
+		const rises = samples.slice(1).map((sample, i) => samples[i].offset - sample.offset);
+		for (const rise of rises) expect(Math.abs(rise - rises[0])).toBeLessThanOrEqual(1);
+		const steps = totals.slice(1).map((total, i) => total - totals[i]).filter((step, i) => totals[i] > 0 && totals[i + 1] < letters);
+		expect(steps.length).toBeGreaterThan(5);
+		for (const step of steps) expect(step).toBeCloseTo(steps[0], 1);
+		const end = await at(1.02);
+		expect([totals[19] < letters, end.ink.every((ink) => ink === 1), end.progress]).toEqual([true, true, 1]);
+		const back = await at(0.7);
+		expect(back.ink).toEqual(samples[14].ink);
+		await page.waitForTimeout(500);
+		expect((await read()).ink).toEqual(back.ink);
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		expect((await at(0.5)).ink.every((ink) => ink === 1)).toBe(true);
 	});
 }
 
@@ -167,7 +188,10 @@ for (const width of [390, 820, 1920]) {
 					board: document.querySelector('[data-closer-board]')!.getBoundingClientRect().toJSON(),
 					cta: document.querySelector('[data-testid="closer-cta"]')!.getBoundingClientRect().toJSON(),
 					propsTop: Math.min(...[...document.querySelectorAll('[data-construction-prop] > svg')].map((svg) => svg.getBoundingClientRect().top)),
-					written: [...document.querySelectorAll('.closer-note path')].filter((path) => getComputedStyle(path).opacity !== '0').length,
+					written: [...document.querySelectorAll('.closer-note path')].reduce(
+						(sum, path) => sum + (Number(getComputedStyle(path).opacity) && 1 - parseFloat(getComputedStyle(path).strokeDashoffset)),
+						0,
+					),
 				}));
 			expect(Math.abs(sample.top - requested.top)).toBeLessThanOrEqual(1);
 			expect(Math.abs(sample.scroll - requested.scroll)).toBeLessThanOrEqual(1);
@@ -193,17 +217,20 @@ for (const width of [390, 820, 1920]) {
 			expect(intersects(sample.note, sample.board) || intersects(sample.note, sample.cta)).toBe(false);
 		}
 		for (const hidden of [samples[0], samples[4]]) {
-			expect(hidden.note.top).toBeGreaterThanOrEqual(hidden.sectionBottom - 1);
 			expect(hidden.lamp.top).toBeGreaterThanOrEqual(hidden.sectionBottom - 1);
 			expect(hidden.beam).toBeLessThanOrEqual(1);
 		}
-		// The ending rises unwritten, retraces its path on the way back, and has landed
-		// and written itself by 0.9 while the props keep rising.
-		expect(fromTop(samples[1], samples[1].note.top)).toBeGreaterThan(fromTop(samples[2], samples[2].note.top) + 1);
+		// The ending is still rising and writing at 0.5 and 0.9, retraces its path on the way back,
+		// and lands fully written as the props finish.
+		for (const rising of [samples[1], samples[5]]) {
+			expect(fromTop(rising, rising.note.top)).toBeGreaterThan(fromTop(samples[2], samples[2].note.top) + 1);
+			expect(rising.written).toBeLessThan(letters - 0.1);
+		}
 		expect(Math.abs(fromTop(samples[3], samples[3].note.top) - fromTop(samples[1], samples[1].note.top))).toBeLessThanOrEqual(1);
-		expect(Math.abs(fromTop(samples[5], samples[5].note.top) - fromTop(samples[6], samples[6].note.top))).toBeLessThanOrEqual(1);
 		expect(fromTop(samples[5], samples[5].propsTop)).toBeGreaterThan(fromTop(samples[6], samples[6].propsTop) + 1);
-		expect(samples.map((sample) => sample.written)).toEqual([0, 0, letters, 0, 0, letters, letters]);
+		expect(samples[3].written).toBeCloseTo(samples[1].written, 1);
+		expect(samples[4].written).toBeCloseTo(samples[0].written, 1);
+		for (const landed of [samples[2], samples[6]]) expect(landed.written).toBeGreaterThan(letters - 0.1);
 		const groundBackground = await page.locator('.construction-extension').evaluate((ground) => {
 			for (let element: Element | null = ground; element; element = element.parentElement) {
 				const style = getComputedStyle(element);
@@ -241,7 +268,7 @@ for (const width of [390, 820, 1920]) {
 		landed.forEach((box, i) => {
 			for (const side of ['left', 'top', 'width', 'height'] as const) expect(Math.abs(still[i][side] - box[side])).toBeLessThanOrEqual(1);
 		});
-		expect(await page.evaluate(() => [['.closer-note', 'translate'], ['.closer-floodlight', 'translate'], ['.closer-beam', 'scale']].map(([selector, property]) => getComputedStyle(document.querySelector(selector)!).getPropertyValue(property)))).toEqual(['none', 'none', 'none']);
+		expect(await page.evaluate(() => [['.closer-note', 'translate'], ['[data-slot="closer-floodlight"]', 'translate'], ['.closer-beam', 'scale']].map(([selector, property]) => getComputedStyle(document.querySelector(selector)!).getPropertyValue(property)))).toEqual(['none', 'none', 'none']);
 		await page.goto('/about');
 		await expect(props).toHaveCount(0);
 	});
