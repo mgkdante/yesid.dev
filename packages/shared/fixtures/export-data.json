@@ -2519,16 +2519,6 @@
 					"en": {"en":"English","fr":"Anglais","es":"Inglés"},
 					"fr": {"en":"French","fr":"Français","es":"Francés"},
 					"es": {"en":"Spanish","fr":"Espagnol","es":"Español"}
-				},
-				"analyticsConsent": {
-					"enabled": true,
-					"showBanner": true,
-					"title": {"en":"Can I count this visit?","fr":"Je peux compter cette visite?","es":"¿Puedo contar esta visita?"},
-					"description": {"en":"Plausible, not Google Analytics, would count visits, pages, referrers, key clicks, and general device and region data. No cookies or form fields.","fr":"Plausible, et non Google Analytics, compterait les visites, les pages, les sources, les clics clés et des données générales sur l’appareil et la région. Aucun témoin ni champ de formulaire.","es":"Plausible, no Google Analytics, contaría visitas, páginas, referencias, clics clave y datos generales del dispositivo y la región. Sin cookies ni campos de formulario."},
-					"acceptLabel": {"en":"Allow analytics","fr":"Autoriser l’analytique","es":"Permitir analítica"},
-					"declineLabel": {"en":"No thanks","fr":"Non merci","es":"No, gracias"},
-					"settingsLabel": {"en":"Analytics preferences","fr":"Préférences d’analytique","es":"Preferencias de analítica"},
-					"privacyLabel": {"en":"Privacy details","fr":"Détails sur la vie privée","es":"Detalles de privacidad"}
 				}
 			},
 			"pages": {
@@ -7496,7 +7486,7 @@
 													"items": []
 												},
 												{
-													"content": "<b>Delivery:</b> Vercel on the Node 22 runtime, Web3Forms for the contact form, Plausible after consent",
+													"content": "<b>Delivery:</b> Vercel on the Node 22 runtime, Web3Forms for the contact form, cookieless Plausible",
 													"items": []
 												},
 												{
@@ -7534,7 +7524,7 @@
 													"items": []
 												},
 												{
-													"content": "<b>Diffusion :</b> Vercel sur l&#39;environnement Node 22, Web3Forms pour le formulaire de contact, Plausible après consentement",
+													"content": "<b>Diffusion :</b> Vercel sur l&#39;environnement Node 22, Web3Forms pour le formulaire de contact, Plausible sans témoins",
 													"items": []
 												},
 												{
@@ -7572,7 +7562,7 @@
 													"items": []
 												},
 												{
-													"content": "<b>Entrega:</b> Vercel sobre el entorno Node 22, Web3Forms para el formulario de contacto, Plausible después del consentimiento",
+													"content": "<b>Entrega:</b> Vercel sobre el entorno Node 22, Web3Forms para el formulario de contacto, Plausible sin cookies",
 													"items": []
 												},
 												{
@@ -8839,7 +8829,7 @@
 								"id": "legal-privacy-en-002",
 								"type": "paragraph",
 								"data": {
-									"text": "Last updated: 2026-07-15"
+									"text": "Last updated: 2026-10-29"
 								}
 							},
 							{
@@ -8884,7 +8874,7 @@
 								"id": "legal-privacy-en-008",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, 8a768d38)."
+									"text": "Fixture copy (en, text, 0d6539ba)."
 								}
 							},
 							{
@@ -8944,7 +8934,14 @@
 								"id": "legal-privacy-en-016",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, 50f42cef)."
+									"text": "Fixture copy (en, text, a48cdf4b)."
+								}
+							},
+							{
+								"id": "legal-privacy-en-016b",
+								"type": "paragraph",
+								"data": {
+									"text": "Measurement is always on. Plausible uses no cookies, no browser storage and no persistent identifier, and it does not follow you across sites, devices or apps. It has no function that identifies, locates or profiles you within the meaning of section 8.1 of the Act respecting the protection of personal information in the private sector: the approximate location comes from the request's IP address, which is then discarded, so there is nothing to switch on. This is collection under section 8 of that Act for the purpose stated above. For visitors covered by the EU General Data Protection Regulation, the basis is my legitimate interest in understanding how the site is used (Article 6(1)(f)); it does not override your rights because no one is identified, profiled or tracked. You can object at any time by writing to contact@yesid.dev, or block plausible.io in your browser. Plausible keeps no record of individual visitors, so there is nothing about you to retrieve or delete."
 								}
 							},
 							{
@@ -8959,7 +8956,7 @@
 								"id": "legal-privacy-en-018",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, 298db5e1)."
+									"text": "Fixture copy (en, text, 0186e051)."
 								}
 							},
 							{
@@ -9076,7 +9073,7 @@
 											"items": []
 										},
 										{
-											"content": "No tracking cookies. Explicit consent is the documented default. I use the no-banner mode only after deciding to do so and obtaining legal-advisor review.",
+											"content": "No tracking cookies, no cross-site tracking and no fingerprinting.",
 											"items": []
 										},
 										{
@@ -9259,7 +9256,7 @@
 								"id": "legal-privacy-fr-002",
 								"type": "paragraph",
 								"data": {
-									"text": "Dernière mise à jour : 2026-07-15"
+									"text": "Dernière mise à jour : 2026-10-29"
 								}
 							},
 							{
@@ -9304,7 +9301,7 @@
 								"id": "legal-privacy-fr-008",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, 8b7db734)."
+									"text": "Fixture copy (fr, text, e2cdc550)."
 								}
 							},
 							{
@@ -9364,7 +9361,14 @@
 								"id": "legal-privacy-fr-016",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, 6bcb2289)."
+									"text": "Fixture copy (fr, text, 06c21d87)."
+								}
+							},
+							{
+								"id": "legal-privacy-fr-016b",
+								"type": "paragraph",
+								"data": {
+									"text": "La mesure est toujours active. Plausible n'utilise ni témoins, ni stockage du navigateur, ni identifiant persistant, et ne vous suit pas d'un site, d'un appareil ou d'une application à l'autre. Il ne comporte aucune fonction permettant de vous identifier, de vous localiser ou d'effectuer votre profilage au sens de l'article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé : la localisation approximative provient de l'adresse IP de la requête, qui est ensuite éliminée; il n'y a donc rien à activer. Il s'agit d'une collecte au sens de l'article 8 de cette loi, pour la fin indiquée ci-dessus. Pour les personnes visées par le Règlement général sur la protection des données de l'Union européenne, le fondement est mon intérêt légitime à comprendre l'utilisation du site (article 6(1)(f)); il ne l'emporte pas sur vos droits, puisque personne n'est identifié, profilé ni suivi. Vous pouvez vous y opposer en tout temps en écrivant à contact@yesid.dev, ou bloquer plausible.io dans votre navigateur. Plausible ne conserve aucun dossier sur les visiteurs individuels; il n'y a donc rien à vous transmettre ni à supprimer."
 								}
 							},
 							{
@@ -9379,7 +9383,7 @@
 								"id": "legal-privacy-fr-018",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, 1ac9e6ce)."
+									"text": "Fixture copy (fr, text, 5a453091)."
 								}
 							},
 							{
@@ -9496,7 +9500,7 @@
 											"items": []
 										},
 										{
-											"content": "Aucun témoin de suivi. Le consentement explicite demeure le mode documenté par défaut. Je n'utilise le mode sans bannière qu'après avoir décidé de le faire et obtenu l'avis d'un conseiller juridique.",
+											"content": "Aucun témoin de suivi, aucun suivi entre les sites et aucune prise d'empreinte.",
 											"items": []
 										},
 										{
@@ -9679,7 +9683,7 @@
 								"id": "legal-privacy-es-002",
 								"type": "paragraph",
 								"data": {
-									"text": "Última actualización: 2026-07-15"
+									"text": "Última actualización: 2026-10-29"
 								}
 							},
 							{
@@ -9724,7 +9728,7 @@
 								"id": "legal-privacy-es-008",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, 02f3b2ba)."
+									"text": "Fixture copy (es, text, 0ba7b97b)."
 								}
 							},
 							{
@@ -9784,7 +9788,14 @@
 								"id": "legal-privacy-es-016",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, 1be10fd1)."
+									"text": "Fixture copy (es, text, 4a7f6102)."
+								}
+							},
+							{
+								"id": "legal-privacy-es-016b",
+								"type": "paragraph",
+								"data": {
+									"text": "La medición está siempre activa. Plausible no usa cookies, ni almacenamiento del navegador, ni identificadores persistentes, y no lo sigue entre sitios, dispositivos o aplicaciones. No tiene ninguna función que permita identificarlo, localizarlo o elaborar su perfil en el sentido del artículo 8.1 de la Ley de protección de la información personal en el sector privado de Quebec: la ubicación aproximada proviene de la dirección IP de la solicitud, que luego se descarta, así que no hay nada que activar. Se trata de una recopilación en el sentido del artículo 8 de esa ley, para el fin indicado arriba. Para las personas amparadas por el Reglamento General de Protección de Datos de la Unión Europea, la base es mi interés legítimo en entender cómo se usa el sitio (artículo 6(1)(f)); no prevalece sobre sus derechos, porque nadie es identificado, perfilado ni rastreado. Puede oponerse en cualquier momento escribiendo a contact@yesid.dev, o bloquear plausible.io en su navegador. Plausible no guarda ningún registro de visitantes individuales, así que no hay nada sobre usted que recuperar ni eliminar."
 								}
 							},
 							{
@@ -9799,7 +9810,7 @@
 								"id": "legal-privacy-es-018",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, ff62a802)."
+									"text": "Fixture copy (es, text, e42f323d)."
 								}
 							},
 							{
@@ -9916,7 +9927,7 @@
 											"items": []
 										},
 										{
-											"content": "Sin cookies de rastreo. El consentimiento explícito sigue siendo el modo documentado predeterminado. Solo uso el modo sin banner después de decidirlo y obtener la revisión de un asesor jurídico.",
+											"content": "Sin cookies de rastreo, sin rastreo entre sitios y sin huellas digitales.",
 											"items": []
 										},
 										{
@@ -10695,7 +10706,7 @@
 								"id": "legal-cookies-en-001",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, 4916892d)."
+									"text": "Fixture copy (en, text, 6fea469a)."
 								}
 							},
 							{
@@ -10717,11 +10728,11 @@
 											"items": []
 										},
 										{
-											"content": "There is no advertising technology, advertising profile, or automated decision-making.",
+											"content": "Visits are counted with Plausible, which is always on and uses no cookies, no browser storage and no identifier.",
 											"items": []
 										},
 										{
-											"content": "Plausible can be fully disabled. When it is enabled, explicit consent is the documented default; the no-banner mode is operator-controlled and requires legal-advisor review.",
+											"content": "There is no advertising technology, advertising profile, or automated decision-making.",
 											"items": []
 										}
 									]
@@ -10739,7 +10750,7 @@
 								"id": "legal-cookies-en-005",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, a63b6af6)."
+									"text": "Fixture copy (en, text, b86fdb1e)."
 								}
 							},
 							{
@@ -10754,14 +10765,14 @@
 								"id": "legal-cookies-en-007",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, 50f42cef)."
+									"text": "Fixture copy (en, text, 88d412fc)."
 								}
 							},
 							{
 								"id": "legal-cookies-en-008",
 								"type": "header",
 								"data": {
-									"text": "Your analytics choice",
+									"text": "Objecting to measurement",
 									"level": 2
 								}
 							},
@@ -10769,14 +10780,7 @@
 								"id": "legal-cookies-en-009",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (en, text, 3b36ff32)."
-								}
-							},
-							{
-								"id": "legal-cookies-en-010",
-								"type": "paragraph",
-								"data": {
-									"text": "Explicit consent is the documented default. I use the no-banner mode only after deciding to do so and obtaining legal-advisor review."
+									"text": "Section 8.1 of Quebec's Act respecting the protection of personal information in the private sector covers technologies with functions that identify, locate or profile a person. Plausible has none: the daily count cannot follow you from one day to the next, and the approximate location comes from the request's IP address, which is then discarded. Measurement is therefore always on, with no banner. If you still object to being counted, write to contact@yesid.dev or block plausible.io in your browser; there is no record of individual visitors to look up or delete."
 								}
 							},
 							{
@@ -10819,7 +10823,7 @@
 								"id": "legal-cookies-fr-001",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, e362a976)."
+									"text": "Fixture copy (fr, text, 9e06daaf)."
 								}
 							},
 							{
@@ -10841,11 +10845,11 @@
 											"items": []
 										},
 										{
-											"content": "Il n'y a aucune technologie publicitaire, aucun profil publicitaire ni aucune décision automatisée.",
+											"content": "Les visites sont comptées avec Plausible, toujours actif, sans témoins, sans stockage dans le navigateur et sans identifiant.",
 											"items": []
 										},
 										{
-											"content": "Fixture copy (fr, content, 9b238edd).",
+											"content": "Il n'y a aucune technologie publicitaire, aucun profil publicitaire ni aucune décision automatisée.",
 											"items": []
 										}
 									]
@@ -10863,7 +10867,7 @@
 								"id": "legal-cookies-fr-005",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, a732bbcc)."
+									"text": "Fixture copy (fr, text, e9ff9078)."
 								}
 							},
 							{
@@ -10878,14 +10882,14 @@
 								"id": "legal-cookies-fr-007",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, 6bcb2289)."
+									"text": "Fixture copy (fr, text, 5f05c6b2)."
 								}
 							},
 							{
 								"id": "legal-cookies-fr-008",
 								"type": "header",
 								"data": {
-									"text": "Votre choix d’analytique",
+									"text": "S'opposer à la mesure",
 									"level": 2
 								}
 							},
@@ -10893,14 +10897,7 @@
 								"id": "legal-cookies-fr-009",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (fr, text, a632c9cf)."
-								}
-							},
-							{
-								"id": "legal-cookies-fr-010",
-								"type": "paragraph",
-								"data": {
-									"text": "Le consentement explicite demeure le mode documenté par défaut. Je n'utilise le mode sans bannière qu'après avoir décidé de le faire et obtenu l'avis d'un conseiller juridique."
+									"text": "L'article 8.1 de la Loi sur la protection des renseignements personnels dans le secteur privé du Québec vise les technologies qui comportent des fonctions permettant d'identifier ou de localiser une personne, ou d'effectuer son profilage. Plausible n'en comporte aucune : le décompte quotidien ne peut pas vous suivre d'un jour à l'autre, et la localisation approximative provient de l'adresse IP de la requête, qui est ensuite éliminée. La mesure est donc toujours active, sans bannière. Si vous vous opposez tout de même à être compté, écrivez à contact@yesid.dev ou bloquez plausible.io dans votre navigateur; il n'existe aucun dossier sur les visiteurs individuels à consulter ni à supprimer."
 								}
 							},
 							{
@@ -10943,7 +10940,7 @@
 								"id": "legal-cookies-es-001",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, 5e9f1265)."
+									"text": "Fixture copy (es, text, 5e03b3fa)."
 								}
 							},
 							{
@@ -10965,11 +10962,11 @@
 											"items": []
 										},
 										{
-											"content": "No hay tecnología publicitaria, perfiles publicitarios ni decisiones automatizadas.",
+											"content": "Las visitas se cuentan con Plausible, que está siempre activo y no usa cookies, almacenamiento del navegador ni identificadores.",
 											"items": []
 										},
 										{
-											"content": "Fixture copy (es, content, 7dc68a3a).",
+											"content": "No hay tecnología publicitaria, perfiles publicitarios ni decisiones automatizadas.",
 											"items": []
 										}
 									]
@@ -10987,7 +10984,7 @@
 								"id": "legal-cookies-es-005",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, f660dad6)."
+									"text": "Fixture copy (es, text, b4a02b4c)."
 								}
 							},
 							{
@@ -11002,14 +10999,14 @@
 								"id": "legal-cookies-es-007",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, 1be10fd1)."
+									"text": "Fixture copy (es, text, 65c2f148)."
 								}
 							},
 							{
 								"id": "legal-cookies-es-008",
 								"type": "header",
 								"data": {
-									"text": "Su elección de analítica",
+									"text": "Oponerse a la medición",
 									"level": 2
 								}
 							},
@@ -11017,14 +11014,7 @@
 								"id": "legal-cookies-es-009",
 								"type": "paragraph",
 								"data": {
-									"text": "Fixture copy (es, text, 18840797)."
-								}
-							},
-							{
-								"id": "legal-cookies-es-010",
-								"type": "paragraph",
-								"data": {
-									"text": "El consentimiento explícito sigue siendo el modo documentado predeterminado. Solo uso el modo sin banner después de decidirlo y obtener la revisión de un asesor jurídico."
+									"text": "El artículo 8.1 de la Ley de protección de la información personal en el sector privado de Quebec se refiere a tecnologías con funciones que permiten identificar o localizar a una persona, o elaborar su perfil. Plausible no tiene ninguna: el recuento diario no puede seguirlo de un día a otro, y la ubicación aproximada proviene de la dirección IP de la solicitud, que luego se descarta. Por eso la medición está siempre activa, sin banner. Si aun así se opone a ser contado, escriba a contact@yesid.dev o bloquee plausible.io en su navegador; no existe ningún registro de visitantes individuales que consultar ni eliminar."
 								}
 							},
 							{

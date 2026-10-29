@@ -82,12 +82,10 @@ describe('failed live export retains last-good generated output', () => {
 			expect(missing).toEqual({ source: 'none', emitted: 0 });
 			expect(decideExit(missing, 'soft')).toBe(1);
 			const cached = { ...(await readCache(FIXTURE_PATH))!, mediaAssets: {}, mediaVariants: {} };
-			cached.siteLabels!.ui.analyticsConsent.description = { ...legalTruth.consent };
 			cached.siteLabels!.heroDashboard.vehiclesSub = { ...demoFeedDisclosures };
 			cached.legalPages = cached.legalPages!.map(page => ({ ...page, body: Object.fromEntries(
 				(['en', 'fr', 'es'] as const).map(locale => [locale, { time: 1, version: '2.31.2', blocks: [
-					'contact@yesid.dev', 'Plausible Analytics Cloud ' + legalTruth.clause[locale],
-					legalTruth.revision[locale] + ' 2026-07-15', ...legalTruth.modes[locale],
+					'contact@yesid.dev',
 					page.slug === 'privacy' ? legalTruth.privacyProfile[locale] : legalTruth.cookieProfile[locale],
 				].map((text, index) => ({ id: String(index), type: 'paragraph', data: { text } })) }]),
 			) }));
@@ -97,11 +95,6 @@ describe('failed live export retains last-good generated output', () => {
 			expect(await run(opts)).toEqual({ source: 'cache', emitted: 20 });
 			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
 			expect(await Bun.file(cache).text()).toBe(before);
-			const emitted = await Bun.file(joinPath(emitDir, 'site-meta.ts')).text();
-			cached.siteLabels!.ui.analyticsConsent.description.en = 'Obsolete consent description';
-			await writeCache(cache, cached, 'synthetic');
-			await expect(run(opts)).rejects.toThrow('CMS cache is stale');
-			expect(await Bun.file(joinPath(emitDir, 'site-meta.ts')).text()).toBe(emitted);
 		} finally { server.stop(true); rmSync(emitDir, { recursive: true, force: true }); }
 	});
 });

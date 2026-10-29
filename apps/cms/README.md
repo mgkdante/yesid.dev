@@ -86,7 +86,7 @@ new modules. Statusless configuration remains supported. An archived
 generation; a successful rebuild is still required to remove deployed output.
 
 Intentional runtime integrations are server-side weather, Transit KPI polling,
-Web3Forms contact submission and consent-gated analytics. Sitemap, robots and
+Web3Forms contact submission and cookieless analytics. Sitemap, robots and
 redirect handlers read generated content. `.cms-cache.json` is a local exporter
 fallback, not visitor content storage; optional GitHub README reads occur at
 build time. Vite development alone may fall back to CMS assets.

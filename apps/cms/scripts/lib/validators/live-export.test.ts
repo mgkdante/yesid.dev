@@ -7,7 +7,7 @@ const locales = ['en', 'fr', 'es'] as const;
 function syntheticContent(): ExportData {
 	const description = { en: 'A complete synthetic SEO description for testing the route metadata contract.' };
 	return {
-		siteLabels: { ui: { analyticsConsent: { description: { ...legalTruth.consent } } }, heroDashboard: { vehiclesSub: { ...demoFeedDisclosures } } },
+		siteLabels: { heroDashboard: { vehiclesSub: { ...demoFeedDisclosures } } },
 		siteSeoDefaults: { defaultDescription: description },
 		routeSeo: [{ path: '/', description }, { path: '/fallback', description: null }],
 		services: [{ id: 'test', seoDescription: description }],
@@ -17,9 +17,6 @@ function syntheticContent(): ExportData {
 			body: Object.fromEntries(locales.map(locale => [locale, {
 				time: 1, version: '2.31.2', blocks: [
 					'Contact: contact@yesid.dev',
-					'Plausible Analytics Cloud ' + legalTruth.clause[locale],
-					legalTruth.revision[locale] + ' 2026-07-15',
-					...legalTruth.modes[locale],
 					slug === 'privacy' ? legalTruth.privacyProfile[locale] : legalTruth.cookieProfile[locale],
 				].map((text, index) => ({ id: String(index), type: 'paragraph', data: { text } })),
 			}])),
@@ -33,14 +30,8 @@ describe('live content validation', () => {
 	});
 
 	for (const locale of locales) {
-		it(`${locale} rejects an unapproved consent description`, () => {
-			const data = syntheticContent();
-			data.siteLabels!.ui.analyticsConsent.description[locale] = 'changed';
-			expect(() => validateLiveExport(data)).toThrow('consent description');
-		});
-
 		for (const slug of ['privacy', 'cookies']) {
-			it(`${locale} ${slug} rejects missing clauses, revision, modes and profile truth`, () => {
+			it(`${locale} ${slug} rejects missing profile truth`, () => {
 				const original = syntheticContent();
 				const blocks = original.legalPages!.find(page => page.slug === slug)!.body[locale]!.blocks;
 				for (let index = 1; index < blocks.length; index++) {
