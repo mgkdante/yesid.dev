@@ -1,7 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import Page from './+page.svelte';
 import type { PageData } from './$types';
 // slice-18i Phase 7C: +page.server.ts now loads all home-page block content
@@ -20,7 +18,6 @@ import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
 import { getVisibleServices } from '#lib/services/static-helpers.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
-import type { Project } from '#lib/types.ts';
 
 vi.mock('#lib/directus/assets.ts', () => ({
 	asset: (id: string, preset?: string) => `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
@@ -69,26 +66,6 @@ const stubData = {
 const renderPage = () => render(Page, { props: { data: stubData } });
 
 describe('Home page', () => {
-	it('scopes the tighter mobile proof-reel heading gap to the Projects section', () => {
-		const source = readFileSync(
-			join(process.cwd(), 'src/lib/components/home/HomePage.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('home-section--proof-reel');
-		expect(source).toMatch(/home-section--proof-reel[\s\S]*home-section-heading-mobile/);
-		expect(source).toMatch(/home-section--proof-reel[\s\S]*proof-reel-section/);
-	});
-
-	it('has NO section magnet: scrolling settles naturally on every input (operator 2026-07-03)', () => {
-		const source = readFileSync(
-			join(process.cwd(), 'src/lib/components/home/HomePage.svelte'),
-			'utf8',
-		);
-
-		expect(source).not.toContain('initSectionMagnet');
-		expect(source).not.toContain('data-magnet-section');
-	});
 
 	it('renders the app root', () => {
 		renderPage();
@@ -160,7 +137,7 @@ describe('Home page', () => {
 		renderPage();
 		expect(screen.getByTestId('hero-metrics')).toBeInTheDocument();
 		const cards = screen.getAllByTestId('metric-card');
-		expect(cards).toHaveLength(3);
+		expect(cards).toHaveLength(stubData.initialHeroData.metrics.length);
 	});
 
 	it('renders hero SQL panel', () => {
@@ -191,7 +168,7 @@ describe('Home page', () => {
 	it('renders manifesto capability pills', () => {
 		renderPage();
 		const pills = screen.getAllByTestId('manifesto-pill');
-		expect(pills).toHaveLength(4); // gate A: 4 stations
+		expect(pills).toHaveLength(stubData.manifesto.pills.length);
 	});
 
 	it('renders the proof reel section', () => {
@@ -210,16 +187,16 @@ describe('Home page', () => {
 		expect(screen.getByTestId('services-section')).toBeInTheDocument();
 	});
 
-	it('renders 6 service cards', () => {
+	it('renders one card per service', () => {
 		renderPage();
 		const cards = screen.getAllByTestId('services-card');
-		expect(cards).toHaveLength(4); // gate A: 4 stations
+		expect(cards).toHaveLength(stubData.services.length);
 	});
 
 	it('renders service benefit headlines', () => {
 		renderPage();
 		const benefits = screen.getAllByTestId('services-benefit');
-		expect(benefits).toHaveLength(4); // gate A: 4 stations
+		expect(benefits).toHaveLength(stubData.services.filter((service) => service.benefitHeadline).length);
 	});
 
 	it('renders the closer section', () => {

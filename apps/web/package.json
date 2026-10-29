@@ -23,6 +23,7 @@
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
 		"check:client-payload": "node scripts/check-client-payload.mjs",
 		"check:csp": "bun scripts/check-csp.ts",
+		"lint:design": "bun tools/lint-design.ts",
 		"precheck:watch": "EXPORT_FALLBACKS_SOURCE=fixture bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"pretest:unit": "EXPORT_FALLBACKS_SOURCE=fixture bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"pretest:watch": "EXPORT_FALLBACKS_SOURCE=fixture bun ../../apps/cms/scripts/export-fallbacks.ts",

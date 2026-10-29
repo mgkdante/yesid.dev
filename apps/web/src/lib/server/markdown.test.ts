@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
 import { renderGithubReadme } from './markdown';
 
@@ -24,7 +25,9 @@ describe('markdown renderer', () => {
 			['<details><summary>Example</summary>', '', 'before', '', '```sh', 'bun test', '```', '', 'after', '', '</details>'].join('\n'),
 		);
 
-		expect(html).toMatch(/^<details>[\s\S]*bun test[\s\S]*after[\s\S]*<\/details>\s*$/);
+		const doc = new DOMParser().parseFromString(html, 'text/html');
+		expect(doc.querySelector('details')?.textContent).toContain('bun test');
+		expect(doc.querySelector('details')?.textContent).toContain('after');
 	});
 
 	it('removes executable README markup and unsafe URL schemes', async () => {
@@ -37,13 +40,17 @@ describe('markdown renderer', () => {
 			].join('\n'),
 		);
 
-		expect(html).toContain('<h1>Safe heading</h1>');
-		expect(html).not.toMatch(/<script|onerror|onclick|javascript:|data:text\/html/i);
+		const doc = new DOMParser().parseFromString(html, 'text/html');
+		expect(doc.querySelector('h1')?.textContent).toBe('Safe heading');
+		expect(doc.querySelector('script')).toBeNull();
+		expect([...doc.querySelectorAll('*')].some((element) => [...element.attributes].some(({ name }) => name.startsWith('on')))).toBe(false);
+		expect(doc.querySelector('[href^="javascript:" i], [src^="javascript:" i], [href^="data:text/html" i], [src^="data:text/html" i]')).toBeNull();
 	});
 
 	it('discards deeply nested iframe fallback without exhausting the sanitizer stack', async () => {
 		const html = await render('<iframe>'.repeat(2500));
 
-		expect(html).not.toContain('<iframe');
+		const doc = new DOMParser().parseFromString(html, 'text/html');
+		expect(doc.querySelector('iframe')).toBeNull();
 	});
 });

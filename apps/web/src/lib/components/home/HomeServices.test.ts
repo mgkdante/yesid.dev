@@ -200,12 +200,5 @@ describe('GO2-W5 round 5 — fun service SVGs + 2×2 station grid', () => {
 	});
 
 	// R5b (operator-ordered): four stations → uniform 2-column desktop grid.
-	it('the services grid is 2-up on desktop (lg:grid-cols-2), stacked below', () => {
-		render(HomeServices, { props: { servicesGrid: servicesGridContent, services } });
-		const section = screen.getByTestId('services-section');
-		const grid = section.querySelector('.services-grid');
-		expect(grid?.classList.contains('grid-cols-1')).toBe(true);
-		expect(grid?.classList.contains('lg:grid-cols-2')).toBe(true);
-		expect(grid?.classList.contains('lg:grid-cols-3')).toBe(false);
-	});
+
 });

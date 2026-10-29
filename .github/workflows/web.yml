@@ -48,6 +48,12 @@ jobs:
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         run: bun x turbo run test --filter=@repo/web
 
+      - name: Brand gates
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+        run: bun run --cwd apps/web lint:design
+
       - name: Product shared-package tests
         run: bun run --cwd packages/shared test
 

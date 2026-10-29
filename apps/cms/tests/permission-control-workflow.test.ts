@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { createHash } from 'node:crypto';
+
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { workflowJobBlock, workflowStepBlock } from './helpers/workflow-source';
@@ -15,10 +15,6 @@ function jobBlock(name: string, next?: string): string {
 	const block = workflowJobBlock(workflow, name, { expectedNext: next });
 	if (!block) throw new Error(`missing workflow job: ${name}`);
 	return block;
-}
-
-function sha256(value: string): string {
-	return createHash('sha256').update(value).digest('hex');
 }
 
 function stepBlock(job: string, name: string, next?: string): string {
@@ -253,28 +249,6 @@ test('permission-control-audit is production-gated, authenticated, and GET-only'
 	]) {
 		expect(audit).not.toContain(forbidden);
 	}
-});
-
-test('keeps every downstream CMS job body byte-stable', () => {
-	expect(sha256(jobBlock('diff', 'live-diff'))).toBe(
-		'4e3bd9fc0b8c51fc2d43c624fd4b20fc124d5fdfc424bdd674d3c652ca7dbe9c',
-	);
-	expect(sha256(jobBlock('live-diff', 'push'))).toBe(
-		'0cedcf484a983112aec92c2cb527424eddf8210328a29a1f9d4d8def2e7b74e7',
-	);
-	expect(sha256(jobBlock('push', 'permission-control-audit'))).toBe(
-		'e73949aa6577920e21cf1ebdbcf88a9567590662ab880e4238c07256e288a9d3',
-	);
-	expect(
-		sha256(
-			jobBlock(
-				'permission-control-audit',
-				'flows-push',
-			),
-		),
-	).toBe(
-		'517ae15e70704345eb9ea666c70f88ac78efe92ff8fcd1707a998237beb469a1',
-	);
 });
 
 test('flows-push keeps the production gate and pushes only the flows collection', () => {

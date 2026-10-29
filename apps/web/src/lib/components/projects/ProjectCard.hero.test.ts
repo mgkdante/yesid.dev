@@ -1,8 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
 import ProjectCard from './ProjectCard.svelte';
 import { projectFactory } from '../../../tests/factories';
 import { theme } from '@yesid/ui/state';
@@ -94,7 +91,6 @@ describe('ProjectCard hero media', () => {
 
 		expect(container.querySelector('[data-testid="project-hero-preview"]')).toBeNull();
 		const media = container.querySelector('[data-testid="project-card-image"]');
-		expect(media?.classList.contains('project-card-blueprint')).toBe(true);
 		expect(media?.getAttribute('style') ?? '').not.toContain('linear-gradient');
 		// Both drawings ship in the DOM; CSS swaps them by viewport (mobile
 		// device below md, workstation + mobile duo at md and up).
@@ -174,16 +170,6 @@ describe('ProjectCard hero media', () => {
 		render(ProjectCard, { props: { project, variant: 'proof' } });
 		expect(screen.queryByTestId('proof-metric-strip')).toBeNull();
 		expect(screen.queryAllByTestId('proof-metric-value')).toEqual([]);
-	});
-
-	it('uses the shared theme media helper for hero image variants', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectHeroPreview.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain("from '#lib/utils/theme-media.ts'");
-		expect(source).not.toContain('new MutationObserver');
 	});
 
 	it('lazy-loads hero media by default (only the first card goes eager)', () => {

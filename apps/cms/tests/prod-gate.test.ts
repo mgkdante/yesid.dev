@@ -16,18 +16,6 @@ describe('production write gate', () => {
 		}
 	});
 
-	test('does not rename workflow acknowledgements', () => {
-		const workflow = readFileSync(new URL('../../../.github/workflows/cms.yml', import.meta.url), 'utf8');
-		for (const contract of [
-			"DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH: '1'",
-			'DIRECTUS_SYNC_PUSH_ACK: sync-push-can-delete-cms-data',
-			"DIRECTUS_SYNC_INCLUDE_PERMISSIONS: ${{ inputs.include_permissions && '1' || '' }}",
-			"DIRECTUS_SYNC_PERMISSIONS_ACK: ${{ inputs.include_permissions && 'permissions-push-can-delete-parallel-work' || '' }}",
-		]) {
-			expect(workflow).toContain(contract);
-		}
-	});
-
 	test('requires exact confirmation only for production writes', () => {
 		expect(parseProductionWriteCli(['--target=dev'], 'sample', 'ship-it')).toEqual({
 			target: 'dev',

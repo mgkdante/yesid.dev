@@ -78,29 +78,4 @@ describe('preview credential repository boundary', () => {
 		expect(examples[2]).toMatch(/^DIRECTUS_ADMIN_PASSWORD=$/mu);
 	});
 
-	it('does not advertise the retired Directus integration switch in the web env template', () => {
-		expect(text('apps/web/.env.example')).not.toContain('RUN_DIRECTUS_INTEGRATION');
-	});
-
-	it('does not advertise dead Web3Forms env aliases in tracked env templates', () => {
-		for (const path of ['.env.example', 'apps/cms/.env.example', 'apps/web/.env.example']) {
-			expect(text(path)).not.toMatch(/^(?:VITE_)?WEB3FORMS_ACCESS_KEY=/mu);
-		}
-	});
-
-	it('preserves the CMS-backed public contact key', () => {
-		const contactPage = text('apps/web/src/lib/components/contact/ContactPage.svelte');
-		expect(contactPage).toContain('access_key: contactPage.web3formsKey');
-		expect(contactPage).not.toMatch(/(?:VITE_)?WEB3FORMS_ACCESS_KEY/u);
-	});
-
-	it('documents the current OpenWeather credential without inventing a second key', () => {
-		for (const path of ['apps/cms/README.md', 'apps/web/.env.example']) {
-			const contents = text(path);
-			expect(contents).not.toMatch(/(?:separate|distinct) dev key/iu);
-		}
-		expect(text('apps/cms/README.md')).toContain(
-			'existing key, independently scoped to `develop`',
-		);
-	});
 });

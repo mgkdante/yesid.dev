@@ -106,14 +106,15 @@ describe('project README server boundary', () => {
 			credentials: 'omit',
 			redirect: 'manual',
 		});
-		expect(readmeHtml(result.readme)).toContain('<h1>Safe heading</h1>');
-		expect(readmeHtml(result.readme)).toContain('href="https://example.com/docs"');
-		expect(readmeHtml(result.readme)).toContain('href="mailto:contact@example.com"');
-		expect(readmeHtml(result.readme)).toContain('src="https://images.example.com/readme.png"');
+		const doc = new DOMParser().parseFromString(readmeHtml(result.readme)!, 'text/html');
+		expect(doc.querySelector('h1')?.textContent).toBe('Safe heading');
+		expect(doc.querySelector('a[href="https://example.com/docs"]')).not.toBeNull();
+		expect(doc.querySelector('a[href="mailto:contact@example.com"]')).not.toBeNull();
+		expect(doc.querySelector('img[src="https://images.example.com/readme.png"]')).not.toBeNull();
 		expect(result.readme?.filter((part) => 'fence' in part)).toEqual([{ fence: '```bash\nbun test\n```' }, { fence: '```mermaid\nflowchart LR\n  a --> b\n```' }]);
-		expect(readmeHtml(result.readme)).not.toMatch(
-			/<script|onerror|onclick|javascript:|data:text\/html/i,
-		);
+		expect(doc.querySelector('script')).toBeNull();
+		expect([...doc.querySelectorAll('*')].some((element) => [...element.attributes].some(({ name }) => name.startsWith('on')))).toBe(false);
+		expect(doc.querySelector('[href^="javascript:" i], [src^="javascript:" i], [href^="data:text/html" i], [src^="data:text/html" i]')).toBeNull();
 		expect(warnSpy).not.toHaveBeenCalled();
 	});
 
@@ -128,7 +129,8 @@ describe('project README server boundary', () => {
 			credentials: 'omit',
 			redirect: 'manual',
 		});
-		expect(readmeHtml(result.readme)).toContain('<h1>Raw README</h1>');
+		const doc = new DOMParser().parseFromString(readmeHtml(result.readme)!, 'text/html');
+		expect(doc.querySelector('h1')?.textContent).toBe('Raw README');
 		expect(warnSpy).not.toHaveBeenCalled();
 	});
 
