@@ -175,17 +175,24 @@ function githubRawReadmeUrl(value: string): string | null {
 		.join('/')}`;
 }
 
-// Top-level fences become CodeBlock segments; the prose between them is sanitized HTML.
+// Top-level fences become CodeBlock segments; the prose between them is sanitized HTML. A fence
+// inside a raw <details> stays in that prose so the disclosure is sanitized whole.
 async function readmeSegments(markdown: string): Promise<ReadmeSegment[]> {
 	const segments: ReadmeSegment[] = [];
 	let prose: Token[] = [];
+	let openDetails = 0;
 	const flush = () => {
 		const html = sanitizeReadmeHtml(marked.parser(prose));
 		if (html.trim()) segments.push({ html });
 		prose = [];
 	};
 	for (const token of marked.lexer(markdown)) {
-		if (token.type !== 'code') {
+		if (token.type === 'html') {
+			const opened = token.raw.match(/<details\b/gi)?.length ?? 0;
+			const closed = token.raw.match(/<\/details>/gi)?.length ?? 0;
+			openDetails = Math.max(0, openDetails + opened - closed);
+		}
+		if (token.type !== 'code' || openDetails > 0) {
 			prose.push(token);
 			continue;
 		}

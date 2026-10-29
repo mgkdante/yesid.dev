@@ -1,19 +1,15 @@
-export type ParsedCodeFence =
+type ParsedCodeFence =
 	| {
 			kind: 'code';
-			raw: string;
 			body: string;
 			language: string | null;
 			normalizedLanguage: string;
-			title: string;
 	  }
 	| {
 			kind: 'mermaid';
-			raw: string;
 			body: string;
 			language: 'mermaid';
 			normalizedLanguage: 'mermaid';
-			title: 'mermaid';
 	  };
 
 /** A rendered README: sanitized prose HTML, or a top-level fence for the CMS CodeBlock. */
@@ -46,35 +42,29 @@ export function parseCodeFence(code: string): ParsedCodeFence {
 		if (normalizedLanguage === 'mermaid') {
 			return {
 				kind: 'mermaid',
-				raw: code,
 				body,
 				language: 'mermaid',
 				normalizedLanguage: 'mermaid',
-				title: 'mermaid',
 			};
 		}
-		return { kind: 'code', raw: code, body, language, normalizedLanguage, title: normalizedLanguage };
+		return { kind: 'code', body, language, normalizedLanguage };
 	}
 
 	const prefixed = /^mermaid\s*\n([\s\S]+)$/i.exec(trimmed);
 	if (prefixed?.[1]?.trim()) {
 		return {
 			kind: 'mermaid',
-			raw: code,
 			body: prefixed[1].trim(),
 			language: 'mermaid',
 			normalizedLanguage: 'mermaid',
-			title: 'mermaid',
 		};
 	}
 
 	return {
 		kind: 'code',
-		raw: code,
 		body: code,
 		language: null,
 		normalizedLanguage: 'text',
-		title: 'text',
 	};
 }
 

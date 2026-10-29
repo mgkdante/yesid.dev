@@ -3,7 +3,7 @@ import { highlight } from '@yesid/seo-kit/highlight';
 import { parseCodeFence } from '#lib/utils/code-fences.ts';
 
 /** block.id → highlighted markup for that block's fence body. */
-export type CodeHighlights = Readonly<Record<string, string>>;
+type CodeHighlights = Readonly<Record<string, string>>;
 
 /** Highlighted markup for a fence; undefined for Mermaid, which MermaidDiagram renders in the browser. */
 export async function highlightFence(code: string): Promise<string | undefined> {

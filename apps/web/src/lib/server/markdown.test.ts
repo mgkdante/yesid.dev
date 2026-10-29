@@ -19,6 +19,14 @@ describe('markdown renderer', () => {
 		expect(readme?.[2]).toHaveProperty('highlighted', undefined);
 	});
 
+	it('keeps a fence inside a <details> disclosure', async () => {
+		const html = await render(
+			['<details><summary>Example</summary>', '', 'before', '', '```sh', 'bun test', '```', '', 'after', '', '</details>'].join('\n'),
+		);
+
+		expect(html).toMatch(/^<details>[\s\S]*bun test[\s\S]*after[\s\S]*<\/details>\s*$/);
+	});
+
 	it('removes executable README markup and unsafe URL schemes', async () => {
 		const html = await render(
 			[
