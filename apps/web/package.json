@@ -20,8 +20,6 @@
 		"test:watch": "vitest",
 		"test:e2e": "playwright test",
 		"test:e2e:prebuilt": "E2E_PREBUILT=1 playwright test",
-		"tokens:build": "bun tools/build-tokens.ts",
-		"tokens:check": "bun tools/build-tokens.ts --check",
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
 		"check:client-payload": "node scripts/check-client-payload.mjs",
 		"check:csp": "bun scripts/check-csp.ts",

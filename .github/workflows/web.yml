@@ -63,7 +63,7 @@ jobs:
             {
               "schema": 1,
               "always": {
-                "paths": [".bun-version", ".github/scripts/materialize-shared-config.mjs", ".github/shared-tooling.json", ".github/workflows/web.yml", ".npmrc", "DESIGN.md", "bun.lock", "package.json", "turbo.json"],
+                "paths": [".bun-version", ".github/scripts/materialize-shared-config.mjs", ".github/shared-tooling.json", ".github/workflows/web.yml", ".npmrc", "bun.lock", "package.json", "turbo.json"],
                 "prefixes": [".github/actions/", ".github/scripts/", ".github/shared-tooling/", ".github/workflows/"]
               },
               "jobs": {
@@ -79,7 +79,7 @@ jobs:
                 },
                 "irrelevant": {
                   "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore"],
-                  "prefixes": [".githooks/"]
+                  "prefixes": []
                 }
               }
             }
@@ -117,9 +117,6 @@ jobs:
       - name: Vendored design integrity (schema 2)
         working-directory: apps/web
         run: bun vendor/design/tools/adopt.ts --check --dest vendor/design
-
-      - name: Product token drift (ci:tokens)
-        run: bun run ci:tokens
 
       - name: Product shared-package tests
         run: bun run --cwd packages/shared test

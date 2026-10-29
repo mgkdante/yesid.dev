@@ -34,7 +34,6 @@ Use Bun 1.4.4 and an updated Node.js LTS runtime (22.23.4+ or 24.22.1+). From th
 
 ```bash
 bun install --frozen-lockfile
-bun run setup:hooks
 bun run --cwd apps/cms test
 ```
 

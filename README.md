@@ -47,6 +47,8 @@ exact schema-2 Release under `apps/web/vendor/design` and owns only its product
 adapters, product policy, composed components, generated outputs, and product
 tests.
 
+Design tokens: [upstream DESIGN.md](https://github.com/mgkdante/yesid.dev-design/blob/main/DESIGN.md).
+
 From `apps/web`, verify the customer payload:
 
 ```bash
@@ -76,7 +78,6 @@ Run the repository gates:
 ```bash
 bun run test
 bun run check
-bun run ci:tokens
 bun run build
 ```
 

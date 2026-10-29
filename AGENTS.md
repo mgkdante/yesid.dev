@@ -21,7 +21,6 @@ ignored modules under `apps/web/src/lib/content` for the SvelteKit build.
 
 ```bash
 bun install --frozen-lockfile
-bun run setup:hooks
 bun run dev
 ```
 
@@ -37,7 +36,6 @@ Run the checks that match the files you changed, then the full local gates:
 ```bash
 bun run check
 bun run test
-bun run ci:tokens
 bun run build
 ```
 
@@ -56,27 +54,6 @@ Refresh the fixture from a live cache with
 ```bash
 bun vendor/design/tools/adopt.ts --check --dest vendor/design
 ```
-
-The vendored token sources feed the product-owned adapter at
-`apps/web/tools/build-tokens.ts`. After an authorized token-source or adapter
-change, regenerate and verify outputs from the repository root:
-
-```bash
-bun run tokens:build
-bun run ci:tokens
-```
-
-Do not hand-edit `DESIGN.md`.
-
-## Pre-commit integrity
-
-`.githooks/pre-commit` protects two repository boundaries:
-
-1. vendored design payload changes require their release manifest;
-2. generated token outputs require their source or adapter.
-
-Install the hook with `bun run setup:hooks`. CI repeats the vendor
-and token checks so a clean clone does not rely on local hook setup.
 
 Keep changes small, preserve public behavior unless the task explicitly says
 otherwise, and add tests around observable behavior rather than source text or

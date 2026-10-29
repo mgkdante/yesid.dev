@@ -225,7 +225,6 @@ test('web reports required ci after classified work without weakening E2E', () =
 		'name: Type check (svelte-kit sync + svelte-check)',
 		'name: Unit tests',
 		'name: Vendored design integrity (schema 2)',
-		'name: Product token drift (ci:tokens)',
 		'name: Product shared-package tests',
 		'name: Build',
 	])).toBe(true);
@@ -400,7 +399,6 @@ test('CMS classifier is strict and covers the frozen fixture matrix', () => {
 		{ label: 'docs', event: 'pull_request', paths: ['docs/ci.md'], relevant: false, reason: 'docs-only' },
 		{ label: 'web asset consumer', event: 'pull_request', paths: ['apps/web/src/routes/+page.svelte'], relevant: true, reason: 'matched' },
 		{ label: 'publication asset', event: 'pull_request', paths: ['gbp-assets/en/mark-dot.dark.png'], relevant: true, reason: 'matched' },
-		{ label: 'generated-content git guard', event: 'pull_request', paths: ['.githooks/pre-commit'], relevant: true, reason: 'matched' },
 		{ label: 'CMS', event: 'pull_request', paths: ['apps/cms/scripts/export-fallbacks.ts'], relevant: true, reason: 'matched' },
 		{ label: 'shared', event: 'pull_request', paths: ['packages/shared/src/index.ts'], relevant: true, reason: 'matched' },
 		{ label: 'control', event: 'pull_request', paths: ['.github/workflows/secret-scan.yml'], relevant: true, reason: 'control' },
