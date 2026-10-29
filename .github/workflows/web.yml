@@ -206,6 +206,7 @@ jobs:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
           EXPORT_FALLBACKS_SOURCE: "fixture"
+          PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
         run: bun x turbo run build --filter=@repo/web
 
       # Cached build output does not include the ignored modules imported by specs.

@@ -278,15 +278,11 @@
 		return typeof label === 'string' ? label : resolveLocale(label, locale);
 	}
 
-	function handleBookingClick(): void {
-		trackAnalyticsEvent('booking_click');
-	}
-
 	function handleContactChannelClick(
 		social: ContactContent['socials'][number],
 	): void {
 		if (social.icon === 'calendar') {
-			handleBookingClick();
+			trackAnalyticsEvent('booking_click');
 			return;
 		}
 
@@ -520,7 +516,7 @@
 								target="_blank"
 								rel="noopener"
 								data-testid="contact-booking-link"
-								onclick={handleBookingClick}
+								onclick={() => trackAnalyticsEvent('booking_click')}
 								class="tap-feedback rounded px-1 py-0.5 text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
 							>
 								<span class="opacity-60">~ $</span>

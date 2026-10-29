@@ -110,7 +110,6 @@ export default defineConfig({
 				test: {
 					name: 'data',
 					include: [
-						'src/lib/analytics/**/*.test.ts',
 						'src/lib/adapters/**/*.test.ts',
 						'src/lib/content/**/*.test.ts',
 						'src/lib/live/**/*.test.ts',

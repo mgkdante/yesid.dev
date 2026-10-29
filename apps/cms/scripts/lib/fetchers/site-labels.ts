@@ -10,22 +10,11 @@ import type { FetcherContext } from './types';
 
 interface SiteLabelsRow {
 	id: string;
-	analytics_enabled?: unknown;
-	analytics_consent_show_banner?: unknown;
 	translations?: ReadonlyArray<Record<string, unknown> & { languages_code: string }>;
 }
 
 export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 	const tr = raw.translations ?? [];
-	const enabledIsBoolean = typeof raw.analytics_enabled === 'boolean';
-	const showBannerIsBoolean = typeof raw.analytics_consent_show_banner === 'boolean';
-	const analyticsControls = {
-		enabled: enabledIsBoolean ? raw.analytics_enabled : true,
-		showBanner:
-			enabledIsBoolean && showBannerIsBoolean
-				? raw.analytics_consent_show_banner
-				: true,
-	};
 	return {
 		a11y: toLocalizedFields(tr, [
 			['navCapabilities', 'a11y_nav_capabilities'], ['carouselPrev', 'a11y_carousel_prev'],
@@ -58,16 +47,6 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			languageNames: toLocalizedFields(tr, [
 				['en', 'ui_language_name_en'], ['fr', 'ui_language_name_fr'], ['es', 'ui_language_name_es'],
 			]),
-			analyticsConsent: {
-				...analyticsControls,
-				...toLocalizedFields(tr, [
-					['title', 'ui_analytics_consent_title'], ['description', 'ui_analytics_consent_description'],
-					['acceptLabel', 'ui_analytics_consent_accept_label'],
-					['declineLabel', 'ui_analytics_consent_decline_label'],
-					['settingsLabel', 'ui_analytics_consent_settings_label'],
-					['privacyLabel', 'ui_analytics_consent_privacy_label'],
-				]),
-			},
 		},
 		pages: toLocalizedFields(tr, [
 			['blogEdgeTitle', 'pages_blog_edge_title'], ['projectsEdgeTitle', 'pages_projects_edge_title'],
@@ -251,8 +230,6 @@ export async function fetchSiteLabels({ client }: FetcherContext): Promise<SiteL
 		'fetchSiteLabels/site_labels',
 		[
 			'id',
-			'analytics_enabled',
-			'analytics_consent_show_banner',
 			{ translations: ['*'] },
 		],
 	);

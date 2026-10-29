@@ -11,7 +11,7 @@ The site is a multilingual SvelteKit application with:
 
 - service, project, and technology case-study content;
 - an editorial blog in English, French, and Spanish;
-- accessible contact, legal, privacy, and consent flows;
+- accessible contact, legal and privacy flows;
 - structured metadata, sitemaps, share cards, and machine-readable content;
 - a Directus-backed publishing pipeline with build-time delivery.
 

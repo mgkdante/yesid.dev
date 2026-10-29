@@ -58,51 +58,6 @@ describe('site-labels localized field-map sources exist in the snapshot', () => 
 	});
 });
 
-describe('site-labels analytics controls exist in the snapshot', () => {
-	const fieldNames = ['analytics_enabled', 'analytics_consent_show_banner'] as const;
-	const fieldsDir = join(SNAPSHOT_DIR, 'fields', 'site_labels');
-
-	it('commits both required true-default boolean fields with their approved editor copy', () => {
-		const missing = fieldNames.filter(
-			(field) => !existsSync(join(fieldsDir, `${field}.json`)),
-		);
-		expect(missing).toEqual([]);
-
-		const snapshots = Object.fromEntries(
-			fieldNames.map((field) => [
-				field,
-				JSON.parse(readFileSync(join(fieldsDir, `${field}.json`), 'utf8')),
-			]),
-		) as Record<(typeof fieldNames)[number], Record<string, any>>;
-		expect(snapshots.analytics_enabled).toMatchObject({
-			collection: 'site_labels',
-			field: 'analytics_enabled',
-			type: 'boolean',
-			meta: {
-				interface: 'boolean',
-				note: 'Master switch. Off disables Plausible tracking, pageviews, conversion events, the consent banner, and footer analytics preferences after the site rebuilds. Stored visitor choices are retained.',
-				options: { label: 'Analytics enabled' },
-				required: true,
-				special: ['cast-boolean'],
-			},
-			schema: { default_value: true, is_nullable: false },
-		});
-		expect(snapshots.analytics_consent_show_banner).toMatchObject({
-			collection: 'site_labels',
-			field: 'analytics_consent_show_banner',
-			type: 'boolean',
-			meta: {
-				interface: 'boolean',
-				note: "When analytics is enabled, off starts cookieless Plausible analytics for visitors without a saved decline. Saved declines stay untracked and footer preferences remain available. Use only after confirming the site's legal basis and published privacy notice support this mode.",
-				options: { label: 'Show analytics consent banner' },
-				required: true,
-				special: ['cast-boolean'],
-			},
-			schema: { default_value: true, is_nullable: false },
-		});
-	});
-});
-
 describe('fetcher collection literals exist in the snapshot', () => {
 	// Junction/translation tables reached via nested field selections do not
 	// appear as readItems() literals; this covers the top-level reads only,
@@ -268,7 +223,7 @@ describe('asset registry plan is captured exactly in the schema snapshot', () =>
 	});
 });
 
-describe('published blog and consent snapshot contracts', () => {
+describe('published blog snapshot contracts', () => {
  it('keeps translation_key required, indexed, nullable=false and non-unique', () => {
   const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/blog_posts/translation_key.json'), 'utf8'));
   expect(field.field).toBe('translation_key');
@@ -289,11 +244,5 @@ describe('published blog and consent snapshot contracts', () => {
   const blogRead = permissions.find(row => row.policy === buildBot!._syncId && row.collection === 'blog_posts' && row.action === 'read');
   expect(blogRead).toBeDefined();
   expect(blogRead!.fields.some(field => field === '*' || field === 'translation_key')).toBe(true);
- });
- it('keeps the consent description field at varchar(500)', () => {
-  const field = JSON.parse(readFileSync(join(SNAPSHOT_DIR, 'fields/site_labels_translations/ui_analytics_consent_description.json'), 'utf8'));
-  expect(field.type).toBe('string');
-  expect(field.schema.data_type).toBe('character varying');
-  expect(field.schema.max_length).toBe(500);
  });
 });

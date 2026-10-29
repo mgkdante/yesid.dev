@@ -15,15 +15,12 @@
 	import '@yesid/motion/ripple.css';
 	import { SiteFooter, SiteHeader, SiteRoot } from '@yesid/ui/layout';
 	import { Wordmark } from '@yesid/ui/brand';
-	import { FooterLink } from '@yesid/ui/footer';
-	import { getAnalyticsPolicy } from '@yesid/analytics/policy';
 
 	// SEO is layout-authoritative: @yesid/ui/head renders tags server-side.
 	// seoHeadProps resolves the page SEO and JSON-LD for the current locale.
 	import { SeoHead } from '@yesid/ui/head';
-	import Analytics from '#lib/components/analytics/Analytics.svelte';
+	import { startAnalytics } from '#lib/analytics/client.ts';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
-	import { analyticsConsentStore } from '#lib/state/analytics-consent.svelte.ts';
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
@@ -78,6 +75,7 @@
 
 	onMount(() => {
 		if (!browser) return;
+		startAnalytics();
 
 		// Slice-23: site-wide click ripple. Anywhere the user clicks/taps
 		// spawns the Manifesto-style two-ring expanding ripple.
@@ -115,9 +113,6 @@
 		const href = siteMeta.links[label.toLowerCase() as 'github' | 'linkedin' | 'upwork'];
 		return href ? [{ href, label, ariaLabel: label, external: true, me: true }] : [];
 	});
-	const analyticsPolicy = $derived(
-		getAnalyticsPolicy(siteLabels.ui.analyticsConsent, $analyticsConsentStore),
-	);
 
 	let isFullBleed = $derived(basePath === '/' || basePath.startsWith('/projects/') && basePath !== '/projects' || basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal');
 </script>
@@ -130,22 +125,8 @@
 	<address class="not-italic">{resolveLocale(footer.location, locale)}</address>
 {/snippet}
 
-{#snippet analyticsPreferences()}
-	{#if analyticsPolicy.showPreferences}
-		<FooterLink
-			type="button"
-			aria-expanded={$analyticsConsentStore.preferencesOpen}
-			onclick={() => analyticsConsentStore.openPreferences()}
-		>
-			{resolveLocale(siteLabels.ui.analyticsConsent.settingsLabel, locale)}
-		</FooterLink>
-	{/if}
-{/snippet}
-
 <SiteRoot lang={locale}>
 	<SeoHead {...seoHeadProps(data.seo, locale, data.themeColor)} />
-
-	<Analytics locale={locale} isHome={basePath === '/'} />
 
 	<div
 		style:overflow-anchor={basePath === '/' ? 'none' : undefined}
@@ -204,7 +185,6 @@
 						label: resolveLocale(footer.legalLabel, locale),
 						testId: 'footer-legal',
 						links: footerNav.filter((link) => link.legal),
-						after: analyticsPreferences,
 					},
 					{ label: resolveLocale(footer.connectLabel, locale), links: socialLinks },
 				]}
