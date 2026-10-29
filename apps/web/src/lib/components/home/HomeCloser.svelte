@@ -241,7 +241,8 @@
 
 	/* Keep the former square wordmark slot; only its authored lettering changes. */
 	.closer-note {
-		position: absolute; right: 4%; bottom: 20%;
+		/* 20% of the core plus its 100px ground, where the ending sat before the ground moved out of the core. */
+		position: absolute; right: 4%; bottom: calc(20% - 80px);
 		width: clamp(160px, 18vw, 260px); max-width: 260px; aspect-ratio: 1;
 		pointer-events: auto; cursor: pointer; z-index: calc(var(--z-content) + 1); overflow: visible;
 	}
