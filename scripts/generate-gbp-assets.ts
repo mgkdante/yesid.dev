@@ -43,9 +43,9 @@ const OUT = `${REPO}/gbp-assets`;
 const require = createRequire(`${WEB}/package.json`);
 const { Resvg } = require('@resvg/resvg-js') as typeof import('@resvg/resvg-js');
 const FONT_FILES = [
-	`${WEB}/vendor/design/seo-kit/fonts/Inter-Black.ttf`,
-	`${WEB}/vendor/design/seo-kit/fonts/Inter-Medium.ttf`,
-	`${WEB}/vendor/design/seo-kit/fonts/JetBrainsMono-Medium.ttf`,
+	`${WEB}/node_modules/@yesid/seo-kit/fonts/Inter-Black.ttf`,
+	`${WEB}/node_modules/@yesid/seo-kit/fonts/Inter-Medium.ttf`,
+	`${WEB}/node_modules/@yesid/seo-kit/fonts/JetBrainsMono-Medium.ttf`,
 ];
 const YELLOW = '#FFB627';
 // Every DOT is the vivid brand orange on BOTH themes (operator: the dots must
@@ -92,7 +92,7 @@ function blueprint(rel: string, x: number, y: number, targetW: number, t: Theme)
 	const s = targetW / open[2];
 	return `<g transform="translate(${x},${y}) scale(${s})" fill="none" opacity="${t.blueprint}">${inner}</g>`;
 }
-const AZUR = 'vendor/design/ui/src/blueprints/BlueprintAzurSide.svelte';
+const AZUR = 'node_modules/@yesid/ui/src/blueprints/BlueprintAzurSide.svelte';
 
 function crosshairs(w: number, h: number, t: Theme): string {
 	const o = t.chrome, I = 46;

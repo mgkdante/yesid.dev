@@ -57,19 +57,6 @@ describe('GO-w2t5 motion policy — MOTION-GATED CSS surfaces park under reduce'
 });
 
 describe('GO-w2t5 micro-interactions — SAFE-ALWAYS additions present', () => {
-	it('base.css ships a global :focus-visible brand ring in @layer base', () => {
-		const baseCSS = read('vendor/design/ui/base.css');
-		expect(baseCSS).toMatch(
-			/:focus-visible \{\s*outline: 2px solid var\(--primary\);\s*outline-offset: 2px;/,
-		);
-	});
-
-	it('footer links draw their underline', () => {
-		const src = read('vendor/design/ui/src/primitives/footer/footer-link.svelte');
-		expect(src).toContain('footer-link');
-		expect(src).toMatch(/\.footer-link \{[\s\S]*?background-size: 0% 1px;/);
-	});
-
 	it('contact form caret is brand orange', () => {
 		const src = read('src/lib/components/contact/ContactPage.svelte');
 		expect(src).toMatch(/\.form-field \{[\s\S]*?caret-color: var\(--primary\);/);

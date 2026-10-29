@@ -12,24 +12,13 @@ const webConfig = await loadWebConfig();
 
 const REPOSITORY_ROOT = fileURLToPath(new URL('../../../../', import.meta.url));
 const CONFIG_URL =
-	'https://github.com/mgkdante/yesid.dev-design/releases/download/config-v0.2.0/yesid-config-v0.2.0.tgz';
+	'https://github.com/mgkdante/yesid.dev-design/releases/download/v0.28.0/yesid-config-0.28.0.tgz';
 const CONFIG_LOCK_INTEGRITY =
-	'sha512-UOP1BG2JaV88/EqrA2mmtlymrLV3OTOIeDqMAdZysySycERKE3OUK0oApKK1udQhGEZcMHd2xnuxNFY7gO5OnA==';
+	'sha512-5LcE8HMve1Ja5VqJLN9MpWgoLkVzWx31SVLdmbLY8Pm8ZnaAvzdx8uauUnYq5ZUKZe1pVUt6XwdHRhk18ILROg==';
 const CONFIG_BASE_DIGEST = '588a4acf72f44593561112fc945d410548b56cf556bbbc9bc745c1f7b218424f';
 const MATERIALIZED_BASE = 'node_modules/.yesid-shared-tooling/turbo/base.json';
 const YESID_TURBO_SEMANTIC_DIGEST =
 	'dba060ff9c4a79a89d2f72c722b2a5ad50f9beca0dd16245c4f665439e9626b5';
-
-const CONFIG_RECEIPT = {
-	schema: 1,
-	repository: 'github.com/mgkdante/yesid.dev-design',
-	package: { name: '@yesid/config', version: '0.2.0' },
-	tag: {
-		name: 'config-v0.2.0',
-		object: '4146d5b3e35d1ddefd3db003a630e14c9b3fbef9',
-		peeledCommit: 'b88a519ade384c1e007aa7330638071bba2f6135',
-	},
-} as const;
 
 const TSCONFIGS = [
 	[
@@ -196,17 +185,6 @@ describe('yesid.dev shared-config canary', () => {
 		expect(text('bun.lock')).toContain(CONFIG_LOCK_INTEGRITY);
 	});
 
-	it('installs the exact annotated-tag receipt from the Release asset', () => {
-		const configRoot = resolveConfigRoot();
-		expect(configRoot).toBeDefined();
-		if (!configRoot) return;
-
-		const receipt = JSON.parse(
-			readFileSync(join(configRoot, '.yesid-config-release.json'), 'utf8'),
-		) as JsonObject;
-		expect(receipt).toEqual(CONFIG_RECEIPT);
-	});
-
 	it.each(TSCONFIGS)('%s adopts the shared preset with its exact local overlay', (path, expected) => {
 		expect(jsonc(path)).toEqual(expected);
 	});
@@ -331,8 +309,7 @@ describe('yesid.dev shared-config canary', () => {
 		expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
 		expect(JSON.parse(result.stdout)).toEqual({
 			schema: 1,
-			package: CONFIG_RECEIPT.package,
-			tag: CONFIG_RECEIPT.tag,
+			package: { name: '@yesid/config', version: '0.28.0' },
 			destination: MATERIALIZED_BASE,
 			digest: `sha256:${CONFIG_BASE_DIGEST}`,
 		});

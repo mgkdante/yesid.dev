@@ -3,7 +3,7 @@
 This package owns the public SvelteKit application: routes, product components,
 prerendering, SEO, cookieless analytics, contact delivery, and the Vercel build.
 It consumes editorial content and shared contracts; it does not own Directus
-schema, editorial rows, or the vendored design-system source.
+schema, editorial rows, or the design-system packages.
 
 ## Runtime boundaries
 
@@ -13,7 +13,6 @@ schema, editorial rows, or the vendored design-system source.
 | [`src/lib/content/`](src/lib/content/) | Build-time runtime content. The CMS emitter registry produces 20 ignored modules; never edit those outputs by hand. |
 | [`src/lib/directus/assets.ts`](src/lib/directus/assets.ts) | The sanctioned media seam. Known file identities resolve to committed mirrors; unknown media may use Directus only in development and fails loudly in production. |
 | [`../../packages/shared/`](../../packages/shared/) | Product types, validation schemas, asset contracts, and dependency-free stack-layer constants. |
-| [`vendor/design/manifest.json`](vendor/design/manifest.json) | Immutable design Release receipt. Product code may adapt the released packages but must not patch the vendored tree or receipt. |
 
 Page content moves in one direction:
 
@@ -54,7 +53,7 @@ sends its fields to Web3Forms. Plausible runs only when `PUBLIC_PLAUSIBLE_DOMAIN
   and pass legal-truth and SEO validators before emission.
 - Production rendering fails for an unmirrored media identity; development may
   use the explicit Directus fallback to preview new editorial media.
-- The sitemap, client-payload, token, vendor, locale, and browser gates are
+- The sitemap, client-payload, token, locale, and browser gates are
   release contracts, not optional reports.
 
 ## Asset serving map
@@ -82,7 +81,7 @@ Regenerate both binary icons from `favicon.svg` if the mark changes.
 | --- | --- | --- |
 | `src/lib/assets/blog-fallbacks/*.svg` | 8 blog no-image icons (pro-* / personal-*), slug-hash selected | Vite `?raw` glob (`src/lib/blog/static-helpers.ts`); registered in CMS `illustrations` |
 | `src/lib/assets/project-fallbacks/*.svg` | Digital-infrastructure blueprints: `digital-mobile` below md, `digital-desktop` at md+ | Vite `?raw` imports in `ProjectCard.svelte`; registered in CMS `illustrations` |
-| `@yesid/ui/blueprints` (vendored) | Blueprint drawings as inline components (`currentColor` for theming); the CTA sheets keep their `data-cta-sheet` and motif markers | Composed in ServicesBlueprint, BlogBlueprint, ProjectsBlueprint and CtaBlueprintBackground (12 unique sheets behind the shared `CtaBand`) |
+| `@yesid/ui/blueprints` | Blueprint drawings as inline components (`currentColor` for theming); the CTA sheets keep their `data-cta-sheet` and motif markers | Composed in ServicesBlueprint, BlogBlueprint, ProjectsBlueprint and CtaBlueprintBackground (12 unique sheets behind the shared `CtaBand`) |
 | `static/svg/services/*.svg` | 6 service line icons; filenames are CMS data (`services.svg`) | Dual: `?raw` glob (`src/lib/utils/service-svg.ts`, SSR) + client fetch/img `/svg/services/...` |
 | `static/images/**` | Raster + CMS-mirrored assets (metro map, about art, work shots) | Static; CMS mirror via `media-assets.ts` (GENERATED) + `assets-id-map.json` |
 | `static/og/**.png` | 30 committed OG share cards, 1200x630 <150KB, minted by `scripts/generate-og-cards.ts`: `default.{en,fr,es}` (home + locale fallback), localized `routes/{services,contact,about,projects}`, localized `services/<id>`, and `site.{en,fr,es}` (standalone share assets, unwired) | Static; blog/project Satori + resvg cards prerender at build into deployment-static `/og/{blog,project}/` files |
@@ -118,12 +117,6 @@ bun run --cwd apps/web test
 bun run --cwd apps/web check
 bun run --cwd apps/web build
 bun run --cwd apps/web check:client-payload
-```
-
-Verify the immutable design receipt from this directory:
-
-```bash
-bun vendor/design/tools/adopt.ts --check --dest vendor/design
 ```
 
 Web dev, test, check and build generate ignored content modules from the shared

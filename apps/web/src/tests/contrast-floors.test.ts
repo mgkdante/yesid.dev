@@ -79,7 +79,7 @@ describe('contrast floors on color: declarations', () => {
 // ──────────────────────────────────────────────────────────────────────
 describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 	const tokens = JSON.parse(
-		readFileSync(resolve(process.cwd(), 'vendor/design/tokens/tokens.json'), 'utf-8'),
+		readFileSync(resolve(process.cwd(), 'node_modules/@yesid/tokens/tokens.json'), 'utf-8'),
 	);
 
 	for (const { label, ratio, floor, pass } of runContrastPairs(tokens, YESID_AA_PAIRS)) {

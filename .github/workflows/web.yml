@@ -114,10 +114,6 @@ jobs:
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         run: bun x turbo run test --filter=@repo/web
 
-      - name: Vendored design integrity (schema 2)
-        working-directory: apps/web
-        run: bun vendor/design/tools/adopt.ts --check --dest vendor/design
-
       - name: Product shared-package tests
         run: bun run --cwd packages/shared test
 

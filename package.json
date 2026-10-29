@@ -25,7 +25,7 @@
 		"secrets:ratelimit": "op service-account ratelimit"
 	},
 	"devDependencies": {
-		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/config-v0.2.0/yesid-config-v0.2.0.tgz",
+		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.28.0/yesid-config-0.28.0.tgz",
 		"turbo": "^2.5.0"
 	},
 	"overrides": {

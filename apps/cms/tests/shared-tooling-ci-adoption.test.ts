@@ -224,7 +224,6 @@ test('web reports required ci after classified work without weakening E2E', () =
 	expect(ordered(work, [
 		'name: Type check (svelte-kit sync + svelte-check)',
 		'name: Unit tests',
-		'name: Vendored design integrity (schema 2)',
 		'name: Product shared-package tests',
 		'name: Build',
 	])).toBe(true);
