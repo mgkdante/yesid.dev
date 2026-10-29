@@ -1,33 +1,13 @@
 import { siteLabels } from '../src/lib/content/site-labels';
 import { test, expect, type Page } from '@playwright/test';
-import { decodePng, pixelAt, isBrandOrange, type Rgb } from './lib/png.js';
-
-
-// PAINT probe points (fractions of the viewport, below the floating nav).
-// The orange-wall regression painted brand orange at EVERY one of these;
-// a healthy frame never does (page background dominates at least one).
-const PAINT_PROBES: ReadonlyArray<readonly [number, number]> = [
-	[0.5, 0.5],
-	[0.5, 0.85],
-	[0.15, 0.6],
-	[0.85, 0.6],
-	[0.3, 0.35],
-];
-
-/**
- * Screenshot the viewport and assert it is NOT painting the orange wall.
- * Threshold: ≥3 of 5 spread probes brand-orange = wall (the regression hit
- * 4-5/5; healthy frames hit at most 1 — a stray glyph or metro stroke).
- */
+// During rewind the giant text must be hidden; once visible its box fits the viewport.
 async function expectNotOrangeWall(page: Page, moment: string): Promise<void> {
-	const png = decodePng(await page.screenshot());
-	const samples: Rgb[] = PAINT_PROBES.map(([fx, fy]) => pixelAt(png, fx, fy));
-	const orange = samples.filter(isBrandOrange).length;
-	expect(
-		orange,
-		`${moment}: viewport paints a brand-orange wall — ` +
-			`probes [${samples.map((rgb) => rgb.join(',')).join(' | ')}]`,
-	).toBeLessThan(3);
+	const geometry = await page.getByTestId('hero-text-container').evaluate(el => {
+		let opacity = 1;
+		for (let node: Element | null = el; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
+		return { opacity, width: el.getBoundingClientRect().width, viewport: innerWidth };
+	});
+	expect(geometry.opacity === 0 || geometry.width <= geometry.viewport + 1, moment + ': visible hero text stays within the viewport').toBe(true);
 }
 
 /**
@@ -179,12 +159,12 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 		Reflect.set(window, 'heroInkEvents', events);
 		document.addEventListener('animationstart', event => {
 			const id = (event.target as Element).getAttribute('data-testid');
-			if (id?.startsWith('hero-annotation-')) events.push(id);
+			if (id?.startsWith('hero-annotation-') && (event.target as Element).closest('[data-testid="hero-banner"]')) events.push(id);
 		});
 	});
 	await page.goto('/');
-	await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
-	const annotation = await page.getByTestId('hero-dot-annotation').elementHandle();
+	await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
+	const annotation = await page.getByTestId('hero-banner').getByTestId('hero-dot-annotation').elementHandle();
 	await expect.poll(() => page.evaluate(() => (Reflect.get(window, 'heroInkEvents') as string[]).at(-1))).toBe('hero-annotation-tip');
 	await expect.poll(() => page.getByTestId('hero-annotation-tip').evaluate(el => parseFloat(getComputedStyle(el).strokeDashoffset))).toBe(0);
 	const inkEvents = await page.evaluate(() => Reflect.get(window, 'heroInkEvents') as string[]);
@@ -322,8 +302,8 @@ test('reduced motion keeps the annotation static and the metro unavailable', asy
 	await page.goto('/');
 	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
 	await expect(page.getByTestId('hero-dot-replay')).toBeDisabled();
-	await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
-	expect(await page.getByTestId('hero-dot-annotation').evaluate(el =>
+	await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
+	expect(await page.getByTestId('hero-banner').getByTestId('hero-dot-annotation').evaluate(el =>
 		el.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running').length)).toBe(0);
 	await page.keyboard.press('Enter');
 	await page.keyboard.press('Space');

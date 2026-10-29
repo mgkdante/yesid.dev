@@ -105,7 +105,7 @@ for (const [width, height, touch] of [[390, 844, true], [840, 956, true], [1440,
 				window.scrollTo({ top: parseFloat(getComputedStyle(spacer).paddingBottom) * 0.98, behavior: 'instant' });
 			});
 			expect(await settledHeroScale(page), 'the settled near-end scene must still differ from its final pose').toBeGreaterThan(1.01);
-			await expect(page.getByTestId('hero-dot-annotation')).toBeHidden();
+			await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeHidden();
 			await expect.poll(() => page.getByTestId('hero-dot').evaluate(async svg => {
 				const animation = svg.getAnimations().find(candidate => candidate.playState === 'running');
 				if (!animation) return false;
@@ -140,7 +140,7 @@ for (const [width, height, touch] of [[390, 844, true], [840, 956, true], [1440,
 			expect(landing.lastPinned?.scale, JSON.stringify(landing)).toBeLessThanOrEqual(1.01);
 			expect(Math.abs(landing.lastPinned!.top - landing.settled!.top), JSON.stringify(landing)).toBeLessThanOrEqual(1);
 			await expect(page.getByTestId('hero-line1')).toBeVisible();
-			await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
+			await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
 			await expectProgressiveInk(page, testInfo);
 		} finally {
 			await context.close();

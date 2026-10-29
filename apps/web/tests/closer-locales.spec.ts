@@ -6,6 +6,17 @@ import { closerContent } from '../src/lib/content/site-content';
 import { resolveLocale } from '../src/lib/utils/locale';
 
 for (const locale of PUBLISHED_LOCALES) {
+	test(`${locale} closer is readable without JavaScript in normal motion`, async ({ browser, baseURL }) => {
+		const context = await browser.newContext({ baseURL, javaScriptEnabled: false, reducedMotion: 'no-preference' });
+		const page = await context.newPage();
+		try {
+			await page.goto(locale === DEFAULT_LOCALE ? '/' : '/' + locale);
+			const note = page.getByRole('img', { name: THE_END[locale], exact: true });
+			await note.scrollIntoViewIfNeeded();
+			expect(await note.locator('path').evaluateAll(paths => paths.every(path => getComputedStyle(path).visibility === 'visible' && getComputedStyle(path).strokeDashoffset === '0px'))).toBe(true);
+		} finally { await context.close(); }
+	});
+
 	test(locale + ' closer lettering and navigation survive failed decorative requests', async ({ page }) => {
 		const requests: string[] = [];
 		page.on('request', request => { if (request.url().includes('/svg/graffiti/')) requests.push(request.url()); });

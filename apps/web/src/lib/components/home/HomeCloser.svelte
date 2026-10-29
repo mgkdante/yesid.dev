@@ -121,7 +121,7 @@
 	class="closer-section relative"
 >
 	<div class="closer-note" bind:this={noteEl} role="img" aria-label={closingLabel}>
-		<HeroDotAnnotation {lettering} width={lettering.width + 24} height={52} x={10} y={34} visible={true} ready={writing} />
+		<HeroDotAnnotation {lettering} width={lettering.width + 24} height={52} x={10} y={34} visible={true} ready={writing} initiallyDrawn />
 	</div>
 
 	<!-- Content -->

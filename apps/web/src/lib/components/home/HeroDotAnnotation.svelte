@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import type { getLettering } from './annotation-lettering';
-	let { lettering, width, height, x, y, arrow = '', tip = '', visible, ready }: {
+	let { lettering, width, height, x, y, arrow = '', tip = '', visible, ready, initiallyDrawn = false }: {
 		lettering: ReturnType<typeof getLettering>;
 		width: number; height: number; x: number; y: number;
 		arrow?: string; tip?: string; visible: boolean; ready: boolean;
+		initiallyDrawn?: boolean;
 	} = $props();
-	let phase = $state<'hidden' | 'drawing' | 'drawn'>('hidden');
+	let phase = $state<'hidden' | 'drawing' | 'drawn'>(untrack(() => initiallyDrawn ? 'drawn' : 'hidden'));
 	$effect(() => {
+		if (!visible || !ready) { phase = initiallyDrawn ? 'drawn' : 'hidden'; return; }
 		phase = 'hidden';
-		if (!visible || !ready) return;
 		// Let pin teardown, scroll anchoring and glyph measurement finish before
 		// starting the clock. Hidden strokes are undrawn, never completed ink.
 		let frame = requestAnimationFrame(() => {
@@ -20,7 +22,7 @@
 
 <svg class="annotation" class:ready class:drawing={phase === 'drawing'} class:drawn={phase === 'drawn'}
 	class:available={visible && ready}
-	class:concealed={!visible || !ready || phase === 'hidden'}
+	class:concealed={!visible || (!initiallyDrawn && (!ready || phase === 'hidden'))}
 	style="--arrow-delay: {(lettering.letters.at(-1)?.index ?? 0) * 0.16 + 0.32}s"
 	data-testid="hero-dot-annotation" viewBox="0 0 {width || 1} {height || 1}"
 	aria-hidden="true" focusable="false" fill="none" stroke="currentColor"
@@ -45,7 +47,7 @@
 	.ready.drawing .letter { animation: draw 0.28s linear var(--delay) both; }
 	.ready.drawing .arrow { animation: draw 0.75s ease-out var(--arrow-delay) both; }
 	.ready.drawing .tip { animation: draw 0.2s ease-out calc(var(--arrow-delay) + 0.75s) both; }
-	.ready.drawn path { animation: none; stroke-dashoffset: 0; }
+	.drawn path { animation: none; stroke-dashoffset: 0; }
 	@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 	@media (prefers-reduced-motion: reduce) {
 		.available { visibility: visible; }
