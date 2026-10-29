@@ -24,7 +24,7 @@ export function getLettering(label: string) {
 		if (letter === ' ') { width += 7; return []; }
 		// Keep unexpected content visible as a replacement glyph instead of crashing or dropping it.
 		const glyph = glyphs[letter.toLowerCase()] ?? { d: 'M1 0 11 0 11 16 1 16 Z M2 1 10 15 M10 1 2 15', width: 13, end: [11, 16] };
-		const path = { d: glyph.d, x: width, index };
+		const path = { d: glyph.d, x: width, y: 0, index };
 		end = { x: width + glyph.end[0], y: glyph.end[1] };
 		width += glyph.width;
 		return [path];

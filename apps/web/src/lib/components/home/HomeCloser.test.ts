@@ -52,7 +52,9 @@ describe('HomeCloser', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows[2].getAttribute('href')).toBe('/blog');
-		expect(rows[2].textContent).toContain(closerContent.rows.read.description.en);
+		expect(rows[2].textContent).toContain(
+			closerContent.rows.read.description.en,
+		);
 		expect(screen.queryByText('First dispatch')).not.toBeInTheDocument();
 		expect(screen.queryByText('Second dispatch')).not.toBeInTheDocument();
 	});
@@ -68,7 +70,20 @@ describe('HomeCloser', () => {
 	it('keeps the authored closer and terminal links available without decorative network requests', () => {
 		render(HomeCloser, { props });
 		expect(screen.getByRole('img', { name: THE_END.en })).toBeInTheDocument();
-		expect(screen.getByRole('link', { name: new RegExp(closerContent.cta.label.en) })).toHaveAttribute('href', closerContent.cta.href);
+		expect(
+			screen.getByRole('link', {
+				name: new RegExp(closerContent.cta.label.en),
+			}),
+		).toHaveAttribute('href', closerContent.cta.href);
 		expect(globalThis.fetch).not.toHaveBeenCalled();
+	});
+	it('keeps the stationary floodlight in the scene', () => {
+		const view = render(HomeCloser, { props });
+		const lamp = view.container.querySelector(
+			'[data-slot="closer-floodlight"]',
+		);
+		expect(lamp).not.toBeNull();
+		expect(lamp).toHaveAttribute('aria-hidden', 'true');
+		expect(lamp!.querySelector('svg')).not.toBeNull();
 	});
 });

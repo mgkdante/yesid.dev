@@ -148,6 +148,7 @@
 	<Analytics locale={locale} isHome={basePath === '/'} />
 
 	<div
+		style:overflow-anchor={basePath === '/' ? 'none' : undefined}
 		class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]"
 	>
 		<SiteHeader
@@ -189,6 +190,7 @@
 
 		<!-- Footer wrapper: z-footer paints over the fixed rail (z-rail) -->
 		<div class="relative z-footer">
+
 			<SiteFooter
 				brand={footerBrand}
 				tagline={resolveLocale(footer.tagline, locale)}
