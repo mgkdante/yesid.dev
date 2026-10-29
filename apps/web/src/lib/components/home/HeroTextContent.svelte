@@ -5,7 +5,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
-	import HeroDotAnnotation, { CLICK_ME, getLettering } from './HeroDotAnnotation.svelte';
+	import HeroDotAnnotation from './HeroDotAnnotation.svelte';
+	import { CLICK_ME, getLettering } from './annotation-lettering';
 	import { Button } from '@yesid/ui/button';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';

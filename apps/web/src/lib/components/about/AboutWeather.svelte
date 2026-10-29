@@ -1,6 +1,5 @@
 <!--
-  Weather + Location-reveal widget.
-  Wordplay hook ("Guess where I am?") leads the visitor to discover Montreal.
+  Weather and location widget.
   GO Wave 4: full animated scene system, one crafted Montréal vignette per
   condition family (WeatherScene.svelte), day/night from the data's icon
   suffix, theme-aware palettes, crafted inline glyph (WeatherGlyph.svelte).
@@ -48,7 +47,6 @@
 	});
 
 	const city = $derived(resolveLocale(config.city, locale));
-	const hook = $derived(resolveLocale(config.hook, locale));
 	const hasWeather = $derived(currentWeather != null);
 
 	// Scene + daypart. The icon's d/n suffix is OpenWeather's own
@@ -72,13 +70,7 @@
 
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">
-			<!-- Hook: wordplay question -->
-			<div class="font-mono text-caption tracking-[2px] text-[var(--secondary-foreground)]">
-				{hook}
-			</div>
-
-			<!-- City reveal -->
-			<div class="mt-2 text-lg font-semibold text-[var(--foreground)]">
+			<div class="text-lg font-semibold text-[var(--foreground)]">
 				{city}
 			</div>
 

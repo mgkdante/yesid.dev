@@ -232,6 +232,7 @@
 	   the home page"): grid lines 3.5% → 6%, solder dots up a step — the
 	   manifesto schematic reads in both modes instead of subliminal. */
 	.manifesto__circuit-grid {
+		opacity: var(--manifesto-background-strength);
 		position: absolute;
 		inset: 0;
 		background-image:
@@ -354,7 +355,6 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.manifesto__circuit-grid,
 		.manifesto__prompt,
 		.manifesto__pill {
 			opacity: 1;
