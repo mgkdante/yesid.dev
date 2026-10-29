@@ -195,6 +195,22 @@
 	.closer-core { min-height: 100dvh; display: flex; align-items: center; padding: var(--space-section-y) var(--space-page-x) 100px; position: relative; }
 	.ground-anchor { height: 0; width: 1px; pointer-events: none; }
 	.construction-extension { height: var(--construction-extension); }
+	/* SSR cannot know the viewport. Keep the static fallback balanced above phone
+	   width until the media query can select the package's enhanced layout. */
+	@media (--tablet-min) {
+		.closer-section :global(.around .floor) {
+			position: absolute; inset-inline: clamp(16px, 4vw, 64px) var(--construction-end-inset);
+			bottom: 0; display: flex; align-items: flex-end; justify-content: space-evenly;
+			gap: clamp(6px, 1.6vw, 24px);
+		}
+		.closer-section :global(.around [data-construction-prop]) {
+			position: relative; inset: auto; flex: 0 1 auto; min-width: 0;
+		}
+		.closer-section :global(.around [data-construction-prop='sign']) { order: 0; }
+		.closer-section :global(.around [data-construction-prop='helmet']) { order: 1; }
+		.closer-section :global(.around [data-construction-prop='barricade']) { order: 2; }
+		.closer-section :global(.around [data-construction-prop='balise']) { order: 3; }
+	}
 
 	/* GO-w2t5: breathing consumer — var(--breathing-phase) 0↔1 modulates a
 	   faint floor glow under the board ("is it actually moving?" subtle). */

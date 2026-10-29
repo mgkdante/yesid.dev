@@ -38,6 +38,16 @@ for (const locale of PUBLISHED_LOCALES) {
 			await expect(
 				page.locator('[data-slot="construction-floodlight"]'),
 			).toHaveAttribute('data-lit', 'true');
+			for (const width of [390, 820, 1920]) {
+				await page.setViewportSize({ width, height: 1180 });
+				const art = await page.locator('[data-construction-prop] > svg').evaluateAll(elements =>
+					elements.map(element => element.getBoundingClientRect().toJSON()).sort((a, b) => a.left - b.left));
+				for (let i = 0; i < art.length; i++) {
+					expect(art[i].left).toBeGreaterThanOrEqual(0);
+					expect(art[i].right).toBeLessThanOrEqual(width);
+					if (i) expect(art[i].left, `${width}px no-JS props stay distinct`).toBeGreaterThanOrEqual(art[i - 1].right);
+				}
+			}
 		} finally {
 			await context.close();
 		}
