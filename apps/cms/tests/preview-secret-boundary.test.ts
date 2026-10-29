@@ -21,16 +21,14 @@ function buildEnv(path: string): string[] {
 
 describe('preview credential repository boundary', () => {
 	it('keys Turbo builds by target, branch, and the distinct build credentials', () => {
-		for (const path of ['turbo.json', '.github/shared-tooling/turbo.overlay.json']) {
-			const env = buildEnv(path);
-			expect(env).toContain('VERCEL_ENV');
-			expect(env).toContain('VERCEL_GIT_COMMIT_REF');
-			expect(env).toContain('DIRECTUS_BUILD_TOKEN');
-			expect(env).toContain('DIRECTUS_DEV_BUILD_TOKEN');
-			expect(env).not.toContain('DIRECTUS_READ_TOKEN');
-			expect(env).not.toContain('WEB3FORMS_ACCESS_KEY');
-			expect(env).not.toContain('VITE_WEB3FORMS_ACCESS_KEY');
-		}
+		const env = buildEnv('turbo.json');
+		expect(env).toContain('VERCEL_ENV');
+		expect(env).toContain('VERCEL_GIT_COMMIT_REF');
+		expect(env).toContain('DIRECTUS_BUILD_TOKEN');
+		expect(env).toContain('DIRECTUS_DEV_BUILD_TOKEN');
+		expect(env).not.toContain('DIRECTUS_READ_TOKEN');
+		expect(env).not.toContain('WEB3FORMS_ACCESS_KEY');
+		expect(env).not.toContain('VITE_WEB3FORMS_ACCESS_KEY');
 	});
 
 	it('does not advertise the dead Directus read credential in tracked env templates', () => {

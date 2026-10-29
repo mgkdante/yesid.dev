@@ -7,8 +7,7 @@ name: cms
 # directus-extension-sync@3.0.6 on the Railway Directus image.
 #
 # Jobs:
-# - test-work (PR/dispatch): apps/cms unit tests (no network or CMS credentials).
-# - test (always): required-check reporter; main pushes reuse the merged PR gate.
+# - test (always, required check): apps/cms unit tests (no network or CMS credentials).
 # - diff (main PR): required credential-free validation of the committed
 #   Directus snapshot contracts. Offline; never receives CMS credentials.
 # - live-diff (push to main or main-only diff dispatch): read-only preview of
@@ -65,7 +64,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
 
 # Cancel in-progress duplicate runs on PR pushes; let main pushes
 # AND workflow_dispatch (which may apply to prod) run to completion.
@@ -74,47 +72,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  classify:
-    if: ${{ github.event_name != 'push' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      classification: ${{ steps.classify.outputs.classification }}
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-
-      - uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        id: classify
-        with:
-          github-token: ${{ github.token }}
-          rules-json: >-
-            {
-              "schema": 1,
-              "always": {
-                "paths": [".bun-version", ".github/scripts/materialize-shared-config.mjs", ".github/shared-tooling.json", ".github/workflows/cms.yml", ".npmrc", "bun.lock", "package.json", "turbo.json"],
-                "prefixes": [".github/actions/", ".github/scripts/", ".github/shared-tooling/", ".github/workflows/"]
-              },
-              "jobs": {
-                "test-work": {
-                  "paths": [],
-                  "prefixes": ["apps/cms/", "apps/web/", "gbp-assets/", "packages/"]
-                }
-              },
-              "ignore": {
-                "docs-only": {
-                  "paths": ["AGENTS.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
-                  "prefixes": ["docs/"]
-                },
-                "irrelevant": {
-                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore"],
-                  "prefixes": []
-                }
-              }
-            }
-
-  test-work:
-    needs: [classify]
-    if: ${{ github.event_name != 'push' && fromJSON(needs.classify.outputs.classification).relevant['test-work'] }}
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -125,27 +83,6 @@ jobs:
       - name: Run apps/cms unit tests (fixtures + seed dry-runs + sync-push + lib)
         working-directory: apps/cms
         run: bun test
-
-      # Schema codegen drift check removed in slice-28.3 (#78): the generated
-      # packages/shared/src/types/directus-schema.ts had zero consumers, and
-      # this step hit the prod CMS on every test run. The generator
-      # (apps/cms/scripts/generate-types.ts) was deleted with it.
-
-  test:
-    name: test
-    needs: [classify, test-work]
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Preserve trusted main-push dependency
-        if: ${{ github.event_name == 'push' }}
-        run: ':'
-
-      - uses: mgkdante/yesid.dev-design/.github/actions/required-context@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        if: ${{ github.event_name != 'push' }}
-        with:
-          needs-json: ${{ toJSON(needs) }}
 
   diff:
     # Keep the required main-PR `diff` status without exposing production.
