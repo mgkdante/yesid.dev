@@ -82,6 +82,7 @@
 	"blog_chrome_detail_code_copy_aria": "Copy code to clipboard",
 	"blog_chrome_detail_code_copy_label": "Copy",
 	"blog_chrome_detail_code_error_label": "Error",
+	"blog_chrome_detail_code_copied_label": "Copied",
 	"blog_chrome_detail_back_nav_to_personal": "← back to personal corner",
 	"blog_chrome_detail_back_nav_to_dispatches": "← back to Blog",
 	"blog_chrome_detail_header_post_tags_aria": "Post tags",

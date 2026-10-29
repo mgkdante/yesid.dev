@@ -82,6 +82,7 @@
 	"blog_chrome_detail_code_copy_aria": "Copier le code dans le presse-papiers",
 	"blog_chrome_detail_code_copy_label": "Copier",
 	"blog_chrome_detail_code_error_label": "Erreur",
+	"blog_chrome_detail_code_copied_label": "Copié",
 	"blog_chrome_detail_back_nav_to_personal": "← retour au coin personnel",
 	"blog_chrome_detail_back_nav_to_dispatches": "← retour au blogue",
 	"blog_chrome_detail_header_post_tags_aria": "Étiquettes de l'article",

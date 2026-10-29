@@ -154,6 +154,7 @@ export const SiteLabelsSchema = z.object({
 				copyAria: LocalizedStringSchema,
 				copyLabel: LocalizedStringSchema,
 				errorLabel: LocalizedStringSchema,
+				copiedLabel: LocalizedStringSchema,
 			}),
 			backNav: z.object({
 				toPersonal: LocalizedStringSchema,

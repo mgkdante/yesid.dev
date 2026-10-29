@@ -107,8 +107,7 @@ html {
 .prose-dark h4 { font-size: 1.1rem; font-weight: 600; }
 .prose-dark p { margin-bottom: 1rem; }
 .prose-dark strong { color: var(--foreground); font-weight: 600; }
-.prose-dark pre:not(.terminal-code-body > pre),
-.prose-dark pre.shiki:not(.terminal-code-body > pre) {
+.prose-dark pre:not(.terminal-code-body > pre) {
   background: var(--terminal) !important;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -129,14 +128,11 @@ html {
   border: none;
   font-size: inherit;
 }
-/* Non-Shiki code blocks (plain): keep orange fallback */
-.prose-dark pre:not(.shiki) code {
-  color: var(--primary);
-}
-/* Shiki spans carry their own color — don't override */
-.prose-dark pre.shiki code {
+/* CodeBlock code takes the syntax colors; other prose code stays orange. */
+.prose-dark .terminal-code-body code {
   color: inherit;
 }
+
 .prose-dark code {
   font-family: var(--font-mono);
   font-size: 0.85em;

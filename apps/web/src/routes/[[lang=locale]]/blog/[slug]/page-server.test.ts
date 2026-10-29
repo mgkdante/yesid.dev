@@ -16,7 +16,7 @@ const adapterMocks = vi.hoisted(() => ({
 }));
 
 vi.mock('#lib/adapters/index.ts', () => adapterMocks);
-vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: () => ({}) }));
+vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: async () => ({}) }));
 
 import { load } from './+page.server';
 

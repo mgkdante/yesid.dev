@@ -1,14 +1,8 @@
-// Server-only ($lib/server): pulls in Shiki via syntax-highlight — the whole
-// chain must never reach the client bundle (highlighting happens at
-// render/prerender time; CodeBlock consumes pre-highlighted HTML).
-import { marked } from 'marked';
+// Server-only ($lib/server): fetches and sanitizes GitHub READMEs; code highlighting stays on the server.
+import { marked, type Token, type Tokens } from 'marked';
 import sanitizeHtml, { type IOptions } from 'sanitize-html';
-import {
-	parseCodeFence,
-	renderCodeTerminalHtml,
-	renderMermaidPlaceholderHtml,
-} from '#lib/utils/code-fences.ts';
-import { highlightCodeHtml } from './syntax-highlight';
+import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
+import { highlightFence } from './code-highlights';
 
 const README_DIAGNOSTICS = {
 	invalid: '[project-readme] invalid source; section omitted',
@@ -59,11 +53,6 @@ const README_SANITIZER_OPTIONS: IOptions = {
 		'td',
 		'pre',
 		'code',
-		'figure',
-		'figcaption',
-		'div',
-		'span',
-		'button',
 		'input',
 		'details',
 		'summary',
@@ -78,66 +67,12 @@ const README_SANITIZER_OPTIONS: IOptions = {
 		ol: ['start'],
 		th: ['align', 'colspan', 'rowspan'],
 		td: ['align', 'colspan', 'rowspan'],
-		pre: ['class', 'style', 'tabindex'],
 		code: ['class'],
-		figure: [
-			'class',
-			'data-slot',
-			'data-code-language',
-			'data-code-copy',
-			'data-testid',
-			'data-mermaid-source',
-		],
-		figcaption: ['class'],
-		div: ['class'],
-		span: ['class', 'style', 'data-slot', 'aria-hidden'],
-		button: [
-			{ name: 'type', values: ['button'] },
-			'class',
-			'data-code-copy-button',
-			'aria-label',
-		],
 		input: [
 			{ name: 'type', values: ['checkbox'] },
 			'checked',
 			'disabled',
 		],
-	},
-	allowedClasses: {
-		figure: ['terminal', 'terminal-code', 'mermaid-diagram'],
-		figcaption: ['terminal-titlebar'],
-		div: [
-			'terminal-titlebar-main',
-			'terminal-titlebar-actions',
-			'terminal-body',
-			'no-pad',
-			'terminal-code-body',
-			'mermaid-diagram__surface',
-		],
-		span: [
-			'line',
-			'terminal-signal-head',
-			'terminal-signal',
-			'terminal-signal-green',
-			'terminal-signal-caution',
-			'terminal-signal-stop',
-			'terminal-title',
-			'terminal-tag',
-		],
-		pre: ['shiki', 'yesid-brand', 'mermaid-diagram__fallback'],
-		button: ['terminal-code-copy'],
-	},
-	allowedStyles: {
-		pre: {
-			'background-color': [/^var\(--terminal\)$/],
-			color: [/^var\(--terminal-ink\)$/],
-		},
-		span: {
-			color: [
-				/^var\(--syntax-(?:keyword|string|number|function|comment|punctuation|plain)\)$/,
-			],
-			'font-style': [/^(?:italic|normal)$/],
-		},
 	},
 	allowedSchemes: ['http', 'https', 'mailto'],
 	allowedSchemesByTag: { img: ['http', 'https'] },
@@ -240,21 +175,40 @@ function githubRawReadmeUrl(value: string): string | null {
 		.join('/')}`;
 }
 
-marked.use({
-	renderer: {
-		code({ text, lang }) {
-			const parsed = parseCodeFence(lang ? `\`\`\`${lang}\n${text}\n\`\`\`` : text);
-			if (parsed.kind === 'mermaid') return renderMermaidPlaceholderHtml(parsed);
-
-			return renderCodeTerminalHtml(parsed, highlightCodeHtml(parsed.body, parsed.normalizedLanguage));
-		},
-	},
-});
+// Top-level fences become CodeBlock segments; the prose between them is sanitized HTML. A fence
+// inside a raw <details> stays in that prose so the disclosure is sanitized whole.
+async function readmeSegments(markdown: string): Promise<ReadmeSegment[]> {
+	const segments: ReadmeSegment[] = [];
+	let prose: Token[] = [];
+	let openDetails = 0;
+	const flush = () => {
+		const html = sanitizeReadmeHtml(marked.parser(prose));
+		if (html.trim()) segments.push({ html });
+		prose = [];
+	};
+	for (const token of marked.lexer(markdown)) {
+		if (token.type === 'html') {
+			const opened = token.raw.match(/<details\b/gi)?.length ?? 0;
+			const closed = token.raw.match(/<\/details>/gi)?.length ?? 0;
+			openDetails = Math.max(0, openDetails + opened - closed);
+		}
+		if (token.type !== 'code' || openDetails > 0) {
+			prose.push(token);
+			continue;
+		}
+		flush();
+		const { lang, text } = token as Tokens.Code;
+		const fence = lang ? `\`\`\`${lang}\n${text}\n\`\`\`` : text;
+		segments.push({ fence, highlighted: await highlightFence(fence) });
+	}
+	flush();
+	return segments;
+}
 
 export async function renderGithubReadme(
 	readmeUrl: string | null | undefined,
 	request: typeof globalThis.fetch,
-): Promise<string | undefined> {
+): Promise<ReadmeSegment[] | undefined> {
 	if (!readmeUrl) return undefined;
 	const sourceUrl = githubRawReadmeUrl(readmeUrl);
 	if (!sourceUrl) {
@@ -279,8 +233,7 @@ export async function renderGithubReadme(
 	}
 
 	try {
-		const markdown = await response.text();
-		return sanitizeReadmeHtml(await marked.parse(markdown));
+		return await readmeSegments(await response.text());
 	} catch {
 		console.warn(README_DIAGNOSTICS.render);
 		return undefined;

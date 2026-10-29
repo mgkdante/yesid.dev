@@ -19,10 +19,6 @@
 	const glanceStackTitle = resolveLocale(detailChrome.glance.stack, locale);
 	const glanceServicesTitle = resolveLocale(detailChrome.glance.services, locale);
 	const glanceLinksTitle = resolveLocale(detailChrome.glance.links, locale);
-	const codeChrome = siteLabels.blogChrome.detail.code;
-	const readmeCopyLabel = resolveLocale(codeChrome.copyLabel, locale);
-	const readmeCopyAria = resolveLocale(codeChrome.copyAria, locale);
-	const readmeCopyErrorLabel = resolveLocale(codeChrome.errorLabel, locale);
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 	import {
@@ -41,7 +37,9 @@
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
 	import ProjectLinksCard from './ProjectLinksCard.svelte';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
-	import { onMount, tick } from 'svelte';
+	import CodeBlock from '#lib/components/cms/blocks/CodeBlock.svelte';
+	import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
+	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
 
@@ -49,7 +47,7 @@
 		project,
 		services,
 		serviceSvgContents,
-		readmeHtml,
+		readme,
 		codeHighlights
 
 		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
@@ -57,7 +55,7 @@
 		project: Project;
 		services: Service[];
 		serviceSvgContents: Record<string, string>;
-		readmeHtml?: string;
+		readme?: ReadmeSegment[];
 		codeHighlights?: Readonly<Record<string, string>>
 	 } = $props();
 
@@ -69,8 +67,6 @@
 	let activeHeadingId = $state('');
 	/** Storage key scoped to this project, so one project's open sections never leak into another. */
 	const scoped = (key: string) => `${project.slug}:${key}`;
-	let readmeBody = $state<HTMLElement | null>(null);
-	let readmeCopyResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	type SectionView = {
 		originalIndex: number;
@@ -152,8 +148,9 @@
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
 	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
+	const readmeHtml = $derived((readme ?? []).map((part) => ('html' in part ? part.html : '')).join(''));
 	const readmeTocEntry = $derived.by((): TocEntry | null => {
-		if (!readmeHtml) return null;
+		if (!readme?.length) return null;
 		return {
 			id: `section-${articleSections.length}`,
 			title: 'README',
@@ -200,184 +197,26 @@
 		return entries;
 	});
 
-	const processedReadmeHtml = $derived.by(() => {
-		if (!readmeHtml) return '';
+	const readmeParts = $derived.by(() => {
 		let idx = 0;
 		// Same real "#" permalink as the blog path (homework #7c): id on the
 		// opening tag, anchor injected before the closing tag. IDs must count
 		// ALL h1-h6 (readmeTocChildren counts them all), but the visible anchor
 		// only ships on h2-h4 — the levels the hover CSS positions.
-		return readmeHtml.replace(
-			/<(h[1-6])([^>]*)>([\s\S]*?)<\/\1>/gi,
-			(match, tag, attrs, inner) => {
-			const id = `readme-h-${idx++}`;
-			const anchor = (/^h[234]$/i).test(tag)
-				? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
-				: '';
-			return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
-		});
+		return (readme ?? []).map((part) =>
+			'html' in part
+				? { html: part.html.replace(/<(h[1-6])([^>]*)>([\s\S]*?)<\/\1>/gi, (match, tag, attrs, inner) => {
+					const id = `readme-h-${idx++}`;
+					const anchor = (/^h[234]$/i).test(tag)
+						? `<a class="heading-anchor" href="#${id}" aria-labelledby="${id}">#</a>`
+						: '';
+					return `<${tag}${attrs} id="${id}">${inner}${anchor}</${tag}>`;
+				}) }
+				: part,
+		);
 	});
-
-	function mermaidCssVar(style: CSSStyleDeclaration, name: string, fallback: string): string {
-		return style.getPropertyValue(name).trim() || fallback;
-	}
-
-	function mermaidThemeVariables(root: Element): Record<string, string> {
-		const style = getComputedStyle(root);
-		const primary = mermaidCssVar(style, '--primary', '#E07800');
-		const accent = mermaidCssVar(style, '--accent', '#FFB627');
-		const background = mermaidCssVar(style, '--background', '#141414');
-		const card = mermaidCssVar(style, '--card', '#1a1a1a');
-		const foreground = mermaidCssVar(style, '--foreground', '#F5F5F0');
-		const muted = mermaidCssVar(style, '--muted-foreground', '#949494');
-		const border = mermaidCssVar(style, '--border-subtle', '#2f2f2f');
-
-		return {
-			background,
-			mainBkg: card,
-			primaryColor: card,
-			primaryBorderColor: primary,
-			primaryTextColor: foreground,
-			secondaryColor: background,
-			secondaryBorderColor: accent,
-			secondaryTextColor: foreground,
-			tertiaryColor: background,
-			tertiaryBorderColor: border,
-			tertiaryTextColor: foreground,
-			lineColor: accent,
-			textColor: foreground,
-			nodeTextColor: foreground,
-			clusterBkg: background,
-			clusterBorder: primary,
-			edgeLabelBackground: card,
-			labelTextColor: foreground,
-			noteBkgColor: card,
-			noteTextColor: foreground,
-			noteBorderColor: border,
-			actorBkg: card,
-			actorBorder: primary,
-			actorTextColor: foreground,
-			activationBkgColor: primary,
-			activationBorderColor: accent,
-			signalColor: muted,
-			signalTextColor: foreground,
-		};
-	}
 
 	afterNavigate(onTocNavigate);
-
-	onMount(() => {
-		if (!browser || !readmeHtml) return;
-
-		let cancelled = false;
-		let renderSerial = 0;
-		let renderQueued = false;
-		let observer: MutationObserver | null = null;
-
-		async function renderReadmeMermaid(): Promise<void> {
-			const token = ++renderSerial;
-			await tick();
-			if (cancelled || !readmeBody) return;
-
-			// Query BEFORE importing: most readmes have zero diagrams, and the
-			// mermaid bundle is ~144KB gz — only pay for it when one exists.
-			const diagrams = [...readmeBody.querySelectorAll<HTMLElement>('[data-mermaid-source]')];
-			if (diagrams.length === 0) return;
-			const mermaid = (await import('mermaid')).default;
-			for (let i = 0; i < diagrams.length; i++) {
-				const diagram = diagrams[i];
-				const source = diagram.getAttribute('data-mermaid-source')?.trim();
-				const surface = diagram.querySelector<HTMLElement>('.mermaid-diagram__surface');
-				if (!source || !surface) continue;
-				try {
-					const themeVariables = mermaidThemeVariables(diagram);
-					const renderKey = `${source}\n${JSON.stringify(themeVariables)}`;
-					if (diagram.dataset.mermaidRenderedKey === renderKey) continue;
-					mermaid.initialize({
-						startOnLoad: false,
-						securityLevel: 'strict',
-						theme: 'base',
-						themeVariables,
-						flowchart: {
-							curve: 'basis',
-							htmlLabels: false,
-						},
-					});
-					const rendered = await mermaid.render(`readme-mermaid-${token}-${i}`, source);
-					if (cancelled || token !== renderSerial) return;
-					surface.innerHTML = rendered.svg;
-					diagram.dataset.mermaidRenderedKey = renderKey;
-					diagram.removeAttribute('data-mermaid-error');
-				} catch {
-					if (!cancelled && token === renderSerial) diagram.setAttribute('data-mermaid-error', 'true');
-				}
-			}
-		}
-
-		function queueReadmeMermaid(): void {
-			if (renderQueued) return;
-			renderQueued = true;
-			requestAnimationFrame(() => {
-				renderQueued = false;
-				void renderReadmeMermaid();
-			});
-		}
-
-		void renderReadmeMermaid();
-		observer = new MutationObserver(queueReadmeMermaid);
-		observer.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ['data-theme', 'class'],
-		});
-
-		return () => {
-			cancelled = true;
-			observer?.disconnect();
-		};
-	});
-
-	onMount(() => {
-		if (!browser || !readmeHtml) return;
-
-		let cancelled = false;
-		let removeListener: (() => void) | null = null;
-
-		async function handleReadmeCopy(event: MouseEvent): Promise<void> {
-			const button = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>('[data-code-copy-button]');
-			if (!button || !readmeBody?.contains(button)) return;
-			const terminal = button.closest<HTMLElement>('[data-code-copy]');
-			const copyText = terminal?.getAttribute('data-code-copy') ?? '';
-			if (!copyText) return;
-
-			try {
-				await navigator.clipboard.writeText(copyText);
-				button.textContent = '✓';
-			} catch {
-				button.textContent = readmeCopyErrorLabel;
-			}
-
-			if (readmeCopyResetTimeout) clearTimeout(readmeCopyResetTimeout);
-			readmeCopyResetTimeout = setTimeout(() => {
-				button.textContent = readmeCopyLabel;
-			}, 2000);
-		}
-
-		void tick().then(() => {
-			if (cancelled || !readmeBody) return;
-			for (const button of readmeBody.querySelectorAll<HTMLButtonElement>('[data-code-copy-button]')) {
-				button.textContent = readmeCopyLabel;
-				button.setAttribute('aria-label', readmeCopyAria);
-			}
-			readmeBody.addEventListener('click', handleReadmeCopy);
-			removeListener = () => readmeBody?.removeEventListener('click', handleReadmeCopy);
-		});
-
-		return () => {
-			cancelled = true;
-			removeListener?.();
-			if (readmeCopyResetTimeout) clearTimeout(readmeCopyResetTimeout);
-		};
-	});
 
 	// slice-34.4: reading position survives a locale switch. The detail page's
 	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
@@ -546,7 +385,7 @@
 				{@render articleSection(section, offset + 1)}
 			{/each}
 
-			{#if readmeHtml}
+			{#if readme?.length}
 				<div
 					class="section-block"
 					data-section-index={articleSections.length}
@@ -555,8 +394,14 @@
 						{#snippet icon()}
 							<SectionIcon name="github" class="h-5 w-5 shrink-0 text-primary" />
 						{/snippet}
-					<div class="article-body prose-dark section-body" bind:this={readmeBody}>
-							{@html processedReadmeHtml}
+						<div class="article-body prose-dark section-body">
+							{#each readmeParts as part, i (i)}
+								{#if 'html' in part}
+									{@html part.html}
+								{:else}
+									<CodeBlock data={{ code: part.fence }} highlightedHtml={part.highlighted} />
+								{/if}
+							{/each}
 						</div>
 					</CollapsibleSection>
 				</div>

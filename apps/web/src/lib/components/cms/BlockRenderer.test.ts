@@ -141,11 +141,11 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		expect(container.querySelector('ul > li > ul > li')).toBeTruthy();
 	});
 
-	it('renders code block (no language attribute per AM3)', () => {
+	it('renders code block (no language attribute per AM3)', async () => {
 		const doc = baseDoc([
 			{ id: 'c1', type: 'code', data: { code: 'SELECT 1;' } },
 		]);
-		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
+		const { container } = render(BlockRenderer, { doc, codeHighlights: await collectCodeHighlights([doc]) });
 		expect(container.textContent).toContain('SELECT 1;');
 	});
 
@@ -175,12 +175,10 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const doc = baseDoc([
 			{ id: 'c-script', type: 'code', data: { code: script } },
 		]);
-		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
+		const { container } = render(BlockRenderer, { doc, codeHighlights: await collectCodeHighlights([doc]) });
 		const button = screen.getByRole('button', { name: resolveLocale(siteLabels.blogChrome.detail.code.copyAria, 'en') });
 
 		expect(screen.getByText('sh')).toBeInTheDocument();
-		expect(container.innerHTML).toContain('var(--terminal)');
-		expect(container.innerHTML).toContain('var(--syntax-keyword)');
 		expect(container.textContent).toContain('op run --env-file=apps/cms/.env');
 		expect(container.textContent).not.toContain('```');
 		expect(button).toBeTruthy();
@@ -195,7 +193,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		);
 	});
 
-	it('renders TypeScript code fences with the shared code frame', () => {
+	it('renders TypeScript code fences with the shared code frame', async () => {
 		const doc = baseDoc([
 			{
 				id: 'c-ts',
@@ -209,7 +207,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 				},
 			},
 		]);
-		const { container } = render(BlockRenderer, { doc, codeHighlights: collectCodeHighlights([doc]) });
+		const { container } = render(BlockRenderer, { doc, codeHighlights: await collectCodeHighlights([doc]) });
 
 		expect(screen.getByText('ts')).toBeInTheDocument();
 		expect(container.textContent).toContain(

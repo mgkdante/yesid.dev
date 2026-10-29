@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Project } from '#lib/types.ts';
+import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
 import { projects } from '#lib/content/projects.ts';
 import { projectFactory } from '../../../../tests/factories';
 
@@ -14,9 +15,11 @@ const routeMocks = vi.hoisted(() => ({
 vi.mock('#lib/adapters/index.ts', () => ({ adapter: routeMocks.adapter }));
 vi.mock('#lib/utils/index.ts', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
 vi.mock('#lib/server/prerender-entries.ts', () => ({ projectEntries: () => [] }));
-vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: () => ({}) }));
+vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: async () => ({}), highlightFence: async () => undefined }));
 
 import { load } from './+page.server';
+
+const readmeHtml = (readme?: ReadmeSegment[]) => readme?.map((part) => ('html' in part ? part.html : '')).join('');
 
 const BLOB_README = 'https://github.com/mgkdante/yesid.dev/blob/main/README.md';
 const RAW_README = 'https://raw.githubusercontent.com/mgkdante/yesid.dev/main/README.md';
@@ -70,7 +73,7 @@ describe('project README server boundary', () => {
 		const result = await loadProject(exportedProject!, fetcher);
 
 		expect(fetcher).not.toHaveBeenCalled();
-		expect(result.readmeHtml).toBeUndefined();
+		expect(result.readme).toBeUndefined();
 		expect(warnSpy).not.toHaveBeenCalled();
 	});
 
@@ -103,16 +106,12 @@ describe('project README server boundary', () => {
 			credentials: 'omit',
 			redirect: 'manual',
 		});
-		expect(result.readmeHtml).toContain('<h1>Safe heading</h1>');
-		expect(result.readmeHtml).toContain('href="https://example.com/docs"');
-		expect(result.readmeHtml).toContain('href="mailto:contact@example.com"');
-		expect(result.readmeHtml).toContain('src="https://images.example.com/readme.png"');
-		expect(result.readmeHtml).toContain('data-slot="terminal-chrome"');
-		expect(result.readmeHtml).toContain('data-code-copy="bun test"');
-		expect(result.readmeHtml).toContain('data-code-copy-button');
-		expect(result.readmeHtml).toContain('data-mermaid-source');
-		expect(result.readmeHtml).toContain('data-testid="mermaid-diagram"');
-		expect(result.readmeHtml).not.toMatch(
+		expect(readmeHtml(result.readme)).toContain('<h1>Safe heading</h1>');
+		expect(readmeHtml(result.readme)).toContain('href="https://example.com/docs"');
+		expect(readmeHtml(result.readme)).toContain('href="mailto:contact@example.com"');
+		expect(readmeHtml(result.readme)).toContain('src="https://images.example.com/readme.png"');
+		expect(result.readme?.filter((part) => 'fence' in part)).toEqual([{ fence: '```bash\nbun test\n```' }, { fence: '```mermaid\nflowchart LR\n  a --> b\n```' }]);
+		expect(readmeHtml(result.readme)).not.toMatch(
 			/<script|onerror|onclick|javascript:|data:text\/html/i,
 		);
 		expect(warnSpy).not.toHaveBeenCalled();
@@ -129,7 +128,7 @@ describe('project README server boundary', () => {
 			credentials: 'omit',
 			redirect: 'manual',
 		});
-		expect(result.readmeHtml).toContain('<h1>Raw README</h1>');
+		expect(readmeHtml(result.readme)).toContain('<h1>Raw README</h1>');
 		expect(warnSpy).not.toHaveBeenCalled();
 	});
 
@@ -157,7 +156,7 @@ describe('project README server boundary', () => {
 		const result = await loadProject(project(readmeUrl), fetcher);
 
 		expect(fetcher).not.toHaveBeenCalled();
-		expect(result.readmeHtml).toBeUndefined();
+		expect(result.readme).toBeUndefined();
 		expect(warnSpy).toHaveBeenCalledOnce();
 		expect(warnSpy).toHaveBeenCalledWith(INVALID_DIAGNOSTIC);
 		expect(loggedWarnings()).not.toContain(readmeUrl);
@@ -175,7 +174,7 @@ describe('project README server boundary', () => {
 			credentials: 'omit',
 			redirect: 'manual',
 		});
-		expect(result.readmeHtml).toBeUndefined();
+		expect(result.readme).toBeUndefined();
 		expect(warnSpy).toHaveBeenCalledWith(REDIRECT_DIAGNOSTIC);
 		expect(loggedWarnings()).not.toContain(BLOB_README);
 		expect(loggedWarnings()).not.toContain(RAW_README);
@@ -189,7 +188,7 @@ describe('project README server boundary', () => {
 
 		const result = await loadProject(project(BLOB_README), fetcher);
 
-		expect(result.readmeHtml).toBeUndefined();
+		expect(result.readme).toBeUndefined();
 		expect(warnSpy).toHaveBeenCalledWith(UPSTREAM_DIAGNOSTIC);
 		expect(loggedWarnings()).not.toContain('503');
 		expect(loggedWarnings()).not.toContain('private upstream body');
@@ -204,7 +203,7 @@ describe('project README server boundary', () => {
 
 		const result = await loadProject(project(BLOB_README), fetcher);
 
-		expect(result.readmeHtml).toBeUndefined();
+		expect(result.readme).toBeUndefined();
 		expect(warnSpy).toHaveBeenCalledWith(FETCH_DIAGNOSTIC);
 		expect(loggedWarnings()).not.toContain(BLOB_README);
 		expect(loggedWarnings()).not.toContain(RAW_README);

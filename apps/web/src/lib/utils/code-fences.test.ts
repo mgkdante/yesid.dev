@@ -10,7 +10,6 @@ describe('code fence parsing', () => {
 			body: 'const x: number = 1;',
 			language: 'typescript',
 			normalizedLanguage: 'ts',
-			title: 'ts',
 		});
 	});
 
@@ -28,7 +27,6 @@ describe('code fence parsing', () => {
 			body: 'flowchart LR\n  a --> b',
 			language: 'mermaid',
 			normalizedLanguage: 'mermaid',
-			title: 'mermaid',
 		});
 	});
 
@@ -40,7 +38,6 @@ describe('code fence parsing', () => {
 			body: 'flowchart LR\n  a --> b',
 			language: 'mermaid',
 			normalizedLanguage: 'mermaid',
-			title: 'mermaid',
 		});
 	});
 
@@ -53,7 +50,6 @@ describe('code fence parsing', () => {
 			body: code,
 			language: null,
 			normalizedLanguage: 'text',
-			title: 'text',
 		});
 	});
 });

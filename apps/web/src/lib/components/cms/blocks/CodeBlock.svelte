@@ -1,10 +1,6 @@
 <!--
-  CodeBlock.svelte renders Editor.js `code` blocks.
-  Highlighting happens SERVER-SIDE ($lib/server/code-highlights → Shiki):
-  loads pass a block-id-keyed map down through BlockRenderer, and this
-  component consumes its entry via `highlightedHtml`. Without an entry the
-  package CodeBlock shows plain text — never import the Shiki chain here, that is
-  exactly the ~300KB gz client regression this replaced.
+  Editor.js `code` blocks and README fences. Loads highlight on the server (`$lib/server/code-highlights`)
+  and pass the markup as `highlightedHtml`; without it the package CodeBlock shows plain text.
   Mermaid fences render as diagrams.
 -->
 <script lang="ts">
@@ -27,13 +23,15 @@
 	const copy = {
 		label: resolveLocale(codeChrome.copyLabel, locale),
 		ariaLabel: resolveLocale(codeChrome.copyAria, locale),
+		copied: resolveLocale(codeChrome.copiedLabel, locale),
 		failed: resolveLocale(codeChrome.errorLabel, locale),
 	};
 	const parsed = $derived(parseCodeFence(data.code));
 </script>
 
 {#snippet highlighted()}
-	{@html highlightedHtml}
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<pre tabindex="0"><code>{@html highlightedHtml}</code></pre>
 {/snippet}
 
 {#if parsed.kind === 'mermaid'}

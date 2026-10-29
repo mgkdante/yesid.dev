@@ -45,6 +45,6 @@ export async function load({
 		postIndex,
 		blogPage,
 		// Shiki runs server-side only; CodeBlock consumes these by block id.
-		codeHighlights: collectCodeHighlights([body]),
+		codeHighlights: await collectCodeHighlights([body]),
 	};
 }
