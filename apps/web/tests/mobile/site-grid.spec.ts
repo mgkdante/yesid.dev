@@ -33,6 +33,19 @@ test('section grids hold still with the page grid instead of scrolling over it',
 		}, offset);
 		expect((await page.locator('.manifesto__circuit-grid').boundingBox())!.y).toBe(0);
 	}
+	// With the section's top at mid-screen, the grid, raised on top and hit-testable, only answers inside it.
+	await manifesto.evaluate((section) => {
+		window.scrollTo({ top: scrollY + section.getBoundingClientRect().top - innerHeight / 2, behavior: 'instant' });
+	});
+	const hits = await page.locator('.manifesto__circuit-grid').evaluate((grid) => {
+		const previous = grid.style.zIndex;
+		grid.style.zIndex = '9999';
+		const inside = document.elementFromPoint(innerWidth / 2, innerHeight * 0.75) === grid;
+		const outside = document.elementFromPoint(innerWidth / 2, innerHeight * 0.25) === grid;
+		grid.style.zIndex = previous;
+		return { inside, outside };
+	});
+	expect(hits).toEqual({ inside: true, outside: false });
 	const band = page.getByTestId('home-cta-band');
 	await expect(band).toHaveCSS('background-image', 'none');
 	await expect(band).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');

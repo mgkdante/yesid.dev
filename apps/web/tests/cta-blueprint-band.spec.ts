@@ -309,6 +309,8 @@ for (const [viewportName, width, height] of viewports) {
 				const box = await band.boundingBox();
 				expect(box).not.toBeNull();
 				routeBoxes.push({ width: box!.width, height: box!.height });
+				// Only the home page draws the band's blueprints a step bolder.
+				await expect(band.getByTestId('cta-blueprint-background')).toHaveCSS('opacity', routeName === 'home' ? '0.75' : '0.55');
 				domSnapshots.push(
 					await band.evaluate(
 						(element, routePrefix) => element.outerHTML.replaceAll(routePrefix, 'cta-band'),
