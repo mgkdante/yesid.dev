@@ -33,7 +33,7 @@
 
 <!-- Every CTA wears the hazard band on top (operator rule 2026-07-03). -->
 <Separator variant="hazard" />
-<section class="cta-band-shell circuit-grid" data-testid={testidPrefix}>
+<section class="cta-band-shell" data-testid={testidPrefix}>
 	<CtaBlueprintBackground />
 	<div class="cta-band">
 		<h2 class="band-heading">
@@ -74,7 +74,6 @@
 		isolation: isolate;
 		width: 100%;
 		overflow: clip;
-		background-color: var(--background);
 	}
 
 	/* Always centered, on every surface that mounts it (operator rule). */
