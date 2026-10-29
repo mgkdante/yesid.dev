@@ -1,37 +1,18 @@
 name: web
 
-# CI for apps/web (SvelteKit consumer deployed to Vercel).
-# Runs check + test + build via turbo on EVERY PR to main+develop (PR-only;
-# the redundant post-merge push run was dropped to cut cost).
-#
-# slice-17f Phase 7: shared setup extracted to .github/actions/setup
-# (Bun + cache restores + install). concurrency cancel-in-progress on
-# pull_request kills duplicate runs on force-push / fast follow-up commits.
-#
-# slice-17f Phase 8: path filters removed. Reason: this workflow is now a
-# REQUIRED status check on the main branch ruleset. Path-filtered workflows
-# don't run on excluded paths → the required check never reports → docs-only
-# PRs would be blocked forever. With the Phase 7 caches, cost on no-op runs
-# is ~20-30s end-to-end (FULL TURBO cache replay), so always-run is fine.
-#
-# E2E (Playwright) runs on pull_request only, against a LOCAL hermetic preview
-# on the runner — zero Vercel edge requests — and is further gated by the
-# `skip-e2e` PR label (build + 3 shards is the costly part). The cheap `ci` job
-# (type check, unit tests, shared-package tests, build) runs on every PR.
+# CI for apps/web (SvelteKit, deployed by Vercel), on pull requests only. The
+# `ci` job (type check, unit tests, shared-package tests, build) is the
+# required check and runs on every PR. e2e runs three Playwright shards against
+# a local hermetic preview after `ci`; the `skip-e2e` PR label skips it.
 
 on:
-  # PR-only (no push: trigger). The PR run is the gate that blocks a bad merge;
-  # re-running the same checks on the post-merge push to develop/main is
-  # redundant and pure cost, so it was dropped (2026-06-19, cost cut).
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pull-requests: read
 
-# Cancel in-progress duplicate runs on PR pushes (force-push / fast follow-ups).
 concurrency:
   group: web-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -46,46 +27,7 @@ concurrency:
 # then add the TURBO_TOKEN secret + TURBO_TEAM variable.
 
 jobs:
-  classify:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      classification: ${{ steps.classify.outputs.classification }}
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-
-      - uses: mgkdante/yesid.dev-design/.github/actions/classify-paths@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        id: classify
-        with:
-          github-token: ${{ github.token }}
-          rules-json: >-
-            {
-              "schema": 1,
-              "always": {
-                "paths": [".bun-version", ".github/scripts/materialize-shared-config.mjs", ".github/shared-tooling.json", ".github/workflows/web.yml", ".npmrc", "bun.lock", "package.json", "turbo.json"],
-                "prefixes": [".github/actions/", ".github/scripts/", ".github/shared-tooling/", ".github/workflows/"]
-              },
-              "jobs": {
-                "ci-work": {
-                  "paths": [],
-                  "prefixes": ["apps/cms/", "apps/web/", "packages/"]
-                }
-              },
-              "ignore": {
-                "docs-only": {
-                  "paths": ["AGENTS.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "README.md", "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md"],
-                  "prefixes": ["docs/"]
-                },
-                "irrelevant": {
-                  "paths": [".env.example", ".gitattributes", ".gitignore", ".gitleaks.toml", ".gitleaksignore"],
-                  "prefixes": []
-                }
-              }
-            }
-
-  ci-work:
-    needs: [classify]
-    if: ${{ fromJSON(needs.classify.outputs.classification).relevant['ci-work'] }}
+  ci:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -93,13 +35,6 @@ jobs:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - uses: ./.github/actions/setup
-
-      - name: Materialize shared config
-        run: node .github/scripts/materialize-shared-config.mjs
-
-      - uses: mgkdante/yesid.dev-design/.github/actions/shared-tooling-drift@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        with:
-          manifest: .github/shared-tooling.json
 
       - name: Type check (svelte-kit sync + svelte-check)
         env:
@@ -132,17 +67,6 @@ jobs:
         working-directory: apps/web
         run: bun run check:csp
 
-  ci:
-    name: ci
-    needs: [classify, ci-work]
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: mgkdante/yesid.dev-design/.github/actions/required-context@a4e9d0e3b42da8121b5e9f98de2e315ad48e8f25
-        with:
-          needs-json: ${{ toJSON(needs) }}
-
   # ── E2E (Playwright) against a LOCAL hermetic preview ──────────────────────
   # Runs ENTIRELY on the runner: the playwright webServer builds with
   # EXPORT_FALLBACKS_SOURCE=fixture (shared fixture content —
@@ -154,19 +78,12 @@ jobs:
   # every route serves 200 under the local preview and there are no pixel-diff
   # assertions. CMS stays build-time-only, the deployed site never calls it.
   e2e:
-    # PR-only: e2e runs on pull_request, NOT on push to main/develop. The
-    # post-merge develop/main push used to re-run the 3 shards redundantly with
-    # the PR run that already passed — pure GitHub Actions minute burn (the 3,000
-    # free monthly minutes ran out mid-month once). ci + gitleaks still run on
-    # push. OPTIONAL SWITCH: add the "skip-e2e" label to a PR to skip e2e
-    # (docs-only, or to unblock a merge if the suite is misbehaving).
     if: >-
       ${{ github.event_name == 'pull_request'
-          && fromJSON(needs.classify.outputs.classification).relevant['ci-work']
           && !contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
     # Gate the 3 shards on the cheap ci job: its build populates the turbo
     # remote cache, so shards replay it instead of running 4 identical builds.
-    needs: [classify, ci]
+    needs: [ci]
     runs-on: ubuntu-latest
     # Shards split by file and run serially; shard 3 runs up to ~18 minutes of tests.
     timeout-minutes: 30
