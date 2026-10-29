@@ -28,6 +28,7 @@
 		width: clamp(40px, 5vw, 64px);
 		height: auto;
 		display: block;
+		translate: 0 calc((1 - var(--closer-lamp, 1)) * 100%);
 	}
 
 	/* Light beam — originates from the lens and widens upward to the ending. */
@@ -50,6 +51,8 @@
 		);
 		filter: blur(8px);
 		pointer-events: none;
+		transform-origin: bottom;
+		scale: 1 var(--closer-beam, 1);
 	}
 	:global([data-theme='light']) .closer-beam {
 		background: linear-gradient(
@@ -80,5 +83,9 @@
 			height: 35dvh;
 			clip-path: polygon(48.5% 100%, 51.5% 100%, 100% 0%, 0% 0%);
 		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.closer-floodlight { translate: none; }
+		.closer-beam { scale: none; }
 	}
 </style>

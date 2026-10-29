@@ -71,19 +71,6 @@ for (const locale of PUBLISHED_LOCALES) {
 			});
 			await note.scrollIntoViewIfNeeded();
 			await expect(note).toBeVisible();
-			await expect(note.locator('svg')).toHaveClass(/ready/);
-			const reducedReplay = await note.evaluate(async element => {
-				const started: string[] = [];
-				const record = (event: Event) => { if (event instanceof AnimationEvent) started.push(event.animationName); };
-				element.addEventListener('animationstart', record);
-				element.dispatchEvent(new Event('mouseenter'));
-				// Observe the two render boundaries that apply a keyed replay and its styles.
-				await new Promise(requestAnimationFrame);
-				await new Promise(requestAnimationFrame);
-				element.removeEventListener('animationstart', record);
-				return started;
-			});
-			expect(reducedReplay).toEqual([]);
 			expect(
 				await note
 					.locator('path')
@@ -91,7 +78,8 @@ for (const locale of PUBLISHED_LOCALES) {
 						paths.every(
 							(path) =>
 								getComputedStyle(path).strokeDashoffset === '0px' &&
-								getComputedStyle(path).animationName === 'none',
+								getComputedStyle(path).animationName === 'none' &&
+								getComputedStyle(path).opacity === '1',
 						),
 					),
 			).toBe(true);
@@ -104,64 +92,34 @@ for (const locale of PUBLISHED_LOCALES) {
 		},
 	);
 
-	test(`${locale} writes one letter at a time across the complete ending`, async ({
-		page,
-	}) => {
+	test(`${locale} scroll writes the ending one letter at a time with nothing on a timer`, async ({ page }) => {
+		await page.setViewportSize({ width: 1280, height: 900 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await page.goto(locale === DEFAULT_LOCALE ? '/' : '/' + locale);
-		const note = page.getByRole('img', { name: THE_END[locale], exact: true });
-		await note.scrollIntoViewIfNeeded();
-		await expect(note.locator('svg')).toHaveClass(/ready/);
-		const sequence = await note.evaluate(async (element) => {
-			element.dispatchEvent(new Event('mouseenter'));
-			let maxActive = 0,
-				premature = 0,
-				started = false;
-			let intervals: { delay: number; duration: number }[] = [];
-			const deadline = performance.now() + 8000;
-			while (performance.now() < deadline) {
-				await new Promise(requestAnimationFrame);
-				const paths = [...element.querySelectorAll('path')];
-				const animations = paths.map((path) => path.getAnimations()[0]);
-				if (animations.some(Boolean)) {
-					started = true;
-					let active = 0;
-					intervals = animations.map((animation) => {
-						const timing = animation.effect!.getTiming();
-						return {
-							delay: Number(timing.delay),
-							duration: Number(timing.duration),
-						};
-					});
-					paths.forEach((path, index) => {
-						const time = Number(animations[index].currentTime);
-						const { delay, duration } = intervals[index];
-						if (time >= delay && time < delay + duration) active += 1;
-						if (time < delay && Number(getComputedStyle(path).opacity) > 0)
-							premature += 1;
-					});
-					maxActive = Math.max(maxActive, active);
-				} else if (
-					started &&
-					paths.every(
-						(path) =>
-							parseFloat(getComputedStyle(path).strokeDashoffset) === 0 &&
-							Number(getComputedStyle(path).opacity) === 1,
-					)
-				) {
-					return { complete: true, maxActive, premature, intervals };
-				}
-			}
-			return { complete: false, maxActive, premature, intervals };
-		});
-		expect(sequence.complete).toBe(true);
-		expect(sequence.maxActive).toBe(1);
-		expect(sequence.premature).toBe(0);
-		for (let i = 1; i < sequence.intervals.length; i++) {
-			expect(sequence.intervals[i].delay + 0.001).toBeGreaterThanOrEqual(
-				sequence.intervals[i - 1].delay + sequence.intervals[i - 1].duration,
-			);
+		const inkAt = async (progress: number) => {
+			await page.locator('.ground-anchor').evaluate((anchor, fraction) => {
+				document.scrollingElement!.scrollTop += anchor.getBoundingClientRect().top - innerHeight * fraction;
+			}, 0.95 - progress * 0.25);
+			await expect
+				.poll(async () => Number(await page.locator('[data-slot="construction-props"]').getAttribute('data-progress')))
+				.toBeCloseTo(progress, 2);
+			return page.locator('.closer-note').evaluate((note) => ({
+				animations: note.getAnimations({ subtree: true }).length,
+				ink: [...note.querySelectorAll('path')].map(
+					(path) => Number(getComputedStyle(path).opacity) && 1 - parseFloat(getComputedStyle(path).strokeDashoffset),
+				),
+			}));
+		};
+		expect((await inkAt(0.58)).ink.every((ink) => ink === 0)).toBe(true);
+		for (let step = 1; step < 20; step++) {
+			const { animations, ink } = await inkAt(0.6 + step * 0.01);
+			expect(animations).toBe(0);
+			expect(ink.filter((value) => value > 0 && value < 1).length).toBeLessThanOrEqual(1);
+			ink.slice(1).forEach((value, i) => expect(value).toBeLessThanOrEqual(ink[i]));
 		}
+		expect((await inkAt(0.82)).ink.every((ink) => ink === 1)).toBe(true);
+		const halfway = (await inkAt(0.7)).ink;
+		expect(halfway.includes(1) && halfway.includes(0)).toBe(true);
 	});
 }
 
@@ -178,7 +136,7 @@ for (const width of [390, 820, 1920]) {
 			(note) => getComputedStyle(note).position === 'absolute',
 		);
 		const samples = [];
-		for (const fraction of [0.98, 0.825, 0.7, 0.825, 0.98, 0.7]) {
+		for (const fraction of [0.98, 0.825, 0.7, 0.825, 0.98, 0.725, 0.7]) {
 			const requested = await page
 				.locator('.ground-anchor')
 				.evaluate((anchor, fraction) => {
@@ -203,6 +161,13 @@ for (const width of [390, 820, 1920]) {
 					sectionHeight: document.querySelector('[data-testid="closer-section"]')!.getBoundingClientRect().height,
 					sectionBottom: document.querySelector('[data-testid="closer-section"]')!.getBoundingClientRect().bottom,
 					ctaBottom: document.querySelector('[data-testid="closer-cta"]')!.getBoundingClientRect().bottom,
+					note: document.querySelector('.closer-note')!.getBoundingClientRect().toJSON(),
+					lamp: document.querySelector('[data-slot="closer-floodlight"] svg')!.getBoundingClientRect().toJSON(),
+					beam: document.querySelector('.closer-beam')!.getBoundingClientRect().height,
+					board: document.querySelector('[data-closer-board]')!.getBoundingClientRect().toJSON(),
+					cta: document.querySelector('[data-testid="closer-cta"]')!.getBoundingClientRect().toJSON(),
+					propsTop: Math.min(...[...document.querySelectorAll('[data-construction-prop] > svg')].map((svg) => svg.getBoundingClientRect().top)),
+					written: [...document.querySelectorAll('.closer-note path')].filter((path) => getComputedStyle(path).opacity !== '0').length,
 				}));
 			expect(Math.abs(sample.top - requested.top)).toBeLessThanOrEqual(1);
 			expect(Math.abs(sample.scroll - requested.scroll)).toBeLessThanOrEqual(1);
@@ -215,10 +180,30 @@ for (const width of [390, 820, 1920]) {
 			expect(
 				Math.abs(samples[4].ground - samples[0].ground),
 			).toBeLessThanOrEqual(1);
-			expect(Math.abs(samples[5].sectionHeight - page.viewportSize()!.height)).toBeLessThanOrEqual(1);
+			expect(Math.abs(samples[6].sectionHeight - page.viewportSize()!.height)).toBeLessThanOrEqual(1);
 		} else {
 			expect(samples.every((sample) => sample.ground === 0)).toBe(true);
 		}
+		type Sample = (typeof samples)[number];
+		type Box = Sample['note'];
+		const intersects = (a: Box, b: Box) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+		const fromTop = (sample: Sample, top: number) => top - (sample.sectionBottom - sample.sectionHeight);
+		const letters = await page.locator('.closer-note path').count();
+		for (const sample of samples) {
+			expect(intersects(sample.note, sample.board) || intersects(sample.note, sample.cta)).toBe(false);
+		}
+		for (const hidden of [samples[0], samples[4]]) {
+			expect(hidden.note.top).toBeGreaterThanOrEqual(hidden.sectionBottom - 1);
+			expect(hidden.lamp.top).toBeGreaterThanOrEqual(hidden.sectionBottom - 1);
+			expect(hidden.beam).toBeLessThanOrEqual(1);
+		}
+		// The ending rises unwritten, retraces its path on the way back, and has landed
+		// and written itself by 0.9 while the props keep rising.
+		expect(fromTop(samples[1], samples[1].note.top)).toBeGreaterThan(fromTop(samples[2], samples[2].note.top) + 1);
+		expect(Math.abs(fromTop(samples[3], samples[3].note.top) - fromTop(samples[1], samples[1].note.top))).toBeLessThanOrEqual(1);
+		expect(Math.abs(fromTop(samples[5], samples[5].note.top) - fromTop(samples[6], samples[6].note.top))).toBeLessThanOrEqual(1);
+		expect(fromTop(samples[5], samples[5].propsTop)).toBeGreaterThan(fromTop(samples[6], samples[6].propsTop) + 1);
+		expect(samples.map((sample) => sample.written)).toEqual([0, 0, letters, 0, 0, letters, letters]);
 		const groundBackground = await page.locator('.construction-extension').evaluate((ground) => {
 			for (let element: Element | null = ground; element; element = element.parentElement) {
 				const style = getComputedStyle(element);
@@ -248,6 +233,15 @@ for (const width of [390, 820, 1920]) {
 				'[data-slot="closer-floodlight"] [data-slot="construction-floodlight"]',
 			),
 		).toHaveAttribute('data-lit', 'true');
+		// At full reveal the scene sits exactly where reduced motion keeps it.
+		const scene = () => page.evaluate(() => ['.closer-note', '[data-slot="closer-floodlight"] svg'].map((selector) => document.querySelector(selector)!.getBoundingClientRect().toJSON()));
+		const landed = await scene();
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		const still = await scene();
+		landed.forEach((box, i) => {
+			for (const side of ['left', 'top', 'width', 'height'] as const) expect(Math.abs(still[i][side] - box[side])).toBeLessThanOrEqual(1);
+		});
+		expect(await page.evaluate(() => [['.closer-note', 'translate'], ['.closer-floodlight', 'translate'], ['.closer-beam', 'scale']].map(([selector, property]) => getComputedStyle(document.querySelector(selector)!).getPropertyValue(property)))).toEqual(['none', 'none', 'none']);
 		await page.goto('/about');
 		await expect(props).toHaveCount(0);
 	});

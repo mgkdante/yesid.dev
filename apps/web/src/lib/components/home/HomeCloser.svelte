@@ -90,11 +90,17 @@
 	] satisfies BoardRow[]);
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
+	let coreEl: HTMLElement;
 	let noteEl: HTMLElement;
-	let writing = $state(false);
+	let noteDrop = $state(0);
 	let groundAnchor = $state<HTMLElement>();
 	let revealProgress = $state(1);
-	let replay = $state(0);
+	// The lamp rises, its beam comes on, then the ending rises through it, writes itself as it lands, and the props finish.
+	const stage = (from: number, span: number) => Math.min(1, Math.max(0, (revealProgress - from) / span));
+	const lamp = $derived(stage(0, 0.2));
+	const beam = $derived(stage(0.1, 0.2));
+	const note = $derived(stage(0.2, 0.6));
+	const ink = $derived(stage(0.6, 0.2));
 	const closingLabel = THE_END[locale];
 	const words = closingLabel.split(' ').map(getLettering);
 	const wordWidth = Math.max(...words.map(word => word.width));
@@ -110,17 +116,8 @@
 
 	onMount(() => {
 		if (!browser || !sectionEl) return;
-		const observer = new IntersectionObserver(entries => {
-			if (entries.some(entry => entry.isIntersecting)) {
-				writing = true;
-				observer.disconnect();
-			}
-		});
-		observer.observe(noteEl);
-		const redraw = () => { replay += 1; };
-		noteEl.addEventListener('mouseenter', redraw);
-		noteEl.addEventListener('touchstart', redraw, { passive: true });
-		if (isPrefersReducedMotion()) writing = true;
+		const fit = new ResizeObserver(() => { noteDrop = coreEl.offsetHeight - noteEl.offsetTop; });
+		fit.observe(coreEl); fit.observe(noteEl);
 		initScrollTriggerConfig();
 		const context = gsap.context(() => {
 			if (isPrefersReducedMotion()) return;
@@ -130,9 +127,7 @@
 		}, sectionEl);
 		const breathing = backgroundBreathing(sectionEl, { duration: 12 });
 		return () => {
-			observer.disconnect(); context.revert(); breathing.destroy();
-			noteEl.removeEventListener('mouseenter', redraw);
-			noteEl.removeEventListener('touchstart', redraw);
+			context.revert(); breathing.destroy(); fit.disconnect();
 		};
 	});
 </script>
@@ -143,13 +138,11 @@
 	bind:this={sectionEl}
 	data-testid="closer-section"
 	class="closer-section relative"
-	style="--closer-reveal: {revealProgress};"
+	style="--closer-reveal: {revealProgress}; --closer-lamp: {lamp}; --closer-beam: {beam}; --closer-note: {note}; --closer-note-drop: {noteDrop}px;"
 >
-	<div class="closer-core">
+	<div class="closer-core" bind:this={coreEl}>
 	<div class="closer-note" bind:this={noteEl} role="img" aria-label={closingLabel}>
-		{#key replay}
-			<HeroDotAnnotation {lettering} width={wordWidth + 14} height={words.length > 1 ? 48 : 30} x={origin.x} y={origin.y} visible={true} ready={writing} initiallyDrawn sequential />
-		{/key}
+		<HeroDotAnnotation {lettering} width={wordWidth + 14} height={words.length > 1 ? 48 : 30} x={origin.x} y={origin.y} visible ready={false} progress={ink} initiallyDrawn sequential />
 	</div>
 
 
@@ -189,12 +182,13 @@
 	.closer-section {
 		/* The 100px ground under the board unfolds with the reveal; unfolded, it is the original bottom clearance. */
 		--closer-ground-fold: calc((1 - var(--closer-reveal, 1)) * 100px);
-		background: transparent; position: relative;
+		--closer-ground: calc(100px - var(--closer-ground-fold));
+		background: transparent; position: relative; overflow-y: clip;
 		--construction-end-inset: calc(4% + clamp(160px, 18vw, 260px) + 1rem);
 	}
 	.closer-core { min-height: calc(100dvh - 100px); display: flex; align-items: center; padding: var(--space-section-y) var(--space-page-x) 0; position: relative; }
 	.ground-anchor { height: 0; width: 1px; pointer-events: none; }
-	.construction-extension { height: calc(100px - var(--closer-ground-fold)); }
+	.construction-extension { height: var(--closer-ground); }
 	/* From tablet width the props spread along the ground beside the ending. */
 	@media (--tablet-min) {
 		.closer-section :global(.around .floor) {
@@ -244,7 +238,9 @@
 		/* 20% of the core plus its 100px ground, where the ending sat before the ground moved out of the core. */
 		position: absolute; right: 4%; bottom: calc(20% - 80px);
 		width: clamp(160px, 18vw, 260px); max-width: 260px; aspect-ratio: 1;
-		pointer-events: auto; cursor: pointer; z-index: calc(var(--z-content) + 1); overflow: visible;
+		z-index: calc(var(--z-content) + 1); overflow: visible;
+		/* Hidden below the ground, including any ground already unfolded, until its stage begins. */
+		translate: 0 calc((1 - var(--closer-note, 1)) * (var(--closer-note-drop, 0px) + var(--closer-ground)));
 	}
 	@media (--tablet-max) {
 		.closer-note {
@@ -253,10 +249,11 @@
 			order: 2; margin: 24px auto 0;
 		}
 		/* The ending stacks under the board and fills that space, so the ground stays folded; the props still reveal. */
-		.construction-extension { height: 0; }
+		.closer-section { --closer-ground: 0px; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.closer-section { --closer-ground-fold: 0px; }
+		.closer-note { translate: none; }
 		.closer-note :global(svg) { visibility: visible; }
 		.closer-note :global(path) { animation: none; stroke-dashoffset: 0; }
 	}
