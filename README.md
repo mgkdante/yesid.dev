@@ -1,5 +1,8 @@
 # yesid.dev
 
+[![cms](https://github.com/mgkdante/yesid.dev/actions/workflows/cms.yml/badge.svg?branch=main)](https://github.com/mgkdante/yesid.dev/actions/workflows/cms.yml)
+[![secret-scan](https://github.com/mgkdante/yesid.dev/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/mgkdante/yesid.dev/actions/workflows/secret-scan.yml)
+
 Source for [yesid.dev](https://yesid.dev), the portfolio and information site of
 Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec,
 Canada. It covers database engineering and SQL, data pipelines and automation,
