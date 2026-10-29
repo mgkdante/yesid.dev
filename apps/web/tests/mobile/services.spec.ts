@@ -237,8 +237,7 @@ for (const locale of PUBLISHED_LOCALES)
 	});
 
 for (const locale of PUBLISHED_LOCALES)
-	test(`${locale}: on desktop the first station centres under the tabs on short and tall screens`, async ({ page, isMobile }) => {
-		test.skip(isMobile, 'desktop layout');
+	test(`${locale}: the first station centres under the tabs when it fits and grows safely otherwise`, async ({ page }) => {
 		const width = page.viewportSize()!.width;
 		const tall = 1080;
 		for (const height of [600, tall]) {

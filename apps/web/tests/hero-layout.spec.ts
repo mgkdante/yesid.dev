@@ -12,8 +12,8 @@ for (const [width, height] of screens) {
 				await expect(page.getByTestId('hero-dot-replay')).toBeEnabled();
 				await page.evaluate(() => document.fonts.ready);
 				await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-				await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
-				await page.getByTestId('hero-dot-annotation').evaluate(async svg => {
+				await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
+				await page.getByTestId('hero-banner').getByTestId('hero-dot-annotation').evaluate(async svg => {
 					await Promise.allSettled(svg.getAnimations({ subtree: true }).map(animation => animation.finished));
 				});
 				const geometry = await page.evaluate(() => {

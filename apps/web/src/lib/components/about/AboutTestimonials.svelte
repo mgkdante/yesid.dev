@@ -22,10 +22,6 @@
 	} = $props();
 
 	let activeIndex = $state(0);
-	const active = $derived(testimonials[activeIndex] ?? testimonials[0]);
-	const quote = $derived(active ? resolveLocale(active.quote, locale) : '');
-	const role = $derived(active ? resolveLocale(active.role, locale) : '');
-	const author = $derived(active?.author ?? '');
 	const hasSlides = $derived(testimonials.length > 1);
 	const carouselAria = $derived(resolveLocale(labels.testimonialsCarouselAria, locale));
 	const tabNavAria = $derived(resolveLocale(labels.testimonialsTabNavAria, locale));
@@ -64,21 +60,23 @@
 		<div class="relative flex flex-1 flex-col">
 			<StopLabel {stop} {label} as="h2" />
 
-			<div class="flex flex-1 flex-col justify-center pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite">
-				<div class="flex flex-col justify-center">
+			<div class="grid flex-1 items-center pr-1" data-testid="about-quote-body" aria-label={slideAria} aria-live="polite">
+				{#each testimonials as testimonial, i}
+				{@const role = resolveLocale(testimonial.role, locale)}
+				<div class="quote-item flex flex-col justify-center" class:quote-hidden={i !== activeIndex} aria-hidden={i !== activeIndex} inert={i !== activeIndex}>
 					<div class="font-heading text-7xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 						&ldquo;
 					</div>
 
 					<blockquote class="-mt-2 max-w-xl text-pretty text-xl leading-tight font-semibold text-[var(--foreground)] md:text-2xl">
-						{quote}
+						{resolveLocale(testimonial.quote, locale)}
 					</blockquote>
 
 					<div class="mt-5 flex items-center gap-3">
 						<span class="h-px w-10 bg-[var(--primary)]" aria-hidden="true"></span>
 						<div class="min-w-0">
 							<div class="font-mono text-caption font-bold tracking-[0.12em] text-[var(--accent-text)]">
-								{author}
+								{testimonial.author}
 							</div>
 							{#if role}
 								<div class="mt-1 font-mono text-[0.64rem] tracking-[0.1em] text-[var(--muted-foreground)]">
@@ -88,6 +86,7 @@
 						</div>
 					</div>
 				</div>
+				{/each}
 			</div>
 
 			{#if hasSlides}
@@ -129,6 +128,10 @@
 </div>
 
 <style>
+	/* Every localized quote sizes the same grid cell, including hidden items. */
+	.quote-item { grid-area: 1 / 1; min-width: 0; }
+	.quote-hidden { visibility: hidden; pointer-events: none; }
+
 	.quote-arrow {
 		display: grid;
 		width: 2.75rem;

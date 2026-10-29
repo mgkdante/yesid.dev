@@ -24,6 +24,8 @@ for (const locale of ['', '/fr', '/es'])
 			const dots = card.getByRole('tab');
 			for (const viewport of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }, { width: 820, height: 1180 }, { width: 1280, height: 600 }]) {
 				await page.setViewportSize(viewport);
+				await page.evaluate(() => document.fonts.ready);
+				const baseline = await card.evaluate(el => ({ height: el.getBoundingClientRect().height, controls: el.querySelector('[data-testid="about-quote-controls"]')!.getBoundingClientRect().top - el.getBoundingClientRect().top }));
 				for (const dot of await dots.all()) {
 					await expect(async () => {
 						await dot.click();
@@ -34,10 +36,12 @@ for (const locale of ['', '/fr', '/es'])
 						const style = getComputedStyle(el), bounds = el.getBoundingClientRect();
 						const label = el.querySelector('[data-slot="stop-label"]')!;
 						const controls = el.querySelector('[data-testid="about-quote-controls"]')!;
-						const quote = el.querySelector('[data-testid="about-quote-body"]')!.firstElementChild!.getBoundingClientRect();
+						const quote = [...el.querySelectorAll('blockquote')].find(item => getComputedStyle(item).visibility === 'visible')!.parentElement!.getBoundingClientRect();
 						const top = label.getBoundingClientRect().bottom + parseFloat(getComputedStyle(label).marginBottom);
 						const bottom = controls.getBoundingClientRect().top - parseFloat(getComputedStyle(controls).marginTop);
 						return {
+							height: bounds.height,
+							controls: controls.getBoundingClientRect().top - bounds.top,
 							topGap: label.getBoundingClientRect().top - bounds.top - parseFloat(style.borderTopWidth) - parseFloat(style.paddingTop),
 							bottomGap: bounds.bottom - parseFloat(style.borderBottomWidth) - parseFloat(style.paddingBottom) - controls.getBoundingClientRect().bottom,
 							centreOffset: (quote.top + quote.bottom - top - bottom) / 2,
@@ -45,20 +49,25 @@ for (const locale of ['', '/fr', '/es'])
 							clearsControls: quote.bottom <= bottom,
 						};
 					});
+					expect(Math.abs(geometry.height - baseline.height), 'all quotes share the largest intrinsic card height').toBeLessThanOrEqual(1);
+					expect(Math.abs(geometry.controls - baseline.controls), 'selection never moves the controls within the card').toBeLessThanOrEqual(1);
+					await expect(card.getByRole('blockquote')).toHaveCount(1);
 					expect(Math.abs(geometry.topGap), 'the stop label stays at the padded card top').toBeLessThanOrEqual(1);
 					expect(Math.abs(geometry.bottomGap), 'controls sit at the padded card bottom').toBeLessThanOrEqual(1);
 					expect(Math.abs(geometry.centreOffset), 'quote and attribution centre between label and controls').toBeLessThanOrEqual(1);
 					expect(geometry.clearsLabel && geometry.clearsControls, 'quote content does not overlap the label or controls').toBe(true);
 				}
 			}
-			for (const id of ['about-identity-scroll', 'about-method-scroll', 'about-quote-body']) {
+			for (const id of ['about-quote-body', 'about-identity-scroll', 'about-method-scroll']) {
 				const body = page.getByTestId(id);
+				const beforeHeight = await body.evaluate(el => el.closest('[data-slot="card"]')!.getBoundingClientRect().height);
 				await body.evaluate((el) => {
 					const paragraph = document.createElement('p');
 					paragraph.textContent =
 						'Representative longer localized prose with changing details. '.repeat(20);
-					el.append(paragraph);
+					(el.querySelector('blockquote') ?? el).append(paragraph);
 				});
+				if (id === 'about-quote-body') expect(await body.evaluate(el => el.closest('[data-slot="card"]')!.getBoundingClientRect().height), 'a longer inactive quote expands the card too').toBeGreaterThan(beforeHeight);
 				expect(
 					await body.evaluate((el) => el.scrollHeight - el.clientHeight),
 					`${id} must grow with its prose`,

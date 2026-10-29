@@ -3,7 +3,7 @@
 The repository's root [LICENSE](LICENSE) applies only to original yesid.dev
 material.
 
-- `apps/web/vendor/design/` contains yesid.dev-design `v0.25.2`, distributed
+- `apps/web/vendor/design/` contains yesid.dev-design `v0.25.3`, distributed
   under the MIT License. Copyright © 2026 Yesid Otalora. See
   `apps/web/vendor/design/LICENSE`.
 - `apps/web/vendor/design/motion/lenis.css` is copied from Lenis 1.3, Copyright
@@ -22,11 +22,6 @@ material.
   permitted uses under the
   [Standard "No Charge" GSAP License](https://gsap.com/community/standard-license/).
   GSAP is not open source, and the license restrictions still apply.
-- The localized closer graffiti SVGs are derived from the
-  [Lacquer](https://fonts.google.com/specimen/Lacquer) typeface by Niki
-  Polyocan and Eli Block. Copyright 2019 The Lacquer Project Authors. Lacquer
-  is distributed under the SIL Open Font License 1.1; the pinned source font
-  and licence are retained under `apps/web/vendor/fonts/lacquer/`.
 
 Separate license and attribution terms above are not replaced by the
 repository's all-rights-reserved license.

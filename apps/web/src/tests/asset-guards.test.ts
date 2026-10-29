@@ -17,8 +17,6 @@ const reviewedSinks = [
 	{ file: 'lib/components/cms/blocks/Paragraph.svelte', reason: 'exported Editor.js HTML with inline code formatting' },
 	{ file: 'lib/components/cms/blocks/Quote.svelte', reason: 'exported Editor.js inline HTML' },
 	{ file: 'lib/components/contact/ContactPage.svelte', reason: 'exported CMS line template with escaped link labels and localized internal links' },
-	{ file: 'lib/components/home/CloserGraffiti.svelte', reason: 'static committed asset' },
-	{ file: 'lib/components/home/CloserProps.svelte', reason: 'static committed asset and fixed SVG filter markup' },
 	{ file: 'lib/components/home/HomeServices.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectCard.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectDetailPage.svelte', reason: 'sanitize-html README content and Mermaid strict mode output' },

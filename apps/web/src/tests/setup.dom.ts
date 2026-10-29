@@ -187,7 +187,7 @@ vi.mock('gsap/SplitText', () => ({
 //   - /api/weather    → JSON null ("no fresh data") so ContactPage/AboutWeather
 //                       keep their SSR-baked prop (slice-28.1 onMount refresh).
 //   - /svg/** assets  → minimal valid SVG (decorative illustrations fetched
-//                       at mount by CloserGraffiti/CloserProps/HomeServices
+//                       at mount by HomeServices
 //                       et al; consumers res.text() + DOMParser it).
 //   - anything else   → loud rejection naming the URL. Add a branch here or
 //                       stub fetch per-test when a new surface appears —

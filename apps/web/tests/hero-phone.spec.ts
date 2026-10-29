@@ -16,8 +16,8 @@ for (const [width, height] of phones) {
 				await page.goto(locale === 'en' ? '/' : `/${locale}`);
 				await page.evaluate(() => document.fonts.ready);
 				await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-				await expect(page.getByTestId('hero-dot-annotation')).toBeVisible();
-				await expect.poll(() => page.getByTestId('hero-dot-annotation').evaluate(svg =>
+				await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
+				await expect.poll(() => page.getByTestId('hero-banner').getByTestId('hero-dot-annotation').evaluate(svg =>
 					svg.getAnimations({ subtree: true }).every(animation => animation.playState !== 'running'))).toBe(true);
 				const geometry = await page.evaluate(() => {
 					const firstWord = (element: Element) => {

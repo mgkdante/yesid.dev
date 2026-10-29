@@ -12,8 +12,24 @@ import { render, screen, waitFor } from '@testing-library/svelte';
 import AboutWeather from './AboutWeather.svelte';
 import { resolveWeatherScene, isNightHour, WEATHER_SCENES } from './weather-scene';
 import { aboutPageContent } from '#lib/content/about-page.ts';
+import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
 
 const config = aboutPageContent.weather;
+
+it.each(PUBLISHED_LOCALES)('%s shows location and weather without the editorial question', (locale) => {
+	const { unmount } = render(AboutWeather, {
+		props: { config, weather: { temp: 12, condition: 'Clear', icon: '01d' }, stop: '06', label: 'LOCATION' },
+		context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
+	});
+	for (const question of Object.values(config.hook)) {
+		if (question) expect(screen.queryByText(question)).not.toBeInTheDocument();
+	}
+	expect(screen.getByText(resolveLocale(config.city, locale))).toBeInTheDocument();
+	expect(screen.getByText('12°C')).toBeInTheDocument();
+	expect(screen.getByText('Clear')).toBeInTheDocument();
+	unmount();
+});
 
 function renderWeather(weather: { temp: number; condition: string; icon: string } | null) {
 	return render(AboutWeather, {

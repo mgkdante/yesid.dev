@@ -269,7 +269,11 @@
 			scroll-snap-align: none;
 		}
 		.service-viewport-first {
-			padding-block-start: clamp(1.5rem, 5svh, 3rem);
+			min-height: calc(100svh - var(--nav-clearance) - var(--strip-h));
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-block: 1rem;
 		}
 		.viewport-inner {
 			position: static;
@@ -307,8 +311,8 @@
 		}
 		/* !important outranks SvgIcon's inline size, as in ServiceSvgPanel. */
 		.svg-mobile-banner :global([data-slot='svg-icon']) {
-			width: 48px !important;
-			height: 48px !important;
+			width: 56px !important;
+			height: 56px !important;
 		}
 		.service-subtitle {
 			display: none;

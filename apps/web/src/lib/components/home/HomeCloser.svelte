@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
 	import { resolveLocale } from '#lib/utils/index.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -17,13 +17,11 @@
 		closer: CloserContent;
 		siteMeta: SiteMeta;
 	} = $props();
-	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '@yesid/motion/utils/gsap';
+	import { initScrollTriggerConfig, gsap } from '@yesid/motion/utils/gsap';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { pressBounce } from '@yesid/motion/actions';
-	import { backgroundBreathing, type BreathingControls } from '#lib/motion/scrubs/index.ts';
-	import CloserGraffiti from './CloserGraffiti.svelte';
-	import CloserFloodlight from './CloserFloodlight.svelte';
-	import CloserProps from './CloserProps.svelte';
+	import HeroDotAnnotation from './HeroDotAnnotation.svelte';
+	import { getLettering, THE_END } from './annotation-lettering';
 	import CloserTerminalBoard from './CloserTerminalBoard.svelte';
 
 	// Static content
@@ -89,94 +87,42 @@
 	] satisfies BoardRow[]);
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
-	let masterTl: gsap.core.Timeline | undefined;
-	let breathing: BreathingControls | null = null;
-	let timelineBuilt = false;
+	let noteEl: HTMLElement;
+	let writing = $state(false);
+	const closingLabel = THE_END[locale];
+	const lettering = { ...getLettering(closingLabel), tilt: -12 };
 
-	function buildMasterTimeline(graffitiAnimateFn?: () => gsap.core.Timeline) {
-		if (timelineBuilt || !sectionEl) return;
-		timelineBuilt = true;
-
-		const boardEl = sectionEl.querySelector('[data-closer-board]');
-		const rowEls = sectionEl.querySelectorAll('[data-closer-row]');
-
-		masterTl = gsap.timeline({
-			scrollTrigger: {
-				trigger: sectionEl,
-				start: 'top 80%',
-				once: true,
-			},
-		});
-
-		masterTl
-			.to(boardEl, { opacity: 1, scale: 1, duration: durationSec('slower') })
-			.to(rowEls, { opacity: 1, x: 0, stagger: 0.05, duration: durationSec('slow') }, '-=0.3');
-
-		if (graffitiAnimateFn) {
-			masterTl.add(graffitiAnimateFn(), '-=0.4');
-		}
-	}
-
-	function handleGraffitiReady(animateFn: () => gsap.core.Timeline) {
-		buildMasterTimeline(animateFn);
-	}
-
-	onMount(async () => {
-		if (!browser || !sectionEl) return;
-
-		const reduced = isPrefersReducedMotion();
-		// CloserGraffiti uses DrawSVG for the localized closer lettering. Preload
-		// before CloserGraffiti's async onReady fires so the timeline can use
-		// `drawSVG: '100%'` tweens immediately.
-		await loadDrawSVG();
-		if (!sectionEl) return; // unmount-during-await guard
-		initScrollTriggerConfig();
-
-		if (!reduced) {
-			const boardEl = sectionEl.querySelector('[data-closer-board]');
-			const rowEls = sectionEl.querySelectorAll('[data-closer-row]');
-
-			gsap.set(boardEl, { opacity: 0, scale: 0.98 });
-			gsap.set(rowEls, { opacity: 0, x: -10 });
-		}
-	});
-
-	// GO-w2t5: slice-23 orphan wired — ambient breathing behind the depot
-	// board. MOTION-GATED tier: backgroundBreathing self-no-ops under reduce.
 	onMount(() => {
-		if (!sectionEl) return;
-		breathing = backgroundBreathing(sectionEl, { duration: 12 });
-		return () => {
-			breathing?.destroy();
-			breathing = null;
-		};
-	});
-
-	onDestroy(() => {
-		masterTl?.kill();
+		if (!browser || !sectionEl) return;
+		const observer = new IntersectionObserver(entries => {
+			if (entries.some(entry => entry.isIntersecting)) {
+				writing = true;
+				observer.disconnect();
+			}
+		});
+		observer.observe(noteEl);
+		if (isPrefersReducedMotion()) writing = true;
+		initScrollTriggerConfig();
+		const context = gsap.context(() => {
+			if (isPrefersReducedMotion()) return;
+			gsap.timeline({ scrollTrigger: { trigger: sectionEl, start: 'top 80%', once: true } })
+				.from('[data-closer-board]', { opacity: 0, scale: 0.98, duration: durationSec('slower') })
+				.from('[data-closer-row]', { opacity: 0, x: -10, stagger: 0.05, duration: durationSec('slow') }, '-=0.3');
+		}, sectionEl);
+		return () => { observer.disconnect(); context.revert(); };
 	});
 </script>
 
-<!--
-  HomeCloser — Section 5: Transit terminus departure board + localized graffiti.
-  Merges Blog Teaser + About Strip + Dual CTA into one conversion-focused closer.
-  Desktop: board left, graffiti right. Mobile: graffiti behind, board full-width.
-  Orchestrates GSAP master timeline across sub-components.
--->
+<!-- Terminus board and an authored note on the blueprint page. -->
 
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
 	class="closer-section relative"
 >
-	<!-- Locale-specific graffiti — SVG loaded dynamically for DrawSVG animation -->
-	<CloserGraffiti onReady={handleGraffitiReady} />
-
-	<!-- Floodlight fixture — ground level, centered on graffiti -->
-	<CloserFloodlight />
-
-	<!-- Construction props — individual pieces for positioning freedom -->
-	<CloserProps />
+	<div class="closer-note" bind:this={noteEl} role="img" aria-label={closingLabel}>
+		<HeroDotAnnotation {lettering} width={lettering.width + 24} height={52} x={10} y={34} visible={true} ready={writing} initiallyDrawn />
+	</div>
 
 	<!-- Content -->
 	<div class="closer-content relative z-10">
@@ -199,44 +145,29 @@
 </section>
 
 <style>
-	/* go2/w4 operator QA: the GO-W2.2 .theme-dark pin is REMOVED — it read as
-	   an extra dark layer and kept the closer terminal dark in light mode.
-	   GO2-W5 round 6 (operator): the section paints NOTHING of its own —
-	   transparent in both themes so the page's circuit-grid schematic shows
-	   through the terminus. Solidity lives in the terminal board inside
-	   (--terminal === --background, the round-2 contract), never on the
-	   section wrapper. */
+
 	.closer-section {
 		background: transparent;
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
-		padding: var(--space-section-y) var(--space-page-x) 100px;
+		padding: var(--space-section-y) var(--space-page-x);
 		position: relative;
 	}
 
-	/* GO-w2t5: breathing consumer — var(--breathing-phase) 0↔1 modulates a
-	   faint floor glow under the board ("is it actually moving?" subtle). */
-	.closer-section::before {
-		content: '';
+	.closer-note {
 		position: absolute;
-		inset: 0;
+		right: var(--space-page-x);
+		top: 25%;
+		width: clamp(160px, 23vw, 360px);
+		aspect-ratio: 2.3;
 		pointer-events: none;
-		background: radial-gradient(
-			ellipse 80% 55% at 50% 100%,
-			color-mix(in srgb, var(--glow) calc(2% + var(--breathing-phase, 0) * 3%), transparent),
-			transparent 75%
-		);
 	}
-	:global([data-theme="light"]) .closer-section::before {
-		background: radial-gradient(
-			ellipse 80% 55% at 50% 100%,
-			color-mix(in srgb, var(--glow) calc(8% + var(--breathing-phase, 0) * 8%), transparent),
-			transparent 75%
-		);
+	@media (prefers-reduced-motion: reduce) {
+		.closer-note :global(svg) { visibility: visible; }
+		.closer-note :global(path) { animation: none; stroke-dashoffset: 0; }
 	}
 
-	/* Content area — wide, leaves room for graffiti on the right */
 	.closer-content {
 		max-width: 78%;
 		width: 100%;
@@ -284,7 +215,15 @@
 			flex-direction: column;
 			align-items: stretch;
 			justify-content: center;
-			padding: var(--space-section-y) var(--space-page-x) 100px;
+			padding: var(--space-section-y) var(--space-page-x);
+		}
+
+		.closer-note {
+			position: relative;
+			right: auto;
+			top: auto;
+			align-self: flex-end;
+			margin-bottom: 1rem;
 		}
 
 		.closer-content {
@@ -294,6 +233,4 @@
 		}
 	}
 
-	/* Horizontal + top padding now handled by fluid tokens (--space-page-x, --space-section-y).
-	   Bottom 100px stays fixed for construction scene clearance. */
 </style>
