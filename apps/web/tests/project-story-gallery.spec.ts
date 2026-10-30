@@ -25,9 +25,20 @@ test('project gallery follows the reader flow and supports native browsing and k
 		expect(images!.y).toBeGreaterThanOrEqual(panels!.y + panels!.height);
 		const scroller = gallery.getByTestId('project-image-gallery');
 		await expect(scroller).toHaveCSS('overflow-x', 'auto');
-		await thumbnails.nth(1).focus();
+		// Wheel browsing is independent of the thumbnail's focus handler.
+		await scroller.hover();
+		await page.mouse.wheel(400, 0);
+		await expect.poll(() => scroller.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+		await scroller.evaluate((element) => { element.scrollLeft = 0; });
+		await thumbnails.first().focus();
+		await page.keyboard.press('Tab');
 		await expect(thumbnails.nth(1)).toBeFocused();
 		await expect.poll(() => scroller.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+		await expect.poll(async () => {
+			const strip = await scroller.boundingBox();
+			const focused = await thumbnails.nth(1).boundingBox();
+			return Boolean(strip && focused && focused.x >= strip.x && focused.x + focused.width <= strip.x + strip.width);
+		}).toBe(true);
 	} else {
 		const rail = await gallery.boundingBox();
 		const article = await page.locator('.sections-column').boundingBox();

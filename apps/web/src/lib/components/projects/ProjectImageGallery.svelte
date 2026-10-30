@@ -79,6 +79,7 @@
 				class="project-image-gallery__trigger"
 				aria-label={openImageLabel(image)}
 				data-testid="project-image-gallery-trigger"
+				onfocus={(event) => event.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })}
 				onclick={(event) => openImage(image, event)}
 			>
 				<img
