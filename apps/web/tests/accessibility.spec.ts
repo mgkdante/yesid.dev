@@ -42,6 +42,10 @@ test.describe('accessibility', { tag: '@theme' }, () => {
 			test(`${url} has no serious or critical axe violations`, async ({ page }) => {
 				await page.goto(url);
 				await page.evaluate(() => document.fonts.ready);
+				// A window splitter reports its position once the page hydrates.
+				for (const splitter of await page.getByRole('separator').all()) {
+					await expect(splitter).toHaveAttribute('aria-valuenow', /\d/);
+				}
 				await expectAccessible(page, { exclude: KNOWN });
 			});
 		}
