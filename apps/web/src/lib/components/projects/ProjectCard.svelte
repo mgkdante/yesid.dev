@@ -87,7 +87,6 @@
 
 <a
 	href={localizeHref(`/projects/${project.slug}`, locale)}
-	aria-label={resolveLocale(project.title, locale)}
 	class={cn("tap-press project-card group block h-full", `project-card--${variant}`, className)}
 	data-testid={v.testId}
 	data-flip-id={project.slug}
@@ -98,7 +97,7 @@
 >
 	<div class="h-full" use:cursorGlow>
 	<Card class="h-full gap-0 py-0">
-		<article class="project-card-layout h-full flex-1">
+		<div class="project-card-layout h-full flex-1">
 
 		{#if project.image}
 			<div class={mediaClass} data-testid={v.mediaTestId}>
@@ -226,7 +225,7 @@
 		{/if}
 		</div>
 
-		</article>
+		</div>
 	</Card>
 	</div>
 </a>

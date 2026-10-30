@@ -33,13 +33,6 @@ async function open(page: Page, { url, post }: (typeof pages)[number]) {
 	expect(response?.ok(), url).toBe(true);
 	if (post) await expect(page.getByTestId('blog-detail-page')).toBeVisible();
 }
-// In files C9 is reshaping; C10b's second part fixes each and deletes it here.
-const KNOWN: string[] = [
-	'[data-testid="project-card-info"] .data-flow-diagram.scrollable',
-	'.proof-count-total',
-	'a[data-testid="project-card"], a[data-testid="proof-card"]',
-	'[data-testid="closer-row"]',
-];
 
 async function openMenu(page: Page, locale: Locale) {
 	const menu = page.getByRole('navigation', { name: resolveLocale(chrome.menuOverlayAria, locale) });
@@ -55,7 +48,7 @@ test.describe('accessibility', { tag: '@theme' }, () => {
 		test(`${entry.url} has no serious or critical axe violations`, async ({ page }) => {
 			await open(page, entry);
 			await page.evaluate(() => document.fonts.ready);
-			await expectAccessible(page, { exclude: KNOWN });
+			await expectAccessible(page);
 		});
 	}
 
@@ -63,7 +56,7 @@ test.describe('accessibility', { tag: '@theme' }, () => {
 		test(`${locale}: the open menu has no serious or critical axe violations`, async ({ page }) => {
 			await page.goto(localized(menuItems[0].href, locale));
 			await openMenu(page, locale);
-			await expectAccessible(page, { include: '[role="dialog"]', exclude: KNOWN });
+			await expectAccessible(page, { include: '[role="dialog"]' });
 		});
 	}
 
@@ -72,12 +65,10 @@ test.describe('accessibility', { tag: '@theme' }, () => {
 		const form = visibleContactTerminal(page);
 		await form.getByTestId('contact-submit').click();
 		await expect(form.getByText('✗ ' + contactContent.validation.required.en.replace('{field}', contactContent.formTerminal.fields.name.label.en))).toBeVisible();
-		await expectAccessible(page, { exclude: KNOWN });
+		await expectAccessible(page);
 	});
 });
 
-// Hero, project carousel and manifesto pills are in files C9 is reshaping; C10b's second part fixes and deletes these.
-const TAP_KNOWN = ['[data-testid="hero-banner"]', '[data-testid="proof-prev"]', '[data-testid="proof-next"]', '[data-testid="manifesto-pill"]'];
 // Links in CMS body copy are text links (WCAG 2.5.8 inline exception); its other controls are still measured.
 const TAP_EXEMPT = ['[data-testid="blog-section-body"] a'];
 
@@ -86,10 +77,11 @@ for (const entry of pages) {
 		await open(page, entry);
 		await page.keyboard.press('Tab');
 		await expect(page.locator(':focus')).toHaveAttribute('href', '#main');
+		await expect(page.locator(':focus')).toHaveAccessibleName(resolveLocale(chrome.skipToContentLabel!, entry.locale));
 		await expect(page.getByRole('banner')).toHaveCount(1);
 		await expect(page.getByRole('main')).toHaveAttribute('id', 'main');
 		await expect(page.getByRole('contentinfo')).toHaveCount(1);
 		await expectNoHorizontalOverflow(page);
-		await expectTapTargets(page, { exclude: [...TAP_KNOWN, ...TAP_EXEMPT] });
+		await expectTapTargets(page, { exclude: TAP_EXEMPT });
 	});
 }
