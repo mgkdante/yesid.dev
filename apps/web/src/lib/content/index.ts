@@ -1,17 +1,6 @@
-// Content-layer barrel.
-// Aggregates every static source module under $lib/content.
-//
-// Import boundaries (rewritten slice-28.5, audit #124 — the 17b-era "adapters
-// become the sole reader" plan never fully landed; this states the actual rule.
-// Canonical long-form version: $lib/adapters/static.ts header):
-// - COLLECTION / PRIMARY data (anything with an adapter port) is read at
-//   runtime only by $lib/adapters/static.ts; routes get it via
-//   $lib/adapters and pass it to components as props.
-// - CMS chrome singletons (`siteLabels.*`) may be imported directly by display
-//   components because generated content files are the edge cache.
-// - Static-fallback imports in layout/error shells + test stubs are sanctioned.
+// Primary content flows through adapter ports;
+// chrome, layout/error fallbacks and the shared CTA read build-time content directly.
 
-// Generated CMS-derived modules (slice-18m export-fallbacks pipeline).
 export * from './projects'
 export * from './services'
 export * from './blog'

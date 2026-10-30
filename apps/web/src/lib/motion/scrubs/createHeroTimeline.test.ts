@@ -172,9 +172,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		destroy();
 	});
 
-	// go2/w5 taste-2: the metro caption (ONE small line naming the art at the
-	// wrapper's bottom strip — the in-frame legend is gone) fades in with the
-	// Phase 4 labels — by the end of the scrub it must be fully readable.
 	it('fades the .metro-caption overlay in with the labels', () => {
 		const caption = document.createElement('p');
 		caption.classList.add('metro-caption');
@@ -190,10 +187,7 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			stopBlink: () => {},
 		});
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
-		// gsap is mocked in the dom tier (setup.dom.ts) — assert through the
-		// mock timeline's call record: a `.to()` targeting the caption, to full
-		// opacity (informative text, AA — unlike the 0.6 decorative labels),
-		// at the Phase 4 label slot (0.58).
+		// GSAP is mocked here, so inspect the caption tween's target and opacity.
 		const tl = pinCall![0].animation as unknown as { to: ReturnType<typeof vi.fn> };
 		const captionCall = tl.to.mock.calls.find((c) => {
 			const targets = c[0] as Element | ArrayLike<Element>;
@@ -209,12 +203,7 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		destroy();
 	});
 
-	// go2/w5 taste-2: the Phase 6 hero-text cross-fade must be an explicit
-	// fromTo(0→1, immediateRender:false). The replay path first renders a
-	// freshly rebuilt timeline at the END of the track while a temporary
-	// inline opacity:1 shield keeps the settled text painted — a lazy .to()
-	// would capture that shield as its start and the cross-fade would
-	// degenerate to 1→1 on rewind.
+	// An explicit cross-fade start prevents the replay opacity shield from being captured as the tween start.
 	it('cross-fades the hero text container via shield-proof fromTo at Phase 6', () => {
 		const createSpy = vi.spyOn(ScrollTrigger, 'create');
 		const destroy = createHeroTimeline(refs.pinContainer, {
@@ -236,12 +225,7 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		destroy();
 	});
 
-	// go2/w5 taste-2: the replayable-intro persistence hook with ARMED-
-	// CROSSING semantics. A genuine below-threshold render arms the latch and
-	// crossing into the end fires it; a first render already AT the end stays
-	// silent (the replay path jumps a rebuilt pin straight to its end — that
-	// must never read as a completion); a rewind below the threshold re-arms
-	// so a replayed completion fires again (the collapse re-applies).
+	// Only crossing the end from below completes the intro; an initial render at the end must stay silent.
 	it('fires onIntroComplete on armed end-crossings only', () => {
 		const createSpy = vi.spyOn(ScrollTrigger, 'create');
 		const onIntroComplete = vi.fn();

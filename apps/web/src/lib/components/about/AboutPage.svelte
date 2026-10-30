@@ -17,7 +17,6 @@
 	import AboutCta from './AboutCta.svelte';
 	import AboutTrain from './AboutTrain.svelte';
 
-	// slice-18i Phase 7C: aboutPageContent now flows as a prop from the server load.
 	let {
 		aboutPage,
 		weather,
@@ -64,10 +63,6 @@
 			</div>
 		</div>
 </section>
-
-<!-- GO2-W5 final batch (6b): no page-level bottom stripe. The footer's
-     platform-edge hazard tape owns the footer seam — a second tape here
-     stacked two stripes at the page bottom (operator QA). -->
 
 <style>
 	/* ═══ DASHBOARD: CSS Grid Named Areas ═══ */

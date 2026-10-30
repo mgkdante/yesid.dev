@@ -1,22 +1,4 @@
-// Adapter contract. Defines every read the app makes against the content layer.
-// Any backend (Directus, Keystatic, mock, static files) implements this
-// interface; the single `as adapter` re-export in index.ts picks the active one.
-//
-// Signature rules codified in Slice 17b:
-//   - Every method is async (`Promise<T>`) — CMS-ready from day one.
-//   - Collections return `readonly T[]` — adapters don't promise mutability.
-//   - Not-found returns `undefined`, never `null` — matches TypeScript idiom.
-//
-// Typing strategy for the ContentPort (18c Task 42 — F4):
-//   Every home-page block has a named interface in @repo/shared/types
-//   (HeroContent, ManifestoContent, ProofReelContent, etc.) so the port
-//   contract is self-describing and reviewable as a list of types instead of
-//   an implicit tuple hidden inside typeof import() calls.
-//
-//   Static adapter's `as const` objects structurally widen to these interfaces;
-//   Directus adapter parses inbound M2A block rows through the matching Zod
-//   schema (post-18i). The `: ContentAdapter` annotation on the composite
-//   export in adapters/index.ts is the compile-time gate.
+// Adapter reads are asynchronous; collections are readonly and missing records return undefined.
 
 import type {
 	Project,
@@ -34,7 +16,6 @@ import type {
 	ProofReelContent,
 	ServicesGridContent,
 	AboutIntroContent,
-	CtaContent,
 	CloserContent,
 	BlockEditorDoc,
 	MorphShape,
@@ -68,9 +49,9 @@ export interface ContentAdapter {
 	blog: BlogPort;
 	meta: MetaPort;
 	content: ContentPort;
-	/** Nav sub-port — reads nav_links by placement slot. Added in slice-18i Phase 5. */
+
 	nav: NavPort;
-	/** Legal-pages sub-port (OPS1 launch Phase 1). */
+
 	legal: LegalPort;
 }
 
@@ -99,21 +80,9 @@ export interface BlogPort {
 }
 
 export interface MetaPort {
-	/**
-	 * Brand identity (slice-18 18h Q9 amendment): name, tagline, description,
-	 * links, owner. CMS-backed via `site_meta` singleton (directus adapter)
-	 * with the same TS shape as before — pre-existing consumers (jsonLd
-	 * factories, Footer, About) are unaffected.
-	 */
+
 	site(): Promise<SiteMeta>;
 
-	/**
-	 * Site-wide SEO defaults (slice-18 18h Q9): defaultOgImage UUID, themeColor
-	 * hex, defaultDescription. Backed by the same `site_meta` singleton row
-	 * via shared internal `fetchSingletonRow()` helper + WeakMap memo on the
-	 * raw row — calling both `site()` and `siteSeoDefaults()` in the same
-	 * request triggers ONE CMS round-trip.
-	 */
 	siteSeoDefaults(): Promise<SiteSeoDefaults>;
 
 	/**
@@ -146,25 +115,17 @@ export interface ContentPort {
 	servicesGrid(): Promise<ServicesGridContent>;
 	/** Home-page About teaser — distinct from the /about page (aboutPage below). */
 	about(): Promise<AboutIntroContent>;
-	cta(): Promise<CtaContent>;
 	closer(): Promise<CloserContent>;
 	errorPage(statusCode: number): Promise<ErrorPageContent>;
 	/** Full /about page content — distinct from the home-page about teaser. */
 	aboutPage(): Promise<AboutContent>;
 	contactPage(): Promise<ContactContent>;
 	initialHeroData(): Promise<HeroData>;
-	/** /blog page chrome — block_blog_page_content (added slice-18i Phase 7). */
+
 	blogPage(): Promise<BlogPageContent>;
-	/** /projects page chrome — block_projects_page_content (added slice-18i Phase 7). */
+
 	projectsPage(): Promise<ProjectsPageContent>;
-	/**
-	 * Inlined SVG markup for the Montreal-metro hero animation.
-	 *
-	 * Slice 18d Phase 8: source flipped from a Vite `?raw` build-time import
-	 * to a Directus-fetched asset (`/assets/<uuid>`) via the assets id-map.
-	 * The result is consumed by MetroNetwork.svelte through SSR `+page.server.ts`
-	 * load and inlined as raw HTML so it remains a valid LCP candidate.
-	 */
+	/* Hero SVG markup is inlined into SSR HTML from the build-time asset. */
 	metroSvg(): Promise<string>;
 	/**
 	 * The geometric morph-target library (CMS-managed via the

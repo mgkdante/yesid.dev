@@ -20,31 +20,7 @@ export interface BreathingControls {
 	destroy: () => void;
 }
 
-/**
- * `backgroundBreathing` — ambient scrub factory.
- *
- * Registers a GSAP tween that animates the host element's
- * `--breathing-phase` CSS custom property from 0 to 1 with `yoyo: true`
- * and `repeat: -1`, using a sine.inOut ease for an "is it actually
- * moving?" subtle background pulse.
- *
- * Consumers reference `var(--breathing-phase)` in background gradients
- * or opacity calcs to produce slow ambient motion:
- *
- *   background: radial-gradient(...,
- *     color-mix(in srgb, var(--primary)
- *       calc(var(--breathing-phase, 0) * 3%), transparent),
- *     transparent 60%);
- *
- * Returns `pause / resume / destroy` so the caller can mute breathing
- * during competing motion (e.g. while sectionGlow is updating in the
- * same section) and clean up on component destroy.
- *
- * No-op under `prefers-reduced-motion: reduce` (all three control
- * functions become safe no-ops).
- *
- * Slice-23 Task 7.
- */
+/* Animate the breathing phase for background layers; reduced motion returns inert controls. */
 export function backgroundBreathing(
 	node: HTMLElement,
 	opts: BreathingOpts = {},

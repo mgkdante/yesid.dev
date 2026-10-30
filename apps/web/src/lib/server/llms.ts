@@ -1,7 +1,4 @@
-// /llms.txt + /llms-full.txt bodies (homework #18, 2026-07-01 expert sweep).
-// Generated at build time from the same CMS-derived content caches the pages
-// read, so both files track CMS truth on every publish→rebuild. Server-only:
-// nothing here may reach the client bundle.
+// Generate crawler text from the same build-time content as pages; this module stays server-only.
 import { blogPosts, contactContent, projects, services, siteMeta } from '#lib/content/index.ts';
 import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
@@ -53,10 +50,6 @@ function contactSection(pages: readonly SitePage[]): string {
 	return ['## Contact', ...lines].join('\n');
 }
 
-// L2 (launch Phase 4, AEO): a Spanish section so AI answer engines fielding
-// Spanish queries ("desarrollador web que hable español en Montréal",
-// "consultor de datos Québec") meet native Spanish copy with the /es URLs.
-// Service titles/descriptions come from the same CMS caches as the /es pages.
 function spanishSection(pages: readonly SitePage[]): string {
 	const serviceLines = visibleServices(pages).map(
 		(s) => `- [${es(s.title)}](${SITE_HOST}/es/services/${s.id}): ${es(s.description)}`,

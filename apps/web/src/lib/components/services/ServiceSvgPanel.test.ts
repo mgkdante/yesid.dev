@@ -33,9 +33,6 @@ describe('ServiceSvgPanel', () => {
 		expect(el.classList.contains('svg-panel--banner')).toBe(true);
 	});
 
-	// Round 5 regression lock (operator: "you removed the fun svgs!"): the
-	// provided SVG markup must actually land in the icon slot — the panel is
-	// the services listing/detail art surface.
 	it('round 5 — the svg markup itself renders inside the icon slot', () => {
 		render(ServiceSvgPanel, {
 			props: { svgContent: '<svg data-fun-art><circle r="10"/></svg>' }
@@ -46,8 +43,6 @@ describe('ServiceSvgPanel', () => {
 		expect(slot?.querySelector('svg[data-fun-art] circle')).toBeTruthy();
 	});
 
-	// Round 5: hovering anywhere on the panel drives the art morph — the art
-	// sits in a pointer-events-none wrapper so the panel owns the hover.
 	it('round 5 — the art wrapper is pointer-transparent (panel-wide hover morph)', () => {
 		render(ServiceSvgPanel, { props: { svgContent: '<svg></svg>' } });
 		const art = screen.getByTestId('service-svg-panel').querySelector('.svg-art');
@@ -55,10 +50,6 @@ describe('ServiceSvgPanel', () => {
 		expect(art?.classList.contains('pointer-events-none')).toBe(true);
 	});
 
-	// Round 6 (operator: restore the fun left-side detail SVG): the panel is a
-	// real <button> so the morph fires on TAP as well as hover — the original
-	// slice-09 hero-svg-box semantics. Decorative toy: hidden from the a11y
-	// tree and out of the tab order, exactly like the round-5 presentation div.
 	it('round 6 — the panel is a tap-able button outside the a11y tree', () => {
 		render(ServiceSvgPanel, { props: { svgContent: '<svg></svg>' } });
 		const el = screen.getByTestId('service-svg-panel');

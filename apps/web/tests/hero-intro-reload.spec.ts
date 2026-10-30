@@ -53,12 +53,13 @@ test('reload during a visitor-started intro returns to the idle hero', async ({ 
 
 test('Back and Forward return to the idle hero without starting an intro', async ({ page }) => {
 	await page.goto('/');
+	// The URL changes before the view transition swaps the page in; going Back earlier races that swap.
 	await page.getByTestId('hero-cta-projects').click();
-	await expect(page).toHaveURL(/\/projects/);
+	await expect(page.getByTestId('project-listing')).toBeVisible();
 	await page.goBack();
 	await expectIdleHero(page);
 	await page.goForward();
-	await expect(page).toHaveURL(/\/projects/);
+	await expect(page.getByTestId('project-listing')).toBeVisible();
 	await page.goBack();
 	await expectIdleHero(page);
 	await expect(page.getByTestId('hero-dot-replay')).toBeEnabled();

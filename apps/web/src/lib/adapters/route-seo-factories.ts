@@ -1,11 +1,4 @@
-// Dynamic-route SEO factories — extracted from apps/web/src/lib/content/meta.ts
-// in slice-18 18h Phase 4 Task 11.
-//
-// Each factory consumes (params, locale, adapter, siteMeta, siteSeoDefaults)
-// and returns a PageSeo. The caller — staticAdapter.meta.forRoute() since the
-// dormant directus adapter was removed at slice-26 close — supplies both site
-// shapes and threads them through here; factories never re-fetch, never
-// import the adapter directly.
+// Dynamic-route factories consume caller-supplied adapter and site data without re-fetching.
 
 import type {
 	Locale,
@@ -89,9 +82,7 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	const seo: PageSeo = {
 		title: appendBrandPerLocale(service.title, siteMeta.name),
-		// Search-facing copy first (homework #25: locality + tech + freelance);
-		// the evocative one-liner stays on-page. Mirrors the blog pattern
-		// (post.seoDescription ?? post.excerpt).
+		// Search metadata prefers SEO copy; the evocative one-liner stays on the page.
 		description: fitDescriptionForSeo(
 			service.seoDescription ?? service.description,
 			siteSeoDefaults.defaultDescription,
@@ -162,10 +153,7 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		],
 	};
 
-	// OG image wiring (slice-15c). Only set when title.en is non-empty so
-	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
-	// EN uses the bare slug; FR/ES use path suffixes so every locale can
-	// prerender to its own deployment-static PNG.
+	// Empty titles leave OG resolution to the locale fallback; localized paths get separate prerendered cards.
 	if (project.title?.en && project.title.en.length > 0) {
 		seo.ogImage = {
 			url: ogImagePath('project', project.slug, locale),
@@ -244,8 +232,7 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		],
 	};
 
-	// New OG image wiring — slice-15c. Only set when title is non-empty so
-	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
+	// Empty titles leave OG resolution to the locale fallback.
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
 			url: imageUrl ?? ogImagePath('blog', post.slug, locale),

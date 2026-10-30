@@ -1,10 +1,3 @@
-// projectFactory — test data for Project.
-//
-// Mirrors ProjectSchema in $lib/schemas/project. Uses the
-// `localizedBlockEditorDoc()` helper for the description + section content
-// fields (Phase 0 finding: ZodFactory auto-gen fails on BlockEditorDoc
-// discriminated union).
-
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';
 import type { Project } from '#lib/types.ts';

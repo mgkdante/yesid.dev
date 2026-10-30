@@ -1,23 +1,10 @@
-// Live transit KPIs consumer (homework #2 phase 2).
-// Contract: GET https://transit.yesid.dev/api/v1/kpis (transit-data-proxy):
-//   - server cache 30s + stale-while-revalidate; the client sends no-store
-//     because the promised cache lives server-side.
-//   - number lanes are NULLABLE per source; a stale vehicles feed is a 503
-//     (+ Retry-After), never invented numbers.
-//   - topRoutes carries UP TO 5 rows (fewer overnight); avgDelayS can be
-//     NEGATIVE (early buses); routesTotal = 227 trackable bus routes.
-// Honest-null policy on this side: the hero is either fully LIVE (every lane
-// present) or fully DEMO with DEMO labels. Partial-live rendering would dress
-// mixed data up as one coherent snapshot, which is the exact overclaim the
-// honesty pass removed.
+// Render fully LIVE only when every KPI lane is present; otherwise use DEMO data and labels.
 
 import type { HeroData, HeroQueryRow } from './hero-data';
 
 export const LIVE_KPIS_URL = 'https://transit.yesid.dev/api/v1/kpis';
 
-/** Operator cadence (2026-07-03): the endpoint's snapshot advances every
- *  ~30s (server cache 30s + SWR), so polling at 45s guarantees every poll
- *  crosses a publish boundary and lands genuinely new data. */
+/* The 45-second poll interval exceeds the endpoint's 30-second cache cadence. */
 export const LIVE_POLL_MS = 45_000;
 
 export function startLiveKpiPolling(poll: () => void | Promise<void>): () => void {

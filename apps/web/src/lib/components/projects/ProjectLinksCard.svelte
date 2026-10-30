@@ -64,8 +64,7 @@
 						{githubLabel}
 					</a>
 				{:else if project.repoPrivate}
-					<!-- The repo exists but is private (homework #13): an honest non-link
-					     state beats a 404. Goes back to a link when the repo goes public. -->
+					<!-- Private repositories render as non-links to avoid sending visitors to a 404. -->
 					<span
 						data-testid="project-repo-private"
 						class="inline-flex items-center gap-2 font-mono text-mono text-[var(--secondary-foreground)]"

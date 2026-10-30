@@ -1,7 +1,3 @@
-<!--
-  ManifestoEdgeTop — measurement tick marks along top edge.
-  Parent GSAP timeline targets .manifesto__edge-top.
--->
 <script lang="ts">
 	let { ticks }: { ticks: readonly string[] } = $props();
 </script>

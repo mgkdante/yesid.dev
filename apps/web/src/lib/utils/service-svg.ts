@@ -1,7 +1,7 @@
 // Service SVG loading utility.
 // Provides a helper to load raw SVG content for service illustrations.
 //
-// WHY build-time inlining instead of fetch-at-load (go2 integration fix):
+// WHY build-time inlining instead of fetch-at-load:
 // Service SVGs live in `static/svg/services/` (SvelteKit's publicDir) so the
 // browser can fetch them by URL (HomeServices does exactly that, client-side).
 // Server load functions used to fetch the same URLs via SvelteKit's `fetch` —

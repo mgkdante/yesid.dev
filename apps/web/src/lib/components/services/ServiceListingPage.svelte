@@ -44,11 +44,7 @@
 		}
 	}
 
-	// slice-34.5: the active station is a SHAREABLE ?station=<id> URL param, written
-	// only on an explicit tab click (NOT from the IntersectionObserver, which would
-	// spam replaceState during scroll). Because it's a URL param it rides the
-	// language toggle for free (localizeHref carries the query), so on the remounted
-	// FR/EN page the onMount deep-link below re-scrolls to the carried station.
+	// Write the shareable station parameter only on explicit tab clicks; scroll-spy updates must not rewrite history.
 	async function handleTabSelect(id: string) {
 		activeId = id;
 		if (!browser) return;

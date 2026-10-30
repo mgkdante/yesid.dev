@@ -1,15 +1,4 @@
-// Build-time sitemap coverage gate.
-//
-// Runs as part of the standard test suite (`bun run test`). Fails if any
-// declared public route is missing from the sitemap's output, or if the
-// sitemap emits a route that doesn't exist on disk. Forces sitemap + routes
-// to stay in sync as pages are added, removed, or renamed.
-//
-// slice-26.1: routes are additionally filtered through the site_pages
-// registry on BOTH sides of the diff. A route whose registry entry is absent
-// (archived section) is expected to be missing from the sitemap — the same
-// rebuild 404s it via the +layout.server.ts gate, so dropping it here is
-// correct, not a coverage hole.
+// Compare only registry-published routes; archived sections must disappear from both routing and the sitemap.
 
 import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
@@ -43,9 +32,7 @@ function collectPageRoutes(dir: string, prefix = ''): string[] {
 		if (!statSync(full).isDirectory()) continue;
 		if (entry.startsWith('.')) continue;
 		if (entry.startsWith('(')) continue; // SvelteKit route group
-		// [[lang=locale]] is the optional locale prefix (slice-28.6) —
-		// transparent for coverage purposes: declared routes are the EN
-		// canonical tree.
+
 		if (entry.startsWith('[[')) {
 			routes.push(...collectPageRoutes(full, prefix));
 			continue;
@@ -95,8 +82,7 @@ describe('sitemap coverage gate', () => {
 		for (const route of declared) {
 			if (EXCLUDES.has(route)) continue;
 			const paths = await expandDynamic(route);
-			// Registry gate (slice-26.1): routes whose site_pages entry is absent
-			// are 404'd by +layout.server.ts and must NOT appear in the sitemap.
+
 			for (const p of paths) {
 				if (isPathPublished(p, pages)) expected.add(p);
 			}
@@ -108,8 +94,7 @@ describe('sitemap coverage gate', () => {
 			const m = entry.match(/<loc>([^<]+)<\/loc>/);
 			if (!m) continue;
 			const url = new URL(m[1]);
-			// slice-28.6: per-locale variants share one declared route — compare
-			// on the delocalized, de-duplicated path set.
+
 			actual.add(delocalizePath(url.pathname === '' ? '/' : url.pathname));
 		}
 

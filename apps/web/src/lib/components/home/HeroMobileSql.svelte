@@ -8,35 +8,22 @@
 </script>
 
 <script lang="ts">
+	import type { ComponentProps } from 'svelte';
 	import * as Collapsible from '@yesid/ui/collapsible';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
 	import type { HeroData } from '#lib/live/index.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	let {
 		heroData,
-		sqlPrompt,
-		sqlLiveLabel,
-		sqlColumnRoute,
-		sqlColumnAvgDelay,
-		sqlColumnVehicles,
-		sqlMetaTemplate,
-		updatedAgo,
-		refreshLabel,
-		refreshHelper,
+		labels,
 		onRefresh,
 	}: {
 		heroData: HeroData;
-		sqlPrompt: string;
-		sqlLiveLabel: string;
-		sqlColumnRoute: string;
-		sqlColumnAvgDelay: string;
-		sqlColumnVehicles: string;
-		sqlMetaTemplate: string;
-		updatedAgo: string;
-		refreshLabel: string;
-		refreshHelper: string;
+		labels: Pick<ComponentProps<typeof HeroSqlPanel>, 'prompt' | 'liveLabel' | 'columnRoute' | 'columnAvgDelay' | 'columnVehicles' | 'metaTemplate'> & { updatedAgo: string; refreshLabel: string; refreshHelper: string };
 		onRefresh: () => void;
 	} = $props();
+
+	const { updatedAgo, refreshLabel, refreshHelper, ...panelLabels } = $derived(labels);
 
 	const tabs = {
 		en: { show: 'See a small example', close: 'Close' },
@@ -82,12 +69,7 @@
 					<HeroSqlPanel
 						rows={heroData.queryRows}
 						queryTime={heroData.queryTime}
-						prompt={sqlPrompt}
-						liveLabel={sqlLiveLabel}
-						columnRoute={sqlColumnRoute}
-						columnAvgDelay={sqlColumnAvgDelay}
-						columnVehicles={sqlColumnVehicles}
-						metaTemplate={sqlMetaTemplate}
+						{...panelLabels}
 						{updatedAgo}
 					/>
 
@@ -118,8 +100,7 @@
 </div>
 
 <style>
-	/* Horizontal divider for mobile — same amber rule + faded ends as the
-	   desktop vertical divider (operator call 2026-07-03: yellow on mobile too). */
+
 	.hero-divider-h {
 		height: 1px;
 		background: linear-gradient(

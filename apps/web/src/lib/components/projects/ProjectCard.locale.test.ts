@@ -1,7 +1,3 @@
-// slice-28.6 T9 — representative internal-link localization tests.
-// The locale context is injected via render's `context` option: the
-// locale-context module keys on Symbol.for('@yesid/ui/locale') and stores a
-// read function (see $lib/utils/locale-context.ts).
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import ProjectCard from './ProjectCard.svelte';

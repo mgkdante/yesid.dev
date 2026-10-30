@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Project } from '#lib/types.ts';
 	import { assetImage } from '#lib/directus/assets.ts';
-	import { resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
+	import type { Theme } from '@yesid/ui/state';
+	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 
 	let {

@@ -1,12 +1,4 @@
-// slice-34.4 — the foundation's default scroll restore is now Lenis-aware.
-//
-// Lenis is the site-wide scroll engine; a bare window.scrollTo fights it (Lenis
-// keeps its own animated position and snaps the page back). lenisAwareScrollTo
-// is the single Lenis-safe recipe shared by the default restore AND every
-// page-level ScrollContext (home pin-fraction, prose heading): resize() to sync
-// Lenis's cached limits to the just-remounted page height, then an immediate
-// forced scrollTo. With no Lenis (touch / reduced motion) it falls back to the
-// native window.scrollTo.
+// Lenis restoration must resize cached scroll limits before an immediate forced scroll.
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 

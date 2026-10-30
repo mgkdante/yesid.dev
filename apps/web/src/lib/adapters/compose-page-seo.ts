@@ -1,20 +1,4 @@
-// Pure composer — slice-18 18h Phase 4 Task 11.
-//
-// Given CMS data (siteMeta + siteSeoDefaults + optional routeOverride) and
-// code-side defaults (ogType, noIndex, jsonLd factory, fallbackTitle), produce
-// a `PageSeo`. Used by `staticAdapter.meta.forRoute()` for STATIC routes only;
-// dynamic routes go through `route-seo-factories.ts`.
-//
-// Title strategy (P3 finding 2026-04-27):
-//   - 'verbatim'      → home `/` keeps `'yesid. — X'` em-dash brand-first format
-//   - 'append-brand'  → other routes append `' | ${siteMeta.name}'` per locale
-//
-// Description fallback chain:
-//   routeOverride.description → siteSeoDefaults.defaultDescription
-//
-// OG image fallback chain:
-//   routeOverride.ogImage UUID → siteSeoDefaults.defaultOgImage UUID → undefined
-//   (consumer's <SeoHead> resolves undefined to `/og/default.{locale}.png`).
+// Static routes compose SEO from CMS values and code defaults; dynamic routes use route-seo-factories.ts.
 
 import type {
 	Locale,
@@ -28,7 +12,6 @@ import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { asset } from '#lib/directus/assets.ts';
 import type { CodeRouteSeoDefaults } from './route-seo-defaults';
 
-/** Append the brand suffix to every locale present in `body` (slice-28.6). */
 export function appendBrandPerLocale(body: LocalizedString, brand: string): LocalizedString {
 	return {
 		en: `${body.en} | ${brand}`,
@@ -76,7 +59,7 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	// undefined and let <SeoHead> resolve `defaultOgImageFor(locale)` to the
 	// static `/og/default.{locale}.png` fallback.
 	const ogImageUuid = routeOverride?.ogImage ?? siteSeoDefaults.defaultOgImage;
-	// slice-28.6: locale-aware canonical (/fr prefix once published; EN until then).
+
 	const canonical = canonicalFor(routeId === '/' ? '/' : routeId, locale);
 
 	const seo: PageSeo = {

@@ -5,11 +5,7 @@ import type { ErrorPageContent } from '#lib/navigation/types.ts';
 
 declare global {
 	namespace App {
-		/**
-		 * slice-18i Phase 7D: handleError enriches the error object with the
-		 * status-specific errorPage content. +error.svelte reads it from
-		 * $page.error.cmsErrorPage so each status code can show distinct copy.
-		 */
+		/* Status-specific error copy is attached by handleError. */
 		interface Error {
 			message: string;
 			/** errorPage content matching the response status code. Name is

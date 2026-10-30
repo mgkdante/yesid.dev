@@ -9,7 +9,7 @@
 	import { MetroStation } from '@yesid/ui/brand';
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 	import { Card } from '@yesid/ui/card';
-	import { cn } from '#lib/utils/index.ts';
+	import { cn } from '@yesid/ui/cn';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -89,8 +89,7 @@
 						{post.title}
 					</h2>
 					<div class="blog-meta-row" data-testid="blog-meta-row">
-						<!-- Round-4 doctrine: the post date is a departure-time readout,
-						     paired with source language as article metadata. -->
+
 						<time datetime={post.date} class="blog-date">
 							{post.date}
 						</time>
@@ -122,9 +121,7 @@
 </a>
 
 <style>
-	/* Round-4: dividers between list items one step thicker — the blog-row
-	   frame steps 2px → 3px (the round-3 divider progression applied to
-	   listing list items; shared ui/card elsewhere stays 2px). */
+
 	:global(.card-surface.blog-row) {
 		border-width: 3px;
 		display: grid;

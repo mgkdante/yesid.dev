@@ -4,10 +4,6 @@ import { blogPosts } from '#lib/content/index.ts';
 import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 
-// L2 (launch Phase 4, AEO): the Spanish section is how AI answer engines
-// fielding Spanish queries meet native copy + the /es URLs. Both bodies
-// carry it; the header announces the site trilingual.
-
 describe('llms.txt — Spanish section (L2 Phase 4)', () => {
 	it.each([['llmsTxt', llmsTxt], ['llmsFullTxt', llmsFullTxt]] as const)('%s omits archived section links', (_, render) => {
 		const registry = sitePages.filter((page) => !['/blog', '/projects', '/services', '/contact'].includes(page.path));

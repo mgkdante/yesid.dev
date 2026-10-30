@@ -22,19 +22,11 @@ describe('motion/utils/flip', () => {
 	});
 
 	describe('animateFlipTransition', () => {
-		it('is a no-op when batchFired is false', async () => {
-			const { animateFlipTransition } = await import('./flip.js');
-			const onDone = vi.fn();
-			animateFlipTransition('[data-batch="test"]', null, false, onDone);
-			// tick() hasn't fired — onDone should not have been called synchronously
-			expect(onDone).not.toHaveBeenCalled();
-		});
-
 		it('accepts a null flipState and does not throw', async () => {
 			const { animateFlipTransition } = await import('./flip.js');
 			const onDone = vi.fn();
 			expect(() =>
-				animateFlipTransition('[data-batch="test"]', null, true, onDone),
+				animateFlipTransition('[data-batch="test"]', null, onDone),
 			).not.toThrow();
 		});
 	});
@@ -76,7 +68,7 @@ describe('motion/utils/flip registration', () => {
 
 		const flipState = captureFlipState();
 		captureFlipState();
-		animateFlipTransition('[data-batch="test"]', flipState, true, vi.fn());
+		animateFlipTransition('[data-batch="test"]', flipState, vi.fn());
 		await vi.waitFor(() => expect(flipFrom).toHaveBeenCalledTimes(1));
 
 		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);

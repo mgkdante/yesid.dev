@@ -1,17 +1,4 @@
-// Weather scene resolver — GO Wave 4 (About weather rebuild).
-//
-// Maps an OpenWeather icon code (e.g. "10n") to one of the crafted scene
-// families rendered by WeatherScene.svelte, plus a day/night flag.
-//
-// Why the icon code and not the condition string: the code is a closed,
-// documented enum (https://openweathermap.org/weather-conditions) while the
-// description is free-form localized text. The trailing d/n suffix is
-// OpenWeather's own sunrise/sunset calc for Montreal — using it keeps the
-// SSR HTML deterministic for a given payload (no Date() at render time).
-//
-// Graceful-data rules (operator spec):
-//   - unknown/unmapped code  → 'clear' (never an empty box)
-//   - missing weather payload → 'offline' (calm sky, skyline still drawn)
+// Icon codes are stable across languages; their daypart suffix keeps SSR deterministic for each weather payload.
 
 export type WeatherSceneId =
 	| 'clear'
@@ -26,17 +13,6 @@ export interface WeatherSceneState {
 	scene: WeatherSceneId;
 	night: boolean;
 }
-
-/** Every renderable scene family, exported for tests + the screenshot rig. */
-export const WEATHER_SCENES: readonly WeatherSceneId[] = [
-	'clear',
-	'clouds',
-	'rain',
-	'snow',
-	'storm',
-	'mist',
-	'offline',
-] as const;
 
 const CODE_TO_SCENE: Record<string, WeatherSceneId> = {
 	'01': 'clear', // clear sky

@@ -1,19 +1,3 @@
-// L4 assertion helpers — slice-17f Phase 4.
-//
-// Three helpers in one module:
-//   expectValidSchema(value, schema)   — Zod-powered runtime validator with
-//                                         friendly error messages
-//   expectAccessibleHeading(rendered, level, name?)
-//                                       — wraps Testing Library's heading query
-//   expectStructuralMatch(rendered, structure)
-//                                       — asserts a set of test-ids exist
-//
-// Consumer pattern:
-//   import { expectValidSchema, expectAccessibleHeading } from '$tests/utils';
-//
-//   expectValidSchema(adapterResult, ProjectSchema);
-//   expectAccessibleHeading(rendered, 1, /yesid/i);
-
 import type { ZodSchema } from 'zod';
 import type { RenderResult } from '@testing-library/svelte';
 import type { Component } from 'svelte';

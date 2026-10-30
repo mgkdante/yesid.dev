@@ -171,9 +171,7 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		if (breadcrumb && breadcrumb['@type'] === 'BreadcrumbList') {
 			expect(breadcrumb.itemListElement).toHaveLength(3);
 			expect(breadcrumb.itemListElement[1].name).toBe(sitePages.find(page => page.path === '/blog')!.title.en);
-			// slice-28.6: crumb names come from the trilingual site_pages
-			// registry — its en title for this row is 'Personal Corner'
-			// (previously a hardcoded 'Personal' literal).
+
 			expect(breadcrumb.itemListElement[2].name).toBe(sitePages.find(page => page.path === '/blog/personal')!.title.en);
 		}
 	});

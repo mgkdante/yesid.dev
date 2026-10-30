@@ -1,14 +1,3 @@
-// Static adapter — content method shape tests (slice-27.1 FIX A).
-//
-// Network-free, CI-runnable shape coverage. Born as the companion to the
-// RUN_PARITY harness (deleted at slice-26 close after Directus 12 passed it
-// on both environments); now the canonical suite asserting:
-//   FIX A: content.errorPage(statusCode) returns per-status content, and
-//          errorPage(404) ≠ errorPage(500) ≠ errorPage(0-fallback).
-//
-// Runs in the "data" Vitest project (Node env, $env stubbed to {}). The static
-// adapter never touches the network, so importing it directly is safe here.
-
 import { describe, expect, it } from 'vitest';
 
 import { staticAdapter, resolveStaticErrorPage } from '#lib/adapters/static.ts';

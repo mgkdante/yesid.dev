@@ -54,9 +54,7 @@ function serviceAreaNodes() {
 	return SERVICE_AREAS.map((name) => ({ '@type': 'City' as const, name }));
 }
 
-/** L2 (launch Phase 4): the languages the practice works in, derived from the
- *  published locales — a new locale flips the entity signal automatically.
- *  Shared by Person + ProfessionalService (both legitimate placements). */
+/* Published locales supply the language signal for both Person and ProfessionalService. */
 function knowsLanguage(): string[] {
 	return [...PUBLISHED_LOCALES];
 }

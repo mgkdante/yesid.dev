@@ -72,10 +72,7 @@
 	let activeService = $derived(browser ? page.url.searchParams.get('service') : null);
 	let activeTag = $derived(browser ? page.url.searchParams.get('tag') : null);
 	let activeStack = $derived(browser ? page.url.searchParams.get('stack') : null);
-	// slice-34.1: free-text search is session-scoped (the locale-free string IS the
-	// query the user typed — valid verbatim in any locale) so it survives a language
-	// switch via the locale-handoff orchestrator. The tag/service/stack filters live
-	// in the URL and are carried for free by localizeUrl.
+	// Persist the locale-free search string; URL filters travel through the language switch.
 	const searchQuery = persisted('projects-q', '');
 
 	// Apply filters: service + tag + stack + search use AND logic
@@ -150,29 +147,17 @@
 		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
-	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
-	// state on load. batchFired stays true so FLIP filter transitions work immediately.
-	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
 	$effect(() => {
 		filteredProjects;
-		animateFlipTransition('[data-batch="project-item"]', flipState, batchFired, () => {
+		animateFlipTransition('[data-batch="project-item"]', flipState, () => {
 			flipState = null;
 		});
 	});
 
 </script>
-
-<!--
-  Full work listing page: ListingFrame owns the header, search, collapsible filter
-  panel and results column; this page supplies the content and the card grid with
-  GSAP Flip animation on filter changes.
-  Service + tag filters use AND logic with URL params via goto().
-  Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
-  No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
--->
 
 <div data-testid="project-listing" class="w-full">
 	<ListingFrame
@@ -262,7 +247,4 @@
 		}
 	}
 
-	/* WHY: items render at final state on load (Snappy Doctrine, 17e-2). FLIP
-	   handles filter transitions only. `data-batch="project-item"` stays as a
-	   query target for animateFlipTransition. */
 </style>

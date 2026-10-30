@@ -180,11 +180,7 @@
 {/snippet}
 
 <div class="service-detail" data-testid="service-detail-page">
-	<!-- Station tabs — navigate mode (orange strip).
-	     Round 6: wrapped in the same solid top-band treatment as the
-	     /services listing's .tabs-bar — the backdrop ::before paints the
-	     nav gap above the tabs solid (was showing the circuit grid here
-	     while the listing showed solid background). -->
+
 	<div class="tabs-bar">
 		<StationTabs
 			{services}
@@ -254,8 +250,7 @@
 	{/snippet}
 
 	{#snippet after()}
-		<!-- Stack + Related projects — mobile only, before prev/next.
-		     Operator order: Stack first (open by default), then Related projects. -->
+
 		{#if hasStack || relatedProjects.length > 0}
 			<div class="projects-mobile">
 				<ServiceStackPanel
@@ -272,8 +267,6 @@
 			</div>
 		{/if}
 
-		<!-- Prev/Next Nav (operator round 2026-07-03: nav moves UP; the CTA is
-		     the page's true last word). -->
 		<div class="nav-area">
 			<ServiceNav {prev} {next} />
 		</div>
@@ -369,8 +362,6 @@
 		/* transparent so the root .circuit-grid shows through, matching /projects */
 		min-height: 100dvh;
 	}
-
-	/* ── Top band (round 6) ── */
 
 	/* Solid backdrop above the tabs — identical treatment to the /services
 	   listing's .tabs-bar::before: covers the nav gap (main's pt-20 strip)
@@ -543,8 +534,6 @@
 		flex-direction: column;
 	}
 
-	/* Round-4 doctrine: the impact metric is a number callout — the YELLOW
-	   wayfinding voice (accent-text = AA amber both modes). */
 	.impact-value {
 		font-family: var(--font-heading);
 		font-size: clamp(88px, 10vw, 140px);
@@ -600,7 +589,6 @@
 		}
 	}
 
-	/* Round-4 doctrine: mobile metric callout = YELLOW voice too. */
 	.metric-inline-value {
 		font-family: var(--font-heading);
 		font-size: clamp(32px, 5vw, 40px);
@@ -692,8 +680,6 @@
 
 	/* ── Nav area ── */
 
-	/* End-of-line CTA: the shared band brings its own centered layout AND its
-	   own hazard strip on top (operator rule), so the wrapper only spaces. */
 	.cta-area {
 		margin-top: 2rem;
 	}

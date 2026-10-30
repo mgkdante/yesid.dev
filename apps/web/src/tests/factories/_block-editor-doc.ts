@@ -1,12 +1,4 @@
-// _block-editor-doc.ts — minimal valid BlockEditorDoc + LocalizedBlockEditorDoc.
-//
-// Underscore prefix marks this as a factory HELPER (not consumed directly by
-// component tests). Reused by project and blog-post factories
-// where Zod schemas reference BlockEditorDoc or LocalizedBlockEditorDoc.
-//
-// Phase 0 finding: ZodFactory auto-gen cannot satisfy the BlockEditorBlock
-// discriminated union. Hand-rolling a single paragraph block is the simplest
-// path to a schema-valid default.
+// Handwritten paragraph defaults satisfy the block-editor discriminated union that automatic factories cannot generate.
 
 import { faker } from '@faker-js/faker';
 import type { BlockEditorDoc } from '@repo/shared';

@@ -13,7 +13,7 @@ const routeMocks = vi.hoisted(() => ({
 }));
 
 vi.mock('#lib/adapters/index.ts', () => ({ adapter: routeMocks.adapter }));
-vi.mock('#lib/utils/index.ts', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
+vi.mock('#lib/utils/service-svg.ts', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
 vi.mock('#lib/server/prerender-entries.ts', () => ({ projectEntries: () => [] }));
 vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: async () => ({}), highlightFence: async () => undefined }));
 

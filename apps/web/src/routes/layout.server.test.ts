@@ -1,23 +1,3 @@
-// layout.server.test.ts — Unit tests for the layout server load function.
-//
-// slice-18i Phase 6 review fix-up (High 4)
-//
-// +layout.server.ts is a pure data function with no DOM or SvelteKit SSR
-// runtime dependency — it calls adapter methods and returns a plain object.
-// The adapter is mocked via vi.mock('#lib/adapters/index.ts') so no network calls
-// are issued.
-//
-// The `load` function is called without arguments (it uses no event fields —
-// only the adapter which is injected at module level). Return type is cast
-// to the known shape for clean assertion ergonomics.
-//
-// Coverage targets:
-//   - Happy path: all 4 nav slots resolve → return shape correct
-//   - Error route: errorPage resolves from adapter
-//   - Partial nav failure: one slot throws → that slot falls back to static
-//   - errorPage failure: adapter.content.errorPage throws → falls back to static
-//   - All-slots failure: every adapter call throws → all slots use static fixtures
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
 	navLinks as staticNavLinks,
@@ -77,9 +57,7 @@ type LayoutData = {
 async function callLoad(
 	routeId: string | null = '/',
 	params: Record<string, string> = {},
-	// Request pathname for the registry route-gate (slice-26.1). Defaults to
-	// '/' (always published) so routeId-focused tests are unaffected by the
-	// gate; gate tests pass an explicit pathname.
+	// Default to the always-published root so route-specific tests opt into registry gating.
 	pathname = '/',
 ): Promise<LayoutData> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

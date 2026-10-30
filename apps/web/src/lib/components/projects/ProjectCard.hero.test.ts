@@ -114,10 +114,6 @@ describe('ProjectCard hero media', () => {
 				project,
 				serviceSvgContents: {},
 				variant: 'proof',
-				cardSize: 'proof',
-				testId: 'proof-card',
-				mediaTestId: 'proof-card-image',
-				metricTestPrefix: 'proof',
 			},
 		});
 
@@ -152,10 +148,6 @@ describe('ProjectCard hero media', () => {
 				project,
 				serviceSvgContents: {},
 				variant: 'proof',
-				cardSize: 'proof',
-				testId: 'proof-card',
-				mediaTestId: 'proof-card-image',
-				metricTestPrefix: 'proof',
 			},
 		});
 

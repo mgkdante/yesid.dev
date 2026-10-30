@@ -1,15 +1,4 @@
-/**
- * Pure wire format for the locale-switch state handoff (slice-34).
- *
- * The orchestrator (locale-handoff.svelte.ts) captures a HandoffBlob in
- * `beforeNavigate` of a language switch and replays it in `afterNavigate` on
- * the remounted page. This module owns the serialization + the version/path
- * gate so a schema change — or a stale blob left by a prior deploy, or a blob
- * from a different page — is discarded instead of crashing a restore.
- *
- * No browser globals, no clock, no `$state` here — fully unit-testable. The
- * caller passes `ts` in.
- */
+/* Version and path gates discard incompatible locale-handoff blobs before restoration. */
 
 export const HANDOFF_BLOB_VERSION = 1;
 

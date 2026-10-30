@@ -1,11 +1,3 @@
-<!--
-  HomeAboutTeaser — the identity strip (homework #20/#21c, reshaped by the
-  operator's 2026-07-03 round): the short story (name, title, bio, more-link)
-  plus the REAL About-page badges, borrowed as-is so home and /about stay one
-  identity: languages (flag reveal), education (school marks), location
-  (weather scene), interests (comic strips). No photo widget, no stack row
-  (the stack has its own page), no parallax, no scroll tricks. Big fonts.
--->
 <script lang="ts">
 	import type { AboutIntroContent } from '#lib/types.ts';
 	import { aboutPageContent } from '#lib/content/index.ts';
@@ -86,9 +78,7 @@
 </div>
 
 <style>
-	/* Full width: the strip is a little piece of About dropped into home
-	   (operator 2026-07-03), so no content cap. The story keeps page gutters;
-	   the badge wall goes full-bleed like About's dashboard. */
+
 	.about-teaser {
 		display: grid;
 		gap: 2.5rem;
@@ -101,7 +91,6 @@
 		text-align: center;
 	}
 
-	/* Big-fonts rule (operator round 2026-07-03). */
 	.teaser-name {
 		font-family: var(--font-heading);
 		font-size: var(--text-display);
@@ -148,12 +137,7 @@
 		color: var(--primary);
 	}
 
-	/* The badge wall mirrors the About bento EXACTLY (operator 2026-07-03):
-	   mobile = About's mobile model (one column, auto rows, each card sizes
-	   itself); desktop = a 4-column square, two rows at About's own row
-	   height ((100dvh - nav - stripes) / 4 per row): languages (1 col) |
-	   college (2 cols, About's education footprint) | weather (1 col), then
-	   interests spanning all four (About gives it a 4-column run too). */
+	/* Mirror About's bento geometry so shared badges keep the same footprint on both surfaces. */
 	/* About's exact container: px-3 wrapper + 4px bento seams. */
 	.teaser-badges-bleed {
 		padding-inline: 0.75rem;

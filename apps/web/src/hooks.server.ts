@@ -20,9 +20,7 @@ function isDataPage(pathname: string, response: Response): boolean {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// i18n (slice-28.6): app.html carries <html lang="%lang%">; locale is
-	// path-derived so each URL is one cacheable representation (no Vary,
-	// CDN-safe) and error renders get the right lang too.
+	// Path-derived language keeps each URL cacheable and covers error renders.
 	const lang = pathLocale(event.url.pathname);
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => injectThemeBoot(html.replace('%lang%', lang)),
@@ -49,17 +47,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-/**
- * slice-18i Phase 7D: handleError resolves the status-specific errorPage
- * content and stashes it on the error object as `cmsErrorPage`. Post-27.2
- * the adapter read resolves from the build-time static content layer (no
- * live CMS call). +error.svelte reads it from $page.error.cmsErrorPage and
- * falls back to the layout's pre-fetched $page.data.errorPage (status 0
- * row) if not present.
- *
- * Fail-graceful: if the adapter read throws during error handling, the
- * error page still renders using the layout's status=0 fallback row.
- */
+/* Error handling falls back to the layout's generic copy if status-specific content cannot resolve. */
 export const handleError: HandleServerError = ({ error, event, kind }) => {
 	// error() bodies already carry their intended status, message and properties.
 	// Returning nothing keeps the expected-error response unchanged.

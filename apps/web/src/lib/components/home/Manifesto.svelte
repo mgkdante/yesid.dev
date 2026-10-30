@@ -9,7 +9,6 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import type { ManifestoContent } from '#lib/types.ts';
 
-	// slice-18i Phase 7C: manifestoContent now flows as a prop from the server load.
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
@@ -21,9 +20,6 @@
 	import ManifestoEdgeBottom from './ManifestoEdgeBottom.svelte';
 	import ManifestoTransit from './ManifestoTransit.svelte';
 
-	// ── Resolve all text from data layer ──────────────────────────────
-	// $derived so every prop read recomputes if the manifesto prop changes: a
-	// plain const captures only the initial value, which Svelte 5 flags.
 	const statementLine1 = $derived(resolveLocale(manifestoContent.statement.line1, locale));
 	const statementLineHuge = $derived(resolveLocale(manifestoContent.statement.lineHuge, locale));
 	const statementLine3Part1 = $derived(resolveLocale(manifestoContent.statement.line3Part1, locale));
@@ -42,9 +38,6 @@
 		}))
 	);
 
-	// Edge + transit data (passed to sub-components). $derived so they recompute
-	// when locale flips (the language toggle) — a plain const captures only the
-	// initial value, which Svelte 5 flags and which would freeze the EN copy.
 	const edgeLeft = $derived({
 		sectionNumber: resolveLocale(manifestoContent.edgeLeft.sectionNumber, locale),
 		sectionName: resolveLocale(manifestoContent.edgeLeft.sectionName, locale),
@@ -84,7 +77,6 @@
 		}))
 	);
 
-	// Data flow line specs
 	const hFlows = [
 		{ y: 80, w: 200, dur: 10, delay: 0 },
 		{ y: 240, w: 140, dur: 12, delay: 3 },
@@ -100,17 +92,14 @@
 		{ x: 560, h: 110, dur: 11, delay: 0 },
 	];
 
-	// ── Countdown timer state ────────────────────────────────────────
 	let countdownSeconds = $state(167);
 	let countdownDisplay = $derived(
 		`${String(Math.floor(countdownSeconds / 60)).padStart(2, '0')}:${String(countdownSeconds % 60).padStart(2, '0')}`
 	);
 
-	// ── Element bindings ─────────────────────────────────────────────
 	let sectionEl = $state<HTMLElement>(undefined!);
 	let statementEl = $state<HTMLElement>(undefined!);
 
-	// ── Lifecycle: GSAP ScrollTrigger entrance + IO-gated countdown ──
 	onMount(() => {
 		let countdownInterval: ReturnType<typeof setInterval> | undefined;
 		let visibilityObserver: IntersectionObserver | null = null;
@@ -129,9 +118,7 @@
 			}
 		}
 
-		// IO-gate the countdown — tick only while the Manifesto is in view.
-		// rootMargin: 100px so the timer starts slightly before the section
-		// enters the viewport, matching the visual rhythm of scrolling in.
+		// Tick the countdown only near the viewport; the margin starts it just before entry.
 		if (browser && sectionEl) {
 			visibilityObserver = new IntersectionObserver(
 				(entries) => {
@@ -143,9 +130,6 @@
 			visibilityObserver.observe(sectionEl);
 		}
 
-		// Apply crescendo scrub to the 3-line statement container. Scales gently
-		// as the user scrolls through the section — minScale at edges, maxScale
-		// mid-scroll. Pure transform, no heading-hierarchy or DOM changes.
 		let destroyCrescendo: (() => void) | undefined;
 		if (browser && sectionEl && statementEl) {
 			destroyCrescendo = createCrescendoScrub(statementEl, {
@@ -163,39 +147,30 @@
 	});
 </script>
 
-<!--
-  Manifesto section — full-viewport transit-themed manifesto.
-  Orchestrator: imports 5 sub-components for edges/transit, owns GSAP timeline.
--->
-
 <section
 	data-testid="manifesto-section"
 	bind:this={sectionEl}
 	class="manifesto"
 >
-	<!-- BG Layer 1: Circuit grid -->
+
 	<div class="manifesto__circuit-grid"></div>
 
-	<!-- BG Layer 2+3: Interactive canvas + warm glow -->
 	<ManifestoCanvas containerEl={sectionEl} />
 
-	<!-- Sub-components: edges, backgrounds, transit -->
 	<ManifestoEdgeBottom {...edgeBottom} hFlows={hFlows} vFlows={vFlows} />
 	<ManifestoEdgeRight {...edgeRight} />
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />
 	<ManifestoTransit {...transit} countdownDisplay={countdownDisplay} />
 
-	<!-- CENTER CONTENT -->
 	<div class="manifesto__content">
-		<!-- Terminal prompt -->
+
 		<div data-testid="manifesto-prompt" class="manifesto__prompt">
 			<span class="manifesto__prompt-cmd">{terminalUser}</span>
 			<span class="manifesto__prompt-text">{terminalCommand}</span>
 			<TerminalCursor />
 		</div>
 
-		<!-- Statement — variable size. Crescendo-scrubbed as a group. -->
 		<div data-testid="manifesto-text" bind:this={statementEl} class="manifesto__statement">
 			<div class="manifesto__line-small">{statementLine1}</div>
 			<div data-testid="manifesto-line-huge" class="manifesto__line-huge">{statementLineHuge}</div>
@@ -204,7 +179,6 @@
 			</div>
 		</div>
 
-		<!-- Capability pills -->
 		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, locale)}>
 			{#each pills as pill}
 				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
@@ -214,7 +188,7 @@
 </section>
 
 <style>
-	/* ── Container ───────────────────────────────────────────────── */
+
 	.manifesto {
 		position: relative;
 		min-height: 100dvh;
@@ -223,16 +197,12 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		/* Clips the fixed circuit grid, so it holds still with the page grid while the section scrolls. */
+		/* Clip the fixed circuit grid so it holds still with the page grid while this section scrolls. */
 		clip-path: inset(0);
 		background: var(--manifesto);
 		cursor: crosshair;
 	}
 
-	/* ── BG Layer 1: Circuit Grid ─────────────────────────────────────
-	   Round-4 home-art bolden (operator: "don't forget the blueprints on
-	   the home page"): grid lines 3.5% → 6%, solder dots up a step — the
-	   manifesto schematic reads in both modes instead of subliminal. */
 	.manifesto__circuit-grid {
 		opacity: var(--manifesto-background-strength);
 		position: fixed;
@@ -257,7 +227,6 @@
 		background-size: 320px 320px;
 	}
 
-	/* ── Center Content ──────────────────────────────────────────── */
 	.manifesto__content {
 		position: relative;
 		z-index: calc(var(--z-content) + 9);
@@ -268,7 +237,6 @@
 		padding-inline: 1.5rem;
 	}
 
-	/* ── Terminal Prompt ──────────────────────────────────────────── */
 	.manifesto__prompt {
 		display: flex;
 		align-items: center;
@@ -292,7 +260,6 @@
 		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
-	/* ── Statement ───────────────────────────────────────────────── */
 	.manifesto__statement {
 		text-align: center;
 		text-transform: uppercase;
@@ -322,7 +289,6 @@
 
 	.manifesto__highlight { color: var(--primary); }
 
-	/* ── Capability Pills ────────────────────────────────────────── */
 	.manifesto__pills {
 		display: flex;
 		flex-wrap: wrap;
@@ -331,9 +297,6 @@
 		margin-top: 40px;
 	}
 
-	/* Capability pills: the original faint outline pill, recoloured orange ->
-	   yellow (the wayfinding voice) and a touch less transparent so they read a
-	   bit stronger. Text is --accent-text, the legible yellow-as-text ink. */
 	.manifesto__pill {
 		font-family: var(--font-mono);
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
@@ -352,7 +315,6 @@
 		background: color-mix(in srgb, var(--accent) 22%, transparent);
 	}
 
-	/* ── Responsive ──────────────────────────────────────────────── */
 	@media (max-width: 640px) {
 		.manifesto__pill { font-size: 10px; padding: 12px 16px; min-height: 44px; }
 		.manifesto__pills { gap: 6px; }

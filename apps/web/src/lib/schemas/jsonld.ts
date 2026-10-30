@@ -44,9 +44,7 @@ export const PersonSchema = z.object({
 	email: z.string().email().optional(),
 	sameAs: z.array(z.string().url()),
 	knowsAbout: z.array(z.string().min(1)),
-	// L2 (launch Phase 4): the trilingual entity signal AI answer engines key
-	// on — a legitimate schema.org Person property (unlike availableLanguage,
-	// see the Service note below).
+	// Person supports knowsLanguage; availableLanguage is not a Person property.
 	knowsLanguage: z.array(z.string().min(2)).min(1),
 	address: PostalAddress,
 });
@@ -86,10 +84,7 @@ export const ServiceSchema = z.object({
 	'@id': z.string().url(),
 	name: z.string().min(1),
 	description: z.string().min(1),
-	// L2 (launch Phase 4): the machine-legible service category. serviceType
-	// IS defined on Service (unlike availableLanguage) — the stable EN station
-	// name regardless of page locale, so all three locales resolve to the
-	// same entity category.
+	// Use a stable service category across locales; availableLanguage is not a Service property.
 	serviceType: z.string().min(1),
 	provider: IdRef,
 	areaServed: z.array(City).optional(),
@@ -111,9 +106,7 @@ export const ProfessionalServiceSchema = z.object({
 	founder: IdRef,
 	sameAs: z.array(z.string().url()),
 	knowsAbout: z.array(z.string().min(1)),
-	// L2 (launch Phase 4): trilingual business signal — knowsLanguage is a
-	// legitimate Organization/LocalBusiness property; mirrors the GBP listing's
-	// languages so the site and the listing describe the same business.
+	// Organization language signals mirror the published business languages.
 	knowsLanguage: z.array(z.string().min(2)).min(1),
 	image: z.string().url().optional(),
 	// The entity logo Google reads for the knowledge panel. Distinct from the

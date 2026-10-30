@@ -32,9 +32,7 @@
 
 	let container: HTMLDivElement;
 
-	// GO2-W5 INTERLOCKING: the alternating second voice is --line-amber (the
-	// yellow line that survives daylight, graphics ≥3:1 both modes); text on
-	// amber nodes uses --accent-text so type stays AA.
+	// Use daylight-visible amber for linework and accent-text for readable node labels.
 	const BRAND_COLORS = ['var(--primary)', 'var(--line-amber)'];
 	const TEXT_COLORS = ['var(--primary)', 'var(--accent-text)'];
 
@@ -175,10 +173,6 @@
 			{/if}
 		{/each}
 
-		<!-- Traveling dot markers — métro-map station dots, Montréal-map style.
-		     Round-4 doctrine: the core is the WHITE reflective voice
-		     (var(--reflective), theme-invariant — var(--card) was dark in dark
-		     mode, so the "white core" was never actually white there). -->
 		{#each nodes as _, i}
 			{#if i > 0}
 				<circle

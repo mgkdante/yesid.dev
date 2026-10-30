@@ -123,7 +123,6 @@ describe('GET /sitemap.xml', () => {
 		expect(body).not.toContain('<lastmod>');
 	});
 
-	// ── slice-28.6 T11: per-locale variants (post-FR-flip: en + fr + x-default) ──
 	it('emits en + fr alternates with x-default for chrome routes (fr published)', async () => {
 		const entries = await _buildSitemapEntries();
 		const joined = entries.join('\n');
@@ -189,10 +188,7 @@ describe('GET /sitemap.xml', () => {
 	});
 });
 
-// slice-26.1: the sitemap is registry-gated — entries appear iff the
-// site_pages registry resolves their path (exact, else longest listing
-// prefix). The registry fixture is injected so the cascade is testable
-// without editing the committed content module.
+// Inject the page registry to test publication gating without changing content.
 describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () => {
 	function pathnamesOf(entries: string[]): string[] {
 		return entries

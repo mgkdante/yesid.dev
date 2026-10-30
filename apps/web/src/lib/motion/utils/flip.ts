@@ -1,21 +1,4 @@
-// FLIP (First, Last, Invert, Play) animation primitives for listing filter transitions.
-// Extracted from listingAnimations.ts in slice 17e-2 when the entrance function
-// (useListingEntrance) was deleted to satisfy the Snappy Doctrine.
-//
-// FLIP animates cards smoothly when the filter value changes — the grid reflows
-// and cards tween between their old and new positions. This is interaction-driven
-// (filter click = user input), so it's doctrine-compatible.
-//
-// Registration is module-local and synchronous. captureFlipState() stays
-// synchronous because Flip.getState() must measure the DOM at the exact moment
-// before the reflow.
-//
-// Usage:
-//   import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
-//   // before filter changes:
-//   flipState = captureFlipState();
-//   // after filter-derived list has rendered:
-//   animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => { flipState = null; });
+// Capture FLIP state synchronously before reflow so filter transitions measure the current DOM.
 
 import { tick } from 'svelte';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
@@ -59,22 +42,13 @@ export function captureFlipState(): FlipState {
 	return Flip.getState(cards);
 }
 
-/**
- * Animate FLIP transition after filter change.
- * Call inside a $effect that watches the filtered list.
- *
- * @param batchSelector - CSS selector for batch items
- * @param flipState - state from captureFlipState(), or null
- * @param batchFired - whether initial render has run (always true after 17e-2; retained for API compat)
- * @param onFlipDone - callback to clear flipState in consumer
- */
+/* Animate the captured FLIP state after the filtered list renders, then clear it through the callback. */
 export function animateFlipTransition(
 	batchSelector: string,
 	flipState: FlipState,
-	batchFired: boolean,
 	onFlipDone: () => void,
 ): void {
-	if (!batchFired || typeof document === 'undefined') return;
+	if (typeof document === 'undefined') return;
 
 	tick().then(() => {
 		const batchItems = document.querySelectorAll<HTMLElement>(batchSelector);

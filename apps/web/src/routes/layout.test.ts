@@ -59,10 +59,7 @@ describe('+layout.ts load', () => {
 	it('uses static fallbacks without touching the adapter when server slots are missing', async () => {
 		const result = await load(fakeEvent({ seo: fakeSeo, themeColor: '#123456' }));
 
-		// slice-27.1 T7: header / footer / mobile / menu are now distinct static
-		// fallback sources (footer + mobile placements added to nav.ts so the
-		// static adapter is byte-faithful to Directus). Each slot falls back to
-		// its own export, not a shared `menuItems`.
+		// Each navigation placement falls back to its own export.
 		expect(result.headerLinks).toEqual(staticNavLinks);
 		expect(result.footerLinks).toEqual(staticFooterLinks);
 		expect(result.mobileLinks).toEqual(staticMobileLinks);

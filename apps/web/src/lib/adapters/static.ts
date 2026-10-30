@@ -1,35 +1,5 @@
-// Static adapter — reads from $lib/content directly.
-//
-// OWNER AUTHORIZATION: GO 2026-07-29 — G7 removes the verified pass-through
-// repository layer and amends this doctrine header.
-//
-// BOUNDARY RULE (rewritten slice-28.5, audit #124; amended G7 2026-07-29):
-//
-//   1. COLLECTION / PRIMARY data (projects, services, blog, page
-//      blocks, meta singletons, morph shapes — anything with an adapter port)
-//      must flow server loader/helper -> $lib/adapters (the active swap point)
-//      -> this module -> $lib/content. Server consumers call typed adapter
-//      ports directly; display components receive resolved values as props.
-//      Those consumers must not import this module, raw primary content, or
-//      static helpers. This module remains the only RUNTIME reader of that data,
-//      so an adapter re-point still reaches every render.
-//   2. CMS CHROME SINGLETONS (siteLabels.*) MAY be imported directly by
-//      display components when the copy is global chrome, aria text, or route
-//      shell labels. They are build-cache values, not runtime CMS calls; routing
-//      them through every load() would add plumbing with no client benefit.
-//   3. SANCTIONED EXCEPTIONS: +layout.ts / +layout.server.ts / +error.svelte /
-//      SiteHeader / Footer static-fallback imports (CSR-only fallback
-//      when server data is absent); HeroBanner's client-side
-//      generateHeroData() refresh (interactive mock regen, not CMS data);
-//      test files stubbing load output.
-//
-// The `staticAdapter: ContentAdapter` annotation below is the compile-time
-// port-coverage gate. Existing parsing, validation, serialization, lookup,
-// fallback, and error behavior stays in the adapter ports; G7 changes only
-// the call path.
-//
-// HomeServices and FeaturedProjects were the last component-level bypasses for
-// primary data; slice-28.5 threaded both through the home +page.server.ts.
+// Primary content flows through adapter ports;
+// chrome, layout/error fallbacks and the shared CTA read build-time content directly.
 
 import {
 	getProjectBySlug,
@@ -89,7 +59,6 @@ import {
 	proofReelContent,
 	servicesGridContent,
 	aboutContent,
-	ctaContent,
 	closerContent,
 } from '#lib/content/site-content.ts';
 import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '#lib/content/nav.ts';
@@ -103,23 +72,12 @@ import { projectsPageContent } from '#lib/content/projects-page.ts';
 import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
 import { morphShapes } from '#lib/content/morph-shapes.ts';
 import { MorphShapeSchema } from '@repo/shared';
-// Slice 18d Phase 8 introduced this as the static fallback for
-// content.metroSvg; since slice-27.2 (static-only data path — the directus
-// fetch layer was removed at slice-26 close) the build-time `?raw` import IS
-// the live source.
+
 import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
 import { assetIdForOrUndefined } from '@repo/shared';
 import type { Project } from '#lib/types.ts';
 
 import type { ContentAdapter } from './types';
-
-// ---------------------------------------------------------------------------
-// Static adapter — slice-18m note: Project.image is now a UUID (CMS-derived)
-// and description/sections.content are LocalizedBlockEditorDoc (slice-18 #41
-// migration complete). The legacy `RawProject → Project` wrapper +
-// `withImageUuid(filename → UUID)` shims are gone; the static array IS the
-// runtime shape now.
-// ---------------------------------------------------------------------------
 
 /** Synchronous so Kit can use the error content during SSR rendering failures. */
 export function resolveStaticErrorPage(statusCode?: number) {
@@ -170,9 +128,7 @@ export const staticAdapter: ContentAdapter = {
 	},
 	meta: {
 		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
-		// slice-18 18h Q9: SEO defaults shape sourced from the static fallback.
-		// (The retired directus adapter sourced this from the CMS singleton;
-		// the static module keeps the same shape so the contract is uniform.)
+
 		siteSeoDefaults: async () => STATIC_SITE_SEO_DEFAULTS,
 		// Static-route editorial SEO comes from generated routeSeoOverrides.
 		// route-seo-defaults.ts keeps technical defaults only.
@@ -226,20 +182,12 @@ export const staticAdapter: ContentAdapter = {
 		proofReel: async () => proofReelContent,
 		servicesGrid: async () => servicesGridContent,
 		about: async () => aboutContent,
-		cta: async () => ctaContent,
 		closer: async () => closerContent,
-		// Schema-validated content ports.
-		// slice-27.1 FIX A: mirror directus's _or: [status_code=N, status_code=0]
-		// semantics — look up the specific status code first, then fall back to the
-		// 0-row (generic fallback). errorPagesById is keyed by status_code (number).
+		// Error copy prefers the status-specific row and falls back to the generic status-0 row.
 		errorPage: async (statusCode?: number) => resolveStaticErrorPage(statusCode),
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
-		// slice-27.1 T4: source the generated CMS modules (blog-page.ts /
-		// projects-page.ts, emitted from dev Directus by export-fallbacks) instead
-		// of inline stubs. Drops the prior placeholder copy that was missing
-		// schema-required keys (heading / backToDispatches / backToPersonal) and
-		// makes this mirror the directus adapter byte-for-byte.
+
 		blogPage: async (): Promise<BlogPageContent> =>
 			parsePort('content.blogPage', BlogPageContentSchema, blogPageContent),
 		projectsPage: async (): Promise<ProjectsPageContent> =>
@@ -247,12 +195,7 @@ export const staticAdapter: ContentAdapter = {
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 		metroSvg: async () => metroSvgRaw,
-		// slice-28.5 (#120): read the GENERATED $lib/content/morph-shapes module
-		// (emitted from the Directus morph_shapes collection by export-fallbacks),
-		// matching every other port. Previously this derived shapes from the
-		// hardcoded SHAPES const in utils/shapes.ts, so CMS morph_shapes edits
-		// regenerated the module but never reached the render. SHAPES survives
-		// only as the documented last-resort seed (utils/shapes.ts).
+
 		morphShapes: async () =>
 			parsePort('content.morphShapes', z.array(MorphShapeSchema), morphShapes),
 	},

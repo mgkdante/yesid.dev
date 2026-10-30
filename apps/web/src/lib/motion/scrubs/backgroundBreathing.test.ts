@@ -3,13 +3,6 @@ import { gsap } from '@yesid/motion/utils/gsap';
 import { backgroundBreathing } from './backgroundBreathing.js';
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 
-// Slice-23 Task 7. `backgroundBreathing` is a GSAP scrub factory that
-// animates a CSS custom property `--breathing-phase` between 0 and 1
-// over ~10s with `yoyo: true`. Consumers reference the var in background
-// layers (e.g. gradient opacity) for subtle ambient motion. Returns
-// `{ pause, resume, destroy }` so callers can mute breathing transiently
-// (e.g. while a sectionGlow is active).
-
 vi.mock('@yesid/motion/stores/reducedMotion', async (importOriginal) => {
 	const mod =
 		(await importOriginal()) as typeof import('@yesid/motion/stores/reducedMotion');

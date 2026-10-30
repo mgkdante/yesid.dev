@@ -15,11 +15,7 @@ const localizedCases = (['fr', 'es'] as const).map(locale => ({
 	forget: siteLabels.a11y.quietModeForget[locale]!,
 }));
 
-// Homework #19b: both controls are plain buttons whose accessible name IS the
-// visible verb label ("Collapse all" / "Expand all"), flipping with state.
-// State styling hooks moved from aria-checked/aria-pressed to
-// data-collapsed/data-remembered because the flipping name already announces
-// the state (role="switch" would double-encode it).
+// Visible verb labels announce the action; state hooks avoid redundant checked or pressed semantics.
 describe('QuietModeButton', () => {
 	beforeEach(() => {
 		localStorage.clear();

@@ -1,8 +1,3 @@
-// PageSeoSchema — Zod contract for route-level SEO metadata.
-// This IS the contract Payload must honor in Slice 18. Narrowly scoped to
-// SEO for 15a; the broader Zod rollout across content/projects/blog/services
-// happens in Slice 17c.
-
 import { z } from 'zod';
 import { LocalizedStringSchema } from '@repo/shared';
 import { SchemaOrgNodeSchema } from './jsonld';

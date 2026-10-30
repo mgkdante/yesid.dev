@@ -5,7 +5,7 @@
 
 import { adapter } from '#lib/adapters/index.ts';
 import { getBlogPostsForLocale } from '#lib/blog/translations.ts';
-import { uniqueSorted } from '#lib/utils/index.ts';
+import { uniqueSorted } from '#lib/utils/collections.ts';
 import type { BlogCategory, Locale } from '#lib/types.ts';
 
 export async function loadBlogCategory(category: BlogCategory, locale: Locale) {

@@ -1,7 +1,3 @@
-<!--
-  ManifestoEdgeRight — construction stripes + right edge coordinates.
-  Parent GSAP timeline targets these via class selectors.
--->
 <script lang="ts">
 	let {
 		lat, lng, src, via, dst, node, status,
@@ -11,13 +7,11 @@
 	} = $props();
 </script>
 
-<!-- Construction stripes (4 corners) -->
 <div class="manifesto__stripe manifesto__stripe--tl"></div>
 <div class="manifesto__stripe manifesto__stripe--br"></div>
 <div class="manifesto__stripe manifesto__stripe--tr"></div>
 <div class="manifesto__stripe manifesto__stripe--bl"></div>
 
-<!-- Right edge coordinates + easter eggs -->
 <div data-testid="manifesto-edge-right" class="manifesto__edge-right">
 	<span class="manifesto__coord">{lat}</span>
 	<span class="manifesto__coord">{lng}</span>
@@ -31,7 +25,7 @@
 </div>
 
 <style>
-	/* ── Construction Stripes ────────────────────────────────────── */
+
 	.manifesto__stripe {
 		position: absolute;
 		overflow: hidden;
@@ -71,7 +65,6 @@
 		opacity: var(--opacity-faint);
 	}
 
-	/* ── Edge: Right ─────────────────────────────────────────────── */
 	.manifesto__edge-right {
 		position: absolute;
 		right: 20px;
@@ -103,7 +96,6 @@
 		margin-block: 4px;
 	}
 
-	/* ── Responsive ──────────────────────────────────────────────── */
 	@media (max-width: 640px) {
 		.manifesto__edge-right { right: 8px; font-size: 7px; gap: 10px; }
 		.manifesto__stripe--tl, .manifesto__stripe--br { width: 160px; height: 160px; }

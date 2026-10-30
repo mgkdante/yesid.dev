@@ -1,25 +1,4 @@
-<!--
-  MetroNetwork: receives Yesid's montreal-metro.svg as a prop (sourced from
-  Directus via `+page.server.ts` → `adapter.content.metroSvg()`), inlines it
-  via `{@html}`, and exposes DOM groups for GSAP animation. The markup is
-  part of the SSR HTML — no runtime fetch on the client — so it paints at
-  first paint and remains a valid LCP candidate.
-
-  Slice 18d Phase 8 (Task 28-33): source flipped from a Vite `?raw` build-
-  inlined import to a Directus-fetched asset. Same final HTML shape — only
-  the data-flow changed. The Directus path uses the @repo/shared id-map
-  (assets-id-map.json) to resolve `images/montreal-metro.svg` to its file UUID.
-
-  SVG structure (from Yesid's Figma export; SVGO-optimized via svgo.config.mjs):
-    - Stations: orange filled paths (fill="#E07800"), including REM line stations
-    - Lines: orange stroke paths (stroke="#E07800"), including smooth-curved REM line
-    - Berri-UQAM: the biggest station (~44px diameter, auto-detected)
-
-  GSAP targets (set via onMount DOM queries on the inlined SVG):
-    - .metro-line: stroke paths for DrawSVGPlugin
-    - .metro-station: station nodes
-    - .metro-berri: the Berri-UQAM origin node (largest station)
--->
+<!-- Inline the build-time metro SVG for SSR paint, then expose its groups to GSAP. -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { isViewportAtMost } from '@yesid/motion/utils/device';
@@ -102,10 +81,6 @@
 	});
 </script>
 
-<!-- go2/w5 taste-2: the in-frame STM/REM legend is REMOVED (it overlapped the
-     map art on mobile). The art is named by ONE caption instead — rendered by
-     HeroBanner at the metro wrapper's bottom strip, outside this frame, so it
-     can never overlap the SVG at any breakpoint. -->
 <div
 	bind:this={containerEl}
 	class="metro-network-frame relative flex max-h-[80dvh] w-full items-center justify-center"
@@ -121,13 +96,7 @@
 		opacity: 0;
 	}
 
-	/* GO-W2.2 light theme: recolor the CMS-sourced metro art via attribute
-	   overrides. Dark is untouched (selectors scoped to light), so it keeps the
-	   SVG's brand #E07800. The intro orange (lines + stations) now maps to
-	   var(--primary) in light (#A05500) to match the interactive orange, and
-	   repaints on theme toggle automatically: the selectors key on the
-	   data-theme attribute, and the GSAP timeline only tweens opacity/drawSVG,
-	   never fill/stroke colour, so CSS owns the colour. */
+	/* CSS owns theme-aware SVG color; the timeline changes only opacity and drawing progress. */
 	:global([data-theme="light"] .metro-network-frame svg [fill="#1E1E1E"]),
 	:global(.theme-light .metro-network-frame svg [fill="#1E1E1E"]) {
 		fill: var(--muted);

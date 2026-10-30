@@ -53,9 +53,7 @@
 </div>
 
 <style>
-	/* No filled backgrounds (operator). Each school is a STOP on a vertical
-	   metro line — the orange line is the brand chrome, the marks keep their
-	   school colours. Airy, legible, cute. */
+
 	.edu-line {
 		position: relative;
 		gap: 1.1rem;

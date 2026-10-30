@@ -4,7 +4,8 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import { resolveThemeValue, watchTheme, type Theme } from '#lib/utils/theme-media.ts';
+	import type { Theme } from '@yesid/ui/state';
+	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 

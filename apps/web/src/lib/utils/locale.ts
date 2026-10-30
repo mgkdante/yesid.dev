@@ -5,9 +5,6 @@ import type { Locale, LocalizedString } from '#lib/types.ts';
 // an empty string, never undefined, never a crash.
 export const DEFAULT_LOCALE: Locale = 'en';
 
-// All locales the site intends to support. Adding a new locale here is step one
-// of a multi-step process: add the type in types.ts, add it here, then fill in
-// the data files and set up routing (slice 04+).
 export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
 
 /**

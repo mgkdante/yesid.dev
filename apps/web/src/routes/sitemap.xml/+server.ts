@@ -16,24 +16,8 @@ import {
 	emitSitemapDocument,
 } from '@yesid/seo-kit/sitemap';
 
-// Route ids that are always present in the router. Keep this list in sync
-// with the static-route set in $lib/adapters/route-seo-defaults.ts when
-// adding a new static route. The build-time coverage script (Task 11)
-// asserts parity.
-// `_` prefix required — SvelteKit rejects any non-reserved named exports from
-// +server routes. Underscore-prefixed names are allowed. Imported by the build-
-// time coverage script (Task 11) so expected routes stay in one place.
-export const _STATIC_ROUTES = STATIC_PAGE_PATHS;
-
-// slice-28.1 (audit #19): <lastmod> dropped entirely. It is optional per the
-// sitemaps spec, and the previous value was request-time noise — static
-// routes got "now" on every request, defeating crawler change detection.
-//
-// slice-28.6 T11: one <url> per locale VARIANT of a path. Multi-locale paths
-// carry the full alternate cluster (every published locale + x-default→en) on
-// each variant, per Google's sitemap-alternates spec. With exactly ['en']
-// published, output keeps the legacy one-entry-with-en-self-link shape
-// (locked by test).
+// No <lastmod>: request-time timestamps would defeat crawler change detection.
+// Each locale variant carries the full published alternate cluster.
 function urlEntries(path: string, variants: readonly Locale[]): string[] {
 	const alternates = Object.fromEntries(
 		variants.map((locale) => [locale, canonicalFor(path, locale)]),
@@ -73,19 +57,9 @@ export function _blogUrlEntries(posts: readonly BlogPost[]): string[] {
 	});
 }
 
-export function _emitSitemapDocument(entries: readonly string[]): string {
-	return emitSitemapDocument(entries);
-}
+export { emitSitemapDocument as _emitSitemapDocument };
 
-// Exported so the build-time coverage gate (Task 11) can diff expected vs
-// actual without HTTP round-tripping.
-//
-// slice-26.1: every candidate path is filtered through the site_pages
-// registry (same predicate as the +layout.server.ts route gate). Static
-// routes appear iff their registry entry exists; detail pages appear iff
-// their section's listing entry exists (longest-prefix resolution). An
-// archived section therefore drops out of the sitemap on the same rebuild
-// that 404s its routes. `pages` is injectable for tests only.
+// Filter every candidate through the route registry so archived pages leave the sitemap on the same rebuild.
 export async function _buildSitemapEntries(
 	pages: readonly SitePage[] = sitePages,
 ): Promise<string[]> {
@@ -94,7 +68,7 @@ export async function _buildSitemapEntries(
 		if (isPathPublished(path, pages)) entries.push(...urlEntries(path, variants));
 	};
 
-	for (const path of _STATIC_ROUTES) {
+	for (const path of STATIC_PAGE_PATHS) {
 		pushIfPublished(path);
 	}
 
@@ -127,14 +101,12 @@ export async function _buildSitemapEntries(
 
 export const GET: RequestHandler = async () => {
 	const entries = await _buildSitemapEntries();
-	const xml = _emitSitemapDocument(entries);
+	const xml = emitSitemapDocument(entries);
 
 	return new Response(xml, {
 		headers: {
 			'content-type': 'application/xml; charset=utf-8',
-			// slice-28.1 (audit #18): edge-cache a day + a week of SWR so crawler
-			// hits stop invoking the lambda; browser TTL stays 1h. Vercel's CDN
-			// cache is reset on deploy, so new routes/posts surface immediately.
+
 			'cache-control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
 		},
 	});

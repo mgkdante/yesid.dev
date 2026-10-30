@@ -256,9 +256,7 @@ describe('AboutPage', () => {
 		expect(weatherWidget.textContent).toContain('clear sky');
 	});
 
-	// slice-28.1 (audit #20/#122): SSR-baked weather is CDN-stale; AboutWeather
-	// refreshes from /api/weather in onMount. Default setup.dom stub returns
-	// null, this test overrides fetch to exercise the fresh-data branch.
+	// Override the null weather stub to exercise hydration refresh of CDN-stale weather.
 	it('refreshes weather from /api/weather on mount', async () => {
 		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn().mockResolvedValue(

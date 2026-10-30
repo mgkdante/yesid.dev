@@ -150,9 +150,7 @@
     overflow-x: hidden;
     padding-bottom: 1rem;
   }
-  /* Body-size overview (operator call 2026-07-03: as big as the rest of the
-     case-study text); standard muted body color so the larger type stays
-     readable instead of half-transparent. */
+
   .glance-overview {
     color: var(--secondary-foreground);
   }

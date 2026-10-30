@@ -19,10 +19,7 @@
 
 	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
 
-	// slice-34.5: the active polaroid survives a language switch. The stored value
-	// is a locale-free integer index — valid in any locale — per the persisted()
-	// invariant. The {#key currentIndex} below remounts on restore, so the carried
-	// index lands cleanly on the remounted page.
+	// The persisted index is locale-free, so a language switch can restore it unchanged.
 	const polaroid = persisted<number>('about-polaroid', 0);
 
 	function prev() {

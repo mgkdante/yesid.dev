@@ -20,39 +20,21 @@ html {
   overflow-y: scroll;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   GO-W2.2 light-theme hand overrides. Dark theme = brand default; these
-   fire only under [data-theme="light"] / .theme-light.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* GO2-W5: inline code chips in light mode — manila label on the paper
-   (var(--muted) + strong border) instead of var(--card): a #FFFDF8 chip is
-   near-invisible on #F7F2E9 prose and disappears entirely inside cards. */
+/* Light code chips need a stronger border to remain visible on paper. */
 [data-theme="light"] .prose-dark code:not(pre code),
 .theme-light .prose-dark code:not(pre code) {
 	background: var(--muted);
 	border-color: var(--border-strong);
 }
 
-/* Hero typewriter cursor (slice 17e-4). Global so the .typewriter-cursor
-   activation class (added/removed from heroTypewriter.ts) can override it
-   without the Svelte scoped-style specificity fight.
-   GO2-W5d cursor law (operator): a terminal cursor matches the color of the
-   text it types — the NEXT STOP prompt types orange, so its cursor blinks
-   orange. currentColor inherits the prompt's own color in both themes. */
+/* Keep the cursor global so typewriter activation can override it without scoped specificity. */
 .scroll-block-cursor {
   margin-left: 0.15em;
   opacity: 0;
   color: currentColor;
 }
 
-/* Typewriter cursor blink (slice 17e-4). Uses visibility instead of opacity
-   so it doesn't multiply with the scroll-driven scrollPrompt fade — the
-   cursor is either visible or hidden, not "half-faded × half-blinking".
-   17e-5 fix: the original `steps(2, start)` + single `to { visibility: hidden }`
-   keyframe left the cursor continuously hidden (both steps resolve to
-   `hidden` for discrete properties). Explicit visible/hidden keyframes
-   with step-end timing gives a proper 1 Hz blink. */
+/* Visibility avoids multiplying the cursor blink with the scroll-driven prompt fade. */
 @keyframes typewriter-blink {
   0%, 100% { visibility: visible; }
   50% { visibility: hidden; }
@@ -142,7 +124,7 @@ html {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
 }
-/* GO2-W5: blockquote = announcement board — recessed warm panel. */
+
 .prose-dark blockquote {
   border-left: 3px solid var(--primary);
   background: var(--muted);

@@ -1,11 +1,4 @@
-<!--
-  Heading.svelte — renders Editor.js `header` block.
-  AM2: data.text is HTML (inline marks embedded). Render via {@html}.
-  Heading id is deterministic kebab-case slug derived from stripped text.
-  The "#" is a REAL copyable permalink (homework #7c) on h2-h4, named by its
-  heading via aria-labelledby; skipped when the slug is empty (emoji/CJK-only
-  headings) so no broken href="#" ships.
--->
+<!-- Inline heading marks are HTML; omit permalinks when stripped text yields an empty slug. -->
 <script lang="ts">
 	import type { HeaderBlock } from '@repo/shared';
 	import { kebabSlug, stripHtml } from '@repo/shared';

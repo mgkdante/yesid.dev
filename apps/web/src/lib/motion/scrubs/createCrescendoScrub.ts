@@ -36,11 +36,7 @@ export function createCrescendoScrub(
 ): () => void {
 	const { section, minScale = 0.6, maxScale = 1.4 } = opts;
 
-	// Reduced motion: render final state, skip ScrollTrigger, no-op destroy.
-	// Slice-23 Task 4: use the individual `scale` property instead of
-	// `transform: scale()` so the title's own sticky positioning is not
-	// disturbed by a self-applied transform shorthand. The individual
-	// property composes cleanly with the rotated-title's `rotate: 180deg`.
+	// Individual scale preserves sticky positioning and rotation; reduced motion renders the final state.
 	if (isPrefersReducedMotion()) {
 		target.style.scale = String(maxScale);
 		return () => {};

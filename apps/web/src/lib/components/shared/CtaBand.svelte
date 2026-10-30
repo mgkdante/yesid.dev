@@ -1,13 +1,6 @@
-<!--
-  CtaBand — THE site conversion band (operator round 2026-07-03: one CTA,
-  recycled everywhere, always centered). Renders the block_cta CMS content:
-  two-line heading, the four-trades subtitle, and the contact + GitHub
-  actions. Mounted on home (mid-page), service details, and project details;
-  per-surface data-testids come from `testidPrefix`.
--->
+<!-- Shared conversion band with localized content and per-surface test IDs. -->
 <script lang="ts">
-	import type { CtaContent, SiteMeta } from '#lib/types.ts';
-	import { ctaContent, siteMeta as siteMetaContent } from '#lib/content/index.ts';
+	import { ctaContent, siteMeta } from '#lib/content/index.ts';
 	import { Button } from '@yesid/ui/button';
 	import { Separator } from '@yesid/ui/separator';
 	import { resolveLocale } from '#lib/utils/locale.ts';
@@ -18,20 +11,15 @@
 
 	const locale = getLocale();
 
-	let {
-		cta = ctaContent,
-		siteMeta = siteMetaContent,
-		testidPrefix = 'cta-band',
-	}: { cta?: CtaContent; siteMeta?: SiteMeta; testidPrefix?: string } = $props();
+	let { testidPrefix = 'cta-band' }: { testidPrefix?: string } = $props();
 
 	// The CMS heading carries a deliberate \n line break.
-	const headingLines = $derived(resolveLocale(cta.heading, locale).split('\n'));
-	const subtitle = $derived(resolveLocale(cta.subtitle, locale));
-	const contactLabel = $derived(resolveLocale(cta.ctaContact, locale));
-	const githubLabel = $derived(resolveLocale(cta.ctaGithub, locale));
+	const headingLines = $derived(resolveLocale(ctaContent.heading, locale).split('\n'));
+	const subtitle = $derived(resolveLocale(ctaContent.subtitle, locale));
+	const contactLabel = $derived(resolveLocale(ctaContent.ctaContact, locale));
+	const githubLabel = $derived(resolveLocale(ctaContent.ctaGithub, locale));
 </script>
 
-<!-- Every CTA wears the hazard band on top (operator rule 2026-07-03). -->
 <Separator variant="hazard" />
 <section class="cta-band-shell" data-testid={testidPrefix}>
 	<CtaBlueprintBackground />
@@ -76,7 +64,6 @@
 		overflow: clip;
 	}
 
-	/* Always centered, on every surface that mounts it (operator rule). */
 	.cta-band {
 		position: relative;
 		z-index: 1;
@@ -87,7 +74,6 @@
 		text-align: center;
 	}
 
-	/* Big-fonts rule (operator round 2026-07-03). */
 	.band-heading {
 		font-family: var(--font-heading);
 		font-size: clamp(2.5rem, 6vw, 4rem);

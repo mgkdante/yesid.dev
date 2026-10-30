@@ -1,8 +1,4 @@
-// Geometric morph-target shapes.
-//
-// Slice 18 18f Phase 11: migrated from hardcoded const to CMS-managed
-// collection (morph_shapes). The actual CMS read happens in +layout.server.ts;
-// this browser-safe module only serves the hydrated list to animation code.
+// Browser-safe morph shapes hydrate from the layout's adapter result.
 
 import type { MorphShape } from '@repo/shared';
 
@@ -33,21 +29,7 @@ export function pickRandomShape(
 	return { shape: shapes[idx]!, index: idx };
 }
 
-// ---------------------------------------------------------------------------
-// FALLBACK SEED (slice-28.5, audit #120 — the old "will be removed in 18i"
-// deprecation note was stale by ten slices; this is the honest role).
-//
-// SHAPES is the hand-written, last-resort seed — NOT the data source. The
-// canonical morph-shape data is the GENERATED $lib/content/morph-shapes
-// module (emitted from the Directus morph_shapes collection), which
-// staticAdapter.content.morphShapes serves and +layout.server.ts ships to the
-// client. The seed exists only for:
-//   - +layout.server.ts catch{} — if the adapter port/generated module throws
-//   - getMorphShapes() below — components mounted with no SSR hydration
-//     (isolated component tests)
-// If you edit shapes, edit them in Directus; touching SHAPES changes only the
-// disaster-fallback rendering.
-// ---------------------------------------------------------------------------
+// The generated CMS module owns shapes; this seed serves adapter failures and isolated mounts without hydration.
 
 export const SHAPES = {
 	triangle: 'M24 8 L40 38 L8 38 Z',

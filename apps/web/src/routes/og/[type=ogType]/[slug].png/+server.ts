@@ -62,7 +62,7 @@ export const GET: RequestHandler = async (event) => {
     // Cast: BodyInit's lib.dom.d.ts shape rejects Uint8Array<ArrayBufferLike>
     // (only accepts ArrayBufferView<ArrayBuffer>), but Response accepts it at
     // runtime in both Node and the Web Fetch standard. Verified at the
-    // satori/resvg seam (Task 5) — png is always a finite, non-shared buffer.
+    // satori/resvg seam: png is always a finite, non-shared buffer.
     return new Response(png as BodyInit, { status: 200, headers: HAPPY_HEADERS });
   } catch (cause) {
     throw new Error(`[og] render failed for ${type}: "${baseSlug}" (${locale})`, { cause });

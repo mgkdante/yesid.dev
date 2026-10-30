@@ -47,16 +47,11 @@
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
 
-	// slice-28.6: request locale. Persistent chrome (SiteHeader/Footer/
-	// SeoHead) receives it as a prop ($derived — it never remounts); everything
-	// under {#key $page.url.pathname} reads it via getLocale() context
-	// (page components remount per pathname, so an init-time read is correct).
+	// Persistent chrome receives reactive locale props; keyed page subtrees read locale context at initialization.
 	const locale = $derived(data.locale ?? DEFAULT_LOCALE);
 	provideLocale(() => data.locale ?? DEFAULT_LOCALE);
 
-	// slice-34: wire the locale-switch state handoff. MUST run at layout init —
-	// beforeNavigate/afterNavigate register during component initialization, and
-	// the root layout never remounts, so the orchestrator survives page swaps.
+	// Register navigation hooks during layout initialization; the persistent layout owns locale handoff.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
 	onNavigate(viewTransition);
 
@@ -77,15 +72,9 @@
 		if (!browser) return;
 		startAnalytics();
 
-		// Slice-23: site-wide click ripple. Anywhere the user clicks/taps
-		// spawns the Manifesto-style two-ring expanding ripple.
 		return initGlobalRipple();
 	});
 
-	// Full-bleed pages skip pt-20 (hero is full-viewport).
-	// Home page + project detail pages have manifesto-style headers.
-	// Compares the canonical (delocalized) pathname so /fr/projects/x gets the
-	// same treatment as /projects/x (slice-28.6).
 	const basePath = $derived(delocalizePath(page.url.pathname));
 	const navChrome = siteLabels.navChrome.shared;
 	const MENU_ICONS: Record<string, Component<{ class?: string }>> = {
@@ -153,6 +142,7 @@
 				openMenu: resolveLocale(navChrome.openMenuAria, locale),
 				closeMenu: resolveLocale(navChrome.closeMenuAria, locale),
 				menu: resolveLocale(navChrome.menuOverlayAria, locale),
+				menuFooter: resolveLocale(navChrome.menuOverlayFooterLabel, locale),
 				theme: resolveLocale(navChrome.themeToggleAria, locale),
 			}}
 			language={{

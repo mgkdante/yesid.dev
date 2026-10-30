@@ -1,7 +1,3 @@
-<!--
-  ManifestoEdgeLeft — beck-style route lines, transit roundels, left edge readouts.
-  Parent GSAP timeline targets these via class selectors.
--->
 <script lang="ts">
 	let {
 		sectionNumber,
@@ -16,7 +12,6 @@
 	} = $props();
 </script>
 
-<!-- Beck-style route lines (decorative) -->
 <div class="manifesto__beck-line manifesto__beck-h" style="top:120px;left:0;width:160px;"></div>
 <div class="manifesto__beck-line manifesto__beck-d45" style="top:120px;left:160px;width:80px;"></div>
 <div class="manifesto__beck-line manifesto__beck-h" style="top:64px;left:217px;width:100px;opacity:0.04;"></div>
@@ -27,7 +22,6 @@
 <div class="manifesto__beck-line manifesto__beck-v" style="left:160px;bottom:0;height:180px;"></div>
 <div class="manifesto__beck-line manifesto__beck-d45" style="bottom:180px;left:160px;width:70px;"></div>
 
-<!-- Transit line roundels (easter eggs) -->
 {#each hiddenLines as line, i}
 	<div
 		class="manifesto__roundel manifesto__roundel--transit manifesto__roundel--t{i}"
@@ -39,7 +33,6 @@
 	</div>
 {/each}
 
-<!-- Left edge readouts -->
 <div data-testid="manifesto-edge-left" class="manifesto__edge-left">
 	<span class="manifesto__readout">{sectionNumber}</span>
 	<span class="manifesto__dot-active"></span>
@@ -50,7 +43,7 @@
 </div>
 
 <style>
-	/* ── Beck-style Route Lines ──────────────────────────────────── */
+
 	.manifesto__beck-line {
 		position: absolute;
 		background: color-mix(in srgb, var(--primary) 14%, transparent);
@@ -62,7 +55,6 @@
 	.manifesto__beck-d45 { height: 2px; transform-origin: left center; transform: rotate(-45deg); }
 	.manifesto__beck-d135 { height: 2px; transform-origin: left center; transform: rotate(45deg); }
 
-	/* ── Roundels (transit line easter eggs) ─────────────────────── */
 	.manifesto__roundel {
 		position: absolute;
 		display: flex;
@@ -86,14 +78,9 @@
 		flex-shrink: 0;
 	}
 
-	/* Line names: the FULL line colour, dimmed through the same --chrome-ink-opacity
-	   as the orange coordinate chrome. (The old --line-color-text baked a 20% alpha
-	   `33` suffix, so the colored names read ~3x fainter than the orange labels —
-	   that's why orange looked sharper.) The dot keeps its own faint fill/stroke as
-	   the colour accent. */
+	/* Apply the shared chrome opacity to full line colors so colored names match the coordinate labels. */
 	.manifesto__roundel-name { color: var(--line-color-text); opacity: var(--chrome-ink-opacity); }
 
-	/* Scattered positions — 9 transit lines around edges */
 	.manifesto__roundel--t0 { left: 155px; top: 116px; }
 	.manifesto__roundel--t1 { right: 115px; top: 195px; }
 	.manifesto__roundel--t2 { right: 178px; bottom: 210px; }
@@ -104,7 +91,6 @@
 	.manifesto__roundel--t7 { right: 200px; bottom: 128px; }
 	.manifesto__roundel--t8 { left: 300px; bottom: 100px; }
 
-	/* ── Edge: Left ──────────────────────────────────────────────── */
 	.manifesto__edge-left {
 		position: absolute;
 		left: 20px;
@@ -142,7 +128,6 @@
 		flex-shrink: 0;
 	}
 
-	/* ── Responsive ──────────────────────────────────────────────── */
 	@media (max-width: 640px) {
 		.manifesto__edge-left { left: 8px; font-size: 7px; gap: 16px; }
 	}

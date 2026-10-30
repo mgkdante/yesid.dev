@@ -4,7 +4,7 @@
  * pass adds fr + es).
  *
  * Mints the static card set: four service cards, the /services, /contact,
- * /about and /projects route cards, home defaults and the general site card,
+ * /about and /projects route cards, home defaults,
  * each in en + fr + es. 1200x630 PNG, hard budget <150KB, text inside 80px
  * margins, colors from the token palette.
  *
@@ -18,7 +18,7 @@
  *
  * The explicit service titles below are manually reconciled against the
  * committed content export; this script does not import CMS copy. Route labels
- * and the general site-card tagline are also explicit in DEFAULTS and SITE,
+ * and home taglines are also explicit in DEFAULTS,
  * keeping this renderer deterministic and reviewable. Every card carries the
  * outlined wordmark ("yesid" + orange period) from the canonical brand SVG.
  *
@@ -372,21 +372,6 @@ const DEFAULTS: Record<Locale, { eyebrow: string; title: readonly string[] }> = 
 	},
 };
 
-const SITE: Record<Locale, { eyebrow: string; tagline: string }> = {
-	en: {
-		eyebrow: 'DIGITAL SOLUTIONS · MONTRÉAL',
-		tagline: 'Web, data and automation for Québec businesses.',
-	},
-	fr: {
-		eyebrow: 'SOLUTIONS NUMÉRIQUES · MONTRÉAL',
-		tagline: 'Web, données et automatisation pour les entreprises du Québec.',
-	},
-	es: {
-		eyebrow: 'SOLUCIONES DIGITALES · MONTRÉAL',
-		tagline: 'Web, datos y automatización para empresas de Québec.',
-	},
-};
-
 // --- Cards ------------------------------------------------------------------
 
 async function buildCards(): Promise<Record<string, string>> {
@@ -469,20 +454,6 @@ async function buildCards(): Promise<Record<string, string>> {
 			footer('yesid.dev'),
 		);
 
-		// General site card: big wordmark + tagline.
-		const siteTaglineSize = fitSize([SITE[loc].tagline], WIDTH - 2 * MARGIN, {
-			max: 40,
-			min: 26,
-			family: 'Inter',
-			weight: 500,
-		});
-		cards[`site.${loc}.png`] = frame(
-			eyebrow(SITE[loc].eyebrow),
-			overline(200),
-			wordmark(MARGIN, 240, 3.4),
-			`<text x="${MARGIN}" y="500" font-family="Inter" font-weight="500" font-size="${siteTaglineSize}" fill="${MUTED}">${escapeXml(SITE[loc].tagline)}</text>`,
-			`<text x="${WIDTH - MARGIN}" y="540" font-family="JetBrains Mono" font-weight="500" font-size="20" letter-spacing="2.4" fill="${MUTED}" text-anchor="end">MONTRÉAL · QC</text>`,
-		);
 	}
 
 	return cards;

@@ -1,27 +1,4 @@
-// use:morphHover — SVG path morphing on hover/tap.
-//
-// Slice 18 18f Phase 11: shapes are now CMS-managed via the morph_shapes
-// collection. Action fetches shapes internally from getMorphShapes() with
-// a shared module-level cache. Caller no longer needs to pass shapes.
-//
-// Desktop hover → paths morph to a random shape from the adapter.
-// mouseleave   → paths morph back to their original `d`.
-// Mobile tap   → toggle morphed / unmorphed.
-// Reduced-motion → KEPT ACTIVE per operator policy (slice-23). SVG path
-//   morphing is a visual transformation, not a translation/scale motion,
-//   and isn't a vestibular trigger. User-initiated, brief (~400ms).
-//
-// MorphSVG plugin is lazy-loaded on first hover via loadMorphSVG() so pages
-// that never hover a morph-capable element never ship the plugin.
-//
-// The node passed to the action should be a clickable parent that contains
-// <path> elements (or SVG primitives — convertSvgToMorphPaths coerces them).
-// SVG may be injected after mount (e.g. HomeServices' async fetch); the
-// action defers path conversion until `enabled` is true AND the first
-// interaction fires.
-//
-// Usage:
-//   <button use:morphHover={{ enabled: svgReady[i] }}>...</button>
+// Morph paths on hover/tap, lazily loading MorphSVG; defer conversion until injected SVG is ready.
 
 import { gsap, loadMorphSVG } from '@yesid/motion/utils/gsap';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';

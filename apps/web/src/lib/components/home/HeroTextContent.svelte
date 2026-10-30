@@ -3,6 +3,7 @@
   Parent coordinates scroll-driven animation via data-hero-stagger attributes.
 -->
 <script lang="ts">
+	import { desktop } from '@yesid/ui/state';
 	import { onMount } from 'svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
 	import HeroDotAnnotation from './HeroDotAnnotation.svelte';
@@ -39,7 +40,7 @@
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
 		heroData: HeroData;
-		/** True while REAL transit KPIs are on screen (homework #2 phase 2). */
+
 		live?: boolean;
 		replayEnabled?: boolean;
 		/** Final geometry enables annotation positioning and redraw. */
@@ -86,7 +87,7 @@
 			return rights;
 		}));
 		let edge = Math.min(headingWidth - 8, Math.max(inkRight + 24, x + 48));
-		if (window.innerWidth < 1024) {
+		if (!desktop.current) {
 			const slot = annotationSlot.getBoundingClientRect();
 			const lastWord = heading.querySelector('[data-testid="hero-line1-last"]')!.getBoundingClientRect();
 			annotationX = Math.max(lastWord.right - box.left + 12,
@@ -128,9 +129,7 @@
 		</span>
 	</h1>
 
-	<!-- go2/w5: aria-hidden moved from the <p> to the text span — the replay
-	     button inside must stay reachable by AT once armed (an aria-hidden
-	     ancestor would hide it). The h1 above still carries the full phrase. -->
+	<!-- Hide only the decorative text; an aria-hidden ancestor would hide the replay button too. -->
 	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 		<span
 			class="block text-[var(--primary)]"
@@ -180,10 +179,6 @@
 		{subtitleText}
 	</p>
 
-	<!-- Round 5c doctrine: orange = deep dive (projects); yellow = the single
-	     "talk to Yesid" conversion action in this view. Homework #21a: that
-	     action now books the cal.com intro call directly instead of routing
-	     through /contact. -->
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 		<span class="tap-press" use:pressBounce>
 			<Button variant="default" size="cta-lg" href={localizeHref('/projects', locale)} data-testid="hero-cta-projects">
@@ -206,18 +201,10 @@
 	.hero-dot-word { display: inline-block; white-space: nowrap; }
 	.annotation-slot { display: none; }
 
-	/* SVG period dot — replaces text "." for pixel-perfect zoom center.
-	   Sized in em so it scales with the heading font-size. The markup keeps
-	   it whitespace-glued to "DON'T BREAK" (no soft-wrap point), so it always
-	   renders as that headline's period — never a lone dot on its own line.
-	   overflow:visible (go2/w5 taste-2): the heartbeat scales the element, so
-	   the circle must never be edge-clipped by the svg viewport at any
-	   breakpoint/zoom rounding. */
+	/* Keep the period glued to the headline and its SVG overflow visible so the heartbeat cannot clip. */
 	.hero-dot {
 		display: inline-block;
-		/* go2 beacon pass: 0.19em → 0.22em — the armed dot is the page's one
-		   replay affordance and must read from across the room. Still period-
-		   proportioned; the intro zoom only over-covers with a bigger glyph. */
+		/* The armed dot is the replay affordance: big enough to spot, still period-sized. */
 		width: 0.22em;
 		height: 0.22em;
 		vertical-align: baseline;
@@ -226,9 +213,7 @@
 		overflow: visible;
 	}
 
-	/* go2/w5: the dot rides inside a button so the completed intro can be
-	   replayed. The reset keeps the glyph metrics identical to the bare svg
-	   (font/line-height inherit → the 0.19em sizing is unchanged). */
+	/* The button inherits glyph metrics to preserve the period's size and position. */
 	.hero-dot-btn {
 		display: inline;
 		padding: 0;
@@ -257,10 +242,7 @@
 		border-radius: 50%;
 	}
 
-	/* go2/w5 taste-2: HEARTBEAT pulse — a strong, unmistakable double-beat
-	   scale (lub-dub, then rest). transform only: zero layout shift, and the
-	   element-level scale can never clip the circle (the svg viewport scales
-	   with it, overflow stays visible). Playback stays unavailable under reduced motion. */
+	/* Transform-only pulses avoid layout shift; playback stays unavailable under reduced motion. */
 	/* Resume the heartbeat during the final small-scale approach. It stays
 	   off during the large metro zoom and is cleared before every rewind. */
 	.hero-dot-settled .hero-dot {
@@ -277,8 +259,7 @@
 		100% {
 			transform: scale(1);
 		}
-		/* Operator trim: the glow carries the highlight — the beat itself
-		   steps back a notch (was 2.1 / 1.65). */
+
 		14% {
 			transform: scale(1.8);
 		}

@@ -1,19 +1,4 @@
-// ServiceListingPage — slice-34.5 selections (the station).
-//
-// The active service station is a SHAREABLE ?station=<id> URL param. Unlike the
-// other two surfaces it uses NO persisted() rune — the URL param IS the
-// cross-language state (the language toggle's localizeHref carries the query
-// verbatim across EN⇄FR). The contract this slice adds:
-//   - the param is written ONLY on an explicit tab click (handleTabSelect),
-//     never from the IntersectionObserver scroll-spy (which would spam
-//     replaceState during scroll);
-//   - the write preserves scroll, resets focus and replaces history — not a
-//     history destination, and the Lenis scroll owns the motion;
-//   - on mount, a present-and-valid ?station=<id> re-scrolls to #service-<id>
-//     using the same Lenis-aware scroll (the deep-link / switch-restore path).
-//
-// $app/state, $app/navigation and the Lenis singleton are mocked so the
-// router/scroll side-effects are observable without a live SvelteKit runtime.
+// Station selection travels in the URL; only explicit tab clicks write it and mount restores its scroll target.
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/svelte';

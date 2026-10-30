@@ -1,10 +1,3 @@
-<!--
-  BlockRenderer.svelte — top-level dispatch for Editor.js Block Editor docs.
-  Slice 18 18f Phase 10. Reused by 18i (M2A blocks),
-  and #41 (projects.description + sections.content).
-
-  Iterates doc.blocks; dispatches on block.type. Per AM1: Editor.js shape.
--->
 <script lang="ts">
 	import type { BlockEditorDoc } from '@repo/shared';
 	import Heading from './blocks/Heading.svelte';

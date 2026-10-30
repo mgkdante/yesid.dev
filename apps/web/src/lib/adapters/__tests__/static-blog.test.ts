@@ -1,16 +1,3 @@
-// Static adapter — blog method shape tests (slice-27.1 Task T3).
-//
-// Network-free, CI-runnable shape coverage. Born as the companion to the
-// RUN_PARITY harness (parity.harness.test.ts — deleted at slice-26 close
-// after Directus 12 passed it on both environments); now the canonical
-// suite for the static blog methods fixed in T3 — bodyBySlug and
-// svgContent / svgContentsForPosts — asserting they keep the shapes the
-// retired directus adapter produced, using the committed CMS-derived
-// content modules (no network).
-//
-// Runs in the "data" Vitest project (Node env, $env stubbed to {}). The static
-// adapter never touches the network, so importing it directly is safe here.
-
 import { describe, expect, it } from 'vitest';
 
 import { staticAdapter } from '#lib/adapters/static.ts';
@@ -23,10 +10,7 @@ import {
 	ProjectsPageContentSchema,
 } from '@repo/shared';
 
-// A LocalizedString leaf is "clean" when no locale value is itself a
-// JSON-encoded LocalizedString — the slice-27.1 T4 double-encoding bug stored
-// the literal text `{"en":"…"}` in the `intro` column. Guard against any
-// regression that re-introduces a stringified object where prose belongs.
+// Localized prose must not contain a JSON-encoded LocalizedString.
 function expectCleanLocalizedString(value: unknown): void {
 	expect(value && typeof value === 'object').toBe(true);
 	for (const v of Object.values(value as Record<string, unknown>)) {

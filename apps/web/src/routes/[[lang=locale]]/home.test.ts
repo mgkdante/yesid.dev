@@ -2,8 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Page from './+page.svelte';
 import type { PageData } from './$types';
-// slice-18i Phase 7C: +page.server.ts now loads all home-page block content
-// from Directus M2A. Unit tests must supply full stubData with all block props.
+
 import {
 	heroContent,
 	heroAnimContent,
@@ -11,7 +10,6 @@ import {
 	proofReelContent,
 	servicesGridContent,
 	aboutContent,
-	ctaContent,
 	closerContent,
 } from '#lib/content/site-content.ts';
 import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
@@ -27,16 +25,7 @@ vi.mock('#lib/directus/assets.ts', () => ({
 	}),
 }));
 
-// The proof-reel card count is CMS-driven: project rows carry the `featured`
-// toggle in Directus, and the component renders one card per featured project. Derive
-// the expected count instead of hardcoding it (precedent: slice-16 commit
-// 8259c6b "decouple test assertions from CMS-controlled copy").
-//
-// slice-28.5 (#124): services + featuredProjects are now resolved by
-// +page.server.ts through the repository layer and arrive as page data. The
-// stub mirrors that load output, derived from the same content modules the
-// static adapter reads (companion calls are fine in TESTS — the boundary rule
-// only governs runtime component code; see adapters/static.ts header).
+// Derive featured membership from CMS data and mirror the server load's resolved collection props.
 const featuredProjects = getFeaturedProjects();
 const expectedProofCards = featuredProjects.length;
 
@@ -54,7 +43,6 @@ const stubData = {
 	proofReel: proofReelContent,
 	servicesGrid: servicesGridContent,
 	about: aboutContent,
-	cta: ctaContent,
 	closer: closerContent,
 	initialHeroData: INITIAL_HERO_DATA,
 	services: getVisibleServices(),

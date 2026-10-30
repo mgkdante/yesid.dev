@@ -1,4 +1,4 @@
-// fetchServiceSvgContents — go2 integration regression lock.
+// fetchServiceSvgContents regression lock.
 //
 // The deployed-preview bug: on Vercel, server-side fetch of /svg/services/*
 // 401s behind deployment protection (the static dir isn't bundled into the
