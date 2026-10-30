@@ -1,6 +1,6 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, within } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
@@ -92,7 +92,7 @@ describe('FeaturedProjects', () => {
 		render(FeaturedProjects, { props: renderProps });
 		const cards = screen.getAllByTestId('proof-card');
 		resolvedProjects.forEach((project, i) => {
-			expect(cards[i]?.closest('a')?.getAttribute('href')).toBe(`/projects/${project.slug}`);
+			expect(within(cards[i]!).getByRole('link').getAttribute('href')).toBe(`/projects/${project.slug}`);
 		});
 	});
 

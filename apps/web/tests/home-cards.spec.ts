@@ -15,8 +15,9 @@ test('home project cards retain supplied content, optional metrics and valid lin
 	expect(await cards.count()).toBeGreaterThan(0);
 	expect(await section.locator('.line-bullet').count(), 'the reel retains its related-service roundels').toBeGreaterThan(0);
 	for (const card of await cards.all()) {
-		await expect(card).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/[^/?#]+\/?$/);
-		await expect(card).toHaveAccessibleName(/\S/);
+		const link = card.getByRole('link');
+		await expect(link).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/[^/?#]+\/?$/);
+		await expect(link).toHaveAccessibleName((await card.getByTestId('proof-card-title').textContent())!.trim());
 		await expect(card.getByTestId('proof-card-title')).toHaveText(/\S/);
 		await expect(card.getByTestId('proof-card-title')).toBeVisible();
 		await expect(card.getByTestId('proof-excerpt')).toHaveText(/\S/);
