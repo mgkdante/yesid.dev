@@ -103,10 +103,10 @@
 	onmouseenter={() => (cardHovered = true)}
 	onmousemove={pullTags}
 	onmouseleave={(event) => { cardHovered = false; pullTags(event); }}
+	use:cursorGlow
 	{...rest}
 >
 	<a href={localizeHref(`/projects/${project.slug}`, locale)} class="project-card-link" aria-labelledby={titleId}></a>
-	<div class="h-full" use:cursorGlow>
 	<Card class="h-full gap-0 py-0">
 		<div class="project-card-layout h-full flex-1">
 
@@ -239,7 +239,6 @@
 
 		</div>
 	</Card>
-	</div>
 </article>
 
 <style>
@@ -260,6 +259,12 @@
 
 	.project-card :global(.card-surface) {
 		border-width: 3px;
+	}
+
+	/* The link layer takes the pointer, so the surface follows the card's hover. */
+	.project-card:hover :global(.card-surface) {
+		border-color: var(--border-brand-active);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 	}
 
 	.project-card-link {
