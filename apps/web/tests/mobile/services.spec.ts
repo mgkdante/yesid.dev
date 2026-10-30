@@ -45,8 +45,8 @@ test('services page deep-dive CTA meets 44px touch target height', async ({ page
 	}
 });
 
-test('375px station tab clicks land every service card below the tabs', async ({ page }) => {
-	test.skip(test.info().project.name !== 'iphone-se', '375px geometry contract');
+test('station tab clicks land every service card below the tabs', async ({ page }) => {
+	test.skip(test.info().project.name !== 'phone', '375px geometry contract');
 	await page.goto('/services');
 	await expect(page.locator('[data-testid="service-listing-page"]')).toBeVisible();
 	await page.evaluate(async () => {

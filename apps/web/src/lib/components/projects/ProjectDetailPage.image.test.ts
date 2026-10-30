@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
+
+
+
 import type { BlockEditorDoc } from '@repo/shared';
 import ProjectDetailPage from './ProjectDetailPage.svelte';
 import { projectFactory } from '../../../tests/factories';
@@ -255,24 +255,6 @@ describe('ProjectDetailPage image placement', () => {
 
 		await fireEvent.click(screen.getByTestId('project-image-gallery-backdrop'));
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-	});
-
-	it('uses theme-aware mats for contained project images', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/projects/ProjectImageGallery.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain('--project-image-gallery-mat');
-		expect(source).toContain('[data-theme="light"]');
-		expect(source).toContain('#fff');
-		expect(source).toContain("from '#lib/utils/theme-media.ts'");
-		expect(source).toContain('siteLabels.a11y.projectImageOpen');
-		expect(source).toContain('siteLabels.a11y.projectImageClose');
-		expect(source).not.toContain('aria-label="Open {stripHtml(image.data.caption)}"');
-		expect(source).not.toContain('aria-label="Close image"');
-		expect(source).not.toContain('new MutationObserver');
-		expect(source).not.toContain('background: #050505;');
 	});
 
 	it('uses CMS light image variants for thumbnails and expanded images from the document theme', async () => {

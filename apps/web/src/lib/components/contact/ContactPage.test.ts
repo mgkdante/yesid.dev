@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/svelte';
 import { tick } from 'svelte';
 
 const analyticsMocks = vi.hoisted(() => ({
@@ -115,17 +115,21 @@ describe('ContactPage', () => {
 	it('associates both layouts with their own labeled fields and validation errors', async () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		const fields = screen.getAllByRole('textbox') as (HTMLInputElement | HTMLTextAreaElement)[];
-		expect(fields).toHaveLength(6);
-		expect(new Set(fields.map((field) => field.id)).size).toBe(6);
+		for (const form of screen.getAllByTestId('contact-form-terminal')) {
+			expect(within(form).getAllByRole('textbox')).toHaveLength(Object.keys(contactContent.formTerminal.fields).length);
+			for (const { label } of Object.values(contactContent.formTerminal.fields))
+				expect(within(form).getByLabelText(`${label.en}:`)).toBeInTheDocument();
+		}
+		expect(new Set(fields.map((field) => field.id)).size).toBe(fields.length);
 		for (const field of fields) {
-			expect(field).toHaveAccessibleName(`${field.name}:`);
+			expect(field).toHaveAccessibleName(`${contactContent.formTerminal.fields[field.name as keyof typeof contactContent.formTerminal.fields].label.en}:`);
 			expect(field.tagName).toBe(field.name === 'message' ? 'TEXTAREA' : 'INPUT');
 			expect(field).toHaveAttribute('data-handoff-focus', `contact-${field.name}`);
 		}
 		await submitForm(screen.getAllByTestId('contact-submit')[0]);
 		for (const field of fields) {
 			expect(field).toHaveAttribute('aria-invalid', 'true');
-			expect(field).toHaveAccessibleDescription(`✗ ${field.name} is required`);
+			expect(field).toHaveAccessibleDescription(`✗ ${contactContent.validation.required.en.replace('{field}', contactContent.formTerminal.fields[field.name as keyof typeof contactContent.formTerminal.fields].label.en)}`);
 		}
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});

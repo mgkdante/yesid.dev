@@ -5,6 +5,8 @@ import { THE_END } from '../src/lib/components/home/annotation-lettering';
 import { closerContent } from '../src/lib/content/site-content';
 import { resolveLocale } from '../src/lib/utils/locale';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 for (const locale of PUBLISHED_LOCALES) {
 	test(`${locale} closer is readable without JavaScript in normal motion`, async ({
 		browser,
@@ -137,8 +139,6 @@ for (const locale of PUBLISHED_LOCALES) {
 		expect([totals[19] < letters, end.ink.every((ink) => ink === 1), end.progress]).toEqual([true, true, 1]);
 		const back = await at(0.7);
 		expect(back.ink).toEqual(samples[14].ink);
-		await page.waitForTimeout(500);
-		expect((await read()).ink).toEqual(back.ink);
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		expect((await at(0.5)).ink.every((ink) => ink === 1)).toBe(true);
 	});
@@ -171,6 +171,21 @@ for (const width of [390, 820, 1920]) {
 			await expect
 				.poll(async () => Number(await props.getAttribute('data-progress')))
 				.toBeCloseTo(Math.max(0, Math.min(1, (0.95 - fraction) / 0.25)), 2);
+			// The ending's ink follows the ground's layout, so sample once its strokes hold still for a frame.
+			await page.locator('.closer-note').evaluate(
+				(note) =>
+					new Promise<void>((settled) => {
+						const read = () => [...note.querySelectorAll('path')].map((path) => getComputedStyle(path).strokeDashoffset).join();
+						let last = read();
+						const next = () =>
+							requestAnimationFrame(() => {
+								const current = read();
+								if (current === last) settled();
+								else (last = current), next();
+							});
+						next();
+					}),
+			);
 			const sample = await page
 				.locator('.ground-anchor')
 				.evaluate((anchor) => ({

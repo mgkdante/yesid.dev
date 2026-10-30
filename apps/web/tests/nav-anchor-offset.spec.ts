@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 const PROJECT_PATH = '/projects/yesid-dev';
 const TOLERANCE_PX = 2;
 
@@ -26,6 +28,7 @@ test.describe('native fragment clearance', () => {
 		[1280, 600, 88, 104],
 	]) {
 		test(`fixture heading lands below the ${width}px pill`, async ({ page }) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 			await page.setViewportSize({ width, height });
 			await page.route('**/legal/privacy', async (route) => {
 				const response = await route.fetch();
@@ -52,6 +55,7 @@ test.describe('native fragment clearance', () => {
 test.describe('desktop table of contents', () => {
 	for (const expanded of [true, false])
 		test(`TOC lands a tall card's visible heading, expanded=${expanded}`, async ({ page }) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 			await page.setViewportSize({ width: 1366, height: 600 });
 			await page.emulateMedia({ reducedMotion: 'reduce' });
 			await page.goto(PROJECT_PATH);
@@ -93,6 +97,7 @@ test.describe('desktop table of contents', () => {
 test('a fragment into closed content reaches its visible trigger without expansion', async ({
 	page,
 }) => {
+		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 	await page.setViewportSize({ width: 1366, height: 600 });
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(PROJECT_PATH);

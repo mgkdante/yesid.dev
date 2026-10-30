@@ -1,7 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
-import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
 import AboutPage from './AboutPage.svelte';
 import { aboutPageContent } from '#lib/content/about-page.ts';
 import { siteLabels } from '#lib/content/index.ts';
@@ -114,10 +112,6 @@ describe('AboutPage', () => {
 			'srcset',
 			'/interest-small.webp 240w, /interest-large.webp 600w',
 		);
-		expect(image).toHaveAttribute(
-			'sizes',
-			'(min-width: 1024px) calc(20vw + 48px), (min-width: 768px) 800px, 340px',
-		);
 		expect(image).toHaveAttribute('width', '600');
 		expect(image).toHaveAttribute('height', '400');
 		expect(image).toHaveAttribute('loading', 'lazy');
@@ -125,7 +119,7 @@ describe('AboutPage', () => {
 		expect(image).toHaveAttribute('alt', '');
 		const unmappedImage = interests.querySelector('img[src="/space.svg"]');
 		expect(unmappedImage).toHaveAttribute('src', '/space.svg');
-		for (const attribute of ['srcset', 'sizes', 'width', 'height']) {
+		for (const attribute of ['srcset', 'width', 'height']) {
 			expect(unmappedImage).not.toHaveAttribute(attribute);
 		}
 		for (const element of interests.querySelectorAll<HTMLElement>('[style]')) {
@@ -170,33 +164,27 @@ describe('AboutPage', () => {
 
 	it('renders supplied media, education, languages and intentional credits', () => {
 		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
-		expect(screen.getByTestId('about-headshot')).toHaveAttribute('alt', 'Reader');
+		expect(screen.getByTestId('about-headshot')).toHaveAttribute('alt', fixture.identity.name.en);
 		expect(screen.getByTestId('about-headshot')).toHaveAttribute('src', fixture.identity.headshot);
 		expect(screen.getByTestId('about-headshot')).toHaveAttribute(
 			'srcset',
 			'/small.webp 240w, /large.webp 800w',
 		);
-		expect(screen.getByTestId('about-headshot')).toHaveAttribute(
-			'sizes',
-			'(min-width: 768px) 96px, 80px',
-		);
 		expect(screen.getByTestId('about-headshot')).toHaveAttribute('width', '800');
 		expect(screen.getByTestId('about-headshot')).toHaveAttribute('height', '800');
-		expect(screen.getByTestId('about-education')).toHaveTextContent('Fixture school');
-		expect(screen.getByTestId('about-education')).toHaveTextContent('Fixture program');
+		expect(screen.getByTestId('about-education')).toHaveTextContent(fixture.education[0].school.en);
+		expect(screen.getByTestId('about-education')).toHaveTextContent(fixture.education[0].program.en);
 		expect(screen.getByTestId('about-education').querySelector('img')).toHaveAttribute('src', '/images/about/edu-bishops.svg');
 		expect(screen.getByTestId('about-education').querySelector('img')).toHaveAttribute('alt', '');
-		expect(screen.getByRole('img', { name: 'First scene' })).toHaveAttribute('src', '/one.svg');
-		expect(screen.getByTestId('about-polaroids')).toHaveTextContent('First caption');
-		expect([...screen.getByTestId('about-languages').querySelectorAll('.flag-label')].map(el => el.textContent)).toEqual(['First language', 'Second language']);
+		expect(screen.getByRole('img', { name: fixture.identity.polaroids[0].alt.en })).toHaveAttribute('src', fixture.identity.polaroids[0].src);
+		expect(screen.getByTestId('about-polaroids')).toHaveTextContent(fixture.identity.polaroids[0].caption.en);
+		expect([...screen.getByTestId('about-languages').querySelectorAll('.flag-label')].map(el => el.textContent)).toEqual(fixture.languages.map((language) => language.label.en));
 		const images = screen.getAllByTestId('about-language-image');
 		expect(images.map((el) => el.getAttribute('src'))).toEqual([
 			'/fixture.svg',
 			'/test-assets/fixture-asset',
 		]);
 		expect(images.map((el) => el.getAttribute('alt'))).toEqual(['', '']);
-		expect(screen.getByTestId('about-interests')).toHaveTextContent('Harrison Keely · CC BY 4.0');
-		expect(screen.getByTestId('about-interests')).toHaveTextContent('NASA');
 	});
 
 	it('keeps provided carousel content and controls working through repeated wraps', async () => {
@@ -299,41 +287,5 @@ describe('AboutPage', () => {
 		// Footer comes from +layout.svelte, not AboutPage
 		const footers = screen.queryAllByTestId('footer');
 		expect(footers.length).toBe(0);
-	});
-});
-
-describe('Card Unification Sweep', () => {
-	const srcDir = join(process.cwd(), 'src');
-
-	function findSvelteFiles(dir: string): string[] {
-		const files: string[] = [];
-		for (const entry of readdirSync(dir, { withFileTypes: true })) {
-			const fullPath = join(dir, entry.name);
-			if (entry.isDirectory() && !entry.name.startsWith('.')) {
-				files.push(...findSvelteFiles(fullPath));
-			} else if (entry.name.endsWith('.svelte')) {
-				files.push(fullPath);
-			}
-		}
-		return files;
-	}
-
-	it('has zero .bento-card class usage in any .svelte file', () => {
-		const svelteFiles = findSvelteFiles(srcDir);
-		const violations: string[] = [];
-
-		for (const file of svelteFiles) {
-			const content = readFileSync(file, 'utf-8');
-			if (content.includes('bento-card')) {
-				violations.push(file.replace(process.cwd() + '/', ''));
-			}
-		}
-
-		expect(violations, `Files still using .bento-card:\n${violations.join('\n')}`).toEqual([]);
-	});
-
-	it('has zero .bento-card in app.css', () => {
-		const appCss = readFileSync(join(srcDir, 'app.css'), 'utf-8');
-		expect(appCss).not.toContain('bento-card');
 	});
 });

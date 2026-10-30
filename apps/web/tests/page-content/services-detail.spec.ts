@@ -2,6 +2,8 @@ import { siteLabels } from '../../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, serviceDetailLinks } from '../_support/helpers';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 // Ground truth (src/lib/content/services.ts + ServiceDetailPage.svelte):
 // The /services listing's first station (sorted by station number) is
 // `database-engineering`. It carries an SVG panel, an impact metric
@@ -21,7 +23,6 @@ test.describe('/services/[id] detail page content', () => {
     await gotoFirstDetail(page, '/services', serviceDetailLinks, 'service-detail-page');
 
     // SVG panel (art) is rendered on desktop — the first service always has one.
-    test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only SVG panel');
     const svgPanel = page.locator('.svg-desktop svg').first();
     await expect(svgPanel).toBeVisible();
     const box = await svgPanel.boundingBox();
@@ -51,7 +52,6 @@ test.describe('/services/[id] detail page content', () => {
 
     // The first service carries an impact metric — on desktop it renders in the
     // sticky .impact-column as .impact-value + .impact-label, both non-empty.
-    test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only impact column');
     const metricValue = page.locator('.impact-column .impact-value');
     await expect(metricValue).toBeVisible();
     expect((await metricValue.textContent())?.trim().length).toBeGreaterThan(0);

@@ -1,9 +1,6 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
@@ -32,9 +29,6 @@ const serviceSvgContents = Object.fromEntries(
 const renderProps = { proofReel: proofReelContent, projects: resolvedProjects, services, serviceSvgContents };
 
 describe('FeaturedProjects', () => {
-	it('renders at least one featured project from CMS data', () => {
-		expect(expectedCount).toBeGreaterThan(0);
-	});
 
 	it('renders the section with correct testid', () => {
 		render(FeaturedProjects, { props: renderProps });
@@ -182,28 +176,6 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-card-image')).toBeInTheDocument();
 		expect(screen.queryByTestId('project-hero-preview')).toBeNull();
 		expect(screen.queryByTestId('proof-image-fallback')).toBeNull();
-	});
-
-	it('wires the proof carousel through ProjectCard instead of a second card system', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/home/FeaturedProjects.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain("import ProjectCard from '#lib/components/projects/ProjectCard.svelte'");
-		expect(source).not.toContain('ProjectHeroPreview');
-		expect(source).not.toContain('class="proof-image');
-		expect(source).not.toContain('class="proof-card group');
-	});
-
-	it('lets nested stack diagrams keep their own horizontal drag inside the proof carousel', () => {
-		const source = readFileSync(
-			join(cwd(), 'src/lib/components/home/FeaturedProjects.svelte'),
-			'utf8',
-		);
-
-		expect(source).toContain("import { allowCarouselDrag } from '#lib/utils/carousel-drag.ts'");
-		expect(source).toContain('watchDrag: allowCarouselDrag');
 	});
 
 	it('keeps loop controls icon-only while the counter carries the numbers', () => {

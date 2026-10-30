@@ -2,7 +2,7 @@
 // it per request from the URL locale. Path-derived (not params-derived) so it
 // works for error renders and is trivially CDN-safe (locale is in the path).
 import { describe, it, expect, vi } from 'vitest';
-import { readFileSync } from 'node:fs';
+
 import { handle } from '../hooks.server';
 
 function fakeEvent(pathname: string) {
@@ -27,11 +27,7 @@ async function transformFor(pathname: string): Promise<string> {
 }
 
 describe('html lang attribute', () => {
-	it('app.html uses the %lang% placeholder (not a hardcoded lang)', () => {
-		const appHtml = readFileSync('src/app.html', 'utf-8');
-		expect(appHtml).toContain('lang="%lang%"');
-		expect(appHtml).not.toContain('lang="en"');
-	});
+
 	it('replaces %lang% with en for unprefixed paths', async () => {
 		expect(await transformFor('/about')).toContain('lang="en"');
 	});

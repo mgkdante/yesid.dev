@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 async function expectIdleHero(page: Page) {
 	await expect(page.getByTestId('hero-banner')).toHaveClass(/hero-intro-done/);
 	await expect(page.locator('.hero-metro-wrapper')).toBeHidden();
@@ -21,6 +23,7 @@ test('server-rendered hero is collapsed before JavaScript runs', async ({ browse
 
 for (const storage of ['fresh', 'today', 'yesterday', 'corrupt', 'denied']) {
 	test(`${storage} storage: initial load and reload never start the metro`, async ({ page }) => {
+		await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
 		await page.addInitScript((state) => {
 			if (state === 'denied') {
 				Object.defineProperty(window, 'localStorage', { get() { throw new Error('denied'); } });

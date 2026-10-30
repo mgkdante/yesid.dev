@@ -2,6 +2,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
+import { composePageSeo } from './compose-page-seo';
+import { codeRouteSeoDefaults } from './route-seo-defaults';
+import { siteMeta as contentSiteMeta } from '#lib/content/site-meta.ts';
+import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
+import { canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
 import type { ContentAdapter } from './types';
 import {
 	blogSlugSeoFactory,
@@ -9,7 +15,7 @@ import {
 	projectsSlugSeoFactory,
 	servicesIdSeoFactory,
 } from './route-seo-factories';
-import { projectFactory, serviceFactory } from '../../tests/factories';
+import { blogPostFactory, projectFactory, serviceFactory } from '../../tests/factories';
 import { PageSeoSchema } from '#lib/schemas/seo.ts';
 import type {
 	BlogPost,
@@ -490,5 +496,115 @@ describe('legalSlugSeoFactory', () => {
 		});
 
 		expect(seo.description).toEqual(intro);
+	});
+});
+
+describe('route SEO composition', () => {
+	const STATIC_ROUTES = [
+		'/',
+		'/about',
+		'/contact',
+		'/services',
+		'/projects',
+		'/blog',
+		'/blog/personal',
+	] as const;
+
+	const paragraph = (id: string, text: string) => ({
+		time: 1,
+		version: '2.31.2',
+		blocks: [{ id, type: 'paragraph' as const, data: { text } }],
+	});
+
+	const service = serviceFactory.build({
+		id: 'database-engineering',
+		title: { en: 'Database Engineering', fr: 'Ingénierie de données', es: 'Ingeniería de datos' },
+		description: {
+			en: 'Reliable PostgreSQL systems for growing teams.',
+			fr: 'Systèmes PostgreSQL fiables pour les équipes en croissance.',
+			es: 'Sistemas PostgreSQL fiables para equipos en crecimiento.',
+		},
+	} satisfies Partial<Service>);
+
+	const project = projectFactory.build({
+		slug: 'transit',
+		title: { en: 'Transit', fr: 'Transport collectif', es: 'Transporte público' },
+		description: {
+			en: paragraph('project-en', 'A reliable transit data platform for Montréal.'),
+			fr: paragraph('project-fr', 'Une plateforme fiable de données de transport pour Montréal.'),
+			es: paragraph('project-es', 'Una plataforma fiable de datos de transporte para Montreal.'),
+		},
+		tags: ['transit', 'data'],
+		stack: ['PostgreSQL', 'SvelteKit'],
+	} satisfies Partial<Project>);
+
+	const blogPosts: readonly BlogPost[] = PUBLISHED_LOCALES.map((lang) => {
+		const slug = {
+			en: 'reliable-sql',
+			fr: 'sql-fiable',
+			es: 'sql-confiable',
+		}[lang];
+		return blogPostFactory.build({
+			translationKey: 'reliable-sql',
+			slug,
+			title: {
+				en: 'Reliable SQL',
+				fr: 'SQL fiable',
+				es: 'SQL confiable',
+			}[lang],
+			excerpt: 'A deterministic route metadata fixture with enough detail for the SEO contract.',
+			seoTitle: 'Reliable SQL metadata',
+			seoDescription:
+				'A deterministic route metadata fixture with enough detail for search and structured data.',
+			date: '2026-07-01',
+			dateModified: '2026-07-02',
+			lang,
+			tags: ['sql', 'reliability'],
+			coverImage: undefined,
+			coverImageAlt: undefined,
+			url: `${lang === 'en' ? '' : `/${lang}`}/blog/${slug}`,
+		} satisfies Partial<BlogPost>);
+	});
+
+	const legalPage: LegalPage = {
+		slug: 'terms',
+		title: {
+			en: 'Terms of Use',
+			fr: 'Conditions d’utilisation',
+			es: 'Condiciones de uso',
+		},
+		body: {
+			en: paragraph('legal-en', 'These terms explain the rules that apply when using the yesid.dev website and its services.'),
+			fr: paragraph('legal-fr', 'Ces conditions expliquent les règles applicables à l’utilisation du site et des services yesid.dev.'),
+			es: paragraph('legal-es', 'Estas condiciones explican las reglas aplicables al uso del sitio y los servicios de yesid.dev.'),
+		},
+	};
+
+	it('every route and published locale gets its canonical URL and valid structured data', async () => {
+		for (const locale of PUBLISHED_LOCALES) {
+			const common = { locale, siteMeta: contentSiteMeta, siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS };
+			const post = blogPosts.find((candidate) => candidate.lang === locale)!;
+			const adapter = {
+				services: { byId: async () => service },
+				projects: { bySlug: async () => project },
+				blog: { all: async () => blogPosts, bySlug: async () => post },
+				legal: { bySlug: async () => legalPage },
+			} as unknown as ContentAdapter;
+			const results = [
+				...STATIC_ROUTES.map((routeId) => [routeId, composePageSeo({
+					...common, routeId, routeOverride: undefined, codeDefaults: codeRouteSeoDefaults[routeId]!,
+				})] as const),
+				[`/services/${service.id}`, await servicesIdSeoFactory({ ...common, adapter, params: { id: service.id } })],
+				[`/projects/${project.slug}`, await projectsSlugSeoFactory({ ...common, adapter, params: { slug: project.slug } })],
+				[`/blog/${post.slug}`, await blogSlugSeoFactory({ ...common, adapter, params: { slug: post.slug } })],
+				[`/legal/${legalPage.slug}`, await legalSlugSeoFactory({ ...common, adapter, params: { slug: legalPage.slug } })],
+			] as const;
+			for (const [path, seo] of results) {
+				expect(seo.canonical).toBe(canonicalFor(path, locale));
+				PageSeoSchema.parse(seo);
+				expect(seo.jsonLd?.length).toBeGreaterThan(0);
+				for (const node of seo.jsonLd!) expect(node['@type']).toBeTruthy();
+			}
+		}
 	});
 });

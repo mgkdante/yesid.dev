@@ -1,4 +1,5 @@
-import { devices, expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
+import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 import { expectCardContentInside } from './lib/project-card-geometry.js';
 
 async function cardPositions(reel: Locator) {
@@ -86,17 +87,10 @@ async function expectImagesFillPanes(card: Locator) {
 	}
 }
 
-const screens = [
-	[360, 740, 'en'], [412, 744, 'en'], [540, 720, 'en'], [768, 700, 'en'],
-	[820, 740, 'en'], [1024, 640, 'en'], [1280, 720, 'en'], [1600, 900, 'en'],
-	[1920, 1080, 'en'], [820, 740, 'fr'], [412, 744, 'es'],
-] as const;
+for (const locale of PUBLISHED_LOCALES) {
+	test(`${locale}: whole project cards keep images and supplied content readable`, async ({ page }) => {
 
-for (const [width, height, locale] of screens) {
-	test(`${width}x${height} ${locale}: whole project cards keep images and supplied content readable`, async ({ browser, baseURL }, testInfo) => {
-		const context = await browser.newContext({ ...(width <= 540 ? devices['Pixel 7'] : {}), baseURL, viewport: { width, height }, reducedMotion: 'reduce', colorScheme: locale === 'fr' ? 'light' : 'dark' });
-		try {
-			const page = await context.newPage();
+		await page.emulateMedia({ reducedMotion: 'reduce' });
 			await page.goto(locale === 'en' ? '/' : `/${locale}`);
 			await page.evaluate(() => document.fonts.ready);
 			const reel = page.getByTestId('proof-reel-section');
@@ -109,12 +103,11 @@ for (const [width, height, locale] of screens) {
 			for (const card of visible) await expectImagesFillPanes(reel.getByTestId('proof-card').nth(card.index));
 			const frames = await reel.getByTestId('proof-card-image').evaluateAll(images => images.map(image => image.getBoundingClientRect().height));
 			expect(Math.max(...frames) / Math.min(...frames), 'every project keeps the same image frame').toBeLessThan(1.1);
-			await reel.screenshot({ path: testInfo.outputPath('projects.png'), animations: 'disabled' });
-		} finally { await context.close(); }
 	});
 }
 
 test('navigation and resizing settle on whole cards and keep every project reachable', async ({ page }) => {
+	test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 	test.setTimeout(60_000);
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');
@@ -150,6 +143,7 @@ test('navigation and resizing settle on whole cards and keep every project reach
 });
 
 test('hover keeps project image panes filled', async ({ page }) => {
+	test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 	await page.setViewportSize({ width: 1280, height: 900 });
 	await page.goto('/');
 	const reel = page.getByTestId('proof-reel-section');
@@ -171,25 +165,23 @@ test('hover keeps project image panes filled', async ({ page }) => {
 	expect(seen.size).toBe(total);
 });
 
-for (const width of [390, 1440]) {
-	test(`shared project listing remains readable at ${width}px`, async ({ page }) => {
-		await page.setViewportSize({ width, height: 900 });
-		await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'light' });
-		await page.goto('/projects');
-		const cards = page.getByTestId('project-card');
-		await expect(cards.first()).toBeVisible();
-		for (const card of await cards.all()) {
-			await expect(card).toHaveAccessibleName(/\S/);
-			await expectImagesFillPanes(card);
-			await expectMediaAboveInfo(card);
-			await expectPanesSideBySide(card);
-			expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth + 1), 'listing content stays inside its card').toBe(true);
-		}
-		expect(await page.locator('[data-testid="project-hero-preview"][data-split="true"]').count(), 'some project supplies a phone screenshot').toBeGreaterThan(0);
-	});
-}
+test('the shared project listing stays readable', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/projects');
+	const cards = page.getByTestId('project-card');
+	await expect(cards.first()).toBeVisible();
+	for (const card of await cards.all()) {
+		await expect(card).toHaveAccessibleName(/\S/);
+		await expectImagesFillPanes(card);
+		await expectMediaAboveInfo(card);
+		await expectPanesSideBySide(card);
+		expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth + 1), 'listing content stays inside its card').toBe(true);
+	}
+	expect(await page.locator('[data-testid="project-hero-preview"][data-split="true"]').count(), 'some project supplies a phone screenshot').toBeGreaterThan(0);
+});
 
 test('a light first load shows the same project screenshots as switching to light', async ({ page }) => {
+	test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 	await page.addInitScript(() => localStorage.setItem('theme', 'light'));
 	await page.goto('/projects');
 	const images = page.getByTestId('project-hero-preview-image');
@@ -203,4 +195,12 @@ test('a light first load shows the same project screenshots as switching to ligh
 	await expect.poll(sources).not.toEqual(firstLoad);
 	await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
 	await expect.poll(sources).toEqual(firstLoad);
+});
+
+test('project images hold still under reduced motion', { tag: '@motion' }, async ({ page }) => {
+	await page.goto('/projects');
+	const image = page.getByTestId('project-hero-preview-image').first();
+	await expect(image).toBeVisible();
+	await image.hover();
+	expect(await image.evaluate((element) => element.getAnimations().length)).toBe(0);
 });

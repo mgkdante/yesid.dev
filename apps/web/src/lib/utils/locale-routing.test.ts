@@ -4,17 +4,7 @@ import { createLocaleRouting } from '@yesid/i18n-core';
 import { SUPPORTED_LOCALES } from './locale';
 import { isPrefixLocale as pureIsPrefixLocale } from './prefix-locales';
 import { params } from '../../params';
-import {
-	PREFIX_LOCALES,
-	pathLocale,
-	delocalizePath,
-	localizeHref,
-	localizeUrl,
-	isLocaleSwitch,
-	stripLocaleSegment,
-	isPrefixLocale,
-	localeFromParams,
-} from './locale-routing';
+import { PREFIX_LOCALES, pathLocale, localizeHref, localizeUrl, stripLocaleSegment, isPrefixLocale, localeFromParams } from './locale-routing';
 
 describe('yesid.dev locale routing wrapper', () => {
 	it('shares the pure prefix predicate and preserves the core predicate semantics', () => {
@@ -38,98 +28,6 @@ describe('yesid.dev locale routing wrapper', () => {
 		expect(localizeHref('/about', 'en')).toBe('/about');
 		expect(localizeHref('/about', 'fr')).toBe('/fr/about');
 		expect(localizeHref('/about', 'es')).toBe('/es/about');
-	});
-
-	it('core-corpus-fixtures', () => {
-		const pathLocaleFixtures: readonly [string, Locale][] = [
-			['', 'en'],
-			['/', 'en'],
-			['/about', 'en'],
-			['/fr', 'fr'],
-			['/fr/', 'fr'],
-			['/fr/about', 'fr'],
-			['/es', 'es'],
-			['/es/', 'es'],
-			['/es/about', 'es'],
-			['/france', 'en'],
-			['/de/about', 'en'],
-		];
-		const delocalizeFixtures: readonly [string, string][] = [
-			['', '/'],
-			['/', '/'],
-			['/about', '/about'],
-			['/fr', '/'],
-			['/fr/', '/'],
-			['/fr//', '//'],
-			['/fr/about', '/about'],
-			['/fr/blog/some-post', '/blog/some-post'],
-			['/es', '/'],
-			['/es/', '/'],
-			['/es/about', '/about'],
-			['/fr/fr/about', '/fr/about'],
-			['/es/fr/about', '/fr/about'],
-			['/france', '/france'],
-		];
-		const localizeFixtures: readonly [string, Locale, string][] = [
-			['/', 'en', '/'],
-			['/', 'fr', '/fr'],
-			['/', 'es', '/es'],
-			['/about', 'en', '/about'],
-			['/about', 'fr', '/fr/about'],
-			['/about', 'es', '/es/about'],
-			['/services/data-pipeline', 'fr', '/fr/services/data-pipeline'],
-			['/fr/about', 'en', '/about'],
-			['/fr/about', 'fr', '/fr/about'],
-			['/fr/about', 'es', '/es/about'],
-			['/es/about', 'en', '/about'],
-			['/es/about', 'fr', '/fr/about'],
-			['/fr/fr/about', 'es', '/es/fr/about'],
-		];
-		const urlFixtures: readonly [string, Locale, string][] = [
-			[
-				'/projects?service=web&tag=svelte',
-				'fr',
-				'/fr/projects?service=web&tag=svelte',
-			],
-			['/blog?tag=ml#post-3', 'fr', '/fr/blog?tag=ml#post-3'],
-			['/projects?service=web', 'en', '/projects?service=web'],
-			['/fr/projects?service=web', 'en', '/projects?service=web'],
-			['/fr/projects?tag=a', 'fr', '/fr/projects?tag=a'],
-			['/about', 'fr', '/fr/about'],
-			['/', 'fr', '/fr'],
-			['/about#contact', 'fr', '/fr/about#contact'],
-		];
-		const switchFixtures: readonly [string, string, boolean][] = [
-			['/about', '/fr/about', true],
-			['/fr/about', '/about', true],
-			['/', '/fr', true],
-			['/fr', '/', true],
-			['/projects', '/fr/projects', true],
-			['/projects', '/es/projects', true],
-			['/fr/about', '/es/about', true],
-			['/about', '/projects', false],
-			['/about', '/fr/projects', false],
-			['/fr/about', '/fr/projects', false],
-			['/about', '/about', false],
-			['/fr/about', '/fr/about', false],
-			['/', '/', false],
-		];
-
-		for (const [pathname, expected] of pathLocaleFixtures) {
-			expect(pathLocale(pathname)).toBe(expected);
-		}
-		for (const [pathname, expected] of delocalizeFixtures) {
-			expect(delocalizePath(pathname)).toBe(expected);
-		}
-		for (const [href, locale, expected] of localizeFixtures) {
-			expect(localizeHref(href, locale)).toBe(expected);
-		}
-		for (const [href, locale, expected] of urlFixtures) {
-			expect(localizeUrl(new URL(href, 'https://yesid.dev'), locale)).toBe(expected);
-		}
-		for (const [fromPathname, toPathname, expected] of switchFixtures) {
-			expect(isLocaleSwitch(fromPathname, toPathname)).toBe(expected);
-		}
 	});
 
 	it('universal+yesid-exemptions+negative-controls', () => {

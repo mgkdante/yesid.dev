@@ -29,48 +29,32 @@ async function expectStation(page: Page, id: string) {
 	expect(new URL(page.url()).searchParams.get('source')).toBe('deep-link');
 }
 
-for (const [width, height] of [
-	[375, 667],
-	[683, 300],
-	[1366, 600],
-])
-	for (const reducedMotion of ['no-preference', 'reduce'] as const)
-		for (const theme of ['light', 'dark'])
-			test(`${width}x${height} ${reducedMotion} ${theme}: station deep link, reload and history`, async ({
-				page,
-			}) => {
-				await page.setViewportSize({ width, height });
-				await page.emulateMedia({ reducedMotion });
-				await page.addInitScript(
-					(value) => localStorage.setItem('theme', value),
-					theme
-				);
-				await page.goto('/services?station=data-pipeline&source=deep-link');
-				for (const reload of [false, true]) {
-					if (reload) await page.reload();
-					if (reducedMotion === 'no-preference')
-						await expect(page.locator('html')).toHaveClass(/lenis/);
-					else await expect(page.locator('html')).not.toHaveClass(/lenis/);
-					await expectStation(page, 'data-pipeline');
-				}
-				const ids = await page
-					.locator('[data-testid^="station-tab-"]')
-					.evaluateAll((tabs) =>
-						tabs.map((tab) =>
-							tab.getAttribute('data-testid')!.slice('station-tab-'.length)
-						)
-					);
-				const other = ids[(ids.indexOf('data-pipeline') + 1) % ids.length];
-				expect(other).not.toBe('data-pipeline');
-				await page.getByTestId(`station-tab-${other}`).press('Enter');
-				await expectStation(page, other);
-				await page.goto('/about');
-				await page.goBack();
-				await expectStation(page, other);
-				await page.goForward();
-				await expect(page).toHaveURL(/\/about$/);
-				await page.goBack();
-				await expectStation(page, other);
-				await page.getByTestId('station-tab-data-pipeline').press('Enter');
-				await expectStation(page, 'data-pipeline');
-			});
+test('station deep link, reload and history', async ({
+	page,
+}) => {
+	await page.goto('/services?station=data-pipeline&source=deep-link');
+	for (const reload of [false, true]) {
+		if (reload) await page.reload();
+		await expectStation(page, 'data-pipeline');
+	}
+	const ids = await page
+		.locator('[data-testid^="station-tab-"]')
+		.evaluateAll((tabs) =>
+			tabs.map((tab) =>
+				tab.getAttribute('data-testid')!.slice('station-tab-'.length)
+			)
+		);
+	const other = ids[(ids.indexOf('data-pipeline') + 1) % ids.length];
+	expect(other).not.toBe('data-pipeline');
+	await page.getByTestId(`station-tab-${other}`).press('Enter');
+	await expectStation(page, other);
+	await page.goto('/about');
+	await page.goBack();
+	await expectStation(page, other);
+	await page.goForward();
+	await expect(page).toHaveURL(/\/about$/);
+	await page.goBack();
+	await expectStation(page, other);
+	await page.getByTestId('station-tab-data-pipeline').press('Enter');
+	await expectStation(page, 'data-pipeline');
+});

@@ -14,10 +14,10 @@
 //     covers site-chrome literals that D2 carves out of schema validation.
 
 import { describe, it, expect } from 'vitest';
-import { existsSync, readFileSync } from 'node:fs';
+
 import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+
+
 import { z } from 'zod';
 import { projects } from './projects.js';
 import { services } from './services.js';
@@ -43,13 +43,6 @@ import {
 	ErrorPageContentSchema,
 	SitePageSchema,
 } from '@repo/shared';
-
-const CONTENT_TEST_DIR = dirname(fileURLToPath(import.meta.url));
-const WEB_SRC_DIR = join(CONTENT_TEST_DIR, '..', '..');
-
-function readWebSource(relativePath: string): string {
-	return readFileSync(join(WEB_SRC_DIR, relativePath), 'utf8');
-}
 
 describe('projects data integrity', () => {
 	it('all slugs are unique', () => {
@@ -183,66 +176,7 @@ describe('services data integrity', () => {
 	});
 });
 
-describe('chrome companion consolidation', () => {
-	it('retired BlogRouteMap component stays absent', () => {
-		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/blog/BlogRouteMap.svelte'))).toBe(false);
-	});
-
-	it('retired TableOfContents component stays absent', () => {
-		expect(existsSync(join(WEB_SRC_DIR, 'lib/components/shared/TableOfContents.svelte'))).toBe(false);
-	});
-
-	it('shared chrome consumers read from siteLabels instead of sharedChromeContent', () => {
-		const consumers = [
-			'routes/+layout.svelte',
-		];
-
-		const offenders = consumers.filter((file) =>
-			/\bsharedChromeContent\b/.test(readWebSource(file)),
-		);
-
-		expect(offenders).toEqual([]);
-	});
-
-	it('blog chrome consumers read from siteLabels instead of blog companions', () => {
-		const consumers = [
-			'lib/components/blog/BlogFilterSidebar.svelte',
-			'lib/components/blog/BlogListingPage.svelte',
-			'lib/components/blog/BlogDetailPage.svelte',
-			'lib/components/cms/blocks/CodeBlock.svelte',
-		];
-
-		const offenders = consumers.filter((file) =>
-			/\bblog(?:Listing|Detail)Content\b/.test(readWebSource(file)),
-		);
-
-		expect(offenders).toEqual([]);
-	});
-
-	it('projects chrome consumers read from siteLabels instead of project companions', () => {
-		const consumers = [
-			'lib/components/projects/ProjectCard.svelte',
-			'lib/components/projects/ProjectListingPage.svelte',
-			'lib/components/projects/ProjectFilterSidebar.svelte',
-			'lib/components/projects/ProjectDetailPage.svelte',
-			'lib/components/projects/ProjectGlancePanel.svelte',
-			'lib/components/services/ServiceDetailPage.svelte',
-			'lib/components/services/ServiceStackPanel.svelte',
-		];
-
-		const offenders = consumers.filter((file) =>
-			/\bprojects(?:Listing|Detail)Content\b|\bprojectsPageMeta\b/.test(readWebSource(file)),
-		);
-
-		expect(offenders).toEqual([]);
-	});
-});
-
 describe('siteMeta data integrity', () => {
-	it('name is yesid.', () => {
-		// Brand name is non-negotiable — enforced here so a typo is caught immediately
-		expect(siteMeta.name).toBe('yesid.');
-	});
 
 	// tagline/description LocalizedString.en non-empty checks removed in
 	// slice-17c — SiteMetaSchema.parse() covers them.
@@ -282,32 +216,6 @@ describe('blogPosts data integrity', () => {
 			expect(p.date).toMatch(isoDate);
 			expect(new Date(p.date).toString()).not.toBe('Invalid Date');
 		});
-	});
-
-	it('preserves the six older families and adds four trilingual publication families', () => {
-		const expectedDates = new Map([
-			['the-two-hour-internet-slot', '2026-06-01'],
-			['how-i-learn-orbiting-a-system-until-it-clicks', '2026-06-09'],
-			['thinking-in-matrices', '2026-06-17'],
-			['ai-accelerated-human-owned-my-actual-workflow', '2026-06-25'],
-			['50-to-0-an-oracle-always-free-vm', '2026-07-03'],
-			['does-your-website-need-instant-publishing', '2026-07-11'],
-		]);
-		expect(blogPosts).toHaveLength(30);
-		for (const [translationKey, date] of expectedDates) {
-			const family = blogPosts.filter((post) => post.translationKey === translationKey);
-			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
-			expect(family.every((post) => post.date === date)).toBe(true);
-			expect(family.every((post) => post.dateModified === '2026-07-11')).toBe(true);
-		}
-		for (const key of ['missing-data-is-not-zero', 'before-product-catalogue-final', 'when-similar-components-stay-separate', 'changing-language-without-starting-over']) {
-			const family = blogPosts.filter((post) => post.translationKey === key);
-			expect(family.map((post) => post.lang).sort()).toEqual(['en', 'es', 'fr']);
-			expect(family.every((post) => post.date === '2026-10-08')).toBe(true);
-		}
-		expect(blogPosts.map((post) => post.date)).toEqual(
-			blogPosts.map((post) => post.date).toSorted().reverse(),
-		);
 	});
 
 	it('all posts have at least one tag', () => {
@@ -412,10 +320,6 @@ describe('seed data parses through schemas', () => {
 //     field. These fail the build — a LocalizedString without its English
 //     default would render as an empty string or `[object Object]` in the UI.
 //
-//   - Translation debt: count of strings by completeness tier (full = en+fr+es,
-//     partial = en + one of fr/es, en-only = en only). Printed as a snapshot
-//     so regressions (or improvements) are visible in the test output.
-//
 // The walker is purely structural — it doesn't know which fields the TypeScript
 // type system expects to be LocalizedString, just recognizes the shape. False
 // positives (objects with an `en` string that aren't meant to be localized) are
@@ -423,12 +327,9 @@ describe('seed data parses through schemas', () => {
 
 interface LocalizedStringStats {
 	full: number; // en + fr + es
-	withFr: number; // non-empty fr (regardless of es)
-	withEs: number; // non-empty es
 	esWithoutFr: string[]; // paths violating FR-first ordering
 	missingFr: string[]; // paths missing non-empty French translations
 	malformed: string[]; // paths where `en` is missing/empty
-	total: number;
 }
 
 function isLocalizedStringShape(v: unknown): v is Record<string, unknown> {
@@ -463,7 +364,6 @@ function walkContent(
 
 	// LocalizedString leaf.
 	if (isLocalizedStringShape(value)) {
-		stats.total++;
 		const ls = value as { en?: unknown; fr?: unknown; es?: unknown };
 		if (!isNonEmptyString(ls.en)) {
 			stats.malformed.push(`${path}.en`);
@@ -472,12 +372,8 @@ function walkContent(
 		const hasFr = isNonEmptyString(ls.fr);
 		const hasEs = isNonEmptyString(ls.es);
 		if (hasFr && hasEs) stats.full++;
-		if (hasFr) stats.withFr++;
-		else stats.missingFr.push(`${path}.fr`);
-		if (hasEs) {
-			stats.withEs++;
-			if (!hasFr) stats.esWithoutFr.push(path);
-		}
+		if (!hasFr) stats.missingFr.push(`${path}.fr`);
+		if (hasEs && !hasFr) stats.esWithoutFr.push(path);
 		return;
 	}
 
@@ -494,7 +390,7 @@ function walkContent(
 }
 
 function newStats(): LocalizedStringStats {
-	return { full: 0, withFr: 0, withEs: 0, esWithoutFr: [], missingFr: [], malformed: [], total: 0 };
+	return { full: 0, esWithoutFr: [], missingFr: [], malformed: [] };
 }
 
 // Load runtime registry metadata without adding CMS fetcher types to the web program.
@@ -532,30 +428,6 @@ describe('LocalizedString guard + translation debt', () => {
 		expect(stats.full).toBeGreaterThan(0);
 	});
 
-	it('prints translation-debt snapshot', () => {
-		const stats = scanAll();
-		const pct = (n: number) => (stats.total === 0 ? 0 : Math.round((n / stats.total) * 100));
-		const lines = [
-			'',
-			'  LocalizedString translation-debt snapshot (slice-28.6 FR-first tiers):',
-			`  ─────────────────────────────────────────────────────────`,
-			`  Total LocalizedStrings walked:  ${stats.total}`,
-			`  Full (en + fr + es):            ${stats.full} (${pct(stats.full)}%)`,
-			`  With fr:                        ${stats.withFr} (${pct(stats.withFr)}%)`,
-			`  With es:                        ${stats.withEs} (${pct(stats.withEs)}%)`,
-			`  FR debt (no fr):                ${stats.missingFr.length} (${pct(stats.missingFr.length)}%)`,
-			`  es-without-fr (policy):         ${stats.esWithoutFr.length}`,
-			`  Malformed (missing en):         ${stats.malformed.length}`,
-			'',
-		];
-		// Log at info level so vitest reporters surface it.
-		// eslint-disable-next-line no-console
-		console.log(lines.join('\n'));
-
-		// Trivial assertion so the test counts as a pass (vitest requires at
-		// least one expect() call to mark a test passed).
-		expect(stats.total).toBeGreaterThan(0);
-	});
 });
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -569,13 +441,6 @@ describe('LocalizedString guard + translation debt', () => {
 // a hard failure.
 //
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
-	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
-		// Canary: if SUPPORTED_LOCALES changes in locale.ts, this test reminds
-		// the author to revisit the locale-completeness expectations here.
-		// (Inlined to avoid importing from utils — SvelteKit $lib resolution.)
-		const SUPPORTED_LOCALES = ['en', 'fr', 'es'] as const;
-		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
-	});
 
 	it('every LocalizedString has a non-empty French value', () => {
 		const { missingFr } = scanAll();

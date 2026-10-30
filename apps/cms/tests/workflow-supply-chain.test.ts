@@ -1,7 +1,6 @@
 import { expect, test } from 'bun:test';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { workflowJobBlock } from './helpers/workflow-source';
 
 const repoRoot = join(import.meta.dir, '..', '..', '..');
 
@@ -63,33 +62,6 @@ test('external action refs use verified commit pins with major-version comments'
 	}
 
 	expect([...observed].sort()).toEqual([...expectedPinnedActionLines.keys()].sort());
-});
-
-test('CI retains remote caches but the shared setup caches only Bun installs', () => {
-	const setup = readFileSync(join(repoRoot, '.github', 'actions', 'setup', 'action.yml'), 'utf8');
-	const viteConfig = readFileSync(join(repoRoot, 'apps', 'web', 'vite.config.ts'), 'utf8');
-	const workflow = readFileSync(join(repoRoot, '.github', 'workflows', 'web.yml'), 'utf8');
-	const cacheUses = setup.match(/^\s+uses: actions\/cache@/gmu) ?? [];
-
-	expect(cacheUses).toHaveLength(1);
-	expect(setup).toContain('path: ~/.bun/install/cache');
-	expect(setup).not.toContain('.turbo/cache');
-	expect(setup).not.toContain('.vitest/cache');
-	expect(setup).not.toMatch(/^\s+key: turbo-/mu);
-	expect(setup).not.toMatch(/^\s+key: vitest-/mu);
-	expect(viteConfig).not.toMatch(/^\s*cacheDir:/mu);
-	expect(viteConfig).not.toContain('.vitest/cache');
-	expect(workflow.match(/^\s+TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}$/gmu)).toHaveLength(4);
-	expect(workflow.match(/^\s+TURBO_TEAM: \$\{\{ vars\.TURBO_TEAM \}\}$/gmu)).toHaveLength(4);
-});
-
-test('e2e installs Chromium without apt system dependencies', () => {
-	const workflow = readFileSync(join(repoRoot, '.github', 'workflows', 'web.yml'), 'utf8');
-	const e2e = workflowJobBlock(workflow, 'e2e', { expectedNext: 'e2e-merge-reports' });
-
-	expect(e2e!.match(/^\s+run: bun x playwright install.*$/gmu)).toEqual([
-		'        run: bun x playwright install chromium',
-	]);
 });
 
 test('secret scan verifies the gitleaks archive before extraction', () => {

@@ -1,6 +1,8 @@
 import { siteLabels } from '../src/lib/content/site-labels';
 import { test, expect } from '@playwright/test';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 // networkidle is banned in this suite (see tests/_support/helpers.ts): against the
 // live preview the contact info-terminal fires a one-shot fetch('/api/weather') +
 // a DOM clock interval, so "network idle" never settles deterministically. Each
@@ -22,7 +24,7 @@ import { test, expect } from '@playwright/test';
 //     role="radio" (bits-ui ToggleGroup), so they're targeted via button.filter-btn.
 //   - ListingFrame renders each sidebar once, inside .listing-filter-column (always
 //     shown from 1024px, behind a toggle below it). Every sidebar/item locator below
-//     is scoped to it so it stays unique AND visible at the desktop-chrome viewport.
+//     is scoped to it so it stays unique AND visible at the desktop viewport.
 
 test.describe('Project listing filters', () => {
   // Desktop sidebar = the one in .listing-filter-column (always shown >=1024px).

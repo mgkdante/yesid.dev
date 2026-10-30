@@ -473,7 +473,7 @@
 
 						<!-- Error summary -->
 						{#if submitted && errorCount() > 0}
-							<div class="rounded border border-[var(--destructive)]/30 bg-[var(--destructive)]/10 px-3 py-2 text-caption text-[var(--destructive)]">
+							<div data-testid="contact-error-summary" class="rounded border border-[var(--destructive)]/30 bg-[var(--destructive)]/10 px-3 py-2 text-caption text-[var(--destructive)]">
 								✗ {resolveLocale(contactPage.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
 							</div>
 						{/if}

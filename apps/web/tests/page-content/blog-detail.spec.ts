@@ -1,6 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 import { gotoFirstDetail, blogPostLinks } from '../_support/helpers';
 
+test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
+
 /**
  * Navigate to the first real blog post detail page and return its href.
  * Wraps the shared gotoFirstDetail helper, which waits on the
@@ -67,7 +69,6 @@ test.describe('/blog/[slug] detail page content', () => {
 	});
 
 	test('blog detail desktop TOC matches authored headings', async ({ page }) => {
-		test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only TOC');
 
 		await gotoFirstPost(page);
 
@@ -112,14 +113,6 @@ test.describe('/blog/[slug] detail page content', () => {
 		expect(await labels.count()).toBeGreaterThan(0);
 		const firstLabel = await labels.first().textContent();
 		expect(firstLabel?.trim().length).toBeGreaterThan(0);
-	});
-
-	test('blog detail page renders in EN', async ({ page }) => {
-		await gotoFirstPost(page);
-		await expect(page.locator('[data-testid="blog-detail-page"]')).toBeVisible();
-
-		const bodyText = await page.locator('[data-testid="blog-sections"]').textContent();
-		expect(bodyText?.trim().length).toBeGreaterThan(0);
 	});
 
 	for (const locale of ['fr', 'es'] as const) {

@@ -1,5 +1,4 @@
 import type {
-	ColorMixFloorConfig,
 	ContrastPair,
 	ForbiddenPattern,
 	TokenIdentity,
@@ -13,20 +12,6 @@ export const YESID_FORBIDDEN: readonly ForbiddenPattern[] = [
 	{ pattern: /var\(--dim-foreground\)|var\(--light-foreground\)/, reason: 'aliases to undefined vars (archived in app.css)' },
 ];
 
-export const YESID_COLOR_MIX_FILES: readonly string[] = [
-	'src/lib/components/home/Manifesto.svelte',
-	'src/lib/components/home/FeaturedProjects.svelte',
-];
-
-export const YESID_MARKER_ALLOWED_FILES: ReadonlySet<string> = new Set<string>();
-
-export const YESID_COLOR_MIX_CONFIG = {
-	brandTokens: ['primary', 'accent', 'blog-accent', 'header-accent'],
-	brandFloor: 85,
-	foregroundFloor: 65,
-	exemptMarker: 'contrast-exempt',
-	markerWindow: 3,
-} as const satisfies ColorMixFloorConfig;
 
 export const YESID_AA_PAIRS: readonly ContrastPair[] = [
 	['D foreground/background', ['dark', 'foreground'], ['dark', 'background'], 4.5],

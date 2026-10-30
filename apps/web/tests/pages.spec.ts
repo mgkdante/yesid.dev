@@ -1,130 +1,77 @@
-// pages.spec.ts — E2E Playwright tests for the 7 public routes + 404 error page.
-//
-// These tests run against the built + previewed app (playwright.config.ts:
-// webServer builds then starts `vite preview` on port 4173; set
-// PLAYWRIGHT_BASE_URL to target a deployed surface instead).
-//
-// No live-CMS dependency (slice-28.4, audit #91 + #121): as of slice-27.2 the
-// adapter is fully static — every route renders from the committed content
-// modules under src/lib/content (regenerated at build time by the
-// export-fallbacks prebuild). The old CMS_LIVE env gate predates that revert
-// and is gone: /about is asserted unconditionally like every other page.
-// No route needs a reachable Directus to pass.
-//
-// Route strategy (all 200 from static content modules):
-//   - /           → data-testid="hero-banner" + non-empty hero-line1
-//   - /services   → nav visible
-//   - /projects   → nav visible
-//   - /blog       → data-testid="blog-listing" (copy lives in content modules)
-//   - /blog/personal → data-testid="blog-listing" (Personal Corner; slice-28.1, audit #29)
-//   - /contact    → data-testid="contact-info-terminal"
-//   - /about      → nav + non-empty <main>
-//   - /tech-stack → permanent locale-aware Services redirect
-//   - unknown     → 404, error page testids visible
+import { expect, test } from '@playwright/test';
 
-import { test, expect } from '@playwright/test';
+import { sitePages } from '../src/lib/content/site-pages';
+import { DEFAULT_LOCALE } from '../src/lib/utils/locale';
+import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 
-// ---------------------------------------------------------------------------
-// Core routes
-// ---------------------------------------------------------------------------
+test.skip(({ viewport }) => viewport!.width < 1024, 'Viewport-independent.');
 
-test('route / (home) renders hero banner', async ({ page }) => {
-	const response = await page.goto('/');
-	expect(response?.status()).toBe(200);
-	// hero-banner testid is always present regardless of content source
-	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
-});
+const localized = (path: string, locale: string) =>
+	locale === DEFAULT_LOCALE ? path : `/${locale}${path === '/' ? '' : path}`;
 
-test('route / (home) renders a non-empty hero headline', async ({ page }) => {
-	// We assert the data chain works (testid present + non-empty content)
-	// rather than specific copy — the content modules own the words, not the
-	// test. Content is baked in at build time, so no skip gate is needed.
-	const response = await page.goto('/');
-	expect(response?.status()).toBe(200);
-	const heroLine1 = page.getByTestId('hero-line1');
-	await expect(heroLine1).toBeVisible();
-	expect((await heroLine1.textContent())?.trim()).toBeTruthy();
-});
+for (const { path } of sitePages) {
+	for (const locale of PUBLISHED_LOCALES) {
+		const url = localized(path, locale);
+		test(`${url} renders one main landmark in its language without console errors`, async ({ page }) => {
+			const errors: string[] = [];
+			page.on('console', (message) => {
+				if (message.type() === 'error') errors.push(message.text());
+			});
+			page.on('pageerror', (error) => errors.push(error.message));
 
-test('route /services renders without crash', async ({ page }) => {
-	const response = await page.goto('/services');
-	expect(response?.status()).toBe(200);
-	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
-});
-
-test('route /projects renders without crash', async ({ page }) => {
-	const response = await page.goto('/projects');
-	expect(response?.status()).toBe(200);
-	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
-});
-
-test('route /blog renders listing container', async ({ page }) => {
-	const response = await page.goto('/blog');
-	expect(response?.status()).toBe(200);
-	// Asserts the blog listing component mounted. The page heading copy comes
-	// from the committed content module (blog-page.ts: heading.en —
-	// "Dispatches" today, anything tomorrow after the next export-fallbacks
-	// run) and is not the engineering concern. Structural testid only.
-	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
-});
-
-test('route /blog/personal renders listing container', async ({ page }) => {
-	// slice-28.1 (audit #29): /blog/personal was the only public page route
-	// missing from this spec. Same structural assertion as /blog — the
-	// Personal Corner listing reuses BlogListingPage (data-testid="blog-listing").
-	const response = await page.goto('/blog/personal');
-	expect(response?.status()).toBe(200);
-	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
-});
-
-test('route /contact renders contact terminals', async ({ page }) => {
-	// slice-19 Phase 1 Task 1: ContactPage renders the contact-info-terminal
-	// snippet inside BOTH a .desktop-terminals (resizable split) and a
-	// .mobile-terminals (stacked) container, with display:none toggled at the
-	// 1024px breakpoint. The .first() selector picks the .desktop-terminals
-	// instance, which is hidden below 1024px. Gate to desktop-chrome only;
-	// mobile coverage of contact-info-terminal visibility can be added in a
-	// later mobile-flow spec using a layout-aware selector.
-	test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only assertion');
-	const response = await page.goto('/contact');
-	expect(response?.status()).toBe(200);
-	// data-testid="contact-info-terminal" is rendered by ContactPage regardless
-	// of whether it uses the static fallback or CMS-sourced content
-	// (there are two instances — info + form; use .first() to avoid strict-mode error)
-	await expect(page.locator('[data-testid="contact-info-terminal"]').first()).toBeVisible();
-});
-
-test('route /about returns 200 and renders nav + main content', async ({ page }) => {
-	const response = await page.goto('/about');
-	expect(response?.status()).toBe(200);
-	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
-	// Structural rendering check — about page chrome (nav + a non-empty <main>)
-	// proves the content-module routing worked without coupling to specific copy.
-	await expect(page.locator('main')).toBeVisible();
-	expect((await page.locator('main').textContent())?.trim().length ?? 0).toBeGreaterThan(0);
-});
+			const response = await page.goto(url, { waitUntil: 'load' });
+			expect(response?.status()).toBe(200);
+			await expect(page.locator('html')).toHaveAttribute('lang', locale);
+			await expect(page.getByRole('main')).toHaveCount(1);
+			await expect(page.getByTestId('footer')).toBeVisible();
+			expect(errors).toEqual([]);
+		});
+	}
+}
 
 for (const [path, location] of [
 	['/tech-stack', '/services'],
 	['/fr/tech-stack', '/fr/services'],
 ]) {
-	test(`route ${path} permanently redirects to ${location}`, async ({ request }) => {
+	test(`${path} permanently redirects to ${location}`, async ({ request }) => {
 		const response = await request.get(path, { maxRedirects: 0 });
 		expect(response.status()).toBe(301);
 		expect(response.headers()['location']).toBe(location);
 	});
 }
 
-// ---------------------------------------------------------------------------
-// 404 route — unknown path activates +error.svelte
-// ---------------------------------------------------------------------------
+test('never-published locale prefix /de/* returns 404', async ({ page }) => {
+  const response = await page.goto('/de/about');
+  expect(response?.status()).toBe(404);
+  // Error page testids are always present.
+  await expect(page.getByTestId('error-label')).toBeVisible();
+});
 
-test('unknown route renders the 404 error page', async ({ page }) => {
-	const response = await page.goto('/this-route-does-not-exist-at-all');
-	// SvelteKit returns 404 for unknown routes
-	expect(response?.status()).toBe(404);
-	// +error.svelte renders structural testids regardless of copy. Asserting
-	// on testids rather than the heading text lets the brand copy evolve
-	// without breaking the test.
-	await expect(page.locator('[data-testid="error-label"]')).toBeVisible();
+test('unknown route under published prefix /fr/nonexistent returns 404', async ({ page }) => {
+  const response = await page.goto('/fr/nonexistent-route-at-all');
+  expect(response?.status()).toBe(404);
+  await expect(page.getByTestId('error-label')).toBeVisible();
+});
+
+test('404 page respects EN context (unprefixed /nonexistent)', async ({ page }) => {
+  const response = await page.goto('/nonexistent-route-xyz');
+  expect(response?.status()).toBe(404);
+  // html lang should be 'en' (unprefixed path)
+  const lang = await page.locator('html').evaluate((el) => el.getAttribute('lang'));
+  expect(lang).toBe('en');
+  // Error page canonical should be EN
+  const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+  expect(canonical).toContain('https://yesid.dev');
+  expect(canonical).not.toContain('/fr');
+});
+
+test('404 page respects FR context (/fr/nonexistent)', async ({ page }) => {
+  const response = await page.goto('/fr/nonexistent-route-xyz');
+  expect(response?.status()).toBe(404);
+  const lang = await page.locator('html').evaluate((el) => el.getAttribute('lang'));
+  expect(lang).toBe('fr');
+  // 404 pages emit a base canonical (they are noindex; the lang context above is
+  // the meaningful FR signal). Just assert a well-formed canonical is present.
+  const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+  expect(canonical).toContain('https://yesid.dev');
 });

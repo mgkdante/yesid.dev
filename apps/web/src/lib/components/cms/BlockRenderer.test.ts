@@ -81,9 +81,8 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 			},
 		]);
 		const { container } = render(BlockRenderer, { doc });
-		expect(container.querySelector('code')?.textContent).toBe('bun test');
 		expect(container.querySelector('b')?.textContent).toBe('green');
-		expect(container.querySelector('p')?.innerHTML).toContain('<code>bun test</code>');
+		expect(container.querySelector('p code')?.textContent).toBe('bun test');
 	});
 
 	it('renders unordered nestedlist', () => {

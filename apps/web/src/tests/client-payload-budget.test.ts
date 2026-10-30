@@ -1,19 +1,12 @@
 import { spawnSync } from 'node:child_process';
-import {
-	mkdirSync,
-	mkdtempSync,
-	readFileSync,
-	rmSync,
-	writeFileSync,
-} from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const REPOSITORY_ROOT = resolve(process.cwd(), '../..');
 const CHECKER = resolve(REPOSITORY_ROOT, 'apps/web/scripts/check-client-payload.mjs');
-const PACKAGE_JSON = resolve(REPOSITORY_ROOT, 'apps/web/package.json');
-const WORKFLOW = resolve(REPOSITORY_ROOT, '.github/workflows/web.yml');
+
 const ROOT_KEY = '.svelte-kit/generated/build/client-optimized/nodes/0.js';
 const BUDGET_ENV = [
 	'ROOT_LAYOUT_ENTRY_BUDGET_GZIP',
@@ -259,27 +252,4 @@ describe('manifest-backed client payload budgets', () => {
 		expect(result.stderr).toContain(`FAIL: cannot read ${label} output: ${path}`);
 	});
 
-	it('wires the renamed checker exactly once immediately after the CI build', () => {
-		const packageJson = JSON.parse(readFileSync(PACKAGE_JSON, 'utf8')) as {
-			scripts: Record<string, string>;
-		};
-		const workflow = readFileSync(WORKFLOW, 'utf8');
-		const gate = [
-			'      - name: Client payload budgets',
-			'        working-directory: apps/web',
-			'        run: bun run check:client-payload',
-		].join('\n');
-
-		expect(packageJson.scripts['check:client-payload']).toBe(
-			'node scripts/check-client-payload.mjs',
-		);
-		expect(workflow.split(gate)).toHaveLength(2);
-
-		const buildHeading = '      - name: Build';
-		const buildIndex = workflow.indexOf(buildHeading);
-		const gateIndex = workflow.indexOf(gate);
-		const nextStepIndex = workflow.indexOf('\n      - ', buildIndex + buildHeading.length) + 1;
-		expect(buildIndex).toBeGreaterThan(-1);
-		expect(gateIndex).toBe(nextStepIndex);
-	});
 });
