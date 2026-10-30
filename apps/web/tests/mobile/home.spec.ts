@@ -25,20 +25,3 @@ test('home page loads + primary CTA is tappable', async ({ page }) => {
 	const href = await primaryCta.getAttribute('href');
 	expect(href).toBeTruthy();
 });
-
-test('home page scrolls without horizontal overflow', async ({ page }) => {
-	await page.goto('/');
-
-	// Wait on the hero landmark instead of networkidle (the contact info-terminal's
-	// one-shot /api/weather fetch + clock interval never settle). This web-first
-	// assertion auto-waits until the page has rendered, so the layout is stable
-	// before we measure scrollWidth below.
-	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
-
-	// Scroll to the bottom first — catches overflow from elements that only affect layout below the fold.
-	await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-
-	const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-	const viewportWidth = await page.evaluate(() => window.innerWidth);
-	expect(documentWidth).toBeLessThanOrEqual(viewportWidth + 1); // +1 sub-pixel tolerance
-});

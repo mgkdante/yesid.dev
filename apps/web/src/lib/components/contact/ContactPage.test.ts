@@ -239,9 +239,8 @@ describe('ContactPage', () => {
 				},
 			},
 		});
-		const mastodonLinks = screen.getAllByTestId('contact-social-mastodon');
+		const mastodonLinks = screen.getAllByRole('link', { name: 'mastodon.social/@mgkdante' });
 		expect(mastodonLinks.length).toBeGreaterThanOrEqual(1);
-		expect(mastodonLinks[0].getAttribute('aria-label')).toBe('Mastodon');
 		expect(mastodonLinks[0].textContent).toContain('mastodon.social/@mgkdante');
 	});
 

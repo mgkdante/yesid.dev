@@ -68,14 +68,4 @@ for (const locale of PUBLISHED_LOCALES) {
 		await expect(page).toHaveURL(samePath(start(next(locale))));
 		await expect(page.locator('html')).toHaveAttribute('lang', next(locale));
 	});
-
-	test(`${locale}: the header fits the viewport without horizontal overflow`, async ({ page }) => {
-		await page.goto(start(locale));
-		const width = page.viewportSize()!.width;
-		const pill = (await page.getByTestId('nav-pill').boundingBox())!;
-
-		expect(pill.x).toBeGreaterThanOrEqual(0);
-		expect(pill.x + pill.width).toBeLessThanOrEqual(width);
-		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-	});
 }

@@ -89,7 +89,7 @@
 
 	.entry-action,
 	.entry-route {
-		min-height: 2.5rem;
+		min-height: var(--size-tap-min);
 		border: 1px solid color-mix(in srgb, var(--primary) 34%, transparent);
 		background: var(--card);
 		color: var(--foreground);

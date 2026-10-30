@@ -56,7 +56,6 @@
 				class="tap-press interest-strip relative flex h-full flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
 				class:strip-active={activeIndex === i}
 				onclick={() => handleTap(i)}
-				aria-label={interestLabel}
 				aria-pressed={activeIndex === i}
 			>
 
@@ -92,7 +91,7 @@
 				<!-- Label: theme-aware ink + halo (see .strip-label below) -->
 				<div class="relative z-10 flex flex-col items-center justify-center">
 					<span class="strip-label font-mono text-caption font-semibold tracking-[3px]">
-						{interestLabel.toUpperCase()}
+						{interestLabel}
 					</span>
 				</div>
 
@@ -126,6 +125,7 @@
 		background: color-mix(in srgb, var(--background) 40%, transparent);
 	}
 	.strip-label {
+		text-transform: uppercase;
 		color: var(--foreground);
 		text-shadow: 0 1px 4px color-mix(in srgb, var(--background) 80%, transparent);
 	}

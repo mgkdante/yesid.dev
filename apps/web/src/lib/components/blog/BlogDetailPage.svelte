@@ -402,7 +402,7 @@
     font-size: var(--text-detail-kicker);
     letter-spacing: 0;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--blog-accent, var(--primary)) 35%, transparent);
+    color: var(--muted-foreground);
   }
 
   .meta-list dd {

@@ -128,7 +128,9 @@
 	}
 
 	.teaser-more {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		min-block-size: var(--size-tap-min);
 		margin-top: 1.25rem;
 		padding: 0.5rem 0.25rem;
 		border-radius: var(--radius-md);

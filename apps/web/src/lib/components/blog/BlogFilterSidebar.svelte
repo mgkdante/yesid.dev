@@ -68,7 +68,7 @@
 	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
 	<FilterSection>
 	<button
-		class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
+		class="flex min-h-11 w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
 		onclick={() => (dateOpen.value = !dateOpen.value)}
 	>
 		{resolveLocale(labels.dateRange, locale)}
@@ -82,7 +82,7 @@
 					<input
 						type="date"
 						bind:value={dateFrom}
-						class="mt-0.5 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
+						class="mt-0.5 min-h-11 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					/>
 				</label>
 				<label class="text-sm text-[var(--muted-foreground)]">
@@ -90,7 +90,7 @@
 					<input
 						type="date"
 						bind:value={dateTo}
-						class="mt-0.5 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
+						class="mt-0.5 min-h-11 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					/>
 				</label>
 			</div>
@@ -118,7 +118,7 @@
 		<FilterSection>
 			<a
 				href={localizeHref(cornerLink.href, locale)}
-				class="flex w-full items-center gap-1.5 rounded border px-2 py-1.5 text-sm font-semibold no-underline transition-colors"
+				class="flex min-h-11 w-full items-center gap-1.5 rounded border px-2 py-1.5 text-sm font-semibold no-underline transition-colors"
 				style="border-color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'}; color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
 			>
 				{cornerLink.label}

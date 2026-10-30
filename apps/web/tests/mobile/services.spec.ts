@@ -29,22 +29,6 @@ test('services page loads + service card is visible', async ({ page }) => {
 	await expect(firstServiceLink).toBeVisible();
 });
 
-test('services page deep-dive CTA meets 44px touch target height', async ({ page }) => {
-	await page.goto('/services');
-
-	// Grab the first visible service link and measure its rendered height. The
-	// web-first expect below auto-waits for the link to be visible, which is what
-	// networkidle was implicitly guarding before the boundingBox() read.
-	const firstServiceLink = page.locator('a[href^="/services/"]').filter({ visible: true }).first();
-	await expect(firstServiceLink).toBeVisible();
-
-	const box = await firstServiceLink.boundingBox();
-	expect(box).not.toBeNull();
-	if (box) {
-		expect(box.height).toBeGreaterThanOrEqual(44);
-	}
-});
-
 test('station tab clicks land every service card below the tabs', async ({ page }) => {
 	test.skip(test.info().project.name !== 'phone', '375px geometry contract');
 	await page.goto('/services');

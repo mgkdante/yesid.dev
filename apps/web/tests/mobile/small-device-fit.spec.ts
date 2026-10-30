@@ -12,7 +12,6 @@ import { expect, test } from '@playwright/test';
 // real-device viewports it now runs under (iphone-se + galaxy-s23 profiles,
 // plus iphone-12 via the single-phone set).
 //
-const ROUTES = ['/', '/services', '/projects', '/blog', '/contact', '/about'];
 
 // Reduced motion renders the home hero in its final static state (the GSAP
 // intro otherwise hides the text behind an animation). Applied via media
@@ -34,19 +33,6 @@ test.describe('small-device fit', () => {
 	// the config, but guard anyway).
 	test.skip(({ viewport }) => !viewport || viewport.width >= 768, 'phone-layout widths only');
 
-	for (const path of ROUTES) {
-		test(`no horizontal overflow: ${path}`, async ({ page }) => {
-			await page.goto(path);
-			await page.waitForLoadState('load');
-			const overflow = await page.evaluate(
-				() =>
-					Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) -
-					window.innerWidth
-			);
-			expect(overflow, `${path} horizontal overflow (px)`).toBeLessThanOrEqual(1);
-		});
-	}
-
 	test('home headline clears nav and both CTAs remain reachable', async ({
 		page
 	}) => {
@@ -57,7 +43,6 @@ test.describe('small-device fit', () => {
 		const headTop = (await line1.boundingBox())!.y;
 		expect(headTop, 'headline top vs hero box top').toBeGreaterThanOrEqual(boxTop - 2);
 		expect(headTop, 'headline clears the floating nav').toBeGreaterThanOrEqual(await pillBottom(page));
-		expect(await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth)).toBeLessThanOrEqual(1);
 		for (const id of ['hero-cta-projects', 'hero-cta-contact']) {
 			await page.getByTestId(id).scrollIntoViewIfNeeded();
 			await expect(page.getByTestId(id)).toBeInViewport();

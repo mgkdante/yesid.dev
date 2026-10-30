@@ -165,7 +165,9 @@
 	}
 
 	.projects-all {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		min-block-size: var(--size-tap-min);
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		color: var(--primary);

@@ -156,6 +156,7 @@
 
 		{#key page.url.pathname}
 			<main
+				id="main"
 				class="flex-1 {isFullBleed ? '' : 'pt-nav-clear'}"
 			>{@render children()}</main>
 		{/key}
