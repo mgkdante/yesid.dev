@@ -20,12 +20,10 @@ function buildEnv(path: string): string[] {
 }
 
 describe('preview credential repository boundary', () => {
-	it('keys Turbo builds by target, branch, and the distinct build credentials', () => {
+	it('keys Turbo builds by target and the production build credential', () => {
 		const env = buildEnv('turbo.json');
 		expect(env).toContain('VERCEL_ENV');
-		expect(env).toContain('VERCEL_GIT_COMMIT_REF');
 		expect(env).toContain('DIRECTUS_BUILD_TOKEN');
-		expect(env).toContain('DIRECTUS_DEV_BUILD_TOKEN');
 		expect(env).not.toContain('DIRECTUS_READ_TOKEN');
 		expect(env).not.toContain('WEB3FORMS_ACCESS_KEY');
 		expect(env).not.toContain('VITE_WEB3FORMS_ACCESS_KEY');
@@ -69,8 +67,6 @@ describe('preview credential repository boundary', () => {
 		expect(examples[0]).toMatch(/^DIRECTUS_ADMIN_EMAIL=$/mu);
 		expect(examples[0]).toMatch(/^DIRECTUS_ADMIN_PASSWORD=$/mu);
 		expect(examples[1]).toContain('DIRECTUS_ADMIN_TOKEN=');
-		expect(examples[1]).toContain('DIRECTUS_DEV_BUILD_TOKEN=');
-		expect(examples[1]).toContain('NEON_API_KEY=');
 		expect(examples[1]).toContain('STORAGE_S3_KEY=');
 		expect(examples[1]).toContain('STORAGE_S3_SECRET=');
 		expect(examples[2]).toMatch(/^OPENWEATHER_API_KEY=$/mu);

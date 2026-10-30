@@ -44,17 +44,12 @@ describe('offline export fixture', () => {
 		} finally { rmSync(emitDir, { recursive: true, force: true }); }
 	}, 30_000);
 
-	it('refuses production and develop before LIVE, argument parsing or authentication', async () => {
-		for (const env of [
-			{ VERCEL_ENV: 'production' },
-			{ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' },
-		]) {
-			for (const overrides of [{}, { EXPORT_FALLBACKS_LIVE: '1' }]) {
-				const result = await fixtureCli(['--unknown'], { ...env, ...overrides });
-				expect(result.exitCode).toBe(1);
-				expect(result.output).toContain('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture');
-				expect(result.output).not.toMatch(/auth failed|fetch:|Unknown option/);
-			}
+	it('refuses production before LIVE, argument parsing or authentication', async () => {
+		for (const overrides of [{}, { EXPORT_FALLBACKS_LIVE: '1' }]) {
+			const result = await fixtureCli(['--unknown'], { VERCEL_ENV: 'production', ...overrides });
+			expect(result.exitCode).toBe(1);
+			expect(result.output).toContain('Trusted CMS builds refuse EXPORT_FALLBACKS_SOURCE=fixture');
+			expect(result.output).not.toMatch(/auth failed|fetch:|Unknown option/);
 		}
 	});
 });
@@ -115,17 +110,13 @@ describe('content source and fallback policy matrix', () => {
 		['production', { VERCEL_ENV: 'production' }, 'live', 'fail'],
 		['production with LIVE flag', { VERCEL_ENV: 'production', EXPORT_FALLBACKS_LIVE: '1' }, 'live', 'fail'],
 		['production explicit live', { VERCEL_ENV: 'production', EXPORT_FALLBACKS_SOURCE: 'live' }, 'live', 'fail'],
-		['develop preview', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' }, 'live', 'fail'],
-		['develop preview explicit live', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop', EXPORT_FALLBACKS_SOURCE: 'live' }, 'live', 'fail'],
+		['develop preview', { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' }, 'fixture', 'soft'],
 	] as const)('%s', (_label, env, source, policy) => {
 		expect(resolveContentSource(env)).toBe(source);
 		expect(resolveFallbackPolicy(env)).toBe(policy);
 	});
-	it.each([
-		{ VERCEL_ENV: 'production' },
-		{ VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'develop' },
-	])('refuses fixture on trusted target %j', env => {
-		expect(() => resolveContentSource({ ...env, EXPORT_FALLBACKS_SOURCE: 'fixture' })).toThrow('refuse');
+	it('refuses fixture on production', () => {
+		expect(() => resolveContentSource({ VERCEL_ENV: 'production', EXPORT_FALLBACKS_SOURCE: 'fixture' })).toThrow('refuse');
 	});
 	it('fails when no content source exists and forbids cache on trusted targets', () => {
 		for (const policy of ['soft', 'fail'] as const) {

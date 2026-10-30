@@ -8,16 +8,9 @@ import { createDirectus, rest, staticToken } from '@directus/sdk';
 import type { DirectusClient, RestClient, StaticTokenClient } from '@directus/sdk';
 import { createQueuedFetch } from './queued-fetch';
 
-/**
- * Default Directus URL for ops scripts. Reads `PUBLIC_DIRECTUS_URL` from env
- * (matches apps/web's runtime convention); falls back to the dev domain
- * (slice-18m P6: defaults flipped from prod → dev now that cms.dev.yesid.dev
- * mirrors prod via Neon branch reset, so local + Vercel preview builds default
- * to dev unless `PUBLIC_DIRECTUS_URL` is set to prod explicitly in env).
- * Scripts can override by passing an explicit URL to createClient().
- */
+/** Directus URL for ops scripts: `PUBLIC_DIRECTUS_URL`, else production. */
 export function defaultDirectusUrl(): string {
-	return process.env.PUBLIC_DIRECTUS_URL ?? 'https://cms.dev.yesid.dev';
+	return process.env.PUBLIC_DIRECTUS_URL ?? 'https://cms.yesid.dev';
 }
 
 /** The only hostname mutating ops scripts may target. */

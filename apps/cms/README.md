@@ -6,10 +6,10 @@ operator tooling. The public site serves generated
 SvelteKit content and mirrored static media without per-request CMS reads.
 Directus serves editorial/source media; it is not the public site's media CDN.
 
-Production and development are separate Railway services at
-`https://cms.yesid.dev` and `https://cms.dev.yesid.dev`. Each uses its own Neon
-Postgres target and credentials. Cloudflare R2 is attached through Directus's
-built-in `s3` storage driver.
+Production runs as one Railway service at `https://cms.yesid.dev`, backed by
+Neon Postgres. Cloudflare R2 is attached through Directus's built-in `s3`
+storage driver. There is no hosted development CMS: Vercel previews of pull
+requests to `main` build from the shared fixture and serve as staging.
 
 ## Architecture and ownership
 
@@ -20,7 +20,7 @@ built-in `s3` storage driver.
 | [`fixtures/`](fixtures/) | Retained asset inventories, preset declarations, site labels, and positioning inputs |
 | [`scripts/lib/fetchers/`](scripts/lib/fetchers/) | Read-side adapters from Directus rows to product content interfaces |
 | [`scripts/lib/emitters/`](scripts/lib/emitters/) | The single registry and formatter for generated content modules |
-| [`scripts/`](scripts/) | Export, audit, migration, reconciliation, and recovery entry points |
+| [`scripts/`](scripts/) | Export, audit, migration, and reconciliation entry points |
 | [`tests/`](tests/) | Offline schema, fixture, boundary, and dry-run contracts |
 | [`../web/src/lib/content/`](../web/src/lib/content/) | Generated modules consumed by SvelteKit; never edit them by hand |
 | [`../../packages/shared/`](../../packages/shared/) | Shared content schemas and the asset-registry interface |
@@ -45,8 +45,8 @@ bun run dev
 ```
 
 To run Directus locally, create the ignored environment file from the public
-schema, supply a dedicated local or development database and the required
-values, then build the repository image:
+schema, supply a dedicated local database and the required values, then build
+the repository image:
 
 ```bash
 cp apps/cms/.env.example apps/cms/.env
@@ -68,14 +68,14 @@ Directus or shared fixture -> export-fallbacks.ts -> 20 ignored typed modules ->
 ```
 
 Web dev, test, check and build generate ignored content modules from the shared
-fixture by default, without credentials or network. Trusted Vercel targets use
+fixture by default, without credentials or network. Only Vercel production uses
 live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
 Refresh the fixture from a live cache with
 `bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 
 The exporter validates the complete registry before emitting. Every live export
-also validates legal truths and explicit SEO description lengths. Trusted Vercel
-fetch failures fail the build. Explicit local live exports may fall back to the
+also validates legal truths and explicit SEO description lengths. Vercel
+production fetch failures fail the build. Explicit local live exports may fall back to the
 last live cache; missing live content and cache fails the export.
 
 CMS projects export only when published; draft is not public WIP. Required
@@ -91,7 +91,7 @@ fallback, not visitor content storage; optional GitHub README reads occur at
 build time. Vite development alone may fall back to CMS assets.
 
 Publishing is a manual action. After editing, an operator runs the Directus
-**Publish site** flow, which requests one Vercel build of that environment's
+**Publish site** flow, which requests one Vercel production build of the
 published content. Edits never rebuild the site by themselves. Committed image
 mirrors change only through a reviewed source release, using
 `scripts/mirror-asset.ts`. Step-by-step operator procedures are maintained
@@ -150,7 +150,6 @@ workflow lanes, and it stays out of the shared dump by design.
 
 ## Recovery
 
-- DEV recovery: `refresh-dev-from-prod.sh` resets Neon from PROD and syncs R2.
 - PROD recovery: use Neon instant restore within the project history window.
 - Schema and configuration recovery: use guarded `sync-push`.
 
@@ -174,21 +173,18 @@ environment as configuration. `fixtures/brand/presets.json` owns the four
 named transform declarations, also recorded in
 `directus/collections/settings.json` as `storage_asset_presets`.
 
-The current OpenWeather setup uses one existing key, independently scoped to `develop`
-and Production; this is target scoping, not a claim that a second credential exists.
+The OpenWeather key is scoped to Vercel Production only.
 
 ## Environment contract
 
 | Target | CMS origin | Build credential | Export rule |
 |---|---|---|---|
 | Vercel Production | `https://cms.yesid.dev` | `DIRECTUS_BUILD_TOKEN` | `EXPORT_FALLBACKS_LIVE=1`; live or fail |
-| `develop` preview | `https://cms.dev.yesid.dev` | `DIRECTUS_DEV_BUILD_TOKEN` | `EXPORT_FALLBACKS_LIVE=1`; live or fail |
-| Generic preview | none required | none | Generate from the shared fixture |
+| Vercel Preview (staging) | none required | none | Generate from the shared fixture |
 | Local | none by default | none by default | Fixture; explicit `EXPORT_FALLBACKS_SOURCE=live` permits live/cache export |
 
-Production and development credentials must be distinct and bound only to
-their matching target. Generic previews receive neither build credential nor
-the live-export flag. Verify target metadata without printing values after any
+The build credential is bound only to Vercel Production. Previews receive
+neither the build credential nor the live-export flag. Verify target metadata without printing values after any
 credential change.
 
 ## Public contracts

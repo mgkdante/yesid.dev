@@ -43,21 +43,6 @@
 			]
 		},
 		{
-			"source": "/(.*)",
-			"has": [
-				{
-					"type": "host",
-					"value": "dev\\.yesid\\.dev"
-				}
-			],
-			"headers": [
-				{
-					"key": "X-Robots-Tag",
-					"value": "noindex, nofollow, noarchive"
-				}
-			]
-		},
-		{
 			"source": "/og/(.*)",
 			"headers": [
 				{

@@ -12,7 +12,7 @@ describe('explicit CMS asset mirror release', () => {
 		const path = join(root, 'sample.svg');
 		const digest = createHash('sha256').update(bytes).digest('hex');
 		const fetcher = async () => new Response(bytes, { headers: { 'content-type': 'image/svg+xml' } });
-		const options = { directusUrl: 'https://cms.dev.yesid.dev', token: 'fixture-token', repoRoot: root, sourceRoot: '.', legacyPath: 'sample.svg', assets: [{ legacyPath: 'sample.svg' }], idMap: { 'sample.svg': '12345678-1234-1234-1234-123456789abc' } };
+		const options = { directusUrl: 'https://cms.yesid.dev', token: 'fixture-token', repoRoot: root, sourceRoot: '.', legacyPath: 'sample.svg', assets: [{ legacyPath: 'sample.svg' }], idMap: { 'sample.svg': '12345678-1234-1234-1234-123456789abc' } };
 		try {
 			await writeFile(path, 'last approved bytes');
 			const plan = await mirrorAsset(options, fetcher);

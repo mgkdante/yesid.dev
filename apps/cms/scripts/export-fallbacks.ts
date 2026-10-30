@@ -1,10 +1,9 @@
 #!/usr/bin/env bun
 /**
  * Generate ephemeral runtime modules before web dev, test, check and build.
- * Local/CI/untrusted previews default to the shared fixture without credentials or network.
- * Trusted Vercel targets always require live content and refuse fixture mode.
+ * Local, CI and every Vercel preview use the shared fixture without credentials or network.
+ * Vercel production always requires live content and refuses fixture mode.
  * EXPORT_FALLBACKS_SOURCE=live selects live export with local cache fallback.
- * EXPORT_FALLBACKS_LIVE remains the trusted-target operator flag.
  * Missing live content and cache fails the export.
  */
 
@@ -173,13 +172,8 @@ export function buildMirroredMediaAssets(): Readonly<Record<string, string>> {
 	);
 }
 
-const LIVE_PREVIEW_BRANCH = 'develop';
-
 function isTrustedVercelExportTarget(env: Env): boolean {
-	return (
-		env.VERCEL_ENV === 'production' ||
-		(env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF === LIVE_PREVIEW_BRANCH)
-	);
+	return env.VERCEL_ENV === 'production';
 }
 
 export function resolveContentSource(env: Env = process.env): 'live' | 'fixture' {
@@ -538,8 +532,7 @@ async function main(): Promise<void> {
 	// Token resolution: lenient locally, strict on Vercel (live-or-die policy).
 	// On Vercel a missing token is an operator error: fail loud so the build
 	// surfaces the problem instead of shipping stale content silently.
-	// Production uses DIRECTUS_BUILD_TOKEN against cms.yesid.dev. Only the
-	// develop Preview uses DIRECTUS_DEV_BUILD_TOKEN against cms.dev.yesid.dev.
+	// Production uses DIRECTUS_BUILD_TOKEN against cms.yesid.dev.
 	// Default fixture exports return before authentication.
 	let token = '';
 	if (!dryRun) {
@@ -550,7 +543,7 @@ async function main(): Promise<void> {
 				log.error(
 					`BUILD FAILED (VERCEL_ENV=${process.env.VERCEL_ENV ?? 'unset'}): token resolution failed: ` +
 						`${(authErr as Error).message}. Fallbacks are forbidden on ` +
-						'this trusted Vercel target. Configure only its target-specific Build Bot token.',
+						'Vercel production. Configure DIRECTUS_BUILD_TOKEN.',
 				);
 				process.exit(1);
 			}

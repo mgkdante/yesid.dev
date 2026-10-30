@@ -53,8 +53,9 @@ bun run build
 ```
 
 Web dev, test, check and build generate ignored content modules from the shared
-fixture by default, without credentials or network. Trusted Vercel targets use
-live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
+fixture by default, without credentials or network. Only Vercel production uses
+live content; Vercel previews of PRs to `main` are staging and use the fixture.
+Local operators select live content with `EXPORT_FALLBACKS_SOURCE=live`.
 Refresh the fixture from a live cache with
 `bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.
 

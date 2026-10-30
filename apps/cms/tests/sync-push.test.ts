@@ -6,7 +6,7 @@ import {
 } from '../scripts/sync-push';
 
 describe('sync-push guard', () => {
-	const DEV_ENV = { DIRECTUS_URL: 'https://cms.dev.yesid.dev' };
+	const LOCAL_ENV = { DIRECTUS_URL: 'http://localhost:8055' };
 	const STAGING_ENV = { DIRECTUS_URL: 'https://staging.example.test' };
 	const buildStaging = (args: readonly string[]) =>
 		buildDirectusSyncPushArgs(args, STAGING_ENV);
@@ -19,7 +19,7 @@ describe('sync-push guard', () => {
 		}
 	});
 
-	it('guards every production CLI override form against a stale dev env', () => {
+	it('guards every production CLI override form against a stale local env', () => {
 		for (const args of [
 			['--directus-url', 'https://cms.yesid.dev'],
 			['--directus-url=https://cms.yesid.dev/'],
@@ -27,14 +27,14 @@ describe('sync-push guard', () => {
 			['-uhttps://cms.yesid.dev/'],
 			['-duhttps://cms.yesid.dev/'],
 			['-du', 'https://cms.yesid.dev/'],
-			['-uhttps://cms.dev.yesid.dev', '-duhttps://cms.yesid.dev'],
+			['-uhttp://localhost:8055', '-duhttps://cms.yesid.dev'],
 			['-uhttps://CMS.YESID.DEV:443'],
 			['-uhttps://cms.yesid.dev./'],
 			['-uhttps://cms.yesid.dev/api'],
 			['-uhttp://cms.yesid.dev'],
 		]) {
 			expect(() =>
-				buildDirectusSyncPushArgs([...args, '--only-collections', 'settings'], DEV_ENV),
+				buildDirectusSyncPushArgs([...args, '--only-collections', 'settings'], LOCAL_ENV),
 			).toThrow(/Refusing production sync:push/);
 		}
 	});

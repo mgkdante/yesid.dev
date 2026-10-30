@@ -52,8 +52,8 @@ describe('production deferred asset-registry grants preflight', () => {
 		['policy-only push', ['--only-collections', 'policies'], {}],
 		['last compact selector selecting policies', ['-oflows,operations', '-dfopolicies'], {}],
 		['last exclusion retaining policies', ['-xpolicies,permissions,settings', '-xsettings'], {}],
-		['production CLI override of a dev environment', ['-uhttps://CMS.YESID.DEV.:443/', '-opolicies'], {
-			DIRECTUS_URL: 'https://cms.dev.yesid.dev',
+		['production CLI override of a local environment', ['-uhttps://CMS.YESID.DEV.:443/', '-opolicies'], {
+			DIRECTUS_URL: 'http://localhost:8055',
 		}],
 		['permissions push with both acknowledgements', ['--only-collections', 'permissions'], {
 			DIRECTUS_SYNC_INCLUDE_PERMISSIONS: '1',
@@ -72,8 +72,8 @@ describe('production deferred asset-registry grants preflight', () => {
 		[['--only-collections', 'flows,operations'], {}],
 		[['-opolicies', '-oflows,operations'], {}],
 		[['--exclude-collections', 'policies,permissions,settings'], {}],
-		[['--only-collections', 'policies'], { DIRECTUS_URL: 'https://cms.dev.yesid.dev' }],
-	] as const)('preserves scoped or development push %j without reaching the network', (args, env) => {
+		[['--only-collections', 'policies'], { DIRECTUS_URL: 'http://localhost:8055' }],
+	] as const)('preserves scoped or local push %j without reaching the network', (args, env) => {
 		const result = runOfflinePush([...args], env);
 		expect(result.exitCode).toBe(0);
 		expect(result.stderr).toBe('');
