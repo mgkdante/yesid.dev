@@ -53,7 +53,7 @@ describe('site-labels transform', () => {
 		});
 		expect(out.navChrome.shared.openMenuAria).toEqual({ en: 'Open menu', fr: 'Ouvrir le menu' });
 		expect(out.navChrome.shared.skipToContentLabel).toEqual({
-			en: 'Skip to content', fr: 'Aller au contenu', es: 'Saltar al contenido',
+			en: seeds.nav_chrome_shared_skip_to_content_label, fr: frSeeds.nav_chrome_shared_skip_to_content_label, es: esSeeds.nav_chrome_shared_skip_to_content_label,
 		});
 		expect(out.a11y.projectImageOpen).toEqual({
 			en: 'Open {caption}',

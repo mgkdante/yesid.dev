@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Project, Service } from '#lib/types.ts';
+	import type { ProjectSummary, Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -22,7 +22,7 @@
 
 	export interface ProjectCardProps {
 
-		project: Project;
+		project: ProjectSummary;
 
 		services?: readonly Service[];
 
@@ -43,6 +43,7 @@
 		class: className = '',
 		...rest
 	}: ProjectCardProps = $props();
+	const titleId = $props.id();
 
 	const VARIANT = {
 		listing: { testId: 'project-card', mediaTestId: 'project-card-image', titleTestId: undefined, excerptTestId: undefined, metricTestPrefix: 'project-card', mediaPreset: 'card-600' },
@@ -50,15 +51,33 @@
 	} as const;
 	const v = $derived(VARIANT[variant]);
 
-	// Rendered card widths: listing = 2-col grid beside the sidebar (~40vw
-	// desktop, full-width mobile); proof = one or two whole carousel slots.
-	const mediaSizes = $derived(
-		variant === 'proof'
-			? '(min-width: 768px) 50vw, 92vw'
-			: '(min-width: 768px) 40vw, 92vw',
-	);
+	// Rendered pane widths per breakpoint. Listing values are measured on /projects:
+	// a split card gives the phone screenshot ~25vw on mobile, so asking for the
+	// whole card width there downloads twice the pixels for the LCP image.
+	const MEDIA_SIZES = {
+		listing: {
+			single: '(min-width: 1280px) 35vw, (min-width: 1024px) 63vw, (min-width: 768px) 90vw, 82vw',
+			primary: '(min-width: 1280px) 26vw, (min-width: 1024px) 52vw, 72vw',
+			secondary: '(min-width: 1280px) 12vw, (min-width: 1024px) 18vw, (min-width: 768px) 24vw, 30vw',
+		},
+		proof: {
+			single: '(min-width: 768px) 50vw, 92vw',
+			primary: '(min-width: 768px) 50vw, 92vw',
+			secondary: '(min-width: 768px) 16vw, 40vw',
+		},
+	} as const;
+	const mediaSizes = $derived(MEDIA_SIZES[variant]);
 
 	let cardHovered = $state(false);
+	let tagsRow = $state<HTMLDivElement>();
+
+	// Tags sit under the card link, so the card hands its pointer to their magnetic action.
+	function pullTags(event: MouseEvent) {
+		for (const tag of tagsRow?.children ?? []) {
+			tag.dispatchEvent(new MouseEvent(event.type, { clientX: event.clientX, clientY: event.clientY }));
+		}
+	}
+
 	let isProof = $derived(variant === 'proof');
 	let mediaClass = $derived(cn('project-card-media overflow-hidden', `project-card-media--${variant}`));
 
@@ -85,17 +104,18 @@
 	const proofMetrics = $derived(projectMetrics(project));
 </script>
 
-<a
-	href={localizeHref(`/projects/${project.slug}`, locale)}
-	class={cn("tap-press project-card group block h-full", `project-card--${variant}`, className)}
+<article
+	class={cn("tap-press project-card group relative block h-full", `project-card--${variant}`, className)}
 	data-testid={v.testId}
 	data-flip-id={project.slug}
 	data-batch="project-item"
 	onmouseenter={() => (cardHovered = true)}
-	onmouseleave={() => (cardHovered = false)}
+	onmousemove={pullTags}
+	onmouseleave={(event) => { cardHovered = false; pullTags(event); }}
+	use:cursorGlow
 	{...rest}
 >
-	<div class="h-full" use:cursorGlow>
+	<a href={localizeHref(`/projects/${project.slug}`, locale)} class="project-card-link" aria-labelledby={titleId}></a>
 	<Card class="h-full gap-0 py-0">
 		<div class="project-card-layout h-full flex-1">
 
@@ -107,7 +127,8 @@
 					alt={resolveLocale(project.title, locale)}
 					imageClass={cn('project-card-img', !isProof && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
 					{eager}
-					sizes={mediaSizes}
+					sizes={project.imageSecondary ? mediaSizes.primary : mediaSizes.single}
+					secondarySizes={mediaSizes.secondary}
 				/>
 			</div>
 		{:else}
@@ -132,6 +153,7 @@
 		<div class="project-card-body flex flex-1 flex-col p-4">
 
 			<h2
+				id={titleId}
 				class="project-card-title font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary"
 				data-testid={v.titleTestId}
 			>
@@ -189,7 +211,7 @@
 			{/if}
 
 			{#if !isProof}
-				<div class="flex flex-wrap gap-1 pt-3">
+				<div class="flex flex-wrap gap-1 pt-3" bind:this={tagsRow}>
 					{#each displayTags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
 							<Badge
@@ -227,8 +249,7 @@
 
 		</div>
 	</Card>
-	</div>
-</a>
+</article>
 
 <style>
 	/* Strip SvgIcon container border/bg when nested in card badges */
@@ -248,6 +269,25 @@
 
 	.project-card :global(.card-surface) {
 		border-width: 3px;
+	}
+
+	/* The link layer takes the pointer, so the surface follows the card's hover. */
+	.project-card:hover :global(.card-surface) {
+		border-color: var(--border-brand-active);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
+	}
+
+	.project-card-link {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		border-radius: var(--radius-lg);
+	}
+
+	/* The stack diagram scrolls on its own, above the card link. */
+	.project-card :global(.data-flow-diagram) {
+		position: relative;
+		z-index: 2;
 	}
 
 	.project-card-media {

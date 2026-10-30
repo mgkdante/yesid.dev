@@ -53,7 +53,6 @@ test('reload during a visitor-started intro returns to the idle hero', async ({ 
 
 test('Back and Forward return to the idle hero without starting an intro', async ({ page }) => {
 	await page.goto('/');
-	// The URL changes before the view transition swaps the page in; going Back earlier races that swap.
 	await page.getByTestId('hero-cta-projects').click();
 	await expect(page.getByTestId('project-listing')).toBeVisible();
 	await page.goBack();
@@ -63,4 +62,38 @@ test('Back and Forward return to the idle hero without starting an intro', async
 	await page.goBack();
 	await expectIdleHero(page);
 	await expect(page.getByTestId('hero-dot-replay')).toBeEnabled();
+});
+
+test('Back before the view-transition swap keeps the home URL and content together', async ({ page }, testInfo) => {
+	test.skip(testInfo.project.name !== 'desktop', 'The transition race is independent of viewport and theme.');
+	await page.addInitScript(() => {
+		if (sessionStorage.getItem('test:held-transition')) return;
+		const start = document.startViewTransition.bind(document);
+		document.startViewTransition = (update) => {
+			sessionStorage.setItem('test:held-transition', 'true');
+			document.startViewTransition = start;
+			return start(async () => {
+				document.documentElement.dataset.transitionHeld = 'true';
+				await new Promise<void>((resolve) => window.addEventListener('test:release-transition', () => resolve(), { once: true }));
+				const finished = typeof update === 'function' ? update() : undefined;
+				delete document.documentElement.dataset.transitionHeld;
+				await finished;
+			});
+		};
+	});
+	await page.goto('/');
+	await page.getByTestId('hero-dot-replay').waitFor({ state: 'visible' });
+	await page.getByTestId('hero-cta-projects').click();
+	await page.waitForFunction(() => document.documentElement.dataset.transitionHeld === 'true');
+	await expect(page).toHaveURL(/\/projects$/);
+	await page.goBack();
+	await expect(page).toHaveURL(/\/$/);
+	await expectIdleHero(page);
+	await page.evaluate(() => window.dispatchEvent(new Event('test:release-transition')));
+	await page.waitForFunction(() => document.documentElement.dataset.transitionHeld !== 'true');
+	await expectIdleHero(page);
+	await expect(page.getByTestId('project-listing')).toHaveCount(0);
+	await page.goForward();
+	await expect(page).toHaveURL(/\/projects$/);
+	await expect(page.getByTestId('project-listing')).toBeVisible();
 });

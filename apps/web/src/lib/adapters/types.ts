@@ -2,6 +2,7 @@
 
 import type {
 	Project,
+	ProjectSummary,
 	Service,
 	BlogPost,
 	BlogCategory,
@@ -57,9 +58,9 @@ export interface ContentAdapter {
 
 export interface ProjectPort {
 	bySlug(slug: string): Promise<Project | undefined>;
-	featured(): Promise<readonly Project[]>;
-	public(): Promise<readonly Project[]>;
-	byService(serviceId: string): Promise<readonly Project[]>;
+	featured(): Promise<readonly ProjectSummary[]>;
+	public(): Promise<readonly ProjectSummary[]>;
+	byService(serviceId: string): Promise<readonly ProjectSummary[]>;
 }
 
 export interface ServicePort {

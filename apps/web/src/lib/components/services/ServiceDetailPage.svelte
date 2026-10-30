@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import type { Service, Project } from '#lib/types.ts';
+	import type { Service, ProjectSummary } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -46,7 +46,7 @@
 		services: readonly Service[];
 		prev?: Service;
 		next?: Service;
-		relatedProjects: readonly Project[];
+		relatedProjects: readonly ProjectSummary[];
 		serviceSvgContents: Record<string, string>;
 	} = $props();
 
@@ -135,19 +135,6 @@
 
 {#snippet impact()}
 	<div class="impact-column">
-		{#if metricValue}
-			<div class="impact-metric">
-				<span class="impact-value">{metricValue}</span>
-				{#if metricLabel}
-					<span class="impact-label">{metricLabel}</span>
-				{/if}
-			</div>
-			{#if benefitHeadline}
-				<div class="impact-separator" aria-hidden="true"></div>
-				<p class="benefit-headline">{benefitHeadline}</p>
-			{/if}
-		{/if}
-
 		{#if tocEntries.length > 0}
 			<div class="impact-toc">
 				<TocNav
@@ -159,6 +146,19 @@
 					counterPrefix={tocCounterPrefix}
 				/>
 			</div>
+		{/if}
+
+		{#if metricValue}
+			<div class="impact-metric">
+				<span class="impact-value">{metricValue}</span>
+				{#if metricLabel}
+					<span class="impact-label">{metricLabel}</span>
+				{/if}
+			</div>
+			{#if benefitHeadline}
+				<div class="impact-separator" aria-hidden="true"></div>
+				<p class="benefit-headline">{benefitHeadline}</p>
+			{/if}
 		{/if}
 	</div>
 {/snippet}
@@ -566,9 +566,9 @@
 		line-height: 1.5;
 	}
 
-	/* TOC sits below the metric in the sticky impact column (desktop). */
+	/* Keep the metric below the TOC in the desktop impact column. */
 	.impact-toc {
-		margin-top: 2rem;
+		margin-bottom: 2rem;
 	}
 
 	/* ── Mobile inline metric (below 1024px) ── */
