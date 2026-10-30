@@ -56,7 +56,11 @@ export const ProjectSchema = z.object({
 	version: z.string().optional(),
 });
 
+/** Listing shape: cards never render the article body, so it stays on the detail route. */
+export const ProjectSummarySchema = ProjectSchema.omit({ description: true, sections: true });
+
 export type ProjectSection = z.infer<typeof ProjectSectionSchema>;
 export type ProjectStatus = z.infer<typeof ProjectStatusSchema>;
 export type ImpactMetric = z.infer<typeof ImpactMetricSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
+export type ProjectSummary = z.infer<typeof ProjectSummarySchema>;

@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import type { Service, Project } from '#lib/types.ts';
+	import type { Service, ProjectSummary } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -46,7 +46,7 @@
 		services: readonly Service[];
 		prev?: Service;
 		next?: Service;
-		relatedProjects: readonly Project[];
+		relatedProjects: readonly ProjectSummary[];
 		serviceSvgContents: Record<string, string>;
 	} = $props();
 

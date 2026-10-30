@@ -31,7 +31,7 @@
 		ServicesGridContent,
 		AboutIntroContent,
 		CloserContent,
-		Project,
+		ProjectSummary,
 		Service,
 		SiteMeta,
 		BlogPost,
@@ -50,7 +50,7 @@
 		initialHeroData: HeroData;
 
 		services: readonly Service[];
-		featuredProjects: readonly Project[];
+		featuredProjects: readonly ProjectSummary[];
 		siteMeta: SiteMeta;
 		serviceSvgContents: Record<string, string>;
 	}
