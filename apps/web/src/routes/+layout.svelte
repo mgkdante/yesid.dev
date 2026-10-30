@@ -53,7 +53,17 @@
 
 	// Register navigation hooks during layout initialization; the persistent layout owns locale handoff.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
-	onNavigate(viewTransition);
+	let pendingTransitions = 0;
+	onNavigate((navigation) => {
+		const transition = viewTransition(navigation);
+		if (!transition) return;
+		pendingTransitions += 1;
+		void navigation.complete.then(
+			() => { pendingTransitions -= 1; },
+			() => { pendingTransitions -= 1; },
+		);
+		return transition;
+	});
 
 	$effect(() => {
 		if (data.morphShapes) {
@@ -105,6 +115,9 @@
 
 	let isFullBleed = $derived(basePath === '/' || basePath.startsWith('/projects/') && basePath !== '/projects' || basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal');
 </script>
+
+<!-- SvelteKit skips beforeNavigate during an active navigation, so use native history events. -->
+<svelte:window onpopstate={() => { if (pendingTransitions > 0) location.reload(); }} />
 
 {#snippet footerBrand()}
 	<Wordmark href={localizeHref('/', locale)} data-testid="footer-wordmark" class="items-baseline text-2xl" />
