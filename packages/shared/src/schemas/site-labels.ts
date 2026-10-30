@@ -231,6 +231,7 @@ export const SiteLabelsSchema = z.object({
 			footerNavAria: LocalizedStringSchema,
 			menuOverlayAria: LocalizedStringSchema,
 			menuOverlayFooterLabel: LocalizedStringSchema,
+			skipToContentLabel: LocalizedStringSchema.optional(),
 			localeSwitcherAria: LocalizedStringSchema,
 			searchPlaceholder: LocalizedStringSchema,
 			clearFiltersLabel: LocalizedStringSchema,

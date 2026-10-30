@@ -52,6 +52,9 @@ describe('site-labels transform', () => {
 			fr: '← Tous les services',
 		});
 		expect(out.navChrome.shared.openMenuAria).toEqual({ en: 'Open menu', fr: 'Ouvrir le menu' });
+		expect(out.navChrome.shared.skipToContentLabel).toEqual({
+			en: 'Skip to content', fr: 'Aller au contenu', es: 'Saltar al contenido',
+		});
 		expect(out.a11y.projectImageOpen).toEqual({
 			en: 'Open {caption}',
 			fr: 'Ouvrir {caption}',

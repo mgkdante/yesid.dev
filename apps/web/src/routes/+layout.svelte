@@ -143,6 +143,7 @@
 				closeMenu: resolveLocale(navChrome.closeMenuAria, locale),
 				menu: resolveLocale(navChrome.menuOverlayAria, locale),
 				menuFooter: resolveLocale(navChrome.menuOverlayFooterLabel, locale),
+				skipToContent: navChrome.skipToContentLabel ? resolveLocale(navChrome.skipToContentLabel, locale) : undefined,
 				theme: resolveLocale(navChrome.themeToggleAria, locale),
 			}}
 			language={{

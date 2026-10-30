@@ -44,7 +44,7 @@ function extractAll(source: string, re: RegExp): string[] {
 
 describe('site-labels localized field-map sources exist in the snapshot', () => {
 	const source = readFileSync(join(FETCHERS_DIR, 'site-labels.ts'), 'utf8');
-	const literals = [...new Set(extractAll(source, /\[\s*'[^']+'\s*,\s*'([^']+)'\s*\]/g))];
+	const literals = [...new Set(extractAll(source, /\[\s*'[^']+'\s*,\s*'([^']+)'(?:\s*,\s*'(?:optional|nullable)')?\s*\]/g))];
 
 	it('finds the expected scale of literals (sanity: the regex still matches)', () => {
 		// Assert a floor so a syntax refactor cannot make this contract pass on zero.
