@@ -171,6 +171,21 @@ for (const width of [390, 820, 1920]) {
 			await expect
 				.poll(async () => Number(await props.getAttribute('data-progress')))
 				.toBeCloseTo(Math.max(0, Math.min(1, (0.95 - fraction) / 0.25)), 2);
+			// The ending's ink follows the ground's layout, so sample once its strokes hold still for a frame.
+			await page.locator('.closer-note').evaluate(
+				(note) =>
+					new Promise<void>((settled) => {
+						const read = () => [...note.querySelectorAll('path')].map((path) => getComputedStyle(path).strokeDashoffset).join();
+						let last = read();
+						const next = () =>
+							requestAnimationFrame(() => {
+								const current = read();
+								if (current === last) settled();
+								else (last = current), next();
+							});
+						next();
+					}),
+			);
 			const sample = await page
 				.locator('.ground-anchor')
 				.evaluate((anchor) => ({
