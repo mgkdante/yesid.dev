@@ -211,11 +211,15 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	await page.keyboard.press('Enter');
 	await page.keyboard.press('Enter');
 
-	// Glitch lock (operator: "the hero animation glitches on clicking the
-	// dot"): the moment a replay starts, GSAP owns the dot svg — the beacon
-	// dress must be GONE. An infinite CSS transform animation overrides
-	// GSAP's inline transform every frame, and a drop-shadow filter
-	// rasterizes a gigantic surface mid-zoom; either reads as the glitch.
+	await expect
+		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
+		.toBeGreaterThan(collapsedHeight + viewport.height * 2);
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
+	await expect(page.locator('[data-testid="metro-network-container"]')).toBeVisible();
+
+	// Once the rebuilt pin exists, GSAP owns the dot, so the beacon dress must be gone: an infinite
+	// CSS transform animation overrides GSAP's inline transform every frame, and a drop-shadow
+	// filter rasterizes a huge surface mid-zoom.
 	const bare = await dot
 		.locator('[data-testid="hero-dot"]')
 		.evaluate((el) => ({
@@ -224,11 +228,6 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 		}));
 	expect(bare.isAnimating, 'the pulse must yield to the replay zoom').toBe(false);
 	expect(bare.hasFilter, 'the zoom must not rasterize the beacon glow at a huge scale').toBe(false);
-	await expect
-		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
-		.toBeGreaterThan(collapsedHeight + viewport.height * 2);
-	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
-	await expect(page.locator('[data-testid="metro-network-container"]')).toBeVisible();
 
 	// PAINT-LEVEL rewind probe (regression: the rewind once painted a solid
 	// brand-orange wall — the hero-text container stuck at its 200×+ initial
