@@ -1,45 +1,4 @@
-// Hero timeline scroll-scrub factory — the site's only pinned scroll-scrub.
-//
-// Composes ScrollTrigger + pin + DrawSVG stroke-scrub + station/label fades +
-// Phase 5 Berri-UQAM zoom + Phase 6 cross-fade + Phase 7 hero text zoom-out
-// into a single self-contained factory that composes GSAP primitives directly
-// (design spec §4.3).
-//
-// Phase map (normalized timeline 0–1.40):
-//   Phase 1  (0–0.03):     Berri + background appear
-//   Phase 1b (0.03–0.15):  Light on/off pulse on Berri + scrollPrompt
-//   Phase 2  (0.17–0.45):  SCROLL DOWN fades out, lines drawSVG 0% → 100%
-//   Phase 3  (0.47–0.58):  Station nodes stagger-fade in
-//   Phase 4  (0.58–0.65):  Labels stagger-fade in
-//   Phase 5  (0.65–0.95):  Zoom svgWrapper to Berri-UQAM
-//   Phase 6  (1.00–1.05):  Cross-fade svgWrapper out / heroTextContainer in
-//   Phase 7  (1.05–1.40):  Zoom heroTextContainer back to scale=1
-//   Phase 8  (1.10–1.40):  Hero text elements stagger in; release at final pose
-//
-// Precondition: caller must `await loadDrawSVG()` + `await loadCustomEase()`
-// at route setup before invoking. Factory is synchronous.
-//
-// Reduced-motion: SVG network dimmed to 0.2 opacity, heroTextContainer
-// snapped to scale=1 + opacity=1; no ScrollTrigger is created; destroy is
-// a no-op.
-//
-// Mobile branch: pinLength compressed to '300%' (vs '800%' desktop). Full
-// network + Phase 5 zoom preserved — see design spec §5.1.
-//
-// Usage:
-//   import { loadDrawSVG, loadCustomEase } from '@yesid/motion/utils/gsap';
-//   import { createHeroTimeline } from '#lib/motion/scrubs/index.ts';
-//   onMount(async () => {
-//     await Promise.all([loadDrawSVG(), loadCustomEase()]);
-//     const isMobile = window.matchMedia('(max-width: 1023px)').matches;
-//     destroy = createHeroTimeline(pinContainer, {
-//       svgWrapper, heroTextContainer, heroDot, scrollPrompt,
-//       startBlink: typewriter.startBlink,
-//       stopBlink: typewriter.stopBlink,
-//       pinLength: isMobile ? '300%' : '800%',
-//     });
-//   });
-//   onDestroy(() => destroy?.());
+// Synchronous pinned hero timeline; callers preload DrawSVG and CustomEase before construction.
 
 import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 import { gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
@@ -48,13 +7,13 @@ import { gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
 import { CustomEase } from 'gsap/CustomEase';
 
 export interface HeroTimelineOpts {
-	/** Wrapper around the metro SVG — receives the Phase 5 zoom transform. */
+
 	svgWrapper: HTMLElement;
 	/** Hero text + SQL panel container — initially scaled up, zooms back to 1. */
 	heroTextContainer: HTMLElement;
 	/** Inline SVG dot inside heroTextContainer — provides zoom transform-origin. */
 	heroDot: SVGSVGElement;
-	/** NEXT STOP: SCROLL DOWN billboard — fades out in Phase 2. */
+
 	scrollPrompt: HTMLElement;
 	/** Typewriter blink restart callback (onUpdate progress <= 0.005). */
 	startBlink: () => void;
@@ -62,24 +21,9 @@ export interface HeroTimelineOpts {
 	stopBlink: () => void;
 	/** Pin length as a GSAP-compatible percent string. Default '800%'. Mobile callers pass '300%'. */
 	pinLength?: string;
-	/**
-	 * go2/w5 taste-2: skip the deferred (next-frame) ScrollTrigger.refresh().
-	 * The replay rebuild refreshes explicitly BEFORE starting its rewind —
-	 * a refresh of a pinned trigger restores the scroll position (a scroll
-	 * write), which would cancel the in-flight native smooth rewind on
-	 * touch devices. Initial mounts keep the deferred refresh (layout is
-	 * still settling there).
-	 */
+	/* Replay refreshes before rewinding; a deferred refresh would cancel native smooth scrolling. */
 	skipDeferredRefresh?: boolean;
-	/**
-	 * go2/w5 replayable intro: fired when the scrub progress crosses INTO the
-	 * end of the pin from below (the visitor scrolled the intro through).
-	 * HeroBanner collapses the track here after the visible sequence completes.
-	 * Taste-2 latch semantics: a first render already AT the end never fires
-	 * (the replay path jumps a rebuilt pin straight to its end), and dropping
-	 * back below the threshold re-arms it — a replayed intro fires again on
-	 * re-completion, so the collapse re-applies.
-	 */
+	/* Complete only when crossing the pin end from below; first rendering at the end must stay silent. */
 	onIntroComplete?: () => void;
 	/** The final small-scale approach may resume the dot heartbeat before release. */
 	onHeroApproach?: (approaching: boolean) => void;
@@ -224,10 +168,8 @@ export function createHeroTimeline(
 		return () => {};
 	}
 
-	// Show Berri-UQAM dot immediately — Phase 1 starts from "dot already lit".
 	(berri as HTMLElement).style.opacity = '1';
 
-	// CustomEase used by Phase 2 line draws. Idempotent — safe to re-create.
 	CustomEase.create('networkDraw', 'M0,0 C0.2,0.6 0.4,1 1,1');
 
 	// Measure origins BEFORE applying scale — HeroBanner reverts transforms
@@ -235,8 +177,6 @@ export function createHeroTimeline(
 	updateZoomOrigin(pinContainer, svgWrapper);
 	updateHeroTextOrigin(heroDot, heroTextContainer);
 
-	// All text elements start invisible; the refresh button starts slightly
-	// below for a fade-up entrance in Phase 8.
 	const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
 	gsap.set(staggerEls, { opacity: 0 });
 	const refreshEl = heroTextContainer.querySelector('[data-hero-stagger="7"]');
@@ -250,21 +190,12 @@ export function createHeroTimeline(
 		onUpdate: () => onHeroApproach?.(introCompleteArmed && tl.time() >= 1.36),
 	});
 
-	// === Phase 1 (0–0.03): Berri + background appear ===
 	tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
 	tl.to(bg, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
 
-	// === Phase 1a (0.005–0.015): Snap-fade scrollPrompt out on first scroll ===
-	// Pre-Snappy: scrollPrompt stayed visible through Phase 1b pulses (0.03–0.15)
-	// and only faded in Phase 2 (0.17). That left the typewriter billboard on
-	// screen for ~136vh of scroll. Now fades within ~8vh of scroll so the
-	// typewriter animation keeps running but is no longer visible.
+	// Hide the billboard promptly while its typewriter continues off-screen.
 	tl.to(scrollPrompt, { opacity: 0, duration: 0.01, ease: 'power2.in' }, 0.005);
 
-	// === Phase 1b (0.03–0.15): Light on/off pulse — berri only ===
-	// scrollPrompt removed from this pulse; it's already hidden by Phase 1a on
-	// any scroll > 0. The pulse still reads on berri as an "idle pre-scroll"
-	// cue for users who haven't scrolled yet.
 	tl.to(berri, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
 	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
 	tl.to(berri, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
@@ -272,7 +203,6 @@ export function createHeroTimeline(
 	tl.to(berri, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
 	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
 
-	// === Phase 2 (0.17–0.45): Lines draw ===
 	lines.forEach((line, i) => {
 		const stagger = i * 0.02;
 		tl.set(line, { opacity: 1 }, 0.17 + stagger);
@@ -284,30 +214,24 @@ export function createHeroTimeline(
 		);
 	});
 
-	// === Phase 3 (0.47–0.58): Station nodes stagger in ===
 	tl.to(
 		stations,
 		{ opacity: 1, duration: 0.08, stagger: 0.002, ease: 'power1.out' },
 		0.47,
 	);
 
-	// === Phase 4 (0.58–0.65): Labels stagger in ===
 	tl.to(
 		labels,
 		{ opacity: 0.6, duration: 0.07, stagger: 0.001, ease: 'power1.out' },
 		0.58,
 	);
 
-	// go2/w5 taste-2: the metro caption (ONE small line naming the art at the
-	// wrapper's bottom strip — the in-frame legend is gone) joins the label
-	// fade — to full opacity, it is informative text (AA), unlike the
-	// decorative 0.6-opacity station-name paths.
+	// The caption is informative text and needs full opacity, unlike decorative station labels.
 	const caption = pinContainer.querySelectorAll('.metro-caption');
 	if (caption.length > 0) {
 		tl.to(caption, { opacity: 1, duration: 0.07, ease: 'power1.out' }, 0.58);
 	}
 
-	// === Phase 5 (0.65–0.95): Zoom into Berri-UQAM ===
 	tl.to(
 		svgWrapper,
 		{
@@ -321,15 +245,8 @@ export function createHeroTimeline(
 		0.65,
 	);
 
-	// === Phase 6 (1.00–1.05): Cross-fade SVG → hero text container ===
 	tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
-	// fromTo, not .to (go2/w5 taste-2): the replay path rebuilds this timeline
-	// and first renders it at the END of the track while a temporary inline
-	// opacity:1 shield keeps the settled hero text painted — a lazy .to()
-	// would capture that shield as its start and the cross-fade would
-	// degenerate to 1→1. Explicit 0→1 is shield-proof; immediateRender:false
-	// keeps first-visit behavior identical (the CSS opacity-0 base holds
-	// until the playhead reaches Phase 6).
+	// An explicit start avoids capturing the replay opacity shield; defer rendering until the cross-fade begins.
 	tl.fromTo(
 		heroTextContainer,
 		{ opacity: 0 },
@@ -337,7 +254,6 @@ export function createHeroTimeline(
 		1.0,
 	);
 
-	// === Phase 7 (1.05–1.40): Zoom hero text container back to scale=1 ===
 	tl.to(
 		heroTextContainer,
 		{
@@ -351,7 +267,6 @@ export function createHeroTimeline(
 		1.05,
 	);
 
-	// === Phase 8 (1.10–1.40): Reveals finish with the zoom, without an idle tail ===
 	const s1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]');
 	const s2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]');
 	const s3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]');
@@ -372,12 +287,7 @@ export function createHeroTimeline(
 	// Mobile (native touch): scrub:0.5 = small buffer for stable touch feel.
 	const isTouch = ScrollTrigger.isTouch > 0;
 
-	// go2/w5 taste-2: ARMED-CROSSING completion latch. "Scrolled it through"
-	// = the scrub was genuinely below the end threshold on this instance and
-	// then reached the exact pin end. A first render already at the end stays silent — the
-	// replay path rebuilds the pin and jumps straight to its end, and that
-	// jump must never read as a completion. Dropping below the threshold
-	// re-arms, so a replayed intro re-fires (the collapse re-applies).
+	// A first render at the end must not complete; crossing from below arms completion and rewind re-arms it.
 	function finishIntro(self: { progress: number }): void {
 		if (self.progress === 1 && introCompleteArmed) {
 			introCompleteArmed = false;

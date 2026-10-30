@@ -1,8 +1,6 @@
 import { browser } from '$app/env';
 import { theme, type Theme } from '@yesid/ui/state';
 
-export type { Theme } from '@yesid/ui/state';
-
 function normalizeTheme(value: unknown, fallback: Theme = 'dark'): Theme {
 	return value === 'light' || value === 'dark' ? value : fallback;
 }

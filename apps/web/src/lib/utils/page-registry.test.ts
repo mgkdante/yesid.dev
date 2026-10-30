@@ -1,10 +1,3 @@
-// page-registry tests — the route-gate resolution rules (slice-26.1).
-//
-// The helper is pure: every test injects its own registry fixture so the
-// cascade behaviour (archived row absent → path unresolved) is exercised
-// without touching the committed $lib/content/site-pages.ts module. A final
-// block sanity-checks the real committed registry.
-
 import { describe, expect, it } from 'vitest';
 import type { SitePage } from '#lib/types.ts';
 import {
@@ -178,7 +171,7 @@ describe('committed registry sanity (regenerated every build)', () => {
 			'/blog/personal',
 			'/about',
 			'/contact',
-			// OPS1 legal framework (launch Phase 1)
+
 			'/legal/privacy',
 			'/legal/terms',
 			'/legal/cookies',

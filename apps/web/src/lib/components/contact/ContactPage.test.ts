@@ -461,9 +461,7 @@ describe('ContactPage', () => {
 		expect(screen.getByTestId('page-contact')).toBeTruthy();
 	});
 
-	// slice-28.1 (audit #20/#122): SSR-baked weather is CDN-stale; onMount
-	// refreshes from /api/weather. Default setup.dom stub returns null (no
-	// fresh data) — these tests override fetch to exercise both branches.
+	// Override the null weather stub to exercise both hydration-refresh outcomes.
 	it('refreshes weather from /api/weather on mount', async () => {
 		globalThis.fetch = vi.fn().mockResolvedValue(
 			new Response(JSON.stringify({ temp: 99, condition: 'fresh breeze', icon: '01d' }), {

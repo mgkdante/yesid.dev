@@ -1,31 +1,3 @@
-// composePageSeo — composer contract tests (slice-18 18h Phase 4 Task 13, #80b).
-//
-// Split out of the old __tests__/contract.test.ts at slice-26 close: that file
-// mixed directus-adapter contract/mapping tests (deleted with the dormant
-// adapter once Directus 12 passed the parity oracle on both environments)
-// with these pure-composer tests, which cover LIVE code — the static adapter's
-// meta.forRoute() composes through composePageSeo.
-//
-// composePageSeo is the pure composer used by staticAdapter.meta.forRoute()
-// for static routes. The 7 static routes are owned by codeRouteSeoDefaults
-// (apps/web/src/lib/adapters/route-seo-defaults.ts). This parity test
-// asserts that for every one of those 7 routes, composePageSeo (with no
-// CMS routeOverride — the cold-start case) produces a valid PageSeo with
-// the expected fallback chain behavior:
-//
-//   - title respects composedTitleStrategy ('verbatim' for '/', 'append-
-//     brand' for everything else)
-//   - description falls back to siteSeoDefaults.defaultDescription when no
-//     routeOverride is present
-//   - ogType + noIndex match codeRouteSeoDefaults exactly
-//   - jsonLd output is non-empty (each route's jsonLdFactory returned
-//     at least one Schema.org node)
-//
-// The "parity" in the issue (#80) body refers to the legacy
-// `routeSeoEntries` static lookup that was refactored away in slice-18m.
-// codeRouteSeoDefaults + composePageSeo is the post-refactor canonical
-// equivalent.
-
 import { describe, expect, it, vi } from 'vitest';
 
 // composePageSeo calls asset(uuid) which needs PUBLIC_DIRECTUS_URL.

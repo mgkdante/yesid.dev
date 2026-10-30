@@ -1,8 +1,4 @@
-// Re-exports @repo/shared (domain types) + web-local Zod type re-exports.
-// Preserves historical `import type { X } from '#lib/types.ts'` surface for apps/web.
-//
-// Shared domain types extracted to packages/shared in slice-18 18c Task 14
-// so apps/web + apps/cms consume one source of truth.
+// Re-export shared domain types and web-local schema types.
 
 export * from '@repo/shared';
 

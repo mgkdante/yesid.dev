@@ -1,16 +1,7 @@
-// AboutWeather scene system, GO Wave 4.
-// Covers: condition→scene mapping (pure resolver), graceful data states
-// (unknown code → clear, missing data → offline, never blank), day/night
-// derivation from the icon suffix, per-scene composition (clouds, bolt,
-// fog banks, precipitation), and the crafted glyph that replaced the
-// hotlinked OpenWeather PNG. The reduced-motion STATIC contract is locked
-// at the CSS-source tier in src/lib/styles/__tests__/motion-policy-css.test.ts
-// and at runtime in tests/reduced-motion.spec.ts (Playwright).
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import AboutWeather from './AboutWeather.svelte';
-import { resolveWeatherScene, isNightHour, WEATHER_SCENES } from './weather-scene';
+import { resolveWeatherScene, isNightHour } from './weather-scene';
 import { aboutPageContent } from '#lib/content/about-page.ts';
 import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
@@ -97,18 +88,6 @@ describe('weather-scene resolver (condition → scene mapping)', () => {
 		expect(resolveWeatherScene(null)).toEqual({ scene: 'offline', night: false });
 		expect(resolveWeatherScene(undefined)).toEqual({ scene: 'offline', night: false });
 		expect(resolveWeatherScene('')).toEqual({ scene: 'offline', night: false });
-	});
-
-	it('exports every renderable scene family', () => {
-		expect(WEATHER_SCENES).toEqual([
-			'clear',
-			'clouds',
-			'rain',
-			'snow',
-			'storm',
-			'mist',
-			'offline',
-		]);
 	});
 
 	it('isNightHour: night spans 19:00–06:59 local', () => {

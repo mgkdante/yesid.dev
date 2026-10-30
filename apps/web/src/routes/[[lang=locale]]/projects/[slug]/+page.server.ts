@@ -4,7 +4,7 @@
 
 import { error } from '@sveltejs/kit';
 import { renderGithubReadme } from '#lib/server/markdown.ts';
-import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { localeFromParams } from '#lib/utils/locale-routing.ts';
 import { adapter } from '#lib/adapters/index.ts';

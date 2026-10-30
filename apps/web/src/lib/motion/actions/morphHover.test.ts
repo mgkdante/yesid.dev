@@ -57,9 +57,7 @@ describe('motion/actions/morphHover', () => {
 	});
 
 	it('reduced-motion: STAYS ACTIVE (slice-23 operator policy)', () => {
-		// SVG path morphing is a visual transformation, not a vestibular
-		// trigger. Operator chose to keep morphHover on under
-		// prefers-reduced-motion, so listeners attach as normal.
+		// User-triggered SVG path morphing stays active under reduced motion.
 		isReducedMock.mockReturnValue(true);
 		const addSpy = vi.spyOn(node, 'addEventListener');
 		const result = morphHover(node, {});

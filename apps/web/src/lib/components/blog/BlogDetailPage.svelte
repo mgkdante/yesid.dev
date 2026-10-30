@@ -26,9 +26,6 @@
   const locale = getLocale();
   import { siteLabels } from '#lib/content/index.ts';
 
-  // go2/w4: reading mode removed per operator QA. The default reading
-  // experience is the only one. The readingMode field stays dormant in the
-  // CMS cache to avoid schema churn.
   const detailPageChrome = siteLabels.blogChrome.detail.page;
   const metaWordsLabel = resolveLocale(detailPageChrome.metaWords, locale);
   const metaReadTimeLabel = resolveLocale(detailPageChrome.metaReadTime, locale);
@@ -182,20 +179,7 @@
 
   afterNavigate(onTocNavigate);
 
-  // slice-34.4: reading position survives a locale switch.
-  //
-  // Blog heading ids are kebabSlug(headingText) (see @repo/shared
-  // extractHeadings), so they are LOCALE-VARIABLE: "Getting Started" -> id
-  // `getting-started` in EN, "Pour commencer" -> `pour-commencer` in FR. The raw
-  // id therefore cannot survive the switch.
-  //
-  // The locale-stable analog is the active heading's ORDINAL INDEX in the
-  // `headings` array. A translated post mirrors the source's heading structure,
-  // so heading #3 in EN corresponds to heading #3 in FR. We capture that index
-  // (plus the raw offset as a fallback) and, on the remounted FR/EN page, scroll
-  // to the heading at the same index. If the structures differ (count mismatch,
-  // index out of range, untranslated post) we fall back to the raw offset.
-  // See the FLAG in the slice report: index-to-index assumes matched structure.
+  // Heading IDs vary by locale, so restore by ordinal when heading structures match and use the raw offset otherwise.
   function activeHeadingIndex(): number {
     return headings.findIndex((h) => h.id === activeHeadingId);
   }
@@ -436,5 +420,4 @@
     border-left-color: var(--blog-accent);
   }
 
-  /* go2/w4: reading-mode switch + dim styles removed per operator QA. */
 </style>

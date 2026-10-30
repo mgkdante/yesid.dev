@@ -26,7 +26,6 @@
 	// Track hover state to pass down to WorkSvgIcon for MorphSVG effect
 	let badgeHovered = $state(false);
 
-	// GO2-W5 STM line bullets — service id → métro line color (shared util).
 	const lineColor = $derived(serviceLineColor(service.id));
 </script>
 
@@ -56,7 +55,6 @@
 		border-radius: 0;
 	}
 
-	/* GO2-W5 STM line bullet — the service's line color as a roundel dot. */
 	.line-bullet {
 		display: inline-block;
 		width: 7px;

@@ -13,7 +13,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import { SectionLabel } from '@yesid/ui/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
-	import { cn } from '#lib/utils/index.ts';
+	import { cn } from '@yesid/ui/cn';
 	import { pressBounce } from '@yesid/motion/actions';
 
 	export interface ServiceCardProps {
@@ -217,8 +217,6 @@
 		gap: 0.75rem;
 	}
 
-	/* Round-4 doctrine: metric/number callouts speak the YELLOW voice
-	   (accent-text = AA amber both modes); the CTA next to it stays orange. */
 	.metric-value {
 		font-size: clamp(44px, 5vw, 60px);
 		font-weight: 900;

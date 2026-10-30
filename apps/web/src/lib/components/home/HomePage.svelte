@@ -30,7 +30,6 @@
 		ProofReelContent,
 		ServicesGridContent,
 		AboutIntroContent,
-		CtaContent,
 		CloserContent,
 		Project,
 		Service,
@@ -47,12 +46,9 @@
 		proofReel: ProofReelContent;
 		servicesGrid: ServicesGridContent;
 		about: AboutIntroContent;
-		cta: CtaContent;
 		closer: CloserContent;
 		initialHeroData: HeroData;
-		/** slice-28.5 (#124): primary collection data resolved by +page.server.ts
-		 *  through the repository layer — section components no longer call the
-		 *  $lib/content companions for services/projects. */
+
 		services: readonly Service[];
 		featuredProjects: readonly Project[];
 		siteMeta: SiteMeta;
@@ -66,7 +62,6 @@
 		proofReel,
 		servicesGrid,
 		about,
-		cta,
 		closer,
 		initialHeroData,
 		services,
@@ -82,10 +77,7 @@
 	const sectionAbout = resolveLocale(siteLabels.pages.homeSectionAbout, locale);
 	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale);
 
-	// Rotated-title fit (operator spec 2026-07-03): ONE mathematically
-	// computed size per locale: the LONGEST label must exactly fit the 50dvh
-	// sticky cap, capped at the 6rem design max; all four titles share it.
-	// null until measured: the CSS var fallback below carries first paint.
+	// Fit the longest localized label to the sticky height cap and share its size across the four titles.
 	let rotatedTitleSize = $state<number | null>(null);
 	const rotatedVar = $derived(
 		rotatedTitleSize === null ? undefined : `--rotated-title-size: ${rotatedTitleSize}px`,
@@ -105,9 +97,6 @@
 		if (size !== null) rotatedTitleSize = size;
 	}
 
-	// Crescendo scrubs were removed from the rotated titles per operator
-	// feedback — titles are sticky-only without scale animation, so the
-	// visual no longer overflows section bounds.
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
 	let servicesSectionEl = $state<HTMLElement>(undefined!);
 	let closerSectionEl = $state<HTMLElement>(undefined!);
@@ -126,8 +115,6 @@
 
 	onMount(() => {
 		if (!browser) return;
-		// Section magnetism removed entirely (operator call 2026-07-03):
-		// scrolling settles wherever the visitor stops it, on every input.
 
 		// Rotated-title fit: compute once, again when the web font finishes
 		// loading (metrics change), and on every resize (the height budget
@@ -145,14 +132,7 @@
 			window.removeEventListener('resize', onResize);
 		});
 
-		// slice-34.4 — reading position survives a locale switch on the HOME page,
-		// the hardest case: HeroBanner's GSAP pin rewrites the document height
-		// (~900svh) AFTER a deferred ScrollTrigger.refresh, and the height also
-		// depends on the hero-intro state (live pin vs collapsed same-day reload).
-		// A raw scrollY captured against one height is meaningless against another,
-		// so we capture a NORMALIZED FRACTION (scrollY / maxScroll) and, after the
-		// remounted page's pin has materialized + refreshed, jump to
-		// fraction * maxScroll via the Lenis-aware recipe.
+		// Restore a scroll fraction after the hero pin refresh because locale and intro state change document height.
 		destroyFns.push(
 			registerScrollContext({
 			capture: () => {
@@ -209,18 +189,6 @@
 	});
 </script>
 
-<!--
-  HomePage — orchestrator for the home page sections.
-  7 sections: Hero, Manifesto, Services, About teaser, Featured Projects,
-  CTA band, Closer. (Services lead the story per operator 2026-07-03:
-  context → identity → proof. About teaser + CTA band went live in the
-  homework #21c batch.)
-  Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
-
-  slice-18i Phase 7C: all page-block content flows as props from +page.svelte
-  (loaded server-side from Directus M2A). Components no longer import static
-  content modules directly.
--->
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
 <section class="w-full">
 	<HeroBanner
@@ -237,10 +205,6 @@
 <section class="w-full"><Manifesto manifesto={manifesto} /></section>
 <Separator variant="hazard" />
 
-<!-- Section 3: Services — rotated title RIGHT, blueprint background spans
-     full width. Operator 2026-07-03: services lead so the story builds
-     context (what I do) → identity (who I am) → proof (what I built). -->
-
 <section
 	bind:this={servicesSectionEl}
 	class="home-section home-section--right relative"
@@ -253,10 +217,6 @@
 </section>
 
 <Separator variant="hazard" />
-
-<!-- Section 3b: About teaser — rotated title LEFT (operator 2026-07-03: every
-     titled section alternates: Services R → About L → Projects R → Terminus L;
-     only the CTA goes untitled, it's special). -->
 
 <section
 	class="home-section home-section--left"
@@ -295,11 +255,7 @@
      is INSIDE CtaBand now (every CTA wears it), so no separate separator. -->
 <!-- The home CTA draws its blueprints a step bolder than the CTA on other pages. -->
 <section class="w-full" style:--cta-blueprint-ink="0.75">
-	<CtaBand
-		cta={cta}
-		siteMeta={siteMeta}
-		testidPrefix="home-cta-band"
-	/>
+	<CtaBand testidPrefix="home-cta-band" />
 </section>
 
 <Separator variant="hazard" />
@@ -317,14 +273,7 @@
 </section>
 
 <style>
-	/* Shared rotated title base. Both `scale` (crescendo scrub) and `rotate`
-	   use individual transform properties so they compose without disturbing
-	   the sticky positioning of the element itself. Slice-23 Task 4 caps the
-	   *physical* height so the title is visibly smaller than its containing
-	   section — sticky can only engage if the element has room to move within
-	   its containing block. `max-block-size` would target the horizontal axis
-	   here (vertical-rl writing mode flips block/inline), hence the physical
-	   `max-height`. */
+	/* Use physical max-height for vertical writing so sticky titles retain room to move. */
 	.rotated-title {
 		position: sticky;
 		top: 50%;
@@ -348,13 +297,7 @@
 
 	/* Right side: natural vertical-rl (reads top → bottom), no rotation */
 
-	/* Super bold display size — full brand color, maximized for edge column.
-	   The SIZE IS COMPUTED (operator spec 2026-07-03): per locale, the
-	   longest label is measured and the shared --rotated-title-size is the
-	   largest size at which IT fits the 50dvh sticky cap (design max 6rem):
-	   as big as mathematically possible, zero overflow on either axis, all
-	   four titles uniform. See $lib/utils/rotated-title-fit.ts. The var
-	   fallback only covers first paint before hydration measures. */
+	/* Share the measured longest-label size across titles; the CSS fallback covers first paint. */
 	.rotated-title :global(.section-heading-text) {
 		font-size: var(--rotated-title-size, min(clamp(3.5rem, 7vw, 6rem), 5.5dvh));
 		font-weight: 900;

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Manifesto from './Manifesto.svelte';
-// slice-18i Phase 7C: Manifesto now requires manifesto prop.
 import { manifestoContent } from '#lib/content/site-content.ts';
 
 describe('Manifesto', () => {

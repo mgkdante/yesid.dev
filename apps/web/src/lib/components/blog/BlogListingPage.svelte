@@ -47,15 +47,7 @@
 	};
 	const clearLabel = resolveLocale(siteLabels.navChrome.shared.clearFiltersLabel, locale);
 
-	// Filter state. slice-34.1: search/language/date are session-scoped so they
-	// survive a language switch via the locale-handoff orchestrator — each stored
-	// value is a locale-free primitive (the literal query string, a Locale code, an
-	// ISO date). A language code can become incompatible after the server narrows
-	// the listing to the new request locale, so it is normalized below. The `tag`
-	// filter lives in the URL and is carried for free by localizeUrl.
-	// Browser-gated: the page prerenders (url.searchParams is unreadable at
-	// build), so SSR HTML is the unfiltered listing and ?tag deep-links apply
-	// on hydration.
+	// Persist locale-free filters across language switches; apply URL filters after hydration because prerendering cannot read query parameters.
 	let activeTag = $derived(browser ? page.url.searchParams.get('tag') : null);
 	const activeLang = persisted<Locale | null>('blog-lang', null); // null = show all languages
 	const searchQuery = persisted('blog-q', '');
@@ -140,8 +132,7 @@
 			dateTo.value !== ''
 	);
 
-	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
-	// state on load. batchFired stays true so FLIP filter transitions work immediately.
+	// Cards start at their final pose so filter transitions can run immediately.
 	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
@@ -237,8 +228,5 @@
 </div>
 
 <style>
-	/* WHY: items render at final state on load (Snappy Doctrine, 17e-2). FLIP
-	   handles filter transitions only. The `data-batch="blog-item"` attribute
-	   stays as a query target for animateFlipTransition. */
 
 </style>

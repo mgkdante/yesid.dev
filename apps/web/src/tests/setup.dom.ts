@@ -7,9 +7,7 @@ import '@testing-library/svelte/vitest';
 import { afterEach, vi } from 'vitest';
 import { faker } from '@faker-js/faker';
 
-// Deterministic faker output for CI reproducibility (slice-17f L1 prerequisite).
-// Override per-test with `faker.seed(<n>)` if non-determinism is intentional.
-// Seed value 42 is arbitrary but stable.
+// Seed faker for reproducible CI; individual tests can override the seed.
 faker.seed(42);
 
 // persisted() state lives in sessionStorage; keep it from leaking between tests.
@@ -80,11 +78,7 @@ vi.stubGlobal(
 	}
 );
 
-// Mock GSAP and its plugins for the happy-dom test environment.
-// GSAP relies on DOM measurement APIs (getBoundingClientRect, computed styles, scroll
-// position) that happy-dom does not fully support. Actions and components that use GSAP
-// are tested for correct invocation, not for visual animation output — that belongs
-// to Playwright E2E tests in slice 10.
+// happy-dom lacks the geometry GSAP needs; test animation behavior in Playwright.
 vi.mock('gsap', () => {
 	const mockTimeline = {
 		to: vi.fn().mockReturnThis(),
@@ -177,21 +171,7 @@ vi.mock('gsap/SplitText', () => ({
 	}
 }));
 
-// Mock global fetch for ALL network surfaces components touch in DOM tests.
-// happy-dom has no server behind it: anything that fell through to the real
-// fetch used to resolve against the default http://localhost:3000 origin and
-// spray "connect ECONNREFUSED 127.0.0.1:3000" + teardown AbortError stacks
-// across the run (slice-28.4, audit #92). Stubbed surfaces:
-//   - web3forms.com   → canned success JSON so the contact form's success
-//                       animation fires.
-//   - /api/weather    → JSON null ("no fresh data") so ContactPage/AboutWeather
-//                       keep their SSR-baked prop (slice-28.1 onMount refresh).
-//   - /svg/** assets  → minimal valid SVG (decorative illustrations fetched
-//                       at mount by HomeServices
-//                       et al; consumers res.text() + DOMParser it).
-//   - anything else   → loud rejection naming the URL. Add a branch here or
-//                       stub fetch per-test when a new surface appears —
-//                       never let DOM tests open real sockets.
+// DOM tests must never open real sockets; stub every supported network surface and reject unknown URLs.
 vi.stubGlobal('fetch', async (url: string | URL | Request) => {
 	const urlStr = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
 	if (urlStr.includes('web3forms.com')) {
@@ -200,10 +180,7 @@ vi.stubGlobal('fetch', async (url: string | URL | Request) => {
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
-	// slice-28.1: ContactPage/AboutWeather refresh weather from /api/weather in
-	// onMount. Default stub answers JSON null ("no fresh data") so components
-	// keep their SSR-baked prop and tests stay deterministic without network.
-	// Tests exercising the refresh path override globalThis.fetch locally.
+	// A null weather response preserves the server-provided weather; refresh tests override fetch locally.
 	if (urlStr.includes('/api/weather')) {
 		return new Response('null', {
 			status: 200,

@@ -199,10 +199,7 @@
 
 	const readmeParts = $derived.by(() => {
 		let idx = 0;
-		// Same real "#" permalink as the blog path (homework #7c): id on the
-		// opening tag, anchor injected before the closing tag. IDs must count
-		// ALL h1-h6 (readmeTocChildren counts them all), but the visible anchor
-		// only ships on h2-h4 — the levels the hover CSS positions.
+		// Count all heading levels for stable IDs, but expose visible permalinks only on h2-h4.
 		return (readme ?? []).map((part) =>
 			'html' in part
 				? { html: part.html.replace(/<(h[1-6])([^>]*)>([\s\S]*?)<\/\1>/gi, (match, tag, attrs, inner) => {
@@ -218,11 +215,7 @@
 
 	afterNavigate(onTocNavigate);
 
-	// slice-34.4: reading position survives a locale switch. The detail page's
-	// section ids are locale-stable (`section-${i}`, `readme-h-${idx}`), so we
-	// capture the active heading id and, after the page remounts in the new
-	// locale, scroll to that SAME heading. Raw scrollY would be wrong because FR/EN
-	// body lengths differ, so the same heading sits at a different offset.
+	// Restore the locale-stable heading ID because translated text changes its vertical offset.
 	onMount(() =>
 		registerScrollContext({
 			capture: () => ({ kind: 'heading', id: activeHeadingId, y: window.scrollY }),
@@ -411,9 +404,7 @@
 </div>
 
 <style>
-	/* End-of-case-study CTA: the shared band brings its own centered layout
-	   AND its own hazard strip on top (operator rule), so the wrapper only
-	   spaces. */
+
 	.cta-area {
 		margin-top: 1rem;
 	}

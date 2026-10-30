@@ -1,26 +1,4 @@
-// page-registry — pure helpers over the emitted site_pages registry
-// ($lib/content/site-pages.ts). Slice-26.1 content controls.
-//
-// THE CASCADE CONTRACT (web side): the registry contains PUBLISHED rows only.
-// A path that doesn't resolve against it belongs to an archived (or unknown)
-// section and must 404 — +layout.server.ts is the single gating point, and
-// the sitemap filters its entries through the same resolution so archived
-// pages disappear from navbar, footer, mobile menu, sitemap, AND route in
-// one CMS action (archive → rebuild Flow → static export).
-//
-// Resolution rules:
-//   1. '/' always resolves (system root — the site cannot 404 its own home).
-//   2. Concrete page routes require their own published registry row.
-//   3. Detail routes resolve to their LONGEST matching listing prefix:
-//      '/services/sql-development' → '/services'; '/blog/some-post' → '/blog'.
-//      Longest-prefix means '/blog/personal' (when it had children) would win
-//      over '/blog' for paths under it. Only `type: 'listing'` rows act as
-//      prefixes — freeform/system rows never claim child paths.
-//   4. Anything else is unknown → no entry → 404.
-//
-// Non-page surfaces (OG images, sitemap.xml, robots.txt, /work resume
-// redirect, /api/*) are exempt: they don't render HTML pages and several
-// apply their own content-specific publication guards where needed.
+// Resolve published pages by exact path or longest listing prefix; absent sections must 404 and leave the sitemap.
 
 import { sitePages } from '#lib/content/site-pages.ts';
 import type { SitePage } from '#lib/types.ts';

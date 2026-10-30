@@ -1,24 +1,4 @@
-/**
- * Locale-switch state handoff orchestrator (slice-34 foundation).
- *
- * A language switch (/about → /fr/about) changes the pathname, and
- * +layout.svelte wraps <main> in `{#key $page.url.pathname}`, so the WHOLE page
- * subtree unmounts and remounts. Component state survives through `persisted()`
- * (plain sessionStorage); this module carries what that cannot:
- *   - in `beforeNavigate` of a switch, it snapshots scroll + focus into a
- *     versioned sessionStorage blob keyed by the delocalized path (or a stable
- *     translation-group identity), and raises `restoring`;
- *   - in `afterNavigate` on the remounted page, it restores scroll AFTER paint,
- *     restores focus/selection by stable key (the old element is gone), clears
- *     the blob (switch-scoped), and lowers `restoring`.
- *
- * Wiring: call `attachLocaleHandoff()` at +layout.svelte SCRIPT INIT — not in
- * onMount's body — because beforeNavigate/afterNavigate must register during
- * component initialization. The root layout never remounts, so the orchestrator
- * (and its module state) survive page swaps.
- *
- * Pages with their own scroll anchor register a ScrollContext.
- */
+/* Register locale handoff during layout initialization; navigation hooks cannot register inside onMount. */
 import { browser } from '$app/env';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { tick } from 'svelte';

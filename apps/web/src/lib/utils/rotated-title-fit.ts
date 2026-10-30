@@ -1,11 +1,4 @@
-// Rotated-title fitting (operator spec 2026-07-03):
-// A vertical-rl label's run length is its RENDERED TEXT WIDTH rotated onto
-// the viewport's height axis. Per locale, the LONGEST rendered label defines
-// ONE shared font size: the biggest size at which that label still fits the
-// section's height budget, capped by the design max so the rail never eats
-// the content column. Every rotated title on the surface then wears that
-// same size, so the set reads as one system and nothing overflows on either
-// axis, in any language.
+// Measure the longest localized label against the vertical height budget and share its capped font size.
 
 export interface RotatedTitleFont {
 	/** CSS font-family list, e.g. from getComputedStyle(el).fontFamily. */

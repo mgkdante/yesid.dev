@@ -1,27 +1,4 @@
-<!--
-  WeatherScene — layered Montréal weather vignette (GO Wave 4).
-
-  One crafted scene per condition family (clear / clouds / rain / snow /
-  storm / mist / offline), each composed of: a sky gradient, celestial +
-  weather elements, and a Montréal skyline silhouette (Mount Royal cross,
-  Place Ville Marie, 1000 De La Gauchetière, Habitat 67, the Olympic
-  Stadium tower) whose windows light up at night.
-
-  Theming — dark theme is the base (brand default); a
-  [data-theme='light'] block re-tunes every palette knob, so the scene
-  sits naturally on both card surfaces. Brand tokens (--accent, --primary)
-  drive the sun, lightning and lit windows.
-
-  Motion — every loop here is infinite ambient motion, which is
-	MOTION-GATED per the two-tier policy (@yesid/motion/policy). The gate is
-  the prefers-reduced-motion block at the bottom: animations stop and each
-  element rests at its *designed* base position (precipitation is scattered
-  mid-sky like a postcard still, the bolt stays lit, fog banks sit layered)
-  — a composed static scene, never blank, never frozen mid-fall.
-
-  Purely decorative: aria-hidden, pointer-events none, zero layout impact
-  (absolute inset-0 behind the card's text).
--->
+<!-- Reduced motion uses composed static positions for precipitation, lightning and fog. -->
 <script lang="ts">
 	import type { WeatherSceneId } from './weather-scene';
 

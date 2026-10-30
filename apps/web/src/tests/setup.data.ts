@@ -6,9 +6,7 @@ import { vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { faker } from '@faker-js/faker';
 
-// Deterministic faker output for CI reproducibility (slice-17f L1 prerequisite).
-// Override per-test with `faker.seed(<n>)` if non-determinism is intentional.
-// Seed value 42 is arbitrary but stable.
+// Seed faker for reproducible CI; individual tests can override the seed.
 faker.seed(42);
 
 // Keep runtime environment imports deterministic and prevent weather requests.

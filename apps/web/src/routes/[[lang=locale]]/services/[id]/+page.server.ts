@@ -3,7 +3,7 @@
 // resolve once on the server and hydrate via __data.json.
 
 import { error } from '@sveltejs/kit';
-import { fetchServiceSvgContents } from '#lib/utils/index.ts';
+import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
 import { adapter } from '#lib/adapters/index.ts';
 import { serviceEntries } from '#lib/server/prerender-entries.ts';
 

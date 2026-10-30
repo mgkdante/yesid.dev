@@ -3,7 +3,7 @@
 	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
 	import { allowCarouselDrag } from '#lib/utils/carousel-drag.ts';
-	import { resolveLocale } from '#lib/utils/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { persisted } from '@yesid/ui/state';
 	import { siteLabels } from '#lib/content/index.ts';
@@ -112,20 +112,7 @@
 		<div class="embla__container">
 			{#each visibleProjects as project, i}
 				<div class="embla__slide">
-					<ProjectCard
-						{project}
-						{services}
-						{serviceSvgContents}
-						variant="proof"
-						cardSize="proof"
-						testId="proof-card"
-						mediaTestId="proof-card-image"
-						titleTestId="proof-card-title"
-						excerptTestId="proof-excerpt"
-						metricTestPrefix="proof"
-						class="w-full"
-						data-active={activeIndex === i}
-					/>
+					<ProjectCard {project} {services} {serviceSvgContents} variant="proof" class="w-full" data-active={activeIndex === i} />
 				</div>
 			{/each}
 		</div>

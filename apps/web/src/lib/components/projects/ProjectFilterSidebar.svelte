@@ -38,7 +38,6 @@
 		onStackSelect?: (stack: string | null) => void;
 	} = $props();
 
-	// Labels pulled from content layer (Task 17b-7d).
 	const filters = siteLabels.projectsChrome.listing.filters;
 	const labels = {
 		services: filters.services,

@@ -1,16 +1,3 @@
-// Contract test for the static adapter implementation.
-//
-// Imports `staticAdapter` directly (not via ./index re-export) so this test
-// stays network-free. Contract itself is enforced compile-time by the
-// `ContentAdapter` annotation on each adapter implementation; this file
-// verifies that the static implementation returns sane cardinality + shapes
-// (non-empty where expected, undefined for not-found).
-//
-// The Directus adapter that once shared this contract was removed at
-// slice-26 close (Directus 12 verified on both environments; the parity
-// oracle it fed is fulfilled). staticAdapter is the sole implementation —
-// this file is the contract's runtime coverage.
-
 import { describe, it, expect } from 'vitest';
 import { projects } from '#lib/content/projects.ts';
 import { services } from '#lib/content/services.ts';

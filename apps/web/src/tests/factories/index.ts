@@ -1,13 +1,3 @@
-// Barrel re-exports for the slice-17f L1 test data factories.
-//
-// Consumer pattern:
-//   import { projectFactory, serviceFactory } from '../../../tests/factories';
-//   const project = projectFactory.build({ status: 'public' });
-//
-// Each factory is a `Factory<T>` from interface-forge — see individual files
-// for defaults. The `_block-editor-doc` helper is INTENTIONALLY not exported
-// (underscore prefix marks it as internal to the factories module).
-
 export { routeSeoFactory } from './route-seo.factory';
 export { serviceFactory } from './service.factory';
 export { projectFactory } from './project.factory';

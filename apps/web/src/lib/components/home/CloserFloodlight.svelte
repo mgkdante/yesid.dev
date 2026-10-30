@@ -1,12 +1,9 @@
-<script lang="ts">import { ConstructionFloodlight } from '@yesid/ui/brand';</script>
+<script lang="ts">
+	import { ConstructionFloodlight } from '@yesid/ui/brand';
+</script>
 
-<!--
-  CloserFloodlight — Ground-level floodlight fixture with upward light beam.
-  Pure visual element, no JS. Centered under the ending on desktop, centered on mobile.
--->
 <div class="closer-floodlight-wrap" data-slot="closer-floodlight" aria-hidden="true">
-	<!-- Beam emerges from the lens at top of floodlight, spreads upward -->
-	<div class="closer-beam"></div>
+		<div class="closer-beam"></div>
 	<div class="closer-floodlight"><ConstructionFloodlight lit /></div>
 </div>
 
@@ -31,12 +28,10 @@
 		display: block;
 	}
 
-	/* Light beam — originates from the lens and widens upward to the ending. */
 	.closer-beam {
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
-		/* Bottom edge sits at top of floodlight wrapper = lens position */
 		bottom: 100%;
 		width: clamp(400px, 45vw, 650px);
 		height: calc(42dvh - var(--closer-ground-fold, 0px));
@@ -65,7 +60,6 @@
 	}
 
 	@media (--tablet-max) {
-		/* Floodlight on the ground, centered across full width */
 		.closer-floodlight-wrap {
 			position: absolute;
 			bottom: 0;
@@ -76,7 +70,6 @@
 			z-index: calc(var(--z-content) + 3);
 		}
 
-		/* Beam up to the ending — wider spread on mobile. */
 		.closer-beam {
 			display: block;
 			width: clamp(280px, 80vw, 400px);

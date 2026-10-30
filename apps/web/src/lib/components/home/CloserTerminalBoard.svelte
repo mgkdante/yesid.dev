@@ -80,7 +80,7 @@
 	.terminal-welcome {
 		padding: 4px 24px 12px;
 	}
-	/* GO2-W5: terminal text speaks console ink — comments/dim = ink-muted. */
+
 	.terminal-comment {
 		font-size: var(--text-mono);
 		color: var(--terminal-ink-muted);
@@ -100,8 +100,7 @@
 	.terminal-row:hover {
 		background-color: color-mix(in srgb, var(--primary) 5%, transparent);
 	}
-	/* go2/w4: accent → accent-text — AA on the now-theme-following terminal
-	   surface (dark byte-identical, light gets the AA gold). */
+
 	.terminal-row:hover .terminal-row-action {
 		color: var(--accent-text);
 	}

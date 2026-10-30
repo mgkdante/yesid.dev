@@ -1,22 +1,4 @@
-// Site-content data-shape contract tests.
-//
-// These tests validate the SHAPE of CMS-derived content modules, not the
-// VALUES inside them. The actual words (headlines, manifesto copy, section
-// labels, transit-line names, etc.) are owned by Directus and may change
-// independently of engineering — asserting on specific phrases makes the
-// suite break every time the marketing operator edits copy.
-//
-// What we test here:
-//   - Required fields exist and are non-empty strings
-//   - Counts (e.g. "5 manifesto pills", "9 hidden transit lines")
-//   - Data identifiers (service IDs, project slugs — URL contracts)
-//   - Structural shapes (Array.isArray, hex color regex, getProjectBySlug
-//     reference integrity)
-//
-// What we do NOT test here:
-//   - Specific copy ("PIPELINES THAT", "INFRASTRUCTURE", "TERMINUS", etc.)
-//   - Substring presence in flavor text (these belong in content-tier tests
-//     run by the editor, not in engineering CI)
+// Validate CMS content shapes and identifiers while allowing editors to change copy.
 
 import { describe, it, expect } from 'vitest';
 import {
@@ -70,14 +52,12 @@ describe('manifestoContent', () => {
 		expect(manifestoContent.terminal.command.en.length).toBeGreaterThan(0);
 	});
 
-
 	it('every pill has a non-empty English label and a serviceId', () => {
 		for (const pill of manifestoContent.pills) {
 			expect(pill.label.en.length).toBeGreaterThan(0);
 			expect(pill.serviceId.length).toBeGreaterThan(0);
 		}
 	});
-
 
 	// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────
 	// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until
@@ -133,8 +113,7 @@ describe('aboutContent', () => {
 	});
 
 	it('has a stack items array', () => {
-		// slice-18m: stackItems is CMS-controlled. Empty is a data-quality
-		// concern (flag for editor) but not a code bug. Test asserts shape.
+		// Empty stack items are an editorial concern; this assertion covers shape.
 		expect(Array.isArray(aboutContent.stackItems)).toBe(true);
 	});
 

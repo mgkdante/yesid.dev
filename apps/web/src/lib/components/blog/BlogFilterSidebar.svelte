@@ -16,15 +16,12 @@
 	import { ChevronToggle, FilterGroup, FilterSection } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 
-	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
 	const listingChrome = siteLabels.blogChrome.listing;
 	const labels = listingChrome.filters;
 	const allLabel = resolveLocale({ en: 'All', fr: 'Tous', es: 'Todos' }, locale);
 	const languageLabel = (lang: Locale) => resolveLocale(siteLabels.ui.languageNames[lang], locale) || lang;
 
-	// WHY: date range section is not a FilterGroup, so it needs its own collapse state.
-	// slice-34.6: session-scoped so it survives a locale switch (paints directly via
-	// persisted()'s synchronous seed — no expand-then-collapse flash).
+	// The date range is outside FilterGroup and needs its own persisted collapse state.
 	const dateOpen = persisted('blog-filter-date', true);
 
 	let {

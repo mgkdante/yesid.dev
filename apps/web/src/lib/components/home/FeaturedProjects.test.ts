@@ -5,7 +5,8 @@ import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
 import { getVisibleServices } from '#lib/services/static-helpers.ts';
-import { projectMetrics, resolveLocale } from '#lib/utils/index.ts';
+import { projectMetrics } from '#lib/utils/project-metrics.ts';
+import { resolveLocale } from '#lib/utils/locale.ts';
 import type { Project } from '#lib/types.ts';
 import { projectFactory } from '../../../tests/factories';
 

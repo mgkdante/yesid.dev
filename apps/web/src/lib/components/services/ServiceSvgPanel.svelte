@@ -1,20 +1,6 @@
-<!--
-  ServiceSvgPanel — container for service SVG illustrations with CornerMarks.
-  Standard dark styling (keeps existing orange-on-dark SVG appearance).
-  variant="panel" (desktop/tablet side panel) or "banner" (mobile full-width).
-  Round 5 (operator: "the fun svgs!"): the whole panel is a morph-hover
-  surface — hovering anywhere on it morphs the art (SvgIcon's built-in icon
-  hover only fired over the icon box itself), and the art runs the
-  light-register --accent remap so its amber linework survives daylight.
-  Round 6: the panel is a <button> and the morph fires on hover AND tap —
-  the original slice-09 hero-svg-box semantics (enter morphs, leave reverts,
-  click/tap toggles). pointerenter/leave are filtered to non-touch so a tap
-  doesn't fire a synthetic hover that instantly cancels its own toggle.
-  Decorative toy: aria-hidden + tabindex -1 (same a11y surface as the round-5
-  presentation div — SvgIcon inside is aria-hidden too).
--->
+<!-- Decorative hover/tap morph surface; filter synthetic touch hover so taps retain their toggle state. -->
 <script lang="ts">
-	import { cn } from '#lib/utils/index.ts';
+	import { cn } from '@yesid/ui/cn';
 	import { CornerMarks } from '@yesid/ui/brand';
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 
@@ -76,17 +62,14 @@
 		justify-content: center;
 		padding: 1.5rem;
 		overflow: hidden;
-		/* Round 6 button resets — the panel is a tap-able morph toy now. */
+
 		border: none;
 		background: transparent;
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
 	}
 
-	/* Round 5 light-register: service SVG linework is ~half var(--accent)
-	   (#FFB627 brand amber, unmapped per theme) — near-invisible on paper.
-	   Scoped remap to --line-amber: dark keeps the identical #FFB627, light
-	   gets #B57F00 (the "yellow line survives daylight" precedent). */
+	/* Remap amber linework locally to line-amber so service art remains visible on light paper. */
 	.svg-art {
 		--accent: var(--line-amber);
 		display: flex;

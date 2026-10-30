@@ -1,22 +1,8 @@
-// Data integrity tests validate that the seed data files conform to the contracts
-// defined by the TypeScript interfaces. These tests catch human errors in the data
-// (duplicate slugs, empty required fields, invalid enum values) at test time rather
-// than at runtime when a user is looking at a broken page.
-//
-// Layered since Slice 17c:
-//   - Per-field format assertions (LocalizedString.en non-empty, enum values)
-//     are covered by Zod schemas at the adapter boundary. The
-//     seed-parses-through-schema block below catches the same class of bug,
-//     and parsePort wraps in staticAdapter catch them at runtime too.
-//   - Cross-entity invariants Zod cannot express (relatedServices references,
-//     unique station numbers, URL-safe slugs, etc.) remain here.
-//   - The LocalizedString walker + translation-debt snapshot stays — it
-//     covers site-chrome literals that D2 carves out of schema validation.
+// Schema parsing covers fields; these tests also enforce cross-entity references and localization.
 
 import { describe, it, expect } from 'vitest';
 
 import { createRequire } from 'node:module';
-
 
 import { z } from 'zod';
 import { projects } from './projects.js';
@@ -64,10 +50,6 @@ describe('projects data integrity', () => {
 			expect(p.slug).toMatch(urlSafe);
 		});
 	});
-
-	// Per-field LocalizedString.en non-empty + status enum checks removed in
-	// slice-17c — ProjectSchema.parse() in the seed-parses-through-schema
-	// block below (and parsePort wraps in staticAdapter) cover those rules.
 
 	it('all projects have at least one stack entry', () => {
 		projects.forEach((p) => {
@@ -120,9 +102,6 @@ describe('services data integrity', () => {
 	it('at least 1 service exists', () => {
 		expect(services.length).toBeGreaterThanOrEqual(1);
 	});
-
-	// title/description LocalizedString.en non-empty checks removed in
-	// slice-17c — ServiceSchema.parse() covers them.
 
 	it('all services have a unique id', () => {
 		const ids = services.map((s) => s.id);
@@ -178,9 +157,6 @@ describe('services data integrity', () => {
 
 describe('siteMeta data integrity', () => {
 
-	// tagline/description LocalizedString.en non-empty checks removed in
-	// slice-17c — SiteMetaSchema.parse() covers them.
-
 	it('email link is present', () => {
 		expect(siteMeta.links.email.trim()).not.toBe('');
 	});
@@ -206,9 +182,6 @@ describe('blogPosts data integrity', () => {
 			expect(p.slug).toMatch(urlSafe);
 		});
 	});
-
-	// title/excerpt LocalizedString.en non-empty checks removed in slice-17c —
-	// BlogPostSchema.parse() covers them.
 
 	it('all dates are valid ISO date strings', () => {
 		const isoDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -250,21 +223,11 @@ describe('sitePages registry integrity (slice-26.1)', () => {
 	});
 });
 
-// ─────────────────────────────────────────────────────────────────────────
-// Seed data parses through schemas (slice-17c)
-// ─────────────────────────────────────────────────────────────────────────
-//
-// Double-check against the schemas consumed by staticAdapter.parsePort wraps.
-// Catches schema drift even when the adapter wiring happens to accept the
-// seed for unrelated reasons (e.g. a production bundle that trims a port).
-// One assertion per content file / constant — mirrors the wrap matrix in
-// staticAdapter so a missing schema is immediately visible here.
+// Validate seed data against the same schemas used at the adapter boundary.
 
 describe('seed data parses through schemas', () => {
 	it('projects → ProjectSchema[]', () => {
-		// slice-18m: projects is now CMS-derived Project shape directly (no
-		// rawProjectToProject wrapping); description + sections.content are
-		// LocalizedBlockEditorDoc per the #41 migration.
+
 		expect(() => z.array(ProjectSchema).parse(projects)).not.toThrow();
 	});
 
@@ -309,21 +272,7 @@ describe('seed data parses through schemas', () => {
 	});
 });
 
-// ─────────────────────────────────────────────────────────────────────────
-// LocalizedString guard + translation-debt report (Task 17b-8)
-// ─────────────────────────────────────────────────────────────────────────
-//
-// Walks every exported value in the content layer, identifies LocalizedString-
-// shaped objects (by the presence of a string `en` field), and reports:
-//
-//   - Malformed strings: any LocalizedString with a missing or empty `en`
-//     field. These fail the build — a LocalizedString without its English
-//     default would render as an empty string or `[object Object]` in the UI.
-//
-// The walker is purely structural — it doesn't know which fields the TypeScript
-// type system expects to be LocalizedString, just recognizes the shape. False
-// positives (objects with an `en` string that aren't meant to be localized) are
-// expected to be rare — grep audit found none as of Task 17b-8 authoring.
+// The structural walker validates objects with string-valued en keys as LocalizedStrings.
 
 interface LocalizedStringStats {
 	full: number; // en + fr + es
@@ -335,11 +284,7 @@ interface LocalizedStringStats {
 function isLocalizedStringShape(v: unknown): v is Record<string, unknown> {
 	if (typeof v !== 'object' || v === null) return false;
 	const obj = v as Record<string, unknown>;
-	// Must have an `en` key whose value is a STRING. Objects with `en` keys whose
-	// values are objects are LocalizedBlockEditorDoc / per-locale JSON columns
-	// (slice-18m: projects.description, projects.sections[].content are
-	// LocalizedBlockEditorDoc, not LocalizedString) — those are walked structurally,
-	// not validated as LocalizedStrings.
+	// Object-valued en keys belong to localized documents and must be walked rather than validated as strings.
 	return 'en' in obj && typeof obj.en === 'string';
 }
 
@@ -430,16 +375,7 @@ describe('LocalizedString guard + translation debt', () => {
 
 });
 
-// ─────────────────────────────────────────────────────────────────────────
-// Locale-completeness locks — slice-28.6 FR-first model
-// ─────────────────────────────────────────────────────────────────────────
-//
-// SUPPORTED_LOCALES = ['en', 'fr', 'es']. Slice-28.6 policy is FR-FIRST /
-// ES-LATER: French translations may land without Spanish (en+fr partials are
-// the expected steady state mid-rollout); a field with es but NOT fr signals
-// translations entered out of order (or an accidental ES backfill) and stays
-// a hard failure.
-//
+// Spanish translations require French siblings; French-only additions remain valid.
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 
 	it('every LocalizedString has a non-empty French value', () => {

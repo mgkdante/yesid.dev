@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from './nav.js';
 
 describe('navLinks', () => {
-	// slice-18m: nav links are CMS-derived. Order + copy are editor-controlled,
-	// so tests assert structural validity instead of specific text/order.
+	// Navigation order and copy are CMS-owned, so assertions cover structure.
 	it('contains the 3 header nav links (Services, Projects, Contact)', () => {
 		expect(navLinks).toHaveLength(3);
 		const hrefs = navLinks.map((l) => l.href).sort();
@@ -85,12 +84,12 @@ describe('errorPageContent', () => {
 	});
 
 	it('has a non-empty label', () => {
-		// slice-18m: label text is CMS-controlled (was hand-written 'ROUTE NOT FOUND').
+
 		expect(errorPageContent.label.en.trim()).not.toBe('');
 	});
 
 	it('has at least one route suggestion', () => {
-		// slice-18m: editor decides how many suggestions (was hand-written 3).
+
 		expect(errorPageContent.suggestions.length).toBeGreaterThanOrEqual(1);
 		for (const s of errorPageContent.suggestions) {
 			expect(s.label.en.trim()).not.toBe('');

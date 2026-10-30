@@ -59,9 +59,7 @@
 				aria-label={interestLabel}
 				aria-pressed={activeIndex === i}
 			>
-				<!-- Background image: skewed, B&W to color on hover/tap.
-				     go2/w4: treatment is theme-aware, dark keeps the darkened
-				     look, light whitens instead (filters live in <style>). -->
+
 				<div
 					class="strip-bg absolute inset-[-20px] transition-all duration-500 ease-out"
 					style="transform: skewX(-8deg) scale(1.2);"
@@ -120,11 +118,7 @@
 		object-position: center;
 	}
 
-	/* go2/w4 operator QA: theme-aware image treatment. Dark mode keeps the
-	   original darkened B&W (brightness 0.3 + ink overlay); light mode
-	   WHITENS instead (brightness up + paper overlay) so the strips read as
-	   bleached paper, not a dark slab on a light page. Tokens drive the
-	   overlay (var(--background) flips per theme), no hardcoded black. */
+	/* Theme-aware filters keep image strips readable on both dark surfaces and light paper. */
 	.strip-bg {
 		filter: grayscale(1) brightness(0.3);
 	}

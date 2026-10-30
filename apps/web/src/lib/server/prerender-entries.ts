@@ -1,20 +1,4 @@
-// Prerender entry builders — consolidation-deploy-honesty slice.
-//
-// The site is 100% build-time content, so every page route prerenders
-// (prerender = true at the root layout). SvelteKit only auto-expands routes
-// whose params are all optional to their UNPREFIXED form ('*' entries strip
-// `[[lang=locale]]`), so each route exports explicit entries for every locale
-// and each content slug. Explicit > crawl-discovered: an orphan page (not
-// linked from nav/listings) would otherwise silently fall back to the lambda.
-//
-// Locale model (slice-28.6): EN is never prefixed (lang: ''), while FR and ES
-// resolve as path prefixes. `resolve_route` drops an optional param whose value
-// is '' — `{ lang: '' }` yields '/about', `{ lang: 'fr' }` '/fr/about'.
-// PREFIX_LOCALES is the routing lever for every entry list here.
-//
-// Slug sources are the GENERATED content modules (CMS is truth, .ts is the
-// build-time cache) — the same arrays the sitemap builder enumerates, so
-// prerender coverage and sitemap coverage stay in lockstep.
+// Explicit locale and slug entries cover orphan pages that SvelteKit's crawler cannot discover.
 
 import { blogPosts } from '#lib/content/blog.ts';
 import { projects } from '#lib/content/projects.ts';

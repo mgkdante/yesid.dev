@@ -1,8 +1,5 @@
 <script lang="ts">
-	// Legal page (OPS1 launch Phase 1): /legal/[slug] — privacy, cookies,
-	// terms, notice, accessibility. Plain prose column rendered through the
-	// shared BlockRenderer (same pipeline as blog bodies). Body is per-locale
-	// (EN fallback via resolveLocale until the L1 Spanish pass lands es).
+
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';

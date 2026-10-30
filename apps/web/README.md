@@ -83,7 +83,7 @@ Regenerate both binary icons from `favicon.svg` if the mark changes.
 | `@yesid/ui/blueprints` | Blueprint drawings as inline components (`currentColor` for theming); the CTA sheets keep their `data-cta-sheet` and motif markers | Composed in ServicesBlueprint, BlogBlueprint, ProjectsBlueprint and CtaBlueprintBackground (12 unique sheets behind the shared `CtaBand`) |
 | `static/svg/services/*.svg` | 6 service line icons; filenames are CMS data (`services.svg`) | Dual: `?raw` glob (`src/lib/utils/service-svg.ts`, SSR) + client fetch/img `/svg/services/...` |
 | `static/images/**` | Raster + CMS-mirrored assets (metro map, about art, work shots) | Static; CMS mirror via `media-assets.ts` (GENERATED) + `assets-id-map.json` |
-| `static/og/**.png` | 30 committed OG share cards, 1200x630 <150KB, minted by `scripts/generate-og-cards.ts`: `default.{en,fr,es}` (home + locale fallback), localized `routes/{services,contact,about,projects}`, localized `services/<id>`, and `site.{en,fr,es}` (standalone share assets, unwired) | Static; blog/project Satori + resvg cards prerender at build into deployment-static `/og/{blog,project}/` files |
+| `static/og/**.png` | 27 committed OG share cards, 1200x630 <150KB, minted by `scripts/generate-og-cards.ts`: `default.{en,fr,es}` (home + locale fallback), localized `routes/{services,contact,about,projects}`, localized `services/<id>` | Static; blog/project Satori + resvg cards prerender at build into deployment-static `/og/{blog,project}/` files |
 
 ### Rules
 

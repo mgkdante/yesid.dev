@@ -1,29 +1,4 @@
-// Layout server load — resolves nav slots for all 4 placement positions plus
-// the generic error page content (status 0 fallback row). All adapter reads
-// resolve from the build-time static content layer (post-27.2) — "CMS" rows
-// below are CMS-authored content exported at build, not live calls.
-//
-// slice-18i Phase 5 Task 5.2: Nav.svelte and Footer.svelte previously imported
-// nav data directly from $lib/content. This server load centralises the read
-// so components receive NavLink arrays as typed props — no direct $lib/content
-// imports remain in layout components after this task.
-//
-// slice-18i Phase 5 Task 5.4: +error.svelte previously imported errorPageContent
-// directly from $lib/content. SvelteKit's error pages have no companion loader,
-// so error page copy is pre-resolved here and forwarded via $page.data.errorPage.
-// Status 0 maps to the generic-fallback row; the component renders it for
-// all status codes (404, 500, etc.) until per-status rows ship.
-//
-// Failure strategy: each read is individually guarded. A failing slot returns
-// [] or the static fallback rather than crashing the layout.
-//
-// slice-26.1 (content controls): this load is ALSO the single route-gating
-// point for the site_pages registry. Before any data resolution, the request
-// path is resolved against $lib/content/site-pages (published rows only —
-// exact match, else longest listing prefix). No entry → the section was
-// archived in the CMS (or never existed) → 404. Non-page surfaces (/og/,
-// /sitemap.xml, /robots.txt, /work, /api/) never run this load (+server.ts
-// endpoints skip layout loads) and are additionally exempt inside the helper.
+// Gate published page routes, then resolve layout data with per-port fallbacks.
 
 import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
@@ -51,21 +26,14 @@ import type { NavLink, ErrorPageContent } from '#lib/navigation/types.ts';
 // with the manual setHeaders call. Single source of truth: hooks.server.ts.
 
 export const load: LayoutServerLoad = async ({ route, params, url }) => {
-	// Route ids stay keyed by their canonical (unprefixed) form everywhere
-	// downstream — route-seo registries, getPageSeo, the composer (slice-28.6).
+
 	const routeId = stripLocaleSegment(route.id ?? '/__error');
 
-	// Registry route-gate (slice-26.1). Only gate real page routes: a null
-	// route.id means SvelteKit is already rendering the error page for an
-	// unmatched path — gating there would just re-throw inside the error
-	// render. Archived/unknown sections 404 before any content resolution.
-	// Registry paths are locale-less, so the gate compares the delocalized
-	// pathname ('/fr/about' gates as '/about').
+	// Skip registry gating for unmatched-route error renders to avoid throwing again during error handling.
 	if (route.id !== null && !isPathPublished(delocalizePath(url.pathname))) {
 		error(404, 'Not found');
 	}
-	// slice-28.6: locale from params.lang (page routes) with a pathname
-	// fallback (error renders carry no params).
+
 	const locale = localeFromParams(params as Record<string, string>, url.pathname);
 	const safeByPlacement = async (
 		placement: 'header' | 'footer' | 'mobile' | 'menu',
@@ -113,8 +81,7 @@ export const load: LayoutServerLoad = async ({ route, params, url }) => {
 
 	const safeMorphShapes = async () => {
 		try {
-			// CMS-generated shapes via the adapter port ($lib/content/morph-shapes
-			// since slice-28.5 #120).
+
 			return await adapter.content.morphShapes();
 		} catch {
 			// Last-resort hand-written seed — see the FALLBACK SEED banner in

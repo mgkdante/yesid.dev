@@ -1,15 +1,4 @@
-// cache-headers.test.ts — pins the CDN cache headers set by handle() in
-// src/hooks.server.ts (slice-28.4, audit #99).
-//
-// The hook is the single place the site's edge-caching contract lives:
-//   - cache-control          (browser+shared, HTML pages only)
-//   - cdn-cache-control      (CDN tier, HTML + __data.json)
-//   - vercel-cdn-cache-control (Vercel CDN tier, HTML + __data.json)
-// gated to GET + 200 responses. These exact values were tuned in slice-27.2
-// (s-maxage 86400 / stale-while-revalidate 604800) — a silent regression here
-// changes prod CDN behaviour with no other test noticing.
-//
-// Node-tier test: stubs resolve() with canned Responses; no server, no DOM.
+// Pin the HTML and data-response CDN cache contract at the server hook boundary.
 
 import { describe, it, expect } from 'vitest';
 import type { RequestEvent } from '@sveltejs/kit';

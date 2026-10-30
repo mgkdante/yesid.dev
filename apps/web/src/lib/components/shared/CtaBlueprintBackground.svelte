@@ -14,54 +14,18 @@
 	{/snippet}
 
 	{#snippet details()}
-		<BlueprintBridge
-			class="edge-detail cta-sheet cta-sheet--bridge"
-			data-cta-sheet="bridge"
-		/>
-		<BlueprintCatenary
-			class="edge-detail cta-sheet cta-sheet--catenary"
-			data-cta-sheet="catenary"
-		/>
-		<BlueprintTunnelSection
-			class="edge-detail cta-sheet cta-sheet--tunnel"
-			data-cta-sheet="tunnel"
-		/>
-		<BlueprintGeology
-			class="edge-detail cta-sheet cta-sheet--geology"
-			data-cta-sheet="geology"
-		/>
-		<BlueprintInterfaceSuite
-			class="edge-detail cta-sheet cta-sheet--interface"
-			data-cta-sheet="interface"
-		/>
-		<BlueprintSignal
-			class="edge-detail cta-sheet cta-sheet--signal"
-			data-cta-sheet="signal"
-		/>
-		<BlueprintVentShaft
-			class="edge-detail cta-sheet cta-sheet--vent-shaft"
-			data-cta-sheet="vent-shaft"
-		/>
-		<BlueprintTransitRoute
-			class="edge-detail cta-sheet cta-sheet--transit"
-			data-cta-sheet="transit"
-		/>
-		<BlueprintTBM
-			class="edge-detail cta-sheet cta-sheet--tbm"
-			data-cta-sheet="tbm"
-		/>
-		<BlueprintDataPipeline
-			class="edge-detail cta-sheet cta-sheet--pipeline"
-			data-cta-sheet="pipeline"
-		/>
-		<BlueprintStationSection
-			class="edge-detail cta-sheet cta-sheet--station"
-			data-cta-sheet="station"
-		/>
-		<BlueprintCodeSystem
-			class="edge-detail cta-sheet cta-sheet--code"
-			data-cta-sheet="code"
-		/>
+		<BlueprintBridge class="edge-detail cta-sheet cta-sheet--bridge" />
+		<BlueprintCatenary class="edge-detail cta-sheet cta-sheet--catenary" />
+		<BlueprintTunnelSection class="edge-detail cta-sheet cta-sheet--tunnel" />
+		<BlueprintGeology class="edge-detail cta-sheet cta-sheet--geology" />
+		<BlueprintInterfaceSuite class="edge-detail cta-sheet cta-sheet--interface" />
+		<BlueprintSignal class="edge-detail cta-sheet cta-sheet--signal" />
+		<BlueprintVentShaft class="edge-detail cta-sheet cta-sheet--vent-shaft" />
+		<BlueprintTransitRoute class="edge-detail cta-sheet cta-sheet--transit" />
+		<BlueprintTBM class="edge-detail cta-sheet cta-sheet--tbm" />
+		<BlueprintDataPipeline class="edge-detail cta-sheet cta-sheet--pipeline" />
+		<BlueprintStationSection class="edge-detail cta-sheet cta-sheet--station" />
+		<BlueprintCodeSystem class="edge-detail cta-sheet cta-sheet--code" />
 	{/snippet}
 </BlueprintShell>
 

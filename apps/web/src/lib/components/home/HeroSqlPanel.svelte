@@ -38,9 +38,6 @@
   );
 </script>
 
-<!-- GO2-W5 taste round 2: terminal body = the SITE background (solid);
-     identity = solid-orange rule chassis + terminal-ink type.
-     Round 3: chassis one step thicker (border-2) — bolder structure. -->
 <div
   class="rounded-lg border-2 border-[var(--border-rule)] bg-[var(--terminal)] p-5 font-mono"
   data-testid="sql-panel"
@@ -56,10 +53,7 @@
     </span>
   </div>
 
-  <!-- Query with syntax highlighting — river indentation (operator's
-       personal pattern): keywords flush left, expressions aligned at one
-       12ch gutter, INNER JOIN spelled out, AS inline. Long lines scroll
-       horizontally like a real SQL editor instead of wrapping the river. -->
+  <!-- Keep SQL lines unwrapped so the keyword and expression gutters stay aligned. -->
   <div class="overflow-x-auto whitespace-nowrap text-xs leading-[1.7] md:text-sm md:leading-[1.8]" data-testid="sql-query">
     <span class="text-[var(--primary)]">SELECT</span><span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d.route_short_name,</span><br />
     <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">round</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">avg</span><span class="text-[var(--terminal-ink)]">(f.delay_seconds)::numeric, 1)</span> <span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">avg_delay_s,</span><br />

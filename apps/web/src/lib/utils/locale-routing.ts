@@ -1,12 +1,4 @@
-// Locale routing helpers — slice-28.6 (/fr path-prefix scheme).
-//
-// TWO LEVERS, deliberately separate:
-//   PREFIX_LOCALES (prefix-locales.ts) = which locales RESOLVE as URL prefixes.
-//   PUBLISHED_LOCALES (seo-defaults.ts) = which locales are ANNOUNCED to crawlers
-//     (hreflang, sitemap variants, FR canonicals, the locale switcher).
-// /fr works as soon as 'fr' is in PREFIX_LOCALES, but self-canonicalizes to the
-// EN URL until 'fr' joins PUBLISHED_LOCALES — so FR can be QA'd live, unindexed,
-// and the launch is a one-line flip.
+// Prefix locales control routing; published locales separately control canonical URLs and crawler announcements.
 
 import { building } from '$app/env';
 import { createLocaleRouting } from '@yesid/i18n-core';

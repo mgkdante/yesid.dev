@@ -1,23 +1,12 @@
-<!--
-  SvgIcon — brand atom for animated SVG illustrations.
-  Merges BlogSvgIcon + WorkSvgIcon into one unified component.
-  Entrance: 3 animation types via GSAP (draw, morph, draw-fill). All are
-  drawing motion — doctrine-compatible on enter per D266. The pure
-  fade-up "stagger" variant was cut in 17e-5 (D267 F reveal violation).
-  Hover: paths morph into a random geometric shape, revert on leave.
-  Tap-to-toggle morph on mobile.
--->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { BlogAnimation } from '#lib/types.ts';
 	import { getMorphShapes, pickRandomShape } from '#lib/utils/shapes.ts';
 	import type { MorphShape } from '@repo/shared';
-	// Slice-23: reduced-motion guards removed per operator policy. Draw-on-
-	// load entrance + hover/tap path morphing are not vestibular triggers
-	// (visual transformation, brief, user-initiated for hover/tap).
+	// Brief drawing and user-triggered path morphing remain active under reduced motion.
 	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
 	import { convertSvgToMorphPaths } from '#lib/motion/utils/morphHelpers.ts';
-	import { cn } from '#lib/utils/index.ts';
+	import { cn } from '@yesid/ui/cn';
 
 	let {
 		svgContent,

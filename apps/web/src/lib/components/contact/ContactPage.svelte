@@ -27,7 +27,6 @@
 	import { pressBounce } from '@yesid/motion/actions';
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
-	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
 	let {
 		contactPage,
 		weather = null,
@@ -66,10 +65,7 @@
 	const localTime = $derived(hydrated ? montrealTime.format(clock.now) : '');
 	$effect(() => clock.subscribe());
 
-	// Rotated edge-title fit (operator spec 2026-07-03, shared logic with the
-	// home rotated titles): the label is measured and sized to exactly fill
-	// the edge column's height, capped at the 13rem design max. null until
-	// measured: the CSS var fallback carries first paint.
+	// Measure the rotated label to fit the edge column; CSS provides the first-paint fallback.
 	let edgeColumnEl = $state<HTMLElement | undefined>(undefined);
 	let edgeTitleSize = $state<number | null>(null);
 	const edgeVar = $derived(
@@ -361,16 +357,11 @@
 				</div>
 			</div>
 
-			<!-- LANGUAGES section (homework #25): tells a bilingual Montreal market
-			     which language to write in; adding ES later is one CMS edit. -->
 			<div class="mb-4">
 				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(contactPage.infoTerminal.sectionLabels.languages, locale)}</div>
 				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.languages, locale)}</div>
 			</div>
 
-			<!-- BEST FIT section (homework #26b): the project shapes that fit best,
-			     so a prospect self-qualifies before the form. Hidden until the CMS
-			     columns carry content (prod regenerates from the prod CMS). -->
 			{#if contactPage.infoTerminal.bestFit?.length}
 				<div class="mb-4" data-testid="contact-best-fit">
 					{#if contactPage.infoTerminal.sectionLabels.bestFit}
@@ -478,11 +469,6 @@
 							</div>
 						{/if}
 
-						<!-- Submit button — Round 5c: THE conversion action. Yellow
-						     signage treatment (bg --accent, ink --signage-bg),
-						     never orange: yellow = "talk to Yesid" only.
-						     In flight: disabled + label swaps to the CMS "sending"
-						     line so the 1-3s Web3Forms round trip is never dead air. -->
 						<span class="tap-press" use:pressBounce>
 							<Button
 								variant="conversion"
@@ -506,9 +492,6 @@
 							</div>
 						{/if}
 
-						<!-- Booking escape hatch (homework #21 batch): prefer a call over a
-						     message. Orange mono link-row; the submit above stays the page's
-						     only conversion-yellow element (Round 5c doctrine). -->
 						<div class="mt-1 flex flex-wrap items-center gap-2 font-mono text-caption">
 							<span class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.formTerminal.bookingPrompt, locale)}</span>
 							<a
@@ -595,8 +578,7 @@
 		.mobile-heading { display: none; }
 		.contact-grid {
 			display: grid;
-			/* Round 5: edge-title rule one step bolder, in lockstep with the
-			   blog/projects listing layouts (same Recipe-4 rail voice). */
+
 			grid-template-columns: auto 2px minmax(0, 1fr);
 			padding-block: 0;
 			margin-top: calc(-1 * var(--nav-clearance));
@@ -623,11 +605,7 @@
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			/* COMPUTED fit (operator spec 2026-07-03, rotated-title-fit.ts):
-			   the rendered label is measured and sized to exactly fill the
-			   edge column's height, capped at the 13rem design max: as big as
-			   possible, zero overflow. The var fallback only covers first
-			   paint before hydration measures. */
+			/* The size variable is measured after hydration; its fallback covers first paint. */
 			font-size: var(--edge-title-size, min(clamp(6rem, 12vw, 13rem), 11dvh));
 			font-weight: 900;
 			color: var(--foreground);
@@ -651,14 +629,10 @@
 	/* Focused form fields need breathing room above the virtual keyboard */
 	.form-field {
 		scroll-margin-bottom: 100px;
-		/* GO-w2t5: terminal-orange caret — zero-risk brand signal. */
+
 		caret-color: var(--primary);
 	}
 
-	/* ═══ Resize Handle ═══
-	   Taste round 2: the grab bar between the two terminals is a real
-	   delimitation — visible border tone idle (var(--card) was invisible on
-	   both boards), full route-set orange on hover. */
 	.contact-grid :global(.contact-resize-handle) {
 		width: 8px;
 		background: var(--border);

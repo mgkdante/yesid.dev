@@ -2,14 +2,13 @@
 	import { durationSec } from '@yesid/motion/tokens';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { resolveLocale } from '#lib/utils/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 
 	import type { CloserContent, SiteMeta } from '#lib/types.ts';
 
-	// slice-18i Phase 7C: closerContent now flows as a prop from the server load.
 	let {
 		closer: closerContent,
 		siteMeta,
@@ -27,30 +26,8 @@
 	import { backgroundBreathing } from '#lib/motion/scrubs/index.ts';
 	import CloserTerminalBoard from './CloserTerminalBoard.svelte';
 
-	// Static content
-	const ctaLabel = $derived(resolveLocale(closerContent.cta.label, locale));
 	const ctaHref = $derived(closerContent.cta.href);
-	const contactLabel = $derived(resolveLocale(closerContent.rows.contact.label, locale));
-	const contactDesc = $derived(resolveLocale(closerContent.rows.contact.description, locale));
-	const contactAction = $derived(resolveLocale(closerContent.rows.contact.action, locale));
-	const connectLabel = $derived(resolveLocale(closerContent.rows.connect.label, locale));
-	const connectDesc = $derived(resolveLocale(closerContent.rows.connect.description, locale));
-	const connectAction = $derived(resolveLocale(closerContent.rows.connect.action, locale));
-	const readLabel = $derived(resolveLocale(closerContent.rows.read.label, locale));
-	const readDesc = $derived(resolveLocale(closerContent.rows.read.description, locale));
-	const readAction = $derived(resolveLocale(closerContent.rows.read.action, locale));
-	const aboutLabel = $derived(resolveLocale(closerContent.rows.about.label, locale));
-	const aboutDesc = $derived(resolveLocale(closerContent.rows.about.description, locale));
-	const aboutAction = $derived(resolveLocale(closerContent.rows.about.action, locale));
 
-	// Terminal chrome copy — added in Task 17b-7a.
-	const terminalTitleText = $derived(resolveLocale(closerContent.terminal.title, locale));
-	const terminalCityLabel = $derived(resolveLocale(closerContent.terminal.city, locale));
-	const terminalEncodingLabel = $derived(resolveLocale(closerContent.terminal.encoding, locale));
-	const terminalDestinationsTemplate = $derived(resolveLocale(closerContent.terminal.destinationsLabel, locale));
-	const terminalPromptLine = $derived(resolveLocale(closerContent.terminal.prompt, locale));
-
-	// Build row data
 	type BoardRow = {
 		label: string;
 		description: string;
@@ -58,36 +35,18 @@
 		href: string;
 		primary: boolean;
 	};
-	const rows = $derived([
-		{
-			label: contactLabel,
-			description: contactDesc,
-			action: contactAction,
-			href: '/contact',
-			primary: true,
-		},
-		{
-			label: aboutLabel,
-			description: aboutDesc,
-			action: aboutAction,
-			href: '/about',
-			primary: false,
-		},
-		{
-			label: readLabel,
-			description: readDesc,
-			action: readAction,
-			href: '/blog',
-			primary: false,
-		},
-		{
-			label: connectLabel,
-			description: connectDesc,
-			action: connectAction,
-			href: siteMeta.links.github,
-			primary: true,
-		},
-	] satisfies BoardRow[]);
+	const rows = $derived(([
+		['contact', '/contact', true],
+		['about', '/about', false],
+		['read', '/blog', false],
+		['connect', siteMeta.links.github, true],
+	] as const).map(([key, href, primary]) => ({
+		label: resolveLocale(closerContent.rows[key].label, locale),
+		description: resolveLocale(closerContent.rows[key].description, locale),
+		action: resolveLocale(closerContent.rows[key].action, locale),
+		href,
+		primary,
+	})) satisfies BoardRow[]);
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 	let coreEl: HTMLElement;
@@ -159,22 +118,21 @@
 		<HeroDotAnnotation {lettering} width={wordWidth + 14} height={words.length > 1 ? 48 : 30} x={origin.x} y={origin.y} visible progress={ink} />
 	</div>
 
-
 	<!-- Content -->
 	<div class="closer-content relative z-10">
 		<!-- Terminal departure board -->
 		<CloserTerminalBoard
 			rows={rows}
-			terminalTitle={terminalTitleText}
-			cityLabel={terminalCityLabel}
-			encodingLabel={terminalEncodingLabel}
-			destinationsTemplate={terminalDestinationsTemplate}
-			promptLine={terminalPromptLine}
+			terminalTitle={resolveLocale(closerContent.terminal.title, locale)}
+			cityLabel={resolveLocale(closerContent.terminal.city, locale)}
+			encodingLabel={resolveLocale(closerContent.terminal.encoding, locale)}
+			destinationsTemplate={resolveLocale(closerContent.terminal.destinationsLabel, locale)}
+			promptLine={resolveLocale(closerContent.terminal.prompt, locale)}
 		/>
 
 		<!-- CTA -->
 		<a href={ctaHref} data-testid="closer-cta" class="closer-cta tap-press" use:pressBounce>
-			{ctaLabel} <span class="closer-cta-arrow">-{'>'}</span>
+			{resolveLocale(closerContent.cta.label, locale)} <span class="closer-cta-arrow">-{'>'}</span>
 		</a>
 
 	</div>
@@ -186,13 +144,7 @@
 </section>
 
 <style>
-	/* go2/w4 operator QA: the GO-W2.2 .theme-dark pin is REMOVED — it read as
-	   an extra dark layer and kept the closer terminal dark in light mode.
-	   GO2-W5 round 6 (operator): the section paints NOTHING of its own —
-	   transparent in both themes so the page's circuit-grid schematic shows
-	   through the terminus. Solidity lives in the terminal board inside
-	   (--terminal === --background, the round-2 contract), never on the
-	   section wrapper. */
+	/* Keep the section transparent so the page circuit grid shows through the terminal. */
 	.closer-section {
 		/* The 100px ground under the board unfolds with the reveal; unfolded, it is the original bottom clearance. */
 		--closer-ground-fold: calc((1 - var(--closer-reveal, 1)) * 100px);
@@ -218,8 +170,7 @@
 		.closer-section :global(.around [data-construction-prop='balise']) { order: 3; }
 	}
 
-	/* GO-w2t5: breathing consumer — var(--breathing-phase) 0↔1 modulates a
-	   faint floor glow under the board ("is it actually moving?" subtle). */
+	/* The breathing phase modulates the floor glow without moving content. */
 	.closer-section::before {
 		content: '';
 		position: absolute;
@@ -272,10 +223,7 @@
 	}
 
 	/* ===== CTA ===== */
-	/* Round 5c YELLOW-CONVERSION doctrine: "Initialize connection ->" is the
-	   terminus conversion action — a SOLID yellow signage button, not a ghost
-	   outline. Theme-invariant pair (--accent #FFB627 ground, --signage-bg
-	   #1C1814 ink, ≈10:1 both modes); hover per the accent system. */
+
 	.closer-cta {
 		display: inline-flex;
 		align-items: center;

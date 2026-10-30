@@ -1,12 +1,4 @@
-<!--
-  Train ↔ rocket morph — pure delight card (operator: "transit + space,
-  cute af"). Every train path morphs into a structurally identical rocket
-  path (see train-rocket-shapes.ts) so the tween loses nothing: the smoke
-  puff BECOMES the flame, the wheels become fins, the headlight becomes a
-  star. Morphs on hover (desktop), tap (mobile), and keyboard focus.
-  Reduced motion: instant state flip, no travel (the cue stays, the motion
-  goes) and the idle bob is gated off.
--->
+<!-- Matching train and rocket path structures allow reversible interpolation without losing shapes. -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';

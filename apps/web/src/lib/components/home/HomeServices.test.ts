@@ -1,11 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import HomeServices from './HomeServices.svelte';
-// slice-18i Phase 7C: HomeServices now requires servicesGrid prop.
-// slice-28.5 (#124): HomeServices also requires the services prop — the
-// component no longer calls getVisibleServices() itself; the home
-// +page.server.ts resolves it through the repository layer. The test stub
-// derives the same data from the content module the static adapter reads.
+
 import { servicesGridContent } from '#lib/content/site-content.ts';
 import { getVisibleServices } from '#lib/services/static-helpers.ts';
 import { serviceFactory } from '../../../tests/factories';
@@ -132,9 +128,7 @@ describe('HomeServices', () => {
 	});
 
 	it('go2/w4: hover glow unwired — pointermove writes NO --glow vars on the section', () => {
-		// Operator QA: the section-scale cursor glow is gone. The sectionGlow
-		// primitive itself survives (other consumers untouched); this section
-		// just no longer uses it.
+
 		const realMatchMedia = window.matchMedia;
 		window.matchMedia = vi.fn().mockImplementation((q: string) => ({
 			matches: true,

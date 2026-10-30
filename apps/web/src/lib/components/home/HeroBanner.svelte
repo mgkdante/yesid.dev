@@ -1,23 +1,4 @@
-<!--
-  Hero banner: scroll-driven SVG metro network animation (Slice A + Slice C).
-  Renders the home-page hero band; layered backdrop with the metro-network motion.
-  The SVG arrives as the `metroSvg` prop via adapter.content.metroSvg — post-27.2
-  the live static adapter inlines static/images/montreal-metro.svg at build time
-  (no runtime Directus fetch).
-
-  Phase 1 (0-3%)    — Berri-UQAM dot + "yesid" + "SCROLL DOWN" after dot activation
-  Phase 1b (3-15%)   — Dot + text pulse (light on/off, opacity)
-  Phase 2 (17-45%)   — "yesid" + "SCROLL DOWN" fade out, lines draw outward
-  Phase 3 (47-58%)   — Station nodes appear
-  Phase 4 (58-65%)   — Labels fade in
-  Phase 5 (65-95%)   — Zoom into Berri-UQAM (fills viewport with orange from the node itself)
-  Phase 6 (100%)     — Cross-fade SVG out → hero text container in (both orange, seamless)
-  Phase 7 (105-140%) — Zoom out hero text container (scale→1), revealing headline
-  Phase 8 (110-142%) — Text elements stagger in during zoom-out
-  Phase 9 (155%)     — Brief hold, then unpin — SQL panel visible on natural scroll
-
-  Scroll: 800% desktop / 300% mobile. Lenis smooth-scroll site-wide (normalizeScroll removed 17e-1).
--->
+<!-- Scroll-driven metro intro with an in-place collapse and reversible replay. -->
 <script lang="ts">
 	import { onMount, onDestroy, tick, untrack } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
@@ -52,8 +33,6 @@
 	import HeroTextContent from './HeroTextContent.svelte';
 	import HeroMobileSql from './HeroMobileSql.svelte';
 
-	// slice-18i Phase 7C: all hero content now flows as props from +page.server.ts
-	// → +page.svelte → HomePage → HeroBanner. No static imports for page content.
 	interface Props {
 		metroSvg: string;
 		hero: HeroContent;
@@ -68,15 +47,8 @@
 	let scrollText: HTMLSpanElement;
 	let scrollCursorEl: HTMLSpanElement;
 
-	// $derived so these recompute if the hero props change: a plain const
-	// captures only the initial prop value, which Svelte 5 flags
-	// (state_referenced_locally).
 	const scrollDownLabel = $derived(resolveLocale(heroAnimContent.scrollDown, locale));
-	// Billboard fit math (receiver r2): the desktop billboard is a nowrap
-	// single mono line with -0.5vw tracking, so its width is roughly
-	// len × (0.6 × size − 0.5) vw. Solve for the LARGEST size that spans ~90%
-	// of the viewport, for EVERY locale (the old approach hardcoded a FR-only
-	// shrink and the ES string clipped). +1 char budgets the block cursor.
+	// Fit a nowrap mono line to 90vw; budget one extra character for the cursor.
 	const billboardVw = $derived.by(() => {
 		const len = scrollDownLabel.length + 1;
 		const size = (90 / len + 0.5) / 0.6;
@@ -88,43 +60,32 @@
 	const subtitleText = $derived(resolveLocale(heroContent.subtitle, locale));
 	const ctaWorkLabel = $derived(resolveLocale(heroContent.ctaWork, locale));
 	const ctaContactLabel = $derived(resolveLocale(heroContent.ctaContact, locale));
-	const sqlPrompt = $derived(resolveLocale(heroContent.sqlPanel.prompt, locale));
-	// Live KPIs (homework #2 phase 2): true only while REAL transit data is on
-	// screen. Every visitor-facing label switches DEMO ↔ LIVE off this flag so
-	// the dashboard can never wear the LIVE badge over simulated numbers.
+	// LIVE labels require real transit data; simulated values must retain DEMO labels.
 	let live = $state(false);
-	const sqlLiveLabel = $derived(
-		resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
-	);
+	const sqlLabels = $derived({
+		prompt: resolveLocale(heroContent.sqlPanel.prompt, locale),
+		liveLabel: resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
+		columnRoute: resolveLocale(heroContent.sqlPanel.columns.route, locale),
+		columnAvgDelay: resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale),
+		columnVehicles: resolveLocale(heroContent.sqlPanel.columns.vehicles, locale),
+		metaTemplate: resolveLocale(heroContent.sqlPanel.metaTemplate, locale),
+	});
 	const headlineAriaSuffix = $derived(resolveLocale(heroContent.headline.ariaSuffix, locale));
-	const sqlColumnRoute = $derived(resolveLocale(heroContent.sqlPanel.columns.route, locale));
-	const sqlColumnAvgDelay = $derived(resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale));
-	const sqlColumnVehicles = $derived(resolveLocale(heroContent.sqlPanel.columns.vehicles, locale));
-	const sqlMetaTemplate = $derived(resolveLocale(heroContent.sqlPanel.metaTemplate, locale));
 	const refreshLabel = $derived(resolveLocale(heroContent.refreshButton.label, locale));
 	const refreshHelper = $derived(
 		resolveLocale(live ? heroContent.refreshButton.helperLive : heroContent.refreshButton.helper, locale),
 	);
-	// go2/w5: hero-dot replay button aria from site_labels.
+
 	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale);
-	// go2/w5 taste-2: ONE caption names the metro art (the in-frame legend is
-	// gone because it overlapped the SVG on mobile). site_labels owns the copy.
+
 	const metroCaption = resolveLocale(siteLabels.ui.metroCaption, locale);
 
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;
 
-	// untrack: heroData deliberately seeds from the prop once and then diverges
-	// locally via handleRefresh(); it must not follow later prop updates.
+	// Seed once from the prop, then let refreshes own the local data.
 	let heroData: HeroData = $state(untrack(() => INITIAL_HERO_DATA));
-	// The dashboard card LABEL/SUB copy is CMS truth (siteLabels.heroDashboard);
-	// HeroMetrics resolves it per-locale by metric key, and the SQL panels carry
-	// no metric labels — so heroData (numbers, units, query rows, the "STM"
-	// wordmark) flows to the children unchanged. No localization pass here.
-	// Honesty pass (until real KPIs ship, homework #2): the page is prerendered,
-	// so any age claim at first paint is fiction. The slot says what the data IS
-	// ("demo data"); after a real click of the refresh button, "regenerated just
-	// now" is genuinely true and may stand.
+	// Prerendered demo data has no meaningful age; only a user refresh can claim it was regenerated just now.
 	const updatedAgoInitial = resolveLocale(
 		{ en: 'demo data', fr: 'données démo', es: 'datos de demo' },
 		locale,
@@ -146,9 +107,7 @@
 		}
 	}
 
-	// freshnessS is computed server-side at serve time; the shared clock keeps
-	// advancing it so the stamp reads as truly live between polls
-	// (operator call 2026-07-03), not frozen at the fetch moment.
+	// The shared clock advances server-provided freshness between polls.
 	let liveBase = $state<{ freshnessS: number; receivedAt: number } | null>(null);
 	$effect(() => clock.subscribe());
 	const updatedAgo = $derived(
@@ -189,10 +148,7 @@
 		});
 	}
 
-	// Poll the transit endpoint at the pipeline cadence (~one publish cycle).
-	// Playwright runs (navigator.webdriver) stay on the deterministic demo
-	// generator so the hermetic e2e preview never depends on an external
-	// service. Any failure falls back to DEMO data with DEMO labels.
+	// Automated browsers use deterministic demo data so E2E runs do not depend on the transit service.
 	let liveEnabled = false;
 	onMount(() => {
 		if (navigator.webdriver) return;
@@ -230,29 +186,20 @@
 			return;
 		}
 
-		// Resolve heroDot from DOM — inside HeroTextContent child component
 		const heroDot = heroTextContainer.querySelector('.hero-dot') as SVGSVGElement;
 
-		// Preload lazy plugins used inside createHeroTimeline (DrawSVG stroke
-		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws).
-		// Register ScrollTrigger + apply its site-wide config.
 		await Promise.all([loadDrawSVG(), loadCustomEase()]);
 		if (destroyed) return;
 		initScrollTriggerConfig();
 
-		// Typewriter accompanies the visitor-activated metro sequence.
-		// If the user scrolls past mid-animation, the type-sequence cuts off and
-		// the blink picks up; the intro is not narrative-critical.
+		// Scrolling past the intro cuts off typing and leaves the cursor blinking.
 		const typewriter = createTypewriter(scrollPrompt, scrollText, scrollCursorEl, scrollDownLabel);
 		typewriter.type(() => {});
 
-		// Ensure fonts are loaded before glyph measurements
 		await document.fonts.ready;
 		if (destroyed) return;
 
-		// Mobile pin length branch per design spec §5.1 + plan decision A1.
-		// Single mount-time matchMedia check; no gsap.matchMedia rebuild on
-		// resize across 1024px — accepted trade-off for simpler architecture.
+		// Choose pin length once at mount; resizing across the breakpoint does not rebuild the timeline.
 		const isMobile = isViewportAtMost(1023);
 
 		const destroyHero = createHeroTimeline(pinContainer, {
@@ -264,9 +211,7 @@
 			stopBlink: typewriter.stopBlink,
 			pinLength: isMobile ? '300%' : '800%',
 			onHeroApproach: approaching => { heroApproaching = approaching; },
-			// Replay rebuilds refresh explicitly before their rewind starts —
-			// the factory's deferred refresh would land mid-rewind and its
-			// scroll restoration would cancel the native smooth scroll.
+			// Refresh before rewind because a deferred refresh would restore scroll and cancel native smooth scrolling.
 			skipDeferredRefresh: true,
 			// Defer teardown until outside the timeline update.
 			onIntroComplete: () => {
@@ -276,7 +221,6 @@
 			},
 		});
 
-		// Sleep/wake: refresh ScrollTrigger when tab becomes visible again
 		function onVisibilityChange() {
 			if (!document.hidden) {
 				ScrollTrigger.refresh();
@@ -294,19 +238,14 @@
 	function scrollBackToTop(): void {
 		const lenis = getLenis();
 		if (lenis) {
-			// Film-rewind pace: quick out of the gate, soft landing at the top.
+
 			lenis.scrollTo(0, { duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
 		} else {
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 
-	// Reset every inline style the intro wrote (timeline tweens, build-time
-	// gsap.set()s, manual transform-origins, MetroNetwork's onMount opacity
-	// seeds) back to the stylesheet state. After this, .hero-intro-done
-	// renders the finished hero (text forced visible, art display:none), and
-	// a replay rebuild starts from EXACTLY the same baseline as a fresh
-	// mount — the e2e-verified skip-path rebuild.
+	// Clear all intro inline styles so replay starts from the same CSS baseline as a fresh mount.
 	function clearIntroSceneStyles(): void {
 		const pieces = pinContainer.querySelectorAll(
 			'.metro-line, .metro-station, .metro-bg, .metro-label, .metro-caption',
@@ -320,13 +259,7 @@
 		heroTextContainer.style.transformOrigin = '';
 	}
 
-	// Taste-2 core: on intro completion, the intro's scroll allowance
-	// COLLAPSES IN PLACE. The pin dies (spacer removed), .hero-intro-done
-	// shrinks the section reserve to one viewport, and the scroll position is
-	// re-anchored by exactly the removed height — the settled hero becomes the
-	// natural top of the page with zero visual displacement (the pinned final
-	// frame and the collapsed hero are the same pixels). Same-day reloads then
-	// land in identical geometry, so restored scroll positions match 1:1.
+	// Collapse the track and subtract its removed height so the settled hero stays in place.
 	async function collapseIntroTrack(): Promise<void> {
 		if (destroyed || introCollapsed) return;
 		const beforeHeight = document.documentElement.scrollHeight;
@@ -347,18 +280,10 @@
 		restoreReplayFocus = false;
 	}
 
-	/** Instant scroll that keeps Lenis' internal position AND limits in sync. */
 	function jumpTo(top: number): void {
 		const lenis = getLenis();
 		if (lenis) {
-			// Lenis CLAMPS scrollTo targets to its cached dimensions, and that
-			// cache refreshes through a 250ms-DEBOUNCED ResizeObserver. Every
-			// jumpTo here runs right after a geometry flip (collapse/re-enlarge),
-			// i.e. inside that debounce window — without a synchronous re-measure
-			// the replay pre-position silently lands at the stale collapsed-track
-			// limit, the rebuilt scrub never renders its top segment, and the
-			// 200×-scaled hero text paints the viewport solid orange (the
-			// replay-rewind orange-wall bug).
+			// Resize Lenis before jumping; its debounced geometry cache otherwise clamps against the old track height.
 			lenis.resize();
 			lenis.scrollTo(top, { immediate: true, force: true });
 		} else {
@@ -366,26 +291,7 @@
 		}
 	}
 
-	// Click on the armed dot (taste-2): RE-ENLARGE the scroll track, place the
-	// viewport (invisibly — identical settled pixels) at the END of the
-	// rebuilt intro, then Lenis-ease back to the top so the whole intro scrubs
-	// BACKWARD through the viewport — a film rewind, never a jump. Scrolling
-	// it through again re-fires onIntroComplete, so the collapse re-applies.
-	//
-	// Ordering is load-bearing:
-	//   1. plugins preload FIRST — afterwards every await in the chain is a
-	//      microtask (settle delay skipped), so no frame can paint the
-	//      intermediate states: the first painted frame after the click is
-	//      the settled hero at the end of the re-enlarged track;
-	//   2. the pre-jump OVERSHOOTS the approximate end before the rebuild so
-	//      the new trigger's very first render is already at/past its end —
-	//      the armed-crossing latch in createHeroTimeline therefore stays
-	//      silent (the jump must never read as "scrolled the intro through");
-	//   3. the global refresh runs AFTER the rebuild — it materializes the
-	//      new pin's start/end (creation alone leaves them undefined) and
-	//      performs the timeline's first render, at progress 1;
-	//   4. the corrective jump dials in the exact pin end and renders it
-	//      before the next paint, then the rewind starts.
+	// Rebuild and correct the pin end before paint, then rewind; jumping directly to the end must not arm completion.
 	async function handleReplay(): Promise<void> {
 		if (destroyed || replayArming || !replayEnabled || isPrefersReducedMotion()) return;
 		heroApproaching = false;
@@ -394,31 +300,17 @@
 		replayArming = true;
 		try {
 			if (introCollapsed) {
-				// Preload the timeline's lazy plugins BEFORE touching geometry.
-				// On an idle load they were never imported, and a
-				// chunk fetch inside the rebuild would break the paint-atomic
-				// microtask chain (frames would paint the half-rebuilt scene).
-				// Idempotent: instant when already loaded.
+				// Preload before geometry changes so chunk fetching cannot expose an intermediate frame.
 				await Promise.all([loadDrawSVG(), loadCustomEase()]);
 				if (destroyed) return;
 				const beforeHeight = document.documentElement.scrollHeight;
 				const beforeY = window.scrollY;
-				// Shield: the base markup is opacity-0; keep the settled hero
-				// text painted across the class flip + rebuild. The rebuilt
-				// timeline's first render (at the end, Phase 6 fromTo end = 1)
-				// takes ownership of the same value.
+				// Shield the settled text across the class flip until the rebuilt timeline owns opacity.
 				heroTextContainer.style.opacity = '1';
 				introCollapsed = false; // re-enlarge the track
 				await tick();
 				if (destroyed) return;
-				// Pre-position at the re-enlarge height delta PLUS one viewport
-				// of overshoot so the rebuilt pin's first render is already
-				// AT/PAST its end. The delta alone can land a hair SHORT of the
-				// pin end (the section reserve holds more than the pin), and a
-				// first render below the end threshold would arm the
-				// completion latch — the corrective end render would then read
-				// as "scrolled through" and instantly re-collapse the track
-				// mid-replay.
+				// Overshoot by one viewport so the first render cannot arm completion and collapse the rebuilt track.
 				jumpTo(
 					beforeY +
 						Math.max(0, document.documentElement.scrollHeight - beforeHeight) +
@@ -426,35 +318,17 @@
 				);
 				await setupIntro();
 				if (destroyed) return;
-				// Release the shield BEFORE the rebuilt timeline's first render
-				// (same synchronous block as the refresh below — no frame can
-				// paint the gap). GSAP records a tween target's PRE-tween value
-				// at init and reverts to it whenever the playhead scrubs back
-				// below the tween's start: the Phase 6 fromTo must therefore
-				// init against the stylesheet state (class opacity-0), not the
-				// shield — otherwise the rewind passing below Phase 6 reverts
-				// the 200×-scaled hero text back to the shield's opacity 1 and
-				// its giant dot glyph paints the viewport solid orange.
+				// Remove the shield before tween initialization so backward scrubbing restores CSS opacity instead of the shield.
 				heroTextContainer.style.opacity = '';
-				// Global re-measure, load-bearing twice over: downstream
-				// triggers (manifesto, closer…) shifted by the re-enlarge, AND
-				// the new pin's start/end only materialize here —
-				// ScrollTrigger.create() does NOT fully refresh synchronously,
-				// so without this pass st.end below reads undefined and the
-				// corrective jump degenerates to scrollTo(NaN) (which Lenis
-				// turns into a scroll-to-0 and a poisoned internal position).
-				// This is also the timeline's FIRST render: at the overshot
-				// scroll it lands at progress 1 — tween starts + zoom getters
-				// init from the clean build state, and the latch stays silent.
+				// Refresh materializes pin bounds and updates downstream triggers before the corrective jump.
 				ScrollTrigger.refresh();
-				// Correct to the EXACT pin end (+ whatever the visitor had
-				// scrolled within the collapsed hero) — identical pixels.
+
 				const st = ScrollTrigger.getAll().find(
 					(t) => t.trigger === pinContainer && Boolean(t.vars.pin),
 				);
 				if (st) {
 					jumpTo(st.end + Math.max(0, beforeY - st.start));
-					// Render the corrected position before the next paint.
+
 					ScrollTrigger.update();
 				}
 			}
@@ -480,28 +354,15 @@
 		class="hero-pin relative flex w-full items-center justify-center overflow-hidden"
 		style="padding-bottom: env(safe-area-inset-bottom, 0px);"
 	>
-		<!-- SVG wrapper — zooms into Berri-UQAM. Hidden under reduced-motion
-		     via @media rule in the stylesheet. -->
+
 		<div
 			bind:this={svgWrapper}
 			class="hero-metro-wrapper absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
-			<!-- Sodium lamp — lives INSIDE the metro wrapper, so it exists only
-			     while the animation does: on from the first intro frame, zooms
-			     away with the art in Phase 5, display:none'd by hero-intro-done
-			     (idle hero on every load) and by reduced motion. Sized
-			     by the 100lvh pin, never by the document — no geometry flip can
-			     re-scale it (the page-wrapper and sticky variants both
-			     glitched; operator-rejected). -->
+			<!-- Size the lamp against the pin viewport so track-height changes cannot rescale it. -->
 			<div class="hero-lamp" aria-hidden="true"></div>
 			<MetroNetwork svg={metroSvg} />
-			<!-- go2/w5 taste-2: ONE unobtrusive caption names the art (the
-			     in-frame legend is gone). Anchored to the wrapper's bottom
-			     strip — the metro frame is capped at 80dvh and centered, so
-			     the wrapper's bottom band is art-free at every breakpoint:
-			     the caption can never overlap the SVG. Part of the art
-			     (aria-hidden, fades in with Phase 4, zooms away with the
-			     wrapper in Phase 5). -->
+			<!-- The caption occupies the art-free bottom strip outside the centered metro frame. -->
 			{#if metroCaption}
 				<p class="metro-caption" data-testid="metro-caption" aria-hidden="true">
 					{metroCaption}
@@ -509,7 +370,6 @@
 			{/if}
 		</div>
 
-		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
 			class="hero-text-layer absolute inset-0 flex items-start justify-center opacity-0 md:items-center md:pb-[max(5svh,2.5rem)]"
@@ -517,7 +377,7 @@
 		>
 			<div class="w-full px-[var(--space-page-x)]">
 				<div class="hero-grid">
-					<!-- LEFT COLUMN: text content -->
+
 					<HeroTextContent
 						{headlineLine1}
 						{headlineLine2}
@@ -535,7 +395,6 @@
 						onReplay={handleReplay}
 					/>
 
-					<!-- VERTICAL DIVIDER (desktop only) -->
 					<div
 						class="hidden self-stretch lg:block"
 						data-hero-stagger="5"
@@ -543,18 +402,12 @@
 						<div class="hero-divider"></div>
 					</div>
 
-					<!-- RIGHT COLUMN: desktop only (mobile gets its own section below pin) -->
 					<div class="hero-viewport-sql hidden lg:block">
 						<div data-hero-stagger="4">
 							<HeroSqlPanel
 								rows={heroData.queryRows}
 								queryTime={heroData.queryTime}
-								prompt={sqlPrompt}
-								liveLabel={sqlLiveLabel}
-								columnRoute={sqlColumnRoute}
-								columnAvgDelay={sqlColumnAvgDelay}
-								columnVehicles={sqlColumnVehicles}
-								metaTemplate={sqlMetaTemplate}
+								{...sqlLabels}
 								{updatedAgo}
 							/>
 						</div>
@@ -577,7 +430,6 @@
 			</div>
 		</div>
 
-		<!-- "NEXT STOP: SCROLL DOWN" — full-width billboard flush to bottom -->
 		<p
 			bind:this={scrollPrompt}
 			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-primary md:whitespace-nowrap md:leading-none"
@@ -587,28 +439,15 @@
 		</p>
 	</div>
 
-	<!-- Mobile SQL section — outside the pin, scrolls naturally after hero text -->
 	<HeroMobileSql
 		heroData={heroData}
-		{sqlPrompt}
-		{sqlLiveLabel}
-		{sqlColumnRoute}
-		{sqlColumnAvgDelay}
-		{sqlColumnVehicles}
-		{sqlMetaTemplate}
-		{updatedAgo}
-		{refreshLabel}
-		{refreshHelper}
+		labels={{ ...sqlLabels, updatedAgo, refreshLabel, refreshHelper }}
 		onRefresh={handleRefresh}
 	/>
 </section>
 
 <style>
-	/* Section scroll reservation — matches the pin-length per breakpoint.
-	   Mobile pin = 300% → 100lvh trigger + 300lvh pin extension = 400lvh +
-	   the closed HeroMobileSql tab + 50lvh buffer = 450lvh.
-	   Desktop pin = 800% → 100lvh + 800lvh = 900lvh, no trailing content
-	   (SQL panel is in-grid inside the pin). */
+	/* Reserve the trigger height plus its pin extension; mobile also needs the SQL tab and trailing buffer. */
 	.hero-section-reserve {
 		min-height: 450svh;
 	}
@@ -619,14 +458,10 @@
 		}
 	}
 
-	/* Hero pin container — full viewport for the animation */
 	.hero-pin {
 		height: 100lvh;
 	}
 
-	/* The intro's sodium lamp: a top-anchored radial filling the metro
-	   wrapper (inset-0 of the 100lvh pin). DOM-first inside the wrapper =
-	   painted under the metro art; no z-index games. */
 	.hero-lamp {
 		position: absolute;
 		inset: 0;
@@ -634,13 +469,7 @@
 		background-image: radial-gradient(120vw 100% at 50% 0%, color-mix(in srgb, var(--glow) 12%, transparent), transparent 60%);
 	}
 
-	/* ─────────────────────────────────────────────────────────────────
-	   Reduced motion: the metro-network scroll-pin sequence is entirely
-	   gated off. Operator policy (slice-23): no metro map background, no
-	   typing animation, hero text visible immediately, no oversized scroll
-	   reservation. CSS-only (not JS-toggled) so the server renders the
-	   correct layout — no flash between SSR and hydration.
-	   ─────────────────────────────────────────────────────────────────── */
+	/* CSS disables the intro and scroll reserve under reduced motion before hydration. */
 	@media (prefers-reduced-motion: reduce) {
 		.hero-section-reserve {
 			min-height: 100svh;
@@ -651,32 +480,21 @@
 			min-height: 100svh;
 		}
 
-		/* Kill the metro map entirely. */
 		.hero-metro-wrapper {
 			display: none;
 		}
 
-		/* Hide the "SCROLL DOWN" typewriter prompt. */
 		.scroll-prompt {
 			display: none;
 		}
 
-		/* Hero text container is opacity-0 in the base markup so the GSAP
-		   pin sequence can fade it in. Under reduced motion the sequence
-		   never runs — force it visible from the first paint. */
 		:global(.hero-section-reserve [data-testid='hero-text-container']) {
 			opacity: 1 !important;
 			position: relative !important;
 		}
 	}
 
-	/* ─────────────────────────────────────────────────────────────────
-	   go2/w5 replayable intro — collapsed (completed) geometry. Mirrors the
-	   reduced-motion block above: the finished hero (text visible, no metro
-	   art, no 900svh scroll reservation). Applied LIVE the moment the intro
-	   completes (taste-2: the scroll allowance collapses in place) and is the server-rendered default on every visit. Removed only
-	   while the pulsing dot replays the intro.
-	   ─────────────────────────────────────────────────────────────────── */
+	/* The collapsed hero is the SSR default; replay temporarily restores the full intro track. */
 	.hero-section-reserve.hero-intro-done {
 		min-height: 100svh;
 	}
@@ -700,21 +518,14 @@
 		transform: none !important;
 	}
 
-
-	/* go2/w5 taste-2: metro caption — ONE small line naming the art. Lives in
-	   the wrapper's bottom strip: the frame is capped at 80dvh and vertically
-	   centered, so ≥10% of the wrapper's height below it is always art-free —
-	   no overlap at any breakpoint. Starts at opacity 0; createHeroTimeline
-	   fades it in with the Phase 4 station labels. Visually uppercase via CSS
-	   (the LocalizedString stays operator-cased: 'STM métro + REM'). */
+	/* Keep the caption in the wrapper's art-free bottom strip to prevent overlap at every breakpoint. */
 	.metro-caption {
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
 		bottom: clamp(10px, 2.5vh, 28px);
 		margin: 0;
-		/* Shrink-wrapped to the text — the caption's box is exactly the ink it
-		   draws, so it occupies nothing it doesn't paint. */
+
 		width: max-content;
 		max-width: calc(100vw - 32px);
 		text-align: center;
@@ -738,17 +549,14 @@
 		padding-top: calc(var(--nav-clearance) + 1rem);
 	}
 
-	/* Two-column hero grid: text | divider | SQL panel */
 	.hero-grid {
 		display: grid;
-		/* WHY (measured 2026-07-29): minmax(0, 1fr) removes 1fr's automatic
-		   min-content floor; the 580px SQL panel otherwise clips live at 769–1120px. */
+		/* minmax(0, 1fr) removes the min-content floor that would clip the SQL panel on small laptops. */
 		grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
 		gap: 32px;
 		align-items: start;
 	}
 
-	/* Vertical divider — amber rule (matches the footer's accent rule), faded ends */
 	.hero-divider {
 		width: 1px;
 		height: 100%;
@@ -761,7 +569,6 @@
 		);
 	}
 
-	/* Refresh button — orange gradient, glow, JetBrains Mono */
 	.refresh-btn {
 		display: inline-flex;
 		align-items: center;
@@ -784,27 +591,21 @@
 		transform: translateY(-1px);
 	}
 
-	/* Full-width billboard text */
 	.scroll-prompt {
 		font-size: 11.5vw;
 		letter-spacing: -0.3vw;
 		bottom: calc(100lvh - 100dvh);
 	}
-	/* .scroll-block-cursor moved to app.css so the global .typewriter-cursor
-	   class can override its opacity when the typewriter is active (17e-4). */
 
 	@media (--tablet-min) {
 		.scroll-prompt {
-			/* Computed per locale from the label length (see billboardVw): the
-			   largest size that never clips the nowrap line. Replaces the old
-			   FR-only 6vw shrink that let the ES billboard overflow. */
+
 			font-size: var(--billboard-vw, 6.8vw);
 			letter-spacing: -0.5vw;
 			bottom: 0;
 		}
 	}
 
-	/* Mobile: single-column grid */
 	@media (--desktop-max) {
 		.hero-intro-done .hero-pin {
 			min-height: 100svh;

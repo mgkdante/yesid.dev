@@ -1,19 +1,4 @@
-/**
- * heroTypewriter — Typewriter text effect for the hero scroll prompt.
- * Character-by-character reveal. Cursor blink is CSS-driven via the
- * .typewriter-cursor class + @keyframes typewriter-blink (see app.css).
- * scrollPrompt opacity is owned by the hero timeline scrub.
- *
- * Character advance runs through the shared gsap.ticker (17e-5) so the
- * whole site ticks from a single RAF callback. A deltaTime accumulator
- * advances one character every ~80ms of wall-clock time.
- *
- * NOTE: GSAP's gsap.ticker.add callback delivers `deltaTime` in
- * MILLISECONDS (not seconds). Preserving the original setInterval's
- * 80ms-per-character pacing means comparing the accumulator to 80, not
- * to 0.08. Getting this wrong makes the typewriter blow through the
- * entire string in one frame.
- */
+/* GSAP ticker deltaTime is milliseconds; compare it with the 80ms character interval. */
 
 import { subscribe, unsubscribe } from '@yesid/motion/utils/ticker';
 

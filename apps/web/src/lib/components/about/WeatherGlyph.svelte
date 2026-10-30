@@ -1,11 +1,3 @@
-<!--
-  WeatherGlyph — crafted inline condition pictogram (GO Wave 4).
-
-  Replaces the hotlinked OpenWeather bitmap (openweathermap.org PNG) with a
-  brand-drawn SVG in the exact same 32px slot: currentColor silhouettes with
-  --accent sun/bolt details, so it follows the theme like every other glyph
-  on the site. Static by design (safe-always tier — no animation at all).
--->
 <script lang="ts">
 	import type { WeatherSceneId } from './weather-scene';
 

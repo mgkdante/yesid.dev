@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
-// slice-18i Phase 7C: HomeCloser now requires closer prop.
+
 import { closerContent } from '#lib/content/site-content.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
 import { THE_END } from './annotation-lettering';
