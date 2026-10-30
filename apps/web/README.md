@@ -117,7 +117,7 @@ bun run --cwd apps/web check:client-payload
 ```
 
 Web dev, test, check and build generate ignored content modules from the shared
-fixture by default, without credentials or network. Trusted Vercel targets use
+fixture by default, without credentials or network. Only Vercel production uses
 live content; local operators select it with `EXPORT_FALLBACKS_SOURCE=live`.
 Refresh the fixture from a live cache with
 `bun apps/cms/scripts/trim-export-fixture.ts`; commit the fixture, not generated modules.

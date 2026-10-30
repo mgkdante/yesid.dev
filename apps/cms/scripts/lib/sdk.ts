@@ -13,14 +13,13 @@ export function defaultDirectusUrl(): string {
 	return process.env.PUBLIC_DIRECTUS_URL ?? 'https://cms.yesid.dev';
 }
 
-/** The only hostname mutating ops scripts may target. */
+/** Retired DEV host; only the historical asset-registry migration still pins it. */
 export const DEV_CMS_HOSTNAME = 'cms.dev.yesid.dev';
 
 /**
- * Guard: refuse to run a mutating ops script against anything but the dev
- * Directus instance. Mutating migration and content scripts call this right
- * after resolving its target URL, so a stray prod URL aborts before any write.
- * Prod promotion is a separate, deliberate, operator-gated path.
+ * Guard for the historical asset-registry migration: refuse any target but the
+ * retired DEV instance, so that script cannot write to production. Production
+ * mutations use their own guarded scripts and the cms workflow.
  *
  * Strict hostname match (2026-07 pipeline-safety sweep): the old substring
  * check let a crafted URL like https://evil.example/cms.dev.yesid.dev pass.

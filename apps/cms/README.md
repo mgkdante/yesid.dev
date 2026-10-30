@@ -157,9 +157,12 @@ workflow lanes, and it stays out of the shared dump by design.
 
 `packages/shared/src/asset-registry.ts` owns semantic keys, release entries,
 usage declarations, kinds, roles, and delivery modes. The Directus snapshot
-owns `asset_records`, `asset_versions`, and `asset_usages`. The corresponding
-setup scripts are guarded migration tools, not alternate schema
-authorities.
+owns `asset_records`, `asset_versions`, and `asset_usages`.
+`scripts/setup-asset-registry-schema.ts` (`setup:asset-registry`) is the
+historical migration that created those collections. Its guard accepts only
+the retired DEV host `cms.dev.yesid.dev`, so it refuses every current target;
+it is not a production apply path or a second schema authority. Its plan
+builder stays as an offline contract for `tests/snapshot-contract.test.ts`.
 
 `fixtures/assets-manifest.json` owns the repository-to-CMS migration inventory
 and the SHA-256 digest of each committed mirror. Export verifies those bytes
