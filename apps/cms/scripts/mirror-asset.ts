@@ -22,7 +22,7 @@ const sha256 = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest(
 const within = (root: string, path: string) => { const child = relative(root, path); return child !== '..' && !child.startsWith('..\\') && !child.startsWith('../') && !isAbsolute(child); };
 function cmsOrigin(value: string) {
 	const origin = new URL(value);
-	if (!['https://cms.yesid.dev', 'https://cms.dev.yesid.dev'].includes(origin.origin) || origin.pathname !== '/' || origin.search || origin.hash || origin.username || origin.password) throw new Error('Expected an existing HTTPS CMS origin.');
+	if (origin.origin !== 'https://cms.yesid.dev' || origin.pathname !== '/' || origin.search || origin.hash || origin.username || origin.password) throw new Error('Expected an existing HTTPS CMS origin.');
 	return origin.origin;
 }
 

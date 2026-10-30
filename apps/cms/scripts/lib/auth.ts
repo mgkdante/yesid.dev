@@ -2,9 +2,8 @@
  * Directus admin-token resolution with fallback flow.
  *
  * Supports three auth paths:
- *   1. Vercel build tokens — DIRECTUS_BUILD_TOKEN on production and the distinct
- *      DIRECTUS_DEV_BUILD_TOKEN on the develop preview. Arbitrary preview branches
- *      are never allowed to resolve a build credential.
+ *   1. Vercel build token — DIRECTUS_BUILD_TOKEN on production only. Vercel
+ *      previews are never allowed to resolve a build credential.
  *   2. DIRECTUS_ADMIN_TOKEN — fallback for local development and operator scripts (admin-level
  *      static token, skips network call).
  *   3. DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD — last resort via
@@ -33,14 +32,7 @@ export async function getAdminToken(
 		}
 
 		if (process.env.VERCEL_ENV === 'preview') {
-			if (process.env.VERCEL_GIT_COMMIT_REF !== 'develop') {
-				throw new Error('Build credentials are disabled on an arbitrary Vercel preview.');
-			}
-			assertCmsOrigin(directusUrl, 'cms.dev.yesid.dev', 'develop preview');
-			if (!process.env.DIRECTUS_DEV_BUILD_TOKEN) {
-				throw new Error('The develop Vercel preview requires DIRECTUS_DEV_BUILD_TOKEN.');
-			}
-			return process.env.DIRECTUS_DEV_BUILD_TOKEN;
+			throw new Error('Build credentials are disabled on Vercel previews.');
 		}
 
 		if (process.env.DIRECTUS_BUILD_TOKEN) {

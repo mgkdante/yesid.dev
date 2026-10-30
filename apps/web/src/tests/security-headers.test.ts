@@ -65,23 +65,6 @@ describe('production security policy', () => {
 		expect(headers['content-security-policy']).toContain("frame-ancestors 'none'");
 	});
 
-	it('noindex applies only on the dev host', () => {
-		const rules = vercel.headers.filter((rule: { headers: { key: string }[] }) => rule.headers.some(({ key }) => key.toLowerCase() === 'x-robots-tag'));
-		expect(rules.length).toBeGreaterThan(0);
-		for (const rule of rules) {
-			for (const header of rule.headers.filter(({ key }: { key: string }) => key.toLowerCase() === 'x-robots-tag'))
-				expect(header.value).toContain('noindex');
-			const hosts = rule.has?.filter(({ type }: { type: string }) => type === 'host') ?? [];
-			expect(hosts.length).toBeGreaterThan(0);
-			for (const { value } of hosts) {
-				const host = new RegExp(value);
-				expect(host.test('dev.yesid.dev')).toBe(true);
-				expect(host.test('yesid.dev')).toBe(false);
-				expect(host.test('www.yesid.dev')).toBe(false);
-			}
-		}
-	});
-
 	it('resolves the production policy with VERCEL_ENV unset and the boot script hash', () => {
 		// The resolved config includes inactive defaults (undefined/false).
 		// Compare every active directive, including any unexpected additions.

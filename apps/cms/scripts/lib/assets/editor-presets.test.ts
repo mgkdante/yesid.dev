@@ -726,7 +726,7 @@ describe('asset editor configuration IO', () => {
 			'GET /permissions',
 			'GET /presets',
 		]);
-		const queries = calls.map((call) => new URL(`https://cms.dev.yesid.dev${call.slice(4)}`).searchParams);
+		const queries = calls.map((call) => new URL(`https://cms.yesid.dev${call.slice(4)}`).searchParams);
 		expect(queries[0]!.get('filter[name][_eq]')).toBe('Editor');
 		expect(queries[1]!.get('filter[name][_in]')).toBe(ASSET_EDITOR_POLICY_NAMES.join(','));
 		expect(queries[2]!.get('filter[policy][_in]')).toBe(Object.values(POLICY_IDS).join(','));

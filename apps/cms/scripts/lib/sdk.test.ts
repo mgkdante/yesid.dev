@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import {
-	DEV_CMS_HOSTNAME,
 	assertDevCms,
 	createClient,
 	defaultDirectusUrl,
@@ -25,9 +24,9 @@ describe('scripts/lib/sdk.ts', () => {
 	});
 
 	describe('defaultDirectusUrl', () => {
-		it('returns cms.dev.yesid.dev fallback when PUBLIC_DIRECTUS_URL unset (slice-18m P6 flip)', () => {
+		it('falls back to the production CMS when PUBLIC_DIRECTUS_URL is unset', () => {
 			delete process.env.PUBLIC_DIRECTUS_URL;
-			expect(defaultDirectusUrl()).toBe('https://cms.dev.yesid.dev');
+			expect(defaultDirectusUrl()).toBe('https://cms.yesid.dev');
 		});
 
 		it('returns PUBLIC_DIRECTUS_URL when set', () => {
@@ -60,12 +59,6 @@ describe('scripts/lib/sdk.ts', () => {
 			expect(() => assertDevCms('https://cms.dev.yesid.dev')).not.toThrow();
 			expect(() => assertDevCms('https://cms.dev.yesid.dev/')).not.toThrow();
 			expect(() => assertDevCms('https://cms.dev.yesid.dev/items/projects')).not.toThrow();
-		});
-
-		it('accepts the default fallback URL every guarded script resolves', () => {
-			delete process.env.PUBLIC_DIRECTUS_URL;
-			expect(() => assertDevCms(defaultDirectusUrl())).not.toThrow();
-			expect(new URL(defaultDirectusUrl()).hostname).toBe(DEV_CMS_HOSTNAME);
 		});
 
 		it('refuses the prod CMS', () => {

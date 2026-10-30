@@ -8,7 +8,7 @@
 // but on Vercel the static dir is NOT bundled into the serverless function
 // (no `read` path for publicDir assets), so kit falls back to a real network
 // self-fetch against the deployment origin. On auth-protected preview
-// deployments (dev.yesid.dev) that anonymous self-fetch gets the 401 wall,
+// deployments that anonymous self-fetch gets the 401 wall,
 // every svgContent string comes back empty, and `{#if svgContent}` renders
 // nothing — "the svgs are nowhere to be found" while DOM-presence tests on
 // local previews kept passing. Inlining via import.meta.glob(?raw) puts the

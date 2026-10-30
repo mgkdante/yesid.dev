@@ -95,13 +95,13 @@ describe('mirrored media assets', () => {
 	});
 
 	it('keeps an explicit Directus fallback path available for dev/editing flows', () => {
-		const devAssets = createAssets('https://cms.dev.yesid.dev', {
+		const devAssets = createAssets('http://localhost:8055', {
 			allowDirectusFallback: true,
 			mirroredAssets: {},
 		});
 
 		expect(devAssets.asset('unknown-uuid', 'card-600')).toBe(
-			'https://cms.dev.yesid.dev/assets/unknown-uuid?key=card-600',
+			'http://localhost:8055/assets/unknown-uuid?key=card-600',
 		);
 	});
 });
@@ -147,12 +147,12 @@ describe('assetImage (responsive variants — consolidation-deploy-honesty)', ()
 	});
 
 	it('falls back to Directus preset transforms for unmirrored ids (dev flow)', () => {
-		const devAssets = createAssets('https://cms.dev.yesid.dev', {
+		const devAssets = createAssets('http://localhost:8055', {
 			allowDirectusFallback: true,
 			mirroredAssets: {},
 		});
 		const image = devAssets.assetImage('unknown-uuid', 'card-600');
-		expect(image.src).toBe('https://cms.dev.yesid.dev/assets/unknown-uuid?key=card-600');
+		expect(image.src).toBe('http://localhost:8055/assets/unknown-uuid?key=card-600');
 		expect(image.srcset).toContain('?key=thumb-240 240w');
 		expect(image.srcset).toContain('?key=hero-1200 1200w');
 		expect(image.width).toBeUndefined();
