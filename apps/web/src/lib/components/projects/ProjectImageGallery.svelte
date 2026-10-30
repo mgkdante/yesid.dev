@@ -79,7 +79,7 @@
 				class="project-image-gallery__trigger"
 				aria-label={openImageLabel(image)}
 				data-testid="project-image-gallery-trigger"
-				onfocus={(event) => event.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })}
+				onfocus={(event) => event.currentTarget.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' })}
 				onclick={(event) => openImage(image, event)}
 			>
 				<img
@@ -196,7 +196,7 @@
 		margin: 0;
 		min-width: 0;
 		flex: 0 0 90%;
-		scroll-snap-align: start;
+		scroll-snap-align: center;
 	}
 
 	.project-image-gallery__trigger {

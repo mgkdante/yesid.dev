@@ -21,6 +21,8 @@ test('project, blog and service details share the reading scale without page-wid
 		} else {
 			await gotoFirstDetail(page, `/${reader.kind}`, reader.links, reader.landmark);
 		}
+		// Avoid inserting measurement nodes into a subtree still awaiting hydration.
+		await expect(page.getByTestId('quiet-mode-toggle').filter({ visible: true }).first().locator('span')).toHaveCount(1);
 		await page.evaluate(() => document.fonts.ready);
 		const body = page.locator(reader.body).first();
 		await expect(body).toBeVisible();
@@ -82,6 +84,7 @@ test('project, blog and service details share the reading scale without page-wid
 test('article text remains readable at 200 percent with user spacing and contained code scrolling', async ({ page, viewport }, testInfo) => {
 	test.skip(viewport!.width >= 1024, 'One narrow-viewport override check.');
 	await gotoFirstDetail(page, '/projects', projectDetailLinks, 'project-detail-page');
+	await expect(page.getByTestId('quiet-mode-toggle').filter({ visible: true }).first().locator('span')).toHaveCount(1);
 	await page.addStyleTag({ content: 'html { font-size: 200% !important; } .article-body * { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } .article-body p { margin-bottom: 2em !important; }' });
 	const body = page.locator('.sections-column .article-body:visible').first();
 	const result = await body.evaluate((element) => {

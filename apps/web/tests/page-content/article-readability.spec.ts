@@ -16,6 +16,8 @@ for (const kind of ["blog", "projects"] as const) {
       kind === "blog" ? blogPostLinks : projectDetailLinks,
       kind === "blog" ? "blog-detail-page" : "project-detail-page",
     );
+    // SSR has both quiet-mode labels; the hydrated control retains one.
+    await expect(page.getByTestId('quiet-mode-toggle').filter({ visible: true }).first().locator('span')).toHaveCount(1);
     const body = page
       .locator(
         kind === "blog"
