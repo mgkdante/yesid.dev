@@ -40,28 +40,8 @@ function jobPreamble(job: string): string {
 	return job.slice(0, end).trimEnd();
 }
 
-test('keeps the required PR diff check credential-free and offline', () => {
-	const diff = jobBlock('diff', 'live-diff');
-
+test('keeps production configuration out of the workflow top level', () => {
 	expect(workflow).not.toMatch(topLevelEnvKey);
-	expect(jobCondition(diff)).toBe(`    if: |
-      github.event_name == 'pull_request' &&
-      github.base_ref == 'main'`);
-	expect(diff).toContain(
-		'name: Validate committed Directus snapshot contracts (offline, no CMS)',
-	);
-	expect(diff).toContain('run: bun test tests/snapshot-contract.test.ts');
-	expect(diff).not.toMatch(secretReference);
-	for (const forbidden of [
-		'workflow_dispatch',
-		"github.event_name == 'push'",
-		'DIRECTUS_PROD_ADMIN_TOKEN',
-		'DIRECTUS_ADMIN_TOKEN',
-		'https://cms.yesid.dev',
-		'sync:diff',
-	]) {
-		expect(diff).not.toContain(forbidden);
-	}
 });
 
 test('runs the live production diff only from trusted main with a step-scoped token', () => {

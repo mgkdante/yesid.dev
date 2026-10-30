@@ -7,9 +7,8 @@ name: cms
 # directus-extension-sync@3.0.6 on the Railway Directus image.
 #
 # Jobs:
-# - test (always, required check): apps/cms unit tests (no network or CMS credentials).
-# - diff (main PR): required credential-free validation of the committed
-#   Directus snapshot contracts. Offline; never receives CMS credentials.
+# - test (always, required check): apps/cms unit tests, including the committed
+#   Directus snapshot contracts (no network or CMS credentials).
 # - live-diff (push to main or main-only diff dispatch): read-only preview of
 #   what sync:push WOULD apply against prod, from trusted main code only.
 # - push (workflow_dispatch with action=push): applies the JSON tree to
@@ -33,9 +32,7 @@ name: cms
 # Source: Notion slice-18 plan, Phase 2 Task 22.
 
 on:
-  # slice-17f Phase 8: path filters removed (test/diff jobs are required
-  # status checks on main; required checks must always run or the merge
-  # gate hangs on docs-only PRs). Phase 7 caches make no-op runs cheap.
+  # No path filters: `test` is a required check on main and must always report.
   push:
     branches: [main]
   pull_request:
@@ -83,25 +80,6 @@ jobs:
       - name: Run apps/cms unit tests (fixtures + seed dry-runs + sync-push + lib)
         working-directory: apps/cms
         run: bun test
-
-  diff:
-    # Keep the required main-PR `diff` status without exposing production.
-    # The full test job already runs this contract; repeating the narrow suite
-    # preserves the branch-rule check name while staying offline and secret-free.
-    if: |
-      github.event_name == 'pull_request' &&
-      github.base_ref == 'main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: test
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-
-      - uses: ./.github/actions/setup
-
-      - name: Validate committed Directus snapshot contracts (offline, no CMS)
-        working-directory: apps/cms
-        run: bun test tests/snapshot-contract.test.ts
 
   live-diff:
     # The live comparison needs the production API, so it runs only after main

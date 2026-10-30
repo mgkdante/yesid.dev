@@ -16,6 +16,11 @@ if (process.env.TEST_WORKER_INDEX === undefined) {
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 const baseURL = externalBaseURL ?? 'http://localhost:4173';
 
+// --shard splits tests by count in project order. Desktop and theme tests take several times longer than phone and
+// tablet tests, so this order evens out the CI shards' run time. Unlisted projects run last.
+const shardOrder = ['phone', 'reduced-motion', 'desktop', 'tablet', 'light', 'dark'];
+const rank = ({ name = '' }: { name?: string }) => shardOrder.indexOf(name) + 1 || shardOrder.length + 1;
+
 export default defineConfig({
 	// A deployed preview scales out; one local preview server only slows down under parallel load.
 	fullyParallel: Boolean(externalBaseURL),
@@ -49,5 +54,5 @@ export default defineConfig({
 			}),
 	testDir: 'tests',
 	testMatch: '**/*.spec.ts',
-	projects: yesidProjects(baseURL)
+	projects: yesidProjects(baseURL).sort((a, b) => rank(a) - rank(b))
 });

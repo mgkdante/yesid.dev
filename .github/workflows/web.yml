@@ -21,7 +21,7 @@ concurrency:
 # (the Vercel team slug) are set as a repo secret + variable, `turbo run` shares
 # a content-addressed cache across every run/branch/PR, so check/test/build go
 # near-instant on unchanged inputs (even on a fresh PR). The credential is
-# scoped only to the four steps that invoke Turbo; every action and other step
+# scoped only to the steps that invoke Turbo; every action and other step
 # stays outside that trust boundary. Empty values degrade gracefully to the
 # local .turbo/cache. One-time setup: `bunx turbo login && bunx turbo link`,
 # then add the TURBO_TOKEN secret + TURBO_TEAM variable.
@@ -36,34 +36,22 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Type check (svelte-kit sync + svelte-check)
+      # One Turbo run so check, test and build share the runner in parallel. The
+      # build env matches the e2e shards' build, so they replay this cache entry
+      # instead of rebuilding (Turbo hashes PUBLIC_* for SvelteKit).
+      - name: Type check, unit tests and build
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-        run: bun x turbo run check --filter=@repo/web
-
-      - name: Unit tests
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-        run: bun x turbo run test --filter=@repo/web
+          EXPORT_FALLBACKS_SOURCE: "fixture"
+          PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
+        run: bun x turbo run check test build --filter=@repo/web
 
       - name: Brand gates
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         run: bun run --cwd apps/web lint:design
 
       - name: Product shared-package tests
         run: bun run --cwd packages/shared test
-
-      - name: Build
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-          # Hermetic CI export uses the committed shared fixture.
-          EXPORT_FALLBACKS_SOURCE: "fixture"
-        run: bun x turbo run build --filter=@repo/web
 
       - name: Client payload budgets
         working-directory: apps/web
@@ -73,29 +61,20 @@ jobs:
         working-directory: apps/web
         run: bun run check:csp
 
-  # ── E2E (Playwright) against a LOCAL hermetic preview ──────────────────────
-  # Runs ENTIRELY on the runner: the playwright webServer builds with
-  # EXPORT_FALLBACKS_SOURCE=fixture (shared fixture content —
-  # no CMS call) and serves on :4173; the suite hits localhost. ZERO Vercel edge
-  # requests — no preview URL to resolve, no Deployment-Protection bypass, no
-  # edge-quota burn (that burn was the reason e2e was throttled to manual-only).
-  # The old reasons for targeting the deployed preview — the @resvg/resvg-js OG
-  # native binary, a /projects SSR 500, and screenshot/font drift — are stale:
-  # every route serves 200 under the local preview and there are no pixel-diff
-  # assertions. CMS stays build-time-only, the deployed site never calls it.
+  # ── E2E (Playwright) against a local hermetic preview ──────────────────────
+  # The webServer previews the fixture build on :4173: no CMS calls and no
+  # Vercel edge requests.
   e2e:
     if: >-
       ${{ github.event_name == 'pull_request'
           && !contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
-    # Gate the 3 shards on the cheap ci job: its build populates the turbo
-    # remote cache, so shards replay it instead of running 4 identical builds.
+    # Gate the 3 shards on the ci job: its build populates the Turbo remote
+    # cache, so shards replay it instead of running 4 identical builds.
     needs: [ci]
     runs-on: ubuntu-latest
-    # Shards split by file and run serially; shard 3 runs up to ~18 minutes of tests.
+    # Shards split by test count and run serially on one worker each.
     timeout-minutes: 30
-    # Shard across 3 runners. Each shard builds from the warm turbo remote cache
-    # (the ci job's identical EXPORT_FALLBACKS_SOURCE=fixture build populates it), so the
-    # per-shard build is a cache hit and only ~1/3 of the suite runs per runner.
+    # Shard across 3 runners; each replays the ci build and runs ~1/3 of the suite.
     strategy:
       fail-fast: false
       matrix:
@@ -112,10 +91,8 @@ jobs:
         working-directory: apps/web
         run: bun x playwright install chromium
 
-      # Build via turbo (cache-eligible; shares the remote/local cache with the
-      # ci job's build) so the Playwright webServer does NOT rebuild — it just
-      # previews this output (E2E_PREBUILT). EXPORT_FALLBACKS_SOURCE matches the ci
-      # build so the turbo cache key lines up; the CMS is never contacted.
+      # Replays the ci build from the Turbo cache, so the Playwright webServer only
+      # previews it (E2E_PREBUILT). Keep this env identical to the ci build step.
       - name: Build (turbo, cache-eligible)
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -123,12 +100,6 @@ jobs:
           EXPORT_FALLBACKS_SOURCE: "fixture"
           PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
         run: bun x turbo run build --filter=@repo/web
-
-      # Cached build output does not include the ignored modules imported by specs.
-      - name: Emit fixture content for Playwright specs
-        env:
-          EXPORT_FALLBACKS_SOURCE: "fixture"
-        run: bun run --cwd apps/cms export:fallbacks
 
       - name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)
         working-directory: apps/web
@@ -147,14 +118,9 @@ jobs:
           path: apps/web/blob-report/
           retention-days: 14
 
-  # ── Merge the 3 shard blob reports into one HTML report ─────────────────────
-  # needs: [e2e] + if: !cancelled() so it still merges when a shard fails (you
-  # want the report most on a red build). Downloads every blob-report-* artifact
-  # and merges to the single playwright-report/ path the old job published.
+  # ── Merge the shard blob reports into one HTML report when a shard fails ────
   e2e-merge-reports:
-    # Skip when e2e itself was skipped (e.g. a push, where e2e is now PR-only) —
-    # otherwise this would run with no blob reports to merge.
-    if: ${{ !cancelled() && needs.e2e.result != 'skipped' }}
+    if: ${{ !cancelled() && needs.e2e.result == 'failure' }}
     needs: [e2e]
     runs-on: ubuntu-latest
     timeout-minutes: 10
