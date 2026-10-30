@@ -46,10 +46,9 @@ export function captureFlipState(): FlipState {
 export function animateFlipTransition(
 	batchSelector: string,
 	flipState: FlipState,
-	batchFired: boolean,
 	onFlipDone: () => void,
 ): void {
-	if (!batchFired || typeof document === 'undefined') return;
+	if (typeof document === 'undefined') return;
 
 	tick().then(() => {
 		const batchItems = document.querySelectorAll<HTMLElement>(batchSelector);

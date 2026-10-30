@@ -204,9 +204,7 @@
 	/* Keep the period glued to the headline and its SVG overflow visible so the heartbeat cannot clip. */
 	.hero-dot {
 		display: inline-block;
-		/* go2 beacon pass: 0.19em → 0.22em — the armed dot is the page's one
-		   replay affordance and must read from across the room. Still period-
-		   proportioned; the intro zoom only over-covers with a bigger glyph. */
+		/* The armed dot is the replay affordance: big enough to spot, still period-sized. */
 		width: 0.22em;
 		height: 0.22em;
 		vertical-align: baseline;

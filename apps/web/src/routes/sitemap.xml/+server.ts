@@ -16,15 +16,7 @@ import {
 	emitSitemapDocument,
 } from '@yesid/seo-kit/sitemap';
 
-// Route ids that are always present in the router. Keep this list in sync
-// with the static-route set in $lib/adapters/route-seo-defaults.ts when
-// adding a new static route. The build-time coverage script (Task 11)
-// asserts parity.
-// `_` prefix required — SvelteKit rejects any non-reserved named exports from
-// +server routes. Underscore-prefixed names are allowed. Imported by the build-
-// time coverage script (Task 11) so expected routes stay in one place.
-export const _STATIC_ROUTES = STATIC_PAGE_PATHS;
-
+// No <lastmod>: request-time timestamps would defeat crawler change detection.
 // Each locale variant carries the full published alternate cluster.
 function urlEntries(path: string, variants: readonly Locale[]): string[] {
 	const alternates = Object.fromEntries(
@@ -65,9 +57,7 @@ export function _blogUrlEntries(posts: readonly BlogPost[]): string[] {
 	});
 }
 
-export function _emitSitemapDocument(entries: readonly string[]): string {
-	return emitSitemapDocument(entries);
-}
+export { emitSitemapDocument as _emitSitemapDocument };
 
 // Filter every candidate through the route registry so archived pages leave the sitemap on the same rebuild.
 export async function _buildSitemapEntries(
@@ -78,7 +68,7 @@ export async function _buildSitemapEntries(
 		if (isPathPublished(path, pages)) entries.push(...urlEntries(path, variants));
 	};
 
-	for (const path of _STATIC_ROUTES) {
+	for (const path of STATIC_PAGE_PATHS) {
 		pushIfPublished(path);
 	}
 
@@ -111,7 +101,7 @@ export async function _buildSitemapEntries(
 
 export const GET: RequestHandler = async () => {
 	const entries = await _buildSitemapEntries();
-	const xml = _emitSitemapDocument(entries);
+	const xml = emitSitemapDocument(entries);
 
 	return new Response(xml, {
 		headers: {

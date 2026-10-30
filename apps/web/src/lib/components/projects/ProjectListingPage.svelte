@@ -147,14 +147,12 @@
 		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
 
-	// Cards start at their final pose so filter transitions can run immediately.
-	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
 	$effect(() => {
 		filteredProjects;
-		animateFlipTransition('[data-batch="project-item"]', flipState, batchFired, () => {
+		animateFlipTransition('[data-batch="project-item"]', flipState, () => {
 			flipState = null;
 		});
 	});

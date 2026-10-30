@@ -1,4 +1,4 @@
-// Explicit locale and slug entries cover orphan pages that SvelteKit's crawler cannot discover.
+// SvelteKit expands '*' only to unprefixed routes, so explicit entries cover every locale and orphan slug.
 
 import { blogPosts } from '#lib/content/blog.ts';
 import { projects } from '#lib/content/projects.ts';

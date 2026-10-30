@@ -47,7 +47,7 @@
 	};
 	const clearLabel = resolveLocale(siteLabels.navChrome.shared.clearFiltersLabel, locale);
 
-	// Persist locale-free filters across language switches; apply URL filters after hydration because prerendering cannot read query parameters.
+	// Prerendering cannot read query parameters, so URL filters apply after hydration.
 	let activeTag = $derived(browser ? page.url.searchParams.get('tag') : null);
 	const activeLang = persisted<Locale | null>('blog-lang', null); // null = show all languages
 	const searchQuery = persisted('blog-q', '');
@@ -132,14 +132,12 @@
 			dateTo.value !== ''
 	);
 
-	// Cards start at their final pose so filter transitions can run immediately.
-	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
 	$effect(() => {
 		filteredPosts;
-		animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => {
+		animateFlipTransition('[data-batch="blog-item"]', flipState, () => {
 			flipState = null;
 		});
 	});

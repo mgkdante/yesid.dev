@@ -1,4 +1,5 @@
-// Primary content flows through adapter ports; chrome, layout/error fallbacks and the shared CTA read build-time content directly.
+// Primary content flows through adapter ports;
+// chrome, layout/error fallbacks and the shared CTA read build-time content directly.
 
 export * from './projects'
 export * from './services'
