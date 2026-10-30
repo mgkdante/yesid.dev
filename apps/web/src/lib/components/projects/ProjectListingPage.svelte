@@ -2,7 +2,7 @@
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
-	import type { Project, ProjectsPageContent, Service } from '#lib/types.ts';
+	import type { ProjectSummary, ProjectsPageContent, Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
@@ -27,7 +27,7 @@
 		serviceSvgContents,
 		projectsPage
 	}: {
-		projects: readonly Project[];
+		projects: readonly ProjectSummary[];
 		allTags: readonly string[];
 		allStack?: readonly string[];
 		serviceIds: readonly string[];

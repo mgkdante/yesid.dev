@@ -7,7 +7,7 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { persisted } from '@yesid/ui/state';
 	import { siteLabels } from '#lib/content/index.ts';
-	import type { Project, ProofReelContent, Service } from '#lib/types.ts';
+	import type { ProjectSummary, ProofReelContent, Service } from '#lib/types.ts';
 	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
 
 	const locale = getLocale();
@@ -19,7 +19,7 @@
 		serviceSvgContents = {},
 	}: {
 		proofReel: ProofReelContent;
-		projects: readonly Project[];
+		projects: readonly ProjectSummary[];
 		services?: readonly Service[];
 		serviceSvgContents?: Record<string, string>;
 	} = $props();

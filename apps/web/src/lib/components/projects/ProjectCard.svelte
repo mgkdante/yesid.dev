@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Project, Service } from '#lib/types.ts';
+	import type { ProjectSummary, Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -22,7 +22,7 @@
 
 	export interface ProjectCardProps {
 
-		project: Project;
+		project: ProjectSummary;
 
 		services?: readonly Service[];
 

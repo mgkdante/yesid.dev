@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Project } from '#lib/types.ts';
+	import type { ProjectSummary } from '#lib/types.ts';
 	import { assetImage } from '#lib/directus/assets.ts';
 	import type { Theme } from '@yesid/ui/state';
 	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
@@ -15,7 +15,7 @@
 		eager = false,
 		sizes = '(min-width: 768px) 40vw, 92vw',
 	}: {
-		project: Project;
+		project: ProjectSummary;
 		preset: string;
 		alt?: string;
 		decorative?: boolean;

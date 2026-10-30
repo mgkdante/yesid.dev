@@ -8,7 +8,7 @@
 -->
 <script lang="ts">
 	import { untrack } from 'svelte';
-	import type { Locale, Project } from '#lib/types.ts';
+	import type { Locale, ProjectSummary } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { boop, pressBounce } from '@yesid/motion/actions';
@@ -28,7 +28,7 @@
 		variant: 'desktop' | 'mobile';
 		serviceId: string;
 		stack: readonly string[];
-		relatedProjects: readonly Project[];
+		relatedProjects: readonly ProjectSummary[];
 		locale: Locale;
 		stackLabel: string;
 		relatedProjectsHeading: string;

@@ -1,7 +1,7 @@
-import type { Project } from '#lib/types.ts';
+import type { ProjectSummary } from '#lib/types.ts';
 import { uniqueSorted } from '#lib/utils/collections.ts';
 
-export function deriveProjectFacets(projects: readonly Project[]): {
+export function deriveProjectFacets(projects: readonly ProjectSummary[]): {
 	tags: readonly string[];
 	stackItems: readonly string[];
 	serviceIds: readonly string[];

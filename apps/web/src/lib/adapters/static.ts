@@ -36,6 +36,7 @@ import {
 } from '#lib/schemas/index.ts';
 import {
 	ProjectSchema,
+	ProjectSummarySchema,
 	ServiceSchema,
 	BlogPostSchema,
 	SiteMetaSchema,
@@ -93,11 +94,11 @@ export const staticAdapter: ContentAdapter = {
 			return parsePort('projects.bySlug', ProjectSchema.optional(), p);
 		},
 		featured: async () =>
-			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects()),
+			parsePort('projects.featured', z.array(ProjectSummarySchema), getFeaturedProjects()),
 		public: async () =>
-			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects()),
+			parsePort('projects.public', z.array(ProjectSummarySchema), getPublicProjects()),
 		byService: async (serviceId) =>
-			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId)),
+			parsePort('projects.byService', z.array(ProjectSummarySchema), getProjectsByService(serviceId)),
 	},
 	services: {
 		byId: async (id) => parsePort('services.byId', ServiceSchema.optional(), getServiceById(id)),
