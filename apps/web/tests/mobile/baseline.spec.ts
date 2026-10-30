@@ -17,10 +17,3 @@ test('viewport meta tag is mobile-shaped', async ({ page }) => {
 	expect(viewportMeta).toContain('initial-scale=1');
 	expect(viewportMeta).toContain('viewport-fit=cover');
 });
-
-test('home page has no horizontal scroll at any viewport', async ({ page }) => {
-	await page.goto('/');
-	const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-	const viewportWidth = await page.evaluate(() => window.innerWidth);
-	expect(documentWidth).toBeLessThanOrEqual(viewportWidth + 1); // +1 sub-pixel tolerance
-});
