@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 
-type InkFrame = { time: number; visible: boolean; ink: number; letteringInk: number; arrowInk: number };
+type InkFrame = { visible: boolean; ink: number; letteringInk: number; arrowInk: number };
 
 async function settledHeroScale(page: Page): Promise<number> {
 	const text = page.getByTestId('hero-text-container');
@@ -25,7 +25,7 @@ async function settledHeroScale(page: Page): Promise<number> {
 
 async function captureInk(page: Page) {
 	await page.evaluate(() => {
-		const frames: { time: number; visible: boolean; ink: number; letteringInk: number; arrowInk: number }[] = [];
+		const frames: { visible: boolean; ink: number; letteringInk: number; arrowInk: number }[] = [];
 		Reflect.set(window, 'heroInkFrames', frames);
 		Reflect.set(window, 'captureHeroInk', true);
 		const watch = () => {
@@ -52,7 +52,7 @@ async function captureInk(page: Page) {
 					arrowDrawn += ink;
 				}
 			}
-			frames.push({ time: performance.now(), visible: svg.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }),
+			frames.push({ visible: svg.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }),
 				ink: length ? drawn / length : 0,
 				letteringInk: letteringLength ? letteringDrawn / letteringLength : 0,
 				arrowInk: arrowLength ? arrowDrawn / arrowLength : 0 });
@@ -73,8 +73,6 @@ async function expectProgressiveInk(page: Page) {
 	expect(visible[0].letteringInk, 'the first visible word must not appear fully drawn').toBeLessThan(0.999);
 	const partial = visible.filter(frame => frame.letteringInk > 0 && frame.letteringInk < 0.999 && frame.arrowInk < 0.999);
 	expect(new Set(partial.map(frame => frame.letteringInk.toFixed(3))).size, 'lettering itself must show changing partial ink before the arrow completes').toBeGreaterThan(1);
-	// A generous perceptibility floor protects the slow-device pop-in bug;
-	// it does not pin the CSS duration, glyph count, or translated phrase.
 }
 
 test('replay pins immediately and completes after its visual scrub', async ({ page }) => {

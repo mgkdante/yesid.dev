@@ -176,11 +176,6 @@ describe('HomeServices station ordering (GO-2)', () => {
 	});
 });
 
-// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────────
-// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until the
-// orchestrator's Gate A CMS apply + regen lands (getVisibleServices() then
-// returns the 4 stations). T8 unskip step: `describe.skip` → `describe`,
-
 describe('GO2-W5 round 5 — fun service SVGs + 2×2 station grid', () => {
 	// R5-1 regression lock: the playful per-service SVG art must render in the
 	// home services surface. SSR contract = one icon panel per visible service,
@@ -198,7 +193,4 @@ describe('GO2-W5 round 5 — fun service SVGs + 2×2 station grid', () => {
 			expect(img?.getAttribute('src')).toBe(`/svg/services/${sorted[i].svg}`);
 		});
 	});
-
-	// R5b (operator-ordered): four stations → uniform 2-column desktop grid.
-
 });

@@ -24,7 +24,7 @@ test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or view
 //     role="radio" (bits-ui ToggleGroup), so they're targeted via button.filter-btn.
 //   - ListingFrame renders each sidebar once, inside .listing-filter-column (always
 //     shown from 1024px, behind a toggle below it). Every sidebar/item locator below
-//     is scoped to it so it stays unique AND visible at the desktop-chrome viewport.
+//     is scoped to it so it stays unique AND visible at the desktop viewport.
 
 test.describe('Project listing filters', () => {
   // Desktop sidebar = the one in .listing-filter-column (always shown >=1024px).

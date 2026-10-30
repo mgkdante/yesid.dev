@@ -216,24 +216,13 @@ const PROJECTS_URL = '/projects';
 const SCROLL_TO = 450; // a few hundred px down — clear of the top, within the listing
 const TOLERANCE = 200; // loose: Lenis settle + FR/EN height drift, anti-flake
 
-async function waitForHydration(page: Page): Promise<void> {
-	await expect
-		.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis')))
-		.toBe(true);
-}
-
 	test('listing: /projects scroll position is preserved across EN→FR toggle', async ({
 		page,
 	}) => {
-		// Lenis (and the fragile-on-touch synthetic scroll) is desktop-only; the
-		// default restore still runs on mobile via native window.scrollTo, but the
-		// deterministic `lenis` hydration signal is desktop-only, so scope the
-		// assertion to desktop where the Lenis path is the one under test.
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 
 		await page.goto(PROJECTS_URL);
 		await expect(page.getByTestId('project-listing')).toBeVisible();
-		await waitForHydration(page);
 
 		// Scroll down a few hundred px and let Lenis settle.
 		await page.evaluate((y) => window.scrollTo(0, y), SCROLL_TO);
@@ -250,7 +239,6 @@ async function waitForHydration(page: Page): Promise<void> {
 		// The remounted FR page paints, then the orchestrator restores scroll.
 		await expect(page).toHaveURL(/\/fr\/projects/);
 		await expect(page.getByTestId('project-listing')).toBeVisible();
-		await waitForHydration(page);
 
 		// The position must be RESTORED — near where we left it, NOT reset to ~0.
 		// Loose bounds: only assert "still meaningfully scrolled", anti-flake.

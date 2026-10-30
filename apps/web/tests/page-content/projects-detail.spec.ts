@@ -43,7 +43,6 @@ test.describe('/projects/[slug] detail page content', () => {
 	});
 
 	test('project detail renders TOC (table of contents) on desktop', async ({ page }) => {
-		test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only TOC');
 
 		await gotoFirstProject(page);
 
@@ -80,7 +79,6 @@ test.describe('/projects/[slug] detail page content', () => {
 	});
 
 	test('project glance panel renders on desktop', async ({ page }) => {
-		test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only glance panel');
 
 		await gotoFirstProject(page);
 
@@ -113,7 +111,6 @@ test.describe('/projects/[slug] detail page content', () => {
 	});
 
 	test('project detail glance panel shows non-empty metadata', async ({ page }) => {
-		test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only glance panel');
 
 		await gotoFirstProject(page);
 

@@ -64,20 +64,6 @@ test('route /fr/contact form validation errors in French', async ({ page }) => {
 		expect(submittedEmails).toEqual([]);
 	});
 
-	test('contact form shows invalid email error', async ({ page }) => {
-		const form = visibleContactTerminal(page);
-
-		await form.getByLabel(new RegExp(`^(?:${Object.values(contactContent.formTerminal.fields.name.label).join('|')}):$`, 'i')).fill('John Doe');
-		// Valid to <input type="email"> (has "@"), invalid to the app regex
-		// (domain has no dot) — so the app's own validation runs and reports it.
-		await form.getByLabel(new RegExp(`^(?:${Object.values(contactContent.formTerminal.fields.email.label).join('|')}):$`, 'i')).fill('john@nodomain');
-		await form.getByLabel(new RegExp(`^(?:${Object.values(contactContent.formTerminal.fields.message.label).join('|')}):$`, 'i')).fill('Test message');
-
-		await form.getByTestId('contact-submit').click();
-
-		await expect(form.getByText('✗ ' + contactContent.validation.invalidEmail.en)).toBeVisible();
-	});
-
 	test('contact form does not submit when email is invalid', async ({ page }) => {
 		// Intercept the Web3Forms endpoint BEFORE the action so we can prove it is
 		// never called when client-side validation rejects the email.

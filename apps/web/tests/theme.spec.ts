@@ -12,7 +12,6 @@ test.describe('Theme toggle persistence', () => {
 		// to 'light'/'dark' (never null). With no stored preference it must be dark.
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
-		// Toggle reflects the dark default via aria-checked.
 		const toggle = page.getByTestId('theme-toggle');
 		await expect(toggle).toBeVisible();
 	});
@@ -54,7 +53,6 @@ test.describe('Theme toggle persistence', () => {
 		expect(storageAfter).toBe('light');
 
 		// Reload -> pre-paint script restores the stored theme.
-		// The data-theme + aria-checked assertions below auto-wait, so no networkidle needed.
 		await page.reload();
 
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
@@ -78,8 +76,6 @@ test.describe('Theme toggle persistence', () => {
 		await expect.poll(async () => (await meta.getAttribute('content'))?.toLowerCase()).toBe(await painted());
 	});
 });
-
-	test.use({ colorScheme: 'dark' });
 
 	test('system preference is ignored: defaults dark, stored light still wins', async ({ page }) => {
 		await page.emulateMedia({ colorScheme: 'light' });

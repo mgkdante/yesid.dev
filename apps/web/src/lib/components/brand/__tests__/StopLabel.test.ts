@@ -23,7 +23,4 @@ describe('StopLabel', () => {
     });
     expect(container.querySelector('.stop-label')?.textContent).toBe(expected);
   });
-
-  // GO2-W5 wayfinding plate: the digits speak the yellow voice.
-
 });

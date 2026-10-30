@@ -16,14 +16,14 @@ const localized = (path: string, locale: Locale) =>
 // Failing today; C10 fixes each one and deletes it here.
 const KNOWN: string[] = [
 	'[data-testid="project-card-info"] .data-flow-diagram.scrollable',
-	'.proof-count-total',
-	'.project-card-tag',
-	'.blog-topic-tag',
-	'.belief-badge',
-	'.belief-title',
+	'[data-theme="light"] .proof-count-total',
+	'[data-theme="light"] .project-card-tag',
+	'[data-theme="light"] .blog-topic-tag',
+	'[data-theme="light"] .belief-badge',
+	'[data-theme="light"] .belief-title',
 	'[data-testid="contact-submit"] > .opacity-60',
 	'[data-testid="contact-booking-link"] > .opacity-60',
-	'[data-testid="contact-error-summary"]',
+	'[data-theme="light"] [data-testid="contact-error-summary"]',
 ];
 
 async function openMenu(page: Page, locale: Locale) {

@@ -63,10 +63,4 @@ describe('Manifesto', () => {
 		expect(ticks.textContent).toContain('0');
 		expect(ticks.textContent).toContain('80');
 	});
-
 });
-
-// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────────
-// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until the
-// orchestrator's Gate A CMS apply + regen lands (manifestoContent.pills is
-// regenerated from the live CMS — 4 stations, data-flow order). T8 unskip

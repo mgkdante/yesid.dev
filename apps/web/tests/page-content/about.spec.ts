@@ -188,24 +188,6 @@ test.describe('/about page content', () => {
 
 });
 
-// GO Wave 4 — About weather scene system, e2e tier.
-//
-// The card SSR-bakes whatever the server fetched, then refreshes from
-// /api/weather after hydration (slice-28.1). Stubbing that endpoint is the
-// supported seam for forcing every condition family deterministically —
-// no CMS, no OpenWeather, no flakiness from live Montréal weather.
-//
-// Two halves:
-//   1. Always-on assertions (cheap): condition → scene mapping through the
-//      real page, unknown-code fallback, scene-never-blank.
-//   2. WEATHER_SHOTS=1 screenshot rig: captures every scene × both themes
-//      (motion frame + a reduced-motion still for the precipitation scenes)
-//      into test-results-weather/ for the operator taste-check. Skipped in
-//      CI by default.
-//
-// Run shots locally:
-//   WEATHER_SHOTS=1 bunx playwright test weather-scenes --project=desktop-chrome
-
 interface SceneCase {
 	name: string;
 	icon: string | null;
@@ -265,14 +247,7 @@ test.describe('weather scene system (GO Wave 4)', () => {
 	});
 });
 
-// ─── Screenshot rig (operator taste-check) ────────────────────────────────
-
-// GO-w2t5 — reduced-motion contract, e2e tier. Asserts the retier decisions
-// that unit tests can't reach: Lenis mounting, canvas pixels, computed CSS.
-// Runs on desktop-chrome + mobile projects (Lenis tests skip on mobile —
-// Lenis is desktop-wheel only by design).
-
-test.describe('reduced-motion retier (GO-w2t5)', () => {
+test.describe('reduced motion', () => {
 
 	test('under reduced motion, about train↔rocket renders the train, idle bob gated off', { tag: '@motion' }, async ({ page }) => {
 		await forceWeather(page, CASES[0]);
@@ -313,5 +288,4 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 				.toBe('none');
 		}
 	});
-
 });

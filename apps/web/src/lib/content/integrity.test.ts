@@ -320,10 +320,6 @@ describe('seed data parses through schemas', () => {
 //     field. These fail the build — a LocalizedString without its English
 //     default would render as an empty string or `[object Object]` in the UI.
 //
-//   - Translation debt: count of strings by completeness tier (full = en+fr+es,
-//     partial = en + one of fr/es, en-only = en only). Printed as a snapshot
-//     so regressions (or improvements) are visible in the test output.
-//
 // The walker is purely structural — it doesn't know which fields the TypeScript
 // type system expects to be LocalizedString, just recognizes the shape. False
 // positives (objects with an `en` string that aren't meant to be localized) are
@@ -331,12 +327,9 @@ describe('seed data parses through schemas', () => {
 
 interface LocalizedStringStats {
 	full: number; // en + fr + es
-	withFr: number; // non-empty fr (regardless of es)
-	withEs: number; // non-empty es
 	esWithoutFr: string[]; // paths violating FR-first ordering
 	missingFr: string[]; // paths missing non-empty French translations
 	malformed: string[]; // paths where `en` is missing/empty
-	total: number;
 }
 
 function isLocalizedStringShape(v: unknown): v is Record<string, unknown> {
@@ -371,7 +364,6 @@ function walkContent(
 
 	// LocalizedString leaf.
 	if (isLocalizedStringShape(value)) {
-		stats.total++;
 		const ls = value as { en?: unknown; fr?: unknown; es?: unknown };
 		if (!isNonEmptyString(ls.en)) {
 			stats.malformed.push(`${path}.en`);
@@ -380,12 +372,8 @@ function walkContent(
 		const hasFr = isNonEmptyString(ls.fr);
 		const hasEs = isNonEmptyString(ls.es);
 		if (hasFr && hasEs) stats.full++;
-		if (hasFr) stats.withFr++;
-		else stats.missingFr.push(`${path}.fr`);
-		if (hasEs) {
-			stats.withEs++;
-			if (!hasFr) stats.esWithoutFr.push(path);
-		}
+		if (!hasFr) stats.missingFr.push(`${path}.fr`);
+		if (hasEs && !hasFr) stats.esWithoutFr.push(path);
 		return;
 	}
 
@@ -402,7 +390,7 @@ function walkContent(
 }
 
 function newStats(): LocalizedStringStats {
-	return { full: 0, withFr: 0, withEs: 0, esWithoutFr: [], missingFr: [], malformed: [], total: 0 };
+	return { full: 0, esWithoutFr: [], missingFr: [], malformed: [] };
 }
 
 // Load runtime registry metadata without adding CMS fetcher types to the web program.

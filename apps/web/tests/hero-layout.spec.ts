@@ -141,7 +141,6 @@ const transitionsDone = (el: Element) =>
 
 // The stacked hero's binder tab, its example and the title block, in document coordinates.
 async function binderTab(page: Page) {
-	await page.setViewportSize(devices['iPhone 12'].viewport);
 	await page.goto('/');
 	const region = page.getByTestId('hero-mobile-sql');
 	const exampleId = (await region.getByRole('button', { expanded: false }).getAttribute('aria-controls'))!;
@@ -164,6 +163,7 @@ async function binderTab(page: Page) {
 
 test('below 1024px one binder tab pulls the SQL example down and folds it back', async ({ page }) => {
 	test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
+	await page.setViewportSize(devices['iPhone 12'].viewport);
 	const { region, tab, example, geometry } = await binderTab(page);
 	const closedName = await tab.evaluate((el) => {
 		const copy = el.cloneNode(true) as Element;
