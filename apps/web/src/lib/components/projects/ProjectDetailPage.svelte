@@ -32,6 +32,7 @@
 	} from '@yesid/ui/brand';
 	import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
 	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
+	import { collectProjectImages } from '#lib/projects/project-images.ts';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
@@ -89,10 +90,10 @@
 		};
 	}
 
-	function galleryTocEntry(gallery: SectionView): TocEntry {
+	function galleryTocEntry(): TocEntry {
 		return {
-			id: `project-gallery-${gallery.originalIndex}`,
-			title: gallery.title,
+			id: galleryAnchor,
+			title: galleryTitle,
 			level: 2,
 			badge: { kind: 'icon', name: 'image' },
 			rail: true,
@@ -145,6 +146,17 @@
 	);
 	const imageGallerySections = $derived(sectionViews.filter((section) => section.isImageGallery));
 	const articleSections = $derived(sectionViews.filter((section) => !section.isImageGallery));
+	const gallerySource = $derived(imageGallerySections[0]);
+	const galleryTitle = $derived(gallerySource?.title ?? ({ en: 'Images', fr: 'Images', es: 'Imágenes' } as const)[locale]);
+	const galleryAnchor = $derived(gallerySource ? `project-gallery-${gallerySource.originalIndex}` : 'project-gallery');
+	const galleryDoc = $derived({
+		...resolveLocale(project.description, locale),
+		blocks: collectProjectImages([
+			...imageGallerySections.map((section) => section.doc),
+			resolveLocale(project.description, locale),
+			...articleSections.map((section) => section.doc),
+		]),
+	});
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
 	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
@@ -163,10 +175,6 @@
 	const tocEntries = $derived.by((): TocEntry[] => {
 		const entries: TocEntry[] = [];
 
-		for (const gallery of imageGallerySections) {
-			entries.push(galleryTocEntry(gallery));
-		}
-
 		for (let i = 0; i < articleSections.length; i++) {
 			entries.push(articleTocEntry(articleSections[i], i));
 		}
@@ -178,24 +186,12 @@
 		// live on the mobile glance instance. On desktop they're already visible in
 		// the rail. Badges mirror the glance cards' SectionIcon shapes.
 		entries.push(...glanceTocEntries());
+		if (galleryDoc.blocks.length > 0) entries.push(galleryTocEntry());
 
 		return entries;
 	});
 
-	const mobileTocEntries = $derived.by((): TocEntry[] => {
-		const entries: TocEntry[] = [];
-
-		if (firstArticleSection) entries.push(articleTocEntry(firstArticleSection, 0));
-		for (const gallery of imageGallerySections) entries.push(galleryTocEntry(gallery));
-		for (let offset = 0; offset < remainingArticleSections.length; offset++) {
-			const articleIndex = offset + 1;
-			entries.push(articleTocEntry(remainingArticleSections[offset], articleIndex));
-		}
-		if (readmeTocEntry) entries.push(readmeTocEntry);
-		entries.push(...glanceTocEntries());
-
-		return entries;
-	});
+	const mobileTocEntries = $derived(tocEntries);
 
 	const readmeParts = $derived.by(() => {
 		let idx = 0;
@@ -239,6 +235,20 @@
 	);
 </script>
 
+{#snippet galleryCard(mobile: boolean)}
+	<CollapsibleSection
+		title={galleryTitle}
+		sectionKey={scoped(`proj-gallery-${mobile ? 'mobile-' : ''}${gallerySource?.originalIndex ?? 'article'}`)}
+		anchor={galleryAnchor}
+		open={true}
+	>
+		{#snippet icon()}
+			<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
+		{/snippet}
+		<ProjectImageGallery doc={galleryDoc} />
+	</CollapsibleSection>
+{/snippet}
+
 {#snippet after()}
 	<div class="lg:hidden px-[var(--space-page-x)] pb-8">
 		<ProjectGlancePanel
@@ -248,6 +258,11 @@
 			mobile
 			codeHighlights={codeHighlights}
 		/>
+		{#if galleryDoc.blocks.length > 0}
+			<div class="mobile-gallery-stack" data-testid="project-image-gallery-mobile">
+				{@render galleryCard(true)}
+			</div>
+		{/if}
 	</div>
 
 	<section class="cta-area" data-testid="project-cta">
@@ -270,6 +285,7 @@
 
 	<DetailFrame
 		data-testid="project-detail-page"
+		class="reading-detail"
 		{right}
 		{after}
 		bind:activeId={activeHeadingId}
@@ -311,25 +327,14 @@
 					sectionKey={scoped('proj-toc')}
 					counterPrefix={tocCounterPrefix}
 				/>
-				{#if imageGallerySections.length > 0}
-					<div class="toc-gallery-stack" data-testid="project-image-gallery-rail">
-						{#each imageGallerySections as gallery (gallery.originalIndex)}
-							<CollapsibleSection
-								title={gallery.title}
-								sectionKey={scoped(`proj-gallery-${gallery.originalIndex}`)}
-								open={true}
-							>
-								{#snippet icon()}
-									<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
-								{/snippet}
-								<ProjectImageGallery doc={gallery.doc} />
-							</CollapsibleSection>
-						{/each}
-					</div>
-				{/if}
 				{#if hasProjectLinks}
 					<div class="toc-links-stack">
 						<ProjectLinksCard project={project} sectionKey={scoped('glance-links-left-rail')} />
+					</div>
+				{/if}
+				{#if galleryDoc.blocks.length > 0}
+					<div class="toc-gallery-stack" data-testid="project-image-gallery-rail">
+						{@render galleryCard(false)}
 					</div>
 				{/if}
 			</div>
@@ -354,24 +359,6 @@
 			{/snippet}
 			{#if firstArticleSection}
 				{@render articleSection(firstArticleSection, 0)}
-			{/if}
-
-			{#if imageGallerySections.length > 0}
-				<div class="mobile-gallery-stack lg:hidden" data-testid="project-image-gallery-mobile">
-					{#each imageGallerySections as gallery (gallery.originalIndex)}
-						<CollapsibleSection
-							title={gallery.title}
-							sectionKey={scoped(`proj-gallery-mobile-${gallery.originalIndex}`)}
-							anchor={`project-gallery-${gallery.originalIndex}`}
-							open={true}
-						>
-							{#snippet icon()}
-								<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
-							{/snippet}
-							<ProjectImageGallery doc={gallery.doc} />
-						</CollapsibleSection>
-					{/each}
-				</div>
 			{/if}
 
 			{#each remainingArticleSections as section, offset}
@@ -438,22 +425,6 @@
 
 	.mobile-gallery-stack {
 		margin-bottom: 1rem;
-	}
-
-	.section-body :global(h3) {
-		font-family: var(--font-heading);
-		font-size: var(--text-detail-subheading-mobile);
-		font-weight: 600;
-		color: color-mix(in srgb, var(--foreground) 70%, transparent);
-		margin: 20px 0 12px;
-	}
-
-	@media (--desktop-min) {
-		.section-body :global(h3) {
-			font-size: var(--text-detail-subheading-desktop);
-			color: color-mix(in srgb, var(--foreground) 80%, transparent);
-			margin: 24px 0 16px;
-		}
 	}
 
 </style>

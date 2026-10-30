@@ -1,23 +1,96 @@
-/* Match the former component-scoped specificity without styling collapsible containers. */
-.article-body.article-body {
-	font-size: 1.125rem;
-	color: color-mix(in srgb, var(--foreground) 85%, transparent);
-	line-height: 1.8;
+/* Site-owned detail reading scale. Legacy legal Markdown keeps its app.css defaults. */
+.reading-detail {
+	--reading-prose-size: 1.1875rem;
+	--reading-code-size: 1rem;
+	--reading-heading-size: 1.25rem;
 }
 
 @media (--desktop-min) {
-	.article-body.article-body {
-		font-size: 1.25rem;
+	.reading-detail {
+		--reading-prose-size: 1.25rem;
+		--reading-code-size: 1.0625rem;
+		--reading-heading-size: 1.375rem;
 	}
 }
 
-.article-body.article-body h2,
-.article-body.article-body h3,
-.article-body.article-body h4 {
-	position: relative;
+.reading-detail .reading-support {
+	--reading-prose-size: 1.125rem;
 }
 
-.article-body.article-body .heading-anchor {
+.reading-detail :is(.article-body, .reading-support) {
+	min-width: 0;
+	font-family: var(--font-body);
+	font-size: var(--reading-prose-size);
+	line-height: 1.7;
+	color: color-mix(in srgb, var(--foreground) 85%, transparent);
+	overflow-wrap: anywhere;
+}
+
+.reading-detail .article-body {
+	max-width: 70ch;
+}
+
+.reading-detail :is(.article-body, .reading-support) :is(p, ul, ol, li, blockquote, td, th, .deliverable-item) {
+	font-size: var(--reading-prose-size);
+	line-height: 1.7;
+}
+
+.reading-detail .section-header .section-title {
+	font-size: var(--reading-heading-size);
+	line-height: 1.3;
+}
+
+.reading-detail :is(.article-body, .reading-support, .project-image-gallery) figcaption,
+.project-image-gallery__lightbox .project-image-gallery__lightbox-caption {
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+.reading-detail :is(.article-body, .reading-support) code:not(pre code) {
+	font-family: var(--font-mono);
+	font-size: 0.95em;
+}
+
+.reading-detail :is(.article-body, .reading-support) :is(.terminal-code, .terminal-code-body, pre) {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.reading-detail :is(.article-body, .reading-support) pre {
+	font-family: var(--font-mono);
+	font-size: var(--reading-code-size);
+	line-height: 1.6;
+	white-space: pre;
+	word-break: normal;
+	overflow-wrap: normal;
+	overflow-x: auto;
+}
+
+.reading-detail :is(.article-body, .reading-support) pre code {
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.reading-detail .article-body table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.reading-detail .article-body :is(h2, h3, h4) {
+	position: relative;
+	font-family: var(--font-heading);
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--foreground);
+	margin: 1.5em 0 0.65em;
+}
+
+.reading-detail .article-body h2 { font-size: 1.4em; font-weight: 700; }
+.reading-detail .article-body h3 { font-size: 1.2em; }
+.reading-detail .article-body h4 { font-size: 1.05em; }
+
+.reading-detail .article-body .heading-anchor {
 	position: absolute;
 	right: 100%;
 	margin-right: 0.5rem;
@@ -28,14 +101,12 @@
 	transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
 }
 
-.article-body.article-body h2:hover .heading-anchor,
-.article-body.article-body h3:hover .heading-anchor,
-.article-body.article-body h4:hover .heading-anchor {
+.reading-detail .article-body :is(h2, h3, h4):hover .heading-anchor {
 	opacity: var(--opacity-muted);
 	transform: translateX(0);
 }
 
-.article-body.article-body :is(h2, h3, h4) .heading-anchor:focus-visible {
+.reading-detail .article-body :is(h2, h3, h4) .heading-anchor:focus-visible {
 	opacity: 1;
 	transform: translateX(0);
 }

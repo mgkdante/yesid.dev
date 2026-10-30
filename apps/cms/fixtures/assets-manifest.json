@@ -548,6 +548,48 @@
 			"title": "yesid.dev — services desktop light",
 			"description": "yesid.dev desktop screenshot in light mode. Browser capture, 26 October 2026.",
 			"sha256": "75d4952353adb220829bc8b6a64b180ab2887323b73f866a20bce012b419af06"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/controls-dark.png",
+			"folder": "projects",
+			"title": "Design Gallery controls, dark theme",
+			"description": "Real Gallery controls in dark theme, captured on 30 October 2026 from unchanged v0.30.2 UI source.",
+			"sha256": "65ec61cd6016d018a4b9f024f505c37d56b369d5e4aef9c5d9dfabc9d6d28d4d"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/controls-light.png",
+			"folder": "projects",
+			"title": "Design Gallery controls, light theme",
+			"description": "Light-theme variant of the same Gallery controls capture, from unchanged v0.30.2 UI source on 30 October 2026.",
+			"sha256": "082e01635fda18568a4a98294aeae9289e2bd94bf4fd41d2e61d100590f19dfd"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/sections-dark.png",
+			"folder": "projects",
+			"title": "Design Gallery collapsible sections",
+			"description": "Real Gallery collapsible-section states in dark theme, captured on 30 October 2026 from unchanged v0.30.2 UI source.",
+			"sha256": "84461695a7ef5c8563308be7f4b7fca36b375532e4b84afbbefbaf2bced8fdd8"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/filters-mobile.png",
+			"folder": "projects",
+			"title": "Design Gallery filters, narrow viewport",
+			"description": "Real Gallery filter controls in a narrow browser viewport, captured on 30 October 2026 from unchanged v0.30.2 UI source. This is a browser capture, not a physical-device test.",
+			"sha256": "9d7862982f2babab8fff48916525f8b23c818aa445c11e10cf7325cc7ab9f253"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/palette-dark.png",
+			"folder": "projects",
+			"title": "Design Token Gallery palette",
+			"description": "Real Token Gallery palette specimen captured on 30 October 2026 from unchanged v0.30.2 UI source. This is not a visual outcome of the PR130 tooling changes.",
+			"sha256": "3ad8b478e5adeac41e6e23d7bc3e257adb09fa698050d682598668c5e1469a52"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/typography.png",
+			"folder": "projects",
+			"title": "Design Token Gallery typography",
+			"description": "Real Token Gallery typography specimen captured on 30 October 2026 from unchanged v0.30.2 UI source. The portfolio article reading scale is a separate site-owned change.",
+			"sha256": "fd9c935f5382febdbbd6db5be8a1279a8658fddb2e57d1f6a13e530285c797d4"
 		}
 	]
 }

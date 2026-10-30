@@ -14,6 +14,7 @@
 	let { doc }: { doc: BlockEditorDoc } = $props();
 
 	let activeTheme = $state<Theme>('dark');
+	let hydrated = $state(false);
 
 	const images = $derived(doc.blocks.filter((block): block is ImageBlock => block.type === 'image'));
 	let activeImage = $state<ImageBlock | null>(null);
@@ -26,12 +27,13 @@
 		activeImage ? imageSource(activeImage, 'hero-1200') : undefined,
 	);
 
-	// Thumbnails sit in a 2-col grid inside the detail page's center column;
+	// The same images serve the mobile strip and desktop rail;
 	// the lightbox panel is min(96vw, 1440px).
 	const THUMB_SIZES = '(min-width: 1024px) 28vw, (min-width: 768px) 45vw, 92vw';
 	const LIGHTBOX_SIZES = 'min(96vw, 1440px)';
 
 	onMount(() => {
+		hydrated = true;
 		return watchTheme((theme) => {
 			activeTheme = theme;
 		});
@@ -67,12 +69,13 @@
 	}
 </script>
 
-<div class="project-image-gallery" data-testid="project-image-gallery">
+<div class="project-image-gallery" data-testid="project-image-gallery" data-lenis-prevent>
 	{#each images as image (image.id)}
 		{@const source = imageSource(image, 'hero-1200')}
 		<figure class="project-image-gallery__item">
 			<button
 				type="button"
+				disabled={!hydrated}
 				class="project-image-gallery__trigger"
 				aria-label={openImageLabel(image)}
 				data-testid="project-image-gallery-trigger"
@@ -161,9 +164,24 @@
 	}
 
 	.project-image-gallery {
-		display: grid;
-		grid-template-columns: 1fr;
+		display: flex;
 		gap: 1rem;
+		max-width: 100%;
+		min-width: 0;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scroll-padding-inline: 0.5rem;
+		padding: 0.5rem;
+		overscroll-behavior-x: contain;
+	}
+
+	@media (--desktop-min) {
+		.project-image-gallery {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			overflow-x: visible;
+			scroll-snap-type: none;
+		}
 	}
 
 	:global([data-theme="light"]) .project-image-gallery,
@@ -176,6 +194,8 @@
 	.project-image-gallery__item {
 		margin: 0;
 		min-width: 0;
+		flex: 0 0 90%;
+		scroll-snap-align: start;
 	}
 
 	.project-image-gallery__trigger {
@@ -206,8 +226,6 @@
 	figcaption {
 		margin-top: 0.55rem;
 		color: color-mix(in srgb, var(--foreground) 62%, transparent);
-		font-size: var(--text-caption);
-		line-height: 1.55;
 	}
 
 	.project-image-gallery__lightbox {
@@ -264,8 +282,6 @@
 		border-top: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
 		padding: 0.85rem 1rem 1rem;
 		color: color-mix(in srgb, var(--foreground) 70%, transparent);
-		font-size: var(--text-caption);
-		line-height: 1.55;
 	}
 
 	.project-image-gallery__close {

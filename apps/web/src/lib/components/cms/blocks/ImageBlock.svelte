@@ -6,13 +6,19 @@
 <script lang="ts">
 	import type { ImageBlock } from '@repo/shared';
 	import { assetImage } from '#lib/directus/assets.ts';
+	import { onMount } from 'svelte';
+	import type { Theme } from '@yesid/ui/state';
+	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
 
 	let { data }: { data: ImageBlock['data'] } = $props();
+	let activeTheme = $state<Theme>('dark');
+	onMount(() => watchTheme((theme) => { activeTheme = theme; }));
+	const file = $derived(resolveThemeValue(activeTheme, data.file, data.variants?.light));
 
 	// Prefer the mirrored asset (with webp variants) via fileId; fall back to
 	// the raw url if no fileId.
 	const source = $derived(
-		data.file.fileId ? assetImage(data.file.fileId, 'card-600') : { src: data.file.url },
+		file.fileId ? assetImage(file.fileId, 'card-600') : { src: file.url },
 	);
 	const altText = $derived(data.caption ? data.caption.replace(/<[^>]*>/g, '') : '');
 

@@ -266,7 +266,7 @@
 
   {#snippet right()}
     {#if entryRail}
-      <div class="entry-column">
+      <div class="entry-column reading-support">
         <BlogEntryRail rail={entryRail} />
       </div>
     {/if}
@@ -274,7 +274,7 @@
 
   {#snippet after()}
     {#if entryRail}
-      <div class="entry-mobile lg:hidden px-[var(--space-page-x)] pb-8">
+      <div class="entry-mobile reading-support lg:hidden px-[var(--space-page-x)] pb-8">
         <BlogEntryRail rail={entryRail} mobile />
       </div>
     {/if}
@@ -285,6 +285,7 @@
     {right}
     {after}
     data-testid="blog-detail-page"
+    class="reading-detail"
     style="--blog-accent: {accentColor};"
     measure="46rem"
     railScroll

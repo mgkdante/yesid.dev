@@ -3,7 +3,7 @@ import { fireEvent, render, screen, within } from '@testing-library/svelte';
 
 
 
-import type { BlockEditorDoc } from '@repo/shared';
+import type { BlockEditorDoc, ImageBlock } from '@repo/shared';
 import ProjectDetailPage from './ProjectDetailPage.svelte';
 import { projectFactory } from '../../../tests/factories';
 import { theme } from '@yesid/ui/state';
@@ -20,6 +20,25 @@ const doc = (text: string): BlockEditorDoc => ({
 	time: 1700000000000,
 	version: '2.31.2',
 	blocks: [{ id: 'p1', type: 'paragraph', data: { text } }],
+});
+
+const storyImage = (id: string, fileId: string, caption: string): ImageBlock => ({
+	id,
+	type: 'image',
+	data: {
+		file: { fileId, fileURL: `/files/${fileId}`, url: `/assets/${fileId}` },
+		variants: { light: { fileId: `${fileId}-light`, fileURL: '', url: `/assets/${fileId}-light` } },
+		caption,
+		withBorder: true,
+		withBackground: false,
+		stretched: false,
+	},
+});
+
+const storyDoc = (...blocks: BlockEditorDoc['blocks']): BlockEditorDoc => ({
+	time: 1700000000000,
+	version: '2.31.2',
+	blocks,
 });
 
 const technicalDoc = (): BlockEditorDoc => ({
@@ -80,6 +99,66 @@ describe('ProjectDetailPage image placement', () => {
 	afterEach(() => {
 		theme.set('dark');
 		document.documentElement.dataset.theme = 'dark';
+	});
+
+	it('collects description and mixed story images without requiring an image-only section', () => {
+		const project = projectFactory.build({
+			description: { en: storyDoc(storyImage('overview-image', 'overview-state', 'Overview state')) },
+			sections: [{
+				title: { en: 'Story' },
+				content: { en: storyDoc(
+					...doc('A story with a real inline image.').blocks,
+					storyImage('story-image', 'story-state', 'Story state'),
+				) },
+			}],
+		});
+		const { container } = render(ProjectDetailPage, { props: { project, services: [], serviceSvgContents: {} } });
+		const article = container.querySelector('.sections-column')!;
+		expect(within(article as HTMLElement).getByRole('img', { name: 'Story state' })).toBeInTheDocument();
+		const gallery = screen.getByTestId('project-image-gallery-mobile');
+		expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
+		expect(within(gallery).getByRole('img', { name: 'Overview state' })).toBeInTheDocument();
+		expect(within(gallery).getByRole('img', { name: 'Story state' })).toBeInTheDocument();
+	});
+
+	it.each(['fr', 'es'] as const)('reuses one image set in inline %s prose and the final gallery, retaining Shiki and theme variants', async (locale) => {
+		document.documentElement.dataset.theme = 'light';
+		const caption = locale === 'fr' ? 'État du produit' : 'Estado del producto';
+		const overview = storyImage('shared-block-id', 'overview-state', caption);
+		const articleImage = storyImage('shared-block-id', 'article-state', `${caption} 2`);
+		const repeatedOverview = { ...overview, id: 'another-editor-block-id' };
+		const story = storyDoc(
+			...doc('Story before the code and image.').blocks,
+			{ id: 'story-code', type: 'code', data: { code: '```ts\nconst source = "fixture";\n```' } },
+			articleImage,
+			repeatedOverview,
+		);
+		const project = projectFactory.build({
+			description: { en: doc('English overview'), [locale]: storyDoc(overview) },
+			sections: [
+				{ title: { en: 'Story', [locale]: 'Récit / Relato' }, content: { en: doc('English story'), [locale]: story } },
+				{ title: { en: 'Images', [locale]: 'Images / Imágenes' }, content: { en: doc('English images'), [locale]: storyDoc(repeatedOverview) } },
+				{ title: { en: 'More images', [locale]: 'Autres / Más' }, content: { en: doc('English images'), [locale]: storyDoc(articleImage) } },
+			],
+		});
+		const { container } = render(ProjectDetailPage, {
+			props: { project, services: [], serviceSvgContents: {}, codeHighlights: { 'story-code': '<span data-story-highlight>const source = "fixture";</span>' } },
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
+		});
+		const article = container.querySelector('.sections-column .section-block .article-body')!;
+		expect(within(article as HTMLElement).getByRole('img', { name: `${caption} 2` })).toHaveAttribute('src', '/test-assets/article-state-light?key=card-600');
+		expect(container.querySelector('[data-story-highlight]')).toHaveTextContent('const source = "fixture";');
+		const mobileGallery = screen.getByTestId('project-image-gallery-mobile');
+		expect(within(mobileGallery).getAllByTestId('project-image-gallery')).toHaveLength(1);
+		expect(within(mobileGallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
+		expect(within(mobileGallery).getByRole('img', { name: caption })).toHaveAttribute('src', '/test-assets/overview-state-light?key=hero-1200');
+		expect(within(mobileGallery).queryByText('English story')).not.toBeInTheDocument();
+		const glance = screen.getByTestId('project-glance-panel-mobile');
+		expect(Boolean(glance.compareDocumentPosition(mobileGallery) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
+		const trigger = within(mobileGallery).getAllByTestId('project-image-gallery-trigger')[0]!;
+		await fireEvent.click(trigger);
+		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', '/test-assets/overview-state-light?key=hero-1200');
+		await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
 	});
 
 	it.each([0, 1, 3])('keeps %i supplied articles mounted with only the first initially open', (count) => {
@@ -157,6 +236,7 @@ describe('ProjectDetailPage image placement', () => {
 				project,
 				services: [],
 				serviceSvgContents: {},
+				readme: [{ html: '<h2>Project README</h2><p>Read before browsing images.</p>' }],
 			},
 		});
 
@@ -217,7 +297,7 @@ describe('ProjectDetailPage image placement', () => {
 		const leftRailLinks = within(leftRail as HTMLElement).getByTestId('project-links-card');
 		expect(
 			Boolean(
-				leftRailGallery.compareDocumentPosition(leftRailLinks) &
+				leftRailLinks.compareDocumentPosition(leftRailGallery) &
 					Node.DOCUMENT_POSITION_FOLLOWING,
 			),
 		).toBe(true);
@@ -230,7 +310,12 @@ describe('ProjectDetailPage image placement', () => {
 		const mobileDrawerLabels = [...mobileToc.querySelectorAll<HTMLElement>('.toc-drawer-item .toc-drawer-label')]
 			.map((node) => node.textContent?.trim())
 			.filter(Boolean);
-		expect(mobileDrawerLabels.slice(0, 3)).toEqual(['Second section', 'Images', 'Technical proof']);
+		expect(mobileDrawerLabels.slice(0, 2)).toEqual(['Second section', 'Technical proof']);
+		expect(mobileDrawerLabels.at(-1)).toBe('Images');
+		const glance = screen.getByTestId('project-glance-panel-mobile');
+		expect(Boolean(glance.compareDocumentPosition(mobileGalleryStack) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
+		expect(mobileGalleryStack.parentElement?.lastElementChild).toBe(mobileGalleryStack);
+		expect(Boolean(screen.getByRole('heading', { name: /Project README/ }).compareDocumentPosition(mobileGalleryStack) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
 
 		const gallery = within(galleryRail).getByTestId('project-image-gallery');
 		const triggers = within(gallery).getAllByTestId('project-image-gallery-trigger');
