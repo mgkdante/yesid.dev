@@ -21,7 +21,7 @@ concurrency:
 # (the Vercel team slug) are set as a repo secret + variable, `turbo run` shares
 # a content-addressed cache across every run/branch/PR, so check/test/build go
 # near-instant on unchanged inputs (even on a fresh PR). The credential is
-# scoped only to the four steps that invoke Turbo; every action and other step
+# scoped only to the steps that invoke Turbo; every action and other step
 # stays outside that trust boundary. Empty values degrade gracefully to the
 # local .turbo/cache. One-time setup: `bunx turbo login && bunx turbo link`,
 # then add the TURBO_TOKEN secret + TURBO_TEAM variable.
@@ -36,34 +36,22 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Type check (svelte-kit sync + svelte-check)
+      # One Turbo run so check, test and build share the runner in parallel. The
+      # build env matches the e2e shards' build, so they replay this cache entry
+      # instead of rebuilding (Turbo hashes PUBLIC_* for SvelteKit).
+      - name: Type check, unit tests and build
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-        run: bun x turbo run check --filter=@repo/web
-
-      - name: Unit tests
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-        run: bun x turbo run test --filter=@repo/web
+          EXPORT_FALLBACKS_SOURCE: "fixture"
+          PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
+        run: bun x turbo run check test build --filter=@repo/web
 
       - name: Brand gates
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         run: bun run --cwd apps/web lint:design
 
       - name: Product shared-package tests
         run: bun run --cwd packages/shared test
-
-      - name: Build
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-          # Hermetic CI export uses the committed shared fixture.
-          EXPORT_FALLBACKS_SOURCE: "fixture"
-        run: bun x turbo run build --filter=@repo/web
 
       - name: Client payload budgets
         working-directory: apps/web
