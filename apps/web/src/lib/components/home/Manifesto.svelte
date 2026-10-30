@@ -298,6 +298,9 @@
 	}
 
 	.manifesto__pill {
+		display: inline-flex;
+		align-items: center;
+		min-block-size: var(--size-tap-min);
 		font-family: var(--font-mono);
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
 		letter-spacing: 0.04em;

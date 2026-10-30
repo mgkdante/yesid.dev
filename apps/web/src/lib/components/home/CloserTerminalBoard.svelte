@@ -55,11 +55,10 @@
 			data-closer-row
 			class="terminal-row tap-press"
 			class:terminal-row-primary={row.primary}
-			aria-label="{row.label} — {row.description}"
 			target={row.href.startsWith('http') ? '_blank' : undefined}
 			rel={row.href.startsWith('http') ? 'noopener noreferrer' : undefined}
 		>
-			<span class="terminal-line-num">{String(i + 1).padStart(2, '0')}</span>
+			<span class="terminal-line-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
 			<span class="terminal-row-label">{row.label}</span>
 			<span class="terminal-row-desc" class:terminal-row-desc-primary={row.primary}>
 				{row.description}

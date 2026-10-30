@@ -190,8 +190,9 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 2.5rem;
-		height: 2.5rem;
+		flex: none;
+		width: var(--size-tap-min);
+		height: var(--size-tap-min);
 		border-radius: var(--radius-pill);
 		background: transparent;
 		border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
@@ -240,7 +241,7 @@
 	.proof-count-sep,
 	.proof-count-total {
 		font-size: var(--text-mono);
-		color: color-mix(in srgb, var(--accent-text) 85%, transparent);
+		color: var(--accent-text);
 	}
 
 	.home-view-all {

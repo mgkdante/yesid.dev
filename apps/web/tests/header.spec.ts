@@ -68,4 +68,11 @@ for (const locale of PUBLISHED_LOCALES) {
 		await expect(page).toHaveURL(samePath(start(next(locale))));
 		await expect(page.locator('html')).toHaveAttribute('lang', next(locale));
 	});
+
+	test(`${locale}: the header stays inside the viewport`, async ({ page }) => {
+		await page.goto(start(locale));
+		const pill = (await page.getByTestId('nav-pill').boundingBox())!;
+		expect(pill.x).toBeGreaterThanOrEqual(0);
+		expect(pill.x + pill.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+	});
 }

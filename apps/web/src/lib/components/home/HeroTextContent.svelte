@@ -208,16 +208,20 @@
 		width: 0.22em;
 		height: 0.22em;
 		vertical-align: baseline;
-		margin-bottom: 0.03em;
 		color: var(--primary);
 		overflow: visible;
 	}
 
 	/* The button inherits glyph metrics to preserve the period's size and position. */
 	.hero-dot-btn {
-		display: inline;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--size-tap-min);
+		height: var(--size-tap-min);
 		padding: 0;
-		margin: 0;
+		margin: calc((0.22em - var(--size-tap-min)) / 2);
+		vertical-align: 0.03em;
 		background: none;
 		border: none;
 		font: inherit;
@@ -229,12 +233,6 @@
 
 	.hero-dot-armed {
 		cursor: pointer;
-	}
-	/* Generous invisible hit area (~44px) without any layout shift. */
-	.hero-dot-armed::after {
-		content: '';
-		position: absolute;
-		inset: -14px;
 	}
 	.hero-dot-armed:focus-visible {
 		outline: 2px solid var(--ring);

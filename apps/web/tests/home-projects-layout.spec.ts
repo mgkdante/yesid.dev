@@ -33,7 +33,7 @@ async function expectWholeCards(reel: Locator) {
 
 async function expectMediaAboveInfo(card: Locator) {
 	const split = await card.evaluate(element => ({
-		card: element.querySelector('article')!.getBoundingClientRect().toJSON(),
+		card: element.getBoundingClientRect().toJSON(),
 		media: element.querySelector('[data-testid$="card-image"]')!.getBoundingClientRect().toJSON(),
 		info: element.querySelector('[data-testid="project-card-info"]')!.getBoundingClientRect().toJSON(),
 	}));

@@ -19,16 +19,23 @@
 		align-items: center;
 		justify-content: center;
 		flex: none;
-		width: 1rem;
-		height: 1rem;
-		border: 1px solid currentColor;
-		border-radius: 50%;
-		font: 11px var(--font-mono);
+		inline-size: var(--size-tap-min);
+		block-size: var(--size-tap-min);
+		margin: calc((1rem - var(--size-tap-min)) / 2);
 		color: var(--muted-foreground);
 		letter-spacing: 0;
 		text-transform: none;
 	}
-	.transit-info::after { content: ''; position: absolute; inset: -14px; }
+	.transit-info > span {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 1rem;
+		block-size: 1rem;
+		border: 1px solid currentColor;
+		border-radius: 50%;
+		font: 11px var(--font-mono);
+	}
 	.transit-info:hover { color: var(--primary); }
 	.transit-info:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
 </style>

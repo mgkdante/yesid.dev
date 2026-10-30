@@ -121,6 +121,7 @@
 	"nav_chrome_shared_footer_nav_aria": "Navigation du pied de page",
 	"nav_chrome_shared_menu_overlay_aria": "Menu de navigation",
 	"nav_chrome_shared_menu_overlay_footer_label": "NAVIGATION · TOUTES LES ROUTES",
+	"nav_chrome_shared_skip_to_content_label": "Aller au contenu",
 	"nav_chrome_shared_locale_switcher_aria": "Langue",
 	"nav_chrome_shared_search_placeholder": "Rechercher...",
 	"nav_chrome_shared_clear_filters_label": "effacer les filtres",

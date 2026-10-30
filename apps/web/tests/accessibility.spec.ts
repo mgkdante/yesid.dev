@@ -16,19 +16,23 @@ import { visibleContactTerminal } from './_support/helpers';
 const chrome = siteLabels.navChrome.shared;
 const localized = (path: string, locale: Locale) =>
 	locale === DEFAULT_LOCALE ? path : `/${locale}${path === '/' ? '' : path}`;
-const paths = [
-	...sitePages.map(({ path }) => path),
-	`/projects/${projects[0].slug}`,
-	`/blog/${blogPosts[0].slug}`,
-	`/services/${services[0].id}`,
-];
-// In files C9 is reshaping; C10b's second part fixes each and deletes it here.
-const KNOWN: string[] = [
-	'[data-testid="project-card-info"] .data-flow-diagram.scrollable',
-	'.proof-count-total',
-	'a[data-testid="project-card"], a[data-testid="proof-card"]',
-	'[data-testid="closer-row"]',
-];
+// Each locale's own pages: a post exists in one language only.
+const pages = PUBLISHED_LOCALES.flatMap((locale) => {
+	const post = blogPosts.find((entry) => entry.lang === locale);
+	const postPath = post && `/blog/${post.slug}`;
+	return [
+		...sitePages.map(({ path }) => path),
+		`/projects/${projects[0].slug}`,
+		...(postPath ? [postPath] : []),
+		`/services/${services[0].id}`,
+	].map((path) => ({ locale, url: localized(path, locale), post: path === postPath }));
+});
+
+async function open(page: Page, { url, post }: (typeof pages)[number]) {
+	const response = await page.goto(url);
+	expect(response?.ok(), url).toBe(true);
+	if (post) await expect(page.getByTestId('blog-detail-page')).toBeVisible();
+}
 
 async function openMenu(page: Page, locale: Locale) {
 	const menu = page.getByRole('navigation', { name: resolveLocale(chrome.menuOverlayAria, locale) });
@@ -40,22 +44,19 @@ async function openMenu(page: Page, locale: Locale) {
 }
 
 test.describe('accessibility', { tag: '@theme' }, () => {
-	for (const path of paths) {
-		for (const locale of PUBLISHED_LOCALES) {
-			const url = localized(path, locale);
-			test(`${url} has no serious or critical axe violations`, async ({ page }) => {
-				await page.goto(url);
-				await page.evaluate(() => document.fonts.ready);
-				await expectAccessible(page, { exclude: KNOWN });
-			});
-		}
+	for (const entry of pages) {
+		test(`${entry.url} has no serious or critical axe violations`, async ({ page }) => {
+			await open(page, entry);
+			await page.evaluate(() => document.fonts.ready);
+			await expectAccessible(page);
+		});
 	}
 
 	for (const locale of PUBLISHED_LOCALES) {
 		test(`${locale}: the open menu has no serious or critical axe violations`, async ({ page }) => {
 			await page.goto(localized(menuItems[0].href, locale));
 			await openMenu(page, locale);
-			await expectAccessible(page, { include: '[role="dialog"]', exclude: KNOWN });
+			await expectAccessible(page, { include: '[role="dialog"]' });
 		});
 	}
 
@@ -64,27 +65,23 @@ test.describe('accessibility', { tag: '@theme' }, () => {
 		const form = visibleContactTerminal(page);
 		await form.getByTestId('contact-submit').click();
 		await expect(form.getByText('✗ ' + contactContent.validation.required.en.replace('{field}', contactContent.formTerminal.fields.name.label.en))).toBeVisible();
-		await expectAccessible(page, { exclude: KNOWN });
+		await expectAccessible(page);
 	});
 });
 
-// Hero, project carousel and manifesto pills are in files C9 is reshaping; C10b's second part fixes and deletes these.
-const TAP_KNOWN = ['[data-testid="hero-banner"]', '[data-testid="proof-prev"]', '[data-testid="proof-next"]', '[data-testid="manifesto-pill"]'];
-// CMS body copy: its links are text links, under WCAG 2.5.8's inline exception.
-const TAP_EXEMPT = ['[data-testid="blog-section-body"]'];
+// Links in CMS body copy are text links (WCAG 2.5.8 inline exception); its other controls are still measured.
+const TAP_EXEMPT = ['[data-testid="blog-section-body"] a'];
 
-for (const path of paths) {
-	for (const locale of PUBLISHED_LOCALES) {
-		const url = localized(path, locale);
-		test(`${url} keeps the page skeleton, fits the viewport and sizes its targets`, async ({ page }) => {
-			await page.goto(url);
-			await page.keyboard.press('Tab');
-			await expect(page.locator(':focus')).toHaveAttribute('href', '#main');
-			await expect(page.getByRole('banner')).toHaveCount(1);
-			await expect(page.getByRole('main')).toHaveAttribute('id', 'main');
-			await expect(page.getByRole('contentinfo')).toHaveCount(1);
-			await expectNoHorizontalOverflow(page);
-			await expectTapTargets(page, { exclude: [...TAP_KNOWN, ...TAP_EXEMPT] });
-		});
-	}
+for (const entry of pages) {
+	test(`${entry.url} keeps the page skeleton, fits the viewport and sizes its targets`, async ({ page }) => {
+		await open(page, entry);
+		await page.keyboard.press('Tab');
+		await expect(page.locator(':focus')).toHaveAttribute('href', '#main');
+		await expect(page.locator(':focus')).toHaveAccessibleName(resolveLocale(chrome.skipToContentLabel!, entry.locale));
+		await expect(page.getByRole('banner')).toHaveCount(1);
+		await expect(page.getByRole('main')).toHaveAttribute('id', 'main');
+		await expect(page.getByRole('contentinfo')).toHaveCount(1);
+		await expectNoHorizontalOverflow(page);
+		await expectTapTargets(page, { exclude: TAP_EXEMPT });
+	});
 }

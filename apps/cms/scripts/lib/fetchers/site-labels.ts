@@ -193,6 +193,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				['themeToggleAria', 'nav_chrome_shared_theme_toggle_aria'], ['footerNavAria', 'nav_chrome_shared_footer_nav_aria'],
 				['menuOverlayAria', 'nav_chrome_shared_menu_overlay_aria'],
 				['menuOverlayFooterLabel', 'nav_chrome_shared_menu_overlay_footer_label'],
+				['skipToContentLabel', 'nav_chrome_shared_skip_to_content_label', 'optional'],
 				['localeSwitcherAria', 'nav_chrome_shared_locale_switcher_aria'],
 				['searchPlaceholder', 'nav_chrome_shared_search_placeholder'], ['clearFiltersLabel', 'nav_chrome_shared_clear_filters_label'],
 				['tocToggleSectionAria', 'nav_chrome_shared_toc_toggle_section_aria'],

@@ -2673,6 +2673,7 @@
 					"footerNavAria": {"en":"Footer navigation","fr":"Navigation du pied de page","es":"Navegación del pie de página"},
 					"menuOverlayAria": {"en":"Navigation menu","fr":"Menu de navigation","es":"Menú de navegación"},
 					"menuOverlayFooterLabel": {"en":"NAVIGATION · ALL ROUTES","fr":"NAVIGATION · TOUTES LES ROUTES","es":"NAVEGACIÓN · TODAS LAS RUTAS"},
+					"skipToContentLabel": {"en":"Skip to content","fr":"Aller au contenu","es":"Saltar al contenido"},
 					"localeSwitcherAria": {"en":"Language","fr":"Langue","es":"Idioma"},
 					"searchPlaceholder": {"en":"Search...","fr":"Rechercher...","es":"Buscar..."},
 					"clearFiltersLabel": {"en":"clear filters","fr":"effacer les filtres","es":"limpiar filtros"},

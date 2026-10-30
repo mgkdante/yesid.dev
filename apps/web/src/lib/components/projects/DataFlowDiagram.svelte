@@ -31,6 +31,15 @@
 	} = $props();
 
 	let container: HTMLDivElement;
+	// Unknown until measured; a card diagram usually overflows, so the server renders it focusable.
+	let overflowing = $state<boolean>();
+	const focusable = $derived(overflowing ?? size === 'sm');
+	$effect(() => {
+		if (!container) return;
+		const observer = new ResizeObserver(() => (overflowing = container.scrollWidth > container.clientWidth));
+		observer.observe(container);
+		return () => observer.disconnect();
+	});
 
 	// Use daylight-visible amber for linework and accent-text for readable node labels.
 	const BRAND_COLORS = ['var(--primary)', 'var(--line-amber)'];
@@ -137,8 +146,10 @@
 	});
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex (an overflowing diagram must be keyboard-scrollable) -->
 <div
 	bind:this={container}
+	tabindex={focusable ? 0 : undefined}
 	class="data-flow-diagram"
 	data-carousel-drag-ignore="true"
 	class:scrollable={stack.length > 4}
