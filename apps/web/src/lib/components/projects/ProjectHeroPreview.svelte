@@ -14,6 +14,7 @@
 		imageClass = '',
 		eager = false,
 		sizes = '(min-width: 768px) 40vw, 92vw',
+		secondarySizes = '(min-width: 768px) 16vw, 40vw',
 	}: {
 		project: ProjectSummary;
 		preset: string;
@@ -26,6 +27,8 @@
 		eager?: boolean;
 		/** Rendered-width hint for srcset selection — set per surface. */
 		sizes?: string;
+		/** Width hint for the narrower phone-screenshot pane of a split preview. */
+		secondarySizes?: string;
 	} = $props();
 
 	// Start from the server markup's dark theme: hydration keeps the server's src,
@@ -50,7 +53,6 @@
 
 	const primaryImage = $derived(primaryId ? assetImage(primaryId, preset) : undefined);
 	const secondaryImage = $derived(secondaryId ? assetImage(secondaryId, preset) : undefined);
-	const SECONDARY_SIZES = '(min-width: 768px) 16vw, 40vw';
 </script>
 
 {#if primaryId}
@@ -80,7 +82,7 @@
 				<img
 					src={secondaryImage?.src}
 					srcset={secondaryImage?.srcset}
-					sizes={SECONDARY_SIZES}
+					sizes={secondarySizes}
 					width={secondaryImage?.width}
 					height={secondaryImage?.height}
 					alt={secondaryAlt}

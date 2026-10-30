@@ -51,13 +51,22 @@
 	} as const;
 	const v = $derived(VARIANT[variant]);
 
-	// Rendered card widths: listing = 2-col grid beside the sidebar (~40vw
-	// desktop, full-width mobile); proof = one or two whole carousel slots.
-	const mediaSizes = $derived(
-		variant === 'proof'
-			? '(min-width: 768px) 50vw, 92vw'
-			: '(min-width: 768px) 40vw, 92vw',
-	);
+	// Rendered pane widths per breakpoint. Listing values are measured on /projects:
+	// a split card gives the phone screenshot ~25vw on mobile, so asking for the
+	// whole card width there downloads twice the pixels for the LCP image.
+	const MEDIA_SIZES = {
+		listing: {
+			single: '(min-width: 1280px) 35vw, (min-width: 1024px) 63vw, (min-width: 768px) 90vw, 82vw',
+			primary: '(min-width: 1280px) 26vw, (min-width: 1024px) 52vw, 72vw',
+			secondary: '(min-width: 1280px) 12vw, (min-width: 1024px) 18vw, (min-width: 768px) 24vw, 30vw',
+		},
+		proof: {
+			single: '(min-width: 768px) 50vw, 92vw',
+			primary: '(min-width: 768px) 50vw, 92vw',
+			secondary: '(min-width: 768px) 16vw, 40vw',
+		},
+	} as const;
+	const mediaSizes = $derived(MEDIA_SIZES[variant]);
 
 	let cardHovered = $state(false);
 	let tagsRow = $state<HTMLDivElement>();
@@ -118,7 +127,8 @@
 					alt={resolveLocale(project.title, locale)}
 					imageClass={cn('project-card-img', !isProof && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
 					{eager}
-					sizes={mediaSizes}
+					sizes={project.imageSecondary ? mediaSizes.primary : mediaSizes.single}
+					secondarySizes={mediaSizes.secondary}
 				/>
 			</div>
 		{:else}
