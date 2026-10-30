@@ -46,7 +46,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						onclick={() => handleProjectProofClick(project.liveUrl)}
-						class="inline-flex items-center gap-2 font-mono text-mono text-primary no-underline"
+						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
 					>
 						<SectionIcon name="arrow" class="h-3.5 w-3.5 shrink-0" />
 						{liveSiteLabel}
@@ -58,7 +58,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						onclick={() => handleProjectProofClick(project.repoUrl)}
-						class="inline-flex items-center gap-2 font-mono text-mono text-primary no-underline"
+						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
 					>
 						<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />
 						{githubLabel}

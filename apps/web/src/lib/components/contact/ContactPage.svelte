@@ -380,13 +380,12 @@
 					{#each contactPage.socials as social}
 						<a
 							href={social.href}
-							aria-label={contactChannelLabel(social.label)}
 							data-testid="contact-social-{social.icon}"
 							onclick={() => handleContactChannelClick(social)}
 							class="tap-feedback flex items-center gap-2 rounded px-2 py-3 min-h-11 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15 active:bg-primary/25"
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
-							<span class="text-[var(--primary)]">→</span>
+							<span class="text-[var(--primary)]" aria-hidden="true">→</span>
 							{#if social.icon === 'calendar'}
 								<!-- The booking row is the site's strongest CONNECT action: the
 								     human label is visible (it was aria-only) with the URL as a
@@ -464,7 +463,7 @@
 
 						<!-- Error summary -->
 						{#if submitted && errorCount() > 0}
-							<div data-testid="contact-error-summary" class="rounded border border-[var(--destructive)]/30 bg-[var(--destructive)]/10 px-3 py-2 text-caption text-[var(--destructive)]">
+							<div data-testid="contact-error-summary" class="rounded border border-[var(--destructive)]/30 px-3 py-2 text-caption text-[var(--destructive)]">
 								✗ {resolveLocale(contactPage.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
 							</div>
 						{/if}
@@ -478,7 +477,7 @@
 								aria-busy={sending}
 								data-testid="contact-submit"
 							>
-								<span class="opacity-60">~ $</span>
+								<span aria-hidden="true">~ $</span>
 								{sending
 									? resolveLocale(contactPage.success.sending, locale)
 									: resolveLocale(contactPage.formTerminal.submitLabel, locale)}
@@ -500,9 +499,9 @@
 								rel="noopener"
 								data-testid="contact-booking-link"
 								onclick={() => trackAnalyticsEvent('booking_click')}
-								class="tap-feedback rounded px-1 py-0.5 text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
+								class="tap-feedback rounded px-1 py-0.5 inline-flex min-h-11 items-center text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
 							>
-								<span class="opacity-60">~ $</span>
+								<span aria-hidden="true">~ $</span>
 								{resolveLocale(contactPage.formTerminal.bookingButtonLabel, locale)}
 							</a>
 						</div>
