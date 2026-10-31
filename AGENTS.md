@@ -11,7 +11,9 @@ Start page: https://app.notion.com/p/4083e863069080df9e63d165128a1522
 This project's guide: https://app.notion.com/p/3f33e86306908116baf8c70ce55b9069
 Shared formats (roadmap, slice, spec, handoff, session): https://app.notion.com/p/4003e8630690809b8045d8ad3a439995
 
-- You MUST start every session by fetching my enabled Notion Skills via `notion-get-enabled-skills`.
+- At the start of each agentic coding or delegation session, fetch the current [model-selection Skill](https://app.notion.com/p/4083e86306908179b442da1e1a9a8156) once and follow it for every model, effort, reviewer, provider and fallback choice. It is the same for every project; this repo picks no models. Saved Notion pages are not loaded context; updates do not change active sessions.
+- Discover enabled Notion Skills through native host tooling when exposed. Otherwise fetch applicable procedures directly and report the discovery limitation. Do not reload the full personal archive.
+- Pass applicable routing constraints and each source revision or read timestamp in child briefs.
 - When Notion is connected, read the project guide before planning; re-read live records before relying on any status.
 - Save durable facts about me as Notion Memories (parent "memory"), not in this file.
 - Repository instructions own local commands and constraints; Notion owns plans, decisions and handoffs.
