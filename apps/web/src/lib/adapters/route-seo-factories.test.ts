@@ -361,8 +361,11 @@ describe('projectsSlugSeoFactory', () => {
 			const body = searchTitle.slice(0, -suffix.length);
 			expect(searchTitle.length).toBeLessThanOrEqual(70);
 			expect(searchTitle.endsWith(suffix)).toBe(true);
-			expect(body.length).toBeGreaterThan(0);
-			expect(title[lang].startsWith(body)).toBe(true);
+			const kept = body.slice(0, -1);
+			expect(body.endsWith('…')).toBe(true);
+			expect(kept.length).toBeGreaterThan(0);
+			expect(title[lang].startsWith(kept)).toBe(true);
+			expect(title[lang].charAt(kept.length)).toMatch(/[\s,;:]/);
 		}
 		expect(seo.canonical).toBe(canonical);
 		expect(seo.ogType).toBe('article');

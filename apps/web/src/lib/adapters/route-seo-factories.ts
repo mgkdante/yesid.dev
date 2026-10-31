@@ -59,8 +59,9 @@ function titleBodyForSeo(primary: string | undefined, fallback: string, brand: s
 	for (const candidate of candidates) {
 		if (`${candidate}${suffix}`.length <= 70) return candidate;
 	}
-	const maxBodyLength = Math.max(1, 70 - suffix.length);
-	return (candidates[0] ?? fallback).slice(0, maxBodyLength).trimEnd();
+	const clipped = (candidates[0] ?? fallback).slice(0, Math.max(2, 70 - suffix.length));
+	const wholeWords = clipped.includes(' ') ? clipped.slice(0, clipped.lastIndexOf(' ')) : clipped.slice(0, -1);
+	return `${wholeWords.replace(/[\s,;:·–—-]+$/u, '')}…`;
 }
 
 /**
