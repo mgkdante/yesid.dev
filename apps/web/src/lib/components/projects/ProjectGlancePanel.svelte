@@ -52,7 +52,7 @@
 
   const hasMetrics = $derived(allMetrics.length > 0);
   const hasServices = $derived(services.length > 0);
-  const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
+  const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 
   const metricColors = ['var(--primary)', 'var(--accent)'] as const;
 </script>

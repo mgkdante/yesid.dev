@@ -66,6 +66,7 @@ export interface DirectusProject {
 	repo_url: string | null;
 	repo_private: boolean | null;
 	live_url: string | null;
+	docs_url: string | null;
 	readme_url: string | null;
 	location: string | null;
 	environment: string | null;
@@ -150,6 +151,7 @@ export function toProject(row: DirectusProject): Project {
 	if (row.repo_url) project.repoUrl = row.repo_url;
 	if (row.repo_private) project.repoPrivate = true;
 	if (row.live_url) project.liveUrl = row.live_url;
+	if (row.docs_url) project.docsUrl = row.docs_url;
 	if (row.readme_url) project.readmeUrl = row.readme_url;
 	if (row.hero_image) project.image = row.hero_image;
 	if (row.hero_image_light) project.imageLight = row.hero_image_light;

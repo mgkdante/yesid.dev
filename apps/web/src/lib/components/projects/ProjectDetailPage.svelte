@@ -129,7 +129,7 @@
 			entries.push({ id: 'glance-stack', title: glanceStackTitle, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
 		if (services.length > 0)
 			entries.push({ id: 'glance-services', title: glanceServicesTitle, level: 2, badge: { kind: 'icon', name: 'grid' }, rail: true, children: [] });
-		if (project.liveUrl || project.repoUrl || project.repoPrivate)
+		if (project.liveUrl || project.repoUrl || project.docsUrl || project.repoPrivate)
 			entries.push({ id: 'glance-links', title: glanceLinksTitle, level: 2, badge: { kind: 'icon', name: 'arrow' }, rail: true, children: [] });
 		return entries;
 	}
@@ -166,7 +166,7 @@
 	const mediaGalleryTitle = $derived(galleryVideos.length === 0 ? galleryTitle : galleryDoc.blocks.length > 0 ? youtubeLabels[locale].media : youtubeLabels[locale].gallery);
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
-	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
+	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 	const readmeHtml = $derived((readme ?? []).map((part) => ('html' in part ? part.html : '')).join(''));
 	const readmeTocEntry = $derived.by((): TocEntry | null => {
 		if (!readme?.length) return null;

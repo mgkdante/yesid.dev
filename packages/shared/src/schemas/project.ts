@@ -34,6 +34,8 @@ export const ProjectSchema = z.object({
 	/** Render a non-link private-repository state instead of a repository link. */
 	repoPrivate: z.boolean().optional(),
 	liveUrl: z.string().optional(),
+	/** Published public documentation (the architecture wiki). */
+	docsUrl: z.string().optional(),
 	/** Directus file UUID for the primary thumbnail/hero; consumers resolve it through the asset helper. */
 	image: z.string().optional(),
 	/** Optional light-theme variant of the primary hero. */
