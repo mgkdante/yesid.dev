@@ -61,8 +61,11 @@ test.describe('responsive shell and interrupted menu', () => {
 		await page.setViewportSize({ width: 1366, height: 600 });
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/blog');
+		await openMenu(page);
+		await page.keyboard.press('Escape');
+		await expect(page.getByRole('dialog')).toHaveCount(0);
 		const title = page.locator('.listing-layout > .edge-title-column .edge-title');
-		// Rendering stress fixture: overwrite the edge title with long text.
+		// Replace renderer-owned text only after client hydration.
 		await title.evaluate((el) => {
 			el.textContent = 'Un catalogue de travaux et de recherches.';
 		});
