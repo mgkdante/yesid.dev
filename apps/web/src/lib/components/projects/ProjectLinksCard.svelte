@@ -12,6 +12,7 @@
 	const glanceLinksTitle = resolveLocale(glanceChrome.links, locale);
 	const liveSiteLabel = resolveLocale(glanceChrome.liveSiteLabel, locale);
 	const githubLabel = resolveLocale(glanceChrome.githubLabel, locale);
+	const docsLabel = resolveLocale(glanceChrome.docsLabel, locale);
 	const repoPrivateLabel = resolveLocale(glanceChrome.repoPrivateLabel, locale);
 
 	let {
@@ -30,7 +31,7 @@
 		}
 	}
 
-	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
+	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 </script>
 
 {#if hasLinks}
@@ -72,6 +73,19 @@
 						<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />
 						{repoPrivateLabel}
 					</span>
+				{/if}
+				{#if project.docsUrl}
+					<a
+						href={project.docsUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						onclick={() => handleProjectProofClick(project.docsUrl)}
+						data-testid="project-docs-link"
+						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
+					>
+						<SectionIcon name="arrow" class="h-3.5 w-3.5 shrink-0" />
+						{docsLabel}
+					</a>
 				{/if}
 			</div>
 		</CollapsibleSection>

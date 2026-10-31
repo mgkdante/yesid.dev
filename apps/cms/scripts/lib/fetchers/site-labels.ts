@@ -93,6 +93,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 					['liveSiteLabel', 'projects_chrome_detail_glance_live_site_label'],
 					['liveSiteLabelMobile', 'projects_chrome_detail_glance_live_site_label_mobile'],
 					['githubLabel', 'projects_chrome_detail_glance_github_label'],
+					['docsLabel', 'projects_chrome_detail_glance_docs_label'],
 					['repoPrivateLabel', 'projects_chrome_detail_glance_repo_private_label'],
 				]),
 				tocPill: toLocalizedFields(tr, [
