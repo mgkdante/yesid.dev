@@ -432,8 +432,7 @@
     },
     "icon": "bookmark",
     "color": null,
-    "_syncId": "_sync_preset_blog_posts_en",
-    "user": null
+    "_syncId": "_sync_preset_blog_posts_en"
   },
   {
     "bookmark": "Français",
@@ -451,8 +450,7 @@
     },
     "icon": "bookmark",
     "color": null,
-    "_syncId": "_sync_preset_blog_posts_fr",
-    "user": null
+    "_syncId": "_sync_preset_blog_posts_fr"
   },
   {
     "bookmark": "Español",
@@ -470,7 +468,6 @@
     },
     "icon": "bookmark",
     "color": null,
-    "_syncId": "_sync_preset_blog_posts_es",
-    "user": null
+    "_syncId": "_sync_preset_blog_posts_es"
   }
 ]
