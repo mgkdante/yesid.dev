@@ -64,7 +64,7 @@ describe('loadOgTitle', () => {
         title: { en: 'Fallback EN' },
       });
       const result = await loadOgTitle('project', 'p', 'fr');
-      expect(result).toEqual({ eyebrow: 'PROJECT', title: 'Fallback EN' });
+      expect(result).toEqual({ eyebrow: 'PROJET', title: 'Fallback EN' });
     });
 
     it('falls back to en when requested locale is empty string', async () => {
@@ -73,7 +73,7 @@ describe('loadOgTitle', () => {
         title: { en: 'EN Fallback', fr: '' },
       });
       const result = await loadOgTitle('project', 'p', 'fr');
-      expect(result).toEqual({ eyebrow: 'PROJECT', title: 'EN Fallback' });
+      expect(result).toEqual({ eyebrow: 'PROJET', title: 'EN Fallback' });
     });
 
     it('returns null when project title.en is empty', async () => {

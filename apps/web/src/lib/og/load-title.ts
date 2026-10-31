@@ -5,14 +5,11 @@ import { resolveLocale } from '#lib/utils/locale.ts';
 export type OgType = 'blog' | 'project';
 
 export interface OgTitleResult {
-  eyebrow: string; // 'BLOG' or 'PROJECT'
+  eyebrow: string; // 'BLOG', or 'PROJECT' in the card's locale
   title: string;
 }
 
-const EYEBROWS: Record<OgType, string> = {
-  blog: 'BLOG',
-  project: 'PROJECT',
-};
+const PROJECT_EYEBROW: Record<Locale, string> = { en: 'PROJECT', fr: 'PROJET', es: 'PROYECTO' };
 
 // Pulls the title for a (type, slug) pair via typed adapter ports,
 // returning a normalized { eyebrow, title } the renderer consumes.
@@ -28,7 +25,7 @@ export async function loadOgTitle(
       const post = await adapter.blog.bySlug(slug);
       const title = post?.title;
       if (!title) return null;
-      return { eyebrow: EYEBROWS.blog, title };
+      return { eyebrow: 'BLOG', title };
     }
 
     // type === 'project'
@@ -41,7 +38,7 @@ export async function loadOgTitle(
     // "not translated yet" and falls back to en (guaranteed by schema).
     const resolved = resolveLocale(project.title, locale);
     if (!resolved) return null;
-    return { eyebrow: EYEBROWS.project, title: resolved };
+    return { eyebrow: PROJECT_EYEBROW[locale], title: resolved };
   } catch (err) {
     console.error('[og]', type, slug, err);
     return null;

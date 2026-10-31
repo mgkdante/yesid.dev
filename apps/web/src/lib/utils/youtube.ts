@@ -8,6 +8,14 @@ export const youtubeLabels = {
 	es: { play: 'Reproducir video', close: 'Cerrar video', title: 'Video de YouTube', gallery: 'Videos', media: 'Imágenes y videos' },
 };
 
+const NAMED_ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0' };
+const decodeEntities = (text: string) =>
+	text.replace(/&(?:#(\d+)|#x([0-9a-f]+)|(amp|lt|gt|quot|apos|nbsp));/gi, (entity, dec?: string, hex?: string, name?: string) => {
+		if (name) return NAMED_ENTITIES[name.toLowerCase()]!;
+		const code = dec ? Number(dec) : parseInt(hex!, 16);
+		return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : entity;
+	});
+
 /** Only a standalone URL or one complete anchor becomes a player. */
 export function parseYouTubeParagraph(text: string): YouTubeVideo | null {
 	const value = text.trim();
@@ -27,7 +35,7 @@ export function parseYouTubeParagraph(text: string): YouTubeVideo | null {
 				: url.pathname.match(/^\/(?:embed|shorts|live)\/([\w-]+)\/?$/)?.[1] ?? null;
 		}
 		if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return null;
-		const caption = anchor && !/[<>]/.test(anchor[2]) ? anchor[2].trim() : '';
+		const caption = anchor && !/[<>]/.test(anchor[2]) ? decodeEntities(anchor[2]).trim() : '';
 		return { id, caption: caption === href || caption === value ? '' : caption };
 	} catch {
 		return null;
