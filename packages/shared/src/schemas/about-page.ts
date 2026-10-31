@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LocalizedStringSchema, PageMetaSchema } from './shared';
+import { LocalizedStringSchema } from './shared';
 
 export const AboutPolaroidSchema = z.object({
 	src: z.string(),
@@ -35,8 +35,6 @@ export const AboutTestimonialSchema = z.object({
 	quote: LocalizedStringSchema,
 	author: z.string(),
 	role: LocalizedStringSchema,
-	company: z.string(),
-	logo: z.string().optional(),
 });
 
 export const AboutLanguageSchema = z.object({
@@ -59,7 +57,6 @@ export const AboutEducationItemSchema = z.object({
 
 export const AboutWeatherConfigSchema = z.object({
 	city: LocalizedStringSchema,
-	hook: LocalizedStringSchema,
 	enabled: z.boolean(),
 });
 
@@ -68,18 +65,11 @@ const AboutCtaLineSchema = z.object({
 	color: z.enum(['orange', 'muted', 'accent']),
 });
 
-export const AboutSocialLinkSchema = z.object({
-	label: z.string(),
-	href: z.string(),
-	icon: z.string(),
-});
-
 export const AboutCtaSchema = z.object({
 	command: z.string(),
 	lines: z.array(AboutCtaLineSchema).readonly(),
 	buttonLabel: LocalizedStringSchema,
 	buttonHref: z.string(),
-	socials: z.array(AboutSocialLinkSchema).readonly(),
 });
 
 export const AboutStopLabelsSchema = z.object({
@@ -120,7 +110,6 @@ export const AboutContentSchema = z.object({
 	cta: AboutCtaSchema,
 	stopLabels: AboutStopLabelsSchema,
 	labels: AboutLabelsSchema,
-	meta: PageMetaSchema,
 });
 
 export type AboutPolaroid = z.infer<typeof AboutPolaroidSchema>;

@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_filters_all_label",
-    "group": "grp_unread",
+    "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"All\"",
+    "note": "First option in the Language and Tags groups. Default: \"All\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 10,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Blog · Filters all label"
+        "translation": "Filter · All option"
       }
     ],
     "validation": null,

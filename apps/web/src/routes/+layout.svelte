@@ -21,6 +21,9 @@
 	import { SeoHead } from '@yesid/ui/head';
 	import { startAnalytics } from '#lib/analytics/client.ts';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
+	import { errorPagesById } from '#lib/content/error-pages.ts';
+	import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
+	import { errorTitleBody } from '#lib/adapters/error-seo-fallback.ts';
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
@@ -36,7 +39,6 @@
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
 		footerLinks?: readonly NavLink[];
-		mobileLinks?: readonly NavLink[];
 		menuItems?: readonly NavLink[];
 		morphShapes?: readonly MorphShape[];
 	}; children: import('svelte').Snippet } = $props();
@@ -46,6 +48,11 @@
 	const headerLinks = $derived(data.headerLinks ?? []);
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
+
+	// Error renders use the browser tab title of their own status row.
+	const seo = $derived(page.error
+		? { ...data.seo, title: appendBrandPerLocale(errorTitleBody(errorPagesById, page.status), siteMeta.name) }
+		: data.seo);
 
 	// Persistent chrome receives reactive locale props; keyed page subtrees read locale context at initialization.
 	const locale = $derived(data.locale ?? DEFAULT_LOCALE);
@@ -99,7 +106,6 @@
 		PUBLISHED_LOCALES[(Math.max(0, PUBLISHED_LOCALES.indexOf(locale)) + 1) % PUBLISHED_LOCALES.length],
 	);
 
-	const LIVE_LABEL = { en: 'Live', fr: 'En direct', es: 'En vivo' } as const;
 	const footer = siteLabels.footerChrome.footer;
 	const footerNav = $derived(
 		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
@@ -128,7 +134,7 @@
 {/snippet}
 
 <SiteRoot lang={locale}>
-	<SeoHead {...seoHeadProps(data.seo, locale, data.themeColor)} />
+	<SeoHead {...seoHeadProps(seo, locale, data.themeColor)} />
 	<div class="site-grid circuit-grid" data-testid="site-grid" aria-hidden="true"></div>
 
 	<div
@@ -196,7 +202,7 @@
 				]}
 				statusStart={footerAddress}
 				statusPrefix={resolveLocale(footer.statusPrefix, locale)}
-				liveLabel={LIVE_LABEL[locale]}
+				liveLabel={resolveLocale(footer.liveLabel, locale)}
 			/>
 		</div>
 	</div>

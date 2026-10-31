@@ -18,11 +18,10 @@ export async function load({
 	const post = await adapter.blog.bySlug(params.slug);
 	if (!post || post.lang !== locale) error(404, 'Post not found');
 
-	const [body, svgContent, allPosts, blogPage] = await Promise.all([
+	const [body, svgContent, allPosts] = await Promise.all([
 		adapter.blog.bodyBySlug(params.slug),
 		adapter.blog.svgContent(post),
 		adapter.blog.all(),
-		adapter.content.blogPage(),
 	]);
 
 	if (!body) error(404, 'Post body missing');
@@ -43,7 +42,6 @@ export async function load({
 		wordCount: words,
 		headings,
 		postIndex,
-		blogPage,
 		// Shiki runs server-side only; CodeBlock consumes these by block id.
 		codeHighlights: await collectCodeHighlights([body]),
 	};

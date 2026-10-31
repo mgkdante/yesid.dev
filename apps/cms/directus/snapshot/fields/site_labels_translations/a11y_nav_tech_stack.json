@@ -11,7 +11,7 @@
     "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"Tech stack\"",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,

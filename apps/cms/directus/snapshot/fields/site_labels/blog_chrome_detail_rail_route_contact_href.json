@@ -1,0 +1,49 @@
+{
+  "collection": "site_labels",
+  "field": "blog_chrome_detail_rail_route_contact_href",
+  "type": "string",
+  "meta": {
+    "collection": "site_labels",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "blog_chrome_detail_rail_route_contact_href",
+    "group": "grp_blog_rail",
+    "hidden": false,
+    "interface": "input",
+    "note": "Site path. Empty uses /contact.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 6,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes · Contact link"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "blog_chrome_detail_rail_route_contact_href",
+    "table": "site_labels",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

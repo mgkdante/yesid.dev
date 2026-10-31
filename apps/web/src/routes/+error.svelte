@@ -6,12 +6,6 @@
 	import { pathLocale, localizeHref } from '#lib/utils/locale-routing.ts';
 	import { ErrorPage } from '@yesid/ui/layout';
 
-	const SUGGESTIONS_LABEL = {
-		en: 'Suggested pages',
-		fr: 'Pages suggérées',
-		es: 'Páginas sugeridas',
-	} as const;
-
 	// Error renders carry no params and bare test renders no page.url, so the locale comes from the path.
 	const locale = $derived(pathLocale(page.url?.pathname ?? '/'));
 
@@ -30,8 +24,8 @@
 		label: resolveLocale(suggestion.label, locale),
 		href: localizeHref(suggestion.href, locale),
 	}))}
-	suggestionsLabel={SUGGESTIONS_LABEL[locale]}
+	suggestionsLabel={resolveLocale(siteLabels.ui.errorSuggestionsLabel, locale)}
 	statusNote={resolveLocale(siteLabels.ui.errorStatusNote, locale) ||
 		'// requested path not in service'}
-	signLabel="STATION"
+	signLabel={resolveLocale(siteLabels.ui.errorSignLabel, locale)}
 />

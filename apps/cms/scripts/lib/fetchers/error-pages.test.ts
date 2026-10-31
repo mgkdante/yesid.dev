@@ -13,7 +13,6 @@ const FIXTURE: DirectusErrorPageRow = {
 			heading: 'This station is under construction',
 			description:
 				"The route you requested doesn't exist or has been rerouted. Here are some active lines:",
-			terminal_line: '$ route --status 404 // requested path not in service',
 			suggestions: [
 				{ label: 'Services', href: '/services' },
 				{ label: 'Projects', href: '/projects' },
@@ -55,7 +54,6 @@ describe('error-pages fetcher transform', () => {
 			es: 'RUTA NO ENCONTRADA',
 		});
 		expect(result.heading.en).toBe('This station is under construction');
-		expect(result.terminalLine).toBe('$ route --status 404 // requested path not in service');
 		expect(result.suggestions).toHaveLength(3);
 	});
 

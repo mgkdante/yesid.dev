@@ -18,7 +18,7 @@
 
 	const listingChrome = siteLabels.blogChrome.listing;
 	const labels = listingChrome.filters;
-	const allLabel = resolveLocale({ en: 'All', fr: 'Tous', es: 'Todos' }, locale);
+	const allLabel = resolveLocale(labels.allLabel, locale);
 	const languageLabel = (lang: Locale) => resolveLocale(siteLabels.ui.languageNames[lang], locale) || lang;
 
 	// The date range is outside FilterGroup and needs its own persisted collapse state.

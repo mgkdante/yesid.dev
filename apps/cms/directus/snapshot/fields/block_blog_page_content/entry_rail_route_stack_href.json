@@ -8,15 +8,15 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_route_stack_href",
-    "group": "grp_retired",
+    "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": "Not shown on the site. Nothing reads it; kept until a source cleanup removes it.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 1,
+    "sort": 7,
     "special": null,
     "translations": [
       {

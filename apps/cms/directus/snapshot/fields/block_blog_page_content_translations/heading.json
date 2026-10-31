@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "heading",
-    "group": "grp_retired",
+    "group": "grp_professional",
     "hidden": false,
     "interface": "input",
-    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
+    "note": "Main heading of /blog. Overrides the fallback heading in Site labels.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Old listing heading (unused)"
+        "translation": "Heading"
       }
     ],
     "validation": null,

@@ -1,0 +1,49 @@
+{
+  "collection": "block_hero_translations",
+  "field": "stamp_demo",
+  "type": "string",
+  "meta": {
+    "collection": "block_hero_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "stamp_demo",
+    "group": "grp_interface",
+    "hidden": false,
+    "interface": "input",
+    "note": "Fills {updatedAgo} in the results line while the data is simulated, for example demo data.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 5,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "SQL panel · Demo data stamp"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "stamp_demo",
+    "table": "block_hero_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

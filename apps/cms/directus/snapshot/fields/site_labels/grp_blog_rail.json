@@ -1,0 +1,38 @@
+{
+  "collection": "site_labels",
+  "field": "grp_blog_rail",
+  "type": "alias",
+  "meta": {
+    "collection": "site_labels",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_blog_rail",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Where the side rail buttons beside each blog article go. Same in every language. The button words are in Text (EN / FR / ES).",
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 3,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog article side rail links (all languages)"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

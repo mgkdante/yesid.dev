@@ -11,7 +11,7 @@
     "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": "The link always opens cal.com/yesid-dev.",
+    "note": "Opens the Calendar link in Contact channels.",
     "options": null,
     "readonly": false,
     "required": false,

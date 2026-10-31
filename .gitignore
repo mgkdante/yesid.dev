@@ -71,6 +71,7 @@ apps/web/static/images/*.source.svg
 /apps/web/src/lib/content/site-content.ts
 /apps/web/src/lib/content/site-labels.ts
 /apps/web/src/lib/content/site-meta.ts
+/apps/web/src/lib/content/site-owner-phone.server.ts
 /apps/web/src/lib/content/site-pages.ts
 /apps/web/src/lib/content/site-seo-defaults.ts
 /apps/web/src/lib/content/generated[.]manifest.json

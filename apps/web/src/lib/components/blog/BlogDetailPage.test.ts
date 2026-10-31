@@ -3,7 +3,6 @@ import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import BlogDetailPage from './BlogDetailPage.svelte';
 import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
-import type { BlogPageContent } from '@repo/shared';
 
 // Minimal BlogPost fixture, only required fields populated.
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
@@ -38,36 +37,7 @@ const mockHeadings: TocHeading[] = [
 	{ id: 'section-two', text: 'Section Two', level: 2 },
 ];
 
-const mockBlogPage = {
-	intro: { en: 'Notes from the field.' },
-	heading: { en: 'Blog' },
-	backToDispatches: { en: 'back to Blog' },
-	backToPersonal: { en: 'back to personal' },
-	personalHeading: { en: 'Personal Corner' },
-	personalIntro: { en: 'Off-work notes.' },
-	toPersonalLabel: { en: 'Personal Corner' },
-	toPersonalSubtitle: { en: 'Off the clock' },
-	toProfessionalLabel: { en: 'Back to Blog' },
-	toProfessionalSubtitle: { en: 'Brand notes' },
-	entryRail: {
-		workWithMe: {
-			title: { en: 'Work With Me' },
-			prompt: { en: 'Need a system that stays editable?' },
-			primary: { label: { en: 'View Services' }, href: '/services' },
-			secondary: { label: { en: 'Start a Project' }, href: '/contact' },
-		},
-		routes: {
-			title: { en: 'Pick A Route' },
-			links: [
-				{ label: { en: 'Case studies' }, href: '/projects' },
-				{ label: { en: 'Services' }, href: '/services' },
-				{ label: { en: 'Stack' }, href: '/services' },
-				{ label: { en: 'About' }, href: '/about' },
-				{ label: { en: 'Contact' }, href: '/contact' },
-			],
-		},
-	},
-} satisfies BlogPageContent;
+const { backNav, entryRail } = siteLabels.blogChrome.detail;
 
 describe('BlogDetailPage', () => {
 	it('renders with data-testid', () => {
@@ -123,11 +93,10 @@ describe('BlogDetailPage', () => {
 				post: makePost({ lang: 'fr' }),
 				body: mockBody,
 				headings: mockHeadings,
-				blogPage: mockBlogPage,
 			},
 			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
 		});
-		expect(french.getByRole('link', { name: 'back to Blog' })).toHaveAttribute(
+		expect(french.getByRole('link', { name: backNav.toDispatches.fr! })).toHaveAttribute(
 			'href',
 			'/fr/blog',
 		);
@@ -138,11 +107,10 @@ describe('BlogDetailPage', () => {
 				post: makePost({ lang: 'es', category: 'personal' }),
 				body: mockBody,
 				headings: mockHeadings,
-				blogPage: mockBlogPage,
 			},
 			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'es']]),
 		});
-		expect(spanishPersonal.getByRole('link', { name: 'back to personal' })).toHaveAttribute(
+		expect(spanishPersonal.getByRole('link', { name: backNav.toPersonal.es! })).toHaveAttribute(
 			'href',
 			'/es/blog/personal',
 		);
@@ -184,20 +152,26 @@ describe('BlogDetailPage', () => {
 		expect(screen.getByText('sql · postgresql')).toBeTruthy();
 	});
 
-	it('renders the CMS-backed entry rail on the blog slug page', () => {
+	it('renders the entry rail from site labels on the blog slug page', () => {
 		render(BlogDetailPage, {
 			props: {
 				post: makePost(),
 				body: mockBody,
 				headings: mockHeadings,
-				blogPage: mockBlogPage,
 			}
 		});
 
-		expect(screen.getAllByText('Work With Me').length).toBeGreaterThan(0);
-		expect(screen.getAllByText('Need a system that stays editable?').length).toBeGreaterThan(0);
-		expect(screen.getAllByRole('link', { name: 'View Services' })[0]).toHaveAttribute('href', '/services');
-		expect(screen.getAllByRole('link', { name: 'Case studies' })[0]).toHaveAttribute('href', '/projects');
+		const { workWithMe, routes } = entryRail;
+		expect(screen.getAllByText(workWithMe.title.en).length).toBeGreaterThan(0);
+		expect(screen.getAllByText(workWithMe.prompt.en).length).toBeGreaterThan(0);
+		expect(screen.getAllByRole('link', { name: workWithMe.primary.label.en })[0]).toHaveAttribute(
+			'href',
+			workWithMe.primary.href,
+		);
+		expect(screen.getAllByRole('link', { name: routes.links[1].label.en })[0]).toHaveAttribute(
+			'href',
+			routes.links[1].href,
+		);
 	});
 
 	it('sets --blog-accent to primary for professional posts', () => {

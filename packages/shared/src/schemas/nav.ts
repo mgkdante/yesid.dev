@@ -20,7 +20,8 @@ export const ErrorPageContentSchema = z.object({
 	label: LocalizedStringSchema,
 	heading: LocalizedStringSchema,
 	description: LocalizedStringSchema,
-	terminalLine: z.string(),
+	/** Browser tab title body; the site name is appended. */
+	browserTitle: LocalizedStringSchema.optional(),
 	suggestions: z
 		.array(
 			z.object({

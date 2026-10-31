@@ -1,11 +1,11 @@
 /**
  * about-page block fetcher: block_about_content.
  *
- * The most complex block: 13 nested types. go2-t1b2: identity/weather/cta/
- * stop_labels/labels/meta now read FLAT columns (locale-invariant leaves on
- * the parent row, per-locale strings + the polaroids repeater on
- * translations); the list repeaters (metrics/methodology/testimonials/
- * interests) are unchanged. Languages are normalized in about_languages.
+ * The most complex block. identity/weather/cta/stop_labels/labels read FLAT
+ * columns (locale-invariant leaves on the parent row, per-locale strings + the
+ * polaroids repeater on translations); the list repeaters (metrics/methodology/
+ * testimonials/interests) are unchanged. Languages are normalized in
+ * about_languages.
  */
 
 import { readItems } from '@directus/sdk';
@@ -229,14 +229,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 				else if (locale === 'es') roleLS.es = t.role;
 			}
 		}
-		const testimonial: AboutContent['testimonials'][number] = {
-			quote: quoteLS,
-			author: str(enT.author),
-			role: roleLS,
-			company: str(enT.company),
-		};
-		if (typeof enT.logo === 'string' && enT.logo.length > 0) testimonial.logo = enT.logo;
-		return testimonial;
+		return { quote: quoteLS, author: str(enT.author), role: roleLS };
 	});
 
 	// --- languages: read from parent row ---
@@ -310,18 +303,13 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 
 	// --- weather: flat LS + parent boolean ---
 	const weather: AboutContent['weather'] = {
-		...toLocalizedFields(tr, [
-			['city', 'weather_city'], ['hook', 'weather_hook'],
-		]),
+		...toLocalizedFields(tr, [['city', 'weather_city']]),
 		enabled: raw.weather_enabled === true,
 	};
 
 	// --- cta: parent scalars/arrays + flat LS ---
 	const rawCtaLines = Array.isArray(raw.cta_lines)
 		? (raw.cta_lines as Array<Record<string, unknown>>)
-		: [];
-	const rawCtaSocials = Array.isArray(raw.cta_socials)
-		? (raw.cta_socials as Array<Record<string, unknown>>)
 		: [];
 	const cta: AboutContent['cta'] = {
 		command: str(raw.cta_command),
@@ -331,12 +319,6 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		})),
 		...toLocalizedFields(tr, [['buttonLabel', 'cta_button_label']]),
 		buttonHref: str(raw.cta_button_href),
-		...toLocalizedFields(tr, [['availability', 'cta_availability']]),
-		socials: rawCtaSocials.map((s) => ({
-			label: str(s.label),
-			href: str(s.href),
-			icon: str(s.icon),
-		})),
 	};
 
 	const stopLabels: AboutContent['stopLabels'] = toLocalizedFields(tr, [
@@ -355,9 +337,6 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		['testimonialSlideAria', 'label_testimonial_slide_aria'],
 		['showTestimonialAria', 'label_show_testimonial_aria'],
 	]);
-	const meta: AboutContent['meta'] = toLocalizedFields(tr, [
-		['title', 'meta_title'], ['description', 'meta_description'],
-	]);
 
 	return {
 		identity,
@@ -371,7 +350,6 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		cta,
 		stopLabels,
 		labels,
-		meta,
 	};
 }
 

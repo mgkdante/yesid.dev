@@ -2,7 +2,7 @@
  * nav fetcher — reads the `nav_links` flat collection ONCE, then groups by
  * placement client-side into the shape `content/nav.ts` exports today
  * (`navLinks` for header placement, `menuItems` for menu placement, plus
- * footer + mobile slots).
+ * a footer slot).
  *
  * slice-26.1 (content controls): nav_links rows now carry a `page` M2O FK
  * into the `site_pages` registry plus a `sort` order field. The CASCADE
@@ -17,7 +17,7 @@
  *             order field but stays in the emitted NavLink shape — components
  *             still use it for adaptive display)
  *
- * Archiving a site_pages row therefore drops every nav/footer/menu/mobile
+ * Archiving a site_pages row therefore drops every nav/footer/menu
  * link pointing at it on the next build — no nav_links edit required.
  *
  * Output carries label, href, priority, and optional subtitle.
@@ -45,7 +45,7 @@ export interface DirectusSitePageRef {
 export interface DirectusNavLinkRow {
 	id: string;
 	status: 'draft' | 'published' | 'archived';
-	placement: 'header' | 'footer' | 'mobile' | 'menu';
+	placement: 'header' | 'footer' | 'menu';
 	href: string;
 	priority: number;
 	/** slice-26.1: order field within a placement slot (replaces priority for ordering). */
@@ -63,7 +63,6 @@ export interface NavData {
 	navLinks: readonly NavLink[];
 	menuItems: readonly NavLink[];
 	footerLinks: readonly NavLink[];
-	mobileLinks: readonly NavLink[];
 }
 
 /**
@@ -123,7 +122,7 @@ export function toNavLink(raw: DirectusNavLinkRow): NavLink {
 	return result;
 }
 
-/** Fetch + validate all four placements (header, menu, footer, mobile) in one round-trip. */
+/** Fetch + validate all three placements (header, menu, footer) in one round-trip. */
 export async function fetchNavData({ client }: FetcherContext): Promise<NavData> {
 	const rows = (await client.request(
 		readItems('nav_links', {
@@ -149,12 +148,10 @@ export async function fetchNavData({ client }: FetcherContext): Promise<NavData>
 	const header = visible.filter((r) => r.placement === 'header').map(toNavLink);
 	const menu = visible.filter((r) => r.placement === 'menu').map(toNavLink);
 	const footer = visible.filter((r) => r.placement === 'footer').map(toNavLink);
-	const mobile = visible.filter((r) => r.placement === 'mobile').map(toNavLink);
 
 	return {
 		navLinks: z.array(NavLinkSchema).parse(header),
 		menuItems: z.array(NavLinkSchema).parse(menu),
 		footerLinks: z.array(NavLinkSchema).parse(footer),
-		mobileLinks: z.array(NavLinkSchema).parse(mobile),
 	};
 }

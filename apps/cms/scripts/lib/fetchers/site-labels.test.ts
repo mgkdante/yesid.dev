@@ -11,17 +11,16 @@ describe('site-labels transform', () => {
 			id: 'u1',
 			translations: [
 				{ languages_code: 'en', ...seeds },
-				{ languages_code: 'fr', a11y_toc: 'Table des matières' },
+				{ languages_code: 'fr', a11y_carousel_prev: 'Projets précédents' },
 			],
 		};
 		const out = toSiteLabels(row);
-		expect(out.a11y.toc).toEqual({ en: 'Table of contents', fr: 'Table des matières' });
+		expect(out.a11y.carouselPrev).toEqual({ en: 'Previous projects', fr: 'Projets précédents' });
 		expect(out.a11y.projectImageOpen).toEqual({ en: 'Open {caption}' });
 		expect(out.a11y.projectImageClose).toEqual({ en: 'Close image' });
-		expect(out.a11y.moreMetrics).toEqual({ en: 'More metrics' });
 		expect(out.a11y.architectureDiagram).toEqual({ en: 'Architecture diagram' });
 		expect(out.a11y.technologyStackTemplate).toEqual({ en: 'Technology stack: {stack}' });
-		expect(out.ui.markerFeatured).toEqual({ en: '{num} / FEATURED' });
+		expect(out.ui.markerService).toEqual({ en: seeds.ui_marker_service });
 		expect(out.ui.terminalTitle).toEqual({ en: 'terminal' });
 		expect(out.email.contactSubjectTemplate.en).toContain('{name}');
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
@@ -38,11 +37,10 @@ describe('site-labels transform', () => {
 		};
 		const out = toSiteLabels(row);
 		// Project chrome with French values merged from the translated row.
-		expect(out.projectsChrome.pageMeta.title).toEqual({ en: 'Projects | yesid.', fr: 'Projets | yesid.' });
 		expect(out.projectsChrome.listing.filters.techStack).toEqual({ en: 'Tech Stack', fr: 'Stack technique' });
-		expect(out.projectsChrome.detail.glance.liveSiteLabelMobile).toEqual({
-			en: '↗ Live Site',
-			fr: '↗ Site en ligne',
+		expect(out.projectsChrome.detail.glance.liveSiteLabel).toEqual({
+			en: seeds.projects_chrome_detail_glance_live_site_label,
+			fr: frSeeds.projects_chrome_detail_glance_live_site_label,
 		});
 		// Blog, services, navigation, and footer chrome.
 		expect(out.blogChrome.listing.mobileHeading).toEqual({ en: 'Blog', fr: 'Blogue' });
@@ -71,5 +69,25 @@ describe('site-labels transform', () => {
 		expect(out.heroDashboard.vehiclesLabel).toEqual({ en: 'VEHICLES TRACKED', fr: 'VÉHICULES SUIVIS' });
 		expect(out.heroDashboard.delaySub).toEqual({ en: '{coverage}% COVERAGE', fr: '{coverage}% DE COUVERTURE' });
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
+	});
+
+	it('builds the blog article side rail from translated labels and shared link addresses', () => {
+		const out = toSiteLabels({
+			id: 'u1',
+			blog_chrome_detail_rail_services_href: '/services/sql-development',
+			blog_chrome_detail_rail_route_about_href: '  ',
+			translations: [
+				{ languages_code: 'en', ...seeds },
+				{ languages_code: 'fr', ...frSeeds },
+			],
+		});
+		const rail = out.blogChrome.detail.entryRail;
+		expect(rail.workWithMe.primary).toEqual({
+			label: { en: 'View Services', fr: 'Voir les services' },
+			href: '/services/sql-development',
+		});
+		expect(rail.workWithMe.secondary.href).toBe('/contact');
+		expect(rail.routes.links.map((link) => link.href)).toEqual(['/about', '/projects', '/services', '/contact']);
+		expect(out.blogChrome.listing.toPersonalLabel).toEqual({ en: 'Personal Corner', fr: 'Coin perso' });
 	});
 });

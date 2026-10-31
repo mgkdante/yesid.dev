@@ -11,7 +11,7 @@
     "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Shown in place of the project cards when the filters match nothing.",
+    "note": "Shown when the filters match no projects.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Filters · No results message"
+        "translation": "When filters match nothing"
       }
     ],
     "validation": null,

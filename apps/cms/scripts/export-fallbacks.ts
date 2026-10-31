@@ -288,7 +288,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 		enqueue('nav', async () => {
 			out.nav = await fetchNavData({ client });
 			log.info(
-				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer / ${out.nav.mobileLinks.length} mobile).`,
+				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer).`,
 			);
 		});
 		enqueue('site-pages', async () => {
@@ -355,7 +355,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 		});
 		enqueue('about-intro', async () => {
 			out.aboutIntro = await fetchAboutIntroContent({ client });
-			log.info(`  about-intro done (${out.aboutIntro.stackItems.length} stack items).`);
+			log.info('  about-intro done.');
 		});
 		enqueue('cta', async () => {
 			out.cta = await fetchCtaContent({ client });

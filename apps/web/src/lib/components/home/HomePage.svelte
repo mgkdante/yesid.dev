@@ -52,6 +52,7 @@
 		services: readonly Service[];
 		featuredProjects: readonly ProjectSummary[];
 		siteMeta: SiteMeta;
+		bookingHref: string;
 		serviceSvgContents: Record<string, string>;
 	}
 	let {
@@ -67,6 +68,7 @@
 		services,
 		featuredProjects,
 		siteMeta,
+		bookingHref,
 		serviceSvgContents,
 	}: Props = $props();
 
@@ -196,6 +198,7 @@
 		hero={hero}
 		heroAnim={heroAnim}
 		initialHeroData={initialHeroData}
+		{bookingHref}
 	/>
 </section>
 

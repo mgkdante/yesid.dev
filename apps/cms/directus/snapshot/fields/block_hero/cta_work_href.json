@@ -1,0 +1,51 @@
+{
+  "collection": "block_hero",
+  "field": "cta_work_href",
+  "type": "string",
+  "meta": {
+    "collection": "block_hero",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "cta_work_href",
+    "group": "grp_shared",
+    "hidden": false,
+    "interface": "input",
+    "note": "Where the first button goes, for example /projects. Empty uses /projects.",
+    "options": {
+      "placeholder": "/projects"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 1,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Hero · Projects button link"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "cta_work_href",
+    "table": "block_hero",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

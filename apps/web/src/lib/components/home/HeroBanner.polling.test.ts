@@ -25,6 +25,7 @@ describe('HeroBanner live KPI polling boundary', () => {
 			hero: heroContent,
 			heroAnim: heroAnimContent,
 			initialHeroData: INITIAL_HERO_DATA,
+			bookingHref: 'https://cal.com/fixture',
 		});
 
 		expect(fetchKpis).toHaveBeenCalledExactlyOnceWith(LIVE_KPIS_URL, { cache: 'no-store' });

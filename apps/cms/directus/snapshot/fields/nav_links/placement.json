@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Header: top bar. Menu: full-screen menu, with subtitle. Footer: Explore column (legal pages go under Legal). Mobile: not shown.",
+    "note": "Header: top bar, also shown on phones. Menu: full-screen menu, with subtitle. Footer: Explore column (legal pages go under Legal).",
     "options": {
       "choices": [
         {
@@ -21,10 +21,6 @@
         {
           "text": "Footer",
           "value": "footer"
-        },
-        {
-          "text": "Mobile",
-          "value": "mobile"
         },
         {
           "text": "Menu",

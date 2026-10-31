@@ -109,17 +109,6 @@ describe('aboutContent', () => {
 		expect(aboutContent.name.en.length).toBeGreaterThan(0);
 		expect(aboutContent.title.en.length).toBeGreaterThan(0);
 		expect(aboutContent.bio.en.length).toBeGreaterThan(0);
-		expect(aboutContent.interests.en.length).toBeGreaterThan(0);
-	});
-
-	it('has a stack items array', () => {
-		// Empty stack items are an editorial concern; this assertion covers shape.
-		expect(Array.isArray(aboutContent.stackItems)).toBe(true);
-	});
-
-	it('has non-empty location data', () => {
-		expect(aboutContent.location.city.en.length).toBeGreaterThan(0);
-		expect(aboutContent.location.region.en.length).toBeGreaterThan(0);
 	});
 });
 
@@ -133,8 +122,7 @@ describe('ctaContent', () => {
 });
 
 describe('proofReelContent', () => {
-	it('has non-empty section label and view-all link', () => {
-		expect(proofReelContent.sectionLabel.en.length).toBeGreaterThan(0);
+	it('has a non-empty view-all link', () => {
 		expect(proofReelContent.viewAllLabel.en.length).toBeGreaterThan(0);
 		// URL contract — the View all link must point at /projects so the
 		// proof reel CTA reaches the listing page. This IS engineering's
@@ -175,12 +163,6 @@ describe('services — home grid fields (Slice 13g)', () => {
 });
 
 describe('closerContent', () => {
-	it('has non-empty heading + subheading', () => {
-		expect(closerContent.heading.en.length).toBeGreaterThan(0);
-		expect(closerContent.headingDot.en.length).toBeGreaterThan(0);
-		expect(closerContent.subheading.en.length).toBeGreaterThan(0);
-	});
-
 	it('has 4 named rows (contact / connect / read / about) each with non-empty label + action', () => {
 		for (const key of ['contact', 'connect', 'read', 'about'] as const) {
 			const row = closerContent.rows[key];
@@ -195,13 +177,5 @@ describe('closerContent', () => {
 		for (const key of ['contact', 'connect', 'about'] as const) {
 			expect(closerContent.rows[key].description.en.length).toBeGreaterThan(0);
 		}
-	});
-
-	it('has attribution with non-empty text + valid URL', () => {
-		expect(closerContent.attribution.text.en.length).toBeGreaterThan(0);
-		// URL contract — attribution must link somewhere. Asserting a
-		// well-formed URL rather than a specific host, because the
-		// attribution source may change.
-		expect(closerContent.attribution.url).toMatch(/^https?:\/\/\S+$/);
 	});
 });

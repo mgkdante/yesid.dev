@@ -11,7 +11,7 @@
     "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": "Site path. Empty uses /about.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,

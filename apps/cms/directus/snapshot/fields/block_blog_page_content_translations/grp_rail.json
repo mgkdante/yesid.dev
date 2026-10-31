@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "grp_rail",
-    "group": "grp_interface",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "group-detail",
-    "note": "Boxes beside each article. Link addresses are on the main form under Article side rail.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 2,
     "special": [
       "alias",
       "no-data",
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Article page · Side rail"
+        "translation": "Old article side rail (moved)"
       }
     ],
     "validation": null,

@@ -12,7 +12,6 @@ const EMPTY_DOC: BlockEditorDoc = {
 const FIXTURE: DirectusProject = {
 	id: 'transit-data-pipeline',
 	status: 'published',
-	date_published: '2026-04-01T00:00:00Z',
 	sort: 1,
 	featured: false,
 	hero_image: 'asset-uuid-1',

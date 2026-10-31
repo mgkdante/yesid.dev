@@ -130,8 +130,8 @@ describe('errorPageFactory', () => {
 		expect(() => ErrorPageContentSchema.parse(errorPageFactory.build())).not.toThrow();
 	});
 	it('respects overrides', () => {
-		const page = errorPageFactory.build({ terminalLine: '$ status: 500' });
-		expect(page.terminalLine).toBe('$ status: 500');
+		const page = errorPageFactory.build({ description: { en: 'Status 500' } });
+		expect(page.description.en).toBe('Status 500');
 		expect(() => ErrorPageContentSchema.parse(page)).not.toThrow();
 	});
 	it('batch produces N valid instances', () => {

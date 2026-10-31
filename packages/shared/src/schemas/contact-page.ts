@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LocalizedStringSchema, PageMetaSchema } from './shared';
+import { LocalizedStringSchema } from './shared';
 
 export const ContactTerminalFieldSchema = z.object({
 	label: LocalizedStringSchema,
@@ -42,6 +42,8 @@ export const ContactValidationSchema = z.object({
 });
 
 export const ContactSuccessSchema = z.object({
+	/** First success line, for example "~ $ send --message". */
+	command: LocalizedStringSchema,
 	validating: LocalizedStringSchema,
 	sending: LocalizedStringSchema,
 	sent: LocalizedStringSchema,
@@ -64,7 +66,6 @@ export const ContactContentSchema = z.object({
 	pageTitle: LocalizedStringSchema,
 	stationLabel: LocalizedStringSchema,
 	sendErrorMessage: LocalizedStringSchema,
-	meta: PageMetaSchema,
 	infoTerminal: ContactInfoTerminalSchema,
 	formTerminal: ContactFormTerminalSchema,
 	validation: ContactValidationSchema,

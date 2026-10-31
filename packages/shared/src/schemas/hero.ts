@@ -11,11 +11,9 @@ export const HeroContentSchema = z.object({
 	}),
 	subheadline: LocalizedStringSchema,
 	subtitle: LocalizedStringSchema,
-	/** Identity kicker above the headline (homework #20): stored human-case,
-	 *  rendered ALL CAPS by CSS. */
-	identity: LocalizedStringSchema,
 	ctaWork: LocalizedStringSchema,
 	ctaContact: LocalizedStringSchema,
+	ctaWorkHref: z.string(),
 	sqlPanel: z.object({
 		prompt: LocalizedStringSchema,
 		/** Badge in the DEMO state (simulated data). */
@@ -28,6 +26,12 @@ export const HeroContentSchema = z.object({
 			vehicles: LocalizedStringSchema,
 		}),
 		metaTemplate: LocalizedStringSchema,
+		/** Values for {updatedAgo}; liveTemplate holds the {seconds} placeholder. */
+		stamps: z.object({
+			demo: LocalizedStringSchema,
+			refreshed: LocalizedStringSchema,
+			liveTemplate: LocalizedStringSchema,
+		}),
 	}),
 	refreshButton: z.object({
 		label: LocalizedStringSchema,
@@ -35,7 +39,7 @@ export const HeroContentSchema = z.object({
 		/** Helper when real KPIs are on screen. */
 		helperLive: LocalizedStringSchema,
 	}),
-	/** Scroll-hint copy from the hero_anim column in block_hero_translations. */
+	/** Scroll-hint copy (block_hero_translations.scroll_down). */
 	heroAnim: HeroAnimContentSchema,
 });
 

@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_listing_filters_all_label",
-    "group": "grp_unread",
+    "group": "grp_projects_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"All\"",
+    "note": "First option in each filter group. Default: \"All\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 9,
+    "sort": 8,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Projects · Filters all label"
+        "translation": "Filter · All option"
       }
     ],
     "validation": null,

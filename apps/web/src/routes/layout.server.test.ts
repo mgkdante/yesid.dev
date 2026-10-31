@@ -46,7 +46,6 @@ import { load } from './+layout.server';
 type LayoutData = {
 	headerLinks: readonly NavLink[];
 	footerLinks: readonly NavLink[];
-	mobileLinks: readonly NavLink[];
 	menuItems: readonly NavLink[];
 	errorPage: ErrorPageContent;
 	morphShapes: readonly MorphShape[];
@@ -86,9 +85,6 @@ const fakeHeaderLinks: readonly NavLink[] = [
 const fakeFooterLinks: readonly NavLink[] = [
 	{ label: { en: 'About' }, href: '/about', priority: 1 },
 ];
-const fakeMobileLinks: readonly NavLink[] = [
-	{ label: { en: 'Blog' }, href: '/blog', priority: 1 },
-];
 const fakeMenuItems: readonly NavLink[] = [
 	{ label: { en: 'Contact' }, href: '/contact', priority: 1 },
 ];
@@ -96,7 +92,6 @@ const fakeErrorPage: ErrorPageContent = {
 	label: { en: 'NOT FOUND' },
 	heading: { en: 'Page not found' },
 	description: { en: 'Try another route' },
-	terminalLine: '$ route --status 404',
 	suggestions: [],
 };
 const fakeSeo: PageSeo = {
@@ -194,11 +189,10 @@ describe('+layout.server load', () => {
 	});
 
 	describe('happy path — all fetches resolve', () => {
-		it('returns all 4 nav slots and static errorPage on normal routes', async () => {
+		it('returns all 3 nav slots and static errorPage on normal routes', async () => {
 			mockByPlacement.mockImplementation(async (placement: string) => {
 				if (placement === 'header') return fakeHeaderLinks;
 				if (placement === 'footer') return fakeFooterLinks;
-				if (placement === 'mobile') return fakeMobileLinks;
 				if (placement === 'menu') return fakeMenuItems;
 				return [];
 			});
@@ -208,7 +202,6 @@ describe('+layout.server load', () => {
 
 			expect(result.headerLinks).toEqual(fakeHeaderLinks);
 			expect(result.footerLinks).toEqual(fakeFooterLinks);
-			expect(result.mobileLinks).toEqual(fakeMobileLinks);
 			expect(result.menuItems).toEqual(fakeMenuItems);
 			expect(result.errorPage).toEqual(staticErrorPageContent);
 			expect(result.morphShapes).toEqual(fakeMorphShapes);
@@ -238,7 +231,7 @@ describe('+layout.server load', () => {
 	});
 
 	describe('happy path — all fetches resolve', () => {
-		it('all 4 placements are fetched via adapter.nav.byPlacement', async () => {
+		it('all 3 placements are fetched via adapter.nav.byPlacement', async () => {
 			mockByPlacement.mockResolvedValue([]);
 			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
 
@@ -247,7 +240,6 @@ describe('+layout.server load', () => {
 			const placements = (mockByPlacement.mock.calls as [string][]).map(([p]) => p);
 			expect(placements).toContain('header');
 			expect(placements).toContain('footer');
-			expect(placements).toContain('mobile');
 			expect(placements).toContain('menu');
 		});
 
@@ -280,7 +272,6 @@ describe('+layout.server load', () => {
 			mockByPlacement.mockImplementation(async (placement: string) => {
 				if (placement === 'header') throw new Error('CMS unreachable');
 				if (placement === 'footer') return fakeFooterLinks;
-				if (placement === 'mobile') return fakeMobileLinks;
 				if (placement === 'menu') return fakeMenuItems;
 				return [];
 			});
@@ -292,7 +283,6 @@ describe('+layout.server load', () => {
 			expect(result.headerLinks).toEqual(staticNavLinks);
 			// Other slots resolved normally
 			expect(result.footerLinks).toEqual(fakeFooterLinks);
-			expect(result.mobileLinks).toEqual(fakeMobileLinks);
 			expect(result.menuItems).toEqual(fakeMenuItems);
 		});
 
@@ -300,7 +290,6 @@ describe('+layout.server load', () => {
 			mockByPlacement.mockImplementation(async (placement: string) => {
 				if (placement === 'footer') throw new Error('CMS unreachable');
 				if (placement === 'header') return fakeHeaderLinks;
-				if (placement === 'mobile') return fakeMobileLinks;
 				if (placement === 'menu') return fakeMenuItems;
 				return [];
 			});
@@ -375,7 +364,6 @@ describe('+layout.server load', () => {
 			// Each slot has its defined fallback
 			expect(result.headerLinks).toEqual(staticNavLinks);
 			expect(result.footerLinks).toEqual([]);   // footer fallback is []
-			expect(result.mobileLinks).toEqual([]);   // mobile fallback is []
 			expect(result.menuItems).toEqual(staticMenuItems);
 			expect(result.errorPage).toEqual(staticErrorPageContent);
 		});
@@ -387,7 +375,7 @@ describe('+layout.server load', () => {
 			const result = await callLoad();
 
 			expect(Object.keys(result).sort()).toEqual(
-				['errorPage', 'footerLinks', 'headerLinks', 'locale', 'menuItems', 'mobileLinks', 'morphShapes', 'seo', 'themeColor'].sort(),
+				['errorPage', 'footerLinks', 'headerLinks', 'locale', 'menuItems', 'morphShapes', 'seo', 'themeColor'].sort(),
 			);
 		});
 	});

@@ -11,7 +11,7 @@
     "group": "grp_back",
     "hidden": false,
     "interface": "input",
-    "note": "Above professional articles, goes to /blog.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,

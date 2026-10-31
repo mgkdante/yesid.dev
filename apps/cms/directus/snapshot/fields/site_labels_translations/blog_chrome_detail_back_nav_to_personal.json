@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_back_nav_to_personal",
-    "group": "grp_blog_article",
+    "group": "grp_blog_article_nav",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"← back to personal corner\"",
+    "note": "Above personal articles, goes to /blog/personal.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 2,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Back link · Personal corner"
+        "translation": "Back link · Personal articles"
       }
     ],
     "validation": null,

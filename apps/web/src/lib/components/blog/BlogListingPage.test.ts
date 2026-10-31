@@ -41,7 +41,10 @@ describe('BlogListingPage language filter', () => {
 				posts: [englishPost],
 				allTags: ['test'],
 				languages: ['en'],
-				subtitle: 'Blog',
+				heading: 'Blog',
+				subtitle: 'Notes',
+				emptyState: 'No posts match.',
+				emptyStateNoPosts: 'No posts yet.',
 			},
 		});
 		await tick();

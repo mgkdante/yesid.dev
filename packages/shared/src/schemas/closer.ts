@@ -1,45 +1,27 @@
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 
+const BoardRowSchema = z.object({
+	label: LocalizedStringSchema,
+	description: LocalizedStringSchema,
+	action: LocalizedStringSchema,
+});
+const LinkedBoardRowSchema = BoardRowSchema.extend({ href: z.string() });
+
 export const CloserContentSchema = z.object({
-	heading: LocalizedStringSchema,
-	headingDot: LocalizedStringSchema,
-	subheading: LocalizedStringSchema,
 	cta: z.object({
 		label: LocalizedStringSchema,
 		href: z.string(),
 	}),
 	rows: z.object({
-		stack: z.object({
-			label: LocalizedStringSchema,
-			description: LocalizedStringSchema,
-			action: LocalizedStringSchema,
-		}),
-		contact: z.object({
-			label: LocalizedStringSchema,
-			description: LocalizedStringSchema,
-			action: LocalizedStringSchema,
-		}),
-		connect: z.object({
-			label: LocalizedStringSchema,
-			description: LocalizedStringSchema,
-			action: LocalizedStringSchema,
-		}),
-		read: z.object({
-			label: LocalizedStringSchema,
-			description: LocalizedStringSchema,
-			action: LocalizedStringSchema,
-		}),
-		about: z.object({
-			label: LocalizedStringSchema,
-			description: LocalizedStringSchema,
-			action: LocalizedStringSchema,
-		}),
+		contact: LinkedBoardRowSchema,
+		/** Links to the GitHub profile in site meta. */
+		connect: BoardRowSchema,
+		read: LinkedBoardRowSchema,
+		about: LinkedBoardRowSchema,
 	}),
-	attribution: z.object({
-		text: LocalizedStringSchema,
-		url: z.string(),
-	}),
+	/** Handwritten ending drawn under the board. */
+	closingLabel: LocalizedStringSchema,
 	terminal: z.object({
 		title: LocalizedStringSchema,
 		city: LocalizedStringSchema,

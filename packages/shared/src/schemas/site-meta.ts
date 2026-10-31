@@ -17,7 +17,8 @@ export const SiteAddressSchema = z.object({
 export const SiteOwnerSchema = z.object({
 	name: z.string(),
 	jobTitle: LocalizedStringSchema,
-	phone: z.string().optional(),
+	/** Published only as the telephone in the search-engine data. */
+	phone: z.string().min(1).optional(),
 	address: SiteAddressSchema,
 	knowsAbout: z.array(z.string()).readonly(),
 });

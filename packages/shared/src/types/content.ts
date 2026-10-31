@@ -1,6 +1,6 @@
 import type { BlockEditorDoc } from './blocks';
 
-export type { Locale, LocalizedString, PageMeta } from '../schemas/shared';
+export type { Locale, LocalizedString } from '../schemas/shared';
 export type { ServiceSection, Service } from '../schemas/service';
 export type { ProjectSection, ProjectStatus, ImpactMetric, Project } from '../schemas/project';
 export type { SiteLinks, SiteAddress, SiteOwner, SiteMeta, SiteSeoDefaults } from '../schemas/site-meta';

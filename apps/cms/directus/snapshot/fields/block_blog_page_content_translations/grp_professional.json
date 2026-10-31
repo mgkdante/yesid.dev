@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "The Blog heading above this intro is edited in Site labels (UI text).",
+    "note": "Top of the /blog page.",
     "options": {
       "start": "open",
       "headerColor": "#E07800"
