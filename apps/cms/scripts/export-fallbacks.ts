@@ -355,7 +355,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 		});
 		enqueue('about-intro', async () => {
 			out.aboutIntro = await fetchAboutIntroContent({ client });
-			log.info(`  about-intro done (${out.aboutIntro.stackItems.length} stack items).`);
+			log.info('  about-intro done.');
 		});
 		enqueue('cta', async () => {
 			out.cta = await fetchCtaContent({ client });
