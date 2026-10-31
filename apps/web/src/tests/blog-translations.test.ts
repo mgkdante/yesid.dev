@@ -21,9 +21,9 @@ describe('groupBlogTranslations', () => {
 		expect(groups).toHaveLength(6);
 		for (const group of groups) {
 			expect(group.translationKey).toMatch(/^article-[1-6]$/);
-			expect(group.posts.en.lang).toBe('en');
-			expect(group.posts.fr.lang).toBe('fr');
-			expect(group.posts.es.lang).toBe('es');
+			expect(group.posts.en?.lang).toBe('en');
+			expect(group.posts.fr?.lang).toBe('fr');
+			expect(group.posts.es?.lang).toBe('es');
 		}
 	});
 

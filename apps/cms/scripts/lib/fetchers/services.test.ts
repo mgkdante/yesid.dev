@@ -83,3 +83,27 @@ describe('services fetcher transform', () => {
 		expect(() => ServiceSchema.parse(result)).not.toThrow();
 	});
 });
+
+describe('services per-language Show on site', () => {
+	const withFrench = (show: boolean): DirectusService => ({
+		...FIXTURE,
+		translations: [
+			{ ...FIXTURE.translations![0]!, show_on_site: true },
+			{ languages_code: 'fr', show_on_site: show, title: 'Développement SQL', description: 'Requêtes.' },
+		],
+		deliverables: [{ id: 1, sort: 1, translations: [{ languages_code: 'en', label: 'Audit' }, { languages_code: 'fr', label: 'Audit FR' }] }],
+	});
+
+	it('shows a switched-on French row and falls back to English when it is off', () => {
+		expect(toService(withFrench(true)).title.fr).toBe('Développement SQL');
+		const off = toService(withFrench(false));
+		expect(off.title.fr).toBeUndefined();
+		expect(off.deliverables?.[0]?.fr).toBeUndefined();
+		expect(off.visible).toBe(true);
+	});
+
+	it('hides the service when English is switched off', () => {
+		const englishOff = { ...FIXTURE, translations: [{ ...FIXTURE.translations![0]!, show_on_site: false }] };
+		expect(toService(englishOff).visible).toBe(false);
+	});
+});

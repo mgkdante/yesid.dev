@@ -1,0 +1,60 @@
+{
+  "collection": "blog_posts_translations",
+  "field": "slug",
+  "type": "string",
+  "meta": {
+    "collection": "blog_posts_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "slug",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "The address in this language, like /fr/blog/<slug>. Lowercase words joined by hyphens. Changing it after publishing breaks links.",
+    "options": {
+      "slug": true,
+      "trim": true
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 5,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Slug (URL)"
+      }
+    ],
+    "validation": {
+      "_and": [
+        {
+          "slug": {
+            "_regex": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          }
+        }
+      ]
+    },
+    "validation_message": "Slug must be kebab-case (lowercase letters/digits with single hyphens).",
+    "width": "half"
+  },
+  "schema": {
+    "name": "slug",
+    "table": "blog_posts_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": true,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

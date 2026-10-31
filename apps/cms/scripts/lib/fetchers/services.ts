@@ -9,9 +9,11 @@
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import {
-	mapLocalizedField,
 	mapLocalizedRepeater,
+	switchedOffLocales,
 	toLocalizedFields,
+	toLocalizedString,
+	withoutLocales,
 } from '../locale';
 import { ServiceSchema } from '@repo/shared/schemas';
 import type { Service, ServiceSection } from '@repo/shared';
@@ -20,6 +22,7 @@ import { stackFromTechM2M, type DirectusTechStackJunctionRow } from './projects'
 
 export interface DirectusServiceTranslation {
 	languages_code: string;
+	show_on_site?: boolean | null;
 	title?: string | null;
 	subtitle?: string | null;
 	description?: string | null;
@@ -71,9 +74,11 @@ interface JunctionRow {
 	service_id: string;
 }
 
-/** Pure transform — DirectusService → Service (without relatedProjects, filled later). */
+/** Pure transform — DirectusService → Service (without relatedProjects, filled later).
+ *  Switched-off languages fall back to English; English switched off hides the service. */
 export function toService(row: DirectusService): Service {
-	const translations = row.translations ?? [];
+	const hidden = switchedOffLocales(row.translations);
+	const translations = withoutLocales(row.translations, hidden);
 	const service: Service = {
 		id: row.id,
 		station: row.station,
@@ -82,6 +87,7 @@ export function toService(row: DirectusService): Service {
 	};
 	if (row.svg) service.svg = row.svg;
 	if (row.visible !== null && row.visible !== undefined) service.visible = row.visible;
+	if (hidden.has('en')) service.visible = false;
 	Object.assign(
 		service,
 		toLocalizedFields(translations, [
@@ -102,12 +108,14 @@ export function toService(row: DirectusService): Service {
 		service.impactMetric = { value: impactMetric.value, label: impactMetric.label };
 	}
 
-	const deliverables = mapLocalizedField(row.deliverables, 'label');
+	const deliverables = mapLocalizedRepeater(row.deliverables, (d) =>
+		toLocalizedString(withoutLocales(d.translations, hidden), 'label'),
+	);
 	if (deliverables.length > 0) service.deliverables = deliverables;
 
 	const sections = mapLocalizedRepeater(
 		row.sections,
-		(s): ServiceSection => toLocalizedFields(s.translations ?? [], ['title', 'content']),
+		(s): ServiceSection => toLocalizedFields(withoutLocales(s.translations, hidden), ['title', 'content']),
 	);
 	if (sections.length > 0) service.sections = sections;
 

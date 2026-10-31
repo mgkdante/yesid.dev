@@ -1,0 +1,57 @@
+{
+  "collection": "blog_posts_translations",
+  "field": "excerpt",
+  "type": "text",
+  "meta": {
+    "collection": "blog_posts_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "excerpt",
+    "group": "grp_card",
+    "hidden": false,
+    "interface": "input-multiline",
+    "note": "One or two sentences on the listing card and under the article heading. Max 500 characters.",
+    "options": null,
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 2,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Excerpt"
+      }
+    ],
+    "validation": {
+      "_and": [
+        {
+          "excerpt": {
+            "_regex": "^.{1,500}$"
+          }
+        }
+      ]
+    },
+    "validation_message": "Excerpt must be 1 to 500 characters.",
+    "width": "full"
+  },
+  "schema": {
+    "name": "excerpt",
+    "table": "blog_posts_translations",
+    "data_type": "text",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

@@ -9,7 +9,7 @@ import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { isPathPublished } from '#lib/utils/page-registry.ts';
 
 // Prerender every known blog/project card into deployment-static PNGs. entries()
-// is exhaustive through the shared complete-blog and non-private-project
+// is exhaustive through the shared available-blog and non-private-project
 // helpers; vercel.json owns the narrow fallback for unknown card paths.
 export const prerender = entries().length > 0;
 

@@ -7,7 +7,7 @@ import { legalPages } from '#lib/content/legal-pages.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 import { isPathPublished } from '#lib/utils/page-registry.ts';
 import { PREFIX_LOCALES } from '#lib/utils/locale-routing.ts';
-import { BLOG_TRANSLATION_LOCALES, groupBlogTranslations } from '#lib/blog/translations.ts';
+import { availableLocales, groupBlogTranslations } from '#lib/blog/translations.ts';
 import type { BlogPost, Project, Service, SitePage } from '#lib/types.ts';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
@@ -24,10 +24,7 @@ function isAvailableProject(project: Project): boolean {
 
 function groupedBlogRows(posts: readonly BlogPost[], pages: readonly SitePage[]) {
 	return groupBlogTranslations(posts.filter((post) => isPathPublished(`/blog/${post.slug}`, pages))).flatMap((group) =>
-		BLOG_TRANSLATION_LOCALES.map((locale) => ({
-			locale,
-			slug: group.posts[locale].slug,
-		})),
+		availableLocales(group).map(({ locale, post }) => ({ locale, slug: post.slug })),
 	);
 }
 
@@ -36,9 +33,8 @@ export function localeEntries(path = '/', pages: readonly SitePage[] = sitePages
 	return isPathPublished(path, pages) ? LANG_PARAM_VALUES.map((lang) => ({ lang })) : [];
 }
 
-/** Blog detail entries for complete EN/FR/ES translation groups. Each row
- * prerenders at its own locale-specific slug; grouping makes an incomplete
- * publication fail the build instead of silently omitting a counterpart. */
+/** Blog detail entries: every language a post is available in prerenders at
+ * its own locale-specific slug. Languages that are not on the site are skipped. */
 export function blogEntriesFor(posts: readonly BlogPost[], pages: readonly SitePage[] = sitePages): Array<{ lang: string; slug: string }> {
 	return groupedBlogRows(posts, pages).map(({ locale, slug }) => ({
 		lang: langParamFor(locale),

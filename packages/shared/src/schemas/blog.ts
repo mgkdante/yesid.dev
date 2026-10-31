@@ -5,9 +5,9 @@ export const BlogCategorySchema = z.enum(['professional', 'personal']);
 
 export const BlogAnimationSchema = z.enum(['draw', 'morph', 'draw-fill']);
 
-// Each blog row owns one language; translationKey groups its language variants.
+// One entry per language a post is available in; translationKey groups a post's languages.
 export const BlogPostSchema = z.object({
-	/** Stable identity shared by every language variant of an article. */
+	/** The CMS post key, shared by every language of the post. */
 	translationKey: z.string().min(1).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 	slug: z.string().min(1),
 	title: z.string().min(1),
@@ -16,7 +16,7 @@ export const BlogPostSchema = z.object({
 	date: z.string(),
 	/** Last-updated date used by Article/BlogPosting structured data. */
 	dateModified: z.string().optional(),
-	/** Language of this row; translated rows share translationKey. */
+	/** Language of this entry; a post's languages share translationKey. */
 	lang: LocaleSchema,
 	category: BlogCategorySchema,
 	tags: z.array(z.string()),

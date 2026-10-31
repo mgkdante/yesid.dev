@@ -1,0 +1,38 @@
+{
+  "collection": "blog_posts",
+  "field": "translations",
+  "type": "alias",
+  "meta": {
+    "collection": "blog_posts",
+    "conditions": null,
+    "display": "translations",
+    "display_options": {
+      "template": "{{title}}",
+      "languageField": "name",
+      "defaultLanguage": "en",
+      "userLanguage": false
+    },
+    "field": "translations",
+    "group": "grp_content",
+    "hidden": false,
+    "interface": "translations",
+    "note": "Pick a language at the top. A language shows on the site only when Show on site is on and its title and article text are filled.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 1,
+    "special": [
+      "translations"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Text (EN / FR / ES)"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -4,43 +4,14 @@
   "type": "json",
   "meta": {
     "collection": "blog_posts",
-    "conditions": [
-      {
-        "hidden": false,
-        "name": "external is false",
-        "required": true,
-        "rule": {
-          "_and": [
-            {
-              "external": {
-                "_eq": false
-              }
-            }
-          ]
-        }
-      },
-      {
-        "hidden": true,
-        "name": "external is true",
-        "required": false,
-        "rule": {
-          "_and": [
-            {
-              "external": {
-                "_eq": true
-              }
-            }
-          ]
-        }
-      }
-    ],
+    "conditions": null,
     "display": null,
     "display_options": null,
     "field": "body",
     "group": "grp_content",
-    "hidden": false,
+    "hidden": true,
     "interface": "input-block-editor",
-    "note": "The article itself: headings, paragraphs, lists, quotes, code and images. Optional for external posts.",
+    "note": "Moved to the language tabs. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,

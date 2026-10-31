@@ -175,6 +175,20 @@ describe('GET /sitemap.xml', () => {
 		}
 	});
 
+	it('limits a partly published blog post to its available languages', () => {
+		const entries = _blogUrlEntries([
+			translatedPost('en', 'english-article'),
+			translatedPost('fr', 'article-francais'),
+		]);
+
+		expect(entries).toHaveLength(2);
+		for (const entry of entries) {
+			expect(entry).toContain('hreflang="fr" href="https://yesid.dev/fr/blog/article-francais"');
+			expect(entry).not.toContain('hreflang="es"');
+			expect(entry).toContain('hreflang="x-default" href="https://yesid.dev/blog/english-article"');
+		}
+	});
+
 	it('every published blog post entry carries its exact translation cluster', async () => {
 		const entries = await _buildSitemapEntries();
 		const post = entries.find(

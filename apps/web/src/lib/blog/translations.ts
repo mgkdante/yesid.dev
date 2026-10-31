@@ -7,9 +7,10 @@ export interface BlogTranslationVariant {
 	lang: Locale;
 }
 
+/** One post and the languages it is available in. Unavailable languages stay absent. */
 export interface BlogTranslationGroup<T extends BlogTranslationVariant> {
 	translationKey: string;
-	posts: Readonly<Record<Locale, T>>;
+	posts: Readonly<Partial<Record<Locale, T>>>;
 }
 
 export function getBlogPostsForLocale<T extends Pick<BlogTranslationVariant, 'lang'>>(
@@ -19,21 +20,12 @@ export function getBlogPostsForLocale<T extends Pick<BlogTranslationVariant, 'la
 	return posts.filter((post) => post.lang === locale);
 }
 
-/** Available rows for one translation key. Missing locales stay absent so
- * runtime navigation can fall back safely while build-time grouping remains strict. */
+/** Available rows for one translation key. Missing locales stay absent. */
 export function findBlogTranslationVariants<T extends BlogTranslationVariant>(
 	posts: readonly T[],
 	translationKey: string,
 ): Partial<Record<Locale, T>> {
-	const variants: Partial<Record<Locale, T>> = {};
-	for (const post of posts) {
-		if (post.translationKey !== translationKey) continue;
-		if (variants[post.lang]) {
-			throw new Error(`Duplicate blog translation for ${translationKey} (${post.lang})`);
-		}
-		variants[post.lang] = post;
-	}
-	return variants;
+	return groupBlogTranslations(posts.filter((post) => post.translationKey === translationKey))[0]?.posts ?? {};
 }
 
 export function groupBlogTranslations<T extends BlogTranslationVariant>(
@@ -50,16 +42,15 @@ export function groupBlogTranslations<T extends BlogTranslationVariant>(
 		grouped.set(post.translationKey, variants);
 	}
 
-	return [...grouped].map(([translationKey, variants]) => {
-		for (const locale of BLOG_TRANSLATION_LOCALES) {
-			if (!variants[locale]) {
-				throw new Error(`Missing blog translation for ${translationKey} (${locale})`);
-			}
-		}
+	return [...grouped].map(([translationKey, posts]) => ({ translationKey, posts }));
+}
 
-		return {
-			translationKey,
-			posts: variants as Record<Locale, T>,
-		};
+/** The languages a post is available in, in site language order. */
+export function availableLocales<T extends BlogTranslationVariant>(
+	group: BlogTranslationGroup<T>,
+): Array<{ locale: Locale; post: T }> {
+	return BLOG_TRANSLATION_LOCALES.flatMap((locale) => {
+		const post = group.posts[locale];
+		return post ? [{ locale, post }] : [];
 	});
 }

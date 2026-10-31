@@ -133,3 +133,35 @@ describe('projects fetcher transform', () => {
 		expect(() => ProjectSchema.parse(result)).not.toThrow();
 	});
 });
+
+describe('projects per-language Show on site', () => {
+	const withFrench = (show: boolean): DirectusProject => ({
+		...FIXTURE,
+		translations: [
+			{ ...FIXTURE.translations![0]!, show_on_site: true },
+			{ languages_code: 'fr', show_on_site: show, title: 'Pipeline de données', one_liner: 'Résumé.' },
+		],
+		sections: [
+			{ id: 1, sort: 1, translations: [...FIXTURE.sections![0]!.translations!, { languages_code: 'fr', title: 'Pourquoi', content: EMPTY_DOC }] },
+		],
+	});
+
+	it('shows a switched-on French row', () => {
+		const result = toProject(withFrench(true));
+		expect(result.title.fr).toBe('Pipeline de données');
+		expect(result.sections[0]?.title.fr).toBe('Pourquoi');
+	});
+
+	it('falls back to English when the French row is switched off', () => {
+		const result = toProject(withFrench(false));
+		expect(result.title.fr).toBeUndefined();
+		expect(result.sections[0]?.title.fr).toBeUndefined();
+		expect(result.title.en).toBe('Transit Operations Data Pipeline');
+	});
+
+	it('hides the project in every language when English is switched off', async () => {
+		const englishOff = { ...FIXTURE, translations: [{ ...FIXTURE.translations![0]!, show_on_site: false }] };
+		const client = { request: async () => [englishOff] };
+		expect(await fetchProjects({ client } as Parameters<typeof fetchProjects>[0])).toEqual([]);
+	});
+});
