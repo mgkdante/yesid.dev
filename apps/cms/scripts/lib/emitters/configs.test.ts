@@ -34,7 +34,6 @@ const completeExportData = {
 		navLinks: [],
 		menuItems: [],
 		footerLinks: [],
-		mobileLinks: [],
 	},
 } as unknown as ExportData;
 

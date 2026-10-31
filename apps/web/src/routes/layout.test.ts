@@ -5,7 +5,6 @@ import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
 	footerLinks as staticFooterLinks,
-	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
 } from '#lib/content/nav.ts';
 import type { ErrorPageContent, NavLink } from '#lib/navigation/types.ts';
@@ -44,7 +43,6 @@ describe('+layout.ts load', () => {
 			themeColor: '#123456',
 			headerLinks: fakeHeaderLinks,
 			footerLinks: [],
-			mobileLinks: [],
 			menuItems: [],
 			errorPage: fakeErrorPage,
 		}));
@@ -61,7 +59,6 @@ describe('+layout.ts load', () => {
 		// Each navigation placement falls back to its own export.
 		expect(result.headerLinks).toEqual(staticNavLinks);
 		expect(result.footerLinks).toEqual(staticFooterLinks);
-		expect(result.mobileLinks).toEqual(staticMobileLinks);
 		expect(result.menuItems).toEqual(staticMenuItems);
 		expect(result.errorPage).toEqual(staticErrorPageContent);
 	});

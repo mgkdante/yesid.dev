@@ -63,7 +63,7 @@ import {
 	aboutContent,
 	closerContent,
 } from '#lib/content/site-content.ts';
-import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '#lib/content/nav.ts';
+import { navLinks, menuItems, footerLinks, errorPageContent } from '#lib/content/nav.ts';
 import { legalPages } from '#lib/content/legal-pages.ts';
 import { LegalPageSchema } from '@repo/shared';
 import { errorPagesById } from '#lib/content/error-pages.ts';
@@ -220,9 +220,6 @@ export const staticAdapter: ContentAdapter = {
 			}
 			if (placement === 'footer') {
 				return parsePort('nav.byPlacement', z.array(NavLinkSchema), footerLinks);
-			}
-			if (placement === 'mobile') {
-				return parsePort('nav.byPlacement', z.array(NavLinkSchema), mobileLinks);
 			}
 			return [];
 		},

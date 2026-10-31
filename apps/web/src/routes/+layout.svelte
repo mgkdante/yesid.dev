@@ -39,7 +39,6 @@
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
 		footerLinks?: readonly NavLink[];
-		mobileLinks?: readonly NavLink[];
 		menuItems?: readonly NavLink[];
 		morphShapes?: readonly MorphShape[];
 	}; children: import('svelte').Snippet } = $props();

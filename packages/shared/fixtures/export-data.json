@@ -281,18 +281,6 @@
 					"href": "/legal/notice",
 					"priority": 1
 				}
-			],
-			"mobileLinks": [
-				{
-					"label": {"en":"Services","fr":"Services","es":"Servicios"},
-					"href": "/services",
-					"priority": 1
-				},
-				{
-					"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
-					"href": "/projects",
-					"priority": 1
-				}
 			]
 		},
 		"blogPosts": [

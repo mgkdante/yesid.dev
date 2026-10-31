@@ -36,7 +36,7 @@ export const load: LayoutServerLoad = async ({ route, params, url }) => {
 
 	const locale = localeFromParams(params as Record<string, string>, url.pathname);
 	const safeByPlacement = async (
-		placement: 'header' | 'footer' | 'mobile' | 'menu',
+		placement: 'header' | 'footer' | 'menu',
 		fallback: readonly NavLink[] = [],
 	): Promise<readonly NavLink[]> => {
 		try {
@@ -91,15 +91,14 @@ export const load: LayoutServerLoad = async ({ route, params, url }) => {
 		}
 	};
 
-	const [headerLinks, footerLinks, mobileLinks, menuItems, errorPage, seoData, morphShapes] = await Promise.all([
+	const [headerLinks, footerLinks, menuItems, errorPage, seoData, morphShapes] = await Promise.all([
 		safeByPlacement('header', staticNavLinks),
 		safeByPlacement('footer'),
-		safeByPlacement('mobile'),
 		safeByPlacement('menu', staticMenuItems),
 		safeErrorPage(),
 		safeSeo(),
 		safeMorphShapes(),
 	]);
 
-	return { headerLinks, footerLinks, mobileLinks, menuItems, errorPage, morphShapes, locale, ...seoData };
+	return { headerLinks, footerLinks, menuItems, errorPage, morphShapes, locale, ...seoData };
 };

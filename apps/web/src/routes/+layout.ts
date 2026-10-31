@@ -7,7 +7,6 @@ import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
 	footerLinks as staticFooterLinks,
-	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
 } from '#lib/content/nav.ts';
 import type { NavLink, ErrorPageContent } from '#lib/navigation/types.ts';
@@ -19,7 +18,6 @@ import type { Locale, MorphShape, PageSeo, SiteSeoDefaults } from '#lib/types.ts
 interface LayoutSlotData {
 	headerLinks: readonly NavLink[];
 	footerLinks: readonly NavLink[];
-	mobileLinks: readonly NavLink[];
 	menuItems: readonly NavLink[];
 	/** CMS-fetched generic error page (status 0 fallback row). Forwarded to
 	 *  +error.svelte via `$page.data.errorPage`. SvelteKit error pages have no
@@ -45,23 +43,20 @@ export const load: LayoutLoad = async ({ data, url }) => {
 	const slotFallback: LayoutSlotData = {
 		headerLinks: staticNavLinks,
 		footerLinks: staticFooterLinks,
-		mobileLinks: staticMobileLinks,
 		menuItems: staticMenuItems,
 		errorPage: staticErrorPageContent,
 	};
 
 	const slots: LayoutSlotData = {
 		headerLinks: serverData.headerLinks ?? slotFallback.headerLinks,
-		// Use length-based fallback for footer + mobile: `??` does not replace an
+		// Use length-based fallback for footer: `??` does not replace an
 		// empty array, and +layout.server.ts's guarded slots return [] when a
-		// read fails (footer/mobile have no server-side fallback arg). The
+		// read fails (footer has no server-side fallback arg). The
 		// length check keeps nav rendering from the static fallback in that
 		// case. (Historical trigger: a pre-fix staticAdapter returned [] for
-		// these slots during a deploy window.)
+		// this slot during a deploy window.)
 		footerLinks:
 			serverData.footerLinks?.length ? serverData.footerLinks : slotFallback.footerLinks,
-		mobileLinks:
-			serverData.mobileLinks?.length ? serverData.mobileLinks : slotFallback.mobileLinks,
 		menuItems: serverData.menuItems ?? slotFallback.menuItems,
 		errorPage: serverData.errorPage ?? slotFallback.errorPage,
 	};

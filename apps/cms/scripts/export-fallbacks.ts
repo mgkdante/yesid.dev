@@ -288,7 +288,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 		enqueue('nav', async () => {
 			out.nav = await fetchNavData({ client });
 			log.info(
-				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer / ${out.nav.mobileLinks.length} mobile).`,
+				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer).`,
 			);
 		});
 		enqueue('site-pages', async () => {

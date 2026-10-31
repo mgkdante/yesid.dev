@@ -211,7 +211,7 @@ export const EXPORT_MODULE_REGISTRY = [
 	defineModule(
 		'nav.ts',
 		['nav', 'errorPageFallback'],
-		'Navigation links (header + menu + footer + mobile placements) + error page fallback.',
+		'Navigation links (header + menu + footer placements) + error page fallback.',
 		[
 			typeImport(
 				'#lib/navigation/types.ts',
@@ -224,7 +224,6 @@ export const EXPORT_MODULE_REGISTRY = [
 			declaration('navLinks', 'readonly NavLink[]', data.nav.navLinks),
 			declaration('menuItems', 'readonly MenuItem[]', data.nav.menuItems),
 			declaration('footerLinks', 'readonly NavLink[]', data.nav.footerLinks),
-			declaration('mobileLinks', 'readonly NavLink[]', data.nav.mobileLinks),
 			declaration('errorPageContent', 'ErrorPageContent', data.errorPageFallback),
 		],
 	),
