@@ -114,6 +114,7 @@ export const SiteLabelsSchema = z.object({
 				liveSiteLabel: LocalizedStringSchema,
 				liveSiteLabelMobile: LocalizedStringSchema,
 				githubLabel: LocalizedStringSchema,
+				docsLabel: LocalizedStringSchema,
 				repoPrivateLabel: LocalizedStringSchema,
 			}),
 			tocPill: z.object({

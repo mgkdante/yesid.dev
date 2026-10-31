@@ -2567,6 +2567,7 @@
 						"liveSiteLabel": {"en":"Live Site","fr":"Site en ligne","es":"Sitio en vivo"},
 						"liveSiteLabelMobile": {"en":"↗ Live Site","fr":"↗ Site en ligne","es":"↗ Sitio en vivo"},
 						"githubLabel": {"en":"GitHub","fr":"GitHub","es":"GitHub"},
+						"docsLabel": {"en":"Documentation","fr":"Documentation","es":"Documentación"},
 						"repoPrivateLabel": {"en":"Private repo (for now)","fr":"Dépôt privé (pour le moment)","es":"Repo privado (por ahora)"}
 					},
 					"tocPill": {
