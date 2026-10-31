@@ -117,13 +117,13 @@ async function projectOgUrls(project: Project): Promise<Record<Locale, string | 
 }
 
 describe('blogSlugSeoFactory', () => {
-	it.each(['en', 'fr', 'es'] as const)('uses the existing landscape share card for a tall cover in %s', async (lang) => {
+	it.each(['en', 'fr', 'es'] as const)('uses the localized title card instead of shared cover metadata in %s', async (lang) => {
 		assetMock.relative = true;
-		assetMock.tall = true;
+		const titles = { en: 'Component boundaries', fr: 'Limites des composants', es: 'Límites de los componentes' };
 		const post = {
 			translationKey: 'component-boundaries',
 			slug: 'component-boundaries-' + lang,
-			title: 'Component boundaries',
+			title: titles[lang],
 			excerpt: 'A practical explanation of why visually similar components can keep separate responsibilities.',
 			date: '2026-10-08',
 			lang,
@@ -132,18 +132,17 @@ describe('blogSlugSeoFactory', () => {
 			animation: 'draw',
 			svg: 'pro-code',
 			coverImage: '33333333-3333-4333-8333-333333333333',
-			coverImageAlt: 'A full-length component gallery screenshot.',
+			coverImageAlt: 'English image metadata shared by every locale.',
 			url: '/blog/component-boundaries-' + lang,
 			external: false,
 		} as BlogPost;
 		const seo = await blogSlugSeoFactory({
 			params: { slug: post.slug }, locale: lang, adapter: adapterFor(post), siteMeta, siteSeoDefaults,
 		});
-		const expected = 'https://yesid.dev/og/blog/' + post.slug + '.png';
+		const expected = '/og/blog/' + post.slug + '.png';
 		expect(seo.ogImage).toEqual({
-			url: expected, alt: { en: 'Component boundaries | yesid.' }, width: 1200, height: 630,
+			url: expected, alt: { en: titles[lang] + ' | yesid.' }, width: 1200, height: 630,
 		});
-		expect(seo.jsonLd?.find((node) => node['@type'] === 'BlogPosting')?.image).toBe(expected);
 	});
 
 	it('uses CMS-backed post SEO fields for title, description, OG image, and JSON-LD', async () => {
@@ -193,8 +192,8 @@ describe('blogSlugSeoFactory', () => {
 		});
 		expect(seo.localeHandoffId).toBe('blog:raw-sql-control');
 		expect(seo.ogImage).toEqual({
-			url: 'https://cms.example.com/assets/11111111-1111-4111-8111-111111111111?key=og-1200',
-			alt: { en: 'PostgreSQL query plan screenshot in the CMS.' },
+			url: '/og/blog/raw-sql-control.png',
+			alt: { en: 'Raw SQL Control | yesid.' },
 			width: 1200,
 			height: 630,
 		});
@@ -254,12 +253,9 @@ describe('blogSlugSeoFactory', () => {
 		expect(blogPosting?.image).toBe(
 			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
 		);
-		expect(seo.ogImage?.width).toBe(1440);
-		expect(seo.ogImage?.height).toBe(1000);
-		// ogImage uses the same absolutized URL.
-		expect(seo.ogImage?.url).toBe(
-			'https://yesid.dev/images/work/22222222-2222-4222-8222-222222222222.png',
-		);
+		expect(seo.ogImage?.width).toBe(1200);
+		expect(seo.ogImage?.height).toBe(630);
+		expect(seo.ogImage?.url).toBe('/og/blog/mirrored-cover.png');
 	});
 
 	it('keeps available exact alternates when a target translation is not published yet', async () => {
