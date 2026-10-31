@@ -342,13 +342,20 @@
 		}
 	}
 
-	/* Sub-660px-tall phones (e.g. 320x640) carrying the longer FR copy need a
-	   touch more shaved so nothing clips. iPhone SE (667) and Galaxy S23 (780)
-	   are above this floor and unaffected. */
+	/* Sub-660px-tall phones keep the English subtitle and both CTAs in the first
+	   screen down to 360x600. Longer FR/ES headlines may still run past it.
+	   iPhone SE (667) and Galaxy S23 (780) are above this floor and unaffected. */
 	@media (--tablet-max) and (max-height: 660px) {
-		.hero-heading { padding-block: 0 1.25rem; }
+		.hero-heading { padding-block: 0 0.5rem; }
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
-			margin-block: 0.375rem;
+			margin-block: 0.25rem;
+		}
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			font-size: 1rem;
+			line-height: 1.3;
+		}
+		.hero-viewport-text :global([data-hero-stagger="6"].flex) {
+			margin-top: 0.5rem;
 		}
 		.hero-viewport-text :global([data-testid^="hero-cta-"]) {
 			width: 100%;

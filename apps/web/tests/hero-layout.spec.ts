@@ -241,3 +241,20 @@ test('under reduced motion the binder tab opens and closes instantly', { tag: '@
 	expect(folded.example.height).toBeLessThanOrEqual(1);
 	expect(Math.abs(folded.tab.top - closed.tab.top)).toBeLessThanOrEqual(1);
 });
+
+test('short phones keep the English subtitle and both CTAs in the first screen', async ({ page }) => {
+	test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	for (const viewport of [{ width: 375, height: 640 }, { width: 360, height: 600 }]) {
+		await page.setViewportSize(viewport);
+		await page.goto('/');
+		await expect(page.getByTestId('hero-dot-replay')).toBeEnabled();
+		await page.evaluate(() => document.fonts.ready);
+		const boxes = await page.evaluate(() => ['hero-subtitle', 'hero-cta-projects', 'hero-cta-contact'].map((id) => {
+			const box = document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect();
+			return { id, top: box.top, bottom: box.bottom };
+		}));
+		for (const box of boxes) expect(box.bottom, `${box.id} at ${viewport.width}x${viewport.height}`).toBeLessThanOrEqual(viewport.height);
+		expect(boxes[0].bottom, 'subtitle clears the CTA row').toBeLessThanOrEqual(boxes[1].top);
+	}
+});
