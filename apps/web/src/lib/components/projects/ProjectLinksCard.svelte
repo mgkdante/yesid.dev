@@ -79,6 +79,7 @@
 						href={project.docsUrl}
 						target="_blank"
 						rel="noopener noreferrer"
+						onclick={() => handleProjectProofClick(project.docsUrl)}
 						data-testid="project-docs-link"
 						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
 					>

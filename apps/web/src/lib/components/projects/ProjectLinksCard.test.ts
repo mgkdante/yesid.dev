@@ -113,7 +113,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 });
 
 describe('ProjectLinksCard documentation link', () => {
-	it('renders a Documentation link to the published wiki beside the other links', () => {
+	it('renders and tracks the published Documentation link beside the other links', async () => {
 		const project = projectFactory.build({
 			repoUrl: 'https://github.com/mgkdante/public-project',
 			docsUrl: 'https://yesid-dev.notion.site/wiki',
@@ -123,6 +123,10 @@ describe('ProjectLinksCard documentation link', () => {
 		expect(link).toHaveAttribute('href', 'https://yesid-dev.notion.site/wiki');
 		expect(link).toHaveAttribute('target', '_blank');
 		expect(link).toHaveTextContent('Documentation');
+		await clickWithoutNavigating(link);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
+			['project_proof_click'],
+		]);
 	});
 
 	it('shows the links card for a project that only has documentation', () => {
