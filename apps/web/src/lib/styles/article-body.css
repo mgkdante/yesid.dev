@@ -1,20 +1,20 @@
-/* Site-owned reading scale for detail pages, legal copy and the home biography. */
+/* Shared reading roles for detail pages, legal copy and the home biography. */
 .reading-detail {
-	--reading-prose-size: 1.1875rem;
-	--reading-code-size: 1rem;
-	--reading-heading-size: 1.25rem;
+	--reading-prose-size: var(--text-reading);
+	--reading-code-size: var(--text-reading-code);
+	--reading-heading-size: var(--text-reading-heading);
 }
 
 @media (--desktop-min) {
 	.reading-detail {
-		--reading-prose-size: 1.25rem;
-		--reading-code-size: 1.0625rem;
-		--reading-heading-size: 1.375rem;
+		--reading-prose-size: var(--text-reading-desktop);
+		--reading-code-size: var(--text-reading-code-desktop);
+		--reading-heading-size: var(--text-reading-heading-desktop);
 	}
 }
 
 .reading-detail .reading-support {
-	--reading-prose-size: 1.125rem;
+	--reading-prose-size: var(--text-reading-support);
 }
 
 .reading-detail :is(.article-body, .reading-support) {
@@ -43,13 +43,13 @@
 
 .reading-detail :is(.article-body, .reading-support, .project-image-gallery) figcaption,
 .project-image-gallery__lightbox .project-image-gallery__lightbox-caption {
-	font-size: 1rem;
+	font-size: var(--text-reading-caption);
 	line-height: 1.6;
 }
 
 .reading-detail :is(.article-body, .reading-support) code:not(pre code) {
 	font-family: var(--font-mono);
-	font-size: 0.95em;
+	font-size: var(--text-reading-inline-code);
 }
 
 .reading-detail :is(.article-body, .reading-support) :is(.terminal-code, .terminal-code-body, pre) {

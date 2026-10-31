@@ -172,7 +172,7 @@
 	</div>
 
 	<p
-		class="mt-5 text-body leading-relaxed text-[var(--secondary-foreground)]"
+		class="mt-5 text-reading leading-[1.7] text-[var(--secondary-foreground)] lg:text-reading-desktop"
 		data-testid="hero-subtitle"
 		data-hero-stagger="6"
 	>
