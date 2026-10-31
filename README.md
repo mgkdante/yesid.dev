@@ -73,6 +73,7 @@ request, and the packages are never patched here.
 ## Links
 
 - Live site: [yesid.dev](https://yesid.dev)
+- Documentation: [architecture wiki](https://yesid-dev.notion.site/3603e8630690813bbe4ac7adac7d1bd7?v=4093e86306908049b5ee000c3e271459)
 - Design system: [mgkdante/yesid.dev-design](https://github.com/mgkdante/yesid.dev-design)
 - Contributor guide: [AGENTS.md](AGENTS.md)
 - Security reports: [SECURITY.md](SECURITY.md)
