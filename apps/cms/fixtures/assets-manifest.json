@@ -695,6 +695,20 @@
 			"title": "yesid.dev: blog-es-light (2026-10-30)",
 			"description": "Spanish article listing with search, language and date filters. Local candidate capture, 30 October 2026.",
 			"sha256": "df13c6aece77d106278a3f03a51e0de36b53d6e8e72f52b657427bd394858876"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261030/cafe-home-desktop.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-home-desktop (2026-10-30)",
+			"description": "French development storefront, desktop home view. Browser capture, 30 October 2026. Work in progress.",
+			"sha256": "27656f103e0a3dd8d0b578c3b005bbdb2e3f41f5ab3e930208dc2df9c1d95d38"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261030/cafe-home-mobile.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-home-mobile (2026-10-30)",
+			"description": "French development storefront in a phone-width browser viewport. Browser capture, 30 October 2026. Work in progress.",
+			"sha256": "0122a187aaaa9249a061fe6fed635d536b6e039f395790e15ad625b8bab3aafd"
 		}
 	]
 }
