@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import {
@@ -31,14 +31,17 @@ describe('media variant write boundary', () => {
 			})
 				.png({ compressionLevel: 0 })
 				.toFile(sourcePath);
+			const secondPath = 'images/z.png';
+			copyFileSync(sourcePath, join(repoRoot, 'static', secondPath));
 
 			const prepared = await prepareMediaVariants(
-				{ sourceRoot: 'static', assets: [{ legacyPath }] },
+				{ sourceRoot: 'static', assets: [{ legacyPath: secondPath }, { legacyPath }] },
 				repoRoot,
 			);
 
-			expect(prepared.data[`/${legacyPath}`]?.variants.length).toBeGreaterThan(0);
-			expect(prepared.writes.length).toBeGreaterThan(0);
+			expect(prepared.data[`/${legacyPath}`]?.variants.map((variant) => variant.width)).toEqual([240, 600, 800]);
+			expect(Object.keys(prepared.data)).toEqual([`/${legacyPath}`, `/${secondPath}`]);
+			expect(prepared.writes.map((variant) => variant.filePath)).toEqual([legacyPath, secondPath].flatMap((file) => [240, 600, 800].map((width) => join(repoRoot, 'static', variantPathFor(file, width)))));
 			expect(existsSync(firstVariantPath)).toBe(false);
 
 			await writeMediaVariants(prepared);

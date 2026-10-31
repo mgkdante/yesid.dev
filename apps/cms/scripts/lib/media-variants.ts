@@ -98,7 +98,8 @@ export async function prepareMediaVariants(
 		.filter((a) => !a.legacyPath.startsWith('og/'))
 		.sort((a, b) => a.legacyPath.localeCompare(b.legacyPath));
 
-	for (const { legacyPath } of rasterAssets) {
+	const prepareAsset = async ({ legacyPath }: { legacyPath: string }) => {
+		const assetWrites: Array<PreparedMediaVariants['writes'][number]> = [];
 		const sourcePath = resolve(staticRoot, legacyPath);
 		if (!existsSync(sourcePath)) {
 			throw new Error(`[media-variants] missing mirrored source file: ${legacyPath}`);
@@ -112,11 +113,14 @@ export async function prepareMediaVariants(
 
 		const originalBytes = statSync(sourcePath).size;
 		const variants: MediaVariantSource[] = [];
-		for (const width of pickVariantWidths(meta.width)) {
-			const encoded = await sharp(sourcePath)
+		const widths = pickVariantWidths(meta.width);
+		// Bound parallel work to one source's width ladder and consume it in order.
+		const encodedVariants = await Promise.all(widths.map((width) => sharp(sourcePath)
 				.resize({ width })
 				.webp({ quality: WEBP_QUALITY })
-				.toBuffer();
+				.toBuffer()));
+		for (const [index, width] of widths.entries()) {
+			const encoded = encodedVariants[index]!;
 			// A variant only earns its bytes if it beats the original (near-
 			// intrinsic re-encodes of already-webp sources come out LARGER).
 			// Fall back to the original at this rung and end the ladder — every
@@ -127,14 +131,23 @@ export async function prepareMediaVariants(
 				break;
 			}
 			const variantRelPath = variantPathFor(legacyPath, width);
-			writes.push({
+			assetWrites.push({
 				filePath: resolve(staticRoot, variantRelPath),
 				content: encoded,
 			});
 			variants.push({ width, path: `/${variantRelPath}` });
 		}
 
-		out[`/${legacyPath}`] = { width: meta.width, height: meta.height, variants };
+		return { legacyPath, data: { width: meta.width, height: meta.height, variants }, writes: assetWrites };
+	};
+
+	// Keep encoding bounded while another source fills idle width-encoding slots.
+	for (let index = 0; index < rasterAssets.length; index += 2) {
+		const batch = await Promise.all(rasterAssets.slice(index, index + 2).map(prepareAsset));
+		for (const asset of batch) {
+			out[`/${asset.legacyPath}`] = asset.data;
+			writes.push(...asset.writes);
+		}
 	}
 
 	return { data: out, writes };

@@ -27,7 +27,7 @@ export function parseYouTubeParagraph(text: string): YouTubeVideo | null {
 				: url.pathname.match(/^\/(?:embed|shorts|live)\/([\w-]+)\/?$/)?.[1] ?? null;
 		}
 		if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return null;
-		const caption = anchor ? anchor[2].replace(/<[^>]*>/g, '').trim() : '';
+		const caption = anchor && !/[<>]/.test(anchor[2]) ? anchor[2].trim() : '';
 		return { id, caption: caption === href || caption === value ? '' : caption };
 	} catch {
 		return null;

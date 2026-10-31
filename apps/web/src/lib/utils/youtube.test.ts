@@ -12,9 +12,13 @@ describe('authored YouTube paragraphs', () => {
 		expect(parseYouTubeParagraph(url)).toEqual({ id: 'M7lc1UVf-VE', caption: '' });
 	});
 
-	it('keeps an actual sole-anchor label as the viewer caption', () => {
+	it('keeps a plain sole-anchor label without trying to sanitize markup into a caption', () => {
 		expect(parseYouTubeParagraph('<a href="https://www.youtube.com/watch?v=M7lc1UVf-VE&amp;feature=shared">Package walkthrough</a>'))
 			.toEqual({ id: 'M7lc1UVf-VE', caption: 'Package walkthrough' });
+		for (const label of ['Demo <script', '<b>Package walkthrough</b>', '<scr<script>ipt>']) {
+			expect(parseYouTubeParagraph(`<a href="https://youtu.be/M7lc1UVf-VE">${label}</a>`))
+				.toEqual({ id: 'M7lc1UVf-VE', caption: '' });
+		}
 	});
 
 	it.each([

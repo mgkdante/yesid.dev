@@ -53,8 +53,13 @@ async function expectPanesSideBySide(card: Locator) {
 	expect(phone.width, 'the phone pane stays narrower than the desktop pane').toBeLessThan(desktop.width);
 }
 
-async function expectImagesFillPanes(card: Locator) {
-	for (const image of await card.getByTestId('project-hero-preview-image').all()) {
+async function expectImagesFitPanes(card: Locator) {
+	const images = await card.getByTestId('project-hero-preview-image').all();
+	if (images.length === 0) return;
+	const layout = await card.getByTestId('project-hero-preview').getAttribute('data-layout');
+	expect(layout).toMatch(/^(single|desktop-mobile)$/);
+	expect(images).toHaveLength(layout === 'single' ? 1 : 2);
+	for (const image of images) {
 		await image.scrollIntoViewIfNeeded();
 		const loadingContext = await image.evaluate((img: HTMLImageElement) => ({ source: img.currentSrc || img.src, card: img.closest('article')?.querySelector('a')?.getAttribute('href'), box: img.getBoundingClientRect().toJSON(), pane: img.parentElement!.getBoundingClientRect().toJSON(), viewport: { width: innerWidth, height: innerHeight }, scroll: scrollY }));
 		await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { message: `Project image must load: ${JSON.stringify(loadingContext)}` }).toBe(true);
@@ -65,24 +70,44 @@ async function expectImagesFillPanes(card: Locator) {
 			const outer = frame.getBoundingClientRect();
 			// Inside the pane's border: the divider between screenshots is not a gap.
 			const pane = { left: outer.left + frame.clientLeft, top: outer.top + frame.clientTop, width: frame.clientWidth, height: frame.clientHeight, right: outer.left + frame.clientLeft + frame.clientWidth, bottom: outer.top + frame.clientTop + frame.clientHeight };
-			const fit = getComputedStyle(img).objectFit;
-			let width = box.width;
-			let height = box.height;
-			if (fit === 'contain' || fit === 'cover') {
-				const scale = (fit === 'contain' ? Math.min : Math.max)(box.width / img.naturalWidth, box.height / img.naturalHeight);
-				width = img.naturalWidth * scale;
-				height = img.naturalHeight * scale;
-			}
+			const style = getComputedStyle(img);
+			const cssWidth = parseFloat(style.width);
+			const cssHeight = parseFloat(style.height);
+			const scaleX = box.width / cssWidth;
+			const scaleY = box.height / cssHeight;
+			const fitScale = (style.objectFit === 'contain' ? Math.min : Math.max)(cssWidth / img.naturalWidth, cssHeight / img.naturalHeight);
+			const width = img.naturalWidth * fitScale * scaleX;
+			const height = img.naturalHeight * fitScale * scaleY;
+			const left = box.left + (box.width - width) / 2;
+			const top = style.objectFit === 'contain' ? box.top + (box.height - height) / 2 : box.top;
+			const content = { left, top, width, height, right: left + width, bottom: top + height };
 			const covers = box.left <= pane.left + 1 && box.right >= pane.right - 1 && box.top <= pane.top + 1 && box.bottom >= pane.bottom - 1
-				&& width >= box.width - 1 && height >= box.height - 1;
+				&& content.left <= pane.left + 1 && content.right >= pane.right - 1 && content.top <= pane.top + 1 && content.bottom >= pane.bottom - 1;
+			const contained = content.left >= pane.left - 1 && content.right <= pane.right + 1 && content.top >= pane.top - 1 && content.bottom <= pane.bottom + 1;
+			const scale = (style.scale === 'none' ? '1' : style.scale).split(/\s+/).map(value => parseFloat(value) / (value.endsWith('%') ? 100 : 1));
 			return {
-				covers,
-				distortion: (width / height) / (img.naturalWidth / img.naturalHeight),
-				content: { width, height },
+				covers, contained, fit: style.objectFit, position: style.objectPosition,
+				distortion: scaleX / scaleY,
+				untransformed: new DOMMatrixReadOnly(style.transform).isIdentity,
+				zoom: { x: scale[0], y: scale[1] ?? scale[0] },
+				content,
 				pane: { left: pane.left, top: pane.top, width: pane.width, height: pane.height },
 			};
 		});
-		expect(paint.covers, `the image paints its whole pane with no empty bands: ${JSON.stringify(paint)}`).toBe(true);
+		if (layout === 'single') {
+			expect(paint.fit).toBe('contain');
+			expect(paint.position).toBe('50% 50%');
+			expect(paint.contained, `the whole single image stays inside its pane: ${JSON.stringify(paint)}`).toBe(true);
+			expect(paint.content.left + paint.content.width / 2).toBeCloseTo(paint.pane.left + paint.pane.width / 2, 0);
+			expect(paint.content.top + paint.content.height / 2).toBeCloseTo(paint.pane.top + paint.pane.height / 2, 0);
+			expect(Math.min(Math.abs(paint.content.width - paint.pane.width), Math.abs(paint.content.height - paint.pane.height))).toBeLessThanOrEqual(1);
+			expect(paint.untransformed).toBe(true);
+			expect(paint.zoom).toEqual({ x: 1, y: 1 });
+		} else {
+			expect(paint.fit).toBe('cover');
+			expect(paint.position).toBe('50% 0%');
+			expect(paint.covers, `split images paint their whole pane with no empty bands: ${JSON.stringify(paint)}`).toBe(true);
+		}
 		expect(paint.distortion).toBeCloseTo(1, 2);
 	}
 }
@@ -100,7 +125,7 @@ for (const locale of PUBLISHED_LOCALES) {
 			const scales = await reel.locator('.df-node text').evaluateAll(labels => labels.map(label => label.getBoundingClientRect().height).filter(Boolean));
 			expect(scales.length).toBeGreaterThan(0);
 			expect(Math.max(...scales) / Math.min(...scales), 'short and long stacks retain the same type scale').toBeLessThan(1.25);
-			for (const card of visible) await expectImagesFillPanes(reel.getByTestId('proof-card').nth(card.index));
+			for (const card of visible) await expectImagesFitPanes(reel.getByTestId('proof-card').nth(card.index));
 			const frames = await reel.getByTestId('proof-card-image').evaluateAll(images => images.map(image => image.getBoundingClientRect().height));
 			expect(Math.max(...frames) / Math.min(...frames), 'every project keeps the same image frame').toBeLessThan(1.1);
 	});
@@ -142,7 +167,7 @@ test('navigation and resizing settle on whole cards and keep every project reach
 	if (await previous.isEnabled()) { await previous.click(); await expectWholeCards(reel); }
 });
 
-test('hover keeps project image panes filled', async ({ page }) => {
+test('hover preserves whole single images and covered split panes', async ({ page }) => {
 	test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 	await page.setViewportSize({ width: 1280, height: 900 });
 	await page.goto('/');
@@ -154,15 +179,21 @@ test('hover keeps project image panes filled', async ({ page }) => {
 		for (const visible of await expectWholeCards(reel)) {
 			if (seen.has(visible.index)) continue;
 			const card = reel.getByTestId('proof-card').nth(visible.index);
-			await expectImagesFillPanes(card);
+			await expectImagesFitPanes(card);
 			await card.getByTestId('proof-card-image').hover({ force: true });
-			await expectImagesFillPanes(card);
+			await expectImagesFitPanes(card);
 			seen.add(visible.index);
 		}
 		if (await reel.getByTestId('proof-next').isDisabled()) break;
 		await reel.getByTestId('proof-next').click();
 	}
 	expect(seen.size).toBe(total);
+	await page.goto('/projects');
+	for (const card of await page.getByTestId('project-card').all()) {
+		await expectImagesFitPanes(card);
+		await card.getByTestId('project-card-image').hover({ force: true });
+		await expectImagesFitPanes(card);
+	}
 });
 
 test('the shared project listing stays readable', async ({ page }) => {
@@ -172,12 +203,13 @@ test('the shared project listing stays readable', async ({ page }) => {
 	await expect(cards.first()).toBeVisible();
 	for (const card of await cards.all()) {
 		await expect(card.getByRole('link')).toHaveAccessibleName((await card.getByRole('heading').textContent())!.trim());
-		await expectImagesFillPanes(card);
+		await expectImagesFitPanes(card);
 		await expectMediaAboveInfo(card);
 		await expectPanesSideBySide(card);
 		expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth + 1), 'listing content stays inside its card').toBe(true);
 	}
 	expect(await page.locator('[data-testid="project-hero-preview"][data-split="true"]').count(), 'some project supplies a phone screenshot').toBeGreaterThan(0);
+	expect(await page.locator('[data-testid="project-hero-preview"][data-layout="single"]').count(), 'some project supplies one holistic visual').toBeGreaterThan(0);
 });
 
 test('a project card opens from its link and its tags, and its overflowing stack diagram is its own keyboard stop', async ({ page }) => {
