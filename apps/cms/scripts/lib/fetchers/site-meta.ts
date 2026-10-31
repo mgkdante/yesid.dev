@@ -52,6 +52,8 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 	const rawKnows: readonly string[] =
 		typeof rawKnowsSource === 'string' ? rawKnowsSource.split(',') : rawKnowsSource;
 	const knowsAbout = rawKnows.map((s) => s.trim()).filter(Boolean);
+	// Public on purpose: the phone is published in the search-engine data only.
+	const phone = row.owner_phone?.trim();
 	return {
 		name: row.name,
 		...toLocalizedFields(row.translations, ['tagline', 'description']),
@@ -59,6 +61,7 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 		owner: {
 			name: row.owner_name,
 			...toLocalizedFields(row.translations, [['jobTitle', 'owner_job_title']]),
+			...(phone && { phone }),
 			address: {
 				locality: row.owner_locality,
 				region: row.owner_region,
@@ -117,6 +120,7 @@ export async function fetchSiteMeta({ client }: FetcherContext): Promise<SiteMet
 				'owner_locality',
 				'owner_region',
 				'owner_country',
+				'owner_phone',
 				'owner_knows_about',
 				'default_og_image',
 				'theme_color',

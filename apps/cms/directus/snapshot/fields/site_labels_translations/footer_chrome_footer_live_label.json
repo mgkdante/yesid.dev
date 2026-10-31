@@ -1,0 +1,49 @@
+{
+  "collection": "site_labels_translations",
+  "field": "footer_chrome_footer_live_label",
+  "type": "string",
+  "meta": {
+    "collection": "site_labels_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "footer_chrome_footer_live_label",
+    "group": "grp_global_footer",
+    "hidden": false,
+    "interface": "input",
+    "note": "Read by screen readers for the orange dot before the status line. Default: \"Live\"",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 8,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Live dot (screen reader)"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "footer_chrome_footer_live_label",
+    "table": "site_labels_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

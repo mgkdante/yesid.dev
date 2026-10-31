@@ -86,9 +86,6 @@ export function toContactContent(
 			['pageTitle', 'page_title'], ['stationLabel', 'station_label'],
 			['sendErrorMessage', 'send_error_message'],
 		]),
-		meta: toLocalizedFields(tr, [
-			['title', 'meta_title'], ['description', 'meta_description'],
-		]),
 		infoTerminal: {
 			title: str(raw.info_terminal_title),
 			command: str(raw.info_terminal_command),
@@ -133,6 +130,7 @@ export function toContactContent(
 			['errorSummary', 'validation_error_summary'],
 		]),
 		success: toLocalizedFields(tr, [
+			['command', 'success_command'],
 			['validating', 'success_validating'], ['sending', 'success_sending'],
 			['sent', 'success_sent'], ['responseTime', 'success_response_time'],
 			['meanwhile', 'success_meanwhile'], ['resetLabel', 'success_reset_label'],

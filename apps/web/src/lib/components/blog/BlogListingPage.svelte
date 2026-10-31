@@ -21,8 +21,10 @@
 		posts,
 		allTags,
 		languages = [],
-		mobileHeading = undefined,
+		heading,
 		subtitle,
+		emptyState,
+		emptyStateNoPosts,
 		accentColor = 'var(--primary)',
 		cornerLink = null,
 		svgContents = {}
@@ -30,15 +32,16 @@
 		posts: readonly BlogPost[];
 		allTags: readonly string[];
 		languages?: readonly Locale[];
-		mobileHeading?: string;
+		heading: string;
 		subtitle: string;
+		emptyState: string;
+		emptyStateNoPosts: string;
 		accentColor?: string;
 		cornerLink?: { href: string; label: string; subtitle: string } | null;
 		svgContents?: Record<string, string>;
 	} = $props();
 
 	const listingChrome = siteLabels.blogChrome.listing;
-	const mobileHeadingText = $derived(mobileHeading ?? resolveLocale(listingChrome.mobileHeading, locale));
 	const mobileFiltersLabel = resolveLocale(listingChrome.filters.filtersLabel, locale);
 	const searchPlaceholder = resolveLocale(listingChrome.searchPlaceholder, locale);
 	const countLabel = {
@@ -156,7 +159,7 @@
 	style={accentColor !== 'var(--accent)' ? `--accent: ${accentColor};` : ''}
 >
 	<ListingFrame
-		heading={mobileHeadingText}
+		{heading}
 		edgeTitle={resolveLocale(siteLabels.pages.blogEdgeTitle, locale)}
 		{subtitle}
 		onHeaderMount={blueprintScrub}
@@ -204,10 +207,7 @@
 			<!-- Two empty states: "your filters matched nothing" vs "this section has
 			     no posts at all" (blaming filters that don't exist reads as a bug). -->
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-				{resolveLocale(
-					hasActiveFilters ? listingChrome.noPostsMessage : listingChrome.noPostsEmptyMessage,
-					locale
-				)}
+				{hasActiveFilters ? emptyState : emptyStateNoPosts}
 			</p>
 		{:else}
 			<div class="flex flex-col gap-4">

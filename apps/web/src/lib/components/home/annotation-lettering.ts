@@ -16,7 +16,6 @@ const glyphs: Record<string, { d: string; width: number; end: [number, number] }
 	z: { d: 'M1 6 11 5 0 16 11 15', width: 12, end: [11, 15] },
 };
 export const CLICK_ME = { en: 'click me', fr: 'clique ici', es: 'haz clic' } as const;
-export const THE_END = { en: 'the end', fr: 'la fin', es: 'fin' } as const;
 export function getLettering(label: string) {
 	let width = 0;
 	let end = { x: 0, y: 0 };

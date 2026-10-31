@@ -11,7 +11,7 @@
     "group": "grp_testimonials",
     "hidden": false,
     "interface": "list",
-    "note": "Each quote: text, author and role. Company is optional.",
+    "note": "Each quote: the text, who said it and their role.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -46,17 +46,6 @@
             "width": "half"
           },
           "name": "role",
-          "type": "string"
-        },
-        {
-          "field": "company",
-          "meta": {
-            "field": "company",
-            "interface": "input",
-            "type": "string",
-            "width": "half"
-          },
-          "name": "company",
           "type": "string"
         }
       ],

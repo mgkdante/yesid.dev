@@ -56,7 +56,6 @@ export interface DirectusProjectsServicesRow {
 export interface DirectusProject {
 	id: string;
 	status: 'draft' | 'published' | 'archived';
-	date_published: string | null;
 	sort: number | null;
 	featured: boolean;
 	hero_image: string | null;

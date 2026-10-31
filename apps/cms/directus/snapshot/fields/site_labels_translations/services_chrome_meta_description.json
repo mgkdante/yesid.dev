@@ -11,7 +11,7 @@
     "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.\"",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,

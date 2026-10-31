@@ -7,7 +7,7 @@
  * block projections; generated-content verification catches output drift.
  */
 
-import { str, toLocalizedFields, toLocalizedString } from '../locale';
+import { hrefOr, str, toLocalizedFields, toLocalizedString } from '../locale';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import {
 	HeroContentSchema,
@@ -42,9 +42,10 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 			['ariaSuffix', 'headline_aria_suffix'],
 		]),
 		...toLocalizedFields(tr, [
-			'subheadline', 'subtitle', ['identity', 'identity_line'],
+			'subheadline', 'subtitle',
 			['ctaWork', 'cta_work'], ['ctaContact', 'cta_contact'],
 		]),
+		ctaWorkHref: hrefOr(raw.cta_work_href, '/projects'),
 		sqlPanel: {
 			...toLocalizedFields(tr, [
 				['prompt', 'sql_prompt'], ['liveLabel', 'sql_live_label'],
@@ -55,6 +56,9 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 				['vehicles', 'sql_col_vehicles'],
 			]),
 			...toLocalizedFields(tr, [['metaTemplate', 'sql_meta_template']]),
+			stamps: toLocalizedFields(tr, [
+				['demo', 'stamp_demo'], ['refreshed', 'stamp_refreshed'], ['liveTemplate', 'stamp_live_template'],
+			]),
 		},
 		refreshButton: toLocalizedFields(tr, [
 			['label', 'refresh_label'], ['helper', 'refresh_helper'],
@@ -194,12 +198,8 @@ export function toProofReelContent(raw: BlockRow): ProofReelContent {
 		Record<string, unknown> & { languages_code: string }
 	>;
 	return {
-		...toLocalizedFields(tr, [
-			'heading', ['headingDot', 'heading_dot'], 'subheading', ['sectionLabel', 'section_label'],
-			['viewAllLabel', 'view_all_label'],
-		]),
+		...toLocalizedFields(tr, [['viewAllLabel', 'view_all_label']]),
 		viewAllHref: typeof raw.view_all_href === 'string' ? raw.view_all_href : '/work',
-		...toLocalizedFields(tr, [['toggleColorAria', 'toggle_color_aria']]),
 	};
 }
 
@@ -221,7 +221,6 @@ export function toServicesGridContent(raw: BlockRow): ServicesGridContent {
 		Record<string, unknown> & { languages_code: string }
 	>;
 	return toLocalizedFields(tr, [
-		'heading', ['headingDot', 'heading_dot'], 'subheading',
 		['viewIllustrationAria', 'view_illustration_aria'],
 		['viewAllLink', 'view_all_link'],
 	]);
@@ -246,19 +245,7 @@ export function toAboutIntroContent(raw: BlockRow): AboutIntroContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const stackItems = Array.isArray(raw.stack_items) ? (raw.stack_items as string[]) : [];
-	return {
-		...toLocalizedFields(tr, [
-			'name', 'title', 'bio', ['moreLink', 'more_link'],
-			['stackLabel', 'stack_label'],
-		]),
-		stackItems,
-		...toLocalizedFields(tr, [['locationLabel', 'location_label']]),
-		location: toLocalizedFields(tr, [
-			['city', 'location_city'], ['region', 'location_region'],
-		]),
-		...toLocalizedFields(tr, [['interestsLabel', 'interests_label'], 'interests']),
-	};
+	return toLocalizedFields(tr, ['name', 'title', 'bio', ['moreLink', 'more_link']]);
 }
 
 export async function fetchAboutIntroContent({
@@ -298,28 +285,27 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const rowGroup = (key: 'stack' | 'contact' | 'connect' | 'read' | 'about') => ({
+	const rowGroup = (key: 'contact' | 'connect' | 'read' | 'about') => ({
 		label: toLocalizedString(tr, `rows_${key}_label`),
 		description: toLocalizedString(tr, `rows_${key}_description`),
 		action: toLocalizedString(tr, `rows_${key}_action`),
 	});
+	const linkedRow = (key: 'contact' | 'read' | 'about', fallback: string) => ({
+		...rowGroup(key),
+		href: hrefOr(raw[`rows_${key}_href`], fallback),
+	});
 	return {
-		...toLocalizedFields(tr, ['heading', ['headingDot', 'heading_dot'], 'subheading']),
 		cta: {
 			...toLocalizedFields(tr, [['label', 'cta_label']]),
 			href: typeof raw.cta_href === 'string' ? raw.cta_href : '/contact',
 		},
 		rows: {
-			stack: rowGroup('stack'),
-			contact: rowGroup('contact'),
+			contact: linkedRow('contact', '/contact'),
 			connect: rowGroup('connect'),
-			read: rowGroup('read'),
-			about: rowGroup('about'),
+			read: linkedRow('read', '/blog'),
+			about: linkedRow('about', '/about'),
 		},
-		attribution: {
-			...toLocalizedFields(tr, [['text', 'attribution_text']]),
-			url: str(raw.attribution_url),
-		},
+		...toLocalizedFields(tr, [['closingLabel', 'closing_label']]),
 		terminal: toLocalizedFields(tr, [
 			['title', 'terminal_title'], ['city', 'terminal_city'], ['encoding', 'terminal_encoding'],
 			['destinationsLabel', 'terminal_destinations_label'],

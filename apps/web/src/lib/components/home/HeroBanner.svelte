@@ -26,6 +26,7 @@
 	import type { HeroContent, HeroAnimContent } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { fillTemplate } from '#lib/utils/labels.ts';
 
 	const locale = getLocale();
 	import MetroNetwork from '#lib/motion/svg/MetroNetwork.svelte';
@@ -38,8 +39,10 @@
 		hero: HeroContent;
 		heroAnim: HeroAnimContent;
 		initialHeroData: HeroData;
+		/** Contact channels Calendar link opened by the second hero button. */
+		bookingHref: string;
 	}
-	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
+	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, initialHeroData: INITIAL_HERO_DATA, bookingHref }: Props = $props();
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
@@ -86,14 +89,10 @@
 	// Seed once from the prop, then let refreshes own the local data.
 	let heroData: HeroData = $state(untrack(() => INITIAL_HERO_DATA));
 	// Prerendered demo data has no meaningful age; only a user refresh can claim it was regenerated just now.
-	const updatedAgoInitial = resolveLocale(
-		{ en: 'demo data', fr: 'données démo', es: 'datos de demo' },
-		locale,
-	);
-	const updatedAgoJustNow = resolveLocale(
-		{ en: 'regenerated just now', fr: "régénéré à l'instant", es: 'regenerado recién' },
-		locale,
-	);
+	const stamps = untrack(() => heroContent.sqlPanel.stamps);
+	const updatedAgoInitial = resolveLocale(stamps.demo, locale);
+	const updatedAgoJustNow = resolveLocale(stamps.refreshed, locale);
+	const liveStampTemplate = resolveLocale(stamps.liveTemplate, locale);
 	let demoStamp: string = $state(updatedAgoInitial);
 
 	function spinRefreshIcon() {
@@ -117,9 +116,7 @@
 	);
 
 	function liveStamp(seconds: number): string {
-		if (locale === 'fr') return `il y a ${seconds} s`;
-		if (locale === 'es') return `hace ${seconds} s`;
-		return `${seconds}s ago`;
+		return fillTemplate(liveStampTemplate, { seconds: String(seconds) });
 	}
 
 	function applyLiveSnapshot(snapshot: LiveHeroSnapshot) {
@@ -386,6 +383,8 @@
 						{subtitleText}
 						{ctaWorkLabel}
 						{ctaContactLabel}
+						ctaWorkHref={heroContent.ctaWorkHref}
+						{bookingHref}
 						heroData={heroData}
 						{live}
 						{replayEnabled}

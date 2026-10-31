@@ -31,10 +31,10 @@ export interface NavPort {
 	/**
 	 * Read nav-link rows for a placement slot.
 	 * Returns rows sorted by `priority` ascending (lower = more prominent).
-	 * placement: 'header' | 'footer' | 'mobile' | 'menu'
+	 * placement: 'header' | 'footer' | 'menu'
 	 */
 	byPlacement(
-		placement: 'header' | 'footer' | 'mobile' | 'menu',
+		placement: 'header' | 'footer' | 'menu',
 	): Promise<readonly NavLink[]>;
 }
 

@@ -1,0 +1,38 @@
+{
+  "collection": "site_labels_translations",
+  "field": "grp_blog_article_nav",
+  "type": "alias",
+  "meta": {
+    "collection": "site_labels_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_blog_article_nav",
+    "group": "grp_blog",
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Link above each article back to its listing, and the boxes beside each article. Link addresses are in Blog article side rail links, below the text.",
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 110,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Article page: back links and side rail"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,14 +8,11 @@ import { resolveLocale } from '#lib/utils/locale.ts';
 
 const config = aboutPageContent.weather;
 
-it.each(PUBLISHED_LOCALES)('%s shows location and weather without the editorial question', (locale) => {
+it.each(PUBLISHED_LOCALES)('%s shows location and weather', (locale) => {
 	const { unmount } = render(AboutWeather, {
 		props: { config, weather: { temp: 12, condition: 'Clear', icon: '01d' }, stop: '06', label: 'LOCATION' },
 		context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 	});
-	for (const question of Object.values(config.hook)) {
-		if (question) expect(screen.queryByText(question)).not.toBeInTheDocument();
-	}
 	expect(screen.getByText(resolveLocale(config.city, locale))).toBeInTheDocument();
 	expect(screen.getByText('12°C')).toBeInTheDocument();
 	expect(screen.getByText('Clear')).toBeInTheDocument();

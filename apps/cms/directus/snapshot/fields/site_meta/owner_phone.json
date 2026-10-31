@@ -11,7 +11,7 @@
     "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "The site build does not read this yet, so it appears nowhere. International format, e.g. +15145550100.",
+    "note": "Public. Appears in the site's search-engine data, not on pages.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Phone (not used yet)"
+        "translation": "Phone (search-engine data)"
       }
     ],
     "validation": null,

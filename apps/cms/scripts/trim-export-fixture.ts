@@ -7,7 +7,7 @@ import { isDeepStrictEqual, parseArgs } from 'node:util';
 import { BlockEditorDocSchema } from '@repo/shared';
 import type { ExportData } from './export-data';
 import { readCache } from './lib/cache';
-import { buildEmitConfigs } from './lib/emitters/configs';
+import { buildEmitConfigs, withoutOwnerPhone as siteMetaWithoutPhone } from './lib/emitters/configs';
 
 export const FIXTURE_PATH = resolve(import.meta.dir, '../../../packages/shared/fixtures/export-data.json');
 const DEFAULT_SOURCE = resolve(import.meta.dir, '../../web/src/lib/content/.cms-cache.json');
@@ -89,9 +89,14 @@ function trimValue(value: unknown, field = '', labels = false, path: string[] = 
 	]));
 }
 
+/** The owner phone is published in search-engine data but never committed to the fixture. */
+function withoutOwnerPhone(data: ExportData): ExportData {
+	return data.siteMeta ? { ...data, siteMeta: siteMetaWithoutPhone(data.siteMeta) } : data;
+}
+
 export function trimExportData(data: ExportData): ExportData {
 	// Derived from the asset manifest during fixture export, exactly as for live data.
-	const { mediaAssets: _assets, mediaVariants: _variants, ...editorial } = data;
+	const { mediaAssets: _assets, mediaVariants: _variants, ...editorial } = withoutOwnerPhone(data);
 	const postLocales = Object.fromEntries((data.blogPosts ?? []).map(post => [post.slug, post.lang]));
 	return trimValue(editorial, '', false, [], 'en', postLocales) as ExportData;
 }
@@ -162,7 +167,7 @@ function validateDocs(value: unknown): void {
 
 /** Refuse to write a partial snapshot or one that changes identities or renderer coverage. */
 export function assertTrimmedExportData(source: ExportData, trimmed: ExportData): void {
-	const { mediaAssets, mediaVariants, ...editorial } = source;
+	const { mediaAssets, mediaVariants, ...editorial } = withoutOwnerPhone(source);
 	if ('mediaAssets' in trimmed || 'mediaVariants' in trimmed) {
 		throw new Error('Fixture must omit derived media maps');
 	}
@@ -177,7 +182,7 @@ export function assertTrimmedExportData(source: ExportData, trimmed: ExportData)
 	// Fixture mode supplies both derived maps before building configs. The source
 	// cache already has them; hermetic fixture validation can use empty maps.
 	const configs = buildEmitConfigs({ ...trimmed, mediaAssets: mediaAssets ?? {}, mediaVariants: mediaVariants ?? {} }, '/fixture');
-	if (configs.length !== 20) throw new Error(`Expected 20 emit configs, received ${configs.length}`);
+	if (configs.length !== 21) throw new Error(`Expected 21 emit configs, received ${configs.length}`);
 }
 
 if (import.meta.main) {

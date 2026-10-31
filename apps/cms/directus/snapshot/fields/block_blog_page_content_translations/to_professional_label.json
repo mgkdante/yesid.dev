@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "to_professional_label",
-    "group": "grp_interface",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Link in the /blog/personal filter sidebar back to /blog.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 5,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Personal sidebar · Back to blog link"
+        "translation": "Personal sidebar · Back to blog link (moved)"
       }
     ],
     "validation": null,

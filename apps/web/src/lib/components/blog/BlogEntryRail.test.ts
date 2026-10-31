@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
 import BlogEntryRail from './BlogEntryRail.svelte';
-import type { BlogPageContent } from '@repo/shared';
+import type { BlogEntryRail as BlogEntryRailContent } from '@repo/shared';
 
 const rail = {
 	workWithMe: {
@@ -20,7 +20,7 @@ const rail = {
 			{ label: { en: 'Contact' }, href: '/contact' },
 		],
 	},
-} satisfies BlogPageContent['entryRail'];
+} satisfies BlogEntryRailContent;
 
 describe('BlogEntryRail', () => {
 	it('renders CMS-backed Work With Me copy and CTA links', () => {

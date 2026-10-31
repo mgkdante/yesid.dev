@@ -102,6 +102,7 @@ const EXPECTED_SITE_META: SiteMeta = {
 			fr: 'Développeur de solutions numériques à la pige',
 			es: 'Desarrollador freelance de soluciones digitales',
 		},
+		phone: '+12025550100',
 		address: {
 			locality: 'Montreal',
 			region: 'QC',
@@ -122,13 +123,15 @@ const EXPECTED_SITE_META: SiteMeta = {
 };
 
 describe('site-meta fetcher', () => {
-	it('does not publish a phone value stored in the private CMS field', () => {
-		const result = toSiteMeta({
-			...SITE_META_FIXTURE,
-			owner_phone: '+12025550100',
-		});
+	it('publishes the CMS phone only as the owner phone used by the search-engine data', () => {
+		const result = toSiteMeta({ ...SITE_META_FIXTURE, owner_phone: ' +12025550100 ' });
 
-		expect(result.owner).not.toHaveProperty('phone');
+		expect(result.owner.phone).toBe('+12025550100');
+		expect(JSON.stringify(result).split('2025550100')).toHaveLength(2);
+	});
+
+	it.each([null, undefined, '', '   '])('omits the phone when the CMS field is %p', (owner_phone) => {
+		expect(toSiteMeta({ ...SITE_META_FIXTURE, owner_phone }).owner).not.toHaveProperty('phone');
 	});
 
 	it('transforms a Directus singleton row into the current SiteMeta shape', () => {

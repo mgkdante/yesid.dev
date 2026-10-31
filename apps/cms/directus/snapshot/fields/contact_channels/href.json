@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Full address, with mailto: for email. Phone, SMS and WhatsApp links are never shown.",
+    "note": "Full address, with mailto: for email. The calendar row is also the Home and Contact booking link. Phone, SMS and WhatsApp links are never shown.",
     "options": null,
     "readonly": false,
     "required": true,

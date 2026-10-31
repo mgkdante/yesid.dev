@@ -47,7 +47,6 @@
     wordCount = 0,
     headings = [],
     postIndex = 1,
-    blogPage,
     codeHighlights,
   }: {
     post: BlogPost;
@@ -57,7 +56,6 @@
     wordCount?: number;
     headings?: readonly TocHeading[];
     postIndex?: number;
-    blogPage?: import('@repo/shared').BlogPageContent;
     /** block.id → server-highlighted HTML ($lib/server/code-highlights). */
     codeHighlights?: Readonly<Record<string, string>>;
   } = $props();
@@ -89,16 +87,12 @@
   const backHref = $derived(
     localizeHref(post.category === 'personal' ? '/blog/personal' : '/blog', post.lang)
   );
-  const backLabel = $derived.by(() => {
-    const cms = blogPage
-      ? resolveLocale(post.category === 'personal' ? blogPage.backToPersonal : blogPage.backToDispatches, locale)
-      : '';
-    if (cms.trim()) return cms;
-    return resolveLocale(
+  const backLabel = $derived(
+    resolveLocale(
       post.category === 'personal' ? detailChrome.backNav.toPersonal : detailChrome.backNav.toDispatches,
       locale
-    );
-  });
+    )
+  );
   const watermark = $derived(
     resolveLocale(
       post.category === 'personal' ? siteLabels.ui.watermarkPersonal : siteLabels.ui.watermarkProfessional,
@@ -123,29 +117,26 @@
   const articleSections = $derived(sectionizeBlogBody(body, post.title));
   const galleryVideos = $derived(collectProjectVideos([body]));
   const videoGalleryTitle = $derived(youtubeLabels[locale].gallery);
-  const entryRail = $derived(blogPage?.entryRail);
+  const entryRail = detailChrome.entryRail;
 
-  const entryRailTocEntries = $derived.by((): TocEntry[] => {
-    if (!entryRail) return [];
-    return [
-      {
-        id: 'blog-work-with-me',
-        title: resolveLocale(entryRail.workWithMe.title, locale),
-        level: 2,
-        badge: { kind: 'icon', name: 'briefcase' },
-        rail: true,
-        children: [],
-      },
-      {
-        id: 'blog-pick-route',
-        title: resolveLocale(entryRail.routes.title, locale),
-        level: 2,
-        badge: { kind: 'icon', name: 'toc' },
-        rail: true,
-        children: [],
-      },
-    ];
-  });
+  const entryRailTocEntries: TocEntry[] = [
+    {
+      id: 'blog-work-with-me',
+      title: resolveLocale(entryRail.workWithMe.title, locale),
+      level: 2,
+      badge: { kind: 'icon', name: 'briefcase' },
+      rail: true,
+      children: [],
+    },
+    {
+      id: 'blog-pick-route',
+      title: resolveLocale(entryRail.routes.title, locale),
+      level: 2,
+      badge: { kind: 'icon', name: 'toc' },
+      rail: true,
+      children: [],
+    },
+  ];
 
   const tocEntries = $derived.by((): TocEntry[] => {
     const entries: TocEntry[] = [];
@@ -276,19 +267,15 @@
   {/snippet}
 
   {#snippet right()}
-    {#if entryRail}
-      <div class="entry-column reading-support">
-        <BlogEntryRail rail={entryRail} />
-      </div>
-    {/if}
+    <div class="entry-column reading-support">
+      <BlogEntryRail rail={entryRail} />
+    </div>
   {/snippet}
 
   {#snippet after()}
-    {#if entryRail}
-      <div class="entry-mobile reading-support lg:hidden px-[var(--space-page-x)] pb-8">
-        <BlogEntryRail rail={entryRail} mobile />
-      </div>
-    {/if}
+    <div class="entry-mobile reading-support lg:hidden px-[var(--space-page-x)] pb-8">
+      <BlogEntryRail rail={entryRail} mobile />
+    </div>
   {/snippet}
 
   <DetailFrame

@@ -15,7 +15,6 @@ function contactFixture(en: Record<string, unknown>, fr?: Record<string, unknown
 		translations: [{
 			languages_code: 'en',
 			page_title: 'Contact', station_label: '04', send_error_message: 'failed',
-			meta_title: 'Contact | yesid.', meta_description: 'desc',
 			info_location: 'MTL', info_response_time: '24h', info_languages: 'EN · FR',
 			info_section_label_location: 'LOCATION', info_section_label_connect: 'CONNECT',
 			info_section_label_languages: 'LANGUAGES',
@@ -24,7 +23,7 @@ function contactFixture(en: Record<string, unknown>, fr?: Record<string, unknown
 			form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
 			form_field_message_placeholder: 'What breaks?',
 			validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-			success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
+			success_command: '~ $ send', success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
 			success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
 			success_work_link_label: 'work', success_blog_link_label: 'blog',
 			...en,
@@ -40,10 +39,11 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 				{
 					languages_code: 'en',
 					headline_line1: 'SHIP FAST', headline_line2: "DON'T BREAK", headline_aria_suffix: 'production',
-					subheadline: 'sub', subtitle: 'tit', identity_line: 'freelance line', cta_work: 'See work', cta_contact: 'Contact',
+					subheadline: 'sub', subtitle: 'tit', cta_work: 'See work', cta_contact: 'Contact',
 					sql_prompt: 'select', sql_live_label: 'DEMO', sql_live_badge: 'LIVE', sql_col_route: 'route',
 					sql_col_avg_delay: 'avg_delay_s', sql_col_vehicles: 'vehicles', sql_meta_template: '{n} rows',
 					refresh_label: 'refresh', refresh_helper: 'press', refresh_helper_live: 'live press', scroll_down: 'scroll',
+					stamp_demo: 'demo', stamp_refreshed: 'fresh', stamp_live_template: '{seconds}s ago',
 				},
 				{ languages_code: 'fr', headline_line1: 'LIVREZ VITE', scroll_down: 'défiler' },
 			],
@@ -52,19 +52,19 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.headline.line1).toEqual({ en: 'SHIP FAST', fr: 'LIVREZ VITE' });
 		expect(out.sqlPanel.columns.avgDelayS).toEqual({ en: 'avg_delay_s' });
 		expect(out.heroAnim.scrollDown).toEqual({ en: 'scroll', fr: 'défiler' });
+		expect(out.sqlPanel.stamps.liveTemplate).toEqual({ en: '{seconds}s ago' });
+		expect(out.ctaWorkHref).toBe('/projects');
 		expect(() => HeroContentSchema.parse(out)).not.toThrow();
 	});
 
-	it('closer: flat rows/terminal + parent href/url recompose CloserContent', () => {
+	it('closer: flat rows/terminal + parent href recompose CloserContent', () => {
 		const row = {
-			id: 1, cta_href: '/contact', attribution_url: 'https://x',
+			id: 1, cta_href: '/contact', rows_contact_href: '/start', rows_about_href: ' ',
 			translations: [{
 				languages_code: 'en',
-				heading: 'TERMINUS', heading_dot: '.', subheading: 'end of line',
-				cta_label: 'Start a project', attribution_text: 'type by X',
+				cta_label: 'Start a project', closing_label: 'the end',
 				terminal_title: 't', terminal_city: 'MTL', terminal_encoding: 'utf8',
 				terminal_destinations_label: 'dest', terminal_prompt: '>',
-				rows_stack_label: 'stack', rows_stack_description: 'd', rows_stack_action: 'go',
 				rows_contact_label: 'contact', rows_contact_description: 'd', rows_contact_action: 'go',
 				rows_connect_label: 'connect', rows_connect_description: 'd', rows_connect_action: 'go',
 				rows_read_label: 'read', rows_read_description: 'd', rows_read_action: 'go',
@@ -73,8 +73,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		};
 		const out = toCloserContent(row);
 		expect(out.cta).toEqual({ label: { en: 'Start a project' }, href: '/contact' });
-		expect(out.rows.stack).toEqual({ label: { en: 'stack' }, description: { en: 'd' }, action: { en: 'go' } });
-		expect(out.rows.read).toEqual({ label: { en: 'read' }, description: { en: 'd' }, action: { en: 'go' } });
+		expect(out.rows.read).toEqual({ label: { en: 'read' }, description: { en: 'd' }, action: { en: 'go' }, href: '/blog' });
+		expect([out.rows.contact.href, out.rows.about.href]).toEqual(['/start', '/about']);
 		expect(() => CloserContentSchema.parse(out)).not.toThrow();
 	});
 
@@ -234,7 +234,6 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 			headshot: '/img/y.jpg', weather_enabled: true,
 			cta_command: 'whoami', cta_button_href: '/contact',
 			cta_lines: [{ text: 'hi', color: 'muted' }],
-			cta_socials: [{ label: 'GH', href: 'https://g', icon: 'gh' }],
 			languages: ['English'],
 			translations: [
 				{
@@ -242,8 +241,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					identity_name: 'Yesid', identity_title: 'Engineer', identity_value_prop: 'ships',
 					education: [{ school: 'School', program: 'Program', icon: 'champlain' }],
 					polaroids: [{ src: '/p.jpg', alt: 'me', caption: 'hi', rotate: -2 }],
-					weather_city: 'Montreal', weather_hook: 'rain',
-					cta_button_label: 'Talk', cta_availability: 'open',
+					weather_city: 'Montreal',
+					cta_button_label: 'Talk',
 					stop_identity: 's1', stop_metrics: 's2', stop_testimonials: 's3', stop_process: 's4',
 					stop_stack: 's5', stop_clients: 's6', stop_interests: 's7', stop_snapshots: 's8',
 					stop_location: 's9', stop_next: 's10',
@@ -251,7 +250,6 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					label_testimonials_carousel_aria: 'l4', label_testimonials_tab_nav_aria: 'l5',
 					label_testimonials_prev_aria: 'l5a', label_testimonials_next_aria: 'l5b',
 					label_testimonial_slide_aria: 'l6', label_show_testimonial_aria: 'l7',
-					meta_title: 'About', meta_description: 'd',
 					metrics: [{ value: '10+', label: 'projects' }],
 					methodology: [], testimonials: [], interests: [],
 				},
@@ -266,7 +264,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		const out = toAboutContent(row);
 		expect(out.identity.headshot).toBe('/img/y.jpg');
 		expect(out.identity.polaroids[0].alt).toEqual({ en: 'me', fr: 'moi' });
-		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, hook: { en: 'rain' }, enabled: true });
+		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, enabled: true });
 		expect(out.cta.command).toBe('whoami');
 		expect(out.stopLabels.next).toEqual({ en: 's10' });
 		expect(out.languages).toEqual([
@@ -341,13 +339,9 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(() => ManifestoContentSchema.parse(m)).not.toThrow();
 
 		const ai = toAboutIntroContent({
-			id: 1, stack_items: ['Bun'],
-			translations: [{
-				languages_code: 'en', name: 'Yesid', title: 't', bio: 'b', more_link: 'm',
-				stack_label: 's', location_label: 'l', interests_label: 'i', interests: 'x',
-				location_city: 'Montreal', location_region: 'QC',
-			}],
+			id: 1,
+			translations: [{ languages_code: 'en', name: 'Yesid', title: 't', bio: 'b', more_link: 'm' }],
 		});
-		expect(ai.location).toEqual({ city: { en: 'Montreal' }, region: { en: 'QC' } });
+		expect(ai).toEqual({ name: { en: 'Yesid' }, title: { en: 't' }, bio: { en: 'b' }, moreLink: { en: 'm' } });
 	});
 });

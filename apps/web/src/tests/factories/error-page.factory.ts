@@ -18,7 +18,6 @@ export const errorPageFactory = new Factory<ErrorPageContent>(() => ({
 	label: localizedString(),
 	heading: localizedString(),
 	description: localizedString(),
-	terminalLine: '$ status: 404 not_found',
 	suggestions: [
 		{ label: localizedString(), href: '/' },
 		{ label: localizedString(), href: '/work' },

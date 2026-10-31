@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "Four rows, in this order: Contact, About, Blog, GitHub. Links are fixed; the GitHub address is in Site identity and SEO defaults.",
+    "note": "Four rows: Contact, About, Blog, GitHub. Row links are in Shared settings on the main form; GitHub uses Site identity and SEO defaults.",
     "options": {
       "start": "open",
       "headerColor": "#E07800"

@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "grp_rail",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "group-detail",
-    "note": "Where the side rail buttons beside each article go. Same in every language. The button words are in Page copy.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": {
       "start": "open",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 10,
+    "sort": 1,
     "special": [
       "alias",
       "no-data",
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Article side rail · Link addresses (all languages)"
+        "translation": "Old side rail link addresses (moved)"
       }
     ],
     "validation": null,

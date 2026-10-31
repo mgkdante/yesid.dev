@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { isDirectContactHref, isProjectProofHref } from './high-intent-links';
+import { bookingHref, isDirectContactHref, isProjectProofHref } from './high-intent-links';
+
+describe('bookingHref', () => {
+	it('uses the Calendar contact channel link', () => {
+		expect(bookingHref([
+			{ icon: 'email', href: 'mailto:contact@yesid.dev' },
+			{ icon: 'calendar', href: 'https://cal.com/fixture' },
+		])).toBe('https://cal.com/fixture');
+	});
+
+	it.each([[[]], [[{ icon: 'calendar', href: '  ' }]]])('falls back to the default booking link for %j', (channels) => {
+		expect(bookingHref(channels)).toBe('https://cal.com/yesid-dev');
+	});
+});
 
 describe('isDirectContactHref', () => {
 	it.each([

@@ -1,0 +1,49 @@
+{
+  "collection": "block_hero_translations",
+  "field": "stamp_live_template",
+  "type": "string",
+  "meta": {
+    "collection": "block_hero_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "stamp_live_template",
+    "group": "grp_interface",
+    "hidden": false,
+    "interface": "input",
+    "note": "Fills {updatedAgo} with live data. {seconds} is replaced by a number, for example {seconds}s ago.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 7,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "SQL panel · Live data age"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "stamp_live_template",
+    "table": "block_hero_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

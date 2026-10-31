@@ -1,8 +1,8 @@
 // serviceFactory — test data for Service.
 //
 // Mirrors ServiceSchema in $lib/schemas/service. Only required fields are
-// populated by default; optional detail-page fields (subtitle, longDescription,
-// sections, etc.) are omitted — pass overrides if a test needs them.
+// populated by default; optional detail-page fields (subtitle, sections,
+// etc.) are omitted; pass overrides if a test needs them.
 
 import { Factory } from 'interface-forge';
 import { faker } from '@faker-js/faker';

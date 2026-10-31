@@ -19,6 +19,7 @@
 			services={data.services}
 			featuredProjects={data.featuredProjects}
 			siteMeta={data.siteMeta}
+			bookingHref={data.bookingHref}
 			serviceSvgContents={data.serviceSvgContents}
 		/>
 	</div>

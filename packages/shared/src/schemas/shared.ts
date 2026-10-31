@@ -13,13 +13,5 @@ export const LocalizedStringSchema = z.object({
 
 export const LocaleSchema = z.enum(['en', 'fr', 'es']);
 
-// Page meta — HTML <title> + <meta name="description"> copy.
-// Reused across about-page and contact-page schemas.
-export const PageMetaSchema = z.object({
-	title: LocalizedStringSchema,
-	description: LocalizedStringSchema,
-});
-
 export type Locale = z.infer<typeof LocaleSchema>;
 export type LocalizedString = z.infer<typeof LocalizedStringSchema>;
-export type PageMeta = z.infer<typeof PageMetaSchema>;
