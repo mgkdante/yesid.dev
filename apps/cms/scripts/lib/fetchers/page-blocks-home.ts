@@ -42,7 +42,7 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 			['ariaSuffix', 'headline_aria_suffix'],
 		]),
 		...toLocalizedFields(tr, [
-			'subheadline', 'subtitle', ['identity', 'identity_line'],
+			'subheadline', 'subtitle',
 			['ctaWork', 'cta_work'], ['ctaContact', 'cta_contact'],
 		]),
 		sqlPanel: {
@@ -194,12 +194,8 @@ export function toProofReelContent(raw: BlockRow): ProofReelContent {
 		Record<string, unknown> & { languages_code: string }
 	>;
 	return {
-		...toLocalizedFields(tr, [
-			'heading', ['headingDot', 'heading_dot'], 'subheading', ['sectionLabel', 'section_label'],
-			['viewAllLabel', 'view_all_label'],
-		]),
+		...toLocalizedFields(tr, [['viewAllLabel', 'view_all_label']]),
 		viewAllHref: typeof raw.view_all_href === 'string' ? raw.view_all_href : '/work',
-		...toLocalizedFields(tr, [['toggleColorAria', 'toggle_color_aria']]),
 	};
 }
 
@@ -221,7 +217,6 @@ export function toServicesGridContent(raw: BlockRow): ServicesGridContent {
 		Record<string, unknown> & { languages_code: string }
 	>;
 	return toLocalizedFields(tr, [
-		'heading', ['headingDot', 'heading_dot'], 'subheading',
 		['viewIllustrationAria', 'view_illustration_aria'],
 		['viewAllLink', 'view_all_link'],
 	]);
@@ -246,19 +241,7 @@ export function toAboutIntroContent(raw: BlockRow): AboutIntroContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const stackItems = Array.isArray(raw.stack_items) ? (raw.stack_items as string[]) : [];
-	return {
-		...toLocalizedFields(tr, [
-			'name', 'title', 'bio', ['moreLink', 'more_link'],
-			['stackLabel', 'stack_label'],
-		]),
-		stackItems,
-		...toLocalizedFields(tr, [['locationLabel', 'location_label']]),
-		location: toLocalizedFields(tr, [
-			['city', 'location_city'], ['region', 'location_region'],
-		]),
-		...toLocalizedFields(tr, [['interestsLabel', 'interests_label'], 'interests']),
-	};
+	return toLocalizedFields(tr, ['name', 'title', 'bio', ['moreLink', 'more_link']]);
 }
 
 export async function fetchAboutIntroContent({
@@ -298,27 +281,21 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const rowGroup = (key: 'stack' | 'contact' | 'connect' | 'read' | 'about') => ({
+	const rowGroup = (key: 'contact' | 'connect' | 'read' | 'about') => ({
 		label: toLocalizedString(tr, `rows_${key}_label`),
 		description: toLocalizedString(tr, `rows_${key}_description`),
 		action: toLocalizedString(tr, `rows_${key}_action`),
 	});
 	return {
-		...toLocalizedFields(tr, ['heading', ['headingDot', 'heading_dot'], 'subheading']),
 		cta: {
 			...toLocalizedFields(tr, [['label', 'cta_label']]),
 			href: typeof raw.cta_href === 'string' ? raw.cta_href : '/contact',
 		},
 		rows: {
-			stack: rowGroup('stack'),
 			contact: rowGroup('contact'),
 			connect: rowGroup('connect'),
 			read: rowGroup('read'),
 			about: rowGroup('about'),
-		},
-		attribution: {
-			...toLocalizedFields(tr, [['text', 'attribution_text']]),
-			url: str(raw.attribution_url),
 		},
 		terminal: toLocalizedFields(tr, [
 			['title', 'terminal_title'], ['city', 'terminal_city'], ['encoding', 'terminal_encoding'],

@@ -178,7 +178,6 @@
 			"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
 			"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
 			"description": {"en":"The page you were looking for could not be found.","fr":"La page que tu cherchais est introuvable.","es":"No se encontró la página que buscabas."},
-			"terminalLine": "$ route --status 0 // generic fallback",
 			"suggestions": [
 				{
 					"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
@@ -2480,13 +2479,9 @@
 				"navCapabilities": {"en":"Capabilities","fr":"Capacités","es":"Capacidades"},
 				"carouselPrev": {"en":"Previous projects","fr":"Projets précédents","es":"Proyectos anteriores"},
 				"carouselNext": {"en":"Next projects","fr":"Projets suivants","es":"Próximos proyectos"},
-				"navTechStack": {"en":"Tech stack","fr":"Stack technique","es":"Stack técnico"},
-				"toc": {"en":"Table of contents","fr":"Table des matières","es":"Tabla de contenido"},
-				"closerGraffiti": {"en":"THE END graffiti","fr":"graffiti LA FIN","es":"grafiti FIN"},
 				"replayIntro": {"en":"Replay intro","fr":"Rejouer l'intro","es":"Repetir la intro"},
 				"projectImageOpen": {"en":"Open {caption}","fr":"Ouvrir {caption}","es":"Abrir {caption}"},
 				"projectImageClose": {"en":"Close image","fr":"Fermer l'image","es":"Cerrar imagen"},
-				"moreMetrics": {"en":"More metrics","fr":"Plus de métriques","es":"Más métricas"},
 				"architectureDiagram": {"en":"Architecture diagram","fr":"Diagramme d'architecture","es":"Diagrama de arquitectura"},
 				"technologyStackTemplate": {"en":"Technology stack: {stack}","fr":"Stack technique : {stack}","es":"Stack tecnológico: {stack}"},
 				"quietModeLabel": {"en":"Collapse all","fr":"Tout replier","es":"Contraer todo"},
@@ -2498,18 +2493,14 @@
 			},
 			"ui": {
 				"markerService": {"en":"{num} / SERVICE","fr":"{num} / SERVICE","es":"{num} / SERVICIO"},
-				"markerFeatured": {"en":"{num} / FEATURED","fr":"{num} / EN VEDETTE","es":"{num} / DESTACADO"},
 				"backToProjects": {"en":"← All Projects","fr":"← Tous les projets","es":"← Todos los proyectos"},
 				"errorStatusNote": {"en":"// requested path not in service","fr":"// chemin demandé hors service","es":"// ruta solicitada fuera de servicio"},
 				"blogEditionTemplate": {"en":"VOL. 01 // ISS. {issue}","fr":"VOL. 01 // NO {issue}","es":"VOL. 01 // NÚM. {issue}"},
-				"copyrightTemplate": {"en":"© {year} yesid","fr":"© {year} yesid","es":"© {year} yesid"},
-				"nounProject": {"en":"project","fr":"projet","es":"proyecto"},
 				"categoryPersonal": {"en":"Personal","fr":"Perso","es":"Personal"},
 				"categoryProfessional": {"en":"Professional","fr":"Professionnel","es":"Profesional"},
 				"watermarkPersonal": {"en":"Personal","fr":"Perso","es":"Personal"},
 				"watermarkProfessional": {"en":"Blog","fr":"Blogue","es":"Blog"},
 				"metroCaption": {"en":"STM métro + REM","fr":"métro STM + REM","es":"metro STM + REM"},
-				"stationsOneSystem": {"en":"{count} stations · one system","fr":"{count} stations · un seul système","es":"{count} estaciones · un solo sistema"},
 				"terminalTitle": {"en":"terminal","fr":"terminal","es":"terminal"},
 				"resultCount": {
 					"singular": {"en":"{count} result","fr":"{count} résultat","es":"{count} resultado"},
@@ -2533,10 +2524,6 @@
 				"contactSubjectTemplate": {"en":"New contact from {name} via yesid.dev","fr":"Nouveau message de {name} via yesid.dev","es":"Nuevo mensaje de {name} vía yesid.dev"}
 			},
 			"projectsChrome": {
-				"pageMeta": {
-					"title": {"en":"Projects | yesid.","fr":"Projets | yesid.","es":"Proyectos | yesid."},
-					"description": {"en":"Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.","fr":"Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique à la pige à Montréal.","es":"Proyectos, pipelines y sistemas construidos por yesid., infraestructura digital freelance en Montreal. Cada uno con su historia y sus números."}
-				},
 				"listing": {
 					"heading": {"en":"Projects","fr":"Projets","es":"Proyectos"},
 					"searchPlaceholder": {"en":"Search projects...","fr":"Rechercher des projets…","es":"Buscar proyectos..."},
@@ -2545,9 +2532,7 @@
 						"filtersLabel": {"en":"Filters","fr":"Filtres","es":"Filtros"},
 						"services": {"en":"Services","fr":"Services","es":"Servicios"},
 						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"},
-						"techStack": {"en":"Tech Stack","fr":"Stack technique","es":"Stack técnico"},
-						"allLabel": {"en":"All","fr":"Tous","es":"Todos"},
-						"showingPrefix": {"en":"Showing","fr":"Affichage","es":"Mostrando"}
+						"techStack": {"en":"Tech Stack","fr":"Stack technique","es":"Stack técnico"}
 					},
 					"card": {
 						"stackOverflowSuffix": {"en":"+{count} more","fr":"+{count} de plus","es":"+{count} más"}
@@ -2555,7 +2540,6 @@
 				},
 				"detail": {
 					"backToListingLabel": {"en":"← All Projects","fr":"← Tous les projets","es":"← Todos los proyectos"},
-					"tocSectionTitle": {"en":"On this page","fr":"Sur cette page","es":"En esta página"},
 					"readmeSectionTitle": {"en":"README","fr":"README","es":"README"},
 					"glance": {
 						"overview": {"en":"Overview","fr":"Aperçu","es":"Resumen"},
@@ -2563,16 +2547,10 @@
 						"stack": {"en":"Stack","fr":"Stack","es":"Stack"},
 						"services": {"en":"Services","fr":"Services","es":"Servicios"},
 						"links": {"en":"Links","fr":"Liens","es":"Enlaces"},
-						"projectInfo": {"en":"Project Info","fr":"Infos du projet","es":"Info del proyecto"},
 						"liveSiteLabel": {"en":"Live Site","fr":"Site en ligne","es":"Sitio en vivo"},
-						"liveSiteLabelMobile": {"en":"↗ Live Site","fr":"↗ Site en ligne","es":"↗ Sitio en vivo"},
 						"githubLabel": {"en":"GitHub","fr":"GitHub","es":"GitHub"},
 						"docsLabel": {"en":"Documentation","fr":"Documentation","es":"Documentación"},
 						"repoPrivateLabel": {"en":"Private repo (for now)","fr":"Dépôt privé (pour le moment)","es":"Repo privado (por ahora)"}
-					},
-					"tocPill": {
-						"openAria": {"en":"Table of contents","fr":"Table des matières","es":"Tabla de contenido"},
-						"closeAria": {"en":"Close table of contents","fr":"Fermer la table des matières","es":"Cerrar tabla de contenido"}
 					}
 				}
 			},
@@ -2580,22 +2558,15 @@
 				"listing": {
 					"mobileHeading": {"en":"Blog","fr":"Blogue","es":"Blog"},
 					"searchPlaceholder": {"en":"Search posts...","fr":"Chercher des articles...","es":"Buscar artículos..."},
-					"resultNoun": {"en":"result","fr":"résultat","es":"resultado"},
 					"noPostsMessage": {"en":"No posts found. Try adjusting your filters.","fr":"Aucun article trouvé. Essaie d'ajuster tes filtres.","es":"No se encontraron artículos. Intenta ajustar tus filtros."},
 					"noPostsEmptyMessage": {"en":"Nothing here yet. New posts are in transit.","fr":"Rien ici pour le moment. Les prochains articles sont en transit.","es":"Nada por aquí todavía. Los nuevos artículos están en tránsito."},
 					"filters": {
 						"filtersLabel": {"en":"Filters","fr":"Filtres","es":"Filtros"},
-						"allLabel": {"en":"All","fr":"Tous","es":"Todos"},
 						"language": {"en":"Language","fr":"Langue","es":"Idioma"},
 						"dateRange": {"en":"Date Range","fr":"Période","es":"Rango de fechas"},
 						"from": {"en":"From","fr":"De","es":"Desde"},
 						"to": {"en":"To","fr":"À","es":"Hasta"},
-						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"},
-						"showingPrefix": {"en":"Showing","fr":"Affichage","es":"Mostrando"}
-					},
-					"routeMap": {
-						"title": {"en":"Route Map","fr":"Carte du trajet","es":"Mapa de ruta"},
-						"terminus": {"en":"Terminus","fr":"Terminus","es":"Terminal"}
+						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"}
 					}
 				},
 				"detail": {
@@ -2611,21 +2582,13 @@
 						"toDispatches": {"en":"← back to Blog","fr":"← retour au blogue","es":"← volver al blog"}
 					},
 					"header": {
-						"postTagsAria": {"en":"Post tags","fr":"Étiquettes de l'article","es":"Etiquetas del artículo"},
 						"readingTimeLabel": {"en":"{minutes} min read","fr":"{minutes} min de lecture","es":"{minutes} min de lectura"}
 					},
 					"page": {
-						"readingMode": {"en":"Reading mode","fr":"Mode lecture","es":"Modo lectura"},
-						"tocSectionTitle": {"en":"On this page","fr":"Sur cette page","es":"En esta página"},
-						"metaCategory": {"en":"Category","fr":"Catégorie","es":"Categoría"},
 						"metaWords": {"en":"Words","fr":"Mots","es":"Palabras"},
 						"metaReadTime": {"en":"Read time","fr":"Temps de lecture","es":"Tiempo de lectura"},
 						"metaLanguage": {"en":"Language","fr":"Langue","es":"Idioma"},
 						"metaTags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"}
-					},
-					"tocPill": {
-						"openAria": {"en":"Table of contents","fr":"Table des matières","es":"Tabla de contenido"},
-						"closeAria": {"en":"Close table of contents","fr":"Fermer la table des matières","es":"Cerrar tabla de contenido"}
 					}
 				}
 			},
@@ -2639,17 +2602,7 @@
 						"data-pipeline": {"en":"Pipelines","fr":"Pipelines","es":"Pipelines"},
 						"analytics-reporting": {"en":"Dashboards","fr":"Tableaux de bord","es":"Tableros"},
 						"web-development": {"en":"Websites","fr":"Sites web","es":"Sitios web"}
-					},
-					"projectsStrip": {
-						"builtWithService": {"en":"Built with {serviceTitle}","fr":"Bâti avec {serviceTitle}","es":"Construido con {serviceTitle}"},
-						"builtWithFallback": {"en":"Built with this","fr":"Bâti avec ça","es":"Construido con esto"},
-						"projectSingular": {"en":"PROJECT","fr":"PROJET","es":"PROYECTO"},
-						"projectPlural": {"en":"PROJECTS","fr":"PROJETS","es":"PROYECTOS"}
 					}
-				},
-				"pageMeta": {
-					"title": {"en":"Services · yesid.","fr":"Services · yesid.","es":"Servicios · yesid."},
-					"description": {"en":"Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.","fr":"Quatre stations : Bases de données & SQL, Pipelines & Automatisation, Tableaux de bord & Analytique, Sites web & Commerce en ligne. Bâti à Montréal, livré avec des chiffres.","es":"Cuatro estaciones: Bases de datos y SQL, Pipelines y Automatización, Tableros y Analítica, Sitios web y E-commerce. Hecho en Montreal, entregado con números."}
 				},
 				"detail": {
 					"backToServicesLabel": {"en":"← All Services","fr":"← Tous les services","es":"← Todos los servicios"},
@@ -2658,8 +2611,7 @@
 					"relatedProjectsHeading": {"en":"Related Projects","fr":"Projets liés","es":"Proyectos relacionados"},
 					"relatedProjectsNavAria": {"en":"Related projects","fr":"Projets liés","es":"Proyectos relacionados"},
 					"serviceNavAria": {"en":"Service navigation","fr":"Navigation des services","es":"Navegación de servicios"},
-					"stackHeading": {"en":"Stack","fr":"Stack","es":"Stack"},
-					"seeStackLabel": {"en":"See the full stack →","fr":"Voir la stack complète →","es":"Ver el stack completo →"}
+					"stackHeading": {"en":"Stack","fr":"Stack","es":"Stack"}
 				}
 			},
 			"navChrome": {
@@ -2676,9 +2628,7 @@
 					"menuOverlayFooterLabel": {"en":"NAVIGATION · ALL ROUTES","fr":"NAVIGATION · TOUTES LES ROUTES","es":"NAVEGACIÓN · TODAS LAS RUTAS"},
 					"skipToContentLabel": {"en":"Skip to content","fr":"Aller au contenu","es":"Saltar al contenido"},
 					"localeSwitcherAria": {"en":"Language","fr":"Langue","es":"Idioma"},
-					"searchPlaceholder": {"en":"Search...","fr":"Rechercher...","es":"Buscar..."},
 					"clearFiltersLabel": {"en":"clear filters","fr":"effacer les filtres","es":"limpiar filtros"},
-					"tocToggleSectionAria": {"en":"Toggle section","fr":"Basculer la section","es":"Alternar sección"},
 					"tocHeading": {"en":"On this page","fr":"Sur cette page","es":"En esta página"},
 					"tocMobileButton": {"en":"Table of Contents","fr":"Table des matières","es":"Tabla de contenido"},
 					"tocCloseAria": {"en":"Close table of contents","fr":"Fermer la table des matières","es":"Cerrar tabla de contenido"},
@@ -2686,11 +2636,6 @@
 				}
 			},
 			"footerChrome": {
-				"relatedProjectsStrip": {
-					"builtWithLabel": {"en":"Built with this","fr":"Bâti avec ça","es":"Construido con esto"},
-					"projectCountSingular": {"en":"project","fr":"projet","es":"proyecto"},
-					"projectCountPlural": {"en":"projects","fr":"projets","es":"proyectos"}
-				},
 				"footer": {
 					"tagline": {"en":"// digital infrastructure","fr":"// infrastructure numérique","es":"// infraestructura digital"},
 					"location": {"en":"Montreal, QC · Remote","fr":"Montréal, QC · À distance","es":"Montreal, QC · Remoto"},
@@ -8698,10 +8643,6 @@
 			"pageTitle": {"en":"Contact","fr":"Contact","es":"Contacto"},
 			"stationLabel": {"en":"NEXT STOP: YOU","fr":"PROCHAIN ARRÊT : TOI","es":"PRÓXIMA PARADA: TÚ"},
 			"sendErrorMessage": {"en":"Failed to send message. Please try again.","fr":"L'envoi du message a échoué. Réessaie, s'il te plaît.","es":"No se pudo enviar el mensaje. Inténtalo de nuevo, por favor."},
-			"meta": {
-				"title": {"en":"Contact · yesid.","fr":"Contact · yesid.","es":"Contacto · yesid."},
-				"description": {"en":"Get in touch for freelance digital infrastructure, databases, pipelines, dashboards, and websites. Montreal, ~24h response time.","fr":"Écris-moi pour de l'infrastructure numérique à la pige : bases de données, pipelines, tableaux de bord et sites web. Montréal, réponse en ~24h.","es":"Escríbeme para infraestructura digital freelance: bases de datos, pipelines, tableros y sitios web. Montreal, respuesta en ~24h."}
-			},
 			"infoTerminal": {
 				"title": "yesid@mtl ~ /info",
 				"command": "$ yesid --info",
@@ -8790,7 +8731,6 @@
 			},
 			"subheadline": {"en":"I make data tell the truth.","fr":"Je fais parler les données, pour vrai.","es":"Hago que los datos digan la verdad."},
 			"subtitle": {"en":"Building reliable infrastructure for teams that can't afford downtime.","fr":"Je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.","es":"Construyo infraestructura confiable para equipos que no pueden darse el lujo de una caída."},
-			"identity": {"en":"freelance digital infrastructure - Montreal","fr":"infrastructure numérique à la pige - Montréal","es":"infraestructura digital freelance - Montreal"},
 			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
 			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
 			"sqlPanel": {
@@ -11923,18 +11863,10 @@
 			]
 		},
 		"proofReel": {
-			"heading": {"en":"PROOF","fr":"PREUVES","es":"PRUEBAS"},
-			"headingDot": {"en":".","fr":".","es":"."},
-			"subheading": {"en":"SELECTED WORK","fr":"TRAVAUX CHOISIS","es":"TRABAJOS ESCOGIDOS"},
-			"sectionLabel": {"en":"// PROOF","fr":"// PREUVES","es":"// PRUEBAS"},
 			"viewAllLabel": {"en":"View all projects →","fr":"Voir tous les projets →","es":"Ver todos los proyectos →"},
-			"viewAllHref": "/projects",
-			"toggleColorAria": {"en":"Toggle color for {title}","fr":"Activer la couleur pour {title}","es":"Alternar el color de {title}"}
+			"viewAllHref": "/projects"
 		},
 		"servicesGrid": {
-			"heading": {"en":"SERVICES","fr":"SERVICES","es":"SERVICIOS"},
-			"headingDot": {"en":".","fr":".","es":"."},
-			"subheading": {"en":"WHAT I BUILD","fr":"CE QUE JE BÂTIS","es":"LO QUE CONSTRUYO"},
 			"viewIllustrationAria": {"en":"View {title} illustration","fr":"Voir l'illustration de {title}","es":"Ver la ilustración de {title}"},
 			"viewAllLink": {"en":"View all services →","fr":"Voir tous les services →","es":"Ver todos los servicios →"}
 		},
@@ -11942,21 +11874,7 @@
 			"name": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
 			"title": {"en":"Freelance Digital Solutions Developer","fr":"Développeur de solutions numériques à la pige","es":"Desarrollador freelance de soluciones digitales"},
 			"bio": {"en":"I take data, make it tell stories, and build the systems it moves through.","fr":"Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.","es":"Tomo los datos, hago que cuenten historias y construyo los sistemas por donde se mueven."},
-			"moreLink": {"en":"→ More about me","fr":"→ En savoir plus sur moi","es":"→ Más sobre mí"},
-			"stackLabel": {"en":"STACK","fr":"STACK","es":"STACK"},
-			"stackItems": [
-				"PostgreSQL",
-				"dbt + Airflow",
-				"Power BI",
-				"SvelteKit"
-			],
-			"locationLabel": {"en":"LOCATION","fr":"EMPLACEMENT","es":"UBICACIÓN"},
-			"location": {
-				"city": {"en":"Montreal","fr":"Montréal","es":"Montreal"},
-				"region": {"en":"QC, Canada","fr":"QC, Canada","es":"QC, Canadá"}
-			},
-			"interestsLabel": {"en":"INTERESTS","fr":"INTÉRÊTS","es":"INTERESES"},
-			"interests": {"en":"Manga · Transit · Space · Montreal food scene","fr":"Manga · Transport collectif · Espace · Scène bouffe de Montréal","es":"Manga · Transporte público · Espacio · Comida de Montreal"}
+			"moreLink": {"en":"→ More about me","fr":"→ En savoir plus sur moi","es":"→ Más sobre mí"}
 		},
 		"cta": {
 			"heading": {"en":"Let's build something\nthat moves","fr":"Bâtissons quelque chose\nqui avance","es":"Construyamos algo\nque se mueva"},
@@ -11965,19 +11883,11 @@
 			"ctaGithub": {"en":"View on GitHub","fr":"Voir sur GitHub","es":"Ver en GitHub"}
 		},
 		"closer": {
-			"heading": {"en":"TERMINUS","fr":"TERMINUS","es":"TERMINAL"},
-			"headingDot": {"en":".","fr":".","es":"."},
-			"subheading": {"en":"END OF LINE","fr":"FIN DE LA LIGNE","es":"FIN DE LA LÍNEA"},
 			"cta": {
 				"label": {"en":"Initialize connection","fr":"Initialiser la connexion","es":"Inicializar conexión"},
 				"href": "/contact"
 			},
 			"rows": {
-				"stack": {
-					"label": {"en":"STACK","fr":"STACK","es":"STACK"},
-					"description": {"en":"Tools and architecture","fr":"Outils et architecture","es":"Herramientas y arquitectura"},
-					"action": {"en":"cd","fr":"cd","es":"cd"}
-				},
 				"contact": {
 					"label": {"en":"CONTACT","fr":"CONTACT","es":"CONTACTO"},
 					"description": {"en":"Start a project together","fr":"Démarrer un projet ensemble","es":"Empezar un proyecto juntos"},
@@ -11999,10 +11909,6 @@
 					"action": {"en":"cd","fr":"cd","es":"cd"}
 				}
 			},
-			"attribution": {
-				"text": {"en":"Lacquer typeface by Niki Polyocan and Eli Block","fr":"Police Lacquer par Niki Polyocan et Eli Block","es":"Tipografía Lacquer de Niki Polyocan y Eli Block"},
-				"url": "https://fonts.google.com/specimen/Lacquer"
-			},
 			"terminal": {
 				"title": {"en":"yesid@terminus:~/destinations","fr":"yesid@terminus:~/destinations","es":"yesid@terminus:~/destinations"},
 				"city": {"en":"Montreal, QC","fr":"Montréal, QC","es":"Montreal, QC"},
@@ -12016,7 +11922,6 @@
 				"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
 				"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
 				"description": {"en":"The page you were looking for could not be found.","fr":"La page que tu cherchais est introuvable.","es":"No se encontró la página que buscabas."},
-				"terminalLine": "$ route --status 0 // generic fallback",
 				"suggestions": [
 					{
 						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
@@ -12032,7 +11937,6 @@
 				"label": {"en":"ROUTE NOT FOUND","fr":"ROUTE INTROUVABLE","es":"RUTA NO ENCONTRADA"},
 				"heading": {"en":"This station is under construction","fr":"Cette station est en construction","es":"Esta estación está en construcción"},
 				"description": {"en":"The route you requested doesn't exist or has been rerouted. Here are some active lines:","fr":"La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :","es":"La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:"},
-				"terminalLine": "$ route --status 404 // requested path not in service",
 				"suggestions": [
 					{
 						"label": {"en":"Services","fr":"Services","es":"Servicios"},
@@ -12052,7 +11956,6 @@
 				"label": {"en":"SYSTEM ERROR","fr":"ERREUR SYSTÈME","es":"ERROR DE SISTEMA"},
 				"heading": {"en":"Something went wrong","fr":"Quelque chose a mal tourné","es":"Algo salió mal"},
 				"description": {"en":"The server encountered an unexpected error. Please try again later.","fr":"Le serveur a rencontré une erreur inattendue. Réessaie plus tard.","es":"El servidor encontró un error inesperado. Intenta de nuevo más tarde."},
-				"terminalLine": "$ route --status 500 // internal server error",
 				"suggestions": [
 					{
 						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
@@ -12233,7 +12136,6 @@
 			],
 			"weather": {
 				"city": {"en":"Montreal","fr":"Montréal","es":"Montreal"},
-				"hook": {"en":"Guess where I am?","fr":"Devine où je suis?","es":"¿Adivina dónde estoy?"},
 				"enabled": true
 			},
 			"cta": {
@@ -12261,24 +12163,7 @@
 					}
 				],
 				"buttonLabel": {"en":"Send message →","fr":"Envoyer un message →","es":"Enviar mensaje →"},
-				"buttonHref": "/contact",
-				"socials": [
-					{
-						"label": "Email",
-						"href": "mailto:contact@yesid.dev",
-						"icon": "email"
-					},
-					{
-						"label": "GitHub",
-						"href": "https://github.com/mgkdante",
-						"icon": "github"
-					},
-					{
-						"label": "LinkedIn",
-						"href": "https://www.linkedin.com/in/otaloray/",
-						"icon": "linkedin"
-					}
-				]
+				"buttonHref": "/contact"
 			},
 			"stopLabels": {
 				"identity": {"en":"IDENTITY","fr":"IDENTITÉ","es":"IDENTIDAD"},
@@ -12301,10 +12186,6 @@
 				"testimonialsNextAria": {"en":"Next quote","fr":"Citation suivante","es":"Cita siguiente"},
 				"testimonialSlideAria": {"en":"Testimonial {index} of {total}","fr":"Témoignage {index} sur {total}","es":"Testimonio {index} de {total}"},
 				"showTestimonialAria": {"en":"Show testimonial {index}","fr":"Afficher le témoignage {index}","es":"Mostrar testimonio {index}"}
-			},
-			"meta": {
-				"title": {"en":"About · yesid.","fr":"À propos · yesid.","es":"Sobre mí · yesid."},
-				"description": {"en":"Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.","fr":"Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.","es":"Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables."}
 			}
 		}
 	}

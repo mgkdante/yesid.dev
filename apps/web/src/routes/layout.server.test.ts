@@ -96,7 +96,6 @@ const fakeErrorPage: ErrorPageContent = {
 	label: { en: 'NOT FOUND' },
 	heading: { en: 'Page not found' },
 	description: { en: 'Try another route' },
-	terminalLine: '$ route --status 404',
 	suggestions: [],
 };
 const fakeSeo: PageSeo = {

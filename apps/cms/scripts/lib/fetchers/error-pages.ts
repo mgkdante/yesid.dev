@@ -7,7 +7,7 @@
  */
 
 import { readItems } from '@directus/sdk';
-import { str, toLocalizedFields, toLocalizedString } from '../locale';
+import { str, toLocalizedFields } from '../locale';
 import { ErrorPageContentSchema } from '@repo/shared/schemas';
 import type { ErrorPageContent } from '@repo/shared';
 import type { LocalizedString } from '@repo/shared';
@@ -18,7 +18,6 @@ export interface DirectusErrorPageTranslation {
 	label?: string | null;
 	heading?: string | null;
 	description?: string | null;
-	terminal_line?: string | null;
 	suggestions?: Array<{ label: string; href: string }> | null;
 }
 
@@ -32,12 +31,6 @@ export interface DirectusErrorPageRow {
 
 /** Pure transform — DirectusErrorPageRow → ErrorPageContent. Tested standalone. */
 export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
-
-	// terminalLine is en-only per ErrorPageContent interface — extract the .en string.
-	const terminalLineLS = toLocalizedString(tr, 'terminal_line');
-	const terminalLine = terminalLineLS.en;
-
 	// suggestions: per-locale JSON arrays. label is LocalizedString; href is plain
 	// (taken from the en row, same across locales). Merge locale rows by index.
 	const rawTr = (raw.translations ?? []) as ReadonlyArray<DirectusErrorPageTranslation>;
@@ -70,7 +63,6 @@ export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent 
 
 	return {
 		...toLocalizedFields(raw.translations ?? [], ['label', 'heading', 'description']),
-		terminalLine,
 		suggestions,
 	};
 }

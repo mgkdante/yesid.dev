@@ -10,14 +10,10 @@ export const SiteLabelsSchema = z.object({
 		navCapabilities: LocalizedStringSchema,
 		carouselPrev: LocalizedStringSchema,
 		carouselNext: LocalizedStringSchema,
-		navTechStack: LocalizedStringSchema,
-		toc: LocalizedStringSchema,
-		closerGraffiti: LocalizedStringSchema,
 		/** "Replay intro" — hero dot replay button aria-label (go2/w5). */
 		replayIntro: LocalizedStringSchema,
 		projectImageOpen: LocalizedStringSchema,
 		projectImageClose: LocalizedStringSchema,
-		moreMetrics: LocalizedStringSchema,
 		architectureDiagram: LocalizedStringSchema,
 		technologyStackTemplate: LocalizedStringSchema,
 		/** Collapse/expand-all reading control (detail headers). Verb labels flip
@@ -33,13 +29,10 @@ export const SiteLabelsSchema = z.object({
 	}),
 	ui: z.object({
 		markerService: LocalizedStringSchema,
-		markerFeatured: LocalizedStringSchema,
 		/** "← All Projects" back-to-listing link on /projects/[slug] (go2/w4). */
 		backToProjects: LocalizedStringSchema,
 		errorStatusNote: LocalizedStringSchema,
 		blogEditionTemplate: LocalizedStringSchema,
-		copyrightTemplate: LocalizedStringSchema,
-		nounProject: LocalizedStringSchema,
 		categoryPersonal: LocalizedStringSchema,
 		categoryProfessional: LocalizedStringSchema,
 		watermarkPersonal: LocalizedStringSchema,
@@ -47,8 +40,6 @@ export const SiteLabelsSchema = z.object({
 		/** Hero metro-art caption — ONE line naming the art: "STM métro + REM"
 		 *  (go2/w5 taste-2; replaces the two-row in-frame legend). */
 		metroCaption: LocalizedStringSchema,
-		/** Featured-projects caption for 3+ station projects ({count} placeholder). */
-		stationsOneSystem: LocalizedStringSchema,
 		terminalTitle: LocalizedStringSchema,
 		/** Listing result-count, per-locale singular/plural ({count} placeholder). */
 		resultCount: z.object({
@@ -77,11 +68,6 @@ export const SiteLabelsSchema = z.object({
 	// Recompose flat CMS columns into stable chrome groups consumed from
 	// siteLabels.*. Leaves stay LocalizedString.
 	projectsChrome: z.object({
-		// Former projectsPageMeta shape.
-		pageMeta: z.object({
-			title: LocalizedStringSchema,
-			description: LocalizedStringSchema,
-		}),
 		// Former projectsListingContent shape.
 		listing: z.object({
 			heading: LocalizedStringSchema,
@@ -92,8 +78,6 @@ export const SiteLabelsSchema = z.object({
 				services: LocalizedStringSchema,
 				tags: LocalizedStringSchema,
 				techStack: LocalizedStringSchema,
-				allLabel: LocalizedStringSchema,
-				showingPrefix: LocalizedStringSchema,
 			}),
 			card: z.object({
 				stackOverflowSuffix: LocalizedStringSchema,
@@ -102,7 +86,6 @@ export const SiteLabelsSchema = z.object({
 		// Former projectsDetailContent shape.
 		detail: z.object({
 			backToListingLabel: LocalizedStringSchema,
-			tocSectionTitle: LocalizedStringSchema,
 			readmeSectionTitle: LocalizedStringSchema,
 			glance: z.object({
 				overview: LocalizedStringSchema,
@@ -110,16 +93,10 @@ export const SiteLabelsSchema = z.object({
 				stack: LocalizedStringSchema,
 				services: LocalizedStringSchema,
 				links: LocalizedStringSchema,
-				projectInfo: LocalizedStringSchema,
 				liveSiteLabel: LocalizedStringSchema,
-				liveSiteLabelMobile: LocalizedStringSchema,
 				githubLabel: LocalizedStringSchema,
 				docsLabel: LocalizedStringSchema,
 				repoPrivateLabel: LocalizedStringSchema,
-			}),
-			tocPill: z.object({
-				openAria: LocalizedStringSchema,
-				closeAria: LocalizedStringSchema,
 			}),
 		}),
 	}),
@@ -128,24 +105,17 @@ export const SiteLabelsSchema = z.object({
 		listing: z.object({
 			mobileHeading: LocalizedStringSchema,
 			searchPlaceholder: LocalizedStringSchema,
-			resultNoun: LocalizedStringSchema,
 			noPostsMessage: LocalizedStringSchema,
 			/** Unfiltered empty state: the section has no posts at all and no
 			 *  filters are active. The filtered variant stays in noPostsMessage. */
 			noPostsEmptyMessage: LocalizedStringSchema,
 			filters: z.object({
 				filtersLabel: LocalizedStringSchema,
-				allLabel: LocalizedStringSchema,
 				language: LocalizedStringSchema,
 				dateRange: LocalizedStringSchema,
 				from: LocalizedStringSchema,
 				to: LocalizedStringSchema,
 				tags: LocalizedStringSchema,
-				showingPrefix: LocalizedStringSchema,
-			}),
-			routeMap: z.object({
-				title: LocalizedStringSchema,
-				terminus: LocalizedStringSchema,
 			}),
 		}),
 		// Former blogDetailContent shape.
@@ -162,21 +132,13 @@ export const SiteLabelsSchema = z.object({
 				toDispatches: LocalizedStringSchema,
 			}),
 			header: z.object({
-				postTagsAria: LocalizedStringSchema,
 				readingTimeLabel: LocalizedStringSchema,
 			}),
 			page: z.object({
-				readingMode: LocalizedStringSchema,
-				tocSectionTitle: LocalizedStringSchema,
-				metaCategory: LocalizedStringSchema,
 				metaWords: LocalizedStringSchema,
 				metaReadTime: LocalizedStringSchema,
 				metaLanguage: LocalizedStringSchema,
 				metaTags: LocalizedStringSchema,
-			}),
-			tocPill: z.object({
-				openAria: LocalizedStringSchema,
-				closeAria: LocalizedStringSchema,
 			}),
 		}),
 	}),
@@ -194,17 +156,6 @@ export const SiteLabelsSchema = z.object({
 				'analytics-reporting': LocalizedStringSchema,
 				'web-development': LocalizedStringSchema,
 			}),
-			projectsStrip: z.object({
-				builtWithService: LocalizedStringSchema,
-				builtWithFallback: LocalizedStringSchema,
-				projectSingular: LocalizedStringSchema,
-				projectPlural: LocalizedStringSchema,
-			}),
-		}),
-		// Former servicesPageMeta shape.
-		pageMeta: z.object({
-			title: LocalizedStringSchema,
-			description: LocalizedStringSchema,
 		}),
 		// Former servicesDetailContent shape.
 		detail: z.object({
@@ -215,7 +166,6 @@ export const SiteLabelsSchema = z.object({
 			relatedProjectsNavAria: LocalizedStringSchema,
 			serviceNavAria: LocalizedStringSchema,
 			stackHeading: LocalizedStringSchema,
-			seeStackLabel: LocalizedStringSchema,
 		}),
 	}),
 	navChrome: z.object({
@@ -234,9 +184,7 @@ export const SiteLabelsSchema = z.object({
 			menuOverlayFooterLabel: LocalizedStringSchema,
 			skipToContentLabel: LocalizedStringSchema.optional(),
 			localeSwitcherAria: LocalizedStringSchema,
-			searchPlaceholder: LocalizedStringSchema,
 			clearFiltersLabel: LocalizedStringSchema,
-			tocToggleSectionAria: LocalizedStringSchema,
 			tocHeading: LocalizedStringSchema,
 			tocMobileButton: LocalizedStringSchema,
 			tocCloseAria: LocalizedStringSchema,
@@ -244,12 +192,6 @@ export const SiteLabelsSchema = z.object({
 		}),
 	}),
 	footerChrome: z.object({
-		// Former relatedProjectsStripContent shape.
-		relatedProjectsStrip: z.object({
-			builtWithLabel: LocalizedStringSchema,
-			projectCountSingular: LocalizedStringSchema,
-			projectCountPlural: LocalizedStringSchema,
-		}),
 		// Former footerContent shape. Receiver r2: the full-bleed footer's
 		// column headings (EXPLORE / LEGAL / CONNECT).
 		footer: z.object({

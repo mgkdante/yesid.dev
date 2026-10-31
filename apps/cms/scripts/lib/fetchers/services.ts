@@ -23,7 +23,6 @@ export interface DirectusServiceTranslation {
 	title?: string | null;
 	subtitle?: string | null;
 	description?: string | null;
-	long_description?: string | null;
 	value_proposition?: string | null;
 	seo_description?: string | null;
 	benefit_headline?: string | null;
@@ -87,7 +86,6 @@ export function toService(row: DirectusService): Service {
 		service,
 		toLocalizedFields(translations, [
 			['subtitle', 'subtitle', 'optional'],
-			['longDescription', 'long_description', 'optional'],
 			['valueProposition', 'value_proposition', 'optional'],
 			['seoDescription', 'seo_description', 'optional'],
 			['benefitHeadline', 'benefit_headline', 'optional'],

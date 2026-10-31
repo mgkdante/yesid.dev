@@ -20,7 +20,6 @@ export const ErrorPageContentSchema = z.object({
 	label: LocalizedStringSchema,
 	heading: LocalizedStringSchema,
 	description: LocalizedStringSchema,
-	terminalLine: z.string(),
 	suggestions: z
 		.array(
 			z.object({

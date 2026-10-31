@@ -30,7 +30,6 @@ export const ServiceSchema = z.object({
 
 	// Detail page fields (all optional for backward compat)
 	subtitle: LocalizedStringSchema.optional(),
-	longDescription: LocalizedStringSchema.optional(),
 	valueProposition: LocalizedStringSchema.optional(),
 	seoDescription: LocalizedStringSchema.optional(),
 	deliverables: z.array(LocalizedStringSchema).optional(),

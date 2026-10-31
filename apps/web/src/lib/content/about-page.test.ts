@@ -204,13 +204,5 @@ describe('aboutPageContent', () => {
 		it('button links to /contact', () => {
 			expect(aboutPageContent.cta.buttonHref).toBe('/contact');
 		});
-
-		it('has at least 2 social links', () => {
-			expect(aboutPageContent.cta.socials.length).toBeGreaterThanOrEqual(2);
-			for (const s of aboutPageContent.cta.socials) {
-				expect(s.label.length).toBeGreaterThan(0);
-				expect(s.href.length).toBeGreaterThan(0);
-			}
-		});
 	});
 });

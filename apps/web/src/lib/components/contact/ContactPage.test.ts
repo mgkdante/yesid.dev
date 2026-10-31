@@ -16,7 +16,6 @@ const contactContent: ContactContent = {
 	pageTitle: { en: 'Contact fixture' },
 	stationLabel: { en: 'Fixture station' },
 	sendErrorMessage: { en: 'Fixture delivery failed' },
-	meta: { title: { en: 'Contact' }, description: { en: 'Fixture description' } },
 	web3formsKey: 'fixture-key',
 	infoTerminal: {
 		title: 'Fixture info', command: '$ info',

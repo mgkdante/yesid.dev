@@ -86,9 +86,6 @@ export function toContactContent(
 			['pageTitle', 'page_title'], ['stationLabel', 'station_label'],
 			['sendErrorMessage', 'send_error_message'],
 		]),
-		meta: toLocalizedFields(tr, [
-			['title', 'meta_title'], ['description', 'meta_description'],
-		]),
 		infoTerminal: {
 			title: str(raw.info_terminal_title),
 			command: str(raw.info_terminal_command),
