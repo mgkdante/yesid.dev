@@ -3277,30 +3277,6 @@
     "_syncId": "2a68154f-996c-4e13-bab6-126ced346b48"
   },
   {
-    "collection": "site_meta_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_site_meta_translations_public_read"
-  },
-  {
-    "collection": "site_meta",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_site_meta_public_read"
-  },
-  {
     "collection": "site_pages_translations",
     "action": "read",
     "permissions": null,

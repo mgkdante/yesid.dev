@@ -25,14 +25,15 @@ import {
 type Policy = { name: string; admin_access: boolean; app_access: boolean; roles: Array<{ role: string | null }>; _syncId: string };
 type Perm = { collection: string; action: string; policy: string };
 
-const UNRELATED_PERMISSION_COUNT = 715;
+const UNRELATED_PERMISSION_COUNT = 713;
 // slice-43.15 retires unused CMS collections and their explicit nav/stack fields.
 // slice-43.22 adds 45 AI Editor rows to adopt the live grant extension.
 // slice-43.26 adopts the live public-read row filters and file metadata fields.
 // slice-43.27 removes the retired icons prefix from AI Editor comment permissions.
 // slice-43.28 removes the deleted empty icons folder from the public file filter.
 // slice-43.30 drops the retired page-builder collections and their 39 rows.
-const UNRELATED_PERMISSION_SHA256 = '9cbe5c85418983322f2dea701e24c5cb4a40c1681fb774f53d2a1dd0b3c28f64';
+// 2026-10-31 removes the anonymous read of site_meta and site_meta_translations (owner-approved).
+const UNRELATED_PERMISSION_SHA256 = 'd57dcc6497e0d2e77add63bbae671c7d8e7791b5a58fb7e7a5d33a42705be0f1';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 const BLOG_LANGUAGE_PRESET_IDS = ['_sync_preset_blog_posts_en', '_sync_preset_blog_posts_fr', '_sync_preset_blog_posts_es'];
