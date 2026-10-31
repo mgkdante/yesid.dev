@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_back_nav_to_dispatches",
-    "group": "grp_blog_article",
+    "group": "grp_blog_article_nav",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"← back to dispatches\"",
+    "note": "Above professional articles, goes to /blog.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 1,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Back link · Dispatches"
+        "translation": "Back link · Professional articles"
       }
     ],
     "validation": null,

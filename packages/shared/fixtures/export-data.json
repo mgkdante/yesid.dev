@@ -2428,51 +2428,12 @@
 			}
 		},
 		"blogPage": {
-			"intro": {"en":"Notes on digital infrastructure, databases, and building reliable systems.","fr":"Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.","es":"Notas sobre infraestructura digital, bases de datos y cómo construir sistemas confiables."},
 			"heading": {"en":"Blog","fr":"Blogue","es":"Blog"},
-			"backToDispatches": {"en":"← back to Blog","fr":"← retour au blogue","es":"← volver al blog"},
-			"backToPersonal": {"en":"← back to personal corner","fr":"← retour au coin personnel","es":"← volver al rincón personal"},
+			"intro": {"en":"Notes on digital infrastructure, databases, and building reliable systems.","fr":"Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.","es":"Notas sobre infraestructura digital, bases de datos y cómo construir sistemas confiables."},
 			"personalHeading": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"},
 			"personalIntro": {"en":"Trains, space, tools, and the off-work notes that still shape how I build.","fr":"Trains, espace, outils, et les notes hors mandat qui influencent encore ma façon de bâtir.","es":"Trenes, espacio, herramientas y esas notas por fuera del trabajo que todavía moldean mi manera de construir."},
-			"toPersonalLabel": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"},
-			"toPersonalSubtitle": {"en":"Off the clock","fr":"Hors mandat","es":"Fuera de horario"},
-			"toProfessionalLabel": {"en":"Back to Blog","fr":"Retour au blogue","es":"Volver al blog"},
-			"toProfessionalSubtitle": {"en":"Brand notes","fr":"Notes de marque","es":"Notas de marca"},
-			"entryRail": {
-				"workWithMe": {
-					"title": {"en":"Work With Me","fr":"Travailler ensemble","es":"Trabaja conmigo"},
-					"prompt": {"en":"Need a system that stays editable?","fr":"Besoin d’un système qui reste éditable?","es":"¿Necesitas un sistema que se mantenga editable?"},
-					"primary": {
-						"label": {"en":"View Services","fr":"Voir les services","es":"Ver servicios"},
-						"href": "/services"
-					},
-					"secondary": {
-						"label": {"en":"Start a Project","fr":"Démarrer un projet","es":"Empezar un proyecto"},
-						"href": "/contact"
-					}
-				},
-				"routes": {
-					"title": {"en":"Pick A Route","fr":"Choisir une route","es":"Elige una ruta"},
-					"links": [
-						{
-							"label": {"en":"About the author","fr":"À propos de l'auteur","es":"Sobre el autor"},
-							"href": "/about"
-						},
-						{
-							"label": {"en":"Case studies","fr":"Études de cas","es":"Casos de estudio"},
-							"href": "/projects"
-						},
-						{
-							"label": {"en":"Services","fr":"Services","es":"Servicios"},
-							"href": "/services"
-						},
-						{
-							"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
-							"href": "/contact"
-						}
-					]
-				}
-			}
+			"emptyState": {"en":"No posts found. Try adjusting your filters.","fr":"Aucun article trouvé. Essaie d'ajuster tes filtres.","es":"No se encontraron artículos. Intenta ajustar tus filtros."},
+			"emptyStateNoPosts": {"en":"Nothing here yet. New posts are in transit.","fr":"Rien ici pour le moment. Les prochains articles sont en transit.","es":"Nada por aquí todavía. Los nuevos artículos están en tránsito."}
 		},
 		"siteLabels": {
 			"a11y": {
@@ -2558,8 +2519,10 @@
 				"listing": {
 					"mobileHeading": {"en":"Blog","fr":"Blogue","es":"Blog"},
 					"searchPlaceholder": {"en":"Search posts...","fr":"Chercher des articles...","es":"Buscar artículos..."},
-					"noPostsMessage": {"en":"No posts found. Try adjusting your filters.","fr":"Aucun article trouvé. Essaie d'ajuster tes filtres.","es":"No se encontraron artículos. Intenta ajustar tus filtros."},
-					"noPostsEmptyMessage": {"en":"Nothing here yet. New posts are in transit.","fr":"Rien ici pour le moment. Les prochains articles sont en transit.","es":"Nada por aquí todavía. Los nuevos artículos están en tránsito."},
+					"toPersonalLabel": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"},
+					"toPersonalSubtitle": {"en":"Off the clock","fr":"Hors mandat","es":"Fuera de horario"},
+					"toProfessionalLabel": {"en":"Back to Blog","fr":"Retour au blogue","es":"Volver al blog"},
+					"toProfessionalSubtitle": {"en":"Brand notes","fr":"Notes de marque","es":"Notas de marca"},
 					"filters": {
 						"filtersLabel": {"en":"Filters","fr":"Filtres","es":"Filtros"},
 						"language": {"en":"Language","fr":"Langue","es":"Idioma"},
@@ -2580,6 +2543,41 @@
 					"backNav": {
 						"toPersonal": {"en":"← back to personal corner","fr":"← retour au coin personnel","es":"← volver al rincón personal"},
 						"toDispatches": {"en":"← back to Blog","fr":"← retour au blogue","es":"← volver al blog"}
+					},
+					"entryRail": {
+						"workWithMe": {
+							"title": {"en":"Work With Me","fr":"Travailler ensemble","es":"Trabaja conmigo"},
+							"prompt": {"en":"Need a system that stays editable?","fr":"Besoin d’un système qui reste éditable?","es":"¿Necesitas un sistema que se mantenga editable?"},
+							"primary": {
+								"label": {"en":"View Services","fr":"Voir les services","es":"Ver servicios"},
+								"href": "/services"
+							},
+							"secondary": {
+								"label": {"en":"Start a Project","fr":"Démarrer un projet","es":"Empezar un proyecto"},
+								"href": "/contact"
+							}
+						},
+						"routes": {
+							"title": {"en":"Pick A Route","fr":"Choisir une route","es":"Elige una ruta"},
+							"links": [
+								{
+									"label": {"en":"About the author","fr":"À propos de l'auteur","es":"Sobre el autor"},
+									"href": "/about"
+								},
+								{
+									"label": {"en":"Case studies","fr":"Études de cas","es":"Casos de estudio"},
+									"href": "/projects"
+								},
+								{
+									"label": {"en":"Services","fr":"Services","es":"Servicios"},
+									"href": "/services"
+								},
+								{
+									"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
+									"href": "/contact"
+								}
+							]
+						}
 					},
 					"header": {
 						"readingTimeLabel": {"en":"{minutes} min read","fr":"{minutes} min de lecture","es":"{minutes} min de lectura"}

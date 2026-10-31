@@ -2,10 +2,10 @@
  * Simple page-block fetchers: blocks whose content is just flat LocalizedString
  * fields composed from translations (no per-locale JSON columns, no nested
  * arrays). Covers /blog (block_blog_page_content) and /projects
- * (block_projects_page_content) page chrome.
+ * (block_projects_page_content) listing text.
  *
  * Queries each block_* singleton directly rather than projecting the parent
- * pages M2A tree. These fetchers own the build-time page-chrome projections;
+ * pages M2A tree. These fetchers own the build-time listing-text projections;
  * generated-content verification catches output drift.
  */
 
@@ -21,92 +21,25 @@ import type { FetcherContext } from './types';
 
 interface BlogPageTranslation {
 	languages_code: string;
-	intro?: string | null;
 	heading?: string | null;
-	back_to_dispatches?: string | null;
-	back_to_personal?: string | null;
+	intro?: string | null;
 	personal_heading?: string | null;
 	personal_intro?: string | null;
-	to_personal_label?: string | null;
-	to_personal_subtitle?: string | null;
-	to_professional_label?: string | null;
-	to_professional_subtitle?: string | null;
-	entry_rail_work_title?: string | null;
-	entry_rail_work_prompt?: string | null;
-	entry_rail_services_label?: string | null;
-	entry_rail_contact_label?: string | null;
-	entry_rail_routes_title?: string | null;
-	entry_rail_route_case_studies_label?: string | null;
-	entry_rail_route_services_label?: string | null;
-	entry_rail_route_about_label?: string | null;
-	entry_rail_route_contact_label?: string | null;
+	empty_state?: string | null;
+	empty_state_no_posts?: string | null;
 }
 
 interface BlogPageRow {
 	id: number;
-	entry_rail_services_href?: string | null;
-	entry_rail_contact_href?: string | null;
-	entry_rail_route_case_studies_href?: string | null;
-	entry_rail_route_services_href?: string | null;
-	entry_rail_route_about_href?: string | null;
-	entry_rail_route_contact_href?: string | null;
 	translations?: BlogPageTranslation[];
 }
 
-function href(value: string | null | undefined, fallback: string): string {
-	return value && value.trim() ? value : fallback;
-}
-
 export function toBlogPageContent(row: BlogPageRow): BlogPageContent {
-	const tr = row.translations ?? [];
-	return {
-		...toLocalizedFields(tr, [
-			'intro', 'heading', ['backToDispatches', 'back_to_dispatches'],
-			['backToPersonal', 'back_to_personal'], ['personalHeading', 'personal_heading'],
-			['personalIntro', 'personal_intro'], ['toPersonalLabel', 'to_personal_label'],
-			['toPersonalSubtitle', 'to_personal_subtitle'],
-			['toProfessionalLabel', 'to_professional_label'],
-			['toProfessionalSubtitle', 'to_professional_subtitle'],
-		]),
-		entryRail: {
-			workWithMe: {
-				...toLocalizedFields(tr, [
-					['title', 'entry_rail_work_title'], ['prompt', 'entry_rail_work_prompt'],
-				]),
-				primary: {
-					...toLocalizedFields(tr, [['label', 'entry_rail_services_label']]),
-					href: href(row.entry_rail_services_href, '/services'),
-				},
-				secondary: {
-					...toLocalizedFields(tr, [['label', 'entry_rail_contact_label']]),
-					href: href(row.entry_rail_contact_href, '/contact'),
-				},
-			},
-			routes: {
-				...toLocalizedFields(tr, [['title', 'entry_rail_routes_title']]),
-				links: [
-					{
-						...toLocalizedFields(tr, [['label', 'entry_rail_route_about_label']]),
-						href: href(row.entry_rail_route_about_href, '/about'),
-					},
-					{
-						...toLocalizedFields(tr, [
-							['label', 'entry_rail_route_case_studies_label'],
-						]),
-						href: href(row.entry_rail_route_case_studies_href, '/projects'),
-					},
-					{
-						...toLocalizedFields(tr, [['label', 'entry_rail_route_services_label']]),
-						href: href(row.entry_rail_route_services_href, '/services'),
-					},
-					{
-						...toLocalizedFields(tr, [['label', 'entry_rail_route_contact_label']]),
-						href: href(row.entry_rail_route_contact_href, '/contact'),
-					},
-				],
-			},
-		},
-	};
+	return toLocalizedFields(row.translations ?? [], [
+		'heading', 'intro', ['personalHeading', 'personal_heading'],
+		['personalIntro', 'personal_intro'], ['emptyState', 'empty_state'],
+		['emptyStateNoPosts', 'empty_state_no_posts'],
+	]);
 }
 
 export async function fetchBlogPageContent({ client }: FetcherContext): Promise<BlogPageContent> {
@@ -114,16 +47,7 @@ export async function fetchBlogPageContent({ client }: FetcherContext): Promise<
 		client,
 		'block_blog_page_content',
 		'fetchBlogPageContent/block_blog_page_content',
-		[
-			'id',
-			'entry_rail_services_href',
-			'entry_rail_contact_href',
-			'entry_rail_route_case_studies_href',
-			'entry_rail_route_services_href',
-			'entry_rail_route_about_href',
-			'entry_rail_route_contact_href',
-			{ translations: ['*'] },
-		],
+		['id', { translations: ['*'] }],
 	);
 	return BlogPageContentSchema.parse(toBlogPageContent(row));
 }

@@ -7,14 +7,17 @@
 	import BlogListingPage from '#lib/components/blog/BlogListingPage.svelte';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 
 	let { data } = $props();
 
 	const locale = getLocale();
 	const heading = $derived(resolveLocale(data.blogPage.personalHeading, locale));
 	const subtitle = $derived(resolveLocale(data.blogPage.personalIntro, locale));
-	const backLabel = $derived(resolveLocale(data.blogPage.toProfessionalLabel, locale));
-	const backSubtitle = $derived(resolveLocale(data.blogPage.toProfessionalSubtitle, locale));
+	const emptyState = $derived(resolveLocale(data.blogPage.emptyState, locale));
+	const emptyStateNoPosts = $derived(resolveLocale(data.blogPage.emptyStateNoPosts, locale));
+	const backLabel = resolveLocale(siteLabels.blogChrome.listing.toProfessionalLabel, locale);
+	const backSubtitle = resolveLocale(siteLabels.blogChrome.listing.toProfessionalSubtitle, locale);
 </script>
 
 <BlogListingPage
@@ -22,8 +25,10 @@
 	allTags={data.tags}
 	languages={data.languages}
 	svgContents={data.svgContents}
-	mobileHeading={heading}
+	{heading}
 	{subtitle}
+	{emptyState}
+	{emptyStateNoPosts}
 	accentColor="var(--accent-text)"
 	cornerLink={{
 		href: '/blog',

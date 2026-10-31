@@ -4,13 +4,82 @@
  * nested SiteLabels shape consumed by apps/web components.
  */
 import { toLocalizedFields } from '../locale';
-import { SiteLabelsSchema, type SiteLabels } from '@repo/shared/schemas';
+import {
+	SiteLabelsSchema,
+	type BlogEntryRail,
+	type LocalizedString,
+	type SiteLabels,
+} from '@repo/shared/schemas';
 import { fetchBlockSingleton } from './singleton';
 import type { FetcherContext } from './types';
 
-interface SiteLabelsRow {
-	id: string;
-	translations?: ReadonlyArray<Record<string, unknown> & { languages_code: string }>;
+type Translations = ReadonlyArray<Record<string, unknown> & { languages_code: string }>;
+
+const RAIL_HREF_FIELDS = [
+	'blog_chrome_detail_rail_services_href',
+	'blog_chrome_detail_rail_contact_href',
+	'blog_chrome_detail_rail_route_about_href',
+	'blog_chrome_detail_rail_route_case_studies_href',
+	'blog_chrome_detail_rail_route_services_href',
+	'blog_chrome_detail_rail_route_contact_href',
+] as const;
+
+type SiteLabelsRow = { id: string; translations?: Translations } & {
+	[K in (typeof RAIL_HREF_FIELDS)[number]]?: string | null;
+};
+
+function href(value: string | null | undefined, fallback: string): string {
+	return value?.trim() ? value : fallback;
+}
+
+function toBlogEntryRail(raw: SiteLabelsRow, tr: Translations): BlogEntryRail {
+	const link = (label: { label: LocalizedString }, value: string | null | undefined, fallback: string) => ({
+		...label,
+		href: href(value, fallback),
+	});
+	return {
+		workWithMe: {
+			...toLocalizedFields(tr, [
+				['title', 'blog_chrome_detail_rail_work_title'],
+				['prompt', 'blog_chrome_detail_rail_work_prompt'],
+			]),
+			primary: link(
+				toLocalizedFields(tr, [['label', 'blog_chrome_detail_rail_services_label']]),
+				raw.blog_chrome_detail_rail_services_href,
+				'/services',
+			),
+			secondary: link(
+				toLocalizedFields(tr, [['label', 'blog_chrome_detail_rail_contact_label']]),
+				raw.blog_chrome_detail_rail_contact_href,
+				'/contact',
+			),
+		},
+		routes: {
+			...toLocalizedFields(tr, [['title', 'blog_chrome_detail_rail_routes_title']]),
+			links: [
+				link(
+					toLocalizedFields(tr, [['label', 'blog_chrome_detail_rail_route_about_label']]),
+					raw.blog_chrome_detail_rail_route_about_href,
+					'/about',
+				),
+				link(
+					toLocalizedFields(tr, [['label', 'blog_chrome_detail_rail_route_case_studies_label']]),
+					raw.blog_chrome_detail_rail_route_case_studies_href,
+					'/projects',
+				),
+				link(
+					toLocalizedFields(tr, [['label', 'blog_chrome_detail_rail_route_services_label']]),
+					raw.blog_chrome_detail_rail_route_services_href,
+					'/services',
+				),
+				link(
+					toLocalizedFields(tr, [['label', 'blog_chrome_detail_rail_route_contact_label']]),
+					raw.blog_chrome_detail_rail_route_contact_href,
+					'/contact',
+				),
+			],
+		},
+	};
 }
 
 export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
@@ -94,8 +163,10 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				...toLocalizedFields(tr, [
 					['mobileHeading', 'blog_chrome_listing_mobile_heading'],
 					['searchPlaceholder', 'blog_chrome_listing_search_placeholder'],
-					['noPostsMessage', 'blog_chrome_listing_no_posts_message'],
-					['noPostsEmptyMessage', 'blog_chrome_listing_no_posts_empty_message'],
+					['toPersonalLabel', 'blog_chrome_listing_to_personal_label'],
+					['toPersonalSubtitle', 'blog_chrome_listing_to_personal_subtitle'],
+					['toProfessionalLabel', 'blog_chrome_listing_to_professional_label'],
+					['toProfessionalSubtitle', 'blog_chrome_listing_to_professional_subtitle'],
 				]),
 				filters: toLocalizedFields(tr, [
 					['filtersLabel', 'blog_chrome_listing_filters_label'],
@@ -115,6 +186,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 					['toPersonal', 'blog_chrome_detail_back_nav_to_personal'],
 					['toDispatches', 'blog_chrome_detail_back_nav_to_dispatches'],
 				]),
+				entryRail: toBlogEntryRail(raw, tr),
 				header: toLocalizedFields(tr, [
 					['readingTimeLabel', 'blog_chrome_detail_header_reading_time_label'],
 				]),
@@ -189,10 +261,7 @@ export async function fetchSiteLabels({ client }: FetcherContext): Promise<SiteL
 		client,
 		'site_labels',
 		'fetchSiteLabels/site_labels',
-		[
-			'id',
-			{ translations: ['*'] },
-		],
+		['id', ...RAIL_HREF_FIELDS, { translations: ['*'] }],
 	);
 	return SiteLabelsSchema.parse(toSiteLabels(row));
 }

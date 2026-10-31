@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "to_personal_subtitle",
-    "group": "grp_interface",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Small line under that link.",
+    "note": "Moved to Site labels > Blog pages > Listing page. This copy is deleted after the next release.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 4,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Blog sidebar · Personal corner caption"
+        "translation": "Blog sidebar · Personal corner caption (moved)"
       }
     ],
     "validation": null,

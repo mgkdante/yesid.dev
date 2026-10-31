@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "to_personal_label",
-    "group": "grp_interface",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Link in the /blog filter sidebar that opens /blog/personal.",
+    "note": "Moved to Site labels > Blog pages > Listing page. This copy is deleted after the next release.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 1,
+    "sort": 3,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Blog sidebar · Personal corner link"
+        "translation": "Blog sidebar · Personal corner link (moved)"
       }
     ],
     "validation": null,

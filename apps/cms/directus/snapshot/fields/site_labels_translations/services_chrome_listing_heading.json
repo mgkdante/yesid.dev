@@ -11,7 +11,7 @@
     "group": "grp_services_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Hidden heading read by screen readers on the Services page. Default: \"Services\"",
+    "note": "The Services listing has no page text collection yet, so its heading lives here.",
     "options": null,
     "readonly": false,
     "required": false,

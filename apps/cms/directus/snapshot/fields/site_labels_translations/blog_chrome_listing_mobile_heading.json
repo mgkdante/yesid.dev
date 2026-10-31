@@ -11,7 +11,7 @@
     "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"Blog\"",
+    "note": "Used only when the /blog heading in Blog page text is empty. Default: \"Blog\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Heading on phones"
+        "translation": "Heading (fallback)"
       }
     ],
     "validation": null,

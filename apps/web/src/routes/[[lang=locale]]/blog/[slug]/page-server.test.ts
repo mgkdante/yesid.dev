@@ -9,9 +9,6 @@ const adapterMocks = vi.hoisted(() => ({
 			bodyBySlug: vi.fn(),
 			svgContent: vi.fn(),
 		},
-		content: {
-			blogPage: vi.fn(),
-		},
 	},
 }));
 
@@ -50,13 +47,11 @@ describe('blog detail loader locale boundary', () => {
 			adapterMocks.adapter.blog.bySlug,
 			adapterMocks.adapter.blog.bodyBySlug,
 			adapterMocks.adapter.blog.svgContent,
-			adapterMocks.adapter.content.blogPage,
 		]) {
 			mock.mockReset();
 		}
 		adapterMocks.adapter.blog.bodyBySlug.mockResolvedValue(body);
 		adapterMocks.adapter.blog.svgContent.mockResolvedValue('<svg />');
-		adapterMocks.adapter.content.blogPage.mockResolvedValue({ intro: { en: 'Blog' } });
 	});
 
 	it('rejects a slug whose post language does not match the request locale', async () => {

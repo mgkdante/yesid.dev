@@ -70,4 +70,24 @@ describe('site-labels transform', () => {
 		expect(out.heroDashboard.delaySub).toEqual({ en: '{coverage}% COVERAGE', fr: '{coverage}% DE COUVERTURE' });
 		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
 	});
+
+	it('builds the blog article side rail from translated labels and shared link addresses', () => {
+		const out = toSiteLabels({
+			id: 'u1',
+			blog_chrome_detail_rail_services_href: '/services/sql-development',
+			blog_chrome_detail_rail_route_about_href: '  ',
+			translations: [
+				{ languages_code: 'en', ...seeds },
+				{ languages_code: 'fr', ...frSeeds },
+			],
+		});
+		const rail = out.blogChrome.detail.entryRail;
+		expect(rail.workWithMe.primary).toEqual({
+			label: { en: 'View Services', fr: 'Voir les services' },
+			href: '/services/sql-development',
+		});
+		expect(rail.workWithMe.secondary.href).toBe('/contact');
+		expect(rail.routes.links.map((link) => link.href)).toEqual(['/about', '/projects', '/services', '/contact']);
+		expect(out.blogChrome.listing.toPersonalLabel).toEqual({ en: 'Personal Corner', fr: 'Coin perso' });
+	});
 });

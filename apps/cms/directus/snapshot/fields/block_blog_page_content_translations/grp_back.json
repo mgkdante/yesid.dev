@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "grp_back",
-    "group": "grp_interface",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "group-detail",
-    "note": "Link above each article back to its listing. Empty uses the Site labels text.",
+    "note": "Moved to Site labels > Blog pages > Article page. This copy is deleted after the next release.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": [
       "alias",
       "no-data",
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Article page · Back links"
+        "translation": "Old article back links (moved)"
       }
     ],
     "validation": null,

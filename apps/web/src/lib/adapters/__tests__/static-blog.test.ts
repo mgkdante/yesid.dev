@@ -71,15 +71,9 @@ describe('staticAdapter.blog.svgContent / svgContentsForPosts — non-empty SVG 
 });
 
 describe('staticAdapter.content.blogPage — full schema shape, clean intro (slice-27.1 T4)', () => {
-	it('returns all schema-required keys (heading / backToDispatches / backToPersonal / intro)', async () => {
+	it('returns the full schema shape', async () => {
 		const page = await staticAdapter.content.blogPage();
-		// Full schema parse — the prior inline stub was missing heading +
-		// backToDispatches + backToPersonal and would S-ERR here.
 		expect(() => BlogPageContentSchema.parse(page)).not.toThrow();
-		expect(page.intro).toBeDefined();
-		expect(page.heading).toBeDefined();
-		expect(page.backToDispatches).toBeDefined();
-		expect(page.backToPersonal).toBeDefined();
 	});
 
 	it('intro is a clean LocalizedString, not a JSON-encoded string', async () => {

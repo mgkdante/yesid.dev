@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_no_posts_empty_message",
-    "group": "grp_blog_listing",
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Shown when there are no posts at all. Default: \"Nothing here yet. New posts are in transit.\"",
+    "note": "Moved to Blog page text > No results message. This copy is deleted after the next release.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 11,
+    "sort": 42,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "No posts yet message"
+        "translation": "Blog · No posts yet message (moved)"
       }
     ],
     "validation": null,

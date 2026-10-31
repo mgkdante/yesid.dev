@@ -5,6 +5,28 @@
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 
+export const BlogEntryRailLinkSchema = z.object({
+	label: LocalizedStringSchema,
+	href: z.string().min(1),
+});
+
+/** Boxes beside each blog article: a work-with-me prompt and route links. */
+export const BlogEntryRailSchema = z.object({
+	workWithMe: z.object({
+		title: LocalizedStringSchema,
+		prompt: LocalizedStringSchema,
+		primary: BlogEntryRailLinkSchema,
+		secondary: BlogEntryRailLinkSchema,
+	}),
+	routes: z.object({
+		title: LocalizedStringSchema,
+		links: z.array(BlogEntryRailLinkSchema).min(1),
+	}),
+});
+
+export type BlogEntryRail = z.infer<typeof BlogEntryRailSchema>;
+export type BlogEntryRailLink = z.infer<typeof BlogEntryRailLinkSchema>;
+
 export const SiteLabelsSchema = z.object({
 	a11y: z.object({
 		navCapabilities: LocalizedStringSchema,
@@ -103,12 +125,14 @@ export const SiteLabelsSchema = z.object({
 	blogChrome: z.object({
 		// Former blogListingContent shape.
 		listing: z.object({
+			/** Fallback for the /blog heading when Blog page text has none. */
 			mobileHeading: LocalizedStringSchema,
 			searchPlaceholder: LocalizedStringSchema,
-			noPostsMessage: LocalizedStringSchema,
-			/** Unfiltered empty state: the section has no posts at all and no
-			 *  filters are active. The filtered variant stays in noPostsMessage. */
-			noPostsEmptyMessage: LocalizedStringSchema,
+			/** Sidebar link from /blog to /blog/personal, and back. */
+			toPersonalLabel: LocalizedStringSchema,
+			toPersonalSubtitle: LocalizedStringSchema,
+			toProfessionalLabel: LocalizedStringSchema,
+			toProfessionalSubtitle: LocalizedStringSchema,
 			filters: z.object({
 				filtersLabel: LocalizedStringSchema,
 				language: LocalizedStringSchema,
@@ -131,6 +155,7 @@ export const SiteLabelsSchema = z.object({
 				toPersonal: LocalizedStringSchema,
 				toDispatches: LocalizedStringSchema,
 			}),
+			entryRail: BlogEntryRailSchema,
 			header: z.object({
 				readingTimeLabel: LocalizedStringSchema,
 			}),
