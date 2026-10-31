@@ -11,7 +11,7 @@
     "group": "grp_back",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Above personal articles, goes to /blog/personal.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Back to personal posts"
+        "translation": "Back link · Personal articles"
       }
     ],
     "validation": null,

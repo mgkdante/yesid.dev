@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Stable language panel id, such as quebec or brazil.",
+    "note": "Short permanent key, for example quebec. Set it once when you create the card.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "ID"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

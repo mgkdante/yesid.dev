@@ -11,7 +11,7 @@
     "group": "grp_snapshots",
     "hidden": false,
     "interface": "list",
-    "note": null,
+    "note": "Each photo: image, screen reader description, caption and tilt angle.",
     "options": {
       "fields": [
         {

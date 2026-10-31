@@ -11,7 +11,7 @@
     "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "Headshot image reference shown in the Identity card.",
+    "note": "Image path of the photo in the Identity card.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Identity card · Headshot"
+        "translation": "Identity card · Photo"
       }
     ],
     "validation": null,

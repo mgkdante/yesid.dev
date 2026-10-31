@@ -11,17 +11,17 @@
     "group": "grp_identity",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Not printed. Screen readers read it as the photo description.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 4,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Name"
+        "translation": "Name (photo description)"
       }
     ],
     "validation": null,

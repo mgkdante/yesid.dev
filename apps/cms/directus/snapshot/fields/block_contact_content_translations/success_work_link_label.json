@@ -11,7 +11,7 @@
     "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Replaces {work}. Links to the Services page.",
     "options": null,
     "readonly": false,
     "required": false,

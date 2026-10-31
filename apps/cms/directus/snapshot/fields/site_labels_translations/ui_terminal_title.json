@@ -11,7 +11,7 @@
     "group": "grp_about",
     "hidden": false,
     "interface": "input",
-    "note": "Shared terminal chrome title.",
+    "note": "Title bar of the terminal box at the end of the About page.",
     "options": null,
     "readonly": false,
     "required": false,

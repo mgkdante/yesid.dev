@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Optional editor notes (when to use this shape).",
+    "note": "Optional notes for editors.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "When to use"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

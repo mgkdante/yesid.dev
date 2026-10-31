@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input-block-editor",
-    "note": "Section body rendered via BlockRenderer (Block Editor JSON).",
+    "note": "Text, images, code and diagrams. Images here also join the page gallery.",
     "options": null,
     "readonly": false,
     "required": true,
@@ -20,7 +20,12 @@
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Content"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

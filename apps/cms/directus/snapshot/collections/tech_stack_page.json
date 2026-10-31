@@ -14,18 +14,18 @@
     "hidden": false,
     "icon": "memory",
     "item_duplication_fields": null,
-    "note": "Technology-names group containing only tech_stack, used for project and service stacks.",
+    "note": "Shared lists that classify projects, services and blog posts.",
     "preview_url": null,
     "singleton": false,
-    "sort": 5,
+    "sort": 8,
     "sort_field": null,
     "status": "active",
     "translations": [
       {
         "language": "en-US",
-        "translation": "Tech stack",
-        "singular": "Tech stack",
-        "plural": "Tech stack"
+        "translation": "Tech stack and tags",
+        "singular": "Tech stack and tags",
+        "plural": "Tech stack and tags"
       }
     ],
     "unarchive_value": null,

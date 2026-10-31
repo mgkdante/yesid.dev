@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "email",
-    "group": null,
+    "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "Contact email",
+    "note": "Used in search-engine profile data. Not shown on the page.",
     "options": {
       "placeholder": "contact@yesid.dev",
       "trim": true
@@ -19,9 +19,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 3,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Email"
+      }
+    ],
     "validation": {
       "_and": [
         {

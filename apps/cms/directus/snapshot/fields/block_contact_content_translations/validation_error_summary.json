@@ -11,7 +11,7 @@
     "group": "grp_errors",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "{count} is replaced by the number of errors.",
     "options": null,
     "readonly": false,
     "required": false,

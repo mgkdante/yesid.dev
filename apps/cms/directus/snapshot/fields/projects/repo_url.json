@@ -11,14 +11,19 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "input",
-    "note": "GitHub or source repository URL.",
+    "note": "Source code address, shown as GitHub in the Links box.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 44,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "GitHub link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

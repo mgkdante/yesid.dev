@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Stable page slug: privacy, cookies, terms, notice, accessibility.",
+    "note": "The address: /legal/<slug>. Current pages: privacy, cookies, terms, notice, accessibility.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Slug (URL)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

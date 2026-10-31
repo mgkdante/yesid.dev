@@ -11,18 +11,23 @@
     "group": "grp_class",
     "hidden": false,
     "interface": "list-m2m",
-    "note": null,
+    "note": "Shown on cards and the project page, used by the Services filter, and lists this project on each service page.",
     "options": {
       "template": "{{service_id}}"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 51,
+    "sort": 1,
     "special": [
       "m2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

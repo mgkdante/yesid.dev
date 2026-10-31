@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "hidden_transit_lines",
-    "group": null,
+    "group": "grp_transit",
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale hidden transit lines (ManifestoContent.hiddenTransitLines). JSON shape: Array<{ name: string, color: string }>. color is non-translatable hex; name is the per-locale string.",
+    "note": "Faint coloured tags. Each has a name and a colour like #003DA5. English sets order and colours; translate names only.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -43,11 +43,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 11,
+    "sort": 4,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line tags"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

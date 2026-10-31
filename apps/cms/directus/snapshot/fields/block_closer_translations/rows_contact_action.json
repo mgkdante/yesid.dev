@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_contact_action",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.contact.action",
+    "note": "Short word before the arrow, for example GO.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact · Action"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

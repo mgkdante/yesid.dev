@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Name label fallback"
+        "translation": "Name label (backup)"
       }
     ],
     "validation": null,

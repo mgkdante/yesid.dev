@@ -11,7 +11,7 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Entrance animation type for the SVG illustration.",
+    "note": "How the illustration draws in on the listing card.",
     "options": {
       "choices": [
         {
@@ -31,7 +31,7 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 5,
+    "sort": 3,
     "special": null,
     "translations": [
       {

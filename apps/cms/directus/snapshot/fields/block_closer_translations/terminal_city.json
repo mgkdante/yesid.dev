@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "terminal_city",
-    "group": null,
+    "group": "grp_window",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces terminal.city",
+    "note": "For example Montreal, QC.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 14,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Footer · City"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

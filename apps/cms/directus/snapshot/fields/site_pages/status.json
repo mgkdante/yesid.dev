@@ -33,7 +33,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Archive = page vanishes from nav/footer/sitemap and 404s, after the auto-rebuild.",
+    "note": "Archived hides the page after the next publish: it leaves the menus, footer and sitemap, and its address shows the 404 page.",
     "options": {
       "choices": [
         {
@@ -51,7 +51,12 @@
     "searchable": true,
     "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

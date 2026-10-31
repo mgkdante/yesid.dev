@@ -11,14 +11,19 @@
     "group": "grp_seo",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Optional search/share description. Use 50 to 200 characters.",
+    "note": "Optional. Empty uses the excerpt. Use 50 to 200 characters.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 32,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

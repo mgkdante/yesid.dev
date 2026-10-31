@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Static route SEO title body. Home can be full verbatim title.",
+    "note": "Shown in Google results and the browser tab. \" | yesid.\" is added automatically, except on / where this is the full title.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

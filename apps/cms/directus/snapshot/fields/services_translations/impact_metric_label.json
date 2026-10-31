@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "impact_metric_label",
-    "group": null,
+    "group": "grp_card",
     "hidden": false,
     "interface": "input",
-    "note": "Context label for home grid metric (e.g. avg query improvement).",
+    "note": "Words under the key number, such as database hosting cost. Shows only with the number.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 11,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Key number label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "impact_metric_label",

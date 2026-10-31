@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "statement_line_huge",
-    "group": null,
+    "group": "grp_statement",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces statement.lineHuge",
+    "note": "The very large word, for example INFRASTRUCTURE.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line 2 (big)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "statement_line_huge",

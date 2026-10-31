@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "Old fields kept for safety. Nothing here appears on yesid.dev.",
+    "note": "Kept for the exporter or history. Nothing here appears on yesid.dev.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"

@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Brand description (used by jsonLd Person.description).",
+    "note": "Describes you to search engines and in /llms.txt. Not shown on the page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Short bio"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

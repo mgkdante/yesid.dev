@@ -11,7 +11,7 @@
     "group": "grp_interests",
     "hidden": false,
     "interface": "list",
-    "note": null,
+    "note": "Each strip: a label and an image, in page order.",
     "options": {
       "addLabel": "Add row",
       "fields": [

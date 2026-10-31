@@ -11,7 +11,7 @@
     "group": "grp_personal",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Heading of /blog/personal.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -26,7 +26,7 @@
     ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "personal_heading",

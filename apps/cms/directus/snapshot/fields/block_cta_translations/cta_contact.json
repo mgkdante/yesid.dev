@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "cta_contact",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale contact CTA label (CtaContent.ctaContact).",
+    "note": "Opens the Contact page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Band · Contact button"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "cta_contact",

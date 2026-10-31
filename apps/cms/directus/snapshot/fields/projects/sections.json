@@ -11,18 +11,23 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "list-o2m",
-    "note": null,
+    "note": "The numbered sections of the project page, in order. A section with only images becomes the screenshot gallery.",
     "options": {
       "template": "{{sort}}. {{translations}}"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 30,
+    "sort": 2,
     "special": [
       "o2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page sections"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -11,7 +11,7 @@
     "group": "grp_success",
     "hidden": false,
     "interface": "input-multiline",
-    "note": null,
+    "note": "{work} and {blog} become links using the two labels below.",
     "options": null,
     "readonly": false,
     "required": false,

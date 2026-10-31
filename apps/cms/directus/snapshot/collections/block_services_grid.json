@@ -14,10 +14,10 @@
     "hidden": false,
     "icon": "grid_view",
     "item_duplication_fields": null,
-    "note": "Services strip on Home: view-all link and illustration label. Section heading comes from Site labels.",
+    "note": "Home services strip. The service cards come from Services; this holds the strip's own link and labels.",
     "preview_url": null,
     "singleton": true,
-    "sort": 4,
+    "sort": 3,
     "sort_field": "sort",
     "status": "active",
     "translations": [

@@ -11,7 +11,7 @@
     "group": "grp_shared_filters",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"{count} results\"",
+    "note": "{count} is replaced by the number. Default: \"{count} results\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Result count plural"
+        "translation": "Result count · Several"
       }
     ],
     "validation": null,

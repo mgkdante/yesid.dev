@@ -11,12 +11,12 @@
     "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Word after each checked field, for example name: ok.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 2,
     "special": null,
     "translations": [
       {

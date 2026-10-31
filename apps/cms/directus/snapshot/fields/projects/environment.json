@@ -11,14 +11,19 @@
     "group": "grp_meta",
     "hidden": false,
     "interface": "input",
-    "note": "Deployment environment descriptor (e.g. Production, Staging).",
+    "note": "Shown as ENV in the project page header margin on wide screens, such as production.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 63,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Environment"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

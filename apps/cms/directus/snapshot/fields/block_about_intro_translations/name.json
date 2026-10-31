@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "name",
-    "group": null,
+    "group": "grp_teaser",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale name label (AboutIntroContent.name).",
+    "note": "Large name. A dot is added after it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "name",

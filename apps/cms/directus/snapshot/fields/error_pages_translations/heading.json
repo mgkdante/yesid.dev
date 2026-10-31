@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale primary heading (e.g. 'This station is under construction').",
+    "note": "Main line of the error page, e.g. This station is under construction.",
     "options": {
       "placeholder": "e.g. This station is under construction"
     },
@@ -20,7 +20,12 @@
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

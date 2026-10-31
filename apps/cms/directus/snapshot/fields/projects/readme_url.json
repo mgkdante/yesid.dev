@@ -11,17 +11,22 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "input",
-    "note": "Direct link to the project README.",
+    "note": "Raw GitHub README address. Its text is added as the last section of the project page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 45,
+    "sort": 9,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "README link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "readme_url",

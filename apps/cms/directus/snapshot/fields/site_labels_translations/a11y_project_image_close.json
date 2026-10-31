@@ -11,12 +11,12 @@
     "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Project image gallery close and backdrop aria label.",
+    "note": "Read on the close button and backdrop of an open gallery photo.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 14,
     "special": null,
     "translations": [
       {

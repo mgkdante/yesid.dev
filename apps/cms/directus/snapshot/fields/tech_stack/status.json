@@ -33,7 +33,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Publication state. AI-editor cannot set to published.",
+    "note": "Draft or Published. To drop a technology from a stack, unlink it in the project or service.",
     "options": {
       "choices": [
         {
@@ -55,7 +55,12 @@
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

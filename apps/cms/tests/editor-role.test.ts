@@ -36,6 +36,10 @@ const UNRELATED_PERMISSION_SHA256 = '9cbe5c85418983322f2dea701e24c5cb4a40c1681fb
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 const BLOG_LANGUAGE_PRESET_IDS = ['_sync_preset_blog_posts_en', '_sync_preset_blog_posts_fr', '_sync_preset_blog_posts_es'];
+const DEFAULT_LIST_VIEW_PRESET_IDS = [
+	'projects', 'services', 'blog_posts', 'legal_pages', 'about_languages', 'contact_channels', 'nav_links',
+	'site_pages', 'route_seo', 'error_pages', 'tech_stack', 'tags', 'languages',
+].map((collection) => `_sync_preset_default_${collection}`);
 
 function withoutSyncId<T extends { _syncId?: string }>(row: T): Omit<T, '_syncId'> {
 	const { _syncId: _ignored, ...payload } = row;
@@ -168,7 +172,7 @@ describe('Editor role wiring (go2-t1d)', () => {
 			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection),
 		);
 		const unrelatedPresets = (presets as Array<{ collection: string; _syncId: string }>).filter(
-			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !BLOG_LANGUAGE_PRESET_IDS.includes(row._syncId),
+			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !BLOG_LANGUAGE_PRESET_IDS.includes(row._syncId) && !DEFAULT_LIST_VIEW_PRESET_IDS.includes(row._syncId),
 		);
 
 		expect(unrelatedPermissions).toHaveLength(UNRELATED_PERMISSION_COUNT);

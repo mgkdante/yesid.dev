@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "🖼 Media & publishing",
+    "note": "Pictures used with this post.",
     "options": {
       "headerColor": "#E07800",
       "start": "open"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 40,
+    "sort": 11,
     "special": [
       "alias",
       "no-data",
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Media and publishing"
+        "translation": "Images and links"
       }
     ],
     "validation": null,

@@ -11,18 +11,23 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "list-o2m",
-    "note": null,
+    "note": "The list under Typical Deliverables on the service page, in this order.",
     "options": {
       "template": "{{translations}}"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 35,
+    "sort": 2,
     "special": [
       "o2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Typical deliverables"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "subheadline",
-    "group": null,
+    "group": "grp_intro",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale subheadline text (HeroContent.subheadline).",
+    "note": "Bold line under the metric cards, for example I make data tell the truth.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Subheadline"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

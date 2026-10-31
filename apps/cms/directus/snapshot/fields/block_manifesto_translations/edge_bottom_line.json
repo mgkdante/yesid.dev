@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_bottom_line",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_bottom.line",
+    "note": "For example LIGNE ORANGE.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 30,
+    "sort": 12,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Bottom · Line name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

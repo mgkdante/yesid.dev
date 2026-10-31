@@ -11,7 +11,7 @@
     "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Vehicles card sub-label when REAL KPIs are on screen (hero_dashboard_vehicles_sub holds the DEMO state). Default: \"STM · LIVE\"",
+    "note": "Used when real transit numbers are on screen. Vehicles subtitle covers the demo state. Default: \"STM · LIVE\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Vehicles subtitle live"
+        "translation": "Vehicles subtitle (live data)"
       }
     ],
     "validation": null,

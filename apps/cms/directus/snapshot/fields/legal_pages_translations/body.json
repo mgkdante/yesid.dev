@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input-block-editor",
-    "note": "Page body. Block Editor: headings, paragraphs, lists. Same renderer as blog bodies (BlockRenderer.svelte).",
+    "note": "The full page: headings, paragraphs and lists. The first long paragraph is also the search description.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -20,7 +20,12 @@
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page text"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "view_all_link",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale label for the View All link at the bottom of the grid (ServicesGridContent.viewAllLink).",
+    "note": "Link under the service cards. The section title is in Site labels (UI text); the cards come from Services.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services · View all link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

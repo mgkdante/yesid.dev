@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "owner_country",
-    "group": null,
+    "group": "grp_owner",
     "hidden": false,
     "interface": "input",
-    "note": "ISO 3166-1 alpha-2 country code (e.g., CA, US, MX)",
+    "note": "Two-letter code, e.g. CA.",
     "options": {
       "trim": true
     },
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 10,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Country"
+      }
+    ],
     "validation": {
       "_and": [
         {

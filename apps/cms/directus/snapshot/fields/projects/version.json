@@ -11,14 +11,19 @@
     "group": "grp_meta",
     "hidden": false,
     "interface": "input",
-    "note": "Version string or milestone (e.g. v2.1, Phase 3).",
+    "note": "Shown as VER in the project page header margin on wide screens, such as v2.1.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 64,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Version"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

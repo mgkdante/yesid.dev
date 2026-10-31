@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "subtitle",
-    "group": null,
+    "group": "grp_intro",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale subtitle text (HeroContent.subtitle).",
+    "note": "Short line under the subheadline, above the buttons.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Intro sentence"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

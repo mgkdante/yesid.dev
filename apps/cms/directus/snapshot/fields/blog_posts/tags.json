@@ -8,15 +8,15 @@
     "display": null,
     "display_options": null,
     "field": "tags",
-    "group": "grp_content",
+    "group": "grp_class",
     "hidden": false,
     "interface": "list-m2m",
-    "note": "normalized tag taxonomy (M2M)",
+    "note": "Topic chips on the card and article. Readers filter the listing by them.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 2,
     "special": [
       "m2m"
     ],

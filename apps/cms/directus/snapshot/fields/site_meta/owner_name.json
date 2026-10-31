@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "owner_name",
-    "group": null,
+    "group": "grp_owner",
     "hidden": false,
     "interface": "input",
-    "note": "Person name (jsonLd Person.name)",
+    "note": "Your name as search engines list it.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 7,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Owner name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

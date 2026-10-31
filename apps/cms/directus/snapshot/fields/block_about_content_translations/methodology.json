@@ -11,7 +11,7 @@
     "group": "grp_method",
     "hidden": false,
     "interface": "list",
-    "note": null,
+    "note": "Each item: a number, a short title and one sentence.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -72,7 +72,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Method steps"
+        "translation": "Beliefs"
       }
     ],
     "validation": null,

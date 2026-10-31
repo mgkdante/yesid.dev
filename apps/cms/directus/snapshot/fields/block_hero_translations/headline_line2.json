@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "headline_line2",
-    "group": null,
+    "group": "grp_headline",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces headline.line2",
+    "note": "Second line, in the accent colour, for example DON'T BREAK.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line 2"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

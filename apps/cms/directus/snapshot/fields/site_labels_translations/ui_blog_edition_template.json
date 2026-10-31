@@ -11,7 +11,7 @@
     "group": "grp_blog_article",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"VOL. 01 // ISS. {issue}\"",
+    "note": "{issue} is replaced by a number. Default: \"VOL. 01 // ISS. {issue}\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Blog edition (template)"
+        "translation": "Edition line"
       }
     ],
     "validation": null,

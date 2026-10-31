@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "label_testimonial_slide_aria",
-    "group": "grp_testimonials",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "{index} and {total} are replaced by numbers, for example Testimonial 1 of 3.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 5,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Screen reader · Quote slide"
+        "translation": "Screen reader · Quote position"
       }
     ],
     "validation": null,

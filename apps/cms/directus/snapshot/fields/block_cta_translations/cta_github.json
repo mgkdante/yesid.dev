@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "cta_github",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale GitHub CTA label (CtaContent.ctaGithub).",
+    "note": "Opens the GitHub address set in Site identity and SEO defaults.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Band · GitHub button"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "cta_github",

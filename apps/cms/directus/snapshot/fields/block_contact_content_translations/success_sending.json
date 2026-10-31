@@ -11,12 +11,12 @@
     "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Also shown on the send button while sending.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 3,
     "special": null,
     "translations": [
       {

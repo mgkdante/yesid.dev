@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "headline_aria_suffix",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces headline.ariaSuffix",
+    "note": "Read after line 1 instead of line 2, for example Don't Break.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 14,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Screen reader · Headline ending"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

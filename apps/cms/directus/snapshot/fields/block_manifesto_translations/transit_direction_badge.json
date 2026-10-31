@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "transit_direction_badge",
-    "group": null,
+    "group": "grp_transit",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces transit.directionBadge",
+    "note": "For example DIRECTION: CENTRE-VILLE.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 36,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Direction badge"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

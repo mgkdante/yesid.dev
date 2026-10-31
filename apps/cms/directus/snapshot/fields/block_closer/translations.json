@@ -11,16 +11,21 @@
     "group": null,
     "hidden": false,
     "interface": "translations",
-    "note": null,
+    "note": "Pick a language at the top. English is required; empty French or Spanish falls back to English.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 10,
+    "sort": 2,
     "special": [
       "translations"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Section copy (EN / FR / ES)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

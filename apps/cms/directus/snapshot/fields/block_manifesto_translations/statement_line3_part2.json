@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "statement_line3_part2",
-    "group": null,
+    "group": "grp_statement",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces statement.line3Part2",
+    "note": "For example RUN ON. A highlighted full stop follows it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 16,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line 3 · end"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

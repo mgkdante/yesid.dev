@@ -1,0 +1,38 @@
+{
+  "collection": "services",
+  "field": "grp_media",
+  "type": "alias",
+  "meta": {
+    "collection": "services",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_media",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "The service drawing.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 11,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Images and links"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -11,7 +11,7 @@
     "group": "grp_shared_toc",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Default: \"Close table of contents\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "TOC close (screen reader)"
+        "translation": "Close button (screen reader)"
       }
     ],
     "validation": null,

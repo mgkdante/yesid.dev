@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "sql_meta_template",
-    "group": null,
+    "group": "grp_sql",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces sql_panel.metaTemplate",
+    "note": "Line under the results. {queryTime} becomes the query time and {updatedAgo} the data age. Keep both.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Results line"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "sql_meta_template",

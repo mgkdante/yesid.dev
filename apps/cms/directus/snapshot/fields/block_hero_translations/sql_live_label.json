@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "sql_live_label",
-    "group": null,
+    "group": "grp_sql",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces sql_panel.liveLabel",
+    "note": "Badge while the panel shows simulated data, for example DEMO.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 16,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Badge · demo data"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

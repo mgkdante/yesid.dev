@@ -8,15 +8,15 @@
     "display": null,
     "display_options": null,
     "field": "heading",
-    "group": null,
+    "group": "grp_heading",
     "hidden": false,
     "interface": "input",
-    "note": "Main heading of /projects.",
+    "note": "Main heading of /projects. Overrides the fallback heading in Site labels.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
     "translations": [
       {
@@ -26,7 +26,7 @@
     ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "heading",

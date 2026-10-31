@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "terminal_command",
-    "group": null,
+    "group": "grp_terminal",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces terminal.command",
+    "note": "Text after it, for example :~$ cat manifesto.md",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Command"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

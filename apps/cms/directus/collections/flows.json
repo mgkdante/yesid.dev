@@ -37,7 +37,7 @@
     "name": "Publish site",
     "icon": "rocket_launch",
     "color": "#E07800",
-    "description": "D6 manual Publish (2026-10-25): one build per editing session. Run from Site Config (build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
+    "description": "D6 manual Publish (2026-10-25): one build per editing session. Run from Publish site (bottom of the Content sidebar, collection build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
     "status": "active",
     "trigger": "manual",
     "accountability": "all",

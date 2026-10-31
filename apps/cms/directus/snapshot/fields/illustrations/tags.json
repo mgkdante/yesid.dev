@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "tags",
-    "note": "Filter / search aid across content types.",
+    "note": "Helps find it in pickers.",
     "options": {
       "alphabetize": true
     },
@@ -22,7 +22,12 @@
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search tags"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

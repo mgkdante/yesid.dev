@@ -11,17 +11,17 @@
     "group": "grp_shared_quiet",
     "hidden": false,
     "interface": "input",
-    "note": "Collapsed-state visible label of the collapse/expand-all control. Default: \"Expand all\"",
+    "note": "Button text while sections are collapsed. Default: \"Expand all\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 2,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Quiet mode label collapsed"
+        "translation": "Button · While collapsed"
       }
     ],
     "validation": null,

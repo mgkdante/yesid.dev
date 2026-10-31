@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "sql_prompt",
-    "group": null,
+    "group": "grp_sql",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces sql_panel.prompt",
+    "note": "Text at the top of the panel, for example yesid@transit:gold>",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 15,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Prompt"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "sql_prompt",

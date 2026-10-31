@@ -11,14 +11,19 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "file-image",
-    "note": "Hero image for the project detail page.",
+    "note": "Main screenshot on project cards (/projects and home page). Used in dark mode, and in light mode if no light version.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 41,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Card image"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

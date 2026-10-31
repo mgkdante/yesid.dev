@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "seo_description",
-    "group": null,
+    "group": "grp_seo",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Search-facing meta description (~155 chars: locality + tech + freelance). The on-page one-liner stays in description; this field only feeds <meta name=\"description\">.",
+    "note": "About 155 characters for Google and link previews. If empty, the short description is used.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "seo_description",

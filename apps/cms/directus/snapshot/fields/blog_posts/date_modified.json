@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "date_modified",
-    "group": "grp_seo",
+    "group": "grp_meta",
     "hidden": false,
     "interface": "datetime",
-    "note": "Optional last-updated date for BlogPosting structured data.",
+    "note": "Optional. Tells search engines when the post last changed. Not shown on the page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 33,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Last updated date"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

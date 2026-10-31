@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": null,
+    "note": "Where contact form messages are sent.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"

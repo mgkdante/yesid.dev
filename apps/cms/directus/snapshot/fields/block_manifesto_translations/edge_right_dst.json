@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_right_dst",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_right.dst",
+    "note": "For example DST Montréal, QC.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 26,
+    "sort": 8,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Right · To"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

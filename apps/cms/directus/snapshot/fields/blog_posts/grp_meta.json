@@ -1,0 +1,38 @@
+{
+  "collection": "blog_posts",
+  "field": "grp_meta",
+  "type": "alias",
+  "meta": {
+    "collection": "blog_posts",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_meta",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Dates shown on the post and given to search engines.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 14,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Publishing details"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "pills",
-    "group": null,
+    "group": "grp_pills",
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale pills array (ManifestoContent.pills). JSON shape: Array<{ label: string, serviceId: string }>. serviceId is a non-translatable slug; label is the per-locale string.",
+    "note": "Links under the statement. Each has a label and a service slug like data-pipeline. English sets order and slugs; translate labels only.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -43,11 +43,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 1,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Service pills"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

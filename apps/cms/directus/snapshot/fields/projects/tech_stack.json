@@ -11,18 +11,23 @@
     "group": "grp_class",
     "hidden": false,
     "interface": "list-m2m",
-    "note": "Tech-stack items used by this project. Bidirectional view of `tech_stack.projects` (junction: tech_stack_projects).",
+    "note": "Shown in the Stack panel and on cards, in this order. Used by the Tech Stack filter.",
     "options": {
       "template": "{{tech_stack_id}}"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 52,
+    "sort": 2,
     "special": [
       "m2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tech stack"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -13,7 +13,7 @@
     "interface": "group-detail",
     "note": null,
     "options": {
-      "start": "closed",
+      "start": "open",
       "headerColor": "#E07800"
     },
     "readonly": false,
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Personal listing (/blog/personal)"
+        "translation": "Heading and intro · Personal corner (/blog/personal)"
       }
     ],
     "validation": null,

@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "boolean",
-    "note": "Off = hidden everywhere on yesid.dev after the auto-rebuild (services have no draft/archive — this toggle IS the switch).",
+    "note": "Off hides this service everywhere on yesid.dev. Services have no draft status; this switch is it.",
     "options": {
       "label": "Visible on the site"
     },
@@ -20,7 +20,12 @@
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Visible on the site"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

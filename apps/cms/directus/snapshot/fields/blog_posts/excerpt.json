@@ -11,7 +11,7 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "1–2 sentences shown on listing cards. Mono-language with the post's native language (see lang field). Max 500 chars.",
+    "note": "One or two sentences on the listing card and under the article heading. Max 500 characters.",
     "options": null,
     "readonly": false,
     "required": true,

@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Display order on the services page (drag rows in the list view to change).",
+    "note": "1 comes first on /services and the home page, and shows as Service 01 / 04. Dragging rows in the list also sets it.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Display order"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

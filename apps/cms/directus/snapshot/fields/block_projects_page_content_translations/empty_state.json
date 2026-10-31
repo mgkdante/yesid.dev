@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "empty_state",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Shown when the filters match no project.",
+    "note": "Shown in place of the project cards when the filters match nothing.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 1,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "No results message"
+        "translation": "Filters · No results message"
       }
     ],
     "validation": null,

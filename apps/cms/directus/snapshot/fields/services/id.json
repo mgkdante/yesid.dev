@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Kebab-case identifier (e.g. sql-development). Used as URL slug.",
+    "note": "The address: /services/<this>. Lowercase words joined by dashes. Set when creating; changing it breaks links.",
     "options": {
       "slug": true,
       "trim": true
@@ -19,12 +19,17 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 1,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Slug (URL)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "id",

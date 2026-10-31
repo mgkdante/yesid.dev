@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "build",
     "item_duplication_fields": null,
-    "note": "Service offerings — listing + per-service detail pages.",
+    "note": "Service cards and service detail pages.",
     "preview_url": null,
     "singleton": false,
     "sort": 2,

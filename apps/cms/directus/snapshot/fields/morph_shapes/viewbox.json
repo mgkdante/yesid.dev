@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "SVG viewBox, e.g. \"0 0 48 48\". Default matches existing shape lib.",
+    "note": "Usually 0 0 48 48.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "View box"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

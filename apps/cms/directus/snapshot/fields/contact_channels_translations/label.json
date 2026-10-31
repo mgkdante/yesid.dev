@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Visible only on the booking (calendar) row; other rows show the link. Also used in the site's AI summary file.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Channel name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

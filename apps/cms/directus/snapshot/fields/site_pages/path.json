@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Route path, e.g. /about. Code-defined routes today; freeform builder pages in slice-26.2.",
+    "note": "Page address, e.g. /about. Must match a page the site already has.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page path"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

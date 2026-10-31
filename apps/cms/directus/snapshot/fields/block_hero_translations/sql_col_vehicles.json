@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "sql_col_vehicles",
-    "group": null,
+    "group": "grp_sql",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces sql_panel.columns.vehicles",
+    "note": "Column heading, for example vehicles.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 19,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Column · vehicles"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

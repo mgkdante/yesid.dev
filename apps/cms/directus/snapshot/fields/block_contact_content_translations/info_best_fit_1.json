@@ -11,7 +11,7 @@
     "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Empty lines are skipped. Leave all three empty to hide Best fit.",
     "options": null,
     "readonly": false,
     "required": false,

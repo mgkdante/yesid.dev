@@ -11,14 +11,19 @@
     "group": "grp_meta",
     "hidden": false,
     "interface": "input",
-    "note": "Geographic location or context (e.g. Remote — Montreal, QC).",
+    "note": "Shown as SRC in the project page header margin on wide screens, such as Montréal / Ottawa.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 65,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Location"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

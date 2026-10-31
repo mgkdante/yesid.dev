@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "identity_line",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Hero identity kicker above the headline. Stored human-case; rendered ALL CAPS by CSS. Default: \"freelance digital infrastructure - Montreal\"",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 24,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Identity line (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

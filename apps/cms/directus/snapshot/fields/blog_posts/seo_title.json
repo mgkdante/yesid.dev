@@ -11,14 +11,19 @@
     "group": "grp_seo",
     "hidden": false,
     "interface": "input",
-    "note": "Optional search/share title body. The site appends the brand suffix. Keep under 60 characters.",
+    "note": "Optional. Empty uses the title. The site adds the brand name. Keep under 60 characters.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 31,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

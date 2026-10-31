@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_stack_label",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.stack.label",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 29,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Stack row · Name (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

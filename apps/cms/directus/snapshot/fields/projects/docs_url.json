@@ -11,14 +11,19 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "input",
-    "note": "Public documentation URL (the published architecture wiki). Shown as Documentation beside the GitHub and live links.",
+    "note": "Shown as Documentation in the Links box.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 46,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Documentation link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

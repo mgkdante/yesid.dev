@@ -14,10 +14,10 @@
     "hidden": false,
     "icon": "manage_search",
     "item_duplication_fields": null,
-    "note": "CMS-backed static route SEO overrides. Code owns technical SEO defaults.",
+    "note": "Search title, description and share image for fixed pages such as Home, Services, Projects, Blog, About and Contact.",
     "preview_url": null,
     "singleton": false,
-    "sort": 4,
+    "sort": 2,
     "sort_field": "sort",
     "status": "active",
     "translations": [

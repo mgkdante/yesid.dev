@@ -11,7 +11,7 @@
     "group": "grp_form",
     "hidden": false,
     "interface": "input-multiline",
-    "note": null,
+    "note": "Printed when the form opens, for example Opening contact form...",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Intro output"
+        "translation": "Intro line"
       }
     ],
     "validation": null,

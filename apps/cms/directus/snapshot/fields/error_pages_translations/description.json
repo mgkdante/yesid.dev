@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Per-locale longer description shown below the heading. Multiline copy explaining the error and prompting the visitor.",
+    "note": "Text under the heading, above the suggested links.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Message label fallback"
+        "translation": "Message label (backup)"
       }
     ],
     "validation": null,

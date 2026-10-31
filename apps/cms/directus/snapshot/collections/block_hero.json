@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "home",
     "item_duplication_fields": null,
-    "note": "Top of the home page: headline, actions and live SQL panel text.",
+    "note": "Top of the home page: headline, intro, buttons and the live SQL panel.",
     "preview_url": null,
     "singleton": true,
     "sort": 1,

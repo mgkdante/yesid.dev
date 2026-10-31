@@ -11,7 +11,7 @@
     "group": "grp_services_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"Services\"",
+    "note": "Hidden heading read by screen readers on the Services page. Default: \"Services\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Heading"
+        "translation": "Page heading (screen reader)"
       }
     ],
     "validation": null,
