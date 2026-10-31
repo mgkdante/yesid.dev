@@ -2457,18 +2457,12 @@
     "presets": null,
     "fields": [
       "block_about_content_id",
-      "cta",
       "id",
-      "identity",
       "interests",
-      "labels",
       "languages_code",
-      "meta",
       "methodology",
       "metrics",
-      "stop_labels",
       "testimonials",
-      "weather",
       "education",
       "label_testimonials_prev_aria",
       "label_testimonials_next_aria"
@@ -2501,14 +2495,9 @@
       "bio",
       "block_about_intro_id",
       "id",
-      "interests",
-      "interests_label",
       "languages_code",
-      "location",
-      "location_label",
       "more_link",
       "name",
-      "stack_label",
       "title"
     ],
     "policy": "_sync_default_public_policy",
@@ -2523,7 +2512,6 @@
     "fields": [
       "id",
       "sort",
-      "stack_items",
       "status",
       "translations"
     ],
@@ -2537,29 +2525,13 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "back_to_dispatches",
-      "back_to_personal",
       "block_blog_page_content_id",
       "heading",
       "id",
       "intro",
       "languages_code",
       "personal_heading",
-      "personal_intro",
-      "to_personal_label",
-      "to_personal_subtitle",
-      "to_professional_label",
-      "to_professional_subtitle",
-      "entry_rail_work_title",
-      "entry_rail_work_prompt",
-      "entry_rail_services_label",
-      "entry_rail_contact_label",
-      "entry_rail_routes_title",
-      "entry_rail_route_case_studies_label",
-      "entry_rail_route_services_label",
-      "entry_rail_route_stack_label",
-      "entry_rail_route_about_label",
-      "entry_rail_route_contact_label"
+      "personal_intro"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "071fa52d-f648-403a-ad9b-ae4846c50ddd"
@@ -2574,14 +2546,7 @@
       "id",
       "sort",
       "status",
-      "translations",
-      "entry_rail_services_href",
-      "entry_rail_contact_href",
-      "entry_rail_route_case_studies_href",
-      "entry_rail_route_services_href",
-      "entry_rail_route_stack_href",
-      "entry_rail_route_about_href",
-      "entry_rail_route_contact_href"
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "5166cbe5-bcae-4078-8eb1-fd0b4247413b"
@@ -2593,16 +2558,9 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "attribution",
       "block_closer_id",
-      "cta",
-      "heading",
-      "heading_dot",
       "id",
-      "languages_code",
-      "rows",
-      "subheading",
-      "terminal"
+      "languages_code"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "7ee5011f-8eef-4244-8346-36cd6da730bf"
@@ -2614,7 +2572,6 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "attribution_url",
       "cta_href",
       "id",
       "sort",
@@ -2632,16 +2589,11 @@
     "presets": null,
     "fields": [
       "block_contact_content_id",
-      "form_terminal",
       "id",
-      "info_terminal",
       "languages_code",
-      "meta",
       "page_title",
       "send_error_message",
       "station_label",
-      "success",
-      "validation",
       "form_field_name_label",
       "form_field_email_label",
       "form_field_message_label",
@@ -2710,12 +2662,8 @@
       "block_hero_id",
       "cta_contact",
       "cta_work",
-      "headline",
-      "hero_anim",
       "id",
       "languages_code",
-      "refresh_button",
-      "sql_panel",
       "subheadline",
       "subtitle"
     ],
@@ -2745,16 +2693,10 @@
     "presets": null,
     "fields": [
       "block_manifesto_id",
-      "edge_bottom",
-      "edge_left",
-      "edge_right",
       "hidden_transit_lines",
       "id",
       "languages_code",
-      "pills",
-      "statement",
-      "terminal",
-      "transit"
+      "pills"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "d8498cce-bdd0-455a-a946-77dc2aef9c8b"
@@ -2813,13 +2755,8 @@
     "presets": null,
     "fields": [
       "block_proof_reel_id",
-      "heading",
-      "heading_dot",
       "id",
       "languages_code",
-      "section_label",
-      "subheading",
-      "toggle_color_aria",
       "view_all_label"
     ],
     "policy": "_sync_default_public_policy",
@@ -2849,11 +2786,8 @@
     "presets": null,
     "fields": [
       "block_services_grid_id",
-      "heading",
-      "heading_dot",
       "id",
       "languages_code",
-      "subheading",
       "view_all_link",
       "view_illustration_aria"
     ],
@@ -2965,8 +2899,7 @@
       "id",
       "label",
       "languages_code",
-      "suggestions",
-      "terminal_line"
+      "suggestions"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "26208700-e017-495a-a643-8e838687da86"
