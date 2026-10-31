@@ -33,7 +33,8 @@ const UNRELATED_PERMISSION_COUNT = 713;
 // slice-43.28 removes the deleted empty icons folder from the public file filter.
 // slice-43.30 drops the retired page-builder collections and their 39 rows.
 // 2026-10-31 removes the anonymous read of site_meta and site_meta_translations (owner-approved).
-const UNRELATED_PERMISSION_SHA256 = 'd57dcc6497e0d2e77add63bbae671c7d8e7791b5a58fb7e7a5d33a42705be0f1';
+// 2026-10-31 drops the deleted stale CMS fields from 13 public read field lists (Directus removed them on delete).
+const UNRELATED_PERMISSION_SHA256 = 'b5403de09aff91286d1419c0a37fef2b2ff1e1ae453fa750b66c8199a0ac3bda';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 const BLOG_LANGUAGE_PRESET_IDS = ['_sync_preset_blog_posts_en', '_sync_preset_blog_posts_fr', '_sync_preset_blog_posts_es'];
