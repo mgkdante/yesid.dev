@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Internal name that links this post's languages. Not shown on the site; each language has its own slug.",
+    "note": "Internal name that links this post's languages. Use the English slug so Preview opens the English page.",
     "options": {
       "slug": true,
       "trim": true
