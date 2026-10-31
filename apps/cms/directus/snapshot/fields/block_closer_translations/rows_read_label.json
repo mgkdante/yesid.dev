@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_read_label",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.read.label",
+    "note": "For example BLOG.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 24,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog · Name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

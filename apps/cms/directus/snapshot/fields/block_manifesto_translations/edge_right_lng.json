@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_right_lng",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_right.lng",
+    "note": "For example LNG 73.5673°W.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 23,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Right · Longitude"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

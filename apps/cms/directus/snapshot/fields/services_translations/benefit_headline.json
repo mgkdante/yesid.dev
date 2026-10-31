@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "benefit_headline",
-    "group": null,
+    "group": "grp_card",
     "hidden": false,
     "interface": "input",
-    "note": "Visitor-facing outcome shown above the service title on home grid.",
+    "note": "Outcome line on the card, home grid and service page, such as Queries that run in seconds, not minutes.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 9,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Benefit headline"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

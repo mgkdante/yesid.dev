@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Email label fallback"
+        "translation": "Email label (backup)"
       }
     ],
     "validation": null,

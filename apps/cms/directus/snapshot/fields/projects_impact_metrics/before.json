@@ -11,17 +11,22 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Locale-universal baseline value before improvement (e.g. 2 days). Optional.",
+    "note": "Earlier value shown before the number on home page project cards, such as 2 days. Same in every language.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Before (optional)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "before",

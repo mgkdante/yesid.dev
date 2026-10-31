@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "label_show_testimonial_aria",
-    "group": "grp_testimonials",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "{index} is replaced by the quote number.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 6,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Screen reader · Show quote"
+        "translation": "Screen reader · Go to quote"
       }
     ],
     "validation": null,

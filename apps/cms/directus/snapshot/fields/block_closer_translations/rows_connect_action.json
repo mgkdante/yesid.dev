@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_connect_action",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.connect.action",
+    "note": "Short word before the arrow, for example GO.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 23,
+    "sort": 11,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "GitHub · Action"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

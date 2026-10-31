@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "cta_button_label",
-    "group": "grp_contact",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Text on the button in the Contact terminal card.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 9,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Button label"
+        "translation": "Contact terminal · Button"
       }
     ],
     "validation": null,

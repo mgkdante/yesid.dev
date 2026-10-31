@@ -11,7 +11,7 @@
     "group": "grp_shared",
     "hidden": false,
     "interface": "boolean",
-    "note": "Turns the live weather readout on or off.",
+    "note": "Shows live Montreal weather on the About Location card.",
     "options": null,
     "readonly": false,
     "required": false,

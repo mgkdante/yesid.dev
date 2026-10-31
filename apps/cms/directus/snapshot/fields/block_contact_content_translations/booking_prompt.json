@@ -11,7 +11,7 @@
     "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": "Shown above the booking link.",
+    "note": "For example Prefer to talk it through?",
     "options": null,
     "readonly": false,
     "required": false,

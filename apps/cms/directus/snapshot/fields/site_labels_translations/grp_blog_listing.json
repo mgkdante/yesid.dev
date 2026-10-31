@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Listing and filters"
+        "translation": "Listing page: filters and empty states"
       }
     ],
     "validation": null,

@@ -469,5 +469,345 @@
     "icon": "bookmark",
     "color": null,
     "_syncId": "_sync_preset_blog_posts_es"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "projects",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "translations",
+          "status",
+          "featured",
+          "date_published"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_projects"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "services",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "translations",
+          "visible",
+          "station"
+        ],
+        "sort": [
+          "station"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_services"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "blog_posts",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "title",
+          "lang",
+          "status",
+          "category",
+          "date_published"
+        ],
+        "sort": [
+          "-date_published"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_blog_posts"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "legal_pages",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "translations",
+          "id",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_legal_pages"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "about_languages",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "translations",
+          "id",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_about_languages"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "contact_channels",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "translations",
+          "href",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_contact_channels"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "nav_links",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "placement",
+          "page",
+          "translations",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_nav_links"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "site_pages",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "path",
+          "translations",
+          "type",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_site_pages"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "route_seo",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "path",
+          "translations",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_route_seo"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "error_pages",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "status_code",
+          "translations",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_error_pages"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "tech_stack",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "name",
+          "status"
+        ],
+        "sort": [
+          "sort"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_tech_stack"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "tags",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "name",
+          "id"
+        ],
+        "sort": [
+          "name"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_tags"
+  },
+  {
+    "bookmark": null,
+    "role": null,
+    "collection": "languages",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": {
+      "tabular": {
+        "fields": [
+          "name",
+          "code"
+        ],
+        "sort": [
+          "code"
+        ],
+        "page": 1
+      }
+    },
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": null,
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_default_languages"
   }
 ]

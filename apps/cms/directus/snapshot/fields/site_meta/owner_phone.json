@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "owner_phone",
-    "group": null,
+    "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "E.164 phone for Person/service-area schema + Google Business Profile (homework 12). No street address: online only.",
+    "note": "The site build does not read this yet, so it appears nowhere. International format, e.g. +15145550100.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 100,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Phone (not used yet)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "owner_phone",

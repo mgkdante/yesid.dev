@@ -11,7 +11,7 @@
     "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "The channel rows are edited in Contact page → Contact Channels.",
+    "note": "The links under it are edited in Contact → Contact channels.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Connect · Label"
+        "translation": "Connect · Heading"
       }
     ],
     "validation": null,

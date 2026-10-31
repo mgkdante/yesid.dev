@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "label_testimonials_carousel_aria",
-    "group": "grp_testimonials",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Name of the quotes card, for example Personal quote.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 1,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Screen reader · Carousel"
+        "translation": "Screen reader · Quotes area"
       }
     ],
     "validation": null,

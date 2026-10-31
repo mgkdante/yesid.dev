@@ -11,7 +11,7 @@
     "group": "grp_shared_toc",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Short word before each section number. Default: \"SEC\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "TOC counter prefix"
+        "translation": "Section counter prefix"
       }
     ],
     "validation": null,

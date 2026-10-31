@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "slug",
+    "note": "The tag as shown on the site, such as etl. Lowercase with dashes. Set when creating. Shared by projects and blog posts.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tag"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

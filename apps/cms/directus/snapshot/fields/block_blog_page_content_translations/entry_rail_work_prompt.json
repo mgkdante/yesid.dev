@@ -11,7 +11,7 @@
     "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Sentence under the title.",
     "options": null,
     "readonly": false,
     "required": false,

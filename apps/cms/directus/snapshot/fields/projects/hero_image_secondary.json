@@ -11,14 +11,19 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "file-image",
-    "note": "Project hero image 2. Optional mobile or secondary view for cards and proof reel.",
+    "note": "Optional narrow phone screenshot shown beside the card image.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 43,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Second card image (phone view)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

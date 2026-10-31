@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "rows_contact_description",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.contact.description",
+    "note": "For example Start a project together.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 19,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact · Description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "rows_contact_description",

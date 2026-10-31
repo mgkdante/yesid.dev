@@ -11,7 +11,7 @@
     "group": "grp_global",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"// requested path not in service\"",
+    "note": "Text after \"$ route --status 404\" on every error page. Default: \"// requested path not in service\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Error page · Status note"
+        "translation": "Error pages · Terminal note"
       }
     ],
     "validation": null,

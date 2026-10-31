@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "terminal_title",
-    "group": null,
+    "group": "grp_window",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces terminal.title",
+    "note": "For example yesid@terminus:~/destinations",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Title bar"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "terminal_title",

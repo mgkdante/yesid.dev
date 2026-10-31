@@ -11,7 +11,7 @@
     "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "Command line shown in the closing terminal.",
+    "note": "Command at the top of the terminal, for example yesid --contact.",
     "options": null,
     "readonly": false,
     "required": false,

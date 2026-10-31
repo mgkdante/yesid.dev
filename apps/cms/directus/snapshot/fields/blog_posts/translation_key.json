@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Stable article-family key shared by exactly one en, fr, and es row.",
+    "note": "Same key on the EN, FR and ES versions of one article, so the language switch can link them.",
     "options": null,
     "readonly": false,
     "required": true,

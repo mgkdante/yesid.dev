@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "transit_platform_badge",
-    "group": null,
+    "group": "grp_transit",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces transit.platformBadge",
+    "note": "For example QUAI / PLATFORM 2.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 35,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Platform badge"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

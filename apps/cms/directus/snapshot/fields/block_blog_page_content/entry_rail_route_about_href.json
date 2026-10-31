@@ -11,12 +11,12 @@
     "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Site path. Empty uses /about.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 3,
     "special": null,
     "translations": [
       {

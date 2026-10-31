@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "owner_knows_about",
-    "group": null,
+    "group": "grp_owner",
     "hidden": false,
     "interface": "tags",
-    "note": "Person.knowsAbout — comma-separated areas of expertise.",
+    "note": "Areas of expertise listed for search engines. Press Enter after each one.",
     "options": {
       "alphabetize": false
     },
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 11,
+    "sort": 5,
     "special": [
       "cast-csv"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Skills"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

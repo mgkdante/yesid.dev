@@ -11,7 +11,7 @@
     "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Full-bleed footer CONNECT column heading (same word as the contact terminal section). Default: \"CONNECT\"",
+    "note": "Heading above the GitHub, LinkedIn and Upwork links. Default: \"CONNECT\"",
     "options": null,
     "readonly": false,
     "required": false,

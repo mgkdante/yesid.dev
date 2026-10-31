@@ -11,7 +11,7 @@
     "group": "grp_location",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Shown on the Location card.",
     "options": null,
     "readonly": false,
     "required": false,

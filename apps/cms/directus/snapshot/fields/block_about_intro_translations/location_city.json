@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "location_city",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces location.city",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "City (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

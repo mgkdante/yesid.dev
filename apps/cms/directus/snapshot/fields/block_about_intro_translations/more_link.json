@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "more_link",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale More link label (AboutIntroContent.moreLink).",
+    "note": "Link to the About page, under the bio.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "About · More link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

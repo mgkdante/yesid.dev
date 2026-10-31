@@ -11,14 +11,14 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "file-image",
-    "note": "Optional hero image (preset hero-1200 used at render).",
+    "note": "Optional. Given to search engines as the article image. Not shown on the page.",
     "options": {
       "folder": "blog"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 1,
     "special": [
       "file"
     ],

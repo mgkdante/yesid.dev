@@ -41,7 +41,7 @@ function assertAutomaticOperationsArePassive(flowRows: readonly Flow[], operatio
 			visited.add(id);
 			const operation = byId.get(id);
 			if (!operation) throw new Error(`${flow.name} reaches missing operation ${id}`);
-			expect(['condition', 'log'], `${flow.name} reaches ${id}`).toContain(operation.type);
+			expect(['condition', 'log', 'notification'], `${flow.name} reaches ${id}`).toContain(operation.type);
 			for (const next of [operation.resolve, operation.reject]) {
 				if (next) pending.push(next);
 			}
@@ -72,12 +72,12 @@ describe('D6 manual Publish flow contract', () => {
 		].sort());
 	});
 
-	it('requires confirmation for one synchronous manual build from Site Config', () => {
+	it('requires confirmation for one synchronous manual build from Publish site', () => {
 		const flow = flows.find((entry) => entry._syncId === PUBLISH_FLOW);
 		expect(flow).toMatchObject({
 			name: 'Publish site', icon: 'rocket_launch', status: 'active',
 			trigger: 'manual', accountability: 'all', operation: PUBLISH_OPERATION,
-			description: "D6 manual Publish (2026-10-25): one build per editing session. Run from Site Config (build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
+			description: "D6 manual Publish (2026-10-25): one build per editing session. Run from Publish site (bottom of the Content sidebar, collection build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
 		});
 		expect(flow?.options).toEqual({
 			collections: ['build_queue'], location: 'item', requireSelection: false,
@@ -118,7 +118,7 @@ describe('D6 manual Publish flow contract', () => {
 		assertOnlyManualPublishRequest(flows, operations);
 	});
 
-	it('allows only condition and log operations along every automatic flow branch', () => {
+	it('allows only condition, log and in-app notification operations along every automatic flow branch', () => {
 		assertAutomaticOperationsArePassive(flows, operations);
 	});
 
@@ -126,7 +126,7 @@ describe('D6 manual Publish flow contract', () => {
 		assertNoOtherDeployOptions(operations);
 	});
 
-	it('retains only the existing translation reminder subscription and operations', () => {
+	it('retains only the translation reminder subscription and its check, log and notify operations', () => {
 		const reminder = flows.find((entry) => entry._syncId === REMINDER_FLOW);
 		expect(reminder).toMatchObject({
 			name: 'Translation reminder on publish', status: 'active', trigger: 'event',
@@ -143,7 +143,7 @@ describe('D6 manual Publish flow contract', () => {
 		});
 		expect(operations.map((operation) => operation._syncId).sort()).toEqual([
 			PUBLISH_OPERATION, '_sync_op_translation_reminder_check_published',
-			'_sync_op_translation_reminder_log',
+			'_sync_op_translation_reminder_log', '_sync_op_translation_reminder_notify',
 		].sort());
 	});
 });

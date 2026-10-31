@@ -11,17 +11,17 @@
     "group": "grp_shared_quiet",
     "hidden": false,
     "interface": "input",
-    "note": "Collapsed-state tooltip. Default: \"Expand all sections on this page\"",
+    "note": "Default: \"Expand all sections on this page\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 4,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Quiet mode disable"
+        "translation": "Tooltip · While collapsed"
       }
     ],
     "validation": null,

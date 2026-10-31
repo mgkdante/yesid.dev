@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "statement_line3_highlight",
-    "group": null,
+    "group": "grp_statement",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces statement.line3Highlight",
+    "note": "Shown in the accent colour, for example OPERATIONS.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 15,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line 3 · highlighted words"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "Routes are the same in every language.",
+    "note": "Where the side rail buttons beside each article go. Same in every language. The button words are in Page copy.",
     "options": {
       "start": "open",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 10,
     "special": [
       "alias",
       "no-data",
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Article side rail links (all languages)"
+        "translation": "Article side rail · Link addresses (all languages)"
       }
     ],
     "validation": null,

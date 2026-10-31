@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Person.jobTitle (e.g., 'Digital Infrastructure Consultant')",
+    "note": "Your job title for search engines, e.g. Freelance Digital Solutions Developer.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Job title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

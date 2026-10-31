@@ -11,7 +11,7 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "input",
-    "note": "Post title in the post's native language (see lang field). Mono-language by editorial design — no translation junction.",
+    "note": "Card title and article heading. Write it in the language of this post.",
     "options": null,
     "readonly": false,
     "required": true,

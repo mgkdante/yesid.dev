@@ -11,17 +11,17 @@
     "group": "grp_shared_quiet",
     "hidden": false,
     "interface": "input",
-    "note": "Persist control, remembered state. Default: \"Don't start collapsed\"",
+    "note": "Shown while the choice is remembered. Default: \"Don't start collapsed\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 6,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Quiet mode forget"
+        "translation": "Remember option · On"
       }
     ],
     "validation": null,

@@ -11,17 +11,17 @@
     "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Glance links card: non-link state when the project repo exists but is private (homework 13).",
+    "note": "Shown instead of the GitHub link when the project code is private.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 14,
+    "sort": 12,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Glance repo private label"
+        "translation": "Glance panel · Private code note"
       }
     ],
     "validation": null,

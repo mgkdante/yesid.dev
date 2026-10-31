@@ -129,14 +129,14 @@
     "icon": "rocket_launch",
     "color": null,
     "show_header": true,
-    "note": "D6: publish once per editing session.",
+    "note": "Publish once per editing session.",
     "type": "label",
     "position_x": 1,
     "position_y": 1,
     "width": 8,
     "height": 6,
     "options": {
-      "text": "Publish: Site Config (build_queue) → Flows → Publish site, once per editing session. About 3 minutes per build."
+      "text": "Saving never changes yesid.dev. When you finish editing, open Publish site at the bottom of the sidebar, click Publish site in the Flows panel and confirm. One build takes about 3 minutes."
     },
     "_syncId": "_sync_panel_ops_rebuild_pending"
   },
@@ -237,5 +237,95 @@
       }
     },
     "_syncId": "f128d67b-ce75-4c1a-adc8-fb3e05214a4d"
+  },
+  {
+    "dashboard": "_sync_dashboard_start_here",
+    "name": "Where to edit",
+    "icon": "map",
+    "color": null,
+    "show_header": true,
+    "note": "How the Content sidebar maps to the site.",
+    "type": "label",
+    "position_x": 1,
+    "position_y": 1,
+    "width": 14,
+    "height": 20,
+    "options": {
+      "text": "Each page of yesid.dev has its own folder in Content, in site order: Home, Services, Projects, Blog, About, Contact, Legal pages.\n\nInside a form, groups follow the page from top to bottom. Words that operate the page (buttons, links, screen-reader text) sit in the Interface text group.\n\nSite shell: page registry, header, menu and footer links, interface labels used on many pages, and error pages.\nSite settings: brand identity, search titles for fixed pages, languages.\nTech stack and tags: shared lists for projects, services and blog posts.\n\nLanguages: pick EN, FR or ES at the top of a form. English is required; empty French or Spanish shows English.\nGroups called Not shown on the site can be ignored.",
+      "whiteSpace": "pre-line"
+    },
+    "_syncId": "_sync_panel_start_where_to_edit"
+  },
+  {
+    "dashboard": "_sync_dashboard_start_here",
+    "name": "How to publish",
+    "icon": "rocket_launch",
+    "color": null,
+    "show_header": true,
+    "note": "Saving alone never changes the site.",
+    "type": "label",
+    "position_x": 15,
+    "position_y": 1,
+    "width": 10,
+    "height": 12,
+    "options": {
+      "text": "1. Edit and Save. Saving does not change yesid.dev.\n2. When you are done, open Publish site at the bottom of the sidebar.\n3. Click Publish site in the Flows panel and confirm.\n4. Wait about 3 minutes, then check yesid.dev.\n\nOnly published items (and visible services) appear on the site.",
+      "whiteSpace": "pre-line"
+    },
+    "_syncId": "_sync_panel_start_how_to_publish"
+  },
+  {
+    "dashboard": "_sync_dashboard_start_here",
+    "name": "Draft blog posts",
+    "icon": "edit_note",
+    "color": null,
+    "show_header": true,
+    "note": "Posts not on the site yet.",
+    "type": "list",
+    "position_x": 15,
+    "position_y": 13,
+    "width": 10,
+    "height": 8,
+    "options": {
+      "collection": "blog_posts",
+      "limit": 10,
+      "sortField": "date_published",
+      "sortDirection": "desc",
+      "displayTemplate": "{{title}} ({{lang}})",
+      "linkToItem": true,
+      "filter": {
+        "status": {
+          "_eq": "draft"
+        }
+      }
+    },
+    "_syncId": "_sync_panel_start_draft_posts"
+  },
+  {
+    "dashboard": "_sync_dashboard_start_here",
+    "name": "Draft projects",
+    "icon": "edit_note",
+    "color": null,
+    "show_header": true,
+    "note": "Projects not on the site yet.",
+    "type": "list",
+    "position_x": 1,
+    "position_y": 21,
+    "width": 14,
+    "height": 8,
+    "options": {
+      "collection": "projects",
+      "limit": 10,
+      "sortField": "sort",
+      "sortDirection": "asc",
+      "displayTemplate": "{{id}}",
+      "linkToItem": true,
+      "filter": {
+        "status": {
+          "_eq": "draft"
+        }
+      }
+    },
+    "_syncId": "_sync_panel_start_draft_projects"
   }
 ]

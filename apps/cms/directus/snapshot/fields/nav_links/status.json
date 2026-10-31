@@ -33,7 +33,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Publication state. ai-editor cannot set to published.",
+    "note": "Only published links show. A link also disappears when its page is archived.",
     "options": {
       "choices": [
         {
@@ -49,9 +49,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 6,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

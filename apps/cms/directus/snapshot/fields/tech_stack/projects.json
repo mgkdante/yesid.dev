@@ -18,11 +18,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 41,
+    "sort": 1,
     "special": [
       "m2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

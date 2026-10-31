@@ -11,17 +11,22 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Locale-universal metric value (e.g. 30s, 99.9%, 2 days).",
+    "note": "The number with its unit, such as 30s or 99.9%. Same in every language.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Number"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "value",

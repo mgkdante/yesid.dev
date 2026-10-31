@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "label_testimonials_next_aria",
-    "group": "grp_testimonials",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
     "note": null,
@@ -16,7 +16,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 4,
     "special": null,
     "translations": [
       {

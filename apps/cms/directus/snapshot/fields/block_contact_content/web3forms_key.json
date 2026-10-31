@@ -11,7 +11,7 @@
     "group": "grp_delivery",
     "hidden": false,
     "interface": "input",
-    "note": "Public web3forms access key (ContactContent.web3formsKey). Safe to expose client-side.",
+    "note": "Delivers form messages to the owner's inbox. Public by design. Change it only if the Web3Forms account changes.",
     "options": null,
     "readonly": false,
     "required": false,

@@ -5,13 +5,18 @@
   "meta": {
     "collection": "block_contact_content",
     "conditions": null,
-    "display": null,
-    "display_options": null,
+    "display": "translations",
+    "display_options": {
+      "template": "{{page_title}}",
+      "languageField": "name",
+      "defaultLanguage": "en",
+      "userLanguage": false
+    },
     "field": "translations",
     "group": null,
     "hidden": false,
     "interface": "translations",
-    "note": "All Contact text, grouped by box. Pick the language at the top.",
+    "note": "Pick a language at the top. English is required; empty French or Spanish falls back to English.",
     "options": null,
     "readonly": false,
     "required": false,

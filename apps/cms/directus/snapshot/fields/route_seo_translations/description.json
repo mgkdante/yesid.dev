@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Static route SEO description, 50 to 200 characters.",
+    "note": "Summary in Google results and share previews. Aim for 50 to 200 characters. Empty uses the default description.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

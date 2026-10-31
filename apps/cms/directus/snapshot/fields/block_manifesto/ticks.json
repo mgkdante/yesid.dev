@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "ticks",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input-code",
-    "note": "Non-translatable array of tick strings (ManifestoContent.ticks). JSON shape: string[].",
+    "note": "Numbers along the top edge, left to right. Keep the format [\"0\", \"80\", \"160\"].",
     "options": {
       "language": "json"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Top ruler numbers"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

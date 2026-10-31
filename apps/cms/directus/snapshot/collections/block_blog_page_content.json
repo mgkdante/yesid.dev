@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "article",
     "item_duplication_fields": null,
-    "note": "Blog listing intros, lane links, back links and the article side rail.",
+    "note": "Blog listing headings and intros, plus the article back links and side rail.",
     "preview_url": null,
     "singleton": true,
     "sort": 2,

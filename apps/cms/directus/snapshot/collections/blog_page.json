@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "article",
     "item_duplication_fields": null,
-    "note": "Blog posts + the blog listing page intro.",
+    "note": "Blog posts and the blog listing text.",
     "preview_url": null,
     "singleton": false,
     "sort": 4,

@@ -11,7 +11,7 @@
     "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Line under the location, for example ~24h response time.",
     "options": null,
     "readonly": false,
     "required": false,

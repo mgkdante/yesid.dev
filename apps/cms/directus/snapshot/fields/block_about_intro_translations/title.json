@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "title",
-    "group": null,
+    "group": "grp_teaser",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale title/role label (AboutIntroContent.title).",
+    "note": "Line under the name.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Role"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "title",

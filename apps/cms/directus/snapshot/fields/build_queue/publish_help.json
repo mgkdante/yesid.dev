@@ -1,0 +1,38 @@
+{
+  "collection": "build_queue",
+  "field": "publish_help",
+  "type": "alias",
+  "meta": {
+    "collection": "build_queue",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "publish_help",
+    "group": null,
+    "hidden": false,
+    "interface": "presentation-notice",
+    "note": null,
+    "options": {
+      "color": "info",
+      "icon": "rocket_launch",
+      "text": "Saving never changes yesid.dev by itself. When you finish an editing session, click Publish site in the Flows panel on the right and confirm. One site build takes about 3 minutes; then check yesid.dev."
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 2,
+    "special": [
+      "alias",
+      "no-data"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "How to publish"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

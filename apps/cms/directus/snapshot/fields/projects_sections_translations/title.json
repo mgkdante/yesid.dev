@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Section heading (e.g. The Challenge).",
+    "note": "Section heading on the project page. For an images-only section it names the gallery, such as Screenshots.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

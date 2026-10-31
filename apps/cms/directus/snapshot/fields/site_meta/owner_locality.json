@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "owner_locality",
-    "group": null,
+    "group": "grp_owner",
     "hidden": false,
     "interface": "input",
-    "note": "City",
+    "note": "e.g. Montreal",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 8,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "City"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

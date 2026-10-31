@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "refresh_helper",
-    "group": null,
+    "group": "grp_refresh",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces refresh_button.helper",
+    "note": "Line under the button while the data is simulated.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 22,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Helper · demo data"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "refresh_helper",

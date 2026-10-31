@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "build",
     "item_duplication_fields": null,
-    "note": "Service offerings. Canonical source for /services/<id> pages. See docs/project/SERVICES.md.",
+    "note": "One row per service: card text, detail page text, deliverables and stack. Turn Visible off to hide a service.",
     "preview_url": null,
     "singleton": false,
     "sort": 1,
     "sort_field": "station",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services",
+        "singular": "Services",
+        "plural": "Services"
+      }
+    ],
     "unarchive_value": "true",
     "versioning": true
   },

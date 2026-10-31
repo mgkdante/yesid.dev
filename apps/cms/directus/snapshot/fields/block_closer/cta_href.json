@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "cta_href",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "Non-translatable href for the CTA button (CloserContent.cta.href).",
+    "note": "Where the button under the board goes, for example /contact.",
     "options": {
       "placeholder": "/contact"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Terminus · Button link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

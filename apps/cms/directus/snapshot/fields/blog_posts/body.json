@@ -40,19 +40,19 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "input-block-editor",
-    "note": "Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.",
+    "note": "The article itself: headings, paragraphs, lists, quotes, code and images. Optional for external posts.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 3,
     "special": [
       "cast-json"
     ],
     "translations": [
       {
         "language": "en-US",
-        "translation": "Body"
+        "translation": "Article text"
       }
     ],
     "validation": null,

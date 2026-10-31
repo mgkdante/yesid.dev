@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale visible nav label (e.g. 'Services' / 'Services' / 'Servicios').",
+    "note": "Overrides the page title. With no text in any language, the link shows the page title.",
     "options": {
       "placeholder": "e.g. Services"
     },
@@ -20,7 +20,12 @@
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Link text"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

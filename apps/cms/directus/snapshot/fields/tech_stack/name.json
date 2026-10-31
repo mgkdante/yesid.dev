@@ -11,14 +11,19 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "input",
-    "note": "International display name (tech names are universal — no translation needed). E.g. \"Apache Airflow\", \"PostgreSQL\".",
+    "note": "Shown in project and service stacks. Not translated: write it as the maker does, such as PostgreSQL.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

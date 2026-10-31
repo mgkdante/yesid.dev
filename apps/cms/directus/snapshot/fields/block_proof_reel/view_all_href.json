@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "view_all_href",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "Non-translatable href for the View All link (ProofReelContent.viewAllHref).",
+    "note": "Where the View all projects link goes, for example /projects.",
     "options": {
       "placeholder": "/work"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "View all link · address"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

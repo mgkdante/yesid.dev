@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "📝 Content",
+    "note": "What visitors read on service cards, the home grid and the service page.",
     "options": {
       "headerColor": "#E07800",
       "start": "open"
@@ -25,7 +25,12 @@
       "no-data",
       "group"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Card and page text"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "file-image",
-    "note": "Extended SVG flag uploaded to the About assets folder.",
+    "note": "Wide SVG flag shown on the card. Cards without a flag or an English name are not shown.",
     "options": {
       "folder": "about"
     },
@@ -22,7 +22,12 @@
     "special": [
       "file"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Flag image"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

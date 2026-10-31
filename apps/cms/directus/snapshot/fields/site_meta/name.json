@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "name",
-    "group": null,
+    "group": "grp_brand",
     "hidden": false,
     "interface": "input",
-    "note": "Brand name + page title suffix. Currently 'yesid.'",
+    "note": "Added after every page title, e.g. Projects | yesid.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 2,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Brand name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

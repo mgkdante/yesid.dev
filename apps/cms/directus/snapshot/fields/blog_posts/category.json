@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "category",
-    "group": "grp_media",
+    "group": "grp_class",
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Editorial lane. Filters illustration dropdown.",
+    "note": "Professional posts list on /blog, personal posts on /blog/personal. Also filters the illustration list.",
     "options": {
       "choices": [
         {

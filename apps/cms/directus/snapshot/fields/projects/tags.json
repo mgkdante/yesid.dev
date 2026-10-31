@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "tags",
-    "group": null,
+    "group": "grp_class",
     "hidden": false,
     "interface": "list-m2m",
-    "note": "normalized tag taxonomy (M2M)",
+    "note": "Shown on project cards and used by the Tags filter. Tags are shared with blog posts.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 66,
+    "sort": 3,
     "special": [
       "m2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tags"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

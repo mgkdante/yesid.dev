@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "translations",
-    "note": null,
+    "note": "Pick a language at the top. English is required; empty French or Spanish falls back to English.",
     "options": {
       "languageField": "name"
     },
@@ -22,7 +22,12 @@
     "special": [
       "translations"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Text (EN / FR / ES)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

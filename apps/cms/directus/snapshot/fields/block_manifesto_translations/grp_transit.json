@@ -1,0 +1,38 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "grp_transit",
+  "type": "alias",
+  "meta": {
+    "collection": "block_manifesto_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_transit",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Station signs: next-train countdown, platform and direction badges, and the coloured line tags.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 14,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Transit board"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

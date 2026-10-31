@@ -11,7 +11,7 @@
     "group": "grp_retired",
     "hidden": false,
     "interface": "list",
-    "note": "Not shown on the site. The exporter still reads it, so keep it until a source migration removes it.",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": {
       "fields": [
         {

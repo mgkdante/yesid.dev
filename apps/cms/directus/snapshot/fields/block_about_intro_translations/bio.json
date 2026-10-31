@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "bio",
-    "group": null,
+    "group": "grp_teaser",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale bio text (AboutIntroContent.bio).",
+    "note": "One or two sentences under the role.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Bio"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

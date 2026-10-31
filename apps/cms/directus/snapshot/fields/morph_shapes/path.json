@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "SVG path d= attribute, e.g. \"M24 8 L40 38 L8 38 Z\". Must be a closed shape compatible with MorphSVGPlugin.",
+    "note": "The d attribute of a closed shape, for example M24 8 L40 38 L8 38 Z.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "SVG path"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

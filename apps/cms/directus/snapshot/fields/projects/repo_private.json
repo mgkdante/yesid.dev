@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "repo_private",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "boolean",
-    "note": "Repo exists but is private: the site shows a private-repo state instead of a dead link.",
+    "note": "Turn on when the code is private: the Links box shows a private-repo note instead of the GitHub link.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 67,
+    "sort": 8,
     "special": [
       "cast-boolean"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Private repository"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

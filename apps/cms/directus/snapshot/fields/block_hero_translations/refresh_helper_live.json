@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "refresh_helper_live",
-    "group": null,
+    "group": "grp_refresh",
     "hidden": false,
     "interface": "input",
-    "note": "Refresh helper when real KPIs are on screen. Default: \"Refreshes metrics + query results from the live pipeline.\"",
+    "note": "Line under the button when real transit data is on screen.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 26,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Helper · live data"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

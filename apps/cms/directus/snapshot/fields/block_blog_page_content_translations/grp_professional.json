@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": null,
+    "note": "The Blog heading above this intro is edited in Site labels (UI text).",
     "options": {
       "start": "open",
       "headerColor": "#E07800"
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Professional listing (/blog)"
+        "translation": "Heading and intro · Blog (/blog)"
       }
     ],
     "validation": null,

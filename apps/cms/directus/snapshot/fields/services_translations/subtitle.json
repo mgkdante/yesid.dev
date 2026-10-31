@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "subtitle",
-    "group": null,
+    "group": "grp_card",
     "hidden": false,
     "interface": "input",
-    "note": "Optional qualifier (e.g. & Optimization).",
+    "note": "Small line under the title on the card and service page. Leave empty if not needed.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Subtitle (optional)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

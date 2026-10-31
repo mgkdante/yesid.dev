@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_left_section_name",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_left.sectionName",
+    "note": "For example MANIFESTO.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Left · Section name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

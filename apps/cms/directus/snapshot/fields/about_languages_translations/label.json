@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Shown on the flag card, for example French.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Language name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

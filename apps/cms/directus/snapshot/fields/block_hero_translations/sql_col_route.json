@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "sql_col_route",
-    "group": null,
+    "group": "grp_sql",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces sql_panel.columns.route",
+    "note": "Column heading, for example route.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Column · route"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

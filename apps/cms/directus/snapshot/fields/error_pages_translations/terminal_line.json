@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "terminal_line",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale terminal-style ASCII line shown below the description (e.g. '$ route --status 404 // requested path not in service').",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": {
       "placeholder": "e.g. $ route --status 404 // requested path not in service"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Terminal line (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

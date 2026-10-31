@@ -1,0 +1,38 @@
+{
+  "collection": "block_hero_translations",
+  "field": "grp_sql",
+  "type": "alias",
+  "meta": {
+    "collection": "block_hero_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_sql",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Query panel beside the headline. Its rows and numbers come from data, not from here.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 12,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "SQL panel"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "cta_work",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale label for the 'work' CTA button (HeroContent.ctaWork).",
+    "note": "First button. Opens the Projects page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Hero · Projects button"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

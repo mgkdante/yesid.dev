@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "upwork_url",
-    "group": null,
+    "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "Upwork profile URL.",
+    "note": "Shown in the footer Connect column. Leave empty to hide the link.",
     "options": {
       "trim": true
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Upwork profile"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

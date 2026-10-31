@@ -11,7 +11,7 @@
     "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Site path. Empty uses /contact.",
     "options": null,
     "readonly": false,
     "required": false,

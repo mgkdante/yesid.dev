@@ -11,7 +11,7 @@
     "group": "grp_education",
     "hidden": false,
     "interface": "list",
-    "note": "Icon key: champlain or bishops.",
+    "note": "Each entry: school, program and logo key (champlain or bishops).",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -61,7 +61,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Education entries"
+        "translation": "Schools"
       }
     ],
     "validation": null,

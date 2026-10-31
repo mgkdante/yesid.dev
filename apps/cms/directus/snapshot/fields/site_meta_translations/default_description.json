@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "SEO fallback meta description (50–200 chars per SEO best practice).",
+    "note": "Search and share summary for pages without their own. Aim for 50 to 200 characters.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Default search description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

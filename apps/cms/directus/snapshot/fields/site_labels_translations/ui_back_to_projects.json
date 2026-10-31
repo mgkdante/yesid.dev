@@ -11,7 +11,7 @@
     "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Back-to-listing label on project detail pages.",
+    "note": "Link at the top of each project page.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Back to projects"
+        "translation": "Back to projects link"
       }
     ],
     "validation": null,

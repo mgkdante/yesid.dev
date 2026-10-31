@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "HTTP status code (404, 500, etc.). 0 = generic fallback — used when no specific status_code row is seeded. UNIQUE constraint enforced.",
+    "note": "Which error this text is for, e.g. 404 or 500. 0 = fallback for any error without its own row. One row per code.",
     "options": {
       "placeholder": "e.g. 404"
     },
@@ -20,7 +20,12 @@
     "searchable": true,
     "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Error code"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

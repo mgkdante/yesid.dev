@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale short label (e.g. 'Error 404' / 'Erreur 404'). Shown above the heading.",
+    "note": "Short line above the heading, e.g. ROUTE NOT FOUND.",
     "options": {
       "placeholder": "e.g. Error 404"
     },
@@ -20,10 +20,15 @@
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Label above the heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "label",

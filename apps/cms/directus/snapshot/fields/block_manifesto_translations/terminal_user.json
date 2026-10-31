@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "terminal_user",
-    "group": null,
+    "group": "grp_terminal",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces terminal.user",
+    "note": "Coloured part, for example yesid@mtl.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "User"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

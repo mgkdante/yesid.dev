@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_read_action",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.read.action",
+    "note": "Short word before the arrow, for example cd.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 25,
+    "sort": 8,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog · Action"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

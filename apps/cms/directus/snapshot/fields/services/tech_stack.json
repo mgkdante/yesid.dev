@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "tech_stack",
-    "group": null,
+    "group": "grp_class",
     "hidden": false,
     "interface": "list-m2m",
-    "note": "Tech-stack items used by this service. Bidirectional view of `tech_stack.services` (junction: tech_stack_services).",
+    "note": "Shown in the Stack panel of the service page, in this order.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 111,
+    "sort": 2,
     "special": [
       "m2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tech stack"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   }
 }

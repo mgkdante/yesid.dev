@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_right_lat",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_right.lat",
+    "note": "For example LAT 45.5017°N.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 22,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Right · Latitude"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

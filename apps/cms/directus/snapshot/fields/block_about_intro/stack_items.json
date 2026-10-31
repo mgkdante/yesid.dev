@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "stack_items",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input-code",
-    "note": "Non-translatable list of stack item strings (AboutIntroContent.stackItems). JSON: string[].",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": {
       "language": "json"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Stack items (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

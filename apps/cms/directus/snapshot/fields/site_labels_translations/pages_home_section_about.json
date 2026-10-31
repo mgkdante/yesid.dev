@@ -11,7 +11,7 @@
     "group": "grp_home_sections",
     "hidden": false,
     "interface": "input",
-    "note": "Home rotated section title for the About strip. Default: \"About\"",
+    "note": "Rotated section title for the About strip. Default: \"About\"",
     "options": null,
     "readonly": false,
     "required": false,

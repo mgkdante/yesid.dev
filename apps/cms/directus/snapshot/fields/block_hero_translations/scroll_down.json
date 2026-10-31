@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "scroll_down",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces hero_anim.scrollDown",
+    "note": "Typed over the metro map when Home opens, for example NEXT STOP: SCROLL DOWN.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 23,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Intro · Scroll prompt"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

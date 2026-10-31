@@ -8,15 +8,15 @@
     "display": null,
     "display_options": null,
     "field": "intro",
-    "group": null,
+    "group": "grp_heading",
     "hidden": false,
     "interface": "input",
-    "note": "Intro under the heading.",
+    "note": "One line under the heading on /projects.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": null,
     "translations": [
       {

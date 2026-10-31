@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "to_personal_label",
-    "group": "grp_professional",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Link in the /blog filter sidebar that opens /blog/personal.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 1,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Link to personal · Label"
+        "translation": "Blog sidebar · Personal corner link"
       }
     ],
     "validation": null,

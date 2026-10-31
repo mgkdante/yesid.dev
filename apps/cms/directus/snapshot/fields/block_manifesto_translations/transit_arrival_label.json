@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "transit_arrival_label",
-    "group": null,
+    "group": "grp_transit",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces transit.arrivalLabel",
+    "note": "Shown before the countdown, for example PROCHAIN / NEXT.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 34,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Next train label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

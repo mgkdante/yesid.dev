@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "title",
-    "group": null,
+    "group": "grp_card",
     "hidden": false,
     "interface": "input",
-    "note": "Service title (e.g. SQL Development & Optimization).",
+    "note": "Service name on cards, the home grid, the service page and the browser tab.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "grp_errors",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "group-detail",
     "note": null,
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 14,
+    "sort": 3,
     "special": [
       "alias",
       "no-data",

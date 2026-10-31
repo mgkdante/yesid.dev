@@ -11,17 +11,17 @@
     "group": "grp_identity",
     "hidden": false,
     "interface": "input-multiline",
-    "note": null,
+    "note": "Paragraph under the headline.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 3,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Value proposition"
+        "translation": "Intro paragraph"
       }
     ],
     "validation": null,

@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Order within the parent service (ascending).",
+    "note": "Lower numbers show first on the service page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Order"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

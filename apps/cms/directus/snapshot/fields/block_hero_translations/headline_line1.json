@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "headline_line1",
-    "group": null,
+    "group": "grp_headline",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces headline.line1",
+    "note": "First headline line, for example SYSTEMS THAT.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line 1"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

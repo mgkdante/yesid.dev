@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "ISO 639-1 code (en, fr, es)",
+    "note": "Two-letter code, e.g. en, fr, es. Content is linked to it, so do not change it.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Language code"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

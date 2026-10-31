@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "view_all_label",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale View All link label (ProofReelContent.viewAllLabel).",
+    "note": "Link under the project carousel. The title is in Site labels (UI text); cards are projects marked Featured.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects · View all link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

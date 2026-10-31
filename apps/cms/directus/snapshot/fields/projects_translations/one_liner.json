@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "One-sentence summary for cards and listings (max 500 chars).",
+    "note": "One sentence under the title on cards and the project page. Up to 500 characters.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "One-liner"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

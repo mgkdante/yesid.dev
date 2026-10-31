@@ -8,15 +8,15 @@
     "display": null,
     "display_options": null,
     "field": "date_published",
-    "group": "grp_media",
+    "group": "grp_meta",
     "hidden": false,
     "interface": "datetime",
-    "note": "ISO datetime; controls listing sort. Set when status flips to published.",
+    "note": "Shown on the card and article. Newest posts list first.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 1,
     "special": null,
     "translations": [
       {

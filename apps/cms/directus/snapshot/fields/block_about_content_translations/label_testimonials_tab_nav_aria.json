@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "label_testimonials_tab_nav_aria",
-    "group": "grp_testimonials",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Name of the dot navigation under the quotes.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 2,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Screen reader · Quote tabs"
+        "translation": "Screen reader · Quote dots"
       }
     ],
     "validation": null,

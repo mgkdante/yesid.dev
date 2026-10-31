@@ -1,0 +1,38 @@
+{
+  "collection": "site_meta",
+  "field": "grp_brand",
+  "type": "alias",
+  "meta": {
+    "collection": "site_meta",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_brand",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Brand"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

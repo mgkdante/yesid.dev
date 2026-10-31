@@ -11,7 +11,7 @@
     "group": "grp_services_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"Service {stationNum} / {totalStr}\"",
+    "note": "{stationNum} and {totalStr} are replaced by numbers. Default: \"Service {stationNum} / {totalStr}\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Station label (template)"
+        "translation": "Station number"
       }
     ],
     "validation": null,

@@ -11,7 +11,7 @@
     "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "The link always opens cal.com/yesid-dev.",
     "options": null,
     "readonly": false,
     "required": false,

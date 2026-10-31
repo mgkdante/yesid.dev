@@ -11,7 +11,7 @@
     "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Full-bleed footer LEGAL column heading. Default: \"LEGAL\"",
+    "note": "Heading above the legal page links. Default: \"LEGAL\"",
     "options": null,
     "readonly": false,
     "required": false,

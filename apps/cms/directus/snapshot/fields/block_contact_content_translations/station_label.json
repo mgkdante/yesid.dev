@@ -11,7 +11,7 @@
     "group": "grp_heading",
     "hidden": false,
     "interface": "input",
-    "note": "For example NEXT STOP: YOU.",
+    "note": "Line under the heading, for example NEXT STOP: YOU.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,12 +21,12 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Station label"
+        "translation": "Station line"
       }
     ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "station_label",

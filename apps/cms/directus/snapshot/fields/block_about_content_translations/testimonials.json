@@ -11,7 +11,7 @@
     "group": "grp_testimonials",
     "hidden": false,
     "interface": "list",
-    "note": null,
+    "note": "Each quote: text, author and role. Company is optional.",
     "options": {
       "addLabel": "Add row",
       "fields": [

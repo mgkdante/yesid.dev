@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "🔧 Internal (picker label & state)",
+    "note": "Internal name used inside the CMS. Not shown on the site.",
     "options": {
       "start": "closed"
     },
@@ -27,7 +27,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Internal (picker label)"
+        "translation": "Internal"
       }
     ],
     "validation": null,

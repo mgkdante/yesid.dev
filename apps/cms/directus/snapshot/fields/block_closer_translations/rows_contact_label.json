@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_contact_label",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.contact.label",
+    "note": "For example CONTACT.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact · Name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "work",
     "item_duplication_fields": null,
-    "note": "Heading, intro and no-results message for /projects.",
+    "note": "Heading, intro and no-results message of the /projects listing.",
     "preview_url": null,
     "singleton": true,
     "sort": 2,

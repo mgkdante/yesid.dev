@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "translate",
     "item_duplication_fields": null,
-    "note": "Supported locales (en required, fr/es optional). Used by Translations fields across all collections.",
+    "note": "The site's languages: English (required), French and Spanish.",
     "preview_url": null,
     "singleton": false,
-    "sort": 5,
+    "sort": 3,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Languages",
+        "singular": "Languages",
+        "plural": "Languages"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   },

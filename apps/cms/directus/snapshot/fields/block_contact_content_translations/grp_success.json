@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "grp_success",
-    "group": null,
+    "group": "grp_interface",
     "hidden": false,
     "interface": "group-detail",
-    "note": null,
+    "note": "Lines shown while sending and after the message is sent.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 15,
+    "sort": 5,
     "special": [
       "alias",
       "no-data",
