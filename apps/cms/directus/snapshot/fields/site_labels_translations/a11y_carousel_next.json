@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_carousel_next",
-    "group": null,
+    "group": "grp_home",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"Next projects\"",
+    "note": "Default: \"Next projects\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 203,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Featured projects · Next (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

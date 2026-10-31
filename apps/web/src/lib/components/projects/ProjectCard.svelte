@@ -125,7 +125,7 @@
 					{project}
 					preset={v.mediaPreset}
 					alt={resolveLocale(project.title, locale)}
-					imageClass={cn('project-card-img', !isProof && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
+					imageClass={cn('project-card-img', !isProof && project.imageSecondary && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
 					{eager}
 					sizes={project.imageSecondary ? mediaSizes.primary : mediaSizes.single}
 					secondarySizes={mediaSizes.secondary}

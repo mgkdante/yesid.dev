@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_listing_projects_strip_built_with_fallback",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Built with this\"",
+    "note": "Default: \"Built with this\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 89,
+    "sort": 28,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services · Projects strip built with fallback"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

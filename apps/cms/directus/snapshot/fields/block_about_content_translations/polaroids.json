@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "polaroids",
-    "group": null,
+    "group": "grp_snapshots",
     "hidden": false,
     "interface": "list",
-    "note": "(go2-t1b flat field) replaces identity.polaroids",
+    "note": null,
     "options": {
       "fields": [
         {
@@ -55,11 +55,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 19,
+    "sort": 2,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Photos"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

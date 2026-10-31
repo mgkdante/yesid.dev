@@ -1,0 +1,38 @@
+{
+  "collection": "site_labels_translations",
+  "field": "grp_unread",
+  "type": "alias",
+  "meta": {
+    "collection": "site_labels_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_unread",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Still exported and required by the site data contract, but no page reads them (checked at commit c1270573). Editing these changes nothing visible.",
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 18,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Not read by the site yet"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

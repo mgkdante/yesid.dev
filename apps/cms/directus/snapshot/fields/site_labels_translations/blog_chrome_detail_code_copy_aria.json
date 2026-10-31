@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_code_copy_aria",
-    "group": null,
+    "group": "grp_shared_code",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Copy code to clipboard\"",
+    "note": "Default: \"Copy code to clipboard\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 69,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Code copy (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

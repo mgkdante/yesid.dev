@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_quiet_mode_disable",
-    "group": null,
+    "group": "grp_shared_quiet",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Collapsed-state tooltip. Default: \"Expand all sections on this page\"",
+    "note": "Collapsed-state tooltip. Default: \"Expand all sections on this page\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Quiet mode disable"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

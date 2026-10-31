@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_quiet_mode_forget",
-    "group": null,
+    "group": "grp_shared_quiet",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Persist control, remembered state. Default: \"Don't start collapsed\"",
+    "note": "Persist control, remembered state. Default: \"Don't start collapsed\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Quiet mode forget"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

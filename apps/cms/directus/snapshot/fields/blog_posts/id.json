@@ -19,9 +19,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 1,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Slug (URL)"
+      }
+    ],
     "validation": {
       "_and": [
         {
@@ -32,7 +37,7 @@
       ]
     },
     "validation_message": "Slug must be kebab-case (lowercase letters/digits with single hyphens).",
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "id",

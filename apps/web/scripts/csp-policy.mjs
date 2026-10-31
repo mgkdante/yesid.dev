@@ -8,7 +8,7 @@ export function createCspDirectives({ themeScriptHash, vercelEnv }) {
 		'default-src': ['self'],
 		'script-src': ['self', themeScriptHash, ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
 		'style-src': ['self', 'unsafe-inline', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
-		'img-src': ['self', 'data:', 'blob:', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://vercel.com']) : [])],
+		'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://vercel.com']) : [])],
 		'font-src': ['self', 'data:', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://assets.vercel.com']) : [])],
 		'connect-src': [
 			'self',
@@ -18,7 +18,7 @@ export function createCspDirectives({ themeScriptHash, vercelEnv }) {
 			...(preview ? /** @type {const} */ (['https://vercel.live', 'wss://ws-us3.pusher.com']) : []),
 		],
 		'manifest-src': ['self'],
-		'frame-src': preview ? ['https://vercel.live'] : ['none'],
+		'frame-src': ['https://www.youtube-nocookie.com', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
 		'frame-ancestors': ['none'],
 		'object-src': ['none'],
 		'base-uri': ['self'],

@@ -42,8 +42,9 @@ function fitDescriptionForSeo(
 	fallback: { en: string; fr?: string; es?: string },
 ): { en: string; fr?: string; es?: string } {
 	if (!desc) return fallback;
-	const len = desc.en.length;
-	if (len < 50 || len > 200) return fallback;
+	if (Object.values(desc).some((text) => text !== undefined && (text.length < 50 || text.length > 200))) {
+		return fallback;
+	}
 	return desc;
 }
 

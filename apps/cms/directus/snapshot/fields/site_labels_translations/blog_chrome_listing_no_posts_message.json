@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_no_posts_message",
-    "group": null,
+    "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"No posts found. Try adjusting your filters.\"",
+    "note": "Default: \"No posts found. Try adjusting your filters.\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 58,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "No posts message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

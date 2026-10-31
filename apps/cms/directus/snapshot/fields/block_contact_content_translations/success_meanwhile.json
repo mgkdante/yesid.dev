@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "success_meanwhile",
-    "group": null,
+    "group": "grp_success",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "(go2-t1b flat field) replaces success.meanwhile",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 31,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Meanwhile text"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

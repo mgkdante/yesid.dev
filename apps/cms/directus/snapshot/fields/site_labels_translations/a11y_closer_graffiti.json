@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_closer_graffiti",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"THE END graffiti\"",
+    "note": "Default: \"THE END graffiti\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 9,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "General · Closer graffiti"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

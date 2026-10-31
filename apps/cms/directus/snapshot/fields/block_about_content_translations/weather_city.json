@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "weather_city",
-    "group": null,
+    "group": "grp_location",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces weather.city",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "City"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

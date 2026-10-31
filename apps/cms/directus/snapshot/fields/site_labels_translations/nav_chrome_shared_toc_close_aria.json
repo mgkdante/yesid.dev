@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_toc_close_aria",
-    "group": "grp_nav",
+    "group": "grp_shared_toc",
     "hidden": false,
     "interface": "input",
     "note": null,
@@ -18,7 +18,12 @@
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "TOC close (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

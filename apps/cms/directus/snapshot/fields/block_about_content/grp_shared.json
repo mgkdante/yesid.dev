@@ -1,0 +1,38 @@
+{
+  "collection": "block_about_content",
+  "field": "grp_shared",
+  "type": "alias",
+  "meta": {
+    "collection": "block_about_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_shared",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Values used in every language.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 3,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Shared settings (all languages)"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "cta_lines",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "list",
-    "note": "(go2-t1b flat field) replaces cta.lines",
+    "note": "Lines printed in the closing terminal.",
     "options": {
       "fields": [
         {
@@ -53,11 +53,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 95,
+    "sort": 5,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact terminal · Output lines"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

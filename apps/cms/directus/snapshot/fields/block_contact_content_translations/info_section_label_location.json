@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_section_label_location",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces info_terminal.sectionLabels.location",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Location · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "intro",
-    "group": null,
+    "group": "grp_professional",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale intro copy (BlogPageContentSchema.intro). Expand schema here when content design lands.",
+    "note": "Intro under the professional blog heading.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Intro"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

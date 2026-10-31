@@ -33,6 +33,7 @@
 	import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
 	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
 	import { collectProjectImages } from '#lib/projects/project-images.ts';
+	import { collectProjectVideos, youtubeLabels } from '#lib/utils/youtube.ts';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
@@ -93,7 +94,7 @@
 	function galleryTocEntry(): TocEntry {
 		return {
 			id: galleryAnchor,
-			title: galleryTitle,
+			title: mediaGalleryTitle,
 			level: 2,
 			badge: { kind: 'icon', name: 'image' },
 			rail: true,
@@ -157,6 +158,12 @@
 			...articleSections.map((section) => section.doc),
 		]),
 	});
+	const galleryVideos = $derived(collectProjectVideos([
+		resolveLocale(project.description, locale),
+		...sectionViews.map((section) => section.doc),
+	]));
+	const hasGallery = $derived(galleryDoc.blocks.length > 0 || galleryVideos.length > 0);
+	const mediaGalleryTitle = $derived(galleryVideos.length === 0 ? galleryTitle : galleryDoc.blocks.length > 0 ? youtubeLabels[locale].media : youtubeLabels[locale].gallery);
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
 	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.repoPrivate);
@@ -186,7 +193,7 @@
 		// live on the mobile glance instance. On desktop they're already visible in
 		// the rail. Badges mirror the glance cards' SectionIcon shapes.
 		entries.push(...glanceTocEntries());
-		if (galleryDoc.blocks.length > 0) entries.push(galleryTocEntry());
+		if (hasGallery) entries.push(galleryTocEntry());
 
 		return entries;
 	});
@@ -237,7 +244,7 @@
 
 {#snippet galleryCard(mobile: boolean)}
 	<CollapsibleSection
-		title={galleryTitle}
+		title={mediaGalleryTitle}
 		sectionKey={scoped(`proj-gallery-${mobile ? 'mobile-' : ''}${gallerySource?.originalIndex ?? 'article'}`)}
 		anchor={galleryAnchor}
 		open={true}
@@ -245,7 +252,7 @@
 		{#snippet icon()}
 			<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
 		{/snippet}
-		<ProjectImageGallery doc={galleryDoc} />
+		<ProjectImageGallery doc={galleryDoc} videos={galleryVideos} />
 	</CollapsibleSection>
 {/snippet}
 
@@ -258,7 +265,7 @@
 			mobile
 			codeHighlights={codeHighlights}
 		/>
-		{#if galleryDoc.blocks.length > 0}
+		{#if hasGallery}
 			<div class="mobile-gallery-stack" data-testid="project-image-gallery-mobile">
 				{@render galleryCard(true)}
 			</div>
@@ -332,7 +339,7 @@
 						<ProjectLinksCard project={project} sectionKey={scoped('glance-links-left-rail')} />
 					</div>
 				{/if}
-				{#if galleryDoc.blocks.length > 0}
+				{#if hasGallery}
 					<div class="toc-gallery-stack" data-testid="project-image-gallery-rail">
 						{@render galleryCard(false)}
 					</div>

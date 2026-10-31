@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_marker_service",
-    "group": null,
+    "group": "grp_home",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"{num} / SERVICE\"",
+    "note": "Default: \"{num} / SERVICE\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 10,
+    "sort": 204,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services strip · Card marker"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

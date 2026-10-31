@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_meta_description",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: projects. Default: \"Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.\"",
+    "note": "Default: \"Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 30,
+    "sort": 8,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects · Meta description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

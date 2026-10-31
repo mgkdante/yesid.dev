@@ -415,5 +415,62 @@
     "icon": "code",
     "color": null,
     "_syncId": "df7b441a-3833-4d84-ae77-f2a041595bcd"
+  },
+  {
+    "bookmark": "English",
+    "role": null,
+    "collection": "blog_posts",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "lang": {
+        "_eq": "en"
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_blog_posts_en",
+    "user": null
+  },
+  {
+    "bookmark": "Français",
+    "role": null,
+    "collection": "blog_posts",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "lang": {
+        "_eq": "fr"
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_blog_posts_fr",
+    "user": null
+  },
+  {
+    "bookmark": "Español",
+    "role": null,
+    "collection": "blog_posts",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "lang": {
+        "_eq": "es"
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "_sync_preset_blog_posts_es",
+    "user": null
   }
 ]

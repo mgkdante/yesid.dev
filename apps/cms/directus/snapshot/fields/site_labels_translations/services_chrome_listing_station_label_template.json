@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_listing_station_label_template",
-    "group": null,
+    "group": "grp_services_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Service {stationNum} / {totalStr}\"",
+    "note": "Default: \"Service {stationNum} / {totalStr}\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 86,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Station label (template)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

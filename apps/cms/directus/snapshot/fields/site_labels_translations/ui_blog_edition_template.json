@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_blog_edition_template",
-    "group": null,
+    "group": "grp_blog_article",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"VOL. 01 // ISS. {issue}\"",
+    "note": "Default: \"VOL. 01 // ISS. {issue}\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog edition (template)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_theme_toggle_aria",
-    "group": null,
+    "group": "grp_global_header",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"Dark theme\"",
+    "note": "Default: \"Dark theme\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 104,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Theme toggle (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

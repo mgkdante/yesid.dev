@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "a11y_more_metrics",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
     "note": "Proof card metric overflow aria label.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 139,
+    "sort": 40,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "General · More metrics"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

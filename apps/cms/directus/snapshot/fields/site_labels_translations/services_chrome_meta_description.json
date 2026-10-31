@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_meta_description",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.\"",
+    "note": "Default: \"Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 93,
+    "sort": 32,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services · Meta description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

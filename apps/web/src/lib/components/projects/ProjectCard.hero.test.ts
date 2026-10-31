@@ -40,13 +40,16 @@ describe('ProjectCard hero media', () => {
 		expect(images).toHaveLength(2);
 		expect(images[0]?.getAttribute('src')).toBe('/test-assets/desktop-light-uuid?key=card-600');
 		expect(images[1]?.getAttribute('src')).toBe('/test-assets/mobile-light-uuid?key=card-600');
+		expect(images[0]).toHaveClass('group-hover:scale-105');
 	});
 
-	it('renders a single hero image when the secondary hero is empty', () => {
-		theme.set('dark');
+	it('keeps a single package visual unzoomed when the secondary hero is empty, even with an orphan light secondary', () => {
+		theme.set('light');
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
 			imageLight: 'desktop-light-uuid',
+			imageSecondary: undefined,
+			imageSecondaryLight: 'unused-mobile-light-uuid',
 		} as Partial<ReturnType<typeof projectFactory.build>>);
 
 		const { container } = render(ProjectCard, {
@@ -60,7 +63,8 @@ describe('ProjectCard hero media', () => {
 		expect(preview?.getAttribute('data-split')).toBe('false');
 		expect(preview?.getAttribute('data-layout')).toBe('single');
 		expect(images).toHaveLength(1);
-		expect(images[0]?.getAttribute('src')).toBe('/test-assets/desktop-dark-uuid?key=card-600');
+		expect(images[0]?.getAttribute('src')).toBe('/test-assets/desktop-light-uuid?key=card-600');
+		expect(images[0]).not.toHaveClass('group-hover:scale-105', 'group-active:scale-105');
 	});
 
 	it('uses the document theme for hero image variants on first render', () => {

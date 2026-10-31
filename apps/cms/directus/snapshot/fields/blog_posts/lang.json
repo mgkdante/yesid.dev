@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.",
+    "note": "Language of this post. Each language is its own row; the EN, FR and ES versions share one translation key.",
     "options": {
       "choices": [
         {
@@ -31,9 +31,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 4,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Language"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

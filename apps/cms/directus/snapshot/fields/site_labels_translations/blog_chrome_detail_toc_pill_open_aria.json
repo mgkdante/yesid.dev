@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_toc_pill_open_aria",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Table of contents\"",
+    "note": "Default: \"Table of contents\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 83,
+    "sort": 25,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog · TOC pill open (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

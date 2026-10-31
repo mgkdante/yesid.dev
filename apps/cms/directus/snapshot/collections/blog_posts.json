@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "blog_posts",
     "color": null,
-    "display_template": "{{translations}}",
+    "display_template": "{{title}} ({{lang}})",
     "group": "blog_page",
     "hidden": false,
     "icon": "article",
@@ -24,13 +24,20 @@
       "excerpt",
       "body"
     ],
-    "note": "Blog posts. Mono-language by editorial design (lang field on parent). ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",
+    "note": "One row per language. EN, FR and ES versions share a translation key. Use the English, Français and Español bookmarks to filter.",
     "preview_url": "https://yesid.dev/blog/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog posts",
+        "singular": "post",
+        "plural": "posts"
+      }
+    ],
     "unarchive_value": "published",
     "versioning": true
   },

@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "cta_socials",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "list",
-    "note": "(go2-t1b flat field) replaces cta.socials",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source migration removes it.",
     "options": {
       "fields": [
         {
@@ -43,14 +43,19 @@
         }
       ]
     },
-    "readonly": false,
+    "readonly": true,
     "required": false,
     "searchable": true,
-    "sort": 96,
+    "sort": 1,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact terminal socials (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_submit_label",
-    "group": null,
+    "group": "grp_form",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces form_terminal.submitLabel",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Send button"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

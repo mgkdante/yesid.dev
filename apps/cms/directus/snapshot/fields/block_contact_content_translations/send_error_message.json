@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "send_error_message",
-    "group": null,
+    "group": "grp_errors",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale error message when web3forms POST fails (ContactContent.sendErrorMessage).",
+    "note": "Shown when the form service rejects the message or cannot be reached.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Send failed message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

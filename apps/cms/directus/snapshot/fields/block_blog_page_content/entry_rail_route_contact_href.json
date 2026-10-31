@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_route_contact_href",
-    "group": null,
+    "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": "Blog entry rail href. Stored once because routes are not locale-specific.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 26,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes · Contact link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

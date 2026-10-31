@@ -1,4 +1,4 @@
-/* Site-owned detail reading scale. Legacy legal Markdown keeps its app.css defaults. */
+/* Site-owned reading scale for detail pages, legal copy and the home biography. */
 .reading-detail {
 	--reading-prose-size: 1.1875rem;
 	--reading-code-size: 1rem;
@@ -30,7 +30,8 @@
 	max-width: 70ch;
 }
 
-.reading-detail :is(.article-body, .reading-support) :is(p, ul, ol, li, blockquote, td, th, .deliverable-item) {
+/* Diagram labels keep the typography Mermaid used to measure their boxes. */
+.reading-detail :is(.article-body, .reading-support) :is(p, ul, ol, li, blockquote, td, th, .deliverable-item):not(svg *) {
 	font-size: var(--reading-prose-size);
 	line-height: 1.7;
 }

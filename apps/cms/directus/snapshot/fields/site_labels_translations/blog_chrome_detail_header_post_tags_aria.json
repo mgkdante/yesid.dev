@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_header_post_tags_aria",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Post tags\"",
+    "note": "Default: \"Post tags\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 74,
+    "sort": 21,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog · Header post tags (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

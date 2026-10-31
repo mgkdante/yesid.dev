@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_best_fit_1",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "BEST FIT line 1 of 3: a project shape that fits best (homework #26b). Default: \"Slow reports that need to be fast\"",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 41,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Best fit · Line 1"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

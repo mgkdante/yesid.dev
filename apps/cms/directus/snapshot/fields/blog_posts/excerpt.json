@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "excerpt",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "input-multiline",
     "note": "1–2 sentences shown on listing cards. Mono-language with the post's native language (see lang field). Max 500 chars.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 14,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Excerpt"
+      }
+    ],
     "validation": {
       "_and": [
         {

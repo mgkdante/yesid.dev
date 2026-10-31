@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "to_personal_label",
-    "group": null,
+    "group": "grp_professional",
     "hidden": false,
     "interface": "input",
-    "note": "Blog listing lane copy. Used by /blog and /blog/personal route chrome.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Link to personal · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

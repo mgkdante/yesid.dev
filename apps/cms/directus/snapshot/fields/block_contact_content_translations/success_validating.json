@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "success_validating",
-    "group": null,
+    "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces success.validating",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 27,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Validating line"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

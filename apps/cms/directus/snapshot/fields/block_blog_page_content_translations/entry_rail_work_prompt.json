@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_work_prompt",
-    "group": null,
+    "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": "Blog listing lane and entry rail copy. Used by /blog and /blog/personal.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Work with me · Prompt"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

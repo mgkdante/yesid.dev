@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_detail_glance_repo_private_label",
-    "group": null,
+    "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
     "note": "Glance links card: non-link state when the project repo exists but is private (homework 13).",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 144,
+    "sort": 14,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Glance repo private label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

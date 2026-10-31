@@ -20,7 +20,14 @@
     "sort": null,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Legal pages",
+        "singular": "legal page",
+        "plural": "legal pages"
+      }
+    ],
     "unarchive_value": "draft",
     "versioning": true
   },

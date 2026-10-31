@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "footer_chrome_footer_connect_label",
-    "group": null,
+    "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Group: footer chrome. Full-bleed footer CONNECT column heading (same word as the contact terminal section). Default: \"CONNECT\"",
+    "note": "Full-bleed footer CONNECT column heading (same word as the contact terminal section). Default: \"CONNECT\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 161,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Connect column heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

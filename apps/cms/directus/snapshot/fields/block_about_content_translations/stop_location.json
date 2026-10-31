@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "stop_location",
-    "group": null,
+    "group": "grp_location",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces stop_labels.location",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 32,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Section label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_result_count_plural",
-    "group": null,
+    "group": "grp_shared_filters",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"{count} results\"",
+    "note": "Default: \"{count} results\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 128,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Result count plural"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_best_fit_2",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "BEST FIT line 2 of 3 (homework #26b). Default: \"Manual data work that should run itself\"",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 42,
+    "sort": 8,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Best fit · Line 2"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_nav_capabilities",
-    "group": null,
+    "group": "grp_home",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"Capabilities\"",
+    "note": "Default: \"Capabilities\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 201,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Manifesto · Capabilities nav (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

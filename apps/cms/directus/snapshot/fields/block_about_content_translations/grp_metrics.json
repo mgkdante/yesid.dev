@@ -1,0 +1,38 @@
+{
+  "collection": "block_about_content_translations",
+  "field": "grp_metrics",
+  "type": "alias",
+  "meta": {
+    "collection": "block_about_content_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_metrics",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 11,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Metrics"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

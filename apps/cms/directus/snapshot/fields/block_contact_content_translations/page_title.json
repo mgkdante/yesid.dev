@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "page_title",
-    "group": null,
+    "group": "grp_heading",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale page title (ContactContent.pageTitle). Renders as desktop edge title + mobile h1.",
+    "note": "Desktop edge title and mobile heading.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

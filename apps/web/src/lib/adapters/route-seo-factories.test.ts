@@ -376,6 +376,37 @@ describe('projectsSlugSeoFactory', () => {
 		expect(longProject).toEqual(original);
 	});
 
+	it('keeps project SEO indexable when a translated one-liner is outside the description band', async () => {
+		const description = {
+			time: 1,
+			version: '2.31.2',
+			blocks: [{ id: 'long-description', type: 'paragraph' as const, data: { text: 'x'.repeat(201) } }],
+		};
+		const designProject = projectFactory.build({
+			slug: 'yesid-dev-design',
+			title: { en: 'yesid.dev-design' },
+			description: { en: description, fr: description, es: description },
+			oneLiner: {
+				en: 'One visual foundation, room for different products',
+				fr: 'Une base visuelle commune, une place pour chaque produit',
+				es: 'Una base visual común, espacio para cada producto',
+			},
+		});
+		for (const locale of PUBLISHED_LOCALES) {
+			const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+				params: { slug: designProject.slug },
+				locale,
+				adapter: { projects: { bySlug: async () => designProject } } as unknown as ContentAdapter,
+				siteMeta,
+				siteSeoDefaults,
+			}));
+			expect(seo.description).toEqual(siteSeoDefaults.defaultDescription);
+			expect(seo.noIndex).toBe(false);
+			expect(seo.title.en).toBe('yesid.dev-design | yesid.');
+			expect(seo.ogImage?.url).toContain('/og/project/yesid-dev-design');
+		}
+	});
+
 	it('keeps short localized titles and missing translations unchanged', async () => {
 		for (const title of [project.title, { en: project.title.en }]) {
 			const seo = await projectsSlugSeoFactory({

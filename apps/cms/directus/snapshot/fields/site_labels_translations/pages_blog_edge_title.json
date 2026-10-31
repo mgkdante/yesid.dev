@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "pages_blog_edge_title",
-    "group": null,
+    "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: pages. Default: \"Blog\"",
+    "note": "Default: \"Blog\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog edge title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

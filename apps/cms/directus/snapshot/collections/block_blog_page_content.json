@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "article",
     "item_duplication_fields": null,
-    "note": "Blog page chrome block (/blog). Minimal stub — only intro field per BlogPageContentSchema. Expand when content design lands.",
+    "note": "Blog listing intros, lane links, back links and the article side rail.",
     "preview_url": null,
     "singleton": true,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog page text",
+        "singular": "Blog page text",
+        "plural": "Blog page text"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

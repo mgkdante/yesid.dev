@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_detail_service_nav_aria",
-    "group": null,
+    "group": "grp_services_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Service navigation\"",
+    "note": "Default: \"Service navigation\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Service nav (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

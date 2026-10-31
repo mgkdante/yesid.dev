@@ -2483,12 +2483,9 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "client_count",
-      "client_logos",
       "id",
       "sort",
       "status",
-      "tech_stack",
       "translations"
     ],
     "policy": "_sync_default_public_policy",

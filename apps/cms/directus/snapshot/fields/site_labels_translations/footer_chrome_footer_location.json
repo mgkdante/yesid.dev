@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "footer_chrome_footer_location",
-    "group": null,
+    "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: footer. Default: \"Montreal, QC · Remote\"",
+    "note": "Default: \"Montreal, QC · Remote\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 118,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Location"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "hero_dashboard_vehicles_sub_live",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Group: hero dashboard. Vehicles card sub-label when REAL KPIs are on screen (hero_dashboard_vehicles_sub holds the DEMO state). Default: \"STM · LIVE\"",
+    "note": "Vehicles card sub-label when REAL KPIs are on screen (hero_dashboard_vehicles_sub holds the DEMO state). Default: \"STM · LIVE\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 157,
+    "sort": 9,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Vehicles subtitle live"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

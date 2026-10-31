@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_language_name_fr",
-    "group": null,
+    "group": "grp_blog_languages",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"French\"",
+    "note": "Default: \"French\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 130,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "French"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

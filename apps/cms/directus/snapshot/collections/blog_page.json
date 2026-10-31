@@ -20,7 +20,14 @@
     "sort": 4,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog",
+        "singular": "Blog",
+        "plural": "Blog"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   }

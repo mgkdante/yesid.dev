@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "cta_button_label",
-    "group": null,
+    "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces cta.buttonLabel",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 22,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Button label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_section_label_languages",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "Info terminal LANGUAGES section label. Default: \"LANGUAGES\"",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 38,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Languages · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

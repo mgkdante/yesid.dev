@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "personal_intro",
-    "group": null,
+    "group": "grp_personal",
     "hidden": false,
     "interface": "input",
-    "note": "Blog listing lane copy. Used by /blog and /blog/personal route chrome.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 11,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Intro"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

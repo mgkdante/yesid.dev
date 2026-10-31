@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "label_testimonials_next_aria",
-    "group": null,
+    "group": "grp_testimonials",
     "hidden": false,
     "interface": "input",
-    "note": "About quote carousel next button aria label.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 42,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Screen reader · Next quote"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

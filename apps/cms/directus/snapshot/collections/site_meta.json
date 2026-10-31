@@ -20,7 +20,14 @@
     "sort": 1,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Site identity and SEO defaults",
+        "singular": "Site identity",
+        "plural": "Site identity"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

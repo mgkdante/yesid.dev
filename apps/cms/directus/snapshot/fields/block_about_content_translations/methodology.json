@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "methodology",
-    "group": null,
+    "group": "grp_method",
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale methodology steps (AboutContent.methodology). JSON shape: Array<{ id, label, description, station: number }>.",
+    "note": null,
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -65,11 +65,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 2,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Method steps"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

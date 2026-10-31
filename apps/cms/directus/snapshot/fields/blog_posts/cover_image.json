@@ -18,11 +18,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 41,
+    "sort": 3,
     "special": [
       "file"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Cover image"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

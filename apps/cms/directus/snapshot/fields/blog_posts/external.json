@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "external",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "boolean",
     "note": "When true, body becomes optional and url is required + visible.",
@@ -18,9 +18,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "External post"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

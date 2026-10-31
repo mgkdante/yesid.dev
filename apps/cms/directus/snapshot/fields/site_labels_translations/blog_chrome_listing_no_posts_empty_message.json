@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_no_posts_empty_message",
-    "group": null,
+    "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy. Group: blog. Blog listing empty state when no filters are active. Default: \"Nothing here yet. New posts are in transit.\"",
+    "note": "Blog listing empty state when no filters are active. Default: \"Nothing here yet. New posts are in transit.\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 146,
+    "sort": 11,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "No posts empty message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

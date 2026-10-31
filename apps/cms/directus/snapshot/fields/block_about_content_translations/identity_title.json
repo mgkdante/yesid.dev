@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "identity_title",
-    "group": null,
+    "group": "grp_identity",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces identity.title",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

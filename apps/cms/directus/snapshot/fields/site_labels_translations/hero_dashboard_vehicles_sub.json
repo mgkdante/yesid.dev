@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "hero_dashboard_vehicles_sub",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: hero. Default: \"STM · LIVE\"",
+    "note": "Default: \"STM · LIVE\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 121,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Vehicles subtitle"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

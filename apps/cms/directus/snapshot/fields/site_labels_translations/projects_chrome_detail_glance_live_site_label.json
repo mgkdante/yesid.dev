@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_detail_glance_live_site_label",
-    "group": null,
+    "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: projects. Default: \"Live Site\"",
+    "note": "Default: \"Live Site\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 50,
+    "sort": 9,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Glance live site label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

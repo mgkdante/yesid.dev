@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "pages_home_section_about",
-    "group": null,
+    "group": "grp_home_sections",
     "hidden": false,
     "interface": "input",
-    "note": "Group: pages. Home rotated section title for the About strip. Default: \"About\"",
+    "note": "Home rotated section title for the About strip. Default: \"About\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 158,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "About"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

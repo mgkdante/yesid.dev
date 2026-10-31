@@ -40,7 +40,7 @@
 
 		<!-- Terminal window -->
 		<TerminalPanel title={terminalTitle} class="mt-3">
-			<div class="break-words font-mono text-sm leading-relaxed">
+			<div class="break-words font-mono text-mono leading-relaxed">
 				<!-- Command -->
 				<div class="text-[var(--secondary-foreground)]">
 					<span class="text-[var(--foreground)]">~</span> {cta.command}

@@ -242,7 +242,7 @@ test('flows-push keeps the production gate and pushes only the flows collection'
 		DIRECTUS_URL: 'https://cms.yesid.dev',
 	});
 	expect(job.steps.slice(0, 2).map((step: any) => step.uses)).toEqual([
-		'actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd',
+		'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
 		'./.github/actions/setup',
 	]);
 	const operations = job.steps.slice(2);

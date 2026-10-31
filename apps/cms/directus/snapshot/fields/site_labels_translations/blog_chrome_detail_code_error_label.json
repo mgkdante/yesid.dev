@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_code_error_label",
-    "group": null,
+    "group": "grp_shared_code",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Error\"",
+    "note": "Default: \"Error\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 71,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Code error label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_command_output",
-    "group": null,
+    "group": "grp_form",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "(go2-t1b flat field) replaces form_terminal.commandOutput",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 19,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Intro output"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

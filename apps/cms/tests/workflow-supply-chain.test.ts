@@ -11,15 +11,15 @@ const expectedPinnedActionLines = new Map([
 	],
 	[
 		'actions/checkout',
-		'uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5',
+		'uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7',
 	],
 	[
 		'actions/download-artifact',
-		'uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4',
+		'uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8',
 	],
 	[
 		'actions/upload-artifact',
-		'uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4',
+		'uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7',
 	],
 	[
 		'oven-sh/setup-bun',

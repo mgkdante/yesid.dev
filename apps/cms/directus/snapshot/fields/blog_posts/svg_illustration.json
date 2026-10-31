@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "svg_illustration",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "select-dropdown-m2o",
     "note": "Curated SVG illustration. Optional — falls back to deterministic fallback if absent.",
@@ -32,11 +32,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 10,
+    "sort": 4,
     "special": [
       "m2o"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Illustration"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

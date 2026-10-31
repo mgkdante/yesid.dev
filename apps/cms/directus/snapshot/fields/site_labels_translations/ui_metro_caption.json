@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "ui_metro_caption",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
     "note": "Caption under the home metro art (STM métro + REM).",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 27,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Metro art caption"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

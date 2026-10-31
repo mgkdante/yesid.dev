@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "pages_projects_edge_title",
-    "group": null,
+    "group": "grp_projects_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: pages. Default: \"Projects\"",
+    "note": "Default: \"Projects\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 21,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects edge title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

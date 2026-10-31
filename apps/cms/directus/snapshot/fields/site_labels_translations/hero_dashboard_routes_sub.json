@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "hero_dashboard_routes_sub",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: hero. Default: \"OF {total} TOTAL\"",
+    "note": "Default: \"OF {total} TOTAL\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 125,
+    "sort": 8,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes subtitle"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

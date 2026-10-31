@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_skip_to_content_label",
-    "group": null,
+    "group": "grp_global_header",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (C10b). Group: nav. Default: \"Skip to content\"",
+    "note": "Default: \"Skip to content\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 163,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Skip to content label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

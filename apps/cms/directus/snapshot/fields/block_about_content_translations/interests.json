@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "interests",
-    "group": null,
+    "group": "grp_interests",
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale interests strips (AboutContent.interests). JSON shape: Array<{ id, label, image: string }>.",
+    "note": null,
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -54,11 +54,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 9,
+    "sort": 2,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Interest strips"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

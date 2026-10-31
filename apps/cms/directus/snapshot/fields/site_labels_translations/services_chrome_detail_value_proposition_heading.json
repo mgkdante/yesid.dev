@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_detail_value_proposition_heading",
-    "group": null,
+    "group": "grp_services_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"How This Helps You\"",
+    "note": "Default: \"How This Helps You\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 95,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Value proposition heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

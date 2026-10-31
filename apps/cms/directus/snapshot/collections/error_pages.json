@@ -20,7 +20,14 @@
     "sort": 3,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Error pages",
+        "singular": "error page",
+        "plural": "error pages"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

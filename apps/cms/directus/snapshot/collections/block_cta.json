@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "campaign",
     "item_duplication_fields": null,
-    "note": "CTA block — bottom of /. All 4 fields are LocalizedStrings → 4 string columns in translations.",
+    "note": "Contact call-to-action band component.",
     "preview_url": null,
     "singleton": true,
     "sort": 6,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact band",
+        "singular": "Contact band",
+        "plural": "Contact band"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

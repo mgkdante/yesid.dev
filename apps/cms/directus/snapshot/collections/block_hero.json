@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "home",
     "item_duplication_fields": null,
-    "note": "Hero block — text-only top section of /. Translatable fields live in block_hero_translations (4 string + 4 JSON columns). No image or mock_data fields — hero is text-only; heroMock is runtime-computed.",
+    "note": "Top of the home page: headline, actions and live SQL panel text.",
     "preview_url": null,
     "singleton": true,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Home: Hero",
+        "singular": "Hero",
+        "plural": "Hero"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

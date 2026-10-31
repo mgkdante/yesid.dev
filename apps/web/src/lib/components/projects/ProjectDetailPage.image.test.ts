@@ -101,6 +101,21 @@ describe('ProjectDetailPage image placement', () => {
 		document.documentElement.dataset.theme = 'dark';
 	});
 
+	it('collects actual repeated YouTube links into one video-only gallery preview per layout', () => {
+		const project = projectFactory.build({
+			description: { en: doc('https://youtu.be/M7lc1UVf-VE') },
+			sections: [{ title: { en: 'Walkthrough' }, content: { en: doc('<a href="https://www.youtube.com/watch?v=M7lc1UVf-VE">Actual package walkthrough</a>') } }],
+		});
+		const { container } = render(ProjectDetailPage, { props: { project, services: [], serviceSvgContents: {} } });
+		expect(container.querySelector('iframe')).toBeNull();
+		for (const testId of ['project-image-gallery-mobile', 'project-image-gallery-rail']) {
+			const gallery = screen.getByTestId(testId);
+			expect(within(gallery).getByRole('button', { name: 'Videos' })).toBeInTheDocument();
+			expect(within(gallery).getAllByTestId('project-video-gallery-trigger')).toHaveLength(1);
+			expect(within(gallery).queryByText('Actual package walkthrough')).toBeNull();
+		}
+	});
+
 	it('collects description and mixed story images without requiring an image-only section', () => {
 		const project = projectFactory.build({
 			description: { en: storyDoc(storyImage('overview-image', 'overview-state', 'Overview state')) },
@@ -320,8 +335,8 @@ describe('ProjectDetailPage image placement', () => {
 		const gallery = within(galleryRail).getByTestId('project-image-gallery');
 		const triggers = within(gallery).getAllByTestId('project-image-gallery-trigger');
 		expect(triggers).toHaveLength(2);
-		expect(within(gallery).getByText('Desktop showcase')).toBeInTheDocument();
-		expect(within(gallery).getByText('Mobile showcase')).toBeInTheDocument();
+		expect(within(gallery).queryByText('Desktop showcase')).not.toBeInTheDocument();
+		expect(within(gallery).queryByText('Mobile showcase')).not.toBeInTheDocument();
 
 		await fireEvent.click(triggers[1] as HTMLElement);
 

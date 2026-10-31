@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "booking_prompt",
-    "group": null,
+    "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": "Form terminal booking prompt above the booking link. Default: \"Prefer to talk it through?\"",
+    "note": "Shown above the booking link.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 36,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Prompt"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

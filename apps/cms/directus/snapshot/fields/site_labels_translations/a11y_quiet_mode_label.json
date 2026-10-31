@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_quiet_mode_label",
-    "group": null,
+    "group": "grp_shared_quiet",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Open-state visible label of the collapse/expand-all control. Default: \"Collapse all\"",
+    "note": "Open-state visible label of the collapse/expand-all control. Default: \"Collapse all\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 16,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Quiet mode label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

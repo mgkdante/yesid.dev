@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "cta_command",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces cta.command",
+    "note": "Command line shown in the closing terminal.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 93,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact terminal · Command"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_section_label_best_fit",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "Info terminal BEST FIT section label (homework #26b). Stored uppercase like the sibling labels. Default: \"BEST FIT\"",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 40,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Best fit · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

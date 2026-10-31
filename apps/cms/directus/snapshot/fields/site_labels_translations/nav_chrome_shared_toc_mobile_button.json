@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_toc_mobile_button",
-    "group": null,
+    "group": "grp_shared_toc",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"Table of Contents\"",
+    "note": "Default: \"Table of Contents\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 113,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "TOC mobile button"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

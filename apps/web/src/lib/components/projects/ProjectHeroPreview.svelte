@@ -124,8 +124,8 @@
 		border-left: 2px solid color-mix(in srgb, var(--primary) 78%, transparent);
 	}
 
-	/* Screenshots fill their pane and crop from the bottom, keeping the page
-	   header in frame. Absolute so an image never sizes the card's media row. */
+	/* Split screenshots keep their page headers in frame. Absolute so an image
+	   never sizes the card's media row. */
 	.project-hero-preview__image {
 		position: absolute;
 		inset: 0;
@@ -134,6 +134,12 @@
 		height: 100%;
 		object-fit: cover;
 		object-position: top center;
+	}
+
+	/* A single visual represents the whole project, so keep every edge visible. */
+	.project-hero-preview[data-layout='single'] .project-hero-preview__image {
+		object-fit: contain;
+		object-position: center;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

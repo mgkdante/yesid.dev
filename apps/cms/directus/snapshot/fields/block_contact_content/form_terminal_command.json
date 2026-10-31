@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_terminal_command",
-    "group": null,
+    "group": "grp_terminals",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces form_terminal.command",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 94,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Form box · Command"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"
