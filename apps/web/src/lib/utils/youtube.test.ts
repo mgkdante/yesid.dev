@@ -24,6 +24,8 @@ describe('authored YouTube paragraphs', () => {
 	it('decodes stored entities in an anchor label', () => {
 		expect(parseYouTubeParagraph('<a href="https://youtu.be/M7lc1UVf-VE">L&#39;atelier &amp; la démo</a>'))
 			.toEqual({ id: 'M7lc1UVf-VE', caption: 'L\'atelier & la démo' });
+		expect(parseYouTubeParagraph('<a href="https://youtu.be/M7lc1UVf-VE">D&#233;mo&nbsp;&#x2014; v2</a>'))
+			.toEqual({ id: 'M7lc1UVf-VE', caption: 'Démo — v2' });
 	});
 
 	it.each([

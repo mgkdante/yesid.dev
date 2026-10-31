@@ -8,8 +8,13 @@ export const youtubeLabels = {
 	es: { play: 'Reproducir video', close: 'Cerrar video', title: 'Video de YouTube', gallery: 'Videos', media: 'Imágenes y videos' },
 };
 
-const ENTITIES: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&#x27;': "'", '&apos;': "'" };
-const decodeEntities = (text: string) => text.replace(/&(?:amp|lt|gt|quot|apos|#39|#x27);/gi, (entity) => ENTITIES[entity.toLowerCase()]!);
+const NAMED_ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0' };
+const decodeEntities = (text: string) =>
+	text.replace(/&(?:#(\d+)|#x([0-9a-f]+)|(amp|lt|gt|quot|apos|nbsp));/gi, (entity, dec?: string, hex?: string, name?: string) => {
+		if (name) return NAMED_ENTITIES[name.toLowerCase()]!;
+		const code = dec ? Number(dec) : parseInt(hex!, 16);
+		return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : entity;
+	});
 
 /** Only a standalone URL or one complete anchor becomes a player. */
 export function parseYouTubeParagraph(text: string): YouTubeVideo | null {
