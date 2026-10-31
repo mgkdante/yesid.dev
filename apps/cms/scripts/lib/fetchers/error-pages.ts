@@ -18,6 +18,7 @@ export interface DirectusErrorPageTranslation {
 	label?: string | null;
 	heading?: string | null;
 	description?: string | null;
+	browser_title?: string | null;
 	suggestions?: Array<{ label: string; href: string }> | null;
 }
 
@@ -62,7 +63,9 @@ export function toErrorPageContent(raw: DirectusErrorPageRow): ErrorPageContent 
 	);
 
 	return {
-		...toLocalizedFields(raw.translations ?? [], ['label', 'heading', 'description']),
+		...toLocalizedFields(raw.translations ?? [], [
+			'label', 'heading', 'description', ['browserTitle', 'browser_title', 'optional'],
+		]),
 		suggestions,
 	};
 }

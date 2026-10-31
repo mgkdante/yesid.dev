@@ -11,7 +11,7 @@
     "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "First button. Opens the Projects page.",
+    "note": "First button. Its link is in Shared settings on the main form.",
     "options": null,
     "readonly": false,
     "required": false,

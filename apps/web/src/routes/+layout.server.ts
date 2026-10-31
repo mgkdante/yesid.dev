@@ -73,6 +73,7 @@ export const load: LayoutServerLoad = async ({ route, params, url }) => {
 					locale,
 					siteMeta: STATIC_SITE_META,
 					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
+					titleBody: staticErrorPageContent.browserTitle,
 				}),
 				themeColor: STATIC_SITE_SEO_DEFAULTS.themeColor,
 			};

@@ -13,7 +13,7 @@
 
 	const locale = getLocale();
 	import { fillTemplate } from '#lib/utils/labels.ts';
-	import { siteLabels } from '#lib/content/index.ts';
+	import { siteLabels, siteMeta } from '#lib/content/index.ts';
 	import { clock, persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
 	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
@@ -210,7 +210,7 @@
 	function buildSuccessLines() {
 		const okText = resolveLocale(contactPage.success.fieldOk, locale);
 		return [
-			{ text: '~ $ send --message', color: 'muted' },
+			{ text: resolveLocale(contactPage.success.command, locale), color: 'muted' },
 			{ text: `→ ${resolveLocale(contactPage.success.validating, locale)}`, color: 'orange' },
 			{ text: `✓ ${fieldLabel('name')}: ${okText}`, color: 'green' },
 			{ text: `✓ ${fieldLabel('email')}: ${okText}`, color: 'green' },
@@ -386,14 +386,10 @@
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
 							<span class="text-[var(--primary)]" aria-hidden="true">→</span>
+							<span class="text-small">{contactChannelLabel(social.label)}</span>
 							{#if social.icon === 'calendar'}
-								<!-- The booking row is the site's strongest CONNECT action: the
-								     human label is visible (it was aria-only) with the URL as a
-								     muted suffix. Other rows keep the terminal URL treatment. -->
-								<span class="text-small">{contactChannelLabel(social.label)}</span>
+								<!-- The booking row keeps its address as a muted suffix. -->
 								<span class="text-small text-[var(--muted-foreground)]">{social.href.replace(/^https?:\/\//, '')}</span>
-							{:else}
-								<span class="text-small">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
 							{/if}
 						</a>
 					{/each}
@@ -494,7 +490,7 @@
 						<div class="mt-1 flex flex-wrap items-center gap-2 font-mono text-caption">
 							<span class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.formTerminal.bookingPrompt, locale)}</span>
 							<a
-								href="https://cal.com/yesid-dev"
+								href={siteMeta.links.booking}
 								target="_blank"
 								rel="noopener"
 								data-testid="contact-booking-link"

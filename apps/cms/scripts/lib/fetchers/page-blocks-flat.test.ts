@@ -23,7 +23,7 @@ function contactFixture(en: Record<string, unknown>, fr?: Record<string, unknown
 			form_field_name_placeholder: 'Your name', form_field_email_placeholder: 'you@x.dev',
 			form_field_message_placeholder: 'What breaks?',
 			validation_required: 'required', validation_invalid_email: 'bad email', validation_error_summary: 'fix {n}',
-			success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
+			success_command: '~ $ send', success_validating: 'validating', success_sending: 'sending', success_sent: 'sent',
 			success_response_time: '24h', success_meanwhile: 'meanwhile', success_reset_label: 'reset', success_field_ok: 'ok',
 			success_work_link_label: 'work', success_blog_link_label: 'blog',
 			...en,
@@ -43,6 +43,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					sql_prompt: 'select', sql_live_label: 'DEMO', sql_live_badge: 'LIVE', sql_col_route: 'route',
 					sql_col_avg_delay: 'avg_delay_s', sql_col_vehicles: 'vehicles', sql_meta_template: '{n} rows',
 					refresh_label: 'refresh', refresh_helper: 'press', refresh_helper_live: 'live press', scroll_down: 'scroll',
+					stamp_demo: 'demo', stamp_refreshed: 'fresh', stamp_live_template: '{seconds}s ago',
 				},
 				{ languages_code: 'fr', headline_line1: 'LIVREZ VITE', scroll_down: 'défiler' },
 			],
@@ -51,15 +52,17 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.headline.line1).toEqual({ en: 'SHIP FAST', fr: 'LIVREZ VITE' });
 		expect(out.sqlPanel.columns.avgDelayS).toEqual({ en: 'avg_delay_s' });
 		expect(out.heroAnim.scrollDown).toEqual({ en: 'scroll', fr: 'défiler' });
+		expect(out.sqlPanel.stamps.liveTemplate).toEqual({ en: '{seconds}s ago' });
+		expect(out.ctaWorkHref).toBe('/projects');
 		expect(() => HeroContentSchema.parse(out)).not.toThrow();
 	});
 
 	it('closer: flat rows/terminal + parent href recompose CloserContent', () => {
 		const row = {
-			id: 1, cta_href: '/contact',
+			id: 1, cta_href: '/contact', rows_contact_href: '/start', rows_about_href: ' ',
 			translations: [{
 				languages_code: 'en',
-				cta_label: 'Start a project',
+				cta_label: 'Start a project', closing_label: 'the end',
 				terminal_title: 't', terminal_city: 'MTL', terminal_encoding: 'utf8',
 				terminal_destinations_label: 'dest', terminal_prompt: '>',
 				rows_contact_label: 'contact', rows_contact_description: 'd', rows_contact_action: 'go',
@@ -70,7 +73,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		};
 		const out = toCloserContent(row);
 		expect(out.cta).toEqual({ label: { en: 'Start a project' }, href: '/contact' });
-		expect(out.rows.read).toEqual({ label: { en: 'read' }, description: { en: 'd' }, action: { en: 'go' } });
+		expect(out.rows.read).toEqual({ label: { en: 'read' }, description: { en: 'd' }, action: { en: 'go' }, href: '/blog' });
+		expect([out.rows.contact.href, out.rows.about.href]).toEqual(['/start', '/about']);
 		expect(() => CloserContentSchema.parse(out)).not.toThrow();
 	});
 

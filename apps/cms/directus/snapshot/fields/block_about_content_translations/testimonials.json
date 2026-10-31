@@ -11,7 +11,7 @@
     "group": "grp_testimonials",
     "hidden": false,
     "interface": "list",
-    "note": "Each quote: text, author and role. Company is optional.",
+    "note": "Each quote: text, author and role. Company and logo are optional; the site does not show them yet.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -57,6 +57,18 @@
             "width": "half"
           },
           "name": "company",
+          "type": "string"
+        },
+        {
+          "field": "logo",
+          "meta": {
+            "field": "logo",
+            "interface": "input",
+            "note": "Optional. Read from the English row. Not shown on the site yet.",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "logo",
           "type": "string"
         }
       ],

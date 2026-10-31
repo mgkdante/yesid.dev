@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "Footer links and search-engine profile data.",
+    "note": "Footer links, the booking link and search-engine profile data.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"

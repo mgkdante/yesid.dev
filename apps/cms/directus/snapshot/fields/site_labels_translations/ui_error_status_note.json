@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "ui_error_status_note",
-    "group": "grp_global",
+    "group": "grp_global_error",
     "hidden": false,
     "interface": "input",
     "note": "Text after \"$ route --status 404\" on every error page. Default: \"// requested path not in service\"",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 201,
+    "sort": 3,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Error pages · Terminal note"
+        "translation": "Terminal note"
       }
     ],
     "validation": null,

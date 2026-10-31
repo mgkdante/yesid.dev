@@ -6,7 +6,7 @@
  */
 
 import { readSingleton } from '@directus/sdk';
-import { toLocalizedFields } from '../locale';
+import { hrefOr, toLocalizedFields } from '../locale';
 import { SiteMetaSchema, SiteSeoDefaultsSchema } from '@repo/shared/schemas';
 import type { SiteMeta, SiteSeoDefaults } from '@repo/shared';
 import type { FetcherContext } from './types';
@@ -27,6 +27,7 @@ export interface DirectusSiteMetaRow {
 	github_url: string;
 	linkedin_url?: string | null;
 	upwork_url?: string | null;
+	booking_url?: string | null;
 	owner_name: string;
 	owner_locality: string;
 	owner_region: string;
@@ -45,6 +46,7 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 		github: row.github_url,
 		...(row.linkedin_url && { linkedin: row.linkedin_url }),
 		...(row.upwork_url && { upwork: row.upwork_url }),
+		booking: hrefOr(row.booking_url, 'https://cal.com/yesid-dev'),
 	};
 	// Directus' cast-csv returns string[] in REST; tolerate the raw string fallback
 	// for non-SDK paths and gracefully handle a null/undefined column.
@@ -113,6 +115,7 @@ export async function fetchSiteMeta({ client }: FetcherContext): Promise<SiteMet
 				'github_url',
 				'linkedin_url',
 				'upwork_url',
+				'booking_url',
 				'owner_name',
 				'owner_locality',
 				'owner_region',

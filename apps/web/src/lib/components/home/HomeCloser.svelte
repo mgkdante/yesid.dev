@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { durationSec } from '@yesid/motion/tokens';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { browser } from '$app/env';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -20,7 +20,7 @@
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { pressBounce } from '@yesid/motion/actions';
 	import HeroDotAnnotation from './HeroDotAnnotation.svelte';
-	import { getLettering, THE_END } from './annotation-lettering';
+	import { getLettering } from './annotation-lettering';
 	import { ConstructionProps } from '@yesid/ui/brand';
 	import CloserFloodlight from './CloserFloodlight.svelte';
 	import { backgroundBreathing } from '#lib/motion/scrubs/index.ts';
@@ -36,9 +36,9 @@
 		primary: boolean;
 	};
 	const rows = $derived(([
-		['contact', '/contact', true],
-		['about', '/about', false],
-		['read', '/blog', false],
+		['contact', closerContent.rows.contact.href, true],
+		['about', closerContent.rows.about.href, false],
+		['read', closerContent.rows.read.href, false],
 		['connect', siteMeta.links.github, true],
 	] as const).map(([key, href, primary]) => ({
 		label: resolveLocale(closerContent.rows[key].label, locale),
@@ -64,7 +64,7 @@
 	// itself from the moment its rising top enters the viewport.
 	const writeFrom = $derived(viewportHeight && 0.7 * viewportHeight / (viewportHeight + noteDrop));
 	const ink = $derived(clamp((note - writeFrom) / (1 - writeFrom)));
-	const closingLabel = THE_END[locale];
+	const closingLabel = resolveLocale(untrack(() => closerContent.closingLabel), locale);
 	const words = closingLabel.split(' ').map(getLettering);
 	const wordWidth = Math.max(...words.map(word => word.width));
 	// Authored SVG origins preserve the former localized wordmarks' painted centers.

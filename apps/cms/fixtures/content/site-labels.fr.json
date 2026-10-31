@@ -16,6 +16,8 @@
 	"ui_marker_service": "{num} / SERVICE",
 	"ui_back_to_projects": "← Tous les projets",
 	"ui_error_status_note": "// chemin demandé hors service",
+	"ui_error_sign_label": "STATION",
+	"ui_error_suggestions_label": "Pages suggérées",
 	"ui_blog_edition_template": "VOL. 01 // NO {issue}",
 	"ui_category_personal": "Perso",
 	"ui_category_professional": "Professionnel",
@@ -36,6 +38,7 @@
 	"projects_chrome_listing_filters_services": "Services",
 	"projects_chrome_listing_filters_tags": "Étiquettes",
 	"projects_chrome_listing_filters_tech_stack": "Stack technique",
+	"projects_chrome_listing_filters_all_label": "Tous",
 	"projects_chrome_listing_card_stack_overflow_suffix": "+{count} de plus",
 	"projects_chrome_detail_back_to_listing_label": "← Tous les projets",
 	"projects_chrome_detail_readme_section_title": "README",
@@ -60,6 +63,7 @@
 	"blog_chrome_listing_filters_from": "De",
 	"blog_chrome_listing_filters_to": "À",
 	"blog_chrome_listing_filters_tags": "Étiquettes",
+	"blog_chrome_listing_filters_all_label": "Tous",
 	"blog_chrome_detail_code_title": "code",
 	"blog_chrome_detail_code_copy_aria": "Copier le code dans le presse-papiers",
 	"blog_chrome_detail_code_copy_label": "Copier",
@@ -128,5 +132,6 @@
 	"services_chrome_listing_station_short_web_development": "Sites web",
 	"footer_chrome_footer_explore_label": "EXPLORER",
 	"footer_chrome_footer_legal_label": "LÉGAL",
-	"footer_chrome_footer_connect_label": "CONNEXION"
+	"footer_chrome_footer_connect_label": "CONNEXION",
+	"footer_chrome_footer_live_label": "En direct"
 }

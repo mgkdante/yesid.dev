@@ -50,6 +50,7 @@ const siteMeta = {
 	links: {
 		email: 'contact@yesid.dev',
 		github: 'https://github.com/mgkdante',
+		booking: 'https://cal.com/yesid-dev',
 		linkedin: 'https://www.linkedin.com/in/otaloray/',
 	},
 	owner: {

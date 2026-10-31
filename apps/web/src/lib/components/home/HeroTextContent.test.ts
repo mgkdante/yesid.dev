@@ -23,6 +23,8 @@ function baseProps(overrides: Record<string, unknown> = {}) {
 		subtitleText: 'subtitle',
 		ctaWorkLabel: 'See the work',
 		ctaContactLabel: 'Contact',
+		ctaWorkHref: '/projects',
+		bookingHref: 'https://cal.com/fixture',
 		heroData: generateHeroData(),
 		replayAriaLabel: 'Replay intro',
 		...overrides,

@@ -16,6 +16,8 @@
 	"ui_marker_service": "{num} / SERVICE",
 	"ui_back_to_projects": "← All Projects",
 	"ui_error_status_note": "// requested path not in service",
+	"ui_error_sign_label": "STATION",
+	"ui_error_suggestions_label": "Suggested pages",
 	"ui_blog_edition_template": "VOL. 01 // ISS. {issue}",
 	"ui_category_personal": "Personal",
 	"ui_category_professional": "Professional",
@@ -36,6 +38,7 @@
 	"projects_chrome_listing_filters_services": "Services",
 	"projects_chrome_listing_filters_tags": "Tags",
 	"projects_chrome_listing_filters_tech_stack": "Tech Stack",
+	"projects_chrome_listing_filters_all_label": "All",
 	"projects_chrome_listing_card_stack_overflow_suffix": "+{count} more",
 	"projects_chrome_detail_back_to_listing_label": "← All Projects",
 	"projects_chrome_detail_readme_section_title": "README",
@@ -60,6 +63,7 @@
 	"blog_chrome_listing_filters_from": "From",
 	"blog_chrome_listing_filters_to": "To",
 	"blog_chrome_listing_filters_tags": "Tags",
+	"blog_chrome_listing_filters_all_label": "All",
 	"blog_chrome_detail_code_title": "code",
 	"blog_chrome_detail_code_copy_aria": "Copy code to clipboard",
 	"blog_chrome_detail_code_copy_label": "Copy",
@@ -128,5 +132,6 @@
 	"services_chrome_listing_station_short_web_development": "Websites",
 	"footer_chrome_footer_explore_label": "EXPLORE",
 	"footer_chrome_footer_legal_label": "LEGAL",
-	"footer_chrome_footer_connect_label": "CONNECT"
+	"footer_chrome_footer_connect_label": "CONNECT",
+	"footer_chrome_footer_live_label": "Live"
 }

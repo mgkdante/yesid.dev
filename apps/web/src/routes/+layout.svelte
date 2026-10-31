@@ -99,7 +99,6 @@
 		PUBLISHED_LOCALES[(Math.max(0, PUBLISHED_LOCALES.indexOf(locale)) + 1) % PUBLISHED_LOCALES.length],
 	);
 
-	const LIVE_LABEL = { en: 'Live', fr: 'En direct', es: 'En vivo' } as const;
 	const footer = siteLabels.footerChrome.footer;
 	const footerNav = $derived(
 		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
@@ -196,7 +195,7 @@
 				]}
 				statusStart={footerAddress}
 				statusPrefix={resolveLocale(footer.statusPrefix, locale)}
-				liveLabel={LIVE_LABEL[locale]}
+				liveLabel={resolveLocale(footer.liveLabel, locale)}
 			/>
 		</div>
 	</div>

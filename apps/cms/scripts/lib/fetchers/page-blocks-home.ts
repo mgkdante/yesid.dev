@@ -7,7 +7,7 @@
  * block projections; generated-content verification catches output drift.
  */
 
-import { str, toLocalizedFields, toLocalizedString } from '../locale';
+import { hrefOr, str, toLocalizedFields, toLocalizedString } from '../locale';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import {
 	HeroContentSchema,
@@ -45,6 +45,7 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 			'subheadline', 'subtitle',
 			['ctaWork', 'cta_work'], ['ctaContact', 'cta_contact'],
 		]),
+		ctaWorkHref: hrefOr(raw.cta_work_href, '/projects'),
 		sqlPanel: {
 			...toLocalizedFields(tr, [
 				['prompt', 'sql_prompt'], ['liveLabel', 'sql_live_label'],
@@ -55,6 +56,9 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 				['vehicles', 'sql_col_vehicles'],
 			]),
 			...toLocalizedFields(tr, [['metaTemplate', 'sql_meta_template']]),
+			stamps: toLocalizedFields(tr, [
+				['demo', 'stamp_demo'], ['refreshed', 'stamp_refreshed'], ['liveTemplate', 'stamp_live_template'],
+			]),
 		},
 		refreshButton: toLocalizedFields(tr, [
 			['label', 'refresh_label'], ['helper', 'refresh_helper'],
@@ -286,17 +290,22 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 		description: toLocalizedString(tr, `rows_${key}_description`),
 		action: toLocalizedString(tr, `rows_${key}_action`),
 	});
+	const linkedRow = (key: 'contact' | 'read' | 'about', fallback: string) => ({
+		...rowGroup(key),
+		href: hrefOr(raw[`rows_${key}_href`], fallback),
+	});
 	return {
 		cta: {
 			...toLocalizedFields(tr, [['label', 'cta_label']]),
 			href: typeof raw.cta_href === 'string' ? raw.cta_href : '/contact',
 		},
 		rows: {
-			contact: rowGroup('contact'),
+			contact: linkedRow('contact', '/contact'),
 			connect: rowGroup('connect'),
-			read: rowGroup('read'),
-			about: rowGroup('about'),
+			read: linkedRow('read', '/blog'),
+			about: linkedRow('about', '/about'),
 		},
+		...toLocalizedFields(tr, [['closingLabel', 'closing_label']]),
 		terminal: toLocalizedFields(tr, [
 			['title', 'terminal_title'], ['city', 'terminal_city'], ['encoding', 'terminal_encoding'],
 			['destinationsLabel', 'terminal_destinations_label'],

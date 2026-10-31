@@ -6,6 +6,8 @@ export const SiteLinksSchema = z.object({
 	github: z.string(),
 	linkedin: z.string().optional(),
 	upwork: z.string().optional(),
+	/** Booking calendar opened by the Home and Contact booking links. */
+	booking: z.string(),
 });
 
 export const SiteAddressSchema = z.object({

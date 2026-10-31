@@ -59,7 +59,8 @@
 				"email": "contact@yesid.dev",
 				"github": "https://github.com/mgkdante",
 				"linkedin": "https://www.linkedin.com/in/otaloray/",
-				"upwork": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82"
+				"upwork": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82",
+				"booking": "https://cal.com/yesid-dev"
 			},
 			"owner": {
 				"name": "Yesid",
@@ -178,6 +179,7 @@
 			"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
 			"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
 			"description": {"en":"The page you were looking for could not be found.","fr":"La page que tu cherchais est introuvable.","es":"No se encontró la página que buscabas."},
+			"browserTitle": {"en":"Not Found","fr":"Not Found","es":"Not Found"},
 			"suggestions": [
 				{
 					"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
@@ -2456,6 +2458,8 @@
 				"markerService": {"en":"{num} / SERVICE","fr":"{num} / SERVICE","es":"{num} / SERVICIO"},
 				"backToProjects": {"en":"← All Projects","fr":"← Tous les projets","es":"← Todos los proyectos"},
 				"errorStatusNote": {"en":"// requested path not in service","fr":"// chemin demandé hors service","es":"// ruta solicitada fuera de servicio"},
+				"errorSignLabel": {"en":"STATION","fr":"STATION","es":"STATION"},
+				"errorSuggestionsLabel": {"en":"Suggested pages","fr":"Pages suggérées","es":"Páginas sugeridas"},
 				"blogEditionTemplate": {"en":"VOL. 01 // ISS. {issue}","fr":"VOL. 01 // NO {issue}","es":"VOL. 01 // NÚM. {issue}"},
 				"categoryPersonal": {"en":"Personal","fr":"Perso","es":"Personal"},
 				"categoryProfessional": {"en":"Professional","fr":"Professionnel","es":"Profesional"},
@@ -2493,7 +2497,8 @@
 						"filtersLabel": {"en":"Filters","fr":"Filtres","es":"Filtros"},
 						"services": {"en":"Services","fr":"Services","es":"Servicios"},
 						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"},
-						"techStack": {"en":"Tech Stack","fr":"Stack technique","es":"Stack técnico"}
+						"techStack": {"en":"Tech Stack","fr":"Stack technique","es":"Stack técnico"},
+						"allLabel": {"en":"All","fr":"Tous","es":"Todos"}
 					},
 					"card": {
 						"stackOverflowSuffix": {"en":"+{count} more","fr":"+{count} de plus","es":"+{count} más"}
@@ -2529,7 +2534,8 @@
 						"dateRange": {"en":"Date Range","fr":"Période","es":"Rango de fechas"},
 						"from": {"en":"From","fr":"De","es":"Desde"},
 						"to": {"en":"To","fr":"À","es":"Hasta"},
-						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"}
+						"tags": {"en":"Tags","fr":"Étiquettes","es":"Etiquetas"},
+						"allLabel": {"en":"All","fr":"Tous","es":"Todos"}
 					}
 				},
 				"detail": {
@@ -2640,7 +2646,8 @@
 					"statusPrefix": {"en":"system online ·","fr":"système en ligne ·","es":"sistema en línea ·"},
 					"exploreLabel": {"en":"EXPLORE","fr":"EXPLORER","es":"EXPLORA"},
 					"legalLabel": {"en":"LEGAL","fr":"LÉGAL","es":"LEGAL"},
-					"connectLabel": {"en":"CONNECT","fr":"CONNEXION","es":"CONECTA"}
+					"connectLabel": {"en":"CONNECT","fr":"CONNEXION","es":"CONECTA"},
+					"liveLabel": {"en":"Live","fr":"En direct","es":"En vivo"}
 				}
 			},
 			"heroDashboard": {
@@ -8687,6 +8694,7 @@
 				"errorSummary": {"en":"{count} errors, fix and retry","fr":"{count} erreurs, corrige et réessaie","es":"{count} errores, corrige y reintenta"}
 			},
 			"success": {
+				"command": {"en":"~ $ send --message","fr":"~ $ send --message","es":"~ $ send --message"},
 				"validating": {"en":"Validating fields...","fr":"Validation des champs...","es":"Validando campos..."},
 				"sending": {"en":"Sending message...","fr":"Envoi du message...","es":"Enviando mensaje..."},
 				"sent": {"en":"Message sent successfully!","fr":"Message envoyé avec succès!","es":"¡Mensaje enviado con éxito!"},
@@ -8731,6 +8739,7 @@
 			"subtitle": {"en":"Building reliable infrastructure for teams that can't afford downtime.","fr":"Je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.","es":"Construyo infraestructura confiable para equipos que no pueden darse el lujo de una caída."},
 			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
 			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
+			"ctaWorkHref": "/projects",
 			"sqlPanel": {
 				"prompt": {"en":"yesid@transit:gold>","fr":"yesid@transit:gold>","es":"yesid@transit:gold>"},
 				"liveLabel": {"en":"DEMO","fr":"DÉMO","es":"DEMO"},
@@ -8740,7 +8749,12 @@
 					"avgDelayS": {"en":"avg_delay_s","fr":"avg_delay_s","es":"avg_delay_s"},
 					"vehicles": {"en":"vehicles","fr":"vehicles","es":"vehicles"}
 				},
-				"metaTemplate": {"en":"5 rows · {queryTime}s · {updatedAgo}","fr":"5 lignes · {queryTime}s · {updatedAgo}","es":"5 filas · {queryTime}s · {updatedAgo}"}
+				"metaTemplate": {"en":"5 rows · {queryTime}s · {updatedAgo}","fr":"5 lignes · {queryTime}s · {updatedAgo}","es":"5 filas · {queryTime}s · {updatedAgo}"},
+				"stamps": {
+					"demo": {"en":"demo data","fr":"données démo","es":"datos de demo"},
+					"refreshed": {"en":"regenerated just now","fr":"régénéré à l'instant","es":"regenerado recién"},
+					"liveTemplate": {"en":"{seconds}s ago","fr":"il y a {seconds} s","es":"hace {seconds} s"}
+				}
 			},
 			"refreshButton": {
 				"label": {"en":"PULL FRESH DATA","fr":"TIRER DES DONNÉES FRAÎCHES","es":"TRAER DATOS FRESCOS"},
@@ -11889,7 +11903,8 @@
 				"contact": {
 					"label": {"en":"CONTACT","fr":"CONTACT","es":"CONTACTO"},
 					"description": {"en":"Start a project together","fr":"Démarrer un projet ensemble","es":"Empezar un proyecto juntos"},
-					"action": {"en":"GO","fr":"GO","es":"GO"}
+					"action": {"en":"GO","fr":"GO","es":"GO"},
+					"href": "/contact"
 				},
 				"connect": {
 					"label": {"en":"GITHUB REPO","fr":"DÉPÔT GITHUB","es":"REPO GITHUB"},
@@ -11899,14 +11914,17 @@
 				"read": {
 					"label": {"en":"BLOG","fr":"BLOGUE","es":"BLOG"},
 					"description": {"en":"Writing and field notes","fr":"Notes et articles","es":"Artículos y notas de campo"},
-					"action": {"en":"cd","fr":"cd","es":"cd"}
+					"action": {"en":"cd","fr":"cd","es":"cd"},
+					"href": "/blog"
 				},
 				"about": {
 					"label": {"en":"YESID","fr":"YESID","es":"YESID"},
 					"description": {"en":"About the builder","fr":"À propos du bâtisseur","es":"Sobre quien construye"},
-					"action": {"en":"cd","fr":"cd","es":"cd"}
+					"action": {"en":"cd","fr":"cd","es":"cd"},
+					"href": "/about"
 				}
 			},
+			"closingLabel": {"en":"the end","fr":"la fin","es":"fin"},
 			"terminal": {
 				"title": {"en":"yesid@terminus:~/destinations","fr":"yesid@terminus:~/destinations","es":"yesid@terminus:~/destinations"},
 				"city": {"en":"Montreal, QC","fr":"Montréal, QC","es":"Montreal, QC"},
@@ -11920,6 +11938,7 @@
 				"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
 				"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
 				"description": {"en":"The page you were looking for could not be found.","fr":"La page que tu cherchais est introuvable.","es":"No se encontró la página que buscabas."},
+				"browserTitle": {"en":"Not Found","fr":"Not Found","es":"Not Found"},
 				"suggestions": [
 					{
 						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},

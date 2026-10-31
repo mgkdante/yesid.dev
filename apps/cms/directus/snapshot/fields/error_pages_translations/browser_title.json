@@ -1,0 +1,49 @@
+{
+  "collection": "error_pages_translations",
+  "field": "browser_title",
+  "type": "string",
+  "meta": {
+    "collection": "error_pages_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "browser_title",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "Used on every error page, from the code 0 row only. The site name is added after it. Empty uses Not Found.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 8,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Browser tab title"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "browser_title",
+    "table": "error_pages_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

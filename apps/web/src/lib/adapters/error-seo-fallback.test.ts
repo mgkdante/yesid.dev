@@ -9,6 +9,7 @@ const siteMeta = {
 	links: {
 		email: 'contact@yesid.dev',
 		github: 'https://github.com/mgkdante',
+		booking: 'https://cal.com/yesid-dev',
 	},
 	owner: {
 		name: 'Yesid Otalora',
@@ -37,6 +38,14 @@ describe('errorSeoFallback boundary', () => {
 			canonical: 'https://yesid.dev',
 			ogType: 'website',
 			noIndex: true,
+		});
+	});
+
+	it('appends the brand to the browser tab title from the CMS', () => {
+		const titleBody = { en: 'Lost', fr: 'Perdu' };
+		expect(errorSeoFallback({ locale: 'fr', siteMeta, siteSeoDefaults, titleBody }).title).toEqual({
+			en: 'Lost | yesid.',
+			fr: 'Perdu | yesid.',
 		});
 	});
 });

@@ -54,6 +54,8 @@ export const SiteLabelsSchema = z.object({
 		/** "← All Projects" back-to-listing link on /projects/[slug] (go2/w4). */
 		backToProjects: LocalizedStringSchema,
 		errorStatusNote: LocalizedStringSchema,
+		errorSignLabel: LocalizedStringSchema,
+		errorSuggestionsLabel: LocalizedStringSchema,
 		blogEditionTemplate: LocalizedStringSchema,
 		categoryPersonal: LocalizedStringSchema,
 		categoryProfessional: LocalizedStringSchema,
@@ -100,6 +102,7 @@ export const SiteLabelsSchema = z.object({
 				services: LocalizedStringSchema,
 				tags: LocalizedStringSchema,
 				techStack: LocalizedStringSchema,
+				allLabel: LocalizedStringSchema,
 			}),
 			card: z.object({
 				stackOverflowSuffix: LocalizedStringSchema,
@@ -140,6 +143,7 @@ export const SiteLabelsSchema = z.object({
 				from: LocalizedStringSchema,
 				to: LocalizedStringSchema,
 				tags: LocalizedStringSchema,
+				allLabel: LocalizedStringSchema,
 			}),
 		}),
 		// Former blogDetailContent shape.
@@ -226,6 +230,8 @@ export const SiteLabelsSchema = z.object({
 			exploreLabel: LocalizedStringSchema,
 			legalLabel: LocalizedStringSchema,
 			connectLabel: LocalizedStringSchema,
+			/** Screen-reader name of the footer status dot. */
+			liveLabel: LocalizedStringSchema,
 		}),
 	}),
 	heroDashboard: z.object({

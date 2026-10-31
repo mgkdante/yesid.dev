@@ -130,6 +130,7 @@ export function toContactContent(
 			['errorSummary', 'validation_error_summary'],
 		]),
 		success: toLocalizedFields(tr, [
+			['command', 'success_command'],
 			['validating', 'success_validating'], ['sending', 'success_sending'],
 			['sent', 'success_sent'], ['responseTime', 'success_response_time'],
 			['meanwhile', 'success_meanwhile'], ['resetLabel', 'success_reset_label'],

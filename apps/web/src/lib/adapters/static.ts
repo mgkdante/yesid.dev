@@ -154,6 +154,7 @@ export const staticAdapter: ContentAdapter = {
 					locale,
 					siteMeta,
 					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
+					titleBody: resolveStaticErrorPage(0).browserTitle,
 				}));
 			}
 			const codeDefaults = codeRouteSeoDefaults[routeId];

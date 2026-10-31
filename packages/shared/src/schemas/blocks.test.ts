@@ -21,6 +21,7 @@ describe('HeroContentSchema', () => {
 		identity: ls('freelance line'),
 		ctaWork: ls('Work'),
 		ctaContact: ls('Contact'),
+		ctaWorkHref: '/projects',
 		sqlPanel: {
 			prompt: ls('SELECT'),
 			liveLabel: ls('live'),
@@ -31,6 +32,7 @@ describe('HeroContentSchema', () => {
 				vehicles: ls('Vehicles'),
 			},
 			metaTemplate: ls('{n} rows'),
+			stamps: { demo: ls('demo'), refreshed: ls('fresh'), liveTemplate: ls('{seconds}s ago') },
 		},
 		refreshButton: { label: ls('Refresh'), helper: ls('helper'), helperLive: ls('helperLive') },
 		heroAnim: { scrollDown: ls('scroll') },
@@ -148,11 +150,12 @@ describe('CloserContentSchema', () => {
 		cta: { label: ls('Get in touch'), href: '/contact' },
 		rows: {
 			stack: { label: ls('Stack'), description: ls('desc'), action: ls('Open') },
-			contact: { label: ls('Contact'), description: ls('desc'), action: ls('Send') },
+			contact: { label: ls('Contact'), description: ls('desc'), action: ls('Send'), href: '/contact' },
 			connect: { label: ls('Connect'), description: ls('desc'), action: ls('Link') },
-			read: { label: ls('Read'), description: ls('desc'), action: ls('Blog') },
-			about: { label: ls('About'), description: ls('desc'), action: ls('More') },
+			read: { label: ls('Read'), description: ls('desc'), action: ls('Blog'), href: '/blog' },
+			about: { label: ls('About'), description: ls('desc'), action: ls('More'), href: '/about' },
 		},
+		closingLabel: ls('the end'),
 		attribution: { text: ls('Built with'), url: 'https://sveltekit.dev' },
 		terminal: {
 			title: ls('DEPART'),

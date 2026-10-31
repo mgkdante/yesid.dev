@@ -25,6 +25,7 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 	github_url: 'https://github.com/mgkdante',
 	linkedin_url: 'https://www.linkedin.com/in/otaloray/',
 	upwork_url: 'https://www.upwork.com/freelancers/~011ba4ec420b4cdd82',
+	booking_url: 'https://cal.com/fixture',
 	owner_name: 'Yesid O.',
 	owner_locality: 'Montreal',
 	owner_region: 'QC',
@@ -94,6 +95,7 @@ const EXPECTED_SITE_META: SiteMeta = {
 		github: 'https://github.com/mgkdante',
 		linkedin: 'https://www.linkedin.com/in/otaloray/',
 		upwork: 'https://www.upwork.com/freelancers/~011ba4ec420b4cdd82',
+		booking: 'https://cal.com/fixture',
 	},
 	owner: {
 		name: 'Yesid O.',
@@ -150,16 +152,18 @@ describe('site-meta fetcher', () => {
 		expect(result.owner.knowsAbout).toEqual(['PostgreSQL', 'dbt', 'Power BI']);
 	});
 
-	it('omits optional links when null/undefined in Directus row', () => {
+	it('omits optional links and falls back to the default booking link when empty', () => {
 		const minimalFixture: DirectusSiteMetaRow = {
 			...SITE_META_FIXTURE,
 			linkedin_url: null,
 			upwork_url: null,
+			booking_url: null,
 		};
 		const result = toSiteMeta(minimalFixture);
 		expect(result.links).toEqual({
 			email: 'contact@yesid.dev',
 			github: 'https://github.com/mgkdante',
+			booking: 'https://cal.com/yesid-dev',
 		});
 	});
 

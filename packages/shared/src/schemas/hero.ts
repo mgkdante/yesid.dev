@@ -13,6 +13,7 @@ export const HeroContentSchema = z.object({
 	subtitle: LocalizedStringSchema,
 	ctaWork: LocalizedStringSchema,
 	ctaContact: LocalizedStringSchema,
+	ctaWorkHref: z.string(),
 	sqlPanel: z.object({
 		prompt: LocalizedStringSchema,
 		/** Badge in the DEMO state (simulated data). */
@@ -25,6 +26,12 @@ export const HeroContentSchema = z.object({
 			vehicles: LocalizedStringSchema,
 		}),
 		metaTemplate: LocalizedStringSchema,
+		/** Values for {updatedAgo}; liveTemplate holds the {seconds} placeholder. */
+		stamps: z.object({
+			demo: LocalizedStringSchema,
+			refreshed: LocalizedStringSchema,
+			liveTemplate: LocalizedStringSchema,
+		}),
 	}),
 	refreshButton: z.object({
 		label: LocalizedStringSchema,

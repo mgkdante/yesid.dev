@@ -42,6 +42,8 @@ export const ContactValidationSchema = z.object({
 });
 
 export const ContactSuccessSchema = z.object({
+	/** First success line, for example "~ $ send --message". */
+	command: LocalizedStringSchema,
 	validating: LocalizedStringSchema,
 	sending: LocalizedStringSchema,
 	sent: LocalizedStringSchema,

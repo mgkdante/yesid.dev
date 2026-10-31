@@ -185,6 +185,11 @@ export function str(value: unknown): string {
 	return typeof value === 'string' ? value : '';
 }
 
+/** A CMS link value, or the fallback when it is empty or blank. */
+export function hrefOr(value: unknown, fallback: string): string {
+	return typeof value === 'string' && value.trim() ? value : fallback;
+}
+
 import type { BlockEditorDoc, LocalizedBlockEditorDoc } from '@repo/shared';
 
 /**

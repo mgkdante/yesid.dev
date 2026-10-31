@@ -24,6 +24,8 @@
 		subtitleText,
 		ctaWorkLabel,
 		ctaContactLabel,
+		ctaWorkHref,
+		bookingHref,
 		heroData,
 		live = false,
 		replayEnabled = false,
@@ -39,6 +41,8 @@
 		subtitleText: string;
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
+		ctaWorkHref: string;
+		bookingHref: string;
 		heroData: HeroData;
 
 		live?: boolean;
@@ -181,11 +185,11 @@
 
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 		<span class="tap-press" use:pressBounce>
-			<Button variant="default" size="cta-lg" href={localizeHref('/projects', locale)} data-testid="hero-cta-projects">
+			<Button variant="default" size="cta-lg" href={localizeHref(ctaWorkHref, locale)} data-testid="hero-cta-projects">
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="conversion" size="cta-lg" href="https://cal.com/yesid-dev" target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press" onclick={() => trackAnalyticsEvent('booking_click')}>
+		<Button variant="conversion" size="cta-lg" href={bookingHref} target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press" onclick={() => trackAnalyticsEvent('booking_click')}>
 			{ctaContactLabel}
 		</Button>
 	</div>

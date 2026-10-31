@@ -4,7 +4,6 @@ import HomeCloser from './HomeCloser.svelte';
 
 import { closerContent } from '#lib/content/site-content.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
-import { THE_END } from './annotation-lettering';
 
 const props = { closer: closerContent, siteMeta };
 
@@ -31,7 +30,7 @@ describe('HomeCloser', () => {
 		expect(rows).toHaveLength(4);
 	});
 
-	it('renders fixed Terminus routes in the requested order', () => {
+	it('renders the Terminus routes in the requested order', () => {
 		render(HomeCloser, { props });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows.map((row) => row.getAttribute('href'))).toEqual([
@@ -69,7 +68,7 @@ describe('HomeCloser', () => {
 
 	it('keeps the authored closer and terminal links available without decorative network requests', () => {
 		render(HomeCloser, { props });
-		expect(screen.getByRole('img', { name: THE_END.en })).toBeInTheDocument();
+		expect(screen.getByRole('img', { name: closerContent.closingLabel.en })).toBeInTheDocument();
 		expect(
 			screen.getByRole('link', {
 				name: new RegExp(closerContent.cta.label.en),

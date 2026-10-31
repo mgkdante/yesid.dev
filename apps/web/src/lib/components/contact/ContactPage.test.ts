@@ -39,7 +39,7 @@ const contactContent: ContactContent = {
 		required: { en: '{field} is required' }, invalidEmail: { en: 'Invalid email format' }, errorSummary: { en: '{count} errors' },
 	},
 	success: {
-		validating: { en: 'Checking' }, sending: { en: 'Sending' }, sent: { en: 'Delivered' },
+		command: { en: '~ $ send' }, validating: { en: 'Checking' }, sending: { en: 'Sending' }, sent: { en: 'Delivered' },
 		responseTime: { en: 'Soon' }, meanwhile: { en: 'Visit {work} and {blog}.' },
 		resetLabel: { en: 'Send another' }, fieldOk: { en: 'OK' }, workLinkLabel: { en: 'work' }, blogLinkLabel: { en: 'blog' },
 	},
@@ -238,15 +238,23 @@ describe('ContactPage', () => {
 				},
 			},
 		});
-		const mastodonLinks = screen.getAllByRole('link', { name: 'mastodon.social/@mgkdante' });
+		const mastodonLinks = screen.getAllByRole('link', { name: 'Mastodon' });
 		expect(mastodonLinks.length).toBeGreaterThanOrEqual(1);
-		expect(mastodonLinks[0].textContent).toContain('mastodon.social/@mgkdante');
+		expect(mastodonLinks[0]).toHaveAttribute('href', 'https://mastodon.social/@mgkdante');
 	});
 
 	it('email social uses mailto link', () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		const emailLinks = screen.getAllByTestId('contact-social-email');
 		expect(emailLinks[0].getAttribute('href')).toMatch(/^mailto:/);
+	});
+
+	it('shows the channel name in Connect and keeps the address as the link', () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		const github = screen.getAllByTestId('contact-social-github')[0];
+		expect(github).toHaveTextContent('GitHub');
+		expect(github).not.toHaveTextContent('github.com/fixture');
+		expect(github).toHaveAttribute('href', 'https://github.com/fixture');
 	});
 
 	it('github social opens in new tab', () => {

@@ -21,6 +21,7 @@ export const siteMetaFactory = new Factory<SiteMeta>(() => ({
 	links: {
 		email: faker.internet.email(),
 		github: 'https://github.com/' + faker.internet.username(),
+		booking: 'https://cal.com/' + faker.internet.username(),
 	},
 	owner: {
 		name: faker.person.fullName(),

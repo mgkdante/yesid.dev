@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { DEFAULT_LOCALE } from '../src/lib/utils/locale';
 import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
-import { THE_END } from '../src/lib/components/home/annotation-lettering';
 import { closerContent } from '../src/lib/content/site-content';
 import { resolveLocale } from '../src/lib/utils/locale';
 
@@ -21,7 +20,7 @@ for (const locale of PUBLISHED_LOCALES) {
 		try {
 			await page.goto(locale === DEFAULT_LOCALE ? '/' : '/' + locale);
 			const note = page.getByRole('img', {
-				name: THE_END[locale],
+				name: resolveLocale(closerContent.closingLabel, locale),
 				exact: true,
 			});
 			await note.scrollIntoViewIfNeeded();
@@ -68,7 +67,7 @@ for (const locale of PUBLISHED_LOCALES) {
 			await page.emulateMedia({ reducedMotion: 'reduce' });
 			await page.goto(locale === DEFAULT_LOCALE ? '/' : '/' + locale);
 			const note = page.getByRole('img', {
-				name: THE_END[locale],
+				name: resolveLocale(closerContent.closingLabel, locale),
 				exact: true,
 			});
 			await note.scrollIntoViewIfNeeded();

@@ -3,7 +3,7 @@
  * regroups the prefix-named flat columns (a11y_/ui_/pages_/email_) into the
  * nested SiteLabels shape consumed by apps/web components.
  */
-import { toLocalizedFields } from '../locale';
+import { hrefOr, toLocalizedFields } from '../locale';
 import {
 	SiteLabelsSchema,
 	type BlogEntryRail,
@@ -28,14 +28,10 @@ type SiteLabelsRow = { id: string; translations?: Translations } & {
 	[K in (typeof RAIL_HREF_FIELDS)[number]]?: string | null;
 };
 
-function href(value: string | null | undefined, fallback: string): string {
-	return value?.trim() ? value : fallback;
-}
-
 function toBlogEntryRail(raw: SiteLabelsRow, tr: Translations): BlogEntryRail {
 	const link = (label: { label: LocalizedString }, value: string | null | undefined, fallback: string) => ({
 		...label,
-		href: href(value, fallback),
+		href: hrefOr(value, fallback),
 	});
 	return {
 		workWithMe: {
@@ -101,6 +97,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			...toLocalizedFields(tr, [
 				['markerService', 'ui_marker_service'],
 				['backToProjects', 'ui_back_to_projects'], ['errorStatusNote', 'ui_error_status_note'],
+				['errorSignLabel', 'ui_error_sign_label'], ['errorSuggestionsLabel', 'ui_error_suggestions_label'],
 				['blogEditionTemplate', 'ui_blog_edition_template'],
 				['categoryPersonal', 'ui_category_personal'],
 				['categoryProfessional', 'ui_category_professional'],
@@ -137,6 +134,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				filters: toLocalizedFields(tr, [
 					['filtersLabel', 'projects_chrome_listing_filters_label'], ['services', 'projects_chrome_listing_filters_services'],
 					['tags', 'projects_chrome_listing_filters_tags'], ['techStack', 'projects_chrome_listing_filters_tech_stack'],
+					['allLabel', 'projects_chrome_listing_filters_all_label'],
 				]),
 				card: toLocalizedFields(tr, [
 					['stackOverflowSuffix', 'projects_chrome_listing_card_stack_overflow_suffix'],
@@ -173,6 +171,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 					['language', 'blog_chrome_listing_filters_language'], ['dateRange', 'blog_chrome_listing_filters_date_range'],
 					['from', 'blog_chrome_listing_filters_from'], ['to', 'blog_chrome_listing_filters_to'],
 					['tags', 'blog_chrome_listing_filters_tags'],
+					['allLabel', 'blog_chrome_listing_filters_all_label'],
 				]),
 			},
 			detail: {
@@ -245,6 +244,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				['exploreLabel', 'footer_chrome_footer_explore_label'],
 				['legalLabel', 'footer_chrome_footer_legal_label'],
 				['connectLabel', 'footer_chrome_footer_connect_label'],
+				['liveLabel', 'footer_chrome_footer_live_label'],
 			]),
 		},
 		heroDashboard: toLocalizedFields(tr, [

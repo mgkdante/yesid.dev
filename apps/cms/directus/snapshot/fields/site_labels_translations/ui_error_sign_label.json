@@ -1,0 +1,49 @@
+{
+  "collection": "site_labels_translations",
+  "field": "ui_error_sign_label",
+  "type": "string",
+  "meta": {
+    "collection": "site_labels_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "ui_error_sign_label",
+    "group": "grp_global_error",
+    "hidden": false,
+    "interface": "input",
+    "note": "Word on the sign in the error picture. Default: \"STATION\"",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 1,
+    "special": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Station sign"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "ui_error_sign_label",
+    "table": "site_labels_translations",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

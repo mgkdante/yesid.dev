@@ -44,7 +44,7 @@
 		tags: filters.tags,
 		stack: filters.techStack,
 	};
-	const allLabel = resolveLocale({ en: 'All', fr: 'Tous', es: 'Todos' }, locale);
+	const allLabel = resolveLocale(filters.allLabel, locale);
 </script>
 
 <aside data-testid="project-filter-sidebar">

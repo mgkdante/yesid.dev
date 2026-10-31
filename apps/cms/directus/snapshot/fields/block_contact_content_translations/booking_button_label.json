@@ -11,7 +11,7 @@
     "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": "The link always opens cal.com/yesid-dev.",
+    "note": "The link opens the booking link in Site identity and SEO defaults.",
     "options": null,
     "readonly": false,
     "required": false,
