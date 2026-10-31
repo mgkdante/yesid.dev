@@ -38,7 +38,7 @@ describe('offline export fixture', () => {
 			expect(result.exitCode).toBe(0);
 			expect(result.output).toContain('Ignoring EXPORT_FALLBACKS_SOURCE=live on untrusted Vercel target');
 			expect(result.output).not.toMatch(/auth failed|fetch:|cache fallback/);
-			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
+			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(21);
 			expect(readdirSync(emitDir).filter(file => file.endsWith('.json'))).toEqual([]);
 			expect(await Bun.file(joinPath(emitDir, '.cms-cache.json')).exists()).toBe(false);
 		} finally { rmSync(emitDir, { recursive: true, force: true }); }
@@ -87,8 +87,8 @@ describe('failed live export retains last-good generated output', () => {
 			const cache = joinPath(emitDir, '.cms-cache.json');
 			await writeCache(cache, cached, 'synthetic');
 			const before = await Bun.file(cache).text();
-			expect(await run(opts)).toEqual({ source: 'cache', emitted: 20 });
-			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(20);
+			expect(await run(opts)).toEqual({ source: 'cache', emitted: 21 });
+			expect(readdirSync(emitDir).filter(file => file.endsWith('.ts'))).toHaveLength(21);
 			expect(await Bun.file(cache).text()).toBe(before);
 		} finally { server.stop(true); rmSync(emitDir, { recursive: true, force: true }); }
 	});

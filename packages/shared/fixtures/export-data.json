@@ -59,8 +59,7 @@
 				"email": "contact@yesid.dev",
 				"github": "https://github.com/mgkdante",
 				"linkedin": "https://www.linkedin.com/in/otaloray/",
-				"upwork": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82",
-				"booking": "https://cal.com/yesid-dev"
+				"upwork": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82"
 			},
 			"owner": {
 				"name": "Yesid",
@@ -12084,20 +12083,17 @@
 				{
 					"quote": {"en":"You have the gift of perseverance, and that's what makes you a genius too.","fr":"Tu as le don de la persévérance, et c'est ce qui fait de toi un génie.","es":"Tienes el don de la perseverancia, y eso es lo que también te hace un genio."},
 					"author": "Guy Sensei",
-					"role": {"en":"Sensei","fr":"Gaï Sensei","es":"Sensei"},
-					"company": "Personal lore"
+					"role": {"en":"Sensei","fr":"Gaï Sensei","es":"Sensei"}
 				},
 				{
 					"quote": {"en":"What matters in life is not what happens to you but what you remember and how you remember it.","fr":"Ce qui compte dans la vie, ce n'est pas ce qui t'arrive, mais ce dont tu te souviens et la façon dont tu t'en souviens.","es":"La vida no es la que uno vivió, sino la que uno recuerda y cómo la recuerda para contarla."},
 					"author": "Gabriel Garcia Marquez",
-					"role": {"en":"Writer","fr":"Écrivain","es":"Escritor"},
-					"company": "Literature"
+					"role": {"en":"Writer","fr":"Écrivain","es":"Escritor"}
 				},
 				{
 					"quote": {"en":"Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.","fr":"Tout ce que nous entendons est une opinion, pas un fait. Tout ce que nous voyons est une perspective, pas la vérité.","es":"Todo lo que oímos es una opinión, no un hecho. Todo lo que vemos es una perspectiva, no la verdad."},
 					"author": "Marcus Aurelius",
-					"role": {"en":"Stoic philosopher","fr":"Philosophe stoïcien","es":"Filósofo estoico"},
-					"company": "Meditations"
+					"role": {"en":"Stoic philosopher","fr":"Philosophe stoïcien","es":"Filósofo estoico"}
 				}
 			],
 			"languages": [

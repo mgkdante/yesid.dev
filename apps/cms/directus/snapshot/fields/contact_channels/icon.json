@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Lowercase key such as email, calendar, github or linkedin. The calendar row also shows its name.",
+    "note": "Lowercase key such as email, calendar, github or linkedin. The calendar row also shows its address.",
     "options": null,
     "readonly": false,
     "required": true,

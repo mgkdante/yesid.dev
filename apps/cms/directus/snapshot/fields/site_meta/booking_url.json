@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "booking_url",
     "group": "grp_contact",
-    "hidden": false,
+    "hidden": true,
     "interface": "input",
-    "note": "Opens from the Home booking button and the Contact form booking link. Empty uses https://cal.com/yesid-dev.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": {
       "placeholder": "https://cal.com/...",
       "trim": true

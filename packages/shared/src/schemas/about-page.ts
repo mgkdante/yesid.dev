@@ -35,8 +35,6 @@ export const AboutTestimonialSchema = z.object({
 	quote: LocalizedStringSchema,
 	author: z.string(),
 	role: LocalizedStringSchema,
-	company: z.string(),
-	logo: z.string().optional(),
 });
 
 export const AboutLanguageSchema = z.object({

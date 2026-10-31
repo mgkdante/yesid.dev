@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Visible only on the booking (calendar) row; other rows show the link. Also used in the site's AI summary file.",
+    "note": "Shown in the Contact page Connect list. Also used in the site's AI summary file.",
     "options": null,
     "readonly": false,
     "required": false,

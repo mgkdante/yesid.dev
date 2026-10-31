@@ -82,7 +82,6 @@ const fixture = {
 			quote: { en: 'First supplied quote.', fr: 'Une citation témoin.', es: 'Una cita de prueba.' },
 			author: 'First author',
 			role: { en: 'Builder' },
-			company: '',
 		},
 		{
 			quote: {
@@ -90,7 +89,6 @@ const fixture = {
 			},
 			author: 'Second author',
 			role: { en: '' },
-			company: '',
 		},
 	],
 	cta: {

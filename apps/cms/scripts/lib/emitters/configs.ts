@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import type { SiteMeta } from '@repo/shared';
 import type { ExportData } from '../../export-data';
 import type {
 	ExportDecl,
@@ -47,14 +48,28 @@ const HOME_EXPORTS = [
 	['closer', 'closerContent', 'CloserContent'],
 ] as const satisfies readonly [DataKey, string, string][];
 
+/** The owner phone is published only as the JSON-LD telephone, so page modules never carry it. */
+export function withoutOwnerPhone(siteMeta: SiteMeta): SiteMeta {
+	if (!siteMeta.owner?.phone) return siteMeta;
+	const { phone: _phone, ...owner } = siteMeta.owner;
+	return { ...siteMeta, owner };
+}
+
 /** The single typed owner of every CMS-generated content module. */
 export const EXPORT_MODULE_REGISTRY = [
 	defineModule(
 		'site-meta.ts',
 		['siteMeta'],
-		'Site-wide brand identity (name, tagline, description, links, owner).',
+		'Site-wide brand identity (name, tagline, description, links, owner), without the owner phone.',
 		[typeImport('#lib/types.ts', 'SiteMeta')],
-		(data) => [declaration('siteMeta', 'SiteMeta', data.siteMeta)],
+		(data) => [declaration('siteMeta', 'SiteMeta', withoutOwnerPhone(data.siteMeta))],
+	),
+	defineModule(
+		'site-owner-phone.server.ts',
+		['siteMeta'],
+		'Owner phone for the JSON-LD telephone only. Server-only, so page data and browser code cannot import it.',
+		[],
+		(data) => [declaration('ownerPhone', 'string | null', data.siteMeta.owner?.phone ?? null)],
 	),
 	defineModule(
 		'site-seo-defaults.ts',

@@ -54,8 +54,20 @@ describe('export module registry', () => {
 			'about-page.ts', 'blog-bodies.ts', 'blog-page.ts', 'blog.ts', 'contact-page.ts',
 			'error-pages.ts', 'legal-pages.ts', 'media-assets.ts', 'media-variants.ts', 'morph-shapes.ts',
 			'nav.ts', 'projects-page.ts', 'projects.ts', 'route-seo.ts', 'services.ts', 'site-content.ts',
-			'site-labels.ts', 'site-meta.ts', 'site-pages.ts', 'site-seo-defaults.ts',
+			'site-labels.ts', 'site-meta.ts', 'site-owner-phone.server.ts', 'site-pages.ts', 'site-seo-defaults.ts',
 		].sort());
+	});
+
+	it('emits the owner phone only into the server-only module', () => {
+		const owner = { name: 'Owner', phone: '+12025550100' };
+		const configs = buildEmitConfigs({ ...completeExportData, siteMeta: { owner } } as unknown as ExportData, '/tmp/out');
+		const exportsOf = (fileName: string) =>
+			configs.find((entry) => basename(entry.filePath) === fileName)!.exports;
+
+		expect(exportsOf('site-meta.ts')).toEqual([{ name: 'siteMeta', typeName: 'SiteMeta', value: { owner: { name: 'Owner' } } }]);
+		expect(exportsOf('site-owner-phone.server.ts')).toEqual([{ name: 'ownerPhone', typeName: 'string | null', value: '+12025550100' }]);
+		const otherModules = configs.filter((entry) => basename(entry.filePath) !== 'site-owner-phone.server.ts');
+		expect(JSON.stringify(otherModules.map((entry) => entry.exports))).not.toContain('2025550100');
 	});
 
 	it('emits route-seo.ts as generated CMS route overrides', () => {

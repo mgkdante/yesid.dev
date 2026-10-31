@@ -229,14 +229,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 				else if (locale === 'es') roleLS.es = t.role;
 			}
 		}
-		const testimonial: AboutContent['testimonials'][number] = {
-			quote: quoteLS,
-			author: str(enT.author),
-			role: roleLS,
-			company: str(enT.company),
-		};
-		if (typeof enT.logo === 'string' && enT.logo.length > 0) testimonial.logo = enT.logo;
-		return testimonial;
+		return { quote: quoteLS, author: str(enT.author), role: roleLS };
 	});
 
 	// --- languages: read from parent row ---

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SiteMeta, SiteSeoDefaults } from '#lib/types.ts';
-import { errorSeoFallback } from './error-seo-fallback';
+import { errorSeoFallback, errorTitleBody } from './error-seo-fallback';
 
 const siteMeta = {
 	name: 'yesid.',
@@ -9,7 +9,6 @@ const siteMeta = {
 	links: {
 		email: 'contact@yesid.dev',
 		github: 'https://github.com/mgkdante',
-		booking: 'https://cal.com/yesid-dev',
 	},
 	owner: {
 		name: 'Yesid Otalora',
@@ -39,6 +38,14 @@ describe('errorSeoFallback boundary', () => {
 			ogType: 'website',
 			noIndex: true,
 		});
+	});
+
+	it('uses the status row tab title, then the code 0 row, then the default text', () => {
+		const rows = { 0: { browserTitle: { en: 'Lost' } }, 404: { browserTitle: { en: 'Missing' } }, 500: {} };
+		expect(errorTitleBody(rows, 404)).toEqual({ en: 'Missing' });
+		expect(errorTitleBody(rows, 500)).toEqual({ en: 'Lost' });
+		expect(errorTitleBody(rows, 503)).toEqual({ en: 'Lost' });
+		expect(errorTitleBody({ 404: {} }, 404)).toEqual({ en: 'Not Found' });
 	});
 
 	it('appends the brand to the browser tab title from the CMS', () => {

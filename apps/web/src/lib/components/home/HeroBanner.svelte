@@ -15,7 +15,7 @@
 	import { createTypewriter } from '#lib/motion/utils/heroTypewriter.ts';
 	import { isViewportAtMost } from '@yesid/motion/utils/device';
 	import { getLenis } from '@yesid/motion/utils/lenis';
-	import { siteLabels, siteMeta } from '#lib/content/index.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 	import {
 		fetchLiveKpis,
 		generateHeroData,
@@ -39,8 +39,10 @@
 		hero: HeroContent;
 		heroAnim: HeroAnimContent;
 		initialHeroData: HeroData;
+		/** Contact channels Calendar link opened by the second hero button. */
+		bookingHref: string;
 	}
-	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
+	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, initialHeroData: INITIAL_HERO_DATA, bookingHref }: Props = $props();
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
@@ -382,7 +384,7 @@
 						{ctaWorkLabel}
 						{ctaContactLabel}
 						ctaWorkHref={heroContent.ctaWorkHref}
-						bookingHref={siteMeta.links.booking}
+						{bookingHref}
 						heroData={heroData}
 						{live}
 						{replayEnabled}

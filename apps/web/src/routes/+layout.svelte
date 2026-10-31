@@ -21,6 +21,9 @@
 	import { SeoHead } from '@yesid/ui/head';
 	import { startAnalytics } from '#lib/analytics/client.ts';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
+	import { errorPagesById } from '#lib/content/error-pages.ts';
+	import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
+	import { errorTitleBody } from '#lib/adapters/error-seo-fallback.ts';
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
@@ -46,6 +49,11 @@
 	const headerLinks = $derived(data.headerLinks ?? []);
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
+
+	// Error renders use the browser tab title of their own status row.
+	const seo = $derived(page.error
+		? { ...data.seo, title: appendBrandPerLocale(errorTitleBody(errorPagesById, page.status), siteMeta.name) }
+		: data.seo);
 
 	// Persistent chrome receives reactive locale props; keyed page subtrees read locale context at initialization.
 	const locale = $derived(data.locale ?? DEFAULT_LOCALE);
@@ -127,7 +135,7 @@
 {/snippet}
 
 <SiteRoot lang={locale}>
-	<SeoHead {...seoHeadProps(data.seo, locale, data.themeColor)} />
+	<SeoHead {...seoHeadProps(seo, locale, data.themeColor)} />
 	<div class="site-grid circuit-grid" data-testid="site-grid" aria-hidden="true"></div>
 
 	<div

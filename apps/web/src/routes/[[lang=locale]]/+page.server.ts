@@ -1,5 +1,6 @@
 import { adapter } from '#lib/adapters/index.ts';
 import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
+import { bookingHref } from '#lib/utils/high-intent-links.ts';
 import { localeEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = localeEntries;
@@ -18,6 +19,7 @@ export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 		initialHeroData,
 		services,
 		siteMeta,
+		contactPage,
 	] = await Promise.all([
 		adapter.content.metroSvg(),
 		adapter.content.hero(),
@@ -30,6 +32,7 @@ export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 		adapter.content.initialHeroData(),
 		adapter.services.visible(),
 		adapter.meta.site(),
+		adapter.content.contactPage(),
 	]);
 
 	const [featuredProjects, serviceSvgContents] = await Promise.all([
@@ -49,6 +52,7 @@ export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 		initialHeroData,
 		services,
 		siteMeta,
+		bookingHref: bookingHref(contactPage.socials),
 		featuredProjects,
 		serviceSvgContents,
 	};

@@ -11,7 +11,7 @@
     "group": "grp_retired",
     "hidden": false,
     "interface": "group-detail",
-    "note": "Moved to Site labels > Blog article side rail links. This copy is deleted after the next release.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": {
       "start": "open",
       "headerColor": "#E07800"

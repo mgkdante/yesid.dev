@@ -481,8 +481,7 @@
         "fields": [
           "translations",
           "status",
-          "featured",
-          "date_published"
+          "featured"
         ],
         "sort": [
           "sort"

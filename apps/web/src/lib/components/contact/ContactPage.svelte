@@ -13,7 +13,7 @@
 
 	const locale = getLocale();
 	import { fillTemplate } from '#lib/utils/labels.ts';
-	import { siteLabels, siteMeta } from '#lib/content/index.ts';
+	import { siteLabels } from '#lib/content/index.ts';
 	import { clock, persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
 	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
@@ -23,7 +23,7 @@
 	import type { WeatherData } from '#lib/utils/weather.ts';
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
 	import { escapeHtml } from '#lib/utils/code-fences.ts';
-	import { isDirectContactHref } from '#lib/utils/high-intent-links.ts';
+	import { bookingHref, isDirectContactHref } from '#lib/utils/high-intent-links.ts';
 	import { pressBounce } from '@yesid/motion/actions';
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
@@ -490,7 +490,7 @@
 						<div class="mt-1 flex flex-wrap items-center gap-2 font-mono text-caption">
 							<span class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.formTerminal.bookingPrompt, locale)}</span>
 							<a
-								href={siteMeta.links.booking}
+								href={bookingHref(contactPage.socials)}
 								target="_blank"
 								rel="noopener"
 								data-testid="contact-booking-link"

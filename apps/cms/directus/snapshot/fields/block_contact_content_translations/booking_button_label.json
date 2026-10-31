@@ -11,7 +11,7 @@
     "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": "The link opens the booking link in Site identity and SEO defaults.",
+    "note": "Opens the Calendar link in Contact channels.",
     "options": null,
     "readonly": false,
     "required": false,

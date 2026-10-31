@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Used on every error page, from the code 0 row only. The site name is added after it. Empty uses Not Found.",
+    "note": "Tab title for this error code. Empty uses the code 0 row, then Not Found. The site name is added after it.",
     "options": null,
     "readonly": false,
     "required": false,

@@ -83,7 +83,6 @@ describe('aboutPageContent', () => {
 				expect(t.quote.en.length).toBeGreaterThan(0);
 				expect(t.author.length).toBeGreaterThan(0);
 				expect(t.role.en.length).toBeGreaterThan(0);
-				expect(t.company.length).toBeGreaterThan(0);
 			}
 		});
 	});

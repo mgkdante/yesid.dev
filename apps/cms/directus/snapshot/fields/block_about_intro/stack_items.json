@@ -11,7 +11,7 @@
     "group": "grp_retired",
     "hidden": false,
     "interface": "input-code",
-    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": {
       "language": "json"
     },

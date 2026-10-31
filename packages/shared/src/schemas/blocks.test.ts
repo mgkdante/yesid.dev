@@ -18,7 +18,6 @@ describe('HeroContentSchema', () => {
 		headline: { line1: ls('Hello'), line2: ls('World'), ariaSuffix: ls('suffix') },
 		subheadline: ls('sub'),
 		subtitle: ls('sub2'),
-		identity: ls('freelance line'),
 		ctaWork: ls('Work'),
 		ctaContact: ls('Contact'),
 		ctaWorkHref: '/projects',
@@ -95,13 +94,8 @@ describe('ManifestoContentSchema', () => {
 
 describe('ProofReelContentSchema', () => {
 	const valid = {
-		heading: ls('Work'),
-		headingDot: ls('.'),
-		subheading: ls('sub'),
-		sectionLabel: ls('section'),
 		viewAllLabel: ls('All'),
 		viewAllHref: '/work',
-		toggleColorAria: ls('Toggle'),
 	};
 
 	it('parses a minimal valid ProofReelContent', () => {
@@ -113,9 +107,6 @@ describe('ProofReelContentSchema', () => {
 
 describe('ServicesGridContentSchema', () => {
 	const valid = {
-		heading: ls('Services'),
-		headingDot: ls('.'),
-		subheading: ls('sub'),
 		viewIllustrationAria: ls('View {title}'),
 		viewAllLink: ls('All services'),
 	};
@@ -144,19 +135,14 @@ describe('CtaContentSchema', () => {
 
 describe('CloserContentSchema', () => {
 	const valid = {
-		heading: ls('TERMINUS'),
-		headingDot: ls('.'),
-		subheading: ls('sub'),
 		cta: { label: ls('Get in touch'), href: '/contact' },
 		rows: {
-			stack: { label: ls('Stack'), description: ls('desc'), action: ls('Open') },
 			contact: { label: ls('Contact'), description: ls('desc'), action: ls('Send'), href: '/contact' },
 			connect: { label: ls('Connect'), description: ls('desc'), action: ls('Link') },
 			read: { label: ls('Read'), description: ls('desc'), action: ls('Blog'), href: '/blog' },
 			about: { label: ls('About'), description: ls('desc'), action: ls('More'), href: '/about' },
 		},
 		closingLabel: ls('the end'),
-		attribution: { text: ls('Built with'), url: 'https://sveltekit.dev' },
 		terminal: {
 			title: ls('DEPART'),
 			city: ls('Montreal'),
@@ -179,12 +165,6 @@ describe('AboutIntroContentSchema', () => {
 		title: ls('Engineer'),
 		bio: ls('bio text'),
 		moreLink: ls('More'),
-		stackLabel: ls('Stack'),
-		stackItems: ['TypeScript', 'Svelte'],
-		locationLabel: ls('Location'),
-		location: { city: ls('Montreal'), region: ls('QC') },
-		interestsLabel: ls('Interests'),
-		interests: ls('music, transit'),
 	};
 
 	it('parses a minimal valid AboutIntroContent', () => {

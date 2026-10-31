@@ -11,7 +11,7 @@
     "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": "Second button. Opens the booking link in Site identity and SEO defaults.",
+    "note": "Second button. Opens the Calendar link in Contact channels.",
     "options": null,
     "readonly": false,
     "required": false,

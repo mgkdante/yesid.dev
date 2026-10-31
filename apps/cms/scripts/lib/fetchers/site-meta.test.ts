@@ -25,7 +25,6 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 	github_url: 'https://github.com/mgkdante',
 	linkedin_url: 'https://www.linkedin.com/in/otaloray/',
 	upwork_url: 'https://www.upwork.com/freelancers/~011ba4ec420b4cdd82',
-	booking_url: 'https://cal.com/fixture',
 	owner_name: 'Yesid O.',
 	owner_locality: 'Montreal',
 	owner_region: 'QC',
@@ -95,7 +94,6 @@ const EXPECTED_SITE_META: SiteMeta = {
 		github: 'https://github.com/mgkdante',
 		linkedin: 'https://www.linkedin.com/in/otaloray/',
 		upwork: 'https://www.upwork.com/freelancers/~011ba4ec420b4cdd82',
-		booking: 'https://cal.com/fixture',
 	},
 	owner: {
 		name: 'Yesid O.',
@@ -104,6 +102,7 @@ const EXPECTED_SITE_META: SiteMeta = {
 			fr: 'Développeur de solutions numériques à la pige',
 			es: 'Desarrollador freelance de soluciones digitales',
 		},
+		phone: '+12025550100',
 		address: {
 			locality: 'Montreal',
 			region: 'QC',
@@ -124,13 +123,15 @@ const EXPECTED_SITE_META: SiteMeta = {
 };
 
 describe('site-meta fetcher', () => {
-	it('does not publish a phone value stored in the private CMS field', () => {
-		const result = toSiteMeta({
-			...SITE_META_FIXTURE,
-			owner_phone: '+12025550100',
-		});
+	it('publishes the CMS phone only as the owner phone used by the search-engine data', () => {
+		const result = toSiteMeta({ ...SITE_META_FIXTURE, owner_phone: ' +12025550100 ' });
 
-		expect(result.owner).not.toHaveProperty('phone');
+		expect(result.owner.phone).toBe('+12025550100');
+		expect(JSON.stringify(result).split('2025550100')).toHaveLength(2);
+	});
+
+	it.each([null, undefined, '', '   '])('omits the phone when the CMS field is %p', (owner_phone) => {
+		expect(toSiteMeta({ ...SITE_META_FIXTURE, owner_phone }).owner).not.toHaveProperty('phone');
 	});
 
 	it('transforms a Directus singleton row into the current SiteMeta shape', () => {
@@ -152,18 +153,16 @@ describe('site-meta fetcher', () => {
 		expect(result.owner.knowsAbout).toEqual(['PostgreSQL', 'dbt', 'Power BI']);
 	});
 
-	it('omits optional links and falls back to the default booking link when empty', () => {
+	it('omits optional links when null/undefined in Directus row', () => {
 		const minimalFixture: DirectusSiteMetaRow = {
 			...SITE_META_FIXTURE,
 			linkedin_url: null,
 			upwork_url: null,
-			booking_url: null,
 		};
 		const result = toSiteMeta(minimalFixture);
 		expect(result.links).toEqual({
 			email: 'contact@yesid.dev',
 			github: 'https://github.com/mgkdante',
-			booking: 'https://cal.com/yesid-dev',
 		});
 	});
 

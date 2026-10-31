@@ -11,7 +11,7 @@
     "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Moved to Site labels > Blog pages > Listing page. This copy is deleted after the next release.",
+    "note": "Not used by the site. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
     "required": false,

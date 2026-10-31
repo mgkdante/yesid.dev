@@ -12,11 +12,20 @@ it('reads the committed fixture through readCache without derived media and is a
 	expect(fixture).not.toHaveProperty('mediaAssets');
 	expect(fixture).not.toHaveProperty('mediaVariants');
 	// The exporter hydrates these derived fields from the asset manifest before emission.
-	expect(buildEmitConfigs({ ...fixture, mediaAssets: {}, mediaVariants: {} }, '/fixture')).toHaveLength(20);
+	expect(buildEmitConfigs({ ...fixture, mediaAssets: {}, mediaVariants: {} }, '/fixture')).toHaveLength(21);
 	expect(trimExportData(fixture)).toEqual(fixture);
 	assertTrimmedExportData(fixture, fixture);
 	expect(JSON.parse(serializeFixture(fixture))).toEqual({ version: '1', directusUrl: 'fixture', data: fixture });
 	expect(serializeFixture(fixture)).toBe(await Bun.file(FIXTURE_PATH).text());
+});
+
+it('never writes the owner phone into the fixture', async () => {
+	const fixture = await readCache(FIXTURE_PATH);
+	if (!fixture?.siteMeta) throw new Error('Missing committed export fixture');
+	const source = { ...fixture, siteMeta: { ...fixture.siteMeta, owner: { ...fixture.siteMeta.owner, phone: '+12025550100' } } };
+	const trimmed = trimExportData(source);
+	expect(trimmed.siteMeta!.owner).not.toHaveProperty('phone');
+	assertTrimmedExportData(source, trimmed);
 });
 
 it('keeps bounded SEO, error headings and email-bearing paragraphs verbatim', () => {

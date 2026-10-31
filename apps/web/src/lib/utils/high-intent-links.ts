@@ -1,4 +1,10 @@
 const APPROVED_WHATSAPP_HOSTS = new Set(['wa.me']);
+const BOOKING_FALLBACK_HREF = 'https://cal.com/yesid-dev';
+
+/** The Contact channels Calendar row owns the booking link used on Home and Contact. */
+export function bookingHref(channels: readonly { icon: string; href: string }[]): string {
+	return channels.find((channel) => channel.icon === 'calendar')?.href.trim() || BOOKING_FALLBACK_HREF;
+}
 
 function parseAbsoluteUrl(href: string): URL | null {
 	const value = href.trim();

@@ -21,13 +21,14 @@ import {
 	getSvgContentsForPosts,
 } from '#lib/blog/static-helpers.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
+import { ownerPhone } from '#lib/content/site-owner-phone.server.ts';
 import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
 import { routeSeoOverrides } from '#lib/content/route-seo.ts';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
-import { errorSeoFallback } from './error-seo-fallback';
+import { errorSeoFallback, errorTitleBody } from './error-seo-fallback';
 import { routeSeoFactories } from './route-seo-factories';
 import { composePageSeo } from './compose-page-seo';
-import type { SiteSeoDefaults } from '#lib/types.ts';
+import type { SiteMeta, SiteSeoDefaults } from '#lib/types.ts';
 import { PageSeoSchema, type PageSeo } from '#lib/schemas/seo.ts';
 import { z } from 'zod';
 import {
@@ -79,6 +80,11 @@ import { assetIdForOrUndefined } from '@repo/shared';
 import type { Project } from '#lib/types.ts';
 
 import type { ContentAdapter } from './types';
+
+/** The JSON-LD telephone is the only output that carries the owner phone. */
+const jsonLdSiteMeta: SiteMeta = ownerPhone
+	? { ...siteMeta, owner: { ...siteMeta.owner, phone: ownerPhone } }
+	: siteMeta;
 
 /** Synchronous so Kit can use the error content during SSR rendering failures. */
 export function resolveStaticErrorPage(statusCode?: number) {
@@ -154,7 +160,7 @@ export const staticAdapter: ContentAdapter = {
 					locale,
 					siteMeta,
 					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
-					titleBody: resolveStaticErrorPage(0).browserTitle,
+					titleBody: errorTitleBody(errorPagesById),
 				}));
 			}
 			const codeDefaults = codeRouteSeoDefaults[routeId];
@@ -167,7 +173,7 @@ export const staticAdapter: ContentAdapter = {
 			return PageSeoSchema.parse(composePageSeo({
 				routeId,
 				locale,
-				siteMeta,
+				siteMeta: jsonLdSiteMeta,
 				siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
 				routeOverride,
 				codeDefaults,
