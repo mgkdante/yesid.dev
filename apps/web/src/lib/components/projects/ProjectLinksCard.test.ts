@@ -111,3 +111,27 @@ describe('ProjectLinksCard high-intent analytics', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 });
+
+describe('ProjectLinksCard documentation link', () => {
+	it('renders and tracks the published Documentation link beside the other links', async () => {
+		const project = projectFactory.build({
+			repoUrl: 'https://github.com/mgkdante/public-project',
+			docsUrl: 'https://yesid-dev.notion.site/wiki',
+		});
+		render(ProjectLinksCard, { props: { project, sectionKey: 'test-links' } });
+		const link = screen.getByTestId('project-docs-link');
+		expect(link).toHaveAttribute('href', 'https://yesid-dev.notion.site/wiki');
+		expect(link).toHaveAttribute('target', '_blank');
+		expect(link).toHaveTextContent('Documentation');
+		await clickWithoutNavigating(link);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
+			['project_proof_click'],
+		]);
+	});
+
+	it('shows the links card for a project that only has documentation', () => {
+		const project = projectFactory.build({ docsUrl: 'https://yesid-dev.notion.site/wiki', liveUrl: undefined, repoUrl: undefined, repoPrivate: false });
+		render(ProjectLinksCard, { props: { project, sectionKey: 'test-links' } });
+		expect(screen.getByTestId('project-links-card')).toBeInTheDocument();
+	});
+});
