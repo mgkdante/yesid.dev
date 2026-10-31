@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Order within the parent project (ascending). First row (sort=0) is the featured metric.",
+    "note": "Lower numbers show first.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Order"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

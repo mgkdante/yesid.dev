@@ -26,7 +26,7 @@
     ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "entry_rail_work_title",

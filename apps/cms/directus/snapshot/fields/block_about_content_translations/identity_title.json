@@ -11,17 +11,17 @@
     "group": "grp_identity",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Main heading of the About page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 2,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Title"
+        "translation": "Headline"
       }
     ],
     "validation": null,

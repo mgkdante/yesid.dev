@@ -11,7 +11,7 @@
     "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Replaces {blog}. Links to the Blog.",
     "options": null,
     "readonly": false,
     "required": false,

@@ -22,13 +22,20 @@
       "impact_metrics",
       "services"
     ],
-    "note": "Portfolio projects with translated content (title, one_liner, description), sections, impact metrics, and M2M relations to services. AI-editor: cannot publish; cannot delete.",
+    "note": "One row per project case study: card text, story, images, links and classification.",
     "preview_url": "https://yesid.dev/projects/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects",
+        "singular": "Projects",
+        "plural": "Projects"
+      }
+    ],
     "unarchive_value": "published",
     "versioning": true
   },

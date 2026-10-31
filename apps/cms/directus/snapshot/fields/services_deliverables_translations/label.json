@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Deliverable text (e.g. Query performance audit).",
+    "note": "One item in the Typical Deliverables list, such as Query performance audit.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Deliverable"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

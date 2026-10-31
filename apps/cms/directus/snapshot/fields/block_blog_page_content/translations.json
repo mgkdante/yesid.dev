@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "translations",
-    "note": "Blog listing and article page text, grouped by section.",
+    "note": "Pick a language at the top. English is required; empty French or Spanish falls back to English.",
     "options": null,
     "readonly": false,
     "required": false,

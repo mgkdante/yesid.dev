@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "description",
-    "group": null,
+    "group": "grp_card",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Short 1-2 sentence description for listings.",
+    "note": "One or two sentences on the card and under the title on the service page. Also the search text if that is empty.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 6,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Short description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

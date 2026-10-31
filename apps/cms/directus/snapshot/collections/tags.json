@@ -9,18 +9,25 @@
     "collapse": "open",
     "collection": "tags",
     "color": null,
-    "display_template": null,
-    "group": null,
+    "display_template": "{{name}}",
+    "group": "tech_stack_page",
     "hidden": false,
     "icon": "sell",
     "item_duplication_fields": null,
-    "note": "Shared tag taxonomy for projects + blog (normalized from json arrays).",
+    "note": "Tags shared by projects and blog posts.",
     "preview_url": null,
     "singleton": false,
-    "sort": null,
+    "sort": 2,
     "sort_field": "name",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tags",
+        "singular": "Tags",
+        "plural": "Tags"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   },

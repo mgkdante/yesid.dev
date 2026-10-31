@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Filters which posts/projects can pick this in their dropdown.",
+    "note": "Decides which blog posts or projects can pick it.",
     "options": {
       "choices": [
         {
@@ -33,7 +33,12 @@
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Category"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

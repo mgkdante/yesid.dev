@@ -11,7 +11,7 @@
     "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"← All Projects\"",
+    "note": "Used only when Back to projects link is empty. Default: \"← All Projects\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Back to listing label"
+        "translation": "Back to projects link (fallback)"
       }
     ],
     "validation": null,

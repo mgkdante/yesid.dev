@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "value_proposition",
-    "group": null,
+    "group": "grp_body",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "How this helps you � client-facing value proposition.",
+    "note": "Text of the How This Helps You section on the service page. Plain text, one paragraph.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "How this helps you"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

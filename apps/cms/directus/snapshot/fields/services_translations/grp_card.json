@@ -1,0 +1,38 @@
+{
+  "collection": "services_translations",
+  "field": "grp_card",
+  "type": "alias",
+  "meta": {
+    "collection": "services_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_card",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Shown on the /services cards and home grid, and at the top of the service page.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Card and listing"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

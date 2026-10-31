@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "subtitle",
-    "group": null,
+    "group": "grp_band",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale subtitle (CtaContent.subtitle).",
+    "note": "One sentence under the heading.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Text"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

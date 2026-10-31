@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 7,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Routes · Case studies"
+        "translation": "Routes · Case studies link"
       }
     ],
     "validation": null,

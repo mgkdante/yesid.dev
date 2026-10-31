@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Language of this post. Each language is its own row; the EN, FR and ES versions share one translation key.",
+    "note": "Language of this post. Each language is its own post, linked to the others by the translation key.",
     "options": {
       "choices": [
         {

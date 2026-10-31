@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Stable icon/test id token, such as email, github, linkedin, mastodon.",
+    "note": "Lowercase key such as email, calendar, github or linkedin. The calendar row also shows its name.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Type"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

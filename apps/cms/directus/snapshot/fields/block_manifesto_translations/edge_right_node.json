@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_right_node",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_right.node",
+    "note": "For example NODE berri-uqam.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 27,
+    "sort": 9,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Right · Node"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

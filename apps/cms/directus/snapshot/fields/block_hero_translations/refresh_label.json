@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "refresh_label",
-    "group": null,
+    "group": "grp_refresh",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces refresh_button.label",
+    "note": "For example PULL FRESH DATA. The refresh icon is added before it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 21,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Button label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "refresh_label",

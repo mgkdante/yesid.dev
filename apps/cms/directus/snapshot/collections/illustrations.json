@@ -20,13 +20,20 @@
       "description",
       "sort"
     ],
-    "note": "Curated SVG illustration library — consumed by blog_posts.svg_illustration + projects.svg_illustration. Reusable across content types. ai-editor: cannot delete.",
+    "note": "Reusable SVG illustrations that blog posts and projects can show.",
     "preview_url": null,
     "singleton": false,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Illustrations",
+        "singular": "Illustrations",
+        "plural": "Illustrations"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   },

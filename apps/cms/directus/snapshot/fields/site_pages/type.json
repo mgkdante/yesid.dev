@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "listing pages cascade to their detail routes: archive /blog and posts 404 too.",
+    "note": "Archiving a Listing page also hides its detail pages: archive /blog and every post shows the 404 page too.",
     "options": {
       "choices": [
         {
@@ -33,7 +33,12 @@
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page type"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

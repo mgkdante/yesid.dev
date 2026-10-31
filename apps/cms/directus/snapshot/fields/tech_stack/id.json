@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Kebab-case identifier (e.g. postgresql, apache-airflow). Used as URL slug for future detail pages.",
+    "note": "Lowercase with dashes, such as apache-airflow. Set when creating. Not shown on the site.",
     "options": {
       "slug": true,
       "trim": true
@@ -19,12 +19,17 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 1,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "ID"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "id",

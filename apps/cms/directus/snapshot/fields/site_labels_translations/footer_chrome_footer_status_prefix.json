@@ -11,7 +11,7 @@
     "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"system online ·\"",
+    "note": "Shown before today's date at the bottom of the footer. Default: \"system online ·\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Status prefix"
+        "translation": "Status line"
       }
     ],
     "validation": null,

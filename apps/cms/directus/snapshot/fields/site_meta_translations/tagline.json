@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input-multiline",
-    "note": "Brand tagline (per-locale).",
+    "note": "Used in /llms.txt, the site summary read by AI assistants (English only). The footer tagline is in Site labels.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tagline"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

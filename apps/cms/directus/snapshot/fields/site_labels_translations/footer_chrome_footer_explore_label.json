@@ -11,7 +11,7 @@
     "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Full-bleed footer EXPLORE column heading. Default: \"EXPLORE\"",
+    "note": "Heading above the page links. Default: \"EXPLORE\"",
     "options": null,
     "readonly": false,
     "required": false,

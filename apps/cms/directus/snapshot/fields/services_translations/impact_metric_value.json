@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "impact_metric_value",
-    "group": null,
+    "group": "grp_card",
     "hidden": false,
     "interface": "input",
-    "note": "Display string for home grid metric (e.g. 3x faster).",
+    "note": "Big number on the card, home grid and service page, such as 3x faster. Shows only with its label.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 10,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Key number"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "impact_metric_value",

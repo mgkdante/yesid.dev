@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Slug — e.g. triangle, decagon.",
+    "note": "Short unique name, for example triangle.",
     "options": {
       "slug": true,
       "trim": true
@@ -21,7 +21,12 @@
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Slug"
+      }
+    ],
     "validation": {
       "_and": [
         {

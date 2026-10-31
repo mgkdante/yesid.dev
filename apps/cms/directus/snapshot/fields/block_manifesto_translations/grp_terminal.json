@@ -1,0 +1,38 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "grp_terminal",
+  "type": "alias",
+  "meta": {
+    "collection": "block_manifesto_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_terminal",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Small prompt shown just above the statement.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 11,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Terminal line"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

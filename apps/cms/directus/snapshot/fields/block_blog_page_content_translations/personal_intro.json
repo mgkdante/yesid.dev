@@ -11,7 +11,7 @@
     "group": "grp_personal",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Sentence under the heading on /blog/personal.",
     "options": null,
     "readonly": false,
     "required": false,

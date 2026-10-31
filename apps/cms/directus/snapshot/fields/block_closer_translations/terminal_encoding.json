@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "terminal_encoding",
-    "group": null,
+    "group": "grp_window",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces terminal.encoding",
+    "note": "For example UTF-8.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 15,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Footer · Encoding"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

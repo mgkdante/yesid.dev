@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Stable contact channel id, such as email or linkedin.",
+    "note": "Short permanent key, for example email or linkedin. Set it once when you create the channel.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "ID"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -11,14 +11,19 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "file-image",
-    "note": "Light theme variant for project hero image 1.",
+    "note": "Optional light-mode version of the card image.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 42,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Card image, light mode"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -13,17 +13,22 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown-m2o",
-    "note": "The registry page this link points at. Link inherits visibility: page archived ⇒ link gone. Leave empty only for external links.",
+    "note": "The page this link opens. Its title is the default link text. Leave empty only for an external link.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 100,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "page",

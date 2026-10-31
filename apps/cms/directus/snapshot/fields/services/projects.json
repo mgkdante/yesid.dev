@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "projects",
-    "group": null,
+    "group": "grp_class",
     "hidden": false,
     "interface": "list-m2m",
-    "note": "Projects that use this service. Bidirectional view of `projects.services` (junction: projects_services).",
+    "note": "Listed under Related Projects on the service page. Same link as Services on the project form.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 110,
+    "sort": 1,
     "special": [
       "m2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Related projects"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   }
 }

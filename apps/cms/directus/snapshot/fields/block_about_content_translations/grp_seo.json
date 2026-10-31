@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "grp_seo",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "group-detail",
-    "note": null,
+    "note": "Not used by the site. This page's search title and description are edited in Site settings → Route SEO.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 41,
     "special": [
       "alias",
       "no-data",

@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "file-image",
-    "note": "SVG file (recommended viewBox: 0 0 48 48; stroke-only; brand colors).",
+    "note": "Stroke-only SVG in brand colours. Recommended view box 0 0 48 48.",
     "options": {
       "folder": "illustrations"
     },
@@ -22,7 +22,12 @@
     "special": [
       "file"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "SVG file"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -11,7 +11,7 @@
     "group": "grp_metrics",
     "hidden": false,
     "interface": "list",
-    "note": "Each tile has a value and a label.",
+    "note": "Each tile: a big value such as 5+ and a short label.",
     "options": {
       "addLabel": "Add row",
       "fields": [

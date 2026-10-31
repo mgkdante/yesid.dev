@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Which nav surface renders this link. header/footer/mobile = NavLink shape; menu = MenuItem shape (renders subtitle).",
+    "note": "Header: top bar. Menu: full-screen menu, with subtitle. Footer: Explore column (legal pages go under Legal). Mobile: not shown.",
     "options": {
       "choices": [
         {
@@ -37,7 +37,12 @@
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Where it shows"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

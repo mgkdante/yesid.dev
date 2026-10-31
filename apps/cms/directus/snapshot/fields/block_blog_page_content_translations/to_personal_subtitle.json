@@ -8,20 +8,20 @@
     "display": null,
     "display_options": null,
     "field": "to_personal_subtitle",
-    "group": "grp_professional",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Small line under that link.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 2,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Link to personal · Subtitle"
+        "translation": "Blog sidebar · Personal corner caption"
       }
     ],
     "validation": null,

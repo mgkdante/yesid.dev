@@ -26,17 +26,17 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "input",
-    "note": "External URL. Required + visible when external=true.",
+    "note": "Full address of the outside article. Used only when External post is on.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 5,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "External URL"
+        "translation": "External link"
       }
     ],
     "validation": null,

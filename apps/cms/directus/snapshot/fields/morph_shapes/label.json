@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Human-readable, e.g. \"Triangle\", \"10-sided polygon\".",
+    "note": "Readable name, for example 10-sided polygon.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

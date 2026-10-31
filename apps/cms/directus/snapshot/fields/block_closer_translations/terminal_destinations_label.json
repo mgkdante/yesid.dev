@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "terminal_destinations_label",
-    "group": null,
+    "group": "grp_window",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces terminal.destinationsLabel",
+    "note": "{count} is replaced by the number of rows, for example {count} destinations.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 16,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Footer · Destination count"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "terminal_destinations_label",

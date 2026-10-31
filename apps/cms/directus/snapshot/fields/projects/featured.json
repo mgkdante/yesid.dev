@@ -11,14 +11,19 @@
     "group": "grp_meta",
     "hidden": false,
     "interface": "boolean",
-    "note": "Highlight this project on the portfolio landing page.",
+    "note": "On: the project appears in the projects section of the home page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 61,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Featured on home page"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

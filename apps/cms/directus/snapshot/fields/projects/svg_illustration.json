@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "svg_illustration",
-    "group": "grp_media",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "select-dropdown-m2o",
-    "note": "Decorative SVG ref — becomes a Brand Assets picker in the chrome batch.",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": {
       "filter": {
         "_or": [
@@ -32,11 +32,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 45,
+    "sort": 1,
     "special": [
       "m2o"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Illustration (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

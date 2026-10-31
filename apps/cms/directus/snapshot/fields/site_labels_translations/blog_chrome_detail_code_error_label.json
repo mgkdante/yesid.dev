@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Code error label"
+        "translation": "Copy failed message"
       }
     ],
     "validation": null,

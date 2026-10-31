@@ -14,10 +14,10 @@
     "hidden": false,
     "icon": "settings",
     "item_duplication_fields": null,
-    "note": "Singletons + lookups: site_meta, route_seo, languages.",
+    "note": "Site identity, search defaults and languages.",
     "preview_url": null,
     "singleton": false,
-    "sort": 9,
+    "sort": 11,
     "sort_field": null,
     "status": "active",
     "translations": [

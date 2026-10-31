@@ -14,10 +14,10 @@
     "hidden": false,
     "icon": "flag",
     "item_duplication_fields": null,
-    "note": "End-of-line Terminus section at the bottom of Home.",
+    "note": "Bottom of the home page: departure board rows and terminal window.",
     "preview_url": null,
     "singleton": true,
-    "sort": 5,
+    "sort": 7,
     "sort_field": "sort",
     "status": "active",
     "translations": [

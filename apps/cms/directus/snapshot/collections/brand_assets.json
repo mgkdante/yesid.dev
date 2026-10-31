@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "palette",
     "item_duplication_fields": null,
-    "note": "Reusable visual assets: illustrations and hero morph shapes.",
+    "note": "Illustrations, morph shapes and the asset registry.",
     "preview_url": null,
     "singleton": false,
-    "sort": 8,
+    "sort": 10,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Brand assets",
+        "singular": "Brand assets",
+        "plural": "Brand assets"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   }

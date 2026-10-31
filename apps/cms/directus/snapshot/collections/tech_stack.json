@@ -17,13 +17,20 @@
       "name",
       "sort"
     ],
-    "note": "Technology names used for project and service stacks. M2M to services and projects via tech_stack_services and tech_stack_projects.",
+    "note": "Technology names shown in project and service stacks. Names are not translated.",
     "preview_url": null,
     "singleton": false,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tech stack",
+        "singular": "Tech stack",
+        "plural": "Tech stack"
+      }
+    ],
     "unarchive_value": "published",
     "versioning": true
   },

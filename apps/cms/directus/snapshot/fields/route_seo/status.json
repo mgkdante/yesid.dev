@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": null,
+    "note": "Only published rows are used. Without one, the page uses a built-in title.",
     "options": {
       "choices": [
         {
@@ -31,9 +31,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

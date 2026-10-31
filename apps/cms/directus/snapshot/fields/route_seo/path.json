@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Canonical static path, such as /about or /blog/personal.",
+    "note": "Main page this row covers: /, /services, /projects, /blog, /blog/personal, /about or /contact. One row per page.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 4,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page path"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

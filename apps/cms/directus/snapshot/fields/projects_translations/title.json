@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Project title (max 100 chars).",
+    "note": "Shown on project cards, the project page header and as the search title. Up to 100 characters.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

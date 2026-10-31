@@ -14,10 +14,10 @@
     "hidden": false,
     "icon": "person",
     "item_duplication_fields": null,
-    "note": "About page sections.",
+    "note": "The About page.",
     "preview_url": null,
     "singleton": false,
-    "sort": 6,
+    "sort": 5,
     "sort_field": null,
     "status": "active",
     "translations": [

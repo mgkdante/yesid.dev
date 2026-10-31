@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_bottom_connected",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_bottom.connected",
+    "note": "For example CONNECTED.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 29,
+    "sort": 11,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Bottom · Connection"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

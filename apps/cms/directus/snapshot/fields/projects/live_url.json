@@ -11,14 +11,19 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "input",
-    "note": "Live deployed URL of the project.",
+    "note": "Shown as Live Site in the Links box of the project page.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 43,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Live site link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

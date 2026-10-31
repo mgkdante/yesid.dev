@@ -11,7 +11,7 @@
     "group": "grp_terminals",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "For example yesid@mtl ~ /info.",
     "options": null,
     "readonly": false,
     "required": false,

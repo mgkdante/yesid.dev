@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Page title: renders as the h1, the site_pages registry label, and the footer link text.",
+    "note": "Page heading and browser tab title. The footer link text is edited in Navigation links.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

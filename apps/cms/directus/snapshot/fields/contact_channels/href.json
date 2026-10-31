@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Full channel URL, including mailto: for email.",
+    "note": "Full address, with mailto: for email. Phone, SMS and WhatsApp links are never shown.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

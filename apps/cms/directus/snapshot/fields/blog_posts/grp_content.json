@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "📝 Content",
+    "note": "What readers see on the listing card and the article page.",
     "options": {
       "headerColor": "#E07800",
       "start": "open"
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Content"
+        "translation": "Card and page text"
       }
     ],
     "validation": null,

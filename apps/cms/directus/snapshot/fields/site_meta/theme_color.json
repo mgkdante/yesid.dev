@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "theme_color",
-    "group": null,
+    "group": "grp_brand",
     "hidden": false,
     "interface": "input",
-    "note": "Hex color for <meta name='theme-color'>. Default #141414 dark.",
+    "note": "Browser bar colour on phones. Hex code, e.g. #141414.",
     "options": {
       "placeholder": "#141414",
       "trim": true
@@ -19,9 +19,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 13,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Theme colour"
+      }
+    ],
     "validation": {
       "_and": [
         {

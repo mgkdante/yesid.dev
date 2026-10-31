@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "linkedin_url",
-    "group": null,
+    "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "LinkedIn profile URL.",
+    "note": "Shown in the footer Connect column. Leave empty to hide the link.",
     "options": {
       "placeholder": "https://linkedin.com/in/...",
       "trim": true
@@ -19,9 +19,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "LinkedIn profile"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

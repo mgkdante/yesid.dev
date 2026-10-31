@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "The slug = the URL (/blog/<this>). Cannot change after publish without breaking links.",
+    "note": "The address: /blog/<slug>. Changing it after publishing breaks existing links.",
     "options": {
       "slug": true,
       "trim": true

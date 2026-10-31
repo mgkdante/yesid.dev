@@ -1,0 +1,38 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "grp_interface",
+  "type": "alias",
+  "meta": {
+    "collection": "block_manifesto_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_interface",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Words that operate the page. Page story and headings are in the groups above.",
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 15,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Interface text (buttons, links, screen readers)"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

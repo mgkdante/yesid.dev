@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Human-readable name shown in dropdown, e.g. \"Database engineering\".",
+    "note": "Shown in the illustration picker, for example Database engineering.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Name"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

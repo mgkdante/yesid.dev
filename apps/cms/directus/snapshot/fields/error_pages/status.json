@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Publication state. ai-editor cannot set to published.",
+    "note": "Only published rows are used.",
     "options": {
       "choices": [
         {
@@ -29,7 +29,12 @@
     "searchable": true,
     "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

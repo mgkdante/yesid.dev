@@ -11,7 +11,7 @@
     "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "Where the contact button goes, for example /contact.",
+    "note": "Where the button goes, for example /contact.",
     "options": null,
     "readonly": false,
     "required": false,

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "edge_left_section_number",
-    "group": null,
+    "group": "grp_edges",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces edge_left.sectionNumber",
+    "note": "For example SEC-02.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 19,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Left · Section number"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

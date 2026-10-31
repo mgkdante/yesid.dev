@@ -11,7 +11,7 @@
     "group": "grp_shared_code",
     "hidden": false,
     "interface": "input",
-    "note": "CMS code block terminal chrome title.",
+    "note": "Title bar of code blocks. Default: \"code\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Code title"
+        "translation": "Window title"
       }
     ],
     "validation": null,

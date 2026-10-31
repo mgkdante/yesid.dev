@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "rows_stack_description",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.stack.description",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 30,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Stack row · Description (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

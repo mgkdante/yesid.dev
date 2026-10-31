@@ -11,7 +11,7 @@
     "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "CMS-rendered Mermaid architecture diagram aria label.",
+    "note": "Read by screen readers on architecture diagrams in articles and stories.",
     "options": null,
     "readonly": false,
     "required": false,

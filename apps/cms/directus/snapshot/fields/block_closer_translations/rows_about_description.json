@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "rows_about_description",
-    "group": null,
+    "group": "grp_rows",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces rows.about.description",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 27,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "About · Description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "rows_about_description",

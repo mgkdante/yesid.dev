@@ -5,13 +5,18 @@
   "meta": {
     "collection": "block_projects_page_content",
     "conditions": null,
-    "display": null,
-    "display_options": null,
+    "display": "translations",
+    "display_options": {
+      "template": "{{heading}}",
+      "languageField": "name",
+      "defaultLanguage": "en",
+      "userLanguage": false
+    },
     "field": "translations",
     "group": null,
     "hidden": false,
     "interface": "translations",
-    "note": null,
+    "note": "Pick a language at the top. English is required; empty French or Spanish falls back to English.",
     "options": null,
     "readonly": false,
     "required": false,

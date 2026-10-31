@@ -1,0 +1,38 @@
+{
+  "collection": "block_closer_translations",
+  "field": "grp_rows",
+  "type": "alias",
+  "meta": {
+    "collection": "block_closer_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_rows",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Four rows, in this order: Contact, About, Blog, GitHub. Links are fixed; the GitHub address is in Site identity and SEO defaults.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Departure board rows"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

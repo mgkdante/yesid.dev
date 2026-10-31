@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "Still exported and required by the site data contract, but no page reads them (checked at commit c1270573). Editing these changes nothing visible.",
+    "note": "The site build still requires these, but no page shows them. Editing them changes nothing visible.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"

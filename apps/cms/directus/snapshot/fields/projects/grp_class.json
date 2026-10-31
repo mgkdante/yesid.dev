@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "🏷 Classification",
+    "note": "Services, tech stack and tags. They also drive the filters on /projects.",
     "options": {
       "headerColor": "#E07800",
       "start": "open"
@@ -19,13 +19,18 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 50,
+    "sort": 12,
     "special": [
       "alias",
       "no-data",
       "group"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Classification"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input-block-editor",
-    "note": "Long-form description rendered via BlockRenderer (Block Editor JSON).",
+    "note": "Shown in the Overview panel beside the page sections, and used as the search description. Its images join the gallery.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -20,7 +20,12 @@
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Overview"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

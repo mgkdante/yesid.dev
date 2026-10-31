@@ -11,7 +11,7 @@
     "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "For example Montreal, QC, Canada.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Location"
+        "translation": "Location · Text"
       }
     ],
     "validation": null,

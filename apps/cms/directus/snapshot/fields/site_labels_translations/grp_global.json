@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": null,
+    "note": "Text in the header, the full-screen menu and the footer on every page.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"
@@ -28,7 +28,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Global: header, menu and footer"
+        "translation": "Global (header, menu and footer)"
       }
     ],
     "validation": null,

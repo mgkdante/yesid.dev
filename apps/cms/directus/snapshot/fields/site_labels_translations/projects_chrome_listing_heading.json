@@ -11,7 +11,7 @@
     "group": "grp_projects_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"Projects\"",
+    "note": "Used only when the heading in Projects page text is empty. Default: \"Projects\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Heading"
+        "translation": "Heading (fallback)"
       }
     ],
     "validation": null,

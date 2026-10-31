@@ -11,7 +11,7 @@
     "group": "grp_media",
     "hidden": false,
     "interface": "select-dropdown-m2o",
-    "note": "Curated SVG illustration. Optional — falls back to deterministic fallback if absent.",
+    "note": "Drawing on the listing card. Empty picks a default drawing for the category.",
     "options": {
       "filter": {
         "_or": [
@@ -32,7 +32,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 2,
     "special": [
       "m2o"
     ],

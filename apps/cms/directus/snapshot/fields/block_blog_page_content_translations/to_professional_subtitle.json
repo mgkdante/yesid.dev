@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "to_professional_subtitle",
-    "group": "grp_personal",
+    "group": "grp_interface",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Small line under that link.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Link to professional · Subtitle"
+        "translation": "Personal sidebar · Back to blog caption"
       }
     ],
     "validation": null,

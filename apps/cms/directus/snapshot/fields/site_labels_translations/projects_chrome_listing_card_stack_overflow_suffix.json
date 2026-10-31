@@ -11,7 +11,7 @@
     "group": "grp_projects_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"+{count} more\"",
+    "note": "{count} is replaced by a number. Default: \"+{count} more\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Card stack overflow suffix"
+        "translation": "Card · More technologies"
       }
     ],
     "validation": null,

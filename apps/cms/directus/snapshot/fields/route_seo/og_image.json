@@ -11,18 +11,23 @@
     "group": null,
     "hidden": false,
     "interface": "file-image",
-    "note": "Optional per-route OG image. Falls back to site_meta.default_og_image.",
+    "note": "Shown when this page is shared on social media. 1200 × 630 px. Empty uses the default share image.",
     "options": {
       "folder": "og"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 4,
     "special": [
       "file"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Share image"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

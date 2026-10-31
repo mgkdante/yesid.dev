@@ -11,7 +11,7 @@
     "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Site path. Empty uses /contact.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Work with me · Contact link"
+        "translation": "Work with me · Contact button link"
       }
     ],
     "validation": null,

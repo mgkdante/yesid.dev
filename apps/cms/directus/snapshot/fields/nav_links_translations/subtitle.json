@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale subtitle — only rendered when placement = 'menu' (MenuItem.subtitle). Nullable for header/footer/mobile placements.",
+    "note": "Small line under the link in the full-screen menu. Only used when Where it shows is Menu.",
     "options": {
       "placeholder": "e.g. what I build"
     },
@@ -20,7 +20,12 @@
     "searchable": true,
     "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Menu subtitle"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "long_description",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "2-3 paragraph deep dive for the detail page.",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Long description (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Order of rows in this list only. Lower numbers first.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "List order"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

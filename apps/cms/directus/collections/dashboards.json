@@ -1,23 +1,30 @@
 [
   {
-    "name": "Blog ops",
+    "name": "Blog posts",
     "icon": "article",
-    "note": "Blog post counts and language split.",
+    "note": "Blog posts by status and language.",
     "color": "#E07800",
     "_syncId": "_sync_dashboard_blog_ops"
   },
   {
-    "name": "Catalog",
+    "name": "Services, projects and tech stack",
     "icon": "category",
-    "note": "Services + projects + tech stack counts.",
+    "note": "How many services, projects and technologies exist.",
     "color": "#E07800",
     "_syncId": "_sync_dashboard_catalog"
   },
   {
-    "name": "Ops & deploy",
+    "name": "Publishing and recent changes",
     "icon": "rocket_launch",
-    "note": "Recent CMS activity and D6 manual Publish. After editing, open Site Config (build_queue) → Flows → Publish site and confirm one build per editing session. Edits never rebuild the site by themselves.",
+    "note": "How to publish, and the latest edits across the CMS.",
     "color": "#E07800",
     "_syncId": "_sync_dashboard_ops_deploy"
+  },
+  {
+    "name": "Start here",
+    "icon": "waving_hand",
+    "note": "Where to edit what, and how to publish.",
+    "color": "#E07800",
+    "_syncId": "_sync_dashboard_start_here"
   }
 ]

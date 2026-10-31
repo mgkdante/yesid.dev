@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Publication state.",
+    "note": "Must stay Published, or the next site build stops with an error.",
     "options": {
       "choices": [
         {
@@ -29,7 +29,12 @@
     "searchable": true,
     "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

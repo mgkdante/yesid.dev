@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": null,
+    "note": "Only Published channels show on the Contact page.",
     "options": {
       "choices": [
         {
@@ -33,7 +33,12 @@
     "searchable": true,
     "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

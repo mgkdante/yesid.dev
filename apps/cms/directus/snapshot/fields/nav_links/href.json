@@ -11,19 +11,24 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Legacy/external only — when a Page is linked, the URL comes from the page path automatically.",
+    "note": "Required, but ignored when a page is picked above. For a link to another site, leave Page empty and put the full address here.",
     "options": {
       "placeholder": "e.g. /about or https://github.com/..."
     },
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 2,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "External URL (advanced)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "href",

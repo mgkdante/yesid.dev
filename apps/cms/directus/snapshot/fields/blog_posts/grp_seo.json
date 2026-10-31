@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "Search and share metadata",
+    "note": "Optional text for search results and link previews.",
     "options": {
       "start": "closed",
       "headerColor": "#E07800"
@@ -19,7 +19,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 50,
+    "sort": 13,
     "special": [
       "alias",
       "no-data",

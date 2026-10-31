@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale suggestion links — JSON array of {label: string, href: string}. The label is the locale-resolved display text; href is the destination path.",
+    "note": "Links under the message. Addresses come from the English row; other languages only change the link text, in the same order.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -43,11 +43,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 7,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Suggested links"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

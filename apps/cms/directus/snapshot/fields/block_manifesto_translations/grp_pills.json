@@ -1,0 +1,38 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "grp_pills",
+  "type": "alias",
+  "meta": {
+    "collection": "block_manifesto_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_pills",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 12,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Service pills"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Human-readable metric label (e.g. Real-time refresh cycles).",
+    "note": "Words after the number, such as configured live refresh interval.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

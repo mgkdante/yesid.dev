@@ -11,14 +11,14 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "boolean",
-    "note": "When true, body becomes optional and url is required + visible.",
+    "note": "Turn on when the article lives on another site. The card then opens the external link in a new tab.",
     "options": {
       "label": "External post (e.g. LinkedIn)"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 4,
     "special": null,
     "translations": [
       {

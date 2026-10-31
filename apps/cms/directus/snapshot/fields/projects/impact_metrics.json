@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "impact_metrics",
-    "group": "grp_class",
+    "group": "grp_content",
     "hidden": false,
     "interface": "list-o2m",
-    "note": null,
+    "note": "Shown in the Impact panel, the page header margin and home page project cards, in this order.",
     "options": {
       "template": "{{translations}}"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 55,
+    "sort": 3,
     "special": [
       "o2m"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Key numbers"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -11,7 +11,7 @@
     "group": "grp_shared_code",
     "hidden": false,
     "interface": "input",
-    "note": "Announced after a code block copies. Default: \"Copied\"",
+    "note": "Shown after a code block is copied. Default: \"Copied\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Code copied label"
+        "translation": "Copied message"
       }
     ],
     "validation": null,

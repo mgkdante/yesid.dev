@@ -11,17 +11,17 @@
     "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Technology stack SVG aria label template with {stack}.",
+    "note": "{stack} is replaced by the list of technologies.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 15,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Technology stack diagram (screen reader template)"
+        "translation": "Technology stack diagram (screen reader)"
       }
     ],
     "validation": null,

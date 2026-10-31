@@ -8,19 +8,24 @@
     "display": null,
     "display_options": null,
     "field": "owner_region",
-    "group": null,
+    "group": "grp_owner",
     "hidden": false,
     "interface": "input",
-    "note": "ISO 3166-2 subdivision code (e.g., QC, ON)",
+    "note": "Two-letter code, e.g. QC.",
     "options": {
       "trim": true
     },
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 9,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Province or state"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

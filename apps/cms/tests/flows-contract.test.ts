@@ -72,12 +72,12 @@ describe('D6 manual Publish flow contract', () => {
 		].sort());
 	});
 
-	it('requires confirmation for one synchronous manual build from Site Config', () => {
+	it('requires confirmation for one synchronous manual build from Publish site', () => {
 		const flow = flows.find((entry) => entry._syncId === PUBLISH_FLOW);
 		expect(flow).toMatchObject({
 			name: 'Publish site', icon: 'rocket_launch', status: 'active',
 			trigger: 'manual', accountability: 'all', operation: PUBLISH_OPERATION,
-			description: "D6 manual Publish (2026-10-25): one build per editing session. Run from Site Config (build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
+			description: "D6 manual Publish (2026-10-25): one build per editing session. Run from Publish site (bottom of the Content sidebar, collection build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
 		});
 		expect(flow?.options).toEqual({
 			collections: ['build_queue'], location: 'item', requireSelection: false,

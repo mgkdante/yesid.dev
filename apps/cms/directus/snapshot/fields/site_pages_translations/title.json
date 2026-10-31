@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Page title — used as the default nav/footer label (nav_links.label overrides).",
+    "note": "Default link text in the header, menu and footer. A navigation link with its own text overrides it.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

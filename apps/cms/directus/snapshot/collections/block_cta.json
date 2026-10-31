@@ -14,7 +14,7 @@
     "hidden": false,
     "icon": "campaign",
     "item_duplication_fields": null,
-    "note": "Contact call-to-action band component.",
+    "note": "Contact band shown on Home and at the end of every project and service page.",
     "preview_url": null,
     "singleton": true,
     "sort": 6,
@@ -23,9 +23,9 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Contact band",
-        "singular": "Contact band",
-        "plural": "Contact band"
+        "translation": "Home: Contact band",
+        "singular": "Home: Contact band",
+        "plural": "Home: Contact band"
       }
     ],
     "unarchive_value": null,

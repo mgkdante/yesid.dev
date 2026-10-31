@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "group-detail",
-    "note": "🔗 Links & media",
+    "note": "Card images and the addresses in the Links box of the project page.",
     "options": {
       "headerColor": "#E07800",
       "start": "open"
@@ -19,13 +19,18 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 40,
+    "sort": 11,
     "special": [
       "alias",
       "no-data",
       "group"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Images and links"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

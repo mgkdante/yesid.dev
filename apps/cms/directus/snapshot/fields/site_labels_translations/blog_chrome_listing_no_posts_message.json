@@ -11,7 +11,7 @@
     "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Default: \"No posts found. Try adjusting your filters.\"",
+    "note": "Shown when the filters match no posts. Default: \"No posts found. Try adjusting your filters.\"",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "No posts message"
+        "translation": "No results message"
       }
     ],
     "validation": null,

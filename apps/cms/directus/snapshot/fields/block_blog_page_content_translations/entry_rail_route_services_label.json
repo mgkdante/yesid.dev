@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 8,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Routes · Services"
+        "translation": "Routes · Services link"
       }
     ],
     "validation": null,

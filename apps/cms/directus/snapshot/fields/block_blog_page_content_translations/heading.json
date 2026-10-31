@@ -11,7 +11,7 @@
     "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Not shown on the site. The exporter still reads it, so keep it until a source migration removes it. The mobile heading comes from Site labels.",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source cleanup removes it.",
     "options": null,
     "readonly": false,
     "required": false,

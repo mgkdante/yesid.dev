@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "github_url",
-    "group": null,
+    "group": "grp_contact",
     "hidden": false,
     "interface": "input",
-    "note": "GitHub profile URL.",
+    "note": "Shown in the footer Connect column and on GitHub buttons across the site.",
     "options": {
       "placeholder": "https://github.com/...",
       "trim": true
@@ -19,9 +19,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 4,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "GitHub profile"
+      }
+    ],
     "validation": {
       "_and": [
         {

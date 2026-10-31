@@ -20,13 +20,20 @@
       "sort",
       "description"
     ],
-    "note": "Geometric morph-target library. Consumed by SVG morph animations. Adding a new shape via Data Studio works without a code deploy. Public read.",
+    "note": "Shapes used by the animated morph graphics. A new shape works without a code change.",
     "preview_url": null,
     "singleton": false,
     "sort": 3,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Morph shapes",
+        "singular": "Morph shapes",
+        "plural": "Morph shapes"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   },

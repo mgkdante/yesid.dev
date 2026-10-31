@@ -8,21 +8,26 @@
     "display": null,
     "display_options": null,
     "field": "default_og_image",
-    "group": null,
+    "group": "grp_brand",
     "hidden": false,
     "interface": "file-image",
-    "note": "Site-wide fallback OG image (1200x630). Folder: og.",
+    "note": "Shown when a page without its own image is shared on social media. 1200 × 630 px.",
     "options": {
       "folder": "og"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 3,
     "special": [
       "file"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Default share image"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

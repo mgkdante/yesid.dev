@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "svg",
-    "group": "grp_meta",
+    "group": "grp_media",
     "hidden": false,
     "interface": "input",
-    "note": "SVG illustration filename (e.g. service-sql.svg). Served from static/svg/services/.",
+    "note": "File name of the drawing in the site code, such as service-database.svg. A new drawing needs a developer.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Drawing file"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

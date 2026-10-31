@@ -14,10 +14,10 @@
     "hidden": false,
     "icon": "contact_mail",
     "item_duplication_fields": null,
-    "note": "Contact page content (incl. the web3forms key).",
+    "note": "The Contact page.",
     "preview_url": null,
     "singleton": false,
-    "sort": 7,
+    "sort": 6,
     "sort_field": null,
     "status": "active",
     "translations": [

@@ -8,20 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "statement_line1",
-    "group": null,
+    "group": "grp_statement",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces statement.line1",
+    "note": "Small line above the big word, for example I BUILD THE.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Line 1"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "half"
+    "width": "full"
   },
   "schema": {
     "name": "statement_line1",

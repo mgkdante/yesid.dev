@@ -11,7 +11,7 @@
     "group": "grp_professional",
     "hidden": false,
     "interface": "input",
-    "note": "Intro under the professional blog heading.",
+    "note": "Sentence under the Blog heading on /blog.",
     "options": null,
     "readonly": false,
     "required": false,

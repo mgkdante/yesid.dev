@@ -1,0 +1,38 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "grp_statement",
+  "type": "alias",
+  "meta": {
+    "collection": "block_manifesto_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_statement",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "The big centre text. Line 3 reads start, highlighted words, end; a highlighted full stop is added.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Statement"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "meta_title",
-    "group": "grp_seo",
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "Not used by the site. This page's search title and description are edited in Site settings → Route SEO.",
     "options": null,
     "readonly": false,
     "required": false,
@@ -21,7 +21,7 @@
     "translations": [
       {
         "language": "en-US",
-        "translation": "Page title"
+        "translation": "Search title (unused)"
       }
     ],
     "validation": null,
