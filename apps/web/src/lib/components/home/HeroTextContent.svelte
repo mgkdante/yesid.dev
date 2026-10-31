@@ -351,6 +351,7 @@
 			margin-block: 0.25rem;
 		}
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			margin-top: 0.75rem;
 			font-size: 1rem;
 			line-height: 1.3;
 		}
