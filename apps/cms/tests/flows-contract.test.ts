@@ -41,7 +41,7 @@ function assertAutomaticOperationsArePassive(flowRows: readonly Flow[], operatio
 			visited.add(id);
 			const operation = byId.get(id);
 			if (!operation) throw new Error(`${flow.name} reaches missing operation ${id}`);
-			expect(['condition', 'log'], `${flow.name} reaches ${id}`).toContain(operation.type);
+			expect(['condition', 'log', 'notification'], `${flow.name} reaches ${id}`).toContain(operation.type);
 			for (const next of [operation.resolve, operation.reject]) {
 				if (next) pending.push(next);
 			}
@@ -118,7 +118,7 @@ describe('D6 manual Publish flow contract', () => {
 		assertOnlyManualPublishRequest(flows, operations);
 	});
 
-	it('allows only condition and log operations along every automatic flow branch', () => {
+	it('allows only condition, log and in-app notification operations along every automatic flow branch', () => {
 		assertAutomaticOperationsArePassive(flows, operations);
 	});
 
@@ -126,7 +126,7 @@ describe('D6 manual Publish flow contract', () => {
 		assertNoOtherDeployOptions(operations);
 	});
 
-	it('retains only the existing translation reminder subscription and operations', () => {
+	it('retains only the translation reminder subscription and its check, log and notify operations', () => {
 		const reminder = flows.find((entry) => entry._syncId === REMINDER_FLOW);
 		expect(reminder).toMatchObject({
 			name: 'Translation reminder on publish', status: 'active', trigger: 'event',
@@ -143,7 +143,7 @@ describe('D6 manual Publish flow contract', () => {
 		});
 		expect(operations.map((operation) => operation._syncId).sort()).toEqual([
 			PUBLISH_OPERATION, '_sync_op_translation_reminder_check_published',
-			'_sync_op_translation_reminder_log',
+			'_sync_op_translation_reminder_log', '_sync_op_translation_reminder_notify',
 		].sort());
 	});
 });

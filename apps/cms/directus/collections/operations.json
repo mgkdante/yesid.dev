@@ -28,10 +28,28 @@
     "options": {
       "message": "Translation reminder: {{$trigger.collection}} item(s) {{$trigger.keys}} published. Verify fr and es translation rows have content where applicable."
     },
-    "resolve": null,
+    "resolve": "_sync_op_translation_reminder_notify",
     "reject": null,
     "flow": "c80a68ad-dabf-4ccc-95cc-e97095f51d90",
     "_syncId": "_sync_op_translation_reminder_log"
+  },
+  {
+    "name": "Notify the editor",
+    "key": "notify_editor",
+    "type": "notification",
+    "position_x": 55,
+    "position_y": 1,
+    "options": {
+      "recipient": [
+        "{{$accountability.user}}"
+      ],
+      "subject": "Check French and Spanish",
+      "message": "You just published an item. Open its French and Spanish tabs: empty fields show English on yesid.dev. When your editing session is done, use Publish site at the bottom of the sidebar."
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "c80a68ad-dabf-4ccc-95cc-e97095f51d90",
+    "_syncId": "_sync_op_translation_reminder_notify"
   },
   {
     "name": "POST Publish hook",
