@@ -250,6 +250,7 @@ test('short phones keep the English subtitle and both CTAs in the first screen',
 		await page.goto('/');
 		await expect(page.getByTestId('hero-cta-contact')).toBeVisible();
 		await page.evaluate(() => document.fonts.ready);
+		await expect(page.getByTestId('hero-subtitle')).toHaveCSS('font-size', '19px');
 		const boxes = await page.evaluate(() => ['hero-subtitle', 'hero-cta-projects', 'hero-cta-contact'].map((id) => {
 			const box = document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect();
 			return { id, top: box.top, bottom: box.bottom };
