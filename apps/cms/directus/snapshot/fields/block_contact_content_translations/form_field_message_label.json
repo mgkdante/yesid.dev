@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_field_message_label",
-    "group": null,
+    "group": "grp_fields",
     "hidden": false,
     "interface": "input",
-    "note": "Contact form message field label.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Message · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

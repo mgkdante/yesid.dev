@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "success_blog_link_label",
-    "group": null,
+    "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": "Contact success template blog link label.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 35,
+    "sort": 8,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog link label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

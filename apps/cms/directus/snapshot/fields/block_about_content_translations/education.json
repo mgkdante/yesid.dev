@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "education",
-    "group": null,
+    "group": "grp_education",
     "hidden": false,
     "interface": "list",
-    "note": "Education entries (per-locale). icon = champlain | bishops.",
+    "note": "Icon key: champlain or bishops.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -54,11 +54,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 2,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Education entries"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -21,14 +21,47 @@ const doc: BlockEditorDoc = {
 };
 
 describe('ProjectImageGallery keyboard access', () => {
+	it('opens real video previews in the existing dialog and restores focus when playback is dismissed', async () => {
+		const { container } = render(ProjectImageGallery, { props: { doc, videos: [{ id: 'M7lc1UVf-VE', caption: 'Actual walkthrough' }] } });
+		expect(container.querySelector('iframe')).toBeNull();
+		expect(screen.queryByText('Actual walkthrough')).toBeNull();
+		const trigger = screen.getByTestId('project-video-gallery-trigger');
+		expect(trigger.querySelector('img')).toHaveAttribute('src', 'https://i.ytimg.com/vi/M7lc1UVf-VE/hqdefault.jpg');
+		trigger.focus();
+		await fireEvent.click(trigger);
+		const dialog = screen.getByRole('dialog', { name: 'Actual walkthrough' });
+		expect(within(dialog).getByTitle('Actual walkthrough')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/M7lc1UVf-VE?autoplay=1&playsinline=1');
+		expect(within(dialog).getByText('Actual walkthrough')).toBeVisible();
+		const close = within(dialog).getByRole('button', { name: 'Close video' });
+		await waitFor(() => expect(close).toHaveFocus());
+		await fireEvent.keyDown(close, { key: 'Escape' });
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		expect(document.querySelector('iframe')).toBeNull();
+		await waitFor(() => expect(trigger).toHaveFocus());
+	});
+
+	it('shows no video previews unless the story supplies a video', () => {
+		render(ProjectImageGallery, { props: { doc } });
+		expect(screen.queryByTestId('project-video-gallery-trigger')).toBeNull();
+		expect(document.querySelector('iframe')).toBeNull();
+	});
+
 	it('focuses the image close control and returns to each opener after Escape', async () => {
 		render(ProjectImageGallery, { props: { doc } });
 		const triggers = screen.getAllByTestId('project-image-gallery-trigger');
+		const gallery = screen.getByTestId('project-image-gallery');
+		expect(within(gallery).queryByText('Desktop')).not.toBeInTheDocument();
+		expect(within(gallery).queryByText('Mobile')).not.toBeInTheDocument();
 
 		for (const trigger of triggers) {
 			trigger.focus();
 			await fireEvent.click(trigger);
 			const dialog = screen.getByRole('dialog');
+			const caption = dialog.querySelector('.project-image-gallery__lightbox-caption')!;
+			expect(caption).toBeVisible();
+			expect(caption).toHaveTextContent(trigger.querySelector('img')!.alt);
+			const image = within(dialog).getByTestId('project-image-gallery-lightbox-image');
+			expect(image.compareDocumentPosition(caption) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 			const close = within(dialog).getByRole('button', { name: siteLabels.a11y.projectImageClose.en });
 			await waitFor(() => expect(close).toHaveFocus());
 			await fireEvent.keyDown(close, { key: 'Escape' });

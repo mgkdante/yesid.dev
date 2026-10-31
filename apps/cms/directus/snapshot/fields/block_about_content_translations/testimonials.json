@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "testimonials",
-    "group": null,
+    "group": "grp_testimonials",
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale testimonials (AboutContent.testimonials). JSON shape: Array<{ quote, author: string, role, company: string, logo?: string }>.",
+    "note": null,
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -65,11 +65,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 2,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Quotes"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

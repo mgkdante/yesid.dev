@@ -37,7 +37,7 @@
     "display": null,
     "display_options": null,
     "field": "body",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "input-block-editor",
     "note": "Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.",
@@ -45,11 +45,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
+    "sort": 5,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Body"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

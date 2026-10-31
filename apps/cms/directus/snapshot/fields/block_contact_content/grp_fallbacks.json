@@ -1,0 +1,38 @@
+{
+  "collection": "block_contact_content",
+  "field": "grp_fallbacks",
+  "type": "alias",
+  "meta": {
+    "collection": "block_contact_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_fallbacks",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Used only when a language is missing its own form label.",
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 4,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "English fallback labels"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

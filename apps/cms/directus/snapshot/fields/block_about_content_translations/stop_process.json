@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "stop_process",
-    "group": null,
+    "group": "grp_method",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces stop_labels.process",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 27,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Section label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

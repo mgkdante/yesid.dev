@@ -20,7 +20,14 @@
     "sort": 2,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact channels",
+        "singular": "channel",
+        "plural": "channels"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

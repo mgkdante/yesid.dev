@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_detail_back_to_services_label",
-    "group": null,
+    "group": "grp_services_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"← All Services\"",
+    "note": "Default: \"← All Services\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 94,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Back to services label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "hero_dashboard_delay_sub",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: hero. Default: \"{coverage}% COVERAGE\"",
+    "note": "Default: \"{coverage}% COVERAGE\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 123,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Delay subtitle"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

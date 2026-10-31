@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_filters_language",
-    "group": null,
+    "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Language\"",
+    "note": "Default: \"Language\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 61,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Filters language"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

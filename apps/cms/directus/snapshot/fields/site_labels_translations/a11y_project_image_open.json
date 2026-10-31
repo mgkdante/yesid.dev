@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "a11y_project_image_open",
-    "group": null,
+    "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
     "note": "Project image gallery open button aria label template.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 137,
+    "sort": 11,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Gallery image open (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

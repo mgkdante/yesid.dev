@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale intro copy (ProjectsPageContentSchema.intro). Expand schema here when content design lands.",
+    "note": "Intro under the heading.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Intro"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

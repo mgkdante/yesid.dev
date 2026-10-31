@@ -5,10 +5,13 @@
 <script lang="ts">
 	import type { ParagraphBlock } from '@repo/shared';
 	import { escapeHtml } from '#lib/utils/code-fences.ts';
+	import { parseYouTubeParagraph } from '#lib/utils/youtube.ts';
+	import YouTubeVideo from './YouTubeVideo.svelte';
 
 	let { data }: { data: ParagraphBlock['data'] } = $props();
 
 	const renderedText = $derived(renderInlineCodeSpans(data.text));
+	const video = $derived(parseYouTubeParagraph(data.text));
 
 	function renderInlineCodeSpans(html: string): string {
 		return html
@@ -21,4 +24,8 @@
 	}
 </script>
 
-<p>{@html renderedText}</p>
+{#if video}
+	<YouTubeVideo {video} />
+{:else}
+	<p>{@html renderedText}</p>
+{/if}

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_page_meta_tags",
-    "group": null,
+    "group": "grp_blog_article",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Tags\"",
+    "note": "Default: \"Tags\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 82,
+    "sort": 12,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page meta tags"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "cta_button_href",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces cta.buttonHref",
+    "note": "Where the contact button goes, for example /contact.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 94,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact terminal · Button link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

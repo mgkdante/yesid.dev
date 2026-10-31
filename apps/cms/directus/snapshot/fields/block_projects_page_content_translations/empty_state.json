@@ -11,14 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Empty-filter message on /projects (go2-t1c).",
+    "note": "Shown when the filters match no project.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "No results message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

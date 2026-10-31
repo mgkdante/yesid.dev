@@ -172,7 +172,7 @@
 	</div>
 
 	<p
-		class="mt-5 text-base leading-[1.5] text-[var(--secondary-foreground)]"
+		class="mt-5 text-reading leading-[1.7] text-[var(--secondary-foreground)] lg:text-reading-desktop"
 		data-testid="hero-subtitle"
 		data-hero-stagger="6"
 	>
@@ -320,7 +320,6 @@
 		}
 		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
 			margin-top: 0.5rem;
-			line-height: 1.5;
 		}
 		/* The CTA row (the only flex descendant tagged stagger 6) — tighten the
 		   top gap + inter-button gap, and the button block padding, so both
@@ -348,10 +347,6 @@
 	   are above this floor and unaffected. */
 	@media (--tablet-max) and (max-height: 660px) {
 		.hero-heading { padding-block: 0 1.25rem; }
-		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
-			font-size: 1rem;
-			line-height: 1.3;
-		}
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
 			margin-block: 0.375rem;
 		}

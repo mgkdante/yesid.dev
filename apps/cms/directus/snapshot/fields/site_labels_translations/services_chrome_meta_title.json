@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_meta_title",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Services · yesid.\"",
+    "note": "Default: \"Services · yesid.\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 92,
+    "sort": 31,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services · Meta title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

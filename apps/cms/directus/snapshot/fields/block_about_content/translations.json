@@ -11,16 +11,21 @@
     "group": null,
     "hidden": false,
     "interface": "translations",
-    "note": null,
+    "note": "All About text, grouped by widget in page order. Pick the language at the top.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 10,
+    "sort": 2,
     "special": [
       "translations"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page copy (EN / FR / ES)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

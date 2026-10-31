@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "label_testimonials_carousel_aria",
-    "group": null,
+    "group": "grp_testimonials",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces labels.testimonialsCarouselAria",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 37,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Screen reader · Carousel"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

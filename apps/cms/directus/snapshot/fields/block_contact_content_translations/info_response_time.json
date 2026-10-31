@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_response_time",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces info_terminal.responseTime",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 16,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Response time"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

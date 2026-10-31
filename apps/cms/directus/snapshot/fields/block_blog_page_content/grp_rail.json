@@ -1,0 +1,38 @@
+{
+  "collection": "block_blog_page_content",
+  "field": "grp_rail",
+  "type": "alias",
+  "meta": {
+    "collection": "block_blog_page_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_rail",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "Routes are the same in every language.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 3,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Article side rail links (all languages)"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

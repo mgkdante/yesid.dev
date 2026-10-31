@@ -20,7 +20,12 @@
     "special": [
       "translations"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page copy (EN / FR / ES)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

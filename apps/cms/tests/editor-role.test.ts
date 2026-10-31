@@ -32,9 +32,10 @@ const UNRELATED_PERMISSION_COUNT = 715;
 // slice-43.27 removes the retired icons prefix from AI Editor comment permissions.
 // slice-43.28 removes the deleted empty icons folder from the public file filter.
 // slice-43.30 drops the retired page-builder collections and their 39 rows.
-const UNRELATED_PERMISSION_SHA256 = '9443bc6f218461f3074c09b2ae27dd3f596261d33ac77dea08fa31a2bc7f0a18';
+const UNRELATED_PERMISSION_SHA256 = '9cbe5c85418983322f2dea701e24c5cb4a40c1681fb774f53d2a1dd0b3c28f64';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
+const BLOG_LANGUAGE_PRESET_IDS = ['_sync_preset_blog_posts_en', '_sync_preset_blog_posts_fr', '_sync_preset_blog_posts_es'];
 
 function withoutSyncId<T extends { _syncId?: string }>(row: T): Omit<T, '_syncId'> {
 	const { _syncId: _ignored, ...payload } = row;
@@ -166,8 +167,8 @@ describe('Editor role wiring (go2-t1d)', () => {
 		const unrelatedPermissions = (permissions as Array<{ collection: string }>).filter(
 			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection),
 		);
-		const unrelatedPresets = (presets as Array<{ collection: string }>).filter(
-			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection),
+		const unrelatedPresets = (presets as Array<{ collection: string; _syncId: string }>).filter(
+			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !BLOG_LANGUAGE_PRESET_IDS.includes(row._syncId),
 		);
 
 		expect(unrelatedPermissions).toHaveLength(UNRELATED_PERMISSION_COUNT);

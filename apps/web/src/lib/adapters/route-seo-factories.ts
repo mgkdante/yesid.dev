@@ -42,8 +42,9 @@ function fitDescriptionForSeo(
 	fallback: { en: string; fr?: string; es?: string },
 ): { en: string; fr?: string; es?: string } {
 	if (!desc) return fallback;
-	const len = desc.en.length;
-	if (len < 50 || len > 200) return fallback;
+	if (Object.values(desc).some((text) => text !== undefined && (text.length < 50 || text.length > 200))) {
+		return fallback;
+	}
 	return desc;
 }
 
@@ -235,10 +236,10 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	// Empty titles leave OG resolution to the locale fallback.
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
-			url: imageUrl ?? ogImagePath('blog', post.slug, locale),
-			alt: { en: (!portraitCover && post.coverImageAlt) || `${post.title} | ${siteMeta.name}` },
-			width: shareCover?.width ?? 1200,
-			height: shareCover?.height ?? 630,
+			url: ogImagePath('blog', post.slug, locale),
+			alt: { en: `${post.title} | ${siteMeta.name}` },
+			width: 1200,
+			height: 630,
 		};
 	}
 

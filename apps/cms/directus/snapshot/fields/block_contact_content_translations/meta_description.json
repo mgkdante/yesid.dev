@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "meta_description",
-    "group": null,
+    "group": "grp_seo",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "(go2-t1b flat field) replaces meta.description",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 14,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page description"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

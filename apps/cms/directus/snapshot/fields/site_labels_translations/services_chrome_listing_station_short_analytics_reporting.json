@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_listing_station_short_analytics_reporting",
-    "group": null,
+    "group": "grp_services_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Dashboards\"",
+    "note": "Default: \"Dashboards\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 134,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Station short analytics reporting"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

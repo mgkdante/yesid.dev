@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_detail_glance_project_info",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: projects. Default: \"Project Info\"",
+    "note": "Default: \"Project Info\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 49,
+    "sort": 12,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects · Glance project info"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

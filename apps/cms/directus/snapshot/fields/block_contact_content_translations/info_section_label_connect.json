@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_section_label_connect",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces info_terminal.sectionLabels.connect",
+    "note": "The channel rows are edited in Contact page → Contact Channels.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 10,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Connect · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

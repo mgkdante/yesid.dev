@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_filters_date_range",
-    "group": null,
+    "group": "grp_blog_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Date Range\"",
+    "note": "Default: \"Date Range\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 62,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Filters date range"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

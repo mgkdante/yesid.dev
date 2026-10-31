@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "a11y_architecture_diagram",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input",
     "note": "CMS-rendered Mermaid architecture diagram aria label.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 140,
+    "sort": 202,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Diagrams · Architecture diagram (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

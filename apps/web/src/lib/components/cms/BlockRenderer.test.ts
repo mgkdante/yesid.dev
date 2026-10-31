@@ -44,6 +44,26 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		blocks,
 	});
 
+	it('loads a trusted YouTube player only after the standalone preview is activated', async () => {
+		const doc = baseDoc([{ id: 'video', type: 'paragraph', data: { text: '<a href="https://youtu.be/M7lc1UVf-VE">Package walkthrough</a>' } }]);
+		const { container } = render(BlockRenderer, { doc });
+		expect(container.querySelector('iframe')).toBeNull();
+		expect(container.querySelector('img')).toHaveAttribute('src', 'https://i.ytimg.com/vi/M7lc1UVf-VE/hqdefault.jpg');
+		await fireEvent.click(screen.getByRole('button', { name: 'Play video: Package walkthrough' }));
+		const frame = screen.getByTitle('Package walkthrough');
+		expect(frame).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/M7lc1UVf-VE?autoplay=1&playsinline=1');
+		expect(frame).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+		await fireEvent.load(frame);
+		expect(frame).toHaveFocus();
+	});
+
+	it('keeps YouTube links embedded in prose as ordinary links', () => {
+		const doc = baseDoc([{ id: 'prose', type: 'paragraph', data: { text: 'Watch <a href="https://youtu.be/M7lc1UVf-VE">the example</a> for context.' } }]);
+		const { container } = render(BlockRenderer, { doc });
+		expect(container.querySelector('[data-testid="youtube-video"]')).toBeNull();
+		expect(screen.getByRole('link', { name: 'the example' })).toHaveAttribute('href', 'https://youtu.be/M7lc1UVf-VE');
+	});
+
 	it('renders header with deterministic id from stripped text and a real "#" permalink (homework #7c)', () => {
 		const doc = baseDoc([
 			{ id: 'h1', type: 'header', data: { text: 'Hello World', level: 2 } },

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_route_stack_label",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Blog listing lane and entry rail copy. Used by /blog and /blog/personal.",
+    "note": "No current site reader found. Kept until a source cleanup confirms removal.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 23,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes · Stack (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

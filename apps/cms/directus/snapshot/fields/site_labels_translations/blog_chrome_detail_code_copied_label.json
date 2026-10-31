@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_code_copied_label",
-    "group": null,
+    "group": "grp_shared_code",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (C5). Group: blog. Announced after a code block copies. Default: \"Copied\"",
+    "note": "Announced after a code block copies. Default: \"Copied\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 162,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Code copied label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

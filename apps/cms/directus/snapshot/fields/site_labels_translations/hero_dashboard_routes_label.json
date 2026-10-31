@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "hero_dashboard_routes_label",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: hero. Default: \"ROUTES LIVE\"",
+    "note": "Default: \"ROUTES LIVE\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 124,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

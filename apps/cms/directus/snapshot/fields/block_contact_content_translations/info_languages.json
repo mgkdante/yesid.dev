@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_languages",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "Info terminal languages value. Adding a language later is one CMS edit (e.g. \"EN · FR · ES\"). Default: \"EN · FR\"",
+    "note": "For example EN · FR · ES.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 39,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Languages"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

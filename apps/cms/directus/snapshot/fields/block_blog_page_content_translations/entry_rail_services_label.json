@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_services_label",
-    "group": null,
+    "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": "Blog listing lane and entry rail copy. Used by /blog and /blog/personal.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Work with me · Services link"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

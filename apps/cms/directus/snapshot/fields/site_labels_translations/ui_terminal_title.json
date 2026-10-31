@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "ui_terminal_title",
-    "group": null,
+    "group": "grp_about",
     "hidden": false,
     "interface": "input",
     "note": "Shared terminal chrome title.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 142,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact terminal · Window title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

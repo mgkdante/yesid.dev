@@ -165,5 +165,77 @@
       ]
     },
     "_syncId": "_sync_panel_ops_recent_activity"
+  },
+  {
+    "dashboard": "_sync_dashboard_blog_ops",
+    "name": "Posts in French",
+    "icon": "language",
+    "color": null,
+    "show_header": true,
+    "note": "Posts where lang = fr",
+    "type": "metric",
+    "position_x": 9,
+    "position_y": 7,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "blog_posts",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "lang": {
+          "_eq": "fr"
+        }
+      }
+    },
+    "_syncId": "a400baae-2c53-4357-b0c9-b07eac173d84"
+  },
+  {
+    "dashboard": "_sync_dashboard_blog_ops",
+    "name": "Posts in Spanish",
+    "icon": "language",
+    "color": null,
+    "show_header": true,
+    "note": "Posts where lang = es",
+    "type": "metric",
+    "position_x": 17,
+    "position_y": 7,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "blog_posts",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "lang": {
+          "_eq": "es"
+        }
+      }
+    },
+    "_syncId": "23b7fbf1-c4b9-4020-b736-20daccd05cd7"
+  },
+  {
+    "dashboard": "_sync_dashboard_blog_ops",
+    "name": "Draft posts",
+    "icon": "edit_note",
+    "color": null,
+    "show_header": true,
+    "note": "Posts where status = draft",
+    "type": "metric",
+    "position_x": 17,
+    "position_y": 1,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "blog_posts",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "status": {
+          "_eq": "draft"
+        }
+      }
+    },
+    "_syncId": "f128d67b-ce75-4c1a-adc8-fb3e05214a4d"
   }
 ]

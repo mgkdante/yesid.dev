@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_error_status_note",
-    "group": null,
+    "group": "grp_global",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"// requested path not in service\"",
+    "note": "Default: \"// requested path not in service\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 201,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Error page · Status note"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

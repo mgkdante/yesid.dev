@@ -76,8 +76,6 @@
 	p {
 		margin: 0;
 		color: var(--secondary-foreground);
-		font-size: 0.95rem;
-		line-height: 1.45;
 	}
 
 	.entry-card__actions {

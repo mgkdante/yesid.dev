@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_terminal_title",
-    "group": null,
+    "group": "grp_terminals",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces form_terminal.title",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 93,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Form box · Window title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

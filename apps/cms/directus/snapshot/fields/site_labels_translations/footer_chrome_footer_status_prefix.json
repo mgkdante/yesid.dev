@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "footer_chrome_footer_status_prefix",
-    "group": null,
+    "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: footer. Default: \"system online ·\"",
+    "note": "Default: \"system online ·\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 119,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Status prefix"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

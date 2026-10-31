@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_replay_intro",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "site_labels microcopy (reconciled 2026-06-12)",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 28,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Replay intro (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -1,0 +1,38 @@
+{
+  "collection": "block_blog_page_content",
+  "field": "grp_retired",
+  "type": "alias",
+  "meta": {
+    "collection": "block_blog_page_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_retired",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 80,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Not shown on the site"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

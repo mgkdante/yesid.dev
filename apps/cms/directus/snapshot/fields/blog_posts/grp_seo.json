@@ -13,19 +13,24 @@
     "interface": "group-detail",
     "note": "Search and share metadata",
     "options": {
-      "headerColor": "#E07800",
-      "start": "open"
+      "start": "closed",
+      "headerColor": "#E07800"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 30,
+    "sort": 50,
     "special": [
       "alias",
       "no-data",
       "group"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Search and sharing"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

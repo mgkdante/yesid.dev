@@ -59,7 +59,7 @@
 
 <!-- Bare rail (no StickyPanel box); scrollChain keeps the nested-scroll exemption on this element. -->
 <div
-  class="glance-rail scrollbar-hidden"
+  class="glance-rail scrollbar-hidden reading-support"
   data-testid="project-glance-panel{mobile ? '-mobile' : ''}"
   use:scrollChain
 >

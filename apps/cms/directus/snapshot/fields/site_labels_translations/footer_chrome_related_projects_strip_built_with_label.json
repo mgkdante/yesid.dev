@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "footer_chrome_related_projects_strip_built_with_label",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: footer. Default: \"Built with this\"",
+    "note": "Default: \"Built with this\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 114,
+    "sort": 36,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Footer · Related projects strip built with label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

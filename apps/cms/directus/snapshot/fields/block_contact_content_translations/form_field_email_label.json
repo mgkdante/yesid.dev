@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_field_email_label",
-    "group": null,
+    "group": "grp_fields",
     "hidden": false,
     "interface": "input",
-    "note": "Contact form email field label.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 19,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Email · Label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

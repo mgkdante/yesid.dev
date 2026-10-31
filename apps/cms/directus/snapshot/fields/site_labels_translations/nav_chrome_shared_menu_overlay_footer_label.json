@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_menu_overlay_footer_label",
-    "group": null,
+    "group": "grp_global_header",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"NAVIGATION · ALL ROUTES\"",
+    "note": "Default: \"NAVIGATION · ALL ROUTES\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 107,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Menu overlay footer label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

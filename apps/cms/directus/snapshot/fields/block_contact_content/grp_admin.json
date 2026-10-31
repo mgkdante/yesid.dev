@@ -24,7 +24,12 @@
       "no-data",
       "group"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Internal (picker label)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

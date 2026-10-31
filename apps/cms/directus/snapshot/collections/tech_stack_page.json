@@ -20,7 +20,14 @@
     "sort": 5,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tech stack",
+        "singular": "Tech stack",
+        "plural": "Tech stack"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   }

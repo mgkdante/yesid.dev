@@ -20,7 +20,14 @@
     "sort": 7,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact",
+        "singular": "Contact",
+        "plural": "Contact"
+      }
+    ],
     "unarchive_value": null,
     "versioning": false
   }

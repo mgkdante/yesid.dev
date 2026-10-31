@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_listing_route_map_title",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: blog. Default: \"Route Map\"",
+    "note": "Default: \"Route Map\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 67,
+    "sort": 19,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Blog · Route map title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

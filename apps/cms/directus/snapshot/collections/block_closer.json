@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "flag",
     "item_duplication_fields": null,
-    "note": "Closer block — TERMINUS / end-of-line section of /. Non-translatable: cta_href (string), attribution_url (string) on parent. All LocalizedString leaves in translations as JSON columns.",
+    "note": "End-of-line Terminus section at the bottom of Home.",
     "preview_url": null,
     "singleton": true,
     "sort": 5,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Home: Terminus",
+        "singular": "Terminus",
+        "plural": "Terminus"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

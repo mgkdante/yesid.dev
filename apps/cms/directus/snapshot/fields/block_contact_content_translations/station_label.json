@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "station_label",
-    "group": null,
+    "group": "grp_heading",
     "hidden": false,
     "interface": "input",
-    "note": "Per-locale station subtitle (ContactContent.stationLabel). e.g. 'NEXT STOP: YOU'.",
+    "note": "For example NEXT STOP: YOU.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Station label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

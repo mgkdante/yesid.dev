@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "a11y_technology_stack_template",
-    "group": null,
+    "group": "grp_projects_detail",
     "hidden": false,
     "interface": "input",
     "note": "Technology stack SVG aria label template with {stack}.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 141,
+    "sort": 13,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Technology stack diagram (screen reader template)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

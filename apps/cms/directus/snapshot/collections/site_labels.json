@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "sell",
     "item_duplication_fields": null,
-    "note": "Global UI microcopy singleton (go2-t1c): aria labels, card markers, edge titles, email templates. Grouped by field-name prefix: a11y_ / ui_ / pages_ / email_.",
+    "note": "Small UI text grouped by page and section. Components used on several pages have their own Shared group.",
     "preview_url": null,
     "singleton": true,
     "sort": null,
     "sort_field": null,
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Site labels (UI text)",
+        "singular": "Site labels",
+        "plural": "Site labels"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

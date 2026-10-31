@@ -1,6 +1,6 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/svelte';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import BlogDetailPage from './BlogDetailPage.svelte';
 import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
 import type { BlogPageContent } from '@repo/shared';
@@ -75,6 +75,39 @@ describe('BlogDetailPage', () => {
 			props: { post: makePost(), body: mockBody, headings: mockHeadings }
 		});
 		expect(getByTestId('blog-detail-page')).toBeTruthy();
+		expect(screen.queryByTestId('blog-video-gallery')).toBeNull();
+	});
+
+	it('deduplicates repeated article video URLs into one localized gallery preview with focused playback', async () => {
+		const body: BlockEditorDoc = {
+			...mockBody,
+			blocks: [
+				...mockBody.blocks,
+				{ id: 'video-url', type: 'paragraph', data: { text: 'https://youtu.be/M7lc1UVf-VE' } },
+				{ id: 'video-anchor', type: 'paragraph', data: { text: '<a href="https://www.youtube.com/watch?v=M7lc1UVf-VE">Démonstration réelle</a>' } },
+			],
+		};
+		render(BlogDetailPage, {
+			props: { post: makePost({ lang: 'fr' }), body, headings: mockHeadings },
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
+		});
+		const gallery = screen.getByTestId('blog-video-gallery');
+		expect(screen.getByTestId('blog-sections').lastElementChild).toBe(gallery);
+		expect(within(gallery).getByRole('button', { name: 'Vidéos' })).toBeInTheDocument();
+		const triggers = within(gallery).getAllByTestId('project-video-gallery-trigger');
+		expect(triggers).toHaveLength(1);
+		const trigger = triggers[0]!;
+		expect(within(gallery).queryByText('Démonstration réelle')).toBeNull();
+		expect(document.querySelector('iframe')).toBeNull();
+		trigger.focus();
+		await fireEvent.click(trigger);
+		const dialog = screen.getByRole('dialog', { name: 'Démonstration réelle' });
+		expect(within(dialog).getByTitle('Démonstration réelle')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/M7lc1UVf-VE?autoplay=1&playsinline=1');
+		const close = within(dialog).getByRole('button', { name: 'Fermer la vidéo' });
+		await waitFor(() => expect(close).toHaveFocus());
+		await fireEvent.keyDown(close, { key: 'Escape' });
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		await waitFor(() => expect(trigger).toHaveFocus());
 	});
 
 	it('renders the blog detail header', () => {

@@ -5,6 +5,7 @@
   Related projects in right panel (desktop) / bottom list (mobile). D186, D187, D189.
 -->
 <script lang="ts">
+	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
 	import type { Service, ProjectSummary } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
@@ -164,7 +165,7 @@
 {/snippet}
 
 {#snippet projectsAside()}
-	<div class="projects-panel">
+	<div class="projects-panel reading-support">
 		<ServiceStackPanel
 			variant="desktop"
 			serviceId={service.id}
@@ -252,7 +253,7 @@
 	{#snippet after()}
 
 		{#if hasStack || relatedProjects.length > 0}
-			<div class="projects-mobile">
+			<div class="projects-mobile reading-support">
 				<ServiceStackPanel
 					variant="mobile"
 					serviceId={service.id}
@@ -279,6 +280,7 @@
 	{/snippet}
 
 	<DetailFrame
+		class="reading-detail"
 		{header}
 		{after}
 		style="--detail-rail-top: calc(var(--chrome-offset) + 4rem + 2rem);"
@@ -294,7 +296,7 @@
 			landFragments: true,
 		}}
 	>
-		<div class="sections">
+		<div class="sections article-body">
 			<!-- Mobile-only inline metric -->
 			{#if metricValue}
 				<div class="metric-inline">
@@ -536,7 +538,7 @@
 
 	.impact-value {
 		font-family: var(--font-heading);
-		font-size: clamp(88px, 10vw, 140px);
+		font-size: clamp(4.875rem, 8.9vw, 7.75rem);
 		font-weight: 900;
 		color: var(--accent-text);
 		line-height: 0.8;
@@ -591,7 +593,7 @@
 
 	.metric-inline-value {
 		font-family: var(--font-heading);
-		font-size: clamp(32px, 5vw, 40px);
+		font-size: clamp(1.8rem, 4.5vw, 2.25rem);
 		font-weight: 900;
 		color: var(--accent-text);
 		line-height: 1;
@@ -622,8 +624,6 @@
 	}
 
 	.section-body {
-		font-size: var(--text-body);
-		line-height: 1.7;
 		color: var(--secondary-foreground);
 	}
 
@@ -643,7 +643,6 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: var(--text-body);
 		color: var(--secondary-foreground);
 	}
 

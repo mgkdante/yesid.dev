@@ -20,7 +20,14 @@
     "sort": 0,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Pages registry",
+        "singular": "page",
+        "plural": "pages"
+      }
+    ],
     "unarchive_value": "published",
     "versioning": false
   },

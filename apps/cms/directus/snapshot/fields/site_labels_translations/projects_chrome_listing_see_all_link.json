@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_listing_see_all_link",
-    "group": null,
+    "group": "grp_shared",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: projects. Default: \"See all projects →\"",
+    "note": "Default: \"See all projects →\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 33,
+    "sort": 201,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "See all projects link (Service page)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

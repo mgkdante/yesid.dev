@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "validation_invalid_email",
-    "group": null,
+    "group": "grp_errors",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces validation.invalidEmail",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 25,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Invalid email message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

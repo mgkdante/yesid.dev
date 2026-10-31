@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "photo_library",
     "item_duplication_fields": null,
-    "note": "Proof Reel block — featured projects section of /. Non-translatable fields: view_all_href (string), slugs (string[]), images (Record<string,string>) on parent. LocalizedString leaves in block_proof_reel_translations.",
+    "note": "Featured projects section on Home. Section heading comes from Site labels.",
     "preview_url": null,
     "singleton": true,
     "sort": 3,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Home: Featured projects",
+        "singular": "Featured projects",
+        "plural": "Featured projects"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

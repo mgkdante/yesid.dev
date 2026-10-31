@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "projects_chrome_meta_title",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: projects. Default: \"Projects | yesid.\"",
+    "note": "Default: \"Projects | yesid.\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 29,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects · Meta title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

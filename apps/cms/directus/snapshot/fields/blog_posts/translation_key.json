@@ -16,12 +16,17 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 5,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Translation key"
+      }
+    ],
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "translation_key",

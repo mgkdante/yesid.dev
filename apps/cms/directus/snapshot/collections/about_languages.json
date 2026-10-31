@@ -20,7 +20,14 @@
     "sort": 4,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "About languages",
+        "singular": "language panel",
+        "plural": "language panels"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

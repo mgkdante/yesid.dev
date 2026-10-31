@@ -1,0 +1,38 @@
+{
+  "collection": "block_about_content_translations",
+  "field": "grp_method",
+  "type": "alias",
+  "meta": {
+    "collection": "block_about_content_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_method",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 13,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Method"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_toc_counter_prefix",
-    "group": "grp_nav",
+    "group": "grp_shared_toc",
     "hidden": false,
     "interface": "input",
     "note": null,
@@ -18,7 +18,12 @@
     "searchable": true,
     "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "TOC counter prefix"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

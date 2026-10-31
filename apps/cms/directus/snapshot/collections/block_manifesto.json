@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "format_quote",
     "item_duplication_fields": null,
-    "note": "Manifesto block — section 2 of /. Non-translatable fields: ticks (string[]) on parent. All LocalizedString leaves live in block_manifesto_translations as JSON columns.",
+    "note": "Home section 2: statement, terminal, pills and edge labels.",
     "preview_url": null,
     "singleton": true,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Home: Manifesto",
+        "singular": "Manifesto",
+        "plural": "Manifesto"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

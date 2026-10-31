@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "info_best_fit_3",
-    "group": null,
+    "group": "grp_info",
     "hidden": false,
     "interface": "input",
-    "note": "BEST FIT line 3 of 3 (homework #26b). Default: \"Sites and stores wired to live data\"",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 43,
+    "sort": 9,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Best fit · Line 3"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

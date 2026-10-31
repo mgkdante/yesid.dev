@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "footer_chrome_footer_legal_label",
-    "group": null,
+    "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Group: footer chrome. Full-bleed footer LEGAL column heading. Default: \"LEGAL\"",
+    "note": "Full-bleed footer LEGAL column heading. Default: \"LEGAL\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 160,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Legal column heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

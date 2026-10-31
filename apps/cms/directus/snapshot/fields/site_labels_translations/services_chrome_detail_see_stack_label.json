@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_detail_see_stack_label",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"See the full stack →\"",
+    "note": "Default: \"See the full stack →\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 101,
+    "sort": 33,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services · See stack label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

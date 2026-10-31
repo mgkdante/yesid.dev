@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_listing_projects_strip_project_singular",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"PROJECT\"",
+    "note": "Default: \"PROJECT\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 90,
+    "sort": 29,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services · Projects strip project singular"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

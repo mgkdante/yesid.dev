@@ -1,0 +1,38 @@
+{
+  "collection": "block_contact_content",
+  "field": "grp_delivery",
+  "type": "alias",
+  "meta": {
+    "collection": "block_contact_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_delivery",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "closed",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 5,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Form delivery"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_category_professional",
-    "group": null,
+    "group": "grp_blog_article",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"Professional\"",
+    "note": "Default: \"Professional\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 17,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Category professional"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

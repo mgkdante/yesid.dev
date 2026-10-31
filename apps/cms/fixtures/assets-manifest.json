@@ -548,6 +548,167 @@
 			"title": "yesid.dev — services desktop light",
 			"description": "yesid.dev desktop screenshot in light mode. Browser capture, 26 October 2026.",
 			"sha256": "75d4952353adb220829bc8b6a64b180ab2887323b73f866a20bce012b419af06"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/controls-dark.png",
+			"folder": "projects",
+			"title": "Design Gallery controls, dark theme",
+			"description": "Real Gallery controls in dark theme, captured on 30 October 2026 from unchanged v0.30.2 UI source.",
+			"sha256": "65ec61cd6016d018a4b9f024f505c37d56b369d5e4aef9c5d9dfabc9d6d28d4d"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/controls-light.png",
+			"folder": "projects",
+			"title": "Design Gallery controls, light theme",
+			"description": "Light-theme variant of the same Gallery controls capture, from unchanged v0.30.2 UI source on 30 October 2026.",
+			"sha256": "082e01635fda18568a4a98294aeae9289e2bd94bf4fd41d2e61d100590f19dfd"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/sections-dark.png",
+			"folder": "projects",
+			"title": "Design Gallery collapsible sections",
+			"description": "Real Gallery collapsible-section states in dark theme, captured on 30 October 2026 from unchanged v0.30.2 UI source.",
+			"sha256": "84461695a7ef5c8563308be7f4b7fca36b375532e4b84afbbefbaf2bced8fdd8"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/filters-mobile.png",
+			"folder": "projects",
+			"title": "Design Gallery filters, narrow viewport",
+			"description": "Real Gallery filter controls in a narrow browser viewport, captured on 30 October 2026 from unchanged v0.30.2 UI source. This is a browser capture, not a physical-device test.",
+			"sha256": "9d7862982f2babab8fff48916525f8b23c818aa445c11e10cf7325cc7ab9f253"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/palette-dark.png",
+			"folder": "projects",
+			"title": "Design Token Gallery palette",
+			"description": "Real Token Gallery palette specimen captured on 30 October 2026 from unchanged v0.30.2 UI source. This is not a visual outcome of the PR130 tooling changes.",
+			"sha256": "3ad8b478e5adeac41e6e23d7bc3e257adb09fa698050d682598668c5e1469a52"
+		},
+		{
+			"legacyPath": "images/work/design-20261030/typography.png",
+			"folder": "projects",
+			"title": "Design Token Gallery typography",
+			"description": "Real Token Gallery typography specimen captured on 30 October 2026 from unchanged v0.30.2 UI source. The portfolio article reading scale is a separate site-owned change.",
+			"sha256": "fd9c935f5382febdbbd6db5be8a1279a8658fddb2e57d1f6a13e530285c797d4"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-map-desktop-light.png",
+			"folder": "projects",
+			"title": "Transit: stm-map-desktop-light (2026-10-30)",
+			"description": "STM vehicle map around Montréal. Light theme. Browser capture, 30 October 2026.",
+			"sha256": "75c67f1a5b272b73c175b2e596dae9289730d25b0b415517f622192e2431a7fe"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-map-phone-light-ready.png",
+			"folder": "projects",
+			"title": "Transit: stm-map-phone-light-ready (2026-10-30)",
+			"description": "STM map in a phone-width browser viewport. Light theme. Browser capture, 30 October 2026.",
+			"sha256": "1e4468772041f9c765603be73cd4e7bc7bd8f134f83292c755346a63f378f693"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-map-phone-dark-ready.png",
+			"folder": "projects",
+			"title": "Transit: stm-map-phone-dark-ready (2026-10-30)",
+			"description": "STM map in a phone-width browser viewport. Dark theme. Browser capture, 30 October 2026.",
+			"sha256": "7049f925df1589dd8a1c5e736ac8bd9181b481090dc454027120593e808b9969"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-map-desktop-dark-ready.png",
+			"folder": "projects",
+			"title": "Transit: stm-map-desktop-dark-ready (2026-10-30)",
+			"description": "STM vehicle map around Montréal. Dark theme. Browser capture, 30 October 2026.",
+			"sha256": "21f0c2318b04d0cbbe8f69fca00a30bf639a99fb88aca75253d132ecbd3ccd24"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-route55-reliability-dark.png",
+			"folder": "projects",
+			"title": "Transit: stm-route55-reliability-dark (2026-10-30)",
+			"description": "Route 55 Saint-Laurent reliability with limited observations and missing percentile values. Dark theme. Browser capture, 30 October 2026.",
+			"sha256": "6ebe61934d2a31dab9b9c5619f78e3f7357b39f17e979b71076e1e6f37fa831a"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-route55-reliability-light.png",
+			"folder": "projects",
+			"title": "Transit: stm-route55-reliability-light (2026-10-30)",
+			"description": "Route 55 Saint-Laurent reliability with limited observations and missing percentile values. Light theme. Browser capture, 30 October 2026.",
+			"sha256": "c77a0d8c0bb4abdaf3b4a3276247fb78ca0d7bacd765b07b2847efae1cfe9640"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-data-health-light.png",
+			"folder": "projects",
+			"title": "Transit: stm-data-health-light (2026-10-30)",
+			"description": "Data Health overview with a visible Rollups warning. Light theme. Browser capture, 30 October 2026.",
+			"sha256": "83aeb285ca4e2db7907448649cb4309966b88aba5b190ad98aee4bb17944ca6a"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/stm-data-health-dark.png",
+			"folder": "projects",
+			"title": "Transit: stm-data-health-dark (2026-10-30)",
+			"description": "Data Health overview with a visible Rollups warning. Dark theme. Browser capture, 30 October 2026.",
+			"sha256": "da89e2a28bc48cfda9ad2e30f5a4aba9a3bbcea705efbd2fac7cecc952aab808"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/oc-map-desktop-dark.png",
+			"folder": "projects",
+			"title": "Transit: oc-map-desktop-dark (2026-10-30)",
+			"description": "OC Transpo vehicle map with the no-connected-alert-feed notice. Dark theme. Browser capture, 30 October 2026.",
+			"sha256": "8a7b03b800ceeb27081813a229984a04e7f4275f7dbdde9c451afe3534f4f432"
+		},
+		{
+			"legacyPath": "images/work/transit-20261030/oc-map-desktop-light.png",
+			"folder": "projects",
+			"title": "Transit: oc-map-desktop-light (2026-10-30)",
+			"description": "OC Transpo vehicle map with the no-connected-alert-feed notice. Light theme. Browser capture, 30 October 2026.",
+			"sha256": "90e2df1fa4a9ff6417a217389ed2823736bd90925b67fceac642eca1d1743c96"
+		},
+		{
+			"legacyPath": "images/work/site-20261030/home-desktop-dark.png",
+			"folder": "projects",
+			"title": "yesid.dev: home-desktop-dark (2026-10-30)",
+			"description": "Homepage with the labelled SQL demo widget, dark theme. Local candidate capture, 30 October 2026.",
+			"sha256": "82fd462238b6f091a070da89a702187d6f5b2f649151857496c13d7e905d8368"
+		},
+		{
+			"legacyPath": "images/work/site-20261030/home-desktop-light.png",
+			"folder": "projects",
+			"title": "yesid.dev: home-desktop-light (2026-10-30)",
+			"description": "Homepage with the labelled SQL demo widget, light theme. Local candidate capture, 30 October 2026.",
+			"sha256": "5a12a9d18c07e50d5bca0ba36fcdba561edc15a38c6c2f6b398a3d145d815975"
+		},
+		{
+			"legacyPath": "images/work/site-20261030/home-mobile-dark.png",
+			"folder": "projects",
+			"title": "yesid.dev: home-mobile-dark (2026-10-30)",
+			"description": "Homepage in a phone-width browser viewport with compact demo figures. Local candidate capture, 30 October 2026.",
+			"sha256": "0fabe7070cf1454d230180026194cf7866dee9e41edd697f752407bb247f792c"
+		},
+		{
+			"legacyPath": "images/work/site-20261030/contact-fr-dark.png",
+			"folder": "projects",
+			"title": "yesid.dev: contact-fr-dark (2026-10-30)",
+			"description": "French contact page with an empty form and current navigation. Local candidate capture, 30 October 2026.",
+			"sha256": "25df86439f7701817491330af36dfbe88cd0b1a1bb3bc70d786bceb423b00af6"
+		},
+		{
+			"legacyPath": "images/work/site-20261030/blog-es-light.png",
+			"folder": "projects",
+			"title": "yesid.dev: blog-es-light (2026-10-30)",
+			"description": "Spanish article listing with search, language and date filters. Local candidate capture, 30 October 2026.",
+			"sha256": "df13c6aece77d106278a3f03a51e0de36b53d6e8e72f52b657427bd394858876"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261030/cafe-home-desktop.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-home-desktop (2026-10-30)",
+			"description": "French development storefront, desktop home view. Browser capture, 30 October 2026. Work in progress.",
+			"sha256": "27656f103e0a3dd8d0b578c3b005bbdb2e3f41f5ab3e930208dc2df9c1d95d38"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261030/cafe-home-mobile.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-home-mobile (2026-10-30)",
+			"description": "French development storefront in a phone-width browser viewport. Browser capture, 30 October 2026. Work in progress.",
+			"sha256": "0122a187aaaa9249a061fe6fed635d536b6e039f395790e15ad625b8bab3aafd"
 		}
 	]
 }

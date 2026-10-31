@@ -27,9 +27,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 44,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Category"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

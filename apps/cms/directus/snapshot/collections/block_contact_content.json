@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "contact_mail",
     "item_duplication_fields": null,
-    "note": "Contact page content block (/contact). Non-translatable: web3forms_key (string) on parent. All LocalizedString leaves in translations as JSON columns per top-level chunk.",
+    "note": "Everything on /contact, grouped by box. Channel rows live in Contact channels.",
     "preview_url": null,
     "singleton": true,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact content",
+        "singular": "Contact content",
+        "plural": "Contact content"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

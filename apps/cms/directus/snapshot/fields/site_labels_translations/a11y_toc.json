@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "a11y_toc",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: a11y. Default: \"Table of contents\"",
+    "note": "Default: \"Table of contents\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "General · TOC"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

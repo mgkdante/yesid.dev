@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "form_field_message_placeholder",
-    "group": null,
+    "group": "grp_fields",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces form_terminal.fields.message.placeholder",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 23,
+    "sort": 6,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Message · Placeholder"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

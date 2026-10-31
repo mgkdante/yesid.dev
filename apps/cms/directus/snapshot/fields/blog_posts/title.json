@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "title",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "input",
     "note": "Post title in the post's native language (see lang field). Mono-language by editorial design — no translation junction.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 13,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_detail_related_projects_heading",
-    "group": null,
+    "group": "grp_services_detail",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Related Projects\"",
+    "note": "Default: \"Related Projects\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 97,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Related projects heading"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

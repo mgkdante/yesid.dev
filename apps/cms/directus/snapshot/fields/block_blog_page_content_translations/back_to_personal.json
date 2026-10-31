@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "back_to_personal",
-    "group": null,
+    "group": "grp_back",
     "hidden": false,
     "interface": "input",
-    "note": "Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Back to personal posts"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

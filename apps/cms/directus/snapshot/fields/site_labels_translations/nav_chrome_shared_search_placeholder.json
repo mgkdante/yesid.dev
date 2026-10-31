@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_search_placeholder",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"Search...\"",
+    "note": "Default: \"Search...\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 109,
+    "sort": 34,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Navigation · Search placeholder"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

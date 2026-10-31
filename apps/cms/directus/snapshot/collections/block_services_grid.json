@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "grid_view",
     "item_duplication_fields": null,
-    "note": "Services Grid block — section 3 of /. All fields are LocalizedStrings → string columns in translations. No M2M to services collection (not needed for 18i scope).",
+    "note": "Services strip on Home: view-all link and illustration label. Section heading comes from Site labels.",
     "preview_url": null,
     "singleton": true,
     "sort": 4,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Home: Services strip",
+        "singular": "Services strip",
+        "plural": "Services strip"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

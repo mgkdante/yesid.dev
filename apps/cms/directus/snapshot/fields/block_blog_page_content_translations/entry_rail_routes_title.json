@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_routes_title",
-    "group": null,
+    "group": "grp_rail",
     "hidden": false,
     "interface": "input",
-    "note": "Blog listing lane and entry rail copy. Used by /blog and /blog/personal.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 20,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes · Title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

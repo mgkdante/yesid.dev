@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "blog_chrome_detail_code_title",
-    "group": null,
+    "group": "grp_shared_code",
     "hidden": false,
     "interface": "input",
     "note": "CMS code block terminal chrome title.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 143,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Code title"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

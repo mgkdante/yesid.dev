@@ -8,30 +8,37 @@
 	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
+	import YouTubeVideoPlayer from '#lib/components/cms/blocks/YouTubeVideo.svelte';
+	import { youtubeLabels, type YouTubeVideo } from '#lib/utils/youtube.ts';
 
 	const locale = getLocale();
 
-	let { doc }: { doc: BlockEditorDoc } = $props();
+	let { doc, videos = [] }: { doc: BlockEditorDoc; videos?: readonly YouTubeVideo[] } = $props();
 
 	let activeTheme = $state<Theme>('dark');
+	let hydrated = $state(false);
 
 	const images = $derived(doc.blocks.filter((block): block is ImageBlock => block.type === 'image'));
 	let activeImage = $state<ImageBlock | null>(null);
+	let activeVideo = $state<YouTubeVideo | null>(null);
 	let opener: HTMLButtonElement | null = null;
 	let closeButton: HTMLButtonElement | undefined = $state();
-	const activeCaption = $derived(activeImage ? stripHtml(activeImage.data.caption) : '');
+	const videoLabels = $derived(youtubeLabels[locale]);
+	const activeCaption = $derived(activeImage ? stripHtml(activeImage.data.caption) : activeVideo?.caption || videoLabels.title);
 	const projectImageOpenTemplate = $derived(resolveLocale(siteLabels.a11y.projectImageOpen, locale));
 	const projectImageCloseLabel = $derived(resolveLocale(siteLabels.a11y.projectImageClose, locale));
+	const closeLabel = $derived(activeVideo ? videoLabels.close : projectImageCloseLabel);
 	const activeSource = $derived(
 		activeImage ? imageSource(activeImage, 'hero-1200') : undefined,
 	);
 
-	// Thumbnails sit in a 2-col grid inside the detail page's center column;
+	// The same images serve the mobile strip and desktop rail;
 	// the lightbox panel is min(96vw, 1440px).
 	const THUMB_SIZES = '(min-width: 1024px) 28vw, (min-width: 768px) 45vw, 92vw';
 	const LIGHTBOX_SIZES = 'min(96vw, 1440px)';
 
 	onMount(() => {
+		hydrated = true;
 		return watchTheme((theme) => {
 			activeTheme = theme;
 		});
@@ -56,9 +63,16 @@
 		activeImage = image;
 	}
 
+	function openVideo(video: YouTubeVideo, event: MouseEvent): void {
+		event.stopPropagation();
+		opener = event.currentTarget as HTMLButtonElement;
+		activeVideo = video;
+	}
+
 	function closeImage(event?: Event): void {
 		event?.stopPropagation();
 		activeImage = null;
+		activeVideo = null;
 	}
 
 	function restoreOpener(event: Event): void {
@@ -67,15 +81,17 @@
 	}
 </script>
 
-<div class="project-image-gallery" data-testid="project-image-gallery">
+<div class="project-image-gallery" data-testid="project-image-gallery" data-lenis-prevent>
 	{#each images as image (image.id)}
 		{@const source = imageSource(image, 'hero-1200')}
 		<figure class="project-image-gallery__item">
 			<button
 				type="button"
+				disabled={!hydrated}
 				class="project-image-gallery__trigger"
 				aria-label={openImageLabel(image)}
 				data-testid="project-image-gallery-trigger"
+				onfocus={(event) => event.currentTarget.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' })}
 				onclick={(event) => openImage(image, event)}
 			>
 				<img
@@ -89,17 +105,29 @@
 					decoding="async"
 				/>
 			</button>
-			{#if image.data.caption}
-				<figcaption>{@html image.data.caption}</figcaption>
-			{/if}
+		</figure>
+	{/each}
+	{#each videos as video (video.id)}
+		<figure class="project-image-gallery__item">
+			<button
+				type="button"
+				disabled={!hydrated}
+				class="project-image-gallery__trigger project-image-gallery__video-trigger"
+				aria-label={`${videoLabels.play}: ${video.caption || videoLabels.title}`}
+				data-testid="project-video-gallery-trigger"
+				onfocus={(event) => event.currentTarget.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' })}
+				onclick={(event) => openVideo(video, event)}
+			>
+				<img src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+				<span class="project-image-gallery__play" aria-hidden="true">▶</span>
+			</button>
 		</figure>
 	{/each}
 </div>
 
-<DialogPrimitive.Root open={activeImage !== null} onOpenChange={(open) => { if (!open) closeImage(); }}>
+<DialogPrimitive.Root open={activeImage !== null || activeVideo !== null} onOpenChange={(open) => { if (!open) closeImage(); }}>
 	<DialogPrimitive.Portal>
-	{#if activeImage}
-		{@const caption = activeImage.data.caption}
+	{#if activeImage || activeVideo}
 		<div
 			class="project-image-gallery__lightbox"
 			data-testid="project-image-gallery-lightbox"
@@ -110,7 +138,7 @@
 						{...props}
 						type="button"
 						class="project-image-gallery__backdrop"
-						aria-label={projectImageCloseLabel}
+						aria-label={closeLabel}
 						tabindex="-1"
 						data-testid="project-image-gallery-backdrop"
 						onclick={closeImage}
@@ -127,12 +155,13 @@
 						<button
 							type="button"
 							class="project-image-gallery__close"
-							aria-label={projectImageCloseLabel}
+							aria-label={closeLabel}
 							bind:this={closeButton}
 							onclick={closeImage}
 						>
 							<span class="project-image-gallery__close-mark" aria-hidden="true"></span>
 						</button>
+						{#if activeImage}
 						<img
 							src={activeSource?.src}
 							srcset={activeSource?.srcset}
@@ -143,8 +172,14 @@
 							decoding="async"
 							data-testid="project-image-gallery-lightbox-image"
 						/>
-						{#if caption}
-							<p class="project-image-gallery__lightbox-caption">{@html caption}</p>
+						{#if activeImage.data.caption}
+							<p class="project-image-gallery__lightbox-caption">{@html activeImage.data.caption}</p>
+						{/if}
+						{:else if activeVideo}
+							<YouTubeVideoPlayer video={activeVideo} active />
+							{#if activeVideo.caption}
+								<p class="project-image-gallery__lightbox-caption">{activeVideo.caption}</p>
+							{/if}
 						{/if}
 					</div>
 				{/snippet}
@@ -161,9 +196,24 @@
 	}
 
 	.project-image-gallery {
-		display: grid;
-		grid-template-columns: 1fr;
+		display: flex;
 		gap: 1rem;
+		max-width: 100%;
+		min-width: 0;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scroll-padding-inline: 0.5rem;
+		padding: 0.5rem;
+		overscroll-behavior-x: contain;
+	}
+
+	@media (--desktop-min) {
+		.project-image-gallery {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			overflow-x: visible;
+			scroll-snap-type: none;
+		}
 	}
 
 	:global([data-theme="light"]) .project-image-gallery,
@@ -176,6 +226,8 @@
 	.project-image-gallery__item {
 		margin: 0;
 		min-width: 0;
+		flex: 0 0 90%;
+		scroll-snap-align: center;
 	}
 
 	.project-image-gallery__trigger {
@@ -203,12 +255,8 @@
 		outline-offset: 3px;
 	}
 
-	figcaption {
-		margin-top: 0.55rem;
-		color: color-mix(in srgb, var(--foreground) 62%, transparent);
-		font-size: var(--text-caption);
-		line-height: 1.55;
-	}
+	.project-image-gallery__video-trigger { position: relative; cursor: pointer; }
+	.project-image-gallery__play { position: absolute; inset: 0; display: grid; place-items: center; font-size: 3rem; color: #fff; text-shadow: 0 2px 12px #000; }
 
 	.project-image-gallery__lightbox {
 		position: fixed;
@@ -264,8 +312,6 @@
 		border-top: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
 		padding: 0.85rem 1rem 1rem;
 		color: color-mix(in srgb, var(--foreground) 70%, transparent);
-		font-size: var(--text-caption);
-		line-height: 1.55;
 	}
 
 	.project-image-gallery__close {

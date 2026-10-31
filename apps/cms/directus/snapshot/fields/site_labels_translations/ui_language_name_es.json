@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "ui_language_name_es",
-    "group": null,
+    "group": "grp_blog_languages",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: ui. Default: \"Spanish\"",
+    "note": "Default: \"Spanish\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 131,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Spanish"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

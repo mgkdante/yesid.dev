@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "hero_dashboard_vehicles_label",
-    "group": null,
+    "group": "grp_home_hero",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: hero. Default: \"VEHICLES TRACKED\"",
+    "note": "Default: \"VEHICLES TRACKED\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 120,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Vehicles label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

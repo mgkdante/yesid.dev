@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "entry_rail_route_stack_href",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Blog entry rail href. Stored once because routes are not locale-specific.",
+    "note": "No current site reader found. Kept until a source cleanup confirms removal.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 24,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Routes · Stack link (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

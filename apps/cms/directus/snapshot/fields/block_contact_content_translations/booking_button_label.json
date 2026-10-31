@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "booking_button_label",
-    "group": null,
+    "group": "grp_booking",
     "hidden": false,
     "interface": "input",
-    "note": "Form terminal booking link label; terminal command stays untranslated. Default: \"book --intro-call →\"",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 37,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Link label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

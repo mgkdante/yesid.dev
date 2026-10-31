@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "footer_chrome_footer_tagline",
-    "group": null,
+    "group": "grp_global_footer",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: footer. Default: \"// digital infrastructure\"",
+    "note": "Default: \"// digital infrastructure\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 117,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Tagline"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

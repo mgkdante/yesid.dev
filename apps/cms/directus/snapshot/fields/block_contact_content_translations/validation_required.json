@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "validation_required",
-    "group": null,
+    "group": "grp_errors",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces validation.required",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 24,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Required field message"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

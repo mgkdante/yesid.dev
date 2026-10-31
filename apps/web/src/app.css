@@ -61,17 +61,19 @@ html {
 @media (--tablet-min) and (--desktop-max) { :root { --page-display: clamp(2.5rem, 4vw, 3rem); } }
 @media (min-width: 1440px) and (min-height: 800px) { :root { --page-display: var(--text-display); } }
 
-/* 10. Prose for dark markdown content — shared base for blog + work detail */
+/* Markdown decoration. Detail reading sizes belong to article-body.css. */
 .prose-dark {
-  max-width: 72ch;
-  font-size: 1.0625rem;
-  line-height: 1.85;
   color: var(--secondary-foreground);
   overflow-wrap: break-word;
   word-break: break-word;
 }
+.prose-dark:not(.article-body) {
+  max-width: 72ch;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
 @media (--desktop-min) {
-  .prose-dark {
+  .prose-dark:not(.article-body) {
     font-size: 1.125rem;
     line-height: 1.9;
   }
@@ -96,12 +98,14 @@ html {
   padding: 0.875rem 1rem;
   overflow-x: auto;
   margin: 1rem 0;
-  font-size: var(--text-mono);
   line-height: 1.6;
   max-width: 100%;
 }
 .terminal-code {
   margin: 1rem 0;
+}
+.prose-dark:not(.article-body) pre:not(.terminal-code-body > pre) {
+  font-size: var(--text-mono);
 }
 .prose-dark pre code {
   font-family: var(--font-mono);
@@ -117,12 +121,14 @@ html {
 
 .prose-dark code {
   font-family: var(--font-mono);
-  font-size: 0.85em;
   color: var(--primary);
   background: var(--card);
   padding: 0.125rem 0.375rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
+}
+.prose-dark:not(.article-body) code:not(pre code) {
+  font-size: 0.85em;
 }
 
 .prose-dark blockquote {

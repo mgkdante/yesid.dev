@@ -14,13 +14,20 @@
     "hidden": false,
     "icon": "person",
     "item_duplication_fields": null,
-    "note": "About teaser block — home page About section (NOT /about page). Non-translatable: stack_items (string[]) on parent. All LocalizedString leaves in translations.",
+    "note": "Name, title, bio and link for the About strip on Home. Its other widgets reuse About content.",
     "preview_url": null,
     "singleton": true,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Home: About teaser",
+        "singular": "About teaser",
+        "plural": "About teaser"
+      }
+    ],
     "unarchive_value": null,
     "versioning": true
   },

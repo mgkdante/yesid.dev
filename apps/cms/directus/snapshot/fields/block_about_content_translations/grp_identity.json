@@ -1,0 +1,38 @@
+{
+  "collection": "block_about_content_translations",
+  "field": "grp_identity",
+  "type": "alias",
+  "meta": {
+    "collection": "block_about_content_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_identity",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": null,
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Identity card"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

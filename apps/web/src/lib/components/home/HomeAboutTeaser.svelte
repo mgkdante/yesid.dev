@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '#lib/styles/article-body.css';
 	import type { AboutIntroContent } from '#lib/types.ts';
 	import { aboutPageContent } from '#lib/content/index.ts';
 	import AboutLanguages from '#lib/components/about/AboutLanguages.svelte';
@@ -46,11 +47,11 @@
 	]);
 </script>
 
-<div class="about-teaser" data-testid="home-about-teaser">
+<div class="about-teaser reading-detail" data-testid="home-about-teaser">
 	<div class="teaser-identity">
 		<p class="teaser-name">{name}<span class="teaser-dot">.</span></p>
 		<p class="teaser-title">{title}</p>
-		<p class="teaser-bio">{bio}</p>
+		<p class="teaser-bio article-body">{bio}</p>
 		<a href={localizeHref('/about', locale)} class="teaser-more tap-feedback" data-testid="home-about-more">
 			{moreLink}
 		</a>
@@ -112,19 +113,11 @@
 		color: var(--accent-text);
 	}
 
-	.teaser-bio {
+	.teaser-bio.article-body {
 		margin-top: 1.25rem;
 		margin-inline: auto;
 		max-width: 52ch;
-		font-size: 1.125rem;
 		color: var(--secondary-foreground);
-		line-height: 1.8;
-	}
-
-	@media (--tablet-min) {
-		.teaser-bio {
-			font-size: 1.25rem;
-		}
 	}
 
 	.teaser-more {

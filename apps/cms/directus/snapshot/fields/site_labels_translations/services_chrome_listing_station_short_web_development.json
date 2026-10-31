@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "services_chrome_listing_station_short_web_development",
-    "group": null,
+    "group": "grp_services_listing",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: services. Default: \"Websites\"",
+    "note": "Default: \"Websites\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 135,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Station short web development"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

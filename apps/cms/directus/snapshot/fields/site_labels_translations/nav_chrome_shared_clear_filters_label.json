@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_clear_filters_label",
-    "group": null,
+    "group": "grp_shared_filters",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"clear filters\"",
+    "note": "Default: \"clear filters\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 110,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Clear filters label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

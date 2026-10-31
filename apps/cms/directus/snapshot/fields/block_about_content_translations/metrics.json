@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "metrics",
-    "group": null,
+    "group": "grp_metrics",
     "hidden": false,
     "interface": "list",
-    "note": "Per-locale metrics array (AboutContent.metrics). JSON shape: Array<{ value: string, label: string, icon?: string }>.",
+    "note": "Each tile has a value and a label.",
     "options": {
       "addLabel": "Add row",
       "fields": [
@@ -43,11 +43,16 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 2,
     "special": [
       "cast-json"
     ],
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Metric tiles"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

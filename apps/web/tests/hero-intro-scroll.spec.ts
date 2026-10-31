@@ -78,6 +78,14 @@ async function expectProgressiveInk(page: Page) {
 test('replay pins immediately and completes after its visual scrub', async ({ page }) => {
 		await page.goto('/');
 		await page.getByTestId('hero-dot-replay').click();
+		// Replay prepares its pin asynchronously, then rewinds. Let it finish before the test takes over scrolling.
+		await expect.poll(() => page.locator('.hero-pin').evaluate(pin => {
+			const spacer = pin.parentElement!;
+			return spacer.classList.contains('pin-spacer')
+				&& parseFloat(getComputedStyle(spacer).paddingBottom) > window.innerHeight
+				&& window.scrollY < 1
+				&& !document.documentElement.classList.contains('lenis-scrolling');
+		})).toBe(true);
 		await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(1);
 		await page.evaluate(() => window.scrollTo({ top: 120, behavior: 'instant' }));
 		await expect.poll(() => page.locator('.hero-pin').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(1);

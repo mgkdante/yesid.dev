@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "web3forms_key",
-    "group": null,
+    "group": "grp_delivery",
     "hidden": false,
     "interface": "input",
     "note": "Public web3forms access key (ContactContent.web3formsKey). Safe to expose client-side.",
@@ -16,9 +16,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Web3Forms access key"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

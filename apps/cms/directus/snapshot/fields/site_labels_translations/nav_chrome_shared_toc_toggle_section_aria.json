@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_toc_toggle_section_aria",
-    "group": null,
+    "group": "grp_unread",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"Toggle section\"",
+    "note": "Default: \"Toggle section\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 111,
+    "sort": 35,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Navigation · TOC toggle section (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

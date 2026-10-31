@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "success_sent",
-    "group": null,
+    "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces success.sent",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 29,
+    "sort": 3,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Sent line"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

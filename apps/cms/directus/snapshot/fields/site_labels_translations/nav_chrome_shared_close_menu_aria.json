@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "nav_chrome_shared_close_menu_aria",
-    "group": null,
+    "group": "grp_global_header",
     "hidden": false,
     "interface": "input",
-    "note": "Microcopy (go2-t1c). Group: nav. Default: \"Close menu\"",
+    "note": "Default: \"Close menu\"",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 103,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Close menu (screen reader)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

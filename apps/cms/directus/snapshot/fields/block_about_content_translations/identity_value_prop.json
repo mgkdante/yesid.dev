@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "identity_value_prop",
-    "group": null,
+    "group": "grp_identity",
     "hidden": false,
     "interface": "input-multiline",
-    "note": "(go2-t1b flat field) replaces identity.valueProp",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Value proposition"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

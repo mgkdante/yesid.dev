@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "success_work_link_label",
-    "group": null,
+    "group": "grp_success",
     "hidden": false,
     "interface": "input",
-    "note": "Contact success template services link label.",
+    "note": null,
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 34,
+    "sort": 7,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Services link label"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

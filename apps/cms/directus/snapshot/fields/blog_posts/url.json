@@ -23,7 +23,7 @@
     "display": null,
     "display_options": null,
     "field": "url",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "input",
     "note": "External URL. Required + visible when external=true.",
@@ -31,9 +31,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 4,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "External URL"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

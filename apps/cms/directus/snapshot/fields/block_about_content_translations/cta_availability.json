@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "cta_availability",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "(go2-t1b flat field) replaces cta.availability",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source migration removes it. The site drops this value before rendering.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 43,
+    "sort": 2,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Availability line (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"

@@ -8,17 +8,22 @@
     "display": null,
     "display_options": null,
     "field": "heading",
-    "group": null,
+    "group": "grp_retired",
     "hidden": false,
     "interface": "input",
-    "note": "Listing-page heading (BlogPageContent.heading). Currently \"Dispatches\" on /blog professional.",
+    "note": "Not shown on the site. The exporter still reads it, so keep it until a source migration removes it. The mobile heading comes from Site labels.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 1,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Old listing heading (unused)"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "full"

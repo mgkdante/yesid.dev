@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "animation",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "select-dropdown",
     "note": "Entrance animation type for the SVG illustration.",
@@ -31,9 +31,14 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 11,
+    "sort": 5,
     "special": null,
-    "translations": null,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Illustration animation"
+      }
+    ],
     "validation": null,
     "validation_message": null,
     "width": "half"
