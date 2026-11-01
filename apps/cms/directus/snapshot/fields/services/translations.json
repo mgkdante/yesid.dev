@@ -16,7 +16,7 @@
     "group": "grp_content",
     "hidden": false,
     "interface": "translations",
-    "note": "Pick a language at the top. English is required; empty French or Spanish falls back to English.",
+    "note": "Pick a language at the top. English is required; empty or switched-off French or Spanish shows English. English off hides the service.",
     "options": null,
     "readonly": false,
     "required": false,

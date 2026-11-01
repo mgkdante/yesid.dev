@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "The address: /blog/<slug>. Changing it after publishing breaks existing links.",
+    "note": "Internal name that links this post's languages. Use the English slug so Preview opens the English page.",
     "options": {
       "slug": true,
       "trim": true
@@ -19,12 +19,12 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 3,
+    "sort": 2,
     "special": null,
     "translations": [
       {
         "language": "en-US",
-        "translation": "Slug (URL)"
+        "translation": "Post key"
       }
     ],
     "validation": {
@@ -36,7 +36,7 @@
         }
       ]
     },
-    "validation_message": "Slug must be kebab-case (lowercase letters/digits with single hyphens).",
+    "validation_message": "Post key must be kebab-case (lowercase letters/digits with single hyphens).",
     "width": "half"
   },
   "schema": {

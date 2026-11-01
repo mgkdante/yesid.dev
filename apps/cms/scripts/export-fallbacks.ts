@@ -28,7 +28,7 @@ import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
 import { fetchSitePages } from './lib/fetchers/site-pages';
 import { fetchLegalPages } from './lib/fetchers/legal-pages';
-import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
+import { fetchBlog } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
 import { fetchSiteLabels } from './lib/fetchers/site-labels';
@@ -296,11 +296,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 			log.info(`  site-pages done (${out.sitePages.length} published rows).`);
 		});
 		enqueue('blog-posts', async () => {
-			// fetchBlogPosts + fetchBlogBodies are independent of each other.
-			const [posts, bodies] = await Promise.all([
-				fetchBlogPosts({ client }),
-				fetchBlogBodies({ client }),
-			]);
+			const { posts, bodies } = await fetchBlog({ client });
 			out.blogPosts = posts;
 			out.blogBodies = bodies;
 			log.info(

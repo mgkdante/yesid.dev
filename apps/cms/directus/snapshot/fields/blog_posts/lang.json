@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "lang",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "select-dropdown",
-    "note": "Language of this post. Each language is its own post, linked to the others by the translation key.",
+    "note": "Moved to the language tabs. Scheduled for deletion after this change is live.",
     "options": {
       "choices": [
         {
@@ -29,7 +29,7 @@
       ]
     },
     "readonly": false,
-    "required": true,
+    "required": false,
     "searchable": true,
     "sort": 2,
     "special": null,

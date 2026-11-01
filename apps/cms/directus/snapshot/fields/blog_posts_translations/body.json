@@ -1,0 +1,51 @@
+{
+  "collection": "blog_posts_translations",
+  "field": "body",
+  "type": "json",
+  "meta": {
+    "collection": "blog_posts_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "body",
+    "group": "grp_body",
+    "hidden": false,
+    "interface": "input-block-editor",
+    "note": "Headings, paragraphs, lists, quotes, code and images. Leave it empty for external posts.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 1,
+    "special": [
+      "cast-json"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Article text"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "body",
+    "table": "blog_posts_translations",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

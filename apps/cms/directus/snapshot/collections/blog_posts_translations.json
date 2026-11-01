@@ -12,9 +12,9 @@
     "display_template": "{{title}}",
     "group": null,
     "hidden": true,
-    "icon": null,
+    "icon": "translate",
     "item_duplication_fields": null,
-    "note": null,
+    "note": "The text of each blog post in English, French and Spanish. Edit it from the post's language tabs.",
     "preview_url": null,
     "singleton": false,
     "sort": null,
@@ -23,5 +23,8 @@
     "translations": null,
     "unarchive_value": null,
     "versioning": false
+  },
+  "schema": {
+    "name": "blog_posts_translations"
   }
 }

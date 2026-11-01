@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "cover_image",
-    "group": "grp_media",
+    "group": "grp_seo",
     "hidden": false,
     "interface": "file-image",
     "note": "Optional. Given to search engines as the article image. Not shown on the page.",

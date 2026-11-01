@@ -978,6 +978,66 @@
     "_syncId": "_sync_perm_blog_posts_ai_update"
   },
   {
+    "collection": "blog_posts_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "show_on_site": {
+            "_neq": true
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_ai_create"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_ai_read"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "show_on_site": {
+            "_neq": true
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "show_on_site": {
+            "_neq": true
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_ai_update"
+  },
+  {
     "collection": "contact_channels_translations",
     "action": "create",
     "permissions": {},
@@ -4497,6 +4557,54 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_blog_posts_human_update"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_create"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_delete"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_read"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_update"
   },
   {
     "collection": "contact_channels_translations",
@@ -8493,6 +8601,18 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "3df33c53-a2e4-490a-85cb-bb6adba03c3a"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": null,
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "_sync_perm_blog_posts_translations_buildbot_read"
   },
   {
     "collection": "build_queue",

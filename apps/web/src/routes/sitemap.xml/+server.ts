@@ -44,16 +44,15 @@ export function _exactUrlEntries(
 	});
 }
 
-/** Exact translated blog clusters. Different slugs still emit reciprocal alternates. */
+/** Exact translated blog clusters over each post's available languages.
+ * Different slugs still emit reciprocal alternates. */
 export function _blogUrlEntries(posts: readonly BlogPost[]): string[] {
 	return groupBlogTranslations(posts).flatMap((group) => {
+		const variants = PUBLISHED_LOCALES.filter((locale) => group.posts[locale]);
 		const alternates = Object.fromEntries(
-			PUBLISHED_LOCALES.map((locale) => {
-				const variant = group.posts[locale];
-				return [locale, canonicalFor(`/blog/${variant.slug}`, locale)];
-			}),
+			variants.map((locale) => [locale, canonicalFor(`/blog/${group.posts[locale]!.slug}`, locale)]),
 		) as Partial<Record<Locale, string>>;
-		return _exactUrlEntries(alternates, PUBLISHED_LOCALES);
+		return _exactUrlEntries(alternates, variants);
 	});
 }
 
@@ -89,8 +88,8 @@ export async function _buildSitemapEntries(
 		pushIfPublished(`/legal/${page.slug}`);
 	}
 
-	// Each translated blog row owns its locale-specific slug. Group by the
-	// required translation key so every variant carries one reciprocal cluster.
+	// Each available blog language owns its locale-specific slug. Group by the
+	// post key so every variant carries one reciprocal cluster.
 	const posts = (await adapter.blog.all()).filter((post) =>
 		isPathPublished(`/blog/${post.slug}`, pages),
 	);

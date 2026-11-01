@@ -9,7 +9,13 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { mapLocalizedRepeater, toLocalizedBlockEditorDoc, toLocalizedFields } from '../locale';
+import {
+	mapLocalizedRepeater,
+	switchedOffLocales,
+	toLocalizedBlockEditorDoc,
+	toLocalizedFields,
+	withoutLocales,
+} from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
 import { ProjectSchema } from '@repo/shared/schemas';
 import type { ImpactMetric, Project, ProjectSection, ProjectStatus } from '@repo/shared';
@@ -17,6 +23,7 @@ import type { FetcherContext } from './types';
 
 export interface DirectusProjectTranslation {
 	languages_code: string;
+	show_on_site?: boolean | null;
 	title?: string | null;
 	one_liner?: string | null;
 	description?: BlockEditorDoc | null;
@@ -117,19 +124,25 @@ export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): Proje
 	}
 }
 
-/** Pure transform — DirectusProject → Project. Tested standalone. */
+/** English switched off hides the project in every language. */
+export function isProjectShown(row: DirectusProject): boolean {
+	return row.status === 'published' && !switchedOffLocales(row.translations).has('en');
+}
+
+/** Pure transform — DirectusProject → Project. Switched-off languages fall back to English. */
 export function toProject(row: DirectusProject): Project {
-	const translations = row.translations ?? [];
+	const hidden = switchedOffLocales(row.translations);
+	const translations = withoutLocales(row.translations, hidden);
 
 	const sections: ProjectSection[] = mapLocalizedRepeater(row.sections, (s) => ({
-		...toLocalizedFields(s.translations ?? [], ['title']),
-		content: toLocalizedBlockEditorDoc(s.translations ?? [], 'content'),
+		...toLocalizedFields(withoutLocales(s.translations, hidden), ['title']),
+		content: toLocalizedBlockEditorDoc(withoutLocales(s.translations, hidden), 'content'),
 	}));
 
 	const impactMetrics: ImpactMetric[] = mapLocalizedRepeater(row.impact_metrics, (m) => {
 		const metric: ImpactMetric = {
 			value: m.value,
-			...toLocalizedFields(m.translations ?? [], ['label']),
+			...toLocalizedFields(withoutLocales(m.translations, hidden), ['label']),
 		};
 		if (m.before) metric.before = m.before;
 		return metric;
@@ -186,5 +199,5 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 		}),
 	)) as unknown as DirectusProject[];
 
-	return z.array(ProjectSchema).parse(rows.filter(row => row.status === 'published').map(toProject));
+	return z.array(ProjectSchema).parse(rows.filter(isProjectShown).map(toProject));
 }

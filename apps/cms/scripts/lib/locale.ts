@@ -41,6 +41,21 @@ export function toLocalizedString<T extends { languages_code: string }>(
 	return result;
 }
 
+/** Locales whose translation row has Show on site switched off. */
+export function switchedOffLocales(
+	translations: ReadonlyArray<{ languages_code: string; show_on_site?: boolean | null }> | null | undefined,
+): ReadonlySet<string> {
+	return new Set((translations ?? []).filter((row) => row.show_on_site === false).map((row) => row.languages_code));
+}
+
+/** Drops rows of switched-off locales, so those locales fall back to English. */
+export function withoutLocales<T extends { languages_code: string }>(
+	rows: ReadonlyArray<T> | null | undefined,
+	hidden: ReadonlySet<string>,
+): T[] {
+	return (rows ?? []).filter((row) => !hidden.has(row.languages_code));
+}
+
 /** LocalizedString or undefined — for optional fields. */
 export function toLocalizedStringOrUndef<T extends { languages_code: string }>(
 	translations: ReadonlyArray<T> | null | undefined,
@@ -157,23 +172,6 @@ export function mapLocalizedRepeater<T extends SortableRow, R>(
 	project: (row: T) => R,
 ): R[] {
 	return [...(rows ?? [])].sort(bySort).map(project);
-}
-
-/**
- * Convenience over {@link mapLocalizedRepeater} for the common single-field
- * shape: sort rows by {@link bySort}, then map each to
- * `toLocalizedString(row.translations ?? [], field)`. Covers e.g. services
- * `deliverables` (one localized `label` per row).
- *
- * The translations accessor defaults to `row.translations`; rows whose
- * translations live under a different key keep using the callback variant.
- * Sparse `LocalizedString` semantics are unchanged — this only relocates the
- * existing `toLocalizedString` call.
- */
-export function mapLocalizedField<
-	T extends SortableRow & { translations?: ReadonlyArray<{ languages_code: string }> | null },
->(rows: ReadonlyArray<T> | null | undefined, field: string): LocalizedString[] {
-	return mapLocalizedRepeater(rows, (row) => toLocalizedString(row.translations ?? [], field));
 }
 
 /**

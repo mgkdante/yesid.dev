@@ -1,0 +1,38 @@
+{
+  "collection": "blog_posts_translations",
+  "field": "grp_body",
+  "type": "alias",
+  "meta": {
+    "collection": "blog_posts_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_body",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "The article itself. Leave it empty for external posts.",
+    "options": {
+      "start": "open",
+      "headerColor": "#E07800"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 11,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Page body"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

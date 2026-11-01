@@ -1,28 +1,38 @@
 /**
- * blog-posts fetcher — reads `blog_posts` (flat, mono-language per row per AM2.5).
- * This module owns the build-time BlogPost projection.
+ * blog-posts fetcher: reads published `blog_posts` with their per-language
+ * `translations` and emits one BlogPost (plus its Block Editor body) for every
+ * language that is available on the site.
  *
- * SVG fallback resolution: when a row has no svg_illustration FK, hashes the
- * slug to pick from the canonical PRO/PERSONAL fallback lists.
+ * SVG fallback resolution: when a post has no svg_illustration FK, hashes the
+ * post key to pick from the canonical PRO/PERSONAL fallback lists.
  */
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
 import type { BlockEditorDoc } from '@repo/shared';
-import { BlogPostSchema } from '@repo/shared/schemas';
+import { BlogPostSchema, LocaleSchema } from '@repo/shared/schemas';
 import type { BlogAnimation, BlogCategory, BlogPost } from '@repo/shared';
 import { BlockEditorDocSchema } from '@repo/shared';
 import type { FetcherContext } from './types';
 import { tagsFromM2M, type DirectusTagJunctionRow } from './projects';
 
+export interface DirectusBlogPostTranslation {
+	languages_code: string;
+	show_on_site: boolean | null;
+	slug: string;
+	title: string | null;
+	excerpt: string | null;
+	body?: BlockEditorDoc | null;
+	seo_title: string | null;
+	seo_description: string | null;
+}
+
 export interface DirectusBlogPostRow {
 	id: string;
-	translation_key: string;
 	status: 'draft' | 'published' | 'archived';
 	date_published: string | null;
 	date_modified: string | null;
 	sort: number | null;
-	lang: 'en' | 'fr' | 'es';
 	category: BlogCategory;
 	tags?: DirectusTagJunctionRow[];
 	external: boolean;
@@ -33,10 +43,13 @@ export interface DirectusBlogPostRow {
 		| null;
 	svg_illustration: { id: string; label?: string; category?: string; file?: { id: string } } | string | null;
 	animation: BlogAnimation;
-	title: string;
-	excerpt: string;
-	seo_title: string | null;
-	seo_description: string | null;
+	translations?: DirectusBlogPostTranslation[];
+}
+
+export interface BlogExport {
+	posts: readonly BlogPost[];
+	/** Block Editor body per available post, keyed by its language slug. */
+	bodies: Record<string, BlockEditorDoc>;
 }
 
 const PRO_FALLBACKS = ['pro-database', 'pro-code', 'pro-pipeline', 'pro-chart'] as const;
@@ -71,71 +84,102 @@ function dateOnly(value: string | null | undefined): string | undefined {
 	return value ? value.split('T')[0] : undefined;
 }
 
-function coverImageId(
-	value: DirectusBlogPostRow['cover_image'],
-): string | undefined {
+function coverImageId(value: DirectusBlogPostRow['cover_image']): string | undefined {
 	if (typeof value === 'string') return value;
 	if (value && typeof value === 'object') return value.id;
 	return undefined;
 }
 
-function coverImageAlt(
-	value: DirectusBlogPostRow['cover_image'],
-): string | undefined {
+function coverImageAlt(value: DirectusBlogPostRow['cover_image']): string | undefined {
 	if (!value || typeof value !== 'object') return undefined;
 	return compact(value.description) ?? compact(value.title);
 }
 
-/** Pure transform — DirectusBlogPostRow → BlogPost. Tested standalone. */
-export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
+/**
+ * A language is on the site only when its row exists, Show on site is on, and
+ * it has a title plus article text (external posts: a title and the post URL).
+ */
+export function isAvailableTranslation(
+	row: Pick<DirectusBlogPostRow, 'external' | 'url'>,
+	translation: DirectusBlogPostTranslation,
+): boolean {
+	if (translation.show_on_site !== true || !compact(translation.title)) return false;
+	if (!LocaleSchema.safeParse(translation.languages_code).success) return false;
+	return row.external ? Boolean(compact(row.url)) : (translation.body?.blocks?.length ?? 0) > 0;
+}
+
+/** Pure transform: one post language → BlogPost. */
+export function toBlogPost(row: DirectusBlogPostRow, translation: DirectusBlogPostTranslation): BlogPost {
 	const svgId =
 		typeof row.svg_illustration === 'object' && row.svg_illustration !== null
 			? row.svg_illustration.id
-			: (row.svg_illustration ?? resolveSvgFallbackName(row.translation_key, row.category));
+			: (row.svg_illustration ?? resolveSvgFallbackName(row.id, row.category));
 	return {
 		coverImage: coverImageId(row.cover_image),
 		coverImageAlt: coverImageAlt(row.cover_image),
-		slug: row.id,
-		translationKey: row.translation_key,
-		title: row.title,
-		excerpt: row.excerpt,
-		seoTitle: compact(row.seo_title),
-		seoDescription: compact(row.seo_description),
+		slug: translation.slug,
+		translationKey: row.id,
+		title: translation.title ?? '',
+		excerpt: translation.excerpt ?? '',
+		seoTitle: compact(translation.seo_title),
+		seoDescription: compact(translation.seo_description),
 		date: dateOnly(row.date_published) ?? '',
 		dateModified: dateOnly(row.date_modified),
-		lang: row.lang,
+		lang: LocaleSchema.parse(translation.languages_code),
 		category: row.category,
 		tags: tagsFromM2M(row.tags),
 		animation: row.animation,
 		svg: svgId,
-		url: row.external ? (row.url ?? '') : `/blog/${row.id}`,
+		url: row.external ? (row.url ?? '') : `/blog/${translation.slug}`,
 		external: row.external,
 	};
 }
 
-/** Fetch + validate all published blog posts sorted by most-recent first. */
-export async function fetchBlogPosts({ client }: FetcherContext): Promise<readonly BlogPost[]> {
+/** Available languages of every post, in post order then slug order. */
+export function toBlogExport(rows: readonly DirectusBlogPostRow[]): BlogExport {
+	const posts: BlogPost[] = [];
+	const bodies: Record<string, BlockEditorDoc> = {};
+	for (const row of rows) {
+		const available = (row.translations ?? [])
+			.filter((translation) => isAvailableTranslation(row, translation))
+			.sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0));
+		for (const translation of available) {
+			posts.push(toBlogPost(row, translation));
+			if (translation.body) bodies[translation.slug] = BlockEditorDocSchema.parse(translation.body);
+		}
+	}
+	return { posts: z.array(BlogPostSchema).parse(posts), bodies };
+}
+
+/** Fetch + validate every published post and its available languages, newest first. */
+export async function fetchBlog({ client }: FetcherContext): Promise<BlogExport> {
 	const rows = (await client.request(
 		readItems('blog_posts', {
 			fields: [
 				'id',
-				'translation_key',
 				'status',
 				'date_published',
 				'date_modified',
 				'sort',
-				'lang',
 				'category',
 				{ tags: ['sort', { tags_id: ['id'] }] } as unknown as string,
 				'external',
 				'url',
 				'animation',
-				'title',
-				'excerpt',
-				'seo_title',
-				'seo_description',
 				{ cover_image: ['id', 'title', 'description'] } as unknown as string,
 				{ svg_illustration: ['id', 'label', 'category', { file: ['id'] }] } as unknown as string,
+				{
+					translations: [
+						'languages_code',
+						'show_on_site',
+						'slug',
+						'title',
+						'excerpt',
+						'body',
+						'seo_title',
+						'seo_description',
+					],
+				} as unknown as string,
 			],
 			filter: { status: { _eq: 'published' } },
 			sort: [...BLOG_POST_SORT],
@@ -143,38 +187,5 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 		}),
 	)) as unknown as DirectusBlogPostRow[];
 
-	return z.array(BlogPostSchema).parse(rows.map(toBlogPost));
-}
-
-/** Raw row shape for the body-only fetch (parent `id` + Block Editor `body`). */
-interface DirectusBlogBodyRow {
-	id: string;
-	body: BlockEditorDoc | null;
-}
-
-/**
- * Fetch the Block Editor `body` for every published post, keyed by slug (= row id).
- *
- * Each value is the row's `body` validated against BlockEditorDocSchema. Posts
- * whose `body` is null are omitted so the static `bodyBySlug` returns `null` for
- * them.
- */
-export async function fetchBlogBodies({
-	client,
-}: FetcherContext): Promise<Record<string, BlockEditorDoc>> {
-	const rows = (await client.request(
-		readItems('blog_posts', {
-			fields: ['id', 'body'],
-			filter: { status: { _eq: 'published' } },
-			sort: [...BLOG_POST_SORT],
-			limit: -1,
-		}),
-	)) as unknown as DirectusBlogBodyRow[];
-
-	const out: Record<string, BlockEditorDoc> = {};
-	for (const row of rows) {
-		if (row.body === null || row.body === undefined) continue;
-		out[row.id] = BlockEditorDocSchema.parse(row.body);
-	}
-	return out;
+	return toBlogExport(rows);
 }

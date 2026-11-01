@@ -9,12 +9,12 @@
     "display_options": null,
     "field": "excerpt",
     "group": "grp_content",
-    "hidden": false,
+    "hidden": true,
     "interface": "input-multiline",
-    "note": "One or two sentences on the listing card and under the article heading. Max 500 characters.",
+    "note": "Moved to the language tabs. Scheduled for deletion after this change is live.",
     "options": null,
     "readonly": false,
-    "required": true,
+    "required": false,
     "searchable": true,
     "sort": 2,
     "special": null,
@@ -24,16 +24,8 @@
         "translation": "Excerpt"
       }
     ],
-    "validation": {
-      "_and": [
-        {
-          "excerpt": {
-            "_regex": "^.{1,500}$"
-          }
-        }
-      ]
-    },
-    "validation_message": "Excerpt must be 1–500 characters.",
+    "validation": null,
+    "validation_message": null,
     "width": "full"
   },
   "schema": {
@@ -44,7 +36,7 @@
     "max_length": null,
     "numeric_precision": null,
     "numeric_scale": null,
-    "is_nullable": false,
+    "is_nullable": true,
     "is_unique": false,
     "is_indexed": false,
     "is_primary_key": false,

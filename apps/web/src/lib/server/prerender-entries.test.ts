@@ -69,16 +69,16 @@ describe('prerender-entries', () => {
 		}
 	});
 
-	it('blogEntriesFor rejects an incomplete translation group before prerendering', () => {
-		const englishOnly = {
-			translationKey: 'incomplete-article',
-			slug: 'english-only',
-			lang: 'en',
-		} as BlogPost;
+	it('blogEntriesFor prerenders only the languages a post is available in', () => {
+		const partial = [
+			{ translationKey: 'partial-article', slug: 'english-only', lang: 'en' },
+			{ translationKey: 'partial-article', slug: 'en-espanol', lang: 'es' },
+		] as BlogPost[];
 
-		expect(() => blogEntriesFor([englishOnly])).toThrow(
-			'Missing blog translation for incomplete-article (fr)',
-		);
+		expect(blogEntriesFor(partial)).toEqual([
+			{ lang: '', slug: 'english-only' },
+			{ lang: 'es', slug: 'en-espanol' },
+		]);
 	});
 
 	it('projectEntries covers every non-private project in every locale', () => {

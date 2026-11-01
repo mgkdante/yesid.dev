@@ -348,7 +348,7 @@
 				"coverImageAlt": "STM network map and reported positions. Browser capture, 8 October 2026."
 			},
 			{
-				"translationKey": "before-product-catalogue-final",
+				"translationKey": "what-can-move-forward-before-the-product-catalogue-is-final",
 				"slug": "ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif",
 				"title": "Ce qu’on peut préparer avant d’avoir son catalogue définitif",
 				"excerpt": "Un site peut présenter une entreprise avant d’inclure un catalogue complet. Le site actuel de Café Arona est informatif et permet de prendre contact. Un catalogue pourra s’ajouter plus tard.",
@@ -369,7 +369,7 @@
 				"coverImageAlt": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
 			},
 			{
-				"translationKey": "before-product-catalogue-final",
+				"translationKey": "what-can-move-forward-before-the-product-catalogue-is-final",
 				"slug": "que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo",
 				"title": "Qué se puede avanzar antes de tener el catálogo definitivo",
 				"excerpt": "Un sitio puede presentar una empresa antes de incluir un catálogo completo. El sitio actual de Café Arona es informativo y permite ponerse en contacto. El catálogo se puede agregar más adelante.",
@@ -390,7 +390,7 @@
 				"coverImageAlt": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
 			},
 			{
-				"translationKey": "before-product-catalogue-final",
+				"translationKey": "what-can-move-forward-before-the-product-catalogue-is-final",
 				"slug": "what-can-move-forward-before-the-product-catalogue-is-final",
 				"title": "What can move forward before the product catalogue is final?",
 				"excerpt": "A website can present a business before it includes a complete product catalogue. Café Arona’s current site focuses on information and contact. A catalogue can be added later.",
@@ -411,7 +411,7 @@
 				"coverImageAlt": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
 			},
 			{
-				"translationKey": "when-similar-components-stay-separate",
+				"translationKey": "when-two-similar-components-should-stay-separate",
 				"slug": "cuando-dos-componentes-parecidos-deberian-seguir-separados",
 				"title": "Cuándo dos componentes parecidos deberían seguir separados",
 				"excerpt": "Dos tarjetas pueden parecer de la misma familia y necesitar contratos distintos.",
@@ -432,7 +432,7 @@
 				"coverImageAlt": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
 			},
 			{
-				"translationKey": "when-similar-components-stay-separate",
+				"translationKey": "when-two-similar-components-should-stay-separate",
 				"slug": "quand-deux-composants-semblables-devraient-rester-separes",
 				"title": "Quand deux composants semblables devraient rester séparés",
 				"excerpt": "Deux cartes peuvent avoir un air de famille et répondre à des exigences différentes.",
@@ -453,7 +453,7 @@
 				"coverImageAlt": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
 			},
 			{
-				"translationKey": "when-similar-components-stay-separate",
+				"translationKey": "when-two-similar-components-should-stay-separate",
 				"slug": "when-two-similar-components-should-stay-separate",
 				"title": "When two similar components should stay separate",
 				"excerpt": "Two cards can look related and still need different contracts.",
@@ -474,7 +474,7 @@
 				"coverImageAlt": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
 			},
 			{
-				"translationKey": "changing-language-without-starting-over",
+				"translationKey": "changing-language-should-not-mean-starting-over",
 				"slug": "cambiar-de-idioma-sin-empezar-de-nuevo",
 				"title": "Cambiar de idioma sin empezar de nuevo",
 				"excerpt": "Un sitio multilingüe necesita algo más que títulos traducidos. También importa conservar el punto de lectura, los filtros elegidos y el mensaje que alguien está escribiendo.",
@@ -495,7 +495,7 @@
 				"coverImageAlt": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
 			},
 			{
-				"translationKey": "changing-language-without-starting-over",
+				"translationKey": "changing-language-should-not-mean-starting-over",
 				"slug": "changer-de-langue-sans-recommencer",
 				"title": "Changer de langue sans recommencer",
 				"excerpt": "Un site multilingue ne se limite pas à traduire ses titres. Il faut aussi penser à la position de lecture, aux filtres choisis et au message en cours.",
@@ -516,7 +516,7 @@
 				"coverImageAlt": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
 			},
 			{
-				"translationKey": "changing-language-without-starting-over",
+				"translationKey": "changing-language-should-not-mean-starting-over",
 				"slug": "changing-language-should-not-mean-starting-over",
 				"title": "Changing language should not mean starting over",
 				"excerpt": "A multilingual website has more to translate than its headings. The reader's place, selected filters, and unfinished message also deserve attention.",
