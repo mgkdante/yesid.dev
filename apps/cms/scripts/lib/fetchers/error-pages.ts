@@ -83,13 +83,14 @@ export async function fetchErrorPageFallback({ client }: FetcherContext): Promis
 		}),
 	)) as unknown as DirectusErrorPageRow[];
 
-	if (rows.length === 0) {
+	const [row] = rows;
+	if (!row) {
 		throw new Error(
 			'[fetchErrorPageFallback] no error_pages row found with status_code=0 (status=published). Seed it.',
 		);
 	}
 
-	return ErrorPageContentSchema.parse(toErrorPageContent(rows[0]));
+	return ErrorPageContentSchema.parse(toErrorPageContent(row));
 }
 
 /**

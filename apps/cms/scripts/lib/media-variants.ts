@@ -65,7 +65,7 @@ export function pickVariantWidths(
 ): number[] {
 	const below = ladder.filter((w) => w < intrinsicWidth);
 	const top = ladder[ladder.length - 1];
-	if (intrinsicWidth <= top) return [...below, intrinsicWidth];
+	if (top !== undefined && intrinsicWidth <= top) return [...below, intrinsicWidth];
 	return [...below];
 }
 

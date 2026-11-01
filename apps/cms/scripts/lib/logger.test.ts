@@ -37,7 +37,7 @@ describe('scripts/lib/logger.ts', () => {
 	it('error prefixes scope + [error]', () => {
 		const log = createLogger('sync');
 		log.error('bang', new Error('x'));
-		const args = errorSpy.mock.calls[0];
+		const args = errorSpy.mock.calls[0] ?? [];
 		expect(args[0]).toBe('[sync]');
 		expect(args[1]).toBe('[error]');
 		expect(args[2]).toBe('bang');

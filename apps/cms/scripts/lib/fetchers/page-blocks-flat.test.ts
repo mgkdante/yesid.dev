@@ -263,7 +263,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		};
 		const out = toAboutContent(row);
 		expect(out.identity.headshot).toBe('/img/y.jpg');
-		expect(out.identity.polaroids[0].alt).toEqual({ en: 'me', fr: 'moi' });
+		expect(out.identity.polaroids[0]?.alt).toEqual({ en: 'me', fr: 'moi' });
 		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, enabled: true });
 		expect(out.cta.command).toBe('whoami');
 		expect(out.stopLabels.next).toEqual({ en: 's10' });

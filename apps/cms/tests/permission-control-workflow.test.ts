@@ -136,7 +136,7 @@ test('cover permission dispatch exposes no mutation path to previews, PRs, or no
 		const writes = mutations.filter((step) => enabled(step.if, action, 'workflow_dispatch', 'refs/heads/main'));
 		expect(writes).toHaveLength(action.endsWith('preview') ? 0 : 1);
 		if (writes.length) {
-			expect(writes[0].run).toContain(action.endsWith('rollback')
+			expect(writes[0]?.run).toContain(action.endsWith('rollback')
 				? '--confirm=ROLLBACK_PROD_BUILDBOT_COVER_PERMISSION'
 				: '--confirm=APPLY_PROD_BUILDBOT_COVER_PERMISSION');
 		}
@@ -187,8 +187,8 @@ test('cover rollback uses the explicit trusted-run apply artifact and retains re
 		expect(step.run).toContain('--rollback=.permission-prior/apply.json');
 		expect(steps.indexOf(step)).toBeGreaterThan(steps.indexOf(download));
 	}
-	expect(rollbackSteps[0].run).toContain('--dry-run');
-	expect(rollbackSteps[1].run).toContain('--apply');
+	expect(rollbackSteps[0]?.run).toContain('--dry-run');
+	expect(rollbackSteps[1]?.run).toContain('--apply');
 	const upload = steps.find((step) => step.uses?.startsWith('actions/upload-artifact@'))!;
 	expect(upload.if).toBe('always()');
 	expect(upload.with.name).toBe('buildbot-cover-permission');
