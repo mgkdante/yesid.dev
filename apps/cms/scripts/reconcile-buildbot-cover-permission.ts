@@ -69,7 +69,7 @@ async function readState(spec: Manifest, api: Api): Promise<State> {
 		recipients: query('/access', 'id,role,user,policy', { 'filter[policy][_eq]': spec.grant.policy }),
 		policies: query('/policies', 'id,name,admin_access,app_access,enforce_tfa,ip_access', { 'filter[name][_eq]': spec.expected.policies[0]!.name }),
 		permissions: query('/permissions', 'id,policy,collection,action,fields,permissions,validation,presets', { 'filter[policy][_eq]': spec.grant.policy }),
-		blogs: query('/items/blog_posts', 'id,translation_key,lang,status,cover_image.id,cover_image.title,cover_image.description', { 'filter[translation_key][_in]': [...new Set(spec.expected.blogs.map(b => b.translation_key))].join(',') }),
+		blogs: query('/items/blog_posts', 'id,status,cover_image.id,cover_image.title,cover_image.description', { 'filter[id][_in]': spec.expected.blogs.map(b => b.id).join(',') }),
 	};
 	const entries = await Promise.all(Object.entries(paths).map(async ([key, path]) => {
 		const rows = data(await api('GET', path));

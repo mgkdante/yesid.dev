@@ -2888,18 +2888,12 @@
       "status",
       "date_published",
       "sort",
-      "lang",
       "category",
       "external",
       "url",
       "cover_image",
       "svg_illustration",
       "animation",
-      "title",
-      "excerpt",
-      "body",
-      "seo_title",
-      "seo_description",
       "date_modified"
     ],
     "policy": "_sync_default_public_policy",
@@ -7077,6 +7071,54 @@
     ],
     "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
     "_syncId": "f98ba4a6-ed79-42d8-8a27-3e0e4a9fae88"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "_sync_perm_blog_posts_translations_opsbot_create"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "_sync_perm_blog_posts_translations_opsbot_delete"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "_sync_perm_blog_posts_translations_opsbot_read"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "676c549d-60b2-4c05-af03-a3a6991e9e22",
+    "_syncId": "_sync_perm_blog_posts_translations_opsbot_update"
   },
   {
     "collection": "contact_channels_translations",

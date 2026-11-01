@@ -25,7 +25,7 @@ import {
 type Policy = { name: string; admin_access: boolean; app_access: boolean; roles: Array<{ role: string | null }>; _syncId: string };
 type Perm = { collection: string; action: string; policy: string };
 
-const UNRELATED_PERMISSION_COUNT = 721;
+const UNRELATED_PERMISSION_COUNT = 725;
 // slice-43.15 retires unused CMS collections and their explicit nav/stack fields.
 // slice-43.22 adds 45 AI Editor rows to adopt the live grant extension.
 // slice-43.26 adopts the live public-read row filters and file metadata fields.
@@ -35,7 +35,8 @@ const UNRELATED_PERMISSION_COUNT = 721;
 // 2026-10-31 removes the anonymous read of site_meta and site_meta_translations (owner-approved).
 // 2026-10-31 drops the deleted stale CMS fields from 13 public read field lists (Directus removed them on delete).
 // 2026-10-31 adds 8 blog_posts_translations rows: Build Bot read, Human Editor CRUD, AI Editor create/read/update without Show on site (owner-approved).
-const UNRELATED_PERMISSION_SHA256 = '1d1312b89f68653e0fc8c0c5ea8fb0fe4328e310e310b907bb7cb03fb5bb0997';
+// 2026-11-01 adds Ops Bot CRUD on blog_posts_translations (same as blog_posts) and drops the deleted old blog fields from the public blog_posts read (owner-approved).
+const UNRELATED_PERMISSION_SHA256 = 'f4c14f1978a0234d8642d70696a9a9877371f0bf9b3b93faf8719304fd373710';
 const UNRELATED_PRESET_COUNT = 4;
 const UNRELATED_PRESET_SHA256 = '6b39309335092f0705d137c3fc7fa86453639c56651abb30e734c56daf1fe092';
 const BLOG_LANGUAGE_PRESET_IDS = ['_sync_preset_blog_posts_en', '_sync_preset_blog_posts_fr', '_sync_preset_blog_posts_es'];
