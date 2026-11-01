@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Your job title for search engines, e.g. Freelance Digital Solutions Developer.",
+    "note": "Your job title for search engines, e.g. Freelance Digital Infrastructure Developer.",
     "options": null,
     "readonly": false,
     "required": false,

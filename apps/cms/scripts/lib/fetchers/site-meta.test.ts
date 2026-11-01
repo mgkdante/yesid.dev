@@ -48,28 +48,28 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 			languages_code: 'en',
 			tagline: 'Digital infrastructure that moves.',
 			description:
-				'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
+				'Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.',
 			default_description:
-				'yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.',
-			owner_job_title: 'Freelance Digital Solutions Developer',
+				'I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.',
+			owner_job_title: 'Freelance Digital Infrastructure Developer',
 		},
 		{
 			languages_code: 'fr',
 			tagline: 'Une infrastructure numérique qui bouge.',
 			description:
-				'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
+				"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.",
 			default_description:
-				'yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.',
-			owner_job_title: 'Développeur de solutions numériques à la pige',
+				"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.",
+			owner_job_title: "Développeur d'infrastructure numérique à la pige",
 		},
 		{
 			languages_code: 'es',
 			tagline: 'Infraestructura digital que se mueve.',
 			description:
-				'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
+				'Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado.',
 			default_description:
-				'yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL.',
-			owner_job_title: 'Desarrollador freelance de soluciones digitales',
+				'Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec.',
+			owner_job_title: 'Desarrollador freelance de infraestructura digital',
 		},
 	],
 };
@@ -85,9 +85,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 		es: 'Infraestructura digital que se mueve.',
 	},
 	description: {
-		en: 'Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.',
-		fr: 'Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.',
-		es: 'Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables.',
+		en: 'Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.',
+		fr: "Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.",
+		es: 'Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -98,9 +98,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 	owner: {
 		name: 'Yesid O.',
 		jobTitle: {
-			en: 'Freelance Digital Solutions Developer',
-			fr: 'Développeur de solutions numériques à la pige',
-			es: 'Desarrollador freelance de soluciones digitales',
+			en: 'Freelance Digital Infrastructure Developer',
+			fr: "Développeur d'infrastructure numérique à la pige",
+			es: 'Desarrollador freelance de infraestructura digital',
 		},
 		phone: '+12025550100',
 		address: {
