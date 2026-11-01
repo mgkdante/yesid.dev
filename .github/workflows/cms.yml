@@ -7,8 +7,8 @@ name: cms
 # directus-extension-sync@3.0.6 on the Railway Directus image.
 #
 # Jobs:
-# - test (always, required check): apps/cms unit tests, including the committed
-#   Directus snapshot contracts (no network or CMS credentials).
+# - test (always, required check): apps/cms type check and unit tests, including
+#   the committed Directus snapshot contracts (no network or CMS credentials).
 # - live-diff (push to main or main-only diff dispatch): read-only preview of
 #   what sync:push WOULD apply against prod, from trusted main code only.
 # - push (workflow_dispatch with action=push): applies the JSON tree to
@@ -76,6 +76,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - uses: ./.github/actions/setup
+
+      - name: Type check apps/cms
+        working-directory: apps/cms
+        run: bun run check
 
       - name: Run apps/cms unit tests (fixtures + seed dry-runs + sync-push + lib)
         working-directory: apps/cms

@@ -24,7 +24,7 @@ function neverSleep(_ms: number): Promise<void> {
 describe('createQueuedFetch', () => {
 	it('returns a 200 response from the upstream fetch', async () => {
 		const fake = async () => makeResponse(200, 'ok');
-		const fetcher = createQueuedFetch({ fetch: fake as typeof fetch, sleep: neverSleep });
+		const fetcher = createQueuedFetch({ fetch: fake, sleep: neverSleep });
 		const res = await fetcher('http://localhost/test');
 		expect(res.status).toBe(200);
 		expect(await res.text()).toBe('ok');
@@ -37,7 +37,7 @@ describe('createQueuedFetch', () => {
 			return makeResponse(404);
 		};
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			retries: 3,
 		});
@@ -57,7 +57,7 @@ describe('createQueuedFetch', () => {
 			return calls === 1 ? makeResponse(500) : makeResponse(200, 'recovered');
 		};
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			retries: 3,
 		});
@@ -73,7 +73,7 @@ describe('createQueuedFetch', () => {
 			return makeResponse(429);
 		};
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			retries: 2,
 		});
@@ -101,7 +101,7 @@ describe('createQueuedFetch', () => {
 			return makeResponse(200);
 		};
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: async (ms) => {
 				delays.push(ms);
 			},
@@ -125,7 +125,7 @@ describe('createQueuedFetch', () => {
 			throw new Error(`network error attempt ${calls}`);
 		};
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			retries: 2,
 		});
@@ -141,7 +141,7 @@ describe('createQueuedFetch', () => {
 			return makeResponse(200, 'fixed');
 		};
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			retries: 3,
 		});
@@ -164,7 +164,7 @@ describe('createQueuedFetch', () => {
 				}
 			});
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			timeoutMs: 50,
 			retries: 0,
@@ -175,7 +175,7 @@ describe('createQueuedFetch', () => {
 	it('passes through when timeoutMs=0 (disabled)', async () => {
 		const fake = async () => makeResponse(200, 'notimeout');
 		const fetcher = createQueuedFetch({
-			fetch: fake as typeof fetch,
+			fetch: fake,
 			sleep: neverSleep,
 			timeoutMs: 0,
 			retries: 0,

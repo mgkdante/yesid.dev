@@ -77,7 +77,8 @@ describe('pickVariantWidths', () => {
 	});
 
 	it('a source exactly on the top rung ends at the rung, not duplicated', () => {
-		const top = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
+		const top = 1600;
+		expect(VARIANT_WIDTHS.at(-1)).toBe(top);
 		expect(pickVariantWidths(top)).toEqual([240, 600, 1200, 1600]);
 	});
 });

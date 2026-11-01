@@ -24,7 +24,7 @@ describe('public repository contact privacy', () => {
 				encoding: 'utf8',
 			},
 		);
-		expect([0, 1]).toContain(grep.status);
+		expect<Array<number | null>>([0, 1]).toContain(grep.status);
 		const trackedFiles = grep.stdout.trim().split('\n').filter(Boolean);
 		const violatingFiles = new Set<string>();
 

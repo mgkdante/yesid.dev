@@ -77,9 +77,9 @@ describe('error-pages fetcher transform', () => {
 	it('handles missing fr/es suggestions (en-only fallback)', () => {
 		const enOnly: DirectusErrorPageRow = {
 			...FIXTURE,
-			translations: [FIXTURE.translations![0]],
+			translations: FIXTURE.translations!.slice(0, 1),
 		};
 		const result = toErrorPageContent(enOnly);
-		expect(result.suggestions[0].label).toEqual({ en: 'Services' });
+		expect(result.suggestions[0]?.label).toEqual({ en: 'Services' });
 	});
 });

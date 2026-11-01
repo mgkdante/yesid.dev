@@ -49,7 +49,7 @@ import {
 	fetchCloserContent,
 } from './lib/fetchers/page-blocks-home';
 import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
-import type { CmsClient } from './lib/fetchers/types';
+import type { CmsSchema } from './lib/fetchers/types';
 import {
 	prepareMediaVariants,
 	writeMediaVariants,
@@ -248,7 +248,7 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 	}
 
 	const fetchAllInner = async (): Promise<ExportData> => {
-		const client = createClient(opts.directusUrl, opts.token) as unknown as CmsClient;
+		const client = createClient<CmsSchema>(opts.directusUrl, opts.token);
 		const out: ExportData = {};
 		out.mediaAssets = buildMirroredMediaAssets();
 
