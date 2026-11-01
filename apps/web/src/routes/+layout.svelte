@@ -19,7 +19,8 @@
 	// SEO is layout-authoritative: @yesid/ui/head renders tags server-side.
 	// seoHeadProps resolves the page SEO and JSON-LD for the current locale.
 	import { SeoHead } from '@yesid/ui/head';
-	import { startAnalytics } from '#lib/analytics/client.ts';
+	import { startAnalytics, trackAnalyticsEvent } from '#lib/analytics/client.ts';
+	import { isProfileClick, navigationEvents } from '#lib/analytics/site-events.ts';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
 	import { errorPagesById } from '#lib/content/error-pages.ts';
 	import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
@@ -92,6 +93,11 @@
 		return initGlobalRipple();
 	});
 
+	// Registered after the mount above, so the tracker exists when the first navigation reports.
+	afterNavigate((navigation) => {
+		for (const event of navigationEvents(navigation, page.status)) trackAnalyticsEvent(event);
+	});
+
 	const basePath = $derived(delocalizePath(page.url.pathname));
 	const navChrome = siteLabels.navChrome.shared;
 	const MENU_ICONS: Record<string, Component<{ class?: string }>> = {
@@ -123,7 +129,10 @@
 </script>
 
 <!-- SvelteKit skips beforeNavigate during an active navigation, so use native history events. -->
-<svelte:window onpopstate={() => { if (pendingTransitions > 0) location.reload(); }} />
+<svelte:window
+	onpopstate={() => { if (pendingTransitions > 0) location.reload(); }}
+	onclick={(event) => { if (isProfileClick(event)) trackAnalyticsEvent('profile_click'); }}
+/>
 
 {#snippet footerBrand()}
 	<Wordmark href={localizeHref('/', locale)} data-testid="footer-wordmark" class="items-baseline text-2xl" />

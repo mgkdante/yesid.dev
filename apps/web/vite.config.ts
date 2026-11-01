@@ -139,6 +139,7 @@ export default defineConfig({
 					name: 'dom',
 					include: [
 						'src/lib/components/**/*.test.ts',
+						'src/lib/analytics/**/*.test.ts',
 						'src/lib/stores/**/*.test.ts',
 						'src/lib/state/**/*.svelte.test.ts',
 						'src/lib/motion/**/*.test.ts',

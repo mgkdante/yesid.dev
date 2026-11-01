@@ -60,6 +60,8 @@
 		"@lucide/svelte": "^1.18.0",
 		"@repo/shared": "workspace:*",
 		"@resvg/resvg-js": "^2.6.2",
+		"@vercel/analytics": "^2.0.1",
+		"@vercel/speed-insights": "^2.0.0",
 		"@yesid/analytics": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.30.3/yesid-analytics-0.30.3.tgz",
 		"@yesid/i18n-core": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.30.3/yesid-i18n-core-0.30.3.tgz",
 		"@yesid/motion": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.30.3/yesid-motion-0.30.3.tgz",
