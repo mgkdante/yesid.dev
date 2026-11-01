@@ -5,32 +5,32 @@
 		"siteSeoDefaults": {
 			"defaultOgImage": null,
 			"themeColor": "#141414",
-			"defaultDescription": {"en":"yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.","es":"yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL."}
+			"defaultDescription": {"en":"yesid.dev helps businesses in Québec and across Canada connect websites, data, reporting, and workflows through web, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les entreprises du Québec et de partout au Canada à relier sites web, données, rapports et processus : web, automatisation, analytique et SQL.","es":"yesid.dev ayuda a empresas de Québec y de todo Canadá a conectar sitios web, datos, reportes y procesos con web, automatización, analítica, bases de datos y SQL."}
 		},
 		"routeSeo": [
 			{
 				"path": "/",
 				"ogImage": null,
 				"title": {"en":"yesid. | Digital Infrastructure that Moves.","fr":"yesid. | Infrastructure numérique qui avance.","es":"yesid. | Infraestructura digital que se mueve."},
-				"description": {"en":"yesid.dev helps Québec SMEs connect websites, data, reporting, and everyday workflows through web development, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les PME du Québec à relier sites web, données, rapports et processus par le web, l’automatisation, l’analytique, les bases de données et SQL.","es":"yesid.dev ayuda a pymes de Québec a conectar sitios web, datos, reportes y procesos mediante desarrollo web, automatización, analítica, bases de datos y SQL."}
+				"description": {"en":"yesid.dev helps businesses in Québec and across Canada connect websites, data, reporting, and workflows through web, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les entreprises du Québec et de partout au Canada à relier sites web, données, rapports et processus : web, automatisation, analytique et SQL.","es":"yesid.dev ayuda a empresas de Québec y de todo Canadá a conectar sitios web, datos, reportes y procesos con web, automatización, analítica, bases de datos y SQL."}
 			},
 			{
 				"path": "/about",
 				"ogImage": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
-				"title": {"en":"Freelance Digital Solutions Developer","fr":"Développeur de solutions numériques à la pige","es":"Desarrollador freelance de soluciones digitales"},
-				"description": {"en":"Digital solutions developer in Montréal helping Québec SMEs connect websites, reports, and workflows through web, automation, analytics, databases, and SQL.","fr":"Développeur de solutions numériques à la pige à Montréal. J'aide les PME du Québec avec le web, l'automatisation, l'analytique, les bases de données et SQL.","es":"Desarrollador freelance de soluciones digitales en Montreal. Ayudo a pymes de Québec con web, automatización, analítica, bases de datos y SQL confiables."}
+				"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur en infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
+				"description": {"en":"Digital infrastructure developer in Montréal helping Canadian businesses connect websites, reports, and workflows through web, automation, analytics, and SQL.","fr":"Développeur en infrastructure numérique à la pige à Montréal. J'aide les entreprises canadiennes avec le web, l'automatisation, l'analytique et SQL.","es":"Desarrollador freelance de infraestructura digital en Montreal. Ayudo a empresas canadienses con web, automatización, analítica, bases de datos y SQL."}
 			},
 			{
 				"path": "/contact",
 				"ogImage": "a781a5a4-1abc-4be4-a75e-ee6000419a53",
 				"title": {"en":"Hire a Digital Infrastructure Freelancer in Montreal","fr":"Engager un pigiste en infrastructure numérique à Montréal","es":"Contrata un freelancer de infraestructura digital en Montreal"},
-				"description": {"en":"Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montreal; available remotely.","fr":"Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal et disponible à distance.","es":"Escríbeme para trabajo freelance en bases de datos, pipelines, tableros o sitios web. PostgreSQL, dbt, Power BI, SvelteKit. En Montreal, disponible en remoto."}
+				"description": {"en":"Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montréal, working across Canada.","fr":"Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal, au service des entreprises partout au Canada.","es":"Escríbeme para trabajo freelance en bases de datos, pipelines, tableros o sitios web. PostgreSQL, dbt, Power BI, SvelteKit. En Montreal, trabajo con todo Canadá."}
 			},
 			{
 				"path": "/services",
 				"ogImage": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7",
 				"title": {"en":"Digital Infrastructure Services: Web, Data, Automation","fr":"Infrastructure numérique: web, données, automatisation","es":"Infraestructura digital: web, datos, automatización"},
-				"description": {"en":"Digital solutions for Québec SMEs: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.","fr":"Solutions numériques pour les PME du Québec : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL fiables.","es":"Soluciones digitales para pymes de Québec: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real."}
+				"description": {"en":"Digital solutions for Canadian businesses: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.","fr":"Solutions numériques pour les entreprises canadiennes : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL.","es":"Soluciones digitales para empresas canadienses: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real."}
 			},
 			{
 				"path": "/projects",
@@ -54,7 +54,7 @@
 		"siteMeta": {
 			"name": "yesid.",
 			"tagline": {"en":"Digital infrastructure that moves.","fr":"Une infrastructure numérique qui bouge.","es":"Infraestructura digital que se mueve."},
-			"description": {"en":"Freelance digital solutions developer in Montréal helping Québec SMEs connect websites, data, reporting, automation, and workflows through practical, reliable systems.","fr":"Développeur de solutions numériques à la pige à Montréal, aidant les PME du Québec à relier sites web, données, rapports, automatisation et processus avec des systèmes fiables.","es":"Desarrollador de soluciones digitales en Montreal que ayuda a pymes de Québec a conectar sitios web, datos, reportes, automatización y procesos con sistemas confiables."},
+			"description": {"en":"Freelance digital infrastructure developer in Montréal helping businesses across Canada connect websites, data, reporting, automation, and workflows.","fr":"Développeur en infrastructure numérique à la pige à Montréal, aidant les entreprises partout au Canada à relier sites web, données, rapports et processus.","es":"Desarrollador de infraestructura digital en Montreal que ayuda a empresas de todo Canadá a conectar sitios web, datos, reportes, automatización y procesos."},
 			"links": {
 				"email": "contact@yesid.dev",
 				"github": "https://github.com/mgkdante",
@@ -63,7 +63,7 @@
 			},
 			"owner": {
 				"name": "Yesid",
-				"jobTitle": {"en":"Freelance Digital Solutions Developer","fr":"Développeur de solutions numériques à la pige","es":"Desarrollador freelance de soluciones digitales"},
+				"jobTitle": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur en infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
 				"address": {
 					"locality": "Montreal",
 					"region": "QC",
@@ -11871,7 +11871,7 @@
 		},
 		"aboutIntro": {
 			"name": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
-			"title": {"en":"Freelance Digital Solutions Developer","fr":"Développeur de solutions numériques à la pige","es":"Desarrollador freelance de soluciones digitales"},
+			"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur en infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
 			"bio": {"en":"I take data, make it tell stories, and build the systems it moves through.","fr":"Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.","es":"Tomo los datos, hago que cuenten historias y construyo los sistemas por donde se mueven."},
 			"moreLink": {"en":"→ More about me","fr":"→ En savoir plus sur moi","es":"→ Más sobre mí"}
 		},
