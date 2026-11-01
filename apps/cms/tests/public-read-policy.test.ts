@@ -24,7 +24,7 @@ function hasPublishedFilter(filter: unknown): boolean {
 describe('Public read policy (slice-43.26)', () => {
 	for (const collection of ['nav_links', 'site_pages', 'error_pages', 'blog_posts', 'projects', 'tech_stack']) {
 		it(`reads only published ${collection}`, () => {
-			expect([
+			expect<unknown[]>([
 				{ status: { _eq: 'published' } },
 				{ _and: [{ status: { _eq: 'published' } }] },
 			]).toContainEqual(permission(collection).permissions);
@@ -60,29 +60,20 @@ describe('Public read policy (slice-43.26)', () => {
 			'metadata', 'location', 'uploaded_by', 'modified_by', 'storage', 'filename_disk',
 			'tus_id', 'tus_data',
 		]) expect(files.fields).not.toContain(field);
-		expect(files.permissions).toEqual({
-			_and: [{
-				folder: {
-					id: {
-						_in: [
-							'5699c47c-c016-484d-ad42-ea35d75ed918',
-							'da9ff878-3124-43d6-9cf9-11524fc0edd9',
-							'02c30511-8c14-46aa-b6f1-cf2d8999290e',
-							'82238060-72ab-414b-8f72-a7f83b15dc59',
-							'e4764c31-b8b4-4045-b066-76653bc3c884',
-							'1868fd73-d094-45eb-9d0c-802e2b49cf23',
-							'3b0880d2-9e19-4812-9b35-d16fba7c2e46',
-						],
-					},
-				},
-			}],
-		});
+		const retainedFolderIds = [
+			'5699c47c-c016-484d-ad42-ea35d75ed918',
+			'da9ff878-3124-43d6-9cf9-11524fc0edd9',
+			'02c30511-8c14-46aa-b6f1-cf2d8999290e',
+			'82238060-72ab-414b-8f72-a7f83b15dc59',
+			'e4764c31-b8b4-4045-b066-76653bc3c884',
+			'1868fd73-d094-45eb-9d0c-802e2b49cf23',
+			'3b0880d2-9e19-4812-9b35-d16fba7c2e46',
+		];
+		expect(files.permissions).toEqual({ _and: [{ folder: { id: { _in: retainedFolderIds } } }] });
 		expect(folders.map((folder) => folder.name).sort()).toEqual([
 			'about', 'blog', 'brand', 'illustrations', 'og', 'projects', 'services',
 		]);
-		expect(folders.map((folder) => folder._syncId).sort()).toEqual(
-			[...files.permissions._and![0]!.folder!.id._in].sort(),
-		);
+		expect(folders.map((folder) => folder._syncId).sort()).toEqual([...retainedFolderIds].sort());
 	});
 
 	it('has no create, update or delete permissions', () => {

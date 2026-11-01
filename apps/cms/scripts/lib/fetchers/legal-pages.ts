@@ -8,14 +8,14 @@
  */
 
 import { readItems } from '@directus/sdk';
-import { LegalPageSchema, type LegalPage } from '@repo/shared';
+import { LegalPageSchema, type BlockEditorDoc, type LegalPage } from '@repo/shared';
 import { toLocalizedFields } from '../locale';
 import type { FetcherContext } from './types';
 
 export interface DirectusLegalPageTranslation {
 	languages_code: string;
 	title?: string | null;
-	body?: unknown;
+	body?: BlockEditorDoc | null;
 }
 
 export interface DirectusLegalPageRow {
@@ -27,11 +27,9 @@ export interface DirectusLegalPageRow {
 
 /** Pure transform — DirectusLegalPageRow → LegalPage. Tested standalone. */
 export function toLegalPage(raw: DirectusLegalPageRow): LegalPage {
-	const tr = (raw.translations ?? []) as ReadonlyArray<
-		Record<string, unknown> & { languages_code: string }
-	>;
-	const body: Record<string, unknown> = {};
-	for (const row of raw.translations ?? []) {
+	const tr = raw.translations ?? [];
+	const body: Partial<LegalPage['body']> = {};
+	for (const row of tr) {
 		if (row.body === null || row.body === undefined) continue;
 		if (row.languages_code === 'en' || row.languages_code === 'fr' || row.languages_code === 'es') {
 			body[row.languages_code] = row.body;

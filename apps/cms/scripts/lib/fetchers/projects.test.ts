@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { fetchProjects, toProject, statusFromDirectus, type DirectusProject } from './projects';
 import { ProjectSchema } from '@repo/shared/schemas';
 import type { BlockEditorDoc } from '@repo/shared';
+import { cmsClientDouble } from '../../../tests/helpers/doubles';
 
 const EMPTY_DOC: BlockEditorDoc = {
 	time: 0,
@@ -19,6 +20,8 @@ const FIXTURE: DirectusProject = {
 	hero_image_secondary: null,
 	hero_image_secondary_light: null,
 	repo_url: 'https://github.com/mgkdante/transit',
+	repo_private: null,
+	docs_url: null,
 	live_url: null,
 	readme_url: null,
 	location: 'sherbrooke',
@@ -64,14 +67,14 @@ describe('statusFromDirectus mapping', () => {
 		expect(statusFromDirectus('archived')).toBe('private');
 	});
 	it('exports only published projects even if a CMS response includes unpublished rows', async () => {
-		const client = { request: async () => [FIXTURE, { ...FIXTURE, id: 'unpublished-draft', status: 'draft' }, { ...FIXTURE, id: 'archived-project', status: 'archived' }] };
-		const projects = await fetchProjects({ client } as Parameters<typeof fetchProjects>[0]);
+		const client = cmsClientDouble(() => [FIXTURE, { ...FIXTURE, id: 'unpublished-draft', status: 'draft' }, { ...FIXTURE, id: 'archived-project', status: 'archived' }]);
+		const projects = await fetchProjects({ client });
 		expect(projects.map(project => project.slug)).toEqual([FIXTURE.id]);
 	});
 	it('reflects simulated publish, localized update and delete transitions without retaining an old row', async () => {
 		let rows: DirectusProject[] = [{ ...FIXTURE, status: 'draft' }];
-		const client = { request: async () => rows };
-		const read = () => fetchProjects({ client } as Parameters<typeof fetchProjects>[0]);
+		const client = cmsClientDouble(() => rows);
+		const read = () => fetchProjects({ client });
 		expect(await read()).toEqual([]);
 		rows = [{ ...FIXTURE }];
 		expect((await read())[0]?.title.en).toBe('Transit Operations Data Pipeline');
@@ -101,8 +104,8 @@ describe('projects fetcher transform', () => {
 	it('sorts impact_metrics by sort ascending, sets first as impactMetric', () => {
 		const result = toProject(FIXTURE);
 		expect(result.impactMetrics).toHaveLength(2);
-		expect(result.impactMetrics?.[0].value).toBe('30s');
-		expect(result.impactMetrics?.[1].value).toBe('99.9%');
+		expect(result.impactMetrics?.[0]?.value).toBe('30s');
+		expect(result.impactMetrics?.[1]?.value).toBe('99.9%');
 		expect(result.impactMetric).toEqual(result.impactMetrics?.[0]);
 	});
 
@@ -161,7 +164,7 @@ describe('projects per-language Show on site', () => {
 
 	it('hides the project in every language when English is switched off', async () => {
 		const englishOff = { ...FIXTURE, translations: [{ ...FIXTURE.translations![0]!, show_on_site: false }] };
-		const client = { request: async () => [englishOff] };
-		expect(await fetchProjects({ client } as Parameters<typeof fetchProjects>[0])).toEqual([]);
+		const client = cmsClientDouble(() => [englishOff]);
+		expect(await fetchProjects({ client })).toEqual([]);
 	});
 });

@@ -15,13 +15,14 @@ import {
 	type AssetPresetRow,
 } from '../scripts/lib/assets/editor-presets';
 import type { SchemaStep } from '../scripts/lib/schema-apply';
+import { fetchDouble } from './helpers/doubles';
 
 const originalFetch = globalThis.fetch;
 let importFetchCalls = 0;
-globalThis.fetch = (async () => {
+globalThis.fetch = fetchDouble(async () => {
 	importFetchCalls += 1;
 	throw new Error('schema module import must not touch the network');
-}) as typeof fetch;
+});
 const subject = await import('../scripts/setup-asset-registry-schema');
 globalThis.fetch = originalFetch;
 
@@ -171,7 +172,7 @@ const EXPECTED_FIELDS: Record<string, readonly string[]> = {
 	],
 };
 
-const EXPECTED_TYPES: Record<string, readonly string[]> = {
+const EXPECTED_TYPES = {
 	uuid: [
 		'asset_records.id',
 		'asset_records.candidate_version',
@@ -308,7 +309,7 @@ const EXPECTED_TYPES: Record<string, readonly string[]> = {
 		'asset_releases.deploy_ref',
 		'asset_releases.error_code',
 	],
-};
+} satisfies Record<string, readonly string[]>;
 
 const REQUIRED_FIELDS = new Set([
 	'asset_records.semantic_key',
@@ -772,7 +773,7 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 		for (const [target, values] of Object.entries(expected)) {
 			const separator = target.indexOf('.');
 			expect(choiceValues(fieldPayload(plan, target.slice(0, separator), target.slice(separator + 1)))).toEqual(
-				values,
+				[...values],
 			);
 		}
 	});
@@ -1045,10 +1046,10 @@ describe('setup-asset-registry-schema dry-run plan', () => {
 		let tokenCalls = 0;
 		let requestCalls = 0;
 		const messages: string[] = [];
-		globalThis.fetch = (async () => {
+		globalThis.fetch = fetchDouble(async () => {
 			fetchCalls += 1;
 			throw new Error('dry-run must not fetch');
-		}) as typeof fetch;
+		});
 		try {
 			const result = await runAssetRegistryCli(['--dry-run'], {
 				resolveUrl: () => 'https://cms.dev.yesid.dev',

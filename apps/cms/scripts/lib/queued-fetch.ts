@@ -30,9 +30,12 @@ export interface QueuedFetchOptions {
 	timeoutMs?: number;
 	retryableStatuses?: ReadonlyArray<number>;
 	// Injection seams for testing
-	fetch?: typeof fetch;
+	fetch?: FetchFn;
 	sleep?: (ms: number) => Promise<void>;
 }
+
+/** The callable part of `fetch`, without Bun's `fetch.preconnect`. */
+export type FetchFn = (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => Promise<Response>;
 
 const DEFAULTS = {
 	maxConcurrent: 4,
@@ -49,7 +52,7 @@ const DEFAULTS = {
  * Factory that returns a fetch-compatible function with concurrency + retry.
  * Drop-in for the `fetch` slot in `createDirectus(url, { globals: { fetch } })`.
  */
-export function createQueuedFetch(options: QueuedFetchOptions = {}): typeof fetch {
+export function createQueuedFetch(options: QueuedFetchOptions = {}): FetchFn {
 	const maxConcurrent = options.maxConcurrent ?? DEFAULTS.maxConcurrent;
 	const minTime = options.minTime ?? DEFAULTS.minTime;
 	const retries = options.retries ?? DEFAULTS.retries;
@@ -62,7 +65,7 @@ export function createQueuedFetch(options: QueuedFetchOptions = {}): typeof fetc
 
 	const limiter = new Bottleneck({ maxConcurrent, minTime });
 
-	const queuedFetch: typeof fetch = (input, init) =>
+	const queuedFetch: FetchFn = (input, init) =>
 		limiter.schedule(async (): Promise<Response> => {
 			let attempt = 0;
 
@@ -117,9 +120,9 @@ function defaultSleep(ms: number): Promise<void> {
 }
 
 async function fetchWithTimeout(
-	upstreamFetch: typeof fetch,
-	input: Parameters<typeof fetch>[0],
-	init: Parameters<typeof fetch>[1],
+	upstreamFetch: FetchFn,
+	input: Parameters<FetchFn>[0],
+	init: Parameters<FetchFn>[1],
 	timeoutMs: number,
 ): Promise<Response> {
 	if (timeoutMs <= 0) {

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { getAdminToken } from './auth';
+import { fetchDouble } from '../../tests/helpers/doubles';
 
 describe('scripts/lib/auth.ts', () => {
 	let originalEnv: Record<string, string | undefined>;
@@ -29,10 +30,10 @@ describe('scripts/lib/auth.ts', () => {
 	it('returns DIRECTUS_ADMIN_TOKEN directly without network', async () => {
 		process.env.DIRECTUS_ADMIN_TOKEN = 'static-token-abc';
 		let fetchCalled = false;
-		globalThis.fetch = (async () => {
+		globalThis.fetch = fetchDouble(async () => {
 			fetchCalled = true;
 			throw new Error('unreachable');
-		}) as unknown as typeof globalThis.fetch;
+		});
 		const token = await getAdminToken('http://localhost:8055');
 		expect(token).toBe('static-token-abc');
 		expect(fetchCalled).toBe(false);
@@ -78,10 +79,10 @@ describe('scripts/lib/auth.ts', () => {
 		process.env.DIRECTUS_BUILD_TOKEN = 'read-only-build-token';
 		process.env.DIRECTUS_ADMIN_TOKEN = 'admin-token';
 		let fetchCalled = false;
-		globalThis.fetch = (async () => {
+		globalThis.fetch = fetchDouble(async () => {
 			fetchCalled = true;
 			throw new Error('unreachable');
-		}) as unknown as typeof globalThis.fetch;
+		});
 
 		const token = await getAdminToken('http://localhost:8055', {
 			allowBuildToken: false,
@@ -105,7 +106,7 @@ describe('scripts/lib/auth.ts', () => {
 		process.env.DIRECTUS_ADMIN_EMAIL = 'admin@test.local';
 		process.env.DIRECTUS_ADMIN_PASSWORD = 'pw';
 		let capturedBody: unknown = null;
-		globalThis.fetch = (async (
+		globalThis.fetch = fetchDouble(async (
 			_url: Parameters<typeof globalThis.fetch>[0],
 			init?: Parameters<typeof globalThis.fetch>[1],
 		) => {
@@ -114,7 +115,7 @@ describe('scripts/lib/auth.ts', () => {
 				JSON.stringify({ data: { access_token: 'login-token-xyz' } }),
 				{ status: 200 },
 			);
-		}) as unknown as typeof globalThis.fetch;
+		});
 		const token = await getAdminToken('http://localhost:8055');
 		expect(token).toBe('login-token-xyz');
 		expect(capturedBody).toEqual({ email: 'admin@test.local', password: 'pw' });
@@ -124,11 +125,11 @@ describe('scripts/lib/auth.ts', () => {
 		delete process.env.DIRECTUS_ADMIN_TOKEN;
 		process.env.DIRECTUS_ADMIN_EMAIL = 'admin@test.local';
 		process.env.DIRECTUS_ADMIN_PASSWORD = 'wrong';
-		globalThis.fetch = (async () =>
+		globalThis.fetch = fetchDouble(async () =>
 			new Response('{"errors":[{"message":"bad creds"}]}', {
 				status: 401,
 				statusText: 'Unauthorized',
-			})) as unknown as typeof globalThis.fetch;
+			}));
 		await expect(getAdminToken('http://localhost:8055')).rejects.toThrow(
 			/\[auth\] 401/,
 		);

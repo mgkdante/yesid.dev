@@ -1,5 +1,6 @@
 import { legalTruth, demoFeedDisclosures } from './lib/validators/live-export';
 import { describe, expect, it } from 'bun:test';
+import type { BlockEditorDoc } from '@repo/shared';
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { readCache, writeCache } from './lib/cache';
@@ -78,12 +79,13 @@ describe('failed live export retains last-good generated output', () => {
 			expect(decideExit(missing, 'soft')).toBe(1);
 			const cached = { ...(await readCache(FIXTURE_PATH))!, mediaAssets: {}, mediaVariants: {} };
 			cached.siteLabels!.heroDashboard.vehiclesSub = { ...demoFeedDisclosures };
-			cached.legalPages = cached.legalPages!.map(page => ({ ...page, body: Object.fromEntries(
-				(['en', 'fr', 'es'] as const).map(locale => [locale, { time: 1, version: '2.31.2', blocks: [
-					'contact@yesid.dev',
-					page.slug === 'privacy' ? legalTruth.privacyProfile[locale] : legalTruth.cookieProfile[locale],
-				].map((text, index) => ({ id: String(index), type: 'paragraph', data: { text } })) }]),
-			) }));
+			const legalDoc = (slug: string, locale: 'en' | 'fr' | 'es'): BlockEditorDoc => ({ time: 1, version: '2.31.2', blocks: [
+				'contact@yesid.dev',
+				slug === 'privacy' ? legalTruth.privacyProfile[locale] : legalTruth.cookieProfile[locale],
+			].map((text, index) => ({ id: String(index), type: 'paragraph', data: { text } })) });
+			cached.legalPages = cached.legalPages!.map(page => ({ ...page, body: {
+				en: legalDoc(page.slug, 'en'), fr: legalDoc(page.slug, 'fr'), es: legalDoc(page.slug, 'es'),
+			} }));
 			const cache = joinPath(emitDir, '.cms-cache.json');
 			await writeCache(cache, cached, 'synthetic');
 			const before = await Bun.file(cache).text();

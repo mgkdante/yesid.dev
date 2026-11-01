@@ -67,6 +67,7 @@ export function mergeProtectedSettingsFields(
 }
 
 export interface SyncPushEnv {
+	[name: string]: string | undefined;
 	DIRECTUS_URL?: string;
 	DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH?: string;
 	DIRECTUS_SYNC_PUSH_ACK?: string;

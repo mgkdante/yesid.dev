@@ -50,14 +50,14 @@ describe('services fetcher transform', () => {
 	it('sorts deliverables by sort ascending', () => {
 		const result = toService(FIXTURE);
 		expect(result.deliverables).toHaveLength(2);
-		expect(result.deliverables?.[0].en).toBe('Query performance audit');
-		expect(result.deliverables?.[1].en).toBe('Schema refactoring plan');
+		expect(result.deliverables?.[0]?.en).toBe('Query performance audit');
+		expect(result.deliverables?.[1]?.en).toBe('Schema refactoring plan');
 	});
 
 	it('attaches sections with localized title + content', () => {
 		const result = toService(FIXTURE);
 		expect(result.sections).toHaveLength(1);
-		expect(result.sections?.[0].title.en).toBe('My Approach');
+		expect(result.sections?.[0]?.title.en).toBe('My Approach');
 	});
 
 	it('attaches impactMetric when both value and label are present', () => {

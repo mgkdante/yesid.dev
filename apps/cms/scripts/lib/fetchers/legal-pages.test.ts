@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 import { toLegalPage } from './legal-pages';
-import { LegalPageSchema } from '@repo/shared';
+import { LegalPageSchema, type BlockEditorDoc } from '@repo/shared';
 
-const doc = (text: string) => ({
+const doc = (text: string): BlockEditorDoc => ({
 	time: 1751500800000,
 	version: '2.31.2',
 	blocks: [{ id: 'b1', type: 'paragraph', data: { text } }],

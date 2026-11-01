@@ -5,6 +5,8 @@ import { buildEmitConfigs } from './lib/emitters/configs';
 import { readCache } from './lib/cache';
 import { assertTrimmedExportData, FIXTURE_PATH, serializeFixture, trimExportData } from './trim-export-fixture';
 
+const textOf = (block: BlockEditorDoc['blocks'][number] | undefined) => (block && 'text' in block.data ? block.data.text : undefined);
+
 it('reads the committed fixture through readCache without derived media and is a fixed point', async () => {
 	const fixture = await readCache(FIXTURE_PATH);
 	expect(fixture).not.toBeNull();
@@ -97,7 +99,7 @@ it('deduplicates prose while retaining header levels, code fences, markup and re
 	// A later paragraph with a template slot is reference-bearing too.
 	const trimmed = trimExportData({ blogBodies: { example: doc } }).blogBodies!.example!;
 	expect(trimmed.blocks.map((block) => block.id)).toEqual(['p1', 'h2', 'h2-again', 'h3', 'code', 'diagram', 'marked', 'link1', 'link2', 'slot']);
-	expect(trimmed.blocks[0]!.data.text).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
+	expect(textOf(trimmed.blocks[0])).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
 	expect(JSON.stringify(trimmed)).toMatch(/<strong>Fixture copy \(en, text, [0-9a-f]{8}\)\.<\/strong>/);
 	expect(JSON.stringify(trimmed)).toContain('{count}');
 	expect(JSON.stringify(trimmed)).not.toContain('Template prose.');
@@ -111,7 +113,7 @@ it('keeps every short string verbatim, including the 200-character boundary in e
 	const values = { title: 'x'.repeat(200), heading: { en: short, fr: 'Titre court' },
 		text: '<strong>Short copy</strong>\n{count}', arbitraryField: 'Unchanged',
 		siteLabels: { helper: { en: short, es: 'Texto breve' } } };
-	expect(trimExportData(values as unknown as ExportData)).toEqual(values);
+	expect<unknown>(trimExportData(values as unknown as ExportData)).toEqual(values);
 });
 
 it('gives different long source strings distinct stable placeholders for the same locale and field', () => {
@@ -120,7 +122,7 @@ it('gives different long source strings distinct stable placeholders for the sam
 		{ id: 'two', type: 'paragraph', data: { text: 'b'.repeat(201) } },
 	] } } }] } as unknown as ExportData;
 	const trimmed = trimExportData(source);
-	const [first, second] = trimmed.legalPages![0]!.body.en!.blocks.map(block => block.data.text);
+	const [first, second] = trimmed.legalPages![0]!.body.en!.blocks.map(textOf);
 	expect(first).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
 	expect(second).toMatch(/^Fixture copy \(en, text, [0-9a-f]{8}\)\.$/);
 	expect(second).not.toBe(first);

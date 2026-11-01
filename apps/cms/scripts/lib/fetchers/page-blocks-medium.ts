@@ -159,5 +159,5 @@ export async function fetchContactContent({ client }: FetcherContext): Promise<C
 			}),
 		),
 	]);
-	return ContactContentSchema.parse(toContactContent(row, toContactChannels(contactChannelRows as ContactChannelRow[])));
+	return ContactContentSchema.parse(toContactContent(row, toContactChannels(contactChannelRows as unknown as ContactChannelRow[])));
 }
