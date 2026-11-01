@@ -7,6 +7,7 @@
   import type { HeroQueryRow } from '#lib/live/index.ts';
   import { StatusDot } from '@yesid/ui/brand';
   import TransitInfoLink from './TransitInfoLink.svelte';
+  import TransitSourceNote from './TransitSourceNote.svelte';
 
   interface Props {
     rows: HeroQueryRow[];
@@ -94,4 +95,6 @@
     </div>
   </div>
 </div>
+
+<TransitSourceNote />
 
