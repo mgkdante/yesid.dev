@@ -67,7 +67,6 @@ export function mergeProtectedSettingsFields(
 }
 
 export interface SyncPushEnv {
-	[name: string]: string | undefined;
 	DIRECTUS_URL?: string;
 	DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH?: string;
 	DIRECTUS_SYNC_PUSH_ACK?: string;
@@ -383,7 +382,20 @@ async function preMergeProtectedSettings(
 }
 
 async function main(): Promise<void> {
-	const finalArgs = buildDirectusSyncPushArgs(process.argv.slice(2), process.env);
+	const {
+		DIRECTUS_URL,
+		DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH,
+		DIRECTUS_SYNC_PUSH_ACK,
+		DIRECTUS_SYNC_INCLUDE_PERMISSIONS,
+		DIRECTUS_SYNC_PERMISSIONS_ACK,
+	} = process.env;
+	const finalArgs = buildDirectusSyncPushArgs(process.argv.slice(2), {
+		DIRECTUS_URL,
+		DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH,
+		DIRECTUS_SYNC_PUSH_ACK,
+		DIRECTUS_SYNC_INCLUDE_PERMISSIONS,
+		DIRECTUS_SYNC_PERMISSIONS_ACK,
+	});
 	const cmsRoot = resolvePath(import.meta.dir, '..');
 	const entrypoint = joinPath(
 		cmsRoot,
