@@ -8722,8 +8722,8 @@
 				"line2": {"en":"DON'T BREAK","fr":"NE CASSENT PAS","es":"NO SE ROMPEN"},
 				"ariaSuffix": {"en":"Don't Break.","fr":"Ne cassent pas.","es":"No se rompen."}
 			},
-			"subheadline": {"en":"I make data tell the truth.","fr":"Je fais parler les données, pour vrai.","es":"Hago que los datos digan la verdad."},
-			"subtitle": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado."},
+			"subheadline": {"en":"I help businesses grow.","fr":"J'aide les entreprises à croître.","es":"Ayudo a las empresas a crecer."},
+			"subtitle": {"en":"More productivity for Canadian businesses, without downtime.","fr":"Plus de productivité pour les entreprises canadiennes, sans pannes.","es":"Más productividad para las empresas canadienses, sin caídas."},
 			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
 			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
 			"ctaWorkHref": "/projects",
