@@ -1,11 +1,20 @@
 import { dev } from '$app/env';
 import { PUBLIC_PLAUSIBLE_DOMAIN } from '$app/env/public';
-import { createAnalytics, type Analytics } from '@yesid/analytics/client';
+import { createAnalytics, sanitizeAnalyticsUrl, type Analytics } from '@yesid/analytics/client';
 import { injectAnalytics } from '@vercel/analytics/sveltekit';
 import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 import { YESID_ANALYTICS_PRESET, type AnalyticsEventName } from './preset';
 
 let analytics: Analytics<AnalyticsEventName> | undefined;
+
+/** Applies the Plausible URL rule to Vercel too: path and bounded campaign tags only. */
+export function reduceVercelEvent<Event extends { url: string }>(event: Event): Event | null {
+	try {
+		return { ...event, url: sanitizeAnalyticsUrl(new URL(event.url, location.origin)) };
+	} catch {
+		return null;
+	}
+}
 
 /**
  * Starts measurement once, from the root layout's mount: Plausible for pageviews and events,
@@ -15,8 +24,8 @@ let analytics: Analytics<AnalyticsEventName> | undefined;
 export function startAnalytics(): void {
 	if (analytics) return;
 	analytics = createAnalytics(YESID_ANALYTICS_PRESET, { domain: PUBLIC_PLAUSIBLE_DOMAIN });
-	injectAnalytics({ mode: dev ? 'development' : 'production' });
-	injectSpeedInsights();
+	injectAnalytics({ mode: dev ? 'development' : 'production', beforeSend: reduceVercelEvent });
+	injectSpeedInsights({ beforeSend: reduceVercelEvent });
 }
 
 export function trackAnalyticsEvent(name: AnalyticsEventName): void {
