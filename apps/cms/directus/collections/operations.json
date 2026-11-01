@@ -43,8 +43,8 @@
       "recipient": [
         "{{$accountability.user}}"
       ],
-      "subject": "Check French and Spanish",
-      "message": "You just published an item. Open its French and Spanish tabs: empty fields show English on yesid.dev. When your editing session is done, use Publish site at the bottom of the sidebar."
+      "subject": "Check your languages",
+      "message": "Switch on Show on site for each language you want live. Blog languages that are off or empty are hidden; for projects and services they fall back to English. When your editing session is done, use Publish site at the bottom of the sidebar."
     },
     "resolve": null,
     "reject": null,

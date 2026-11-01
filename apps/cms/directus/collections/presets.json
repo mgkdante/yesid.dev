@@ -426,8 +426,12 @@
     "layout_options": null,
     "refresh_interval": null,
     "filter": {
-      "lang": {
-        "_eq": "en"
+      "translations": {
+        "_some": {
+          "languages_code": {
+            "_eq": "en"
+          }
+        }
       }
     },
     "icon": "bookmark",
@@ -444,8 +448,12 @@
     "layout_options": null,
     "refresh_interval": null,
     "filter": {
-      "lang": {
-        "_eq": "fr"
+      "translations": {
+        "_some": {
+          "languages_code": {
+            "_eq": "fr"
+          }
+        }
       }
     },
     "icon": "bookmark",
@@ -462,8 +470,12 @@
     "layout_options": null,
     "refresh_interval": null,
     "filter": {
-      "lang": {
-        "_eq": "es"
+      "translations": {
+        "_some": {
+          "languages_code": {
+            "_eq": "es"
+          }
+        }
       }
     },
     "icon": "bookmark",
@@ -531,8 +543,7 @@
     "layout_query": {
       "tabular": {
         "fields": [
-          "title",
-          "lang",
+          "translations",
           "status",
           "category",
           "date_published"

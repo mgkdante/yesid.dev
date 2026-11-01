@@ -5,20 +5,29 @@
     "icon": "language",
     "color": null,
     "show_header": true,
-    "note": "Posts where lang = en",
+    "note": "Posts whose English tab has Show on site on",
     "type": "metric",
     "position_x": 1,
     "position_y": 7,
     "width": 8,
     "height": 6,
     "options": {
-      "collection": "blog_posts",
+      "collection": "blog_posts_translations",
       "field": "id",
       "function": "count",
       "filter": {
-        "lang": {
-          "_eq": "en"
-        }
+        "_and": [
+          {
+            "languages_code": {
+              "_eq": "en"
+            }
+          },
+          {
+            "show_on_site": {
+              "_eq": true
+            }
+          }
+        ]
       }
     },
     "_syncId": "_sync_panel_blog_ops_english_posts"
@@ -172,20 +181,29 @@
     "icon": "language",
     "color": null,
     "show_header": true,
-    "note": "Posts where lang = fr",
+    "note": "Posts whose French tab has Show on site on",
     "type": "metric",
     "position_x": 9,
     "position_y": 7,
     "width": 8,
     "height": 6,
     "options": {
-      "collection": "blog_posts",
+      "collection": "blog_posts_translations",
       "field": "id",
       "function": "count",
       "filter": {
-        "lang": {
-          "_eq": "fr"
-        }
+        "_and": [
+          {
+            "languages_code": {
+              "_eq": "fr"
+            }
+          },
+          {
+            "show_on_site": {
+              "_eq": true
+            }
+          }
+        ]
       }
     },
     "_syncId": "a400baae-2c53-4357-b0c9-b07eac173d84"
@@ -196,20 +214,29 @@
     "icon": "language",
     "color": null,
     "show_header": true,
-    "note": "Posts where lang = es",
+    "note": "Posts whose Spanish tab has Show on site on",
     "type": "metric",
     "position_x": 17,
     "position_y": 7,
     "width": 8,
     "height": 6,
     "options": {
-      "collection": "blog_posts",
+      "collection": "blog_posts_translations",
       "field": "id",
       "function": "count",
       "filter": {
-        "lang": {
-          "_eq": "es"
-        }
+        "_and": [
+          {
+            "languages_code": {
+              "_eq": "es"
+            }
+          },
+          {
+            "show_on_site": {
+              "_eq": true
+            }
+          }
+        ]
       }
     },
     "_syncId": "23b7fbf1-c4b9-4020-b736-20daccd05cd7"
@@ -291,7 +318,7 @@
       "limit": 10,
       "sortField": "date_published",
       "sortDirection": "desc",
-      "displayTemplate": "{{title}} ({{lang}})",
+      "displayTemplate": "{{id}}",
       "linkToItem": true,
       "filter": {
         "status": {
