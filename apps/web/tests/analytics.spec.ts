@@ -376,3 +376,11 @@ test('an aborted provider request does not block navigation', async ({ page, bas
 	await expect(page.getByTestId('service-listing-page')).toBeVisible();
 	await waitForPageviews(abortedPayloads, 2);
 });
+
+test('starting measurement raises no page errors', async ({ page }) => {
+	const errors: string[] = [];
+	page.on('pageerror', (error) => errors.push(error.message));
+	await page.goto('/projects');
+	await page.waitForLoadState('networkidle');
+	expect(errors).toEqual([]);
+});

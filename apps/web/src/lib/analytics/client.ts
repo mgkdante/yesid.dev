@@ -1,8 +1,9 @@
 import { dev } from '$app/env';
 import { PUBLIC_PLAUSIBLE_DOMAIN } from '$app/env/public';
 import { createAnalytics, sanitizeAnalyticsUrl, type Analytics } from '@yesid/analytics/client';
-import { injectAnalytics } from '@vercel/analytics/sveltekit';
-import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+// The /sveltekit entries import $app/stores, which SvelteKit 3 removed; the generic ones track pushState navigations.
+import { inject as injectAnalytics } from '@vercel/analytics';
+import { injectSpeedInsights } from '@vercel/speed-insights';
 import { YESID_ANALYTICS_PRESET, type AnalyticsEventName } from './preset';
 
 let analytics: Analytics<AnalyticsEventName> | undefined;
@@ -24,8 +25,8 @@ export function reduceVercelEvent<Event extends { url: string }>(event: Event): 
 export function startAnalytics(): void {
 	if (analytics) return;
 	analytics = createAnalytics(YESID_ANALYTICS_PRESET, { domain: PUBLIC_PLAUSIBLE_DOMAIN });
-	injectAnalytics({ mode: dev ? 'development' : 'production', beforeSend: reduceVercelEvent });
-	injectSpeedInsights({ beforeSend: reduceVercelEvent });
+	injectAnalytics({ framework: 'sveltekit', mode: dev ? 'development' : 'production', beforeSend: reduceVercelEvent });
+	injectSpeedInsights({ framework: 'sveltekit', beforeSend: reduceVercelEvent });
 }
 
 export function trackAnalyticsEvent(name: AnalyticsEventName): void {
