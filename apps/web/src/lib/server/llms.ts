@@ -56,7 +56,7 @@ function spanishSection(pages: readonly SitePage[]): string {
 	);
 	return [
 		'## Español — infraestructura digital en Montreal, Québec',
-		`Yesid O. trabaja como Desarrollador freelance de infraestructura digital en Montreal y atiende en español, francés e inglés. Ayuda a empresas de Québec y de todo Canadá con sitios web y e-commerce, automatización y pipelines, tableros y analítica, y bases de datos y SQL. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
+		`Yesid O. trabaja como Desarrollador freelance de infraestructura digital en Montreal y atiende en español, francés e inglés. Ayuda a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado: sitios web y e-commerce, automatización y pipelines, tableros y analítica, y bases de datos y SQL. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
 		...serviceLines,
 		...(isPathPublished('/contact', pages) ? [`Contacto en español: ${SITE_HOST}/es/contact`] : []),
 	].join('\n');

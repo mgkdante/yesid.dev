@@ -334,7 +334,7 @@ const ROUTES = {
 		eyebrow: { en: 'ABOUT', fr: 'À PROPOS', es: 'ACERCA DE' } satisfies L,
 		subtitle: {
 			en: ['Freelance Digital', 'Infrastructure Developer'],
-			fr: ['Développeur en infrastructure', 'numérique à la pige'],
+			fr: ["Développeur d'infrastructure", 'numérique à la pige'],
 			es: ['Desarrollador freelance', 'de infraestructura digital'],
 		} satisfies LL,
 	},
@@ -360,15 +360,15 @@ const ROUTES = {
 const DEFAULTS: Record<Locale, { eyebrow: string; title: readonly string[] }> = {
 	en: {
 		eyebrow: 'DIGITAL INFRASTRUCTURE · MONTRÉAL',
-		title: ['Web, data & automation', 'for Canadian businesses.'],
+		title: ['Web, data and automation for', 'Québec and Canadian businesses.'],
 	},
 	fr: {
 		eyebrow: 'INFRASTRUCTURE NUMÉRIQUE · MONTRÉAL',
-		title: ['Web, données et automatisation', 'pour les entreprises canadiennes.'],
+		title: ['Web, données et automatisation pour', 'les entreprises du Québec et du Canada.'],
 	},
 	es: {
 		eyebrow: 'INFRAESTRUCTURA DIGITAL · MONTRÉAL',
-		title: ['Web, datos y automatización', 'para empresas canadienses.'],
+		title: ['Web, datos y automatización para', 'empresas de Québec y Canadá.'],
 	},
 };
 

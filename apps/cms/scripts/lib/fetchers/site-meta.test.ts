@@ -48,27 +48,27 @@ const SITE_META_FIXTURE: DirectusSiteMetaRow = {
 			languages_code: 'en',
 			tagline: 'Digital infrastructure that moves.',
 			description:
-				'Freelance digital infrastructure developer in Montréal helping businesses across Canada connect websites, data, reporting, automation, and workflows.',
+				'Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.',
 			default_description:
-				'yesid.dev helps businesses in Québec and across Canada connect websites, data, reporting, and workflows through web, automation, analytics, databases, and SQL.',
+				'I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.',
 			owner_job_title: 'Freelance Digital Infrastructure Developer',
 		},
 		{
 			languages_code: 'fr',
 			tagline: 'Une infrastructure numérique qui bouge.',
 			description:
-				'Développeur en infrastructure numérique à la pige à Montréal, aidant les entreprises partout au Canada à relier sites web, données, rapports et processus.',
+				"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.",
 			default_description:
-				'yesid.dev aide les entreprises du Québec et de partout au Canada à relier sites web, données, rapports et processus : web, automatisation, analytique et SQL.',
-			owner_job_title: 'Développeur en infrastructure numérique à la pige',
+				"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.",
+			owner_job_title: "Développeur d'infrastructure numérique à la pige",
 		},
 		{
 			languages_code: 'es',
 			tagline: 'Infraestructura digital que se mueve.',
 			description:
-				'Desarrollador de infraestructura digital en Montreal que ayuda a empresas de todo Canadá a conectar sitios web, datos, reportes, automatización y procesos.',
+				'Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado.',
 			default_description:
-				'yesid.dev ayuda a empresas de Québec y de todo Canadá a conectar sitios web, datos, reportes y procesos con web, automatización, analítica, bases de datos y SQL.',
+				'Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec.',
 			owner_job_title: 'Desarrollador freelance de infraestructura digital',
 		},
 	],
@@ -85,9 +85,9 @@ const EXPECTED_SITE_META: SiteMeta = {
 		es: 'Infraestructura digital que se mueve.',
 	},
 	description: {
-		en: 'Freelance digital infrastructure developer in Montréal helping businesses across Canada connect websites, data, reporting, automation, and workflows.',
-		fr: 'Développeur en infrastructure numérique à la pige à Montréal, aidant les entreprises partout au Canada à relier sites web, données, rapports et processus.',
-		es: 'Desarrollador de infraestructura digital en Montreal que ayuda a empresas de todo Canadá a conectar sitios web, datos, reportes, automatización y procesos.',
+		en: 'Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.',
+		fr: "Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.",
+		es: 'Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -99,7 +99,7 @@ const EXPECTED_SITE_META: SiteMeta = {
 		name: 'Yesid O.',
 		jobTitle: {
 			en: 'Freelance Digital Infrastructure Developer',
-			fr: 'Développeur en infrastructure numérique à la pige',
+			fr: "Développeur d'infrastructure numérique à la pige",
 			es: 'Desarrollador freelance de infraestructura digital',
 		},
 		phone: '+12025550100',

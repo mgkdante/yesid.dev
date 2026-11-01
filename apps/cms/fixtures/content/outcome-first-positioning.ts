@@ -1,6 +1,6 @@
 export const TITLE_BY_LOCALE = {
 	en: 'Freelance Digital Infrastructure Developer',
-	fr: 'Développeur en infrastructure numérique à la pige',
+	fr: "Développeur d'infrastructure numérique à la pige",
 	es: 'Desarrollador freelance de infraestructura digital',
 } as const;
 
@@ -9,23 +9,23 @@ export type OutcomeFirstLocale = keyof typeof TITLE_BY_LOCALE;
 export const SITE_META_BY_LOCALE = {
 	en: {
 		description:
-			'Freelance digital infrastructure developer in Montréal helping businesses across Canada connect websites, data, reporting, automation, and workflows.',
+			'Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.',
 		default_description:
-			'yesid.dev helps businesses in Québec and across Canada connect websites, data, reporting, and workflows through web, automation, analytics, databases, and SQL.',
+			'I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.',
 		owner_job_title: TITLE_BY_LOCALE.en,
 	},
 	fr: {
 		description:
-			'Développeur en infrastructure numérique à la pige à Montréal, aidant les entreprises partout au Canada à relier sites web, données, rapports et processus.',
+			"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.",
 		default_description:
-			'yesid.dev aide les entreprises du Québec et de partout au Canada à relier sites web, données, rapports et processus : web, automatisation, analytique et SQL.',
+			"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.",
 		owner_job_title: TITLE_BY_LOCALE.fr,
 	},
 	es: {
 		description:
-			'Desarrollador de infraestructura digital en Montreal que ayuda a empresas de todo Canadá a conectar sitios web, datos, reportes, automatización y procesos.',
+			'Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado.',
 		default_description:
-			'yesid.dev ayuda a empresas de Québec y de todo Canadá a conectar sitios web, datos, reportes y procesos con web, automatización, analítica, bases de datos y SQL.',
+			'Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec.',
 		owner_job_title: TITLE_BY_LOCALE.es,
 	},
 } as const;
@@ -40,17 +40,17 @@ export const ABOUT_ROUTE_BY_LOCALE = {
 	en: {
 		title: TITLE_BY_LOCALE.en,
 		description:
-			'Digital infrastructure developer in Montréal helping Canadian businesses connect websites, reports, and workflows through web, automation, analytics, and SQL.',
+			'Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.',
 	},
 	fr: {
 		title: TITLE_BY_LOCALE.fr,
 		description:
-			"Développeur en infrastructure numérique à la pige à Montréal. J'aide les entreprises canadiennes avec le web, l'automatisation, l'analytique et SQL.",
+			"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.",
 	},
 	es: {
 		title: TITLE_BY_LOCALE.es,
 		description:
-			'Desarrollador freelance de infraestructura digital en Montreal. Ayudo a empresas canadienses con web, automatización, analítica, bases de datos y SQL.',
+			'Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado.',
 	},
 } as const;
 
@@ -61,7 +61,7 @@ export const ABOUT_META_DESCRIPTION_BY_LOCALE = {
 } as const;
 
 export const SERVICES_DESCRIPTION_BY_LOCALE = {
-	en: 'Digital solutions for Canadian businesses: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.',
-	fr: 'Solutions numériques pour les entreprises canadiennes : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL.',
-	es: 'Soluciones digitales para empresas canadienses: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real.',
+	en: 'I build the infrastructure your operations run on: databases & SQL, pipelines & automation, dashboards & analytics, websites & e-commerce.',
+	fr: "Je bâtis l'infrastructure sur laquelle vos opérations reposent : bases de données et SQL, pipelines et automatisation, tableaux de bord et analytique, sites web et commerce en ligne.",
+	es: 'Construyo la infraestructura sobre la que funcionan tus operaciones: bases de datos y SQL, pipelines y automatización, dashboards y analítica, sitios web y e-commerce.',
 } as const;

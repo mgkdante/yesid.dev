@@ -5,20 +5,20 @@
 		"siteSeoDefaults": {
 			"defaultOgImage": null,
 			"themeColor": "#141414",
-			"defaultDescription": {"en":"yesid.dev helps businesses in Québec and across Canada connect websites, data, reporting, and workflows through web, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les entreprises du Québec et de partout au Canada à relier sites web, données, rapports et processus : web, automatisation, analytique et SQL.","es":"yesid.dev ayuda a empresas de Québec y de todo Canadá a conectar sitios web, datos, reportes y procesos con web, automatización, analítica, bases de datos y SQL."}
+			"defaultDescription": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec."}
 		},
 		"routeSeo": [
 			{
 				"path": "/",
 				"ogImage": null,
 				"title": {"en":"yesid. | Digital Infrastructure that Moves.","fr":"yesid. | Infrastructure numérique qui avance.","es":"yesid. | Infraestructura digital que se mueve."},
-				"description": {"en":"yesid.dev helps businesses in Québec and across Canada connect websites, data, reporting, and workflows through web, automation, analytics, databases, and SQL.","fr":"yesid.dev aide les entreprises du Québec et de partout au Canada à relier sites web, données, rapports et processus : web, automatisation, analytique et SQL.","es":"yesid.dev ayuda a empresas de Québec y de todo Canadá a conectar sitios web, datos, reportes y procesos con web, automatización, analítica, bases de datos y SQL."}
+				"description": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec."}
 			},
 			{
 				"path": "/about",
 				"ogImage": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
-				"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur en infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
-				"description": {"en":"Digital infrastructure developer in Montréal helping Canadian businesses connect websites, reports, and workflows through web, automation, analytics, and SQL.","fr":"Développeur en infrastructure numérique à la pige à Montréal. J'aide les entreprises canadiennes avec le web, l'automatisation, l'analytique et SQL.","es":"Desarrollador freelance de infraestructura digital en Montreal. Ayudo a empresas canadienses con web, automatización, analítica, bases de datos y SQL."}
+				"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
+				"description": {"en":"Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.","fr":"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado."}
 			},
 			{
 				"path": "/contact",
@@ -30,7 +30,7 @@
 				"path": "/services",
 				"ogImage": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7",
 				"title": {"en":"Digital Infrastructure Services: Web, Data, Automation","fr":"Infrastructure numérique: web, données, automatisation","es":"Infraestructura digital: web, datos, automatización"},
-				"description": {"en":"Digital solutions for Canadian businesses: websites and e-commerce, workflow automation, dashboards and analytics, databases and SQL, built around real operations.","fr":"Solutions numériques pour les entreprises canadiennes : sites web et commerce en ligne, automatisation, tableaux de bord, analytique, bases de données et SQL.","es":"Soluciones digitales para empresas canadienses: desarrollo web y e-commerce, automatización, tableros y analítica, bases de datos y SQL, según su operación real."}
+				"description": {"en":"I build the infrastructure your operations run on: databases & SQL, pipelines & automation, dashboards & analytics, websites & e-commerce.","fr":"Je bâtis l'infrastructure sur laquelle vos opérations reposent : bases de données et SQL, pipelines et automatisation, tableaux de bord et analytique, sites web et commerce en ligne.","es":"Construyo la infraestructura sobre la que funcionan tus operaciones: bases de datos y SQL, pipelines y automatización, dashboards y analítica, sitios web y e-commerce."}
 			},
 			{
 				"path": "/projects",
@@ -54,7 +54,7 @@
 		"siteMeta": {
 			"name": "yesid.",
 			"tagline": {"en":"Digital infrastructure that moves.","fr":"Une infrastructure numérique qui bouge.","es":"Infraestructura digital que se mueve."},
-			"description": {"en":"Freelance digital infrastructure developer in Montréal helping businesses across Canada connect websites, data, reporting, automation, and workflows.","fr":"Développeur en infrastructure numérique à la pige à Montréal, aidant les entreprises partout au Canada à relier sites web, données, rapports et processus.","es":"Desarrollador de infraestructura digital en Montreal que ayuda a empresas de todo Canadá a conectar sitios web, datos, reportes, automatización y procesos."},
+			"description": {"en":"Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.","fr":"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado."},
 			"links": {
 				"email": "contact@yesid.dev",
 				"github": "https://github.com/mgkdante",
@@ -63,7 +63,7 @@
 			},
 			"owner": {
 				"name": "Yesid",
-				"jobTitle": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur en infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
+				"jobTitle": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
 				"address": {
 					"locality": "Montreal",
 					"region": "QC",
@@ -8426,7 +8426,7 @@
 				"relatedProjects": [
 					"transit-data-pipeline"
 				],
-				"valueProposition": {"en":"Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it's created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day.","fr":"Prochain arrêt : tes données bougent. En ce moment, quelqu'un dans ton équipe recopie probablement des chiffres d'un système à l'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d'où elles sont créées jusqu'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour.","es":"Próxima parada: tus datos se mueven. Ahora mismo alguien en tu equipo seguramente copia números de un sistema a otro a mano cada semana. Yo monto una ruta que lleva tus datos de donde se crean hasta donde tu equipo los usa, sola, cada mañana, para que los mismos números frescos lleguen de la misma forma todos los días."},
+				"valueProposition": {"en":"Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it's created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day. Clear, simple protocols to follow, and your pipelines explained in plain words so your team understands how they work.","fr":"Prochain arrêt : tes données bougent. En ce moment, quelqu'un dans ton équipe recopie probablement des chiffres d'un système à l'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d'où elles sont créées jusqu'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour. Des protocoles clairs et simples à suivre, et vos pipelines expliqués en mots simples pour que votre équipe comprenne comment ils fonctionnent.","es":"Próxima parada: tus datos se mueven. Ahora mismo alguien en tu equipo seguramente copia números de un sistema a otro a mano cada semana. Yo monto una ruta que lleva tus datos de donde se crean hasta donde tu equipo los usa, sola, cada mañana, para que los mismos números frescos lleguen de la misma forma todos los días. Protocolos claros y simples a seguir, y tus pipelines explicados en palabras sencillas para que tu equipo entienda cómo funcionan."},
 				"seoDescription": {"en":"Freelance data pipelines and automation in Montreal: Python, Airflow, dbt. Data that travels on its own and lands clean, on time, every morning.","fr":"Pigiste pipelines de données à Montréal : Python, Airflow, dbt. Tes données voyagent toutes seules et arrivent propres, à temps, chaque matin.","es":"Pipelines de datos y automatización freelance en Montreal: Python, Airflow, dbt. Datos que viajan solos y llegan limpios, a tiempo, cada mañana."},
 				"deliverables": [
 					{"en":"Pipeline architecture design","fr":"Conception de l'architecture du pipeline","es":"Diseño de arquitectura del pipeline"},
@@ -8723,7 +8723,7 @@
 				"ariaSuffix": {"en":"Don't Break.","fr":"Ne cassent pas.","es":"No se rompen."}
 			},
 			"subheadline": {"en":"I make data tell the truth.","fr":"Je fais parler les données, pour vrai.","es":"Hago que los datos digan la verdad."},
-			"subtitle": {"en":"Building reliable infrastructure for teams that can't afford downtime.","fr":"Je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.","es":"Construyo infraestructura confiable para equipos que no pueden darse el lujo de una caída."},
+			"subtitle": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado."},
 			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
 			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
 			"ctaWorkHref": "/projects",
@@ -11871,7 +11871,7 @@
 		},
 		"aboutIntro": {
 			"name": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
-			"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur en infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
+			"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
 			"bio": {"en":"I take data, make it tell stories, and build the systems it moves through.","fr":"Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.","es":"Tomo los datos, hago que cuenten historias y construyo los sistemas por donde se mueven."},
 			"moreLink": {"en":"→ More about me","fr":"→ En savoir plus sur moi","es":"→ Más sobre mí"}
 		},
