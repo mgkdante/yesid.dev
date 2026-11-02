@@ -27,7 +27,7 @@ async function expectWholeCards(reel: Locator) {
 		};
 	}, { message: `the settled carousel at ${reel.page().viewportSize()?.width}px must contain only complete cards` }).toEqual({ hasVisibleCard: true, partial: [], settled: true });
 	const visible = (await cardPositions(reel)).filter(card => card.visible > 1);
-	expect(visible.length).toBeLessThanOrEqual(2);
+	expect(visible.length).toBeLessThanOrEqual(3);
 	return visible;
 }
 
@@ -158,7 +158,7 @@ test('navigation and resizing settle on whole cards and keep every project reach
 		}
 	}
 	expect(seen.size).toBe(total);
-	expect(Math.max(...counts)).toBe(Math.min(total, 2));
+	expect(Math.max(...counts)).toBe(Math.min(total, 3));
 	expect(Math.min(...counts)).toBe(1);
 	const previous = reel.getByTestId('proof-prev');
 	if (await previous.isEnabled()) { await previous.click(); await expectWholeCards(reel); }

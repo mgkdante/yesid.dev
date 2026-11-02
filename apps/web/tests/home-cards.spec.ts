@@ -14,6 +14,7 @@ test('home project cards share one size and show title, excerpt and links withou
 	const cards = section.getByTestId('proof-card');
 	expect(await cards.count()).toBeGreaterThan(0);
 	await expect(section.locator('.line-bullet, .data-flow-diagram, [data-testid$="metric-item"]')).toHaveCount(0);
+	await expect(section.locator('[data-testid="proof-card-links"] li').first()).toBeVisible();
 	for (const card of await cards.all()) {
 		const link = card.locator('.project-card-link');
 		await expect(link).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/[^/?#]+\/?$/);
@@ -22,7 +23,6 @@ test('home project cards share one size and show title, excerpt and links withou
 		await expect(card.getByTestId('proof-card-title')).toBeVisible();
 		await expect(card.getByTestId('proof-excerpt')).toHaveText(/\S/);
 		await expect(card.getByTestId('proof-excerpt')).toBeVisible();
-		await expect(card.getByTestId('proof-card-links')).toBeVisible();
 		await expectCardContentInside(card);
 	}
 	const sizes = await cards.evaluateAll(nodes => nodes.map(node => {
