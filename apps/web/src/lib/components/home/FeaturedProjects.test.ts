@@ -1,6 +1,6 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, within } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
@@ -35,8 +35,9 @@ describe('FeaturedProjects', () => {
 
 	it('renders project titles and one-liners from the shared card', () => {
 		render(FeaturedProjects, { props: renderProps });
-		const titles = screen.getAllByTestId('proof-card-title');
-		const excerpts = screen.getAllByTestId('proof-excerpt');
+		const cards = screen.getAllByTestId('proof-card');
+		const titles = cards.map((card) => within(card).getByTestId('proof-card-title'));
+		const excerpts = cards.map((card) => within(card).getByTestId('proof-excerpt'));
 		expect(titles).toHaveLength(expectedCount);
 		expect(excerpts).toHaveLength(expectedCount);
 		resolvedProjects.forEach((project, i) => {
@@ -62,8 +63,18 @@ describe('FeaturedProjects', () => {
 
 	it('renders one shared media band per card', () => {
 		render(FeaturedProjects, { props: renderProps });
-		const images = screen.getAllByTestId('proof-card-image');
+		const images = screen.getAllByTestId('proof-card').flatMap((card) => within(card).queryAllByTestId('proof-card-image'));
 		expect(images).toHaveLength(expectedCount);
+	});
+
+	it('adds one hidden, untabbable copy of each card so the reel can loop', () => {
+		render(FeaturedProjects, { props: renderProps });
+		const copies = document.querySelectorAll('[data-loop-copy]');
+		expect(copies).toHaveLength(expectedCount);
+		for (const copy of copies) {
+			expect(copy.getAttribute('aria-hidden')).toBe('true');
+			for (const link of copy.querySelectorAll('a, button')) expect(link.getAttribute('tabindex')).toBe('-1');
+		}
 	});
 
 	it('uses project hero media for proof reel images', () => {

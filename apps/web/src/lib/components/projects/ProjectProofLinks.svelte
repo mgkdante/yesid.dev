@@ -18,7 +18,7 @@
 	const docsLabel = resolveLocale(glanceChrome.docsLabel, locale);
 	const repoPrivateLabel = resolveLocale(glanceChrome.repoPrivateLabel, locale);
 
-	let { project }: { project: ProjectSummary } = $props();
+	let { project, tabbable = true }: { project: ProjectSummary; tabbable?: boolean } = $props();
 
 	function handleProjectProofClick(href: string | undefined, link: 'live' | 'repo' | 'docs'): void {
 		if (href && isProjectProofHref(href)) {
@@ -34,6 +34,7 @@
 		{#if project.liveUrl}
 			<li>
 				<a
+					tabindex={tabbable ? undefined : -1}
 					href={project.liveUrl}
 					target="_blank"
 					rel="noopener noreferrer"
@@ -47,6 +48,7 @@
 		{#if project.repoUrl && !project.repoPrivate}
 			<li>
 				<a
+					tabindex={tabbable ? undefined : -1}
 					href={project.repoUrl}
 					target="_blank"
 					rel="noopener noreferrer"
@@ -68,6 +70,7 @@
 		{#if project.docsUrl}
 			<li>
 				<a
+					tabindex={tabbable ? undefined : -1}
 					href={project.docsUrl}
 					target="_blank"
 					rel="noopener noreferrer"

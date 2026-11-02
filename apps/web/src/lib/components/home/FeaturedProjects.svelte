@@ -26,6 +26,9 @@
 	const viewAllHref = $derived(proofReelContent.viewAllHref);
 	const visibleProjects = $derived(projects);
 	const total = $derived(visibleProjects.length);
+	// Embla disables loop when the slides barely exceed the viewport (4 projects, 3 per view).
+	// A second, hidden set gives it room to wrap at every width.
+	const loopCopies = $derived(total > 1 ? visibleProjects : []);
 
 	function wrapCarouselIndex(index: number, count: number): number {
 		if (count <= 0) return 0;
@@ -78,14 +81,23 @@
 		}
 		const syncPosition = () => {
 			if (!emblaApi) return;
-			card.value = emblaApi.selectedScrollSnap();
+			card.value = emblaApi.selectedScrollSnap() % Math.max(total, 1);
 			canScrollPrevious = emblaApi.canScrollPrev();
 			canScrollForward = emblaApi.canScrollNext();
+		};
+		// Copies look identical, so resting on the real set is an invisible jump that keeps
+		// the clickable, accessible originals in view.
+		const restOnRealSet = () => {
+			const snap = emblaApi?.selectedScrollSnap() ?? 0;
+			if (total > 0 && snap >= total) emblaApi?.scrollTo(snap % total, true);
 		};
 		syncPosition();
 		emblaApi.on('select', syncPosition);
 		emblaApi.on('reInit', syncPosition);
+		emblaApi.on('settle', restOnRealSet);
+		emblaApi.on('reInit', restOnRealSet);
 	}
+
 
 	function scrollPrev() {
 		emblaApi?.scrollPrev();
@@ -109,6 +121,11 @@
 			{#each visibleProjects as project, i}
 				<div class="embla__slide">
 					<ProjectCard {project} variant="proof" class="w-full" data-active={activeIndex === i} />
+				</div>
+			{/each}
+			{#each loopCopies as project}
+				<div class="embla__slide" aria-hidden="true" data-loop-copy>
+					<ProjectCard {project} variant="proof" class="w-full" tabbable={false} data-testid="proof-card-copy" />
 				</div>
 			{/each}
 		</div>

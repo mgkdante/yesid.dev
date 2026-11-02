@@ -28,6 +28,8 @@
 		variant?: ProjectCardVariant;
 		/** Forward first-card loading priority to the media preview. */
 		eager?: boolean;
+		/** False keeps every link out of the tab order (decorative loop copies). */
+		tabbable?: boolean;
 		class?: string;
 		[key: string]: unknown;
 	}
@@ -38,6 +40,7 @@
 		serviceSvgContents = {},
 		variant = 'listing',
 		eager = false,
+		tabbable = true,
 		class: className = '',
 		...rest
 	}: ProjectCardProps = $props();
@@ -92,7 +95,7 @@
 	use:cursorGlow
 	{...rest}
 >
-	<a href={localizeHref(`/projects/${project.slug}`, locale)} class="project-card-link" aria-labelledby={titleId}></a>
+	<a href={localizeHref(`/projects/${project.slug}`, locale)} class="project-card-link" aria-labelledby={titleId} tabindex={tabbable ? undefined : -1}></a>
 	<Card class="h-full gap-0 py-0">
 		<div class="project-card-layout h-full flex-1">
 
@@ -181,7 +184,7 @@
 
 		{#if isProof}
 			<div class="project-card-links" data-testid="proof-card-links">
-				<ProjectProofLinks {project} />
+				<ProjectProofLinks {project} {tabbable} />
 			</div>
 		{/if}
 		</div>
