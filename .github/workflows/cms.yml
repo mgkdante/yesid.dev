@@ -50,6 +50,12 @@ on:
         type: boolean
         default: false
         required: false
+      push_scope:
+        description: 'push only: full (schema + config collections) or schema-only (snapshot, no collections)'
+        type: choice
+        options: [full, schema-only]
+        default: full
+        required: false
       cover_permission_approval_sha256:
         description: 'Cover apply/rollback only: exact reviewed preview plan SHA-256 after direct human approval'
         type: string
@@ -144,7 +150,13 @@ jobs:
           DIRECTUS_SYNC_PUSH_ACK: sync-push-can-delete-cms-data
           DIRECTUS_SYNC_INCLUDE_PERMISSIONS: ${{ inputs.include_permissions && '1' || '' }}
           DIRECTUS_SYNC_PERMISSIONS_ACK: ${{ inputs.include_permissions && 'permissions-push-can-delete-parallel-work' || '' }}
-        run: bun run sync:push
+          PUSH_SCOPE: ${{ inputs.push_scope }}
+        run: |
+          if [ "$PUSH_SCOPE" = "schema-only" ]; then
+            bun run sync:push -- --no-collections
+          else
+            bun run sync:push
+          fi
 
   permission-control-audit:
     # Read-only semantic comparison by policy name + collection + action. This
