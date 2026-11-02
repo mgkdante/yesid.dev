@@ -6,6 +6,7 @@
 	import { cursorGlow } from '@yesid/motion/actions';
 	import StopLabel from '#lib/components/brand/StopLabel.svelte';
 	import { Card } from '@yesid/ui/card';
+	import LanguageFlag, { isFlagId } from './LanguageFlag.svelte';
 
 	const locale = getLocale();
 
@@ -32,7 +33,6 @@
 			<div class="language-strip flex h-full min-h-36 flex-col">
 				{#each languages as language, i}
 					{@const languageLabel = resolveLocale(language.label, locale)}
-					{@const imageSrc = resolveLanguageImage(language.image)}
 					<button
 						type="button"
 						class="tap-press language-flag relative flex min-h-0 flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
@@ -44,14 +44,18 @@
 						aria-pressed={activeIndex === i}
 						onclick={() => handleTap(i)}
 					>
-						<img
-							src={imageSrc}
-							alt=""
-							class="flag-image absolute inset-0 transition-transform duration-500 ease-out"
-							data-testid="about-language-image"
-							loading="lazy"
-							decoding="async"
-						/>
+						{#if isFlagId(language.id)}
+							<LanguageFlag id={language.id} class="flag-image absolute inset-0 transition-transform duration-500 ease-out" />
+						{:else}
+							<img
+								src={resolveLanguageImage(language.image)}
+								alt=""
+								class="flag-image absolute inset-0 transition-transform duration-500 ease-out"
+								data-testid="about-language-image"
+								loading="lazy"
+								decoding="async"
+							/>
+						{/if}
 						<div class="flag-overlay absolute inset-0 transition-opacity duration-500"></div>
 
 						<span class="flag-label absolute z-10 font-mono text-caption font-semibold tracking-[3px]">
@@ -107,7 +111,7 @@
 		border-top: 1px solid color-mix(in srgb, var(--primary) 52%, transparent);
 	}
 
-	.flag-image {
+	.language-flag :global(.flag-image) {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
@@ -135,21 +139,21 @@
 		white-space: nowrap;
 	}
 
-	:global([data-theme='light']) .flag-image,
-	:global(.theme-light) .flag-image {
+	:global([data-theme="light"]) .language-flag :global(.flag-image),
+	:global(.theme-light) .language-flag :global(.flag-image) {
 		filter: brightness(1.04) saturate(1.08);
 	}
 
-	.language-flag:hover .flag-image,
-	.language-flag.language-flag-active .flag-image {
+	.language-flag:hover :global(.flag-image),
+	.language-flag.language-flag-active :global(.flag-image) {
 		filter: brightness(1.05) saturate(1.18);
 		transform: scale(1.04);
 	}
 
-	:global([data-theme='light']) .language-flag:hover .flag-image,
-	:global(.theme-light) .language-flag:hover .flag-image,
-	:global([data-theme='light']) .language-flag.language-flag-active .flag-image,
-	:global(.theme-light) .language-flag.language-flag-active .flag-image {
+	:global([data-theme='light']) .language-flag:hover :global(.flag-image),
+	:global(.theme-light) .language-flag:hover :global(.flag-image),
+	:global([data-theme='light']) .language-flag.language-flag-active :global(.flag-image),
+	:global(.theme-light) .language-flag.language-flag-active :global(.flag-image) {
 		filter: brightness(1.1) saturate(1.13);
 	}
 
