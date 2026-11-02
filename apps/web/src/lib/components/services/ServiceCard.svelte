@@ -14,6 +14,7 @@
 	import { SectionLabel } from '@yesid/ui/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '@yesid/ui/cn';
+	import { stationNumber } from '#lib/utils/station.ts';
 	import { pressBounce } from '@yesid/motion/actions';
 
 	export interface ServiceCardProps {
@@ -38,7 +39,7 @@
 		...rest
 	}: ServiceCardProps = $props();
 
-	let stationNum = $derived(String(service.station).padStart(2, '0'));
+	let stationNum = $derived(stationNumber(index));
 	let totalStr = $derived(String(total).padStart(2, '0'));
 	let stationLabelText = $derived(
 		resolveLocale(siteLabels.servicesChrome.listing.stationLabelTemplate, locale)

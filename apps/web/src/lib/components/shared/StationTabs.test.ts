@@ -30,6 +30,16 @@ describe('StationTabs', () => {
 		expect(screen.getByText('04')).toBeTruthy();
 	});
 
+	it('numbers tabs by position, not by the CMS order value', () => {
+		const gapped = [
+			serviceFactory.build({ id: 'web-development', title: { en: 'Websites' }, description: { en: '' }, station: 7, visible: true }),
+			serviceFactory.build({ id: 'data-pipeline', title: { en: 'Automation' }, description: { en: '' }, station: 3, visible: true }),
+		];
+		render(StationTabs, { props: { services: gapped, activeId: 'data-pipeline' } });
+		expect(screen.getByTestId('station-tab-data-pipeline')).toHaveTextContent('01');
+		expect(screen.getByTestId('station-tab-web-development')).toHaveTextContent('02');
+	});
+
 	it('falls back to the full service title for an id missing from the CMS short-labels', () => {
 		const unknown = [
 			serviceFactory.build({ id: 'mystery-service', title: { en: 'Mystery Offering' }, description: { en: '' }, station: 1, visible: true }),

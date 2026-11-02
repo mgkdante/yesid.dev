@@ -4,6 +4,7 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { siteLabels } from '#lib/content/index.ts';
+	import { orderServices, stationNumber } from '#lib/utils/station.ts';
 	import { Separator } from '@yesid/ui/separator';
 	import * as Tabs from '@yesid/ui/tabs';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
@@ -26,13 +27,9 @@
 		onSelect?: (id: string) => void;
 	} = $props();
 
-	let sorted = $derived([...services].sort((a, b) => a.station - b.station));
+	let sorted = $derived(orderServices(services));
 
 	let activeIndex = $derived(sorted.findIndex((s) => s.id === activeId));
-
-	function padStation(n: number): string {
-		return String(n).padStart(2, '0');
-	}
 
 	const stationShortLabels = siteLabels.servicesChrome.listing.stationShortLabels;
 
@@ -104,8 +101,8 @@
 	});
 </script>
 
-{#snippet tabContent(service: Service, isActive: boolean)}
-	<span class="station-num font-mono text-xs" class:text-brand={isActive}>{padStation(service.station)}</span>
+{#snippet tabContent(service: Service, isActive: boolean, index: number)}
+	<span class="station-num font-mono text-xs" class:text-brand={isActive}>{stationNumber(index)}</span>
 	<span class="station-label text-sm" class:font-bold={isActive}>{getLabel(service)}</span>
 {/snippet}
 
@@ -137,7 +134,7 @@
 					data-testid="station-tab-{service.id}"
 					data-active={isActive ? 'true' : undefined}
 				>
-					{@render tabContent(service, isActive)}
+					{@render tabContent(service, isActive, i)}
 				</a>
 			{/each}
 		</nav>
@@ -173,7 +170,7 @@
 							data-testid="station-tab-{service.id}"
 							data-active={isActive ? 'true' : undefined}
 						>
-							{@render tabContent(service, isActive)}
+							{@render tabContent(service, isActive, i)}
 						</button>
 					{/snippet}
 				</Tabs.Trigger>

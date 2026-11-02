@@ -12,6 +12,7 @@
 	import { getLenis } from '@yesid/motion/utils/lenis';
 	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
+	import { orderServices } from '#lib/utils/station.ts';
 
 	let {
 		services,
@@ -21,9 +22,7 @@
 		serviceSvgContents: Record<string, string>;
 	} = $props();
 
-	let sorted = $derived(
-		[...services].sort((a, b) => a.station - b.station)
-	);
+	let sorted = $derived(orderServices(services));
 
 	// untrack: activeId deliberately seeds from the first station once, then the
 	// IntersectionObserver and tab clicks own it.
