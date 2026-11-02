@@ -129,9 +129,11 @@
 		scroll-snap-align: start;
 	}
 
+	/* Pinned box spans the viewport under the nav and tabs, so every station sits at its vertical middle. */
 	.viewport-inner {
 		position: sticky;
 		top: calc(var(--nav-clearance) + var(--strip-h) + 1rem);
+		min-height: calc(100svh - var(--nav-clearance) - var(--strip-h) - 2rem);
 		display: flex;
 		align-items: center;
 		/* Original distance restored — the giant title (below) fills the row so the
@@ -194,17 +196,9 @@
 		overflow: hidden; /* clips SVG during initial render — prevents size flash */
 	}
 
-	/* The first station centres in the viewport area under the sticky tabs: the bottom padding
-	   mirrors the nav and tabs above it. Later stations keep their pinned top. */
 	@media (--tablet-min) {
 		.svg-mobile-banner {
 			display: none;
-		}
-		.service-viewport-first {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			padding-block: 1rem calc(var(--nav-clearance) + var(--strip-h) + 1rem);
 		}
 	}
 
@@ -277,6 +271,7 @@
 		.viewport-inner {
 			position: static;
 			top: auto;
+			min-height: 0;
 			flex-direction: column;
 			align-items: stretch;
 			gap: 1rem;

@@ -32,8 +32,8 @@ describe('ServiceStackPanel', () => {
 		expect(desktop.container.children).toHaveLength(2);
 		expect(mobile.container.children).toHaveLength(2);
 		expect(desktop.container.querySelector('[data-toc]')).toBeNull();
-		expect(mobile.container.children[0]).toHaveAttribute('data-toc', 'svc-stack');
-		expect(mobile.container.children[1]).toHaveAttribute('data-toc', 'svc-related');
+		expect(mobile.container.children[0]).toHaveAttribute('data-toc', 'svc-related');
+		expect(mobile.container.children[1]).toHaveAttribute('data-toc', 'svc-stack');
 	});
 
 	it('keeps a collapsed stack closed on remount for that service and variant only', async () => {
