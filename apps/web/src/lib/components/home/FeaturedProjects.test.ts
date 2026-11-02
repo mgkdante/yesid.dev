@@ -136,12 +136,15 @@ describe('FeaturedProjects', () => {
 		});
 
 		expect(screen.getByTestId('proof-count')).toHaveAttribute('aria-label', '01 / 03');
-		expect(screen.getByTestId('proof-prev')).toHaveTextContent('←');
-		expect(screen.getByTestId('proof-prev')).not.toHaveTextContent('03');
-		expect(screen.getByTestId('proof-prev')).toHaveAttribute('aria-label', siteLabels.a11y.carouselPrev.en);
-		expect(screen.getByTestId('proof-next')).toHaveTextContent('→');
-		expect(screen.getByTestId('proof-next')).not.toHaveTextContent('02');
-		expect(screen.getByTestId('proof-next')).toHaveAttribute('aria-label', siteLabels.a11y.carouselNext.en);
+		for (const [id, direction, label] of [
+			['proof-prev', 'previous', siteLabels.a11y.carouselPrev.en],
+			['proof-next', 'next', siteLabels.a11y.carouselNext.en],
+		] as const) {
+			const control = screen.getByTestId(id);
+			expect(control).toHaveTextContent(/^$/);
+			expect(control).toHaveAttribute('data-direction', direction);
+			expect(control).toHaveAttribute('aria-label', label);
+		}
 	});
 
 });
