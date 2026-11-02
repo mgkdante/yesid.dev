@@ -337,40 +337,29 @@
 		}
 	}
 
-	/* Home cards share one fixed size and split, whatever their content. */
-	.project-card--proof :global(.card-surface) {
-		height: var(--proof-card-height);
-	}
-
-	.project-card--proof {
-		--proof-card-height: clamp(30rem, 64dvh, 44rem);
-	}
-
+	/* Home cards size to their content and the reel stretches each one to the tallest:
+	   equal media and info halves from tablet up, a 16:9 frame over the info on phones. */
 	.project-card--proof .project-card-layout {
-		grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-	}
-
-	.project-card--proof .project-card-info {
-		min-height: 0;
+		grid-template-rows: 1fr 1fr;
 	}
 
 	.project-card-links {
 		position: relative;
 		z-index: 2;
-		display: flex;
-		align-items: center;
-		flex-shrink: 0;
-		min-height: calc(var(--size-tap-min) + 1.5rem);
-		padding: 0.75rem 1.25rem;
+		padding: 0.25rem 1.25rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 	}
 
 	.project-card-links:not(:has(li)) {
-		border-top-color: transparent;
+		display: none;
 	}
 
 	.project-card-links :global(.project-links) {
 		gap: 0 1rem;
+	}
+
+	.project-card-links :global(:is(.project-links a, .project-links__private)) {
+		font-size: var(--text-caption);
 	}
 
 	.project-card-title {
@@ -393,7 +382,7 @@
 	}
 
 	.project-card--proof .project-card-body {
-		padding: 1.25rem 1.25rem 1rem;
+		padding: 1rem 1.25rem 0.75rem;
 	}
 
 	.project-card--proof[data-active='true'] :global(.card-surface) {
@@ -403,7 +392,7 @@
 
 	@media (--tablet-min) {
 		.project-card--proof .project-card-body {
-			padding: 1.25rem 1.75rem 1rem;
+			padding: 1rem 1.75rem 0.75rem;
 		}
 
 		.project-card-links {
@@ -412,16 +401,16 @@
 	}
 
 	@media (--tablet-max) {
-		.project-card--proof {
-			--proof-card-height: 36rem;
+		.project-card--proof .project-card-layout {
+			grid-template-rows: auto 1fr;
 		}
 
-		.project-card--proof .project-card-layout {
-			grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
+		.project-card--proof .project-card-media {
+			aspect-ratio: 16 / 9;
 		}
 
 		.project-card-links {
-			padding: 0.5rem 1rem;
+			padding-inline: 1rem;
 		}
 	}
 
