@@ -88,7 +88,8 @@
 		{#if svg}
 			{@html svg}
 		{:else}
-			<pre class="mermaid-diagram__fallback"><code>{source}</code></pre>
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+			<pre class="mermaid-diagram__fallback" tabindex="0"><code>{source}</code></pre>
 		{/if}
 	</div>
 	{/if}
