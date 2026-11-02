@@ -157,6 +157,12 @@
 	// --- Submit (client-side — Web3Forms free tier requires client calls) ---
 	let sending = $state(false);
 
+	function failSend(): void {
+		errors = { form: sendErrorMessage };
+		sending = false;
+		trackAnalyticsEvent('contact_form_error');
+	}
+
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		if (sending) return; // in-flight guard — no double submits
@@ -185,15 +191,9 @@
 			});
 			const result = await res.json();
 
-			if (!result.success) {
-				errors = { form: sendErrorMessage };
-				sending = false;
-				return;
-			}
+			if (!result.success) return failSend();
 		} catch {
-			errors = { form: sendErrorMessage };
-			sending = false;
-			return;
+			return failSend();
 		} finally {
 			clearTimeout(timeout);
 		}
