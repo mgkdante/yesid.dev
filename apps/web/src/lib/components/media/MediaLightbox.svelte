@@ -105,6 +105,7 @@
 						{#if activeDiagram}
 							<div class="article-media-diagram" data-testid="article-media-diagram">{@html activeDiagram.svg}</div>
 						{:else if activeImage}
+						<div class="article-media-stage">
 						<img
 							src={activeSource?.src}
 							srcset={activeSource?.srcset}
@@ -115,11 +116,12 @@
 							decoding="async"
 							data-testid="project-image-gallery-lightbox-image"
 						/>
+						</div>
 						{#if activeImage.data.caption}
 							<p class="project-image-gallery__lightbox-caption">{@html activeImage.data.caption}</p>
 						{/if}
 						{:else if activeVideo}
-							{#key activeVideo.id}<YouTubeVideoPlayer video={activeVideo} active />{/key}
+							<div class="article-media-stage">{#key activeVideo.id}<YouTubeVideoPlayer video={activeVideo} active />{/key}</div>
 							{#if activeVideo.caption}
 								<p class="project-image-gallery__lightbox-caption">{activeVideo.caption}</p>
 							{/if}
@@ -164,7 +166,7 @@
 		flex-direction: column;
 		width: min(96vw, 1440px);
 		max-width: 100%;
-		max-height: 90dvh;
+		height: 90dvh;
 		border: 3px solid var(--border-brand-active);
 		border-radius: var(--radius-md);
 		background: var(--surface-2);
@@ -174,13 +176,33 @@
 		cursor: default;
 	}
 
-	.project-image-gallery__lightbox-panel img {
+	/* The panel keeps one height per viewport, so the controls never move between items;
+	   each item is letterboxed inside the stage instead. */
+	.article-media-stage {
+		flex: 1 1 0;
+		min-height: 0;
+		display: grid;
+		grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+		place-items: center;
+		overflow: hidden;
+		container-type: size;
+		background: var(--project-image-gallery-mat);
+	}
+
+	.article-media-stage img {
 		display: block;
 		width: 100%;
-		min-height: 0;
-		max-height: calc(90dvh - 4rem);
+		height: 100%;
 		object-fit: contain;
-		background: var(--project-image-gallery-mat);
+	}
+
+	.article-media-stage :global(.youtube-video) {
+		width: min(100%, 100cqh * 16 / 9);
+		padding-top: 0;
+	}
+
+	.article-media-stage :global(.youtube-video iframe) {
+		max-height: none;
 	}
 
 	.project-image-gallery__lightbox-caption {
@@ -243,6 +265,6 @@
 	}
 
 	.article-media-navigation { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.5rem 3.75rem; flex-shrink: 0; }
-	.article-media-diagram { padding: 3.75rem 1rem 1rem; overflow: auto; }
+	.article-media-diagram { flex: 1 1 0; min-height: 0; padding: 3.75rem 1rem 1rem; overflow: auto; }
 	.article-media-diagram :global(svg) { display: block; width: 100%; max-width: none !important; height: auto; }
 </style>
