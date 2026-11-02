@@ -37,6 +37,7 @@
 }
 
 .reading-detail .section-header .section-title {
+	margin: 0;
 	font-size: var(--reading-heading-size);
 	line-height: 1.3;
 }
