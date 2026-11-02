@@ -1,11 +1,12 @@
 import { adapter } from '#lib/adapters/index.ts';
 import { bookingHref } from '#lib/utils/high-intent-links.ts';
+import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
 import { localeEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = localeEntries;
 
 // Home page content resolves concurrently through the adapter.
-export async function load() {
+export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 	const [
 		metroSvg,
 		hero,
@@ -34,7 +35,10 @@ export async function load() {
 		adapter.content.contactPage(),
 	]);
 
-	const featuredProjects = await adapter.projects.featured();
+	const [featuredProjects, serviceSvgContents] = await Promise.all([
+		adapter.projects.featured(),
+		fetchServiceSvgContents(fetch, services),
+	]);
 
 	return {
 		metroSvg,
@@ -50,5 +54,6 @@ export async function load() {
 		siteMeta,
 		bookingHref: bookingHref(contactPage.socials),
 		featuredProjects,
+		serviceSvgContents,
 	};
 };

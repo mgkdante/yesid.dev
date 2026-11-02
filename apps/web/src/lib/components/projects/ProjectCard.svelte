@@ -105,7 +105,7 @@
 					{project}
 					preset={v.mediaPreset}
 					alt={resolveLocale(project.title, locale)}
-					imageClass={cn('project-card-img', !isProof && project.imageSecondary && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
+					imageClass={cn('project-card-img', project.imageSecondary && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
 					{eager}
 					sizes={project.imageSecondary ? mediaSizes.primary : mediaSizes.single}
 					secondarySizes={mediaSizes.secondary}
@@ -144,7 +144,6 @@
 				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
-			{#if !isProof}
 			{#if projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
@@ -177,8 +176,6 @@
 					{/each}
 					</div>
 				</div>
-			{/if}
-
 			{/if}
 		</div>
 
@@ -318,12 +315,6 @@
 		}
 	}
 
-	/* Home cards size to their content and the reel stretches each one to the tallest:
-	   equal media and info halves from tablet up, a 16:9 frame over the info on phones. */
-	.project-card--proof .project-card-layout {
-		grid-template-rows: 1fr 1fr;
-	}
-
 	.project-card-links {
 		position: relative;
 		z-index: 2;
@@ -357,33 +348,9 @@
 		font-size: var(--text-card-meta);
 	}
 
-	.project-card--proof .project-card-body {
-		padding: 1rem 1.25rem 0.75rem;
-	}
-
 	.project-card--proof[data-active='true'] :global(.card-surface) {
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
-	}
-
-	@media (--tablet-min) {
-		.project-card--proof .project-card-body {
-			padding: 1rem 1.75rem 0.75rem;
-		}
-
-		.project-card--proof .project-card-links {
-			padding-inline: 1.75rem;
-		}
-	}
-
-	@media (--tablet-max) {
-		.project-card--proof .project-card-layout {
-			grid-template-rows: auto 1fr;
-		}
-
-		.project-card--proof .project-card-media {
-			aspect-ratio: 16 / 9;
-		}
 	}
 
 	/* Large image scale rests under reduced motion; component CSS must outrank layered zoom utilities. */
