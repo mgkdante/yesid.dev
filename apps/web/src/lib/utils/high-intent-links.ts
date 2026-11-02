@@ -17,24 +17,31 @@ function parseAbsoluteUrl(href: string): URL | null {
 	}
 }
 
-export function isDirectContactHref(href: string): boolean {
+export type DirectContactChannel = 'email' | 'phone' | 'whatsapp';
+
+/** The direct channel a link opens, or null when it is not a usable direct contact link. */
+export function directContactChannel(href: string): DirectContactChannel | null {
 	const url = parseAbsoluteUrl(href);
-	if (!url) return false;
+	if (!url) return null;
 
 	if (url.protocol === 'mailto:') {
-		return url.pathname.includes('@');
+		return url.pathname.includes('@') ? 'email' : null;
 	}
 
 	if (url.protocol === 'tel:') {
-		return /\d/.test(url.pathname);
+		return /\d/.test(url.pathname) ? 'phone' : null;
 	}
 
-	return (
+	const whatsapp =
 		url.protocol === 'https:' &&
 		url.port === '' &&
 		APPROVED_WHATSAPP_HOSTS.has(url.hostname) &&
-		url.pathname !== '/'
-	);
+		url.pathname !== '/';
+	return whatsapp ? 'whatsapp' : null;
+}
+
+export function isDirectContactHref(href: string): boolean {
+	return directContactChannel(href) !== null;
 }
 
 export function isProjectProofHref(href: string): boolean {

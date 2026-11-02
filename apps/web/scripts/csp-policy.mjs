@@ -6,7 +6,8 @@ export function createCspDirectives({ themeScriptHash, vercelEnv }) {
 	const preview = vercelEnv === 'preview';
 	return {
 		'default-src': ['self'],
-		'script-src': ['self', themeScriptHash, ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
+		// Cloudflare's proxy injects its Web Analytics beacon; it reports to the same-origin /cdn-cgi/rum.
+		'script-src': ['self', themeScriptHash, 'https://static.cloudflareinsights.com', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
 		'style-src': ['self', 'unsafe-inline', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
 		'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://vercel.com']) : [])],
 		'font-src': ['self', 'data:', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://assets.vercel.com']) : [])],

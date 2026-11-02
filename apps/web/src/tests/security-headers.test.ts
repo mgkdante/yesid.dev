@@ -12,7 +12,7 @@ const config = await loadWebConfig().finally(() => vi.unstubAllEnvs());
 const themeScriptHash = boot.hash as `sha256-${string}`;
 const productionDirectives = {
 	'default-src': ['self'],
-	'script-src': ['self', themeScriptHash],
+	'script-src': ['self', themeScriptHash, 'https://static.cloudflareinsights.com'],
 	'style-src': ['self', 'unsafe-inline'],
 	'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com'],
 	'font-src': ['self', 'data:'],
@@ -38,7 +38,7 @@ describe('CSP deployment policy', () => {
 	it('appends only the preview toolbar sources to the same YouTube policy', () => {
 		expect(createCspDirectives({ themeScriptHash, vercelEnv: 'preview' })).toEqual({
 			...productionDirectives,
-			'script-src': ['self', themeScriptHash, 'https://vercel.live'],
+			'script-src': ['self', themeScriptHash, 'https://static.cloudflareinsights.com', 'https://vercel.live'],
 			'style-src': ['self', 'unsafe-inline', 'https://vercel.live'],
 			'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com', 'https://vercel.live', 'https://vercel.com'],
 			'font-src': ['self', 'data:', 'https://vercel.live', 'https://assets.vercel.com'],

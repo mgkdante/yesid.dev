@@ -2,6 +2,8 @@ import { siteMeta } from '#lib/content/index.ts';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
 import type { AnalyticsEventName } from './preset';
 
+type ProfileNetwork = 'github' | 'linkedin' | 'upwork';
+
 function profileKey(href: string): string | null {
 	try {
 		const url = new URL(href);
@@ -11,10 +13,11 @@ function profileKey(href: string): string | null {
 	}
 }
 
-const PROFILE_KEYS = new Set(
-	[siteMeta.links.github, siteMeta.links.linkedin, siteMeta.links.upwork].flatMap((href) => {
+const PROFILE_NETWORKS = new Map<string, ProfileNetwork>(
+	(['github', 'linkedin', 'upwork'] as const).flatMap((network) => {
+		const href = siteMeta.links[network];
 		const key = href ? profileKey(href) : null;
-		return key ? [key] : [];
+		return key ? [[key, network] as const] : [];
 	}),
 );
 
@@ -33,9 +36,9 @@ export function navigationEvents(navigation: NavigationEnds, status: number): An
 	return events;
 }
 
-/** True when the click lands on a link to one of the owner's GitHub, LinkedIn or Upwork profiles. */
-export function isProfileClick(event: Pick<MouseEvent, 'target'>): boolean {
+/** The owner profile (GitHub, LinkedIn or Upwork) a click lands on, or null for any other target. */
+export function profileClickNetwork(event: Pick<MouseEvent, 'target'>): ProfileNetwork | null {
 	const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null;
 	const key = anchor instanceof HTMLAnchorElement ? profileKey(anchor.href) : null;
-	return key !== null && PROFILE_KEYS.has(key);
+	return key === null ? null : (PROFILE_NETWORKS.get(key) ?? null);
 }

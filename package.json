@@ -27,7 +27,7 @@
 	"devDependencies": {
 		"@axe-core/playwright": "4.12.1",
 		"@playwright/test": "^1.58.2",
-		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.30.3/yesid-config-0.30.3.tgz",
+		"@yesid/config": "https://github.com/mgkdante/yesid.dev-design/releases/download/v0.31.0/yesid-config-0.31.0.tgz",
 		"turbo": "^2.5.0"
 	},
 	"overrides": {

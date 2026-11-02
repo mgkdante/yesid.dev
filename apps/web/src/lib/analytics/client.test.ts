@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('$app/env', () => ({ dev: false }));
+vi.mock('$app/env', () => ({ dev: false, building: false, browser: true }));
 vi.mock('$app/env/public', () => ({ PUBLIC_PLAUSIBLE_DOMAIN: '' }));
 
 const { reduceVercelEvent } = await import('./client');

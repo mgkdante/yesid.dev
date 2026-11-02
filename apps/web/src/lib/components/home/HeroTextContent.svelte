@@ -189,7 +189,7 @@
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="conversion" size="cta-lg" href={bookingHref} target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press" onclick={() => trackAnalyticsEvent('booking_click')}>
+		<Button variant="conversion" size="cta-lg" href={bookingHref} target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press" onclick={() => trackAnalyticsEvent('booking_click', { placement: 'hero' })}>
 			{ctaContactLabel}
 		</Button>
 	</div>
