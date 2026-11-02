@@ -6,6 +6,7 @@
   import type { HeroMetric } from '#lib/live/index.ts';
   import { siteLabels } from '#lib/content/site-labels.ts';
   import TransitInfoLink from './TransitInfoLink.svelte';
+  import TransitSourceNote from './TransitSourceNote.svelte';
   import { Card } from '@yesid/ui/card';
   import { resolveLocale } from '#lib/utils/locale.ts';
   import { getLocale, intl } from '#lib/utils/locale-context.ts';
@@ -103,7 +104,11 @@
   {/each}
 </div>
 
+<!-- Short screens keep the CTAs in the first view; the SQL panel note still credits Transit there. -->
+<div class="metrics-source"><TransitSourceNote /></div>
+
 <style>
+  @media (max-height: 720px) { .metrics-source { display: none; } }
   .metric-label { display: flex; align-items: center; justify-content: start; gap: 0.5rem; }
   .metric-label-text { min-width: 0; flex: 1; white-space: normal; }
   .metric-value { white-space: nowrap; }
