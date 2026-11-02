@@ -209,9 +209,25 @@
 			column-gap: 1.5rem;
 		}
 
+		/* The icon has its own fixed column here and fills the full height of the four text
+		   rows beside it (capped by the column width). The column never depends on the icon,
+		   so the text width and the row height stay stable. */
 		.blog-row-icon {
-			flex: 0 0 auto;
+			flex: 0 0 11.5rem;
 			margin: 0;
+			align-self: stretch;
+			width: 11.5rem;
+			height: auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.blog-row-icon > :global(*) {
+			height: 100% !important;
+			width: auto !important;
+			aspect-ratio: 1;
+			max-width: 100%;
 		}
 
 		.blog-row-body {

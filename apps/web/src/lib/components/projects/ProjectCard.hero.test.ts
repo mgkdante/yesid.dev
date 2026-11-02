@@ -102,7 +102,7 @@ describe('ProjectCard hero media', () => {
 		expect(container.querySelectorAll('.blueprint-art')).toHaveLength(2);
 	});
 
-	it('renders proof cards with media, title and proof links but no metrics, services or stack', () => {
+	it('renders proof cards like listing cards: media, title, services and links, without metrics or stack', () => {
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
 			imageSecondary: 'mobile-dark-uuid',
@@ -121,7 +121,8 @@ describe('ProjectCard hero media', () => {
 		expect(screen.getByTestId('proof-card-image')).toBeInTheDocument();
 		expect(screen.getByTestId('proof-card-title').textContent).toContain(project.title.en);
 		expect(card.textContent).not.toContain('42%');
-		expect(card.textContent).not.toContain('Fixture service');
+		expect(card.textContent).toContain('Fixture service');
+		expect(card.textContent).not.toContain('Postgres');
 		expect(screen.getByTestId('proof-card-links').querySelector('a')?.getAttribute('href')).toBe('https://example.test');
 
 		const images = container.querySelectorAll('[data-testid="project-hero-preview-image"]');

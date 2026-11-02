@@ -51,6 +51,7 @@
 
 		services: readonly Service[];
 		featuredProjects: readonly ProjectSummary[];
+		serviceSvgContents?: Record<string, string>;
 		siteMeta: SiteMeta;
 		bookingHref: string;
 	}
@@ -66,6 +67,7 @@
 		initialHeroData,
 		services,
 		featuredProjects,
+		serviceSvgContents = {},
 		siteMeta,
 		bookingHref,
 	}: Props = $props();
@@ -241,6 +243,8 @@
 		<FeaturedProjects
 			proofReel={proofReel}
 			projects={featuredProjects}
+			{services}
+			{serviceSvgContents}
 		/>
 	</div>
 	<div class="rotated-title rotated-title--right">

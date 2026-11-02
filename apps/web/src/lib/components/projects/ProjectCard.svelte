@@ -28,6 +28,8 @@
 		variant?: ProjectCardVariant;
 		/** Forward first-card loading priority to the media preview. */
 		eager?: boolean;
+		/** False keeps every link out of the tab order (decorative loop copies). */
+		tabbable?: boolean;
 		class?: string;
 		[key: string]: unknown;
 	}
@@ -38,6 +40,7 @@
 		serviceSvgContents = {},
 		variant = 'listing',
 		eager = false,
+		tabbable = true,
 		class: className = '',
 		...rest
 	}: ProjectCardProps = $props();
@@ -92,7 +95,7 @@
 	use:cursorGlow
 	{...rest}
 >
-	<a href={localizeHref(`/projects/${project.slug}`, locale)} class="project-card-link" aria-labelledby={titleId}></a>
+	<a href={localizeHref(`/projects/${project.slug}`, locale)} class="project-card-link" aria-labelledby={titleId} tabindex={tabbable ? undefined : -1}></a>
 	<Card class="h-full gap-0 py-0">
 		<div class="project-card-layout h-full flex-1">
 
@@ -102,7 +105,7 @@
 					{project}
 					preset={v.mediaPreset}
 					alt={resolveLocale(project.title, locale)}
-					imageClass={cn('project-card-img', !isProof && project.imageSecondary && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
+					imageClass={cn('project-card-img', project.imageSecondary && 'transition-transform duration-500 group-hover:scale-105 group-active:scale-105')}
 					{eager}
 					sizes={project.imageSecondary ? mediaSizes.primary : mediaSizes.single}
 					secondarySizes={mediaSizes.secondary}
@@ -141,16 +144,15 @@
 				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
-			{#if !isProof}
 			{#if projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, locale)}
 					</div>
-					<div class="flex flex-wrap gap-1.5">
+					<div class="project-card-services">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
+							class="project-card-service inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -162,7 +164,7 @@
 									/>
 								</div>
 							{/if}
-							<span class="project-card-meta inline-flex items-start gap-2 font-mono leading-tight text-[var(--foreground)]">
+							<span class="project-card-meta inline-flex min-w-0 items-start gap-2 font-mono leading-tight text-[var(--foreground)]">
 								<span
 									class="first-line-bullet"
 									style="background: {serviceLineColor(service.id)};"
@@ -175,15 +177,11 @@
 					</div>
 				</div>
 			{/if}
-
-			{/if}
 		</div>
 
-		{#if isProof}
-			<div class="project-card-links" data-testid="proof-card-links">
-				<ProjectProofLinks {project} />
-			</div>
-		{/if}
+		<div class="project-card-links" data-testid={isProof ? 'proof-card-links' : 'project-card-links'}>
+			<ProjectProofLinks {project} {tabbable} />
+		</div>
 		</div>
 
 		</div>
@@ -191,6 +189,45 @@
 </article>
 
 <style>
+	/* From tablet up: a fixed 2x2, filled column by column. One service sits in the first cell,
+	   two stack, three or four fill both columns. Pills fill their cell's width; the listing's
+	   equalizeRows gives every pill the tallest pill's height, so all pills match. Rows stay
+	   natural (no stretch) so that measurement is stable. */
+	.project-card-services {
+		display: grid;
+		grid-auto-flow: column;
+		grid-template-rows: repeat(2, auto);
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-content: start;
+		gap: 0.375rem;
+	}
+
+	/* Labels wrap between words only, overriding the global break-word. */
+	.project-card-service {
+		min-width: 0;
+		max-width: 100%;
+		word-break: normal;
+		overflow-wrap: normal;
+	}
+
+	/* Tight insides leave room for the icon and a whole word on one line. */
+	.project-card-service {
+		padding-inline: 0.5rem;
+		gap: 0.375rem;
+	}
+	.project-card-service .project-card-meta {
+		gap: 0.375rem;
+	}
+
+	/* Phones stack every service in one column. */
+	@media (--tablet-max) {
+		.project-card-services {
+			grid-auto-flow: row;
+			grid-template-rows: none;
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
 	/* Strip SvgIcon container border/bg when nested in card badges */
 	.service-badge-icon :global([data-slot="svg-icon"]) {
 		border: none;
@@ -278,16 +315,10 @@
 		}
 	}
 
-	/* Home cards size to their content and the reel stretches each one to the tallest:
-	   equal media and info halves from tablet up, a 16:9 frame over the info on phones. */
-	.project-card--proof .project-card-layout {
-		grid-template-rows: 1fr 1fr;
-	}
-
 	.project-card-links {
 		position: relative;
 		z-index: 2;
-		padding: 0.25rem 1.25rem;
+		padding: 0.25rem 1rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 	}
 
@@ -317,37 +348,9 @@
 		font-size: var(--text-card-meta);
 	}
 
-	.project-card--proof .project-card-body {
-		padding: 1rem 1.25rem 0.75rem;
-	}
-
 	.project-card--proof[data-active='true'] :global(.card-surface) {
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
-	}
-
-	@media (--tablet-min) {
-		.project-card--proof .project-card-body {
-			padding: 1rem 1.75rem 0.75rem;
-		}
-
-		.project-card-links {
-			padding-inline: 1.75rem;
-		}
-	}
-
-	@media (--tablet-max) {
-		.project-card--proof .project-card-layout {
-			grid-template-rows: auto 1fr;
-		}
-
-		.project-card--proof .project-card-media {
-			aspect-ratio: 16 / 9;
-		}
-
-		.project-card-links {
-			padding-inline: 1rem;
-		}
 	}
 
 	/* Large image scale rests under reduced motion; component CSS must outrank layered zoom utilities. */

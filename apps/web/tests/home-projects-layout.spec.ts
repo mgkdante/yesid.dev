@@ -199,7 +199,7 @@ test('the shared project listing stays readable', async ({ page }) => {
 	const cards = page.getByTestId('project-card');
 	await expect(cards.first()).toBeVisible();
 	for (const card of await cards.all()) {
-		await expect(card.getByRole('link')).toHaveAccessibleName((await card.getByRole('heading').textContent())!.trim());
+		await expect(card.locator('.project-card-link')).toHaveAccessibleName((await card.getByRole('heading').textContent())!.trim());
 		await expectImagesFitPanes(card);
 		await expectMediaAboveInfo(card);
 		await expectPanesSideBySide(card);
@@ -213,7 +213,7 @@ test('a project card opens from its link and its service labels', async ({ page 
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/projects');
 	const card = page.getByTestId('project-card').filter({ has: page.locator('.first-line-bullet') }).first();
-	const link = card.getByRole('link');
+	const link = card.locator('.project-card-link');
 	const href = await link.getAttribute('href');
 	await card.locator('.first-line-bullet').first().locator('..').click({ force: true });
 	await expect(page.getByTestId('project-detail-page')).toBeVisible();
