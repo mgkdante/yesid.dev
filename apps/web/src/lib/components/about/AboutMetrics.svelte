@@ -40,7 +40,7 @@
 				{/if}
 
 				<div class="flex flex-1 justify-center text-center">
-					<MetricDisplay value={metric.value} label={metricLabel} size="lg" labelBelow />
+					<MetricDisplay value={metric.value} label={metricLabel} size="md" labelBelow />
 				</div>
 			{/each}
 		</div>
