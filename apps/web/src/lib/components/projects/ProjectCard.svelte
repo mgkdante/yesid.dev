@@ -147,10 +147,10 @@
 					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, locale)}
 					</div>
-					<div class="flex flex-wrap gap-1.5">
+					<div class="project-card-services" class:project-card-services--split={projectServices.length > 2}>
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
+							class="project-card-service inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -162,7 +162,7 @@
 									/>
 								</div>
 							{/if}
-							<span class="project-card-meta inline-flex items-start gap-2 font-mono leading-tight text-[var(--foreground)]">
+							<span class="project-card-meta inline-flex min-w-0 items-start gap-2 font-mono leading-tight text-[var(--foreground)]">
 								<span
 									class="first-line-bullet"
 									style="background: {serviceLineColor(service.id)};"
@@ -191,6 +191,31 @@
 </article>
 
 <style>
+	/* Always two rows, filled column by column: one service leaves the second row
+	   empty but sized, two stack, three or four split into two columns. Equal 1fr
+	   rows keep every card's services block the same height. */
+	.project-card-services {
+		display: grid;
+		grid-auto-flow: column;
+		grid-template-rows: repeat(2, 1fr);
+		grid-auto-columns: minmax(0, 1fr);
+		justify-items: start;
+		gap: 0.375rem;
+	}
+
+	/* Labels wrap between words only, overriding the global break-word. */
+	.project-card-service {
+		min-width: 0;
+		max-width: 100%;
+		word-break: normal;
+		overflow-wrap: normal;
+	}
+
+	/* Two columns are narrow: drop the icon so each word fits on its line. */
+	.project-card-services--split .service-badge-icon {
+		display: none;
+	}
+
 	/* Strip SvgIcon container border/bg when nested in card badges */
 	.service-badge-icon :global([data-slot="svg-icon"]) {
 		border: none;
