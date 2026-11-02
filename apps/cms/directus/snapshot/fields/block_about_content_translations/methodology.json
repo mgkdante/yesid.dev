@@ -27,17 +27,6 @@
           "type": "string"
         },
         {
-          "field": "station",
-          "meta": {
-            "field": "station",
-            "interface": "input",
-            "type": "string",
-            "width": "half"
-          },
-          "name": "station",
-          "type": "string"
-        },
-        {
           "field": "label",
           "meta": {
             "field": "label",

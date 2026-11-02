@@ -169,7 +169,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		return metric;
 	});
 
-	// --- methodology: id (plain), station (number plain), label (LS), description (LS) ---
+	// --- methodology: id (plain), label (LS), description (LS) ---
 	const methodByLocale = new Map<string, Array<Record<string, unknown>>>();
 	for (const row of tr) {
 		const code = row.languages_code as string;
@@ -200,7 +200,6 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			id: str(enS.id),
 			label: labelLS,
 			description: descLS,
-			station: typeof enS.station === 'number' ? enS.station : 0,
 		};
 	});
 

@@ -28,7 +28,6 @@ export const AboutMethodStepSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	description: LocalizedStringSchema,
-	station: z.number(),
 });
 
 export const AboutTestimonialSchema = z.object({

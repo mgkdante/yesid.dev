@@ -6406,26 +6406,22 @@
 				{
 					"id": "curiosity",
 					"label": {"en":"CURIOSITY","fr":"CURIOSITÉ","es":"CURIOSIDAD"},
-					"description": {"en":"I take things apart to learn how they work, then build better ones.","fr":"Je démonte les choses pour comprendre comment elles marchent, puis j'en construis de meilleures.","es":"Desarmo las cosas para entender cómo funcionan, y luego construyo unas mejores."},
-					"station": 1
+					"description": {"en":"I take things apart to learn how they work, then build better ones.","fr":"Je démonte les choses pour comprendre comment elles marchent, puis j'en construis de meilleures.","es":"Desarmo las cosas para entender cómo funcionan, y luego construyo unas mejores."}
 				},
 				{
 					"id": "aesthetics",
 					"label": {"en":"AESTHETICS","fr":"ESTHÉTIQUE","es":"ESTÉTICA"},
-					"description": {"en":"If it works but it's ugly, it's only half done.","fr":"Si ça fonctionne mais que c'est laid, ce n'est qu'à moitié fait.","es":"Si funciona pero es feo, solo está hecho a medias."},
-					"station": 2
+					"description": {"en":"If it works but it's ugly, it's only half done.","fr":"Si ça fonctionne mais que c'est laid, ce n'est qu'à moitié fait.","es":"Si funciona pero es feo, solo está hecho a medias."}
 				},
 				{
 					"id": "community",
 					"label": {"en":"COMMUNITY","fr":"COMMUNAUTÉ","es":"COMUNIDAD"},
-					"description": {"en":"Good tools lift the people around them, that’s the whole point.","fr":"Les bons outils élèvent les gens autour d'eux, c'est tout l'intérêt.","es":"Las buenas herramientas impulsan a quienes las rodean, de eso se trata todo."},
-					"station": 3
+					"description": {"en":"Good tools lift the people around them, that’s the whole point.","fr":"Les bons outils élèvent les gens autour d'eux, c'est tout l'intérêt.","es":"Las buenas herramientas impulsan a quienes las rodean, de eso se trata todo."}
 				},
 				{
 					"id": "quality",
 					"label": {"en":"QUALITY","fr":"QUALITÉ","es":"CALIDAD"},
-					"description": {"en":"I'd rather build it right than build it twice.","fr":"Je préfère bien le bâtir que le bâtir deux fois.","es":"Prefiero construirlo bien a construirlo dos veces."},
-					"station": 4
+					"description": {"en":"I'd rather build it right than build it twice.","fr":"Je préfère bien le bâtir que le bâtir deux fois.","es":"Prefiero construirlo bien a construirlo dos veces."}
 				}
 			],
 			"testimonials": [

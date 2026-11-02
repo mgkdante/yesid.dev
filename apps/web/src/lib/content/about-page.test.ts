@@ -60,13 +60,6 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.methodology.length).toBeGreaterThanOrEqual(3);
 		});
 
-		it('stations are sequential starting at 1', () => {
-			const stations = aboutPageContent.methodology.map((s) => s.station);
-			for (let i = 0; i < stations.length; i++) {
-				expect(stations[i]).toBe(i + 1);
-			}
-		});
-
 		it('every step has a unique id', () => {
 			const ids = aboutPageContent.methodology.map((s) => s.id);
 			expect(new Set(ids).size).toBe(ids.length);

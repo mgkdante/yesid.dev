@@ -17,13 +17,13 @@ import type { FetcherContext } from './types';
 import { mapLocalizedRepeater } from '../locale';
 
 /** blog_posts_tags junction row, expanded to the tag slug. */
-export interface DirectusTagJunctionRow {
+interface DirectusTagJunctionRow {
 	sort: number | null;
 	tags_id: { id: string } | null;
 }
 
 /** Tag slugs from the ordered M2M junction. */
-export function tagsFromM2M(rows: DirectusTagJunctionRow[] | undefined): string[] {
+function tagsFromM2M(rows: DirectusTagJunctionRow[] | undefined): string[] {
 	return mapLocalizedRepeater(rows, (j) => j.tags_id?.id).filter((n): n is string => !!n);
 }
 

@@ -1,4 +1,4 @@
-export type TextBlock = { kind: 'paragraph'; text: string } | { kind: 'list'; items: string[] };
+type TextBlock = { kind: 'paragraph'; text: string } | { kind: 'list'; items: string[] };
 
 const LIST_ITEM = /^\s*-\s+/;
 
