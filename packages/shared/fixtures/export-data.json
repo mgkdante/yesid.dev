@@ -2,11 +2,90 @@
 	"version": "1",
 	"directusUrl": "fixture",
 	"data": {
+		"siteMeta": {
+			"name": "yesid.",
+			"tagline": {"en":"Digital infrastructure that moves.","fr":"Une infrastructure numérique qui bouge.","es":"Infraestructura digital que se mueve."},
+			"description": {"en":"Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.","fr":"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado."},
+			"links": {
+				"email": "contact@yesid.dev",
+				"github": "https://github.com/mgkdante",
+				"linkedin": "https://www.linkedin.com/in/otaloray/",
+				"upwork": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82"
+			},
+			"owner": {
+				"name": "Yesid",
+				"jobTitle": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
+				"address": {
+					"locality": "Montreal",
+					"region": "QC",
+					"country": "CA"
+				},
+				"knowsAbout": [
+					"Web Development",
+					"Shopify",
+					"SvelteKit",
+					"TypeScript",
+					"Business Automation",
+					"AI Automation",
+					"Python",
+					"Power BI",
+					"PostgreSQL",
+					"dbt",
+					"ETL",
+					"Data Warehousing",
+					"Digital Infrastructure"
+				]
+			}
+		},
 		"siteSeoDefaults": {
 			"defaultOgImage": null,
 			"themeColor": "#141414",
 			"defaultDescription": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec."}
 		},
+		"routeSeo": [
+			{
+				"path": "/",
+				"ogImage": null,
+				"title": {"en":"yesid. | Digital Infrastructure that Moves.","fr":"yesid. | Infrastructure numérique qui avance.","es":"yesid. | Infraestructura digital que se mueve."},
+				"description": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec."}
+			},
+			{
+				"path": "/about",
+				"ogImage": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
+				"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
+				"description": {"en":"Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.","fr":"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado."}
+			},
+			{
+				"path": "/contact",
+				"ogImage": "a781a5a4-1abc-4be4-a75e-ee6000419a53",
+				"title": {"en":"Hire a Digital Infrastructure Freelancer in Montreal","fr":"Engager un pigiste en infrastructure numérique à Montréal","es":"Contrata un freelancer de infraestructura digital en Montreal"},
+				"description": {"en":"Get in touch about a website, online store, automation, dashboard, or database. SvelteKit, Shopify, Python, Power BI, PostgreSQL. Montréal, across Canada.","fr":"Contactez-moi pour un site web, une boutique en ligne, de l'automatisation, des tableaux de bord ou une base de données. Basé à Montréal, partout au Canada.","es":"Escríbeme por un sitio web, tienda en línea, automatización, tableros o bases de datos. SvelteKit, Shopify, Python, Power BI, PostgreSQL. Montreal y Canadá."}
+			},
+			{
+				"path": "/services",
+				"ogImage": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7",
+				"title": {"en":"Websites, Automation & AI, Dashboards, Software","fr":"Sites web, automatisation et IA, rapports, logiciels","es":"Sitios web, automatización e IA, reportes, software"},
+				"description": {"en":"Websites and online stores, automation and AI, reports and dashboards, custom software and databases. Freelance in Montréal for Québec and Canadian SMEs.","fr":"Sites web et boutiques, automatisation et IA, rapports et tableaux de bord, logiciels et bases de données. Pigiste à Montréal pour les PME d'ici.","es":"Sitios web y tiendas, automatización e IA, reportes y tableros, software y bases de datos. Freelance en Montreal para pymes de Quebec y Canadá."}
+			},
+			{
+				"path": "/projects",
+				"ogImage": "864b5ad1-3dac-47ea-ad96-f175cad1b515",
+				"title": {"en":"Projects","fr":"Projets","es":"Proyectos"},
+				"description": {"en":"Recent freelance and client work: websites, online stores, automation, dashboards, and data systems, including a real-time transit platform.","fr":"Travaux récents pour clients : sites web et boutiques, automatisation, tableaux de bord et données, dont une plateforme de transport en temps réel.","es":"Trabajo freelance reciente: sitios web y tiendas, automatización, tableros y sistemas de datos, incluida una plataforma de transporte en tiempo real. Montreal."}
+			},
+			{
+				"path": "/blog",
+				"ogImage": null,
+				"title": {"en":"Blog","fr":"Blog","es":"Blog"},
+				"description": {"en":"Notes on websites, automation, dashboards, and databases for growing businesses: SvelteKit, PostgreSQL, Power BI, and more. Montreal-based freelance developer.","fr":"Notes sur les sites web, l'automatisation, les tableaux de bord et les bases de données pour PME : SvelteKit, PostgreSQL, Power BI et plus. Pigiste à Montréal.","es":"Notas sobre sitios web, automatización, tableros y bases de datos para empresas en crecimiento: SvelteKit, PostgreSQL, Power BI y más. Freelance en Montreal."}
+			},
+			{
+				"path": "/blog/personal",
+				"ogImage": null,
+				"title": {"en":"Personal Blog","fr":"Blogue perso","es":"Blog personal"},
+				"description": {"en":"Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well.","fr":"Notes hors travail: outils, lectures, expériences et projets parallèles. Plus personnel que le blog professionnel, mais toujours centré sur bien construire.","es":"Notas fuera del trabajo: herramientas, lecturas, experimentos y proyectos paralelos. Más largo que el blog profesional, siempre sobre construir bien las cosas."}
+			}
+		],
 		"morphShapes": [
 			{
 				"id": "triangle",
@@ -35,81 +114,6 @@
 				"path": "M24 7 L39 15.5 L39 32.5 L24 41 L9 32.5 L9 15.5 Z",
 				"viewbox": "0 0 48 48",
 				"sort": 4
-			}
-		],
-		"siteMeta": {
-			"name": "yesid.",
-			"tagline": {"en":"Digital infrastructure that moves.","fr":"Une infrastructure numérique qui bouge.","es":"Infraestructura digital que se mueve."},
-			"description": {"en":"Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.","fr":"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado."},
-			"links": {
-				"email": "contact@yesid.dev",
-				"github": "https://github.com/mgkdante",
-				"linkedin": "https://www.linkedin.com/in/otaloray/",
-				"upwork": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82"
-			},
-			"owner": {
-				"name": "Yesid",
-				"jobTitle": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
-				"address": {
-					"locality": "Montreal",
-					"region": "QC",
-					"country": "CA"
-				},
-				"knowsAbout": [
-					"PostgreSQL",
-					"dbt",
-					"Power BI",
-					"Python",
-					"Digital Infrastructure",
-					"ETL",
-					"Data Warehousing",
-					"SvelteKit",
-					"TypeScript"
-				]
-			}
-		},
-		"routeSeo": [
-			{
-				"path": "/",
-				"ogImage": null,
-				"title": {"en":"yesid. | Digital Infrastructure that Moves.","fr":"yesid. | Infrastructure numérique qui avance.","es":"yesid. | Infraestructura digital que se mueve."},
-				"description": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec."}
-			},
-			{
-				"path": "/about",
-				"ogImage": "48bb90b1-0934-4cc9-a935-bc5ab719a71d",
-				"title": {"en":"Freelance Digital Infrastructure Developer","fr":"Développeur d'infrastructure numérique à la pige","es":"Desarrollador freelance de infraestructura digital"},
-				"description": {"en":"Digital Infrastructure Developer. I help Québec and Canadian SMEs become more competitive, more productive and generate more value per employee.","fr":"Développeur d'infrastructure numérique. J'aide les PME du Québec et du Canada à devenir plus compétitives, plus productives et à générer plus de valeur par employé.","es":"Desarrollador de infraestructura digital. Ayudo a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado."}
-			},
-			{
-				"path": "/contact",
-				"ogImage": "a781a5a4-1abc-4be4-a75e-ee6000419a53",
-				"title": {"en":"Hire a Digital Infrastructure Freelancer in Montreal","fr":"Engager un pigiste en infrastructure numérique à Montréal","es":"Contrata un freelancer de infraestructura digital en Montreal"},
-				"description": {"en":"Get in touch for freelance database, pipeline, dashboard, or website work. PostgreSQL, dbt, Power BI, SvelteKit. Based in Montréal, working across Canada.","fr":"Contactez-moi pour du travail pigiste: bases de données, pipelines, tableaux de bord, sites web. Basé à Montréal, au service des entreprises partout au Canada.","es":"Escríbeme para trabajo freelance en bases de datos, pipelines, tableros o sitios web. PostgreSQL, dbt, Power BI, SvelteKit. En Montreal, trabajo con todo Canadá."}
-			},
-			{
-				"path": "/services",
-				"ogImage": "dcf6e0a2-7da6-44fe-9324-4a98a4d0aaa7",
-				"title": {"en":"Digital Infrastructure Services: Web, Data, Automation","fr":"Infrastructure numérique: web, données, automatisation","es":"Infraestructura digital: web, datos, automatización"},
-				"description": {"en":"I build the infrastructure your operations run on: databases & SQL, pipelines & automation, dashboards & analytics, websites & e-commerce.","fr":"Je bâtis l'infrastructure sur laquelle vos opérations reposent : bases de données et SQL, pipelines et automatisation, tableaux de bord et analytique, sites web et commerce en ligne.","es":"Construyo la infraestructura sobre la que funcionan tus operaciones: bases de datos y SQL, pipelines y automatización, dashboards y analítica, sitios web y e-commerce."}
-			},
-			{
-				"path": "/projects",
-				"ogImage": "864b5ad1-3dac-47ea-ad96-f175cad1b515",
-				"title": {"en":"Projects","fr":"Projets","es":"Proyectos"},
-				"description": {"en":"Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.","fr":"Travaux récents pour clients et mandats pigistes: pipelines transport temps réel, plateformes analytiques, tableaux de bord, ETL et infrastructure numérique.","es":"Trabajo freelance reciente: pipelines de transporte en tiempo real, plataformas analíticas, tableros, ETL e infraestructura para equipos en Montreal y Canadá."}
-			},
-			{
-				"path": "/blog",
-				"ogImage": null,
-				"title": {"en":"Blog","fr":"Blog","es":"Blog"},
-				"description": {"en":"Notes on digital infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.","fr":"Notes sur l'infrastructure numérique, SQL, PostgreSQL, dbt, Power BI et la construction de systèmes analytiques pour équipes en croissance.","es":"Notas sobre infraestructura digital, SQL, PostgreSQL, dbt, Power BI y sistemas analíticos para equipos en crecimiento. Consultor freelance en Montreal."}
-			},
-			{
-				"path": "/blog/personal",
-				"ogImage": null,
-				"title": {"en":"Personal Blog","fr":"Blogue perso","es":"Blog personal"},
-				"description": {"en":"Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well.","fr":"Notes hors travail: outils, lectures, expériences et projets parallèles. Plus personnel que le blog professionnel, mais toujours centré sur bien construire.","es":"Notas fuera del trabajo: herramientas, lecturas, experimentos y proyectos paralelos. Más largo que el blog profesional, siempre sobre construir bien las cosas."}
 			}
 		],
 		"errorPageFallback": {
@@ -221,68 +225,6 @@
 				}
 			]
 		},
-		"sitePages": [
-			{
-				"path": "/",
-				"type": "freeform",
-				"title": {"en":"Home","fr":"Accueil","es":"Inicio"}
-			},
-			{
-				"path": "/services",
-				"type": "listing",
-				"title": {"en":"Services","fr":"Services","es":"Servicios"}
-			},
-			{
-				"path": "/projects",
-				"type": "listing",
-				"title": {"en":"Projects","fr":"Projets","es":"Proyectos"}
-			},
-			{
-				"path": "/blog",
-				"type": "listing",
-				"title": {"en":"Blog","fr":"Blog","es":"Blog"}
-			},
-			{
-				"path": "/blog/personal",
-				"type": "listing",
-				"title": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"}
-			},
-			{
-				"path": "/about",
-				"type": "freeform",
-				"title": {"en":"About","fr":"À propos","es":"Acerca de"}
-			},
-			{
-				"path": "/contact",
-				"type": "freeform",
-				"title": {"en":"Contact","fr":"Contact","es":"Contacto"}
-			},
-			{
-				"path": "/legal/privacy",
-				"type": "freeform",
-				"title": {"en":"Privacy Policy","fr":"Politique de confidentialité","es":"Política de privacidad"}
-			},
-			{
-				"path": "/legal/terms",
-				"type": "freeform",
-				"title": {"en":"Terms of Use","fr":"Conditions d'utilisation","es":"Condiciones de uso"}
-			},
-			{
-				"path": "/legal/cookies",
-				"type": "freeform",
-				"title": {"en":"Cookie and Tracking Policy","fr":"Politique sur les témoins (cookies)","es":"Política de cookies"}
-			},
-			{
-				"path": "/legal/accessibility",
-				"type": "freeform",
-				"title": {"en":"Accessibility Statement","fr":"Déclaration d'accessibilité","es":"Declaración de accesibilidad"}
-			},
-			{
-				"path": "/legal/notice",
-				"type": "freeform",
-				"title": {"en":"Legal Notice","fr":"Avis juridique","es":"Aviso legal"}
-			}
-		],
 		"blogPosts": [
 			{
 				"translationKey": "missing-data-is-not-zero",
@@ -1353,7 +1295,7 @@
 						"id": "ch6-017",
 						"type": "paragraph",
 						"data": {
-							"text": "If that trade fits your site, see how the <a href=\"https://yesid.dev/services/web-development\">Websites &amp; E-commerce service</a> approaches web projects."
+							"text": "If that trade fits your site, see how the <a href=\"https://yesid.dev/services/web-development\">Websites &amp; Online Stores service</a> approaches web projects."
 						}
 					},
 					{
@@ -1426,7 +1368,7 @@
 						"id": "ch6-es-017",
 						"type": "paragraph",
 						"data": {
-							"text": "Si ese equilibrio funciona para tu sitio, mira cómo el <a href=\"https://yesid.dev/services/web-development\">servicio de Sitios web y e-commerce</a> aborda los proyectos web."
+							"text": "Si ese equilibrio funciona para tu sitio, mira cómo el <a href=\"https://yesid.dev/services/web-development\">servicio de Sitios web y tiendas en línea</a> aborda los proyectos web."
 						}
 					},
 					{
@@ -1499,7 +1441,7 @@
 						"id": "ch6-fr-017",
 						"type": "paragraph",
 						"data": {
-							"text": "Si ce compromis convient à votre site, voyez comment le <a href=\"https://yesid.dev/services/web-development\">service Sites web et commerce électronique</a> aborde les projets web."
+							"text": "Si ce compromis convient à votre site, voyez comment le <a href=\"https://yesid.dev/services/web-development\">service Sites web et boutiques en ligne</a> aborde les projets web."
 						}
 					},
 					{
@@ -2416,75 +2358,147 @@
 				"version": "2.31.2"
 			}
 		},
+		"sitePages": [
+			{
+				"path": "/",
+				"type": "freeform",
+				"title": {"en":"Home","fr":"Accueil","es":"Inicio"}
+			},
+			{
+				"path": "/services",
+				"type": "listing",
+				"title": {"en":"Services","fr":"Services","es":"Servicios"}
+			},
+			{
+				"path": "/projects",
+				"type": "listing",
+				"title": {"en":"Projects","fr":"Projets","es":"Proyectos"}
+			},
+			{
+				"path": "/blog",
+				"type": "listing",
+				"title": {"en":"Blog","fr":"Blog","es":"Blog"}
+			},
+			{
+				"path": "/blog/personal",
+				"type": "listing",
+				"title": {"en":"Personal Corner","fr":"Coin perso","es":"Rincón personal"}
+			},
+			{
+				"path": "/about",
+				"type": "freeform",
+				"title": {"en":"About","fr":"À propos","es":"Acerca de"}
+			},
+			{
+				"path": "/contact",
+				"type": "freeform",
+				"title": {"en":"Contact","fr":"Contact","es":"Contacto"}
+			},
+			{
+				"path": "/legal/privacy",
+				"type": "freeform",
+				"title": {"en":"Privacy Policy","fr":"Politique de confidentialité","es":"Política de privacidad"}
+			},
+			{
+				"path": "/legal/terms",
+				"type": "freeform",
+				"title": {"en":"Terms of Use","fr":"Conditions d'utilisation","es":"Condiciones de uso"}
+			},
+			{
+				"path": "/legal/cookies",
+				"type": "freeform",
+				"title": {"en":"Cookie and Tracking Policy","fr":"Politique sur les témoins (cookies)","es":"Política de cookies"}
+			},
+			{
+				"path": "/legal/accessibility",
+				"type": "freeform",
+				"title": {"en":"Accessibility Statement","fr":"Déclaration d'accessibilité","es":"Declaración de accesibilidad"}
+			},
+			{
+				"path": "/legal/notice",
+				"type": "freeform",
+				"title": {"en":"Legal Notice","fr":"Avis juridique","es":"Aviso legal"}
+			}
+		],
 		"services": [
 			{
-				"id": "database-engineering",
-				"title": {"en":"Databases & SQL","fr":"Bases de données et SQL","es":"Bases de datos y SQL"},
-				"description": {"en":"Where your business keeps its data, built to stay fast and safe as you grow.","fr":"L'endroit où ta business garde ses données, bâti pour rester rapide et sécuritaire en grandissant.","es":"El lugar donde tu negocio guarda sus datos, construido para seguir rápido y seguro mientras creces."},
+				"id": "web-development",
+				"title": {"en":"Websites & Online Stores","fr":"Sites web et boutiques en ligne","es":"Sitios web y tiendas en línea"},
+				"description": {"en":"Websites and online stores, designed to look sharp, load fast and get found on Google.","fr":"Des sites web et des boutiques en ligne bien designés, rapides et faciles à trouver sur Google.","es":"Sitios web y tiendas en línea con buen diseño, rápidos y fáciles de encontrar en Google."},
 				"station": 1,
-				"svg": "service-database.svg",
+				"svg": "service-web.svg",
 				"visible": true,
 				"relatedProjects": [
+					"yesid-dev",
+					"cafe-arona",
 					"transit-data-pipeline",
-					"yesid-dev"
+					"yesid-dev-design"
 				],
-				"valueProposition": {"en":"First stop: your data lives here. A database is the filing cabinet behind your whole business, and everything else is built on top of it. I make yours store and update your data fast and safely, so it stays an asset instead of the thing that slows you down.","fr":"Premier arrêt : tes données vivent ici. Une base de données, c'est le classeur derrière toute ta business, et tout le reste est bâti par-dessus. Je fais en sorte que la tienne garde et mette à jour tes données vite et de façon sécuritaire, pour qu'elle reste un atout au lieu de la chose qui te ralentit.","es":"Primera parada: tus datos viven aquí. Una base de datos es el archivador detrás de todo tu negocio, y todo lo demás se construye encima. Hago que la tuya guarde y actualice tus datos rápido y de forma segura, para que siga siendo un activo y no la cosa que te frena."},
-				"seoDescription": {"en":"Freelance PostgreSQL and SQL Server consulting in Montreal: schema design, query tuning, migrations with rollback. Fast and safe as your business grows.","fr":"Pigiste PostgreSQL et SQL Server à Montréal : conception de schéma, requêtes optimisées, migrations avec rollback. Ta base reste rapide et sécuritaire.","es":"Consultoría freelance PostgreSQL y SQL Server en Montreal: diseño de esquemas, consultas afinadas, migraciones con rollback. Tu base sigue rápida y segura."},
+				"valueProposition": {"en":"First stop on the line: your business reaches people. I design and build websites and online stores that look sharp on every screen, load fast, and are easy to find on Google. The basics of getting noticed are set up properly: search, analytics, your Google listing, a way to capture leads. And you can update your own content without calling a developer.","fr":"Premier arrêt sur la ligne : ta business rejoint le monde. Je conçois et je bâtis des sites web et des boutiques en ligne qui sont beaux sur tous les écrans, qui chargent vite et qu'on trouve facilement sur Google. Les bases pour te faire remarquer sont bien en place : référencement, statistiques, ta fiche Google, une façon de récolter des contacts. Pis tu peux modifier ton contenu toi-même sans appeler un développeur.","es":"Primera parada de la línea: tu negocio llega a la gente. Diseño y construyo sitios web y tiendas en línea que se ven bien en cualquier pantalla, cargan rápido y se encuentran fácil en Google. Dejo bien montado lo básico para que te noten: posicionamiento, estadísticas, tu ficha de Google y una forma de captar contactos. Y puedes actualizar tu contenido tú mismo sin llamar a un desarrollador."},
+				"seoDescription": {"en":"Freelance web design and development in Montréal: websites and Shopify stores that look sharp, load fast and get found on Google.","fr":"Pigiste en design et développement web à Montréal : sites web et boutiques Shopify beaux, rapides et faciles à trouver sur Google.","es":"Diseño y desarrollo web freelance en Montreal: sitios web y tiendas Shopify bonitos, rápidos y fáciles de encontrar en Google."},
 				"deliverables": [
-					{"en":"Query performance audit","fr":"Audit de performance des requêtes","es":"Auditoría de consultas lentas"},
-					{"en":"Optimized stored procedures","fr":"Procédures stockées optimisées","es":"Procedimientos almacenados optimizados"},
-					{"en":"Schema design and normalization review","fr":"Révision de la conception et de la normalisation du schéma","es":"Revisión del diseño y la normalización del esquema"},
-					{"en":"Index optimization strategy","fr":"Stratégie d'optimisation des index","es":"Estrategia de optimización de índices"},
-					{"en":"Migration scripts with rollback","fr":"Scripts de migration avec retour en arrière","es":"Scripts de migración con rollback"},
-					{"en":"Backup and recovery plan","fr":"Plan de sauvegarde et de récupération","es":"Plan de respaldo y recuperación"},
-					{"en":"Performance benchmarking","fr":"Mesure de la performance","es":"Medición de rendimiento"},
-					{"en":"Documentation, runbooks, and ER diagrams","fr":"Documentation, guides d'exploitation et diagrammes entité-relation","es":"Documentación, guías de operación y diagramas ER"}
+					{"en":"A custom website built to load fast","fr":"Un site web sur mesure qui charge vite","es":"Un sitio web a la medida que carga rápido"},
+					{"en":"An online store that takes orders and payments (Shopify)","fr":"Une boutique en ligne qui prend les commandes et les paiements (Shopify)","es":"Una tienda en línea que recibe pedidos y pagos (Shopify)"},
+					{"en":"Content you can edit yourself, no developer needed","fr":"Du contenu que tu modifies toi-même, sans développeur","es":"Contenido que editas tú mismo, sin necesitar un desarrollador"},
+					{"en":"Looks right on phones, tablets and desktops","fr":"Beau sur cellulaire, tablette et ordinateur","es":"Se ve bien en celular, tableta y computadora"},
+					{"en":"Connected to the tools you already use (store, CRM, bookings)","fr":"Branché sur les outils que tu utilises déjà (boutique, CRM, réservations)","es":"Conectado a las herramientas que ya usas (tienda, CRM, reservas)"},
+					{"en":"Secure logins for your staff and customers","fr":"Connexions sécurisées pour ton équipe et tes clients","es":"Inicios de sesión seguros para tu equipo y tus clientes"},
+					{"en":"Launched and hosted, with safe updates anytime","fr":"Mis en ligne et hébergé, avec des mises à jour sans risque","es":"Publicado y alojado, con actualizaciones seguras cuando quieras"},
+					{"en":"Fast pages that rank well on Google","fr":"Des pages rapides qui se classent bien sur Google","es":"Páginas rápidas que posicionan bien en Google"}
 				],
 				"stack": [
-					"PostgreSQL",
-					"SQL Server",
-					"PL/pgSQL",
-					"T-SQL",
-					"Alembic",
-					"Neon",
-					"MySQL"
+					"SvelteKit",
+					"TypeScript",
+					"Tailwind CSS",
+					"Shopify",
+					"Vercel",
+					"Svelte 5",
+					"GSAP",
+					"Directus",
+					"Bun",
+					"Turbo",
+					"Figma",
+					"Liquid",
+					"React",
+					"Three.js / Threlte"
 				],
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, 14400b02).","fr":"Fixture copy (fr, content, 0420e9bb).","es":"Fixture copy (es, content, 2f732b51)."}
+						"content": {"en":"Fixture copy (en, content, ed15277d).","fr":"Fixture copy (fr, content, c642fe4e).","es":"Fixture copy (es, content, b4a7b856)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
-						"content": {"en":"Fixture copy (en, content, 4d10bee1).","fr":"Fixture copy (fr, content, 8d4a0067).","es":"Fixture copy (es, content, 623020dc)."}
+						"content": {"en":"Fixture copy (en, content, 62543ef3).","fr":"Fixture copy (fr, content, 5cd29bd9).","es":"Fixture copy (es, content, af9d3b63)."}
 					}
 				],
-				"benefitHeadline": {"en":"Queries that run in seconds, not minutes","fr":"Des requêtes qui roulent en secondes, pas en minutes","es":"Consultas que corren en segundos, no en minutos"},
+				"benefitHeadline": {"en":"A site that looks good, loads fast and gets found","fr":"Un site beau, rapide et facile à trouver","es":"Un sitio bonito, rápido y fácil de encontrar"},
 				"impactMetric": {
-					"value": {"en":"$60/mo → $0","fr":"60 $/mois → 0 $","es":"$60/mes → $0"},
-					"label": {"en":"database hosting cost","fr":"coût d'hébergement","es":"costo de hosting de la base"}
+					"value": {"en":"95+","fr":"95+","es":"95+"},
+					"label": {"en":"Lighthouse performance","fr":"performance Lighthouse","es":"rendimiento Lighthouse"}
 				}
 			},
 			{
 				"id": "data-pipeline",
-				"title": {"en":"Pipelines & Automation","fr":"Pipelines et automatisation","es":"Pipelines y automatización"},
-				"description": {"en":"Your data travels from where it's created to where your team uses it, on its own, every day.","fr":"Tes données voyagent d'où elles sont créées jusqu'où ton équipe les utilise, toutes seules, chaque jour.","es":"Tus datos viajan de donde se crean hasta donde tu equipo los usa, solitos, todos los días."},
+				"title": {"en":"Automation & AI","fr":"Automatisation et IA","es":"Automatización e IA"},
+				"description": {"en":"Business processes that run themselves: your tools connected, data moving on its own, and AI handling the busywork.","fr":"Des processus d'affaires qui roulent tout seuls : tes outils connectés, tes données qui circulent et l'IA qui s'occupe des tâches répétitives.","es":"Procesos de negocio que corren solos: tus herramientas conectadas, tus datos moviéndose y la IA haciendo el trabajo repetitivo."},
 				"station": 2,
 				"svg": "service-pipeline.svg",
 				"visible": true,
 				"relatedProjects": [
 					"transit-data-pipeline"
 				],
-				"valueProposition": {"en":"Next stop: your data moves. Right now someone on your team probably copies numbers between systems by hand every week. I set up a route that carries your data from where it's created to where your team uses it on its own, every morning, so the same fresh numbers show up the same way every day. Clear, simple protocols to follow, and your pipelines explained in plain words so your team understands how they work.","fr":"Prochain arrêt : tes données bougent. En ce moment, quelqu'un dans ton équipe recopie probablement des chiffres d'un système à l'autre à la main chaque semaine. Je mets en place un trajet qui transporte tes données d'où elles sont créées jusqu'où ton équipe les utilise tout seul, chaque matin, pour que les mêmes chiffres frais arrivent de la même façon chaque jour. Des protocoles clairs et simples à suivre, et vos pipelines expliqués en mots simples pour que votre équipe comprenne comment ils fonctionnent.","es":"Próxima parada: tus datos se mueven. Ahora mismo alguien en tu equipo seguramente copia números de un sistema a otro a mano cada semana. Yo monto una ruta que lleva tus datos de donde se crean hasta donde tu equipo los usa, sola, cada mañana, para que los mismos números frescos lleguen de la misma forma todos los días. Protocolos claros y simples a seguir, y tus pipelines explicados en palabras sencillas para que tu equipo entienda cómo funcionan."},
-				"seoDescription": {"en":"Freelance data pipelines and automation in Montreal: Python, Airflow, dbt. Data that travels on its own and lands clean, on time, every morning.","fr":"Pigiste pipelines de données à Montréal : Python, Airflow, dbt. Tes données voyagent toutes seules et arrivent propres, à temps, chaque matin.","es":"Pipelines de datos y automatización freelance en Montreal: Python, Airflow, dbt. Datos que viajan solos y llegan limpios, a tiempo, cada mañana."},
+				"valueProposition": {"en":"Next stop: your work moves on its own. Right now someone on your team probably copies information between tools by hand, chases approvals by email, or rebuilds the same file every week. I map how the work actually flows, then automate it: tools connected, data synced every morning, forms and approvals that route themselves, and AI steps that sort requests, summarize documents and draft replies, with a person approving. Everything comes explained in plain words so your team knows how it works.","fr":"Prochain arrêt : ton travail avance tout seul. En ce moment, quelqu'un dans ton équipe recopie probablement de l'information d'un outil à l'autre à la main, court après des approbations par courriel ou refait le même fichier chaque semaine. Je cartographie comment le travail circule vraiment, puis je l'automatise : des outils connectés, des données synchronisées chaque matin, des formulaires et des approbations qui se rendent tout seuls à la bonne personne, et des étapes d'IA qui trient les demandes, résument les documents et préparent les réponses, avec une personne qui approuve. Le tout expliqué en mots simples pour que ton équipe comprenne comment ça marche.","es":"Próxima parada: tu trabajo avanza solo. Ahora mismo alguien en tu equipo seguramente copia información de una herramienta a otra a mano, persigue aprobaciones por correo o rehace el mismo archivo cada semana. Mapeo cómo fluye el trabajo de verdad y luego lo automatizo: herramientas conectadas, datos sincronizados cada mañana, formularios y aprobaciones que llegan solos a la persona correcta, y pasos con IA que clasifican solicitudes, resumen documentos y redactan respuestas, con una persona que aprueba. Todo explicado en palabras sencillas para que tu equipo entienda cómo funciona."},
+				"seoDescription": {"en":"Freelance automation and AI in Montréal: Python, Airflow, dbt, scheduled workflows and integrations. No more copying data by hand. It lands clean every morning.","fr":"Pigiste en automatisation et IA à Montréal : Python, Airflow, dbt, flux planifiés et intégrations. Fini le copier-coller, tes données arrivent propres.","es":"Automatización e IA freelance en Montreal: Python, Airflow, dbt, flujos programados e integraciones. Se acabó copiar a mano: tus datos llegan limpios."},
 				"deliverables": [
-					{"en":"Pipeline architecture design","fr":"Conception de l'architecture du pipeline","es":"Diseño de arquitectura del pipeline"},
-					{"en":"ELT/ETL implementation","fr":"Implémentation ELT/ETL","es":"Implementación ELT/ETL"},
-					{"en":"Orchestration setup (Airflow/cron)","fr":"Mise en place de l'orchestration (Airflow/cron)","es":"Configuración de orquestación (Airflow/cron)"},
-					{"en":"Schema design and validation","fr":"Conception et validation du schéma","es":"Diseño y validación del esquema"},
-					{"en":"Error handling and alerting","fr":"Gestion des erreurs et alertes","es":"Manejo de errores y alertas"},
-					{"en":"Runbook and monitoring dashboard","fr":"Guide d'exploitation et tableau de bord de surveillance","es":"Guía de operación y tablero de monitoreo"},
-					{"en":"Workflow automation (approval flows, scheduled jobs)","fr":"Automatisation des flux de travail (flux d'approbation, tâches planifiées)","es":"Automatización de flujos de trabajo (aprobaciones, tareas programadas)"}
+					{"en":"A clear map of where your data comes from and where it needs to go","fr":"Un plan clair d'où viennent tes données et où elles doivent aller","es":"Un mapa claro de dónde vienen tus datos y a dónde deben ir"},
+					{"en":"Data moved between your systems automatically","fr":"Tes données transférées automatiquement d'un système à l'autre","es":"Datos que pasan de un sistema a otro solos"},
+					{"en":"Jobs that run on schedule, without anyone clicking","fr":"Des tâches qui roulent à l'heure prévue, sans que personne clique","es":"Tareas que corren a la hora programada, sin que nadie haga clic"},
+					{"en":"Checks that catch bad data before it spreads","fr":"Des vérifications qui bloquent les mauvaises données avant qu'elles se propagent","es":"Validaciones que atrapan datos malos antes de que se propaguen"},
+					{"en":"An alert when something breaks, before your team notices","fr":"Une alerte quand ça brise, avant que ton équipe s'en rende compte","es":"Una alerta cuando algo falla, antes de que tu equipo lo note"},
+					{"en":"A simple guide and status page so you know it's working","fr":"Un guide simple et une page d'état pour savoir que tout roule","es":"Una guía sencilla y una página de estado para saber que todo funciona"},
+					{"en":"Approvals, forms and reminders that run themselves","fr":"Approbations, formulaires et rappels qui se gèrent tout seuls","es":"Aprobaciones, formularios y recordatorios que se manejan solos"},
+					{"en":"AI steps that sort, summarize and draft, with a person approving","fr":"Des étapes d'IA qui trient, résument et rédigent, avec une personne qui approuve","es":"Pasos con IA que clasifican, resumen y redactan, con una persona que aprueba"}
 				],
 				"stack": [
 					"Python",
@@ -2496,14 +2510,14 @@
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, f8c6fa7f).","fr":"Fixture copy (fr, content, 904d44fa).","es":"Fixture copy (es, content, d7fbe823)."}
+						"content": {"en":"Fixture copy (en, content, ba53ff21).","fr":"Fixture copy (fr, content, fe67eb4f).","es":"Fixture copy (es, content, 3c92a13b)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
-						"content": {"en":"Fixture copy (en, content, 2e1140d7).","fr":"Fixture copy (fr, content, 0af95a9c).","es":"Fixture copy (es, content, 267f9eec)."}
+						"content": {"en":"Fixture copy (en, content, 578ac45d).","fr":"Fixture copy (fr, content, 28081bd2).","es":"Fixture copy (es, content, 7d06288e)."}
 					}
 				],
-				"benefitHeadline": {"en":"Your data arrives clean, on time, every morning","fr":"Tes données arrivent propres, à temps, chaque matin","es":"Tus datos llegan limpios, a tiempo, cada mañana"},
+				"benefitHeadline": {"en":"Less copy-paste, more time for real work","fr":"Moins de copier-coller, plus de temps pour le vrai travail","es":"Menos copiar y pegar, más tiempo para el trabajo de verdad"},
 				"impactMetric": {
 					"value": {"en":"1.5TB+","fr":"1,5 To+","es":"1,5 TB+"},
 					"label": {"en":"migrated","fr":"migrées","es":"migrados"}
@@ -2511,8 +2525,8 @@
 			},
 			{
 				"id": "analytics-reporting",
-				"title": {"en":"Dashboards & Analytics","fr":"Tableaux de bord et analytique","es":"Tableros y analítica"},
-				"description": {"en":"Your messy numbers turned into clear dashboards your team actually trusts.","fr":"Tes chiffres mélangés transformés en tableaux de bord clairs en qui ton équipe a confiance.","es":"Tus números revueltos convertidos en tableros claros en los que tu equipo confía de verdad."},
+				"title": {"en":"Reports & Dashboards","fr":"Rapports et tableaux de bord","es":"Reportes y tableros"},
+				"description": {"en":"Numbers scattered across your tools turned into clear reports and dashboards your team trusts.","fr":"Tes chiffres éparpillés dans tes outils transformés en rapports et tableaux de bord clairs, fiables pour ton équipe.","es":"Los números regados en tus herramientas convertidos en reportes y tableros claros en los que tu equipo confía."},
 				"station": 3,
 				"svg": "service-reporting.svg",
 				"visible": true,
@@ -2520,15 +2534,15 @@
 					"transit-data-pipeline",
 					"cafe-arona"
 				],
-				"valueProposition": {"en":"Third stop: your data starts talking. I take numbers scattered across your tools and turn them into one set of dashboards that all agree with each other. Your team stops arguing about whose number is right and just decides.","fr":"Troisième arrêt : tes données se mettent à parler. Je prends des chiffres éparpillés dans tes outils et j'en fais une seule série de tableaux de bord qui s'accordent tous entre eux. Ton équipe arrête de se chicaner sur quel chiffre est le bon et prend ses décisions, point.","es":"Tercera parada: tus datos empiezan a hablar. Tomo los números regados por todas tus herramientas y los convierto en un solo juego de tableros que cuadran entre sí. Tu equipo deja de pelear por cuál número es el bueno y simplemente decide."},
-				"seoDescription": {"en":"Freelance Power BI dashboards and analytics in Montreal: KPIs, semantic layers, reports your team trusts. Decisions in 15 minutes, not 2 days.","fr":"Pigiste Power BI et analytique à Montréal : KPI, couche sémantique, tableaux de bord fiables. Ton équipe décide en 15 minutes, pas en 2 jours.","es":"Tableros Power BI y analítica freelance en Montreal: KPIs, capas semánticas, reportes en los que tu equipo confía. Decisiones en 15 minutos, no en 2 días."},
+				"valueProposition": {"en":"Third stop: your data starts talking. I take numbers scattered across your tools, spreadsheets and systems and turn them into one set of reports and dashboards that agree with each other, delivered to your inbox or open on your screen. Your team stops arguing about whose number is right and just decides.","fr":"Troisième arrêt : tes données se mettent à parler. Je prends les chiffres éparpillés dans tes outils, tes fichiers Excel et tes systèmes, et j'en fais une seule série de rapports et de tableaux de bord qui s'accordent entre eux, livrés dans ta boîte courriel ou ouverts sur ton écran. Ton équipe arrête de se chicaner sur quel chiffre est le bon et prend ses décisions, point.","es":"Tercera parada: tus datos empiezan a hablar. Tomo los números regados en tus herramientas, hojas de cálculo y sistemas, y los convierto en un solo juego de reportes y tableros que cuadran entre sí, enviados a tu correo o abiertos en tu pantalla. Tu equipo deja de pelear por cuál número es el bueno y simplemente decide."},
+				"seoDescription": {"en":"Freelance reports and Power BI dashboards in Montréal: KPIs, semantic layers, one set of numbers your team trusts. Decisions in 15 minutes, not 2 days.","fr":"Pigiste rapports et tableaux de bord Power BI à Montréal : KPI, couche sémantique, des chiffres fiables. Décide en 15 minutes, pas en 2 jours.","es":"Reportes y tableros Power BI freelance en Montreal: KPIs, capas semánticas y números en los que tu equipo confía. Decide en 15 minutos, no en 2 días."},
 				"deliverables": [
-					{"en":"Semantic layer / data model design","fr":"Conception de la couche sémantique / du modèle de données","es":"Diseño de capa semántica / modelo de datos"},
-					{"en":"Power BI or Retool dashboards","fr":"Tableaux de bord Power BI ou Retool","es":"Tableros de Power BI o Retool"},
-					{"en":"KPI definition and documentation","fr":"Définition et documentation des KPI","es":"Definición y documentación de KPI"},
-					{"en":"Automated report delivery","fr":"Livraison automatisée des rapports","es":"Envío automático de reportes"},
-					{"en":"User training and onboarding","fr":"Formation et accompagnement des usagers","es":"Capacitación y onboarding de usuarios"},
-					{"en":"Performance tuning for large datasets","fr":"Optimisation de la performance pour les grands jeux de données","es":"Optimización de rendimiento para datos masivos"}
+					{"en":"One source of truth for every number","fr":"Une seule source de vérité pour chaque chiffre","es":"Una sola fuente de verdad para cada número"},
+					{"en":"Power BI dashboards your team actually opens","fr":"Des tableaux de bord Power BI que ton équipe ouvre vraiment","es":"Tableros en Power BI que tu equipo sí abre"},
+					{"en":"Clear definitions for the numbers that matter","fr":"Des définitions claires pour les chiffres qui comptent","es":"Definiciones claras para los números que importan"},
+					{"en":"Reports in your inbox every morning, no exporting","fr":"Des rapports dans ta boîte courriel chaque matin, sans exporter","es":"Reportes en tu correo cada mañana, sin exportar nada"},
+					{"en":"Training so your team can use them on their own","fr":"Une formation pour que ton équipe s'en serve toute seule","es":"Capacitación para que tu equipo los use por su cuenta"},
+					{"en":"Fast, even with years of data","fr":"Rapides, même avec des années de données","es":"Rápidos, incluso con años de datos"}
 				],
 				"stack": [
 					"Power BI",
@@ -2554,58 +2568,53 @@
 				}
 			},
 			{
-				"id": "web-development",
-				"title": {"en":"Websites & E-commerce","fr":"Sites web et commerce en ligne","es":"Sitios web y e-commerce"},
-				"description": {"en":"Fast websites, online stores, and dashboards that put your data in front of people.","fr":"Des sites web, des boutiques en ligne et des tableaux de bord rapides qui mettent tes données devant le monde.","es":"Sitios web, tiendas en línea y tableros rápidos que ponen tus datos frente a la gente."},
+				"id": "database-engineering",
+				"title": {"en":"Software & Databases","fr":"Logiciels et bases de données","es":"Software y bases de datos"},
+				"description": {"en":"Custom software and the databases behind it: internal tools, client portals and apps that replace spreadsheets and paper.","fr":"Des logiciels sur mesure et les bases de données derrière : outils internes, portails clients et applications qui remplacent les fichiers Excel et le papier.","es":"Software a la medida y las bases de datos detrás: herramientas internas, portales para clientes y aplicaciones que reemplazan hojas de cálculo y papel."},
 				"station": 4,
-				"svg": "service-web.svg",
+				"svg": "service-database.svg",
 				"visible": true,
 				"relatedProjects": [
-					"yesid-dev",
-					"cafe-arona",
 					"transit-data-pipeline",
-					"yesid-dev-design"
+					"yesid-dev"
 				],
-				"valueProposition": {"en":"Last stop on the line: your data reaches people. A fast website, online store, or dashboard takes everything sitting in your systems and shows it to customers and staff the way they'll actually use it. Pages load quick, the store takes orders, and your team sees what they need without digging.","fr":"Dernier arrêt sur la ligne : tes données rejoignent le monde. Un site web rapide, une boutique en ligne ou un tableau de bord prend tout ce qui dort dans tes systèmes et le montre à tes clients pis à ton staff de la façon dont ils vont vraiment s'en servir. Les pages chargent vite, la boutique prend les commandes, pis ton équipe voit ce qu'il lui faut sans avoir à fouiller.","es":"Última parada de la línea: tus datos llegan a la gente. Un sitio web rápido, una tienda en línea o un tablero toma todo lo que duerme en tus sistemas y se lo muestra a tus clientes y a tu equipo tal como lo van a usar de verdad. Las páginas cargan rápido, la tienda recibe pedidos y tu equipo ve lo que necesita sin ponerse a escarbar."},
-				"seoDescription": {"en":"Freelance web development in Montreal: SvelteKit sites, Shopify stores, live dashboards. Fast pages that put your data in front of people.","fr":"Pigiste web à Montréal : sites SvelteKit, boutiques Shopify, tableaux de bord rapides. Tes données et tes produits rejoignent le monde.","es":"Desarrollo web freelance en Montreal: sitios SvelteKit, tiendas Shopify, tableros en vivo. Páginas rápidas que ponen tus datos frente a la gente."},
+				"valueProposition": {"en":"Last stop on the line: the foundation. When a business outgrows spreadsheets, paper forms and patched-together tools, I build the software it actually needs: internal tools, admin panels, client portals and custom apps, on a database designed to stay fast and safe as you grow. If you already have a database, I tune it, clean it up and move it safely. This is where going digital stops being a project and becomes how you run.","fr":"Dernier arrêt sur la ligne : la fondation. Quand ta business a dépassé les fichiers Excel, les formulaires papier et les outils rafistolés, je bâtis le logiciel dont elle a vraiment besoin : outils internes, panneaux d'administration, portails clients et applications sur mesure, sur une base de données conçue pour rester rapide et sécuritaire en grandissant. Si t'as déjà une base de données, je l'optimise, j'y fais le ménage et je la déménage sans risque. C'est là que le virage numérique arrête d'être un projet et devient ta façon de fonctionner.","es":"Última parada de la línea: la base. Cuando tu negocio ya no cabe en hojas de cálculo, formularios en papel y herramientas parchadas, construyo el software que de verdad necesita: herramientas internas, paneles de administración, portales para clientes y aplicaciones a la medida, sobre una base de datos diseñada para seguir rápida y segura mientras creces. Si ya tienes una base de datos, la afino, la ordeno y la migro sin riesgo. Ahí es donde la transformación digital deja de ser un proyecto y se vuelve tu forma de trabajar."},
+				"seoDescription": {"en":"Freelance custom software and databases in Montréal: internal tools, client portals, PostgreSQL and SQL Server. Off the spreadsheets, onto a real system.","fr":"Pigiste logiciels sur mesure et bases de données à Montréal : outils internes, portails clients, PostgreSQL et SQL Server. Fini les fichiers Excel.","es":"Software a la medida y bases de datos freelance en Montreal: herramientas internas, portales para clientes, PostgreSQL y SQL Server. Adiós al Excel."},
 				"deliverables": [
-					{"en":"Full-stack SvelteKit application","fr":"Application SvelteKit pleine pile","es":"Aplicación SvelteKit full-stack"},
-					{"en":"Responsive design implementation","fr":"Mise en place d'un design adaptatif","es":"Implementación de diseño responsive"},
-					{"en":"API integration and data layer","fr":"Intégration API et couche de données","es":"Integración de API y capa de datos"},
-					{"en":"Authentication and authorization","fr":"Authentification et autorisation","es":"Autenticación y autorización"},
-					{"en":"Deployment and CI/CD setup","fr":"Déploiement et configuration CI/CD","es":"Despliegue y configuración CI/CD"},
-					{"en":"Performance optimization","fr":"Optimisation de la performance","es":"Optimización de rendimiento"}
+					{"en":"Internal tools and admin panels that replace spreadsheets","fr":"Des outils internes et des panneaux d'administration qui remplacent les fichiers Excel","es":"Herramientas internas y paneles de administración que reemplazan las hojas de cálculo"},
+					{"en":"Client portals and custom apps built around how you work","fr":"Des portails clients et des applications sur mesure bâtis selon ta façon de travailler","es":"Portales para clientes y aplicaciones a la medida según cómo trabajas"},
+					{"en":"A check-up that finds what's slowing you down","fr":"Un bilan qui trouve ce qui te ralentit","es":"Un chequeo que encuentra lo que te frena"},
+					{"en":"Faster reports and screens from tuned queries","fr":"Des rapports et des écrans plus rapides grâce à des requêtes optimisées","es":"Reportes y pantallas más rápidos con consultas afinadas"},
+					{"en":"A structure that stays clean as you grow","fr":"Une structure qui reste propre en grandissant","es":"Una estructura que se mantiene ordenada al crecer"},
+					{"en":"Searches that answer in seconds, not minutes","fr":"Des recherches qui répondent en secondes, pas en minutes","es":"Búsquedas que responden en segundos, no en minutos"},
+					{"en":"Moves to a new system, with an undo button","fr":"Un déménagement vers un nouveau système, avec bouton d'annulation","es":"Mudanzas a un sistema nuevo, con botón de deshacer"},
+					{"en":"Backups and a plan to get your data back","fr":"Des sauvegardes et un plan pour récupérer tes données","es":"Respaldos y un plan para recuperar tus datos"},
+					{"en":"Before-and-after numbers so you see the gain","fr":"Des chiffres avant-après pour voir le gain","es":"Números de antes y después para ver la mejora"},
+					{"en":"Plain-language docs and a diagram of how it all fits","fr":"Une documentation claire et un schéma de comment tout s'emboîte","es":"Documentación clara y un diagrama de cómo encaja todo"}
 				],
 				"stack": [
-					"SvelteKit",
-					"TypeScript",
-					"Tailwind CSS",
-					"Shopify",
-					"Vercel",
-					"Svelte 5",
-					"GSAP",
-					"Directus",
-					"Bun",
-					"Turbo",
-					"Figma",
-					"Liquid",
-					"React",
-					"Three.js / Threlte"
+					"PostgreSQL",
+					"SQL Server",
+					"PL/pgSQL",
+					"T-SQL",
+					"Alembic",
+					"Neon",
+					"MySQL"
 				],
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, 04684fa2).","fr":"Fixture copy (fr, content, 8a5a831c).","es":"Fixture copy (es, content, 78cf61c6)."}
+						"content": {"en":"Fixture copy (en, content, 5c57951d).","fr":"Fixture copy (fr, content, 8b11bacc).","es":"Fixture copy (es, content, 6f9ef8d4)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
-						"content": {"en":"Fixture copy (en, content, 35825e33).","fr":"Fixture copy (fr, content, de6e9d77).","es":"Fixture copy (es, content, 64c5d8bd)."}
+						"content": {"en":"Fixture copy (en, content, cef82833).","fr":"Fixture copy (fr, content, 5e07ad9d).","es":"Fixture copy (es, content, 64e98081)."}
 					}
 				],
-				"benefitHeadline": {"en":"A storefront as fast as the systems behind it","fr":"Une vitrine aussi rapide que les systèmes derrière","es":"Una vitrina tan rápida como los sistemas detrás"},
+				"benefitHeadline": {"en":"Off the spreadsheets, onto a system that scales","fr":"Fini les fichiers Excel, place à un système qui grandit avec toi","es":"Adiós a las hojas de cálculo, hola a un sistema que crece contigo"},
 				"impactMetric": {
-					"value": {"en":"95+","fr":"95+","es":"95+"},
-					"label": {"en":"Lighthouse performance","fr":"performance Lighthouse","es":"rendimiento Lighthouse"}
+					"value": {"en":"$60/mo → $0","fr":"60 $/mois → 0 $","es":"$60/mes → $0"},
+					"label": {"en":"database hosting cost","fr":"coût d'hébergement","es":"costo de hosting de la base"}
 				}
 			},
 			{
@@ -2759,7 +2768,7 @@
 						"liveSiteLabel": {"en":"Live Site","fr":"Site en ligne","es":"Sitio en vivo"},
 						"githubLabel": {"en":"GitHub","fr":"GitHub","es":"GitHub"},
 						"docsLabel": {"en":"Documentation","fr":"Documentation","es":"Documentación"},
-						"repoPrivateLabel": {"en":"Private repo (for now)","fr":"Dépôt privé (pour le moment)","es":"Repo privado (por ahora)"}
+						"repoPrivateLabel": {"en":"Private repo","fr":"Dépôt privé","es":"Repo privado"}
 					}
 				}
 			},
@@ -2845,8 +2854,8 @@
 					"stationLabelTemplate": {"en":"Service {stationNum} / {totalStr}","fr":"Service {stationNum} / {totalStr}","es":"Servicio {stationNum} / {totalStr}"},
 					"deepDiveLabel": {"en":"Deep dive →","fr":"Voir en détail →","es":"Ver a fondo →"},
 					"stationShortLabels": {
-						"database-engineering": {"en":"Databases","fr":"Bases de données","es":"Bases de datos"},
-						"data-pipeline": {"en":"Pipelines","fr":"Pipelines","es":"Pipelines"},
+						"database-engineering": {"en":"Software","fr":"Logiciels","es":"Software"},
+						"data-pipeline": {"en":"Automation","fr":"Automatisation","es":"Automatización"},
 						"analytics-reporting": {"en":"Dashboards","fr":"Tableaux de bord","es":"Tableros"},
 						"web-development": {"en":"Websites","fr":"Sites web","es":"Sitios web"}
 					}
@@ -2903,6 +2912,11 @@
 				"routesSub": {"en":"OF {total} TOTAL","fr":"SUR {total} AU TOTAL","es":"DE {total} EN TOTAL"}
 			}
 		},
+		"projectsPage": {
+			"intro": {"en":"Projects, pipelines, and systems I have built.","fr":"Des projets, des pipelines et des systèmes que j'ai bâtis.","es":"Proyectos, pipelines y sistemas que he construido."},
+			"heading": {"en":"Projects","fr":"Projets","es":"Proyectos"},
+			"emptyState": {"en":"No projects match the selected filters.","fr":"Aucun projet ne correspond aux filtres sélectionnés.","es":"Ningún proyecto coincide con los filtros elegidos."}
+		},
 		"blogPage": {
 			"heading": {"en":"Blog","fr":"Blogue","es":"Blog"},
 			"intro": {"en":"Notes on digital infrastructure, databases, and building reliable systems.","fr":"Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.","es":"Notas sobre infraestructura digital, bases de datos y cómo construir sistemas confiables."},
@@ -2910,6 +2924,91 @@
 			"personalIntro": {"en":"Trains, space, tools, and the off-work notes that still shape how I build.","fr":"Trains, espace, outils, et les notes hors mandat qui influencent encore ma façon de bâtir.","es":"Trenes, espacio, herramientas y esas notas por fuera del trabajo que todavía moldean mi manera de construir."},
 			"emptyState": {"en":"No posts found. Try adjusting your filters.","fr":"Aucun article trouvé. Essaie d'ajuster tes filtres.","es":"No se encontraron artículos. Intenta ajustar tus filtros."},
 			"emptyStateNoPosts": {"en":"Nothing here yet. New posts are in transit.","fr":"Rien ici pour le moment. Les prochains articles sont en transit.","es":"Nada por aquí todavía. Los nuevos artículos están en tránsito."}
+		},
+		"contactPage": {
+			"pageTitle": {"en":"Contact","fr":"Contact","es":"Contacto"},
+			"stationLabel": {"en":"NEXT STOP: YOU","fr":"PROCHAIN ARRÊT : TOI","es":"PRÓXIMA PARADA: TÚ"},
+			"sendErrorMessage": {"en":"Failed to send message. Please try again.","fr":"L'envoi du message a échoué. Réessaie, s'il te plaît.","es":"No se pudo enviar el mensaje. Inténtalo de nuevo, por favor."},
+			"infoTerminal": {
+				"title": "yesid@mtl ~ /info",
+				"command": "$ yesid --info",
+				"location": {"en":"Montreal, QC, Canada","fr":"Montréal, QC, Canada","es":"Montreal, QC, Canadá"},
+				"responseTime": {"en":"~24h response time","fr":"réponse en ~24h","es":"respuesta en ~24h"},
+				"languages": {"en":"EN · FR · ES","fr":"EN · FR · ES","es":"EN · FR · ES"},
+				"bestFit": [
+					{"en":"Slow reports that need to be fast","fr":"Des rapports lents qui doivent aller vite","es":"Reportes lentos que deben ser rápidos"},
+					{"en":"Manual data work that should run itself","fr":"Du travail de données manuel qui devrait rouler tout seul","es":"Trabajo manual con datos que debería correr solo"},
+					{"en":"Sites and stores wired to live data","fr":"Des sites et boutiques branchés sur des données en direct","es":"Sitios y tiendas conectados a datos en vivo"}
+				],
+				"sectionLabels": {
+					"location": {"en":"LOCATION","fr":"EMPLACEMENT","es":"UBICACIÓN"},
+					"connect": {"en":"CONNECT","fr":"CONNEXION","es":"CONECTA"},
+					"languages": {"en":"LANGUAGES","fr":"LANGUES","es":"IDIOMAS"},
+					"bestFit": {"en":"BEST FIT","fr":"PROJETS IDÉAUX","es":"PROYECTOS IDEALES"}
+				}
+			},
+			"formTerminal": {
+				"title": "yesid@mtl ~ /contact",
+				"command": "$ yesid --contact",
+				"commandOutput": {"en":"Opening contact form...","fr":"Ouverture du formulaire de contact...","es":"Abriendo formulario de contacto..."},
+				"fields": {
+					"name": {
+						"label": {"en":"name","fr":"nom","es":"nombre"},
+						"placeholder": {"en":"Your name","fr":"Ton nom","es":"Tu nombre"}
+					},
+					"email": {
+						"label": {"en":"email","fr":"courriel","es":"correo"},
+						"placeholder": {"en":"you@company.com","fr":"toi@compagnie.com","es":"tu@empresa.com"}
+					},
+					"message": {
+						"label": {"en":"message","fr":"message","es":"mensaje"},
+						"placeholder": {"en":"Tell me about your project...","fr":"Parle-moi de ton projet...","es":"Cuéntame de tu proyecto..."}
+					}
+				},
+				"submitLabel": {"en":"send --message →","fr":"send --message →","es":"send --message →"},
+				"bookingPrompt": {"en":"Prefer to talk it through?","fr":"Tu préfères en jaser de vive voix?","es":"¿Prefieres hablarlo de viva voz?"},
+				"bookingButtonLabel": {"en":"book --intro-call →","fr":"book --intro-call →","es":"book --intro-call →"}
+			},
+			"validation": {
+				"required": {"en":"required, {field} cannot be empty","fr":"requis, {field} ne peut pas être vide","es":"requerido, {field} no puede estar vacío"},
+				"invalidEmail": {"en":"invalid, enter a valid email address","fr":"invalide, entre une adresse courriel valide","es":"inválido, ingresa un correo válido"},
+				"errorSummary": {"en":"{count} errors, fix and retry","fr":"{count} erreurs, corrige et réessaie","es":"{count} errores, corrige y reintenta"}
+			},
+			"success": {
+				"command": {"en":"~ $ send --message","fr":"~ $ send --message","es":"~ $ send --message"},
+				"validating": {"en":"Validating fields...","fr":"Validation des champs...","es":"Validando campos..."},
+				"sending": {"en":"Sending message...","fr":"Envoi du message...","es":"Enviando mensaje..."},
+				"sent": {"en":"Message sent successfully!","fr":"Message envoyé avec succès!","es":"¡Mensaje enviado con éxito!"},
+				"responseTime": {"en":"I'll get back to you within 24h","fr":"Je te reviens d'ici 24h","es":"Te respondo en menos de 24h"},
+				"meanwhile": {"en":"Meanwhile, check out my {work} or {blog}","fr":"En attendant, jette un œil à mes {work} ou mon {blog}","es":"Mientras tanto, échale un ojo a mis {work} o a mi {blog}"},
+				"resetLabel": {"en":"reset --form","fr":"reset --form","es":"reset --form"},
+				"fieldOk": {"en":"OK","fr":"OK","es":"OK"},
+				"workLinkLabel": {"en":"work","fr":"services","es":"servicios"},
+				"blogLinkLabel": {"en":"blog","fr":"blogue","es":"blog"}
+			},
+			"socials": [
+				{
+					"label": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 minutes","es":"Agenda una llamada intro de 20 min"},
+					"href": "https://cal.com/yesid-dev",
+					"icon": "calendar"
+				},
+				{
+					"label": {"en":"Email","fr":"Courriel","es":"Correo"},
+					"href": "mailto:contact@yesid.dev",
+					"icon": "email"
+				},
+				{
+					"label": {"en":"GitHub","fr":"GitHub","es":"GitHub"},
+					"href": "https://github.com/mgkdante",
+					"icon": "github"
+				},
+				{
+					"label": {"en":"LinkedIn","fr":"LinkedIn","es":"LinkedIn"},
+					"href": "https://www.linkedin.com/in/otaloray/",
+					"icon": "linkedin"
+				}
+			],
+			"web3formsKey": "6887fd90-3348-4d31-ba03-bc0e285697b6"
 		},
 		"projects": [
 			{
@@ -9398,95 +9497,41 @@
 				]
 			}
 		],
-		"projectsPage": {
-			"intro": {"en":"Projects, pipelines, and systems I have built.","fr":"Des projets, des pipelines et des systèmes que j'ai bâtis.","es":"Proyectos, pipelines y sistemas que he construido."},
-			"heading": {"en":"Projects","fr":"Projets","es":"Proyectos"},
-			"emptyState": {"en":"No projects match the selected filters.","fr":"Aucun projet ne correspond aux filtres sélectionnés.","es":"Ningún proyecto coincide con los filtros elegidos."}
-		},
-		"contactPage": {
-			"pageTitle": {"en":"Contact","fr":"Contact","es":"Contacto"},
-			"stationLabel": {"en":"NEXT STOP: YOU","fr":"PROCHAIN ARRÊT : TOI","es":"PRÓXIMA PARADA: TÚ"},
-			"sendErrorMessage": {"en":"Failed to send message. Please try again.","fr":"L'envoi du message a échoué. Réessaie, s'il te plaît.","es":"No se pudo enviar el mensaje. Inténtalo de nuevo, por favor."},
-			"infoTerminal": {
-				"title": "yesid@mtl ~ /info",
-				"command": "$ yesid --info",
-				"location": {"en":"Montreal, QC, Canada","fr":"Montréal, QC, Canada","es":"Montreal, QC, Canadá"},
-				"responseTime": {"en":"~24h response time","fr":"réponse en ~24h","es":"respuesta en ~24h"},
-				"languages": {"en":"EN · FR · ES","fr":"EN · FR · ES","es":"EN · FR · ES"},
-				"bestFit": [
-					{"en":"Slow reports that need to be fast","fr":"Des rapports lents qui doivent aller vite","es":"Reportes lentos que deben ser rápidos"},
-					{"en":"Manual data work that should run itself","fr":"Du travail de données manuel qui devrait rouler tout seul","es":"Trabajo manual con datos que debería correr solo"},
-					{"en":"Sites and stores wired to live data","fr":"Des sites et boutiques branchés sur des données en direct","es":"Sitios y tiendas conectados a datos en vivo"}
-				],
-				"sectionLabels": {
-					"location": {"en":"LOCATION","fr":"EMPLACEMENT","es":"UBICACIÓN"},
-					"connect": {"en":"CONNECT","fr":"CONNEXION","es":"CONECTA"},
-					"languages": {"en":"LANGUAGES","fr":"LANGUES","es":"IDIOMAS"},
-					"bestFit": {"en":"BEST FIT","fr":"PROJETS IDÉAUX","es":"PROYECTOS IDEALES"}
+		"hero": {
+			"headline": {
+				"line1": {"en":"SYSTEMS THAT","fr":"DES SYSTÈMES QUI","es":"SISTEMAS QUE"},
+				"line2": {"en":"DON'T BREAK","fr":"NE CASSENT PAS","es":"NO SE ROMPEN"},
+				"ariaSuffix": {"en":"Don't Break.","fr":"Ne cassent pas.","es":"No se rompen."}
+			},
+			"subheadline": {"en":"I help businesses grow.","fr":"J'aide les entreprises à croître.","es":"Ayudo a las empresas a crecer."},
+			"subtitle": {"en":"More productivity for Canadian businesses, without downtime.","fr":"Plus de productivité pour les entreprises canadiennes, sans pannes.","es":"Más productividad para las empresas canadienses, sin caídas."},
+			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
+			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
+			"ctaWorkHref": "/projects",
+			"sqlPanel": {
+				"prompt": {"en":"yesid@transit:gold>","fr":"yesid@transit:gold>","es":"yesid@transit:gold>"},
+				"liveLabel": {"en":"DEMO","fr":"DÉMO","es":"DEMO"},
+				"liveBadge": {"en":"LIVE","fr":"EN DIRECT","es":"EN VIVO"},
+				"columns": {
+					"route": {"en":"route","fr":"route","es":"route"},
+					"avgDelayS": {"en":"avg_delay_s","fr":"avg_delay_s","es":"avg_delay_s"},
+					"vehicles": {"en":"vehicles","fr":"vehicles","es":"vehicles"}
+				},
+				"metaTemplate": {"en":"5 rows · {queryTime}s · {updatedAgo}","fr":"5 lignes · {queryTime}s · {updatedAgo}","es":"5 filas · {queryTime}s · {updatedAgo}"},
+				"stamps": {
+					"demo": {"en":"demo data","fr":"données démo","es":"datos de demo"},
+					"refreshed": {"en":"regenerated just now","fr":"régénéré à l'instant","es":"regenerado recién"},
+					"liveTemplate": {"en":"{seconds}s ago","fr":"il y a {seconds} s","es":"hace {seconds} s"}
 				}
 			},
-			"formTerminal": {
-				"title": "yesid@mtl ~ /contact",
-				"command": "$ yesid --contact",
-				"commandOutput": {"en":"Opening contact form...","fr":"Ouverture du formulaire de contact...","es":"Abriendo formulario de contacto..."},
-				"fields": {
-					"name": {
-						"label": {"en":"name","fr":"nom","es":"nombre"},
-						"placeholder": {"en":"Your name","fr":"Ton nom","es":"Tu nombre"}
-					},
-					"email": {
-						"label": {"en":"email","fr":"courriel","es":"correo"},
-						"placeholder": {"en":"you@company.com","fr":"toi@compagnie.com","es":"tu@empresa.com"}
-					},
-					"message": {
-						"label": {"en":"message","fr":"message","es":"mensaje"},
-						"placeholder": {"en":"Tell me about your project...","fr":"Parle-moi de ton projet...","es":"Cuéntame de tu proyecto..."}
-					}
-				},
-				"submitLabel": {"en":"send --message →","fr":"send --message →","es":"send --message →"},
-				"bookingPrompt": {"en":"Prefer to talk it through?","fr":"Tu préfères en jaser de vive voix?","es":"¿Prefieres hablarlo de viva voz?"},
-				"bookingButtonLabel": {"en":"book --intro-call →","fr":"book --intro-call →","es":"book --intro-call →"}
+			"refreshButton": {
+				"label": {"en":"PULL FRESH DATA","fr":"TIRER DES DONNÉES FRAÎCHES","es":"TRAER DATOS FRESCOS"},
+				"helper": {"en":"Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.","fr":"Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.","es":"Regenera las métricas y los resultados de la consulta. Datos simulados, estilo pipeline STM, no un feed en vivo."},
+				"helperLive": {"en":"Refreshes metrics + query results from the live pipeline.","fr":"Actualise les métriques et les résultats de requête depuis le pipeline en direct.","es":"Actualiza las métricas y los resultados de la consulta desde el pipeline en vivo."}
 			},
-			"validation": {
-				"required": {"en":"required, {field} cannot be empty","fr":"requis, {field} ne peut pas être vide","es":"requerido, {field} no puede estar vacío"},
-				"invalidEmail": {"en":"invalid, enter a valid email address","fr":"invalide, entre une adresse courriel valide","es":"inválido, ingresa un correo válido"},
-				"errorSummary": {"en":"{count} errors, fix and retry","fr":"{count} erreurs, corrige et réessaie","es":"{count} errores, corrige y reintenta"}
-			},
-			"success": {
-				"command": {"en":"~ $ send --message","fr":"~ $ send --message","es":"~ $ send --message"},
-				"validating": {"en":"Validating fields...","fr":"Validation des champs...","es":"Validando campos..."},
-				"sending": {"en":"Sending message...","fr":"Envoi du message...","es":"Enviando mensaje..."},
-				"sent": {"en":"Message sent successfully!","fr":"Message envoyé avec succès!","es":"¡Mensaje enviado con éxito!"},
-				"responseTime": {"en":"I'll get back to you within 24h","fr":"Je te reviens d'ici 24h","es":"Te respondo en menos de 24h"},
-				"meanwhile": {"en":"Meanwhile, check out my {work} or {blog}","fr":"En attendant, jette un œil à mes {work} ou mon {blog}","es":"Mientras tanto, échale un ojo a mis {work} o a mi {blog}"},
-				"resetLabel": {"en":"reset --form","fr":"reset --form","es":"reset --form"},
-				"fieldOk": {"en":"OK","fr":"OK","es":"OK"},
-				"workLinkLabel": {"en":"work","fr":"services","es":"servicios"},
-				"blogLinkLabel": {"en":"blog","fr":"blogue","es":"blog"}
-			},
-			"socials": [
-				{
-					"label": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 minutes","es":"Agenda una llamada intro de 20 min"},
-					"href": "https://cal.com/yesid-dev",
-					"icon": "calendar"
-				},
-				{
-					"label": {"en":"Email","fr":"Courriel","es":"Correo"},
-					"href": "mailto:contact@yesid.dev",
-					"icon": "email"
-				},
-				{
-					"label": {"en":"GitHub","fr":"GitHub","es":"GitHub"},
-					"href": "https://github.com/mgkdante",
-					"icon": "github"
-				},
-				{
-					"label": {"en":"LinkedIn","fr":"LinkedIn","es":"LinkedIn"},
-					"href": "https://www.linkedin.com/in/otaloray/",
-					"icon": "linkedin"
-				}
-			],
-			"web3formsKey": "6887fd90-3348-4d31-ba03-bc0e285697b6"
+			"heroAnim": {
+				"scrollDown": {"en":"NEXT STOP: SCROLL DOWN","fr":"PROCHAIN ARRÊT : FAIS DÉFILER","es":"PRÓXIMA PARADA: SIGUE BAJANDO"}
+			}
 		},
 		"legalPages": [
 			{
@@ -12630,11 +12675,11 @@
 			},
 			"pills": [
 				{
-					"label": {"en":"databases","fr":"bases de données","es":"bases de datos"},
-					"serviceId": "database-engineering"
+					"label": {"en":"websites","fr":"sites web","es":"sitios web"},
+					"serviceId": "web-development"
 				},
 				{
-					"label": {"en":"pipelines","fr":"pipelines","es":"pipelines"},
+					"label": {"en":"automation","fr":"automatisation","es":"automatización"},
 					"serviceId": "data-pipeline"
 				},
 				{
@@ -12642,8 +12687,8 @@
 					"serviceId": "analytics-reporting"
 				},
 				{
-					"label": {"en":"websites","fr":"sites web","es":"sitios web"},
-					"serviceId": "web-development"
+					"label": {"en":"software","fr":"logiciels","es":"software"},
+					"serviceId": "database-engineering"
 				}
 			],
 			"edgeLeft": {
@@ -12720,42 +12765,6 @@
 				}
 			]
 		},
-		"hero": {
-			"headline": {
-				"line1": {"en":"SYSTEMS THAT","fr":"DES SYSTÈMES QUI","es":"SISTEMAS QUE"},
-				"line2": {"en":"DON'T BREAK","fr":"NE CASSENT PAS","es":"NO SE ROMPEN"},
-				"ariaSuffix": {"en":"Don't Break.","fr":"Ne cassent pas.","es":"No se rompen."}
-			},
-			"subheadline": {"en":"I help businesses grow.","fr":"J'aide les entreprises à croître.","es":"Ayudo a las empresas a crecer."},
-			"subtitle": {"en":"More productivity for Canadian businesses, without downtime.","fr":"Plus de productivité pour les entreprises canadiennes, sans pannes.","es":"Más productividad para las empresas canadienses, sin caídas."},
-			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
-			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
-			"ctaWorkHref": "/projects",
-			"sqlPanel": {
-				"prompt": {"en":"yesid@transit:gold>","fr":"yesid@transit:gold>","es":"yesid@transit:gold>"},
-				"liveLabel": {"en":"DEMO","fr":"DÉMO","es":"DEMO"},
-				"liveBadge": {"en":"LIVE","fr":"EN DIRECT","es":"EN VIVO"},
-				"columns": {
-					"route": {"en":"route","fr":"route","es":"route"},
-					"avgDelayS": {"en":"avg_delay_s","fr":"avg_delay_s","es":"avg_delay_s"},
-					"vehicles": {"en":"vehicles","fr":"vehicles","es":"vehicles"}
-				},
-				"metaTemplate": {"en":"5 rows · {queryTime}s · {updatedAgo}","fr":"5 lignes · {queryTime}s · {updatedAgo}","es":"5 filas · {queryTime}s · {updatedAgo}"},
-				"stamps": {
-					"demo": {"en":"demo data","fr":"données démo","es":"datos de demo"},
-					"refreshed": {"en":"regenerated just now","fr":"régénéré à l'instant","es":"regenerado recién"},
-					"liveTemplate": {"en":"{seconds}s ago","fr":"il y a {seconds} s","es":"hace {seconds} s"}
-				}
-			},
-			"refreshButton": {
-				"label": {"en":"PULL FRESH DATA","fr":"TIRER DES DONNÉES FRAÎCHES","es":"TRAER DATOS FRESCOS"},
-				"helper": {"en":"Regenerates the metrics + query results. Simulated STM-style pipeline data, not a live feed.","fr":"Régénère les métriques et les résultats de requête. Données simulées, style pipeline STM, pas un flux en direct.","es":"Regenera las métricas y los resultados de la consulta. Datos simulados, estilo pipeline STM, no un feed en vivo."},
-				"helperLive": {"en":"Refreshes metrics + query results from the live pipeline.","fr":"Actualise les métriques et les résultats de requête depuis le pipeline en direct.","es":"Actualiza las métricas y los resultados de la consulta desde el pipeline en vivo."}
-			},
-			"heroAnim": {
-				"scrollDown": {"en":"NEXT STOP: SCROLL DOWN","fr":"PROCHAIN ARRÊT : FAIS DÉFILER","es":"PRÓXIMA PARADA: SIGUE BAJANDO"}
-			}
-		},
 		"proofReel": {
 			"viewAllLabel": {"en":"View all projects →","fr":"Voir tous les projets →","es":"Ver todos los proyectos →"},
 			"viewAllHref": "/projects"
@@ -12772,7 +12781,7 @@
 		},
 		"cta": {
 			"heading": {"en":"Let's build something\nthat moves","fr":"Bâtissons quelque chose\nqui avance","es":"Construyamos algo\nque se mueva"},
-			"subtitle": {"en":"Database, pipeline, dashboard, website: wherever it's stuck, that's where we start.","fr":"Base de données, pipeline, tableau de bord, site web : peu importe où ça accroche, c'est là qu'on commence.","es":"Base de datos, pipeline, tablero, sitio web: donde se atasca la cosa, ahí empezamos."},
+			"subtitle": {"en":"Website, automation, dashboard, custom software: wherever it's stuck, that's where we start.","fr":"Site web, automatisation, tableau de bord, logiciel sur mesure : peu importe où ça accroche, c'est là qu'on commence.","es":"Sitio web, automatización, tablero, software a la medida: donde se atasca la cosa, ahí empezamos."},
 			"ctaContact": {"en":"Get in touch","fr":"Parlons-en","es":"Hablemos"},
 			"ctaGithub": {"en":"View on GitHub","fr":"Voir sur GitHub","es":"Ver en GitHub"}
 		},
@@ -12815,11 +12824,63 @@
 				"prompt": {"en":"// where to next?","fr":"// on va où, là?","es":"// ¿y ahora a dónde?"}
 			}
 		},
+		"errorPages": {
+			"0": {
+				"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
+				"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
+				"description": {"en":"The page you were looking for could not be found.","fr":"La page que tu cherchais est introuvable.","es":"No se encontró la página que buscabas."},
+				"browserTitle": {"en":"Not Found","fr":"Not Found","es":"Not Found"},
+				"suggestions": [
+					{
+						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
+						"href": "/"
+					},
+					{
+						"label": {"en":"Services","fr":"Services","es":"Servicios"},
+						"href": "/services"
+					}
+				]
+			},
+			"404": {
+				"label": {"en":"ROUTE NOT FOUND","fr":"ROUTE INTROUVABLE","es":"RUTA NO ENCONTRADA"},
+				"heading": {"en":"This station is under construction","fr":"Cette station est en construction","es":"Esta estación está en construcción"},
+				"description": {"en":"The route you requested doesn't exist or has been rerouted. Here are some active lines:","fr":"La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :","es":"La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:"},
+				"suggestions": [
+					{
+						"label": {"en":"Services","fr":"Services","es":"Servicios"},
+						"href": "/services"
+					},
+					{
+						"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
+						"href": "/projects"
+					},
+					{
+						"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
+						"href": "/contact"
+					}
+				]
+			},
+			"500": {
+				"label": {"en":"SYSTEM ERROR","fr":"ERREUR SYSTÈME","es":"ERROR DE SISTEMA"},
+				"heading": {"en":"Something went wrong","fr":"Quelque chose a mal tourné","es":"Algo salió mal"},
+				"description": {"en":"The server encountered an unexpected error. Please try again later.","fr":"Le serveur a rencontré une erreur inattendue. Réessaie plus tard.","es":"El servidor encontró un error inesperado. Intenta de nuevo más tarde."},
+				"suggestions": [
+					{
+						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
+						"href": "/"
+					},
+					{
+						"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
+						"href": "/contact"
+					}
+				]
+			}
+		},
 		"aboutPage": {
 			"identity": {
 				"name": {"en":"Yesid","fr":"Yesid","es":"Yesid"},
 				"title": {"en":"Curious builder, lifelong tinkerer","fr":"Bâtisseur curieux, bricoleur depuis toujours","es":"Constructor curioso, cacharreador eterno"},
-				"valueProp": {"en":"I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through databases, pipelines, dashboards, and websites. When clients work with me, I teach them what things mean so they stay behind the wheel.","fr":"Moi, c'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les bases de données, les pipelines, les tableaux de bord et les sites web. Avec mes clients, j'explique ce que les choses veulent dire pour qu'ils gardent le volant.","es":"Soy Yesid, una persona de Montreal a la que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por bases de datos, pipelines, dashboards y sitios web. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante."},
+				"valueProp": {"en":"I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through websites, automation, dashboards, and custom software. When clients work with me, I teach them what things mean so they stay behind the wheel.","fr":"Moi, c'est Yesid : un gars de Montréal qui aime les systèmes clairs et les explications simples. Mon métier passe par les sites web, l'automatisation, les tableaux de bord et les logiciels sur mesure. Avec mes clients, j'explique ce que les choses veulent dire pour qu'ils gardent le volant.","es":"Soy Yesid, una persona de Montreal a la que le gustan los sistemas claros y las explicaciones sencillas. Mi oficio pasa por sitios web, automatización, tableros y software a la medida. Cuando los clientes trabajan conmigo, les enseño qué significa cada cosa para que sigan al volante."},
 				"headshot": "/images/about/headshot.webp",
 				"polaroids": [
 					{
@@ -13030,58 +13091,6 @@
 				"testimonialsNextAria": {"en":"Next quote","fr":"Citation suivante","es":"Cita siguiente"},
 				"testimonialSlideAria": {"en":"Testimonial {index} of {total}","fr":"Témoignage {index} sur {total}","es":"Testimonio {index} de {total}"},
 				"showTestimonialAria": {"en":"Show testimonial {index}","fr":"Afficher le témoignage {index}","es":"Mostrar testimonio {index}"}
-			}
-		},
-		"errorPages": {
-			"0": {
-				"label": {"en":"PAGE NOT FOUND","fr":"PAGE INTROUVABLE","es":"PÁGINA NO ENCONTRADA"},
-				"heading": {"en":"This station is offline","fr":"Cette station est hors ligne","es":"Estación fuera de servicio"},
-				"description": {"en":"The page you were looking for could not be found.","fr":"La page que tu cherchais est introuvable.","es":"No se encontró la página que buscabas."},
-				"browserTitle": {"en":"Not Found","fr":"Not Found","es":"Not Found"},
-				"suggestions": [
-					{
-						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
-						"href": "/"
-					},
-					{
-						"label": {"en":"Services","fr":"Services","es":"Servicios"},
-						"href": "/services"
-					}
-				]
-			},
-			"404": {
-				"label": {"en":"ROUTE NOT FOUND","fr":"ROUTE INTROUVABLE","es":"RUTA NO ENCONTRADA"},
-				"heading": {"en":"This station is under construction","fr":"Cette station est en construction","es":"Esta estación está en construcción"},
-				"description": {"en":"The route you requested doesn't exist or has been rerouted. Here are some active lines:","fr":"La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :","es":"La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:"},
-				"suggestions": [
-					{
-						"label": {"en":"Services","fr":"Services","es":"Servicios"},
-						"href": "/services"
-					},
-					{
-						"label": {"en":"Projects","fr":"Projets","es":"Proyectos"},
-						"href": "/projects"
-					},
-					{
-						"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
-						"href": "/contact"
-					}
-				]
-			},
-			"500": {
-				"label": {"en":"SYSTEM ERROR","fr":"ERREUR SYSTÈME","es":"ERROR DE SISTEMA"},
-				"heading": {"en":"Something went wrong","fr":"Quelque chose a mal tourné","es":"Algo salió mal"},
-				"description": {"en":"The server encountered an unexpected error. Please try again later.","fr":"Le serveur a rencontré une erreur inattendue. Réessaie plus tard.","es":"El servidor encontró un error inesperado. Intenta de nuevo más tarde."},
-				"suggestions": [
-					{
-						"label": {"en":"Home","fr":"Accueil","es":"Inicio"},
-						"href": "/"
-					},
-					{
-						"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
-						"href": "/contact"
-					}
-				]
 			}
 		}
 	}

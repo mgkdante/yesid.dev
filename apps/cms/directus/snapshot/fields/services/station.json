@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "1 comes first on /services and the home page, and shows as Service 01 / 04. Dragging rows in the list also sets it.",
+    "note": "Lower comes first on /services and the home page. The site numbers services by position (Service 01 / 04), so gaps are fine. Dragging rows in the list also sets it.",
     "options": null,
     "readonly": false,
     "required": true,

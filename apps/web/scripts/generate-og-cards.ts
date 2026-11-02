@@ -14,7 +14,7 @@
  *
  * Every dot is orange. Service and route TITLES wrap to two lines and auto-fit
  * their font size so no line overlaps the service logo art on the right, which
- * matters most for the longer fr/es strings ("Bases de données et SQL").
+ * matters most for the longer fr/es strings ("Sites web et boutiques en ligne").
  *
  * The explicit service titles below are manually reconciled against the
  * committed content export; this script does not import CMS copy. Route labels
@@ -255,70 +255,52 @@ const SERVICES_TITLE_MAXW = 600;
 
 const SERVICES = [
 	{
-		id: 'database-engineering',
-		station: '01',
-		icon: 'service-database.svg',
-		// EN two-line per operator: "databases on one line, SQL on the next".
+		id: 'web-development',
+		icon: 'service-web.svg',
 		lines: {
-			en: ['Databases', '& SQL'],
-			fr: ['Bases de données', 'et SQL'],
-			es: ['Bases de datos', 'y SQL'],
+			en: ['Websites &', 'Online Stores'],
+			fr: ['Sites web et', 'boutiques en ligne'],
+			es: ['Sitios web y', 'tiendas en línea'],
 		} satisfies LL,
 	},
 	{
 		id: 'data-pipeline',
-		station: '02',
 		icon: 'service-pipeline.svg',
 		lines: {
-			en: ['Pipelines &', 'Automation'],
-			fr: ['Pipelines et', 'automatisation'],
-			es: ['Pipelines y', 'automatización'],
+			en: ['Automation', '& AI'],
+			fr: ['Automatisation', 'et IA'],
+			es: ['Automatización', 'e IA'],
 		} satisfies LL,
 	},
 	{
 		id: 'analytics-reporting',
-		station: '03',
 		icon: 'service-reporting.svg',
 		lines: {
-			en: ['Dashboards &', 'Analytics'],
-			fr: ['Tableaux de bord', 'et analytique'],
-			es: ['Tableros y', 'analítica'],
+			en: ['Reports &', 'Dashboards'],
+			fr: ['Rapports et', 'tableaux de bord'],
+			es: ['Reportes y', 'tableros'],
 		} satisfies LL,
 	},
 	{
-		id: 'web-development',
-		station: '04',
-		icon: 'service-web.svg',
+		id: 'database-engineering',
+		icon: 'service-database.svg',
 		lines: {
-			en: ['Websites &', 'E-commerce'],
-			fr: ['Sites web et', 'commerce en ligne'],
-			es: ['Sitios web y', 'e-commerce'],
+			en: ['Software &', 'Databases'],
+			fr: ['Logiciels et', 'bases de données'],
+			es: ['Software y', 'bases de datos'],
 		} satisfies LL,
 	},
 ] as const;
+
+const stationOf = (index: number): string => String(index + 1).padStart(2, '0');
 
 const SERVICE_EYEBROW: L = { en: 'SERVICE', fr: 'SERVICE', es: 'SERVICIO' };
 
 /** Uppercase service names for the services-listing line-list, per locale. */
 const SERVICE_LIST: Record<Locale, readonly string[]> = {
-	en: [
-		'DATABASES & SQL',
-		'PIPELINES & AUTOMATION',
-		'DASHBOARDS & ANALYTICS',
-		'WEBSITES & E-COMMERCE',
-	],
-	fr: [
-		'BASES DE DONNÉES ET SQL',
-		'PIPELINES ET AUTOMATISATION',
-		'TABLEAUX DE BORD ET ANALYTIQUE',
-		'SITES WEB ET COMMERCE EN LIGNE',
-	],
-	es: [
-		'BASES DE DATOS Y SQL',
-		'PIPELINES Y AUTOMATIZACIÓN',
-		'TABLEROS Y ANALÍTICA',
-		'SITIOS WEB Y E-COMMERCE',
-	],
+	en: ['WEBSITES & ONLINE STORES', 'AUTOMATION & AI', 'REPORTS & DASHBOARDS', 'SOFTWARE & DATABASES'],
+	fr: ['SITES WEB ET BOUTIQUES EN LIGNE', 'AUTOMATISATION ET IA', 'RAPPORTS ET TABLEAUX DE BORD', 'LOGICIELS ET BASES DE DONNÉES'],
+	es: ['SITIOS WEB Y TIENDAS EN LÍNEA', 'AUTOMATIZACIÓN E IA', 'REPORTES Y TABLEROS', 'SOFTWARE Y BASES DE DATOS'],
 };
 
 const ROUTES = {
@@ -381,10 +363,10 @@ async function buildCards(): Promise<Record<string, string>> {
 		const sfx = suffix(loc);
 
 		// Service cards: two-line title, auto-fit clear of the logo art.
-		for (const s of SERVICES) {
+		for (const [i, s] of SERVICES.entries()) {
 			cards[`services/${s.id}${sfx}.png`] = frame(
 				serviceArt(s.icon, 760, 130, 360, 0.2),
-				eyebrow(`${SERVICE_EYEBROW[loc]} ${s.station} / 04`),
+				eyebrow(`${SERVICE_EYEBROW[loc]} ${stationOf(i)} / ${stationOf(SERVICES.length - 1)}`),
 				overline(),
 				titleBlock(s.lines[loc], SERVICE_TITLE_MAXW, 350),
 				footer(`yesid.dev/services/${s.id}`),

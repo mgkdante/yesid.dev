@@ -7,6 +7,7 @@
 
 	const locale = getLocale();
 	import { fillTemplate } from '#lib/utils/labels.ts';
+	import { orderServices, stationNumber } from '#lib/utils/station.ts';
 	import { siteLabels } from '#lib/content/index.ts';
 
 	import { pressBounce, cursorGlow, cardParallax } from '@yesid/motion/actions';
@@ -20,8 +21,7 @@
 		services,
 	}: { servicesGrid: ServicesGridContent; services: readonly Service[] } = $props();
 
-	// Station order defines the journey; CMS exports do not guarantee collection order.
-	const orderedServices = $derived([...services].sort((a, b) => a.station - b.station));
+	const orderedServices = $derived(orderServices(services));
 
 	const viewIllustrationAriaTemplate = $derived(
 		resolveLocale(servicesGridContent.viewIllustrationAria, locale)
@@ -118,7 +118,7 @@
 						<div class="services-icon-zone relative">
 
 							<div class="services-marker">
-								{fillTemplate(markerServiceTemplate, { num: String(service.station).padStart(2, '0') })}
+								{fillTemplate(markerServiceTemplate, { num: stationNumber(i) })}
 							</div>
 
 							<!-- Parent-link hover drives morphs; disabled click toggles let mobile taps navigate. -->

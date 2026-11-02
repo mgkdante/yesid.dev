@@ -15,6 +15,7 @@
 	const locale = getLocale();
 	import { siteLabels } from '#lib/content/index.ts';
 	import { boop } from '@yesid/motion/actions';
+	import { orderServices, stationNumber } from '#lib/utils/station.ts';
 	import StationTabs from '#lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
@@ -54,7 +55,7 @@
 	let title = $derived(resolveLocale(service.title, locale));
 	let description = $derived(resolveLocale(service.description, locale));
 	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, locale) : null);
-	let stationNum = $derived(String(service.station).padStart(2, '0'));
+	let stationNum = $derived(stationNumber(orderServices(services).findIndex((s) => s.id === service.id)));
 	let totalStr = $derived(String(services.length).padStart(2, '0'));
 	let stationLabelText = $derived(
 		resolveLocale(siteLabels.servicesChrome.listing.stationLabelTemplate, locale)

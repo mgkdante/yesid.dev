@@ -6,6 +6,7 @@
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
 	import StopLabel from '#lib/components/brand/StopLabel.svelte';
+	import { stationNumber } from '#lib/utils/station.ts';
 	import { Card } from '@yesid/ui/card';
 
 	let { steps, stop, label }: { steps: readonly AboutMethodStep[]; stop: string; label: string } = $props();
@@ -31,7 +32,7 @@
 				<div class="belief-card">
 					<div class="flex items-center gap-2">
 						<div class="belief-badge">
-							{String(step.station).padStart(2, '0')}
+							{stationNumber(i)}
 						</div>
 						<div class="belief-title">{stepLabel}</div>
 					</div>

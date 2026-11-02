@@ -61,7 +61,7 @@ export const ABOUT_META_DESCRIPTION_BY_LOCALE = {
 } as const;
 
 export const SERVICES_DESCRIPTION_BY_LOCALE = {
-	en: 'I build the infrastructure your operations run on: databases & SQL, pipelines & automation, dashboards & analytics, websites & e-commerce.',
-	fr: "Je bâtis l'infrastructure sur laquelle vos opérations reposent : bases de données et SQL, pipelines et automatisation, tableaux de bord et analytique, sites web et commerce en ligne.",
-	es: 'Construyo la infraestructura sobre la que funcionan tus operaciones: bases de datos y SQL, pipelines y automatización, dashboards y analítica, sitios web y e-commerce.',
+	en: 'Websites and online stores, automation and AI, reports and dashboards, custom software and databases. Freelance in Montréal for Québec and Canadian SMEs.',
+	fr: "Sites web et boutiques, automatisation et IA, rapports et tableaux de bord, logiciels et bases de données. Pigiste à Montréal pour les PME d'ici.",
+	es: 'Sitios web y tiendas, automatización e IA, reportes y tableros, software y bases de datos. Freelance en Montreal para pymes de Quebec y Canadá.',
 } as const;

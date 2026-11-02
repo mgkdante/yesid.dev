@@ -169,7 +169,7 @@
 			"folder": "og",
 			"title": "OG card — /services",
 			"description": "Share card for the /services listing route: Digital Infrastructure title with the four-station service list.",
-			"sha256": "6c9ee70dcba09be6c68e471337ec337d287e92547520c839df1f1ac9ff06be6a"
+			"sha256": "ecc605e88bccf2477376bf8cedbd698b71138f1488152d473698467796809a45"
 		},
 		{
 			"legacyPath": "og/routes/contact.png",
