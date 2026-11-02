@@ -11,6 +11,7 @@
 
 	import { articleMediaLabels, type ArticleMedia } from '#lib/media/article-media.svelte.ts';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
+	import { SliderButton } from '@yesid/ui/brand';
 	import YouTubeVideoPlayer from '#lib/components/cms/blocks/YouTubeVideo.svelte';
 	let { media }: { media: ArticleMedia } = $props();
 	const locale = getLocale();
@@ -96,9 +97,9 @@
 						</button>
 						{#if media.selection?.kind !== 'diagram'}
 							<div class="article-media-navigation" data-card-interactive>
-								<button type="button" aria-label={labels.previous} disabled={media.index === 0} onclick={() => media.move(-1)}>←</button>
+								<SliderButton direction="previous" aria-label={labels.previous} disabled={media.index === 0} onclick={() => media.move(-1)} />
 								<span role="status" aria-label={labels.position}>{media.index + 1} / {media.count}</span>
-								<button type="button" aria-label={labels.next} disabled={media.index === media.count - 1} onclick={() => media.move(1)}>→</button>
+								<SliderButton direction="next" aria-label={labels.next} disabled={media.index === media.count - 1} onclick={() => media.move(1)} />
 							</div>
 						{/if}
 						{#if activeDiagram}
@@ -242,9 +243,6 @@
 	}
 
 	.article-media-navigation { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.5rem 3.75rem; flex-shrink: 0; }
-	.article-media-navigation button { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--foreground); min-width: 2.75rem; min-height: 2.75rem; cursor: pointer; }
-	.article-media-navigation button:disabled { opacity: 0.35; cursor: default; }
-	.article-media-navigation button:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
 	.article-media-diagram { padding: 3.75rem 1rem 1rem; overflow: auto; }
 	.article-media-diagram :global(svg) { display: block; width: 100%; max-width: none !important; height: auto; }
 </style>

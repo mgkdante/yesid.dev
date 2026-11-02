@@ -9,6 +9,7 @@
 	import { siteLabels } from '#lib/content/index.ts';
 	import type { ProjectSummary, ProofReelContent, Service } from '#lib/types.ts';
 	import { equalizeRows } from '#lib/utils/equalize-rows.ts';
+	import { SliderButton } from '@yesid/ui/brand';
 	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
 
 	const locale = getLocale();
@@ -137,26 +138,8 @@
 	</div>
 
 	<div class="proof-controls">
-		<button
-			type="button"
-			class="proof-control-btn"
-			onclick={scrollPrev}
-			aria-label={previousControlAria}
-			data-testid="proof-prev"
-			disabled={!canScrollPrevious}
-		>
-			<span class="proof-control-arrow" aria-hidden="true">←</span>
-		</button>
-		<button
-			type="button"
-			class="proof-control-btn"
-			onclick={scrollNext}
-			aria-label={nextControlAria}
-			data-testid="proof-next"
-			disabled={!canScrollForward}
-		>
-			<span class="proof-control-arrow" aria-hidden="true">→</span>
-		</button>
+		<SliderButton direction="previous" onclick={scrollPrev} aria-label={previousControlAria} data-testid="proof-prev" disabled={!canScrollPrevious} />
+		<SliderButton direction="next" onclick={scrollNext} aria-label={nextControlAria} data-testid="proof-next" disabled={!canScrollForward} />
 		<div class="proof-count" aria-live="polite" aria-label={currentPosition.label} data-testid="proof-count">
 			<span class="proof-count-current">{currentPosition.current}</span>
 			<span class="proof-count-sep">/</span>
@@ -202,41 +185,6 @@
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
-	}
-
-	.proof-control-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		flex: none;
-		width: var(--size-tap-min);
-		height: var(--size-tap-min);
-		border-radius: var(--radius-pill);
-		background: transparent;
-		border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
-		color: var(--primary);
-		font-family: var(--font-mono);
-		font-size: var(--text-menu-subtitle);
-		font-weight: 700;
-		cursor: pointer;
-		transition:
-			background var(--duration-normal) ease-out,
-			border-color var(--duration-normal) ease-out;
-	}
-
-	.proof-control-btn:hover {
-		background: color-mix(in srgb, var(--primary) 10%, transparent);
-		border-color: color-mix(in srgb, var(--primary) 55%, transparent);
-	}
-
-	.proof-control-btn:disabled {
-		opacity: 0.4;
-		cursor: default;
-	}
-
-	.proof-control-arrow {
-		font-size: var(--text-detail-body-desktop);
-		line-height: 1;
 	}
 
 	.proof-count {

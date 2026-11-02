@@ -14,6 +14,7 @@
 	import { cursorGlow } from '@yesid/motion/actions';
 	import StopLabel from '#lib/components/brand/StopLabel.svelte';
 	import { Card } from '@yesid/ui/card';
+	import { SliderButton } from '@yesid/ui/brand';
 	import { variantImage } from '#lib/utils/variant-image.ts';
 	import { persisted } from '@yesid/ui/state';
 
@@ -91,23 +92,9 @@
 
 		<!-- Arrow nav + counter -->
 		<div class="flex items-center justify-center gap-3 pb-1">
-			<button
-				class="tap-press flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] p-2.5 text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
-				onclick={prev}
-				aria-label={prevPhotoAria}
-				data-testid="about-polaroid-prev"
-			>
-				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6 2L3.5 5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-			</button>
+			<SliderButton direction="previous" onclick={prev} aria-label={prevPhotoAria} data-testid="about-polaroid-prev" />
 			<span class="font-mono text-caption text-[var(--muted-foreground)]" data-testid="about-polaroid-counter">{currentIndex + 1}/{polaroids.length}</span>
-			<button
-				class="tap-press flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] p-2.5 text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
-				onclick={next}
-				aria-label={nextPhotoAria}
-				data-testid="about-polaroid-next"
-			>
-				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4 2L6.5 5L4 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-			</button>
+			<SliderButton direction="next" onclick={next} aria-label={nextPhotoAria} data-testid="about-polaroid-next" />
 		</div>
 		{/if}
 	</div>

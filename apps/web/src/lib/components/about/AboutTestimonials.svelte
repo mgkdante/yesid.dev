@@ -6,6 +6,7 @@
 	import { cursorGlow } from '@yesid/motion/actions';
 	import StopLabel from '#lib/components/brand/StopLabel.svelte';
 	import { Card } from '@yesid/ui/card';
+	import { SliderButton } from '@yesid/ui/brand';
 
 	const locale = getLocale();
 
@@ -91,14 +92,7 @@
 
 			{#if hasSlides}
 				<div class="mt-3 flex shrink-0 items-center justify-between gap-3" data-testid="about-quote-controls">
-					<button
-						type="button"
-						class="quote-arrow tap-press"
-						aria-label={prevAria}
-						onclick={previous}
-					>
-						‹
-					</button>
+					<SliderButton direction="previous" aria-label={prevAria} onclick={previous} />
 					<div class="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-1" role="tablist" aria-label={tabNavAria}>
 						{#each testimonials as _testimonial, i}
 							<button
@@ -113,14 +107,7 @@
 							></button>
 						{/each}
 					</div>
-					<button
-						type="button"
-						class="quote-arrow tap-press"
-						aria-label={nextAria}
-						onclick={next}
-					>
-						›
-					</button>
+					<SliderButton direction="next" aria-label={nextAria} onclick={next} />
 				</div>
 			{/if}
 		</div>
@@ -131,33 +118,6 @@
 	/* Every localized quote sizes the same grid cell, including hidden items. */
 	.quote-item { grid-area: 1 / 1; min-width: 0; }
 	.quote-hidden { visibility: hidden; pointer-events: none; }
-
-	.quote-arrow {
-		display: grid;
-		width: 2.75rem;
-		height: 2.75rem;
-		flex-shrink: 0;
-		place-items: center;
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-pill);
-		background: var(--card);
-		box-shadow: inset 0 1px 0 var(--edge-highlight);
-		color: var(--foreground);
-		font-family: var(--font-heading);
-		font-size: 1.5rem;
-		line-height: 1;
-		cursor: pointer;
-		transition:
-			border-color var(--duration-fast) var(--ease-default),
-			color var(--duration-fast) var(--ease-default),
-			transform var(--duration-fast) var(--ease-default);
-	}
-
-	.quote-arrow:hover {
-		border-color: var(--primary);
-		color: var(--primary);
-		transform: translateY(-1px);
-	}
 
 	.quote-dot {
 		display: grid;
