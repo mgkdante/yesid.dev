@@ -11,12 +11,8 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.identity.valueProp.en.length).toBeLessThanOrEqual(260);
 			expect(aboutPageContent.identity.valueProp.en.toLowerCase()).not.toContain('mom');
 			expect(aboutPageContent.identity.valueProp.en).not.toContain('2005');
-			expect(aboutPageContent.identity.valueProp.en).toContain(
-				'so they stay behind the wheel.',
-			);
-
 			expect(aboutPageContent.identity.valueProp.en).toBe(
-				"I'm Yesid, a Montreal builder who likes clear systems and plain explanations. My trade runs through websites, automation, dashboards, and custom software. When clients work with me, I teach them what things mean so they stay behind the wheel.",
+				"I'm Yesid, a Montreal builder who likes clear systems and plain explanations. This page reflects a bit of me, feel free to explore :)",
 			);
 			expect(aboutPageContent.identity.valueProp.en).not.toContain('take advantage');
 			const valuePropFr = aboutPageContent.identity.valueProp.fr;
