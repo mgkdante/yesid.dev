@@ -564,7 +564,6 @@ describe('route SEO composition', () => {
 			fr: paragraph('project-fr', 'Une plateforme fiable de données de transport pour Montréal.'),
 			es: paragraph('project-es', 'Una plataforma fiable de datos de transporte para Montreal.'),
 		},
-		tags: ['transit', 'data'],
 		stack: ['PostgreSQL', 'SvelteKit'],
 	} satisfies Partial<Project>);
 

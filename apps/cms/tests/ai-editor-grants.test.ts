@@ -3,7 +3,7 @@ import { describe, expect, it } from 'bun:test';
 import policies from '../directus/collections/policies.json';
 import permissions from '../directus/collections/permissions.json';
 import settings from '../directus/collections/settings.json';
-// Exact 45-row payload supplied with WO-43.22; keep independent of the repo dump.
+// WO-43.22 payload (45 rows) minus the 3 projects_tags grants retired with project tags; keep independent of the repo dump.
 import expectedGrants from './fixtures/ai-editor-grants.json';
 
 const POLICY_ID = '_sync_ai_editor_policy';
@@ -22,11 +22,11 @@ describe('AI Editor grants (slice-43.22)', () => {
 		expect(aiPermissions.filter((row) => row.action === 'delete')).toEqual([]);
 	});
 
-	it('holds exactly the 45 supplied grants with their sync identities and payloads', () => {
-		expect(expectedGrants).toHaveLength(45);
+	it('holds exactly the 42 supplied grants with their sync identities and payloads', () => {
+		expect(expectedGrants).toHaveLength(42);
 		const collections = new Set(expectedGrants.map((row) => row.collection));
 		const actual = aiPermissions.filter((row) => collections.has(row.collection));
-		expect(actual).toHaveLength(45);
+		expect(actual).toHaveLength(42);
 		for (const expected of expectedGrants) {
 			const rows = permissions.filter((row) => row._syncId === expected._syncId);
 			expect(rows).toEqual([expected]);

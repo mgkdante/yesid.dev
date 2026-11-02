@@ -11,9 +11,9 @@ test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or view
 
 // Ground truth (verified against the live preview + src):
 //   - ProjectFilterSidebar renders FilterGroup with testIdPrefix="service-filter" /
-//     "tag-filter"; FilterGroup emits data-testid=`${prefix}-${key}` on each item
+//     "stack-filter"; FilterGroup emits data-testid=`${prefix}-${key}` on each item
 //     button (so [data-testid^="service-filter-"] is correct).
-//   - The Services group is startOpen (open on load); the Tags group is
+//   - The Services group is startOpen (open on load); the Tech Stack group is
 //     startOpen={false} (collapsed) — its buttons are in the DOM but the collapse
 //     wrapper intercepts pointer events, so the group header must be expanded first.
 //   - Filter changes call goto({replaceState:true}) asynchronously; networkidle does
@@ -50,17 +50,17 @@ test.describe('Project listing filters', () => {
     await expect(page).toHaveURL(/[?&]service=/);
   });
 
-  test('clicking a tag filter button updates URL param', async ({ page }) => {
-    // The Tags group is collapsed by default — expand it before its items are clickable.
+  test('clicking a stack filter button updates URL param', async ({ page }) => {
+    // The Tech Stack group is collapsed by default — expand it before its items are clickable.
     const sidebar = desktopSidebar(page);
-    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.tags.en }).click();
+    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.techStack.en }).click();
 
-    const filterBtn = sidebar.locator('[data-testid^="tag-filter-"]').first();
+    const filterBtn = sidebar.locator('[data-testid^="stack-filter-"]').first();
     await expect(filterBtn).toBeVisible();
 
     await filterBtn.click();
 
-    await expect(page).toHaveURL(/[?&]tag=/);
+    await expect(page).toHaveURL(/[?&]stack=/);
   });
 
   test('typing in project search filters results in real-time', async ({ page }) => {
@@ -98,7 +98,7 @@ test.describe('Project listing filters', () => {
     await expect(page).not.toHaveURL(/[?&]service=/);
   });
 
-  test('service and tag filters use AND logic', async ({ page }) => {
+  test('service and stack filters use AND logic', async ({ page }) => {
     const sidebar = desktopSidebar(page);
 
     // Apply service filter (open group).
@@ -107,14 +107,14 @@ test.describe('Project listing filters', () => {
     await serviceBtn.click();
     await expect(page).toHaveURL(/[?&]service=/);
 
-    // Expand Tags, then apply a tag filter — both params must coexist (AND logic).
-    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.tags.en }).click();
-    const tagBtn = sidebar.locator('[data-testid^="tag-filter-"]').first();
-    await expect(tagBtn).toBeVisible();
-    await tagBtn.click();
+    // Expand Tech Stack, then apply a stack filter — both params must coexist (AND logic).
+    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.techStack.en }).click();
+    const stackBtn = sidebar.locator('[data-testid^="stack-filter-"]').first();
+    await expect(stackBtn).toBeVisible();
+    await stackBtn.click();
 
     await expect(page).toHaveURL(/[?&]service=/);
-    await expect(page).toHaveURL(/[?&]tag=/);
+    await expect(page).toHaveURL(/[?&]stack=/);
   });
 });
 

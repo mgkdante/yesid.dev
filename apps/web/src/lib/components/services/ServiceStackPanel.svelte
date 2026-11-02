@@ -1,5 +1,5 @@
 <!--
-  Stack + related-projects fragment shared by the service detail desktop rail
+  Related-projects + stack fragment shared by the service detail desktop rail
   and mobile block. `variant` and `serviceId` are mount-stable: CollapsibleSection
   captures its persistence key once at initialization, so callers must remount
   rather than change them on a live instance.
@@ -44,23 +44,6 @@
 	const relatedAnchor = mountVariant === 'mobile' ? 'svc-related' : undefined;
 </script>
 
-{#if stack?.length}
-	<CollapsibleSection
-		title="{stackLabel} ({stack.length})"
-		sectionKey={stackKey}
-		anchor={stackAnchor}
-		open={true}
-	>
-		{#snippet icon()}
-			<SectionIcon name="layers" class="h-4 w-4 shrink-0 text-primary" />
-		{/snippet}
-		<div class="stack-pills">
-			{#each stack as tech}
-				<span class="stack-pill">{tech}</span>
-			{/each}
-		</div>
-	</CollapsibleSection>
-{/if}
 {#if relatedProjects.length}
 	<CollapsibleSection
 		title="{relatedProjectsHeading} ({relatedProjects.length})"
@@ -79,7 +62,7 @@
 					use:boop={{ scale: 1.02, timing: 150 }}
 					use:pressBounce
 				>
-					<span class="project-dot" aria-hidden="true"></span>
+					<span class="project-dot first-line-bullet" aria-hidden="true"></span>
 					<span class="project-name">{resolveLocale(project.title, locale)}</span>
 				</a>
 			{/each}
@@ -87,6 +70,23 @@
 		<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
 			{seeAllProjectsLabel}
 		</a>
+	</CollapsibleSection>
+{/if}
+{#if stack?.length}
+	<CollapsibleSection
+		title="{stackLabel} ({stack.length})"
+		sectionKey={stackKey}
+		anchor={stackAnchor}
+		open={true}
+	>
+		{#snippet icon()}
+			<SectionIcon name="layers" class="h-4 w-4 shrink-0 text-primary" />
+		{/snippet}
+		<div class="stack-pills">
+			{#each stack as tech}
+				<span class="stack-pill">{tech}</span>
+			{/each}
+		</div>
 	</CollapsibleSection>
 {/if}
 
@@ -135,7 +135,7 @@
 
 	.project-link {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 0.625rem;
 		padding: 0.625rem 0.75rem;
 		text-decoration: none;
@@ -153,11 +153,7 @@
 	}
 
 	.project-dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
 		background: var(--primary);
-		flex-shrink: 0;
 	}
 
 	.project-name {

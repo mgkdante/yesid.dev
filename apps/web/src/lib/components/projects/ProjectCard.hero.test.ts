@@ -122,7 +122,6 @@ describe('ProjectCard hero media', () => {
 		expect(screen.getByTestId('proof-card-title').textContent).toContain(project.title.en);
 		expect(card.textContent).not.toContain('42%');
 		expect(card.textContent).not.toContain('Fixture service');
-		expect(container.querySelector('.data-flow-diagram')).toBeNull();
 		expect(screen.getByTestId('proof-card-links').querySelector('a')?.getAttribute('href')).toBe('https://example.test');
 
 		const images = container.querySelectorAll('[data-testid="project-hero-preview-image"]');

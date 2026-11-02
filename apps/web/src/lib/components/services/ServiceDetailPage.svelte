@@ -11,6 +11,7 @@
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { toTextBlocks } from '#lib/utils/text-blocks.ts';
 
 	const locale = getLocale();
 	import { siteLabels } from '#lib/content/index.ts';
@@ -118,10 +119,10 @@
 			service.sections.forEach((section, i) =>
 				entries.push({ id: `svc-section-${i}`, title: resolveLocale(section.title, locale), level: 2, badge: { kind: 'number', value: i + 1 }, children: [] })
 			);
-		if (hasStack)
-			entries.push({ id: 'svc-stack', title: stackLabel, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
 		if (relatedProjects.length > 0)
 			entries.push({ id: 'svc-related', title: relatedProjectsHeading, level: 2, badge: { kind: 'icon', name: 'briefcase' }, rail: true, children: [] });
+		if (hasStack)
+			entries.push({ id: 'svc-stack', title: stackLabel, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
 		return entries;
 	});
 
@@ -335,7 +336,7 @@
 						<div class="deliverables-grid">
 							{#each service.deliverables as deliverable}
 								<div class="deliverable-item">
-									<span class="deliverable-dot" aria-hidden="true"></span>
+									<span class="deliverable-dot first-line-bullet" aria-hidden="true"></span>
 									<span>{resolveLocale(deliverable, locale)}</span>
 								</div>
 							{/each}
@@ -349,9 +350,22 @@
 				{#each service.sections as section, i}
 					<div>
 						<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey={scoped(`svc-section-${i}`)} anchor="svc-section-{i}" open={true} index={i}>
-							<p class="section-body">
-								{resolveLocale(section.content, locale)}
-							</p>
+							<div class="section-body">
+								{#each toTextBlocks(resolveLocale(section.content, locale)) as block}
+									{#if block.kind === 'list'}
+										<ul class="section-list">
+											{#each block.items as item}
+												<li class="deliverable-item">
+													<span class="deliverable-dot first-line-bullet" aria-hidden="true"></span>
+													<span>{item}</span>
+												</li>
+											{/each}
+										</ul>
+									{:else}
+										<p>{block.text}</p>
+									{/if}
+								{/each}
+							</div>
 						</CollapsibleSection>
 					</div>
 				{/each}
@@ -625,7 +639,19 @@
 	}
 
 	.section-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
 		color: var(--secondary-foreground);
+	}
+
+	.section-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
 	}
 
 	/* Deliverables grid */
@@ -642,17 +668,14 @@
 
 	.deliverable-item {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 0.5rem;
 		color: var(--secondary-foreground);
 	}
 
 	.deliverable-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
+		--bullet-size: 6px;
 		background: var(--primary);
-		flex-shrink: 0;
 	}
 
 	/* ── Related projects panel (desktop right column) ── */

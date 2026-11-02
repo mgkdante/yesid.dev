@@ -1756,42 +1756,6 @@
     "_syncId": "ae-projects-svc-update-0040-000000000027"
   },
   {
-    "collection": "projects_tags",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_projects_tags_ai_create"
-  },
-  {
-    "collection": "projects_tags",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_projects_tags_ai_read"
-  },
-  {
-    "collection": "projects_tags",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_projects_tags_ai_update"
-  },
-  {
     "collection": "projects_translations",
     "action": "create",
     "permissions": {},
@@ -9147,18 +9111,6 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "cf11ff38-0699-4091-8a45-3f647cfcb46d"
-  },
-  {
-    "collection": "projects_tags",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
-    "_syncId": "4b1787ef-eb8d-43e7-8d9c-b382690408d0"
   },
   {
     "collection": "blog_posts_tags",

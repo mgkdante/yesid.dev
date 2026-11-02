@@ -5,11 +5,9 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { cursorGlow, magnetic } from '@yesid/motion/actions';
+	import { cursorGlow } from '@yesid/motion/actions';
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
-	import { Badge } from '@yesid/ui/badge';
 	import { Card } from '@yesid/ui/card';
-	import DataFlowDiagram from '#lib/components/projects/DataFlowDiagram.svelte';
 	import { cn } from '@yesid/ui/cn';
 	import { serviceLineColor } from '#lib/utils/service-colors.ts';
 	import { siteLabels } from '#lib/content/index.ts';
@@ -69,21 +67,9 @@
 	const mediaSizes = $derived(MEDIA_SIZES[variant]);
 
 	let cardHovered = $state(false);
-	let tagsRow = $state<HTMLDivElement>();
-
-	// Tags sit under the card link, so the card hands its pointer to their magnetic action.
-	function pullTags(event: MouseEvent) {
-		for (const tag of tagsRow?.children ?? []) {
-			tag.dispatchEvent(new MouseEvent(event.type, { clientX: event.clientX, clientY: event.clientY }));
-		}
-	}
 
 	let isProof = $derived(variant === 'proof');
 	let mediaClass = $derived(cn('project-card-media overflow-hidden', `project-card-media--${variant}`));
-
-	let displayTags = $derived(project.tags.slice(0, 4));
-
-	let displayStack = $derived(project.stack.slice(0, 5));
 
 	let projectServices = $derived(
 		project.relatedServices
@@ -92,14 +78,7 @@
 	);
 
 	const listingChrome = siteLabels.projectsChrome.listing;
-	const stackLabel = listingChrome.filters.techStack;
 	const servicesLabel = listingChrome.filters.services;
-	const stackOverflowTemplate = resolveLocale(listingChrome.card.stackOverflowSuffix, locale);
-	const stackOverflow = $derived(
-		project.stack.length > 5
-			? stackOverflowTemplate.replace('{count}', String(project.stack.length - 5))
-			: ''
-	);
 
 </script>
 
@@ -109,8 +88,7 @@
 	data-flip-id={project.slug}
 	data-batch="project-item"
 	onmouseenter={() => (cardHovered = true)}
-	onmousemove={pullTags}
-	onmouseleave={(event) => { cardHovered = false; pullTags(event); }}
+	onmouseleave={() => (cardHovered = false)}
 	use:cursorGlow
 	{...rest}
 >
@@ -184,13 +162,13 @@
 									/>
 								</div>
 							{/if}
-							<span
-								class="line-bullet"
-								style="background: {serviceLineColor(service.id)};"
-								aria-hidden="true"
-							></span>
-							<span class="project-card-meta font-mono leading-tight text-[var(--foreground)]">
-								{resolveLocale(service.title, locale)}
+							<span class="project-card-meta inline-flex items-start gap-2 font-mono leading-tight text-[var(--foreground)]">
+								<span
+									class="first-line-bullet"
+									style="background: {serviceLineColor(service.id)};"
+									aria-hidden="true"
+								></span>
+								<span>{resolveLocale(service.title, locale)}</span>
 							</span>
 						</div>
 					{/each}
@@ -198,29 +176,6 @@
 				</div>
 			{/if}
 
-			{#if displayStack.length > 0}
-				<div class="mt-3">
-					<div class="mb-1.5 label-section font-semibold">
-						{resolveLocale(stackLabel, locale)}
-					</div>
-					<DataFlowDiagram stack={displayStack} size="sm" />
-					{#if stackOverflow}
-						<span class="project-card-meta mt-0.5 block font-mono text-[var(--muted-foreground)]">{stackOverflow}</span>
-					{/if}
-				</div>
-			{/if}
-
-				<div class="flex flex-wrap gap-1 pt-3" bind:this={tagsRow}>
-					{#each displayTags as tag}
-						<span use:magnetic={{ strength: 2, radius: 30 }}>
-							<Badge
-								variant="tag-active"
-								size="xs"
-								class="project-card-tag"
-							>{tag}</Badge>
-						</span>
-					{/each}
-				</div>
 			{/if}
 		</div>
 
@@ -243,14 +198,6 @@
 		border-radius: 0;
 	}
 
-	.line-bullet {
-		display: inline-block;
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		flex-shrink: 0;
-	}
-
 	.project-card :global(.card-surface) {
 		border-width: 3px;
 	}
@@ -266,12 +213,6 @@
 		inset: 0;
 		z-index: 1;
 		border-radius: var(--radius-lg);
-	}
-
-	/* The stack diagram scrolls on its own, above the card link. */
-	.project-card :global(.data-flow-diagram) {
-		position: relative;
-		z-index: 2;
 	}
 
 	.project-card-media {
@@ -376,11 +317,6 @@
 		font-size: var(--text-card-meta);
 	}
 
-	:global(.project-card-tag) {
-		font-size: var(--text-tag);
-		letter-spacing: 0;
-	}
-
 	.project-card--proof .project-card-body {
 		padding: 1rem 1.25rem 0.75rem;
 	}
@@ -422,12 +358,4 @@
 		}
 	}
 
-	/* Alpha-only pipeline attention remains active under reduced motion. */
-	.project-card :global(.df-line) {
-		transition: stroke-opacity var(--duration-normal) var(--ease-default);
-	}
-	.project-card:hover :global(.df-line),
-	.project-card:active :global(.df-line) {
-		stroke-opacity: 1;
-	}
 </style>

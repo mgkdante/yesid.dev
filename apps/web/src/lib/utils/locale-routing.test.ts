@@ -90,7 +90,7 @@ describe('yesid.dev locale routing wrapper', () => {
 
 			expect(
 				buildLocalizeUrl(
-					new URL('/projects?service=web&tag=svelte#results', 'https://yesid.dev'),
+					new URL('/projects?service=web&stack=svelte#results', 'https://yesid.dev'),
 					'fr',
 				),
 			).toBe('/fr/projects');

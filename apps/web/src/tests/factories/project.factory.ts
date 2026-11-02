@@ -15,7 +15,6 @@ export const projectFactory = new Factory<Project>(() => ({
 	oneLiner: localizedString(),
 	description: localizedBlockEditorDoc(),
 	stack: ['TypeScript', 'SvelteKit'],
-	tags: [faker.lorem.word(), faker.lorem.word()],
 	status: 'public',
 	featured: false,
 	relatedServices: [],

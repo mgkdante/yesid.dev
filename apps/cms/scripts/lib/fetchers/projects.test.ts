@@ -31,10 +31,6 @@ const FIXTURE: DirectusProject = {
 		{ sort: 0, tech_stack_id: { id: 'postgresql', name: 'PostgreSQL' } },
 		{ sort: 1, tech_stack_id: { id: 'python', name: 'Python' } },
 	],
-	tags: [
-		{ sort: 0, tags_id: { id: 'etl' } },
-		{ sort: 1, tags_id: { id: 'transit' } },
-	],
 	translations: [
 		{
 			languages_code: 'en',

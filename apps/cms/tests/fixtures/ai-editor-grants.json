@@ -540,42 +540,6 @@
     "_syncId": "_sync_perm_blog_posts_tags_ai_update"
   },
   {
-    "collection": "projects_tags",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_projects_tags_ai_create"
-  },
-  {
-    "collection": "projects_tags",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_projects_tags_ai_read"
-  },
-  {
-    "collection": "projects_tags",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_projects_tags_ai_update"
-  },
-  {
     "collection": "directus_files",
     "action": "read",
     "permissions": {},

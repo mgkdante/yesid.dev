@@ -26,7 +26,6 @@ export const ProjectSchema = z.object({
 	/** Technology names are not localized. */
 	stack: z.array(z.string()),
 	/** Tags are not localized. */
-	tags: z.array(z.string()),
 	/** Public projects appear in listings; private projects stay hidden; wip projects are flagged. */
 	status: ProjectStatusSchema,
 	featured: z.boolean(),

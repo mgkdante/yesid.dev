@@ -197,5 +197,4 @@ credential change.
 - [CMS CI and guarded operations](../../.github/workflows/cms.yml)
 - [Shared content interfaces](../../packages/shared/src/types/content.ts)
 - [Asset-registry interface](../../packages/shared/src/asset-registry.ts)
-- [Outcome-first positioning source](fixtures/content/outcome-first-positioning.ts)
 - [Security reporting](../../SECURITY.md)

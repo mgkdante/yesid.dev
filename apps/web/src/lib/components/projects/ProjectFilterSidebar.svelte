@@ -1,9 +1,9 @@
 <!--
   Listing filter panel for the /projects page.
-  Shows SERVICES section + TAGS section.
+  Shows SERVICES section + TECH STACK section.
   Follows the same layout pattern as BlogFilterSidebar.
 
-  WHY: button groups (services + tags) are now delegated to FilterGroup so the
+  WHY: button groups (services + stack) are now delegated to FilterGroup so the
   active/tag-active styles and deselect logic live in one place.
 -->
 <script lang="ts">
@@ -17,31 +17,24 @@
 	let {
 		serviceIds,
 		serviceMap,
-		tags,
 		stack = [],
 		activeService = null,
-		activeTag = null,
 		activeStack = null,
 		onServiceSelect,
-		onTagSelect,
 		onStackSelect
 	}: {
 		serviceIds: readonly string[];
 		serviceMap: Map<string, string>;
-		tags: readonly string[];
 		stack?: readonly string[];
 		activeService: string | null;
-		activeTag: string | null;
 		activeStack?: string | null;
 		onServiceSelect: (serviceId: string | null) => void;
-		onTagSelect: (tag: string | null) => void;
 		onStackSelect?: (stack: string | null) => void;
 	} = $props();
 
 	const filters = siteLabels.projectsChrome.listing.filters;
 	const labels = {
 		services: filters.services,
-		tags: filters.tags,
 		stack: filters.techStack,
 	};
 	const allLabel = resolveLocale(filters.allLabel, locale);
@@ -80,20 +73,4 @@
 			/>
 		</FilterSection>
 	{/if}
-
-	<!-- Tags section — delegated to FilterGroup with deselect enabled -->
-	<FilterSection>
-		<FilterGroup
-			label={resolveLocale(labels.tags, locale)}
-			items={tags.map((tag) => ({ key: tag, label: tag }))}
-			activeKey={activeTag}
-			{allLabel}
-			allowDeselect={true}
-			collapsible={true}
-			startOpen={false}
-			persistKey="projects-filter-tags"
-			onSelect={(key) => onTagSelect(key)}
-			testIdPrefix="tag-filter"
-		/>
-	</FilterSection>
 </aside>

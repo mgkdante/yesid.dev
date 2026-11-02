@@ -236,7 +236,6 @@ export function buildCreativeWorkNode(project: Project, locale: Locale): Creativ
 		url: canonicalUrl,
 		author: { '@id': PERSON_ID },
 		creator: { '@id': PERSON_ID },
-		keywords: project.tags,
 		about: project.stack,
 	};
 	return SchemaOrgNodeSchema.parse(built) as CreativeWork;

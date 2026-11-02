@@ -41,9 +41,9 @@
 	{#if svgContent}
 		<SvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
-	<span class="line-bullet" style="background: {lineColor};" aria-hidden="true"></span>
-	<span class="font-mono text-caption leading-tight text-[var(--foreground)] md:text-mono">
-		{resolveLocale(service.title, locale)}
+	<span class="inline-flex items-start gap-2 font-mono text-caption leading-tight text-[var(--foreground)] md:text-mono">
+		<span class="first-line-bullet" style="background: {lineColor};" aria-hidden="true"></span>
+		<span>{resolveLocale(service.title, locale)}</span>
 	</span>
 </a>
 
@@ -55,13 +55,6 @@
 		border-radius: 0;
 	}
 
-	.line-bullet {
-		display: inline-block;
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		flex-shrink: 0;
-	}
 
 	/* Hover: glow, bg shift, slight scale — makes badges feel interactive */
 	.service-badge {

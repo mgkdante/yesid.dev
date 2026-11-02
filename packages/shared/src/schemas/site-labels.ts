@@ -100,12 +100,8 @@ export const SiteLabelsSchema = z.object({
 			filters: z.object({
 				filtersLabel: LocalizedStringSchema,
 				services: LocalizedStringSchema,
-				tags: LocalizedStringSchema,
 				techStack: LocalizedStringSchema,
 				allLabel: LocalizedStringSchema,
-			}),
-			card: z.object({
-				stackOverflowSuffix: LocalizedStringSchema,
 			}),
 		}),
 		// Former projectsDetailContent shape.

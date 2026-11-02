@@ -28,8 +28,8 @@
 						<div class="edu-mark">
 							<!-- Real school marks, pixel-traced to vector (Champlain
 							     Cougars navy paw / Bishop's purple BU monogram). Brand
-							     colours are baked into the artwork; the white outline
-							     keeps each mark legible in both themes. The orange ring
+							     colours are baked into the artwork; a white outline keeps
+							     each mark legible in both themes. The orange ring
 							     is the wayfinding chrome — the station the school sits on. -->
 							<img
 								src={item.icon === 'champlain'

@@ -14,7 +14,18 @@ import { BlogPostSchema, LocaleSchema } from '@repo/shared/schemas';
 import type { BlogAnimation, BlogCategory, BlogPost } from '@repo/shared';
 import { BlockEditorDocSchema } from '@repo/shared';
 import type { FetcherContext } from './types';
-import { tagsFromM2M, type DirectusTagJunctionRow } from './projects';
+import { mapLocalizedRepeater } from '../locale';
+
+/** blog_posts_tags junction row, expanded to the tag slug. */
+interface DirectusTagJunctionRow {
+	sort: number | null;
+	tags_id: { id: string } | null;
+}
+
+/** Tag slugs from the ordered M2M junction. */
+function tagsFromM2M(rows: DirectusTagJunctionRow[] | undefined): string[] {
+	return mapLocalizedRepeater(rows, (j) => j.tags_id?.id).filter((n): n is string => !!n);
+}
 
 export interface DirectusBlogPostTranslation {
 	languages_code: string;
