@@ -274,7 +274,7 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 	});
 
-	it.each(['response failure', 'request rejection'])('does not track conversion after %s', async (failure) => {
+	it.each(['response failure', 'request rejection'])('tracks an error instead of a conversion after %s', async (failure) => {
 		const prevFetch = globalThis.fetch;
 		globalThis.fetch = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
 			if (String(input).includes('web3forms')) {
@@ -287,7 +287,7 @@ describe('ContactPage', () => {
 		await fillForm();
 		await submitForm(screen.getAllByRole('button', { name: /send/i })[0]);
 		await waitFor(() => expect(screen.getAllByText(/Fixture delivery failed/).length).toBeGreaterThanOrEqual(1));
-		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_error']]);
 	});
 
 	// Launch-edge batch: the Web3Forms round trip is 1-3s of network time — the
@@ -359,13 +359,13 @@ describe('ContactPage', () => {
 		expect(screen.getAllByLabelText(/^email/i)[0]).toHaveValue('visitor@example.com');
 		expect(screen.getAllByLabelText(/^message/i)[0]).toHaveValue('Please keep this draft.');
 		expect(screen.queryAllByTestId('contact-success')).toHaveLength(0);
-		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_error']]);
 
 		await submitForm(submit);
 		await vi.advanceTimersByTimeAsync(1500);
 		await tick();
 		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
-		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_success']]);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['contact_form_error'], ['contact_form_success']]);
 	});
 
 	it.each(['contact-social-calendar', 'contact-booking-link'])('tracks only booking_click for %s', async (testId) => {
