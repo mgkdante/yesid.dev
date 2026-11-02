@@ -150,7 +150,7 @@
 					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, locale)}
 					</div>
-					<div class="project-card-services" class:project-card-services--split={projectServices.length > 2}>
+					<div class="project-card-services">
 					{#each projectServices as service}
 						<div
 							class="project-card-service inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
@@ -194,7 +194,7 @@
 </article>
 
 <style>
-	/* Always two rows, filled column by column: one service leaves the second row
+	/* From tablet up: always two rows, filled column by column. One service leaves the second row
 	   empty but sized, two stack, three or four split into two columns. Equal 1fr
 	   rows keep every card's services block the same height. */
 	.project-card-services {
@@ -214,9 +214,24 @@
 		overflow-wrap: normal;
 	}
 
-	/* Two columns are narrow: drop the icon so each word fits on its line. */
-	.project-card-services--split .service-badge-icon {
-		display: none;
+	/* Two columns share the card: tighter insides leave room for the icon and a whole word. */
+	@media (--tablet-min) {
+		.project-card-service {
+			padding-inline: 0.5rem;
+			gap: 0.375rem;
+		}
+		.project-card-service .project-card-meta {
+			gap: 0.375rem;
+		}
+	}
+
+	/* Phones stack every service in one column. */
+	@media (--tablet-max) {
+		.project-card-services {
+			grid-auto-flow: row;
+			grid-template-rows: none;
+			grid-template-columns: minmax(0, 1fr);
+		}
 	}
 
 	/* Strip SvgIcon container border/bg when nested in card badges */
