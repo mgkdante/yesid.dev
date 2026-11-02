@@ -4,12 +4,13 @@ import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { orderServices } from '#lib/utils/station.ts';
 import type { BlogPost, LocalizedString, SitePage } from '#lib/types.ts';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
 const es = (value: LocalizedString): string => resolveLocale(value, 'es');
 
-const visibleServices = (pages: readonly SitePage[]) => [...services].filter((s) => s.visible !== false && isPathPublished(`/services/${s.id}`, pages)).sort((a, b) => a.station - b.station);
+const visibleServices = (pages: readonly SitePage[]) => orderServices(services.filter((s) => s.visible !== false && isPathPublished(`/services/${s.id}`, pages)));
 
 // Web-side ProjectStatus is 'public' | 'private' | 'wip' (NOT Directus's
 // draft/published/archived — the fetcher maps them). Public only.
@@ -30,13 +31,19 @@ function serviceAreaList(): string {
 	return `${areas.slice(0, -1).join(', ')}, and ${areas[areas.length - 1]}`;
 }
 
-function header(): string {
+function serviceList(pages: readonly SitePage[], value: (v: LocalizedString) => string, and: string): string {
+	const titles = visibleServices(pages).map((s) => value(s.title));
+	if (titles.length <= 1) return titles[0] ?? '';
+	return `${titles.slice(0, -1).join(', ')}, ${and} ${titles[titles.length - 1]}`;
+}
+
+function header(pages: readonly SitePage[]): string {
 	return [
 		`# ${siteMeta.name} (yesid.dev)`,
 		'',
 		`> ${en(siteMeta.description)}`,
 		'',
-		`${en(siteMeta.tagline)} Yesid O. works as a Freelance Digital Infrastructure Developer in Montréal. The four services cover websites and e-commerce, automation and pipelines, dashboards and analytics, and databases and SQL.`,
+		`${en(siteMeta.tagline)} Yesid O. works as a Freelance Digital Infrastructure Developer in Montréal. The services cover ${serviceList(pages, en, 'and')}.`,
 		'',
 		`Available for remote and on-site work across ${serviceAreaList()}.`,
 		'',
@@ -56,7 +63,7 @@ function spanishSection(pages: readonly SitePage[]): string {
 	);
 	return [
 		'## Español — infraestructura digital en Montreal, Québec',
-		`Yesid O. trabaja como Desarrollador freelance de infraestructura digital en Montreal y atiende en español, francés e inglés. Ayuda a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado: sitios web y e-commerce, automatización y pipelines, tableros y analítica, y bases de datos y SQL. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
+		`Yesid O. trabaja como Desarrollador freelance de infraestructura digital en Montreal y atiende en español, francés e inglés. Ayuda a las pymes de Quebec y Canadá a ser más competitivas, más productivas y a generar más valor por empleado: ${serviceList(pages, es, 'y')}. Todo el sitio existe en español bajo ${SITE_HOST}/es.`,
 		...serviceLines,
 		...(isPathPublished('/contact', pages) ? [`Contacto en español: ${SITE_HOST}/es/contact`] : []),
 	].join('\n');
@@ -73,7 +80,7 @@ export function llmsTxt(pages: readonly SitePage[] = sitePages): string {
 		(p) => `- [${p.title}](${blogUrl(p)}) (${p.lang}): ${p.excerpt}`,
 	);
 	return [
-		header(),
+		header(pages),
 		'',
 		'## Services',
 		...serviceLines,
@@ -118,7 +125,7 @@ export function llmsFullTxt(pages: readonly SitePage[] = sitePages): string {
 		(p) => `### ${p.title} (${blogUrl(p)})\n\nLanguage: ${p.lang}. ${p.excerpt}`,
 	);
 	return [
-		header(),
+		header(pages),
 		'',
 		'## Services',
 		'',

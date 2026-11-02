@@ -1,5 +1,5 @@
 // GO-2 Track 3 (services consolidation): internal-tooling archived; its
-// promise (kill spreadsheet copy-paste) lives on in Pipelines & Automation,
+// promise (kill spreadsheet copy-paste) lives on in Automation & AI,
 // so intent-preserving redirect target is /services/data-pipeline.
 // See permanentRedirect() for the CDN-edge pattern rationale.
 
