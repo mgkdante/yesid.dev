@@ -182,11 +182,9 @@
 			{/if}
 		</div>
 
-		{#if isProof}
-			<div class="project-card-links" data-testid="proof-card-links">
-				<ProjectProofLinks {project} {tabbable} />
-			</div>
-		{/if}
+		<div class="project-card-links" data-testid={isProof ? 'proof-card-links' : 'project-card-links'}>
+			<ProjectProofLinks {project} {tabbable} />
+		</div>
 		</div>
 
 		</div>
@@ -330,7 +328,7 @@
 	.project-card-links {
 		position: relative;
 		z-index: 2;
-		padding: 0.25rem 1.25rem;
+		padding: 0.25rem 1rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 	}
 
@@ -374,7 +372,7 @@
 			padding: 1rem 1.75rem 0.75rem;
 		}
 
-		.project-card-links {
+		.project-card--proof .project-card-links {
 			padding-inline: 1.75rem;
 		}
 	}
@@ -386,10 +384,6 @@
 
 		.project-card--proof .project-card-media {
 			aspect-ratio: 16 / 9;
-		}
-
-		.project-card-links {
-			padding-inline: 1rem;
 		}
 	}
 
