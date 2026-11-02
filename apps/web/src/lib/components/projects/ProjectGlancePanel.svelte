@@ -1,8 +1,8 @@
 <!--
-  Glance rail for the project detail page. Desktop right rail: Links / Overview /
-  Stack / Services (Impact sits in the left rail). Mobile block below the sections:
-  Overview / Impact / Stack / Services (Links sits above the sections), with distinct
-  section keys so its open state doesn't collide with the desktop instance.
+  Glance rail for the project detail page. Desktop right rail: Overview / Stack / Services
+  (Impact sits in the left rail, links in the header). Mobile block below the sections:
+  Impact / Stack / Services (Overview sits above the sections), with distinct section keys
+  so its open state doesn't collide with the desktop instance.
 -->
 <script lang="ts">
   import type { Project, Service } from '#lib/types.ts';
@@ -13,13 +13,11 @@
   import { CollapsibleSection, SectionIcon } from '@yesid/ui/brand';
   import ServiceBadge from './ServiceBadge.svelte';
   import { siteLabels } from '#lib/content/index.ts';
-  import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
-  import ProjectLinksCard from './ProjectLinksCard.svelte';
   import ProjectImpactCard from './ProjectImpactCard.svelte';
+  import ProjectOverviewCard from './ProjectOverviewCard.svelte';
   import { scrollChain } from '@yesid/motion/actions';
 
   const glanceChrome = siteLabels.projectsChrome.detail.glance;
-  const glanceOverviewTitle = resolveLocale(glanceChrome.overview, locale);
   const glanceStackTitle = resolveLocale(glanceChrome.stack, locale);
   const glanceServicesTitle = resolveLocale(glanceChrome.services, locale);
   let {
@@ -32,7 +30,7 @@
     project: Project;
     services: Service[];
     serviceSvgContents?: Record<string, string>;
-    /** Mobile variant: no Links (the page puts them above the sections), Impact included, own section keys. */
+    /** Mobile variant: no Overview (the page puts it above the sections), Impact included, own section keys. */
     mobile?: boolean;
     /** block.id → server-highlighted HTML ($lib/server/code-highlights). */
     codeHighlights?: Readonly<Record<string, string>>;
@@ -42,7 +40,6 @@
   const k = (key: string) => `${project.slug}:${mobile ? `${key}-m` : key}`;
 
   const hasServices = $derived(services.length > 0);
-  const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 </script>
 
 <!-- Bare rail (no StickyPanel box); scrollChain keeps the nested-scroll exemption on this element. -->
@@ -51,23 +48,9 @@
   data-testid="project-glance-panel{mobile ? '-mobile' : ''}"
   use:scrollChain
 >
-    {#if hasLinks && !mobile}
-      <div class="mb-4">
-        <ProjectLinksCard {project} sectionKey={k('glance-links')} />
-      </div>
+    {#if !mobile}
+      <div class="mb-4"><ProjectOverviewCard {project} sectionKey={k('glance-overview')} {codeHighlights} /></div>
     {/if}
-
-    <!-- Overview -->
-    <div class="mb-4">
-      <CollapsibleSection title={glanceOverviewTitle} sectionKey={k('glance-overview')} open={true}>
-        {#snippet icon()}
-          <SectionIcon name="eye" />
-        {/snippet}
-        <div class="glance-overview text-body leading-[1.7]">
-          <BlockRenderer doc={resolveLocale(project.description, locale)} {codeHighlights} />
-        </div>
-      </CollapsibleSection>
-    </div>
 
     {#if mobile}
       <div class="mb-4"><ProjectImpactCard {project} sectionKey={k('glance-impact')} columns={1} /></div>
@@ -114,10 +97,6 @@
   .glance-rail {
     overflow-x: hidden;
     padding-bottom: 1rem;
-  }
-
-  .glance-overview {
-    color: var(--secondary-foreground);
   }
 
   /* Stack rendered as a literal vertical STACK of connected slabs, mirroring the
