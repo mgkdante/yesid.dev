@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 });
 
-test('home project cards retain supplied content, optional metrics and valid links without clipping', async ({ page }) => {
+test('home project cards share one size and show title, excerpt and links without clipping', async ({ page }) => {
 	await page.goto('/');
 	const section = page.getByTestId('proof-reel-section');
 	await expect(section).toBeVisible();
@@ -13,25 +13,24 @@ test('home project cards retain supplied content, optional metrics and valid lin
 	await page.evaluate(() => document.fonts.ready);
 	const cards = section.getByTestId('proof-card');
 	expect(await cards.count()).toBeGreaterThan(0);
-	expect(await section.locator('.line-bullet').count(), 'the reel retains its related-service roundels').toBeGreaterThan(0);
+	await expect(section.locator('.line-bullet, .data-flow-diagram, [data-testid$="metric-item"]')).toHaveCount(0);
 	for (const card of await cards.all()) {
-		const link = card.getByRole('link');
+		const link = card.locator('.project-card-link');
 		await expect(link).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/[^/?#]+\/?$/);
 		await expect(link).toHaveAccessibleName((await card.getByTestId('proof-card-title').textContent())!.trim());
 		await expect(card.getByTestId('proof-card-title')).toHaveText(/\S/);
 		await expect(card.getByTestId('proof-card-title')).toBeVisible();
 		await expect(card.getByTestId('proof-excerpt')).toHaveText(/\S/);
 		await expect(card.getByTestId('proof-excerpt')).toBeVisible();
-		const metrics = card.getByTestId('proof-metric-item');
-		for (const metric of await metrics.all()) {
-			await expect(metric.getByTestId('proof-metric-value')).toHaveText(/\S/);
-			await expect(metric.getByTestId('proof-metric-value')).toBeVisible();
-			await expect(metric.getByTestId('proof-metric-label')).toHaveText(/\S/);
-			await expect(metric.getByTestId('proof-metric-label')).toBeVisible();
-		}
-		for (const roundel of await card.locator('.line-bullet').all()) await expect(roundel).toBeVisible();
+		await expect(card.getByTestId('proof-card-links')).toBeVisible();
 		await expectCardContentInside(card);
 	}
+	const sizes = await cards.evaluateAll(nodes => nodes.map(node => {
+		const box = node.getBoundingClientRect();
+		const media = node.querySelector('[data-testid="proof-card-image"]')!.getBoundingClientRect();
+		return [box.width, box.height, media.height].map(Math.round).join('x');
+	}));
+	expect(new Set(sizes), 'every home card shares one size and media split').toEqual(new Set([sizes[0]]));
 	const viewAll = section.getByTestId('proof-view-all');
 	await expect(viewAll).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/?$/);
 	await viewAll.scrollIntoViewIfNeeded();

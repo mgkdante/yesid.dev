@@ -37,7 +37,7 @@
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
 	import ProjectImpactCard from './ProjectImpactCard.svelte';
-	import ProjectHeaderLinks from './ProjectHeaderLinks.svelte';
+	import ProjectProofLinks from './ProjectProofLinks.svelte';
 	import ProjectOverviewCard from './ProjectOverviewCard.svelte';
 	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
@@ -316,7 +316,7 @@
 					<ProjectHeaderTelemetry {project} />
 				{/snippet}
 				{#snippet actions()}
-					<ProjectHeaderLinks {project} />
+					<ProjectProofLinks {project} />
 				{/snippet}
 				{#snippet controls()}
 					<QuietModeButton />

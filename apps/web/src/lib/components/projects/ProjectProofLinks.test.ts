@@ -8,7 +8,7 @@ const analyticsMocks = vi.hoisted(() => ({
 
 vi.mock('#lib/analytics/client.ts', () => analyticsMocks);
 
-import ProjectHeaderLinks from './ProjectHeaderLinks.svelte';
+import ProjectProofLinks from './ProjectProofLinks.svelte';
 
 beforeEach(() => {
 	analyticsMocks.trackAnalyticsEvent.mockClear();
@@ -29,7 +29,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 		const project = projectFactory.build({
 			liveUrl: 'https://example.com/demo',
 		});
-		const { container } = render(ProjectHeaderLinks, {
+		const { container } = render(ProjectProofLinks, {
 			props: { project },
 		});
 		const link = container.querySelector(
@@ -49,7 +49,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 			repoUrl: 'https://github.com/mgkdante/public-project',
 			repoPrivate: false,
 		});
-		const { container } = render(ProjectHeaderLinks, {
+		const { container } = render(ProjectProofLinks, {
 			props: { project },
 		});
 		const link = container.querySelector(
@@ -69,7 +69,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 			repoUrl: 'https://github.com/mgkdante/private-project',
 			repoPrivate: true,
 		});
-		const { container } = render(ProjectHeaderLinks, {
+		const { container } = render(ProjectProofLinks, {
 			props: { project },
 		});
 
@@ -86,7 +86,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 		'does not track an invalid rendered proof URL %s',
 		async (liveUrl) => {
 			const project = projectFactory.build({ liveUrl });
-			const { container } = render(ProjectHeaderLinks, {
+			const { container } = render(ProjectProofLinks, {
 				props: { project },
 			});
 			const link = container.querySelector(`a[href="${liveUrl}"]`);
@@ -103,7 +103,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 			repoUrl: undefined,
 			repoPrivate: false,
 		});
-		render(ProjectHeaderLinks, {
+		render(ProjectProofLinks, {
 			props: { project },
 		});
 
@@ -118,7 +118,7 @@ describe('ProjectLinksCard documentation link', () => {
 			repoUrl: 'https://github.com/mgkdante/public-project',
 			docsUrl: 'https://yesid-dev.notion.site/wiki',
 		});
-		render(ProjectHeaderLinks, { props: { project } });
+		render(ProjectProofLinks, { props: { project } });
 		const link = screen.getByTestId('project-docs-link');
 		expect(link).toHaveAttribute('href', 'https://yesid-dev.notion.site/wiki');
 		expect(link).toHaveAttribute('target', '_blank');
@@ -131,7 +131,7 @@ describe('ProjectLinksCard documentation link', () => {
 
 	it('shows the links card for a project that only has documentation', () => {
 		const project = projectFactory.build({ docsUrl: 'https://yesid-dev.notion.site/wiki', liveUrl: undefined, repoUrl: undefined, repoPrivate: false });
-		render(ProjectHeaderLinks, { props: { project } });
+		render(ProjectProofLinks, { props: { project } });
 		expect(screen.getByTestId('project-links-card')).toBeInTheDocument();
 	});
 });

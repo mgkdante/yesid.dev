@@ -12,9 +12,9 @@
 	import DataFlowDiagram from '#lib/components/projects/DataFlowDiagram.svelte';
 	import { cn } from '@yesid/ui/cn';
 	import { serviceLineColor } from '#lib/utils/service-colors.ts';
-	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 	import { siteLabels } from '#lib/content/index.ts';
 	import ProjectHeroPreview from './ProjectHeroPreview.svelte';
+	import ProjectProofLinks from './ProjectProofLinks.svelte';
 	import digitalDesktopBlueprint from '#lib/assets/project-fallbacks/digital-desktop.svg?raw';
 	import digitalMobileBlueprint from '#lib/assets/project-fallbacks/digital-mobile.svg?raw';
 
@@ -46,8 +46,8 @@
 	const titleId = $props.id();
 
 	const VARIANT = {
-		listing: { testId: 'project-card', mediaTestId: 'project-card-image', titleTestId: undefined, excerptTestId: undefined, metricTestPrefix: 'project-card', mediaPreset: 'card-600' },
-		proof: { testId: 'proof-card', mediaTestId: 'proof-card-image', titleTestId: 'proof-card-title', excerptTestId: 'proof-excerpt', metricTestPrefix: 'proof', mediaPreset: 'hero-1200' },
+		listing: { testId: 'project-card', mediaTestId: 'project-card-image', titleTestId: undefined, excerptTestId: undefined, mediaPreset: 'card-600' },
+		proof: { testId: 'proof-card', mediaTestId: 'proof-card-image', titleTestId: 'proof-card-title', excerptTestId: 'proof-excerpt', mediaPreset: 'hero-1200' },
 	} as const;
 	const v = $derived(VARIANT[variant]);
 
@@ -101,7 +101,6 @@
 			: ''
 	);
 
-	const proofMetrics = $derived(projectMetrics(project));
 </script>
 
 <article
@@ -164,6 +163,7 @@
 				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
+			{#if !isProof}
 			{#if projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
@@ -210,7 +210,6 @@
 				</div>
 			{/if}
 
-			{#if !isProof}
 				<div class="flex flex-wrap gap-1 pt-3" bind:this={tagsRow}>
 					{#each displayTags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
@@ -225,24 +224,9 @@
 			{/if}
 		</div>
 
-		{#if isProof && proofMetrics.length > 0}
-			<div class="project-card-proof-metric" data-testid="{v.metricTestPrefix}-metric-strip">
-				<div class="project-card-proof-metric__grid">
-					{#each proofMetrics as metric}
-						<div class="project-card-proof-metric__item" data-testid="{v.metricTestPrefix}-metric-item">
-							{#if metric.before}
-								<span
-									class="proof-metric-before"
-									data-testid="{v.metricTestPrefix}-metric-before"
-								>{metric.before}</span>
-							{/if}
-							<div class="project-card-proof-metric__line">
-								<span class="proof-metric-value" data-testid="{v.metricTestPrefix}-metric-value">{metric.value}</span>
-								<span class="proof-metric-label" data-testid="{v.metricTestPrefix}-metric-label">{resolveLocale(metric.label, locale)}</span>
-							</div>
-						</div>
-					{/each}
-				</div>
+		{#if isProof}
+			<div class="project-card-links" data-testid="proof-card-links">
+				<ProjectProofLinks {project} />
 			</div>
 		{/if}
 		</div>
@@ -353,8 +337,40 @@
 		}
 	}
 
+	/* Home cards share one fixed size and split, whatever their content. */
 	.project-card--proof :global(.card-surface) {
-		min-height: clamp(30rem, 64dvh, 44rem);
+		height: var(--proof-card-height);
+	}
+
+	.project-card--proof {
+		--proof-card-height: clamp(30rem, 64dvh, 44rem);
+	}
+
+	.project-card--proof .project-card-layout {
+		grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+	}
+
+	.project-card--proof .project-card-info {
+		min-height: 0;
+	}
+
+	.project-card-links {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+		min-height: calc(var(--size-tap-min) + 1.5rem);
+		padding: 0.75rem 1.25rem;
+		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
+	}
+
+	.project-card-links:not(:has(li)) {
+		border-top-color: transparent;
+	}
+
+	.project-card-links :global(.project-links) {
+		gap: 0 1rem;
 	}
 
 	.project-card-title {
@@ -380,75 +396,6 @@
 		padding: 1.25rem 1.25rem 1rem;
 	}
 
-	.project-card-proof-metric {
-		margin-top: auto;
-		display: flex;
-		align-items: stretch;
-		min-height: 6.5rem;
-		flex-shrink: 0;
-		padding: 0.95rem 1.25rem;
-		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-	}
-
-	.project-card-proof-metric__grid {
-		display: grid;
-		width: 100%;
-		min-width: 0;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
-		align-items: stretch;
-		gap: 0.75rem;
-		position: relative;
-	}
-
-	.project-card-proof-metric__item {
-		min-width: 0;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		padding-inline-end: 0.75rem;
-		border-inline-end: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
-	}
-
-	.project-card-proof-metric__item:last-child {
-		border-inline-end: 0;
-	}
-
-	.project-card-proof-metric__line {
-		display: flex;
-		min-width: 0;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.25rem;
-	}
-
-	.proof-metric-before {
-		color: var(--muted-foreground);
-		font-size: var(--text-small);
-		text-decoration: line-through;
-		margin-bottom: 0.25rem;
-		max-width: 100%;
-		overflow-wrap: anywhere;
-	}
-
-	.proof-metric-value {
-		font-family: var(--font-heading);
-		font-weight: 800;
-		font-size: var(--text-metric-value-mobile);
-		line-height: 1;
-		color: var(--accent-text);
-		max-width: 100%;
-		overflow-wrap: anywhere;
-	}
-
-	.proof-metric-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		color: var(--muted-foreground);
-		overflow-wrap: anywhere;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-	}
-
 	.project-card--proof[data-active='true'] :global(.card-surface) {
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
@@ -459,42 +406,22 @@
 			padding: 1.25rem 1.75rem 1rem;
 		}
 
-		.project-card-proof-metric {
+		.project-card-links {
 			padding-inline: 1.75rem;
-		}
-
-		.proof-metric-label {
-			font-size: var(--text-mono);
-		}
-
-		.proof-metric-before {
-			font-size: var(--text-body);
 		}
 	}
 
 	@media (--tablet-max) {
-		.project-card--proof :global(.card-surface) {
-			min-height: clamp(20rem, 50dvh, 30rem);
+		.project-card--proof {
+			--proof-card-height: 36rem;
 		}
 
-		.project-card-proof-metric {
-			padding: 0.8rem 1rem;
+		.project-card--proof .project-card-layout {
+			grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
 		}
 
-		.project-card-proof-metric__grid {
-			gap: 0.5rem;
-		}
-
-		.project-card-proof-metric__item {
-			padding-inline-end: 0.5rem;
-		}
-
-		.proof-metric-label {
-			font-size: var(--text-caption);
-		}
-
-		.proof-metric-before {
-			font-size: var(--text-small);
+		.project-card-links {
+			padding: 0.5rem 1rem;
 		}
 	}
 

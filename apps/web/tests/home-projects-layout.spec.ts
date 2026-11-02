@@ -122,9 +122,6 @@ for (const locale of PUBLISHED_LOCALES) {
 			await reel.scrollIntoViewIfNeeded();
 			const visible = await expectWholeCards(reel);
 			for (const card of await reel.getByTestId('proof-card').all()) { await expectCardContentInside(card); await expectMediaAboveInfo(card); await expectPanesSideBySide(card); }
-			const scales = await reel.locator('.df-node text').evaluateAll(labels => labels.map(label => label.getBoundingClientRect().height).filter(Boolean));
-			expect(scales.length).toBeGreaterThan(0);
-			expect(Math.max(...scales) / Math.min(...scales), 'short and long stacks retain the same type scale').toBeLessThan(1.25);
 			for (const card of visible) await expectImagesFitPanes(reel.getByTestId('proof-card').nth(card.index));
 			const frames = await reel.getByTestId('proof-card-image').evaluateAll(images => images.map(image => image.getBoundingClientRect().height));
 			expect(Math.max(...frames) / Math.min(...frames), 'every project keeps the same image frame').toBeLessThan(1.1);

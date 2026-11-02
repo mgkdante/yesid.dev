@@ -7,7 +7,7 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { persisted } from '@yesid/ui/state';
 	import { siteLabels } from '#lib/content/index.ts';
-	import type { ProjectSummary, ProofReelContent, Service } from '#lib/types.ts';
+	import type { ProjectSummary, ProofReelContent } from '#lib/types.ts';
 	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
 
 	const locale = getLocale();
@@ -15,13 +15,9 @@
 	let {
 		proofReel: proofReelContent,
 		projects,
-		services = [],
-		serviceSvgContents = {},
 	}: {
 		proofReel: ProofReelContent;
 		projects: readonly ProjectSummary[];
-		services?: readonly Service[];
-		serviceSvgContents?: Record<string, string>;
 	} = $props();
 
 	const carouselPrevAria = $derived(resolveLocale(siteLabels.a11y.carouselPrev, locale));
@@ -112,7 +108,7 @@
 		<div class="embla__container">
 			{#each visibleProjects as project, i}
 				<div class="embla__slide">
-					<ProjectCard {project} {services} {serviceSvgContents} variant="proof" class="w-full" data-active={activeIndex === i} />
+					<ProjectCard {project} variant="proof" class="w-full" data-active={activeIndex === i} />
 				</div>
 			{/each}
 		</div>
