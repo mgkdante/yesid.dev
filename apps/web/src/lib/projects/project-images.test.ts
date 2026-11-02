@@ -25,4 +25,20 @@ describe('project story image collection', () => {
 		expect(new Set(collected.map((block) => block.id)).size).toBe(2);
 		expect(docs).toEqual(before);
 	});
+
+	it('keeps authored document order, deduplicates URL-only images and ignores empty files', () => {
+		const image = (url: string, caption = ''): ImageBlock => ({
+			id: 'local-editor-id', type: 'image', data: {
+				file: { fileId: '', fileURL: '', url }, caption,
+				withBorder: false, withBackground: false, stretched: false,
+			},
+		});
+		const docs: BlockEditorDoc[] = [
+			{ time: 0, version: '2', blocks: [image('/first.png'), image('')] },
+			{ time: 0, version: '2', blocks: [image('/second.png', 'Second'), image('/first.png', 'First')] },
+		];
+		expect(collectProjectImages(docs).map((image) => [image.data.file.url, image.data.caption])).toEqual([
+			['/first.png', 'First'], ['/second.png', 'Second'],
+		]);
+	});
 });

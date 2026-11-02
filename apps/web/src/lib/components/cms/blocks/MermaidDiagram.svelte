@@ -5,10 +5,12 @@
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { buildMermaidThemeVariables } from '#lib/utils/mermaid-theme.ts';
+	import { articleMediaLabels, getArticleMedia } from '#lib/media/article-media.svelte.ts';
 
 	let { code }: { code: string } = $props();
 
 	const locale = getLocale();
+	const media = getArticleMedia();
 
 	let svg = $state('');
 	let renderError = $state('');
@@ -77,6 +79,11 @@
 </script>
 
 <figure class="mermaid-diagram" data-testid="mermaid-diagram" bind:this={root}>
+	{#if media && svg}
+		<button type="button" class="mermaid-diagram__surface mermaid-diagram__open" aria-label={articleMediaLabels[locale].diagram} onclick={(event) => { event.stopPropagation(); media.openDiagram(svg, architectureDiagramLabel, event.currentTarget); }}>
+			{@html svg}
+		</button>
+	{:else}
 	<div class="mermaid-diagram__surface" aria-label={architectureDiagramLabel}>
 		{#if svg}
 			{@html svg}
@@ -84,6 +91,7 @@
 			<pre class="mermaid-diagram__fallback"><code>{source}</code></pre>
 		{/if}
 	</div>
+	{/if}
 	{#if renderError}
 		<figcaption>{renderError}</figcaption>
 	{/if}
@@ -103,6 +111,8 @@
 	.mermaid-diagram__surface {
 		overflow-x: auto;
 	}
+	.mermaid-diagram__open { display: block; width: 100%; border: 0; padding: 0; color: inherit; background: transparent; text-align: inherit; cursor: zoom-in; }
+	.mermaid-diagram__open:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
 
 	.mermaid-diagram__surface :global(svg) {
 		display: block;

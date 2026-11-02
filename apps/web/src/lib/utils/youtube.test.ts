@@ -53,4 +53,14 @@ describe('authored YouTube paragraphs', () => {
 		expect(collectProjectVideos([doc, doc])).toEqual([{ id: 'M7lc1UVf-VE', caption: 'Walkthrough' }]);
 		expect(collectProjectVideos([])).toEqual([]);
 	});
+
+	it('preserves first-seen video order across documents and the first authored caption', () => {
+		const doc = (...texts: string[]): BlockEditorDoc => ({ time: 0, version: '2', blocks: texts.map((text, index) => ({
+			id: String(index), type: 'paragraph', data: { text },
+		})) });
+		expect(collectProjectVideos([
+			doc('https://youtu.be/M7lc1UVf-VE', 'https://youtu.be/dQw4w9WgXcQ'),
+			doc('<a href="https://youtube.com/watch?v=M7lc1UVf-VE">First caption</a>', '<a href="https://youtu.be/M7lc1UVf-VE">Later caption</a>'),
+		])).toEqual([{ id: 'M7lc1UVf-VE', caption: 'First caption' }, { id: 'dQw4w9WgXcQ', caption: '' }]);
+	});
 });

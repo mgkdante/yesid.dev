@@ -361,6 +361,7 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		const img = container.querySelector('img');
 		expect(img?.getAttribute('alt')).toBe('A picture');
 		expect(img?.getAttribute('src')).toContain('uuid-123');
+		expect(img?.closest('button')).toBeNull();
 	});
 
 	it('handles multi-paragraph quote as N consecutive blocks (AM5)', () => {

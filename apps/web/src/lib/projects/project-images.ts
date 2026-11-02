@@ -1,6 +1,6 @@
 import type { BlockEditorDoc, ImageBlock, ImageBlockFile } from '@repo/shared';
 
-function fileIdentity(file: ImageBlockFile): string | undefined {
+export function imageIdentity(file: ImageBlockFile): string | undefined {
 	if (file.fileId.trim()) return `file:${file.fileId.trim().toLowerCase()}`;
 	for (const url of [file.fileURL, file.url]) {
 		const id = url.match(/\/(?:assets|files)\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(?:[/?#]|$)/i)?.[1];
@@ -16,7 +16,7 @@ export function collectProjectImages(docs: readonly BlockEditorDoc[]): ImageBloc
 	for (const doc of docs) {
 		for (const block of doc.blocks) {
 			if (block.type !== 'image') continue;
-			const identity = fileIdentity(block.data.file);
+			const identity = imageIdentity(block.data.file);
 			if (!identity) continue;
 			const previous = images.get(identity);
 			if (!previous) {
