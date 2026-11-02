@@ -1,16 +1,12 @@
 <script lang="ts">
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
-	const copy = {
-		en: { source: 'Data from Transit, a product by yesid.dev.', link: 'See here' },
-		fr: { source: 'Données de Transit, un produit de yesid.dev.', link: 'Voir ici' },
-		es: { source: 'Datos de Transit, un producto de yesid.dev.', link: 'Ver aquí' },
-	}[getLocale()];
+	const lead = { en: 'Data from', fr: 'Données de', es: 'Datos de' }[getLocale()];
 </script>
 
 <p class="transit-source" data-testid="transit-source-note">
-	{copy.source}
-	<a href="https://transit.yesid.dev/" target="_blank" rel="noopener noreferrer">{copy.link}<span aria-hidden="true">&nbsp;↗</span></a>
+	{lead}
+	<a href="https://transit.yesid.dev/" target="_blank" rel="noopener noreferrer">transit.yesid.dev<span aria-hidden="true">↗</span></a>
 </p>
 
 <style>
