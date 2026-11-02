@@ -4,7 +4,10 @@
   import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
   import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
-  import ProjectImageGallery from '#lib/components/projects/ProjectImageGallery.svelte';
+  import MediaGallery from '#lib/components/media/MediaGallery.svelte';
+  import MediaLightbox from '#lib/components/media/MediaLightbox.svelte';
+  import { articleMediaLabels, setArticleMedia } from '#lib/media/article-media.svelte.ts';
+  import { collectProjectImages } from '#lib/projects/project-images.ts';
   import { collectProjectVideos, youtubeLabels } from '#lib/utils/youtube.ts';
   import {
     CollapsibleSection,
@@ -115,7 +118,10 @@
   /** Storage key scoped to this post's locale-free id, so one post's open sections never leak into another. */
   const scoped = (key: string) => `${post.translationKey}:${key}`;
   const articleSections = $derived(sectionizeBlogBody(body, post.title));
+  const galleryImages = $derived(collectProjectImages([body]));
   const galleryVideos = $derived(collectProjectVideos([body]));
+  const imageGalleryTitle = articleMediaLabels[locale].images;
+  const media = setArticleMedia(() => galleryImages, () => galleryVideos);
   const videoGalleryTitle = $derived(youtubeLabels[locale].gallery);
   const entryRail = detailChrome.entryRail;
 
@@ -167,6 +173,10 @@
       }
     }
 
+    if (galleryImages.length > 0) entries.push({
+      id: 'blog-images', title: imageGalleryTitle, level: 2,
+      badge: { kind: 'icon', name: 'image' }, children: [],
+    });
     if (galleryVideos.length > 0) entries.push({
       id: 'blog-videos',
       title: videoGalleryTitle,
@@ -335,19 +345,29 @@
           </CollapsibleSection>
         </div>
       {/each}
+      {#if galleryImages.length > 0}
+        <div class="blog-section-block" data-testid="blog-image-gallery">
+          <CollapsibleSection title={imageGalleryTitle} sectionKey={scoped('blog-images')} anchor="blog-images" open={true} accentColor={accentColor}>
+            {#snippet icon()}<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />{/snippet}
+            <MediaGallery kind="image" />
+          </CollapsibleSection>
+        </div>
+      {/if}
       {#if galleryVideos.length > 0}
         <div class="blog-section-block" data-testid="blog-video-gallery">
           <CollapsibleSection title={videoGalleryTitle} sectionKey={scoped('blog-videos')} anchor="blog-videos" open={true} accentColor={accentColor}>
             {#snippet icon()}
               <SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
             {/snippet}
-            <ProjectImageGallery doc={{ ...body, blocks: [] }} videos={galleryVideos} />
+            <MediaGallery kind="video" />
           </CollapsibleSection>
         </div>
       {/if}
     </div>
   </DetailFrame>
 </div>
+
+<MediaLightbox {media} />
 
 <style>
   .sections-column {
