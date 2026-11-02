@@ -197,7 +197,7 @@
 				{emptyStateText}
 			</p>
 		{:else}
-			<div class="project-grid" use:equalizeRows={['.project-card-title', '.project-card-excerpt', '.project-card-services', '.project-card-links']}>
+			<div class="project-grid" use:equalizeRows={['.project-card-title', '.project-card-excerpt', '.project-card-service', '.project-card-services', '.project-card-links']}>
 				{#each filteredProjects as project, i (project.slug)}
 					<div class="flex gap-3" data-batch="project-item">
 						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />

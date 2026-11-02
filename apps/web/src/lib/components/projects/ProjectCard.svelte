@@ -192,15 +192,16 @@
 </article>
 
 <style>
-	/* From tablet up: always two rows, filled column by column. One service leaves the second row
-	   empty but sized, two stack, three or four split into two columns. Equal 1fr
-	   rows keep every card's services block the same height. */
+	/* From tablet up: a fixed 2x2, filled column by column. One service sits in the first cell,
+	   two stack, three or four fill both columns. Pills fill their cell's width; the listing's
+	   equalizeRows gives every pill the tallest pill's height, so all pills match. Rows stay
+	   natural (no stretch) so that measurement is stable. */
 	.project-card-services {
 		display: grid;
 		grid-auto-flow: column;
-		grid-template-rows: repeat(2, 1fr);
-		grid-auto-columns: minmax(0, 1fr);
-		justify-items: start;
+		grid-template-rows: repeat(2, auto);
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-content: start;
 		gap: 0.375rem;
 	}
 
@@ -212,15 +213,13 @@
 		overflow-wrap: normal;
 	}
 
-	/* Two columns share the card: tighter insides leave room for the icon and a whole word. */
-	@media (--tablet-min) {
-		.project-card-service {
-			padding-inline: 0.5rem;
-			gap: 0.375rem;
-		}
-		.project-card-service .project-card-meta {
-			gap: 0.375rem;
-		}
+	/* Tight insides leave room for the icon and a whole word on one line. */
+	.project-card-service {
+		padding-inline: 0.5rem;
+		gap: 0.375rem;
+	}
+	.project-card-service .project-card-meta {
+		gap: 0.375rem;
 	}
 
 	/* Phones stack every service in one column. */
