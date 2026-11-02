@@ -18,7 +18,6 @@
 	const readmeSectionTitle = resolveLocale(detailChrome.readmeSectionTitle, locale);
 	const glanceStackTitle = resolveLocale(detailChrome.glance.stack, locale);
 	const glanceServicesTitle = resolveLocale(detailChrome.glance.services, locale);
-	const glanceLinksTitle = resolveLocale(detailChrome.glance.links, locale);
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
 	import {
@@ -38,7 +37,8 @@
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
 	import ProjectImpactCard from './ProjectImpactCard.svelte';
-	import ProjectLinksCard from './ProjectLinksCard.svelte';
+	import ProjectHeaderLinks from './ProjectHeaderLinks.svelte';
+	import ProjectOverviewCard from './ProjectOverviewCard.svelte';
 	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import CodeBlock from '#lib/components/cms/blocks/CodeBlock.svelte';
@@ -66,7 +66,6 @@
 	const backToListingLabel =
 		resolveLocale(siteLabels.ui.backToProjects, locale) ||
 		resolveLocale(detailChrome.backToListingLabel, locale);
-	const subtitle = $derived(resolveLocale(project.oneLiner, locale));
 
 	let activeHeadingId = $state('');
 	/** Storage key scoped to this project, so one project's open sections never leak into another. */
@@ -167,7 +166,6 @@
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
 	const hasImpact = $derived(projectMetrics(project).length > 0);
-	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 	const readmeHtml = $derived((readme ?? []).map((part) => ('html' in part ? part.html : '')).join(''));
 	const readmeTocEntry = $derived.by((): TocEntry | null => {
 		if (!readme?.length) return null;
@@ -182,10 +180,6 @@
 
 	const tocEntries = $derived.by((): TocEntry[] => {
 		const entries: TocEntry[] = [];
-
-		// Links lead the page on mobile (above the sections) and the right rail on desktop.
-		if (hasProjectLinks)
-			entries.push({ id: 'glance-links', title: glanceLinksTitle, level: 2, badge: { kind: 'icon', name: 'arrow' }, rail: true, children: [] });
 
 		for (let i = 0; i < articleSections.length; i++) {
 			entries.push(articleTocEntry(articleSections[i], i));
@@ -313,7 +307,6 @@
 		{#snippet header()}
 			<ArticleHeader
 				title={resolveLocale(project.title, locale)}
-				{subtitle}
 				backHref={localizeHref('/projects', locale)}
 				backLabel={backToListingLabel}
 				accent="var(--primary)"
@@ -321,6 +314,9 @@
 			>
 				{#snippet decorations()}
 					<ProjectHeaderTelemetry {project} />
+				{/snippet}
+				{#snippet actions()}
+					<ProjectHeaderLinks {project} />
 				{/snippet}
 				{#snippet controls()}
 					<QuietModeButton />
@@ -352,11 +348,9 @@
 		{/snippet}
 
 		<div class="sections-column">
-			{#if hasProjectLinks}
-				<div class="section-block lg:hidden" data-testid="project-links-mobile">
-					<ProjectLinksCard project={project} sectionKey={scoped('glance-links-m')} anchor="glance-links" />
-				</div>
-			{/if}
+			<div class="section-block lg:hidden" data-testid="project-overview-mobile">
+				<ProjectOverviewCard project={project} sectionKey={scoped('glance-overview-m')} {codeHighlights} />
+			</div>
 			{#snippet articleSection(section: SectionView, index: number)}
 				<div
 					class="section-block"

@@ -185,7 +185,7 @@ describe('ProjectDetailPage image placement', () => {
 		const { container } = render(ProjectDetailPage, {
 			props: { project, services: [], serviceSvgContents: {} },
 		});
-		const sections = [...container.querySelectorAll('.sections-column > .section-block')];
+		const sections = [...container.querySelectorAll('.sections-column > .section-block[data-section-index]')];
 		expect(sections).toHaveLength(count);
 		for (const [index, section] of sections.entries()) {
 			expect(section.id).toBe(`section-${index}`);
@@ -257,10 +257,10 @@ describe('ProjectDetailPage image placement', () => {
 		});
 
 		expect(
-			screen.getByText(
+			screen.queryByText(
 				'A bilingual CMS portfolio that edits in Directus and serves visitors from generated edge-ready content.',
 			),
-		).toBeInTheDocument();
+		).not.toBeInTheDocument();
 
 		const firstSection = container.querySelector('[data-section-index="0"]');
 		const mobileGalleryStack = screen.getByTestId('project-image-gallery-mobile');
@@ -319,19 +319,26 @@ describe('ProjectDetailPage image placement', () => {
 		).toBe(true);
 		expect(within(leftRail as HTMLElement).queryByTestId('project-links-card')).not.toBeInTheDocument();
 
+		const header = screen.getByTestId('project-detail-header');
+		expect(within(header).getByTestId('project-links-card')).toBeInTheDocument();
+		expect(screen.getAllByTestId('project-links-card')).toHaveLength(1);
+		expect(within(header).queryByText(project.oneLiner.en)).not.toBeInTheDocument();
+
 		const desktopGlance = screen.getByTestId('project-glance-panel');
 		expect(within(desktopGlance).queryByTestId('project-impact-card')).not.toBeInTheDocument();
 		const desktopCards = [...desktopGlance.querySelectorAll('h2.section-title')].map((node) => node.textContent?.trim());
-		expect(desktopCards.slice(0, 2)).toEqual([expect.stringMatching(/links/i), expect.stringMatching(/overview/i)]);
+		expect(desktopCards[0]).toMatch(/overview/i);
 
-		const mobileLinks = screen.getByTestId('project-links-mobile');
-		const firstSectionsCard = container.querySelector('.sections-column h2.section-title');
-		expect(mobileLinks.contains(firstSectionsCard)).toBe(true);
-		expect(firstSectionsCard?.textContent).toMatch(/links/i);
+		const sectionsCards = [...container.querySelectorAll('.sections-column h2.section-title')];
+		expect(screen.getByTestId('project-overview-mobile').contains(sectionsCards[0])).toBe(true);
+		expect(sectionsCards.slice(0, 2).map((node) => node.textContent?.trim())).toEqual([
+			expect.stringMatching(/overview/i),
+			'Second section',
+		]);
 		const mobileGlance = screen.getByTestId('project-glance-panel-mobile');
-		expect(within(mobileGlance).queryByTestId('project-links-card')).not.toBeInTheDocument();
+		expect(within(mobileGlance).queryByTestId('project-overview-card')).not.toBeInTheDocument();
 		const mobileCards = [...mobileGlance.querySelectorAll('h2.section-title')].map((node) => node.textContent?.trim());
-		expect(mobileCards.slice(0, 2)).toEqual([expect.stringMatching(/overview/i), expect.stringMatching(/impact/i)]);
+		expect(mobileCards[0]).toMatch(/impact/i);
 
 		const mobileToc = screen.getByTestId('toc-pill');
 		await fireEvent.click(within(mobileToc).getByRole('button'));
@@ -339,7 +346,7 @@ describe('ProjectDetailPage image placement', () => {
 		const mobileDrawerLabels = [...mobileToc.querySelectorAll<HTMLElement>('.toc-drawer-item .toc-drawer-label')]
 			.map((node) => node.textContent?.trim())
 			.filter(Boolean);
-		expect(mobileDrawerLabels.slice(0, 3)).toEqual([expect.stringMatching(/links/i), 'Second section', 'Technical proof']);
+		expect(mobileDrawerLabels.slice(0, 2)).toEqual(['Second section', 'Technical proof']);
 		expect(mobileDrawerLabels.at(-1)).toBe('Images');
 		const glance = screen.getByTestId('project-glance-panel-mobile');
 		expect(Boolean(glance.compareDocumentPosition(mobileGalleryStack) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
