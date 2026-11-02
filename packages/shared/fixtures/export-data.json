@@ -2465,7 +2465,7 @@
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, ed15277d).","fr":"Fixture copy (fr, content, c642fe4e).","es":"Fixture copy (es, content, b4a7b856)."}
+						"content": {"en":"Fixture copy (en, content, 393aef01).\nFixture copy (en, content, 393aef01).\nFixture copy (en, content, 393aef01).\nFixture copy (en, content, 393aef01).\nFixture copy (en, content, 393aef01).","fr":"Fixture copy (fr, content, 1561e439).\nFixture copy (fr, content, 1561e439).\nFixture copy (fr, content, 1561e439).\nFixture copy (fr, content, 1561e439).\nFixture copy (fr, content, 1561e439).","es":"Fixture copy (es, content, 1f6163ed).\nFixture copy (es, content, 1f6163ed).\nFixture copy (es, content, 1f6163ed).\nFixture copy (es, content, 1f6163ed).\nFixture copy (es, content, 1f6163ed)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
@@ -2510,7 +2510,7 @@
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, ba53ff21).","fr":"Fixture copy (fr, content, fe67eb4f).","es":"Fixture copy (es, content, 3c92a13b)."}
+						"content": {"en":"Fixture copy (en, content, 2121d5f0).\nFixture copy (en, content, 2121d5f0).\nFixture copy (en, content, 2121d5f0).\nFixture copy (en, content, 2121d5f0).\nFixture copy (en, content, 2121d5f0).","fr":"Fixture copy (fr, content, f499e4c4).\nFixture copy (fr, content, f499e4c4).\nFixture copy (fr, content, f499e4c4).\nFixture copy (fr, content, f499e4c4).\nFixture copy (fr, content, f499e4c4).","es":"Fixture copy (es, content, 1ef77bc9).\nFixture copy (es, content, 1ef77bc9).\nFixture copy (es, content, 1ef77bc9).\nFixture copy (es, content, 1ef77bc9).\nFixture copy (es, content, 1ef77bc9)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
@@ -2554,7 +2554,7 @@
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, 0bd6fcb2).","fr":"Fixture copy (fr, content, 2cb10ae0).","es":"Fixture copy (es, content, 4a94f223)."}
+						"content": {"en":"Fixture copy (en, content, 700faa56).\nFixture copy (en, content, 700faa56).\nFixture copy (en, content, 700faa56).\nFixture copy (en, content, 700faa56).","fr":"Fixture copy (fr, content, c31a0b9e).\nFixture copy (fr, content, c31a0b9e).\nFixture copy (fr, content, c31a0b9e).\nFixture copy (fr, content, c31a0b9e).","es":"Fixture copy (es, content, 2f6a3187).\nFixture copy (es, content, 2f6a3187).\nFixture copy (es, content, 2f6a3187).\nFixture copy (es, content, 2f6a3187)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
@@ -2604,7 +2604,7 @@
 				"sections": [
 					{
 						"title": {"en":"Is this you?","fr":"Ça te ressemble?","es":"¿Te suena?"},
-						"content": {"en":"Fixture copy (en, content, 5c57951d).","fr":"Fixture copy (fr, content, 8b11bacc).","es":"Fixture copy (es, content, 6f9ef8d4)."}
+						"content": {"en":"Fixture copy (en, content, c9b97a25).\nFixture copy (en, content, c9b97a25).\nFixture copy (en, content, c9b97a25).\nFixture copy (en, content, c9b97a25).\nFixture copy (en, content, c9b97a25).","fr":"Fixture copy (fr, content, a2e1b5f4).\nFixture copy (fr, content, a2e1b5f4).\nFixture copy (fr, content, a2e1b5f4).\nFixture copy (fr, content, a2e1b5f4).\nFixture copy (fr, content, a2e1b5f4).","es":"Fixture copy (es, content, 251695fe).\nFixture copy (es, content, 251695fe).\nFixture copy (es, content, 251695fe).\nFixture copy (es, content, 251695fe).\nFixture copy (es, content, 251695fe)."}
 					},
 					{
 						"title": {"en":"My Approach","fr":"Mon approche","es":"Mi enfoque"},
@@ -2913,7 +2913,7 @@
 			},
 			"socials": [
 				{
-					"label": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 minutes","es":"Agenda una llamada intro de 20 min"},
+					"label": {"en":"Book a call","fr":"Réserver un appel","es":"Agenda una llamada"},
 					"href": "https://cal.com/yesid-dev",
 					"icon": "calendar"
 				},
@@ -6175,8 +6175,8 @@
 			},
 			"subheadline": {"en":"I help businesses grow.","fr":"J'aide les entreprises à croître.","es":"Ayudo a las empresas a crecer."},
 			"subtitle": {"en":"More productivity for Canadian businesses, without downtime.","fr":"Plus de productivité pour les entreprises canadiennes, sans pannes.","es":"Más productividad para las empresas canadienses, sin caídas."},
-			"ctaWork": {"en":"See how I build →","fr":"Vois comment je bâtis →","es":"Mira cómo construyo →"},
-			"ctaContact": {"en":"Book a 20-min intro call","fr":"Réserver un appel intro de 20 min","es":"Agenda tu llamada intro de 20 min"},
+			"ctaWork": {"en":"See how I build","fr":"Vois comment je bâtis","es":"Mira cómo construyo"},
+			"ctaContact": {"en":"Book a call","fr":"Réserver un appel","es":"Agenda una llamada"},
 			"ctaWorkHref": "/projects",
 			"sqlPanel": {
 				"prompt": {"en":"yesid@transit:gold>","fr":"yesid@transit:gold>","es":"yesid@transit:gold>"},
@@ -6315,12 +6315,8 @@
 			},
 			"metrics": [
 				{
-					"value": "13",
-					"label": {"en":"first website","fr":"premier site web","es":"primer sitio web"}
-				},
-				{
 					"value": "12",
-					"label": {"en":"first Ubuntu install","fr":"premier Ubuntu","es":"primer Ubuntu"}
+					"label": {"en":"yrs old: first website & Linux distro","fr":"ans : premier site web et distro Linux","es":"años: primer sitio web y distro Linux"}
 				},
 				{
 					"value": "#1",
@@ -6329,6 +6325,10 @@
 				{
 					"value": "3AM",
 					"label": {"en":"still tinkering","fr":"encore debout","es":"aún sin dormir"}
+				},
+				{
+					"value": "3×5K",
+					"label": {"en":"runs a week","fr":"courses par semaine","es":"carreras por semana"}
 				}
 			],
 			"methodology": [
@@ -8673,8 +8673,7 @@
 					"TypeScript",
 					"Figma",
 					"Bun",
-					"Lighthouse",
-					"Playwright"
+					"Lighthouse"
 				],
 				"status": "public",
 				"featured": true,
