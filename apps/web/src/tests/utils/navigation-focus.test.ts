@@ -27,9 +27,9 @@ describe('scroll-preserving navigation focus parity', () => {
 		const scroll = vi.spyOn(window, 'scrollTo');
 		let complete!: () => void;
 		vi.mocked(goto).mockReturnValue(new Promise<void>((resolve) => { complete = resolve; }));
-		const navigation = gotoPreservingScroll('/projects?tag=sql', { replaceState: true });
+		const navigation = gotoPreservingScroll('/projects?stack=sql', { replaceState: true });
 		expect(document.activeElement).toBe(button);
-		expect(goto).toHaveBeenCalledExactlyOnceWith('/projects?tag=sql', { replaceState: true, reset: false });
+		expect(goto).toHaveBeenCalledExactlyOnceWith('/projects?stack=sql', { replaceState: true, reset: false });
 		complete();
 		await navigation;
 		expect(document.activeElement).toBe(document.body);

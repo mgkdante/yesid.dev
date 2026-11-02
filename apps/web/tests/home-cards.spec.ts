@@ -13,7 +13,7 @@ test('home project cards share one size and show title, excerpt and links withou
 	await page.evaluate(() => document.fonts.ready);
 	const cards = section.getByTestId('proof-card');
 	expect(await cards.count()).toBeGreaterThan(0);
-	await expect(section.locator('.line-bullet, .data-flow-diagram, [data-testid$="metric-item"]')).toHaveCount(0);
+	await expect(section.locator('.first-line-bullet, [data-testid$="metric-item"]')).toHaveCount(0);
 	await expect(section.locator('[data-testid="proof-card-links"] li').first()).toBeVisible();
 	for (const card of await cards.all()) {
 		const link = card.locator('.project-card-link');

@@ -209,41 +209,19 @@ test('the shared project listing stays readable', async ({ page }) => {
 	expect(await page.locator('[data-testid="project-hero-preview"][data-layout="single"]').count(), 'some project supplies one holistic visual').toBeGreaterThan(0);
 });
 
-test('a project card opens from its link and its tags, and its overflowing stack diagram is its own keyboard stop', async ({ page }) => {
-	test.skip(page.viewportSize()!.width >= 768, 'Stack diagrams overflow on narrow cards.');
+test('a project card opens from its link and its service labels', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/projects');
-	const card = page.getByTestId('project-card')
-		.filter({ has: page.locator('[tabindex="0"]') })
-		.filter({ has: page.locator('.project-card-tag') })
-		.first();
+	const card = page.getByTestId('project-card').filter({ has: page.locator('.first-line-bullet') }).first();
 	const link = card.getByRole('link');
 	const href = await link.getAttribute('href');
-	await card.locator('.project-card-tag').first().click({ force: true });
+	await card.locator('.first-line-bullet').first().locator('..').click({ force: true });
 	await expect(page.getByTestId('project-detail-page')).toBeVisible();
 	expect(new URL(page.url()).pathname).toBe(href);
 	await page.goto('/projects');
 	await link.focus();
-	await page.keyboard.press('Tab');
-	const diagram = page.locator(':focus');
-	await expect(diagram.getByRole('img')).toHaveAccessibleName(/\S/);
-	await page.keyboard.press('ArrowRight');
-	await expect.poll(() => diagram.evaluate(element => element.scrollLeft)).toBeGreaterThan(0);
-	await expect(page).toHaveURL(/\/projects\/?$/);
-	await page.keyboard.press('Shift+Tab');
-	await expect(link).toBeFocused();
 	await page.keyboard.press('Enter');
 	await expect(page.getByTestId('project-detail-page')).toBeVisible();
-});
-
-test('card tags lean toward the pointer from under the card link', async ({ page }) => {
-	test.skip(page.viewportSize()!.width < 1024, 'Pointer hover is a desktop behavior.');
-	await page.goto('/projects');
-	const tag = page.getByTestId('project-card').locator('.project-card-tag').first();
-	await tag.scrollIntoViewIfNeeded();
-	const rest = (await tag.boundingBox())!;
-	await page.mouse.move(rest.x + rest.width / 2 + 15, rest.y + rest.height / 2);
-	await expect.poll(async () => (await tag.boundingBox())!.x).toBeGreaterThan(rest.x);
 });
 
 test('a light first load shows the same project screenshots as switching to light', async ({ page }) => {

@@ -191,7 +191,7 @@ export const EXPORT_MODULE_REGISTRY = [
 	defineModule(
 		'projects.ts',
 		['projects'],
-		'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services).',
+		'Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, related services).',
 		[typeImport('#lib/types.ts', 'Project')],
 		(data) => [declaration('projects', 'readonly Project[]', data.projects)],
 	),

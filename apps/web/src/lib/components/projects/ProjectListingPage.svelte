@@ -20,7 +20,6 @@
 
 	let {
 		projects,
-		allTags,
 		allStack = [],
 		serviceIds,
 		services,
@@ -28,7 +27,6 @@
 		projectsPage
 	}: {
 		projects: readonly ProjectSummary[];
-		allTags: readonly string[];
 		allStack?: readonly string[];
 		serviceIds: readonly string[];
 		services: readonly Service[];
@@ -68,14 +66,13 @@
 	// Filter state — read from URL params. Browser-gated: the page prerenders
 	// (url.searchParams is unreadable at build), so SSR HTML is always the
 	// unfiltered listing — the only representation a static file can carry —
-	// and ?service/?tag/?stack deep-links apply on hydration.
+	// and ?service/?stack deep-links apply on hydration.
 	let activeService = $derived(browser ? page.url.searchParams.get('service') : null);
-	let activeTag = $derived(browser ? page.url.searchParams.get('tag') : null);
 	let activeStack = $derived(browser ? page.url.searchParams.get('stack') : null);
 	// Persist the locale-free search string; URL filters travel through the language switch.
 	const searchQuery = persisted('projects-q', '');
 
-	// Apply filters: service + tag + stack + search use AND logic
+	// Apply filters: service + stack + search use AND logic
 	let filteredProjects = $derived.by(() => {
 		let result = [...projects];
 
@@ -83,23 +80,19 @@
 			result = result.filter((p) => p.relatedServices.includes(activeService!));
 		}
 
-		if (activeTag) {
-			result = result.filter((p) => p.tags.includes(activeTag!));
-		}
-
 		if (activeStack) {
 			result = result.filter((p) => p.stack.includes(activeStack!));
 		}
 
-		// Search filter (title, oneLiner, tags, stack)
+		// Search filter (title, oneLiner, service names, stack)
 		if (searchQuery.value.trim()) {
 			const q = searchQuery.value.trim().toLowerCase();
 			result = result.filter((p) => {
 				const title = resolveLocale(p.title, locale).toLowerCase();
 				const oneLiner = resolveLocale(p.oneLiner, locale).toLowerCase();
-				const tags = p.tags.join(' ').toLowerCase();
+				const serviceNames = p.relatedServices.map((id) => serviceMap.get(id) ?? '').join(' ').toLowerCase();
 				const stack = p.stack.join(' ').toLowerCase();
-				return title.includes(q) || oneLiner.includes(q) || tags.includes(q) || stack.includes(q);
+				return title.includes(q) || oneLiner.includes(q) || serviceNames.includes(q) || stack.includes(q);
 			});
 		}
 
@@ -107,7 +100,7 @@
 	});
 
 	// FLIP animation on filter changes
-	async function updateFilter(type: 'service' | 'tag' | 'stack', value: string | null) {
+	async function updateFilter(type: 'service' | 'stack', value: string | null) {
 		flipState = captureFlipState();
 		const url = new URL(page.url.href);
 		if (value) {
@@ -122,10 +115,6 @@
 		updateFilter('service', serviceId);
 	}
 
-	function handleTagSelect(tag: string | null) {
-		updateFilter('tag', tag);
-	}
-
 	function handleStackSelect(stack: string | null) {
 		updateFilter('stack', stack);
 	}
@@ -135,14 +124,13 @@
 		new Map(services.map((s) => [s.id, resolveLocale(s.title, locale)]))
 	);
 
-	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.value.trim() !== '');
+	let hasActiveFilters = $derived(!!activeService || !!activeStack || searchQuery.value.trim() !== '');
 
 	async function clearFilters() {
 		flipState = captureFlipState();
 		searchQuery.value = '';
 		const url = new URL(page.url.href);
 		url.searchParams.delete('service');
-		url.searchParams.delete('tag');
 		url.searchParams.delete('stack');
 		await gotoPreservingScroll(url.toString(), { replaceState: true });
 	}
@@ -185,13 +173,10 @@
 			<ProjectFilterSidebar
 				serviceIds={serviceIds}
 				serviceMap={serviceMap}
-				tags={allTags}
 				stack={allStack}
 				activeService={activeService}
-				activeTag={activeTag}
 				activeStack={activeStack}
 				onServiceSelect={handleServiceSelect}
-				onTagSelect={handleTagSelect}
 				onStackSelect={handleStackSelect}
 			/>
 		{/snippet}

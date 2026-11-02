@@ -352,11 +352,10 @@ describe('buildCreativeWorkNode', () => {
 		expect(node.creator).toEqual({ '@id': PERSON_ID });
 	});
 
-	it('copies project.tags into keywords + project.stack into about', async () => {
+	it('copies project.stack into about', async () => {
 		const project = await firstProject();
 		if (!project) return;
 		const node = buildCreativeWorkNode(project, 'en');
-		expect(node.keywords).toEqual(project.tags);
 		expect(node.about).toEqual(project.stack);
 	});
 

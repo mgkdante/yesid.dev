@@ -133,11 +133,8 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				]),
 				filters: toLocalizedFields(tr, [
 					['filtersLabel', 'projects_chrome_listing_filters_label'], ['services', 'projects_chrome_listing_filters_services'],
-					['tags', 'projects_chrome_listing_filters_tags'], ['techStack', 'projects_chrome_listing_filters_tech_stack'],
+					['techStack', 'projects_chrome_listing_filters_tech_stack'],
 					['allLabel', 'projects_chrome_listing_filters_all_label'],
-				]),
-				card: toLocalizedFields(tr, [
-					['stackOverflowSuffix', 'projects_chrome_listing_card_stack_overflow_suffix'],
 				]),
 			},
 			detail: {

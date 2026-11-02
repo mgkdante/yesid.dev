@@ -57,12 +57,6 @@ describe('projects data integrity', () => {
 		});
 	});
 
-	it('all projects have at least one tag', () => {
-		projects.forEach((p) => {
-			expect(p.tags.length).toBeGreaterThan(0);
-		});
-	});
-
 	it('there is at least one featured project', () => {
 		// The home page showcase section requires at least one featured project
 		const featured = projects.filter((p) => p.featured);

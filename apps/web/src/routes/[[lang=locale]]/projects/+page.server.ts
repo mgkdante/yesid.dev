@@ -16,7 +16,7 @@ export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 		adapter.content.projectsPage(),
 	]);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
-	const { tags, stackItems, serviceIds } = deriveProjectFacets(projects);
+	const { stackItems, serviceIds } = deriveProjectFacets(projects);
 
-	return { projects, tags, stackItems, serviceIds, services, serviceSvgContents, projectsPage };
+	return { projects, stackItems, serviceIds, services, serviceSvgContents, projectsPage };
 };

@@ -84,9 +84,6 @@ export interface DirectusProject {
 	/** Normalized tech stack: M2M to tech_stack, ordered by junction `sort`.
 	 *  Single source of truth (the old denormalized `stack` json was dropped). */
 	tech_stack?: DirectusTechStackJunctionRow[];
-	/** Normalized tags: M2M to the shared tags collection, ordered by `sort`
-	 *  (the old denormalized `tags` json was dropped). */
-	tags?: DirectusTagJunctionRow[];
 }
 
 /** tech_stack_projects junction row, expanded to the linked tech name. */
@@ -95,22 +92,11 @@ export interface DirectusTechStackJunctionRow {
 	tech_stack_id: { id: string; name: string } | null;
 }
 
-/** projects_tags / blog_posts_tags junction row, expanded to the tag slug. */
-export interface DirectusTagJunctionRow {
-	sort: number | null;
-	tags_id: { id: string } | null;
-}
-
 /** Tech names from the ordered M2M junction (single source of truth for stack). */
 export function stackFromTechM2M(rows: DirectusTechStackJunctionRow[] | undefined): string[] {
 	return mapLocalizedRepeater(rows, (j) => j.tech_stack_id?.name).filter(
 		(n): n is string => !!n,
 	);
-}
-
-/** Tag slugs from the ordered M2M junction (single source of truth for tags). */
-export function tagsFromM2M(rows: DirectusTagJunctionRow[] | undefined): string[] {
-	return mapLocalizedRepeater(rows, (j) => j.tags_id?.id).filter((n): n is string => !!n);
 }
 
 export function statusFromDirectus(s: 'draft' | 'published' | 'archived'): ProjectStatus {
@@ -153,7 +139,6 @@ export function toProject(row: DirectusProject): Project {
 		...toLocalizedFields(translations, ['title', ['oneLiner', 'one_liner']]),
 		description: toLocalizedBlockEditorDoc(translations, 'description'),
 		stack: stackFromTechM2M(row.tech_stack),
-		tags: tagsFromM2M(row.tags),
 		status: statusFromDirectus(row.status),
 		featured: row.featured,
 		relatedServices: (row.services ?? []).map((j) => j.service_id),
@@ -193,7 +178,6 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 				{ impact_metrics: ['id', 'sort', 'value', 'before', { translations: ['*'] }] } as unknown as string,
 				{ services: ['id', 'project_id', 'service_id'] } as unknown as string,
 				{ tech_stack: ['sort', { tech_stack_id: ['id', 'name'] }] } as unknown as string,
-				{ tags: ['sort', { tags_id: ['id'] }] } as unknown as string,
 			],
 			limit: -1,
 		}),

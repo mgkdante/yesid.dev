@@ -6,7 +6,6 @@
 
 <ProjectListingPage
 	projects={data.projects}
-	allTags={data.tags}
 	allStack={data.stackItems}
 	serviceIds={data.serviceIds}
 	services={data.services}

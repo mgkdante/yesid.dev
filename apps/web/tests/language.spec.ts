@@ -65,10 +65,10 @@ test.describe('State across languages — foundation (URL state survives the swi
 
 	test('the query survives the FR→ES and ES→EN directions too (3-locale cycle)', async ({ page }) => {
 		// en → fr → es → en: FR now points at ES; ES closes the cycle back to EN.
-		await page.goto('/fr/projects?tag=svelte');
-		await expect(page.getByTestId('language-toggle')).toHaveAttribute('href', '/es/projects?tag=svelte');
-		await page.goto('/es/projects?tag=svelte');
-		await expect(page.getByTestId('language-toggle')).toHaveAttribute('href', '/projects?tag=svelte');
+		await page.goto('/fr/projects?stack=svelte');
+		await expect(page.getByTestId('language-toggle')).toHaveAttribute('href', '/es/projects?stack=svelte');
+		await page.goto('/es/projects?stack=svelte');
+		await expect(page.getByTestId('language-toggle')).toHaveAttribute('href', '/projects?stack=svelte');
 	});
 
 	test('a hash fragment is carried across the switch', async ({ page }) => {
