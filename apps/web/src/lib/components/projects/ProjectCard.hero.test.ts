@@ -102,70 +102,32 @@ describe('ProjectCard hero media', () => {
 		expect(container.querySelectorAll('.blueprint-art')).toHaveLength(2);
 	});
 
-	it('renders proof cards with the proof reel media preset and metric strip', () => {
+	it('renders proof cards with media, title and proof links but no metrics, services or stack', () => {
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
 			imageSecondary: 'mobile-dark-uuid',
-			impactMetric: {
-				before: 'old',
-				value: '42%',
-				label: { en: 'less waiting' },
-			},
+			impactMetrics: [{ value: '42%', label: { en: 'less waiting' } }],
+			relatedServices: ['service-a'],
+			stack: ['Postgres'],
+			liveUrl: 'https://example.test',
 		} as Partial<ReturnType<typeof projectFactory.build>>);
+		const service = { id: 'service-a', title: { en: 'Fixture service' } } as never;
 
 		const { container } = render(ProjectCard, {
-			props: {
-				project,
-				serviceSvgContents: {},
-				variant: 'proof',
-			},
+			props: { project, services: [service], variant: 'proof' },
 		});
 
-		expect(screen.getByTestId('proof-card')).toBeInTheDocument();
+		const card = screen.getByTestId('proof-card');
 		expect(screen.getByTestId('proof-card-image')).toBeInTheDocument();
 		expect(screen.getByTestId('proof-card-title').textContent).toContain(project.title.en);
-		expect(screen.getByTestId('proof-metric-before').textContent).toContain('old');
-		expect(screen.getByTestId('proof-metric-value').textContent).toContain('42%');
-		expect(screen.getByTestId('proof-metric-label').textContent).toContain('less waiting');
+		expect(card.textContent).not.toContain('42%');
+		expect(card.textContent).not.toContain('Fixture service');
+		expect(container.querySelector('.data-flow-diagram')).toBeNull();
+		expect(screen.getByTestId('proof-card-links').querySelector('a')?.getAttribute('href')).toBe('https://example.test');
 
 		const images = container.querySelectorAll('[data-testid="project-hero-preview-image"]');
 		expect(images[0]?.getAttribute('src')).toBe('/test-assets/desktop-dark-uuid?key=hero-1200');
 		expect(images[1]?.getAttribute('src')).toBe('/test-assets/mobile-dark-uuid?key=hero-1200');
-	});
-
-	it('renders all supplied proof metrics in preference to the legacy singular metric', () => {
-		const project = projectFactory.build({
-			impactMetrics: [
-				{ value: '30s', label: { en: 'refresh cycles' } },
-				{ value: '99.9%', label: { en: 'pipeline uptime' } },
-				{ value: '2', label: { en: 'languages shipped' } },
-				{ value: '0', label: { en: 'CMS calls per visit' } },
-			],
-			impactMetric: {
-				value: 'legacy',
-				label: { en: 'legacy metric' },
-			},
-		} as Partial<ReturnType<typeof projectFactory.build>>);
-
-		render(ProjectCard, {
-			props: {
-				project,
-				serviceSvgContents: {},
-				variant: 'proof',
-			},
-		});
-
-		expect(screen.getAllByTestId('proof-metric-item')).toHaveLength(project.impactMetrics!.length);
-		expect(screen.getAllByTestId('proof-metric-value').map((node) => node.textContent)).toEqual(project.impactMetrics!.map(metric => metric.value));
-		expect(screen.getAllByTestId('proof-metric-label').map((node) => node.textContent)).toEqual(project.impactMetrics!.map(metric => metric.label.en));
-		expect(screen.queryByText(project.impactMetric!.value)).toBeNull();
-	});
-
-	it('does not invent a proof metric footer when neither metric field is supplied', () => {
-		const project = projectFactory.build({ impactMetrics: [], impactMetric: undefined });
-		render(ProjectCard, { props: { project, variant: 'proof' } });
-		expect(screen.queryByTestId('proof-metric-strip')).toBeNull();
-		expect(screen.queryAllByTestId('proof-metric-value')).toEqual([]);
 	});
 
 	it('lazy-loads hero media by default (only the first card goes eager)', () => {

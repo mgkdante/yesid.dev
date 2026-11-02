@@ -1,7 +1,7 @@
-<!-- A project's proof links (live site, repository, documentation) in its page header. -->
+<!-- A project's proof links (live site, repository, documentation), shown in its page header and home card. -->
 <script lang="ts">
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
-	import type { Project } from '#lib/types.ts';
+	import type { ProjectSummary } from '#lib/types.ts';
 	import { isProjectProofHref } from '#lib/utils/high-intent-links.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -18,7 +18,7 @@
 	const docsLabel = resolveLocale(glanceChrome.docsLabel, locale);
 	const repoPrivateLabel = resolveLocale(glanceChrome.repoPrivateLabel, locale);
 
-	let { project }: { project: Project } = $props();
+	let { project }: { project: ProjectSummary } = $props();
 
 	function handleProjectProofClick(href: string | undefined, link: 'live' | 'repo' | 'docs'): void {
 		if (href && isProjectProofHref(href)) {

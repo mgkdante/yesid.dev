@@ -39,7 +39,7 @@
 	import MediaLightbox from '#lib/components/media/MediaLightbox.svelte';
 	import { articleMediaLabels, setArticleMedia } from '#lib/media/article-media.svelte.ts';
 	import ProjectImpactCard from './ProjectImpactCard.svelte';
-	import ProjectHeaderLinks from './ProjectHeaderLinks.svelte';
+	import ProjectProofLinks from './ProjectProofLinks.svelte';
 	import ProjectOverviewCard from './ProjectOverviewCard.svelte';
 	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
@@ -319,7 +319,7 @@
 					<ProjectHeaderTelemetry {project} />
 				{/snippet}
 				{#snippet actions()}
-					<ProjectHeaderLinks {project} />
+					<ProjectProofLinks {project} />
 				{/snippet}
 				{#snippet controls()}
 					<QuietModeButton />

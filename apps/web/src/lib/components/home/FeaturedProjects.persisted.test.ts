@@ -11,7 +11,6 @@ import { render, screen, cleanup } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
 import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
-import { getVisibleServices } from '#lib/services/static-helpers.ts';
 import type { Project } from '#lib/types.ts';
 import { persisted } from '@yesid/ui/state';
 
@@ -24,8 +23,7 @@ vi.mock('#lib/directus/assets.ts', () => ({
 }));
 
 const resolvedProjects: readonly Project[] = getFeaturedProjects();
-const services = getVisibleServices();
-const renderProps = { proofReel: proofReelContent, projects: resolvedProjects, services };
+const renderProps = { proofReel: proofReelContent, projects: resolvedProjects };
 
 function currentCounter(): HTMLElement {
 	const el = screen.getByTestId('proof-count').querySelector<HTMLElement>('.proof-count-current');

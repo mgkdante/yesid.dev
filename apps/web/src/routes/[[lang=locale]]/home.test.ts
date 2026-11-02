@@ -48,7 +48,6 @@ const stubData = {
 	services: getVisibleServices(),
 	featuredProjects,
 	siteMeta,
-	serviceSvgContents: {},
 } as unknown as PageData;
 
 const renderPage = () => render(Page, { props: { data: stubData } });

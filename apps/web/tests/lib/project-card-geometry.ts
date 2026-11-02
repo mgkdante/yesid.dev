@@ -4,25 +4,10 @@ export async function expectCardContentInside(card: Locator) {
 	const violations = await card.evaluate(link => {
 		const failures: string[] = [];
 		const cardBox = link.getBoundingClientRect();
-		const selectors = [
-			'[data-testid="proof-card-title"]', '[data-testid="proof-excerpt"]',
-			'[data-testid="proof-metric-before"]', '[data-testid="proof-metric-value"]',
-			'[data-testid="proof-metric-label"]', '[data-testid="proof-metric-overflow"]', '.line-bullet',
-		];
+		const selectors = ['[data-testid="proof-card-title"]', '[data-testid="proof-excerpt"]', '[data-testid="proof-card-links"] li'];
 		for (const element of link.querySelectorAll<HTMLElement>(selectors.join(','))) {
 			if (!element.checkVisibility()) continue;
 			const name = element.dataset.testid ?? element.className;
-			if (element.dataset.testid === 'proof-metric-value') {
-				const nodes = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-				while (nodes.nextNode()) {
-					for (const word of nodes.currentNode.textContent!.matchAll(/\S+/g)) {
-						const wordRange = document.createRange();
-						wordRange.setStart(nodes.currentNode, word.index!);
-						wordRange.setEnd(nodes.currentNode, word.index! + word[0].length);
-						if (wordRange.getClientRects().length > 1) failures.push(name + ': word split across lines');
-					}
-				}
-			}
 			const range = document.createRange();
 			range.selectNodeContents(element);
 			const content = element.textContent?.trim() ? Array.from(range.getClientRects()) : [element.getBoundingClientRect()];
@@ -47,5 +32,5 @@ export async function expectCardContentInside(card: Locator) {
 		}
 		return failures;
 	});
-	expect(violations, 'card text, metrics and service roundels must remain inside their clipping ancestors').toEqual([]);
+	expect(violations, 'card text must remain inside its clipping ancestors').toEqual([]);
 }

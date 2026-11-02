@@ -53,7 +53,6 @@
 		featuredProjects: readonly ProjectSummary[];
 		siteMeta: SiteMeta;
 		bookingHref: string;
-		serviceSvgContents: Record<string, string>;
 	}
 	let {
 		metroSvg,
@@ -69,7 +68,6 @@
 		featuredProjects,
 		siteMeta,
 		bookingHref,
-		serviceSvgContents,
 	}: Props = $props();
 
 // go2-t1c2: rotated home section titles from site_labels, previous
@@ -239,14 +237,10 @@
 		<SectionHeading heading={sectionProjects} />
 	</div>
 	<div class="home-section-content">
-		<!-- go2/home-cards: services join the proof reel so each card can name
-		     the station that built it (same prop the services grid consumes). -->
 
 		<FeaturedProjects
 			proofReel={proofReel}
 			projects={featuredProjects}
-			services={services}
-			serviceSvgContents={serviceSvgContents}
 		/>
 	</div>
 	<div class="rotated-title rotated-title--right">
