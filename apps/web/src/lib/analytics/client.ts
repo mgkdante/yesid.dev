@@ -1,4 +1,3 @@
-import { dev } from '$app/env';
 import { PUBLIC_PLAUSIBLE_DOMAIN } from '$app/env/public';
 import { createAnalytics, sanitizeAnalyticsUrl, type Analytics } from '@yesid/analytics/client';
 // The /sveltekit entries import $app/stores, which SvelteKit 3 removed; the generic ones track pushState navigations.
@@ -19,13 +18,15 @@ export function reduceVercelEvent<Event extends { url: string }>(event: Event): 
 
 /**
  * Starts measurement once, from the root layout's mount: Plausible for pageviews and events,
- * Vercel Web Analytics for pageviews and Speed Insights for web vitals. Vercel custom events
- * need a Pro plan, so events go to Plausible only.
+ * Vercel Web Analytics for pageviews and Speed Insights for web vitals. Like Plausible, Vercel's
+ * scripts start only on the production host: they exist only on Vercel deployments, and previews
+ * would spend the Hobby event quota. Vercel custom events need Pro, so events go to Plausible only.
  */
 export function startAnalytics(): void {
 	if (analytics) return;
 	analytics = createAnalytics(YESID_ANALYTICS_PRESET, { domain: PUBLIC_PLAUSIBLE_DOMAIN });
-	injectAnalytics({ framework: 'sveltekit', mode: dev ? 'development' : 'production', beforeSend: reduceVercelEvent });
+	if (!PUBLIC_PLAUSIBLE_DOMAIN || location.hostname !== PUBLIC_PLAUSIBLE_DOMAIN) return;
+	injectAnalytics({ framework: 'sveltekit', mode: 'production', beforeSend: reduceVercelEvent });
 	injectSpeedInsights({ framework: 'sveltekit', beforeSend: reduceVercelEvent });
 }
 
