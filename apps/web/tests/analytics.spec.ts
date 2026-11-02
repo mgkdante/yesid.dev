@@ -105,7 +105,7 @@ async function clickWithoutNavigation(link: Locator): Promise<void> {
 	});
 }
 
-test('successful contact form sends one property-free event without form data', async ({ page, baseURL }) => {
+test('successful contact form sends one locale-tagged event without form data', async ({ page, baseURL }) => {
 	const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
 	const payloads = await capturePlausible(page);
 	await mockWeb3Forms(page, { success: true });
@@ -132,7 +132,7 @@ test('successful contact form sends one property-free event without form data', 
 		n: 'contact_form_success',
 		d: 'yesid.dev',
 	});
-	expect(events[0].p).toBeUndefined();
+	expect(events[0].p).toEqual({ locale: 'en' });
 	const trackedUrl = new URL(events[0].u);
 	expect(trackedUrl.pathname).toBe('/contact');
 	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
@@ -143,7 +143,7 @@ test('successful contact form sends one property-free event without form data', 
 	expectExactPageviewCount(payloads, 1);
 });
 
-test('booking click sends one property-free event with the sanitized current page', async ({
+test('booking click sends one event with its placement and the sanitized current page', async ({
 	page,
 	baseURL,
 }) => {
@@ -168,7 +168,7 @@ test('booking click sends one property-free event with the sanitized current pag
 		n: 'booking_click',
 		d: 'yesid.dev',
 	});
-	expect(events[0].p).toBeUndefined();
+	expect(events[0].p).toEqual({ locale: 'en', placement: 'contact' });
 	const trackedUrl = new URL(events[0].u);
 	expect(trackedUrl.pathname).toBe('/contact');
 	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
@@ -176,7 +176,7 @@ test('booking click sends one property-free event with the sanitized current pag
 	expectExactPageviewCount(payloads, 1);
 });
 
-test('direct contact click sends one property-free event with the sanitized current page', async ({
+test('direct contact click sends one event with its channel and the sanitized current page', async ({
 	page,
 	baseURL,
 }) => {
@@ -207,7 +207,7 @@ test('direct contact click sends one property-free event with the sanitized curr
 		n: 'direct_contact_click',
 		d: 'yesid.dev',
 	});
-	expect(events[0].p).toBeUndefined();
+	expect(events[0].p).toEqual({ locale: 'en', placement: 'contact', channel: 'email' });
 	const trackedUrl = new URL(events[0].u);
 	expect(trackedUrl.pathname).toBe('/contact');
 	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
@@ -215,7 +215,7 @@ test('direct contact click sends one property-free event with the sanitized curr
 	expectExactPageviewCount(payloads, 1);
 });
 
-test('project proof click sends one property-free event with the sanitized current project page', async ({
+test('project proof click sends one event with its link type and the sanitized current project page', async ({
 	page,
 	baseURL,
 }) => {
@@ -247,7 +247,7 @@ test('project proof click sends one property-free event with the sanitized curre
 		n: 'project_proof_click',
 		d: 'yesid.dev',
 	});
-	expect(events[0].p).toBeUndefined();
+	expect(events[0].p).toEqual({ locale: 'en', link: 'live' });
 	const trackedUrl = new URL(events[0].u);
 	expect(trackedUrl.pathname).toBe('/projects/yesid-dev');
 	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
@@ -255,10 +255,10 @@ test('project proof click sends one property-free event with the sanitized curre
 	expectExactPageviewCount(payloads, 1);
 });
 
-for (const { locale, path } of [
-	{ locale: 'English', path: '/projects' },
-	{ locale: 'French', path: '/fr/projects' },
-	{ locale: 'Spanish', path: '/es/projects' },
+for (const { locale, code, path } of [
+	{ locale: 'English', code: 'en', path: '/projects' },
+	{ locale: 'French', code: 'fr', path: '/fr/projects' },
+	{ locale: 'Spanish', code: 'es', path: '/es/projects' },
 ] as const) {
 	test(`${locale} pageview preserves acquisition data and strips private query parameters`, async ({
 		page,
@@ -279,7 +279,7 @@ for (const { locale, path } of [
 		const [pageview] = pageviews(payloads);
 		const trackedUrl = new URL(pageview.u);
 		expect(pageview.d).toBe('yesid.dev');
-		expect(pageview.p).toBeUndefined();
+		expect(pageview.p).toEqual({ locale: code });
 		expect(trackedUrl.origin).toBe(productionOrigin);
 		expect(trackedUrl.pathname).toBe(path);
 		expect(trackedUrl.searchParams.get('utm_source')).toBe('linkedin');
@@ -336,7 +336,7 @@ test('internal path navigation emits one additional pageview', async ({ page, ba
 	expect(eventsNamed(payloads, 'engagement').length).toBeGreaterThan(0);
 	for (const payload of nonSentinel(payloads)) {
 		expect(payload.d).toBe('yesid.dev');
-		expect(payload.p).toBeUndefined();
+		expect(payload.p).toEqual({ locale: 'en' });
 		const url = new URL(payload.u);
 		expect([...url.searchParams.keys()].every(key => key === 'utm_source')).toBe(true);
 		expect(url.hash).toBe('');

@@ -371,7 +371,7 @@ describe('ContactPage', () => {
 	it.each(['contact-social-calendar', 'contact-booking-link'])('tracks only booking_click for %s', async (testId) => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		await clickWithoutNavigating(screen.getAllByTestId(testId)[0]);
-		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['booking_click']]);
+		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([['booking_click', { placement: 'contact' }]]);
 	});
 
 	it.each([
@@ -392,6 +392,7 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith(
 			'direct_contact_click',
+			{ placement: 'contact', channel: icon },
 		);
 	});
 

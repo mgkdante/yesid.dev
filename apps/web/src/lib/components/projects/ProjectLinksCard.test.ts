@@ -40,7 +40,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 		await clickWithoutNavigating(link!);
 
 		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
-			['project_proof_click'],
+			['project_proof_click', { link: 'live' }],
 		]);
 	});
 
@@ -60,7 +60,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 		await clickWithoutNavigating(link!);
 
 		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
-			['project_proof_click'],
+			['project_proof_click', { link: 'repo' }],
 		]);
 	});
 
@@ -125,7 +125,7 @@ describe('ProjectLinksCard documentation link', () => {
 		expect(link).toHaveTextContent('Documentation');
 		await clickWithoutNavigating(link);
 		expect(analyticsMocks.trackAnalyticsEvent.mock.calls).toEqual([
-			['project_proof_click'],
+			['project_proof_click', { link: 'docs' }],
 		]);
 	});
 

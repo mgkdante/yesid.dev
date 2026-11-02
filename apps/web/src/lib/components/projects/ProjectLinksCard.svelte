@@ -25,9 +25,9 @@
 		anchor?: string;
 	} = $props();
 
-	function handleProjectProofClick(href: string | undefined): void {
+	function handleProjectProofClick(href: string | undefined, link: 'live' | 'repo' | 'docs'): void {
 		if (href && isProjectProofHref(href)) {
-			trackAnalyticsEvent('project_proof_click');
+			trackAnalyticsEvent('project_proof_click', { link });
 		}
 	}
 
@@ -46,7 +46,7 @@
 						href={project.liveUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						onclick={() => handleProjectProofClick(project.liveUrl)}
+						onclick={() => handleProjectProofClick(project.liveUrl, 'live')}
 						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
 					>
 						<SectionIcon name="arrow" class="h-3.5 w-3.5 shrink-0" />
@@ -58,7 +58,7 @@
 						href={project.repoUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						onclick={() => handleProjectProofClick(project.repoUrl)}
+						onclick={() => handleProjectProofClick(project.repoUrl, 'repo')}
 						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
 					>
 						<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />
@@ -79,7 +79,7 @@
 						href={project.docsUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						onclick={() => handleProjectProofClick(project.docsUrl)}
+						onclick={() => handleProjectProofClick(project.docsUrl, 'docs')}
 						data-testid="project-docs-link"
 						class="inline-flex min-h-11 items-center gap-2 font-mono text-mono text-primary no-underline"
 					>

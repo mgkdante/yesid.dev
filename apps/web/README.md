@@ -44,7 +44,7 @@ separate controls. Do not infer one from another or add a locale in only one
 layer.
 
 Contact delivery and analytics are separate privacy domains. The contact form
-sends its fields to Web3Forms. Plausible runs only when `PUBLIC_PLAUSIBLE_DOMAIN` is set at build time (Vercel Production: `yesid.dev`) and the page is served from that host; it receives pageviews and the allowlisted events in `src/lib/analytics/preset.ts`, never form fields, and sets no cookies or storage. Vercel Web Analytics (pageviews only; custom events need a Pro plan) and Speed Insights (web vitals) also load from the root layout through same-origin `/_vercel/insights` and `/_vercel/speed-insights` endpoints and collect nothing outside Vercel deployments. Preserve that separation when adding tracking or changing form behavior.
+sends its fields to Web3Forms. Plausible runs only when `PUBLIC_PLAUSIBLE_DOMAIN` is set at build time (Vercel Production: `yesid.dev`) and the page is served from that host; it receives pageviews and the allowlisted events in `src/lib/analytics/preset.ts`, each tagged only with that preset's fixed property values (page locale, and link type, placement, channel or network on the events that use them), never form fields, and sets no cookies or storage. Vercel Web Analytics (pageviews only; custom events need a Pro plan) and Speed Insights (web vitals) also load from the root layout through same-origin `/_vercel/insights` and `/_vercel/speed-insights` endpoints and collect nothing outside Vercel deployments. Preserve that separation when adding tracking or changing form behavior.
 
 ## Failure behavior
 

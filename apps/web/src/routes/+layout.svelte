@@ -20,7 +20,7 @@
 	// seoHeadProps resolves the page SEO and JSON-LD for the current locale.
 	import { SeoHead } from '@yesid/ui/head';
 	import { startAnalytics, trackAnalyticsEvent } from '#lib/analytics/client.ts';
-	import { isProfileClick, navigationEvents } from '#lib/analytics/site-events.ts';
+	import { navigationEvents, profileClickNetwork } from '#lib/analytics/site-events.ts';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
 	import { errorPagesById } from '#lib/content/error-pages.ts';
 	import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
@@ -131,7 +131,10 @@
 <!-- SvelteKit skips beforeNavigate during an active navigation, so use native history events. -->
 <svelte:window
 	onpopstate={() => { if (pendingTransitions > 0) location.reload(); }}
-	onclick={(event) => { if (isProfileClick(event)) trackAnalyticsEvent('profile_click'); }}
+	onclick={(event) => {
+		const network = profileClickNetwork(event);
+		if (network) trackAnalyticsEvent('profile_click', { network });
+	}}
 />
 
 {#snippet footerBrand()}

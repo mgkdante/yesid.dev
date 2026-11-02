@@ -47,7 +47,7 @@ describe('HeroTextContent — hero dot replay affordance (go2/w5)', () => {
 		await clickWithoutNavigating(screen.getByTestId('hero-cta-contact'));
 
 		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledTimes(1);
-		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click');
+		expect(analyticsMocks.trackAnalyticsEvent).toHaveBeenCalledWith('booking_click', { placement: 'hero' });
 	});
 
 	it.each([

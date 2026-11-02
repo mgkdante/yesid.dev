@@ -23,7 +23,7 @@
 	import type { WeatherData } from '#lib/utils/weather.ts';
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
 	import { escapeHtml } from '#lib/utils/code-fences.ts';
-	import { bookingHref, isDirectContactHref } from '#lib/utils/high-intent-links.ts';
+	import { bookingHref, directContactChannel } from '#lib/utils/high-intent-links.ts';
 	import { pressBounce } from '@yesid/motion/actions';
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
@@ -278,13 +278,12 @@
 		social: ContactContent['socials'][number],
 	): void {
 		if (social.icon === 'calendar') {
-			trackAnalyticsEvent('booking_click');
+			trackAnalyticsEvent('booking_click', { placement: 'contact' });
 			return;
 		}
 
-		if (isDirectContactHref(social.href)) {
-			trackAnalyticsEvent('direct_contact_click');
-		}
+		const channel = directContactChannel(social.href);
+		if (channel) trackAnalyticsEvent('direct_contact_click', { placement: 'contact', channel });
 	}
 
 </script>
@@ -494,7 +493,7 @@
 								target="_blank"
 								rel="noopener"
 								data-testid="contact-booking-link"
-								onclick={() => trackAnalyticsEvent('booking_click')}
+								onclick={() => trackAnalyticsEvent('booking_click', { placement: 'contact' })}
 								class="tap-feedback rounded px-1 py-0.5 inline-flex min-h-11 items-center text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
 							>
 								<span aria-hidden="true">~ $</span>

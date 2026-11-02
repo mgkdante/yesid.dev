@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bookingHref, isDirectContactHref, isProjectProofHref } from './high-intent-links';
+import { bookingHref, directContactChannel, isDirectContactHref, isProjectProofHref } from './high-intent-links';
 
 describe('bookingHref', () => {
 	it('uses the Calendar contact channel link', () => {
@@ -62,5 +62,17 @@ describe('isProjectProofHref', () => {
 		'https://user:password@example.com/private',
 	])('rejects the ineligible project-proof URL %s', (href) => {
 		expect(isProjectProofHref(href)).toBe(false);
+	});
+});
+
+describe('directContactChannel', () => {
+	it.each([
+		['mailto:contact@yesid.dev', 'email'],
+		['tel:+12025550100', 'phone'],
+		['https://wa.me/12025550100', 'whatsapp'],
+		['https://cal.com/yesid-dev', null],
+		['mailto:', null],
+	])('maps %s to %s', (href, channel) => {
+		expect(directContactChannel(href)).toBe(channel);
 	});
 });
