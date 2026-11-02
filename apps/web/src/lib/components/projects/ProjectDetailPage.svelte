@@ -37,7 +37,9 @@
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
 	import ProjectImageGallery from './ProjectImageGallery.svelte';
+	import ProjectImpactCard from './ProjectImpactCard.svelte';
 	import ProjectLinksCard from './ProjectLinksCard.svelte';
+	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import CodeBlock from '#lib/components/cms/blocks/CodeBlock.svelte';
 	import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
@@ -129,8 +131,6 @@
 			entries.push({ id: 'glance-stack', title: glanceStackTitle, level: 2, badge: { kind: 'icon', name: 'layers' }, rail: true, children: [] });
 		if (services.length > 0)
 			entries.push({ id: 'glance-services', title: glanceServicesTitle, level: 2, badge: { kind: 'icon', name: 'grid' }, rail: true, children: [] });
-		if (project.liveUrl || project.repoUrl || project.docsUrl || project.repoPrivate)
-			entries.push({ id: 'glance-links', title: glanceLinksTitle, level: 2, badge: { kind: 'icon', name: 'arrow' }, rail: true, children: [] });
 		return entries;
 	}
 
@@ -166,6 +166,7 @@
 	const mediaGalleryTitle = $derived(galleryVideos.length === 0 ? galleryTitle : galleryDoc.blocks.length > 0 ? youtubeLabels[locale].media : youtubeLabels[locale].gallery);
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
+	const hasImpact = $derived(projectMetrics(project).length > 0);
 	const hasProjectLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 	const readmeHtml = $derived((readme ?? []).map((part) => ('html' in part ? part.html : '')).join(''));
 	const readmeTocEntry = $derived.by((): TocEntry | null => {
@@ -182,13 +183,17 @@
 	const tocEntries = $derived.by((): TocEntry[] => {
 		const entries: TocEntry[] = [];
 
+		// Links lead the page on mobile (above the sections) and the right rail on desktop.
+		if (hasProjectLinks)
+			entries.push({ id: 'glance-links', title: glanceLinksTitle, level: 2, badge: { kind: 'icon', name: 'arrow' }, rail: true, children: [] });
+
 		for (let i = 0; i < articleSections.length; i++) {
 			entries.push(articleTocEntry(articleSections[i], i));
 		}
 
 		if (readmeTocEntry) entries.push(readmeTocEntry);
 
-		// Glance-rail panels in the TOC (Stack / Services / Links). On mobile these
+		// Glance-rail panels in the TOC (Stack / Services). On mobile these
 		// sit below the sections (in-flow); their scroll-target anchors (data-toc)
 		// live on the mobile glance instance. On desktop they're already visible in
 		// the rail. Badges mirror the glance cards' SectionIcon shapes.
@@ -284,7 +289,6 @@
 				project={project}
 				services={services}
 				serviceSvgContents={serviceSvgContents}
-				showLinks={false}
 				codeHighlights={codeHighlights}
 			/>
 		</div>
@@ -334,9 +338,9 @@
 					sectionKey={scoped('proj-toc')}
 					counterPrefix={tocCounterPrefix}
 				/>
-				{#if hasProjectLinks}
-					<div class="toc-links-stack">
-						<ProjectLinksCard project={project} sectionKey={scoped('glance-links-left-rail')} />
+				{#if hasImpact}
+					<div class="toc-impact-stack">
+						<ProjectImpactCard project={project} sectionKey={scoped('glance-impact')} />
 					</div>
 				{/if}
 				{#if hasGallery}
@@ -348,6 +352,11 @@
 		{/snippet}
 
 		<div class="sections-column">
+			{#if hasProjectLinks}
+				<div class="section-block lg:hidden" data-testid="project-links-mobile">
+					<ProjectLinksCard project={project} sectionKey={scoped('glance-links-m')} anchor="glance-links" />
+				</div>
+			{/if}
 			{#snippet articleSection(section: SectionView, index: number)}
 				<div
 					class="section-block"
@@ -426,7 +435,7 @@
 		margin-top: 1rem;
 	}
 
-	.toc-links-stack {
+	.toc-impact-stack {
 		margin-top: 1rem;
 	}
 

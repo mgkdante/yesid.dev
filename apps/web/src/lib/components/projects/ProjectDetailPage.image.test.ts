@@ -205,6 +205,7 @@ describe('ProjectDetailPage image placement', () => {
 			image: 'hero-image-uuid',
 			liveUrl: 'https://yesid.dev',
 			repoUrl: 'https://github.com/mgkdante/yesid.dev',
+			impactMetrics: [{ value: '30s', label: { en: 'Publish time' } }],
 			stack: ['SvelteKit'],
 			description: { en: doc('Overview text') },
 			sections: [
@@ -309,15 +310,28 @@ describe('ProjectDetailPage image placement', () => {
 		const leftRail = container.querySelector('.toc-column');
 		expect(leftRail).toBeTruthy();
 		const leftRailGallery = within(leftRail as HTMLElement).getByTestId('project-image-gallery-rail');
-		const leftRailLinks = within(leftRail as HTMLElement).getByTestId('project-links-card');
+		const leftRailImpact = within(leftRail as HTMLElement).getByTestId('project-impact-card');
 		expect(
 			Boolean(
-				leftRailLinks.compareDocumentPosition(leftRailGallery) &
+				leftRailImpact.compareDocumentPosition(leftRailGallery) &
 					Node.DOCUMENT_POSITION_FOLLOWING,
 			),
 		).toBe(true);
-		expect(within(screen.getByTestId('project-glance-panel')).queryByTestId('project-links-card')).not.toBeInTheDocument();
-		expect(within(screen.getByTestId('project-glance-panel-mobile')).getByTestId('project-links-card')).toBeInTheDocument();
+		expect(within(leftRail as HTMLElement).queryByTestId('project-links-card')).not.toBeInTheDocument();
+
+		const desktopGlance = screen.getByTestId('project-glance-panel');
+		expect(within(desktopGlance).queryByTestId('project-impact-card')).not.toBeInTheDocument();
+		const desktopCards = [...desktopGlance.querySelectorAll('h2.section-title')].map((node) => node.textContent?.trim());
+		expect(desktopCards.slice(0, 2)).toEqual([expect.stringMatching(/links/i), expect.stringMatching(/overview/i)]);
+
+		const mobileLinks = screen.getByTestId('project-links-mobile');
+		const firstSectionsCard = container.querySelector('.sections-column h2.section-title');
+		expect(mobileLinks.contains(firstSectionsCard)).toBe(true);
+		expect(firstSectionsCard?.textContent).toMatch(/links/i);
+		const mobileGlance = screen.getByTestId('project-glance-panel-mobile');
+		expect(within(mobileGlance).queryByTestId('project-links-card')).not.toBeInTheDocument();
+		const mobileCards = [...mobileGlance.querySelectorAll('h2.section-title')].map((node) => node.textContent?.trim());
+		expect(mobileCards.slice(0, 2)).toEqual([expect.stringMatching(/overview/i), expect.stringMatching(/impact/i)]);
 
 		const mobileToc = screen.getByTestId('toc-pill');
 		await fireEvent.click(within(mobileToc).getByRole('button'));
@@ -325,7 +339,7 @@ describe('ProjectDetailPage image placement', () => {
 		const mobileDrawerLabels = [...mobileToc.querySelectorAll<HTMLElement>('.toc-drawer-item .toc-drawer-label')]
 			.map((node) => node.textContent?.trim())
 			.filter(Boolean);
-		expect(mobileDrawerLabels.slice(0, 2)).toEqual(['Second section', 'Technical proof']);
+		expect(mobileDrawerLabels.slice(0, 3)).toEqual([expect.stringMatching(/links/i), 'Second section', 'Technical proof']);
 		expect(mobileDrawerLabels.at(-1)).toBe('Images');
 		const glance = screen.getByTestId('project-glance-panel-mobile');
 		expect(Boolean(glance.compareDocumentPosition(mobileGalleryStack) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
