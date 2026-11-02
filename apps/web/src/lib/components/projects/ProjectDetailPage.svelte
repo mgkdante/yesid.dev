@@ -35,7 +35,9 @@
 	import { collectProjectVideos, youtubeLabels } from '#lib/utils/youtube.ts';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
-	import ProjectImageGallery from './ProjectImageGallery.svelte';
+	import MediaGallery from '#lib/components/media/MediaGallery.svelte';
+	import MediaLightbox from '#lib/components/media/MediaLightbox.svelte';
+	import { articleMediaLabels, setArticleMedia } from '#lib/media/article-media.svelte.ts';
 	import ProjectImpactCard from './ProjectImpactCard.svelte';
 	import ProjectHeaderLinks from './ProjectHeaderLinks.svelte';
 	import ProjectOverviewCard from './ProjectOverviewCard.svelte';
@@ -92,10 +94,10 @@
 		};
 	}
 
-	function galleryTocEntry(): TocEntry {
+	function galleryTocEntry(video = false): TocEntry {
 		return {
-			id: galleryAnchor,
-			title: mediaGalleryTitle,
+			id: video ? 'project-videos' : galleryAnchor,
+			title: video ? youtubeLabels[locale].gallery : galleryTitle,
 			level: 2,
 			badge: { kind: 'icon', name: 'image' },
 			rail: true,
@@ -147,14 +149,13 @@
 	const imageGallerySections = $derived(sectionViews.filter((section) => section.isImageGallery));
 	const articleSections = $derived(sectionViews.filter((section) => !section.isImageGallery));
 	const gallerySource = $derived(imageGallerySections[0]);
-	const galleryTitle = $derived(gallerySource?.title ?? ({ en: 'Images', fr: 'Images', es: 'Imágenes' } as const)[locale]);
+	const galleryTitle = articleMediaLabels[locale].images;
 	const galleryAnchor = $derived(gallerySource ? `project-gallery-${gallerySource.originalIndex}` : 'project-gallery');
 	const galleryDoc = $derived({
 		...resolveLocale(project.description, locale),
 		blocks: collectProjectImages([
-			...imageGallerySections.map((section) => section.doc),
 			resolveLocale(project.description, locale),
-			...articleSections.map((section) => section.doc),
+			...sectionViews.map((section) => section.doc),
 		]),
 	});
 	const galleryVideos = $derived(collectProjectVideos([
@@ -162,7 +163,7 @@
 		...sectionViews.map((section) => section.doc),
 	]));
 	const hasGallery = $derived(galleryDoc.blocks.length > 0 || galleryVideos.length > 0);
-	const mediaGalleryTitle = $derived(galleryVideos.length === 0 ? galleryTitle : galleryDoc.blocks.length > 0 ? youtubeLabels[locale].media : youtubeLabels[locale].gallery);
+	const media = setArticleMedia(() => galleryDoc.blocks, () => galleryVideos);
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
 	const hasImpact = $derived(projectMetrics(project).length > 0);
@@ -192,7 +193,8 @@
 		// live on the mobile glance instance. On desktop they're already visible in
 		// the rail. Badges mirror the glance cards' SectionIcon shapes.
 		entries.push(...glanceTocEntries());
-		if (hasGallery) entries.push(galleryTocEntry());
+		if (galleryDoc.blocks.length > 0) entries.push(galleryTocEntry());
+		if (galleryVideos.length > 0) entries.push(galleryTocEntry(true));
 
 		return entries;
 	});
@@ -242,17 +244,18 @@
 </script>
 
 {#snippet galleryCard(mobile: boolean)}
-	<CollapsibleSection
-		title={mediaGalleryTitle}
-		sectionKey={scoped(`proj-gallery-${mobile ? 'mobile-' : ''}${gallerySource?.originalIndex ?? 'article'}`)}
-		anchor={galleryAnchor}
-		open={true}
-	>
-		{#snippet icon()}
-			<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
-		{/snippet}
-		<ProjectImageGallery doc={galleryDoc} videos={galleryVideos} />
-	</CollapsibleSection>
+	{#if galleryDoc.blocks.length > 0}
+		<CollapsibleSection title={galleryTitle} sectionKey={scoped(`proj-gallery-${mobile ? 'mobile-' : ''}${gallerySource?.originalIndex ?? 'article'}`)} anchor={galleryAnchor} open={true}>
+			{#snippet icon()}<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />{/snippet}
+			<MediaGallery kind="image" />
+		</CollapsibleSection>
+	{/if}
+	{#if galleryVideos.length > 0}
+		<CollapsibleSection title={youtubeLabels[locale].gallery} sectionKey={scoped(`proj-videos-${mobile ? 'mobile' : 'rail'}`)} anchor="project-videos" open={true}>
+			{#snippet icon()}<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />{/snippet}
+			<MediaGallery kind="video" />
+		</CollapsibleSection>
+	{/if}
 {/snippet}
 
 {#snippet after()}
@@ -400,6 +403,8 @@
 	</DetailFrame>
 </div>
 
+<MediaLightbox {media} />
+
 <style>
 
 	.cta-area {
@@ -416,17 +421,18 @@
 		position: relative;
 	}
 
-	.sections-column:has(:global(.project-image-gallery__lightbox)),
-	:global([data-slot='detail-shell-left']:has(.project-image-gallery__lightbox)) {
-		z-index: var(--z-overlay);
-	}
-
 	.toc-column {
 		padding-bottom: 1rem;
 	}
 
 	.toc-gallery-stack {
 		margin-top: 1rem;
+	}
+	.toc-gallery-stack,
+	.mobile-gallery-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	.toc-impact-stack {

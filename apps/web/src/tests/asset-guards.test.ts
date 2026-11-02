@@ -20,7 +20,7 @@ const reviewedSinks = [
 	{ file: 'lib/components/home/HomeServices.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectCard.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectDetailPage.svelte', reason: 'sanitize-html README content and Mermaid strict mode output' },
-	{ file: 'lib/components/projects/ProjectImageGallery.svelte', reason: 'exported Editor.js caption HTML' },
+	{ file: 'lib/components/media/MediaLightbox.svelte', reason: 'exported Editor.js caption HTML and Mermaid strict mode output from the article renderer' },
 	{ file: 'lib/motion/svg/MetroNetwork.svelte', reason: 'static committed asset' },
 ];
 

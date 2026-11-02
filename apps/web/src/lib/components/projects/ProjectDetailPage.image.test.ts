@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 
 
 
@@ -96,7 +96,9 @@ const technicalDoc = (): BlockEditorDoc => ({
 });
 
 describe('ProjectDetailPage image placement', () => {
-	afterEach(() => {
+	afterEach(async () => {
+		cleanup();
+		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));
 		theme.set('dark');
 		document.documentElement.dataset.theme = 'dark';
 	});
@@ -116,7 +118,7 @@ describe('ProjectDetailPage image placement', () => {
 		}
 	});
 
-	it('collects description and mixed story images without requiring an image-only section', () => {
+	it('collects description and mixed story images and opens the inline image without collapsing', async () => {
 		const project = projectFactory.build({
 			description: { en: storyDoc(storyImage('overview-image', 'overview-state', 'Overview state')) },
 			sections: [{
@@ -134,6 +136,29 @@ describe('ProjectDetailPage image placement', () => {
 		expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
 		expect(within(gallery).getByRole('img', { name: 'Overview state' })).toBeInTheDocument();
 		expect(within(gallery).getByRole('img', { name: 'Story state' })).toBeInTheDocument();
+		const header = within(article as HTMLElement).getByRole('button', { name: 'Story' });
+		const inline = within(article as HTMLElement).getByRole('img', { name: 'Story state' }).closest('button')!;
+		await fireEvent.click(inline);
+		expect(screen.getByRole('status')).toHaveTextContent('2 / 2');
+		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', '/test-assets/story-state?key=hero-1200');
+		expect(header).toHaveAttribute('aria-expanded', 'true');
+		await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+	});
+
+	it('renders separate Images then Videos cards in both layouts and omits image-only article sections', () => {
+		const image = storyImage('only-image', 'screenshot', 'Screenshot');
+		const project = projectFactory.build({
+			description: { en: doc('https://youtu.be/M7lc1UVf-VE') },
+			sections: [{ title: { en: 'Old media title' }, content: { en: storyDoc(image) } }],
+		});
+		const { container } = render(ProjectDetailPage, { props: { project, services: [], serviceSvgContents: {} } });
+		for (const testId of ['project-image-gallery-mobile', 'project-image-gallery-rail']) {
+			const gallery = screen.getByTestId(testId);
+			expect([...gallery.querySelectorAll('h2')].map((heading) => heading.textContent?.trim())).toEqual(['Images', 'Videos']);
+			expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(1);
+			expect(within(gallery).getAllByTestId('project-video-gallery-trigger')).toHaveLength(1);
+		}
+		expect(container.querySelector('.sections-column')).not.toHaveTextContent('Old media title');
 	});
 
 	it.each(['fr', 'es'] as const)('reuses one image set in inline %s prose and the final gallery, retaining Shiki and theme variants', async (locale) => {

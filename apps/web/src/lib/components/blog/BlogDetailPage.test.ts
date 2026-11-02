@@ -1,8 +1,14 @@
 import { siteLabels } from '#lib/content/site-labels.ts';
-import { describe, it, expect } from 'vitest';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
+import { afterEach, describe, it, expect, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import BlogDetailPage from './BlogDetailPage.svelte';
 import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
+
+vi.mock('$app/env', () => ({ browser: true, building: false }));
+vi.mock('mermaid', () => ({ default: {
+	initialize: vi.fn(),
+	render: vi.fn(async () => ({ svg: '<svg><text>Article diagram</text></svg>' })),
+} }));
 
 // Minimal BlogPost fixture, only required fields populated.
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
@@ -40,12 +46,63 @@ const mockHeadings: TocHeading[] = [
 const { backNav, entryRail } = siteLabels.blogChrome.detail;
 
 describe('BlogDetailPage', () => {
+	afterEach(async () => {
+		cleanup();
+		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));
+	});
+
 	it('renders with data-testid', () => {
 		const { getByTestId } = render(BlogDetailPage, {
 			props: { post: makePost(), body: mockBody, headings: mockHeadings }
 		});
 		expect(getByTestId('blog-detail-page')).toBeTruthy();
 		expect(screen.queryByTestId('blog-video-gallery')).toBeNull();
+		expect(screen.queryByTestId('blog-image-gallery')).toBeNull();
+	});
+
+	it.each(['en', 'fr', 'es'] as const)('renders an Images card in %s and opens inline images at their shared index without collapsing', async (locale) => {
+		const images: BlockEditorDoc['blocks'] = ['First', 'Second'].map((caption) => ({
+			id: caption, type: 'image', data: {
+				file: { fileId: '', fileURL: '', url: `/images/${caption}.png` },
+				caption, withBorder: false, withBackground: false, stretched: false,
+			},
+		}));
+		const body = { ...mockBody, blocks: [...mockBody.blocks.slice(0, 2), ...images, { ...images[0]!, id: 'repeat' }] };
+		render(BlogDetailPage, {
+			props: { post: makePost({ lang: locale }), body },
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
+		});
+		const gallery = screen.getByTestId('blog-image-gallery');
+		expect(within(gallery).getByRole('button', { name: locale === 'es' ? 'Imágenes' : 'Images' })).toHaveAttribute('aria-expanded', 'true');
+		expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
+		const header = screen.getByRole('button', { name: /Section One/ });
+		const inline = within(screen.getByTestId('blog-section-body')).getByRole('img', { name: 'Second' }).closest('button')!;
+		await fireEvent.click(inline);
+		expect(within(screen.getByRole('dialog')).getByRole('img', { name: 'Second' })).toBeVisible();
+		expect(screen.getByRole('status')).toHaveTextContent('2 / 2');
+		expect(header).toHaveAttribute('aria-expanded', 'true');
+		await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		expect(header).toHaveAttribute('aria-expanded', 'true');
+		await waitFor(() => expect(inline).toHaveFocus());
+	});
+
+	it('enlarges a rendered Mermaid diagram without collapsing its article section', async () => {
+		const body: BlockEditorDoc = { ...mockBody, blocks: [
+			...mockBody.blocks.slice(0, 2),
+			{ id: 'diagram', type: 'code', data: { code: 'mermaid\nflowchart LR\n A --> B' } },
+		] };
+		render(BlogDetailPage, { props: { post: makePost(), body } });
+		const header = screen.getByRole('button', { name: /Section One/ });
+		const trigger = await screen.findByRole('button', { name: 'Enlarge diagram' });
+		await fireEvent.click(trigger);
+		expect(screen.getByTestId('article-media-diagram').querySelector('svg')).toHaveTextContent('Article diagram');
+		expect(header).toHaveAttribute('aria-expanded', 'true');
+		expect(screen.queryByRole('status')).toBeNull();
+		await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		expect(header).toHaveAttribute('aria-expanded', 'true');
+		await waitFor(() => expect(trigger).toHaveFocus());
 	});
 
 	it('deduplicates repeated article video URLs into one localized gallery preview with focused playback', async () => {
