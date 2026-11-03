@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
-import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
+import { getFeaturedProjects } from '#lib/catalog/index.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import type { Project } from '#lib/types.ts';
 import { projectFactory } from '../../../tests/factories';

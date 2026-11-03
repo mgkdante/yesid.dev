@@ -32,7 +32,7 @@ export interface ComposePageSeoArgs {
 /**
  * Compose final PageSeo for a static route.
  *
- * Pure — no I/O. The composer is called from `staticAdapter.meta.forRoute()`
+ * Pure — no I/O. The composer is called from `resolvePageSeo()`
  * with the static site shapes already in hand.
  */
 export function composePageSeo(args: ComposePageSeoArgs): PageSeo {

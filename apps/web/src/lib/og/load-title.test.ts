@@ -1,109 +1,35 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-
-const getPostBySlugMock = vi.fn();
-const getProjectBySlugMock = vi.fn();
-
-vi.mock('#lib/adapters/index.ts', () => ({
-  adapter: {
-    blog: {
-      bySlug: (...args: unknown[]) => getPostBySlugMock(...args),
-    },
-    projects: {
-      bySlug: (...args: unknown[]) => getProjectBySlugMock(...args),
-    },
-  },
-}));
-
+import { describe, expect, it } from 'vitest';
+import { projects } from '#lib/content/projects.ts';
+import { blogPosts } from '#lib/content/blog.ts';
 import { loadOgTitle } from './load-title';
 
-describe('loadOgTitle', () => {
-  beforeEach(() => {
-    getPostBySlugMock.mockReset();
-    getProjectBySlugMock.mockReset();
-  });
+const project = { ...projects[0]!, slug: 'fixture-project', title: { en: 'English project', fr: 'Projet français' } };
+const post = { ...blogPosts[0]!, slug: 'fixture-post', title: 'Article français', lang: 'fr' as const };
 
-  describe('blog', () => {
-    it('uses the language carried by a translated blog slug', async () => {
-      getPostBySlugMock.mockResolvedValueOnce({ slug: 'bonjour', lang: 'fr', title: 'Bonjour' });
-      expect(await loadOgTitle('blog', 'bonjour', 'en')).toEqual({ eyebrow: 'BLOG', title: 'Bonjour' });
-    });
-    it('returns title + BLOG eyebrow when post found', async () => {
-      getPostBySlugMock.mockResolvedValueOnce({
-        slug: 'postgres-vacuum-tuning', lang: 'en',
-        title: 'Postgres Vacuum Tuning',
-      });
-      const result = await loadOgTitle('blog', 'postgres-vacuum-tuning', 'en');
-      expect(result).toEqual({ eyebrow: 'BLOG', title: 'Postgres Vacuum Tuning' });
-    });
-
-    it('returns null when post missing', async () => {
-      getPostBySlugMock.mockResolvedValueOnce(undefined);
-      expect(await loadOgTitle('blog', 'missing', 'en')).toBeNull();
-    });
-
-    it('returns null when blog title is empty', async () => {
-      getPostBySlugMock.mockResolvedValueOnce({ slug: 's', title: '' });
-      expect(await loadOgTitle('blog', 's', 'en')).toBeNull();
-    });
-
-    it('returns null when repository throws', async () => {
-      getPostBySlugMock.mockRejectedValueOnce(new Error('boom'));
-      expect(await loadOgTitle('blog', 's', 'en')).toBeNull();
-    });
-  });
-
-  describe('project', () => {
-    it('returns title + PROJECT eyebrow for matching locale', async () => {
-      getProjectBySlugMock.mockResolvedValueOnce({
-        slug: 'transit-pipelines',
-        title: { en: 'Transit Pipelines', fr: 'Pipelines de Transit' },
-      });
-      const result = await loadOgTitle('project', 'transit-pipelines', 'en');
-      expect(result).toEqual({ eyebrow: 'PROJECT', title: 'Transit Pipelines' });
-    });
-
-    it('falls back to en when requested locale absent', async () => {
-      getProjectBySlugMock.mockResolvedValueOnce({
-        slug: 'p',
-        title: { en: 'Fallback EN' },
-      });
-      const result = await loadOgTitle('project', 'p', 'fr');
-      expect(result).toEqual({ eyebrow: 'PROJET', title: 'Fallback EN' });
-    });
-
-    it('falls back to en when requested locale is empty string', async () => {
-      getProjectBySlugMock.mockResolvedValueOnce({
-        slug: 'p',
-        title: { en: 'EN Fallback', fr: '' },
-      });
-      const result = await loadOgTitle('project', 'p', 'fr');
-      expect(result).toEqual({ eyebrow: 'PROJET', title: 'EN Fallback' });
-    });
-
-    it('returns null when project title.en is empty', async () => {
-      getProjectBySlugMock.mockResolvedValueOnce({ slug: 'p', title: { en: '' } });
-      expect(await loadOgTitle('project', 'p', 'en')).toBeNull();
-    });
-
-    it('returns null when project missing', async () => {
-      getProjectBySlugMock.mockResolvedValueOnce(undefined);
-      expect(await loadOgTitle('project', 'missing', 'en')).toBeNull();
-    });
-
-    it('returns null when project is archived (status private)', async () => {
-      // Hidden project: detail route 404s, so its OG image must fall back to
-      // the default instead of rendering a card for a hidden project.
-      getProjectBySlugMock.mockResolvedValueOnce({
-        slug: 'hidden',
-        status: 'private',
-        title: { en: 'Hidden Project' },
-      });
-      expect(await loadOgTitle('project', 'hidden', 'en')).toBeNull();
-    });
-
-    it('returns null when repository throws', async () => {
-      getProjectBySlugMock.mockRejectedValueOnce(new Error('boom'));
-      expect(await loadOgTitle('project', 's', 'en')).toBeNull();
-    });
-  });
+describe('OG titles from catalog fixtures', () => {
+	it('uses the native language carried by a blog slug', async () => {
+		expect(await loadOgTitle('blog', post.slug, 'en', { posts: [post] })).toEqual({ eyebrow: 'BLOG', title: 'Article français' });
+	});
+	it('returns null for unknown posts and projects', async () => {
+		expect(await loadOgTitle('blog', 'missing', 'en', { posts: [] })).toBeNull();
+		expect(await loadOgTitle('project', 'missing', 'en', { projects: [] })).toBeNull();
+	});
+	it('localizes project titles and eyebrows', async () => {
+		expect(await loadOgTitle('project', project.slug, 'fr', { projects: [project] })).toEqual({ eyebrow: 'PROJET', title: 'Projet français' });
+	});
+	it.each([undefined, '', '   '])('falls back to English for missing French copy %s', async (fr) => {
+		expect(await loadOgTitle('project', project.slug, 'fr', { projects: [{ ...project, title: { en: 'English project', fr } }] })).toEqual({ eyebrow: 'PROJET', title: 'English project' });
+	});
+	it('returns null for private or unavailable-locale rows', async () => {
+		expect(await loadOgTitle('project', project.slug, 'en', { projects: [{ ...project, status: 'private' }] })).toBeNull();
+		expect(await loadOgTitle('project', project.slug, 'fr', { projects: [project], locales: ['en'] })).toBeNull();
+		expect(await loadOgTitle('blog', post.slug, 'en', { posts: [post], locales: ['en'] })).toBeNull();
+	});
+	it('keeps wip project cards available without a marker', async () => {
+		expect(await loadOgTitle('project', project.slug, 'en', { projects: [{ ...project, status: 'wip' }] })).toEqual({ eyebrow: 'PROJECT', title: 'English project' });
+	});
+	it('returns null for empty titles so the endpoint can stop the build', async () => {
+		expect(await loadOgTitle('project', project.slug, 'en', { projects: [{ ...project, title: { en: '' } }] })).toBeNull();
+		expect(await loadOgTitle('blog', post.slug, 'fr', { posts: [{ ...post, title: '' }] })).toBeNull();
+	});
 });

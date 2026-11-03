@@ -4,18 +4,7 @@ import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
 import { projects } from '#lib/content/projects.ts';
 import { projectFactory } from '../../../../tests/factories';
 
-const routeMocks = vi.hoisted(() => ({
-	adapter: {
-		projects: { bySlug: vi.fn() },
-		services: { byId: vi.fn() },
-	},
-	fetchServiceSvgContents: vi.fn(),
-}));
-
-vi.mock('#lib/adapters/index.ts', () => ({ adapter: routeMocks.adapter }));
-vi.mock('#lib/utils/service-svg.ts', () => ({ fetchServiceSvgContents: routeMocks.fetchServiceSvgContents }));
-vi.mock('#lib/server/prerender-entries.ts', () => ({ projectEntries: () => [] }));
-vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: async () => ({}), highlightFence: async () => undefined }));
+import { createContentCatalog } from '#lib/catalog/index.ts';
 
 import { load } from './+page.server';
 
@@ -40,12 +29,11 @@ function project(readmeUrl?: string): Project {
 }
 
 async function loadProject(selected: Project, fetcher: typeof globalThis.fetch) {
-	routeMocks.adapter.projects.bySlug.mockResolvedValue(selected);
 	return load({
 		params: { slug: selected.slug },
 		fetch: fetcher,
 		url: new URL(`https://yesid.dev/projects/${selected.slug}`),
-	});
+	}, createContentCatalog({ projects: [selected], services: [] }));
 }
 
 function loggedWarnings(): string {
@@ -54,9 +42,6 @@ function loggedWarnings(): string {
 
 describe('project README server boundary', () => {
 	beforeEach(() => {
-		routeMocks.adapter.projects.bySlug.mockReset();
-		routeMocks.adapter.services.byId.mockReset();
-		routeMocks.fetchServiceSvgContents.mockReset().mockResolvedValue({});
 		warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 	});
 
@@ -111,7 +96,7 @@ describe('project README server boundary', () => {
 		expect(doc.querySelector('a[href="https://example.com/docs"]')).not.toBeNull();
 		expect(doc.querySelector('a[href="mailto:contact@example.com"]')).not.toBeNull();
 		expect(doc.querySelector('img[src="https://images.example.com/readme.png"]')).not.toBeNull();
-		expect(result.readme?.filter((part) => 'fence' in part)).toEqual([{ fence: '```bash\nbun test\n```' }, { fence: '```mermaid\nflowchart LR\n  a --> b\n```' }]);
+		expect(result.readme?.filter((part) => 'fence' in part).map(({ fence }) => ({ fence }))).toEqual([{ fence: '```bash\nbun test\n```' }, { fence: '```mermaid\nflowchart LR\n  a --> b\n```' }]);
 		expect(doc.querySelector('script')).toBeNull();
 		expect([...doc.querySelectorAll('*')].some((element) => [...element.attributes].some(({ name }) => name.startsWith('on')))).toBe(false);
 		expect(doc.querySelector('[href^="javascript:" i], [src^="javascript:" i], [href^="data:text/html" i], [src^="data:text/html" i]')).toBeNull();

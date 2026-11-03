@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { siteMeta } from '#lib/content/site-meta.ts';
-import { adapter } from './index';
+import { catalog } from '#lib/catalog/index.ts';
 import {
 	BRAND_LOGO,
 	PERSON_IMAGE,
@@ -186,7 +186,7 @@ describe('buildCollectionPageNode', () => {
 
 describe('buildBlogPostingNode', () => {
 	it('produces a Zod-parseable BlogPosting from a real post', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		if (posts.length === 0) return;
 		const post = posts[0];
 		const node = buildBlogPostingNode(post, 'en');
@@ -217,7 +217,7 @@ describe('buildBlogPostingNode', () => {
 	});
 
 	it('copies inLanguage from post.lang', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		if (posts.length === 0) return;
 		const post = posts[0];
 		const node = buildBlogPostingNode(post, 'en');
@@ -225,7 +225,7 @@ describe('buildBlogPostingNode', () => {
 	});
 
 	it('references Person via author + publisher @ids (Q6-A: same @id)', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		if (posts.length === 0) return;
 		const node = buildBlogPostingNode(posts[0], 'en');
 		expect(node.author).toEqual({ '@id': PERSON_ID });
@@ -233,7 +233,7 @@ describe('buildBlogPostingNode', () => {
 	});
 
 	it('uses post.date as datePublished', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		if (posts.length === 0) return;
 		const post = posts[0];
 		const node = buildBlogPostingNode(post, 'en');
@@ -274,7 +274,7 @@ describe('buildBlogPostingNode', () => {
 
 describe('buildServiceNode', () => {
 	it('produces a Zod-parseable Service from a real service', async () => {
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const service = services[0];
 		const node = buildServiceNode(service, 'en');
@@ -283,7 +283,7 @@ describe('buildServiceNode', () => {
 	});
 
 	it('@id is locale-aware: an fr render uses the /fr canonical', async () => {
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const service = services[0];
 		const node = buildServiceNode(service, 'fr');
@@ -291,7 +291,7 @@ describe('buildServiceNode', () => {
 	});
 
 	it('references Person via provider @id', async () => {
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const node = buildServiceNode(services[0], 'en');
 		expect(node.provider).toEqual({ '@id': PERSON_ID });
@@ -302,7 +302,7 @@ describe('buildServiceNode', () => {
 		// Place — not directly on Service. Dropped during 15b Codex-review
 		// iteration. When fr/es ship, locale info re-enters via a nested
 		// ServiceChannel (Service.availableChannel → ServiceChannel.availableLanguage).
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const node = buildServiceNode(services[0], 'en');
 		expect((node as Record<string, unknown>).availableLanguage).toBeUndefined();
@@ -312,7 +312,7 @@ describe('buildServiceNode', () => {
 		// serviceType IS a schema.org Service property (unlike availableLanguage):
 		// all three locale renders must resolve to the same machine-legible
 		// category — the EN station name.
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const en = buildServiceNode(services[0], 'en');
 		const es = buildServiceNode(services[0], 'es');
@@ -325,8 +325,8 @@ describe('buildServiceNode', () => {
 describe('buildCreativeWorkNode', () => {
 	// Listing ports return summaries; the builder takes the full detail record.
 	const firstProject = async () => {
-		const [summary] = await adapter.projects.public();
-		return summary && adapter.projects.bySlug(summary.slug);
+		const [summary] = await catalog.projects.available();
+		return summary && catalog.projects.bySlug(summary.slug);
 	};
 
 	it('produces a Zod-parseable CreativeWork from a real project', async () => {

@@ -13,8 +13,8 @@ import {
 	closerContent,
 } from '#lib/content/site-content.ts';
 import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
-import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
-import { getVisibleServices } from '#lib/services/static-helpers.ts';
+import { getFeaturedProjects } from '#lib/catalog/index.ts';
+import { getVisibleServices } from '#lib/catalog/index.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
 
 vi.mock('#lib/directus/assets.ts', () => ({
@@ -83,7 +83,7 @@ describe('Home page', () => {
 	it('renders the hero headline', () => {
 		renderPage();
 		// Structural: both headline lines render with non-empty content from
-		// whatever data the adapter supplied. We do NOT assert specific copy —
+		// whatever data the catalog supplied. We do NOT assert specific copy —
 		// Directus owns the words; this test owns the chain integrity.
 		const line1 = screen.getByTestId('hero-line1');
 		const line2 = screen.getByTestId('hero-line2');

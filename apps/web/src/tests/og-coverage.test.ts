@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { adapter } from '#lib/adapters/index.ts';
+import { catalog } from '#lib/catalog/index.ts';
 import { params } from '../params';
 
 async function ogTypeMatch(value: string): Promise<boolean> {
@@ -31,8 +31,8 @@ async function assertOgCoverage(type: OgType, identifiers: readonly string[]) {
 
 describe('OG coverage gate', () => {
 	it('keeps the route type matcher and every published base slug inside the codec domain', async () => {
-		const posts = await adapter.blog.all();
-		const projects = await adapter.projects.public();
+		const posts = await catalog.blog.all();
+		const projects = await catalog.projects.available();
 
 		expect(await ogTypeMatch('other')).toBe(false);
 		await assertOgCoverage('blog', posts.map((post) => post.slug));
@@ -40,8 +40,8 @@ describe('OG coverage gate', () => {
 	});
 
 	it('round-trips every published OG path and keeps the real entry matrix injective', async () => {
-		const posts = await adapter.blog.all();
-		const projects = await adapter.projects.public();
+		const posts = await catalog.blog.all();
+		const projects = await catalog.projects.available();
 		const cases: Array<{ type: OgType; baseSlug: string; locale: OgLocale }> = [
 			...posts.map((post) => ({
 				type: 'blog' as const,

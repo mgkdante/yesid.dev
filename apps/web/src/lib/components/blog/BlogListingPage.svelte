@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { isEntityAvailable } from '#lib/catalog/availability.ts';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import { gotoPreservingScroll } from '#lib/utils/navigation-focus.ts';
@@ -72,7 +73,7 @@
 
 		// Language filter
 		if (compatibleLang) {
-			result = result.filter((p) => p.lang === compatibleLang);
+			result = result.filter((post) => isEntityAvailable({ kind: 'post', entity: post }, compatibleLang));
 		}
 
 		// Tag filter

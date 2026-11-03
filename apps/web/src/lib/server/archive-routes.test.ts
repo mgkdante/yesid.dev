@@ -1,23 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SitePage } from '#lib/types.ts';
+import { describe, expect, it } from 'vitest';
+import { createContentCatalog } from '#lib/catalog/index.ts';
+import { sitePages } from '#lib/content/site-pages.ts';
+import { load } from '../../routes/+layout.server';
 
-const registry = vi.hoisted(() => ({ pages: [] as readonly SitePage[] }));
-vi.mock('#lib/content/site-pages.ts', () => ({ get sitePages() { return registry.pages; } }));
+const content = createContentCatalog({ pages: sitePages.filter((page) => !['/about', '/blog', '/projects', '/services'].includes(page.path)) });
 
-beforeEach(async () => {
-	vi.resetModules();
-	const { sitePages } = await vi.importActual<{ sitePages: readonly SitePage[] }>('#lib/content/site-pages.ts');
-	registry.pages = sitePages.filter((page) => !['/about', '/blog', '/projects', '/services'].includes(page.path));
-});
-
-describe('archived route boundaries', () => {
+describe('archived route fixtures', () => {
 	it.each(['', '/fr', '/es'])('root layout rejects archived %s static and detail paths', async (prefix) => {
-		const { load } = await import('../../routes/+layout.server');
 		for (const path of ['/about', '/blog/archived-article', '/projects/archived-project', '/services/archived-service']) {
 			await expect(load({
-				route: { id: '/[[lang=locale]]' + path }, params: {}, locals: {},
+				route: { id: '/[[lang=locale]]' + path }, params: {},
 				url: new URL(`https://yesid.dev${prefix}${path}`),
-			} as Parameters<typeof load>[0])).rejects.toMatchObject({ status: 404 });
+			} as Parameters<typeof load>[0], content)).rejects.toMatchObject({ status: 404 });
 		}
 	});
 });

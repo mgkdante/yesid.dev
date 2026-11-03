@@ -1,4 +1,4 @@
-import { adapter } from '#lib/adapters/index.ts';
+import { catalog } from '#lib/catalog/index.ts';
 import { fetchMontrealWeather } from '#lib/utils/weather.ts';
 import { localeFromParams } from '#lib/utils/locale-routing.ts';
 import { localeEntries } from '#lib/server/prerender-entries.ts';
@@ -17,7 +17,7 @@ export async function load({
 	// SSR-bake the condition in the request locale (fr/es). EN is the default.
 	const locale = localeFromParams(params, url.pathname);
 	const [contactPage, weather] = await Promise.all([
-		adapter.content.contactPage(),
+		catalog.content.contactPage(),
 		fetchMontrealWeather(locale),
 	]);
 

@@ -4,7 +4,7 @@ import { building } from '$app/env';
 import { createLocaleRouting } from '@yesid/i18n-core';
 import type { Locale } from '#lib/types.ts';
 import { DEFAULT_LOCALE } from '#lib/utils/locale.ts';
-import { isRegistryExempt } from '#lib/utils/content-availability.ts';
+import { isRegistryExempt } from '#lib/catalog/availability.ts';
 import { PREFIX_LOCALES, isPrefixLocale } from '#lib/utils/prefix-locales.ts';
 
 export { PREFIX_LOCALES, isPrefixLocale };

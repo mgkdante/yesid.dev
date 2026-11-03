@@ -5,12 +5,9 @@ import type { RequestHandler } from './$types';
 // kit-default change would be a stale-SEO footgun.
 export const prerender = false;
 
-import { projects } from '#lib/content/projects.ts';
-import { services as serviceRows } from '#lib/content/services.ts';
-import { blogPosts } from '#lib/content/blog.ts';
-import { legalPages } from '#lib/content/legal-pages.ts';
+import { createContentCatalog } from '#lib/catalog/index.ts';
 import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '#lib/utils/seo-defaults.ts';
-import { STATIC_PAGE_PATHS, isPathPublished, isEntityAvailable, type AvailabilityContext } from '#lib/utils/content-availability.ts';
+import { STATIC_PAGE_PATHS, type AvailabilityContext } from '#lib/catalog/availability.ts';
 import { groupBlogTranslations } from '#lib/blog/translations.ts';
 import type { BlogPost, Locale } from '#lib/types.ts';
 import {
@@ -66,35 +63,34 @@ export async function _buildSitemapEntries(
 	context: AvailabilityContext = {},
 ): Promise<string[]> {
 	const entries: string[] = [];
-	const locales = context.locales ?? PUBLISHED_LOCALES;
+	const content = createContentCatalog(context);
+	const locales = content.locales;
 	const pushIfPublished = (path: string, variants: readonly Locale[] = locales) => {
-		if (isPathPublished(path, context.pages) && variants.length) entries.push(...urlEntries(path, variants));
+		if (content.isPathPublished(path) && variants.length) entries.push(...urlEntries(path, variants));
 	};
 
 	for (const path of STATIC_PAGE_PATHS) {
 		pushIfPublished(path);
 	}
 
-	for (const project of context.projects ?? projects) {
-		pushIfPublished(`/projects/${project.slug}`, locales.filter((locale) => isEntityAvailable({ kind: 'project', entity: project }, locale, context)));
+	for (const project of new Map(locales.flatMap((locale) => content.projects.available(locale).map((project) => [project.slug, project] as const))).values()) {
+		pushIfPublished(`/projects/${project.slug}`, locales.filter((locale) => content.isAvailable({ kind: 'project', entity: project }, locale)));
 	}
 
-	const services = context.services ?? serviceRows;
+	const services = [...new Map(locales.flatMap((locale) => content.services.available(locale).map((service) => [service.id, service] as const))).values()];
 	for (const service of services) {
-		pushIfPublished(`/services/${service.id}`, locales.filter((locale) => isEntityAvailable({ kind: 'service', entity: service }, locale, context)));
+		pushIfPublished(`/services/${service.id}`, locales.filter((locale) => content.isAvailable({ kind: 'service', entity: service }, locale)));
 	}
 
 	// Legal pages (OPS1) — localized like the chrome routes, full alternate
 	// cluster per published locale.
-	for (const page of legalPages) {
+	for (const page of content.legal.all()) {
 		pushIfPublished(`/legal/${page.slug}`);
 	}
 
 	// Each available blog language owns its locale-specific slug. Group by the
 	// post key so every variant carries one reciprocal cluster.
-	const posts = (context.posts ?? blogPosts).filter((post) =>
-		isEntityAvailable({ kind: 'post', entity: post }, post.lang, context),
-	);
+	const posts = content.blog.all();
 	entries.push(..._blogUrlEntries(posts, locales));
 
 	return entries;

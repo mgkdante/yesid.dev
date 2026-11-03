@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/svelte';
 import HomeServices from './HomeServices.svelte';
 
 import { servicesGridContent } from '#lib/content/site-content.ts';
-import { getVisibleServices } from '#lib/services/static-helpers.ts';
+import { getVisibleServices } from '#lib/catalog/index.ts';
 import { serviceFactory } from '../../../tests/factories';
 
 const services = getVisibleServices();

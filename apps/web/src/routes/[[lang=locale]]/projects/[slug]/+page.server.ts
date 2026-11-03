@@ -1,4 +1,3 @@
-import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 // Project detail page loader — server-only so hydration reuses __data.json
 // instead of re-running the load in the browser (reads resolve from the
 // static content layer post-27.2).
@@ -8,7 +7,7 @@ import { renderGithubReadme } from '#lib/server/markdown.ts';
 import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { localeFromParams } from '#lib/utils/locale-routing.ts';
-import { adapter } from '#lib/adapters/index.ts';
+import { catalog as defaultCatalog, type ContentCatalog } from '#lib/catalog/index.ts';
 import { projectEntries } from '#lib/server/prerender-entries.ts';
 import { collectCodeHighlights } from '#lib/server/code-highlights.ts';
 import type { Service } from '#lib/types.ts';
@@ -16,15 +15,15 @@ import type { Service } from '#lib/types.ts';
 export const entries = projectEntries;
 export const prerender = entries().length > 0;
 
-export async function load({ params, fetch, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; url: URL }) {
-	const project = await adapter.projects.bySlug(params.slug);
+export async function load({ params, fetch, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; url: URL }, catalog: ContentCatalog = defaultCatalog) {
+	const project = await catalog.projects.bySlug(params.slug);
 
-	if (!project || !isEntityAvailable({ kind: 'project', entity: project }, localeFromParams(params, url.pathname))) {
+	if (!project || !catalog.isAvailable({ kind: 'project', entity: project }, localeFromParams(params, url.pathname))) {
 		error(404, 'Project not found');
 	}
 
 	const servicesResolved = await Promise.all(
-		project.relatedServices.map((id) => adapter.services.byId(id)),
+		project.relatedServices.map((id) => catalog.services.byId(id)),
 	);
 	const services: Service[] = servicesResolved.filter(
 		(s): s is Service => s !== undefined,

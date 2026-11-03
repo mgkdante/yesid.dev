@@ -1,8 +1,9 @@
+import { resolvePageSeo } from '#lib/adapters/page-seo.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 
 import { describe, it, expect } from 'vitest';
 import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
-import { staticAdapter } from '#lib/adapters/static.ts';
+import { catalog } from '#lib/catalog/index.ts';
 import { buildPersonNode } from '#lib/adapters/jsonld.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
 
@@ -25,16 +26,16 @@ describe('buildPersonNode locale', () => {
 
 describe('meta.forRoute locale threading', () => {
 	it('static route SEO for fr canonicalizes to the /fr URL (fr published)', async () => {
-		const seo = await staticAdapter.meta.forRoute('/about', 'fr');
+		const seo = await resolvePageSeo('/about', 'fr');
 		expect(seo.canonical).toBe('https://yesid.dev/fr/about');
 	});
 	it('breadcrumb names come from the trilingual site_pages registry', async () => {
-		const seo = await staticAdapter.meta.forRoute('/about', 'fr');
+		const seo = await resolvePageSeo('/about', 'fr');
 		const crumbs = JSON.stringify(seo.jsonLd ?? []);
 		expect(crumbs).toContain(sitePages.find(page => page.path === '/')!.title.fr!); // site-pages '/' title.fr
 	});
 	it('en output is unchanged (en-invariance)', async () => {
-		const seo = await staticAdapter.meta.forRoute('/about', 'en');
+		const seo = await resolvePageSeo('/about', 'en');
 		expect(seo.canonical).toBe('https://yesid.dev/about');
 		const crumbs = JSON.stringify(seo.jsonLd ?? []);
 		expect(crumbs).toContain(sitePages.find(page => page.path === '/')!.title.en);

@@ -3,8 +3,8 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { adapter } from '#lib/adapters/index.ts';
-import { isPathPublished } from '#lib/utils/content-availability.ts';
+import { catalog } from '#lib/catalog/index.ts';
+import { isPathPublished } from '#lib/catalog/availability.ts';
 import { delocalizePath } from '#lib/utils/locale-routing.ts';
 import { PUBLISHED_LOCALES, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
@@ -48,19 +48,19 @@ async function expandDynamic(route: string): Promise<string[]> {
 	if (!route.includes('[')) return [route];
 
 	if (route === '/blog/[slug]') {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		return posts.map((p) => `/blog/${p.slug}`);
 	}
 	if (route === '/projects/[slug]') {
-		const projects = await adapter.projects.public();
+		const projects = await catalog.projects.available();
 		return projects.map((p) => `/projects/${p.slug}`);
 	}
 	if (route === '/services/[id]') {
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		return services.map((s) => `/services/${s.id}`);
 	}
 	if (route === '/legal/[slug]') {
-		const pages = await adapter.legal.all();
+		const pages = await catalog.legal.all();
 		return pages.map((p) => `/legal/${p.slug}`);
 	}
 
@@ -106,7 +106,7 @@ describe('sitemap coverage gate', () => {
 		// Every same-path chrome route appears once per published locale. Blog
 		// translations own distinct slugs, so each row appears at its body locale
 		// and carries exact alternates rather than same-slug locale variants.
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		const blogPaths = new Set(posts.map((p) => `/blog/${p.slug}`));
 		const rawActual = new Set(
 			entries.map((e) => e.match(/<loc>([^<]+)<\/loc>/)?.[1]).filter(Boolean) as string[],
