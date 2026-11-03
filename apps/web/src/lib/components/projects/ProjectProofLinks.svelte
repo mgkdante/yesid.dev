@@ -1,4 +1,4 @@
-<!-- A project's proof links (live site, repository, documentation), shown in its page header and home card. -->
+<!-- Project status and proof links, shared by both card variants and the page header. -->
 <script lang="ts">
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 	import type { ProjectSummary } from '#lib/types.ts';
@@ -17,6 +17,7 @@
 	const githubLabel = resolveLocale(glanceChrome.githubLabel, locale);
 	const docsLabel = resolveLocale(glanceChrome.docsLabel, locale);
 	const repoPrivateLabel = resolveLocale(glanceChrome.repoPrivateLabel, locale);
+	const progressLabel = resolveLocale({ en: 'Work in progress', fr: 'Travail en cours', es: 'Trabajo en curso' }, locale);
 
 	let { project, tabbable = true }: { project: ProjectSummary; tabbable?: boolean } = $props();
 
@@ -26,11 +27,14 @@
 		}
 	}
 
-	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
+	const hasLinks = $derived(project.status === 'wip' || !!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 </script>
 
 {#if hasLinks}
 	<ul class="project-links" data-testid="project-links-card" aria-label={linksLabel}>
+		{#if project.status === 'wip'}
+			<li><span class="project-links__private">{progressLabel}</span></li>
+		{/if}
 		{#if project.liveUrl}
 			<li>
 				<a

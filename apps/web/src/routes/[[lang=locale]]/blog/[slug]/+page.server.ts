@@ -1,3 +1,4 @@
+import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 import { error } from '@sveltejs/kit';
 import { adapter } from '#lib/adapters/index.ts';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
@@ -16,7 +17,7 @@ export async function load({
 }) {
 	const locale = localeFromParams(params);
 	const post = await adapter.blog.bySlug(params.slug);
-	if (!post || post.lang !== locale) error(404, 'Post not found');
+	if (!post || !isEntityAvailable({ kind: 'post', entity: post }, locale)) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts] = await Promise.all([
 		adapter.blog.bodyBySlug(params.slug),

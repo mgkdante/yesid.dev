@@ -7,10 +7,11 @@ export const prerender = false;
 
 import { adapter } from '#lib/adapters/index.ts';
 import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '#lib/utils/seo-defaults.ts';
-import { isPathPublished, STATIC_PAGE_PATHS } from '#lib/utils/page-registry.ts';
+import { STATIC_PAGE_PATHS } from '#lib/utils/page-registry.ts';
+import { isPathPublished, isEntityAvailable } from '#lib/utils/content-availability.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 import { groupBlogTranslations } from '#lib/blog/translations.ts';
-import type { BlogPost, Locale, SitePage } from '#lib/types.ts';
+import type { BlogPost, Locale, ProjectSummary, SitePage } from '#lib/types.ts';
 import {
 	emitAlternateSitemapEntries,
 	emitSitemapDocument,
@@ -61,24 +62,24 @@ export { emitSitemapDocument as _emitSitemapDocument };
 // Filter every candidate through the route registry so archived pages leave the sitemap on the same rebuild.
 export async function _buildSitemapEntries(
 	pages: readonly SitePage[] = sitePages,
+	projectRows?: readonly ProjectSummary[],
 ): Promise<string[]> {
 	const entries: string[] = [];
 	const pushIfPublished = (path: string, variants: readonly Locale[] = PUBLISHED_LOCALES) => {
-		if (isPathPublished(path, pages)) entries.push(...urlEntries(path, variants));
+		if (isPathPublished(path, pages) && variants.length) entries.push(...urlEntries(path, variants));
 	};
 
 	for (const path of STATIC_PAGE_PATHS) {
 		pushIfPublished(path);
 	}
 
-	const projects = await adapter.projects.public();
-	for (const project of projects) {
-		pushIfPublished(`/projects/${project.slug}`);
+	for (const project of projectRows ?? await adapter.projects.public()) {
+		pushIfPublished(`/projects/${project.slug}`, PUBLISHED_LOCALES.filter((locale) => isEntityAvailable({ kind: 'project', entity: project }, locale, { pages })));
 	}
 
 	const services = await adapter.services.visible();
 	for (const service of services) {
-		pushIfPublished(`/services/${service.id}`);
+		pushIfPublished(`/services/${service.id}`, PUBLISHED_LOCALES.filter((locale) => isEntityAvailable({ kind: 'service', entity: service }, locale, { pages })));
 	}
 
 	// Legal pages (OPS1) — localized like the chrome routes, full alternate
@@ -91,7 +92,7 @@ export async function _buildSitemapEntries(
 	// Each available blog language owns its locale-specific slug. Group by the
 	// post key so every variant carries one reciprocal cluster.
 	const posts = (await adapter.blog.all()).filter((post) =>
-		isPathPublished(`/blog/${post.slug}`, pages),
+		isEntityAvailable({ kind: 'post', entity: post }, post.lang, { pages }),
 	);
 	entries.push(..._blogUrlEntries(posts));
 

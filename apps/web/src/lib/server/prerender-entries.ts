@@ -5,25 +5,22 @@ import { projects } from '#lib/content/projects.ts';
 import { services } from '#lib/content/services.ts';
 import { legalPages } from '#lib/content/legal-pages.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
-import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { isEntityAvailable, isPathPublished } from '#lib/utils/content-availability.ts';
+import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
 import { PREFIX_LOCALES } from '#lib/utils/locale-routing.ts';
 import { availableLocales, groupBlogTranslations } from '#lib/blog/translations.ts';
 import type { BlogPost, Project, Service, SitePage } from '#lib/types.ts';
 
 /** `lang` param values: '' (EN, unprefixed) plus each prefix locale. */
-const LANG_PARAM_VALUES: readonly string[] = ['', ...PREFIX_LOCALES];
+const LANG_PARAM_VALUES = PUBLISHED_LOCALES.map(langParamFor);
 
 /** Map a content locale to its `lang` route param ('en' → '', 'fr' → 'fr'). */
 function langParamFor(locale: string): string {
 	return (PREFIX_LOCALES as readonly string[]).includes(locale) ? locale : '';
 }
 
-function isAvailableProject(project: Project): boolean {
-	return project.status !== 'private';
-}
-
 function groupedBlogRows(posts: readonly BlogPost[], pages: readonly SitePage[]) {
-	return groupBlogTranslations(posts.filter((post) => isPathPublished(`/blog/${post.slug}`, pages))).flatMap((group) =>
+	return groupBlogTranslations(posts.filter((post) => isEntityAvailable({ kind: 'post', entity: post }, post.lang, { pages }))).flatMap((group) =>
 		availableLocales(group).map(({ locale, post }) => ({ locale, slug: post.slug })),
 	);
 }
@@ -51,21 +48,23 @@ export function ogBlogRows(pages: readonly SitePage[] = sitePages) {
 }
 
 export function ogProjectSlugs(rows: readonly Project[] = projects, pages: readonly SitePage[] = sitePages): string[] {
-	return rows.filter((project) => isAvailableProject(project) && isPathPublished(`/projects/${project.slug}`, pages)).map((project) => project.slug);
+	return rows.filter((project) => PUBLISHED_LOCALES.some((locale) => isEntityAvailable({ kind: 'project', entity: project }, locale, { pages }))).map((project) => project.slug);
 }
 
 /** Project detail entries: every public project × every published locale. */
-export function projectEntries(pages: readonly SitePage[] = sitePages): Array<{ lang: string; slug: string }> {
-	return projects
-		.filter((project) => isAvailableProject(project) && isPathPublished(`/projects/${project.slug}`, pages))
-		.flatMap((project) => LANG_PARAM_VALUES.map((lang) => ({ lang, slug: project.slug })));
+export function projectEntries(pages: readonly SitePage[] = sitePages, rows: readonly Project[] = projects): Array<{ lang: string; slug: string }> {
+	return rows
+		.flatMap((project) => PUBLISHED_LOCALES
+			.filter((locale) => isEntityAvailable({ kind: 'project', entity: project }, locale, { pages }))
+			.map((locale) => ({ lang: langParamFor(locale), slug: project.slug })));
 }
 
 /** Service detail entries: every visible service × every published locale. */
 export function serviceEntries(pages: readonly SitePage[] = sitePages, rows: readonly Service[] = services): Array<{ lang: string; id: string }> {
 	return rows
-		.filter((service) => service.visible !== false && isPathPublished(`/services/${service.id}`, pages))
-		.flatMap((service) => LANG_PARAM_VALUES.map((lang) => ({ lang, id: service.id })));
+		.flatMap((service) => PUBLISHED_LOCALES
+			.filter((locale) => isEntityAvailable({ kind: 'service', entity: service }, locale, { pages }))
+			.map((locale) => ({ lang: langParamFor(locale), id: service.id })));
 }
 
 /** Legal page entries (OPS1): every legal page × every published locale. */

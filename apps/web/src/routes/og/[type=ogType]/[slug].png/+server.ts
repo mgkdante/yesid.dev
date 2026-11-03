@@ -6,7 +6,7 @@ import { OG_WIDTH, renderOgPng } from '@yesid/seo-kit/og';
 import { ogFonts } from '@yesid/seo-kit/og/fonts';
 import { ogBlogRows, ogProjectSlugs } from '#lib/server/prerender-entries.ts';
 import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
-import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { isPathPublished } from '#lib/utils/content-availability.ts';
 
 // Prerender every known blog/project card into deployment-static PNGs. entries()
 // is exhaustive through the shared available-blog and non-private-project

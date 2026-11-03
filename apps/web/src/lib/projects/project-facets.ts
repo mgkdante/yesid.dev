@@ -1,3 +1,4 @@
+import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 import type { ProjectSummary } from '#lib/types.ts';
 import { uniqueSorted } from '#lib/utils/collections.ts';
 
@@ -5,7 +6,7 @@ export function deriveProjectFacets(projects: readonly ProjectSummary[]): {
 	stackItems: readonly string[];
 	serviceIds: readonly string[];
 } {
-	const visibleProjects = projects.filter((project) => project.status !== 'private');
+	const visibleProjects = projects.filter((project) => isEntityAvailable({ kind: 'project', entity: project }));
 
 	return {
 		stackItems: uniqueSorted(visibleProjects.flatMap((project) => project.stack)),

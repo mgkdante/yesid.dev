@@ -18,7 +18,7 @@ import { blogPosts } from '#lib/content/blog.ts';
 import { projects } from '#lib/content/projects.ts';
 import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { entries, GET } from './+server';
-import * as registry from '#lib/utils/page-registry.ts';
+import * as registry from '#lib/utils/content-availability.ts';
 
 function makeEvent(params: { type: string; slug: string }): RequestEvent {
   const url = new URL(`http://localhost/og/${params.type}/${params.slug}.png`);

@@ -3,19 +3,17 @@ import { blogPosts, contactContent, projects, services, siteMeta } from '#lib/co
 import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
-import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { isPathPublished, isEntityAvailable } from '#lib/utils/content-availability.ts';
 import { orderServices } from '#lib/utils/station.ts';
-import type { BlogPost, LocalizedString, SitePage } from '#lib/types.ts';
+import type { BlogPost, LocalizedString, Project, SitePage } from '#lib/types.ts';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
 const es = (value: LocalizedString): string => resolveLocale(value, 'es');
 
-const visibleServices = (pages: readonly SitePage[]) => orderServices(services.filter((s) => s.visible !== false && isPathPublished(`/services/${s.id}`, pages)));
+const availableServices = (pages: readonly SitePage[]) => orderServices(services.filter((s) => isEntityAvailable({ kind: 'service', entity: s }, 'en', { pages })));
 
-// Web-side ProjectStatus is 'public' | 'private' | 'wip' (NOT Directus's
-// draft/published/archived — the fetcher maps them). Public only.
-const publishedProjects = (pages: readonly SitePage[]) => projects.filter((p) => p.status === 'public' && isPathPublished(`/projects/${p.slug}`, pages));
-const publishedBlogPosts = (pages: readonly SitePage[]) => blogPosts.filter((post) => isPathPublished(`/blog/${post.slug}`, pages));
+const availableProjects = (pages: readonly SitePage[], rows: readonly Project[]) => rows.filter((p) => isEntityAvailable({ kind: 'project', entity: p }, 'en', { pages }));
+const availableBlogPosts = (pages: readonly SitePage[]) => blogPosts.filter((post) => isEntityAvailable({ kind: 'post', entity: post }, post.lang, { pages }));
 
 const absolute = (path: string): string => (path.startsWith('http') ? path : `${SITE_HOST}${path}`);
 const blogUrl = (post: BlogPost): string =>
@@ -32,7 +30,7 @@ function serviceAreaList(): string {
 }
 
 function serviceList(pages: readonly SitePage[], value: (v: LocalizedString) => string, and: string): string {
-	const titles = visibleServices(pages).map((s) => value(s.title));
+	const titles = availableServices(pages).map((s) => value(s.title));
 	if (titles.length <= 1) return titles[0] ?? '';
 	return `${titles.slice(0, -1).join(', ')}, ${and} ${titles[titles.length - 1]}`;
 }
@@ -58,7 +56,7 @@ function contactSection(pages: readonly SitePage[]): string {
 }
 
 function spanishSection(pages: readonly SitePage[]): string {
-	const serviceLines = visibleServices(pages).map(
+	const serviceLines = availableServices(pages).map(
 		(s) => `- [${es(s.title)}](${SITE_HOST}/es/services/${s.id}): ${es(s.description)}`,
 	);
 	return [
@@ -69,14 +67,14 @@ function spanishSection(pages: readonly SitePage[]): string {
 	].join('\n');
 }
 
-export function llmsTxt(pages: readonly SitePage[] = sitePages): string {
-	const serviceLines = visibleServices(pages).map(
+export function llmsTxt(pages: readonly SitePage[] = sitePages, projectRows: readonly Project[] = projects): string {
+	const serviceLines = availableServices(pages).map(
 		(s) => `- [${en(s.title)}](${SITE_HOST}/services/${s.id}): ${en(s.description)}`,
 	);
-	const projectLines = publishedProjects(pages).map(
-		(p) => `- [${en(p.title)}](${SITE_HOST}/projects/${p.slug}): ${en(p.oneLiner)}`,
+	const projectLines = availableProjects(pages, projectRows).map(
+		(p) => `- [${en(p.title)}](${SITE_HOST}/projects/${p.slug}): ${en(p.oneLiner)}${p.status === 'wip' ? ' (in progress)' : ''}`,
 	);
-	const blogLines = publishedBlogPosts(pages).map(
+	const blogLines = availableBlogPosts(pages).map(
 		(p) => `- [${p.title}](${blogUrl(p)}) (${p.lang}): ${p.excerpt}`,
 	);
 	return [
@@ -100,8 +98,8 @@ export function llmsTxt(pages: readonly SitePage[] = sitePages): string {
 	].join('\n');
 }
 
-export function llmsFullTxt(pages: readonly SitePage[] = sitePages): string {
-	const serviceBlocks = visibleServices(pages).map((s) => {
+export function llmsFullTxt(pages: readonly SitePage[] = sitePages, projectRows: readonly Project[] = projects): string {
+	const serviceBlocks = availableServices(pages).map((s) => {
 		const lines = [`### ${en(s.title)} (${SITE_HOST}/services/${s.id})`, '', en(s.description)];
 		if (s.benefitHeadline) lines.push('', `Benefit: ${en(s.benefitHeadline)}`);
 		if (s.impactMetric) lines.push(`Impact: ${en(s.impactMetric.value)} (${en(s.impactMetric.label)})`);
@@ -111,8 +109,8 @@ export function llmsFullTxt(pages: readonly SitePage[] = sitePages): string {
 		if (s.stack?.length) lines.push('', `Stack: ${s.stack.join(', ')}`);
 		return lines.join('\n');
 	});
-	const projectBlocks = publishedProjects(pages).map((p) => {
-		const lines = [`### ${en(p.title)} (${SITE_HOST}/projects/${p.slug})`, '', en(p.oneLiner)];
+	const projectBlocks = availableProjects(pages, projectRows).map((p) => {
+		const lines = [`### ${en(p.title)} (${SITE_HOST}/projects/${p.slug})${p.status === 'wip' ? ' (in progress)' : ''}`, '', en(p.oneLiner)];
 		const metrics = p.impactMetrics ?? (p.impactMetric ? [p.impactMetric] : []);
 		if (metrics.length) {
 			lines.push('', 'Impact:', ...metrics.map((m) => `- ${m.value} (${en(m.label)})${m.before ? `, before: ${m.before}` : ''}`));
@@ -121,7 +119,7 @@ export function llmsFullTxt(pages: readonly SitePage[] = sitePages): string {
 		if (p.liveUrl) lines.push(`Live: ${p.liveUrl}`);
 		return lines.join('\n');
 	});
-	const blogBlocks = publishedBlogPosts(pages).map(
+	const blogBlocks = availableBlogPosts(pages).map(
 		(p) => `### ${p.title} (${blogUrl(p)})\n\nLanguage: ${p.lang}. ${p.excerpt}`,
 	);
 	return [

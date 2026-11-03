@@ -1,3 +1,4 @@
+import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 import type { Service } from '#lib/types.ts';
 import { services } from '#lib/content/services.ts';
 import { orderServices } from '#lib/utils/station.ts';
@@ -7,11 +8,11 @@ export function getServiceById(id: string): Service | undefined {
 }
 
 export function getVisibleServices(): readonly Service[] {
-	return services.filter((service) => service.visible !== false);
+	return services.filter((service) => isEntityAvailable({ kind: 'service', entity: service }));
 }
 
 export function getAdjacentServices(id: string): { prev?: Service; next?: Service } {
-	const visible = services.filter((service) => service.visible !== false);
+	const visible = services.filter((service) => isEntityAvailable({ kind: 'service', entity: service }));
 	const sorted = orderServices(visible);
 	const index = sorted.findIndex((service) => service.id === id);
 	if (index === -1) return {};

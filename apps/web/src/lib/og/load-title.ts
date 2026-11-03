@@ -1,3 +1,4 @@
+import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 import { adapter } from '#lib/adapters/index.ts';
 import type { Locale } from '#lib/types.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
@@ -24,7 +25,7 @@ export async function loadOgTitle(
     if (type === 'blog') {
       const post = await adapter.blog.bySlug(slug);
       const title = post?.title;
-      if (!title) return null;
+      if (!post || !title || !isEntityAvailable({ kind: 'post', entity: post }, post.lang)) return null;
       return { eyebrow: 'BLOG', title };
     }
 
@@ -33,7 +34,7 @@ export async function loadOgTitle(
     // Mirror the detail route guard: archived projects (status 'private') 404
     // there, so their OG image must fall back to the default too — never render
     // a share card for a hidden project.
-    if (!project || project.status === 'private') return null;
+    if (!project || !isEntityAvailable({ kind: 'project', entity: project }, locale)) return null;
     // Use the canonical locale resolver — treats empty/whitespace strings as
     // "not translated yet" and falls back to en (guaranteed by schema).
     const resolved = resolveLocale(project.title, locale);
