@@ -19,18 +19,16 @@
 	const glanceStackTitle = resolveLocale(detailChrome.glance.stack, locale);
 	const glanceServicesTitle = resolveLocale(detailChrome.glance.services, locale);
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
-	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
+	import SectionsToggle from '#lib/components/shared/SectionsToggle.svelte';
 	import {
 		CollapsibleSection,
 		SectionIcon,
 		TocNav,
-		navigateToc,
-		onTocNavigate,
-		tocElement,
+		useSectionJump,
 		type TocEntry,
 	} from '@yesid/ui/brand';
 	import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
-	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
+
 	import { collectProjectImages } from '#lib/projects/project-images.ts';
 	import { collectProjectVideos, youtubeLabels } from '#lib/utils/youtube.ts';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
@@ -57,7 +55,7 @@
 		codeHighlights
 
 		/** block.id → server-highlighted HTML ($lib/server/code-highlights). */
-	}: { 
+	}: {
 		project: Project;
 		services: Service[];
 		serviceSvgContents: Record<string, string>;
@@ -70,8 +68,6 @@
 		resolveLocale(detailChrome.backToListingLabel, locale);
 
 	let activeHeadingId = $state('');
-	/** Storage key scoped to this project, so one project's open sections never leak into another. */
-	const scoped = (key: string) => `${project.slug}:${key}`;
 
 	type SectionView = {
 		originalIndex: number;
@@ -217,25 +213,15 @@
 		);
 	});
 
-	afterNavigate(onTocNavigate);
+	const navigation = useSectionJump(afterNavigate);
 
 	// Restore the locale-stable heading ID because translated text changes its vertical offset.
 	onMount(() =>
 		registerScrollContext({
 			capture: () => ({ kind: 'heading', id: activeHeadingId, y: window.scrollY }),
-			restore: (snap) => {
+			restore: async (snap) => {
 				const s = snap as { id?: string; y?: number } | null;
-				const id = s?.id;
-				const el = id ? tocElement(id) : null;
-				if (el) {
-					// Instant, Lenis-aware jump to the heading's top, matching the
-					// IntersectionObserver's -20% top rootMargin so the restored
-					// heading lands where the observer considers it "active".
-					const top = el.getBoundingClientRect().top + window.scrollY;
-					lenisAwareScrollTo(Math.max(0, top - window.innerHeight * 0.2));
-				} else {
-					// No active heading (top of page) or it vanished, so fall back to
-					// the raw captured offset (still Lenis-aware).
+				if (!s?.id || !(await navigation.jump(s.id, { behavior: 'auto' }))) {
 					lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
 				}
 			},
@@ -245,13 +231,13 @@
 
 {#snippet galleryCard(mobile: boolean)}
 	{#if galleryDoc.blocks.length > 0}
-		<CollapsibleSection title={galleryTitle} sectionKey={scoped(`proj-gallery-${mobile ? 'mobile-' : ''}${gallerySource?.originalIndex ?? 'article'}`)} anchor={galleryAnchor} open={true}>
+		<CollapsibleSection title={galleryTitle} anchor={galleryAnchor} open={true}>
 			{#snippet icon()}<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />{/snippet}
 			<MediaGallery kind="image" />
 		</CollapsibleSection>
 	{/if}
 	{#if galleryVideos.length > 0}
-		<CollapsibleSection title={youtubeLabels[locale].gallery} sectionKey={scoped(`proj-videos-${mobile ? 'mobile' : 'rail'}`)} anchor="project-videos" open={true}>
+		<CollapsibleSection title={youtubeLabels[locale].gallery} anchor="project-videos" open={true}>
 			{#snippet icon()}<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />{/snippet}
 			<MediaGallery kind="video" />
 		</CollapsibleSection>
@@ -302,8 +288,8 @@
 			pillEntries: mobileTocEntries,
 			openAria: tocOpenAria,
 			closeAria: tocCloseAria,
-			onNavigate: navigateToc,
-			selector: YESID_TOC_SELECTOR,
+			navigation,
+			selector: '[id^="readme-h-"]',
 			landFragments: true,
 		}}
 	>
@@ -322,7 +308,7 @@
 					<ProjectProofLinks {project} />
 				{/snippet}
 				{#snippet controls()}
-					<QuietModeButton />
+					<SectionsToggle />
 				{/snippet}
 			</ArticleHeader>
 		{/snippet}
@@ -332,14 +318,13 @@
 				<TocNav
 					entries={tocEntries}
 					activeId={activeHeadingId}
-					onNavigate={navigateToc}
+					{navigation}
 					heading={tocHeading}
-					sectionKey={scoped('proj-toc')}
 					counterPrefix={tocCounterPrefix}
 				/>
 				{#if hasImpact}
 					<div class="toc-impact-stack">
-						<ProjectImpactCard project={project} sectionKey={scoped('glance-impact')} />
+						<ProjectImpactCard project={project} />
 					</div>
 				{/if}
 				{#if hasGallery}
@@ -352,7 +337,7 @@
 
 		<div class="sections-column">
 			<div class="section-block lg:hidden" data-testid="project-overview-mobile">
-				<ProjectOverviewCard project={project} sectionKey={scoped('glance-overview-m')} {codeHighlights} />
+				<ProjectOverviewCard project={project} {codeHighlights} />
 			</div>
 			{#snippet articleSection(section: SectionView, index: number)}
 				<div
@@ -362,7 +347,6 @@
 				>
 					<CollapsibleSection
 						title={section.title}
-						sectionKey={scoped(`proj-section-${index}`)}
 						index={index}
 						open={index === 0}
 					>
@@ -383,7 +367,7 @@
 					class="section-block"
 					data-section-index={articleSections.length}
 				>
-					<CollapsibleSection title={readmeSectionTitle} sectionKey={scoped('proj-readme')} open={true}>
+					<CollapsibleSection title={readmeSectionTitle} open={true}>
 						{#snippet icon()}
 							<SectionIcon name="github" class="h-5 w-5 shrink-0 text-primary" />
 						{/snippet}

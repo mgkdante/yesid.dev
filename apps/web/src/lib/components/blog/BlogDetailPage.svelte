@@ -2,7 +2,7 @@
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
   import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
-  import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
+  import SectionsToggle from '#lib/components/shared/SectionsToggle.svelte';
   import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
   import MediaGallery from '#lib/components/media/MediaGallery.svelte';
   import MediaLightbox from '#lib/components/media/MediaLightbox.svelte';
@@ -13,12 +13,11 @@
     CollapsibleSection,
     SectionIcon,
     TocNav,
-    navigateToc,
-    onTocNavigate,
+    useSectionJump,
     type TocEntry,
   } from '@yesid/ui/brand';
   import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
-  import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
+
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
   import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
@@ -115,8 +114,6 @@
 
   // Shared active heading state, drives TOC + pill.
   let activeHeadingId = $state('');
-  /** Storage key scoped to this post's locale-free id, so one post's open sections never leak into another. */
-  const scoped = (key: string) => `${post.translationKey}:${key}`;
   const articleSections = $derived(sectionizeBlogBody(body, post.title));
   const galleryImages = $derived(collectProjectImages([body]));
   const galleryVideos = $derived(collectProjectVideos([body]));
@@ -189,7 +186,7 @@
     return entries;
   });
 
-  afterNavigate(onTocNavigate);
+  const navigation = useSectionJump(afterNavigate);
 
   // Heading IDs vary by locale, so restore by ordinal when heading structures match and use the raw offset otherwise.
   function activeHeadingIndex(): number {
@@ -237,16 +234,15 @@
             <TocNav
               entries={tocEntries}
               activeId={activeHeadingId}
-              onNavigate={navigateToc}
+              {navigation}
               heading={tocHeading}
-              sectionKey={scoped('blog-toc')}
               counterPrefix={tocCounterPrefix}
             />
           </div>
         {/if}
 
         <div class="meta-card" data-testid="blog-meta-card">
-          <CollapsibleSection title={categoryName} sectionKey={scoped('blog-meta')} open={true} accentColor={accentColor}>
+          <CollapsibleSection title={categoryName} open={true} accentColor={accentColor}>
             {#snippet icon()}
               <SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
             {/snippet}
@@ -303,8 +299,8 @@
       entries: tocEntries,
       openAria: tocOpenAria,
       closeAria: tocCloseAria,
-      onNavigate: navigateToc,
-      selector: YESID_TOC_SELECTOR,
+      navigation,
+      selector: '[data-testid="blog-section-body"] h3[id], [data-testid="blog-section-body"] h4[id]',
       landFragments: true,
     }}
   >
@@ -323,7 +319,7 @@
         testId="blog-detail-header"
       >
         {#snippet controls()}
-          <QuietModeButton />
+          <SectionsToggle />
         {/snippet}
       </ArticleHeader>
     {/snippet}
@@ -333,7 +329,6 @@
         <div class="blog-section-block">
           <CollapsibleSection
             title={section.title}
-            sectionKey={scoped(section.id)}
             anchor={section.anchor}
             index={i}
             open={true}
@@ -347,7 +342,7 @@
       {/each}
       {#if galleryImages.length > 0}
         <div class="blog-section-block" data-testid="blog-image-gallery">
-          <CollapsibleSection title={imageGalleryTitle} sectionKey={scoped('blog-images')} anchor="blog-images" open={true} accentColor={accentColor}>
+          <CollapsibleSection title={imageGalleryTitle} anchor="blog-images" open={true} accentColor={accentColor}>
             {#snippet icon()}<SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />{/snippet}
             <MediaGallery kind="image" />
           </CollapsibleSection>
@@ -355,7 +350,7 @@
       {/if}
       {#if galleryVideos.length > 0}
         <div class="blog-section-block" data-testid="blog-video-gallery">
-          <CollapsibleSection title={videoGalleryTitle} sectionKey={scoped('blog-videos')} anchor="blog-videos" open={true} accentColor={accentColor}>
+          <CollapsibleSection title={videoGalleryTitle} anchor="blog-videos" open={true} accentColor={accentColor}>
             {#snippet icon()}
               <SectionIcon name="image" class="h-4 w-4 shrink-0 text-primary" />
             {/snippet}

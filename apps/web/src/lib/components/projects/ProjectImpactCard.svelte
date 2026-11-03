@@ -8,11 +8,9 @@
 
   let {
     project,
-    sectionKey,
     columns = 2,
   }: {
     project: Project;
-    sectionKey: string;
     columns?: 1 | 2;
   } = $props();
 
@@ -24,7 +22,7 @@
 
 {#if metrics.length > 0}
   <div data-testid="project-impact-card">
-    <CollapsibleSection {title} {sectionKey} open={true}>
+    <CollapsibleSection {title} open={true}>
       {#snippet icon()}
         <SectionIcon name="chart" />
       {/snippet}

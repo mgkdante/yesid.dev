@@ -50,7 +50,6 @@
 			{allLabel}
 			allowDeselect={true}
 			collapsible={true}
-			persistKey="projects-filter-services"
 			onSelect={(key) => onServiceSelect(key)}
 			testIdPrefix="service-filter"
 		/>
@@ -67,7 +66,6 @@
 				allowDeselect={true}
 				collapsible={true}
 				startOpen={false}
-				persistKey="projects-filter-stack"
 				onSelect={(key) => onStackSelect(key)}
 				testIdPrefix="stack-filter"
 			/>

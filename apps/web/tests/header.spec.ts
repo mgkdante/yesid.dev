@@ -1,12 +1,13 @@
+import { localeCopy } from '../src/lib/locales';
 import { expect, test, type Page } from '@playwright/test';
 
 import { menuItems } from '../src/lib/content/nav';
-import { siteLabels } from '../src/lib/content/site-labels';
 import type { Locale } from '../src/lib/types';
 import { DEFAULT_LOCALE, resolveLocale } from '../src/lib/utils/locale';
 import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 
-const chrome = siteLabels.navChrome.shared;
+const chrome = localeCopy;
+
 const literal = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const localized = (href: string, locale: Locale) =>
 	locale === DEFAULT_LOCALE ? href : `/${locale}${href === '/' ? '' : href}`;
@@ -17,11 +18,11 @@ const samePath = (href: string) => (url: URL) => url.pathname === new URL(href, 
 const toggle = (page: Page, locale: Locale) =>
 	page.getByRole('button', {
 		name: new RegExp(
-			`^(${literal(resolveLocale(chrome.openMenuAria, locale))}|${literal(resolveLocale(chrome.closeMenuAria, locale))})$`,
+			`^(${literal(chrome[locale].navChrome.shared.openMenuAria)}|${literal(chrome[locale].navChrome.shared.closeMenuAria)})$`,
 		),
 	});
 const menu = (page: Page, locale: Locale) =>
-	page.getByRole('navigation', { name: resolveLocale(chrome.menuOverlayAria, locale) });
+	page.getByRole('navigation', { name: chrome[locale].navChrome.shared.menuOverlayAria });
 
 // SSR shows the toggle before hydration wires it; retry the click until the menu opens.
 async function openMenu(page: Page, locale: Locale) {
@@ -62,7 +63,7 @@ for (const locale of PUBLISHED_LOCALES) {
 	test(`${locale}: the language switch goes to the next locale`, async ({ page }) => {
 		await page.goto(start(locale));
 		await page
-			.getByRole('link', { name: new RegExp(`^${literal(resolveLocale(chrome.localeSwitcherAria, locale))}:`) })
+			.getByRole('link', { name: new RegExp(`^${literal(chrome[locale].navChrome.shared.localeSwitcherAria)}:`) })
 			.click();
 
 		await expect(page).toHaveURL(samePath(start(next(locale))));
@@ -76,3 +77,30 @@ for (const locale of PUBLISHED_LOCALES) {
 		expect(pill.x + pill.width).toBeLessThanOrEqual(page.viewportSize()!.width);
 	});
 }
+
+// Kit 3 forwards native events for direct links, but has no accepted-start subscription.
+test('an open menu survives direct language links and Escape restores the trigger', async ({ page }) => {
+	await page.goto('/services');
+	await openMenu(page, 'en');
+	await page.getByTestId('language-toggle').click();
+	await expect(page).toHaveURL(samePath('/fr/services'));
+	await expect(menu(page, 'fr')).toBeVisible();
+	await expect(page.getByTestId('language-toggle')).toBeFocused();
+	await page.keyboard.press('Escape');
+	await expect(menu(page, 'fr')).toBeHidden();
+	await expect(toggle(page, 'fr')).toBeFocused();
+});
+
+test('a language link landing on a router redirect closes the menu with the Kit 3 fallback', async ({ page }) => {
+	// Emulate an editorial redirect in Kit's data response, preserving a real native click and router hooks.
+	await page.route('**/fr/services/__data.json*', route => route.fulfill({
+		contentType: 'application/json',
+		body: JSON.stringify({ type: 'redirect', location: '/fr/projects' }),
+	}));
+	await page.goto('/services');
+	await openMenu(page, 'en');
+	await page.getByTestId('language-toggle').click();
+	await expect(page).toHaveURL(samePath('/fr/projects'));
+	await expect(menu(page, 'fr')).toBeHidden();
+	await expect(page.getByTestId('language-toggle')).not.toBeFocused();
+});

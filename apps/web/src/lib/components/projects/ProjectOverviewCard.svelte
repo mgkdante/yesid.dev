@@ -8,11 +8,9 @@
 
   let {
     project,
-    sectionKey,
     codeHighlights,
   }: {
     project: Project;
-    sectionKey: string;
     /** block.id → server-highlighted HTML ($lib/server/code-highlights). */
     codeHighlights?: Readonly<Record<string, string>>;
   } = $props();
@@ -22,7 +20,7 @@
 </script>
 
 <div data-testid="project-overview-card">
-  <CollapsibleSection {title} {sectionKey} open={true}>
+  <CollapsibleSection {title} open={true}>
     {#snippet icon()}
       <SectionIcon name="eye" />
     {/snippet}

@@ -1,8 +1,7 @@
 <!--
   Glance rail for the project detail page. Desktop right rail: Overview / Stack / Services
   (Impact sits in the left rail, links in the header). Mobile block below the sections:
-  Impact / Stack / Services (Overview sits above the sections), with distinct section keys
-  so its open state doesn't collide with the desktop instance.
+  Impact / Stack / Services (Overview sits above the sections).
 -->
 <script lang="ts">
   import type { Project, Service } from '#lib/types.ts';
@@ -30,14 +29,11 @@
     project: Project;
     services: Service[];
     serviceSvgContents?: Record<string, string>;
-    /** Mobile variant: no Overview (the page puts it above the sections), Impact included, own section keys. */
+    /** Mobile variant: no Overview (the page puts it above the sections), Impact included. */
     mobile?: boolean;
     /** block.id → server-highlighted HTML ($lib/server/code-highlights). */
     codeHighlights?: Readonly<Record<string, string>>;
   } = $props();
-
-  /** Scope section keys to this project, and suffix them so the mobile + desktop instances don't share open state. */
-  const k = (key: string) => `${project.slug}:${mobile ? `${key}-m` : key}`;
 
   const hasServices = $derived(services.length > 0);
 </script>
@@ -49,17 +45,17 @@
   use:scrollChain
 >
     {#if !mobile}
-      <div class="mb-4"><ProjectOverviewCard {project} sectionKey={k('glance-overview')} {codeHighlights} /></div>
+      <div class="mb-4"><ProjectOverviewCard {project} {codeHighlights} /></div>
     {/if}
 
     {#if mobile}
-      <div class="mb-4"><ProjectImpactCard {project} sectionKey={k('glance-impact')} columns={1} /></div>
+      <div class="mb-4"><ProjectImpactCard {project} columns={1} /></div>
     {/if}
 
     <!-- Stack -->
     {#if project.stack.length > 0}
       <div data-toc={mobile ? 'glance-stack' : undefined} class="mb-4">
-        <CollapsibleSection title="{glanceStackTitle} ({project.stack.length})" sectionKey={k('glance-stack')} open={true}>
+        <CollapsibleSection title="{glanceStackTitle} ({project.stack.length})" open={true}>
           {#snippet icon()}
             <SectionIcon name="layers" />
           {/snippet}
@@ -75,7 +71,7 @@
     <!-- Services (SVG badges with morph hover) -->
     {#if hasServices}
       <div data-toc={mobile ? 'glance-services' : undefined} class="mb-4">
-        <CollapsibleSection title="{glanceServicesTitle} ({services.length})" sectionKey={k('glance-services')} open={true}>
+        <CollapsibleSection title="{glanceServicesTitle} ({services.length})" open={true}>
           {#snippet icon()}
             <SectionIcon name="grid" />
           {/snippet}

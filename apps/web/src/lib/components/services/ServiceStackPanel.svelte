@@ -1,8 +1,6 @@
 <!--
   Related-projects + stack fragment shared by the service detail desktop rail
-  and mobile block. `variant` and `serviceId` are mount-stable: CollapsibleSection
-  captures its persistence key once at initialization, so callers must remount
-  rather than change them on a live instance.
+  and mobile block.
   The duplicate related-projects nav aria-label across variants is intentional:
   display:none removes the inactive variant from the accessibility tree.
 -->
@@ -16,7 +14,6 @@
 
 	let {
 		variant,
-		serviceId,
 		stack,
 		relatedProjects,
 		locale,
@@ -26,7 +23,6 @@
 		seeAllProjectsLabel,
 	}: {
 		variant: 'desktop' | 'mobile';
-		serviceId: string;
 		stack: readonly string[];
 		relatedProjects: readonly ProjectSummary[];
 		locale: Locale;
@@ -37,9 +33,7 @@
 	} = $props();
 
 	const mountVariant = untrack(() => variant);
-	const mountServiceId = untrack(() => serviceId);
-	const stackKey = `${mountServiceId}:svc-stack-${mountVariant}`;
-	const relatedKey = `${mountServiceId}:svc-related-${mountVariant}`;
+
 	const stackAnchor = mountVariant === 'mobile' ? 'svc-stack' : undefined;
 	const relatedAnchor = mountVariant === 'mobile' ? 'svc-related' : undefined;
 </script>
@@ -47,7 +41,6 @@
 {#if relatedProjects.length}
 	<CollapsibleSection
 		title="{relatedProjectsHeading} ({relatedProjects.length})"
-		sectionKey={relatedKey}
 		anchor={relatedAnchor}
 		open={true}
 	>
@@ -75,7 +68,6 @@
 {#if stack?.length}
 	<CollapsibleSection
 		title="{stackLabel} ({stack.length})"
-		sectionKey={stackKey}
 		anchor={stackAnchor}
 		open={true}
 	>

@@ -12,7 +12,6 @@
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
 	const locale = getLocale();
-	import { persisted } from '@yesid/ui/state';
 	import { ChevronToggle, FilterGroup, FilterSection } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 
@@ -21,8 +20,8 @@
 	const allLabel = resolveLocale(labels.allLabel, locale);
 	const languageLabel = (lang: Locale) => resolveLocale(siteLabels.ui.languageNames[lang], locale) || lang;
 
-	// The date range is outside FilterGroup and needs its own persisted collapse state.
-	const dateOpen = persisted('blog-filter-date', true);
+	// Date filters toggle independently of content sections.
+	let dateOpen = $state(true);
 
 	let {
 		tags,
@@ -59,7 +58,6 @@
 				{allLabel}
 				allowDeselect={false}
 				collapsible={true}
-				persistKey="blog-filter-language"
 				onSelect={(key) => onLangSelect(key as Locale | null)}
 			/>
 		</FilterSection>
@@ -69,12 +67,12 @@
 	<FilterSection>
 	<button
 		class="flex min-h-11 w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
-		onclick={() => (dateOpen.value = !dateOpen.value)}
+		onclick={() => (dateOpen = !dateOpen)}
 	>
 		{resolveLocale(labels.dateRange, locale)}
-		<ChevronToggle open={dateOpen.value} size="sm" direction="down" />
+		<ChevronToggle open={dateOpen} size="sm" direction="down" />
 	</button>
-	<div class="date-collapse" class:date-open={dateOpen.value}>
+	<div class="date-collapse" class:date-open={dateOpen}>
 		<div class="date-collapse-inner">
 			<div class="mt-2 flex flex-col gap-1.5">
 				<label class="text-sm text-[var(--muted-foreground)]">
@@ -108,7 +106,6 @@
 			allowDeselect={false}
 			collapsible={true}
 			startOpen={false}
-			persistKey="blog-filter-tags"
 			onSelect={onTagSelect}
 		/>
 	</FilterSection>

@@ -28,14 +28,13 @@
 		SectionIcon,
 		SectionLabel,
 		TocNav,
-		navigateToc,
-		onTocNavigate,
+		useSectionJump,
 		type TocEntry,
 	} from '@yesid/ui/brand';
 	import { DetailFrame } from '@yesid/ui/layout';
-	import { YESID_TOC_SELECTOR } from '#lib/utils/toc-selector.ts';
+
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
-	import QuietModeButton from '#lib/components/shared/QuietModeButton.svelte';
+	import SectionsToggle from '#lib/components/shared/SectionsToggle.svelte';
 
 	let {
 		service,
@@ -127,12 +126,9 @@
 	});
 
 	let activeTocId = $state('');
-	afterNavigate(onTocNavigate);
+	const navigation = useSectionJump(afterNavigate);
 	const hasImpact = $derived(Boolean(metricValue) || tocEntries.length > 0);
 	const hasSidePanel = $derived(hasStack || relatedProjects.length > 0);
-
-	/** Storage key scoped to this service, so one service's open sections never leak into another. */
-	const scoped = (key: string) => `${service.id}:${key}`;
 
 </script>
 
@@ -143,9 +139,8 @@
 				<TocNav
 					entries={tocEntries}
 					activeId={activeTocId}
-					onNavigate={navigateToc}
+					{navigation}
 					heading={tocHeading}
-					sectionKey={scoped('svc-toc')}
 					counterPrefix={tocCounterPrefix}
 				/>
 			</div>
@@ -170,7 +165,6 @@
 	<div class="projects-panel reading-support">
 		<ServiceStackPanel
 			variant="desktop"
-			serviceId={service.id}
 			stack={service.stack ?? []}
 			{relatedProjects}
 			{locale}
@@ -224,8 +218,8 @@
 
 					<p class="detail-description">{description}</p>
 
-					<div class="quiet-mode-slot quiet-mode-slot--desktop">
-						<QuietModeButton />
+					<div class="sections-slot sections-slot--desktop">
+						<SectionsToggle />
 					</div>
 				</div>
 
@@ -246,8 +240,8 @@
 				</div>
 			{/if}
 
-			<div class="quiet-mode-slot quiet-mode-slot--mobile">
-				<QuietModeButton />
+			<div class="sections-slot sections-slot--mobile">
+				<SectionsToggle />
 			</div>
 		</div>
 	{/snippet}
@@ -258,7 +252,6 @@
 			<div class="projects-mobile reading-support">
 				<ServiceStackPanel
 					variant="mobile"
-					serviceId={service.id}
 					stack={service.stack ?? []}
 					{relatedProjects}
 					{locale}
@@ -293,8 +286,7 @@
 			entries: tocEntries,
 			openAria: tocOpenAria,
 			closeAria: tocCloseAria,
-			onNavigate: navigateToc,
-			selector: YESID_TOC_SELECTOR,
+			navigation,
 			landFragments: true,
 		}}
 	>
@@ -315,7 +307,7 @@
 			<!-- Value Proposition -->
 			{#if service.valueProposition}
 				<div>
-					<CollapsibleSection title={valuePropositionHeading} sectionKey={scoped('svc-valueprop')} anchor="svc-valueprop" open={true}>
+					<CollapsibleSection title={valuePropositionHeading} anchor="svc-valueprop" open={true}>
 						{#snippet icon()}
 							<SectionIcon name="eye" class="h-4 w-4 shrink-0 text-primary" />
 						{/snippet}
@@ -329,7 +321,7 @@
 			<!-- Deliverables -->
 			{#if service.deliverables && service.deliverables.length > 0}
 				<div>
-					<CollapsibleSection title={deliverablesHeading} sectionKey={scoped('svc-deliverables')} anchor="svc-deliverables" open={true}>
+					<CollapsibleSection title={deliverablesHeading} anchor="svc-deliverables" open={true}>
 						{#snippet icon()}
 							<SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
 						{/snippet}
@@ -349,7 +341,7 @@
 			{#if service.sections}
 				{#each service.sections as section, i}
 					<div>
-						<CollapsibleSection title={resolveLocale(section.title, locale)} sectionKey={scoped(`svc-section-${i}`)} anchor="svc-section-{i}" open={true} index={i}>
+						<CollapsibleSection title={resolveLocale(section.title, locale)} anchor="svc-section-{i}" open={true} index={i}>
 							<div class="section-body">
 								{#each toTextBlocks(resolveLocale(section.content, locale)) as block}
 									{#if block.kind === 'list'}
@@ -482,24 +474,24 @@
 		min-width: 0;
 	}
 
-	.quiet-mode-slot {
+	.sections-slot {
 		display: flex;
 	}
 
-	.quiet-mode-slot--desktop {
+	.sections-slot--desktop {
 		display: none;
 	}
 
-	.quiet-mode-slot--mobile {
+	.sections-slot--mobile {
 		margin-top: 1rem;
 	}
 
 	@media (--tablet-min) {
-		.quiet-mode-slot--desktop {
+		.sections-slot--desktop {
 			display: flex;
 		}
 
-		.quiet-mode-slot--mobile {
+		.sections-slot--mobile {
 			display: none;
 		}
 	}

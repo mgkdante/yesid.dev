@@ -19,7 +19,7 @@
 
 	const work = $derived(rail.workWithMe);
 	const routes = $derived(rail.routes);
-	const k = (key: string) => (mobile ? `${key}-mobile` : key);
+
 </script>
 
 <div
@@ -27,7 +27,7 @@
 	data-testid={mobile ? 'blog-entry-rail-mobile' : 'blog-entry-rail'}
 >
 	<div class="entry-panel" data-toc={mobile ? 'blog-work-with-me' : undefined}>
-		<CollapsibleSection title={resolveLocale(work.title, locale)} sectionKey={k('blog-entry-work')} open={true}>
+		<CollapsibleSection title={resolveLocale(work.title, locale)} open={true}>
 			{#snippet icon()}
 				<SectionIcon name="briefcase" class="h-4 w-4 shrink-0 text-primary" />
 			{/snippet}
@@ -44,7 +44,7 @@
 	</div>
 
 	<div class="entry-panel" data-toc={mobile ? 'blog-pick-route' : undefined}>
-		<CollapsibleSection title={resolveLocale(routes.title, locale)} sectionKey={k('blog-entry-routes')} open={true}>
+		<CollapsibleSection title={resolveLocale(routes.title, locale)} open={true}>
 			{#snippet icon()}
 				<SectionIcon name="toc" class="h-4 w-4 shrink-0 text-primary" />
 			{/snippet}
