@@ -8,9 +8,8 @@
 	import { persisted } from '@yesid/ui/state';
 	import { siteLabels } from '#lib/content/index.ts';
 	import type { ProjectSummary, ProofReelContent, Service } from '#lib/types.ts';
-	import { equalizeRows } from '#lib/utils/equalize-rows.ts';
 	import { SliderButton } from '@yesid/ui/brand';
-	import ProjectCard from '#lib/components/projects/ProjectCard.svelte';
+	import ProjectCard, { alignProjectCards } from '#lib/components/projects/ProjectCard.svelte';
 
 	const locale = getLocale();
 
@@ -123,15 +122,15 @@
 		use:emblaCarouselSvelte={{ options: emblaOptions, plugins: [WheelGesturesPlugin()] }}
 		onemblaInit={onEmblaInit}
 	>
-		<div class="embla__container" use:equalizeRows={['.project-card-title', '.project-card-excerpt', '.project-card-service', '.project-card-services', '.project-card-links']}>
+		<div class="embla__container" use:alignProjectCards>
 			{#each visibleProjects as project, i}
 				<div class="embla__slide">
-					<ProjectCard {project} {services} {serviceSvgContents} variant="proof" class="w-full" data-active={activeIndex === i} />
+					<ProjectCard {project} {services} {serviceSvgContents} placement="proof" class="w-full" data-active={activeIndex === i} />
 				</div>
 			{/each}
 			{#each loopCopies as project}
 				<div class="embla__slide" aria-hidden="true" data-loop-copy>
-					<ProjectCard {project} {services} {serviceSvgContents} variant="proof" class="w-full" tabbable={false} data-testid="proof-card-copy" />
+					<ProjectCard {project} {services} {serviceSvgContents} placement="proof" class="w-full" tabbable={false} data-testid="proof-card-copy" />
 				</div>
 			{/each}
 		</div>

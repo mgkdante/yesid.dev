@@ -1,3 +1,20 @@
+<script module lang="ts">
+	import type { Action } from 'svelte/action';
+	import { equalizeRows } from '#lib/utils/equalize-rows.ts';
+
+	/** Align a group of cards. Containers choose the group; the card owns its rows. */
+	export const alignProjectCards: Action<HTMLElement> = (node) => {
+		const alignment = equalizeRows(node, [
+			'.project-card-title',
+			'.project-card-excerpt',
+			'.project-card-service',
+			'.project-card-services',
+			'.project-card-links',
+		]);
+		return { destroy: () => alignment?.destroy?.() };
+	};
+</script>
+
 <script lang="ts">
 	import type { ProjectSummary, Service } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
@@ -16,7 +33,7 @@
 	import digitalDesktopBlueprint from '#lib/assets/project-fallbacks/digital-desktop.svg?raw';
 	import digitalMobileBlueprint from '#lib/assets/project-fallbacks/digital-mobile.svg?raw';
 
-	type ProjectCardVariant = 'listing' | 'proof';
+	type ProjectCardPlacement = 'listing' | 'proof';
 
 	export interface ProjectCardProps {
 
@@ -25,7 +42,8 @@
 		services?: readonly Service[];
 
 		serviceSvgContents?: Record<string, string>;
-		variant?: ProjectCardVariant;
+		/** Selects image sizes and test ids; both placements share one layout. */
+		placement?: ProjectCardPlacement;
 		/** Forward first-card loading priority to the media preview. */
 		eager?: boolean;
 		/** False keeps every link out of the tab order (decorative loop copies). */
@@ -38,7 +56,7 @@
 		project,
 		services = [],
 		serviceSvgContents = {},
-		variant = 'listing',
+		placement = 'listing',
 		eager = false,
 		tabbable = true,
 		class: className = '',
@@ -46,11 +64,11 @@
 	}: ProjectCardProps = $props();
 	const titleId = $props.id();
 
-	const VARIANT = {
-		listing: { testId: 'project-card', mediaTestId: 'project-card-image', titleTestId: undefined, excerptTestId: undefined, mediaPreset: 'card-600' },
-		proof: { testId: 'proof-card', mediaTestId: 'proof-card-image', titleTestId: 'proof-card-title', excerptTestId: 'proof-excerpt', mediaPreset: 'hero-1200' },
+	const PLACEMENT = {
+		listing: { testId: 'project-card', mediaTestId: 'project-card-image', titleTestId: 'project-card-title', excerptTestId: 'project-card-excerpt', linksTestId: 'project-card-links', mediaPreset: 'card-600' },
+		proof: { testId: 'proof-card', mediaTestId: 'proof-card-image', titleTestId: 'proof-card-title', excerptTestId: 'proof-excerpt', linksTestId: 'proof-card-links', mediaPreset: 'hero-1200' },
 	} as const;
-	const v = $derived(VARIANT[variant]);
+	const v = $derived(PLACEMENT[placement]);
 
 	// Rendered pane widths per breakpoint. Listing values are measured on /projects:
 	// a split card gives the phone screenshot ~25vw on mobile, so asking for the
@@ -67,12 +85,11 @@
 			secondary: '(min-width: 768px) 16vw, 40vw',
 		},
 	} as const;
-	const mediaSizes = $derived(MEDIA_SIZES[variant]);
+	const mediaSizes = $derived(MEDIA_SIZES[placement]);
 
 	let cardHovered = $state(false);
 
-	let isProof = $derived(variant === 'proof');
-	let mediaClass = $derived(cn('project-card-media overflow-hidden', `project-card-media--${variant}`));
+	const mediaClass = 'project-card-media overflow-hidden';
 
 	let projectServices = $derived(
 		project.relatedServices
@@ -86,7 +103,7 @@
 </script>
 
 <article
-	class={cn("tap-press project-card group relative block h-full", `project-card--${variant}`, className)}
+	class={cn("tap-press project-card group relative block h-full", className)}
 	data-testid={v.testId}
 	data-flip-id={project.slug}
 	data-batch="project-item"
@@ -149,10 +166,11 @@
 					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, locale)}
 					</div>
-					<div class="project-card-services">
+					<div class="project-card-services" data-testid="project-card-services">
 					{#each projectServices as service}
 						<div
 							class="project-card-service inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
+							data-testid="project-card-service"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -179,7 +197,7 @@
 			{/if}
 		</div>
 
-		<div class="project-card-links" data-testid={isProof ? 'proof-card-links' : 'project-card-links'}>
+		<div class="project-card-links" data-testid={v.linksTestId}>
 			<ProjectProofLinks {project} {tabbable} />
 		</div>
 		</div>
@@ -191,7 +209,7 @@
 <style>
 	/* From tablet up: a fixed 2x2, filled column by column. One service sits in the first cell,
 	   two stack, three or four fill both columns. Pills fill their cell's width; the listing's
-	   equalizeRows gives every pill the tallest pill's height, so all pills match. Rows stay
+	   alignProjectCards gives every pill the tallest pill's height, so all pills match. Rows stay
 	   natural (no stretch) so that measurement is stable. */
 	.project-card-services {
 		display: grid;
@@ -348,7 +366,7 @@
 		font-size: var(--text-card-meta);
 	}
 
-	.project-card--proof[data-active='true'] :global(.card-surface) {
+	.project-card[data-active='true'] :global(.card-surface) {
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 	}

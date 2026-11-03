@@ -1,12 +1,38 @@
 import { test, expect } from '@playwright/test';
-import { expectCardContentInside } from './lib/project-card-geometry.js';
+import { expectCardContentInside, expectCardRowsAligned } from './lib/project-card-geometry.js';
 
 test.beforeEach(async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 });
 
+for (const locale of ['en', 'fr', 'es']) {
+	for (const placement of ['proof', 'listing']) {
+		test(`${locale} ${placement} card rows stay aligned after resizing and filtering`, async ({ page }) => {
+			const prefix = locale === 'en' ? '' : `/${locale}`;
+			await page.goto(`${prefix}${placement === 'proof' ? '/' : '/projects'}`, { waitUntil: 'domcontentloaded' });
+			const cards = page.getByTestId(placement === 'proof' ? 'proof-card' : 'project-card');
+			await expect(cards.first()).toBeVisible();
+			await cards.first().scrollIntoViewIfNeeded();
+			await page.evaluate(() => document.fonts.ready);
+			await expectCardRowsAligned(cards);
+			const original = page.viewportSize()!;
+			await page.setViewportSize({ width: original.width < 768 ? 1280 : 390, height: original.height });
+			await expectCardRowsAligned(cards);
+			if (placement === 'listing') {
+				// Removing and restoring cards must trigger alignment with the new tallest row.
+				await page.setViewportSize({ width: 1280, height: original.height });
+				const search = page.getByTestId('project-search-sidebar');
+				await search.fill((await cards.first().getByRole('heading').innerText()).trim());
+				await expect(cards).toHaveCount(1);
+				await search.fill('');
+				await expectCardRowsAligned(cards);
+			}
+		});
+	}
+}
+
 test('home project cards share one size and show title, excerpt and links without clipping', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'domcontentloaded' });
 	const section = page.getByTestId('proof-reel-section');
 	await expect(section).toBeVisible();
 	await section.scrollIntoViewIfNeeded();
@@ -14,10 +40,10 @@ test('home project cards share one size and show title, excerpt and links withou
 	const cards = section.getByTestId('proof-card');
 	expect(await cards.count()).toBeGreaterThan(0);
 	await expect(section.locator('[data-testid$="metric-item"]')).toHaveCount(0);
-	await expect(cards.first().locator('.project-card-service').first()).toBeVisible();
+	await expect(cards.first().getByTestId('project-card-service').first()).toBeVisible();
 	await expect(section.locator('[data-testid="proof-card-links"] li').first()).toBeVisible();
 	for (const card of await cards.all()) {
-		const link = card.locator('.project-card-link');
+		const link = card.getByRole('link', { name: (await card.getByRole('heading').innerText()).trim(), exact: true });
 		await expect(link).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/[^/?#]+\/?$/);
 		await expect(link).toHaveAccessibleName((await card.getByTestId('proof-card-title').textContent())!.trim());
 		await expect(card.getByTestId('proof-card-title')).toHaveText(/\S/);
@@ -39,7 +65,7 @@ test('home project cards share one size and show title, excerpt and links withou
 });
 
 test('project reel controls expose state and visible keyboard focus', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'domcontentloaded' });
 	const section = page.getByTestId('proof-reel-section');
 	await section.scrollIntoViewIfNeeded();
 	const previous = section.getByTestId('proof-prev');

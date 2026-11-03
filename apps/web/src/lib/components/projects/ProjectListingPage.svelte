@@ -9,9 +9,8 @@
 	const locale = getLocale();
 	import { captureFlipState, animateFlipTransition } from '#lib/motion/utils/flip.ts';
 	import { blueprintScrub } from '@yesid/motion/utils/blueprintScrub';
-	import ProjectCard from './ProjectCard.svelte';
+	import ProjectCard, { alignProjectCards } from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
-	import { equalizeRows } from '#lib/utils/equalize-rows.ts';
 	import { MetroStation } from '@yesid/ui/brand';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
@@ -197,7 +196,7 @@
 				{emptyStateText}
 			</p>
 		{:else}
-			<div class="project-grid" use:equalizeRows={['.project-card-title', '.project-card-excerpt', '.project-card-service', '.project-card-services', '.project-card-links']}>
+			<div class="project-grid" use:alignProjectCards>
 				{#each filteredProjects as project, i (project.slug)}
 					<div class="flex gap-3" data-batch="project-item">
 						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
