@@ -7,6 +7,7 @@
  * Missing live content and cache fails the export.
  */
 
+import { z } from 'zod';
 import { parseArgs } from 'node:util';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,36 +20,9 @@ import { createLogger } from './lib/logger';
 import { buildEmitConfigs } from './lib/emitters/configs';
 import { emitModule, type ModuleEmitConfig } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
-import { validateLiveExport } from './lib/validators/live-export';
+import { createFixtureSource, directusSource, readExport, validateExport, ExportValidationError, type ExportSource } from './lib/export-pipeline';
 import type { ExportData } from './export-data';
-import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
-import { fetchRouteSeoOverrides } from './lib/fetchers/route-seo';
-import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
-import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
-import { fetchNavData, type NavData } from './lib/fetchers/nav';
-import { fetchSitePages } from './lib/fetchers/site-pages';
-import { fetchLegalPages } from './lib/fetchers/legal-pages';
-import { fetchBlog } from './lib/fetchers/blog-posts';
-import { fetchServices } from './lib/fetchers/services';
-import { fetchProjects } from './lib/fetchers/projects';
-import { fetchSiteLabels } from './lib/fetchers/site-labels';
-import {
-	fetchBlogPageContent,
-	fetchProjectsPageContent,
-} from './lib/fetchers/page-blocks-simple';
-import {
-	fetchContactContent,
-} from './lib/fetchers/page-blocks-medium';
-import {
-	fetchHeroContent,
-	fetchManifestoContent,
-	fetchProofReelContent,
-	fetchServicesGridContent,
-	fetchAboutIntroContent,
-	fetchCtaContent,
-	fetchCloserContent,
-} from './lib/fetchers/page-blocks-home';
-import { fetchAboutContent } from './lib/fetchers/page-blocks-about';
+import { EXPORT_MODULES } from './lib/export-modules';
 import type { CmsSchema } from './lib/fetchers/types';
 import {
 	prepareMediaVariants,
@@ -76,6 +50,8 @@ export interface RunOptions {
 	emitDir?: string;
 	/** Trusted targets fail on fetch errors; local live exports may use cache. */
 	policy?: FallbackPolicy;
+	/** Injectable source adapter for exercising the live export without CMS access. */
+	contentSource?: ExportSource;
 }
 
 /**
@@ -247,149 +223,26 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 		return { data: {} };
 	}
 
-	const fetchAllInner = async (): Promise<ExportData> => {
-		const client = createClient<CmsSchema>(opts.directusUrl, opts.token);
-		const out: ExportData = {};
-		out.mediaAssets = buildMirroredMediaAssets();
-
-		// Each task is [moduleName, async () => void that assigns to out.*].
-		// Fan out the complete source set in parallel.
-		// The Bottleneck limiter inside createQueuedFetch() keeps actual
-		// in-flight HTTP requests ≤ 4 concurrent / ≤ 50 req/s.
-		const tasks: Array<Promise<void>> = [];
-
-		const enqueue = (name: string, task: () => Promise<void>) => {
-			log.info(`  ${name}...`);
-			tasks.push(task());
-		};
-
-		enqueue('site-meta', async () => {
-			out.siteMeta = await fetchSiteMeta({ client });
-			log.info('  site-meta done.');
-		});
-		enqueue('site-seo-defaults', async () => {
-			out.siteSeoDefaults = await fetchSiteSeoDefaults({ client });
-			log.info('  site-seo-defaults done.');
-		});
-		enqueue('route-seo', async () => {
-			out.routeSeo = await fetchRouteSeoOverrides({ client });
-			log.info(`  route-seo done (${out.routeSeo.length} rows).`);
-		});
-		enqueue('morph-shapes', async () => {
-			out.morphShapes = await fetchMorphShapes({ client });
-			log.info(`  morph-shapes done (${out.morphShapes.length} rows).`);
-		});
-		enqueue('error-pages', async () => {
-			// Two fetches for the same module — kept together to preserve semantics.
-			out.errorPageFallback = await fetchErrorPageFallback({ client });
-			out.errorPages = await fetchAllErrorPages({ client });
-			log.info(`  error-pages done (${Object.keys(out.errorPages).length} rows).`);
-		});
-		enqueue('nav', async () => {
-			out.nav = await fetchNavData({ client });
-			log.info(
-				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer).`,
-			);
-		});
-		enqueue('site-pages', async () => {
-			out.sitePages = await fetchSitePages({ client });
-			log.info(`  site-pages done (${out.sitePages.length} published rows).`);
-		});
-		enqueue('blog-posts', async () => {
-			const { posts, bodies } = await fetchBlog({ client });
-			out.blogPosts = posts;
-			out.blogBodies = bodies;
-			log.info(
-				`  blog-posts done (${out.blogPosts.length} posts, ${Object.keys(out.blogBodies).length} bodies).`,
-			);
-		});
-		enqueue('services', async () => {
-			out.services = await fetchServices({ client });
-			log.info(`  services done (${out.services.length} services).`);
-		});
-		enqueue('projects', async () => {
-			out.projects = await fetchProjects({ client });
-			log.info(`  projects done (${out.projects.length} projects).`);
-		});
-		enqueue('site-labels', async () => {
-			out.siteLabels = await fetchSiteLabels({ client });
-			log.info('  site-labels done.');
-		});
-		enqueue('blog-page', async () => {
-			out.blogPage = await fetchBlogPageContent({ client });
-			log.info('  blog-page done.');
-		});
-		enqueue('projects-page', async () => {
-			out.projectsPage = await fetchProjectsPageContent({ client });
-			log.info('  projects-page done.');
-		});
-		enqueue('contact-page', async () => {
-			out.contactPage = await fetchContactContent({ client });
-			log.info('  contact-page done.');
-		});
-		enqueue('legal-pages', async () => {
-			out.legalPages = await fetchLegalPages({ client });
-			log.info(`  legal-pages done (${out.legalPages.length} pages).`);
-		});
-		enqueue('hero', async () => {
-			out.hero = await fetchHeroContent({ client });
-			log.info('  hero done.');
-		});
-		enqueue('manifesto', async () => {
-			out.manifesto = await fetchManifestoContent({ client });
-			log.info(
-				`  manifesto done (${out.manifesto.pills.length} pills, ${out.manifesto.hiddenTransitLines.length} transit lines).`,
-			);
-		});
-		enqueue('proof-reel', async () => {
-			out.proofReel = await fetchProofReelContent({ client });
-			log.info('  proof-reel done.');
-		});
-		enqueue('services-grid', async () => {
-			out.servicesGrid = await fetchServicesGridContent({ client });
-			log.info('  services-grid done.');
-		});
-		enqueue('about-intro', async () => {
-			out.aboutIntro = await fetchAboutIntroContent({ client });
-			log.info('  about-intro done.');
-		});
-		enqueue('cta', async () => {
-			out.cta = await fetchCtaContent({ client });
-			log.info('  cta done.');
-		});
-		enqueue('closer', async () => {
-			out.closer = await fetchCloserContent({ client });
-			log.info('  closer done.');
-		});
-		enqueue('about-page', async () => {
-			out.aboutPage = await fetchAboutContent({ client });
-			log.info(
-				`  about-page done (${out.aboutPage.metrics.length} metrics, ${out.aboutPage.methodology.length} beliefs, ${out.aboutPage.testimonials.length} testimonials, ${out.aboutPage.languages.length} languages, ${out.aboutPage.education.length} education rows).`,
-			);
-		});
-
-		await Promise.all(tasks);
-		return out;
-	};
+	let preparedMediaVariants: PreparedMediaVariants | undefined;
+	const client = createClient<CmsSchema>(opts.directusUrl, opts.token);
+	const source = opts.contentSource ?? directusSource({
+		client,
+		mediaAssets: buildMirroredMediaAssets,
+		mediaVariants: async () => {
+			preparedMediaVariants = await prepareMediaVariants(assetManifest as MediaMirrorManifest);
+			return preparedMediaVariants.data;
+		},
+	});
+	const fetchAllInner = () => readExport(source, EXPORT_MODULES.filter(module => module.fetchKind === 'network'));
 
 	// Top-level stall guard: if the entire fetch hasn't completed within
 	// FETCH_ALL_TIMEOUT_MS, reject so the caller falls through to cache. The
 	// timer is cleared in raceWithStallGuard's finally, win or lose.
 	const out = await raceWithStallGuard(fetchAllInner(), FETCH_ALL_TIMEOUT_MS);
 
-	// Variant preparation runs outside the network-timeout race: it is local-only
-	// and sharp encode time must not eat into the CMS fetch budget. Preparation
-	// retains encoded buffers but performs no writes; run() validates the complete
-	// snapshot before committing them.
-	const preparedMediaVariants = await prepareMediaVariants(
-		assetManifest as MediaMirrorManifest,
-	);
-	out.mediaVariants = preparedMediaVariants.data;
-	log.info(
-		`  media-variants prepared (${Object.keys(out.mediaVariants).length} raster assets).`,
-	);
-
-	return { data: out, preparedMediaVariants };
+	// Local image encoding is deliberately outside the CMS network stall budget.
+	const local = await readExport(source, EXPORT_MODULES.filter(module => module.fetchKind === 'local'));
+	return { data: { ...out, ...local }, preparedMediaVariants };
 }
 
 /** Emit only after the complete registry and live-content validators pass. */
@@ -427,11 +280,13 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		// Defense in depth for callers that bypass the CLI's pre-auth gate.
 		resolveContentSource({ ...process.env, EXPORT_FALLBACKS_SOURCE: 'fixture' });
 		if (opts.policy === 'fail') throw new Error('Trusted CMS builds refuse fixture exports.');
-		const data = await readCache(EXPORT_FIXTURE_PATH);
-		if (!data) throw new Error(`Missing export fixture: ${EXPORT_FIXTURE_PATH}`);
-		data.mediaAssets = buildMirroredMediaAssets();
+		const snapshot = await readCache(EXPORT_FIXTURE_PATH);
+		if (!snapshot) throw new Error(`Missing export fixture: ${EXPORT_FIXTURE_PATH}`);
+		snapshot.mediaAssets = buildMirroredMediaAssets();
 		const prepared = await prepareMediaVariants(assetManifest as MediaMirrorManifest);
-		data.mediaVariants = prepared.data;
+		snapshot.mediaVariants = prepared.data;
+		const data = await readExport(opts.contentSource ?? createFixtureSource(snapshot));
+		validateExport(data);
 		const configs = buildEmitConfigs(data, opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR);
 		if (opts.dryRun) return { source: 'fixture', emitted: 0 };
 		await writeMediaVariants(prepared);
@@ -449,6 +304,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		data = fetched.data;
 		preparedMediaVariants = fetched.preparedMediaVariants;
 	} catch (fetchErr) {
+		if (fetchErr instanceof z.ZodError || fetchErr instanceof ExportValidationError) throw fetchErr;
 		const fetchMsg = (fetchErr as Error).message;
 		log.warn(`fetch failed: ${fetchMsg}`);
 		if (policy === 'fail') {
@@ -482,7 +338,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	try {
-		validateLiveExport(data);
+		validateExport(data, { source: 'live', warn: message => log.warn(message) });
 	} catch (error) {
 		if (dataFromCache) throw new Error(`CMS cache is stale: ${(error as Error).message}`, { cause: error });
 		throw error;
