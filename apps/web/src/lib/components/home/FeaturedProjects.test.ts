@@ -50,7 +50,7 @@ describe('FeaturedProjects', () => {
 		render(FeaturedProjects, { props: renderProps });
 		const cards = screen.getAllByTestId('proof-card');
 		resolvedProjects.forEach((project, i) => {
-			expect(cards[i]!.querySelector('.project-card-link')?.getAttribute('href')).toBe(`/projects/${project.slug}`);
+			expect(within(cards[i]!).getByRole('link', { name: resolveLocale(project.title, 'en') })).toHaveAttribute('href', `/projects/${project.slug}`);
 		});
 	});
 

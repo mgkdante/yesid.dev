@@ -114,7 +114,7 @@ describe('ProjectCard hero media', () => {
 		const service = { id: 'service-a', title: { en: 'Fixture service' } } as never;
 
 		const { container } = render(ProjectCard, {
-			props: { project, services: [service], variant: 'proof' },
+			props: { project, services: [service], placement: 'proof' },
 		});
 
 		const card = screen.getByTestId('proof-card');
@@ -142,6 +142,18 @@ describe('ProjectCard hero media', () => {
 		const img = container.querySelector('[data-testid="project-hero-preview-image"]');
 		expect(img?.getAttribute('loading')).toBe('lazy');
 		expect(img?.hasAttribute('fetchpriority')).toBe(false);
+	});
+
+	it.each([
+		{ placement: 'listing' as const, cardId: 'project-card', preset: 'card-600', sizes: '(min-width: 1280px) 35vw, (min-width: 1024px) 63vw, (min-width: 768px) 90vw, 82vw' },
+		{ placement: 'proof' as const, cardId: 'proof-card', preset: 'hero-1200', sizes: '(min-width: 768px) 50vw, 92vw' },
+	])('$placement placement selects image delivery and test ids', ({ placement, cardId, preset, sizes }) => {
+		const project = projectFactory.build({ image: 'desktop-dark-uuid' });
+		render(ProjectCard, { props: { project, placement } });
+		expect(screen.getByTestId(cardId)).toBeInTheDocument();
+		const image = screen.getByTestId('project-hero-preview-image');
+		expect(image).toHaveAttribute('src', `/test-assets/desktop-dark-uuid?key=${preset}`);
+		expect(image).toHaveAttribute('sizes', sizes);
 	});
 
 	it('eager + fetchpriority=high on the LCP first card (consolidation-deploy-honesty)', () => {
