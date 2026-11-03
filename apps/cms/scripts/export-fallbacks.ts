@@ -338,7 +338,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 
 	const emitDir = opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR;
 	try {
-		validateExport(data);
+		validateExport(data, { source: 'live', warn: message => log.warn(message) });
 	} catch (error) {
 		if (dataFromCache) throw new Error(`CMS cache is stale: ${(error as Error).message}`, { cause: error });
 		throw error;

@@ -11,6 +11,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { z } from 'zod';
 
+const liveSnapshot = (snapshot: unknown) => {
+	const fixtureSource = createFixtureSource(snapshot);
+	return createLiveSource((module) => fixtureSource.read(module));
+};
+
 describe('export source checks', () => {
 	it('accepts the fixture through the same pipeline as a fake live source', async () => {
 		const snapshot = {
@@ -23,7 +28,7 @@ describe('export source checks', () => {
 		const fromLive = await loadExport(
 			createLiveSource(async (module) => {
 				requests.push(module.name);
-				return snapshot;
+				return createFixtureSource(snapshot).read(module);
 			}),
 		);
 		expect(fromLive).toEqual(fromFixture);
@@ -67,13 +72,7 @@ describe('export source checks', () => {
 				},
 				'services',
 			],
-			[
-				'localization',
-				(data: typeof fixture.data) => {
-					data.projects[0]!.title.fr = '';
-				},
-				'French',
-			],
+
 			[
 				'duplicate station',
 				(data: typeof fixture.data) => {
@@ -120,7 +119,7 @@ describe('export source checks', () => {
 				const source =
 					kind === 'fixture'
 						? createFixtureSource(snapshot)
-						: createLiveSource(async () => snapshot);
+						: liveSnapshot(snapshot);
 				await expect(loadExport(source)).rejects.toThrow(message);
 			});
 		}
@@ -145,7 +144,7 @@ describe('export source checks', () => {
 					emitDir,
 					policy: 'soft',
 				}),
-			).rejects.toBeInstanceOf(z.ZodError);
+			).rejects.toThrow('Invalid export module');
 			expect(await readdir(emitDir)).toEqual(['.cms-cache.json']);
 			expect(await readFile(join(emitDir, '.cms-cache.json'), 'utf8')).toBe(
 				JSON.stringify(fixture),
@@ -187,7 +186,7 @@ describe('export source checks', () => {
 				await expect(
 					run({
 						source: 'live',
-						contentSource: createLiveSource(async () => snapshot),
+						contentSource: liveSnapshot(snapshot),
 						directusUrl: 'https://fake.invalid',
 						token: '',
 						dryRun: false,
@@ -218,11 +217,16 @@ describe('export source checks', () => {
 			mediaAssets: {},
 			mediaVariants: {},
 		};
+		// English-only live copy must still build under the production fail policy.
+		snapshot.blogPosts = snapshot.blogPosts.filter(
+			(post) => post.lang === 'en',
+		);
+		Reflect.deleteProperty(snapshot.routeSeo[0]!.description!, 'fr');
 		try {
 			expect(
 				await run({
 					source: 'live',
-					contentSource: createLiveSource(async () => snapshot),
+					contentSource: liveSnapshot(snapshot),
 					directusUrl: 'https://fake.invalid',
 					token: '',
 					dryRun: false,
