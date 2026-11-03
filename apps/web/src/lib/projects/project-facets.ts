@@ -1,4 +1,4 @@
-import { isEntityAvailable, type AvailabilityOptions } from '#lib/utils/content-availability.ts';
+import { isEntityAvailable, type AvailabilityOptions } from '#lib/catalog/availability.ts';
 import type { Locale, ProjectSummary } from '#lib/types.ts';
 import { uniqueSorted } from '#lib/utils/collections.ts';
 

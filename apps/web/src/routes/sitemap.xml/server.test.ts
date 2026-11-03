@@ -76,8 +76,8 @@ describe('GET /sitemap.xml', () => {
 	});
 
 	it('includes dynamic blog routes for every published post', async () => {
-		const { adapter } = await import('#lib/adapters/index.ts');
-		const posts = await adapter.blog.all();
+		const { catalog } = await import('#lib/catalog/index.ts');
+		const posts = await catalog.blog.all();
 		const { body } = await fetchBody();
 		for (const post of posts) {
 			expect(body, `missing blog post ${post.slug}`).toContain(

@@ -51,6 +51,7 @@ describe('+layout.ts load', () => {
 		expect(result.themeColor).toBe('#123456');
 		expect(result.headerLinks).toEqual(fakeHeaderLinks);
 		expect(result.errorPage).toEqual(fakeErrorPage);
+		expect(result.footerLinks).toEqual([]);
 	});
 
 	it('uses static fallbacks without touching the adapter when server slots are missing', async () => {

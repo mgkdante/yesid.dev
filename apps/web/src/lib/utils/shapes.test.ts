@@ -1,18 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SHAPES, SHAPE_KEYS, pickRandomShape, getMorphShapes } from './shapes.js';
+import { SHAPES, SHAPE_KEYS, pickRandomShape, getMorphShapes, setMorphShapes } from './shapes.js';
 import type { MorphShape } from '@repo/shared';
-
-// Mock the adapter's content.morphShapes
-vi.mock('#lib/adapters/index.ts', () => ({
-	adapter: {
-		content: {
-			morphShapes: vi.fn(),
-		},
-	},
-}));
-
-import { adapter } from '#lib/adapters/index.ts';
-const morphShapesMock = adapter.content.morphShapes as ReturnType<typeof vi.fn>;
 
 const sampleShapes: readonly MorphShape[] = [
 	{ id: 'triangle', label: 'Triangle', path: 'M24 8 L40 38 L8 38 Z', viewbox: '0 0 48 48', sort: 1 },
@@ -43,10 +31,10 @@ describe('legacy SHAPES (deprecated, kept for static fallback)', () => {
 describe('getMorphShapes (async getter with cache)', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		morphShapesMock.mockResolvedValue(sampleShapes);
+		setMorphShapes(sampleShapes);
 	});
 
-	it('returns shapes from adapter on first call', async () => {
+	it('returns shapes from catalog on first call', async () => {
 		// Note: cache may be populated from a previous test run in the same module.
 		// The important invariant is that the returned shapes are always valid.
 		const shapes = await getMorphShapes();
@@ -64,16 +52,9 @@ describe('getMorphShapes (async getter with cache)', () => {
 		}
 	});
 
-	it('adapter is called at most once per module lifetime (cache)', async () => {
-		// Call multiple times — adapter should be called 0 or 1 times total
-		// (cache is either warm from a prior test, or gets set on first call here).
-		const before = morphShapesMock.mock.calls.length;
-		await getMorphShapes();
-		await getMorphShapes();
-		await getMorphShapes();
-		const after = morphShapesMock.mock.calls.length;
-		// At most one new call across the three invocations
-		expect(after - before).toBeLessThanOrEqual(1);
+	it('keeps the hydrated fixture stable across repeated reads', async () => {
+		expect(await getMorphShapes()).toEqual(sampleShapes);
+		expect(await getMorphShapes()).toEqual(sampleShapes);
 	});
 });
 

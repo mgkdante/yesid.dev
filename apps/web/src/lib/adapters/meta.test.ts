@@ -1,14 +1,15 @@
+import { resolvePageSeo } from '#lib/adapters/page-seo.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 import { siteMeta } from '#lib/content/site-meta.ts';
 import { describe, expect, it } from 'vitest';
-import { adapter } from './index';
+import { catalog } from '#lib/catalog/index.ts';
 import { routeSeoOverrides } from '#lib/content/route-seo.ts';
 
 const overrideByPath = new Map(routeSeoOverrides.map((entry) => [entry.path, entry]));
 
-describe('adapter.meta.forRoute', () => {
+describe('resolvePageSeo', () => {
 	it('resolves a static route by id', async () => {
-		const seo = await adapter.meta.forRoute('/about', 'en');
+		const seo = await resolvePageSeo('/about', 'en');
 		expect(seo.title.en).toBe(
 			`${overrideByPath.get('/about')!.title!.en} | ${siteMeta.name}`,
 		);
@@ -19,75 +20,75 @@ describe('adapter.meta.forRoute', () => {
 		const servicesOverride = overrideByPath.get('/services');
 		expect(servicesOverride?.description?.en).toBeTruthy();
 
-		const seo = await adapter.meta.forRoute('/services', 'en');
+		const seo = await resolvePageSeo('/services', 'en');
 		expect(seo.description.en).toBe(servicesOverride?.description?.en);
 	});
 
 	it('returns a Zod-validated object (ogType default fills in)', async () => {
-		const seo = await adapter.meta.forRoute('/', 'en');
+		const seo = await resolvePageSeo('/', 'en');
 		expect(seo.ogType).toBe('website');
 		expect(seo.noIndex).toBe(false);
 	});
 
 	it('resolves a dynamic blog route by slug', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		const first = posts.find((post) => post.lang === 'en');
 		if (!first) return;
-		const seo = await adapter.meta.forRoute('/blog/[slug]', first.lang, { slug: first.slug });
+		const seo = await resolvePageSeo('/blog/[slug]', first.lang, { slug: first.slug });
 		expect(seo.title.en).toContain('yesid.');
 		expect(seo.canonical).toBe(`https://yesid.dev/blog/${first.slug}`);
 		expect(seo.ogType).toBe('article');
 	});
 
 	it('resolves a dynamic project route by slug', async () => {
-		const projects = await adapter.projects.public();
+		const projects = await catalog.projects.available();
 		if (projects.length === 0) return;
 		const first = projects[0];
-		const seo = await adapter.meta.forRoute('/projects/[slug]', 'en', { slug: first.slug });
+		const seo = await resolvePageSeo('/projects/[slug]', 'en', { slug: first.slug });
 		expect(seo.canonical).toBe(`https://yesid.dev/projects/${first.slug}`);
 		expect(seo.ogType).toBe('article');
 	});
 
 	it('resolves a dynamic service route by id', async () => {
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const first = services[0];
-		const seo = await adapter.meta.forRoute('/services/[id]', 'en', { id: first.id });
+		const seo = await resolvePageSeo('/services/[id]', 'en', { id: first.id });
 		expect(seo.canonical).toBe(`https://yesid.dev/services/${first.id}`);
 	});
 
 	it('throws on an unknown route id', async () => {
-		await expect(adapter.meta.forRoute('/definitely-not-a-route', 'en')).rejects.toThrow(
+		await expect(resolvePageSeo('/definitely-not-a-route', 'en')).rejects.toThrow(
 			/Unknown route id/,
 		);
 	});
 
 	it('throws on a dynamic route with an unknown slug', async () => {
 		await expect(
-			adapter.meta.forRoute('/blog/[slug]', 'en', { slug: 'not-a-real-post' }),
+			resolvePageSeo('/blog/[slug]', 'en', { slug: 'not-a-real-post' }),
 		).rejects.toThrow(/Unknown blog slug/);
 	});
 
 	it('returns 404 entry with noIndex: true', async () => {
-		const seo = await adapter.meta.forRoute('/__error', 'en');
+		const seo = await resolvePageSeo('/__error', 'en');
 		expect(seo.noIndex).toBe(true);
 		expect(seo.title.en).toMatch(/Not Found/);
 	});
 });
 
-describe('adapter.meta.forRoute + jsonLd (Slice 15b)', () => {
+describe('resolvePageSeo + jsonLd (Slice 15b)', () => {
 	it('returns jsonLd as part of PageSeo for a static route', async () => {
-		const seo = await adapter.meta.forRoute('/about', 'en');
+		const seo = await resolvePageSeo('/about', 'en');
 		expect(seo.jsonLd).toBeDefined();
 		expect(Array.isArray(seo.jsonLd)).toBe(true);
 	});
 
-	it('parses jsonLd through PageSeoSchema at the adapter boundary', async () => {
+	it('parses jsonLd through PageSeoSchema at the catalog boundary', async () => {
 		// If an entry's jsonLd is malformed, forRoute must throw at the Zod parse.
 		// We can't directly inject a bad entry from a test, but we can rely on
 		// the Zod parse as the documented contract: cover it in the schema tests
 		// and assert here that a known-good entry round-trips cleanly.
-		const seo = await adapter.meta.forRoute('/blog', 'en');
+		const seo = await resolvePageSeo('/blog', 'en');
 		expect(seo.jsonLd).toBeDefined();
 		for (const node of seo.jsonLd ?? []) {
 			expect(node).toHaveProperty('@type');
@@ -96,10 +97,10 @@ describe('adapter.meta.forRoute + jsonLd (Slice 15b)', () => {
 	});
 
 	it('returns jsonLd for a dynamic blog route', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		const post = posts.find((candidate) => candidate.lang === 'en');
 		if (!post) return;
-		const seo = await adapter.meta.forRoute('/blog/[slug]', post.lang, { slug: post.slug });
+		const seo = await resolvePageSeo('/blog/[slug]', post.lang, { slug: post.slug });
 		expect(seo.jsonLd).toBeDefined();
 		const types = (seo.jsonLd ?? []).map((n) => n['@type']);
 		expect(types).toContain('BlogPosting');
@@ -107,9 +108,9 @@ describe('adapter.meta.forRoute + jsonLd (Slice 15b)', () => {
 	});
 });
 
-describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
+describe('resolvePageSeo + jsonLd — per-route coverage', () => {
 	async function typesFor(routeId: string, params?: Record<string, string>): Promise<string[]> {
-		const seo = await adapter.meta.forRoute(routeId, 'en', params);
+		const seo = await resolvePageSeo(routeId, 'en', params);
 		return (seo.jsonLd ?? []).map((n) => n['@type']);
 	}
 
@@ -133,14 +134,14 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 
 	it('/services CollectionPage description follows the CMS route_seo description', async () => {
 		const servicesOverride = overrideByPath.get('/services');
-		const seo = await adapter.meta.forRoute('/services', 'en');
+		const seo = await resolvePageSeo('/services', 'en');
 		const collectionPage = seo.jsonLd?.find((node) => node['@type'] === 'CollectionPage');
 
 		expect(collectionPage?.description).toBe(servicesOverride?.description?.en);
 	});
 
 	it('/services/[id] emits Service + BreadcrumbList', async () => {
-		const services = await adapter.services.visible();
+		const services = await catalog.services.available();
 		if (services.length === 0) return;
 		const types = await typesFor('/services/[id]', { id: services[0].id });
 		expect(types).toEqual(['Service', 'BreadcrumbList']);
@@ -151,7 +152,7 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 	});
 
 	it('/projects/[slug] emits CreativeWork + BreadcrumbList', async () => {
-		const projects = await adapter.projects.public();
+		const projects = await catalog.projects.available();
 		if (projects.length === 0) return;
 		const types = await typesFor('/projects/[slug]', { slug: projects[0].slug });
 		expect(types).toEqual(['CreativeWork', 'BreadcrumbList']);
@@ -162,7 +163,7 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 	});
 
 	it('/blog/personal emits CollectionPage + BreadcrumbList (nested: Home → Blog → Personal Corner)', async () => {
-		const seo = await adapter.meta.forRoute('/blog/personal', 'en');
+		const seo = await resolvePageSeo('/blog/personal', 'en');
 		const types = (seo.jsonLd ?? []).map((n) => n['@type']);
 		expect(types).toEqual(['CollectionPage', 'BreadcrumbList']);
 		// Check the nested breadcrumb trail (Q3-B)
@@ -177,7 +178,7 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 	});
 
 	it('/blog/[slug] emits BlogPosting + BreadcrumbList', async () => {
-		const posts = await adapter.blog.all();
+		const posts = await catalog.blog.all();
 		const post = posts.find((candidate) => candidate.lang === 'en');
 		if (!post) return;
 		const types = await typesFor('/blog/[slug]', { slug: post.slug });
@@ -185,7 +186,7 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 	});
 
 	it('/__error emits no jsonLd (noIndex route, per spec)', async () => {
-		const seo = await adapter.meta.forRoute('/__error', 'en');
+		const seo = await resolvePageSeo('/__error', 'en');
 		expect(seo.jsonLd === undefined || seo.jsonLd.length === 0).toBe(true);
 	});
 });

@@ -1,5 +1,5 @@
-import { isEntityAvailable, type AvailabilityContext } from '#lib/utils/content-availability.ts';
-import { adapter } from '#lib/adapters/index.ts';
+import { type AvailabilityContext } from '#lib/catalog/availability.ts';
+import { createContentCatalog } from '#lib/catalog/index.ts';
 import type { Locale } from '#lib/types.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 
@@ -12,9 +12,9 @@ export interface OgTitleResult {
 
 const PROJECT_EYEBROW: Record<Locale, string> = { en: 'PROJECT', fr: 'PROJET', es: 'PROYECTO' };
 
-// Pulls the title for a (type, slug) pair via typed adapter ports,
+// Pulls the title for a (type, slug) pair from the content catalog,
 // returning a normalized { eyebrow, title } the renderer consumes.
-// Returns null on miss, empty title, or any adapter error — the endpoint
+// Returns null on miss, empty title, or any catalog error — the endpoint
 // turns any null into a build-stopping [og] throw during prerender.
 export async function loadOgTitle(
   type: OgType,
@@ -22,20 +22,19 @@ export async function loadOgTitle(
   locale: Locale,
   context: AvailabilityContext = {},
 ): Promise<OgTitleResult | null> {
+  const catalog = createContentCatalog(context);
   try {
     if (type === 'blog') {
-      const post = context.posts ? context.posts.find((post) => post.slug === slug) : await adapter.blog.bySlug(slug);
+      const post = catalog.blog.bySlug(slug);
       const title = post?.title;
-      if (!post || !title || !isEntityAvailable({ kind: 'post', entity: post }, post.lang, context)) return null;
+      if (!post || !title || !catalog.isAvailable({ kind: 'post', entity: post }, post.lang)) return null;
       return { eyebrow: 'BLOG', title };
     }
 
     // type === 'project'
-    const project = context.projects ? context.projects.find((project) => project.slug === slug) : await adapter.projects.bySlug(slug);
-    // Mirror the detail route guard: archived projects (status 'private') 404
-    // there, so their OG image must fall back to the default too — never render
-    // a share card for a hidden project.
-    if (!project || !isEntityAvailable({ kind: 'project', entity: project }, locale, context)) return null;
+    const project = catalog.projects.bySlug(slug);
+    // Only available projects can supply a generated share card.
+    if (!project || !catalog.isAvailable({ kind: 'project', entity: project }, locale)) return null;
     // Use the canonical locale resolver — treats empty/whitespace strings as
     // "not translated yet" and falls back to en (guaranteed by schema).
     const resolved = resolveLocale(project.title, locale);

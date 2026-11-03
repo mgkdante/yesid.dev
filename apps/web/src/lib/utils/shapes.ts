@@ -1,4 +1,4 @@
-// Browser-safe morph shapes hydrate from the layout's adapter result.
+// Browser-safe morph shapes hydrate from generated layout data.
 
 import type { MorphShape } from '@repo/shared';
 
@@ -20,7 +20,7 @@ export function pickRandomShape(
 	lastIndex = -1,
 ): { shape: MorphShape; index: number } {
 	if (shapes.length === 0) {
-		throw new Error('No morph shapes available — fetch from adapter first.');
+		throw new Error('No morph shapes available — hydrate shapes first.');
 	}
 	let idx: number;
 	do {
@@ -29,7 +29,7 @@ export function pickRandomShape(
 	return { shape: shapes[idx]!, index: idx };
 }
 
-// The generated CMS module owns shapes; this seed serves adapter failures and isolated mounts without hydration.
+// The generated content owns shapes; this seed serves isolated mounts without hydration.
 
 export const SHAPES = {
 	triangle: 'M24 8 L40 38 L8 38 Z',

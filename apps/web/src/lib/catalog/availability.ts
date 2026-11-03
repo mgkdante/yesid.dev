@@ -1,6 +1,6 @@
 import type { BlogPost, Locale, Project, Service, SitePage } from '#lib/types.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
-import { PUBLISHED_LOCALES } from './published-locales';
+import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
 
 export interface AvailabilityOptions {
 	pages?: readonly SitePage[];

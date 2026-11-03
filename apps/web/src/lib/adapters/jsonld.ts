@@ -1,5 +1,5 @@
 // JSON-LD factories. Each factory is a pure function mapping a domain object
-// to a Zod-parsed SchemaOrgNode. Factories have no I/O, no adapter imports,
+// to a Zod-parsed SchemaOrgNode. Factories have no I/O, no catalog imports,
 // and no runtime side effects. Every factory ends with
 // `SchemaOrgNodeSchema.parse(built)` — malformed nodes never leave the module.
 //

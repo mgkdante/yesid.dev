@@ -5,10 +5,9 @@ import { Resvg } from '@resvg/resvg-js';
 import { OG_WIDTH, renderOgPng } from '@yesid/seo-kit/og';
 import { ogFonts } from '@yesid/seo-kit/og/fonts';
 import { ogBlogRows, projectEntries } from '#lib/server/prerender-entries.ts';
-import { projects } from '#lib/content/projects.ts';
-import { blogPosts } from '#lib/content/blog.ts';
+import { createContentCatalog } from '#lib/catalog/index.ts';
 import { localeFromParams } from '#lib/utils/locale-routing.ts';
-import { isEntityAvailable, type AvailabilityContext } from '#lib/utils/content-availability.ts';
+import { type AvailabilityContext } from '#lib/catalog/availability.ts';
 
 // Prerender every known blog/project card into deployment-static PNGs. entries()
 // is exhaustive through the shared available-blog and non-private-project
@@ -33,6 +32,7 @@ const HAPPY_HEADERS = {
 };
 
 export function _createOgHandler(context: AvailabilityContext = {}): RequestHandler {
+ const content = createContentCatalog(context);
  return async (event) => {
   const { type, slug } = event.params as { type: OgType; slug: string };
 
@@ -45,17 +45,16 @@ export function _createOgHandler(context: AvailabilityContext = {}): RequestHand
     throw new Error(`[og] invalid slug parameter for ${type}: "${slug}"`);
   }
   const { baseSlug } = parsed;
-  const rows = { ...context, projects: context.projects ?? projects, posts: context.posts ?? blogPosts };
-  const post = type === 'blog' ? rows.posts.find((post) => post.slug === baseSlug) : undefined;
-  const project = type === 'project' ? rows.projects.find((project) => project.slug === baseSlug) : undefined;
+  const post = type === 'blog' ? content.blog.bySlug(baseSlug) : undefined;
+  const project = type === 'project' ? content.projects.bySlug(baseSlug) : undefined;
   const locale = post?.lang ?? parsed.locale;
   if (type === 'blog') {
-    if (!post || !isEntityAvailable({ kind: 'post', entity: post }, locale, context)) error(404, 'Not found');
+    if (!post || !content.isAvailable({ kind: 'post', entity: post }, locale)) error(404, 'Not found');
   } else {
-    if (!project || !isEntityAvailable({ kind: 'project', entity: project }, locale, context)) error(404, 'Not found');
+    if (!project || !content.isAvailable({ kind: 'project', entity: project }, locale)) error(404, 'Not found');
   }
 
-  const titleResult = await loadOgTitle(type, baseSlug, locale, rows);
+  const titleResult = await loadOgTitle(type, baseSlug, locale, context);
   if (!titleResult) {
     throw new Error(`[og] missing title for ${type}: "${baseSlug}" (${locale})`);
   }

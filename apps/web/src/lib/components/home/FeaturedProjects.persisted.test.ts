@@ -10,7 +10,7 @@ import { flushSync } from 'svelte';
 import { render, screen, cleanup } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 import { proofReelContent } from '#lib/content/site-content.ts';
-import { getFeaturedProjects } from '#lib/projects/static-helpers.ts';
+import { getFeaturedProjects } from '#lib/catalog/index.ts';
 import type { Project } from '#lib/types.ts';
 import { persisted } from '@yesid/ui/state';
 

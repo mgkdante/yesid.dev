@@ -8,7 +8,7 @@ import { siteMeta as contentSiteMeta } from '#lib/content/site-meta.ts';
 import { STATIC_SITE_SEO_DEFAULTS } from '#lib/content/site-seo-defaults.ts';
 import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
-import type { ContentAdapter } from './types';
+import { createContentCatalog, type ContentCatalog } from '#lib/catalog/index.ts';
 import {
 	blogSlugSeoFactory,
 	legalSlugSeoFactory,
@@ -72,13 +72,8 @@ const siteSeoDefaults = {
 	},
 } satisfies SiteSeoDefaults;
 
-function adapterFor(post: BlogPost, posts: readonly BlogPost[] = [post]): ContentAdapter {
-	return {
-		blog: {
-			all: async () => posts,
-			bySlug: async () => post,
-		},
-	} as unknown as ContentAdapter;
+function catalogFor(post: BlogPost, posts: readonly BlogPost[] = [post]): ContentCatalog {
+	return createContentCatalog({ posts });
 }
 
 function translatedVariant(
@@ -96,17 +91,13 @@ function translatedVariant(
 }
 
 async function projectOgUrls(project: Project): Promise<Record<Locale, string | undefined>> {
-	const adapter = {
-		projects: {
-			bySlug: async () => project,
-		},
-	} as unknown as ContentAdapter;
+	const catalog = createContentCatalog({ projects: [project] });
 	const entries = await Promise.all(
 		(['en', 'fr', 'es'] as const).map(async (locale) => {
 			const seo = await projectsSlugSeoFactory({
 				params: { slug: project.slug },
 				locale,
-				adapter,
+				catalog,
 				siteMeta,
 				siteSeoDefaults,
 			});
@@ -137,7 +128,7 @@ describe('blogSlugSeoFactory', () => {
 			external: false,
 		} as BlogPost;
 		const seo = await blogSlugSeoFactory({
-			params: { slug: post.slug }, locale: lang, adapter: adapterFor(post), siteMeta, siteSeoDefaults,
+			params: { slug: post.slug }, locale: lang, catalog: catalogFor(post), siteMeta, siteSeoDefaults,
 		});
 		const expected = '/og/blog/' + post.slug + '.png';
 		expect(seo.ogImage).toEqual({
@@ -176,7 +167,7 @@ describe('blogSlugSeoFactory', () => {
 		const seo = await blogSlugSeoFactory({
 			params: { slug: post.slug },
 			locale: 'en',
-			adapter: adapterFor(post, translations),
+			catalog: catalogFor(post, translations),
 			siteMeta,
 			siteSeoDefaults,
 		});
@@ -244,7 +235,7 @@ describe('blogSlugSeoFactory', () => {
 		const seo = await blogSlugSeoFactory({
 			params: { slug: post.slug },
 			locale: 'en',
-			adapter: adapterFor(post, translations),
+			catalog: catalogFor(post, translations),
 			siteMeta,
 			siteSeoDefaults,
 		});
@@ -280,7 +271,7 @@ describe('blogSlugSeoFactory', () => {
 		const seo = await blogSlugSeoFactory({
 			params: { slug: post.slug },
 			locale: 'en',
-			adapter: adapterFor(post, posts),
+			catalog: catalogFor(post, posts),
 			siteMeta,
 			siteSeoDefaults,
 		});
@@ -290,6 +281,13 @@ describe('blogSlugSeoFactory', () => {
 			fr: 'https://yesid.dev/fr/blog/article-en-preparation',
 		});
 		expect(seo.ogImage?.url).toBe('/og/blog/staged-article.png');
+	});
+
+	it.each([{ locales: ['en'] as const }, { pages: [] }])('rejects metadata for a catalog-unavailable native-language post', async (permission) => {
+		const post = blogPostFactory.build({ slug: 'unavailable-french', lang: 'fr' });
+		await expect(blogSlugSeoFactory({
+			params: { slug: post.slug }, locale: 'fr', catalog: createContentCatalog({ ...permission, posts: [post] }), siteMeta, siteSeoDefaults,
+		})).rejects.toThrow('is not available in locale fr');
 	});
 
 	it('rejects an English slug requested under the French route', async () => {
@@ -313,11 +311,11 @@ describe('blogSlugSeoFactory', () => {
 			blogSlugSeoFactory({
 				params: { slug: post.slug },
 				locale: 'fr',
-				adapter: adapterFor(post),
+				catalog: catalogFor(post),
 				siteMeta,
 				siteSeoDefaults,
 			}),
-		).rejects.toThrow('does not belong to locale fr');
+		).rejects.toThrow('is not available in locale fr');
 	});
 });
 
@@ -350,7 +348,7 @@ describe('projectsSlugSeoFactory', () => {
 		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
 			params: { slug: longProject.slug },
 			locale,
-			adapter: { projects: { bySlug: async () => longProject } } as unknown as ContentAdapter,
+			catalog: createContentCatalog({ projects: [longProject] }),
 			siteMeta,
 			siteSeoDefaults,
 		}));
@@ -399,7 +397,7 @@ describe('projectsSlugSeoFactory', () => {
 			const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
 				params: { slug: designProject.slug },
 				locale,
-				adapter: { projects: { bySlug: async () => designProject } } as unknown as ContentAdapter,
+				catalog: createContentCatalog({ projects: [designProject] }),
 				siteMeta,
 				siteSeoDefaults,
 			}));
@@ -415,7 +413,7 @@ describe('projectsSlugSeoFactory', () => {
 			const seo = await projectsSlugSeoFactory({
 				params: { slug: project.slug },
 				locale: 'en',
-				adapter: { projects: { bySlug: async () => ({ ...project, title }) } } as unknown as ContentAdapter,
+				catalog: createContentCatalog({ projects: [{ ...project, title }] }),
 				siteMeta,
 				siteSeoDefaults,
 			});
@@ -447,7 +445,7 @@ describe('servicesIdSeoFactory', () => {
 		return {
 			params: { id: service.id },
 			locale: 'en' as const,
-			adapter: { services: { byId: async () => service } } as unknown as ContentAdapter,
+			catalog: createContentCatalog({ services: [service] }),
 			siteMeta,
 			siteSeoDefaults,
 		};
@@ -518,9 +516,7 @@ describe('legalSlugSeoFactory', () => {
 		const seo = await legalSlugSeoFactory({
 			params: { slug: page.slug },
 			locale: 'en',
-			adapter: {
-				legal: { bySlug: async () => page },
-			} as unknown as ContentAdapter,
+			catalog: createContentCatalog({ legalPages: [page] }),
 			siteMeta,
 			siteSeoDefaults: localizedDefaults,
 		});
@@ -613,20 +609,15 @@ describe('route SEO composition', () => {
 		for (const locale of PUBLISHED_LOCALES) {
 			const common = { locale, siteMeta: contentSiteMeta, siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS };
 			const post = blogPosts.find((candidate) => candidate.lang === locale)!;
-			const adapter = {
-				services: { byId: async () => service },
-				projects: { bySlug: async () => project },
-				blog: { all: async () => blogPosts, bySlug: async () => post },
-				legal: { bySlug: async () => legalPage },
-			} as unknown as ContentAdapter;
+			const catalog = createContentCatalog({ services: [service], projects: [project], posts: blogPosts, legalPages: [legalPage] });
 			const results = [
 				...STATIC_ROUTES.map((routeId) => [routeId, composePageSeo({
 					...common, routeId, routeOverride: undefined, codeDefaults: codeRouteSeoDefaults[routeId]!,
 				})] as const),
-				[`/services/${service.id}`, await servicesIdSeoFactory({ ...common, adapter, params: { id: service.id } })],
-				[`/projects/${project.slug}`, await projectsSlugSeoFactory({ ...common, adapter, params: { slug: project.slug } })],
-				[`/blog/${post.slug}`, await blogSlugSeoFactory({ ...common, adapter, params: { slug: post.slug } })],
-				[`/legal/${legalPage.slug}`, await legalSlugSeoFactory({ ...common, adapter, params: { slug: legalPage.slug } })],
+				[`/services/${service.id}`, await servicesIdSeoFactory({ ...common, catalog, params: { id: service.id } })],
+				[`/projects/${project.slug}`, await projectsSlugSeoFactory({ ...common, catalog, params: { slug: project.slug } })],
+				[`/blog/${post.slug}`, await blogSlugSeoFactory({ ...common, catalog, params: { slug: post.slug } })],
+				[`/legal/${legalPage.slug}`, await legalSlugSeoFactory({ ...common, catalog, params: { slug: legalPage.slug } })],
 			] as const;
 			for (const [path, seo] of results) {
 				expect(seo.canonical).toBe(canonicalFor(path, locale));

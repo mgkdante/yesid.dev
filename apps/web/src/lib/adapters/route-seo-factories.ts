@@ -1,4 +1,4 @@
-// Dynamic-route factories consume caller-supplied adapter and site data without re-fetching.
+// Dynamic-route factories consume caller-supplied catalog and site data without re-fetching.
 
 import type {
 	Locale,
@@ -6,7 +6,7 @@ import type {
 	SiteMeta,
 	SiteSeoDefaults,
 } from '#lib/types.ts';
-import type { ContentAdapter } from '#lib/adapters/types.ts';
+import type { ContentCatalog } from '#lib/catalog/index.ts';
 import { extractText } from '@repo/shared';
 import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
@@ -27,7 +27,7 @@ import { buildRouteBreadcrumbNode } from '#lib/adapters/route-jsonld.ts';
 export interface FactoryArgs {
 	params: Record<string, string>;
 	locale: Locale;
-	adapter: ContentAdapter;
+	catalog: ContentCatalog;
 	siteMeta: SiteMeta;
 	siteSeoDefaults: SiteSeoDefaults;
 }
@@ -76,10 +76,10 @@ const SERVICE_OG_CARD_IDS: ReadonlySet<string> = new Set([
 	'web-development',
 ]);
 
-/** /services/[id] — pulls service from collection adapter; brand suffix from siteMeta. */
+/** /services/[id] — pulls service from collection catalog; brand suffix from siteMeta. */
 export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
-	const service = await adapter.services.byId(params.id);
+	const { params, locale, catalog, siteMeta, siteSeoDefaults } = args;
+	const service = await catalog.services.byId(params.id);
 	if (!service) throw new Error(`Unknown service id: ${params.id}`);
 	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	const seo: PageSeo = {
@@ -117,10 +117,10 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 	return seo;
 }
 
-/** /projects/[slug] — pulls project from collection adapter; brand suffix from siteMeta. */
+/** /projects/[slug] — pulls project from collection catalog; brand suffix from siteMeta. */
 export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
-	const project = await adapter.projects.bySlug(params.slug);
+	const { params, locale, catalog, siteMeta, siteSeoDefaults } = args;
+	const project = await catalog.projects.bySlug(params.slug);
 	if (!project) throw new Error(`Unknown project slug: ${params.slug}`);
 	// Extract plain text from LocalizedBlockEditorDoc before passing to fitDescriptionForSeo.
 	const descriptionText: { en: string; fr?: string; es?: string } = {
@@ -172,16 +172,16 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 	return seo;
 }
 
-/** /blog/[slug] — pulls post from collection adapter; brand suffix from siteMeta. */
+/** /blog/[slug] — pulls post from collection catalog; brand suffix from siteMeta. */
 export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
+	const { params, locale, catalog, siteMeta, siteSeoDefaults } = args;
 	const [post, posts] = await Promise.all([
-		adapter.blog.bySlug(params.slug),
-		adapter.blog.all(),
+		catalog.blog.bySlug(params.slug),
+		catalog.blog.all(),
 	]);
 	if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
-	if (post.lang !== locale) {
-		throw new Error(`Blog slug ${params.slug} does not belong to locale ${locale}`);
+	if (!catalog.isAvailable({ kind: 'post', entity: post }, locale)) {
+		throw new Error(`Blog slug ${params.slug} is not available in locale ${locale}`);
 	}
 	const translationVariants = findBlogTranslationVariants(posts, post.translationKey);
 	if (!translationVariants[post.lang]) {
@@ -267,8 +267,8 @@ function legalDescriptionFor(doc: { blocks: Array<{ type: string; data: unknown 
 /** /legal/[slug] — title from the CMS legal page (OPS1); description derived
  *  from the first substantive body paragraph per locale, siteSeoDefaults fallback. */
 export async function legalSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
-	const { params, locale, adapter, siteMeta, siteSeoDefaults } = args;
-	const page = await adapter.legal.bySlug(params.slug);
+	const { params, locale, catalog, siteMeta, siteSeoDefaults } = args;
+	const page = await catalog.legal.bySlug(params.slug);
 	if (!page) throw new Error(`Unknown legal slug: ${params.slug}`);
 	const canonicalUrl = canonicalFor(`/legal/${page.slug}`, locale);
 	const enDescription = legalDescriptionFor(page.body.en);

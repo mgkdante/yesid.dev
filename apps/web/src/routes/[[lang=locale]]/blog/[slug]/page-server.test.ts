@@ -1,19 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { BlogPost, BlockEditorDoc } from '#lib/types.ts';
 
-const adapterMocks = vi.hoisted(() => ({
-	adapter: {
-		blog: {
-			all: vi.fn(),
-			bySlug: vi.fn(),
-			bodyBySlug: vi.fn(),
-			svgContent: vi.fn(),
-		},
-	},
-}));
-
-vi.mock('#lib/adapters/index.ts', () => adapterMocks);
-vi.mock('#lib/server/code-highlights.ts', () => ({ collectCodeHighlights: async () => ({}) }));
+import { createContentCatalog } from '#lib/catalog/index.ts';
 
 import { load } from './+page.server';
 
@@ -41,26 +29,11 @@ function post(lang: BlogPost['lang'], slug: string): BlogPost {
 }
 
 describe('blog detail loader locale boundary', () => {
-	beforeEach(() => {
-		for (const mock of [
-			adapterMocks.adapter.blog.all,
-			adapterMocks.adapter.blog.bySlug,
-			adapterMocks.adapter.blog.bodyBySlug,
-			adapterMocks.adapter.blog.svgContent,
-		]) {
-			mock.mockReset();
-		}
-		adapterMocks.adapter.blog.bodyBySlug.mockResolvedValue(body);
-		adapterMocks.adapter.blog.svgContent.mockResolvedValue('<svg />');
-	});
-
 	it('rejects a slug whose post language does not match the request locale', async () => {
 		const englishPost = post('en', 'article-en');
-		adapterMocks.adapter.blog.bySlug.mockResolvedValue(englishPost);
-		adapterMocks.adapter.blog.all.mockResolvedValue([englishPost]);
 
 		await expect(
-			load({ params: { lang: 'fr', slug: englishPost.slug } }),
+			load({ params: { lang: 'fr', slug: englishPost.slug } }, createContentCatalog({ posts: [englishPost], bodies: { [englishPost.slug]: body } })),
 		).rejects.toMatchObject({ status: 404 });
 	});
 
@@ -73,12 +46,10 @@ describe('blog detail loader locale boundary', () => {
 			post('en', 'second-en'),
 		];
 		const selected = posts[3];
-		adapterMocks.adapter.blog.bySlug.mockResolvedValue(selected);
-		adapterMocks.adapter.blog.all.mockResolvedValue(posts);
 
 		const result = await load({
 			params: { lang: 'fr', slug: selected.slug },
-		});
+		}, createContentCatalog({ posts, bodies: { [selected.slug]: body } }));
 
 		expect(result.postIndex).toBe(2);
 	});

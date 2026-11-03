@@ -1,6 +1,5 @@
-import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 import { error } from '@sveltejs/kit';
-import { adapter } from '#lib/adapters/index.ts';
+import { catalog as defaultCatalog, type ContentCatalog } from '#lib/catalog/index.ts';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
 import { blogEntries } from '#lib/server/prerender-entries.ts';
 import { collectCodeHighlights } from '#lib/server/code-highlights.ts';
@@ -14,15 +13,15 @@ export async function load({
 	params,
 }: {
 	params: { slug: string; lang?: string };
-}) {
+}, catalog: ContentCatalog = defaultCatalog) {
 	const locale = localeFromParams(params);
-	const post = await adapter.blog.bySlug(params.slug);
-	if (!post || !isEntityAvailable({ kind: 'post', entity: post }, locale)) error(404, 'Post not found');
+	const post = await catalog.blog.bySlug(params.slug);
+	if (!post || !catalog.isAvailable({ kind: 'post', entity: post }, locale)) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts] = await Promise.all([
-		adapter.blog.bodyBySlug(params.slug),
-		adapter.blog.svgContent(post),
-		adapter.blog.all(),
+		catalog.blog.bodyBySlug(params.slug),
+		catalog.blog.svgContent(post),
+		catalog.blog.all(),
 	]);
 
 	if (!body) error(404, 'Post body missing');

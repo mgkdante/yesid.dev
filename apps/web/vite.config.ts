@@ -111,6 +111,7 @@ export default defineConfig({
 					name: 'data',
 					include: [
 						'src/lib/adapters/**/*.test.ts',
+						'src/lib/catalog/**/*.test.ts',
 						'src/lib/content/**/*.test.ts',
 						'src/lib/live/**/*.test.ts',
 						'src/lib/directus/**/*.test.ts',

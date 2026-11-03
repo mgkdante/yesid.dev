@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isEntityAvailable, isPathPublished, isLocaleAvailable } from './content-availability';
+import { isEntityAvailable, isPathPublished, isLocaleAvailable } from '#lib/catalog/availability.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 import type { Project } from '#lib/types.ts';
 

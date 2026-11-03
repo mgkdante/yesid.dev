@@ -23,7 +23,7 @@ import { projects } from '#lib/content/projects.ts';
 import { services } from '#lib/content/services.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 import { PREFIX_LOCALES } from '#lib/utils/locale-routing.ts';
-import type { BlogPost, Project, Service } from '#lib/types.ts';
+import type { BlogPost } from '#lib/types.ts';
 
 const LANG_VALUES = ['', ...PREFIX_LOCALES];
 
@@ -50,7 +50,7 @@ describe('prerender-entries', () => {
 	});
 
 	it('enumerates a service with omitted visibility like the public service loader', () => {
-		expect(serviceEntries({ pages: sitePages, services: [{ id: 'default-visible' } as Service] })).toEqual([
+		expect(serviceEntries({ pages: sitePages, services: [{ ...services[0]!, id: 'default-visible', visible: undefined }] })).toEqual([
 			{ lang: '', id: 'default-visible' }, { lang: 'fr', id: 'default-visible' }, { lang: 'es', id: 'default-visible' },
 		]);
 	});
@@ -102,8 +102,8 @@ describe('prerender-entries', () => {
 	});
 
 	it('ogProjectSlugs includes a WIP project while excluding a private project', () => {
-		const wip = { slug: 'work-in-progress', status: 'wip' } as Project;
-		const hidden = { slug: 'private-project', status: 'private' } as Project;
+		const wip = { ...projects[0]!, slug: 'work-in-progress', status: 'wip' as const };
+		const hidden = { ...projects[0]!, slug: 'private-project', status: 'private' as const };
 
 		expect(ogProjectSlugs({ projects: [wip, hidden] })).toEqual(['work-in-progress']);
 	});

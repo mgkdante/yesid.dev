@@ -9,7 +9,7 @@ import {
 	proofReelContent,
 	closerContent,
 } from './site-content.js';
-import { getVisibleServices } from '#lib/services/static-helpers.ts';
+import { getVisibleServices } from '#lib/catalog/index.ts';
 
 describe('heroContent', () => {
 	it('has non-empty headline lines (both English)', () => {

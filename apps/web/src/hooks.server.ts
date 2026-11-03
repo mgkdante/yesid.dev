@@ -1,9 +1,8 @@
 import { injectThemeBoot } from '@yesid/ui/head';
 import type { Handle, HandleServerError } from '@sveltejs/kit/hooks';
-import { resolveStaticErrorPage } from '#lib/adapters/index.ts';
+import { resolveErrorPage } from '#lib/catalog/index.ts';
 import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
-import type { ErrorPageContent } from '#lib/navigation/types.ts';
 import { preloadFont } from '@yesid/tokens/fonts';
 
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
@@ -47,7 +46,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-/* Error handling falls back to the layout's generic copy if status-specific content cannot resolve. */
+/* Status-specific and generic error copy are generated together. */
 export const handleError: HandleServerError = ({ error, event, kind }) => {
 	// error() bodies already carry their intended status, message and properties.
 	// Returning nothing keeps the expected-error response unchanged.
@@ -64,14 +63,7 @@ export const handleError: HandleServerError = ({ error, event, kind }) => {
 		? error.message
 		: typeof error === 'string' ? error : 'An unexpected error occurred';
 
-	let cmsErrorPage: ErrorPageContent | undefined;
-	try {
-		cmsErrorPage = resolveStaticErrorPage(status);
-	} catch {
-		// Adapter read failed during error handling — $page.data.errorPage
-		// (status=0 fallback from +layout.server.ts) will be used by
-		// +error.svelte instead.
-	}
+	const cmsErrorPage = resolveErrorPage(status);
 
 	return { message, cmsErrorPage };
 };

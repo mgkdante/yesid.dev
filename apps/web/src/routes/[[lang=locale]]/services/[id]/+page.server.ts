@@ -1,12 +1,11 @@
 import { localeFromParams } from '#lib/utils/locale-routing.ts';
-import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 // Load function for /services/[id] detail page.
 // Server-only so service/project reads (static content layer post-27.2)
 // resolve once on the server and hydrate via __data.json.
 
 import { error } from '@sveltejs/kit';
 import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
-import { adapter } from '#lib/adapters/index.ts';
+import { catalog } from '#lib/catalog/index.ts';
 import { serviceEntries } from '#lib/server/prerender-entries.ts';
 
 export const entries = serviceEntries;
@@ -14,16 +13,16 @@ export const prerender = entries().length > 0;
 
 export async function load({ params, fetch }: { params: { id: string; lang?: string }; fetch: typeof globalThis.fetch }) {
 	const locale = localeFromParams(params);
-	const service = await adapter.services.byId(params.id);
+	const service = await catalog.services.byId(params.id);
 
-	if (!service || !isEntityAvailable({ kind: 'service', entity: service }, locale)) {
+	if (!service || !catalog.isAvailable({ kind: 'service', entity: service }, locale)) {
 		error(404, 'Service not found');
 	}
 
-	const services = await adapter.services.visible(locale);
+	const services = await catalog.services.available(locale);
 	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		adapter.services.adjacent(params.id, locale),
-		adapter.projects.byService(params.id, locale),
+		catalog.services.adjacent(params.id, locale),
+		catalog.projects.byService(params.id, locale),
 		fetchServiceSvgContents(fetch, services),
 	]);
 
