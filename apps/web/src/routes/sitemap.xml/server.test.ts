@@ -215,7 +215,7 @@ describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () 
 	}
 
 	it('full registry → every static route present (parity with today)', async () => {
-		const paths = pathnamesOf(await _buildSitemapEntries(sitePages));
+		const paths = pathnamesOf(await _buildSitemapEntries({ pages: sitePages }));
 		for (const p of ['/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal']) {
 			expect(paths).toContain(p);
 		}
@@ -223,7 +223,7 @@ describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () 
 
 	it('archiving /blog drops the listing AND its posts, but NOT /blog/personal (own row)', async () => {
 		const registry = sitePages.filter((p) => p.path !== '/blog');
-		const paths = pathnamesOf(await _buildSitemapEntries(registry));
+		const paths = pathnamesOf(await _buildSitemapEntries({ pages: registry }));
 
 		expect(paths).not.toContain('/blog');
 		expect(paths.filter((p) => p.startsWith('/blog/'))).toEqual(['/blog/personal']);
@@ -231,7 +231,7 @@ describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () 
 
 	it('archiving /services drops the listing and every service detail page', async () => {
 		const registry = sitePages.filter((p) => p.path !== '/services');
-		const paths = pathnamesOf(await _buildSitemapEntries(registry));
+		const paths = pathnamesOf(await _buildSitemapEntries({ pages: registry }));
 
 		expect(paths).not.toContain('/services');
 		expect(paths.some((p) => p.startsWith('/services/'))).toBe(false);
@@ -242,14 +242,14 @@ describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () 
 
 	it('archiving a freeform page drops exactly that path', async () => {
 		const registry = sitePages.filter((p) => p.path !== '/about');
-		const paths = pathnamesOf(await _buildSitemapEntries(registry));
+		const paths = pathnamesOf(await _buildSitemapEntries({ pages: registry }));
 
 		expect(paths).not.toContain('/about');
 		expect(paths).toContain('/contact');
 	});
 
 	it('/ stays in the sitemap regardless (system root always resolves)', async () => {
-		const paths = pathnamesOf(await _buildSitemapEntries([]));
+		const paths = pathnamesOf(await _buildSitemapEntries({ pages: [] }));
 		expect(paths).toContain('/');
 	});
 });

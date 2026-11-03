@@ -58,15 +58,15 @@ export interface ContentAdapter {
 
 export interface ProjectPort {
 	bySlug(slug: string): Promise<Project | undefined>;
-	featured(): Promise<readonly ProjectSummary[]>;
-	public(): Promise<readonly ProjectSummary[]>;
-	byService(serviceId: string): Promise<readonly ProjectSummary[]>;
+	featured(locale?: Locale): Promise<readonly ProjectSummary[]>;
+	public(locale?: Locale): Promise<readonly ProjectSummary[]>;
+	byService(serviceId: string, locale?: Locale): Promise<readonly ProjectSummary[]>;
 }
 
 export interface ServicePort {
 	byId(id: string): Promise<Service | undefined>;
-	visible(): Promise<readonly Service[]>;
-	adjacent(id: string): Promise<{ prev?: Service; next?: Service }>;
+	visible(locale?: Locale): Promise<readonly Service[]>;
+	adjacent(id: string, locale?: Locale): Promise<{ prev?: Service; next?: Service }>;
 }
 
 export interface BlogPort {

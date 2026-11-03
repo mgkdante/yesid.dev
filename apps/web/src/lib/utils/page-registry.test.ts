@@ -5,7 +5,7 @@ import {
 	isRegistryExempt,
 	normalizePathname,
 	resolveSitePage,
-} from './page-registry';
+} from './content-availability';
 import { sitePages } from '#lib/content/site-pages.ts';
 
 const FULL_REGISTRY: readonly SitePage[] = [

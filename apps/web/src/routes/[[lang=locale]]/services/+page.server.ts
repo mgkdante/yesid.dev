@@ -1,3 +1,4 @@
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
 // Load function for /services index page.
 // Server-only so service CMS reads are serialized through __data.json.
 
@@ -9,8 +10,9 @@ import type { EntryGenerator } from './$types';
 export const entries = (() => localeEntries('/services')) satisfies EntryGenerator;
 export const prerender = entries().length > 0;
 
-export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
-	const services = await adapter.services.visible();
+export async function load({ fetch, params = {} }: { fetch: typeof globalThis.fetch; params?: { lang?: string } }) {
+	const locale = localeFromParams(params);
+	const services = await adapter.services.visible(locale);
 	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
 
 	return { services, serviceSvgContents };

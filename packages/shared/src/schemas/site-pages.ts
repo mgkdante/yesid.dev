@@ -6,7 +6,7 @@
 // cascade. Archived rows are simply absent — there is no status field here.
 //
 // Shared between apps/cms (export-fallbacks fetcher validation) and apps/web
-// (emitted $lib/content/site-pages.ts + page-registry helper) so the two
+// (emitted $lib/content/site-pages.ts + availability module) so the two
 // sides cannot drift.
 
 import { z } from 'zod';

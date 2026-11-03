@@ -9,7 +9,7 @@ import type { LayoutServerLoad } from './$types';
 // routes (+server.ts: og/, api/, sitemap.xml, robots.txt, /work, service
 // redirects) opt out individually — they stay on the lambda.
 export const prerender = true;
-import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { isPathPublished, isLocaleAvailable } from '#lib/utils/content-availability.ts';
 import { adapter } from '#lib/adapters/index.ts';
 import { localeFromParams, stripLocaleSegment, delocalizePath } from '#lib/utils/locale-routing.ts';
 import { siteMeta as STATIC_SITE_META } from '#lib/content/site-meta.ts';
@@ -30,7 +30,7 @@ export const load: LayoutServerLoad = async ({ route, params, url }) => {
 	const routeId = stripLocaleSegment(route.id ?? '/__error');
 
 	// Skip registry gating for unmatched-route error renders to avoid throwing again during error handling.
-	if (route.id !== null && !isPathPublished(delocalizePath(url.pathname))) {
+	if (route.id !== null && (!isPathPublished(delocalizePath(url.pathname)) || !isLocaleAvailable(localeFromParams(params, url.pathname)))) {
 		error(404, 'Not found');
 	}
 

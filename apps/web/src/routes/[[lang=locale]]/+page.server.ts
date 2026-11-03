@@ -1,3 +1,4 @@
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
 import { adapter } from '#lib/adapters/index.ts';
 import { bookingHref } from '#lib/utils/high-intent-links.ts';
 import { fetchServiceSvgContents } from '#lib/utils/service-svg.ts';
@@ -6,7 +7,8 @@ import { localeEntries } from '#lib/server/prerender-entries.ts';
 export const entries = localeEntries;
 
 // Home page content resolves concurrently through the adapter.
-export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
+export async function load({ fetch, params = {} }: { fetch: typeof globalThis.fetch; params?: { lang?: string } }) {
+	const locale = localeFromParams(params);
 	const [
 		metroSvg,
 		hero,
@@ -30,13 +32,13 @@ export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 		adapter.content.about(),
 		adapter.content.closer(),
 		adapter.content.initialHeroData(),
-		adapter.services.visible(),
+		adapter.services.visible(locale),
 		adapter.meta.site(),
 		adapter.content.contactPage(),
 	]);
 
 	const [featuredProjects, serviceSvgContents] = await Promise.all([
-		adapter.projects.featured(),
+		adapter.projects.featured(locale),
 		fetchServiceSvgContents(fetch, services),
 	]);
 

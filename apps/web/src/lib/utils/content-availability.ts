@@ -1,7 +1,45 @@
-// Resolve published pages by exact path or longest listing prefix; absent sections must 404 and leave the sitemap.
-
+import type { BlogPost, Locale, Project, Service, SitePage } from '#lib/types.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
-import type { SitePage } from '#lib/types.ts';
+import { PUBLISHED_LOCALES } from './published-locales';
+
+export interface AvailabilityOptions {
+	pages?: readonly SitePage[];
+	locales?: readonly Locale[];
+}
+
+/** Build-time rows and locale permission, injectable together for surface agreement checks. */
+export interface AvailabilityContext extends AvailabilityOptions {
+	projects?: readonly Project[];
+	services?: readonly Service[];
+	posts?: readonly BlogPost[];
+}
+
+export type ContentEntity =
+	| { kind: 'project'; entity: Pick<Project, 'slug' | 'status'> }
+	| { kind: 'service'; entity: Pick<Service, 'id' | 'visible'> }
+	| { kind: 'post'; entity: Pick<BlogPost, 'slug' | 'lang'> };
+
+/** Locale permission is separate from the registry's site page publication switch. */
+export function isLocaleAvailable(locale: string, locales: readonly Locale[] = PUBLISHED_LOCALES): boolean {
+	return locales.some((published) => published === locale);
+}
+
+/** Generated project/service translations already preserve English fallback.
+ * Posts have one row per available language, so a different language is absent. */
+export function isEntityAvailable(content: ContentEntity, locale: string = 'en', options: AvailabilityOptions = {}): boolean {
+	if (!isLocaleAvailable(locale, options.locales)) return false;
+	switch (content.kind) {
+		case 'project':
+			return content.entity.status !== 'private'
+				&& isPathPublished(`/projects/${content.entity.slug}`, options.pages);
+		case 'service':
+			return content.entity.visible !== false
+				&& isPathPublished(`/services/${content.entity.id}`, options.pages);
+		case 'post':
+			return content.entity.lang === locale
+				&& isPathPublished(`/blog/${content.entity.slug}`, options.pages);
+	}
+}
 
 /** Concrete page routes need their own published row, never a parent's fallback. */
 export const STATIC_PAGE_PATHS: readonly string[] = [

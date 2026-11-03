@@ -23,9 +23,13 @@ describe('loadOgTitle', () => {
   });
 
   describe('blog', () => {
+    it('uses the language carried by a translated blog slug', async () => {
+      getPostBySlugMock.mockResolvedValueOnce({ slug: 'bonjour', lang: 'fr', title: 'Bonjour' });
+      expect(await loadOgTitle('blog', 'bonjour', 'en')).toEqual({ eyebrow: 'BLOG', title: 'Bonjour' });
+    });
     it('returns title + BLOG eyebrow when post found', async () => {
       getPostBySlugMock.mockResolvedValueOnce({
-        slug: 'postgres-vacuum-tuning',
+        slug: 'postgres-vacuum-tuning', lang: 'en',
         title: 'Postgres Vacuum Tuning',
       });
       const result = await loadOgTitle('blog', 'postgres-vacuum-tuning', 'en');

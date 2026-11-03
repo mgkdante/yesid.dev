@@ -4,7 +4,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { adapter } from '#lib/adapters/index.ts';
-import { isPathPublished } from '#lib/utils/page-registry.ts';
+import { isPathPublished } from '#lib/utils/content-availability.ts';
 import { delocalizePath } from '#lib/utils/locale-routing.ts';
 import { PUBLISHED_LOCALES, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
@@ -88,7 +88,7 @@ describe('sitemap coverage gate', () => {
 			}
 		}
 
-		const entries = await _buildSitemapEntries(pages);
+		const entries = await _buildSitemapEntries({ pages: pages });
 		const actual = new Set<string>();
 		for (const entry of entries) {
 			const m = entry.match(/<loc>([^<]+)<\/loc>/);

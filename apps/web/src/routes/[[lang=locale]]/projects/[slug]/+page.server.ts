@@ -1,3 +1,4 @@
+import { isEntityAvailable } from '#lib/utils/content-availability.ts';
 // Project detail page loader — server-only so hydration reuses __data.json
 // instead of re-running the load in the browser (reads resolve from the
 // static content layer post-27.2).
@@ -18,7 +19,7 @@ export const prerender = entries().length > 0;
 export async function load({ params, fetch, url }: { params: { slug: string; lang?: string }; fetch: typeof globalThis.fetch; url: URL }) {
 	const project = await adapter.projects.bySlug(params.slug);
 
-	if (!project || project.status === 'private') {
+	if (!project || !isEntityAvailable({ kind: 'project', entity: project }, localeFromParams(params, url.pathname))) {
 		error(404, 'Project not found');
 	}
 
