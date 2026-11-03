@@ -1,6 +1,6 @@
 /** Live editorial contracts ported verbatim from the served legal-truth tests. */
 import type { ExportData } from '../../export-data';
-import { PageSeoSchema } from '../../../../web/src/lib/schemas/seo';
+import { PageSeoSchema } from '@repo/shared/schemas';
 
 type Locale = 'en' | 'fr' | 'es';
 

@@ -39,3 +39,6 @@ export * from './blog';
 export * from './service';
 export * from './morph-shape';
 export * from './nav';
+
+export * from './seo';
+export { SchemaOrgNodeSchema } from './jsonld';
