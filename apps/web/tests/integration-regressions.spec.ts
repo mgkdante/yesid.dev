@@ -32,7 +32,6 @@ test.describe('responsive shell and interrupted menu', () => {
 		await page.getByTestId('sections-toggle').click();
 		await expect(page.getByTestId('sections-toggle')).toHaveText(localeCopy.en.sections.expand);
 		await page.keyboard.press('Tab');
-		await page.keyboard.press('Tab');
 		const section = page.locator('main .section-header:visible').first();
 		await expect(section).toBeFocused();
 		const focused = await section.boundingBox();
@@ -275,10 +274,13 @@ test.describe('section navigation keyboard continuity', () => {
 				expect(box.y).toBeGreaterThanOrEqual(pill.y + pill.height);
 				expect(box.y + box.height).toBeLessThanOrEqual(page.viewportSize()!.height);
 			}).toPass();
-			await expect(heading).toHaveAttribute('aria-expanded', 'false');
-			await heading.press('Enter');
+			// A TOC jump opens its target, including on later cycles after an individual collapse.
 			await expect(heading).toHaveAttribute('aria-expanded', 'true');
+			await heading.press('Enter');
+			await expect(heading).toHaveAttribute('aria-expanded', 'false');
 			await heading.press('Space');
+			await expect(heading).toHaveAttribute('aria-expanded', 'true');
+			await heading.press('Enter');
 			await expect(heading).toHaveAttribute('aria-expanded', 'false');
 		}
 	});
