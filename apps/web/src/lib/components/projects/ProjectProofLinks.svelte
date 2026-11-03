@@ -5,6 +5,7 @@
 	import { isProjectProofHref } from '#lib/utils/high-intent-links.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
+	import { localeCopy } from '#lib/locales/index.ts';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { SectionIcon } from '@yesid/ui/brand';
 	import Globe from '@lucide/svelte/icons/globe';
@@ -17,7 +18,7 @@
 	const githubLabel = resolveLocale(glanceChrome.githubLabel, locale);
 	const docsLabel = resolveLocale(glanceChrome.docsLabel, locale);
 	const repoPrivateLabel = resolveLocale(glanceChrome.repoPrivateLabel, locale);
-	const progressLabel = resolveLocale({ en: 'Work in progress', fr: 'Travail en cours', es: 'Trabajo en curso' }, locale);
+	const progressLabel = localeCopy[locale].projects.workInProgress;
 
 	let { project, tabbable = true }: { project: ProjectSummary; tabbable?: boolean } = $props();
 
