@@ -34,3 +34,17 @@ export async function expectCardContentInside(card: Locator) {
 	});
 	expect(violations, 'card text must remain inside its clipping ancestors').toEqual([]);
 }
+
+/** Compare rendered rows through the card's test interface, independent of its CSS. */
+export async function expectCardRowsAligned(cards: Locator) {
+	expect(await cards.count(), 'alignment needs multiple cards with different content').toBeGreaterThan(1);
+	for (const row of ['title', 'excerpt', 'service', 'services', 'links']) {
+		const rows = row === 'title' ? cards.getByRole('heading') : cards.getByTestId(new RegExp(`(?:project-card|proof-card|proof)-${row}$`));
+		await expect.poll(async () => {
+			const heights = await rows.evaluateAll(nodes => nodes
+				.filter(node => node.checkVisibility())
+				.map(node => node.getBoundingClientRect().height));
+			return heights.length > 1 ? Math.max(...heights) - Math.min(...heights) : Infinity;
+		}, { message: `${row} rows share a height across every card` }).toBeLessThanOrEqual(1);
+	}
+}
