@@ -13,16 +13,17 @@ export const entries = serviceEntries;
 export const prerender = entries().length > 0;
 
 export async function load({ params, fetch }: { params: { id: string; lang?: string }; fetch: typeof globalThis.fetch }) {
+	const locale = localeFromParams(params);
 	const service = await adapter.services.byId(params.id);
 
-	if (!service || !isEntityAvailable({ kind: 'service', entity: service }, localeFromParams(params))) {
+	if (!service || !isEntityAvailable({ kind: 'service', entity: service }, locale)) {
 		error(404, 'Service not found');
 	}
 
-	const services = await adapter.services.visible();
+	const services = await adapter.services.visible(locale);
 	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		adapter.services.adjacent(params.id),
-		adapter.projects.byService(params.id),
+		adapter.services.adjacent(params.id, locale),
+		adapter.projects.byService(params.id, locale),
 		fetchServiceSvgContents(fetch, services),
 	]);
 

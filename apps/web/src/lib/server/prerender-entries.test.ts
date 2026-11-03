@@ -29,28 +29,28 @@ const LANG_VALUES = ['', ...PREFIX_LOCALES];
 
 describe('prerender-entries', () => {
 	it('does not enumerate an archived static page in any locale', () => {
-		expect(localeEntries('/about', sitePages.filter((page) => page.path !== '/about'))).toEqual([]);
-		expect(localeEntries('/contact', sitePages)).toEqual([{ lang: '' }, { lang: 'fr' }, { lang: 'es' }]);
+		expect(localeEntries('/about', { pages: sitePages.filter((page) => page.path !== '/about') })).toEqual([]);
+		expect(localeEntries('/contact', { pages: sitePages })).toEqual([{ lang: '' }, { lang: 'fr' }, { lang: 'es' }]);
 	});
 
 	it('does not enumerate archived listings, detail pages or their OG cards', () => {
 		const registry = sitePages.filter((page) => !['/blog', '/projects', '/services'].includes(page.path));
-		expect(blogEntriesFor(blogPosts, registry)).toEqual([]);
-		expect(projectEntries(registry)).toEqual([]);
-		expect(serviceEntries(registry)).toEqual([]);
-		expect(ogBlogRows(registry)).toEqual([]);
-		expect(ogProjectSlugs(projects, registry)).toEqual([]);
-		expect(localeEntries('/blog/personal', registry)).toEqual([{ lang: '' }, { lang: 'fr' }, { lang: 'es' }]);
+		expect(blogEntriesFor(blogPosts, { pages: registry })).toEqual([]);
+		expect(projectEntries({ pages: registry })).toEqual([]);
+		expect(serviceEntries({ pages: registry })).toEqual([]);
+		expect(ogBlogRows({ pages: registry })).toEqual([]);
+		expect(ogProjectSlugs({ projects, pages: registry })).toEqual([]);
+		expect(localeEntries('/blog/personal', { pages: registry })).toEqual([{ lang: '' }, { lang: 'fr' }, { lang: 'es' }]);
 	});
 
 	it('does not enumerate an archived legal page in any locale', () => {
 		const registry = sitePages.filter((page) => page.path !== '/legal/privacy');
-		expect(legalEntries(registry).some((entry) => entry.slug === 'privacy')).toBe(false);
-		expect(legalEntries(registry).some((entry) => entry.slug === 'terms')).toBe(true);
+		expect(legalEntries({ pages: registry }).some((entry) => entry.slug === 'privacy')).toBe(false);
+		expect(legalEntries({ pages: registry }).some((entry) => entry.slug === 'terms')).toBe(true);
 	});
 
 	it('enumerates a service with omitted visibility like the public service loader', () => {
-		expect(serviceEntries(sitePages, [{ id: 'default-visible' } as Service])).toEqual([
+		expect(serviceEntries({ pages: sitePages, services: [{ id: 'default-visible' } as Service] })).toEqual([
 			{ lang: '', id: 'default-visible' }, { lang: 'fr', id: 'default-visible' }, { lang: 'es', id: 'default-visible' },
 		]);
 	});
@@ -105,7 +105,7 @@ describe('prerender-entries', () => {
 		const wip = { slug: 'work-in-progress', status: 'wip' } as Project;
 		const hidden = { slug: 'private-project', status: 'private' } as Project;
 
-		expect(ogProjectSlugs([wip, hidden])).toEqual(['work-in-progress']);
+		expect(ogProjectSlugs({ projects: [wip, hidden] })).toEqual(['work-in-progress']);
 	});
 
 	it('ogProjectSlugs binds generated projects by default', () => {

@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { DEFAULT_LOCALE } from '../src/lib/utils/locale';
-import { isPathPublished, STATIC_PAGE_PATHS } from '../src/lib/utils/page-registry';
+import { isPathPublished, STATIC_PAGE_PATHS } from '../src/lib/utils/content-availability';
 import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 
 test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');

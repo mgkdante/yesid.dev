@@ -7,7 +7,7 @@ import { sitePages } from '#lib/content/site-pages.ts';
 describe('llms.txt — Spanish section (L2 Phase 4)', () => {
 	it.each([['llmsTxt', llmsTxt], ['llmsFullTxt', llmsFullTxt]] as const)('%s omits archived section links', (_, render) => {
 		const registry = sitePages.filter((page) => !['/blog', '/projects', '/services', '/contact'].includes(page.path));
-		const body = render(registry);
+		const body = render({ pages: registry });
 		expect(body).not.toMatch(/https:\/\/yesid\.dev\/(?:es\/)?(?:blog|projects|services|contact)(?:\/|\b)/);
 		expect(body).toContain('Available for remote and on-site work');
 	});

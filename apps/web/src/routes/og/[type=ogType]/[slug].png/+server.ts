@@ -4,27 +4,27 @@ import { ogSlugParam, parseOgSlugParam } from '#lib/og/og-path.ts';
 import { Resvg } from '@resvg/resvg-js';
 import { OG_WIDTH, renderOgPng } from '@yesid/seo-kit/og';
 import { ogFonts } from '@yesid/seo-kit/og/fonts';
-import { ogBlogRows, ogProjectSlugs } from '#lib/server/prerender-entries.ts';
-import { PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
-import { isPathPublished } from '#lib/utils/content-availability.ts';
+import { ogBlogRows, projectEntries } from '#lib/server/prerender-entries.ts';
+import { projects } from '#lib/content/projects.ts';
+import { blogPosts } from '#lib/content/blog.ts';
+import { localeFromParams } from '#lib/utils/locale-routing.ts';
+import { isEntityAvailable, type AvailabilityContext } from '#lib/utils/content-availability.ts';
 
 // Prerender every known blog/project card into deployment-static PNGs. entries()
 // is exhaustive through the shared available-blog and non-private-project
 // helpers; vercel.json owns the narrow fallback for unknown card paths.
 export const prerender = entries().length > 0;
 
-export function entries(): Array<{ type: OgType; slug: string }> {
+export function entries(context: AvailabilityContext = {}): Array<{ type: OgType; slug: string }> {
 	return [
-		...ogBlogRows().map(({ slug, locale }) => ({
+		...ogBlogRows(context).map(({ slug, locale }) => ({
 			type: 'blog' as const,
 			slug: ogSlugParam('blog', slug, locale),
 		})),
-		...ogProjectSlugs().flatMap((baseSlug) =>
-			PUBLISHED_LOCALES.map((locale) => ({
-				type: 'project' as const,
-				slug: ogSlugParam('project', baseSlug, locale),
-			})),
-		),
+		...projectEntries(context).map(({ slug, lang }) => ({
+			type: 'project' as const,
+			slug: ogSlugParam('project', slug, localeFromParams({ lang })),
+		})),
 	];
 }
 
@@ -32,7 +32,8 @@ const HAPPY_HEADERS = {
   'content-type': 'image/png',
 };
 
-export const GET: RequestHandler = async (event) => {
+export function _createOgHandler(context: AvailabilityContext = {}): RequestHandler {
+ return async (event) => {
   const { type, slug } = event.params as { type: OgType; slug: string };
 
   // Locale is path-encoded: project cards use bare EN or .fr/.es suffixes,
@@ -43,12 +44,18 @@ export const GET: RequestHandler = async (event) => {
   if (!parsed) {
     throw new Error(`[og] invalid slug parameter for ${type}: "${slug}"`);
   }
-  const { baseSlug, locale } = parsed;
-  if (!isPathPublished(`/${type === 'project' ? 'projects' : 'blog'}/${baseSlug}`)) {
-    error(404, 'Not found');
+  const { baseSlug } = parsed;
+  const rows = { ...context, projects: context.projects ?? projects, posts: context.posts ?? blogPosts };
+  const post = type === 'blog' ? rows.posts.find((post) => post.slug === baseSlug) : undefined;
+  const project = type === 'project' ? rows.projects.find((project) => project.slug === baseSlug) : undefined;
+  const locale = post?.lang ?? parsed.locale;
+  if (type === 'blog') {
+    if (!post || !isEntityAvailable({ kind: 'post', entity: post }, locale, context)) error(404, 'Not found');
+  } else {
+    if (!project || !isEntityAvailable({ kind: 'project', entity: project }, locale, context)) error(404, 'Not found');
   }
 
-  const titleResult = await loadOgTitle(type, baseSlug, locale);
+  const titleResult = await loadOgTitle(type, baseSlug, locale, rows);
   if (!titleResult) {
     throw new Error(`[og] missing title for ${type}: "${baseSlug}" (${locale})`);
   }
@@ -68,3 +75,6 @@ export const GET: RequestHandler = async (event) => {
     throw new Error(`[og] render failed for ${type}: "${baseSlug}" (${locale})`, { cause });
   }
 };
+}
+
+export const GET: RequestHandler = _createOgHandler();

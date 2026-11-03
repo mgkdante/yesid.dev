@@ -99,22 +99,22 @@ export const staticAdapter: ContentAdapter = {
 			const p = getProjectBySlug(slug);
 			return parsePort('projects.bySlug', ProjectSchema.optional(), p);
 		},
-		featured: async () =>
-			parsePort('projects.featured', z.array(ProjectSummarySchema), getFeaturedProjects()),
-		public: async () =>
-			parsePort('projects.public', z.array(ProjectSummarySchema), getPublicProjects()),
-		byService: async (serviceId) =>
-			parsePort('projects.byService', z.array(ProjectSummarySchema), getProjectsByService(serviceId)),
+		featured: async (locale) =>
+			parsePort('projects.featured', z.array(ProjectSummarySchema), getFeaturedProjects(locale)),
+		public: async (locale) =>
+			parsePort('projects.public', z.array(ProjectSummarySchema), getPublicProjects(locale)),
+		byService: async (serviceId, locale) =>
+			parsePort('projects.byService', z.array(ProjectSummarySchema), getProjectsByService(serviceId, locale)),
 	},
 	services: {
 		byId: async (id) => parsePort('services.byId', ServiceSchema.optional(), getServiceById(id)),
-		visible: async () =>
-			parsePort('services.visible', z.array(ServiceSchema), getVisibleServices()),
-		adjacent: async (id) =>
+		visible: async (locale) =>
+			parsePort('services.visible', z.array(ServiceSchema), getVisibleServices(locale)),
+		adjacent: async (id, locale) =>
 			parsePort(
 				'services.adjacent',
 				z.object({ prev: ServiceSchema.optional(), next: ServiceSchema.optional() }),
-				getAdjacentServices(id),
+				getAdjacentServices(id, locale),
 			),
 	},
 	blog: {

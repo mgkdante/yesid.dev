@@ -9,6 +9,12 @@ const project = (
 ) => projectFactory.build({ status, stack, relatedServices });
 
 describe('deriveProjectFacets', () => {
+	it('uses the request locale and omits facets when the project site page is archived', () => {
+		const rows = [project('public', ['SQL'], ['database'])];
+		expect(deriveProjectFacets(rows, 'es', { locales: ['en'] })).toEqual({ stackItems: [], serviceIds: [] });
+		expect(deriveProjectFacets(rows, 'fr', { locales: ['fr'] })).toEqual({ stackItems: ['SQL'], serviceIds: ['database'] });
+		expect(deriveProjectFacets(rows, 'en', { pages: [] })).toEqual({ stackItems: [], serviceIds: [] });
+	});
 	it('excludes private-only stack items and service IDs', () => {
 		const facets = deriveProjectFacets([
 			project('public', ['Visible stack'], ['visible-service']),

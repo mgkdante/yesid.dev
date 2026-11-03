@@ -5,13 +5,14 @@ import type { RequestHandler } from './$types';
 // kit-default change would be a stale-SEO footgun.
 export const prerender = false;
 
-import { adapter } from '#lib/adapters/index.ts';
+import { projects } from '#lib/content/projects.ts';
+import { services as serviceRows } from '#lib/content/services.ts';
+import { blogPosts } from '#lib/content/blog.ts';
+import { legalPages } from '#lib/content/legal-pages.ts';
 import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '#lib/utils/seo-defaults.ts';
-import { STATIC_PAGE_PATHS } from '#lib/utils/page-registry.ts';
-import { isPathPublished, isEntityAvailable } from '#lib/utils/content-availability.ts';
-import { sitePages } from '#lib/content/site-pages.ts';
+import { STATIC_PAGE_PATHS, isPathPublished, isEntityAvailable, type AvailabilityContext } from '#lib/utils/content-availability.ts';
 import { groupBlogTranslations } from '#lib/blog/translations.ts';
-import type { BlogPost, Locale, ProjectSummary, SitePage } from '#lib/types.ts';
+import type { BlogPost, Locale } from '#lib/types.ts';
 import {
 	emitAlternateSitemapEntries,
 	emitSitemapDocument,
@@ -47,9 +48,10 @@ export function _exactUrlEntries(
 
 /** Exact translated blog clusters over each post's available languages.
  * Different slugs still emit reciprocal alternates. */
-export function _blogUrlEntries(posts: readonly BlogPost[]): string[] {
+export function _blogUrlEntries(posts: readonly BlogPost[], locales: readonly Locale[] = PUBLISHED_LOCALES): string[] {
 	return groupBlogTranslations(posts).flatMap((group) => {
-		const variants = PUBLISHED_LOCALES.filter((locale) => group.posts[locale]);
+		const variants = locales.filter((locale) => group.posts[locale]);
+		if (!variants.length) return [];
 		const alternates = Object.fromEntries(
 			variants.map((locale) => [locale, canonicalFor(`/blog/${group.posts[locale]!.slug}`, locale)]),
 		) as Partial<Record<Locale, string>>;
@@ -61,40 +63,39 @@ export { emitSitemapDocument as _emitSitemapDocument };
 
 // Filter every candidate through the route registry so archived pages leave the sitemap on the same rebuild.
 export async function _buildSitemapEntries(
-	pages: readonly SitePage[] = sitePages,
-	projectRows?: readonly ProjectSummary[],
+	context: AvailabilityContext = {},
 ): Promise<string[]> {
 	const entries: string[] = [];
-	const pushIfPublished = (path: string, variants: readonly Locale[] = PUBLISHED_LOCALES) => {
-		if (isPathPublished(path, pages) && variants.length) entries.push(...urlEntries(path, variants));
+	const locales = context.locales ?? PUBLISHED_LOCALES;
+	const pushIfPublished = (path: string, variants: readonly Locale[] = locales) => {
+		if (isPathPublished(path, context.pages) && variants.length) entries.push(...urlEntries(path, variants));
 	};
 
 	for (const path of STATIC_PAGE_PATHS) {
 		pushIfPublished(path);
 	}
 
-	for (const project of projectRows ?? await adapter.projects.public()) {
-		pushIfPublished(`/projects/${project.slug}`, PUBLISHED_LOCALES.filter((locale) => isEntityAvailable({ kind: 'project', entity: project }, locale, { pages })));
+	for (const project of context.projects ?? projects) {
+		pushIfPublished(`/projects/${project.slug}`, locales.filter((locale) => isEntityAvailable({ kind: 'project', entity: project }, locale, context)));
 	}
 
-	const services = await adapter.services.visible();
+	const services = context.services ?? serviceRows;
 	for (const service of services) {
-		pushIfPublished(`/services/${service.id}`, PUBLISHED_LOCALES.filter((locale) => isEntityAvailable({ kind: 'service', entity: service }, locale, { pages })));
+		pushIfPublished(`/services/${service.id}`, locales.filter((locale) => isEntityAvailable({ kind: 'service', entity: service }, locale, context)));
 	}
 
 	// Legal pages (OPS1) — localized like the chrome routes, full alternate
 	// cluster per published locale.
-	const legal = await adapter.legal.all();
-	for (const page of legal) {
+	for (const page of legalPages) {
 		pushIfPublished(`/legal/${page.slug}`);
 	}
 
 	// Each available blog language owns its locale-specific slug. Group by the
 	// post key so every variant carries one reciprocal cluster.
-	const posts = (await adapter.blog.all()).filter((post) =>
-		isEntityAvailable({ kind: 'post', entity: post }, post.lang, { pages }),
+	const posts = (context.posts ?? blogPosts).filter((post) =>
+		isEntityAvailable({ kind: 'post', entity: post }, post.lang, context),
 	);
-	entries.push(..._blogUrlEntries(posts));
+	entries.push(..._blogUrlEntries(posts, locales));
 
 	return entries;
 }

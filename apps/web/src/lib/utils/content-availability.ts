@@ -7,6 +7,13 @@ export interface AvailabilityOptions {
 	locales?: readonly Locale[];
 }
 
+/** Build-time rows and locale permission, injectable together for surface agreement checks. */
+export interface AvailabilityContext extends AvailabilityOptions {
+	projects?: readonly Project[];
+	services?: readonly Service[];
+	posts?: readonly BlogPost[];
+}
+
 export type ContentEntity =
 	| { kind: 'project'; entity: Pick<Project, 'slug' | 'status'> }
 	| { kind: 'service'; entity: Pick<Service, 'id' | 'visible'> }
