@@ -173,7 +173,7 @@
 
 		<div data-testid="manifesto-text" bind:this={statementEl} class="manifesto__statement">
 			<div class="manifesto__line-small">{statementLine1}</div>
-			<div data-testid="manifesto-line-huge" class="manifesto__line-huge">{statementLineHuge}</div>
+			<div data-testid="manifesto-line-huge" class="manifesto__line-huge" class:manifesto__line-huge--es={locale === 'es'}>{statementLineHuge}</div>
 			<div class="manifesto__line-small">
 				{statementLine3Part1} <span class="manifesto__highlight">{statementLine3Highlight}</span> {statementLine3Part2}<span class="manifesto__highlight">.</span>
 			</div>
@@ -288,6 +288,11 @@
 	}
 
 	.manifesto__highlight { color: var(--primary); }
+
+	/* The Spanish word has one more letter than EN/FR. Keep the whole word visible. */
+	.manifesto__line-huge--es {
+		font-size: clamp(1.9rem, 10vw, 11rem);
+	}
 
 	.manifesto__pills {
 		display: flex;

@@ -24,7 +24,7 @@
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
 	import { escapeHtml } from '#lib/utils/code-fences.ts';
 	import { bookingHref, directContactChannel } from '#lib/utils/high-intent-links.ts';
-	import { pressBounce } from '@yesid/motion/actions';
+	import { trackLinkActivation } from '#lib/analytics/site-events.ts';
 	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
 
 	let {
@@ -275,15 +275,16 @@
 	}
 
 	function handleContactChannelClick(
+		event: MouseEvent,
 		social: ContactContent['socials'][number],
 	): void {
 		if (social.icon === 'calendar') {
-			trackAnalyticsEvent('booking_click', { placement: 'contact' });
+			trackLinkActivation(event, 'booking_click', { placement: 'contact' });
 			return;
 		}
 
 		const channel = directContactChannel(social.href);
-		if (channel) trackAnalyticsEvent('direct_contact_click', { placement: 'contact', channel });
+		if (channel) trackLinkActivation(event, 'direct_contact_click', { placement: 'contact', channel });
 	}
 
 </script>
@@ -380,7 +381,8 @@
 						<a
 							href={social.href}
 							data-testid="contact-social-{social.icon}"
-							onclick={() => handleContactChannelClick(social)}
+							onclick={(event) => handleContactChannelClick(event, social)}
+							onauxclick={(event) => handleContactChannelClick(event, social)}
 							class="tap-feedback flex items-center gap-2 rounded px-2 py-3 min-h-11 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15 active:bg-primary/25"
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
@@ -463,21 +465,19 @@
 							</div>
 						{/if}
 
-						<span class="tap-press" use:pressBounce>
-							<Button
-								variant="conversion"
-								size="cta"
-								type="submit"
-								disabled={sending || !hydrated}
-								aria-busy={sending}
-								data-testid="contact-submit"
-							>
-								<span aria-hidden="true">~ $</span>
-								{sending
-									? resolveLocale(contactPage.success.sending, locale)
-									: resolveLocale(contactPage.formTerminal.submitLabel, locale)}
-							</Button>
-						</span>
+						<Button
+							variant="conversion"
+							size="cta"
+							type="submit"
+							disabled={sending || !hydrated}
+							aria-busy={sending}
+							data-testid="contact-submit"
+						>
+							<span aria-hidden="true">~ $</span>
+							{sending
+								? resolveLocale(contactPage.success.sending, locale)
+								: resolveLocale(contactPage.formTerminal.submitLabel, locale)}
+						</Button>
 
 						<!-- In-flight transmission line (terminal voice) -->
 						{#if sending}
@@ -493,7 +493,8 @@
 								target="_blank"
 								rel="noopener"
 								data-testid="contact-booking-link"
-								onclick={() => trackAnalyticsEvent('booking_click', { placement: 'contact' })}
+								onclick={(event) => trackLinkActivation(event, 'booking_click', { placement: 'contact' })}
+								onauxclick={(event) => trackLinkActivation(event, 'booking_click', { placement: 'contact' })}
 								class="tap-feedback rounded px-1 py-0.5 inline-flex min-h-11 items-center text-[var(--primary)] transition-colors duration-200 hover:bg-primary/15"
 							>
 								<span aria-hidden="true">~ $</span>

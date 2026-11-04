@@ -16,6 +16,7 @@
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
 	import { ListingFrame } from '@yesid/ui/layout';
+	import { StateNotice } from '@yesid/ui/feedback';
 	import { persisted } from '@yesid/ui/state';
 
 	let {
@@ -206,9 +207,7 @@
 		{#if filteredPosts.length === 0}
 			<!-- Two empty states: "your filters matched nothing" vs "this section has
 			     no posts at all" (blaming filters that don't exist reads as a bug). -->
-			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-				{hasActiveFilters ? emptyState : emptyStateNoPosts}
-			</p>
+			<StateNotice role="status" title={hasActiveFilters ? emptyState : emptyStateNoPosts} data-testid="blog-empty-state" />
 		{:else}
 			<div class="flex flex-col gap-4">
 				{#each filteredPosts as post, i (post.slug)}

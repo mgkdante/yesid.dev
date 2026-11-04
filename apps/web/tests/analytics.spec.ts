@@ -94,15 +94,15 @@ function eventsNamed(payloads: Payload[], name: string): Payload[] {
 	return nonSentinel(payloads).filter((payload) => payload.n === name);
 }
 
-async function clickWithoutNavigation(link: Locator): Promise<void> {
-	await link.evaluate((element) => {
+async function clickWithoutNavigation(link: Locator, activation: 'click' | 'auxclick' = 'click'): Promise<void> {
+	await link.evaluate((element, type) => {
 		element.addEventListener(
-			'click',
+			type,
 			(event) => event.preventDefault(),
 			{ capture: true, once: true },
 		);
-		(element as HTMLElement).click();
-	});
+		element.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, button: type === 'auxclick' ? 1 : 0 }));
+	}, activation);
 }
 
 test('successful contact form sends one locale-tagged event without form data', async ({ page, baseURL }) => {
@@ -143,117 +143,132 @@ test('successful contact form sends one locale-tagged event without form data', 
 	expectExactPageviewCount(payloads, 1);
 });
 
-test('booking click sends one event with its placement and the sanitized current page', async ({
-	page,
-	baseURL,
-}) => {
-	const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
-	const payloads = await capturePlausible(page);
+for (const activation of ['click', 'auxclick'] as const) {
+	test(`${activation}: booking click sends one event with its placement and the sanitized current page`, async ({
+		page,
+		baseURL,
+	}) => {
+		const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
+		const payloads = await capturePlausible(page);
 
-	await page.goto(
-		`${productionOrigin}/contact?utm_source=codex_ops2_qa&booking=private`,
-	);
-	await waitForPageviews(payloads, 1);
+		await page.goto(
+			`${productionOrigin}/contact?utm_source=codex_ops2_qa&booking=private`,
+		);
+		await waitForPageviews(payloads, 1);
 
-	const booking = visibleContactTerminal(page).getByTestId('contact-booking-link');
-	await expect(booking).toBeVisible();
-	await clickWithoutNavigation(booking);
+		const booking = visibleContactTerminal(page).getByTestId('contact-booking-link');
+		await expect(booking).toBeVisible();
+		await clickWithoutNavigation(booking, activation);
 
-	await expect.poll(() => eventsNamed(payloads, 'booking_click').length).toBe(1);
-	await drainCapturedRequests(page, payloads);
+		await expect.poll(() => eventsNamed(payloads, 'booking_click').length).toBe(1);
+		await drainCapturedRequests(page, payloads);
 
-	const events = eventsNamed(payloads, 'booking_click');
-	expect(events).toHaveLength(1);
-	expect(events[0]).toMatchObject({
-		n: 'booking_click',
-		d: 'yesid.dev',
+		const events = eventsNamed(payloads, 'booking_click');
+		expect(events).toHaveLength(1);
+		expect(events[0]).toMatchObject({
+			n: 'booking_click',
+			d: 'yesid.dev',
+		});
+		expect(events[0].p).toEqual({ locale: 'en', placement: 'contact' });
+		const trackedUrl = new URL(events[0].u);
+		expect(trackedUrl.pathname).toBe('/contact');
+		expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+		expect(trackedUrl.searchParams.has('booking')).toBe(false);
+		expectExactPageviewCount(payloads, 1);
 	});
-	expect(events[0].p).toEqual({ locale: 'en', placement: 'contact' });
-	const trackedUrl = new URL(events[0].u);
-	expect(trackedUrl.pathname).toBe('/contact');
-	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
-	expect(trackedUrl.searchParams.has('booking')).toBe(false);
-	expectExactPageviewCount(payloads, 1);
-});
 
-test('direct contact click sends one event with its channel and the sanitized current page', async ({
-	page,
-	baseURL,
-}) => {
-	const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
-	const payloads = await capturePlausible(page);
+	test(`${activation}: direct contact click sends one event with its channel and the sanitized current page`, async ({
+		page,
+		baseURL,
+	}) => {
+		const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
+		const payloads = await capturePlausible(page);
 
-	await page.goto(
-		`${productionOrigin}/contact?utm_source=codex_ops2_qa&bp=secret`,
-	);
-	await waitForPageviews(payloads, 1);
+		await page.goto(
+			`${productionOrigin}/contact?utm_source=codex_ops2_qa&bp=secret`,
+		);
+		await waitForPageviews(payloads, 1);
 
-	const email = page
-		.getByTestId('contact-social-email')
-		.filter({ visible: true })
-		.first();
-	await expect(email).toBeVisible();
-	await clickWithoutNavigation(email);
+		const email = page
+			.getByTestId('contact-social-email')
+			.filter({ visible: true })
+			.first();
+		await expect(email).toBeVisible();
+		await clickWithoutNavigation(email, activation);
 
-	await expect
-		.poll(() => eventsNamed(payloads, 'direct_contact_click').length)
-		.toBe(1);
-	await settleBrowser(page);
-	await drainCapturedRequests(page, payloads);
+		await expect
+			.poll(() => eventsNamed(payloads, 'direct_contact_click').length)
+			.toBe(1);
+		await settleBrowser(page);
+		await drainCapturedRequests(page, payloads);
 
-	const events = eventsNamed(payloads, 'direct_contact_click');
-	expect(events).toHaveLength(1);
-	expect(events[0]).toMatchObject({
-		n: 'direct_contact_click',
-		d: 'yesid.dev',
+		const events = eventsNamed(payloads, 'direct_contact_click');
+		expect(events).toHaveLength(1);
+		expect(events[0]).toMatchObject({
+			n: 'direct_contact_click',
+			d: 'yesid.dev',
+		});
+		expect(events[0].p).toEqual({ locale: 'en', placement: 'contact', channel: 'email' });
+		const trackedUrl = new URL(events[0].u);
+		expect(trackedUrl.pathname).toBe('/contact');
+		expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+		expect(trackedUrl.searchParams.has('bp')).toBe(false);
+		expectExactPageviewCount(payloads, 1);
 	});
-	expect(events[0].p).toEqual({ locale: 'en', placement: 'contact', channel: 'email' });
-	const trackedUrl = new URL(events[0].u);
-	expect(trackedUrl.pathname).toBe('/contact');
-	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
-	expect(trackedUrl.searchParams.has('bp')).toBe(false);
-	expectExactPageviewCount(payloads, 1);
-});
 
-test('project proof click sends one event with its link type and the sanitized current project page', async ({
-	page,
-	baseURL,
-}) => {
-	const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
-	const payloads = await capturePlausible(page);
+	test(`${activation}: project proof click sends one event with its link type and the sanitized current project page`, async ({
+		page,
+		baseURL,
+	}) => {
+		const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
+		const payloads = await capturePlausible(page);
 
-	await page.goto(
-		`${productionOrigin}/projects/yesid-dev?utm_source=codex_ops2_qa&stack=secret`,
-	);
-	await waitForPageviews(payloads, 1);
+		await page.goto(
+			`${productionOrigin}/projects/yesid-dev?utm_source=codex_ops2_qa&stack=secret`,
+		);
+		await waitForPageviews(payloads, 1);
 
-	const card = page
-		.getByTestId('project-links-card')
-		.filter({ visible: true })
-		.first();
-	const liveSite = card.locator('a[href="https://yesid.dev"]');
-	await expect(liveSite).toBeVisible();
-	await clickWithoutNavigation(liveSite);
+		const card = page
+			.getByTestId('project-links-card')
+			.filter({ visible: true })
+			.first();
+		const liveSite = card.locator('a[href="https://yesid.dev"]');
+		await expect(liveSite).toBeVisible();
+		await clickWithoutNavigation(liveSite, activation);
 
-	await expect
-		.poll(() => eventsNamed(payloads, 'project_proof_click').length)
-		.toBe(1);
-	await settleBrowser(page);
-	await drainCapturedRequests(page, payloads);
+		await expect
+			.poll(() => eventsNamed(payloads, 'project_proof_click').length)
+			.toBe(1);
+		await settleBrowser(page);
+		await drainCapturedRequests(page, payloads);
 
-	const events = eventsNamed(payloads, 'project_proof_click');
-	expect(events).toHaveLength(1);
-	expect(events[0]).toMatchObject({
-		n: 'project_proof_click',
-		d: 'yesid.dev',
+		const events = eventsNamed(payloads, 'project_proof_click');
+		expect(events).toHaveLength(1);
+		expect(events[0]).toMatchObject({
+			n: 'project_proof_click',
+			d: 'yesid.dev',
+		});
+		expect(events[0].p).toEqual({ locale: 'en', link: 'live' });
+		const trackedUrl = new URL(events[0].u);
+		expect(trackedUrl.pathname).toBe('/projects/yesid-dev');
+		expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
+		expect(trackedUrl.searchParams.has('stack')).toBe(false);
+		expectExactPageviewCount(payloads, 1);
 	});
-	expect(events[0].p).toEqual({ locale: 'en', link: 'live' });
-	const trackedUrl = new URL(events[0].u);
-	expect(trackedUrl.pathname).toBe('/projects/yesid-dev');
-	expect(trackedUrl.searchParams.get('utm_source')).toBe('codex_ops2_qa');
-	expect(trackedUrl.searchParams.has('stack')).toBe(false);
-	expectExactPageviewCount(payloads, 1);
-});
+
+	test(`${activation}: owner profile activation sends exactly one profile event`, async ({ page, baseURL }) => {
+	    const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
+	    const payloads = await capturePlausible(page);
+	    await page.goto(`${productionOrigin}/projects`);
+	    await waitForPageviews(payloads, 1);
+	    const github = page.locator('footer a[href="https://github.com/mgkdante"]').first();
+	    await clickWithoutNavigation(github, activation);
+	    await expect.poll(() => eventsNamed(payloads, 'profile_click').length).toBe(1);
+	    await drainCapturedRequests(page, payloads);
+	    expect(eventsNamed(payloads, 'profile_click')).toHaveLength(1);
+	    expect(eventsNamed(payloads, 'profile_click')[0].p).toEqual({ locale: 'en', network: 'github' });
+	});
+}
 
 for (const { locale, code, path } of [
 	{ locale: 'English', code: 'en', path: '/projects' },

@@ -14,7 +14,8 @@ if (process.env.TEST_WORKER_INDEX === undefined) {
 
 // PLAYWRIGHT_BASE_URL runs the suite against a deployed preview instead of the local build.
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
-const baseURL = externalBaseURL ?? 'http://localhost:4173';
+const port = Number(process.env.E2E_PORT ?? 4173);
+const baseURL = externalBaseURL ?? `http://localhost:${port}`;
 
 // --shard splits tests by count in project order. Desktop and theme tests take several times longer than phone and
 // tablet tests, so this order evens out the CI shards' run time. Unlisted projects run last.
@@ -45,8 +46,8 @@ export default defineConfig({
 		: {
 				webServer: {
 					// CI builds once through turbo, so E2E_PREBUILT only previews.
-					command: process.env.E2E_PREBUILT ? 'bun run preview' : 'bun run build && bun run preview',
-					port: 4173,
+					command: process.env.E2E_PREBUILT ? `bun run preview --port ${port} --strictPort` : `bun run build && bun run preview --port ${port} --strictPort`,
+					port,
 					reuseExistingServer: !process.env.CI,
 					timeout: 180_000,
 					env: { EXPORT_FALLBACKS_SOURCE: 'fixture', PUBLIC_PLAUSIBLE_DOMAIN: 'yesid.dev' }

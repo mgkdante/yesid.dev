@@ -1,8 +1,27 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+const analytics = vi.hoisted(() => ({ trackAnalyticsEvent: vi.fn() }));
+vi.mock('./client', () => analytics);
 import { siteMeta } from '#lib/content/index.ts';
-import { navigationEvents, profileClickNetwork } from './site-events';
+import { navigationEvents, profileClickNetwork, trackLinkActivation } from './site-events';
 
 const at = (path: string) => ({ url: new URL(path, 'https://yesid.dev') });
+
+describe('trackLinkActivation', () => {
+	it.each(['profile_click', 'project_proof_click', 'booking_click', 'direct_contact_click'] as const)(
+		'counts left, keyboard and middle activation exactly once for %s', (name) => {
+			analytics.trackAnalyticsEvent.mockClear();
+			for (const event of [
+				{ type: 'click', button: 0 }, // includes Enter and programmatic activation
+				{ type: 'auxclick', button: 1 },
+				{ type: 'auxclick', button: 2 },
+				{ type: 'click', button: 1 },
+			]) trackLinkActivation(event, name, { placement: 'contact' });
+			expect(analytics.trackAnalyticsEvent.mock.calls).toEqual([
+				[name, { placement: 'contact' }], [name, { placement: 'contact' }],
+			]);
+		},
+	);
+});
 
 describe('navigationEvents', () => {
 	it('reports a 404 render and a hop between locales', () => {

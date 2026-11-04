@@ -22,7 +22,7 @@
 	// seoHeadProps resolves the page SEO and JSON-LD for the current locale.
 	import { SeoHead } from '@yesid/ui/head';
 	import { startAnalytics, trackAnalyticsEvent } from '#lib/analytics/client.ts';
-	import { navigationEvents, profileClickNetwork } from '#lib/analytics/site-events.ts';
+	import { navigationEvents, profileClickNetwork, trackLinkActivation } from '#lib/analytics/site-events.ts';
 	import { siteMeta, menuItems as staticMenuItems, siteLabels } from '#lib/content/index.ts';
 	import { errorPagesById } from '#lib/content/error-pages.ts';
 	import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
@@ -129,15 +129,18 @@
 	});
 
 	let isFullBleed = $derived(basePath === '/' || basePath.startsWith('/projects/') && basePath !== '/projects' || basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal');
+
+	function trackProfileLink(event: MouseEvent): void {
+		const network = profileClickNetwork(event);
+		if (network) trackLinkActivation(event, 'profile_click', { network });
+	}
 </script>
 
 <!-- SvelteKit skips beforeNavigate during an active navigation, so use native history events. -->
 <svelte:window
 	onpopstate={() => { if (pendingTransitions > 0) location.reload(); }}
-	onclick={(event) => {
-		const network = profileClickNetwork(event);
-		if (network) trackAnalyticsEvent('profile_click', { network });
-	}}
+	onclick={trackProfileLink}
+	onauxclick={trackProfileLink}
 />
 
 {#snippet footerBrand()}

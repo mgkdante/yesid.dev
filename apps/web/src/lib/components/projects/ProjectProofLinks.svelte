@@ -1,6 +1,6 @@
 <!-- Project status and proof links, shared by both card variants and the page header. -->
 <script lang="ts">
-	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
+	import { trackLinkActivation } from '#lib/analytics/site-events.ts';
 	import type { ProjectSummary } from '#lib/types.ts';
 	import { isProjectProofHref } from '#lib/utils/high-intent-links.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
@@ -22,9 +22,9 @@
 
 	let { project, tabbable = true }: { project: ProjectSummary; tabbable?: boolean } = $props();
 
-	function handleProjectProofClick(href: string | undefined, link: 'live' | 'repo' | 'docs'): void {
+	function handleProjectProofClick(event: MouseEvent, href: string | undefined, link: 'live' | 'repo' | 'docs'): void {
 		if (href && isProjectProofHref(href)) {
-			trackAnalyticsEvent('project_proof_click', { link });
+			trackLinkActivation(event, 'project_proof_click', { link });
 		}
 	}
 
@@ -43,7 +43,8 @@
 					href={project.liveUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					onclick={() => handleProjectProofClick(project.liveUrl, 'live')}
+					onclick={(event) => handleProjectProofClick(event, project.liveUrl, 'live')}
+					onauxclick={(event) => handleProjectProofClick(event, project.liveUrl, 'live')}
 				>
 					<Globe class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
 					{liveSiteLabel}
@@ -57,7 +58,8 @@
 					href={project.repoUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					onclick={() => handleProjectProofClick(project.repoUrl, 'repo')}
+					onclick={(event) => handleProjectProofClick(event, project.repoUrl, 'repo')}
+					onauxclick={(event) => handleProjectProofClick(event, project.repoUrl, 'repo')}
 				>
 					<SectionIcon name="github" class="h-3.5 w-3.5 shrink-0" />
 					{githubLabel}
@@ -79,7 +81,8 @@
 					href={project.docsUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					onclick={() => handleProjectProofClick(project.docsUrl, 'docs')}
+					onclick={(event) => handleProjectProofClick(event, project.docsUrl, 'docs')}
+					onauxclick={(event) => handleProjectProofClick(event, project.docsUrl, 'docs')}
 					data-testid="project-docs-link"
 				>
 					<BookOpen class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

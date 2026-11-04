@@ -1,6 +1,18 @@
 import { siteMeta } from '#lib/content/index.ts';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
-import type { AnalyticsEventName } from './preset';
+import type { AnalyticsEventName, AnalyticsEventProps } from './preset';
+import { trackAnalyticsEvent } from './client';
+
+/** Links activate through click (including Enter) or middle-button auxclick, never both. */
+export function trackLinkActivation(
+	event: Pick<MouseEvent, 'type' | 'button'>,
+	name: AnalyticsEventName,
+	props?: AnalyticsEventProps,
+): void {
+	if (event.type === 'click' && event.button === 0 || event.type === 'auxclick' && event.button === 1) {
+		trackAnalyticsEvent(name, props);
+	}
+}
 
 type ProfileNetwork = 'github' | 'linkedin' | 'upwork';
 
