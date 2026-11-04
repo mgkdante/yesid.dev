@@ -262,7 +262,7 @@
 <!-- Section 7: Terminus and construction props stay together, rotated title left. -->
 <section
 	bind:this={closerSectionEl}
-	class="home-section home-section--left"
+	class="home-section home-section--left home-section--terminus"
 	style={rotatedVar}
 >
 	<div class="rotated-title rotated-title--left"><SectionHeading heading={sectionTerminus} /></div>
@@ -345,6 +345,11 @@
 		.home-section-heading-mobile {
 			display: block;
 			padding: 2rem var(--space-page-x) 0.5rem;
+		}
+
+		/* Match the conversion band's divider-to-heading gap only at Terminus. */
+		.home-section--terminus .home-section-heading-mobile {
+			padding-block-start: 4rem;
 		}
 
 		.home-section--proof-reel .home-section-heading-mobile {

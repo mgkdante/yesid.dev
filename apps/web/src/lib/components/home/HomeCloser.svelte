@@ -151,9 +151,13 @@
 		background: transparent; position: relative; overflow-y: clip;
 		--construction-end-inset: calc(4% + clamp(160px, 18vw, 260px) + 1rem);
 	}
-	/* Natural board height with a modest top inset. The tallest floor artwork
+	/* Match the conversion band's 4rem gap; the page owns the stacked heading gap.
+	   Natural board height remains. The tallest floor artwork
 	   is 234px: 140px here plus the 100px unfolding ground clears it below the CTA. */
-	.closer-core { display: flex; align-items: flex-start; padding: 24px var(--space-page-x) 140px; position: relative; }
+	.closer-core { display: flex; align-items: flex-start; padding: 4rem var(--space-page-x) 140px; position: relative; }
+	@media (--desktop-max) {
+		.closer-core { padding-block-start: 0; }
+	}
 	.ground-anchor { height: 0; width: 1px; pointer-events: none; }
 	.construction-extension { height: calc(100px - var(--closer-ground-fold)); }
 	/* Scroll input arrives in steps. Ease the floor and artwork together so a
@@ -275,7 +279,7 @@
 		.closer-core {
 			flex-direction: column;
 			align-items: stretch;
-			padding: 24px var(--space-page-x) 100px;
+			padding: 0 var(--space-page-x) 100px;
 		}
 
 		.closer-content {

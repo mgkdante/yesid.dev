@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { measureCloserGap } from './helpers/closer-gap';
 
 // Run the explicit locale/viewport matrix once, rather than once per device project.
 test.skip(({ viewport }) => viewport?.width !== 1440, 'Explicit geometry matrix runs in desktop.');
@@ -15,7 +16,7 @@ const viewports = [
 
 for (const locale of ['en', 'fr', 'es']) {
 	for (const viewport of viewports) {
-		test(`${locale} ${viewport.width}x${viewport.height} terminus keeps a modest top inset and finishes before scroll ends`, async ({ page }, testInfo) => {
+		test(`${locale} ${viewport.width}x${viewport.height} terminus matches the CTA divider gap and finishes before scroll ends`, async ({ page }, testInfo) => {
 			await page.setViewportSize(viewport);
 			await page.emulateMedia({ reducedMotion: 'no-preference' });
 			await page.goto(locale === 'en' ? '/' : `/${locale}`);
@@ -28,6 +29,22 @@ for (const locale of ['en', 'fr', 'es']) {
 			await section.evaluate(el => window.scrollBy(0, el.getBoundingClientRect().top));
 			await expect(board).toHaveCSS('opacity', '1');
 			await expect.poll(() => board.evaluate(el => getComputedStyle(el).transform)).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
+			const dividerGeometry = await measureCloserGap(page);
+			await testInfo.attach('divider-geometry', { body: JSON.stringify(dividerGeometry), contentType: 'application/json' });
+			if (process.env.S8_EVIDENCE) {
+				await mkdir(process.env.S8_EVIDENCE, { recursive: true });
+				await writeFile(join(process.env.S8_EVIDENCE, `${locale}-${viewport.width}x${viewport.height}-dividers.json`), JSON.stringify(dividerGeometry, null, 2));
+			}
+			expect.soft(dividerGeometry.ctaGap, 'reference CTA heading begins 4rem after its hazard edge').toBeCloseTo(64, 1);
+			expect.soft(dividerGeometry.terminusGap, 'Terminus uses the measured CTA gap, including the divider edge').toBeCloseTo(dividerGeometry.ctaGap, 1);
+			expect.soft(dividerGeometry.terminusGap, 'both gaps stay pinned to the intended value').toBeCloseTo(64, 1);
+			if (viewport.width < 1024) {
+				expect.soft(dividerGeometry.sharedHeadingGap, 'board follows the shared heading spacing').toBeCloseTo(14, 1);
+				for (const control of dividerGeometry.otherHeadings) {
+					expect(control.paddingTop, `${control.text} keeps its existing top padding`).toBe('32px');
+					expect(control.topGap, `${control.text} stays in place`).toBeCloseTo(32, 1);
+				}
+			}
 			const geometry = await section.evaluate(el => {
 				const box = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
 				const content = el.parentElement!;
@@ -41,9 +58,9 @@ for (const locale of ['en', 'fr', 'es']) {
 				};
 			});
 			await testInfo.attach('geometry', { body: JSON.stringify(geometry), contentType: 'application/json' });
-			expect.soft(Math.abs(geometry.gap - 24), 'board keeps a modest 24px breathing room').toBeLessThanOrEqual(1);
+			expect.soft(Math.abs(geometry.gap - (viewport.width >= 1024 ? 64 : 0)), 'content adds only the intended inset').toBeLessThanOrEqual(1);
 			expect.soft(Math.abs(geometry.wrapperGap), 'wrapper adds no top space').toBeLessThanOrEqual(1);
-			if (geometry.headingGap !== null) expect.soft(Math.abs(geometry.headingGap - 24), 'shared heading spacing plus the modest inset').toBeLessThanOrEqual(1);
+			if (geometry.headingGap !== null) expect.soft(Math.abs(geometry.headingGap), 'no extra inset after the shared heading wrapper').toBeLessThanOrEqual(1);
 			if (process.env.S7_EVIDENCE) {
 				await mkdir(process.env.S7_EVIDENCE, { recursive: true });
 				await writeFile(join(process.env.S7_EVIDENCE, `${locale}-${viewport.width}x${viewport.height}-gap.json`), JSON.stringify(geometry, null, 2));
