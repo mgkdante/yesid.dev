@@ -198,7 +198,7 @@
 
 	/* Swipe guard: disable all pointer events on tabs during horizontal swipe.
 	   Prevents click/pointerdown from firing on buttons or links mid-swipe. */
-	.swipe-lock .station-tab {
+	:global(.swipe-lock) .station-tab {
 		pointer-events: none;
 	}
 
