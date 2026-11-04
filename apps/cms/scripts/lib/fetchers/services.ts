@@ -58,6 +58,8 @@ export interface DirectusServiceSectionRow {
 
 export interface DirectusService {
 	id: string;
+	impact_metric_source_url?: string | null;
+	impact_metric_as_of?: string | null;
 	station: number;
 	icon?: string | null;
 	svg?: string | null;
@@ -106,6 +108,8 @@ export function toService(row: DirectusService): Service {
 	]);
 	if (impactMetric.value && impactMetric.label) {
 		service.impactMetric = { value: impactMetric.value, label: impactMetric.label };
+		if (row.impact_metric_source_url?.trim()) service.impactMetric.sourceUrl = row.impact_metric_source_url.trim();
+		if (row.impact_metric_as_of?.trim()) service.impactMetric.asOf = row.impact_metric_as_of.trim();
 	}
 
 	const deliverables = mapLocalizedRepeater(row.deliverables, (d) =>

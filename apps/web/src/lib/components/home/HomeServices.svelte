@@ -14,6 +14,7 @@
 	import { morphHover } from '#lib/motion/actions/morphHover.js';
 	import { gsap, loadDrawSVG } from '@yesid/motion/utils/gsap';
 	import { SectionHeading } from '@yesid/ui/brand';
+	import MetricProof from '#lib/components/shared/MetricProof.svelte';
 	import type { Service, ServicesGridContent } from '#lib/types.ts';
 
 	let {
@@ -103,6 +104,7 @@
 				{@const title = resolveLocale(service.title, locale)}
 				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : ''}
 				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : ''}
+				<div class="services-card-item">
 				<a
 					href={localizeHref(`/services/${service.id}`, locale)}
 					data-testid="services-card"
@@ -164,6 +166,8 @@
 						{/if}
 					</div>
 				</a>
+				{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
+				</div>
 			{/each}
 		</div>
 
@@ -202,6 +206,8 @@
 		text-decoration: none;
 		height: 100%;
 	}
+	.services-card-item { display: flex; flex-direction: column; min-width: 0; }
+	.services-card-item > .services-card-link { flex: 1; }
 
 	/* Explicit grid rows keep icon, content and footer sizes aligned across varied copy lengths. */
 

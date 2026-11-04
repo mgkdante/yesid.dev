@@ -16,6 +16,7 @@
 	import { cn } from '@yesid/ui/cn';
 	import { stationNumber } from '#lib/utils/station.ts';
 	import { pressBounce } from '@yesid/motion/actions';
+	import MetricProof from '#lib/components/shared/MetricProof.svelte';
 
 	export interface ServiceCardProps {
 		/** The service data to display */
@@ -101,6 +102,7 @@
 							<span class="metric-label">{metricLabel}</span>
 						{/if}
 					</div>
+					{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 				{/if}
 
 				<!-- Desktop CTA — hidden on mobile -->

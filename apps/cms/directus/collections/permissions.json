@@ -9548,5 +9548,31 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "1a331113-ebf5-46b1-b7ff-9df13a5dade3"
+  },
+  {
+    "collection": "services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "impact_metric_source_url",
+      "impact_metric_as_of"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-services-impact-proof-read"
+  },
+  {
+    "collection": "services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "impact_metric_source_url",
+      "impact_metric_as_of"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-services-impact-proof-update"
   }
 ]

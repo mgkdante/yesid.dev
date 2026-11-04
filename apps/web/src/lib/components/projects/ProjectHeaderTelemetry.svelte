@@ -3,7 +3,6 @@
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { getStackRole } from '#lib/utils/stack-roles.ts';
-	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 
 	let { project }: { project: Project } = $props();
 
@@ -19,7 +18,7 @@
 			name: tech.toLowerCase().replace(/\s+/g, '-'),
 		})),
 	);
-	const metrics = $derived(projectMetrics(project));
+	const metrics = $derived(project.impactMetrics ?? []);
 </script>
 
 <div class="absolute bottom-[55px] right-[45px] hidden lg:block">
@@ -44,7 +43,7 @@
 	<div>STATUS <span>{project.status}</span></div>
 	<div class="mt-2">───────</div>
 	{#each metrics as metric, i (i)}
-		<div>{metric.value} {resolveLocale(metric.label, locale)}</div>
+		<div>{resolveLocale(metric.value, locale)} {resolveLocale(metric.label, locale)}</div>
 	{/each}
 </div>
 

@@ -39,7 +39,6 @@
 	import ProjectImpactCard from './ProjectImpactCard.svelte';
 	import ProjectProofLinks from './ProjectProofLinks.svelte';
 	import ProjectOverviewCard from './ProjectOverviewCard.svelte';
-	import { projectMetrics } from '#lib/utils/project-metrics.ts';
 	import BlockRenderer from '#lib/components/cms/BlockRenderer.svelte';
 	import CodeBlock from '#lib/components/cms/blocks/CodeBlock.svelte';
 	import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
@@ -162,7 +161,7 @@
 	const media = setArticleMedia(() => galleryDoc.blocks, () => galleryVideos);
 	const firstArticleSection = $derived(articleSections[0]);
 	const remainingArticleSections = $derived(articleSections.slice(1));
-	const hasImpact = $derived(projectMetrics(project).length > 0);
+	const hasImpact = $derived((project.impactMetrics?.length ?? 0) > 0);
 	const readmeHtml = $derived((readme ?? []).map((part) => ('html' in part ? part.html : '')).join(''));
 	const readmeTocEntry = $derived.by((): TocEntry | null => {
 		if (!readme?.length) return null;

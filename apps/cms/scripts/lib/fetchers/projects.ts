@@ -51,6 +51,8 @@ export interface DirectusProjectImpactMetricRow {
 	sort: number | null;
 	value: string;
 	before: string | null;
+	source_url?: string | null;
+	as_of?: string | null;
 	translations?: DirectusProjectImpactMetricTranslation[];
 }
 
@@ -127,10 +129,12 @@ export function toProject(row: DirectusProject): Project {
 
 	const impactMetrics: ImpactMetric[] = mapLocalizedRepeater(row.impact_metrics, (m) => {
 		const metric: ImpactMetric = {
-			value: m.value,
+			value: { en: m.value, fr: m.value, es: m.value },
 			...toLocalizedFields(withoutLocales(m.translations, hidden), ['label']),
 		};
 		if (m.before) metric.before = m.before;
+		if (m.source_url?.trim()) metric.sourceUrl = m.source_url.trim();
+		if (m.as_of?.trim()) metric.asOf = m.as_of.trim();
 		return metric;
 	});
 
@@ -160,7 +164,6 @@ export function toProject(row: DirectusProject): Project {
 
 	if (impactMetrics.length > 0) {
 		project.impactMetrics = impactMetrics;
-		project.impactMetric = impactMetrics[0];
 	}
 
 	return project;
@@ -175,7 +178,8 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 				'*',
 				{ translations: ['*'] } as unknown as string,
 				{ sections: ['id', 'sort', { translations: ['*'] }] } as unknown as string,
-				{ impact_metrics: ['id', 'sort', 'value', 'before', { translations: ['*'] }] } as unknown as string,
+				// Wildcard keeps Publish compatible before the optional proof columns exist.
+				{ impact_metrics: ['*', { translations: ['*'] }] } as unknown as string,
 				{ services: ['id', 'project_id', 'service_id'] } as unknown as string,
 				{ tech_stack: ['sort', { tech_stack_id: ['id', 'name'] }] } as unknown as string,
 			],

@@ -26,6 +26,7 @@ type Policy = { name: string; admin_access: boolean; app_access: boolean; roles:
 type Perm = { collection: string; action: string; policy: string };
 
 const UNRELATED_PERMISSION_COUNT = 721;
+const IMPACT_PROOF_PERMISSION_IDS = ['he-services-impact-proof-read', 'he-services-impact-proof-update'];
 // slice-43.15 retires unused CMS collections and their explicit nav/stack fields.
 // slice-43.22 adds 45 AI Editor rows to adopt the live grant extension.
 // slice-43.26 adopts the live public-read row filters and file metadata fields.
@@ -175,8 +176,8 @@ describe('Editor role wiring (go2-t1d)', () => {
 	});
 
 	it('preserves every unrelated permission and preset row while adding registry configuration', () => {
-		const unrelatedPermissions = (permissions as Array<{ collection: string }>).filter(
-			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection),
+		const unrelatedPermissions = (permissions as Array<{ collection: string; _syncId: string }>).filter(
+			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !IMPACT_PROOF_PERMISSION_IDS.includes(row._syncId),
 		);
 		const unrelatedPresets = (presets as Array<{ collection: string; _syncId: string }>).filter(
 			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !BLOG_LANGUAGE_PRESET_IDS.includes(row._syncId) && !DEFAULT_LIST_VIEW_PRESET_IDS.includes(row._syncId),
@@ -186,5 +187,14 @@ describe('Editor role wiring (go2-t1d)', () => {
 		expect(rowsSha256(unrelatedPermissions)).toBe(UNRELATED_PERMISSION_SHA256);
 		expect(unrelatedPresets).toHaveLength(UNRELATED_PRESET_COUNT);
 		expect(rowsSha256(unrelatedPresets)).toBe(UNRELATED_PRESET_SHA256);
+	});
+
+	it('adds only read and update of the two service proof fields for Human Editor', () => {
+		const rows = permissions.filter(row => IMPACT_PROOF_PERMISSION_IDS.includes(row._syncId));
+		expect(rows).toEqual(['read', 'update'].map(action => ({
+			collection: 'services', action, permissions: {}, validation: null, presets: null,
+			fields: ['impact_metric_source_url', 'impact_metric_as_of'], policy: '_sync_human_editor_policy',
+			_syncId: `he-services-impact-proof-${action}`,
+		})));
 	});
 });

@@ -97,19 +97,45 @@ describe('projects fetcher transform', () => {
 		expect(result.relatedServices).toEqual(['data-pipeline', 'sql-development']);
 	});
 
-	it('sorts impact_metrics by sort ascending, sets first as impactMetric', () => {
+	it('sorts impact_metrics without exporting a duplicate legacy metric', () => {
 		const result = toProject(FIXTURE);
 		expect(result.impactMetrics).toHaveLength(2);
-		expect(result.impactMetrics?.[0]?.value).toBe('30s');
-		expect(result.impactMetrics?.[1]?.value).toBe('99.9%');
-		expect(result.impactMetric).toEqual(result.impactMetrics?.[0]);
+		expect(result.impactMetrics?.[0]?.value).toEqual({ en: '30s', fr: '30s', es: '30s' });
+		expect(result.impactMetrics?.[1]?.value).toEqual({ en: '99.9%', fr: '99.9%', es: '99.9%' });
+		expect(result).not.toHaveProperty('impactMetric');
+	});
+
+	it('exports optional proof without changing the number or inventing missing fields', async () => {
+		const row = { ...FIXTURE, impact_metrics: [Object.assign({}, FIXTURE.impact_metrics![0]!, {
+			source_url: 'https://example.org/evidence', as_of: '2026-11-04',
+		})] };
+		const [project] = await fetchProjects({ client: cmsClientDouble(() => [row]) });
+		expect(project?.impactMetrics?.[0]).toMatchObject({ value: { en: '99.9%' }, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' });
+		const [old] = await fetchProjects({ client: cmsClientDouble(() => [FIXTURE]) });
+		expect(old?.impactMetrics?.[0]).not.toHaveProperty('sourceUrl');
+		expect(old?.impactMetrics?.[0]).not.toHaveProperty('asOf');
+	});
+
+	it('rejects invalid proof at the export boundary', async () => {
+		for (const proof of [{ source_url: 'http://example.org' }, { as_of: '2026-02-30' }]) {
+			const row = { ...FIXTURE, impact_metrics: [Object.assign({}, FIXTURE.impact_metrics![0]!, proof)] };
+			await expect(fetchProjects({ client: cmsClientDouble(() => [row]) })).rejects.toThrow();
+		}
+	});
+	it('omits null or blank proof without making a citation mandatory', async () => {
+		for (const proof of [null, '', '   ']) {
+			const row = { ...FIXTURE, impact_metrics: [{ ...FIXTURE.impact_metrics![0]!, source_url: proof, as_of: proof }] };
+			const [project] = await fetchProjects({ client: cmsClientDouble(() => [row]) });
+			expect(project?.impactMetrics?.[0]).not.toHaveProperty('sourceUrl');
+			expect(project?.impactMetrics?.[0]).not.toHaveProperty('asOf');
+		}
 	});
 
 	it('omits impactMetrics entirely when none provided', () => {
 		const noMetrics: DirectusProject = { ...FIXTURE, impact_metrics: [] };
 		const result = toProject(noMetrics);
 		expect(result.impactMetrics).toBeUndefined();
-		expect(result.impactMetric).toBeUndefined();
+		expect(result).not.toHaveProperty('impactMetric');
 	});
 
 	it('maps theme-aware primary and optional secondary hero images', () => {

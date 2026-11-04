@@ -4,7 +4,7 @@ import { SITE_HOST, SERVICE_AREAS, canonicalFor } from '#lib/utils/seo-defaults.
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { type AvailabilityContext } from '#lib/catalog/availability.ts';
 import { orderServices } from '#lib/utils/station.ts';
-import type { BlogPost, Locale, LocalizedString } from '#lib/types.ts';
+import type { BlogPost, ImpactMetric, Locale, LocalizedString } from '#lib/types.ts';
 
 const en = (value: LocalizedString): string => resolveLocale(value, 'en');
 const es = (value: LocalizedString): string => resolveLocale(value, 'es');
@@ -19,6 +19,10 @@ const availableBlogPosts = (content: ContentCatalog) => content.blog.all();
 const absolute = (path: string): string => path.startsWith('http') ? path : `${SITE_HOST}${path}`;
 const blogUrl = (post: BlogPost): string => post.external ? absolute(post.url ?? '') : canonicalFor(`/blog/${post.slug}`, post.lang);
 const progress = (status: string) => status === 'wip' ? ' (in progress)' : '';
+
+function metricText(metric: ImpactMetric, locale: Locale): string {
+	return `${resolveLocale(metric.value, locale)} (${resolveLocale(metric.label, locale)})${metric.before ? `, before: ${metric.before}` : ''}${metric.sourceUrl ? `; source: ${metric.sourceUrl}` : ''}${metric.asOf ? `; as of: ${metric.asOf}` : ''}`;
+}
 
 function serviceAreaList(): string {
 	const areas = [...SERVICE_AREAS];
@@ -85,7 +89,7 @@ export function llmsFullTxt(context: AvailabilityContext = {}): string {
 		const value = (text: LocalizedString) => resolveLocale(text, locale);
 		const lines = [`### ${value(service.title)} (${canonicalFor(`/services/${service.id}`, locale)})`, '', value(service.description)];
 		if (service.benefitHeadline) lines.push('', `Benefit: ${value(service.benefitHeadline)}`);
-		if (service.impactMetric) lines.push(`Impact: ${value(service.impactMetric.value)} (${value(service.impactMetric.label)})`);
+		if (service.impactMetric) lines.push(`Impact: ${metricText(service.impactMetric, locale)}`);
 		if (service.deliverables?.length) lines.push('', 'Deliverables:', ...service.deliverables.map((item) => `- ${value(item)}`));
 		if (service.stack?.length) lines.push('', `Stack: ${service.stack.join(', ')}`);
 		return lines.join('\n');
@@ -93,8 +97,8 @@ export function llmsFullTxt(context: AvailabilityContext = {}): string {
 	const projectBlocks = projectRows(content).map(({ project, locale }) => {
 		const value = (text: LocalizedString) => resolveLocale(text, locale);
 		const lines = [`### ${value(project.title)} (${canonicalFor(`/projects/${project.slug}`, locale)})${progress(project.status)}`, '', value(project.oneLiner)];
-		const metrics = project.impactMetrics ?? (project.impactMetric ? [project.impactMetric] : []);
-		if (metrics.length) lines.push('', 'Impact:', ...metrics.map((metric) => `- ${metric.value} (${value(metric.label)})${metric.before ? `, before: ${metric.before}` : ''}`));
+		const metrics = project.impactMetrics ?? [];
+		if (metrics.length) lines.push('', 'Impact:', ...metrics.map((metric) => `- ${metricText(metric, locale)}`));
 		if (project.stack.length) lines.push('', `Stack: ${project.stack.join(', ')}`);
 		if (project.liveUrl) lines.push(`Live: ${project.liveUrl}`);
 		return lines.join('\n');
