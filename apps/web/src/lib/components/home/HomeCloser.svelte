@@ -151,9 +151,22 @@
 		background: transparent; position: relative; overflow-y: clip;
 		--construction-end-inset: calc(4% + clamp(160px, 18vw, 260px) + 1rem);
 	}
-	.closer-core { min-height: calc(100dvh - 100px); display: flex; align-items: center; padding: var(--space-section-y) var(--space-page-x) 0; position: relative; }
+	/* Natural board height, flush with the section content. The tallest floor artwork
+	   is 234px: 140px here plus the 100px unfolding ground clears it below the CTA. */
+	.closer-core { display: flex; align-items: flex-start; padding: 0 var(--space-page-x) 140px; position: relative; }
 	.ground-anchor { height: 0; width: 1px; pointer-events: none; }
 	.construction-extension { height: calc(100px - var(--closer-ground-fold)); }
+	/* Scroll input arrives in steps. Ease the floor and artwork together so a
+	   wheel notch, touch scroll or reversal cannot teleport the props. */
+	@media (prefers-reduced-motion: no-preference) {
+		.construction-extension { transition: height var(--duration-normal) var(--ease-out); }
+		.closer-section :global([data-construction-prop] > svg) {
+			transition: transform var(--duration-normal) var(--ease-out), opacity var(--duration-normal) var(--ease-out);
+		}
+		.closer-section :global([data-slot="closer-floodlight"]) {
+			transition: translate var(--duration-normal) var(--ease-out);
+		}
+	}
 	/* From tablet width the props spread along the ground beside the ending. */
 	@media (--tablet-min) {
 		.closer-section :global(.around .floor) {
@@ -257,11 +270,9 @@
 	/* ===== Mobile (<768px) ===== */
 	@media (--tablet-max) {
 		.closer-core {
-			min-height: 100dvh;
 			flex-direction: column;
 			align-items: stretch;
-			justify-content: center;
-			padding: var(--space-section-y) var(--space-page-x) 100px;
+			padding: 0 var(--space-page-x) 100px;
 		}
 
 		.closer-content {
@@ -271,6 +282,5 @@
 		}
 	}
 
-	/* Horizontal + top padding now handled by fluid tokens (--space-page-x, --space-section-y).
-	   Bottom 100px stays fixed for construction scene clearance. */
+	/* Phones stack the ending under the CTA and retain its 100px floor clearance. */
 </style>
