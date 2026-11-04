@@ -72,7 +72,9 @@ export const ContactContentSchema = z.object({
 	success: ContactSuccessSchema,
 	socials: z.array(ContactSocialLinkSchema).readonly(),
 	/** Public access key; safe to expose client-side. */
-	web3formsKey: z.string(),
+	web3formsKey: z.string().refine((key) => key.trim().length > 0, {
+		message: 'Web3Forms access key must not be blank',
+	}),
 });
 
 export type ContactTerminalField = z.infer<typeof ContactTerminalFieldSchema>;
