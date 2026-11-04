@@ -23,6 +23,7 @@ describe('detail reading position', () => {
 		vi.stubGlobal('scrollY', 800);
 	});
 	afterEach(() => {
+		context.dispose();
 		document.body.replaceChildren();
 		vi.unstubAllGlobals();
 	});
@@ -44,6 +45,35 @@ describe('detail reading position', () => {
 		section(1700, 200);
 		context.restore(saved);
 		expect(lenisAwareScrollTo).toHaveBeenCalledWith(800);
+	});
+
+	it('follows late diagram layout, then stops on reader input and disposal', () => {
+		let resized = () => {};
+		const disconnect = vi.fn();
+		vi.stubGlobal('ResizeObserver', class {
+			constructor(callback: () => void) { resized = callback; }
+			observe() {}
+			disconnect = disconnect;
+		});
+		const el = section(400, 1200);
+		context.restore(context.capture());
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(800);
+		vi.mocked(el.getBoundingClientRect).mockReturnValue({
+			top: -200, bottom: 1800, height: 2000, width: 600,
+			left: 0, right: 600, x: 0, y: -200, toJSON() {},
+		});
+		resized();
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1400);
+		window.dispatchEvent(new Event('wheel'));
+		vi.mocked(lenisAwareScrollTo).mockClear();
+		resized();
+		expect(lenisAwareScrollTo).not.toHaveBeenCalled();
+		expect(disconnect).toHaveBeenCalled();
+		context.restore(context.capture());
+		context.dispose();
+		vi.mocked(lenisAwareScrollTo).mockClear();
+		resized();
+		expect(lenisAwareScrollTo).not.toHaveBeenCalled();
 	});
 
 	it('keeps the offset outside section content, including above the article', () => {

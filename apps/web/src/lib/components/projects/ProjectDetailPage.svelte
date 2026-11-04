@@ -45,8 +45,7 @@
 	import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { registerScrollContext } from '#lib/state/locale-handoff.svelte.ts';
-	import { detailReadingPosition } from '#lib/state/detail-reading-position.ts';
+	import { registerDetailReadingPosition } from '#lib/state/detail-reading-position.ts';
 
 	let {
 		project,
@@ -216,9 +215,7 @@
 
 	const navigation = useSectionJump(afterNavigate);
 
-	onMount(() => registerScrollContext(
-		detailReadingPosition('.sections-column [data-section-index]')
-	));
+	onMount(() => registerDetailReadingPosition('.sections-column [data-section-index]'));
 </script>
 
 {#snippet galleryCard(mobile: boolean)}

@@ -20,8 +20,7 @@
 
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { registerScrollContext } from '#lib/state/locale-handoff.svelte.ts';
-  import { detailReadingPosition } from '#lib/state/detail-reading-position.ts';
+  import { registerDetailReadingPosition } from '#lib/state/detail-reading-position.ts';
   import { resolveLocale } from '#lib/utils/locale.ts';
   import { getLocale, intl } from '#lib/utils/locale-context.ts';
   import { localizeHref } from '#lib/utils/locale-routing.ts';
@@ -189,9 +188,7 @@
 
   const navigation = useSectionJump(afterNavigate);
 
-  onMount(() => registerScrollContext(
-    detailReadingPosition('[data-testid="blog-sections"] > .blog-section-block')
-  ));
+  onMount(() => registerDetailReadingPosition('[data-testid="blog-sections"] > .blog-section-block'));
 
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
 </script>

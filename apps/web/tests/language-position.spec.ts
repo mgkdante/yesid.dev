@@ -9,6 +9,9 @@ async function progress(section: Locator): Promise<number> {
 }
 
 async function readMiddle(page: Page, section: Locator): Promise<void> {
+	await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeVisible();
+	await page.evaluate(() => document.fonts.ready);
+	await expect(section.locator('.mermaid-diagram__fallback')).toHaveCount(0);
 	await section.evaluate((el) => {
 		const box = el.getBoundingClientRect();
 		window.scrollTo(0, window.scrollY + box.top + box.height * 0.5 - window.innerHeight * 0.25);
@@ -16,20 +19,35 @@ async function readMiddle(page: Page, section: Locator): Promise<void> {
 	await expect.poll(() => progress(section)).toBeCloseTo(0.5, 1);
 }
 
+
+// A matching position can briefly exist before afterNavigate restores. Wait for
+// the transient handoff to be consumed before asserting or switching again.
+async function handoffFinished(page: Page): Promise<void> {
+	await expect.poll(() => page.evaluate(() =>
+		Object.keys(sessionStorage).some((key) => key.startsWith('yesid:lstate:')),
+	)).toBe(false);
+}
+
+async function expectReadingProgress(page: Page, section: Locator, expected: number): Promise<void> {
+	await page.evaluate(() => document.fonts.ready);
+	await expect(section.locator('.mermaid-diagram__fallback')).toHaveCount(0);
+	await expect.poll(() => progress(section)).toBeCloseTo(expected, 1);
+}
+
 test('project language switch keeps progress inside the long first section', async ({ page }) => {
-	await page.goto('/projects/transit-data-pipeline');
+	await page.goto('/projects/transit-data-pipeline', { waitUntil: 'domcontentloaded' });
 	const section = page.locator('.sections-column [data-section-index="0"]');
 	await expect(section).toBeVisible();
-	await page.evaluate(() => document.fonts.ready);
 	await readMiddle(page, section);
 	const before = await progress(section);
 	await page.getByTestId('language-toggle').click();
 	await expect(page).toHaveURL(/\/fr\/projects\/transit-data-pipeline$/);
-	await expect.poll(() => progress(section)).toBeCloseTo(before, 1);
+	await handoffFinished(page);
+	await expectReadingProgress(page, section, before);
 });
 
 test('project language switch does not open a closed target section', async ({ page }) => {
-	await page.goto('/projects/transit-data-pipeline');
+	await page.goto('/projects/transit-data-pipeline', { waitUntil: 'domcontentloaded' });
 	const closed = page.locator('.sections-column [data-section-index="1"]');
 	const trigger = closed.locator('[data-section-trigger]');
 	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -39,6 +57,7 @@ test('project language switch does not open a closed target section', async ({ p
 	}
 	await page.getByTestId('language-toggle').click();
 	await expect(page).toHaveURL(/\/fr\/projects\/transit-data-pipeline$/);
+	await handoffFinished(page);
 	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 });
 
@@ -47,10 +66,9 @@ for (const detail of [
 	{ name: 'blog', path: '/blog/changing-language-should-not-mean-starting-over', selector: '[data-testid="blog-sections"] > .blog-section-block' },
 ]) {
 	test(`${detail.name} keeps section progress through EN, FR, ES and back`, async ({ page }) => {
-		await page.goto(detail.path);
+		await page.goto(detail.path, { waitUntil: 'domcontentloaded' });
 		const section = page.locator(detail.selector).first();
 		await expect(section).toBeVisible();
-		await page.evaluate(() => document.fonts.ready);
 		await readMiddle(page, section);
 		const before = await progress(section);
 		for (const locale of ['fr', 'es', 'en']) {
@@ -60,19 +78,20 @@ for (const detail of [
 			await toggle.click();
 			await expect(page).toHaveURL(href!);
 			await expect(page.locator('html')).toHaveAttribute('lang', locale);
-			await expect.poll(() => progress(section)).toBeCloseTo(before, 1);
+			await handoffFinished(page);
+			await expectReadingProgress(page, section, before);
 		}
 	});
 }
 
 test('project keeps reading progress with reduced motion @motion', async ({ page }) => {
-	await page.goto('/projects/transit-data-pipeline');
+	await page.goto('/projects/transit-data-pipeline', { waitUntil: 'domcontentloaded' });
 	const section = page.locator('.sections-column [data-section-index="0"]');
 	await expect(section).toBeVisible();
-	await page.evaluate(() => document.fonts.ready);
 	await readMiddle(page, section);
 	await page.getByTestId('language-toggle').click();
 	await expect(page).toHaveURL(/\/fr\/projects\/transit-data-pipeline$/);
-	await expect.poll(() => progress(section)).toBeCloseTo(0.5, 1);
+	await handoffFinished(page);
+	await expectReadingProgress(page, section, 0.5);
 });
 
