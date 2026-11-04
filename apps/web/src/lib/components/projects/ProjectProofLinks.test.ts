@@ -113,6 +113,14 @@ describe('ProjectLinksCard high-intent analytics', () => {
 });
 
 describe('ProjectLinksCard documentation link', () => {
+	it.each([undefined, 'https://example.com/demo'])('keeps WIP status outside the proof list with liveUrl=%s', (liveUrl) => {
+		const project = projectFactory.build({ status: 'wip', liveUrl, repoUrl: undefined, docsUrl: undefined, repoPrivate: false });
+		const { container } = render(ProjectProofLinks, { props: { project } });
+		const status = screen.getByText('Work in progress');
+		expect(status.closest('ul')).toBeNull();
+		expect(container.querySelectorAll('ul')).toHaveLength(liveUrl ? 1 : 0);
+	});
+
 	it('renders and tracks the published Documentation link beside the other links', async () => {
 		const project = projectFactory.build({
 			repoUrl: 'https://github.com/mgkdante/public-project',

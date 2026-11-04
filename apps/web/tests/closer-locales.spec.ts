@@ -97,6 +97,9 @@ for (const locale of PUBLISHED_LOCALES) {
 		await page.setViewportSize({ width: 1280, height: 900 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await page.goto(locale === DEFAULT_LOCALE ? '/' : '/' + locale);
+		// The SSR note is fully inked for no-JS readers. Load and two frames do not
+		// guarantee hydration; wait for scroll-driven props before sampling the note.
+		await expect(page.locator('[data-slot="construction-props"]')).toHaveAttribute('data-state', 'hidden');
 		const read = () =>
 			page.locator('.closer-note').evaluate(async (note) => {
 				await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
@@ -311,3 +314,28 @@ for (const width of [390, 820, 1920]) {
 		await expect(props).toHaveCount(0);
 	});
 }
+
+test('closer switches from readable server HTML to scroll-driven ink after delayed hydration', async ({ page }) => {
+	let resumeHydration!: () => void;
+	const hydration = new Promise<void>(resolve => { resumeHydration = resolve; });
+	await page.route('**/_app/immutable/entry/app.*.js', async route => {
+		await hydration;
+		await route.continue();
+	});
+	await page.setViewportSize({ width: 1280, height: 900 });
+	await page.emulateMedia({ reducedMotion: 'no-preference' });
+	try {
+		await page.goto('/');
+		const props = page.locator('[data-slot="construction-props"]');
+		const ink = () => page.locator('.closer-note path').evaluateAll(paths => paths.map(path =>
+			Number(getComputedStyle(path).opacity) && 1 - parseFloat(getComputedStyle(path).strokeDashoffset)));
+		// Server HTML deliberately remains readable until the client takes over.
+		expect((await ink()).every(value => value === 1)).toBe(true);
+		resumeHydration();
+		await expect(props).toHaveAttribute('data-state', 'hidden');
+		await page.locator('.ground-anchor').evaluate(anchor => {
+			document.scrollingElement!.scrollTop += anchor.getBoundingClientRect().top - innerHeight * 1.7;
+		});
+		await expect.poll(async () => (await ink()).every(value => value === 0)).toBe(true);
+	} finally { resumeHydration(); }
+});
