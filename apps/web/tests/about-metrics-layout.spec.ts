@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const locales = ['en', 'fr', 'es'] as const;
-const widths = [320, 390, 499, 500, 639, 640, 767, 768, 1023, 1024, 1280, 1440, 1789, 1790, 1800, 1920];
+const widths = [320, 390, 499, 500, 639, 640, 767, 768, 1023, 1024, 1280, 1440, 1789, 1790, 1795, 1796, 1797, 1800, 1920];
 
 async function openAbout(page: Page, locale: string) {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -32,7 +32,7 @@ async function geometry(page: Page) {
 				range.selectNodeContents(node);
 				lines.push(...[...range.getClientRects()].filter(rect => rect.width > 0).map(rect => ({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom })));
 			}
-			return { ...rect(element), align: getComputedStyle(element).textAlign, fontSize: parseFloat(getComputedStyle(element).fontSize), words, lines };
+			return { ...rect(element), align: getComputedStyle(element).textAlign, fontSize: parseFloat(getComputedStyle(element).fontSize), lineHeight: parseFloat(getComputedStyle(element).lineHeight), words, lines };
 		};
 		const values = [...card.querySelectorAll('.metric-value')];
 		const labels = [...card.querySelectorAll('.label-metric')];
@@ -52,6 +52,9 @@ async function expectLayout(page: Page, width: number) {
 	expect(facts).toHaveLength(4);
 	// The content needs 560px for four readable mono columns, and phones always use corners.
 	const fourColumns = width >= 640 && state.content.width >= 560;
+	// Pin the mode to the spec's ranges for the current About grid so a grid change cannot shift them silently.
+	const specFourColumns = (width >= 640 && width <= 767) || width >= 1796;
+	expect(fourColumns, `${width}px uses ${specFourColumns ? 'four columns' : 'two-by-two corners'}`).toBe(specFourColumns);
 	const pairs = fourColumns ? [facts] : [facts.slice(0, 2), facts.slice(2)];
 	for (const pair of pairs) {
 		for (const fact of pair) {
@@ -77,6 +80,7 @@ async function expectLayout(page: Page, width: number) {
 	}
 	expect(Math.abs(card.height - state.cell.height), 'card stretches with its grid row').toBeLessThanOrEqual(1);
 	for (const fact of facts) {
+		expect(fact.value.lineHeight, 'preserve the shared metric value line height').toBe(fact.value.fontSize);
 		expect(fact.color).toBe(state.theme === 'light' ? 'rgb(129, 93, 0)' : 'rgb(255, 182, 39)');
 		for (const element of [fact.value, fact.label]) {
 			expect(['left', 'start']).toContain(element.align);
@@ -111,7 +115,7 @@ for (const locale of locales) {
 
 	test(`${locale} About facts retain alignment and accent in both themes @theme`, async ({ page }, testInfo) => {
 		await openAbout(page, locale);
-		for (const [name, width, height] of [['phone', 390, 844], ['tablet', 768, 1024], ['desktop', 1440, 900], ['four-columns-min', 640, 900], ['desktop-four-columns-min', 1790, 900]] as const) {
+		for (const [name, width, height] of [['phone', 390, 844], ['tablet', 768, 1024], ['desktop', 1440, 900], ['four-columns-min', 640, 900], ['desktop-four-columns-min', 1796, 900]] as const) {
 			await page.setViewportSize({ width, height });
 			await expectLayout(page, width);
 			await page.getByTestId('about-metrics').screenshot({ path: testInfo.outputPath(`${locale}-${name}-${testInfo.project.name}-block.png`) });
