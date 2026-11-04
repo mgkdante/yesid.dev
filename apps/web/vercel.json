@@ -34,7 +34,7 @@
 				},
 				{
 					"key": "Permissions-Policy",
-					"value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"
+					"value": "accelerometer=(), bluetooth=(), camera=(), geolocation=(), gyroscope=(), hid=(), magnetometer=(), microphone=(), payment=(), serial=(), usb=()"
 				},
 				{
 					"key": "Cross-Origin-Opener-Policy",
