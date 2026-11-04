@@ -15,6 +15,7 @@
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
 	import { ListingFrame } from '@yesid/ui/layout';
+	import { StateNotice } from '@yesid/ui/feedback';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { persisted } from '@yesid/ui/state';
 
@@ -191,9 +192,7 @@
 		{/if}
 
 		{#if filteredProjects.length === 0}
-			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
-				{emptyStateText}
-			</p>
+			<StateNotice role="status" title={emptyStateText} data-testid="work-empty-state" />
 		{:else}
 			<div class="project-grid" use:alignProjectCards>
 				{#each filteredProjects as project, i (project.slug)}

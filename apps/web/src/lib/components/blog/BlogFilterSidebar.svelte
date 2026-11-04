@@ -22,6 +22,7 @@
 
 	// Date filters toggle independently of content sections.
 	let dateOpen = $state(true);
+	const datePanelId = $props.id();
 
 	let {
 		tags,
@@ -66,13 +67,16 @@
 	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
 	<FilterSection>
 	<button
+		type="button"
+		aria-expanded={dateOpen}
+		aria-controls={datePanelId}
 		class="flex min-h-11 w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
 		onclick={() => (dateOpen = !dateOpen)}
 	>
 		{resolveLocale(labels.dateRange, locale)}
 		<ChevronToggle open={dateOpen} size="sm" direction="down" />
 	</button>
-	<div class="date-collapse" class:date-open={dateOpen}>
+	<div id={datePanelId} class="date-collapse" class:date-open={dateOpen} inert={!dateOpen}>
 		<div class="date-collapse-inner">
 			<div class="mt-2 flex flex-col gap-1.5">
 				<label class="text-sm text-[var(--muted-foreground)]">

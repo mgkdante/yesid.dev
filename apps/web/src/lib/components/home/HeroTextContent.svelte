@@ -11,10 +11,9 @@
 	import { Button } from '@yesid/ui/button';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
-	import { trackAnalyticsEvent } from '#lib/analytics/client.ts';
+	import { trackLinkActivation } from '#lib/analytics/site-events.ts';
 
 	const locale = getLocale();
-	import { pressBounce } from '@yesid/motion/actions';
 	import type { HeroData } from '#lib/live/index.ts';
 	let {
 		headlineLine1,
@@ -184,12 +183,10 @@
 	</p>
 
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
-		<span class="tap-press" use:pressBounce>
-			<Button variant="default" size="cta-lg" href={localizeHref(ctaWorkHref, locale)} data-testid="hero-cta-projects">
-				{ctaWorkLabel}
-			</Button>
-		</span>
-		<Button variant="conversion" size="cta-lg" href={bookingHref} target="_blank" rel="noopener" data-testid="hero-cta-contact" class="tap-press" onclick={() => trackAnalyticsEvent('booking_click', { placement: 'hero' })}>
+		<Button variant="default" size="cta-lg" href={localizeHref(ctaWorkHref, locale)} data-testid="hero-cta-projects">
+			{ctaWorkLabel}
+		</Button>
+		<Button variant="conversion" size="cta-lg" href={bookingHref} target="_blank" rel="noopener" data-testid="hero-cta-contact" onclick={(event) => trackLinkActivation(event, 'booking_click', { placement: 'hero' })} onauxclick={(event) => trackLinkActivation(event, 'booking_click', { placement: 'hero' })}>
 			{ctaContactLabel}
 		</Button>
 	</div>

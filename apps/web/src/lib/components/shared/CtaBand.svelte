@@ -6,7 +6,6 @@
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
-	import { pressBounce } from '@yesid/motion/actions';
 	import CtaBlueprintBackground from './CtaBlueprintBackground.svelte';
 
 	const locale = getLocale();
@@ -31,16 +30,14 @@
 		</h2>
 		<p class="band-subtitle">{subtitle}</p>
 		<div class="band-actions">
-			<span class="tap-press" use:pressBounce>
-				<Button
-					variant="conversion"
-					size="cta-lg"
-					href={localizeHref('/contact', locale)}
-					data-testid="{testidPrefix}-contact"
-				>
-					{contactLabel}
-				</Button>
-			</span>
+			<Button
+				variant="conversion"
+				size="cta-lg"
+				href={localizeHref('/contact', locale)}
+				data-testid="{testidPrefix}-contact"
+			>
+				{contactLabel}
+			</Button>
 			<Button
 				variant="default"
 				size="cta-lg"
@@ -48,7 +45,6 @@
 				target="_blank"
 				rel="noopener"
 				data-testid="{testidPrefix}-github"
-				class="tap-press"
 			>
 				{githubLabel}
 			</Button>
