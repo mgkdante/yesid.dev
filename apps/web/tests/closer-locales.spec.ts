@@ -170,6 +170,16 @@ for (const width of [390, 820, 1920]) {
 			await expect
 				.poll(async () => Number(await props.getAttribute('data-progress')))
 				.toBeCloseTo(Math.max(0, Math.min(1, (0.95 - fraction) / 0.25)), 2);
+			// The target follows scroll immediately; the scene eases to it. Sample
+			// landed geometry only after the real artwork and floor have settled.
+			await expect.poll(() => props.locator('[data-construction-prop] > svg').evaluateAll(elements => {
+				const progress = Number(document.querySelector('[data-slot="construction-props"]')!.getAttribute('data-progress'));
+				return Math.max(...elements.map(el => Math.abs(new DOMMatrixReadOnly(getComputedStyle(el).transform).m42 - (1 - progress) * el.getBoundingClientRect().height)));
+			})).toBeLessThan(0.1);
+			await expect.poll(() => page.locator('.construction-extension').evaluate(el => {
+				const progress = Number(document.querySelector('[data-slot="construction-props"]')!.getAttribute('data-progress'));
+				return Math.abs(el.getBoundingClientRect().height - (innerWidth < 768 ? 0 : 100 * progress));
+			})).toBeLessThan(0.1);
 			// The ending's ink follows the ground's layout, so sample once its strokes hold still for a frame.
 			await page.locator('.closer-note').evaluate(
 				(note) =>
@@ -218,7 +228,9 @@ for (const width of [390, 820, 1920]) {
 			expect(
 				Math.abs(samples[4].ground - samples[0].ground),
 			).toBeLessThanOrEqual(1);
-			expect(Math.abs(samples[6].sectionHeight - page.viewportSize()!.height)).toBeLessThanOrEqual(1);
+			// The board now sets the natural section height. Returning to the same
+			// fully revealed anchor must restore that height, without a viewport floor.
+			expect(Math.abs(samples[6].sectionHeight - samples[2].sectionHeight)).toBeLessThanOrEqual(1);
 		} else {
 			expect(samples.every((sample) => sample.ground === 0)).toBe(true);
 		}
