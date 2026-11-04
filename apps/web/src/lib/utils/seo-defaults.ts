@@ -39,6 +39,17 @@ export { PUBLISHED_LOCALES };
 // in the codebase. Consumers of seo-defaults get it without a second import.
 export { DEFAULT_LOCALE };
 
+/** One image description format, including titles already branded by the home or title composer. */
+export function shareImageAlt(title: string, brand: string): string {
+	let body = title;
+	for (const separator of [' | ', ' · ', ' \u2014 ']) {
+		if (body.startsWith(`${brand}${separator}`)) body = body.slice(brand.length + separator.length);
+	}
+	const suffix = ` | ${brand}`;
+	if (body.endsWith(suffix)) body = body.slice(0, -suffix.length);
+	return `${body}${suffix}`;
+}
+
 /**
  * Returns the default OG image path for a given locale.
  *
@@ -130,7 +141,7 @@ export function seoHeadProps(seo: PageSeo, locale: Locale, themeColor?: string):
 		ogLocaleAlternates: locales.filter((l) => l !== locale).map((l) => `${l}_CA`),
 		image: {
 			url: image.startsWith('http') ? image : `${SITE_HOST}${image}`,
-			alt: seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} · ${title}`,
+			alt: seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : shareImageAlt(title, SITE_NAME),
 			width: seo.ogImage?.width,
 			height: seo.ogImage?.height,
 		},

@@ -25,6 +25,12 @@ async function expectHead(page: Page, { loc, alternates }: Cluster) {
 	const response = await page.goto(pathOf(loc));
 	expect(response?.ok(), loc).toBe(true);
 	await expect(page).toHaveTitle(/\S/);
+	expect((await page.title()).length).toBeLessThanOrEqual(70);
+	const imageAlt = await page.locator('meta[property="og:image:alt"]').getAttribute('content');
+	expect(imageAlt).toMatch(/^.+ \| yesid\.$/);
+	expect(imageAlt).not.toMatch(/^yesid\. [|·]/);
+	expect(imageAlt).not.toContain(' | yesid. | yesid.');
+	await expect(page.locator('meta[name="twitter:image:alt"]')).toHaveAttribute('content', imageAlt!);
 	await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S/);
 	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', loc);
 	const links = await page
@@ -62,7 +68,7 @@ for (const route of STATIC_PAGE_PATHS.filter((path) => isPathPublished(path))) {
 	}
 }
 
-for (const section of ['/blog/', '/projects/']) {
+for (const section of ['/blog/', '/projects/', '/services/', '/legal/']) {
 	test(`the first ${section} page's head matches its sitemap cluster`, async ({ page }) => {
 		const entry = (await sitemap(page)).find(
 			(c) => routeOf(c.loc).startsWith(section) && !STATIC_PAGE_PATHS.includes(routeOf(c.loc)) && c.alternates.length > 1,

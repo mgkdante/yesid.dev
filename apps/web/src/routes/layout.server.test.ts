@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { catalog } from '#lib/catalog/index.ts';
+import { catalog, createContentCatalog } from '#lib/catalog/index.ts';
 import { load } from './+layout.server';
 
 async function callLoad(routeId: string | null = '/', params: Record<string, string> = {}, pathname = '/') {
@@ -39,6 +39,16 @@ describe('generated layout data', () => {
 		const result = await callLoad(null, {}, '/fr/missing');
 		expect(result.locale).toBe('fr');
 		expect(result.seo.noIndex).toBe(true);
+	});
+	it.each(['en', 'fr', 'es'] as const)('returns 404 for a published legal registry row without content in %s', async (locale) => {
+		const page = catalog.legal.all()[0]!;
+		const prefix = locale === 'en' ? '' : `/${locale}`;
+		const content = createContentCatalog({ legalPages: [] });
+		await expect(load({
+			route: { id: '/[[lang=locale]]/legal/[slug]' },
+			params: { slug: page.slug, lang: locale },
+			url: new URL(`https://yesid.dev${prefix}/legal/${page.slug}`),
+		} as Parameters<typeof load>[0], content)).rejects.toMatchObject({ status: 404 });
 	});
 	it('surfaces an unknown SEO route instead of masking it as a CMS outage', async () => {
 		await expect(callLoad('/unconfigured')).rejects.toThrow('Unknown route id');
