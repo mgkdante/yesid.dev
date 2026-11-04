@@ -2,8 +2,7 @@
 
 @import 'tailwindcss';
 @import '@yesid/ui/base.css';
-
-@import 'tw-animate-css';
+@import '@yesid/ui/station-tabs.css';
 
 :root {
   /* Ambient opacity for the decorative coordinate / edge labels on the manifesto. */

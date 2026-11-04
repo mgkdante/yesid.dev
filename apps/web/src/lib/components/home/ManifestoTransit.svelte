@@ -81,7 +81,7 @@
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 2px;
-		color: color-mix(in srgb, var(--accent-text) 45%, transparent);
+		color: var(--accent-text);
 		border: 1px solid color-mix(in srgb, var(--accent-text) 25%, transparent);
 		border-radius: var(--radius-sm);
 		padding: 3px 8px;

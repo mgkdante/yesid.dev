@@ -58,6 +58,8 @@ describe('StationTabs', () => {
 		render(StationTabs, { props: { services: mockServices, activeId: 'database-engineering', mode: 'navigate' } });
 		const link = screen.getByTestId('station-tab-data-pipeline');
 		expect(link.closest('a')?.getAttribute('href')).toBe('/services/data-pipeline');
+		expect(screen.getByTestId('station-tab-database-engineering')).toHaveAttribute('aria-current', 'page');
+		expect(link).not.toHaveAttribute('aria-current');
 	});
 });
 
