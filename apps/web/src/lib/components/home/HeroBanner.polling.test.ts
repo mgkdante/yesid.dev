@@ -36,6 +36,56 @@ afterEach(() => {
 });
 
 describe('HeroBanner live KPI polling boundary', () => {
+	it('keeps DEMO values unchanged across two further failed polls after dropping', async () => {
+		const fetchKpis = liveFetch();
+		const view = mountHero();
+		await settle();
+		fetchKpis.mockRejectedValue(new Error('offline'));
+		vi.spyOn(Math, 'random').mockReturnValue(0.1);
+		await vi.advanceTimersByTimeAsync(LIVE_POLL_MS * 2);
+		const rows = view.getAllByTestId('sql-results')[0];
+		const metrics = view.getByTestId('hero-metrics-desktop');
+		const meta = view.getAllByTestId('sql-meta')[0];
+		const demo = { rows: rows.textContent, metrics: metrics.textContent, meta: meta.textContent };
+		expect(view.getAllByTestId('sql-live')[0]).toHaveTextContent('DEMO');
+		vi.spyOn(Math, 'random').mockReturnValue(0.9);
+		for (let poll = 0; poll < 2; poll++) {
+			await vi.advanceTimersByTimeAsync(LIVE_POLL_MS);
+			expect({ rows: rows.textContent, metrics: metrics.textContent, meta: meta.textContent }).toEqual(demo);
+		}
+	});
+
+	it('keeps a never-live page on its initial DEMO values across failed polls', async () => {
+		liveFetch().mockRejectedValue(new Error('offline'));
+		vi.spyOn(Math, 'random').mockReturnValue(0.9);
+		const view = mountHero();
+		const rows = view.getAllByTestId('sql-results')[0];
+		const metrics = view.getByTestId('hero-metrics-desktop');
+		const meta = view.getAllByTestId('sql-meta')[0];
+		const initial = { rows: rows.textContent, metrics: metrics.textContent, meta: meta.textContent };
+		await settle();
+		for (let poll = 0; poll < 4; poll++) {
+			await vi.advanceTimersByTimeAsync(LIVE_POLL_MS);
+			expect({ rows: rows.textContent, metrics: metrics.textContent, meta: meta.textContent }).toEqual(initial);
+			expect(view.getAllByTestId('sql-live')[0]).toHaveTextContent('DEMO');
+		}
+	});
+
+	it('manual refresh in DEMO regenerates with the just-now stamp even during a failed initial poll', async () => {
+		let finish!: (response: Response) => void;
+		liveFetch().mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+		vi.spyOn(Math, 'random').mockReturnValue(0.9);
+		const view = mountHero();
+		const rows = view.getAllByTestId('sql-results')[0];
+		const initial = rows.textContent;
+		await fireEvent.click(view.getByTestId('hero-refresh'));
+		finish(new Response('cold', { status: 503 }));
+		await settle();
+		expect(rows.textContent).not.toBe(initial);
+		expect(view.getAllByTestId('sql-live')[0]).toHaveTextContent('DEMO');
+		expect(view.getAllByTestId('sql-meta')[0]).toHaveTextContent(heroContent.sqlPanel.stamps.refreshed.en);
+	});
+
 	it('holds real values and their original ageing clock once, then labels DEMO, and recovers', async () => {
 		const fetchKpis = liveFetch();
 		const view = mountHero();

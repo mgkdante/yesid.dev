@@ -146,7 +146,7 @@
 			} else {
 				consecutiveFailures += 1;
 				// Keep the original liveBase so a held real reading keeps ageing.
-				if (consecutiveFailures >= 2) dropToDemo(stamp);
+				if (live && consecutiveFailures >= 2) dropToDemo(stamp);
 			}
 		}).finally(() => { pendingLiveCheck = null; });
 		return pendingLiveCheck;
@@ -154,10 +154,10 @@
 
 	function handleRefresh() {
 		spinRefreshIcon();
-		if (!liveEnabled) {
+		if (!liveEnabled || !live) {
 			heroData = generateHeroData();
 			demoStamp = updatedAgoJustNow;
-			return;
+			if (!liveEnabled) return;
 		}
 		void refreshLive(updatedAgoJustNow);
 	}
