@@ -15,7 +15,7 @@ const viewports = [
 
 for (const locale of ['en', 'fr', 'es']) {
 	for (const viewport of viewports) {
-		test(`${locale} ${viewport.width}x${viewport.height} terminus starts flush and finishes before scroll ends`, async ({ page }, testInfo) => {
+		test(`${locale} ${viewport.width}x${viewport.height} terminus keeps a modest top inset and finishes before scroll ends`, async ({ page }, testInfo) => {
 			await page.setViewportSize(viewport);
 			await page.emulateMedia({ reducedMotion: 'no-preference' });
 			await page.goto(locale === 'en' ? '/' : `/${locale}`);
@@ -40,11 +40,10 @@ for (const locale of ['en', 'fr', 'es']) {
 					sectionHeight: el.getBoundingClientRect().height,
 				};
 			});
-			console.log(JSON.stringify({ locale, ...viewport, ...geometry }));
 			await testInfo.attach('geometry', { body: JSON.stringify(geometry), contentType: 'application/json' });
-			expect.soft(Math.abs(geometry.gap), 'board begins at the section content top').toBeLessThanOrEqual(1);
+			expect.soft(Math.abs(geometry.gap - 24), 'board keeps a modest 24px breathing room').toBeLessThanOrEqual(1);
 			expect.soft(Math.abs(geometry.wrapperGap), 'wrapper adds no top space').toBeLessThanOrEqual(1);
-			if (geometry.headingGap !== null) expect.soft(Math.abs(geometry.headingGap), 'board follows the shared heading padding directly').toBeLessThanOrEqual(1);
+			if (geometry.headingGap !== null) expect.soft(Math.abs(geometry.headingGap - 24), 'shared heading spacing plus the modest inset').toBeLessThanOrEqual(1);
 			if (process.env.S7_EVIDENCE) {
 				await mkdir(process.env.S7_EVIDENCE, { recursive: true });
 				await writeFile(join(process.env.S7_EVIDENCE, `${locale}-${viewport.width}x${viewport.height}-gap.json`), JSON.stringify(geometry, null, 2));
@@ -108,7 +107,7 @@ for (const locale of ['en', 'fr', 'es']) {
 }
 
 for (const width of [390, 820, 1440]) {
-	test(`${width}px props ease through scroll steps and reversals instead of jumping`, async ({ page }) => {
+	test(`${width}px props and beam ease through scroll steps and reversals instead of jumping`, async ({ page }, testInfo) => {
 		await page.setViewportSize({ width, height: 900 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await page.goto('/');
@@ -134,20 +133,29 @@ for (const width of [390, 820, 1440]) {
 				artwork.forEach(svg => getComputedStyle(svg).transform);
 				const transitions = artwork.flatMap(svg => svg.getAnimations().filter((animation): animation is CSSTransition =>
 					animation instanceof CSSTransition && animation.transitionProperty === 'transform'));
+				const beam = document.querySelector('.closer-beam')!;
+				getComputedStyle(beam).scale;
+				const beamTransitions = beam.getAnimations().filter((animation): animation is CSSTransition =>
+					animation instanceof CSSTransition && ['scale', 'height'].includes(animation.transitionProperty));
+				const allTransitions = [...transitions, ...beamTransitions];
 				// Pause real browser transitions to sample interpolation independently of
 				// runner frame rate. No transition means the old instantaneous jump.
-				transitions.forEach(animation => animation.pause());
+				allTransitions.forEach(animation => animation.pause());
 				const positions = [0, 0.25, 0.5, 0.75, 1].map(fraction => {
-					transitions.forEach(animation => { animation.currentTime = Number(animation.effect!.getTiming().duration) * fraction; });
-					return artwork.map(svg =>
-						1 - new DOMMatrixReadOnly(getComputedStyle(svg).transform).m42 / svg.getBoundingClientRect().height);
+					allTransitions.forEach(animation => { animation.currentTime = Number(animation.effect!.getTiming().duration) * fraction; });
+					return {
+						props: artwork.map(svg => 1 - new DOMMatrixReadOnly(getComputedStyle(svg).transform).m42 / svg.getBoundingClientRect().height),
+						beamScale: Number(getComputedStyle(beam).scale.split(' ').at(-1)),
+						beamHeight: parseFloat(getComputedStyle(beam).height),
+					};
 				});
-				transitions.forEach(animation => animation.finish());
-				return { count: transitions.length, positions };
+				allTransitions.forEach(animation => animation.finish());
+				return { count: transitions.length, beamCount: beamTransitions.length, positions };
 			}, fraction);
 			expect(samples.count, 'all four props interpolate actual scroll changes').toBe(4);
+			expect(samples.beamCount, 'beam scale and responsive height interpolate too').toBe(width < 768 ? 1 : 2);
 			for (let prop = 0; prop < 4; prop++) {
-				const positions = samples.positions.map(sample => sample[prop]);
+				const positions = samples.positions.map(sample => sample.props[prop]);
 				expect(positions[0]).toBeCloseTo(from, 2);
 				expect(positions.at(-1)).toBeCloseTo(to, 2);
 				for (let i = 1; i < positions.length - 1; i++) {
@@ -156,11 +164,35 @@ for (const width of [390, 820, 1440]) {
 					expect((positions[i] - positions[i - 1]) * (to - from)).toBeGreaterThan(0);
 				}
 			}
+			expect(samples.positions[0].beamScale).toBeCloseTo(from, 2);
+			expect(samples.positions.at(-1)!.beamScale).toBeCloseTo(to, 2);
+			for (const sample of samples.positions.slice(1, -1)) {
+				expect(sample.beamScale).toBeGreaterThan(0);
+				expect(sample.beamScale).toBeLessThan(1);
+				if (width >= 768) {
+					expect(sample.beamHeight).toBeGreaterThan(278);
+					expect(sample.beamHeight).toBeLessThan(378);
+				}
+			}
 		}
 		await move(0.94);
 		await settled();
 		const beforeWheel = await page.evaluate(() => scrollY);
-		await page.mouse.wheel(0, 120);
+		const [beamFrames] = await Promise.all([
+			page.locator('.closer-beam').evaluate(async beam => {
+				const frames = [], start = performance.now();
+				while (performance.now() - start < 500) {
+					await new Promise(requestAnimationFrame);
+					const style = getComputedStyle(beam);
+					frames.push({ ms: performance.now() - start, scale: style.scale, height: style.height,
+						baseGap: beam.getBoundingClientRect().bottom - beam.parentElement!.querySelector('svg')!.getBoundingClientRect().top });
+				}
+				return frames;
+			}),
+			page.mouse.wheel(0, 120),
+		]);
+		await testInfo.attach('beam-wheel', { body: JSON.stringify(beamFrames), contentType: 'application/json' });
+		for (const frame of beamFrames) expect(Math.abs(frame.baseGap), 'beam remains attached to the moving lamp').toBeLessThanOrEqual(1);
 		await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(beforeWheel);
 		await settled();
 		await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -168,5 +200,7 @@ for (const width of [390, 820, 1440]) {
 			await expect(svg).toHaveCSS('transform', 'none');
 			await expect(svg).toHaveCSS('transition-duration', '0s');
 		}
+		await expect(page.locator('.closer-beam')).toHaveCSS('scale', 'none');
+		await expect(page.locator('.closer-beam')).toHaveCSS('transition-duration', '0s');
 	});
 }
