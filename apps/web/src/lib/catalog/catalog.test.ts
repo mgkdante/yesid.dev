@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { projects } from '#lib/content/projects.ts';
 import { services } from '#lib/content/services.ts';
-import { catalog } from '#lib/catalog/index.ts';
+import { catalog, createContentCatalog } from '#lib/catalog/index.ts';
+import { blogPosts } from '#lib/content/blog.ts';
 
 describe('ContentCatalog contract', () => {
 	describe('projects', () => {
@@ -87,6 +88,13 @@ describe('ContentCatalog contract', () => {
 	});
 
 	describe('services', () => {
+		it('skips a hidden station in both directions and never offers adjacency for it', () => {
+			const rows = [0, 1, 2].map((station) => ({ ...services[0], id: `fixture-${station}`, station, visible: station !== 1 }));
+			const content = createContentCatalog({ services: rows });
+			expect(content.services.adjacent('fixture-0').next?.id).toBe('fixture-2');
+			expect(content.services.adjacent('fixture-2').prev?.id).toBe('fixture-0');
+			expect(content.services.adjacent('fixture-1')).toEqual({});
+		});
 		it('byId() returns undefined for unknown id', async () => {
 			const result = await catalog.services.byId('__nonexistent__');
 			expect(result).toBeUndefined();
@@ -128,6 +136,17 @@ describe('ContentCatalog contract', () => {
 	});
 
 	describe('blog', () => {
+		it('filters unavailable locales and unpublished paths from all and category listings', () => {
+			const posts = [
+				{ ...blogPosts[0], slug: 'visible', lang: 'en' as const },
+				{ ...blogPosts[0], slug: 'unavailable-locale', lang: 'fr' as const },
+				{ ...blogPosts[0], slug: 'unpublished', lang: 'en' as const },
+			];
+			const pages = ['visible', 'unavailable-locale'].map(slug => ({ path: `/blog/${slug}`, type: 'freeform' as const, title: { en: slug } }));
+			const content = createContentCatalog({ posts, pages, locales: ['en'] });
+			expect(content.blog.all().map((post) => post.slug)).toEqual(['visible']);
+			expect(content.blog.byCategory(posts[0].category).map((post) => post.slug)).toEqual(['visible']);
+		});
 		it('all() returns a non-empty readonly array', async () => {
 			const result = await catalog.blog.all();
 			expect(result.length).toBeGreaterThan(0);

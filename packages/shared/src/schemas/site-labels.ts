@@ -191,14 +191,7 @@ export const SiteLabelsSchema = z.object({
 		}),
 		// Former sharedChromeContent shape.
 		shared: z.object({
-			openMenuAria: LocalizedStringSchema,
-			closeMenuAria: LocalizedStringSchema,
-			themeToggleAria: LocalizedStringSchema,
 			footerNavAria: LocalizedStringSchema,
-			menuOverlayAria: LocalizedStringSchema,
-			menuOverlayFooterLabel: LocalizedStringSchema,
-			skipToContentLabel: LocalizedStringSchema.optional(),
-			localeSwitcherAria: LocalizedStringSchema,
 			clearFiltersLabel: LocalizedStringSchema,
 			tocHeading: LocalizedStringSchema,
 			tocMobileButton: LocalizedStringSchema,

@@ -218,12 +218,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				['previous', 'nav_chrome_directions_previous'], ['next', 'nav_chrome_directions_next'],
 			]),
 			shared: toLocalizedFields(tr, [
-				['openMenuAria', 'nav_chrome_shared_open_menu_aria'], ['closeMenuAria', 'nav_chrome_shared_close_menu_aria'],
-				['themeToggleAria', 'nav_chrome_shared_theme_toggle_aria'], ['footerNavAria', 'nav_chrome_shared_footer_nav_aria'],
-				['menuOverlayAria', 'nav_chrome_shared_menu_overlay_aria'],
-				['menuOverlayFooterLabel', 'nav_chrome_shared_menu_overlay_footer_label'],
-				['skipToContentLabel', 'nav_chrome_shared_skip_to_content_label', 'optional'],
-				['localeSwitcherAria', 'nav_chrome_shared_locale_switcher_aria'],
+				['footerNavAria', 'nav_chrome_shared_footer_nav_aria'],
 				['clearFiltersLabel', 'nav_chrome_shared_clear_filters_label'],
 				['tocHeading', 'nav_chrome_shared_toc_heading'], ['tocMobileButton', 'nav_chrome_shared_toc_mobile_button'],
 				['tocCloseAria', 'nav_chrome_shared_toc_close_aria'],

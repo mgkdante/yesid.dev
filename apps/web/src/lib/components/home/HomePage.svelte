@@ -99,10 +99,6 @@
 		if (size !== null) rotatedTitleSize = size;
 	}
 
-	let projectsSectionEl = $state<HTMLElement>(undefined!);
-	let servicesSectionEl = $state<HTMLElement>(undefined!);
-	let closerSectionEl = $state<HTMLElement>(undefined!);
-
 	let destroyFns: Array<() => void> = [];
 
 	/** Max scrollable distance for the current (post-pin-refresh) document. */
@@ -206,7 +202,6 @@
 
 <!-- Section 2: Services, rotated title right. -->
 <section
-	bind:this={servicesSectionEl}
 	class="home-section home-section--right relative"
 	style={rotatedVar}
 >
@@ -224,7 +219,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 4: Projects, rotated title left. -->
-<section bind:this={projectsSectionEl} class="home-section home-section--left home-section--proof-reel" style={rotatedVar}>
+<section class="home-section home-section--left home-section--proof-reel" style={rotatedVar}>
 	<div class="rotated-title rotated-title--left"><SectionHeading heading={sectionProjects} /></div>
 	<div class="home-section-heading-mobile">
 		<SectionHeading heading={sectionProjects} />
@@ -261,7 +256,6 @@
 
 <!-- Section 7: Terminus and construction props stay together, rotated title left. -->
 <section
-	bind:this={closerSectionEl}
 	class="home-section home-section--left home-section--terminus"
 	style={rotatedVar}
 >

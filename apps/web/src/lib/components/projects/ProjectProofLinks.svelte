@@ -28,14 +28,15 @@
 		}
 	}
 
-	const hasLinks = $derived(project.status === 'wip' || !!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
+	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl || !!project.docsUrl || !!project.repoPrivate);
 </script>
+
+{#if project.status === 'wip'}
+	<p class="project-links__private">{progressLabel}</p>
+{/if}
 
 {#if hasLinks}
 	<ul class="project-links" data-testid="project-links-card" aria-label={linksLabel}>
-		{#if project.status === 'wip'}
-			<li><span class="project-links__private">{progressLabel}</span></li>
-		{/if}
 		{#if project.liveUrl}
 			<li>
 				<a
