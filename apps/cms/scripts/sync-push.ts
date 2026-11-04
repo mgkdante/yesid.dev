@@ -261,12 +261,12 @@ function syncPushWillTouchCollection(args: readonly string[], collection: string
 
 function refuseProductionPolicySync(directusUrl: string, args: readonly string[]): void {
 	if (new URL(directusUrl).hostname.replace(/\.$/, '') !== 'cms.yesid.dev') return;
-	// slice-43.12 reconciled the Ops Bot identity. The repository still declares
-	// 31 deferred asset-registry grants that production intentionally lacks.
-	// Existing push acknowledgements cannot authorize adding those grants.
+	// Production policy/permission changes require a separately reviewed,
+	// targeted operation. The historical asset-registry plan includes deferred
+	// bot grants; the live snapshot alone cannot authorize adding those grants.
 	if (['policies', 'permissions'].some((collection) => syncPushWillTouchCollection(args, collection))) {
 		throw new Error(
-			'[sync-push] Refusing production policy/permission sync:push: the repository declares ' +
+			'[sync-push] Refusing production policy/permission sync:push: the historical plan includes ' +
 				'deferred asset-registry grants that production intentionally lacks. Narrow the push ' +
 				'away from policies and permissions or use a separately reviewed targeted permission ' +
 				'change. Existing push acknowledgements do not authorize adding grants.',

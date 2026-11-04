@@ -107,7 +107,7 @@ describe('Editor role wiring (go2-t1d)', () => {
 		for (const id of ['content', 'files', 'insights', 'deployments', 'settings']) expect(byId[id]).toBe(true);
 	});
 
-	it('snapshots exactly the 31 governed asset-registry permission rows', () => {
+	it('snapshots the 11 live Human Editor asset grants and leaves deferred bot grants in the historical plan', () => {
 		const policyIds = Object.fromEntries(
 			ASSET_EDITOR_POLICY_NAMES.map((name) => [
 				name,
@@ -119,12 +119,15 @@ describe('Editor role wiring (go2-t1d)', () => {
 		const actual = (permissions as Array<Perm & { _syncId: string }>)
 			.filter((row) => (ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection))
 			.map((row) => normalizedPermissionSnapshot(row as Perm & { _syncId: string; fields: string[] }));
-		const expected = buildDesiredAssetPermissions(policyIds).map((row) => ({
-			...row,
-			fields: [...row.fields].sort(),
-		}));
+		const expected = buildDesiredAssetPermissions(policyIds)
+			.filter((row) => row.policy === policyIds['Human Editor'])
+			.map((row) => ({
+				...row,
+				permissions: row.action === 'update' ? row.permissions : null,
+				fields: [...row.fields].sort(),
+			}));
 
-		expect(actual).toHaveLength(31);
+		expect(actual).toHaveLength(11);
 		expect(sortPermissionRows(actual)).toEqual(sortPermissionRows(expected));
 	});
 
@@ -162,7 +165,7 @@ describe('Editor role wiring (go2-t1d)', () => {
 			(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection),
 		);
 
-		expect(managedPermissionRows).toHaveLength(31);
+		expect(managedPermissionRows).toHaveLength(11);
 		expect(managedPresetRows).toHaveLength(10);
 		for (const rows of [permissionRows, presetRows]) {
 			const ids = rows.map((row) => row._syncId);
