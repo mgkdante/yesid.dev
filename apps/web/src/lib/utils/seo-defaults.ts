@@ -8,7 +8,6 @@ import type { PageSeo } from '#lib/schemas/seo.ts';
 import type { Locale } from '#lib/types.ts';
 import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 import { delocalizePath, localizeHref, localizeUrl } from '#lib/utils/locale-routing.ts';
-import { shareImageAlt } from '#lib/adapters/compose-page-seo.ts';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).
@@ -39,6 +38,17 @@ export { PUBLISHED_LOCALES };
 // Re-exported from $lib/utils/locale so there's exactly one DEFAULT_LOCALE
 // in the codebase. Consumers of seo-defaults get it without a second import.
 export { DEFAULT_LOCALE };
+
+/** One image description format, including titles already branded by the home or title composer. */
+export function shareImageAlt(title: string, brand: string): string {
+	let body = title;
+	for (const separator of [' | ', ' · ', ' \u2014 ']) {
+		if (body.startsWith(`${brand}${separator}`)) body = body.slice(brand.length + separator.length);
+	}
+	const suffix = ` | ${brand}`;
+	if (body.endsWith(suffix)) body = body.slice(0, -suffix.length);
+	return `${body}${suffix}`;
+}
 
 /**
  * Returns the default OG image path for a given locale.

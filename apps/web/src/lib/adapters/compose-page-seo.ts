@@ -8,7 +8,7 @@ import type {
 	SiteMeta,
 	SiteSeoDefaults,
 } from '#lib/types.ts';
-import { canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { canonicalFor, shareImageAlt } from '#lib/utils/seo-defaults.ts';
 import { asset } from '#lib/directus/assets.ts';
 import type { CodeRouteSeoDefaults } from './route-seo-defaults';
 
@@ -36,17 +36,6 @@ export function appendBrandPerLocale(body: LocalizedString, brand: string): Loca
 		...(body.fr && { fr: titleForSeo(undefined, body.fr, brand) }),
 		...(body.es && { es: titleForSeo(undefined, body.es, brand) }),
 	};
-}
-
-/** One image description format, including titles already branded by the home or title composer. */
-export function shareImageAlt(title: string, brand: string): string {
-	let body = title;
-	for (const separator of [' | ', ' · ', ' \u2014 ']) {
-		if (body.startsWith(`${brand}${separator}`)) body = body.slice(brand.length + separator.length);
-	}
-	const suffix = ` | ${brand}`;
-	if (body.endsWith(suffix)) body = body.slice(0, -suffix.length);
-	return `${body}${suffix}`;
 }
 
 export function shareImageAltPerLocale(body: LocalizedString, brand: string): LocalizedString {
