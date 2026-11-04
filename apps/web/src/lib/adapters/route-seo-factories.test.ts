@@ -458,7 +458,7 @@ describe('servicesIdSeoFactory', () => {
 			expect(seo.ogImage?.url).toBe(`/og/services/${id}.png`);
 			expect(seo.ogImage?.width).toBe(1200);
 			expect(seo.ogImage?.height).toBe(630);
-			expect(seo.ogImage?.alt?.en).toContain('yesid.dev');
+			expect(seo.ogImage?.alt?.en).toBe(`${service.title.en} | ${siteMeta.name}`);
 		}
 	});
 

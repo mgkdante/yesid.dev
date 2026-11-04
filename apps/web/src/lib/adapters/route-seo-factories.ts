@@ -11,7 +11,7 @@ import { extractText } from '@repo/shared';
 import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { ogImagePath } from '#lib/og/og-path.ts';
-import { appendBrandPerLocale } from '#lib/adapters/compose-page-seo.ts';
+import { appendBrandPerLocale, shareImageAltPerLocale, titleForSeo } from '#lib/adapters/compose-page-seo.ts';
 import { assetImage } from '#lib/directus/assets.ts';
 import {
 	BLOG_TRANSLATION_LOCALES,
@@ -46,22 +46,6 @@ function fitDescriptionForSeo(
 		return fallback;
 	}
 	return desc;
-}
-
-function cleanText(value: string | undefined): string | undefined {
-	const trimmed = value?.trim();
-	return trimmed ? trimmed : undefined;
-}
-
-function titleBodyForSeo(primary: string | undefined, fallback: string, brand: string): string {
-	const suffix = ` | ${brand}`;
-	const candidates = [cleanText(primary), cleanText(fallback)].filter(Boolean) as string[];
-	for (const candidate of candidates) {
-		if (`${candidate}${suffix}`.length <= 70) return candidate;
-	}
-	const clipped = (candidates[0] ?? fallback).slice(0, Math.max(2, 70 - suffix.length));
-	const wholeWords = clipped.includes(' ') ? clipped.slice(0, clipped.lastIndexOf(' ')) : clipped.slice(0, -1);
-	return `${wholeWords.replace(/[\s,;:·–—-]+$/u, '')}…`;
 }
 
 /**
@@ -104,11 +88,7 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 	if (SERVICE_OG_CARD_IDS.has(service.id)) {
 		seo.ogImage = {
 			url: `/og/services/${service.id}.png`,
-			alt: {
-				en: `${service.title.en} | yesid.dev`,
-				...(service.title.fr && { fr: `${service.title.fr} | yesid.dev` }),
-				...(service.title.es && { es: `${service.title.es} | yesid.dev` }),
-			},
+			alt: shareImageAltPerLocale(service.title, siteMeta.name),
 			width: 1200,
 			height: 630,
 		};
@@ -135,13 +115,8 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 			? descriptionText
 			: fitDescriptionForSeo(project.oneLiner, fallback);
 	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
-	const titleBody = {
-		en: titleBodyForSeo(undefined, project.title.en, siteMeta.name),
-		...(project.title.fr && { fr: titleBodyForSeo(undefined, project.title.fr, siteMeta.name) }),
-		...(project.title.es && { es: titleBodyForSeo(undefined, project.title.es, siteMeta.name) }),
-	};
 	const seo: PageSeo = {
-		title: appendBrandPerLocale(titleBody, siteMeta.name),
+		title: appendBrandPerLocale(project.title, siteMeta.name),
 		description: desc,
 		canonical: canonicalUrl,
 		ogType: 'article',
@@ -159,11 +134,7 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 	if (project.title?.en && project.title.en.length > 0) {
 		seo.ogImage = {
 			url: ogImagePath('project', project.slug, locale),
-			alt: {
-				en: `${project.title.en} | yesid.`,
-				...(project.title.fr && { fr: `${project.title.fr} | yesid.` }),
-				...(project.title.es && { es: `${project.title.es} | yesid.` }),
-			},
+			alt: shareImageAltPerLocale(project.title, siteMeta.name),
 			width: 1200,
 			height: 630,
 		};
@@ -200,7 +171,6 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 			];
 		}),
 	) as Partial<Record<Locale, string>>;
-	const titleBody = titleBodyForSeo(post.seoTitle, post.title, siteMeta.name);
 	const description = fitDescriptionForSeo(
 		{ en: post.seoDescription ?? post.excerpt },
 		siteSeoDefaults.defaultDescription,
@@ -218,7 +188,7 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	const rawImageUrl = shareCover?.src ?? (portraitCover ? ogImagePath('blog', post.slug, locale) : undefined);
 	const imageUrl = rawImageUrl ? new URL(rawImageUrl, SITE_HOST).href : undefined;
 	const seo: PageSeo = {
-		title: { en: `${titleBody} | ${siteMeta.name}` },
+		title: { en: titleForSeo(post.seoTitle, post.title, siteMeta.name) },
 		description,
 		canonical: canonicalUrl,
 		ogType: 'article',
@@ -238,7 +208,7 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	if (post.title && post.title.length > 0) {
 		seo.ogImage = {
 			url: ogImagePath('blog', post.slug, locale),
-			alt: { en: `${post.title} | ${siteMeta.name}` },
+			alt: shareImageAltPerLocale({ en: post.title }, siteMeta.name),
 			width: 1200,
 			height: 630,
 		};

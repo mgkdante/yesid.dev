@@ -8,6 +8,7 @@ import type { PageSeo } from '#lib/schemas/seo.ts';
 import type { Locale } from '#lib/types.ts';
 import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 import { delocalizePath, localizeHref, localizeUrl } from '#lib/utils/locale-routing.ts';
+import { shareImageAlt } from '#lib/adapters/compose-page-seo.ts';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).
@@ -130,7 +131,7 @@ export function seoHeadProps(seo: PageSeo, locale: Locale, themeColor?: string):
 		ogLocaleAlternates: locales.filter((l) => l !== locale).map((l) => `${l}_CA`),
 		image: {
 			url: image.startsWith('http') ? image : `${SITE_HOST}${image}`,
-			alt: seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} · ${title}`,
+			alt: seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : shareImageAlt(title, SITE_NAME),
 			width: seo.ogImage?.width,
 			height: seo.ogImage?.height,
 		},

@@ -24,6 +24,7 @@ export const load = (async ({ route, params, url }, content: ContentCatalog = de
 			const post = content.blog.bySlug(params.slug ?? '');
 			if (!post || !content.isAvailable({ kind: 'post', entity: post }, locale)) error(404, 'Post not found');
 		}
+		if (routeId === '/legal/[slug]' && !content.legal.bySlug(params.slug ?? '')) error(404, 'Legal page not found');
 	}
 	return {
 		headerLinks: content.nav.byPlacement('header'),
