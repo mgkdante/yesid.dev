@@ -1,0 +1,238 @@
+[
+  {
+    "method": "POST",
+    "path": "/fields/projects_impact_metrics",
+    "payload": {
+      "collection": "projects_impact_metrics",
+      "field": "source_url",
+      "type": "string",
+      "meta": {
+        "collection": "projects_impact_metrics",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "source_url",
+        "group": null,
+        "hidden": false,
+        "interface": "input",
+        "note": "Public HTTPS evidence for this number. Never paste private links, credentials or client data. Leave empty when no public proof exists.",
+        "options": {
+          "iconRight": "link"
+        },
+        "readonly": false,
+        "required": false,
+        "searchable": true,
+        "sort": 6,
+        "special": null,
+        "translations": [
+          {
+            "language": "en-US",
+            "translation": "Proof source (optional)"
+          },
+          {
+            "language": "fr-CA",
+            "translation": "Source de la preuve (facultatif)"
+          },
+          {
+            "language": "es-ES",
+            "translation": "Fuente de la prueba (opcional)"
+          }
+        ],
+        "validation": null,
+        "validation_message": null,
+        "width": "half"
+      },
+      "schema": {
+        "default_value": null,
+        "max_length": 2048,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "is_generated": false,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/fields/projects_impact_metrics",
+    "payload": {
+      "collection": "projects_impact_metrics",
+      "field": "as_of",
+      "type": "date",
+      "meta": {
+        "collection": "projects_impact_metrics",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "as_of",
+        "group": null,
+        "hidden": false,
+        "interface": "datetime",
+        "note": "Calendar date the number describes, not the date this record was edited. Leave empty when unknown.",
+        "options": null,
+        "readonly": false,
+        "required": false,
+        "searchable": true,
+        "sort": 7,
+        "special": null,
+        "translations": [
+          {
+            "language": "en-US",
+            "translation": "As-of date (optional)"
+          },
+          {
+            "language": "fr-CA",
+            "translation": "Date de référence (facultatif)"
+          },
+          {
+            "language": "es-ES",
+            "translation": "Fecha de referencia (opcional)"
+          }
+        ],
+        "validation": null,
+        "validation_message": null,
+        "width": "half"
+      },
+      "schema": {
+        "default_value": null,
+        "max_length": null,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "is_generated": false,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/fields/services",
+    "payload": {
+      "collection": "services",
+      "field": "impact_metric_source_url",
+      "type": "string",
+      "meta": {
+        "collection": "services",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "impact_metric_source_url",
+        "group": "grp_content",
+        "hidden": false,
+        "interface": "input",
+        "note": "Public HTTPS evidence for this number. Never paste private links, credentials or client data. Leave empty when no public proof exists.",
+        "options": {
+          "iconRight": "link"
+        },
+        "readonly": false,
+        "required": false,
+        "searchable": true,
+        "sort": 2,
+        "special": null,
+        "translations": [
+          {
+            "language": "en-US",
+            "translation": "Proof source (optional)"
+          },
+          {
+            "language": "fr-CA",
+            "translation": "Source de la preuve (facultatif)"
+          },
+          {
+            "language": "es-ES",
+            "translation": "Fuente de la prueba (opcional)"
+          }
+        ],
+        "validation": null,
+        "validation_message": null,
+        "width": "half"
+      },
+      "schema": {
+        "default_value": null,
+        "max_length": 2048,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "is_generated": false,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/fields/services",
+    "payload": {
+      "collection": "services",
+      "field": "impact_metric_as_of",
+      "type": "date",
+      "meta": {
+        "collection": "services",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "impact_metric_as_of",
+        "group": "grp_content",
+        "hidden": false,
+        "interface": "datetime",
+        "note": "Calendar date the number describes, not the date this record was edited. Leave empty when unknown.",
+        "options": null,
+        "readonly": false,
+        "required": false,
+        "searchable": true,
+        "sort": 3,
+        "special": null,
+        "translations": [
+          {
+            "language": "en-US",
+            "translation": "As-of date (optional)"
+          },
+          {
+            "language": "fr-CA",
+            "translation": "Date de référence (facultatif)"
+          },
+          {
+            "language": "es-ES",
+            "translation": "Fecha de referencia (opcional)"
+          }
+        ],
+        "validation": null,
+        "validation_message": null,
+        "width": "half"
+      },
+      "schema": {
+        "default_value": null,
+        "max_length": null,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "is_generated": false,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    }
+  }
+]

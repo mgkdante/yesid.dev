@@ -68,7 +68,7 @@ describe('ContentCatalog contract', () => {
 			const project = await catalog.projects.bySlug('transit-data-pipeline');
 			expect(project?.impactMetrics?.length).toBeGreaterThan(0);
 			for (const metric of project!.impactMetrics!) {
-				expect(metric.value).toMatch(/\S/);
+				expect(metric.value.en).toMatch(/\S/);
 				expect(metric.label.en).toMatch(/\S/);
 			}
 		});

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { toService, type DirectusService } from './services';
+import { fetchServices, toService, type DirectusService } from './services';
+import { cmsClientDouble } from '../../../tests/helpers/doubles';
 import { ServiceSchema } from '@repo/shared/schemas';
 const FIXTURE: DirectusService = {
 	id: 'sql-development',
@@ -39,6 +40,23 @@ const FIXTURE: DirectusService = {
 };
 
 describe('services fetcher transform', () => {
+	it('exports independent optional proof and preserves localized values', async () => {
+		const row = Object.assign({}, FIXTURE, { impact_metric_source_url: 'https://example.org/evidence', impact_metric_as_of: '2026-11-04' });
+		const [service] = await fetchServices({ client: cmsClientDouble(() => [row]) });
+		expect(service?.impactMetric).toMatchObject({ value: { en: '3x faster' }, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' });
+	});
+	it('rejects an unsafe proof URL at export', async () => {
+		const row = Object.assign({}, FIXTURE, { impact_metric_source_url: 'http://example.org' });
+		await expect(fetchServices({ client: cmsClientDouble(() => [row]) })).rejects.toThrow();
+	});
+	it('omits null or blank proof without making a citation mandatory', async () => {
+		for (const proof of [null, '', '   ']) {
+			const row = { ...FIXTURE, impact_metric_source_url: proof, impact_metric_as_of: proof };
+			const [service] = await fetchServices({ client: cmsClientDouble(() => [row]) });
+			expect(service?.impactMetric).not.toHaveProperty('sourceUrl');
+			expect(service?.impactMetric).not.toHaveProperty('asOf');
+		}
+	});
 	it('produces a Service with localized title + description', () => {
 		const result = toService(FIXTURE);
 		expect(result.id).toBe('sql-development');

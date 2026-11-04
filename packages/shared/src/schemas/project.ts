@@ -1,20 +1,14 @@
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 import { LocalizedBlockEditorDocSchema } from '../types/blocks';
+import { ImpactMetricSchema } from './impact-metric';
+export { ImpactMetricSchema, type ImpactMetric } from './impact-metric';
 
 export const ProjectStatusSchema = z.enum(['public', 'private', 'wip']);
 
 export const ProjectSectionSchema = z.object({
 	title: LocalizedStringSchema,
 	content: LocalizedBlockEditorDocSchema,
-});
-
-export const ImpactMetricSchema = z.object({
-	/** Locale-neutral display value including its unit, such as `30s` or `99.9%`. */
-	value: z.string(),
-	label: LocalizedStringSchema,
-	/** Optional locale-neutral baseline for before-and-after comparisons. */
-	before: z.string().optional(),
 });
 
 export const ProjectSchema = z.object({
@@ -48,8 +42,7 @@ export const ProjectSchema = z.object({
 	/** GitHub raw README URL, fetched by the route as the final content section. */
 	readmeUrl: z.string().optional(),
 	sections: z.array(ProjectSectionSchema),
-	impactMetric: ImpactMetricSchema.optional(),
-	/** Detail-panel metrics; consumers fall back to the single impactMetric when absent. */
+	/** Ordered metrics shared by the detail panels and public text export. */
 	impactMetrics: z.array(ImpactMetricSchema).optional(),
 	/** Hero edge metadata; consumers supply defaults for omitted location/environment/version. */
 	location: z.string().optional(),
@@ -62,6 +55,5 @@ export const ProjectSummarySchema = ProjectSchema.omit({ description: true, sect
 
 export type ProjectSection = z.infer<typeof ProjectSectionSchema>;
 export type ProjectStatus = z.infer<typeof ProjectStatusSchema>;
-export type ImpactMetric = z.infer<typeof ImpactMetricSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
 export type ProjectSummary = z.infer<typeof ProjectSummarySchema>;

@@ -8583,25 +8583,21 @@
 						}
 					}
 				],
-				"impactMetric": {
-					"value": "8 880",
-					"label": {"en":"tests in the October 26, 2026 CI snapshot","fr":"tests dans l'exécution CI du 26 octobre 2026","es":"pruebas en la ejecución de CI del 26 de octubre de 2026"}
-				},
 				"impactMetrics": [
 					{
-						"value": "8 880",
+						"value": {"en":"8 880","fr":"8 880","es":"8 880"},
 						"label": {"en":"tests in the October 26, 2026 CI snapshot","fr":"tests dans l'exécution CI du 26 octobre 2026","es":"pruebas en la ejecución de CI del 26 de octubre de 2026"}
 					},
 					{
-						"value": "30 s",
+						"value": {"en":"30 s","fr":"30 s","es":"30 s"},
 						"label": {"en":"configured live refresh interval","fr":"cadence configurée du direct","es":"intervalo configurado de actualización en vivo"}
 					},
 					{
-						"value": "71 304",
+						"value": {"en":"71 304","fr":"71 304","es":"71 304"},
 						"label": {"en":"checks before STM history publication, October 26, 2026","fr":"vérifications avant la publication de l'historique STM, le 26 octobre 2026","es":"verificaciones previas a publicar el historial STM, el 26 de octubre de 2026"}
 					},
 					{
-						"value": "1 533",
+						"value": {"en":"1 533","fr":"1 533","es":"1 533"},
 						"label": {"en":"buses observed on both maps, October 26, 2026, 7:30 a.m. ET","fr":"autobus observés sur les deux cartes, le 26 octobre 2026 à 7 h 30 HE","es":"autobuses observados en ambos mapas, el 26 de octubre de 2026 a las 7:30 a. m. ET"}
 					}
 				],
@@ -12977,25 +12973,21 @@
 						}
 					}
 				],
-				"impactMetric": {
-					"value": "3,655",
-					"label": {"en":"tests in the October 26, 2026 CI snapshot","fr":"tests dans l'exécution CI du 26 octobre 2026","es":"pruebas en la ejecución de CI del 26 de octubre de 2026"}
-				},
 				"impactMetrics": [
 					{
-						"value": "3,655",
+						"value": {"en":"3,655","fr":"3,655","es":"3,655"},
 						"label": {"en":"tests in the October 26, 2026 CI snapshot","fr":"tests dans l'exécution CI du 26 octobre 2026","es":"pruebas en la ejecución de CI del 26 de octubre de 2026"}
 					},
 					{
-						"value": "180",
+						"value": {"en":"180","fr":"180","es":"180"},
 						"label": {"en":"prerendered pages in the October 26, 2026 build","fr":"pages prérendues dans la version du 26 octobre 2026","es":"páginas prerenderizadas en la versión del 26 de octubre de 2026"}
 					},
 					{
-						"value": "90",
+						"value": {"en":"90","fr":"90","es":"90"},
 						"label": {"en":"sitemap URLs in the October 26, 2026 snapshot","fr":"URL du plan du site au 26 octobre 2026","es":"URL del mapa del sitio al 26 de octubre de 2026"}
 					},
 					{
-						"value": "0",
+						"value": {"en":"0","fr":"0","es":"0"},
 						"label": {"en":"visitor requests to the editorial CMS","fr":"requêtes des visiteurs au CMS éditorial","es":"solicitudes de visitantes al CMS editorial"}
 					}
 				]

@@ -106,7 +106,7 @@ describe('ProjectCard hero media', () => {
 		const project = projectFactory.build({
 			image: 'desktop-dark-uuid',
 			imageSecondary: 'mobile-dark-uuid',
-			impactMetrics: [{ value: '42%', label: { en: 'less waiting' } }],
+			impactMetrics: [{ value: { en: '42%' }, label: { en: 'less waiting' } }],
 			relatedServices: ['service-a'],
 			stack: ['Postgres'],
 			liveUrl: 'https://example.test',

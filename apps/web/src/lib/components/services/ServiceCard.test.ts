@@ -20,6 +20,11 @@ const mockService = serviceFactory.build({
 });
 
 describe('ServiceCard', () => {
+	it('keeps the optional proof link separate from the navigation CTA', () => {
+		render(ServiceCard, { service: { ...mockService, impactMetric: { ...mockService.impactMetric!, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' } }, svgContent: '', index: 0, total: 6 });
+		expect(screen.getByRole('link', { name: 'Source: faster avg query' }).getAttribute('href')).toBe('https://example.org/evidence');
+		expect(screen.getByText('As of November 4, 2026')).toBeTruthy();
+	});
 	it('renders the service title with dot', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }

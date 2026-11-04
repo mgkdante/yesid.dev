@@ -37,6 +37,7 @@
 
 	import CtaBand from '#lib/components/shared/CtaBand.svelte';
 	import SectionsToggle from '#lib/components/shared/SectionsToggle.svelte';
+	import MetricProof from '#lib/components/shared/MetricProof.svelte';
 
 	let {
 		service,
@@ -155,6 +156,7 @@
 				{#if metricLabel}
 					<span class="impact-label">{metricLabel}</span>
 				{/if}
+				{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 			</div>
 			{#if benefitHeadline}
 				<div class="impact-separator" aria-hidden="true"></div>
@@ -301,6 +303,7 @@
 					{#if metricLabel}
 						<span class="metric-inline-label">{metricLabel}</span>
 					{/if}
+					{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 					{#if benefitHeadline}
 						<p class="metric-inline-headline">{benefitHeadline}</p>
 					{/if}

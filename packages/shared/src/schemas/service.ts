@@ -1,17 +1,10 @@
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
+import { ImpactMetricSchema } from './impact-metric';
 
 export const ServiceSectionSchema = z.object({
 	title: LocalizedStringSchema,
 	content: LocalizedStringSchema,
-});
-
-// Home page Services Grid impact metric — different shape from Project's
-// ImpactMetric (both value + label are LocalizedString here). Kept inline
-// rather than exported because no other schema references it.
-const ServiceImpactMetricSchema = z.object({
-	value: LocalizedStringSchema,
-	label: LocalizedStringSchema,
 });
 
 export const ServiceSchema = z.object({
@@ -38,7 +31,7 @@ export const ServiceSchema = z.object({
 
 	// Home page Services Grid fields (Slice 13g)
 	benefitHeadline: LocalizedStringSchema.optional(),
-	impactMetric: ServiceImpactMetricSchema.optional(),
+	impactMetric: ImpactMetricSchema.optional(),
 });
 
 export type ServiceSection = z.infer<typeof ServiceSectionSchema>;
