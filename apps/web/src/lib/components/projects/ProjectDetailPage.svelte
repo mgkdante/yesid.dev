@@ -45,7 +45,8 @@
 	import type { ReadmeSegment } from '#lib/utils/code-fences.ts';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/env';
-	import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
+	import { registerScrollContext } from '#lib/state/locale-handoff.svelte.ts';
+	import { detailReadingPosition } from '#lib/state/detail-reading-position.ts';
 
 	let {
 		project,
@@ -215,18 +216,9 @@
 
 	const navigation = useSectionJump(afterNavigate);
 
-	// Restore the locale-stable heading ID because translated text changes its vertical offset.
-	onMount(() =>
-		registerScrollContext({
-			capture: () => ({ kind: 'heading', id: activeHeadingId, y: window.scrollY }),
-			restore: async (snap) => {
-				const s = snap as { id?: string; y?: number } | null;
-				if (!s?.id || !(await navigation.jump(s.id, { behavior: 'auto' }))) {
-					lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
-				}
-			},
-		})
-	);
+	onMount(() => registerScrollContext(
+		detailReadingPosition('.sections-column [data-section-index]')
+	));
 </script>
 
 {#snippet galleryCard(mobile: boolean)}

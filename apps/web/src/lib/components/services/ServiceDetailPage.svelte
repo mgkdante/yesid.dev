@@ -7,6 +7,9 @@
 <script lang="ts">
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { registerScrollContext } from '#lib/state/locale-handoff.svelte.ts';
+	import { detailReadingPosition } from '#lib/state/detail-reading-position.ts';
 	import type { Service, ProjectSummary } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
@@ -127,6 +130,9 @@
 
 	let activeTocId = $state('');
 	const navigation = useSectionJump(afterNavigate);
+	onMount(() => registerScrollContext(
+		detailReadingPosition('.sections.article-body > div > [data-toc]')
+	));
 	const hasImpact = $derived(Boolean(metricValue) || tocEntries.length > 0);
 	const hasSidePanel = $derived(hasStack || relatedProjects.length > 0);
 

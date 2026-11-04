@@ -20,7 +20,8 @@
 
   import BlogEntryRail from './BlogEntryRail.svelte';
   import { onMount } from 'svelte';
-  import { registerScrollContext, lenisAwareScrollTo } from '#lib/state/locale-handoff.svelte.ts';
+  import { registerScrollContext } from '#lib/state/locale-handoff.svelte.ts';
+  import { detailReadingPosition } from '#lib/state/detail-reading-position.ts';
   import { resolveLocale } from '#lib/utils/locale.ts';
   import { getLocale, intl } from '#lib/utils/locale-context.ts';
   import { localizeHref } from '#lib/utils/locale-routing.ts';
@@ -188,39 +189,9 @@
 
   const navigation = useSectionJump(afterNavigate);
 
-  // Heading IDs vary by locale, so restore by ordinal when heading structures match and use the raw offset otherwise.
-  function activeHeadingIndex(): number {
-    return headings.findIndex((h) => h.id === activeHeadingId);
-  }
-
-  onMount(() =>
-    registerScrollContext({
-      capture: () => ({
-        kind: 'heading-index',
-        index: activeHeadingIndex(),
-        count: headings.length,
-        y: window.scrollY,
-      }),
-      restore: (snap) => {
-        const s = snap as { index?: number; count?: number; y?: number } | null;
-        const idx = s?.index ?? -1;
-        // Restore by ordinal index only when the heading structure matches
-        // (same count) and the index is in range. Otherwise the offset is the
-        // safer guess than scrolling to a structurally-different heading.
-        const sameStructure = s?.count === headings.length;
-        const target = sameStructure && idx >= 0 ? headings[idx] : undefined;
-        const el = target ? document.getElementById(target.id) : null;
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY;
-          // Match the IntersectionObserver's -20% top rootMargin so the restored
-          // heading lands where the observer considers it active.
-          lenisAwareScrollTo(Math.max(0, top - window.innerHeight * 0.2));
-        } else {
-          lenisAwareScrollTo(Math.max(0, s?.y ?? 0));
-        }
-      },
-    })
-  );
+  onMount(() => registerScrollContext(
+    detailReadingPosition('[data-testid="blog-sections"] > .blog-section-block')
+  ));
 
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
 </script>
