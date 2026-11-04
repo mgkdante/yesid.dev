@@ -1,4 +1,4 @@
-// Render fully LIVE only when every KPI lane is present; otherwise use DEMO data and labels.
+// LIVE requires every aggregate lane and at least one usable route; DEMO stays labelled.
 
 import type { HeroData, HeroQueryRow } from './hero-data';
 
@@ -34,8 +34,8 @@ function num(value: unknown): number | null {
 
 /**
  * Map a raw /api/v1/kpis payload onto the hero's HeroData shape.
- * Returns null unless EVERY lane the hero renders is present and finite;
- * a null return means "stay in DEMO mode", never "render a partial".
+ * Returns null unless every aggregate lane is present and finite, with at
+ * least one route that has a delay. Null-delay routes are omitted individually.
  * queryTime is left at 0 for the caller (fetchLiveKpis stamps the measured
  * round trip, the live analog of the demo generator's fake query time).
  */
@@ -66,12 +66,14 @@ export function mapLiveKpis(payload: unknown): LiveHeroSnapshot | null {
 	for (const raw of rawRoutes.slice(0, 5)) {
 		if (typeof raw !== 'object' || raw === null) return null;
 		const row = raw as Record<string, unknown>;
+		if (row.avgDelayS === null) continue;
 		const route = typeof row.route === 'string' && row.route.length > 0 ? row.route : null;
 		const rowVehicles = num(row.vehicles);
 		const rowDelay = num(row.avgDelayS);
 		if (route === null || rowVehicles === null || rowDelay === null) return null;
 		queryRows.push({ route, avgDelayS: rowDelay, vehicles: rowVehicles });
 	}
+	if (queryRows.length === 0) return null;
 
 	return {
 		freshnessS,
