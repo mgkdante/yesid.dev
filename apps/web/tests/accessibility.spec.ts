@@ -1,3 +1,4 @@
+import { localeCopy } from '../src/lib/locales';
 import { expect, test, type Page } from '@playwright/test';
 import { expectAccessible, expectNoHorizontalOverflow, expectTapTargets } from '@yesid/config/playwright';
 
@@ -13,7 +14,8 @@ import { DEFAULT_LOCALE, resolveLocale } from '../src/lib/utils/locale';
 import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 import { visibleContactTerminal } from './_support/helpers';
 
-const chrome = siteLabels.navChrome.shared;
+const chrome = localeCopy;
+
 const localized = (path: string, locale: Locale) =>
 	locale === DEFAULT_LOCALE ? path : `/${locale}${path === '/' ? '' : path}`;
 // Each locale's own pages: a post exists in one language only.
@@ -35,10 +37,10 @@ async function open(page: Page, { url, post }: (typeof pages)[number]) {
 }
 
 async function openMenu(page: Page, locale: Locale) {
-	const menu = page.getByRole('navigation', { name: resolveLocale(chrome.menuOverlayAria, locale) });
+	const menu = page.getByRole('navigation', { name: chrome[locale].navChrome.shared.menuOverlayAria });
 	await expect(async () => {
 		if (!(await menu.isVisible()))
-			await page.getByRole('button', { name: resolveLocale(chrome.openMenuAria, locale) }).click();
+			await page.getByRole('button', { name: chrome[locale].navChrome.shared.openMenuAria }).click();
 		await expect(menu).toBeVisible({ timeout: 1000 });
 	}).toPass();
 }
@@ -77,7 +79,7 @@ for (const entry of pages) {
 		await open(page, entry);
 		await page.keyboard.press('Tab');
 		await expect(page.locator(':focus')).toHaveAttribute('href', '#main');
-		await expect(page.locator(':focus')).toHaveAccessibleName(resolveLocale(chrome.skipToContentLabel!, entry.locale));
+		await expect(page.locator(':focus')).toHaveAccessibleName(chrome[entry.locale].navChrome.shared.skipToContentLabel);
 		await expect(page.getByRole('banner')).toHaveCount(1);
 		await expect(page.getByRole('main')).toHaveAttribute('id', 'main');
 		await expect(page.getByRole('contentinfo')).toHaveCount(1);

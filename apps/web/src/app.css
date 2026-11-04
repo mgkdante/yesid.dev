@@ -12,7 +12,7 @@
 
 html {
   /* Always reserve a real scrollbar track so a page-height change (e.g. blog
-     Quiet Mode collapsing the article) can't toggle the scrollbar and shift
+     collapsing all article sections) can't toggle the scrollbar and shift
      content sideways. Unlike scrollbar-gutter:stable, a real scrollbar IS
      subtracted from documentElement.clientWidth, so full-bleed bands still
      measure edge-to-edge (the full-width band invariant holds). On overlay /

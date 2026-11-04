@@ -14,6 +14,8 @@
 	import { viewTransition } from '@yesid/motion/utils/viewTransition';
 	import '@yesid/motion/ripple.css';
 	import { SiteFooter, SiteHeader, SiteRoot } from '@yesid/ui/layout';
+	import { createNavigationLifecycle } from '@yesid/ui/brand';
+	import { localeCopy } from '#lib/locales/index.ts';
 	import { Wordmark } from '@yesid/ui/brand';
 
 	// SEO is layout-authoritative: @yesid/ui/head renders tags server-side.
@@ -99,7 +101,8 @@
 	});
 
 	const basePath = $derived(delocalizePath(page.url.pathname));
-	const navChrome = siteLabels.navChrome.shared;
+	const navChrome = $derived(localeCopy[locale].navChrome.shared);
+	const navigation = createNavigationLifecycle({ beforeNavigate, onNavigate, afterNavigate });
 	const MENU_ICONS: Record<string, Component<{ class?: string }>> = {
 		'/services': Wrench,
 		'/projects': FolderOpen,
@@ -154,7 +157,7 @@
 		class="site-shell flex min-h-screen flex-col overflow-x-clip font-body text-[var(--foreground)]"
 	>
 		<SiteHeader
-			navigation={{ beforeNavigate, onNavigate, afterNavigate }}
+			{navigation}
 			home={localizeHref('/', locale)}
 			links={headerLinks.map((link) => ({
 				href: localizeHref(link.href, locale),
@@ -170,18 +173,19 @@
 				icon: MENU_ICONS[item.href],
 			}))}
 			labels={{
-				openMenu: resolveLocale(navChrome.openMenuAria, locale),
-				closeMenu: resolveLocale(navChrome.closeMenuAria, locale),
-				menu: resolveLocale(navChrome.menuOverlayAria, locale),
-				menuFooter: resolveLocale(navChrome.menuOverlayFooterLabel, locale),
-				skipToContent: navChrome.skipToContentLabel ? resolveLocale(navChrome.skipToContentLabel, locale) : undefined,
-				theme: resolveLocale(navChrome.themeToggleAria, locale),
+				openMenu: navChrome.openMenuAria,
+				closeMenu: navChrome.closeMenuAria,
+				menu: navChrome.menuOverlayAria,
+				menuFooter: navChrome.menuOverlayFooterLabel,
+				skipToContent: navChrome.skipToContentLabel,
+				theme: navChrome.themeToggleAria,
 			}}
 			language={{
 				locale,
 				locales: PUBLISHED_LOCALES,
+				names: navChrome.languageNames,
 				href: (next) => languageHref(new URL(page.url.href), next as Locale, data.seo.localeAlternates),
-				label: resolveLocale(navChrome.localeSwitcherAria, locale),
+				label: navChrome.localeSwitcherAria,
 				preserveState: !data.seo.localeAlternates || Boolean(data.seo.localeAlternates[nextLocale]),
 			}}
 		/>

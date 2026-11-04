@@ -165,7 +165,6 @@
 		{subtitle}
 		onHeaderMount={blueprintScrub}
 		filterLabel={mobileFiltersLabel}
-		filterPersistKey="blog-mobile-filters-open"
 	>
 		{#snippet blueprint()}
 			<BlogBlueprint />

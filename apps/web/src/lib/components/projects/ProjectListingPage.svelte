@@ -154,7 +154,6 @@
 		subtitle={listingIntro}
 		onHeaderMount={blueprintScrub}
 		filterLabel={mobileFiltersLabel}
-		filterPersistKey="projects-mobile-filters-open"
 	>
 		{#snippet blueprint()}
 			<ProjectsBlueprint />

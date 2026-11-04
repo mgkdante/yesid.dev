@@ -1,4 +1,4 @@
-import { siteLabels } from '../src/lib/content/site-labels';
+import { localeCopy } from '../src/lib/locales';
 // go2 integration regression locks — two operator-reported deploy bugs.
 //
 // BUG 1 — service SVGs "nowhere to be found" on /services + /services/[id].
@@ -29,9 +29,8 @@ test.describe('responsive shell and interrupted menu', () => {
 		await openMenu(page);
 		await page.keyboard.press('Escape');
 		await expect(page.getByRole('dialog')).toHaveCount(0);
-		await page.getByTestId('quiet-mode-toggle').click();
-		await expect(page.getByTestId('quiet-mode-toggle')).toHaveText(siteLabels.a11y.quietModeLabelCollapsed.en);
-		await page.keyboard.press('Tab');
+		await page.getByTestId('sections-toggle').click();
+		await expect(page.getByTestId('sections-toggle')).toHaveText(localeCopy.en.sections.expand);
 		await page.keyboard.press('Tab');
 		const section = page.locator('main .section-header:visible').first();
 		await expect(section).toBeFocused();
@@ -275,10 +274,13 @@ test.describe('section navigation keyboard continuity', () => {
 				expect(box.y).toBeGreaterThanOrEqual(pill.y + pill.height);
 				expect(box.y + box.height).toBeLessThanOrEqual(page.viewportSize()!.height);
 			}).toPass();
-			await expect(heading).toHaveAttribute('aria-expanded', 'false');
-			await heading.press('Enter');
+			// A TOC jump opens its target, including on later cycles after an individual collapse.
 			await expect(heading).toHaveAttribute('aria-expanded', 'true');
+			await heading.press('Enter');
+			await expect(heading).toHaveAttribute('aria-expanded', 'false');
 			await heading.press('Space');
+			await expect(heading).toHaveAttribute('aria-expanded', 'true');
+			await heading.press('Enter');
 			await expect(heading).toHaveAttribute('aria-expanded', 'false');
 		}
 	});
@@ -304,7 +306,7 @@ test('programmatic collapse returns interior focus visibly', async ({ page }) =>
 	await page.getByRole('link', { name: 'Interior focus fixture' }).focus();
 	const heading = section.locator('.section-header').first();
 	await page
-		.getByTestId('quiet-mode-toggle')
+		.getByTestId('sections-toggle')
 		.evaluate((el: HTMLButtonElement) => el.click());
 	await expect(heading).toBeFocused();
 	await expect(heading).toHaveAttribute('aria-expanded', 'false');

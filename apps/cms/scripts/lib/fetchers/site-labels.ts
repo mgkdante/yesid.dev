@@ -88,10 +88,6 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			['projectImageClose', 'a11y_project_image_close'],
 			['architectureDiagram', 'a11y_architecture_diagram'],
 			['technologyStackTemplate', 'a11y_technology_stack_template'],
-			['quietModeLabel', 'a11y_quiet_mode_label'],
-			['quietModeLabelCollapsed', 'a11y_quiet_mode_label_collapsed'],
-			['quietModeEnable', 'a11y_quiet_mode_enable'], ['quietModeDisable', 'a11y_quiet_mode_disable'],
-			['quietModeRemember', 'a11y_quiet_mode_remember'], ['quietModeForget', 'a11y_quiet_mode_forget'],
 		]),
 		ui: {
 			...toLocalizedFields(tr, [

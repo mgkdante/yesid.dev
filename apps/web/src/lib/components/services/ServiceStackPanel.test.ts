@@ -23,10 +23,10 @@ function stackTrigger({ container }: { container: HTMLElement }): HTMLElement {
 describe('ServiceStackPanel', () => {
 	it('anchors only mobile roots and preserves the fragment contract', () => {
 		const desktop = render(ServiceStackPanel, {
-			props: { ...props, variant: 'desktop', serviceId: 'automation' },
+			props: { ...props, variant: 'desktop' },
 		});
 		const mobile = render(ServiceStackPanel, {
-			props: { ...props, variant: 'mobile', serviceId: 'automation' },
+			props: { ...props, variant: 'mobile' },
 		});
 
 		expect(desktop.container.children).toHaveLength(2);
@@ -36,26 +36,22 @@ describe('ServiceStackPanel', () => {
 		expect(mobile.container.children[1]).toHaveAttribute('data-toc', 'svc-stack');
 	});
 
-	it('keeps a collapsed stack closed on remount for that service and variant only', async () => {
+	it('resets collapsed cards to their declared defaults on remount', async () => {
 		const first = render(ServiceStackPanel, {
-			props: { ...props, variant: 'desktop', serviceId: 'automation' },
+			props: { ...props, variant: 'desktop' },
 		});
 		await fireEvent.click(stackTrigger(first));
 		expect(stackTrigger(first)).toHaveAttribute('aria-expanded', 'false');
 		first.unmount();
 
-		const sameService = render(ServiceStackPanel, {
-			props: { ...props, variant: 'desktop', serviceId: 'automation' },
+		const remounted = render(ServiceStackPanel, {
+			props: { ...props, variant: 'desktop' },
 		});
 		const otherVariant = render(ServiceStackPanel, {
-			props: { ...props, variant: 'mobile', serviceId: 'automation' },
-		});
-		const otherService = render(ServiceStackPanel, {
-			props: { ...props, variant: 'desktop', serviceId: 'consulting' },
+			props: { ...props, variant: 'mobile' },
 		});
 
-		expect(stackTrigger(sameService)).toHaveAttribute('aria-expanded', 'false');
+		expect(stackTrigger(remounted)).toHaveAttribute('aria-expanded', 'true');
 		expect(stackTrigger(otherVariant)).toHaveAttribute('aria-expanded', 'true');
-		expect(stackTrigger(otherService)).toHaveAttribute('aria-expanded', 'true');
 	});
 });

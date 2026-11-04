@@ -38,16 +38,6 @@ export const SiteLabelsSchema = z.object({
 		projectImageClose: LocalizedStringSchema,
 		architectureDiagram: LocalizedStringSchema,
 		technologyStackTemplate: LocalizedStringSchema,
-		/** Collapse/expand-all reading control (detail headers). Verb labels flip
-		 *  with state (label = open state, labelCollapsed = collapsed state);
-		 *  enable/disable are the state tooltips; remember/forget the persist
-		 *  control (homework #19b: verbs instead of a mode name). */
-		quietModeLabel: LocalizedStringSchema,
-		quietModeLabelCollapsed: LocalizedStringSchema,
-		quietModeEnable: LocalizedStringSchema,
-		quietModeDisable: LocalizedStringSchema,
-		quietModeRemember: LocalizedStringSchema,
-		quietModeForget: LocalizedStringSchema,
 	}),
 	ui: z.object({
 		markerService: LocalizedStringSchema,

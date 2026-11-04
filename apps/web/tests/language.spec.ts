@@ -176,12 +176,12 @@ test.describe('State across languages — contact form (session survives the swi
 
 function firstVisibleSectionTrigger(page: Page): Locator {
 	return page
-		.locator('[data-slot="card"] button[aria-expanded]')
+		.locator('.sections-column [data-section-index] .section-header')
 		.filter({ visible: true })
 		.first();
 }
 
-	test('the collapse survives FR→ES→EN (click-twice cycle)', async ({ page }) => {
+	test('content disclosures reset on FR→ES→EN remounts', async ({ page }) => {
 		await page.goto('/fr/projects');
 		const firstCard = page.getByTestId('project-card').first();
 		await expect(firstCard).toBeVisible();
@@ -194,22 +194,24 @@ function firstVisibleSectionTrigger(page: Page): Locator {
 		await trigger.click();
 		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
-		// Click 1: FR → ES — the collapse survives the first remount.
+		// Click 1: FR → ES resets to the declared open default.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL('**/es/projects/**');
 		await expect(page.getByTestId('project-detail-page')).toBeVisible();
 		const esTrigger = firstVisibleSectionTrigger(page);
 		await expect(esTrigger).toBeVisible();
+		await expect(esTrigger).toHaveAttribute('aria-expanded', 'true');
+		await esTrigger.click();
 		await expect(esTrigger).toHaveAttribute('aria-expanded', 'false');
 
-		// Click 2: ES → EN — and the second one.
+		// Click 2: ES → EN resets the second collapsed instance too.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => /^\/projects\//.test(url.pathname));
 		await expect(page.getByTestId('project-detail-page')).toBeVisible();
 
 		const enTrigger = firstVisibleSectionTrigger(page);
 		await expect(enTrigger).toBeVisible();
-		await expect(enTrigger).toHaveAttribute('aria-expanded', 'false');
+		await expect(enTrigger).toHaveAttribute('aria-expanded', 'true');
 	});
 
 const PROJECTS_URL = '/projects';
