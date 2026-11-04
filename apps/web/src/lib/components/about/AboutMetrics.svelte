@@ -1,6 +1,6 @@
 <!--
   Four left-aligned facts share value and label tracks using row subgrids.
-  Narrow cards use two corner pairs; roomy cards meet on two middle rows.
+  Narrow cards use two divided corner pairs; roomy cards keep shared rows up top.
   Typography and accent colour come from the shared metric classes and tokens.
 -->
 <script lang="ts">
@@ -45,12 +45,32 @@
 
 	.metrics-grid {
 		display: grid;
+		position: relative;
 		flex: 1;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		grid-template-rows: auto auto minmax(1rem, 1fr) auto auto;
 		gap: 0.5rem 1rem;
 		margin-top: 1rem;
 		text-align: left;
+	}
+
+	/* Split the corner pairs without adding decorative nodes to the reading order. */
+	.metrics-grid::before {
+		content: '';
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 50%;
+		width: 1px;
+		background: linear-gradient(180deg, transparent, var(--border), transparent);
+	}
+
+	.metrics-grid::after {
+		content: '';
+		grid-column: 1 / -1;
+		grid-row: 3;
+		align-self: center;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--border), transparent);
 	}
 
 	.fact {
@@ -85,12 +105,17 @@
 		@container about-facts (min-width: 560px) {
 			.metrics-grid {
 				grid-template-columns: repeat(4, minmax(0, 1fr));
-				grid-template-rows: 1fr 1fr;
+				grid-template-rows: auto 1fr;
 			}
 
 			.fact:nth-child(n) {
 				grid-column: auto;
 				grid-row: 1 / span 2;
+			}
+
+			.metrics-grid::before,
+			.metrics-grid::after {
+				display: none;
 			}
 		}
 	}

@@ -62,8 +62,7 @@ async function expectLayout(page: Page, width: number) {
 	}
 	if (fourColumns) {
 		for (let i = 1; i < facts.length; i++) expect(facts[i].column.left).toBeGreaterThan(facts[i - 1].column.right);
-		const middle = (state.heading.bottom + 16 + state.content.bottom) / 2;
-		expect(Math.abs((facts[0].value.bottom + facts[0].label.top) / 2 - middle), 'shared rows meet in the available card middle').toBeLessThanOrEqual(1);
+		expect(facts[0].value.top, 'owner refinement: shared values start just below the heading, with spare height below labels').toBeCloseTo(state.heading.bottom + 16, 0);
 	} else {
 		for (const i of [0, 2]) {
 			expect(facts[i].column.left).toBeLessThan(card.left + card.width / 2);
@@ -72,6 +71,9 @@ async function expectLayout(page: Page, width: number) {
 		expect(facts[2].value.top).toBeGreaterThan(Math.max(facts[0].label.bottom, facts[1].label.bottom));
 		expect(facts[2].column.left).toBeCloseTo(facts[0].column.left, 0);
 		expect(facts[3].column.left).toBeCloseTo(facts[1].column.left, 0);
+		const middle = (state.heading.bottom + 16 + state.content.bottom) / 2;
+		for (const fact of facts.slice(0, 2)) expect(fact.value.top).toBeLessThan(middle);
+		for (const fact of facts.slice(2)) expect(fact.value.bottom).toBeGreaterThan(middle);
 	}
 	expect(Math.abs(card.height - state.cell.height), 'card stretches with its grid row').toBeLessThanOrEqual(1);
 	for (const fact of facts) {
