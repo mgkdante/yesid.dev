@@ -23,11 +23,40 @@ test('touch buttons shrink once across hero, CTA band and contact form', async (
 	}
 });
 
+test('date disclosure waits for its handler before accepting keyboard activation', async ({ page, viewport }, testInfo) => {
+	test.skip(viewport!.width < 1024, 'Desktop filter rail');
+	let releaseBootstrap!: () => void;
+	const bootstrap = new Promise<void>((resolve) => { releaseBootstrap = resolve; });
+	await page.route('**/_app/immutable/entry/start.*.js', async (route) => {
+		await bootstrap;
+		await route.continue();
+	});
+	try {
+		await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+		const sidebar = page.locator('.listing-filter-column [data-testid="blog-filter-sidebar"]');
+		const toggle = sidebar.getByRole('button', { name: siteLabels.blogChrome.listing.filters.dateRange.en });
+		await expect(toggle).toBeDisabled();
+		await sidebar.screenshot({ path: testInfo.outputPath('date-before-hydration.png'), timeout: 10_000 });
+		releaseBootstrap();
+		await expect(toggle).toBeEnabled();
+		await toggle.focus();
+		await page.keyboard.press('Enter');
+		await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+		await page.keyboard.press('Tab');
+		await expect(sidebar.locator('input[type="date"]').first()).not.toBeFocused();
+		await expect(sidebar.locator('input[type="date"]').last()).not.toBeFocused();
+		await sidebar.screenshot({ path: testInfo.outputPath('date-closed-after-hydration.png'), timeout: 10_000 });
+	} finally {
+		releaseBootstrap();
+	}
+});
+
 test('closed date filter skips its inputs during keyboard navigation', async ({ page, viewport }) => {
 	test.skip(viewport!.width < 1024, 'Desktop filter rail');
 	await page.goto('/blog', { waitUntil: 'domcontentloaded' });
 	const sidebar = page.locator('.listing-filter-column [data-testid="blog-filter-sidebar"]');
 	const toggle = sidebar.getByRole('button', { name: siteLabels.blogChrome.listing.filters.dateRange.en });
+	await expect(toggle).toBeEnabled();
 	await toggle.focus();
 	await page.keyboard.press('Enter');
 	await expect(toggle).toHaveAttribute('aria-expanded', 'false');

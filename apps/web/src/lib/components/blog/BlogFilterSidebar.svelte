@@ -6,6 +6,7 @@
   because they are not button group patterns.
 -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { Locale } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -22,7 +23,10 @@
 
 	// Date filters toggle independently of content sections.
 	let dateOpen = $state(true);
+	let dateReady = $state(false);
 	const datePanelId = $props.id();
+	// SSR exposes the fields, but the JS disclosure cannot accept activation until mounted.
+	onMount(() => { dateReady = true; });
 
 	let {
 		tags,
@@ -68,6 +72,7 @@
 	<FilterSection>
 	<button
 		type="button"
+		disabled={!dateReady}
 		aria-expanded={dateOpen}
 		aria-controls={datePanelId}
 		class="flex min-h-11 w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
