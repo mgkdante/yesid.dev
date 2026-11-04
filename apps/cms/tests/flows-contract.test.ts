@@ -23,10 +23,16 @@ type Operation = {
 
 function assertOnlyManualPublishRequest(flowRows: readonly Flow[], operationRows: readonly Operation[]) {
 	const requests = operationRows.filter((operation) => operation.type === 'request');
-	expect(requests).toHaveLength(1);
-	expect(requests[0]).toMatchObject({ _syncId: PUBLISH_OPERATION, flow: PUBLISH_FLOW });
+	expect(requests).toHaveLength(3);
+	const builds = requests.filter((operation) => (operation.options as { method?: string }).method !== 'GET');
+	expect(builds).toHaveLength(1);
+	expect(builds[0]).toMatchObject({ _syncId: PUBLISH_OPERATION, flow: PUBLISH_FLOW });
+	for (const read of requests.filter((operation) => operation !== builds[0])) {
+		expect(read.flow).toBe(PUBLISH_FLOW);
+		expect(read.options).toMatchObject({ method: 'GET', url: 'https://yesid.dev/_app/version.json' });
+	}
 	expect(flowRows.find((flow) => flow._syncId === PUBLISH_FLOW)).toMatchObject({
-		name: 'Publish site', trigger: 'manual', operation: PUBLISH_OPERATION,
+		name: 'Publish site', trigger: 'manual', operation: '_sync_op_publish_context',
 	});
 }
 
@@ -52,7 +58,9 @@ function assertAutomaticOperationsArePassive(flowRows: readonly Flow[], operatio
 function assertNoOtherDeployOptions(operationRows: readonly Operation[]) {
 	for (const operation of operationRows) {
 		if (operation._syncId === PUBLISH_OPERATION) continue;
-		expect(JSON.stringify(operation.options), operation._syncId).not.toMatch(/vercel\.com|deploy/i);
+		// Notification prose may link to Vercel's dashboard. Deploy URLs and hook
+		// references remain forbidden outside the one manual POST operation.
+		expect(JSON.stringify(operation.options), operation._syncId).not.toMatch(/VERCEL_DEPLOY_HOOK|https?:\/\/[^"'\\\s]*(?:deploy|hooks)/i);
 	}
 }
 
@@ -72,17 +80,16 @@ describe('D6 manual Publish flow contract', () => {
 		].sort());
 	});
 
-	it('requires confirmation for one synchronous manual build from Publish site', () => {
+	it('requires confirmation for one asynchronous manual build from Publish site', () => {
 		const flow = flows.find((entry) => entry._syncId === PUBLISH_FLOW);
 		expect(flow).toMatchObject({
 			name: 'Publish site', icon: 'rocket_launch', status: 'active',
-			trigger: 'manual', accountability: 'all', operation: PUBLISH_OPERATION,
-			description: "D6 manual Publish (2026-10-25): one build per editing session. Run from Publish site (bottom of the Content sidebar, collection build_queue) → Flows → Publish site. POSTs this environment's Vercel deploy hook ($env.VERCEL_DEPLOY_HOOK_URL, allow-listed in FLOWS_ENV_ALLOW_LIST) with buildCache=false. Edits never rebuild the site by themselves.",
+			trigger: 'manual', accountability: 'all', operation: '_sync_op_publish_context',
 		});
 		expect(flow?.options).toEqual({
 			collections: ['build_queue'], location: 'item', requireSelection: false,
-			async: false, requireConfirmation: true,
-			confirmationDescription: "Publish site: rebuild this environment's website from the current published CMS content (one build, about 3 minutes).",
+			async: true, requireConfirmation: true,
+			confirmationDescription: 'Publish site: rebuild the website from the current published CMS content. A CMS notification checks whether the public site changed about 10 minutes later.',
 		});
 	});
 
@@ -93,7 +100,7 @@ describe('D6 manual Publish flow contract', () => {
 		expect(hookOperations).toHaveLength(1);
 		expect(hookOperations[0]).toMatchObject({
 			_syncId: PUBLISH_OPERATION, flow: PUBLISH_FLOW,
-			type: 'request', resolve: null, reject: null,
+			type: 'request', resolve: '_sync_op_publish_wait', reject: '_sync_op_publish_hook_error',
 		});
 		expect(hookOperations[0]?.options).toEqual({
 			method: 'POST',
@@ -114,7 +121,7 @@ describe('D6 manual Publish flow contract', () => {
 		}
 	});
 
-	it('allows exactly one request, owned and entered by the manual Publish site flow', () => {
+	it('allows exactly one build POST and two public reads owned by the manual Publish site flow', () => {
 		assertOnlyManualPublishRequest(flows, operations);
 	});
 
@@ -141,8 +148,8 @@ describe('D6 manual Publish flow contract', () => {
 				'block_projects_page_content', 'block_proof_reel', 'block_services_grid',
 			],
 		});
-		expect(operations.map((operation) => operation._syncId).sort()).toEqual([
-			PUBLISH_OPERATION, '_sync_op_translation_reminder_check_published',
+		expect(operations.filter((operation) => operation.flow === REMINDER_FLOW).map((operation) => operation._syncId).sort()).toEqual([
+			'_sync_op_translation_reminder_check_published',
 			'_sync_op_translation_reminder_log', '_sync_op_translation_reminder_notify',
 		].sort());
 	});
