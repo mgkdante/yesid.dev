@@ -16,6 +16,29 @@ const tokenPx = (page: Page, token: string) =>
 		return size;
 	}, token);
 
+for (const path of ['/services', '/services/web-development']) {
+	test(`${path}: swiping blocks station activation until the guard resets`, async ({ page }) => {
+		test.skip(test.info().project.name !== 'phone', 'Touch strip hit-testing.');
+		await page.goto(path);
+		const rail = page.locator('.station-tabs');
+		const target = page.getByTestId('station-tab-data-pipeline');
+		await expect(target).toBeVisible();
+		const bounds = (await target.boundingBox())!;
+		await rail.evaluate((element) => {
+			const touch = (x: number) => new Touch({ identifier: 1, target: element, clientX: x, clientY: 110 });
+			element.dispatchEvent(new TouchEvent('touchstart', { touches: [touch(250)], bubbles: true }));
+			element.dispatchEvent(new TouchEvent('touchmove', { touches: [touch(150)], bubbles: true }));
+		});
+		await expect(target).toHaveCSS('pointer-events', 'none');
+		await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+		await expect(page).toHaveURL(new RegExp(`${path}$`));
+		await rail.evaluate((element) => element.dispatchEvent(new TouchEvent('touchend', { touches: [], bubbles: true })));
+		await expect(target).toHaveCSS('pointer-events', 'auto');
+		await target.click();
+		await expect(page).toHaveURL(path === '/services' ? /station=data-pipeline/ : /\/services\/data-pipeline$/);
+	});
+}
+
 test('services page loads + service card is visible', async ({ page }) => {
 	await page.goto('/services');
 

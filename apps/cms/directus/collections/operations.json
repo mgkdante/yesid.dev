@@ -118,7 +118,7 @@
       "milliseconds": 600000
     },
     "resolve": "_sync_op_publish_version_after",
-    "reject": "_sync_op_publish_check_failed",
+    "reject": null,
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_wait"
   },
@@ -153,7 +153,7 @@
       "code": "module.exports = function (data) {\n  function version(reply) {\n    var value = reply && reply.status === 200 && reply.data && reply.data.version;\n    return typeof value === 'string' && /^[A-Za-z0-9._-]{1,80}$/.test(value) ? value : null;\n  }\n  var context = data.publish_context;\n  var before = version(data.version_before);\n  var after = version(data.version_after);\n  var subject;\n  var observation;\n  if (before === null || after === null) {\n    var missing = [];\n    if (before === null) missing.push('before Publish');\n    if (after === null) missing.push('after the wait');\n    subject = 'Publish site: could not verify';\n    observation = 'Could not read a valid public build version ' + missing.join(' and ') + '. The update status is unknown.';\n  } else if (before !== after) {\n    subject = 'Publish site: updated';\n    observation = 'Public build changed from ' + before + ' to ' + after + '.';\n  } else {\n    subject = 'Publish site: not updated';\n    observation = 'Public build is still ' + before + ' after about 10 minutes. The build may still be running; this does not prove a deployment failed.';\n  }\n  return {\n    subject: subject,\n    message: 'Request ' + context.requestId + ' at ' + context.hookRespondedAt + '. ' + observation + ' This checks the public site during this request window; overlapping Publishes or other deployments cannot be attributed to a particular press. [Open Vercel](https://vercel.com/dashboard).'\n  };\n};"
     },
     "resolve": "_sync_op_publish_notify",
-    "reject": "_sync_op_publish_check_failed",
+    "reject": "_sync_op_publish_result_check_failed",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_result"
   },
@@ -166,8 +166,8 @@
     "options": {
       "code": "module.exports = function (data) {\n  var context = { hookRespondedAt: new Date().toISOString(), requestId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10) };\n  return {\n    subject: 'Publish site: hook rejected',\n    message: 'Request ' + context.requestId + ' at ' + context.hookRespondedAt + '. The Publish hook was rejected or could not be reached. A build was not confirmed as queued; no delayed version check was run. Check Vercel before retrying, because a network failure can leave the request outcome unknown. [Open Vercel](https://vercel.com/dashboard).'\n  };\n};"
     },
-    "resolve": "_sync_op_publish_notify",
-    "reject": "_sync_op_publish_check_failed",
+    "resolve": "_sync_op_publish_hook_rejected_notice",
+    "reject": "_sync_op_publish_hook_check_failed",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_hook_error"
   },
@@ -181,8 +181,8 @@
       "recipient": [
         "{{$accountability.user}}"
       ],
-      "subject": "{{$last.subject}}",
-      "message": "{{$last.message}}"
+      "subject": "{{publish_result.subject}}",
+      "message": "{{publish_result.message}}"
     },
     "resolve": null,
     "reject": null,
@@ -206,5 +206,59 @@
     "reject": null,
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_check_failed"
+  },
+  {
+    "name": "Notify rejected Publish hook",
+    "key": "hook_rejected_notice",
+    "type": "notification",
+    "position_x": 91,
+    "position_y": 20,
+    "options": {
+      "recipient": [
+        "{{$accountability.user}}"
+      ],
+      "subject": "{{hook_error.subject}}",
+      "message": "{{hook_error.message}}"
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
+    "_syncId": "_sync_op_publish_hook_rejected_notice"
+  },
+  {
+    "name": "Notify failed version result check",
+    "key": "result_check_failed",
+    "type": "notification",
+    "position_x": 145,
+    "position_y": 39,
+    "options": {
+      "recipient": [
+        "{{$accountability.user}}"
+      ],
+      "subject": "Publish site: could not verify",
+      "message": "The Publish check itself failed, so the site update could not be verified. The Publish hook was already attempted; its outcome may be unknown. [Look at Vercel](https://vercel.com/dashboard) before retrying."
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
+    "_syncId": "_sync_op_publish_result_check_failed"
+  },
+  {
+    "name": "Notify failed hook error check",
+    "key": "hook_check_failed",
+    "type": "notification",
+    "position_x": 91,
+    "position_y": 39,
+    "options": {
+      "recipient": [
+        "{{$accountability.user}}"
+      ],
+      "subject": "Publish site: could not verify",
+      "message": "The Publish check itself failed, so the site update could not be verified. The Publish hook was already attempted; its outcome may be unknown. [Look at Vercel](https://vercel.com/dashboard) before retrying."
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
+    "_syncId": "_sync_op_publish_hook_check_failed"
   }
 ]
