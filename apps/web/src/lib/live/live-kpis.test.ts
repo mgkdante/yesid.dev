@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import contract from '../../../../../contracts/kpis-v1.examples.json';
 import {
 	fetchLiveKpis,
 	LIVE_KPIS_URL,
@@ -25,6 +28,30 @@ const validPayload = {
 		{ route: '49', vehicles: 7, avgDelayS: 53 },
 	],
 };
+
+describe('shared KPI v1 examples', () => {
+	it('keeps the exact Transit 8314d2f3 example bytes', () => {
+		// Transit parses these bytes directly in kpis-contract.test.mjs, without
+		// reserializing JSON. Hash the original UTF-8 file, including its final LF.
+		const bytes = readFileSync(new URL('../../../../../contracts/kpis-v1.examples.json', import.meta.url));
+		expect(createHash('sha256').update(bytes).digest('hex')).toBe(
+			'a040edee590d8c1480e9388db9be0ed39e46df5deaa98f6ee108e2b750ccec89',
+		);
+	});
+
+	it.each(contract.examples)('$name maps to the agreed hero state and route list', async (example) => {
+		const headers = new Headers();
+		for (const [name, value] of Object.entries(example.headers)) {
+			if (typeof value === 'string') headers.set(name, value);
+		}
+		const snapshot = await fetchLiveKpis(async () => new Response(JSON.stringify(example.body), {
+			status: example.status,
+			headers,
+		}));
+		expect(snapshot ? 'live' : 'demo').toBe(example.hero.mode);
+		expect(snapshot?.data.queryRows.map(row => row.route) ?? []).toEqual(example.hero.routes);
+	});
+});
 
 describe('mapLiveKpis', () => {
 	it('maps a full payload onto HeroData (metrics keyed, coverage as %)', () => {

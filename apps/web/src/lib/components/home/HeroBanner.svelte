@@ -63,6 +63,8 @@
 	const subtitleText = $derived(resolveLocale(heroContent.subtitle, locale));
 	const ctaWorkLabel = $derived(resolveLocale(heroContent.ctaWork, locale));
 	const ctaContactLabel = $derived(resolveLocale(heroContent.ctaContact, locale));
+	// Seed once from the prop, then let refreshes own the local data.
+	let heroData: HeroData = $state(untrack(() => INITIAL_HERO_DATA));
 	// LIVE labels require real transit data; simulated values must retain DEMO labels.
 	let live = $state(false);
 	const sqlLabels = $derived({
@@ -71,7 +73,8 @@
 		columnRoute: resolveLocale(heroContent.sqlPanel.columns.route, locale),
 		columnAvgDelay: resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale),
 		columnVehicles: resolveLocale(heroContent.sqlPanel.columns.vehicles, locale),
-		metaTemplate: resolveLocale(heroContent.sqlPanel.metaTemplate, locale),
+		metaTemplate: resolveLocale(heroContent.sqlPanel.metaTemplate, locale)
+			.replace(/^\d+\b/, String(heroData.queryRows.length)),
 	});
 	const headlineAriaSuffix = $derived(resolveLocale(heroContent.headline.ariaSuffix, locale));
 	const refreshLabel = $derived(resolveLocale(heroContent.refreshButton.label, locale));
@@ -86,8 +89,6 @@
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;
 
-	// Seed once from the prop, then let refreshes own the local data.
-	let heroData: HeroData = $state(untrack(() => INITIAL_HERO_DATA));
 	// Prerendered demo data has no meaningful age; only a user refresh can claim it was regenerated just now.
 	const stamps = untrack(() => heroContent.sqlPanel.stamps);
 	const updatedAgoInitial = resolveLocale(stamps.demo, locale);
@@ -132,6 +133,25 @@
 		demoStamp = stamp;
 	}
 
+	let consecutiveFailures = 0;
+	let pendingLiveCheck: Promise<void> | null = null;
+	function refreshLive(stamp: string): Promise<void> {
+		// A click during a poll shares that check instead of consuming two failures.
+		if (pendingLiveCheck) return pendingLiveCheck;
+		pendingLiveCheck = fetchLiveKpis().then((snapshot) => {
+			if (destroyed) return;
+			if (snapshot) {
+				consecutiveFailures = 0;
+				applyLiveSnapshot(snapshot);
+			} else {
+				consecutiveFailures += 1;
+				// Keep the original liveBase so a held real reading keeps ageing.
+				if (consecutiveFailures >= 2) dropToDemo(stamp);
+			}
+		}).finally(() => { pendingLiveCheck = null; });
+		return pendingLiveCheck;
+	}
+
 	function handleRefresh() {
 		spinRefreshIcon();
 		if (!liveEnabled) {
@@ -139,10 +159,7 @@
 			demoStamp = updatedAgoJustNow;
 			return;
 		}
-		void fetchLiveKpis().then((snapshot) => {
-			if (snapshot) applyLiveSnapshot(snapshot);
-			else dropToDemo(updatedAgoJustNow);
-		});
+		void refreshLive(updatedAgoJustNow);
 	}
 
 	// Automated browsers use deterministic demo data so E2E runs do not depend on the transit service.
@@ -150,12 +167,7 @@
 	onMount(() => {
 		if (navigator.webdriver) return;
 		liveEnabled = true;
-		const tickLive = async () => {
-			const snapshot = await fetchLiveKpis();
-			if (snapshot) applyLiveSnapshot(snapshot);
-			else if (live) dropToDemo(updatedAgoInitial);
-		};
-		const stopLivePolling = startLiveKpiPolling(tickLive);
+		const stopLivePolling = startLiveKpiPolling(() => refreshLive(updatedAgoInitial));
 		return stopLivePolling;
 	});
 
