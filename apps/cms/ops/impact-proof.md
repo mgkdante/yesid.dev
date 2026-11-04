@@ -28,6 +28,49 @@ invalid URL or calendar date stops export. The date is the measurement's date,
 not the record's edit date. UI dates use locale formatting with UTC calendar-day
 semantics; llms-full.txt carries the supplied ISO date and source URL.
 
+## Editor validation, verified against Directus 12.5.1
+
+Both URL fields now validate at save, while strict export validation remains unchanged.
+The rule is `_and: [{ _or: [field is null, field equals "", field matches _regex] }]`.
+A stored empty string and null both pass; the exporter omits either before parsing
+the public metric. Whitespace-only input is refused by the CMS rule. Missing fields
+remain optional. Non-empty links must use HTTPS, a DNS domain, no credentials or
+backslashes, and a port in 0..65535 when specified. The DNS-domain rule is deliberately
+conservative: literal IP addresses and single-label hosts are refused by the editor.
+
+The `_regex` is an unwrapped JavaScript pattern, not `/pattern/flags`. The `_and`
+wrapper is necessary for the editor's custom-validation path. It rejects HTTP,
+javascript, relative paths, embedded credentials, bare `https://`, malformed hosts,
+out-of-range ports and trailing newlines. Table tests verify that each accepted URL
+also passes the unchanged `ImpactMetricSchema`.
+
+`meta.validation_message` is `$t:impact_proof_source_invalid` on both URL fields.
+Field translations name fields only; localized messages require custom translations.
+[impact-proof-translations.json](impact-proof-translations.json) contains three POSTs
+to `/translations`, with the same rows committed in `directus/collections/translations.json`:
+
+| Language | Message |
+| --- | --- |
+| en-US | Use a public https:// link with a domain name and no username or password, or leave this field blank. |
+| fr-CA | Utilisez un lien public https:// avec un nom de domaine, sans nom d’utilisateur ni mot de passe, ou laissez ce champ vide. |
+| es-ES | Usa un enlace público https:// con un nombre de dominio, sin usuario ni contraseña, o deja este campo vacío. |
+
+Pinned source: Directus tag `v12.5.1`, commit `2cd112f1a1afe42829d2e4de899d07ce4394649c`.
+
+- [generate-joi.ts](https://github.com/directus/directus/blob/2cd112f1a1afe42829d2e4de899d07ce4394649c/packages/utils/shared/generate-joi.ts#L295): `_null`, `_eq` and `_regex`; the latter constructs `new RegExp`.
+- [validate-payload.ts](https://github.com/directus/directus/blob/2cd112f1a1afe42829d2e4de899d07ce4394649c/packages/utils/shared/validate-payload.ts#L24): logical `_and` and `_or` evaluation.
+- [validate-item.ts](https://github.com/directus/directus/blob/2cd112f1a1afe42829d2e4de899d07ce4394649c/app/src/utils/validate-item.ts#L69): the editor reads custom rules from `_and` and skips null inputs.
+- [fields.ts](https://github.com/directus/directus/blob/2cd112f1a1afe42829d2e4de899d07ce4394649c/app/src/stores/fields.ts#L161): resolves a translated `validation_message`.
+- [format-date-picker-model-value.ts](https://github.com/directus/directus/blob/2cd112f1a1afe42829d2e4de899d07ce4394649c/app/src/utils/format-date-picker-model-value.ts#L36): a `date` emits `CalendarDate.toString()` as `YYYY-MM-DD`; clearing emits null.
+- [payload.ts](https://github.com/directus/directus/blob/2cd112f1a1afe42829d2e4de899d07ce4394649c/api/src/services/payload.ts#L427): API null handling and date-only read serialization.
+
+The pinned date formatter was executed locally with real CalendarDate values:
+`2024-02-29`, `2026-11-04` and `2026-12-31`. All three emitted unchanged strings
+accepted by ImpactMetricSchema; clearing emitted null. The field type remains
+`date` with interface `datetime`, not timestamp/dateTime. A stored date-column empty
+string is not the UI's representation of absence; the picker uses null. Existing
+exporter tests also tolerate an empty string by omission. No production save was tested.
+
 ## Permission changes to confirm separately
 
 1. Human Editor: ADD `services` READ, fields exactly `impact_metric_source_url,impact_metric_as_of`, unrestricted row filter `{}`; no other field.
@@ -49,25 +92,31 @@ applying: a newer equivalent grant must be reconciled, never duplicated or overw
    main into the worker branch after opening the PR. The existing uncited Publish
    can run without the new columns.
 2. Run cms.yml `diff` on main. Review the exact diff. Expected scope is the four
-   nullable fields plus the two narrowly scoped permission rows above. Stop for
+   nullable fields, three message translations and the two narrowly scoped permission rows above. Stop for
    unrelated differences. The authenticated live diff was not run by the worker.
 3. From the owner's authenticated browser session, GET `/fields/projects_impact_metrics`
    and `/fields/services`; confirm the four fields are absent. Save relevant preimages
    of any existing fields/grants. Do not change item content.
-4. In the JSON packet order, POST each `payload` to its `path`. Read each field
+4. Apply the three translation POSTs in `impact-proof-translations.json` first. Re-read
+   each key/language before creating it; reconcile an existing row instead of duplicating.
+   Save returned IDs and register their `syncId` values at
+   `/directus-extension-sync/table/directus_translations`, using
+   `{"table":"directus_translations","local_id":"RETURNED_ID","sync_id":"PACKET_SYNC_ID"}`.
+   Read each translation and map back. These are the only additional configuration rows.
+5. In the field JSON packet order, POST each `payload` to its `path`. Read each field
    back with GET `/fields/{collection}/{field}`. Existing metrics remain null.
-5. Resolve Human Editor's current policy with GET
+6. Resolve Human Editor's current policy with GET
    `/directus-extension-sync/table/directus_policies/sync_id/_sync_human_editor_policy`.
    Use its returned `local_id`, not a guessed UUID. GET `/permissions` filtered to
    that policy and `services`; stop/reconcile if a corresponding grant now exists.
-6. POST the two permission bodies below, one at a time, replacing POLICY_ID with
+7. POST the two permission bodies below, one at a time, replacing POLICY_ID with
    the resolved policy ID. Save each returned permission `id` and read it back.
-7. Register each new permission's sync identity with the mapping POST below. This
+8. Register each new permission's sync identity with the mapping POST below. This
    avoids duplicate grants or a perpetual diff after manual REST creation. Inspect
    an uncertain outcome before retrying. Never POST the same grant twice.
-8. Run cms.yml `diff` again. It must be empty. A live diff or permission mismatch
+9. Run cms.yml `diff` again. It must be empty. A live diff or permission mismatch
    remains an orchestrator blocker, not evidence supplied by a fixture build.
-9. Owner fills only real proof in CMS, then uses Publish site. Verify that Publish,
+10. Owner fills only real proof in CMS, then uses Publish site. Verify that Publish,
    the corresponding live pages and llms-full.txt all show that exact source/date.
    The worker's synthetic layout examples are never content for this step.
 

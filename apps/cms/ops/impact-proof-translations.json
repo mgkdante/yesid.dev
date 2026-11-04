@@ -1,0 +1,32 @@
+[
+  {
+    "method": "POST",
+    "path": "/translations",
+    "payload": {
+      "language": "en-US",
+      "key": "impact_proof_source_invalid",
+      "value": "Use a public https:// link with a domain name and no username or password, or leave this field blank."
+    },
+    "syncId": "impact-proof-source-invalid-en-us"
+  },
+  {
+    "method": "POST",
+    "path": "/translations",
+    "payload": {
+      "language": "fr-CA",
+      "key": "impact_proof_source_invalid",
+      "value": "Utilisez un lien public https:// avec un nom de domaine, sans nom d’utilisateur ni mot de passe, ou laissez ce champ vide."
+    },
+    "syncId": "impact-proof-source-invalid-fr-ca"
+  },
+  {
+    "method": "POST",
+    "path": "/translations",
+    "payload": {
+      "language": "es-ES",
+      "key": "impact_proof_source_invalid",
+      "value": "Usa un enlace público https:// con un nombre de dominio, sin usuario ni contraseña, o deja este campo vacío."
+    },
+    "syncId": "impact-proof-source-invalid-es-es"
+  }
+]

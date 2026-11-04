@@ -38,8 +38,30 @@
             "translation": "Fuente de la prueba (opcional)"
           }
         ],
-        "validation": null,
-        "validation_message": null,
+        "validation": {
+          "_and": [
+            {
+              "_or": [
+                {
+                  "source_url": {
+                    "_null": true
+                  }
+                },
+                {
+                  "source_url": {
+                    "_eq": ""
+                  }
+                },
+                {
+                  "source_url": {
+                    "_regex": "^[Hh][Tt][Tt][Pp][Ss]://(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?::(?:[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(?:[/?#][^\\s\\\\\\u0000-\\u001F\\u007F]*)?(?![\\s\\S])"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "validation_message": "$t:impact_proof_source_invalid",
         "width": "half"
       },
       "schema": {
@@ -156,8 +178,30 @@
             "translation": "Fuente de la prueba (opcional)"
           }
         ],
-        "validation": null,
-        "validation_message": null,
+        "validation": {
+          "_and": [
+            {
+              "_or": [
+                {
+                  "impact_metric_source_url": {
+                    "_null": true
+                  }
+                },
+                {
+                  "impact_metric_source_url": {
+                    "_eq": ""
+                  }
+                },
+                {
+                  "impact_metric_source_url": {
+                    "_regex": "^[Hh][Tt][Tt][Pp][Ss]://(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?::(?:[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(?:[/?#][^\\s\\\\\\u0000-\\u001F\\u007F]*)?(?![\\s\\S])"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "validation_message": "$t:impact_proof_source_invalid",
         "width": "half"
       },
       "schema": {
