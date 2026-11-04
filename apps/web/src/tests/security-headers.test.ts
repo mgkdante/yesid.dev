@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { loadWebConfig } from './load-web-config';
 
 import boot from '@yesid/ui/boot.json' with { type: 'json' };
+import { SECURITY_HEADERS } from '@yesid/seo-kit/headers';
 import { createCspDirectives } from '../../scripts/csp-policy.mjs';
 
 vi.stubEnv('VERCEL_ENV', undefined);
@@ -56,6 +57,27 @@ describe('CSP deployment policy', () => {
 });
 
 describe('production security policy', () => {
+	it('keeps static headers aligned with the installed shared policy, except owner-controlled HSTS', () => {
+		// HSTS remains Vercel-owned. Adding includeSubDomains at the apex affects
+		// every subdomain, and preload is hard to undo: both need the owner's decision.
+		const sharedHeaders = Object.entries(SECURITY_HEADERS).filter(([key]) => key.toLowerCase() !== 'strict-transport-security');
+		const globalRule = vercel.headers.find(
+			(rule: { source: string; has?: unknown; missing?: unknown }) => rule.source === '/(.*)' && !rule.has && !rule.missing,
+		);
+		expect(globalRule, 'an unconditional shared policy must cover documents and assets').toBeDefined();
+		for (const [key, value] of sharedHeaders) {
+			const matching = (rule: typeof globalRule) =>
+				rule.headers.filter((header: { key: string; value: string }) => header.key.toLowerCase() === key.toLowerCase());
+			expect(matching(globalRule).map((header: { value: string }) => header.value), key).toEqual([value]);
+			for (const rule of vercel.headers) {
+				for (const header of matching(rule)) expect(header.value, `${rule.source}: ${key}`).toBe(value);
+			}
+		}
+		expect(vercel.headers.flatMap((rule: typeof globalRule) => rule.headers).some(
+			(header: { key: string }) => header.key.toLowerCase() === 'strict-transport-security',
+		), 'HSTS must stay absent from vercel.json pending the owner').toBe(false);
+	});
+
 	it('every path answers with DENY framing, nosniff and no framing ancestors', () => {
 		const rule = vercel.headers.find((rule: { source: string; has?: unknown }) => rule.source === '/(.*)' && !rule.has);
 		expect(rule).toBeDefined();
