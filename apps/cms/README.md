@@ -144,6 +144,14 @@ Permission control follows the same rule. The read-only audit owns discovery.
 Targeted reconcilers and the guarded CMS workflow own repairs. Do not replace
 them with ad-hoc Data Studio or REST mutations.
 
+The permissions dump records the 11 live Human Editor asset-registry grants.
+Its eight unfiltered create/read rows use `permissions: null`, matching live;
+their field lists, create validation and presets remain enforced. The historical
+DEV plan in `scripts/lib/assets/editor-presets.ts` retains the 20 deferred
+Ops Bot and Build Bot grants for reference. They are not production access
+declarations. Production policy/permission pushes remain refused, including
+after the existing acknowledgement variables are set.
+
 [`ops/permissions/buildbot-cover-permission.json`](ops/permissions/buildbot-cover-permission.json)
 is a production-only permission declaration applied through guarded `cms`
 workflow lanes, and it stays out of the shared dump by design.
