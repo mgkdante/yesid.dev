@@ -5,13 +5,14 @@ test.beforeEach(({}, testInfo) => {
 });
 
 async function layoutReady(page: Page) {
+	await page.evaluate(() => document.activeViewTransition?.finished);
 	await page.evaluate(() => document.fonts.ready);
 	await expect(page.locator('.mermaid-diagram__fallback')).toHaveCount(0);
 	await page.evaluate(() => new Promise<void>((resolve) =>
 		requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
 }
 
-async function visitListing(page: Page) {
+async function visitListing(page: Page, waitForVisibleListing = true) {
 	await page.evaluate(() => {
 		const link = document.createElement('a');
 		link.href = '/projects';
@@ -25,6 +26,11 @@ async function visitListing(page: Page) {
 		return y;
 	});
 	await expect(page).toHaveURL(/\/projects$/);
+	if (waitForVisibleListing) {
+		// The URL changes before the old-page snapshot stops covering the listing.
+		await layoutReady(page);
+		await expect(page.locator('main h1')).toBeVisible();
+	}
 	return before;
 }
 
@@ -38,13 +44,12 @@ for (const width of [1440, 1280]) {
 				{ path: '/services/web-development', diagrams: false },
 			]) {
 				test(`Back keeps the settled offset on ${detail.path}`, async ({ page }) => {
-					// Rapid Back: 1400 to 1484, full document reload via the +layout.svelte guard.
-					test.fixme(width === 1440 && reducedMotion === 'no-preference' && detail.diagrams, 'Forced-reload path is outside c-s6.');
 					await page.goto(detail.path);
 					await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeVisible();
 					await layoutReady(page);
 					if (detail.diagrams) await expect(page.locator('.mermaid-diagram svg').first()).toBeVisible();
 					else await expect(page.locator('.mermaid-diagram')).toHaveCount(0);
+					const documentStarted = await page.evaluate(() => performance.timeOrigin);
 					await page.evaluate(() => window.scrollTo(0, 1400));
 					await layoutReady(page);
 					const before = await visitListing(page);
@@ -52,6 +57,7 @@ for (const width of [1440, 1280]) {
 					await page.goBack();
 					await expect(page).toHaveURL(detail.path);
 					await layoutReady(page);
+					expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStarted);
 					await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(before, 0);
 				});
 			}
@@ -94,3 +100,18 @@ for (const width of [1440, 1280]) {
 		});
 	}
 }
+
+test.describe('navigation interrupted before the listing appears', () => {
+	test.use({ viewport: { width: 1440, height: 900 }, contextOptions: { reducedMotion: 'no-preference' } });
+	// Rapid Back: 1400 to 1484, full document reload via the +layout.svelte guard.
+	test.fixme('Back during the outgoing transition reaches the reload guard', async ({ page }) => {
+		await page.goto('/projects/yesid-dev');
+		await layoutReady(page);
+		await page.evaluate(() => window.scrollTo(0, 1400));
+		const before = await visitListing(page, false);
+		await page.goBack();
+		await expect(page).toHaveURL('/projects/yesid-dev');
+		await layoutReady(page);
+		await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(before, 0);
+	});
+});
