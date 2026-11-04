@@ -68,7 +68,7 @@
       ],
       "body": "{\"source\":\"directus.manual\",\"trigger\":\"publish_site_flow\"}"
     },
-    "resolve": "_sync_op_publish_wait",
+    "resolve": "_sync_op_publish_context",
     "reject": "_sync_op_publish_hook_error",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "a7c9d628-b970-4f38-bb4b-0c532901d0e1"
@@ -77,13 +77,13 @@
     "name": "Label this Publish request",
     "key": "publish_context",
     "type": "exec",
-    "position_x": 1,
+    "position_x": 73,
     "position_y": 1,
     "options": {
-      "code": "module.exports = function () {\n  return { requestedAt: new Date().toISOString(), requestId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10) };\n};"
+      "code": "module.exports = function () {\n  return { hookRespondedAt: new Date().toISOString(), requestId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10) };\n};"
     },
-    "resolve": "_sync_op_publish_version_before",
-    "reject": null,
+    "resolve": "_sync_op_publish_wait",
+    "reject": "_sync_op_publish_check_failed",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_context"
   },
@@ -112,13 +112,13 @@
     "name": "Wait about 10 minutes",
     "key": "wait",
     "type": "sleep",
-    "position_x": 73,
+    "position_x": 91,
     "position_y": 1,
     "options": {
       "milliseconds": 600000
     },
     "resolve": "_sync_op_publish_version_after",
-    "reject": null,
+    "reject": "_sync_op_publish_check_failed",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_wait"
   },
@@ -126,7 +126,7 @@
     "name": "Read public version after wait",
     "key": "version_after",
     "type": "request",
-    "position_x": 91,
+    "position_x": 109,
     "position_y": 1,
     "options": {
       "method": "GET",
@@ -147,13 +147,13 @@
     "name": "Describe the public version check",
     "key": "publish_result",
     "type": "exec",
-    "position_x": 109,
+    "position_x": 127,
     "position_y": 1,
     "options": {
-      "code": "module.exports = function (data) {\n  function version(reply) {\n    var value = reply && reply.status === 200 && reply.data && reply.data.version;\n    return typeof value === 'string' && /^[A-Za-z0-9._-]{1,80}$/.test(value) ? value : null;\n  }\n  var context = data.publish_context;\n  var before = version(data.version_before);\n  var after = version(data.version_after);\n  var subject;\n  var observation;\n  if (before === null || after === null) {\n    var missing = [];\n    if (before === null) missing.push('before Publish');\n    if (after === null) missing.push('after the wait');\n    subject = 'Publish site: could not verify';\n    observation = 'Could not read a valid public build version ' + missing.join(' and ') + '. The update status is unknown.';\n  } else if (before !== after) {\n    subject = 'Publish site: updated';\n    observation = 'Public build changed from ' + before + ' to ' + after + '.';\n  } else {\n    subject = 'Publish site: not updated';\n    observation = 'Public build is still ' + before + ' after about 10 minutes. The build may still be running; this does not prove a deployment failed.';\n  }\n  return {\n    subject: subject,\n    message: 'Request ' + context.requestId + ' at ' + context.requestedAt + '. ' + observation + ' This checks the public site during this request window; overlapping Publishes or other deployments cannot be attributed to a particular press. [Open Vercel](https://vercel.com/dashboard).'\n  };\n};"
+      "code": "module.exports = function (data) {\n  function version(reply) {\n    var value = reply && reply.status === 200 && reply.data && reply.data.version;\n    return typeof value === 'string' && /^[A-Za-z0-9._-]{1,80}$/.test(value) ? value : null;\n  }\n  var context = data.publish_context;\n  var before = version(data.version_before);\n  var after = version(data.version_after);\n  var subject;\n  var observation;\n  if (before === null || after === null) {\n    var missing = [];\n    if (before === null) missing.push('before Publish');\n    if (after === null) missing.push('after the wait');\n    subject = 'Publish site: could not verify';\n    observation = 'Could not read a valid public build version ' + missing.join(' and ') + '. The update status is unknown.';\n  } else if (before !== after) {\n    subject = 'Publish site: updated';\n    observation = 'Public build changed from ' + before + ' to ' + after + '.';\n  } else {\n    subject = 'Publish site: not updated';\n    observation = 'Public build is still ' + before + ' after about 10 minutes. The build may still be running; this does not prove a deployment failed.';\n  }\n  return {\n    subject: subject,\n    message: 'Request ' + context.requestId + ' at ' + context.hookRespondedAt + '. ' + observation + ' This checks the public site during this request window; overlapping Publishes or other deployments cannot be attributed to a particular press. [Open Vercel](https://vercel.com/dashboard).'\n  };\n};"
     },
     "resolve": "_sync_op_publish_notify",
-    "reject": null,
+    "reject": "_sync_op_publish_check_failed",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_result"
   },
@@ -164,10 +164,10 @@
     "position_x": 73,
     "position_y": 20,
     "options": {
-      "code": "module.exports = function (data) {\n  var context = data.publish_context;\n  return {\n    subject: 'Publish site: hook rejected',\n    message: 'Request ' + context.requestId + ' at ' + context.requestedAt + '. The Publish hook was rejected or could not be reached. A build was not confirmed as queued; no delayed version check was run. Check Vercel before retrying, because a network failure can leave the request outcome unknown. [Open Vercel](https://vercel.com/dashboard).'\n  };\n};"
+      "code": "module.exports = function (data) {\n  var context = { hookRespondedAt: new Date().toISOString(), requestId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10) };\n  return {\n    subject: 'Publish site: hook rejected',\n    message: 'Request ' + context.requestId + ' at ' + context.hookRespondedAt + '. The Publish hook was rejected or could not be reached. A build was not confirmed as queued; no delayed version check was run. Check Vercel before retrying, because a network failure can leave the request outcome unknown. [Open Vercel](https://vercel.com/dashboard).'\n  };\n};"
     },
     "resolve": "_sync_op_publish_notify",
-    "reject": null,
+    "reject": "_sync_op_publish_check_failed",
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_hook_error"
   },
@@ -175,7 +175,7 @@
     "name": "Notify the publishing editor",
     "key": "notify",
     "type": "notification",
-    "position_x": 127,
+    "position_x": 145,
     "position_y": 1,
     "options": {
       "recipient": [
@@ -188,5 +188,23 @@
     "reject": null,
     "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
     "_syncId": "_sync_op_publish_notify"
+  },
+  {
+    "name": "Notify failed Publish check",
+    "key": "check_failed",
+    "type": "notification",
+    "position_x": 145,
+    "position_y": 20,
+    "options": {
+      "recipient": [
+        "{{$accountability.user}}"
+      ],
+      "subject": "Publish site: could not verify",
+      "message": "The Publish check itself failed, so the site update could not be verified. The Publish hook was already attempted; its outcome may be unknown. [Look at Vercel](https://vercel.com/dashboard) before retrying."
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "d86a5982-6ab4-4474-ace8-cfd16962a9a4",
+    "_syncId": "_sync_op_publish_check_failed"
   }
 ]

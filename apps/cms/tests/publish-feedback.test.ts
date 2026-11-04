@@ -19,8 +19,9 @@ async function publish({
 	hook = { status: 201, data: { job: { state: 'PENDING' } } },
 	pause = async (_ms: number) => {},
 	user = 'editor-a',
+	failExec = [],
 }: { before?: Reply | Error; after?: Reply | Error; hook?: Reply | Error;
-	pause?: (ms: number) => Promise<void>; user?: string } = {}) {
+	pause?: (ms: number) => Promise<void>; user?: string; failExec?: readonly string[] | 'all' } = {}) {
 	const flow = flows.find((entry) => entry._syncId === PUBLISH_FLOW)!;
 	const data: Record<string, unknown> = {
 		$accountability: { user }, $env: { VERCEL_DEPLOY_HOOK_URL: 'https://hook.invalid/publish' },
@@ -28,6 +29,7 @@ async function publish({
 	const notices: Notice[] = [];
 	const requests: { method: string; url: string; headers?: unknown }[] = [];
 	const waits: number[] = [];
+	const execs: string[] = [];
 	const render = (value: unknown): unknown => {
 		if (typeof value === 'string') return value.replace(/\{\{\s*([^{}]+?)\s*\}\}/g, (_, path: string) => {
 			let result: unknown = data;
@@ -62,6 +64,8 @@ async function publish({
 					break;
 				}
 				case 'exec': {
+					execs.push(operation.key);
+					if (failExec === 'all' || failExec.includes(operation.key)) throw new Error('private script failure details');
 					const module = { exports: null as null | ((input: Record<string, unknown>) => unknown) };
 					runInNewContext(String(options.code), { module }, { timeout: 1000 });
 					if (!module.exports) throw new Error('Missing Run Script export');
@@ -85,10 +89,34 @@ async function publish({
 		data.$last = result ?? null;
 		next = operation[branch];
 	}
-	return { notices, requests, waits };
+	return { notices, requests, waits, execs };
 }
 
 describe('manual Publish feedback', () => {
+	it.each([
+		['publish_context', { status: 201, data: {} }],
+		['publish_result', { status: 201, data: {} }],
+		['hook_error', { status: 403, data: 'private hook details' }],
+	] satisfies [string, Reply][])('still posts the hook once and delivers fixed feedback when %s fails', async (key, hook) => {
+		const { notices, requests, execs } = await publish({ failExec: [key], hook });
+		expect(execs).toContain(key);
+		expect(requests.filter(({ method }) => method === 'POST')).toHaveLength(1);
+		expect(notices).toEqual([{
+			recipient: ['editor-a'], subject: 'Publish site: could not verify',
+			message: 'The Publish check itself failed, so the site update could not be verified. The Publish hook was already attempted; its outcome may be unknown. [Look at Vercel](https://vercel.com/dashboard) before retrying.',
+		}]);
+	});
+
+	it.each([201, 403])('keeps Publish reachable with every script disabled and hook HTTP %i', async (status) => {
+		const { notices, requests } = await publish({
+			failExec: 'all', before: new Error('version read unavailable'), hook: { status, data: {} },
+		});
+		expect(requests.map(({ method }) => method)).toEqual(['GET', 'POST']);
+		expect(notices).toHaveLength(1);
+		expect(notices[0]?.subject).toBe('Publish site: could not verify');
+		expect(notices[0]?.message).toContain('check itself failed');
+	});
+
 	it('notifies the triggering editor when the public version changes after ten minutes', async () => {
 		const result = await publish();
 		expect(result.notices).toHaveLength(1);
@@ -177,7 +205,19 @@ describe('manual Publish feedback', () => {
 		const flow = flows.find((entry) => entry._syncId === PUBLISH_FLOW)!;
 		expect(flow.trigger).toBe('manual');
 		expect(flow.options).toMatchObject({ async: true, requireConfirmation: true, collections: ['build_queue'] });
+		const first = operations.find((entry) => entry._syncId === flow.operation)!;
+		expect(first).toMatchObject({
+			key: 'version_before', type: 'request',
+			resolve: 'a7c9d628-b970-4f38-bb4b-0c532901d0e1',
+			reject: 'a7c9d628-b970-4f38-bb4b-0c532901d0e1',
+		});
 		const ownOperations = operations.filter((entry) => entry.flow === PUBLISH_FLOW);
+		for (const operation of ownOperations.filter((entry) => entry.type === 'exec')) {
+			const fallback = operations.find((entry) => entry._syncId === operation.reject)!;
+			expect(fallback).toMatchObject({ type: 'notification', resolve: null, reject: null });
+			expect(fallback.options.subject).toBe('Publish site: could not verify');
+			expect(fallback.options.message).not.toContain('{{');
+		}
 		expect(ownOperations.filter((entry) => entry.type === 'request')).toHaveLength(3);
 		expect(ownOperations.every((entry) => ['request', 'exec', 'sleep', 'notification'].includes(entry.type))).toBe(true);
 		for (const operation of ownOperations.filter((entry) => entry.type === 'request' && entry.options.method === 'GET')) {

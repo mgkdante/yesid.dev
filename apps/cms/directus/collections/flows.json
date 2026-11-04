@@ -51,7 +51,7 @@
       "requireConfirmation": true,
       "confirmationDescription": "Publish site: rebuild the website from the current published CMS content. A CMS notification checks whether the public site changed about 10 minutes later."
     },
-    "operation": "_sync_op_publish_context",
+    "operation": "_sync_op_publish_version_before",
     "folder": null,
     "_syncId": "d86a5982-6ab4-4474-ace8-cfd16962a9a4"
   }

@@ -32,7 +32,7 @@ function assertOnlyManualPublishRequest(flowRows: readonly Flow[], operationRows
 		expect(read.options).toMatchObject({ method: 'GET', url: 'https://yesid.dev/_app/version.json' });
 	}
 	expect(flowRows.find((flow) => flow._syncId === PUBLISH_FLOW)).toMatchObject({
-		name: 'Publish site', trigger: 'manual', operation: '_sync_op_publish_context',
+		name: 'Publish site', trigger: 'manual', operation: '_sync_op_publish_version_before',
 	});
 }
 
@@ -84,7 +84,7 @@ describe('D6 manual Publish flow contract', () => {
 		const flow = flows.find((entry) => entry._syncId === PUBLISH_FLOW);
 		expect(flow).toMatchObject({
 			name: 'Publish site', icon: 'rocket_launch', status: 'active',
-			trigger: 'manual', accountability: 'all', operation: '_sync_op_publish_context',
+			trigger: 'manual', accountability: 'all', operation: '_sync_op_publish_version_before',
 		});
 		expect(flow?.options).toEqual({
 			collections: ['build_queue'], location: 'item', requireSelection: false,
@@ -100,7 +100,7 @@ describe('D6 manual Publish flow contract', () => {
 		expect(hookOperations).toHaveLength(1);
 		expect(hookOperations[0]).toMatchObject({
 			_syncId: PUBLISH_OPERATION, flow: PUBLISH_FLOW,
-			type: 'request', resolve: '_sync_op_publish_wait', reject: '_sync_op_publish_hook_error',
+			type: 'request', resolve: '_sync_op_publish_context', reject: '_sync_op_publish_hook_error',
 		});
 		expect(hookOperations[0]?.options).toEqual({
 			method: 'POST',
