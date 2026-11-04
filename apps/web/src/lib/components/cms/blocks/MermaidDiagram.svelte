@@ -78,7 +78,7 @@
 	});
 </script>
 
-<figure class="mermaid-diagram" data-testid="mermaid-diagram" bind:this={root}>
+<figure class="mermaid-diagram" data-testid="mermaid-diagram" data-rendering={Boolean(source) && !svg && !renderError} bind:this={root}>
 	{#if media && svg}
 		<button type="button" class="mermaid-diagram__surface mermaid-diagram__open" aria-label={articleMediaLabels[locale].diagram} onclick={(event) => { event.stopPropagation(); media.openDiagram(svg, architectureDiagramLabel, event.currentTarget); }}>
 			{@html svg}
