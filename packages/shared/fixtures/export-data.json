@@ -2795,14 +2795,7 @@
 					"next": {"en":"Next","fr":"Suivant","es":"Siguiente"}
 				},
 				"shared": {
-					"openMenuAria": {"en":"Open menu","fr":"Ouvrir le menu","es":"Abrir menú"},
-					"closeMenuAria": {"en":"Close menu","fr":"Fermer le menu","es":"Cerrar menú"},
-					"themeToggleAria": {"en":"Dark theme","fr":"Thème sombre","es":"Tema oscuro"},
 					"footerNavAria": {"en":"Footer navigation","fr":"Navigation du pied de page","es":"Navegación del pie de página"},
-					"menuOverlayAria": {"en":"Navigation menu","fr":"Menu de navigation","es":"Menú de navegación"},
-					"menuOverlayFooterLabel": {"en":"NAVIGATION · ALL ROUTES","fr":"NAVIGATION · TOUTES LES ROUTES","es":"NAVEGACIÓN · TODAS LAS RUTAS"},
-					"skipToContentLabel": {"en":"Skip to content","fr":"Aller au contenu","es":"Saltar al contenido"},
-					"localeSwitcherAria": {"en":"Language","fr":"Langue","es":"Idioma"},
 					"clearFiltersLabel": {"en":"clear filters","fr":"effacer les filtres","es":"limpiar filtros"},
 					"tocHeading": {"en":"On this page","fr":"Sur cette page","es":"En esta página"},
 					"tocMobileButton": {"en":"Table of Contents","fr":"Table des matières","es":"Tabla de contenido"},

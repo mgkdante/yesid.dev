@@ -144,3 +144,31 @@ test('a fragment opens its owning content and lands the nested heading', async (
 	await page.goForward();
 	await expect(page).toHaveURL(/\/projects$/);
 });
+
+// Existing before c84296f4: Back moves 1440 to 1480 as native scroll anchoring follows Mermaid's late fallback-to-SVG height change.
+test.fixme('Back restores the project reading position after visiting the listing', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto(PROJECT_PATH);
+	await expect(page.locator('.section-header').first()).toHaveAttribute('aria-expanded', 'true');
+	await page.evaluate(() => document.fonts.ready);
+	await page.evaluate(() => {
+		window.scrollTo(0, 1400);
+		const link = document.createElement('a');
+		link.href = '/projects';
+		link.textContent = 'Fixture visit listing';
+		link.style.cssText = 'position:fixed;bottom:100px;right:30px;z-index:200';
+		document.body.append(link);
+	});
+	await settleScroll(page);
+	// Capture in the same task as navigation, after any focus/scroll settling.
+	const beforeLeaving = await page.getByRole('link', { name: 'Fixture visit listing' }).evaluate((link) => {
+		const y = window.scrollY;
+		(link as HTMLAnchorElement).click();
+		return y;
+	});
+	expect(beforeLeaving).toBeGreaterThan(0);
+	await expect(page).toHaveURL(/\/projects$/);
+	await page.goBack();
+	await expect(page).toHaveURL(/\/projects\/yesid-dev$/);
+	await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(beforeLeaving, 0);
+});

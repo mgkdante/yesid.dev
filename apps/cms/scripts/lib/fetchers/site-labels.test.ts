@@ -6,6 +6,25 @@ import frSeeds from '../../../fixtures/content/site-labels.fr.json';
 import esSeeds from '../../../fixtures/content/site-labels.es.json';
 
 describe('site-labels transform', () => {
+	it('exports remaining navigation copy without reading retired header fields', () => {
+		const retired = {
+			openMenuAria: 'nav_chrome_shared_open_menu_aria',
+			closeMenuAria: 'nav_chrome_shared_close_menu_aria',
+			themeToggleAria: 'nav_chrome_shared_theme_toggle_aria',
+			menuOverlayAria: 'nav_chrome_shared_menu_overlay_aria',
+			menuOverlayFooterLabel: 'nav_chrome_shared_menu_overlay_footer_label',
+			skipToContentLabel: 'nav_chrome_shared_skip_to_content_label',
+			localeSwitcherAria: 'nav_chrome_shared_locale_switcher_aria',
+		};
+		const translation = { languages_code: 'en', ...seeds };
+		for (const field of Object.values(retired)) Object.defineProperty(translation, field, {
+			get() { throw new Error(`Retired CMS field read: ${field}`); },
+		});
+		const out = toSiteLabels({ id: 'u1', translations: [translation] });
+		expect(out.navChrome.shared.footerNavAria.en).toBe(seeds.nav_chrome_shared_footer_nav_aria);
+		for (const key of Object.keys(retired)) expect(out.navChrome.shared).not.toHaveProperty(key);
+		expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
+	});
 	it('regroups prefix-named columns into the nested SiteLabels shape', () => {
 		const row = {
 			id: 'u1',
@@ -49,10 +68,7 @@ describe('site-labels transform', () => {
 			en: '← All Services',
 			fr: '← Tous les services',
 		});
-		expect(out.navChrome.shared.openMenuAria).toEqual({ en: 'Open menu', fr: 'Ouvrir le menu' });
-		expect(out.navChrome.shared.skipToContentLabel).toEqual({
-			en: seeds.nav_chrome_shared_skip_to_content_label, fr: frSeeds.nav_chrome_shared_skip_to_content_label, es: esSeeds.nav_chrome_shared_skip_to_content_label,
-		});
+		expect(out.navChrome.shared.footerNavAria.en).toBe(seeds.nav_chrome_shared_footer_nav_aria);
 		expect(out.a11y.projectImageOpen).toEqual({
 			en: 'Open {caption}',
 			fr: 'Ouvrir {caption}',

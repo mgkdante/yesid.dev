@@ -1,10 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { llmsTxt, llmsFullTxt } from './llms';
-import { blogPosts } from '#lib/content/index.ts';
+import { blogPosts, projects } from '#lib/content/index.ts';
 import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 
 describe('llms.txt — Spanish section (L2 Phase 4)', () => {
+	it.each([llmsTxt, llmsFullTxt])('groups project rows by locale, preserving source project order within each locale', (render) => {
+		const rows = projects.slice(0, 2).map((project) => ({ ...project, status: 'public' as const }));
+		const body = render({ projects: rows, locales: ['fr', 'en'] });
+		const urls = body.split('## Projects (personal builds, documented like case studies)')[1].split('## Blog')[0]
+			.match(/https:\/\/yesid\.dev\/(?:fr\/)?projects\/[a-z0-9-]+/g);
+		expect(urls).toEqual(['fr', 'en'].flatMap((locale) => rows.map((project) =>
+			`https://yesid.dev/${locale === 'en' ? '' : 'fr/'}projects/${project.slug}`)));
+	});
 	it.each([['llmsTxt', llmsTxt], ['llmsFullTxt', llmsFullTxt]] as const)('%s omits archived section links', (_, render) => {
 		const registry = sitePages.filter((page) => !['/blog', '/projects', '/services', '/contact'].includes(page.path));
 		const body = render({ pages: registry });
