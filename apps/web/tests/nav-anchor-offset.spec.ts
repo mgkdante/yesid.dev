@@ -54,7 +54,7 @@ test.describe('native fragment clearance', () => {
 
 test.describe('desktop table of contents', () => {
 	for (const expanded of [true, false])
-		test(`TOC lands a tall card's visible heading, expanded=${expanded}`, async ({ page }) => {
+		test(`TOC opens and lands a tall card's heading, initially expanded=${expanded}`, async ({ page }) => {
 		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
 			await page.setViewportSize({ width: 1366, height: 600 });
 			await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -82,19 +82,16 @@ test.describe('desktop table of contents', () => {
 			await expect(async () => {
 				await toc.click();
 				await settleScroll(page);
+				expect((await target.boundingBox())!.y).toBeCloseTo(600 * 0.25, 0);
 				const box = await heading.boundingBox();
 				expect(box!.y).toBeGreaterThanOrEqual(88);
 				expect(box!.y + box!.height).toBeLessThan(600);
 			}).toPass();
-			await expect(heading).toHaveAttribute('aria-expanded', String(expanded));
-			if (!expanded)
-				expect(
-					(await target.locator('[data-slot="collapsible-content"]').first().boundingBox())!.height,
-				).toBeLessThanOrEqual(1);
+			await expect(heading).toHaveAttribute('aria-expanded', 'true');
 		});
 });
 
-test('a fragment into closed content reaches its visible trigger without expansion', async ({
+test('a fragment opens its owning content and lands the nested heading', async ({
 	page,
 }) => {
 		test.skip(page.viewportSize()!.width < 1024, 'Sets its own viewports.');
@@ -122,15 +119,14 @@ test('a fragment into closed content reaches its visible trigger without expansi
 			const link = document.createElement('a');
 			link.href = '#fixture-fragment';
 			link.textContent = 'Open fixture fragment';
-			document.querySelector('main')!.prepend(link);
+			link.style.cssText = 'position:fixed;bottom:100px;right:30px;z-index:200';
+			el.closest('[data-slot="detail-shell"]')!.prepend(link);
 		});
 	await page.getByRole('link', { name: 'Open fixture fragment' }).click();
 	await expect(page).toHaveURL(/#fixture-fragment$/);
 	await settleScroll(page);
-	const box = await trigger.boundingBox();
-	expect(box!.y).toBeGreaterThanOrEqual(88);
-	expect(box!.y + box!.height).toBeLessThanOrEqual(600);
-	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+	await expect.poll(async () => (await page.locator('#fixture-fragment').boundingBox())!.y).toBeCloseTo(600 * 0.25, 0);
+	await expect(trigger).toHaveAttribute('aria-expanded', 'true');
 	await page.evaluate(() => {
 		window.scrollBy(0, 240);
 		const link = document.createElement('a');
@@ -139,12 +135,12 @@ test('a fragment into closed content reaches its visible trigger without expansi
 		link.style.cssText = 'position:fixed;bottom:100px;right:30px;z-index:200';
 		document.body.append(link);
 	});
-	const readingY = await page.evaluate(() => scrollY);
 	await page.getByRole('link', { name: 'Fixture return to listing' }).click();
 	await expect(page).toHaveURL(/\/projects$/);
 	await page.goBack();
 	await expect(page).toHaveURL(/#fixture-fragment$/);
-	await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(readingY, 0);
+	// Back remounts the page at its declared disclosure default. The injected heading is gone.
+	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 	await page.goForward();
 	await expect(page).toHaveURL(/\/projects$/);
 });

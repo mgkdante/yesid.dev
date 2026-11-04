@@ -2627,13 +2627,7 @@
 				"projectImageOpen": {"en":"Open {caption}","fr":"Ouvrir {caption}","es":"Abrir {caption}"},
 				"projectImageClose": {"en":"Close image","fr":"Fermer l'image","es":"Cerrar imagen"},
 				"architectureDiagram": {"en":"Architecture diagram","fr":"Diagramme d'architecture","es":"Diagrama de arquitectura"},
-				"technologyStackTemplate": {"en":"Technology stack: {stack}","fr":"Stack technique : {stack}","es":"Stack tecnológico: {stack}"},
-				"quietModeLabel": {"en":"Collapse all","fr":"Tout replier","es":"Contraer todo"},
-				"quietModeLabelCollapsed": {"en":"Expand all","fr":"Tout déplier","es":"Expandir todo"},
-				"quietModeEnable": {"en":"Collapse all sections on this page","fr":"Replier toutes les sections de la page","es":"Contraer todas las secciones de esta página"},
-				"quietModeDisable": {"en":"Expand all sections on this page","fr":"Déplier toutes les sections de la page","es":"Expandir todas las secciones de esta página"},
-				"quietModeRemember": {"en":"Always start collapsed","fr":"Toujours replier","es":"Empezar siempre contraído"},
-				"quietModeForget": {"en":"Don't start collapsed","fr":"Ne plus replier","es":"No empezar contraído"}
+				"technologyStackTemplate": {"en":"Technology stack: {stack}","fr":"Stack technique : {stack}","es":"Stack tecnológico: {stack}"}
 			},
 			"ui": {
 				"markerService": {"en":"{num} / SERVICE","fr":"{num} / SERVICE","es":"{num} / SERVICIO"},
