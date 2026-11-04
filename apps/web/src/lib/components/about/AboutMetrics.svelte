@@ -29,7 +29,7 @@
 				{@const metricLabel = resolveLocale(metric.label, locale)}
 
 				<div class="fact">
-					<span class="metric-value font-heading font-extrabold text-heading text-accent-text">{metric.value}</span>
+					<span class="metric-value font-heading font-extrabold leading-none text-heading text-accent-text">{metric.value}</span>
 					<span class="label-metric">{metricLabel}</span>
 				</div>
 			{/each}
