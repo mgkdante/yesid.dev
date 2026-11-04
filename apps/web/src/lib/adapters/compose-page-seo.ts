@@ -8,15 +8,41 @@ import type {
 	SiteMeta,
 	SiteSeoDefaults,
 } from '#lib/types.ts';
-import { canonicalFor } from '#lib/utils/seo-defaults.ts';
+import { canonicalFor, shareImageAlt } from '#lib/utils/seo-defaults.ts';
 import { asset } from '#lib/directus/assets.ts';
 import type { CodeRouteSeoDefaults } from './route-seo-defaults';
 
+function fitTitle(text: string, limit: number): string {
+	if (text.length <= limit) return text;
+	const clipped = text.slice(0, limit - 1).replace(/[\uD800-\uDBFF]$/u, '');
+	const boundary = clipped.lastIndexOf(' ');
+	const words = boundary > 0 ? clipped.slice(0, boundary) : clipped;
+	return `${words.replace(/[\s,;:·–\u2014-]+$/u, '')}…`;
+}
+
+/** Keep the brand suffix intact; prefer a fitting fallback before shortening editorial copy. */
+export function titleForSeo(primary: string | undefined, fallback: string, brand: string): string {
+	const suffix = ` | ${brand}`;
+	const preferred = primary?.trim() || fallback.trim();
+	if (preferred.length + suffix.length <= 70) return `${preferred}${suffix}`;
+	const fallbackBody = fallback.trim();
+	if (fallbackBody.length + suffix.length <= 70) return `${fallbackBody}${suffix}`;
+	return `${fitTitle(preferred, 70 - suffix.length)}${suffix}`;
+}
+
 export function appendBrandPerLocale(body: LocalizedString, brand: string): LocalizedString {
 	return {
-		en: `${body.en} | ${brand}`,
-		...(body.fr && { fr: `${body.fr} | ${brand}` }),
-		...(body.es && { es: `${body.es} | ${brand}` }),
+		en: titleForSeo(undefined, body.en, brand),
+		...(body.fr && { fr: titleForSeo(undefined, body.fr, brand) }),
+		...(body.es && { es: titleForSeo(undefined, body.es, brand) }),
+	};
+}
+
+export function shareImageAltPerLocale(body: LocalizedString, brand: string): LocalizedString {
+	return {
+		en: shareImageAlt(body.en, brand),
+		...(body.fr && { fr: shareImageAlt(body.fr, brand) }),
+		...(body.es && { es: shareImageAlt(body.es, brand) }),
 	};
 }
 
@@ -41,11 +67,15 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	// Title body comes from CMS override if present, else code-side fallback.
 	const titleBody: LocalizedString = (routeOverride?.title ?? codeDefaults.fallbackTitle) as LocalizedString;
 
-	// Apply composedTitleStrategy. 'verbatim' (home) preserves em-dash format;
+	// Apply composedTitleStrategy. 'verbatim' (home) preserves its authored format;
 	// 'append-brand' (everything else) appends ` | ${siteMeta.name}` per locale.
 	const title: LocalizedString =
 		codeDefaults.composedTitleStrategy === 'verbatim'
-			? titleBody
+			? {
+				en: fitTitle(titleBody.en, 70),
+				...(titleBody.fr && { fr: fitTitle(titleBody.fr, 70) }),
+				...(titleBody.es && { es: fitTitle(titleBody.es, 70) }),
+			}
 			: appendBrandPerLocale(titleBody, siteMeta.name);
 
 	// Description fallback chain.
@@ -74,11 +104,7 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	if (ogImageUuid) {
 		seo.ogImage = {
 			url: asset(ogImageUuid, 'og-1200'),
-			alt: {
-				en: `${siteMeta.name} — ${titleBody.en}`,
-				...(titleBody.fr && { fr: `${siteMeta.name} — ${titleBody.fr}` }),
-				...(titleBody.es && { es: `${siteMeta.name} — ${titleBody.es}` }),
-			},
+			alt: shareImageAltPerLocale(titleBody, siteMeta.name),
 			width: 1200,
 			height: 630,
 		};
