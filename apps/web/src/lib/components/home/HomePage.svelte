@@ -204,10 +204,7 @@
 
 <Separator variant="hazard" />
 
-<!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
-<section class="w-full"><Manifesto manifesto={manifesto} /></section>
-<Separator variant="hazard" />
-
+<!-- Section 2: Services, rotated title right. -->
 <section
 	bind:this={servicesSectionEl}
 	class="home-section home-section--right relative"
@@ -221,20 +218,14 @@
 
 <Separator variant="hazard" />
 
-<section
-	class="home-section home-section--left"
-	style={rotatedVar}
->
-	<div class="rotated-title rotated-title--left"><SectionHeading heading={sectionAbout} /></div>
-	<div class="home-section-heading-mobile"><SectionHeading heading={sectionAbout} /></div>
-	<div class="home-section-content"><HomeAboutTeaser about={about} /></div>
-</section>
+<!-- Section 3: Manifesto, with its own section-relative scrub. -->
+<section class="w-full"><Manifesto manifesto={manifesto} /></section>
 
 <Separator variant="hazard" />
 
-<!-- Section 4: Featured Projects — rotated title RIGHT; the proof lands with
-     the service context already established above it. -->
-<section bind:this={projectsSectionEl} class="home-section home-section--right home-section--proof-reel" style={rotatedVar}>
+<!-- Section 4: Projects, rotated title left. -->
+<section bind:this={projectsSectionEl} class="home-section home-section--left home-section--proof-reel" style={rotatedVar}>
+	<div class="rotated-title rotated-title--left"><SectionHeading heading={sectionProjects} /></div>
 	<div class="home-section-heading-mobile">
 		<SectionHeading heading={sectionProjects} />
 	</div>
@@ -247,22 +238,28 @@
 			{serviceSvgContents}
 		/>
 	</div>
-	<div class="rotated-title rotated-title--right">
-		<SectionHeading heading={sectionProjects} />
-	</div>
 </section>
 
-<!-- Section 4b: CTA band — the mid-page conversion action. The hazard strip
-     is INSIDE CtaBand now (every CTA wears it), so no separate separator. -->
-<!-- The home CTA draws its blueprints a step bolder than the CTA on other pages. -->
+<Separator variant="hazard" />
+
+<!-- Section 5: About, rotated title right. -->
+<section
+	class="home-section home-section--right"
+	style={rotatedVar}
+>
+	<div class="home-section-heading-mobile"><SectionHeading heading={sectionAbout} /></div>
+	<div class="home-section-content"><HomeAboutTeaser about={about} /></div>
+	<div class="rotated-title rotated-title--right"><SectionHeading heading={sectionAbout} /></div>
+</section>
+
+<!-- Section 6: CTA strip, including its leading hazard and stronger blueprints. -->
 <section class="w-full" style:--cta-blueprint-ink="0.75">
 	<CtaBand testidPrefix="home-cta-band" />
 </section>
 
 <Separator variant="hazard" />
 
-<!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-
+<!-- Section 7: Terminus and construction props stay together, rotated title left. -->
 <section
 	bind:this={closerSectionEl}
 	class="home-section home-section--left"
