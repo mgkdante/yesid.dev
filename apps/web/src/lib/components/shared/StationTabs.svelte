@@ -39,11 +39,11 @@
 		return resolveLocale(service.title, locale);
 	}
 
-	// The 0.8 opacity floor keeps inactive tabs readable.
+	// Rendered light-theme contrast stays above 4.5:1 at the 0.9 floor.
 	function getOpacity(index: number): number {
 		if (activeIndex === -1) return 1;
 		const distance = Math.abs(index - activeIndex);
-		return Math.max(0.8, 1 - distance * 0.15);
+		return Math.max(0.9, 1 - distance * 0.05);
 	}
 
 	// Disable tab clicks during swipes regardless of event ordering.
@@ -102,7 +102,7 @@
 </script>
 
 {#snippet tabContent(service: Service, isActive: boolean, index: number)}
-	<span class="station-num font-mono text-xs" class:text-brand={isActive}>{stationNumber(index)}</span>
+	<span class="station-num font-mono text-xs">{stationNumber(index)}</span>
 	<span class="station-label text-sm" class:font-bold={isActive}>{getLabel(service)}</span>
 {/snippet}
 
@@ -127,10 +127,10 @@
 
 				<a
 					href={localizeHref(`/services/${service.id}`, locale)}
-					class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all tap-press"
+					class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline tap-press"
 
-					class:active={isActive}
-					style="opacity: {opacity};"
+					aria-current={isActive ? 'page' : undefined}
+					style="--station-distance-opacity: {opacity};"
 					data-testid="station-tab-{service.id}"
 					data-active={isActive ? 'true' : undefined}
 				>
@@ -164,9 +164,8 @@
 					{#snippet child({ props })}
 						<button
 							{...props}
-							class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm transition-all tap-press"
-							class:active={isActive}
-							style="opacity: {opacity};"
+							class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm tap-press"
+							style="--station-distance-opacity: {opacity};"
 							data-testid="station-tab-{service.id}"
 							data-active={isActive ? 'true' : undefined}
 						>
@@ -180,11 +179,6 @@
 {/if}
 
 <style>
-	:global(.station-tabs) {
-		background: var(--primary);
-		border: none;
-	}
-
 	/* Tabs.Root adds gap-2 + flex-col by default; flatten for our horizontal layout */
 	:global([data-slot="tabs"].station-tabs-root) {
 		gap: 0;
@@ -192,45 +186,19 @@
 
 	/* Each tab needs min-width so tabs don't collapse on narrow viewports */
 	.station-tab {
+		flex-grow: 0;
 		min-width: max-content;
-		cursor: pointer;
-		border-bottom: 3px solid transparent;
-		color: var(--background);
-		background: transparent;
-		border-top: none;
-		border-left: none;
-		border-right: none;
-		min-height: 44px;
 		padding: calc((var(--strip-h) - 12px - 1.25rem) / 2) 1.25rem;
-		font-family: var(--font-mono);
-		font-size: var(--text-small);
 		line-height: 1.25rem;
-		transition: opacity var(--duration-fast) var(--ease-default);
 	}
 
-	/* The active signage chip keeps the same readable colors in both themes. */
-	.station-tab.active {
-		background: var(--signage-bg);
-		border-bottom-color: var(--signage-text);
-		color: var(--signage-text);
-		font-weight: 800;
-	}
-
-	.station-tab:not(.active):hover {
-		opacity: 0.7;
-	}
-
-	.text-brand {
-		color: var(--signage-text);
-	}
-
-	.station-num {
-		font-family: var(--font-mono);
+	.station-tab:not(:hover, :focus-visible, :active) {
+		opacity: var(--station-distance-opacity);
 	}
 
 	/* Swipe guard: disable all pointer events on tabs during horizontal swipe.
 	   Prevents click/pointerdown from firing on buttons or links mid-swipe. */
-	.swipe-lock .station-tab {
+	:global(.swipe-lock) .station-tab {
 		pointer-events: none;
 	}
 
@@ -252,6 +220,10 @@
 	}
 
 	@media (min-width: 1280px) {
+		:global(.station-tabs) {
+			justify-content: center;
+		}
+
 		.scroll-cue {
 			display: none;
 		}
