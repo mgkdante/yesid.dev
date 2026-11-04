@@ -32,6 +32,7 @@
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
 	import { PUBLISHED_LOCALES, languageHref, seoHeadProps } from '#lib/utils/seo-defaults.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
+	import { attachDiagramHistoryAnchoring } from '#lib/state/diagram-history-anchoring.ts';
 	import { initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
 	import { initGlobalRipple } from '@yesid/motion/utils/globalRipple';
 	import { setMorphShapes } from '#lib/utils/shapes.ts';
@@ -63,6 +64,7 @@
 
 	// Register navigation hooks during layout initialization; the persistent layout owns locale handoff.
 	attachLocaleHandoff(() => data.seo.localeHandoffId);
+	attachDiagramHistoryAnchoring();
 	let pendingTransitions = 0;
 	onNavigate((navigation) => {
 		const transition = viewTransition(navigation);
