@@ -8661,8 +8661,8 @@
 				"status": "public",
 				"featured": true,
 				"repoPrivate": true,
-				"image": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-				"imageSecondary": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
+				"image": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+				"imageSecondary": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
 				"relatedServices": [
 					"web-development",
 					"analytics-reporting"
@@ -8701,16 +8701,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"fileURL": "/files/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"url": "/assets/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"width": 1280,
-												"height": 889,
-												"size": "1123931",
-												"name": "cafe-home-desktop.png",
+												"fileId": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"fileURL": "/files/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"url": "/assets/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"width": 1440,
+												"height": 900,
+												"size": "796447",
+												"name": "cafe-arona-live-home-desktop.png",
 												"extension": "png"
 											},
-											"caption": "Café Arona's French development homepage, desktop view, captured 2026-10-30. Work in progress.",
+											"caption": "Café Arona's French homepage at cafearona.com, desktop view, captured 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -8749,16 +8749,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"fileURL": "/files/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"url": "/assets/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"width": 1280,
-												"height": 889,
-												"size": "1123931",
-												"name": "cafe-home-desktop.png",
+												"fileId": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"fileURL": "/files/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"url": "/assets/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"width": 1440,
+												"height": 900,
+												"size": "796447",
+												"name": "cafe-arona-live-home-desktop.png",
 												"extension": "png"
 											},
-											"caption": "Accueil de la boutique de développement de Café Arona, en français, sur ordinateur, capturé le 2026-10-30. Projet en cours.",
+											"caption": "Accueil français de Café Arona à cafearona.com, sur ordinateur, capturé le 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -8797,16 +8797,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"fileURL": "/files/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"url": "/assets/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"width": 1280,
-												"height": 889,
-												"size": "1123931",
-												"name": "cafe-home-desktop.png",
+												"fileId": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"fileURL": "/files/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"url": "/assets/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"width": 1440,
+												"height": 900,
+												"size": "796447",
+												"name": "cafe-arona-live-home-desktop.png",
 												"extension": "png"
 											},
-											"caption": "Inicio de la tienda de desarrollo de Café Arona en francés, vista de escritorio, capturado el 2026-10-30. Proyecto en curso.",
+											"caption": "Inicio en francés de Café Arona en cafearona.com, vista de escritorio, capturado el 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9464,16 +9464,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"fileURL": "/files/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"url": "/assets/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"width": 488,
-												"height": 1055,
-												"size": "249065",
-												"name": "cafe-home-mobile.png",
+												"fileId": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"fileURL": "/files/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"url": "/assets/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"width": 390,
+												"height": 844,
+												"size": "307729",
+												"name": "cafe-arona-live-home-mobile.png",
 												"extension": "png"
 											},
-											"caption": "The same French development homepage in a 390 × 844 browser viewport, captured 2026-10-30.",
+											"caption": "The same French homepage in a 390 × 844 browser viewport, captured 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9504,16 +9504,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"fileURL": "/files/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"url": "/assets/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"width": 488,
-												"height": 1055,
-												"size": "249065",
-												"name": "cafe-home-mobile.png",
+												"fileId": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"fileURL": "/files/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"url": "/assets/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"width": 390,
+												"height": 844,
+												"size": "307729",
+												"name": "cafe-arona-live-home-mobile.png",
 												"extension": "png"
 											},
-											"caption": "Le même accueil de développement dans une fenêtre de navigateur de 390 × 844, capturé le 2026-10-30.",
+											"caption": "Le même accueil français dans une fenêtre de navigateur de 390 × 844, capturé le 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9544,16 +9544,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"fileURL": "/files/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"url": "/assets/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"width": 488,
-												"height": 1055,
-												"size": "249065",
-												"name": "cafe-home-mobile.png",
+												"fileId": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"fileURL": "/files/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"url": "/assets/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"width": 390,
+												"height": 844,
+												"size": "307729",
+												"name": "cafe-arona-live-home-mobile.png",
 												"extension": "png"
 											},
-											"caption": "El mismo inicio de desarrollo en francés, en una ventana de navegador de 390 × 844, capturado el 2026-10-30.",
+											"caption": "El mismo inicio en francés, en una ventana de navegador de 390 × 844, capturado el 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9729,16 +9729,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"fileURL": "/files/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"url": "/assets/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"width": 1280,
-												"height": 889,
-												"size": "1123931",
-												"name": "cafe-home-desktop.png",
+												"fileId": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"fileURL": "/files/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"url": "/assets/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"width": 1440,
+												"height": 900,
+												"size": "796447",
+												"name": "cafe-arona-live-home-desktop.png",
 												"extension": "png"
 											},
-											"caption": "Café Arona's French development homepage, desktop view, captured 2026-10-30. Work in progress.",
+											"caption": "Café Arona's French homepage at cafearona.com, desktop view, captured 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9749,16 +9749,56 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"fileURL": "/files/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"url": "/assets/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"width": 488,
-												"height": 1055,
-												"size": "249065",
-												"name": "cafe-home-mobile.png",
+												"fileId": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"fileURL": "/files/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"url": "/assets/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"width": 390,
+												"height": 844,
+												"size": "307729",
+												"name": "cafe-arona-live-home-mobile.png",
 												"extension": "png"
 											},
-											"caption": "The same French development homepage in a 390 × 844 browser viewport, captured 2026-10-30.",
+											"caption": "The same French homepage in a 390 × 844 browser viewport, captured 2026-11-04.",
+											"withBorder": false,
+											"withBackground": false,
+											"stretched": false
+										}
+									},
+									{
+										"id": "a1f4c7d29e3b6081",
+										"type": "image",
+										"data": {
+											"file": {
+												"fileId": "a76a967b-fd72-4187-ad72-254919b6e955",
+												"fileURL": "/files/a76a967b-fd72-4187-ad72-254919b6e955",
+												"url": "/assets/a76a967b-fd72-4187-ad72-254919b6e955",
+												"width": 1440,
+												"height": 900,
+												"size": "313886",
+												"name": "cafe-arona-live-product-desktop.png",
+												"extension": "png"
+											},
+											"caption": "The Feu Doux product page in French, with its Coming soon stamp and no purchase controls, captured 2026-11-05.",
+											"withBorder": false,
+											"withBackground": false,
+											"stretched": false
+										}
+									},
+									{
+										"id": "d4a7f0e52b6c93b4",
+										"type": "image",
+										"data": {
+											"file": {
+												"fileId": "178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"fileURL": "/files/178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"url": "/assets/178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"width": 1440,
+												"height": 900,
+												"size": "476537",
+												"name": "cafe-arona-live-team-desktop.png",
+												"extension": "png"
+											},
+											"caption": "The team page in French, with the group photo at the top, captured 2026-11-05.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9775,16 +9815,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"fileURL": "/files/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"url": "/assets/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"width": 1280,
-												"height": 889,
-												"size": "1123931",
-												"name": "cafe-home-desktop.png",
+												"fileId": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"fileURL": "/files/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"url": "/assets/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"width": 1440,
+												"height": 900,
+												"size": "796447",
+												"name": "cafe-arona-live-home-desktop.png",
 												"extension": "png"
 											},
-											"caption": "Accueil de la boutique de développement de Café Arona, en français, sur ordinateur, capturé le 2026-10-30. Projet en cours.",
+											"caption": "Accueil français de Café Arona à cafearona.com, sur ordinateur, capturé le 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9795,16 +9835,56 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"fileURL": "/files/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"url": "/assets/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"width": 488,
-												"height": 1055,
-												"size": "249065",
-												"name": "cafe-home-mobile.png",
+												"fileId": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"fileURL": "/files/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"url": "/assets/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"width": 390,
+												"height": 844,
+												"size": "307729",
+												"name": "cafe-arona-live-home-mobile.png",
 												"extension": "png"
 											},
-											"caption": "Le même accueil de développement dans une fenêtre de navigateur de 390 × 844, capturé le 2026-10-30.",
+											"caption": "Le même accueil français dans une fenêtre de navigateur de 390 × 844, capturé le 2026-11-04.",
+											"withBorder": false,
+											"withBackground": false,
+											"stretched": false
+										}
+									},
+									{
+										"id": "b2e5d8c30f4a7192",
+										"type": "image",
+										"data": {
+											"file": {
+												"fileId": "a76a967b-fd72-4187-ad72-254919b6e955",
+												"fileURL": "/files/a76a967b-fd72-4187-ad72-254919b6e955",
+												"url": "/assets/a76a967b-fd72-4187-ad72-254919b6e955",
+												"width": 1440,
+												"height": 900,
+												"size": "313886",
+												"name": "cafe-arona-live-product-desktop.png",
+												"extension": "png"
+											},
+											"caption": "La fiche du café Feu Doux en français, avec son tampon Bientôt disponible et sans contrôles d’achat, capturée le 2026-11-05.",
+											"withBorder": false,
+											"withBackground": false,
+											"stretched": false
+										}
+									},
+									{
+										"id": "e5b8a1f63c7da4c5",
+										"type": "image",
+										"data": {
+											"file": {
+												"fileId": "178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"fileURL": "/files/178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"url": "/assets/178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"width": 1440,
+												"height": 900,
+												"size": "476537",
+												"name": "cafe-arona-live-team-desktop.png",
+												"extension": "png"
+											},
+											"caption": "La page d’équipe en français, avec la photo de groupe en haut, capturée le 2026-11-05.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9821,16 +9901,16 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"fileURL": "/files/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"url": "/assets/c90334bb-3477-4cd7-966a-af2bea0dc620",
-												"width": 1280,
-												"height": 889,
-												"size": "1123931",
-												"name": "cafe-home-desktop.png",
+												"fileId": "87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"fileURL": "/files/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"url": "/assets/87a1a8ef-187b-4546-a8be-382ce57e5509",
+												"width": 1440,
+												"height": 900,
+												"size": "796447",
+												"name": "cafe-arona-live-home-desktop.png",
 												"extension": "png"
 											},
-											"caption": "Inicio de la tienda de desarrollo de Café Arona en francés, vista de escritorio, capturado el 2026-10-30. Proyecto en curso.",
+											"caption": "Inicio en francés de Café Arona en cafearona.com, vista de escritorio, capturado el 2026-11-04.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
@@ -9841,16 +9921,56 @@
 										"type": "image",
 										"data": {
 											"file": {
-												"fileId": "98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"fileURL": "/files/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"url": "/assets/98ff3236-c97a-4506-8e3d-29efcd6a8361",
-												"width": 488,
-												"height": 1055,
-												"size": "249065",
-												"name": "cafe-home-mobile.png",
+												"fileId": "fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"fileURL": "/files/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"url": "/assets/fd648f4e-527f-4fa5-9460-aa3cc36c3a8b",
+												"width": 390,
+												"height": 844,
+												"size": "307729",
+												"name": "cafe-arona-live-home-mobile.png",
 												"extension": "png"
 											},
-											"caption": "El mismo inicio de desarrollo en francés, en una ventana de navegador de 390 × 844, capturado el 2026-10-30.",
+											"caption": "El mismo inicio en francés, en una ventana de navegador de 390 × 844, capturado el 2026-11-04.",
+											"withBorder": false,
+											"withBackground": false,
+											"stretched": false
+										}
+									},
+									{
+										"id": "c3f6e9d41a5b82a3",
+										"type": "image",
+										"data": {
+											"file": {
+												"fileId": "a76a967b-fd72-4187-ad72-254919b6e955",
+												"fileURL": "/files/a76a967b-fd72-4187-ad72-254919b6e955",
+												"url": "/assets/a76a967b-fd72-4187-ad72-254919b6e955",
+												"width": 1440,
+												"height": 900,
+												"size": "313886",
+												"name": "cafe-arona-live-product-desktop.png",
+												"extension": "png"
+											},
+											"caption": "La ficha del café Feu Doux en francés, con su sello Próximamente y sin controles de compra, capturada el 2026-11-05.",
+											"withBorder": false,
+											"withBackground": false,
+											"stretched": false
+										}
+									},
+									{
+										"id": "f6c9b2a74d8eb5d6",
+										"type": "image",
+										"data": {
+											"file": {
+												"fileId": "178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"fileURL": "/files/178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"url": "/assets/178c42e0-c8a9-410a-851e-34a87ec38fe8",
+												"width": 1440,
+												"height": 900,
+												"size": "476537",
+												"name": "cafe-arona-live-team-desktop.png",
+												"extension": "png"
+											},
+											"caption": "La página del equipo en francés, con la foto de grupo arriba, capturada el 2026-11-05.",
 											"withBorder": false,
 											"withBackground": false,
 											"stretched": false
