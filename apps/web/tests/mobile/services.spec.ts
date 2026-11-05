@@ -23,6 +23,10 @@ for (const path of ['/services', '/services/web-development']) {
 		const rail = page.locator('.station-tabs');
 		const target = page.getByTestId('station-tab-data-pipeline');
 		await expect(target).toBeVisible();
+		// Detail links render in SSR before Svelte wires their touch handlers.
+		if (path.startsWith('/services/')) {
+			await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeEnabled();
+		}
 		const bounds = (await target.boundingBox())!;
 		await rail.evaluate((element) => {
 			const touch = (x: number) => new Touch({ identifier: 1, target: element, clientX: x, clientY: 110 });
