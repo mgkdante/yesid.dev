@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { detailReadingPosition } from './detail-reading-position';
 import { lenisAwareScrollTo } from './locale-handoff.svelte';
 
-vi.mock('./locale-handoff.svelte', () => ({ lenisAwareScrollTo: vi.fn() }));
+vi.mock('./locale-handoff.svelte', () => ({ lenisAwareScrollTo: vi.fn(), getNavigationCaptureY: () => undefined }));
 
 function section(top: number, height: number): HTMLElement {
 	const el = document.createElement('section');
@@ -25,6 +25,7 @@ describe('detail reading position', () => {
 	afterEach(() => {
 		context.dispose();
 		document.body.replaceChildren();
+		delete document.documentElement.dataset.sectionsChoice;
 		vi.unstubAllGlobals();
 	});
 
@@ -39,12 +40,56 @@ describe('detail reading position', () => {
 		expect(lenisAwareScrollTo).toHaveBeenCalledWith(1300);
 	});
 
+	it('reveals a body reading target before measuring its translated progress without changing the bulk choice', async () => {
+		const original = section(400, 1200);
+		original.dataset.sectionIndex = '0';
+		original.innerHTML = '<div data-slot="collapsible-content">Reading body</div>';
+		vi.spyOn(original.firstElementChild!, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, -320, 600, 1120));
+		const saved = context.capture();
+		document.body.replaceChildren();
+		const translated = section(600, 64);
+		translated.dataset.sectionIndex = '0';
+		let height = 64;
+		vi.spyOn(translated, 'getBoundingClientRect').mockImplementation(() => new DOMRect(0, 600 - window.scrollY, 600, height));
+		const jump = vi.fn(async () => { height = 1800; return true; });
+		const restoring = detailReadingPosition('.reading-section', { jump });
+		localStorage.setItem('sections-choice', 'collapsed');
+		await restoring.restore(saved);
+		expect(jump).toHaveBeenCalledWith('section-0', { behavior: 'auto' });
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
+		expect(localStorage.getItem('sections-choice')).toBe('collapsed');
+		restoring.dispose();
+		localStorage.removeItem('sections-choice');
+	});
+
 	it('uses the offset when translated section counts differ', () => {
 		section(400, 1200);
 		const saved = context.capture();
 		section(1700, 200);
 		context.restore(saved);
 		expect(lenisAwareScrollTo).toHaveBeenCalledWith(800);
+	});
+
+	it('restores captured expanded offsets while locale handoff maps progress', async () => {
+		document.documentElement.dataset.sectionsChoice = 'expanded';
+		const original = section(400, 1200);
+		original.innerHTML = '<div data-slot="collapsible-content">Reading body</div>';
+		vi.spyOn(original.firstElementChild!, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, -320, 600, 1120));
+		const saved = context.capture();
+		document.body.replaceChildren();
+		section(600, 1800);
+		await context.restoreHistory(saved);
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(800);
+		await context.restore(saved);
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
+		vi.mocked(lenisAwareScrollTo).mockClear();
+		document.documentElement.dataset.sectionsChoice = 'collapsed';
+		await context.restoreHistory(saved);
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
+		vi.mocked(lenisAwareScrollTo).mockClear();
+		document.documentElement.dataset.sectionsChoice = 'expanded';
+		await context.restoreHistory({ insideBody: true, bulkExpanded: true, y: NaN });
+		expect(lenisAwareScrollTo).not.toHaveBeenCalled();
 	});
 
 	it('follows late diagram layout, then stops on reader input and disposal', () => {

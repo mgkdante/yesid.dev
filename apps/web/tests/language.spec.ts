@@ -181,7 +181,7 @@ function firstVisibleSectionTrigger(page: Page): Locator {
 		.first();
 }
 
-	test('content disclosures reset on FR→ES→EN remounts', async ({ page }) => {
+	test('individual section choices leave the expanded preference intact across FR→ES→EN', async ({ page }) => {
 		await page.goto('/fr/projects');
 		const firstCard = page.getByTestId('project-card').first();
 		await expect(firstCard).toBeVisible();
@@ -194,7 +194,7 @@ function firstVisibleSectionTrigger(page: Page): Locator {
 		await trigger.click();
 		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
-		// Click 1: FR → ES resets to the declared open default.
+		// The saved expanded choice applies on the FR → ES remount.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL('**/es/projects/**');
 		await expect(page.getByTestId('project-detail-page')).toBeVisible();
@@ -204,7 +204,7 @@ function firstVisibleSectionTrigger(page: Page): Locator {
 		await esTrigger.click();
 		await expect(esTrigger).toHaveAttribute('aria-expanded', 'false');
 
-		// Click 2: ES → EN resets the second collapsed instance too.
+		// The saved expanded choice also applies on the ES → EN remount.
 		await page.getByTestId('language-toggle').click();
 		await page.waitForURL((url) => /^\/projects\//.test(url.pathname));
 		await expect(page.getByTestId('project-detail-page')).toBeVisible();

@@ -19,7 +19,6 @@
   import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
 
   import BlogEntryRail from './BlogEntryRail.svelte';
-  import { onMount } from 'svelte';
   import { registerDetailReadingPosition } from '#lib/state/detail-reading-position.ts';
   import { resolveLocale } from '#lib/utils/locale.ts';
   import { getLocale, intl } from '#lib/utils/locale-context.ts';
@@ -188,7 +187,7 @@
 
   const navigation = useSectionJump(afterNavigate);
 
-  onMount(() => registerDetailReadingPosition('[data-testid="blog-sections"] > .blog-section-block'));
+  registerDetailReadingPosition('[data-testid="blog-sections"] > .blog-section-block', navigation);
 
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
 </script>

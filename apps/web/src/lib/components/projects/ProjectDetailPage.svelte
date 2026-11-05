@@ -214,7 +214,7 @@
 
 	const navigation = useSectionJump(afterNavigate);
 
-	onMount(() => registerDetailReadingPosition('.sections-column [data-section-index]'));
+	registerDetailReadingPosition('.sections-column [data-section-index]', navigation);
 </script>
 
 {#snippet galleryCard(mobile: boolean)}
