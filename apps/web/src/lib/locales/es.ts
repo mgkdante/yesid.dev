@@ -1,5 +1,4 @@
 export const es = {
-	metricProof: { source: 'Fuente', asOf: 'Al' },
 	navChrome: {
 		shared: {
 			openMenuAria: 'Abrir menú',

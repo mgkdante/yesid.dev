@@ -20,10 +20,13 @@ const mockService = serviceFactory.build({
 });
 
 describe('ServiceCard', () => {
-	it('keeps the optional proof link separate from the navigation CTA', () => {
+	it('shows only the metric value and label even when proof is supplied', () => {
 		render(ServiceCard, { service: { ...mockService, impactMetric: { ...mockService.impactMetric!, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' } }, svgContent: '', index: 0, total: 6 });
-		expect(screen.getByRole('link', { name: 'Source: faster avg query' }).getAttribute('href')).toBe('https://example.org/evidence');
-		expect(screen.getByText('As of November 4, 2026')).toBeTruthy();
+		expect(screen.getByText('3x')).toBeTruthy();
+		expect(screen.getByText('faster avg query')).toBeTruthy();
+		expect(screen.queryByTestId('metric-proof')).toBeNull();
+		expect(screen.queryByRole('link', { name: 'Source: faster avg query' })).toBeNull();
+		expect(screen.queryByText('As of November 4, 2026')).toBeNull();
 	});
 	it('renders the service title with dot', () => {
 		render(ServiceCard, {

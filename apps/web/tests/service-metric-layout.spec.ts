@@ -4,7 +4,7 @@ import { installMetricProofFixture, navigateWithMetricFixture, proofUrl } from '
 
 for (const locale of ['en', 'fr', 'es']) {
 	const prefix = locale === 'en' ? '' : `/${locale}`;
-	test(`${locale} home cards fit content and contain their proof`, async ({ page }, testInfo) => {
+	test(`${locale} home metric cards stay compact without source or date proof`, async ({ page }, testInfo) => {
 		if (testInfo.project.name === 'phone') await page.setViewportSize({ width: 412, height: 915 });
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		const assertFixture = await installMetricProofFixture(page);
@@ -14,8 +14,9 @@ for (const locale of ['en', 'fr', 'es']) {
 		assertFixture();
 		await expect(cards.nth(0).getByTestId('services-metric')).toHaveCount(0);
 		await expect(cards.nth(1).getByTestId('services-metric')).toHaveCount(0);
-		await expect(cards.nth(2).getByTestId('metric-proof')).toHaveCount(1);
-		await expect(cards.nth(3).getByTestId('metric-proof')).toHaveCount(1);
+		await expect(cards.nth(2).getByTestId('services-metric')).toBeVisible();
+		await expect(cards.nth(3).getByTestId('services-metric')).toBeVisible();
+		await expectNoMetricProof(page);
 		for (const card of await cards.all()) {
 			await card.scrollIntoViewIfNeeded();
 			const geometry = await card.evaluate(el => {
@@ -26,14 +27,9 @@ for (const locale of ['en', 'fr', 'es']) {
 				return {
 					blank: (metric?.getBoundingClientRect().top ?? bounds.bottom) - last.getBoundingClientRect().bottom,
 					height: bounds.height,
-					proofInside: [...el.querySelectorAll('[data-testid="metric-proof"]')].every(proof => {
-						const box = proof.getBoundingClientRect();
-						return box.top >= bounds.top && box.bottom <= bounds.bottom && box.left >= bounds.left && box.right <= bounds.right;
-					}),
 				};
 			});
 			if (page.viewportSize()!.width < 1024) expect(geometry.blank, 'only normal content padding remains').toBeLessThan(40);
-			expect(geometry.proofInside).toBe(true);
 		}
 		if (page.viewportSize()!.width >= 1024) {
 			const heights = await cards.evaluateAll(nodes => nodes.map(node => node.getBoundingClientRect().height));
@@ -48,24 +44,23 @@ for (const locale of ['en', 'fr', 'es']) {
 			const lineHeight = await longMetric.locator('.services-metric-value').evaluate(el => parseFloat(getComputedStyle(el).lineHeight));
 			expect(value!.height, 'the long value fits on one phone line').toBeLessThanOrEqual(lineHeight + 1);
 		}
-		await expectProofLinks(page);
+		await expectNoMetricProof(page);
 		await expectNoHorizontalOverflow(page, ['.services-card', '.services-footer', '[data-testid="metric-proof"]']);
 		await cards.nth(3).scrollIntoViewIfNeeded();
 		await testInfo.attach(`${locale}-home-metric`, { body: await page.screenshot(), contentType: 'image/png' });
 	});
 
 	for (const path of ['/services', '/services/database-engineering', '/projects/transit-data-pipeline']) {
-		test(`${locale} ${path} keeps metric proof readable`, async ({ page }, testInfo) => {
+		test(`${locale} ${path} keeps metrics readable without proof`, async ({ page }, testInfo) => {
 			if (testInfo.project.name === 'phone') await page.setViewportSize({ width: 412, height: 915 });
 			await page.emulateMedia({ reducedMotion: 'reduce' });
 			const assertFixture = await installMetricProofFixture(page);
 			await navigateWithMetricFixture(page, `${prefix}${path}`);
-			await expect(page.getByTestId('metric-proof').filter({ visible: true }).first()).toBeVisible();
 			assertFixture();
-			await expectProofLinks(page);
+			await expectNoMetricProof(page);
 			if (path.startsWith('/projects/')) {
 				const panel = page.getByTestId('project-impact-card').filter({ visible: true });
-				await expect(panel.getByTestId('metric-proof')).toHaveCount(1);
+				await expect(panel.locator('.metric-value').first()).toBeVisible();
 			}
 			if (path === '/services/database-engineering' && page.viewportSize()!.width >= 1024) {
 				const value = page.locator('.impact-value');
@@ -124,16 +119,8 @@ for (const forcedColors of ['none', 'active'] as const) {
 	}
 }
 
-async function expectProofLinks(page: import('@playwright/test').Page) {
-	for (const proof of await page.getByTestId('metric-proof').filter({ visible: true }).all()) {
-		const link = proof.getByRole('link');
-		await proof.scrollIntoViewIfNeeded();
-		await expect(link).toHaveAttribute('href', proofUrl);
-		await expect(link).toHaveAccessibleName(/(?:Source|Fuente): .+/);
-		await link.focus();
-		await page.keyboard.press('Shift+Tab');
-		await page.keyboard.press('Tab');
-		await expect(link).toBeFocused();
-		expect(await link.evaluate(el => el.parentElement?.closest('a'))).toBeNull();
-	}
+async function expectNoMetricProof(page: import('@playwright/test').Page) {
+	await expect(page.getByTestId('metric-proof')).toHaveCount(0);
+	await expect(page.locator(`a[href="${proofUrl}"]`)).toHaveCount(0);
+	await expect(page.locator('time[datetime="2026-11-04"]')).toHaveCount(0);
 }

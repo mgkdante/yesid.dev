@@ -4,7 +4,6 @@
   import { getLocale } from '#lib/utils/locale-context.ts';
   import { siteLabels } from '#lib/content/index.ts';
   import { CollapsibleSection, MetricDisplay, SectionIcon } from '@yesid/ui/brand';
-  import MetricProof from '#lib/components/shared/MetricProof.svelte';
 
   let {
     project,
@@ -36,7 +35,6 @@
             labelBelow
             style="--metric-color: {metricColors[i % 2]};"
           />
-          <MetricProof {metric} {locale} />
           </div>
         {/each}
       </div>
