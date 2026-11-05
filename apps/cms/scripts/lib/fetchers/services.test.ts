@@ -40,6 +40,18 @@ const FIXTURE: DirectusService = {
 };
 
 describe('services fetcher transform', () => {
+	it('exports named sources and keeps the legacy URL, refusing any invalid list entry', async () => {
+		const sources = [{ label: 'Site A', url: 'https://example.org' }, { label: 'Site B', url: 'https://example.net' }];
+		const row = { ...FIXTURE, impact_metric_sources: sources, impact_metric_source_url: 'https://example.com' };
+		const [service] = await fetchServices({ client: cmsClientDouble(() => [row]) });
+		expect(service?.impactMetric).toMatchObject({ sources, sourceUrl: 'https://example.com' });
+		for (const value of [null, undefined, []]) {
+			await expect(fetchServices({ client: cmsClientDouble(() => [{ ...FIXTURE, impact_metric_sources: value }]) })).resolves.toHaveLength(1);
+		}
+		for (const url of ['http://example.org', 'https://user:secret@example.org', '/relative', 'javascript:alert(1)']) {
+			await expect(fetchServices({ client: cmsClientDouble(() => [{ ...row, impact_metric_sources: [...sources, { label: 'Bad', url }] }]) })).rejects.toThrow();
+		}
+	});
 	it('exports independent optional proof and preserves localized values', async () => {
 		const row = Object.assign({}, FIXTURE, { impact_metric_source_url: 'https://example.org/evidence', impact_metric_as_of: '2026-11-04' });
 		const [service] = await fetchServices({ client: cmsClientDouble(() => [row]) });

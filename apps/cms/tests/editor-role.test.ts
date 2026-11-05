@@ -189,11 +189,11 @@ describe('Editor role wiring (go2-t1d)', () => {
 		expect(rowsSha256(unrelatedPresets)).toBe(UNRELATED_PRESET_SHA256);
 	});
 
-	it('adds only read and update of the two service proof fields for Human Editor', () => {
+	it('adds only read and update of the three service proof fields for Human Editor', () => {
 		const rows = permissions.filter(row => IMPACT_PROOF_PERMISSION_IDS.includes(row._syncId));
 		expect(rows).toEqual(['read', 'update'].map(action => ({
 			collection: 'services', action, permissions: {}, validation: null, presets: null,
-			fields: ['impact_metric_source_url', 'impact_metric_as_of'], policy: '_sync_human_editor_policy',
+			fields: ['impact_metric_source_url', 'impact_metric_as_of', 'impact_metric_sources'], policy: '_sync_human_editor_policy',
 			_syncId: `he-services-impact-proof-${action}`,
 		})));
 	});

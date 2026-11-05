@@ -35,8 +35,9 @@
             size="md"
             labelBelow
             style="--metric-color: {metricColors[i % 2]};"
-          />
-          <MetricProof {metric} {locale} />
+          >
+            {#snippet info()}<MetricProof {metric} {locale} />{/snippet}
+          </MetricDisplay>
           </div>
         {/each}
       </div>

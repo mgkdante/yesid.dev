@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import flows from '../directus/collections/flows.json';
 import operations from '../directus/collections/operations.json';
+import sourcesPacket from '../ops/metric-sources-flow.json';
 
 const PUBLISH_FLOW = 'd86a5982-6ab4-4474-ace8-cfd16962a9a4';
 const PUBLISH_OPERATION = 'a7c9d628-b970-4f38-bb4b-0c532901d0e1';
@@ -47,7 +48,12 @@ function assertAutomaticOperationsArePassive(flowRows: readonly Flow[], operatio
 			visited.add(id);
 			const operation = byId.get(id);
 			if (!operation) throw new Error(`${flow.name} reaches missing operation ${id}`);
-			expect(['condition', 'log', 'notification'], `${flow.name} reaches ${id}`).toContain(operation.type);
+			if (flow._syncId === sourcesPacket.flowSyncId && id === sourcesPacket.operationSyncId) {
+				// One pure blocking validator is authorized, with no side-effect branch.
+				expect(operation).toMatchObject({ type: 'exec', resolve: null, reject: null, options: sourcesPacket.operation.options });
+			} else {
+				expect(['condition', 'log', 'notification'], `${flow.name} reaches ${id}`).toContain(operation.type);
+			}
 			for (const next of [operation.resolve, operation.reject]) {
 				if (next) pending.push(next);
 			}
@@ -73,10 +79,11 @@ function reminderRequestMutation(): Operation[] {
 }
 
 describe('D6 manual Publish flow contract', () => {
-	it('declares exactly Publish site and Translation reminder on publish', () => {
+	it('declares only manual Publish, the translation reminder and the metric-source validator', () => {
 		expect(flows.map((flow) => [flow._syncId, flow.name]).sort()).toEqual([
 			[REMINDER_FLOW, 'Translation reminder on publish'],
 			[PUBLISH_FLOW, 'Publish site'],
+			[sourcesPacket.flowSyncId, 'Validate metric proof sources'],
 		].sort());
 	});
 
@@ -125,7 +132,7 @@ describe('D6 manual Publish flow contract', () => {
 		assertOnlyManualPublishRequest(flows, operations);
 	});
 
-	it('allows only condition, log and in-app notification operations along every automatic flow branch', () => {
+	it('keeps automatic branches passive except the exact pure metric-source validator', () => {
 		assertAutomaticOperationsArePassive(flows, operations);
 	});
 

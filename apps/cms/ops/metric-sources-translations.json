@@ -1,0 +1,32 @@
+[
+  {
+    "method": "POST",
+    "path": "/translations",
+    "payload": {
+      "language": "en-US",
+      "key": "impact_proof_sources_invalid",
+      "value": "Give every proof source a name and a public https:// URL with no username or password, or remove the row."
+    },
+    "syncId": "metric-sources-invalid-en-us"
+  },
+  {
+    "method": "POST",
+    "path": "/translations",
+    "payload": {
+      "language": "fr-CA",
+      "key": "impact_proof_sources_invalid",
+      "value": "Donnez à chaque source un nom et une URL publique https:// sans nom d’utilisateur ni mot de passe, ou supprimez la ligne."
+    },
+    "syncId": "metric-sources-invalid-fr-ca"
+  },
+  {
+    "method": "POST",
+    "path": "/translations",
+    "payload": {
+      "language": "es-ES",
+      "key": "impact_proof_sources_invalid",
+      "value": "Dale a cada fuente un nombre y una URL pública https:// sin usuario ni contraseña, o elimina la fila."
+    },
+    "syncId": "metric-sources-invalid-es-es"
+  }
+]

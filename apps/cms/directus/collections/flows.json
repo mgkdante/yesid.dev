@@ -54,5 +54,29 @@
     "operation": "_sync_op_publish_version_before",
     "folder": null,
     "_syncId": "d86a5982-6ab4-4474-ace8-cfd16962a9a4"
+  },
+  {
+    "name": "Validate metric proof sources",
+    "icon": "fact_check",
+    "color": null,
+    "description": "Blocks invalid named metric sources before service or project-metric saves. Returns the original payload unchanged.",
+    "status": "active",
+    "trigger": "event",
+    "accountability": "$trigger",
+    "options": {
+      "type": "filter",
+      "scope": [
+        "items.create",
+        "items.update"
+      ],
+      "collections": [
+        "services",
+        "projects_impact_metrics"
+      ],
+      "return": "$last"
+    },
+    "operation": "_sync_op_metric_sources_validate",
+    "folder": null,
+    "_syncId": "_sync_flow_metric_sources"
   }
 ]

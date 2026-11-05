@@ -116,6 +116,18 @@ describe('projects fetcher transform', () => {
 		expect(old?.impactMetrics?.[0]).not.toHaveProperty('asOf');
 	});
 
+	it('exports the same named-source shape for projects and rejects invalid entries', async () => {
+		const sources = [{ label: 'Site A', url: 'https://example.org' }, { label: 'Site B', url: 'https://example.net' }];
+		const row = { ...FIXTURE, impact_metrics: [{ ...FIXTURE.impact_metrics![0]!, sources }] };
+		const [project] = await fetchProjects({ client: cmsClientDouble(() => [row]) });
+		expect(project?.impactMetrics?.[0]?.sources).toEqual(sources);
+		for (const value of [null, undefined, []]) {
+			await expect(fetchProjects({ client: cmsClientDouble(() => [{ ...row, impact_metrics: [{ ...row.impact_metrics[0]!, sources: value }] }]) })).resolves.toHaveLength(1);
+		}
+		for (const url of ['http://example.org', 'https://user:secret@example.org', '/relative', 'javascript:alert(1)']) {
+			await expect(fetchProjects({ client: cmsClientDouble(() => [{ ...row, impact_metrics: [{ ...row.impact_metrics[0]!, sources: [...sources, { label: 'Bad', url }] }] }]) })).rejects.toThrow();
+		}
+	});
 	it('rejects invalid proof at the export boundary', async () => {
 		for (const proof of [{ source_url: 'http://example.org' }, { as_of: '2026-02-30' }]) {
 			const row = { ...FIXTURE, impact_metrics: [Object.assign({}, FIXTURE.impact_metrics![0]!, proof)] };

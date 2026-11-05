@@ -9557,7 +9557,8 @@
     "presets": null,
     "fields": [
       "impact_metric_source_url",
-      "impact_metric_as_of"
+      "impact_metric_as_of",
+      "impact_metric_sources"
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-services-impact-proof-read"
@@ -9570,7 +9571,8 @@
     "presets": null,
     "fields": [
       "impact_metric_source_url",
-      "impact_metric_as_of"
+      "impact_metric_as_of",
+      "impact_metric_sources"
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-services-impact-proof-update"

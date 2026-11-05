@@ -100,10 +100,9 @@
 						<div class="metric-inline">
 							<span class="metric-value">{metricValue}</span>
 							{#if metricLabel}
-								<span class="metric-label">{metricLabel}</span>
+								<span class="metric-label">{metricLabel}<MetricProof metric={service.impactMetric!} {locale} /></span>
 							{/if}
 						</div>
-						{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 					</div>
 				{/if}
 

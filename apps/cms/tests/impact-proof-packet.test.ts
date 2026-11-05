@@ -86,7 +86,7 @@ describe('impact proof schema packet', () => {
 	}
 
 	it('ships the same three localized messages in the snapshot and REST packet', () => {
-		const translations: Array<{ _syncId: string }> = readJson('../directus/collections/translations.json');
+		const translations: Array<{ _syncId: string }> = readJson('../directus/collections/translations.json').filter((row: { key: string }) => row.key === 'impact_proof_source_invalid');
 		const steps: Array<{ method: string; path: string; payload: unknown; syncId: string }> = readJson('../ops/impact-proof-translations.json');
 		expect(steps.map(step => step.payload)).toEqual(translations.map(({ _syncId, ...row }) => row));
 		expect(steps.map(step => step.syncId)).toEqual(translations.map(row => row._syncId));

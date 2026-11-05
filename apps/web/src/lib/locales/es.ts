@@ -1,5 +1,5 @@
 export const es = {
-	metricProof: { source: 'Fuente', asOf: 'Al' },
+	metricProof: { info: 'Información sobre la métrica', source: 'Fuente', asOf: 'Al' },
 	navChrome: {
 		shared: {
 			openMenuAria: 'Abrir menú',

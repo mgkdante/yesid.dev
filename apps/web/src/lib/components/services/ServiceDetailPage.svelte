@@ -154,9 +154,8 @@
 			<div class="impact-metric">
 				<span class="impact-value" class:impact-value-compact={metricValue.length > 8}>{metricValue}</span>
 				{#if metricLabel}
-					<span class="impact-label">{metricLabel}</span>
+					<span class="impact-label">{metricLabel}<MetricProof metric={service.impactMetric!} {locale} /></span>
 				{/if}
-				{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 			</div>
 			{#if benefitHeadline}
 				<div class="impact-separator" aria-hidden="true"></div>
@@ -301,9 +300,8 @@
 				<div class="metric-inline">
 					<span class="metric-inline-value">{metricValue}</span>
 					{#if metricLabel}
-						<span class="metric-inline-label">{metricLabel}</span>
+						<span class="metric-inline-label">{metricLabel}<MetricProof metric={service.impactMetric!} {locale} /></span>
 					{/if}
-					{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 					{#if benefitHeadline}
 						<p class="metric-inline-headline">{benefitHeadline}</p>
 					{/if}
@@ -639,10 +637,6 @@
 		color: var(--secondary-foreground);
 		line-height: 1.5;
 		margin-top: 0.25rem;
-	}
-
-	.metric-inline :global(.metric-proof) {
-		flex-basis: 100%;
 	}
 
 	/* ── Sections ── */

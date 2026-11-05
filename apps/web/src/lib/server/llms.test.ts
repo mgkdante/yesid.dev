@@ -5,6 +5,14 @@ import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 
 describe('llms.txt — Spanish section (L2 Phase 4)', () => {
+	it('carries each named source for service and project metrics alongside legacy proof', () => {
+		const sources = [{ label: 'Site A', url: 'https://example.org' }, { label: 'Site B', url: 'https://example.net' }];
+		const metric = { value: { en: '4' }, label: { en: 'sites' }, sources, sourceUrl: 'https://example.com' };
+		const body = llmsFullTxt({ locales: ['en'], projects: [{ ...projects[0], impactMetrics: [metric] }], services: [{ ...services[0], impactMetric: metric }] });
+		expect(body.match(/source: Site A \(https:\/\/example.org\)/g)).toHaveLength(2);
+		expect(body.match(/source: Site B \(https:\/\/example.net\)/g)).toHaveLength(2);
+		expect(body.match(/source: https:\/\/example.com/g)).toHaveLength(2);
+	});
 	it('includes supplied proof for project and service claims, and no empty labels', () => {
 		const metric = { value: { en: '30 s' }, label: { en: 'synthetic test claim' }, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' };
 		const body = llmsFullTxt({ locales: ['en'], projects: [{ ...projects[0], impactMetrics: [metric] }], services: [{ ...services[0], impactMetric: metric }] });

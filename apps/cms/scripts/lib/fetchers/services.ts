@@ -15,7 +15,7 @@ import {
 	toLocalizedString,
 	withoutLocales,
 } from '../locale';
-import { ServiceSchema } from '@repo/shared/schemas';
+import { ImpactMetricSchema, ServiceSchema } from '@repo/shared/schemas';
 import type { Service, ServiceSection } from '@repo/shared';
 import type { FetcherContext } from './types';
 import { stackFromTechM2M, type DirectusTechStackJunctionRow } from './projects';
@@ -59,6 +59,7 @@ export interface DirectusServiceSectionRow {
 export interface DirectusService {
 	id: string;
 	impact_metric_source_url?: string | null;
+	impact_metric_sources?: unknown;
 	impact_metric_as_of?: string | null;
 	station: number;
 	icon?: string | null;
@@ -109,6 +110,10 @@ export function toService(row: DirectusService): Service {
 	if (impactMetric.value && impactMetric.label) {
 		service.impactMetric = { value: impactMetric.value, label: impactMetric.label };
 		if (row.impact_metric_source_url?.trim()) service.impactMetric.sourceUrl = row.impact_metric_source_url.trim();
+		if (row.impact_metric_sources !== undefined && row.impact_metric_sources !== null) {
+			// Parse unknown JSON at the same boundary as the complete metric.
+			service.impactMetric.sources = ImpactMetricSchema.shape.sources.parse(row.impact_metric_sources);
+		}
 		if (row.impact_metric_as_of?.trim()) service.impactMetric.asOf = row.impact_metric_as_of.trim();
 	}
 

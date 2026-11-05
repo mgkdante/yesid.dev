@@ -21,7 +21,8 @@ const blogUrl = (post: BlogPost): string => post.external ? absolute(post.url ??
 const progress = (status: string) => status === 'wip' ? ' (in progress)' : '';
 
 function metricText(metric: ImpactMetric, locale: Locale): string {
-	return `${resolveLocale(metric.value, locale)} (${resolveLocale(metric.label, locale)})${metric.before ? `, before: ${metric.before}` : ''}${metric.sourceUrl ? `; source: ${metric.sourceUrl}` : ''}${metric.asOf ? `; as of: ${metric.asOf}` : ''}`;
+	const sources = (metric.sources ?? []).map(source => `; source: ${source.label} (${source.url})`).join('');
+	return `${resolveLocale(metric.value, locale)} (${resolveLocale(metric.label, locale)})${metric.before ? `, before: ${metric.before}` : ''}${metric.sourceUrl ? `; source: ${metric.sourceUrl}` : ''}${sources}${metric.asOf ? `; as of: ${metric.asOf}` : ''}`;
 }
 
 function serviceAreaList(): string {

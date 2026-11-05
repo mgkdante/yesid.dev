@@ -1,0 +1,40 @@
+{
+  "flowSyncId": "_sync_flow_metric_sources",
+  "operationSyncId": "_sync_op_metric_sources_validate",
+  "flow": {
+    "name": "Validate metric proof sources",
+    "icon": "fact_check",
+    "color": null,
+    "description": "Blocks invalid named metric sources before service or project-metric saves. Returns the original payload unchanged.",
+    "status": "active",
+    "trigger": "event",
+    "accountability": "$trigger",
+    "options": {
+      "type": "filter",
+      "scope": [
+        "items.create",
+        "items.update"
+      ],
+      "collections": [
+        "services",
+        "projects_impact_metrics"
+      ],
+      "return": "$last"
+    },
+    "operation": "_sync_op_metric_sources_validate",
+    "folder": null
+  },
+  "operation": {
+    "name": "Validate every named source",
+    "key": "validate_metric_sources",
+    "type": "exec",
+    "position_x": 19,
+    "position_y": 1,
+    "options": {
+      "code": "module.exports = function (data) {\n  var payload = data.$trigger.payload;\n  var field = data.$trigger.collection === 'services' ? 'impact_metric_sources' : 'sources';\n  var pattern = new RegExp(\"^[Hh][Tt][Tt][Pp][Ss]://(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\\\.)+[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?::(?:[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(?:[/?#][^\\\\s\\\\\\\\\\\\u0000-\\\\u001F\\\\u007F]*)?(?![\\\\s\\\\S])\");\n  var rows = Array.isArray(payload) ? payload : [payload];\n  rows.forEach(function (item) {\n    if (!item || !Object.prototype.hasOwnProperty.call(item, field) || item[field] === null) return;\n    var sources = item[field];\n    if (!Array.isArray(sources) || sources.some(function (source) {\n      return !source || typeof source.label !== 'string' || !source.label.trim() ||\n        typeof source.url !== 'string' || !pattern.test(source.url);\n    })) {\n      throw JSON.stringify({ name: 'DirectusError', code: 'FAILED_VALIDATION', status: 400,\n        message: 'Every proof source needs a name and a public HTTPS URL without credentials.',\n        extensions: { field: field, type: 'regex' } });\n    }\n  });\n  return payload;\n};"
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "_sync_flow_metric_sources"
+  }
+}

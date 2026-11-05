@@ -17,7 +17,7 @@ import {
 	withoutLocales,
 } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
-import { ProjectSchema } from '@repo/shared/schemas';
+import { ImpactMetricSchema, ProjectSchema } from '@repo/shared/schemas';
 import type { ImpactMetric, Project, ProjectSection, ProjectStatus } from '@repo/shared';
 import type { FetcherContext } from './types';
 
@@ -52,6 +52,7 @@ export interface DirectusProjectImpactMetricRow {
 	value: string;
 	before: string | null;
 	source_url?: string | null;
+	sources?: unknown;
 	as_of?: string | null;
 	translations?: DirectusProjectImpactMetricTranslation[];
 }
@@ -134,6 +135,7 @@ export function toProject(row: DirectusProject): Project {
 		};
 		if (m.before) metric.before = m.before;
 		if (m.source_url?.trim()) metric.sourceUrl = m.source_url.trim();
+		if (m.sources !== undefined && m.sources !== null) metric.sources = ImpactMetricSchema.shape.sources.parse(m.sources);
 		if (m.as_of?.trim()) metric.asOf = m.as_of.trim();
 		return metric;
 	});

@@ -1,11 +1,17 @@
 import { expect, type Page } from '@playwright/test';
 
 export const proofUrl = 'https://example.org/metric-layout-evidence';
+export const namedSources = [
+	{ label: 'yesid.dev', url: 'https://yesid.dev' },
+	{ label: 'Transit', url: 'https://transit.yesid.dev' },
+	{ label: 'Café Arona', url: 'https://cafearona.com' },
+	{ label: 'Vitreva', url: 'https://vitreva.ca' },
+];
 
 // Exercise the real pages with a live-shaped test case. The committed content
 // fixture has four metrics and no proof. Only intercepted SvelteKit navigation
 // data changes; CMS, build content and the deployed site remain untouched.
-export async function installMetricProofFixture(page: Page) {
+export async function installMetricProofFixture(page: Page, variants = false, multiple = false) {
 	let replacements = 0;
 	await page.route('**/__data.json*', async route => {
 		const response = await route.fetch();
@@ -20,7 +26,12 @@ export async function installMetricProofFixture(page: Page) {
 				if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
 				const row = item as Record<string, number>;
 				const id = data[row.id];
-				if (id === 'web-development' || id === 'data-pipeline') delete row.impactMetric;
+				if ((id === 'web-development' && !multiple) || id === 'data-pipeline') delete row.impactMetric;
+				if (multiple && id === 'web-development') {
+					const metric = data[row.impactMetric] as Record<string, number>;
+					metric.sources = ref(namedSources.map(source => ref({ label: ref(source.label), url: ref(source.url) })));
+					replacements++;
+				}
 				if (id === 'analytics-reporting' || id === 'database-engineering') {
 					const metric = data[row.impactMetric] as Record<string, number>;
 					if (!metric) continue;
@@ -38,6 +49,18 @@ export async function installMetricProofFixture(page: Page) {
 					if (metric) {
 						metric.sourceUrl = ref(proofUrl);
 						metric.asOf = ref('2026-11-04');
+						if (multiple) {
+							delete metric.sourceUrl;
+							metric.sources = ref(namedSources.map(source => ref({ label: ref(source.label), url: ref(source.url) })));
+						}
+						if (variants) {
+							// Keep the existing claims; add isolated source-only/date-only cases.
+							const sourceOnly: Record<string, number> = { ...metric, label: ref({ en: ref('Source only'), fr: ref('Source seule'), es: ref('Solo fuente') }) };
+							delete sourceOnly.asOf;
+							const dateOnly: Record<string, number> = { ...metric, label: ref({ en: ref('Date only'), fr: ref('Date seule'), es: ref('Solo fecha') }) };
+							delete dateOnly.sourceUrl;
+							row.impactMetrics = ref([...metrics, ref(sourceOnly), ref(dateOnly)]);
+						}
 						replacements++;
 					}
 				}

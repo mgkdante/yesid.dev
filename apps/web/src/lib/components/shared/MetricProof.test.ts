@@ -16,6 +16,10 @@ describe('MetricProof', () => {
 		['es', 'Fuente', 'Al', '4 de noviembre de 2026'],
 	] as const)('renders localized accessible proof in %s', (locale, source, asOf, date) => {
 		render(MetricProof, { metric: { ...metric, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' }, locale });
+		const info = { en: 'Metric information', fr: 'Informations sur la mesure', es: 'Información sobre la métrica' };
+		const button = screen.getByRole('button', { name: `${info[locale]}: refresh interval` });
+		expect(button.getAttribute('type')).toBe('button');
+		expect(document.getElementById(button.getAttribute('popovertarget')!)?.getAttribute('popover')).toBe('auto');
 		expect(screen.getByRole('link', { name: `${source}: refresh interval` }).getAttribute('href')).toBe('https://example.org/evidence');
 		expect(screen.getByText(`${asOf} ${date}`)).toBeTruthy();
 		expect(screen.getByText(`${asOf} ${date}`).getAttribute('datetime')).toBe('2026-11-04');
@@ -27,5 +31,13 @@ describe('MetricProof', () => {
 		render(MetricProof, { metric: { ...metric, sourceUrl: 'https://example.org/evidence' }, locale: 'en' });
 		expect(screen.getByRole('link')).toBeTruthy();
 		expect(document.querySelector('time')).toBeNull();
+	});
+	it('renders every named source alongside legacy proof and leaves an empty list invisible', () => {
+		const { unmount } = render(MetricProof, { metric: { ...metric, sources: [] }, locale: 'en' });
+		expect(screen.queryByRole('button')).toBeNull();
+		unmount();
+		render(MetricProof, { metric: { ...metric, sourceUrl: 'https://example.org', sources: [{ label: 'Example', url: 'https://example.net' }] }, locale: 'en' });
+		expect(screen.getByRole('link', { name: 'Source: refresh interval' }).getAttribute('href')).toBe('https://example.org');
+		expect(screen.getByRole('link', { name: 'Example: refresh interval' }).getAttribute('href')).toBe('https://example.net');
 	});
 });

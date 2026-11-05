@@ -162,9 +162,8 @@
 						>
 							<div class="services-metric-row">
 								<span class="services-metric-value">{metricValue}</span>
-								<span class="services-metric-label">{metricLabel}</span>
+								<span class="services-metric-label">{metricLabel}{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}</span>
 							</div>
-							{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 						</div>
 					{/if}
 				</div>

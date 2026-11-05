@@ -1,0 +1,133 @@
+{
+  "collection": "projects_impact_metrics",
+  "field": "sources",
+  "type": "json",
+  "meta": {
+    "collection": "projects_impact_metrics",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "sources",
+    "group": null,
+    "hidden": false,
+    "interface": "list",
+    "note": "Optional named public evidence, shared across languages. Each row needs a name and an HTTPS URL without credentials. Leave empty when unknown.",
+    "options": {
+      "template": "{{label}}",
+      "fields": [
+        {
+          "field": "label",
+          "name": "Source name",
+          "type": "string",
+          "meta": {
+            "field": "label",
+            "interface": "input",
+            "width": "full",
+            "required": true,
+            "translations": [
+              {
+                "language": "en-US",
+                "translation": "Source name"
+              },
+              {
+                "language": "fr-CA",
+                "translation": "Nom de la source"
+              },
+              {
+                "language": "es-ES",
+                "translation": "Nombre de la fuente"
+              }
+            ],
+            "validation": {
+              "_and": [
+                {
+                  "label": {
+                    "_regex": "\\S"
+                  }
+                }
+              ]
+            },
+            "validation_message": "$t:impact_proof_sources_invalid"
+          }
+        },
+        {
+          "field": "url",
+          "name": "Source URL",
+          "type": "string",
+          "meta": {
+            "field": "url",
+            "interface": "input",
+            "width": "full",
+            "required": true,
+            "translations": [
+              {
+                "language": "en-US",
+                "translation": "Source URL"
+              },
+              {
+                "language": "fr-CA",
+                "translation": "URL de la source"
+              },
+              {
+                "language": "es-ES",
+                "translation": "URL de la fuente"
+              }
+            ],
+            "validation": {
+              "_and": [
+                {
+                  "url": {
+                    "_regex": "^[Hh][Tt][Tt][Pp][Ss]://(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?::(?:[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(?:[/?#][^\\s\\\\\\u0000-\\u001F\\u007F]*)?(?![\\s\\S])"
+                  }
+                }
+              ]
+            },
+            "validation_message": "$t:impact_proof_source_invalid"
+          }
+        }
+      ]
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 8,
+    "special": [
+      "cast-json"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Proof sources (optional)"
+      },
+      {
+        "language": "fr-CA",
+        "translation": "Sources de la preuve (facultatif)"
+      },
+      {
+        "language": "es-ES",
+        "translation": "Fuentes de la prueba (opcional)"
+      }
+    ],
+    "validation": null,
+    "validation_message": "$t:impact_proof_sources_invalid",
+    "width": "full"
+  },
+  "schema": {
+    "name": "sources",
+    "table": "projects_impact_metrics",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
