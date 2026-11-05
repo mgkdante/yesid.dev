@@ -83,9 +83,23 @@ describe('buildProfessionalServiceNode — L2 trilingual signal (Phase 4)', () =
 		expect(business.knowsLanguage).toEqual(person.knowsLanguage);
 	});
 
-	it('publishes Montréal as the only service area', () => {
+	it('publishes the Google Business Profile service areas', () => {
 		const business = buildProfessionalServiceNode(siteMeta);
-		expect(business.areaServed).toEqual([{ '@type': 'City', name: 'Montréal' }]);
+		expect(business.areaServed).toEqual(
+			['Montréal', 'Laval', 'Longueuil', 'Gatineau', 'Ottawa'].map((name) => ({ '@type': 'City', name })),
+		);
+	});
+
+	it('links the business to its Google Business Profile and YouTube channel', () => {
+		const business = buildProfessionalServiceNode(siteMeta);
+		expect(business.sameAs).toContain('https://www.google.com/maps?cid=5599969099190130938');
+		expect(business.sameAs).toContain('https://www.youtube.com/@yesid-dev');
+	});
+
+	it('links the person to the YouTube channel but not to the business listing', () => {
+		const person = buildPersonNode(siteMeta);
+		expect(person.sameAs).toContain('https://www.youtube.com/@yesid-dev');
+		expect(person.sameAs).not.toContain('https://www.google.com/maps?cid=5599969099190130938');
 	});
 });
 

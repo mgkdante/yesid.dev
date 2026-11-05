@@ -13,13 +13,15 @@ import { delocalizePath, localizeHref, localizeUrl } from '#lib/utils/locale-rou
 // a staging domain is introduced (currently yesid.dev is the only target).
 export const SITE_HOST = 'https://yesid.dev';
 
-// Public service area. MUST stay byte-identical to the approved GBP listing:
-// Montréal only, with the Gatineau legal street address kept private. This
-// feeds ProfessionalService `areaServed` and the llms.txt geography line.
-export const SERVICE_AREAS = ['Montréal'] as const;
+// Public service areas. MUST list the same cities as the Google Business Profile
+// listing, with the legal street address kept private. This feeds
+// ProfessionalService `areaServed` and the llms.txt geography line.
+export const SERVICE_AREAS = ['Montréal', 'Laval', 'Longueuil', 'Gatineau', 'Ottawa'] as const;
 
-// Set the Google Business Profile URL only after the listing is verified and public.
-export const GBP_PROFILE_URL: string | undefined = undefined;
+// The verified Google Business Profile listing.
+export const GBP_PROFILE_URL = 'https://www.google.com/maps?cid=5599969099190130938';
+
+export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@yesid-dev';
 
 // 1200x630 branded default shipped as static asset, per-locale.
 // Pages without an explicit ogImage fall back to `defaultOgImageFor(locale)`.
