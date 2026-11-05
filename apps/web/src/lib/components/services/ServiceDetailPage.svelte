@@ -152,7 +152,7 @@
 
 		{#if metricValue}
 			<div class="impact-metric">
-				<span class="impact-value">{metricValue}</span>
+				<span class="impact-value" class:impact-value-compact={metricValue.length > 8}>{metricValue}</span>
 				{#if metricLabel}
 					<span class="impact-label">{metricLabel}</span>
 				{/if}
@@ -550,6 +550,7 @@
 	}
 
 	.impact-value {
+		overflow-wrap: anywhere;
 		font-family: var(--font-heading);
 		font-size: clamp(4.875rem, 8.9vw, 7.75rem);
 		font-weight: 900;
@@ -565,6 +566,13 @@
 		text-transform: uppercase;
 		letter-spacing: 2px;
 		margin-top: 0.5rem;
+	}
+
+	/* Multi-part values need reading type, rather than the short-number poster scale. */
+	.impact-value-compact {
+		font-size: var(--text-heading);
+		line-height: 1.2;
+		letter-spacing: var(--tracking-tight);
 	}
 
 	.impact-separator {
@@ -605,6 +613,9 @@
 	}
 
 	.metric-inline-value {
+		flex: 0 0 auto;
+		max-width: 100%;
+		overflow-wrap: anywhere;
 		font-family: var(--font-heading);
 		font-size: clamp(1.8rem, 4.5vw, 2.25rem);
 		font-weight: 900;
@@ -613,6 +624,8 @@
 	}
 
 	.metric-inline-label {
+		flex: 1 1 14rem;
+		min-width: 0;
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		color: var(--accent-text);
@@ -626,6 +639,10 @@
 		color: var(--secondary-foreground);
 		line-height: 1.5;
 		margin-top: 0.25rem;
+	}
+
+	.metric-inline :global(.metric-proof) {
+		flex-basis: 100%;
 	}
 
 	/* ── Sections ── */

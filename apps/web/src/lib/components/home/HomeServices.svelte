@@ -104,17 +104,16 @@
 				{@const title = resolveLocale(service.title, locale)}
 				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : ''}
 				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : ''}
-				<div class="services-card-item">
-				<a
-					href={localizeHref(`/services/${service.id}`, locale)}
-					data-testid="services-card"
-					class="services-card-link group block tap-press"
-					use:morphHover={{ enabled: svgReady[i], disableClickToggle: true }}
+				<div
+					class="services-card services-card-item relative overflow-hidden"
+					use:cursorGlow
+					use:cardParallax
 				>
-					<div
-						class="services-card relative overflow-hidden"
-						use:cursorGlow
-						use:cardParallax
+					<a
+						href={localizeHref(`/services/${service.id}`, locale)}
+						data-testid="services-card"
+						class="services-card-link group block tap-press"
+						use:morphHover={{ enabled: svgReady[i], disableClickToggle: true }}
 					>
 
 						<div class="services-icon-zone relative">
@@ -155,18 +154,19 @@
 							{/if}
 						</div>
 
-						{#if metricValue}
-							<div
-								class="services-footer"
-								data-testid="services-metric"
-							>
+					</a>
+					{#if metricValue}
+						<div
+							class="services-footer"
+							data-testid="services-metric"
+						>
+							<div class="services-metric-row">
 								<span class="services-metric-value">{metricValue}</span>
 								<span class="services-metric-label">{metricLabel}</span>
 							</div>
-						{/if}
-					</div>
-				</a>
-				{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
+							{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
+						</div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -198,34 +198,53 @@
 		}
 	}
 
-	.services-grid {
-		grid-auto-rows: 1fr;
-	}
-
 	.services-card-link {
 		text-decoration: none;
-		height: 100%;
+		display: grid;
+		grid-template-rows: 12.5rem auto;
+		flex: 1;
 	}
-	.services-card-item { display: flex; flex-direction: column; min-width: 0; }
-	.services-card-item > .services-card-link { flex: 1; }
 
-	/* Explicit grid rows keep icon, content and footer sizes aligned across varied copy lengths. */
+	/* The card clips decorative effects, so keep the shared keyboard outline inside it. */
+	.services-card-link:focus-visible {
+		position: relative;
+		outline-offset: -4px;
+		border-radius: var(--radius-lg);
+	}
+
+	/* Paint above the positioned illustration, inheriting primary or forced CanvasText. */
+	.services-card-link:focus-visible::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		outline: inherit;
+		outline-offset: inherit;
+		border-radius: inherit;
+		pointer-events: none;
+	}
+	.services-card-item { min-width: 0; }
+
+	/* Equal-height cards are useful in columns, but create empty mobile rows. */
+	@media (--desktop-min) {
+		.services-grid { grid-auto-rows: 1fr; }
+		.services-card-link { grid-template-rows: 12.5rem 1fr; }
+	}
 
 	.services-card {
 		background: var(--surface-1);
 		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		box-shadow: inset 0 1px 0 var(--edge-highlight);
-		display: grid;
-		grid-template-rows: 12.5rem 1fr auto;
-		height: 100%;
+		display: flex;
+		flex-direction: column;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
 			box-shadow var(--duration-normal) var(--ease-default),
 			transform 220ms var(--ease-default);
 	}
 
-	.services-card-link:hover .services-card {
+	.services-card:hover {
 		border-color: var(--border-brand-active);
 		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 		transform: translateY(-3px);
@@ -336,21 +355,30 @@
 	.services-footer {
 		padding: 1rem 1.75rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
+	}
+
+	.services-metric-row {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: baseline;
 		gap: 0.625rem;
 	}
 
 	.services-metric-value {
+		flex: 0 0 auto;
+		max-width: 100%;
+		overflow-wrap: anywhere;
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: 1.5rem;
+		font-size: var(--text-heading);
 		line-height: 1;
 		color: var(--accent-text);
 		letter-spacing: -0.02em;
 	}
 
 	.services-metric-label {
+		flex: 1 1 14rem;
+		min-width: 0;
 		font-family: var(--font-mono);
 		font-size: var(--text-card-meta);
 		color: var(--muted-foreground);
@@ -380,8 +408,8 @@
 	}
 
 	@media (--tablet-max) {
-		.services-card {
-			grid-template-rows: 10rem 1fr auto;
+		.services-card-link {
+			grid-template-rows: 10rem auto;
 		}
 		button.services-svg-panel {
 			width: 96px;
