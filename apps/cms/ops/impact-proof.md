@@ -100,13 +100,13 @@ applying: a newer equivalent grant must be reconciled, never duplicated or overw
 4. Apply the three translation POSTs in `impact-proof-translations.json` first. Re-read
    each key/language before creating it; reconcile an existing row instead of duplicating.
    Save returned IDs and register their `syncId` values at
-   `/directus-extension-sync/table/directus_translations`, using
-   `{"table":"directus_translations","local_id":"RETURNED_ID","sync_id":"PACKET_SYNC_ID"}`.
+   `/directus-extension-sync/table/translations`, using
+   `{"table":"translations","local_id":"RETURNED_ID","sync_id":"PACKET_SYNC_ID"}`.
    Read each translation and map back. These are the only additional configuration rows.
 5. In the field JSON packet order, POST each `payload` to its `path`. Read each field
    back with GET `/fields/{collection}/{field}`. Existing metrics remain null.
 6. Resolve Human Editor's current policy with GET
-   `/directus-extension-sync/table/directus_policies/sync_id/_sync_human_editor_policy`.
+   `/directus-extension-sync/table/policies/sync_id/_sync_human_editor_policy`.
    Use its returned `local_id`, not a guessed UUID. GET `/permissions` filtered to
    that policy and `services`; stop/reconcile if a corresponding grant now exists.
 7. POST the two permission bodies below, one at a time, replacing POLICY_ID with
@@ -136,18 +136,20 @@ applying: a newer equivalent grant must be reconciled, never duplicated or overw
 }
 ```
 
-POST `/directus-extension-sync/table/directus_permissions` for each returned ID:
+POST `/directus-extension-sync/table/permissions` for each returned ID:
 
 ```json
-{"table":"directus_permissions","local_id":"READ_PERMISSION_ID","sync_id":"he-services-impact-proof-read"}
+{"table":"permissions","local_id":"READ_PERMISSION_ID","sync_id":"he-services-impact-proof-read"}
 ```
 
 ```json
-{"table":"directus_permissions","local_id":"UPDATE_PERMISSION_ID","sync_id":"he-services-impact-proof-update"}
+{"table":"permissions","local_id":"UPDATE_PERMISSION_ID","sync_id":"he-services-impact-proof-update"}
 ```
 
 Use ordinary authenticated REST requests from that session. No token extraction,
 credential-file search, global schema push or production content write is needed.
+The sync extension uses logical map table names: `operations`, `permissions`,
+`translations` and `policies`, not their `directus_*` database names.
 
 ## Owner's authoring action
 
