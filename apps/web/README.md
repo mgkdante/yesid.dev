@@ -9,15 +9,16 @@ schema, editorial rows, or the design-system packages.
 
 | Interface | Contract |
 |---|---|
-| [`src/lib/adapters/`](src/lib/adapters/) | Route-facing content interface. `adapter` is the stable entry point and `staticAdapter` reads generated modules. |
-| [`src/lib/content/`](src/lib/content/) | Build-time runtime content. The CMS emitter registry produces 20 ignored modules; never edit those outputs by hand. |
+| [`src/lib/catalog/`](src/lib/catalog/) | Synchronous generated-content catalog and shared availability rules used by routes and server helpers. |
+| [`src/lib/adapters/`](src/lib/adapters/) | Page SEO composition and route-specific SEO factories, using the catalog. |
+| [`src/lib/content/`](src/lib/content/) | Build-time content. The CMS exporter produces 21 ignored modules, including one server-only module; never edit those outputs by hand. |
 | [`src/lib/directus/assets.ts`](src/lib/directus/assets.ts) | The sanctioned media seam. Known file identities resolve to committed mirrors; unknown media may use Directus only in development and fails loudly in production. |
 | [`../../packages/shared/`](../../packages/shared/) | Product types, validation schemas, asset contracts, and dependency-free stack-layer constants. |
 
 Page content moves in one direction:
 
 ```text
-Directus -> CMS exporter -> generated modules -> staticAdapter -> routes/components
+Directus -> CMS exporter -> generated modules -> catalog -> routes/components
 ```
 
 The public application never queries Directus for page content at request time.
@@ -48,7 +49,7 @@ sends its fields to Web3Forms. Plausible runs only when `PUBLIC_PLAUSIBLE_DOMAIN
 
 ## Failure behavior
 
-- A trusted live content export must complete the whole 20-module registry
+- A trusted live content export must validate the whole registry of 21 outputs
   and pass legal-truth and SEO validators before emission.
 - Production rendering fails for an unmirrored media identity; development may
   use the explicit Directus fallback to preview new editorial media.

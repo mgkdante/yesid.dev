@@ -19,7 +19,8 @@ requests to `main` build from the shared fixture and serve as staging.
 | [`directus/`](directus/) | Reviewable directus-sync collections and schema snapshot |
 | [`fixtures/`](fixtures/) | Retained asset inventories, preset declarations, site labels, and positioning inputs |
 | [`scripts/lib/fetchers/`](scripts/lib/fetchers/) | Read-side adapters from Directus rows to product content interfaces |
-| [`scripts/lib/emitters/`](scripts/lib/emitters/) | The single registry and formatter for generated content modules |
+| [`scripts/lib/export-modules.ts`](scripts/lib/export-modules.ts) | Content schemas, fetchers, integrity checks and emitted outputs in one registry |
+| [`scripts/lib/emitters/`](scripts/lib/emitters/) | Generated-module configuration and formatting |
 | [`scripts/`](scripts/) | Export, audit, migration, and reconciliation entry points |
 | [`tests/`](tests/) | Offline schema, fixture, boundary, and dry-run contracts |
 | [`../web/src/lib/content/`](../web/src/lib/content/) | Generated modules consumed by SvelteKit; never edit them by hand |
@@ -64,7 +65,7 @@ local files or their deployment target.
 Content moves through one interface:
 
 ```text
-Directus or shared fixture -> export-fallbacks.ts -> 20 ignored typed modules -> SvelteKit
+Directus or shared fixture -> export-fallbacks.ts -> 21 ignored typed modules -> SvelteKit
 ```
 
 Web dev, test, check and build generate ignored content modules from the shared
@@ -115,23 +116,24 @@ Locale-aware fetchers must preserve the same three-code interface.
 `directus/` is schema and configuration. Editorial rows live in Directus.
 Retained fixtures hold asset and content contracts; they do not restore editorial rows.
 
-From the repository root with a configured ignored `apps/cms/.env`:
+The CLI supports injected operator credentials for separately authorized use.
+Its declared read/pull commands, run from `apps/cms`, are:
 
 ```bash
-bun run --env-file=.env --cwd apps/cms sync:diff
-bun run --env-file=.env --cwd apps/cms sync:pull
+bun run sync:diff
+bun run sync:pull
 ```
 
 `sync:diff` is the read-only preview. `sync:pull` replaces the local
 `apps/cms/directus/` dump with remote state, so review its complete diff and
-stage only that directory. Production apply belongs to the environment-gated
-`push` job in [`.github/workflows/cms.yml`](../../.github/workflows/cms.yml).
+stage only that directory. The environment-gated `push` job is declared in
+[`.github/workflows/cms.yml`](../../.github/workflows/cms.yml).
 The `flows-push` dispatch audits permissions, previews, pushes only `flows`, and checks convergence.
 The package command below exists for an explicitly authorized apply and always
 runs through the repository guard wrapper:
 
 ```bash
-bun run --env-file=.env --cwd apps/cms sync:push
+bun run sync:push
 ```
 
 Never invoke the underlying directus-sync push directly. The wrapper refuses
@@ -140,9 +142,23 @@ permissions out by default, and preserves environment-specific settings file
 references. A committed dump, successful diff, or green test does not prove
 the live environment matches it; keep the post-apply readback.
 
-Permission control follows the same rule. The read-only audit owns discovery.
-Targeted reconcilers and the guarded CMS workflow own repairs. Do not replace
-them with ad-hoc Data Studio or REST mutations.
+The current production admin login uses two-factor authentication and is not
+kept in `.env`. GitHub's `cms` workflow has a token for the read-only diff.
+Confirmed production writes run through the owner's authenticated browser
+session, with an exact reviewed packet and preimages for recovery. Do not
+extract the session token or search credential files.
+
+For manually created configuration rows, register the matching directus-sync
+identity and read back both the row and its map. The sync extension uses logical
+map names such as `operations`, `permissions`, `translations` and `policies`,
+not `directus_*`. See the [impact-proof packet](ops/impact-proof.md) for the
+request shape. Re-read before every create, reconcile an existing row, and
+finish with a new read-only `cms.yml` diff. Stop for unrelated changes.
+
+The guarded workflow lanes and targeted reconcilers remain declared tooling;
+their existence does not authorize an apply. Broad production policy and
+permission synchronization remains refused. A confirmed browser-session packet
+does not waive that guard or permit unrelated grant repairs.
 
 The permissions dump records the 11 live Human Editor asset-registry grants.
 Its eight unfiltered create/read rows use `permissions: null`, matching live;
@@ -159,7 +175,9 @@ workflow lanes, and it stays out of the shared dump by design.
 ## Recovery
 
 - PROD recovery: use Neon instant restore within the project history window.
-- Schema and configuration recovery: use guarded `sync-push`.
+- Schema and configuration recovery: restore the reviewed preimages through the
+  confirmed operator path, including links and sync maps, then read back and diff.
+  Guarded `sync-push` remains available only with suitable authorization and auth.
 
 ## Asset and preset ownership
 
