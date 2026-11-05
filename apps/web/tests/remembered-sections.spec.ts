@@ -55,7 +55,7 @@ test('locale reading restoration reveals the individual reading target and Back 
 	await page.getByTestId('nav-menu-toggle').click();
 	await page.getByRole('dialog').locator('a.menu-item[href="/fr/services"]').click();
 	await expect(page).toHaveURL(/\/fr\/services$/);
-	await expect(page.locator('main a[href="/fr/services/database-engineering"]').first()).toBeVisible();
+	await expect(page.locator('main a[href="/fr/services/database-engineering"]').filter({ visible: true }).first()).toBeVisible();
 	await page.goBack();
 	await expect(page).toHaveURL(/\/fr\/projects\//);
 	await expect(trigger(page, 1)).toHaveAttribute('aria-expanded', 'true');
@@ -97,7 +97,7 @@ for (const locale of ['', '/fr']) {
                 link.click();
             }, locale + '/services');
 			await expect(page).toHaveURL(locale + '/services');
-			if (!rapid) await expect(page.locator(`main a[href="${locale}/services/database-engineering"]`).first()).toBeVisible();
+			if (!rapid) await expect(page.locator(`main a[href="${locale}/services/database-engineering"]`).filter({ visible: true }).first()).toBeVisible();
 			await page.goBack();
 			await expect(page).toHaveURL(locale + project);
 			await expect(trigger(page, 1)).toHaveAttribute('aria-expanded', 'true');
