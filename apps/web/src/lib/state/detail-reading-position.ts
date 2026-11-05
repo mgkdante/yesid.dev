@@ -10,6 +10,12 @@ interface DetailPosition {
 	progress: number;
 	y: number;
 	insideBody: boolean;
+	bulkExpanded: boolean;
+}
+
+interface DetailReadingContext extends ScrollContext {
+	dispose(): void;
+	restoreHistory(snapshot: unknown): void | Promise<void>;
 }
 
 // Match the detail TOC's reading line, but measure geometry rather than its
@@ -17,7 +23,7 @@ interface DetailPosition {
 const READING_LINE = 0.25;
 
 /** Locale and history restoration reveal the reading target without changing the bulk preference. */
-export function detailReadingPosition(selector: string, navigation?: Pick<SectionJump, 'jump'>): ScrollContext & { dispose(): void } {
+export function detailReadingPosition(selector: string, navigation?: Pick<SectionJump, 'jump'>): DetailReadingContext {
 	let dispose = () => {};
 	let request = 0;
 	const sections = () => [...document.querySelectorAll<HTMLElement>(selector)]
@@ -26,7 +32,7 @@ export function detailReadingPosition(selector: string, navigation?: Pick<Sectio
 			return box.height > 0 && box.width > 0;
 		});
 
-	return {
+	const context: ScrollContext & { dispose(): void } = {
 		dispose: () => { request++; dispose(); },
 		capture() {
 			const elements = sections();
@@ -43,6 +49,7 @@ export function detailReadingPosition(selector: string, navigation?: Pick<Sectio
 				kind: 'detail-section', index, count: elements.length,
 				progress: (line - box.top) / box.height, y: window.scrollY,
 				insideBody: !!bodyBox && !body?.hasAttribute('inert') && bodyBox.top <= line && bodyBox.bottom > line,
+				bulkExpanded: document.documentElement.dataset.sectionsChoice === 'expanded',
 			} satisfies DetailPosition;
 		},
 		async restore(snapshot) {
@@ -91,6 +98,17 @@ export function detailReadingPosition(selector: string, navigation?: Pick<Sectio
 			lenisAwareScrollTo(Math.max(0, y));
 		},
 	};
+	return {
+		...context,
+		restoreHistory(snapshot) {
+			const saved = snapshot as Partial<DetailPosition> | null;
+			if (!saved?.insideBody) return;
+			// An expanded view already has its target open. Native history owns its
+			// absolute offset, including the existing late-diagram anchoring policy.
+			if (saved.bulkExpanded === true && document.documentElement.dataset.sectionsChoice === 'expanded') return;
+			return context.restore(snapshot);
+		},
+	};
 }
 
 /** Called during initialization. Kit owns the per-history-entry snapshot lifetime. */
@@ -102,7 +120,7 @@ export function registerDetailReadingPosition(selector: string, navigation?: Pic
 		restore: (saved) => {
 			// Native history handles ordinary offsets. Only a body reading target
 			// needs its collapsed chain revealed before its position can be measured.
-			if ((saved as Partial<DetailPosition> | null)?.insideBody) void context.restore(saved);
+			void context.restoreHistory(saved);
 		},
 	});
 	onMount(() => {

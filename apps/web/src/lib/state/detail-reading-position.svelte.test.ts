@@ -25,6 +25,7 @@ describe('detail reading position', () => {
 	afterEach(() => {
 		context.dispose();
 		document.body.replaceChildren();
+		delete document.documentElement.dataset.sectionsChoice;
 		vi.unstubAllGlobals();
 	});
 
@@ -67,6 +68,24 @@ describe('detail reading position', () => {
 		section(1700, 200);
 		context.restore(saved);
 		expect(lenisAwareScrollTo).toHaveBeenCalledWith(800);
+	});
+
+	it('leaves expanded history offsets to native restoration while locale handoff maps progress', async () => {
+		document.documentElement.dataset.sectionsChoice = 'expanded';
+		const original = section(400, 1200);
+		original.innerHTML = '<div data-slot="collapsible-content">Reading body</div>';
+		vi.spyOn(original.firstElementChild!, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, -320, 600, 1120));
+		const saved = context.capture();
+		document.body.replaceChildren();
+		section(600, 1800);
+		await context.restoreHistory(saved);
+		expect(lenisAwareScrollTo).not.toHaveBeenCalled();
+		await context.restore(saved);
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
+		vi.mocked(lenisAwareScrollTo).mockClear();
+		document.documentElement.dataset.sectionsChoice = 'collapsed';
+		await context.restoreHistory(saved);
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
 	});
 
 	it('follows late diagram layout, then stops on reader input and disposal', () => {

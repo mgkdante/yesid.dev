@@ -139,13 +139,14 @@ test('a fragment opens its owning content and lands the nested heading', async (
 	await expect(page).toHaveURL(/\/projects$/);
 	await page.goBack();
 	await expect(page).toHaveURL(/#fixture-fragment$/);
-	// Back remounts the page at its declared disclosure default. The injected heading is gone.
-	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+	// The expanded bulk choice applies on Back; the injected heading is gone.
+	await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+	await expect(page.locator('#fixture-fragment')).toHaveCount(0);
 	await page.goForward();
 	await expect(page).toHaveURL(/\/projects$/);
 });
 
-// Existing before c84296f4: Back moves 1440 to 1480 as native scroll anchoring follows Mermaid's late fallback-to-SVG height change.
+// Native history keeps the captured absolute offset when the expanded view returns.
 test('Back restores the project reading position after visiting the listing', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(PROJECT_PATH);
