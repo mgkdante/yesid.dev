@@ -52,7 +52,7 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 	'/': {
 		ogType: 'website',
 		noIndex: false,
-		fallbackTitle: { en: 'yesid. | Digital Infrastructure that Moves.' },
+		fallbackTitle: { en: 'Websites, Automation, Data & Software in Montréal | yesid.' },
 		composedTitleStrategy: 'verbatim',
 		jsonLdFactory: (sm, locale) => [
 			buildPersonNode(sm, locale),
