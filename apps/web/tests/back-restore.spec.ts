@@ -115,3 +115,24 @@ test.describe('navigation interrupted before the listing appears', () => {
 		await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(before, 0);
 	});
 });
+
+test('Back preserves departure offset while the outgoing diagram settles', async ({ page, context }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	const client = await context.newCDPSession(page);
+	await client.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+	try {
+		await page.goto('/projects/yesid-dev', { waitUntil: 'domcontentloaded' });
+		await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeEnabled();
+		await page.evaluate(() => document.fonts.ready);
+		await page.evaluate(() => scrollTo(0, 1400));
+		const before = await visitListing(page);
+		expect(before).toBeGreaterThan(0);
+		await page.goBack();
+		await expect(page).toHaveURL('/projects/yesid-dev');
+		await layoutReady(page);
+		await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(before, 0);
+	} finally {
+		await client.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+		await client.detach();
+	}
+});
