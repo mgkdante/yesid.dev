@@ -96,13 +96,15 @@
 
 			<div class="cta-row">
 				{#if metricValue}
-					<div class="metric-inline">
-						<span class="metric-value">{metricValue}</span>
-						{#if metricLabel}
-							<span class="metric-label">{metricLabel}</span>
-						{/if}
+					<div class="metric-group">
+						<div class="metric-inline">
+							<span class="metric-value">{metricValue}</span>
+							{#if metricLabel}
+								<span class="metric-label">{metricLabel}</span>
+							{/if}
+						</div>
+						{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 					</div>
-					{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 				{/if}
 
 				<!-- Desktop CTA — hidden on mobile -->
@@ -208,13 +210,22 @@
 	.deep-dive-cta.mobile-only { display: none; }
 	.deep-dive-cta.desktop-only { display: inline-block; }
 
+	.metric-group {
+		flex: 1 1 20rem;
+		min-width: 0;
+	}
+
 	.metric-inline {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: baseline;
 		gap: 0.75rem;
 	}
 
 	.metric-value {
+		flex: 0 0 auto;
+		max-width: 100%;
+		overflow-wrap: anywhere;
 		font-size: clamp(44px, 5vw, 60px);
 		font-weight: 900;
 		color: var(--accent-text);
@@ -222,6 +233,8 @@
 	}
 
 	.metric-label {
+		flex: 1 1 14rem;
+		min-width: 0;
 		font-family: var(--font-mono);
 		font-size: var(--text-small);
 		color: var(--accent-text);
