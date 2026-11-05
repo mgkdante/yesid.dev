@@ -204,6 +204,25 @@
 		grid-template-rows: 12.5rem auto;
 		flex: 1;
 	}
+
+	/* The card clips decorative effects, so keep the shared keyboard outline inside it. */
+	.services-card-link:focus-visible {
+		position: relative;
+		outline-offset: -4px;
+		border-radius: var(--radius-lg);
+	}
+
+	/* Paint above the positioned illustration, inheriting primary or forced CanvasText. */
+	.services-card-link:focus-visible::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		outline: inherit;
+		outline-offset: inherit;
+		border-radius: inherit;
+		pointer-events: none;
+	}
 	.services-card-item { min-width: 0; }
 
 	/* Equal-height cards are useful in columns, but create empty mobile rows. */

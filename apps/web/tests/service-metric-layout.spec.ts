@@ -77,6 +77,53 @@ for (const locale of ['en', 'fr', 'es']) {
 	}
 }
 
+for (const forcedColors of ['none', 'active'] as const) {
+	for (const index of [0, 3]) {
+		test(`home card ${index} keyboard outlines remain inside the clip, forced colors ${forcedColors}`, async ({ page }, testInfo) => {
+			await page.emulateMedia({ reducedMotion: 'reduce', forcedColors });
+			await installMetricProofFixture(page);
+			await navigateWithMetricFixture(page, '/');
+			const card = page.locator('.services-card').nth(index);
+			const link = card.getByTestId('services-card');
+			await link.scrollIntoViewIfNeeded();
+			await link.focus();
+			await page.keyboard.press('Shift+Tab');
+			await page.keyboard.press('Tab');
+			await expect(link).toBeFocused();
+			const ring = await link.evaluate((el, forcedColors) => {
+				const overlay = getComputedStyle(el, '::after');
+				const style = overlay.content !== 'none' ? overlay : getComputedStyle(el);
+				const width = parseFloat(style.outlineWidth);
+				const outset = width + parseFloat(style.outlineOffset);
+				const box = el.getBoundingClientRect();
+				const card = el.parentElement!;
+				const clip = card.getBoundingClientRect();
+				const probe = document.createElement('span');
+				probe.style.color = forcedColors === 'active' ? 'CanvasText' : 'var(--primary)';
+				el.append(probe);
+				const expectedColor = getComputedStyle(probe).color;
+				probe.remove();
+				return {
+					keyboardVisible: el.matches(':focus-visible'),
+					style: style.outlineStyle, width, color: style.outlineColor, expectedColor,
+					clippedEdges: [
+						box.left - outset < clip.left + card.clientLeft,
+						box.top - outset < clip.top + card.clientTop,
+						box.right + outset > clip.left + card.clientLeft + card.clientWidth,
+						box.bottom + outset > clip.top + card.clientTop + card.clientHeight,
+					].filter(Boolean).length,
+				};
+			}, forcedColors);
+			await testInfo.attach(`card-${index}-focus-${forcedColors}`, { body: await card.screenshot(), contentType: 'image/png' });
+			expect(ring.keyboardVisible).toBe(true);
+			expect(ring.style).toBe('solid');
+			expect(ring.width).toBeGreaterThanOrEqual(2);
+			expect(ring.color).toBe(ring.expectedColor);
+			expect(ring.clippedEdges, `card ${index} has its full keyboard outline inside the overflow clip`).toBe(0);
+		});
+	}
+}
+
 async function expectProofLinks(page: import('@playwright/test').Page) {
 	for (const proof of await page.getByTestId('metric-proof').filter({ visible: true }).all()) {
 		const link = proof.getByRole('link');
