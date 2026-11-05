@@ -59,6 +59,7 @@ test.describe('desktop table of contents', () => {
 			await page.setViewportSize({ width: 1366, height: 600 });
 			await page.emulateMedia({ reducedMotion: 'reduce' });
 			await page.goto(PROJECT_PATH);
+			await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeEnabled();
 			const target = page.locator('[data-section-index]').nth(1);
 			const heading = target.locator('.section-header').first();
 			await expect(heading).toBeVisible();
@@ -98,6 +99,7 @@ test('a fragment opens its owning content and lands the nested heading', async (
 	await page.setViewportSize({ width: 1366, height: 600 });
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(PROJECT_PATH);
+	await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeEnabled();
 	const target = page.locator('[data-section-index]').nth(1);
 	const trigger = target.locator('.section-header').first();
 	await expect(async () => {
@@ -150,6 +152,7 @@ test('a fragment opens its owning content and lands the nested heading', async (
 test('Back restores the project reading position after visiting the listing', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(PROJECT_PATH);
+	await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeEnabled();
 	await expect(page.locator('.section-header').first()).toHaveAttribute('aria-expanded', 'true');
 	await page.evaluate(() => document.fonts.ready);
 	await page.evaluate(() => {
