@@ -4,7 +4,7 @@ import { flushSync } from 'svelte';
 import { localeCopy } from '#lib/locales/index.ts';
 import Fixture from './_sections-fixture.svelte';
 
-afterEach(cleanup);
+afterEach(() => { cleanup(); localStorage.clear(); delete document.documentElement.dataset.sectionsChoice; });
 
 describe('SectionsToggle', () => {
 	it.each(['en', 'fr', 'es'] as const)('uses local %s copy and collapses mixed state', async (locale) => {
@@ -32,6 +32,6 @@ describe('SectionsToggle', () => {
 	it.each([0, 1])('hides with %i content sections', (count) => {
 		render(Fixture, { props: { count } });
 		flushSync();
-		expect(screen.queryByTestId('sections-toggle')).not.toBeInTheDocument();
+		expect(screen.getByTestId('sections-controls')).toHaveAttribute('data-sections-hidden');
 	});
 });

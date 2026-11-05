@@ -47,10 +47,13 @@ test('project language switch keeps progress inside the long first section', asy
 });
 
 test('project language switch does not open a closed target section', async ({ page }) => {
+	await page.addInitScript(() => localStorage.setItem('sections-choice', 'collapsed'));
 	await page.goto('/projects/transit-data-pipeline', { waitUntil: 'domcontentloaded' });
 	const closed = page.locator('.sections-column [data-section-index="1"]');
 	const trigger = closed.locator('[data-section-trigger]');
+	if (await trigger.getAttribute('aria-expanded') === 'true') await trigger.click();
 	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+	await expect.poll(() => closed.locator('[data-slot="collapsible-content"]').evaluate(el => el.getBoundingClientRect().height)).toBe(0);
 	await readMiddle(page, closed);
 	if (page.viewportSize()!.width >= 1024) {
 		await expect(page.locator('nav.toc-nav > .toc-item').nth(1)).toHaveAttribute('aria-current', 'location');
