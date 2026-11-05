@@ -116,8 +116,26 @@ test.describe('navigation interrupted before the listing appears', () => {
 	});
 });
 
-test('Back preserves departure offset while the outgoing diagram settles', async ({ page, context }) => {
+test('Back preserves departure offset while the outgoing diagram settles', async ({ page, context }, testInfo) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.addInitScript(() => {
+		const trace: unknown[] = [];
+		Object.assign(window, { __c10HistoryTrace: trace });
+		const record = (phase: string, target?: number) => {
+			if (trace.length < 100) trace.push({ phase, target, t: performance.now(), y: scrollY,
+				anchor: document.documentElement?.style.overflowAnchor,
+				pending: document.querySelectorAll('.mermaid-diagram[data-rendering="true"]').length });
+		};
+		document.addEventListener('click', () => record('activation'), true);
+		addEventListener('scroll', () => record('scroll'));
+		addEventListener('popstate', () => record('popstate'));
+		const original = window.scrollTo.bind(window);
+		window.scrollTo = function (optionsOrX?: ScrollToOptions | number, y?: number) {
+			record('scrollTo', typeof optionsOrX === 'number' ? y : optionsOrX?.top);
+			if (typeof optionsOrX === 'number') original(optionsOrX, y ?? 0);
+			else original(optionsOrX);
+		};
+	});
 	const client = await context.newCDPSession(page);
 	await client.send('Emulation.setCPUThrottlingRate', { rate: 6 });
 	try {
@@ -132,6 +150,10 @@ test('Back preserves departure offset while the outgoing diagram settles', async
 		await layoutReady(page);
 		await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(before, 0);
 	} finally {
+		await testInfo.attach('history-capture-events.json', {
+			body: JSON.stringify(await page.evaluate(() => Reflect.get(window, '__c10HistoryTrace')), null, 2),
+			contentType: 'application/json',
+		});
 		await client.send('Emulation.setCPUThrottlingRate', { rate: 1 });
 		await client.detach();
 	}

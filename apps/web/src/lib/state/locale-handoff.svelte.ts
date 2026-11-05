@@ -1,7 +1,7 @@
 /* Register locale handoff during layout initialization; navigation hooks cannot register inside onMount. */
 import { browser } from '$app/env';
 import { beforeNavigate, afterNavigate } from '$app/navigation';
-import { tick } from 'svelte';
+import { onMount, tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
 import {
@@ -13,6 +13,11 @@ import {
 } from './handoff-blob';
 
 const STORAGE_PREFIX = 'yesid:lstate:';
+const activationOffsets = new WeakMap<Event, number>();
+let navigationCapture: { y: number } | undefined;
+
+/** Preserve activation before Kit's repaint and asynchronous intent resolution. */
+export function getNavigationCaptureY(): number | undefined { return navigationCapture?.y; }
 
 /** A page registers ONE scroll strategy; the orchestrator delegates capture/restore. */
 export interface ScrollContext {
@@ -176,8 +181,22 @@ function snapshot(scope: string, nowMs: number): void {
 // --- attach: wire the nav hooks (call at +layout INIT) ---
 export function attachLocaleHandoff(getStableIdentity: () => string | undefined = () => undefined): void {
 	if (!browser) return;
+	onMount(() => {
+		const capture = (event: MouseEvent) => activationOffsets.set(event, window.scrollY);
+		window.addEventListener('click', capture, true);
+		return () => window.removeEventListener('click', capture, true);
+	});
 
 	beforeNavigate((nav) => {
+		navigationCapture = undefined;
+		if (!nav.shallow && !nav.willUnload) {
+			const event = 'event' in nav ? nav.event : undefined;
+			const y = event instanceof Event ? activationOffsets.get(event) : undefined;
+			const captured = { y: y ?? window.scrollY };
+			navigationCapture = captured;
+			const clear = () => { if (navigationCapture === captured) navigationCapture = undefined; };
+			void nav.complete.then(clear, clear);
+		}
 		if (nav.shallow && nav.type === 'goto') return;
 
 		if (!nav.from || !nav.to) return;

@@ -1,4 +1,4 @@
-import { lenisAwareScrollTo, registerScrollContext, type ScrollContext } from './locale-handoff.svelte';
+import { getNavigationCaptureY, lenisAwareScrollTo, registerScrollContext, type ScrollContext } from './locale-handoff.svelte';
 import type { SectionJump } from '@yesid/ui/brand';
 import { snapshot } from '$app/navigation';
 import { onMount } from 'svelte';
@@ -35,19 +35,20 @@ export function detailReadingPosition(selector: string, navigation?: Pick<Sectio
 	const context: ScrollContext & { dispose(): void } = {
 		dispose: () => { request++; dispose(); },
 		capture() {
+			const y = getNavigationCaptureY() ?? window.scrollY;
 			const elements = sections();
 			const line = window.innerHeight * READING_LINE;
 			const index = elements.findIndex((el) => {
 				const box = el.getBoundingClientRect();
 				return box.top <= line && box.bottom > line;
 			});
-			if (index < 0) return { kind: 'offset', y: window.scrollY };
+			if (index < 0) return { kind: 'offset', y };
 			const box = elements[index].getBoundingClientRect();
 			const body = elements[index].querySelector<HTMLElement>('[data-slot="collapsible-content"]');
 			const bodyBox = body?.getBoundingClientRect();
 			return {
 				kind: 'detail-section', index, count: elements.length,
-				progress: (line - box.top) / box.height, y: window.scrollY,
+				progress: (line - box.top) / box.height, y,
 				insideBody: !!bodyBox && !body?.hasAttribute('inert') && bodyBox.top <= line && bodyBox.bottom > line,
 				bulkExpanded: document.documentElement.dataset.sectionsChoice === 'expanded',
 			} satisfies DetailPosition;
@@ -103,9 +104,13 @@ export function detailReadingPosition(selector: string, navigation?: Pick<Sectio
 		restoreHistory(snapshot) {
 			const saved = snapshot as Partial<DetailPosition> | null;
 			if (!saved?.insideBody) return;
-			// An expanded view already has its target open. Native history owns its
-			// absolute offset, including the existing late-diagram anchoring policy.
-			if (saved.bulkExpanded === true && document.documentElement.dataset.sectionsChoice === 'expanded') return;
+			// The target is open in an expanded view. Restore the activation offset,
+			// which can precede the later offset captured by native history.
+			if (saved.bulkExpanded === true && document.documentElement.dataset.sectionsChoice === 'expanded') {
+				context.dispose();
+				if (typeof saved.y === 'number' && Number.isFinite(saved.y)) lenisAwareScrollTo(Math.max(0, saved.y));
+				return;
+			}
 			return context.restore(snapshot);
 		},
 	};

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { detailReadingPosition } from './detail-reading-position';
 import { lenisAwareScrollTo } from './locale-handoff.svelte';
 
-vi.mock('./locale-handoff.svelte', () => ({ lenisAwareScrollTo: vi.fn() }));
+vi.mock('./locale-handoff.svelte', () => ({ lenisAwareScrollTo: vi.fn(), getNavigationCaptureY: () => undefined }));
 
 function section(top: number, height: number): HTMLElement {
 	const el = document.createElement('section');
@@ -70,7 +70,7 @@ describe('detail reading position', () => {
 		expect(lenisAwareScrollTo).toHaveBeenCalledWith(800);
 	});
 
-	it('leaves expanded history offsets to native restoration while locale handoff maps progress', async () => {
+	it('restores captured expanded offsets while locale handoff maps progress', async () => {
 		document.documentElement.dataset.sectionsChoice = 'expanded';
 		const original = section(400, 1200);
 		original.innerHTML = '<div data-slot="collapsible-content">Reading body</div>';
@@ -79,13 +79,17 @@ describe('detail reading position', () => {
 		document.body.replaceChildren();
 		section(600, 1800);
 		await context.restoreHistory(saved);
-		expect(lenisAwareScrollTo).not.toHaveBeenCalled();
+		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(800);
 		await context.restore(saved);
 		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
 		vi.mocked(lenisAwareScrollTo).mockClear();
 		document.documentElement.dataset.sectionsChoice = 'collapsed';
 		await context.restoreHistory(saved);
 		expect(lenisAwareScrollTo).toHaveBeenLastCalledWith(1300);
+		vi.mocked(lenisAwareScrollTo).mockClear();
+		document.documentElement.dataset.sectionsChoice = 'expanded';
+		await context.restoreHistory({ insideBody: true, bulkExpanded: true, y: NaN });
+		expect(lenisAwareScrollTo).not.toHaveBeenCalled();
 	});
 
 	it('follows late diagram layout, then stops on reader input and disposal', () => {
