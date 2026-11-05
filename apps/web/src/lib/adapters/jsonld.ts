@@ -25,7 +25,7 @@ import type {
 } from '#lib/schemas/jsonld.ts';
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '#lib/types.ts';
 import { resolveLocale, DEFAULT_LOCALE } from '#lib/utils/locale.ts';
-import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
+import { SITE_HOST, canonicalFor, SERVICE_AREAS, GBP_PROFILE_URL, YOUTUBE_CHANNEL_URL, PUBLISHED_LOCALES } from '#lib/utils/seo-defaults.ts';
 import { extractText } from '@repo/shared';
 import {
 	buildBreadcrumbListJsonLd,
@@ -64,6 +64,7 @@ export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE)
 	if (meta.links.github) sameAs.push(meta.links.github);
 	if (meta.links.linkedin) sameAs.push(meta.links.linkedin);
 	if (meta.links.upwork) sameAs.push(meta.links.upwork);
+	sameAs.push(YOUTUBE_CHANNEL_URL);
 
 	const built = {
 		'@type': 'Person' as const,
@@ -115,7 +116,7 @@ export function buildProfessionalServiceNode(
 	if (meta.links.github) sameAs.push(meta.links.github);
 	if (meta.links.linkedin) sameAs.push(meta.links.linkedin);
 	if (meta.links.upwork) sameAs.push(meta.links.upwork);
-	if (GBP_PROFILE_URL) sameAs.push(GBP_PROFILE_URL);
+	sameAs.push(GBP_PROFILE_URL, YOUTUBE_CHANNEL_URL);
 
 	const built = {
 		'@type': 'ProfessionalService' as const,

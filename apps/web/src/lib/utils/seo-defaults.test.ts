@@ -28,8 +28,8 @@ describe('seo-defaults constants', () => {
 		expect(SITE_NAME).toBe('yesid.');
 	});
 
-	it('advertises Montréal as the only public service area', () => {
-		expect(SERVICE_AREAS).toEqual(['Montréal']);
+	it('advertises the Google Business Profile service areas', () => {
+		expect(SERVICE_AREAS).toEqual(['Montréal', 'Laval', 'Longueuil', 'Gatineau', 'Ottawa']);
 	});
 
 	it('PUBLISHED_LOCALES is a non-empty subset of SUPPORTED_LOCALES and includes en', () => {
