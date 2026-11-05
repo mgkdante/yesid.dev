@@ -25,8 +25,8 @@ default null, and have no uniqueness, index or relation. No existing field moves
 Labels use en-US, fr-CA and es-ES. Source URLs are validated at export: HTTPS,
 absolute, and no embedded credentials. A missing citation is valid. A supplied
 invalid URL or calendar date stops export. The date is the measurement's date,
-not the record's edit date. UI dates use locale formatting with UTC calendar-day
-semantics; llms-full.txt carries the supplied ISO date and source URL.
+not the record's edit date. Dates are calendar dates. Metric source and date fields
+are not displayed on the site or included in llms-full.txt.
 
 ## Editor validation, verified against Directus 12.5.1
 
@@ -116,9 +116,9 @@ applying: a newer equivalent grant must be reconciled, never duplicated or overw
    an uncertain outcome before retrying. Never POST the same grant twice.
 9. Run cms.yml `diff` again. It must be empty. A live diff or permission mismatch
    remains an orchestrator blocker, not evidence supplied by a fixture build.
-10. Owner fills only real proof in CMS, then uses Publish site. Verify that Publish,
-   the corresponding live pages and llms-full.txt all show that exact source/date.
-   The worker's synthetic layout examples are never content for this step.
+10. Owner stores only real source/date metadata in CMS. Verify it through CMS
+   readback and export validation. Verify metric values and labels on the site
+   and in llms-full.txt, without source/date output. Synthetic examples are not content.
 
 ```json
 {

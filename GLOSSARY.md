@@ -28,7 +28,7 @@ Clearly labelled generated example numbers, used before a usable live reading or
 _Avoid_: cached real data, zero activity
 
 **Impact proof**:
-An optional public source and/or as-of date attached to an impact metric. The date says when the number was true; an uncited metric is allowed.
+Optional CMS source and/or as-of date metadata attached to an impact metric. Either field may be blank; the date says when the number was true, and the site and llms-full.txt do not display these fields.
 _Avoid_: verified result, record edit date
 
 **Publish site**:
