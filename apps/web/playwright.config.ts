@@ -31,6 +31,8 @@ export default defineConfig({
 	expect: { timeout: process.env.CI ? 10_000 : 5_000 },
 	use: {
 		baseURL,
+		// Content-interaction specs use a returning expanded visitor; fresh-storage specs override this.
+		storageState: { cookies: [], origins: [{ origin: new URL(baseURL).origin, localStorage: [{ name: 'sections-choice', value: 'expanded' }] }] },
 		// Vercel previews sit behind Deployment Protection; the bypass header gets the suite past it.
 		...(externalBaseURL && process.env.VERCEL_AUTOMATION_BYPASS_SECRET
 			? {

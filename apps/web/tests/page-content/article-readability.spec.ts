@@ -18,6 +18,10 @@ for (const kind of ["blog", "projects"] as const) {
     );
     // The page action appears after content sections register during hydration.
     await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first().locator('span')).toHaveCount(1);
+    const bulk = page.getByTestId('sections-toggle').filter({ visible: true }).first();
+    await expect(bulk).toBeEnabled();
+    if (await bulk.getAttribute('data-collapsed') === 'true') await bulk.click();
+    await expect(bulk).toHaveAttribute('data-collapsed', 'false');
     const body = page
       .locator(
         kind === "blog"
