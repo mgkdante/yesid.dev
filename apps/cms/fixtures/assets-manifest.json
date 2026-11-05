@@ -709,6 +709,34 @@
 			"title": "Café Arona: cafe-home-mobile (2026-10-30)",
 			"description": "French development storefront in a phone-width browser viewport. Browser capture, 30 October 2026. Work in progress.",
 			"sha256": "0122a187aaaa9249a061fe6fed635d536b6e039f395790e15ad625b8bab3aafd"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261105/cafe-arona-live-home-desktop.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-arona-live-home-desktop (2026-11-04)",
+			"description": "French homepage at cafearona.com, desktop view. Browser capture, 4 November 2026.",
+			"sha256": "f6604e5fa674764cac4f0cc27629bf66e68133244e087ea6d724f057554221b3"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261105/cafe-arona-live-home-mobile.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-arona-live-home-mobile (2026-11-04)",
+			"description": "French homepage at cafearona.com in a phone-width browser viewport. Browser capture, 4 November 2026.",
+			"sha256": "9c483207c99b75b337d82f3c2f2508951a0943265589f9deebb51afd285d2160"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261105/cafe-arona-live-product-desktop.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-arona-live-product-desktop (2026-11-05)",
+			"description": "Feu Doux product page in French with its Coming soon stamp and no purchase controls. Browser capture, 5 November 2026.",
+			"sha256": "e2179e0c317c9cf8349207ff47df640e3913b735d534c8b9b9ce7babd505c35d"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261105/cafe-arona-live-team-desktop.png",
+			"folder": "projects",
+			"title": "Café Arona: cafe-arona-live-team-desktop (2026-11-05)",
+			"description": "Team page in French with the group photo at the top. Browser capture, 5 November 2026.",
+			"sha256": "ee9239bd109939431fe99674e2fa5dbfe3a03f26cab35a88ec2bd39ddac3919a"
 		}
 	]
 }
