@@ -5,14 +5,14 @@ import { canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { sitePages } from '#lib/content/site-pages.ts';
 
 describe('llms.txt — Spanish section (L2 Phase 4)', () => {
-	it('includes supplied proof for project and service claims, and no empty labels', () => {
+	it('keeps service and project metric values but omits source and date proof', () => {
 		const metric = { value: { en: '30 s' }, label: { en: 'synthetic test claim' }, sourceUrl: 'https://example.org/evidence', asOf: '2026-11-04' };
-		const body = llmsFullTxt({ locales: ['en'], projects: [{ ...projects[0], impactMetrics: [metric] }], services: [{ ...services[0], impactMetric: metric }] });
-		expect(body.match(/source: https:\/\/example.org\/evidence; as of: 2026-11-04/g)).toHaveLength(2);
-		const uncited = { value: metric.value, label: metric.label };
-		const empty = llmsFullTxt({ locales: ['en'], projects: [{ ...projects[0], impactMetrics: [uncited] }], services: [{ ...services[0], impactMetric: uncited }] });
-		expect(empty).not.toContain('; source:');
-		expect(empty).not.toContain('; as of:');
+		const body = llmsFullTxt({ locales: ['en', 'fr', 'es'], projects: [{ ...projects[0], impactMetrics: [metric] }], services: [{ ...services[0], impactMetric: metric }] });
+		expect(body).toContain('30 s (synthetic test claim)');
+		expect(body).not.toContain('https://example.org/evidence');
+		expect(body).not.toContain('2026-11-04');
+		expect(body).not.toContain('; source:');
+		expect(body).not.toContain('; as of:');
 	});
 	it.each([llmsTxt, llmsFullTxt])('groups project rows by locale, preserving source project order within each locale', (render) => {
 		const rows = projects.slice(0, 2).map((project) => ({ ...project, status: 'public' as const }));

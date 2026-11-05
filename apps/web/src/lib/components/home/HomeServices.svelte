@@ -14,7 +14,6 @@
 	import { morphHover } from '#lib/motion/actions/morphHover.js';
 	import { gsap, loadDrawSVG } from '@yesid/motion/utils/gsap';
 	import { SectionHeading } from '@yesid/ui/brand';
-	import MetricProof from '#lib/components/shared/MetricProof.svelte';
 	import type { Service, ServicesGridContent } from '#lib/types.ts';
 
 	let {
@@ -164,7 +163,6 @@
 								<span class="services-metric-value">{metricValue}</span>
 								<span class="services-metric-label">{metricLabel}</span>
 							</div>
-							{#if service.impactMetric}<MetricProof metric={service.impactMetric} {locale} />{/if}
 						</div>
 					{/if}
 				</div>
