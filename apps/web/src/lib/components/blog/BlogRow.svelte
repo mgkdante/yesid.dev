@@ -1,12 +1,11 @@
 <!--
   Single blog post row in the listing page.
-  Metro timeline layout: station badge + vertical line | content card.
 -->
 <script lang="ts">
 	import type { BlogPost } from '#lib/types.ts';
 	import { boop, cursorGlow, magnetic } from '@yesid/motion/actions';
+	import { pointerHover } from '#lib/motion/actions/pointerHover.ts';
 	import { Badge } from '@yesid/ui/badge';
-	import { MetroStation } from '@yesid/ui/brand';
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 	import { Card } from '@yesid/ui/card';
 	import { cn } from '@yesid/ui/cn';
@@ -24,8 +23,6 @@
 		svgContent?: string;
 		/** Accent color for tags and highlights */
 		accentColor?: string;
-		/** Position index in the listing (1-based station number) */
-		index?: number;
 		class?: string;
 		[key: string]: unknown;
 	}
@@ -34,15 +31,12 @@
 		post,
 		svgContent = '',
 		accentColor = 'var(--primary)',
-		index = 0,
 		class: className = '',
 		...rest
 	}: BlogRowProps = $props();
 
 	let cardHovered = $state(false);
 
-	// Station number: 1-based, zero-padded to 2 digits
-	let stationNumber = $derived(String(index + 1).padStart(2, '0'));
 	let languageName = $derived(resolveLocale(siteLabels.ui.languageNames[post.lang], locale) || post.lang);
 	let languageAria = $derived(`${resolveLocale(siteLabels.blogChrome.listing.filters.language, locale)}: ${languageName}`);
 
@@ -57,17 +51,10 @@
 	data-testid="blog-row"
 	data-batch="blog-item"
 	use:boop={{ scale: 1.015, timing: 300 }}
-	onmouseenter={() => (cardHovered = true)}
-	onmouseleave={() => (cardHovered = false)}
+	use:pointerHover={(hovering) => (cardHovered = hovering)}
 	{...rest}
 >
-	<!-- Metro timeline wrapper: badge + line on left, content card on right -->
-	<div class="flex gap-3">
-		<!-- Metro line column: station badge + vertical connector -->
-		<MetroStation index={index + 1} showLine pulseDelay={index * 0.4} />
-
-		<!-- Content card -->
-		<div class="min-w-0 flex-1" use:cursorGlow>
+	<div use:cursorGlow>
 		<Card class="blog-row p-5 md:p-6" style="--blog-row-accent: {accentColor};">
 			<!-- SVG icon -->
 			{#if svgContent}
@@ -116,7 +103,6 @@
 				</div>
 			</div>
 		</Card>
-		</div>
 	</div>
 </a>
 

@@ -11,7 +11,6 @@
 	import { blueprintScrub } from '@yesid/motion/utils/blueprintScrub';
 	import ProjectCard, { alignProjectCards } from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
-	import { MetroStation } from '@yesid/ui/brand';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { FilterSummary, SearchInput } from '@yesid/ui/brand';
 	import { ListingFrame } from '@yesid/ui/layout';
@@ -196,20 +195,14 @@
 		{:else}
 			<div class="project-grid" use:alignProjectCards>
 				{#each filteredProjects as project, i (project.slug)}
-					<div class="flex gap-3" data-batch="project-item">
-						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
-						<div class="min-w-0 flex-1">
-							<!-- First card is the listing's LCP candidate: eager + high priority.
-							     The rest stay lazy. -->
-
-							<ProjectCard
-								project={project}
-								services={services}
-								serviceSvgContents={serviceSvgContents}
-								eager={i === 0}
-							/>
-						</div>
-					</div>
+					<!-- First card is the listing's LCP candidate: eager + high priority.
+					     The rest stay lazy. -->
+					<ProjectCard
+						project={project}
+						services={services}
+						serviceSvgContents={serviceSvgContents}
+						eager={i === 0}
+					/>
 				{/each}
 			</div>
 		{/if}
@@ -220,13 +213,13 @@
 	/* 2-column grid on desktop, single column on mobile */
 	.project-grid {
 		display: grid;
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 1rem;
 	}
 
 	@media (min-width: 1280px) {
 		.project-grid {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 

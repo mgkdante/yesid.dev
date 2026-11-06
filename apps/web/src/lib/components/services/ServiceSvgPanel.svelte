@@ -1,7 +1,8 @@
-<!-- Decorative hover/tap morph surface; filter synthetic touch hover so taps retain their toggle state. -->
+<!-- Decorative hover/tap morph surface; hover ignores touch so taps retain their toggle state. -->
 <script lang="ts">
 	import { cn } from '@yesid/ui/cn';
 	import { CornerMarks } from '@yesid/ui/brand';
+	import { pointerHover } from '#lib/motion/actions/pointerHover.ts';
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 
 	export interface ServiceSvgPanelProps {
@@ -33,12 +34,7 @@
 			className
 		)}
 		data-testid="service-svg-panel"
-		onpointerenter={(e) => {
-			if (e.pointerType !== 'touch') panelMorphed = true;
-		}}
-		onpointerleave={(e) => {
-			if (e.pointerType !== 'touch') panelMorphed = false;
-		}}
+		use:pointerHover={(hovering) => (panelMorphed = hovering)}
 		onclick={() => (panelMorphed = !panelMorphed)}
 		aria-hidden="true"
 		tabindex="-1"

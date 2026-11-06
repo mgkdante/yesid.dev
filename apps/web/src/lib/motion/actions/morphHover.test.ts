@@ -1,16 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-// Mock reducedMotion so we can toggle its return value per test.
-vi.mock('@yesid/motion/stores/reducedMotion', async (importOriginal) => {
-	const mod = (await importOriginal()) as typeof import('@yesid/motion/stores/reducedMotion');
-	return {
-		...mod,
-		isPrefersReducedMotion: vi.fn(() => false),
-	};
-});
+import { gsap } from '@yesid/motion/utils/gsap';
 
 // Mock the lazy loader so the test doesn't try to dynamic-import gsap/MorphSVGPlugin.
-// Real plugin behaviour isn't tested here — that's an integration concern.
+// Real plugin behaviour isn't tested here; tests/svg-morph.spec.ts covers it in a browser.
 vi.mock('@yesid/motion/utils/gsap', async (importOriginal) => {
 	const mod = (await importOriginal()) as typeof import('@yesid/motion/utils/gsap');
 	return {
@@ -32,17 +24,34 @@ vi.mock('#lib/utils/shapes.ts', () => ({
 }));
 
 import { morphHover } from './morphHover.js';
-import * as reducedMotionMod from '@yesid/motion/stores/reducedMotion';
+import { loadMorphSVG } from '@yesid/motion/utils/gsap';
+import { pickRandomShape } from '#lib/utils/shapes.ts';
 
-const isReducedMock = reducedMotionMod.isPrefersReducedMotion as ReturnType<typeof vi.fn>;
+const ORIGINAL_D = 'M0 0 L10 10';
+const SHAPE_D = 'M24 8 L40 38 L8 38 Z';
+
+const pointer = (type: string, pointerType = 'mouse') => new PointerEvent(type, { pointerType });
+const tweenCalls = () => vi.mocked(gsap.to).mock.calls;
+const flush = () => new Promise((resolve) => setTimeout(resolve));
+
+/** Resolve one per-path morph target from the most recent tween. */
+function lastTarget(): string {
+	const vars = tweenCalls().at(-1)![1] as unknown as { morphSVG: (index: number) => string };
+	return vars.morphSVG(0);
+}
+
+/** Finish the most recent tween, the way GSAP does after the whole stagger. */
+function finishLastTween() {
+	(tweenCalls().at(-1)![1] as { onComplete: () => void }).onComplete();
+}
 
 describe('motion/actions/morphHover', () => {
 	let node: HTMLElement;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		isReducedMock.mockReturnValue(false);
 		node = document.createElement('div');
+		node.innerHTML = `<svg><path d="${ORIGINAL_D}"></path></svg>`;
 		document.body.append(node);
 	});
 
@@ -50,58 +59,215 @@ describe('motion/actions/morphHover', () => {
 		document.body.innerHTML = '';
 	});
 
-	it('returns an action object with destroy', () => {
-		const result = morphHover(node, {});
-		expect(typeof result.destroy).toBe('function');
-		result.destroy();
+	it('morphs to a shape on mouse hover', async () => {
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+
+		expect(tweenCalls()).toHaveLength(1);
+		expect(lastTarget()).toBe(SHAPE_D);
+		action.destroy();
 	});
 
-	it('reduced-motion: STAYS ACTIVE (slice-23 operator policy)', () => {
-		// User-triggered SVG path morphing stays active under reduced motion.
-		isReducedMock.mockReturnValue(true);
-		const addSpy = vi.spyOn(node, 'addEventListener');
-		const result = morphHover(node, {});
-		expect(addSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function));
-		expect(addSpy).toHaveBeenCalledWith('mouseleave', expect.any(Function));
-		expect(addSpy).toHaveBeenCalledWith('click', expect.any(Function));
-		expect(() => result.destroy()).not.toThrow();
+	it('finishes the running morph before morphing back when the pointer leaves', async () => {
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		node.dispatchEvent(pointer('pointerleave'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
+
+		finishLastTween();
+		await flush();
+		expect(tweenCalls()).toHaveLength(2);
+		expect(lastTarget()).toBe(ORIGINAL_D);
+		action.destroy();
 	});
 
-	it('attaches mouseenter, mouseleave, and click listeners by default', () => {
-		const addSpy = vi.spyOn(node, 'addEventListener');
-		const result = morphHover(node, {});
-		const events = addSpy.mock.calls.map((c) => c[0]);
-		expect(events).toContain('mouseenter');
-		expect(events).toContain('mouseleave');
-		expect(events).toContain('click');
-		result.destroy();
+	it('never kills a running tween to start another', async () => {
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		node.dispatchEvent(pointer('pointerleave'));
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+
+		expect(gsap.killTweensOf).not.toHaveBeenCalled();
+		expect(vi.mocked(gsap.to).mock.results[0]!.value.kill).not.toHaveBeenCalled();
+		action.destroy();
 	});
 
-	it('destroy removes the listeners it attached', () => {
-		const removeSpy = vi.spyOn(node, 'removeEventListener');
-		const result = morphHover(node, {});
-		result.destroy();
-		const events = removeSpy.mock.calls.map((c) => c[0]);
-		expect(events).toContain('mouseenter');
-		expect(events).toContain('mouseleave');
-		expect(events).toContain('click');
+	it('holds a hover while disabled, then morphs once enabled if the pointer stayed', async () => {
+		const action = morphHover(node, { enabled: false });
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(0);
+
+		action.update({ enabled: true });
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
+		expect(lastTarget()).toBe(SHAPE_D);
+		action.destroy();
 	});
 
-	it('update() accepts new params without throwing', () => {
-		const result = morphHover(node, {});
-		expect(result.update).toBeDefined();
-		if (result.update) {
-			expect(() => result.update({ enabled: false })).not.toThrow();
-			expect(() => result.update({ enabled: true, lastShapeIdx: 1 })).not.toThrow();
-		}
-		result.destroy();
+	it('skips the morph when the pointer left before the entrance finished', async () => {
+		const action = morphHover(node, { enabled: false });
+
+		node.dispatchEvent(pointer('pointerenter'));
+		node.dispatchEvent(pointer('pointerleave'));
+		action.update({ enabled: true });
+		await flush();
+
+		expect(tweenCalls()).toHaveLength(0);
+		action.destroy();
 	});
 
-	it('enabled: false prevents morph on mouseenter', () => {
-		const result = morphHover(node, { enabled: false });
-		// Fire mouseenter — should be a no-op (enabled: false guard fires first)
-		node.dispatchEvent(new MouseEvent('mouseenter'));
-		expect(typeof result.destroy).toBe('function');
-		result.destroy();
+	it('follows hover owned by a parent surface', async () => {
+		const action = morphHover(node, { hovered: true });
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
+
+		finishLastTween();
+		action.update({ hovered: false });
+		await flush();
+		expect(tweenCalls()).toHaveLength(2);
+		expect(lastTarget()).toBe(ORIGINAL_D);
+		action.destroy();
+	});
+
+	it('stays morphed while the parent is hovered even after the pointer leaves the icon', async () => {
+		const action = morphHover(node, { hovered: true });
+		await flush();
+		finishLastTween();
+
+		node.dispatchEvent(pointer('pointerenter'));
+		node.dispatchEvent(pointer('pointerleave'));
+		await flush();
+
+		expect(tweenCalls()).toHaveLength(1);
+		action.destroy();
+	});
+
+	it('toggles on tap without touch hover double-driving it', async () => {
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter', 'touch'));
+		node.dispatchEvent(new MouseEvent('click'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
+		expect(lastTarget()).toBe(SHAPE_D);
+
+		finishLastTween();
+		node.dispatchEvent(new MouseEvent('click'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(2);
+		expect(lastTarget()).toBe(ORIGINAL_D);
+		action.destroy();
+	});
+
+	it('leaves the tap default alone so icons inside links still navigate', () => {
+		const action = morphHover(node, {});
+		const click = new MouseEvent('click', { cancelable: true, bubbles: true });
+
+		node.dispatchEvent(click);
+
+		expect(click.defaultPrevented).toBe(false);
+		action.destroy();
+	});
+
+	it('disableClickToggle ignores taps', async () => {
+		const action = morphHover(node, { disableClickToggle: true });
+
+		node.dispatchEvent(new MouseEvent('click'));
+		await flush();
+
+		expect(tweenCalls()).toHaveLength(0);
+		action.destroy();
+	});
+
+	it('keeps a tapped morph when an unrelated update arrives', async () => {
+		const action = morphHover(node, { enabled: true });
+
+		node.dispatchEvent(new MouseEvent('click'));
+		await flush();
+		finishLastTween();
+		action.update({ enabled: true });
+		await flush();
+
+		expect(tweenCalls()).toHaveLength(1);
+		action.destroy();
+	});
+
+	it('finds an SVG injected after mount', async () => {
+		node.innerHTML = '';
+		const action = morphHover(node, {});
+		node.innerHTML = `<svg><path d="${ORIGINAL_D}"></path></svg>`;
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+
+		expect(tweenCalls()).toHaveLength(1);
+		action.destroy();
+	});
+
+	it('recovers when the morph plugin fails to load', async () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		vi.mocked(loadMorphSVG).mockRejectedValueOnce(new Error('offline'));
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		expect(warn).toHaveBeenCalled();
+		expect(tweenCalls()).toHaveLength(0);
+
+		node.dispatchEvent(pointer('pointerleave'));
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
+		expect(lastTarget()).toBe(SHAPE_D);
+
+		warn.mockRestore();
+		action.destroy();
+	});
+
+	it('stays responsive when building a morph throws', async () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		vi.mocked(pickRandomShape).mockImplementationOnce(() => {
+			throw new Error('bad shape');
+		});
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		expect(warn).toHaveBeenCalled();
+		expect(tweenCalls()).toHaveLength(0);
+
+		node.dispatchEvent(pointer('pointerleave'));
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
+		expect(lastTarget()).toBe(SHAPE_D);
+
+		warn.mockRestore();
+		action.destroy();
+	});
+
+	it('destroy kills the running tween and stops responding', async () => {
+		const action = morphHover(node, {});
+
+		node.dispatchEvent(pointer('pointerenter'));
+		await flush();
+		const tween = vi.mocked(gsap.to).mock.results[0]!.value;
+
+		action.destroy();
+		expect(tween.kill).toHaveBeenCalled();
+
+		node.dispatchEvent(pointer('pointerleave'));
+		await flush();
+		expect(tweenCalls()).toHaveLength(1);
 	});
 });

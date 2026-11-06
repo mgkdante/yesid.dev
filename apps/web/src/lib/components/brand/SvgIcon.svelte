@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { BlogAnimation } from '#lib/types.ts';
-	import { getMorphShapes, pickRandomShape } from '#lib/utils/shapes.ts';
-	import type { MorphShape } from '@repo/shared';
 	// Brief drawing and user-triggered path morphing remain active under reduced motion.
-	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '@yesid/motion/utils/gsap';
+	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG } from '@yesid/motion/utils/gsap';
+	import { morphHover } from '#lib/motion/actions/morphHover.ts';
 	import { convertSvgToMorphPaths } from '#lib/motion/utils/morphHelpers.ts';
+	import { playSvgEntrance } from '#lib/motion/utils/svgEntrance.ts';
 	import { cn } from '@yesid/ui/cn';
 
 	let {
@@ -27,169 +27,34 @@
 	} = $props();
 
 	let container: HTMLDivElement;
-
-	let isHovered = false;
-	let entranceDone = false;
-	let originalPaths: string[] = [];
-	let svgPaths: SVGPathElement[] = [];
-	let lastShapeIdx = -1;
-	let morphShapes = $state<readonly MorphShape[] | null>(null);
-
-	function handleMouseEnter() {
-		if (svgPaths.length === 0 || isHovered || !entranceDone) return;
-		if (!morphShapes || morphShapes.length === 0) return;
-		isHovered = true;
-
-		const { shape, index: shapeIdx } = pickRandomShape(morphShapes, lastShapeIdx);
-		lastShapeIdx = shapeIdx;
-
-		gsap.to(svgPaths, {
-			morphSVG: shape.path,
-			duration: 0.4,
-			stagger: 0.03,
-			ease: 'power2.inOut',
-			overwrite: true
-		});
-	}
-
-	let isMorphed = false;
-
-	function handleTap() {
-		if (svgPaths.length === 0 || !entranceDone) return;
-		if (!morphShapes || morphShapes.length === 0) return;
-
-		if (isMorphed) {
-			svgPaths.forEach((path, i) => {
-				gsap.to(path, {
-					morphSVG: originalPaths[i],
-					duration: 0.4,
-					delay: i * 0.03,
-					ease: 'power2.inOut',
-					overwrite: true
-				});
-			});
-			isMorphed = false;
-		} else {
-			const { shape, index: shapeIdx } = pickRandomShape(morphShapes, lastShapeIdx);
-			lastShapeIdx = shapeIdx;
-			gsap.to(svgPaths, {
-				morphSVG: shape.path,
-				duration: 0.4,
-				stagger: 0.03,
-				ease: 'power2.inOut',
-				overwrite: true
-			});
-			isMorphed = true;
-		}
-	}
-
-	function handleMouseLeave() {
-		if (svgPaths.length === 0 || !isHovered || !entranceDone) return;
-		isHovered = false;
-
-		svgPaths.forEach((path, i) => {
-			gsap.to(path, {
-				morphSVG: originalPaths[i],
-				duration: 0.4,
-				delay: i * 0.03,
-				ease: 'power2.inOut',
-				overwrite: true
-			});
-		});
-	}
-
-	$effect(() => {
-		if (hovered) {
-			handleMouseEnter();
-		} else {
-			handleMouseLeave();
-		}
-	});
-
-	// --- Entrance animations ---
-
-	function animateDraw(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
-		gsap.set(paths, { drawSVG: '0%' });
-		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
-		tl.to(paths, {
-			drawSVG: '100%',
-			duration: 1.2,
-			stagger: 0.15,
-			ease: 'power2.inOut'
-		});
-	}
-
-	function animateMorph(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
-		gsap.set(paths, { opacity: 0, scale: 0.3, transformOrigin: 'center center' });
-		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
-		tl.to(paths, {
-			opacity: 1,
-			scale: 1,
-			duration: 0.8,
-			stagger: 0.1,
-			ease: 'back.out(1.7)'
-		});
-	}
-
-	function animateDrawFill(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
-		gsap.set(paths, { drawSVG: '0%', fillOpacity: 0 });
-		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
-		tl.to(paths, {
-			drawSVG: '100%',
-			duration: 1,
-			stagger: 0.12,
-			ease: 'power2.inOut'
-		});
-		tl.to(paths, {
-			fillOpacity: 0.15,
-			duration: 0.6,
-			stagger: 0.08,
-			ease: 'power1.out'
-		}, '-=0.3');
-	}
+	let entranceDone = $state(false);
+	let entrance: gsap.core.Timeline | undefined;
 
 	onMount(async () => {
 		if (!container) return;
-		// animateMorph uses MorphSVG; all 3 entrance variants use DrawSVG.
-		// Fetch morph shapes from adapter (cached after first call).
+		// Entrance variants use DrawSVG, and shapes convert through MorphSVG.
 		await Promise.all([loadDrawSVG(), loadMorphSVG()]);
 		// Component may have unmounted while awaiting (tests mount + unmount
 		// rapidly). Re-check before touching the DOM.
-		if (!container) return;
-		morphShapes = await getMorphShapes();
-		// Re-check after second async boundary (getMorphShapes).
 		if (!container) return;
 		initScrollTriggerConfig();
 
 		const svg = container.querySelector('svg');
 		if (!svg) return;
 
-		const result = convertSvgToMorphPaths(svg);
-		if (result.paths.length === 0) return;
+		const { paths } = convertSvgToMorphPaths(svg);
+		if (paths.length === 0) return;
 
-		svgPaths = result.paths;
-		originalPaths = result.originals;
-
-		const scrollTriggerConfig = trigger === 'scroll' ? {
-			trigger: container,
-			start: 'top 80%',
-			once: true
-		} : undefined;
-
-		const onDone = () => { entranceDone = true; };
-
-		switch (animation) {
-			case 'draw':
-				animateDraw(svgPaths, scrollTriggerConfig, onDone);
-				break;
-			case 'morph':
-				animateMorph(svgPaths, scrollTriggerConfig, onDone);
-				break;
-			case 'draw-fill':
-				animateDrawFill(svgPaths, scrollTriggerConfig, onDone);
-				break;
-		}
+		entrance = playSvgEntrance(paths, {
+			animation,
+			scrollTrigger: trigger === 'scroll' ? { trigger: container, start: 'top 80%', once: true } : undefined,
+			onComplete: () => {
+				entranceDone = true;
+			},
+		});
 	});
+
+	onDestroy(() => entrance?.kill());
 </script>
 
 <div
@@ -201,10 +66,8 @@
 	)}
 	style="--svg-icon-size: {size}px; width: var(--svg-icon-size); height: var(--svg-icon-size);"
 	aria-hidden="true"
-	onmouseenter={handleMouseEnter}
-	onmouseleave={handleMouseLeave}
-	onclick={handleTap}
 	role="presentation"
+	use:morphHover={{ enabled: entranceDone, hovered }}
 	{...rest}
 >
 	{@html svgContent}

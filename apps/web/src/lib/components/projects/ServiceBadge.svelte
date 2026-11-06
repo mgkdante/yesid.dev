@@ -1,7 +1,7 @@
 <!--
   Pill badge showing a service's SVG icon + title.
   Used in the detail page sidebar to show which services a project links to.
-  SVG icon uses WorkSvgIcon for MorphSVG hover/tap effects.
+  SVG icon uses SvgIcon for MorphSVG hover/tap effects.
   Title resolved via resolveLocale for i18n.
   Hover: subtle glow, bg shift, slight scale, and SVG morph.
 -->
@@ -11,6 +11,7 @@
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { serviceLineColor } from '#lib/utils/service-colors.ts';
+	import { pointerHover } from '#lib/motion/actions/pointerHover.ts';
 
 	const locale = getLocale();
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
@@ -23,7 +24,7 @@
 		svgContent: string;
 	} = $props();
 
-	// Track hover state to pass down to WorkSvgIcon for MorphSVG effect
+	// The whole badge counts as hover for the icon's morph.
 	let badgeHovered = $state(false);
 
 	const lineColor = $derived(serviceLineColor(service.id));
@@ -35,8 +36,7 @@
 	class="service-badge inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2.5 no-underline"
 	style="border-color: color-mix(in srgb, var(--primary) 40%, transparent);"
 	data-testid="work-service-badge"
-	onmouseenter={() => (badgeHovered = true)}
-	onmouseleave={() => (badgeHovered = false)}
+	use:pointerHover={(hovering) => (badgeHovered = hovering)}
 >
 	{#if svgContent}
 		<SvgIcon {svgContent} size={28} hovered={badgeHovered} />

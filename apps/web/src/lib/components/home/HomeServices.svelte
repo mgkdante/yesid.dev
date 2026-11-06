@@ -12,7 +12,9 @@
 
 	import { pressBounce, cursorGlow, cardParallax } from '@yesid/motion/actions';
 	import { morphHover } from '#lib/motion/actions/morphHover.js';
-	import { gsap, loadDrawSVG } from '@yesid/motion/utils/gsap';
+	import { loadDrawSVG } from '@yesid/motion/utils/gsap';
+	import { SVG_SHAPE_SELECTOR } from '#lib/motion/utils/morphHelpers.ts';
+	import { playSvgEntrance } from '#lib/motion/utils/svgEntrance.ts';
 	import { SectionHeading } from '@yesid/ui/brand';
 	import type { Service, ServicesGridContent } from '#lib/types.ts';
 
@@ -32,7 +34,7 @@
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 
-	// Morphing waits for injected SVG paths; readiness flags seed once and remain locally owned.
+	// Morphing waits for each injected SVG's entrance; readiness flags seed once and remain locally owned.
 	const svgReady = $state<boolean[]>(untrack(() => orderedServices.map(() => false)));
 
 	onMount(() => {
@@ -40,6 +42,7 @@
 
 		// Load DrawSVG alongside SVG fetches so icon injection does not wait on the plugin.
 		const drawPluginPromise: Promise<void> = loadDrawSVG();
+		const entrances: gsap.core.Timeline[] = [];
 
 		const panels = sectionEl.querySelectorAll('[data-testid="services-svg-panel"]');
 		panels.forEach(async (panel, i) => {
@@ -63,30 +66,32 @@
 				if (!wrapper) return;
 				wrapper.innerHTML = svgText;
 
-				const svg = wrapper.querySelector('svg');
-				if (svg) {
-					const drawable = svg.querySelectorAll(
-						'path, line, polyline, polygon, rect, circle, ellipse',
-					);
-					if (drawable.length > 0) {
-						gsap.set(drawable, { drawSVG: '0%' });
-						gsap.to(drawable, {
-							drawSVG: '100%',
-							duration: 1.1,
-							stagger: 0.04,
-							ease: 'power2.inOut',
-							delay: i * 0.12,
-						});
-					}
+				const drawable = Array.from(
+					wrapper.querySelector('svg')?.querySelectorAll<SVGElement>(SVG_SHAPE_SELECTOR) ?? [],
+				);
+				if (drawable.length === 0) {
+					svgReady[i] = true;
+					return;
 				}
-
-				svgReady[i] = true;
+				entrances.push(
+					playSvgEntrance(drawable, {
+						animation: 'draw',
+						duration: 1.1,
+						stagger: 0.04,
+						delay: i * 0.12,
+						onComplete: () => {
+							svgReady[i] = true;
+						},
+					}),
+				);
 			} catch {
 				console.warn(
 					'[home-services] Decorative SVG fetch failed; keeping the static image.',
 				);
 			}
 		});
+
+		return () => entrances.forEach((entrance) => entrance.kill());
 	});
 </script>
 
