@@ -210,12 +210,11 @@
 			<StateNotice role="status" title={hasActiveFilters ? emptyState : emptyStateNoPosts} data-testid="blog-empty-state" />
 		{:else}
 			<div class="flex flex-col gap-4">
-				{#each filteredPosts as post, i (post.slug)}
+				{#each filteredPosts as post (post.slug)}
 					<BlogRow
 						post={post}
 						svgContent={svgContents[post.slug] ?? ''}
 						accentColor={accentColor}
-						index={i}
 						data-flip-id={post.slug}
 					/>
 				{/each}

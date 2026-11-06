@@ -1,5 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/svelte';
+import { flushSync } from 'svelte';
+import { gsap } from '@yesid/motion/utils/gsap';
 import SvgIcon from './SvgIcon.svelte';
 
 // Mock shapes utils so getMorphShapes doesn't invoke the real adapter.
@@ -52,5 +54,53 @@ describe('SvgIcon', () => {
 		const { container } = render(SvgIcon, { props: { svgContent: MOCK_SVG, class: 'my-custom' } });
 		const el = container.querySelector('[data-slot="svg-icon"]');
 		expect(el?.classList.contains('my-custom')).toBe(true);
+	});
+
+	describe('morph timing', () => {
+		const flush = () => new Promise((resolve) => setTimeout(resolve));
+		const morphTweens = () =>
+			vi.mocked(gsap.to).mock.calls.filter(([, vars]) => 'morphSVG' in (vars as object));
+
+		/** Complete the entrance the way GSAP does, through the timeline's onComplete. */
+		function finishEntrance() {
+			const vars = vi.mocked(gsap.timeline).mock.calls.at(-1)![0] as { onComplete: () => void };
+			flushSync(() => vars.onComplete());
+		}
+
+		beforeEach(() => vi.clearAllMocks());
+
+		it('holds a parent hover during the entrance and morphs when it finishes', async () => {
+			render(SvgIcon, { props: { svgContent: MOCK_SVG, hovered: true } });
+			await flush();
+			expect(morphTweens()).toHaveLength(0);
+
+			finishEntrance();
+			await flush();
+			expect(morphTweens()).toHaveLength(1);
+		});
+
+		it('holds its own hover during the entrance and morphs when it finishes', async () => {
+			const { container } = render(SvgIcon, { props: { svgContent: MOCK_SVG } });
+			await flush();
+
+			container
+				.querySelector('[data-slot="svg-icon"]')!
+				.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }));
+			await flush();
+			expect(morphTweens()).toHaveLength(0);
+
+			finishEntrance();
+			await flush();
+			expect(morphTweens()).toHaveLength(1);
+		});
+
+		it('does not morph after the entrance when nothing is hovering', async () => {
+			render(SvgIcon, { props: { svgContent: MOCK_SVG } });
+			await flush();
+
+			finishEntrance();
+			await flush();
+			expect(morphTweens()).toHaveLength(0);
+		});
 	});
 });

@@ -24,31 +24,23 @@ const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
 describe('BlogRow', () => {
 	it('renders the post title', () => {
 		const { getByText } = render(BlogRow, {
-			props: { post: makePost(), index: 0 }
+			props: { post: makePost() }
 		});
 		expect(getByText('Test Post Title')).toBeTruthy();
 	});
 
-	it('renders station badge with zero-padded index', () => {
+	it('renders without a station number, pulsing dot or vertical line', () => {
 		const { container } = render(BlogRow, {
-			props: { post: makePost(), index: 3 }
+			props: { post: makePost() }
 		});
-		// NumberBadge uses padStart(2, '0') on value
-		const badge = container.querySelector('[aria-hidden="true"]');
-		expect(badge?.textContent?.trim()).toBe('04');
-	});
-
-	it('renders metro line connector below badge', () => {
-		const { container } = render(BlogRow, {
-			props: { post: makePost(), index: 0 }
-		});
-		const line = container.querySelector('[data-metro-line]');
-		expect(line).toBeTruthy();
+		expect(container.querySelector('[data-slot="metro-station"]')).toBeNull();
+		expect(container.querySelector('[data-slot="metro-station-pulse"]')).toBeNull();
+		expect(container.querySelector('[data-metro-line]')).toBeNull();
 	});
 
 	it('renders tags', () => {
 		const { getByText } = render(BlogRow, {
-			props: { post: makePost({ tags: ['sql', 'postgres'] }), index: 0 }
+			props: { post: makePost({ tags: ['sql', 'postgres'] }) }
 		});
 		expect(getByText('sql')).toBeTruthy();
 		expect(getByText('postgres')).toBeTruthy();
@@ -56,13 +48,13 @@ describe('BlogRow', () => {
 
 	it('renders the post date', () => {
 		const { getByText } = render(BlogRow, {
-			props: { post: makePost({ date: '2025-01-15' }), index: 0 }
+			props: { post: makePost({ date: '2025-01-15' }) }
 		});
 		expect(getByText('2025-01-15')).toBeTruthy();
 	});
 
 	it('renders the language chip beside the date, not inside the topic tags', () => {
-		const en = render(BlogRow, { props: { post: makePost({ lang: 'en' }), index: 0 } });
+		const en = render(BlogRow, { props: { post: makePost({ lang: 'en' }) } });
 		const metaRow = en.getByTestId('blog-meta-row');
 		expect(metaRow.textContent).toContain('2025-01-15');
 		expect(en.getByTestId('blog-lang-chip').textContent?.trim()).toBe(siteLabels.ui.languageNames.en.en);
@@ -71,7 +63,7 @@ describe('BlogRow', () => {
 		en.unmount();
 
 		const fr = render(BlogRow, {
-			props: { post: makePost({ lang: 'en' }), index: 0 },
+			props: { post: makePost({ lang: 'en' }) },
 			context: new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]),
 		});
 		expect(fr.getByTestId('blog-lang-chip').textContent?.trim()).toBe(siteLabels.ui.languageNames.en.fr);
@@ -80,20 +72,20 @@ describe('BlogRow', () => {
 	it('localizes internal post urls from the post language, independent of the listing context', () => {
 		const frContext = () => new Map([[Symbol.for('@yesid/ui/locale'), () => 'fr']]);
 		const enPost = render(BlogRow, {
-			props: { post: makePost(), index: 0 },
+			props: { post: makePost() },
 			context: frContext(),
 		});
 		expect(enPost.container.querySelector('a')?.getAttribute('href')).toBe('/blog/test-post');
 		enPost.unmount();
 
 		const frPost = render(BlogRow, {
-			props: { post: makePost({ lang: 'fr' }), index: 0 },
+			props: { post: makePost({ lang: 'fr' }) },
 		});
 		expect(frPost.container.querySelector('a')?.getAttribute('href')).toBe('/fr/blog/test-post');
 		frPost.unmount();
 
 		const esPost = render(BlogRow, {
-			props: { post: makePost({ lang: 'es' }), index: 0 },
+			props: { post: makePost({ lang: 'es' }) },
 		});
 		expect(esPost.container.querySelector('a')?.getAttribute('href')).toBe('/es/blog/test-post');
 		esPost.unmount();
@@ -101,7 +93,6 @@ describe('BlogRow', () => {
 		const external = render(BlogRow, {
 			props: {
 				post: makePost({ external: true, url: 'https://medium.com/@x/post' }),
-				index: 0,
 			},
 			context: frContext(),
 		});

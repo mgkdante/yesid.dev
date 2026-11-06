@@ -1,9 +1,9 @@
 // Shared helpers for MorphSVGPlugin-based SVG morph animations.
-// Centralizes the convertToPath boilerplate used by HomeServices, BlogSvgIcon, WorkSvgIcon.
 
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+import { gsap } from '@yesid/motion/utils/gsap';
 
-const SVG_SHAPE_SELECTOR = 'path, circle, ellipse, rect, line, polyline, polygon';
+export const SVG_SHAPE_SELECTOR = 'path, circle, ellipse, rect, line, polyline, polygon';
 
 /**
  * Convert all SVG shape elements inside a container to MorphSVG-compatible paths.
@@ -32,4 +32,20 @@ export function convertSvgToMorphPaths(container: SVGElement): {
 	const originals = paths.map((p) => p.getAttribute('d') ?? '');
 
 	return { paths, originals };
+}
+
+/** The one morph tween. `onComplete` fires after the whole stagger has finished. */
+export function tweenPathsTo(
+	paths: SVGPathElement[],
+	target: (index: number) => string,
+	onComplete: () => void,
+): gsap.core.Tween {
+	return gsap.to(paths, {
+		// MorphSVG resolves function values per target at runtime; its typedef only lists static values.
+		morphSVG: target as unknown as string,
+		duration: 0.4,
+		stagger: 0.03,
+		ease: 'power2.inOut',
+		onComplete,
+	});
 }
