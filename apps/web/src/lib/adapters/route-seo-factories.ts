@@ -11,7 +11,7 @@ import { extractText } from '@repo/shared';
 import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { ogImagePath } from '#lib/og/og-path.ts';
-import { SHARE_CTA, inviteLocalized, projectShareDescription, withShareCta } from '#lib/og/share-copy.ts';
+import { SHARE_CTA, projectShareDescription, withShareCta } from '#lib/og/share-copy.ts';
 import { appendBrandPerLocale, shareImageAltPerLocale, titleForSeo } from '#lib/adapters/compose-page-seo.ts';
 import { assetImage } from '#lib/directus/assets.ts';
 import {
@@ -109,15 +109,21 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		...(project.description.fr !== undefined && { fr: extractText(project.description.fr) }),
 		...(project.description.es !== undefined && { es: extractText(project.description.es) }),
 	};
-	// Prefer the short share line; fall back to oneLiner, description, then site fallback.
-	// Both CMS candidates close with the case-study invitation.
+	// Prefer the short share line. Otherwise each language picks its own oneLiner,
+	// description, then site fallback, closing with the case-study invitation.
 	const fallback = siteSeoDefaults.defaultDescription;
-	const desc =
-		projectShareDescription(project.slug) ??
-		[project.oneLiner, descriptionText]
-			.map((copy) => inviteLocalized(copy, SHARE_CTA.project.label))
-			.find((copy) => fitDescriptionForSeo(copy, fallback) !== fallback) ??
-		fallback;
+	const descriptionFor = (language: 'en' | 'fr' | 'es'): string | undefined =>
+		[project.oneLiner[language], descriptionText[language]]
+			.filter((text) => text !== undefined)
+			.map((text) => withShareCta(text, SHARE_CTA.project.label[language]))
+			.find((text) => text.length >= 50 && text.length <= 200) ?? fallback[language];
+	const fr = descriptionFor('fr');
+	const es = descriptionFor('es');
+	const desc = projectShareDescription(project.slug) ?? {
+		en: descriptionFor('en') ?? fallback.en,
+		...(fr && { fr }),
+		...(es && { es }),
+	};
 	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
 	const seo: PageSeo = {
 		title: appendBrandPerLocale(project.title, siteMeta.name),

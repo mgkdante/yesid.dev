@@ -73,16 +73,3 @@ export function withShareCta(text: string, label: string): string {
 	const invited = `${sentence} ${invitation}`;
 	return invited.length <= DESCRIPTION_MAX_LENGTH ? invited : trimmed;
 }
-
-/** {@link withShareCta} for each language the copy has. */
-export function inviteLocalized<Copy extends { en: string; fr?: string; es?: string }>(
-	copy: Copy,
-	label: LocalizedShareCopy,
-): Copy {
-	return {
-		...copy,
-		en: withShareCta(copy.en, label.en),
-		...(copy.fr !== undefined && { fr: withShareCta(copy.fr, label.fr) }),
-		...(copy.es !== undefined && { es: withShareCta(copy.es, label.es) }),
-	};
-}

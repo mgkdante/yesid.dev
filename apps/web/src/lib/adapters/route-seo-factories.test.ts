@@ -388,8 +388,8 @@ describe('projectsSlugSeoFactory', () => {
 			title: { en: 'yesid.dev-design' },
 			description: { en: description, fr: description, es: description },
 			oneLiner: {
-				en: 'One visual foundation, room for different products',
-				fr: 'Une base visuelle commune, une place pour chaque produit',
+				en: 'x'.repeat(201),
+				fr: 'x'.repeat(201),
 				es: 'x'.repeat(201),
 			},
 		});
@@ -429,6 +429,40 @@ describe('projectsSlugSeoFactory', () => {
 		}));
 		expect(seo.description.en).toBe('A short line about the new project. See the case study.');
 		expect(seo.description.fr).toBe('Une courte ligne sur le nouveau projet. Voir l’étude de cas.');
+	});
+
+	it('chooses each language on its own so a translation is never lost to English', async () => {
+		const paragraph = (text: string) => ({
+			time: 1,
+			version: '2.31.2',
+			blocks: [{ id: 'prose', type: 'paragraph' as const, data: { text } }],
+		});
+		const fresh = {
+			...projectFactory.build({
+				slug: 'english-one-liner-project',
+				title: { en: 'Brand new' },
+				description: {
+					en: paragraph('An English long description that is well inside the band.'),
+					fr: paragraph('Une description française du projet et de ses résultats pour les lecteurs.'),
+					es: paragraph('x'.repeat(201)),
+				},
+			}),
+			oneLiner: { en: 'An English summary of this new project and its useful results.' },
+		};
+		const spanishDefault = 'Descripción predeterminada del sitio, lo bastante larga para el esquema.';
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: fresh.slug },
+			locale: 'fr',
+			catalog: createContentCatalog({ projects: [fresh] }),
+			siteMeta,
+			siteSeoDefaults: {
+				...siteSeoDefaults,
+				defaultDescription: { ...siteSeoDefaults.defaultDescription, es: spanishDefault },
+			},
+		}));
+		expect(seo.description.en).toBe('An English summary of this new project and its useful results. See the case study.');
+		expect(seo.description.fr).toBe('Une description française du projet et de ses résultats pour les lecteurs. Voir l’étude de cas.');
+		expect(seo.description.es).toBe(spanishDefault);
 	});
 
 	it('describes a known project with its short line and invitation, not the site fallback', async () => {

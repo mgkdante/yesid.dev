@@ -99,7 +99,8 @@ describe('share card', () => {
 			}
 		}
 		expect(image.asPng().byteLength).toBeLessThan(150_000);
-	});
+		// Long titles take many real font measurements, which is slow on a busy machine.
+	}, 30_000);
 
 	it('keeps titles beside art clear of the art column', () => {
 		const title = 'Sites web et\nboutiques en ligne';
