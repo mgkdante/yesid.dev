@@ -8,6 +8,7 @@ import {
 	canonicalFor,
 	localizeOgCard,
 	languageHref,
+	pageRobots,
 } from './seo-defaults';
 
 // Every committed OG card the resolver may localize. Resolved at build time so
@@ -35,6 +36,16 @@ describe('seo-defaults constants', () => {
 	it('PUBLISHED_LOCALES is a non-empty subset of SUPPORTED_LOCALES and includes en', () => {
 		expect(PUBLISHED_LOCALES.length).toBeGreaterThan(0);
 		expect(PUBLISHED_LOCALES).toContain('en');
+	});
+});
+
+describe('pageRobots', () => {
+	it('lets search use the large share card on indexable pages', () => {
+		expect(pageRobots({ noIndex: false })).toBe('max-image-preview:large');
+	});
+
+	it('adds nothing to a noindex page', () => {
+		expect(pageRobots({ noIndex: true })).toBeUndefined();
 	});
 });
 

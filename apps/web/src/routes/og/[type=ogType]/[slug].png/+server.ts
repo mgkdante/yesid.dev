@@ -1,9 +1,8 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { loadOgTitle, type OgType } from '#lib/og/load-title.ts';
 import { ogSlugParam, parseOgSlugParam } from '#lib/og/og-path.ts';
-import { Resvg } from '@resvg/resvg-js';
-import { OG_WIDTH, renderOgPng } from '@yesid/seo-kit/og';
-import { ogFonts } from '@yesid/seo-kit/og/fonts';
+import { inlinedOgFontFiles } from '#lib/og/font-files.ts';
+import { createOgCardRenderer, type OgCardRenderer } from '#lib/og/render.ts';
 import { ogBlogRows, projectEntries } from '#lib/server/prerender-entries.ts';
 import { createContentCatalog } from '#lib/catalog/index.ts';
 import { localeFromParams } from '#lib/utils/locale-routing.ts';
@@ -30,6 +29,9 @@ export function entries(context: AvailabilityContext = {}): Array<{ type: OgType
 const HAPPY_HEADERS = {
   'content-type': 'image/png',
 };
+
+let renderer: OgCardRenderer | undefined;
+const cardRenderer = () => (renderer ??= createOgCardRenderer(inlinedOgFontFiles()));
 
 export function _createOgHandler(context: AvailabilityContext = {}): RequestHandler {
  const content = createContentCatalog(context);
@@ -60,15 +62,11 @@ export function _createOgHandler(context: AvailabilityContext = {}): RequestHand
   }
 
   try {
-    const png = await renderOgPng(
-      { ...titleResult, wordmark: 'yesid', handle: 'yesid.dev', location: 'Montréal · QC' },
-      ogFonts,
-      (svg) => new Resvg(svg, { fitTo: { mode: 'width', value: OG_WIDTH } }).render().asPng(),
-    );
+    const png = cardRenderer().png(titleResult);
     // Cast: BodyInit's lib.dom.d.ts shape rejects Uint8Array<ArrayBufferLike>
     // (only accepts ArrayBufferView<ArrayBuffer>), but Response accepts it at
-    // runtime in both Node and the Web Fetch standard. Verified at the
-    // satori/resvg seam: png is always a finite, non-shared buffer.
+    // runtime in both Node and the Web Fetch standard. png is always a finite,
+    // non-shared buffer.
     return new Response(png as BodyInit, { status: 200, headers: HAPPY_HEADERS });
   } catch (cause) {
     throw new Error(`[og] render failed for ${type}: "${baseSlug}" (${locale})`, { cause });

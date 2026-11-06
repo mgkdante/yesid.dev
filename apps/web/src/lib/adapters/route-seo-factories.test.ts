@@ -384,7 +384,7 @@ describe('projectsSlugSeoFactory', () => {
 			blocks: [{ id: 'long-description', type: 'paragraph' as const, data: { text: 'x'.repeat(201) } }],
 		};
 		const designProject = projectFactory.build({
-			slug: 'yesid-dev-design',
+			slug: 'project-without-share-line',
 			title: { en: 'yesid.dev-design' },
 			description: { en: description, fr: description, es: description },
 			oneLiner: {
@@ -404,8 +404,21 @@ describe('projectsSlugSeoFactory', () => {
 			expect(seo.description).toEqual(siteSeoDefaults.defaultDescription);
 			expect(seo.noIndex).toBe(false);
 			expect(seo.title.en).toBe('yesid.dev-design | yesid.');
-			expect(seo.ogImage?.url).toContain('/og/project/yesid-dev-design');
+			expect(seo.ogImage?.url).toContain('/og/project/project-without-share-line');
 		}
+	});
+
+	it('describes a known project with its short line and invitation, not the site fallback', async () => {
+		const known = projectFactory.build({ slug: 'yesid-dev-design', title: { en: 'yesid.design' } });
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: known.slug },
+			locale: 'es',
+			catalog: createContentCatalog({ projects: [known] }),
+			siteMeta,
+			siteSeoDefaults,
+		}));
+		expect(seo.description.en).toBe('One visual foundation, room for different products. See the case study.');
+		expect(seo.description.es).toBe('Una base visual común, espacio para cada producto. Ver el caso de estudio.');
 	});
 
 	it('keeps short localized titles and missing translations unchanged', async () => {

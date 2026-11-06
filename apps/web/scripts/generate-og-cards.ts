@@ -1,30 +1,15 @@
 #!/usr/bin/env bun
 /**
- * OG share-card generator (homework #5, slice brand-svg-og-cards; trilingual
- * pass adds fr + es).
+ * Mints the static share cards: four service cards, the /services, /contact,
+ * /about and /projects route cards and the home default, each in en + fr + es.
+ * 1200x630 PNG under a hard 150KB budget. The layout lives in src/lib/og/card.ts,
+ * shared with the blog and project cards.
  *
- * Mints the static card set: four service cards, the /services, /contact,
- * /about and /projects route cards, home defaults,
- * each in en + fr + es. 1200x630 PNG, hard budget <150KB, text inside 80px
- * margins, colors from the token palette.
+ * EN keeps the legacy no-suffix filename (services/<id>.png, routes/<route>.png);
+ * fr + es land at the .<locale>.png sibling the locale-aware resolver reaches for.
  *
- * EN keeps the legacy no-suffix filename (services/<id>.png, routes/<route>.png)
- * so the existing SeoHead + media-assets wiring is untouched; fr + es land at
- * the .<locale>.png sibling that the locale-aware resolver reaches for.
- *
- * Every dot is orange. Service and route TITLES wrap to two lines and auto-fit
- * their font size so no line overlaps the service logo art on the right, which
- * matters most for the longer fr/es strings ("Sites web et boutiques en ligne").
- *
- * The explicit service titles below are manually reconciled against the
- * committed content export; this script does not import CMS copy. Route labels
- * and home taglines are also explicit in DEFAULTS,
- * keeping this renderer deterministic and reviewable. Every card carries the
- * outlined wordmark ("yesid" + orange period) from the canonical brand SVG.
- *
- * Cards use hand-built SVG -> resvg with the packaged OG TTFs (Inter 500/900,
- * JetBrains Mono 500). The /about card embeds the headshot; sharp converts the
- * committed webp to PNG at render time.
+ * The copy below is explicit and reviewable: this script does not import CMS
+ * copy. Titles and support lines reuse approved site wording where it exists.
  *
  *   bun scripts/generate-og-cards.ts                 # writes into static/og
  *   bun scripts/generate-og-cards.ts --out <dir>     # mockup run
@@ -36,6 +21,9 @@ import { ogFontFiles } from '@yesid/seo-kit/og/files';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
+import { escapeXml, OG_CARD_WIDTH, type OgCard, type OgCardArt } from '../src/lib/og/card';
+import { createOgCardRenderer } from '../src/lib/og/render';
+import { SHARE_CTA, type ShareCta, type ShareLocale } from '../src/lib/og/share-copy';
 
 const WEB_ROOT = resolve(import.meta.dir, '..');
 const REPO_ROOT = resolve(WEB_ROOT, '../..');
@@ -44,15 +32,10 @@ const OUT_FLAG = process.argv.indexOf('--out');
 const OUT_DIR =
 	OUT_FLAG === -1 ? resolve(WEB_ROOT, 'static/og') : resolve(process.argv[OUT_FLAG + 1] ?? '');
 
-const WIDTH = 1200;
-const HEIGHT = 630;
-const MARGIN = 80;
 const BUDGET_BYTES = 150_000;
+const { muted: MUTED, accent: ORANGE, accentText: YELLOW } = OG_PALETTE;
 
-const { background: BG, foreground: TEXT, muted: MUTED, accent: ORANGE, accentText: YELLOW } = OG_PALETTE;
-
-type Locale = 'en' | 'fr' | 'es';
-const LOCALES: readonly Locale[] = ['en', 'fr', 'es'];
+const LOCALES: readonly ShareLocale[] = ['en', 'fr', 'es'];
 const LOCALE_EQ_ARG = process.argv.find((arg) => arg.startsWith('--locale='));
 const LOCALE_FLAG = process.argv.indexOf('--locale');
 const requestedLocale =
@@ -61,398 +44,273 @@ const requestedLocale =
 if (requestedLocale && !(LOCALES as readonly string[]).includes(requestedLocale)) {
 	throw new Error(`unsupported locale: ${requestedLocale}`);
 }
-const SELECTED_LOCALES: readonly Locale[] = requestedLocale ? [requestedLocale as Locale] : LOCALES;
+const SELECTED_LOCALES: readonly ShareLocale[] = requestedLocale ? [requestedLocale as ShareLocale] : LOCALES;
 /** EN keeps the legacy no-suffix path; fr/es get a .<locale> suffix. */
-const suffix = (loc: Locale) => (loc === 'en' ? '' : `.${loc}`);
+const suffix = (locale: ShareLocale) => (locale === 'en' ? '' : `.${locale}`);
 
-const FONT_FILES = [...ogFontFiles];
+const renderer = createOgCardRenderer(ogFontFiles);
 
-// --- Brand wordmark (canonical outlined paths) ---------------------------
+// --- Art -------------------------------------------------------------------
 
-const wordmarkSvg = readFileSync(resolve(REPO_ROOT, 'apps/cms/brand/yesid-wordmark.svg'), 'utf8');
-const wordmarkPaths = [...wordmarkSvg.matchAll(/<path class="(wordmark|dot)" d="([^"]+)"/g)];
-const lettersPath = wordmarkPaths.find(([, cls]) => cls === 'wordmark')?.[2];
-const dotPath = wordmarkPaths.find(([, cls]) => cls === 'dot')?.[2];
-if (!lettersPath || !dotPath) {
-	throw new Error('could not extract wordmark paths from apps/cms/brand/yesid-wordmark.svg');
+function innerSvg(raw: string): string {
+	return raw.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
 }
 
-/** The wordmark as a positioned group. Source viewBox is 130x64. Dot is always orange. */
-function wordmark(x: number, y: number, scale: number, letterFill = TEXT): string {
-	return `<g transform="translate(${x},${y}) scale(${scale})">
-		<path d="${lettersPath}" fill="${letterFill}"/>
-		<path d="${dotPath}" fill="${ORANGE}"/>
-	</g>`;
-}
-
-// --- Text measurement + auto-fit ------------------------------------------
-
-/** Exact rendered width of a single line at a given size, via resvg's bbox. */
-function measureWidth(text: string, size: number, family: string, weight: number): number {
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="4000" height="400"><text x="0" y="200" font-family="${family}" font-weight="${weight}" font-size="${size}">${escapeXml(text)}</text></svg>`;
-	const bbox = new Resvg(svg, {
-		font: {
-			fontFiles: FONT_FILES,
-			loadSystemFonts: false,
-			defaultFontFamily: 'Inter',
-		},
-	}).getBBox();
-	return bbox?.width ?? 0;
-}
-
-/** Largest size (stepping down from `max`) at which every line fits `maxWidth`. */
-function fitSize(
-	lines: readonly string[],
-	maxWidth: number,
-	{
-		max,
-		min,
-		family,
-		weight,
-		letterSpacing = 0,
-	}: {
-		max: number;
-		min: number;
-		family: string;
-		weight: number;
-		letterSpacing?: number;
-	},
-): number {
-	for (let size = max; size > min; size -= 2) {
-		if (
-			lines.every((line) => {
-				const trackedWidth =
-					measureWidth(line, size, family, weight) + Math.max(0, line.length - 1) * letterSpacing;
-				return trackedWidth <= maxWidth;
-			})
-		)
-			return size;
-	}
-	return min;
-}
-
-// --- Art helpers ----------------------------------------------------------
-
-function escapeXml(s: string): string {
-	return s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-}
-
-/** Inline a service icon (48x48, var(--primary) tokens) recolored for cards. */
-function serviceArt(name: string, x: number, y: number, size: number, opacity: number): string {
-	const raw = readFileSync(resolve(WEB_ROOT, `static/svg/services/${name}`), 'utf8');
-	const inner = raw
-		.replace(/^[\s\S]*?<svg[^>]*>/, '')
-		.replace(/<\/svg>\s*$/, '')
+/** A service icon (48x48, var(--primary) tokens) recolored for cards. */
+function serviceArt(name: string): OgCardArt {
+	const size = 300;
+	const inner = innerSvg(readFileSync(resolve(WEB_ROOT, `static/svg/services/${name}`), 'utf8'))
 		.replaceAll('var(--primary)', ORANGE)
 		.replaceAll('var(--accent)', YELLOW);
-	return `<g transform="translate(${x},${y}) scale(${size / 48})" opacity="${opacity}">${inner}</g>`;
+	return {
+		svg: `<g transform="translate(820,146) scale(${size / 48})" opacity="0.28">${inner}</g>`,
+		contentWidth: 700,
+	};
 }
 
-/** Inline the digital-infrastructure blueprint (840x520, currentColor). */
-function blueprintArt(x: number, y: number, scale: number, opacity: number): string {
-	const raw = readFileSync(
-		resolve(WEB_ROOT, 'src/lib/assets/project-fallbacks/digital-desktop.svg'),
-		'utf8',
-	);
-	const inner = raw
-		.replace(/^[\s\S]*?<svg[^>]*>/, '')
-		.replace(/<\/svg>\s*$/, '')
-		.replaceAll('currentColor', ORANGE);
-	return `<g transform="translate(${x},${y}) scale(${scale})" opacity="${opacity}" fill="none" stroke="${ORANGE}">${inner}</g>`;
+/** The digital-infrastructure blueprint (840x520, currentColor). */
+function blueprintArt(): OgCardArt {
+	const inner = innerSvg(
+		readFileSync(resolve(WEB_ROOT, 'src/lib/assets/project-fallbacks/digital-desktop.svg'), 'utf8'),
+	).replaceAll('currentColor', ORANGE);
+	return {
+		svg: `<g transform="translate(720,170) scale(0.5)" opacity="0.32" fill="none" stroke="${ORANGE}">${inner}</g>`,
+		contentWidth: 610,
+	};
 }
-
-/** Faint blueprint grid, full bleed (minor 40px / major 200px). */
-function grid(): string {
-	const lines: string[] = [];
-	for (let x = 40; x < WIDTH; x += 40) {
-		lines.push(
-			`<line x1="${x}" y1="0" x2="${x}" y2="${HEIGHT}" stroke="${ORANGE}" stroke-width="1" opacity="${x % 200 === 0 ? 0.07 : 0.04}"/>`,
-		);
-	}
-	for (let y = 40; y < HEIGHT; y += 40) {
-		lines.push(
-			`<line x1="0" y1="${y}" x2="${WIDTH}" y2="${y}" stroke="${ORANGE}" stroke-width="1" opacity="${y % 200 === 0 ? 0.07 : 0.04}"/>`,
-		);
-	}
-	return lines.join('');
-}
-
-// --- Layout primitives ----------------------------------------------------
-
-function eyebrow(text: string, fill = ORANGE): string {
-	return `<text x="${MARGIN}" y="104" font-family="JetBrains Mono" font-weight="500" font-size="22" letter-spacing="2.6" fill="${fill}">${escapeXml(text)}</text>`;
-}
-
-function overline(y = 186): string {
-	return `<rect x="${MARGIN}" y="${y}" width="140" height="6" fill="${YELLOW}"/>`;
-}
-
-/** Two-line title, vertically centered on `midY`, auto-fit to `maxWidth`. */
-function titleBlock(lines: readonly string[], maxWidth: number, midY: number, fill = TEXT): string {
-	const size = fitSize(lines, maxWidth, {
-		max: 92,
-		min: 52,
-		family: 'Inter',
-		weight: 900,
-	});
-	const lineHeight = Math.round(size * 1.08);
-	const startY = midY - ((lines.length - 1) * lineHeight) / 2 + size * 0.34;
-	return lines
-		.map(
-			(line, i) =>
-				`<text x="${MARGIN}" y="${startY + i * lineHeight}" font-family="Inter" font-weight="900" font-size="${size}" letter-spacing="-1.5" fill="${fill}">${escapeXml(line)}</text>`,
-		)
-		.join('');
-}
-
-function subtitleBlock(lines: readonly string[], startY: number, size = 40): string {
-	const lineHeight = Math.round(size * 1.35);
-	return lines
-		.map(
-			(line, i) =>
-				`<text x="${MARGIN}" y="${startY + i * lineHeight}" font-family="Inter" font-weight="500" font-size="${size}" fill="${MUTED}">${escapeXml(line)}</text>`,
-		)
-		.join('');
-}
-
-function footer(rightText: string): string {
-	return `${wordmark(MARGIN, 496, 0.85)}
-	<text x="${WIDTH - MARGIN}" y="540" font-family="JetBrains Mono" font-weight="500" font-size="20" letter-spacing="2.4" fill="${MUTED}" text-anchor="end">${escapeXml(rightText)}</text>`;
-}
-
-function frame(...children: string[]): string {
-	return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
-	<rect width="${WIDTH}" height="${HEIGHT}" fill="${BG}"/>
-	${grid()}
-	${children.join('\n')}
-</svg>`;
-}
-
-// --- Headshot (about card) -------------------------------------------------
 
 function loadSharp(): typeof import('sharp') {
 	const cmsRequire = createRequire(resolve(REPO_ROOT, 'apps/cms/scripts/'));
 	return cmsRequire('sharp') as typeof import('sharp');
 }
 
-async function headshotDataUri(): Promise<string> {
+async function headshotArt(): Promise<OgCardArt> {
 	const png = await loadSharp()(resolve(WEB_ROOT, 'static/images/about/headshot.webp'))
 		.resize(640, 640, { fit: 'cover' })
 		.png()
 		.toBuffer();
-	return `data:image/png;base64,${png.toString('base64')}`;
+	const uri = `data:image/png;base64,${png.toString('base64')}`;
+	const [x, y, size] = [820, 134, 300];
+	return {
+		svg: `<clipPath id="headshot-clip"><rect x="${x}" y="${y}" width="${size}" height="${size}" rx="16"/></clipPath>
+		<image href="${uri}" x="${x}" y="${y}" width="${size}" height="${size}" clip-path="url(#headshot-clip)"/>
+		<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="16" fill="none" stroke="${ORANGE}" stroke-width="3"/>`,
+		contentWidth: 700,
+	};
 }
 
-// --- Trilingual card copy (committed service export + explicit OG labels) --
+/** The four services as a station list beside the /services title. */
+function serviceListArt(rows: readonly string[]): OgCardArt {
+	const numberX = 730;
+	const nameX = 780;
+	const longest = Math.max(
+		...rows.map((row) => renderer.measure(row, { family: 'JetBrains Mono', weight: 500, tracking: 0.07 })),
+	);
+	const size = Math.min(22, Math.floor((1120 - nameX) / longest));
+	const svg = rows
+		.map((row, index) => {
+			const y = 214 + index * 58;
+			return `<text x="${numberX}" y="${y}" font-family="JetBrains Mono" font-weight="500" font-size="${size}" letter-spacing="${0.1 * size}" fill="${ORANGE}">0${index + 1}</text><text x="${nameX}" y="${y}" font-family="JetBrains Mono" font-weight="500" font-size="${size}" letter-spacing="${0.07 * size}" fill="${MUTED}">${escapeXml(row)}</text>`;
+		})
+		.join('\n');
+	return { svg, contentWidth: 610 };
+}
 
-type L = Record<Locale, string>;
-type LL = Record<Locale, readonly string[]>;
+// --- Trilingual card copy --------------------------------------------------
 
-/** The service-logo art sits at x=760, so the title band is capped short. */
-const SERVICE_TITLE_MAXW = 620;
-/** The services-listing card has the service line-list on the right at x=724. */
-const SERVICES_TITLE_MAXW = 600;
+type L = Record<ShareLocale, string>;
 
-const SERVICES = [
+const SERVICES: ReadonlyArray<{ id: string; icon: string; title: L; subtitle: L }> = [
 	{
 		id: 'web-development',
 		icon: 'service-web.svg',
-		lines: {
-			en: ['Websites &', 'Online Stores'],
-			fr: ['Sites web et', 'boutiques en ligne'],
-			es: ['Sitios web y', 'tiendas en línea'],
-		} satisfies LL,
+		title: {
+			en: 'Websites &\nOnline Stores',
+			fr: 'Sites web et\nboutiques en ligne',
+			es: 'Sitios web y\ntiendas en línea',
+		},
+		subtitle: {
+			en: 'Sharp, fast and found on Google.',
+			fr: 'Beaux, rapides et trouvables sur Google.',
+			es: 'Bonitos, rápidos y visibles en Google.',
+		},
 	},
 	{
 		id: 'data-pipeline',
 		icon: 'service-pipeline.svg',
-		lines: {
-			en: ['Automation', '& AI'],
-			fr: ['Automatisation', 'et IA'],
-			es: ['Automatización', 'e IA'],
-		} satisfies LL,
+		title: { en: 'Automation\n& AI', fr: 'Automatisation\net IA', es: 'Automatización\ne IA' },
+		subtitle: {
+			en: 'No more copying data by hand.',
+			fr: 'Fini le copier-coller.',
+			es: 'Se acabó copiar a mano.',
+		},
 	},
 	{
 		id: 'analytics-reporting',
 		icon: 'service-reporting.svg',
-		lines: {
-			en: ['Reports &', 'Dashboards'],
-			fr: ['Rapports et', 'tableaux de bord'],
-			es: ['Reportes y', 'tableros'],
-		} satisfies LL,
+		title: {
+			en: 'Reports &\nDashboards',
+			fr: 'Rapports et\ntableaux de bord',
+			es: 'Reportes y\ntableros',
+		},
+		subtitle: {
+			en: 'One set of numbers your team trusts.',
+			fr: 'Des chiffres fiables pour toute l’équipe.',
+			es: 'Números en los que tu equipo confía.',
+		},
 	},
 	{
 		id: 'database-engineering',
 		icon: 'service-database.svg',
-		lines: {
-			en: ['Software &', 'Databases'],
-			fr: ['Logiciels et', 'bases de données'],
-			es: ['Software y', 'bases de datos'],
-		} satisfies LL,
+		title: {
+			en: 'Software &\nDatabases',
+			fr: 'Logiciels et\nbases de données',
+			es: 'Software y\nbases de datos',
+		},
+		subtitle: {
+			en: 'Off the spreadsheets, onto a real system.',
+			fr: 'Fini les fichiers Excel.',
+			es: 'Adiós al Excel.',
+		},
 	},
-] as const;
+];
 
-const stationOf = (index: number): string => String(index + 1).padStart(2, '0');
+const SERVICE_EYEBROW: L = { en: 'SERVICE · MONTRÉAL', fr: 'SERVICE · MONTRÉAL', es: 'SERVICIO · MONTREAL' };
 
-const SERVICE_EYEBROW: L = { en: 'SERVICE', fr: 'SERVICE', es: 'SERVICIO' };
-
-/** Uppercase service names for the services-listing line-list, per locale. */
-const SERVICE_LIST: Record<Locale, readonly string[]> = {
-	en: ['WEBSITES & ONLINE STORES', 'AUTOMATION & AI', 'REPORTS & DASHBOARDS', 'SOFTWARE & DATABASES'],
-	fr: ['SITES WEB ET BOUTIQUES EN LIGNE', 'AUTOMATISATION ET IA', 'RAPPORTS ET TABLEAUX DE BORD', 'LOGICIELS ET BASES DE DONNÉES'],
-	es: ['SITIOS WEB Y TIENDAS EN LÍNEA', 'AUTOMATIZACIÓN E IA', 'REPORTES Y TABLEROS', 'SOFTWARE Y BASES DE DATOS'],
+const SERVICE_LIST: Record<ShareLocale, readonly string[]> = {
+	en: ['WEBSITES & STORES', 'AUTOMATION & AI', 'REPORTS & DASHBOARDS', 'SOFTWARE & DATABASES'],
+	fr: ['SITES WEB ET BOUTIQUES', 'AUTOMATISATION ET IA', 'RAPPORTS ET TABLEAUX', 'LOGICIELS ET BASES'],
+	es: ['SITIOS WEB Y TIENDAS', 'AUTOMATIZACIÓN E IA', 'REPORTES Y TABLEROS', 'SOFTWARE Y BASES'],
 };
 
 const ROUTES = {
 	services: {
 		eyebrow: { en: 'SERVICES', fr: 'SERVICES', es: 'SERVICIOS' } satisfies L,
 		title: {
-			en: ['Digital', 'Solutions'],
-			fr: ['Solutions', 'numériques'],
-			es: ['Soluciones', 'digitales'],
-		} satisfies LL,
+			en: 'Wherever it’s stuck,\nwe start there',
+			fr: 'Là où ça accroche,\non commence',
+			es: 'Donde se atasca,\nahí empezamos',
+		} satisfies L,
 	},
 	about: {
 		eyebrow: { en: 'ABOUT', fr: 'À PROPOS', es: 'ACERCA DE' } satisfies L,
 		subtitle: {
-			en: ['Freelance Digital', 'Infrastructure Developer'],
-			fr: ["Développeur d'infrastructure", 'numérique à la pige'],
-			es: ['Desarrollador freelance', 'de infraestructura digital'],
-		} satisfies LL,
+			en: 'Freelance digital\ninfrastructure developer',
+			fr: 'Développeur d’infrastructure\nnumérique à la pige',
+			es: 'Desarrollador freelance\nde infraestructura digital',
+		} satisfies L,
 	},
 	projects: {
-		eyebrow: {
-			en: 'CASE STUDIES',
-			fr: 'ÉTUDES DE CAS',
-			es: 'CASOS DE ESTUDIO',
-		} satisfies L,
-		title: { en: 'Projects', fr: 'Projets', es: 'Proyectos' } satisfies L,
+		eyebrow: { en: 'CASE STUDIES', fr: 'ÉTUDES DE CAS', es: 'CASOS DE ESTUDIO' } satisfies L,
+		title: { en: 'What I’ve built', fr: 'Ce que j’ai bâti', es: 'Lo que he construido' } satisfies L,
 		subtitle: {
-			en: ['Projects, pipelines, and', 'systems I have built.'],
-			fr: ['Projets, pipelines et', "systèmes que j'ai bâtis."],
-			es: ['Proyectos, pipelines y', 'sistemas que he construido.'],
-		} satisfies LL,
+			en: 'Websites, online stores, automation and a live transit platform.',
+			fr: 'Sites web, boutiques, automatisation et une plateforme de transport en direct.',
+			es: 'Sitios web, tiendas, automatización y una plataforma de transporte en vivo.',
+		} satisfies L,
 	},
 	contact: {
 		eyebrow: { en: 'CONTACT', fr: 'CONTACT', es: 'CONTACTO' } satisfies L,
-		big: { en: "Let's talk.", fr: 'Parlons.', es: 'Hablemos.' } satisfies L,
+		title: { en: 'Let’s talk', fr: 'Parlons', es: 'Hablemos' } satisfies L,
+		subtitle: {
+			en: 'Tell me what’s stuck. I reply in about 24 hours.',
+			fr: 'Dis-moi ce qui accroche. Je réponds en 24 h environ.',
+			es: 'Cuéntame qué está atascado. Respondo en unas 24 h.',
+		} satisfies L,
 	},
 } as const;
 
-const DEFAULTS: Record<Locale, { eyebrow: string; title: readonly string[] }> = {
-	en: {
-		eyebrow: 'DIGITAL INFRASTRUCTURE · MONTRÉAL',
-		title: ['Web, data and automation for', 'Québec and Canadian businesses.'],
-	},
-	fr: {
-		eyebrow: 'INFRASTRUCTURE NUMÉRIQUE · MONTRÉAL',
-		title: ['Web, données et automatisation pour', 'les entreprises du Québec et du Canada.'],
-	},
-	es: {
-		eyebrow: 'INFRAESTRUCTURA DIGITAL · MONTRÉAL',
-		title: ['Web, datos y automatización para', 'empresas de Québec y Canadá.'],
-	},
-};
+const HOME = {
+	eyebrow: {
+		en: 'WEBSITES · AUTOMATION · DATA · SOFTWARE',
+		fr: 'SITES WEB · AUTOMATISATION · DONNÉES · LOGICIELS',
+		es: 'SITIOS WEB · AUTOMATIZACIÓN · DATOS · SOFTWARE',
+	} satisfies L,
+	title: {
+		en: 'Systems that\ndon’t break',
+		fr: 'Des systèmes qui\nne cassent pas',
+		es: 'Sistemas que\nno se rompen',
+	} satisfies L,
+	subtitle: {
+		en: 'More productivity for Canadian businesses, without downtime.',
+		fr: 'Plus de productivité pour les entreprises canadiennes, sans pannes.',
+		es: 'Más productividad para las empresas canadienses, sin caídas.',
+	} satisfies L,
+} as const;
 
-// --- Cards ------------------------------------------------------------------
+// --- Cards -----------------------------------------------------------------
 
-async function buildCards(): Promise<Record<string, string>> {
-	const cards: Record<string, string> = {};
+const cta = (share: ShareCta, locale: ShareLocale): Pick<OgCard, 'cta' | 'ctaTone'> => ({
+	cta: share.label[locale],
+	ctaTone: share.tone,
+});
 
-	for (const loc of SELECTED_LOCALES) {
-		const sfx = suffix(loc);
+async function buildCards(): Promise<Record<string, OgCard>> {
+	const cards: Record<string, OgCard> = {};
+	const headshot = await headshotArt();
 
-		// Service cards: two-line title, auto-fit clear of the logo art.
-		for (const [i, s] of SERVICES.entries()) {
-			cards[`services/${s.id}${sfx}.png`] = frame(
-				serviceArt(s.icon, 760, 130, 360, 0.2),
-				eyebrow(`${SERVICE_EYEBROW[loc]} ${stationOf(i)} / ${stationOf(SERVICES.length - 1)}`),
-				overline(),
-				titleBlock(s.lines[loc], SERVICE_TITLE_MAXW, 350),
-				footer(`yesid.dev/services/${s.id}`),
-			);
+	for (const locale of SELECTED_LOCALES) {
+		const sfx = suffix(locale);
+
+		for (const service of SERVICES) {
+			cards[`services/${service.id}${sfx}.png`] = {
+				eyebrow: SERVICE_EYEBROW[locale],
+				title: service.title[locale],
+				subtitle: service.subtitle[locale],
+				art: serviceArt(service.icon),
+				...cta(SHARE_CTA.service, locale),
+			};
 		}
 
-		// Services listing: title left, service line-list right (font auto-fit
-		// so the longest localized name clears the right margin).
-		const listSize = fitSize(SERVICE_LIST[loc], WIDTH - 776 - MARGIN, {
-			max: 22,
-			min: 15,
-			family: 'JetBrains Mono',
-			weight: 500,
-			letterSpacing: 1.6,
-		});
-		const listRows = SERVICE_LIST[loc]
-			.map((name, i) => {
-				const y = 292 + i * 48;
-				return `<text x="724" y="${y}" font-family="JetBrains Mono" font-weight="500" font-size="${listSize}" letter-spacing="2.2" fill="${ORANGE}">0${i + 1}</text><text x="776" y="${y}" font-family="JetBrains Mono" font-weight="500" font-size="${listSize}" letter-spacing="1.6" fill="${MUTED}">${escapeXml(name)}</text>`;
-			})
-			.join('\n');
-		cards[`routes/services${sfx}.png`] = frame(
-			eyebrow(ROUTES.services.eyebrow[loc]),
-			overline(),
-			titleBlock(ROUTES.services.title[loc], SERVICES_TITLE_MAXW, 350),
-			`<g>${listRows}</g>`,
-			footer('yesid.dev/services'),
-		);
+		cards[`routes/services${sfx}.png`] = {
+			eyebrow: ROUTES.services.eyebrow[locale],
+			title: ROUTES.services.title[locale],
+			art: serviceListArt(SERVICE_LIST[locale]),
+			...cta(SHARE_CTA.services, locale),
+		};
 
-		// Contact: yellow slab, big line, mono url.
-		cards[`routes/contact${sfx}.png`] = frame(
-			eyebrow(ROUTES.contact.eyebrow[loc]),
-			`<rect x="${MARGIN}" y="150" width="1040" height="270" rx="10" fill="${YELLOW}"/>`,
-			`<text x="130" y="280" font-family="Inter" font-weight="900" font-size="92" letter-spacing="-1.5" fill="${BG}">${escapeXml(ROUTES.contact.big[loc])}</text>`,
-			`<text x="130" y="368" font-family="JetBrains Mono" font-weight="500" font-size="28" letter-spacing="2.4" fill="${BG}">yesid.dev/contact →</text>`,
-			footer('MONTRÉAL · QC'),
-		);
+		cards[`routes/contact${sfx}.png`] = {
+			eyebrow: ROUTES.contact.eyebrow[locale],
+			title: ROUTES.contact.title[locale],
+			subtitle: ROUTES.contact.subtitle[locale],
+			...cta(SHARE_CTA.contact, locale),
+		};
 
-		// About: headshot + name + role subtitle.
-		const headshot = await headshotDataUri();
-		cards[`routes/about${sfx}.png`] = frame(
-			`<clipPath id="headshot-clip"><rect x="780" y="140" width="320" height="320" rx="16"/></clipPath>
-			<image href="${headshot}" x="780" y="140" width="320" height="320" clip-path="url(#headshot-clip)"/>
-			<rect x="780" y="140" width="320" height="320" rx="16" fill="none" stroke="${ORANGE}" stroke-width="3"/>`,
-			eyebrow(ROUTES.about.eyebrow[loc]),
-			overline(),
-			titleBlock(['Yesid'], 620, 320),
-			subtitleBlock(ROUTES.about.subtitle[loc], 402, 36),
-			footer('yesid.dev/about'),
-		);
+		cards[`routes/about${sfx}.png`] = {
+			eyebrow: ROUTES.about.eyebrow[locale],
+			title: 'Yesid',
+			subtitle: ROUTES.about.subtitle[locale],
+			art: headshot,
+			...cta(SHARE_CTA.about, locale),
+		};
 
-		// Projects: blueprint art + title + subtitle.
-		cards[`routes/projects${sfx}.png`] = frame(
-			blueprintArt(590, 130, 0.62, 0.3),
-			eyebrow(ROUTES.projects.eyebrow[loc]),
-			overline(),
-			titleBlock([ROUTES.projects.title[loc]], 620, 320),
-			subtitleBlock(ROUTES.projects.subtitle[loc], 402, 38),
-			footer('yesid.dev/projects'),
-		);
+		cards[`routes/projects${sfx}.png`] = {
+			eyebrow: ROUTES.projects.eyebrow[locale],
+			title: ROUTES.projects.title[locale],
+			subtitle: ROUTES.projects.subtitle[locale],
+			art: blueprintArt(),
+			...cta(SHARE_CTA.projects, locale),
+		};
 
-		// Home default: tagline stack.
-		cards[`default.${loc}.png`] = frame(
-			eyebrow(DEFAULTS[loc].eyebrow),
-			overline(),
-			titleBlock(DEFAULTS[loc].title, WIDTH - 2 * MARGIN, 330),
-			footer('yesid.dev'),
-		);
-
+		cards[`default.${locale}.png`] = {
+			eyebrow: HOME.eyebrow[locale],
+			title: HOME.title[locale],
+			subtitle: HOME.subtitle[locale],
+			...cta(SHARE_CTA.home, locale),
+		};
 	}
 
 	return cards;
 }
 
-// --- Render -----------------------------------------------------------------
+// --- Render ----------------------------------------------------------------
 
 const cards = await buildCards();
 let failed = false;
-for (const [file, svg] of Object.entries(cards)) {
-	let png: Uint8Array = new Resvg(svg, {
-		fitTo: { mode: 'width', value: WIDTH },
-		font: {
-			fontFiles: FONT_FILES,
-			loadSystemFonts: false,
-			defaultFontFamily: 'Inter',
-		},
+for (const [file, card] of Object.entries(cards)) {
+	let png: Uint8Array = new Resvg(renderer.svg(card), {
+		fitTo: { mode: 'width', value: OG_CARD_WIDTH },
+		font: { fontFiles: [...ogFontFiles], loadSystemFonts: false, defaultFontFamily: 'Inter' },
 	})
 		.render()
 		.asPng();
@@ -469,6 +327,6 @@ for (const [file, svg] of Object.entries(cards)) {
 	const target = resolve(OUT_DIR, file);
 	mkdirSync(dirname(target), { recursive: true });
 	writeFileSync(target, png);
-	console.log(`✓ ${file}  ${WIDTH}x${HEIGHT}, ${png.byteLength} bytes${note}`);
+	console.log(`✓ ${file}  ${OG_CARD_WIDTH}x630, ${png.byteLength} bytes${note}`);
 }
 if (failed) process.exit(1);

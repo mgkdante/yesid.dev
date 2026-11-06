@@ -32,6 +32,7 @@ async function expectHead(page: Page, { loc, alternates }: Cluster) {
 	expect(imageAlt).not.toContain(' | yesid. | yesid.');
 	await expect(page.locator('meta[name="twitter:image:alt"]')).toHaveAttribute('content', imageAlt!);
 	await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S/);
+	await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'max-image-preview:large');
 	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', loc);
 	const links = await page
 		.locator('link[rel="alternate"][hreflang]')
