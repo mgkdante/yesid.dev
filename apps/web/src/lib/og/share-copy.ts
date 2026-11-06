@@ -57,3 +57,32 @@ export function projectShareDescription(slug: string): LocalizedShareCopy | unde
 	const describe = (locale: ShareLocale) => `${tagline[locale]} ${SHARE_CTA.project.label[locale]}.`;
 	return { en: describe('en'), fr: describe('fr'), es: describe('es') };
 }
+
+const DESCRIPTION_MAX_LENGTH = 200;
+const straightApostrophes = (text: string) => text.replaceAll('’', "'");
+
+/**
+ * Closes CMS copy with the invitation, so authors only write the hook. Keeps copy that
+ * already ends with it, and copy with no room left: sentences are never cut to fit.
+ */
+export function withShareCta(text: string, label: string): string {
+	const trimmed = text.trim();
+	const invitation = `${label}.`;
+	if (straightApostrophes(trimmed).endsWith(straightApostrophes(invitation))) return trimmed;
+	const sentence = /[.!?…]$/u.test(trimmed) ? trimmed : `${trimmed}.`;
+	const invited = `${sentence} ${invitation}`;
+	return invited.length <= DESCRIPTION_MAX_LENGTH ? invited : trimmed;
+}
+
+/** {@link withShareCta} for each language the copy has. */
+export function inviteLocalized<Copy extends { en: string; fr?: string; es?: string }>(
+	copy: Copy,
+	label: LocalizedShareCopy,
+): Copy {
+	return {
+		...copy,
+		en: withShareCta(copy.en, label.en),
+		...(copy.fr !== undefined && { fr: withShareCta(copy.fr, label.fr) }),
+		...(copy.es !== undefined && { es: withShareCta(copy.es, label.es) }),
+	};
+}

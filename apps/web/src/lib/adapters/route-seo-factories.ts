@@ -11,7 +11,7 @@ import { extractText } from '@repo/shared';
 import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { ogImagePath } from '#lib/og/og-path.ts';
-import { projectShareDescription } from '#lib/og/share-copy.ts';
+import { SHARE_CTA, inviteLocalized, projectShareDescription, withShareCta } from '#lib/og/share-copy.ts';
 import { appendBrandPerLocale, shareImageAltPerLocale, titleForSeo } from '#lib/adapters/compose-page-seo.ts';
 import { assetImage } from '#lib/directus/assets.ts';
 import {
@@ -109,13 +109,15 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		...(project.description.fr !== undefined && { fr: extractText(project.description.fr) }),
 		...(project.description.es !== undefined && { es: extractText(project.description.es) }),
 	};
-	// Prefer the short share line; fall back to description, oneLiner, then site fallback.
+	// Prefer the short share line; fall back to oneLiner, description, then site fallback.
+	// Both CMS candidates close with the case-study invitation.
 	const fallback = siteSeoDefaults.defaultDescription;
 	const desc =
 		projectShareDescription(project.slug) ??
-		(fitDescriptionForSeo(descriptionText, fallback) !== fallback
-			? descriptionText
-			: fitDescriptionForSeo(project.oneLiner, fallback));
+		[project.oneLiner, descriptionText]
+			.map((copy) => inviteLocalized(copy, SHARE_CTA.project.label))
+			.find((copy) => fitDescriptionForSeo(copy, fallback) !== fallback) ??
+		fallback;
 	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
 	const seo: PageSeo = {
 		title: appendBrandPerLocale(project.title, siteMeta.name),
@@ -174,7 +176,7 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 		}),
 	) as Partial<Record<Locale, string>>;
 	const description = fitDescriptionForSeo(
-		{ en: post.seoDescription ?? post.excerpt },
+		{ en: withShareCta(post.seoDescription ?? post.excerpt, SHARE_CTA.blog.label[post.lang]) },
 		siteSeoDefaults.defaultDescription,
 	);
 	// assetImage() resolves to a RELATIVE mirrored path (e.g. /images/work/x.png) in

@@ -40,7 +40,7 @@
 		"siteSeoDefaults": {
 			"defaultOgImage": null,
 			"themeColor": "#141414",
-			"defaultDescription": {"en":"I help Canadian businesses become more competitive, more productive, and generate more value per employee, starting with Montréal and Québec.","fr":"J'aide les entreprises canadiennes à devenir plus compétitives, plus productives et à générer plus de valeur par employé, en commençant par Montréal et le Québec.","es":"Ayudo a las empresas canadienses a ser más competitivas, más productivas y a generar más valor por empleado, empezando por Montreal y Quebec."}
+			"defaultDescription": {"en":"More productivity for Canadian businesses, without downtime. Web, automation, data, software. Book a call.","fr":"Plus de productivité pour les PME d’ici, sans pannes. Web, automatisation, données, logiciels. Réserver un appel.","es":"Más productividad para pymes canadienses, sin caídas. Web, automatización, datos, software. Agenda una llamada."}
 		},
 		"routeSeo": [
 			{

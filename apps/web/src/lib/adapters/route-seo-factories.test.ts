@@ -173,7 +173,7 @@ describe('blogSlugSeoFactory', () => {
 		});
 
 		expect(seo.title.en).toBe('Raw SQL for PostgreSQL Control | yesid.');
-		expect(seo.description.en).toBe(seoDescription);
+		expect(seo.description.en).toBe(`${seoDescription} Read the article.`);
 		expect(seo.canonical).toBe('https://yesid.dev/blog/raw-sql-control');
 		expect(seo.singleLocale).toBeUndefined();
 		expect(seo.localeAlternates).toEqual({
@@ -390,7 +390,7 @@ describe('projectsSlugSeoFactory', () => {
 			oneLiner: {
 				en: 'One visual foundation, room for different products',
 				fr: 'Une base visuelle commune, une place pour chaque produit',
-				es: 'Una base visual común, espacio para cada producto',
+				es: 'x'.repeat(201),
 			},
 		});
 		for (const locale of PUBLISHED_LOCALES) {
@@ -406,6 +406,29 @@ describe('projectsSlugSeoFactory', () => {
 			expect(seo.title.en).toBe('yesid.dev-design | yesid.');
 			expect(seo.ogImage?.url).toContain('/og/project/project-without-share-line');
 		}
+	});
+
+	it('describes a new project with its one-liner and invitation, ahead of the long description', async () => {
+		const description = {
+			time: 1,
+			version: '2.31.2',
+			blocks: [{ id: 'prose', type: 'paragraph' as const, data: { text: 'A longer description that reads as prose and is well inside the band.' } }],
+		};
+		const fresh = projectFactory.build({
+			slug: 'brand-new-project',
+			title: { en: 'Brand new' },
+			description: { en: description, fr: description, es: description },
+			oneLiner: { en: 'A short line about the new project.', fr: 'Une courte ligne sur le nouveau projet.', es: 'Una línea corta sobre el nuevo proyecto.' },
+		});
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: fresh.slug },
+			locale: 'fr',
+			catalog: createContentCatalog({ projects: [fresh] }),
+			siteMeta,
+			siteSeoDefaults,
+		}));
+		expect(seo.description.en).toBe('A short line about the new project. See the case study.');
+		expect(seo.description.fr).toBe('Une courte ligne sur le nouveau projet. Voir l’étude de cas.');
 	});
 
 	it('describes a known project with its short line and invitation, not the site fallback', async () => {
