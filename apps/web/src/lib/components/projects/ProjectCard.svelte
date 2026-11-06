@@ -23,6 +23,7 @@
 
 	const locale = getLocale();
 	import { cursorGlow } from '@yesid/motion/actions';
+	import { pointerHover } from '#lib/motion/actions/pointerHover.ts';
 	import SvgIcon from '#lib/components/brand/SvgIcon.svelte';
 	import { Card } from '@yesid/ui/card';
 	import { cn } from '@yesid/ui/cn';
@@ -107,8 +108,7 @@
 	data-testid={v.testId}
 	data-flip-id={project.slug}
 	data-batch="project-item"
-	onmouseenter={() => (cardHovered = true)}
-	onmouseleave={() => (cardHovered = false)}
+	use:pointerHover={(hovering) => (cardHovered = hovering)}
 	use:cursorGlow
 	{...rest}
 >

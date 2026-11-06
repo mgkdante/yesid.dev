@@ -3,6 +3,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { gsap } from '@yesid/motion/utils/gsap';
+	import { pointerHover } from '#lib/motion/actions/pointerHover.ts';
+	import { createMorphGate } from '#lib/motion/utils/morphGate.ts';
 	import { Card } from '@yesid/ui/card';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -90,35 +92,31 @@
 	const tweenState = { p: 0 };
 	let activeTween: gsap.core.Tween | null = null;
 
-	function morphTo(target: 0 | 1) {
-		if (reduced) {
-			progress = target;
-			return;
-		}
-		activeTween?.kill();
-		activeTween = gsap.to(tweenState, {
-			p: target,
-			duration: 0.7,
-			// back.inOut → a little anticipatory crouch, then an overshoot on launch.
-			ease: 'back.inOut(1.6)',
-			onUpdate: () => {
-				progress = tweenState.p;
-			},
-		});
-	}
-
-	$effect(() => {
-		morphTo(launched ? 1 : 0);
+	const gate = createMorphGate({
+		play(launch, done) {
+			const target = launch ? 1 : 0;
+			if (reduced) {
+				progress = target;
+				done();
+				return;
+			}
+			activeTween = gsap.to(tweenState, {
+				p: target,
+				duration: 0.7,
+				// back.inOut → a little anticipatory crouch, then an overshoot on launch.
+				ease: 'back.inOut(1.6)',
+				onUpdate: () => {
+					progress = tweenState.p;
+				},
+				onComplete: done,
+			});
+		},
 	});
 
-	function onEnter(e: PointerEvent) {
-		// Mouse hover only — touch fires pointerenter on tap, which the click
-		// toggle already owns; double-driving it makes the morph stutter.
-		if (e.pointerType === 'mouse') hovered = true;
-	}
-	function onLeave(e: PointerEvent) {
-		if (e.pointerType === 'mouse') hovered = false;
-	}
+	$effect(() => {
+		gate.set(launched);
+	});
+
 	function onClick() {
 		tapped = !tapped;
 	}
@@ -127,6 +125,7 @@
 		reduced = isPrefersReducedMotion();
 	});
 	onDestroy(() => {
+		gate.destroy();
 		activeTween?.kill();
 	});
 </script>
@@ -142,8 +141,7 @@
 		aria-label={launched
 			? resolveLocale(TRAIN_ARIA.rocket, locale)
 			: resolveLocale(TRAIN_ARIA.train, locale)}
-		onpointerenter={onEnter}
-		onpointerleave={onLeave}
+		use:pointerHover={(hovering) => (hovered = hovering)}
 		onclick={onClick}
 	>
 		<svg viewBox={TRAIN_ROCKET_VIEWBOX} width="120" height="120" aria-hidden="true">

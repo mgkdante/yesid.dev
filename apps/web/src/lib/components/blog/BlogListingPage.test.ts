@@ -33,6 +33,29 @@ const englishPost: BlogPost = {
 
 afterEach(() => cleanup());
 
+describe('BlogListingPage rows', () => {
+	it('shows each post card without a station number, pulsing dot or vertical line', () => {
+		persisted<string | null>('blog-lang', null).value = null;
+		const { container } = render(BlogListingPage, {
+			props: {
+				posts: [englishPost],
+				allTags: ['test'],
+				languages: ['en'],
+				heading: 'Blog',
+				subtitle: 'Notes',
+				emptyState: 'No posts match.',
+				emptyStateNoPosts: 'No posts yet.',
+			},
+		});
+
+		expect(screen.getByText('English article')).toBeInTheDocument();
+		expect(container.querySelector('[data-slot="metro-station"]')).toBeNull();
+		expect(container.querySelector('[data-slot="metro-station-pulse"]')).toBeNull();
+		expect(container.querySelector('[data-metro-line]')).toBeNull();
+		expect(screen.queryByText('01')).toBeNull();
+	});
+});
+
 describe('BlogListingPage language filter', () => {
 	it('clears an incompatible persisted language instead of hiding the active-locale posts', async () => {
 		persisted<string | null>('blog-lang', null).value = 'fr';

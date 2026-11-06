@@ -1,134 +1,98 @@
-// Morph paths on hover/tap, lazily loading MorphSVG; defer conversion until injected SVG is ready.
+// The one way SVG art morphs to a random shape on hover or tap. Timing rules live in
+// morphGate; MorphSVG loads lazily and conversion waits until the SVG has been injected.
 
-import { gsap, loadMorphSVG } from '@yesid/motion/utils/gsap';
-import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
-import { isViewportAtMost } from '@yesid/motion/utils/device';
+import { loadMorphSVG } from '@yesid/motion/utils/gsap';
 import { getMorphShapes, pickRandomShape } from '#lib/utils/shapes.ts';
+import { createMorphGate } from '../utils/morphGate.js';
+import { convertSvgToMorphPaths, tweenPathsTo } from '../utils/morphHelpers.js';
+import { pointerHover } from './pointerHover.js';
 import type { MorphShape } from '@repo/shared';
 
 export interface MorphHoverParams {
-	/** If false, listeners still attach but morphs are no-ops (use while SVG content loads). Default: true */
+	/** False holds morphs until true, e.g. while the SVG loads or its entrance plays. Default: true. */
 	enabled?: boolean;
-	/** Optional deterministic starting shape index. Default: -1 (random). */
-	lastShapeIdx?: number;
-	/**
-	 * If true, skip the mobile click-to-toggle handler. Useful when applying
-	 * morphHover to a clickable parent (e.g. an `<a>` link) where you want
-	 * desktop hover-to-morph but still want mobile taps to navigate normally
-	 * instead of being intercepted by preventDefault. Default: false.
-	 */
+	/** Hover owned by a parent surface, such as the card around an icon. */
+	hovered?: boolean;
+	/** Skip tap-to-toggle where taps belong to a clickable parent. Default: false. */
 	disableClickToggle?: boolean;
 }
 
-export function morphHover(node: HTMLElement, params: MorphHoverParams) {
+export function morphHover(node: HTMLElement, params: MorphHoverParams = {}) {
 	let currentParams = params;
-	let morphed = false;
+	let pointerOver = false;
+	let isMorphed = false;
+	let destroyed = false;
 	let paths: SVGPathElement[] = [];
 	let originals: string[] = [];
 	let shapes: readonly MorphShape[] = [];
-	let lastIdx = params.lastShapeIdx ?? -1;
-	let pluginLoaded = false;
-	let shapesLoaded = false;
+	let lastIdx = -1;
+	let tween: gsap.core.Tween | undefined;
 
-	const isMobile = () => isViewportAtMost(767);
-
-	async function ensureShapes() {
-		if (shapesLoaded) return;
-		shapes = await getMorphShapes();
-		shapesLoaded = true;
+	async function prepare() {
+		const [, loadedShapes] = await Promise.all([loadMorphSVG(), getMorphShapes()]);
+		shapes = loadedShapes;
+		if (paths.length > 0) return;
+		// The SVG root may be the node itself or a child injected after mount.
+		const svg = node.querySelector('svg') ?? (node as unknown as SVGElement);
+		if (!(svg instanceof SVGElement)) return;
+		({ paths, originals } = convertSvgToMorphPaths(svg));
 	}
 
-	async function ensurePluginAndPaths() {
-		if (!pluginLoaded) {
-			await loadMorphSVG();
-			pluginLoaded = true;
-		}
-		if (paths.length === 0) {
-			// Find SVG root (may be the node itself or a child — SVG can be
-			// injected post-mount for async content like HomeServices).
-			const svg = node.querySelector('svg') ?? (node as unknown as SVGElement);
-			if (!(svg instanceof SVGElement)) return;
-			const { paths: p, originals: o } = convertSvgToMorphPaths(svg);
-			paths = p;
-			originals = o;
-		}
-	}
-
-	function morphTo(path: string) {
-		paths.forEach((p) => gsap.killTweensOf(p));
-		gsap.to(paths, {
-			morphSVG: path,
-			duration: 0.4,
-			stagger: 0.03,
-			ease: 'power2.inOut',
-			overwrite: true,
-		});
-		morphed = true;
-	}
-
-	function morphBack() {
-		if (paths.length === 0 || originals.length === 0) return;
-		paths.forEach((path, i) => {
-			gsap.killTweensOf(path);
-			gsap.to(path, {
-				morphSVG: originals[i],
-				duration: 0.4,
-				delay: i * 0.03,
-				ease: 'power2.inOut',
-				overwrite: true,
-			});
-		});
-		morphed = false;
-	}
-
-	async function handleEnter() {
-		if (currentParams.enabled === false) return;
-		if (isMobile()) return;
-		await Promise.all([ensurePluginAndPaths(), ensureShapes()]);
-		if (paths.length === 0 || shapes.length === 0) return;
+	function nextTarget(toMorphed: boolean): ((index: number) => string) | null {
+		if (paths.length === 0) return null;
+		if (!toMorphed) return isMorphed ? (index) => originals[index] ?? '' : null;
+		if (shapes.length === 0) return null;
 		const { shape, index } = pickRandomShape(shapes, lastIdx);
 		lastIdx = index;
-		morphTo(shape.path);
+		return () => shape.path;
 	}
 
-	function handleLeave() {
-		if (currentParams.enabled === false) return;
-		if (isMobile()) return;
-		morphBack();
-	}
+	async function play(toMorphed: boolean, done: () => void) {
+		// Every path must reach `done`, or the gate would ignore this icon until it remounts.
+		try {
+			await prepare();
+			if (destroyed) return;
 
-	async function handleTap(e: Event) {
-		if (!isMobile()) return;
-		if (currentParams.enabled === false) return;
-		e.preventDefault();
-		e.stopPropagation();
-		await Promise.all([ensurePluginAndPaths(), ensureShapes()]);
-		if (paths.length === 0 || shapes.length === 0) return;
-		if (morphed) {
-			morphBack();
-		} else {
-			const { shape, index } = pickRandomShape(shapes, lastIdx);
-			lastIdx = index;
-			morphTo(shape.path);
+			const target = nextTarget(toMorphed);
+			if (!target) {
+				done();
+				return;
+			}
+			tween = tweenPathsTo(paths, target, () => {
+				isMorphed = toMorphed;
+				done();
+			});
+		} catch (error) {
+			console.warn('[morph-hover] Morph failed; keeping the current art.', error);
+			done();
 		}
 	}
 
-	node.addEventListener('mouseenter', handleEnter);
-	node.addEventListener('mouseleave', handleLeave);
-	if (!params.disableClickToggle) {
-		node.addEventListener('click', handleTap);
-	}
+	const gate = createMorphGate({ play, ready: params.enabled !== false });
+	const syncHover = () => gate.set(pointerOver || currentParams.hovered === true);
+	const handleTap = () => gate.toggle();
+
+	const hover = pointerHover(node, (hovering) => {
+		pointerOver = hovering;
+		syncHover();
+	});
+	if (!params.disableClickToggle) node.addEventListener('click', handleTap);
+	syncHover();
 
 	return {
-		update(newParams: MorphHoverParams) {
-			currentParams = newParams;
+		update(next: MorphHoverParams) {
+			const hoverChanged = next.hovered !== currentParams.hovered;
+			currentParams = next;
+			gate.setReady(next.enabled !== false);
+			// Only a real hover change may reset the request, or an unrelated update would undo a tap.
+			if (hoverChanged) syncHover();
 		},
 		destroy() {
-			node.removeEventListener('mouseenter', handleEnter);
-			node.removeEventListener('mouseleave', handleLeave);
-			if (!params.disableClickToggle) {
-				node.removeEventListener('click', handleTap);
-			}
+			destroyed = true;
+			gate.destroy();
+			hover.destroy();
+			node.removeEventListener('click', handleTap);
+			tween?.kill();
 		},
 	};
 }
