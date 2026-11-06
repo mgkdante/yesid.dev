@@ -34,6 +34,15 @@ export const SITE_NAME = 'yesid.';
 
 export const TWITTER_HANDLE = '@mgkDante';
 
+/**
+ * Robots tag for indexable pages. Google shows large image previews only with this
+ * rule, and index, follow and an unlimited snippet are already its defaults.
+ * Noindex pages get their tag from SeoHead.
+ */
+export function pageRobots({ noIndex }: Pick<PageSeo, 'noIndex'>): string | undefined {
+	return noIndex ? undefined : 'max-image-preview:large';
+}
+
 import { PUBLISHED_LOCALES } from './published-locales';
 export { PUBLISHED_LOCALES };
 

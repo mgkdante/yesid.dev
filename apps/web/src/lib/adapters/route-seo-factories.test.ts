@@ -173,7 +173,7 @@ describe('blogSlugSeoFactory', () => {
 		});
 
 		expect(seo.title.en).toBe('Raw SQL for PostgreSQL Control | yesid.');
-		expect(seo.description.en).toBe(seoDescription);
+		expect(seo.description.en).toBe(`${seoDescription} Read the article.`);
 		expect(seo.canonical).toBe('https://yesid.dev/blog/raw-sql-control');
 		expect(seo.singleLocale).toBeUndefined();
 		expect(seo.localeAlternates).toEqual({
@@ -384,13 +384,13 @@ describe('projectsSlugSeoFactory', () => {
 			blocks: [{ id: 'long-description', type: 'paragraph' as const, data: { text: 'x'.repeat(201) } }],
 		};
 		const designProject = projectFactory.build({
-			slug: 'yesid-dev-design',
+			slug: 'project-without-share-line',
 			title: { en: 'yesid.dev-design' },
 			description: { en: description, fr: description, es: description },
 			oneLiner: {
-				en: 'One visual foundation, room for different products',
-				fr: 'Une base visuelle commune, une place pour chaque produit',
-				es: 'Una base visual común, espacio para cada producto',
+				en: 'x'.repeat(201),
+				fr: 'x'.repeat(201),
+				es: 'x'.repeat(201),
 			},
 		});
 		for (const locale of PUBLISHED_LOCALES) {
@@ -404,8 +404,78 @@ describe('projectsSlugSeoFactory', () => {
 			expect(seo.description).toEqual(siteSeoDefaults.defaultDescription);
 			expect(seo.noIndex).toBe(false);
 			expect(seo.title.en).toBe('yesid.dev-design | yesid.');
-			expect(seo.ogImage?.url).toContain('/og/project/yesid-dev-design');
+			expect(seo.ogImage?.url).toContain('/og/project/project-without-share-line');
 		}
+	});
+
+	it('describes a new project with its one-liner and invitation, ahead of the long description', async () => {
+		const description = {
+			time: 1,
+			version: '2.31.2',
+			blocks: [{ id: 'prose', type: 'paragraph' as const, data: { text: 'A longer description that reads as prose and is well inside the band.' } }],
+		};
+		const fresh = projectFactory.build({
+			slug: 'brand-new-project',
+			title: { en: 'Brand new' },
+			description: { en: description, fr: description, es: description },
+			oneLiner: { en: 'A short line about the new project.', fr: 'Une courte ligne sur le nouveau projet.', es: 'Una línea corta sobre el nuevo proyecto.' },
+		});
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: fresh.slug },
+			locale: 'fr',
+			catalog: createContentCatalog({ projects: [fresh] }),
+			siteMeta,
+			siteSeoDefaults,
+		}));
+		expect(seo.description.en).toBe('A short line about the new project. See the case study.');
+		expect(seo.description.fr).toBe('Une courte ligne sur le nouveau projet. Voir l’étude de cas.');
+	});
+
+	it('chooses each language on its own so a translation is never lost to English', async () => {
+		const paragraph = (text: string) => ({
+			time: 1,
+			version: '2.31.2',
+			blocks: [{ id: 'prose', type: 'paragraph' as const, data: { text } }],
+		});
+		const fresh = {
+			...projectFactory.build({
+				slug: 'english-one-liner-project',
+				title: { en: 'Brand new' },
+				description: {
+					en: paragraph('An English long description that is well inside the band.'),
+					fr: paragraph('Une description française du projet et de ses résultats pour les lecteurs.'),
+					es: paragraph('x'.repeat(201)),
+				},
+			}),
+			oneLiner: { en: 'An English summary of this new project and its useful results.' },
+		};
+		const spanishDefault = 'Descripción predeterminada del sitio, lo bastante larga para el esquema.';
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: fresh.slug },
+			locale: 'fr',
+			catalog: createContentCatalog({ projects: [fresh] }),
+			siteMeta,
+			siteSeoDefaults: {
+				...siteSeoDefaults,
+				defaultDescription: { ...siteSeoDefaults.defaultDescription, es: spanishDefault },
+			},
+		}));
+		expect(seo.description.en).toBe('An English summary of this new project and its useful results. See the case study.');
+		expect(seo.description.fr).toBe('Une description française du projet et de ses résultats pour les lecteurs. Voir l’étude de cas.');
+		expect(seo.description.es).toBe(spanishDefault);
+	});
+
+	it('describes a known project with its short line and invitation, not the site fallback', async () => {
+		const known = projectFactory.build({ slug: 'yesid-dev-design', title: { en: 'yesid.design' } });
+		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
+			params: { slug: known.slug },
+			locale: 'es',
+			catalog: createContentCatalog({ projects: [known] }),
+			siteMeta,
+			siteSeoDefaults,
+		}));
+		expect(seo.description.en).toBe('One visual foundation, room for different products. See the case study.');
+		expect(seo.description.es).toBe('Una base visual común, espacio para cada producto. Ver el caso de estudio.');
 	});
 
 	it('keeps short localized titles and missing translations unchanged', async () => {

@@ -14,8 +14,15 @@ test('project, blog and service details share the reading scale without page-wid
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	for (const reader of readers) {
 		if (reader.kind === 'services') {
-			const service = services.find((item) => item.visible !== false && (item.valueProposition || item.sections?.length));
-			expect(service, 'fixture needs a service with reading content').toBeDefined();
+			// Metrics over 8 characters use the compact size by design; this checks the large display size.
+			const service = services.find(
+				(item) =>
+					item.visible !== false &&
+					(item.valueProposition || item.sections?.length) &&
+					item.impactMetric &&
+					item.impactMetric.value.en.length <= 8,
+			);
+			expect(service, 'fixture needs a service with reading content and a short metric').toBeDefined();
 			await page.goto(`/services/${service!.id}`);
 			await expect(page.getByTestId(reader.landmark)).toBeVisible();
 		} else {

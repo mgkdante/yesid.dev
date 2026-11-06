@@ -30,7 +30,7 @@
 	import { DEFAULT_LOCALE, resolveLocale } from '#lib/utils/locale.ts';
 	import { provideLocale } from '#lib/utils/locale-context.ts';
 	import { delocalizePath, localizeHref } from '#lib/utils/locale-routing.ts';
-	import { PUBLISHED_LOCALES, languageHref, seoHeadProps } from '#lib/utils/seo-defaults.ts';
+	import { PUBLISHED_LOCALES, languageHref, pageRobots, seoHeadProps } from '#lib/utils/seo-defaults.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { attachDiagramHistoryAnchoring } from '#lib/state/diagram-history-anchoring.ts';
 	import { initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
@@ -152,6 +152,12 @@
 {#snippet footerAddress()}
 	<address class="not-italic">{resolveLocale(footer.location, locale)}</address>
 {/snippet}
+
+<svelte:head>
+	{#if pageRobots(seo)}
+		<meta name="robots" content={pageRobots(seo)} />
+	{/if}
+</svelte:head>
 
 <SiteRoot lang={locale}>
 	<SeoHead {...seoHeadProps(seo, locale, data.themeColor)} />

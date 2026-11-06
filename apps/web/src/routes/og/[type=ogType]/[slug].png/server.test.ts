@@ -1,14 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { RequestEvent } from '@sveltejs/kit';
 
-const renderOgPngMock = vi.fn();
+const renderPngMock = vi.fn();
 
-vi.mock('@yesid/seo-kit/og', () => ({
-  OG_WIDTH: 1200,
-  renderOgPng: (...args: unknown[]) => renderOgPngMock(...args),
+vi.mock('#lib/og/render.ts', () => ({
+  createOgCardRenderer: () => ({ png: (...args: unknown[]) => renderPngMock(...args) }),
 }));
-// Avoid decoding the real fonts during endpoint tests.
-vi.mock('@yesid/seo-kit/og/fonts', () => ({ ogFonts: [] }));
+// Avoid writing the real fonts during endpoint tests.
+vi.mock('#lib/og/font-files.ts', () => ({ inlinedOgFontFiles: () => [] }));
 
 import { blogPosts } from '#lib/content/blog.ts';
 import { projects } from '#lib/content/projects.ts';
@@ -26,7 +25,7 @@ function makeEvent(params: { type: string; slug: string }): RequestEvent {
 describe('GET /og/[type]/[slug].png', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    renderOgPngMock.mockReset();
+    renderPngMock.mockReset();
   });
 
   it('returns 404 for an archived section even when its generated row remains', async () => {
@@ -55,7 +54,7 @@ describe('GET /og/[type]/[slug].png', () => {
 
   it('returns 200 image/png on happy path', async () => {
 
-    renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+    renderPngMock.mockReturnValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
     const res = await GET(makeEvent({ type: 'blog', slug: 'hello-world' }));
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('image/png');
@@ -78,7 +77,9 @@ describe('GET /og/[type]/[slug].png', () => {
 
   it('throws an OG-prefixed error when rendering fails', async () => {
 
-    renderOgPngMock.mockRejectedValueOnce(new Error('satori boom'));
+    renderPngMock.mockImplementationOnce(() => {
+      throw new Error('resvg boom');
+    });
     await expect(GET(makeEvent({ type: 'blog', slug: 'hello-world' }))).rejects.toThrow(
       '[og] render failed for blog: "hello-world" (en)',
     );
@@ -86,15 +87,15 @@ describe('GET /og/[type]/[slug].png', () => {
 
   it('decodes a project locale suffix before loading the title', async () => {
 
-    renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+    renderPngMock.mockReturnValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
     await GET(makeEvent({ type: 'project', slug: 'p.fr' }));
-    expect(renderOgPngMock).toHaveBeenCalledWith(expect.objectContaining({ eyebrow: 'PROJET', title: 'Titre français' }), expect.anything(), expect.any(Function));
+    expect(renderPngMock).toHaveBeenCalledWith(expect.objectContaining({ eyebrow: 'PROJET', title: 'Titre français', cta: 'Voir l’étude de cas' }));
   });
 
   it('defaults to en when a project locale suffix is absent', async () => {
 
-    renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+    renderPngMock.mockReturnValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
     await GET(makeEvent({ type: 'project', slug: 'p' }));
-    expect(renderOgPngMock).toHaveBeenCalledWith(expect.objectContaining({ eyebrow: 'PROJECT', title: 'English title' }), expect.anything(), expect.any(Function));
+    expect(renderPngMock).toHaveBeenCalledWith(expect.objectContaining({ eyebrow: 'PROJECT', title: 'English title', cta: 'See the case study' }));
   });
 });

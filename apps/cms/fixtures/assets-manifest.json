@@ -168,29 +168,29 @@
 			"legacyPath": "og/routes/services.png",
 			"folder": "og",
 			"title": "OG card — /services",
-			"description": "Share card for the /services listing route: Digital Infrastructure title with the four-station service list.",
-			"sha256": "ecc605e88bccf2477376bf8cedbd698b71138f1488152d473698467796809a45"
+			"description": "Share card for the /services route: where stuck work starts, the four-service list and a call to action.",
+			"sha256": "224a68f7882fad86a3833b6ba86fe70c6319aa0238141cab30552b1665083142"
 		},
 		{
 			"legacyPath": "og/routes/contact.png",
 			"folder": "og",
 			"title": "OG card — /contact",
-			"description": "Share card for the /contact route in the yellow signage voice: Let's talk.",
-			"sha256": "3d4d50e6b220949a3c4e1262bf1cdc5d27bb783800f29c9f0f7388f05e58742f"
+			"description": "Share card for the /contact route: Let’s talk, the reply time and a call to action.",
+			"sha256": "b25421d844ba8c31edc2412e27f140d939c9a7318e786ba340b4730e8456d098"
 		},
 		{
 			"legacyPath": "og/routes/about.png",
 			"folder": "og",
 			"title": "OG card — /about",
-			"description": "Share card for the /about route: Yesid O., Freelance Digital Infrastructure Developer, with headshot.",
-			"sha256": "a5c8638070b022f6335e21cbffce09a936f92e54721c897a9e2a369d59651283"
+			"description": "Share card for the /about route: Yesid, freelance digital infrastructure developer, with headshot and a call to action.",
+			"sha256": "8c316985f71bd877bd213a682b5a942783af8e92651a960172bb3c6dad51dc96"
 		},
 		{
 			"legacyPath": "og/routes/projects.png",
 			"folder": "og",
 			"title": "OG card — /projects",
-			"description": "Share card for the /projects listing route with the digital-infrastructure blueprint drawing.",
-			"sha256": "8d9e573118a3d54eaca149babbe5f40794026504fac752be423c49c21207f161"
+			"description": "Share card for the /projects listing route with the digital-infrastructure blueprint drawing and a call to action.",
+			"sha256": "5417892fc336c19c3f5a67267f6783f35e3e8a96a94fe6685ae941332ee18de9"
 		},
 		{
 			"legacyPath": "images/work/portfolio-20261008/portfolio-20261008-transit-f1c7d4c3cfbd-01-stm-accueil-desktop-1440x1000.jpg",
