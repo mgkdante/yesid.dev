@@ -57,3 +57,9 @@ apps/web/static/images/*.source.svg
 !/apps/web/src/lib/content/index.ts
 !/apps/web/src/lib/content/*.test.ts
 /apps/web/src/lib/content/generated[.]manifest.json
+
+# Local agent tooling, never published
+AGENTS.local.md
+.mcp.json
+.codex/
+.claude/
