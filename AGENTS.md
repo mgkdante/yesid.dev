@@ -5,20 +5,7 @@ multilingual portfolio and information site backed by a build-time content
 pipeline. It is public for inspection but remains proprietary; read
 `CONTRIBUTING.md`, `LICENSE`, and `SECURITY.md` before proposing work.
 
-## Project context (Notion)
-Profile: https://app.notion.com/p/4033e8630690813cba9afa4949d1c849
-Start page: https://app.notion.com/p/4083e863069080df9e63d165128a1522
-This project's guide: https://app.notion.com/p/3f33e86306908116baf8c70ce55b9069
-Shared formats (roadmap, slice, spec, handoff, session): https://app.notion.com/p/4003e8630690809b8045d8ad3a439995
-
-- At the start of each agentic coding or delegation session, fetch the current [model-selection Skill](https://app.notion.com/p/4083e86306908179b442da1e1a9a8156) once and follow it for every model, effort, reviewer, provider and fallback choice. It is the same for every project; this repo picks no models. Saved Notion pages are not loaded context; updates do not change active sessions.
-- Discover enabled Notion Skills through native host tooling when exposed. Otherwise fetch applicable procedures directly and report the discovery limitation. Do not reload the full personal archive.
-- Pass applicable routing constraints and each source revision or read timestamp in child briefs.
-- When Notion is connected, read the project guide before planning; re-read live records before relying on any status.
-- Save durable facts about me as Notion Memories (parent "memory"), not in this file.
-- Repository instructions own local commands and constraints; Notion owns plans, decisions and handoffs.
-- Without Notion access, say what you couldn't read and propose the Notion update instead of claiming it.
-- Never use em dashes in anything written for Yesito.
+Notion owns intent, decisions, standing rules and how to work with Yesito. Before agentic coding, read [LLMs](https://app.notion.com/p/4083e863069080df9e63d165128a1522), which routes to the rest, and this project's [guide](https://app.notion.com/p/3f33e86306908116baf8c70ce55b9069). Don't add standing rules here: this file keeps local commands and constraints only. Write to Notion only when the current task authorizes it. Private workspace access is not needed to contribute.
 
 ## Stack and repository layout
 
