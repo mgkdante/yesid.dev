@@ -385,7 +385,7 @@ describe('projectsSlugSeoFactory', () => {
 		};
 		const designProject = projectFactory.build({
 			slug: 'project-without-share-line',
-			title: { en: 'yesid.dev-design' },
+			title: { en: 'yesid.design' },
 			description: { en: description, fr: description, es: description },
 			oneLiner: {
 				en: 'x'.repeat(201),
@@ -403,7 +403,7 @@ describe('projectsSlugSeoFactory', () => {
 			}));
 			expect(seo.description).toEqual(siteSeoDefaults.defaultDescription);
 			expect(seo.noIndex).toBe(false);
-			expect(seo.title.en).toBe('yesid.dev-design | yesid.');
+			expect(seo.title.en).toBe('yesid.design | yesid.');
 			expect(seo.ogImage?.url).toContain('/og/project/project-without-share-line');
 		}
 	});
@@ -466,7 +466,7 @@ describe('projectsSlugSeoFactory', () => {
 	});
 
 	it('describes a known project with its short line and invitation, not the site fallback', async () => {
-		const known = projectFactory.build({ slug: 'yesid-dev-design', title: { en: 'yesid.design' } });
+		const known = projectFactory.build({ slug: 'yesid-design', title: { en: 'yesid.design' } });
 		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
 			params: { slug: known.slug },
 			locale: 'es',

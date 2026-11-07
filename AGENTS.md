@@ -26,7 +26,7 @@ Shared formats (roadmap, slice, spec, handoff, session): https://app.notion.com/
 - SvelteKit, Svelte 5, TypeScript, Tailwind CSS, and Vite in `apps/web`
 - Directus 12 content schema, fixtures, exporters, and operations in `apps/cms`
 - Shared product schemas and utilities in `packages/shared`
-- The `@yesid/*` design-system packages, installed from one exact yesid.dev-design release
+- The `@yesid/*` design-system packages, installed from one exact yesid.design release
 
 The browser and request-time application do not query Directus for page
 content. Directus is the editorial source, and the CMS exporter writes typed,
@@ -63,7 +63,7 @@ Refresh the fixture from a live cache with
 
 ## Design system
 
-`@yesid/*` come from one exact yesid.dev-design release, installed by URL (`apps/web/package.json`, root `package.json` for `@yesid/config`) and pinned by integrity in `bun.lock`. Never patch them under `node_modules`; change them upstream and bump.
+`@yesid/*` come from one exact yesid.design release, installed by URL (`apps/web/package.json`, root `package.json` for `@yesid/config`) and pinned by integrity in `bun.lock`. Never patch them under `node_modules`; change them upstream and bump.
 
 Keep changes small, preserve public behavior unless the task explicitly says
 otherwise, and add tests around observable behavior rather than source text or

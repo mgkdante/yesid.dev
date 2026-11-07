@@ -13,7 +13,7 @@ analytics and reporting, and web development, in English, French and Spanish.
 - [SvelteKit](https://svelte.dev) with Svelte 5 and TypeScript, Tailwind CSS 4 and GSAP
 - [Directus 12](https://directus.io) as the editorial CMS, on Railway with Neon Postgres and Cloudflare R2
 - Vercel for the site, Bun workspaces and Turborepo for the monorepo
-- The `@yesid/*` design-system packages from [yesid.dev-design](https://github.com/mgkdante/yesid.dev-design)
+- The `@yesid/*` design-system packages from [yesid.design](https://github.com/mgkdante/yesid.design)
 
 ## Quickstart
 
@@ -66,7 +66,7 @@ Directus ──► exporter ──► typed modules ──► SvelteKit build �
                 └── shared fixture (local and CI builds)
 ```
 
-The `@yesid/*` packages come from one exact yesid.dev-design release, installed
+The `@yesid/*` packages come from one exact yesid.design release, installed
 by URL and pinned by integrity in `bun.lock`. A version bump gets its own pull
 request, and the packages are never patched here.
 
@@ -74,7 +74,7 @@ request, and the packages are never patched here.
 
 - Live site: [yesid.dev](https://yesid.dev)
 - Documentation: [architecture wiki](https://yesid-dev.notion.site/3603e8630690813bbe4ac7adac7d1bd7?v=4093e86306908049b5ee000c3e271459)
-- Design system: [mgkdante/yesid.dev-design](https://github.com/mgkdante/yesid.dev-design)
+- Design system: [mgkdante/yesid.design](https://github.com/mgkdante/yesid.design)
 - Contributor guide: [AGENTS.md](AGENTS.md)
 - Security reports: [SECURITY.md](SECURITY.md)
 - Support: [SUPPORT.md](SUPPORT.md)
