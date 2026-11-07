@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SHARE_CTA, projectShareDescription, projectTagline, withShareCta } from './share-copy';
 
 const LOCALES = ['en', 'fr', 'es'] as const;
-const SLUGS = ['transit-data-pipeline', 'cafe-arona', 'yesid-dev-design', 'yesid-dev'];
+const SLUGS = ['transit-data-pipeline', 'cafe-arona', 'yesid-design', 'yesid-dev'];
 
 describe('share copy', () => {
 	it.each(SLUGS)('keeps the %s description short and closes it with the invitation', (slug) => {

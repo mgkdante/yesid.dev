@@ -34,7 +34,7 @@ const PROJECT_TAGLINES: Readonly<Record<string, LocalizedShareCopy>> = {
 		fr: 'Un site bilingue que la famille gère depuis Shopify.',
 		es: 'Un sitio bilingüe que la familia administra desde Shopify.',
 	},
-	'yesid-dev-design': {
+	'yesid-design': {
 		en: 'One visual foundation, room for different products.',
 		fr: 'Une base visuelle commune, une place pour chaque produit.',
 		es: 'Una base visual común, espacio para cada producto.',

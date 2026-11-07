@@ -3,7 +3,7 @@
 The repository's root [LICENSE](LICENSE) applies only to original yesid.dev
 material.
 
-- The `@yesid/*` packages from yesid.dev-design, installed from its release tarballs under
+- The `@yesid/*` packages from yesid.design, installed from its release tarballs under
   `node_modules/@yesid/`, are MIT licensed (Copyright © 2026 Yesid Otalora); each tarball carries
   `LICENSE` and `NOTICE`. `@yesid/motion/lenis.css` comes from Lenis 1.3 (MIT, Copyright (c) 2024
   darkroom.engineering). The Inter and JetBrains Mono fonts in `@yesid/tokens/fonts/` and

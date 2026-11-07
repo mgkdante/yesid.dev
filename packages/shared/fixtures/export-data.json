@@ -1473,7 +1473,7 @@
 						"id": "545ee6f03e4666f3-11",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/es/projects/yesid-dev-design\">Conocer el proyecto</a>"
+							"text": "<a href=\"/es/projects/yesid-design\">Conocer el proyecto</a>"
 						}
 					}
 				],
@@ -1500,7 +1500,7 @@
 						"id": "0ced3869e13dc74c-11",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/fr/projects/yesid-dev-design\">Découvrir le projet</a>"
+							"text": "<a href=\"/fr/projects/yesid-design\">Découvrir le projet</a>"
 						}
 					}
 				],
@@ -1527,7 +1527,7 @@
 						"id": "b0d5561e2204c7da-11",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/projects/yesid-dev-design\">Read the project story</a>"
+							"text": "<a href=\"/projects/yesid-design\">Read the project story</a>"
 						}
 					}
 				],
@@ -5898,7 +5898,7 @@
 					"yesid-dev",
 					"cafe-arona",
 					"transit-data-pipeline",
-					"yesid-dev-design"
+					"yesid-design"
 				],
 				"valueProposition": {"en":"First stop on the line: your business reaches people. I design and build websites and online stores that look sharp on every screen, load fast, and are easy to find on Google. The basics of getting noticed are set up properly: search, analytics, your Google listing, a way to capture leads. And you can update your own content without calling a developer.","fr":"Premier arrêt sur la ligne : ta business rejoint le monde. Je conçois et je bâtis des sites web et des boutiques en ligne qui sont beaux sur tous les écrans, qui chargent vite et qu'on trouve facilement sur Google. Les bases pour te faire remarquer sont bien en place : référencement, statistiques, ta fiche Google, une façon de récolter des contacts. Pis tu peux modifier ton contenu toi-même sans appeler un développeur.","es":"Primera parada de la línea: tu negocio llega a la gente. Diseño y construyo sitios web y tiendas en línea que se ven bien en cualquier pantalla, cargan rápido y se encuentran fácil en Google. Dejo bien montado lo básico para que te noten: posicionamiento, estadísticas, tu ficha de Google y una forma de captar contactos. Y puedes actualizar tu contenido tú mismo sin llamar a un desarrollador."},
 				"seoDescription": {"en":"Sharp, fast websites and Shopify stores that get found on Google. In Montréal. See what’s included.","fr":"Sites web et boutiques Shopify beaux, rapides et trouvables sur Google. À Montréal. Voir ce qui est inclus.","es":"Sitios y tiendas Shopify bonitos, rápidos y visibles en Google. Freelance en Montreal. Ver qué incluye."},
@@ -9607,7 +9607,7 @@
 				"environment": "production"
 			},
 			{
-				"slug": "yesid-dev-design",
+				"slug": "yesid-design",
 				"title": {"en":"yesid.design","fr":"yesid.design","es":"yesid.design"},
 				"oneLiner": {"en":"One visual foundation, room for different products","fr":"Une base visuelle commune, une place pour chaque produit","es":"Una base visual común, espacio para cada producto"},
 				"description": {
@@ -9670,7 +9670,7 @@
 				],
 				"status": "public",
 				"featured": true,
-				"repoUrl": "https://github.com/mgkdante/yesid.dev-design",
+				"repoUrl": "https://github.com/mgkdante/yesid.design",
 				"docsUrl": "https://yesid-dev.notion.site/3923e86306908139bbe4e78931cb3dbc?v=4093e8630690805eb12d000c417f4660",
 				"image": "1e736cd2-dd12-40ed-8175-4483538b66e1",
 				"imageLight": "774906cc-920c-4455-a4cc-6e5a5be057d5",
@@ -10002,7 +10002,7 @@
 										"id": "f9156aa96bb45d78",
 										"type": "paragraph",
 										"data": {
-											"text": "Source: <a href=\"https://github.com/mgkdante/yesid.dev-design/blob/main/tools/build-tokens.ts#L8-L13\">artifactPaths, tools/build-tokens.ts</a>"
+											"text": "Source: <a href=\"https://github.com/mgkdante/yesid.design/blob/main/tools/build-tokens.ts#L8-L13\">artifactPaths, tools/build-tokens.ts</a>"
 										}
 									},
 									{
@@ -10083,7 +10083,7 @@
 										"id": "23f0ccaa310997b3",
 										"type": "paragraph",
 										"data": {
-											"text": "Source : <a href=\"https://github.com/mgkdante/yesid.dev-design/blob/main/tools/build-tokens.ts#L8-L13\">artifactPaths, tools/build-tokens.ts</a>"
+											"text": "Source : <a href=\"https://github.com/mgkdante/yesid.design/blob/main/tools/build-tokens.ts#L8-L13\">artifactPaths, tools/build-tokens.ts</a>"
 										}
 									},
 									{
@@ -10164,7 +10164,7 @@
 										"id": "6e3cbc5a4889dba2",
 										"type": "paragraph",
 										"data": {
-											"text": "Fuente: <a href=\"https://github.com/mgkdante/yesid.dev-design/blob/main/tools/build-tokens.ts#L8-L13\">artifactPaths, tools/build-tokens.ts</a>"
+											"text": "Fuente: <a href=\"https://github.com/mgkdante/yesid.design/blob/main/tools/build-tokens.ts#L8-L13\">artifactPaths, tools/build-tokens.ts</a>"
 										}
 									},
 									{
@@ -10242,7 +10242,7 @@
 										"id": "73ed424f12eaefd0",
 										"type": "paragraph",
 										"data": {
-											"text": "Source: <a href=\"https://github.com/mgkdante/yesid.dev-design/blob/main/packages/motion/src/actions/cardParallax.ts#L22-L25\">cardParallax, packages/motion/src/actions/cardParallax.ts</a>"
+											"text": "Source: <a href=\"https://github.com/mgkdante/yesid.design/blob/main/packages/motion/src/actions/cardParallax.ts#L22-L25\">cardParallax, packages/motion/src/actions/cardParallax.ts</a>"
 										}
 									}
 								],
@@ -10308,7 +10308,7 @@
 										"id": "a088c9d10f2e7107",
 										"type": "paragraph",
 										"data": {
-											"text": "Source : <a href=\"https://github.com/mgkdante/yesid.dev-design/blob/main/packages/motion/src/actions/cardParallax.ts#L22-L25\">cardParallax, packages/motion/src/actions/cardParallax.ts</a>"
+											"text": "Source : <a href=\"https://github.com/mgkdante/yesid.design/blob/main/packages/motion/src/actions/cardParallax.ts#L22-L25\">cardParallax, packages/motion/src/actions/cardParallax.ts</a>"
 										}
 									}
 								],
@@ -10374,7 +10374,7 @@
 										"id": "6fb7743b1eee9889",
 										"type": "paragraph",
 										"data": {
-											"text": "Fuente: <a href=\"https://github.com/mgkdante/yesid.dev-design/blob/main/packages/motion/src/actions/cardParallax.ts#L22-L25\">cardParallax, packages/motion/src/actions/cardParallax.ts</a>"
+											"text": "Fuente: <a href=\"https://github.com/mgkdante/yesid.design/blob/main/packages/motion/src/actions/cardParallax.ts#L22-L25\">cardParallax, packages/motion/src/actions/cardParallax.ts</a>"
 										}
 									}
 								],
@@ -12325,7 +12325,7 @@
 													"items": []
 												},
 												{
-													"content": "Design system: <a href=\"https://github.com/mgkdante/yesid.dev-design\">github.com/mgkdante/yesid.dev-design</a>",
+													"content": "Design system: <a href=\"https://github.com/mgkdante/yesid.design\">github.com/mgkdante/yesid.design</a>",
 													"items": []
 												}
 											]
@@ -12385,7 +12385,7 @@
 													"items": []
 												},
 												{
-													"content": "Système de design : <a href=\"https://github.com/mgkdante/yesid.dev-design\">github.com/mgkdante/yesid.dev-design</a>",
+													"content": "Système de design : <a href=\"https://github.com/mgkdante/yesid.design\">github.com/mgkdante/yesid.design</a>",
 													"items": []
 												}
 											]
@@ -12445,7 +12445,7 @@
 													"items": []
 												},
 												{
-													"content": "Sistema de diseño: <a href=\"https://github.com/mgkdante/yesid.dev-design\">github.com/mgkdante/yesid.dev-design</a>",
+													"content": "Sistema de diseño: <a href=\"https://github.com/mgkdante/yesid.design\">github.com/mgkdante/yesid.design</a>",
 													"items": []
 												}
 											]
