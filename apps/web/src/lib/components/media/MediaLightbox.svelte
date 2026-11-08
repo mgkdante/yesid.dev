@@ -265,6 +265,7 @@
 	}
 
 	.article-media-navigation { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.5rem 3.75rem; flex-shrink: 0; }
-	.article-media-diagram { flex: 1 1 0; min-height: 0; padding: 3.75rem 1rem 1rem; overflow: auto; }
-	.article-media-diagram :global(svg) { display: block; width: 100%; max-width: none !important; height: auto; }
+	/* Centered both ways; auto margins still scroll from the top when the diagram is taller. */
+	.article-media-diagram { display: flex; flex: 1 1 0; min-height: 0; padding: 3.75rem 1rem; overflow: auto; }
+	.article-media-diagram :global(svg) { display: block; width: 100%; max-width: none !important; height: auto; margin: auto; }
 </style>
