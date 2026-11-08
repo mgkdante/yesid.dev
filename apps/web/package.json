@@ -7,7 +7,7 @@
 		"predev": "bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"dev": "vite dev",
 		"prebuild": "bun ../../apps/cms/scripts/export-fallbacks.ts",
-		"build": "vite build && vitest run src/tests/sitemap-coverage.test.ts",
+		"build": "vite build && node --no-experimental-require-module scripts/check-ssr-runtime.mjs && vitest run src/tests/sitemap-coverage.test.ts",
 		"check:sitemap": "vitest run src/tests/sitemap-coverage.test.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
