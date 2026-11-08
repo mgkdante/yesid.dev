@@ -283,6 +283,7 @@
 		style="--detail-rail-top: calc(var(--chrome-offset) + 4rem + 2rem);"
 		left={hasImpact ? impact : undefined}
 		right={hasSidePanel ? projectsAside : undefined}
+		railScroll
 		bind:activeId={activeTocId}
 		toc={{
 			entries: tocEntries,
