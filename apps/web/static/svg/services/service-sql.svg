@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <ellipse cx="24" cy="11" rx="14" ry="5" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
-  <path d="M10 11v13m28-13v13M10 34v3c0 6 28 6 28 0v-3" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
-  <path d="M10 20c0 6 28 6 28 0" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="m14 27-7 5 7 5m20-10 7 5-7 5M27 26l-6 12" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
+  <path d="M10 10v26c0 6.7 28 6.7 28 0V10" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <ellipse cx="24" cy="10" rx="14" ry="5" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
+  <path d="M10 20c0 6.7 28 6.7 28 0" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
+  <path d="m18 30-4 3.5 4 3.5m12-7 4 3.5-4 3.5M25.5 29l-3 9" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
 </svg>
