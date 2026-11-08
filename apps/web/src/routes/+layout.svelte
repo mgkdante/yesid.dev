@@ -33,6 +33,7 @@
 	import { PUBLISHED_LOCALES, languageHref, pageRobots, seoHeadProps } from '#lib/utils/seo-defaults.ts';
 	import { attachLocaleHandoff } from '#lib/state/locale-handoff.svelte.ts';
 	import { attachDiagramHistoryAnchoring } from '#lib/state/diagram-history-anchoring.ts';
+	import { guardHistoryDuringTransitions } from '#lib/state/history-reload-guard.ts';
 	import { initScrollTriggerConfig } from '@yesid/motion/utils/gsap';
 	import { initGlobalRipple } from '@yesid/motion/utils/globalRipple';
 	import { setMorphShapes } from '#lib/utils/shapes.ts';
@@ -76,6 +77,8 @@
 		);
 		return transition;
 	});
+	// A Back or Forward during that transition reloads the target entry (#557).
+	onMount(() => guardHistoryDuringTransitions(window, () => pendingTransitions > 0));
 
 	$effect(() => {
 		if (data.morphShapes) {
@@ -138,9 +141,7 @@
 	}
 </script>
 
-<!-- SvelteKit skips beforeNavigate during an active navigation, so use native history events. -->
 <svelte:window
-	onpopstate={() => { if (pendingTransitions > 0) location.reload(); }}
 	onclick={trackProfileLink}
 	onauxclick={trackProfileLink}
 />
