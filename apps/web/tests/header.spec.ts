@@ -70,11 +70,13 @@ for (const locale of PUBLISHED_LOCALES) {
 		await expect(page.locator('html')).toHaveAttribute('lang', next(locale));
 	});
 
+	// Links that don't fit move to the menu once the app script measures them, so poll the settled pill.
 	test(`${locale}: the header stays inside the viewport`, async ({ page }) => {
 		await page.goto(start(locale));
-		const pill = (await page.getByTestId('nav-pill').boundingBox())!;
-		expect(pill.x).toBeGreaterThanOrEqual(0);
-		expect(pill.x + pill.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+		await expect.poll(async () => {
+			const pill = (await page.getByTestId('nav-pill').boundingBox())!;
+			return pill.x >= 0 && pill.x + pill.width <= page.viewportSize()!.width;
+		}).toBe(true);
 	});
 }
 

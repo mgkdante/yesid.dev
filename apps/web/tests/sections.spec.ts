@@ -4,9 +4,15 @@ import boot from '@yesid/ui/boot.json' with { type: 'json' };
 test.use({ storageState: { cookies: [], origins: [] } });
 
 const action = (page: Page) => page.getByTestId('sections-toggle').filter({ visible: true });
+// Seeds a remembered Collapse all; a later bulk choice still wins.
+const startCollapsed = (page: Page) =>
+	page.addInitScript(() => {
+		if (localStorage.getItem('sections-choice') === null) localStorage.setItem('sections-choice', 'collapsed');
+	});
 const contentTriggers = (page: Page) => page.locator('main .section-header:visible').filter({ hasNot: page.locator('h2', { hasText: 'On this page' }) });
 
 test('bulk choice is remembered while TOC reveal affects only the current target', async ({ page }) => {
+	await startCollapsed(page);
 	const errors: string[] = [];
 	page.on('pageerror', error => errors.push(error.message));
 	page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
@@ -44,8 +50,8 @@ test('bulk choice is remembered while TOC reveal affects only the current target
 
 test('a different service applies the remembered collapsed choice', async ({ page }) => {
 	await page.goto('/services/database-engineering');
-	await expect(action(page)).toHaveText('Expand all');
-	await action(page).click();
+	await expect(action(page)).toHaveText('Collapse all');
+	await expect(contentTriggers(page).first()).toHaveAttribute('aria-expanded', 'true');
 	await action(page).click();
 	await expect(action(page)).toHaveText('Expand all');
 	await page.getByTestId('service-nav-prev').click();
