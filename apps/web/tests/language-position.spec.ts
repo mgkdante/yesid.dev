@@ -66,7 +66,7 @@ test('project language switch does not open a closed target section', async ({ p
 
 for (const detail of [
 	{ name: 'service', path: '/services/web-development', selector: '.sections.article-body [data-toc="svc-deliverables"]' },
-	{ name: 'blog', path: '/blog/changing-language-should-not-mean-starting-over', selector: '[data-testid="blog-sections"] > .blog-section-block' },
+	{ name: 'blog', path: '/blog/four-projects-four-stacks', selector: '[data-testid="blog-sections"] > .blog-section-block' },
 ]) {
 	test(`${detail.name} keeps section progress through EN, FR, ES and back`, async ({ page }) => {
 		await page.goto(detail.path, { waitUntil: 'domcontentloaded' });

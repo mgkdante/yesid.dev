@@ -105,7 +105,7 @@ test.describe('responsive shell and interrupted menu', () => {
 			await expect(page.getByTestId('hero-cta-projects')).toBeInViewport();
 			for (const route of [
 				'/projects/transit-data-pipeline',
-				'/blog/50-to-0-an-oracle-always-free-vm',
+				'/blog/four-projects-four-stacks',
 			]) {
 				await page.goto(route);
 				await page.evaluate(() => document.fonts.ready);

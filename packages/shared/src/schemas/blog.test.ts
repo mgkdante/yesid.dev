@@ -2,17 +2,17 @@ import { describe, expect, it } from 'bun:test';
 import { BlogPostSchema } from './blog';
 
 const validPost = {
-	translationKey: 'the-two-hour-internet-slot',
-	slug: 'the-two-hour-internet-slot',
-	title: 'The two-hour internet slot',
+	translationKey: 'four-projects-four-stacks',
+	slug: 'four-projects-four-stacks',
+	title: 'Four projects, four stacks',
 	excerpt: 'A short listing excerpt.',
 	date: '2026-07-10',
 	lang: 'en',
-	category: 'personal',
-	tags: ['internet'],
+	category: 'professional',
+	tags: ['sveltekit'],
 	animation: 'draw',
-	svg: '/images/blog/the-two-hour-internet-slot.svg',
-	url: '/blog/the-two-hour-internet-slot',
+	svg: '/images/blog/four-projects-four-stacks.svg',
+	url: '/blog/four-projects-four-stacks',
 	external: false,
 };
 
@@ -27,7 +27,7 @@ describe('BlogPostSchema translationKey', () => {
 		expect(BlogPostSchema.safeParse(postWithoutKey).success).toBe(false);
 	});
 
-	it.each(['', 'The-Two-Hour-Slot', 'two hour slot', 'two_hour_slot', 'two--hour-slot'])(
+	it.each(['', 'Four-Projects-Four-Stacks', 'four projects', 'four_projects', 'four--projects'])(
 		'rejects a non-kebab translation key: %s',
 		(translationKey) => {
 			expect(BlogPostSchema.safeParse({ ...validPost, translationKey }).success).toBe(false);

@@ -8,9 +8,9 @@ import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
 
 const FIRST_ARTICLE = {
-  en: '/blog/the-two-hour-internet-slot',
-  fr: '/fr/blog/le-creneau-internet-de-deux-heures',
-  es: '/es/blog/el-turno-de-dos-horas-para-usar-internet',
+  en: '/blog/four-projects-four-stacks',
+  fr: '/fr/blog/quatre-projets-quatre-piles-technologiques',
+  es: '/es/blog/cuatro-proyectos-cuatro-stacks',
 } as const;
 
 test.describe('Language toggle — click navigation + content change', () => {
