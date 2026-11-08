@@ -335,6 +335,27 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		expect(container.querySelector('cite')?.textContent).toBe('Gandhi');
 	});
 
+	it('renders sanitized tables in a named keyboard-focusable region', () => {
+		const { container } = render(BlockRenderer, { doc: baseDoc([{ id: 't1', type: 'table', data: {
+			withHeadings: true, content: [['<b>Name</b>', 'Role'], ['<i>Ada</i>', '<script>evil()</script><a href="https://example.com" onclick="evil()">Engineer</a>']],
+		} }]) });
+		expect(screen.getByRole('region', { name: 'Name · Role' })).toHaveAttribute('tabindex', '0');
+		expect(screen.getAllByRole('columnheader')).toHaveLength(2);
+		expect(screen.getByRole('columnheader', { name: 'Name' })).toHaveAttribute('scope', 'col');
+		expect(container.querySelector('thead b')).toHaveTextContent('Name');
+		expect(container.querySelector('tbody i')).toHaveTextContent('Ada');
+		expect(screen.getByRole('link', { name: 'Engineer' })).toHaveAttribute('href', 'https://example.com');
+		expect(container.querySelector('script, [onclick]')).toBeNull();
+	});
+
+	it('renders every row as body cells without headings', () => {
+		render(BlockRenderer, { doc: baseDoc([{ id: 't2', type: 'table', data: {
+			withHeadings: false, content: [['One', 'Two'], ['Three']],
+		} }]) });
+		expect(screen.queryByRole('columnheader')).toBeNull();
+		expect(screen.getAllByRole('cell')).toHaveLength(3);
+	});
+
 	it('renders delimiter (HR)', () => {
 		const doc = baseDoc([
 			{ id: 'd1', type: 'delimiter', data: {} },

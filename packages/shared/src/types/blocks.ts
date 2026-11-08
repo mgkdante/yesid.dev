@@ -100,6 +100,16 @@ export interface ImageBlock {
 	};
 }
 
+export interface TableBlock {
+	id: string;
+	type: 'table';
+	data: {
+		withHeadings: boolean;
+		stretched?: boolean;
+		content: string[][]; // raw inline HTML, as saved by @editorjs/table 2.4.5
+	};
+}
+
 export interface DelimiterBlock {
 	id: string;
 	type: 'delimiter';
@@ -114,6 +124,7 @@ export type BlockEditorBlock =
 	| CodeBlock
 	| QuoteBlock
 	| ImageBlock
+	| TableBlock
 	| DelimiterBlock;
 
 // ---------------------------------------------------------------------------
@@ -216,6 +227,16 @@ export const ImageBlockSchema: z.ZodType<ImageBlock> = z.object({
 	}),
 });
 
+export const TableBlockSchema = z.object({
+	id: z.string(),
+	type: z.literal('table'),
+	data: z.object({
+		withHeadings: z.boolean(),
+		stretched: z.boolean().optional(),
+		content: z.array(z.array(z.string())),
+	}),
+});
+
 export const DelimiterBlockSchema: z.ZodType<DelimiterBlock> = z.object({
 	id: z.string(),
 	type: z.literal('delimiter'),
@@ -230,6 +251,7 @@ export const DelimiterBlockSchema: z.ZodType<DelimiterBlock> = z.object({
 // — runtime behaviour is unaffected because each cast target IS a ZodObject
 // at runtime; only the static type is opaque.
 export const BlockEditorBlockSchema = z.discriminatedUnion('type', [
+	TableBlockSchema,
 	HeaderBlockSchema as unknown as z.ZodObject<z.ZodRawShape>,
 	ParagraphBlockSchema as unknown as z.ZodObject<z.ZodRawShape>,
 	NestedListBlockSchema as unknown as z.ZodObject<z.ZodRawShape>,

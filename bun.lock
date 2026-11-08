@@ -81,7 +81,11 @@
       "name": "@repo/shared",
       "version": "0.0.0",
       "dependencies": {
+        "sanitize-html": "2.18.1",
         "zod": "^4.3.6",
+      },
+      "devDependencies": {
+        "@types/sanitize-html": "2.16.1",
       },
     },
   },

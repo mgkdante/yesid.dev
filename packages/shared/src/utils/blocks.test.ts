@@ -681,3 +681,36 @@ describe('BlockEditorDocSchema.parse — full round-trip', () => {
 		expect(result.success).toBe(true);
 	});
 });
+
+
+describe('table blocks', () => {
+	const tableDoc: BlockEditorDoc = {
+		time: 0, version: '2.31.2', blocks: [{ id: 'table', type: 'table', data: {
+			withHeadings: true, stretched: false,
+			content: [['<b>Tool</b>', 'Use'], ['Bun', '<a href="https://bun.sh">Runtime</a>']],
+		} }],
+	};
+	it('accepts the Directus table payload and preserves it through validation', () => {
+		expect(BlockEditorDocSchema.parse(tableDoc)).toEqual(tableDoc);
+	});
+	it('includes cells in reading text without creating TOC headings', () => {
+		expect(extractText(tableDoc)).toBe('Tool Use Bun Runtime');
+		expect(extractHeadings(tableDoc)).toEqual([]);
+	});
+	it('serializes a semantic header and body with inline marks', () => {
+		expect(serializeBlocksToHtml(tableDoc)).toBe('<table><thead><tr><th scope="col"><b>Tool</b></th><th scope="col">Use</th></tr></thead><tbody><tr><td>Bun</td><td><a href="https://bun.sh">Runtime</a></td></tr></tbody></table>');
+	});
+	it('accepts omitted stretch, empty and ragged rows, but rejects non-string cells', () => {
+		const doc = (content: unknown) => ({ ...tableDoc, blocks: [{ id: 't', type: 'table', data: { withHeadings: false, content } }] });
+		expect(BlockEditorDocSchema.safeParse(doc([[], ['One']])).success).toBe(true);
+		expect(BlockEditorDocSchema.safeParse(doc([[1]])).success).toBe(false);
+		expect(serializeBlocksToHtml(BlockEditorDocSchema.parse(doc([])))).toBe('<table><tbody></tbody></table>');
+		expect(serializeBlocksToHtml(BlockEditorDocSchema.parse(doc([['One']])))).toBe('<table><tbody><tr><td>One</td></tr></tbody></table>');
+	});
+	it('removes scripts, event handlers and unsafe URLs from serialized cells', () => {
+		const doc: BlockEditorDoc = { ...tableDoc, blocks: [{ id: 'unsafe', type: 'table', data: {
+			withHeadings: false, content: [['<script>alert(1)</script><b onclick="evil()">Safe</b><a href="javascript:evil()">Link</a><i>Italic</i>']],
+		} }] };
+		expect(serializeBlocksToHtml(doc)).toBe('<table><tbody><tr><td><b>Safe</b><a>Link</a><i>Italic</i></td></tr></tbody></table>');
+	});
+});

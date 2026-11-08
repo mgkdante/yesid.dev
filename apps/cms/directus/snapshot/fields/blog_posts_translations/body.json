@@ -11,8 +11,10 @@
     "group": "grp_body",
     "hidden": false,
     "interface": "input-block-editor",
-    "note": "Headings, paragraphs, lists, quotes, code and images. Leave it empty for external posts.",
-    "options": null,
+    "note": "Headings, paragraphs, lists, quotes, code, images and tables. Leave it empty for external posts.",
+    "options": {
+      "tools": ["header", "nestedlist", "code", "image", "paragraph", "checklist", "quote", "underline", "table"]
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
