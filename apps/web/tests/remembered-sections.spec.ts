@@ -3,23 +3,28 @@ import { expect, test, type Page } from '@playwright/test';
 test.use({ storageState: { cookies: [], origins: [] } });
 const project = '/projects/transit-data-pipeline';
 const action = (page: Page) => page.getByTestId('sections-toggle').filter({ visible: true });
+// Seeds a remembered Collapse all; a later bulk choice still wins.
+const startCollapsed = (page: Page) =>
+	page.addInitScript(() => {
+		if (localStorage.getItem('sections-choice') === null) localStorage.setItem('sections-choice', 'collapsed');
+	});
 const section = (page: Page, index: number) => page.locator(`.sections-column [data-section-index="${index}"]`);
 const trigger = (page: Page, index: number) => section(page, index).locator('[data-section-trigger]').first();
 
-test('fresh content is collapsed and the bulk choice survives another page and reload', async ({ page }) => {
+test('fresh content is expanded and the bulk choice survives another page and reload', async ({ page }) => {
 	await page.goto(project);
-	await expect(action(page)).toHaveAccessibleName('Expand all');
-	await expect(trigger(page, 0)).toHaveAttribute('aria-expanded', 'false');
+	await expect(action(page)).toHaveAccessibleName('Collapse all');
+	await expect(trigger(page, 0)).toHaveAttribute('aria-expanded', 'true');
 	expect(await page.evaluate(() => localStorage.getItem('sections-choice'))).toBeNull();
 	await action(page).click();
-	await expect(trigger(page, 0)).toHaveAttribute('aria-expanded', 'true');
-	expect(await page.evaluate(() => localStorage.getItem('sections-choice'))).toBe('expanded');
+	await expect(trigger(page, 0)).toHaveAttribute('aria-expanded', 'false');
+	expect(await page.evaluate(() => localStorage.getItem('sections-choice'))).toBe('collapsed');
 	await page.goto('/services/database-engineering');
-	await expect(action(page)).toHaveAccessibleName('Collapse all');
+	await expect(action(page)).toHaveAccessibleName('Expand all');
 	await action(page).click();
 	await page.reload();
-	await expect(action(page)).toHaveAccessibleName('Expand all');
-	expect(await page.evaluate(() => localStorage.getItem('sections-choice'))).toBe('collapsed');
+	await expect(action(page)).toHaveAccessibleName('Collapse all');
+	expect(await page.evaluate(() => localStorage.getItem('sections-choice'))).toBe('expanded');
 });
 
 test('a direct project fragment reveals its section without changing the collapsed choice', async ({ page }) => {
@@ -31,6 +36,7 @@ test('a direct project fragment reveals its section without changing the collaps
 });
 
 test('locale reading restoration reveals the individual reading target and Back keeps its position', async ({ page }) => {
+	await startCollapsed(page);
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(project);
 	await action(page).click();
@@ -74,6 +80,7 @@ async function readingProgress(page: Page) {
 for (const locale of ['', '/fr']) {
 	for (const rapid of [false, true]) {
 		test(`${locale || 'EN'} Back restores only the reading target and position${rapid ? ' immediately after departure' : ''}`, async ({ page }) => {
+			await startCollapsed(page);
 			await page.emulateMedia({ reducedMotion: rapid ? 'no-preference' : 'reduce' });
 			await page.goto(locale + project);
 			await action(page).click();
