@@ -270,6 +270,7 @@
 		class="reading-detail"
 		{right}
 		{after}
+		railScroll
 		bind:activeId={activeHeadingId}
 		toc={{
 			entries: tocEntries,
