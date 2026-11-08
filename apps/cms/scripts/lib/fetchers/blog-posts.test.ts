@@ -9,7 +9,7 @@ import {
 	type DirectusBlogPostTranslation,
 } from './blog-posts';
 import { BlogPostSchema } from '@repo/shared/schemas';
-import type { BlockEditorDoc } from '@repo/shared';
+import { serializeBlocksToHtml, type BlockEditorDoc } from '@repo/shared';
 
 const BODY: BlockEditorDoc = {
 	time: 0,
@@ -78,6 +78,16 @@ describe('blog language availability', () => {
 			['en', 'why-bun-is-fast', 'why-bun-is-fast'],
 		]);
 		expect(Object.keys(bodies)).toEqual(['why-bun-is-fast']);
+	});
+
+	it('exports a table body through validation and HTML serialization', () => {
+		const body: BlockEditorDoc = { ...BODY, blocks: [{ id: 'table', type: 'table', data: {
+			withHeadings: true, stretched: false, content: [['Tool', 'Use'], ['Bun', '<b>Runtime</b>']],
+		} }] };
+		const { bodies } = toBlogExport([{ ...POST, translations: [{ ...ENGLISH, body }] }]);
+		expect(bodies[ENGLISH.slug]).toEqual(body);
+		expect(serializeBlocksToHtml(bodies[ENGLISH.slug]!)).toContain('<th scope="col">Tool</th>');
+		expect(serializeBlocksToHtml(bodies[ENGLISH.slug]!)).toContain('<td><b>Runtime</b></td>');
 	});
 
 	it('drops a post with no available language', () => {

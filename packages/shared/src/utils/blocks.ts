@@ -16,6 +16,17 @@ import type {
 	NestedListItem,
 	TocHeading,
 } from '../types/blocks';
+import sanitizeHtml from 'sanitize-html';
+
+/** Inline marks supported by the CMS; shared by table HTML and Svelte output. */
+export function sanitizeTableCell(html: string): string {
+	return sanitizeHtml(html, {
+		allowedTags: ['b', 'strong', 'i', 'em', 'a', 'u', 'code', 'br'],
+		allowedAttributes: { a: ['href', 'title'] },
+		allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+		allowProtocolRelative: false,
+	});
+}
 
 // ---------------------------------------------------------------------------
 // kebabSlug — text → kebab-case ASCII slug
@@ -76,6 +87,8 @@ export function extractText(doc: BlockEditorDoc): string {
 
 function blockText(block: BlockEditorBlock): string {
 	switch (block.type) {
+		case 'table':
+			return block.data.content.flat().map((cell) => stripHtml(sanitizeTableCell(cell))).join(' ');
 		case 'header':
 			return stripHtml(block.data.text);
 		case 'paragraph':
@@ -207,7 +220,8 @@ export function wrapPlainText(str: string): BlockEditorDoc {
  * (An earlier note called this a "legacy bridge to be removed in 18i" —
  * inverted: the static adapter became the live adapter and kept it.)
  *
- * Inline marks (already HTML inside data.text) pass through as-is.
+ * Existing text blocks preserve inline marks as-is; table cells use the
+ * shared inline allowlist before either HTML serialization or Svelte rendering.
  * External links rendered without rel/target — relies on Block Editor
  * input sanitization. Code blocks escape entities (raw plain text input).
  */
@@ -218,6 +232,15 @@ export function serializeBlocksToHtml(doc: BlockEditorDoc): string {
 
 function blockHtml(block: BlockEditorBlock, counts: Map<string, number>): string {
 	switch (block.type) {
+		case 'table': {
+			const rows = block.data.content.map((row, index) => {
+				const heading = block.data.withHeadings && index === 0;
+				const tag = heading ? 'th' : 'td';
+				return `<tr>${row.map((cell) => `<${tag}${heading ? ' scope="col"' : ''}>${sanitizeTableCell(cell)}</${tag}>`).join('')}</tr>`;
+			});
+			const head = block.data.withHeadings && rows.length ? `<thead>${rows.shift()}</thead>` : '';
+			return `<table>${head}<tbody>${rows.join('')}</tbody></table>`;
+		}
 		case 'header': {
 			const plain = stripHtml(block.data.text);
 			const baseId = kebabSlug(plain);

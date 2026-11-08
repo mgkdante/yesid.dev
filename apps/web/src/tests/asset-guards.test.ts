@@ -16,6 +16,7 @@ const reviewedSinks = [
 	{ file: 'lib/components/cms/blocks/NestedList.svelte', reason: 'exported Editor.js inline HTML' },
 	{ file: 'lib/components/cms/blocks/Paragraph.svelte', reason: 'exported Editor.js HTML with inline code formatting' },
 	{ file: 'lib/components/cms/blocks/Quote.svelte', reason: 'exported Editor.js inline HTML' },
+	{ file: 'lib/components/cms/blocks/Table.svelte', reason: 'cells sanitized by the shared sanitize-html inline allowlist' },
 	{ file: 'lib/components/contact/ContactPage.svelte', reason: 'exported CMS line template with escaped link labels and localized internal links' },
 	{ file: 'lib/components/home/HomeServices.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/projects/ProjectCard.svelte', reason: 'static committed asset' },

@@ -2,6 +2,7 @@
 	import type { BlockEditorDoc } from '@repo/shared';
 	import Heading from './blocks/Heading.svelte';
 	import Paragraph from './blocks/Paragraph.svelte';
+	import Table from './blocks/Table.svelte';
 	import NestedList from './blocks/NestedList.svelte';
 	import CodeBlock from './blocks/CodeBlock.svelte';
 	import Quote from './blocks/Quote.svelte';
@@ -24,6 +25,8 @@
 		<Heading data={block.data} />
 	{:else if block.type === 'paragraph'}
 		<Paragraph data={block.data} />
+	{:else if block.type === 'table'}
+		<Table data={block.data} />
 	{:else if block.type === 'nestedlist'}
 		<NestedList style={block.data.style} items={block.data.items} />
 	{:else if block.type === 'code'}
