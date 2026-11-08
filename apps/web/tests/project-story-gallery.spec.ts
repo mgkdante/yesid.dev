@@ -26,9 +26,15 @@ test('project gallery follows the reader flow and supports native browsing and k
 		const scroller = gallery.getByTestId('project-image-gallery');
 		await expect(scroller).toHaveCSS('overflow-x', 'auto');
 		// Wheel browsing is independent of the thumbnail's focus handler.
+		// The wheel scroll and its snap animate. Resetting mid-animation lets the
+		// animation carry on past the reset and the Tab below, so wait for it to end.
+		const wheel = await scroller.evaluateHandle((element) => ({
+			settled: new Promise<void>((resolve) => element.addEventListener('scrollend', () => resolve(), { once: true })),
+		}));
 		await scroller.hover();
 		await page.mouse.wheel(400, 0);
-		await expect.poll(() => scroller.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+		await wheel.evaluate(({ settled }) => settled);
+		expect(await scroller.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
 		await scroller.evaluate((element) => { element.scrollLeft = 0; });
 		await thumbnails.first().focus();
 		await page.keyboard.press('Tab');
