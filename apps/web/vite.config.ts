@@ -85,6 +85,15 @@ export default defineConfig({
 		// module" on `/`. Inline it (+ siblings) at SSR build time to avoid
 		// the runtime resolution mismatch.
 		noExternal: [
+			// sanitize-html is CJS but htmlparser2 12 is ESM-only. Resolve that
+			// interop at build time, including the parser's DOM/entity modules.
+			'sanitize-html',
+			'htmlparser2',
+			'domhandler',
+			'domutils',
+			'domelementtype',
+			'dom-serializer',
+			'entities',
 			'@yesid/tokens',
 			'@yesid/seo-kit',
 			'bits-ui',
