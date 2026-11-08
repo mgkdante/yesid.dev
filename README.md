@@ -78,10 +78,8 @@ READMEs stay the source for local commands.
 | Document | Covers | Access |
 |---|---|---|
 | [Architecture wiki](https://yesid-dev.notion.site/3603e8630690813bbe4ac7adac7d1bd7?v=4093e86306908049b5ee000c3e271459) | As-built system: setup, content model, pipeline, web app, CMS, deployment, security, testing, operations and known limits | Public |
-| [yesid.dev Deep Dive](https://app.notion.com/p/4043e863069081e8bcf6c1e814ee4a3e) | Training course: guided source reading through the codebase, lesson by lesson | Workspace members only |
 
-Both are written against a pinned commit of this repository and name it on
-each page.
+Each page is written against a pinned commit of this repository and names it.
 
 ## Links
 
