@@ -22,7 +22,7 @@
 			"folder": "about",
 			"title": "Headshot — Yesid",
 			"description": "Portrait photograph of Yesid; used as the primary author image on the /about page.",
-			"sha256": "97115465db521ebc23857f727ae70234f2b0d2b7ad11cca6a1f3ce1d7ff0fbfb"
+			"sha256": "1f5551a13f2171569a23c77d474ea00dc4e19fcd952993487d856172ba561376"
 		},
 		{
 			"legacyPath": "images/about/polaroid-1.webp",
@@ -182,8 +182,8 @@
 			"legacyPath": "og/routes/about.png",
 			"folder": "og",
 			"title": "OG card — /about",
-			"description": "Share card for the /about route: Yesid, freelance digital infrastructure developer, with headshot and a call to action.",
-			"sha256": "8c316985f71bd877bd213a682b5a942783af8e92651a960172bb3c6dad51dc96"
+			"description": "Share card for the /about route: Yesid, freelance digital infrastructure developer, with a call to action.",
+			"sha256": "a20a507dd2d4ce02acd8e029a738899e9cf0b5ace7a3a51036b9a5a8c1109306"
 		},
 		{
 			"legacyPath": "og/routes/projects.png",

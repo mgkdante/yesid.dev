@@ -84,21 +84,6 @@ function loadSharp(): typeof import('sharp') {
 	return cmsRequire('sharp') as typeof import('sharp');
 }
 
-async function headshotArt(): Promise<OgCardArt> {
-	const png = await loadSharp()(resolve(WEB_ROOT, 'static/images/about/headshot.webp'))
-		.resize(640, 640, { fit: 'cover' })
-		.png()
-		.toBuffer();
-	const uri = `data:image/png;base64,${png.toString('base64')}`;
-	const [x, y, size] = [820, 134, 300];
-	return {
-		svg: `<clipPath id="headshot-clip"><rect x="${x}" y="${y}" width="${size}" height="${size}" rx="16"/></clipPath>
-		<image href="${uri}" x="${x}" y="${y}" width="${size}" height="${size}" clip-path="url(#headshot-clip)"/>
-		<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="16" fill="none" stroke="${ORANGE}" stroke-width="3"/>`,
-		contentWidth: 700,
-	};
-}
-
 /** The four services as a station list beside the /services title. */
 function serviceListArt(rows: readonly string[]): OgCardArt {
 	const numberX = 730;
@@ -247,7 +232,6 @@ const cta = (share: ShareCta, locale: ShareLocale): Pick<OgCard, 'cta' | 'ctaTon
 
 async function buildCards(): Promise<Record<string, OgCard>> {
 	const cards: Record<string, OgCard> = {};
-	const headshot = await headshotArt();
 
 	for (const locale of SELECTED_LOCALES) {
 		const sfx = suffix(locale);
@@ -280,7 +264,6 @@ async function buildCards(): Promise<Record<string, OgCard>> {
 			eyebrow: ROUTES.about.eyebrow[locale],
 			title: 'Yesid',
 			subtitle: ROUTES.about.subtitle[locale],
-			art: headshot,
 			...cta(SHARE_CTA.about, locale),
 		};
 
