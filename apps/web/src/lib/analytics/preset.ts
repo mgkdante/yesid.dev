@@ -5,6 +5,9 @@ import {
 } from '@yesid/analytics/config';
 import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
 
+/** Same-origin path the relay route serves; it forwards each event to Plausible once. */
+export const ANALYTICS_ENDPOINT = '/relay/e';
+
 export const YESID_ANALYTICS_PRESET = defineAnalyticsPreset({
 	events: [
 		'contact_form_success',

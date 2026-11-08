@@ -3,7 +3,8 @@ import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
 test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
 
-const ENDPOINT = 'https://plausible.io/api/event';
+// Events go to this site's own relay route, never straight to plausible.io.
+const RELAY_PATH = '/relay/e';
 
 type Payload = {
 	n: string;
@@ -14,14 +15,24 @@ type Payload = {
 	v?: number;
 	i?: boolean;
 	h?: number;
+	/** Where the browser sent it. */
+	at?: string;
 };
 
+let directSends: string[] = [];
+
 test.beforeEach(async ({ page }) => {
+	directSends = [];
+	await page.route('https://plausible.io/**', async (route) => {
+		directSends.push(route.request().url());
+		await route.abort();
+	});
 	await page.addInitScript(() => { Reflect.set(window, '__plausible', true); });
 });
 
 test.afterEach(async ({ page }) => {
 	await page.unrouteAll({ behavior: 'wait' });
+	expect(directSends, 'no request may go straight to plausible.io').toEqual([]);
 });
 
 async function proxyProductionHostnameToPreview(page: Page, baseURL: string | undefined): Promise<string> {
@@ -38,9 +49,9 @@ async function proxyProductionHostnameToPreview(page: Page, baseURL: string | un
 
 async function capturePlausible(page: Page): Promise<Payload[]> {
 	const payloads: Payload[] = [];
-	await page.route(ENDPOINT, async (route) => {
-		payloads.push(JSON.parse(route.request().postData() ?? '{}') as Payload);
-		await route.fulfill({ status: 202, contentType: 'text/plain', body: '' });
+	await page.route(`**${RELAY_PATH}`, async (route) => {
+		payloads.push({ ...(JSON.parse(route.request().postData() ?? '{}') as Payload), at: route.request().url() });
+		await route.fulfill({ status: 202, body: '' });
 	});
 	return payloads;
 }
@@ -81,7 +92,7 @@ async function drainCapturedRequests(page: Page, payloads: Payload[]): Promise<v
 			fetch(endpoint, { method: 'POST', body: JSON.stringify({ n }) }).catch(
 				() => undefined,
 			),
-		[ENDPOINT, marker] as const,
+		[RELAY_PATH, marker] as const,
 	);
 	await expect.poll(() => payloads.some(({ n }) => n === marker)).toBe(true);
 }
@@ -328,7 +339,7 @@ test('query-only service filtering does not emit a duplicate pageview', async ({
 	expectExactPageviewCount(payloads, 1);
 });
 
-test('internal path navigation emits one additional pageview', async ({ page, baseURL }) => {
+test('one page load and one client-side navigation each send exactly one pageview to the relay', async ({ page, baseURL }) => {
 	const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
 	const payloads = await capturePlausible(page);
 
@@ -348,6 +359,10 @@ test('internal path navigation emits one additional pageview', async ({ page, ba
 	await settleBrowser(page);
 	await drainCapturedRequests(page, payloads);
 	expectExactPageviewCount(payloads, 2);
+	expect(pageviews(payloads).map(({ at }) => at)).toEqual([
+		`${productionOrigin}${RELAY_PATH}`,
+		`${productionOrigin}${RELAY_PATH}`,
+	]);
 	expect(eventsNamed(payloads, 'engagement').length).toBeGreaterThan(0);
 	for (const payload of nonSentinel(payloads)) {
 		expect(payload.d).toBe('yesid.dev');
@@ -379,7 +394,7 @@ test('the local host sends nothing', async ({ page, baseURL }) => {
 test('an aborted provider request does not block navigation', async ({ page, baseURL }) => {
 	const productionOrigin = await proxyProductionHostnameToPreview(page, baseURL);
 	const abortedPayloads: Payload[] = [];
-	await page.route(ENDPOINT, async (route) => {
+	await page.route(`**${RELAY_PATH}`, async (route) => {
 		abortedPayloads.push(JSON.parse(route.request().postData() ?? '{}') as Payload);
 		await route.abort();
 	});

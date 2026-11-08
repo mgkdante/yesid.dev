@@ -4,7 +4,7 @@ import { createAnalytics, sanitizeAnalyticsUrl, type Analytics } from '@yesid/an
 import { inject as injectAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
-import { YESID_ANALYTICS_PRESET, type AnalyticsEventName, type AnalyticsEventProps } from './preset';
+import { ANALYTICS_ENDPOINT, YESID_ANALYTICS_PRESET, type AnalyticsEventName, type AnalyticsEventProps } from './preset';
 
 let analytics: Analytics<AnalyticsEventName, NonNullable<typeof YESID_ANALYTICS_PRESET.props>> | undefined;
 
@@ -19,7 +19,7 @@ export function reduceVercelEvent<Event extends { url: string }>(event: Event): 
 
 /**
  * Starts measurement once, from the root layout's mount: Plausible for pageviews and events, each
- * tagged with the page locale; Vercel Web Analytics for pageviews and Speed Insights for web
+ * tagged with the page locale and sent through this site's own relay route; Vercel Web Analytics for pageviews and Speed Insights for web
  * vitals. Like Plausible, Vercel's scripts start only on the production host: they exist only on
  * Vercel deployments, and previews would spend the Hobby event quota. Vercel custom events need
  * Pro, so events go to Plausible only.
@@ -28,6 +28,7 @@ export function startAnalytics(): void {
 	if (analytics) return;
 	analytics = createAnalytics(YESID_ANALYTICS_PRESET, {
 		domain: PUBLIC_PLAUSIBLE_DOMAIN,
+		endpoint: ANALYTICS_ENDPOINT,
 		context: () => ({ locale: pathLocale(location.pathname) }),
 	});
 	if (!PUBLIC_PLAUSIBLE_DOMAIN || location.hostname !== PUBLIC_PLAUSIBLE_DOMAIN) return;
