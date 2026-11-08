@@ -219,7 +219,7 @@ describe('buildBlogPostingNode', () => {
 			category: 'professional',
 			tags: ['sql'],
 			animation: 'draw',
-			svg: 'pro-code',
+			svg: 'code',
 			url: '/blog/raw-sql-control',
 			external: false,
 		} satisfies BlogPost;
@@ -268,7 +268,7 @@ describe('buildBlogPostingNode', () => {
 			category: 'professional',
 			tags: ['sql', 'postgresql'],
 			animation: 'draw',
-			svg: 'pro-code',
+			svg: 'code',
 			url: '/blog/raw-sql-control',
 			external: false,
 		} satisfies BlogPost;

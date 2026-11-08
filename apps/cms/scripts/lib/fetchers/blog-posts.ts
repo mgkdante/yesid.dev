@@ -3,8 +3,8 @@
  * `translations` and emits one BlogPost (plus its Block Editor body) for every
  * language that is available on the site.
  *
- * SVG fallback resolution: when a post has no svg_illustration FK, hashes the
- * post key to pick from the canonical PRO/PERSONAL fallback lists.
+ * Topic icon resolution: svg_illustration selects an icon; without it, hashes the
+ * post key into the stable professional/personal topic lists (order preserves assignments).
  */
 
 import { readItems } from '@directus/sdk';
@@ -63,12 +63,12 @@ export interface BlogExport {
 	bodies: Record<string, BlockEditorDoc>;
 }
 
-const PRO_FALLBACKS = ['pro-database', 'pro-code', 'pro-pipeline', 'pro-chart'] as const;
+const PRO_FALLBACKS = ['database', 'code', 'pipeline', 'chart'] as const;
 const PERSONAL_FALLBACKS = [
-	'personal-rocket',
-	'personal-train',
-	'personal-telescope',
-	'personal-globe',
+	'rocket',
+	'train',
+	'telescope',
+	'globe',
 ] as const;
 
 export const BLOG_POST_SORT = ['-date_published', 'sort', 'id'] as const;
